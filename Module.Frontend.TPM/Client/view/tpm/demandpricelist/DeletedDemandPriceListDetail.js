@@ -1,0 +1,35 @@
+﻿Ext.define('App.view.tpm.demandpricelist.DeletedDemandPriceListDetail', {
+    extend: 'App.view.core.common.EditorDetailWindow',
+    alias: 'widget.deleteddemandpricelistdetail',
+    width: 800,
+    minWidth: 800,
+    maxHeight: 600,
+
+    items: {
+        xtype: 'editorform',
+        itemId: 'deleteddetailform',
+        items: [{
+            xtype: 'singlelinedisplayfield',
+            name: 'DeletedDate',
+            renderer: Ext.util.Format.dateRenderer('d.m.Y H:i:s'),
+            fieldLabel: l10n.ns('core', 'BaseDeletedEntity').value('DeletedDate')
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'ProductZREP',
+            fieldLabel: l10n.ns('tpm', 'DemandPriceList').value('ProductZREP'),
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'ClientTreeDemandCode',
+            fieldLabel: l10n.ns('tpm', 'DemandPriceList').value('ClientTreeDemandCode'),
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'StartDate',
+            fieldLabel: l10n.ns('tpm', 'DemandPriceList').value('StartDate'),
+            renderer: Ext.util.Format.dateRenderer('d.m.Y'),
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'Price',
+            fieldLabel: l10n.ns('tpm', 'DemandPriceList').value('Price'),
+        }]
+    }
+})

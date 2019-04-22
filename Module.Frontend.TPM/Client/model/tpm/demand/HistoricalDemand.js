@@ -1,0 +1,46 @@
+﻿Ext.define('App.model.tpm.demand.HistoricalDemand', {
+    extend: 'Ext.data.Model',
+    idProperty: '_Id',
+    breezeEntityType: 'HistoricalPromo',
+    fields: [
+        { name: '_Id', type: 'string', hidden: true },
+        { name: '_ObjectId', hidden: true },
+        { name: '_User', type: 'string', isDefault: true },
+        { name: '_Role', type: 'string', isDefault: true },
+        { name: '_EditDate', type: 'date', isDefault: true },
+        { name: '_Operation', type: 'string', isDefault: true },
+        { name: 'ClientId', useNull: true, hidden: true, isDefault: true },
+        { name: 'BrandId', useNull: true, hidden: true, isDefault: true },
+        { name: 'BrandTechId', useNull: true, hidden: true, isDefault: true },
+        { name: 'Number', type: 'int', hidden: false, isDefault: true },
+        { name: 'Name', type: 'string', hidden: false, isDefault: true },
+        { name: 'StartDate', useNull: true, type: 'date', hidden: false, isDefault: true },
+        { name: 'EndDate', useNull: true, type: 'date', hidden: false, isDefault: true },
+        { name: 'DispatchesStart', useNull: true, type: 'date', hidden: false, isDefault: true },
+        { name: 'DispatchesEnd', useNull: true, type: 'date', hidden: false, isDefault: true },
+        { name: 'PlanBaseline', useNull: true, type: 'int', hidden: false, isDefault: true },
+        { name: 'PlanDuration', useNull: true, type: 'int', hidden: false, isDefault: true },
+        { name: 'PlanUplift', useNull: true, type: 'int', hidden: false, isDefault: true },
+        { name: 'PlanIncremental', useNull: true, type: 'int', hidden: false, isDefault: true },
+        { name: 'PlanActivity', useNull: true, type: 'int', hidden: false, isDefault: true },
+        { name: 'PlanSteal', useNull: true, type: 'int', hidden: false, isDefault: true },
+        { name: 'FactBaseline', useNull: true, type: 'int', hidden: false, isDefault: true },
+        { name: 'FactDuration', useNull: true, type: 'int', hidden: false, isDefault: true },
+        { name: 'FactUplift', useNull: true, type: 'int', hidden: false, isDefault: true },
+        { name: 'FactIncremental', useNull: true, type: 'int', hidden: false, isDefault: true },
+        { name: 'FactActivity', useNull: true, type: 'int', hidden: false, isDefault: true },
+        { name: 'FactSteal', useNull: true, type: 'int', hidden: false, isDefault: true },
+        { name: 'ClientCommercialSubnetCommercialNetName', type: 'string' },
+        { name: 'BrandName', type: 'string' },
+        { name: 'BrandTechName', type: 'string' },
+    ],
+    proxy: {
+        type: 'breeze',
+        resourceName: 'HistoricalDemands',
+        reader: {
+            type: 'json',
+            totalProperty: 'inlineCount',
+            root: 'results'
+        }
+    }
+});

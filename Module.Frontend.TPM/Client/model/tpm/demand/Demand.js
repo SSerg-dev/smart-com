@@ -1,0 +1,47 @@
+﻿Ext.define('App.model.tpm.demand.Demand', {
+    extend: 'Ext.data.Model',
+    idProperty: 'Id',
+    breezeEntityType: 'Demand',
+    fields: [
+        { name: 'Id', hidden: true },
+        { name: 'ClientId', useNull: true, hidden: true, isDefault: true, defaultValue: null },
+        { name: 'BrandId', useNull: true, hidden: true, isDefault: true, defaultValue: null },
+        { name: 'BrandTechId', useNull: true, hidden: true, isDefault: true, defaultValue: null },
+        { name: 'Number', type: 'int', hidden: false, isDefault: true },
+        { name: 'Name', type: 'string', hidden: false, isDefault: true },
+        { name: 'StartDate', useNull: true, type: 'date', hidden: false, isDefault: true },
+        { name: 'EndDate', useNull: true, type: 'date', hidden: false, isDefault: true },
+        { name: 'DispatchesStart', useNull: true, type: 'date', hidden: false, isDefault: true },
+        { name: 'DispatchesEnd', useNull: true, type: 'date', hidden: false, isDefault: true },
+        { name: 'PlanBaseline', useNull: true, type: 'int', hidden: false, isDefault: true },
+        { name: 'PlanDuration', useNull: true, type: 'int', hidden: false, isDefault: true },
+        { name: 'PlanUplift', useNull: true, type: 'int', hidden: false, isDefault: true },
+        { name: 'PlanIncremental', useNull: true, type: 'int', hidden: false, isDefault: true },
+        { name: 'PlanActivity', useNull: true, type: 'int', hidden: false, isDefault: true },
+        { name: 'PlanSteal', useNull: true, type: 'int', hidden: false, isDefault: true },
+        { name: 'FactBaseline', useNull: true, type: 'int', hidden: false, isDefault: true },
+        { name: 'FactDuration', useNull: true, type: 'int', hidden: false, isDefault: true },
+        { name: 'FactUplift', useNull: true, type: 'int', hidden: false, isDefault: true },
+        { name: 'FactIncremental', useNull: true, type: 'int', hidden: false, isDefault: true },
+        { name: 'FactActivity', useNull: true, type: 'int', hidden: false, isDefault: true },
+        { name: 'FactSteal', useNull: true, type: 'int', hidden: false, isDefault: true },
+        {
+            name: 'ClientCommercialSubnetCommercialNetName', type: 'string', mapping: 'Client.CommercialSubnet.CommercialNet.Name',
+            defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'CommercialNet', hidden: false, isDefault: true
+        },
+        {
+            name: 'BrandName', type: 'string', mapping: 'Brand.Name', defaultFilterConfig: { valueField: 'Name' },
+            breezeEntityType: 'Brand', hidden: false, isDefault: true
+        },
+        { name: 'BrandTechName', type: 'string', mapping: 'BrandTech.Name', defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'BrandTech', hidden: false, isDefault: true },
+    ],
+    proxy: {
+        type: 'breeze',
+        resourceName: 'Demands',
+        reader: {
+            type: 'json',
+            totalProperty: 'inlineCount',
+            root: 'results'
+        }
+    }
+});

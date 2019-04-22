@@ -1,0 +1,18 @@
+﻿using Core.ModuleRegistrator;
+//using Module.Persist.MODULENAME.Model;
+//using Module.Persist.MODULENAME.Model.History;
+//using Module.Persist.MODULENAME.Model.Import;
+using System.Data.Entity;
+using System.Web.Http.OData.Builder;
+
+namespace Module.Persist.MODULENAME {
+    public class PersistMODULENAMEModuleRegistrator : IPersistModuleRegistrator {
+        public void ConfigurateDBModel(DbModelBuilder modelBuilder) {
+            // ADD Db Models here
+        }
+
+        public void BuildEdm(ODataConventionModelBuilder builder) {
+            // ADD EdmBuilding here
+        }
+    }
+}

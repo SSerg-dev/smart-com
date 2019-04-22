@@ -1,0 +1,2 @@
+﻿DELETE FROM dbo.AccessPointRole WHERE AccessPointId IN (SELECT ID FROM dbo.AccessPoint WHERE Resource = 'Promoes' AND Action = 'DownloadTemplateXLSX');
+DELETE FROM dbo.AccessPoint WHERE Resource = 'Promoes' AND Action = 'DownloadTemplateXLSX';

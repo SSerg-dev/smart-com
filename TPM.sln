@@ -1,0 +1,79 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.271
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceProject", "ServiceProject\ServiceProject.csproj", "{8FCC3394-3A9D-4E62-8F92-52C860C2AEAB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Module.Persist.TPM", "Module.Persist.TPM\Module.Persist.TPM.csproj", "{A4E76DF0-0B6A-4848-A99C-B6BF261623F2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Module.Host.TPM", "Module.Host.TPM\Module.Host.TPM.csproj", "{2C62BEB7-5D98-4FD6-A491-523473EA5019}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Frontend.TPM", "Frontend.TPM\Frontend.TPM.csproj", "{DF60AE86-A38C-463C-B67D-DEB25AFD40BE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Module.Frontend.TPM", "Module.Frontend.TPM\Module.Frontend.TPM.csproj", "{70DE5780-2297-41FC-A861-D370F6FE631B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProcessingService.TPM", "ProcessingService.TPM\ProcessingService.TPM.csproj", "{53FF0767-10C7-4E3B-B1DD-C1E47D3EE536}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8FCC3394-3A9D-4E62-8F92-52C860C2AEAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8FCC3394-3A9D-4E62-8F92-52C860C2AEAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8FCC3394-3A9D-4E62-8F92-52C860C2AEAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8FCC3394-3A9D-4E62-8F92-52C860C2AEAB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4E76DF0-0B6A-4848-A99C-B6BF261623F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4E76DF0-0B6A-4848-A99C-B6BF261623F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4E76DF0-0B6A-4848-A99C-B6BF261623F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4E76DF0-0B6A-4848-A99C-B6BF261623F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C62BEB7-5D98-4FD6-A491-523473EA5019}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C62BEB7-5D98-4FD6-A491-523473EA5019}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C62BEB7-5D98-4FD6-A491-523473EA5019}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C62BEB7-5D98-4FD6-A491-523473EA5019}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF60AE86-A38C-463C-B67D-DEB25AFD40BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF60AE86-A38C-463C-B67D-DEB25AFD40BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF60AE86-A38C-463C-B67D-DEB25AFD40BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF60AE86-A38C-463C-B67D-DEB25AFD40BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70DE5780-2297-41FC-A861-D370F6FE631B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70DE5780-2297-41FC-A861-D370F6FE631B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70DE5780-2297-41FC-A861-D370F6FE631B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70DE5780-2297-41FC-A861-D370F6FE631B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53FF0767-10C7-4E3B-B1DD-C1E47D3EE536}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53FF0767-10C7-4E3B-B1DD-C1E47D3EE536}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53FF0767-10C7-4E3B-B1DD-C1E47D3EE536}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53FF0767-10C7-4E3B-B1DD-C1E47D3EE536}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4277D305-A516-4748-A3FD-CBE66CBB4463}
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 7
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = http://192.168.10.129:8080/tfs/dotnet_project_collection
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = ServiceProject\\ServiceProject.csproj
+		SccProjectName1 = ServiceProject
+		SccLocalPath1 = ServiceProject
+		SccProjectUniqueName2 = Module.Persist.TPM\\Module.Persist.TPM.csproj
+		SccProjectName2 = Module.Persist.TPM
+		SccLocalPath2 = Module.Persist.TPM
+		SccProjectUniqueName3 = Module.Host.TPM\\Module.Host.TPM.csproj
+		SccProjectName3 = Module.Host.TPM
+		SccLocalPath3 = Module.Host.TPM
+		SccProjectUniqueName4 = Frontend.TPM\\Frontend.TPM.csproj
+		SccProjectName4 = Frontend.TPM
+		SccLocalPath4 = Frontend.TPM
+		SccProjectUniqueName5 = Module.Frontend.TPM\\Module.Frontend.TPM.csproj
+		SccProjectName5 = Module.Frontend.TPM
+		SccLocalPath5 = Module.Frontend.TPM
+		SccProjectUniqueName6 = ProcessingService.TPM\\ProcessingService.TPM.csproj
+		SccProjectName6 = ProcessingService.TPM
+		SccLocalPath6 = ProcessingService.TPM
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,60 @@
+﻿Ext.define('App.view.tpm.promoactivitydetailsinfo.PromoActivityDetailsInfoEditor', {
+    extend: 'App.view.core.common.EditorDetailWindow',
+    alias: 'widget.promoactivitydetailsinfoeditor',
+    width: 800,
+    minWidth: 800,
+    maxHeight: 600,
+
+    items: {
+        xtype: 'editorform',
+        columnsCount: 2,
+        items: [{
+            xtype: 'singlelinedisplayfield',
+            name: 'ZREP',
+            maxLength: 255,
+            fieldLabel: l10n.ns('tpm', 'PromoProduct').value('ZREP'),
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'ProductEN',
+            maxLength: 255,
+            fieldLabel: l10n.ns('tpm', 'PromoProduct').value('ProductEN'),
+        }, {
+            xtype: 'numberfield',
+            format: '0.00',
+            fieldLabel: l10n.ns('tpm', 'PromoProduct').value('PlanProductQty'),
+            name: 'PlanProductBaselineLSV'
+        }, {
+            xtype: 'numberfield',
+            format: '0.00',
+            fieldLabel: l10n.ns('tpm', 'PromoProduct').value('PlanProductIncrementalQty'),
+            name: 'PlanProductIncrementalQty'
+        }, {
+            xtype: 'numberfield',
+            format: '0.00',
+            fieldLabel: l10n.ns('tpm', 'PromoProduct').value('PlanProductLSV'),
+            name: 'PlanProductLSV'
+        }, {
+            xtype: 'numberfield',
+            format: '0.00',
+            fieldLabel: l10n.ns('tpm', 'PromoProduct').value('PlanProductPostPromoEffectQty'),
+            name: 'PlanProductPostPromoEffectQty'
+        //
+        }, {
+            xtype: 'numberfield',
+            format: '0.00',
+            fieldLabel: l10n.ns('tpm', 'PromoProduct').value('ActualProductLSV'),
+            name: 'ActualProductLSV'
+        }, {
+            xtype: 'numberfield',
+            format: '0.00',
+            fieldLabel: l10n.ns('tpm', 'PromoProduct').value('ActualProductPostPromoEffectQty'),
+            name: 'ActualProductPostPromoEffectQty'
+        }] 
+    },
+
+    listeners: {
+        beforerender: function (editor) {
+            editor.down('#edit').hidden = true;
+        },
+    }
+});

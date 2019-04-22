@@ -1,0 +1,21 @@
+using Core.Data;
+using System;
+
+namespace Module.Persist.TPM.Model.DTO {
+    public class PlanIncrementalReport : IEntity<Guid> {
+        public Guid Id { get; set; }
+        public string ZREP { get; set; }
+        public string DemandCode { get; set; }
+        public string PromoName { get; set; }
+        public string PromoNameId { get; set; }
+        public string LocApollo { get; set; }
+        public string TypeApollo { get; set; }
+        public string ModelApollo { get; set; }
+        public DateTimeOffset? WeekStartDate { get; set; }
+        public double? PlanProductQty { get; set; }
+        public double? PlanUplift { get; set; }
+        public DateTimeOffset? StartDate { get; set; }
+        public DateTimeOffset? EndDate { get; set; }
+        public string Status { get; set; }
+    }
+}

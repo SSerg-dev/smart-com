@@ -1,0 +1,107 @@
+﻿Ext.define('App.view.tpm.promoactivitydetailsinfo.PromoActivityDetailsInfo', {
+    extend: 'App.view.core.common.CombinedDirectoryPanel',
+    alias: 'widget.promoactivitydetailsinfo',
+    title: l10n.ns('tpm', 'compositePanelTitles').value('PromoProduct'),
+
+    customHeaderItems: [],
+
+    dockedItems: [{
+        xtype: 'custombigtoolbar',
+        dock: 'right',
+        items: [{
+            xtype: 'widthexpandbutton',
+            ui: 'fill-gray-button-toolbar',
+            text: l10n.ns('core', 'selectablePanelButtons').value('toolbarCollapse'),
+            glyph: 0xf13d,
+            glyph1: 0xf13e,
+            target: function () {
+                return this.up('toolbar');
+            },
+        }, {
+            itemId: 'extfilterbutton',
+            glyph: 0xf349,
+            text: l10n.ns('core', 'toptoolbar').value('filterButtonText'),
+            tooltip: l10n.ns('core', 'toptoolbar').value('filterButtonText')
+        }, {
+            itemId: 'extfilterclearbutton',
+            ui: 'blue-button-toolbar',
+            disabled: true,
+            glyph: 0xf232,
+            text: l10n.ns('core', 'filter').value('filterEmptyStatus'),
+            tooltip: l10n.ns('core', 'filter').value('filterEmptyStatus'),
+            overCls: '',
+            style: {
+                'cursor': 'default'
+            }
+        }]
+    }],
+
+    items: [{
+        xtype: 'directorygrid',
+        itemId: 'datatable',
+        editorModel: 'Core.form.EditorDetailWindowModel',
+        store: {
+            type: 'directorystore',
+            model: 'App.model.tpm.promoactivitydetailsinfo.PromoActivityDetailsInfo',
+            storeId: 'actualstore',
+            extendedFilter: {
+                xclass: 'App.ExtFilterContext',
+                supportedModels: [{
+                    xclass: 'App.ExtSelectionFilterModel',
+                    model: 'App.model.tpm.promoactivitydetailsinfo.PromoActivityDetailsInfo',
+                    modelId: 'efselectionmodel'
+                }, {
+                    xclass: 'App.ExtTextFilterModel',
+                    modelId: 'eftextmodel'
+                }]
+            }
+        },
+
+        columns: {
+            defaults: {
+                plugins: ['sortbutton'],
+                menuDisabled: true,
+                filter: true,
+                flex: 1,
+                minWidth: 110
+            },
+            items: [{
+                text: l10n.ns('tpm', 'PromoProduct').value('ZREP'),
+                dataIndex: 'ZREP',
+            }, {
+                text: l10n.ns('tpm', 'PromoProduct').value('ProductEN'),
+                dataIndex: 'ProductEN',
+            }, {
+                text: l10n.ns('tpm', 'PromoProduct').value('PlanProductBaselineLSV'),
+                dataIndex: 'PlanProductBaselineLSV',
+                hidden: true
+            }, {
+                text: l10n.ns('tpm', 'PromoProduct').value('PlanProductIncrementalQty'),
+                dataIndex: 'PlanProductIncrementalQty',
+                hidden: true
+            }, {
+                text: l10n.ns('tpm', 'PromoProduct').value('PlanProductLSV'),
+                dataIndex: 'PlanProductLSV',
+                hidden: true
+            }, {
+                text: l10n.ns('tpm', 'PromoProduct').value('PlanProductPostPromoEffectQty'),
+                dataIndex: 'PlanProductPostPromoEffectQty',
+                hidden: true
+            //
+            }, {
+                text: l10n.ns('tpm', 'PromoProduct').value('ActualProductLSV'),
+                dataIndex: 'ActualProductLSV',
+                hidden: true
+            }, {
+                text: l10n.ns('tpm', 'PromoProduct').value('ActualProductPostPromoEffectQty'),
+                dataIndex: 'ActualProductPostPromoEffectQty',
+                hidden: true
+            }]
+        }
+    }, {
+        xtype: 'editabledetailform',
+        itemId: 'detailform',
+        model: 'App.model.tpm.promoactivitydetailsinfo.PromoActivityDetailsInfo',
+        items: []
+    }]
+});

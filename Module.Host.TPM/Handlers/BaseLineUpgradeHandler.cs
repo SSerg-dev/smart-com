@@ -1,0 +1,189 @@
+﻿using ProcessingHost.Handlers;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Looper.Core;
+using Utility.LogWriter;
+using System.Diagnostics;
+using Interfaces.Core.Common;
+using Module.Host.TPM.Actions;
+using Persist;
+using Persist.Model;
+using Module.Persist.TPM.Model.TPM;
+using Module.Persist.TPM.CalculatePromoParametersModule;
+using System.Threading;
+
+namespace Module.Host.TPM.Handlers
+{
+    /// <summary>
+    /// Класс для пересчета параметров при изменении BaseLine
+    /// </summary>
+    public class BaseLineUpgradeHandler : BaseHandler
+    {
+        public override void Action(HandlerInfo info, ExecuteData data)
+        {
+            ILogWriter handlerLogger = null;
+            Stopwatch sw = new Stopwatch();
+            List<Promo> promoQuery = new List<Promo>();
+
+            sw.Start();
+            try
+            {
+                handlerLogger = new FileLogWriter(info.HandlerId.ToString());
+                handlerLogger.Write(true, String.Format("Calculation of parameters started at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now));
+                //Console.WriteLine("Start: {0}", DateTimeOffset.Now);
+
+                using (DatabaseContext context = new DatabaseContext())
+                {
+                    LoopHandler handler = context.Set<LoopHandler>().Find(info.HandlerId);
+                    DateTimeOffset prevExecutionDate;
+
+                    // если по расписанию то дата последнего запуска рассчитывается через вычитание периода запуска
+                    // иначе - это разовая задача и нужно брать фактическое значение и обновить даты у истинного обработчика
+                    if (handler.ExecutionMode.ToLower() == "schedule")
+                    {
+                        prevExecutionDate = handler.LastExecutionDate.Value.AddMilliseconds(-(double)handler.ExecutionPeriod);
+                    }
+                    else
+                    {
+                        LoopHandler handlerSchedule = context.Set<LoopHandler>().Where(n => n.ExecutionMode.ToLower() == "schedule" && n.Name == handler.Name).First();
+                        prevExecutionDate = handlerSchedule.LastExecutionDate ?? DateTimeOffset.Now;
+                        handlerSchedule.LastExecutionDate = DateTimeOffset.Now;
+                        handlerSchedule.Status = "WAITING";
+
+                        // если дата следущего запуска была, отодвигаем её на период запуск (или несколько, если обработчик давно завис)
+                        // иначе определям от текущего момента + период
+                        if (handlerSchedule.NextExecutionDate.HasValue)
+                        {
+                            while (DateTimeOffset.Compare(handlerSchedule.NextExecutionDate.Value, handlerSchedule.LastExecutionDate.Value) <= 0)
+                                handlerSchedule.NextExecutionDate = handlerSchedule.NextExecutionDate.Value.AddMilliseconds((double)handlerSchedule.ExecutionPeriod);
+                        }
+                        else
+                        {
+                            handlerSchedule.NextExecutionDate = handlerSchedule.LastExecutionDate.Value.AddMilliseconds((double)handlerSchedule.ExecutionPeriod);
+                        }
+                    }
+
+                    List<BaseLine> baseLineList = context.Set<BaseLine>().Where(x => x.LastModifiedDate.HasValue && DateTimeOffset.Compare(prevExecutionDate, x.LastModifiedDate.Value) < 0 && !x.Disabled).ToList();
+
+                    promoQuery = GetPromo(baseLineList, context);
+                    string promoNumbers = "";
+
+                    while (true)
+                    {                      
+                        if (CalculationTaskManager.BlockPromoRange(promoQuery, info.HandlerId))
+                        {
+                            foreach (Promo promo in promoQuery)
+                                promoNumbers += promo.Number.Value + ", ";
+
+                            break;
+                        }
+                        else
+                        {
+                            // Если блокировка не удалась, ждем 5 мин и проверяем
+                            // Надо бы через перезапуск задачи
+                            Thread.Sleep(1000 * 60 * 5);
+                        }
+                    }
+
+                    handlerLogger.Write(true, String.Format("At the time of calculation, the following promo are blocked for editing: {0}", promoNumbers));
+
+                    foreach (Promo promo in promoQuery)
+                    {
+                        string calculateError = PlanProductParametersCalculation.CalculatePromoProductParameters(promo.Id, context);
+                        if (calculateError != null)
+                        {
+                            handlerLogger.Write(true, String.Format("Error when calculating the planned parameters of the Product: {0}", calculateError));
+                        }
+
+                        calculateError = PlanPromoParametersCalculation.CalculatePromoParameters(promo.Id, context);
+                        if (calculateError != null)
+                        {
+                            handlerLogger.Write(true, String.Format("Error when calculating the planned parameters Promo: {0}", calculateError));
+                        }
+
+                        CalulateActual(promo, context, handlerLogger);
+                        context.SaveChanges();
+                    }
+
+                }
+            }
+            catch (Exception e)
+            {
+                if (handlerLogger != null)
+                {
+                    handlerLogger.Write(true, e.ToString());
+                }
+            }
+            finally
+            {
+                foreach (Promo promo in promoQuery)
+                    CalculationTaskManager.UnLockPromo(promo.Id);
+
+                sw.Stop();
+                if (handlerLogger != null)
+                {
+                    handlerLogger.Write(true, String.Format("Calculation of parameters completed at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", DateTimeOffset.Now, sw.Elapsed.TotalSeconds));
+                    //Console.WriteLine("Fin. Duration: {1} s", DateTimeOffset.Now, sw.Elapsed.TotalSeconds);
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Получить промо, которое необходимо пересчитать
+        /// </summary>
+        /// <param name="baseLineList">Список BaseLines</param>
+        /// <param name="context">Контекст БД</param>
+        /// <returns></returns>
+        private List<Promo> GetPromo(List<BaseLine> baseLineList, DatabaseContext context)
+        {
+            List<Promo> promo = new List<Promo>();
+
+            foreach (BaseLine baseLine in baseLineList)
+            {
+                List<PromoProduct> promoProduct = context.Set<PromoProduct>().Where(x => x.ProductId == baseLine.ProductId && !x.Disabled).ToList();
+                promo.AddRange(promoProduct.Select(x => x.Promo).Where(n => n.PromoStatus.SystemName != "Draft" && n.PromoStatus.SystemName != "Closed" && !n.Disabled).Distinct());
+            }
+
+            return promo;
+        }
+
+        /// <summary>
+        /// Расчитать фактические показатели для Промо
+        /// </summary>
+        /// <param name="promo">Промо</param>
+        /// <param name="context">Контекст БД</param>
+        /// <param name="handlerLogger">Лог</param>
+        private void CalulateActual(Promo promo, DatabaseContext context, ILogWriter handlerLogger)
+        {
+            // если есть ошибки, они перечисленны через ;
+            string errorString = ActualProductParametersCalculation.CalculatePromoProductParameters(promo, context);
+
+            ActualPromoParametersCalculation.ResetValues(promo, context);
+            if (errorString == null)
+                errorString = ActualPromoParametersCalculation.CalculatePromoParameters(promo, context);
+
+            // записываем ошибки если они есть
+            if (errorString != null)
+                WriteErrorsInLog(handlerLogger, errorString);
+        }
+
+        /// <summary>
+        /// Записать ошибки в лог
+        /// </summary>
+        /// <param name="handlerLogger">Лог</param>
+        /// <param name="errorString">Список ошибок, записанных через ';'</param>
+        private void WriteErrorsInLog(ILogWriter handlerLogger, string errorString)
+        {
+            string[] errors = errorString.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+            string message = "";
+            foreach (string e in errors)
+                message += e + "\n";
+
+            handlerLogger.Write(true, message);
+        }
+    }
+}

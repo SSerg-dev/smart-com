@@ -1,0 +1,248 @@
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using Core.Security;
+using Core.Security.Models;
+using Frontend.Core.Controllers.Base;
+using Frontend.Core.Extensions.Export;
+using Module.Persist.TPM.Model.DTO;
+using Module.Persist.TPM.Model.TPM;
+using Persist.Model;
+using System;
+using System.Collections.Generic;
+using System.Data.Entity.Infrastructure;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Net;
+using System.Web.Http;
+using System.Web.Http.OData;
+using System.Web.Http.OData.Query;
+using System.Web.Http.Results;
+using Thinktecture.IdentityModel.Authorization.WebApi;
+
+namespace Module.Frontend.TPM.Controllers
+{
+    [Route("odata/DemandDTOs")]
+    public class DemandDTOsController : EFContextController
+    {
+        private readonly IAuthorizationManager authorizationManager;
+
+        public DemandDTOsController(IAuthorizationManager authorizationManager)
+        {
+            this.authorizationManager = authorizationManager;
+            Mapper.CreateMap<Promo, DemandDTO>();
+        }
+
+
+        protected IQueryable<Promo> GetConstraintedQuery()
+        {
+
+            UserInfo user = authorizationManager.GetCurrentUser();
+            string role = authorizationManager.GetCurrentRoleName();
+            IList<Constraint> constraints = user.Id.HasValue ? Context.Constraints
+                .Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
+                .ToList() : new List<Constraint>();
+            IQueryable<Promo> query = Context.Set<Promo>().Where(e => !e.Disabled);
+
+            return query;
+        }
+
+
+        [ClaimsAuthorize]
+        [EnableQuery(MaxNodeCount = int.MaxValue, MaxExpansionDepth = 3)]
+        public SingleResult<DemandDTO> GetPromo([FromODataUri] System.Guid key)
+        {
+            return SingleResult.Create(GetConstraintedQuery().ProjectTo<DemandDTO>());
+        }
+
+
+        [ClaimsAuthorize]
+        [EnableQuery(MaxNodeCount = int.MaxValue, MaxExpansionDepth = 3)]
+        public IQueryable<DemandDTO> GetPromoes()
+        {
+            return GetConstraintedQuery().ProjectTo<DemandDTO>();
+        }
+
+
+        [ClaimsAuthorize]
+        public IHttpActionResult Put([FromODataUri] System.Guid key, Delta<DemandDTO> patch)
+        {
+            var model = Context.Set<Promo>().Find(key);
+            if (model == null)
+            {
+                return NotFound();
+            }
+            var dto = Mapper.Map<DemandDTO>(model);
+            patch.Put(dto);
+            Mapper.Map(dto, model);
+            try
+            {
+                Context.SaveChanges();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!EntityExists(key))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return Updated(model);
+        }
+
+        [ClaimsAuthorize]
+        public IHttpActionResult Post(DemandDTO model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var proxy = Context.Set<Promo>().Create<Promo>();
+            var result = (Promo)Mapper.Map(model, proxy, typeof(Promo), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+            Context.Set<Promo>().Add(result);
+
+            try
+            {
+                Context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                return GetErorrRequest(e);
+            }
+
+            return Created(model);
+        }
+
+        [ClaimsAuthorize]
+        [AcceptVerbs("PATCH", "MERGE")]
+        public IHttpActionResult Patch([FromODataUri] System.Guid key, Delta<DemandDTO> patch)
+        {            
+            try
+            {
+                var model = Context.Set<Promo>().Find(key);
+                if (model == null)
+                {
+                    return NotFound();
+                }
+
+                var dto = Mapper.Map<DemandDTO>(model);
+                patch.Patch(dto);
+                Mapper.Map(dto, model);
+                Context.SaveChanges();
+
+                return Updated(model);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!EntityExists(key))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            catch (Exception e)
+            {
+                return GetErorrRequest(e);
+            }            
+        }
+
+        [ClaimsAuthorize]
+        public IHttpActionResult Delete([FromODataUri] System.Guid key)
+        {
+            try
+            {
+                var model = Context.Set<Promo>().Find(key);
+                if (model == null)
+                {
+                    return NotFound();
+                }
+                model.DeletedDate = System.DateTime.Now;
+                model.Disabled = true;
+                Context.SaveChanges();
+                return StatusCode(HttpStatusCode.NoContent);
+            }
+            catch (Exception e)
+            {
+                return InternalServerError(e.InnerException);
+            }
+        }
+
+        private bool EntityExists(System.Guid key)
+        {
+            return Context.Set<Promo>().Count(e => e.Id == key) > 0;
+        }
+
+        private IEnumerable<Column> GetExportSettings()
+        {
+            IEnumerable<Column> columns = new List<Column>() {
+                new Column() { Order = 0, Field = "Name", Header = "Program", Quoting = false },
+                new Column() { Order = 1, Field = "Client.CommercialSubnet.CommercialNet.Name", Header = "Customer", Quoting = false },
+                new Column() { Order = 2, Field = "Brand.Name", Header = "Brand", Quoting = false },
+                new Column() { Order = 3, Field = "BrandTech.Name", Header = "BrandTech", Quoting = false },
+                new Column() { Order = 4, Field = "Product.Name", Header = "Product", Quoting = false },
+                new Column() { Order = 5, Field = "PromoStatus.Name", Header = "PromoStatus", Quoting = false },
+                new Column() { Order = 6, Field = "Mechanic.MechanicName", Header = "Mechanic", Quoting = false },
+                new Column() { Order = 7, Field = "Mechanic.Discount", Header = "Mechanic, %", Quoting = false },
+                new Column() { Order = 8, Field = "Mechanic.Comment", Header = "Mechanic comment", Quoting = false },
+                new Column() { Order = 9, Field = "StartDate", Header = "StartDate", Quoting = false },
+                new Column() { Order = 10, Field = "EndDate", Header = "EndDate", Quoting = false },
+                new Column() { Order = 11, Field = "DispatchesStart", Header = "DispatchesStart", Quoting = false },
+                new Column() { Order = 12, Field = "DispatchesEnd", Header = "DispatchesEnd", Quoting = false },
+                new Column() { Order = 13, Field = "EventName", Header = "EventName", Quoting = false },
+                new Column() { Order = 14, Field = "PlanBaseline", Header = "PlanBaseline", Quoting = false },
+                new Column() { Order = 15, Field = "PlanDuration", Header = "PlanDuration", Quoting = false },
+                new Column() { Order = 16, Field = "PlanUplift", Header = "PlanUplift", Quoting = false },
+                new Column() { Order = 17, Field = "PlanIncremental", Header = "PlanIncremental", Quoting = false },
+                new Column() { Order = 18, Field = "PlanActivity", Header = "PlanActivity", Quoting = false },
+                new Column() { Order = 19, Field = "PlanSteal", Header = "PlanSteal", Quoting = false },
+                new Column() { Order = 20, Field = "FactBaseline", Header = "FactBaseline", Quoting = false },
+                new Column() { Order = 21, Field = "FactDuration", Header = "FactDuration", Quoting = false },
+                new Column() { Order = 22, Field = "FactUplift", Header = "FactUplift", Quoting = false },
+                new Column() { Order = 23, Field = "FactIncremental", Header = "FactIncremental", Quoting = false },
+                new Column() { Order = 24, Field = "FactActivity", Header = "FactActivity", Quoting = false },
+                new Column() { Order = 25, Field = "FactSteal", Header = "FactSteal", Quoting = false }
+            };
+            return columns;
+        }
+        [ClaimsAuthorize]
+        public IHttpActionResult ExportXLSX(ODataQueryOptions<DemandDTO> options)
+        {
+            try
+            {
+                IQueryable results = options.ApplyTo(GetConstraintedQuery().Where(x => !x.Disabled));
+                IEnumerable<Column> columns = GetExportSettings();
+                XLSXExporter exporter = new XLSXExporter(columns);
+                UserInfo user = authorizationManager.GetCurrentUser();
+                string username = user == null ? "" : user.Login;
+                string filePath = exporter.GetExportFileName("DemandDTO", username);
+                exporter.Export(results, filePath);
+                string filename = System.IO.Path.GetFileName(filePath);
+                return Content<string>(HttpStatusCode.OK, filename);
+            }
+            catch (Exception e)
+            {
+                return Content<string>(HttpStatusCode.InternalServerError, e.Message);
+            }
+        }
+
+        private ExceptionResult GetErorrRequest(Exception e)
+        {
+            // обработка при создании дублирующей записи
+            SqlException exc = e.GetBaseException() as SqlException;
+
+            if (exc != null && (exc.Number == 2627 || exc.Number == 2601))
+            {
+                return InternalServerError(new Exception("This Demand DTO has already existed"));
+            }
+            else
+            {
+                return InternalServerError(e.InnerException);
+            }
+        }
+    }
+}

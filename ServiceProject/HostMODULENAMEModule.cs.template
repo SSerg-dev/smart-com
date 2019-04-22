@@ -1,0 +1,12 @@
+﻿using Core.ModuleRegistrator;
+using Ninject.Modules;
+
+namespace Module.Host.MODULENAME {
+    public class HostMODULENAMEModule : NinjectModule
+    {
+        public override void Load()
+        {
+            Kernel.Bind<IHostModuleRegistrator>().To<HostMODULENAMEModuleRegistrator>().InSingletonScope();
+        }
+    }
+}

@@ -1,0 +1,2 @@
+﻿ResourceMgr.defineModuleSettings('tpm', {
+});

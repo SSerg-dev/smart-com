@@ -1,0 +1,13 @@
+﻿using Core.ModuleRegistrator;
+using System.Web.Optimization;
+
+namespace Module.Frontend.MODULENAME
+{
+    public class FrontendMODULENAMEModuleRegistrator : IFrontendModuleRegistrator
+    {
+        public void RegisterBundles(BundleCollection bundles)
+        {
+
+        }
+    }
+}

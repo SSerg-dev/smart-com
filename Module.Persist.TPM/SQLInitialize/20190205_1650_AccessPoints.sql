@@ -1,0 +1,15 @@
+INSERT INTO AccessPoint (Resource, Action, Disabled, DeletedDate) VALUES ('BudgetSubItems', 'GetBudgetSubItem', 0, NULL);
+INSERT INTO AccessPoint (Resource, Action, Disabled, DeletedDate) VALUES ('BudgetSubItems', 'GetBudgetSubItems', 0, NULL);
+INSERT INTO AccessPoint (Resource, Action, Disabled, DeletedDate) VALUES ('DeletedBudgetSubItems', 'GetDeletedBudgetSubItem', 0, NULL);
+INSERT INTO AccessPoint (Resource, Action, Disabled, DeletedDate) VALUES ('DeletedBudgetSubItems', 'GetDeletedBudgetSubItems', 0, NULL);
+INSERT INTO AccessPoint (Resource, Action, Disabled, DeletedDate) VALUES ('HistoricalBudgetSubItems', 'GetHistoricalBudgetSubItems', 0, NULL);
+INSERT INTO AccessPoint (Resource, Action, Disabled, DeletedDate) VALUES ('BudgetSubItems', 'Put', 0, NULL);
+INSERT INTO AccessPoint (Resource, Action, Disabled, DeletedDate) VALUES ('ImportBudgetSubItems', 'Put', 0, NULL);
+INSERT INTO AccessPoint (Resource, Action, Disabled, DeletedDate) VALUES ('BudgetSubItems', 'Post', 0, NULL);
+INSERT INTO AccessPoint (Resource, Action, Disabled, DeletedDate) VALUES ('ImportBudgetSubItems', 'Post', 0, NULL);
+INSERT INTO AccessPoint (Resource, Action, Disabled, DeletedDate) VALUES ('BudgetSubItems', 'Patch', 0, NULL);
+INSERT INTO AccessPoint (Resource, Action, Disabled, DeletedDate) VALUES ('ImportBudgetSubItems', 'Patch', 0, NULL);
+INSERT INTO AccessPoint (Resource, Action, Disabled, DeletedDate) VALUES ('BudgetSubItems', 'Delete', 0, NULL);
+INSERT INTO AccessPoint (Resource, Action, Disabled, DeletedDate) VALUES ('ImportBudgetSubItems', 'Delete', 0, NULL);
+INSERT INTO AccessPoint (Resource, Action, Disabled, DeletedDate) VALUES ('BudgetSubItems', 'ExportXLSX', 0, NULL);
+INSERT INTO AccessPoint (Resource, Action, Disabled, DeletedDate) VALUES ('BudgetSubItems', 'FullImportXLSX', 0, NULL);

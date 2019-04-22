@@ -1,0 +1,1135 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{70DE5780-2297-41FC-A861-D370F6FE631B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Module.Frontend.TPM</RootNamespace>
+    <AssemblyName>Module.Frontend.TPM</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Antlr3.Runtime, Version=3.4.1.9004, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.35569\lib\net451\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="AutoMapper, Version=4.0.4.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.35569\lib\net451\AutoMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.35569\lib\net451\Core.dll</HintPath>
+    </Reference>
+    <Reference Include="DocumentFormat.OpenXml, Version=2.8.1.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.35569\lib\net451\DocumentFormat.OpenXml.dll</HintPath>
+    </Reference>
+    <Reference Include="Elasticsearch.Net, Version=5.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.35569\lib\net451\Elasticsearch.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.35569\lib\net451\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.35569\lib\net451\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework6.Npgsql, Version=3.1.1.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.35569\lib\net451\EntityFramework6.Npgsql.dll</HintPath>
+    </Reference>
+    <Reference Include="ExtJsScaffolding, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.35569\lib\net451\ExtJsScaffolding.dll</HintPath>
+    </Reference>
+    <Reference Include="Frontend.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\RodMApp.Core.TPM.Frontend.0.1.0.35569\lib\net451\Frontend.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="History.ElasticSearch, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.35569\lib\net451\History.ElasticSearch.dll</HintPath>
+    </Reference>
+    <Reference Include="History.RavenDB, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.35569\lib\net451\History.RavenDB.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=1.1.0.145, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpZipLib.1.1.0\lib\net45\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="LiteDB, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.35569\lib\net451\LiteDB.dll</HintPath>
+    </Reference>
+    <Reference Include="Looper, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.35569\lib\net451\Looper.dll</HintPath>
+    </Reference>
+    <Reference Include="Looper.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.35569\lib\net451\Looper.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Data.Edm, Version=5.6.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.35569\lib\net451\Microsoft.Data.Edm.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Data.OData, Version=5.6.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.35569\lib\net451\Microsoft.Data.OData.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.35569\lib\net451\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="Nest, Version=5.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.35569\lib\net451\Nest.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.35569\lib\net451\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.35569\lib\net451\Ninject.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.35569\lib\net451\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="Npgsql, Version=3.2.3.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.35569\lib\net451\Npgsql.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI, Version=2.4.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\NPOI.2.4.1\lib\net45\NPOI.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OOXML, Version=2.4.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\NPOI.2.4.1\lib\net45\NPOI.OOXML.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OpenXml4Net, Version=2.4.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\NPOI.2.4.1\lib\net45\NPOI.OpenXml4Net.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OpenXmlFormats, Version=2.4.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\NPOI.2.4.1\lib\net45\NPOI.OpenXmlFormats.dll</HintPath>
+    </Reference>
+    <Reference Include="Persist, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.35569\lib\net451\Persist.dll</HintPath>
+    </Reference>
+    <Reference Include="Raven.Abstractions, Version=3.0.0.0, Culture=neutral, PublicKeyToken=37f41c7f99471593, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.35569\lib\net451\Raven.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Raven.Client.Lightweight, Version=3.0.0.0, Culture=neutral, PublicKeyToken=37f41c7f99471593, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.35569\lib\net451\Raven.Client.Lightweight.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Management.Automation, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.35569\lib\net451\System.Management.Automation.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.35569\lib\net451\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Spatial, Version=5.6.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.35569\lib\net451\System.Spatial.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.1.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.35569\lib\net451\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Http, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.35569\lib\net451\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.OData, Version=5.5.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.35569\lib\net451\System.Web.Http.OData.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Optimization, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.35569\lib\net451\System.Web.Optimization.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Thinktecture.IdentityModel, Version=3.6.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\RodMApp.Core.TPM.Frontend.0.1.0.35569\lib\net451\Thinktecture.IdentityModel.dll</HintPath>
+    </Reference>
+    <Reference Include="Utility, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.35569\lib\net451\Utility.dll</HintPath>
+    </Reference>
+    <Reference Include="WebGrease, Version=1.5.2.14234, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.35569\lib\net451\WebGrease.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Client\controller\tpm\promoactivitydetailsinfo\PromoActivityDetailsInfo.js" />
+    <Content Include="Client\controller\tpm\promoroireport\PromoROIReport.js" />
+    <Content Include="Client\controller\tpm\planpostpromoeffectreport\PlanPostPromoEffectReport.js" />
+    <Content Include="Client\controller\tpm\planincrementalreport\PlanIncrementalReport.js" />
+    <Content Include="Client\controller\tpm\budgetsubitem\BudgetSubItem.js" />
+    <Content Include="Client\controller\tpm\budgetsubitem\DeletedBudgetSubItem.js" />
+    <Content Include="Client\controller\tpm\budgetsubitem\HistoricalBudgetSubItem.js" />
+    <Content Include="Client\controller\tpm\clienttreesharesview\ClientTreeSharesView.js" />
+    <Content Include="Client\controller\tpm\baseline\BaseLine.js" />
+    <Compile Include="Controllers\PromoROIReportsController.cs" />
+    <Compile Include="Controllers\PlanPostPromoEffectReportsController.cs" />
+    <Compile Include="Controllers\PlanIncrementalReportsController.cs" />
+    <Compile Include="Controllers\DeletedCOGSsController.cs" />
+    <Compile Include="Controllers\DeletedTradeInvestmentsController.cs" />
+    <Compile Include="Controllers\HistoricalCOGSsController.cs" />
+    <Compile Include="Controllers\HistoricalTradeInvestmentsController.cs" />
+    <Compile Include="Controllers\PromoSupportPromoesController.cs" />
+    <Compile Include="Controllers\PromoProductsController.cs" />
+    <Compile Include="Controllers\BudgetSubItemsController.cs" />
+    <Compile Include="Controllers\ClientTreeSharesViewsController.cs" />
+    <Compile Include="Controllers\BaseLinesController.cs" />
+    <Compile Include="Controllers\DeletedPromoProductsController.cs" />
+    <Compile Include="Controllers\DeletedBaseLine.cs" />
+    <Compile Include="Controllers\DeletedBudgetSubItemsController.cs" />
+    <Compile Include="Controllers\DeletedPostPromoEffectsController.cs" />
+    <Compile Include="Controllers\HistoricalPromoProductsController.cs" />
+    <Compile Include="Controllers\HistoricalBaseLinesController.cs" />
+    <Compile Include="Controllers\HistoricalBudgetSubItemsController.cs" />
+    <Compile Include="Controllers\HistoricalPostPromoEffectsController.cs" />
+    <Compile Include="Controllers\PostPromoEffectsController.cs" />
+    <Compile Include="Controllers\PromoSupportsController.cs" />
+    <Compile Include="Controllers\COGSsController.cs" />
+    <Compile Include="Controllers\PromoViewsController.cs" />
+    <Compile Include="Controllers\TradeInvestmentsController.cs" />
+    <Compile Include="Util\NonGuidIdExporter.cs" />
+    <Content Include="Client\controller\tpm\promoproduct\HistoricalPromoProduct.js" />
+    <Content Include="Client\controller\tpm\promoproduct\DeletedPromoProduct.js" />
+    <Content Include="Client\controller\tpm\promoproduct\PromoProduct.js" />
+    <Content Include="Client\controller\tpm\baseclienttreeview\BaseClientTreeView.js" />
+    <Content Include="Client\controller\tpm\baseline\DeletedBaseLine.js" />
+    <Content Include="Client\controller\tpm\baseline\HistoricalBaseLine.js" />
+    <Content Include="Client\controller\tpm\costproduction\CostProduction.js" />
+    <Content Include="Client\controller\tpm\costproduction\DeletedCostProduction.js" />
+    <Content Include="Client\controller\tpm\costproduction\HistoricalCostProduction.js" />
+    <Content Include="Client\controller\tpm\demandpricelist\DemandPriceList.js" />
+    <Content Include="Client\controller\tpm\demandpricelist\DeletedDemandPriceList.js" />
+    <Content Include="Client\controller\tpm\demandpricelist\HistoricalDemandPriceList.js" />
+    <Content Include="Client\controller\tpm\filter\Filter.js" />
+    <Content Include="Client\controller\tpm\promosupportpromo\PSPshortFactCostProd.js" />
+    <Content Include="Client\controller\tpm\promosupportpromo\PSPshortPlanCostProd.js" />
+    <Content Include="Client\controller\tpm\promo\PromoBudgetDetails.js" />
+    <Content Include="Client\controller\tpm\nonenego\DeletedNoneNego.js" />
+    <Content Include="Client\controller\tpm\nonenego\HistoricalNoneNego.js" />
+    <Content Include="Client\controller\tpm\nonenego\NoneNego.js" />
+    <Content Include="Client\controller\tpm\postpromoeffect\DeletedPostPromoEffect.js" />
+    <Content Include="Client\controller\tpm\postpromoeffect\HistoricalPostPromoEffect.js" />
+    <Content Include="Client\controller\tpm\postpromoeffect\PostPromoEffect.js" />
+    <Content Include="Client\controller\tpm\actualproductsview\ActualProductsView.js" />
+    <Content Include="Client\controller\tpm\promolinked\PromoLinked.js" />
+    <Content Include="Client\controller\tpm\promosupportpromo\PSPshortFactCalculation.js" />
+    <Content Include="Client\controller\tpm\promosupportpromo\PSPshortPlanCalculation.js" />
+    <Content Include="Client\controller\tpm\promosupport\DeletedPromoSupport.js" />
+    <Content Include="Client\controller\tpm\promosupport\HistoricalPromoSupport.js" />
+    <Content Include="Client\controller\tpm\promosupport\PromoSupportChoose.js" />
+    <Content Include="Client\controller\tpm\promosupport\PromoSupport.js" />
+    <Content Include="Client\controller\tpm\cogs\DeletedCOGS.js" />
+    <Content Include="Client\controller\tpm\cogs\HistoricalCOGS.js" />
+    <Content Include="Client\controller\tpm\cogs\COGS.js" />
+    <Content Include="Client\controller\tpm\tradeinvestment\DeletedTradeInvestment.js" />
+    <Content Include="Client\controller\tpm\tradeinvestment\HistoricalTradeInvestment.js" />
+    <Content Include="Client\controller\tpm\tradeinvestment\TradeInvestment.js" />
+    <Content Include="Client\controller\tpm\retailtype\DeletedRetailType.js" />
+    <Content Include="Client\controller\tpm\retailtype\HistoricalRetailType.js" />
+    <Content Include="Client\controller\tpm\retailtype\RetailType.js" />
+    <Content Include="Client\locale\tpm\CoreLocale-en.js" />
+    <Content Include="Client\locale\tpm\CoreLocale-ru.js" />
+    <Content Include="Client\locale\tpm\TPMLocale-en.js" />
+    <Content Include="Client\model\tpm\promoactivitydetailsinfo\PromoActivityDetailsInfo.js" />
+    <Content Include="Client\model\tpm\promosupportpromo\PromoSupportPromoCostProd.js" />
+    <Content Include="Client\model\tpm\promosupportpromo\PromoSupportPromoView.js" />
+    <Content Include="Client\model\tpm\promosupportpromo\PromoSupportPromoTICost.js" />
+    <Content Include="Client\model\tpm\promo\PromoActivityDetailsWindow.js" />
+    <Content Include="Client\model\tpm\promoroireport\PromoROIReport.js" />
+    <Content Include="Client\model\tpm\promo\PromoView.js" />
+    <Content Include="Client\model\tpm\utils\ToChangeEditorDetailWindowModel.js" />
+    <Content Include="Client\model\tpm\planpostpromoeffectreport\PlanPostPromoEffectReport.js" />
+    <Content Include="Client\model\tpm\promoproduct\PromoProduct.js" />
+    <Content Include="Client\model\tpm\promoproduct\DeletedPromoProduct.js" />
+    <Content Include="Client\model\tpm\promoproduct\HistoricalPromoProduct.js" />
+    <Content Include="Client\model\tpm\planincrementalreport\PlanIncrementalReport.js" />
+    <Content Include="Client\model\tpm\budgetsubitem\BudgetSubItem.js" />
+    <Content Include="Client\model\tpm\budgetsubitem\DeletedBudgetSubItem.js" />
+    <Content Include="Client\model\tpm\budgetsubitem\HistoricalBudgetSubItem.js" />
+    <Content Include="Client\model\tpm\actualproductsview\ActualProductsView.js" />
+    <Content Include="Client\model\tpm\clienttreesharesview\ClientTreeSharesView.js" />
+    <Content Include="Client\model\tpm\baseclienttreeview\BaseClientTreeView.js" />
+    <Content Include="Client\model\tpm\baseline\BaseLine.js" />
+    <Content Include="Client\model\tpm\baseline\DeletedBaseLine.js" />
+    <Content Include="Client\model\tpm\baseline\HistoricalBaseLine.js" />
+    <Content Include="Client\model\tpm\costproduction\CostProduction.js" />
+    <Content Include="Client\model\tpm\costproduction\DeletedCostProduction.js" />
+    <Content Include="Client\model\tpm\costproduction\HistoricalCostProduction.js" />
+    <Content Include="Client\model\tpm\demandpricelist\DemandPriceList.js" />
+    <Content Include="Client\model\tpm\demandpricelist\DeletedDemandPriceList.js" />
+    <Content Include="Client\model\tpm\demandpricelist\HistoricalDemandPriceList.js" />
+    <Content Include="Client\model\tpm\nonenego\DeletedNoneNego.js" />
+    <Content Include="Client\model\tpm\nonenego\HistoricalNoneNego.js" />
+    <Content Include="Client\model\tpm\nonenego\NoneNego.js" />
+    <Content Include="Client\model\tpm\postpromoeffect\DeletedPostPromoEffect.js" />
+    <Content Include="Client\model\tpm\postpromoeffect\HistoricalPostPromoEffect.js" />
+    <Content Include="Client\model\tpm\postpromoeffect\PostPromoEffect.js" />
+    <Content Include="Client\model\tpm\promosupportpromo\PSPshortFactCostProd.js" />
+    <Content Include="Client\model\tpm\promosupportpromo\PSPshortFactCalculation.js" />
+    <Content Include="Client\model\tpm\promosupportpromo\PSPshortPlanCostProd.js" />
+    <Content Include="Client\model\tpm\promosupportpromo\PSPshortPlanCalculation.js" />
+    <Content Include="Client\model\tpm\promosupportpromo\PromoSupportPromo.js" />
+    <Content Include="Client\model\tpm\cogs\DeletedCOGS.js" />
+    <Content Include="Client\model\tpm\cogs\HistoricalCOGS.js" />
+    <Content Include="Client\model\tpm\cogs\COGS.js" />
+    <Content Include="Client\model\tpm\promosupport\DeletedPromoSupport.js" />
+    <Content Include="Client\model\tpm\promosupport\HistoricalPromoSupport.js" />
+    <Content Include="Client\model\tpm\promosupport\PromoSupportChoose.js" />
+    <Content Include="Client\model\tpm\promosupport\PromoSupport.js" />
+    <Content Include="Client\model\tpm\tradeinvestment\DeletedTradeInvestment.js" />
+    <Content Include="Client\model\tpm\tradeinvestment\HistoricalTradeInvestment.js" />
+    <Content Include="Client\model\tpm\tradeinvestment\TradeInvestment.js" />
+    <Content Include="Client\model\tpm\retailtype\DeletedRetailType.js" />
+    <Content Include="Client\model\tpm\retailtype\HistoricalRetailType.js" />
+    <Content Include="Client\model\tpm\retailtype\RetailType.js" />
+    <Content Include="Client\scrollUtil\promoHorizontalScroll.js" />
+    <Content Include="Client\store\tpm\constraint\ConstraintEditor.js" />
+    <Content Include="Client\store\tpm\mechanic\PromoFormMechanicTypeStore.js" />
+    <Content Include="Client\store\tpm\mechanic\PromoFormMechanicStore.js" />
+    <Content Include="Client\view\tpm\actualproductsview\ActualProductsViewEditor.js" />
+    <Content Include="Client\view\tpm\common\approvalHistoryDeclineTpl.js" />
+    <Content Include="Client\view\tpm\common\approvalHistoryTpl.js" />
+    <Content Include="Client\view\tpm\common\chooseEventButton.js" />
+    <Content Include="Client\view\tpm\promoactivitydetailsinfo\PromoActivityDetailsInfo.js" />
+    <Content Include="Client\view\tpm\promoactivitydetailsinfo\PromoActivityDetailsInfoEditor.js" />
+    <Content Include="Client\view\tpm\promoroireport\PromoROIReport.js" />
+    <Content Include="Client\view\tpm\promoroireport\PromoROIReportEditor.js" />
+    <Content Include="Client\view\tpm\planpostpromoeffectreport\PlanPostPromoEffectReport.js" />
+    <Content Include="Client\view\tpm\planpostpromoeffectreport\PlanPostPromoEffectReportEditor.js" />
+    <Content Include="Client\view\tpm\promoproduct\DeletedPromoProduct.js" />
+    <Content Include="Client\view\tpm\promoproduct\DeletedPromoProductDetail.js" />
+    <Content Include="Client\view\tpm\promoproduct\HistoricalPromoProduct.js" />
+    <Content Include="Client\view\tpm\promoproduct\HistoricalPromoProductDetail.js" />
+    <Content Include="Client\view\tpm\promoproduct\PromoProduct.js" />
+    <Content Include="Client\view\tpm\promoproduct\PromoProductEditor.js" />
+    <Content Include="Client\view\tpm\associatedpromo\AssociatedCostProduction.js" />
+    <Content Include="Client\view\tpm\associatedpromo\AssociatedPromoSupport.js" />
+    <Content Include="Client\view\tpm\common\promoDashboardTpl.js" />
+    <Content Include="Client\view\tpm\planincrementalreport\PlanIncrementalReport.js" />
+    <Content Include="Client\view\tpm\planincrementalreport\PlanIncrementalReportEditor.js" />
+    <Content Include="Client\view\tpm\baseclienttreeview\BaseClientTreeView.js" />
+    <Content Include="Client\util\helper.js" />
+    <Content Include="Client\view\tpm\baseclienttreeview\BaseClientTreeViewEditor.js" />
+    <Content Include="Client\view\tpm\baseline\BaseLine.js" />
+    <Content Include="Client\view\tpm\baseline\BaseLineEditor.js" />
+    <Content Include="Client\view\tpm\baseline\DeletedBaseLineDetail.js" />
+    <Content Include="Client\view\tpm\baseline\DeletedBaseLine.js" />
+    <Content Include="Client\view\tpm\baseline\HistoricalBaseLine.js" />
+    <Content Include="Client\view\tpm\baseline\HistoricalBaseLineDetails.js" />
+    <Content Include="Client\view\tpm\budgetsubitem\BudgetSubItem.js" />
+    <Content Include="Client\view\tpm\budgetsubitem\BudgetSubItemEditor.js" />
+    <Content Include="Client\view\tpm\budgetsubitem\DeletedBudgetSubItem.js" />
+    <Content Include="Client\view\tpm\budgetsubitem\DeletedBudgetSubItemDetail.js" />
+    <Content Include="Client\view\tpm\budgetsubitem\HistoricalBudgetSubItem.js" />
+    <Content Include="Client\view\tpm\budgetsubitem\HistoricalBudgetSubItemDetail.js" />
+    <Content Include="Client\view\tpm\clienttreesharesview\ClientTreeSharesView.js" />
+    <Content Include="Client\view\tpm\clienttreesharesview\ClientTreeSharesViewEditor.js" />
+    <Content Include="Client\view\tpm\client\DispatchDate.js" />
+    <Content Include="Client\view\tpm\common\customPromoPanel.js" />
+    <Content Include="Client\view\tpm\costproduction\CostProduction.js" />
+    <Content Include="Client\view\tpm\costproduction\CostProductionEditor.js" />
+    <Content Include="Client\view\tpm\costproduction\DeletedCostProduction.js" />
+    <Content Include="Client\view\tpm\costproduction\DeletedCostProductionDetail.js" />
+    <Content Include="Client\view\tpm\costproduction\HistoricalCostProduction.js" />
+    <Content Include="Client\view\tpm\costproduction\HistoricalCostProductionDetail.js" />
+    <Content Include="Client\view\tpm\costproduction\CostProductionPromoLinked.js" />
+    <Content Include="Client\view\tpm\demandpricelist\DemandPriceList.js" />
+    <Content Include="Client\view\tpm\demandpricelist\DemandPriceListEditor.js" />
+    <Content Include="Client\view\tpm\demandpricelist\DeletedDemandPriceList.js" />
+    <Content Include="Client\view\tpm\demandpricelist\DeletedDemandPriceListDetail.js" />
+    <Content Include="Client\view\tpm\demandpricelist\HistoricalDemandPriceList.js" />
+    <Content Include="Client\view\tpm\demandpricelist\HistoricalDemandPriceListDetails.js" />
+    <Content Include="Client\view\tpm\filter\SelectOperationWindow.js" />
+    <Content Include="Client\view\tpm\main\notification\Notification.js" />
+    <Content Include="Client\view\tpm\nonenego\DeletedNoneNego.js" />
+    <Content Include="Client\view\tpm\nonenego\DeletedNoneNegoDetail.js" />
+    <Content Include="Client\view\tpm\nonenego\HistoricalNoneNego.js" />
+    <Content Include="Client\view\tpm\nonenego\HistoricalNoneNegoDetail.js" />
+    <Content Include="Client\view\tpm\nonenego\NoneNego.js" />
+    <Content Include="Client\view\tpm\nonenego\NoneNegoEditor.js" />
+    <Content Include="Client\view\tpm\postpromoeffect\DeletedPostPromoEffect.js" />
+    <Content Include="Client\view\tpm\postpromoeffect\DeletedPostPromoEffectDetail.js" />
+    <Content Include="Client\view\tpm\postpromoeffect\HistoricalPostPromoEffect.js" />
+    <Content Include="Client\view\tpm\postpromoeffect\HistoricalPostPromoEffectDetail.js" />
+    <Content Include="Client\view\tpm\postpromoeffect\PostPromoEffect.js" />
+    <Content Include="Client\view\tpm\postpromoeffect\PostPromoEffectEditor.js" />
+    <Content Include="Client\view\tpm\actualproductsview\ActualProductsView.js" />
+    <Content Include="Client\view\tpm\actualproductsview\ActualProductList.js" />
+    <Content Include="Client\view\tpm\product\ProductList.js" />
+    <Content Include="Client\view\tpm\promodemand\DeletedPromoDemandDetail.js" />
+    <Compile Include="Controllers\AgeGroupsController.cs" />
+    <Compile Include="Controllers\BrandsController.cs" />
+    <Compile Include="Controllers\BrandTechesController.cs" />
+    <Compile Include="Controllers\BudgetItemsController.cs" />
+    <Compile Include="Controllers\BudgetsController.cs" />
+    <Compile Include="Controllers\CategoriesController.cs" />
+    <Compile Include="Controllers\DeletedNoneNegoes.cs" />
+    <Compile Include="Controllers\DeletedPromoDemandsController.cs" />
+    <Compile Include="Controllers\DeletedRetailTypesController.cs" />
+    <Compile Include="Controllers\HistoricalNoneNegoes.cs" />
+    <Compile Include="Controllers\HistoricalPromoDemandsController.cs" />
+    <Compile Include="Controllers\HistoricalRetailTypesController.cs" />
+    <Compile Include="Controllers\NoneNegoesController.cs" />
+    <Compile Include="Controllers\PromoDemandsController.cs" />
+    <Compile Include="Controllers\PromoStatusChangeController.cs" />
+    <Compile Include="Controllers\DeletedNodeTypesController.cs" />
+    <Compile Include="Controllers\BaseClientsController.cs" />
+    <Compile Include="Controllers\HistoricalNodeTypesController.cs" />
+    <Compile Include="Controllers\NodeTypesController.cs" />
+    <Compile Include="Controllers\ClientTreesController.cs" />
+    <Compile Include="Controllers\ClientsController.cs" />
+    <Compile Include="Controllers\CommercialNetsController.cs" />
+    <Compile Include="Controllers\CommercialSubnetsController.cs" />
+    <Compile Include="Controllers\DeletedAgeGroupsController.cs" />
+    <Compile Include="Controllers\DeletedBrandsController.cs" />
+    <Compile Include="Controllers\DeletedBrandTechesController.cs" />
+    <Compile Include="Controllers\DeletedBudgetItemsController.cs" />
+    <Compile Include="Controllers\DeletedBudgetsController.cs" />
+    <Compile Include="Controllers\DeletedCategoriesController.cs" />
+    <Compile Include="Controllers\DeletedClientsController.cs" />
+    <Compile Include="Controllers\DeletedColorsController.cs" />
+    <Compile Include="Controllers\DeletedCommercialNetsController.cs" />
+    <Compile Include="Controllers\DeletedCommercialSubnetsController.cs" />
+    <Compile Include="Controllers\DeletedEventsController.cs" />
+    <Compile Include="Controllers\DeletedDistributorsController.cs" />
+    <Compile Include="Controllers\DeletedFormatsController.cs" />
+    <Compile Include="Controllers\DeletedMechanicsController.cs" />
+    <Compile Include="Controllers\DeletedMechanicTypesController.cs" />
+    <Compile Include="Controllers\DeletedProductsController.cs" />
+    <Compile Include="Controllers\DeletedProgramsController.cs" />
+    <Compile Include="Controllers\DeletedPromoesController.cs" />
+    <Compile Include="Controllers\DeletedDemandsController.cs" />
+    <Compile Include="Controllers\DeletedPromoSalesesController.cs" />
+    <Compile Include="Controllers\DeletedRejectReasonsController.cs" />
+    <Compile Include="Controllers\DeletedPromoStatussController.cs" />
+    <Compile Include="Controllers\DeletedRegionsController.cs" />
+    <Compile Include="Controllers\DeletedSalesController.cs" />
+    <Compile Include="Controllers\DeletedSegmentsController.cs" />
+    <Compile Include="Controllers\DeletedStoreTypesController.cs" />
+    <Compile Include="Controllers\DeletedSubrangesController.cs" />
+    <Compile Include="Controllers\DeletedTechHighLevelsController.cs" />
+    <Compile Include="Controllers\DeletedTechnologiesController.cs" />
+    <Compile Include="Controllers\DeletedVarietiesController.cs" />
+    <Compile Include="Controllers\EventsController.cs" />
+    <Compile Include="Controllers\DemandsController.cs" />
+    <Compile Include="Controllers\DistributorsController.cs" />
+    <Compile Include="Controllers\FormatsController.cs" />
+    <Compile Include="Controllers\HistoricalAgeGroupsController.cs" />
+    <Compile Include="Controllers\HistoricalBrandsController.cs" />
+    <Compile Include="Controllers\HistoricalBrandTechesController.cs" />
+    <Compile Include="Controllers\HistoricalBudgetItemsController.cs" />
+    <Compile Include="Controllers\HistoricalEventsController.cs" />
+    <Compile Include="Controllers\HistoricalDemandsController.cs" />
+    <Compile Include="Controllers\HistoricalBudgetsController.cs" />
+    <Compile Include="Controllers\HistoricalCategoriesController.cs" />
+    <Compile Include="Controllers\HistoricalClientsController.cs" />
+    <Compile Include="Controllers\HistoricalColorsController.cs" />
+    <Compile Include="Controllers\HistoricalCommercialNetsController.cs" />
+    <Compile Include="Controllers\HistoricalCommercialSubnetsController.cs" />
+    <Compile Include="Controllers\HistoricalDistributorsController.cs" />
+    <Compile Include="Controllers\HistoricalFormatsController.cs" />
+    <Compile Include="Controllers\HistoricalMechanicsController.cs" />
+    <Compile Include="Controllers\HistoricalMechanicTypesController.cs" />
+    <Compile Include="Controllers\HistoricalProductsController.cs" />
+    <Compile Include="Controllers\HistoricalProgramsController.cs" />
+    <Compile Include="Controllers\HistoricalPromoesController.cs" />
+    <Compile Include="Controllers\HistoricalPromoSalesesController.cs" />
+    <Compile Include="Controllers\HistoricalRejectReasonsController.cs" />
+    <Compile Include="Controllers\HistoricalPromoStatussController.cs" />
+    <Compile Include="Controllers\HistoricalRegionsController.cs" />
+    <Compile Include="Controllers\HistoricalSalesController.cs" />
+    <Compile Include="Controllers\HistoricalSegmentsController.cs" />
+    <Compile Include="Controllers\HistoricalStoreTypesController.cs" />
+    <Compile Include="Controllers\HistoricalSubrangesController.cs" />
+    <Compile Include="Controllers\HistoricalTechHighLevelsController.cs" />
+    <Compile Include="Controllers\HistoricalTechnologiesController.cs" />
+    <Compile Include="Controllers\HistoricalVarietiesController.cs" />
+    <Compile Include="Controllers\ColorsController.cs" />
+    <Compile Include="Controllers\MechanicsController.cs" />
+    <Compile Include="Controllers\MechanicTypesController.cs" />
+    <Compile Include="Controllers\ProductsController.cs" />
+    <Compile Include="Controllers\ProductTreesController.cs" />
+    <Compile Include="Controllers\ProgramsController.cs" />
+    <Compile Include="Controllers\DemandDTOsController.cs" />
+    <Compile Include="Controllers\PromoesController.cs" />
+    <Compile Include="Controllers\PromoSalesesController.cs" />
+    <Compile Include="Controllers\RejectReasonsController.cs" />
+    <Compile Include="Controllers\PromoStatussController.cs" />
+    <Compile Include="Controllers\RegionsController.cs" />
+    <Compile Include="Controllers\RetailTypesController.cs" />
+    <Compile Include="Controllers\SalesController.cs" />
+    <Compile Include="Controllers\SegmentsController.cs" />
+    <Compile Include="Controllers\StoreTypesController.cs" />
+    <Compile Include="Controllers\SubrangesController.cs" />
+    <Compile Include="Controllers\TechHighLevelsController.cs" />
+    <Compile Include="Controllers\TechnologiesController.cs" />
+    <Compile Include="Controllers\BaseClientTreeViewsController.cs" />
+    <Compile Include="Controllers\VarietiesController.cs" />
+    <Compile Include="FrontendTPMModule.cs" />
+    <Compile Include="FrontendTPMModuleRegistrator.cs" />
+    <Compile Include="Model\Filter.cs" />
+    <Compile Include="Model\FilterContainer.cs" />
+    <Compile Include="Model\ProductFilterUtility.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Templates\BaseLineTemplate.xlsx" />
+    <None Include="Templates\COGSPreTemplate.xlsx" />
+    <None Include="Templates\TIPreTemplate.xlsx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Client\configuration\tpm\TPMAdditionalMenuConfig.js" />
+    <Content Include="Client\configuration\tpm\TPMControllersConfig.js" />
+    <Content Include="Client\configuration\tpm\TPMMainMenuConfig.js" />
+    <Content Include="Client\configuration\tpm\TPMModuleSettings.js" />
+    <Content Include="Client\controller\tpm\agegroup\AgeGroup.js" />
+    <Content Include="Client\controller\tpm\agegroup\DeletedAgeGroup.js" />
+    <Content Include="Client\controller\tpm\agegroup\HistoricalAgeGroup.js" />
+    <Content Include="Client\controller\tpm\brandtech\BrandTech.js" />
+    <Content Include="Client\controller\tpm\brandtech\DeletedBrandTech.js" />
+    <Content Include="Client\controller\tpm\brandtech\HistoricalBrandTech.js" />
+    <Content Include="Client\controller\tpm\brand\Brand.js" />
+    <Content Include="Client\controller\tpm\brand\DeletedBrand.js" />
+    <Content Include="Client\controller\tpm\brand\HistoricalBrand.js" />
+    <Content Include="Client\controller\tpm\budgetitem\BudgetItem.js" />
+    <Content Include="Client\controller\tpm\budgetitem\DeletedBudgetItem.js" />
+    <Content Include="Client\controller\tpm\budgetitem\HistoricalBudgetItem.js" />
+    <Content Include="Client\controller\tpm\budget\Budget.js" />
+    <Content Include="Client\controller\tpm\budget\DeletedBudget.js" />
+    <Content Include="Client\controller\tpm\budget\HistoricalBudget.js" />
+    <Content Include="Client\controller\tpm\category\Category.js" />
+    <Content Include="Client\controller\tpm\category\DeletedCategory.js" />
+    <Content Include="Client\controller\tpm\category\HistoricalCategory.js" />
+    <Content Include="Client\controller\tpm\client\ClientTree.js" />
+    <Content Include="Client\controller\tpm\nodetype\NodeType.js" />
+    <Content Include="Client\controller\tpm\nodetype\DeletedNodeType.js" />
+    <Content Include="Client\controller\tpm\nodetype\HistoricalNodeType.js" />
+    <Content Include="Client\controller\tpm\client\Client.js" />
+    <Content Include="Client\controller\tpm\client\DeletedClient.js" />
+    <Content Include="Client\controller\tpm\client\HistoricalClient.js" />
+    <Content Include="Client\controller\tpm\color\DeletedColor.js" />
+    <Content Include="Client\controller\tpm\color\HistoricalColor.js" />
+    <Content Include="Client\controller\tpm\commercialnet\CommercialNet.js" />
+    <Content Include="Client\controller\tpm\commercialnet\DeletedCommercialNet.js" />
+    <Content Include="Client\controller\tpm\commercialnet\HistoricalCommercialNet.js" />
+    <Content Include="Client\controller\tpm\commercialsubnet\CommercialSubnet.js" />
+    <Content Include="Client\controller\tpm\commercialsubnet\DeletedCommercialSubnet.js" />
+    <Content Include="Client\controller\tpm\commercialsubnet\HistoricalCommercialSubnet.js" />
+    <Content Include="Client\controller\tpm\demand\DeletedDemand.js" />
+    <Content Include="Client\controller\tpm\demand\Demand.js" />
+    <Content Include="Client\controller\tpm\demand\HistoricalDemand.js" />
+    <Content Include="Client\controller\tpm\distributor\DeletedDistributor.js" />
+    <Content Include="Client\controller\tpm\distributor\Distributor.js" />
+    <Content Include="Client\controller\tpm\distributor\HistoricalDistributor.js" />
+    <Content Include="Client\controller\tpm\event\DeletedEvent.js" />
+    <Content Include="Client\controller\tpm\event\Event.js" />
+    <Content Include="Client\controller\tpm\event\HistoricalEvent.js" />
+    <Content Include="Client\controller\tpm\format\DeletedFormat.js" />
+    <Content Include="Client\controller\tpm\format\Format.js" />
+    <Content Include="Client\controller\tpm\format\HistoricalFormat.js" />
+    <Content Include="Client\controller\tpm\color\Color.js" />
+    <Content Include="Client\controller\tpm\mechanictype\DeletedMechanicType.js" />
+    <Content Include="Client\controller\tpm\mechanictype\HistoricalMechanicType.js" />
+    <Content Include="Client\controller\tpm\mechanictype\MechanicType.js" />
+    <Content Include="Client\controller\tpm\mechanic\DeletedMechanic.js" />
+    <Content Include="Client\controller\tpm\mechanic\HistoricalMechanic.js" />
+    <Content Include="Client\controller\tpm\mechanic\Mechanic.js" />
+    <Content Include="Client\controller\tpm\product\ProductTree.js" />
+    <Content Include="Client\controller\tpm\product\DeletedProduct.js" />
+    <Content Include="Client\controller\tpm\product\HistoricalProduct.js" />
+    <Content Include="Client\controller\tpm\product\Product.js" />
+    <Content Include="Client\controller\tpm\program\DeletedProgram.js" />
+    <Content Include="Client\controller\tpm\program\HistoricalProgram.js" />
+    <Content Include="Client\controller\tpm\program\Program.js" />
+    <Content Include="Client\controller\tpm\promodemand\DeletedPromoDemand.js" />
+    <Content Include="Client\controller\tpm\promodemand\HistoricalPromoDemand.js" />
+    <Content Include="Client\controller\tpm\promodemand\PromoDemand.js" />
+    <Content Include="Client\controller\tpm\promosales\DeletedPromoSales.js" />
+    <Content Include="Client\controller\tpm\promosales\HistoricalPromoSales.js" />
+    <Content Include="Client\controller\tpm\promosales\PromoSales.js" />
+    <Content Include="Client\controller\tpm\rejectreason\DeletedRejectReason.js" />
+    <Content Include="Client\controller\tpm\rejectreason\HistoricalRejectReason.js" />
+    <Content Include="Client\controller\tpm\rejectreason\RejectReason.js" />
+    <Content Include="Client\controller\tpm\promostatus\DeletedPromoStatus.js" />
+    <Content Include="Client\controller\tpm\promostatus\HistoricalPromoStatus.js" />
+    <Content Include="Client\controller\tpm\promostatus\PromoStatus.js" />
+    <Content Include="Client\controller\tpm\promo\DeletedPromo.js" />
+    <Content Include="Client\controller\tpm\promo\HistoricalPromo.js" />
+    <Content Include="Client\controller\tpm\promo\Promo.js" />
+    <Content Include="Client\controller\tpm\region\DeletedRegion.js" />
+    <Content Include="Client\controller\tpm\region\HistoricalRegion.js" />
+    <Content Include="Client\controller\tpm\region\Region.js" />
+    <Content Include="Client\controller\tpm\sale\DeletedSale.js" />
+    <Content Include="Client\controller\tpm\sale\HistoricalSale.js" />
+    <Content Include="Client\controller\tpm\sale\Sale.js" />
+    <Content Include="Client\controller\tpm\schedule\SchedulerViewController.js" />
+    <Content Include="Client\controller\tpm\segment\DeletedSegment.js" />
+    <Content Include="Client\controller\tpm\segment\HistoricalSegment.js" />
+    <Content Include="Client\controller\tpm\segment\Segment.js" />
+    <Content Include="Client\controller\tpm\storetype\DeletedStoreType.js" />
+    <Content Include="Client\controller\tpm\storetype\HistoricalStoreType.js" />
+    <Content Include="Client\controller\tpm\storetype\StoreType.js" />
+    <Content Include="Client\controller\tpm\subrange\DeletedSubrange.js" />
+    <Content Include="Client\controller\tpm\subrange\HistoricalSubrange.js" />
+    <Content Include="Client\controller\tpm\subrange\Subrange.js" />
+    <Content Include="Client\controller\tpm\techhighlevel\DeletedTechHighLevel.js" />
+    <Content Include="Client\controller\tpm\techhighlevel\HistoricalTechHighLevel.js" />
+    <Content Include="Client\controller\tpm\techhighlevel\TechHighLevel.js" />
+    <Content Include="Client\controller\tpm\technology\DeletedTechnology.js" />
+    <Content Include="Client\controller\tpm\technology\HistoricalTechnology.js" />
+    <Content Include="Client\controller\tpm\technology\Technology.js" />
+    <Content Include="Client\controller\tpm\variety\DeletedVariety.js" />
+    <Content Include="Client\controller\tpm\variety\HistoricalVariety.js" />
+    <Content Include="Client\controller\tpm\variety\Variety.js" />
+    <Content Include="Client\locale\tpm\TPMLocale-ru.js" />
+    <Content Include="Client\model\tpm\agegroup\AgeGroup.js" />
+    <Content Include="Client\model\tpm\agegroup\DeletedAgeGroup.js" />
+    <Content Include="Client\model\tpm\agegroup\HistoricalAgeGroup.js" />
+    <Content Include="Client\model\tpm\brandtech\BrandTech.js" />
+    <Content Include="Client\model\tpm\brandtech\DeletedBrandTech.js" />
+    <Content Include="Client\model\tpm\brandtech\HistoricalBrandTech.js" />
+    <Content Include="Client\model\tpm\brand\Brand.js" />
+    <Content Include="Client\model\tpm\brand\DeletedBrand.js" />
+    <Content Include="Client\model\tpm\brand\HistoricalBrand.js" />
+    <Content Include="Client\model\tpm\budgetitem\BudgetItem.js" />
+    <Content Include="Client\model\tpm\budgetitem\DeletedBudgetItem.js" />
+    <Content Include="Client\model\tpm\budgetitem\HistoricalBudgetItem.js" />
+    <Content Include="Client\model\tpm\budget\Budget.js" />
+    <Content Include="Client\model\tpm\budget\DeletedBudget.js" />
+    <Content Include="Client\model\tpm\budget\HistoricalBudget.js" />
+    <Content Include="Client\model\tpm\category\Category.js" />
+    <Content Include="Client\model\tpm\category\DeletedCategory.js" />
+    <Content Include="Client\model\tpm\category\HistoricalCategory.js" />
+    <Content Include="Client\model\tpm\baseclient\BaseClient.js" />
+    <Content Include="Client\model\tpm\filter\FilterField.js" />
+    <Content Include="Client\model\tpm\nodetype\NodeType.js" />
+    <Content Include="Client\model\tpm\nodetype\DeletedNodeType.js" />
+    <Content Include="Client\model\tpm\nodetype\HistoricalNodeType.js" />
+    <Content Include="Client\model\tpm\clienttree\ClientTree.js" />
+    <Content Include="Client\model\tpm\client\Client.js" />
+    <Content Include="Client\model\tpm\client\DeletedClient.js" />
+    <Content Include="Client\model\tpm\client\HistoricalClient.js" />
+    <Content Include="Client\model\tpm\color\DeletedColor.js" />
+    <Content Include="Client\model\tpm\color\HistoricalColor.js" />
+    <Content Include="Client\model\tpm\commercialnet\CommercialNet.js" />
+    <Content Include="Client\model\tpm\commercialnet\DeletedCommercialNet.js" />
+    <Content Include="Client\model\tpm\commercialnet\HistoricalCommercialNet.js" />
+    <Content Include="Client\model\tpm\commercialsubnet\CommercialSubnet.js" />
+    <Content Include="Client\model\tpm\commercialsubnet\DeletedCommercialSubnet.js" />
+    <Content Include="Client\model\tpm\commercialsubnet\HistoricalCommercialSubnet.js" />
+    <Content Include="Client\model\tpm\demand\DeletedDemand.js" />
+    <Content Include="Client\model\tpm\demand\Demand.js" />
+    <Content Include="Client\model\tpm\demand\HistoricalDemand.js" />
+    <Content Include="Client\model\tpm\distributor\DeletedDistributor.js" />
+    <Content Include="Client\model\tpm\distributor\Distributor.js" />
+    <Content Include="Client\model\tpm\distributor\HistoricalDistributor.js" />
+    <Content Include="Client\model\tpm\customevent\CustomEvent.js" />
+    <Content Include="Client\model\tpm\event\DeletedEvent.js" />
+    <Content Include="Client\model\tpm\event\Event.js" />
+    <Content Include="Client\model\tpm\event\HistoricalEvent.js" />
+    <Content Include="Client\model\tpm\format\DeletedFormat.js" />
+    <Content Include="Client\model\tpm\format\Format.js" />
+    <Content Include="Client\model\tpm\format\HistoricalFormat.js" />
+    <Content Include="Client\model\tpm\color\Color.js" />
+    <Content Include="Client\model\tpm\mechanictype\DeletedMechanicType.js" />
+    <Content Include="Client\model\tpm\mechanictype\HistoricalMechanicType.js" />
+    <Content Include="Client\model\tpm\mechanictype\MechanicType.js" />
+    <Content Include="Client\model\tpm\mechanic\DeletedMechanic.js" />
+    <Content Include="Client\model\tpm\mechanic\HistoricalMechanic.js" />
+    <Content Include="Client\model\tpm\mechanic\Mechanic.js" />
+    <Content Include="Client\model\tpm\producttree\ProductTree.js" />
+    <Content Include="Client\model\tpm\product\DeletedProduct.js" />
+    <Content Include="Client\model\tpm\product\HistoricalProduct.js" />
+    <Content Include="Client\model\tpm\product\Product.js" />
+    <Content Include="Client\model\tpm\program\DeletedProgram.js" />
+    <Content Include="Client\model\tpm\program\HistoricalProgram.js" />
+    <Content Include="Client\model\tpm\program\Program.js" />
+    <Content Include="Client\model\tpm\promodemand\DeletedPromoDemand.js" />
+    <Content Include="Client\model\tpm\promodemand\HistoricalPromoDemand.js" />
+    <Content Include="Client\model\tpm\promodemand\PromoDemand.js" />
+    <Content Include="Client\model\tpm\promosales\DeletedPromoSales.js" />
+    <Content Include="Client\model\tpm\promosales\HistoricalPromoSales.js" />
+    <Content Include="Client\model\tpm\promosales\PromoSales.js" />
+    <Content Include="Client\model\tpm\rejectreason\DeletedRejectReason.js" />
+    <Content Include="Client\model\tpm\rejectreason\HistoricalRejectReason.js" />
+    <Content Include="Client\model\tpm\rejectreason\RejectReason.js" />
+    <Content Include="Client\model\tpm\promostatus\DeletedPromoStatus.js" />
+    <Content Include="Client\model\tpm\promostatus\HistoricalPromoStatus.js" />
+    <Content Include="Client\model\tpm\promostatus\PromoStatus.js" />
+    <Content Include="Client\model\tpm\promo\DeletedPromo.js" />
+    <Content Include="Client\model\tpm\promo\HistoricalPromo.js" />
+    <Content Include="Client\model\tpm\promo\Promo.js" />
+    <Content Include="Client\model\tpm\region\DeletedRegion.js" />
+    <Content Include="Client\model\tpm\region\HistoricalRegion.js" />
+    <Content Include="Client\model\tpm\region\Region.js" />
+    <Content Include="Client\model\tpm\sale\DeletedSale.js" />
+    <Content Include="Client\model\tpm\sale\HistoricalSale.js" />
+    <Content Include="Client\model\tpm\sale\Sale.js" />
+    <Content Include="Client\model\tpm\scheduler\SchedulerLine.js" />
+    <Content Include="Client\model\tpm\segment\DeletedSegment.js" />
+    <Content Include="Client\model\tpm\segment\HistoricalSegment.js" />
+    <Content Include="Client\model\tpm\segment\Segment.js" />
+    <Content Include="Client\model\tpm\storetype\DeletedStoreType.js" />
+    <Content Include="Client\model\tpm\storetype\HistoricalStoreType.js" />
+    <Content Include="Client\model\tpm\storetype\StoreType.js" />
+    <Content Include="Client\model\tpm\subrange\DeletedSubrange.js" />
+    <Content Include="Client\model\tpm\subrange\HistoricalSubrange.js" />
+    <Content Include="Client\model\tpm\subrange\Subrange.js" />
+    <Content Include="Client\model\tpm\techhighlevel\DeletedTechHighLevel.js" />
+    <Content Include="Client\model\tpm\techhighlevel\HistoricalTechHighLevel.js" />
+    <Content Include="Client\model\tpm\techhighlevel\TechHighLevel.js" />
+    <Content Include="Client\model\tpm\technology\DeletedTechnology.js" />
+    <Content Include="Client\model\tpm\technology\HistoricalTechnology.js" />
+    <Content Include="Client\model\tpm\technology\Technology.js" />
+    <Content Include="Client\model\tpm\variety\DeletedVariety.js" />
+    <Content Include="Client\model\tpm\variety\HistoricalVariety.js" />
+    <Content Include="Client\model\tpm\variety\Variety.js" />
+    <Content Include="Client\store\tpm\constraint\Constraint.js" />
+    <Content Include="Client\store\tpm\constraint\ConstraintPrefixStore.js" />
+    <Content Include="Client\store\tpm\nodetype\NodeTypeStore.js" />
+    <Content Include="Client\store\tpm\priority\Priority.js" />
+    <Content Include="Client\store\tpm\scheduler\SchedulerLineStore.js" />
+    <Content Include="Client\store\tpm\tree\SimpleTreeStore.js" />
+    <Content Include="Client\view\tpm\promodemand\DeletedPromoDemand.js" />
+    <Content Include="Client\view\tpm\promodemand\HistoricalPromoDemand.js" />
+    <Content Include="Client\view\tpm\promodemand\HistoricalPromoDemandDetail.js" />
+    <Content Include="Client\view\tpm\promodemand\PromoDemand.js" />
+    <Content Include="Client\view\tpm\promodemand\PromoDemandEditor.js" />
+    <Content Include="Client\view\tpm\agegroup\DeletedAgeGroupDetail.js" />
+    <Content Include="Client\view\tpm\brandtech\DeletedBrandTechDetail.js" />
+    <Content Include="Client\view\tpm\brandtech\HistoricalBrandTechDetail.js" />
+    <Content Include="Client\view\tpm\brand\DeletedBrandDetail.js" />
+    <Content Include="Client\view\tpm\agegroup\HistoricalAgeGroupDetail.js" />
+    <Content Include="Client\view\tpm\brand\HistoricalBrandDetail.js" />
+    <Content Include="Client\view\tpm\budgetitem\DeletedBudgetItemDetail.js" />
+    <Content Include="Client\view\tpm\budgetitem\HistoricalBudgetItemDetail.js" />
+    <Content Include="Client\view\tpm\budget\DeletedBudgetDetail.js" />
+    <Content Include="Client\view\tpm\budget\HistoricalBudgetDetail.js" />
+    <Content Include="Client\view\tpm\category\DeletedCategoryDetail.js" />
+    <Content Include="Client\view\tpm\category\HistoricalCategoryDetail.js" />
+    <Content Include="Client\view\tpm\client\ClientTreeMoveWindow.js" />
+    <Content Include="Client\view\tpm\client\ClientTreeGrid.js" />
+    <Content Include="Client\view\tpm\client\ClientTreeEditor.js" />
+    <Content Include="Client\view\tpm\client\DeletedClientDetail.js" />
+    <Content Include="Client\view\tpm\client\HistoricalClientDetail.js" />
+    <Content Include="Client\view\tpm\color\DeletedColorDetail.js" />
+    <Content Include="Client\view\tpm\color\HistoricalColorDetail.js" />
+    <Content Include="Client\view\tpm\commercialnet\DeletedCommercialNetDetail.js" />
+    <Content Include="Client\view\tpm\commercialnet\HistoricalCommercialNetDetail.js" />
+    <Content Include="Client\view\tpm\commercialsubnet\DeletedCommercialSubnetDetail.js" />
+    <Content Include="Client\view\tpm\commercialsubnet\HistoricalCommercialSubnetDetail.js" />
+    <Content Include="Client\view\tpm\demand\DeletedDemandDetail.js" />
+    <Content Include="Client\view\tpm\demand\HistoricalDemandDetail.js" />
+    <Content Include="Client\view\tpm\distributor\DeletedDistributorDetail.js" />
+    <Content Include="Client\view\tpm\distributor\HistoricalDistributorDetail.js" />
+    <Content Include="Client\view\tpm\event\DeletedEventDetail.js" />
+    <Content Include="Client\view\tpm\event\HistoricalEventDetail.js" />
+    <Content Include="Client\view\tpm\filter\FilterConstructiorRule.js" />
+    <Content Include="Client\view\tpm\filter\FilterConstructiorNode.js" />
+    <Content Include="Client\view\tpm\filter\FilterConstructior.js" />
+    <Content Include="Client\view\tpm\format\DeletedFormatDetail.js" />
+    <Content Include="Client\view\tpm\format\HistoricalFormatDetail.js" />
+    <Content Include="Client\view\tpm\mechanictype\DeletedMechanicTypeDetail.js" />
+    <Content Include="Client\view\tpm\mechanictype\HistoricalMechanicTypeDetail.js" />
+    <Content Include="Client\view\tpm\mechanic\DeletedMechanicDetail.js" />
+    <Content Include="Client\view\tpm\mechanic\HistoricalMechanicDetail.js" />
+    <Content Include="Client\view\tpm\nodetype\DeletedNodeTypeDetail.js" />
+    <Content Include="Client\view\tpm\nodetype\HistoricalNodeTypeDetail.js" />
+    <Content Include="Client\view\tpm\nodetype\NodeType.js" />
+    <Content Include="Client\view\tpm\nodetype\NodeTypeEditor.js" />
+    <Content Include="Client\view\tpm\nodetype\DeletedNodeType.js" />
+    <Content Include="Client\view\tpm\nodetype\HistoricalNodeType.js" />
+    <Content Include="Client\view\tpm\client\ClientTree.js" />
+    <Content Include="Client\view\tpm\client\ClientEditor.js" />
+    <Content Include="Client\view\tpm\color\ColorEditor.js" />
+    <Content Include="Client\view\tpm\demand\DemandEditor.js" />
+    <Content Include="Client\view\tpm\event\DeletedEvent.js" />
+    <Content Include="Client\view\tpm\event\Event.js" />
+    <Content Include="Client\view\tpm\event\EventEditor.js" />
+    <Content Include="Client\view\tpm\event\HistoricalEvent.js" />
+    <Content Include="Client\view\tpm\mechanictype\DeletedMechanicType.js" />
+    <Content Include="Client\view\tpm\mechanictype\HistoricalMechanicType.js" />
+    <Content Include="Client\view\tpm\mechanictype\MechanicType.js" />
+    <Content Include="Client\view\tpm\mechanictype\MechanicTypeEditor.js" />
+    <Content Include="Client\view\tpm\mechanic\DeletedMechanic.js" />
+    <Content Include="Client\view\tpm\mechanic\HistoricalMechanic.js" />
+    <Content Include="Client\view\tpm\mechanic\Mechanic.js" />
+    <Content Include="Client\view\tpm\mechanic\MechanicEditor.js" />
+    <Content Include="Client\view\tpm\product\FilterProduct.js" />
+    <Content Include="Client\view\tpm\product\ProductTreeGrid.js" />
+    <Content Include="Client\view\tpm\product\ProductTreeMoveWindow.js" />
+    <Content Include="Client\view\tpm\product\DeletedProductDetail.js" />
+    <Content Include="Client\view\tpm\product\HistoricalProductDetail.js" />
+    <Content Include="Client\view\tpm\product\ProductTreeEditor.js" />
+    <Content Include="Client\view\tpm\product\ProductTree.js" />
+    <Content Include="Client\view\tpm\product\ProductEditor.js" />
+    <Content Include="Client\view\tpm\program\DeletedProgramDetail.js" />
+    <Content Include="Client\view\tpm\program\HistoricalProgramDetail.js" />
+    <Content Include="Client\view\tpm\promosales\PromoSalesEditor.js" />
+    <Content Include="Client\view\tpm\promostatus\DeletedPromoStatusDetail.js" />
+    <Content Include="Client\view\tpm\promostatus\HistoricalPromoStatusDetail.js" />
+    <Content Include="Client\view\tpm\promosupportpromo\PSPCostProdEditor.js" />
+    <Content Include="Client\view\tpm\promosupportpromo\PSPCostTIEditor.js" />
+    <Content Include="Client\view\tpm\promosupportpromo\PSPshortFactCostProd.js" />
+    <Content Include="Client\view\tpm\promosupportpromo\PSPshortFactCostProdEditor.js" />
+    <Content Include="Client\view\tpm\promosupportpromo\PSPshortFactCalculationEditor.js" />
+    <Content Include="Client\view\tpm\promosupportpromo\PSPshortPlanCostProd.js" />
+    <Content Include="Client\view\tpm\promosupportpromo\PSPshortPlanCostProdEditor.js" />
+    <Content Include="Client\view\tpm\promosupportpromo\PSPshortPlanCalculationEditor.js" />
+    <Content Include="Client\view\tpm\promosupportpromo\PSPshortFactCalculation.js" />
+    <Content Include="Client\view\tpm\promosupportpromo\PSPshortPlanCalculation.js" />
+    <Content Include="Client\view\tpm\promosupport\PromoLinkedTICosts.js" />
+    <Content Include="Client\view\tpm\promosupport\PromoSupportPromoCostProdEditor.js" />
+    <Content Include="Client\view\tpm\promosupport\PromoSupportPromoTICostEditor.js" />
+    <Content Include="Client\view\tpm\promosupport\PromoLinkedViewer.js" />
+    <Content Include="Client\view\tpm\promosupport\CustomPromoSupportEditor.js" />
+    <Content Include="Client\view\tpm\promosupport\PromoLinkedCostProd.js" />
+    <Content Include="Client\view\tpm\promosupport\PromoSupportChoose.js" />
+    <Content Include="Client\view\tpm\promosupport\PromoSupportForm.js" />
+    <Content Include="Client\view\tpm\promosupport\PromoSupportPanel.js" />
+    <Content Include="Client\view\tpm\promosupport\PromoSupportType.js" />
+    <Content Include="Client\view\tpm\promo\PromoActivityDetailsWindow.js" />
+    <Content Include="Client\view\tpm\promo\PromoBudgetsChart.js" />
+    <Content Include="Client\view\tpm\promo\PromoBudgetsDetailsWindow.js" />
+    <Content Include="Client\view\tpm\promo\PromoActivityChart.js" />
+    <Content Include="Client\view\tpm\promo\PromoFinanceChart.js" />
+    <Content Include="Client\view\tpm\promo\PromoFinanceDetailsWindow.js" />
+    <Content Include="Client\view\tpm\promo\PromoProductSubrangeDetailsWindow.js" />
+    <Content Include="Client\view\tpm\promo\PromoSummary.js" />
+    <Content Include="Client\view\tpm\promo\ApprovalHistory.js" />
+    <Content Include="Client\view\tpm\promo\CustomHistoricalPromo.js" />
+    <Content Include="Client\view\tpm\promo\ChoosePromo.js" />
+    <Content Include="Client\view\tpm\promo\PostPromoEffectDetails.js" />
+    <Content Include="Client\view\tpm\promo\PromoActivity.js" />
+    <Content Include="Client\view\tpm\promo\PromoCalculatingWindow.js" />
+    <Content Include="Client\view\tpm\promo\PromoBudgets.js" />
+    <Content Include="Client\view\tpm\promo\PromoSupport.js" />
+    <Content Include="Client\view\tpm\promo\PromoCalculation.js" />
+    <Content Include="Client\view\tpm\promo\PromoEditorCustomScroll.js" />
+    <Content Include="Client\view\tpm\promo\PromoEvent.js" />
+    <Content Include="Client\view\tpm\promo\PromoPeriod.js" />
+    <Content Include="Client\view\tpm\promo\PromoSettings.js" />
+    <Content Include="Client\view\tpm\promo\PromoBudgetDetails.js" />
+    <Content Include="Client\view\tpm\promo\RejectReasonSelectWindow.js" />
+    <Content Include="Client\view\tpm\promosupport\DeletedPromoSupport.js" />
+    <Content Include="Client\view\tpm\promosupport\DeletedPromoSupportDetail.js" />
+    <Content Include="Client\view\tpm\promosupport\HistoricalPromoSupport.js" />
+    <Content Include="Client\view\tpm\promosupport\HistoricalPromoSupportDetail.js" />
+    <Content Include="Client\view\tpm\promosupport\PromoSupport.js" />
+    <Content Include="Client\view\tpm\promosupport\PromoSupportEditor.js" />
+    <Content Include="Client\view\tpm\promo\TriggerFieldDetails.js" />
+    <Content Include="Client\view\tpm\region\DeletedRegionDetail.js" />
+    <Content Include="Client\view\tpm\region\HistoricalRegionDetail.js" />
+    <Content Include="Client\view\tpm\rejectreason\DeletedRejectReasonDetail.js" />
+    <Content Include="Client\view\tpm\rejectreason\DeletedRejectReason.js" />
+    <Content Include="Client\view\tpm\rejectreason\HistoricalRejectReasonDetail.js" />
+    <Content Include="Client\view\tpm\rejectreason\HistoricalRejectReason.js" />
+    <Content Include="Client\view\tpm\rejectreason\RejectReason.js" />
+    <Content Include="Client\view\tpm\rejectreason\RejectReasonEditor.js" />
+    <Content Include="Client\view\tpm\cogs\DeletedCOGS.js" />
+    <Content Include="Client\view\tpm\cogs\DeletedCOGSDetail.js" />
+    <Content Include="Client\view\tpm\cogs\HistoricalCOGS.js" />
+    <Content Include="Client\view\tpm\cogs\HistoricalCOGSDetail.js" />
+    <Content Include="Client\view\tpm\cogs\COGS.js" />
+    <Content Include="Client\view\tpm\cogs\COGSEditor.js" />
+    <Content Include="Client\view\tpm\toolbar\promosupport\PromoSupportLeftToolbar.js" />
+    <Content Include="Client\view\tpm\toolbar\promosupport\PromoSupportBottomToolbar.js" />
+    <Content Include="Client\view\tpm\toolbar\promosupport\PromoSupportFormTopToolbar.js" />
+    <Content Include="Client\view\tpm\toolbar\promosupport\PromoSupportTopToolbar.js" />
+    <Content Include="Client\view\tpm\tradeinvestment\DeletedTradeInvestment.js" />
+    <Content Include="Client\view\tpm\tradeinvestment\DeletedTradeInvestmentDetail.js" />
+    <Content Include="Client\view\tpm\tradeinvestment\HistoricalTradeInvestment.js" />
+    <Content Include="Client\view\tpm\tradeinvestment\HistoricalTradeInvestmentDetail.js" />
+    <Content Include="Client\view\tpm\tradeinvestment\TradeInvestment.js" />
+    <Content Include="Client\view\tpm\tradeinvestment\TradeInvestmentEditor.js" />
+    <Content Include="Client\view\tpm\retailtype\DeletedRetailTypeDetail.js" />
+    <Content Include="Client\view\tpm\retailtype\DeletedRetailType.js" />
+    <Content Include="Client\view\tpm\retailtype\HistoricalRetailTypeDetail.js" />
+    <Content Include="Client\view\tpm\retailtype\HistoricalRetailType.js" />
+    <Content Include="Client\view\tpm\retailtype\RetailType.js" />
+    <Content Include="Client\view\tpm\retailtype\RetailTypeEditor.js" />
+    <Content Include="Client\view\tpm\sale\DeletedSaleDetail.js" />
+    <Content Include="Client\view\tpm\sale\HistoricalSaleDetail.js" />
+    <Content Include="Client\view\tpm\sale\SaleEditor.js" />
+    <Content Include="Client\view\tpm\schedule\CustomPresets.js" />
+    <Content Include="Client\view\tpm\schedule\MarsTimeAxis.js" />
+    <Content Include="Client\view\tpm\schedule\SelectYearWindow.js" />
+    <Content Include="Client\view\tpm\schedule\ShedulePromoStore.js" />
+    <Content Include="Client\view\tpm\agegroup\AgeGroup.js" />
+    <Content Include="Client\view\tpm\agegroup\AgeGroupEditor.js" />
+    <Content Include="Client\view\tpm\agegroup\DeletedAgeGroup.js" />
+    <Content Include="Client\view\tpm\agegroup\HistoricalAgeGroup.js" />
+    <Content Include="Client\view\tpm\associatedpromo\AssociatedPromo.js" />
+    <Content Include="Client\view\tpm\brandtech\BrandTech.js" />
+    <Content Include="Client\view\tpm\brandtech\BrandTechEditor.js" />
+    <Content Include="Client\view\tpm\brandtech\DeletedBrandTech.js" />
+    <Content Include="Client\view\tpm\brandtech\HistoricalBrandTech.js" />
+    <Content Include="Client\view\tpm\brand\Brand.js" />
+    <Content Include="Client\view\tpm\brand\BrandEditor.js" />
+    <Content Include="Client\view\tpm\brand\DeletedBrand.js" />
+    <Content Include="Client\view\tpm\brand\HistoricalBrand.js" />
+    <Content Include="Client\view\tpm\budgetitem\BudgetItem.js" />
+    <Content Include="Client\view\tpm\budgetitem\BudgetItemEditor.js" />
+    <Content Include="Client\view\tpm\budgetitem\DeletedBudgetItem.js" />
+    <Content Include="Client\view\tpm\budgetitem\HistoricalBudgetItem.js" />
+    <Content Include="Client\view\tpm\budget\Budget.js" />
+    <Content Include="Client\view\tpm\budget\BudgetEditor.js" />
+    <Content Include="Client\view\tpm\budget\DeletedBudget.js" />
+    <Content Include="Client\view\tpm\budget\HistoricalBudget.js" />
+    <Content Include="Client\view\tpm\category\Category.js" />
+    <Content Include="Client\view\tpm\category\CategoryEditor.js" />
+    <Content Include="Client\view\tpm\category\DeletedCategory.js" />
+    <Content Include="Client\view\tpm\category\HistoricalCategory.js" />
+    <Content Include="Client\view\tpm\client\Client.js" />
+    <Content Include="Client\view\tpm\client\DeletedClient.js" />
+    <Content Include="Client\view\tpm\client\HistoricalClient.js" />
+    <Content Include="Client\view\tpm\color\DeletedColor.js" />
+    <Content Include="Client\view\tpm\color\HistoricalColor.js" />
+    <Content Include="Client\view\tpm\commercialnet\CommercialNet.js" />
+    <Content Include="Client\view\tpm\commercialnet\CommercialNetEditor.js" />
+    <Content Include="Client\view\tpm\commercialnet\DeletedCommercialNet.js" />
+    <Content Include="Client\view\tpm\commercialnet\HistoricalCommercialNet.js" />
+    <Content Include="Client\view\tpm\commercialsubnet\CommercialSubnet.js" />
+    <Content Include="Client\view\tpm\commercialsubnet\CommercialSubnetEditor.js" />
+    <Content Include="Client\view\tpm\commercialsubnet\DeletedCommercialSubnet.js" />
+    <Content Include="Client\view\tpm\commercialsubnet\HistoricalCommercialSubnet.js" />
+    <Content Include="Client\view\tpm\demand\DeletedDemand.js" />
+    <Content Include="Client\view\tpm\demand\Demand.js" />
+    <Content Include="Client\view\tpm\demand\HistoricalDemand.js" />
+    <Content Include="Client\view\tpm\distributor\DeletedDistributor.js" />
+    <Content Include="Client\view\tpm\distributor\Distributor.js" />
+    <Content Include="Client\view\tpm\distributor\DistributorEditor.js" />
+    <Content Include="Client\view\tpm\distributor\HistoricalDistributor.js" />
+    <Content Include="Client\view\tpm\format\DeletedFormat.js" />
+    <Content Include="Client\view\tpm\format\Format.js" />
+    <Content Include="Client\view\tpm\format\FormatEditor.js" />
+    <Content Include="Client\view\tpm\format\HistoricalFormat.js" />
+    <Content Include="Client\view\tpm\color\Color.js" />
+    <Content Include="Client\view\tpm\product\DeletedProduct.js" />
+    <Content Include="Client\view\tpm\product\HistoricalProduct.js" />
+    <Content Include="Client\view\tpm\product\Product.js" />
+    <Content Include="Client\view\tpm\program\DeletedProgram.js" />
+    <Content Include="Client\view\tpm\program\HistoricalProgram.js" />
+    <Content Include="Client\view\tpm\program\Program.js" />
+    <Content Include="Client\view\tpm\program\ProgramEditor.js" />
+    <Content Include="Client\view\tpm\promosales\DeletedPromoSales.js" />
+    <Content Include="Client\view\tpm\promosales\HistoricalPromoSales.js" />
+    <Content Include="Client\view\tpm\promosales\PromoSales.js" />
+    <Content Include="Client\view\tpm\promostatus\DeletedPromoStatus.js" />
+    <Content Include="Client\view\tpm\promostatus\HistoricalPromoStatus.js" />
+    <Content Include="Client\view\tpm\promostatus\PromoStatus.js" />
+    <Content Include="Client\view\tpm\promostatus\PromoStatusEditor.js" />
+    <Content Include="Client\view\tpm\promo\DeletedPromo.js" />
+    <Content Include="Client\controller\tpm\promo\PromoEditorFormModel.js" />
+    <Content Include="Client\view\tpm\promo\HistoricalPromo.js" />
+    <Content Include="Client\view\tpm\promo\PromoMechanic.js" />
+    <Content Include="Client\view\tpm\promo\Promo.js" />
+    <Content Include="Client\view\tpm\region\DeletedRegion.js" />
+    <Content Include="Client\view\tpm\region\HistoricalRegion.js" />
+    <Content Include="Client\view\tpm\region\Region.js" />
+    <Content Include="Client\view\tpm\region\RegionEditor.js" />
+    <Content Include="Client\view\tpm\sale\DeletedSale.js" />
+    <Content Include="Client\view\tpm\sale\HistoricalSale.js" />
+    <Content Include="Client\view\tpm\sale\Sale.js" />
+    <Content Include="Client\view\tpm\schedule\PromoDetailTabPanel.js" />
+    <Content Include="Client\view\tpm\schedule\FilterField.js" />
+    <Content Include="Client\view\tpm\schedule\Scheduler.js" />
+    <Content Include="Client\view\tpm\schedule\ScheduleContainer.js" />
+    <Content Include="Client\view\tpm\segment\DeletedSegmentDetail.js" />
+    <Content Include="Client\view\tpm\segment\DeletedSegment.js" />
+    <Content Include="Client\view\tpm\segment\HistoricalSegmentDetail.js" />
+    <Content Include="Client\view\tpm\segment\HistoricalSegment.js" />
+    <Content Include="Client\view\tpm\segment\Segment.js" />
+    <Content Include="Client\view\tpm\segment\SegmentEditor.js" />
+    <Content Include="Client\view\tpm\storetype\DeletedStoreTypeDetail.js" />
+    <Content Include="Client\view\tpm\storetype\DeletedStoreType.js" />
+    <Content Include="Client\view\tpm\storetype\HistoricalStoreTypeDetail.js" />
+    <Content Include="Client\view\tpm\storetype\HistoricalStoreType.js" />
+    <Content Include="Client\view\tpm\storetype\StoreType.js" />
+    <Content Include="Client\view\tpm\storetype\StoreTypeEditor.js" />
+    <Content Include="Client\view\tpm\subrange\DeletedSubrangeDetail.js" />
+    <Content Include="Client\view\tpm\subrange\DeletedSubrange.js" />
+    <Content Include="Client\view\tpm\subrange\HistoricalSubrangeDetail.js" />
+    <Content Include="Client\view\tpm\subrange\HistoricalSubrange.js" />
+    <Content Include="Client\view\tpm\subrange\Subrange.js" />
+    <Content Include="Client\view\tpm\subrange\SubrangeEditor.js" />
+    <Content Include="Client\view\tpm\techhighlevel\DeletedTechHighLevelDetail.js" />
+    <Content Include="Client\view\tpm\techhighlevel\DeletedTechHighLevel.js" />
+    <Content Include="Client\view\tpm\techhighlevel\HistoricalTechHighLevelDetail.js" />
+    <Content Include="Client\view\tpm\techhighlevel\HistoricalTechHighLevel.js" />
+    <Content Include="Client\view\tpm\techhighlevel\TechHighLevel.js" />
+    <Content Include="Client\view\tpm\techhighlevel\TechHighLevelEditor.js" />
+    <Content Include="Client\view\tpm\technology\DeletedTechnologyDetail.js" />
+    <Content Include="Client\view\tpm\technology\DeletedTechnology.js" />
+    <Content Include="Client\view\tpm\technology\HistoricalTechnologyDetail.js" />
+    <Content Include="Client\view\tpm\technology\HistoricalTechnology.js" />
+    <Content Include="Client\view\tpm\technology\Technology.js" />
+    <Content Include="Client\view\tpm\technology\TechnologyEditor.js" />
+    <Content Include="Client\view\tpm\toolbar\CustomDirectoryToolbar.js" />
+    <Content Include="Client\view\tpm\toolbar\CustomPromoSupportBigToolbar.js" />
+    <Content Include="Client\view\tpm\toolbar\CustomPromoToolbar.js" />
+    <Content Include="Client\view\tpm\toolbar\CustomBigToolbar.js" />
+    <Content Include="Client\view\tpm\toolbar\CustomBottomToolbar.js" />
+    <Content Include="Client\view\tpm\toolbar\CustomTopToolbar.js" />
+    <Content Include="Client\view\tpm\toolbar\CustomTopTreeToolbar.js" />
+    <Content Include="Client\view\tpm\variety\DeletedVarietyDetail.js" />
+    <Content Include="Client\view\tpm\variety\DeletedVariety.js" />
+    <Content Include="Client\view\tpm\variety\HistoricalVarietyDetail.js" />
+    <Content Include="Client\view\tpm\variety\HistoricalVariety.js" />
+    <Content Include="Client\view\tpm\variety\Variety.js" />
+    <Content Include="Client\view\tpm\variety\VarietyEditor.js" />
+    <Content Include="Content\custom-color-scheme.css" />
+    <Content Include="Content\images\1px.png" />
+    <Content Include="Content\images\1x1.png" />
+    <Content Include="Content\images\altrow.png" />
+    <Content Include="Content\images\append-container-l-b.png" />
+    <Content Include="Content\images\append-container-l.png" />
+    <Content Include="Content\images\append-container.png" />
+    <Content Include="Content\images\arrow-left.png" />
+    <Content Include="Content\images\arrow-right.png" />
+    <Content Include="Content\images\boolean-l-b.png" />
+    <Content Include="Content\images\boolean-l.png" />
+    <Content Include="Content\images\boolean.png" />
+    <Content Include="Content\images\budget.png" />
+    <Content Include="Content\images\calendar-multiselect.png" />
+    <Content Include="Content\images\check-l-b.png" />
+    <Content Include="Content\images\check-l.png" />
+    <Content Include="Content\images\check.png" />
+    <Content Include="Content\images\checkboc_uzel.png" />
+    <Content Include="Content\images\checkbox_active_uzel.png" />
+    <Content Include="Content\images\clock-bare.png" />
+    <Content Include="Content\images\close-icon.png" />
+    <Content Include="Content\images\column-header-bg.gif" />
+    <Content Include="Content\images\column-header-over-bg.gif" />
+    <Content Include="Content\images\container-l-b.png" />
+    <Content Include="Content\images\container-l.png" />
+    <Content Include="Content\images\container.png" />
+    <Content Include="Content\images\copy.png" />
+    <Content Include="Content\images\create_component.png" />
+    <Content Include="Content\images\date-l-b.png" />
+    <Content Include="Content\images\date-l.png" />
+    <Content Include="Content\images\date.png" />
+    <Content Include="Content\images\delete_checked.png" />
+    <Content Include="Content\images\delete_user_component.png" />
+    <Content Include="Content\images\delete_user_component_focus.png" />
+    <Content Include="Content\images\delete_uzel.png" />
+    <Content Include="Content\images\demand.png" />
+    <Content Include="Content\images\dollar.svg" />
+    <Content Include="Content\images\dollarSelected.svg" />
+    <Content Include="Content\images\drop-no.gif" />
+    <Content Include="Content\images\drop-yes.gif" />
+    <Content Include="Content\images\edit_user_component.png" />
+    <Content Include="Content\images\edit_user_component_focus.png" />
+    <Content Include="Content\images\elbow-2-minus-material.png" />
+    <Content Include="Content\images\elbow-2-plus-material.png" />
+    <Content Include="Content\images\elbow-3-minus-material.png" />
+    <Content Include="Content\images\elbow-3-plus-material.png" />
+    <Content Include="Content\images\elbow-end-material.png" />
+    <Content Include="Content\images\elbow-line-material.png" />
+    <Content Include="Content\images\elbow-material.png" />
+    <Content Include="Content\images\fader.png" />
+    <Content Include="Content\images\favicon.ico" />
+    <Content Include="Content\images\finance.png" />
+    <Content Include="Content\images\history.svg" />
+    <Content Include="Content\images\historySelected.svg" />
+    <Content Include="Content\images\home.svg" />
+    <Content Include="Content\images\homeSelected.svg" />
+    <Content Include="Content\images\icon-info-gray.png" />
+    <Content Include="Content\images\icon-question-gray.png" />
+    <Content Include="Content\images\icon_title.png" />
+    <Content Include="Content\images\information-outline.svg" />
+    <Content Include="Content\images\jupiter_bg.jpg" />
+    <Content Include="Content\images\logo.svg" />
+    <Content Include="Content\images\page-horizontal-icon.png" />
+    <Content Include="Content\images\page-vertical-icon.png" />
+    <Content Include="Content\images\paste-content.png" />
+    <Content Include="Content\images\pattern.png" />
+    <Content Include="Content\images\pdf-icon.png" />
+    <Content Include="Content\images\percent.svg" />
+    <Content Include="Content\images\percentSelected.svg" />
+    <Content Include="Content\images\photo-l-b.png" />
+    <Content Include="Content\images\photo-l.png" />
+    <Content Include="Content\images\photo.png" />
+    <Content Include="Content\images\png-icon.png" />
+    <Content Include="Content\images\promo.png" />
+    <Content Include="Content\images\radio-l-b.png" />
+    <Content Include="Content\images\radio-l.png" />
+    <Content Include="Content\images\radio.png" />
+    <Content Include="Content\images\resize-handle-hor.gif" />
+    <Content Include="Content\images\resize-handle-ver.gif" />
+    <Content Include="Content\images\search.png" />
+    <Content Include="Content\images\search_down.png" />
+    <Content Include="Content\images\search_up.png" />
+    <Content Include="Content\images\slider-dots.png" />
+    <Content Include="Content\images\slider-v-dots.png" />
+    <Content Include="Content\images\star-container-l-b.png" />
+    <Content Include="Content\images\star-container-l.png" />
+    <Content Include="Content\images\star-container.png" />
+    <Content Include="Content\images\starswitch-l-b.png" />
+    <Content Include="Content\images\starswitch-l.png" />
+    <Content Include="Content\images\starswitch.png" />
+    <Content Include="Content\images\switch-glyph.png" />
+    <Content Include="Content\images\switch-l-b.png" />
+    <Content Include="Content\images\switch-l.png" />
+    <Content Include="Content\images\switch.png" />
+    <Content Include="Content\images\text-l-b.png" />
+    <Content Include="Content\images\text-l.png" />
+    <Content Include="Content\images\text.png" />
+    <Content Include="Content\images\top_delete.png" />
+    <Content Include="Content\images\top_preview.png" />
+    <Content Include="Content\images\transp-1px.png" />
+    <Content Include="Content\images\user_template_active.png" />
+    <Content Include="Content\images\user_template_not_active.png" />
+    <Content Include="Content\images\value-l-b.png" />
+    <Content Include="Content\images\value-l.png" />
+    <Content Include="Content\images\value.png" />
+    <Content Include="Content\images\zonebg.png" />
+    <Content Include="Content\sch-all-debug.css" />
+    <Content Include="Sch\ext-all-debug.js" />
+    <Content Include="Sch\Notification.js" />
+    <Content Include="Sch\sch-all-debug.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Module.Persist.TPM\Module.Persist.TPM.csproj">
+      <Project>{A4E76DF0-0B6A-4848-A99C-B6BF261623F2}</Project>
+      <Name>Module.Persist.TPM</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

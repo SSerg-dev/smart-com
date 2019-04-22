@@ -1,0 +1,11 @@
+﻿using Core.ModuleRegistrator;
+using Ninject.Modules;
+
+namespace Module.Frontend.MODULENAME
+{
+    public class FrontendMODULENAMEModule : NinjectModule {
+        public override void Load() {
+            Kernel.Bind<IFrontendModuleRegistrator>().To<FrontendMODULENAMEModuleRegistrator>().InSingletonScope();
+        }
+    }
+}

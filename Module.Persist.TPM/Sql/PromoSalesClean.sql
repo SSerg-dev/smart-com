@@ -1,0 +1,3 @@
+DELETE FROM PromoStatusChange;
+DELETE FROM Sale;
+DELETE FROM Promo;

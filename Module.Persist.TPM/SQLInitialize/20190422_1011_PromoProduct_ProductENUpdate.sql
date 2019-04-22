@@ -1,0 +1,1 @@
+﻿UPDATE [PromoProduct] SET ProductEN = (SELECT ProductEN FROM [Product] WHERE ProductId = Id)

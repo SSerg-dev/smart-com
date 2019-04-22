@@ -1,0 +1,15 @@
+﻿using Core.ModuleRegistrator;
+using Looper.Core;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Module.Host.MODULENAME {
+    public class HostMODULENAMEModuleRegistrator : IHostModuleRegistrator
+    {
+        public IEnumerable<IHandler> GetHandlers()
+        {
+            return Enumerable.Empty<IHandler>();
+        }
+    }
+}

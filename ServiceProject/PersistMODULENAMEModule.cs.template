@@ -1,0 +1,10 @@
+﻿using Core.ModuleRegistrator;
+using Ninject.Modules;
+
+namespace Module.Persist.MODULENAME {
+    public class PersistMODULENAMEModule : NinjectModule {
+        public override void Load() {
+            Kernel.Bind<IPersistModuleRegistrator>().To<PersistMODULENAMEModuleRegistrator>().InSingletonScope();
+        }
+    }
+}
