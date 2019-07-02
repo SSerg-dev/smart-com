@@ -4,6 +4,7 @@
     width: 500,
     minWidth: 500,
     maxHeight: 500,
+    cls: 'readOnlyFields',
 
     items: {
         xtype: 'editorform',
@@ -41,11 +42,28 @@
             selectorWidget: 'clienttree',
             valueField: 'Id',
             displayField: 'FullPathName',
+            clientTreeIdValid: true,
             store: {
                 storeId: 'clienttreestore',
                 model: 'App.model.tpm.clienttree.ClientTree',
                 autoLoad: false,
                 root: {}
+            },
+            listeners:
+            {
+                change: function (field, newValue, oldValue) {
+                    if (field && field.record && field.record.data.ObjectId === 5000000) {
+                        this.clientTreeIdValid = false;
+                    } else {
+                        this.clientTreeIdValid = true;
+                    }
+                }
+            },
+            validator: function () {
+                if (!this.clientTreeIdValid) {
+                    return l10n.ns('core', 'customValidators').value('clientTreeSelectRoot')
+                }
+                return true;
             },
             mapping: [{
                 from: 'FullPathName',

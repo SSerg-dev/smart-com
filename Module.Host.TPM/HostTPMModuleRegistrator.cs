@@ -30,6 +30,11 @@ namespace Module.Host.TPM {
                 new Handlers.FullXLSXUpdateAllHandler(),
                 new Handlers.FullXLSXUpdateBudgetSubItemHandler(),
                 new Handlers.FullXLSXNoNegoUpdateImporHandler(),
+                new Handlers.FullXLSXAssortmentMatrixImportHandler(),
+                new Handlers.AutoResetPromoHandler(),
+                new Handlers.RejectPromoNotificationHandler(),
+                new Handlers.XLSXImportActualLsvHandler(),
+                new Handlers.ActualLSVChangeHandler()
             };
         }
     }

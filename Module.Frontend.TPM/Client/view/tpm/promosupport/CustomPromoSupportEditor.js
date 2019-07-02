@@ -3,13 +3,15 @@
     alias: 'widget.custompromosupporteditor',
     title: l10n.ns('tpm', 'compositePanelTitles').value('PromoSupport'),
     ghost: false,
-    modal: true,
     header: false,
+    modal: true,
     constrain: true,
     layout: 'fit',
 
     height: '95%',
     width: '95%',
+    minWidth: 1000,
+    minHeight: 500,
 
     dockedItems: [{
         xtype: 'promosupportlefttoolbar',
@@ -27,7 +29,7 @@
         dockedItems: [{
             xtype: 'promosupportbottomtoolbar',
             dock: 'bottom'
-        }, {
+        },{
             xtype: 'promosupportformtoptoolbar',
             dock: 'top'
         }],
@@ -66,5 +68,21 @@
                 }]
             }]
         }]
-    }]
+    }],
+    listeners: {
+        afterRender: function () {
+            var me = this,
+                ddConfig;
+            var customHeader = me.items.items[0].dockedItems.items[1];
+            console.log(customHeader);
+
+            ddConfig = Ext.applyIf({
+                el: me.el,
+                delegate: '#' + Ext.escapeId(customHeader.id)
+            }, me.draggable);
+
+            me.dd = new Ext.util.ComponentDragger(this, ddConfig);
+            me.relayEvents(me.dd, ['dragstart', 'drag', 'dragend']);
+        }
+    }
 })

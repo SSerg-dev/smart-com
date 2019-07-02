@@ -2,14 +2,18 @@
 using Core.Security;
 using Core.Security.Models;
 using Frontend.Core.Controllers.Base;
+using Frontend.Core.Extensions;
 using Module.Persist.TPM.Model.TPM;
 using Newtonsoft.Json;
 using Persist.Model;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.OData;
 using Thinktecture.IdentityModel.Authorization.WebApi;
@@ -68,7 +72,7 @@ namespace Module.Frontend.TPM.Controllers
                 activeTree = GetConstraintedQuery(dateFilter);
                 bool existProductTreeForPromo = promoId == null ? false : Context.Set<PromoProductTree>().Any(n => n.PromoId == promoId.Value && !n.Disabled);
 
-                if (filterParameter == null && !existProductTreeForPromo)
+                if (filterParameter == null && !promoId.HasValue && productTreeObjectIds == null)
                 {
                     return GetTreeForLevel(node);
                 }
@@ -78,7 +82,7 @@ namespace Module.Frontend.TPM.Controllers
                 }
                 else
                 {
-                    return GetTreeForPromo(promoId.Value, productTreeObjectIds, view);
+                    return GetTreeForPromo(promoId, productTreeObjectIds, view);
                 }                
             }
             catch (Exception e)
@@ -112,7 +116,7 @@ namespace Module.Frontend.TPM.Controllers
                 throw new Exception("Unable to find root node");
             }
 
-            IQueryable<ProductTree> activeTreeList = activeTree.Where(x => x.parentId == parentId && x.parentId != x.ObjectId);
+            IQueryable<ProductTree> activeTreeList = activeTree.Where(x => x.parentId == parentId && x.parentId != x.ObjectId).OrderBy(x => x.NodePriority);
             List<ProductTreeNode> rootChilds = new List<ProductTreeNode>();
             // формируем список дочерних элементов
             foreach (ProductTree treeNode in activeTreeList)
@@ -249,7 +253,7 @@ namespace Module.Frontend.TPM.Controllers
         /// <param name="productObjectId">Целевой элемент</param>
         /// <param name="view">True, если промо открывается на только просмотр</param>
         /// <returns>Дерево для промо</returns>
-        private IHttpActionResult GetTreeForPromo(Guid promoId, string productTreeObjectIds, bool view)
+        private IHttpActionResult GetTreeForPromo(Guid? promoId, string productTreeObjectIds, bool view)
         {
             List<ProductTreeNode> children = new List<ProductTreeNode>();
             List<ProductTreeNode> nodeList = new List<ProductTreeNode>();
@@ -264,7 +268,7 @@ namespace Module.Frontend.TPM.Controllers
             // иначе ищем те, которые отметили
             if (productTreeObjectIds == null)
             {
-                targetNodes = activeTree.Where(n => Context.Set<PromoProductTree>().Where(t => t.PromoId == promoId && !t.Disabled)
+                targetNodes = activeTree.Where(n => Context.Set<PromoProductTree>().Where(t => t.PromoId == promoId.Value && !t.Disabled)
                     .Select(t => t.ProductTreeObjectId).Contains(n.ObjectId)).ToList();
             }
             else
@@ -291,6 +295,7 @@ namespace Module.Frontend.TPM.Controllers
                     children.Add(new ProductTreeNode(treeNode, false, leaf, false, target));
                 }
 
+                children = children.OrderBy(x => x.NodePriority).ToList();
                 //----получаем всех предков ----
                 bool first = true;
 
@@ -320,7 +325,7 @@ namespace Module.Frontend.TPM.Controllers
                     }
 
                     parentTargetNode = activeTree.Where(x => x.ObjectId == parentTargetNode.parentId).FirstOrDefault();
-                    outList = nodeList;
+                    outList = nodeList.OrderBy(x => x.NodePriority).ToList();
                     nodeList = new List<ProductTreeNode>();
                 }
 
@@ -559,6 +564,88 @@ namespace Module.Frontend.TPM.Controllers
                 UpdateFullPathProductTree(children[i], tree);
             }
         }
+
+        [ClaimsAuthorize]
+        [HttpPost]
+        public async Task<IHttpActionResult> UploadLogoFile(int productTreeId)
+        {
+            try
+            { 
+                if (!Request.Content.IsMimeMultipartContent())
+                    throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+
+                string directory = Core.Settings.AppSettingsManager.GetSetting("PRODUCT_TREE_DIRECTORY", "ProductTreeLogoFiles");
+                string fullPathfile = await FileUtility.UploadFile(Request, directory);
+                string fileName = fullPathfile.Split('\\').Last();
+
+                // так себе проверка, но лучше что-то, чем ничего
+                string typeFile = fullPathfile.Split('.').Last().ToLower();
+                if (typeFile != "png" && typeFile != "jpg")
+                    throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+
+                ProductTree productTree = Context.Set<ProductTree>().Find(productTreeId);
+                if (productTree == null)
+                    return NotFound();
+
+                // удаляем старую картинку если была
+                if (productTree.LogoFileName != null)
+                {
+                    FileInfo f = new FileInfo(directory + "/" + productTree.LogoFileName);
+                    if (f.Exists)
+                        f.Delete();
+                }
+
+                productTree.LogoFileName = fileName;
+                Context.SaveChanges();
+
+                return Json(new { success = true, fileName });
+            }
+            catch (Exception e)
+            {
+                return Json(new { success = false, message = e.Message });
+            }
+        }
+
+        [ClaimsAuthorize]
+        [HttpGet]
+        [Route("odata/ProductTrees/DownloadLogoFile")]
+        public HttpResponseMessage DownloadLogoFile(string fileName)
+        {
+            try
+            {
+                string directory = Core.Settings.AppSettingsManager.GetSetting("PRODUCT_TREE_DIRECTORY", "ProductTreeLogoFiles");
+                return FileUtility.DownloadFile(directory, fileName);
+            }
+            catch (Exception e)
+            {
+                return new HttpResponseMessage(HttpStatusCode.Accepted);
+            }
+        }
+
+        [ClaimsAuthorize]
+        [HttpPost]
+        public async Task<IHttpActionResult> DeleteLogo(int id)
+        {
+            var currentProduct = Context.Set<ProductTree>().Find(id);
+
+            if (currentProduct != null && !String.IsNullOrEmpty(currentProduct.LogoFileName))
+            {
+                // удаляем старое лого
+                string directory = Core.Settings.AppSettingsManager.GetSetting("PRODUCT_TREE_DIRECTORY", "ProductTreeLogoFiles");
+                FileInfo f = new FileInfo(directory + "/" + currentProduct.LogoFileName);
+
+                if (f.Exists)
+                    f.Delete();
+
+                currentProduct.LogoFileName = null;
+                await Context.SaveChangesAsync();
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, message = "The file from selected client was removed successfully." }));
+            }
+            else
+            {
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "The logo is not exists for current client." }));
+            }
+        }
     }
 
     /// <summary>
@@ -585,6 +672,8 @@ namespace Module.Frontend.TPM.Controllers
         public bool root { get; set; }
         public bool Target { get; set; }
         public List<ProductTreeNode> children { get; set; }
+        public int? NodePriority { get; set; }
+        public string LogoFileName { get; set; }
 
         public ProductTreeNode(ProductTree treeNode, bool expanded, bool leaf, bool loaded, bool target = false)
         {
@@ -601,6 +690,8 @@ namespace Module.Frontend.TPM.Controllers
             EndDate = treeNode.EndDate;
             Filter = treeNode.Filter;                              
             depth = treeNode.depth;
+            NodePriority = treeNode.NodePriority;
+            LogoFileName = treeNode.LogoFileName;
 
             root = Type == "root";
             this.expanded = expanded;

@@ -18,7 +18,7 @@ Ext.define('App.model.tpm.tradeinvestment.HistoricalTradeInvestment', {
         { name: 'ClientTreeObjectId', type: 'int', hidden: false, isDefault: true },
         { name: 'TIType', type: 'string', hidden: false, isDefault: true },
         { name: 'TISubType', type: 'string', hidden: false, isDefault: true },
-        { name: 'SizePercent', type: 'int', hidden: false, isDefault: true },
+        { name: 'SizePercent', type: 'float', hidden: false, isDefault: true },
         { name: 'MarcCalcROI', type: 'bool', hidden: false, isDefault: true },
         { name: 'MarcCalcBudgets', type: 'bool', hidden: false, isDefault: true }
     ],

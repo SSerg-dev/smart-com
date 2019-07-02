@@ -14,6 +14,7 @@ using System.Diagnostics;
 using System.Data;
 using Module.Persist.TPM.CalculatePromoParametersModule;
 using System.Threading;
+using Module.Persist.TPM;
 
 namespace Module.Host.TPM.Handlers
 {
@@ -26,72 +27,91 @@ namespace Module.Host.TPM.Handlers
         {
 
             ILogWriter handlerLogger = null;
+            string logLine = "";
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
             handlerLogger = new FileLogWriter(info.HandlerId.ToString());
             handlerLogger.Write(true, "");
-            handlerLogger.Write(true, String.Format("The calculation of the budgets started at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now));
+            logLine = String.Format("The calculation of the budgets started at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now);
+            handlerLogger.Write(true, logLine, "Message");
 
-            // переменные определяющие какие бюджеты необходимо пересчитать
-            bool calculatePlanCostTE = HandlerDataHelper.GetIncomingArgument<bool>("CalculatePlanCostTE", info.Data, false);
-            bool calculateFactCostTE = HandlerDataHelper.GetIncomingArgument<bool>("CalculateFactCostTE", info.Data, false);
-            bool calculatePlanCostProd = HandlerDataHelper.GetIncomingArgument<bool>("CalculatePlanCostProd", info.Data, false);
-            bool calculateFactCostProd = HandlerDataHelper.GetIncomingArgument<bool>("CalculateFactCostProd", info.Data, false);
+            // список ID подстатей
+            string promoSupportIdsString = HandlerDataHelper.GetIncomingArgument<string>("PromoSupportIds", info.Data, false);
+            // список ID отвязанных промо
+            string unlinkedPromoIdsString = HandlerDataHelper.GetIncomingArgument<string>("UnlinkedPromoIds", info.Data, false);
 
-            // список ID подстатей/промо
-            string promoSupportPromoIds = HandlerDataHelper.GetIncomingArgument<string>("PromoSupportPromoIds", info.Data, false);
-            // распарсенный список ID подстатей/промо
-            List<Guid> subItemsIdsList = new List<Guid>();
+            // распарсенный список ID подстатей
+            List<Guid> promoSupportIds = new List<Guid>();
+            // распарсенный список ID отвязанных промо
+            List<Guid> unlinkedPromoIds = new List<Guid>();
+
             // список промо, участвующих в расчете
             Promo[] promoes = null;
 
             try
             {
                 using (DatabaseContext context = new DatabaseContext())
-                {                    
+                {
                     promoes = CalculationTaskManager.GetBlockedPromo(info.HandlerId, context);
+
+                    // копируем старые значения, чтобы определить нужно ли пересчитывать остальные параметры
+                    double?[] oldPlanMarketingTI = promoes.Select(n => n.PlanPromoTIMarketing).ToArray();
+                    double?[] oldActualMarketingTI = promoes.Select(n => n.ActualPromoTIMarketing).ToArray();
+                    double?[] oldPlanCostProd = promoes.Select(n => n.PlanPromoCostProduction).ToArray();
+                    double?[] oldActualCostProd = promoes.Select(n => n.ActualPromoCostProduction).ToArray();
 
                     if (promoes.Length > 0)
                     {
-                        subItemsIdsList = promoSupportPromoIds.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries).Select(n => Guid.Parse(n)).ToList();
-
-                        // список подстатей/промо
-                        PromoSupportPromo[] psps = context.Set<PromoSupportPromo>().Where(n => subItemsIdsList.Any(m => m == n.Id)).ToArray();
+                        promoSupportIds = promoSupportIdsString.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries).Select(n => Guid.Parse(n)).ToList();
+                        unlinkedPromoIds = unlinkedPromoIdsString.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries).Select(n => Guid.Parse(n)).ToList();
 
                         string promoNumbers = "";
                         foreach (Promo promo in promoes)
                             promoNumbers += promo.Number.Value + ", ";
 
                         context.SaveChanges();
-                        handlerLogger.Write(true, String.Format("At the time of calculation, the following promo are blocked for editing: {0}", promoNumbers));
+                        logLine = String.Format("At the time of calculation, the following promo are blocked for editing: {0}", promoNumbers);
+                        handlerLogger.Write(true, logLine, "Message");
 
-                        foreach (PromoSupportPromo psp in psps)
-                            BudgetsPromoCalculation.CalculateBudgets(psp, calculatePlanCostTE, calculateFactCostTE, calculatePlanCostProd, calculateFactCostProd, context);
+                        // пересчитываем бюджеты
+                        foreach (Guid promoSupportId in promoSupportIds)
+                            BudgetsPromoCalculation.CalculateBudgets(promoSupportId, true, true, context);
 
-                        foreach (Promo promo in promoes)
+                        // обновляем общие суммы по бюджетам для отвязанных промо
+                        foreach (Guid promoId in unlinkedPromoIds)
+                            BudgetsPromoCalculation.RecalculateSummBudgets(promoId, context);
+
+
+                        context.SaveChanges();
+
+                        for (int i = 0; i < promoes.Length; i++)
                         {
-                            handlerLogger.Write(true, "");
-                            handlerLogger.Write(true, String.Format("Calculation of parameters for promo №{0} started at {1:yyyy-MM-dd HH:mm:ss}", promo.Number, DateTimeOffset.Now));
+                            Promo promo = promoes[i];
 
-                            if (calculatePlanCostTE || calculatePlanCostProd)
+                            handlerLogger.Write(true, "");
+                            logLine = String.Format("Calculation of parameters for promo № {0} started at {1:yyyy-MM-dd HH:mm:ss}", promo.Number, DateTimeOffset.Now);
+                            handlerLogger.Write(true, logLine, "Message");
+
+                            if (oldPlanMarketingTI[i] != promo.PlanPromoTIMarketing || oldPlanCostProd[i] != promo.PlanPromoCostProduction)
                             {
                                 string setPromoProductFieldsError = PlanPromoParametersCalculation.CalculatePromoParameters(promo.Id, context);
 
                                 if (setPromoProductFieldsError != null)
                                 {
-                                    handlerLogger.Write(true, String.Format("Error when calculating the planned parameters of the PromoProduct table: {0}", setPromoProductFieldsError));
+                                    logLine = String.Format("Error when calculating the planned parameters of the PromoProduct table: {0}", setPromoProductFieldsError);
+                                    handlerLogger.Write(true, logLine, "Error");
                                 }
-
-                                CalulateActual(promo, context, handlerLogger);
                             }
 
-                            if (calculateFactCostTE || calculateFactCostProd)
+                            if (oldActualMarketingTI[i] != promo.ActualPromoTIMarketing || oldActualCostProd[i] != promo.ActualPromoCostProduction)
                             {
                                 CalulateActual(promo, context, handlerLogger);
                             }
 
-                            handlerLogger.Write(true, String.Format("Calculation of parameters for promo № {0} completed.", promo.Number));
+                            logLine = String.Format("Calculation of parameters for promo № {0} completed.", promo.Number);
+                            handlerLogger.Write(true, logLine, "Message");
+
                             CalculationTaskManager.UnLockPromo(promo.Id);
                             context.SaveChanges();
                         }
@@ -100,7 +120,7 @@ namespace Module.Host.TPM.Handlers
             }
             catch (Exception e)
             {
-                handlerLogger.Write(true, e.ToString());
+                handlerLogger.Write(true, e.ToString(), "Error");
 
                 if (promoes != null)
                 {
@@ -111,17 +131,14 @@ namespace Module.Host.TPM.Handlers
 
             sw.Stop();
             handlerLogger.Write(true, "");
-            handlerLogger.Write(true, String.Format("The calculation of the budgets ended at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", DateTimeOffset.Now, sw.Elapsed.TotalSeconds));
+            logLine = String.Format("The calculation of the budgets ended at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", DateTimeOffset.Now, sw.Elapsed.TotalSeconds);
+            handlerLogger.Write(true, logLine, "Message");
         }
 
         private void CalulateActual(Promo promo, DatabaseContext context, ILogWriter handlerLogger)
         {
-            // если есть ошибки, они перечисленны через ;
-            string errorString = ActualProductParametersCalculation.CalculatePromoProductParameters(promo, context);
-
             ActualPromoParametersCalculation.ResetValues(promo, context);
-            if (errorString == null)
-                errorString = ActualPromoParametersCalculation.CalculatePromoParameters(promo, context);
+            string errorString = ActualPromoParametersCalculation.CalculatePromoParameters(promo, context);
 
             // записываем ошибки если они есть
             if (errorString != null)

@@ -37,7 +37,7 @@ namespace Module.Frontend.TPM.Controllers {
 
         public IQueryable<PlanPostPromoEffectReport> GetConstraintedQuery() {
             List<PlanPostPromoEffectReport> result = new List<PlanPostPromoEffectReport>();
-            List<PromoProduct> promoproducts = Context.Set<PromoProduct>().Where(y => !y.Disabled && y.PlanProductQty > 0).ToList();
+            List<PromoProduct> promoproducts = Context.Set<PromoProduct>().Where(y => !y.Disabled && y.PlanProductCaseQty > 0).ToList();
             DateTime dt = DateTime.Now;
             foreach (PromoProduct promoproduct in promoproducts) {
                 Promo promo = Context.Set<Promo>().FirstOrDefault(x => x.Id == promoproduct.PromoId);
@@ -68,10 +68,10 @@ namespace Module.Frontend.TPM.Controllers {
                     postPromoEffectW2 = clientTree.PostPromoEffectW2;
                 }
                 if (postPromoEffectW1 != null) {
-                    postPromoEffectW1Qty = promoproduct.PlanProductIncrementalQty * (postPromoEffectW1 / 100);
+                    postPromoEffectW1Qty = promoproduct.PlanProductIncrementalCaseQty * (postPromoEffectW1 / 100);
                 }
                 if (postPromoEffectW2 != null) {
-                    postPromoEffectW2Qty = promoproduct.PlanProductIncrementalQty * (postPromoEffectW2 / 100);
+                    postPromoEffectW2Qty = promoproduct.PlanProductIncrementalCaseQty * (postPromoEffectW2 / 100);
                 }
 
 
@@ -112,6 +112,7 @@ namespace Module.Frontend.TPM.Controllers {
                 new Column() { Order = 10, Field = "StartDate", Header = "Start date", Quoting = false, Format = "dd.MM.yyyy"  },
                 new Column() { Order = 11, Field = "EndDate", Header = "End date", Quoting = false, Format = "dd.MM.yyyy" },
                 new Column() { Order = 12, Field = "Status", Header = "Status", Quoting = false },
+                new Column() { Order = 13, Field = "InOut", Header = "InOut", Quoting = false },
             };
             return columns;
         }
@@ -143,7 +144,7 @@ namespace Module.Frontend.TPM.Controllers {
             rep.StartDate = promo.StartDate;
             rep.EndDate = promo.EndDate;
             rep.DemandCode = String.IsNullOrEmpty(demandCode) ? "Demand code was not found" : demandCode;
-
+            rep.InOut = promo.InOut;
             rep.Id = Guid.NewGuid();
             rep.LocApollo = "RU_0125";
             rep.TypeApollo = "7";

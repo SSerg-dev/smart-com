@@ -47,7 +47,9 @@
     'customValidators': {
         'StartDateFinishDateOrder': 'Дата начала должна быть меньше даты окончания',
         'UploadFileFormat': 'Формат файла не поддерживается',
-        'invalidSearchFieldValue': 'Запись удалена или не создана'
+        'invalidSearchFieldValue': 'Запись удалена или не создана',
+        'clientTreeSelectRoot': 'Корневой элемент не может быть выбран',
+        'EmailValidationError': 'Введён некорректный адрес электронной почты'
     },
 
     'booleanValues': {
@@ -250,6 +252,7 @@
             'IsNull': 'Пусто',
             'NotNull': 'Не пусто',
             'Contains': 'Содержит',
+            'NotContains': 'Не содержит',
             'StartsWith': 'Начинается с',
             'EndsWith': 'Заканчивается на'
         }
@@ -364,7 +367,10 @@
             'Materials': 'Материалы',
             'Infinities': 'Инфинити',
             'ResultMessage': 'Результат',
-            'NoValidFile': 'Ошибки'
+            'NoValidFile': 'Ошибки',
+            'CrossParam.ClientFilter': 'Фильтр по клиенту',
+            'CrossParam.StartDate': 'Дата начала',
+            'CrossParam.FinishDate': 'Дата окончания',
         }
     },
     'HistoricalLoopHandler': ['LoopHandler', 'BaseHistoryEntity'],

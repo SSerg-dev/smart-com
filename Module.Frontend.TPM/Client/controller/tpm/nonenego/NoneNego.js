@@ -364,5 +364,13 @@
         };
 
         return filter;
-    }
+    },
+
+    onCreateButtonClick: function () {
+        this.callParent(arguments);
+
+        var nonenegoeditor = Ext.ComponentQuery.query('nonenegoeditor')[0];
+        var createDate = nonenegoeditor.down('[name=CreateDate]');
+        createDate.setValue(new Date());
+    },
 });

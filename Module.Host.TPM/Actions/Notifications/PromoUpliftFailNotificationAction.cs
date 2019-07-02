@@ -16,7 +16,7 @@ namespace Module.Host.TPM.Actions.Notifications {
             try {
                 using (DatabaseContext context = new DatabaseContext()) {
                     ISettingsManager settingsManager = (ISettingsManager) IoC.Kernel.GetService(typeof(ISettingsManager));
-                    string templateFileName = settingsManager.GetSetting<string>("PROMO_UPLIFT_FAIL_NOTIFICATION_TEMPLATE_FILE", "PromoDemandChangeTemplate.txt");
+                    string templateFileName = settingsManager.GetSetting<string>("PROMO_UPLIFT_FAIL_NOTIFICATION_TEMPLATE_FILE", "PromoUpliftFailTemplate.txt");
                     if (File.Exists(templateFileName)) {
                         string template = File.ReadAllText(templateFileName);
                         if (!String.IsNullOrEmpty(template)) {

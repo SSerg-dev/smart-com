@@ -23,7 +23,9 @@ namespace Module.Persist.TPM.Model.TPM
         [Index("CX_ObjDate", 2, IsUnique = true)]
         public DateTime? EndDate { get; set; }
         public string Filter { get; set; }
+        public int? NodePriority { get; set; }
 
+        public string LogoFileName { get; set; }
         public object Clone()
         {
             return MemberwiseClone();

@@ -21,13 +21,18 @@
         }, {
             xtype: 'numberfield',
             format: '0.00',
-            fieldLabel: l10n.ns('tpm', 'PromoProduct').value('PlanProductQty'),
+            fieldLabel: l10n.ns('tpm', 'PromoProduct').value('PlanProductCaseQty'),
             name: 'PlanProductBaselineLSV'
         }, {
             xtype: 'numberfield',
             format: '0.00',
-            fieldLabel: l10n.ns('tpm', 'PromoProduct').value('PlanProductIncrementalQty'),
-            name: 'PlanProductIncrementalQty'
+            fieldLabel: l10n.ns('tpm', 'PromoProduct').value('PlanProductIncrementalLSV'),
+            name: 'PlanProductIncrementalLSV'
+        }, {
+            xtype: 'numberfield',
+            format: '0.00',
+            fieldLabel: l10n.ns('tpm', 'PromoProduct').value('ActualProductIncrementalLSV'),
+            name: 'ActualProductIncrementalLSV'
         }, {
             xtype: 'numberfield',
             format: '0.00',
@@ -36,9 +41,8 @@
         }, {
             xtype: 'numberfield',
             format: '0.00',
-            fieldLabel: l10n.ns('tpm', 'PromoProduct').value('PlanProductPostPromoEffectQty'),
-            name: 'PlanProductPostPromoEffectQty'
-        //
+            fieldLabel: l10n.ns('tpm', 'PromoProduct').value('PlanProductPostPromoEffectLSV'),
+            name: 'PlanProductPostPromoEffectLSV'
         }, {
             xtype: 'numberfield',
             format: '0.00',
@@ -47,8 +51,13 @@
         }, {
             xtype: 'numberfield',
             format: '0.00',
-            fieldLabel: l10n.ns('tpm', 'PromoProduct').value('ActualProductPostPromoEffectQty'),
-            name: 'ActualProductPostPromoEffectQty'
+            fieldLabel: l10n.ns('tpm', 'PromoProduct').value('ActualProductPostPromoEffectLSV'),
+            name: 'ActualProductPostPromoEffectLSV'
+        }, {
+            xtype: 'numberfield',
+            format: '0.00',
+            fieldLabel: l10n.ns('tpm', 'PromoProduct').value('ActualProductLSVByCompensation'),
+            name: 'ActualProductLSVByCompensation'
         }] 
     },
 

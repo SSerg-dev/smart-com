@@ -9,8 +9,6 @@ using System.Data.Entity;
 using System.Linq;
 using System.Reflection;
 using System.Web.Http.OData.Builder;
-using Persist.Model.History;
-using Persist.Model;
 
 namespace Module.Persist.TPM {
     public class PersistTPMModuleRegistrator : IPersistModuleRegistrator {
@@ -61,7 +59,8 @@ namespace Module.Persist.TPM {
             modelBuilder.Entity<ProductTreeHierarchyView>();
             modelBuilder.Entity<PromoDemandChangeIncident>();
             modelBuilder.Entity<BudgetSubItem>();
-            modelBuilder.Entity<PromoSupport>();
+            modelBuilder.Entity<PromoSupport>().HasMany(p => p.PromoSupportPromo)
+                .WithRequired(p => p.PromoSupport);
             modelBuilder.Entity<PostPromoEffect>();
             modelBuilder.Entity<PromoSupportPromo>();
             modelBuilder.Entity<PromoProductTree>();
@@ -69,12 +68,16 @@ namespace Module.Persist.TPM {
             modelBuilder.Entity<TradeInvestment>();
             modelBuilder.Entity<PromoUpliftFailIncident>();
             modelBuilder.Entity<BlockedPromo>();
+            modelBuilder.Entity<AssortmentMatrix>();
+            modelBuilder.Entity<IncrementalPromo>();
+            modelBuilder.Entity<PromoView>();
+            modelBuilder.Entity<PromoGridView>();
+            modelBuilder.Entity<PlanIncrementalReport>();
+            modelBuilder.Entity<PromoRejectIncident>();
 
             modelBuilder.Entity<Promo>().Ignore(n => n.ProductTreeObjectIds);
             modelBuilder.Entity<Promo>().Ignore(n => n.Calculating);
-
-            modelBuilder.Entity<PromoView>();
-            modelBuilder.Entity<PlanIncrementalReport>();
+            modelBuilder.Entity<Promo>().Ignore(n => n.PromoBasicProducts);            
         }
 
         public void BuildEdm(ODataConventionModelBuilder builder) {
@@ -258,6 +261,8 @@ namespace Module.Persist.TPM {
             builder.EntitySet<Promo>("DeletedPromoes").HasOptionalBinding(e => e.ActualInStoreMechanic, "Mechanics");
             builder.EntitySet<Promo>("Promoes").HasOptionalBinding(e => e.ActualInStoreMechanicType, "MechanicTypes");
             builder.EntitySet<Promo>("DeletedPromoes").HasOptionalBinding(e => e.ActualInStoreMechanicType, "MechanicTypes");
+            builder.EntitySet<Promo>("Promoes").HasOptionalBinding(e => e.ClientTree, "ClientTrees");
+            builder.EntitySet<Promo>("DeletedPromoes").HasOptionalBinding(e => e.ClientTree, "ClientTrees");
             builder.Entity<Promo>().Collection.Action("ExportXLSX");
             builder.Entity<Promo>().Collection.Action("FullImportXLSX");
             builder.Entity<Promo>().Collection.Action("DeclinePromo");
@@ -265,6 +270,8 @@ namespace Module.Persist.TPM {
             builder.Entity<Promo>().Collection.Action("CalculateMarketingTI");
             builder.Entity<Promo>().Collection.Action("ChangeStatus");
             builder.Entity<Promo>().Collection.Action("ExportPromoROIReportXLSX");
+            builder.Entity<Promo>().Collection.Action("RecalculatePromo");
+            builder.Entity<Promo>().Collection.Action("CheckIfLogHasErrors");
 
             ActionConfiguration schedExp = builder.Entity<Promo>().Collection.Action("ExportSchedule");
             schedExp.CollectionParameter<int>("clients");
@@ -333,11 +340,17 @@ namespace Module.Persist.TPM {
             ActionConfiguration updateClientNodeAction = builder.Entity<ClientTree>().Collection.Action("UpdateNode");
             updateClientNodeAction.ReturnsFromEntitySet<ClientTree>("ClientTrees"); //какого типа параметр принимает экшн.
             builder.Entity<ClientTree>().Collection.Action("CanCreateBaseClient");
+            builder.Entity<ClientTree>().Collection.Action("UploadLogoFile");
+            builder.Entity<ClientTree>().Collection.Action("DownloadLogoFile");
+            builder.Entity<ClientTree>().Collection.Action("DeleteLogo");
             builder.Entity<BaseClientTreeView>().Collection.Action("ExportXLSX");
 
             builder.EntitySet<ProductTree>("ProductTrees");
             builder.Entity<ProductTree>().Collection.Action("Delete");
             builder.Entity<ProductTree>().Collection.Action("Move");
+            builder.Entity<ProductTree>().Collection.Action("UploadLogoFile");
+            builder.Entity<ProductTree>().Collection.Action("DownloadLogoFile");
+            builder.Entity<ProductTree>().Collection.Action("DeleteLogo");
             ActionConfiguration updateProductNodeAction = builder.Entity<ProductTree>().Collection.Action("UpdateNode");
             updateProductNodeAction.ReturnsFromEntitySet<ProductTree>("ProductTrees"); //какого типа параметр принимает экшн.
 
@@ -399,6 +412,8 @@ namespace Module.Persist.TPM {
             builder.EntitySet<PromoProduct>("PromoProducts").HasRequiredBinding(e => e.Product, "Products");
             builder.EntitySet<PromoProduct>("DeletedPromoProducts").HasRequiredBinding(e => e.Promo, "Promoes");
             builder.EntitySet<PromoProduct>("DeletedPromoProducts").HasRequiredBinding(e => e.Product, "Products");
+            //builder.EntitySet<PromoProduct>("PromoProducts").EntityType.Ignore(e => e.ActualProductBaselineLSV);
+            //builder.StructuralTypes.First(e => e.ClrType == typeof(PromoProduct)).AddProperty(typeof(PromoProduct).GetProperty("ActualProductBaselineLSV"));
             builder.Entity<PromoProduct>().HasRequired(n => n.Promo, (n, p) => n.PromoId == p.Id);
             builder.Entity<PromoProduct>().HasRequired(n => n.Product, (n, p) => n.ProductId == p.Id);
             builder.Entity<PromoProduct>().Collection.Action("ExportXLSX");
@@ -447,7 +462,8 @@ namespace Module.Persist.TPM {
             builder.Entity<PromoSupport>().Collection.Action("UploadFile");
             builder.Entity<PromoSupport>().Collection.Action("DownloadFile");
             builder.Entity<PromoSupport>().Collection.Action("GetUserTimestamp");
-
+            builder.EntitySet<PromoSupport>("PromoSupports").HasManyBinding<PromoSupportPromo>(e => e.PromoSupportPromo, "PromoSupportPromoes");
+            builder.EntitySet<PromoSupport>("DeletedPromoSupports").HasManyBinding<PromoSupportPromo>(e => e.PromoSupportPromo, "PromoSupportPromoes");
             builder.EntitySet<PostPromoEffect>("PostPromoEffects");
             builder.EntitySet<PostPromoEffect>("DeletedPostPromoEffects");
             builder.EntitySet<HistoricalPostPromoEffect>("HistoricalPostPromoEffects");            
@@ -495,6 +511,19 @@ namespace Module.Persist.TPM {
             builder.Entity<TradeInvestment>().Collection.Action("FullImportXLSX");
             builder.Entity<TradeInvestment>().Collection.Action("DownloadTemplateXLSX");
 
+            builder.EntitySet<AssortmentMatrix>("AssortmentMatrices");
+            builder.EntitySet<AssortmentMatrix>("DeletedAssortmentMatrices");
+            builder.EntitySet<HistoricalAssortmentMatrix>("HistoricalAssortmentMatrices");
+            builder.Entity<AssortmentMatrix>().Collection.Action("ExportXLSX");
+            builder.EntitySet<AssortmentMatrix>("AssortmentMatrices").HasRequiredBinding(e => e.ClientTree, "ClientTrees");
+            builder.EntitySet<AssortmentMatrix>("DeletedAssortmentMatrices").HasRequiredBinding(e => e.ClientTree, "ClientTrees");
+            builder.EntitySet<AssortmentMatrix>("AssortmentMatrices").HasRequiredBinding(e => e.Product, "Products");
+            builder.EntitySet<AssortmentMatrix>("DeletedAssortmentMatrices").HasRequiredBinding(e => e.Product, "Products");
+            builder.Entity<AssortmentMatrix>().HasRequired(n => n.ClientTree, (n, p) => n.ClientTreeId == p.Id);
+            builder.Entity<AssortmentMatrix>().HasRequired(n => n.Product, (n, p) => n.ProductId == p.Id);
+            builder.Entity<AssortmentMatrix>().Collection.Action("FullImportXLSX");
+            builder.Entity<AssortmentMatrix>().Collection.Action("DownloadTemplateXLSX");
+
             builder.Entity<PromoProductTree>().HasRequired(n => n.Promo, (n, p) => n.PromoId == p.Id);
 
             builder.EntitySet<PlanIncrementalReport>("PlanIncrementalReports");
@@ -504,8 +533,11 @@ namespace Module.Persist.TPM {
             builder.Entity<PlanPostPromoEffectReport>().Collection.Action("ExportXLSX");
 
             builder.Entity<Promo>().Collection.Action("ReadPromoCalculatingLog");
+            builder.Entity<Promo>().Collection.Action("GetHandlerIdForBlockedPromo");
 
             builder.EntitySet<PromoView>("PromoViews");
+            builder.EntitySet<PromoGridView>("PromoGridViews");
+            builder.Entity<PromoGridView>().Collection.Action("ExportXLSX");
             builder.EntitySet<PlanIncrementalReport>("PlanIncrementalReports");
 
             //Загрузка шаблонов
@@ -525,6 +557,22 @@ namespace Module.Persist.TPM {
             builder.Entity<Mechanic>().Collection.Action("DownloadTemplateXLSX");
             builder.Entity<NodeType>().Collection.Action("DownloadTemplateXLSX");
             builder.Entity<ClientTreeSharesView>().Collection.Action("DownloadTemplateXLSX");
+
+            builder.EntitySet<IncrementalPromo>("IncrementalPromoes");
+            builder.EntitySet<IncrementalPromo>("IncrementalPromoes").HasRequiredBinding(e => e.Promo, "Promoes");
+            builder.EntitySet<IncrementalPromo>("IncrementalPromoes").HasRequiredBinding(e => e.Product, "Products");
+            builder.EntitySet<IncrementalPromo>("DeletedIncrementalPromoes");
+            builder.EntitySet<IncrementalPromo>("DeletedIncrementalPromoes").HasRequiredBinding(e => e.Promo, "Promoes");
+            builder.EntitySet<IncrementalPromo>("DeletedIncrementalPromoes").HasRequiredBinding(e => e.Product, "Products");
+            builder.EntitySet<HistoricalIncrementalPromo>("HistoricalIncrementalPromoes");
+            builder.Entity<IncrementalPromo>().Collection.Action("ExportXLSX");
+            builder.Entity<IncrementalPromo>().Collection.Action("ExportDemandPriceListXLSX");
+            builder.Entity<IncrementalPromo>().Collection.Action("FullImportXLSX");
+            builder.Entity<IncrementalPromo>().Collection.Action("DownloadTemplateXLSX");
+
+            builder.EntitySet<ActualLSV>("ActualLSVs");
+            builder.Entity<ActualLSV>().Collection.Action("ExportXLSX");
+            builder.Entity<ActualLSV>().Collection.Action("FullImportXLSX");
         }
 
         public IEnumerable<Type> GetHistoricalEntities() {

@@ -6,11 +6,12 @@
 
     width: "70%",
     minWidth: 800,
-    minHeight: 431,
-    maxHeight: 431,
+    height: 470,
+    minHeight: 470,
 
     items: [{
         xtype: 'container',
+        height: '100%',
         maxHeight: '100%',
         cls: 'custom-promo-panel-container',
         layout: 'fit',
@@ -68,12 +69,12 @@
                             promoController.resetFields([
                                 mechanicFields.actualInstoreMechanicFields.actualInstoreMechanicId,
                                 mechanicFields.actualInstoreMechanicFields.actualInstoreMechanicTypeId,
-                                mechanicFields.actualInstoreMechanicFields.actualInstoreMechanicDiscount
+                                mechanicFields.actualInstoreMechanicFields.actualInStoreDiscount
                             ]);
 
                             promoController.disableFields([
                                 mechanicFields.actualInstoreMechanicFields.actualInstoreMechanicTypeId,
-                                mechanicFields.actualInstoreMechanicFields.actualInstoreMechanicDiscount
+                                mechanicFields.actualInstoreMechanicFields.actualInStoreDiscount
                             ]);
                         },
 
@@ -109,7 +110,7 @@
 
                             promoController.resetFields([
                                 mechanicFields.actualInstoreMechanicFields.actualInstoreMechanicTypeId,
-                                mechanicFields.actualInstoreMechanicFields.actualInstoreMechanicDiscount
+                                mechanicFields.actualInstoreMechanicFields.actualInStoreDiscount
                             ]);
                         },
                         mapping: [{
@@ -117,13 +118,13 @@
                             to: 'ActualInstoreMechanicTypeName'
                         }, {
                             from: 'Discount',
-                            to: 'ActualInstoreMechanicDiscount'
+                            to: 'ActualInStoreDiscount'
                         }]
                     }, {
                         xtype: 'numberfield',
                         margin: 0,
                         layout: 'anchor',
-                        name: 'ActualInstoreMechanicDiscount',
+                        name: 'ActualInStoreDiscount',
                         minValue: 1,
                         maxValue: 100,
                         fieldLabel: 'Discount',
@@ -192,7 +193,7 @@
                         xtype: 'triggerfielddetails',
                         name: 'PlanPromoIncrementalLSV',
                         fieldLabel: l10n.ns('tpm', 'Promo').value('PlanPromoIncrementalLSV'),
-                        dataIndexes: ['PlanProductIncrementalQty'],
+                        dataIndexes: ['PlanProductIncrementalLSV'],
                         blockMillion: false, // если true - то преобразовывать в миллионы
                         originValue: null, // настоящее значение
                         valueToRaw: function (value) {
@@ -264,9 +265,9 @@
                         }
                     }, {
                         xtype: 'triggerfielddetails',
-                        name: 'PlanPostPromoEffect',
-                        fieldLabel: l10n.ns('tpm', 'Promo').value('PlanPostPromoEffect'),
-                        dataIndexes: ['PlanProductPostPromoEffectQty'],
+                        name: 'PlanPromoPostPromoEffectLSV',
+                        fieldLabel: l10n.ns('tpm', 'Promo').value('PlanPromoPostPromoEffectLSV'),
+                        dataIndexes: ['PlanProductPostPromoEffectLSV'],
                         margin: '0 0 10 0',
                         blockMillion: false, // если true - то преобразовывать в миллионы
                         originValue: null, // настоящее значение
@@ -307,7 +308,7 @@
                 flex: 1,
                 items: [{
                     xtype: 'fieldset',
-                    title: l10n.ns('tpm', 'PromoActivityDetailsWindow').value('InvoiceAndPrices'),
+                    title: l10n.ns('tpm', 'PromoActivityDetailsWindow').value('ActualInStore'),
                     layout: 'hbox',
                     padding: '0 10 10 10',
                     defaults: {
@@ -322,6 +323,12 @@
                         xtype: 'numberfield',
                         layout: 'anchor',
                         name: 'ActualInStoreShelfPrice',
+                        fieldLabel: l10n.ns('tpm', 'Promo').value('ActualInStoreShelfPrice'),
+                        labelAlign: 'top',
+                    }, {
+                        xtype: 'numberfield',
+                        layout: 'anchor',
+                        name: 'PlanInStoreShelfPrice',
                         fieldLabel: l10n.ns('tpm', 'Promo').value('ActualInStoreShelfPrice'),
                         labelAlign: 'top',
                     }, {
@@ -352,7 +359,7 @@
                         xtype: 'triggerfielddetails',
                         name: 'ActualPromoBaselineLSV',
                         fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoBaselineLSV'),
-                        dataIndexes: ['PlanProductBaselineLSV'],
+                        dataIndexes: ['ActualProductBaselineLSV'],
                         blockMillion: false, // если true - то преобразовывать в миллионы
                         originValue: null, // настоящее значение
                         valueToRaw: function (value) {
@@ -389,7 +396,7 @@
                         xtype: 'triggerfielddetails',
                         name: 'ActualPromoIncrementalLSV',
                         fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoIncrementalLSV'),
-                        dataIndexes: ['PlanProductIncrementalQty'],
+                        dataIndexes: ['ActualProductIncrementalLSV'],
                         blockMillion: false, // если true - то преобразовывать в миллионы
                         originValue: null, // настоящее значение
                         valueToRaw: function (value) {
@@ -422,48 +429,85 @@
                                 this.blockMillion = false;
                             },
                         }
-                    }, {
-                        xtype: 'triggerfielddetails',
-                        name: 'ActualPromoLSV',
-                        fieldLabel: l10n.ns('tpm', 'Promo').value('PlanPromoLSV'),
-                        dataIndexes: ['ActualProductLSV'],
-                        blockMillion: false, // если true - то преобразовывать в миллионы
-                        originValue: null, // настоящее значение
-                        valueToRaw: function (value) {
-                            var valueToDisplay = null; 
+                        }, {
+                            xtype: 'triggerfielddetails',
+                            name: 'ActualPromoLSV',
+                            fieldLabel: l10n.ns('tpm', 'Promo').value('PlanPromoLSV'),
+                            dataIndexes: ['ActualProductLSV'],
+                            blockMillion: false, // если true - то преобразовывать в миллионы
+                            originValue: null, // настоящее значение
+                            valueToRaw: function (value) {
+                                var valueToDisplay = null;
 
-                            if (value !== null && value !== undefined) {
-                                if (this.blockMillion) {
-                                    valueToDisplay = value;
+                                if (value !== null && value !== undefined) {
+                                    if (this.blockMillion) {
+                                        valueToDisplay = value;
+                                    }
+                                    else {
+                                        this.originValue = value;
+                                        valueToDisplay = value / 1000000.0;
+                                    }
                                 }
-                                else {
-                                    this.originValue = value;
-                                    valueToDisplay = value / 1000000.0;
-                                }
+
+                                return Ext.util.Format.number(valueToDisplay, '0.00');
+                            },
+                            rawToValue: function () {
+                                var parsedValue = parseFloat(String(this.originValue).replace(Ext.util.Format.decimalSeparator, "."))
+                                return isNaN(parsedValue) ? null : parsedValue;
+                            },
+                            listeners: {
+                                afterrender: function (el) {
+                                    el.triggerCell.addCls('form-info-trigger-cell')
+                                },
+                                focus: function (field) {
+                                    this.blockMillion = true;
+                                },
+                                blur: function (field) {
+                                    this.blockMillion = false;
+                                },
                             }
+                        }, {
+                            xtype: 'triggerfielddetails',
+                            name: 'ActualPromoLSVByCompensation',
+                            fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoLSVByCompensation'),
+                            dataIndexes: ['ActualProductLSVByCompensation'],
+                            blockMillion: false, // если true - то преобразовывать в миллионы
+                            originValue: null, // настоящее значение
+                            valueToRaw: function (value) {
+                                var valueToDisplay = null;
 
-                            return Ext.util.Format.number(valueToDisplay, '0.00');
-                        },
-                        rawToValue: function () {
-                            var parsedValue = parseFloat(String(this.originValue).replace(Ext.util.Format.decimalSeparator, "."))
-                            return isNaN(parsedValue) ? null : parsedValue;
-                        },
-                        listeners: {
-                            afterrender: function (el) {
-                                el.triggerCell.addCls('form-info-trigger-cell')
+                                if (value !== null && value !== undefined) {
+                                    if (this.blockMillion) {
+                                        valueToDisplay = value;
+                                    }
+                                    else {
+                                        this.originValue = value;
+                                        valueToDisplay = value / 1000000.0;
+                                    }
+                                }
+
+                                return Ext.util.Format.number(valueToDisplay, '0.00');
                             },
-                            focus: function (field) {
-                                this.blockMillion = true;
+                            rawToValue: function () {
+                                var parsedValue = parseFloat(String(this.originValue).replace(Ext.util.Format.decimalSeparator, "."))
+                                return isNaN(parsedValue) ? null : parsedValue;
                             },
-                            blur: function (field) {
-                                this.blockMillion = false;
-                            },
-                        }
-                    }, {
+                            listeners: {
+                                afterrender: function (el) {
+                                    el.triggerCell.addCls('form-info-trigger-cell')
+                                },
+                                focus: function (field) {
+                                    this.blockMillion = true;
+                                },
+                                blur: function (field) {
+                                    this.blockMillion = false;
+                                },
+                            }
+                        }, {
                         xtype: 'triggerfielddetails',
-                        name: 'FactPostPromoEffect',
-                        fieldLabel: l10n.ns('tpm', 'Promo').value('FactPostPromoEffect'),
-                        dataIndexes: ['ActualProductPostPromoEffectQty'],
+                        name: 'ActualPromoPostPromoEffectLSV',
+                        fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoPostPromoEffectLSV'),
+                        dataIndexes: ['ActualProductPostPromoEffectLSV'],
                         margin: '0 0 10 0',
                         blockMillion: false, // если true - то преобразовывать в миллионы
                         originValue: null, // настоящее значение

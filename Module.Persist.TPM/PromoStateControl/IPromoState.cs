@@ -28,11 +28,11 @@ namespace Module.Persist.TPM.PromoStateControl
         /// <summary>
         /// Изменяет/обновляет состояние
         /// </summary>
-        bool ChangeState(Promo promoModel, string userRole, out string massage);
+        bool ChangeState(Promo promoModel, string userRole, out string message);
 
         /// <summary>
         /// Изменяет/обновляет состояние
         /// </summary>
-        bool ChangeState(Promo promoModel, PromoStates promoState, string userRole, out string massage);
+        bool ChangeState(Promo promoModel, PromoStates promoState, string userRole, out string message);
     }
 }

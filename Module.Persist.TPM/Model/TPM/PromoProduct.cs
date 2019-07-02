@@ -19,58 +19,74 @@ namespace Module.Persist.TPM.Model.TPM
         public string ZREP { get; set; }
 
         /// <summary>
-        /// EAN код продукта
+        /// EAN_Case код продукта
         /// </summary>
         [StringLength(255)]
-        public string EAN { get; set; }
+        public string EAN_Case { get; set; }
+
+        /// <summary>
+        /// EAN_PC код продукта
+        /// </summary>
+        [StringLength(255)]
+        public string EAN_PC { get; set; }
 
         /// <summary>
         /// Плановое количество в кейсах, расчитывается исходя из дат промо
         /// </summary>
         [Range(0, 10000000000)]
-        public double? PlanProductQty { get; set; }
+        public double? PlanProductCaseQty { get; set; }
 
         /// <summary>
         /// Плановое количество в штуках, расчитывается исходя из дат промо
         /// </summary>
-        [Range(0, 1000000000)]
         public int? PlanProductPCQty { get; set; }
 
         /// <summary>
         /// Плановая сумма продажи в кейсах
         /// </summary>
-        [Range(0, 10000000000)]
-        public double? PlanProductLSV { get; set; }
+        public double? PlanProductCaseLSV { get; set; }
 
         /// <summary>
         /// Плановая сумма продажи в штуках
         /// </summary>
-        [Range(0, 10000000000)]
         public double? PlanProductPCLSV { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
-        [Range(0, 10000000000)]
         public double? PlanProductBaselineLSV { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
+        public double? ActualProductBaselineLSV { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public double? PlanProductIncrementalLSV { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public double? PlanProductLSV { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         [Range(0, 10000000000)]
-        public double? PlanProductBaselineQty { get; set; }
+        public double? PlanProductBaselineCaseQty { get; set; }
 
         /// <summary>
         /// Базовая цена продажи
         /// </summary>
-        [Range(0, 10000000000)]
         public double? ProductBaselinePrice { get; set; }
 
         /// <summary>
         /// Базовая цена продажи
         /// </summary>
         [Range(0, 10000000000)]
-        public double? ProductBaselinePCPrice { get; set; }
+        public double? PlanProductPCPrice { get; set; }
 
         /// <summary>
         /// Значение планового аплифта
@@ -80,14 +96,13 @@ namespace Module.Persist.TPM.Model.TPM
         /// <summary>
         /// Фактическое количество в штуках
         /// </summary>
-        [Range(0, 1000000000)]
         public int? ActualProductPCQty { get; set; }
 
         /// <summary>
         /// Фактическое количество в кейсах
         /// </summary>
         [Range(0, 10000000000)]
-        public double? ActualProductQty { get; set; }
+        public double? ActualProductCaseQty { get; set; }
 
         /// <summary>
         /// Единица измерения (штуки или кейсы)
@@ -97,7 +112,6 @@ namespace Module.Persist.TPM.Model.TPM
         /// <summary>
         /// Фактическая закупочная цена
         /// </summary>
-        [Range(0, 1000000000)]
         public double? ActualProductSellInPrice { get; set; }
 
         /// <summary>
@@ -108,7 +122,6 @@ namespace Module.Persist.TPM.Model.TPM
         /// <summary>
         /// Цена на полке
         /// </summary>
-        [Range(0, 1000000000)]
         public double? ActualProductShelfPrice { get; set; }
 
         /// <summary>
@@ -119,7 +132,6 @@ namespace Module.Persist.TPM.Model.TPM
         /// <summary>
         /// Общая сумма продажи
         /// </summary>
-        [Range(0, 1000000000)]
         public double? ActualProductPCLSV { get; set; }
 
         /// <summary>
@@ -150,37 +162,37 @@ namespace Module.Persist.TPM.Model.TPM
         /// <summary>
         /// Плановое изменение продаж в первую неделю после проведения промо
         /// </summary>
-        public double? PlanPostPromoEffectLSVW1 { get; set; }
+        public double? PlanProductPostPromoEffectLSVW1 { get; set; }
 
         /// <summary>
         /// Плановое изменение продаж во вторую неделю после проведения промо
         /// </summary>
-        public double? PlanPostPromoEffectLSVW2 { get; set; }
+        public double? PlanProductPostPromoEffectLSVW2 { get; set; }
 
         /// <summary>
         /// Плановое изменение продаж в первую и вторую недели после проведения промо
         /// </summary>
-        public double? PlanPostPromoEffectLSV { get; set; }
+        public double? PlanProductPostPromoEffectLSV { get; set; }
 
         /// <summary>
         /// Фактическое изменение продаж в первую неделю после проведения промо
         /// </summary>
-        public double? ActualPostPromoEffectLSVW1 { get; set; }
+        public double? ActualProductPostPromoEffectLSVW1 { get; set; }
 
         /// <summary>
         /// Фактическое изменение продаж во вторую неделю после проведения промо
         /// </summary>
-        public double? ActualPostPromoEffectLSVW2 { get; set; }
+        public double? ActualProductPostPromoEffectLSVW2 { get; set; }
 
         /// <summary>
         /// Фактическое изменение продаж в первую и вторую недели после проведения промо
         /// </summary>
-        public double? ActualPostPromoEffectLSV { get; set; }
+        public double? ActualProductPostPromoEffectLSV { get; set; }
 
         /// <summary>
         /// Планируемое увеличение продаж относительно плана (Qty) в штуках  
         /// </summary>
-        public double? PlanProductIncrementalQty { get; set; }
+        public double? PlanProductIncrementalCaseQty { get; set; }
 
         /// <summary>
         /// Значение планового аплифта в процентах
@@ -195,18 +207,43 @@ namespace Module.Persist.TPM.Model.TPM
         /// <summary>
         /// 
         /// </summary>
+        public double? ActualProductPostPromoEffectQtyW1 { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public double? ActualProductPostPromoEffectQtyW2 { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public double? ActualProductPostPromoEffectQty { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public double? PlanProductPostPromoEffectQtyW1 { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public double? PlanProductPostPromoEffectQtyW2 { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
         public double? PlanProductPostPromoEffectQty { get; set; }
 
-            
+
         /// <summary>
         /// Имя продукта на EN
         /// </summary>
         public string ProductEN { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public double? ActualProductLSVByCompensation { get; set; }
 
         public virtual Promo Promo { get; set; }
         public virtual Product Product  { get; set; }

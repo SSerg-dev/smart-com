@@ -210,4 +210,18 @@
 
     // Promo Activity Details Info
     'tpm.promoactivitydetailsinfo.PromoActivityDetailsInfo',
+
+    'tpm.assortmentmatrix.AssortmentMatrix',
+    'tpm.assortmentmatrix.DeletedAssortmentMatrix',
+    'App.controller.tpm.assortmentmatrix.HistoricalAssortmentMatrix',
+
+    'tpm.incrementalpromo.IncrementalPromo',
+    'tpm.incrementalpromo.DeletedIncrementalPromo',
+    'tpm.incrementalpromo.HistoricalIncrementalPromo',
+
+    // Calculating info log
+    'tpm.promocalculating.CalculatingInfoLog',
+
+    //Actual LSV
+    'tpm.actualLSV.ActualLSV',
 ]);

@@ -138,7 +138,7 @@
                 flex: 1
             }, {
                 xtype: 'text',
-                text: 'Plan Cost TE: ',
+                text: 'Plan Cost TE Total: ',
                 style: {
                     "font-weight": "700",
                     "color": "#798388"
@@ -179,7 +179,7 @@
                 flex: 1
             }, {
                 xtype: 'text',
-                text: 'Actual Cost TE: ',
+                text: 'Actual Cost TE Total: ',
                 style: {
                     "font-weight": "700",
                     "color": "#798388"

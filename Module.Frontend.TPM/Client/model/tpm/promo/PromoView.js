@@ -10,7 +10,7 @@
         { name: 'BrandTechName', type: 'string', mapping: 'BrandTechName', defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'BrandTech', hidden: false, isDefault: true },
         { name: 'EventName', type: 'string', useNull: true, hidden: false, isDefault: true },
         { name: 'MarsMechanicName', type: 'string', useNull: true, hidden: false, isDefault: true },
-        { name: 'MarsMechanicDiscount', type: 'int', hidden: false, isDefault: false },
+        { name: 'MarsMechanicDiscount', type: 'float', hidden: false, isDefault: false },
         { name: 'MarsMechanicTypeName', type: 'string', useNull: true, hidden: false, isDefault: false },
         { name: 'ColorSystemName', type: 'string', useNull: true, hidden: true, isDefault: false },
         { name: 'PromoStatusColor', type: 'string', hidden: true, isDefault: false },

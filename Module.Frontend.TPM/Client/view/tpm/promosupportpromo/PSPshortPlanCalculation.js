@@ -44,7 +44,14 @@
                 dataIndex: 'BudgetSubItemName'
             }, {
                 xtype: 'numbercolumn',
-				format: '0.00',
+				renderer: function (value) {
+                    if (value !== null && value !== undefined) {
+                        valueToDisplay = value / 1000000.0;
+                        return Ext.util.Format.number(valueToDisplay, '0.00');
+                    } else {
+                        return null;
+                    }
+                },
                 text: l10n.ns('tpm', 'PSPshortPlanCalculation').value('PlanCalculation'),
                 dataIndex: 'PlanCalculation'
             }]

@@ -20,7 +20,7 @@ namespace Module.Persist.TPM.Model.TPM
         public DateTimeOffset? StartDate { get; set; }
         public DateTimeOffset? EndDate { get; set; }
 
-        public short LVSpercent { get; set; }
+        public float LVSpercent { get; set; }
 
         public int ClientTreeId { get; set; }
         public System.Guid? BrandTechId { get; set; }

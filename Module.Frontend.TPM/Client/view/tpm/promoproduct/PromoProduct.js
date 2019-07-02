@@ -52,7 +52,45 @@
 
     dockedItems: [{
         xtype: 'custombigtoolbar',
-        dock: 'right'
+        dock: 'right',
+        items: [{
+            xtype: 'widthexpandbutton',
+            ui: 'fill-gray-button-toolbar',
+            text: l10n.ns('core', 'selectablePanelButtons').value('toolbarCollapse'),
+            glyph: 0xf13d,
+            glyph1: 0xf13e,
+            target: function () {
+                return this.up('toolbar');
+            },
+        }, {
+            itemId: 'createbutton',
+            action: 'Post',
+            glyph: 0xf415,
+            text: l10n.ns('core', 'crud').value('createButtonText'),
+            tooltip: l10n.ns('core', 'crud').value('createButtonText')
+        }, {
+            itemId: 'updatebutton',
+            action: 'Patch',
+            glyph: 0xf64f,
+            text: l10n.ns('core', 'crud').value('updateButtonText'),
+            tooltip: l10n.ns('core', 'crud').value('updateButtonText')
+        }, '-', {
+            itemId: 'extfilterbutton',
+            glyph: 0xf349,
+            text: l10n.ns('core', 'toptoolbar').value('filterButtonText'),
+            tooltip: l10n.ns('core', 'toptoolbar').value('filterButtonText')
+        }, '-', '->', '-', {
+            itemId: 'extfilterclearbutton',
+            ui: 'blue-button-toolbar',
+            disabled: true,
+            glyph: 0xf232,
+            text: l10n.ns('core', 'filter').value('filterEmptyStatus'),
+            tooltip: l10n.ns('core', 'filter').value('filterEmptyStatus'),
+            overCls: '',
+            style: {
+                'cursor': 'default'
+            }
+        }]
     }],
 
     items: [{
@@ -85,26 +123,13 @@
                 minWidth: 110
             },
             items: [{
-                text: l10n.ns('tpm', 'PromoProduct').value('EAN'),
-                dataIndex: 'EAN'
+                text: l10n.ns('tpm', 'PromoProduct').value('EAN_PC'),
+                dataIndex: 'EAN_PC'
             }, {
                 xtype: 'numbercolumn',
-				format: '0',
+                format: '0',
                 text: l10n.ns('tpm', 'PromoProduct').value('ActualProductPCQty'),
                 dataIndex: 'ActualProductPCQty'
-            }, {
-                xtype: 'numbercolumn',
-				format: '0.00',
-                text: l10n.ns('tpm', 'PromoProduct').value('ActualProductQty'),
-                dataIndex: 'ActualProductQty'
-            }, {
-                text: l10n.ns('tpm', 'PromoProduct').value('ActualProductUOM'),
-                dataIndex: 'ActualProductUOM'
-            }, {
-                xtype: 'numbercolumn',
-                format: '0.00',
-                text: l10n.ns('tpm', 'PromoProduct').value('ActualProductShelfPrice'),
-                dataIndex: 'ActualProductShelfPrice'
             }, {
                 xtype: 'numbercolumn',
                 format: '0.00',

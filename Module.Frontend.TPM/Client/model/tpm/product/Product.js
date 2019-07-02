@@ -5,7 +5,8 @@
     fields: [
         { name: 'Id', hidden: true },
         { name: 'ZREP', useNull: true, type: 'string', hidden: false, isDefault: true },
-        { name: 'EAN', useNull: true, type: 'string', hidden: false, isDefault: true },
+        { name: 'EAN_Case', useNull: true, type: 'string', hidden: false, isDefault: true },
+        { name: 'EAN_PC', useNull: true, type: 'string', hidden: false, isDefault: true },
         { name: 'ProductRU', useNull: true, type: 'string', hidden: false, isDefault: true },
         { name: 'ProductEN', useNull: true, type: 'string', hidden: false, isDefault: true },
         { name: 'BrandFlagAbbr', useNull: true, type: 'string', hidden: false, isDefault: true },

@@ -43,16 +43,20 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         description = "Calculate promo parameters (Promo was changed)";
                         nameHandler = "Module.Host.TPM.Handlers.CalculatePromoParametersHandler";
 
-                        if (HandlerDataHelper.GetIncomingArgument<bool>("NeedCalculatePlanMarketingTI", data, false))
-                        {
-                            promoIdsForBlock = BudgetsPromoCalculation.GetLinkedPromoId(promoId.Value, context);
-                            if (!promoIdsForBlock.Contains(promoId.Value))
-                                promoIdsForBlock.Add(promoId.Value);
-                        }
-                        else
-                        {
+                        promoIdsForBlock = BudgetsPromoCalculation.GetLinkedPromoId(promoId.Value, context);
+                        if (!promoIdsForBlock.Contains(promoId.Value))
                             promoIdsForBlock.Add(promoId.Value);
-                        }
+
+                        //if (HandlerDataHelper.GetIncomingArgument<bool>("NeedCalculatePlanMarketingTI", data, false))
+                        //{
+                        //    promoIdsForBlock = BudgetsPromoCalculation.GetLinkedPromoId(promoId.Value, context);
+                        //    if (!promoIdsForBlock.Contains(promoId.Value))
+                        //        promoIdsForBlock.Add(promoId.Value);
+                        //}
+                        //else
+                        //{
+                        //    promoIdsForBlock.Add(promoId.Value);
+                        //}
 
                         break;
 
@@ -62,9 +66,9 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                     case CalculationAction.Budgets:
                         // список ID подстатей/промо
-                        string promoSupportPromoIds = HandlerDataHelper.GetIncomingArgument<string>("PromoSupportPromoIds", data, false);
-                        bool calculatePlanCostTE = HandlerDataHelper.GetIncomingArgument<bool>("CalculatePlanCostTE", data, false);
-                        promoIdsForBlock = BudgetsPromoCalculation.GetLinkedPromoId(promoSupportPromoIds, calculatePlanCostTE, context);
+                        string promoSupportIds = HandlerDataHelper.GetIncomingArgument<string>("PromoSupportIds", data, false);
+                        string unlinkedPromoIds = HandlerDataHelper.GetIncomingArgument<string>("UnlinkedPromoIds", data, false);
+                        promoIdsForBlock = BudgetsPromoCalculation.GetLinkedPromoId(promoSupportIds, unlinkedPromoIds, context);
                         description = "Calculate promo budgets";
                         nameHandler = "Module.Host.TPM.Handlers.CalculateBudgetsHandler";
                         break;
@@ -104,9 +108,9 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
         private static void CreateHandler(Guid handlerId, string description, string nameHandler, HandlerData data, DatabaseContext context)
         {
-            Guid userId = HandlerDataHelper.GetIncomingArgument<Guid>("UserId", data, false);
-            Guid roleId = HandlerDataHelper.GetIncomingArgument<Guid>("RoleId", data, false);
-            
+            Guid? userId = HandlerDataHelper.GetIncomingArgument<Guid>("UserId", data, false);
+            Guid? roleId = HandlerDataHelper.GetIncomingArgument<Guid>("RoleId", data, false);
+
             LoopHandler handler = new LoopHandler()
             {
                 Id = handlerId,
@@ -118,8 +122,8 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 LastExecutionDate = null,
                 NextExecutionDate = null,
                 ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
-                UserId = userId,
-                RoleId = roleId
+                UserId = userId == Guid.Empty ? null : userId,
+                RoleId = roleId == Guid.Empty ? null : roleId
             };
 
             handler.SetParameterData(data);
@@ -270,7 +274,31 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     }
                 }
             }
-            catch {}
+            catch { }
+        }
+
+        /// <summary>
+        /// Разблокировать Промо
+        /// </summary>
+        /// <param name="promoId">ID промо</param>
+        public static void UnLockPromoForHandler(Guid handlerId)
+        {
+            try
+            {
+                using (DatabaseContext contextOutOfTransaction = new DatabaseContext())
+                {
+                    BlockedPromo[] blockedPromoes = contextOutOfTransaction.Set<BlockedPromo>().Where(n => n.HandlerId == handlerId && !n.Disabled).ToArray();
+
+                    foreach (BlockedPromo bp in blockedPromoes)
+                    {
+                        bp.Disabled = true;
+                        bp.DeletedDate = DateTime.Now;
+                    }
+
+                    contextOutOfTransaction.SaveChanges();
+                }
+            }
+            catch { }
         }
     }
 }

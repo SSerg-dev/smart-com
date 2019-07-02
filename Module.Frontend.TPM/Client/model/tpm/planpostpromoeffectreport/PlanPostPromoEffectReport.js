@@ -15,7 +15,8 @@
         { name: 'PlanPostPromoEffectQty', type: 'number', hidden: false, isDefault: true },
         { name: 'StartDate', type: 'date', hidden: false, isDefault: true },
         { name: 'EndDate', type: 'date', hidden: false, isDefault: true },
-        { name: 'Status', type: 'string', hidden: false, isDefault: true }
+        { name: 'Status', type: 'string', hidden: false, isDefault: true },
+        { name: 'InOut', useNull: true, type: 'bool', hidden: false, isDefault: true },
     ],
     proxy: {
         type: 'breeze',

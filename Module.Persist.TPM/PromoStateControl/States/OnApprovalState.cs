@@ -14,7 +14,7 @@ namespace Module.Persist.TPM.PromoStateControl
 
             private readonly string Name = "OnApproval";
 
-            private readonly List<string> Roles = new List<string> { "Administrator", "CustomerMarketing", "DemandFinance", "DemandPlanning", "FunctionalExpert", "KeyAccountManager" };
+            private readonly List<string> Roles = new List<string> { "Administrator", "CMManager", "CustomerMarketing", "FunctionalExpert", "KeyAccountManager", "DemandPlanning" };
 
             public OnApprovalState(PromoStateContext stateContext)
             {
@@ -41,30 +41,38 @@ namespace Module.Persist.TPM.PromoStateControl
                 return RoleStateUtil.GetMapForStatus(Name);
             }
 
-            public bool ChangeState(Promo promoModel, string userRole, out string massage)
+            public bool ChangeState(Promo promoModel, string userRole, out string message)
             {
-                massage = string.Empty;
+                message = string.Empty;
 
                 bool sendForApproval = false;
                 PromoStatus promoStatus;
 
+                Guid? stateIdVP = _stateContext.dbContext.Set<Mechanic>().FirstOrDefault(x => x.SystemName == "VP").Id;
+                Guid? stateIdTPR = _stateContext.dbContext.Set<Mechanic>().FirstOrDefault(x => x.SystemName == "TPR").Id;
+
+                bool isAvailable;
+                bool isAvailableCurrent = PromoStateUtil.CheckAccess(Roles, userRole);
+
                 // Условия для возврата
                 if ((_stateContext.Model.MarsMechanicDiscount < promoModel.MarsMechanicDiscount) ||
-                    (_stateContext.Model.MarsMechanic.SystemName == "VP" && promoModel.MarsMechanic.SystemName == "TPR"))
+                    (_stateContext.Model.MarsMechanicId == stateIdVP && promoModel.MarsMechanicId == stateIdTPR) ||
+                    (_stateContext.Model.ProductHierarchy != promoModel.ProductHierarchy) ||
+                    (_stateContext.Model.StartDate != promoModel.StartDate) || 
+                    (_stateContext.Model.EndDate != promoModel.EndDate))
                 {
                     promoStatus = _stateContext.dbContext.Set<PromoStatus>().First(n => n.SystemName == "DraftPublished");
                     promoModel.PromoStatusId = promoStatus.Id;
                     sendForApproval = true;
+                    isAvailable = isAvailableCurrent;
                 }
                 else
                 {
                     promoStatus = _stateContext.dbContext.Set<PromoStatus>().Find(promoModel.PromoStatusId);
+                    isAvailable = PromoStateUtil.CheckAccess(GetAvailableStates(), promoStatus.SystemName, userRole);
                 }
 
-                string statusName = promoStatus.SystemName;
-
-                bool isAvailable = PromoStateUtil.CheckAccess(GetAvailableStates(), statusName, userRole);
-                bool isAvailableCurrent = PromoStateUtil.CheckAccess(Roles, userRole);
+                string statusName = promoStatus.SystemName;                
 
                 if (isAvailable)
                 {
@@ -72,7 +80,7 @@ namespace Module.Persist.TPM.PromoStateControl
                     if (statusName == "DraftPublished")
                     {
                         promoModel.IsAutomaticallyApproved = false;
-                        promoModel.IsCustomerMarketingApproved = false;
+                        promoModel.IsCMManagerApproved = false;
                         promoModel.IsDemandPlanningApproved = false;
                         promoModel.IsDemandFinanceApproved = false;
                         _stateContext.Model = promoModel;
@@ -86,7 +94,7 @@ namespace Module.Persist.TPM.PromoStateControl
 
                             _stateContext.Model = promoDraftPublished;
                             promoModel.PromoStatusId = onApprovalStatus.Id;
-                            return _stateContext.ChangeState(promoModel, userRole, out massage);
+                            return _stateContext.ChangeState(promoModel, userRole, out message);
                         }
 
                         return true;
@@ -100,21 +108,39 @@ namespace Module.Persist.TPM.PromoStateControl
                         bool next = false;
                         switch (userRole)
                         {
-                            case "CustomerMarketing":
-                                promoModel.IsCustomerMarketingApproved = true;
+                            case "CMManager":
+                                promoModel.IsCMManagerApproved = true;
                                 break;
 
                             case "DemandPlanning":
-                                promoModel.IsDemandPlanningApproved = promoModel.IsCustomerMarketingApproved;
-                                // если промо прошло проверку на NoNego, но не прошло на 8 недель, то решает только DemandPlanning
-                                // и в этом случае IsCustomerMarketingApproved и IsDemandFinanceApproved = true
-                                next = promoModel.IsDemandFinanceApproved.HasValue && promoModel.IsDemandFinanceApproved.Value;  
+                                // т.к. только Demand Planning может заполнить Plan Promo Uplift и загрузить Baseline на клиента,
+                                // то CMManager может согласовать промо без Uplift и Baseline, а Demand Planning уже не сможет
+                                bool okBaselineLSV = promoModel.PlanPromoBaselineLSV.HasValue && promoModel.PlanPromoBaselineLSV > 0;
+                                bool okUpliftPercent = promoModel.PlanPromoUpliftPercent.HasValue && promoModel.PlanPromoUpliftPercent > 0;
+
+                                if (okBaselineLSV && okUpliftPercent)
+                                {
+                                    promoModel.IsDemandPlanningApproved = promoModel.IsCMManagerApproved;
+                                    // если промо прошло проверку на NoNego, но не прошло на 8 недель, то решает только DemandPlanning
+                                    // и в этом случае IsCMManagerApproved и IsDemandFinanceApproved = true
+                                    next = promoModel.IsDemandFinanceApproved.HasValue && promoModel.IsDemandFinanceApproved.Value;
+                                }
+                                else
+                                {
+                                    message = "";
+
+                                    if (!okBaselineLSV)
+                                        message += "The Plan Baseline LSV must not be empty or equal to zero. ";
+
+                                    if (!okUpliftPercent)
+                                        message += "The Plan Promo Uplift must not be empty or equal to zero.";
+                                }
                                 break;
 
                             case "DemandFinance":
-                                if (promoModel.IsCustomerMarketingApproved.HasValue && promoModel.IsDemandPlanningApproved.HasValue)
+                                if (promoModel.IsCMManagerApproved.HasValue && promoModel.IsDemandPlanningApproved.HasValue)
                                 {
-                                    promoModel.IsDemandFinanceApproved = promoModel.IsCustomerMarketingApproved.Value && promoModel.IsDemandPlanningApproved.Value;
+                                    promoModel.IsDemandFinanceApproved = promoModel.IsCMManagerApproved.Value && promoModel.IsDemandPlanningApproved.Value;
                                     next = promoModel.IsDemandFinanceApproved.Value;
                                 }
                                 break;
@@ -146,13 +172,13 @@ namespace Module.Persist.TPM.PromoStateControl
                 }
                 else
                 {
-                    massage = "Action is not available";
+                    message = "Action is not available";
 
                     return false;
                 }
             }
 
-            public bool ChangeState(Promo promoModel, PromoStates promoState, string userRole, out string massage)
+            public bool ChangeState(Promo promoModel, PromoStates promoState, string userRole, out string message)
             {
                 throw new NotImplementedException();
             }

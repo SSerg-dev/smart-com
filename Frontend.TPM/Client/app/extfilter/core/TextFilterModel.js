@@ -14,6 +14,7 @@
         'IsNull': breeze.FilterQueryOp.Equals.operator,
         'NotNull': breeze.FilterQueryOp.NotEquals.operator,
         'Contains': breeze.FilterQueryOp.Contains.operator,
+        'NotContains': 'notcontains',
         'StartsWith': breeze.FilterQueryOp.StartsWith.operator,
         'EndsWith': breeze.FilterQueryOp.EndsWith.operator
     },

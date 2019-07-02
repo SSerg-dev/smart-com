@@ -8,6 +8,7 @@
         OnApproval,
         Approved,
         Planned,
+        Cancelled,
         Started,
         Finished,
         Closed,

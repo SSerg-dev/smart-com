@@ -1,5 +1,6 @@
 ﻿using Looper.Core;
 using Looper.Parameters;
+using Module.Persist.TPM;
 using Module.Persist.TPM.CalculatePromoParametersModule;
 using Module.Persist.TPM.Model.TPM;
 using Persist;
@@ -16,6 +17,7 @@ namespace Module.Host.TPM.Handlers
 {
     public class CalculateActualParamatersHandler : BaseHandler
     {
+        public string logLine = "";
         public override void Action(HandlerInfo info, ExecuteData data)
         {
             ILogWriter handlerLogger = null;
@@ -23,7 +25,8 @@ namespace Module.Host.TPM.Handlers
             sw.Start();
 
             handlerLogger = new FileLogWriter(info.HandlerId.ToString());
-            handlerLogger.Write(true, String.Format("The calculation of the actual parameters began at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now));
+            logLine = String.Format("The calculation of the actual parameters began at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now);
+            handlerLogger.Write(true, logLine, "Message");
             handlerLogger.Write(true, "");
 
             Guid promoId = HandlerDataHelper.GetIncomingArgument<Guid>("PromoId", info.Data, false);
@@ -31,36 +34,42 @@ namespace Module.Host.TPM.Handlers
             try
             {
                 using (DatabaseContext context = new DatabaseContext())
-                {                    
+                {
                     Promo promo = context.Set<Promo>().FirstOrDefault(n => n.Id == promoId && !n.Disabled);
 
                     if (promo != null)
                     {
                         // если есть ошибки, они перечисленны через ;
                         string errorString = ActualProductParametersCalculation.CalculatePromoProductParameters(promo, context);
+                        // записываем ошибки если они есть
+                        if (errorString != null)
+                            WriteErrorsInLog(handlerLogger, errorString);
+
+                        // пересчет фактических бюджетов (из-за LSV)
+                        BudgetsPromoCalculation.CalculateBudgets(promo, false, true, handlerLogger, info.HandlerId, context);
 
                         ActualPromoParametersCalculation.ResetValues(promo, context);
-                        if (errorString == null)
-                            errorString = ActualPromoParametersCalculation.CalculatePromoParameters(promo, context);
-
+                        errorString = ActualPromoParametersCalculation.CalculatePromoParameters(promo, context);
                         // записываем ошибки если они есть
                         if (errorString != null)
                             WriteErrorsInLog(handlerLogger, errorString);
                     }
 
-                    CalculationTaskManager.UnLockPromo(promo.Id);
+                    //CalculationTaskManager.UnLockPromo(promo.Id);
+                    CalculationTaskManager.UnLockPromoForHandler(info.HandlerId);
                     context.SaveChanges();
                 }
             }
             catch (Exception e)
             {
-                handlerLogger.Write(true, e.ToString());
-                CalculationTaskManager.UnLockPromo(promoId);
+                handlerLogger.Write(true, e.ToString(), "Error");
+                CalculationTaskManager.UnLockPromoForHandler(info.HandlerId);
             }
 
             sw.Stop();
             handlerLogger.Write(true, "");
-            handlerLogger.Write(true, String.Format("The calculation of the actual parameters was completed at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", DateTimeOffset.Now, sw.Elapsed.TotalSeconds));
+            logLine = String.Format("The calculation of the actual parameters was completed at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", DateTimeOffset.Now, sw.Elapsed.TotalSeconds);
+            handlerLogger.Write(true, logLine, "Message");
         }
 
         /// <summary>

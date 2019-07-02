@@ -15,7 +15,7 @@ namespace Module.Persist.TPM.PromoStateControl
 
             private readonly string Name = "DraftPublished";
 
-            private readonly List<string> Roles = new List<string> { "Administrator", "CustomerMarketing", "DemandFinance", "DemandPlanning", "FunctionalExpert", "KeyAccountManager" };
+            private readonly List<string> Roles = new List<string> { "Administrator", "CMManager", "CustomerMarketing", "DemandFinance", "DemandPlanning", "FunctionalExpert", "KeyAccountManager" };
 
             public DraftPublishedState(PromoStateContext stateContext)
             {
@@ -91,9 +91,9 @@ namespace Module.Persist.TPM.PromoStateControl
                 return true;
             }
 
-            public bool ChangeState(Promo promoModel, string userRole, out string massage)
+            public bool ChangeState(Promo promoModel, string userRole, out string message)
             {
-                massage = string.Empty;
+                message = string.Empty;
 
                 PromoStatus promoStatus = _stateContext.dbContext.Set<PromoStatus>().Find(promoModel.PromoStatusId);
                 string statusName = promoStatus.SystemName;
@@ -118,9 +118,11 @@ namespace Module.Persist.TPM.PromoStateControl
                         bool isNoNego = CheckNoNego(promoModel);
                         if (isNoNego)
                         {
-                            TimeSpan difference = (DateTimeOffset)promoModel.StartDate - DateTimeOffset.Now;
+                            TimeSpan difference = (DateTimeOffset)promoModel.DispatchesStart - DateTimeOffset.Now;
 
-                            if (difference.Days >= 56 || userRole == UserRoles.FunctionalExpert.ToString())
+                            if ((difference.Days >= 56 || userRole == UserRoles.FunctionalExpert.ToString())
+                                    && promoModel.PlanPromoBaselineLSV.HasValue && promoModel.PlanPromoBaselineLSV > 0
+                                    && promoModel.PlanPromoUpliftPercent.HasValue && promoModel.PlanPromoUpliftPercent > 0)
                             {
                                 PromoStatus approvedStatus = _stateContext.dbContext.Set<PromoStatus>().FirstOrDefault(e => e.SystemName == "Approved");
                                 promoModel.PromoStatusId = approvedStatus.Id;
@@ -133,7 +135,7 @@ namespace Module.Persist.TPM.PromoStateControl
                             }
                             else
                             {
-                                promoModel.IsCustomerMarketingApproved = true;
+                                promoModel.IsCMManagerApproved = true;
                                 promoModel.IsDemandFinanceApproved = true;
                                 _stateContext.Model = promoModel;
                                 _stateContext.State = _stateContext._onApprovalState;
@@ -159,15 +161,53 @@ namespace Module.Persist.TPM.PromoStateControl
                 }
                 else
                 {
-                    massage = "Action is not available";
+                    message = "Action is not available";
 
                     return false;
                 }
             }
 
-            public bool ChangeState(Promo promoModel, PromoStates promoState, string userRole, out string massage)
+            public bool ChangeState(Promo promoModel, PromoStates promoState, string userRole, out string message)
             {
-                throw new NotImplementedException();
+                bool isAvailable=false;
+                message = string.Empty;
+
+                if (userRole == "System")
+                {
+                    isAvailable = true;
+                }
+                else
+                {
+                    isAvailable = PromoStateUtil.CheckAccess(GetAvailableStates(), promoState.ToString(), userRole);
+                }
+
+                if (isAvailable)
+                {
+                    // Go to: DraftState
+                    if (promoState == PromoStates.Draft)
+                    {
+                        Guid startedPromoStatusId = _stateContext.dbContext.Set<PromoStatus>().Where(x => x.SystemName == "Draft" && !x.Disabled).FirstOrDefault().Id;
+
+                        _stateContext.Model.PromoStatusId = startedPromoStatusId;
+                        _stateContext.State = _stateContext._draftState;
+
+                        return true;
+                    }
+                    // Go to: DraftPublishedState
+                    else
+                    {
+                        _stateContext.Model = promoModel;
+                        _stateContext.State = _stateContext._draftPublishedState;
+
+                        return true;
+                    }
+                }
+                else
+                {
+                    message = "Action is not available";
+
+                    return false;
+                }
             }
         }
     }

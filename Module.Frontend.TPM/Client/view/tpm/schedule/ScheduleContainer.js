@@ -21,9 +21,14 @@
                 if (isCollapsed) {
                     target.down('#createbutton').setUI('create-promo-btn-toolbar-expanded');
                     target.down('#createbutton').setText(l10n.ns('tpm', 'Schedule').value('CreateExpanded'));
+                   // target.down('#createinoutbutton').setUI('create-promo-btn-toolbar-expanded');
+                   // target.down('#createinoutbutton').setText(l10n.ns('tpm', 'Schedule').value('CreateInOutExpanded'));
+
                 } else {
                     target.down('#createbutton').setUI('create-promo-btn-toolbar');
-                    target.down('#createbutton').setText(l10n.ns('tpm', 'Schedule').value('CreateCollapsed'))
+                    target.down('#createbutton').setText(l10n.ns('tpm', 'Schedule').value('CreateCollapsed'));
+                   // target.down('#createinoutbutton').setUI('create-promo-btn-toolbar');
+                   // target.down('#createinoutbutton').setText(l10n.ns('tpm', 'Schedule').value('CreateInOutCollapsed'));
                 }
                 target.isExpanded = !target.isExpanded;
             },
@@ -34,7 +39,16 @@
             text: l10n.ns('tpm', 'Schedule').value('CreateCollapsed'),
             tooltip: l10n.ns('tpm', 'Schedule').value('CreateCollapsed'),
             ui: 'create-promo-btn'
-        },
+            },
+        //кнопка 'Create Promo InOut' временно скрыта
+            //{
+            //    itemId: 'createinoutbutton',
+            //    action: 'Post',
+            //    glyph: 0xf0f3,
+            //    text: l10n.ns('tpm', 'Schedule').value('CreateInOutCollapsed'),
+            //    tooltip: l10n.ns('tpm', 'Schedule').value('CreateInOutCollapsed'),
+            //    ui: 'create-promo-btn'
+            //},
         //{
         //    xtype: 'schedulemultiselectbutton',
         //    text: l10n.ns('tpm', 'Schedule').value('Multiselectbutton'),
@@ -106,7 +120,7 @@
         itemId: 'ExportYearSchedule'
     }, {
         itemgroup: 'shiftpresetbutton',
-        text: l10n.ns('tpm', 'Schedule').value('Week'),
+        text: l10n.ns('tpm', 'Schedule').value('Month'),
         presetId: 'marsdayWeek',
         active: false
     }, {
@@ -116,7 +130,7 @@
         active: true
     }, {
         itemgroup: 'shiftpresetbutton',
-        text: l10n.ns('tpm', 'Schedule').value('Quarter'),
+        text: l10n.ns('tpm', 'Schedule').value('Year'),
         presetId: 'marsmonthQuarter',
         active: false
     }, {

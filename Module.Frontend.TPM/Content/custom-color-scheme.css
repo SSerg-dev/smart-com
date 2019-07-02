@@ -238,7 +238,7 @@
 }
 
 .x-panel-header-selectable-panel-framed-top {
-    background-color: #0066A6;
+    background-color: #3f6895;
 }
 
 .x-panel-selectable-panel-framed .x-btn-white-button-small .x-btn-glyph,
@@ -255,6 +255,17 @@ x-panel-header-text-container-blue-panel {
     color: gray;
 }
 
+.roles-header .x-header-text {
+    color: #42a5f5;
+    font-weight: bold;
+}
+
+.x-btn-selected-role-item-button-small {
+    border: 1px solid #42a5f5;
+}
+.x-btn-role-item-button-small {
+    border: 1px solid transparent;
+}
 /*toolbar buttons Border*/
 .x-tab-system-panel-tab-button,
 .x-tab-bar-strip-system-panel {
@@ -792,6 +803,10 @@ pre.code {
     background-color: #953333;
 }
 
+.errorinside {
+    background-color: #b53333 !important;
+}
+
 .custom-bottom-panel {
     background-color: #eceff1;
 }
@@ -804,7 +819,7 @@ pre.code {
     box-shadow: none !important;
 }
 .custom-additional-button .x-btn-inner {
-    padding-left: 10px;
+    /*padding-left: 10px;*/
 }
 .custom-additional-button .x-btn-inner, .custom-additional-button .x-btn-glyph {
     color: white;
@@ -1495,6 +1510,10 @@ tr[data-recordindex="0"] .container-icon {
     right: 5px;
 }
 
+.scrollpanel.scrollSettingsClientTree .jspVerticalBar {
+    right: 10px;
+}
+
     .scrollpanel .jspVerticalBar .jspTrack {
         width: 8px;
     }
@@ -1502,6 +1521,10 @@ tr[data-recordindex="0"] .container-icon {
     .scrollpanel .jspVerticalBar .jspCap {
         height: 10px;
     }
+
+.scrollpanel .x-panel-body {
+    -ms-overflow-y: hidden !important;
+}
 
 .scrollpanel .jspHorizontalBar {
     background-color: transparent !important;
@@ -1843,17 +1866,45 @@ tr[data-recordindex="0"] .container-icon {
     position: absolute;
 }
 
-    .hScrollTree .jspDrag {
-        height: 6px !important;
-    }
+.hScrollTree .jspDrag {
+    height: 6px !important;
+}
 
-    .hScrollTree .jspHorizontalBar {
-        left: 10px;
-    }
+.hScrollTree .jspHorizontalBar {
+    left: 10px;
+}
 
-        .hScrollTree .jspHorizontalBar .jspCap {
-            width: 15px;
-        }
+.hScrollTree .jspHorizontalBar .jspCap {
+    width: 15px;
+}
+
+.hScrollTree {
+    height: 16px;
+    left: 0px;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    overflow-y: hidden;
+    position: absolute;
+}
+
+/* лечим горизонтальный скролл для обычных панелей */
+
+.hScrollPanel .jspDrag {
+    height: 6px !important;
+}
+
+.hScrollPanel .jspHorizontalBar {
+    left: 0px;
+}
+ 
+.hScrollPanel .jspHorizontalBar .jspCap {
+    width: 1px;
+}
+
+.hScrollPanel .jspHorizontalBar .jspCap.jspCapRight {
+    width: 10px;
+}
 
 .template-tree .x-tree-view table {
     width: initial !important;
@@ -1898,7 +1949,7 @@ tr[data-recordindex="0"] .container-icon {
 }
 
 .custom-promo-panel-advanced-search-filter {
-    margin: -10px 0 0 0 !important;
+    margin: -5px 0 0 0 !important;
 }
 
 .promo-textarea .x-form-item-label {
@@ -2510,7 +2561,13 @@ x-slider-inner:before {
 
 /*--------------Поля формы в режиме просмотра----------------------------*/
 .readOnlyField input {
+    pointer-events: none;
     background-color: #f5f5f5 !important;
+}
+
+.readOnlyTextArea textarea {
+    background-color: #f5f5f5 !important;
+    opacity: 0.6 !important;
 }
 
 .promo-calculation-activity-uplift-container {
@@ -2700,9 +2757,13 @@ x-slider-inner:before {
     height: 26px !important;
 }
 
-    .deletefile-button .x-btn-inner {
-        color: #3f6895;
-    }
+.deletefile-button .x-btn-inner {
+    color: #3f6895;
+}
+
+.promosupport-fieldset.x-form-invalid table.x-form-trigger-wrap {
+    border-color: #cf4c35 !important;
+}
 
 .promosupport-left-toolbar-button {
     border-radius: 0px;
@@ -2774,10 +2835,15 @@ x-slider-inner:before {
         color: #cccccc;
     }
 
-    /*лечим "лишний" пиксель в полях с подписью*/
-    .borderedField-with-lable .x-field-label-cell + .x-form-item-body {
-        border: 1px solid #ccc;
-    }
+.readOnlyFields .x-field.x-form-readonly,
+.promoform .x-field.x-form-readonly {
+	pointer-events: none;
+}
+
+/*лечим "лишний" пиксель в полях с подписью*/
+.borderedField-with-lable .x-field-label-cell + .x-form-item-body {
+    border: 1px solid #ccc;
+}
 .borderedField-with-lable .x-field-label-cell + .x-form-item-body table.x-form-trigger-wrap {
     border: none !important;
 }
@@ -2873,6 +2939,14 @@ x-slider-inner:before {
     background-color: #f5f5f5;
 }
 
+.promo-budgets-details-window .x-field.borderedField-with-lable {
+    pointer-events: none;
+}
+
+.promo-budgets-details-window .form-info-trigger-cell {
+    pointer-events: auto;
+}
+
 /*====================================================*/
 
 .promo-activity-details-window-field {
@@ -2898,6 +2972,23 @@ x-slider-inner:before {
 
 .promo-activity-details-window-field input {
     background-color: #f5f5f5;
+}
+
+.promo-activity-details-window .x-field.borderedField-with-lable,
+.promo-activity-details-window fieldset {
+    pointer-events: none;
+}
+
+.promo-activity-details-window .form-info-trigger-cell {
+    pointer-events: auto;
+}
+/*====================================================*/
+.promo-finance-details-window-field input {
+    background-color: #f5f5f5;
+}
+
+.promo-finance-details-window .x-field.borderedField-with-lable {
+    pointer-events: none;
 }
 
 /*====================================================*/
@@ -2958,6 +3049,19 @@ x-slider-inner:before {
             .promo-summary-panel .custom-event-button:hover .x-btn-glyph {
                 color: #3f6895 !important;
             }
+
+    .promo-summary-panel .summary-detail-btn {
+        background-color: inherit;
+        border: none;
+        padding: 0 3px 0 0;
+    }
+
+        .promo-summary-panel .summary-detail-btn .x-btn-inner {
+            color: #3f6895;
+            font-size: 11px;
+            font-weight: bold;
+            text-decoration: underline;
+        }
 
 @media screen and (min-device-width: 1600px) {
     .promo-summary-panel .uplift-result-label {
@@ -3029,6 +3133,14 @@ x-slider-inner:before {
         font-size: 20px;
         font-weight: bold;
         font-family: helvetica,arial,verdana,sans-serif;
+    }
+
+        .promo-summary-panel .promo-mechanic-label .x-btn-inner {
+            font-size: 14px;
+        }
+
+    .promo-summary-panel .promo-brandtech-button-empty .x-btn-inner {
+        text-decoration: none;
     }
 
     .promo-summary-panel .promo-dates-label {
@@ -3113,6 +3225,14 @@ x-slider-inner:before {
         font-family: helvetica,arial,verdana,sans-serif;
     }
 
+        .promo-summary-panel .promo-mechanic-label .x-btn-inner {
+            font-size: 10px;
+        }
+
+    .promo-summary-panel .promo-brandtech-button-empty .x-btn-inner {
+        text-decoration: none;
+    }
+
     .promo-summary-panel .promo-dates-label {
         margin: 3px;
         color: #494949;
@@ -3121,19 +3241,6 @@ x-slider-inner:before {
         font-family: helvetica,arial,verdana,sans-serif;
     }
 }
-
-    .promo-summary-panel .summary-detail-btn {
-        background-color: inherit;
-        border: none;
-        padding: 0 3px 0 0;
-    }
-
-        .promo-summary-panel .summary-detail-btn .x-btn-inner {
-            color: #3f6895;
-            font-size: 11px;
-            font-weight: bold;
-            text-decoration: underline;
-        }
 
 .summary-budget-tip {
     background-color: rgba(63, 104, 149, 0.5);
@@ -3154,4 +3261,191 @@ x-slider-inner:before {
 
 .hidden-row-grid {
     display: none;
+}
+
+/*-------------calculating promo log--------------*/
+.logtext {
+    padding: 2px 0px !important;
+    color: white;
+}
+
+.errorbutton:hover .x-btn-inner,
+.messagebutton:hover .x-btn-inner,
+.warningbutton:hover .x-btn-inner {
+    color: #8a98a7;
+    cursor: pointer;
+}
+
+.errorbutton,
+.messagebutton,
+.warningbutton {
+    background-color: #3f6895;
+    border: none;
+    height: 20px;
+    box-shadow: none !important;
+}
+
+    .errorbutton.x-btn-gray-button-toolbar-toolbar-small .x-btn-inner,
+    .messagebutton.x-btn-gray-button-toolbar-toolbar-small .x-btn-inner,
+    .warningbutton.x-btn-gray-button-toolbar-toolbar-small .x-btn-inner {
+        color: white;
+    }
+
+    .errorbutton .x-btn-glyph {
+        color: #ff9999;
+    }
+
+    .warningbutton .x-btn-glyph {
+        color: #ffcc66;
+    }
+
+    .messagebutton .x-btn-glyph {
+        color: #c5e6fc;
+    }
+
+    .errorbutton:hover,
+    .messagebutton:hover,
+    .warningbutton:hover {
+        background-color: #3f6895;
+        cursor: default;
+    }
+
+.messageclicked {
+    background-color: #5b8abc;
+    border: 1px white solid;
+}
+
+.messagenotclicked {
+    border: 1px transparent solid;
+}
+
+.completeField input {
+    background-color: #effdee !important;
+    color: #67b244 !important;
+}
+
+.inprogressField input {
+    background-color: #fff8d9 !important;
+    color: #F9A825 !important;
+}
+
+.emptyField-trigger {
+    background: none;
+    cursor: default;
+}
+
+.completeField-trigger {
+    background: url(images/complete-status.svg);
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    background-size: 20px;
+    cursor:default;
+}
+
+.completeField-trigger-cell {
+    background-color: #effdee !important;
+    border-radius: 0 !important;
+    width: 25px !important;
+}
+
+.inprogressField-trigger {
+    background: url(images/inprogress-status.svg);
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    background-size: 20px;
+}
+
+.inprogressField-trigger-cell {
+    background-color: #fff8d9 !important;
+    border-radius: 0 !important;
+    width: 25px !important;
+}
+
+.errorraw .x-grid-cell {
+    background-color: #ffebeb;
+}
+
+.warningraw .x-grid-cell {
+    background-color: #fff8d9;
+}
+
+.errorraw .x-form-item-input-row .x-form-item-body .x-form-display-field {
+    background-color: #ffebeb;
+}
+
+.warningraw .x-form-item-input-row .x-form-item-body .x-form-display-field {
+    background-color: #fff8d9;
+}
+
+.errorField input {
+    background-color: #fdf3f3 !important;
+    color: #bc4242 !important;
+}
+
+.errorField-trigger {
+    background: url(images/error-status.svg);
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    background-size: 20px;
+    cursor: default;
+}
+
+.errorField-trigger-cell {
+    background-color: #fdf3f3 !important;
+    border-radius: 0 !important;
+    width: 25px !important;
+}
+
+
+/*-------------END calculating promo log--------------*/
+
+.custom-promo-panel .x-form-field[name="ActualInstoreMechanicId"],
+.custom-promo-panel .x-form-field[name="ActualInstoreMechanicTypeId"],
+.custom-promo-panel .x-form-field[name="ActualInStoreDiscount"],
+.custom-promo-panel .x-form-field[name="ActualInStoreShelfPrice"],
+.custom-promo-panel .x-form-field[name="PlanInStoreShelfPrice"] {
+    height: 28px !important;
+}
+
+.custom-promo-panel .x-form-field[name="InvoiceNumber"] {
+    height: 30px !important;
+}
+
+.clienttree-hierarchydetailform-container .jspContainer .jspVerticalBar {
+    right: 0 !important;
+}
+
+.icon-list-png {
+    background-image: url(images/switch-glyph.png) !important;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position-y: center;
+    background-position-x: center;
+}
+
+.promoClientChooseBtnIcon {
+    background-size: contain;
+    height: 60px !important;    
+}
+
+.materialDesignIcons {
+    font-family: MaterialDesignIcons;
+}
+
+.empty-logo-clientTree {
+    padding: 30px !important;
+    opacity: 0.6;
+}
+
+.promobasic-choose-btn .x-btn-inner.x-btn-inner-center {
+    padding-top: 48px !important;
+}
+
+.promobasic-choose-btn-disabled {
+    opacity: 1.0 !important;
+    cursor: default !important;
+}
+
+.cursor-pointer {
+    cursor: pointer !important;
 }

@@ -7,6 +7,7 @@
         { name: 'ClientTreeId', hidden: true, isDefault: true },
         { name: 'BudgetSubItemId', hidden: true, isDefault: true },
         { name: 'PromoId', useNull: true, hidden: true, isDefault: false, defaultValue: null },
+        { name: 'Number', type: 'int', hidden: false, isDefault: true },
         { name: 'PlanQuantity', type: 'int', hidden: false, isDefault: true },
         { name: 'ActualQuantity', type: 'int', hidden: false, isDefault: true },
         { name: 'PlanCostTE', type: 'float', hidden: false, isDefault: true },
@@ -18,6 +19,8 @@
         { name: 'UserTimestamp', type: 'string', hidden: true, isDefault: false },
         { name: 'AttachFileName', type: 'string', hidden: true, isDefault: false },
         { name: 'BorderColor', type: 'string', hidden: true, isDefault: false },
+        { name: 'PlanProdCostPer1Item', type: 'float', hidden: false, isDefault: true },
+        { name: 'ActualProdCostPer1Item', type: 'float', hidden: false, isDefault: true },
         {
             name: 'ClientTreeFullPathName', type: 'string', mapping: 'ClientTree.FullPathName', tree: true,
             defaultFilterConfig: { valueField: 'FullPathName' }, breezeEntityType: 'ClientTree', hidden: false, isDefault: true

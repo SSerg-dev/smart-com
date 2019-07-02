@@ -10,7 +10,9 @@
 
     defaults: {
         ui: 'gray-button-toolbar',
-        padding: '5 0 5 10',
+        padding: '5 5 5 5',
+        margin: { right: 0 },
+        margin: { left: 0 },
         textAlign: 'left'
     },
 
@@ -30,10 +32,11 @@
         glyph: 0xf262,
         text: l10n.ns('tpm', 'customtoptoolbar').value('showLog'),
         cls: 'custom-additional-button',
-        hidden: true,
-        padding: '5 0 5 5',
+        hidden: false,
+        disabled: true,
+        //padding: '5 0 5 5',
         height: 27,
-        width: 100
+        //width: 100
     },
     // ------------------------------
     {
@@ -44,6 +47,6 @@
         cls: 'custom-additional-button',
         hidden: false,
         height: 27,
-        width: 100
+        //width: 100
     }]
 });

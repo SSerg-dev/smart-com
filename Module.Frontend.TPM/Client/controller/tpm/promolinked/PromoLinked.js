@@ -227,7 +227,7 @@
         }  
 
         prefilter.rules.push({
-            operation: "Contains",
+            operation: "Equals",
             property: "ClientHierarchy",
             value: client
         });

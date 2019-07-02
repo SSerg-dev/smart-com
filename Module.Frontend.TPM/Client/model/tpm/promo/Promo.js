@@ -21,6 +21,7 @@
         { name: 'EventId', useNull: true, hidden: true, isDefault: false, defaultValue: null },
         { name: 'CreatorId', useNull: true, hidden: true, isDefault: false, defaultValue: null },
         { name: 'ClientTreeId', useNull: true, hidden: true, isDefault: false, defaultValue: null },
+        { name: 'ClientTreeKeyId', useNull: true, hidden: true, isDefault: false, defaultValue: null },
         //{ name: 'ProductTreeId', useNull: true, hidden: true, isDefault: false, defaultValue: null },
         { name: 'BaseClientTreeIds', useNull: true, hidden: true, isDefault: false, defaultValue: null },
 
@@ -32,7 +33,7 @@
         //Дата последнего вхождения в статус Approved
         { name: 'LastApprovedDate', type: 'date', hidden: true, isDefault: true },
         { name: 'IsAutomaticallyApproved', type: "boolean", useNull: true, hidden: true, isDefault: false },
-        { name: 'IsCustomerMarketingApproved', type: "boolean", useNull: true, hidden: true, isDefault: false },
+        { name: 'IsCMManagerApproved', type: "boolean", useNull: true, hidden: true, isDefault: false },
         { name: 'IsDemandPlanningApproved', type: "boolean", useNull: true, hidden: true, isDefault: false },
         { name: 'IsDemandFinanceApproved', type: "boolean", useNull: true, hidden: true, isDefault: false },
 
@@ -63,8 +64,8 @@
 
         { name: 'ProductHierarchy', type: 'string', hidden: false, isDefault: false },
         { name: 'MechanicComment', type: 'string', hidden: false, isDefault: false },
-        { name: 'MarsMechanicDiscount', type: 'int', hidden: false, isDefault: false },
-        { name: 'PlanInstoreMechanicDiscount', type: 'int', hidden: false, isDefault: false },
+        { name: 'MarsMechanicDiscount', type: 'float', hidden: false, isDefault: false },
+        { name: 'PlanInstoreMechanicDiscount', type: 'float', hidden: false, isDefault: false },
         { name: 'StartDate', useNull: true, type: 'date', hidden: false, isDefault: false },
         { name: 'EndDate', useNull: true, type: 'date', hidden: false, isDefault: false },
         { name: 'DispatchesStart', useNull: true, type: 'date', hidden: false, isDefault: false },
@@ -86,10 +87,10 @@
         { name: 'PlanPromoUpliftPercent', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'PlanPromoIncrementalLSV', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'PlanPromoLSV', useNull: true, type: 'float', hidden: false, isDefault: false },
-        { name: 'PlanPostPromoEffect', useNull: true, type: 'float', hidden: false, isDefault: false },
-        { name: 'PlanPostPromoEffectW1', useNull: true, type: 'float', hidden: false, isDefault: false },
-        { name: 'PlanPostPromoEffectW2', useNull: true, type: 'float', hidden: false, isDefault: false },
-        { name: 'PlanPromoROIPercent', useNull: true, type: 'int', hidden: false, isDefault: false },
+        { name: 'PlanPromoPostPromoEffectLSV', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'PlanPromoPostPromoEffectLSVW1', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'PlanPromoPostPromoEffectLSVW2', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'PlanPromoROIPercent', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'PlanPromoIncrementalNSV', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'PlanPromoNetIncrementalNSV', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'PlanPromoIncrementalMAC', useNull: true, type: 'float', hidden: false, isDefault: false },
@@ -114,11 +115,12 @@
         { name: 'PlanPromoNetIncrementalMAC', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'PlanPromoIncrementalEarnings', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'PlanPromoNetIncrementalEarnings', useNull: true, type: 'float', hidden: false, isDefault: false },
-        { name: 'PlanPromoROIPercent', useNull: true, type: 'int', hidden: false, isDefault: false },
-        { name: 'PlanPromoNetUpliftPercent', useNull: true, type: 'int', hidden: false, isDefault: false },
+        { name: 'PlanPromoNetROIPercent', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'PlanPromoNetUpliftPercent', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'ActualPromoBaselineLSV', useNull: true, type: 'float', hidden: false, isDefault: false },
-        { name: 'ActualInStoreDiscount', useNull: true, type: 'int', hidden: false, isDefault: false },
+        { name: 'ActualInStoreDiscount', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'ActualInStoreShelfPrice', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'PlanInStoreShelfPrice', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'ActualPromoIncrementalBaseTI', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'ActualPromoIncrementalCOGS', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'ActualPromoTotalCost', useNull: true, type: 'float', hidden: false, isDefault: false },
@@ -127,8 +129,8 @@
         { name: 'ActualPromoNetIncrementalMAC', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'ActualPromoIncrementalEarnings', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'ActualPromoNetIncrementalEarnings', useNull: true, type: 'float', hidden: false, isDefault: false },
-        { name: 'ActualPromoNetROIPercent', useNull: true, type: 'int', hidden: false, isDefault: false },
-        { name: 'ActualPromoNetUpliftPercent', useNull: true, type: 'int', hidden: false, isDefault: false },
+        { name: 'ActualPromoNetROIPercent', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'ActualPromoNetUpliftPercent', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'PlanPromoBaselineBaseTI', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'PlanPromoBaseTI', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'PlanPromoNetNSV', useNull: true, type: 'float', hidden: false, isDefault: false },
@@ -145,17 +147,15 @@
         { name: 'ActualPromoCost', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'ActualPromoUpliftPercent', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'ActualPromoIncrementalLSV', useNull: true, type: 'float', hidden: false, isDefault: false },
-        { name: 'ActualPromoLSV', useNull: true, type: 'float', hidden: false, isDefault: false },
-        { name: 'FactPostPromoEffect', useNull: true, type: 'int', hidden: false, isDefault: false },
-        { name: 'FactPostPromoEffectW1', useNull: true, type: 'float', hidden: false, isDefault: false },
-        { name: 'FactPostPromoEffectW2', useNull: true, type: 'float', hidden: false, isDefault: false },
-        { name: 'ActualPromoROIPercent', useNull: true, type: 'int', hidden: false, isDefault: false },
+        { name: 'ActualPromoLSV', useNull: true, type: 'float', hidden: false, isDefault: false, defaultValue: 0 },
+        { name: 'ActualPromoLSVByCompensation', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'ActualPromoPostPromoEffectLSV', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'ActualPromoPostPromoEffectLSVW1', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'ActualPromoPostPromoEffectLSVW2', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'ActualPromoROIPercent', useNull: true, type: 'double', hidden: false, isDefault: false },
         { name: 'ActualPromoIncrementalNSV', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'ActualPromoNetIncrementalNSV', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'ActualPromoIncrementalMAC', useNull: true, type: 'float', hidden: false, isDefault: false },
-
-        { name: 'ActualInStoreMechanicDiscount', type: 'int', hidden: false, isDefault: false },
-
         { name: 'PromoStatusSystemName', type: 'string', mapping: 'PromoStatus.SystemName', defaultFilterConfig: { valueField: 'SystemName' }, breezeEntityType: 'PromoStatus', hidden: true, isDefault: false },
         { name: 'PromoStatusColor', type: 'string', mapping: 'PromoStatus.Color', defaultFilterConfig: { valueField: 'Color' }, breezeEntityType: 'PromoStatus', hidden: true, isDefault: false },
         { name: 'MarsMechanicTypeName', type: 'string', mapping: 'MarsMechanicType.Name', defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'MechanicType', useNull: true, hidden: false, isDefault: false },
@@ -178,10 +178,37 @@
         { name: "ResourceId", hidden: true },
 
         // Для записи выбранных продуктов (из-за множественного выбора subrange)
-        { name: 'ProductTreeObjectIds', type: 'string', hidden: true },
+        { name: 'ProductTreeObjectIds', type: 'string', hidden: true, useNull: true },
 
         // Показывает, производится ли расчет по данному промо
         { name: 'Calculating', type: "boolean", useNull: true, hidden: true, isDefault: false },
+        //
+        { name: 'PlanPromoNetIncrementalBaseTI', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'PlanPromoNetIncrementalCOGS', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'PlanPromoNetBaseTI', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'PlanPromoNSV', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'ActualPromoNetIncrementalBaseTI', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'ActualPromoNetIncrementalCOGS', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'ActualPromoNetBaseTI', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'ActualPromoNSV', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'InOut', useNull: true, type: 'boolean', hidden: false, isDefault: false },
+
+
+        // поля по клиенту
+        { name: 'PromoClientName', type: 'string', mapping: 'ClientTree.Name', defaultFilterConfig: { valueField: 'Name' }, /*breezeEntityType: 'ClientTree',*/ hidden: false, isDefault: false },
+        { name: 'PromoClientObjectId', type: 'string', mapping: 'ClientTree.ObjectId', defaultFilterConfig: { valueField: 'ObjectId' }, /*breezeEntityType: 'ClientTree',*/ hidden: false, isDefault: false },
+        { name: 'PromoClientType', type: 'string', mapping: 'ClientTree.Type', defaultFilterConfig: { valueField: 'Type' }, /*breezeEntityType: 'ClientTree',*/ hidden: false, isDefault: false },
+        { name: 'PromoClientExecutionCode', type: 'string', mapping: 'ClientTree.ExecutionCode', defaultFilterConfig: { valueField: 'ExecutionCode' }, /*breezeEntityType: 'ClientTree',*/ hidden: false, isDefault: false },
+        { name: 'PromoClientDemandCode', type: 'string', mapping: 'ClientTree.DemandCode', defaultFilterConfig: { valueField: 'DemandCode' }, /*breezeEntityType: 'ClientTree',*/ hidden: false, isDefault: false },
+        { name: 'PromoClientShare', type: 'string', mapping: 'ClientTree.Share', defaultFilterConfig: { valueField: 'Share' }, /*breezeEntityType: 'ClientTree',*/ hidden: false, isDefault: false },
+        { name: 'PromoClientIsBaseClient', type: 'string', mapping: 'ClientTree.IsBaseClient', defaultFilterConfig: { valueField: 'IsBaseClient' }, /*breezeEntityType: 'ClientTree',*/ hidden: false, isDefault: false },
+        { name: 'PromoClientRetailTypeName', type: 'string', mapping: 'ClientTree.RetailTypeName', defaultFilterConfig: { valueField: 'RetailTypeName' }, /*breezeEntityType: 'ClientTree',*/ hidden: false, isDefault: false },
+        { name: 'PromoClientPPEW1', type: 'string', mapping: 'ClientTree.PostPromoEffectW1', defaultFilterConfig: { valueField: 'PostPromoEffectW1' }, /*breezeEntityType: 'ClientTree',*/ hidden: false, isDefault: false },
+        { name: 'PromoClientPPEW2', type: 'string', mapping: 'ClientTree.PostPromoEffectW2', defaultFilterConfig: { valueField: 'PostPromoEffectW2' }, /*breezeEntityType: 'ClientTree',*/ hidden: false, isDefault: false },
+
+        // привет ExtJS, Odata и Breeze за удобную работу с моделями
+        // на самом деле это объект в формате JSON
+        { name: 'PromoBasicProducts', type: 'string', persist: false}
     ],
     proxy: {
         type: 'breeze',

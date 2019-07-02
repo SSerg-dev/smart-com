@@ -4,9 +4,10 @@ using System;
 
 namespace Module.Persist.TPM.Model.History
 {
-    [AssociatedWith(typeof(Region))]
+    [AssociatedWith(typeof(PromoSupport))]
     public class HistoricalPromoSupport : BaseHistoricalEntity<System.Guid>
     {
+        public int Number { get; set; }
         public string ClientTreeFullPathName { get; set; }
         public string BudgetItemName { get; set; }
         public string BudgetSubItemName { get; set; }

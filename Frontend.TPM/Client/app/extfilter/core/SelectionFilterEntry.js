@@ -2,7 +2,7 @@
     extend: 'App.util.core.ObservableMap',
 
     typeOperationsMap: {
-        'string': ['Equals', 'NotEqual', 'In', 'IsNull', 'NotNull', 'Contains', 'StartsWith', 'EndsWith'],
+        'string': ['Equals', 'NotEqual', 'In', 'IsNull', 'NotNull', 'Contains', 'NotContains', 'StartsWith', 'EndsWith'],
         'int': ['Equals', 'NotEqual', 'GraterThan', 'GraterOrEqual', 'LessThan', 'LessOrEqual', 'Between', 'In', 'IsNull', 'NotNull'],
         'float': ['Equals', 'NotEqual', 'GraterThan', 'GraterOrEqual', 'LessThan', 'LessOrEqual', 'Between', 'In', 'IsNull', 'NotNull'],
         'boolean': ['Equals', 'NotEqual', 'IsNull', 'NotNull'],
@@ -17,6 +17,7 @@
         'LessThan': ['atom', 'field'],
         'LessOrEqual': ['atom', 'field'],
         'Contains': ['atom', 'field'],
+        'NotContains': ['atom', 'field'],
         'StartsWith': ['atom', 'field'],
         'EndsWith': ['atom', 'field'],
         'In': ['list', 'searchlist'],

@@ -72,30 +72,116 @@
                 text: l10n.ns('tpm', 'PromoProduct').value('ProductEN'),
                 dataIndex: 'ProductEN',
             }, {
+                xtype: 'numbercolumn',
                 text: l10n.ns('tpm', 'PromoProduct').value('PlanProductBaselineLSV'),
                 dataIndex: 'PlanProductBaselineLSV',
-                hidden: true
+                hidden: true,
+                renderer: function (value) {
+                    if (value !== null && value !== undefined) {
+                        valueToDisplay = value / 1000000.0;
+                        return Ext.util.Format.number(valueToDisplay, '0.00');
+                    } else {
+                        return null;
+                    }
+                }
             }, {
-                text: l10n.ns('tpm', 'PromoProduct').value('PlanProductIncrementalQty'),
-                dataIndex: 'PlanProductIncrementalQty',
-                hidden: true
+                xtype: 'numbercolumn',
+                text: l10n.ns('tpm', 'PromoProduct').value('ActualProductBaselineLSV'),
+                dataIndex: 'ActualProductBaselineLSV',
+                hidden: true,
+                renderer: function (value) {
+                    if (value !== null && value !== undefined) {
+                        valueToDisplay = value / 1000000.0;
+                        return Ext.util.Format.number(valueToDisplay, '0.00');
+                    } else {
+                        return null;
+                    }
+                }
+            }, {
+                text: l10n.ns('tpm', 'PromoProduct').value('PlanProductIncrementalLSV'),
+                dataIndex: 'PlanProductIncrementalLSV',
+                hidden: true,
+                renderer: function (value) {
+                    if (value !== null && value !== undefined) {
+                        valueToDisplay = value / 1000000.0;
+                        return Ext.util.Format.number(valueToDisplay, '0.00');
+                    } else {
+                        return null;
+                    }
+                }
+            }, {
+                text: l10n.ns('tpm', 'PromoProduct').value('ActualProductIncrementalLSV'),
+                dataIndex: 'ActualProductIncrementalLSV',
+                hidden: true,
+                renderer: function (value) {
+                    if (value !== null && value !== undefined) {
+                        valueToDisplay = value / 1000000.0;
+                        return Ext.util.Format.number(valueToDisplay, '0.00');
+                    } else {
+                        return null;
+                    }
+                }
             }, {
                 text: l10n.ns('tpm', 'PromoProduct').value('PlanProductLSV'),
                 dataIndex: 'PlanProductLSV',
-                hidden: true
+                hidden: true,
+                renderer: function (value) {
+                    if (value !== null && value !== undefined) {
+                        valueToDisplay = value / 1000000.0;
+                        return Ext.util.Format.number(valueToDisplay, '0.00');
+                    } else {
+                        return null;
+                    }
+                }
             }, {
-                text: l10n.ns('tpm', 'PromoProduct').value('PlanProductPostPromoEffectQty'),
-                dataIndex: 'PlanProductPostPromoEffectQty',
-                hidden: true
+                text: l10n.ns('tpm', 'PromoProduct').value('PlanProductPostPromoEffectLSV'),
+                dataIndex: 'PlanProductPostPromoEffectLSV',
+                hidden: true,
+                renderer: function (value) {
+                    if (value !== null && value !== undefined) {
+                        valueToDisplay = value / 1000000.0;
+                        return Ext.util.Format.number(valueToDisplay, '0.00');
+                    } else {
+                        return null;
+                    }
+                }
             //
             }, {
                 text: l10n.ns('tpm', 'PromoProduct').value('ActualProductLSV'),
                 dataIndex: 'ActualProductLSV',
-                hidden: true
+                hidden: true,
+                renderer: function (value) {
+                    if (value !== null && value !== undefined) {
+                        valueToDisplay = value / 1000000.0;
+                        return Ext.util.Format.number(valueToDisplay, '0.00');
+                    } else {
+                        return null;
+                    }
+                }
             }, {
-                text: l10n.ns('tpm', 'PromoProduct').value('ActualProductPostPromoEffectQty'),
-                dataIndex: 'ActualProductPostPromoEffectQty',
-                hidden: true
+                text: l10n.ns('tpm', 'PromoProduct').value('ActualProductPostPromoEffectLSV'),
+                dataIndex: 'ActualProductPostPromoEffectLSV',
+                hidden: true,
+                renderer: function (value) {
+                    if (value !== null && value !== undefined) {
+                        valueToDisplay = value / 1000000.0;
+                        return Ext.util.Format.number(valueToDisplay, '0.00');
+                    } else {
+                        return null;
+                    }
+                }
+            }, {
+                text: l10n.ns('tpm', 'PromoProduct').value('ActualProductLSVByCompensation'),
+                dataIndex: 'ActualProductLSVByCompensation',
+                hidden: true,
+                renderer: function (value) {
+                    if (value !== null && value !== undefined) {
+                        valueToDisplay = value / 1000000.0;
+                        return Ext.util.Format.number(valueToDisplay, '0.00');
+                    } else {
+                        return null;
+                    }
+                }
             }]
         }
     }, {

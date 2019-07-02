@@ -33,21 +33,17 @@ using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using Module.Persist.TPM.Model.DTO;
 
-namespace Module.Frontend.TPM.Controllers
-{
+namespace Module.Frontend.TPM.Controllers {
 
-    public class COGSsController : EFContextController
-    {
+    public class COGSsController : EFContextController {
         private readonly IAuthorizationManager authorizationManager;
 
-        public COGSsController(IAuthorizationManager authorizationManager)
-        {
+        public COGSsController(IAuthorizationManager authorizationManager) {
             this.authorizationManager = authorizationManager;
         }
 
 
-        protected IQueryable<COGS> GetConstraintedQuery()
-        {
+        protected IQueryable<COGS> GetConstraintedQuery() {
 
             UserInfo user = authorizationManager.GetCurrentUser();
             string role = authorizationManager.GetCurrentRoleName();
@@ -62,41 +58,31 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
-        public SingleResult<COGS> GetCOGS([FromODataUri] System.Guid key)
-        {
+        public SingleResult<COGS> GetCOGS([FromODataUri] System.Guid key) {
             return SingleResult.Create(GetConstraintedQuery());
         }
 
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
-        public IQueryable<COGS> GetCOGSs()
-        {
+        public IQueryable<COGS> GetCOGSs() {
             return GetConstraintedQuery();
         }
 
 
         [ClaimsAuthorize]
-        public IHttpActionResult Put([FromODataUri] System.Guid key, Delta<COGS> patch)
-        {
+        public IHttpActionResult Put([FromODataUri] System.Guid key, Delta<COGS> patch) {
             var model = Context.Set<COGS>().Find(key);
-            if (model == null)
-            {
+            if (model == null) {
                 return NotFound();
             }
             patch.Put(model);
-            try
-            {
+            try {
                 Context.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!EntityExists(key))
-                {
+            } catch (DbUpdateConcurrencyException) {
+                if (!EntityExists(key)) {
                     return NotFound();
-                }
-                else
-                {
+                } else {
                     throw;
                 }
             }
@@ -104,29 +90,24 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Post(COGS model)
-        {
-            if (!ModelState.IsValid)
-            {
+        public IHttpActionResult Post(COGS model) {
+            if (!ModelState.IsValid) {
                 return BadRequest(ModelState);
             }
             var proxy = Context.Set<COGS>().Create<COGS>();
-            var result = (COGS)Mapper.Map(model, proxy, typeof(COGS), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+            var result = (COGS) Mapper.Map(model, proxy, typeof(COGS), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
 
             //Проверка пересечения по времени на клиенте
-            if (!DateCheck(model)) {
+            if (!DateCheck(result)) {
                 string msg = "There can not be two COGS of client and Brand Tech  in some Time";
                 return InternalServerError(new Exception(msg)); //Json(new { success = false, message = msg });
             }
 
             Context.Set<COGS>().Add(result);
 
-            try
-            {
+            try {
                 Context.SaveChanges();
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 return GetErorrRequest(e);
             }
 
@@ -135,15 +116,14 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] System.Guid key, Delta<COGS> patch)
-        {
-            try
-            {
+        public IHttpActionResult Patch([FromODataUri] System.Guid key, Delta<COGS> patch) {
+            try {
                 var model = Context.Set<COGS>().Find(key);
-                if (model == null)
-                {
+                if (model == null) {
                     return NotFound();
                 }
+
+                patch.Patch(model);
 
                 //Проверка пересечения по времени на клиенте
                 if (!DateCheck(model)) {
@@ -151,36 +131,25 @@ namespace Module.Frontend.TPM.Controllers
                     return InternalServerError(new Exception(msg)); //Json(new { success = false, message = msg });
                 }
 
-                patch.Patch(model);
                 Context.SaveChanges();
 
                 return Updated(model);
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!EntityExists(key))
-                {
+            } catch (DbUpdateConcurrencyException) {
+                if (!EntityExists(key)) {
                     return NotFound();
-                }
-                else
-                {
+                } else {
                     throw;
                 }
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 return GetErorrRequest(e);
-            }            
+            }
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Delete([FromODataUri] System.Guid key)
-        {
-            try
-            {
+        public IHttpActionResult Delete([FromODataUri] System.Guid key) {
+            try {
                 var model = Context.Set<COGS>().Find(key);
-                if (model == null)
-                {
+                if (model == null) {
                     return NotFound();
                 }
 
@@ -189,20 +158,16 @@ namespace Module.Frontend.TPM.Controllers
                 Context.SaveChanges();
 
                 return StatusCode(HttpStatusCode.NoContent);
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 return InternalServerError(e.InnerException);
             }
         }
 
-        private bool EntityExists(System.Guid key)
-        {
+        private bool EntityExists(System.Guid key) {
             return Context.Set<COGS>().Count(e => e.Id == key) > 0;
         }
 
-        private IEnumerable<Column> GetExportSettings()
-        {
+        private IEnumerable<Column> GetExportSettings() {
             IEnumerable<Column> columns = new List<Column>() {
                 new Column() { Order = 0, Field = "StartDate", Header = "StartDate", Quoting = false, Format = "dd.MM.yyyy"  },
                 new Column() { Order = 1, Field = "EndDate", Header = "EndDate", Quoting = false, Format = "dd.MM.yyyy"  },
@@ -214,10 +179,8 @@ namespace Module.Frontend.TPM.Controllers
             return columns;
         }
         [ClaimsAuthorize]
-        public IHttpActionResult ExportXLSX(ODataQueryOptions<COGS> options)
-        {
-            try
-            {
+        public IHttpActionResult ExportXLSX(ODataQueryOptions<COGS> options) {
+            try {
                 IQueryable results = options.ApplyTo(GetConstraintedQuery().Where(x => !x.Disabled));
                 IEnumerable<Column> columns = GetExportSettings();
                 XLSXExporter exporter = new XLSXExporter(columns);
@@ -227,9 +190,7 @@ namespace Module.Frontend.TPM.Controllers
                 exporter.Export(results, filePath);
                 string filename = System.IO.Path.GetFileName(filePath);
                 return Content<string>(HttpStatusCode.OK, filename);
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 return Content<string>(HttpStatusCode.InternalServerError, e.Message);
             }
         }
@@ -353,7 +314,7 @@ namespace Module.Frontend.TPM.Controllers
                         stream.Close();
                     }
                     return Content(HttpStatusCode.OK, file);
-                }            
+                }
             } catch (Exception e) {
                 return Content(HttpStatusCode.InternalServerError, e.Message);
             }
@@ -361,17 +322,13 @@ namespace Module.Frontend.TPM.Controllers
         }
 
 
-        private ExceptionResult GetErorrRequest(Exception e)
-        {
+        private ExceptionResult GetErorrRequest(Exception e) {
             // обработка при создании дублирующей записи
             SqlException exc = e.GetBaseException() as SqlException;
 
-            if (exc != null && (exc.Number == 2627 || exc.Number == 2601))
-            {
+            if (exc != null && (exc.Number == 2627 || exc.Number == 2601)) {
                 return InternalServerError(new Exception("This COGS has already existed"));
-            }
-            else
-            {
+            } else {
                 return InternalServerError(e.InnerException);
             }
         }
@@ -379,8 +336,9 @@ namespace Module.Frontend.TPM.Controllers
         public bool DateCheck(COGS toCheck) {
             List<COGS> clientCOGSs = GetConstraintedQuery().Where(y => y.ClientTreeId == toCheck.ClientTreeId && y.BrandTechId == toCheck.BrandTechId && y.Id != toCheck.Id && !y.Disabled).ToList();
             foreach (COGS item in clientCOGSs) {
-                if ((item.StartDate <= toCheck.StartDate && item.EndDate >= toCheck.StartDate) || 
-                    (item.StartDate <= toCheck.EndDate && item.EndDate >= toCheck.EndDate)) {
+                if ((item.StartDate <= toCheck.StartDate && item.EndDate >= toCheck.StartDate) ||
+                    (item.StartDate <= toCheck.EndDate && item.EndDate >= toCheck.EndDate) ||
+                    (item.StartDate >= toCheck.StartDate && item.EndDate <= toCheck.EndDate)) {
                     return false;
                 }
             }

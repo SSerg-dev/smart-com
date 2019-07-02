@@ -59,7 +59,11 @@
                     xclass: 'App.ExtTextFilterModel',
                     modelId: 'eftextmodel'
                 }]
-            }
+            },
+            sorters: [{
+                property: 'Number',
+                direction: 'DESC'
+            }],
         },
 
         columns: {
@@ -71,6 +75,9 @@
                 minWidth: 100
             },
             items: [{
+                text: l10n.ns('tpm', 'PromoSupport').value('Number'),
+                dataIndex: 'Number'
+            }, {
                 text: l10n.ns('tpm', 'PromoSupport').value('ClientTreeFullPathName'),
                 dataIndex: 'ClientTreeFullPathName',
                 minWidth: 200,

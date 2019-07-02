@@ -11,6 +11,7 @@ using Module.Persist.TPM.Model.Import;
 using Module.Persist.TPM.Model.TPM;
 using Core.Extensions;
 using Looper.Parameters;
+using Core.History;
 
 namespace Module.Host.TPM.Actions
 {
@@ -20,7 +21,8 @@ namespace Module.Host.TPM.Actions
 
         protected override int InsertDataToDatabase(IEnumerable<IEntity<Guid>> records, DatabaseContext context)
         {
-            ScriptGenerator generator = GetScriptGenerator();
+            NoGuidGeneratingScriptGenerator generatorCreate = new NoGuidGeneratingScriptGenerator(typeof (Product), false);
+            ScriptGenerator generatorUpdate = new ScriptGenerator(typeof(Product));
             IQueryable<Product> sourceRecords = records.Cast<Product>().AsQueryable();
             IList<Product> query = GetQuery(context).ToList();
             IList<Product> toCreate = new List<Product>();
@@ -31,11 +33,13 @@ namespace Module.Host.TPM.Actions
                 Product oldRecord = query.FirstOrDefault(x => x.ZREP == newRecord.ZREP && !x.Disabled);
                 if (oldRecord == null)
                 {
+                    newRecord.Id = Guid.NewGuid();
                     toCreate.Add(newRecord);
                 }
                 else
                 {
-                    oldRecord.EAN = newRecord.EAN;
+                    oldRecord.EAN_Case = newRecord.EAN_Case;
+                    oldRecord.EAN_PC = newRecord.EAN_PC;
                     oldRecord.ProductRU = newRecord.ProductRU;
                     oldRecord.ProductEN = newRecord.ProductEN;
                     oldRecord.BrandFlagAbbr = newRecord.BrandFlagAbbr;
@@ -61,16 +65,27 @@ namespace Module.Host.TPM.Actions
 
             foreach (IEnumerable<Product> items in toCreate.Partition(10000))
             {
-                string insertScript = generator.BuildInsertScript(items);
+                string insertScript = generatorCreate.BuildInsertScript(items);
                 context.Database.ExecuteSqlCommand(insertScript);
             }
 
             foreach (IEnumerable<Product> items in toUpdate.Partition(10000))
             {
-                string insertScript = generator.BuildUpdateScript(items);
+                string insertScript = generatorUpdate.BuildUpdateScript(items);
                 context.Database.ExecuteSqlCommand(insertScript);
             }
 
+            //Добавление записей в историю
+            List<Core.History.OperationDescriptor<Guid>> toHis = new List<Core.History.OperationDescriptor<Guid>>();
+            foreach (var item in toCreate) {
+                toHis.Add(new Core.History.OperationDescriptor<Guid>() { Operation = OperationType.Created, Entity = item });
+            }
+            foreach (var item in toUpdate) {
+                toHis.Add(new Core.History.OperationDescriptor<Guid>() { Operation = OperationType.Updated, Entity = item });
+            }
+            context.HistoryWriter.Write(toHis.ToArray(), context.AuthManager.GetCurrentUser(), context.AuthManager.GetCurrentRole());
+
+            context.SaveChanges();
             return sourceRecords.Count();
         }
 

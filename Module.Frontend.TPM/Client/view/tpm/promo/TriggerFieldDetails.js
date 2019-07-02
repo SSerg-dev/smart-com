@@ -28,7 +28,7 @@
     onTrigger1Click: function (el) {
         var me = this;
         var promoController = App.app.getController('tpm.promo.Promo');
-        var record = promoController.getRecord(Ext.ComponentQuery.query('promoeditorcustom'));
+        var record = promoController.getRecord(Ext.ComponentQuery.query('promoeditorcustom')[0]);
 
         var window = Ext.create('App.view.core.base.BaseModalWindow', {
             title: 'Details',

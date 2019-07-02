@@ -38,7 +38,7 @@
             action = Ext.String.format(button.action, resource);
 
         var editor = Ext.create('App.view.core.common.UploadFileWindow', {
-            title: l10n.value('uploadFileWindowTitle'),
+            title: l10n.ns('core').value('uploadFileWindowTitle'),
             parentGrid: grid,
             resource: resource,
             action: action

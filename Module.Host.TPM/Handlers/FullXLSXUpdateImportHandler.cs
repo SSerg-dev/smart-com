@@ -50,15 +50,6 @@ namespace Module.Host.TPM.Handlers
         }
     }
 
-    class FullXLSXImportBaseLineHandler : FullXLSXImportHandler
-    {
-        protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
-        {
-            return new FullXLSXImportBaseLineAction(settings);
-        }
-    }
-
-
     class FullXLSXUpdateBrandTechHandler : FullXLSXImportHandler {
         protected override IAction GetAction(FullImportSettings settings, ExecuteData data) {
             return new FullXLSXUpdateImportBrandTechAction(settings);
@@ -70,8 +61,6 @@ namespace Module.Host.TPM.Handlers
             return new FullXLSXUpdateImportBudgetSubItemAction(settings);
         }
     }
-    
-
 
     class FullXLSXUpdateAllHandler : FullXLSXImportHandler {
         protected override void InitializeParameters(HandlerData handlerData, ExecuteData data) {
@@ -96,6 +85,14 @@ namespace Module.Host.TPM.Handlers
         }
     }
 
+    class FullXLSXAssortmentMatrixImportHandler : FullXLSXImportHandler
+    {
+        protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
+        {
+            return new FullXLSXAssortmentMatrixImportAction(settings);
+        }
+    }
+
     class FullXLSXImportPromoProductHandler : FullXLSXImportHandler
     {
         /// <summary>
@@ -116,6 +113,26 @@ namespace Module.Host.TPM.Handlers
         protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
         {
             return new FullXLSXImportPromoProductAction(settings, promoId, userId, roleId);
+        }
+    }
+
+    class XLSXImportActualLsvHandler : FullXLSXImportHandler
+    {
+        private Guid handlerId;
+        private Guid userId;
+        private Guid roleId;
+
+        public override void Action(HandlerInfo info, ExecuteData data)
+        {
+            handlerId = info.HandlerId;
+            userId = Looper.Parameters.HandlerDataHelper.GetIncomingArgument<Guid>("UserId", info.Data, false);
+            roleId = Looper.Parameters.HandlerDataHelper.GetIncomingArgument<Guid>("RoleId", info.Data, false);
+            base.Action(info, data);
+        }
+
+        protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
+        {
+            return new XLSXImportActualLsvAction(settings, handlerId, userId, roleId);
         }
     }
 }

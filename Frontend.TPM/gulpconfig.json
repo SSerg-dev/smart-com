@@ -41,7 +41,8 @@
     "Scripts/breeze.min.js",
     "../Frontend.TPM/Client/ext/ext-all.js",
     "../Module.Frontend.TPM/Sch/sch-all-debug.js",
-    "../Module.Frontend.TPM/Sch/Notification.js"
+    "../Module.Frontend.TPM/Sch/Notification.js",
+    "Scripts/jquery.signalR-2.4.1.min.js"
   ],
   "appFiles": [
     "../Frontend.TPM/Client/ext/locale/ext-lang-TPM-en.js",
@@ -82,6 +83,7 @@
     "../Frontend.TPM/Client/app/view/core/constraint/**/*.js",
     "../Frontend.TPM/Client/app/controller/core/CombinedDirectory.js",
     "../Frontend.TPM/Client/app/controller/core/AssociatedDirectory.js",
+    "../Frontend.TPM/Client/app/controller/core/ImportExportLogic.js",
     "../Frontend.TPM/Client/app/controller/*.js",
     "../Frontend.TPM/Client/app/controller/**/*.js",
     "../Module.Frontend.TPM/Client/util/*.js",

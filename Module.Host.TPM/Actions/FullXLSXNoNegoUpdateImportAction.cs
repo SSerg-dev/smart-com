@@ -187,7 +187,7 @@ namespace Module.Host.TPM.Actions {
                 ctQuery = ModuleApplyFilterHelper.ApplyFilter(ctQuery, hierarchy, filters);
 
                 //Запрос действующих ObjectId
-                IList<ClientTree> existedClientTrees = ctQuery.Where(y => y.EndDate == null || y.EndDate > dtNow).ToList();
+                IList<ClientTree> existedClientTrees = ctQuery.Where(y => (y.EndDate == null || y.EndDate > dtNow) && y.depth != 0).ToList();
                 IList<Tuple<int, int>> existedClientTreesTuples = existedClientTrees.Select(y => new Tuple<int, int>(y.Id, y.ObjectId)).ToList();
                 IList<int> existedClientTreesIds = existedClientTreesTuples.Select(y => y.Item2).ToList();
 
@@ -198,15 +198,14 @@ namespace Module.Host.TPM.Actions {
 
                 //Запрос механик
                 IList<Mechanic> mechQuery = context.Set<Mechanic>().AsNoTracking().Where(y => !y.Disabled).ToList();
-                IList <Tuple<String, Guid>> mechanicTuples = mechQuery.Select(y => new Tuple<String, Guid>(y.Name, y.Id)).ToList();
+                IList<Tuple<String, Guid>> mechanicTuples = mechQuery.Select(y => new Tuple<String, Guid>(y.Name, y.Id)).ToList();
 
                 IList<MechanicType> mechTypeQuery = context.Set<MechanicType>().AsNoTracking().Where(y => !y.Disabled).ToList();
-                IList<Tuple<String, Guid>> mechanicTypeTuples = mechTypeQuery.Select(y => new Tuple<String, Guid>(y.Name, y.Id)).ToList();
+                IList<Tuple<String, Guid, int?>> mechanicTypeTuples = mechTypeQuery.Select(y => new Tuple<String, Guid, int?>(y.Name, y.Id, y.Discount)).ToList();
 
 
                 //Присваивание ID
-                Parallel.ForEach(sourceRecords, item =>
-                {
+                Parallel.ForEach(sourceRecords, item => {
                     ImportNoNego typedItem = (ImportNoNego) item;
 
                     int clientObjId = typedItem.ClientObjectId;
@@ -225,17 +224,17 @@ namespace Module.Host.TPM.Actions {
                         }
                     }
 
-                    Tuple<String, Guid> mech = mechanicTuples.FirstOrDefault(y=>y.Item1 == typedItem.MechanicName);
-                    if (mech!=null) {
+                    Tuple<String, Guid> mech = mechanicTuples.FirstOrDefault(y => y.Item1 == typedItem.MechanicName);
+                    if (mech != null) {
                         typedItem.MechanicId = mech.Item2;
                     }
 
-                    Tuple<String, Guid> mechType = mechanicTypeTuples.FirstOrDefault(y => y.Item1 == typedItem.MechanicTypeName);
+                    Tuple<String, Guid, int?> mechType = mechanicTypeTuples.FirstOrDefault(y => y.Item1 == typedItem.MechanicTypeName);
                     if (mechType != null) {
                         typedItem.MechanicTypeId = mechType.Item2;
                     }
 
-                    if (typedItem.ToDate==null) {
+                    if (typedItem.ToDate == null) {
                         typedItem.ToDate = DateTimeOffset.MaxValue;
                     }
 
@@ -245,22 +244,20 @@ namespace Module.Host.TPM.Actions {
                 IList<Tuple<int, int, Guid?>> badTimesIds = new List<Tuple<int, int, Guid?>>();
 
                 IList<Tuple<int, int, Guid?, DateTimeOffset?, DateTimeOffset?>> existedNoNegosTimes =
-                    this.GetQuery(context).Where(x => !x.Disabled).Select(y => new Tuple<int, int,Guid? ,DateTimeOffset?, DateTimeOffset?>(y.ClientTreeId, y.ProductTreeId, y.MechanicId, y.FromDate, y.ToDate)).ToList();
+                    this.GetQuery(context).Where(x => !x.Disabled).Select(y => new Tuple<int, int, Guid?, DateTimeOffset?, DateTimeOffset?>(y.ClientTreeId, y.ProductTreeId, y.MechanicId, y.FromDate, y.ToDate)).ToList();
 
                 IList<Tuple<int, int, Guid?, DateTimeOffset?, DateTimeOffset?>> importedNoNegosTimes =
                     sourceRecords.Select(y => new Tuple<int, int, Guid?, DateTimeOffset?, DateTimeOffset?>(((ImportNoNego) y).ClientTreeId, ((ImportNoNego) y).ProductTreeId, ((ImportNoNego) y).MechanicId, ((ImportNoNego) y).FromDate, ((ImportNoNego) y).ToDate)).ToList();
 
 
-                Parallel.ForEach(sourceRecords, item =>
-                {
+                Parallel.ForEach(sourceRecords, item => {
                     if (!DateCheck((ImportNoNego) item, existedNoNegosTimes, importedNoNegosTimes)) {
                         badTimesIds.Add(new Tuple<int, int, Guid?>(((ImportNoNego) item).ClientTreeId, ((ImportNoNego) item).ProductTreeId, ((ImportNoNego) item).MechanicId));
                     }
                 });
 
                 //Стандартные проверки
-                Parallel.ForEach(sourceRecords, item =>
-                {
+                Parallel.ForEach(sourceRecords, item => {
                     IEntity<Guid> rec;
                     IList<string> warnings;
                     IList<string> validationErrors;
@@ -274,7 +271,7 @@ namespace Module.Host.TPM.Actions {
                         if (warnings.Any()) {
                             warningRecords.Add(new Tuple<IEntity<Guid>, string>(item, String.Join(", ", warnings)));
                         }
-                    } else if (!IsFilterSuitable(rec, existedClientTreesIds, existedProductTreesIds, badTimesIds, context, out validationErrors)) {
+                    } else if (!IsFilterSuitable(rec, existedClientTreesIds, existedProductTreesIds, mechanicTypeTuples, badTimesIds, context, out validationErrors)) {
                         HasErrors = true;
                         errorRecords.Add(new Tuple<IEntity<Guid>, string>(item, String.Join(", ", validationErrors)));
                     } else {
@@ -334,7 +331,7 @@ namespace Module.Host.TPM.Actions {
         protected ScriptGenerator _generator { get; set; }
 
         //Кастомная проверка
-        protected virtual bool IsFilterSuitable(IEntity<Guid> rec, IList<int> existedClientObjIds, IList<int> existedProductObjIds, IList<Tuple<int, int, Guid?>> badTimesIds, DatabaseContext context, out IList<string> errors) {
+        protected virtual bool IsFilterSuitable(IEntity<Guid> rec, IList<int> existedClientObjIds, IList<int> existedProductObjIds, IList<Tuple<String, Guid, int?>> mechanicTypeTuples, IList<Tuple<int, int, Guid?>> badTimesIds, DatabaseContext context, out IList<string> errors) {
             errors = new List<string>();
             bool isError = false;
 
@@ -352,20 +349,33 @@ namespace Module.Host.TPM.Actions {
             }
 
             //Проверка пересечения по времени на клиенте
-            if (badTimesIds.Any(y => y.Item1 == importObj.ClientTreeId && y.Item2 == importObj.ProductTreeId && y.Item3 == importObj.MechanicId) ){
+            if (badTimesIds.Any(y => y.Item1 == importObj.ClientTreeId && y.Item2 == importObj.ProductTreeId && y.Item3 == importObj.MechanicId)) {
                 isError = true;
                 errors.Add(" there can not be two NoNego of client, product and Mechanic in some Time");
             }
 
             //Проверка FromDate, ToDate
-            if (importObj.FromDate == null || importObj.CreateDate == null) {
+            if (importObj.FromDate == null) {
                 isError = true;
-                errors.Add(" FromDate  and CreateDate must be fullfilled");
+                errors.Add(" FromDate must be fullfilled");
             } else {
 
                 if (importObj.FromDate > importObj.ToDate) {
                     isError = true;
                     errors.Add(" FromDate must be before ToDate");
+                }
+
+            }
+
+            // Проверка Discount
+            if (importObj.MechanicTypeId == null && importObj.MechanicDiscount == null) {
+                isError = true;
+                errors.Add(" Mechanic Type or Mechanic Discount must be fullfilled");
+            } else {
+                Tuple<String, Guid, int?> mechType = mechanicTypeTuples.FirstOrDefault(y => y.Item2 == importObj.MechanicTypeId);
+                if (mechType !=null && importObj.MechanicDiscount != null && mechType.Item3 != importObj.MechanicDiscount) {
+                    isError = true;
+                    errors.Add(" Mechanic Discount is not corresponding with Mechanic Type");
                 }
 
             }
@@ -395,19 +405,18 @@ namespace Module.Host.TPM.Actions {
             IList<NoneNego> toCreate = new List<NoneNego>();
             var query = GetQuery(context).ToList();
 
-            DateTime dtNow = DateTime.Now;
             foreach (ImportNoNego newRecord in sourceRecords) {
                 NoneNego oldRecord = query.FirstOrDefault(x => x.ClientTreeId == newRecord.ClientTreeId && x.ProductTreeId == newRecord.ProductTreeId && x.MechanicId == newRecord.MechanicId && !x.Disabled);
 
                 NoneNego toSave = new NoneNego() {
-                    MechanicId= newRecord.MechanicId,
+                    MechanicId = newRecord.MechanicId,
                     MechanicTypeId = newRecord.MechanicTypeId,
                     ClientTreeId = newRecord.ClientTreeId,
                     ProductTreeId = newRecord.ProductTreeId,
                     Discount = newRecord.MechanicDiscount,
                     FromDate = newRecord.FromDate,
                     ToDate = newRecord.ToDate,
-                    CreateDate = newRecord.CreateDate,
+                    CreateDate = DateTimeOffset.Now
                 };
 
                 toCreate.Add(toSave);
@@ -453,7 +462,7 @@ namespace Module.Host.TPM.Actions {
                 if (ctNoNego.Where(y => y.Item1 == thisNoNego.Item1 && y.Item2 == thisNoNego.Item2 && y.Item3 == thisNoNego.Item3 && y.Item4 == thisNoNego.Item4).Count() > 1) {
                     return false;
                 }
-                foreach (Tuple<int, int, Guid?, DateTimeOffset?, DateTimeOffset?> item in ctNoNego.Where(y =>!( y.Item1 == thisNoNego.Item1 && y.Item2 == thisNoNego.Item2 && y.Item3 == thisNoNego.Item3 && y.Item4 == thisNoNego.Item4))) {
+                foreach (Tuple<int, int, Guid?, DateTimeOffset?, DateTimeOffset?> item in ctNoNego.Where(y => !(y.Item1 == thisNoNego.Item1 && y.Item2 == thisNoNego.Item2 && y.Item3 == thisNoNego.Item3 && y.Item4 == thisNoNego.Item4))) {
                     if ((item.Item4 <= toCheck.FromDate && item.Item5 >= toCheck.FromDate) ||
                         (item.Item4 <= toCheck.ToDate && item.Item5 >= toCheck.ToDate)) {
                         return false;

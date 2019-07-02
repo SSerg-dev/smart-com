@@ -9,6 +9,8 @@ using Module.Host.TPM.Actions.Notifications;
 using System.Collections.Generic;
 using Looper.Parameters;
 using Interfaces.Implementation.Action;
+using System.Threading;
+using Module.Persist.TPM;
 
 namespace Module.Host.TPM.Handlers {
     /// <summary>
@@ -26,15 +28,15 @@ namespace Module.Host.TPM.Handlers {
                 Guid userId = HandlerDataHelper.GetIncomingArgument<Guid>("UserId", info.Data);
                 Guid roleId = HandlerDataHelper.GetIncomingArgument<Guid>("RoleId", info.Data);
 
-                handlerLogger.Write(true, String.Format("Start of calendar export at 10 {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now));
-
+                handlerLogger.Write(true, String.Format("Start of calendar export at 10 {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+                Thread.Sleep(10000);
                 IAction action = new SchedulerExportAction(clients, year, userId, roleId);
                 action.Execute();
 
                 if (action.Errors.Any()) {
                     data.SetValue<bool>("HasErrors", true);
                     if (handlerLogger != null) {
-                        handlerLogger.Write(true, String.Join(Environment.NewLine, action.Errors));
+                        handlerLogger.Write(true, action.Errors, "Error");
                     }
                 } else {
                     action.SaveResultToData<FileModel>(info.Data, "ExportFile", "File");
@@ -43,13 +45,16 @@ namespace Module.Host.TPM.Handlers {
                 data.SetValue<bool>("HasErrors", true);
                 logger.Error(e);
                 if (handlerLogger != null) {
-                    handlerLogger.Write(true, e.ToString());
+                    handlerLogger.Write(true, e.ToString(), "Error");
                 }
             } finally {
                 logger.Debug("Finish '{0}'", info.HandlerId);
                 sw.Stop();
                 if (handlerLogger != null) {
-                    handlerLogger.Write(true, String.Format("Newsletter notifications ended at  {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", DateTimeOffset.Now, sw.Elapsed.TotalSeconds));
+                    handlerLogger.Write(true, String.Format("Newsletter notifications ended at  {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", DateTimeOffset.Now, sw.Elapsed.TotalSeconds), "Message");
+
+                    if(!data.GetValue<bool>("HasErrors", false))
+                        handlerLogger.Write(true, "You can download the file!", "Message");
                 }
             }
         }

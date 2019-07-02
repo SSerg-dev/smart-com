@@ -45,7 +45,7 @@
                             allowDepress: true,
                             needUpdateMappings: true,
                             cls: 'custom-event-button',
-                            crudAccess: ['Administrator', 'FunctionalExpert', 'CustomerMarketing', 'KeyAccountManager'],
+                            crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
                             store: {
                                 type: 'directorystore',
                                 model: 'App.model.tpm.event.Event',

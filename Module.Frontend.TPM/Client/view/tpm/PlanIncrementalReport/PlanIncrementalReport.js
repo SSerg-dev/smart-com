@@ -41,11 +41,13 @@
             { text: l10n.ns('tpm', 'PlanIncrementalReport').value('TypeApollo'), dataIndex: 'TypeApollo' },
             { text: l10n.ns('tpm', 'PlanIncrementalReport').value('ModelApollo'), dataIndex: 'ModelApollo' },
             { xtype: 'datecolumn', text: l10n.ns('tpm', 'PlanIncrementalReport').value('WeekStartDate'), dataIndex: 'WeekStartDate', renderer: Ext.util.Format.dateRenderer('d.m.Y') },
-            { xtype: 'numbercolumn', text: l10n.ns('tpm', 'PlanIncrementalReport').value('PlanProductQty'), dataIndex: 'PlanProductQty' },
+            { xtype: 'numbercolumn', text: l10n.ns('tpm', 'PlanIncrementalReport').value('PlanProductCaseQty'), dataIndex: 'PlanProductCaseQty' },
             { xtype: 'numbercolumn', text: l10n.ns('tpm', 'PlanIncrementalReport').value('PlanUplift'), dataIndex: 'PlanUplift' },
             { xtype: 'datecolumn', text: l10n.ns('tpm', 'PlanIncrementalReport').value('StartDate'), dataIndex: 'StartDate', renderer: Ext.util.Format.dateRenderer('d.m.Y') },
             { xtype: 'datecolumn', text: l10n.ns('tpm', 'PlanIncrementalReport').value('EndDate'), dataIndex: 'EndDate', renderer: Ext.util.Format.dateRenderer('d.m.Y') },
-            { text: l10n.ns('tpm', 'PlanIncrementalReport').value('Status'), dataIndex: 'Status' }]
+            { text: l10n.ns('tpm', 'PlanIncrementalReport').value('Status'), dataIndex: 'Status' },
+            { text: l10n.ns('tpm', 'PlanIncrementalReport').value('InOut'), dataIndex: 'InOut' },
+            ]
         }
     }, {
         xtype: 'editabledetailform',
@@ -59,11 +61,12 @@
                 { xtype: 'textfield', name: 'TypeApollo', fieldLabel: l10n.ns('tpm', 'PlanIncrementalReport').value('TypeApollo') },
                 { xtype: 'textfield', name: 'ModelApollo', fieldLabel: l10n.ns('tpm', 'PlanIncrementalReport').value('ModelApollo') },
                 { xtype: 'datefield', name: 'WeekStartDate', fieldLabel: l10n.ns('tpm', 'PlanIncrementalReport').value('WeekStartDate') },
-                { xtype: 'numberfield', name: 'PlanProductQty', fieldLabel: l10n.ns('tpm', 'PlanIncrementalReport').value('PlanProductQty') },
+                { xtype: 'numberfield', name: 'PlanProductCaseQty', fieldLabel: l10n.ns('tpm', 'PlanIncrementalReport').value('PlanProductCaseQty') },
                 { xtype: 'numberfield', name: 'PlanUplift', fieldLabel: l10n.ns('tpm', 'PlanIncrementalReport').value('PlanUplift') },
                 { xtype: 'datefield', name: 'StartDate', fieldLabel: l10n.ns('tpm', 'PlanIncrementalReport').value('StartDate') },
                 { xtype: 'datefield', name: 'EndDate', fieldLabel: l10n.ns('tpm', 'PlanIncrementalReport').value('EndDate') },
-                { xtype: 'textfield', name: 'Status', fieldLabel: l10n.ns('tpm', 'PlanIncrementalReport').value('Status') }
+                { xtype: 'textfield', name: 'Status', fieldLabel: l10n.ns('tpm', 'PlanIncrementalReport').value('Status') },
+                { xtype: 'textfield', name: 'InOut', fieldLabel: l10n.ns('tpm', 'PlanIncrementalReport').value('InOut') }
         ]
     }]
 });

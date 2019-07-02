@@ -20,5 +20,8 @@ namespace Module.Persist.TPM.Model.Import {
         [Display(Name = "Client hierarchy Share")]
         public int LeafShare { get; set; }
 
+        [ImportCSVColumn(ColumnNumber = 3)]
+        [Display(Name = "Demand Code")]
+        public string DemandCode { get; set; }
     }
 }

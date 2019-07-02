@@ -65,6 +65,7 @@ namespace Module.Host.TPM.Actions
                 context.Database.ExecuteSqlCommand(insertScript);
             }
 
+            context.SaveChanges();
             return sourceRecords.Count();
         }
 

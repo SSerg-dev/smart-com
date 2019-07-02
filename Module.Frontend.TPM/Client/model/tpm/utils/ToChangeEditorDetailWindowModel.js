@@ -4,8 +4,8 @@
 
     startDetailRecord: function (model) {
         this.editor = this.createEditor({ title: l10n.ns('core').value('detailWindowTitle') });
-        var isHistorical = this.editor.down('#historicaldetailform'),
-            isDeleted = this.editor.down('#deleteddetailform');
+        var isHistorical = this.editor.down('#historicaldetailform');
+        var isDeleted = this.editor.down('#deleteddetailform');
 
         // если запись из гридов История или Удаленные, то скрывается кнопка Редактировать
 
@@ -79,7 +79,7 @@
             editor = Ext.create(App.Util.buildViewClassName(panel, model, null, 'Editor'), cfg);
             editor.isOriginalEditor = true;
         } catch (err) {
-            var detailgrid = grid.up().down('editabledetailform');
+            var detailgrid = grid.up().down('editabledetailform') ? grid.up().down('editabledetailform') : grid.up().down('detailform');
             var itemsTo = detailgrid.initialConfig.items;
             cfg.extend = 'App.view.core.common.EditorDetailWindow';
             cfg.width = 800;

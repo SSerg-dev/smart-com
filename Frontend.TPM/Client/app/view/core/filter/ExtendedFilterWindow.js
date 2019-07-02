@@ -35,7 +35,7 @@
         layout: 'fit',
         bodyPadding: '10 10 0 10',
         margin: '10 8 15 15',
-        flex: 0,
+        flex: 1,
 
         dockedItems: [{
             xtype: 'toolbar',

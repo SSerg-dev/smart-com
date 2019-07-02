@@ -8,7 +8,8 @@ namespace Module.Persist.TPM.Model.History
     public class HistoricalProduct : BaseHistoricalEntity<System.Guid>
     {
         public string ZREP { get; set; }
-        public string EAN { get; set; }
+        public string EAN_Case { get; set; }
+        public string EAN_PC { get; set; }
         public string ProductRU { get; set; }
         public string ProductEN { get; set; }
         public string BrandFlagAbbr { get; set; }

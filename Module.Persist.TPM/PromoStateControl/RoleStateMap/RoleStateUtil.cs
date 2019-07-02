@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Module.Persist.TPM.Model.DTO;
+using Module.Persist.TPM.Model.TPM;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -10,35 +12,41 @@ namespace Module.Persist.TPM.PromoStateControl.RoleStateMap {
         public static List<RoleStateMap> StatusRoleStateMap = new List<RoleStateMap>() {
             new RoleStateMap(StateNames.DELETED, new Dictionary<string, List<string>>(){ }),
             new RoleStateMap(StateNames.DRAFT, new Dictionary<string, List<string>>(){
-                { StateNames.DRAFT_PUBLISHED, new List<string> { "Administrator", "CustomerMarketing", "DemandFinance", "DemandPlanning", "FunctionalExpert", "KeyAccountManager" } },
-                { StateNames.DELETED, new List<string> { "Administrator", "CustomerMarketing", "DemandFinance", "DemandPlanning", "FunctionalExpert", "KeyAccountManager" } }
+                { StateNames.DRAFT_PUBLISHED, new List<string> { "Administrator", "CMManager", "CustomerMarketing", "DemandFinance", "DemandPlanning", "FunctionalExpert", "KeyAccountManager" } },
+                { StateNames.DELETED, new List<string> { "Administrator", "CMManager", "CustomerMarketing", "DemandFinance", "DemandPlanning", "FunctionalExpert", "KeyAccountManager" } }
             }),
             new RoleStateMap(StateNames.DRAFT_PUBLISHED, new Dictionary<string, List<string>>(){
-                { StateNames.DRAFT, new List<string> { "Administrator", "CustomerMarketing", "DemandFinance", "DemandPlanning", "FunctionalExpert", "KeyAccountManager" } },
-                { StateNames.ON_APPROVAL, new List<string> { "Administrator", "CustomerMarketing", "DemandFinance", "DemandPlanning", "FunctionalExpert", "KeyAccountManager" } }
+                { StateNames.DRAFT, new List<string> { "Administrator", "CMManager", "CustomerMarketing", "FunctionalExpert", "KeyAccountManager" } },
+                { StateNames.ON_APPROVAL, new List<string> { "Administrator", "CMManager", "CustomerMarketing", "FunctionalExpert", "KeyAccountManager", "DemandPlanning" } },
+                { StateNames.DELETED, new List<string> { "Administrator", "CMManager", "CustomerMarketing", "FunctionalExpert", "KeyAccountManager" } }
             }),
             new RoleStateMap(StateNames.ON_APPROVAL, new Dictionary<string, List<string>>() {
-                { StateNames.DRAFT_PUBLISHED, new List<string> { "Administrator", "CustomerMarketing", "DemandFinance", "DemandPlanning", "FunctionalExpert", "KeyAccountManager" } },
-                { StateNames.APPROVED, new List<string> { "Administrator", "CustomerMarketing", "DemandFinance", "DemandPlanning", "FunctionalExpert", "KeyAccountManager" } }
+                { StateNames.DRAFT_PUBLISHED, new List<string> { "Administrator", "CMManager", "CustomerMarketing", "DemandFinance", "DemandPlanning" } },
+                { StateNames.APPROVED, new List<string> { "Administrator", "CMManager", "DemandFinance", "DemandPlanning" } }
             }),
             new RoleStateMap(StateNames.APPROVED, new Dictionary<string, List<string>>() {
-                { StateNames.DRAFT_PUBLISHED, new List<string> { "Administrator", "CustomerMarketing", "DemandFinance", "DemandPlanning", "FunctionalExpert", "KeyAccountManager" } },
-                { StateNames.PLANNED, new List<string> { "Administrator", "CustomerMarketing", "DemandFinance", "DemandPlanning", "FunctionalExpert", "KeyAccountManager" } }
+                { StateNames.DRAFT_PUBLISHED, new List<string> { "Administrator", "KeyAccountManager" } },
+                { StateNames.PLANNED, new List<string> { "Administrator", "KeyAccountManager" } },
+                { StateNames.CANCELLED, new List<string> { "KeyAccountManager" } }
             }),
+            new RoleStateMap(StateNames.CANCELLED, new Dictionary<string, List<string>>(){ }),
             new RoleStateMap(StateNames.PLANNED, new Dictionary<string, List<string>>(){
                 { StateNames.STARTED, new List<string> { "System" } },
-                { StateNames.DRAFT_PUBLISHED, new List<string> { "Administrator", "CustomerMarketing", "DemandFinance", "DemandPlanning", "FunctionalExpert", "KeyAccountManager" } }
-            }),
+                { StateNames.DRAFT_PUBLISHED, new List<string> { "Administrator", "KeyAccountManager" } },
+				{ StateNames.CANCELLED, new List<string> { "KeyAccountManager" } }
+			}),
             new RoleStateMap(StateNames.STARTED, new Dictionary<string, List<string>>(){
-                { StateNames.FINISHED, new List<string> { "System", "Administrator", "CustomerMarketing", "DemandFinance", "DemandPlanning", "FunctionalExpert", "KeyAccountManager" } }
+                { StateNames.FINISHED, new List<string> { "System", "Administrator" } }
             }),
             new RoleStateMap(StateNames.FINISHED, new Dictionary<string, List<string>>(){
-                { StateNames.CLOSED, new List<string> { "System", "Administrator", "CustomerMarketing", "DemandFinance", "DemandPlanning", "FunctionalExpert", "KeyAccountManager" } }
+                { StateNames.CLOSED, new List<string> { "System", "Administrator","DemandFinance", "FunctionalExpert", "KeyAccountManager" } }
             }),
-            new RoleStateMap(StateNames.CLOSED, new Dictionary<string, List<string>>()),
+            new RoleStateMap(StateNames.CLOSED, new Dictionary<string, List<string>>() {
+                { StateNames.FINISHED, new List<string> { "FunctionalExpert" } },
+            }),
             new RoleStateMap(StateNames.UNDEFINED, new Dictionary<string, List<string>>(){
-                { StateNames.DRAFT, new List<string> { "Administrator", "CustomerMarketing", "DemandFinance", "DemandPlanning", "FunctionalExpert", "KeyAccountManager" } },
-                { StateNames.DRAFT_PUBLISHED, new List<string> { "Administrator", "CustomerMarketing", "DemandFinance", "DemandPlanning", "FunctionalExpert", "KeyAccountManager" } }
+                { StateNames.DRAFT, new List<string> { "Administrator", "CMManager", "CustomerMarketing", "DemandFinance", "DemandPlanning", "FunctionalExpert", "KeyAccountManager" } },
+                { StateNames.DRAFT_PUBLISHED, new List<string> { "Administrator", "CMManager", "CustomerMarketing", "DemandFinance", "DemandPlanning", "FunctionalExpert", "KeyAccountManager" } }
             })
         };
 
@@ -52,7 +60,7 @@ namespace Module.Persist.TPM.PromoStateControl.RoleStateMap {
             if (roleStateMap == null) {
                 throw new Exception(String.Format("Can't find role state map for Status Name '{0}'", statusName));
             } else {
-                return StatusRoleStateMap.FirstOrDefault(s => s.StatusName == statusName).StateMap;
+                return roleStateMap.StateMap;
             }
         }
 
@@ -64,6 +72,55 @@ namespace Module.Persist.TPM.PromoStateControl.RoleStateMap {
         /// <returns></returns>
         public static bool RoleCanChangeState(string roleName, string statusName) {
             return GetMapForStatus(statusName).Any(x => x.Value.Contains(roleName));
-        } 
+        }
+
+        /// <summary>
+        /// Доступен ли текущий шаг согласования для текущей роли
+        /// </summary>
+        /// <param name="roleName"></param>
+        /// <param name="promo"></param>
+        /// <returns></returns>
+        public static bool IsOnApprovalRoleOrder(string roleName, Promo promo) {
+            bool isAvailable = true;
+            if (promo.PromoStatus.SystemName == StateNames.ON_APPROVAL) {
+                switch (roleName) {
+                    case "CustomerMarketing":
+                    case "CMManager":
+                        isAvailable = !promo.IsCMManagerApproved.HasValue || (promo.IsCMManagerApproved.HasValue && !promo.IsCMManagerApproved.Value); //TODO: зачем флаги nullable?
+                        break;
+                    case "DemandPlanning":
+                        isAvailable = (promo.IsCMManagerApproved.HasValue && promo.IsCMManagerApproved.Value) && (!promo.IsDemandPlanningApproved.HasValue || (promo.IsDemandPlanningApproved.HasValue && !promo.IsDemandPlanningApproved.Value));
+                        break;
+                    case "DemandFinance":
+                        isAvailable = (promo.IsCMManagerApproved.HasValue && promo.IsCMManagerApproved.Value) && (promo.IsDemandPlanningApproved.HasValue && promo.IsDemandPlanningApproved.Value) && (!promo.IsDemandFinanceApproved.HasValue || (promo.IsDemandFinanceApproved.HasValue && !promo.IsDemandFinanceApproved.Value));
+                        break;
+                }
+            }
+            return isAvailable;
+        }
+        /// <summary>
+        /// Доступен ли текущий шаг согласования для текущей роли
+        /// </summary>
+        /// <param name="roleName"></param>
+        /// <param name="promo"></param>
+        /// <returns></returns>
+        public static bool IsOnApprovalRoleOrder(string roleName, PromoGridView promo) {
+            bool isAvailable = true;
+            if (promo.PromoStatusSystemName == StateNames.ON_APPROVAL) {
+                switch (roleName) {
+                    case "CustomerMarketing":
+                    case "CMManager":
+                        isAvailable = !promo.IsCMManagerApproved.HasValue || (promo.IsCMManagerApproved.HasValue && !promo.IsCMManagerApproved.Value);
+                        break;
+                    case "DemandPlanning":
+                        isAvailable = (promo.IsCMManagerApproved.HasValue && promo.IsCMManagerApproved.Value) && (!promo.IsDemandPlanningApproved.HasValue || (promo.IsDemandPlanningApproved.HasValue && !promo.IsDemandPlanningApproved.Value));
+                        break;
+                    case "DemandFinance":
+                        isAvailable = (promo.IsCMManagerApproved.HasValue && promo.IsCMManagerApproved.Value) && (promo.IsDemandPlanningApproved.HasValue && promo.IsDemandPlanningApproved.Value) && (!promo.IsDemandFinanceApproved.HasValue || (promo.IsDemandFinanceApproved.HasValue && !promo.IsDemandFinanceApproved.Value));
+                        break;
+                }
+            }
+            return isAvailable;
+        }
     }
 }

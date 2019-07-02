@@ -1,7 +1,7 @@
 ﻿Ext.define('App.model.tpm.clienttree.ClientTree', {
     extend: 'Ext.data.Model',
     idProperty: 'ObjectId',
-
+    breezeEntityType: 'ClientTree',
     fields: [
         { name: 'Id', type: 'int', hidden: true },
         { name: 'ObjectId', hidden: true },
@@ -24,8 +24,8 @@
         { name: 'IsDaysEnd', type: 'bool', hidden: false, useNull: true },
         { name: 'DaysEnd', type: 'int', hidden: false, useNull: true },
         { name: 'PostPromoEffectW1', type: 'float', hidden: false, useNull: true, defaultValue: 0 },
-        { name: 'PostPromoEffectW2', type: 'float', hidden: false, useNull: true, defaultValue: 0 }
-
+        { name: 'PostPromoEffectW2', type: 'float', hidden: false, useNull: true, defaultValue: 0 },
+        { name: 'LogoFileName', type: 'string', hidden: false, useNull: true, defaultValue: null }
     ],
 
     proxy: {

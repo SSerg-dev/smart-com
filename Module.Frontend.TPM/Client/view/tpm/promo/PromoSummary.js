@@ -119,10 +119,17 @@
                 items: [{
                     xtype: 'fieldset',
                     title: l10n.ns('tpm', 'PromoSummary').value('BrandTech'),
+                    layout: {
+                        type: 'vbox',
+                        pack: 'center',
+                        align: 'left'
+                    },
                     items: [{
-                        xtype: 'label',
-                        name: 'brandTechLabel',
-                        cls: 'promo-mechanic-label',
+                        xtype: 'button',
+                        name: 'brandTechButton',
+                        itemId: 'brandTechButton',
+                        windowName: 'promoproductsubrangedetailswindow',
+                        cls: ['promo-mechanic-label', 'summary-detail-btn'],
                     }],
                     flex: 2,
                     margin: 5
@@ -295,7 +302,7 @@
             items: [{
                 xtype: 'button',
                 itemId: 'financeDetailButton',
-                windowName: 'promoproductsubrangedetailswindow',
+                windowName: 'promofinancedetailswindow',
                 text: l10n.ns('tpm', 'PromoSummary').value('Detail'),
                 cls: 'summary-detail-btn'
             }]

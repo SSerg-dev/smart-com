@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Core.Data;
 using Persist;
@@ -12,125 +11,31 @@ using Module.Persist.TPM.Model.TPM;
 using Core.Extensions;
 using Looper.Parameters;
 using Interfaces.Implementation.Action;
-using NLog;
 using Utility.Import;
-using Core.Settings;
-using System.IO;
-using Utility.Import.ImportModelBuilder;
 using System.Collections.Concurrent;
-using Utility.Import.ModelBuilder;
-using Utility.Import.Cache;
-using Utility.Import.Structure;
-using System.Reflection;
-using Persist.Extensions;
-using Core.Import;
+using Core.History;
+using Module.Persist.TPM.Utils;
+using Persist.ScriptGenerator.Filter;
 
 namespace Module.Host.TPM.Actions {
-    class FullXLSXImportBaseLineAction : BaseAction {
-        private readonly Guid UserId;
-        private readonly Guid RoleId;
-        private readonly FileModel ImportFile;
-        private readonly Type ImportType;
-        private readonly Type ModelType;
-        private readonly string Separator;
-        private readonly string Quote;
-        private readonly bool HasHeader;
+    class FullXLSXImportBaseLineAction : FullXLSXImportAction {
 
+        private readonly bool NeedClearData;
+        private readonly DateTimeOffset StartDate;
+        private readonly DateTimeOffset FinishDate;
+        private readonly IDictionary<string, IEnumerable<string>> Filters;
 
-        private bool AllowPartialApply { get; set; }
-        private readonly Logger logger;
-
-        private string ResultStatus { get; set; }
-        private bool HasErrors { get; set; }
-
-        private ScriptGenerator Generator { get; set; }
-
-        public FullXLSXImportBaseLineAction(FullImportSettings settings) {
-            UserId = settings.UserId;
-            RoleId = settings.RoleId;
-            ImportFile = settings.ImportFile;
-            ImportType = settings.ImportType;
-            ModelType = settings.ModelType;
-            Separator = settings.Separator;
-            Quote = settings.Quote;
-            HasHeader = settings.HasHeader;
-
-            AllowPartialApply = false;
-            logger = LogManager.GetCurrentClassLogger();
+        public FullXLSXImportBaseLineAction(FullImportSettings settings, DateTimeOffset startDate, DateTimeOffset finishDate, IDictionary<string, IEnumerable<string>> filters, bool needClearData) : base(settings) {
+            NeedClearData = needClearData;
+            StartDate = startDate;
+            FinishDate = finishDate;
+            Filters = filters;
+            UniqueErrorMessage = "This entry already exists in the database";
+            ErrorMessageScaffold = "FullImportAction failed: {0}";
+            FileParseErrorMessage = "An error occurred while parsing the import file";
         }
 
-        public override void Execute() {
-            logger.Trace("Begin");
-            try {
-                ResultStatus = null;
-                HasErrors = false;
-
-                var sourceRecords = ParseImportFile();
-
-                int successCount;
-                int warningCount;
-                int errorCount;
-
-                var resultFilesModel = ApplyImport(sourceRecords, out successCount, out warningCount, out errorCount);
-
-                // Сохранить выходные параметры
-                Results["ImportSourceRecordCount"] = sourceRecords.Count();
-                Results["ImportResultRecordCount"] = successCount;
-                Results["ErrorCount"] = errorCount;
-                Results["WarningCount"] = warningCount;
-                Results["ImportResultFilesModel"] = resultFilesModel;
-
-            } catch (Exception e) {
-                HasErrors = true;
-                string message = String.Format("FullImportAction failed: {0}", e.ToString());
-                logger.Error(message);
-
-                if (e.IsUniqueConstraintException()) {
-                    message = "This entry already exists in the database.";
-                } else {
-                    message = e.ToString();
-                }
-
-                Errors.Add(message);
-                ResultStatus = ImportUtility.StatusName.ERROR;
-            } finally {
-                // информация о том, какой долен быть статус у задачи
-                Results["ImportResultStatus"] = ResultStatus;
-                logger.Debug("Finish");
-            }
-        }
-
-        private IList<IEntity<Guid>> ParseImportFile() {
-            var importDir = AppSettingsManager.GetSetting<string>("IMPORT_DIRECTORY", "ImportFiles");
-            var importFilePath = Path.Combine(importDir, ImportFile.Name);
-
-            if (!File.Exists(importFilePath)) {
-                throw new Exception("Import File not found");
-            }
-
-            var builder = ImportModelFactory.GetCSVImportModelBuilder(ImportType);
-            var validator = ImportModelFactory.GetImportValidator(ImportType);
-            int sourceRecordCount;
-            List<string> errors;
-            IList<Tuple<string, string>> buildErrors;
-            IList<Tuple<IEntity<Guid>, string>> validateErrors;
-            logger.Trace("before parse file");
-            IList<IEntity<Guid>> records = ImportUtility.ParseXLSXFile(importFilePath, null, builder, validator, Separator, Quote, HasHeader, out sourceRecordCount, out errors, out buildErrors, out validateErrors);
-            logger.Trace("after parse file");
-
-            // Обработать ошибки
-            foreach (string err in errors) {
-                Errors.Add(err);
-            }
-            if (errors.Any()) {
-                HasErrors = true;
-                throw new ApplicationException("An error occurred while parsing the import file");
-            }
-
-            return records;
-        }
-
-        private ImportResultFilesModel ApplyImport(IList<IEntity<Guid>> sourceRecords, out int successCount, out int warningCount, out int errorCount) {
+        protected override ImportResultFilesModel ApplyImport(IList<IEntity<Guid>> sourceRecords, out int successCount, out int warningCount, out int errorCount) {
 
             // Логика переноса данных из временной таблицы в постоянную
             // Получить записи текущего импорта
@@ -144,7 +49,7 @@ namespace Module.Host.TPM.Actions {
                 // Получить функцию Validate
                 var validator = ImportModelFactory.GetImportValidator(ImportType);
                 // Получить функцию SetProperty
-                var builder = ImportModelFactory.GetModelBuilder(ImportType, ModelType);
+                var builder = ImportModelFactory.GetModelBuilder(ImportType, ImportType);
 
                 //Отфильтровать все записи с типом не 1
                 sourceRecords = sourceRecords.Where(y => ((ImportBaseLine) y).Type == 1).ToList();
@@ -189,8 +94,7 @@ namespace Module.Host.TPM.Actions {
                     .Any(z => z.Product.ZREP == y.Item1 && z.ClientTree.DemandCode == y.Item2 && z.StartDate == y.Item3 && !z.Disabled))
                     .ToList();
 
-                Parallel.ForEach(sourceRecords, item =>
-                {
+                Parallel.ForEach(sourceRecords, item => {
                     string demandCode = ((ImportBaseLine) item).ClientTreeDemandCode;
                     if (clientTreeDemandCodeList.Contains(demandCode)) {
                         Tuple<int, string> clientTreeTuple = clientTreeTupleList.FirstOrDefault(x => x.Item2 == demandCode);
@@ -200,8 +104,7 @@ namespace Module.Host.TPM.Actions {
                     }
                 });
 
-                Parallel.ForEach(sourceRecords, item =>
-                {
+                Parallel.ForEach(sourceRecords, item => {
                     IEntity<Guid> rec;
                     IList<string> warnings;
                     IList<string> validationErrors;
@@ -247,7 +150,7 @@ namespace Module.Host.TPM.Actions {
 
                 errorCount = errorRecords.Count;
                 warningCount = warningRecords.Count;
-                successCount = successList.Count;
+                successCount = resultRecordCount;
                 ImportResultFilesModel resultFilesModel = SaveProcessResultHelper.SaveResultToFile(
                     importModel.Id,
                     hasSuccessList ? successList : null,
@@ -283,14 +186,18 @@ namespace Module.Host.TPM.Actions {
 
             return isSuitable;
         }
-
-        private int InsertDataToDatabase(IEnumerable<IEntity<Guid>> sourceRecords, DatabaseContext context) {
+        protected override int InsertDataToDatabase(IEnumerable<IEntity<Guid>> sourceRecords, DatabaseContext context) {
             ScriptGenerator generator = GetScriptGenerator();
             IList<BaseLine> toCreate = new List<BaseLine>();
             IList<BaseLine> toUpdate = new List<BaseLine>();
-
+            IQueryable<ImportBaseLine> filteredRecords = AddFilter(sourceRecords.Cast<ImportBaseLine>().AsQueryable());
+            if (NeedClearData) {
+                PersistFilter filter = ModuleApplyFilterHelper.BuildBaseLineFilter(StartDate, FinishDate, Filters);
+                string deleteScript = generator.BuildDeleteScript(filter);
+                context.Database.ExecuteSqlCommand(deleteScript);
+            }
             // Забор по уникальным полям
-            var groups = sourceRecords.Select(bli => (ImportBaseLine) bli).GroupBy(bl => new { bl.ProductZREP, bl.ClientTreeDemandCode, bl.StartDate });
+            var groups = filteredRecords.Select(bli => (ImportBaseLine) bli).GroupBy(bl => new { bl.ProductZREP, bl.ClientTreeDemandCode, bl.StartDate });
             foreach (var group in groups) {
                 //Выбор записи с Type 1
                 ImportBaseLine newRecord = group.FirstOrDefault(y => y.Type == 1);
@@ -324,42 +231,29 @@ namespace Module.Host.TPM.Actions {
                 }
             }
 
-            foreach (IEnumerable<BaseLine> items in toCreate.Partition(100)) {
+            foreach (IEnumerable<BaseLine> items in toCreate.Partition(10000)) {
                 context.Set<BaseLine>().AddRange(items);
             }
 
-            foreach (IEnumerable<BaseLine> items in toUpdate.Partition(10000)) {
+            foreach (IEnumerable<BaseLine> items in toUpdate.Partition(1000)) {
                 string insertScript = String.Join("", items.Select(y => String.Format("UPDATE BaseLine SET QTY = {0}, Price = {1}, BaselineLSV = {2}, Type = {3},LastModifiedDate = '{4:yyyy-MM-dd HH:mm:ss +03:00}'  WHERE Id = '{5}';", y.QTY, y.Price, y.BaselineLSV, y.Type, y.LastModifiedDate, y.Id)));
                 context.Database.ExecuteSqlCommand(insertScript);
             }
 
+            //Добавление изменений в историю
+            List<Core.History.OperationDescriptor<Guid>> toHis = new List<Core.History.OperationDescriptor<Guid>>();
+            foreach (var item in toUpdate) {
+                toHis.Add(new Core.History.OperationDescriptor<Guid>() { Operation = OperationType.Updated, Entity = item });
+            }
+            context.HistoryWriter.Write(toHis.ToArray(), context.AuthManager.GetCurrentUser(), context.AuthManager.GetCurrentRole());
+
             context.SaveChanges();
 
-            return sourceRecords.Count();
+            return filteredRecords.Count();
         }
 
-        private ScriptGenerator GetScriptGenerator() {
-            if (Generator == null) {
-                Generator = new ScriptGenerator(ModelType);
-            }
-            return Generator;
-        }
-
-        private IEnumerable<BaseLine> GetQuery(DatabaseContext context) {
-            IQueryable<BaseLine> query = context.Set<BaseLine>().AsNoTracking();
-            return query.ToList();
-        }
-
-        private string GetImportStatus() {
-            if (HasErrors) {
-                if (AllowPartialApply) {
-                    return ImportUtility.StatusName.PARTIAL_COMPLETE;
-                } else {
-                    return ImportUtility.StatusName.ERROR;
-                }
-            } else {
-                return ImportUtility.StatusName.COMPLETE;
-            }
+        private IQueryable<ImportBaseLine> AddFilter(IQueryable<ImportBaseLine> source) {
+            return ModuleApplyFilterHelper.ApplyFilter(source, StartDate, FinishDate, Filters);
         }
     }
 }

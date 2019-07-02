@@ -94,14 +94,21 @@ Ext.define('App.view.core.associatedmailnotificationsetting.mailnotificationsett
         }, {
             xtype: 'textfield',
             name: 'To',
+            vtype: 'extendEmail',
             fieldLabel: l10n.ns('core', 'AssociatedMailNotificationSetting').value('To')
         }, {
             xtype: 'textfield',
             name: 'CC',
+            vtype: 'extendEmail',
+            allowBlank: true,
+            allowOnlyWhitespace: true,
             fieldLabel: l10n.ns('core', 'AssociatedMailNotificationSetting').value('CC')
         }, {
             xtype: 'textfield',
             name: 'BCC',
+            vtype: 'extendEmail',
+            allowBlank: true,
+            allowOnlyWhitespace: true,
             fieldLabel: l10n.ns('core', 'AssociatedMailNotificationSetting').value('BCC')
         }]
     }]

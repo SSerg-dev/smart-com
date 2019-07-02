@@ -5,7 +5,8 @@
     fields: [
         { name: 'Id', hidden: true },
         { name: 'ClientTreeId', hidden: true, isDefault: true },
-        { name: 'BudgetSubItemId', hidden: true, isDefault: true },        
+        { name: 'BudgetSubItemId', hidden: true, isDefault: true },
+        { name: 'Number', type: 'int', hidden: false, isDefault: true },
         {
             name: 'BudgetSubItemName', type: 'string', mapping: 'BudgetSubItem.Name', defaultFilterConfig: { valueField: 'Name' },
             breezeEntityType: 'BudgetSubItem', hidden: false, isDefault: true

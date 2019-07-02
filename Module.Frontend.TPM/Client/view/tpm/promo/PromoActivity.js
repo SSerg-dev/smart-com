@@ -31,111 +31,84 @@
                 flex: 1,
                 items: [{
                     xtype: 'fieldset',
-                    title: l10n.ns('tpm', 'PromoActivity').value('InstoreAssumption'),
-                    name: 'instoreAssumptionFieldset',
+                    title: l10n.ns('tpm', 'PromoActivity').value('PlanInstoreAssumption'),
+                    name: 'planInstoreAssumptionFieldset',
                     layout: {
-                        type: 'hbox',
+                        type: 'vbox',
                         align: 'stretch'
                     },
                     items: [{
-                        xtype: 'searchcombobox',
-                        flex: 1,
-                        layout: 'anchor',
-                        padding: '0 5 5 5',
-                        fieldLabel: l10n.ns('tpm', 'PromoActivity').value('Mechanic'),
-                        labelAlign: 'top',
-                        name: 'ActualInstoreMechanicId',
-                        selectorWidget: 'mechanic',
-                        valueField: 'Id',
-                        displayField: 'Name',
-                        entityType: 'Mechanic',
-                        needReadOnly: true,
-                        allowBlank: true,
-                        crudAccess: ['Administrator', 'FunctionalExpert', 'CustomerMarketing', 'KeyAccountManager'],
-                        store: {
-                            type: 'promoformmechanicstore'
+                        xtype: 'container',
+                        layout: {
+                            type: 'hbox',
+                            align: 'stretch'
                         },
-                        onTrigger3Click: function () {
-                            var promoController = App.app.getController('tpm.promo.Promo'),
-                                promoMechanic = Ext.ComponentQuery.query('#promoActivity_step1')[0],
-                                mechanicFields = promoController.getMechanicFields(promoMechanic);
-
-                            promoController.resetFields([
-                                mechanicFields.actualInstoreMechanicFields.actualInstoreMechanicId,
-                                mechanicFields.actualInstoreMechanicFields.actualInstoreMechanicTypeId,
-                                mechanicFields.actualInstoreMechanicFields.actualInstoreMechanicDiscount
-                            ]);
-
-                            promoController.disableFields([
-                                mechanicFields.actualInstoreMechanicFields.actualInstoreMechanicTypeId,
-                                mechanicFields.actualInstoreMechanicFields.actualInstoreMechanicDiscount
-                            ]);
-                        },
-                        
-                       
-                        mapping: [{
-                            from: 'Name',
-                            to: 'ActualInstoreMechanicName'
-                        }]
-                    }, {
-                        xtype: 'searchcombobox',
-                        flex: 1,
-                        layout: 'anchor',
-                        padding: '0 5 5 5',
-                        fieldLabel: 'Type',
-                        labelAlign: 'top',
-                        name: 'ActualInstoreMechanicTypeId',
-                        selectorWidget: 'mechanictype',
-                        valueField: 'Id',
-                        displayField: 'Name',
-                        entityType: 'MechanicType',
-                        needUpdateMappings: true,
-                        needReadOnly: true,
-                        allowBlank: false,
-                        allowOnlyWhitespace: false,
-                        allowDecimals: false,
-                        allowExponential: false,
-                        crudAccess: ['Administrator', 'FunctionalExpert', 'CustomerMarketing', 'KeyAccountManager'],
-                        store: {
-                            type: 'promoformmechanictypestore'
-                        },
-                        onTrigger3Click: function () {
-                            var promoController = App.app.getController('tpm.promo.Promo'),
-                                promoMechanic = Ext.ComponentQuery.query('#promoActivity_step1')[0],
-                                mechanicFields = promoController.getMechanicFields(promoMechanic);
-
-                            promoController.resetFields([
-                                mechanicFields.actualInstoreMechanicFields.actualInstoreMechanicTypeId,
-                                mechanicFields.actualInstoreMechanicFields.actualInstoreMechanicDiscount
-                            ]);
-                        },
-                        mapping: [{
-                            from: 'Name',
-                            to: 'ActualInstoreMechanicTypeName'
+                        items: [{
+                            xtype: 'textfield',
+                            name: 'PlanInstoreMechanicIdInActivity',
+                            flex: 1,
+                            layout: 'anchor',
+                            padding: '0 5 5 5',
+                            fieldLabel: l10n.ns('tpm', 'PromoActivity').value('Mechanic'),
+                            labelAlign: 'top',
+                            id: 'PlanInstoreMechanicIdInActivity',
+                            readOnly: true,
+                            readOnlyCls: 'readOnlyField',
+                            needReadOnly: true,
+                            setReadOnly: function () { return false },
+                            allowBlank: true,
+                            customTip: l10n.ns('tpm', 'Promo').value('ActualInStoreMechanicNameTip'),
+                            crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager']
                         }, {
-                            from: 'Discount',
-                            to: 'ActualInstoreMechanicDiscount'
+                            xtype: 'textfield',
+                            name: 'PlanInstoreMechanicTypeIdInActivity',
+                            flex: 1,
+                            layout: 'anchor',
+                            padding: '0 5 5 5',
+                            fieldLabel: 'Type',
+                            labelAlign: 'top',
+                            id: 'PlanInstoreMechanicTypeIdInActivity',
+                            entityType: 'MechanicType',
+                            readOnly: true,
+                            readOnlyCls: 'readOnlyField',
+                            needReadOnly: true,
+                            setReadOnly: function () { return false },
+                            crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager']
+                        }, {
+                            xtype: 'numberfield',
+                            name: 'PlanInstoreMechanicDiscountInActivity',
+                            flex: 1,
+                            layout: 'anchor',
+                            id: 'PlanInstoreMechanicDiscountInActivity',
+                            minValue: 1,
+                            maxValue: 100,
+                            fieldLabel: 'Discount',
+                            labelAlign: 'top',
+                            padding: '0 5 5 5',
+                            readOnly: true,
+                            readOnlyCls: 'readOnlyField',
+                            needReadOnly: true,
+                            setReadOnly: function () { return false },
+                            crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager']
                         }]
-                    }, {
+                    },{
                         xtype: 'numberfield',
                         flex: 1,
                         layout: 'anchor',
-                        name: 'ActualInstoreMechanicDiscount',
-                        minValue: 1,
-                        maxValue: 100,
-                        fieldLabel: 'Discount',
-                        labelAlign: 'top',
+                        name: 'PlanInStoreShelfPrice',
+                        fieldLabel: l10n.ns('tpm', 'Promo').value('PlanInStoreShelfPrice'),
+                        labelAlign: 'left',
+                        labelWidth: 120,
                         padding: '0 5 5 5',
+                        readOnly: true,
+                        readOnlyCls: 'readOnlyField',
                         needReadOnly: true,
                         isChecked: true,
-                        allowBlank: false,
-                        allowOnlyWhitespace: false,
-                        allowDecimals: false,
+                        allowBlank: true,
+                        allowOnlyWhitespace: true,
+                        allowDecimals: true,
                         allowExponential: false,
-                        crudAccess: ['Administrator', 'FunctionalExpert', 'CustomerMarketing', 'KeyAccountManager'],
-                        listeners: {
-                            change: this.invoiceAndPricesChangeListener
-                        }
+                        crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager']
                     }]
                 }]
             }, {
@@ -154,55 +127,147 @@
                         element: 'el'
                     }
                 }
-            }, {
-                xtype: 'custompromopanel',
-                minWidth: 245,
-                flex: 1,
-                items: [{
-                    xtype: 'fieldset',
-                    title: l10n.ns('tpm', 'PromoActivity').value('InvoiceAndPrices'),
-                    name: 'invoiceAndPricesFieldset',
-                    layout: {
-                        type: 'hbox',
-                        align: 'stretch'
-                    },
+                }, {
+                    xtype: 'custompromopanel',
+                    minWidth: 245,
+                    flex: 1,
                     items: [{
-                        xtype: 'numberfield',
-                        flex: 1,
-                        layout: 'anchor',
-                        name: 'ActualInStoreShelfPrice',
-                        fieldLabel: l10n.ns('tpm', 'Promo').value('ActualInStoreShelfPrice'),
-                        labelAlign: 'top',
-                        padding: '0 5 5 5',
-                        needReadOnly: true,
-                        isChecked: true,
-                        allowBlank: false,
-                        allowOnlyWhitespace: false,
-                        allowDecimals: true,
-                        allowExponential: false,
-                        crudAccess: ['Administrator', 'FunctionalExpert', 'CustomerMarketing', 'KeyAccountManager'],
-                        listeners: {
-                            change: this.invoiceAndPricesChangeListener
-                        }
-                    }, {
-                        xtype: 'textfield',
-                        name: 'InvoiceNumber',
-                        flex: 1,
-                        layout: 'anchor',
-                        fieldLabel: l10n.ns('tpm', 'Promo').value('InvoiceNumber'),
-                        labelAlign: 'top',
-                        padding: '0 5 5 5',
-                        needReadOnly: true,
-                        isChecked: true,
-                        allowBlank: false,
-                        allowOnlyWhitespace: false,
-                        crudAccess: ['Administrator', 'FunctionalExpert', 'CustomerMarketing', 'KeyAccountManager'],
-                        listeners: {
-                            change: this.invoiceAndPricesChangeListener
-                        }
+                        xtype: 'fieldset',
+                        title: l10n.ns('tpm', 'PromoActivity').value('ActualInStore'),
+                        name: 'actualInStoreFieldset',
+                        layout: {
+                            type: 'vbox',
+                            align: 'stretch'
+                        },
+                        items: [{
+                            xtype: 'container',
+                            layout: {
+                                type: 'hbox',
+                                align: 'stretch'
+                            },
+                            items: [{
+                                xtype: 'searchcombobox',
+                                flex: 1,
+                                layout: 'anchor',
+                                padding: '0 5 5 5',
+                                fieldLabel: l10n.ns('tpm', 'PromoActivity').value('Mechanic'),
+                                labelAlign: 'top',
+                                name: 'ActualInstoreMechanicId',
+                                selectorWidget: 'mechanic',
+                                valueField: 'Id',
+                                displayField: 'Name',
+                                entityType: 'Mechanic',
+                                readOnlyCls: 'readOnlyField',
+                                needReadOnly: true,
+                                allowBlank: true,
+                                crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
+                                customTip: l10n.ns('tpm', 'Promo').value('ActualInStoreMechanicNameTip'),
+                                store: {
+                                    type: 'promoformmechanicstore'
+                                },
+                                onTrigger3Click: function () {
+                                    var promoController = App.app.getController('tpm.promo.Promo'),
+                                        promoMechanic = Ext.ComponentQuery.query('#promoActivity_step1')[0],
+                                        mechanicFields = promoController.getMechanicFields(promoMechanic);
+
+                                    promoController.resetFields([
+                                        mechanicFields.actualInstoreMechanicFields.actualInstoreMechanicId,
+                                        mechanicFields.actualInstoreMechanicFields.actualInstoreMechanicTypeId,
+                                        mechanicFields.actualInstoreMechanicFields.actualInStoreDiscount
+                                    ]);
+
+                                    promoController.disableFields([
+                                        mechanicFields.actualInstoreMechanicFields.actualInstoreMechanicTypeId,
+                                        mechanicFields.actualInstoreMechanicFields.actualInStoreDiscount
+                                    ]);
+                                },
+                                mapping: [{
+                                    from: 'Name',
+                                    to: 'ActualInstoreMechanicName'
+                                }]
+                            }, {
+                                xtype: 'searchcombobox',
+                                flex: 1,
+                                layout: 'anchor',
+                                padding: '0 5 5 5',
+                                fieldLabel: 'Type',
+                                labelAlign: 'top',
+                                name: 'ActualInstoreMechanicTypeId',
+                                selectorWidget: 'mechanictype',
+                                valueField: 'Id',
+                                displayField: 'Name',
+                                entityType: 'MechanicType',
+                                needUpdateMappings: true,
+                                readOnlyCls: 'readOnlyField',
+                                needReadOnly: true,
+                                allowBlank: false,
+                                allowOnlyWhitespace: false,
+                                allowDecimals: false,
+                                allowExponential: false,
+                                disabled: true,
+                                crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
+                                customTip: l10n.ns('tpm', 'Promo').value('ActualInStoreMechanicTypeNameTip'),
+                                store: {
+                                    type: 'promoformmechanictypestore'
+                                },
+                                onTrigger3Click: function () {
+                                    var promoController = App.app.getController('tpm.promo.Promo'),
+                                        promoMechanic = Ext.ComponentQuery.query('#promoActivity_step1')[0],
+                                        mechanicFields = promoController.getMechanicFields(promoMechanic);
+
+                                    promoController.resetFields([
+                                        mechanicFields.actualInstoreMechanicFields.actualInstoreMechanicTypeId,
+                                        mechanicFields.actualInstoreMechanicFields.actualInStoreDiscount
+                                    ]);
+                                },
+                                mapping: [{
+                                    from: 'Name',
+                                    to: 'ActualInstoreMechanicTypeName'
+                                }, {
+                                    from: 'Discount',
+                                    to: 'ActualInStoreDiscount'
+                                }]
+                            }, {
+                                xtype: 'numberfield',
+                                flex: 1,
+                                layout: 'anchor',
+                                name: 'ActualInStoreDiscount',
+                                minValue: 1,
+                                maxValue: 100,
+                                fieldLabel: 'Discount',
+                                labelAlign: 'top',
+                                padding: '0 5 5 5',
+                                readOnlyCls: 'readOnlyField',
+                                needReadOnly: true,
+                                isChecked: true,
+                                allowBlank: false,
+                                allowOnlyWhitespace: false,
+                                allowDecimals: false,
+                                allowExponential: false,
+                                disabled: true,
+                                crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
+                                customTip: l10n.ns('tpm', 'Promo').value('ActualInStoreMechanicDiscountTip'),
+                            }]
+                        }, {
+                            xtype: 'numberfield',
+                            flex: 1,
+                            layout: 'anchor',
+                            name: 'ActualInStoreShelfPrice',
+                            fieldLabel: l10n.ns('tpm', 'Promo').value('ActualInStoreShelfPrice'),
+                            labelAlign: 'left',
+                            labelWidth: 120,
+                            padding: '0 5 5 5',
+                            readOnlyCls: 'readOnlyField',
+                            needReadOnly: true,
+                            isChecked: true,
+                            allowBlank: true,
+                            allowOnlyWhitespace: true,
+                            allowDecimals: true,
+                            allowExponential: false,
+                            crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager']
+                        }]
                     }]
                 }]
-            }]
         },
         // promoActivity_step2
         {
@@ -274,6 +339,18 @@
                                 labelAlign: 'right',
                                 style: 'margin-left: 10px',
                                 crudAccess: ['Administrator', 'FunctionalExpert', 'DemandPlanning'],
+                                listeners: {
+                                    change: function (checkbox, newValue, oldValue) {
+                                        var planPromoUpliftNumberField = this.up('container').down('numberfield[name=PlanPromoUpliftPercent]');
+                                        if (newValue) {
+                                            planPromoUpliftNumberField.setReadOnly(false);
+                                            planPromoUpliftNumberField.removeCls('readOnlyField');
+                                        } else {
+                                            planPromoUpliftNumberField.setReadOnly(true);
+                                            planPromoUpliftNumberField.addCls('readOnlyField');
+                                        }
+                                    }
+                                }
                             }]
                         }, {
                             xtype: 'triggerfielddetails',
@@ -316,7 +393,7 @@
                             xtype: 'triggerfielddetails',
                             name: 'PlanPromoIncrementalLSV',
                             fieldLabel: l10n.ns('tpm', 'Promo').value('PlanPromoIncrementalLSV'),
-                            dataIndexes: ['PlanProductIncrementalQty'],
+                            dataIndexes: ['PlanProductIncrementalLSV'],
                             blockMillion: false, // если true - то преобразовывать в миллионы
                             originValue: null, // настоящее значение
                             valueToRaw: function (value) {
@@ -388,9 +465,9 @@
                             }
                         }, {
                             xtype: 'triggerfielddetails',
-                            name: 'PlanPostPromoEffect',
-                            fieldLabel: l10n.ns('tpm', 'Promo').value('PlanPostPromoEffect'),
-                            dataIndexes: ['PlanProductPostPromoEffectQty'],
+                            name: 'PlanPromoPostPromoEffectLSV',
+                            fieldLabel: l10n.ns('tpm', 'Promo').value('PlanPromoPostPromoEffectLSV'),
+                            dataIndexes: ['PlanProductPostPromoEffectLSV'],
                             blockMillion: false, // если true - то преобразовывать в миллионы
                             originValue: null, // настоящее значение
                             valueToRaw: function (value) {
@@ -486,7 +563,7 @@
                             xtype: 'triggerfielddetails',
                             name: 'ActualPromoBaselineLSV',
                             fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoBaselineLSV'),
-                            dataIndexes: ['PlanProductBaselineLSV'],
+                            dataIndexes: ['ActualProductBaselineLSV'],
                             blockMillion: false, // если true - то преобразовывать в миллионы
                             originValue: null, // настоящее значение
                             valueToRaw: function (value) {
@@ -524,7 +601,7 @@
                             xtype: 'triggerfielddetails',
                             name: 'ActualPromoIncrementalLSV',
                             fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoIncrementalLSV'),
-                            dataIndexes: ['PlanProductIncrementalQty'],
+                            dataIndexes: ['ActualProductIncrementalLSV'],
                             blockMillion: false, // если true - то преобразовывать в миллионы
                             originValue: null, // настоящее значение
                             valueToRaw: function (value) {
@@ -557,83 +634,139 @@
                                 blur: function (field) {
                                     this.blockMillion = false;
                                 },
+                            }
+                            }, {
+                                xtype: 'triggerfielddetails',
+                                name: 'ActualPromoPostPromoEffectLSV',
+                                fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoPostPromoEffectLSV'),
+                                dataIndexes: ['ActualProductPostPromoEffectLSV'],
+                                blockMillion: false, // если true - то преобразовывать в миллионы
+                                originValue: null, // настоящее значение
+                                valueToRaw: function (value) {
+                                    var valueToDisplay = null;
+
+                                    if (value !== null && value !== undefined) {
+                                        if (this.blockMillion) {
+                                            valueToDisplay = value;
+                                        }
+                                        else {
+                                            this.originValue = value;
+                                            valueToDisplay = value / 1000000.0;
+                                        }
+                                    }
+
+                                    return Ext.util.Format.number(valueToDisplay, '0.00');
+                                },
+                                rawToValue: function () {
+                                    var parsedValue = parseFloat(String(this.originValue).replace(Ext.util.Format.decimalSeparator, "."))
+                                    return isNaN(parsedValue) ? null : parsedValue;
+                                },
+                                listeners: {
+                                    change: this.activityChangeListener,
+                                    afterrender: function (el) {
+                                        el.triggerCell.addCls('form-info-trigger-cell')
+                                    },
+                                    focus: function (field) {
+                                        this.blockMillion = true;
+                                    },
+                                    blur: function (field) {
+                                        this.blockMillion = false;
+                                    },
+                                }
+                            }, {
+                                xtype: 'triggerfielddetails',
+                                name: 'ActualPromoLSV',
+                                fieldLabel: l10n.ns('tpm', 'Promo').value('PlanPromoLSV'),
+                                dataIndexes: ['ActualProductLSV'],
+                                value: '0',
+                                blockMillion: false, // если true - то преобразовывать в миллионы
+                                originValue: null, // настоящее значение
+                                valueToRaw: function (value) {
+                                    var valueToDisplay = null;
+
+                                    if (value !== null && value !== undefined) {
+                                        if (this.blockMillion) {
+                                            valueToDisplay = value;
+                                        }
+                                        else {
+                                            this.originValue = value;
+                                            valueToDisplay = value / 1000000.0;
+                                        }
+                                    }
+
+                                    return Ext.util.Format.number(valueToDisplay, '0.00');
+                                },
+                                rawToValue: function () {
+                                    var parsedValue = parseFloat(String(this.originValue).replace(Ext.util.Format.decimalSeparator, "."))
+                                    return isNaN(parsedValue) ? null : parsedValue;
+                                },
+                                listeners: {
+                                    change: this.activityChangeListener,
+                                    afterrender: function (el) {
+                                        el.triggerCell.addCls('form-info-trigger-cell')
+                                    },
+                                    focus: function (field) {
+                                        this.blockMillion = true;
+                                    },
+                                    blur: function (field) {
+                                        this.blockMillion = false;
+                                    },
+                                }
+                            }, {
+                                xtype: 'triggerfielddetails',
+                                name: 'ActualPromoLSVByCompensation',
+                                fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoLSVByCompensation'),
+                                dataIndexes: ['ActualPromoLSVByCompensation', 'ActualProductLSVByCompensation'],
+                                blockMillion: false, // если true - то преобразовывать в миллионы
+                                originValue: null, // настоящее значение
+                                valueToRaw: function (value) {
+                                    var valueToDisplay = null; 
+
+                                    if (value !== null && value !== undefined) {
+                                        if (this.blockMillion) {
+                                            valueToDisplay = value;
+                                        }
+                                        else {
+                                            this.originValue = value;
+                                            valueToDisplay = value / 1000000.0;
+                                        }
+                                    }
+
+                                    return Ext.util.Format.number(valueToDisplay, '0.00');
+                                },
+                                rawToValue: function () {
+                                    var parsedValue = parseFloat(String(this.originValue).replace(Ext.util.Format.decimalSeparator, "."))
+                                    return isNaN(parsedValue) ? null : parsedValue;
+                                },
+                                listeners: {
+                                    change: this.activityChangeListener,
+                                    afterrender: function (el) {
+                                        el.triggerCell.addCls('form-info-trigger-cell')
+                                    },
+                                    focus: function (field) {
+                                        this.blockMillion = true;
+                                    },
+                                    blur: function (field) {
+                                        this.blockMillion = false;
+                                    },
                             }
                         }, {
-                            xtype: 'triggerfielddetails',
-                            name: 'ActualPromoLSV',
-                            fieldLabel: l10n.ns('tpm', 'Promo').value('PlanPromoLSV'),
-                            dataIndexes: ['ActualProductLSV'],
-                            blockMillion: false, // если true - то преобразовывать в миллионы
-                            originValue: null, // настоящее значение
-                            valueToRaw: function (value) {
-                                var valueToDisplay = null; 
-
-                                if (value !== null && value !== undefined) {
-                                    if (this.blockMillion) {
-                                        valueToDisplay = value;
-                                    }
-                                    else {
-                                        this.originValue = value;
-                                        valueToDisplay = value / 1000000.0;
-                                    }
-                                }
-
-                                return Ext.util.Format.number(valueToDisplay, '0.00');
-                            },
-                            rawToValue: function () {
-                                var parsedValue = parseFloat(String(this.originValue).replace(Ext.util.Format.decimalSeparator, "."))
-                                return isNaN(parsedValue) ? null : parsedValue;
-                            },
-                            listeners: {
-                                change: this.activityChangeListener,
-                                afterrender: function (el) {
-                                    el.triggerCell.addCls('form-info-trigger-cell')
-                                },
-                                focus: function (field) {
-                                    this.blockMillion = true;
-                                },
-                                blur: function (field) {
-                                    this.blockMillion = false;
-                                },
-                            }
-                        }, {
-                            xtype: 'triggerfielddetails',
-                            name: 'FactPostPromoEffect',
-                            fieldLabel: l10n.ns('tpm', 'Promo').value('FactPostPromoEffect'),
-                            dataIndexes: ['ActualProductPostPromoEffectQty'],
-                            blockMillion: false, // если true - то преобразовывать в миллионы
-                            originValue: null, // настоящее значение
-                            valueToRaw: function (value) {
-                                var valueToDisplay = null; 
-
-                                if (value !== null && value !== undefined) {
-                                    if (this.blockMillion) {
-                                        valueToDisplay = value;
-                                    }
-                                    else {
-                                        this.originValue = value;
-                                        valueToDisplay = value / 1000000.0;
-                                    }
-                                }
-
-                                return Ext.util.Format.number(valueToDisplay, '0.00');
-                            },
-                            rawToValue: function () {
-                                var parsedValue = parseFloat(String(this.originValue).replace(Ext.util.Format.decimalSeparator, "."))
-                                return isNaN(parsedValue) ? null : parsedValue;
-                            },
-                            listeners: {
-                                change: this.activityChangeListener,
-                                afterrender: function (el) {
-                                    el.triggerCell.addCls('form-info-trigger-cell')
-                                },
-                                focus: function (field) {
-                                    this.blockMillion = true;
-                                },
-                                blur: function (field) {
-                                    this.blockMillion = false;
-                                },
-                            }
+                        xtype: 'textfield',
+                        name: 'InvoiceNumber',
+                        flex: 1,
+                        layout: 'anchor',
+                        regex: /^([0-9a-zA-ZА-Яа-я]{4,}[,])*[0-9a-zA-ZА-Яа-я]{4,}$/,
+                        regexText: l10n.ns('tpm', 'Promo').value('InvoiceNumberRegex'),
+                        fieldLabel: l10n.ns('tpm', 'Promo').value('InvoiceNumber'),
+                        labelAlign: 'left',
+                        //Для одного уровня с остальными полями
+                        labelWidth: 190,
+                        padding: '0 5 5 5',
+                        needReadOnly: true,
+                        isChecked: true,
+                        allowBlank: true,
+                        allowOnlyWhitespace: true,
+                        crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager']
                         }]
                     }, {
                         xtype: 'container',

@@ -5,11 +5,45 @@
     minWidth: 500,
     maxHeight: 500,
 
-    listeners:{
+    listeners: {
         afterrender: function (window) {
             window.down('searchcombobox[name=BrandId]').hide();
-            window.down('searchcombobox[name=TechnologyId]').hide();
-        }
+
+            var brandTechWin = window.down('searchcombobox[name = TechnologyId]');
+            brandTechWin.hide();
+            var brandTechStore = brandTechWin.getStore();
+            var currentNode = Ext.ComponentQuery.query('producttreegrid')[0].getSelectionModel().getSelection()[0];
+            var brandId = currentNode.data.BrandId;
+
+            if (window.down('searchcombobox[name = Type]').value) {
+                if (currentNode.parentNode) {
+                    if (currentNode.parentNode.data.root) {
+                        window.down('numberfield[name = NodePriority]').setDisabled(false);
+                    } else {
+                        window.down('numberfield[name = NodePriority]').hide();
+                    }
+                }
+            } else {
+                if (currentNode.data.root) {
+                    window.down('numberfield[name = NodePriority]').setDisabled(false);
+                } else {
+                    window.down('numberfield[name = NodePriority]').hide();
+                }
+            }
+            while (!brandId && currentNode.parentNode) {
+                brandId = currentNode.data.BrandId;
+                currentNode = currentNode.parentNode;
+            }
+
+            if (brandId) {
+                brandTechStore.setFixedFilter('BrandId', {
+                    property: 'BrandId',
+                    operation: 'Equals',
+                    value: brandId
+                });
+            }
+
+        },
     },
 
     items: [{
@@ -59,6 +93,7 @@
                         field.up('editorform').down('searchcombobox[name=TechnologyId]').hide();
                         field.up('editorform').down('textfield[name=Name]').show();
                         field.up('editorform').down('textfield[name=Abbreviation]').setDisabled(true);
+                        field.up('editorform').down('textfield[name=NodePriority]').setDisabled(true);
                     }
                 }
             },
@@ -97,27 +132,113 @@
             fieldLabel: l10n.ns('tpm', 'ProductTree').value('Name'),
             name: 'TechnologyId',
             selectorWidget: 'technology',
-            valueField: 'Id',
-            displayField: 'Name',
+            valueField: 'TechnologyId',
+            displayField: 'TechnologyName',
             entityType: 'Technology',
             allowBlank: true,
             allowOnlyWhitespace: true,
             store: {
                 type: 'simplestore',
-                model: 'App.model.tpm.technology.Technology',
+                model: 'App.model.tpm.brandtech.BrandTech',
                 extendedFilter: {
                     xclass: 'App.ExtFilterContext',
                     supportedModels: [{
                         xclass: 'App.ExtSelectionFilterModel',
-                        model: 'App.model.tpm.technology.Technology',
+                        model: 'App.model.tpm.brandtech.BrandTech',
                         modelId: 'efselectionmodel'
                     }]
                 }
             },
             mapping: [{
-                from: 'Name',
+                from: 'TechnologyName',
                 to: 'Name'
-            }]
+            }],
+            onTrigger2Click: function () {
+                // из-за того, что в этом элементе стор - BrandTech, а по клику на лупу должен открываться грид Technology, приходится переопределить это действие(нажатие на лупу)
+                var window,
+                    me = this,
+                    technologyStore = Ext.create('App.store.core.SimpleStore', {
+                        model: 'App.model.tpm.technology.Technology',
+                        extendedFilter: {
+                            xclass: 'App.ExtFilterContext',
+                            supportedModels: [{
+                                xclass: 'App.ExtSelectionFilterModel',
+                                model: 'App.model.tpm.technology.Technology',
+                                modelId: 'efselectionmodel'
+                            }]
+                        }
+                    }
+                );
+                
+                var selectorWidgetConfig = this.selectorWidgetConfig || {};
+                selectorWidgetConfig.xtype = this.selectorWidget;
+
+                window = this.window = Ext.widget('selectorwindow', {
+                    title: l10n.ns('core').value('selectorWindowTitle'),
+                    items: [selectorWidgetConfig]
+                });
+
+                if (!this.defaultStoreState) {
+                    this.defaultStoreState = technologyStore.getState() || {};
+                    Ext.applyIf(this.defaultStoreState, {
+                        sorters: [],
+                        filters: []
+                    });
+                }
+
+                this.getGrid().bindStore(technologyStore);
+
+                // в searchfield должна попасть запись BrandTech, но в гриде Technology выбирается запись Technology, поэтому выбираем нужную запись из стора BrandTech по TechnologyId
+                window.down('#select').on('click', function (button) {
+                    var selModel = window.down(this.selectorWidget).down('grid').getSelectionModel(),
+                        technoligyRecord = selModel.hasSelection() ? selModel.getSelection()[0] : null,
+                        techNameNumber = me.store.find('TechnologyId', technoligyRecord.data.Id);
+
+                    if (techNameNumber !== -1) {
+                        var record = me.store.getAt(techNameNumber);
+                        me.setValue(record);
+                        me.fireEvent('select', me, record);
+                    }
+
+                    window.close();
+                }, this);
+
+                window.down('#cancel').on('click', this.onCancelButtonClick, this);
+                window.on('close', this.onWindowClose, this);
+                this.getGrid().on('selectionchange', this.onSelectionChange, this);
+                this.getGrid().getStore().on({
+                    single: true,
+                    scope: this,
+                    load: this.onFirstLoad
+                });
+
+                if (window) {
+                    window.show();
+
+                    window.down('#createbutton').hide();
+                    window.down('#updatebutton').hide();
+                    window.down('#deletebutton').hide();
+                    window.down('#historybutton').hide();
+                    window.down('#deletedbutton').hide();
+                    // необходимо отфильтровать записи в гриде, аналогично выпадающему списку в searchfield (выбираются технологии по связи Brand-Tecnology из справочника BrandTech)
+                    var technologyIds = [],
+                        technologyRecords = this.store.getRange(0, this.store.getCount());
+
+                    technologyRecords.forEach(function (record) {
+                        technologyIds.push(record.data.TechnologyId);
+                    });
+                    if (technologyIds.length === 0) {
+                        window.close();
+                        App.Notify.pushError(l10n.ns('tpm', 'ProductTree').value('ErrorNoBrandTech'));
+                    } else {
+                        technologyStore.setFixedFilter('Id', {
+                            property: 'Id',
+                            operation: 'In',
+                            value: technologyIds
+                        });
+                    }
+                }
+            }
         }, {
             xtype: 'textfield',
             name: 'Name',
@@ -129,6 +250,14 @@
             name: 'Abbreviation',
             disabled: true,
             fieldLabel: l10n.ns('tpm', 'ProductTree').value('Abbreviation')
+        }, {
+            xtype: 'numberfield',
+            name: 'NodePriority',
+            disabled: true,
+            fieldLabel: l10n.ns('tpm', 'ProductTree').value('NodePriority'),
+            minValue: 0,
+            allowBlank: false,
+            allowOnlyWhitespace: false
         }]
     }]
 });

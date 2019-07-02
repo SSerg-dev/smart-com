@@ -14,7 +14,7 @@ namespace Module.Persist.TPM.PromoStateControl
 
             private readonly string Name = "Approved";
 
-            private readonly List<string> Roles = new List<string> { "Administrator", "CustomerMarketing", "DemandFinance", "DemandPlanning", "FunctionalExpert", "KeyAccountManager" };
+            private readonly List<string> Roles = new List<string> { "Administrator", "CMManager", "CustomerMarketing", "FunctionalExpert", "KeyAccountManager" };
 
             public ApprovedState(PromoStateContext stateContext)
             {
@@ -41,37 +41,45 @@ namespace Module.Persist.TPM.PromoStateControl
                 return RoleStateUtil.GetMapForStatus(Name);
             }
 
-            public bool ChangeState(Promo promoModel, string userRole, out string massage)
+            public bool ChangeState(Promo promoModel, string userRole, out string message)
             {
-                massage = string.Empty;
+                message = string.Empty;
 
                 bool sendForApproval = false;
                 PromoStatus promoStatus;
 
+                Guid? stateIdVP = _stateContext.dbContext.Set<Mechanic>().FirstOrDefault(x => x.SystemName == "VP").Id;
+                Guid? stateIdTPR = _stateContext.dbContext.Set<Mechanic>().FirstOrDefault(x => x.SystemName == "TPR").Id;
+
+                bool isAvailable;
+                bool isAvailableCurrent = PromoStateUtil.CheckAccess(Roles, userRole);
+
                 // Условия для возврата
                 if ((_stateContext.Model.MarsMechanicDiscount < promoModel.MarsMechanicDiscount) ||
-                    (_stateContext.Model.MarsMechanic.SystemName == "VP" && promoModel.MarsMechanic.SystemName == "TPR"))
+                    (_stateContext.Model.MarsMechanicId == stateIdVP && promoModel.MarsMechanicId == stateIdTPR) ||
+                    (_stateContext.Model.ProductHierarchy != promoModel.ProductHierarchy) ||
+                    (_stateContext.Model.StartDate != promoModel.StartDate) ||
+                    (_stateContext.Model.EndDate != promoModel.EndDate))
                 {
                     promoStatus = _stateContext.dbContext.Set<PromoStatus>().First(n => n.SystemName == "DraftPublished");
                     promoModel.PromoStatusId = promoStatus.Id;
                     sendForApproval = true;
+                    isAvailable = isAvailableCurrent;
                 }
                 else
                 {
                     promoStatus = _stateContext.dbContext.Set<PromoStatus>().Find(promoModel.PromoStatusId);
+                    isAvailable = PromoStateUtil.CheckAccess(GetAvailableStates(), promoStatus.SystemName, userRole);
                 }
 
                 string statusName = promoStatus.SystemName;
-
-                bool isAvailable = PromoStateUtil.CheckAccess(GetAvailableStates(), statusName, userRole);
-                bool isAvailableCurrent = PromoStateUtil.CheckAccess(Roles, userRole);
 
                 if (isAvailable)
                 {
                     // Go to: DraftPublishedState (Rejected)
                     if (statusName == "DraftPublished")
                     {
-                        promoModel.IsCustomerMarketingApproved = false;
+                        promoModel.IsCMManagerApproved = false;
                         promoModel.IsDemandPlanningApproved = false;
                         promoModel.IsDemandFinanceApproved = false;
                         promoModel.IsAutomaticallyApproved = false;
@@ -86,17 +94,26 @@ namespace Module.Persist.TPM.PromoStateControl
 
                             _stateContext.Model = promoDraftPublished;
                             promoModel.PromoStatusId = onApprovalStatus.Id;
-                            return _stateContext.ChangeState(promoModel, userRole, out massage);
+                            return _stateContext.ChangeState(promoModel, userRole, out message);
                         }
 
                         return true;
                     }
-                    else
+                    else if (statusName == "Planned")
                     {
                         // Go to: PlannedState
 
                         _stateContext.Model = promoModel;
                         _stateContext.State = _stateContext._plannedState;
+
+                        return true;
+                    }
+                    else 
+                    {
+                        // Go to: CancelledState
+
+                        _stateContext.Model = promoModel;
+                        _stateContext.State = _stateContext._cancelledState;
 
                         return true;
                     }
@@ -110,13 +127,13 @@ namespace Module.Persist.TPM.PromoStateControl
                 }
                 else
                 {
-                    massage = "Action is not available";
+                    message = "Action is not available";
 
                     return false;
                 }
             }
 
-            public bool ChangeState(Promo promoModel, PromoStates promoState, string userRole, out string massage)
+            public bool ChangeState(Promo promoModel, PromoStates promoState, string userRole, out string message)
             {
                 throw new NotImplementedException();
             }

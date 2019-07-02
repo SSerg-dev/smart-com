@@ -27,7 +27,7 @@
 
         { name: 'MarsMechanicName', type: 'string', mapping: 'MarsMechanic.Name', defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'Mechanic', useNull: true, hidden: false, isDefault: false },
         { name: 'MarsMechanicTypeName', type: 'string', mapping: 'MarsMechanicType.Name', defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'MarsMechanicType', useNull: true, hidden: true, isDefault: true },
-        { name: 'MarsMechanicDiscount', type: 'int', hidden: false, isDefault: false },
+        { name: 'MarsMechanicDiscount', type: 'float', hidden: false, isDefault: false },
         { name: 'MechanicComment', type: 'string', hidden: false, isDefault: false },
 
         { name: 'StartDate', useNull: true, type: 'date', hidden: false, isDefault: false },
@@ -41,7 +41,7 @@
 
         { name: 'PlanInstoreMechanicName', type: 'string', type: 'string', mapping: 'PlanInstoreMechanic.Name', defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'PlanInstoreMechanic', useNull: true, hidden: true, isDefault: true },
         { name: 'PlanInstoreMechanicTypeName', type: 'string', type: 'string', mapping: 'PlanInstoreMechanicType.Name', defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'PlanInstoreMechanicType', useNull: true, hidden: true, isDefault: true },
-        { name: 'PlanInstoreMechanicDiscount', type: 'int', hidden: false, isDefault: false },
+        { name: 'PlanInstoreMechanicDiscount', type: 'float', hidden: false, isDefault: false },
 
         { name: 'PlanPromoBaselineLSV', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'PlanPromoIncrementalLSV', useNull: true, type: 'float', hidden: false, isDefault: false },
@@ -64,9 +64,9 @@
 
         { name: 'PlanPromoIncrementalCOGS', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'PlanPromoTotalCost', useNull: true, type: 'float', hidden: false, isDefault: false },       
-        { name: 'PlanPostPromoEffectW1', useNull: true, type: 'float', hidden: false, isDefault: false },
-        { name: 'PlanPostPromoEffectW2', useNull: true, type: 'float', hidden: false, isDefault: false },
-        { name: 'PlanPostPromoEffect', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'PlanPromoPostPromoEffectLSVW1', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'PlanPromoPostPromoEffectLSVW2', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'PlanPromoPostPromoEffectLSV', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'PlanPromoNetIncrementalLSV', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'PlanPromoNetLSV', useNull: true, type: 'float', hidden: false, isDefault: false },
 
@@ -80,18 +80,20 @@
         { name: 'PlanPromoNetIncrementalMAC', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'PlanPromoIncrementalEarnings', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'PlanPromoNetIncrementalEarnings', useNull: true, type: 'float', hidden: false, isDefault: false },
-        { name: 'PlanPromoROIPercent', useNull: true, type: 'int', hidden: false, isDefault: false },
-        { name: 'PlanPromoNetROIPercent', useNull: true, type: 'int', hidden: false, isDefault: false },
-        { name: 'PlanPromoNetUpliftPercent', useNull: true, type: 'int', hidden: false, isDefault: false },
+        { name: 'PlanPromoROIPercent', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'PlanPromoNetROIPercent', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'PlanPromoNetUpliftPercent', useNull: true, type: 'float', hidden: false, isDefault: false },
 
         { name: 'ActualInStoreMechanicName', type: 'string', mapping: 'ActualInStoreMechanic.Name', defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'ActualInStoreMechanic', useNull: true, hidden: true, isDefault: true },
         { name: 'ActualInStoreMechanicTypeName', type: 'string', mapping: 'ActualInStoreMechanicType.Name', defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'ActualInStoreMechanicType', useNull: true, hidden: true, isDefault: true },
-        { name: 'ActualInStoreMechanicDiscount', type: 'int', hidden: false, isDefault: false },
+        { name: 'ActualInStoreDiscount', type: 'float', hidden: false, isDefault: false },
         { name: 'ActualInStoreShelfPrice', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'PlanInStoreShelfPrice', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'InvoiceNumber', type: 'string', hidden: false, isDefault: false },
         { name: 'ActualPromoBaselineLSV', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'ActualPromoIncrementalLSV', useNull: true, type: 'float', hidden: false, isDefault: false },
-        { name: 'ActualPromoLSV', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'ActualPromoLSV', useNull: true, defaultValue: 0, type: 'float', hidden: false, isDefault: false },
+        { name: 'ActualPromoLSVByCompensation', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'ActualPromoUpliftPercent', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'ActualPromoTIShopper', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'ActualPromoTIMarketing', useNull: true, type: 'float', hidden: false, isDefault: false },
@@ -117,9 +119,9 @@
         { name: 'ActualPromoIncrementalCOGS', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'ActualPromoTotalCost', useNull: true, type: 'float', hidden: false, isDefault: false },
 
-        { name: 'FactPostPromoEffectW1', useNull: true, type: 'float', hidden: false, isDefault: false },
-        { name: 'FactPostPromoEffectW2', useNull: true, type: 'float', hidden: false, isDefault: false },
-        { name: 'FactPostPromoEffect', useNull: true, type: 'int', hidden: false, isDefault: false },
+        { name: 'ActualPromoPostPromoEffectLSVW1', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'ActualPromoPostPromoEffectLSVW2', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'ActualPromoPostPromoEffectLSV', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'ActualPromoNetIncrementalLSV', useNull: true, type: 'float', hidden: false, isDefault: false },
 
         { name: 'ActualPromoNetLSV', useNull: true, type: 'float', hidden: false, isDefault: false },
@@ -134,9 +136,10 @@
         { name: 'ActualPromoNetIncrementalMAC', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'ActualPromoIncrementalEarnings', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'ActualPromoNetIncrementalEarnings', useNull: true, type: 'float', hidden: false, isDefault: false },
-        { name: 'ActualPromoROIPercent', useNull: true, type: 'int', hidden: false, isDefault: false },
-        { name: 'ActualPromoNetROIPercent', useNull: true, type: 'int', hidden: false, isDefault: false },
-        { name: 'ActualPromoNetUpliftPercent', useNull: true, type: 'int', hidden: false, isDefault: false },
+        { name: 'ActualPromoROIPercent', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'ActualPromoNetROIPercent', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'ActualPromoNetUpliftPercent', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'InOut', useNull: true, type: 'bool', hidden: false, isDefault: true },
 
     ],
     proxy: {

@@ -32,8 +32,12 @@
             fieldLabel: l10n.ns('tpm', 'Product').value('ZREP'),
         }, {
             xtype: 'singlelinedisplayfield',
-            name: 'EAN',
-            fieldLabel: l10n.ns('tpm', 'Product').value('EAN'),
+            name: 'EAN_Case',
+            fieldLabel: l10n.ns('tpm', 'Product').value('EAN_Case'),
+        },{
+            xtype: 'singlelinedisplayfield',
+            name: 'EAN_PC',
+            fieldLabel: l10n.ns('tpm', 'Product').value('EAN_PC'),
         }, {
             xtype: 'singlelinedisplayfield',
             name: 'ProductRU',
@@ -103,7 +107,9 @@
             name: 'ConsumerPackFormat',
             fieldLabel: l10n.ns('tpm', 'Product').value('ConsumerPackFormat'),
         }, {
-            xtype: 'singlelinedisplayfield',            name: 'UOM_PC2Case',            fieldLabel: l10n.ns('tpm', 'Product').value('UOM_PC2Case'),
+            xtype: 'singlelinedisplayfield',
+            name: 'UOM_PC2Case',
+            fieldLabel: l10n.ns('tpm', 'Product').value('UOM_PC2Case'),
         }]
     }
 });

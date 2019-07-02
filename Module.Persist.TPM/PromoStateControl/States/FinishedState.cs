@@ -13,7 +13,7 @@ namespace Module.Persist.TPM.PromoStateControl
 
             private readonly string Name = "Finished";
 
-            private readonly List<string> Roles = new List<string> { "System", "Administrator", "CustomerMarketing", "DemandFinance", "DemandPlanning", "FunctionalExpert", "KeyAccountManager" };
+            private readonly List<string> Roles = new List<string> { "System", "Administrator", "CMManager", "CustomerMarketing", "DemandFinance", "DemandPlanning", "FunctionalExpert", "KeyAccountManager" };
 
             public FinishedState(PromoStateContext stateContext)
             {
@@ -40,9 +40,9 @@ namespace Module.Persist.TPM.PromoStateControl
                 return RoleStateUtil.GetMapForStatus(Name);
             }
 
-            public bool ChangeState(Promo promoModel, string userRole, out string massage)
+            public bool ChangeState(Promo promoModel, string userRole, out string message)
             {
-                massage = string.Empty;
+                message = string.Empty;
 
                 PromoStatus promoStatus = _stateContext.dbContext.Set<PromoStatus>().Find(promoModel.PromoStatusId);
                 string statusName = promoStatus.SystemName;
@@ -52,12 +52,19 @@ namespace Module.Persist.TPM.PromoStateControl
 
                 if (isAvailable)
                 {
+                    message = CheckPromoForErrors(promoModel);
                     // Go to: closedState
+                    if (message != null)
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        _stateContext.Model = promoModel;
+                        _stateContext.State = _stateContext._closedState;
 
-                    _stateContext.Model = promoModel;
-                    _stateContext.State = _stateContext._closedState;
-
-                    return true;
+                        return true;
+                    }
                 }
                 // Current state
                 else if (isAvailableCurrent && statusName == Name)
@@ -68,15 +75,40 @@ namespace Module.Persist.TPM.PromoStateControl
                 }
                 else
                 {
-                    massage = "Action is not available";
+                    message = "Action is not available";
 
                     return false;
                 }
             }
 
-            public bool ChangeState(Promo promoModel, PromoStates promoState, string userRole, out string massage)
+            public bool ChangeState(Promo promoModel, PromoStates promoState, string userRole, out string message)
             {
                 throw new NotImplementedException();
+            }
+
+            private string CheckPromoForErrors(Promo promoModel)
+            {
+                if (String.IsNullOrEmpty(promoModel.InvoiceNumber))
+                {
+                    return "Invoice Number cannot be empty.";
+                }
+
+                if (!promoModel.ActualPromoLSV.HasValue || promoModel.ActualPromoLSV.Value <= 0)
+                {
+                    return "Actual Promo LSV must be greater than 0.";
+                }
+
+                if (!promoModel.ActualPromoTIMarketing.HasValue || promoModel.ActualPromoTIMarketing.Value < 0)
+                {
+                    return "Actual Marketing TI must be greater or equal 0.";
+                }
+
+                if (!promoModel.ActualPromoCostProduction.HasValue || promoModel.ActualPromoCostProduction.Value < 0)
+                {
+                    return "Actual Promo Cost Production must be greater or equal 0.";
+                }
+
+                return null;
             }
         }
     }

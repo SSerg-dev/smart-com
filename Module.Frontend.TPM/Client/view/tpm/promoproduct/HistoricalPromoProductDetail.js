@@ -28,24 +28,12 @@
             fieldLabel: l10n.ns('tpm', 'HistoricalPromoProduct').value('_Operation')
         }, {
             xtype: 'singlelinedisplayfield',
-            name: 'EAN',
-            fieldLabel: l10n.ns('tpm', 'PromoProduct').value('EAN'),
+            name: 'EAN_PC',
+            fieldLabel: l10n.ns('tpm', 'PromoProduct').value('EAN_PC'),
         }, {
             xtype: 'singlelinedisplayfield',
             name: 'ActualProductPCQty',
             fieldLabel: l10n.ns('tpm', 'PromoProduct').value('ActualProductPCQty'),
-        }, {
-            xtype: 'singlelinedisplayfield',
-            name: 'ActualProductQty',
-            fieldLabel: l10n.ns('tpm', 'PromoProduct').value('ActualProductQty'),
-        }, {
-            xtype: 'singlelinedisplayfield',
-            name: 'ActualProductUOM',
-            fieldLabel: l10n.ns('tpm', 'PromoProduct').value('ActualProductUOM'),
-        }, {
-            xtype: 'singlelinedisplayfield',
-            name: 'ActualProductShelfPrice',
-            fieldLabel: l10n.ns('tpm', 'PromoProduct').value('ActualProductShelfPrice'),
         }, {
             xtype: 'singlelinedisplayfield',
             name: 'ActualProductPCLSV',

@@ -74,7 +74,7 @@ namespace Module.Frontend.TPM.Controllers
             {
                 return NotFound();
             }
-            
+
             patch.Put(model);
 
             try
@@ -111,6 +111,7 @@ namespace Module.Frontend.TPM.Controllers
             try
             {
                 // разница между промо в подстатье должно быть меньше 2 периодов (8 недель)
+                // TODO: Убрать константу из кода!
                 Promo promo = Context.Set<Promo>().Find(result.PromoId);
                 bool bigDifference = Context.Set<PromoSupportPromo>().Any(n => n.PromoSupportId == result.PromoSupportId
                         && DbFunctions.DiffDays(n.Promo.StartDate.Value, promo.EndDate.Value).Value > 56 && !n.Disabled);
@@ -120,7 +121,7 @@ namespace Module.Frontend.TPM.Controllers
 
                 Context.SaveChanges();
 
-                CalculateBudgetsCreateTast(result.Id.ToString(), true, true, true, true);
+                CalculateBudgetsCreateTask(new List<Guid>() { result.Id });
             }
             catch (Exception e)
             {
@@ -138,10 +139,7 @@ namespace Module.Frontend.TPM.Controllers
                 try
                 {
                     string[] promoIds = promoIdString.Split(";".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-                    List<Guid> promoIdList = new List<Guid>();                    
-                    
-                    // список Id подстатей/промо, которые необходимо пересчитать
-                    string changedPromoSupportPromoIds = "";
+                    List<Guid> promoIdList = new List<Guid>();
 
                     foreach (var id in promoIds)
                     {
@@ -151,6 +149,7 @@ namespace Module.Frontend.TPM.Controllers
                         if (promo.PromoStatus.SystemName.ToLower().IndexOf("close") < 0)
                         {
                             // разница между промо в подстатье должно быть меньше 2 периодов (8 недель)
+                            // TODO: Убрать константу из кода!
                             bool bigDifference = Context.Set<PromoSupportPromo>().Any(n => n.PromoSupportId == promoSupportId
                                     && DbFunctions.DiffDays(n.Promo.StartDate.Value, promo.EndDate.Value).Value > 56 && !n.Disabled);
 
@@ -160,12 +159,10 @@ namespace Module.Frontend.TPM.Controllers
                             PromoSupportPromo psp = new PromoSupportPromo(promoSupportId, promoId);
                             Context.Set<PromoSupportPromo>().Add(psp);
                             Context.SaveChanges();
-
-                            changedPromoSupportPromoIds += psp.Id + ";";
                         }
                     }
 
-                    CalculateBudgetsCreateTast(changedPromoSupportPromoIds, true, true, true, true);
+                    CalculateBudgetsCreateTask(new List<Guid>() { promoSupportId });
 
                     transaction.Commit();
                     return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
@@ -198,11 +195,14 @@ namespace Module.Frontend.TPM.Controllers
         {
             try
             {
-                string pspJSON = Request.Content.ReadAsStringAsync().Result;                
+                string pspJSON = Request.Content.ReadAsStringAsync().Result;
                 List<PromoSupportPromo> newList = JsonConvert.DeserializeObject<List<PromoSupportPromo>>(pspJSON);
                 List<PromoSupportPromo> oldList = Context.Set<PromoSupportPromo>().Where(n => n.PromoSupportId == promoSupportId && !n.Disabled).ToList();
                 // список Id подстатей/промо, которые необходимо пересчитать
                 string changedPromoSupportPromoIds = "";
+
+                // список Id промо, которые были откреплены
+                List<Guid> deletedPromoIds = new List<Guid>();
 
                 for (int i = 0; i < newList.Count; i++)
                 {
@@ -213,6 +213,7 @@ namespace Module.Frontend.TPM.Controllers
                         newList[i].Promo = Context.Set<Promo>().Find(newList[i].PromoId);
                         newList[i].PromoSupport = Context.Set<PromoSupport>().Find(newList[i].PromoSupportId);
 
+                        // TODO: Убрать константу из кода!
                         DateTimeOffset endPromoDate = newList[i].Promo.EndDate.Value;
                         bool bigDifference = Context.Set<PromoSupportPromo>().Any(n => n.PromoSupportId == promoSupportId
                                         && DbFunctions.DiffDays(n.Promo.StartDate.Value, endPromoDate).Value > 56 && !n.Disabled);
@@ -245,6 +246,8 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     p.Disabled = true;
                     p.DeletedDate = DateTime.Now;
+
+                    deletedPromoIds.Add(p.PromoId);
                 }
 
                 Context.SaveChanges();
@@ -255,20 +258,20 @@ namespace Module.Frontend.TPM.Controllers
                     changedPromoSupportPromoIds += p.Id + ";";
                 }
 
-                CalculateBudgetsCreateTast(changedPromoSupportPromoIds, true, true, true, true);
+                CalculateBudgetsCreateTask(new List<Guid>() { promoSupportId }, deletedPromoIds);
 
                 return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, list = newList }));
             }
             catch (Exception e)
             {
-                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = e.Message }));                
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = e.Message }));
             }
         }
 
         [ClaimsAuthorize]
         [AcceptVerbs("PATCH", "MERGE")]
         public IHttpActionResult Patch([FromODataUri] System.Guid key, Delta<PromoSupportPromo> patch)
-        {            
+        {
             try
             {
                 var model = Context.Set<PromoSupportPromo>().Find(key);
@@ -280,13 +283,7 @@ namespace Module.Frontend.TPM.Controllers
                 patch.Patch(model);
                 Context.SaveChanges();
 
-                // определяем какие поля изменились и на основе это определяется, что пересчитывать
-                bool changedPlanCostTE = patch.GetChangedPropertyNames().Contains("PlanCalculation");
-                bool changedFactCostTE = patch.GetChangedPropertyNames().Contains("FactCalculation");
-                bool changedPlanCostProd = patch.GetChangedPropertyNames().Contains("PlanCostProd");
-                bool changedFactCostProd = patch.GetChangedPropertyNames().Contains("FactCostProd");
-
-                CalculateBudgetsCreateTast(key.ToString(), changedPlanCostTE, changedFactCostTE, changedPlanCostProd, changedFactCostProd);
+                CalculateBudgetsCreateTask(new List<Guid>() { key });
 
                 return Updated(model);
             }
@@ -304,7 +301,7 @@ namespace Module.Frontend.TPM.Controllers
             catch (Exception e)
             {
                 return GetErorrRequest(e);
-            }            
+            }
         }
 
         [ClaimsAuthorize]
@@ -319,10 +316,12 @@ namespace Module.Frontend.TPM.Controllers
                 }
 
                 model.DeletedDate = System.DateTime.Now;
-                model.Disabled = true;                
+                model.Disabled = true;
 
                 Context.SaveChanges();
-                CalculateBudgetsCreateTast(key.ToString(), true, true, true, true);
+
+                CalculateBudgetsCreateTask(new List<Guid>() { model.PromoSupportId }, new List<Guid>() { model.PromoId });
+                //CalculateBudgetsCreateTask(key.ToString(), true, true, true, true);
 
                 return StatusCode(HttpStatusCode.NoContent);
             }
@@ -333,7 +332,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         /// <summary>
-        /// Получить привязанны подстатьи к промо
+        /// Получить привязанные подстатьи к промо
         /// </summary>
         /// <param name="promoId">ID промо</param>
         /// <returns></returns>
@@ -384,11 +383,13 @@ namespace Module.Frontend.TPM.Controllers
 
                     // находим прежние записи, если они остались то ислючаем их из нового списка
                     // иначе удаляем
-                    var oldRecords = Context.Set<PromoSupportPromo>().Where(n => n.PromoId == promoId 
+                    var oldRecords = Context.Set<PromoSupportPromo>().Where(n => n.PromoId == promoId
                         && n.PromoSupport.BudgetSubItem.BudgetItem.Budget.Name.ToLower().IndexOf(budgetName.ToLower()) >= 0 && !n.Disabled);
 
-                    // список Id подстатей/промо, которые необходимо пересчитать
-                    string changedPromoSupportPromoIds = "";
+                    // список Id подстатей/промо, которые были откреплены
+                    List<Guid> deletedPromoIds = new List<Guid>();
+                    // список Id подстатей, которые нужно пересчитать
+                    List<Guid> promoSupportForRecalc = new List<Guid>();
 
                     foreach (PromoSupportPromo rec in oldRecords)
                     {
@@ -404,7 +405,8 @@ namespace Module.Frontend.TPM.Controllers
                             rec.Disabled = true;
                             Context.SaveChanges();
 
-                            changedPromoSupportPromoIds += rec.Id + ";";
+                            deletedPromoIds.Add(rec.PromoId);
+                            promoSupportForRecalc.Add(rec.PromoSupportId);
                         }
                     }
 
@@ -412,6 +414,7 @@ namespace Module.Frontend.TPM.Controllers
                     foreach (Guid promoSupportId in subItemsIdsList)
                     {
                         // разница между промо в подстатье должно быть меньше 2 периодов (8 недель)
+                        // TODO: Убрать константу из кода!
                         bool bigDifference = Context.Set<PromoSupportPromo>().Any(n => n.PromoSupportId == promoSupportId
                             && DbFunctions.DiffDays(n.Promo.StartDate.Value, promo.EndDate.Value).Value > 56 && !n.Disabled);
 
@@ -426,16 +429,16 @@ namespace Module.Frontend.TPM.Controllers
                                 FactCalculation = 0,
                                 PlanCalculation = 0
                             };
-                            
+
                             Context.Set<PromoSupportPromo>().Add(psp);
                             Context.SaveChanges();
 
-                            changedPromoSupportPromoIds += psp.Id + ";";
+                            promoSupportForRecalc.Add(promoSupportId);
                         }
-                    }                  
+                    }
 
                     Context.SaveChanges();
-                    CalculateBudgetsCreateTast(changedPromoSupportPromoIds, true, true, true, true);
+                    CalculateBudgetsCreateTask(promoSupportForRecalc, deletedPromoIds);
                     transaction.Commit();
 
                     return Json(new { success = true });
@@ -456,26 +459,37 @@ namespace Module.Frontend.TPM.Controllers
         /// <param name="calculateFactCostTE">Необходимо ли пересчитывать значения фактические Cost TE</param>
         /// <param name="calculatePlanCostProd">Необходимо ли пересчитывать значения плановые Cost Production</param>
         /// <param name="calculateFactCostProd">Необходимо ли пересчитывать значения фактические Cost Production</param>
-        private void CalculateBudgetsCreateTast(string promoSupportPromoIds, bool calculatePlanCostTE, bool calculateFactCostTE, bool calculatePlanCostProd, bool calculateFactCostProd)
+        private void CalculateBudgetsCreateTask(List<Guid> promoSupportIds, List<Guid> unlinkedPromoIds = null)
         {
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
             RoleInfo role = authorizationManager.GetCurrentRole();
             Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
 
+            string promoSupportIdsString = FromListToString(promoSupportIds);
+            string unlinkedPromoIdsString = FromListToString(unlinkedPromoIds);
+
             HandlerData data = new HandlerData();
-            HandlerDataHelper.SaveIncomingArgument("PromoSupportPromoIds", promoSupportPromoIds, data, visible: false, throwIfNotExists: false);
-            HandlerDataHelper.SaveIncomingArgument("CalculatePlanCostTE", calculatePlanCostTE, data, visible: false, throwIfNotExists: false);
-            HandlerDataHelper.SaveIncomingArgument("CalculateFactCostTE", calculateFactCostTE, data, visible: false, throwIfNotExists: false);
-            HandlerDataHelper.SaveIncomingArgument("CalculatePlanCostProd", calculatePlanCostProd, data, visible: false, throwIfNotExists: false);
-            HandlerDataHelper.SaveIncomingArgument("CalculateFactCostProd", calculateFactCostProd, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("PromoSupportIds", promoSupportIdsString, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("UnlinkedPromoIds", unlinkedPromoIdsString, data, visible: false, throwIfNotExists: false);
             HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
             HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
 
             bool success = CalculationTaskManager.CreateCalculationTask(CalculationTaskManager.CalculationAction.Budgets, data, Context);
 
             if (!success)
-                throw new Exception("Операция не возможна, данное промо участвует в расчетах и было заблокировано");
+                throw new Exception("Promo was blocked for calculation");
+        }
+
+        private string FromListToString(List<Guid> list)
+        {
+            string result = "";
+
+            if (list != null)
+                foreach (Guid el in list.Distinct())
+                    result += el + ";";
+
+            return result;
         }
 
         /// <summary>
@@ -493,7 +507,7 @@ namespace Module.Frontend.TPM.Controllers
             // суммы для статей
             List<object> sums = new List<object>();
             // общая сумма (бюджет)
-            double sumBudget = 0;            
+            double sumBudget = 0;
 
             IQueryable<IGrouping<string, PromoSupportPromo>> groups;
 
@@ -514,7 +528,7 @@ namespace Module.Frontend.TPM.Controllers
                 groups = Context.Set<PromoSupportPromo>().Where(n => n.PromoId == promoId && !n.Disabled
                     && n.PromoSupport.BudgetSubItem.BudgetItem.Budget.Name.ToLower().IndexOf(budgetName.ToLower()) >= 0)
                 .GroupBy(n => n.PromoSupport.BudgetSubItem.BudgetItem.Name);
-            }            
+            }
 
             // группа - это 1 статья
             foreach (var g in groups)
@@ -522,7 +536,7 @@ namespace Module.Frontend.TPM.Controllers
                 double sumItem;
 
                 if (costProd)
-                    sumItem = fact ? g.Sum(n => n.FactCostProd) : g.Sum(n => n.PlanCostProd);                
+                    sumItem = fact ? g.Sum(n => n.FactCostProd) : g.Sum(n => n.PlanCostProd);
                 else
                     sumItem = fact ? g.Sum(n => n.FactCalculation) : g.Sum(n => n.PlanCalculation);
 
@@ -539,12 +553,12 @@ namespace Module.Frontend.TPM.Controllers
 
         private IEnumerable<Column> GetExportSettingsTICosts()
         {
-            IEnumerable<Column> columns = new List<Column>() {                
+            IEnumerable<Column> columns = new List<Column>() {
                 new Column() { Order = 0, Field = "Promo.Number", Header = "Promo ID", Quoting = false },
                 new Column() { Order = 1, Field = "Promo.Name", Header = "Promo name", Quoting = false },
                 new Column() { Order = 2, Field = "Promo.BrandTech.Name", Header = "Brandtech", Quoting = false },
-                new Column() { Order = 2, Field = "PlanCalculation", Header = "Plan Cost TE", Quoting = false },
-                new Column() { Order = 2, Field = "FactCalculation", Header = "Actual Cost TE", Quoting = false },
+                new Column() { Order = 2, Field = "PlanCalculation", Header = "Plan Cost TE Total", Quoting = false },
+                new Column() { Order = 2, Field = "FactCalculation", Header = "Actual Cost TE Total", Quoting = false },
                 new Column() { Order = 3, Field = "Promo.EventName", Header = "Event", Quoting = false },                
                 new Column() { Order = 4, Field = "Promo.StartDate", Header = "Start Date", Quoting = false, Format = "dd.MM.yyyy" },
                 new Column() { Order = 5, Field = "Promo.EndDate", Header = "End Date", Quoting = false, Format = "dd.MM.yyyy" },
@@ -588,12 +602,12 @@ namespace Module.Frontend.TPM.Controllers
             {
                 return Content<string>(HttpStatusCode.InternalServerError, e.Message);
             }
-        }        
+        }
 
         private bool EntityExists(System.Guid key)
         {
             return Context.Set<PromoSupportPromo>().Count(e => e.Id == key) > 0;
-        }        
+        }
 
         private ExceptionResult GetErorrRequest(Exception e)
         {
@@ -609,11 +623,5 @@ namespace Module.Frontend.TPM.Controllers
                 return InternalServerError(e);
             }
         }
-    }
-
-    public class Abc
-    {
-        public string psp { get; set; }
-        public Guid promoSupportId { get; set; }
     }
 }

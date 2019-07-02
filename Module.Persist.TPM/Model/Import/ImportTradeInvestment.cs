@@ -40,7 +40,7 @@ namespace Module.Persist.TPM.Model.TPM
 
         [ImportCSVColumn(ColumnNumber = 7)]
         [Display(Name = "SizePercent")]
-        public double SizePercent { get; set; }
+        public float SizePercent { get; set; }
 
         [ImportCSVColumn(ColumnNumber = 8)]
         [Display(Name = "Marc Calc ROI")]

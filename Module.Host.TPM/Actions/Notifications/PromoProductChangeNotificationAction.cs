@@ -1,6 +1,5 @@
 ﻿using System;
 using Persist;
-using NLog;
 using Core.Settings;
 using Core.Dependency;
 using Module.Persist.TPM.Model.TPM;
@@ -86,18 +85,22 @@ namespace Module.Host.TPM.Actions.Notifications {
                                         }
                                     }
                                 }
-                                CreateNotification(promoToNewProductsList, "PROMO_PRODUCT_CREATE_NOTIFICATION", template);
-                                CreateNotification(promoToDeletedProductsList, "PROMO_PRODUCT_DELETE_NOTIFICATION", template);
+                                if (promoToNewProductsList.Count > 0) {
+                                    CreateNotification(promoToNewProductsList, "PROMO_PRODUCT_CREATE_NOTIFICATION", template);
+                                }
+                                if (promoToDeletedProductsList.Count > 0) {
+                                    CreateNotification(promoToDeletedProductsList, "PROMO_PRODUCT_DELETE_NOTIFICATION", template);
+                                }
                                 foreach (ProductChangeIncident incident in changeProductIncidents) {
                                     incident.ProcessDate = DateTimeOffset.Now;
                                 }
                                 context.SaveChanges();
                             }
                         } else {
-                            Errors.Add(String.Format("Empty alert template: {0}", templateFileName));
+                            Errors.Add(String.Format("Empty notification template: {0}", templateFileName));
                         }
                     } else {
-                        Errors.Add(String.Format("Could not find alert template: {0}", templateFileName));
+                        Errors.Add(String.Format("Could not find notification template: {0}", templateFileName));
                     }
                 }
             } catch (Exception e) {

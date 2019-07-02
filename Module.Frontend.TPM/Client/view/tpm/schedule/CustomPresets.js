@@ -198,15 +198,31 @@ Sch.preset.Manager.registerPreset('marsdayWeek', {
             align: 'center',
             renderer: function (start, end, cfg) {
                 var marsDate = new App.MarsDate(start);
-                return Ext.String.format('D{0}', marsDate.getDay())
+                var day = marsDate.getDay();
+                day = day == 7 ? 1 : day + 1;
+                return Ext.String.format('D{0}', day)
             }
         },
         middle: {
             unit: 'WEEK',
             align: 'center',
-            renderer: function (start, end, cfg) {
-                var marsDate = new App.MarsDate(start);
-                return Ext.String.format('{0} P{1} W{2}',marsDate.getYear(), marsDate.getPeriod(), marsDate.getWeek())
+            cellGenerator: function (viewStart, viewEnd) {
+                var cells = [],
+                    intervalEnd;
+                var isFirst = true; // первую неделю начинаем как есть, остальные с начала марс-недели.
+                while (viewStart < viewEnd) {
+                    var marsDate = new App.MarsDate(viewStart);
+                    intervalEnd = marsDate.getWeekEndDate();
+                    cells.push({
+                        align: 'center',
+                        start: isFirst ? viewStart : Sch.util.Date.add(marsDate.getWeekStartDate(), Sch.util.Date.HOUR, -3),
+                        end: Sch.util.Date.add(intervalEnd, Sch.util.Date.HOUR, -3), // getWeekEndDate и getEndDate возвращают разное время - разница 3 часа, видимо часовой пояс
+                        header: Ext.String.format('{0} P{1} W{2}', marsDate.getYear(), marsDate.getPeriod(), marsDate.getWeek())
+                    });
+                    isFirst = false;
+                    viewStart = Sch.util.Date.add(intervalEnd, Sch.util.Date.DAY, 1); // Если присвоить weekStartDate следующей недели, то в следующей итерации получим marsDate = прошлой неделе (
+                }
+                return cells;
             }
         }
     }

@@ -28,10 +28,10 @@ namespace Module.Persist.TPM.Model.TPM {
         public int? OldOutletCount { get; set; }
         public int? NewOutletCount { get; set; }
 
-        public int? OldMarsMechanicDiscount { get; set; }
-        public int? NewMarsMechanicDiscount { get; set; }
-        public int? OldPlanInstoreMechanicDiscount { get; set; }
-        public int? NewPlanInstoreMechanicDiscount { get; set; }
+        public double? OldMarsMechanicDiscount { get; set; }
+        public double? NewMarsMechanicDiscount { get; set; }
+        public double? OldPlanInstoreMechanicDiscount { get; set; }
+        public double? NewPlanInstoreMechanicDiscount { get; set; }
 
 
         public DateTimeOffset? OldStartDate { get; set; }

@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Collections.Generic;
 using Persist;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace Module.Persist.TPM.Model.TPM
 {
@@ -21,10 +22,12 @@ namespace Module.Persist.TPM.Model.TPM
             {
                 id = value;
                 GetCalculationStatus();
+                GetPromoBasicProducts();
             }
         }
 
         public bool Disabled { get; set; }
+        public bool? InOut { get; set; }
         public DateTimeOffset? DeletedDate { get; set; }
         public Guid? BrandId { get; set; }
         public Guid? TechnologyId { get; set; }
@@ -41,6 +44,8 @@ namespace Module.Persist.TPM.Model.TPM
         public Guid? ActualInStoreMechanicId { get; set; }
         public Guid? ActualInStoreMechanicTypeId { get; set; }
         public int? ClientTreeId { get; set; }
+        public int? ClientTreeKeyId { get; set; }
+
         public int? BaseClientTreeId { get; set; }
         [StringLength(400)]
         public string BaseClientTreeIds { get; set; }
@@ -57,8 +62,8 @@ namespace Module.Persist.TPM.Model.TPM
         public string ProductHierarchy { get; set; }
         [StringLength(255)]
         public string MechanicComment { get; set; }
-        public int? MarsMechanicDiscount { get; set; }
-        public int? PlanInstoreMechanicDiscount { get; set; }
+        public double? MarsMechanicDiscount { get; set; }
+        public double? PlanInstoreMechanicDiscount { get; set; }
         public DateTimeOffset? StartDate { get; set; }
         public DateTimeOffset? EndDate { get; set; }
         public DateTimeOffset? DispatchesStart { get; set; }
@@ -98,13 +103,11 @@ namespace Module.Persist.TPM.Model.TPM
         public double? PlanPromoIncrementalLSV { get; set; }
         public double? PlanPromoLSV { get; set; }
 
-        //необходимость полей в таком виде под вопросом
-        public double? PlanPostPromoEffect { get; set; }
-        public double? PlanPostPromoEffectW1 { get; set; }
-        public double? PlanPostPromoEffectW2 { get; set; }
-        //
+        public double? PlanPromoPostPromoEffectLSVW1 { get; set; }
+        public double? PlanPromoPostPromoEffectLSVW2 { get; set; }
+        public double? PlanPromoPostPromoEffectLSV { get; set; }
 
-        public int? PlanPromoROIPercent { get; set; }
+        public double? PlanPromoROIPercent { get; set; }
         public double? PlanPromoIncrementalNSV { get; set; }
         public double? PlanPromoNetIncrementalNSV { get; set; }
         public double? PlanPromoIncrementalMAC { get; set; }
@@ -122,32 +125,41 @@ namespace Module.Persist.TPM.Model.TPM
         public double? ActualPromoCostProdPOSMInClient { get; set; }
         public double? PlanPromoBaselineLSV { get; set; }
         public double? PlanPromoIncrementalBaseTI { get; set; }
+        public double? PlanPromoNetIncrementalBaseTI { get; set; }
         public double? PlanPromoIncrementalCOGS { get; set; }
+        public double? PlanPromoNetIncrementalCOGS { get; set; }
         public double? PlanPromoTotalCost { get; set; }
         public double? PlanPromoNetIncrementalLSV { get; set; }
         public double? PlanPromoNetLSV { get; set; }
         public double? PlanPromoNetIncrementalMAC { get; set; }
         public double? PlanPromoIncrementalEarnings { get; set; }
         public double? PlanPromoNetIncrementalEarnings { get; set; }
-        public int? PlanPromoNetROIPercent { get; set; }
-        public int? PlanPromoNetUpliftPercent { get; set; }
+        public double? PlanPromoNetROIPercent { get; set; }
+        public double? PlanPromoNetUpliftPercent { get; set; }
         public double? ActualPromoBaselineLSV { get; set; }
-        public int? ActualInStoreDiscount { get; set; }
+        public double? ActualInStoreDiscount { get; set; }
         public double? ActualInStoreShelfPrice { get; set; }
+        public double? PlanInStoreShelfPrice { get; set; }
         public double? ActualPromoIncrementalBaseTI { get; set; }
+        public double? ActualPromoNetIncrementalBaseTI { get; set; }
         public double? ActualPromoIncrementalCOGS { get; set; }
+        public double? ActualPromoNetIncrementalCOGS { get; set; }
         public double? ActualPromoTotalCost { get; set; }
         public double? ActualPromoNetIncrementalLSV { get; set; }
         public double? ActualPromoNetLSV { get; set; }
         public double? ActualPromoNetIncrementalMAC { get; set; }
         public double? ActualPromoIncrementalEarnings { get; set; }
         public double? ActualPromoNetIncrementalEarnings { get; set; }
-        public int? ActualPromoNetROIPercent { get; set; }
-        public int? ActualPromoNetUpliftPercent { get; set; }
+        public double? ActualPromoNetROIPercent { get; set; }
+        public double? ActualPromoNetUpliftPercent { get; set; }
         public double? PlanPromoBaselineBaseTI { get; set; }
         public double? PlanPromoBaseTI { get; set; }
+        public double? PlanPromoNetBaseTI { get; set; }
+        public double? PlanPromoNSV { get; set; }
         public double? PlanPromoNetNSV { get; set; }
         public double? ActualPromoBaselineBaseTI { get; set; }
+        public double? ActualPromoNetBaseTI { get; set; }
+        public double? ActualPromoNSV { get; set; }
         public double? ActualPromoBaseTI { get; set; }
         public double? ActualPromoNetNSV { get; set; }
 
@@ -160,22 +172,21 @@ namespace Module.Persist.TPM.Model.TPM
         public double? ActualPromoCost { get; set; }
         public double? ActualPromoUpliftPercent { get; set; }
         public double? ActualPromoIncrementalLSV { get; set; }
+        public double? ActualPromoLSVByCompensation { get; set; }
         public double? ActualPromoLSV { get; set; }
 
-        //необходимость полей в таком виде под вопросом
-        public int? FactPostPromoEffect { get; set; }
-        public double? FactPostPromoEffectW1 { get; set; }
-        public double? FactPostPromoEffectW2 { get; set; }
-        //
+        public double? ActualPromoPostPromoEffectLSVW1 { get; set; }
+        public double? ActualPromoPostPromoEffectLSVW2 { get; set; }
+        public double? ActualPromoPostPromoEffectLSV { get; set; }
 
-        public int? ActualPromoROIPercent { get; set; }
+        public double? ActualPromoROIPercent { get; set; }
         public double? ActualPromoIncrementalNSV { get; set; }
         public double? ActualPromoNetIncrementalNSV { get; set; }
         public double? ActualPromoIncrementalMAC { get; set; }
 
         // Promo Approved
         public bool? IsAutomaticallyApproved { get; set; }
-        public bool? IsCustomerMarketingApproved { get; set; }
+        public bool? IsCMManagerApproved { get; set; }
         public bool? IsDemandPlanningApproved { get; set; }
         public bool? IsDemandFinanceApproved { get; set; }
 
@@ -222,6 +233,21 @@ namespace Module.Persist.TPM.Model.TPM
         public string BlockInformation { get; set; }
 
         /// <summary>
+        /// Список продуктов в формате JSON
+        /// </summary>
+        // Почему JSON? Привет ExtJS, Odata и Breeze за удобную работу с моделями
+        public string PromoBasicProducts { get; set; }
+
+        [ForeignKey("ClientTreeKeyId")]
+        public ClientTree ClientTree { get; set; }
+
+        /// <summary>
+        /// ID для обозначения операций над промо, позволяет избедать дубрирования в Raven
+        /// </summary>
+        [NotMapped] // не маппим в БД MS SQL
+        public Guid OperationId { get; set; } = Guid.NewGuid(); // присваивание здесь позволяет не думать об этом :)
+
+        /// <summary>
         /// Copy Constructor
         /// </summary>
         /// <param name="promoToCopy"></param>
@@ -247,6 +273,11 @@ namespace Module.Persist.TPM.Model.TPM
             PlanPromoUpliftPercent = promoToCopy.PlanPromoUpliftPercent;
             PlanPromoIncrementalLSV = promoToCopy.PlanPromoIncrementalLSV;
             ProductHierarchy = promoToCopy.ProductHierarchy;
+            PromoStatusId = promoToCopy.PromoStatusId;
+            NeedRecountUplift = promoToCopy.NeedRecountUplift;
+            IsDemandPlanningApproved = promoToCopy.IsDemandPlanningApproved;
+            IsDemandFinanceApproved = promoToCopy.IsDemandFinanceApproved;
+            IsCMManagerApproved = promoToCopy.IsCMManagerApproved;
         }
 
         public Promo() {}
@@ -262,5 +293,76 @@ namespace Module.Persist.TPM.Model.TPM
             }
             catch { }
         }
+
+        /// <summary>
+        /// Поиск сведений о выбранных узлах в дереве продуктов
+        /// </summary>
+        private void GetPromoBasicProducts()
+        {
+            try
+            {
+                using (DatabaseContext context = new DatabaseContext())
+                {
+                    // Ищем в таблице, обеспечивающей связь М-М, затем в таблице продуктового дерева
+                    int[] productObjectIds = context.Set<PromoProductTree>().Where(n => n.PromoId == id && !n.Disabled).Select(n => n.ProductTreeObjectId).ToArray();
+                    ProductTree[] products = context.Set<ProductTree>().Where(n => productObjectIds.Contains(n.ObjectId) && !n.EndDate.HasValue).ToArray();
+
+                    if (products.Length > 0)
+                    {
+                        PromoBasicProduct promoBasicProducts = new PromoBasicProduct();
+
+                        // выбранные узлы
+                        promoBasicProducts.ProductsChoosen = products.Select(n => new 
+                        {
+                            ObjectId = n.ObjectId,
+                            Name = n.Name,
+                            Type = n.Type,
+                            FullPathName = n.FullPathName,
+                            Abbreviation = n.Abbreviation,
+                            LogoFileName = n.LogoFileName,
+                            Filter = n.Filter
+                        }).ToArray();
+
+                        // формируем название Brand и Technology
+                        ProductTree currentNode = products[0];
+                        while (currentNode != null && currentNode.Type.IndexOf("root") < 0)
+                        {
+                            if (currentNode.Type.IndexOf("Brand") >= 0)
+                            {
+                                promoBasicProducts.Brand = currentNode.Name;
+                                promoBasicProducts.BrandAbbreviation = currentNode.Abbreviation;
+
+                                // если есть технология, то и логотип уже есть
+                                if (promoBasicProducts.LogoFileName == null)
+                                    promoBasicProducts.LogoFileName = currentNode.LogoFileName;
+                            }
+                            else if (currentNode.Type.IndexOf("Technology") >= 0)
+                            {
+                                promoBasicProducts.Technology = currentNode.Name;
+                                promoBasicProducts.TechnologyAbbreviation = currentNode.Abbreviation;
+                                promoBasicProducts.LogoFileName = currentNode.LogoFileName;
+                            }
+
+                            currentNode = context.Set<ProductTree>().FirstOrDefault(n => n.ObjectId == currentNode.parentId && !n.EndDate.HasValue);
+                        }
+
+                        PromoBasicProducts = JsonConvert.SerializeObject(promoBasicProducts);
+                    }                    
+                }
+            }
+            catch { }
+        }
+    }
+
+    // Класс обертка для формы выбора продуктов в форме PROMO
+    // Экономит память, дает обойтись малой кровью, позвляет не делать лишний запрос
+    public class PromoBasicProduct
+    {
+        public string Brand { get; set; }
+        public string BrandAbbreviation { get; set; }
+        public string Technology { get; set; }
+        public string TechnologyAbbreviation { get; set; }
+        public string LogoFileName { get; set; }
+        public object[] ProductsChoosen { get; set; }
     }
 }

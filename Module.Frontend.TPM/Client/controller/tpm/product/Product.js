@@ -79,6 +79,13 @@
         });
     },
 
+    onDetailButtonClick: function (button) {
+        this.callParent(arguments);
+        if (button.up('productlist')) {
+            Ext.ComponentQuery.query('producteditor #edit')[0].setVisible(false);
+        }
+    },
+
     // TODO: убрать
     onApplyProductFilterClick: function (button) {
         var textarea = button.up().up().down('textarea'),

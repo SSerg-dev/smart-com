@@ -17,7 +17,9 @@ namespace Module.Persist.TPM.Model.TPM
         [Index("Unique_ZREP", 1, IsUnique = true)]
         public string ZREP { get; set; }
         [StringLength(255)]
-        public string EAN { get; set; }
+        public string EAN_Case { get; set; }
+        [StringLength(255)]
+        public string EAN_PC { get; set; }
         [StringLength(255)]
         public string ProductRU { get; set; }
         [StringLength(255)]

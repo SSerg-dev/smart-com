@@ -14,7 +14,7 @@ namespace Module.Persist.TPM.PromoStateControl
 
             private readonly string Name = "Started";
 
-            private readonly List<string> Roles = new List<string> { "System", "Administrator", "CustomerMarketing", "DemandFinance", "DemandPlanning", "FunctionalExpert", "KeyAccountManager" };
+            private readonly List<string> Roles = new List<string> { "System", "Administrator", "CMManager", "CustomerMarketing", "DemandFinance", "DemandPlanning", "FunctionalExpert", "KeyAccountManager" };
 
             public StartedState(PromoStateContext stateContext)
             {
@@ -41,9 +41,9 @@ namespace Module.Persist.TPM.PromoStateControl
                 return RoleStateUtil.GetMapForStatus(Name);
             }
 
-            public bool ChangeState(Promo promoModel, string userRole, out string massage)
+            public bool ChangeState(Promo promoModel, string userRole, out string message)
             {
-                massage = string.Empty;
+                message = string.Empty;
 
                 PromoStatus promoStatus = _stateContext.dbContext.Set<PromoStatus>().Find(promoModel.PromoStatusId);
                 string statusName = promoStatus.SystemName;
@@ -78,15 +78,15 @@ namespace Module.Persist.TPM.PromoStateControl
                 }
                 else
                 {
-                    massage = "Action is not available";
+                    message = "Action is not available";
 
                     return false;
                 }
             }
 
-            public bool ChangeState(Promo promoModel, PromoStates promoState, string userRole, out string massage)
+            public bool ChangeState(Promo promoModel, PromoStates promoState, string userRole, out string message)
             {
-                massage = string.Empty;
+                message = string.Empty;
 
                 bool isAvailable = PromoStateUtil.CheckAccess(GetAvailableStates(), promoState.ToString(), userRole);
 
@@ -110,7 +110,7 @@ namespace Module.Persist.TPM.PromoStateControl
                 }
                 else
                 {
-                    massage = "Action is not available";
+                    message = "Action is not available";
 
                     return false;
                 }

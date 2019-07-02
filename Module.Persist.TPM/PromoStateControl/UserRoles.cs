@@ -4,6 +4,7 @@
     {
         System,
         Administrator,
+        CMManager,
         CustomerMarketing,
         DemandFinance,
         DemandPlanning,

@@ -11,7 +11,7 @@ namespace Module.Persist.TPM.Model.DTO {
         public string EventName { get; set; }
 
         public string MarsMechanicName { get; set; }
-        public int? MarsMechanicDiscount { get; set; }
+        public double? MarsMechanicDiscount { get; set; }
         public string MarsMechanicTypeName { get; set; }
 
         public string ColorSystemName { get; set; }

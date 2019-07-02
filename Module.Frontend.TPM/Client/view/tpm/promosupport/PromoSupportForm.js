@@ -114,8 +114,10 @@
                             var planProductionCost = customPromoPanel.down('[name=PlanProductionCost]');
                             var planProdCostPer1Item = customPromoPanel.down('[name=PlanProdCostPer1Item]');
                             var planProductionCostNewValue = planProdCostPer1Item.getValue() * field.getValue();
+                            var planQuantityCopy = field.up('custompromopanel').down('[name=PlanQuantityCopy]');
 
                             planProductionCost.setValue(planProductionCostNewValue);
+                            planQuantityCopy.setValue(field.getValue());
                         }
                     }
                 }, {
@@ -129,19 +131,21 @@
                             var actualProductionCost = customPromoPanel.down('[name=ActualProductionCost]');
                             var actualProdCostPer1Item = customPromoPanel.down('[name=ActualProdCostPer1Item]');
                             var actualProductionCostNewValue = actualProdCostPer1Item.getValue() * field.getValue();
+                            var actualQuantityCopy = field.up('custompromopanel').down('[name=ActualQuantityCopy]');
 
                             actualProductionCost.setValue(actualProductionCostNewValue);
+                            actualQuantityCopy.setValue(field.getValue());
                         }
                     }
                 }, {
                     xtype: 'numberfield',
                     name: 'PlanCostTE',
-                    fieldLabel: 'Plan Cost TE',
+                    fieldLabel: 'Plan Cost TE Total',
                     needReadOnlyFromCostProduction: true,
                 }, {
                     xtype: 'numberfield',
                     name: 'ActualCostTE',
-                    fieldLabel: 'Actual Cost TE',
+                    fieldLabel: 'Actual Cost TE Total',
                     needReadOnlyFromCostProduction: true,
                 }]
             }, {
@@ -149,68 +153,109 @@
                 title: 'Cost Production',
                 itemId: 'costProductionFieldset',
                 layout: {
-                    type: 'hbox',
+                    type: 'vbox',
                     align: 'stretch'
                 },
-                defaults: {
-                    labelAlign: 'top',
-                    flex: 1,
-                    padding: '0 5 5 5',
-                    cls: 'promosupport-fieldset',
-                    hideTrigger: true,
-                    needClear: true,
-                    listeners: {
-                        change: function (field, newValue, oldValue) {
-                            if (newValue) {
-                                onChangeFieldEvent(field);
+                items: [{
+                    xtype: 'container',
+                    layout: {
+                        type: 'hbox',
+                        align: 'stretch'
+                    },
+                    defaults: {
+                        labelAlign: 'top',
+                        flex: 1,
+                        padding: '0 5 5 5',
+                        cls: 'promosupport-fieldset',
+                        hideTrigger: true,
+                        needClear: true,
+                        listeners: {
+                            change: function (field, newValue, oldValue) {
+                                if (newValue) {
+                                    onChangeFieldEvent(field);
+                                }
                             }
                         }
-                    }
-                },
-                items: [{
-                    xtype: 'numberfield',
-                    name: 'PlanProdCostPer1Item',
-                    fieldLabel: 'Plan prod cost per 1 item',
-                    needReadOnlyFromCostProduction: false,
-                    minValue: 0,
-                    allowDecimal: true,
-                    listeners: {
-                        change: function (field) {
-                            var customPromoPanel = field.up('custompromopanel');
-                            var planProductionCost = customPromoPanel.down('[name=PlanProductionCost]');
-                            var planQuantity = customPromoPanel.down('[name=PlanQuantity]');
-                            var planProductionCostNewValue = planQuantity.getValue() * field.getValue();
+                    },
+                    items: [{
+                        xtype: 'numberfield',
+                        name: 'PlanProdCostPer1Item',
+                        fieldLabel: 'Plan prod cost per 1 item',
+                        needReadOnlyFromCostProduction: false,
+                        minValue: 0,
+                        allowDecimal: true,
+                        listeners: {
+                            change: function (field) {
+                                var customPromoPanel = field.up('custompromopanel');
+                                var planProductionCost = customPromoPanel.down('[name=PlanProductionCost]');
+                                var planQuantity = customPromoPanel.down('[name=PlanQuantity]');
+                                var planProductionCostNewValue = planQuantity.getValue() * field.getValue();
 
-                            planProductionCost.setValue(planProductionCostNewValue);
+                                planProductionCost.setValue(planProductionCostNewValue);
+                                planProductionCost.clearInvalid();
+                            }
                         }
-                    }
-                }, {
-                    xtype: 'numberfield',
-                    name: 'ActualProdCostPer1Item',
-                    fieldLabel: 'Actual prod cost per 1 item',
-                    needReadOnlyFromCostProduction: false,
-                    minValue: 0,
-                    allowDecimal: true,
-                    listeners: {
-                        change: function (field) {
-                            var customPromoPanel = field.up('custompromopanel');
-                            var actualProductionCost = customPromoPanel.down('[name=ActualProductionCost]');
-                            var actualQuantity = customPromoPanel.down('[name=ActualQuantity]');
-                            var actualProductionCostNewValue = actualQuantity.getValue() * field.getValue();
+                    }, {
+                        xtype: 'numberfield',
+                        name: 'ActualProdCostPer1Item',
+                        fieldLabel: 'Actual prod cost per 1 item',
+                        needReadOnlyFromCostProduction: false,
+                        minValue: 0,
+                        allowDecimal: true,
+                        listeners: {
+                            change: function (field) {
+                                var customPromoPanel = field.up('custompromopanel');
+                                var actualProductionCost = customPromoPanel.down('[name=ActualProductionCost]');
+                                var actualQuantity = customPromoPanel.down('[name=ActualQuantity]');
+                                var actualProductionCostNewValue = actualQuantity.getValue() * field.getValue();
 
-                            actualProductionCost.setValue(actualProductionCostNewValue);
+                                actualProductionCost.setValue(actualProductionCostNewValue);
+                                actualProductionCost.clearInvalid();
+                            }
                         }
-                    }
+                    }]
                 }, {
-                    xtype: 'numberfield',
-                    name: 'PlanProductionCost',
-                    fieldLabel: 'Plan production cost',
-                    needReadOnlyFromCostProduction: true,
-                }, {
-                    xtype: 'numberfield',
-                    name: 'ActualProductionCost',
-                    fieldLabel: 'Actual production cost',
-                    needReadOnlyFromCostProduction: true,
+                    xtype: 'container',
+                    layout: {
+                        type: 'hbox',
+                        align: 'stretch'
+                    },
+                    defaults: {
+                        labelAlign: 'top',
+                        flex: 1,
+                        padding: '0 5 5 5',
+                        cls: 'promosupport-fieldset',
+                        hideTrigger: true,
+                        needClear: true,
+                        listeners: {
+                            change: function (field, newValue, oldValue) {
+                                if (newValue) {
+                                    onChangeFieldEvent(field);
+                                }
+                            }
+                        }
+                    },
+                    items: [{
+                        xtype: 'numberfield',
+                        name: 'PlanQuantityCopy',
+                        fieldLabel: 'Plan Quantity',
+                        needReadOnlyFromCostProduction: true,
+                    }, {
+                        xtype: 'numberfield',
+                        name: 'PlanProductionCost',
+                        fieldLabel: 'Plan production cost',
+                        needReadOnlyFromCostProduction: true,
+                    }, {
+                        xtype: 'numberfield',
+                        name: 'ActualQuantityCopy',
+                        fieldLabel: 'Actual Quantity',
+                        needReadOnlyFromCostProduction: true,
+                    }, {
+                        xtype: 'numberfield',
+                        name: 'ActualProductionCost',
+                        fieldLabel: 'Actual production cost',
+                        needReadOnlyFromCostProduction: true,
+                    }]
                 }]
             }, {
                 xtype: 'container',

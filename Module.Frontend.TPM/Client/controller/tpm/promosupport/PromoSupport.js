@@ -143,6 +143,26 @@
                 },
                 'costproduction #updategroupbutton': {
                     click: this.onUpdateGroupButtonClick
+                },
+
+                //filter
+                'extmasterfilter #detailfilter': {
+                    click: this.onDetailFilterButtonClick
+                },
+                'extdetailfilter #detailapply': {
+                    click: this.onDetailFilterApplyButtonClick
+                },
+                'extdetailfilter #eftextmodelbutton': {
+                    click: this.ondetailTextTypeMenuItemClick
+                },
+                'extdetailfilter #efselectionmodelbutton': {
+                    click: this.ondetailSelectionTypeMenuItemClick
+                },
+                'extmasterfilter #masterapply': {
+                    click: this.onMasterFilterApplyButtonClick
+                },
+                'extmasterfilter #masterreject': {
+                    click: this.onMasterRejectButtonClick
                 }
             }
         });
@@ -448,8 +468,10 @@
             customPromoSupportEditor.down('#costProductionFieldset').setVisible(false);
             promoLinkedGrid = associatedContainer.down('promolinkedticosts').down('grid');
         }
-        
+
         customPromoSupportEditor.width = '60%';
+        //Иначе отобразиться только половинка окна
+        customPromoSupportEditor.minWidth = 550;
         customPromoSupportEditor.down('#customPromoSupportEditorContainer').style = { borderLeft: 'none' };
         customPromoSupportEditor.singleUpdateMode = true;
 
@@ -908,7 +930,7 @@
         var me = this,
             editor = button.up('custompromosupporteditor');
 
-        if (me.checkSummOfValues(editor) && me.validateFields(editor)) {
+        if (/*me.checkSummOfValues(editor) &&*/ me.validateFields(editor)) {
             editor.setLoading(l10n.ns('core').value('savingText'));
             setTimeout(function () {
 
@@ -1288,16 +1310,18 @@
 
                 var promoLinkedViewer = editor.down('promolinkedviewer'),
                     toolbarpromoLinked = promoLinkedViewer.down('custombigtoolbar');
-                toolbarpromoLinked.down('#addbutton').hide();
-                toolbarpromoLinked.down('#deletebutton').hide();
+                toolbarpromoLinked.down('#addbutton').setDisabled(true);
+                //toolbarpromoLinked.down('#updatebutton').setDisabled(true);
+                toolbarpromoLinked.down('#deletebutton').setDisabled(true);
             }
-            else if (selectedItem.saved) {
-                me.clearPromoSupportForm(editor);
-                me.selectPromoSupportPanel(selectedItem);
-                me.updatePromoSupportForm(selectedItem);
-            }
-            else {
-                me.cancelUnsavePromoSupport(editor, selectedItem);
+            else if (selectedItem) {
+                if (selectedItem.saved) {
+                    me.clearPromoSupportForm(editor);
+                    me.selectPromoSupportPanel(selectedItem);
+                    me.updatePromoSupportForm(selectedItem);
+                } else {
+                    me.cancelUnsavePromoSupport(editor, selectedItem);
+                }
             }
 
             editor.setLoading(false);
@@ -1596,6 +1620,9 @@
         }
 
         customPromoSupportEditor.width = '60%';
+        //Иначе отобразиться только половинка окна
+        customPromoSupportEditor.minWidth = 550;
+        customPromoSupportEditor.down('#customPromoSupportEditorContainer').style = { borderLeft: 'none' };
         customPromoSupportEditor.singleUpdateMode = true;
 
         var promoSupportGrid = item.up('grid'),
@@ -1625,9 +1652,9 @@
         var promoLinkedViewer = customPromoSupportEditor.down('promolinkedviewer');
         promoLinkedViewer.addListener('afterrender', function () {
             var toolbarpromoLinked = promoLinkedViewer.down('custombigtoolbar');
-            toolbarpromoLinked.down('#addbutton').hide();
-            toolbarpromoLinked.down('#updatebutton').hide();
-            toolbarpromoLinked.down('#deletebutton').hide();
+            toolbarpromoLinked.down('#addbutton').setDisabled(true);
+            //toolbarpromoLinked.down('#updatebutton').setDisabled(true);
+            toolbarpromoLinked.down('#deletebutton').setDisabled(true);
         });
 
         // кнопки прикрепления файла
@@ -1658,11 +1685,14 @@
 
         // Для Cost Production нельзя изменять список промо
         if (!isCostProduction) {
-            toolbarpromoLinked.down('#addbutton').show();
-            toolbarpromoLinked.down('#deletebutton').show();
+            toolbarpromoLinked.down('#addbutton').setDisabled(false);
+            toolbarpromoLinked.down('#deletebutton').setDisabled(false);
+        }
+        if (promoLinkedViewer.down('directorygrid').getStore().totalCount === 0) {
+            toolbarpromoLinked.down('#deletebutton').setDisabled(true);
         }
 
-        toolbarpromoLinked.down('#updatebutton').show();
+        //toolbarpromoLinked.down('#updatebutton').setDisabled(false);
 
         // кнопки прикрепления файла
         customPromoSupportEditor.down('#attachFile').setDisabled(false);
@@ -1804,5 +1834,198 @@
         })
 
         return isValid;    
+    },
+
+    // расширенный расширенный фильтр
+    onFilterButtonClick: function (button) {
+        var grid = this.getGridByButton(button);
+        var store = grid.getStore();
+        if (store.isExtendedStore) {
+            var win = Ext.widget('extmasterfilter', store.getExtendedFilter());
+            win.show();
+        } else {
+            console.error('Extended filter does not implemented for this store');
+        }
+    },
+    // Открывается окно дитэйл-фильтра
+    onDetailFilterButtonClick: function () {
+        var masterFilterWindow = Ext.ComponentQuery.query('extmasterfilter')[0],
+            // старый дитэйл-контекст из контекста мастер-фильтра
+            ctx = masterFilterWindow.getFilterContext().detailContext,
+            // дитэйл-контекст, если перед повторным открытием дитэйл-фильтра, не был применён мастер-фильтр
+            notImplementCtx = masterFilterWindow.detailFilterContext;
+        // если контекст уже есть, передаём его в конструктор окна фильтра
+        if (notImplementCtx) {
+            var win = Ext.widget('extdetailfilter', notImplementCtx);
+        } else if (ctx) {
+            var win = Ext.widget('extdetailfilter', ctx);
+        } else {
+            // конфиг стора для дитэйл-фильтра
+            var storeConfig = {
+                type: 'directorystore',
+                model: 'App.model.tpm.promosupportpromo.PromoSupportPromoTICost',
+                storeId: 'promosupportdetailfilterstore',
+                extendedFilter: {
+                    xclass: 'App.ExtFilterContext',
+                    supportedModels: [{
+                        xclass: 'App.ExtSelectionFilterModel',
+                        model: 'App.model.tpm.promosupportpromo.PromoSupportPromoTICost',
+                        modelId: 'efselectionmodel'
+                    }, {
+                        xclass: 'App.ExtTextFilterModel',
+                        modelId: 'eftextmodel'
+                    }]
+                }
+            };
+            // создаём новый стор для дитэйл-фильтра. Если взять стор из грида, доп. фильтр будет работать некорректно
+            var store = Ext.create('Ext.ux.data.ExtendedStore', storeConfig);
+            if (store.isExtendedStore) {
+                var win = Ext.widget('extdetailfilter', store.getExtendedFilter());
+            } else {
+                console.error('Extended filter does not implemented for this store');
+            }
+        }
+        win.show();
+    },
+    // Применение дитэйл-фильтра
+    onDetailFilterApplyButtonClick: function (button) {
+        var filterWindow = button.up('extdetailfilter'),
+            masterFilterWindow = Ext.ComponentQuery.query('extmasterfilter')[0],
+            modelView = filterWindow.modelContainer.child();
+        if (modelView) {
+            if (!modelView.getForm().isValid()) {
+                Ext.Msg.show({
+                    title: l10n.ns('core').value('errorTitle'),
+                    msg: l10n.ns('core', 'filter').value('filterErrorMessage'),
+                    buttons: Ext.MessageBox.OK,
+                    icon: Ext.Msg.ERROR
+                });
+                return;
+            }
+            modelView.commitChanges();
+        }
+        // сохранение дитэйл-контекста
+        var context = filterWindow.getFilterContext();
+        var model = context.getFilterModel();
+        model.commit();
+        context.filter = model.getFilter();
+        context.fireEvent('extfilterchange', context);
+        masterFilterWindow.detailFilterContext = context;
+        filterWindow.close();
+    },
+    // необходим т.к. базовый метод открывает текстовый фильтр только для первого окна TODO: исправить в ядре?
+    ondetailTextTypeMenuItemClick: function (menuitem) {
+        var window = menuitem.up('extdetailfilter'),
+            windowHeight = window.getHeight(),
+            windowBodyHeight = window.body.getHeight(true),
+            modelcontainer = window.down('#modelcontainer');
+        window.getFilterContext().selectFilterModel('eftextmodel');
+
+        if (windowBodyHeight > modelcontainer.down().minHeight) {
+            modelcontainer.flex = 1;
+            window.setHeight(windowHeight);
+        }
+    },
+    // необходим т.к. базовый метод закрывает текстовый фильтр только для первого окна TODO: исправить в ядре?
+    ondetailSelectionTypeMenuItemClick: function (menuitem) {
+        var window = menuitem.up('extdetailfilter'),
+            modelcontainer = window.down('#modelcontainer');
+
+        if (modelcontainer.flex != 0) {
+            modelcontainer.flex = 0;
+            window.setHeight(null);
+        }
+
+        window.getFilterContext().selectFilterModel('efselectionmodel');
+    },
+    // Применение мастер-фильтра
+    onMasterFilterApplyButtonClick: function (menuitem) {
+        var filterWindow = menuitem.up('extmasterfilter');
+        modelView = filterWindow.modelContainer.child();
+        if (modelView) {
+            if (!modelView.getForm().isValid()) {
+                Ext.Msg.show({
+                    title: l10n.ns('core').value('errorTitle'),
+                    msg: l10n.ns('core', 'filter').value('filterErrorMessage'),
+                    buttons: Ext.MessageBox.OK,
+                    icon: Ext.Msg.ERROR
+                });
+                return;
+            }
+            modelView.commitChanges();
+            // контекст дитэйл-фильтра
+            var detailFilterContext = filterWindow.detailFilterContext;
+            // последний дитэйл-фильтр
+            var lastDetailFilter = Ext.ComponentQuery.query('combineddirectorypanel')[0].detailFilter;
+            var context = filterWindow.getFilterContext();
+            var detailFilter;
+            // если был применён дитэйл-фильтр
+            if (detailFilterContext) {
+                context.detailContext = detailFilterContext;
+                detailFilter = detailFilterContext.filter;
+                // Если был применён не пустой дитэйл-фильтр  (как например при очистке)
+                if (detailFilter) {
+                    detailFilter.operator = 'any';
+                    detailFilter.entity = 'PromoSupportPromo';
+                    detailFilter.rules.map(function (rule) {
+                        function makeNode(rule) {
+                            if (rule) {
+                                if (rule.operator) {
+                                    return rule.rules.map(function (item) {
+                                        return makeNode.apply(this, [item]);
+                                    }, this);
+                                } else if (rule) {
+                                    rule.entity = "PromoSupportPromo";
+                                    return rule;
+                                }
+                            }
+                        };
+                        return makeNode.apply(this, [rule]);
+                    });
+                    // Удалённые записи не учитывать при фильтрации (TODO: рассмотреть возможность реализации Condition Mapping || убрать реализацию IDeactivatable из PromoSupportPromo)
+                    detailFilter.rules.push({
+                        entity: "PromoSupportPromo",
+                        operation: "Equals",
+                        property: "Disabled",
+                        value: false
+                    })
+                }
+                // сохраняем фильтр
+                Ext.ComponentQuery.query('combineddirectorypanel')[0].detailFilter = detailFilter;
+            }
+            // если дитэйл-фильтр уже был применён ранее, но не был модифицирован при повторном применении мастер-фильтра
+            else if (lastDetailFilter)
+                detailFilter = lastDetailFilter;
+            // если есть дитэйл-фильтр, он добавляется к основному
+            if (detailFilter) {
+                context.getFilterModel().commit();
+                var masterFilter = context.getFilterModel().getFilter();
+                if (masterFilter) {
+                    masterFilter.rules.push(detailFilter);
+                    // если мастер-фильтр пуст
+                } else
+                    masterFilter = detailFilter;
+                context.filter = masterFilter;
+                // если дитэйл-фильтр пуст
+            } else {
+                context.getFilterModel().commit();
+                context.filter = context.getFilterModel().getFilter();
+            }
+            context.reloadStore();
+            context.fireEvent('extfilterchange', filterWindow.getFilterContext());
+            filterWindow.close();
+        }
+    },
+    // Очистка главного фильтра. Дополнительно очищается дитэйл-фильтр
+    onMasterRejectButtonClick: function (button) {
+        var filterWindow = button.up('extmasterfilter');
+        var form = filterWindow.down('extselectionfilter'); // После очистки фильтра фокус остаётся на кнопке, перемещаем фокус на форму.
+        if (form) {
+            form.focus()
+        }
+        filterWindow.getFilterContext().clear();
+        filterWindow.getFilterContext().detailContext = null;
+        filterWindow.detailFilterContext = null;
+        Ext.ComponentQuery.query('combineddirectorypanel')[0].detailFilter = null;
     }
 });

@@ -13,7 +13,7 @@ namespace Module.Persist.TPM.PromoStateControl
 
             private readonly string Name = "Closed";
 
-            private readonly List<string> Roles = new List<string> { "Administrator", "CustomerMarketing", "DemandFinance", "DemandPlanning", "FunctionalExpert", "KeyAccountManager" };
+            private readonly List<string> Roles = new List<string> { "Administrator", "CMManager", "CustomerMarketing", "DemandFinance", "DemandPlanning", "FunctionalExpert", "KeyAccountManager" };
 
             private readonly Dictionary<string, List<string>> AvailableStates = new Dictionary<string, List<string>>();
 
@@ -42,14 +42,40 @@ namespace Module.Persist.TPM.PromoStateControl
                 return RoleStateUtil.GetMapForStatus(Name);
             }
 
-            public bool ChangeState(Promo promoModel, string userRole, out string massage)
+            public bool ChangeState(Promo promoModel, string userRole, out string message)
             {
-                massage = "Action is not available";
+                message = string.Empty;
 
-                return false;
+                PromoStatus promoStatus = _stateContext.dbContext.Set<PromoStatus>().Find(promoModel.PromoStatusId);
+                string statusName = promoStatus.SystemName;
+
+                bool isAvailable = PromoStateUtil.CheckAccess(GetAvailableStates(), statusName, userRole);
+                bool isAvailableCurrent = PromoStateUtil.CheckAccess(Roles, userRole);
+
+                if (isAvailable)
+                {
+                    // Go to: FinishedState
+                    _stateContext.Model = promoModel;
+                    _stateContext.State = _stateContext._finishedState;
+
+                    return true;
+                }
+                // Current state
+                else if (isAvailableCurrent && statusName == Name)
+                {
+                    _stateContext.Model = promoModel;
+
+                    return true;
+                }
+                else
+                {
+                    message = "Action is not available";
+
+                    return false;
+                }
             }
 
-            public bool ChangeState(Promo promoModel, PromoStates promoState, string userRole, out string massage)
+            public bool ChangeState(Promo promoModel, PromoStates promoState, string userRole, out string message)
             {
                 throw new NotImplementedException();
             }

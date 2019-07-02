@@ -4,6 +4,7 @@
     width: 500,
     minWidth: 500,
     maxHeight: 500,
+    cls: 'readOnlyFields',
 
     afterWindowShow: function (scope, isCreating) {
         scope.down('field').focus(true, 10); // фокус на первом поле формы для корректной работы клавишных комбинаций

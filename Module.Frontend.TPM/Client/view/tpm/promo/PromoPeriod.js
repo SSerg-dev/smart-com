@@ -30,28 +30,34 @@
                     labelAlign: 'top',
                     minValue: new Date(),
                     needReadOnly: true,
-                    crudAccess: ['Administrator', 'FunctionalExpert', 'CustomerMarketing', 'KeyAccountManager'],
+                    allowBlank: false,
+                    allowOnlyWhitespace: false,
+                    crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
                     maxText: l10n.ns('tpm', 'Promo').value('failMaxDate'),
                     minText: l10n.ns('tpm', 'Promo').value('failMinDate'),
+                    onExpand: function () {
+                        var field = Ext.ComponentQuery.query('datefield[name=DurationStartDate]')[0];                        
+                        var endDateField = field.up().down('datefield[name=DurationEndDate]');                       
+
+                        setMonthPicker(field, endDateField);
+                    },
                     listeners: {
                         change: function (field, newValue, oldValue) {
                             var validDates = false;
                             var panel = field.up('promoperiod');
 
-                            if (newValue && field.isValid()) {
+                            if (newValue /*&& field.isValid()*/) {
                                 var endDateField = field.up().down('datefield[name=DurationEndDate]');
                                 var endDateValue = endDateField.getValue();
-                                
-                                selectionModel = field.up('promoeditorcustom').down('clienttreegrid').getSelectionModel();
-                                var checked = field.up('promoeditorcustom').down('clienttreegrid').getView().getChecked();
+                                var promoClientForm = field.up('promoeditorcustom').down('promoclient');
 
-                                if (checked.length != 0 && selectionModel.hasSelection()) {
-                                    var record = selectionModel.getSelection()[0];
-                                    var isBeforeStart = record.get('IsBeforeStart');
-                                    var daysStart = record.get('DaysStart');
-                                    var isDaysStart = record.get('IsDaysStart');
+                                if (promoClientForm && promoClientForm.clientTreeRecord) {
+                                    var record = promoClientForm.clientTreeRecord;
+                                    var isBeforeStart = record.IsBeforeStart;
+                                    var daysStart = record.DaysStart;
+                                    var isDaysStart = record.IsDaysStart;
                                     var dispatchStartDate = field.up('promoperiod').down('[name=DispatchStartDate]');
-                                    var daysForDispatchStart = record.get('DaysStart');
+                                    var daysForDispatchStart = record.DaysStart;
 
                                     if (isBeforeStart !== null && daysStart !== null && isDaysStart !== null) {
                                         if (!isDaysStart) {
@@ -72,9 +78,9 @@
                                     }
                                 }
 
-                                //endDateField.getPicker().setMinDate(Ext.Date.add(newValue, Ext.Date.DAY, 1));
                                 endDateField.setMinValue(Ext.Date.add(newValue, Ext.Date.DAY, 1));
-                                endDateField.getPicker().setMinDate();
+                                endDateField.getPicker().setMinDate(Ext.Date.add(newValue, Ext.Date.DAY, 1));
+                                endDateField.validate();
 
                                 //Установка завершенности при promo в статусе Closed, Finished, Started
                                 var promoPeriodButton = Ext.ComponentQuery.query('button[itemId=btn_promo_step4]')[0];
@@ -87,7 +93,7 @@
                                     }
                                 }
 
-                                if (endDateValue && endDateField.isValid() && newValue) {
+                                if (endDateValue /*&& endDateField.isValid()*/ && newValue) {
                                     validDates = true;
 
                                     panel.durationPeriod = 'c ' + Ext.Date.format(newValue, "d.m.Y") + ' по ' + Ext.Date.format(endDateValue, "d.m.Y");
@@ -95,7 +101,7 @@
                                     var text = '<b>' + l10n.ns('tpm', 'promoStap').value('basicStep4') + '</b><br><p>Promo: ' +
                                         panel.durationPeriod + '<br>Dispatch: ' + (panel.dispatchPeriod ? panel.dispatchPeriod : '') + '</p>';
 
-                                    var days = (endDateValue - newValue) / 86400000;
+                                    var days = getDaysBetweenDates(endDateValue, newValue); //(endDateValue - newValue) / 86400000;
                                     var titleText = 'Promo duration (' + ++days + (days === 1 ? ' day)' : ' days)');
                                     field.up().setTitle(titleText);
                                     promoPeriodButton.setText(text);
@@ -111,7 +117,7 @@
                                     var stepButtons = panel.down('panel[itemId=promo]').down('custompromotoolbar');
 
                                     checkMainTab(stepButtons, mainTab);
-                                }                          
+                                }
                             }
 
                             if (!validDates) {
@@ -123,10 +129,10 @@
                                 var titleText = 'Promo duration';
                                 field.up().setTitle(titleText);
                                 promoPeriodButton.setText(text);
-                                
+
                                 promoPeriodButton.addCls('notcompleted');
                                 promoPeriodButton.setGlyph(0xf130);
-                                promoPeriodButton.isComplete = false;                                
+                                promoPeriodButton.isComplete = false;
 
                                 var panel = field.up('promoeditorcustom');
                                 var mainTab = panel.down('button[itemId=btn_promo]');
@@ -146,28 +152,56 @@
                     labelAlign: 'top',
                     minValue: new Date(),
                     needReadOnly: true,
-                    crudAccess: ['Administrator', 'FunctionalExpert', 'CustomerMarketing', 'KeyAccountManager'],
+                    allowBlank: false,
+                    allowOnlyWhitespace: false,
+                    crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
                     maxText: l10n.ns('tpm', 'Promo').value('failMaxDate'),
                     minText: l10n.ns('tpm', 'Promo').value('failMinDate'),
-                    listeners: {
+                    // переопределение нужно для того чтобы при преобразовании значения в дату подклеивать время 23:59:59 для корректного отображения в календаре
+                    //parseDate: function (value) {
+                    //    if (!value || Ext.isDate(value)) {
+                    //        return value;
+                    //    }
+
+                    //    var me = this,
+                    //        val = me.safeParse(value, me.format),
+                    //        altFormats = me.altFormats,
+                    //        altFormatsArray = me.altFormatsArray,
+                    //        i = 0,
+                    //        len;
+
+                    //    if (!val && altFormats) {
+                    //        altFormatsArray = altFormatsArray || altFormats.split('|');
+                    //        len = altFormatsArray.length;
+                    //        for (; i < len && !val; ++i) {
+                    //            val = me.safeParse(value, altFormatsArray[i]);
+                    //        }
+                    //    }
+                    //    return new Date(val.setHours(23, 59, 59));
+                    //},
+                    onExpand: function () {
+                        var field = Ext.ComponentQuery.query('datefield[name=DurationEndDate]')[0];
+                        var startDateField = field.up().down('datefield[name=DurationStartDate]');
+
+                        setMonthPicker(field, startDateField);
+                    },
+                    listeners: {                                               
                         change: function (field, newValue, oldValue) {
                             var validDates = false;
                             var panel = field.up('promoperiod');
 
-                            if (newValue && field.isValid()) {
+                            if (newValue /*&& field.isValid()*/) {
                                 var startDateField = field.up().down('datefield[name=DurationStartDate]');
-                                var startDateValue = startDateField.getValue();
-                                
-                                selectionModel = field.up('promoeditorcustom').down('clienttreegrid').getSelectionModel();
-                                var checked = field.up('promoeditorcustom').down('clienttreegrid').getView().getChecked();
+                                var startDateValue = startDateField.getValue();                                
+                                var promoClientForm = field.up('promoeditorcustom').down('promoclient');
 
-                                if (checked.length != 0 && selectionModel.hasSelection()) {
-                                    var record = selectionModel.getSelection()[0];
-                                    var isBeforeEnd = record.get('IsBeforeEnd');
-                                    var daysEnd = record.get('DaysEnd');
-                                    var isDaysEnd = record.get('IsDaysEnd');
+                                if (promoClientForm && promoClientForm.clientTreeRecord) {
+                                    var record = promoClientForm.clientTreeRecord;                                
+                                    var isBeforeEnd = record.IsBeforeEnd;
+                                    var daysEnd = record.DaysEnd;
+                                    var isDaysEnd = record.IsDaysEnd;
                                     var dispatchEndDate = field.up('promoperiod').down('[name=DispatchEndDate]');
-                                    var daysForDispatchEnd = record.get('DaysEnd');
+                                    var daysForDispatchEnd = record.DaysEnd;
 
                                     if (isBeforeEnd !== null && daysEnd !== null && isDaysEnd !== null) {
                                         if (!isDaysEnd) {
@@ -188,11 +222,11 @@
                                     }
                                 }
 
-                                
+
                                 //startDateField.getPicker().setMaxDate(Ext.Date.add(newValue, Ext.Date.DAY, -1));
                                 startDateField.setMaxValue(Ext.Date.add(newValue, Ext.Date.DAY, -1));
                                 startDateField.getPicker().setMaxDate();
-                                
+                                startDateField.validate();
 
                                 //Установка завершенности при promo в статусе Closed, Finished, Started
                                 var promoPeriodButton = Ext.ComponentQuery.query('button[itemId=btn_promo_step4]')[0];
@@ -205,7 +239,7 @@
                                     }
                                 }
 
-                                if (startDateValue && startDateField.isValid() && newValue) {
+                                if (startDateValue /*&& startDateField.isValid()*/ && newValue) {
                                     validDates = true;
 
                                     panel.durationPeriod = 'c ' + Ext.Date.format(startDateValue, "d.m.Y") + ' по ' + Ext.Date.format(newValue, "d.m.Y");
@@ -213,7 +247,7 @@
                                     var text = '<b>' + l10n.ns('tpm', 'promoStap').value('basicStep4') + '</b><br><p>Promo: ' +
                                         panel.durationPeriod + '<br>Dispatch: ' + (panel.dispatchPeriod ? panel.dispatchPeriod : '') + '</p>';
 
-                                    var days = (newValue - startDateValue) / 86400000;
+                                    var days = getDaysBetweenDates(newValue, startDateValue); //(newValue - startDateValue) / 86400000;
                                     var titleText = 'Promo duration (' + ++days + (days === 1 ? ' day)' : ' days)');
                                     field.up().setTitle(titleText);
                                     promoPeriodButton.setText(text);
@@ -237,14 +271,14 @@
                                 var promoPeriodButton = Ext.ComponentQuery.query('button[itemId=btn_promo_step4]')[0];
                                 var text = '<b>' + l10n.ns('tpm', 'promoStap').value('basicStep4') + '</b><br><p>Promo: <br>Dispatch: '
                                     + (panel.dispatchPeriod ? panel.dispatchPeriod : '') + '</p>';
-                                
+
                                 var titleText = 'Promo duration';
                                 field.up().setTitle(titleText);
                                 promoPeriodButton.setText(text);
 
                                 promoPeriodButton.addCls('notcompleted');
                                 promoPeriodButton.setGlyph(0xf130);
-                                promoPeriodButton.isComplete = false;                                
+                                promoPeriodButton.isComplete = false;
 
                                 var panel = field.up('promoeditorcustom');
                                 var mainTab = panel.down('button[itemId=btn_promo]');
@@ -253,7 +287,7 @@
                                 checkMainTab(stepButtons, mainTab);
                             }
                         }
-                    }
+                    },
                 }]
             }]
         }, {
@@ -293,21 +327,28 @@
                     fieldLabel: 'Start date',
                     labelAlign: 'top',
                     needReadOnly: true,
-                    crudAccess: ['Administrator', 'FunctionalExpert', 'CustomerMarketing', 'KeyAccountManager'],
+                    allowBlank: false,
+                    allowOnlyWhitespace: false,
+                    crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
                     maxText: l10n.ns('tpm', 'Promo').value('failMaxDate'),
                     minText: l10n.ns('tpm', 'Promo').value('failMinDate'),
+                    onExpand: function () {
+                        var field = Ext.ComponentQuery.query('datefield[name=DispatchStartDate]')[0];
+                        var endDateField = field.up().down('datefield[name=DispatchEndDate]');
+
+                        setMonthPicker(field, endDateField);
+                    },
                     listeners: {
                         change: function (field, newValue, oldValue) {
                             var validDates = false;
                             var panel = field.up('promoperiod');
 
-                            if (newValue && field.isValid()) {
+                            if (newValue /*&& field.isValid()*/) {
                                 var endDateField = field.up().down('datefield[name=DispatchEndDate]');
-                                var endDateValue = endDateField.getValue();                                
+                                var endDateValue = endDateField.getValue();
 
-                                //endDateField.getPicker().setMinDate(Ext.Date.add(newValue, Ext.Date.DAY, 1));
                                 endDateField.setMinValue(Ext.Date.add(newValue, Ext.Date.DAY, 1));
-                                endDateField.getPicker().setMinDate();
+                                endDateField.getPicker().setMinDate(Ext.Date.add(newValue, Ext.Date.DAY, 1));
                                 endDateField.validate();
 
                                 if (endDateValue && endDateField.isValid() && newValue) {
@@ -318,7 +359,7 @@
                                     var text = '<b>' + l10n.ns('tpm', 'promoStap').value('basicStep4') + '</b><br><p>Promo: ' +
                                         (panel.durationPeriod ? panel.durationPeriod : '') + '<br>Dispatch: ' + panel.dispatchPeriod + '</p>';
 
-                                    var days = (endDateValue - newValue) / 86400000;
+                                    var days = getDaysBetweenDates(endDateValue, newValue); //(endDateValue - newValue) / 86400000;
                                     var titleText = 'Dispatch (' + ++days + (days === 1 ? ' day)' : ' days)');
                                     field.up().setTitle(titleText);
                                     promoPeriodButton.setText(text);
@@ -342,14 +383,14 @@
                                 var promoPeriodButton = Ext.ComponentQuery.query('button[itemId=btn_promo_step4]')[0];
                                 var text = '<b>' + l10n.ns('tpm', 'promoStap').value('basicStep4') + '</b><br><p>Promo: ' +
                                     (panel.durationPeriod ? panel.durationPeriod : '') + '<br>Dispatch: </p>';
-                                
+
                                 var titleText = 'Dispatch';
                                 field.up().setTitle(titleText);
                                 promoPeriodButton.setText(text);
-                                
+
                                 promoPeriodButton.addCls('notcompleted');
                                 promoPeriodButton.setGlyph(0xf130);
-                                promoPeriodButton.isComplete = false;                                
+                                promoPeriodButton.isComplete = false;
 
                                 var panel = field.up('promoeditorcustom');
                                 var mainTab = panel.down('button[itemId=btn_promo]');
@@ -368,24 +409,32 @@
                     fieldLabel: 'End date',
                     labelAlign: 'top',
                     needReadOnly: true,
-                    crudAccess: ['Administrator', 'FunctionalExpert', 'CustomerMarketing', 'KeyAccountManager'],
+                    allowBlank: false,
+                    allowOnlyWhitespace: false,
+                    crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
                     maxText: l10n.ns('tpm', 'Promo').value('failMaxDate'),
                     minText: l10n.ns('tpm', 'Promo').value('failMinDate'),
+                    onExpand: function () {
+                        var field = Ext.ComponentQuery.query('datefield[name=DispatchEndDate]')[0];
+                        var startDateField = field.up().down('datefield[name=DispatchStartDate]');
+
+                        setMonthPicker(field, startDateField);
+                    },
                     listeners: {
                         change: function (field, newValue, oldValue) {
                             var validDates = false;
                             var panel = field.up('promoperiod');
 
-                            if (newValue && field.isValid()) {
+                            if (newValue /*&& field.isValid()*/) {
                                 var startDateField = field.up().down('datefield[name=DispatchStartDate]');
-                                var startDateValue = startDateField.getValue();                                
+                                var startDateValue = startDateField.getValue();
 
                                 //startDateField.getPicker().setMaxDate(Ext.Date.add(newValue, Ext.Date.DAY, -1));
                                 startDateField.setMaxValue(Ext.Date.add(newValue, Ext.Date.DAY, -1));
                                 startDateField.getPicker().setMaxDate();
                                 startDateField.validate();
 
-                                if (startDateValue && startDateField.isValid() && newValue) {
+                                if (startDateValue /*&& startDateField.isValid()*/ && newValue) {
                                     validDates = true;
 
                                     panel.dispatchPeriod = 'c ' + Ext.Date.format(startDateValue, "d.m.Y") + ' по ' + Ext.Date.format(newValue, "d.m.Y");
@@ -393,7 +442,7 @@
                                     var text = '<b>' + l10n.ns('tpm', 'promoStap').value('basicStep4') + '</b><br><p>Promo: ' +
                                         (panel.durationPeriod ? panel.durationPeriod : '') + '<br>Dispatch: ' + panel.dispatchPeriod + '</p>';
 
-                                    var days = (newValue - startDateValue) / 86400000;
+                                    var days = getDaysBetweenDates(newValue, startDateValue); //(newValue - startDateValue) / 86400000;
                                     var titleText = 'Dispatch (' + ++days + (days === 1 ? ' day)' : ' days)');
                                     field.up().setTitle(titleText);
                                     promoPeriodButton.setText(text);
@@ -421,10 +470,10 @@
                                 var titleText = 'Dispatch';
                                 field.up().setTitle(titleText);
                                 promoPeriodButton.setText(text);
-                                
+
                                 promoPeriodButton.addCls('notcompleted');
                                 promoPeriodButton.setGlyph(0xf130);
-                                promoPeriodButton.isComplete = false;                                
+                                promoPeriodButton.isComplete = false;
 
                                 var panel = field.up('promoeditorcustom');
                                 var mainTab = panel.down('button[itemId=btn_promo]');

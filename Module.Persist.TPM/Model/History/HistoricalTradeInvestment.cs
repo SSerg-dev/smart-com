@@ -15,7 +15,7 @@ namespace Module.Persist.TPM.Model.History
 
         public string TIType { get; set; }
         public string TISubType { get; set; }
-        public short SizePercent { get; set; }
+        public float SizePercent { get; set; }
 
         public bool MarcCalcROI { get; set; }
         public bool MarcCalcBudgets { get; set; }

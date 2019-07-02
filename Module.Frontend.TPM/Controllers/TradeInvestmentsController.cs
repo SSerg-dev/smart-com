@@ -32,21 +32,17 @@ using AutoMapper;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 
-namespace Module.Frontend.TPM.Controllers
-{
+namespace Module.Frontend.TPM.Controllers {
 
-    public class TradeInvestmentsController : EFContextController
-    {
+    public class TradeInvestmentsController : EFContextController {
         private readonly IAuthorizationManager authorizationManager;
 
-        public TradeInvestmentsController(IAuthorizationManager authorizationManager)
-        {
+        public TradeInvestmentsController(IAuthorizationManager authorizationManager) {
             this.authorizationManager = authorizationManager;
         }
 
 
-        protected IQueryable<TradeInvestment> GetConstraintedQuery()
-        {
+        protected IQueryable<TradeInvestment> GetConstraintedQuery() {
 
             UserInfo user = authorizationManager.GetCurrentUser();
             string role = authorizationManager.GetCurrentRoleName();
@@ -61,41 +57,31 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
-        public SingleResult<TradeInvestment> GetTradeInvestment([FromODataUri] System.Guid key)
-        {
+        public SingleResult<TradeInvestment> GetTradeInvestment([FromODataUri] System.Guid key) {
             return SingleResult.Create(GetConstraintedQuery());
         }
 
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
-        public IQueryable<TradeInvestment> GetTradeInvestments()
-        {
+        public IQueryable<TradeInvestment> GetTradeInvestments() {
             return GetConstraintedQuery();
         }
 
 
         [ClaimsAuthorize]
-        public IHttpActionResult Put([FromODataUri] System.Guid key, Delta<TradeInvestment> patch)
-        {
+        public IHttpActionResult Put([FromODataUri] System.Guid key, Delta<TradeInvestment> patch) {
             var model = Context.Set<TradeInvestment>().Find(key);
-            if (model == null)
-            {
+            if (model == null) {
                 return NotFound();
             }
             patch.Put(model);
-            try
-            {
+            try {
                 Context.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!EntityExists(key))
-                {
+            } catch (DbUpdateConcurrencyException) {
+                if (!EntityExists(key)) {
                     return NotFound();
-                }
-                else
-                {
+                } else {
                     throw;
                 }
             }
@@ -103,28 +89,23 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Post(TradeInvestment model)
-        {
-            if (!ModelState.IsValid)
-            {
+        public IHttpActionResult Post(TradeInvestment model) {
+            if (!ModelState.IsValid) {
                 return BadRequest(ModelState);
             }
             var proxy = Context.Set<TradeInvestment>().Create<TradeInvestment>();
-            var result = (TradeInvestment)Mapper.Map(model, proxy, typeof(TradeInvestment), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+            var result = (TradeInvestment) Mapper.Map(model, proxy, typeof(TradeInvestment), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
 
             //Проверка пересечения по времени на клиенте
-            if (!DateCheck(model)) {
+            if (!DateCheck(result)) {
                 string msg = "There can not be two TradeInvestment of such client, brandTech, Type and SubType in some Time";
                 return InternalServerError(new Exception(msg)); //Json(new { success = false, message = msg });
             }
 
             Context.Set<TradeInvestment>().Add(result);
-            try
-            {
+            try {
                 Context.SaveChanges();
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 return GetErorrRequest(e);
             }
 
@@ -133,15 +114,14 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] System.Guid key, Delta<TradeInvestment> patch)
-        {
-            try
-            {
+        public IHttpActionResult Patch([FromODataUri] System.Guid key, Delta<TradeInvestment> patch) {
+            try {
                 var model = Context.Set<TradeInvestment>().Find(key);
-                if (model == null)
-                {
+                if (model == null) {
                     return NotFound();
                 }
+
+                patch.Patch(model);
 
                 //Проверка пересечения по времени на клиенте
                 if (!DateCheck(model)) {
@@ -149,36 +129,25 @@ namespace Module.Frontend.TPM.Controllers
                     return InternalServerError(new Exception(msg)); //Json(new { success = false, message = msg });
                 }
 
-                patch.Patch(model);
                 Context.SaveChanges();
 
                 return Updated(model);
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!EntityExists(key))
-                {
+            } catch (DbUpdateConcurrencyException) {
+                if (!EntityExists(key)) {
                     return NotFound();
-                }
-                else
-                {
+                } else {
                     throw;
                 }
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 return GetErorrRequest(e);
-            }            
+            }
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Delete([FromODataUri] System.Guid key)
-        {
-            try
-            {
+        public IHttpActionResult Delete([FromODataUri] System.Guid key) {
+            try {
                 var model = Context.Set<TradeInvestment>().Find(key);
-                if (model == null)
-                {
+                if (model == null) {
                     return NotFound();
                 }
 
@@ -187,25 +156,21 @@ namespace Module.Frontend.TPM.Controllers
                 Context.SaveChanges();
 
                 return StatusCode(HttpStatusCode.NoContent);
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 return InternalServerError(e.InnerException);
             }
         }
 
-        private bool EntityExists(System.Guid key)
-        {
+        private bool EntityExists(System.Guid key) {
             return Context.Set<TradeInvestment>().Count(e => e.Id == key) > 0;
         }
 
-        private IEnumerable<Column> GetExportSettings()
-        {
+        private IEnumerable<Column> GetExportSettings() {
             IEnumerable<Column> columns = new List<Column>() {
                 new Column() { Order = 0, Field = "StartDate", Header = "StartDate", Quoting = false, Format = "dd.MM.yyyy"  },
                 new Column() { Order = 1, Field = "EndDate", Header = "EndDate", Quoting = false, Format = "dd.MM.yyyy"  },
-                new Column() { Order = 2, Field = "ClientTree.ObjectId", Header = "ClientId", Quoting = false },
-                new Column() { Order = 3, Field = "ClientTree.FullPathName", Header = "Client", Quoting = false },
+                new Column() { Order = 2, Field = "ClientTree.FullPathName", Header = "Client", Quoting = false },
+                new Column() { Order = 3, Field = "ClientTree.ObjectId", Header = "ClientId", Quoting = false },
                 new Column() { Order = 4, Field = "BrandTech.Name", Header = "BrandTech", Quoting = false },
                 new Column() { Order = 5, Field = "TIType", Header = "TI Type", Quoting = false },
                 new Column() { Order = 6, Field = "TISubType", Header = "TI SubType", Quoting = false },
@@ -216,10 +181,8 @@ namespace Module.Frontend.TPM.Controllers
             return columns;
         }
         [ClaimsAuthorize]
-        public IHttpActionResult ExportXLSX(ODataQueryOptions<TradeInvestment> options)
-        {
-            try
-            {
+        public IHttpActionResult ExportXLSX(ODataQueryOptions<TradeInvestment> options) {
+            try {
                 IQueryable results = options.ApplyTo(GetConstraintedQuery().Where(x => !x.Disabled));
                 IEnumerable<Column> columns = GetExportSettings();
                 XLSXExporter exporter = new XLSXExporter(columns);
@@ -229,9 +192,7 @@ namespace Module.Frontend.TPM.Controllers
                 exporter.Export(results, filePath);
                 string filename = System.IO.Path.GetFileName(filePath);
                 return Content<string>(HttpStatusCode.OK, filename);
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 return Content<string>(HttpStatusCode.InternalServerError, e.Message);
             }
         }
@@ -358,24 +319,21 @@ namespace Module.Frontend.TPM.Controllers
                 && y.Id != toCheck.Id && !y.Disabled).ToList();
             foreach (TradeInvestment item in clientTIs) {
                 if ((item.StartDate <= toCheck.StartDate && item.EndDate >= toCheck.StartDate) ||
-                    (item.StartDate <= toCheck.EndDate && item.EndDate >= toCheck.EndDate)) {
+                    (item.StartDate <= toCheck.EndDate && item.EndDate >= toCheck.EndDate) ||
+                    (item.StartDate >= toCheck.StartDate && item.EndDate <= toCheck.EndDate)) {
                     return false;
                 }
             }
             return true;
         }
 
-        private ExceptionResult GetErorrRequest(Exception e)
-        {
+        private ExceptionResult GetErorrRequest(Exception e) {
             // обработка при создании дублирующей записи
             SqlException exc = e.GetBaseException() as SqlException;
 
-            if (exc != null && (exc.Number == 2627 || exc.Number == 2601))
-            {
+            if (exc != null && (exc.Number == 2627 || exc.Number == 2601)) {
                 return InternalServerError(new Exception("This Trade Investment has already existed"));
-            }
-            else
-            {
+            } else {
                 return InternalServerError(e.InnerException);
             }
         }

@@ -37,11 +37,17 @@
                     displayField: 'Name',
                     entityType: 'Mechanic',
                     needReadOnly: true,
-                    crudAccess: ['Administrator', 'FunctionalExpert', 'CustomerMarketing', 'KeyAccountManager'],
+                    allowBlank: false,
+                    allowOnlyWhitespace: false,
+                    allowDecimals: false,
+                    allowExponential: false,
+                    crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
                     store: {
                         type: 'promoformmechanicstore'
                     },
                     onTrigger3Click: function () {
+                        Ext.util.Observable.capture(this, function (evname) { console.log(evname, arguments); })
+
                         var promoController = App.app.getController('tpm.promo.Promo'),
                             promoMechanic = Ext.ComponentQuery.query('promomechanic')[0],
                             mechanicFields = promoController.getMechanicFields(promoMechanic);
@@ -56,6 +62,7 @@
                             mechanicFields.marsMechanicFields.marsMechanicTypeId,
                             mechanicFields.marsMechanicFields.marsMechanicDiscount,
                         ]);
+                        this.validate();
                     },
                     mapping: [{
                         from: 'Name',
@@ -75,7 +82,11 @@
                     entityType: 'MechanicType',
                     needUpdateMappings: true,
                     needReadOnly: true,
-                    crudAccess: ['Administrator', 'FunctionalExpert', 'CustomerMarketing', 'KeyAccountManager'],
+                    allowBlank: false,
+                    allowOnlyWhitespace: false,
+                    allowDecimals: false,
+                    allowExponential: false,
+                    crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
                     store: {
                         type: 'promoformmechanictypestore'
                     },
@@ -88,6 +99,7 @@
                             mechanicFields.marsMechanicFields.marsMechanicTypeId,
                             mechanicFields.marsMechanicFields.marsMechanicDiscount,
                         ]);
+                        this.validate();
                     },
                     mapping: [{
                         from: 'Name',
@@ -111,7 +123,7 @@
                     allowOnlyWhitespace: false,
                     allowDecimals: false,
                     allowExponential: false,
-                    crudAccess: ['Administrator', 'FunctionalExpert', 'CustomerMarketing', 'KeyAccountManager'],
+                    crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
                 }]
             }, {
                 xtype: 'fieldset',
@@ -134,7 +146,7 @@
                     entityType: 'Mechanic',
                     needReadOnly: true,
                     allowBlank: true,
-                    crudAccess: ['Administrator', 'FunctionalExpert', 'CustomerMarketing', 'KeyAccountManager'],
+                    crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
                     customTip: l10n.ns('tpm', 'Promo').value('PlanInstoreMechanicNameTip'),
                     store: {
                         type: 'promoformmechanicstore'
@@ -154,6 +166,12 @@
                             mechanicFields.instoreMechanicFields.instoreMechanicTypeId,
                             mechanicFields.instoreMechanicFields.instoreMechanicDiscount,
                         ]);
+                        //this.validate();
+                    },
+                    listeners: {
+                        change: function (field, newVal, oldVal) {
+                            this.up('promoeditorcustom').down('#PlanInstoreMechanicIdInActivity').setRawValue(field.rawValue);
+                        }
                     },
                     mapping: [{
                         from: 'Name',
@@ -177,7 +195,7 @@
                     allowOnlyWhitespace: false,
                     allowDecimals: false,
                     allowExponential: false,
-                    crudAccess: ['Administrator', 'FunctionalExpert', 'CustomerMarketing', 'KeyAccountManager'],
+                    crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
                     customTip: l10n.ns('tpm', 'Promo').value('PlanInstoreMechanicTypeNameTip'),
                     store: {
                         type: 'promoformmechanictypestore'
@@ -191,6 +209,12 @@
                             mechanicFields.instoreMechanicFields.instoreMechanicTypeId,
                             mechanicFields.instoreMechanicFields.instoreMechanicDiscount,
                         ]);
+                        //this.validate();
+                    },
+                    listeners: {
+                        change: function (field, newVal, oldVal) {
+                            this.up('promoeditorcustom').down('#PlanInstoreMechanicTypeIdInActivity').setRawValue(field.rawValue);
+                        }
                     },
                     mapping: [{
                         from: 'Name',
@@ -214,8 +238,13 @@
                     allowOnlyWhitespace: false,
                     allowDecimals: false,
                     allowExponential: false,
-                    crudAccess: ['Administrator', 'FunctionalExpert', 'CustomerMarketing', 'KeyAccountManager'],
+                    crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
                     customTip: l10n.ns('tpm', 'Promo').value('PlanInstoreMechanicDiscountTip'),
+                    listeners: {
+                        change: function (field, newVal, oldVal) {
+                            this.up('promoeditorcustom').down('#PlanInstoreMechanicDiscountInActivity').setRawValue(field.rawValue);
+                        }
+                    },
                 }]
             }]
         }, {
@@ -246,7 +275,7 @@
                 labelAlign: 'top',
                 cls: 'promo-textarea',
                 needReadOnly: true,
-                crudAccess: ['Administrator', 'FunctionalExpert', 'CustomerMarketing', 'KeyAccountManager'],
+                crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
             }]
         }]
     }]

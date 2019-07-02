@@ -18,16 +18,16 @@ Ext.define('App.view.core.associatedmailnotificationsetting.recipient.Associated
             storeId: 'associatedmailnotificationsettingrecipientstore',
             extendedFilter: {
                 xclass: 'App.ExtFilterContext',
-				supportedModels: [{
+                supportedModels: [{
                     xclass: 'App.ExtSelectionFilterModel',
                     model: 'App.model.core.associatedmailnotificationsetting.recipient.AssociatedRecipient',
                     modelId: 'efselectionmodel'
-				}, {
+                }, {
                     xclass: 'App.ExtTextFilterModel',
                     modelId: 'eftextmodel'
-				}]
-            }        
-		},
+                }]
+            }
+        },
 
         columns: {
             defaults: {
@@ -35,22 +35,22 @@ Ext.define('App.view.core.associatedmailnotificationsetting.recipient.Associated
                 menuDisabled: true,
                 filter: true,
                 flex: 1,
-				minWidth: 100
+                minWidth: 100
             },
-            items: [{ 
-				text: l10n.ns('core', 'AssociatedRecipient').value('Type'),
-				dataIndex: 'Type'
-			}, { 
-				text: l10n.ns('core', 'AssociatedRecipient').value('Value'),
-				dataIndex: 'Value'
-			}]
+            items: [{
+                text: l10n.ns('core', 'AssociatedRecipient').value('Type'),
+                dataIndex: 'Type'
+            }, {
+                text: l10n.ns('core', 'AssociatedRecipient').value('Value'),
+                dataIndex: 'Value'
+            }]
         }
     }, {
         xtype: 'editabledetailform',
         itemId: 'detailform',
         editableModes: [Core.BaseEditableDetailForm.LOADED_MODE],
-		model: 'App.model.core.associatedmailnotificationsetting.recipient.AssociatedRecipient',
-        items: [{ 
+        model: 'App.model.core.associatedmailnotificationsetting.recipient.AssociatedRecipient',
+        items: [{
             xtype: 'combobox',
             name: 'Type',
             editable: false,
@@ -61,11 +61,12 @@ Ext.define('App.view.core.associatedmailnotificationsetting.recipient.Associated
             store: {
                 type: 'recipienttypestore'
             },
-			fieldLabel: l10n.ns('core', 'AssociatedRecipient').value('Type')		
+            fieldLabel: l10n.ns('core', 'AssociatedRecipient').value('Type')
         }, {
             xtype: 'textfield',
             name: 'Value',
             id: 'emailnotificationfield',
+            vtype: 'extendEmail',
             allowOnlyWhitespace: false,
             allowBlank: false,
             hidden: true,

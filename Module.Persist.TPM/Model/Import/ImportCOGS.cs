@@ -34,7 +34,7 @@ namespace Module.Persist.TPM.Model.Import
 
         [ImportCSVColumn(ColumnNumber = 5)]
         [Display(Name = "LVS percent")]
-        public double LVSpercent { get; set; }
+        public float LVSpercent { get; set; }
 
 
         public int ClientTreeId { get; set; }

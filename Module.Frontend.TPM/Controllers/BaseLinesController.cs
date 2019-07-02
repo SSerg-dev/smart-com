@@ -28,6 +28,7 @@ using System.Net.Http.Headers;
 using Core.Settings;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using System.Collections.Specialized;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -261,7 +262,9 @@ namespace Module.Frontend.TPM.Controllers
                 string importDir = Core.Settings.AppSettingsManager.GetSetting("IMPORT_DIRECTORY", "ImportFiles");
                 string fileName = await FileUtility.UploadFile(Request, importDir);
 
-                CreateImportTask(fileName, "FullXLSXImportBaseLineHandler");
+                NameValueCollection form = System.Web.HttpContext.Current.Request.Form;
+
+                CreateImportTask(fileName, "FullXLSXImportBaseLineHandler", form);
 
                 HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
                 result.Content = new StringContent("success = true");
@@ -272,7 +275,7 @@ namespace Module.Frontend.TPM.Controllers
             }
         }
 
-        private void CreateImportTask(string fileName, string importHandler)
+        private void CreateImportTask(string fileName, string importHandler, NameValueCollection paramForm)
         {
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
@@ -291,13 +294,18 @@ namespace Module.Frontend.TPM.Controllers
                     Name = System.IO.Path.GetFileName(fileName),
                     DisplayName = System.IO.Path.GetFileName(fileName)
                 };
+                // параметры импорта
+                HandlerDataHelper.SaveIncomingArgument("CrossParam.ClientFilter", new TextListModel(paramForm.GetStringValue("clientFilter")), data, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("CrossParam.StartDate", paramForm.GetStringValue("startDate"), data, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("CrossParam.FinishDate", paramForm.GetStringValue("endDate"), data, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("CrossParam.ClearTable", Boolean.Parse(paramForm.GetStringValue("clearTable")), data, throwIfNotExists: false);
 
                 HandlerDataHelper.SaveIncomingArgument("File", file, data, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportBaseLine), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportBaseLine).Name, data, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(ImportBaseLine), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(BaseLine), data, visible: false, throwIfNotExists: false);
 
                 LoopHandler handler = new LoopHandler()
                 {

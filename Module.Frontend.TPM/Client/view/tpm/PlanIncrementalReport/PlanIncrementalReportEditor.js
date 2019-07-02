@@ -4,6 +4,7 @@
     width: 500,
     minWidth: 500,
     maxHeight: 500,
+    cls: 'readOnlyFields',
 
     noChange: true,
 
@@ -18,10 +19,12 @@
                 { xtype: 'textfield', name: 'TypeApollo', fieldLabel: l10n.ns('tpm', 'PlanIncrementalReport').value('TypeApollo') },
                 { xtype: 'textfield', name: 'ModelApollo', fieldLabel: l10n.ns('tpm', 'PlanIncrementalReport').value('ModelApollo') },
                 { xtype: 'datefield', name: 'WeekStartDate', fieldLabel: l10n.ns('tpm', 'PlanIncrementalReport').value('WeekStartDate') },
-                { xtype: 'numberfield', name: 'PlanProductQty', fieldLabel: l10n.ns('tpm', 'PlanIncrementalReport').value('PlanProductQty') },
+            { xtype: 'numberfield', name: 'PlanProductCaseQty', fieldLabel: l10n.ns('tpm', 'PlanIncrementalReport').value('PlanProductCaseQty') },
                 { xtype: 'numberfield', name: 'PlanUplift', fieldLabel: l10n.ns('tpm', 'PlanIncrementalReport').value('PlanUplift') },
                 { xtype: 'datefield', name: 'StartDate', fieldLabel: l10n.ns('tpm', 'PlanIncrementalReport').value('StartDate') },
                 { xtype: 'datefield', name: 'EndDate', fieldLabel: l10n.ns('tpm', 'PlanIncrementalReport').value('EndDate') },
-                { xtype: 'textfield', name: 'Status', fieldLabel: l10n.ns('tpm', 'PlanIncrementalReport').value('Status') }]
+            { xtype: 'textfield', name: 'Status', fieldLabel: l10n.ns('tpm', 'PlanIncrementalReport').value('Status') },
+            { xtype: 'textfield', name: 'InOut', fieldLabel: l10n.ns('tpm', 'PlanIncrementalReport').value('InOut') }
+        ]
     }
 });

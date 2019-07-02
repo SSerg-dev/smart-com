@@ -153,7 +153,7 @@
                             width: 80,
                             minWidth: 80,
                             fieldLabel: l10n.ns('tpm', 'Promo').value('PlanPromoBTL'),
-                            editableRoles: ['Administrator', 'CustomerMarketing', 'FunctionalExpert'],
+                            editableRoles: ['Administrator', 'CMManager', 'CustomerMarketing', 'FunctionalExpert'],
                             listeners: {
                                 change: this.calculationChangeListener
                             }
@@ -484,8 +484,8 @@
                             }
                         }, {
                             xtype: 'trigger',
-                            name: 'PlanPostPromoEffect',
-                            fieldLabel: l10n.ns('tpm', 'Promo').value('PlanPostPromoEffect'),
+                            name: 'PlanPromoPostPromoEffectLSV',
+                            fieldLabel: l10n.ns('tpm', 'Promo').value('PlanPromoPostPromoEffectLSV'),
                             padding: '18 10 0 0',
                             needReadOnly: false,
                             editable: false,
@@ -501,26 +501,26 @@
 
                                 var planPostPromoEffectW1 = {
                                     xtype: 'numberfield',
-                                    name: 'PlanPostPromoEffect',
+                                    name: 'PlanPromoPostPromoEffectLSV',
                                     readOnly: true,
                                     cls: 'readOnlyField',
-                                    fieldLabel: l10n.ns('tpm', 'PostPromoEffectDetails').value('PlanPostPromoEffectW1'),
+                                    fieldLabel: l10n.ns('tpm', 'PostPromoEffectDetails').value('PlanPromoPostPromoEffectLSVW1'),
                                     labelStyle: 'margin-top: 6px !important',
                                     labelSeparator: '',
                                     labelWidth: 200,
-                                    value: record.data.PlanPostPromoEffectW1
+                                    value: record.data.PlanPromoPostPromoEffectLSVW1
                                 };
 
                                 var planPostPromoEffectW2 = {
                                     xtype: 'numberfield',
-                                    name: 'PlanPostPromoEffect',
+                                    name: 'PlanPromoPostPromoEffectLSV',
                                     readOnly: true,
                                     cls: 'readOnlyField',
-                                    fieldLabel: l10n.ns('tpm', 'PostPromoEffectDetails').value('PlanPostPromoEffectW2'),
+                                    fieldLabel: l10n.ns('tpm', 'PostPromoEffectDetails').value('PlanPromoPostPromoEffectLSVW2'),
                                     labelStyle: 'margin-top: 6px !important',
                                     labelSeparator: '',
                                     labelWidth: 200,
-                                    value: record.data.PlanPostPromoEffectW2
+                                    value: record.data.PlanPromoPostPromoEffectLSVW2
                                 };
 
                                 widget.down('fieldset').add(planPostPromoEffectW1, planPostPromoEffectW2);
@@ -534,7 +534,7 @@
                                     var record = promoController.getRecord(window);
 
                                     el.triggerCell.addCls('form-info-trigger-cell');
-                                    el.setValue(record.data.PlanPostPromoEffect || 0);
+                                    el.setValue(record.data.PlanPromoPostPromoEffectLSV || 0);
                                 },
                                 change: this.calculationChangeListener
                             }
@@ -583,7 +583,7 @@
                             }
                         }, {
                             xtype: 'trigger',
-                            name: 'FactPostPromoEffect',
+                            name: 'ActualPromoPostPromoEffectLSV',
                             needReadOnly: false,
                             editable: false,
                             width: 120,
@@ -598,26 +598,26 @@
 
                                 var factPostPromoEffectW1 = {
                                     xtype: 'numberfield',
-                                    name: 'FactPostPromoEffectW1',
+                                    name: 'ActualPromoPostPromoEffectLSVW1',
                                     readOnly: true,
                                     cls: 'readOnlyField',
-                                    fieldLabel: l10n.ns('tpm', 'PostPromoEffectDetails').value('FactPostPromoEffectW1'),
+                                    fieldLabel: l10n.ns('tpm', 'PostPromoEffectDetails').value('ActualPromoPostPromoEffectLSVW1'),
                                     labelSeparator: '',
                                     labelStyle: 'margin-top: 6px !important',
                                     labelWidth: 200,
-                                    value: record.data.FactPostPromoEffectW1
+                                    value: record.data.ActualPromoPostPromoEffectLSVW1
                                 };
 
                                 var factPostPromoEffectW2 = {
                                     xtype: 'numberfield',
-                                    name: 'FactPostPromoEffectW2',
+                                    name: 'ActualPromoPostPromoEffectLSVW2',
                                     readOnly: true,
                                     cls: 'readOnlyField',
-                                    fieldLabel: l10n.ns('tpm', 'PostPromoEffectDetails').value('FactPostPromoEffectW2'),
+                                    fieldLabel: l10n.ns('tpm', 'PostPromoEffectDetails').value('ActualPromoPostPromoEffectLSVW2'),
                                     labelSeparator: '',
                                     labelStyle: 'margin-top: 6px !important',
                                     labelWidth: 200,
-                                    value: record.data.FactPostPromoEffectW2
+                                    value: record.data.ActualPromoPostPromoEffectLSVW2
                                 };
 
                                 widget.down('fieldset').add(factPostPromoEffectW1, factPostPromoEffectW2);
@@ -630,7 +630,7 @@
                                     var record = promoController.getRecord(window);
 
                                     el.triggerCell.addCls('form-info-trigger-cell');
-                                    el.setValue(record.data.FactPostPromoEffect || 0);
+                                    el.setValue(record.data.ActualPromoPostPromoEffectLSV || 0);
                                 },
                                 change: this.calculationChangeListener
                             }

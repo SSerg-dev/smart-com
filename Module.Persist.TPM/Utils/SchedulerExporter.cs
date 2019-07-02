@@ -89,7 +89,7 @@ namespace Module.Persist.TPM.Utils {
             DateTime dt = DateTime.Now;
             // Получаем словарь клиентов
             IDictionary<int, ClientTree> clients = context.Set<ClientTree>().Where(cl => cl.IsBaseClient && clientIDs.Contains(cl.ObjectId) && (DateTime.Compare(cl.StartDate, dt) <= 0 && (!cl.EndDate.HasValue || DateTime.Compare(cl.EndDate.Value, dt) > 0))).Distinct().ToDictionary(x => x.ObjectId);
-            Dictionary<int, DateTime> colToDateMap = new Dictionary<int, DateTime>();
+            Dictionary<DateTime, int> colToDateMap = new Dictionary<DateTime, int>();
 
             DateTime startdDate = promoDTOs.Min(p => p.StartDate).Value.DateTime;
             DateTime endDate = promoDTOs.Max(p => p.EndDate).Value.DateTime;
@@ -125,7 +125,9 @@ namespace Module.Persist.TPM.Utils {
                         clientCell.SetCellValue(new XSSFRichTextString(client.Name));
                         clientCell.Row.Height = (short) -1;
                         if (lastRow - curRow > 1) {
-                            sheet.AddMergedRegion(new CellRangeAddress(curRow, lastRow - 1, 0, 0));
+                            CellRangeAddress range = new CellRangeAddress(curRow, lastRow - 1, 0, 0);
+                            SetMergedRegionBorders(range, sheet, wb);
+                            sheet.AddMergedRegion(range);
                         }
                         clientCell.CellStyle = verticalStyle;
                         curRow = lastRow;
@@ -152,7 +154,7 @@ namespace Module.Persist.TPM.Utils {
         /// <param name="colToDateMap"></param>
         /// <param name="wb"></param>
         /// <returns></returns>
-        private int SplitPromoByRows(int curRow, List<Promo> sortedPromoes, ISheet sheet, Dictionary<int, DateTime> colToDateMap, ref IWorkbook wb) {
+        private int SplitPromoByRows(int curRow, List<Promo> sortedPromoes, ISheet sheet, Dictionary<DateTime, int> colToDateMap, ref IWorkbook wb) {
             do {    // Перебираем Промо для Клиента
                 IRow row = sheet.CreateRow(curRow);
                 Promo promo = sortedPromoes.FirstOrDefault();
@@ -161,8 +163,11 @@ namespace Module.Persist.TPM.Utils {
                     // Промо отсортированы по приоритету и Дате, берём первое Промо
                     sortedPromoes.Remove(promo);
                     // Определение диапазона колонок, которые занимает промо
-                    int startCol = colToDateMap.FirstOrDefault(x => promo.StartDate.Value.DateTime >= x.Value && promo.StartDate.Value.DateTime < x.Value.AddDays(7)).Key;
-                    int endCol = colToDateMap.FirstOrDefault(x => promo.EndDate.Value.DateTime >= x.Value && promo.EndDate.Value.DateTime <= x.Value.AddDays(7)).Key;
+                    // Колонки создаются исходя из попавших в экспорт промо, соответственно для каждого промо в colToDateMap будет нужная колонка
+                    int startCol = 0;
+                    int endCol = 0;
+                    colToDateMap.TryGetValue(promo.StartDate.Value.Date, out startCol);
+                    colToDateMap.TryGetValue(promo.EndDate.Value.Date, out endCol);
 
                     ICell cell = row.CreateCell(startCol);
                     cell.SetCellValue(new XSSFRichTextString(String.IsNullOrEmpty(promo.Name) ? String.Empty : promo.Name));
@@ -190,10 +195,7 @@ namespace Module.Persist.TPM.Utils {
                     // Объединяем ячейки, добавляем рамку (при мерже ячеек не подтягивается стиль рамки первой)
                     if (startCol != endCol) {
                         CellRangeAddress range = new CellRangeAddress(curRow, curRow, startCol, endCol);
-                        RegionUtil.SetBorderTop(1, range, sheet, wb);
-                        RegionUtil.SetBorderLeft(1, range, sheet, wb);
-                        RegionUtil.SetBorderRight(1, range, sheet, wb);
-                        RegionUtil.SetBorderBottom(1, range, sheet, wb);
+                        SetMergedRegionBorders(range, sheet, wb, 1);
                         sheet.AddMergedRegion(range);
                     }
                     // Если есть подходящее промо - записывается в эту же строку, если нет, переход на новую строку
@@ -218,7 +220,7 @@ namespace Module.Persist.TPM.Utils {
                 int dateDiff = (sortedPromoes[i].StartDate - promo.EndDate).Value.Days;
                 MarsDate endDate = new MarsDate(promo.EndDate.Value);
                 MarsDate startDate = new MarsDate(sortedPromoes[i].StartDate.Value);
-                bool isEqualMarsWeek = endDate.WeekStartDate() == startDate.WeekStartDate();
+                bool isEqualMarsWeek = endDate.StartDate() == startDate.StartDate();
                 if (dateDiff >= 0 && dateDiff < compareDiff && !isEqualMarsWeek) {
                     if (dateDiff >= 0 || sortedPromoes[i].CalendarPriority <= promo.CalendarPriority) { // sort verticaly by Priority
                         closerPromo = sortedPromoes[i];
@@ -237,14 +239,14 @@ namespace Module.Persist.TPM.Utils {
         /// <param name="style"></param>
         /// <param name="wb"></param>
         /// <param name="colToDateMap"></param>
-        private void WriteHeader(DateTime startdDate, DateTime endDate, ICellStyle style, ref IWorkbook wb, out Dictionary<int, DateTime> colToDateMap) {
-            colToDateMap = new Dictionary<int, DateTime>();
+        private void WriteHeader(DateTime startdDate, DateTime endDate, ICellStyle style, ref IWorkbook wb, out Dictionary<DateTime, int> colToDateMap) {
+            colToDateMap = new Dictionary<DateTime, int>();
             MarsDate startMarsDate = new MarsDate(startdDate);
             MarsDate endMarsDate = new MarsDate(endDate);
             endDate = endMarsDate.WeekEndDate().DateTime;
             MarsDate curMarsDate = new MarsDate(startMarsDate.WeekStartDate());
             // Получение списка Период - Неделя - Дата Начала недели
-            List<Tuple<int, int, int, DateTime>> weeks = GetWeeks(curMarsDate, endDate);
+            List<Tuple<int, int, int, int, DateTime>> weeks = GetWeeks(curMarsDate, endDate);
             ISheet sheet1 = wb.GetSheet("Schedule");
 
             // Создание строк заголовка, первых ячеек.
@@ -256,7 +258,7 @@ namespace Module.Persist.TPM.Utils {
             ICell cell2 = row2.CreateCell(0);
             cell0.SetCellValue("P");
             cell1.SetCellValue("W");
-            cell2.SetCellValue("Dates");
+            cell2.SetCellValue("D");
             short rowHeight = 15 * 20;
             row0.Height = rowHeight;
             row1.Height = rowHeight;
@@ -271,22 +273,33 @@ namespace Module.Persist.TPM.Utils {
                 int cellsToMerge = period.Count();
                 ICell cell = row0.CreateCell(curCell);
                 cell.SetCellValue(new XSSFRichTextString(String.Format("P{0}", period.Key.Item2.ToString())));
-                int endColumn = curCell + cellsToMerge - 1;
+                int endColumn = curCell + cellsToMerge - 1;             
                 if (curCell != endColumn) {
-                    sheet1.AddMergedRegion(new CellRangeAddress(0, 0, curCell, endColumn));
+                    CellRangeAddress range = new CellRangeAddress(0, 0, curCell, endColumn);
+                    SetMergedRegionBorders(range, sheet1, wb);
+                    sheet1.AddMergedRegion(range);
                 }
                 cell.CellStyle = style;
-                foreach (Tuple<int, int, int, DateTime> week in period) {
+                var daysByWeeks = period.GroupBy(p => new { p.Item3 });
+                foreach (var week in daysByWeeks) {
+                    int cellsToMergeWeek = week.Count();
                     ICell weekCell = row1.CreateCell(curCell);
-                    weekCell.SetCellValue(new XSSFRichTextString(String.Format("W{0}", week.Item3.ToString())));
+                    weekCell.SetCellValue(new XSSFRichTextString(String.Format("W{0}", week.Key.Item3.ToString())));
+                    int endWeekColumn = curCell + cellsToMergeWeek - 1;
+                    if (curCell != endWeekColumn) {
+                        CellRangeAddress range = new CellRangeAddress(1, 1, curCell, endWeekColumn);
+                        SetMergedRegionBorders(range, sheet1, wb);
+                        sheet1.AddMergedRegion(range);
+                    }
                     weekCell.CellStyle = style;
+                    foreach (var day in week) {
+                        ICell dateCell = row2.CreateCell(curCell);
+                        dateCell.SetCellValue(day.Item4.ToString());
+                        dateCell.CellStyle = style;
 
-                    ICell dateCell = row2.CreateCell(curCell);
-                    dateCell.SetCellValue(week.Item4.ToString("dd.MM.yyyy"));
-                    dateCell.CellStyle = style;
-
-                    colToDateMap.Add(curCell, week.Item4);
-                    curCell++;
+                        colToDateMap.Add(day.Item5, curCell);
+                        curCell++;
+                    }
                 }
             }
             // Фиксация заголовка
@@ -294,16 +307,16 @@ namespace Module.Persist.TPM.Utils {
             cell0.CellStyle = cell1.CellStyle = cell2.CellStyle = style;
         }
         /// <summary>
-        /// Получение последовательности Период, Неделя, Дата начала недели для записи заголовка
+        /// Получение последовательности Период, Неделя, День, Дата для записи заголовка
         /// </summary>
         /// <param name="curMarsDate"></param>
         /// <param name="endDate"></param>
         /// <returns></returns>
-        private List<Tuple<int, int, int, DateTime>> GetWeeks(MarsDate curMarsDate, DateTime endDate) {
-            List<Tuple<int, int, int, DateTime>> weeks = new List<Tuple<int, int, int, DateTime>>();
+        private List<Tuple<int, int, int, int, DateTime>> GetWeeks(MarsDate curMarsDate, DateTime endDate) {
+            var weeks = new List<Tuple<int, int, int, int, DateTime>>();
             while (curMarsDate.StartDate() <= endDate) {
-                weeks.Add(new Tuple<int, int, int, DateTime>(curMarsDate.Year, curMarsDate.Period, curMarsDate.Week, curMarsDate.StartDate().DateTime));
-                curMarsDate = curMarsDate.AddWeeks(1);
+                weeks.Add(new Tuple<int, int, int, int, DateTime>(curMarsDate.Year, curMarsDate.Period, curMarsDate.Week, curMarsDate.Day, curMarsDate.StartDate().Date));
+                curMarsDate = curMarsDate.AddDays(1);
             }
             weeks.Distinct();
             return weeks;
@@ -357,6 +370,20 @@ namespace Module.Persist.TPM.Utils {
         protected string GetUserName(string userName) {
             string[] userParts = userName.Split(new char[] { '/', '\\' });
             return userParts[userParts.Length - 1];
+        }
+
+        /// <summary>
+        /// Установка рамки для смерженных ячеек
+        /// </summary>
+        /// <param name="range"></param>
+        /// <param name="sheet"></param>
+        /// <param name="wb"></param>
+        /// <param name="borderSize"></param>
+        private void SetMergedRegionBorders(CellRangeAddress range, ISheet sheet, IWorkbook wb, int borderSize = 2) {
+            RegionUtil.SetBorderTop(borderSize, range, sheet, wb);
+            RegionUtil.SetBorderLeft(borderSize, range, sheet, wb);
+            RegionUtil.SetBorderRight(borderSize, range, sheet, wb);
+            RegionUtil.SetBorderBottom(borderSize, range, sheet, wb);
         }
     }
 }

@@ -4,6 +4,7 @@
     width: 500,
     minWidth: 500,
     maxHeight: 500,
+    cls: 'readOnlyFields',
 
     afterWindowShow: function (scope, isCreating) {
         scope.down('searchfield[name=BudgetItemId]').focus(true, 10);

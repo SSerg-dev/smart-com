@@ -1,0 +1,1 @@
+﻿UPDATE Promo SET ClientTreeKeyId = (SELECT TOP(1) Id From ClientTree Where EndDate IS NULL AND ObjectId = Promo.ClientTreeId Order By ClientTree.StartDate Desc);

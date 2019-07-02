@@ -5,6 +5,7 @@
         public const string ON_APPROVAL = "OnApproval";
         public const string APPROVED = "Approved";
         public const string PLANNED = "Planned";
+        public const string CANCELLED = "Cancelled";
         public const string STARTED = "Started";
         public const string FINISHED = "Finished";
         public const string CLOSED = "Closed";

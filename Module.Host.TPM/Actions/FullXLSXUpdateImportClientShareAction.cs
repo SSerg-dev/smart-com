@@ -358,51 +358,46 @@ namespace Module.Host.TPM.Actions {
             DateTime dtNow = DateTime.Now;
             foreach (ImportClientsShare newRecord in sourceRecords) {
                 ClientTree oldRecord = query.FirstOrDefault(x => x.ObjectId == newRecord.BOI && (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, dtNow) > 0));
-                if (oldRecord == null) {
+                if (oldRecord != null && (oldRecord.Share != newRecord.LeafShare || oldRecord.DemandCode != newRecord.DemandCode)) {
+                    ClientTree oldRecordToSave = new ClientTree()
+                    {
+                        ObjectId = oldRecord.ObjectId,
+                        RetailTypeName = oldRecord.RetailTypeName,
+                        Type = oldRecord.Type,
+                        Name = oldRecord.Name,
+                        FullPathName = oldRecord.FullPathName,
+                        Share = oldRecord.Share,
+                        ExecutionCode = oldRecord.ExecutionCode,
+                        DemandCode = oldRecord.DemandCode,
+                        IsBaseClient = oldRecord.IsBaseClient,
+                        parentId = oldRecord.parentId,
+                        StartDate = oldRecord.StartDate,
+                        EndDate = dtNow,
+                        depth = oldRecord.depth,
+                        IsBeforeStart = oldRecord.IsBeforeStart,
+                        DaysStart = oldRecord.DaysStart,
+                        IsDaysStart = oldRecord.IsDaysStart,
+                        IsBeforeEnd = oldRecord.IsBeforeEnd,
+                        DaysEnd = oldRecord.DaysEnd,
+                        IsDaysEnd = oldRecord.IsDaysEnd
+                    };
+                    toCreate.Add(oldRecordToSave);
 
-                } else {
-                    if (oldRecord.Share != newRecord.LeafShare) {
-                        ClientTree oldRecordToSave = new ClientTree() {
-                            ObjectId = oldRecord.ObjectId,
-                            RetailTypeName = oldRecord.RetailTypeName,
-                            Type = oldRecord.Type,
-                            Name = oldRecord.Name,
-                            FullPathName = oldRecord.FullPathName,
-                            Share = oldRecord.Share,
-                            ExecutionCode = oldRecord.ExecutionCode,
-                            DemandCode = oldRecord.DemandCode,
-                            IsBaseClient = oldRecord.IsBaseClient,
-                            parentId = oldRecord.parentId,
-                            StartDate = oldRecord.StartDate,
-                            EndDate = dtNow,
-                            depth = oldRecord.depth,
-                            IsBeforeStart = oldRecord.IsBeforeStart,
-                            DaysStart = oldRecord.DaysStart,
-                            IsDaysStart = oldRecord.IsDaysStart,
-                            IsBeforeEnd = oldRecord.IsBeforeEnd,
-                            DaysEnd = oldRecord.DaysEnd,
-                            IsDaysEnd = oldRecord.IsDaysEnd
-                        };
-                        toCreate.Add(oldRecordToSave);
-
-                        oldRecord.Share = (short) newRecord.LeafShare;
-                        toUpdate.Add(oldRecord);
-                    }
-
-
+                    oldRecord.Share = (short)newRecord.LeafShare;
+                    oldRecord.DemandCode = newRecord.DemandCode;
+                    toUpdate.Add(oldRecord);
                 }
             }
 
             foreach (IEnumerable<ClientTree> items in toCreate.Partition(100)) {
                 context.Set<ClientTree>().AddRange(items);
             }
-            context.SaveChanges();
 
             foreach (IEnumerable<ClientTree> items in toUpdate.Partition(10000)) {
-                string insertScript = String.Join("", items.Select(y => String.Format("UPDATE ClientTree SET Share = {0} WHERE Id = {1};", y.Share, y.Id)));
+                string insertScript = String.Join("", items.Select(y => String.Format("UPDATE ClientTree SET Share = {0}, DemandCode = '{1}' WHERE Id = {2};", y.Share, y.DemandCode, y.Id)));
                 context.Database.ExecuteSqlCommand(insertScript);
             }
-
+            context.SaveChanges();
             return sourceRecords.Count();
         }
 

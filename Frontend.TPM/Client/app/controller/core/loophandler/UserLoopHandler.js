@@ -10,7 +10,7 @@ Ext.define('App.controller.core.loophandler.UserLoopHandler', {
                 //},
                 'userloophandler directorygrid': {
                     // TODO: относиться к переключению состояний грида, можно убрать в будущем
-                    //itemdblclick: this.switchToDetailForm,
+                    itemdblclick: this.switchToDetailForm,
 
                     selectionchange: this.onGridSelectionChange,
                     afterrender: this.onGridAfterrender,
@@ -30,11 +30,10 @@ Ext.define('App.controller.core.loophandler.UserLoopHandler', {
                 'userloophandler #detailform #next': {
                     click: this.onNextButtonClick
                 },
-                //
 
-                //'userloophandler #detail': {
-                //    click: this.switchToDetailForm
-                //},
+                'userloophandler #detail': {
+                    click: this.switchToDetailForm
+                },
                 'userloophandler #table': {
                     click: this.onTableButtonClick
                 },

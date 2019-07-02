@@ -15,7 +15,9 @@
         { name: 'EndDate', type: 'date', hidden: true, useNull: true },
         { name: 'leaf', type: 'bool', defaultValue: false, persist: false },
         { name: 'Filter', type: 'string', hidden: true },
-        { name: 'Target', type: 'bool', hidden: true, persist: false }
+        { name: 'Target', type: 'bool', hidden: true, persist: false },
+        { name: 'NodePriority', type: 'int', persist: true, useNull: true, defaultValue: null },
+        { name: 'LogoFileName', type: 'string', useNull: true, defaultValue: null }
     ],
     proxy: {
         type: 'ajax',

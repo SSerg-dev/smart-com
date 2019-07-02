@@ -63,11 +63,12 @@ namespace Module.Frontend.TPM.Controllers {
                 new Column() { Order = 6, Field = "TypeApollo", Header = "Type", Quoting = false },
                 new Column() { Order = 7, Field = "ModelApollo", Header = "Model", Quoting = false },
                 new Column() { Order = 8, Field = "WeekStartDate", Header = "Week Start Date", Quoting = false, Format = "dd.MM.yyyy"  },
-                new Column() { Order = 9, Field = "PlanProductQty", Header = "Qty", Quoting = false, Format = "0.00"},
+                new Column() { Order = 9, Field = "PlanProductCaseQty", Header = "Qty", Quoting = false, Format = "0.00"},
                 new Column() { Order = 10, Field = "PlanUplift", Header = "Uplift Plan", Quoting = false, Format = "0.00" },
                 new Column() { Order = 11, Field = "StartDate", Header = "Start date", Quoting = false, Format = "dd.MM.yyyy"  },
                 new Column() { Order = 12, Field = "EndDate", Header = "End date", Quoting = false, Format = "dd.MM.yyyy" },
                 new Column() { Order = 13, Field = "Status", Header = "Status", Quoting = false },
+                new Column() { Order = 14, Field = "InOut", Header = "InOut", Quoting = false },
             };
             return columns;
         }

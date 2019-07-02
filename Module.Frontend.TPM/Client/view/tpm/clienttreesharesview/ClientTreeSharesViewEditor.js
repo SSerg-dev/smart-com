@@ -4,6 +4,7 @@
     width: 500,
     minWidth: 500,
     maxHeight: 500,
+    cls: 'readOnlyFields',
 
     noChange: true,
 
@@ -22,6 +23,10 @@
             xtype: 'numberfield',
             name: 'LeafShare',
             fieldLabel: l10n.ns('tpm', 'ClientTreeSharesView').value('LeafShare')
+        }, {
+            xtype: 'textfield',
+            name: 'DemandCode',
+            fieldLabel: l10n.ns('tpm', 'ClientTreeSharesView').value('DemandCode')
         }]
     }
 });

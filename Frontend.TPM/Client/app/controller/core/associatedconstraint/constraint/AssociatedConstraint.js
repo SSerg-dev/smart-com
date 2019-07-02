@@ -7,10 +7,13 @@ Ext.define('App.controller.core.associatedconstraint.constraint.AssociatedConstr
                 'constraint directorygrid': {
                     selectionchange: this.onGridSelectionChange,
                     afterrender: this.onGridAfterrender,
-                    extfilterchange: this.onExtFilterChange
+                    extfilterchange: this.onExtFilterChange,
+                    itemdblclick: this.switchToDetailForm,
+                },
+                'historicalconstraint directorygrid': {
+                    itemdblclick: this.switchToDetailForm,
                 },
                 'constraint[isMain=true][isSearch!=true] directorygrid': {
-                    itemdblclick: this.switchToDetailForm,
                     load: this.onGridStoreLoad
                 },
                 'constraint #datatable': {

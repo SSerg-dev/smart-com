@@ -22,6 +22,19 @@
         inputValue: true,
         uncheckedValue: false,
         //isConstrain: true
+    },
+
+    initFields: function (fieldValues, constraintValues) {
+        if (fieldValues) {
+            var me = this;
+            Object.keys(fieldValues).map(function (key, index) {
+                var value = fieldValues[key];
+                var field = me.down('field[name=' + key + ']');
+                if (field) {
+                    field.setValue(value);
+                }
+            });
+        }
     }
 
 });

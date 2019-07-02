@@ -10,7 +10,6 @@
                     itemdblclick: this.onDetailButtonClick,
                 },
                 'event directorygrid': {
-                    itemdblclick: this.onDetailButtonClick,
                     selectionchange: this.onGridSelectionChange,
                     afterrender: this.onGridAfterrender,
                     extfilterchange: this.onExtFilterChange

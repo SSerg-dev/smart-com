@@ -167,7 +167,7 @@ namespace Module.Host.TPM.Actions {
             errors = new List<string>();
             SpreadsheetDocument book = SpreadsheetDocument.Open(filePath, false);
             //Брать только первый лист
-            WorksheetPart wSheet = book.WorkbookPart.WorksheetParts.FirstOrDefault(y=>y.Uri.OriginalString.Contains("sheet1"));
+            WorksheetPart wSheet = book.WorkbookPart.WorksheetParts.FirstOrDefault(y => y.Uri.OriginalString.Contains("sheet1"));
             using (OpenXmlReader reader = OpenXmlReader.Create(wSheet)) {
                 DocumentFormat.OpenXml.Spreadsheet.Row row;
                 int columnsCount = 0;
@@ -228,7 +228,7 @@ namespace Module.Host.TPM.Actions {
                                 } else {
                                     text = cell.InnerText;
                                 }
-                               
+
                             }
                             strRow.Add(text);
                         }
@@ -361,8 +361,7 @@ namespace Module.Host.TPM.Actions {
                 IList<Tuple<String, Guid?>> brandTechesTuples = brandTeches.Select(y => new Tuple<String, Guid?>(y.Name, y.Id)).ToList();
 
                 //Присваивание ID
-                Parallel.ForEach(sourceRecords, item =>
-                {
+                Parallel.ForEach(sourceRecords, item => {
                     int objId = ((ImportCOGS) item).ClientTreeObjectId;
                     String btName = ((ImportCOGS) item).BrandTechName;
                     if (existedexistedClientTreesIds.Contains(objId)) {
@@ -379,22 +378,20 @@ namespace Module.Host.TPM.Actions {
                 IList<Tuple<int, Guid?>> badTimesIds = new List<Tuple<int, Guid?>>();
 
                 IList<Tuple<int, Guid?, DateTimeOffset?, DateTimeOffset?>> existedCOGSsTimes =
-                    this.GetQuery(context).Where(x => !x.Disabled).Select(y => new Tuple<int,Guid? ,DateTimeOffset?, DateTimeOffset?>(y.ClientTreeId, y.BrandTechId, y.StartDate, y.EndDate)).ToList();
+                    this.GetQuery(context).Where(x => !x.Disabled).Select(y => new Tuple<int, Guid?, DateTimeOffset?, DateTimeOffset?>(y.ClientTreeId, y.BrandTechId, y.StartDate, y.EndDate)).ToList();
 
                 IList<Tuple<int, Guid?, DateTimeOffset?, DateTimeOffset?>> importedCOGSsTimes =
                     sourceRecords.Select(y => new Tuple<int, Guid?, DateTimeOffset?, DateTimeOffset?>(((ImportCOGS) y).ClientTreeId, ((ImportCOGS) y).BrandTechId, ((ImportCOGS) y).StartDate, ((ImportCOGS) y).EndDate)).ToList();
 
 
-                Parallel.ForEach(sourceRecords, item =>
-                {
+                Parallel.ForEach(sourceRecords, item => {
                     if (!DateCheck((ImportCOGS) item, existedCOGSsTimes, importedCOGSsTimes)) {
                         badTimesIds.Add(new Tuple<int, Guid?>(((ImportCOGS) item).ClientTreeObjectId, ((ImportCOGS) item).BrandTechId));
                     }
                 });
 
                 //Стандартные проверки
-                Parallel.ForEach(sourceRecords, item =>
-                {
+                Parallel.ForEach(sourceRecords, item => {
                     IEntity<Guid> rec;
                     IList<string> warnings;
                     IList<string> validationErrors;
@@ -480,7 +477,7 @@ namespace Module.Host.TPM.Actions {
             } else {
 
                 //Проверка пересечения по времени на клиенте
-                if (badTimesIds.Any(y=>y.Item1 == importObj.ClientTreeObjectId && y.Item2 == importObj.BrandTechId)) {
+                if (badTimesIds.Any(y => y.Item1 == importObj.ClientTreeObjectId && y.Item2 == importObj.BrandTechId)) {
                     isError = true;
                     errors.Add(importObj.ClientTreeObjectId.ToString() + " there can not be two COGS of client and BrandTech in some Time");
                 }
@@ -502,7 +499,7 @@ namespace Module.Host.TPM.Actions {
 
             ////Проверка BrandTech
             if (!String.IsNullOrEmpty(importObj.BrandTechName)
-                && !brandTechesTuples.Any(y=>y.Item1 == importObj.BrandTechName)) {
+                && !brandTechesTuples.Any(y => y.Item1 == importObj.BrandTechName)) {
                 isError = true;
                 errors.Add(importObj.BrandTechName + " is not active BrandTech's Name");
             }
@@ -541,13 +538,12 @@ namespace Module.Host.TPM.Actions {
             DateTime dtNow = DateTime.Now;
             foreach (ImportCOGS newRecord in sourceRecords) {
                 COGS oldRecord = query.FirstOrDefault(x => x.ClientTree.ObjectId == newRecord.ClientTreeObjectId && !x.Disabled);
-
                 BrandTech bt = context.Set<BrandTech>().FirstOrDefault(x => x.Name == newRecord.BrandTechName);
-
+                float lsvpercent = newRecord.LVSpercent < 1 ? (float)Math.Round(newRecord.LVSpercent * 100, 2) : (float)Math.Round(newRecord.LVSpercent, 2);
                 COGS toSave = new COGS() {
                     StartDate = newRecord.StartDate,
                     EndDate = newRecord.EndDate,
-                    LVSpercent = newRecord.LVSpercent <= 1 ? (short)(newRecord.LVSpercent*100) : (short)newRecord.LVSpercent,
+                    LVSpercent = lsvpercent,
                     ClientTreeId = newRecord.ClientTreeId,//context.Set<ClientTree>().FirstOrDefault(x => x.ObjectId == newRecord.ClientTreeObjectId).Id,
                     BrandTechId = bt != null ? (Guid?) bt.Id : null
                 };
@@ -594,9 +590,10 @@ namespace Module.Host.TPM.Actions {
                 if (ctCogs.Where(y => y.Item1 == thisCOGS.Item1 && y.Item2 == thisCOGS.Item2 && y.Item3 == thisCOGS.Item3 && y.Item4 == thisCOGS.Item4).Count() > 1) {
                     return false;
                 }
-                foreach (Tuple<int, Guid?, DateTimeOffset?, DateTimeOffset?> item in ctCogs.Where(y =>!( y.Item1 == thisCOGS.Item1 && y.Item2 == thisCOGS.Item2 && y.Item3 == thisCOGS.Item3 && y.Item4 == thisCOGS.Item4))) {
+                foreach (Tuple<int, Guid?, DateTimeOffset?, DateTimeOffset?> item in ctCogs.Where(y => !(y.Item1 == thisCOGS.Item1 && y.Item2 == thisCOGS.Item2 && y.Item3 == thisCOGS.Item3 && y.Item4 == thisCOGS.Item4))) {
                     if ((item.Item3 <= toCheck.StartDate && item.Item4 >= toCheck.StartDate) ||
-                        (item.Item3 <= toCheck.EndDate && item.Item4 >= toCheck.EndDate)) {
+                        (item.Item3 <= toCheck.EndDate && item.Item4 >= toCheck.EndDate) ||
+                        (item.Item3 >= toCheck.StartDate && item.Item4 <= toCheck.EndDate)) {
                         return false;
                     }
                 }

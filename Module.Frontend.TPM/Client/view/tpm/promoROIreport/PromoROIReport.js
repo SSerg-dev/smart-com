@@ -150,9 +150,9 @@
 
 { text: l10n.ns('tpm', 'PromoROIReport').value('PlanPromoIncrementalCOGS'), dataIndex: 'PlanPromoIncrementalCOGS' , format: '0.00'},
 { text: l10n.ns('tpm', 'PromoROIReport').value('PlanPromoTotalCost'), dataIndex: 'PlanPromoTotalCost' , format: '0.00'},
-{ text: l10n.ns('tpm', 'PromoROIReport').value('PlanPostPromoEffectW1'), dataIndex: 'PlanPostPromoEffectW1' , format: '0.00'},
-{ text: l10n.ns('tpm', 'PromoROIReport').value('PlanPostPromoEffectW2'), dataIndex: 'PlanPostPromoEffectW2' , format: '0.00'},
-{ text: l10n.ns('tpm', 'PromoROIReport').value('PlanPostPromoEffect'), dataIndex: 'PlanPostPromoEffect' , format: '0.00'},
+{ text: l10n.ns('tpm', 'PromoROIReport').value('PlanPromoPostPromoEffectLSVW1'), dataIndex: 'PlanPromoPostPromoEffectLSVW1' , format: '0.00'},
+{ text: l10n.ns('tpm', 'PromoROIReport').value('PlanPromoPostPromoEffectLSVW2'), dataIndex: 'PlanPromoPostPromoEffectLSVW2' , format: '0.00'},
+{ text: l10n.ns('tpm', 'PromoROIReport').value('PlanPromoPostPromoEffectLSV'), dataIndex: 'PlanPromoPostPromoEffectLSV' , format: '0.00'},
 { text: l10n.ns('tpm', 'PromoROIReport').value('PlanPromoNetIncrementalLSV'), dataIndex: 'PlanPromoNetIncrementalLSV' , format: '0.00'},
 { text: l10n.ns('tpm', 'PromoROIReport').value('PlanPromoNetLSV'), dataIndex: 'PlanPromoNetLSV' , format: '0.00'},
 
@@ -172,11 +172,13 @@
 
 { text: l10n.ns('tpm', 'PromoROIReport').value('ActualInStoreMechanicName'), dataIndex: 'ActualInStoreMechanicName' },
 { text: l10n.ns('tpm', 'PromoROIReport').value('ActualInStoreMechanicTypeName'), dataIndex: 'ActualInStoreMechanicTypeName' },
-{ text: l10n.ns('tpm', 'PromoROIReport').value('ActualInStoreMechanicDiscount'), dataIndex: 'ActualInStoreMechanicDiscount' , format: '0'},
+{ text: l10n.ns('tpm', 'PromoROIReport').value('ActualInStoreDiscount'), dataIndex: 'ActualInStoreDiscount' , format: '0'},
 { text: l10n.ns('tpm', 'PromoROIReport').value('ActualInStoreShelfPrice'), dataIndex: 'ActualInStoreShelfPrice' , format: '0.00'},
+{ text: l10n.ns('tpm', 'PromoROIReport').value('PlanInStoreShelfPrice'), dataIndex: 'PlanInStoreShelfPrice' , format: '0.00'},
 { text: l10n.ns('tpm', 'PromoROIReport').value('InvoiceNumber'), dataIndex: 'InvoiceNumber' },
 { text: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoBaselineLSV'), dataIndex: 'ActualPromoBaselineLSV' , format: '0.00'},
 { text: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoIncrementalLSV'), dataIndex: 'ActualPromoIncrementalLSV' , format: '0.00'},
+{ text: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoLSVByCompensation'), dataIndex: 'ActualPromoLSVByCompensation' , format: '0.00'},
 { text: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoLSV'), dataIndex: 'ActualPromoLSV' , format: '0.00'},
 { text: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoUpliftPercent'), dataIndex: 'ActualPromoUpliftPercent' , format: '0.00'},
 { text: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoTIShopper'), dataIndex: 'ActualPromoTIShopper' , format: '0.00'},
@@ -199,9 +201,9 @@
 { text: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoIncrementalCOGS'), dataIndex: 'ActualPromoIncrementalCOGS' , format: '0.00'},
 { text: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoTotalCost'), dataIndex: 'ActualPromoTotalCost' , format: '0.00'},
 
-{ text: l10n.ns('tpm', 'PromoROIReport').value('FactPostPromoEffectW1'), dataIndex: 'FactPostPromoEffectW1' , format: '0.00'},
-{ text: l10n.ns('tpm', 'PromoROIReport').value('FactPostPromoEffectW2'), dataIndex: 'FactPostPromoEffectW2' , format: '0.00'},
-{ text: l10n.ns('tpm', 'PromoROIReport').value('FactPostPromoEffect'), dataIndex: 'FactPostPromoEffect' , format: '0'},
+{ text: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoPostPromoEffectLSVW1'), dataIndex: 'ActualPromoPostPromoEffectLSVW1' , format: '0.00'},
+{ text: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoPostPromoEffectLSVW2'), dataIndex: 'ActualPromoPostPromoEffectLSVW2' , format: '0.00'},
+{ text: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoPostPromoEffectLSV'), dataIndex: 'ActualPromoPostPromoEffectLSV' , format: '0'},
 { text: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoNetIncrementalLSV'), dataIndex: 'ActualPromoNetIncrementalLSV' , format: '0.00'},
 
 { text: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoNetLSV'), dataIndex: 'ActualPromoNetLSV' , format: '0.00'},
@@ -219,6 +221,7 @@
 { text: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoROIPercent'), dataIndex: 'ActualPromoROIPercent' , format: '0'},
 { text: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoNetROIPercent'), dataIndex: 'ActualPromoNetROIPercent' , format: '0'},
 { text: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoNetUpliftPercent'), dataIndex: 'ActualPromoNetUpliftPercent' , format: '0'},
+{ text: l10n.ns('tpm', 'PromoROIReport').value('InOut'), dataIndex: 'InOut' , format: '0'},
 ]
         }
     }, {
@@ -274,9 +277,9 @@
 
 { xtype: 'numberfield', name: 'PlanPromoIncrementalCOGS', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('PlanPromoIncrementalCOGS') },
 { xtype: 'numberfield', name: 'PlanPromoTotalCost', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('PlanPromoTotalCost') },
-{ xtype: 'numberfield', name: 'PlanPostPromoEffectW1', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('PlanPostPromoEffectW1') },
-{ xtype: 'numberfield', name: 'PlanPostPromoEffectW2', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('PlanPostPromoEffectW2') },
-{ xtype: 'numberfield', name: 'PlanPostPromoEffect', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('PlanPostPromoEffect') },
+{ xtype: 'numberfield', name: 'PlanPromoPostPromoEffectLSVW1', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('PlanPromoPostPromoEffectLSVW1') },
+{ xtype: 'numberfield', name: 'PlanPromoPostPromoEffectLSVW2', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('PlanPromoPostPromoEffectLSVW2') },
+{ xtype: 'numberfield', name: 'PlanPromoPostPromoEffectLSV', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('PlanPromoPostPromoEffectLSV') },
 { xtype: 'numberfield', name: 'PlanPromoNetIncrementalLSV', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('PlanPromoNetIncrementalLSV') },
 { xtype: 'numberfield', name: 'PlanPromoNetLSV', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('PlanPromoNetLSV') },
 
@@ -296,8 +299,9 @@
 
 { xtype: 'textfield', name: 'ActualInStoreMechanicName', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('ActualInStoreMechanicName') },
 { xtype: 'textfield', name: 'ActualInStoreMechanicTypeName', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('ActualInStoreMechanicTypeName') },
-{ xtype: 'numberfield', name: 'ActualInStoreMechanicDiscount', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('ActualInStoreMechanicDiscount') },
+{ xtype: 'numberfield', name: 'ActualInStoreDiscount', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('ActualInStoreDiscount') },
 { xtype: 'numberfield', name: 'ActualInStoreShelfPrice', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('ActualInStoreShelfPrice') },
+{ xtype: 'numberfield', name: 'PlanInStoreShelfPrice', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('PlanInStoreShelfPrice') },
 { xtype: 'textfield', name: 'InvoiceNumber', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('InvoiceNumber') },
 { xtype: 'numberfield', name: 'ActualPromoBaselineLSV', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoBaselineLSV') },
 { xtype: 'numberfield', name: 'ActualPromoIncrementalLSV', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoIncrementalLSV') },
@@ -329,9 +333,9 @@
 { xtype: 'numberfield', name: 'ActualPromoIncrementalCOGS', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoIncrementalCOGS') },
 { xtype: 'numberfield', name: 'ActualPromoTotalCost', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoTotalCost') },
 
-{ xtype: 'numberfield', name: 'FactPostPromoEffectW1', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('FactPostPromoEffectW1') },
-{ xtype: 'numberfield', name: 'FactPostPromoEffectW2', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('FactPostPromoEffectW2') },
-{ xtype: 'numberfield', name: 'FactPostPromoEffect', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('FactPostPromoEffect') },
+{ xtype: 'numberfield', name: 'ActualPromoPostPromoEffectLSVW1', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoPostPromoEffectLSVW1') },
+{ xtype: 'numberfield', name: 'ActualPromoPostPromoEffectLSVW2', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoPostPromoEffectLSVW2') },
+{ xtype: 'numberfield', name: 'ActualPromoPostPromoEffectLSV', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoPostPromoEffectLSV') },
 { xtype: 'numberfield', name: 'ActualPromoNetIncrementalLSV', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoNetIncrementalLSV') },
 
 { xtype: 'numberfield', name: 'ActualPromoNetLSV', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoNetLSV') },
@@ -348,7 +352,8 @@
 { xtype: 'numberfield', name: 'ActualPromoNetIncrementalEarnings', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoNetIncrementalEarnings') },
 { xtype: 'numberfield', name: 'ActualPromoROIPercent', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoROIPercent') },
 { xtype: 'numberfield', name: 'ActualPromoNetROIPercent', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoNetROIPercent') },
-{ xtype: 'numberfield', name: 'ActualPromoNetUpliftPercent', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoNetUpliftPercent') }
+{ xtype: 'numberfield', name: 'ActualPromoNetUpliftPercent', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoNetUpliftPercent') },
+{ xtype: 'numberfield', name: 'InOut', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('InOut') }
         ]
     }]
 });

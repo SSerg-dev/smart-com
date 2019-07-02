@@ -13,7 +13,7 @@ namespace Module.Persist.TPM.PromoStateControl
 
             private readonly string Name = "Deleted";
 
-            private readonly List<string> Roles = new List<string> { "Administrator", "CustomerMarketing", "DemandFinance", "DemandPlanning", "FunctionalExpert", "KeyAccountManager" };
+            private readonly List<string> Roles = new List<string> { "Administrator", "CMManager", "CustomerMarketing", "DemandFinance", "DemandPlanning", "FunctionalExpert", "KeyAccountManager" };
 
             private readonly Dictionary<string, List<string>> AvailableStates = new Dictionary<string, List<string>>();
 
@@ -42,14 +42,14 @@ namespace Module.Persist.TPM.PromoStateControl
                 return RoleStateUtil.GetMapForStatus(Name);
             }
 
-            public bool ChangeState(Promo promoModel, string userRole, out string massage)
+            public bool ChangeState(Promo promoModel, string userRole, out string message)
             {
-                massage = "Action is not available";
+                message = "Action is not available";
 
                 return false;
             }
 
-            public bool ChangeState(Promo promoModel, PromoStates promoState, string userRole, out string massage)
+            public bool ChangeState(Promo promoModel, PromoStates promoState, string userRole, out string message)
             {
                 throw new NotImplementedException();
             }

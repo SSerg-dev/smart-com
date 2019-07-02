@@ -9,33 +9,28 @@
     resizable: false,
     record: null,
     promowindow: null,
-
-    layout: {
-        type: 'vbox',
-        align: 'stretch'
-    },
-
-    defaults: {
-        flex: 1,
-        margin: '10 8 15 15'
-    },
-
     title: l10n.ns('tpm', 'text').value('rejectReason'),
 
     initComponent: function () {
         this.callParent(arguments);
-        this.down('textarea[name=comment]').setVisible(false);
+
+        var commentField = this.down('textarea[name=comment]');
+        commentField.setDisabled(true);
+        commentField.addCls('readOnlyTextArea');
     },
 
     items: [{
         xtype: 'editorform',
         columnsCount: 1,
-       
+
         items: [{
-            xtype: 'custompromopanel',
-            margin: 2,
+            xtype: 'custompromopanel',  
+            widht: '100%',
+            height: '100%',
+            margin: '0 0 10 0',
+            padding: '5 10 5 10',
             overflowY: 'auto',
-            padding: 5,
+            
             layout: {
                 type: 'vbox',
                 align: 'stretch'
@@ -46,9 +41,11 @@
             layout: {
                 type: 'vbox',
                 align: 'stretch',
+                pack: 'center',
             },
+            padding: '0 10 10 10',
             defaults: {
-                padding: '0 3 0 3',
+                margin: '5 0 0 0',
             },
             items: [{
                     xtype: 'searchfield',
@@ -78,10 +75,17 @@
                                 record = this.store.getById(newValue);
 
                             if (record) {
-                                if (record.data.SystemName === 'Other')
-                                    commentField.setVisible(true);
-                                else
-                                    commentField.setVisible(false);
+                                if (record.data.SystemName === 'Other') {
+                                    commentField.setDisabled(false);
+                                    commentField.removeCls('readOnlyTextArea');
+                                }
+                                else {
+                                    commentField.setDisabled(true);
+                                    commentField.addCls('readOnlyTextArea');                                    
+                                }
+
+                                if (newValue != oldValue)
+                                    commentField.reset();
                             }
                         }
                     },
@@ -89,8 +93,10 @@
                         var me = this;
                         me.clearValue();
 
-                        var commentField = me.up('editorform').down('textarea[name=comment]');
-                        commentField.setVisible(false);
+                        var commentField = me.up('editorform').down('textarea[name=comment]');                        
+                        commentField.setDisabled(true);
+                        commentField.addCls('readOnlyTextArea');
+                        commentField.reset();
                     },
                     mapping: [{
                         from: 'Name',
@@ -103,9 +109,11 @@
                 layout: {
                     type: 'vbox',
                     align: 'stretch',
+                    pack: 'center',
                 },
+                padding: '0 10 10 10',
                 defaults: {
-                    padding: '0 3 0 3',
+                    margin: '5 0 0 0',
                 },
                 items: [{
                     xtype: 'textarea',

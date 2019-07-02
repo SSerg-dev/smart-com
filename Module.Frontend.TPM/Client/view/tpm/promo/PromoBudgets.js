@@ -211,13 +211,14 @@
                         hideTrigger: true,
                         readOnly: true,
                         needReadOnly: true,
+                        readOnlyCls: 'readOnlyField',
                         isChecked: true,
                         labelWidth: 120,
                         fieldLabel: l10n.ns('tpm', 'Promo').value('PlanPromoBranding'),
                         value: 0,
                         cls: 'borderedField-with-lable',
                         labelCls: 'borderedField-label',
-                        crudAccess: ['Administrator', 'FunctionalExpert', 'CustomerMarketing', 'KeyAccountManager'],
+                        crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
                         mouseWheelEnabled: false,
                         blockMillion: false, // если true - то преобразовывать в миллионы
                         originValue: null, // настоящее значение
@@ -253,6 +254,7 @@
                         name: 'PlanPromoBTL',
                         hideTrigger: true,
                         readOnly: true,
+                        readOnlyCls: 'readOnlyField',
                         needReadOnly: true,
                         isChecked: true,
                         labelWidth: 120,
@@ -260,7 +262,7 @@
                         value: 0,
                         cls: 'borderedField-with-lable',
                         labelCls: 'borderedField-label',
-                        crudAccess: ['Administrator', 'FunctionalExpert', 'CustomerMarketing'],
+                        crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing'],
                         mouseWheelEnabled: false,
                         blockMillion: false, // если true - то преобразовывать в миллионы
                         originValue: null, // настоящее значение
@@ -498,6 +500,7 @@
                         name: 'ActualPromoBranding',
                         hideTrigger: true,
                         readOnly: true,
+                        readOnlyCls: 'readOnlyField',
                         needReadOnly: true,
                         isChecked: true,
                         labelWidth: 120,
@@ -505,7 +508,7 @@
                         value: 0,
                         cls: 'borderedField-with-lable',
                         labelCls: 'borderedField-label',
-                        crudAccess: ['Administrator', 'FunctionalExpert', 'CustomerMarketing', 'KeyAccountManager'],
+                        crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
                         mouseWheelEnabled: false,
                         blockMillion: false, // если true - то преобразовывать в миллионы
                         originValue: null, // настоящее значение
@@ -541,6 +544,7 @@
                         name: 'ActualPromoBTL',
                         hideTrigger: true,
                         readOnly: true,
+                        readOnlyCls: 'readOnlyField',
                         needReadOnly: true,
                         isChecked: true,
                         labelWidth: 120,
@@ -548,7 +552,7 @@
                         value: 0,
                         cls: 'borderedField-with-lable',
                         labelCls: 'borderedField-label',
-                        crudAccess: ['Administrator', 'FunctionalExpert', 'CustomerMarketing'],
+                        crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing'],
                         mouseWheelEnabled: false,
                         blockMillion: false, // если true - то преобразовывать в миллионы
                         originValue: null, // настоящее значение

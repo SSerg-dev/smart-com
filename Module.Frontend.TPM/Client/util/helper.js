@@ -153,45 +153,7 @@ var budgetsChangeListener = function (field, newValue, oldValue) {
     checkMainTab(stepButtons, mainTab);
 };
 
-var invoiceAndPricesChangeListener = function (field, newValue, oldValue) {
-    var status = true;
 
-    var panel = field.up('panel[name=promoActivity_step1]');
-    var fields1 = panel.down('fieldset[name=instoreAssumptionFieldset]').items.items;
-    var fields2 = panel.down('fieldset[name=invoiceAndPricesFieldset]').items.items;
-
-    for (i = 0; i < fields1.length; i++) {
-        if ((fields1[i].getValue() === null || !fields1[i].isValid()) && fields1[i].isChecked === true) {
-            status = false;
-            break;
-        }
-    }
-
-    for (i = 0; i < fields2.length; i++) {
-        if ((fields2[i].getValue() === null || !fields2[i].isValid()) && fields2[i].isChecked === true) {
-            status = false;
-            break;
-        }
-    }
-
-    var promoeditorcustom = field.up('promoeditorcustom');
-    var currentButton = promoeditorcustom.down('button[itemId=btn_promoActivity_step1]');
-
-    if (status) {
-        currentButton.isComplete = status;
-        currentButton.removeCls('notcompleted');
-        currentButton.setGlyph(0xf133);
-    } else {
-        currentButton.isComplete = status;
-        currentButton.addCls('notcompleted');
-        currentButton.setGlyph(0xf130);
-    }
-
-    var mainTab = promoeditorcustom.down('button[itemId=btn_promoActivity]');
-    var stepButtons = currentButton.up('custompromotoolbar');
-
-    checkMainTab(stepButtons, mainTab);
-};
 
 var activityChangeListener = function (field, newValue, oldValue) {
     var status = true;
@@ -262,19 +224,19 @@ var calculationChangeListener = function (field, newValue, oldValue) {
 var calculationChangePostPromoEffectListener = function (field, newValue, oldValue) {
     postPromoEffectFields = getPostPromoEffectFields(field.up('promocalculation'));
 
-    postPromoEffectFields.PlanPostPromoEffect.setValue(
-        postPromoEffectFields.PlanPostPromoEffectW1.getValue() + postPromoEffectFields.PlanPostPromoEffectW2.getValue()
+    postPromoEffectFields.PlanPromoPostPromoEffectLSV.setValue(
+        postPromoEffectFields.PlanPromoPostPromoEffectLSVW1.getValue() + postPromoEffectFields.PlanPromoPostPromoEffectLSVW2.getValue()
     );
 };
 
 var getPostPromoEffectFields = function (widgetName) {
     return {
-        PlanPostPromoEffectW1: widgetName.down('numberfield[name=PlanPostPromoEffectW1]'),
-        PlanPostPromoEffectW2: widgetName.down('numberfield[name=PlanPostPromoEffectW2]'),
-        PlanPostPromoEffect: widgetName.down('numberfield[name=PlanPostPromoEffect]'),
-        FactPostPromoEffectW1: widgetName.down('numberfield[name=FactPostPromoEffectW1]'),
-        FactPostPromoEffectW2: widgetName.down('numberfield[name=FactPostPromoEffectW2]'),
-        FactPostPromoEffect: widgetName.down('numberfield[name=FactPostPromoEffect]'),
+        PlanPromoPostPromoEffectLSVW1: widgetName.down('numberfield[name=PlanPromoPostPromoEffectLSVW1]'),
+        PlanPromoPostPromoEffectLSVW2: widgetName.down('numberfield[name=PlanPromoPostPromoEffectLSVW2]'),
+        PlanPromoPostPromoEffectLSV: widgetName.down('numberfield[name=PlanPromoPostPromoEffectLSV]'),
+        ActualPromoPostPromoEffectLSVW1: widgetName.down('numberfield[name=ActualPromoPostPromoEffectLSVW1]'),
+        ActualPromoPostPromoEffectLSVW2: widgetName.down('numberfield[name=ActualPromoPostPromoEffectLSVW2]'),
+        ActualPromoPostPromoEffectLSV: widgetName.down('numberfield[name=ActualPromoPostPromoEffectLSV]'),
     }
 };
 
@@ -341,6 +303,12 @@ Ext.override(App.view.core.toolbar.StandardDirectoryToolbar, bbStyleToOverrryde)
 Ext.override(App.view.core.toolbar.ReadonlyWithoutFilterDirectoryToolbar, bbStyleToOverrryde);
 Ext.override(App.view.core.toolbar.AddOnlyDirectoryToolbar, bbStyleToOverrryde);
 
+Ext.override(App.view.core.security.RolesView, {
+    header: {
+        cls: 'roles-header'
+    }
+});
+
 Ext.override(App.view.core.filter.ExtendedFilterWindow, {
     cls: 'scrollable custom-scheduler-toolbar',
     listeners: {
@@ -373,7 +341,6 @@ Ext.override(App.view.core.toolbar.ReportsFilterToolbar, {
     cls: 'custom-scheduler-toolbar',
     defaults: {
         ui: 'gray-button-toolbar',
-        //padding: 6, //TODO: временно
         textAlign: 'center'
     },
     items: [{
@@ -384,6 +351,22 @@ Ext.override(App.view.core.toolbar.ReportsFilterToolbar, {
         glyph1: 0xf13e,
         target: function () {
             return this.up('toolbar');
+        }
+    }, {
+        itemId: 'extfilterbutton',
+        glyph: 0xf349,
+        text: l10n.ns('core', 'toptoolbar').value('filterButtonText'),
+        tooltip: l10n.ns('core', 'toptoolbar').value('filterButtonText')
+    }, '->', '-', {
+        itemId: 'extfilterclearbutton',
+        ui: 'blue-button-toolbar',
+        disabled: true,
+        glyph: 0xf232,
+        text: l10n.ns('core', 'filter').value('filterEmptyStatus'),
+        tooltip: l10n.ns('core', 'filter').value('filterEmptyStatus'),
+        overCls: '',
+        style: {
+            'cursor': 'default'
         }
     }]
 });
@@ -397,7 +380,9 @@ Ext.override(App.view.tpm.nonenego.TreeFilterableSearchField, {
                 if (val.value.indexOf('  ') >= 0)
                     me.setValue(val.value.replace(//g, '>'));
             });
-        }
+        };
+
+        this.callParent();
     },
 });
 
@@ -407,7 +392,9 @@ Ext.override(Ext.form.field.Text, {
         // проверяем по xtype потому, что datefield тоже срабатывает
         if (this.xtype == 'textfield' && value && value.indexOf('  ') >= 0) {
             this.setValue(value.replace(//g, '>'));
-        }
+        };
+
+        this.callParent();
     },
 });
 
@@ -513,7 +500,7 @@ Ext.apply(Ext.form.field.VTypes, {
     eanNum: function (v) {
         return /^\d{0,13}$/.test(v);
     },
-    eanNumText: 'Must be a numeric EAN',
+    eanNumText: 'Must be a numeric EAN Case',
     eanNumMask: /\d{0,13}/i
 });
 
@@ -521,9 +508,9 @@ Ext.apply(Ext.form.field.VTypes, {
 Ext.override(Ext.view.Table, {
     focusRow: function (rowIdx) {
         var me = this,
-        row,
-        gridCollapsed = me.ownerCt && me.ownerCt.collapsed,
-        record;
+            row,
+            gridCollapsed = me.ownerCt && me.ownerCt.collapsed,
+            record;
 
         if (me.isVisible(true) && !gridCollapsed && (row = me.getNode(rowIdx, true)) && me.el) {
             record = me.getRecord(row);
@@ -537,3 +524,28 @@ Ext.override(Ext.view.Table, {
         }
     },
 });
+
+// посчитать количество дней между датами (без границ)
+var getDaysBetweenDates = function (date1, date2) {
+    var date1WithoutHours = new Date(date1.getFullYear(), date1.getMonth(), date1.getDate());
+    var date2WithoutHours = new Date(date2.getFullYear(), date2.getMonth(), date2.getDate());
+
+    return (date1WithoutHours - date2WithoutHours) / 86400000;
+};
+
+// установить месяц в календаре (пикере) как в другом
+var setMonthPicker = function (currentDateField, otherDateField) {
+    // переопределяем, чтобы переключить месяц на тот, который выбран в start date
+    var picker = currentDateField.getPicker();
+    var otherDateValue = otherDateField.getValue();
+
+    // если значение уже установлено, то переключение не требуется
+    // а таекже проверяем установлено ли значение в start date
+    if (currentDateField.getValue() !== null) {
+        picker.setValue(currentDateField.getValue());
+    }
+    else if (otherDateValue !== null) {
+        var dateMonth = new Date(otherDateValue.getFullYear(), otherDateValue.getMonth(), 1);
+        picker.setValue(dateMonth);
+    }
+};

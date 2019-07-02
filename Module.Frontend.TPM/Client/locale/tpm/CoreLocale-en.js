@@ -55,7 +55,10 @@
     'customValidators': {
         'StartDateFinishDateOrder': 'Stary date must be less then end date',
         'UploadFileFormat': 'Wrong file format. Required format: {0}',
-        'PasswordFormat': 'The password can not be shorter than 5 characters and contains spaces'
+        'PasswordFormat': 'The password can not be shorter than 5 characters and contains spaces',
+        'clientTreeSelectRoot': "Root element couldn't be selected",
+        'EmailValidationError': 'Invalid email',
+        'invalidSearchFieldValue': 'Such a record no longer exists.'
     },
 
     'booleanValues': {
@@ -287,6 +290,7 @@
             'IsNull': 'Is Null',
             'NotNull': 'Not Null',
             'Contains': 'Contains',
+            'NotContains': 'Not Contains',
             'StartsWith': 'Starts With',
             'EndsWith': 'Ends With'
         }
@@ -404,7 +408,10 @@
             'Materials': 'Materials',
             'Infinities': 'Infinities',
             'ResultMessage': 'Result',
-            'NoValidFile': 'Errors'
+            'NoValidFile': 'Errors',
+            'CrossParam.ClientFilter': 'Client Filter',
+            'CrossParam.StartDate': ' Start Date',
+            'CrossParam.FinishDate': 'Finish Date',
         }
     },
     'HistoricalLoopHandler': ['LoopHandler', 'BaseHistoryEntity'],

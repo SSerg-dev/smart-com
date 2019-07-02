@@ -3,7 +3,11 @@
     alias: 'widget.promo',
     id: 'promoGrid',
     title: l10n.ns('tpm', 'compositePanelTitles').value('Promo'),
-
+    // Для того чтобы показывать полные записи в удалённых и истории
+    baseModel: Ext.ModelManager.getModel('App.model.tpm.promo.Promo'),
+    getDefaultResource: function () {
+        return 'PromoGridViews';
+    },
     dockedItems: [{
         xtype: 'custombigtoolbar',
         dock: 'right',
@@ -16,13 +20,34 @@
             target: function () {
                 return this.up('toolbar');
             },
+            toggleCollapse: function () {
+                var target = this.getTarget();
+                var isCollapsed = this.isCollapsed();
+                target.setWidth(isCollapsed ? target.maxWidth : target.minWidth);
+                //if (isCollapsed) {
+                //    target.down('#createinoutbutton').setUI('create-promo-btn-toolbar-expanded');
+                //} else {
+                //    target.down('#createinoutbutton').setUI('create-promo-btn-toolbar');
+                //}
+                target.isExpanded = !target.isExpanded;
+            },
         }, {
             itemId: 'createbutton',
             action: 'Post',
             glyph: 0xf415,
             text: l10n.ns('core', 'crud').value('createButtonText'),
             tooltip: l10n.ns('core', 'crud').value('createButtonText')
-        }, {
+        },
+        //кнопка 'InOut' временно скрыта
+            //{
+            //itemId: 'createinoutbutton',
+            //action: 'Post',
+            //glyph: 0xf415,
+            //text: l10n.ns('tpm', 'Promo').value('CreateInOutPromo'),
+            //tooltip: l10n.ns('tpm', 'Promo').value('CreateInOutPromo'),
+            //ui: 'create-promo-btn'
+            //},
+        {
             itemId: 'updatebutton',
             action: 'Patch',
             glyph: 0xf64f,
@@ -79,13 +104,13 @@
         editorModel: 'Core.form.EditorWindowModel',
         store: {
             type: 'directorystore',
-            model: 'App.model.tpm.promo.Promo',
+            model: 'App.model.tpm.promo.PromoGridView',
             storeId: 'promostore',
             extendedFilter: {
                 xclass: 'App.ExtFilterContext',
                 supportedModels: [{
                     xclass: 'App.ExtSelectionFilterModel',
-                    model: 'App.model.tpm.promo.Promo',
+                    model: 'App.model.tpm.promo.PromoGridView',
                     modelId: 'efselectionmodel'
                 }, {
                     xclass: 'App.ExtTextFilterModel',
@@ -95,9 +120,18 @@
             sorters: [{
                 property: 'Number',
                 direction: 'DESC'
-            }]
+            }],
+            // размер страницы уменьшен для ускорения загрузки грида
+            trailingBufferZone: 20,
+            leadingBufferZone: 20,
+            pageSize: 30
         },
-
+        // стор для получения полной записи промо
+        promoStore: Ext.create('App.store.core.SimpleStore', {
+            model: 'App.model.tpm.promo.Promo',
+            storeId: 'gridviewpromostore',
+            autoLoad: false,
+        }),
         plugins: [{
             ptype: 'filterbar',
             renderHidden: false,
@@ -215,7 +249,7 @@
             }, {
                 text: l10n.ns('tpm', 'Promo').value('Mechanic'),
                 dataIndex: 'Mechanic',
-                width: 110,
+                width: 130,
             }, {
                 text: l10n.ns('tpm', 'Promo').value('MarsMechanicName'),
                 dataIndex: 'MarsMechanicName',
@@ -271,6 +305,12 @@
                 },
                 hidden: true
             }, {
+                xtype: 'datecolumn',
+                text: l10n.ns('tpm', 'Promo').value('StartDate'),
+                dataIndex: 'StartDate',
+                width: 105,
+                renderer: Ext.util.Format.dateRenderer('d.m.Y'),
+            }, {
                 text: l10n.ns('tpm', 'Promo').value('MarsStartDate'),
                 dataIndex: 'MarsStartDate',
                 width: 150,
@@ -283,15 +323,77 @@
                     },
                 }
             }, {
+                xtype: 'datecolumn',
+                text: l10n.ns('tpm', 'Promo').value('EndDate'),
+                dataIndex: 'EndDate',
+                width: 100,
+                renderer: Ext.util.Format.dateRenderer('d.m.Y'),
+            }, {
+                text: l10n.ns('tpm', 'Promo').value('MarsEndDate'),
+                dataIndex: 'MarsEndDate',
+                width: 125,
+                filter: {
+                    xtype: 'marsdatefield',
+                    operator: 'like',
+                    valueToRaw: function (value) {
+                        // в cs между годом и остальной частью добавляется пробел
+                        // а в js нет, поэтому добавляем пробел
+                        var result = value;
+
+                        if (value) {
+                            var stringValue = value.toString();
+
+                            if (stringValue.indexOf('P') >= 0)
+                                result = stringValue.replace('P', ' P')
+                        }
+
+                        return result;
+                    },
+                }
+            }, {
+                xtype: 'datecolumn',
+                text: l10n.ns('tpm', 'Promo').value('DispatchesStart'),
+                dataIndex: 'DispatchesStart',
+                width: 130,
+                renderer: Ext.util.Format.dateRenderer('d.m.Y'),
+            }, {
                 text: l10n.ns('tpm', 'Promo').value('MarsDispatchesStart'),
                 dataIndex: 'MarsDispatchesStart',
-                width: 170,
+                width: 165,
                 filter: {
                     xtype: 'marsdatefield',
                     operator: 'like',
                     validator: function (value) {
                         // дает возможность фильтровать только по году
                         return true;
+                    },
+                }
+            }, {
+                xtype: 'datecolumn',
+                text: l10n.ns('tpm', 'Promo').value('DispatchesEnd'),
+                dataIndex: 'DispatchesEnd',
+                width: 115,
+                renderer: Ext.util.Format.dateRenderer('d.m.Y'),
+            }, {
+                text: l10n.ns('tpm', 'Promo').value('MarsDispatchesEnd'),
+                dataIndex: 'MarsDispatchesEnd',
+                width: 155,
+                filter: {
+                    xtype: 'marsdatefield',
+                    operator: 'like',
+                    valueToRaw: function (value) {
+                        // в cs между годом и остальной частью добавляется пробел
+                        // а в js нет, поэтому добавляем пробел
+                        var result = value;
+
+                        if (value) {
+                            var stringValue = value.toString();
+
+                            if (stringValue.indexOf('P') >= 0)
+                                result = stringValue.replace('P', ' P')
+                        }
+
+                        return result;
                     },
                 }
             }, {
@@ -383,11 +485,6 @@
                 width: 110,
                 hidden: true,
             }, {
-                text: l10n.ns('tpm', 'Promo').value('MechanicComment'),
-                dataIndex: 'MechanicComment',
-                width: 100,
-                hidden: true,
-            }, {
                 text: l10n.ns('tpm', 'Promo').value('BrandName'),
                 dataIndex: 'BrandName',
                 width: 110,
@@ -412,91 +509,7 @@
                     }
                 },
                 hidden: true,
-            }, {
-                text: l10n.ns('tpm', 'Promo').value('MarsEndDate'),
-                dataIndex: 'MarsEndDate',
-                width: 120,
-                hidden: true,
-                filter: {
-                    xtype: 'marsdatefield',
-                    operator: 'like',
-                    valueToRaw: function (value) {
-                        // в cs между годом и остальной частью добавляется пробел
-                        // а в js нет, поэтому добавляем пробел
-                        var result = value;
-
-                        if (value) {
-                            var stringValue = value.toString();
-
-                            if (stringValue.indexOf('P') >= 0)
-                                result = stringValue.replace('P', ' P')
-                        }
-
-                        return result;
-                    },
-                }
-            }, {
-                xtype: 'datecolumn',
-                text: l10n.ns('tpm', 'Promo').value('StartDate'),
-                dataIndex: 'StartDate',
-                width: 110,
-                renderer: Ext.util.Format.dateRenderer('d.m.Y'),
-                hidden: true,
-            }, {
-                xtype: 'datecolumn',
-                text: l10n.ns('tpm', 'Promo').value('EndDate'),
-                dataIndex: 'EndDate',
-                width: 100,
-                renderer: Ext.util.Format.dateRenderer('d.m.Y'),
-                hidden: true,
-            }, {
-                text: l10n.ns('tpm', 'Promo').value('MarsDispatchesEnd'),
-                dataIndex: 'MarsDispatchesEnd',
-                width: 120,
-                hidden: true,
-                valueToRaw: function (value) {
-                    // в cs между годом и остальной частью добавляется пробел
-                    // а в js нет, поэтому добавляем пробел
-                    var result = value;
-
-                    if (value) {
-                        var stringValue = value.toString();
-
-                        if (stringValue.indexOf('P') >= 0)
-                            result = stringValue.replace('P', ' P')
-                    }
-
-                    return result;
-                },
-            }, {
-                xtype: 'datecolumn',
-                text: l10n.ns('tpm', 'Promo').value('DispatchesStart'),
-                dataIndex: 'DispatchesStart',
-                width: 115,
-                renderer: Ext.util.Format.dateRenderer('d.m.Y'),
-                hidden: true,
-            }, {
-                xtype: 'datecolumn',
-                text: l10n.ns('tpm', 'Promo').value('DispatchesEnd'),
-                dataIndex: 'DispatchesEnd',
-                width: 115,
-                renderer: Ext.util.Format.dateRenderer('d.m.Y'),
-                hidden: true,
-            }, {
-                xtype: 'numbercolumn',
-                format: '0',
-                text: l10n.ns('tpm', 'Promo').value('CalendarPriority'),
-                dataIndex: 'CalendarPriority',
-                hidden: true,
-            }, {
-                text: l10n.ns('tpm', 'Promo').value('ColorDisplayName'),
-                dataIndex: 'ColorDisplayName',
-                renderer: function (value, metaData, record, rowIndex, colIndex, store, view) {
-                    var descr = record.get('ColorDisplayName');
-                    return Ext.String.format('<div style="background-color:{0};width:50px;height:10px;display:inline-block;margin:0 5px 0 5px;border:solid;border-color:gray;border-width:1px;"></div><div style="display:inline-block">{1}</div>', record.get('ColorSystemName'), descr ? descr : '');
-                },
-                hidden: true,
             }]
-        },
+        }
     }]
 });

@@ -29,19 +29,17 @@ using Utility;
 using Module.Persist.TPM.Utils;
 using Module.Persist.TPM.Model.DTO;
 using Core.Settings;
-using Core.Dependency;
-using System.Data.Entity;
 using Module.Persist.TPM.PromoStateControl;
 using System.Web.Http.Results;
-using System.Collections.Concurrent;
 using System.IO;
 using Persist.ScriptGenerator.Filter;
 using System.Net.Http.Headers;
 using Module.Persist.TPM.CalculatePromoParametersModule;
+using Module.Frontend.TPM.Util;
 
 namespace Module.Frontend.TPM.Controllers {
     public class PromoesController : EFContextController {
-        
+
         private readonly IAuthorizationManager authorizationManager;
 
         public PromoesController(IAuthorizationManager authorizationManager) {
@@ -80,8 +78,7 @@ namespace Module.Frontend.TPM.Controllers {
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue, MaxExpansionDepth = 3)]
-        public IQueryable<Promo> GetCanChangeStatePromoes(bool canChangeStateOnly = false)
-        {
+        public IQueryable<Promo> GetCanChangeStatePromoes(bool canChangeStateOnly = false) {
             return GetConstraintedQuery(canChangeStateOnly);
         }
 
@@ -92,13 +89,15 @@ namespace Module.Frontend.TPM.Controllers {
                 return NotFound();
             }
             patch.Put(model);
+
             try {
                 //Установка полей по дереву ProductTree
-                SetPromoByProductTree(model);
+                //SetPromoByProductTree(model);
                 //Установка дат в Mars формате
                 SetPromoMarsDates(model);
                 //Установка полей по дереву ClientTree
                 SetPromoByClientTree(model);
+
                 Context.SaveChanges();
             } catch (DbUpdateConcurrencyException) {
                 if (!EntityExists(key)) {
@@ -124,18 +123,25 @@ namespace Module.Frontend.TPM.Controllers {
                     }
 
                     model.EventId = promoEvent.Id;
+                    model.EventName = promoEvent.Name;
+                } else {
+                    Event promoEvent = Context.Set<Event>().FirstOrDefault(x => !x.Disabled && x.Id == model.EventId);
+                    if (promoEvent == null) {
+                        return InternalServerError(new Exception("Event 'Standard promo' not found"));
+                    }
+                    model.EventName = promoEvent.Name;
                 }
 
                 UserInfo user = authorizationManager.GetCurrentUser();
                 string userRole = user.GetCurrentRole().SystemName;
 
-                string massage;
+                string message;
 
                 PromoStateContext promoStateContext = new PromoStateContext(Context, null);
-                bool status = promoStateContext.ChangeState(model, userRole, out massage);
+                bool status = promoStateContext.ChangeState(model, userRole, out message);
 
                 if (!status) {
-                    return InternalServerError(new Exception(massage));
+                    return InternalServerError(new Exception(message));
                 }
 
                 Promo proxy = Context.Set<Promo>().Create<Promo>();
@@ -146,11 +152,12 @@ namespace Module.Frontend.TPM.Controllers {
                 }
 
                 Context.Set<Promo>().Add(result);
-                // Добавление продуктов
-                AddProductTrees(model.ProductTreeObjectIds, result);
                 Context.SaveChanges();
+                // Добавление продуктов
+                List<PromoProductTree> promoProductTrees = AddProductTrees(model.ProductTreeObjectIds, result);
+
                 //Установка полей по дереву ProductTree
-                SetPromoByProductTree(result);
+                SetPromoByProductTree(result, promoProductTrees);
                 //Установка дат в Mars формате
                 SetPromoMarsDates(result);
                 //Установка полей по дереву ClientTree
@@ -171,17 +178,23 @@ namespace Module.Frontend.TPM.Controllers {
                 //Установка времени последнгего присвоения статуса Approved
                 if (result.PromoStatus != null && result.PromoStatus.SystemName == "Approved") {
                     result.LastApprovedDate = DateTimeOffset.UtcNow;
-                }                
+                }
 
-                WritePromoDemandChangeIncident(result);
-                
-                // для draft не проверяем и не считаем
-                if (result.PromoStatus.SystemName.ToLower() != "draft")
-                {
+                PromoHelper.WritePromoDemandChangeIncident(Context, result);
+
+                // для draft не проверяем и не считаем && если у промо есть признак InOut, то Uplift считать не нужно.
+                if (result.PromoStatus.SystemName.ToLower() != "draft") {
                     // если нет TI, COGS или продукты не подобраны по фильтрам, запретить сохранение (будет исключение)
-                    CheckSupportInfo(result);
+                    List<Product> filteredProducts; // продукты, подобранные по фильтрам
+                    CheckSupportInfo(result, promoProductTrees, out filteredProducts);
                     //создание отложенной задачи, выполняющей подбор аплифта и расчет параметров
                     CalculatePromo(result, false);
+                }
+                else
+                {
+                    // Добавить запись в таблицу PromoProduct при сохранении.
+                    string error;
+                    PlanProductParametersCalculation.SetPromoProduct(Context.Set<Promo>().First(x => x.Number == result.Number).Id, Context, out error, true, promoProductTrees);
                 }
 
                 Context.SaveChanges();
@@ -196,85 +209,133 @@ namespace Module.Frontend.TPM.Controllers {
         [ClaimsAuthorize]
         [AcceptVerbs("PATCH", "MERGE")]
         public IHttpActionResult Patch([FromODataUri] Guid key, Delta<Promo> patch) {
-            try
-            {
+            try {
                 var model = Context.Set<Promo>().Find(key);
 
-                if (model == null)
-                {
+                if (model == null) {
                     return NotFound();
                 }
 
                 Promo promoCopy = new Promo(model);
                 patch.Patch(model);
 
-                // Добавление продуктов                
-                AddProductTrees(model.ProductTreeObjectIds, model);
-                Context.SaveChanges();
-
                 UserInfo user = authorizationManager.GetCurrentUser();
                 string userRole = user.GetCurrentRole().SystemName;
 
-                string massage;
-
+                string message;
                 PromoStateContext promoStateContext = new PromoStateContext(Context, promoCopy);
-                bool status = promoStateContext.ChangeState(model, userRole, out massage);
-
-                if (!status)
-                {
-                    return InternalServerError(new Exception(massage));
+                bool status = promoStateContext.ChangeState(model, userRole, out message);
+                if (!status) {
+                    return InternalServerError(new Exception(message));
                 }
 
-                //Установка полей по дереву ProductTree
-                SetPromoByProductTree(model);
-                //Установка дат в Mars формате
-                SetPromoMarsDates(model);
-                //Установка полей по дереву ClientTree
-                SetPromoByClientTree(model);
-                //Установка механик
-                SetMechanic(model);
-                SetMechanicIA(model);
+                String statusName = Context.Set<PromoStatus>().FirstOrDefault(s => s.Id == model.PromoStatusId && !s.Disabled).SystemName;
+                String prevStatusName = Context.Set<PromoStatus>().FirstOrDefault(s => s.Id == promoCopy.PromoStatusId && !s.Disabled).SystemName;
+                bool needDetachPromoSupport = statusName.ToLower() == "draft" && prevStatusName.ToLower() == "draftpublished";
 
-                var statusId = model.PromoStatusId;
-
-                //Сохранение изменения статуса
-                if (promoCopy.PromoStatusId != model.PromoStatusId)
+                if (statusName.ToLower() != "cancelled" && statusName.ToLower() != "finished")
                 {
-                    PromoStatusChange psc = Context.Set<PromoStatusChange>().Create<PromoStatusChange>();
-                    psc.PromoId = model.Id;
-                    psc.StatusId = model.PromoStatusId;
-                    psc.UserId = (Guid)user.Id;
-                    psc.RoleId = (Guid)user.GetCurrentRole().Id;
-                    psc.Date = DateTimeOffset.UtcNow;
-                    Context.Set<PromoStatusChange>().Add(psc);
+                    // Добавление продуктов                
+                    List<PromoProductTree> promoProductTrees = AddProductTrees(model.ProductTreeObjectIds, model);
 
-                    //Установка времени последнгего присвоения статуса Approved
-                    if (model.PromoStatus != null && model.PromoStatus.SystemName == "Approved")
+                    bool needRecalculatePromo = NeedRecalculatePromo(model, promoCopy);
+                    //для ускорения перехода в следующий статус (если нет изменений параметров промо, то пропускаем следующие действия)
+                    if (needRecalculatePromo)
                     {
-                        model.LastApprovedDate = DateTimeOffset.UtcNow;
+                        //Установка полей по дереву ProductTree
+                        SetPromoByProductTree(model, promoProductTrees);
+                        //Установка дат в Mars формате
+                        SetPromoMarsDates(model);
+                        //Установка полей по дереву ClientTree
+                        SetPromoByClientTree(model);
+                        //Установка механик
+                        SetMechanic(model);
+                        SetMechanicIA(model);
+                    }
+
+                    if (model.EventId != null) {
+                        Event promoEvent = Context.Set<Event>().FirstOrDefault(x => !x.Disabled && x.Id == model.EventId);
+                        if (promoEvent == null) {
+                            return InternalServerError(new Exception("Event not found"));
+                        }
+                        model.EventName = promoEvent.Name;
+                    }
+
+                    //Сохранение изменения статуса.
+                    if (promoCopy.PromoStatusId != model.PromoStatusId
+                        || promoCopy.IsDemandFinanceApproved != model.IsDemandFinanceApproved
+                        || promoCopy.IsCMManagerApproved != model.IsCMManagerApproved
+                        || promoCopy.IsDemandPlanningApproved != model.IsDemandPlanningApproved) {
+                        PromoStatusChange psc = Context.Set<PromoStatusChange>().Create<PromoStatusChange>();
+                        psc.PromoId = model.Id;
+                        psc.StatusId = model.PromoStatusId;
+                        psc.UserId = (Guid) user.Id;
+                        psc.RoleId = (Guid) user.GetCurrentRole().Id;
+                        psc.Date = DateTimeOffset.UtcNow;
+                        Context.Set<PromoStatusChange>().Add(psc);
+
+                        //Установка времени последнего присвоения статуса Approved
+                        if (statusName != null && statusName.ToLower() == "approved") {
+                            model.LastApprovedDate = DateTimeOffset.UtcNow;
+                        }
+                    }
+
+                    SetBrandTechIdPromo(model);
+
+                    // для draft не проверяем и не считаем
+                    if (statusName.ToLower() != "draft") {
+                        // если нет TI, COGS или продукты не подобраны по фильтрам, запретить сохранение (будет исключение)
+                        List<Product> filteredProducts; // продукты, подобранные по фильтрам
+                        CheckSupportInfo(model, promoProductTrees, out filteredProducts);
+
+                        // в статусе On Approval проверяем изменился ли список фильтруемых продуктов (и соответсвенно если узел остался тот же)
+                        // проверяем предыдущий на случай, когда утвердил последний и промо перешло в Approved
+                        bool changedProducts = false;
+                        if ((model.ProductHierarchy == promoCopy.ProductHierarchy) &&
+                            (model.PromoStatus.SystemName.ToLower() == "onapproval" || promoCopy.PromoStatus.SystemName.ToLower() == "onapproval"))
+                        {
+                            List<string> eanPCs = PlanProductParametersCalculation.GetProductListFromAssortmentMatrix(model, Context);
+                            List<Product> resultProductList = PlanProductParametersCalculation.GetResultProducts(filteredProducts, eanPCs, model, Context);
+
+                            changedProducts = CheckChangesInProductList(model, resultProductList);
+                        }
+
+                        //создание отложенной задачи, выполняющей переподбор аплифта и перерассчет параметров                    
+                        //если у промо есть признак InOut, то Uplift считать не нужно.
+                        if (changedProducts || needRecalculatePromo) {
+                            // если меняем длительность промо, то пересчитываем Marketing TI
+                            bool needCalculatePlanMarketingTI = promoCopy.StartDate != model.StartDate || promoCopy.EndDate != model.EndDate;
+                            CalculatePromo(model, needCalculatePlanMarketingTI); //TODO: Задача создаётся раньше чем сохраняются изменения промо.
+                        }                                                        //Сначала проверять заблокированно ли промо, если нет сохранять промо, затем сохранять задачу
+                    }
+                    else if (needDetachPromoSupport)
+                    {
+                        List<PromoProduct> promoProductToDeleteList = Context.Set<PromoProduct>().Where(x => x.PromoId == model.Id && !x.Disabled).ToList();
+                        foreach(PromoProduct promoProduct in promoProductToDeleteList)
+                        {
+                            promoProduct.DeletedDate = System.DateTime.Now;
+                            promoProduct.Disabled = true;
+                        }
+                        //при сбросе статуса в Draft необходимо отвязать бюджеты от промо и пересчитать эти бюджеты
+                        PromoCalculateHelper.RecalculateBudgets(model, user, Context);
                     }
                 }
-
-                WritePromoDemandChangeIncident(model, patch, promoCopy);
-
-                // для draft не проверяем и не считаем
-                if (model.PromoStatus.SystemName.ToLower() != "draft")
+                else if (statusName.ToLower() != "finished")
                 {
-                    // если нет TI, COGS или продукты не подобраны по фильтрам, запретить сохранение (будет исключение)
-                    CheckSupportInfo(model);
-
-                    //создание отложенной задачи, выполняющей переподбор аплифта и перерассчет параметров                    
-                    if (NeedRecalculatePromo(model, promoCopy))
-                    {
-                        // если меняем длительность промо, то пересчитываем Marketing TI
-                        bool needCalculatePlanMarketingTI = promoCopy.StartDate != model.StartDate || promoCopy.EndDate != model.EndDate;
-                        CalculatePromo(model, needCalculatePlanMarketingTI);
-                    }
+                    //при отмене промо необходимо отвязать бюджеты от промо и пересчитать эти бюджеты
+                    PromoCalculateHelper.RecalculateBudgets(model, user, Context);
                 }
-
                 Context.SaveChanges();
+                PromoHelper.WritePromoDemandChangeIncident(Context, model, patch, promoCopy);
 
-                return Updated(model);
+                // ПЕРЕДЕЛАТЬ, просто оставалось 15 мин до релиза
+                if (message != string.Empty && userRole == "DemandPlanning" && statusName.ToLower() == "onapproval")
+                {
+                    return Content(HttpStatusCode.OK, message);
+                }
+                else
+                    return Updated(model);
+
             } catch (DbUpdateConcurrencyException) {
                 if (!EntityExists(key)) {
                     return NotFound();
@@ -283,6 +344,73 @@ namespace Module.Frontend.TPM.Controllers {
                 }
             } catch (Exception ex) {
                 return InternalServerError(ex);
+            }
+        }
+
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IHttpActionResult RecalculatePromo(Guid promoId) {
+            Promo promo = Context.Set<Promo>().Find(promoId);
+            if (promo == null)
+                return NotFound();
+
+            using (var transaction = Context.Database.BeginTransaction()) {
+                try {
+                    CalculatePromo(promo, true);
+                    transaction.Commit();
+                } catch (Exception e) {
+                    transaction.Rollback();
+                    return InternalServerError(e);
+                }
+            }
+
+            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
+        }
+
+        private void SetBrandTechIdPromo(Promo model) {
+            if (model.ProductTreeObjectIds != null) {
+                List<int> productTreeObjectIds = new List<int>();
+                if (model.ProductTreeObjectIds.Length > 0) {
+                    productTreeObjectIds = model.ProductTreeObjectIds.Split(';').Select(n => Int32.Parse(n)).ToList();
+                }
+
+                int objectId = productTreeObjectIds.FirstOrDefault();
+
+                DateTime dt = DateTime.Now;
+                ProductTree productTree = Context.Set<ProductTree>().FirstOrDefault(x => (x.StartDate < dt && (x.EndDate > dt || !x.EndDate.HasValue)) && x.ObjectId == objectId);
+                if (productTree != null) {
+                    Guid? brandId = null;
+                    Guid? technologyId = null;
+                    Brand brand = null;
+                    Technology technology = null;
+                    bool end = false;
+                    do {
+                        if (productTree.Type == "Brand") {
+                            brand = Context.Set<Brand>().FirstOrDefault(x => x.Name == productTree.Name);
+                            if (brand != null) {
+                                brandId = brand.Id;
+                            }
+                        }
+                        if (productTree.Type == "Technology") {
+                            technology = Context.Set<Technology>().FirstOrDefault(x => x.Name == productTree.Name);
+                            if (technology != null) {
+                                technologyId = technology.Id;
+                            }
+                        }
+                        if (productTree.parentId != 1000000) {
+                            productTree = Context.Set<ProductTree>().FirstOrDefault(x => (x.StartDate < dt && (x.EndDate > dt || !x.EndDate.HasValue)) && x.ObjectId == productTree.parentId);
+                        } else {
+                            end = true;
+                        }
+                    } while (!end && productTree != null);
+
+                    BrandTech brandTech = Context.Set<BrandTech>().FirstOrDefault(x => !x.Disabled && x.TechnologyId == technologyId && x.BrandId == brandId);
+                    if (brandTech != null) {
+                        model.BrandTechId = brandTech.Id;
+                    } else {
+                        model.BrandTechId = null;
+                    }
+                }
             }
         }
 
@@ -303,17 +431,20 @@ namespace Module.Frontend.TPM.Controllers {
                 UserInfo user = authorizationManager.GetCurrentUser();
                 string userRole = user.GetCurrentRole().SystemName;
 
-                string massage;
+                string message;
 
                 PromoStateContext promoStateContext = new PromoStateContext(Context, promoCopy);
-                bool status = promoStateContext.ChangeState(model, userRole, out massage);
+                bool status = promoStateContext.ChangeState(model, userRole, out message);
 
                 if (!status) {
-                    return InternalServerError(new Exception(massage));
+                    return InternalServerError(new Exception(message));
                 }
 
                 Context.SaveChanges();
-                WritePromoDemandChangeIncident(model, true);
+
+                PromoHelper.WritePromoDemandChangeIncident(Context, model, true);
+                PromoCalculateHelper.RecalculateBudgets(model, user, Context);
+
                 return StatusCode(HttpStatusCode.NoContent);
             } catch (Exception e) {
                 return InternalServerError(e);
@@ -371,11 +502,13 @@ namespace Module.Frontend.TPM.Controllers {
                     Promo promo = Context.Set<Promo>().Find(rejectPromoId);
                     RejectReason rejectreason = Context.Set<RejectReason>().Find(rejectReasonId);
 
-                    if (promo == null || rejectreason == null) {
-                        return NotFound();
-                    }
-
-                    PromoStatus draftPublishedStatus = Context.Set<PromoStatus>().First(n => n.SystemName == "DraftPublished");
+					if (promo == null) {
+						throw new Exception("Promo not found");
+					} else if (rejectreason == null) {
+						throw new Exception("Reject reason not found");
+					}
+					
+					PromoStatus draftPublishedStatus = Context.Set<PromoStatus>().First(n => n.SystemName == "DraftPublished");
                     Delta<Promo> patch = new Delta<Promo>(promo.GetType(), new string[] { "PromoStatusId", "RejectReasonId" });
                     patch.TrySetPropertyValue("PromoStatusId", draftPublishedStatus.Id);
                     patch.TrySetPropertyValue("RejectReasonId", rejectReasonId);
@@ -390,6 +523,9 @@ namespace Module.Frontend.TPM.Controllers {
 
                         psc.RejectReasonId = rejectreason.Id;
                         psc.Comment = rejectreason.SystemName == "Other" ? rejectComment : null;
+
+                        // Создание записи об изменении/удалении промо
+                        Context.Set<PromoRejectIncident>().Add(new PromoRejectIncident() { PromoId = rejectPromoId, CreateDate = DateTime.Now });
 
                         Context.SaveChanges();
                         transaction.Commit();
@@ -432,65 +568,11 @@ namespace Module.Frontend.TPM.Controllers {
             return Context.Set<Promo>().Count(e => e.Id == key) > 0;
         }
 
-        private IEnumerable<Column> GetExportSettings() {
-            IEnumerable<Column> columns = new List<Column>() {
-                new Column() { Order = 0, Field = "Number", Header = "Promo ID", Quoting = false },
-                new Column() { Order = 0, Field = "Name", Header = "Promo name", Quoting = false },
-                new Column() { Order = 0, Field = "PromoStatus.Name", Header = "Status", Quoting = false },
-                new Column() { Order = 0, Field = "MarsMechanic.Name", Header = "Mars mechanic", Quoting = false },
-                new Column() { Order = 0, Field = "MarsMechanicType.Name", Header = "Mars mechanic type", Quoting = false },
-                new Column() { Order = 0, Field = "MarsMechanicDiscount", Header = "Mars mechanic discount, %", Quoting = false },
-                new Column() { Order = 0, Field = "InstoreMechanic.Name", Header = "IA mechanic", Quoting = false },
-                new Column() { Order = 0, Field = "InstoreMechanicType.Name", Header = "IA mechanic type", Quoting = false },
-                new Column() { Order = 0, Field = "InstoreMechanicDiscount", Header = "IA mechanic discount, %", Quoting = false },
-                new Column() { Order = 0, Field = "Brand.Name", Header = "Brand", Quoting = false },
-                new Column() { Order = 0, Field = "BrandTech.Name", Header = "Brandtech", Quoting = false },
-                new Column() { Order = 0, Field = "StartDate", Header = "Start date", Quoting = false, Format = "dd.MM.yyyy" },
-                new Column() { Order = 0, Field = "EndDate", Header = "End date", Quoting = false, Format = "dd.MM.yyyy" },
-                new Column() { Order = 0, Field = "DispatchesStart", Header = "Dispatch start", Quoting = false, Format = "dd.MM.yyyy" },
-                new Column() { Order = 0, Field = "DispatchesEnd", Header = "Dispatch end", Quoting = false, Format = "dd.MM.yyyy" },
-                new Column() { Order = 0, Field = "EventName", Header = "Event", Quoting = false },
-                new Column() { Order = 0, Field = "Priority", Header = "Priority", Quoting = false },
-                new Column() { Order = 0, Field = "ClientHierarchy", Header = "Client hierarchy", Quoting = false },
-                new Column() { Order = 0, Field = "ProductHierarchy", Header = "Product hierarchy", Quoting = false },
-                new Column() { Order = 0, Field = "ShopperTi", Header = "Shopper TI, RUR", Quoting = false },
-                new Column() { Order = 0, Field = "MarketingTi", Header = "Marketing TI, RUR", Quoting = false },
-                new Column() { Order = 0, Field = "Branding", Header = "Branding, RUR", Quoting = false },
-                new Column() { Order = 0, Field = "BTL", Header = "BTL, RUR", Quoting = false },
-                new Column() { Order = 0, Field = "CostProduction", Header = "Cost production, RUR", Quoting = false },
-                new Column() { Order = 0, Field = "TotalCost", Header = "Total cost, RUR", Quoting = false },
-                new Column() { Order = 0, Field = "PlanUplift", Header = "Uplift, %", Quoting = false },
-                new Column() { Order = 0, Field = "PlanIncrementalLsv", Header = "Incremental LSV, RUR", Quoting = false },
-                new Column() { Order = 0, Field = "PlanTotalPromoLsv", Header = "Total promo LSV, RUR", Quoting = false },
-                new Column() { Order = 0, Field = "PlanPostPromoEffect", Header = "Post promo effect, RUR", Quoting = false },
-                new Column() { Order = 0, Field = "PlanRoi", Header = "ROI, %", Quoting = false },
-                new Column() { Order = 0, Field = "PlanIncrementalNsv", Header = "Incremental NSV, RUR", Quoting = false },
-                new Column() { Order = 0, Field = "PlanTotalPromoNsv", Header = "Total promo NSV, RUR", Quoting = false },
-                new Column() { Order = 0, Field = "PlanIncrementalMac", Header = "Incremental Mac, RUR", Quoting = false },
-                new Column() { Order = 0, Field = "FactShopperTi", Header = "Actual Shopper TI, RUR", Quoting = false },
-                new Column() { Order = 0, Field = "FactMarketingTi", Header = "Actual Marketing TI, RUR", Quoting = false },
-                new Column() { Order = 0, Field = "FactBranding", Header = "Actual Branding, RUR", Quoting = false },
-                new Column() { Order = 0, Field = "FactBTL", Header = "Actual BTL, RUR", Quoting = false },
-                new Column() { Order = 0, Field = "FactCostProduction", Header = "Actual Cost production, RUR", Quoting = false },
-                new Column() { Order = 0, Field = "FactTotalCost", Header = "Actual Total cost, RUR", Quoting = false },
-                new Column() { Order = 0, Field = "FactUplift", Header = "Fact Uplift, %", Quoting = false },
-                new Column() { Order = 0, Field = "FactIncrementalLsv", Header = "Fact Incremental LSV, RUR", Quoting = false },
-                new Column() { Order = 0, Field = "FactTotalPromoLsv", Header = "Fact Total promo LSV, RUR", Quoting = false },
-                new Column() { Order = 0, Field = "FactPostPromoEffect", Header = "Fact Post promo effect, RUR", Quoting = false },
-                new Column() { Order = 0, Field = "FactRoi", Header = "Fact ROI, %", Quoting = false },
-                new Column() { Order = 0, Field = "FactIncrementalNsv", Header = "Fact Incremental NSV, RUR", Quoting = false },
-                new Column() { Order = 0, Field = "FactTotalPromoNsv", Header = "Fact Total promo NSV, RUR", Quoting = false },
-                new Column() { Order = 0, Field = "FactIncrementalMac", Header = "Fact Incremental Mac, RUR", Quoting = false },
-                new Column() { Order = 0, Field = "Color.DisplayName", Header = "Color name", Quoting = false }
-            };
-            return columns;
-        }
-
         [ClaimsAuthorize]
         public IHttpActionResult ExportXLSX(ODataQueryOptions<Promo> options) {
             try {
                 IQueryable results = options.ApplyTo(GetConstraintedQuery().Where(x => !x.Disabled));
-                IEnumerable<Column> columns = GetExportSettings();
+                IEnumerable<Column> columns = PromoHelper.GetExportSettings();
                 XLSXExporter exporter = new XLSXExporter(columns);
                 UserInfo user = authorizationManager.GetCurrentUser();
                 string username = user == null ? "" : user.Login;
@@ -630,7 +712,7 @@ namespace Module.Frontend.TPM.Controllers {
             bool success = CalculationTaskManager.CreateCalculationTask(CalculationTaskManager.CalculationAction.Uplift, data, Context, promo.Id);
 
             if (!success)
-                throw new Exception("Операция не возможна, данное промо участвует в расчетах и было заблокировано");
+                throw new Exception("Promo was blocked for calculation");
         }
 
         /// <summary>
@@ -639,79 +721,120 @@ namespace Module.Frontend.TPM.Controllers {
         /// <returns></returns>
         [HttpPost]
         [ClaimsAuthorize]
-        public IHttpActionResult ReadPromoCalculatingLog(String promoId)
-        {
+        public IHttpActionResult ReadPromoCalculatingLog(String promoId) {
             Guid promoGuid = Guid.Parse(promoId);
             String respond = null;
             int codeTo = 0;
             String opDataTo = null;
-            try
-            {
+            string description = null;
+            string status = null;
+            try {
                 Guid? handlerGuid = null;
-                //Guid? handlerGuid = GetCalculatedPromo(promoGuid);
                 BlockedPromo bp = Context.Set<BlockedPromo>().FirstOrDefault(n => n.PromoId == promoGuid && !n.Disabled);
 
-                if (bp != null)
-                {
-                    //Чтение файла лога
-                    handlerGuid = bp.HandlerId;
+                Promo promo = Context.Set<Promo>().FirstOrDefault(x => x.Id == promoGuid && !x.Disabled);
+                if (promo != null) {
+                    handlerGuid = Guid.Parse(promo.BlockInformation.Split('_')[0]);
+                    if (handlerGuid != null) {
+                        LoopHandler handler = Context.Set<LoopHandler>().FirstOrDefault(x => x.Id == handlerGuid);
+                        if (handler != null) {
+                            description = handler.Description;
+                            status = handler.Status;
 
-                    string logDir = AppSettingsManager.GetSetting("HANDLER_LOG_DIRECTORY", "HandlerLogs");
-                    string logFileName = String.Format("{0}.txt", handlerGuid);
-                    string filePath = System.IO.Path.Combine(logDir, logFileName);
-                    if (File.Exists(filePath))
-                    {
-                        respond = File.ReadAllText(filePath);
-                    }
-                    else
-                    {
-                        respond = "";
+                            string logDir = AppSettingsManager.GetSetting("HANDLER_LOG_DIRECTORY", "HandlerLogs");
+                            string logFileName = String.Format("{0}.txt", handlerGuid);
+                            string filePath = System.IO.Path.Combine(logDir, logFileName);
+                            if (File.Exists(filePath)) {
+                                respond = File.ReadAllText(filePath);
+                            } else {
+                                respond = "";
+                            }
+                        }
                     }
                 }
-                else
+
+                if (bp == null) {
                     codeTo = 1;
+                }
 
-                //Чтение файла лога
-                //if (handlerGuid.HasValue)
+                //if (bp != null)
                 //{
-                    
-                //}
+                //    //Чтение файла лога
+                //    handlerGuid = bp.HandlerId;
 
-                // Получение параметров хендлера
-                /*using (DatabaseContext context = new DatabaseContext())
-                {
-                    LoopHandler task = context.Set<LoopHandler>().Where(x => x.Id == handlerGuid).FirstOrDefault();
-                    if (task == null)
-                    {                        
-                        codeTo = 1;
-                    }
-                    else
-                    {
-                        //if (b)
-                        //if (task.Status == Looper.Consts.StatusName.COMPLETE)
-                        //{                            
-                        //    codeTo = 1;
-                        //}
-                        //else if (task.Status == Looper.Consts.StatusName.ERROR)
-                        //{                            
-                        //    codeTo = 1;
-                        //}
-                    }
-                }*/
-            }
-            catch (Exception e)
-            {
+                //    string logDir = AppSettingsManager.GetSetting("HANDLER_LOG_DIRECTORY", "HandlerLogs");
+                //    string logFileName = String.Format("{0}.txt", handlerGuid);
+                //    string filePath = System.IO.Path.Combine(logDir, logFileName);
+                //    if (File.Exists(filePath))
+                //    {
+                //        respond = File.ReadAllText(filePath);
+                //    }
+                //    else
+                //    {
+                //        respond = "";
+                //    }
+                //}
+                //else
+                //{
+                //    codeTo = 1;
+                //}
+            } catch (Exception e) {
                 respond = e.Message;
                 codeTo = 1;
             }
 
-            return Json(new
-            {
+            return Json(new {
                 success = true,
                 data = respond,
+                description,
+                status,
                 code = codeTo,
                 opData = opDataTo
             });
+        }
+
+        [HttpPost]
+        [ClaimsAuthorize]
+        public IHttpActionResult GetHandlerIdForBlockedPromo(string promoId) {
+            var guidPromoId = Guid.Parse(promoId);
+            var blockedPromo = Context.Set<BlockedPromo>().FirstOrDefault(n => n.PromoId == guidPromoId && !n.Disabled);
+
+            if (blockedPromo != null) {
+                return Json(new {
+                    success = true,
+                    handlerId = blockedPromo.HandlerId
+                });
+            } else {
+                return Json(new {
+                    success = true
+                });
+            }
+        }
+
+        //Проверка на наличие ошибок в логе
+        [HttpPost]
+        [ClaimsAuthorize]
+        public IHttpActionResult CheckIfLogHasErrors(string promoId)
+        {
+            var guidPromoId = Guid.Parse(promoId);
+            BlockedPromo calculatingInfo = Context.Set<BlockedPromo>().Where(n => n.PromoId == guidPromoId).OrderByDescending(n => n.CreateDate).FirstOrDefault();
+            if (calculatingInfo != null)
+            {
+                string contentOfLog = null;
+                string logDir = AppSettingsManager.GetSetting("HANDLER_LOG_DIRECTORY", "HandlerLogs");
+                string logFileName = String.Format("{0}.txt", calculatingInfo.HandlerId);
+                string filePath = System.IO.Path.Combine(logDir, logFileName);
+
+                if (File.Exists(filePath))
+                {
+                    contentOfLog = File.ReadAllText(filePath);
+                    if (contentOfLog.Contains("[ERROR]"))
+                    {
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { LogHasErrors = true }));
+                    }
+                }
+            }
+            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { LogHasErrors = false }));
         }
 
         private void CreateImportTask(string fileName, string importHandler) {
@@ -769,11 +892,22 @@ namespace Module.Frontend.TPM.Controllers {
             if (promo.EndDate != null) {
                 promo.MarsEndDate = (new MarsDate((DateTimeOffset) promo.EndDate)).ToString(stringFormatYP2WD);
             }
+            if (promo.EndDate != null && promo.StartDate != null) {
+                promo.PromoDuration = (promo.EndDate - promo.StartDate).Value.Days;
+            } else {
+                promo.PromoDuration = null;
+            }
+
             if (promo.DispatchesStart != null) {
                 promo.MarsDispatchesStart = (new MarsDate((DateTimeOffset) promo.DispatchesStart)).ToString(stringFormatYP2WD);
             }
             if (promo.DispatchesEnd != null) {
                 promo.MarsDispatchesEnd = (new MarsDate((DateTimeOffset) promo.DispatchesEnd)).ToString(stringFormatYP2WD);
+            }
+            if (promo.DispatchesStart != null && promo.DispatchesEnd != null) {
+                promo.DispatchDuration = (promo.DispatchesEnd - promo.DispatchesStart).Value.Days;
+            } else {
+                promo.DispatchDuration = null;
             }
         }
 
@@ -781,8 +915,7 @@ namespace Module.Frontend.TPM.Controllers {
         /// Установка в промо цвета, бренда и BrandTech на основании дерева продуктов
         /// </summary>
         /// <param name="promo"></param>
-        private void SetPromoByProductTree(Promo promo) {
-            IEnumerable<PromoProductTree> promoProducts = Context.Set<PromoProductTree>().Where(y => y.PromoId == promo.Id && !y.Disabled);
+        private void SetPromoByProductTree(Promo promo, List<PromoProductTree> promoProducts) {
             PromoProductTree product = promoProducts.FirstOrDefault();
             DateTime dt = DateTime.Now;
             if (product != null) {
@@ -1021,91 +1154,14 @@ namespace Module.Frontend.TPM.Controllers {
         }
 
         /// <summary>
-        /// Создание записи о создании/удалении нового промо
-        /// </summary>
-        /// <param name="newRecord"></param>
-        /// <param name="isDelete"></param>
-        private void WritePromoDemandChangeIncident(Promo record, bool isDelete = false) {
-            PromoDemandChangeIncident change = new PromoDemandChangeIncident(record, isDelete) { };
-            Context.Set<PromoDemandChangeIncident>().Add(change);
-            Context.SaveChanges();
-        }
-
-        /// <summary>
-        /// Создание записи об изменении/удалении промо
-        /// </summary>
-        /// <param name="newRecord"></param>
-        /// <param name="patch"></param>
-        /// <param name="oldRecord"></param>
-        private void WritePromoDemandChangeIncident(Promo newRecord, Delta<Promo> patch, Promo oldRecord) {
-            bool needCreateIncident = CheckCreateIncidentCondition(oldRecord, newRecord, patch);
-            if (needCreateIncident) {
-                // Если промо удалено, нет необходимости писать старые значения
-                //bool isDelete = newRecord.PromoStatus != null && newRecord.PromoStatus.SystemName == "Deleted";
-                //PromoDemandChangeIncident change = isDelete? new PromoDemandChangeIncident(oldRecord, isDelete) {} : new PromoDemandChangeIncident(oldRecord, newRecord) {};
-                PromoDemandChangeIncident change = new PromoDemandChangeIncident(oldRecord, newRecord) { };
-                Context.Set<PromoDemandChangeIncident>().Add(change);
-                Context.SaveChanges();
-            }
-        }
-
-        /// <summary>
-        /// Проверка на то, что о изменениях применённых к промо необходимо создавать сообщение
-        /// </summary>
-        /// <param name="oldRecord"></param>
-        /// <param name="newRecord"></param>
-        /// <param name="patch"></param>
-        /// <returns></returns>
-        private bool CheckCreateIncidentCondition(Promo oldRecord, Promo newRecord, Delta<Promo> patch) {
-            bool result = false;
-            // TODO: Изменения продуктов не учитывается из-за удаления ProductTreeId из Promo
-            // Получение настроек
-            ISettingsManager settingsManager = (ISettingsManager) IoC.Kernel.GetService(typeof(ISettingsManager));
-
-            string promoPropertiesSetting = settingsManager.GetSetting<string>("PROMO_CHANGE_PROPERTIES",
-                "ClientTreeId, ProductHierarchy, StartDate, EndDate, DispatchesStart, DispatchesEnd, PlanUplift, PlanIncrementalLsv, MarsMechanicDiscount, InstoreMechanicDiscount, Mechanic, MarsMechanic, InstoreMechanic");
-            int daysToCheckSetting = settingsManager.GetSetting<int>("PROMO_CHANGE_PERIOD_DAYS", 84);
-            int marsDiscountSetting = settingsManager.GetSetting<int>("PROMO_CHANGE_MARS_DISCOUNT", 3);
-            int instoreDiscountSetting = settingsManager.GetSetting<int>("PROMO_CHANGE_INSTORE_DISCOUNT", 5);
-            int durationSetting = settingsManager.GetSetting<int>("PROMO_CHANGE_DURATION_DAYS", 3);
-            int dispatchSetting = settingsManager.GetSetting<int>("PROMO_CHANGE_DISPATCH_DAYS", 5);
-
-            string[] propertiesToCheck = promoPropertiesSetting.Split(',').Select(x => x.Trim(' ')).ToArray();
-
-            DateTimeOffset today = DateTimeOffset.Now;
-            bool isOldStartInCheckPeriod = oldRecord.StartDate.HasValue && (oldRecord.StartDate.Value - today).Days <= daysToCheckSetting;
-            bool isNewStartInCheckPeriod = newRecord.StartDate.HasValue && (newRecord.StartDate.Value - today).Days <= daysToCheckSetting;
-            IEnumerable<string> changedProperties = patch.GetChangedPropertyNames();
-            changedProperties = changedProperties.Where(p => propertiesToCheck.Contains(p));
-            bool relevantByTime = isOldStartInCheckPeriod || isNewStartInCheckPeriod;
-            // Если дата начала промо соответствует настройке и изменилось какое-либо поле из указанных в настройках создаётся запись об изменении
-            if (relevantByTime && changedProperties.Any()) {
-                bool productChange = oldRecord.ProductHierarchy != newRecord.ProductHierarchy;
-                bool clientChange = oldRecord.ClientTreeId != newRecord.ClientTreeId;
-                bool marsMechanicChange = oldRecord.MarsMechanic != newRecord.MarsMechanic;
-                bool instoreMechanicChange = oldRecord.PlanInstoreMechanic != newRecord.PlanInstoreMechanic;
-                bool marsDiscountChange = oldRecord.MarsMechanicDiscount.HasValue ? newRecord.MarsMechanicDiscount.HasValue ? Math.Abs(oldRecord.MarsMechanicDiscount.Value - newRecord.MarsMechanicDiscount.Value) > marsDiscountSetting : true : false;
-                bool instoreDiscountChange = oldRecord.PlanInstoreMechanicDiscount.HasValue ? newRecord.PlanInstoreMechanicDiscount.HasValue ? Math.Abs(oldRecord.PlanInstoreMechanicDiscount.Value - newRecord.PlanInstoreMechanicDiscount.Value) > instoreDiscountSetting : true : false;
-                TimeSpan? oldDuration = oldRecord.EndDate - oldRecord.StartDate;
-                TimeSpan? newDuration = newRecord.EndDate - newRecord.StartDate;
-                bool durationChange = oldDuration.HasValue && newDuration.HasValue && Math.Abs(oldDuration.Value.Days - newDuration.Value.Days) > durationSetting;
-                TimeSpan? dispatchStartDif = oldRecord.DispatchesStart - newRecord.DispatchesStart;
-                TimeSpan? dispatchEndDif = oldRecord.DispatchesEnd - newRecord.DispatchesEnd;
-                bool dispatchChange = dispatchStartDif.HasValue && dispatchEndDif.HasValue && Math.Abs(dispatchStartDif.Value.Days + dispatchEndDif.Value.Days) > dispatchSetting;
-                bool isDelete = newRecord.PromoStatus != null && newRecord.PromoStatus.SystemName == "Deleted";
-
-                List<bool> conditionnCheckResults = new List<bool>() { productChange, clientChange, marsMechanicChange, instoreMechanicChange, marsDiscountChange, instoreDiscountChange, durationChange, dispatchChange, isDelete };
-                result = conditionnCheckResults.Any(x => x == true);
-            }
-            return result;
-        }
-
-        /// <summary>
         /// Добавить продукты из иерархии к промо
         /// </summary>
         /// <param name="objectIds">Список ObjectId продуктов в иерархии</param>
         /// <param name="promo">Промо к которому прикрепляются продукты</param>
-        private void AddProductTrees(string objectIds, Promo promo) {
+        private List<PromoProductTree> AddProductTrees(string objectIds, Promo promo) {
+            // сформированный список продуктов - приходится использовать из-за отказа SaveChanges
+            List<PromoProductTree> currentProducTrees = Context.Set<PromoProductTree>().Where(n => n.PromoId == promo.Id && !n.Disabled).ToList();
+
             // Если Null, значит продукты не менялись
             if (objectIds != null) {
                 List<int> productTreeObjectIds = new List<int>();
@@ -1116,8 +1172,10 @@ namespace Module.Frontend.TPM.Controllers {
 
                 // находим прежние записи, если они остались то ислючаем их из нового списка
                 // иначе удаляем
-                var oldRecords = Context.Set<PromoProductTree>().Where(n => n.PromoId == promo.Id && !n.Disabled);
-                foreach (var rec in oldRecords) {
+                //var oldRecords = Context.Set<PromoProductTree>().Where(n => n.PromoId == promo.Id && !n.Disabled);
+                //PromoProductTree[] oldRecords = new PromoProductTree[currentProducTrees.Count];
+                //currentProducTrees.CopyTo(oldRecords);
+                foreach (var rec in currentProducTrees) {
                     int index = productTreeObjectIds.IndexOf(rec.ProductTreeObjectId);
 
                     if (index >= 0) {
@@ -1133,53 +1191,57 @@ namespace Module.Frontend.TPM.Controllers {
                     PromoProductTree promoProductTree = new PromoProductTree() {
                         Id = Guid.NewGuid(),
                         ProductTreeObjectId = objectId,
-                        PromoId = promo.Id
+                        Promo = promo
                     };
 
+                    currentProducTrees.Add(promoProductTree);
                     Context.Set<PromoProductTree>().Add(promoProductTree);
                 }
             }
+
+            return currentProducTrees.Where(n => !n.Disabled).ToList();
         }
 
         /// <summary>
         /// Проверка TI, COGS и наличия продуктов, попадающих под фильтрация
         /// </summary>
         /// <param name="promo">Проверяемое промо</param>
+        /// <param name="promoProductTrees">Список узлов продуктового дерева</param>
         /// <exception cref="Exception">Исключение генерируется при отсутсвии одного из проверяемых параметров</exception>
-        private void CheckSupportInfo(Promo promo)
-        {
+        private void CheckSupportInfo(Promo promo, List<PromoProductTree> promoProductTrees, out List<Product> products) {
             List<string> messagesError = new List<string>();
             string message = null;
+            bool error;
 
             // проверка на наличие TI
-            PlanPromoParametersCalculation.GetTIBasePercent(promo, Context, out message);
-            if (message != null)
+            PlanPromoParametersCalculation.GetTIBasePercent(promo, Context, out message, out error);
+            if (message != null && error)
             {
                 messagesError.Add(message);
                 message = null;
             }
+            else if (message != null)
+            {
+                throw new Exception(message);
+            }
 
             // проверка на наличие COGS
             PlanPromoParametersCalculation.GetCOGSPercent(promo, Context, out message);
-            if (message != null)
-            {
+            if (message != null) {
                 messagesError.Add(message);
                 message = null;
             }
 
             // проверка на наличие продуктов, попадающих под фильтр
-            PlanProductParametersCalculation.GetProductFiltered(promo.Id, Context, out message);
-            if (message != null)
-            {
+            products = PlanProductParametersCalculation.GetProductFiltered(promo.Id, Context, out message, promoProductTrees);
+            if (message != null) {
                 messagesError.Add(message);
             }
 
             // если что-то не найдено, то генерируем ошибку
-            if (messagesError.Count > 0)
-            {
+            if (messagesError.Count > 0) {
                 string messageError = "";
-                for (int i = 0; i < messagesError.Count; i++)
-                {
+                for (int i = 0; i < messagesError.Count; i++) {
                     string endString = i == messagesError.Count - 1 ? "" : " ";
                     messageError += messagesError[i] + endString;
                 }
@@ -1190,104 +1252,107 @@ namespace Module.Frontend.TPM.Controllers {
 
 
         private IEnumerable<Column> GetPromoROIExportSettings() {
+            int orderNumber = 1;
             IEnumerable<Column> columns = new List<Column>() {
-                new Column { Order = 1, Field = "Number", Header = "Promo ID", Quoting = false },
-                new Column { Order = 2, Field = "Client1LevelName", Header = "NA/RKA", Quoting = false },
-                new Column { Order = 3, Field = "Client2LevelName", Header = "Client Group", Quoting = false },
-                new Column { Order = 4, Field = "ClientName", Header = "Client", Quoting = false },
-                new Column { Order = 5, Field = "BrandName", Header = "Brand", Quoting = false },
-                new Column { Order = 6, Field = "TechnologyName", Header = "Technology", Quoting = false },
-                new Column { Order = 7, Field = "ProductSubrangesList", Header = "Subrange", Quoting = false },
-                new Column { Order = 8, Field = "MarsMechanic.Name", Header = "Mars mechanic", Quoting = false },
-                new Column { Order = 9, Field = "MarsMechanicType.Name", Header = "Mars mechanic type", Quoting = false },
-                new Column { Order = 10, Field = "MarsMechanicDiscount", Header = "Mars mechanic discount, %", Quoting = false },
-                new Column { Order = 11, Field = "MechanicComment", Header = "Mechanic comment", Quoting = false },
-                new Column { Order = 12, Field = "StartDate", Header = "Start date", Quoting = false, Format = "dd.MM.yyyy"  },
-                new Column { Order = 13, Field = "EndDate", Header = "End date", Quoting = false, Format = "dd.MM.yyyy"  },
-                new Column { Order = 14, Field = "PromoDuration", Header = "Promo duration", Quoting = false , Format = "0"},
-                new Column { Order = 15, Field = "DispatchDuration", Header = "Dispatch Duration", Quoting = false, Format = "0" },
-                new Column { Order = 16, Field = "EventName", Header = "Event", Quoting = false },
-                new Column { Order = 17, Field = "PromoStatusName", Header = "Status", Quoting = false },
-                new Column { Order = 18, Field = "PlanInstoreMechanic.Name", Header = "Plan Instore Mechanic Name", Quoting = false },
-                new Column { Order = 19, Field = "PlanInstoreMechanicType.Name", Header = "Plan Instore Mechanic Type Name", Quoting = false },
-                new Column { Order = 20, Field = "PlanInstoreMechanicDiscount", Header = "Plan Instore Mechanic Discount", Quoting = false,  Format = "0"  },
-                new Column { Order = 21, Field = "PlanPromoBaselineLSV", Header = "Plan Promo Baseline LSV", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 22, Field = "PlanPromoIncrementalLSV", Header = "Plan Promo Incremental LSV", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 23, Field = "PlanPromoLSV", Header = "Plan Promo LSV", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 24, Field = "PlanPromoUpliftPercent", Header = "Plan Promo Uplift %", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 25, Field = "PlanPromoTIShopper", Header = "Plan Promo TI Shopper", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 26, Field = "PlanPromoTIMarketing", Header = "Plan Promo TI Marketing", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 27, Field = "PlanPromoXSites", Header = "Plan Promo X-Sites", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 28, Field = "PlanPromoCatalogue", Header = "Plan Promo Catalogue", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 29, Field = "PlanPromoPOSMInClient", Header = "Plan Promo POSM In Client", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 30, Field = "PlanPromoBranding", Header = "Plan Promo Branding", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 31, Field = "PlanPromoBTL", Header = "Plan Promo BTL", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 32, Field = "PlanPromoCostProduction", Header = "Plan Promo Cost Production", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 33, Field = "PlanPromoCostProdXSites", Header = "Plan PromoCostProdXSites", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 34, Field = "PlanPromoCostProdCatalogue", Header = "Plan PromoCostProdCatalogue", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 35, Field = "PlanPromoCostProdPOSMInClient", Header = "Plan PromoCostProdPOSMInClient", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 36, Field = "PlanPromoCost", Header = "Plan Promo Cost", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 37, Field = "PlanPromoIncrementalBaseTI", Header = "Plan Promo Incremental BaseTI", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 38, Field = "PlanPromoIncrementalCOGS", Header = "Plan Promo Incremental COGS", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 39, Field = "PlanPromoTotalCost", Header = "Plan Promo Total Cost", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 40, Field = "PlanPostPromoEffectW1", Header = "Plan Post Promo Effect LSV W1", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 41, Field = "PlanPostPromoEffectW2", Header = "Plan Post Promo Effect LSV W2", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 42, Field = "PlanPostPromoEffect", Header = "Plan Post Promo Effect LSV", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 43, Field = "PlanPromoNetIncrementalLSV", Header = "Plan Promo Net Incremental LSV", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 44, Field = "PlanPromoNetLSV", Header = "PlanPromo Net LSV", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 45, Field = "PlanPromoBaselineBaseTI", Header = "Plan Promo Baseline Base TI", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 46, Field = "PlanPromoBaseTI", Header = "Plan Promo Base TI", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 47, Field = "PlanPromoNetNSV", Header = "Plan Promo Net NSV", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 48, Field = "PlanPromoIncrementalNSV", Header = "Plan Promo Total Net NSV", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 49, Field = "PlanPromoNetIncrementalNSV", Header = "Plan Promo Incremental NSV", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 50, Field = "PlanPromoIncrementalMAC", Header = "Plan Promo Incremental MAC", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 51, Field = "PlanPromoNetIncrementalMAC", Header = "Plan Promo Net Incremental MAC", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 52, Field = "PlanPromoIncrementalEarnings", Header = "Plan Promo Incremental Earnings", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 53, Field = "PlanPromoNetIncrementalEarnings", Header = "Plan Promo Net Incremental Earnings", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 54, Field = "PlanPromoROIPercent", Header = "Plan Promo ROI, %", Quoting = false,  Format = "0"  },
-                new Column { Order = 55, Field = "PlanPromoNetROIPercent", Header = "Plan Promo Net ROI, %", Quoting = false,  Format = "0"  },
-                new Column { Order = 56, Field = "PlanPromoNetUpliftPercent", Header = "Plan Promo Net Uplift %", Quoting = false,  Format = "0"  },
-                new Column { Order = 57, Field = "ActualInStoreMechanic.Name", Header = "Actual InStore Mechanic Name", Quoting = false },
-                new Column { Order = 58, Field = "ActualInStoreMechanicType.Name", Header = "Actual InStore Mechanic Type Name", Quoting = false  },
-                new Column { Order = 59, Field = "ActualInStoreMechanicDiscount", Header = "Actual InStore Mechanic Discount", Quoting = false,  Format = "0"  },
-                new Column { Order = 60, Field = "ActualInStoreShelfPrice", Header = "Instore Shelf Price", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 61, Field = "InvoiceNumber", Header = "Invoice number", Quoting = false },
-                new Column { Order = 62, Field = "ActualPromoBaselineLSV", Header = "Actual Promo Baseline LSV", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 63, Field = "ActualPromoIncrementalLSV", Header = "Actual Promo Incremental LSV", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 64, Field = "ActualPromoLSV", Header = "Actual Promo LSV", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 65, Field = "ActualPromoUpliftPercent", Header = "Actual Promo Uplift %", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 66, Field = "ActualPromoTIShopper", Header = "Actual Promo TI Shopper", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 67, Field = "ActualPromoTIMarketing", Header = "Actual Promo TI Marketing", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 68, Field = "ActualPromoProdXSites", Header = "Actual Promo Prod XSites", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 69, Field = "ActualPromoProdCatalogue", Header = "Actual Promo Prod Catalogue", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 70, Field = "ActualPromoProdPOSMInClient", Header = "Actual Promo Prod POSMInClient", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 71, Field = "ActualPromoBranding", Header = "Actual Promo Branding", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 72, Field = "ActualPromoBTL", Header = "Actual Promo BTL", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 73, Field = "ActualPromoCostProduction", Header = "Actual Promo Cost Production", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 74, Field = "ActualPromoCostProdXSites", Header = "Actual Promo CostProdXSites", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 75, Field = "ActualPromoCostProdCatalogue", Header = "Actual Promo Cost ProdCatalogue", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 76, Field = "ActualPromoCostProdPOSMInClient", Header = "Actual Promo Cost ProdPOSMInClient", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 77, Field = "ActualPromoCost", Header = "Actual Promo Cost", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 78, Field = "ActualPromoIncrementalBaseTI", Header = "Actual Promo Incremental BaseTI", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 79, Field = "ActualPromoIncrementalCOGS", Header = "Actual Promo Incremental COGS", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 80, Field = "ActualPromoTotalCost", Header = "Actual Promo Total Cost", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 81, Field = "FactPostPromoEffectW1", Header = "Actual Post Promo Effect LSV W1", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 82, Field = "FactPostPromoEffectW2", Header = "Actual Post Promo Effect LSV W2", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 83, Field = "FactPostPromoEffect", Header = "Actual Post Promo Effect LSV", Quoting = false,  Format = "0"  },
-                new Column { Order = 84, Field = "ActualPromoNetIncrementalLSV", Header = "Actual Promo Net Incremental LSV", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 85, Field = "ActualPromoNetLSV", Header = "Actual Promo Net LSV", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 86, Field = "ActualPromoIncrementalNSV", Header = "Actual Promo Incremental NSV", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 87, Field = "ActualPromoNetIncrementalNSV", Header = "Actual Promo Net Incremental NSV", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 88, Field = "ActualPromoBaselineBaseTI", Header = "Actual Promo Baseline Base TI", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 89, Field = "ActualPromoBaseTI", Header = "Actual Promo Base TI", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 90, Field = "ActualPromoNetNSV", Header = "Actual Promo Net NSV", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 91, Field = "ActualPromoIncrementalMAC", Header = "Actual Promo Incremental MAC", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 92, Field = "ActualPromoNetIncrementalMAC", Header = "Actual Promo Net Incremental MAC", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 93, Field = "ActualPromoIncrementalEarnings", Header = "Actual Promo Incremental Earnings", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 94, Field = "ActualPromoNetIncrementalEarnings", Header = "Actual Promo Net Incremental Earnings", Quoting = false,  Format = "0.00"  },
-                new Column { Order = 95, Field = "ActualPromoROIPercent", Header = "Actual Promo ROI, %", Quoting = false,  Format = "0"  },
-                new Column { Order = 96, Field = "ActualPromoNetROIPercent", Header = "Actual Promo Net ROI%", Quoting = false,  Format = "0"  },
-                new Column { Order = 97, Field = "ActualPromoNetUpliftPercent", Header = "Actual Promo Net Uplift Percent", Quoting = false,  Format = "0"  }};
+                new Column { Order = orderNumber++, Field = "Number", Header = "Promo ID", Quoting = false },
+                new Column { Order = orderNumber++, Field = "Client1LevelName", Header = "NA/RKA", Quoting = false },
+                new Column { Order = orderNumber++, Field = "Client2LevelName", Header = "Client Group", Quoting = false },
+                new Column { Order = orderNumber++, Field = "ClientName", Header = "Client", Quoting = false },
+                new Column { Order = orderNumber++, Field = "Brand.Name", Header = "Brand", Quoting = false },
+                new Column { Order = orderNumber++, Field = "Technology.Name", Header = "Technology", Quoting = false },
+                new Column { Order = orderNumber++, Field = "ProductSubrangesList", Header = "Subrange", Quoting = false },
+                new Column { Order = orderNumber++, Field = "MarsMechanic.Name", Header = "Mars mechanic", Quoting = false },
+                new Column { Order = orderNumber++, Field = "MarsMechanicType.Name", Header = "Mars mechanic type", Quoting = false },
+                new Column { Order = orderNumber++, Field = "MarsMechanicDiscount", Header = "Mars mechanic discount, %", Quoting = false },
+                new Column { Order = orderNumber++, Field = "MechanicComment", Header = "Mechanic comment", Quoting = false },
+                new Column { Order = orderNumber++, Field = "StartDate", Header = "Start date", Quoting = false, Format = "dd.MM.yyyy"  },
+                new Column { Order = orderNumber++, Field = "EndDate", Header = "End date", Quoting = false, Format = "dd.MM.yyyy"  },
+                new Column { Order = orderNumber++, Field = "PromoDuration", Header = "Promo duration", Quoting = false , Format = "0"},
+                new Column { Order = orderNumber++, Field = "DispatchDuration", Header = "Dispatch Duration", Quoting = false, Format = "0" },
+                new Column { Order = orderNumber++, Field = "EventName", Header = "Event", Quoting = false },
+                new Column { Order = orderNumber++, Field = "PromoStatus.Name", Header = "Status", Quoting = false },
+                new Column { Order = orderNumber++, Field = "PlanInstoreMechanic.Name", Header = "Plan Instore Mechanic Name", Quoting = false },
+                new Column { Order = orderNumber++, Field = "PlanInstoreMechanicType.Name", Header = "Plan Instore Mechanic Type Name", Quoting = false },
+                new Column { Order = orderNumber++, Field = "PlanInstoreMechanicDiscount", Header = "Plan Instore Mechanic Discount", Quoting = false,  Format = "0"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoBaselineLSV", Header = "Plan Promo Baseline LSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoIncrementalLSV", Header = "Plan Promo Incremental LSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoLSV", Header = "Plan Promo LSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoUpliftPercent", Header = "Plan Promo Uplift %", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoTIShopper", Header = "Plan Promo TI Shopper", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoTIMarketing", Header = "Plan Promo TI Marketing", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoXSites", Header = "Plan Promo X-Sites", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoCatalogue", Header = "Plan Promo Catalogue", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoPOSMInClient", Header = "Plan Promo POSM In Client", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoBranding", Header = "Plan Promo Branding", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoBTL", Header = "Plan Promo BTL", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoCostProduction", Header = "Plan Promo Cost Production", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoCostProdXSites", Header = "Plan PromoCostProdXSites", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoCostProdCatalogue", Header = "Plan PromoCostProdCatalogue", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoCostProdPOSMInClient", Header = "Plan PromoCostProdPOSMInClient", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoCost", Header = "Plan Promo Cost", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoIncrementalBaseTI", Header = "Plan Promo Incremental BaseTI", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoIncrementalCOGS", Header = "Plan Promo Incremental COGS", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoTotalCost", Header = "Plan Promo Total Cost", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoPostPromoEffectLSVW1", Header = "Plan Post Promo Effect LSV W1", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoPostPromoEffectLSVW2", Header = "Plan Post Promo Effect LSV W2", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoPostPromoEffectLSV", Header = "Plan Post Promo Effect LSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoNetIncrementalLSV", Header = "Plan Promo Net Incremental LSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoNetLSV", Header = "PlanPromo Net LSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoBaselineBaseTI", Header = "Plan Promo Baseline Base TI", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoBaseTI", Header = "Plan Promo Base TI", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoNetNSV", Header = "Plan Promo Net NSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoIncrementalNSV", Header = "Plan Promo Total Net NSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoNetIncrementalNSV", Header = "Plan Promo Incremental NSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoIncrementalMAC", Header = "Plan Promo Incremental MAC", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoNetIncrementalMAC", Header = "Plan Promo Net Incremental MAC", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoIncrementalEarnings", Header = "Plan Promo Incremental Earnings", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoNetIncrementalEarnings", Header = "Plan Promo Net Incremental Earnings", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoROIPercent", Header = "Plan Promo ROI, %", Quoting = false,  Format = "0"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoNetROIPercent", Header = "Plan Promo Net ROI, %", Quoting = false,  Format = "0"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoNetUpliftPercent", Header = "Plan Promo Net Uplift %", Quoting = false,  Format = "0"  },
+                new Column { Order = orderNumber++, Field = "PlanInStoreShelfPrice", Header = "Plan Instore Shelf Price", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualInStoreMechanic.Name", Header = "Actual InStore Mechanic Name", Quoting = false },
+                new Column { Order = orderNumber++, Field = "ActualInStoreMechanicType.Name", Header = "Actual InStore Mechanic Type Name", Quoting = false  },
+                new Column { Order = orderNumber++, Field = "ActualInStoreDiscount", Header = "Actual InStore Mechanic Discount", Quoting = false,  Format = "0"  },
+                new Column { Order = orderNumber++, Field = "ActualInStoreShelfPrice", Header = "Actual Instore Shelf Price", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "InvoiceNumber", Header = "Invoice number", Quoting = false },
+                new Column { Order = orderNumber++, Field = "ActualPromoBaselineLSV", Header = "Actual Promo Baseline LSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoIncrementalLSV", Header = "Actual Promo Incremental LSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoLSVByCompensation", Header = "Actual PromoLSV By Compensation", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoLSV", Header = "Actual Promo LSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoUpliftPercent", Header = "Actual Promo Uplift %", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoTIShopper", Header = "Actual Promo TI Shopper", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoTIMarketing", Header = "Actual Promo TI Marketing", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoXSites", Header = "Actual Promo Prod XSites", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoCatalogue", Header = "Actual Promo Prod Catalogue", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoPOSMInClient", Header = "Actual Promo Prod POSMInClient", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoBranding", Header = "Actual Promo Branding", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoBTL", Header = "Actual Promo BTL", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoCostProduction", Header = "Actual Promo Cost Production", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoCostProdXSites", Header = "Actual Promo CostProdXSites", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoCostProdCatalogue", Header = "Actual Promo Cost ProdCatalogue", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoCostProdPOSMInClient", Header = "Actual Promo Cost ProdPOSMInClient", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoCost", Header = "Actual Promo Cost", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoIncrementalBaseTI", Header = "Actual Promo Incremental BaseTI", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoIncrementalCOGS", Header = "Actual Promo Incremental COGS", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoTotalCost", Header = "Actual Promo Total Cost", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoPostPromoEffectLSVW1", Header = "Actual Post Promo Effect LSV W1", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoPostPromoEffectLSVW2", Header = "Actual Post Promo Effect LSV W2", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoPostPromoEffectLSV", Header = "Actual Post Promo Effect LSV", Quoting = false,  Format = "0"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoNetIncrementalLSV", Header = "Actual Promo Net Incremental LSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoNetLSV", Header = "Actual Promo Net LSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoIncrementalNSV", Header = "Actual Promo Incremental NSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoNetIncrementalNSV", Header = "Actual Promo Net Incremental NSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoBaselineBaseTI", Header = "Actual Promo Baseline Base TI", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoBaseTI", Header = "Actual Promo Base TI", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoNetNSV", Header = "Actual Promo Net NSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoIncrementalMAC", Header = "Actual Promo Incremental MAC", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoNetIncrementalMAC", Header = "Actual Promo Net Incremental MAC", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoIncrementalEarnings", Header = "Actual Promo Incremental Earnings", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoNetIncrementalEarnings", Header = "Actual Promo Net Incremental Earnings", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoROIPercent", Header = "Actual Promo ROI, %", Quoting = false,  Format = "0"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoNetROIPercent", Header = "Actual Promo Net ROI%", Quoting = false,  Format = "0"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoNetUpliftPercent", Header = "Actual Promo Net Uplift Percent", Quoting = false,  Format = "0"  }};
             return columns;
         }
         [ClaimsAuthorize]
@@ -1307,34 +1372,55 @@ namespace Module.Frontend.TPM.Controllers {
             }
         }
 
-        private bool NeedRecalculatePromo(Promo newPromo, Promo oldPromo)
-        {
+        private bool NeedRecalculatePromo(Promo newPromo, Promo oldPromo) {
             bool needReacalculate = false;
 
+            // Если есть различия в этих полях.
             if (oldPromo.ClientTreeId != newPromo.ClientTreeId
                     || oldPromo.ProductHierarchy != newPromo.ProductHierarchy
                     || oldPromo.MarsMechanicId != newPromo.MarsMechanicId
                     || oldPromo.MarsMechanicTypeId != newPromo.MarsMechanicTypeId
                     || oldPromo.MarsMechanicDiscount != newPromo.MarsMechanicDiscount
-                    || oldPromo.PlanInstoreMechanicId != newPromo.PlanInstoreMechanicId
-                    || oldPromo.PlanInstoreMechanicTypeId != newPromo.PlanInstoreMechanicTypeId
-                    || oldPromo.PlanInstoreMechanicDiscount != newPromo.PlanInstoreMechanicDiscount
                     || oldPromo.StartDate != newPromo.StartDate
                     || oldPromo.EndDate != newPromo.EndDate
                     || oldPromo.DispatchesStart != newPromo.DispatchesStart
                     || oldPromo.DispatchesEnd != newPromo.DispatchesEnd
-                    || oldPromo.ActualPromoBTL != newPromo.ActualPromoBTL
-                    || oldPromo.PlanPromoBTL != newPromo.PlanPromoBTL
-                    || oldPromo.ActualPromoBranding != newPromo.ActualPromoBranding
-                    || oldPromo.PlanPromoBranding != newPromo.PlanPromoBranding
-                    || oldPromo.PlanPromoUpliftPercent != newPromo.PlanPromoUpliftPercent
-                    || oldPromo.NeedRecountUplift != newPromo.NeedRecountUplift
+                    || (oldPromo.ActualPromoBTL != null && newPromo.ActualPromoBTL != null && oldPromo.ActualPromoBTL != newPromo.ActualPromoBTL)
+                    || (oldPromo.PlanPromoBTL != null && newPromo.PlanPromoBTL != null && oldPromo.PlanPromoBTL != newPromo.PlanPromoBTL)
+                    || (oldPromo.ActualPromoBranding != null && newPromo.ActualPromoBranding != null && oldPromo.ActualPromoBranding != newPromo.ActualPromoBranding)
+                    || (oldPromo.PlanPromoBranding != null && newPromo.PlanPromoBranding != null && oldPromo.PlanPromoBranding != newPromo.PlanPromoBranding)
+                    || (oldPromo.PlanPromoUpliftPercent != null && newPromo.PlanPromoUpliftPercent != null && oldPromo.PlanPromoUpliftPercent != newPromo.PlanPromoUpliftPercent)
+                    || (oldPromo.NeedRecountUplift != null && newPromo.NeedRecountUplift != null && oldPromo.NeedRecountUplift != newPromo.NeedRecountUplift)
                     || oldPromo.PromoStatus.Name.ToLower() == "draft")
             {
                 needReacalculate = true;
             }
 
             return needReacalculate;
+        }
+
+        /// <summary>
+        /// Проверить не изменился ли набор продуктов, отбираемых по фильтру
+        /// </summary>
+        /// <param name="promo">Модель промо</param>
+        /// <param name="products">Список продуктов, отфильтрованных на данный момент</param>
+        /// <returns></returns>
+        private bool CheckChangesInProductList(Promo promo, List<Product> products)
+        {            
+            List<PromoProduct> promoProducts = Context.Set<PromoProduct>().Where(n => n.PromoId == promo.Id && !n.Disabled).ToList();
+            bool changed = promoProducts.Count != products.Count;
+
+            if (!changed) {
+                foreach (PromoProduct p in promoProducts) {
+                    if (!products.Any(n => n.ZREP == p.ZREP)) {
+                        changed = true;
+                        break;
+                    }
+                }
+            }
+
+
+            return changed;
         }
     }
 }

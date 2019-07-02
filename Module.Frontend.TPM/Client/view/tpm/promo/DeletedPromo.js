@@ -488,8 +488,8 @@
             fieldLabel: l10n.ns('tpm', 'Promo').value('PlanPromoIncrementalLSV'),
         }, {
             xtype: 'singlelinedisplayfield',
-            name: 'PlanPostPromoEffect',
-            fieldLabel: l10n.ns('tpm', 'Promo').value('PlanPostPromoEffect'),
+            name: 'PlanPromoPostPromoEffectLSV',
+            fieldLabel: l10n.ns('tpm', 'Promo').value('PlanPromoPostPromoEffectLSV'),
         }, {
             xtype: 'singlelinedisplayfield',
             name: 'PlanPromoROIPercent',
@@ -544,8 +544,12 @@
             fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoLSV'),
         }, {
             xtype: 'singlelinedisplayfield',
-            name: 'FactPostPromoEffect',
-            fieldLabel: l10n.ns('tpm', 'Promo').value('FactPostPromoEffect'),
+            name: 'ActualPromoLSVByCompensation',
+            fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoLSVByCompensation'),
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'ActualPromoPostPromoEffectLSV',
+            fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoPostPromoEffectLSV'),
         }, {
             xtype: 'singlelinedisplayfield',
             name: 'ActualPromoROIPercent',

@@ -1,4 +1,6 @@
-﻿using Module.Persist.TPM.Model.TPM;
+﻿using Core.Dependency;
+using Core.Settings;
+using Module.Persist.TPM.Model.TPM;
 using Persist;
 using System;
 using System.Collections.Generic;
@@ -27,13 +29,18 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                 var promoQuery = promoXsites.Intersect(promoCatalog);
 
+                // Исключить промо с признаком InOut из подбора uplift.
+                promoQuery = promoQuery.Where(x => x.InOut != true);
+
                 if (promoQuery.Count() != 0)
                 {
-                    //выбираем закрытые промо (дата окончания в пределах двух лет до текущей даты)
+                    //выбираем закрытые промо (дата окончания в пределах N лет до текущей даты)
+                    ISettingsManager settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
+                    int closedPromoPeriod = settingsManager.GetSetting<int>("CLOSED_PROMO_PERIOD_YEARS", 1);
                     var now = DateTimeOffset.Now;
-                    var twoYearsLaterDate = new DateTimeOffset(now.Year - 2, now.Month, now.Day, now.Hour, now.Minute, now.Second, now.Offset);
+                    var someYearsLaterDate = new DateTimeOffset(now.Year - closedPromoPeriod, now.Month, now.Day, now.Hour, now.Minute, now.Second, now.Offset);
                     var closedPromoStatusId = context.Set<PromoStatus>().Where(x => x.SystemName == "Closed").FirstOrDefault().Id;
-                    promoQuery = promoQuery.Where(x => x.PromoStatusId == closedPromoStatusId && x.EndDate.HasValue && x.EndDate >= twoYearsLaterDate && !x.Disabled);
+                    promoQuery = promoQuery.Where(x => x.PromoStatusId == closedPromoStatusId && x.EndDate.HasValue && x.EndDate >= someYearsLaterDate && !x.Disabled);
 
                     //проверка на совпадение по клиенту
                     promoQuery = promoQuery.Where(x => x.ClientTreeId == currentPromo.ClientTreeId);
@@ -250,8 +257,8 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 if (promoList.Count() != 0)
                 {
                     //промо, подходящие по скидке
-                    int? marsMechanicDiscountLeft = currentPromo.MarsMechanicDiscount - 3 < 0 ? 0 : currentPromo.MarsMechanicDiscount - 3;
-                    int? marsMechanicDiscountRight = currentPromo.MarsMechanicDiscount + 3;
+                    double? marsMechanicDiscountLeft = currentPromo.MarsMechanicDiscount - 3 < 0 ? 0 : currentPromo.MarsMechanicDiscount - 3;
+                    double? marsMechanicDiscountRight = currentPromo.MarsMechanicDiscount + 3;
 
                     promoList = promoList.Where(x => (x.MarsMechanicDiscount <= marsMechanicDiscountRight && x.MarsMechanicDiscount >= marsMechanicDiscountLeft)).ToList();
 

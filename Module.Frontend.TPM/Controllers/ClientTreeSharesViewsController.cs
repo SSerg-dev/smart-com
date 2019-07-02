@@ -72,7 +72,8 @@ namespace Module.Frontend.TPM.Controllers {
             IEnumerable<Column> columns = new List<Column>() {
                 new Column() { Order = 0, Field = "ResultNameStr", Header = "Client hierarchy", Quoting = false },
                 new Column() { Order = 1, Field = "BOI", Header = "Client hierarchy code", Quoting = false },
-                new Column() { Order = 2, Field = "LeafShare", Header = "Client hierarchy Share", Quoting = false }
+                new Column() { Order = 2, Field = "LeafShare", Header = "Client hierarchy Share", Quoting = false },
+                new Column() { Order = 3, Field = "DemandCode", Header = "Demand Code", Quoting = false }
             };
             return columns;
         }

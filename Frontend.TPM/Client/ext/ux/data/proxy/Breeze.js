@@ -14,6 +14,7 @@
         'IsNull': breeze.FilterQueryOp.Equals,
         'NotNull': breeze.FilterQueryOp.NotEquals,
         'Contains': breeze.FilterQueryOp.Contains,
+        'NotContains': 'notcontains',
         'StartsWith': breeze.FilterQueryOp.StartsWith,
         'EndsWith': breeze.FilterQueryOp.EndsWith
     },
@@ -25,7 +26,8 @@
         'ne': breeze.FilterQueryOp.NotEquals,
         'like': breeze.FilterQueryOp.StartsWith,
         'conts': breeze.FilterQueryOp.Contains,
-        'in': 'in'
+        'in': 'in',
+        'notcontains': 'notcontains',
     },
 
     sortDirectionMap: {
@@ -418,6 +420,7 @@
                         case 'any':
                             return breeze.Predicate.create(node.entity, breeze.FilterQueryOp.Any, breeze.Predicate.and(buildPredicate.apply(this, [node.rules])));
                         default:
+                            // чтобы предикат для операции Not Contains корректно создался, необходимо в файл breeze.min.js добавить notcontains:{aliases:["not substring"], isFunction: !0} туда, где инициализируется binaryPredicate
                             return breeze.Predicate.create(node.property, this.extFilterOperationMap[node.operation], node.value);
                     }
                 default:

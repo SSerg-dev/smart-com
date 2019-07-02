@@ -32,7 +32,7 @@ namespace Module.Persist.TPM.Model.TPM
         [StringLength(255)]
         public string TISubType { get; set; }
 
-        public short SizePercent { get; set; }
+        public float SizePercent { get; set; }
 
         public bool MarcCalcROI { get; set; }
         public bool MarcCalcBudgets { get; set; }

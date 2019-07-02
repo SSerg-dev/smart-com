@@ -93,6 +93,8 @@
                         return "(" + expr1Val + " eq " + v + ")";
                     }).join(" or ");
                     return result;
+                } else if (this.op.key === 'notcontains') {
+                    return "not substringof(" + expr2Val + "," + expr1Val + ") eq true";
                 } else if (this.op.isFunction) {
                     if (odataOp === "substringof") {
                         return odataOp + "(" + expr2Val + "," + expr1Val + ") eq true";

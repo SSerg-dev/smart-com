@@ -32,7 +32,7 @@ namespace Module.Host.TPM.Handlers
             try
             {
                 handlerLogger = new FileLogWriter(info.HandlerId.ToString());
-                handlerLogger.Write(true, String.Format("Calculation of parameters started at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now));
+                handlerLogger.Write(true, String.Format("Calculation of parameters started at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
                 //Console.WriteLine("Start: {0}", DateTimeOffset.Now);
 
                 using (DatabaseContext context = new DatabaseContext())
@@ -72,7 +72,7 @@ namespace Module.Host.TPM.Handlers
                     string promoNumbers = "";
 
                     while (true)
-                    {                      
+                    {
                         if (CalculationTaskManager.BlockPromoRange(promoQuery, info.HandlerId))
                         {
                             foreach (Promo promo in promoQuery)
@@ -88,23 +88,26 @@ namespace Module.Host.TPM.Handlers
                         }
                     }
 
-                    handlerLogger.Write(true, String.Format("At the time of calculation, the following promo are blocked for editing: {0}", promoNumbers));
+                    handlerLogger.Write(true, String.Format("At the time of calculation, the following promo are blocked for editing: {0}", promoNumbers), "Message");
 
                     foreach (Promo promo in promoQuery)
                     {
                         string calculateError = PlanProductParametersCalculation.CalculatePromoProductParameters(promo.Id, context);
                         if (calculateError != null)
                         {
-                            handlerLogger.Write(true, String.Format("Error when calculating the planned parameters of the Product: {0}", calculateError));
+                            handlerLogger.Write(true, String.Format("Error when calculating the planned parameters of the Product: {0}", calculateError), "Error");
                         }
+
+                        // пересчет плановых бюджетов (из-за LSV)
+                        BudgetsPromoCalculation.CalculateBudgets(promo, true, false, handlerLogger, info.HandlerId, context);
 
                         calculateError = PlanPromoParametersCalculation.CalculatePromoParameters(promo.Id, context);
                         if (calculateError != null)
                         {
-                            handlerLogger.Write(true, String.Format("Error when calculating the planned parameters Promo: {0}", calculateError));
+                            handlerLogger.Write(true, String.Format("Error when calculating the planned parameters Promo: {0}", calculateError), "Error");
                         }
 
-                        CalulateActual(promo, context, handlerLogger);
+                        CalulateActual(promo, context, handlerLogger, info.HandlerId);
                         context.SaveChanges();
                     }
 
@@ -114,7 +117,7 @@ namespace Module.Host.TPM.Handlers
             {
                 if (handlerLogger != null)
                 {
-                    handlerLogger.Write(true, e.ToString());
+                    handlerLogger.Write(true, e.ToString(), "Error");
                 }
             }
             finally
@@ -125,7 +128,7 @@ namespace Module.Host.TPM.Handlers
                 sw.Stop();
                 if (handlerLogger != null)
                 {
-                    handlerLogger.Write(true, String.Format("Calculation of parameters completed at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", DateTimeOffset.Now, sw.Elapsed.TotalSeconds));
+                    handlerLogger.Write(true, String.Format("Calculation of parameters completed at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", DateTimeOffset.Now, sw.Elapsed.TotalSeconds), "Message");
                     //Console.WriteLine("Fin. Duration: {1} s", DateTimeOffset.Now, sw.Elapsed.TotalSeconds);
                 }
             }
@@ -157,14 +160,19 @@ namespace Module.Host.TPM.Handlers
         /// <param name="promo">Промо</param>
         /// <param name="context">Контекст БД</param>
         /// <param name="handlerLogger">Лог</param>
-        private void CalulateActual(Promo promo, DatabaseContext context, ILogWriter handlerLogger)
+        private void CalulateActual(Promo promo, DatabaseContext context, ILogWriter handlerLogger, Guid handlerId)
         {
             // если есть ошибки, они перечисленны через ;
             string errorString = ActualProductParametersCalculation.CalculatePromoProductParameters(promo, context);
+            // записываем ошибки если они есть
+            if (errorString != null)
+                WriteErrorsInLog(handlerLogger, errorString);
+
+            // пересчет фактических бюджетов (из-за LSV)
+            BudgetsPromoCalculation.CalculateBudgets(promo, false, true, handlerLogger, handlerId, context);
 
             ActualPromoParametersCalculation.ResetValues(promo, context);
-            if (errorString == null)
-                errorString = ActualPromoParametersCalculation.CalculatePromoParameters(promo, context);
+            errorString = ActualPromoParametersCalculation.CalculatePromoParameters(promo, context);
 
             // записываем ошибки если они есть
             if (errorString != null)

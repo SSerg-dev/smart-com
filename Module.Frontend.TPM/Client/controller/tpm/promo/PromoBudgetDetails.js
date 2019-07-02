@@ -46,7 +46,7 @@
             toolbar.down('#createbutton').hide();
             toolbar.down('#deletebutton').hide();
 
-            if (!editable) {
+            if (!editable || Ext.ComponentQuery.query('promoeditorcustom')[0].down('#changePromo').isVisible()) {
                 toolbar.down('#updatebutton').hide();
             }
         });
@@ -124,35 +124,67 @@
         picker.show();
         picker.down('#select').setDisabled(false);
         picker.down('#select').addListener('click', function () {
-            // отправляем выбранные статьи           
-            promoSupport.setLoading(true);
+            var datesAreValide = true;
+            var checkedRows = picker.down('grid').getSelectionModel().checkedRows.items;
+            var promoController = App.app.getController('tpm.promo.Promo');
+            var promoRecord = promoController.getRecord(Ext.ComponentQuery.query('promoeditorcustom')[0]);
 
-            var selModel = this.up('window').down('grid').getSelectionModel();
-
-            // привет Odata и её контроллерам
-            var checked = '';
-            selModel.checkedRows.keys.forEach(function (subItemId) {
-                checked += subItemId + ';';
-            });
-            checked = checked.slice(0, -1);
-
-            var params = 'promoId=' + detailWidget.record.promoId + '&subItemsIds=' + checked + '&budgetName=' + detailWidget.budgetName;
-
-            $.ajax({
-                dataType: 'json',
-                url: '/odata/PromoSupportPromoes/ManageSubItems?' + params,
-                type: 'POST',
-                success: function () {
-                    me.clearFields(detailWidget);                
-                    me.updateValuesInPromoForm(detailWidget);
-                    picker.close();
-                    promoSupport.setLoading(false);
-                },
-                error: function (data) {
-                    promoSupport.setLoading(false);
-                    App.Notify.pushError(data.responseJSON["odata.error"].innererror.message);
+            checkedRows.forEach(function (row) {
+                if (!row.data.StartDate || !row.data.EndDate || row.data.StartDate >= promoRecord.data.EndDate || row.data.EndDate <= promoRecord.data.StartDate) {
+                    datesAreValide = false;
                 }
             });
+
+            if (!datesAreValide) {
+                Ext.Msg.show({
+                    title: l10n.ns('core').value('confirmTitle'),
+                    msg: l10n.ns('tpm', 'PromoSupportPromo').value('ConfirmNewDatesPromoCard'),
+                    fn: onMsgBoxClose,
+                    scope: this,
+                    icon: Ext.Msg.QUESTION,
+                    buttons: Ext.Msg.YESNO,
+                    buttonText: {
+                        yes: l10n.ns('core', 'buttons').value('save'),
+                        no: l10n.ns('core', 'buttons').value('cancel')
+                    }
+                });
+            } else {
+                onMsgBoxClose('yes');
+            }
+
+            function onMsgBoxClose(buttonId) {
+                if (buttonId === 'yes') {
+                    // отправляем выбранные статьи           
+                    promoSupport.setLoading(true);
+
+                    var selModel = grid.getSelectionModel();
+
+                    // привет Odata и её контроллерам
+                    var checked = '';
+                    selModel.checkedRows.keys.forEach(function (subItemId) {
+                        checked += subItemId + ';';
+                    });
+                    checked = checked.slice(0, -1);
+
+                    var params = 'promoId=' + detailWidget.record.promoId + '&subItemsIds=' + checked + '&budgetName=' + detailWidget.budgetName;
+
+                    $.ajax({
+                        dataType: 'json',
+                        url: '/odata/PromoSupportPromoes/ManageSubItems?' + params,
+                        type: 'POST',
+                        success: function () {
+                            me.clearFields(detailWidget);
+                            me.updateValuesInPromoForm(detailWidget);
+                            picker.close();
+                            promoSupport.setLoading(false);
+                        },
+                        error: function (data) {
+                            promoSupport.setLoading(false);
+                            App.Notify.pushError(data.responseJSON["odata.error"].innererror.message);
+                        }
+                    });
+                }
+            }
         });
 
         // чекаем уже прикрепленные подстатьи
@@ -196,23 +228,21 @@
     updateValuesInPromoForm: function (widget) {
         App.model.tpm.promo.Promo.load(widget.record.promoId, {
             callback: function (record, operation) {
-                if (record.data.Calculating) {
-                    var promoForm = widget.up('promoeditorcustom');
-                    var promoController = App.app.getController('tpm.promo.Promo');
+                var promoForm = widget.up('promoeditorcustom');
+                var promoController = App.app.getController('tpm.promo.Promo');
 
-                    var grid = Ext.ComponentQuery.query('#promoGrid')[0];
-                    var directorygrid = grid ? grid.down('directorygrid') : null;
+                var grid = Ext.ComponentQuery.query('#promoGrid')[0];
+                var directorygrid = grid ? grid.down('directorygrid') : null;
 
-                    promoForm.model = record;
-                    promoController.reFillPromoForm(promoForm, record, directorygrid);
+                promoForm.model = record;
+                promoController.reFillPromoForm(promoForm, record, directorygrid);
 
-                    // Если создание из календаря - обновляем календарь
-                    var scheduler = Ext.ComponentQuery.query('#nascheduler')[0];
-                    if (scheduler) {
-                        scheduler.resourceStore.reload();
-                        scheduler.eventStore.reload();
-                    }
-                }                
+                // Если создание из календаря - обновляем календарь
+                var scheduler = Ext.ComponentQuery.query('#nascheduler')[0];
+                if (scheduler) {
+                    scheduler.resourceStore.reload();
+                    scheduler.eventStore.reload();
+                }
             },
             failure: function () {
                 App.Notify.pushError('Error!');
@@ -278,7 +308,7 @@
 
             clientRules.push({
                 property: 'ClientTree.FullPathName',
-                operation: 'Contains',
+                operation: 'Equals',
                 value: clientHierarchy
             });
         });
@@ -291,7 +321,7 @@
             }, {
                 property: 'BudgetSubItem.BudgetItem.Budget.Name',
                 operation: 'Contains',
-                    value: widget.budgetName
+                value: widget.budgetName
             }]
         };
 

@@ -4,6 +4,7 @@
     width: 800,
     minWidth: 800,
     maxHeight: 600,
+    cls: 'readOnlyFields',
 
     items: {
         xtype: 'editorform',

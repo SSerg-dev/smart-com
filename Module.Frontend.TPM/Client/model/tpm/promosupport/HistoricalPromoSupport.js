@@ -9,6 +9,7 @@
         { name: '_Role', type: 'string', isDefault: true },
         { name: '_EditDate', type: 'date', isDefault: true },
         { name: '_Operation', type: 'string', isDefault: true },
+        { name: 'Number', type: 'int', hidden: false, isDefault: true },
         { name: 'PlanQuantity', type: 'int', hidden: false, isDefault: true },
         { name: 'ActualQuantity', type: 'int', hidden: false, isDefault: true },
         { name: 'PlanCostTE', type: 'float', hidden: false, isDefault: true },

@@ -19,7 +19,8 @@
     },
 
     onApplySettingsButtonClick: function (button) {
-        var filterWindow = Ext.ComponentQuery.query('extfilter')[0],
+        var extfilters = Ext.ComponentQuery.query('extfilter');
+        var filterWindow = extfilters.length == 1 ? extfilters[0] : extfilters[extfilters.length - 1],
             settingsWindow = button.up('window'),
             selModel = settingsWindow.down('grid').getSelectionModel(),
             filterModel = filterWindow.filterContext.getFilterModel(),

@@ -15,6 +15,7 @@ namespace Module.Persist.TPM.PromoStateControl
             _onApprovalState = new OnApprovalState(this);
             _approvedState = new ApprovedState(this);
             _plannedState = new PlannedState(this);
+            _cancelledState = new CancelledState(this);
             _startedState = new StartedState(this);
             _finishedState = new FinishedState(this);
             _closedState = new ClosedState(this);
@@ -47,6 +48,9 @@ namespace Module.Persist.TPM.PromoStateControl
                             break;
                         case "Planned":
                             State = _plannedState;
+                            break;
+                        case "Cancelled":
+                            State = _cancelledState;
                             break;
                         case "Started":
                             State = _startedState;
@@ -81,6 +85,7 @@ namespace Module.Persist.TPM.PromoStateControl
         private readonly IPromoState _onApprovalState;
         private readonly IPromoState _approvedState;
         private readonly IPromoState _plannedState;
+        private readonly IPromoState _cancelledState;
         private readonly IPromoState _startedState;
         private readonly IPromoState _finishedState;
         private readonly IPromoState _closedState;
@@ -112,14 +117,14 @@ namespace Module.Persist.TPM.PromoStateControl
             return State.GetAvailableStates();
         }
 
-        public bool ChangeState(Promo promoModel, string userRole, out string massage)
+        public bool ChangeState(Promo promoModel, string userRole, out string message)
         {
-            return State.ChangeState(promoModel, userRole, out massage);
+            return State.ChangeState(promoModel, userRole, out message);
         }
 
-        public bool ChangeState(Promo promoModel, PromoStates promoStates, string userRole, out string massage)
+        public bool ChangeState(Promo promoModel, PromoStates promoStates, string userRole, out string message)
         {
-            return State.ChangeState(promoModel, promoStates, userRole, out massage);
+            return State.ChangeState(promoModel, promoStates, userRole, out message);
         }
 
 

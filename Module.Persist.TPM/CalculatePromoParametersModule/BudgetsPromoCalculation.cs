@@ -1,21 +1,31 @@
-﻿using Module.Persist.TPM.Model.TPM;
+﻿using Looper.Core;
+using Module.Persist.TPM.Model.TPM;
 using Persist;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Utility.LogWriter;
 
 namespace Module.Persist.TPM.CalculatePromoParametersModule
 {
     public class BudgetsPromoCalculation
     {
-        public static string CalculateBudgets(PromoSupportPromo psp, bool calculatePlanCostTE, bool calculateFactCostTE, bool calculatePlanCostProd, bool calculateFactCostProd, DatabaseContext context)
+        /// <summary>
+        /// Расчет бюджетов
+        /// </summary>
+        /// <param name="promoSupportId">ID подстать</param>
+        /// <param name="plan">True, если необходимо считать плановые</param>
+        /// <param name="actual">True, если необходимо считать фактические</param>
+        /// <param name="context">Контекст БД</param>
+        /// <returns></returns>
+        public static string CalculateBudgets(Guid promoSupportId, bool plan, bool actual, DatabaseContext context)
         {
             try
             {
-                RecalculatePlanValue(psp, calculatePlanCostTE, calculatePlanCostProd, context);
-                RecalculateFactValue(psp, calculateFactCostTE, calculateFactCostProd, context);
+                CalculateFromLSV(promoSupportId, plan, actual, context);
+
                 context.SaveChanges();
 
                 return null;
@@ -27,6 +37,122 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         }
 
         /// <summary>
+        /// Расчет бюджетов при полном перерассчете промо
+        /// </summary>
+        /// <param name="promo">Промо</param>
+        /// <param name="plan">True, если необходимо считать плановые</param>
+        /// <param name="actual">True, если необходимо считать фактические</param>
+        /// <param name="handlerLogger">Лог</param>
+        /// <param name="handlerId">ID обработчика</param>
+        /// <param name="context">Контекст БД</param>
+        public static void CalculateBudgets(Promo promo, bool plan, bool actual, ILogWriter handlerLogger, Guid handlerId, DatabaseContext context)
+        {
+            string logLine = "";
+            handlerLogger.Write(true, "");
+            logLine = String.Format("The calculation of the budgets started at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now);
+            handlerLogger.Write(true, logLine, "Message");
+
+            // находим все подстатьи к которым привязано промо
+            Guid[] promoSupportIds = context.Set<PromoSupportPromo>().Where(n => n.PromoId == promo.Id && !n.Disabled
+                && n.PromoSupport.BudgetSubItem.BudgetItem.Budget.Name.ToLower().IndexOf("marketing") >= 0).Select(n => n.PromoSupportId).ToArray();
+
+            // список промо, участвующих в расчете
+            Promo[] promoes = CalculationTaskManager.GetBlockedPromo(handlerId, context);
+
+            // копируем старые значения, чтобы определить нужно ли пересчитывать остальные параметры
+            double?[] oldPlanMarketingTI = promoes.Select(n => n.PlanPromoTIMarketing).ToArray();
+            double?[] oldActualMarketingTI = promoes.Select(n => n.ActualPromoTIMarketing).ToArray();
+            double?[] oldPlanCostProd = promoes.Select(n => n.PlanPromoCostProduction).ToArray();
+            double?[] oldActualCostProd = promoes.Select(n => n.ActualPromoCostProduction).ToArray();
+
+            string promoNumbers = "";
+            foreach (Promo p in promoes)
+                promoNumbers += p.Number.Value + ", ";
+
+            context.SaveChanges();
+            logLine = String.Format("At the time of calculation, the following promo are blocked for editing: {0}", promoNumbers);
+            handlerLogger.Write(true, logLine, "Message");
+
+            // пересчитываем распределенные значения
+            string error = "";
+
+            try
+            {
+                foreach (Guid promoSupportId in promoSupportIds)
+                {
+                    error = CalculateBudgets(promoSupportId, plan, actual, context);
+
+                    if (error != null)
+                        throw new Exception();
+                }
+            }
+            catch
+            {
+                logLine = String.Format("Error calculating planned Marketing TI: {0}", error);
+                handlerLogger.Write(true, logLine, "Error");
+            }
+
+            logLine = String.Format("The calculation of the budgets completed");
+            handlerLogger.Write(true, logLine, "Message");
+
+            for (int i = 0; i < promoes.Length; i++)
+            {
+                Promo p = promoes[i];
+
+                // для основного промо пересчет будет произведен в вызывающей функции
+                if (p.Id != promo.Id)
+                {
+                    handlerLogger.Write(true, "");
+                    logLine = String.Format("Calculation of parameters for promo № {0} started at {1:yyyy-MM-dd HH:mm:ss}", p.Number, DateTimeOffset.Now);
+                    handlerLogger.Write(true, logLine, "Message");
+
+                    if (oldPlanMarketingTI[i] != p.PlanPromoTIMarketing || oldPlanCostProd[i] != p.PlanPromoCostProduction)
+                    {
+                        string setPromoProductFieldsError = PlanPromoParametersCalculation.CalculatePromoParameters(p.Id, context);
+
+                        if (setPromoProductFieldsError != null)
+                        {
+                            logLine = String.Format("Error when calculating the planned parameters of the PromoProduct table: {0}", setPromoProductFieldsError);
+                            handlerLogger.Write(true, logLine, "Error");
+                        }
+                    }
+
+                    if (oldActualMarketingTI[i] != p.ActualPromoTIMarketing || oldActualCostProd[i] != p.ActualPromoCostProduction)
+                    {
+                        ActualPromoParametersCalculation.ResetValues(p, context);
+                        string errorString = ActualPromoParametersCalculation.CalculatePromoParameters(p, context);
+
+                        // записываем ошибки если они есть
+                        if (errorString != null)
+                            WriteErrorsInLog(handlerLogger, errorString);
+                    }
+
+                    logLine = String.Format("Calculation of parameters for promo № {0} completed.", p.Number);
+                    handlerLogger.Write(true, logLine, "Message");
+
+                    context.SaveChanges();
+                }
+            }
+
+            handlerLogger.Write(true, "");
+        }
+
+        /// <summary>
+        /// Записать ошибки в лог
+        /// </summary>
+        /// <param name="handlerLogger">Лог</param>
+        /// <param name="errorString">Список ошибок, записанных через ';'</param>
+        private static void WriteErrorsInLog(ILogWriter handlerLogger, string errorString)
+        {
+            string[] errors = errorString.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+            string message = "";
+            foreach (string e in errors)
+                message += e + "\n";
+
+            handlerLogger.Write(true, message);
+        }
+
+        /// <summary>
         /// Получить список промо ID, участвующих в расчетах бюджетов
         /// </summary>
         /// <param name="promoId">ID промо, являющегося причиной пересчета</param>
@@ -34,16 +160,14 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         /// <returns></returns>
         public static List<Guid> GetLinkedPromoId(Guid promoId, DatabaseContext context)
         {
-            // находим все подстатьи Marketing к которым привязано промо
-            // при смене длительности пересчитывать необходимо только x-sites
+            // находим все подстатьи Marketing к которым привязано промо            
             PromoSupportPromo[] promoSupports = context.Set<PromoSupportPromo>().Where(n => n.PromoId == promoId && !n.Disabled
                 && n.PromoSupport.BudgetSubItem.BudgetItem.Budget.Name.ToLower().IndexOf("marketing") >= 0
-                && n.PromoSupport.BudgetSubItem.BudgetItem.Name.ToLower().IndexOf("x-sites") >= 0
             ).ToArray();
 
             // список промо ID, участвующих в расчетах
             List<Guid> promoIds = new List<Guid>();
-            
+
             foreach (PromoSupportPromo psp in promoSupports)
             {
                 Promo[] promoLinked = context.Set<PromoSupportPromo>().Where(n => n.PromoSupportId == psp.PromoSupportId && !n.Disabled).Select(n => n.Promo).ToArray();
@@ -62,95 +186,94 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         /// <summary>
         /// Получить список промо ID, участвующих в расчетах бюджетов
         /// </summary>
-        /// <param name="promoSupportPromoIds">Список ID подстатей/промо</param>
-        /// <param name="calculatePlanCostTE">True, если необходимо пересчитать распределение подстатьи</param>
+        /// <param name="promoSupportIds">Список ID подстатей</param>
+        /// <param name="unlinkedPromoIds">Список ID отвязанных промо от подстатьи</param>
         /// <param name="context">Контекст БД</param>
         /// <returns></returns>
-        public static List<Guid> GetLinkedPromoId(string promoSupportPromoIds, bool calculatePlanCostTE, DatabaseContext context)
+        public static List<Guid> GetLinkedPromoId(string promoSupportIds, string unlinkedPromoIds, DatabaseContext context)
         {
-            // распарсенный список ID подстатей/промо
-            List<Guid> subItemsIdsList = new List<Guid>();
+
             // список промо ID, участвующих в расчетах
             List<Guid> promoIds = new List<Guid>();
 
-            if (promoSupportPromoIds != null && promoSupportPromoIds.Length > 0)
+            if (promoSupportIds != null && promoSupportIds.Length > 0)
             {
-                subItemsIdsList = promoSupportPromoIds.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries).Select(n => Guid.Parse(n)).ToList();
+                // распарсенный список ID подстатей
+                List<Guid> promoSupportIdsList = new List<Guid>();
+                promoSupportIdsList = promoSupportIds.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries).Select(n => Guid.Parse(n)).ToList();
 
-                // список подстатей/промо
-                PromoSupportPromo[] psps = context.Set<PromoSupportPromo>().Where(n => subItemsIdsList.Any(m => m == n.Id)).ToArray();
-
-                foreach (PromoSupportPromo psp in psps)
+                foreach (Guid promoSupportId in promoSupportIdsList)
                 {
-                    // при создании нет маппа, поэтому грузим явно
-                    PromoSupport promoSupport = psp.PromoSupport ?? context.Set<PromoSupport>().Find(psp.PromoSupportId);
-                    // при изменении списка прикрепленных x-sites или catalog необходимо пересчитать распределение бюджетов
-                    if (calculatePlanCostTE && promoSupport.BudgetSubItem.BudgetItem.Name.ToLower().IndexOf("posm") < 0)
-                    {
-                        List<Promo> promoLinked = new List<Promo>();
+                    Promo[] promoes = context.Set<PromoSupportPromo>().Where(n => n.PromoSupportId == promoSupportId && !n.Disabled).Select(n => n.Promo).ToArray();
 
-                        // Промо из списка
-                        promoLinked.AddRange(psps.Select(n => n.Promo));
-                        // Связанные промо
-                        promoLinked.AddRange(context.Set<PromoSupportPromo>().Where(n => n.PromoSupportId == psp.PromoSupportId
-                            && n.Id != psp.Id && !n.Disabled).Select(n => n.Promo));
-
-                        // страховка от повторений, сразу при включении
-                        foreach (Promo p in promoLinked)
-                        {
-                            if (!promoIds.Contains(p.Id))
-                                promoIds.Add(p.Id);
-                        }
-                    }
-                    else
+                    // страховка от повторений, сразу при включении
+                    foreach (Promo p in promoes)
                     {
-                        // страховка от повторений, сразу при включении
-                        if (!promoIds.Contains(psp.PromoId))
-                            promoIds.Add(psp.PromoId);
+                        if (!promoIds.Contains(p.Id))
+                            promoIds.Add(p.Id);
                     }
+                }
+            }
+
+            // включаем также отвязанные от подстатьи промо
+            if (unlinkedPromoIds != null && unlinkedPromoIds.Length > 0)
+            {
+                List<Guid> unlinkedPromoIdsList = new List<Guid>();
+                unlinkedPromoIdsList = unlinkedPromoIds.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries).Select(n => Guid.Parse(n)).ToList();
+
+                // страховка от повторений, сразу при включении
+                foreach (Guid promoId in unlinkedPromoIdsList)
+                {
+                    if (!promoIds.Contains(promoId))
+                        promoIds.Add(promoId);
                 }
             }
 
             return promoIds;
         }
 
+
         /// <summary>
-        /// Пересчитать плановые значения
+        /// Расчет бюждетов по LSV
         /// </summary>
-        /// <param name="psp">Подстатья</param>
-        /// <param name="recalculateCostTE">Необходимо ли пересчитывать значения Cost TE</param>
-        /// <param name="recalculateCostProd">Необходимо ли пересчитывать значения Cost Production</param>
-        private static void RecalculatePlanValue(PromoSupportPromo psp, bool recalculateCostTE, bool recalculateCostProd, DatabaseContext context)
+        /// <param name="promoSupportId">ID подстатьи</param>
+        /// <param name="plan">True, если необходимо считать плановые</param>
+        /// <param name="actual">True, если необходимо считать фактические</param>
+        /// <param name="context">Контекст БД</param>
+        private static void CalculateFromLSV(Guid promoSupportId, bool plan, bool actual, DatabaseContext context)
         {
-            // у контекста проблемы с маппингом при создании            
-            Promo promo = context.Set<Promo>().Find(psp.PromoId);
-            PromoSupport promoSupport = context.Set<PromoSupport>().Find(psp.PromoSupportId);
+            PromoSupport ps = context.Set<PromoSupport>().Find(promoSupportId);
+            PromoSupportPromo[] psps = context.Set<PromoSupportPromo>().Where(n => n.PromoSupportId == ps.Id && !n.Disabled).ToArray();
 
-            // защита от возможных будущих реализаций
-            if (promoSupport.BudgetSubItem.BudgetItem.Budget.Name.ToLower().IndexOf("marketing") >= 0)
+            Promo[] notClosedPromo = psps.Select(n => n.Promo).Where(n => n.PromoStatus.SystemName != "Closed").ToArray();
+
+            double summPlanLSV = notClosedPromo.Where(n => n.PlanPromoLSV.HasValue).Sum(n => n.PlanPromoLSV.Value);
+            //double summActualLSV = notClosedPromo.Where(n => n.ActualPromoLSVByCompensation.HasValue).Sum(n => n.ActualPromoLSVByCompensation.Value);
+
+            // ушедший бюджет на закрытые промо  
+            double closedBudgetMarketingTi = psps.Where(n => n.Promo.PromoStatus.SystemName == "Closed").Sum(n => n.FactCalculation);
+            double closedBudgetCostProd = psps.Where(n => n.Promo.PromoStatus.SystemName == "Closed").Sum(n => n.FactCostProd);
+
+            foreach (PromoSupportPromo psp in psps)
             {
-                if (recalculateCostTE)
+                Promo promo = psp.Promo;
+
+                double kPlan = promo.PlanPromoLSV.HasValue ? promo.PlanPromoLSV.Value / summPlanLSV : 0;
+                //double kActual = promo.ActualPromoLSVByCompensation.HasValue ? promo.ActualPromoLSVByCompensation.Value / summActualLSV : 0;
+
+                if (plan)
                 {
-                    if (psp.PromoSupport.BudgetSubItem.BudgetItem.Name.ToLower().IndexOf("posm") >= 0)
-                        UpdateMarketingTI(new Guid[] { psp.PromoId }, context);
-                    else
-                        CalculateMarketingTI(psp.PromoSupportId, psp.PromoId, context);
+                    psp.PlanCalculation = Math.Round((ps.PlanCostTE.Value - closedBudgetMarketingTi) * kPlan, 2, MidpointRounding.AwayFromZero);
+                    psp.PlanCostProd = Math.Round((ps.PlanProdCost.Value - closedBudgetCostProd) * kPlan, 2, MidpointRounding.AwayFromZero);
                 }
 
-                if (recalculateCostProd)
+                if (actual)
                 {
-                    PromoSupportPromo[] subItems = context.Set<PromoSupportPromo>().Where(n => n.PromoId == psp.PromoId && !n.Disabled
-                        && n.PromoSupport.BudgetSubItem.BudgetItem.Budget.Id == promoSupport.BudgetSubItem.BudgetItem.Budget.Id).ToArray();
-
-                    PromoSupportPromo[] xsites = subItems.Where(n => n.PromoSupport.BudgetSubItem.BudgetItem.Name.ToLower().IndexOf("x-sites") >= 0).ToArray();
-                    PromoSupportPromo[] catalog = subItems.Where(n => n.PromoSupport.BudgetSubItem.BudgetItem.Name.ToLower().IndexOf("catalog") >= 0).ToArray();
-                    PromoSupportPromo[] posm = subItems.Where(n => n.PromoSupport.BudgetSubItem.BudgetItem.Name.ToLower().IndexOf("posm") >= 0).ToArray();
-
-                    promo.PlanPromoCostProdXSites = xsites.Length > 0 ? xsites.Sum(n => n.PlanCostProd) : new double?();
-                    promo.PlanPromoCostProdCatalogue = catalog.Length > 0 ? catalog.Sum(n => n.PlanCostProd) : new double?();
-                    promo.PlanPromoCostProdPOSMInClient = posm.Length > 0 ? posm.Sum(n => n.PlanCostProd) : new double?();
-                    promo.PlanPromoCostProduction = subItems.Length > 0 ? subItems.Sum(n => n.PlanCostProd) : new double?();
+                    psp.FactCalculation = Math.Round((ps.ActualCostTE.Value - closedBudgetMarketingTi) * kPlan, 2, MidpointRounding.AwayFromZero);
+                    psp.FactCostProd = Math.Round((ps.ActualProdCost.Value - closedBudgetCostProd) * kPlan, 2, MidpointRounding.AwayFromZero);
                 }
+
+                RecalculateSummBudgets(promo.Id, context);
             }
         }
 
@@ -160,166 +283,42 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         /// <param name="psp">Подстатья</param>
         /// <param name="recalculateCostTE">Необходимо ли перерассчитывать значения Cost TE</param>
         /// <param name="recalculateCostProd">Необходимо ли перерассчитывать значения Cost Production</param>
-        private static void RecalculateFactValue(PromoSupportPromo psp, bool recalculateCostTE, bool recalculateCostProd, DatabaseContext context)
+        public static void RecalculateSummBudgets(Guid promoId, DatabaseContext context)
         {
-            // у контекста проблемы с маппингом при создании            
-            Promo promo = context.Set<Promo>().Find(psp.PromoId);
-            PromoSupport promoSupport = context.Set<PromoSupport>().Find(psp.PromoSupportId);
+            // у контекста проблемы с маппингом при создании
+            Promo promo = context.Set<Promo>().Find(promoId);
 
-            PromoSupportPromo[] subItems = context.Set<PromoSupportPromo>().Where(n => n.PromoId == psp.PromoId && !n.Disabled
-                && n.PromoSupport.BudgetSubItem.BudgetItem.Budget.Id == promoSupport.BudgetSubItem.BudgetItem.Budget.Id).ToArray();
+            PromoSupportPromo[] subItems = context.Set<PromoSupportPromo>().Where(n => n.PromoId == promoId && !n.Disabled
+                && n.PromoSupport.BudgetSubItem.BudgetItem.Budget.Name.ToLower().IndexOf("marketing") >= 0).ToArray();
 
-            // защита от возможных будущих реализаций
-            if (promoSupport.BudgetSubItem.BudgetItem.Budget.Name.ToLower().IndexOf("marketing") >= 0)
-            {
-                PromoSupportPromo[] xsites = subItems.Where(n => n.PromoSupport.BudgetSubItem.BudgetItem.Name.ToLower().IndexOf("x-sites") >= 0).ToArray();
-                PromoSupportPromo[] catalog = subItems.Where(n => n.PromoSupport.BudgetSubItem.BudgetItem.Name.ToLower().IndexOf("catalog") >= 0).ToArray();
-                PromoSupportPromo[] posm = subItems.Where(n => n.PromoSupport.BudgetSubItem.BudgetItem.Name.ToLower().IndexOf("posm") >= 0).ToArray();
 
-                if (recalculateCostTE)
-                {
-                    promo.ActualPromoXSites = xsites.Length > 0 ? xsites.Sum(n => n.FactCalculation) : new double?();
-                    promo.ActualPromoCatalogue = catalog.Length > 0 ? catalog.Sum(n => n.FactCalculation) : new double?();
-                    promo.ActualPromoPOSMInClient = posm.Length > 0 ? posm.Sum(n => n.FactCalculation) : new double?();
-                    promo.ActualPromoTIMarketing = subItems.Length > 0 ? subItems.Sum(n => n.FactCalculation) : new double?();
-                }
+            PromoSupportPromo[] xsites = subItems.Where(n => n.PromoSupport.BudgetSubItem.BudgetItem.Name.ToLower().IndexOf("x-sites") >= 0).ToArray();
+            PromoSupportPromo[] catalog = subItems.Where(n => n.PromoSupport.BudgetSubItem.BudgetItem.Name.ToLower().IndexOf("catalog") >= 0).ToArray();
+            PromoSupportPromo[] posm = subItems.Where(n => n.PromoSupport.BudgetSubItem.BudgetItem.Name.ToLower().IndexOf("posm") >= 0).ToArray();
 
-                if (recalculateCostProd)
-                {
-                    promo.ActualPromoCostProdXSites = xsites.Length > 0 ? xsites.Sum(n => n.FactCostProd) : new double?();
-                    promo.ActualPromoCostProdCatalogue = catalog.Length > 0 ? catalog.Sum(n => n.FactCostProd) : new double?();
-                    promo.ActualPromoCostProdPOSMInClient = posm.Length > 0 ? posm.Sum(n => n.FactCostProd) : new double?();
-                    promo.ActualPromoCostProduction = subItems.Length > 0 ? subItems.Sum(n => n.FactCostProd) : new double?();
-                }
-            }
-        }
+            // Plan Marketing TI
+            promo.PlanPromoXSites = xsites.Length > 0 ? xsites.Sum(n => n.PlanCalculation) : new double?();
+            promo.PlanPromoCatalogue = catalog.Length > 0 ? catalog.Sum(n => n.PlanCalculation) : new double?();
+            promo.PlanPromoPOSMInClient = posm.Length > 0 ? posm.Sum(n => n.PlanCalculation) : new double?();
+            promo.PlanPromoTIMarketing = subItems.Length > 0 ? subItems.Sum(n => n.PlanCalculation) : new double?();
 
-        /// <summary>
-        /// Пересчитать распределенные значения для подстатьи Marketing и обновить Marketing TI для затронутых промо
-        /// </summary>
-        /// <param name="promoSupportId">Id PromoSupport, для которого производится перерасчет (должен относиться к Marketing)<</param>
-        /// <param name="currentPromoId">Id Промо, послужившего причиной перерасчета</param>
-        private static void CalculateMarketingTI(Guid promoSupportId, Guid currentPromoId, DatabaseContext context)
-        {
-            List<Guid> promoIds = CalculateMarketingSubItems(promoSupportId, currentPromoId, context);
+            // Actual Marketing TI
+            promo.ActualPromoXSites = xsites.Length > 0 ? xsites.Sum(n => n.FactCalculation) : new double?();
+            promo.ActualPromoCatalogue = catalog.Length > 0 ? catalog.Sum(n => n.FactCalculation) : new double?();
+            promo.ActualPromoPOSMInClient = posm.Length > 0 ? posm.Sum(n => n.FactCalculation) : new double?();
+            promo.ActualPromoTIMarketing = subItems.Length > 0 ? subItems.Sum(n => n.FactCalculation) : new double?();
 
-            // Пересчитываем для затронутых промо Marketing TI (Сумма распределенных значений)
-            UpdateMarketingTI(promoIds, context);
-        }
+            // Plan Cost Prod
+            promo.PlanPromoCostProdXSites = xsites.Length > 0 ? xsites.Sum(n => n.PlanCostProd) : new double?();
+            promo.PlanPromoCostProdCatalogue = catalog.Length > 0 ? catalog.Sum(n => n.PlanCostProd) : new double?();
+            promo.PlanPromoCostProdPOSMInClient = posm.Length > 0 ? posm.Sum(n => n.PlanCostProd) : new double?();
+            promo.PlanPromoCostProduction = subItems.Length > 0 ? subItems.Sum(n => n.PlanCostProd) : new double?();
 
-        private static void UpdateMarketingTI(IEnumerable<Guid> promoIds, DatabaseContext context)
-        {
-            foreach (Guid promoId in promoIds)
-            {
-                Promo promo = context.Set<Promo>().Find(promoId);
-
-                PromoSupportPromo[] subItems = context.Set<PromoSupportPromo>().Where(n => n.PromoId == promo.Id && !n.Disabled
-                    && n.PromoSupport.BudgetSubItem.BudgetItem.Budget.Name.ToLower().IndexOf("marketing") >= 0).ToArray();
-
-                PromoSupportPromo[] xsites = subItems.Where(n => n.PromoSupport.BudgetSubItem.BudgetItem.Name.ToLower().IndexOf("x-sites") >= 0).ToArray();
-                PromoSupportPromo[] catalog = subItems.Where(n => n.PromoSupport.BudgetSubItem.BudgetItem.Name.ToLower().IndexOf("catalog") >= 0).ToArray();
-                PromoSupportPromo[] posm = subItems.Where(n => n.PromoSupport.BudgetSubItem.BudgetItem.Name.ToLower().IndexOf("posm") >= 0).ToArray();
-
-                promo.PlanPromoXSites = xsites.Length > 0 ? xsites.Sum(n => n.PlanCalculation) : new double?();
-                promo.PlanPromoCatalogue = catalog.Length > 0 ? catalog.Sum(n => n.PlanCalculation) : new double?();
-                promo.PlanPromoPOSMInClient = posm.Length > 0 ? posm.Sum(n => n.PlanCalculation) : new double?();
-                promo.PlanPromoTIMarketing = subItems.Length > 0 ? subItems.Sum(n => n.PlanCalculation) : new double?();
-            }
-
-            context.SaveChanges();
-        }
-
-        /// <summary>
-        /// Пересчитать распределенные значения для подстатьи Marketing
-        /// </summary>
-        /// <param name="promoSupportId">Id PromoSupport, относящийся к Marketing</param>
-        /// <param name="currentPromoId">Id Промо, послужившего причиной перерасчета</param>
-        /// <param name="context">Контекст БД</param>
-        /// <returns>Список затронутых промо</returns>
-        private static List<Guid> CalculateMarketingSubItems(Guid promoSupportId, Guid currentPromoId, DatabaseContext context)
-        {
-            // Выборка необходимых для перерасчета PromoSupportPromo
-            // !!! Предполагается что PromoSupport для Marketing (RecalculatePlanValueCostTE есть проверка)
-            PromoSupportPromo[] recalculatePromoSupportPromo = context.Set<PromoSupportPromo>().Where(n => n.PromoSupportId == promoSupportId && !n.Disabled).ToArray();
-
-            // Подстатья может относиться только к одной статье
-            if (recalculatePromoSupportPromo.Any(n => n.PromoSupport.BudgetSubItem.BudgetItem.Name.ToLower().IndexOf("x-sites") >= 0))
-            {
-                CalculateXsites(recalculatePromoSupportPromo);
-            }
-            else if (recalculatePromoSupportPromo.Any(n => n.PromoSupport.BudgetSubItem.BudgetItem.Name.ToLower().IndexOf("catalog") >= 0))
-            {
-                CalculateCatalog(recalculatePromoSupportPromo);
-            }
-
-            context.SaveChanges();
-
-            // Список затронутых промо, для которых нужно пересчитать Marketing TI
-            List<Guid> promoIds = recalculatePromoSupportPromo.GroupBy(n => n.PromoId).Select(n => n.Key).ToList();
-            // если промо открепляется, то в списке его нет
-            if (!promoIds.Contains(currentPromoId))
-                promoIds.Add(currentPromoId);
-
-            return promoIds;
-        }
-
-        /// <summary>
-        /// Рассчитать x-sites
-        /// </summary>
-        /// <param name="recalculatePromoSupportPromo">Список для перерасчета</param>
-        private static void CalculateXsites(PromoSupportPromo[] recalculatePromoSupportPromo)
-        {
-            // группируем по подстатьям
-            var promoSupportGroups = recalculatePromoSupportPromo.GroupBy(n => n.PromoSupportId);
-
-            // рассчитываем для каждой подстатьи отдельно
-            foreach (var subItems in promoSupportGroups)
-            {
-                // ушедший бюджет на закрытые промо  
-                double closedBudget = subItems.Where(n => n.Promo.PromoStatus.SystemName == "Closed").Sum(n => n.FactCalculation);
-                // незакрытые промо
-                PromoSupportPromo[] notClosedPromo = subItems.Where(n => n.Promo.PromoStatus.SystemName != "Closed").ToArray();
-
-                // сумма длительностей промо из подстатьи
-                int countDays = notClosedPromo.Select(n => n.Promo).Sum(n => (int)(n.EndDate - n.StartDate).Value.TotalDays);
-                // стоимость за 1 день
-                double costPerDay = Math.Round((notClosedPromo.First().PromoSupport.PlanCostTE.Value - closedBudget) / countDays, 2, MidpointRounding.AwayFromZero);
-
-                // получаем и записываем распределенное значение (только незакрытые промо)
-                foreach (PromoSupportPromo p in notClosedPromo)
-                {
-                    double sumInSubItem = costPerDay * (int)(p.Promo.EndDate - p.Promo.StartDate).Value.TotalDays;
-                    p.PlanCalculation = sumInSubItem;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Рассчитать catalogs
-        /// </summary>
-        /// <param name="recalculatePromoSupportPromo">Список для перерасчета</param>
-        private static void CalculateCatalog(PromoSupportPromo[] recalculatePromoSupportPromo)
-        {
-            // группируем по подстатьям
-            var promoSupportGroups = recalculatePromoSupportPromo.GroupBy(n => n.PromoSupportId);
-
-            // рассчитываем для каждой подстатьи отдельно
-            foreach (var subItems in promoSupportGroups)
-            {
-                // ушедший бюджет на закрытые промо  
-                double closedBudget = subItems.Where(n => n.Promo.PromoStatus.SystemName == "Closed").Sum(n => n.FactCalculation);
-                // незакрытые промо
-                PromoSupportPromo[] notClosedPromo = subItems.Where(n => n.Promo.PromoStatus.SystemName != "Closed").ToArray();
-
-                // количество привязанных промо
-                double countPromo = notClosedPromo.Count();
-
-                // получаем и записываем распределенное значение
-                foreach (PromoSupportPromo p in notClosedPromo)
-                {
-                    p.PlanCalculation = Math.Round((p.PromoSupport.PlanCostTE.Value - closedBudget) / countPromo, 2, MidpointRounding.AwayFromZero);
-                }
-            }
+            // Actual Cost Prod
+            promo.ActualPromoCostProdXSites = xsites.Length > 0 ? xsites.Sum(n => n.FactCostProd) : new double?();
+            promo.ActualPromoCostProdCatalogue = catalog.Length > 0 ? catalog.Sum(n => n.FactCostProd) : new double?();
+            promo.ActualPromoCostProdPOSMInClient = posm.Length > 0 ? posm.Sum(n => n.FactCostProd) : new double?();
+            promo.ActualPromoCostProduction = subItems.Length > 0 ? subItems.Sum(n => n.FactCostProd) : new double?();
         }
     }
 }

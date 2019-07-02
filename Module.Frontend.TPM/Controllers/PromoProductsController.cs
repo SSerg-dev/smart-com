@@ -188,12 +188,19 @@ namespace Module.Frontend.TPM.Controllers
         {
             IEnumerable<Column> columns = new List<Column>()
             {
-                new Column() { Order = 0, Field = "EAN", Header = "EAN", Quoting = false },
+                new Column() { Order = 0, Field = "EAN_PC", Header = "EAN PC", Quoting = false },
                 new Column() { Order = 1, Field = "ActualProductPCQty", Header = "Actual Product PC Qty", Quoting = false },
-                new Column() { Order = 2, Field = "ActualProductQty", Header = "Actual Product Qty", Quoting = false },
-                new Column() { Order = 3, Field = "ActualProductUOM", Header = "Actual Product UOM", Quoting = false },
-                new Column() { Order = 4, Field = "ActualProductShelfPrice", Header = "Actual Product Shelf Price", Quoting = false },
-                new Column() { Order = 5, Field = "ActualProductPCLSV", Header = "Actual Product PC LSV", Quoting = false },
+                new Column() { Order = 2, Field = "ActualProductPCLSV", Header = "Actual Product PC LSV", Quoting = false },
+            };
+
+            return columns;
+        }
+
+        private IEnumerable<Column> GetImportTemplateSettings() {
+            IEnumerable<Column> columns = new List<Column>()
+            {
+                new Column() { Order = 0, Field = "EAN_PC", Header = "EAN PC", Quoting = false },
+                new Column() { Order = 1, Field = "ActualProductPCQty", Header = "Actual Product PC Qty", Quoting = false },
             };
 
             return columns;
@@ -243,7 +250,7 @@ namespace Module.Frontend.TPM.Controllers
                 }
                 else
                 {
-                    return GetErorrRequest(new Exception("Операция не возможна, данное промо участвует в расчетах и было заблокировано"));
+                    return GetErorrRequest(new Exception("Promo was blocked for calculation"));
                 }
             }
             catch (Exception e)
@@ -303,7 +310,7 @@ namespace Module.Frontend.TPM.Controllers
         [ClaimsAuthorize]
         public IHttpActionResult DownloadTemplateXLSX() {
             try {
-                IEnumerable<Column> columns = GetExportSettings();
+                IEnumerable<Column> columns = GetImportTemplateSettings();
                 XLSXExporter exporter = new XLSXExporter(columns);
                 string exportDir = AppSettingsManager.GetSetting("EXPORT_DIRECTORY", "~/ExportFiles");
                 string filename = string.Format("{0}Template.xlsx", "PromoProduct");
@@ -339,7 +346,7 @@ namespace Module.Frontend.TPM.Controllers
             bool success = CalculationTaskManager.CreateCalculationTask(CalculationTaskManager.CalculationAction.Actual, data, Context, promoId);
 
             if (!success)
-                throw new Exception("Операция не возможна, данное промо участвует в расчетах и было заблокировано");
+                throw new Exception("Promo was blocked for calculation");
         }
 
         private ExceptionResult GetErorrRequest(Exception e)

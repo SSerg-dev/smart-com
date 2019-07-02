@@ -121,6 +121,13 @@ namespace Module.Persist.TPM.Utils.Filter {
                         typeof(String).GetMethod("Contains", new Type[] { typeof(String) }),
                         new Expression[] { selector }));
 
+                // available only for string fields
+                case RuleOperator.NotContains:
+                    return Expression.AndAlso(Expression.NotEqual(member, Expression.Constant(null, member.Type)),
+                        Expression.Not(Expression.Call(Expression.Call(member, typeof(String).GetMethod("ToUpper", new Type[] { })),
+                        typeof(String).GetMethod("Contains", new Type[] { typeof(String) }),
+                        new Expression[] { selector })));
+
                 case RuleOperator.Any:
                     var parY = Expression.Parameter(member.Type, "y");
                     var eq = Expression.Equal(parY, member);

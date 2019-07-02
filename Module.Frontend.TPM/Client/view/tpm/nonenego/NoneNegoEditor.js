@@ -2,6 +2,7 @@
     extend: 'App.view.core.common.EditorDetailWindow',
     alias: 'widget.nonenegoeditor',
 
+    cls: 'readOnlyFields',
     width: 800,
     minWidth: 800,
     maxHeight: 500,
@@ -223,12 +224,15 @@
             xtype: 'datefield',
             name: 'CreateDate',
             fieldLabel: l10n.ns('tpm', 'NoneNego').value('CreateDate'),
+            allowBlank: false,
             readOnly: true,
             editable: false,
             format: 'd.m.Y',
             listeners: {
-                afterrender: function () {
-                    this.setValue(new Date());
+                writeablechange: function (field) {
+                    if (field.readOnly == false) {
+                        field.setReadOnly(true);
+                    }
                 }
             }
         }]

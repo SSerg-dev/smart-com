@@ -59,6 +59,9 @@
                 'schedulecontainer #createbutton': {
                     click: this.onCreateButtonClick
                 },
+                'schedulecontainer #createinoutbutton': {
+                    click: this.onCreateInOutButtonClick
+                },
                 'schedulecontainer #schedulefilterdraftpublbutton': {
                     click: this.onFilterDraftPublButtonClick
                 },
@@ -104,9 +107,8 @@
             return false;
         } else {
             //// Save reference to context to be able to finalize drop operation after user clicks yes/no button.
-
             Ext.Msg.confirm('Please confirm',
-                'Do you want to update the Promo: ' + dragContext.eventRecords[0].get('Name'),
+                'Do you want to update the Promo: ' + record.get('Name'),
                 me.onDragAndDropConfirm,  // The button callback
                 me);                 // scope
             return false;
@@ -127,7 +129,6 @@
                 id: eventRecord.getId(),
                 scope: this,
                 callback: function (records, operation, success) {
-                    debugger;
                     var record = records[0];
 
                     var daysForDispatchDateFromClientSettings = this.getDaysForDispatchDateFromClientSettings(
@@ -262,98 +263,74 @@
                 textField.setValue(l10n.ns('tpm', 'Schedule').value('ExportBeforeMessageLog') + '\n');
 
                 // После создания задачи экспорта нужно выделить первую запись (только что созданная задача).
-                userLoopHandlerStore.addListener('load', function (store, records) {
-                    // Если вызывается из календаря.
-                    if (Ext.ComponentQuery.query('schedulecontainer')[0]) {
-                        record = records[0];
-                        selectionModel.select(record);
+                userLoopHandlerStore.on({
+                    scope: this,
+                    single: true,
+                    load: function (store, records) {
+                        // Если вызывается из календаря.
+                        if (Ext.ComponentQuery.query('schedulecontainer')[0]) {
+                            record = records[0];
+                            selectionModel.select(record);
+                        }
+
+                        // Показываем окно с логом.
+                        var calculatingInfoWindow = Ext.create('App.view.tpm.promocalculating.CalculatingInfoWindow', { handlerId: record.get('Id') });
+                        var downloadSchedulerFileBtn = calculatingInfoWindow.down('#downloadSchedulerFile');
+
+                        downloadSchedulerFileBtn.setVisible(true);
+                        calculatingInfoWindow.on({
+                            beforeclose: function (window) {
+                                if ($.connection.tasksLogHub)
+                                    $.connection.tasksLogHub.server.unsubscribeLog(window.handlerId);
+
+                                App.Notify.pushInfo(messageForNotify);
+                            }
+                        });
+
+                        calculatingInfoWindow.show();
+                        Ext.ComponentQuery.query('selectyearwindow')[0].close();
+
+                        calculatingInfoWindow.down('triggerfield[name=Status]').on({
+                            change: function (field) {
+                                if (field.hasCls('completeField')) {
+                                    // Получение ссылки для скачивания файла.
+                                    breeze.EntityQuery
+                                        .from('LoopHandlers')
+                                        .withParameters({
+                                            $actionName: 'Parameters',
+                                            $method: 'POST',
+                                            $entity: record.getProxy().getBreezeEntityByRecord(record)
+                                        })
+                                        .using(Ext.ux.data.BreezeEntityManager.getEntityManager())
+                                        .execute()
+                                        .then(function (data) {
+                                            var resultData = data.httpResponse.data.value;
+                                            var result = JSON.parse(resultData);
+                                            var fileName = result.OutcomingParameters.File.Value.Name;
+
+                                            if (fileName) {                                                
+                                                downloadSchedulerFileBtn.addListener('click', function () {
+                                                    location.assign(document.location.href + '/api/File/ExportDownload?filename=' + fileName);
+                                                });
+
+                                                downloadSchedulerFileBtn.setDisabled(false);
+                                            } else {
+                                                App.Notify.pushError(l10n.ns('tpm', 'Schedule').value('ExportFileIsNotReady'));
+                                            }
+                                        })
+                                        .fail(function (data) {
+                                            App.Notify.pushError(l10n.ns('tpm', 'Schedule').value('ExportFileIsNotReady'));
+                                        });
+                                }
+                            }
+                        })
+
+                        $.connection.tasksLogHub.server.subscribeLog(record.get('Id'));
+
                     }
                 });
+
                 userLoopHandlerStore.load();
-
-                loopHandlerViewLogWindow.addListener('beforeclose', function () {
-                    App.Notify.pushInfo(messageForNotify);
-                });
-
-                // Показываем окно с логом.
-                loopHandlerViewLogWindow.show(null, function () {
-                    Ext.ComponentQuery.query('selectyearwindow')[0].close();
-
-                    // Каждую секунду проверяем задачу на окончание.
-                    var interval = setInterval(function () {
-                        breeze.EntityQuery
-                            .from('LoopHandlers')
-                            .withParameters({
-                                $actionName: 'ReadLogFile',
-                                $method: 'POST',
-                                $entity: record.getProxy().getBreezeEntityByRecord(record)
-                            })
-                            .using(Ext.ux.data.BreezeEntityManager.getEntityManager())
-                            .execute()
-                            .then(function (data) {
-                                var text = data.httpResponse.data.value;
-
-                                if (text) {
-                                    textField.setValue(text + '\n');
-                                    userLoopHandlerStore.model.load(record.data.Id);
-                                }
-                            })
-                            .fail(function (data) {
-                                clearInterval(interval);
-                                textField.setValue(textField.getValue() + l10n.ns('tpm', 'Schedule').value('ExportErrorMessage') + '\n');
-                            });
-
-                        var status = record.get('Status');
-                        // Если задача завершилась или окно с логом закрыто.
-                        if (status === 'ERROR' || status === 'COMPLETE' || (loopHandlerViewLogWindow && !loopHandlerViewLogWindow.isVisible())) {
-                            // Больше не нужно отправлять запросы на получение лога.
-                            clearInterval(interval);
-
-                            if (status === 'ERROR') {
-                                textField.setValue(textField.getValue() + l10n.ns('tpm', 'Schedule').value('ExportErrorMessage') + '\n');
-                                messageForNotify = l10n.ns('tpm', 'Schedule').value('ExportTaskError') + ' ' + l10n.ns('tpm', 'Schedule').value('ExportTaskDetailsPath');
-                            }
-
-                            // В случае успешного завершения нужно разблокировать кнопку для скачивания файла.
-                            if (status === 'COMPLETE') {
-                                textField.setValue(textField.getValue() + l10n.ns('tpm', 'Schedule').value('ExportFileUploadPreparation') + '\n');
-                                messageForNotify = l10n.ns('tpm', 'Schedule').value('ExportTaskComplete') + ' ' + l10n.ns('tpm', 'Schedule').value('ExportTaskDetailsPath');
-
-                                var loopHandlerViewLogWindowDownloadButton = loopHandlerViewLogWindow.down('#download');
-                                // Получение ссылки для скачивания файла.
-                                breeze.EntityQuery
-                                    .from('LoopHandlers')
-                                    .withParameters({
-                                        $actionName: 'Parameters',
-                                        $method: 'POST',
-                                        $entity: record.getProxy().getBreezeEntityByRecord(record)
-                                    })
-                                    .using(Ext.ux.data.BreezeEntityManager.getEntityManager())
-                                    .execute()
-                                    .then(function (data) {
-                                        var resultData = data.httpResponse.data.value;
-                                        var result = JSON.parse(resultData);
-                                        var fileName = result.OutcomingParameters.File.Value.Name;
-
-                                        if (fileName) {
-                                            textField.setValue(textField.getValue() + l10n.ns('tpm', 'Schedule').value('ExportFileIsReady') + '\n');
-
-                                            loopHandlerViewLogWindowDownloadButton.addListener('click', function () {
-                                                location.assign(document.location.href + '/api/File/ExportDownload?filename=' + fileName);
-                                            });
-
-                                            loopHandlerViewLogWindowDownloadButton.setDisabled(false);
-                                        } else {
-                                            textField.setValue(textField.getValue() + l10n.ns('tpm', 'Schedule').value('ExportFileIsNotReady') + '\n');
-                                        }
-                                    })
-                                    .fail(function (data) {
-                                        textField.setValue(textField.getValue() + l10n.ns('tpm', 'Schedule').value('ExportFileIsNotReady') + '\n');
-                                    });
-                            }
-                        }
-                    }, 1000);
-                });
             })
             .fail(function (data) {
                 scheduler.setLoading(false);
@@ -495,7 +472,7 @@
         var me = this;
         e.stopEvent();
         var status = rec.get('PromoStatusSystemName').toLowerCase();
-        var isDeletable = status == "draft";
+        var isDeletable = status == 'draft' || status == 'draftpublished';
         var postAccess = me.getAllowedActionsForCurrentRoleAndResource('Promoes').some(function (action) { return action === 'Post' });
         if (!panel.ctx) {
             panel.ctx = new Ext.menu.Menu({
@@ -575,6 +552,7 @@
     onPromoDragCreation: function (view, createContext, e, el, eOpts) {
         if (createContext.start > Date.now()) {
             var me = this;
+            createContext.end = createContext.end;          
             var schedulerData;
             if (!view.schedulerView.eventCopy) {
                 schedulerData = { schedulerContext: createContext };
@@ -621,7 +599,16 @@
     },
 
     createPromo: function (schedulerData) {
-        this.mixins["App.controller.tpm.promo.Promo"].onCreateButtonClick.call(this, null, null, schedulerData);
+        this.mixins["App.controller.tpm.promo.Promo"].onCreateButtonClick.call(this, null, null, schedulerData, false);
+    },
+
+    onCreateInOutButtonClick: function () {
+        this.detailButton = null;
+        this.createInOutPromo();
+    },
+
+    createInOutPromo: function (schedulerData) {
+        this.mixins["App.controller.tpm.promo.Promo"].onCreateButtonClick.call(this, null, null, schedulerData, true);
     },
 
     setButtonState: function (window, visible) {
@@ -1211,4 +1198,8 @@
 
         return loopHandlerViewLogWindow;
     },
+    // Возвращает переданную дату с временем 23:59:59. TODO: перенести в Util
+    getDayEndDateTime: function (date) {
+        return new Date(date.setHours(23, 59, 59))
+    }
 });

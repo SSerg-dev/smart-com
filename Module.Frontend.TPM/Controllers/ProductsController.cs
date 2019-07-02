@@ -165,7 +165,7 @@ namespace Module.Frontend.TPM.Controllers
 
                 model.DeletedDate = System.DateTime.Now;
                 model.Disabled = true;
-                Context.Set<ProductChangeIncident>().Add(CreateIncident(model, true, false));
+                Context.Set<ProductChangeIncident>().Add(CreateIncident(model, false, true));
                 Context.SaveChanges();
 
                 return StatusCode(HttpStatusCode.NoContent);
@@ -183,27 +183,29 @@ namespace Module.Frontend.TPM.Controllers
 
         private IEnumerable<Column> GetExportSettings()
         {
+            int orderNum = 0;
             IEnumerable<Column> columns = new List<Column>() {
-                new Column() { Order = 0, Field = "ZREP", Header = "ZREP", Quoting = false },
-                new Column() { Order = 1, Field = "EAN", Header = "EAN", Quoting = false },
-                new Column() { Order = 2, Field = "ProductRU", Header = "Product RU", Quoting = false },
-                new Column() { Order = 3, Field = "ProductEN", Header = "Product EN", Quoting = false },
-                new Column() { Order = 4, Field = "BrandFlagAbbr", Header = "Brand flag abbr", Quoting = false },
-                new Column() { Order = 5, Field = "BrandFlag", Header = "Brand flag", Quoting = false },
-                new Column() { Order = 6, Field = "SubmarkFlag", Header = "Submark flag", Quoting = false },
-                new Column() { Order = 7, Field = "IngredientVariety", Header = "Ingredient variety", Quoting = false },
-                new Column() { Order = 8, Field = "ProductCategory", Header = "Product category", Quoting = false },
-                new Column() { Order = 9, Field = "ProductType", Header = "Product type", Quoting = false },
-                new Column() { Order = 10, Field = "MarketSegment", Header = "Market segment", Quoting = false },
-                new Column() { Order = 11, Field = "SupplySegment", Header = "Supply segment", Quoting = false },
-                new Column() { Order = 12, Field = "FunctionalVariety", Header = "Functional variety", Quoting = false },
-                new Column() { Order = 13, Field = "Size", Header = "Size", Quoting = false },
-                new Column() { Order = 14, Field = "BrandEssence", Header = "Brand essence", Quoting = false },
-                new Column() { Order = 15, Field = "PackType", Header = "Pack type", Quoting = false },
-                new Column() { Order = 16, Field = "GroupSize", Header = "Group size", Quoting = false },
-                new Column() { Order = 17, Field = "TradedUnitFormat", Header = "Traded unit format", Quoting = false },
-                new Column() { Order = 18, Field = "ConsumerPackFormat", Header = "Consumer pack format", Quoting = false },
-                new Column() { Order = 19, Field = "UOM_PC2Case", Header = "UOM_PC2Case", Quoting = false }
+                new Column() { Order = orderNum++, Field = "ZREP", Header = "ZREP", Quoting = false },
+                new Column() { Order = orderNum++, Field = "EAN_Case", Header = "EAN Case", Quoting = false },
+                new Column() { Order = orderNum++, Field = "EAN_PC", Header = "EAN PC", Quoting = false },
+                new Column() { Order = orderNum++, Field = "ProductRU", Header = "Product RU", Quoting = false },
+                new Column() { Order = orderNum++, Field = "ProductEN", Header = "Product EN", Quoting = false },
+                new Column() { Order = orderNum++, Field = "BrandFlagAbbr", Header = "Brand flag abbr", Quoting = false },
+                new Column() { Order = orderNum++, Field = "BrandFlag", Header = "Brand flag", Quoting = false },
+                new Column() { Order = orderNum++, Field = "SubmarkFlag", Header = "Submark flag", Quoting = false },
+                new Column() { Order = orderNum++, Field = "IngredientVariety", Header = "Ingredient variety", Quoting = false },
+                new Column() { Order = orderNum++, Field = "ProductCategory", Header = "Product category", Quoting = false },
+                new Column() { Order = orderNum++, Field = "ProductType", Header = "Product type", Quoting = false },
+                new Column() { Order = orderNum++, Field = "MarketSegment", Header = "Market segment", Quoting = false },
+                new Column() { Order = orderNum++, Field = "SupplySegment", Header = "Supply segment", Quoting = false },
+                new Column() { Order = orderNum++, Field = "FunctionalVariety", Header = "Functional variety", Quoting = false },
+                new Column() { Order = orderNum++, Field = "Size", Header = "Size", Quoting = false },
+                new Column() { Order = orderNum++, Field = "BrandEssence", Header = "Brand essence", Quoting = false },
+                new Column() { Order = orderNum++, Field = "PackType", Header = "Pack type", Quoting = false },
+                new Column() { Order = orderNum++, Field = "GroupSize", Header = "Group size", Quoting = false },
+                new Column() { Order = orderNum++, Field = "TradedUnitFormat", Header = "Traded unit format", Quoting = false },
+                new Column() { Order = orderNum++, Field = "ConsumerPackFormat", Header = "Consumer pack format", Quoting = false },
+                new Column() { Order = orderNum++, Field = "UOM_PC2Case", Header = "UOM_PC2Case", Quoting = false }
             };
             return columns;
         }

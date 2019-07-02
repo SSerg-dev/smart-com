@@ -47,27 +47,15 @@ Ext.define('App.view.tpm.promoproduct.DeletedPromoProduct', {
 				xtype: 'datecolumn',
 				renderer: Ext.util.Format.dateRenderer('d.m.Y H:i:s')
 			}, {
-                text: l10n.ns('tpm', 'PromoProduct').value('EAN'),
-                dataIndex: 'EAN'
+                text: l10n.ns('tpm', 'PromoProduct').value('EAN_PC'),
+                dataIndex: 'EAN_PC'
             }, {
 				xtype: 'numbercolumn',
 				format: '0',
                 text: l10n.ns('tpm', 'PromoProduct').value('ActualProductPCQty'),
                 dataIndex: 'ActualProductPCQty'
-			}, {
-				xtype: 'numbercolumn',
-				format: '0.00',
-                text: l10n.ns('tpm', 'PromoProduct').value('ActualProductQty'),
-                dataIndex: 'ActualProductQty'
-			}, {
-                text: l10n.ns('tpm', 'PromoProduct').value('ActualProductUOM'),
-                dataIndex: 'ActualProductUOM'
-            }, {
-				xtype: 'numbercolumn',
-				format: '0.00',
-                text: l10n.ns('tpm', 'PromoProduct').value('ActualProductShelfPrice'),
-                dataIndex: 'ActualProductShelfPrice'
-			}, {
+                },
+                {
 				xtype: 'numbercolumn',
 				format: '0.00',
                 text: l10n.ns('tpm', 'PromoProduct').value('ActualProductPCLSV'),
@@ -85,25 +73,27 @@ Ext.define('App.view.tpm.promoproduct.DeletedPromoProduct', {
             fieldLabel: l10n.ns('core', 'BaseDeletedEntity').value('DeletedDate')
         }, {
             xtype: 'singlelinedisplayfield',
-            name: 'EAN',
-            fieldLabel: l10n.ns('tpm', 'PromoProduct').value('EAN'),
+            name: 'EAN_PC',
+            fieldLabel: l10n.ns('tpm', 'PromoProduct').value('EAN_PC'),
         }, {
             xtype: 'singlelinedisplayfield',
             name: 'ActualProductPCQty',
             fieldLabel: l10n.ns('tpm', 'PromoProduct').value('ActualProductPCQty'),
-        }, {
-            xtype: 'singlelinedisplayfield',
-            name: 'ActualProductQty',
-            fieldLabel: l10n.ns('tpm', 'PromoProduct').value('ActualProductQty'),
-        }, {
-            xtype: 'singlelinedisplayfield',
-            name: 'ActualProductUOM',
-            fieldLabel: l10n.ns('tpm', 'PromoProduct').value('ActualProductUOM'),
-        }, {
-            xtype: 'singlelinedisplayfield',
-            name: 'ActualProductShelfPrice',
-            fieldLabel: l10n.ns('tpm', 'PromoProduct').value('ActualProductShelfPrice'),
-        }, {
+            },
+        //    {
+        //    xtype: 'singlelinedisplayfield',
+        //    name: 'ActualProductCaseQty',
+        //    fieldLabel: l10n.ns('tpm', 'PromoProduct').value('ActualProductCaseQty'),
+        //}, {
+        //    xtype: 'singlelinedisplayfield',
+        //    name: 'ActualProductUOM',
+        //    fieldLabel: l10n.ns('tpm', 'PromoProduct').value('ActualProductUOM'),
+        //}, {
+        //    xtype: 'singlelinedisplayfield',
+        //    name: 'ActualProductShelfPrice',
+        //    fieldLabel: l10n.ns('tpm', 'PromoProduct').value('ActualProductShelfPrice'),
+        //    },
+            {
             xtype: 'singlelinedisplayfield',
             name: 'ActualProductPCLSV',
             fieldLabel: l10n.ns('tpm', 'PromoProduct').value('ActualProductPCLSV'),

@@ -5,10 +5,17 @@
         '<span style="color: #697278; font-size: 12px;">{[this.drawDate(values.Date)]}</span>',
         '<div class="approval-history-box" style="border-color: {StatusColor};">',
         '<span style="text-align:left;"><b>Status: {StatusName}</b></span><br>',
-        '{RoleName}: {UserName}<br>{[this.drawComment(values.MechanicComment)]}',
+        '{[this.drawRoleAndName(values.RoleName, values.UserName)]}<br>{[this.drawComment(values.MechanicComment)]}',
         '</div>',
         '</div>',
         {
+            drawRoleAndName: function (role, name) {
+                // если изменения делает система, то RoleName и UserName равны null
+                if (role !== null && name !== null)
+                    return role + ': ' + name;
+                else
+                    return 'System';
+            },
             drawDate: function (value) {
                 return Ext.util.Format.date(value, 'd.m.Y H:i:s');
             },

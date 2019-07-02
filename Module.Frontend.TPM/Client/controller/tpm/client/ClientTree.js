@@ -58,7 +58,16 @@
                 },
                 'clienttreeeditor [name=IsBeforeEnd]': {
                     change: this.onIsBeforeEndChange
-                }
+                },
+                'clienttree #attachFile': {
+                    click: this.onAttachFileButtonClick
+                },
+                'clienttree #deleteAttachFile': {
+                    click: this.onDeleteAttachFileButtonClick
+                },
+                '#clientTreeUploadFileWindow #userOk': {
+                    click: this.onUploadFileOkButtonClick
+                },
             }
         });
     },
@@ -194,8 +203,7 @@
             this.enableButtons([addButton]);
             this.disableButtons([updateButton, deleteButton, moveButton]);
         }
-        else if (record.get('EndDate') != null)
-        {
+        else if (record.get('EndDate') != null) {
             this.disableButtons([updateButton, deleteButton, addButton]);
         }
         else /*if (needEnable)*/ {
@@ -224,6 +232,7 @@
 
     updateTreeDetail: function (editorform, record) {
         editorform.loadRecord(record);
+        this.setLogoImage(editorform.up('clienttree').down('[name=treeLogoPanel]'), record.data.LogoFileName);
     },
 
     // ClientTree
@@ -243,12 +252,12 @@
         me.disableButtons([updateButton, deleteButton, moveButton]);
 
         //так как автозагрузка стора отключена, необходимо загрузить стор, если иерархия открыта не в окне промо или в окне промо в режиме создания
-        if (!promocontainer || (promoeditorcustom && promoeditorcustom.isCreating) && !promoeditorcustom.isFromSchedule) {
+        if (tree.needLoadTree && (!promocontainer || (promoeditorcustom && promoeditorcustom.isCreating) && !promoeditorcustom.isFromSchedule)) {
             store.load();
         }
 
         var promocontainer = treegrid.up('#promo');
-        if (promocontainer) {
+        if (promocontainer || tree.hideNotHierarchyBtns) {
             var elementsToHide = tree.query('[hierarchyOnly=true]');
             elementsToHide.forEach(function (el) { el.hide(); });
         }
@@ -360,8 +369,9 @@
         });
     },
 
-    onBaseClientsCheckbox: function (newValue, oldValue) {
-        this.applyFiltersForTree(); 
+    onBaseClientsCheckbox: function (checkBox, newValue, oldValue) {
+        var clientTree = checkBox.up('clienttree');
+        this.applyFiltersForTree(clientTree);
     },
 
     onAddNodeButtonClick: function (button) {
@@ -467,7 +477,8 @@
                 selModel = treegrid.getSelectionModel(),
                 store = treegrid.getStore(),
                 currentRoot = store.getRootNode(),
-                trueRoot = store.getById('5000000');
+                trueRoot = store.getById('5000000'),
+                clientTree = treegrid.up('clienttree');
 
             // workaround - не нашёл способа загружать дерево вместе с рутом с сервера
             var rootIsDefault = currentRoot.getId() != '5000000';
@@ -483,7 +494,7 @@
 
             if (sels.length == 0 && form && records[0]) {
                 if (records[0].get('ObjectId') == 5000000) {
-                    selModel.select(records[0]);                    
+                    selModel.select(records[0]);
                     treegrid.fireEvent('itemclick', gridView, records[0]);
                 }
             }
@@ -494,14 +505,13 @@
                 treegrid.mask();
                 $('#' + treegrid.id + ' .x-mask').css('opacity', '0.1');
             }
-
-            var promoeditor = treegrid.up('promoeditorcustom');
-            if (promoeditor) {
+            
+            if (clientTree.chooseMode) {
                 // разве одного любого чекнуть не достаточно?
                 // если да, то иконки базового нужно будет переделать
                 var nodes = node.childNodes.length !== 0 ? node.childNodes : records[0].childNodes.length !== 0 ? records[0].childNodes : null;
                 me.setCheckTree(nodes, false);
-                this.controllCheckClient(promoeditor);
+                this.controllCheckClient(clientTree);
             } else if (treegrid.checkedNodes) {
                 // для расширенного фильтра при выборе операции Список
                 var nodes = node.childNodes.length !== 0 ? node.childNodes : records[0].childNodes.length !== 0 ? records[0].childNodes : null;
@@ -585,23 +595,23 @@
 
         var heightScroll = table.length > 0 ? table.height() : 0;
         var widthScroll = table.length > 0 ? table.innerWidth() : 0;
-        var jspV = $('#vScrollClientTree');
-        var jspH = $('#hScrollClientTree');
+        var jspV = $('#vScrollClientTree' + tree.id);
+        var jspH = $('#hScrollClientTree' + tree.id);
 
         // если скролла есть, то обновить, иначе создать
         if (jspV.length > 0) {
             jspV.height(treeViewHtml.height());
-            $('#vScrollClientTreeDiv').height(heightScroll);
+            $('#vScrollClientTreeDiv' + tree.id).height(heightScroll);
             jspV.data('jsp').reinitialise();
-            $('#vScrollClientTree').data('jsp').scrollToY(treeViewHtml.scrollTop());
+            $('#vScrollClientTree' + tree.id).data('jsp').scrollToY(treeViewHtml.scrollTop());
         } else {
             treeViewHtml.css('overflow', 'hidden');
-            treeHtml.append('<div id="vScrollClientTree" class="vScrollTree scrollpanel" style="height: ' + treeViewHtml.height() + 'px;">'
-                + '<div id="vScrollClientTreeDiv" style="height: ' + heightScroll + 'px;"></div></div>');
+            treeHtml.append('<div id="vScrollClientTree' + tree.id +'" class="vScrollTree scrollpanel" style="height: ' + treeViewHtml.height() + 'px;">'
+                + '<div id="vScrollClientTreeDiv' + tree.id +'" style="height: ' + heightScroll + 'px;"></div></div>');
 
-            $('#vScrollClientTree').jScrollPane();
-            $('#vScrollClientTree').data('jsp').scrollToY(treeViewHtml.scrollTop());
-            $('#vScrollClientTree').on('jsp-scroll-y', function (event, scrollPositionY, isAtTop, isAtBottom) {
+            $('#vScrollClientTree' + tree.id).jScrollPane();
+            $('#vScrollClientTree' + tree.id).data('jsp').scrollToY(treeViewHtml.scrollTop());
+            $('#vScrollClientTree' + tree.id).on('jsp-scroll-y', function (event, scrollPositionY, isAtTop, isAtBottom) {
                 treeViewHtml.scrollTop(scrollPositionY);
                 return false;
             });
@@ -609,16 +619,16 @@
 
         if (jspH.length > 0) {
             jspH.width(treeViewHtml.width());
-            $('#hScrollClientTreeDiv').width(widthScroll);
+            $('#hScrollClientTreeDiv' + tree.id).width(widthScroll);
             jspH.data('jsp').reinitialise();
-            $('#hScrollClientTree').data('jsp').scrollToX(treeViewHtml.scrollLeft());
+            $('#hScrollClientTree' + tree.id).data('jsp').scrollToX(treeViewHtml.scrollLeft());
         } else {
-            treeHtml.append('<div id="hScrollClientTree" class="hScrollTree scrollpanel">'
-                + '<div id="hScrollClientTreeDiv" style="width: ' + widthScroll + 'px;"></div></div>');
+            treeHtml.append('<div id="hScrollClientTree' + tree.id +'" class="hScrollTree scrollpanel">'
+                + '<div id="hScrollClientTreeDiv' + tree.id +'" style="width: ' + widthScroll + 'px;"></div></div>');
 
-            $('#hScrollClientTree').jScrollPane();
-            $('#hScrollClientTree').data('jsp').scrollToX(treeViewHtml.scrollLeft());
-            $('#hScrollClientTree').on('jsp-scroll-x', function (event, scrollPositionX, isAtTop, isAtBottom) {
+            $('#hScrollClientTree' + tree.id).jScrollPane();
+            $('#hScrollClientTree' + tree.id).data('jsp').scrollToX(treeViewHtml.scrollLeft());
+            $('#hScrollClientTree' + tree.id).on('jsp-scroll-x', function (event, scrollPositionX, isAtTop, isAtBottom) {
                 treeViewHtml.scrollLeft(scrollPositionX);
                 return false;
             });
@@ -634,8 +644,8 @@
             var table = treeViewHtml.find('table');
             var heightTable = table.height();
             var widthTable = table.innerWidth();
-            var currentHeightScroll = $('#vScrollClientTreeDiv').height();
-            var currentWidthScroll = $('#hScrollClientTreeDiv').width();
+            var currentHeightScroll = $('#vScrollClientTreeDiv' + tree.id).height();
+            var currentWidthScroll = $('#hScrollClientTreeDiv' + tree.id).width();
 
             if ((heightTable && heightTable != 0 && currentHeightScroll && heightTable != currentHeightScroll)
                 || (widthTable && widthTable != 0 && currentWidthScroll && widthTable != currentWidthScroll))
@@ -648,14 +658,14 @@
             var direction = e.originalEvent.deltaY > 0 ? 1 : -1;
             var scrollValue = this.scrollTop + direction * 40;
 
-            $('#vScrollClientTree').data('jsp').scrollToY(scrollValue);
+            $('#vScrollClientTree' + tree.id).data('jsp').scrollToY(scrollValue);
             return false;
         });
 
         $('#' + tree.getView().id).on('scroll', function (e) {
-            if (this.scrollTop != $('#vScrollClientTree').scrollTop())
-                $('#vScrollClientTree').data('jsp').scrollToY(this.scrollTop);
-        }); 
+            if (this.scrollTop != $('#vScrollClientTree' + tree.id).scrollTop())
+                $('#vScrollClientTree' + tree.id).data('jsp').scrollToY(this.scrollTop);
+        });
 
         tree.mask('Loading...');
         this.checkRolesAccess(tree);
@@ -691,9 +701,10 @@
 
         datetimePicker.show();
 
+        var clientTree = button.up('clienttree');
         var okButton = Ext.ComponentQuery.query('button[action="ok"]')[0];
         var dateFilterButton = Ext.ComponentQuery.query('#dateFilter')[0];
-        var clientTreeGrid = Ext.ComponentQuery.query('clienttreegrid')[0];
+        var clientTreeGrid = clientTree.down('clienttreegrid');
         var store = clientTreeGrid.store;
 
         okButton.addListener('click', function () {
@@ -704,12 +715,12 @@
             button.dateValue = resultDate;
             dateFilterButton.setText(days + '.' + month + '.' + year);
             store.getProxy().extraParams.dateFilter = resultDate;
-            me.applyFiltersForTree();
+            me.applyFiltersForTree(clientTree);
         });
     },
 
     onClientTreeEditorClose: function (window) {
-        debugger;
+       // debugger;
         var gridView = Ext.ComponentQuery.query('clienttreegrid')[0].getView();
         this.checkForBase(gridView);
     },
@@ -756,11 +767,11 @@
                             myMask.hide();
                         }
                     },
-                    function () {
-                        isBaseClientField.setValue(false);
-                        App.Notify.pushError(data.message);
-                        myMask.hide();
-                    })
+                        function () {
+                            isBaseClientField.setValue(false);
+                            App.Notify.pushError(data.message);
+                            myMask.hide();
+                        })
                 }
             }
         });
@@ -772,7 +783,7 @@
         var pointsAccess = App.UserInfo.getCurrentRole().AccessPoints;
 
         // кнопки которые проверяем на доступ
-        var btns = ['#addNode', '#deleteNode', '#updateNode'];
+        var btns = ['#addNode', '#deleteNode', '#updateNode', '#attachFile', '#deleteAttachFile', '#attachFileName'];
 
         Ext.each(btns, function (btnName) {
             var btn = clientTree.down(btnName);
@@ -787,12 +798,12 @@
 
     onClientTextSearch: function (field, e) {
         if (!e || e.getKey() == e.ENTER) {
-            this.applyFiltersForTree();
+            var clientTree = field.up('clienttree');
+            this.applyFiltersForTree(clientTree);
         }
     },
 
-    applyFiltersForTree: function () {
-        var clientTree = Ext.ComponentQuery.query('clienttree')[0];
+    applyFiltersForTree: function (clientTree) {        
         var textFieldSearch = clientTree.down('#clientsSearchTrigger');
         var baseClientChBox = clientTree.down('#baseClientsCheckbox');
         var store = clientTree.down('basetreegrid').store;
@@ -804,10 +815,9 @@
             proxy.extraParams.filterParameter = textSearch;
 
         proxy.extraParams.needBaseClients = baseClientChBox.getValue();
-
-        var window = clientTree.up('promoeditorcustom');
-        if (window && window.clientTreeId)
-            proxy.extraParams.clientObjectId = window.clientTreeId;
+                
+        if (clientTree.choosenClientObjectId)
+            proxy.extraParams.clientObjectId = clientTree.choosenClientObjectId;
 
         store.getRootNode().removeAll();
         store.getRootNode().setId('root');
@@ -819,8 +829,7 @@
     },
 
     // следит за галочками
-    controllCheckClient: function (promoeditor) {
-        var clientTree = Ext.ComponentQuery.query('clienttree')[0];       
+    controllCheckClient: function (clientTree) {        
         var clientTreeGrid = clientTree.down('basetreegrid');
         var store = clientTreeGrid.store;
         var proxy = store.getProxy();
@@ -829,7 +838,7 @@
         if (proxy.extraParams.clientObjectId != null)
             targerNodeId = proxy.extraParams.clientObjectId;
         else
-            targerNodeId = promoeditor.clientTreeId;
+            targerNodeId = clientTree.choosenClientObjectId;
 
         var targetnode = store.getNodeById(targerNodeId);
 
@@ -913,6 +922,133 @@
                     record.set('DaysEnd', null);
                 }
             }
+        }
+    },
+
+
+    onAttachFileButtonClick: function (button) {
+        var resource = 'ClientTrees';
+        var action = 'UploadLogoFile';
+
+        var uploadFileWindow = Ext.widget('uploadfilewindow', {
+            itemId: 'clientTreeUploadFileWindow',
+            resource: resource,
+            action: action,
+            buttons: [{
+                text: l10n.ns('core', 'buttons').value('cancel'),
+                itemId: 'cancel'
+            }, {
+                text: l10n.ns('core', 'buttons').value('upload'),
+                ui: 'green-button-footer-toolbar',
+                itemId: 'userOk'
+            }]
+        });
+
+        uploadFileWindow.down('filefield').regex = /^.*\.(png|jpg)$/,
+        uploadFileWindow.down('filefield').regexText = 'Only .png or .jpg file supported',
+        uploadFileWindow.show();
+    },
+
+    onDeleteAttachFileButtonClick: function (button) {
+        var me = this;
+        var clientTree = button.up('clienttree');
+        var logoPanel = clientTree.down('[name=treeLogoPanel]');
+        var currentNode = clientTree.down('clienttreegrid').getSelectionModel().getSelection()[0];
+
+        var parameters = {
+            id: currentNode.get('Id')
+        };
+
+        App.Util.makeRequestWithCallback('ClientTrees', 'DeleteLogo', parameters,
+            function (data) {
+                var result = Ext.JSON.decode(data.httpResponse.data.value);
+                if (result.success) {
+                    currentNode.data.LogoFileName = null;
+                    me.setLogoImage(logoPanel, null);
+                } else {
+                    App.Notify.pushError(result.message || 'Error has occured');
+                }
+            },
+            function (data) {
+                App.Notify.pushError(data.message);
+            }
+        );
+    },
+
+    onUploadFileOkButtonClick: function (button) {
+        var me = this;
+        var clientTree = Ext.ComponentQuery.query('clienttree')[0];
+        var logoPanel = clientTree.down('[name=treeLogoPanel]');
+        var win = button.up('uploadfilewindow');
+        var currentNode = clientTree.down('clienttreegrid').getSelectionModel().getSelection()[0];
+        var url = Ext.String.format("/odata/{0}/{1}?clientTreeId={2}", win.resource, win.action, currentNode.get('Id'));
+        var needCloseParentAfterUpload = win.needCloseParentAfterUpload;
+        var parentWin = win.parentGrid ? win.parentGrid.up('window') : null;
+        var form = win.down('#importform');
+        var paramform = form.down('importparamform');
+        var isEmpty;
+        if (paramform) {
+            var constrains = paramform.query('field[isConstrain=true]');
+            isEmpty = constrains && constrains.length > 0 && constrains.every(function (item) {
+                return Ext.isEmpty(item.getValue());
+            });
+
+            if (isEmpty) {
+                paramform.addCls('error-import-form');
+                paramform.down('#errormsg').getEl().setVisible();
+            }
+        }
+        if (form.isValid() && !isEmpty) {
+            form.getForm().submit({
+                url: url,                
+                waitMsg: l10n.ns('core').value('uploadingFileWaitMessageText'),
+                success: function (fp, o) {
+                    // Проверить ответ от сервера на наличие ошибки и отобразить ее, в случае необходимости
+                    if (o.result) {
+                        win.close();
+                        if (parentWin && needCloseParentAfterUpload) {
+                            parentWin.close();
+                        }
+                        var pattern = '/odata/ClientTrees/DownloadLogoFile?fileName={0}';
+                        var downloadFileUrl = document.location.href + Ext.String.format(pattern, o.result.fileName);
+
+                        var attachFileName = Ext.ComponentQuery.query('#attachFileName')[0];
+                        attachFileName.setValue('<a href=' + downloadFileUrl + '>' + o.result.fileName + '</a>');
+                        attachFileName.attachFileName = o.result.fileName;
+
+                        var currentNode = Ext.ComponentQuery.query('clienttreegrid')[0].getSelectionModel().getSelection()[0];
+                        currentNode.data.LogoFileName = o.result.fileName;
+                        me.setLogoImage(logoPanel, o.result.fileName);
+
+                        App.Notify.pushInfo(win.successMessage || 'Файл был загружен на сервер');
+                    } else {
+                        App.Notify.pushError(o.result.message);
+                    }
+                },
+                failure: function (fp, o) {
+                    App.Notify.pushError(o.result.message || 'Ошибка при обработке запроса');
+                }
+            });
+        }
+    },
+
+    setLogoImage: function (logoPanel, logoFileName) {
+        var logoImage = logoPanel.down('#logoImage');
+        var attachFileName = logoPanel.down('#attachFileName');
+        var deleteAtachFile = logoPanel.down('#deleteAttachFile');
+
+        if (logoFileName) {
+            var pattern = '/odata/ClientTrees/DownloadLogoFile?fileName={0}';
+            var downloadFileUrl = document.location.href + Ext.String.format(pattern, logoFileName);
+
+            attachFileName.setValue('<a href=' + downloadFileUrl + '>' + logoFileName + '</a>');
+            attachFileName.attachFileName = logoFileName;
+            logoImage.setSrc(downloadFileUrl);
+            deleteAtachFile.setDisabled(false);
+        } else {            
+            logoImage.setSrc('/bundles/style/images/swith-glyph-gray.png');            
+            attachFileName.setValue(null);
+            deleteAtachFile.setDisabled(true);
         }
     }
 });

@@ -184,15 +184,16 @@ namespace Module.Frontend.TPM.Controllers
         private IEnumerable<Column> GetExportSettingsTiCosts()
         {
             IEnumerable<Column> columns = new List<Column>() {
-                new Column() { Order = 0, Field = "ClientTree.FullPathName", Header = "Client", Quoting = false },
-                new Column() { Order = 1, Field = "BudgetSubItem.BudgetItem.Name", Header = "Support", Quoting = false },
-                new Column() { Order = 2, Field = "BudgetSubItem.Name", Header = "Equipment Type", Quoting = false },
-                new Column() { Order = 3, Field = "PlanQuantity", Header = "Plan Quantity", Quoting = false },
-                new Column() { Order = 4, Field = "ActualQuantity", Header = "Actual Quantity", Quoting = false },
-                new Column() { Order = 5, Field = "PlanCostTE", Header = "Plan Cost TE", Quoting = false },
-                new Column() { Order = 6, Field = "ActualCostTE", Header = "Actual Cost TE", Quoting = false },
-                new Column() { Order = 7, Field = "StartDate", Header = "Start Date", Quoting = false, Format = "dd.MM.yyyy" },
-                new Column() { Order = 8, Field = "EndDate", Header = "End Date", Quoting = false, Format = "dd.MM.yyyy" },
+                new Column() { Order = 0, Field = "Number", Header = "ID", Quoting = false },
+                new Column() { Order = 1, Field = "ClientTree.FullPathName", Header = "Client", Quoting = false },
+                new Column() { Order = 2, Field = "BudgetSubItem.BudgetItem.Name", Header = "Support", Quoting = false },
+                new Column() { Order = 3, Field = "BudgetSubItem.Name", Header = "Equipment Type", Quoting = false },
+                new Column() { Order = 4, Field = "PlanQuantity", Header = "Plan Quantity", Quoting = false },
+                new Column() { Order = 5, Field = "ActualQuantity", Header = "Actual Quantity", Quoting = false },
+                new Column() { Order = 6, Field = "PlanCostTE", Header = "Plan Cost TE Total", Quoting = false },
+                new Column() { Order = 7, Field = "ActualCostTE", Header = "Actual Cost TE Total", Quoting = false },
+                new Column() { Order = 8, Field = "StartDate", Header = "Start Date", Quoting = false, Format = "dd.MM.yyyy" },
+                new Column() { Order = 9, Field = "EndDate", Header = "End Date", Quoting = false, Format = "dd.MM.yyyy" },
             };
             return columns;
         }
@@ -200,17 +201,18 @@ namespace Module.Frontend.TPM.Controllers
         private IEnumerable<Column> GetExportSettingsCostProduction()
         {
             IEnumerable<Column> columns = new List<Column>() {
-                new Column() { Order = 0, Field = "ClientTree.FullPathName", Header = "Client", Quoting = false },
-                new Column() { Order = 1, Field = "BudgetSubItem.BudgetItem.Name", Header = "Support", Quoting = false },
-                new Column() { Order = 2, Field = "BudgetSubItem.Name", Header = "Equipment Type", Quoting = false },
-                new Column() { Order = 3, Field = "PlanQuantity", Header = "Plan Quantity", Quoting = false },
-                new Column() { Order = 4, Field = "ActualQuantity", Header = "Actual Quantity", Quoting = false },
-                new Column() { Order = 5, Field = "StartDate", Header = "Start Date", Quoting = false, Format = "dd.MM.yyyy" },
-                new Column() { Order = 6, Field = "EndDate", Header = "End Date", Quoting = false, Format = "dd.MM.yyyy" },
-                new Column() { Order = 7, Field = "PlanProdCostPer1Item", Header = "Plan Prod Cost Per 1 Item", Quoting = false },
-                new Column() { Order = 8, Field = "ActualProdCostPer1Item", Header = "Actual Prod Cost Per 1 Item", Quoting = false },
-                new Column() { Order = 9, Field = "PlanProdCost", Header = "Plan Prod Cost", Quoting = false },
-                new Column() { Order = 10, Field = "ActualProdCost", Header = "Actual Prod Cost", Quoting = false },
+                new Column() { Order = 0, Field = "Number", Header = "ID", Quoting = false },
+                new Column() { Order = 1, Field = "ClientTree.FullPathName", Header = "Client", Quoting = false },
+                new Column() { Order = 2, Field = "BudgetSubItem.BudgetItem.Name", Header = "Support", Quoting = false },
+                new Column() { Order = 3, Field = "BudgetSubItem.Name", Header = "Equipment Type", Quoting = false },
+                new Column() { Order = 4, Field = "PlanQuantity", Header = "Plan Quantity", Quoting = false },
+                new Column() { Order = 5, Field = "ActualQuantity", Header = "Actual Quantity", Quoting = false },
+                new Column() { Order = 6, Field = "StartDate", Header = "Start Date", Quoting = false, Format = "dd.MM.yyyy" },
+                new Column() { Order = 7, Field = "EndDate", Header = "End Date", Quoting = false, Format = "dd.MM.yyyy" },
+                new Column() { Order = 8, Field = "PlanProdCostPer1Item", Header = "Plan Prod Cost Per 1 Item", Quoting = false },
+                new Column() { Order = 9, Field = "ActualProdCostPer1Item", Header = "Actual Prod Cost Per 1 Item", Quoting = false },
+                new Column() { Order = 10, Field = "PlanProdCost", Header = "Plan Prod Cost", Quoting = false },
+                new Column() { Order = 11, Field = "ActualProdCost", Header = "Actual Prod Cost", Quoting = false },
             };
             return columns;
         }
@@ -298,10 +300,18 @@ namespace Module.Frontend.TPM.Controllers
         {
             try
             {
+                int maxFileByteLength = 25000000; 
+
                 if (!Request.Content.IsMimeMultipartContent())
                 {
                     throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
                 }
+
+                if (Request.Content.Headers.ContentLength > maxFileByteLength)
+                {
+                    throw new FileLoadException("The file size must be less than 25mb.");
+                }
+
                 string directory = Core.Settings.AppSettingsManager.GetSetting("PROMO_SUPPORT_DIRECTORY", "PromoSupportFiles");
                 string fileName = await FileUtility.UploadFile(Request, directory);
 

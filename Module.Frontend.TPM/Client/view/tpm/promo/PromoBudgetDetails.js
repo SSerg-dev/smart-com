@@ -26,15 +26,18 @@
     },
 
     getEditableField: function (budgetItemName) {
-        var costProd = this.costProd;
-        var fact = this.fact;
-        var budgetName = this.budgetName.toLowerCase();
-        var editable = fact;
+        //var costProd = this.costProd;
+        //var fact = this.fact;
+        //var budgetName = this.budgetName.toLowerCase();
+        //var editable = fact;
 
-        if (costProd || (budgetName == 'marketing' && budgetItemName.toLowerCase() == 'posm'))
-            editable = true;
+        //if (costProd || (budgetName == 'marketing' && budgetItemName.toLowerCase() == 'posm'))
+        //    editable = true;
 
-        return editable;
+        //return editable;
+
+        // а вдруг нужно будет вернуть ручное редактирвание
+        return false;
     },
 
     addBudgetItemField: function (budgetItemName) {
@@ -73,7 +76,7 @@
                 return isNaN(parsedValue) ? null : parsedValue;
             },
             onTrigger1Click: function () {
-                var promobudgetdetails = this.up('promobudgetdetails') || Ext.ComponentQuery.query('promobudgetdetails')[0];
+                var promobudgetdetails = this.up('promobudgetdetails') || this.up('fieldset').down('promobudgetdetails'); /* || Ext.ComponentQuery.query('promobudgetdetails')[0]*/;
                 var controller = App.app.getController('tpm.promo.PromoBudgetDetails');
                 var promoId = promobudgetdetails.record.promoId;
                 var fact = promobudgetdetails.fact;

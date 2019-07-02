@@ -30,7 +30,7 @@
                 container.down('#btn_promo_step6').removeCls('selected');
 
                 var jspData = $(wind.down('panel[name=basicPromo]').getTargetEl().dom).data('jsp');
-                var el = $(container.down('producttree[itemId=promo_step2]').up().getTargetEl().dom);
+                var el = $(container.down('#promo_step2').getTargetEl().dom);
                 jspData.scrollToElement(el, true, true);
                 container.down('#btn_promo_step3').addClass('selected');
             }
@@ -48,7 +48,8 @@
 
     detailTabPanel: null,
     clientHierarchy: null,
-    clientTreeId: null,
+    clientTreeId: null, // ObjectId
+    clientTreeKeyId: null, // Ключ в таблице
     productHierarchy: null,
 
     initComponent: function () {
@@ -82,7 +83,8 @@
 
         // promo activity
         this.down('#btn_promoActivity_step1').addCls('selected');
-        this.down('#btn_promoActivity_step1').addCls('notcompleted');
+        //Необязательный шаг
+        this.down('#btn_promoActivity_step1').removeCls('notcompleted');
         this.down('#btn_promoActivity_step2').addCls('notcompleted');
 
         // при создании из календаря, promoGrid не существует
@@ -158,6 +160,8 @@
                         margin: '5 5 0 5',
                         isComplete: false,
                         //Переустановка isComplete для первичного отображения вкладки Basic
+                        isInstoreMechanicsComplete: true,
+                        isMarsMechanicsComplete: false,
                         listeners: {
                             glyphchange: function (me, newGlyph, oldGlyph) {
                                 var productButton = Ext.ComponentQuery.query('button[itemId=btn_promo_step2]')[0];
@@ -223,41 +227,23 @@
                         xtype: 'container',
                         cls: 'promo-editor-custom-scroll-items',
                         items: [{
-                            items: [{
-                                xtype: 'panel',
-                                height: 547 + 36,
-                                header: {
-                                    title: l10n.ns('tpm', 'promoStap').value('basicStep1'),
-                                    cls: 'promo-header-item'
-                                },
-                                items: [{
-                                    xtype: 'clienttree',
-                                    name: 'promo_step1',
-                                    itemId: 'promo_step1',
-                                    header: false,
-                                    height: 547,
-                                    minHeight: 547,
-                                    maxHeight: 547
-                                }]
-                            }]
+                            xtype: 'promoclient',
+                            name: 'promo_step1',
+                            itemId: 'promo_step1',
+                            height: 221 + 36,
+                            header: {
+                                title: l10n.ns('tpm', 'promoStap').value('basicStep1'),
+                                cls: 'promo-header-item'
+                            }
                         }, {
-                            items: [{
-                                xtype: 'panel',
-                                height: 472 + 36,
-                                header: {
-                                    title: l10n.ns('tpm', 'promoStap').value('basicStep2'),
-                                    cls: 'promo-header-item'
-                                },
-                                items: [{
-                                    xtype: 'producttree',
-                                    name: 'promo_step2',
-                                    itemId: 'promo_step2',
-                                    header: false,
-                                    height: 472,
-                                    minHeight: 472,
-                                    maxHeight: 472
-                                }]
-                            }]
+                            xtype: 'promobasicproducts',
+                            name: 'promo_step2',
+                            itemId: 'promo_step2',
+                            height: 227 + 36,
+                            header: {
+                                title: l10n.ns('tpm', 'promoStap').value('basicStep2'),
+                                cls: 'promo-header-item'
+                            }
                         }, {
                             xtype: 'promomechanic',
                             name: 'promo_step3',
@@ -554,7 +540,7 @@
         cls: 'promo-action-button',
         hidden: true,
         isPromoAction: true,
-        roles: ['Administrator', 'CustomerMarketing', 'DemandFinance', 'DemandPlanning', 'FunctionalExpert', 'KeyAccountManager'],
+        roles: ['Administrator', 'CMManager', 'CustomerMarketing', 'DemandFinance', 'DemandPlanning', 'FunctionalExpert', 'KeyAccountManager'],
         statuses: ['Draft'],
         statusId: null,
         statusName: null,
@@ -570,7 +556,7 @@
         cls: 'promo-action-button',
         hidden: true,
         isPromoAction: true,
-        roles: ['Administrator', 'CustomerMarketing', 'FunctionalExpert', 'KeyAccountManager'],
+        roles: ['Administrator', 'CMManager', 'CustomerMarketing', 'FunctionalExpert', 'KeyAccountManager'],
         statuses: ['DraftPublished', 'Test2'],
         statusId: null,
         statusName: null,
@@ -585,7 +571,7 @@
         cls: 'promo-action-button',
         hidden: true,
         isPromoAction: true,
-        roles: ['Administrator', 'CustomerMarketing', 'FunctionalExpert', 'KeyAccountManager'],
+        roles: ['Administrator', 'CMManager', 'CustomerMarketing', 'FunctionalExpert', 'KeyAccountManager'],
         statuses: ['DraftPublished'],
         statusId: null,
         statusName: null,
@@ -601,7 +587,7 @@
         cls: 'promo-action-button',
         hidden: true,
         isPromoAction: true,
-        roles: ['CustomerMarketing', 'DemandFinance', 'DemandPlanning'],
+        roles: ['CMManager', 'CustomerMarketing', 'DemandFinance', 'DemandPlanning'],
         statuses: ['OnApproval'],
         statusId: null,
         statusName: null,
@@ -616,27 +602,28 @@
         cls: 'promo-action-button',
         hidden: true,
         isPromoAction: true,
-        roles: ['CustomerMarketing', 'DemandFinance', 'DemandPlanning'],
+        roles: ['CMManager', 'DemandFinance', 'DemandPlanning'],
         statuses: ['OnApproval'],
         statusId: null,
         statusName: null,
         statusSystemName: null,
         style: { "background-color": "#66BB6A" }
     },
-    // КАМ в статусе Approval может отменить промо
+    // Отменить промо
     {
         xtype: 'button',
-        itemId: 'btn_rejectPlan',
-        glyph: 0xf156,
-        text: l10n.ns('tpm', 'customtoptoolbar').value('reject'),
+        itemId: 'btn_cancel',
+        glyph: 0xf739,
+        text: l10n.ns('tpm', 'customtoptoolbar').value('cancel'),
         cls: 'promo-action-button',
         hidden: true,
         isPromoAction: true,
         roles: ['KeyAccountManager'],
-        statuses: ['Approved'],
+        statuses: ['Approved', 'Planned'],
         statusId: null,
         statusName: null,
-        statusSystemName: null
+        statusSystemName: null,
+        style: { "background-color": "#ffb74d" }
     },
     // Спланировать промо
     {
@@ -663,8 +650,22 @@
         cls: 'promo-action-button',
         hidden: true,
         isPromoAction: true,
-        roles: ['Administrator', 'DemandFinance', 'FunctionalExpert'],
+		roles: ['Administrator', 'KeyAccountManager', 'FunctionalExpert'],
         statuses: ['Finished'],
+        statusId: null,
+        statusName: null,
+        statusSystemName: null,
+        style: { "background-color": "#66BB6A" }
+    }, {
+        xtype: 'button',
+        itemId: 'btn_backToFinished',
+        glyph: 0xf54d,
+        text: l10n.ns('tpm', 'customtoptoolbar').value('backtofinished'),
+        cls: 'promo-action-button',
+        hidden: true,
+        isPromoAction: true,
+        roles: ['FunctionalExpert'],
+        statuses: ['Closed'],
         statusId: null,
         statusName: null,
         statusSystemName: null,
@@ -672,6 +673,11 @@
     }, {
         xtype: 'tbspacer',
         flex: 10
+    }, {
+        text: l10n.ns('tpm', 'customtoptoolbar').value('recalculate'),
+        itemId: 'btn_recalculatePromo',
+        style: { "background-color": "#ffb74d" },
+        hidden: true
     }, {
         text: l10n.ns('tpm', 'buttons').value('close'),
         itemId: 'closePromo',
@@ -685,7 +691,7 @@
         text: l10n.ns('tpm', 'buttons').value('edit'),
         itemId: 'changePromo',
         style: { "background-color": "#26A69A" },
-        roles: ['Administrator', 'CustomerMarketing', 'FunctionalExpert', 'KeyAccountManager'],
+        roles: ['Administrator', 'CMManager', 'CustomerMarketing', 'FunctionalExpert', 'KeyAccountManager'],
         hidden: true
     }, {
         text: l10n.ns('tpm', 'promoButtons').value('ok'),

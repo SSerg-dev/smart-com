@@ -4,6 +4,7 @@
     width: 500,
     minWidth: 500,
     maxHeight: 500,
+    cls: 'readOnlyFields',
 
     noChange: true,
 
@@ -22,6 +23,8 @@
         },
                 { xtype: 'datefield', name: 'StartDate', fieldLabel: l10n.ns('tpm', 'PlanPostPromoEffectReport').value('StartDate') },
                 { xtype: 'datefield', name: 'EndDate', fieldLabel: l10n.ns('tpm', 'PlanPostPromoEffectReport').value('EndDate') },
-                { xtype: 'textfield', name: 'Status', fieldLabel: l10n.ns('tpm', 'PlanPostPromoEffectReport').value('Status') }]
+            { xtype: 'textfield', name: 'Status', fieldLabel: l10n.ns('tpm', 'PlanPostPromoEffectReport').value('Status') },
+            { xtype: 'textfield', name: 'InOut', fieldLabel: l10n.ns('tpm', 'PlanPostPromoEffectReport').value('InOut') }
+        ]
     }
 });

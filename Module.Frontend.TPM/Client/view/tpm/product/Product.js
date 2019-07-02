@@ -92,8 +92,11 @@ ResourceMgr.getAdditionalMenu('core').import = {
                 text: l10n.ns('tpm', 'Product').value('ZREP'),
                 dataIndex: 'ZREP'
             }, {
-                text: l10n.ns('tpm', 'Product').value('EAN'),
-                dataIndex: 'EAN'
+                text: l10n.ns('tpm', 'Product').value('EAN_Case'),
+                dataIndex: 'EAN_Case'
+            },{
+                text: l10n.ns('tpm', 'Product').value('EAN_PC'),
+                dataIndex: 'EAN_PC'
             }, {
                 text: l10n.ns('tpm', 'Product').value('ProductRU'),
                 dataIndex: 'ProductRU'
@@ -160,9 +163,14 @@ ResourceMgr.getAdditionalMenu('core').import = {
             fieldLabel: l10n.ns('tpm', 'Product').value('ZREP'),
         }, {
             xtype: 'textfield',
-            name: 'EAN',
+            name: 'EAN_Case',
             vtype: 'eanNum',
-            fieldLabel: l10n.ns('tpm', 'Product').value('EAN'),
+            fieldLabel: l10n.ns('tpm', 'Product').value('EAN_Case'),
+        }, {
+            xtype: 'textfield',
+            name: 'EAN_PC',
+            vtype: 'eanNum',
+            fieldLabel: l10n.ns('tpm', 'Product').value('EAN_PC'),
         }, {
             xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
             name: 'ProductRU',
@@ -235,10 +243,12 @@ ResourceMgr.getAdditionalMenu('core').import = {
             xtype: 'numberfield',
             name: 'UOM_PC2Case',
             fieldLabel: l10n.ns('tpm', 'Product').value('UOM_PC2Case'),
-            allowDecimals: true,
+            allowDecimals: false,
             allowExponential: false,
             minValue: 0,
-            maxValue: 10000000000
+            maxValue: 999999999,
+            enforceMaxLength: true,
+            maxLength: 9
         }]
     }]
 });

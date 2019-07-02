@@ -363,8 +363,7 @@ namespace Module.Host.TPM.Actions {
                 IList<Tuple<String, Guid?>> brandTechesTuples = brandTeches.Select(y => new Tuple<String, Guid?>(y.Name, y.Id)).ToList();
 
                 //Присваивание ID
-                Parallel.ForEach(sourceRecords, item =>
-                {
+                Parallel.ForEach(sourceRecords, item => {
                     ImportTradeInvestment typedItem = (ImportTradeInvestment) item;
                     int objId = typedItem.ClientTreeObjectId;
                     if (existedexistedClientTreesIds.Contains(objId)) {
@@ -383,17 +382,16 @@ namespace Module.Host.TPM.Actions {
                 });
 
                 //Проверка по пересечению времени
-                IList < Tuple<int,Guid?,String, String>> badTimesIds = new List<Tuple<int, Guid?, String, String>>();
+                IList<Tuple<int, Guid?, String, String>> badTimesIds = new List<Tuple<int, Guid?, String, String>>();
 
-                IList<Tuple<int, String,String, String, DateTimeOffset?, DateTimeOffset?>> existedTradeInvestmentsTimes =
-                    this.GetQuery(context).Where(x => !x.Disabled).Select(y => new Tuple<int, String, String, String, DateTimeOffset?, DateTimeOffset?>(y.ClientTreeId, y.BrandTech!=null? y.BrandTech.Name:null, y.TIType, y.TISubType, y.StartDate, y.EndDate)).ToList();
+                IList<Tuple<int, String, String, String, DateTimeOffset?, DateTimeOffset?>> existedTradeInvestmentsTimes =
+                    this.GetQuery(context).Where(x => !x.Disabled).Select(y => new Tuple<int, String, String, String, DateTimeOffset?, DateTimeOffset?>(y.ClientTreeId, y.BrandTech != null ? y.BrandTech.Name : null, y.TIType, y.TISubType, y.StartDate, y.EndDate)).ToList();
 
-                IList<Tuple<int, String,String, String, DateTimeOffset?, DateTimeOffset?>> importedTradeInvestmentsTimes =
+                IList<Tuple<int, String, String, String, DateTimeOffset?, DateTimeOffset?>> importedTradeInvestmentsTimes =
                     sourceRecords.Select(y => new Tuple<int, String, String, String, DateTimeOffset?, DateTimeOffset?>(((ImportTradeInvestment) y).ClientTreeId, ((ImportTradeInvestment) y).BrandTechName, ((ImportTradeInvestment) y).TIType, ((ImportTradeInvestment) y).TISubType, ((ImportTradeInvestment) y).StartDate, ((ImportTradeInvestment) y).EndDate)).ToList();
 
 
-                Parallel.ForEach(sourceRecords, item =>
-                {
+                Parallel.ForEach(sourceRecords, item => {
                     ImportTradeInvestment typedObj = (ImportTradeInvestment) item;
                     if (!DateCheck(typedObj, existedTradeInvestmentsTimes, importedTradeInvestmentsTimes)) {
                         badTimesIds.Add(new Tuple<int, Guid?, String, String>(typedObj.ClientTreeObjectId, typedObj.BrandTechId, typedObj.TIType, typedObj.TISubType));
@@ -401,8 +399,7 @@ namespace Module.Host.TPM.Actions {
                 });
 
                 //Стандартные проверки
-                Parallel.ForEach(sourceRecords, item =>
-                {
+                Parallel.ForEach(sourceRecords, item => {
                     IEntity<Guid> rec;
                     IList<string> warnings;
                     IList<string> validationErrors;
@@ -489,7 +486,7 @@ namespace Module.Host.TPM.Actions {
             } else {
 
                 //Проверка пересечения по времени на клиенте
-                if (badTimesIds.Any(y=>y.Item1 == importObj.ClientTreeObjectId && y.Item2 == importObj.BrandTechId && y.Item3 == importObj.TIType && y.Item4 == importObj.TISubType)) {
+                if (badTimesIds.Any(y => y.Item1 == importObj.ClientTreeObjectId && y.Item2 == importObj.BrandTechId && y.Item3 == importObj.TIType && y.Item4 == importObj.TISubType)) {
                     isError = true;
                     errors.Add(" there can not be two TradeInvestment of such client, brandTech, Type and SubType in some Time");
                 }
@@ -560,15 +557,12 @@ namespace Module.Host.TPM.Actions {
             DateTime dtNow = DateTime.Now;
             foreach (ImportTradeInvestment newRecord in sourceRecords) {
                 TradeInvestment oldRecord = query.FirstOrDefault(x => x.ClientTree.ObjectId == newRecord.ClientTreeObjectId && !x.Disabled);
-
                 BrandTech bt = context.Set<BrandTech>().FirstOrDefault(x => x.Name == newRecord.BrandTechName && !x.Disabled);
-
-                //Если Excel конвертировано в доли из процентов
-                short sizePercent = newRecord.SizePercent < 1 ? (short) Math.Round(newRecord.SizePercent * 100) : (short) Math.Round(newRecord.SizePercent);
+                float sizepercent = newRecord.SizePercent < 1 ? (float)Math.Round(newRecord.SizePercent * 100, 2) : (float)Math.Round(newRecord.SizePercent, 2);
                 TradeInvestment toSave = new TradeInvestment() {
                     StartDate = newRecord.StartDate,
                     EndDate = newRecord.EndDate,
-                    SizePercent = sizePercent,
+                    SizePercent = sizepercent,
                     TISubType = newRecord.TISubType,
                     TIType = newRecord.TIType,
                     ClientTreeId = newRecord.ClientTreeId,
@@ -604,9 +598,9 @@ namespace Module.Host.TPM.Actions {
             IList<Tuple<int, String, String, String, DateTimeOffset?, DateTimeOffset?>> importedTradeInvestmentsTimes) {
 
             int clientTreeId = toCheck.ClientTreeId;
-            String brandTech = (String.IsNullOrWhiteSpace(toCheck.BrandTechName) || toCheck.BrandTechName == "All") ? null: toCheck.BrandTechName;;
+            String brandTech = (String.IsNullOrWhiteSpace(toCheck.BrandTechName) || toCheck.BrandTechName == "All") ? null : toCheck.BrandTechName; ;
 
-            foreach (Tuple<int, String, String, String, DateTimeOffset?, DateTimeOffset?> item in existedTradeInvestmentsTimes.Where(y => y.Item1 == clientTreeId && y.Item2== brandTech && y.Item3 == toCheck.TIType && y.Item4 == toCheck.TISubType)) {
+            foreach (Tuple<int, String, String, String, DateTimeOffset?, DateTimeOffset?> item in existedTradeInvestmentsTimes.Where(y => y.Item1 == clientTreeId && y.Item2 == brandTech && y.Item3 == toCheck.TIType && y.Item4 == toCheck.TISubType)) {
                 if ((item.Item5 <= toCheck.StartDate && item.Item6 >= toCheck.StartDate) ||
                     (item.Item5 <= toCheck.EndDate && item.Item6 >= toCheck.EndDate)) {
                     return false;
@@ -620,9 +614,10 @@ namespace Module.Host.TPM.Actions {
                     return false;
                 }
                 foreach (Tuple<int, String, String, String, DateTimeOffset?, DateTimeOffset?> item in ctCogs
-                    .Where(y => !( y.Item1 == thisTI.Item1 && y.Item2 == thisTI.Item2 && y.Item3 == thisTI.Item3 && y.Item4 == thisTI.Item4 && y.Item5 == thisTI.Item5 && y.Item6 == thisTI.Item6))) {
+                    .Where(y => !(y.Item1 == thisTI.Item1 && y.Item2 == thisTI.Item2 && y.Item3 == thisTI.Item3 && y.Item4 == thisTI.Item4 && y.Item5 == thisTI.Item5 && y.Item6 == thisTI.Item6))) {
                     if ((item.Item5 <= toCheck.StartDate && item.Item6 >= toCheck.StartDate) ||
-                        (item.Item5 <= toCheck.EndDate && item.Item6 >= toCheck.EndDate)) {
+                        (item.Item5 <= toCheck.EndDate && item.Item6 >= toCheck.EndDate) ||
+                        (item.Item5 >= toCheck.StartDate && item.Item6 <= toCheck.EndDate)) {
                         return false;
                     }
                 }

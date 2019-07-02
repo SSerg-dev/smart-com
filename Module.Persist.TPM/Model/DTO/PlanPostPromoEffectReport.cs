@@ -18,5 +18,6 @@ namespace Module.Persist.TPM.Model.DTO {
         public DateTimeOffset? StartDate { get; set; }
         public DateTimeOffset? EndDate { get; set; }
         public string Status { get; set; }
+        public bool? InOut { get; set; }
     }
 }

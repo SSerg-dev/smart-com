@@ -16,6 +16,7 @@ namespace Module.Persist.TPM.Model.Import
         public string ProductZREP { get; set; }
 
         [ImportCSVColumn(ColumnNumber = 1)]
+        [Required(ErrorMessage = Core.Import.ImportConsts.ValidationMessage.RequiredErrorMessage)]
         [Display(Name = "Client Demand Code")]
         public string ClientTreeDemandCode { get; set; }
 

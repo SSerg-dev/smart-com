@@ -50,13 +50,13 @@
             glyph: 0xf415,
             text: l10n.ns('core', 'crud').value('createButtonText'),
             tooltip: l10n.ns('core', 'crud').value('createButtonText')
-        }, {
+        }, /*{
             itemId: 'updatebutton',
             action: 'Patch',
             glyph: 0xf64f,
             text: l10n.ns('core', 'crud').value('updateButtonText'),
             tooltip: l10n.ns('core', 'crud').value('updateButtonText')
-        }, {
+        },*/ {
             itemId: 'deletebutton',
             action: 'Delete',
             glyph: 0xf5e8,
@@ -100,7 +100,17 @@
             sorters: [{
                 property: 'Number',
                 direction: 'DESC'
-            }]
+            }],
+            listeners: {
+                load: function (store, records, options) {
+                    var deleteBtn = Ext.ComponentQuery.query('promolinkedviewer > custombigtoolbar > #deletebutton');
+                    if (store.totalCount === 0) {
+                        deleteBtn[0].setDisabled(true);
+                    } else {
+                        deleteBtn[0].setDisabled(false);
+                    }
+                }
+            }
         },
 
         columns: {

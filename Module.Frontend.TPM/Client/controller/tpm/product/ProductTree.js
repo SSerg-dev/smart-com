@@ -66,6 +66,17 @@
                 'filterproduct tool[type=close]': {
                     click: this.onBackButtonClick
                 },
+
+                // кнопки для работы с логоитипом
+                'producttree #attachFile': {
+                    click: this.onAttachFileButtonClick
+                },
+                'producttree #deleteAttachFile': {
+                    click: this.onDeleteAttachFileButtonClick
+                },
+                '#productTreeUploadFileWindow #userOk': {
+                    click: this.onUploadFileOkButtonClick
+                },
             }
         });
     },
@@ -221,6 +232,7 @@
                 var filterContent = this.parseJsonFilter(filter, true, filterConstructor);
                 filterProductContainer.removeAll();
                 filterProductContainer.add(filterContent);
+                filterProductContainer.fireEvent('resize', filterProductContainer); // для качественной прокрутки
             } else {
                 filterProductContainer.removeAll();
             }
@@ -245,6 +257,7 @@
 
     updateTreeDetail: function (editorform, record) {
         editorform.loadRecord(record);
+        this.setLogoImage(editorform.up('producttree').down('[name=treeLogoPanel]'), record.data.LogoFileName);
     },
 
     //ProductTree
@@ -263,7 +276,7 @@
         me.disableButtons([updateButton, deleteButton, moveButton, editFilterButton]);
         var isCopyFromSchedule = (promoeditorcustom && promoeditorcustom.isFromSchedule && promoeditorcustom.isFromSchedule.isCopy);
         //так как автозагрузка стора отключена, необходимо загрузить стор, если иерархия открыта не в окне промо или в окне промо в режиме создания
-        if (!promocontainer || (promoeditorcustom && promoeditorcustom.isCreating) && !isCopyFromSchedule) {
+        if (tree.needLoadTree && (!promocontainer || (promoeditorcustom && promoeditorcustom.isCreating) && !isCopyFromSchedule)) {
             store.load();
         }
 
@@ -277,7 +290,7 @@
         //})
 
         var promocontainer = treegrid.up('#promo');
-        if (promocontainer) {
+        if (promocontainer || tree.hideNotHierarchyBtns) {
             var elementsToHide = tree.query('[hierarchyOnly=true]');
             elementsToHide.forEach(function (el) { el.hide(); });
         }
@@ -509,7 +522,8 @@
                 selModel = treegrid.getSelectionModel(),
                 store = treegrid.getStore(),
                 currentRoot = store.getRootNode(),
-                trueRoot = store.getById('1000000');
+                trueRoot = store.getById('1000000'),
+                productTree = treegrid.up('producttree');
 
             // workaround - не нашёл способа загружать дерево вместе с рутом с сервера
             var rootIsDefault = currentRoot.getId() != '1000000';
@@ -536,14 +550,13 @@
                     treegrid.mask();
                     $('#' + treegrid.id + ' .x-mask').css('opacity', '0.1');
                 }
-
-                var promoeditor = treegrid.up('promoeditorcustom');
-                if (promoeditor) {
+                
+                if (productTree.chooseMode) {
                     var nodes = node.childNodes.length !== 0 ? node.childNodes : records[0].childNodes.length !== 0 ? records[0].childNodes : null;
                     var targetNodes = [];
 
                     this.setCheckTree(nodes, false, targetNodes);
-                    this.controllCheckProduct(targetNodes);
+                    this.controllCheckProduct(productTree, targetNodes);
                 } else if (treegrid.checkedNodes) {
                     // для расширенного фильтра при выборе операции Список
                     var nodes = node.childNodes.length !== 0 ? node.childNodes : records[0].childNodes.length !== 0 ? records[0].childNodes : null;
@@ -686,7 +699,15 @@
                 filterWindow.show();
                 filterWindow.down('product').collapse();
                 filterWindow.expandProductPanel = false;
-                applyButton.fireEvent('click', applyButton);
+                if (stringfilter !== '') {
+                    applyButton.fireEvent('click', applyButton);
+                } else {
+                    var selectoperationwindow = Ext.widget({
+                        xtype: 'selectoperationwindow',
+                        content: filterConstructor.down('container[name=filtercontainer]')
+                    });
+                    selectoperationwindow.show();
+                }
             } else {
                 var selectoperationwindow = Ext.widget({
                     xtype: 'selectoperationwindow',
@@ -727,7 +748,15 @@
                 filterWindow.show();
                 filterWindow.down('product').collapse();
                 filterWindow.expandProductPanel = false;
-                applyButton.fireEvent('click', applyButton);
+                if (stringfilter !== '') {
+                    applyButton.fireEvent('click', applyButton);
+                } else {
+                    var selectoperationwindow = Ext.widget({
+                        xtype: 'selectoperationwindow',
+                        content: filterConstructor.down('container[name=filtercontainer]')
+                    });
+                    selectoperationwindow.show();
+                }
             } else if (filter) {
                 this.nodeCount = 0;
                 filterConstructor.down('container[name=filtercontainer]').add(this.parseJsonFilter(filter, false, filterConstructor));
@@ -754,18 +783,33 @@
             var brandField = editor.down('searchcombobox[name=BrandId]'),
                 value = brandField.getValue(),
                 store = brandField.getStore();
-            return '{"and": [{"BrandFlag": {"eq": "' + store.getById(value).data.Name + '" }}]}';
+            if (value && store.getById(value) && store.getById(value).data) {
+                return '{"and": [{"BrandFlag": {"eq": "' + store.getById(value).data.Name + '" }}]}';
+            }
         } else if (nodetype === 'Technology') {
             var technologyField = editor.down('searchcombobox[name=TechnologyId]'),
                 value = technologyField.getValue(),
                 store = technologyField.getStore(),
                 treeStore = this.tree.getStore(),
                 parent = treeStore.getNodeById(form.getRecord().data.parentId);
-            if (parent.data.Type === 'Brand') {
-                return '{"and": [{"BrandFlag": {"eq": "' + parent.data.Name + '" }},' +
-                    '{ "SupplySegment": { "eq": "' + store.getById(value).data.Name + '" }}]}';
-            } else {
-                return '{"and": [{ "SupplySegment": { "eq": "' + store.getById(value).data.Name + '" }}]}';
+
+            var techNameNumber = store.find('TechnologyId', value);
+
+            if (techNameNumber !== -1) {
+                var record = store.getAt(techNameNumber);
+
+                if (record && record.data) {
+                    var technologyName = record.data.TechnologyName;
+
+                    if (parent.data.Type === 'Brand') {
+                        return '{"and": [{"BrandFlag": {"eq": "' + parent.data.Name + '" }},' +
+                            '{ "SupplySegment": { "eq": "' + technologyName + '" }}]}';
+                    } else {
+                        return '{"and": [{ "SupplySegment": { "eq": "' + technologyName + '" }}]}';
+                    }
+                }
+            } else if (parent.data.Type === 'Brand') {
+                return '{"and": [{"BrandFlag": {"eq": "' + parent.data.Name + '" }}]}';
             }
         }
         return '';
@@ -985,13 +1029,14 @@
         var promogrid = button.up('promoeditorcustom');
         var grid = productlist.down('directorygrid');
         var store = grid.getStore();
+
         store.setFixedFilter('PromoId', {
             property: 'PromoId',
             operation: 'Equals',
             value: promogrid.promoId
         });
-        productlist.show();
 
+        productlist.show();
     },
 
     onProductListFilteredButtonClick: function (button) {
@@ -1024,23 +1069,23 @@
 
         var heightScroll = table.length > 0 ? table.height() : 0;
         var widthScroll = table.length > 0 ? table.innerWidth() : 0;
-        var jspV = $('#vScrollProductTree');
-        var jspH = $('#hScrollProductTree');
+        var jspV = $('#vScrollProductTree' + tree.id);
+        var jspH = $('#hScrollProductTree' + tree.id);
 
         // если скролла есть, то обновить, иначе создать
         if (jspV.length > 0) {
             jspV.height(treeViewHtml.height());
-            $('#vScrollProductTreeDiv').height(heightScroll);
+            $('#vScrollProductTreeDiv' + tree.id).height(heightScroll);
             jspV.data('jsp').reinitialise();
-            $('#vScrollProductTree').data('jsp').scrollToY(treeViewHtml.scrollTop());
+            $('#vScrollProductTree' + tree.id).data('jsp').scrollToY(treeViewHtml.scrollTop());
         } else {
             treeViewHtml.css('overflow', 'hidden');
-            treeHtml.append('<div id="vScrollProductTree" class="vScrollTree scrollpanel" style="height: ' + treeViewHtml.height() + 'px;">'
-                + '<div id="vScrollProductTreeDiv" style="height: ' + heightScroll + 'px;"></div></div>');
+            treeHtml.append('<div id="vScrollProductTree'+ tree.id +'" class="vScrollTree scrollpanel" style="height: ' + treeViewHtml.height() + 'px;">'
+                + '<div id="vScrollProductTreeDiv' + tree.id +'" style="height: ' + heightScroll + 'px;"></div></div>');
 
-            $('#vScrollProductTree').jScrollPane();
-            $('#vScrollProductTree').data('jsp').scrollToY(treeViewHtml.scrollTop());
-            $('#vScrollProductTree').on('jsp-scroll-y', function (event, scrollPositionY, isAtTop, isAtBottom) {
+            $('#vScrollProductTree' + tree.id).jScrollPane();
+            $('#vScrollProductTree' + tree.id).data('jsp').scrollToY(treeViewHtml.scrollTop());
+            $('#vScrollProductTree' + tree.id).on('jsp-scroll-y', function (event, scrollPositionY, isAtTop, isAtBottom) {
                 treeViewHtml.scrollTop(scrollPositionY);
                 return false;
             });
@@ -1048,16 +1093,16 @@
 
         if (jspH.length > 0) {
             jspH.width(treeViewHtml.width());
-            $('#hScrollProductTreeDiv').width(widthScroll);
+            $('#hScrollProductTreeDiv' + tree.id).width(widthScroll);
             jspH.data('jsp').reinitialise();
-            $('#hScrollProductTree').data('jsp').scrollToX(treeViewHtml.scrollLeft());
+            $('#hScrollProductTree' + tree.id).data('jsp').scrollToX(treeViewHtml.scrollLeft());
         } else {
-            treeHtml.append('<div id="hScrollProductTree" class="hScrollTree scrollpanel">'
-                + '<div id="hScrollProductTreeDiv" style="width: ' + widthScroll + 'px;"></div></div>');
+            treeHtml.append('<div id="hScrollProductTree' + tree.id +'" class="hScrollTree scrollpanel">'
+                + '<div id="hScrollProductTreeDiv' + tree.id +'" style="width: ' + widthScroll + 'px;"></div></div>');
 
-            $('#hScrollProductTree').jScrollPane();
-            $('#hScrollProductTree').data('jsp').scrollToX(treeViewHtml.scrollLeft());
-            $('#hScrollProductTree').on('jsp-scroll-x', function (event, scrollPositionX, isAtTop, isAtBottom) {
+            $('#hScrollProductTree' + tree.id).jScrollPane();
+            $('#hScrollProductTree' + tree.id).data('jsp').scrollToX(treeViewHtml.scrollLeft());
+            $('#hScrollProductTree' + tree.id).on('jsp-scroll-x', function (event, scrollPositionX, isAtTop, isAtBottom) {
                 treeViewHtml.scrollLeft(scrollPositionX);
                 return false;
             });
@@ -1072,8 +1117,8 @@
             var table = treeViewHtml.find('table');
             var heightTable = table.height();
             var widthTable = table.innerWidth();
-            var currentHeightScroll = $('#vScrollProductTreeDiv').height();
-            var currentWidthScroll = $('#hScrollProductTreeDiv').width();
+            var currentHeightScroll = $('#vScrollProductTreeDiv' + tree.id).height();
+            var currentWidthScroll = $('#hScrollProductTreeDiv' + tree.id).width();
 
             if ((heightTable && heightTable != 0 && currentHeightScroll && heightTable != currentHeightScroll)
                 || (widthTable && widthTable != 0 && currentWidthScroll && widthTable != currentWidthScroll))
@@ -1086,13 +1131,13 @@
             var direction = e.originalEvent.deltaY > 0 ? 1 : -1;
             var scrollValue = this.scrollTop + direction * 40;
 
-            $('#vScrollProductTree').data('jsp').scrollToY(scrollValue);
+            $('#vScrollProductTree' + tree.id).data('jsp').scrollToY(scrollValue);
             return false;
         });
 
         $('#' + tree.getView().id).on('scroll', function (e) {
-            if (this.scrollTop != $('#vScrollProductTree').scrollTop())
-                $('#vScrollProductTree').data('jsp').scrollToY(this.scrollTop);
+            if (this.scrollTop != $('#vScrollProductTree' + tree.id).scrollTop())
+                $('#vScrollProductTree' + tree.id).data('jsp').scrollToY(this.scrollTop);
         });
 
         tree.mask('Loading...');
@@ -1129,9 +1174,10 @@
 
         datetimePicker.show();
 
+        var productTree = button.up('producttree');
         var okButton = Ext.ComponentQuery.query('button[action="ok"]')[0];
         var dateFilterButton = Ext.ComponentQuery.query('#dateFilter')[0];
-        var productTreeGrid = Ext.ComponentQuery.query('producttreegrid')[0];
+        var productTreeGrid = productTree.down('producttreegrid');
         var store = productTreeGrid.store;
 
         okButton.addListener('click', function () {
@@ -1142,7 +1188,7 @@
             button.dateValue = resultDate;
             dateFilterButton.setText(days + '.' + month + '.' + year);
             store.getProxy().extraParams.dateFilter = resultDate;
-            me.applyFiltersForTree();
+            me.applyFiltersForTree(productTree);
         });
     },
 
@@ -1158,31 +1204,33 @@
 
     checkRolesAccess: function (grid) {
         var productTree = grid.up('producttree');
-        var resource = productTree.getBaseModel().getProxy().resourceName;
-        var pointsAccess = App.UserInfo.getCurrentRole().AccessPoints;
+        if (productTree) {
+            var resource = productTree.getBaseModel().getProxy().resourceName;
+            var pointsAccess = App.UserInfo.getCurrentRole().AccessPoints;
 
-        // кнопки которые проверяем на доступ
-        var btns = ['#addNode', '#deleteNode', '#updateNode', '#editFilter'];
+            // кнопки которые проверяем на доступ
+            var btns = ['#addNode', '#deleteNode', '#updateNode', '#editFilter', '#attachFileName' , '#attachFile' , '#deleteAttachFile'];
 
-        Ext.each(btns, function (btnName) {
-            var btn = productTree.down(btnName);
-            var access = pointsAccess.find(function (element) {
-                return element.Resource == resource && element.Action == btn.action;
+            Ext.each(btns, function (btnName) {
+                var btn = productTree.down(btnName);
+                var access = pointsAccess.find(function (element) {
+                    return element.Resource == resource && element.Action == btn.action;
+                });
+
+                if (!access)
+                    btn.setVisible(false);
             });
-
-            if (!access)
-                btn.setVisible(false);
-        });
+        }
     },
 
     onProductTextSearch: function (field, e) {
         if (!e || e.getKey() == e.ENTER) {
-            this.applyFiltersForTree();
+            var productTree = field.up('producttree');
+            this.applyFiltersForTree(productTree);
         }
     },
 
-    applyFiltersForTree: function () {
-        var productTree = Ext.ComponentQuery.query('producttree')[0];
+    applyFiltersForTree: function (productTree) {
         var textFieldSearch = productTree.down('#productsSearchTrigger');
         var store = productTree.down('basetreegrid').store;
         var proxy = store.getProxy();
@@ -1191,22 +1239,16 @@
         if (textSearch && textSearch.length > 0 && textSearch.indexOf('Product search') == -1)
             proxy.extraParams.filterParameter = textSearch;
 
-        var window = productTree.up('promoeditorcustom');
-        if (window) {
-            if (window.productTreeNodes && window.productTreeNodes.length > 0) {
-                proxy.extraParams.productTreeObjectIds = '';
+        if (productTree.choosenClientObjectId.length > 0) {
+            productTree.choosenClientObjectId.forEach(function (objectId, index) {
+                proxy.extraParams.productTreeObjectIds += objectId;
 
-                window.productTreeNodes.forEach(function (node) {
-                    proxy.extraParams.productTreeObjectIds += node.get('ObjectId') + ';';
-                });
-
-                proxy.extraParams.productTreeObjectIds = proxy.extraParams.productTreeObjectIds.slice(0, -1);
-            }
-            else {
-                proxy.extraParams.productTreeObjectIds = null;
-            }
-
-            proxy.extraParams.promoId = window.promoId;
+                if (index != productTree.choosenClientObjectId.length - 1)
+                    proxy.extraParams.productTreeObjectIds += ';';
+            });
+        }
+        else {
+            proxy.extraParams.productTreeObjectIds = null;
         }
 
         store.getRootNode().removeAll();
@@ -1216,8 +1258,7 @@
     },
 
     // следит за галочками
-    controllCheckProduct: function (targetNodes) {
-        var productTree = Ext.ComponentQuery.query('producttree')[0];
+    controllCheckProduct: function (productTree, targetNodes) {        
         var productTreeGrid = productTree.down('basetreegrid');
 
         if (targetNodes && targetNodes.length > 0) {
@@ -1263,4 +1304,130 @@
             view.focusRow(node);
         }
     },
+
+    onAttachFileButtonClick: function (button) {
+        var resource = 'ProductTrees';
+        var action = 'UploadLogoFile';
+
+        var uploadFileWindow = Ext.widget('uploadfilewindow', {
+            itemId: 'productTreeUploadFileWindow',
+            resource: resource,
+            action: action,
+            buttons: [{
+                text: l10n.ns('core', 'buttons').value('cancel'),
+                itemId: 'cancel'
+            }, {
+                text: l10n.ns('core', 'buttons').value('upload'),
+                ui: 'green-button-footer-toolbar',
+                itemId: 'userOk'
+            }]
+        });
+
+        uploadFileWindow.down('filefield').regex = /^.*\.(png|jpg)$/,
+        uploadFileWindow.down('filefield').regexText = 'Only .png or .jpg file supported',
+        uploadFileWindow.show();
+    },
+
+    onDeleteAttachFileButtonClick: function (button) {
+        var me = this;
+        var productTree = button.up('producttree');
+        var logoPanel = productTree.down('[name=treeLogoPanel]');
+        var currentNode = productTree.down('producttreegrid').getSelectionModel().getSelection()[0];
+
+        var parameters = {
+            id: currentNode.get('Id')
+        };
+
+        App.Util.makeRequestWithCallback('ProductTrees', 'DeleteLogo', parameters,
+            function (data) {
+                var result = Ext.JSON.decode(data.httpResponse.data.value);
+                if (result.success) {
+                    currentNode.data.LogoFileName = null;
+                    me.setLogoImage(logoPanel, null);
+                } else {
+                    App.Notify.pushError(result.message || 'Error has occured');
+                }
+            },
+            function (data) {
+                App.Notify.pushError(data.message);
+            }
+        );
+    },
+
+    onUploadFileOkButtonClick: function (button) {
+        var me = this;
+        var productTree = Ext.ComponentQuery.query('producttree')[0];
+        var logoPanel = productTree.down('[name=treeLogoPanel]');
+        var win = button.up('uploadfilewindow');
+        var currentNode = productTree.down('producttreegrid').getSelectionModel().getSelection()[0];
+        var url = Ext.String.format("/odata/{0}/{1}?productTreeId={2}", win.resource, win.action, currentNode.get('Id'));
+        var needCloseParentAfterUpload = win.needCloseParentAfterUpload;
+        var parentWin = win.parentGrid ? win.parentGrid.up('window') : null;
+        var form = win.down('#importform');
+        var paramform = form.down('importparamform');
+        var isEmpty;
+        if (paramform) {
+            var constrains = paramform.query('field[isConstrain=true]');
+            isEmpty = constrains && constrains.length > 0 && constrains.every(function (item) {
+                return Ext.isEmpty(item.getValue());
+            });
+
+            if (isEmpty) {
+                paramform.addCls('error-import-form');
+                paramform.down('#errormsg').getEl().setVisible();
+            }
+        }
+        if (form.isValid() && !isEmpty) {
+            form.getForm().submit({
+                url: url,
+                waitMsg: l10n.ns('core').value('uploadingFileWaitMessageText'),
+                success: function (fp, o) {
+                    // Проверить ответ от сервера на наличие ошибки и отобразить ее, в случае необходимости
+                    if (o.result) {
+                        win.close();
+                        if (parentWin && needCloseParentAfterUpload) {
+                            parentWin.close();
+                        }
+                        var pattern = '/odata/ProductTrees/DownloadLogoFile?fileName={0}';
+                        var downloadFileUrl = document.location.href + Ext.String.format(pattern, o.result.fileName);
+
+                        var attachFileName = Ext.ComponentQuery.query('#attachFileName')[0];
+                        attachFileName.setValue('<a href=' + downloadFileUrl + '>' + o.result.fileName + '</a>');
+                        attachFileName.attachFileName = o.result.fileName;
+
+                        var currentNode = Ext.ComponentQuery.query('producttreegrid')[0].getSelectionModel().getSelection()[0];
+                        currentNode.data.LogoFileName = o.result.fileName;
+                        me.setLogoImage(logoPanel, o.result.fileName);
+
+                        App.Notify.pushInfo(win.successMessage || 'Файл был загружен на сервер');
+                    } else {
+                        App.Notify.pushError(o.result.message);
+                    }
+                },
+                failure: function (fp, o) {
+                    App.Notify.pushError(o.result.message || 'Ошибка при обработке запроса');
+                }
+            });
+        }
+    },
+
+    setLogoImage: function (logoPanel, logoFileName) {
+        var logoImage = logoPanel.down('#logoImage');
+        var attachFileName = logoPanel.down('#attachFileName');
+        var deleteAtachFile = logoPanel.down('#deleteAttachFile');
+
+        if (logoFileName) {
+            var pattern = '/odata/ProductTrees/DownloadLogoFile?fileName={0}';
+            var downloadFileUrl = document.location.href + Ext.String.format(pattern, logoFileName);
+
+            attachFileName.setValue('<a href=' + downloadFileUrl + '>' + logoFileName + '</a>');
+            attachFileName.attachFileName = logoFileName;            
+            logoImage.setSrc(downloadFileUrl);
+            deleteAtachFile.setDisabled(false);
+        } else {
+            logoImage.setSrc('/bundles/style/images/swith-glyph-gray.png');            
+            attachFileName.setValue(null);
+            deleteAtachFile.setDisabled(true);
+        }
+    }
 });

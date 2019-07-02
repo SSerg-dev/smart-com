@@ -69,7 +69,7 @@
                 'technology #applyimportbutton': {
                     click: this.onApplyImportButtonClick
                 }
-            }
+            },
         });
     }
 });

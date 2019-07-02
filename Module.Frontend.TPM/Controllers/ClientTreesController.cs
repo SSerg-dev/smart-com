@@ -2,6 +2,7 @@
 using Core.Security;
 using Core.Security.Models;
 using Frontend.Core.Controllers.Base;
+using Frontend.Core.Extensions;
 using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
@@ -9,8 +10,11 @@ using Newtonsoft.Json;
 using Persist.Model;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.OData;
 using Thinktecture.IdentityModel.Authorization.WebApi;
@@ -668,6 +672,88 @@ namespace Module.Frontend.TPM.Controllers
         public bool CheckDemandCode(ClientTree tree) {
             return String.IsNullOrEmpty(tree.DemandCode) || !GetConstraintedQuery().Any(y => y.DemandCode == tree.DemandCode && tree.ObjectId != y.ObjectId);
         }
+
+        [ClaimsAuthorize]
+        [HttpPost]
+        public async Task<IHttpActionResult> UploadLogoFile(int clientTreeId)
+        {
+            try
+            {
+                if (!Request.Content.IsMimeMultipartContent())
+                    throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+
+                string directory = Core.Settings.AppSettingsManager.GetSetting("CLIENT_TREE_DIRECTORY", "ClientTreeLogoFiles");
+                string fullPathfile = await FileUtility.UploadFile(Request, directory);
+                string fileName = fullPathfile.Split('\\').Last();
+
+                // так себе проверка, но лучше что-то, чем ничего
+                string typeFile = fullPathfile.Split('.').Last().ToLower();
+                if (typeFile != "png" && typeFile != "jpg")
+                    throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+
+                ClientTree clientTree = Context.Set<ClientTree>().Find(clientTreeId);
+                if (clientTree == null)
+                    return NotFound();
+          
+                // удаляем старую картинку если была
+                if (clientTree.LogoFileName != null)
+                {
+                    FileInfo f = new FileInfo(directory + "/" + clientTree.LogoFileName);
+                    if (f.Exists)
+                        f.Delete();
+                }
+
+                clientTree.LogoFileName = fileName;
+                Context.SaveChanges();
+
+                return Json(new { success = true, fileName });
+            }
+            catch (Exception e)
+            {
+                return Json(new { success = false, message = e.Message });
+            }
+        }
+
+        [ClaimsAuthorize]
+        [HttpGet]
+        [Route("odata/ClientTrees/DownloadLogoFile")]
+        public HttpResponseMessage DownloadLogoFile(string fileName)
+        {
+            try
+            {
+                string directory = Core.Settings.AppSettingsManager.GetSetting("CLIENT_TREE_DIRECTORY", "ClientTreeLogoFiles");
+                return FileUtility.DownloadFile(directory, fileName);
+            }
+            catch (Exception e)
+            {
+                return new HttpResponseMessage(HttpStatusCode.Accepted);
+            }
+        }
+
+        [ClaimsAuthorize]
+        [HttpPost]
+        public async Task<IHttpActionResult> DeleteLogo(int id)
+        {
+            var currentClient = Context.Set<ClientTree>().Find(id);
+
+            if (currentClient != null && !String.IsNullOrEmpty(currentClient.LogoFileName))
+            {
+                // удаляем старое лого
+                string directory = Core.Settings.AppSettingsManager.GetSetting("CLIENT_TREE_DIRECTORY", "ClientTreeLogoFiles");
+                FileInfo f = new FileInfo(directory + "/" + currentClient.LogoFileName);
+
+                if (f.Exists)
+                    f.Delete();
+
+                currentClient.LogoFileName = null;
+                await Context.SaveChangesAsync();
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, message = "The file from selected client was removed successfully." }));
+            }
+            else
+            {
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "The logo is not exists for current client." }));
+            }
+        }
     }
 
     /// <summary>
@@ -702,6 +788,8 @@ namespace Module.Frontend.TPM.Controllers
         public double? PostPromoEffectW1 { get; set; }
         public double? PostPromoEffectW2 { get; set; }
 
+        public string LogoFileName { get; set; }
+
         public ClientTreeNode(ClientTree treeNode, bool expanded, bool leaf, bool loaded)
         {
             Id = treeNode.Id;
@@ -726,6 +814,7 @@ namespace Module.Frontend.TPM.Controllers
             IsDaysEnd = treeNode.IsDaysEnd;
             PostPromoEffectW1 = treeNode.PostPromoEffectW1;
             PostPromoEffectW2 = treeNode.PostPromoEffectW2;
+            LogoFileName = treeNode.LogoFileName;
 
 
             this.leaf = leaf;

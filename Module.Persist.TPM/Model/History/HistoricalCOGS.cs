@@ -11,7 +11,7 @@ namespace Module.Persist.TPM.Model.History
         public System.Guid? BrandTechId { get; set; }
         public DateTimeOffset? StartDate { get; set; }
         public DateTimeOffset? EndDate { get; set; }
-        public short LVSpercent { get; set; }
+        public float LVSpercent { get; set; }
 
         public string BrandTechName { get; set; }
         public string ClientTreeFullPathName { get; set; }

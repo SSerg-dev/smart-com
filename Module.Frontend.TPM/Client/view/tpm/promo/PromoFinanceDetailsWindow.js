@@ -64,7 +64,7 @@
                     }, {
                         xtype: 'numberfield',
                         fieldLabel: l10n.ns('tpm', 'PromoFinanceDetailsWindow').value('PostPromoEffectLSV'),
-                        name: 'PlanPostPromoEffectLSV',
+                        name: 'PlanPromoPostPromoEffectLSV',
                     }, {
                         xtype: 'numberfield',
                         fieldLabel: l10n.ns('tpm', 'PromoFinanceDetailsWindow').value('PromoNetNSV'),
@@ -131,7 +131,7 @@
                         }, {
                             xtype: 'numberfield',
                             fieldLabel: l10n.ns('tpm', 'PromoFinanceDetailsWindow').value('PostPromoEffectLSV'),
-                            name: 'ActualPostPromoEffectLSV',
+                            name: 'ActualProductPostPromoEffectLSV',
                         }, {
                             xtype: 'numberfield',
                             fieldLabel: l10n.ns('tpm', 'PromoFinanceDetailsWindow').value('PromoNetNSV'),

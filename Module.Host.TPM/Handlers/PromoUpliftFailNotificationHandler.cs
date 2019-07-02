@@ -18,7 +18,7 @@ namespace Module.Host.TPM.Handlers {
             sw.Start();
             try {
                 handlerLogger = new FileLogWriter(info.HandlerId.ToString());
-                handlerLogger.Write(true, String.Format("The formation of the message began at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now));
+                handlerLogger.Write(true, String.Format("The formation of the message began at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
                 //string param = HandlerDataHelper.GetIncomingArgument<paramType>("paramName", info.Data).Value;
 
                 IAction action = new PromoUpliftFailNotificationAction();
@@ -27,20 +27,20 @@ namespace Module.Host.TPM.Handlers {
                 if (action.Errors.Any()) {
                     data.SetValue<bool>("HasErrors", true);
                     if (handlerLogger != null) {
-                        handlerLogger.Write(true, String.Join(Environment.NewLine, action.Errors));
+                        handlerLogger.Write(true, action.Errors, "Error");
                     }
                 }
             } catch (Exception e) {
                 data.SetValue<bool>("HasErrors", true);
                 logger.Error(e);
                 if (handlerLogger != null) {
-                    handlerLogger.Write(true, e.ToString());
+                    handlerLogger.Write(true, e.ToString(), "Error");
                 }
             } finally {
                 logger.Debug("Finish '{0}'", info.HandlerId);
                 sw.Stop();
                 if (handlerLogger != null) {
-                    handlerLogger.Write(true, String.Format("Newsletter notifications ended at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", DateTimeOffset.Now, sw.Elapsed.TotalSeconds));
+                    handlerLogger.Write(true, String.Format("Newsletter notifications ended at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", DateTimeOffset.Now, sw.Elapsed.TotalSeconds), "Message");
                 }
             }
         }

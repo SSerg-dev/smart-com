@@ -16,6 +16,7 @@ using Module.Persist.TPM.CalculatePromoParametersModule;
 using System.Threading;
 using Core.Security.Models;
 using Persist.Model;
+using Module.Persist.TPM;
 
 namespace Module.Host.TPM.Handlers
 {
@@ -23,7 +24,8 @@ namespace Module.Host.TPM.Handlers
     /// 
     /// </summary>
     public class CalculatePromoParametersHandler : BaseHandler
-    {      
+    {
+        public string logLine = "";
         public override void Action(HandlerInfo info, ExecuteData data)
         {
             using (DatabaseContext context = new DatabaseContext())
@@ -33,174 +35,137 @@ namespace Module.Host.TPM.Handlers
                 sw.Start();
 
                 handlerLogger = new FileLogWriter(info.HandlerId.ToString());
-                handlerLogger.Write(true, String.Format("The calculation of the parameters started at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now));
+                logLine = String.Format("The calculation of the parameters started at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now);
+                handlerLogger.Write(true, logLine, "Message");
                 handlerLogger.Write(true, "");
 
                 Guid nullGuid = new Guid();
                 Guid promoId = HandlerDataHelper.GetIncomingArgument<Guid>("PromoId", info.Data, false);
                 bool needCalculatePlanMarketingTI = HandlerDataHelper.GetIncomingArgument<bool>("NeedCalculatePlanMarketingTI", info.Data, false);
 
-                if (promoId != nullGuid)
+                try
                 {
-                    try
+                    if (promoId != nullGuid)
                     {
                         Promo promo = context.Set<Promo>().Where(x => x.Id == promoId).FirstOrDefault();
 
+                        //добавление номера рассчитываемого промо в лог
+                        handlerLogger.Write(true, String.Format("Calculating promo: №{0}", promo.Number), "Message");
+                        handlerLogger.Write(true, "");
+                        
                         //Подбор исторических промо и расчет PlanPromoUpliftPercent
-                        if (!promo.NeedRecountUplift.HasValue || promo.NeedRecountUplift.Value)
+                        if (NeedUpliftFinding(promo))
                         {
                             Stopwatch swUplift = new Stopwatch();
                             swUplift.Start();
-                            handlerLogger.Write(true, String.Format("Pick uplift started at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now));
+                            logLine = String.Format("Pick uplift started at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now);
+                            handlerLogger.Write(true, logLine, "Message");
 
                             string upliftMessage;
                             double? planPromoUpliftPercent = PlanPromoUpliftCalculation.FindPlanPromoUplift(promoId, context, out upliftMessage);
 
                             if (planPromoUpliftPercent != -1)
                             {
-                                handlerLogger.Write(true, String.Format("{0}: {1}", upliftMessage, planPromoUpliftPercent));
+                                logLine = String.Format("{0}: {1}", upliftMessage, planPromoUpliftPercent);
+                                handlerLogger.Write(true, logLine, "Message");
                             }
                             else
                             {
-                                handlerLogger.Write(true, String.Format("{0}", upliftMessage));
+                                logLine = String.Format("{0}", upliftMessage);
+                                handlerLogger.Write(true, logLine, "Message");
                             }
 
                             swUplift.Stop();
-                            handlerLogger.Write(true, String.Format("Pick uplift completed at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", DateTimeOffset.Now, swUplift.Elapsed.TotalSeconds));
+                            logLine = String.Format("Pick uplift completed at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", DateTimeOffset.Now, swUplift.Elapsed.TotalSeconds);
+                            handlerLogger.Write(true, logLine, "Message");
                             handlerLogger.Write(true, "");
                         }
 
                         //Заполнение таблицы PromoProduct и расчет плановых параметров Product и Promo
                         Stopwatch swPromoProduct = new Stopwatch();
                         swPromoProduct.Start();
-                        handlerLogger.Write(true, String.Format("Calculation of planned parameters began at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now));
+                        logLine = String.Format("Calculation of planned parameters began at {0:yyyy-MM-dd HH:mm:ss}. It may take some time.", DateTimeOffset.Now);
+                        handlerLogger.Write(true, logLine, "Message");
 
                         //TODO: УБРАТЬ ЗАДЕРЖКУ !!!
-                        //Thread.Sleep(10000);
+                        //Thread.Sleep(100000000);
 
                         string setPromoProductError;
                         PlanProductParametersCalculation.SetPromoProduct(promoId, context, out setPromoProductError);
                         if (setPromoProductError != null)
                         {
-                            handlerLogger.Write(true, String.Format("Error filling Product: {0}", setPromoProductError));
+                            logLine = String.Format("Error filling Product: {0}", setPromoProductError);
+                            handlerLogger.Write(true, logLine, "Error");
                         }
 
                         ////TODO: УБРАТЬ ЗАДЕРЖКУ !!!
-                        //Thread.Sleep(15000);
+                        //Thread.Sleep(100000000);
 
                         string calculateError = PlanProductParametersCalculation.CalculatePromoProductParameters(promoId, context);
                         if (calculateError != null)
                         {
-                            handlerLogger.Write(true, String.Format("Error when calculating the planned parameters of the Product: {0}", calculateError));
+                            logLine = String.Format("Error when calculating the planned parameters of the Product: {0}", calculateError);
+                            handlerLogger.Write(true, logLine, "Error");
                         }
 
-                        // если изменилась длительность промо, то необходимо перерасчитать Marketing TI
-                        if (needCalculatePlanMarketingTI)
+
+                        // пересчет плановых бюджетов (из-за LSV)
+                        BudgetsPromoCalculation.CalculateBudgets(promo, true, false, handlerLogger, info.HandlerId, context);
+
+                        calculateError = PlanPromoParametersCalculation.CalculatePromoParameters(promoId, context);
+                        if (calculateError != null)
                         {
-                            CalculatePlanMarketingTI(promo, handlerLogger, info, context);
+                            logLine = String.Format("Error when calculating the planned parameters Promo: {0}", calculateError);
+                            handlerLogger.Write(true, logLine, "Error");
                         }
-                        else
-                        {
-                            calculateError = PlanPromoParametersCalculation.CalculatePromoParameters(promoId, context);
-                            if (calculateError != null)
-                            {
-                                handlerLogger.Write(true, String.Format("Error when calculating the planned parameters Promo: {0}", calculateError));
-                            }
-                        }
+
 
                         swPromoProduct.Stop();
-                        handlerLogger.Write(true, String.Format("Calculation of planned parameters was completed at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", DateTimeOffset.Now, swPromoProduct.Elapsed.TotalSeconds));
+                        logLine = String.Format("Calculation of planned parameters was completed at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", DateTimeOffset.Now, swPromoProduct.Elapsed.TotalSeconds);
+                        handlerLogger.Write(true, logLine, "Message");
                         handlerLogger.Write(true, "");
 
                         Stopwatch swActual = new Stopwatch();
                         swActual.Start();
-                        handlerLogger.Write(true, String.Format("The calculation of the actual parameters began at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now));
+                        logLine = String.Format("The calculation of the actual parameters began at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now);
+                        handlerLogger.Write(true, logLine, "Message");
                         handlerLogger.Write(true, "");
 
-                        CalulateActual(promo, context, handlerLogger);
+                        CalulateActual(promo, context, handlerLogger, info.HandlerId);
 
                         swActual.Stop();
                         handlerLogger.Write(true, "");
-                        handlerLogger.Write(true, String.Format("The calculation of the actual parameters was completed at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", DateTimeOffset.Now, swActual.Elapsed.TotalSeconds));
+                        logLine = String.Format("The calculation of the actual parameters was completed at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", DateTimeOffset.Now, swActual.Elapsed.TotalSeconds);
+                        handlerLogger.Write(true, logLine, "Message");
 
                         //promo.Calculating = false;
                         context.SaveChanges();
-
-                        CalculationTaskManager.UnLockPromo(promo.Id);
                     }
-                    catch (Exception e)
+                }
+                catch (Exception e)
+                {
+                    handlerLogger.Write(true, e.Message, "Error");
+                }
+                finally
+                {
+                    sw.Stop();
+                    handlerLogger.Write(true, "");
+                    logLine = String.Format("Calculation of parameters completed at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", DateTimeOffset.Now, sw.Elapsed.TotalSeconds);
+                    handlerLogger.Write(true, logLine, "Message");
+
+                    //разблокировку промо необходимо производить после всего, иначе не успевает прочитаться последнее сообщение и (самое главное) окончательный статус хендлера
+                    //для перестраховки добавлена небольшая задержка
+                    if (promoId != nullGuid)
                     {
-                        handlerLogger.Write(true, e.Message);
-                        CalculationTaskManager.UnLockPromo(promoId);
+                        Promo promo = context.Set<Promo>().Where(x => x.Id == promoId).FirstOrDefault();
+                        //TODO: УБРАТЬ ЗАДЕРЖКУ !!!
+                        Thread.Sleep(5000);
+
+                        CalculationTaskManager.UnLockPromoForHandler(info.HandlerId);
+                        //CalculationTaskManager.UnLockPromo(promo.Id);
                     }
-                }               
-
-                sw.Stop();
-                handlerLogger.Write(true, "");
-                handlerLogger.Write(true, String.Format("Calculation of parameters completed at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", DateTimeOffset.Now, sw.Elapsed.TotalSeconds));
-            }
-        }
-
-        /// <summary>
-        /// Пересчитать распределенные значения для подстатьи Marketing и обновить Marketing TI для затронутых промо
-        /// </summary>
-        /// <param name="promo">Промо, послуживший причиной перерасчета</param>
-        /// <param name="context">Контекст БД</param>
-        private void CalculatePlanMarketingTI(Promo promo, ILogWriter handlerLogger, HandlerInfo info, DatabaseContext context)
-        {
-            handlerLogger.Write(true, "");
-            handlerLogger.Write(true, String.Format("The calculation of the budgets started at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now));
-
-            // находим все подстатьи Marketing к которым привязано промо
-            PromoSupportPromo[] promoSupports = context.Set<PromoSupportPromo>().Where(n => n.PromoId == promo.Id && !n.Disabled
-                && n.PromoSupport.BudgetSubItem.BudgetItem.Budget.Name.ToLower().IndexOf("marketing") >= 0).ToArray();
-
-            // список промо, участвующих в расчете
-            Promo[] promoes = CalculationTaskManager.GetBlockedPromo(info.HandlerId, context);
-
-            string promoNumbers = "";
-            foreach (Promo p in promoes)
-                promoNumbers += p.Number.Value + ", ";
-
-            context.SaveChanges();
-            handlerLogger.Write(true, String.Format("At the time of calculation, the following promo are blocked for editing: {0}", promoNumbers));
-
-            // пересчитываем распределенные значения
-            string error = "";
-
-            try
-            {
-                foreach (PromoSupportPromo psp in promoSupports)
-                {
-                    error = BudgetsPromoCalculation.CalculateBudgets(psp, true, false, false, false, context);
-
-                    if (error != null)
-                        throw new Exception();
                 }
             }
-            catch
-            {
-                handlerLogger.Write(true, String.Format("Error calculating planned Marketing TI: {0}", error));
-            }
-
-            handlerLogger.Write(true, String.Format("The calculation of the budgets completed"));
-
-            foreach (Promo p in promoes)
-            {
-                string setPromoProductFieldsError = PlanPromoParametersCalculation.CalculatePromoParameters(p.Id, context);
-
-                if (setPromoProductFieldsError != null)
-                {
-                    handlerLogger.Write(true, String.Format("Error when calculating the planned parameters of the PromoProduct table: {0}", setPromoProductFieldsError));
-                }
-
-                handlerLogger.Write(true, String.Format("Calculation of parameters for promo № {0} completed.", p.Number));
-
-                CalculationTaskManager.UnLockPromo(p.Id);
-                context.SaveChanges();
-            }
-
-            handlerLogger.Write(true, "");
         }
 
         /// <summary>
@@ -209,14 +174,19 @@ namespace Module.Host.TPM.Handlers
         /// <param name="promo">Промо</param>
         /// <param name="context">Контекст БД</param>
         /// <param name="handlerLogger">Лог</param>
-        private void CalulateActual(Promo promo, DatabaseContext context, ILogWriter handlerLogger)
+        private void CalulateActual(Promo promo, DatabaseContext context, ILogWriter handlerLogger, Guid handlerId)
         {
             // если есть ошибки, они перечисленны через ;
             string errorString = ActualProductParametersCalculation.CalculatePromoProductParameters(promo, context);
+            // записываем ошибки если они есть
+            if (errorString != null)
+                WriteErrorsInLog(handlerLogger, errorString);
+
+            // пересчет фактических бюджетов (из-за LSV)
+            BudgetsPromoCalculation.CalculateBudgets(promo, false, true, handlerLogger, handlerId, context);
 
             ActualPromoParametersCalculation.ResetValues(promo, context);
-            if (errorString == null)
-                errorString = ActualPromoParametersCalculation.CalculatePromoParameters(promo, context);
+            errorString = ActualPromoParametersCalculation.CalculatePromoParameters(promo, context);
 
             // записываем ошибки если они есть
             if (errorString != null)
@@ -236,6 +206,12 @@ namespace Module.Host.TPM.Handlers
                 message += e + "\n";
 
             handlerLogger.Write(true, message);
+        }
+
+        private bool NeedUpliftFinding(Promo promo)
+        {
+            // если стоит флаг inout, то подбирать uplift не требуется
+            return (!promo.NeedRecountUplift.HasValue || promo.NeedRecountUplift.Value) && (!promo.InOut.HasValue || !promo.InOut.Value);
         }
     }
 }

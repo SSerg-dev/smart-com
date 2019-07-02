@@ -7,6 +7,7 @@
         { name: 'ClientTreeId', hidden: true, isDefault: true },
         { name: 'BudgetSubItemId', hidden: true, isDefault: true },
         { name: 'PromoId', useNull: true, hidden: true, isDefault: false, defaultValue: null },
+        { name: 'Number', type: 'int', hidden: false, isDefault: true },
         { name: 'PlanQuantity', type: 'int', hidden: false, isDefault: true },
         { name: 'ActualQuantity', type: 'int', hidden: false, isDefault: true },
         { name: 'PlanCostTE', type: 'float', hidden: false, isDefault: true },

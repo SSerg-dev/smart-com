@@ -4,6 +4,7 @@ Ext.define('App.view.tpm.retailtype.RetailTypeEditor', {
     width: 500,
     minWidth: 500,
     maxHeight: 500,
+    cls: 'readOnlyFields',
 
     items: {
         xtype: 'editorform',

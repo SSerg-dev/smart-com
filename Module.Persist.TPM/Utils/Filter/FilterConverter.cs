@@ -107,6 +107,7 @@ namespace Module.Persist.TPM.Utils.Filter {
             switch (value["Operation"].ToString()) {
                 case "ContainsEx": r.Operator = RuleOperator.ContainsEx; break;
                 case "Contains": r.Operator = RuleOperator.Contains; break;
+                case "NotContains": r.Operator = RuleOperator.NotContains; break;
                 case "EndsWith": r.Operator = RuleOperator.EndsWith; break;
                 case "Equals": r.Operator = RuleOperator.Equals; break;
                 case "GraterOrEqual": r.Operator = RuleOperator.GraterOrEqual; break;
@@ -128,6 +129,7 @@ namespace Module.Persist.TPM.Utils.Filter {
         private static Dictionary<string, string> operations = new Dictionary<string, string>() {
             { "eq", "Equals"},
             { "contains", "Contains"},
+            { "notcontains", "NotContains"},
             //{ "", "ContainsEx"},
             { "endswith", "EndsWith"},
             { "ge", "GraterOrEqual"},

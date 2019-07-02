@@ -368,7 +368,7 @@ namespace Module.Frontend.TPM.Controllers
 
             if (exc != null && (exc.Number == 2627 || exc.Number == 2601))
             {
-                return InternalServerError(new Exception("This Color has already existed"));
+                return InternalServerError(new Exception("The Item with such Brand and Technology has already existed"));
             }
             else
             {

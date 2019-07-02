@@ -39,38 +39,38 @@ Ext.define('App.view.tpm.promoproduct.HistoricalPromoProduct', {
                 minWidth: 100
             },
             items: [
-            {
-                text: l10n.ns('tpm', 'HistoricalPromoProduct').value('_User'),
-                dataIndex: '_User',
-                filter: {
-                    type: 'string',
-                    operator: 'eq'
-                }
-            }, {
-                text: l10n.ns('tpm', 'HistoricalPromoProduct').value('_Role'),
-                dataIndex: '_Role',
-                filter: {
-                    type: 'string',
-                    operator: 'eq'
-                }
-            }, {
-                text: l10n.ns('tpm', 'HistoricalPromoProduct').value('_EditDate'),
-                dataIndex: '_EditDate',
-                xtype: 'datecolumn',
-                renderer: Ext.util.Format.dateRenderer('d.m.Y H:i:s')
-            }, {
-                text: l10n.ns('tpm', 'HistoricalPromoProduct').value('_Operation'),
-                dataIndex: '_Operation',
-                renderer: App.RenderHelper.getLocalizedRenderer('tpm.HistoricalActual', 'OperationType'),
-                filter: {
-                    type: 'combo',
-                    valueField: 'id',
-                    store: {
-                        type: 'operationtypestore'
-                    },
-                    operator: 'eq'
-                }
-            }]
+                {
+                    text: l10n.ns('tpm', 'HistoricalPromoProduct').value('_User'),
+                    dataIndex: '_User',
+                    filter: {
+                        type: 'string',
+                        operator: 'eq'
+                    }
+                }, {
+                    text: l10n.ns('tpm', 'HistoricalPromoProduct').value('_Role'),
+                    dataIndex: '_Role',
+                    filter: {
+                        type: 'string',
+                        operator: 'eq'
+                    }
+                }, {
+                    text: l10n.ns('tpm', 'HistoricalPromoProduct').value('_EditDate'),
+                    dataIndex: '_EditDate',
+                    xtype: 'datecolumn',
+                    renderer: Ext.util.Format.dateRenderer('d.m.Y H:i:s')
+                }, {
+                    text: l10n.ns('tpm', 'HistoricalPromoProduct').value('_Operation'),
+                    dataIndex: '_Operation',
+                    renderer: App.RenderHelper.getLocalizedRenderer('tpm.HistoricalActual', 'OperationType'),
+                    filter: {
+                        type: 'combo',
+                        valueField: 'id',
+                        store: {
+                            type: 'operationtypestore'
+                        },
+                        operator: 'eq'
+                    }
+                }]
         }
     }, {
         xtype: 'editabledetailform',
@@ -78,24 +78,12 @@ Ext.define('App.view.tpm.promoproduct.HistoricalPromoProduct', {
         model: 'App.model.tpm.promoproduct.HistoricalPromoProduct',
         items: [{
             xtype: 'singlelinedisplayfield',
-            name: 'EAN',
-            fieldLabel: l10n.ns('tpm', 'PromoProduct').value('EAN'),
+            name: 'EAN_PC',
+            fieldLabel: l10n.ns('tpm', 'PromoProduct').value('EAN_PC'),
         }, {
             xtype: 'singlelinedisplayfield',
             name: 'ActualProductPCQty',
             fieldLabel: l10n.ns('tpm', 'PromoProduct').value('ActualProductPCQty'),
-        }, {
-            xtype: 'singlelinedisplayfield',
-            name: 'ActualProductQty',
-            fieldLabel: l10n.ns('tpm', 'PromoProduct').value('ActualProductQty'),
-        }, {
-            xtype: 'singlelinedisplayfield',
-            name: 'ActualProductUOM',
-            fieldLabel: l10n.ns('tpm', 'PromoProduct').value('ActualProductUOM'),
-        }, {
-            xtype: 'singlelinedisplayfield',
-            name: 'ActualProductShelfPrice',
-            fieldLabel: l10n.ns('tpm', 'PromoProduct').value('ActualProductShelfPrice'),
         }, {
             xtype: 'singlelinedisplayfield',
             name: 'ActualProductPCLSV',

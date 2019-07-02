@@ -106,5 +106,17 @@
                 panel.setLoading(false);
                 App.Notify.pushError(me.getErrorMessage(data));
             });
-    }
+    },
+
+    // расширенный расширенный фильтр
+    onFilterButtonClick: function (button) {
+        var grid = this.getGridByButton(button);
+        var store = grid.getStore();
+        if (store.isExtendedStore) {
+            var win = Ext.widget('extmasterfilter', store.getExtendedFilter());
+            win.show();
+        } else {
+            console.error('Extended filter does not implemented for this store');
+        }
+    },
 });
