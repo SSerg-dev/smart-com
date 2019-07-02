@@ -29,36 +29,36 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule {
                 if (!product.Product.UOM_PC2Case.HasValue)
                     errorsForProduct += Log.GenerateLogLine(Log.MessageType["Warning"], "For product with EAN Case:") + product.EAN_Case + " is no UOM_PC2Case value;";
 
-                if (!product.PlanProductPCQty.HasValue)
-                    errorsForProduct += Log.GenerateLogLine(Log.MessageType["Warning"], "For product with EAN Case:") + product.EAN_Case + " is no Plan Product PC Qty value;";
+                //if (!product.PlanProductPCQty.HasValue)
+                //    errorsForProduct += Log.GenerateLogLine(Log.MessageType["Warning"], "For product with EAN Case:") + product.EAN_Case + " is no Plan Product PC Qty value;";
 
-                if (!product.ActualProductPCQty.HasValue)
-                    errorsForProduct += Log.GenerateLogLine(Log.MessageType["Warning"], "For product with EAN Case:") + product.EAN_Case + " is no Actual ProductPC Qty value;";
-                
-                if (errorsForProduct.Length == 0) {
+                //if (!product.ActualProductPCQty.HasValue)
+                //    errorsForProduct += Log.GenerateLogLine(Log.MessageType["Warning"], "For product with EAN Case:") + product.EAN_Case + " is no Actual ProductPC Qty value;";
 
-                    // если значения введены вручную через грид ActualLSV, то ненужно обновлять
-                    if (!lockedActualLSV)
-                    {
-                        product.ActualProductBaselineLSV = product.PlanProductBaselineLSV;
-                        product.ActualProductLSV = 0;// product.Product.UOM_PC2Case != 0 ? product.ActualProductPCLSV / product.Product.UOM_PC2Case : 0;
-                    }
+                // если значения введены вручную через грид ActualLSV, то ненужно обновлять
+                if (!lockedActualLSV)
+                {
+                    product.ActualProductBaselineLSV = product.PlanProductBaselineLSV;
+                    product.ActualProductLSV = 0;// product.Product.UOM_PC2Case != 0 ? product.ActualProductPCLSV / product.Product.UOM_PC2Case : 0;
+                }
 
-                    product.ActualProductCaseQty = product.ActualProductPCQty / product.Product.UOM_PC2Case;
+                if (errorsForProduct.Length == 0)
+                {
+                    product.ActualProductCaseQty = product.Product.UOM_PC2Case != 0 ? (product.ActualProductPCQty ?? 0) / product.Product.UOM_PC2Case : 0;
                     product.ActualProductSellInPrice = product.PlanProductPCPrice;
 
                     //удалять? 17/06/19
                     //все -таки не надо удалять 20/06/19
-                    product.ActualProductPCLSV = product.ActualProductPCQty * product.ActualProductSellInPrice;// * (product.ActualProductShelfDiscount / 100);
+                    product.ActualProductPCLSV = (product.ActualProductPCQty * product.ActualProductSellInPrice) ?? 0;// * (product.ActualProductShelfDiscount / 100);
                         
 
                     // Plan Product Baseline PC Qty = Plan Product Baseline Case Qty * UOM_PC2Case
                     double? planProductBaselinePCQty = product.PlanProductBaselineCaseQty * product.Product.UOM_PC2Case;
-                    product.ActualProductIncrementalPCQty = product.ActualProductPCQty - planProductBaselinePCQty;
+                    product.ActualProductIncrementalPCQty = (product.ActualProductPCQty ?? 0) - (planProductBaselinePCQty ?? 0);
 
                     // что значит "показатель недействителен по формуле" в спеке?
                     double? planProductBaselinePCLSV = product.Product.UOM_PC2Case != 0 ? (product.PlanProductBaselineLSV / product.Product.UOM_PC2Case) : 0;
-                    product.ActualProductIncrementalPCLSV = product.ActualProductPCLSV - planProductBaselinePCLSV;
+                    product.ActualProductIncrementalPCLSV = (product.ActualProductPCLSV ?? 0) - (planProductBaselinePCLSV ?? 0);
 
                     product.ActualProductUplift = planProductBaselinePCQty != 0 ? (product.ActualProductIncrementalPCQty / planProductBaselinePCQty) * 100 : 0;
 
@@ -76,8 +76,8 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule {
                             product.ActualProductPostPromoEffectLSVW2 = product.PlanProductBaselineLSV * clientTree.PostPromoEffectW2 / 100;
                             product.ActualProductPostPromoEffectLSV = product.PlanProductPostPromoEffectLSVW1 + product.PlanProductPostPromoEffectLSVW2;
 
-                            product.ActualProductLSVByCompensation = product.ActualProductPCQty * product.PlanProductPCPrice;
-                            product.ActualProductIncrementalLSV = product.ActualProductLSVByCompensation - product.PlanProductBaselineLSV;
+                            product.ActualProductLSVByCompensation = (product.ActualProductPCQty * product.PlanProductPCPrice) ?? 0;
+                            product.ActualProductIncrementalLSV = (product.ActualProductLSVByCompensation ?? 0) - (product.PlanProductBaselineLSV ?? 0);
                         }
                     }
                     else
@@ -90,11 +90,11 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule {
                         product.ActualProductPostPromoEffectLSVW2 = 0;
                         product.ActualProductPostPromoEffectLSV = 0;
 
-                        product.ActualProductLSVByCompensation = product.ActualProductPCQty * product.PlanProductPCPrice;
-                        product.ActualProductIncrementalLSV = product.ActualProductLSVByCompensation - product.PlanProductBaselineLSV;
+                        product.ActualProductLSVByCompensation = (product.ActualProductPCQty * product.PlanProductPCPrice) ?? 0;
+                        product.ActualProductIncrementalLSV = (product.ActualProductLSVByCompensation ?? 0) - (product.PlanProductBaselineLSV ?? 0);
                     }
 
-                    ActualPromoLSVByCompensation += (product.ActualProductPCQty * product.PlanProductPCPrice);
+                    ActualPromoLSVByCompensation += (product.ActualProductPCQty * product.PlanProductPCPrice) ?? 0;
                 } else {
                     errors += errorsForProduct;
                 }
