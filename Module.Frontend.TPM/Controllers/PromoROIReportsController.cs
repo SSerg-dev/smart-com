@@ -234,7 +234,7 @@ namespace Module.Frontend.TPM.Controllers
                 new Column { Order = orderNumber++, Field = "PlanInstoreMechanicTypeName", Header = "Plan Instore Mechanic Type Name", Quoting = false },
                 new Column { Order = orderNumber++, Field = "PlanInstoreMechanicDiscount", Header = "Plan Instore Mechanic Discount", Quoting = false,  Format = "0"  },
                 new Column { Order = orderNumber++, Field = "PlanInStoreShelfPrice", Header = "Plan Instore Shelf Price", Quoting = false,  Format = "0.00"  },
-                new Column { Order = orderNumber++, Field = "PCPrice", Header = "PC Price", Quoting = false },
+                new Column { Order = orderNumber++, Field = "PCPrice", Header = "PC Price", Quoting = false, Format = "0.00" },
                 new Column { Order = orderNumber++, Field = "PlanPromoBaselineLSV", Header = "Plan Promo Baseline LSV", Quoting = false,  Format = "0.00"  },
                 new Column { Order = orderNumber++, Field = "PlanPromoIncrementalLSV", Header = "Plan Promo Incremental LSV", Quoting = false,  Format = "0.00"  },
                 new Column { Order = orderNumber++, Field = "PlanPromoLSV", Header = "Plan Promo LSV", Quoting = false,  Format = "0.00"  },
