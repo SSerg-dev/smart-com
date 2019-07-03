@@ -1185,6 +1185,7 @@
     <Compile Include="Model\DTO\ClientTreeHierarchyView.cs" />
     <Compile Include="Model\TPM\NoneNego.cs" />
     <Compile Include="Model\TPM\PromoRejectIncident.cs" />
+    <Compile Include="Model\TPM\PromoROIReport.cs" />
     <Compile Include="Model\TPM\PromoUpliftFailIncident.cs" />
     <Compile Include="Model\TPM\ProductChangeIncident.cs" />
     <Compile Include="Model\TPM\PromoProductTree.cs" />

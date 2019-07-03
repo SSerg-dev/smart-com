@@ -573,6 +573,9 @@ namespace Module.Persist.TPM {
             builder.EntitySet<ActualLSV>("ActualLSVs");
             builder.Entity<ActualLSV>().Collection.Action("ExportXLSX");
             builder.Entity<ActualLSV>().Collection.Action("FullImportXLSX");
+
+            builder.EntitySet<PromoROIReport>("PromoROIReports");
+            builder.Entity<PromoROIReport>().Collection.Action("ExportXLSX");
         }
 
         public IEnumerable<Type> GetHistoricalEntities() {

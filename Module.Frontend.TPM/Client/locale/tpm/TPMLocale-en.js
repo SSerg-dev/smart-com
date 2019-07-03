@@ -700,6 +700,8 @@
         'RejectReasonName': 'Reject Reason Name',
         'ProductTreeObjectIds': 'Product Tree ObjectIds',
         'InOut': 'In-Out',
+        'ActualPromoNetIncrementalBaseTI': 'Actual Promo Net Incremental BaseTI',
+        'ActualPromoNetIncrementalCOGS': 'Actual Promo Net Incremental COGS',
 
         //Для исторической модели
         'PlanPromoNetROIPercent': 'Plan Promo Net ROI Percent',
@@ -1382,8 +1384,8 @@
 
         'PlanPromoROIPercent': 'Plan Promo ROI, %',
         'PlanPromoNetROIPercent': 'Plan Promo Net ROI, %',
-        'PlanPromoIncrementalNSV': 'Plan Promo Total Net NSV',
-        'PlanPromoNetIncrementalNSV': 'Plan Promo Incremental NSV',
+        'PlanPromoIncrementalNSV': 'Plan Promo Incremental NSV',
+        'PlanPromoNetIncrementalNSV': 'Plan Promo Net Incremental NSV',
         'PlanPromoIncrementalMAC': 'Plan Promo Incremental MAC',
 
         'ActualPromoCost': 'Actual Promo Cost',
@@ -1448,6 +1450,7 @@
         'ActualPromoCostProdCatalogue': 'Actual Promo Cost ProdCatalogue',
         'ActualPromoCostProdPOSMInClient': 'Actual Promo Cost ProdPOSMInClient',
         'PlanPromoIncrementalBaseTI': 'Plan Promo Incremental BaseTI',
+        'PlanPromoNetIncrementalBaseTI': 'Plan Promo Net Incremental BaseTI',
         'PlanPromoIncrementalCOGS': 'Plan Promo Incremental COGS',
         'PlanPromoTotalCost': 'Plan Promo Total Cost',
         'PlanPromoNetIncrementalLSV': 'Plan Promo Net Incremental LSV',
@@ -1473,9 +1476,13 @@
 
         'PlanPromoBaselineBaseTI': 'Plan Promo Baseline Base TI',
         'PlanPromoBaseTI': 'Plan Promo Base TI',
+        'PlanPromoNetBaseTI': 'Plan Promo Net Base TI',
+        'PlanPromoNSV': 'Plan Promo NSV',
         'PlanPromoNetNSV': 'Plan Promo Net NSV',
         'ActualPromoBaselineBaseTI': 'Actual Promo Baseline Base TI',
         'ActualPromoBaseTI': 'Actual Promo Base TI',
+        'ActualPromoNetBaseTI': 'Actual Promo Net Base TI',
+        'ActualPromoNSV': 'Actual Promo NSV',
         'ActualPromoNetNSV': 'Actual Promo Net NSV',
 
 
@@ -1495,7 +1502,11 @@
         'ActualPromoNetIncrementalBaseTI': 'Actual Promo Net Incremental Base TI',
         'ActualPromoNetIncrementalCOGS': 'Actual Promo Net Incremental COGS',
         'ActualPromoTotalBaseTI': 'Actual Promo Total Base TI',
-        'InOut': 'In-Out'
+        'InOut': 'In-Out',
+        'PlanPromoNetIncrementalCOGS': 'Plan Promo Net Incremental COGS',
+        'PCPrice': 'PC Price',
+        'TIBasePercent': 'TI Base',
+        'COGSPercent': 'COGS'
     },
 
     'PromoActivity': {
