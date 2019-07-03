@@ -19,6 +19,11 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         /// <returns>Null при успешном расчете, иначе строку с ошибками</returns>
         public static string CalculatePromoParameters(Promo promo, DatabaseContext context, bool lockedActualLSV = false)
         {
+            bool isActualPromoBaseLineLSVChangedByDemand = promo.ActualPromoBaselineLSV != promo.PlanPromoBaselineLSV;
+            bool isActualPromoLSVChangedByDemand = promo.ActualPromoLSV != 0;
+            bool isActualPromoProstPromoEffectLSVChangedByDemand = promo.ActualPromoPostPromoEffectLSV != promo.PlanPromoPostPromoEffectLSV;
+
+            ResetValues(promo, context, !isActualPromoBaseLineLSVChangedByDemand, !isActualPromoProstPromoEffectLSVChangedByDemand);
             // подготовительная часть, проверяем все ли данные имеются
             string errors = "";
 
@@ -58,8 +63,10 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             if (errors.Length == 0)
             {
                 // если значения введены вручную через грид ActualLSV, то ненужно обновлять
-                if (!lockedActualLSV)
+                if (!isActualPromoLSVChangedByDemand)
+                {
                     promo.ActualPromoLSV = 0;
+                }
 
                 promo.ActualPromoTIShopper = promo.ActualPromoLSVByCompensation * promo.MarsMechanicDiscount;
                 promo.ActualPromoCost = (promo.ActualPromoTIShopper ?? 0) + (promo.ActualPromoTIMarketing ?? 0) + (promo.ActualPromoBranding ?? 0) + (promo.ActualPromoBTL ?? 0) + (promo.ActualPromoCostProduction ?? 0);
@@ -69,13 +76,18 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                 if (!promo.InOut.HasValue || !promo.InOut.Value)
                 {
-                    promo.ActualPromoPostPromoEffectLSVW1 = promo.PlanPromoPostPromoEffectLSVW1;
-                    promo.ActualPromoPostPromoEffectLSVW2 = promo.PlanPromoPostPromoEffectLSVW2;
-                    promo.ActualPromoPostPromoEffectLSV = promo.PlanPromoPostPromoEffectLSV;
-
                     // если значения введены вручную через грид ActualLSV, то ненужно обновлять
-                    if (!lockedActualLSV)
+                    if (!isActualPromoProstPromoEffectLSVChangedByDemand)
+                    {
+                        promo.ActualPromoPostPromoEffectLSVW1 = promo.PlanPromoPostPromoEffectLSVW1;
+                        promo.ActualPromoPostPromoEffectLSVW2 = promo.PlanPromoPostPromoEffectLSVW2;
+                        promo.ActualPromoPostPromoEffectLSV = promo.PlanPromoPostPromoEffectLSV;
+                    }
+                    
+                    if (!isActualPromoBaseLineLSVChangedByDemand)
+                    {
                         promo.ActualPromoBaselineLSV = promo.PlanPromoBaselineLSV;
+                    }
 
                     promo.ActualPromoIncrementalLSV = (promo.ActualPromoLSVByCompensation ?? 0) - (promo.ActualPromoBaselineLSV ?? 0);
                     promo.ActualPromoNetIncrementalLSV = (promo.ActualPromoIncrementalLSV ?? 0) - (promo.ActualPromoPostPromoEffectLSVW1 ?? 0) - (promo.ActualPromoPostPromoEffectLSVW2 ?? 0);
@@ -85,13 +97,18 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 }
                 else
                 {
-                    promo.ActualPromoPostPromoEffectLSVW1 = 0;
-                    promo.ActualPromoPostPromoEffectLSVW2 = 0;
-                    promo.ActualPromoPostPromoEffectLSV = 0;
-
                     // если значения введены вручную через грид ActualLSV, то ненужно обновлять
-                    if (!lockedActualLSV)
+                    if (!isActualPromoProstPromoEffectLSVChangedByDemand)
+                    {
+                        promo.ActualPromoPostPromoEffectLSVW1 = 0;
+                        promo.ActualPromoPostPromoEffectLSVW2 = 0;
+                        promo.ActualPromoPostPromoEffectLSV = 0;
+                    }
+
+                    if (!isActualPromoBaseLineLSVChangedByDemand)
+                    {
                         promo.ActualPromoBaselineLSV = 1;
+                    }
 
                     promo.ActualPromoIncrementalLSV = (promo.ActualPromoLSVByCompensation ?? 0) - (promo.ActualPromoBaselineLSV ?? 0);
                     promo.ActualPromoNetIncrementalLSV = (promo.ActualPromoIncrementalLSV ?? 0) - (promo.ActualPromoPostPromoEffectLSVW1 ?? 0) - (promo.ActualPromoPostPromoEffectLSVW2 ?? 0);
@@ -151,14 +168,21 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         /// </summary>
         /// <param name="promo">Промо</param>
         /// <param name="context">Контекст БД</param>
-        public static void ResetValues(Promo promo, DatabaseContext context, bool lockedActualLSV = false)
+        private static void ResetValues(Promo promo, DatabaseContext context, bool resetActualPromoBaselineLSV, bool resetActualPromoPostPromoEffectLSV)
         {
             // если значения введены вручную через грид ActualLSV, то ненужно обновлять
-            if (!lockedActualLSV)
+            if (resetActualPromoBaselineLSV)
             {
                 promo.ActualPromoBaselineLSV = null;
             }
-            
+
+            if (resetActualPromoPostPromoEffectLSV)
+            {
+                promo.ActualPromoPostPromoEffectLSVW1 = null;
+                promo.ActualPromoPostPromoEffectLSVW2 = null;
+                promo.ActualPromoNetIncrementalLSV = null;
+            }
+
             promo.ActualPromoIncrementalLSV = null;
             promo.ActualPromoUpliftPercent = null;
             promo.ActualPromoNetBaseTI = null;
@@ -170,9 +194,6 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             promo.ActualPromoIncrementalCOGS = null;
             promo.ActualPromoNetIncrementalCOGS = null;
             promo.ActualPromoTotalCost = null;
-            promo.ActualPromoPostPromoEffectLSVW1 = null;
-            promo.ActualPromoPostPromoEffectLSVW2 = null;
-            promo.ActualPromoNetIncrementalLSV = null;
             promo.ActualPromoNetLSV = null;
             promo.ActualPromoIncrementalNSV = null;
             promo.ActualPromoNetIncrementalNSV = null;

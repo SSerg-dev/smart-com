@@ -137,7 +137,6 @@ namespace Module.Host.TPM.Handlers
 
         private void CalulateActual(Promo promo, DatabaseContext context, ILogWriter handlerLogger)
         {
-            ActualPromoParametersCalculation.ResetValues(promo, context);
             string errorString = ActualPromoParametersCalculation.CalculatePromoParameters(promo, context);
 
             // записываем ошибки если они есть

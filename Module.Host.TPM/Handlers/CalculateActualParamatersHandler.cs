@@ -48,7 +48,6 @@ namespace Module.Host.TPM.Handlers
                         // пересчет фактических бюджетов (из-за LSV)
                         BudgetsPromoCalculation.CalculateBudgets(promo, false, true, handlerLogger, info.HandlerId, context);
 
-                        ActualPromoParametersCalculation.ResetValues(promo, context);
                         errorString = ActualPromoParametersCalculation.CalculatePromoParameters(promo, context);
                         // записываем ошибки если они есть
                         if (errorString != null)

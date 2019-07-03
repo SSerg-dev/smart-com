@@ -55,7 +55,6 @@ namespace Module.Host.TPM.Handlers
                             if (errorString != null)
                                 WriteErrorsInLog(handlerLogger, errorString);
 
-                            ActualPromoParametersCalculation.ResetValues(promo, context, true);
                             errorString = ActualPromoParametersCalculation.CalculatePromoParameters(promo, context, true);
                             // записываем ошибки если они есть
                             if (errorString != null)

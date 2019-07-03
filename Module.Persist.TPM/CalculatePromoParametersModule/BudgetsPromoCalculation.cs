@@ -119,7 +119,6 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                     if (oldActualMarketingTI[i] != p.ActualPromoTIMarketing || oldActualCostProd[i] != p.ActualPromoCostProduction)
                     {
-                        ActualPromoParametersCalculation.ResetValues(p, context);
                         string errorString = ActualPromoParametersCalculation.CalculatePromoParameters(p, context);
 
                         // записываем ошибки если они есть
