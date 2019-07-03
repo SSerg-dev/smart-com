@@ -3,6 +3,7 @@
     idProperty: 'Id',
     breezeEntityType: 'Promo',
     fields: [
+        { name: 'Id', hidden: true },
         { name: 'Number', type: 'int', hidden: false, isDefault: true },
         { name: 'Client1LevelName', type: 'string', hidden: false, isDefault: true },//NA/RKA (1 level)
         { name: 'Client2LevelName', type: 'string', hidden: false, isDefault: true },//Client Group (2 level)

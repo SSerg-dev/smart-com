@@ -7,7 +7,7 @@ using Persist;
 using System.Linq;
 using Newtonsoft.Json;
 
-namespace Module.Persist.TPM.Model.TPM
+namespace Module.Persist.TPM.Model.DTO
 {
     public class PromoROIReport : IEntity<Guid>
     {
