@@ -173,33 +173,35 @@ namespace Module.Host.TPM.Handlers
         /// </summary>
         private void CalculateAllActualProductPostPromoEffect(Promo promo, DatabaseContext context)
         {
-            var actualPromoPostPromoEffectLSVTotal = promo.ActualPromoPostPromoEffectLSVW1 + promo.ActualPromoPostPromoEffectLSVW2;
+            promo.ActualPromoPostPromoEffectLSV = promo.ActualPromoPostPromoEffectLSVW1 + promo.ActualPromoPostPromoEffectLSVW2;
 
-            // Если Demand ввел корректное число.
-            if (actualPromoPostPromoEffectLSVTotal.HasValue && actualPromoPostPromoEffectLSVTotal.Value > 0)
+            // Если есть от чего считать долю.
+            if (promo.PlanPromoBaselineLSV.HasValue && promo.PlanPromoBaselineLSV.Value != 0)
             {
-                // Если есть от чего считать долю.
-                if (promo.PlanPromoBaselineLSV.HasValue && promo.PlanPromoBaselineLSV.Value != 0)
-                {
-                    // Получаем все записи из таблицы PromoProduct для текущего промо.
-                    var promoProductsForCurrentPromo = context.Set<PromoProduct>().Where(x => x.PromoId == promo.Id && !x.Disabled);
+                // Получаем все записи из таблицы PromoProduct для текущего промо.
+                var promoProductsForCurrentPromo = context.Set<PromoProduct>().Where(x => x.PromoId == promo.Id && !x.Disabled);
 
-                    // Перебираем все найденные для текущего промо записи из таблицы PromoProduct.
-                    foreach (var promoProduct in promoProductsForCurrentPromo)
+                // Перебираем все найденные для текущего промо записи из таблицы PromoProduct.
+                foreach (var promoProduct in promoProductsForCurrentPromo)
+                {
+                    // Если PlanProductPostPromoEffectLSV нет, то мы не сможем посчитать долю
+                    if (promoProduct.PlanProductPostPromoEffectLSV.HasValue)
                     {
-                        // Если ActualProductPostPromoEffectLSV нет, то мы не сможем посчитать долю
-                        if (promoProduct.ActualProductPostPromoEffectLSV.HasValue)
+                        double currentPlanProductPostPromoEffectLSVPercent = 0;
+                        //double currentPlanProductBaselineLSVPercent = 0;
+
+                        // Если показатель PlanProductPostPromoEffectLSV == 0, то он составляет 0 процентов от показателя PlanPromoPostPromoEffectLSV.
+                        if (promoProduct.PlanProductPostPromoEffectLSV.Value != 0)
                         {
-                            double currentActualProductPostPromoEffectLSVPercent = 0;
-                            // Если показатель ActualProductPostPromoEffectLSV == 0, то он составляет 0 процентов от показателя PlanPromoBaselineLSV.
-                            if (promoProduct.ActualProductPostPromoEffectLSV.Value != 0)
-                            {
-                                // Считаем долю ActualProductPostPromoEffectLSV от PlanPromoBaselineLSV.
-                                currentActualProductPostPromoEffectLSVPercent = promoProduct.ActualProductPostPromoEffectLSV.Value / promo.PlanPromoBaselineLSV.Value;
-                            }
-                            // Устанавливаем ActualProductBaselineLSV в запись таблицы PromoProduct.
-                            promoProduct.ActualProductPostPromoEffectLSV = actualPromoPostPromoEffectLSVTotal * currentActualProductPostPromoEffectLSVPercent;
+                            // Считаем долю PlanProductPostPromoEffectLSV от PlanPromoPostPromoEffectLSV.
+                            currentPlanProductPostPromoEffectLSVPercent = promoProduct.PlanProductPostPromoEffectLSV.Value / promo.PlanPromoPostPromoEffectLSV.Value;
+
+                            // Считаем долю PlanProductBaselineLSV от PlanPromoBaselineLSV.
+                            //currentPlanProductBaselineLSVPercent = promoProduct.PlanProductBaselineLSV.Value / promo.PlanPromoBaselineLSV.Value;
                         }
+
+                        // Устанавливаем ActualProductPostPromoEffectLSV в запись таблицы PromoProduct.
+                        promoProduct.ActualProductPostPromoEffectLSV = promo.ActualPromoPostPromoEffectLSV * currentPlanProductPostPromoEffectLSVPercent;
                     }
                 }
             }
