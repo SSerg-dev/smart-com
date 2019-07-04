@@ -19,9 +19,9 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         /// <returns>Null при успешном расчете, иначе строку с ошибками</returns>
         public static string CalculatePromoParameters(Promo promo, DatabaseContext context, bool lockedActualLSV = false)
         {
-            bool isActualPromoBaseLineLSVChangedByDemand = promo.ActualPromoBaselineLSV != promo.PlanPromoBaselineLSV;
-            bool isActualPromoLSVChangedByDemand = promo.ActualPromoLSV != 0;
-            bool isActualPromoProstPromoEffectLSVChangedByDemand = promo.ActualPromoPostPromoEffectLSV != promo.PlanPromoPostPromoEffectLSV;
+            bool isActualPromoBaseLineLSVChangedByDemand = promo.ActualPromoBaselineLSV != null && promo.ActualPromoBaselineLSV != promo.PlanPromoBaselineLSV;
+            bool isActualPromoLSVChangedByDemand = promo.ActualPromoLSV != null && promo.ActualPromoLSV != 0;
+            bool isActualPromoProstPromoEffectLSVChangedByDemand = promo.ActualPromoPostPromoEffectLSV != null && promo.ActualPromoPostPromoEffectLSV != 0; 
 
             ResetValues(promo, context, !isActualPromoBaseLineLSVChangedByDemand, !isActualPromoProstPromoEffectLSVChangedByDemand);
             // подготовительная часть, проверяем все ли данные имеются
@@ -76,14 +76,6 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                 if (!promo.InOut.HasValue || !promo.InOut.Value)
                 {
-                    // если значения введены вручную через грид ActualLSV, то ненужно обновлять
-                    if (!isActualPromoProstPromoEffectLSVChangedByDemand)
-                    {
-                        promo.ActualPromoPostPromoEffectLSVW1 = promo.PlanPromoPostPromoEffectLSVW1;
-                        promo.ActualPromoPostPromoEffectLSVW2 = promo.PlanPromoPostPromoEffectLSVW2;
-                        promo.ActualPromoPostPromoEffectLSV = promo.PlanPromoPostPromoEffectLSV;
-                    }
-                    
                     if (!isActualPromoBaseLineLSVChangedByDemand)
                     {
                         promo.ActualPromoBaselineLSV = promo.PlanPromoBaselineLSV;
@@ -97,14 +89,6 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 }
                 else
                 {
-                    // если значения введены вручную через грид ActualLSV, то ненужно обновлять
-                    if (!isActualPromoProstPromoEffectLSVChangedByDemand)
-                    {
-                        promo.ActualPromoPostPromoEffectLSVW1 = 0;
-                        promo.ActualPromoPostPromoEffectLSVW2 = 0;
-                        promo.ActualPromoPostPromoEffectLSV = 0;
-                    }
-
                     if (!isActualPromoBaseLineLSVChangedByDemand)
                     {
                         promo.ActualPromoBaselineLSV = 1;
@@ -178,9 +162,9 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
             if (resetActualPromoPostPromoEffectLSV)
             {
-                promo.ActualPromoPostPromoEffectLSVW1 = null;
-                promo.ActualPromoPostPromoEffectLSVW2 = null;
-                promo.ActualPromoNetIncrementalLSV = null;
+                promo.ActualPromoPostPromoEffectLSVW1 = 0;
+                promo.ActualPromoPostPromoEffectLSVW2 = 0;
+                promo.ActualPromoPostPromoEffectLSV = null;
             }
 
             promo.ActualPromoIncrementalLSV = null;

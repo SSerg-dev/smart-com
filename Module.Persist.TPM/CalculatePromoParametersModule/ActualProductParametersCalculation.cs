@@ -19,9 +19,9 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule {
             PromoProduct[] products = context.Set<PromoProduct>().Where(n => n.PromoId == promo.Id && !n.Disabled).ToArray();
             ClientTree clientTree = context.Set<ClientTree>().Where(x => x.ObjectId == promo.ClientTreeId && !x.EndDate.HasValue).FirstOrDefault();
 
-            bool isActualPromoBaseLineLSVChangedByDemand = promo.ActualPromoBaselineLSV != promo.PlanPromoBaselineLSV;
-            bool isActualPromoLSVChangedByDemand = promo.ActualPromoLSV != 0;
-            bool isActualPromoProstPromoEffectLSVChangedByDemand = promo.ActualPromoPostPromoEffectLSV != promo.PlanPromoPostPromoEffectLSV;
+            bool isActualPromoBaseLineLSVChangedByDemand = promo.ActualPromoBaselineLSV != null && promo.ActualPromoBaselineLSV != promo.PlanPromoBaselineLSV;
+            bool isActualPromoLSVChangedByDemand = promo.ActualPromoLSV != null && promo.ActualPromoLSV != 0;
+            bool isActualPromoProstPromoEffectLSVChangedByDemand = promo.ActualPromoPostPromoEffectLSV != null && promo.ActualPromoPostPromoEffectLSV != 0;
 
             ResetProductParameters(products, context, !isActualPromoProstPromoEffectLSVChangedByDemand);
 
@@ -72,12 +72,14 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule {
                             product.ActualProductPostPromoEffectQtyW2 = product.PlanProductBaselineCaseQty * clientTree.PostPromoEffectW2 / 100;
                             product.ActualProductPostPromoEffectQty = product.PlanProductPostPromoEffectQtyW1 + product.PlanProductPostPromoEffectQtyW2;
 
+                            /*
                             if (!isActualPromoProstPromoEffectLSVChangedByDemand)
                             {
                                 product.ActualProductPostPromoEffectLSVW1 = product.PlanProductBaselineLSV * clientTree.PostPromoEffectW1 / 100;
                                 product.ActualProductPostPromoEffectLSVW2 = product.PlanProductBaselineLSV * clientTree.PostPromoEffectW2 / 100;
                                 product.ActualProductPostPromoEffectLSV = product.PlanProductPostPromoEffectLSVW1 + product.PlanProductPostPromoEffectLSVW2;
                             }
+                            */
 
                             product.ActualProductLSVByCompensation = (product.ActualProductPCQty * product.PlanProductPCPrice) ?? 0;
                             product.ActualProductIncrementalLSV = (product.ActualProductLSVByCompensation ?? 0) - (product.PlanProductBaselineLSV ?? 0);
