@@ -98,12 +98,12 @@ namespace Module.Persist.TPM.PromoStateControl
                     return "Actual Promo LSV must be greater than 0.";
                 }
 
-                if (!promoModel.ActualPromoTIMarketing.HasValue || promoModel.ActualPromoTIMarketing.Value < 0)
+                if (promoModel.ActualPromoTIMarketing.HasValue && promoModel.ActualPromoTIMarketing.Value < 0)
                 {
                     return "Actual Marketing TI must be greater or equal 0.";
                 }
 
-                if (!promoModel.ActualPromoCostProduction.HasValue || promoModel.ActualPromoCostProduction.Value < 0)
+                if (promoModel.ActualPromoCostProduction.HasValue && promoModel.ActualPromoCostProduction.Value < 0)
                 {
                     return "Actual Promo Cost Production must be greater or equal 0.";
                 }
