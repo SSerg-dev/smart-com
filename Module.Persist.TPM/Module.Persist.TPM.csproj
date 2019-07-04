@@ -1084,6 +1084,10 @@
     <Compile Include="Migrations\201907011108007_PromoProduct_PlanProductIncrementalLSV_ChangeName.Designer.cs">
       <DependentUpon>201907011108007_PromoProduct_PlanProductIncrementalLSV_ChangeName.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201907040753146_EmptyMigration_0407.cs" />
+    <Compile Include="Migrations\201907040753146_EmptyMigration_0407.Designer.cs">
+      <DependentUpon>201907040753146_EmptyMigration_0407.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\PlanPostPromoEffectReport.cs" />
     <Compile Include="Model\DTO\PlanIncrementalReport.cs" />
@@ -1937,6 +1941,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201907011108007_PromoProduct_PlanProductIncrementalLSV_ChangeName.resx">
       <DependentUpon>201907011108007_PromoProduct_PlanProductIncrementalLSV_ChangeName.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201907040753146_EmptyMigration_0407.resx">
+      <DependentUpon>201907040753146_EmptyMigration_0407.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
