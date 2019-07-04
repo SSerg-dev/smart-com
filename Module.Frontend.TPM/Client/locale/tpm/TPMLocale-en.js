@@ -1324,7 +1324,7 @@
     'PromoROIReport': {
         'StartDate': 'Start date',
         'EndDate': 'End date',
-        'ActualPromoPostPromoEffectLSV': 'Actual Promo Post Promo Effect',
+        'ActualPromoPostPromoEffectLSV': 'Actual Post Promo Effect LSV',
         'DispatchesStart': 'Dispatch start',
         'DispatchesEnd': 'Dispatch end',
         'MarsStartDate': 'Mars Start date',
@@ -1398,7 +1398,7 @@
         'ActualPromoUpliftPercent': 'Actual Promo Uplift %',
         'ActualPromoIncrementalLSV': 'Actual Promo Incremental LSV',
         'ActualPromoLSV': 'Actual Promo LSV',
-        'ActualPromoLSVByCompensation': 'Promo LSV by Compensation',
+        'ActualPromoLSVByCompensation': 'Actual Promo LSV by Compensation',
         'FactPostPromoEffect': 'Actual Post Promo Effect LSV',
         'FactPostPromoEffectTotal': 'Actual Post Promo Effect LSV',
         'ActualPromoPostPromoEffectLSVW1': 'Actual Post Promo Effect LSV W1',
@@ -1410,8 +1410,8 @@
         'ActualPromoNetIncrementalNSV': 'Actual Promo Net Incremental NSV',
         'ActualPromoIncrementalMAC': 'Actual Promo Incremental MAC',
 
-        'ActualInStoreShelfPrice': 'Instore Shelf Price',
-        'PlanInStoreShelfPrice': 'Instore Shelf Price',
+        'ActualInStoreShelfPrice': 'Actual Instore Shelf Price',
+        'PlanInStoreShelfPrice': 'Plan Instore Shelf Price',
         'InvoiceNumber': 'Invoice number',
 
         'Quantity': 'Quantity',
