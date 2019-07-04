@@ -82,7 +82,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule {
                             */
 
                             product.ActualProductLSVByCompensation = (product.ActualProductPCQty * product.PlanProductPCPrice) ?? 0;
-                            product.ActualProductIncrementalLSV = (product.ActualProductLSVByCompensation ?? 0) - (product.PlanProductBaselineLSV ?? 0);
+                            product.ActualProductIncrementalLSV = (product.ActualProductLSVByCompensation ?? 0) - (product.ActualProductBaselineLSV ?? 0);
                         }
                     }
                     else
