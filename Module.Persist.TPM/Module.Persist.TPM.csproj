@@ -2019,6 +2019,7 @@
     <Content Include="SQLInitialize\20190625_1800_Update_EAN_PC.sql" />
     <Content Include="SQLInitialize\20190625_2000_Promoescontroller_CheckIfLogHasError_AP.sql" />
     <Content Include="SQLInitialize\20190704_1300_ClientTree_BigBoxes.sql" />
+    <Content Include="SQLInitialize\20190704_1500_ClientTree_BigBoxes_NodeInsert.sql" />
     <Content Include="Sql\SetPromoBlockInformationTrigger.sql" />
     <Content Include="Sql\ProductTreeTechnologyIdFix.sql" />
     <Content Include="Sql\SubBudgetItems_Init.sql" />
