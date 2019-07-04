@@ -2022,6 +2022,7 @@
     <Content Include="SQLInitialize\20190704_1500_ClientTree_BigBoxes_NodeInsert.sql" />
     <Content Include="Sql\SetPromoBlockInformationTrigger.sql" />
     <Content Include="Sql\ProductTreeTechnologyIdFix.sql" />
+    <Content Include="SQLInitialize\20190704_2040_Promo_ChangeStatus.sql" />
     <Content Include="Sql\SubBudgetItems_Init.sql" />
     <Content Include="SQLInitialize\20190305_1500_Uplift_Notification_Initial.sql" />
     <Content Include="SQLInitialize\20190227_0005_InitialPC2Case.sql" />
