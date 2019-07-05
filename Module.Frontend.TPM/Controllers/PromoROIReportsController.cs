@@ -81,7 +81,8 @@ namespace Module.Frontend.TPM.Controllers
                 PlanInstoreMechanicTypeName = x.PlanInstoreMechanicType.Name,
                 PlanInstoreMechanicDiscount = x.PlanInstoreMechanicDiscount,
                 PlanInStoreShelfPrice = x.PlanInStoreShelfPrice,
-                PCPrice = Context.Set<PromoProduct>().Where(y => y.PromoId == x.Id && !y.Disabled).Average(z => z.PlanProductPCPrice),
+                PCPrice = Context.Set<PromoProduct>().Where(y => y.PromoId == x.Id && y.PlanProductPCPrice > 0 && !y.Disabled)
+                    .Average(z => z.PlanProductPCPrice),
                 PlanPromoBaselineLSV = x.PlanPromoBaselineLSV,
                 PlanPromoIncrementalLSV = x.PlanPromoIncrementalLSV,
                 PlanPromoLSV = x.PlanPromoLSV,
