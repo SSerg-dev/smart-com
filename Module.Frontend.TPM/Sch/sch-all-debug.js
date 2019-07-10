@@ -4978,7 +4978,7 @@ Ext.define("Sch.eventlayout.Horizontal", {
                 return p1 < p2? -1 : 1
             }
         } else {
-            if (p) {
+        if (!((g < e && e < i) || (g > e && h > g)) || p) {
                 return (g < e) ? -1 : 1
             } else {
                 return p1 < p2 ? -1 : 1
