@@ -4975,16 +4975,18 @@ Ext.define("Sch.eventlayout.Horizontal", {
             if (p) {
                 return i > h ? -1 : 1
             } else {
-                return p1 < p2? -1 : 1
+                return p1 < p2 ? -1 : 1
             }
         } else {
-        if (!((g < e && e < i) || (g > e && h > g)) || p) {
+            // Если промо не пересекается сортируем по датам
+            if (!((g < e && e < i) || (g > e && h > g)) || p) {
                 return (g < e) ? -1 : 1
             } else {
                 return p1 < p2 ? -1 : 1
             }
         }
     },
+
     layoutEventsInBands: function (e, b) {
         var a = this.view;
         do {
@@ -5006,14 +5008,15 @@ Ext.define("Sch.eventlayout.Horizontal", {
     findClosestSuccessor: function (a, j) {
         var f = Infinity,
             b, g = a.end,
-            h, c = a.end - a.start === 0;
+            h, c = a.end - a.start === 0,
+            p = Infinity; // учитываем приоритет промо
         for (var e = 0, d = j.length; e < d; e++) {
             h = j[e].start - g;
-            if (h >= 0 && h < f && (h > 0 || j[e].end - j[e].start > 0 || !c)) {
-                if (h >= 0 || j[e].event.get('Priority') < a.event.get('Priority')) { // sort verticaly by Priority
-                    b = j[e];
-                    f = h
-                }
+            np = j[e].event.get('CalendarPriority');
+            if (h >= 0 && h < f && np < p && (h > 0 || j[e].end - j[e].start > 0 || !c)) {
+                b = j[e];
+                f = h;
+                p = np;
             }
         }
         return b
