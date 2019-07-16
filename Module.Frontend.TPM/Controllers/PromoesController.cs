@@ -410,6 +410,16 @@ namespace Module.Frontend.TPM.Controllers {
                     } else {
                         model.BrandTechId = null;
                     }
+
+                    if (brandId != null)
+                    {
+                        model.BrandId = brandId;
+                    }
+
+                    if (technologyId != null)
+                    {
+                        model.TechnologyId = technologyId;
+                    }
                 }
             }
         }
