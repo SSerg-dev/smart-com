@@ -68,7 +68,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     promo.ActualPromoLSV = 0;
                 }
 
-                promo.ActualPromoTIShopper = promo.ActualPromoLSVByCompensation * promo.MarsMechanicDiscount;
+                promo.ActualPromoTIShopper = promo.ActualPromoLSVByCompensation * promo.MarsMechanicDiscount / 100;
                 promo.ActualPromoCost = (promo.ActualPromoTIShopper ?? 0) + (promo.ActualPromoTIMarketing ?? 0) + (promo.ActualPromoBranding ?? 0) + (promo.ActualPromoBTL ?? 0) + (promo.ActualPromoCostProduction ?? 0);
 
                 promo.ActualPromoBaseTI = promo.ActualPromoLSVByCompensation * TIBasePercent / 100;
