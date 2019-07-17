@@ -22,16 +22,22 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 context.SaveChanges();
 
                 upliftMessage = "";
-                //экстра-места - физические ДМП(X-sites) - проверка на наличие X-sites
-                //экстра-места - каталоги(Catalog) - проверка на наличие Catalog
-                var promoXsites = context.Set<Promo>().Where(x => x.ActualPromoXSites != null && !x.Disabled);
-                var promoCatalog = context.Set<Promo>().Where(x => x.ActualPromoCatalogue != null && !x.Disabled);
 
-                var promoQuery = promoXsites.Intersect(promoCatalog);
+                //временно убрана проверка на наличие бюджетов
+                // TODO: решить, что с этим делать!
+                /*
+                    //экстра-места - физические ДМП(X-sites) - проверка на наличие X-sites
+                    //экстра-места - каталоги(Catalog) - проверка на наличие Catalog
+                    var promoXsites = context.Set<Promo>().Where(x => x.ActualPromoXSites != null && !x.Disabled);
+                    var promoCatalog = context.Set<Promo>().Where(x => x.ActualPromoCatalogue != null && !x.Disabled);
 
-                // Исключить промо с признаком InOut из подбора uplift.
-                promoQuery = promoQuery.Where(x => x.InOut != true);
+                    var promoQuery = promoXsites.Intersect(promoCatalog);
 
+                    // Исключить промо с признаком InOut из подбора uplift.
+                    promoQuery = promoQuery.Where(x => x.InOut != true);
+                */
+
+                var promoQuery = context.Set<Promo>().Where(x => x.InOut != true);
                 if (promoQuery.Count() != 0)
                 {
                     //выбираем закрытые промо (дата окончания в пределах N лет до текущей даты)
