@@ -4415,6 +4415,7 @@
                     var currentRecord = me.getRecord(window);
 
                     if (currentRecord.get('Calculating')) {
+                        currentRecord.data.Calculating = newModel.data.Calculating;
                         window.model = newModel;
                         me.reFillPromoForm(window, newModel, directorygrid);
 
