@@ -518,7 +518,9 @@
 
     'Promo': {
         'StartDate': 'Start date',
+        'DateStart': 'Start date',
         'EndDate': 'End date',
+        'DateEnd': 'End date',
         'DispatchesStart': 'Dispatch start',
         'DispatchesEnd': 'Dispatch end',
         'MarsStartDate': 'Mars Start date',

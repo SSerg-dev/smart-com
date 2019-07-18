@@ -21,7 +21,8 @@
         { name: 'IsDemandFinanceApproved', type: "boolean", useNull: true, hidden: true, isDefault: false },
         { name: 'PlanInstoreMechanicDiscount', type: 'float', hidden: false, isDefault: false },
 
-        { name: 'StartDate', useNull: true, type: 'date', hidden: false, isDefault: false },
+        { name: 'StartDate', useNull: true, type: 'date', hidden: true },
+        { name: 'DateStart', useNull: true, type: 'date', hidden: false, isDefault: false, mapping: 'StartDate' },
         { name: 'EndDate', useNull: true, type: 'date', hidden: false, isDefault: false },
 
         { name: 'DispatchesStart', useNull: true, type: 'date', hidden: false, isDefault: false },
