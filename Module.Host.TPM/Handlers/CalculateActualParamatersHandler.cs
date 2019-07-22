@@ -39,11 +39,15 @@ namespace Module.Host.TPM.Handlers
 
                     if (promo != null)
                     {
-                        // если есть ошибки, они перечисленны через ;
-                        string errorString = ActualProductParametersCalculation.CalculatePromoProductParameters(promo, context);
-                        // записываем ошибки если они есть
-                        if (errorString != null)
-                            WriteErrorsInLog(handlerLogger, errorString);
+                        string errorString = null;
+                        if (!promo.LoadFromTLC)
+                        {
+                            // если есть ошибки, они перечисленны через ;
+                            errorString = ActualProductParametersCalculation.CalculatePromoProductParameters(promo, context);
+                            // записываем ошибки если они есть
+                            if (errorString != null)
+                                WriteErrorsInLog(handlerLogger, errorString);
+                        }
 
                         // пересчет фактических бюджетов (из-за LSV)
                         BudgetsPromoCalculation.CalculateBudgets(promo, false, true, handlerLogger, info.HandlerId, context);

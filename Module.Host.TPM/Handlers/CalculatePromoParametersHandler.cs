@@ -101,7 +101,12 @@ namespace Module.Host.TPM.Handlers
                         ////TODO: УБРАТЬ ЗАДЕРЖКУ !!!
                         //Thread.Sleep(100000000);
 
-                        string calculateError = PlanProductParametersCalculation.CalculatePromoProductParameters(promoId, context);
+                        string calculateError = null;
+                        if (!promo.LoadFromTLC)
+                        {
+                            calculateError = PlanProductParametersCalculation.CalculatePromoProductParameters(promoId, context);
+                        }
+
                         if (calculateError != null)
                         {
                             logLine = String.Format("Error when calculating the planned parameters of the Product: {0}", calculateError);
@@ -176,12 +181,15 @@ namespace Module.Host.TPM.Handlers
         /// <param name="handlerLogger">Лог</param>
         private void CalulateActual(Promo promo, DatabaseContext context, ILogWriter handlerLogger, Guid handlerId)
         {
-            // если есть ошибки, они перечисленны через ;
-            string errorString = ActualProductParametersCalculation.CalculatePromoProductParameters(promo, context);
-            // записываем ошибки если они есть
-            if (errorString != null)
-                WriteErrorsInLog(handlerLogger, errorString);
-
+            string errorString = null;
+            if (!promo.LoadFromTLC)
+            {
+                // если есть ошибки, они перечисленны через ;
+                errorString = ActualProductParametersCalculation.CalculatePromoProductParameters(promo, context);
+                // записываем ошибки если они есть
+                if (errorString != null)
+                    WriteErrorsInLog(handlerLogger, errorString);
+            }
             // пересчет фактических бюджетов (из-за LSV)
             BudgetsPromoCalculation.CalculateBudgets(promo, false, true, handlerLogger, handlerId, context);
 

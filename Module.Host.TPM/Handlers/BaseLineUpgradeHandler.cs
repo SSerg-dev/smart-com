@@ -92,10 +92,14 @@ namespace Module.Host.TPM.Handlers
 
                     foreach (Promo promo in promoQuery)
                     {
-                        string calculateError = PlanProductParametersCalculation.CalculatePromoProductParameters(promo.Id, context);
-                        if (calculateError != null)
+                        string calculateError = null;
+                        if (!promo.LoadFromTLC)
                         {
-                            handlerLogger.Write(true, String.Format("Error when calculating the planned parameters of the Product: {0}", calculateError), "Error");
+                            calculateError = PlanProductParametersCalculation.CalculatePromoProductParameters(promo.Id, context);
+                            if (calculateError != null)
+                            {
+                                handlerLogger.Write(true, String.Format("Error when calculating the planned parameters of the Product: {0}", calculateError), "Error");
+                            }
                         }
 
                         // пересчет плановых бюджетов (из-за LSV)
@@ -162,11 +166,15 @@ namespace Module.Host.TPM.Handlers
         /// <param name="handlerLogger">Лог</param>
         private void CalulateActual(Promo promo, DatabaseContext context, ILogWriter handlerLogger, Guid handlerId)
         {
-            // если есть ошибки, они перечисленны через ;
-            string errorString = ActualProductParametersCalculation.CalculatePromoProductParameters(promo, context);
-            // записываем ошибки если они есть
-            if (errorString != null)
-                WriteErrorsInLog(handlerLogger, errorString);
+            string errorString = null;
+            if (!promo.LoadFromTLC)
+            {
+                // если есть ошибки, они перечисленны через ;
+                errorString = ActualProductParametersCalculation.CalculatePromoProductParameters(promo, context);
+                // записываем ошибки если они есть
+                if (errorString != null)
+                    WriteErrorsInLog(handlerLogger, errorString);
+            }
 
             // пересчет фактических бюджетов (из-за LSV)
             BudgetsPromoCalculation.CalculateBudgets(promo, false, true, handlerLogger, handlerId, context);

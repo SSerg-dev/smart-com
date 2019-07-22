@@ -1088,6 +1088,10 @@
     <Compile Include="Migrations\201907040753146_EmptyMigration_0407.Designer.cs">
       <DependentUpon>201907040753146_EmptyMigration_0407.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201907221306150_Add_FieldLoadFromTLC_Promo.cs" />
+    <Compile Include="Migrations\201907221306150_Add_FieldLoadFromTLC_Promo.Designer.cs">
+      <DependentUpon>201907221306150_Add_FieldLoadFromTLC_Promo.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\PlanPostPromoEffectReport.cs" />
     <Compile Include="Model\DTO\PlanIncrementalReport.cs" />
@@ -1944,6 +1948,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201907040753146_EmptyMigration_0407.resx">
       <DependentUpon>201907040753146_EmptyMigration_0407.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201907221306150_Add_FieldLoadFromTLC_Promo.resx">
+      <DependentUpon>201907221306150_Add_FieldLoadFromTLC_Promo.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

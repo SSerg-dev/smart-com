@@ -49,11 +49,15 @@ namespace Module.Host.TPM.Handlers
                             CalculateAllActualProductPostPromoEffect(promo, context);
                             context.SaveChanges();
 
-                            // если есть ошибки, они перечисленны через ;
-                            string errorString = ActualProductParametersCalculation.CalculatePromoProductParameters(promo, context, true);
-                            // записываем ошибки если они есть
-                            if (errorString != null)
-                                WriteErrorsInLog(handlerLogger, errorString);
+                            string errorString = null;                            
+                            if (!promo.LoadFromTLC)
+                            {
+                                // если есть ошибки, они перечисленны через ;
+                                errorString = ActualProductParametersCalculation.CalculatePromoProductParameters(promo, context, true);
+                                // записываем ошибки если они есть
+                                if (errorString != null)
+                                    WriteErrorsInLog(handlerLogger, errorString);
+                            }
 
                             errorString = ActualPromoParametersCalculation.CalculatePromoParameters(promo, context, true);
                             // записываем ошибки если они есть

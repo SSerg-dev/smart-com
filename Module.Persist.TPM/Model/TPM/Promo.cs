@@ -247,6 +247,8 @@ namespace Module.Persist.TPM.Model.TPM
         [NotMapped] // не маппим в БД MS SQL
         public Guid OperationId { get; set; } = Guid.NewGuid(); // присваивание здесь позволяет не думать об этом :)
 
+        public bool LoadFromTLC { get; set; }
+
         /// <summary>
         /// Copy Constructor
         /// </summary>
