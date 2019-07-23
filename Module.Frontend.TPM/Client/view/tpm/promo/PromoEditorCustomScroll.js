@@ -556,7 +556,7 @@
         cls: 'promo-action-button',
         hidden: true,
         isPromoAction: true,
-        roles: ['Administrator', 'CMManager', 'CustomerMarketing', 'FunctionalExpert', 'KeyAccountManager'],
+        roles: ['Administrator', /*'CMManager', 'CustomerMarketing', 'FunctionalExpert',*/ 'KeyAccountManager'],
         statuses: ['DraftPublished', 'Test2'],
         statusId: null,
         statusName: null,
