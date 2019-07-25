@@ -163,6 +163,7 @@
   <ItemGroup>
     <Compile Include="Actions\AutoResetPromoAction.cs" />
     <Compile Include="Actions\FullXLSXAssortmentMatrixImportAction.cs" />
+    <Compile Include="Actions\FullXLSXImportPromoProductFromTLCAction.cs" />
     <Compile Include="Actions\XLSXImportActualLsvAction.cs" />
     <Compile Include="Actions\FullXLSXNoNegoUpdateImportAction.cs" />
     <Compile Include="Actions\FullXLSXTradeInvestmentUpdateImportAction.cs" />

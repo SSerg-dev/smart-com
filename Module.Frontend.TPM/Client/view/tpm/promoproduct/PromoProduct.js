@@ -2,6 +2,7 @@
     extend: 'App.view.core.common.CombinedDirectoryPanel',
     alias: 'widget.promoproduct',
     title: l10n.ns('tpm', 'compositePanelTitles').value('PromoProduct'),
+    record: null,
 
     customHeaderItems: [
         ResourceMgr.getAdditionalMenu('core').base = {
@@ -38,7 +39,14 @@
                     itemId: 'loadimporttemplatexlsxbutton',
                     exactlyModelCompare: true,
                     text: l10n.ns('core', 'additionalMenu').value('importTemplateXLSX'),
-                    action: 'DownloadTemplateXLSX'
+                    action: 'DownloadTemplateXLSX',
+                }, {
+                    glyph: 0xf21d,
+                    itemId: 'loadimporttemplatexlsxbuttonTLC',
+                    exactlyModelCompare: true,
+                    text: l10n.ns('tpm', 'PromoProduct').value('TemplateTLC'),
+                    action: 'DownloadTemplateXLSXTLC',
+                    hidden: true,
                 }, {
                     glyph: 0xf21d,
                     itemId: 'exportxlsxbutton',

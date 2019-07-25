@@ -195,6 +195,17 @@ namespace Module.Frontend.TPM.Controllers
 
             return columns;
         }
+        private IEnumerable<Column> GetImportTemplateSettingsTLC()
+        {
+            IEnumerable<Column> columns = new List<Column>()
+            {
+                new Column() { Order = 0, Field = "EAN_PC", Header = "EAN PC", Quoting = false },
+                new Column() { Order = 1, Field = "ActualProductPCQty", Header = "Actual Product PC Qty", Quoting = false },
+                new Column() { Order = 2, Field = "ActualProductSellInPrice", Header = "Price", Quoting = false },
+            };
+
+            return columns;
+        }
 
         private IEnumerable<Column> GetImportTemplateSettings() {
             IEnumerable<Column> columns = new List<Column>()
@@ -244,14 +255,14 @@ namespace Module.Frontend.TPM.Controllers
                     string importDir = Core.Settings.AppSettingsManager.GetSetting("IMPORT_DIRECTORY", "ImportFiles");
                     string fileName = await FileUtility.UploadFile(Request, importDir);
 
-                    CreateImportTask(fileName, "FullXLSXImportPromoProductHandler", promoId);
-
+                    CreateImportTask(fileName, promoId);
                     return Json(new { success = true });
                 }
                 else
                 {
                     return GetErorrRequest(new Exception("Promo was blocked for calculation"));
                 }
+
             }
             catch (Exception e)
             {
@@ -259,7 +270,7 @@ namespace Module.Frontend.TPM.Controllers
             }
         }
 
-        private void CreateImportTask(string fileName, string importHandler, Guid promoId)
+        private void CreateImportTask(string fileName, Guid promoId)
         {
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
@@ -279,11 +290,24 @@ namespace Module.Frontend.TPM.Controllers
                     DisplayName = System.IO.Path.GetFileName(fileName)
                 };
 
+                Promo promo = Context.Set<Promo>().FirstOrDefault(x => x.Id == promoId);
+                string handlerName;
+                Type importModel;
+                if (promo.LoadFromTLC)
+                {
+                    handlerName = "FullXLSXImportPromoProductFromTLCHandler";
+                    importModel = typeof(ImportPromoProductFromTLC);
+                }
+                else
+                {
+                    handlerName = "FullXLSXImportPromoProductHandler";
+                    importModel = typeof(ImportPromoProduct);
+                }
                 HandlerDataHelper.SaveIncomingArgument("File", file, data, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportPromoProduct), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportPromoProduct).Name, data, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("ImportType", importModel, data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", importModel.Name, data, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(PromoProduct), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("PromoId", promoId, data, visible: false, throwIfNotExists: false);
 
@@ -291,8 +315,8 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     Id = Guid.NewGuid(),
                     ConfigurationName = "PROCESSING",
-                    Description = "Загрузка импорта из файла " + typeof(ImportPromoProduct).Name,
-                    Name = "Module.Host.TPM.Handlers." + importHandler,
+                    Description = "Загрузка импорта из файла " + importModel.Name,
+                    Name = "Module.Host.TPM.Handlers." + handlerName,
                     ExecutionPeriod = null,
                     CreateDate = DateTimeOffset.Now,
                     LastExecutionDate = null,
@@ -308,25 +332,58 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult DownloadTemplateXLSX() {
-            try {
+        public IHttpActionResult DownloadTemplateXLSX()
+        {
+            try
+            {
                 IEnumerable<Column> columns = GetImportTemplateSettings();
                 XLSXExporter exporter = new XLSXExporter(columns);
                 string exportDir = AppSettingsManager.GetSetting("EXPORT_DIRECTORY", "~/ExportFiles");
                 string filename = string.Format("{0}Template.xlsx", "PromoProduct");
-                if (!Directory.Exists(exportDir)) {
+                if (!Directory.Exists(exportDir))
+                {
                     Directory.CreateDirectory(exportDir);
                 }
                 string filePath = Path.Combine(exportDir, filename);
                 exporter.Export(Enumerable.Empty<PromoProduct>(), filePath);
                 string file = Path.GetFileName(filePath);
                 return Content(HttpStatusCode.OK, file);
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 return Content(HttpStatusCode.InternalServerError, e.Message);
             }
 
         }
+        [ClaimsAuthorize]
+        public IHttpActionResult DownloadTemplateXLSXTLC(Guid promoId)
+        {
+            try
+            {
+                //IQueryable results = options.ApplyTo(GetConstraintedQuery().Where(x => !x.Disabled));
+                var promo = Context.Set<Promo>().Where(x => x.Id == promoId && !x.Disabled).FirstOrDefault();
+                List<string> eanPCs = PlanProductParametersCalculation.GetProductListFromAssortmentMatrix(promo, Context);
+                IQueryable results = eanPCs.Select(n => new ImportPromoProductFromTLC
+                {
+                    EAN_PC = n,
+                }).AsQueryable();
 
+
+                IEnumerable<Column> columns = GetImportTemplateSettingsTLC();
+                XLSXExporter exporter = new XLSXExporter(columns);
+                UserInfo user = authorizationManager.GetCurrentUser();
+                string username = user == null ? "" : user.Login;
+                string filePath = exporter.GetExportFileName("PromoProduct", username);
+                exporter.Export(results, filePath);
+                string filename = System.IO.Path.GetFileName(filePath);
+                return Content<string>(HttpStatusCode.OK, filename);
+            }
+            catch (Exception e)
+            {
+                return Content<string>(HttpStatusCode.InternalServerError, e.Message);
+            }
+        }
+        
         /// <summary>
         /// Создание отложенной задачи, выполняющей расчет фактических параметров продуктов и промо
         /// </summary>
@@ -364,4 +421,5 @@ namespace Module.Frontend.TPM.Controllers
             }
         }
     }
+
 }

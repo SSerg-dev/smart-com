@@ -1045,7 +1045,8 @@
         'ActualPromoBaselineLSV': 'Actual Promo Baseline LSV',
         'ActualPoductBaselineLSV': 'Actual Poduct Baseline LSV',
         'ProductEN': 'Product EN',
-        'ActualProductLSVByCompensation': 'Actual Product LSV By Compensation'
+        'ActualProductLSVByCompensation': 'Actual Product LSV By Compensation',
+        'TemplateTLC':'Import TLC template XLSX'
     },
     'HistoricalPromoProduct': ['.tpm.PromoProduct', '.core.BaseHistoryEntity'],
     'DeletedPromoProduct': ['.tpm.PromoProduct', '.core.BaseDeletedEntity'],

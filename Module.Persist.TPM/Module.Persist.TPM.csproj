@@ -1153,6 +1153,7 @@
     <Compile Include="Model\Import\ImportEvent.cs" />
     <Compile Include="Model\Import\ImportColor.cs" />
     <Compile Include="Model\Import\ImportActualLsv.cs" />
+    <Compile Include="Model\Import\ImportPromoProductFromTLC.cs" />
     <Compile Include="Model\Import\ImportRetailType.cs" />
     <Compile Include="Model\Import\ImportRejectReason.cs" />
     <Compile Include="Model\Import\ImportPromoStatus.cs" />
@@ -2027,6 +2028,7 @@
     <Content Include="SQLInitialize\20190625_2000_Promoescontroller_CheckIfLogHasError_AP.sql" />
     <Content Include="SQLInitialize\20190704_1300_ClientTree_BigBoxes.sql" />
     <Content Include="SQLInitialize\20190704_1500_ClientTree_BigBoxes_NodeInsert.sql" />
+    <Content Include="SQLInitialize\20190725_1600_AccessPoints_PromoproductsTLCTemplate.sql" />
     <Content Include="Sql\SetPromoBlockInformationTrigger.sql" />
     <Content Include="Sql\ProductTreeTechnologyIdFix.sql" />
     <Content Include="SQLInitialize\20190704_2040_Promo_ChangeStatus.sql" />

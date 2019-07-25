@@ -116,6 +116,29 @@ namespace Module.Host.TPM.Handlers
         }
     }
 
+    class FullXLSXImportPromoProductFromTLCHandler : FullXLSXImportHandler
+    {
+        /// <summary>
+        /// Id промо для которого загружается PromoProducts
+        /// </summary>
+        private Guid promoId;
+        private Guid userId;
+        private Guid roleId;
+
+        public override void Action(HandlerInfo info, ExecuteData data)
+        {
+            promoId = Looper.Parameters.HandlerDataHelper.GetIncomingArgument<Guid>("PromoId", info.Data, false);
+            userId = Looper.Parameters.HandlerDataHelper.GetIncomingArgument<Guid>("UserId", info.Data, false);
+            roleId = Looper.Parameters.HandlerDataHelper.GetIncomingArgument<Guid>("RoleId", info.Data, false);
+            base.Action(info, data);
+        }
+
+        protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
+        {
+            return new FullXLSXImportPromoProductFromTLCAction(settings, promoId, userId, roleId);
+        }
+    }
+
     class XLSXImportActualLsvHandler : FullXLSXImportHandler
     {
         private Guid handlerId;

@@ -209,7 +209,9 @@
 
         // привет ExtJS, Odata и Breeze за удобную работу с моделями
         // на самом деле это объект в формате JSON
-        { name: 'PromoBasicProducts', type: 'string', persist: false}
+        { name: 'PromoBasicProducts', type: 'string', persist: false },
+
+        {name: 'LoadFromTLC', hidden: true},
     ],
     proxy: {
         type: 'breeze',

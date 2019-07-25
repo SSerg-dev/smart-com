@@ -23,6 +23,7 @@ namespace Module.Host.TPM {
                 new Handlers.CalculateActualParamatersHandler(),
                 new Handlers.PromoWorkflowHandler(),
                 new Handlers.FullXLSXImportPromoProductHandler(),
+                new Handlers.FullXLSXImportPromoProductFromTLCHandler(),
                 new Handlers.PromoUpliftFailNotificationHandler(),
                 new Handlers.BaseLineUpgradeHandler(),
                 new Handlers.SchedulerExportHandler(),

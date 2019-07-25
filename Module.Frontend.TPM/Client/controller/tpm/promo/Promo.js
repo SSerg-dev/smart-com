@@ -4071,12 +4071,27 @@
         var me = this;
 
         if (promoProductWidget) {
+            promoProductWidget.record = record;
             promoProductWidget.addListener('afterrender', function () {
                 var toolbar = promoProductWidget.down('custombigtoolbar');
                 var importBtn = promoProductWidget.down('[action=FullImportXLSX]');
 
                 toolbar.down('#createbutton').hide();
                 importBtn.action += '?promoId=' + record.get('Id');
+
+                var tmplTLC = promoProductWidget.down('#loadimporttemplatexlsxbuttonTLC');
+                var tmplNotTLC = promoProductWidget.down('#loadimporttemplatexlsxbutton');
+                var currentRole = App.UserInfo.getCurrentRole();
+                if (currentRole.SystemName.toLowerCase() == 'keyaccountmanager' && record.data.LoadFromTLC) {
+                    tmplTLC.show();
+                    tmplNotTLC.hide(); 
+                    tmplTLC.promoId = record.get('Id');
+                } else if (currentRole.SystemName.toLowerCase() != 'keyaccountmanager' && record.data.LoadFromTLC) {
+                    importBtn.hide();
+                } else {
+                    tmplNotTLC.show();
+                    tmplTLC.hide();
+                }
             })
 
             // загружать нужно только для текущего промо
