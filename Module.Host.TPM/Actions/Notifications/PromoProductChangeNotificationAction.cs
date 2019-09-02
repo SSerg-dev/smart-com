@@ -7,6 +7,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.IO;
 using System.Data.Entity;
+using Module.Persist.TPM.Utils;
 
 namespace Module.Host.TPM.Actions.Notifications {
     /// <summary>
@@ -24,7 +25,7 @@ namespace Module.Host.TPM.Actions.Notifications {
                         string template = File.ReadAllText(templateFileName);
                         if (!String.IsNullOrEmpty(template)) {
                             string[] statuses = statusesSetting.Split(',');
-                            IQueryable<ProductChangeIncident> changeProductIncidents = context.Set<ProductChangeIncident>().Where(x => x.ProcessDate == null).OrderBy(x => x.CreateDate);
+                            IQueryable<ProductChangeIncident> changeProductIncidents = context.Set<ProductChangeIncident>().Where(x => x.NotificationProcessDate == null).OrderBy(x => x.CreateDate);
                             IQueryable<Product> createdProducts = changeProductIncidents.Where(p => p.IsCreate).Select(i => i.Product);
                             IQueryable<Product> deletedProducts = changeProductIncidents.Where(p => p.IsDelete).Select(i => i.Product);
                             List<Product> changedProducts = changeProductIncidents.Where(p => !p.IsCreate && !p.IsDelete).Select(i => i.Product).ToList();
@@ -43,9 +44,9 @@ namespace Module.Host.TPM.Actions.Notifications {
                                 List<Tuple<Promo, IEnumerable<Product>>> promoToDeletedProductsList = new List<Tuple<Promo, IEnumerable<Product>>>();
 
                                 foreach (Promo promo in promoesToCheck) {
-                                    DateTime approveDate = promo.LastApprovedDate.HasValue ? promo.LastApprovedDate.Value.DateTime : DateTime.Now; // TODO: offset...
+                                    DateTimeOffset approveDate = promo.LastApprovedDate.HasValue ? promo.LastApprovedDate.Value : (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
                                                                                                                                                    // Фильтруем иерархию по дате подтверждения промо ??
-                                    IQueryable<ProductTree> nodes = allNodes.Where(n => DateTime.Compare(n.StartDate, approveDate) <= 0 && (!n.EndDate.HasValue || DateTime.Compare(n.EndDate.Value, approveDate) > 0));
+                                    IQueryable<ProductTree> nodes = allNodes.Where(n => DateTimeOffset.Compare(n.StartDate, approveDate) <= 0 && (!n.EndDate.HasValue || DateTimeOffset.Compare(n.EndDate.Value, approveDate) > 0));
                                     // Узлы иерархии продуктов для данного промо
                                     IQueryable<PromoProductTree> promoProductTrees = allProductTreeLinks.Where(p => p.PromoId == promo.Id);
                                     // Продукстов в иерархии может быть несколько
@@ -92,7 +93,7 @@ namespace Module.Host.TPM.Actions.Notifications {
                                     CreateNotification(promoToDeletedProductsList, "PROMO_PRODUCT_DELETE_NOTIFICATION", template);
                                 }
                                 foreach (ProductChangeIncident incident in changeProductIncidents) {
-                                    incident.ProcessDate = DateTimeOffset.Now;
+                                    incident.NotificationProcessDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
                                 }
                                 context.SaveChanges();
                             }

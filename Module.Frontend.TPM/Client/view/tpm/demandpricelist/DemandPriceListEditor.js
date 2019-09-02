@@ -56,8 +56,16 @@
             minValue: new Date(),
             allowBlank: false,
             editable: false,
-            format: 'd.m.Y'
-            // minValue: new Date(),          
+            format: 'd.m.Y',
+            listeners: {
+                afterrender: function (field) {
+                    var minValue = new Date();
+                    var currentTimeZoneOffsetInHours = minValue.getTimezoneOffset();
+                    var minValueInt = minValue.getTime();
+                    field.setMinValue(new Date(minValueInt + currentTimeZoneOffsetInHours * 60000 + 10800000));
+                    field.getPicker().setValue(field.minValue);
+                }
+            }         
         }, {
             xtype: 'numberfield',
             name: 'Price',

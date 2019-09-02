@@ -46,7 +46,10 @@
 				dataIndex: 'DeletedDate',
 				xtype: 'datecolumn',
 				renderer: Ext.util.Format.dateRenderer('d.m.Y H:i:s')
-			}, {
+            }, {
+                text: l10n.ns('tpm', 'AssortmentMatrix').value('Number'),
+                dataIndex: 'Number',
+             },{
                 text: l10n.ns('tpm', 'AssortmentMatrix').value('ClientTreeName'),
                 dataIndex: 'ClientTreeName',
                 width: 250,
@@ -106,6 +109,10 @@
             itemId: 'detailform',
             model: 'App.model.tpm.assortmentmatrix.DeletedAssortmentMatrix',
             items: [{
+                xtype: 'singlelinedisplayfield',
+                name: 'Number',
+                fieldLabel: l10n.ns('tpm', 'AssortmentMatrix').value('Number'),
+            }, {
                 xtype: 'singlelinedisplayfield',
                 name: 'DeletedDate',
                 renderer: Ext.util.Format.dateRenderer('d.m.Y H:i:s'),

@@ -5,7 +5,7 @@
     fields: [
         { name: 'Id', hidden: true },
         { name: 'ProductId', hidden: true, isDefault: false },
-        { name: 'StartDate', type: 'date', hidden: false, isDefault: true },
+        { name: 'StartDate', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
         { name: 'ClientTreeId', hidden: true, isDefault: false },
         { name: 'QTY', type: 'float', hidden: false, isDefault: true },
         { name: 'Price', type: 'float', hidden: false, isDefault: true },

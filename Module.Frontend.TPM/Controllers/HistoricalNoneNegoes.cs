@@ -23,7 +23,7 @@ namespace Module.Frontend.TPM.Controllers
             MaxTop = 1024)]
         public IQueryable<HistoricalNoneNego> GetHistoricalNoneNegoes()
         {
-            return HistoryReader.Query<HistoricalNoneNego>();
+            return HistoryReader.GetAll<HistoricalNoneNego>();
         }
 
         protected override void Dispose(bool disposing)

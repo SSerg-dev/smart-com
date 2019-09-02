@@ -145,7 +145,7 @@ namespace Module.Persist.TPM.PromoStateControl
                     // Go to: StartedState
                     if (promoState == PromoStates.Started)
                     {
-                        if (_stateContext.Model.StartDate <= DateTimeOffset.Now.Date)
+                        if (_stateContext.Model.StartDate <= DateTimeOffset.Now)
                         {
                             Guid startedPromoStatusId = _stateContext.dbContext.Set<PromoStatus>().Where(x => x.SystemName == "Started" && !x.Disabled).FirstOrDefault().Id;
 

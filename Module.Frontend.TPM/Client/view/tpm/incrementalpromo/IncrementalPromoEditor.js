@@ -6,53 +6,41 @@
     maxHeight: 600,
     cls: 'readOnlyFields',
 
+    afterWindowShow: function (scope, isCreating) {
+        scope.down('numberfield[name=PlanPromoIncrementalCases]').focus(true, 10);
+    },
+
     items: {
         xtype: 'editorform',
         columnsCount: 2,
         items: [{
-            xtype: 'searchfield',
-            name: 'PromoId',
-            fieldLabel: l10n.ns('tpm', 'IncrementalPromo').value('PromoId'),
-            selectorWidget: 'promo',
-            valueField: 'Id',
-            displayField: 'Number',
-            store: {
-                type: 'directorystore',
-                model: 'App.model.tpm.promo.Promo',
-                extendedFilter: {
-                    xclass: 'App.ExtFilterContext',
-                    supportedModels: [{
-                        xclass: 'App.ExtSelectionFilterModel',
-                        model: 'App.model.tpm.promo.Promo',
-                        modelId: 'efselectionmodel'
-                    }]
-                }
-            },
-            mapping: [{
-                from: 'Number',
-                to: 'PromoNumber'
-            }],
-            onTrigger2Click: function () {
-                this.reset();
-                this.up('editorform').down('[name=PromoName]').reset();
-                this.up('editorform').down('[name=PromoBrandTechName]').reset();
-                this.up('editorform').down('[name=PromoDispatchesStart]').reset();
-                this.up('editorform').down('[name=PromoDispatchesEnd]').reset();
-                this.up('editorform').down('[name=PromoStartDate]').reset();
-                this.up('editorform').down('[name=PromoEndDate]').reset();
-            },
-            listeners: {
-                change: function (searchfield) {
-                    if (searchfield.getRecord()) {
-                        searchfield.up('editorform').down('[name=PromoName]').setValue(searchfield.getRecord().data.Name);
-                        searchfield.up('editorform').down('[name=PromoBrandTechName]').setValue(searchfield.getRecord().data.BrandTechName);
-                        searchfield.up('editorform').down('[name=PromoDispatchesStart]').setValue(searchfield.getRecord().data.DispatchesStart);
-                        searchfield.up('editorform').down('[name=PromoDispatchesEnd]').setValue(searchfield.getRecord().data.DispatchesEnd);
-                        searchfield.up('editorform').down('[name=PromoStartDate]').setValue(searchfield.getRecord().data.StartDate);
-                        searchfield.up('editorform').down('[name=PromoEndDate]').setValue(searchfield.getRecord().data.EndDate);
-                    }
-                }
-            }
+            xtype: 'textfield',
+            name: 'ProductZREP',
+            fieldLabel: l10n.ns('tpm', 'IncrementalPromo').value('ProductZREP'),
+            readOnlyCls: 'readOnlyField',
+            readOnly: true,
+            setReadOnly: function () { return false },
+        }, {
+            xtype: 'textfield',
+            name: 'ProductName',
+            fieldLabel: l10n.ns('tpm', 'IncrementalPromo').value('ProductName'),
+            readOnlyCls: 'readOnlyField',
+            readOnly: true,
+            setReadOnly: function () { return false },
+        }, {
+            xtype: 'textfield',
+            name: 'PromoClient',
+            fieldLabel: l10n.ns('tpm', 'IncrementalPromo').value('PromoClient'),
+            readOnlyCls: 'readOnlyField',
+            readOnly: true,
+            setReadOnly: function () { return false },
+        }, {
+            xtype: 'textfield',
+            name: 'PromoNumber',
+            fieldLabel: l10n.ns('tpm', 'IncrementalPromo').value('PromoNumber'),
+            readOnlyCls: 'readOnlyField',
+            readOnly: true,
+            setReadOnly: function () { return false },
         }, {
             xtype: 'textfield',
             name: 'PromoName',
@@ -61,94 +49,48 @@
             readOnly: true,
             setReadOnly: function () { return false },
         }, {
-            xtype: 'textfield',
-            name: 'PromoBrandTechName',
-            fieldLabel: l10n.ns('tpm', 'IncrementalPromo').value('PromoBrandTechName'),
-            readOnlyCls: 'readOnlyField',
-            readOnly: true,
-            setReadOnly: function () { return false },
-        }, {
-            xtype: 'datefield',
-            name: 'PromoStartDate',
-            fieldLabel: l10n.ns('tpm', 'IncrementalPromo').value('PromoStartDate'),
-            minValue: new Date(),
+            xtype: 'numberfield',
+            name: 'PlanPromoIncrementalCases',
+            fieldLabel: l10n.ns('tpm', 'IncrementalPromo').value('PlanPromoIncrementalCases'),
             allowBlank: false,
-            editable: false,
-            format: 'd.m.Y',
-            readOnlyCls: 'readOnlyField',
-            readOnly: true,
-            setReadOnly: function () { return false },
-        }, {
-            xtype: 'datefield',
-            name: 'PromoEndDate',
-            fieldLabel: l10n.ns('tpm', 'IncrementalPromo').value('PromoEndDate'),
-            minValue: new Date(),
-            allowBlank: false,
-            editable: false,
-            format: 'd.m.Y',
-            readOnlyCls: 'readOnlyField',
-            readOnly: true,
-            setReadOnly: function () { return false },
-        }, {
-            xtype: 'datefield',
-            name: 'PromoDispatchesStart',
-            fieldLabel: l10n.ns('tpm', 'IncrementalPromo').value('PromoDispatchesStart'),
-            minValue: new Date(),
-            allowBlank: false,
-            editable: false,
-            format: 'd.m.Y',
-            readOnlyCls: 'readOnlyField',
-            readOnly: true,
-            setReadOnly: function () { return false },
-        }, {
-            xtype: 'datefield',
-            name: 'PromoDispatchesEnd',
-            fieldLabel: l10n.ns('tpm', 'IncrementalPromo').value('PromoDispatchesEnd'),
-            minValue: new Date(),
-            allowBlank: false,
-            editable: false,
-            format: 'd.m.Y',
-            readOnlyCls: 'readOnlyField',
-            readOnly: true,
-            setReadOnly: function () { return false },
-        }, {
-            xtype: 'searchfield',
-            name: 'ProductId',
-            fieldLabel: l10n.ns('tpm', 'IncrementalPromo').value('ProductZREP'),
-            selectorWidget: 'product',
-            valueField: 'Id',
-            displayField: 'ZREP',
-            store: {
-                type: 'directorystore',
-                model: 'App.model.tpm.product.Product',
-                extendedFilter: {
-                    xclass: 'App.ExtFilterContext',
-                    supportedModels: [{
-                        xclass: 'App.ExtSelectionFilterModel',
-                        model: 'App.model.tpm.product.Product',
-                        modelId: 'efselectionmodel'
-                    }]
+            minValue: 0,
+            maxValue: 100000000000000000000,
+            listeners: {
+                change: function (field, newVal, oldVal) {
+                    IncrementalPromo_SetPlanLSV(field.up('editorform'));
                 }
-            },
-            mapping: [{
-                from: 'ZREP',
-                to: 'ProductZREP'
-            }],
+            }
         }, {
             xtype: 'numberfield',
-            name: 'IncrementalCaseAmount',
-            fieldLabel: l10n.ns('tpm', 'IncrementalPromo').value('IncrementalCaseAmount'),
+            name: 'CasePrice',
+            fieldLabel: l10n.ns('tpm', 'IncrementalPromo').value('CasePrice'),
             allowBlank: false,
+            minValue: 0,
+            maxValue: 100000000000000000000,
+            listeners: {
+                change: function (field, newVal, oldVal) {
+                    IncrementalPromo_SetPlanLSV(field.up('editorform'));
+                }
+            }
         }, {
             xtype: 'numberfield',
-            name: 'IncrementalLSV',
-            fieldLabel: l10n.ns('tpm', 'IncrementalPromo').value('IncrementalLSV'),
-            allowBlank: false,
-        }, {
-            xtype: 'numberfield',
-            name: 'IncrementalPrice',
-            fieldLabel: l10n.ns('tpm', 'IncrementalPromo').value('IncrementalPrice'),
-            allowBlank: false,
+            name: 'PlanPromoIncrementalLSV',
+            fieldLabel: l10n.ns('tpm', 'IncrementalPromo').value('PlanPromoIncrementalLSV'),
+            readOnlyCls: 'readOnlyField',
+            readOnly: true,
+            setReadOnly: function () { return false },
         }]
     }
 });
+
+function IncrementalPromo_SetPlanLSV(form) {
+    var casesField = form.down('numberfield[name=PlanPromoIncrementalCases]');
+    var casePriceField = form.down('numberfield[name=CasePrice]');
+    var lsvField = form.down('numberfield[name=PlanPromoIncrementalLSV]');
+
+    var cases = casesField.getValue();
+    var casePrice = casePriceField.getValue();
+    var lsv = cases !== null && casePrice !== null ? cases * casePrice : null;
+
+    lsvField.setValue(lsv);
+}

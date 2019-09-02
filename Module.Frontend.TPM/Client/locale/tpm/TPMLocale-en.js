@@ -130,6 +130,7 @@
         'PromoProductSubrangeDetailsWindow': 'Products',
         'AssortmentMatrix': 'Assortment matrix',
         'IncrementalPromo': 'Incremental Promo',        
+        'InOutProductSelectionWindow': 'Selected Products'
     },
 
     'text': {
@@ -159,6 +160,7 @@
         'PlanInstoreAssumptionValidate': 'Plan Instore Assumption',
         'ActualInstoreValidate': 'Instore Assumption Mechanic',
         'InvoiceNumberValidate': 'Invoice Number',
+        'DocumentNumberValidate': 'Document Number',
         'completeStep1Validate': 'Step 1',
         'completeStep2Validate': 'Step 2',
         'completeStep3Validate': 'Step 3',
@@ -172,7 +174,8 @@
     'DeleteText': {
         'deleteWindowTitle': 'Delete record',
         'deleteConfirmMessage': 'Do you really want to delete the record?',
-        'cascadeDeleteConfirmMessage': 'Do you really want to delete the node? All child elements will be also removed'
+		'cascadeDeleteConfirmMessage': 'Do you really want to delete the node? All child elements will be also removed',
+		'deleteNodeWarning': 'Warning! If you delete the node all related promos will be corrupted!'
     },
 
     'promoMainTab': {
@@ -238,7 +241,10 @@
         'plan': 'Plan',
         'showLog': 'Show log',
         'recalculate': 'Recalculate',
-        'promoBlockLabelText': 'Promo is blocked for recalculations'
+        'promoBlockLabelText': 'Promo is blocked for recalculations',
+        'downloadScheduleButtonText': 'Download',
+        'downloadError': 'File for this task doesn\'t exist',
+        'noSelectionError': 'Select task',
     },
 
     'Category': {
@@ -519,6 +525,9 @@
     'Promo': {
         'StartDate': 'Start date',
         'DateStart': 'Start date',
+        'LastChangedDate': 'Last Changed Date',
+        'LastChangedDateDemand': 'Last Changed Date Demand',
+        'LastChangedDateFinance': 'Last Changed Date Finance',
         'EndDate': 'End date',
         'DateEnd': 'End date',
         'DispatchesStart': 'Dispatch start',
@@ -540,11 +549,11 @@
         'MarsMechanicDiscount': 'Mars mechanic discount, %',
         'MechanicIA': 'IA mechanic',
         'PlanInstoreMechanicName': 'Plan Instore Mechanic Name',
-        'PlanInstoreMechanicNameTip': 'Forecasted mechanic in store',
+        'PlanInstoreMechanicNameTip': 'Plan Forecasted mechanic in store',
         'PlanInstoreMechanicTypeName': 'Plan Instore Mechanic Type Name',
-        'PlanInstoreMechanicTypeNameTip': 'Forecasted mechanic type instore with co investment from client',
+        'PlanInstoreMechanicTypeNameTip': 'Plan Forecasted mechanic type instore with co investment from client',
         'PlanInstoreMechanicDiscount': 'Plan Instore Mechanic Discount',
-        'PlanInstoreMechanicDiscountTip': 'Forecasted discount instore with co investment from client',
+        'PlanInstoreMechanicDiscountTip': 'Plan Forecasted discount instore with co investment from client',
         'CalendarPriority': 'Calendar view priority',
         'ProductFilter': 'Product filter',
         'ProductFilterDisplay': 'Product filter',
@@ -565,54 +574,65 @@
         'EventPeriod': 'Period',
         'EventDescription': 'Description',
 
-        'PlanPromoCost': 'Total Cost, MRUR',
-        'PlanPromoTIMarketing': 'Marketing TI',
-        'PlanPromoCostProduction': 'Cost Production',
-        'PlanPromoTIShopper': 'Shopper TI',
-        'PlanPromoBranding': 'Branding',
-        'PlanPromoBTL': 'BTL',
+        'PlanPromoCost': 'Plan Total Cost, MRUR',
+        'PlanPromoTIMarketing': 'Plan Marketing TI',
+        'PlanPromoCostProduction': 'Plan Cost Production',
+        'PlanPromoTIShopper': 'Plan Shopper TI',
+        'PlanPromoBranding': 'Plan Branding',
+        'PlanPromoBTL': 'Plan BTL',
 
-        'PlanPromoUpliftPercent': 'Promo Uplift %',
-        'PlanPromoIncrementalLSV': 'Promo Incremental LSV',
-        'PlanPromoLSV': 'Promo LSV',
-        'PlanPromoBaselineLSV': 'Promo Baseline LSV',
-        'PlanPromoPostPromoEffectLSV': 'Post Promo Effect LSV total',
-        'PlanPostPromoEffectTotal': 'Post promo effect, Total %',
-        'PlanPromoPostPromoEffectLSVW1': 'Post Promo Effect W1, %',
-        'PlanPromoPostPromoEffectLSVW2': 'Post Promo Effect W2, %',
+        'PlanPromoUpliftPercent': 'Plan Promo Uplift, %',
+        'PlanPromoIncrementalLSV': 'Plan Promo Incremental LSV',
+        'PlanPromoLSV': 'Plan Promo LSV',
+        'PlanPromoBaselineLSV': 'Plan Promo Baseline LSV',
+        'PlanPromoPostPromoEffectLSV': 'Plan Post Promo Effect LSV',
+        'PlanPostPromoEffectTotal': 'Plan Post Promo Effect LSV',
+        'PlanPromoPostPromoEffectLSVW1': 'Plan Post Promo Effect LSV W1',
+        'PlanPromoPostPromoEffectLSVW2': 'Plan Post Promo Effect LSV W2',
+
+        'PromoUpliftPercent': 'Promo Uplift %',
+        'PromoIncrementalLSV': 'Promo Incremental LSV',
+        'PromoLSV': 'Promo LSV',
+        'PromoBaselineLSV': 'Promo Baseline LSV',
+        'PromoPostPromoEffectLSV': 'Post Promo Effect LSV total',
+        'PostPromoEffectTotal': 'Post promo effect, Total %',
+        'PromoPostPromoEffectLSVW1': 'Post Promo Effect W1, %',
+        'PromoPostPromoEffectLSVW2': 'Post Promo Effect W2, %',
 
         'PlanPromoROIPercent': 'Plan Promo ROI, %',
         'PlanPromoIncrementalNSV': 'Plan Promo Incremental NSV, RUR',
         'PlanPromoNetIncrementalNSV': 'Plan Promo Net Incremental NSV, RUR',
         'PlanPromoIncrementalMAC': 'Plan Promo Incremental Mac, RUR',
 
-        'ActualPromoCost': 'Total Cost, MRUR',
-        'ActualPromoTIMarketing': 'Marketing TI',
-        'ActualPromoCostProduction': 'Cost Production',
-        'ActualPromoTIShopper': 'Shopper TI',
-        'ActualPromoBranding': 'Branding',
-        'ActualPromoBTL': 'BTL',
+        'ActualPromoCost': 'Actual Total Cost, MRUR',
+        'ActualPromoTIMarketing': 'Actual Marketing TI',
+        'ActualPromoCostProduction': 'Actual Cost Production',
+        'ActualPromoTIShopper': 'Actual Shopper TI',
+        'ActualPromoBranding': 'Atual Branding',
+        'ActualPromoBTL': 'Actual BTL',
         'ActualPostPromoEffect': 'Actual Post Promo Effect',
 
-        'ActualPromoUpliftPercent': 'Promo Uplift %',
-        'ActualPromoIncrementalLSV': 'Promo Incremental LSV',
+        'ActualPromoUpliftPercent': 'Actual Promo Uplift %',
+        'ActualPromoIncrementalLSV': 'Actual Promo Incremental LSV',
         'ActualPromoLSV': 'Actual Promo LSV, RUR',
-        'ActualPromoLSVByCompensation': 'Promo LSV by Compensation',
-        'ActualPromoPostPromoEffectLSV': 'Post Promo Effect LSV total',
-        'FactPostPromoEffectTotal': 'Post Promo Effect LSV total',
+        'ActualPromoLSVByCompensation': 'Actual Promo LSV by Compensation',
+        'ActualPromoPostPromoEffectLSV': 'Actual Post Promo Effect LSV total',
+        'FactPostPromoEffectTotal': 'Actual Post Promo Effect LSV total',
         'ActualPromoPostPromoEffectLSVW1': 'Actual Promo Post Promo Effect LSV W1',
         'ActualPromoPostPromoEffectLSVW2': 'Actual Promo Post Promo Effect LSV W2',
 
         'ActualPromoROIPercent': 'Actual Promo ROI, %',
-        'ActualPromoBaselineLSV': 'Promo Baseline LSV',
+        'ActualPromoBaselineLSV': 'Actual Promo Baseline LSV',
         'ActualPromoIncrementalNSV': 'Actual Promo Incremental NSV, RUR',
         'ActualPromoNetIncrementalNSV': 'Actual Promo Net Incremental NSV, RUR',
         'ActualPromoIncrementalMAC': 'Actual Promo Incremental MAC, RUR',
 
-        'ActualInStoreShelfPrice': 'Instore Shelf Price',
-        'PlanInStoreShelfPrice': 'Instore Shelf Price',
+        'ActualInStoreShelfPrice': 'Actual In Store Shelf Price',
+        'PlanInStoreShelfPrice': 'Plan In Store Shelf Price',
         'InvoiceNumber': 'Invoice number',
         'InvoiceNumberRegex': 'Only letters, numbers and \',\' allowed. Each code must be at least 4 symbols long.',
+        'DocumentNumber': 'Document number',
+        'DocumentNumberRegex': 'Only letters, numbers and \',\' allowed. Each code must be at least 4 symbols long.',
 
         'Quantity': 'Quantity',
         'ProdCostPer1': 'Prod cost per 1 item',
@@ -675,7 +695,10 @@
         'ActualInStoreMechanicTypeNameTip': 'Actual mechanic type instore with co investment from client',
         'ActualInStoreMechanicDiscountTip': 'Actual discount instore with co investment from client',
         'ChangeStateOnlyButtonText': 'Dependent on me',
-        'CreateInOutPromo': 'InOut',
+        'CreateCollapsed': 'Create<br>Promo',
+        'CreateInOutCollapsed': 'Create<br>Promo<br>InOut',
+        'CreateExpanded': 'Create Promo',
+        'CreateInOutExpanded': 'Create Promo InOut',
 
         'PlanPromoBaselineBaseTI': 'Plan Promo Baseline Base TI',
         'PlanPromoBaseTI': 'Plan Promo Base TI',
@@ -704,6 +727,7 @@
         'InOut': 'In-Out',
         'ActualPromoNetIncrementalBaseTI': 'Actual Promo Net Incremental BaseTI',
         'ActualPromoNetIncrementalCOGS': 'Actual Promo Net Incremental COGS',
+        'ActualPromoNSV': 'Actual Promo NSV',
 
         //Для исторической модели
         'PlanPromoNetROIPercent': 'Plan Promo Net ROI Percent',
@@ -713,7 +737,16 @@
         'ActualPromoNetIncrementalBaseTI': 'Actual Promo Net Incremental Base TI',
         'ActualPromoNetIncrementalCOGS': 'Actual Promo Net Incremental COGS',
         'ActualPromoNetBaseTI': 'Actual Promo Net Base TI',
-        'PlanPromoNSV': 'Pla nPromo NSV',
+        'PlanPromoNSV': 'Plan Promo NSV',
+        'Comment': 'Comment',
+        'InstoreMechanicName': 'Instore Mechanic',
+        'InstoreMechanicTypeName': 'Instore Mechanic Type',
+        'InstoreMechanicDiscount': 'Instore Mechanic Discount',
+        'Priority': 'Priority',
+        'Client1LevelName': 'NA/RKA',
+        'Client2LevelName': 'Client Group',
+        'ClientName': 'Client',
+        'ProductSubrangesList': 'Subrange',
     },
     'HistoricalPromo': ['.tpm.Promo', '.core.BaseHistoryEntity'],
     'DeletedPromo': ['.tpm.Promo', '.core.BaseDeletedEntity'],
@@ -813,6 +846,7 @@
         'ExportTaskCreated': 'Export task was successfully created. Results file will be available here:',
         'ExportTaskComplete': 'Export task was successfully completed. Results file will be available in the task details.',
         'ExportTaskError': 'The export task failed. You can see the details of the task here:',
+        'CopyInOutError': 'Unable to copy to different type promo'
     },
 
     'Color': {
@@ -969,7 +1003,11 @@
         'CreatePromoSupportButton': 'Create Promo Support',
         'CreateOnTheBasisButton': 'Create on the basis',
         'PlanProdCostPer1Item': 'Plan Prod Cost Per 1 Item',
-        'ActualProdCostPer1Item': 'Actual Prod Cost Per 1 Item'
+        'ActualProdCostPer1Item': 'Actual Prod Cost Per 1 Item',
+        'PONumber': 'PO Number',
+        'PONumberRegex': 'Only numbers',
+        'InvoiceNumber': 'Invoice Number',
+        'InvoiceNumberRegex': 'Only numbers'
     },
     'HistoricalPromoSupport': ['.tpm.PromoSupport', '.core.BaseHistoryEntity'],
     'DeletedPromoSupport': ['.tpm.PromoSupport', '.core.BaseDeletedEntity'],
@@ -989,6 +1027,7 @@
         'ActualProdCostPer1Item': 'Actual Prod Cost Per 1 Item',
         'PlanProdCost': 'Plan Prod Cost',
         'ActualProdCost': 'Actual Prod Cost',
+        'PONumber': 'PO Number'
     },
     'HistoricalCostProduction': ['.tpm.CostProduction', '.core.BaseHistoryEntity'],
     'DeletedCostProduction': ['.tpm.CostProduction', '.core.BaseDeletedEntity'],
@@ -1245,7 +1284,6 @@
         'ZREP': 'ZREP',
         'PlanProductQty': 'Plan Product Qty',
         'DemandCode': 'Demand Code',
-        'PromoName': 'Promo Name',
         'PromoNameId': 'Promo Name Id',
         'LocApollo': 'Loc',
         'TypeApollo': 'Type',
@@ -1255,7 +1293,11 @@
         'PlanUplift': 'Uplift Plan',
         'StartDate': 'Start Date',
         'EndDate': 'End Date',
-        'Status': 'Status',
+		'Status': 'Status',
+		'Week': 'Week',
+		'PlanProductBaselineCaseQty': 'Plan Product Baseline Case Qty',
+		'PlanProductIncrementalLSV': 'Plan Product Incremental LSV',
+		'PlanProductBaselineLSV': 'Plan Product Baseline LSV',
         'InOut':'In-Out'
     },
 
@@ -1321,7 +1363,11 @@
         'PlanPostPromoEffectQty': 'Qty',
         'StartDate': 'Start Date',
         'EndDate': 'End Date',
-        'Status': 'Status',
+		'Status': 'Status',
+		'Week': 'Week',
+		'PlanProductBaselineCaseQty': 'Plan Product Baseline Case Qty',
+		'PlanProductPostPromoEffectLSV': 'Plan Product Post Promo Effect LSV',
+		'PlanProductBaselineLSV': 'Plan Product Baseline LSV',
         'InOut':'In-Out'
     },
     'PromoROIReport': {
@@ -1514,11 +1560,11 @@
 
     'PromoActivity': {
         'UpdateActuals': 'Upload Actuals',
-        'PlanInstoreAssumption': 'Plan Instore Assumption',
+        'PlanInstoreAssumption': 'Plan In Store Assumption',
         'Mechanic': 'Mechanic',
         'MechanicType': 'Mechanic Type',
         'ActualInStoreDiscount': 'Actual Instore Mechanic Discount',
-        'ActualInStore': 'Actual In Store',
+        'ActualInStore': 'Actual Discount In Store',
         'Plan': 'Plan',
         'Actuals': 'Actuals'
     },
@@ -1533,7 +1579,7 @@
     },
 
     'PromoActivityDetailsWindow': {
-        'InstoreAssumption': 'Instore Assumption',
+        'PlanInstoreAssumption': 'Plan Instore Assumption',
         'ActualInStore': 'Actual In Store',
         'PlanActivity': 'Plan - Activity',
         'ActualActivity': 'Actual - Activity',
@@ -1559,20 +1605,36 @@
 
     'PromoSummary': {
         'InformationTitle': 'Promo information',
+        'Client': 'Client',
+        'Status': 'Status',
         'MarsMechanic': 'Mars mechanic',
         'InstoreMechanic': 'Instore mechanic',
         'DurationDate': 'Duration Date',
-        'Client': 'Client',
-        'BrandTech': 'Brand + Technology',
         'DispatchDate': 'Dispatch Date',
-        'Event': 'Event',
-        'Status': 'Status',
-        'Detail': 'Detail',
-        'ActivityTitle': 'Activity',
+
+        'Activity': 'Activity',
+        'IncrementalLSV': 'Incremental LSV',
+        'Baseline': 'Baseline',
+
+        'Uplift': 'Uplift',
+
+        'Budgets': 'Budgets',
+        'MarketingTI': 'MarketingTI',
+        'CostProduction': 'Cost Production',
+        'ShopperTI': 'Shopper TI',
+        'Branding': 'Branding',
+        'BTL': 'BTL',
+        'Finance': 'Finance',
+
+        'IncrementalNSV': 'Incremental NSV',
+        'IncrementalLSV': 'Incremental LSV',
+        'PromoNSV': 'Promo NSV',
+        'Earnings': 'Earnings',
+        'ROI': 'ROI',
+
         'Plan': 'Plan',
-        'Fact': 'Actual',
-        'BudgetsTitle': 'Budgets',
-        'FinanceTitle': 'Finance'
+        'Actual': 'Actual',
+        'Detail': 'Detail',
     },
 
     'buttons': {
@@ -1662,6 +1724,7 @@
         'SelectedSubranges': 'Selected Subranges',
         'Products': 'Products',
         'ChooseBtn': 'Choose',
+        'SelectedProducts': 'Selected Products'
     },
     'CalculatingInfoLog': {
         'Type': 'Type',
@@ -1673,37 +1736,29 @@
         },
     },
     'AssortmentMatrix': {
+        'Id': 'Id',
+        'Number': 'ID',
         'EAN_PC': 'EAN PC',
         'ClientTreeName': 'Client',
         'ClientTreeObjectId': 'Client hierarchy code',
         'StartDate': 'Start Date',
         'EndDate': 'End Date',
-        'CreateDate': 'Create Date'
+        'CreateDate': 'Create Date',
+        'actualAssortmentMatrixButtonText': 'Get actual assortment matrix.'
     },
     'HistoricalAssortmentMatrix': ['.tpm.AssortmentMatrix', '.core.BaseHistoryEntity'],
     'DeletedAssortmentMatrix': ['.tpm.AssortmentMatrix', '.core.BaseDeletedEntity'],
 
     'IncrementalPromo': {
-        'PromoId': 'Promo Id',
-        'PromoNumber': 'Promo Number',
-        'PromoName': 'Promo Name',
-        'PromoBrand': 'Brand',
-        'PromoBrandTechName': 'Brand / Tech',
-        'PromoStartDate': 'Start Date',
-        'PromoEndDate': 'End Date',
-        'PromoDispatchesStart': 'Dispath Start Date',
-        'PromoDispatchesEnd': 'Dispatch End Date',
         'ProductZREP': 'ZREP',
-        'IncrementalCaseAmount': 'Case Amount',
-        'IncrementalLSV': 'LSV',
-        'IncrementalPrice': 'Price',
-        'BrandName': 'Brand',
-        'TechnologyName': 'Technology',
-        'StartDate': 'Start Date',
-        'EndDate': 'End Date',
-        'DispatchesStartDate': 'Dispatch Start',
-        'DispatchesEndDate': 'Dispatch End',
-        'PromoZREP': 'ZREP'
+        'ProductName': 'Product Name',
+        'PromoClient': 'Client',
+        'PromoNumber': 'Promo ID',
+        'PromoName': 'Promo Name',
+        'PlanPromoIncrementalCases': 'Plan Promo Incremental Cases',
+        'CasePrice': 'Case Price',
+		'PlanPromoIncrementalLSV': 'Plan Promo Incremental LSV',
+		'ClientTreeId': 'Client Id',
     },
     'HistoricalIncrementalPromo': ['.tpm.IncrementalPromo', '.core.BaseHistoryEntity'],
     'DeletedIncrementalPromo': ['.tpm.IncrementalPromo', '.core.BaseDeletedEntity'],
@@ -1742,5 +1797,12 @@
         'ActualPromoPostPromoEffectLSVW2': 'Actual Post Promo Effect W2, %',
         'PlanPromoPostPromoEffectLSV': 'Plan Post Promo Effect LSV total',
         'ActualPromoPostPromoEffectLSV': 'Actual Promo Effect LSV total',
+        'InOut': 'InOut'
     },
+
+    'InOutProductSelectionWindow': {
+        'excludeassortmentmatrixproductsbutton': 'Exclude products from assortment matrix.',
+        'ok': 'Choose products',
+        'productrequired': 'You must select at least one product.'
+    }
 });

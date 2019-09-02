@@ -7,7 +7,7 @@ Ext.define('App.model.core.associatedmailnotificationsetting.mailnotificationset
 		{ name: '_ObjectId', hidden: true },
 		{ name: '_User', type: 'string', isDefault: true },
 		{ name: '_Role', type: 'string', isDefault: true },
-		{ name: '_EditDate', type: 'date', isDefault: true },
+        { name: '_EditDate', type: 'date', isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
 		{ name: '_Operation', type: 'string', isDefault: true },
 		{ name: 'Name', type: 'string', isDefault: true },
 		{ name: 'Description', type: 'string', isDefault: true },

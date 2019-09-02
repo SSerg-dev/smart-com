@@ -1,5 +1,6 @@
 using Core.Import;
 using Module.Persist.TPM.Model.TPM;
+using Module.Persist.TPM.Utils;
 using System;
 using System.ComponentModel.DataAnnotations;
 
@@ -9,11 +10,19 @@ namespace Module.Persist.TPM.Model.TPM
 
         [ImportCSVColumn(ColumnNumber = 0)]
         [Display(Name = "StartDate")]
-        public DateTimeOffset? StartDate { get; set; }
+        public DateTimeOffset? StartDate
+        {
+            get { return startDate; }
+            set { startDate = ChangeTimeZoneUtil.ResetTimeZone(value); }
+        }
 
         [ImportCSVColumn(ColumnNumber = 1)]
         [Display(Name = "EndDate")]
-        public DateTimeOffset? EndDate { get; set; }
+        public DateTimeOffset? EndDate
+        {
+            get { return endDate; }
+            set { endDate = ChangeTimeZoneUtil.ResetTimeZone(value); }
+        }
 
         [ImportCSVColumn(ColumnNumber = 2)]
         [Display(Name = "Client hierarchy")]
@@ -55,5 +64,8 @@ namespace Module.Persist.TPM.Model.TPM
         public int ClientTreeId { get; set; }
         public System.Guid? BrandTechId { get; set; }
         public virtual BrandTech BrandTech { get; set; }
+
+        private DateTimeOffset? startDate;
+        private DateTimeOffset? endDate;
     }
 }

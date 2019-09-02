@@ -11,6 +11,7 @@ using Looper.Parameters;
 using Module.Frontend.TPM.Model;
 using Module.Persist.TPM.Model.Import;
 using Module.Persist.TPM.Model.TPM;
+using Module.Persist.TPM.Utils;
 using Newtonsoft.Json;
 using Persist;
 using Persist.Model;
@@ -262,7 +263,7 @@ namespace Module.Frontend.TPM.Controllers
                     Description = "Загрузка импорта из файла " + typeof(ImportPromoStatus).Name,
                     Name = "Module.Host.TPM.Handlers." + importHandler,
                     ExecutionPeriod = null,
-                    CreateDate = DateTimeOffset.Now,
+                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
                     LastExecutionDate = null,
                     NextExecutionDate = null,
                     ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,

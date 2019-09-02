@@ -287,8 +287,15 @@
                         }
                     });
                     node.set('checked', c);
-                } else {
-                    node.set('checked', checked);
+				} else {
+					var promoeditorcustom = Ext.ComponentQuery.query('promoeditorcustom')[0];
+					if (promoeditorcustom) {
+						if (node.get('IsBaseClient')) {
+							node.set('checked', checked);
+						}
+					} else {
+						node.set('checked', checked);
+					}
                 }
 
                 if (node.get('IsBaseClient')) {
@@ -318,6 +325,13 @@
             var clientTreeEditorWindow = Ext.ComponentQuery.query('clienttreeeditor')[0],
                 srch = clientTreeEditorWindow.down('searchcombobox');
 
+            clientTreeEditorWindow.down('#ok').on('click', function () {
+                var scroll = $('#vScrollClientTree' + tree.id).data('jsp');
+
+                tree.lastScrollHeight = scroll.getContentHeight();
+                tree.lastScrollY = scroll.getContentPositionY();
+            });
+
             clientTreeEditorWindow.beforeDestroy = function () {
                 selModel.select(record);
                 me.updateTreeDetail(form, record);
@@ -333,10 +347,11 @@
     onDeleteNodeButtonClick: function (button) {
         var treegrid = button.up('combineddirectorytreepanel').down('basetreegrid'),
             record = treegrid.getSelectionModel().getSelection()[0],
-            msg = record.isLeaf() ? l10n.ns('tpm', 'DeleteText').value('deleteConfirmMessage') : l10n.ns('tpm', 'DeleteText').value('cascadeDeleteConfirmMessage');
+			msg = l10n.ns('tpm', 'DeleteText').value('deleteNodeWarning'),
+            me = this;
 
         Ext.Msg.show({
-            title: l10n.ns('tpm', 'DeleteText').value('deleteWindowTitle'),
+			title: l10n.ns('tpm', 'DeleteText').value('deleteWindowTitle'),
             msg: msg,
             fn: function (buttonId) {
                 if (buttonId === 'yes') {
@@ -348,7 +363,35 @@
                     App.Util.makeRequestWithCallback('ClientTrees', 'Delete', parameters, function (data) {
                         var result = Ext.JSON.decode(data.httpResponse.data.value);
                         if (result.success) {
-                            treegrid.store.load();
+                            var targetId;
+
+                            if (record.nextSibling) {
+                                targetId = record.nextSibling.get('ObjectId');
+                            }
+                            else if (record.previousSibling) {
+                                targetId = record.previousSibling.get('ObjectId');
+                            }
+                            else {
+                                targetId = record.get('parentId');
+                            }
+
+                            treegrid.store.getProxy().extraParams.clientObjectId = targetId;
+                            treegrid.store.getRootNode().removeAll();
+                            treegrid.store.getRootNode().setId('root');
+                            treegrid.store.load({
+                                scope: this,
+                                callback: function (records, operation, success) {
+                                    if (success) {
+                                        var choosenRecord = treegrid.store.getById(targetId);
+                                        if (choosenRecord.parentNode.isExpanded()) {
+                                            treegrid.getSelectionModel().select(choosenRecord);
+                                            treegrid.fireEvent('itemclick', treegrid.getView(), choosenRecord);
+
+                                            me.scrollNodeToCenterTree(treegrid, choosenRecord);
+                                        }
+                                    }
+                                }
+                            });
                             treegrid.setLoading(false);
                         } else {
                             treegrid.setLoading(false);

@@ -21,7 +21,7 @@ namespace Module.Frontend.TPM.Controllers {
             EnableConstantParameterization = false,
             MaxTop = 1024)]
         public IQueryable<HistoricalSubrange> GetHistoricalSubranges() {
-            return HistoryReader.Query<HistoricalSubrange>();
+            return HistoryReader.GetAll<HistoricalSubrange>();
         }
 
         protected override void Dispose(bool disposing) {

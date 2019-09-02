@@ -28,6 +28,13 @@ namespace Frontend {
             }
 
             GlobalConfiguration.Configure(WebApiConfig.Register);
+
+            string useXssFilter = WebConfigurationManager.AppSettings["UseXssFilter"];
+            if (useXssFilter != "false")
+            {
+                GlobalConfiguration.Configure(TPM.App_Start.WebApiConfig.Register);
+            }
+
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             //BundleConfig.RegisterBundles(BundleTable.Bundles);
 

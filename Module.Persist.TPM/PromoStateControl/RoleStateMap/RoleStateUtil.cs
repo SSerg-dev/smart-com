@@ -12,37 +12,37 @@ namespace Module.Persist.TPM.PromoStateControl.RoleStateMap {
         public static List<RoleStateMap> StatusRoleStateMap = new List<RoleStateMap>() {
             new RoleStateMap(StateNames.DELETED, new Dictionary<string, List<string>>(){ }),
             new RoleStateMap(StateNames.DRAFT, new Dictionary<string, List<string>>(){
-                { StateNames.DRAFT_PUBLISHED, new List<string> { "Administrator", "CMManager", "CustomerMarketing", "DemandFinance", "DemandPlanning", "FunctionalExpert", "KeyAccountManager" } },
-                { StateNames.DELETED, new List<string> { "Administrator", "CMManager", "CustomerMarketing", "DemandFinance", "DemandPlanning", "FunctionalExpert", "KeyAccountManager" } }
+                { StateNames.DRAFT_PUBLISHED, new List<string> { "Administrator", "CustomerMarketing", "KeyAccountManager", "FunctionalExpert" } },
+                { StateNames.DELETED, new List<string> { "Administrator", "CustomerMarketing", "KeyAccountManager", "FunctionalExpert" } }
             }),
             new RoleStateMap(StateNames.DRAFT_PUBLISHED, new Dictionary<string, List<string>>(){
-                { StateNames.DRAFT, new List<string> { "Administrator", "CMManager", "CustomerMarketing", "FunctionalExpert", "KeyAccountManager" } },
-                { StateNames.ON_APPROVAL, new List<string> { "Administrator", "CMManager", "CustomerMarketing", "FunctionalExpert", "KeyAccountManager", "DemandPlanning" } },
-                { StateNames.DELETED, new List<string> { "Administrator", "CMManager", "CustomerMarketing", "FunctionalExpert", "KeyAccountManager" } }
+                { StateNames.DRAFT, new List<string> { "Administrator", "CustomerMarketing", "FunctionalExpert", "KeyAccountManager" } },
+                { StateNames.ON_APPROVAL, new List<string> { "System", "Administrator",  "CustomerMarketing", "FunctionalExpert", "KeyAccountManager" } },
+                { StateNames.DELETED, new List<string> { "Administrator", "CustomerMarketing", "FunctionalExpert", "KeyAccountManager" } }
             }),
             new RoleStateMap(StateNames.ON_APPROVAL, new Dictionary<string, List<string>>() {
                 { StateNames.DRAFT_PUBLISHED, new List<string> { "Administrator", "CMManager", "CustomerMarketing", "DemandFinance", "DemandPlanning" } },
-                { StateNames.APPROVED, new List<string> { "Administrator", "CMManager", "DemandFinance", "DemandPlanning" } }
+                { StateNames.APPROVED, new List<string> { "CMManager", "DemandFinance", "DemandPlanning" } }
             }),
             new RoleStateMap(StateNames.APPROVED, new Dictionary<string, List<string>>() {
-                { StateNames.DRAFT_PUBLISHED, new List<string> { "Administrator", "KeyAccountManager" } },
-                { StateNames.PLANNED, new List<string> { "Administrator", "KeyAccountManager" } },
-                { StateNames.CANCELLED, new List<string> { "KeyAccountManager" } }
+                { StateNames.DRAFT_PUBLISHED, new List<string> { "Administrator" } },
+                { StateNames.PLANNED, new List<string> { "Administrator", "KeyAccountManager", "FunctionalExpert" } },
+                { StateNames.CANCELLED, new List<string> { "Administrator", "KeyAccountManager", "FunctionalExpert" } }
             }),
             new RoleStateMap(StateNames.CANCELLED, new Dictionary<string, List<string>>(){ }),
             new RoleStateMap(StateNames.PLANNED, new Dictionary<string, List<string>>(){
                 { StateNames.STARTED, new List<string> { "System" } },
-                { StateNames.DRAFT_PUBLISHED, new List<string> { "Administrator", "KeyAccountManager" } },
-				{ StateNames.CANCELLED, new List<string> { "KeyAccountManager" } }
+                { StateNames.DRAFT_PUBLISHED, new List<string> { "Administrator" } },
+				{ StateNames.CANCELLED, new List<string> { "Administrator", "KeyAccountManager", "FunctionalExpert" } }
 			}),
             new RoleStateMap(StateNames.STARTED, new Dictionary<string, List<string>>(){
-                { StateNames.FINISHED, new List<string> { "System", "Administrator" } }
+                { StateNames.FINISHED, new List<string> { "System" } }
             }),
             new RoleStateMap(StateNames.FINISHED, new Dictionary<string, List<string>>(){
-                { StateNames.CLOSED, new List<string> { "System", "Administrator","DemandFinance", "FunctionalExpert", "KeyAccountManager" } }
+                { StateNames.CLOSED, new List<string> { "System", "Administrator", "KeyAccountManager", "FunctionalExpert" } }
             }),
             new RoleStateMap(StateNames.CLOSED, new Dictionary<string, List<string>>() {
-                { StateNames.FINISHED, new List<string> { "FunctionalExpert" } },
+                { StateNames.FINISHED, new List<string> { "Administrator", "FunctionalExpert" } },
             }),
             new RoleStateMap(StateNames.UNDEFINED, new Dictionary<string, List<string>>(){
                 { StateNames.DRAFT, new List<string> { "Administrator", "CMManager", "CustomerMarketing", "DemandFinance", "DemandPlanning", "FunctionalExpert", "KeyAccountManager" } },
@@ -71,7 +71,13 @@ namespace Module.Persist.TPM.PromoStateControl.RoleStateMap {
         /// <param name="statusName"></param>
         /// <returns></returns>
         public static bool RoleCanChangeState(string roleName, string statusName) {
-            return GetMapForStatus(statusName).Any(x => x.Value.Contains(roleName));
+			bool isChangeAvailable = GetMapForStatus(statusName).Any(x => x.Value.Contains(roleName));
+
+			if (roleName.Equals("KeyAccountManager") && statusName.Equals(StateNames.PLANNED))
+			{
+				isChangeAvailable = false;
+			}
+			return isChangeAvailable;
         }
 
         /// <summary>
@@ -85,6 +91,7 @@ namespace Module.Persist.TPM.PromoStateControl.RoleStateMap {
             if (promo.PromoStatus.SystemName == StateNames.ON_APPROVAL) {
                 switch (roleName) {
                     case "CustomerMarketing":
+						break;
                     case "CMManager":
                         isAvailable = !promo.IsCMManagerApproved.HasValue || (promo.IsCMManagerApproved.HasValue && !promo.IsCMManagerApproved.Value); //TODO: зачем флаги nullable?
                         break;

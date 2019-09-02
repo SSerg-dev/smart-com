@@ -30,12 +30,28 @@ namespace Module.Host.TPM.Actions.Notifications {
             EmailGetterArgument eventArgument = new EmailGetterArgument();
             notifier.Notify(name, parameters, eventArgument);
         }
-        /// <summary>
-        /// Преобразование записи в словарь поле/значение
-        /// </summary>
-        /// <param name="record"></param>
-        /// <returns></returns>
-        protected IDictionary<string, object> GetDictionary(object record) {
+
+		/// <summary>
+		/// Отправка нотификации по Email
+		/// </summary>
+		/// <param name="body"></param>
+		/// <param name="name">Имя нотификации</param>
+		/// <param name="emails">Emails получателей</param>
+		protected virtual void SendNotificationByEmails(string body, string name, string[] emails)
+		{
+			IDictionary<string, string> parameters = new Dictionary<string, string>() {
+									{ "HTML_SCAFFOLD", body }
+								};
+			EmailGetterArgument eventArgument = new EmailGetterArgument();
+			notifier.NotifyByEmails(emails, name, parameters, eventArgument);
+		}
+
+		/// <summary>
+		/// Преобразование записи в словарь поле/значение
+		/// </summary>
+		/// <param name="record"></param>
+		/// <returns></returns>
+		protected IDictionary<string, object> GetDictionary(object record) {
             IDictionary<string, object> dict;
             if (record is ISelectExpandWrapper) {
                 dict = ((ISelectExpandWrapper) record).ToDictionary();

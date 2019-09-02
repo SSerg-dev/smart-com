@@ -258,6 +258,11 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 Promo promo = psp.Promo;
 
                 double kPlan = promo.PlanPromoLSV.HasValue ? promo.PlanPromoLSV.Value / summPlanLSV : 0;
+
+				if (double.IsNaN(kPlan))
+				{
+					kPlan = 0;
+				}
                 //double kActual = promo.ActualPromoLSVByCompensation.HasValue ? promo.ActualPromoLSVByCompensation.Value / summActualLSV : 0;
 
                 if (plan)

@@ -8,6 +8,7 @@ using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
 using Newtonsoft.Json;
 using Persist.Model;
+using Persist.ScriptGenerator.Filter;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -45,8 +46,25 @@ namespace Module.Frontend.TPM.Controllers
             IQueryable<ClientTree> query = Context.Set<ClientTree>().Where(x => x.Type == "root" 
                 || (DateTime.Compare(x.StartDate, dt) <= 0 && (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, dt) > 0)));
 
-            IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
-            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
+            //IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
+            IQueryable<ClientTreeHierarchyView> hierarchy = Context.Database.SqlQuery<ClientTreeHierarchyView>(
+                @"With RecursiveSearch (ObjectId, parentId, Hierarchy) AS (
+		            Select ObjectId, parentId, CONVERT(varchar(255), '') 
+		            FROM [dbo].[ClientTree] AS FirtGeneration 
+		            WHERE [Type] = 'root' and ((Cast({0} AS Datetime) between StartDate and EndDate) or EndDate is NULL)  
+		            union all 
+		            select NextStep.ObjectId, NextStep.parentId, CAST(CASE WHEN Hierarchy = '' 
+			            THEN 
+				            (CAST(NextStep.parentId AS VARCHAR(255))) 
+			            ELSE
+            				(Hierarchy + '.' + CAST(NextStep.parentId AS VARCHAR(255))) 
+			            END AS VARCHAR(255)) 
+		            FROM [dbo].[ClientTree] AS NextStep INNER JOIN RecursiveSearch as bag on bag.ObjectId = NextStep.parentId 
+		            where ( (Cast({0} AS Datetime) between NextStep.StartDate and NextStep.EndDate) or NextStep.EndDate is NULL) and [Type] <> 'root' 
+	            ) 
+                Select ObjectId as Id, Hierarchy from RecursiveSearch", dt.ToString("MM/dd/yyyy HH:mm:ss")).AsQueryable();
+
+            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters, FilterQueryModes.Active, true);
 
             return query;
         }
@@ -75,18 +93,30 @@ namespace Module.Frontend.TPM.Controllers
             {
                 // Получаем активные записи по диапазону дат
                 activeTree = GetConstraintedQuery(dateFilter);
-
-                if (filterParameter == null && clientObjectId == null && !needBaseClients)
+                if (activeTree.Count() != 0)
                 {
-                    return GetTreeForLevel(node);
-                }
-                else if (filterParameter != null || needBaseClients)
-                {
-                    return GetFilteredNodes(clientObjectId, filterParameter, needBaseClients);
+                    if (filterParameter == null && clientObjectId == null && !needBaseClients)
+                    {
+                        return GetTreeForLevel(node);
+                    }
+                    else if (filterParameter != null || needBaseClients)
+                    {
+                        return GetFilteredNodes(clientObjectId, filterParameter, needBaseClients);
+                    }
+                    else
+                    {
+                        return GetTreeForPromo(clientObjectId, view);
+                    }
                 }
                 else
                 {
-                    return GetTreeForPromo(clientObjectId, view);
+                    ClientTree rootNode = Context.Set<ClientTree>().Where(x => x.ObjectId == 5000000 && !x.EndDate.HasValue).FirstOrDefault();
+
+                    return Json(new
+                    {
+                        success = true,
+                        children = new ClientTreeNode(rootNode, false, false, true)                        
+                    });
                 }
             }
             catch (Exception e)
@@ -231,17 +261,19 @@ namespace Module.Frontend.TPM.Controllers
                 if (clientObjectId != null)
                 {
                     int objectId = int.Parse(clientObjectId);
-                    ClientTree checkedClient = activeTree.First(n => n.ObjectId == objectId);
-                    ClientTreeNode currentNode = addedNodes.FirstOrDefault(n => n.ObjectId == objectId);
-
-                    while (currentNode == null)
-                    {
-                        checkedClient = activeTree.First(n => n.ObjectId == checkedClient.parentId);
-                        currentNode = addedNodes.FirstOrDefault(n => n.ObjectId == checkedClient.ObjectId);
-                    }
-
-                    if (currentNode.Type != "root" && filterList.Any(n => n.ObjectId == currentNode.ObjectId))
-                        currentNode.AddChild(GetChildrenTreeNode(currentNode, activeTree, addedNodes, true, false));
+                    ClientTree checkedClient = activeTree.FirstOrDefault(n => n.ObjectId == objectId);
+                    
+					if (checkedClient != null)
+					{
+						ClientTreeNode currentNode = addedNodes.FirstOrDefault(n => n.ObjectId == objectId);
+						while (currentNode == null)
+						{
+							checkedClient = activeTree.First(n => n.ObjectId == checkedClient.parentId);
+							currentNode = addedNodes.FirstOrDefault(n => n.ObjectId == checkedClient.ObjectId);
+						}
+						if (currentNode.Type != "root" && filterList.Any(n => n.ObjectId == currentNode.ObjectId))
+							currentNode.AddChild(GetChildrenTreeNode(currentNode, activeTree, addedNodes, true, false));
+					}
                 }
             }
             else
@@ -322,23 +354,30 @@ namespace Module.Frontend.TPM.Controllers
                 branch.AddChild(outList.Count == 0 ? children : outList);
             }
 
-            return Json(new
-            {
-                success = branch != null,
-                children = branch
-            });
-        }
+			if (branch == null)
+			{
+				return GetTreeForLevel("root");
+			}
+			else
+			{
+				return Json(new
+				{
+					success = branch != null,
+					children = branch
+				});
+			}
+		}
 
-        /// <summary>
-        /// Получить потомков
-        /// </summary>
-        /// <param name="clientTree">Текущий узел</param>
-        /// <param name="activeTree">Активное дерево</param>
-        /// <param name="addedNodes">Отфильтрованные узлы</param>
-        /// <param name="full">Получить всех потомков или толькло для текущего уровня</param>
-        /// <param name="expandAll">Раскрывать ли потомков</param>
-        /// <returns></returns>
-        private List<ClientTreeNode> GetChildrenTreeNode(ClientTreeNode clientTree, IQueryable<ClientTree> activeTree, List<ClientTreeNode> addedNodes, bool full, bool expandAll)
+		/// <summary>
+		/// Получить потомков
+		/// </summary>
+		/// <param name="clientTree">Текущий узел</param>
+		/// <param name="activeTree">Активное дерево</param>
+		/// <param name="addedNodes">Отфильтрованные узлы</param>
+		/// <param name="full">Получить всех потомков или толькло для текущего уровня</param>
+		/// <param name="expandAll">Раскрывать ли потомков</param>
+		/// <returns></returns>
+		private List<ClientTreeNode> GetChildrenTreeNode(ClientTreeNode clientTree, IQueryable<ClientTree> activeTree, List<ClientTreeNode> addedNodes, bool full, bool expandAll)
         {
             List<ClientTreeNode> children = new List<ClientTreeNode>();
             IQueryable<ClientTree> clientTreeList = activeTree.Where(x => x.parentId == clientTree.ObjectId && x.parentId != x.ObjectId);
@@ -399,8 +438,9 @@ namespace Module.Frontend.TPM.Controllers
             result.ObjectId = new int();
             Context.Set<ClientTree>().Add(result);
             Context.SaveChanges();
+            Context.Entry(result).Reload();
 
-            return Created(result);
+            return Json(new { success = true, children = result });
         }
 
         [ClaimsAuthorize]
@@ -443,10 +483,33 @@ namespace Module.Frontend.TPM.Controllers
                     return Json(new { success = false, message = msg });
                 }
 
+                if (model.Share != currentRecord.Share)
+                {
+                    ChangesIncident changesIncident = new ChangesIncident
+                    {
+                        Disabled = false,
+                        DeletedDate = null,
+                        DirectoryName = "ClientTree",
+                        ItemId = model.Id.ToString(),
+                        CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                        ProcessDate = null
+                    };
+
+                    Context.Set<ChangesIncident>().Add(changesIncident);
+                }
+
                 Context.Entry(currentRecord).CurrentValues.SetValues(model);
                 UpdateFullPathClientTree(currentRecord, Context.Set<ClientTree>());
                 Context.Set<ClientTree>().Add(oldRecord);
-                Context.SaveChanges();
+
+                try
+                {
+                    Context.SaveChanges();
+                }
+                catch (Exception e)
+                {
+                    int a = 5 + 6;
+                }
 
                 return Created(currentRecord);
             }

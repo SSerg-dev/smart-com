@@ -123,13 +123,6 @@
             items: [{
                 xtype: 'tbspacer',
                 flex: 1
-            }, {
-                xtype: 'button',
-                cls: 'hierarchyButton hierarchyButtonList',
-                itemId: 'outletList',
-                text: 'Outlets List',
-                tooltip: 'Outlets list',
-                icon: '/'
             }]
         }]
     }],

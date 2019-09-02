@@ -14,10 +14,10 @@ using Persist.Utils;
 using System;
 using System.Web;
 using Utility.Security;
+using Module.Persist.TPM.ElasticSearch;
 
 namespace Frontend {
     public class FrontendModule : NinjectModule {
-
         public override void Load() {
             Kernel.Bind<IAuthorizationManager>().ToMethod(SelectAuthorizationManager);
             Kernel.Bind<ISecurityManager>().ToMethod(SelectSecurityManager);
@@ -27,11 +27,23 @@ namespace Frontend {
             Kernel.Bind<IMailNotificationSettingsService>().To<DbMailNotificationSettingsService>();
             Kernel.Bind<IMailNotificationService>().To<NLogMailNotificationService>();
 
-            Kernel.Bind<IHistoryWriter<Guid>>().To<RavenDbHistoryWriter<Guid>>();
-            //Kernel.Bind<IHistoryWriter<Guid>>().To<ElasticHistoryWriter<Guid>>();
+            var indexName = AppSettingsManager.GetSetting<string>("ElasticHistoryIndexName", "tpm_elastic_index_01");
+            var typeName = AppSettingsManager.GetSetting<string>("ElasticHistoryTypeName", "entry");
+            string uri = AppSettingsManager.GetSetting<string>("ElasticHost", "http://elastic:changeme@localhost:9200");
+
+            Kernel.Bind<IHistoryWriter<Guid>>().To<ElasticHistoryWriter<Guid>>()
+                  .WithConstructorArgument("uri", uri)
+                  .WithConstructorArgument("indexName", indexName);
             Kernel.Bind<IHistoricalEntityFactory<Guid>>().To<HistoricalEntityFactory<Guid>>().InSingletonScope();
-            Kernel.Bind<IHistoryReader>().To<RavenDbHistoryReader>();
-            //Kernel.Bind<IHistoryReader>().To<ElasticHistoryReader>();
+            Kernel.Bind<IHistoryReader>().To<ElasticHistoryReader>()
+                  .WithConstructorArgument("uri", uri)
+                  .WithConstructorArgument("indexName", indexName);
+
+            //Kernel.Bind<IHistoryWriter<Guid>>().To<RavenDbHistoryWriter<Guid>>();
+            ////Kernel.Bind<IHistoryWriter<Guid>>().To<ElasticHistoryWriter<Guid>>();
+            //Kernel.Bind<IHistoricalEntityFactory<Guid>>().To<HistoricalEntityFactory<Guid>>().InSingletonScope();
+            //Kernel.Bind<IHistoryReader>().To<RavenDbHistoryReader>();
+            ////Kernel.Bind<IHistoryReader>().To<ElasticHistoryReader>();
         }
 
         private static IAuthorizationManager SelectAuthorizationManager(IContext context) {

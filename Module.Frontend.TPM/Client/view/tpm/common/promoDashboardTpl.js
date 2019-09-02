@@ -9,7 +9,7 @@
                     '<tr>',
                         // Name + Status
                         '<td>',
-                            '<b style="text-overflow: ellipsis; overflow: hidden; display: inline-block; max-width: 119px; white-space: nowrap;">{[this.rowFormat(values.Name)]}</b><b style="text-overflow: ellipsis; overflow: hidden; display: inline-block; white-space: nowrap; margin-left: 5px">(ID: {[values.Number]})</b></br>',
+                            '<b data-qtip="{[this.rowFormat(values.Name)]}" style="text-overflow: ellipsis; overflow: hidden; display: inline-block; max-width: 119px; white-space: nowrap;">{[this.rowFormat(values.Name)]}</b><b style="text-overflow: ellipsis; overflow: hidden; display: inline-block; white-space: nowrap; margin-left: 5px">(ID: {[values.Number]})</b></br>',
                             '<div class="border-left-box promo-grid-row" style="height: 18px; border-color: {[values.PromoStatusColor]};">',
                                 '<span style="text-align: left;"><b>Status:</b> {[values.PromoStatusName]}</br>',
                             '</div>',
@@ -30,11 +30,11 @@
                         // Client
                         '<td>',
                             '<fieldset class="x-fieldset x-fieldset-with-title x-fieldset-with-legend" style="width: 190px; height: 43px; margin: 0">',
-                                '<legend class="x-fieldset-header x-fieldset-header-default" id="fieldset-1110-legend" tabindex="-1"><span id="fieldset-1110-legend-outerCt" style="display: table;" role="presentation">',
+								'<legend class="x-fieldset-header x-fieldset-header-default" id="fieldset-1110-legend" tabindex="-1"><span id="fieldset-1110-legend-outerCt" style="display: table;" role="presentation">',
                                 '<div id="fieldset-1110-legend-innerCt" style="height: 100%; vertical-align: top; display: table-cell;" class="" role="presentation">',
                                 '<div class="x-component x-fieldset-header-text x-component-default" id="fieldset-1110-legendTitle">Client</div></div></span></legend>',
                                 '<div class="x-fieldset-body promo-fieldset x-box-layout-ct" style="padding-left: 3px; width: 180px; font-size: 11px">',
-                                    '<span data-qtip="{[this.simpleFormat(values.ClientHierarchy)]}">',
+									'<span data-qtip="{[this.tipFormat(values.ClientHierarchy)]}">',
                                         '{[this.rowFormat(values.ClientHierarchy)]}',
                                     '</span>',
                                 '</div>',
@@ -60,7 +60,7 @@
                                 '<div id="fieldset-1110-legend-innerCt" style="height: 100%; vertical-align: top; display: table-cell;" class="" role="presentation">',
                                 '<div class="x-component x-fieldset-header-text x-component-default" id="fieldset-1110-legendTitle">Product</div></div></span></legend>',
                                 '<div class="x-fieldset-body promo-fieldset x-box-layout-ct" style="padding-left: 3px; width: 180px; font-size: 11px">',
-                                    '<span data-qtip="{[this.simpleFormat(values.ProductHierarchy)]}">',
+                                    '<span data-qtip="{[this.tipFormat(values.ProductHierarchy)]}">',
                                         '{[this.rowFormat(values.ProductHierarchy)]}',
                                     '</span>',
                                 '</div>',
@@ -347,7 +347,10 @@
             else {
                 return '-';
             }     
-        },
+		},
+		tipFormat: function (value) {
+			return value;
+		},
         simpleFormat: function (value) {
             return value ? Ext.util.Format.number(value, '0.00') : '-';
         },
@@ -381,7 +384,7 @@
         },
         isEmptyValue: function (value) {
             return value !== null && value !== undefined ? 'Yes' : 'No';
-        }
+		}
     }
     ])
 });

@@ -145,18 +145,24 @@
                         //Начало
                         dispatchDateForCurrentClientAfterResize = Ext.Date.add(
                             dragContext.startDate, Ext.Date.DAY, daysForDispatchDateFromClientSettings);
-
                         dispatchDateForCurrentPromoAfterResize = Ext.Date.add(record.get('DispatchesStart'), Ext.Date.DAY, deltaDaysBeforeAndAfterResize);
-
                         // Если dispatch дата, сформированная из настроек клиента, совпадает с текущей dispatch датой
                         if (Ext.Date.isEqual(dispatchDateForCurrentPromoAfterResize, dispatchDateForCurrentClientAfterResize) === true) {
                             record.set('DispatchesStart', dispatchDateForCurrentPromoAfterResize);
                         }
+                    }
 
-                        //Конец
+                    daysForDispatchDateFromClientSettings = null;
+                    //Конец
+                    daysForDispatchDateFromClientSettings = this.getDaysForDispatchDateFromClientSettings(
+                        resourceRecord.data.IsBeforeEnd, resourceRecord.data.DaysEnd, resourceRecord.data.IsDaysEnd);
+
+                    if (daysForDispatchDateFromClientSettings !== null) {
                         dispatchDateForCurrentClientAfterResize = Ext.Date.add(
                             dragContext.endDate, Ext.Date.DAY, daysForDispatchDateFromClientSettings);
-
+                        //т.к в  dragContext.endDate в дате присутствует 23ч 59м 59с убираем их
+                        dispatchDateForCurrentClientAfterResize = Ext.Date.add(dispatchDateForCurrentClientAfterResize, Ext.Date.SECOND, 1);
+                        dispatchDateForCurrentClientAfterResize = Ext.Date.add(dispatchDateForCurrentClientAfterResize, Ext.Date.DAY, -1);
                         dispatchDateForCurrentPromoAfterResize = Ext.Date.add(record.get('DispatchesEnd'), Ext.Date.DAY, deltaDaysBeforeAndAfterResize);
 
                         // Если dispatch дата, сформированная из настроек клиента, совпадает с текущей dispatch датой
@@ -178,8 +184,15 @@
                     } else {
                         //Возврат выделения
                         me.calendarSheduler.down('gridview').on('refresh', (function () { me.highlightRow(null, new Array(resourceRecord)); }));
-                        record.set('StartDate', dragContext.startDate);
-                        record.set('EndDate', dragContext.endDate);
+                        // выравниваем время с учётом часового пояса
+                        var offset = dragContext.startDate.getTimezoneOffset() / 60.0;
+                        record.set('StartDate', Sch.util.Date.add(dragContext.startDate, Sch.util.Date.HOUR, -(offset + 3)));
+                        //record.set('StartDate', dragContext.startDate);
+                        //record.data.EndDate = dragContext.endDate;
+                        // в dragContext endDate с временем 23.59...
+                        var fixedEndDate = new Date(dragContext.endDate.getFullYear(), dragContext.endDate.getMonth(), dragContext.endDate.getDate(), 0, 0, 0);
+                        fixedEndDate = Sch.util.Date.add(fixedEndDate, Sch.util.Date.HOUR, -(offset + 3));
+                        record.set('EndDate', fixedEndDate);
                         record.save({
                             callback: function (record, operation, success) {
                                 if (success) {
@@ -203,11 +216,6 @@
     },
 
     onExportSchedulerButtonClick: function (button) {
-        var me = this;
-        me.onExportForYearSchedulerButtonClick(button);
-    },
-
-    onExportForYearSchedulerButtonClick: function (button) {
         var selectyearwindow = Ext.widget('selectyearwindow');
         selectyearwindow.down('#exportforyear').on('click', this.onExportForYearButtonClick, this, button);
         selectyearwindow.show();
@@ -231,7 +239,7 @@
             clientStore = scheduler.getResourceStore(),
             ids = clientStore.getRange(0, clientStore.getCount() - 1).map(
                 function (client) {
-                    return client.getId()
+                    return client.get('ObjectId')
                 }),
             actionName = 'ExportSchedule',
             resource = 'Promoes';
@@ -550,14 +558,15 @@
     },
 
     onPromoDragCreation: function (view, createContext, e, el, eOpts) {
+        var me = this;
         if (createContext.start > Date.now()) {
-            var me = this;
-            createContext.end = createContext.end;          
-            var schedulerData;
+                var schedulerData,
+                isInOutClient = createContext.resourceRecord.get('InOut');
+            createContext.end = me.getDayEndDateTime(createContext.end);          
             if (!view.schedulerView.eventCopy) {
                 schedulerData = { schedulerContext: createContext };
                 schedulerData.isCopy = false;
-                me.createPromo(schedulerData);
+                me.createPromo(schedulerData, isInOutClient);
             } else {
                 var ctx = new Ext.menu.Menu({
                     cls: "scheduler-context-menu",
@@ -565,10 +574,14 @@
                         text: 'Paste',
                         glyph: 0xf191,
                         handler: function () {
-                            schedulerData = view.schedulerView.eventCopy;
-                            schedulerData.schedulerContext = createContext
-                            schedulerData.isCopy = true;
-                            me.createPromo(schedulerData);
+                            if (!!isInOutClient != !!view.schedulerView.eventCopy.get('InOut')) {
+                                return me.finalizeContextWithError(createContext, l10n.ns('tpm', 'Schedule').value('CopyInOutError'));
+                            } else {
+                                schedulerData = view.schedulerView.eventCopy;
+                                schedulerData.schedulerContext = createContext
+                                schedulerData.isCopy = true;
+								me.createPromo(schedulerData, isInOutClient);
+                            }
                         }
                     }, {
                         text: 'Create',
@@ -576,21 +589,23 @@
                         handler: function () {
                             schedulerData = { schedulerContext: createContext };
                             schedulerData.isCopy = false;
-                            me.createPromo(schedulerData);
+                            me.createPromo(schedulerData, isInOutClient);
                         }
                     }]
                 });
                 ctx.showAt(e.getXY());
             }
-
             createContext.finalize(false); // убрать выделенную область
             return false; // чтобы предотвратить автоматическое создание промо
         } else {
-            App.Notify.pushError(l10n.ns('tpm', 'text').value('wrongStartDate'));
-            createContext.finalize(false); // убрать выделенную область
-            return false; // чтобы предотвратить автоматическое создание промо
+            return me.finalizeContextWithError(createContext, l10n.ns('tpm', 'text').value('wrongStartDate'));
         }
+    },
 
+    finalizeContextWithError: function (context, message) {
+        App.Notify.pushError(message);
+        context.finalize(false); // убрать выделенную область
+        return false; // чтобы предотвратить автоматическое создание промо
     },
 
     onCreateButtonClick: function () {
@@ -598,17 +613,13 @@
         this.createPromo();
     },
 
-    createPromo: function (schedulerData) {
-        this.mixins["App.controller.tpm.promo.Promo"].onCreateButtonClick.call(this, null, null, schedulerData, false);
+    createPromo: function (schedulerData, inOut) {
+        this.mixins["App.controller.tpm.promo.Promo"].onCreateButtonClick.call(this, null, null, schedulerData, inOut);
     },
 
     onCreateInOutButtonClick: function () {
         this.detailButton = null;
-        this.createInOutPromo();
-    },
-
-    createInOutPromo: function (schedulerData) {
-        this.mixins["App.controller.tpm.promo.Promo"].onCreateButtonClick.call(this, null, null, schedulerData, true);
+        this.createPromo(null, true);
     },
 
     setButtonState: function (window, visible) {
@@ -637,7 +648,6 @@
     onEventResize: function (s, resizeContext) {
         var me = this;
         var calendarGrid = Ext.ComponentQuery.query('scheduler');
-
         //Проверка по дате начала
         if (resizeContext.eventRecord.start < Date.now() || resizeContext.start < Date.now()) {
             App.Notify.pushError(l10n.ns('tpm', 'text').value('wrongStartDate'));
@@ -751,8 +761,15 @@
                         } else {
                             //Возврат выделения
                             me.calendarSheduler.down('gridview').on('refresh', (function () { me.highlightRow(null, new Array(resourceRecord)); }));
-                            record.set('StartDate', resizeContext.start);
-                            record.set('EndDate', resizeContext.end);
+                            //record.set('StartDate', resizeContext.start);
+                            // выравниваем время с учётом часового пояса
+                            var offset = resizeContext.start.getTimezoneOffset() / 60.0;
+                            record.set('StartDate', Sch.util.Date.add(resizeContext.start, Sch.util.Date.HOUR, -(offset + 3)));
+                            var fixedEndDate = new Date(resizeContext.end.getFullYear(), resizeContext.end.getMonth(), resizeContext.end.getDate(), 0, 0, 0);
+                            fixedEndDate = Sch.util.Date.add(fixedEndDate, Sch.util.Date.HOUR, -(offset + 3));
+                            record.set('EndDate', fixedEndDate);
+                            //record.data.EndDate = resizeContext.end;
+                            //record.set('EndDate', resizeContext.end);
                             record.save({
                                 callback: function (record, operation, success) {
                                     if (success) {

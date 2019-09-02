@@ -64,6 +64,11 @@
             glyph: 0xf349,
             text: l10n.ns('core', 'toptoolbar').value('filterButtonText'),
             tooltip: l10n.ns('core', 'toptoolbar').value('filterButtonText')
+        }, {
+            itemId: 'detailfilter',
+            glyph: 0xf233,
+            text: l10n.ns('tpm', 'filter', 'buttons').value('PromoSupportDetailFilter'),
+            tooltip: l10n.ns('tpm', 'filter', 'buttons').value('PromoSupportDetailFilter')
         }, '-', '->', '-', {
             itemId: 'extfilterclearbutton',
             ui: 'blue-button-toolbar',

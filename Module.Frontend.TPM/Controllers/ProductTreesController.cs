@@ -4,6 +4,7 @@ using Core.Security.Models;
 using Frontend.Core.Controllers.Base;
 using Frontend.Core.Extensions;
 using Module.Persist.TPM.Model.TPM;
+using Module.Persist.TPM.Utils;
 using Newtonsoft.Json;
 using Persist.Model;
 using System;
@@ -212,7 +213,7 @@ namespace Module.Frontend.TPM.Controllers
                 // если есть галочки, то подгружаем эти узлы
                 if (productTreeObjectIds != null)
                 {
-                    List<int> objectIds = productTreeObjectIds.Split(';').Select(n => Int32.Parse(n)).ToList();
+                    List<int> objectIds = productTreeObjectIds.Split(";".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(n => Int32.Parse(n)).ToList();
 
                     foreach (int objectId in objectIds)
                     {                        
@@ -273,11 +274,15 @@ namespace Module.Frontend.TPM.Controllers
             }
             else
             {
-                List<int> objectIds = productTreeObjectIds.Split(';').Select(n => Int32.Parse(n)).ToList();
+                List<int> objectIds = productTreeObjectIds.Split(";".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(n => Int32.Parse(n)).ToList();
 
                 foreach (int objectId in objectIds)
                 {
-                    targetNodes.Add(activeTree.Where(n => n.ObjectId == objectId).First());
+					ProductTree productTreeNode = activeTree.Where(n => n.ObjectId == objectId).FirstOrDefault();
+					if (productTreeNode != default(ProductTree))
+					{
+						targetNodes.Add(activeTree.Where(n => n.ObjectId == objectId).First());
+					}
                 }
             }
 
@@ -334,14 +339,21 @@ namespace Module.Frontend.TPM.Controllers
                 branch.AddChild(outList.Count == 0 ? children : outList);
             }
 
-            return Json(new
-            {
-                success = branch != null,
-                children = branch
-            });
-        }
+			if (branch == null)
+			{
+				return GetTreeForLevel("root");
+			}
+			else
+			{
+				return Json(new
+				{
+					success = branch != null,
+					children = branch
+				});
+			}
+		}
 
-        [ClaimsAuthorize]
+		[ClaimsAuthorize]
         public IHttpActionResult Post(ProductTree model)
         {
             if (!ModelState.IsValid)
@@ -368,8 +380,9 @@ namespace Module.Frontend.TPM.Controllers
             result.ObjectId = new int();
             Context.Set<ProductTree>().Add(result);
             Context.SaveChanges();
+            Context.Entry(result).Reload();
 
-            return Created(result);
+            return Json(new { success = true, children = result });
         }
 
         [ClaimsAuthorize]
@@ -413,6 +426,21 @@ namespace Module.Frontend.TPM.Controllers
 
                 model.FullPathName = oldFullPath.Substring(0, ind) + model.Name;
                 model.StartDate = dt;
+
+                if (model.Filter != currentRecord.Filter)
+                {
+                    ChangesIncident changesIncident = new ChangesIncident
+                    {
+                        Disabled = false,
+                        DeletedDate = null,
+                        DirectoryName = "ProductTree",
+                        ItemId = model.Id.ToString(),
+                        CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                        ProcessDate = null
+                    };
+
+                    Context.Set<ChangesIncident>().Add(changesIncident);
+                }
 
                 Context.Entry(currentRecord).CurrentValues.SetValues(model);
                 UpdateFullPathProductTree(currentRecord, Context.Set<ProductTree>());

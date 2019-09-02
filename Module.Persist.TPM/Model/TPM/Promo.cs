@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Persist;
 using System.Linq;
 using Newtonsoft.Json;
+using Module.Persist.TPM.ElasticSearch;
 
 namespace Module.Persist.TPM.Model.TPM
 {
@@ -27,8 +28,10 @@ namespace Module.Persist.TPM.Model.TPM
         }
 
         public bool Disabled { get; set; }
-        public bool? InOut { get; set; }
         public DateTimeOffset? DeletedDate { get; set; }
+        public DateTimeOffset? LastChangedDate { get; set; }
+        public DateTimeOffset? LastChangedDateDemand { get; set; }
+        public DateTimeOffset? LastChangedDateFinance { get; set; }
         public Guid? BrandId { get; set; }
         public Guid? TechnologyId { get; set; }
         public Guid? BrandTechId { get; set; }
@@ -71,6 +74,7 @@ namespace Module.Persist.TPM.Model.TPM
         public int? PromoDuration { get; set; }
         public int? DispatchDuration { get; set; }
         public string InvoiceNumber { get; set; }
+        public string DocumentNumber { get; set; }
 
         [StringLength(20)]
         public string Mechanic { get; set; }
@@ -221,6 +225,7 @@ namespace Module.Persist.TPM.Model.TPM
         public string ProductSubrangesList { get; set; }
 
         // Not Mapped
+        //[NotMapped]
         public string ProductTreeObjectIds { get; set; }
 
         /// <summary>
@@ -239,7 +244,7 @@ namespace Module.Persist.TPM.Model.TPM
         public string PromoBasicProducts { get; set; }
 
         [ForeignKey("ClientTreeKeyId")]
-        public ClientTree ClientTree { get; set; }
+        public virtual ClientTree ClientTree { get; set; }
 
         /// <summary>
         /// ID для обозначения операций над промо, позволяет избедать дубрирования в Raven
@@ -248,6 +253,10 @@ namespace Module.Persist.TPM.Model.TPM
         public Guid OperationId { get; set; } = Guid.NewGuid(); // присваивание здесь позволяет не думать об этом :)
 
         public bool LoadFromTLC { get; set; }
+
+        public bool? InOut { get; set; }
+        public string InOutProductIds { get; set; }
+        public bool InOutExcludeAssortmentMatrixProductsButtonPressed { get; set; }
 
         /// <summary>
         /// Copy Constructor
@@ -277,9 +286,31 @@ namespace Module.Persist.TPM.Model.TPM
             ProductHierarchy = promoToCopy.ProductHierarchy;
             PromoStatusId = promoToCopy.PromoStatusId;
             NeedRecountUplift = promoToCopy.NeedRecountUplift;
+            InOut = promoToCopy.InOut;
+            InOutProductIds = promoToCopy.InOutProductIds;
+            InOutExcludeAssortmentMatrixProductsButtonPressed = promoToCopy.InOutExcludeAssortmentMatrixProductsButtonPressed;
             IsDemandPlanningApproved = promoToCopy.IsDemandPlanningApproved;
             IsDemandFinanceApproved = promoToCopy.IsDemandFinanceApproved;
             IsCMManagerApproved = promoToCopy.IsCMManagerApproved;
+            ActualPromoUpliftPercent = promoToCopy.ActualPromoUpliftPercent;
+            ActualPromoIncrementalBaseTI = promoToCopy.ActualPromoIncrementalBaseTI;
+            ActualPromoIncrementalCOGS = promoToCopy.ActualPromoIncrementalCOGS;
+            ActualPromoIncrementalEarnings = promoToCopy.ActualPromoIncrementalEarnings;
+            ActualPromoIncrementalLSV = promoToCopy.ActualPromoIncrementalLSV;
+            ActualPromoIncrementalMAC = promoToCopy.ActualPromoIncrementalMAC;
+            ActualPromoIncrementalNSV = promoToCopy.ActualPromoIncrementalNSV;
+            ActualPromoLSV = promoToCopy.ActualPromoLSV;
+            ActualPromoLSVByCompensation = promoToCopy.ActualPromoLSVByCompensation;
+            PlanPromoUpliftPercent = promoToCopy.PlanPromoUpliftPercent;
+            PlanPromoIncrementalBaseTI = promoToCopy.PlanPromoIncrementalBaseTI;
+            PlanPromoIncrementalCOGS = promoToCopy.PlanPromoIncrementalCOGS;
+            PlanPromoIncrementalEarnings = promoToCopy.PlanPromoIncrementalEarnings;
+            PlanPromoIncrementalLSV = promoToCopy.PlanPromoIncrementalLSV;
+            PlanPromoIncrementalMAC = promoToCopy.PlanPromoIncrementalMAC;
+            PlanPromoIncrementalNSV = promoToCopy.PlanPromoIncrementalNSV;
+            PlanPromoLSV = promoToCopy.PlanPromoLSV;
+            EventId = promoToCopy.EventId;
+            CalendarPriority = promoToCopy.CalendarPriority;
         }
 
         public Promo() {}

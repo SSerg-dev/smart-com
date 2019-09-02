@@ -1,6 +1,7 @@
 ﻿using Core.Dependency;
 using Core.Settings;
 using Module.Persist.TPM.Model.TPM;
+using Module.Persist.TPM.Utils;
 using Persist;
 using System;
 using System.Collections.Generic;
@@ -249,7 +250,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
         private static void WriteUpliftIncident(Guid promoId, DatabaseContext context)
         {
-            context.Set<PromoUpliftFailIncident>().Add(new PromoUpliftFailIncident() { PromoId = promoId, CreateDate = DateTime.Now });
+            context.Set<PromoUpliftFailIncident>().Add(new PromoUpliftFailIncident() { PromoId = promoId, CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow) });
             context.SaveChanges();
         }
 

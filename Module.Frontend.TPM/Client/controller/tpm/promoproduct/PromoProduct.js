@@ -92,7 +92,6 @@
             .withParameters({
                 $actionName: actionName,
                 $method: 'POST',
-                promoId: promoId,
             });
 
         query = me.buildQuery(query, store)
@@ -109,3 +108,4 @@
             });
     },
 });
+    

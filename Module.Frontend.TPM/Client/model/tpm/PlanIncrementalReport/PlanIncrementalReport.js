@@ -6,18 +6,21 @@
         { name: 'Id', hidden: true },
         { name: 'ZREP', type: 'string', hidden: false, isDefault: true },
         { name: 'DemandCode', type: 'string', hidden: false, isDefault: true },
-        { name: 'PromoName', type: 'string', hidden: false, isDefault: true },
         { name: 'PromoNameId', type: 'string', hidden: false, isDefault: true },
         { name: 'LocApollo', type: 'string', hidden: false, isDefault: true },
         { name: 'TypeApollo', type: 'string', hidden: false, isDefault: true },
         { name: 'ModelApollo', type: 'string', hidden: false, isDefault: true },
-        { name: 'WeekStartDate', type: 'date', hidden: false, isDefault: true },
+        { name: 'WeekStartDate', type: 'date', hidden: false, isDefault: true, timeZone: 0, convert: dateConvertTimeZone }, // timeZone: 0, т.к. расширенный фильтр этого поля работает при таком значении
         { name: 'PlanProductCaseQty', type: 'number', hidden: false, isDefault: true },
         { name: 'PlanUplift', type: 'number', hidden: false, isDefault: true },
-        { name: 'StartDate', type: 'date', hidden: false, isDefault: true },
-        { name: 'EndDate', type: 'date', hidden: false, isDefault: true },
-        { name: 'Status', type: 'string', hidden: false, isDefault: true },
-        { name: 'InOut', useNull: true, type: 'bool', hidden: false, isDefault: true },
+        { name: 'StartDate', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
+		{ name: 'EndDate', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
+		{ name: 'Week', type: 'string', hidden: false, isDefault: true },
+		{ name: 'Status', type: 'string', hidden: false, isDefault: true, defaultFilterConfig: getDefaultFilterStatus() },
+		{ name: 'PlanProductBaselineCaseQty', type: 'number', hidden: false, isDefault: true },
+		{ name: 'PlanProductIncrementalLSV', type: 'number', hidden: false, isDefault: true },
+		{ name: 'PlanProductBaselineLSV', type: 'number', hidden: false, isDefault: true },
+        { name: 'InOut', type: 'bool', hidden: false, isDefault: true },
     ],
     proxy: {
         type: 'breeze',
@@ -29,3 +32,14 @@
         }
     },
 });
+
+function getDefaultFilterStatus() {
+	var statuses = ['Approved', 'Planned'];
+	var value = Ext.create('App.extfilter.core.ValueList', statuses);
+
+	var result = {
+		value: value,
+		operation: 'In'
+	};
+	return result;
+}

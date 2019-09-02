@@ -6,7 +6,7 @@
         { name: 'Id', hidden: true },
         { name: 'ProductId', hidden: true, isDefault: true },
         { name: 'DeletedDate', type: 'date', isDefault: false },
-        { name: 'StartDate', type: 'date', hidden: false, isDefault: true },
+        { name: 'StartDate', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
         { name: 'ClientTreeId', hidden: true, isDefault: false },
         { name: 'Price', type: 'float', hidden: false, isDefault: true },
         {

@@ -121,5 +121,12 @@
             enforceMaxLength: true,
             maxLength: 9
         }]
+    },
+    listeners: {
+        afterrender: function (window) {
+            if (Ext.ComponentQuery.query('inoutselectionproductwindow')[0]) {
+                window.down('#edit').setVisible(false);
+            }
+        }
     }
 });

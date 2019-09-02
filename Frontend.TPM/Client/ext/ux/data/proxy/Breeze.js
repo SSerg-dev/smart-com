@@ -54,7 +54,19 @@
         query = query.inlineCount();
 
         if (this.extraParams) {
-            query = query.withParameters(this.extraParams)
+			// Без actionName реквест будет отправлен GET методу в контроллер, поэтому переназначенение обязательно.
+			if (this.jsonData && this.actionName) {
+				query = query.withParameters({
+					$extraParams: this.extraParams,
+					$method: 'POST',
+					$actionName: this.actionName,
+					$data: {
+						jsonData: this.jsonData
+					}
+				});
+			} else {
+				query = query.withParameters(this.extraParams);
+			}
         }
 
         request = {
@@ -236,6 +248,26 @@
                 this.fireEvent('exception', this, response, operation);
             }
         } else {
+            if (response.body) {
+                var error = response.body['odata.error'];
+                if (error) {
+                    var message = error.innererror ? error.innererror.message : error.message;
+                    if (message == "SESSION_EXPIRED") {
+                        operation.setException(response);
+                        Ext.Msg.show({
+                            title: l10n.ns('core').value('SessionExpiredWindowTitle'),
+                            msg: l10n.ns('core').value('SessionExpiredMessage'),
+                            buttons: Ext.MessageBox.OK,
+                            icon: Ext.Msg.INFO,
+                            fn: function () {
+                                document.location.reload(true);
+                            },
+                            cls: 'over_all',
+                            closable: false
+                        });
+                    }
+                }
+            }
             console.error('breeze proxy request failure', arguments);
 
             rejectChanges();
@@ -359,7 +391,9 @@
 
         for (var key in filters) {
             var filter = filters[key];
-            predicates.push(breeze.Predicate.create(propertyMap[filter.property], this.extFilterOperationMap[filter.operation], filter.value));
+            if (filter.property && filter.operation) {
+                predicates.push(breeze.Predicate.create(propertyMap[filter.property], this.extFilterOperationMap[filter.operation], filter.value));
+            }
         }
         return query.where(breeze.Predicate.and(predicates));
     },

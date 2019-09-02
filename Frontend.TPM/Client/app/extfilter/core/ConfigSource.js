@@ -9,7 +9,8 @@
                 entityName = field.breezeEntityType,
                 moduleName = App.Util.getSubdirectory(modelClassName),
                 customLocale = field.localeConfig,
-                tree = field.tree;
+                tree = field.tree,
+                timeZone = field.timeZone;
 
             var cfg = field.filterOperationsConfig ? field.filterOperationsConfig : {};
             // Для кастомной локализации булевых полей
@@ -31,33 +32,66 @@
                 })
             }
             if (fieldType === 'date') {
-                cfg = Ext.Object.merge(cfg, {
-                    editors: {
-                        date: {
-                            editable: false
-                        }
-                    },
-                    values: {
-                        date: {
-                            list: {
-                                itemRenderer: function (value) {
-                                    if (!Ext.isEmpty(value) && Ext.isDate(value)) {
-                                        return Ext.Date.format(value, 'd.m.Y');
-                                    }
-
-                                    if (value.from && Ext.isDate(value.from)) {
-                                        return {
-                                            from: Ext.Date.format(value, 'd.m.Y'),
-                                            to: Ext.Date.format(value, 'd.m.Y')
+                if (timeZone !== undefined && timeZone !== null) {
+                    cfg = Ext.Object.merge(cfg, {
+                        editors: {
+                            date: {
+                                xtype: 'datefieldtimezone',
+                                timeZone: timeZone,
+                                editable: false
+                            }
+                        },
+                        values: {
+                            date: {
+                                list: {
+                                    itemRenderer: function (value) {
+                                        if (!Ext.isEmpty(value) && Ext.isDate(value)) {
+                                            return Ext.Date.format(value, 'd.m.Y');
                                         }
-                                    }
 
-                                    return value;
+                                        if ((value.from && Ext.isDate(value.from)) || (value.to && Ext.isDate(value.to))) {
+                                            return {
+                                                from: Ext.Date.format(value.from, 'd.m.Y'),
+                                                to: Ext.Date.format(value.to, 'd.m.Y')
+                                            }
+                                        }
+
+                                        return value;
+                                    }
                                 }
                             }
                         }
-                    }
-                });
+                    });
+                }
+                else {
+                    cfg = Ext.Object.merge(cfg, {
+                        editors: {
+                            date: {
+                                editable: false
+                            }
+                        },
+                        values: {
+                            date: {
+                                list: {
+                                    itemRenderer: function (value) {
+                                        if (!Ext.isEmpty(value) && Ext.isDate(value)) {
+                                            return Ext.Date.format(value, 'd.m.Y');
+                                        }
+
+                                        if ((value.from && Ext.isDate(value.from)) || (value.to && Ext.isDate(value.to))) {
+                                            return {
+                                                from: Ext.Date.format(value.from, 'd.m.Y'),
+                                                to: Ext.Date.format(value.to, 'd.m.Y')
+                                            }
+                                        }
+
+                                        return value;
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
             }
 
             if (fieldType === 'float') {
@@ -96,26 +130,51 @@
 
             if (Ext.String.startsWith(modelName, 'Deleted') || Ext.String.startsWith(modelName, 'Historical') || isHandler || isMapping || isForecast) {
                 if (fieldType === 'date') {
-                    cfg = Ext.Object.merge(cfg, {
-                        editors: {
-                            date: {
-                                xtype: 'datetimefield'
-                            }
-                        },
-                        values: {
-                            date: {
-                                list: {
-                                    itemRenderer: function (value) {
-                                        if (!Ext.isEmpty(value) && Ext.isDate(value)) {
-                                            return Ext.Date.format(value, 'd.m.Y');
-                                        }
+                    if (timeZone !== undefined && timeZone !== null) {
+                        cfg = Ext.Object.merge(cfg, {
+                            editors: {
+                                date: {
+                                    xtype: 'datefieldtimezone',
+                                    timeZone: timeZone,
+                                }
+                            },
+                            values: {
+                                date: {
+                                    list: {
+                                        itemRenderer: function (value) {
+                                            if (!Ext.isEmpty(value) && Ext.isDate(value)) {
+                                                return Ext.Date.format(value, 'd.m.Y');
+                                            }
 
-                                        return value;
+                                            return value;
+                                        }
                                     }
                                 }
                             }
-                        }
-                    });
+                        });
+                    }
+                    else {
+                        cfg = Ext.Object.merge(cfg, {
+                            editors: {
+                                date: {
+                                    xtype: 'datetimefield'
+                                }
+                            },
+                            values: {
+                                date: {
+                                    list: {
+                                        itemRenderer: function (value) {
+                                            if (!Ext.isEmpty(value) && Ext.isDate(value)) {
+                                                return Ext.Date.format(value, 'd.m.Y');
+                                            }
+
+                                            return value;
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    }
                 }
             }
 

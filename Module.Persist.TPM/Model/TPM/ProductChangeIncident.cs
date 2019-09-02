@@ -8,7 +8,8 @@ namespace Module.Persist.TPM.Model.TPM {
         public Guid Id { get; set; }
         public Guid ProductId { get; set; }
         public DateTimeOffset CreateDate { get; set; }
-        public DateTimeOffset? ProcessDate { get; set; }
+        public DateTimeOffset? NotificationProcessDate { get; set; }
+        public DateTimeOffset? RecalculationProcessDate { get; set; }
 
         public Boolean IsCreate { get; set; }
         public Boolean IsDelete { get; set; }

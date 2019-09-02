@@ -14,7 +14,7 @@ namespace Module.Persist.TPM.PromoStateControl
 
             private readonly string Name = "Approved";
 
-            private readonly List<string> Roles = new List<string> { "Administrator", "CMManager", "CustomerMarketing", "FunctionalExpert", "KeyAccountManager" };
+            private readonly List<string> Roles = new List<string> { "Administrator", "CMManager", "CustomerMarketing", "FunctionalExpert", "KeyAccountManager", "DemandPlanning" };
 
             public ApprovedState(PromoStateContext stateContext)
             {
@@ -94,7 +94,7 @@ namespace Module.Persist.TPM.PromoStateControl
 
                             _stateContext.Model = promoDraftPublished;
                             promoModel.PromoStatusId = onApprovalStatus.Id;
-                            return _stateContext.ChangeState(promoModel, userRole, out message);
+                            return _stateContext.ChangeState(promoModel, "System", out message);
                         }
 
                         return true;

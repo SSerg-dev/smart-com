@@ -84,16 +84,19 @@
         '<dt>Name</dt><dd>{Name}</dd>' +
         '<dt>Mechanic</dt><dd style="border-bottom: 1px solid rgba(197, 197, 197, 0.25); padding-bottom: 5px;">{MarsMechanicName} <tpl if="MarsMechanicName === \'TPR\' || MarsMechanicName === \'Other\'">{MarsMechanicDiscount}%</tpl><tpl if="MarsMechanicName === \'VP\'">{MarsMechanicTypeName}</tpl></dd>' +
         '<dl style="border-left: 5px solid {PromoStatusColor}; margin: 0px;"><dt style="margin: 0 0 3px 2px;">Status</dt><dd style="margin: 0 0 3px 2px;">{PromoStatusSystemName}</dd></dl>' +
-        '</dl>'),
+		'<tpl if="InOut"><dd style="border-bottom: 1px solid rgba(197, 197, 197, 0.25); padding-bottom: 5px;"></dd>' +
+		'<dt><span class="mdi mdi-hexagon-slice-2 inout-mark-icon"></span>InOut promo</dt></tpl>' +
+		'</dl>'
+	),
     tipCfg: {
         cls: 'sch-tip',
-        height: '120px',
+        height: 'auto',
         showDelay: 200,
         hideDelay: 200,
         autoHide: true,
-        anchor: 'b',
+		anchor: 'b',
         show: function () { // если высота меньше чем высота подсказки, подсказка начинает мерцать - баг в функции show плагина
-            Ext.ToolTip.prototype.show.apply(this, arguments);
+			Ext.ToolTip.prototype.show.apply(this, arguments);
         }
     },
     // Промо в две строки
@@ -123,6 +126,17 @@
             property: 'Name',
             flex: 1
         }],
+        xtype: 'templatecolumn',
+
+        tpl: new Ext.XTemplate(
+            '<div style="font-weight: 600">{Name}</div>',
+            '<tpl if="InOut">',
+            '<div class="inout-mark-text"><span class="mdi mdi-hexagon-slice-2 inout-mark-icon"></span>InOut promo</div>',
+            '<tpl else>',
+            '<div class="inout-mark-text">Regular promo</div>',
+            '</tpl>'
+        ),
+
         // prevent sortchange on Enter
         onEnterKey: function () {
         },
@@ -131,9 +145,10 @@
     resourceStore: {
         type: 'resourcestore',
         storeId: 'MyResources',
-        idProperty: 'Id',
-        model: 'App.model.tpm.baseclient.BaseClient',
-        autoLoad: true
+        idProperty: 'InOutId',
+        model: 'App.model.tpm.baseclient.SchedulerClientTreeDTO',
+        autoLoad: true,
+        pageSize: 100,
         //sortInfo: { field: 'Id', direction: 'ASC' }
     },
 

@@ -13,8 +13,9 @@ namespace Module.Persist.TPM.Model.TPM
 
         public bool Disabled { get; set; }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public int Number { get; set; }
         public DateTimeOffset? DeletedDate { get; set; }
-
         public DateTimeOffset? StartDate { get; set; }
         public DateTimeOffset? EndDate { get; set; }
         public DateTimeOffset? CreateDate { get; set; }

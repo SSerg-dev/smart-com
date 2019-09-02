@@ -45,6 +45,7 @@
     <add key="USER_SETTINGS_FILE_PATH" value="###PATH_TO_STORE_FOLDER###\EmailNotificationSettings.xml" />
     <add key="EXPORT_TYPE" value="CSV" />
     <add key="FILES_DIRECTORY" value="###PATH_TO_STORE_FOLDER###\Files" />
+    <add key="SESSION_TIME" value="15" />
     <!--<add key="EXPORT_TYPE" value="XLSX"/>-->
   </appSettings>
   <system.identityModel>

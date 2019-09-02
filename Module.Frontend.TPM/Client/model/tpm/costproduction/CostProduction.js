@@ -12,14 +12,15 @@
         { name: 'ActualQuantity', type: 'int', hidden: false, isDefault: true },
         { name: 'PlanCostTE', type: 'float', hidden: false, isDefault: true },
         { name: 'ActualCostTE', type: 'float', hidden: false, isDefault: true },
-        { name: 'StartDate', type: 'date', hidden: false, isDefault: true },
-        { name: 'EndDate', type: 'date', hidden: false, isDefault: true },
+        { name: 'StartDate', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
+        { name: 'EndDate', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
         { name: 'PlanProdCostPer1Item', type: 'float', hidden: false, isDefault: true },
         { name: 'ActualProdCostPer1Item', type: 'float', hidden: false, isDefault: true },
         { name: 'PlanProdCost', type: 'float', hidden: false, isDefault: true },
         { name: 'ActualProdCost', type: 'float', hidden: false, isDefault: true },
         { name: 'AttachFileName', type: 'string', hidden: true, isDefault: true },
         { name: 'BorderColor', type: 'string', hidden: true, isDefault: false },
+        { name: 'PONumber', type: 'string', hidden: false, isDefault: true },
         {
             name: 'ClientTreeFullPathName', type: 'string', mapping: 'ClientTree.FullPathName', tree: true,
             defaultFilterConfig: { valueField: 'FullPathName' }, breezeEntityType: 'ClientTree', hidden: false, isDefault: true

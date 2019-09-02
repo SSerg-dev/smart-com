@@ -20,7 +20,7 @@ namespace Module.Frontend.TPM.Controllers {
             EnableConstantParameterization = false,
             MaxTop = 1024)]
         public IQueryable<HistoricalRejectReason> GetHistoricalRejectReasons() {
-            return HistoryReader.Query<HistoricalRejectReason>();
+            return HistoryReader.GetAll<HistoricalRejectReason>();
         }
 
         protected override void Dispose(bool disposing) {

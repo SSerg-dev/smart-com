@@ -31,6 +31,7 @@ using System.Net.Http.Headers;
 using AutoMapper;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using Module.Persist.TPM.Model.DTO;
 
 namespace Module.Frontend.TPM.Controllers {
 
@@ -49,10 +50,15 @@ namespace Module.Frontend.TPM.Controllers {
             IList<Constraint> constraints = user.Id.HasValue ? Context.Constraints
                 .Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
                 .ToList() : new List<Constraint>();
-            IQueryable<TradeInvestment> query = Context.Set<TradeInvestment>().Where(e => !e.Disabled);
 
-            return query;
-        }
+			IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
+			IQueryable<TradeInvestment> query = Context.Set<TradeInvestment>().Where(e => !e.Disabled);
+			IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
+
+			query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
+
+			return query;
+		}
 
 
         [ClaimsAuthorize]
@@ -93,6 +99,11 @@ namespace Module.Frontend.TPM.Controllers {
             if (!ModelState.IsValid) {
                 return BadRequest(ModelState);
             }
+
+            // делаем UTC +3
+            model.StartDate = ChangeTimeZoneUtil.ResetTimeZone(model.StartDate);
+            model.EndDate = ChangeTimeZoneUtil.ResetTimeZone(model.EndDate);
+
             var proxy = Context.Set<TradeInvestment>().Create<TradeInvestment>();
             var result = (TradeInvestment) Mapper.Map(model, proxy, typeof(TradeInvestment), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
 
@@ -122,6 +133,9 @@ namespace Module.Frontend.TPM.Controllers {
                 }
 
                 patch.Patch(model);
+                // делаем UTC +3
+                model.StartDate = ChangeTimeZoneUtil.ResetTimeZone(model.StartDate);
+                model.EndDate = ChangeTimeZoneUtil.ResetTimeZone(model.EndDate);
 
                 //Проверка пересечения по времени на клиенте
                 if (!DateCheck(model)) {
@@ -249,7 +263,7 @@ namespace Module.Frontend.TPM.Controllers {
                     Description = "Загрузка импорта из файла " + typeof(ImportTradeInvestment).Name,
                     Name = "Module.Host.TPM.Handlers." + importHandler,
                     ExecutionPeriod = null,
-                    CreateDate = DateTimeOffset.Now,
+                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
                     LastExecutionDate = null,
                     NextExecutionDate = null,
                     ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,

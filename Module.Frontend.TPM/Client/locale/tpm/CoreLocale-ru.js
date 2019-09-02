@@ -43,6 +43,8 @@
     'viewTextDataWindowTitle': 'Подробно',
     'Filter': 'Фильтр',
     'BigFilterDisplay': 'Сложный фильтр',
+    'SessionExpiredWindowTitle': 'Время сессии истекло',
+    'SessionExpiredMessage': 'Страница будет перезагружена',
 
     'customValidators': {
         'StartDateFinishDateOrder': 'Дата начала должна быть меньше даты окончания',

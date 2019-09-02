@@ -33,7 +33,6 @@ namespace Module.Persist.TPM.Model.TPM
         /// <summary>
         /// Плановое количество в кейсах, расчитывается исходя из дат промо
         /// </summary>
-        [Range(0, 10000000000)]
         public double? PlanProductCaseQty { get; set; }
 
         /// <summary>
@@ -74,7 +73,6 @@ namespace Module.Persist.TPM.Model.TPM
         /// <summary>
         /// 
         /// </summary>
-        [Range(0, 10000000000)]
         public double? PlanProductBaselineCaseQty { get; set; }
 
         /// <summary>
@@ -85,7 +83,6 @@ namespace Module.Persist.TPM.Model.TPM
         /// <summary>
         /// Базовая цена продажи
         /// </summary>
-        [Range(0, 10000000000)]
         public double? PlanProductPCPrice { get; set; }
 
         /// <summary>
@@ -101,7 +98,6 @@ namespace Module.Persist.TPM.Model.TPM
         /// <summary>
         /// Фактическое количество в кейсах
         /// </summary>
-        [Range(0, 10000000000)]
         public double? ActualProductCaseQty { get; set; }
 
         /// <summary>

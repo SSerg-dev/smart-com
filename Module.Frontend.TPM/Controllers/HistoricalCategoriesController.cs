@@ -21,7 +21,7 @@ namespace Module.Frontend.TPM.Controllers {
             EnableConstantParameterization = false,
             MaxTop = 1024)]
         public IQueryable<HistoricalCategory> GetHistoricalCategories() {
-            return HistoryReader.Query<HistoricalCategory>();
+            return HistoryReader.GetAll<HistoricalCategory>();
         }
 
         protected override void Dispose(bool disposing) {

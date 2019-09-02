@@ -29,6 +29,9 @@ namespace Module.Persist.TPM.Model.TPM {
         public string UserTimestamp { get; set; }
         public string AttachFileName { get; set; }
         public string BorderColor { get; set; }
+        public string PONumber { get; set; }
+        public string InvoiceNumber { get; set; }
+
 
         public virtual ClientTree ClientTree { get; set; }
         public virtual BudgetSubItem BudgetSubItem { get; set; }

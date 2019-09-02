@@ -24,7 +24,8 @@
         { name: 'GroupSize', useNull: true, type: 'string', hidden: false, isDefault: true },
         { name: 'TradedUnitFormat', useNull: true, type: 'string', hidden: false, isDefault: true },
         { name: 'ConsumerPackFormat', useNull: true, type: 'string', hidden: false, isDefault: true },
-        { name: 'UOM_PC2Case', useNull: true, type: 'int', hidden: false, isDefault: true }
+        { name: 'UOM_PC2Case', useNull: true, type: 'int', hidden: false, isDefault: true },
+        { name: 'Checked', useNull: false, type: 'bool', hidden: true, isDefault: false, defaultValue: false }
     ],
     proxy: {
         type: 'breeze',
@@ -33,6 +34,13 @@
             type: 'json',
             totalProperty: 'inlineCount',
             root: 'results'
+        },
+        extraParams: {
+            inOutProductTreeObjectIds: '',
+            needInOutFilteredProducts: false,
+            needInOutExcludeAssortmentMatrixProducts: false,
+            needInOutSelectedProducts: false,
+            inOutProductIdsForGetting: '',
         }
     }
 });

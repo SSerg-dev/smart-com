@@ -20,7 +20,7 @@ namespace Module.Frontend.TPM.Controllers {
             EnableConstantParameterization = false,
             MaxTop = 1024)]
         public IQueryable<HistoricalColor> GetHistoricalColors() {
-            return HistoryReader.Query<HistoricalColor>();
+            return HistoryReader.GetAll<HistoricalColor>();
         }
 
         protected override void Dispose(bool disposing) {

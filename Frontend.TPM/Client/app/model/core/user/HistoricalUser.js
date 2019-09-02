@@ -27,7 +27,7 @@ Ext.define('App.model.core.user.HistoricalUser', {
 		        }
 		    }
 		},
-		{ name: '_EditDate', type: 'date', isDefault: true },
+        { name: '_EditDate', type: 'date', isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
 		{
 		    name: '_Operation', type: 'string', isDefault: true,
 		    extendedFilterEntry: {

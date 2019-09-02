@@ -9,6 +9,7 @@ using Looper.Core;
 using Looper.Parameters;
 using Module.Persist.TPM.Model.Import;
 using Module.Persist.TPM.Model.TPM;
+using Module.Persist.TPM.Utils;
 using Persist;
 using Persist.Model;
 using System;
@@ -243,7 +244,7 @@ namespace Module.Frontend.TPM.Controllers
                     Description = "Загрузка импорта из файла " + typeof(ImportRetailType).Name,
                     Name = "Module.Host.TPM.Handlers." + importHandler,
                     ExecutionPeriod = null,
-                    CreateDate = DateTimeOffset.Now,
+                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
                     LastExecutionDate = null,
                     NextExecutionDate = null,
                     ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,

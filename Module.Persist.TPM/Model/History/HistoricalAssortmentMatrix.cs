@@ -11,7 +11,10 @@ namespace Module.Persist.TPM.Model.History
     [AssociatedWith(typeof(AssortmentMatrix))]
     public class HistoricalAssortmentMatrix : BaseHistoricalEntity<System.Guid>
     {
+        public int Number { get; set; }
         public string ClientTreeName { get; set; }
-        public string EAN_PC { get; set; }
+        public string ProductEANPC { get; set; }
+        public DateTimeOffset? StartDate { get; set; }
+        public DateTimeOffset? EndDate { get; set; }
     }
 }

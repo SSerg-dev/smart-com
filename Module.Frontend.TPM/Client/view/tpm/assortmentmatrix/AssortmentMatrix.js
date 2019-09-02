@@ -53,6 +53,70 @@
     dockedItems: [{
         xtype: 'custombigtoolbar',
         dock: 'right',
+        items: [{
+            xtype: 'widthexpandbutton',
+            ui: 'fill-gray-button-toolbar',
+            text: l10n.ns('core', 'selectablePanelButtons').value('toolbarCollapse'),
+            glyph: 0xf13d,
+            glyph1: 0xf13e,
+            target: function () {
+                return this.up('toolbar');
+            },
+        }, {
+            itemId: 'createbutton',
+            action: 'Post',
+            glyph: 0xf415,
+            text: l10n.ns('core', 'crud').value('createButtonText'),
+            tooltip: l10n.ns('core', 'crud').value('createButtonText')
+        }, {
+            itemId: 'updatebutton',
+            action: 'Patch',
+            glyph: 0xf64f,
+            text: l10n.ns('core', 'crud').value('updateButtonText'),
+            tooltip: l10n.ns('core', 'crud').value('updateButtonText')
+        }, {
+            itemId: 'deletebutton',
+            action: 'Delete',
+            glyph: 0xf5e8,
+            text: l10n.ns('core', 'crud').value('deleteButtonText'),
+            tooltip: l10n.ns('core', 'crud').value('deleteButtonText')
+        }, {
+            itemId: 'historybutton',
+            resource: 'Historical{0}',
+            action: 'Get{0}',
+            glyph: 0xf2da,
+            text: l10n.ns('core', 'crud').value('historyButtonText'),
+            tooltip: l10n.ns('core', 'crud').value('historyButtonText')
+        }, '-', {
+            itemId: 'extfilterbutton',
+            glyph: 0xf349,
+            text: l10n.ns('core', 'toptoolbar').value('filterButtonText'),
+            tooltip: l10n.ns('core', 'toptoolbar').value('filterButtonText')
+        }, {
+            itemId: 'deletedbutton',
+            resource: 'Deleted{0}',
+            action: 'Get{0}',
+            glyph: 0xf258,
+            text: l10n.ns('core', 'toptoolbar').value('deletedButtonText'),
+            tooltip: l10n.ns('core', 'toptoolbar').value('deletedButtonText')
+        }, {
+            itemId: 'actualassortmentmatrix',
+            action: 'Post',
+            glyph: 0xf3cc,
+            text: l10n.ns('tpm', 'AssortmentMatrix').value('actualAssortmentMatrixButtonText'),
+            tooltip: l10n.ns('tpm', 'AssortmentMatrix').value('actualAssortmentMatrixButtonText')
+        }, '-', '->', '-', {
+            itemId: 'extfilterclearbutton',
+            ui: 'blue-button-toolbar',
+            disabled: true,
+            glyph: 0xf232,
+            text: l10n.ns('core', 'filter').value('filterEmptyStatus'),
+            tooltip: l10n.ns('core', 'filter').value('filterEmptyStatus'),
+            overCls: '',
+            style: {
+                'cursor': 'default'
+            }
+        }]
     }],
 
     items: [{
@@ -73,7 +137,11 @@
                     xclass: 'App.ExtTextFilterModel',
                     modelId: 'eftextmodel'
                 }]
-            }
+            },
+            sorters: [{
+                property: 'Number',
+                direction: 'DESC'
+            }]
         },
 
         columns: {
@@ -85,6 +153,9 @@
                 minWidth: 100
             },
             items: [{
+                text: l10n.ns('tpm', 'AssortmentMatrix').value('Number'),
+                dataIndex: 'Number',
+            }, {
                 text: l10n.ns('tpm', 'AssortmentMatrix').value('ClientTreeName'),
                 dataIndex: 'ClientTreeName',
                 width: 250,
@@ -107,7 +178,7 @@
                 dataIndex: 'ClientTreeObjectId'
             }, {
                 text: l10n.ns('tpm', 'AssortmentMatrix').value('EAN_PC'),
-                dataIndex: 'EAN_PC',
+                dataIndex: 'ProductEAN_PC',
                 filter: {
                     type: 'search',
                     selectorWidget: 'product',

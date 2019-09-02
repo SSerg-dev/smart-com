@@ -21,7 +21,7 @@ namespace Module.Frontend.TPM.Controllers {
             EnableConstantParameterization = false,
             MaxTop = 1024)]
         public IQueryable<HistoricalTechHighLevel> GetHistoricalTechHighLevels() {
-            return HistoryReader.Query<HistoricalTechHighLevel>();
+            return HistoryReader.GetAll<HistoricalTechHighLevel>();
         }
 
         protected override void Dispose(bool disposing) {

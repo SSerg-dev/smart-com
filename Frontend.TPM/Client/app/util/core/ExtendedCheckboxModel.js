@@ -34,7 +34,7 @@
         var grid = header.up('directorygrid'),
             store = grid.getStore();
 
-        if (store.getCount() !== 0) {
+        if (store.getTotalCount() !== 0) {
             if (header.isCheckerHd) {
                 e.stopEvent();
                 var me = this;
@@ -95,41 +95,63 @@
         }
     },
 
-
-
-
     selectAllRecords: function (btn) {
-        var win = btn.up('selectorwindow');
-        var grid = win ? win.down('directorygrid') : btn.up('directorygrid'); // Если базовый грид с мультиселектом (не в отдельном окне)
+        var win = btn.up('selectorwindow'),
+            grid = win ? win.down('directorygrid') : btn.up('directorygrid'); // Если базовый грид с мультиселектом (не в отдельном окне)
+
         if (grid) {
-            var selModel = grid.getSelectionModel();
-            selModel.loadRecords(grid, function (records) {
-                selModel.checkRows(records);
-                if (win) {
-                    win.down('#select')[selModel.hasChecked() ? 'enable' : 'disable']();
-                }
-            });
+            var store = grid.getStore(),
+                selModel = grid.getSelectionModel(),
+                recordsCount = store.getTotalCount();
+
+            if (recordsCount > 0) {
+                grid.setLoading(true);
+                store.getRange(0, recordsCount, {
+                    callback: function () {
+                        if (recordsCount > 0) {
+                            selModel.checkRows(store.getRange(0, recordsCount));
+                            grid.setLoading(false);
+                        }
+                        if (win) {
+                            win.down('#select')[selModel.hasChecked() ? 'enable' : 'disable']();
+                        }
+                    }
+                });
+            }
         }
     },
 
     deselectAllRecords: function (btn) {
-        var win = btn.up('selectorwindow');
-        var grid = win ? win.down('directorygrid') : btn.up('directorygrid');
+        var win = btn.up('selectorwindow'),
+            grid = win ? win.down('directorygrid') : btn.up('directorygrid');
+
         if (grid) {
-            var selModel = grid.getSelectionModel();
-            selModel.loadRecords(grid, function (records) {
-                selModel.uncheckRows(records);
-                if (win) {
-                    win.down('#select')[selModel.hasChecked() ? 'enable' : 'disable']();
-                }
-            });
+            var store = grid.getStore(),
+                selModel = grid.getSelectionModel(),
+                recordsCount = store.getTotalCount(),
+                selectedRecords = selModel.getCheckedRows();
+
+            if (recordsCount > 0) {
+                selModel.uncheckRows(selectedRecords);
+            }
+            if (win) {
+                win.down('#select')[selModel.hasChecked() ? 'enable' : 'disable']();
+            }
         }
     },
 
     loadRecords: function (grid, callback) {
         grid.setLoading(true);
         var store = grid.getStore();
-        var proxy = store.getProxy();
+        //var proxy = store.getProxy();
+
+        store.addListener('load', function (store, records) {
+            callback.call(store, records);
+            grid.setLoading(false);
+        });
+
+        store.load();
+        /*
         var resource = proxy.resourceName;
         var query = breeze.EntityQuery
             .from(resource)
@@ -151,6 +173,7 @@
                 grid.setLoading(false);
                 App.Notify.pushError('Ошибка при выделении всех записей');
             });
+        */
     },
 
     processSelection: function (view, record, item, index, e) {

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Module.Persist.TPM.Model.TPM;
+using Module.Persist.TPM.Utils;
 
 namespace Module.Persist.TPM.Model.Import
 {
@@ -26,7 +27,11 @@ namespace Module.Persist.TPM.Model.Import
 
         [ImportCSVColumn(ColumnNumber = 3)]
         [Display(Name = "Start date")]
-        public DateTimeOffset? StartDate { get; set; }
+        public DateTimeOffset? StartDate
+        {
+            get { return startDate; }
+            set { startDate = ChangeTimeZoneUtil.ResetTimeZone(value); }
+        }
 
         [ImportCSVColumn(ColumnNumber = 4)]
         [Display(Name = "QTY")]
@@ -58,5 +63,7 @@ namespace Module.Persist.TPM.Model.Import
         public int ClientTreeId { get; set; }
         public Guid ProductId { get; set; }
         public virtual Product Product { get; set; }
+
+        private DateTimeOffset? startDate;
     }
 }

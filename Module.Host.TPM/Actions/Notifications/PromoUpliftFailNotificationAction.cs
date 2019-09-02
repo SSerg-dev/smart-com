@@ -6,6 +6,7 @@ using System.IO;
 using Module.Persist.TPM.Model.TPM;
 using System.Linq;
 using System.Collections.Generic;
+using Module.Persist.TPM.Utils;
 
 namespace Module.Host.TPM.Actions.Notifications {
     /// <summary>
@@ -49,10 +50,10 @@ namespace Module.Host.TPM.Actions.Notifications {
         private void CreateNotification(IQueryable<IGrouping<Guid, PromoUpliftFailIncident>> incidentsForNotify, string notificationName, string template, DatabaseContext context) {
             List<string> allRows = new List<string>();
             foreach (IGrouping<Guid, PromoUpliftFailIncident> incidentGroup in incidentsForNotify) {
-                List<string> allRowCells = GetRow(incidentGroup.FirstOrDefault().Promo, propertiesOrder);
-                allRows.Add(String.Format(rowTemplate, string.Join("", allRowCells)));
                 foreach (PromoUpliftFailIncident incident in incidentGroup) {
-                    incident.ProcessDate = DateTimeOffset.Now;
+					List<string> allRowCells = GetRow(incidentGroup.FirstOrDefault().Promo, propertiesOrder);
+					allRows.Add(String.Format(rowTemplate, string.Join("", allRowCells)));
+					incident.ProcessDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
                 }
             }
             string notifyBody = String.Format(template, string.Join("", allRows));

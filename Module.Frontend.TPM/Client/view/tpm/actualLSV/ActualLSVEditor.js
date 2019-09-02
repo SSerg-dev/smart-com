@@ -179,6 +179,11 @@
             xtype: 'singlelinedisplayfield',
             fieldLabel: l10n.ns('tpm', 'ActualLSV').value('ActualPromoPostPromoEffectLSV'),
             name: 'ActualPromoPostPromoEffectLSV'
+        },
+        {
+            xtype: 'singlelinedisplayfield',
+            fieldLabel: l10n.ns('tpm', 'ActualLSV').value('InOut'),
+            name: 'InOut'
         }]
     }
 });     

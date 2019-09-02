@@ -21,7 +21,7 @@ namespace Module.Frontend.TPM.Controllers {
             EnableConstantParameterization = false,
             MaxTop = 1024)]
         public IQueryable<HistoricalTradeInvestment> GetHistoricalTradeInvestments() {
-            return HistoryReader.Query<HistoricalTradeInvestment>();
+            return HistoryReader.GetAll<HistoricalTradeInvestment>();
         }
 
         protected override void Dispose(bool disposing) {

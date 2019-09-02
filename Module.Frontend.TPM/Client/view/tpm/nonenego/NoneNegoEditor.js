@@ -162,7 +162,7 @@
             xtype: 'numberfield',
             name: 'Discount',
             fieldLabel: l10n.ns('tpm', 'NoneNego').value('Discount'),
-            minValue: -100,
+            minValue: 1,
             maxValue: 100,
             readOnly: true,
             allowBlank: false,
@@ -188,6 +188,13 @@
                 return true;
             },
             listeners: {
+                afterrender: function (field) {
+                    var minValue = new Date();
+                    var currentTimeZoneOffsetInHours = minValue.getTimezoneOffset();
+                    var minValueInt = minValue.getTime();
+                    field.setMinValue(new Date(minValueInt + currentTimeZoneOffsetInHours * 60000 + 10800000));
+                    field.getPicker().setValue(field.minValue);
+                },
                 change: function (newValue, oldValue) {
                     var toDate = this.up('form').down('[name=ToDate]');
                     toDate.setMinValue(newValue.getValue());

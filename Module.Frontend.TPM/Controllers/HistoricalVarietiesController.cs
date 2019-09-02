@@ -21,7 +21,7 @@ namespace Module.Frontend.TPM.Controllers {
             EnableConstantParameterization = false,
             MaxTop = 1024)]
         public IQueryable<HistoricalVariety> GetHistoricalVarieties() {
-            return HistoryReader.Query<HistoricalVariety>();
+            return HistoryReader.GetAll<HistoricalVariety>();
         }
 
         protected override void Dispose(bool disposing) {

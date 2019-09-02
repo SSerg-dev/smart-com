@@ -74,6 +74,11 @@ namespace Module.Persist.TPM {
             modelBuilder.Entity<PromoGridView>();
             modelBuilder.Entity<PlanIncrementalReport>();
             modelBuilder.Entity<PromoRejectIncident>();
+			modelBuilder.Entity<PromoCancelledIncident>();
+            modelBuilder.Entity<ChangesIncident>();
+			modelBuilder.Entity<PromoOnApprovalIncident>();
+			modelBuilder.Entity<PromoOnRejectIncident>();
+			modelBuilder.Entity<PromoApprovedIncident>();
 
             modelBuilder.Entity<Promo>().Ignore(n => n.ProductTreeObjectIds);
             modelBuilder.Entity<Promo>().Ignore(n => n.Calculating);
@@ -272,6 +277,7 @@ namespace Module.Persist.TPM {
             builder.Entity<Promo>().Collection.Action("ExportPromoROIReportXLSX");
             builder.Entity<Promo>().Collection.Action("RecalculatePromo");
             builder.Entity<Promo>().Collection.Action("CheckIfLogHasErrors");
+            builder.Entity<Promo>().Collection.Action("GetProducts").CollectionParameter<string>("InOutProductIds");
 
             ActionConfiguration schedExp = builder.Entity<Promo>().Collection.Action("ExportSchedule");
             schedExp.CollectionParameter<int>("clients");
@@ -577,6 +583,12 @@ namespace Module.Persist.TPM {
 
             builder.EntitySet<PromoROIReport>("PromoROIReports");
             builder.Entity<PromoROIReport>().Collection.Action("ExportXLSX");
+
+            builder.EntitySet<SchedulerClientTreeDTO>("SchedulerClientTreeDTOs");
+			
+			ActionConfiguration getSelectedProductsAction = builder.Entity<Product>().Collection.Action("GetSelectedProducts");
+			getSelectedProductsAction.ReturnsCollectionFromEntitySet<IQueryable<Product>>("SelectedProducts");
+			getSelectedProductsAction.CollectionParameter<string>("jsonData");
         }
 
         public IEnumerable<Type> GetHistoricalEntities() {

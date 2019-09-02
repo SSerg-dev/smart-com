@@ -289,12 +289,26 @@ namespace Module.Persist.TPM
             string logFileName = String.Format("{0}.txt", handlerID);
             string filePath = System.IO.Path.Combine(logDir, logFileName);
 
-            if (File.Exists(filePath))
+            try
             {
-                lastWriteDate = File.GetLastWriteTime(filePath);
-                contentOfLog = File.ReadAllText(filePath);
+                if (File.Exists(filePath))
+                {
+                    using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                    {
+                        byte[] buffer = new byte[fs.Length];
+
+                        lastWriteDate = File.GetLastWriteTime(filePath);
+                        fs.Read(buffer, 0, buffer.Length);
+                        contentOfLog = System.Text.Encoding.UTF8.GetString(buffer);
+                    }
+                }
+                else
+                {
+                    lastWriteDate = null;
+                    contentOfLog = null;
+                }
             }
-            else
+            catch (Exception e)
             {
                 lastWriteDate = null;
                 contentOfLog = null;

@@ -9,7 +9,6 @@ namespace Module.Persist.TPM.Model.Import
         [ImportCSVColumn(ColumnNumber = 0)]
         [Display(Name = "EAN PC")]
         [StringLength(255)]
-        [Required]
         public string EAN_PC { get; set; }
 
         [ImportCSVColumn(ColumnNumber = 1)]

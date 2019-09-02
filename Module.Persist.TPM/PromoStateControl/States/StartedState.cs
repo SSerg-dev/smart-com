@@ -94,7 +94,7 @@ namespace Module.Persist.TPM.PromoStateControl
                 {
                     // Go to: FinishedState
 
-                    if (_stateContext.Model.EndDate <= DateTimeOffset.Now.Date)
+                    if (_stateContext.Model.EndDate < DateTimeOffset.Now)
                     {
                         Guid finishedPromoStatusId = _stateContext.dbContext.Set<PromoStatus>().Where(x => x.SystemName == "Finished" && !x.Disabled).FirstOrDefault().Id;
 

@@ -37,7 +37,8 @@
             height: '90%',
             minHeight: '90%',
             items: [{
-                xtype: 'promoactivitydetailsinfo'
+                xtype: 'promoactivitydetailsinfo',
+                promoId: record.data.Id
             }],
             buttons: [{
                 text: l10n.ns('core', 'buttons').value('cancel'),

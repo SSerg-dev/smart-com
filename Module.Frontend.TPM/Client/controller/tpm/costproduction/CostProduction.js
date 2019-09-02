@@ -71,6 +71,26 @@
                 'costproduction #applyimportbutton': {
                     click: this.onApplyImportButtonClick
                 },
+
+                //filter
+                'costproduction #detailfilter': {
+                    click: this.onDetailFilterButtonClick
+                },
+                'extdetailfilter #detailapply': {
+                    click: this.onDetailFilterApplyButtonClick
+                },
+                'extdetailfilter #eftextmodelbutton': {
+                    click: this.ondetailTextTypeMenuItemClick
+                },
+                'extdetailfilter #efselectionmodelbutton': {
+                    click: this.ondetailSelectionTypeMenuItemClick
+                },
+                'extmasterfilter #masterapply': {
+                    click: this.onMasterFilterApplyButtonClick
+                },
+                'extmasterfilter #masterreject': {
+                    click: this.onMasterRejectButtonClick
+                }
             },
         });
     },
@@ -119,4 +139,34 @@
             console.error('Extended filter does not implemented for this store');
         }
     },
+
+    onDetailFilterButtonClick: function (button) {
+        var promoSupportController = App.app.getController('tpm.promosupport.PromoSupport');
+        promoSupportController.onDetailFilterButtonClick(button);
+    },
+
+    onDetailFilterApplyButtonClick: function (button) {
+        var promoSupportController = App.app.getController('tpm.promosupport.PromoSupport');
+        promoSupportController.onDetailFilterApplyButtonClick(button);
+    },
+
+    ondetailTextTypeMenuItemClick: function (menuitem) {
+        var promoSupportController = App.app.getController('tpm.promosupport.PromoSupport');
+        promoSupportController.ondetailTextTypeMenuItemClick(menuitem);
+    },
+
+    ondetailSelectionTypeMenuItemClick: function (menuitem) {
+        var promoSupportController = App.app.getController('tpm.promosupport.PromoSupport');
+        promoSupportController.ondetailSelectionTypeMenuItemClick(menuitem);
+    },
+
+    onMasterFilterApplyButtonClick: function (menuitem) {
+        var promoSupportController = App.app.getController('tpm.promosupport.PromoSupport');
+        promoSupportController.onMasterFilterApplyButtonClick(menuitem);
+    },
+
+    onMasterRejectButtonClick: function (button) {
+        var promoSupportController = App.app.getController('tpm.promosupport.PromoSupport');
+        promoSupportController.onMasterRejectButtonClick(button);
+    }
 });

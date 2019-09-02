@@ -6,6 +6,7 @@ using System.IO;
 using Module.Persist.TPM.Model.TPM;
 using System.Linq;
 using System.Collections.Generic;
+using Module.Persist.TPM.Utils;
 
 namespace Module.Host.TPM.Actions.Notifications
 {
@@ -67,19 +68,21 @@ namespace Module.Host.TPM.Actions.Notifications
             List<string> allRows = new List<string>();
             foreach (IGrouping<Guid, PromoRejectIncident> incidentGroup in incidentsForNotify)
             {
-                List<string> allRowCells = GetRow(incidentGroup.FirstOrDefault().Promo, propertiesOrder);
-                allRows.Add(String.Format(rowTemplate, string.Join("", allRowCells)));
-                foreach (PromoRejectIncident incident in incidentGroup)
+				foreach (PromoRejectIncident incident in incidentGroup)
                 {
-                    incident.ProcessDate = DateTimeOffset.Now;
-                }
-            }
+					List<string> allRowCells = GetRow(incident.Promo, propertiesOrder);
+					allRowCells.Add(String.Format(cellTemplate, incident.Comment));
+					allRowCells.Add(String.Format(cellTemplate, incident.CreateDate.ToString("dd.MM.yyyy HH:mm:ss")));
+					allRows.Add(String.Format(rowTemplate, string.Join("", allRowCells)));
+					incident.ProcessDate = ChangeTimeZoneUtil.ChangeTimeZone(ChangeTimeZoneUtil.ResetTimeZone(DateTimeOffset.UtcNow));
+				}
+			}
             string notifyBody = String.Format(template, string.Join("", allRows));
             SendNotification(notifyBody, notificationName);
             context.SaveChanges();
         }
 
         private readonly string[] propertiesOrder = new string[] {
-            "Number", "Name", "BrandTech.Name", "PromoStatus.Name", "StartDate", "EndDate" };
+            "Number", "Name", "BrandTech.Name", "PromoStatus.Name", "StartDate", "EndDate", "RejectReason.Name" };
     }
 }

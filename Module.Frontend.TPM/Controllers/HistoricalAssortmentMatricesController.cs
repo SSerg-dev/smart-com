@@ -21,7 +21,7 @@ namespace Module.Frontend.TPM.Controllers {
             EnableConstantParameterization = false,
             MaxTop = 1024)]
         public IQueryable<HistoricalAssortmentMatrix> GetHistoricalAssortmentMatrices() {
-            return HistoryReader.Query<HistoricalAssortmentMatrix>();
+            return HistoryReader.GetAll<HistoricalAssortmentMatrix>();
         }
 
         protected override void Dispose(bool disposing) {

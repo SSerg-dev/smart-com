@@ -57,6 +57,7 @@ ResourceMgr.getAdditionalMenu('core').import = {
     ],
     items: [{
         xtype: 'directorygrid',
+        //alias: 'widget.productgrid',
         itemId: 'datatable',
         editorModel: 'Core.form.EditorDetailWindowModel',
         store: {

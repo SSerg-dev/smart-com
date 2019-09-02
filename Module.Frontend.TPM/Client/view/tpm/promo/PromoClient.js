@@ -85,15 +85,6 @@
                 items: [{
                     xtype: 'tbspacer',
                     flex: 1
-                }, {
-                    xtype: 'button',
-                    width: 111,
-                    padding: '3 7 3 10',
-                    cls: 'hierarchyButton hierarchyButtonList',
-                    itemId: 'outletList',
-                    text: l10n.ns('tpm', 'PromoClient').value('OutletsList'),
-                    tooltip: 'Outlets list',
-                    iconCls: 'icon-list-png'
                 }]
             }]
         }, {

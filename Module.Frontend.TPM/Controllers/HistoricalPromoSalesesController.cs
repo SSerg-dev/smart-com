@@ -23,7 +23,7 @@ namespace Module.Frontend.TPM.Controllers
             MaxTop = 1024)]
         public IQueryable<HistoricalPromoSales> GetHistoricalPromoSaleses()
         {
-            return HistoryReader.Query<HistoricalPromoSales>();
+            return HistoryReader.GetAll<HistoricalPromoSales>();
         }
 
         protected override void Dispose(bool disposing)

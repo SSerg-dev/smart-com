@@ -60,8 +60,26 @@
                     return renderWithDelimiter(value, ' > ', '  ');
                 }
             }, {
+                text: l10n.ns('tpm', 'Promo').value('InOut'),
+                dataIndex: 'InOut',
+                renderer: function (value) {
+                    return value ? l10n.ns('core', 'booleanValues').value('true') : l10n.ns('core', 'booleanValues').value('false');
+                }
+            }, {
                 text: l10n.ns('tpm', 'Promo').value('Name'),
                 dataIndex: 'Name',
+                width: 150,
+            }, {
+                text: l10n.ns('tpm', 'Promo').value('PlanPromoUpliftPercent'),
+                dataIndex: 'PlanPromoUpliftPercent',
+                width: 150,
+            }, {
+                text: l10n.ns('tpm', 'Promo').value('PlanPromoIncrementalLSV'),
+                dataIndex: 'PlanPromoIncrementalLSV',
+                width: 150,
+            }, {
+                text: l10n.ns('tpm', 'Promo').value('PlanPromoBaselineLSV'),
+                dataIndex: 'PlanPromoBaselineLSV',
                 width: 150,
             }, {
                 text: l10n.ns('tpm', 'Promo').value('BrandTechName'),
@@ -91,6 +109,27 @@
                 text: l10n.ns('tpm', 'Promo').value('EventName'),
                 dataIndex: 'EventName',
                 width: 110,
+            },  {
+                xtype: 'datecolumn',
+                text: l10n.ns('tpm', 'Promo').value('LastChangedDate'),
+                dataIndex: 'LastChangedDate',
+                width: 130,
+                renderer: Ext.util.Format.dateRenderer('d.m.Y H:i'),
+                hidden: true
+            }, {
+                xtype: 'datecolumn',
+                text: l10n.ns('tpm', 'Promo').value('LastChangedDateDemand'),
+                dataIndex: 'LastChangedDateDemand',
+                width: 130,
+                renderer: Ext.util.Format.dateRenderer('d.m.Y H:i'),
+                hidden: true
+            }, {
+                xtype: 'datecolumn',
+                text: l10n.ns('tpm', 'Promo').value('LastChangedDateFinance'),
+                dataIndex: 'LastChangedDateFinance',
+                width: 130,
+                renderer: Ext.util.Format.dateRenderer('d.m.Y H:i'),
+                hidden: true
             }, {
                 text: l10n.ns('tpm', 'Promo').value('Mechanic'),
                 dataIndex: 'Mechanic',
@@ -484,8 +523,8 @@
             fieldLabel: l10n.ns('tpm', 'Promo').value('PlanPromoIncrementalLSV'),
         }, {
             xtype: 'singlelinedisplayfield',
-            name: 'PlanPromoIncrementalLSV',
-            fieldLabel: l10n.ns('tpm', 'Promo').value('PlanPromoIncrementalLSV'),
+            name: 'PlanPromoBaselineLSV',
+            fieldLabel: l10n.ns('tpm', 'Promo').value('PlanPromoBaselineLSV'),
         }, {
             xtype: 'singlelinedisplayfield',
             name: 'PlanPromoPostPromoEffectLSV',

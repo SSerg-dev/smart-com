@@ -29,5 +29,7 @@ namespace Module.Persist.TPM.Model.DTO {
         public DateTimeOffset? DispatchesStart { get; set; }
 
         public int? CalendarPriority { get; set; }
+
+        public bool? InOut { get; set; }
     }
 }

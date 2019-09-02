@@ -1,17 +1,23 @@
 ﻿using Core.History;
+using Module.Persist.TPM.ElasticSearch;
 using Module.Persist.TPM.Model.TPM;
 using System;
 namespace Module.Persist.TPM.Model.History {
+
     [AssociatedWith(typeof(Promo))]
-    public class HistoricalPromo : BaseHistoricalEntity<System.Guid> {
+    public class HistoricalPromo : BaseHistoricalEntity<System.Guid>
+    {
         public DateTimeOffset? StartDate { get; set; }
         public DateTimeOffset? EndDate { get; set; }
         public DateTimeOffset? DispatchesStart { get; set; }
         public DateTimeOffset? DispatchesEnd { get; set; }
-        public string BaseClientTreeIds { get; set; }
+        public DateTimeOffset? LastChangedDate { get; set; }
+        public DateTimeOffset? LastChangedDateDemand { get; set; }
+        public DateTimeOffset? LastChangedDateFinance { get; set; }
         public int? PromoDuration { get; set; }
         public int? DispatchDuration { get; set; }
         public string InvoiceNumber { get; set; }
+        public string DocumentNumber { get; set; }
         public string ClientHierarchy { get; set; }
         public string ProductHierarchy { get; set; }
         public int? Number { get; set; }
@@ -215,7 +221,6 @@ namespace Module.Persist.TPM.Model.History {
         public bool? IsCMManagerApproved { get; set; }
         public bool? IsDemandPlanningApproved { get; set; }
         public bool? IsDemandFinanceApproved { get; set; }
-        public string ProductTreeObjectIds { get; set; }
 
         public bool? NeedRecountUplift { get; set; }
 
@@ -235,6 +240,7 @@ namespace Module.Persist.TPM.Model.History {
         public double? ActualPromoNetIncrementalCOGS { get; set; }
         public double? ActualPromoNetBaseTI { get; set; }
         public double? ActualPromoNSV { get; set; }
+
         public bool? InOut { get; set; }
 
         // Id операции (по сути транзакции) для предотвращения дублирования

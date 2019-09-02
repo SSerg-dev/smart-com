@@ -5,7 +5,8 @@
 
     layout: {
         type: 'hbox',
-        align: 'stretch'
+        align: 'stretch',
+        pack: 'center'
     },
 
     defaults: {
@@ -22,7 +23,15 @@
         cls: 'customtoptoolbarheader',
         text: '',
         height: 27,
-        width: 750
+    }, {
+        xtype: 'button',
+        itemId: 'btn_promoInOut',
+        glyph: 0xfac3,
+        cls: 'in-out-promo-header-button',
+        text: 'InOut Promo',
+        height: 20,
+        hidden: true,
+        disabled: true
     }, {
         xtype: 'tbspacer',
         flex: 1

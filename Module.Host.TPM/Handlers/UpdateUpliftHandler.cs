@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Data;
 using Core.Settings;
 using Core.Dependency;
+using Module.Persist.TPM.Utils;
 
 namespace Module.Host.TPM.Handlers {
     /// <summary>
@@ -174,7 +175,7 @@ namespace Module.Host.TPM.Handlers {
         }
 
         private void WriteUpliftIncident(Guid promoId, DatabaseContext context) {
-            context.Set<PromoUpliftFailIncident>().Add(new PromoUpliftFailIncident() { PromoId = promoId, CreateDate = DateTime.Now });
+            context.Set<PromoUpliftFailIncident>().Add(new PromoUpliftFailIncident() { PromoId = promoId, CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow) });
             context.SaveChanges();
         }
 

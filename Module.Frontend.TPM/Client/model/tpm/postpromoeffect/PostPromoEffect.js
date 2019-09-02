@@ -4,8 +4,8 @@
     breezeEntityType: 'PostPromoEffect',
     fields: [
         { name: 'Id', hidden: true },
-        { name: 'StartDate', type: 'date', hidden: false, isDefault: true },
-        { name: 'EndDate', type: 'date', hidden: false, isDefault: true },
+        { name: 'StartDate', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
+        { name: 'EndDate', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone},
         { name: 'ClientTreeId', hidden: true, isDefault: false },
         { name: 'ProductTreeId', hidden: true, isDefault: false },
         {

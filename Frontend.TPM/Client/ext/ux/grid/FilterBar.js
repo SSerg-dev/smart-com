@@ -104,8 +104,8 @@ Ext.define('Ext.ux.grid.FilterBar', {
         triggerAction: 'all',
         editable: false,
         store: [
-			[1, 'Да'],
-			[0, 'Нет']
+            [1, l10n.ns('core', 'booleanValues').value('true'),],
+            [0, l10n.ns('core', 'booleanValues').value('false'),]
         ],
         operator: 'eq'
     },
@@ -811,6 +811,25 @@ Ext.define('Ext.ux.grid.FilterBar', {
             } else {
                 if (column.filter.type == 'date') {
                     var from = Ext.Date.clearTime(new Date(newVal), true);
+                    var store = grid.getStore();
+                    var timeZone = null;
+
+                    if (store.model && store.model.getFields) {
+                        store.model.getFields().forEach(function (fieldModel) {
+                            if (fieldModel.name == column.dataIndex && fieldModel.timeZone)
+                                timeZone = fieldModel.timeZone;
+                        });
+                    }
+
+                    if (timeZone !== null) {
+                        var fromClear = Ext.Date.parse(newVal, "Y-m-d");
+                        var currentTimeZone = from.getTimezoneOffset() / -60;
+                        var hour = timeZone - currentTimeZone;
+                        var date = new Date(fromClear.getFullYear(), fromClear.getMonth(), fromClear.getDate(), 0, 0, 0);
+
+                        date.setHours(date.getHours() - hour);
+                        from = date;
+                    }  
 
                     me.filterArray.push(Ext.create('Ext.util.Filter', {
                         property: column.dataIndex,

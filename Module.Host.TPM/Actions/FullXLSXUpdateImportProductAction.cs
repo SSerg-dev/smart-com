@@ -27,17 +27,23 @@ namespace Module.Host.TPM.Actions
             IList<Product> query = GetQuery(context).ToList();
             IList<Product> toCreate = new List<Product>();
             IList<Product> toUpdate = new List<Product>();
+            List<Tuple<IEntity<Guid>, IEntity<Guid>>> toHisCreate = new List<Tuple<IEntity<Guid>, IEntity<Guid>>>();
+            List<Tuple<IEntity<Guid>, IEntity<Guid>>> toHisUpdate = new List<Tuple<IEntity<Guid>, IEntity<Guid>>>();
 
             foreach (Product newRecord in sourceRecords)
             {
                 Product oldRecord = query.FirstOrDefault(x => x.ZREP == newRecord.ZREP && !x.Disabled);
+                var oldRecordCopy = oldRecord;
                 if (oldRecord == null)
                 {
                     newRecord.Id = Guid.NewGuid();
                     toCreate.Add(newRecord);
+                    toHisCreate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(null, newRecord));
                 }
                 else
                 {
+                    newRecord.Id = oldRecord.Id;
+
                     oldRecord.EAN_Case = newRecord.EAN_Case;
                     oldRecord.EAN_PC = newRecord.EAN_PC;
                     oldRecord.ProductRU = newRecord.ProductRU;
@@ -59,6 +65,7 @@ namespace Module.Host.TPM.Actions
                     oldRecord.ConsumerPackFormat = newRecord.ConsumerPackFormat;
                     oldRecord.UOM_PC2Case = newRecord.UOM_PC2Case;
 
+                    toHisUpdate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(oldRecordCopy, oldRecord));
                     toUpdate.Add(oldRecord);
                 }
             }
@@ -74,16 +81,9 @@ namespace Module.Host.TPM.Actions
                 string insertScript = generatorUpdate.BuildUpdateScript(items);
                 context.Database.ExecuteSqlCommand(insertScript);
             }
-
             //Добавление записей в историю
-            List<Core.History.OperationDescriptor<Guid>> toHis = new List<Core.History.OperationDescriptor<Guid>>();
-            foreach (var item in toCreate) {
-                toHis.Add(new Core.History.OperationDescriptor<Guid>() { Operation = OperationType.Created, Entity = item });
-            }
-            foreach (var item in toUpdate) {
-                toHis.Add(new Core.History.OperationDescriptor<Guid>() { Operation = OperationType.Updated, Entity = item });
-            }
-            context.HistoryWriter.Write(toHis.ToArray(), context.AuthManager.GetCurrentUser(), context.AuthManager.GetCurrentRole());
+            context.HistoryWriter.Write(toHisCreate, context.AuthManager.GetCurrentUser(), context.AuthManager.GetCurrentRole(), OperationType.Created);
+            context.HistoryWriter.Write(toHisUpdate, context.AuthManager.GetCurrentUser(), context.AuthManager.GetCurrentRole(), OperationType.Updated);
 
             context.SaveChanges();
             return sourceRecords.Count();

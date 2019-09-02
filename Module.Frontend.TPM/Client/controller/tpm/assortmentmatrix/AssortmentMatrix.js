@@ -9,6 +9,9 @@
                     load: this.onGridStoreLoad,
                     itemdblclick: this.onDetailButtonClick
                 },
+                'assortmentmatrix': {
+                    beforedestroy: this.onAssortmentMatrixBeforeDestroy,
+                },
                 'assortmentmatrix directorygrid': {
                     selectionchange: this.onGridSelectionChange,
                     afterrender: this.onGridAfterrender,
@@ -56,6 +59,9 @@
                 'assortmentmatrix #close': {
                     click: this.onCloseButtonClick
                 },
+                'assortmentmatrix #actualassortmentmatrix': {
+                    click: this.onActualAssortmentMatrixButtonClick
+                },
                 // import/export
                 'assortmentmatrix #exportbutton': {
                     click: this.onExportButtonClick
@@ -98,6 +104,101 @@
 
         var assortmentmatrixeditor = Ext.ComponentQuery.query('assortmentmatrixeditor')[0];
         var createDate = assortmentmatrixeditor.down('[name=CreateDate]');
-        createDate.setValue(new Date());
+
+        var date = new Date();
+        date.setHours(date.getHours() + (date.getTimezoneOffset() / 60) + 3);   // приведение к московской timezone
+        createDate.setValue(date);                                              // вывести дату в поле 
+    },
+
+    onAssortmentMatrixBeforeDestroy: function (panel) {
+        var assortmentMatrixGrid = panel.down('grid');
+        var assortmentMatrixGridStore = assortmentMatrixGrid.getStore();
+        var assortmentMatrixGridStoreProxy = assortmentMatrixGridStore.getProxy();
+        assortmentMatrixGridStoreProxy.extraParams.needActualAssortmentMatrix = false;
+        return true;
+    },
+
+    onActualAssortmentMatrixButtonClick: function (button) {
+        var combinedDirectoryPanel = button.up('assortmentmatrix');
+        var assortmentMatrixGrid = combinedDirectoryPanel.down('grid');
+        var assortmentMatrixGridStore = assortmentMatrixGrid.getStore();
+        var assortmentMatrixGridStoreProxy = assortmentMatrixGridStore.getProxy();
+
+        assortmentMatrixGridStoreProxy.extraParams.needActualAssortmentMatrix = !assortmentMatrixGridStoreProxy.extraParams.needActualAssortmentMatrix;
+        if (assortmentMatrixGridStoreProxy.extraParams.needActualAssortmentMatrix) {
+            button.addCls('showEditablePromo-btn-active');
+        } else {
+            button.removeCls('showEditablePromo-btn-active');
+        }
+
+        assortmentMatrixGridStore.removeAll();
+        assortmentMatrixGridStore.load();
+    },
+
+    onDeleteButtonClick: function (button) {
+        var grid = this.getGridByButton(button),
+            panel = grid.up('combineddirectorypanel'),
+            selModel = grid.getSelectionModel();
+
+        if (selModel.hasSelection()) {
+            Ext.Msg.show({
+                title: l10n.ns('core').value('deleteWindowTitle'),
+                msg: l10n.ns('core').value('deleteConfirmMessage'),
+                fn: onMsgBoxClose,
+                scope: this,
+                icon: Ext.Msg.QUESTION,
+                buttons: Ext.Msg.YESNO,
+                buttonText: {
+                    yes: l10n.ns('core', 'buttons').value('delete'),
+                    no: l10n.ns('core', 'buttons').value('cancel')
+                }
+            });
+        } else {
+            console.log('No selection');
+        }
+
+        function onMsgBoxClose(buttonId) {
+
+            if (buttonId === 'yes') {
+                var record = selModel.getSelection()[0],
+                    store = grid.getStore(),
+                    view = grid.getView(),
+                    currentIndex = store.indexOf(record),
+                    pageIndex = store.getPageFromRecordIndex(currentIndex),
+                    endIndex = store.getTotalCount() - 2; // 2, т.к. после удаления станет на одну запись меньше
+
+                currentIndex = Math.min(Math.max(currentIndex, 0), endIndex);
+                panel.setLoading(l10n.ns('core').value('deletingText'));
+
+                record.destroy({
+                    scope: this,
+                    success: function () {
+                        selModel.deselectAll();
+                        store.data.removeAtKey(pageIndex);
+                        store.totalCount--;
+
+                        grid.setLoadMaskDisabled(true);
+                        store.on({
+                            single: true,
+                            load: function (records, operation, success) {
+                                if (store.getTotalCount() > 0) {
+                                    view.bufferedRenderer.scrollTo(currentIndex, true, function () {
+                                        view.refresh();
+                                        view.focusRow(currentIndex);
+                                    });
+                                }
+
+                                panel.setLoading(false);
+                                grid.setLoadMaskDisabled(false);
+                            }
+                        });
+                        store.load();
+                    },
+                    failure: function () {
+                        panel.setLoading(false);
+                    }
+                });
+            }
+        }
     },
 });

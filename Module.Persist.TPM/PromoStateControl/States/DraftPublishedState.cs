@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.PromoStateControl.RoleStateMap;
+using Module.Persist.TPM.Utils;
 
 namespace Module.Persist.TPM.PromoStateControl
 {
@@ -120,35 +121,83 @@ namespace Module.Persist.TPM.PromoStateControl
                         {
                             TimeSpan difference = (DateTimeOffset)promoModel.DispatchesStart - DateTimeOffset.Now;
 
-                            if ((difference.Days >= 56 || userRole == UserRoles.FunctionalExpert.ToString())
+                            if (!promoModel.InOut.HasValue || !promoModel.InOut.Value)
+                            {
+                                if ((difference.Days >= 56 || userRole == UserRoles.FunctionalExpert.ToString())
                                     && promoModel.PlanPromoBaselineLSV.HasValue && promoModel.PlanPromoBaselineLSV > 0
                                     && promoModel.PlanPromoUpliftPercent.HasValue && promoModel.PlanPromoUpliftPercent > 0)
-                            {
-                                PromoStatus approvedStatus = _stateContext.dbContext.Set<PromoStatus>().FirstOrDefault(e => e.SystemName == "Approved");
-                                promoModel.PromoStatusId = approvedStatus.Id;
-                                promoModel.IsAutomaticallyApproved = true;
+                                {
+                                    PromoStatus approvedStatus = _stateContext.dbContext.Set<PromoStatus>().FirstOrDefault(e => e.SystemName == "Approved");
+                                    promoModel.PromoStatusId = approvedStatus.Id;
+                                    promoModel.IsAutomaticallyApproved = true;
 
-                                _stateContext.Model = promoModel;
-                                _stateContext.State = _stateContext._approvedState;
+                                    _stateContext.Model = promoModel;
+                                    _stateContext.State = _stateContext._approvedState;
 
-                                return true;
+                                    return true;
+                                }
+                                else
+                                {
+									promoModel.IsCMManagerApproved = true;
+                                    promoModel.IsDemandFinanceApproved = true;
+                                    _stateContext.Model = promoModel;
+                                    _stateContext.State = _stateContext._onApprovalState;
+
+									_stateContext.dbContext.Set<PromoOnApprovalIncident>().Add(new PromoOnApprovalIncident()
+									{
+										PromoId = promoModel.Id,
+										ApprovingRole = "DemandPlanning",
+										CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+										Promo = promoModel
+									});
+									return true;
+                                }
                             }
                             else
                             {
-                                promoModel.IsCMManagerApproved = true;
-                                promoModel.IsDemandFinanceApproved = true;
-                                _stateContext.Model = promoModel;
-                                _stateContext.State = _stateContext._onApprovalState;
+                                if ((difference.Days >= 56 || userRole == UserRoles.FunctionalExpert.ToString())
+                                    && promoModel.PlanPromoIncrementalLSV.HasValue && promoModel.PlanPromoIncrementalLSV.Value > 0)
+                                {
+                                    PromoStatus approvedStatus = _stateContext.dbContext.Set<PromoStatus>().FirstOrDefault(e => e.SystemName == "Approved");
+                                    promoModel.PromoStatusId = approvedStatus.Id;
+                                    promoModel.IsAutomaticallyApproved = true;
 
-                                return true;
+                                    _stateContext.Model = promoModel;
+                                    _stateContext.State = _stateContext._approvedState;
+
+                                    return true;
+                                }
+                                else
+                                {
+                                    promoModel.IsCMManagerApproved = true;
+                                    promoModel.IsDemandFinanceApproved = true;
+                                    _stateContext.Model = promoModel;
+                                    _stateContext.State = _stateContext._onApprovalState;
+
+									_stateContext.dbContext.Set<PromoOnApprovalIncident>().Add(new PromoOnApprovalIncident()
+									{
+										PromoId = promoModel.Id,
+										ApprovingRole = "DemandPlanning",
+										CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+										Promo = promoModel
+									});
+									return true;
+                                }
                             }
                         }
                         else
                         {
-                            _stateContext.Model = promoModel;
+							_stateContext.dbContext.Set<PromoOnApprovalIncident>().Add(new PromoOnApprovalIncident(){
+								PromoId = promoModel.Id,
+								ApprovingRole = "CMManager",
+								CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+								Promo = promoModel
+							});
+
+							_stateContext.Model = promoModel;
                             _stateContext.State = _stateContext._onApprovalState;
 
-                            return true;
+							return true;
                         }
                     }
                 }

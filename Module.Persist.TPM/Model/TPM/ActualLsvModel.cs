@@ -42,5 +42,6 @@ namespace Module.Persist.TPM.Model.TPM
         public double? ActualPromoPostPromoEffectLSVW2 { get; set; }
         public double? PlanPromoPostPromoEffectLSV { get; set; }
         public double? ActualPromoPostPromoEffectLSV { get; set; }
+        public bool? InOut { get; set; }
     }
 }

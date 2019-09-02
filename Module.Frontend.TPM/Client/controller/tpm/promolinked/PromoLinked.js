@@ -226,6 +226,9 @@
             endDate = psGrid.getSelectionModel().getSelection()[0].get('EndDate');
         }  
 
+        startDate = changeTimeZone(startDate, 3, -1);
+        endDate = changeTimeZone(endDate, 3, -1);
+
         prefilter.rules.push({
             operation: "Equals",
             property: "ClientHierarchy",
@@ -234,7 +237,7 @@
 
         if (startDate) {
             prefilter.rules.push({
-                operation: "GraterThan",
+                operation: "GraterOrEqual",
                 property: "EndDate",
                 value: startDate
             });
@@ -242,7 +245,7 @@
 
         if (endDate) {
             prefilter.rules.push({
-                operation: "LessThan",
+                operation: "LessOrEqual",
                 property: "StartDate",
                 value: endDate
             });

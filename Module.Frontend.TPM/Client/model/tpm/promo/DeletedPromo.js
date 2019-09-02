@@ -45,10 +45,13 @@
 
         { name: 'ColorId', useNull: true, hidden: true, isDefault: false },
         { name: 'ProductHierarchy', type: 'string', hidden: false, isDefault: false },
-        { name: 'StartDate', useNull: true, type: 'date', hidden: false, isDefault: false },
-        { name: 'EndDate', useNull: true, type: 'date', hidden: false, isDefault: false },
-        { name: 'DispatchesStart', useNull: true, type: 'date', hidden: false, isDefault: false },
-        { name: 'DispatchesEnd', useNull: true, type: 'date', hidden: false, isDefault: false },
+        { name: 'LastChangedDate', useNull: true, type: 'date', hidden: true, isDefault: false, timeZone: +3, convert: dateConvertTimeZone },
+        { name: 'LastChangedDateDemand', useNull: true, type: 'date', hidden: true, isDefault: false, timeZone: +3, convert: dateConvertTimeZone },
+        { name: 'LastChangedDateFinance', useNull: true, type: 'date', hidden: true, isDefault: false, timeZone: +3, convert: dateConvertTimeZone },
+        { name: 'StartDate', useNull: true, type: 'date', hidden: false, isDefault: false, timeZone: +3, convert: dateConvertTimeZone },
+        { name: 'EndDate', useNull: true, type: 'date', hidden: false, isDefault: false, timeZone: +3, convert: dateConvertTimeZone },
+        { name: 'DispatchesStart', useNull: true, type: 'date', hidden: false, isDefault: false, timeZone: +3, convert: dateConvertTimeZone },
+        { name: 'DispatchesEnd', useNull: true, type: 'date', hidden: false, isDefault: false, timeZone: +3, convert: dateConvertTimeZone },
         { name: 'ProductFilter', type: 'string', hidden: false, isDefault: false },
         { name: 'ProductFilterDisplay', type: 'string', hidden: false, isDefault: false },
         { name: 'MechanicComment', type: 'string', hidden: false, isDefault: false },
@@ -58,6 +61,7 @@
         { name: 'PromoDuration', useNull: true, type: 'int', hidden: false, isDefault: false },
         { name: 'DispatchDuration', useNull: true, type: 'int', hidden: false, isDefault: false },
         { name: 'InvoiceNumber', type: 'string', hidden: false, isDefault: false },
+        { name: 'DocumentNumber', type: 'string', hidden: false, isDefault: false },
 
         // Calculation
         { name: 'PlanPromoTIShopper', useNull: true, type: 'int', hidden: false, isDefault: false },
@@ -153,7 +157,7 @@
         { name: 'Mechanic', type: 'string', useNull: true, hidden: false, isDefault: true },
         { name: 'MechanicIA', type: 'string', useNull: true, hidden: false, isDefault: true },
         //Дата последнего вхождения в статус Approved
-        { name: 'LastApprovedDate', type: 'date', hidden: true, isDefault: true },
+        { name: 'LastApprovedDate', type: 'date', hidden: true, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
 
         //
         { name: 'PlanPromoNetIncrementalBaseTI', useNull: true, type: 'float', hidden: false, isDefault: false },
@@ -164,7 +168,11 @@
         { name: 'ActualPromoNetIncrementalCOGS', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'ActualPromoNetBaseTI', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'ActualPromoNSV', useNull: true, type: 'float', hidden: false, isDefault: false },
+
+        // InOut
         { name: 'InOut', useNull: true, type: 'boolean', hidden: false, isDefault: false },
+        { name: 'InOutProductIds', type: 'string', hidden: true, isDefault: false },
+        { name: 'InOutExcludeAssortmentMatrixProductsButtonPressed', type: 'boolean', hidden: true, isDefault: false, defaultValue: false },
     ],
     proxy: {
         type: 'breeze',

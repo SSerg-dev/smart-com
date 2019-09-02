@@ -1,5 +1,6 @@
 ﻿using Core.Import;
 using Module.Persist.TPM.Model.TPM;
+using Module.Persist.TPM.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -41,17 +42,19 @@ namespace Module.Persist.TPM.Model.Import {
 
         [ImportCSVColumn(ColumnNumber = 7)]
         [Display(Name = "From Date")]
-        public DateTimeOffset? FromDate { get; set; }
+        public DateTimeOffset? FromDate
+        {
+            get { return fromDate; }
+            set { fromDate = ChangeTimeZoneUtil.ResetTimeZone(value); }
+        }
 
         [ImportCSVColumn(ColumnNumber = 8)]
         [Display(Name = "To Date")]
-        public DateTimeOffset? ToDate { get; set; }
-
-        [ImportCSVColumn(ColumnNumber = 9)]
-        [Display(Name = "Create Date")]
-        public DateTimeOffset? CreateDate { get; set; }
-
-
+        public DateTimeOffset? ToDate
+        {
+            get { return toDate; }
+            set { toDate = ChangeTimeZoneUtil.ResetTimeZone(value); }
+        }
 
         public int ClientTreeId { get; set; }
         public int ProductTreeId { get; set; }
@@ -59,5 +62,9 @@ namespace Module.Persist.TPM.Model.Import {
         public System.Guid? MechanicTypeId { get; set; }
         public virtual Mechanic Mechanic { get; set; }
         public virtual MechanicType MechanicType { get; set; }
+
+
+        private DateTimeOffset? fromDate;
+        private DateTimeOffset? toDate;
     }
 }

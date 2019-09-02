@@ -8,9 +8,13 @@
 
     columns: [{
         dataIndex: 'from',
+        xtype: 'datecolumn',
+        renderer: this.itemRenderer,
         flex: 1
     }, {
         dataIndex: 'to',
+        xtype: 'datecolumn',
+        renderer: this.itemRenderer,
         flex: 1
     }],
 

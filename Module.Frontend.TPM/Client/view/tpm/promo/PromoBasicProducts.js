@@ -129,7 +129,7 @@
             },
             items: [{
                 xtype: 'fieldset',
-                title: l10n.ns('tpm', 'PromoBasicProducts').value('SelectedSubranges'),
+                title: '',
                 padding: '0 0 0 10',
                 height: 160,
                 //itemId: 'choosenSubrangesPanel',
@@ -137,21 +137,33 @@
                 items: [{
                     xtype: 'container',
                     itemId: 'choosenSubrangesPanel',
-            autoScroll: true,
-            flex: 1,
-            height: '100%',
-            width: '100%',
-            cls: 'scrollpanel hScrollPanel',
-            layout: {
-                type: 'hbox',
-                align: 'top',
-            },
-            padding: '0 0 2 1',
-            defaults: {
-                margin: '0 10 10 0',
-            },
-            items: []
-        }]
+                    autoScroll: true,
+                    flex: 1,
+                    height: '100%',
+                    width: '100%',
+                    cls: 'scrollpanel hScrollPanel',
+                    layout: {
+                        type: 'hbox',
+                        align: 'top',
+                    },
+                    padding: '0 0 2 1',
+                    defaults: {
+                        margin: '0 10 10 0',
+                    },
+                    items: []
+                }],
+                listeners: {
+                    afterrender: function (fieldset) {
+                        var promoEditorCustom = fieldset.up('promoeditorcustom');
+                        var isInOutPromo = promoEditorCustom.isInOutPromo || (promoEditorCustom.model && promoEditorCustom.model.data.InOut);
+
+                        if (isInOutPromo) {
+                            fieldset.setTitle(l10n.ns('tpm', 'PromoBasicProducts').value('SelectedProducts'));
+                        } else {
+                            fieldset.setTitle(l10n.ns('tpm', 'PromoBasicProducts').value('SelectedSubranges'));
+                        }
+                    }
+                },
             },
             {
                 xtype: 'container',
@@ -179,12 +191,25 @@
     }],
 
     // заполнение формы при загрузке промо
-    fillFormJson: function (promoBasicProductJSON, treesChangingBlockDate) {
+    fillFormJson: function (promoBasicProductJSON, treesChangingBlockDate, record) {
         this.treesChangingBlockDate = treesChangingBlockDate;
         this.promoProductRecord = promoBasicProductJSON ? JSON.parse(promoBasicProductJSON) : null;
-        this.brandAbbreviation = this.promoProductRecord.BrandAbbreviation;
-        this.technologyAbbreviation = this.promoProductRecord.TechnologyAbbreviation;
-        this.fillMainInfo();
+
+		if (this.promoProductRecord) {
+			this.brandAbbreviation = this.promoProductRecord.BrandAbbreviation;
+			this.technologyAbbreviation = this.promoProductRecord.TechnologyAbbreviation;
+		} else {
+			// Переделать. Нужно вынести BrandAbbreviation и TechnologyAbbreviation в модель промо, 
+			// чтобы информация о них не удалялась при удалении узла продукта (!!!)
+			var brandTechName = record.data.BrandTechName;
+			var brandName = record.data.BrandName;
+			var techName = brandTechName.replace(brandName + ' ', '');
+
+			this.brandAbbreviation = brandName;
+			this.technologyAbbreviation = techName;
+		}
+
+        this.fillMainInfo(record);
     },
 
     fillForm: function (nodesProductTree) {
@@ -198,16 +223,18 @@
                 ProductsChoosen: []
             };
 
-            nodesProductTree.forEach(function (node) {
-                me.promoProductRecord.ProductsChoosen.push({
-                    ObjectId: node.get('ObjectId'),
-                    Name: node.get('Name'),
-                    Type: node.get('Type'),
-                    LogoFileName: node.get('LogoFileName'),
-                    FullPathName: node.get('FullPathName'),
-                    Filter: node.get('Filter'),
-                });
-            });
+			nodesProductTree.forEach(function (node) {
+				if (node) {
+					me.promoProductRecord.ProductsChoosen.push({
+						ObjectId: node.get('ObjectId'),
+						Name: node.get('Name'),
+						Type: node.get('Type'),
+						LogoFileName: node.get('LogoFileName'),
+						FullPathName: node.get('FullPathName'),
+						Filter: node.get('Filter'),
+					});
+				}
+			});
 
             var current = nodesProductTree[0];
             while (current && current.data.root !== true) {
@@ -235,7 +262,7 @@
         this.fillMainInfo();
     },
 
-    fillMainInfo: function () {
+    fillMainInfo: function (record) {
         var chooseBtn = this.down('#choosePromoProductsBtn');
 
         if (this.promoProductRecord) {
@@ -250,7 +277,19 @@
 
             this.down('[name=PromoProductBrand]').setValue(this.promoProductRecord.Brand);
             this.down('[name=PromoProductTechnology]').setValue(this.promoProductRecord.Technology);
-        } else {
+		} else if (record.data.BrandTechName != null && record.data.BrandTechName != '') {
+			var brandTechName = record.data.BrandTechName;
+			var brandName = record.data.BrandName;
+			var techName = brandTechName.replace(brandName + ' ', '');
+
+			chooseBtn.setText('<b>' + brandName + '<br/>...</b>');
+			chooseBtn.setGlyph();
+			chooseBtn.setIcon(iconSrc);
+			chooseBtn.setIconCls('promoClientChooseBtnIcon');
+
+			this.down('[name=PromoProductBrand]').setValue(brandName);
+			this.down('[name=PromoProductTechnology]').setValue(techName);
+		} else {
             chooseBtn.setText('<b>' + l10n.ns('tpm', 'PromoBasicProducts').value('ChooseProduct') + '<br/>...</b>');
             chooseBtn.setIcon();
             chooseBtn.setIconCls('x-btn-glyph materialDesignIcons');
@@ -263,14 +302,16 @@
         // для обновления отрисовки кнопки
         chooseBtn.fireEvent('resize', chooseBtn);
         // заполняем панель выбранных subranges
-        this.fillSubrangePanel();
+        this.fillSubrangePanel(record);
     },
 
     // заполнить панель выбранных subranges
-    fillSubrangePanel: function () {
+    fillSubrangePanel: function (record) {
         var me = this;
         var subrangeBtns = [];
         var subrangePanel = me.down('#choosenSubrangesPanel');
+        var promoEditorCustom = me.up('promoeditorcustom');
+        var isInOutPromo = promoEditorCustom.isInOutPromo || (promoEditorCustom.model && promoEditorCustom.model.data.InOut) || (record && record.data && record.data.InOut);
 
         me.choosenProductObjectIds = [];
         subrangePanel.removeAll();
@@ -293,29 +334,70 @@
                 // парсим фильтр из Json
                 item.Filter = item.Filter && item.Filter.length > 0 ? JSON.parse(item.Filter) : null;
 
-                // фильтруем только с типом subrange (можно же выбрать просто технологию например)
-                if (item.Type.toLowerCase().indexOf('subrange') >= 0) {
-                    var iconSrc = item.LogoFileName ? '/odata/ProductTrees/DownloadLogoFile?fileName=' + encodeURIComponent(item.LogoFileName) : '/bundles/style/images/swith-glyph-gray.png';
+                if (!isInOutPromo) {
+                    // фильтруем только с типом subrange (можно же выбрать просто технологию например)
+                    if (item.Type.toLowerCase().indexOf('subrange') >= 0) {
+                        var iconSrc = item.LogoFileName ? '/odata/ProductTrees/DownloadLogoFile?fileName=' + encodeURIComponent(item.LogoFileName) : '/bundles/style/images/swith-glyph-gray.png';
 
-                    subrangeBtns.push({
-                        xtype: 'button',
-                        scale: 'large',
-                        height: 98,
-                        width: 110,
-                        text: '<b>' + item.Name + '<br/></b>',
-                        iconAlign: 'top',
-                        icon: iconSrc,
-                        iconCls: 'promoClientChooseBtnIcon',
-                        cls: 'custom-event-button promobasic-choose-btn cursor-pointer',
-                        disabled: true,
-                        disabledCls: '',
-                        style: 'opacity: 1.0 !important; cursor: default',
-                    });
+                        subrangeBtns.push({
+                            xtype: 'button',
+                            scale: 'large',
+                            height: 98,
+                            width: 110,
+                            text: '<b>' + item.Name + '<br/></b>',
+                            iconAlign: 'top',
+                            icon: iconSrc,
+                            iconCls: 'promoClientChooseBtnIcon',
+                            cls: 'custom-event-button promobasic-choose-btn cursor-pointer',
+                            disabled: true,
+                            disabledCls: '',
+                            style: 'opacity: 1.0 !important; cursor: default',
+                        });
+                    }
                 }
-            });
-        }
 
-        subrangePanel.add(subrangeBtns);
+            });
+            subrangePanel.add(subrangeBtns);
+
+            if (isInOutPromo) {
+                var inOutProductIdsString = promoEditorCustom.InOutProductIds || (promoEditorCustom.model && promoEditorCustom.model.data.InOutProductIds) || record.data.InOutProductIds;
+
+                var query = breeze.EntityQuery
+                    .from('Promoes')
+                    .withParameters({
+                        $actionName: 'GetProducts',
+                        $method: 'POST',
+                        $data: {
+                            InOutProductIds: inOutProductIdsString.split(';')
+                        }
+                    })
+                    .using(Ext.ux.data.BreezeEntityManager.getEntityManager())
+                    .execute()
+                    .then(function (data) {
+                        var result = Ext.JSON.decode(data.httpResponse.data.value);
+                        result = Ext.JSON.decode(result.data);
+
+                        if (result.length > 0) {
+                            result.forEach(function (product) {
+                                subrangeBtns.push({
+                                    xtype: 'button',
+                                    height: 98,
+                                    width: 110,
+                                    text: '<b style="display: block !important; padding-bottom: 10px; min-height: 35px !important; max-height: 35px !important;">' + product.ProductEN + '</b><br/>' + '<b>' + product.ZREP + '<br/></b>',
+                                    cls: 'custom-event-button promobasic-choose-btn-in-out cursor-pointer',
+                                    disabled: true,
+                                    disabledCls: '',
+                                    style: 'opacity: 1.0 !important; cursor: default',
+                                });
+                            });
+                            subrangePanel.add(subrangeBtns);
+                        }
+                    })
+                    .fail(function (data) {
+                        App.Notify.pushError(data.message);
+                    })
+            }
+        }
     },
 
     // вызвать форму выбора продуктов

@@ -5,7 +5,9 @@ using Core.Settings;
 using Frontend.Core.Controllers.Base;
 using Frontend.Core.Extensions;
 using Frontend.Core.Extensions.Export;
+using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.TPM;
+using Module.Persist.TPM.Utils;
 using Newtonsoft.Json;
 using Persist.Model;
 using System;
@@ -23,6 +25,7 @@ using System.Web.Http.OData;
 using System.Web.Http.OData.Query;
 using System.Web.Http.Results;
 using Thinktecture.IdentityModel.Authorization.WebApi;
+using Utility;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -42,10 +45,15 @@ namespace Module.Frontend.TPM.Controllers
             IList<Constraint> constraints = user.Id.HasValue ? Context.Constraints
                 .Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
                 .ToList() : new List<Constraint>();
-            IQueryable<PromoSupport> query = Context.Set<PromoSupport>().Where(e => !e.Disabled);
 
-            return query;
-        }
+			IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
+			IQueryable<PromoSupport> query = Context.Set<PromoSupport>().Where(e => !e.Disabled);
+			IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
+
+			query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
+
+			return query;
+		}
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
@@ -95,6 +103,11 @@ namespace Module.Frontend.TPM.Controllers
             {
                 return BadRequest(ModelState);
             }
+
+            // делаем UTC +3
+            model.StartDate = ChangeTimeZoneUtil.ResetTimeZone(model.StartDate);
+            model.EndDate = ChangeTimeZoneUtil.ResetTimeZone(model.EndDate);
+
             var proxy = Context.Set<PromoSupport>().Create<PromoSupport>();
             var result = (PromoSupport)Mapper.Map(model, proxy, typeof(PromoSupport), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
             Context.Set<PromoSupport>().Add(result);
@@ -124,6 +137,10 @@ namespace Module.Frontend.TPM.Controllers
                 }
 
                 patch.Patch(model);
+                // делаем UTC +3
+                model.StartDate = ChangeTimeZoneUtil.ResetTimeZone(model.StartDate);
+                model.EndDate = ChangeTimeZoneUtil.ResetTimeZone(model.EndDate);
+
                 Context.SaveChanges();
 
                 return Updated(model);

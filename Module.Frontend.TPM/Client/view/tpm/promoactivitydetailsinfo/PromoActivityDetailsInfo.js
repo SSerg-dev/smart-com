@@ -3,7 +3,23 @@
     alias: 'widget.promoactivitydetailsinfo',
     title: l10n.ns('tpm', 'compositePanelTitles').value('PromoProduct'),
 
-    customHeaderItems: [],
+    customHeaderItems: [
+
+    ResourceMgr.getAdditionalMenu('core').import = {
+        glyph: 0xf21b,
+        text: l10n.ns('core', 'additionalMenu').value('importExportBtn'),
+
+        menu: {
+            xtype: 'customheadermenu',
+            items: [{
+                glyph: 0xf21d,
+                itemId: 'customExportXlsxButton',
+                exactlyModelCompare: true,
+                text: l10n.ns('core', 'additionalMenu').value('exportXLSX'),
+                action: 'ExportXLSX'
+            }]
+        }
+    }],
 
     dockedItems: [{
         xtype: 'custombigtoolbar',

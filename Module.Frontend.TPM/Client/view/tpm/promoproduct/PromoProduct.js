@@ -2,7 +2,6 @@
     extend: 'App.view.core.common.CombinedDirectoryPanel',
     alias: 'widget.promoproduct',
     title: l10n.ns('tpm', 'compositePanelTitles').value('PromoProduct'),
-    record: null,
 
     customHeaderItems: [
         ResourceMgr.getAdditionalMenu('core').base = {

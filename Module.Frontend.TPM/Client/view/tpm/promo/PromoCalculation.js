@@ -431,7 +431,7 @@
                                 },
                                 items: [{
                                     xtype: 'container',
-                                    html: l10n.ns('tpm', 'Promo').value('PlanPromoUpliftPercent'),
+                                    html: l10n.ns('tpm', 'Promo').value('PromoUpliftPercent'),
                                     flex: 1
                                 }, {
                                     xtype: 'checkbox',
@@ -467,7 +467,7 @@
                             name: 'PlanPromoIncrementalLSV',
                             hideTrigger: true,
                             needReadOnly: true,
-                            fieldLabel: l10n.ns('tpm', 'Promo').value('PlanPromoIncrementalLSV'),
+                            fieldLabel: l10n.ns('tpm', 'Promo').value('PromoIncrementalLSV'),
                             padding: '18 10 0 0',
                             listeners: {
                                 change: this.calculationChangeListener
@@ -477,7 +477,7 @@
                             name: 'PlanPromoIncrementalLSV',
                             hideTrigger: true,
                             needReadOnly: true,
-                            fieldLabel: l10n.ns('tpm', 'Promo').value('PlanPromoIncrementalLSV'),
+                            fieldLabel: l10n.ns('tpm', 'Promo').value('PromoIncrementalLSV'),
                             padding: '18 10 0 0',
                             listeners: {
                                 change: this.calculationChangeListener

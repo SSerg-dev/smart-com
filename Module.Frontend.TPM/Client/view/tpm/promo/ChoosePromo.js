@@ -101,6 +101,27 @@
                 text: l10n.ns('tpm', 'Promo').value('EventName'),
                 dataIndex: 'EventName',
                 width: 110,
+            },  {
+                xtype: 'datecolumn',
+                text: l10n.ns('tpm', 'Promo').value('LastChangedDate'),
+                dataIndex: 'LastChangedDate',
+                width: 130,
+                renderer: Ext.util.Format.dateRenderer('d.m.Y H:i'),
+                hidden: true
+            }, {
+                xtype: 'datecolumn',
+                text: l10n.ns('tpm', 'Promo').value('LastChangedDateDemand'),
+                dataIndex: 'LastChangedDateDemand',
+                width: 130,
+                renderer: Ext.util.Format.dateRenderer('d.m.Y H:i'),
+                hidden: true
+            }, {
+                xtype: 'datecolumn',
+                text: l10n.ns('tpm', 'Promo').value('LastChangedDateFinance'),
+                dataIndex: 'LastChangedDateFinance',
+                width: 130,
+                renderer: Ext.util.Format.dateRenderer('d.m.Y H:i'),
+                hidden: true
             }, {
                 text: l10n.ns('tpm', 'Promo').value('Mechanic'),
                 dataIndex: 'Mechanic',

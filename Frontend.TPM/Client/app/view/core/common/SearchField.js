@@ -171,17 +171,31 @@
             var searchfieldstore = me.getStore(),
                 value = me.getValue();
 
-            if (value) {
-                var num = searchfieldstore.find('Id', value);
-                if (num === -1) {
-                    me.selectValidate = false;
-                    me.validate();
-                }
-                else {
-                    me.selectValidate = true;
-                    me.validate();
-                }
-            }
+			if (me.valueField) {
+				if (value) {
+					var num = searchfieldstore.find(me.valueField, value);
+					if (num === -1) {
+						me.selectValidate = false;
+						me.validate();
+					}
+					else {
+						me.selectValidate = true;
+						me.validate();
+					}
+				}
+			} else {
+				if (value) {
+					var num = searchfieldstore.find('Id', value);
+					if (num === -1) {
+						me.selectValidate = false;
+						me.validate();
+					}
+					else {
+						me.selectValidate = true;
+						me.validate();
+					}
+				}
+			}
         });
     },
 

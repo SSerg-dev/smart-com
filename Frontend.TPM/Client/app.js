@@ -35,6 +35,21 @@ Ext.application({
             var data = Ext.JSON.decode(response.responseText, true);
 
             if (data && data.success === false) {
+                if (data.message == "SESSION_EXPIRED") {
+                    Ext.Msg.show({
+                        title: l10n.ns('core').value('SessionExpiredWindowTitle'),
+                        msg: l10n.ns('core').value('SessionExpiredMessage'),
+                        buttons: Ext.MessageBox.OK,
+                        icon: Ext.Msg.INFO,
+                        fn: function () {
+                            document.location.reload(true);
+                        },
+                        cls: 'over_all',
+                        closable: false
+                    });
+                } else {
+                    App.Notify.pushError(data.message);
+                }
                 App.Notify.pushError(data.message);
             }
         });

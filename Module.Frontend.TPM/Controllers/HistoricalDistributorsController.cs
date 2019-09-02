@@ -21,7 +21,7 @@ namespace Module.Frontend.TPM.Controllers {
             EnableConstantParameterization = false,
             MaxTop = 1024)]
         public IQueryable<HistoricalDistributor> GetHistoricalDistributors() {
-            return HistoryReader.Query<HistoricalDistributor>();
+            return HistoryReader.GetAll<HistoricalDistributor>();
         }
 
         protected override void Dispose(bool disposing) {

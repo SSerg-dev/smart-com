@@ -61,7 +61,7 @@
             },
             mapping: [{
                 from: 'EAN_PC',
-                to: 'EAN_PC'
+                to: 'ProductEAN_PC'
             }]
         }, {
             xtype: 'datefield',
@@ -72,6 +72,13 @@
             editable: true,
             format: 'd.m.Y',
             listeners: {
+                afterrender: function (field) {
+                    var minValue = new Date();
+                    var currentTimeZoneOffsetInHours = minValue.getTimezoneOffset();
+                    var minValueInt = minValue.getTime();
+                    field.setMinValue(new Date(minValueInt + currentTimeZoneOffsetInHours * 60000 + 10800000));
+                    field.getPicker().setValue(field.minValue);
+                },
                 change: function (field) {
                     var endDate = field.up('editorform').down('[name=EndDate]');
 

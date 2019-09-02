@@ -29,6 +29,10 @@ using Core.Settings;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using System.Collections.Specialized;
+using Module.Persist.TPM.Utils;
+using Module.Persist.TPM.Model.DTO;
+using Persist.ScriptGenerator.Filter;
+using Utility;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -49,7 +53,12 @@ namespace Module.Frontend.TPM.Controllers
                 .Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
                 .ToList() : new List<Constraint>();
 
+            IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
+            IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
+
             IQueryable<IncrementalPromo> query = Context.Set<IncrementalPromo>().Where(e => !e.Disabled);
+
+            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
 
             return query;
         }
@@ -109,7 +118,7 @@ namespace Module.Frontend.TPM.Controllers
             var proxy = Context.Set<IncrementalPromo>().Create<IncrementalPromo>();
             var result = (IncrementalPromo)Mapper.Map(model, proxy, typeof(IncrementalPromo), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
             Context.Set<IncrementalPromo>().Add(result);
-            result.LastModifiedDate = DateTimeOffset.Now;
+            result.LastModifiedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
 
             try
             {
@@ -136,7 +145,7 @@ namespace Module.Frontend.TPM.Controllers
                 }
 
                 patch.Patch(model);
-                model.LastModifiedDate = DateTimeOffset.Now;
+                model.LastModifiedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
                 Context.SaveChanges();
 
                 return Updated(model);
@@ -190,17 +199,14 @@ namespace Module.Frontend.TPM.Controllers
         {
             IEnumerable<Column> columns = new List<Column>()
             {
-                new Column() { Order = 0, Field = "Promo.Number", Header = "Promo ID", Quoting = false },
-                new Column() { Order = 1, Field = "Promo.Name", Header = "Promo Name", Quoting = false },
-                new Column() { Order = 2, Field = "Promo.BrandTech.Name", Header = "Brand Technology", Quoting = false },
-                new Column() { Order = 3, Field = "Promo.StartDate", Header = "Start Date", Quoting = false, Format = "dd.MM.yyyy" },
-                new Column() { Order = 4, Field = "Promo.EndDate", Header = "End Date", Quoting = false, Format = "dd.MM.yyyy" },
-                new Column() { Order = 5, Field = "Promo.DispatchesStart", Header = "Dispatch Start", Quoting = false, Format = "dd.MM.yyyy" },
-                new Column() { Order = 6, Field = "Promo.DispatchesEnd", Header = "Dispatch End", Quoting = false, Format = "dd.MM.yyyy" },
-                new Column() { Order = 7, Field = "Product.ZREP", Header = "ZREP", Quoting = false },
-                new Column() { Order = 8, Field = "IncrementalCaseAmount", Header = "Case Amount", Quoting = false },
-                new Column() { Order = 9, Field = "IncrementalLSV", Header = "LSV", Quoting = false },
-                new Column() { Order = 10, Field = "IncrementalPrice", Header = "Price", Quoting = false }
+                new Column() { Order = 0, Field = "Product.ZREP", Header = "ZREP", Quoting = false },
+                new Column() { Order = 1, Field = "Product.ProductEN", Header = "Product Name", Quoting = false },
+                new Column() { Order = 2, Field = "Promo.ClientHierarchy", Header = "Client", Quoting = false },
+                new Column() { Order = 3, Field = "Promo.Number", Header = "Promo ID", Quoting = false, },
+                new Column() { Order = 4, Field = "Promo.Name", Header = "Promo Name", Quoting = false, },
+                new Column() { Order = 5, Field = "PlanPromoIncrementalCases", Header = "Plan Promo Incremental Cases", },
+                new Column() { Order = 6, Field = "CasePrice", Header = "Case Price", Quoting = false, },
+                new Column() { Order = 7, Field = "PlanPromoIncrementalLSV", Header = "Plan Promo Incremental LSV", Quoting = false },
             };
 
             return columns;
@@ -261,7 +267,8 @@ namespace Module.Frontend.TPM.Controllers
                 string importDir = Core.Settings.AppSettingsManager.GetSetting("IMPORT_DIRECTORY", "ImportFiles");
                 string fileName = await FileUtility.UploadFile(Request, importDir);
 
-                CreateImportTask(fileName, "FullXLSXImportHandler");
+				NameValueCollection form = System.Web.HttpContext.Current.Request.Form;
+				CreateImportTask(fileName, "FullXLSXUpdateImportIncrementalPromoHandler", form);
 
                 HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
                 result.Content = new StringContent("success = true");
@@ -275,7 +282,7 @@ namespace Module.Frontend.TPM.Controllers
             }
         }
 
-        private void CreateImportTask(string fileName, string importHandler)
+        private void CreateImportTask(string fileName, string importHandler, NameValueCollection paramForm)
         {
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
@@ -294,8 +301,10 @@ namespace Module.Frontend.TPM.Controllers
                     Name = System.IO.Path.GetFileName(fileName),
                     DisplayName = System.IO.Path.GetFileName(fileName)
                 };
+				// Параметры импорта
+				HandlerDataHelper.SaveIncomingArgument("CrossParam.ClientFilter", new TextListModel(paramForm.GetStringValue("clientFilter")), data, throwIfNotExists: false);
 
-                HandlerDataHelper.SaveIncomingArgument("File", file, data, throwIfNotExists: false);
+				HandlerDataHelper.SaveIncomingArgument("File", file, data, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportIncrementalPromo), data, visible: false, throwIfNotExists: false);
@@ -307,9 +316,9 @@ namespace Module.Frontend.TPM.Controllers
                     Id = Guid.NewGuid(),
                     ConfigurationName = "PROCESSING",
                     Description = "Загрузка импорта из файла " + typeof(ImportIncrementalPromo).Name,
-                    Name = "ProcessingHost.Handlers.Import." + importHandler,
+                    Name = "Module.Host.TPM.Handlers." + importHandler,
                     ExecutionPeriod = null,
-                    CreateDate = DateTimeOffset.Now,
+                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
                     LastExecutionDate = null,
                     NextExecutionDate = null,
                     ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
@@ -327,34 +336,23 @@ namespace Module.Frontend.TPM.Controllers
         {
             try
             {
-
-                string templateDir = AppSettingsManager.GetSetting("TEMPLATE_DIRECTORY", "Templates");
-                string templateFilePath = Path.Combine(templateDir, "IncrementalPromoTemplate.xlsx");
-                using (FileStream templateStream = new FileStream(templateFilePath, FileMode.Open, FileAccess.Read))
+                IEnumerable<Column> columns = GetExportSettings();
+                XLSXExporter exporter = new XLSXExporter(columns);
+                string exportDir = AppSettingsManager.GetSetting("EXPORT_DIRECTORY", "~/ExportFiles");
+                string filename = string.Format("{0}Template.xlsx", "IncrementalPromo");
+                if (!Directory.Exists(exportDir))
                 {
-                    IWorkbook twb = new XSSFWorkbook(templateStream);
-
-                    string exportDir = AppSettingsManager.GetSetting("EXPORT_DIRECTORY", "~/ExportFiles");
-                    string filename = string.Format("{0}Template.xlsx", "IncrementalPromo");
-                    if (!Directory.Exists(exportDir))
-                    {
-                        Directory.CreateDirectory(exportDir);
-                    }
-                    string filePath = Path.Combine(exportDir, filename);
-                    string file = Path.GetFileName(filePath);
-                    using (FileStream stream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
-                    {
-                        twb.Write(stream);
-                        stream.Close();
-                    }
-                    return Content(HttpStatusCode.OK, file);
+                    Directory.CreateDirectory(exportDir);
                 }
+                string filePath = Path.Combine(exportDir, filename);
+                exporter.Export(Enumerable.Empty<IncrementalPromo>(), filePath);
+                string file = Path.GetFileName(filePath);
+                return Content(HttpStatusCode.OK, file);
             }
             catch (Exception e)
             {
                 return Content(HttpStatusCode.InternalServerError, e.Message);
             }
-
         }
 
         private ExceptionResult GetErorrRequest(Exception e)

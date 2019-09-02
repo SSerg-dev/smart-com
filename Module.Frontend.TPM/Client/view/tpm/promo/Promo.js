@@ -24,30 +24,35 @@
                 var target = this.getTarget();
                 var isCollapsed = this.isCollapsed();
                 target.setWidth(isCollapsed ? target.maxWidth : target.minWidth);
-                //if (isCollapsed) {
-                //    target.down('#createinoutbutton').setUI('create-promo-btn-toolbar-expanded');
-                //} else {
-                //    target.down('#createinoutbutton').setUI('create-promo-btn-toolbar');
-                //}
+                if (isCollapsed) {
+                    target.down('#createbutton').setUI('create-promo-btn-toolbar-expanded');
+                    target.down('#createbutton').setText(l10n.ns('tpm', 'Schedule').value('CreateExpanded'));
+                    target.down('#createinoutbutton').setUI('create-promo-btn-toolbar-expanded');
+                    target.down('#createinoutbutton').setText(l10n.ns('tpm', 'Schedule').value('CreateInOutExpanded'));
+
+                } else {
+                    target.down('#createbutton').setUI('create-promo-btn-toolbar');
+                    target.down('#createbutton').setText(l10n.ns('tpm', 'Schedule').value('CreateCollapsed'));
+                    target.down('#createinoutbutton').setUI('create-promo-btn-toolbar');
+                    target.down('#createinoutbutton').setText(l10n.ns('tpm', 'Schedule').value('CreateInOutCollapsed'));
+                }
                 target.isExpanded = !target.isExpanded;
             },
         }, {
             itemId: 'createbutton',
             action: 'Post',
-            glyph: 0xf415,
-            text: l10n.ns('core', 'crud').value('createButtonText'),
-            tooltip: l10n.ns('core', 'crud').value('createButtonText')
-        },
-        //кнопка 'InOut' временно скрыта
-            //{
-            //itemId: 'createinoutbutton',
-            //action: 'Post',
-            //glyph: 0xf415,
-            //text: l10n.ns('tpm', 'Promo').value('CreateInOutPromo'),
-            //tooltip: l10n.ns('tpm', 'Promo').value('CreateInOutPromo'),
-            //ui: 'create-promo-btn'
-            //},
-        {
+            glyph: 0xf0f3,
+            text: l10n.ns('tpm', 'Promo').value('CreateCollapsed'),
+            tooltip: l10n.ns('tpm', 'Promo').value('CreateCollapsed'),
+            ui: 'create-promo-btn'
+        }, {
+            itemId: 'createinoutbutton',
+            action: 'Post',
+            glyph: 0xf0f3,
+            text: l10n.ns('tpm', 'Promo').value('CreateInOutCollapsed'),
+            tooltip: l10n.ns('tpm', 'Promo').value('CreateInOutCollapsed'),
+            ui: 'create-promo-btn'
+        }, {
             itemId: 'updatebutton',
             action: 'Patch',
             glyph: 0xf64f,
@@ -171,15 +176,6 @@
                     }
                 }
                 grid.headerCt.insert(0, expandedCol);
-
-                //обновление вертикальной прокрутки при разворачивании/сворачивании строки 
-                grid.view.on('expandBody', function (rowNode, record, expandRow, eOpts) {
-                    grid.view.refresh();
-                });
-
-                grid.view.on('collapseBody', function (rowNode, record, expandRow, eOpts) {
-                    grid.view.refresh();
-                });
             }
         },
 
@@ -215,6 +211,12 @@
                     return renderWithDelimiter(value, ' > ', '  ');
                 }
             }, {
+                text: l10n.ns('tpm', 'Promo').value('InOut'),
+                dataIndex: 'InOut',
+                renderer: function (value) {
+                    return value ? l10n.ns('core', 'booleanValues').value('true') : l10n.ns('core', 'booleanValues').value('false');
+                }
+            }, {
                 text: l10n.ns('tpm', 'Promo').value('Name'),
                 dataIndex: 'Name',
                 width: 150,
@@ -245,6 +247,42 @@
             }, {
                 text: l10n.ns('tpm', 'Promo').value('EventName'),
                 dataIndex: 'PromoEventName',
+                width: 110,
+            }, {
+                xtype: 'datecolumn',
+                text: l10n.ns('tpm', 'Promo').value('LastChangedDate'),
+                dataIndex: 'LastChangedDate',
+                width: 130,
+                renderer: Ext.util.Format.dateRenderer('d.m.Y H:i'),
+                hidden: true
+            }, {
+                xtype: 'datecolumn',
+                text: l10n.ns('tpm', 'Promo').value('LastChangedDateDemand'),
+                dataIndex: 'LastChangedDateDemand',
+                width: 130,
+                renderer: Ext.util.Format.dateRenderer('d.m.Y H:i'),
+                hidden: true
+            }, {
+                xtype: 'datecolumn',
+                text: l10n.ns('tpm', 'Promo').value('LastChangedDateFinance'),
+                dataIndex: 'LastChangedDateFinance',
+                width: 130,
+                renderer: Ext.util.Format.dateRenderer('d.m.Y H:i'),
+                hidden: true
+            }, {
+                xtype: 'numbercolumn',
+                text: l10n.ns('tpm', 'Promo').value('PlanPromoUpliftPercent'),
+                dataIndex: 'PlanPromoUpliftPercent',
+                width: 110,
+            }, {
+                xtype: 'numbercolumn',
+                text: l10n.ns('tpm', 'Promo').value('PlanPromoIncrementalLSV'),
+                dataIndex: 'PlanPromoIncrementalLSV',
+                width: 110,
+            }, {
+                xtype: 'numbercolumn',
+                text: l10n.ns('tpm', 'Promo').value('PlanPromoBaselineLSV'),
+                dataIndex: 'PlanPromoBaselineLSV',
                 width: 110,
             }, {
                 text: l10n.ns('tpm', 'Promo').value('Mechanic'),
@@ -404,6 +442,7 @@
                     type: 'search',
                     selectorWidget: 'promostatus',
                     valueField: 'Name',
+                    operator: 'eq',
                     store: {
                         type: 'directorystore',
                         model: 'App.model.tpm.promostatus.PromoStatus',

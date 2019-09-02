@@ -21,7 +21,7 @@ namespace Module.Frontend.TPM.Controllers {
             EnableConstantParameterization = false,
             MaxTop = 1024)]
         public IQueryable<HistoricalFormat> GetHistoricalFormats() {
-            return HistoryReader.Query<HistoricalFormat>();
+            return HistoryReader.GetAll<HistoricalFormat>();
         }
 
         protected override void Dispose(bool disposing) {

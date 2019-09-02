@@ -224,4 +224,6 @@
 
     //Actual LSV
     'tpm.actualLSV.ActualLSV',
+
+    'tpm.inoutselectionproductwindow.InOutSelectionProductWindow'
 ]);

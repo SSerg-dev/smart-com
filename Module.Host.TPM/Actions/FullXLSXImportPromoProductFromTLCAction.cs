@@ -17,6 +17,7 @@ using Looper.Core;
 using Persist.Model;
 using Module.Persist.TPM.CalculatePromoParametersModule;
 using Core.History;
+using Module.Persist.TPM.Utils;
 
 namespace Module.Host.TPM.Actions {
     class FullXLSXImportPromoProductFromTLCAction : FullXLSXImportAction {
@@ -26,46 +27,11 @@ namespace Module.Host.TPM.Actions {
         private Guid promoId;
         private Guid userId;
         private Guid roleId;
-        private List<string> eanPCs;
 
         public FullXLSXImportPromoProductFromTLCAction(FullImportSettings settings, Guid promoId, Guid userId, Guid roleId) : base(settings) {
             this.promoId = promoId;
             this.userId = userId;
             this.roleId = roleId;
-            using (DatabaseContext context = new DatabaseContext())
-            {
-                var promo = context.Set<Promo>().Where(x => x.Id == promoId && !x.Disabled).FirstOrDefault();
-                eanPCs = PlanProductParametersCalculation.GetProductListFromAssortmentMatrix(promo, context);
-            }
-        }
-        protected override bool IsFilterSuitable(IEntity<Guid> rec, out IList<string> errors)
-        {
-            errors = new List<string>();
-            bool success = true;
-
-            try
-            {
-                PromoProduct importObj = rec as PromoProduct;
-                if (importObj != null)
-                {
-                    // если к промо не прикреплен продукт с указанным EAN_Case выдаем ошибку
-                    using (DatabaseContext context = new DatabaseContext())
-                    {
-                        if (!eanPCs.Contains(importObj.EAN_PC))
-                        {
-                            errors.Add("No product attached to promo with EAN PC " + importObj.EAN_PC);
-                            success = false;
-                        }
-                    }
-                }
-            }
-            catch
-            {
-                // если что-то пошло не так
-                success = false;
-            }
-
-            return success;
         }
 
         protected override int InsertDataToDatabase(IEnumerable<IEntity<Guid>> records, DatabaseContext context) {
@@ -105,7 +71,7 @@ namespace Module.Host.TPM.Actions {
                     Description = "Calculate actual parameters",
                     Name = "Module.Host.TPM.Handlers.CalculateActualParamatersHandler",
                     ExecutionPeriod = null,
-                    CreateDate = DateTimeOffset.Now,
+                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
                     LastExecutionDate = null,
                     NextExecutionDate = null,
                     ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,

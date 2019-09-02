@@ -1125,3 +1125,6 @@ a.x-monthpicker-item-inner:hover,
     background-repeat: no-repeat;
     padding: 8px;
 }
+.over_all {
+    z-index: 99999 !important;
+}

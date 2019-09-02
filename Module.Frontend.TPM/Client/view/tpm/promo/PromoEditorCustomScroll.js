@@ -43,6 +43,7 @@
     promoId: null,
     statusId: null,
     promoName: 'Unpublish Promo',
+    promoNumber: null,
     promoStatusName: null,
     promoStatusSystemName: null,
 
@@ -522,7 +523,7 @@
                     }
                 }]
             }, {
-                xtype: 'promosummary'
+                    xtype: 'promosummary'
             }, {
                 // approvalhistory
                 items: [{
@@ -540,7 +541,7 @@
         cls: 'promo-action-button',
         hidden: true,
         isPromoAction: true,
-        roles: ['Administrator', 'CMManager', 'CustomerMarketing', 'DemandFinance', 'DemandPlanning', 'FunctionalExpert', 'KeyAccountManager'],
+		roles: ['Administrator', 'FunctionalExpert', 'CustomerMarketing', 'KeyAccountManager'],
         statuses: ['Draft'],
         statusId: null,
         statusName: null,
@@ -556,8 +557,8 @@
         cls: 'promo-action-button',
         hidden: true,
         isPromoAction: true,
-        roles: ['Administrator', /*'CMManager', 'CustomerMarketing', 'FunctionalExpert',*/ 'KeyAccountManager'],
-        statuses: ['DraftPublished', 'Test2'],
+		roles: ['Administrator', 'FunctionalExpert', 'CustomerMarketing', 'KeyAccountManager'],
+        statuses: ['DraftPublished'],
         statusId: null,
         statusName: null,
         statusSystemName: null
@@ -571,7 +572,7 @@
         cls: 'promo-action-button',
         hidden: true,
         isPromoAction: true,
-        roles: ['Administrator', /*'CMManager',*/ 'CustomerMarketing', 'FunctionalExpert', 'KeyAccountManager'],
+		roles: ['Administrator', 'FunctionalExpert', 'CustomerMarketing', 'KeyAccountManager'],
         statuses: ['DraftPublished'],
         statusId: null,
         statusName: null,
@@ -587,7 +588,7 @@
         cls: 'promo-action-button',
         hidden: true,
         isPromoAction: true,
-        roles: ['CMManager', 'CustomerMarketing', 'DemandFinance', 'DemandPlanning'],
+		roles: ['Administrator', 'CMManager', 'CustomerMarketing', 'DemandPlanning', 'DemandFinance'],
         statuses: ['OnApproval'],
         statusId: null,
         statusName: null,
@@ -602,7 +603,7 @@
         cls: 'promo-action-button',
         hidden: true,
         isPromoAction: true,
-        roles: ['CMManager', 'DemandFinance', 'DemandPlanning'],
+		roles: ['CMManager', 'DemandPlanning', 'DemandFinance'],
         statuses: ['OnApproval'],
         statusId: null,
         statusName: null,
@@ -618,7 +619,7 @@
         cls: 'promo-action-button',
         hidden: true,
         isPromoAction: true,
-        roles: ['KeyAccountManager'],
+		roles: ['Administrator', 'KeyAccountManager', 'FunctionalExpert'],
         statuses: ['Approved', 'Planned'],
         statusId: null,
         statusName: null,
@@ -634,7 +635,7 @@
         cls: 'promo-action-button',
         hidden: true,
         isPromoAction: true,
-        roles: ['KeyAccountManager'],
+		roles: ['Administrator', 'KeyAccountManager', 'FunctionalExpert'],
         statuses: ['Approved'],
         statusId: null,
         statusName: null,
@@ -664,7 +665,7 @@
         cls: 'promo-action-button',
         hidden: true,
         isPromoAction: true,
-        roles: ['FunctionalExpert'],
+		roles: ['Administrator', 'FunctionalExpert'],
         statuses: ['Closed'],
         statusId: null,
         statusName: null,
@@ -691,7 +692,7 @@
         text: l10n.ns('tpm', 'buttons').value('edit'),
         itemId: 'changePromo',
         style: { "background-color": "#26A69A" },
-        roles: ['Administrator', 'CMManager', 'CustomerMarketing', 'FunctionalExpert', 'KeyAccountManager'],
+        roles: ['Administrator', 'CMManager', 'CustomerMarketing', 'FunctionalExpert', 'KeyAccountManager', 'DemandPlanning'],
         hidden: true
     }, {
         text: l10n.ns('tpm', 'promoButtons').value('ok'),

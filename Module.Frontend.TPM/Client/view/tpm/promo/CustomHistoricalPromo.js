@@ -79,9 +79,9 @@
                     { xtype: 'singlelinedisplayfield', name: 'DispatchesEnd', fieldLabel: l10n.ns('tpm', 'Promo').value('DispatchesEnd'), renderer: Ext.util.Format.dateRenderer('d.m.Y'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'EventName', fieldLabel: l10n.ns('tpm', 'Promo').value('EventName'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'PromoEventName', fieldLabel: l10n.ns('tpm', 'Promo').value('PromoEventName'), hidden: true },
-                    { xtype: 'singlelinedisplayfield', name: 'PromoEventYear', fieldLabel: l10n.ns('tpm', 'Promo').value('PromoEventYear'), renderer: Ext.util.Format.dateRenderer('d.m.Y'), hidden: true  },
+                    { xtype: 'singlelinedisplayfield', name: 'PromoEventYear', fieldLabel: l10n.ns('tpm', 'Promo').value('PromoEventYear'), renderer: Ext.util.Format.dateRenderer('d.m.Y'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'PromoEventPeriod', fieldLabel: l10n.ns('tpm', 'Promo').value('PromoEventPeriod'), hidden: true },
-                    { xtype: 'singlelinedisplayfield', name: 'PromoEventDescription', fieldLabel: l10n.ns('tpm', 'Promo').value('PromoEventDescription'), hidden: true  },
+                    { xtype: 'singlelinedisplayfield', name: 'PromoEventDescription', fieldLabel: l10n.ns('tpm', 'Promo').value('PromoEventDescription'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'CalendarPriority', fieldLabel: l10n.ns('tpm', 'Promo').value('CalendarPriority'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'PlanPromoTIShopper', fieldLabel: l10n.ns('tpm', 'Promo').value('PlanPromoTIShopper'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'PlanPromoTIMarketing', fieldLabel: l10n.ns('tpm', 'Promo').value('PlanPromoTIMarketing'), hidden: true },
@@ -118,16 +118,17 @@
                     { xtype: 'singlelinedisplayfield', name: 'ActualPromoNetIncrementalCOGS', fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoNetIncrementalCOGS'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'ActualPromoNetBaseTI', fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoNetBaseTI'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'ActualPromoIncrementalMAC', fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoIncrementalMAC'), hidden: true },
-
                     { xtype: 'singlelinedisplayfield', name: 'ProductHierarchy', fieldLabel: l10n.ns('tpm', 'Promo').value('ProductHierarchy'), hidden: true },
+                    { xtype: 'singlelinedisplayfield', name: 'InOut', fieldLabel: l10n.ns('tpm', 'Promo').value('InOut'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'Name', fieldLabel: l10n.ns('tpm', 'Promo').value('Name'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'BrandName', fieldLabel: l10n.ns('tpm', 'Promo').value('BrandName'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'BrandTechName', fieldLabel: l10n.ns('tpm', 'Promo').value('BrandTechName'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'Mechanic', fieldLabel: l10n.ns('tpm', 'Promo').value('Mechanic'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'MechanicIA', fieldLabel: l10n.ns('tpm', 'Promo').value('MechanicIA'), hidden: true },
-                    { xtype: 'singlelinedisplayfield', name: 'ColorSystemName', fieldLabel: l10n.ns('tpm', 'Promo').value('ColorSystemName'), hidden: true },
+                    //{ xtype: 'singlelinedisplayfield', name: 'ColorSystemName', fieldLabel: l10n.ns('tpm', 'Promo').value('ColorSystemName'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'ColorDisplayName', fieldLabel: l10n.ns('tpm', 'Promo').value('ColorDisplayName'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'InvoiceNumber', fieldLabel: l10n.ns('tpm', 'Promo').value('InvoiceNumber'), hidden: true },
+                    { xtype: 'singlelinedisplayfield', name: 'DocumentNumber', fieldLabel: l10n.ns('tpm', 'Promo').value('DocumentNumber'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'NeedRecountUplift', fieldLabel: l10n.ns('tpm', 'Promo').value('NeedRecountUplift'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'PlanPromoXSites', fieldLabel: l10n.ns('tpm', 'Promo').value('PlanPromoXSites'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'PlanPromoCatalogue', fieldLabel: l10n.ns('tpm', 'Promo').value('PlanPromoCatalogue'), hidden: true },
@@ -154,7 +155,7 @@
                     { xtype: 'singlelinedisplayfield', name: 'ActualPromoBaselineLSV', fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoBaselineLSV'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'ActualInStoreDiscount', fieldLabel: l10n.ns('tpm', 'Promo').value('ActualInStoreDiscount'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'ActualInStoreShelfPrice', fieldLabel: l10n.ns('tpm', 'Promo').value('ActualInStoreShelfPrice'), hidden: true },
-                    { xtype: 'singlelinedisplayfield', name: 'PlanInStoreShelfPrice', fieldLabel: l10n.ns('tpm', 'Promo').value('ActualInStoreShelfPrice'), hidden: true },
+                    { xtype: 'singlelinedisplayfield', name: 'PlanInStoreShelfPrice', fieldLabel: l10n.ns('tpm', 'Promo').value('PlanInStoreShelfPrice'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'ActualPromoIncrementalBaseTI', fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoIncrementalBaseTI'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'ActualPromoIncrementalCOGS', fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoIncrementalCOGS'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'ActualPromoTotalCost', fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoTotalCost'), hidden: true },
@@ -171,7 +172,6 @@
                     { xtype: 'singlelinedisplayfield', name: 'PlanPromoNetNSV', fieldLabel: l10n.ns('tpm', 'Promo').value('PlanPromoNetNSV'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'ActualPromoBaselineBaseTI', fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoBaselineBaseTI'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'ActualPromoBaseTI', fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoBaseTI'), hidden: true },
-
                     { xtype: 'singlelinedisplayfield', name: 'IsAutomaticallyApproved', fieldLabel: l10n.ns('tpm', 'Promo').value('IsAutomaticallyApproved'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'IsCMManagerApproved', fieldLabel: l10n.ns('tpm', 'Promo').value('IsCMManagerApproved'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'IsDemandPlanningApproved', fieldLabel: l10n.ns('tpm', 'Promo').value('IsDemandPlanningApproved'), hidden: true },
@@ -183,11 +183,27 @@
                     { xtype: 'singlelinedisplayfield', name: 'ActualPromoPostPromoEffectLSV', fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoPostPromoEffectLSV'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'ActualPromoPostPromoEffectLSVW1', fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoPostPromoEffectLSVW1'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'ActualPromoPostPromoEffectLSVW2', fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoPostPromoEffectLSVW2'), hidden: true },
-                    { xtype: 'singlelinedisplayfield', name: 'ActualInStoreDiscount', fieldLabel: l10n.ns('tpm', 'Promo').value('ActualInStoreDiscount'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'PromoStatusColor', fieldLabel: l10n.ns('tpm', 'Promo').value('PromoStatusColor'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'RejectReasonName', fieldLabel: l10n.ns('tpm', 'Promo').value('RejectReasonName'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'ActualInStoreMechanicName', fieldLabel: l10n.ns('tpm', 'Promo').value('ActualInStoreMechanicName'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'ActualInStoreMechanicTypeName', fieldLabel: l10n.ns('tpm', 'Promo').value('ActualInStoreMechanicTypeName'), hidden: true },
+                    { xtype: 'singlelinedisplayfield', name: 'ActualPromoNSV', fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoNSV'), hidden: true },
+                    { xtype: 'singlelinedisplayfield', name: 'LastChangedDate', fieldLabel: l10n.ns('tpm', 'Promo').value('LastChangedDate'), hidden: true, renderer: Ext.util.Format.dateRenderer('d.m.Y H:i:s'), hidden: true },
+                    { xtype: 'singlelinedisplayfield', name: 'LastChangedDateDemand', fieldLabel: l10n.ns('tpm', 'Promo').value('LastChangedDateDemand'), hidden: true, renderer: Ext.util.Format.dateRenderer('d.m.Y H:i:s'), hidden: true },
+                    { xtype: 'singlelinedisplayfield', name: 'LastChangedDateFinance', fieldLabel: l10n.ns('tpm', 'Promo').value('LastChangedDateFinance'), hidden: true, renderer: Ext.util.Format.dateRenderer('d.m.Y H:i:s'), hidden: true },
+                    { xtype: 'singlelinedisplayfield', name: 'PromoDuration', fieldLabel: l10n.ns('tpm', 'Promo').value('PromoDuration'), hidden: true },
+                    { xtype: 'singlelinedisplayfield', name: 'DispatchDuration', fieldLabel: l10n.ns('tpm', 'Promo').value('DispatchDuration'), hidden: true },
+                    { xtype: 'singlelinedisplayfield', name: 'Number', fieldLabel: l10n.ns('tpm', 'Promo').value('Number'), hidden: true },
+                    { xtype: 'singlelinedisplayfield', name: 'Comment', fieldLabel: l10n.ns('tpm', 'Promo').value('Comment'), hidden: true },
+                    { xtype: 'singlelinedisplayfield', name: 'ProductZREP', fieldLabel: l10n.ns('tpm', 'Promo').value('ProductZREP'), hidden: true },
+                    { xtype: 'singlelinedisplayfield', name: 'InstoreMechanicName', fieldLabel: l10n.ns('tpm', 'Promo').value('InstoreMechanicName'), hidden: true },
+                    { xtype: 'singlelinedisplayfield', name: 'InstoreMechanicTypeName', fieldLabel: l10n.ns('tpm', 'Promo').value('InstoreMechanicTypeName'), hidden: true },
+                    { xtype: 'singlelinedisplayfield', name: 'InstoreMechanicDiscount', fieldLabel: l10n.ns('tpm', 'Promo').value('InstoreMechanicDiscount'), hidden: true },
+                    { xtype: 'singlelinedisplayfield', name: 'Priority', fieldLabel: l10n.ns('tpm', 'Promo').value('Priority'), hidden: true },
+                    { xtype: 'singlelinedisplayfield', name: 'Client1LevelName', fieldLabel: l10n.ns('tpm', 'Promo').value('Client1LevelName'), hidden: true },
+                    { xtype: 'singlelinedisplayfield', name: 'Client2LevelName', fieldLabel: l10n.ns('tpm', 'Promo').value('Client2LevelName'), hidden: true },
+                    { xtype: 'singlelinedisplayfield', name: 'ClientName', fieldLabel: l10n.ns('tpm', 'Promo').value('ClientName'), hidden: true },
+                    { xtype: 'singlelinedisplayfield', name: 'ProductSubrangesList', fieldLabel: l10n.ns('tpm', 'Promo').value('ProductSubrangesList'), hidden: true },
                 ]
             }]
         }]
@@ -265,99 +281,15 @@
                 var form = this.up().down('editorform');
                 var fields = form.getForm().getFields();
 
-                //Подзапрос для просмотра только изменившихся полей относительно предыдущей записи
-                var objId = record.get('_ObjectId');
-                var editDate = Ext.Date.format(record.get('_EditDate'), 'Y-m-d\\TH:i:s');
-                var testVals = function (a, b) {
-                    if (a != null && typeof a.getMonth === 'function') {
-                        return (a - new Date(b)) == 0;
+                fields.each(function (item, index) {
+                    var changedValue = record.get(item.name);
+                    if (changedValue != null) {
+                        item.setValue(changedValue);
+                        item.show();
                     } else {
-                        //Некоторые пустые поля записаны как "", из-за чего ломается сравнение
-                        if (a === "") a = null;
-                        if (b === "") b = null;
-                        return a == b;
-                    }
-                }
-
-                $.ajax({
-                    dataType: 'json',
-                    url: Ext.String.format("/odata/HistoricalPromoes?$filter=(_ObjectId eq guid'{0}') and (_EditDate le datetimeoffset'{1}')&$orderby=_EditDate desc&$top=1", objId, editDate),
-                    success: function (jsondata) {
-                        if (jsondata.value[0]) {
-                            var nt = jsondata.value[0];
-
-                            //TEST для вывода различия в полях
-                            //var iwq = [];
-                            //var iwq2 = [];
-                            //var filedes = Ext.ModelManager.getModel('App.model.tpm.promo.HistoricalPromo').getFields();
-                            //filedes.forEach(function (items) {
-                            //    iwq.push(items.name);
-                            //});
-                            //fields.each(function (item, index) {
-                            //    iwq2.push(item.name);
-                            //});
-                            //var res = [...iwq2];
-                            //iwq.forEach((e1) => iwq2.forEach((e2) => {
-                            //    if (e1 === e2) {
-                            //        res.splice(res.indexOf(e1), 1);
-                            //    }
-                            //}));
-                            //res.forEach(function (item, index) { console.log(item); })
-                            //if (recValue === undefined) console.log(item.name);
-                            //END TEST
-                            fields.each(function (item, index) {
-                                var recValue = record.get(item.name);
-                                var prevRecValue = nt[item.name];
-                                //Если такого поля нет - незачем сравнивать
-                                if (prevRecValue !== undefined) {
-                                if (['_User', '_Role', '_EditDate', '_Operation'].indexOf(item.name) >= 0) {
-                                    item.setValue(recValue);
-                                } else {
-                                    if (!testVals(recValue, prevRecValue)) {
-                                        if (!item.isVisible()) {
-                                            item.setVisible(true);
-                                        }
-                                        item.setValue(recValue);
-                                    } else {
-                                        if (item.isVisible()) {
-                                            item.setVisible(false);
-                                        }
-                                    }
-                                }
-                                } else {
-                                    //console.log(item.name);
-                                    if (item.isVisible()) {
-                                        item.setVisible(false);
-                                    }
-                                }
-                            });
-
-
-                        } else {
-                            fields.each(function (item, index) {
-                                var recValue = record.get(item.name);
-                                if (['_User', '_Role', '_EditDate', '_Operation'].indexOf(item.name) >= 0) {
-                                    item.setValue(recValue);
-                                } else {
-                                    if (recValue) {
-                                        if (!item.isVisible()) {
-                                            item.setVisible(true);
-                                        }
-                                        item.setValue(recValue);
-                                    } else {
-                                        if (item.isVisible()) {
-                                            item.setVisible(false);
-                                        }
-                                    }
-                                }
-                            });
-                        }
-                    },
-                    error: function (XMLHttpRequest, textStatus, errorThrown) {
-                        App.Notify.pushError(l10n.ns('tpm', 'text').value('failedStatusLoad'));
+                        item.hide();
                     }
                 });
-
             }
         }
     }]

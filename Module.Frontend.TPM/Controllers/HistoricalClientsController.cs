@@ -21,7 +21,7 @@ namespace Module.Frontend.TPM.Controllers {
             EnableConstantParameterization = false,
             MaxTop = 1024)]
         public IQueryable<HistoricalClient> GetHistoricalClients() {
-            return HistoryReader.Query<HistoricalClient>();
+            return HistoryReader.GetAll<HistoricalClient>();
         }
 
         protected override void Dispose(bool disposing) {

@@ -28,7 +28,6 @@
                     padding: '0 5 5 5',
                     fieldLabel: 'Start date',
                     labelAlign: 'top',
-                    minValue: new Date(),
                     needReadOnly: true,
                     allowBlank: false,
                     allowOnlyWhitespace: false,
@@ -42,6 +41,13 @@
                         setMonthPicker(field, endDateField);
                     },
                     listeners: {
+                        afterrender: function (field) {
+                            var minValue = new Date();
+                            var currentTimeZoneOffsetInHours = minValue.getTimezoneOffset();
+                            var minValueInt = minValue.getTime();
+                            field.setMinValue(new Date(minValueInt + currentTimeZoneOffsetInHours * 60000 + 10800000));
+                            field.getPicker().setValue(field.minValue);
+                        },
                         change: function (field, newValue, oldValue) {
                             var validDates = false;
                             var panel = field.up('promoperiod');
@@ -50,7 +56,7 @@
                                 var endDateField = field.up().down('datefield[name=DurationEndDate]');
                                 var endDateValue = endDateField.getValue();
                                 var promoClientForm = field.up('promoeditorcustom').down('promoclient');
-
+                            
                                 if (promoClientForm && promoClientForm.clientTreeRecord) {
                                     var record = promoClientForm.clientTreeRecord;
                                     var isBeforeStart = record.IsBeforeStart;
@@ -59,27 +65,27 @@
                                     var dispatchStartDate = field.up('promoperiod').down('[name=DispatchStartDate]');
                                     var daysForDispatchStart = record.DaysStart;
 
-                                    if (isBeforeStart !== null && daysStart !== null && isDaysStart !== null) {
+                                    if (isBeforeStart !== null && daysStart !== null && isDaysStart !== null && oldValue == undefined) {
                                         if (!isDaysStart) {
                                             daysForDispatchStart *= 7;
                                         }
-
+                                    
                                         var resultDateForDispatchStart = null;
-
+                                    
                                         if (isBeforeStart) {
                                             resultDateForDispatchStart = Ext.Date.add(field.getValue(), Ext.Date.DAY, -daysForDispatchStart);
                                         } else {
                                             resultDateForDispatchStart = Ext.Date.add(field.getValue(), Ext.Date.DAY, daysForDispatchStart);
                                         }
-
+                                    
                                         if (resultDateForDispatchStart) {
                                             dispatchStartDate.setValue(resultDateForDispatchStart);
                                         }
                                     }
                                 }
 
-                                endDateField.setMinValue(Ext.Date.add(newValue, Ext.Date.DAY, 1));
-                                endDateField.getPicker().setMinDate(Ext.Date.add(newValue, Ext.Date.DAY, 1));
+                                endDateField.setMinValue(newValue);
+                                endDateField.getPicker().setMinDate(newValue);
                                 endDateField.validate();
 
                                 //Установка завершенности при promo в статусе Closed, Finished, Started
@@ -185,8 +191,8 @@
 
                         setMonthPicker(field, startDateField);
                     },
-                    listeners: {                                               
-                        change: function (field, newValue, oldValue) {
+						listeners: {  
+                            change: function (field, newValue, oldValue) {
                             var validDates = false;
                             var panel = field.up('promoperiod');
 
@@ -203,19 +209,20 @@
                                     var dispatchEndDate = field.up('promoperiod').down('[name=DispatchEndDate]');
                                     var daysForDispatchEnd = record.DaysEnd;
 
-                                    if (isBeforeEnd !== null && daysEnd !== null && isDaysEnd !== null) {
+                                    if (isBeforeEnd !== null && daysEnd !== null && isDaysEnd !== null && oldValue == undefined) {
+                                         
                                         if (!isDaysEnd) {
                                             daysForDispatchEnd *= 7;
                                         }
-
+                                    
                                         var resultDateForDispatchEnd = null;
-
+                                    
                                         if (isBeforeEnd) {
                                             resultDateForDispatchEnd = Ext.Date.add(field.getValue(), Ext.Date.DAY, -daysForDispatchEnd);
                                         } else {
                                             resultDateForDispatchEnd = Ext.Date.add(field.getValue(), Ext.Date.DAY, daysForDispatchEnd);
                                         }
-
+                                    
                                         if (resultDateForDispatchEnd) {
                                             dispatchEndDate.setValue(resultDateForDispatchEnd);
                                         }
@@ -224,7 +231,7 @@
 
 
                                 //startDateField.getPicker().setMaxDate(Ext.Date.add(newValue, Ext.Date.DAY, -1));
-                                startDateField.setMaxValue(Ext.Date.add(newValue, Ext.Date.DAY, -1));
+                                startDateField.setMaxValue(newValue);
                                 startDateField.getPicker().setMaxDate();
                                 startDateField.validate();
 
@@ -347,8 +354,8 @@
                                 var endDateField = field.up().down('datefield[name=DispatchEndDate]');
                                 var endDateValue = endDateField.getValue();
 
-                                endDateField.setMinValue(Ext.Date.add(newValue, Ext.Date.DAY, 1));
-                                endDateField.getPicker().setMinDate(Ext.Date.add(newValue, Ext.Date.DAY, 1));
+                                endDateField.setMinValue(newValue);
+                                endDateField.getPicker().setMinDate(newValue);
                                 endDateField.validate();
 
                                 if (endDateValue && endDateField.isValid() && newValue) {
@@ -430,7 +437,7 @@
                                 var startDateValue = startDateField.getValue();
 
                                 //startDateField.getPicker().setMaxDate(Ext.Date.add(newValue, Ext.Date.DAY, -1));
-                                startDateField.setMaxValue(Ext.Date.add(newValue, Ext.Date.DAY, -1));
+                                startDateField.setMaxValue(newValue);
                                 startDateField.getPicker().setMaxDate();
                                 startDateField.validate();
 

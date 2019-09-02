@@ -10,17 +10,19 @@ namespace Module.Persist.TPM.Model.TPM
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public System.Guid Id { get; set; }
         public bool Disabled { get; set; }
+
+        [Index("Unique_IncrementalPromo", 1, IsUnique = true)]
         public DateTimeOffset? DeletedDate { get; set; }
 
-        public Guid? PromoId { get; set; }
+        [Index("Unique_IncrementalPromo", 2, IsUnique = true)]
+        public Guid PromoId { get; set; }
 
-        public Guid? ProductId { get; set; }
+        [Index("Unique_IncrementalPromo", 3, IsUnique = true)]
+        public Guid ProductId { get; set; }
 
-        public int? IncrementalCaseAmount { get; set; }
-
-        public double? IncrementalLSV { get; set; }
-
-        public double? IncrementalPrice { get; set; }
+        public double? PlanPromoIncrementalCases { get; set; }
+        public double? CasePrice { get; set; }
+        public double? PlanPromoIncrementalLSV { get; set; }        
 
         public DateTimeOffset? LastModifiedDate { get; set; }
 

@@ -4,22 +4,23 @@
     breezeEntityType: 'AssortmentMatrix',
     fields: [
         { name: 'Id', hidden: true },
+        { name: 'Number', type: 'int', hidden: false, isDefault: true },
         { name: 'ClientTreeId', hidden: true, isDefault: true },
         {
-            name: 'ClientTreeName', type: 'string', mapping: 'ClientTree.FullPathName',
+            name: 'ClientTreeName', type: 'string', mapping: 'ClientTree.Name',
             tree: true, defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'ClientTree', hidden: false, isDefault: true
         },
         { name: 'ProductId', hidden: true, isDefault: true },
         {
-            name: 'EAN_PC', type: 'string', mapping: 'Product.EAN_PC', tree: true,
+            name: 'ProductEAN_PC', type: 'string', mapping: 'Product.EAN_PC', tree: true,
             defaultFilterConfig: { valueField: 'EAN_PC' }, breezeEntityType: 'Product', hidden: false, isDefault: true
         },
-        { name: 'StartDate', type: 'date', hidden: false, isDefault: true },
-        { name: 'EndDate', type: 'date', hidden: false, isDefault: true },
-        { name: 'CreateDate', type: 'date', hidden: false, isDefault: true },
+        { name: 'StartDate', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
+        { name: 'EndDate', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
+        { name: 'CreateDate', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
         {
             name: 'ClientTreeObjectId', type: 'int', mapping: 'ClientTree.ObjectId',
-            defaultFilterConfig: { valueField: 'ObjectId' }, breezeEntityType: 'ClientTree', hidden: false, isDefault: true
+            defaultFilterConfig: { valueField: 'ObjectId' }, breezeEntityType: 'ClientTree', hidden: false, isDefault: true,            
         }
     ],
     proxy: {
@@ -30,5 +31,8 @@
             totalProperty: 'inlineCount',
             root: 'results'
         },
+        extraParams: {
+            needActualAssortmentMatrix: false
+        }
     }
 });

@@ -7,17 +7,28 @@
         { name: 'Number', type: 'int', hidden: false, isDefault: true },
         { name: 'ClientHierarchy', type: 'string', hidden: false, isDefault: true },
         { name: 'Name', type: 'string', hidden: false, isDefault: true },
-        { name: 'BrandTech', type: 'string', hidden: false, isDefault: true },
+        {
+            name: 'BrandTech',
+            type: 'string',
+            hidden: false,
+            isDefault: true,
+            useNull: true,
+            convert: function (value) {
+                if (value === "")
+                    return null;
+                return value;
+            }
+        },
         { name: 'Event', type: 'string', hidden: false, isDefault: true },
         { name: 'Mechanic', type: 'string', hidden: false, isDefault: true },
         { name: 'MechanicIA', type: 'string', hidden: false, isDefault: true },
-        { name: 'StartDate', useNull: true, type: 'date', hidden: false, isDefault: false },
+        { name: 'StartDate', useNull: true, type: 'date', hidden: false, isDefault: false, timeZone: +3, convert: dateConvertTimeZone },
         { name: 'MarsStartDate', type: 'string', hidden: false, isDefault: true },
-        { name: 'EndDate', useNull: true, type: 'date', hidden: false, isDefault: false },
+        { name: 'EndDate', useNull: true, type: 'date', hidden: false, isDefault: false, timeZone: +3, convert: dateConvertTimeZone },
         { name: 'MarsEndDate', type: 'string', hidden: false, isDefault: true },
-        { name: 'DispatchesStart', useNull: true, type: 'date', hidden: false, isDefault: false },
+        { name: 'DispatchesStart', useNull: true, type: 'date', hidden: false, isDefault: false, timeZone: +3, convert: dateConvertTimeZone },
         { name: 'MarsDispatchesStart', type: 'string', hidden: false, isDefault: true },
-        { name: 'DispatchesEnd', useNull: true, type: 'date', hidden: false, isDefault: false },
+        { name: 'DispatchesEnd', useNull: true, type: 'date', hidden: false, isDefault: false, timeZone: +3, convert: dateConvertTimeZone },
         { name: 'MarsDispatchesEnd', type: 'string', hidden: false, isDefault: true },
         { name: 'Status', type: 'string', hidden: false, isDefault: true },
         { name: 'ActualInStoreDiscount', type: 'int', hidden: false, isDefault: true, useNull: true },
@@ -36,6 +47,16 @@
         { name: 'ActualPromoPostPromoEffectLSVW2', type: 'float', hidden: false, isDefault: true, useNull: true },
         { name: 'PlanPromoPostPromoEffectLSV', type: 'float', hidden: false, isDefault: true, useNull: true },
         { name: 'ActualPromoPostPromoEffectLSV', type: 'float', hidden: false, isDefault: true, useNull: true },
+        {
+            name: 'InOut',
+            type: 'boolean',
+            hidden: false,
+            isDefault: true,
+            useNull: true,
+            convert: function (value) {
+                return (value === true || value === 'Yes') ? l10n.ns('core', 'booleanValues').value('true') : l10n.ns('core', 'booleanValues').value('false');
+            }
+        }
     ],
     proxy: {
         type: 'breeze',

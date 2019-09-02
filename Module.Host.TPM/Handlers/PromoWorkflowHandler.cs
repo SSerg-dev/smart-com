@@ -27,7 +27,7 @@ namespace Module.Host.TPM.Handlers
 
                 using (DatabaseContext context = new DatabaseContext())
                 {
-                    List<Promo> plannedPromoList = context.Set<Promo>().Where(x => x.PromoStatus.SystemName == "Planned" && !x.Disabled).ToList();
+                    List<Promo> plannedPromoList = context.Set<Promo>().Where(x => x.PromoStatus.SystemName == "Planned" && !x.Disabled).ToList(); 
                     List<Promo> startedPromoList = context.Set<Promo>().Where(x => x.PromoStatus.SystemName == "Started" && !x.Disabled).ToList();
 
                     string message;
@@ -36,16 +36,20 @@ namespace Module.Host.TPM.Handlers
                     {
                         using (PromoStateContext promoStateContext = new PromoStateContext(context, promo))
                         {
+                            
                             bool status = promoStateContext.ChangeState(null, PromoStates.Started, "System", out message);
 
-                            //Сохранение изменения статуса
-                            PromoStatusChange psc = context.Set<PromoStatusChange>().Create<PromoStatusChange>();
-                            psc.PromoId = promo.Id;
-                            psc.StatusId = promo.PromoStatusId;                            
-                            psc.Date = DateTimeOffset.UtcNow;
+                            if (status)
+                            {
+                                //Сохранение изменения статуса
+                                PromoStatusChange psc = context.Set<PromoStatusChange>().Create<PromoStatusChange>();
+                                psc.PromoId = promo.Id;
+                                psc.StatusId = promo.PromoStatusId;
+                                psc.Date = DateTimeOffset.UtcNow;
 
-                            context.Set<PromoStatusChange>().Add(psc);
-                            context.SaveChanges();
+                                context.Set<PromoStatusChange>().Add(psc);
+                                context.SaveChanges();
+                            }
                         }
                     }
 
@@ -54,14 +58,18 @@ namespace Module.Host.TPM.Handlers
                         using (PromoStateContext promoStateContext = new PromoStateContext(context, promo))
                         {
                             bool status = promoStateContext.ChangeState(null, PromoStates.Finished, "System", out message);
-                            //Сохранение изменения статуса
-                            PromoStatusChange psc = context.Set<PromoStatusChange>().Create<PromoStatusChange>();
-                            psc.PromoId = promo.Id;
-                            psc.StatusId = promo.PromoStatusId;
-                            psc.Date = DateTimeOffset.UtcNow;
 
-                            context.Set<PromoStatusChange>().Add(psc);
-                            context.SaveChanges();
+                            if (status)
+                            {
+                                //Сохранение изменения статуса
+                                PromoStatusChange psc = context.Set<PromoStatusChange>().Create<PromoStatusChange>();
+                                psc.PromoId = promo.Id;
+                                psc.StatusId = promo.PromoStatusId;
+                                psc.Date = DateTimeOffset.UtcNow;
+
+                                context.Set<PromoStatusChange>().Add(psc);
+                                context.SaveChanges();
+                            }
                         }
                     }
                 }

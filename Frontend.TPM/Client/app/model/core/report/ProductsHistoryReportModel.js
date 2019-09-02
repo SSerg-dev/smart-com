@@ -7,7 +7,7 @@ Ext.define('App.model.core.report.ProductsHistoryReportModel', {
 				    name: 'TargetStartDate', type: 'date', isDefault: true, filterOperationsConfig: {
 				        allowedOperations: { date: ['Between'] }
 				        }
-				    
+				    , timeZone: +3, convert: dateConvertTimeZone
 				},
 	],
     proxy: {

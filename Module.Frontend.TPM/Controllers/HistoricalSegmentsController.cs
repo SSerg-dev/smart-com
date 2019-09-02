@@ -21,7 +21,7 @@ namespace Module.Frontend.TPM.Controllers {
             EnableConstantParameterization = false,
             MaxTop = 1024)]
         public IQueryable<HistoricalSegment> GetHistoricalSegments() {
-            return HistoryReader.Query<HistoricalSegment>();
+            return HistoryReader.GetAll<HistoricalSegment>();
         }
 
         protected override void Dispose(bool disposing) {

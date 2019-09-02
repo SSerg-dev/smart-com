@@ -33,6 +33,9 @@ namespace Module.Persist.TPM.Model.DTO
         public string MechanicComment { get; set; }
         public double? MarsMechanicDiscount { get; set; }
         public double? PlanInstoreMechanicDiscount { get; set; }
+        public DateTimeOffset? LastChangedDate { get; set; }
+        public DateTimeOffset? LastChangedDateDemand { get; set; }
+        public DateTimeOffset? LastChangedDateFinance { get; set; }
         public DateTimeOffset? StartDate { get; set; }
         public DateTimeOffset? EndDate { get; set; }
         public DateTimeOffset? DispatchesStart { get; set; }

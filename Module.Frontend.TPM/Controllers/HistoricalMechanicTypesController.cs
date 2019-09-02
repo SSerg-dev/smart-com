@@ -21,7 +21,7 @@ namespace Module.Frontend.TPM.Controllers {
             EnableConstantParameterization = false,
             MaxTop = 1024)]
         public IQueryable<HistoricalMechanicType> GetHistoricalMechanicTypes() {
-            return HistoryReader.Query<HistoricalMechanicType>();
+            return HistoryReader.GetAll<HistoricalMechanicType>();
         }
 
         protected override void Dispose(bool disposing) {

@@ -12,17 +12,29 @@ using System.Linq;
 using Utility;
 using Utility.LogWriter;
 
-namespace Module.Host.TPM.Handlers {
-    public class FullXLSXImportBaseLineHandler : FullXLSXImportHandler {
-        protected override IAction GetAction(FullImportSettings settings, ExecuteData data) {
+namespace Module.Host.TPM.Handlers
+{
+    public class FullXLSXImportBaseLineHandler : FullXLSXImportHandler
+    {
+
+        Guid handlerId;
+
+        public override void Action(HandlerInfo info, ExecuteData data)
+        {
+            handlerId = info.HandlerId;
+            base.Action(info, data);
+        }
+        protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
+        {
             IDictionary<string, IEnumerable<string>> filters = data.GetValue<IDictionary<string, IEnumerable<string>>>("Filters");
             DateTimeOffset startDate = data.GetValue<DateTimeOffset>("StartDate");
             DateTimeOffset finishDate = data.GetValue<DateTimeOffset>("FinishDate");
             bool needClearData = data.GetValue<bool>("NeedClearData");
-            return new FullXLSXImportBaseLineAction(settings, startDate, finishDate, filters, needClearData);
+            return new FullXLSXImportBaseLineAction(settings, startDate, finishDate, filters, needClearData, handlerId);
         }
 
-        protected override void InitializeParameters(HandlerData handlerData, ExecuteData data) {
+        protected override void InitializeParameters(HandlerData handlerData, ExecuteData data)
+        {
             bool allowPartialApply = HandlerDataHelper.GetIncomingArgument<bool?>("AllowPartialApply", handlerData, false) ?? false;
             data.SetValue<bool>("AllowPartialApply", allowPartialApply);
             bool needClearData = HandlerDataHelper.GetIncomingArgument<bool>("CrossParam.ClearTable", handlerData);
@@ -40,7 +52,8 @@ namespace Module.Host.TPM.Handlers {
             data.SetValue("Filters", filters);
         }
 
-        protected override void WriteParametersToLog(ILogWriter handlerLogger, ExecuteData data) {
+        protected override void WriteParametersToLog(ILogWriter handlerLogger, ExecuteData data)
+        {
             IDictionary<string, IEnumerable<string>> filters = data.GetValue<IDictionary<string, IEnumerable<string>>>("Filters");
             string sourceFilter = filters == null ? "NULL" : String.Join(Environment.NewLine, filters.Select(x => String.Format("{0}:\r\n\t{1}", x.Key, String.Join(Environment.NewLine + "\t", x.Value))));
             handlerLogger.Write(true, String.Format("Filter: \r\n{0}", sourceFilter), "Message");

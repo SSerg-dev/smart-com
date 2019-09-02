@@ -7,7 +7,7 @@
         { name: '_ObjectId', hidden: true },
         { name: '_User', type: 'string', isDefault: true },
         { name: '_Role', type: 'string', isDefault: true },
-        { name: '_EditDate', type: 'date', isDefault: true },
+        { name: '_EditDate', type: 'date', isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
         { name: '_Operation', type: 'string', isDefault: true },        
         { name: 'BudgetId', hidden: true, isDefault: true },
         { name: 'BudgetName', type: 'string' },

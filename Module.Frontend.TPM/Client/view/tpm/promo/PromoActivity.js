@@ -323,7 +323,7 @@
                                 readOnly: true,
                                 needReadOnly: true,
                                 labelWidth: 190,
-                                fieldLabel: l10n.ns('tpm', 'Promo').value('PlanPromoUpliftPercent'),
+                                fieldLabel: l10n.ns('tpm', 'Promo').value('PromoUpliftPercent'),
                                 cls: 'borderedField-with-lable',
                                 labelCls: 'borderedField-label',
                                 flex: 1,
@@ -340,6 +340,16 @@
                                 style: 'margin-left: 10px',
                                 crudAccess: ['Administrator', 'FunctionalExpert', 'DemandPlanning'],
                                 listeners: {
+                                    afterRender: function () {
+                                        var planPromoUpliftNumberField = this.up('container').down('numberfield[name=PlanPromoUpliftPercent]');
+                                        if (this.value) {
+                                            planPromoUpliftNumberField.setReadOnly(false);
+                                            planPromoUpliftNumberField.removeCls('readOnlyField');
+                                        } else {
+                                            planPromoUpliftNumberField.setReadOnly(true);
+                                            planPromoUpliftNumberField.addCls('readOnlyField');
+                                        }
+                                    },
                                     change: function (checkbox, newValue, oldValue) {
                                         var planPromoUpliftNumberField = this.up('container').down('numberfield[name=PlanPromoUpliftPercent]');
                                         if (newValue) {
@@ -355,7 +365,7 @@
                         }, {
                             xtype: 'triggerfielddetails',
                             name: 'PlanPromoBaselineLSV',
-                            fieldLabel: l10n.ns('tpm', 'Promo').value('PlanPromoBaselineLSV'),
+                            fieldLabel: l10n.ns('tpm', 'Promo').value('PromoBaselineLSV'),
                             dataIndexes: ['PlanProductBaselineLSV'],
                             blockMillion: false, // если true - то преобразовывать в миллионы
                             originValue: null, // настоящее значение
@@ -392,7 +402,7 @@
                         }, {
                             xtype: 'triggerfielddetails',
                             name: 'PlanPromoIncrementalLSV',
-                            fieldLabel: l10n.ns('tpm', 'Promo').value('PlanPromoIncrementalLSV'),
+                            fieldLabel: l10n.ns('tpm', 'Promo').value('PromoIncrementalLSV'),
                             dataIndexes: ['PlanProductIncrementalLSV'],
                             blockMillion: false, // если true - то преобразовывать в миллионы
                             originValue: null, // настоящее значение
@@ -429,7 +439,7 @@
                         }, {
                             xtype: 'triggerfielddetails',
                             name: 'PlanPromoLSV',
-                            fieldLabel: l10n.ns('tpm', 'Promo').value('PlanPromoLSV'),
+                            fieldLabel: l10n.ns('tpm', 'Promo').value('PromoLSV'),
                             dataIndexes: ['PlanProductLSV'],
                             blockMillion: false, // если true - то преобразовывать в миллионы
                             originValue: null, // настоящее значение
@@ -466,7 +476,7 @@
                         }, {
                             xtype: 'triggerfielddetails',
                             name: 'PlanPromoPostPromoEffectLSV',
-                            fieldLabel: l10n.ns('tpm', 'Promo').value('PlanPromoPostPromoEffectLSV'),
+                            fieldLabel: l10n.ns('tpm', 'Promo').value('PromoPostPromoEffectLSV'),
                             dataIndexes: ['PlanProductPostPromoEffectLSV'],
                             blockMillion: false, // если true - то преобразовывать в миллионы
                             originValue: null, // настоящее значение
@@ -676,7 +686,7 @@
                             }, {
                                 xtype: 'triggerfielddetails',
                                 name: 'ActualPromoLSV',
-                                fieldLabel: l10n.ns('tpm', 'Promo').value('PlanPromoLSV'),
+                                fieldLabel: l10n.ns('tpm', 'Promo').value('PromoLSV'),
                                 dataIndexes: ['ActualProductLSV'],
                                 value: '0',
                                 blockMillion: false, // если true - то преобразовывать в миллионы
@@ -751,22 +761,40 @@
                                     },
                             }
                         }, {
-                        xtype: 'textfield',
-                        name: 'InvoiceNumber',
-                        flex: 1,
-                        layout: 'anchor',
-                        regex: /^([0-9a-zA-ZА-Яа-я]{4,}[,])*[0-9a-zA-ZА-Яа-я]{4,}$/,
-                        regexText: l10n.ns('tpm', 'Promo').value('InvoiceNumberRegex'),
-                        fieldLabel: l10n.ns('tpm', 'Promo').value('InvoiceNumber'),
-                        labelAlign: 'left',
-                        //Для одного уровня с остальными полями
-                        labelWidth: 190,
-                        padding: '0 5 5 5',
-                        needReadOnly: true,
-                        isChecked: true,
-                        allowBlank: true,
-                        allowOnlyWhitespace: true,
-                        crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager']
+                            xtype: 'textfield',
+                            name: 'InvoiceNumber',
+                            flex: 1,
+                            layout: 'anchor',
+                            regex: /^([0-9a-zA-ZА-Яа-я]{4,}[,])*[0-9a-zA-ZА-Яа-я]{4,}$/,
+                            regexText: l10n.ns('tpm', 'Promo').value('InvoiceNumberRegex'),
+                            fieldLabel: l10n.ns('tpm', 'Promo').value('InvoiceNumber'),
+                            labelAlign: 'left',
+                            //Для одного уровня с остальными полями
+                            labelWidth: 190,
+                            padding: '0 5 5 5',
+                            margin: '25 0 0 0',
+                            needReadOnly: true,
+                            isChecked: true,
+                            allowBlank: true,
+                            allowOnlyWhitespace: true,
+                            crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager']
+                        }, {
+                            xtype: 'textfield',
+                            name: 'DocumentNumber',
+                            flex: 1,
+                            layout: 'anchor',
+                            regex: /^([0-9a-zA-ZА-Яа-я]{4,}[,])*[0-9a-zA-ZА-Яа-я]{4,}$/,
+                            regexText: l10n.ns('tpm', 'Promo').value('DocumentNumberRegex'),
+                            fieldLabel: l10n.ns('tpm', 'Promo').value('DocumentNumber'),
+                            labelAlign: 'left',
+                            //Для одного уровня с остальными полями
+                            labelWidth: 190,
+                            padding: '0 5 5 5',
+                            needReadOnly: true,
+                            isChecked: true,
+                            allowBlank: true,
+                            allowOnlyWhitespace: true,
+                            crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager']
                         }]
                     }, {
                         xtype: 'container',
@@ -786,7 +814,8 @@
                             itemId: 'activityUploadPromoProducts',
                             text: l10n.ns('tpm', 'PromoActivity').value('UpdateActuals'),
                             tooltip: l10n.ns('tpm', 'PromoActivity').value('UpdateActuals'),
-                            glyph: 0xf552
+                            glyph: 0xf552,
+                            disabled: true
                         }]
                     }]
                 }] 

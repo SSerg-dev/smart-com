@@ -5,9 +5,9 @@
     cls: 'promo-finance-details-window',
 
     width: "70%",
-    height: "80%",
+    height: 420,
     minWidth: 800,
-    minHeight: 500,
+    minHeight: 420,
 
     items: {
         xtype: 'container',
@@ -55,40 +55,20 @@
                         name: 'PlanPromoNetLSV',
                     }, {
                         xtype: 'numberfield',
-                        fieldLabel: l10n.ns('tpm', 'PromoFinanceDetailsWindow').value('PromoIncrementalNSV'),
-                        name: 'PlanPromoIncrementalNSV',
+                        fieldLabel: l10n.ns('tpm', 'PromoFinanceDetailsWindow').value('PostPromoEffectLSV'),
+                        name: 'PlanPromoPostPromoEffectLSV',
                     }, {
                         xtype: 'numberfield',
                         fieldLabel: l10n.ns('tpm', 'PromoFinanceDetailsWindow').value('PromoNetIncrementalNSV'),
                         name: 'PlanPromoNetIncrementalNSV',
                     }, {
                         xtype: 'numberfield',
-                        fieldLabel: l10n.ns('tpm', 'PromoFinanceDetailsWindow').value('PostPromoEffectLSV'),
-                        name: 'PlanPromoPostPromoEffectLSV',
-                    }, {
-                        xtype: 'numberfield',
                         fieldLabel: l10n.ns('tpm', 'PromoFinanceDetailsWindow').value('PromoNetNSV'),
                         name: 'PlanPromoNetNSV',
                     }, {
                         xtype: 'numberfield',
-                        fieldLabel: l10n.ns('tpm', 'PromoFinanceDetailsWindow').value('PromoIncrementalMAC'),
-                        name: 'PlanPromoIncrementalMAC',
-                    }, {
-                        xtype: 'numberfield',
-                        fieldLabel: l10n.ns('tpm', 'PromoFinanceDetailsWindow').value('PromoNetIncrementalMAC'),
-                        name: 'PlanPromoNetIncrementalMAC',
-                    }, {
-                        xtype: 'numberfield',
-                        fieldLabel: l10n.ns('tpm', 'PromoFinanceDetailsWindow').value('PromoIncrementalEarnings'),
-                        name: 'PlanPromoIncrementalEarnings',
-                    }, {
-                        xtype: 'numberfield',
                         fieldLabel: l10n.ns('tpm', 'PromoFinanceDetailsWindow').value('PromoNetIncrementalEarnings'),
                         name: 'PlanPromoNetIncrementalEarnings',
-                    }, {
-                        xtype: 'numberfield',
-                        fieldLabel: l10n.ns('tpm', 'PromoFinanceDetailsWindow').value('PromoROIPercent'),
-                        name: 'PlanPromoROIPercent',
                     }, {
                         xtype: 'numberfield',
                         fieldLabel: l10n.ns('tpm', 'PromoFinanceDetailsWindow').value('PromoNetROIPercent'),
@@ -122,40 +102,20 @@
                             name: 'ActualPromoNetLSV',
                         }, {
                             xtype: 'numberfield',
-                            fieldLabel: l10n.ns('tpm', 'PromoFinanceDetailsWindow').value('PromoIncrementalNSV'),
-                            name: 'ActualPromoIncrementalNSV',
+                            fieldLabel: l10n.ns('tpm', 'PromoFinanceDetailsWindow').value('PostPromoEffectLSV'),
+                            name: 'ActualProductPostPromoEffectLSV',
                         }, {
                             xtype: 'numberfield',
                             fieldLabel: l10n.ns('tpm', 'PromoFinanceDetailsWindow').value('PromoNetIncrementalNSV'),
                             name: 'ActualPromoNetIncrementalNSV',
                         }, {
                             xtype: 'numberfield',
-                            fieldLabel: l10n.ns('tpm', 'PromoFinanceDetailsWindow').value('PostPromoEffectLSV'),
-                            name: 'ActualProductPostPromoEffectLSV',
-                        }, {
-                            xtype: 'numberfield',
                             fieldLabel: l10n.ns('tpm', 'PromoFinanceDetailsWindow').value('PromoNetNSV'),
                             name: 'ActualPromoNetNSV',
                         }, {
                             xtype: 'numberfield',
-                            fieldLabel: l10n.ns('tpm', 'PromoFinanceDetailsWindow').value('PromoIncrementalMAC'),
-                            name: 'ActualPromoIncrementalMAC',
-                        }, {
-                            xtype: 'numberfield',
-                            fieldLabel: l10n.ns('tpm', 'PromoFinanceDetailsWindow').value('PromoNetIncrementalMAC'),
-                            name: 'ActualPromoNetIncrementalMAC',
-                        }, {
-                            xtype: 'numberfield',
-                            fieldLabel: l10n.ns('tpm', 'PromoFinanceDetailsWindow').value('PromoIncrementalEarnings'),
-                            name: 'ActualPromoIncrementalEarnings',
-                        }, {
-                            xtype: 'numberfield',
                             fieldLabel: l10n.ns('tpm', 'PromoFinanceDetailsWindow').value('PromoNetIncrementalEarnings'),
                             name: 'ActualPromoNetIncrementalEarnings',
-                        }, {
-                            xtype: 'numberfield',
-                            fieldLabel: l10n.ns('tpm', 'PromoFinanceDetailsWindow').value('PromoROIPercent'),
-                            name: 'ActualPromoROIPercent',
                         }, {
                             xtype: 'numberfield',
                             fieldLabel: l10n.ns('tpm', 'PromoFinanceDetailsWindow').value('PromoNetROIPercent'),

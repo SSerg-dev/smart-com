@@ -21,12 +21,16 @@
         { name: 'IsDemandFinanceApproved', type: "boolean", useNull: true, hidden: true, isDefault: false },
         { name: 'PlanInstoreMechanicDiscount', type: 'float', hidden: false, isDefault: false },
 
-        { name: 'StartDate', useNull: true, type: 'date', hidden: true },
-        { name: 'DateStart', useNull: true, type: 'date', hidden: false, isDefault: false, mapping: 'StartDate' },
-        { name: 'EndDate', useNull: true, type: 'date', hidden: false, isDefault: false },
+        { name: 'StartDate', useNull: true, type: 'date', hidden: true, timeZone: +3, convert: dateConvertTimeZone },
+        { name: 'DateStart', useNull: true, type: 'date', hidden: false, isDefault: false, mapping: 'StartDate', timeZone: +3, convert: dateConvertTimeZone },
+        { name: 'EndDate', useNull: true, type: 'date', hidden: false, isDefault: false, timeZone: +3, convert: dateConvertTimeZone },
 
-        { name: 'DispatchesStart', useNull: true, type: 'date', hidden: false, isDefault: false },
-        { name: 'DispatchesEnd', useNull: true, type: 'date', hidden: false, isDefault: false },
+        { name: 'DispatchesStart', useNull: true, type: 'date', hidden: false, isDefault: false, timeZone: +3, convert: dateConvertTimeZone },
+        { name: 'DispatchesEnd', useNull: true, type: 'date', hidden: false, isDefault: false, timeZone: +3, convert: dateConvertTimeZone },
+
+        { name: 'LastChangedDate', useNull: true, type: 'date', hidden: true, isDefault: false, timeZone: +3, convert: dateConvertTimeZone },
+        { name: 'LastChangedDateDemand', useNull: true, type: 'date', hidden: true, isDefault: false, timeZone: +3, convert: dateConvertTimeZone},
+        { name: 'LastChangedDateFinance', useNull: true, type: 'date', hidden: true, isDefault: false, timeZone: +3, convert: dateConvertTimeZone},
 
         { name: 'MarsEndDate', type: 'string', useNull: true, hidden: false, isDefault: false },     
         { name: 'MarsDispatchesEnd', type: 'string', useNull: true, hidden: true, isDefault: false },
@@ -51,7 +55,7 @@
         { name: 'ActualPromoXSites', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'ActualPromoCatalogue', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'ActualPromoPOSMInClient', useNull: true, type: 'float', hidden: false, isDefault: false },
-        { name: 'PlanPromoUpliftPercent', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'PlanPromoUpliftPercent', useNull: true, type: 'float', hidden: false, isDefault: true },
         { name: 'PlanPromoROIPercent', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'ActualPromoNetIncrementalNSV', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'ActualPromoIncrementalNSV', useNull: true, type: 'float', hidden: false, isDefault: false },
@@ -61,6 +65,10 @@
         { name: 'PlanPromoIncrementalNSV', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'CreatorId', useNull: true, hidden: true, isDefault: false, defaultValue: null },
         { name: 'ClientTreeId', useNull: true, hidden: true, isDefault: false, defaultValue: null },
+
+        { name: 'InOut', type: 'boolean', hidden: false, isDefault: true },
+        { name: 'PlanPromoIncrementalLSV', useNull: true, type: 'float', hidden: false, isDefault: true },
+        { name: 'PlanPromoBaselineLSV', useNull: true, type: 'float', hidden: false, isDefault: true },
     ],
     proxy: {
         type: 'breeze',

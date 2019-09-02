@@ -37,7 +37,7 @@ namespace Module.Host.TPM.Handlers
                 {
                     Promo promo = context.Set<Promo>().FirstOrDefault(n => n.Id == promoId && !n.Disabled);
 
-                    if (promo != null)
+                    if (promo != null && promo.PromoStatus.SystemName == "Finished")
                     {
                         string errorString = null;
                         if (!promo.LoadFromTLC)

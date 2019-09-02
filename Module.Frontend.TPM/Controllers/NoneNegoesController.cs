@@ -113,6 +113,12 @@ namespace Module.Frontend.TPM.Controllers
             {
                 return BadRequest(ModelState);
             }
+
+            // делаем UTC +3
+            model.CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+            model.FromDate = ChangeTimeZoneUtil.ResetTimeZone(model.FromDate);
+            model.ToDate = ChangeTimeZoneUtil.ResetTimeZone(model.ToDate);
+
             var proxy = Context.Set<NoneNego>().Create<NoneNego>();
             var result = (NoneNego)Mapper.Map(model, proxy, typeof(NoneNego), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
             Context.Set<NoneNego>().Add(result);
@@ -142,6 +148,11 @@ namespace Module.Frontend.TPM.Controllers
                 }
 
                 patch.Patch(model);
+                // делаем UTC +3
+                model.CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                model.FromDate = ChangeTimeZoneUtil.ResetTimeZone(model.FromDate);
+                model.ToDate = ChangeTimeZoneUtil.ResetTimeZone(model.ToDate);
+
                 Context.SaveChanges();
 
                 return Updated(model);
@@ -300,7 +311,7 @@ namespace Module.Frontend.TPM.Controllers
                     Description = "Загрузка импорта из файла " + typeof(ImportNoNego).Name,
                     Name = "Module.Host.TPM.Handlers." + importHandler,
                     ExecutionPeriod = null,
-                    CreateDate = DateTimeOffset.Now,
+                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
                     LastExecutionDate = null,
                     NextExecutionDate = null,
                     ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
@@ -318,6 +329,9 @@ namespace Module.Frontend.TPM.Controllers
         public IHttpActionResult IsValidPeriod([FromODataUri] DateTimeOffset? fromDate, [FromODataUri] DateTimeOffset? toDate, Guid? noneNegoId, int clientTreeId, int productTreeId, Guid mechanicId)
         {
             List<NoneNego> neededNoneNegoes = null;
+
+            fromDate = ChangeTimeZoneUtil.ChangeTimeZone(fromDate);
+            toDate = ChangeTimeZoneUtil.ChangeTimeZone(toDate);
 
             // При создании новой записи.
             if (noneNegoId == null)

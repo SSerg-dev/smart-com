@@ -15,52 +15,39 @@
             fieldLabel: l10n.ns('core', 'BaseDeletedEntity').value('DeletedDate')
         }, {
             xtype: 'singlelinedisplayfield',
-            name: 'PromoNumber',
-            fieldLabel: l10n.ns('tpm', 'IncrementalPromo').value('PromoNumber'),
-        }, {
-            xtype: 'singlelinedisplayfield',
-            name: 'PromoName',
-            fieldLabel: l10n.ns('tpm', 'IncrementalPromo').value('PromoName'),
-        }, {
-            xtype: 'singlelinedisplayfield',
-            name: 'PromoBrandTechName',
-            fieldLabel: l10n.ns('tpm', 'IncrementalPromo').value('PromoBrandTechName'),
-        }, {
-            xtype: 'singlelinedisplayfield',
-            name: 'PromoStartDate',
-            fieldLabel: l10n.ns('tpm', 'IncrementalPromo').value('PromoStartDate'),
-            renderer: Ext.util.Format.dateRenderer('d.m.Y'),
-        }, {
-            xtype: 'singlelinedisplayfield',
-            name: 'PromoEndDate',
-            fieldLabel: l10n.ns('tpm', 'IncrementalPromo').value('PromoEndDate'),
-            renderer: Ext.util.Format.dateRenderer('d.m.Y'),
-        }, {
-            xtype: 'singlelinedisplayfield',
-            name: 'PromoDispatchesStart',
-            fieldLabel: l10n.ns('tpm', 'IncrementalPromo').value('PromoDispatchesStart'),
-            renderer: Ext.util.Format.dateRenderer('d.m.Y'),
-        }, {
-            xtype: 'singlelinedisplayfield',
-            name: 'PromoDispatchesEnd',
-            fieldLabel: l10n.ns('tpm', 'IncrementalPromo').value('PromoDispatchesEnd'),
-            renderer: Ext.util.Format.dateRenderer('d.m.Y'),
-        }, {
-            xtype: 'singlelinedisplayfield',
-            name: 'ProductZREP',
             fieldLabel: l10n.ns('tpm', 'IncrementalPromo').value('ProductZREP'),
+            name: 'ProductZREP',
         }, {
             xtype: 'singlelinedisplayfield',
-            name: 'IncrementalCaseAmount',
-            fieldLabel: l10n.ns('tpm', 'IncrementalPromo').value('IncrementalCaseAmount'),
+            fieldLabel: l10n.ns('tpm', 'IncrementalPromo').value('ProductName'),
+            name: 'ProductName',
         }, {
             xtype: 'singlelinedisplayfield',
-            name: 'IncrementalLSV',
-            fieldLabel: l10n.ns('tpm', 'IncrementalPromo').value('IncrementalLSV'),
+            fieldLabel: l10n.ns('tpm', 'IncrementalPromo').value('PromoClient'),
+            name: 'PromoClient',             
         }, {
             xtype: 'singlelinedisplayfield',
-            name: 'IncrementalPrice',
-            fieldLabel: l10n.ns('tpm', 'IncrementalPromo').value('IncrementalPrice'),
+            fieldLabel: l10n.ns('tpm', 'IncrementalPromo').value('PromoNumber'),
+            name: 'PromoNumber'
+        }, {
+            xtype: 'singlelinedisplayfield',
+            fieldLabel: l10n.ns('tpm', 'IncrementalPromo').value('PromoName'),
+            name: 'PromoName'
+        }, {
+            xtype: 'singlelinedisplayfield',
+            fieldLabel: l10n.ns('tpm', 'IncrementalPromo').value('PlanPromoIncrementalCases'),
+            name: 'PlanPromoIncrementalCases',
+            format: '0.00',
+        }, {
+            xtype: 'singlelinedisplayfield',
+            fieldLabel: l10n.ns('tpm', 'IncrementalPromo').value('CasePrice'),
+            name: 'CasePrice',
+            format: '0.00',
+        }, {
+            xtype: 'singlelinedisplayfield',
+            fieldLabel: l10n.ns('tpm', 'IncrementalPromo').value('PlanPromoIncrementalLSV'),
+            name: 'PlanPromoIncrementalLSV',
+            format: '0.00',
         }]
     }
 })

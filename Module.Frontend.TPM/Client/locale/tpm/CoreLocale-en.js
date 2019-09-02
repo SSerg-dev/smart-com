@@ -51,6 +51,8 @@
     'TaskSuccessRunMessage': 'Processing successfully started',
     'accessDeniedMessage': 'Access denied ({0}). If this error repeat, contact administrator.',
     'loginConfirmMessage': 'You will be redirected to the main page as user {0}.',
+    'SessionExpiredWindowTitle': 'Session is expired',
+    'SessionExpiredMessage': 'Application will be reloaded',
 
     'customValidators': {
         'StartDateFinishDateOrder': 'Stary date must be less then end date',
@@ -118,7 +120,8 @@
     'gridInfoToolbar': {
         'gridInfoMsg': 'Records count: {0}',
         'emptyFilter': 'Filter is empty',
-        'clearFilter': 'Clear filter'
+        'clearFilter': 'Clear filter',
+        'checkedRecordsCount': 'Selected count: {0}'
     },
 
     'additionalMenu': {

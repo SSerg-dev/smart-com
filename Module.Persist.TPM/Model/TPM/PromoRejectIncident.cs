@@ -18,6 +18,8 @@ namespace Module.Persist.TPM.Model.TPM
         [Index]
         public DateTimeOffset? ProcessDate { get; set; }
 
-        public virtual Promo Promo { get; set; }
+		public string Comment { get; set; }
+
+		public virtual Promo Promo { get; set; }
     }
 }

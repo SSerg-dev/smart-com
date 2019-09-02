@@ -11,6 +11,7 @@ using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.Import;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
+using Newtonsoft.Json;
 using Persist;
 using Persist.Model;
 using System;
@@ -43,7 +44,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
 
-        protected IQueryable<AssortmentMatrix> GetConstraintedQuery()
+        protected IQueryable<AssortmentMatrix> GetConstraintedQuery(bool needActualAssortmentMatrix = false)
         {
             UserInfo user = authorizationManager.GetCurrentUser();
             string role = authorizationManager.GetCurrentRoleName();
@@ -56,6 +57,13 @@ namespace Module.Frontend.TPM.Controllers
             IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
 
             query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
+
+            if (needActualAssortmentMatrix)
+            {
+                List<AssortmentMatrix> materializedQuery = query.ToList();
+                List<AssortmentMatrix> actualAssortmentMatrix = GetActualAssortmentMatrix();
+                query = materializedQuery.Intersect(actualAssortmentMatrix).AsQueryable();
+            }
 
             return query;
         }
@@ -71,9 +79,9 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
-        public IQueryable<AssortmentMatrix> GetAssortmentMatrices()
+        public IQueryable<AssortmentMatrix> GetAssortmentMatrices(bool needActualAssortmentMatrix)
         {
-            return GetConstraintedQuery();
+            return GetConstraintedQuery(needActualAssortmentMatrix);
         }
 
 
@@ -111,6 +119,12 @@ namespace Module.Frontend.TPM.Controllers
             {
                 return BadRequest(ModelState);
             }
+
+            model.CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+            // делаем UTC +3
+            model.StartDate = ChangeTimeZoneUtil.ResetTimeZone(model.StartDate);
+            model.EndDate = ChangeTimeZoneUtil.ResetTimeZone(model.EndDate);
+
             var proxy = Context.Set<AssortmentMatrix>().Create<AssortmentMatrix>();
             var result = (AssortmentMatrix)Mapper.Map(model, proxy, typeof(AssortmentMatrix), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
 
@@ -140,7 +154,42 @@ namespace Module.Frontend.TPM.Controllers
                     return NotFound();
                 }
 
+                var oldAssortmentMatrix = new AssortmentMatrix
+                {
+                    Id = new Guid(),
+                    Disabled = true,
+                    Number = model.Number,
+                    DeletedDate = null,
+                    StartDate = model.StartDate,
+                    EndDate = model.EndDate,
+                    CreateDate = model.CreateDate,
+                    ClientTreeId = model.ClientTreeId,
+                    ProductId = model.ProductId,
+                    Product = model.Product,
+                    ClientTree = model.ClientTree
+                };
+                Context.Set<AssortmentMatrix>().Add(oldAssortmentMatrix);
+
+                var changesIncidnet = new ChangesIncident
+                {
+                    Id = new Guid(),
+                    DirectoryName = "AssortmentMatrix",
+                    ItemId = oldAssortmentMatrix.Id.ToString(),
+                    CreateDate = DateTimeOffset.Now,
+                    ProcessDate = null,
+                    DeletedDate = null,
+                    Disabled = false
+                };
+                Context.Set<ChangesIncident>().Add(changesIncidnet);
+
+                model.CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+
                 patch.Patch(model);
+
+                // делаем UTC +3
+                model.StartDate = ChangeTimeZoneUtil.ResetTimeZone(model.StartDate);
+                model.EndDate = ChangeTimeZoneUtil.ResetTimeZone(model.EndDate);
+
                 Context.SaveChanges();
 
                 return Updated(model);
@@ -189,15 +238,29 @@ namespace Module.Frontend.TPM.Controllers
         private IEnumerable<Column> GetExportSettings()
         {
             IEnumerable<Column> columns = new List<Column>() {
+                new Column() { Order = 0, Field = "Number", Header = "ID", Quoting = false },
+                new Column() { Order = 1, Field = "ClientTree.FullPathName", Header = "Client", Quoting = false },
+                new Column() { Order = 2, Field = "ClientTree.ObjectId", Header = "Client hierarchy code", Quoting = false },
+                new Column() { Order = 3, Field = "Product.EAN_PC", Header = "EAN PC", Quoting = false },
+                new Column() { Order = 5, Field = "StartDate", Header = "Start Date", Quoting = false, Format = "dd.MM.yyyy" },
+                new Column() { Order = 6, Field = "EndDate", Header = "End Date", Quoting = false, Format = "dd.MM.yyyy" },
+                new Column() { Order = 7, Field = "CreateDate", Header = "Create Date", Quoting = false, Format = "dd.MM.yyyy" }
+            };
+            return columns;
+        }
+
+        private IEnumerable<Column> GetColumnsImportSettings()
+        {
+            IEnumerable<Column> columns = new List<Column>() {
                 new Column() { Order = 0, Field = "ClientTree.FullPathName", Header = "Client", Quoting = false },
                 new Column() { Order = 1, Field = "ClientTree.ObjectId", Header = "Client hierarchy code", Quoting = false },
                 new Column() { Order = 2, Field = "Product.EAN_PC", Header = "EAN PC", Quoting = false },
                 new Column() { Order = 3, Field = "StartDate", Header = "Start Date", Quoting = false, Format = "dd.MM.yyyy" },
-                new Column() { Order = 4, Field = "EndDate", Header = "End Date", Quoting = false, Format = "dd.MM.yyyy" },
-                new Column() { Order = 5, Field = "CreateDate", Header = "Create Date", Quoting = false, Format = "dd.MM.yyyy" }
+                new Column() { Order = 4, Field = "EndDate", Header = "End Date", Quoting = false, Format = "dd.MM.yyyy" }
             };
             return columns;
         }
+
         [ClaimsAuthorize]
         public IHttpActionResult ExportXLSX(ODataQueryOptions<AssortmentMatrix> options)
         {
@@ -272,7 +335,7 @@ namespace Module.Frontend.TPM.Controllers
                     Description = "Загрузка импорта из файла " + typeof(ImportAssortmentMatrix).Name,
                     Name = "Module.Host.TPM.Handlers." + importHandler,
                     ExecutionPeriod = null,
-                    CreateDate = DateTimeOffset.Now,
+                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
                     LastExecutionDate = null,
                     NextExecutionDate = null,
                     ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
@@ -288,7 +351,7 @@ namespace Module.Frontend.TPM.Controllers
         [ClaimsAuthorize]
         public IHttpActionResult DownloadTemplateXLSX() {
             try {
-                IEnumerable<Column> columns = GetExportSettings();
+                IEnumerable<Column> columns = GetColumnsImportSettings();
                 XLSXExporter exporter = new XLSXExporter(columns);
                 string exportDir = AppSettingsManager.GetSetting("EXPORT_DIRECTORY", "~/ExportFiles");
                 string filename = string.Format("{0}Template.xlsx", "AssortmentMatrix");
@@ -319,6 +382,29 @@ namespace Module.Frontend.TPM.Controllers
             {
                 return InternalServerError(e.InnerException);
             }
+        }
+
+        /// <summary>
+        /// This method returns the actual assortment matrix. 
+        /// </summary>
+        private List<AssortmentMatrix> GetActualAssortmentMatrix()
+        {
+            var resultAssortmentMatrix = new List<AssortmentMatrix>();
+            var clientProductAssortmentMatrixGroups = Context.Set<AssortmentMatrix>().GroupBy(x => new { x.ClientTreeId, x.ProductId });
+
+            foreach (var clientProductAssortmentMatrixGroup in clientProductAssortmentMatrixGroups)
+            {
+                var record = clientProductAssortmentMatrixGroup
+                    .Where(x => x.EndDate >= new DateTime(DateTimeOffset.Now.Year, DateTimeOffset.Now.Month, DateTimeOffset.Now.Day) && !x.Disabled)
+                    .OrderByDescending(x => x.CreateDate).FirstOrDefault();
+
+                if (record != null)
+                {
+                    resultAssortmentMatrix.Add(record);
+                }
+            }
+
+            return resultAssortmentMatrix;
         }
     }
 }

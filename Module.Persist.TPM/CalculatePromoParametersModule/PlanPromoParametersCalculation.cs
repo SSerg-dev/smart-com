@@ -7,6 +7,8 @@ using Module.Persist.TPM.Model.TPM;
 using Persist;
 using Module.Persist.TPM.Utils.Filter;
 using System.Data.Entity;
+using System.Data.Entity.Validation;
+using Module.Persist.TPM.Utils;
 
 namespace Module.Persist.TPM.CalculatePromoParametersModule
 {
@@ -22,6 +24,8 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             try
             {
                 Promo promo = context.Set<Promo>().Where(x => x.Id == promoId && !x.Disabled).FirstOrDefault();
+                Promo promoCopy = new Promo(promo);
+
                 ResetValues(promo, context);
                 double? sumPlanProductBaseLineLSV = context.Set<PromoProduct>().Where(x => x.PromoId == promoId && !x.Disabled).Sum(x => x.PlanProductBaselineLSV);
                 ClientTree clientTree = context.Set<ClientTree>().Where(x => x.ObjectId == promo.ClientTreeId && !x.EndDate.HasValue).FirstOrDefault();
@@ -48,11 +52,12 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         promo.PlanPromoIncrementalCOGS = promo.PlanPromoIncrementalLSV * COGSPercent / 100;
 
                         promo.PlanPromoBaseTI = promo.PlanPromoLSV * TIBasePercent / 100;
-                        promo.PlanPromoTotalCost = promo.PlanPromoCost + promo.PlanPromoBaseTI;
 
                         // если стоит флаг inout, PlanPromoPostPromoEffect = 0
                         if (!promo.InOut.HasValue || !promo.InOut.Value)
                         {
+                            promo.PlanPromoTotalCost = (promo.PlanPromoCost ?? 0) + (promo.PlanPromoBaseTI ?? 0);
+
                             if (clientTree != null)
                             {
                                 //TODO: Уточнить насчет деления на 100
@@ -60,48 +65,66 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                 promo.PlanPromoPostPromoEffectLSVW2 = promo.PlanPromoBaselineLSV * clientTree.PostPromoEffectW2 / 100;
                                 promo.PlanPromoPostPromoEffectLSV = promo.PlanPromoPostPromoEffectLSVW1 + promo.PlanPromoPostPromoEffectLSVW2;
                             }
+
+                            promo.PlanPromoNetIncrementalLSV = (promo.PlanPromoIncrementalLSV ?? 0) + (promo.PlanPromoPostPromoEffectLSV ?? 0);
                         }
                         else
                         {
+                            promo.PlanPromoTotalCost = (promo.PlanPromoCost ?? 0) + (promo.PlanPromoBaseTI ?? 0); ;// (promo.PlanPromoCost ?? 0) + (promo.PlanPromoIncrementalBaseTI ?? 0) + (promo.PlanPromoIncrementalCOGS ?? 0);
+
                             promo.PlanPromoPostPromoEffectLSVW1 = 0;
                             promo.PlanPromoPostPromoEffectLSVW2 = 0;
                             promo.PlanPromoPostPromoEffectLSV = 0;
+
+                            promo.PlanPromoNetIncrementalLSV = (promo.PlanPromoIncrementalLSV ?? 0) + (promo.PlanPromoPostPromoEffectLSV ?? 0);
                         }
 
-                        // плюс, так как Post Promo Effect отрицательный
-                        promo.PlanPromoNetIncrementalLSV = promo.PlanPromoIncrementalLSV + promo.PlanPromoPostPromoEffectLSV;
-
-                        promo.PlanPromoNetIncrementalCOGS = promo.PlanPromoNetIncrementalLSV * COGSPercent / 100;
+                        promo.PlanPromoNetLSV = (promo.PlanPromoBaselineLSV ?? 0) + (promo.PlanPromoNetIncrementalLSV ?? 0);
                         promo.PlanPromoNetIncrementalBaseTI = promo.PlanPromoNetIncrementalLSV * TIBasePercent / 100;
-                        promo.PlanPromoNetLSV = promo.PlanPromoBaselineLSV + promo.PlanPromoNetIncrementalLSV;
+                        promo.PlanPromoNetIncrementalCOGS = promo.PlanPromoNetIncrementalLSV * COGSPercent / 100;
 
                         if (!promo.InOut.HasValue || !promo.InOut.Value)
                         {
                             promo.PlanPromoNetBaseTI = promo.PlanPromoNetLSV * TIBasePercent / 100;
                             promo.PlanPromoBaselineBaseTI = promo.PlanPromoBaselineLSV * TIBasePercent / 100;
+                            promo.PlanPromoNSV = (promo.PlanPromoLSV ?? 0) - (promo.PlanPromoTIShopper ?? 0) - (promo.PlanPromoTIMarketing ?? 0) - (promo.PlanPromoBaseTI ?? 0);
+                            promo.PlanPromoIncrementalNSV = (promo.PlanPromoIncrementalLSV ?? 0) - (promo.PlanPromoTIShopper ?? 0) - (promo.PlanPromoTIMarketing ?? 0) - (promo.PlanPromoIncrementalBaseTI ?? 0);
+                            promo.PlanPromoNetIncrementalNSV = (promo.PlanPromoNetIncrementalLSV ?? 0) - (promo.PlanPromoTIShopper ?? 0) - (promo.PlanPromoTIMarketing ?? 0) - (promo.PlanPromoNetIncrementalBaseTI ?? 0);
+                            promo.PlanPromoNetIncrementalMAC = (promo.PlanPromoNetIncrementalNSV ?? 0) - (promo.PlanPromoNetIncrementalCOGS ?? 0);
                         }
                         else
                         {
                             promo.PlanPromoNetBaseTI = 0;
                             promo.PlanPromoBaselineBaseTI = 0;
+                            promo.PlanPromoNSV = (promo.PlanPromoLSV ?? 0) - (promo.PlanPromoTIShopper ?? 0) - (promo.PlanPromoTIMarketing ?? 0) - (promo.PlanPromoBaseTI ?? 0);
+                            promo.PlanPromoIncrementalNSV = (promo.PlanPromoIncrementalLSV ?? 0) - (promo.PlanPromoTIShopper ?? 0) - (promo.PlanPromoTIMarketing ?? 0) - (promo.PlanPromoIncrementalBaseTI ?? 0);
+                            promo.PlanPromoNetIncrementalNSV = (promo.PlanPromoNetIncrementalLSV ?? 0) - (promo.PlanPromoTIShopper ?? 0) - (promo.PlanPromoTIMarketing ?? 0) - (promo.PlanPromoNetIncrementalBaseTI ?? 0);
+                            promo.PlanPromoNetIncrementalMAC = (promo.PlanPromoNetIncrementalNSV ?? 0) - (promo.PlanPromoNetIncrementalCOGS ?? 0);
                         }
-                        
-                        promo.PlanPromoNSV = (promo.PlanPromoLSV ?? 0) - (promo.PlanPromoTIShopper ?? 0) - (promo.PlanPromoTIMarketing ?? 0) - (promo.PlanPromoBaseTI ?? 0);
+
                         promo.PlanPromoNetNSV = (promo.PlanPromoNetLSV ?? 0) - (promo.PlanPromoTIShopper ?? 0) - (promo.PlanPromoTIMarketing ?? 0) - (promo.PlanPromoNetBaseTI ?? 0);
-
-                        promo.PlanPromoIncrementalNSV = (promo.PlanPromoIncrementalLSV ?? 0) - (promo.PlanPromoTIShopper ?? 0) - (promo.PlanPromoTIMarketing ?? 0) - (promo.PlanPromoIncrementalBaseTI ?? 0);
-                        promo.PlanPromoNetIncrementalNSV = (promo.PlanPromoNetIncrementalLSV ?? 0) - (promo.PlanPromoTIShopper ?? 0) - (promo.PlanPromoTIMarketing ?? 0) - (promo.PlanPromoIncrementalBaseTI ?? 0);
-
                         promo.PlanPromoIncrementalMAC = (promo.PlanPromoIncrementalNSV ?? 0) - (promo.PlanPromoIncrementalCOGS ?? 0);
-                        promo.PlanPromoNetIncrementalMAC = (promo.PlanPromoNetIncrementalNSV ?? 0) - (promo.PlanPromoNetIncrementalCOGS ?? 0);
-
                         promo.PlanPromoIncrementalEarnings = (promo.PlanPromoIncrementalMAC ?? 0) - (promo.PlanPromoBranding ?? 0) - (promo.PlanPromoBTL ?? 0) - (promo.PlanPromoCostProduction ?? 0);
                         promo.PlanPromoNetIncrementalEarnings = (promo.PlanPromoNetIncrementalMAC ?? 0) - (promo.PlanPromoBranding ?? 0) - (promo.PlanPromoBTL ?? 0) - (promo.PlanPromoCostProduction ?? 0);
 
-                        // +1 / -1 ?
                         promo.PlanPromoROIPercent = promo.PlanPromoCost != 0 ? (promo.PlanPromoIncrementalEarnings / promo.PlanPromoCost + 1) * 100 : 0;
                         promo.PlanPromoNetROIPercent = promo.PlanPromoCost != 0 ? (promo.PlanPromoNetIncrementalEarnings / promo.PlanPromoCost + 1) * 100 : 0;
+                        
+                        // +1 / -1 ?
+                        //if (!promo.InOut.HasValue || !promo.InOut.Value)
+                        //{
+                        //    promo.PlanPromoROIPercent = promo.PlanPromoCost != 0 ? (promo.PlanPromoIncrementalEarnings / promo.PlanPromoCost + 1) * 100 : 0;
+                        //    promo.PlanPromoNetROIPercent = promo.PlanPromoCost != 0 ? (promo.PlanPromoNetIncrementalEarnings / promo.PlanPromoCost + 1) * 100 : 0;
+                        //}
+                        //else
+                        //{
+                        //    promo.PlanPromoROIPercent = promo.PlanPromoTotalCost != 0 ? promo.PlanPromoIncrementalEarnings / promo.PlanPromoTotalCost * 100 : 0;
+                        //    promo.PlanPromoNetROIPercent = promo.PlanPromoTotalCost != 0 ? promo.PlanPromoNetIncrementalEarnings / promo.PlanPromoTotalCost * 100 : 0;
+                        //}
+
                         promo.PlanPromoNetUpliftPercent = promo.PlanPromoBaselineLSV != 0 ? promo.PlanPromoNetIncrementalLSV / promo.PlanPromoBaselineLSV * 100 : 0;
+
+                        promo.LastChangedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
 
                         context.SaveChanges();
                     }
@@ -138,7 +161,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             try
             {
                 // Список всех подошедших записей из таблицы TI
-                List<TradeInvestment> tradeInvestments = null;
+                List<TradeInvestment> tradeInvestments = new List<TradeInvestment>();
                 // Сумма процентов всех подошедших записей из таблицы TI
                 double percentSum = 0;
 
@@ -148,7 +171,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     .FirstOrDefault();
 
                 // Пока в отфильтрованном списке пусто и мы не достигли корневого элемента
-                while ((tradeInvestments == null || tradeInvestments.Count() == 0) && currentClient.Type != "root")
+                while ((tradeInvestments == null || tradeInvestments.Count() == 0) && currentClient != null && currentClient.Type != "root")
                 {
                     tradeInvestments = context.Set<TradeInvestment>()
                         // Фильтр по клиенту
@@ -324,33 +347,32 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             //promo.PlanPromoBaselineLSV = null;
             //promo.PlanPromoIncrementalLSV = null;
             //promo.PlanPromoLSV = null;
-            promo.PlanPromoTIShopper = null;
-            promo.PlanPromoCost = null;
-            promo.PlanPromoIncrementalBaseTI = null;
-            promo.PlanPromoNetIncrementalBaseTI = null;
-            promo.PlanPromoIncrementalCOGS = null;
-            promo.PlanPromoNetIncrementalCOGS = null;
-            promo.PlanPromoTotalCost = null;
-            promo.PlanPromoPostPromoEffectLSVW1 = null;
-            promo.PlanPromoPostPromoEffectLSVW2 = null;
-            promo.PlanPromoPostPromoEffectLSV = null;
-            promo.PlanPromoNetIncrementalLSV = null;
-            promo.PlanPromoNetLSV = null;
-            promo.PlanPromoBaselineBaseTI = null;
-            promo.PlanPromoBaseTI = null;
-            promo.PlanPromoNetBaseTI = null;
-            promo.PlanPromoNSV = null;
-            promo.PlanPromoNetNSV = null;
-            promo.PlanPromoIncrementalNSV = null;
-            promo.PlanPromoNetIncrementalNSV = null;
-            promo.PlanPromoIncrementalMAC = null;
-            promo.PlanPromoNetIncrementalMAC = null;
-            promo.PlanPromoIncrementalEarnings = null;
-            promo.PlanPromoNetIncrementalEarnings = null;
-            promo.PlanPromoROIPercent = null;
-            promo.PlanPromoNetROIPercent = null;
-            promo.PlanPromoNetUpliftPercent = null;
-            context.SaveChanges();
+            promo.PlanPromoTIShopper = promo.PlanPromoTIShopper != 0 ? null : promo.PlanPromoTIShopper;
+            promo.PlanPromoCost = promo.PlanPromoCost != 0 ? null : promo.PlanPromoCost;
+            promo.PlanPromoIncrementalBaseTI = promo.PlanPromoIncrementalBaseTI != 0 ? null : promo.PlanPromoIncrementalBaseTI;
+            promo.PlanPromoNetIncrementalBaseTI = promo.PlanPromoNetIncrementalBaseTI != 0 ? null : promo.PlanPromoNetIncrementalBaseTI;
+            promo.PlanPromoIncrementalCOGS = promo.PlanPromoIncrementalCOGS != 0 ? null : promo.PlanPromoIncrementalCOGS;
+            promo.PlanPromoNetIncrementalCOGS = promo.PlanPromoNetIncrementalCOGS != 0 ? null : promo.PlanPromoNetIncrementalCOGS;
+            promo.PlanPromoTotalCost = promo.PlanPromoTotalCost != 0 ? null : promo.PlanPromoTotalCost;
+            promo.PlanPromoPostPromoEffectLSVW1 = promo.PlanPromoPostPromoEffectLSVW1 != 0 ? null : promo.PlanPromoPostPromoEffectLSVW1;
+            promo.PlanPromoPostPromoEffectLSVW2 = promo.PlanPromoPostPromoEffectLSVW2 != 0 ? null : promo.PlanPromoPostPromoEffectLSVW2;
+            promo.PlanPromoPostPromoEffectLSV = promo.PlanPromoPostPromoEffectLSV != 0 ? null : promo.PlanPromoPostPromoEffectLSV;
+            promo.PlanPromoNetIncrementalLSV = promo.PlanPromoNetIncrementalLSV != 0 ? null : promo.PlanPromoNetIncrementalLSV;
+            promo.PlanPromoNetLSV = promo.PlanPromoNetLSV != 0 ? null : promo.PlanPromoNetLSV;
+            promo.PlanPromoBaselineBaseTI = promo.PlanPromoBaselineBaseTI != 0 ? null : promo.PlanPromoBaselineBaseTI;
+            promo.PlanPromoBaseTI = promo.PlanPromoBaseTI != 0 ? null : promo.PlanPromoBaseTI;
+            promo.PlanPromoNetBaseTI = promo.PlanPromoNetBaseTI != 0 ? null : promo.PlanPromoNetBaseTI;
+            promo.PlanPromoNSV = promo.PlanPromoNSV != 0 ? null : promo.PlanPromoNSV;
+            promo.PlanPromoNetNSV = promo.PlanPromoNetNSV  != 0 ? null : promo.PlanPromoNetNSV;
+            promo.PlanPromoIncrementalNSV = promo.PlanPromoIncrementalNSV != 0 ? null : promo.PlanPromoIncrementalNSV;
+            promo.PlanPromoNetIncrementalNSV = promo.PlanPromoNetIncrementalNSV  != 0 ? null : promo.PlanPromoNetIncrementalNSV;
+            promo.PlanPromoIncrementalMAC = promo.PlanPromoIncrementalMAC != 0 ? null : promo.PlanPromoIncrementalMAC;
+            promo.PlanPromoNetIncrementalMAC = promo.PlanPromoNetIncrementalMAC != 0 ? null : promo.PlanPromoNetIncrementalMAC;
+            promo.PlanPromoIncrementalEarnings = promo.PlanPromoIncrementalEarnings != 0 ? null : promo.PlanPromoIncrementalEarnings;
+            promo.PlanPromoNetIncrementalEarnings = promo.PlanPromoNetIncrementalEarnings != 0 ? null : promo.PlanPromoNetIncrementalEarnings;
+            promo.PlanPromoROIPercent = promo.PlanPromoROIPercent != 0 ? null : promo.PlanPromoROIPercent;
+            promo.PlanPromoNetROIPercent = promo.PlanPromoNetROIPercent != 0 ? null : promo.PlanPromoNetROIPercent;
+            promo.PlanPromoNetUpliftPercent = promo.PlanPromoNetUpliftPercent != 0 ? null : promo.PlanPromoNetUpliftPercent;
         }
     }
 }

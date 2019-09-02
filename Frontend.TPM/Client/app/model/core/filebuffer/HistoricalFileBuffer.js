@@ -7,17 +7,17 @@ Ext.define('App.model.core.filebuffer.HistoricalFileBuffer', {
 		{ name: '_ObjectId', hidden: true },
 		{ name: '_User', type: 'string', isDefault: true },
 		{ name: '_Role', type: 'string', isDefault: true },
-		{ name: '_EditDate', type: 'date', isDefault: true },
+        { name: '_EditDate', type: 'date', isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
 		{ name: '_Operation', type: 'string', isDefault: true },
 		{ name: 'InterfaceId', hidden: true },
 		{ name: 'InterfaceName', type: 'string', isDefault: true, breezeEntityType: 'Interface' },
 		{ name: 'InterfaceDirection', type: 'string', isDefault: true, breezeEntityType: 'Interface' },
-		{ name: 'CreateDate', type: 'date', isDefault: true },
+        { name: 'CreateDate', type: 'date', isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
 		{ name: 'UserId', hidden: true },
 		{ name: 'HandlerId' },
 		{ name: 'FileName', type: 'string', isDefault: true },
 		{ name: 'Status', type: 'string', isDefault: true },
-		{ name: 'ProcessDate', type: 'date', isDefault: true }
+        { name: 'ProcessDate', type: 'date', isDefault: true, timeZone: +3, convert: dateConvertTimeZone }
 	],
     proxy: {
         type: 'breeze',

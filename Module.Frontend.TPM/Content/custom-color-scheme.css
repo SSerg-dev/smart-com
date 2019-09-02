@@ -877,6 +877,40 @@ pre.code {
 
 .custom-date-button .x-btn-glyph {
 }
+
+/*------------custom-promo-date-button----------------*/
+.custom-promo-date-button {
+	margin: 0 5px 0 5px !important;
+	border-radius: 4px;
+	background-color: #829cb8;
+	border-color: #829cb8;
+}
+
+	.custom-promo-date-button .x-btn-inner {
+		border-bottom: 1px dashed white;
+		line-height: 15px;
+		margin-left: 21px;
+		padding: 0;
+	}
+
+	.custom-promo-date-button .x-btn-inner, .custom-promo-date-button .x-btn-glyph {
+		color: white;
+	}
+
+	.custom-promo-date-button:hover {
+		background-color: #5481B2;
+	}
+
+	.custom-promo-date-button.disabled {
+		background-color: #0066a6;
+	}
+
+		.custom-promo-date-button.disabled .x-btn-inner, .custom-promo-date-button.disabled .x-btn-glyph {
+			color: #e0e0e0;
+		}
+
+	.custom-promo-date-button .x-btn-glyph {
+	}
 /*----------------------------*/
 
 .positive-result-glyph {
@@ -1939,6 +1973,10 @@ tr[data-recordindex="0"] .container-icon {
     border: 1px solid #ebebeb;
     padding: 0px 3px 5px 3px;
 }
+.custom-promo-panel .x-fieldset .specialOne{
+    border: 0px transparent !important;
+    padding: 0px;
+}
 
 .custom-promo-panel .x-panel-body-default {
     color: #697278;
@@ -2565,6 +2603,11 @@ x-slider-inner:before {
     background-color: #f5f5f5 !important;
 }
 
+.readOnlyFieldActualLSV input {
+    pointer-events: none;
+    background-color: #e6e9ed !important;
+}
+
 .readOnlyTextArea textarea {
     background-color: #f5f5f5 !important;
     opacity: 0.6 !important;
@@ -2835,8 +2878,9 @@ x-slider-inner:before {
         color: #cccccc;
     }
 
-.readOnlyFields .x-field.x-form-readonly,
-.promoform .x-field.x-form-readonly {
+.promoform .x-field.x-form-readonly,
+.readOnlyFields .x-form-readonly input:not(.x-form-file-input),
+.readOnlyFields .x-form-readonly .singlelinedisplayfield {
 	pointer-events: none;
 }
 
@@ -2992,6 +3036,14 @@ x-slider-inner:before {
 }
 
 /*====================================================*/
+/*
+    Коды цветов:
+    #FFE000 - желтый
+    #0000A0 - темносиний
+    #5B5BE6 - посветлее
+    #8888CF - светлофиолетовый
+    #00D7B8 - бирюзовый
+*/
 .promo-summary-panel {
     margin-bottom: 5px;
     border: 1px solid #ccc;
@@ -2999,26 +3051,59 @@ x-slider-inner:before {
     box-shadow: 1px 1px 3px 1px rgba(0,0,0,0.1);
     -webkit-box-shadow: 1px 1px 3px 1px rgba(0,0,0,0.1);
     -moz-box-shadow: 1px 1px 3px 1px rgba(0,0,0,0.1);
+    color: #0000A0 !important;
 }
 
+    .summary-promoInformationPanel .x-fieldset-header{
+        padding-left: 0px !important;
+    }
+
+    .promo-summary-panel .bigSummaryPanels {
+        border: solid 1px #E3E6E8;
+        margin: 3px;
+        padding: 7px;
+    }
+    .promo-summary-panel .summary-uplift{
+        text-align: center;
+    }
     .promo-summary-panel .x-panel-header-default {
-        background-color: #FAFAFA;
+        background-color:white;
         padding: 0 0 1px 2px;
     }
 
-    .promo-summary-panel .x-panel-header-text {
-        color: #3f6895;
-        font-size: 11px;
+    .promo-summary-panel .summary-uplift .x-fieldset-header-text,
+    .promo-summary-panel .x-panel-header-text,
+    .promo-summary-panel .fatheader .x-fieldset-header-text {
+        color: #0000A0;
+        font-weight: bold;
     }
-    .promo-summary-panel .x-panel-header-text-container-default {
+
+        .promo-summary-panel .x-panel-header-text-container-default {
         padding: 0 0 1px 2px;
         top: 0 !Important;
     }
 
+    .promo-summary-panel .redPercent {
+        color: red !important;
+    }
+    .promo-summary-panel .greenPercent {
+        color: #00D7B8 !important;
+    }
+
     .promo-summary-panel .x-fieldset-header-text {
-        color: #697278;
+        color: #0000A0;
+        line-height:initial;
+    }
+
+    .promo-summary-panel .summary-leftPanel .x-fieldset label {
+        color: #0000A0;
         font-weight: bold;
-        font-size: 11px;
+    }
+
+    .promo-summary-panel .border-left-box {
+        color: #0000A0;
+        font-weight: bold;
+        padding: 1px 1px 1px 1px;
     }
 
     .promo-summary-panel .x-fieldset {
@@ -3029,6 +3114,44 @@ x-slider-inner:before {
         .promo-summary-panel .x-fieldset div {
             vertical-align: middle !important;
         }
+
+        .promo-summary-panel .promo-summary-rightup .x-fieldset div {
+            text-align: center;
+        }
+
+    .promo-summary-panel statusSummaryText div {
+        vertical-align: middle !important;
+        margin: 0px 0px 0px 5px !important;
+    }
+
+    .bigSummaryText,
+    .promo-summary-panel .bigSummaryText .x-fieldset-header-text,
+    .promo-summary-panel .bigSummaryText {
+        color: #0000A0;
+        font-weight: bold;
+        line-height: initial;
+    }
+
+    .promo-summary-panel .spriteText {
+        fill: #0000A0;
+        text-align: center;
+    }
+
+    .promo-summary-panel .roispriteText {
+        fill: #00D7B8;
+        text-align: center;
+    }
+
+    .promo-summary-panel .mediumSummaryText {
+        color: #0000A0;
+        margin: 5px 0px 5px 0px;
+        font-weight: bold;
+        line-height: initial;
+    }
+
+    .promo-summary-panel .actualPlanBudgets {
+        font-weight: initial;
+    }
 
     .promo-summary-panel .custom-event-button {
         border: none;
@@ -3057,188 +3180,195 @@ x-slider-inner:before {
     }
 
         .promo-summary-panel .summary-detail-btn .x-btn-inner {
-            color: #3f6895;
-            font-size: 11px;
-            font-weight: bold;
-            text-decoration: underline;
+            color: #0000A0;
+            font-weight: normal !important;
+            text-decoration: none;
         }
+
+    .promo-summary-panel .borderleft {
+        border-left: solid 1px #E3E6E8
+    }
+    .promo-summary-panel .x-menu-item-separator {
+        background-color: #E3E6E8
+    }
+    .promo-summary-panel .borderbottom {
+        border-bottom: solid 1px #E3E6E8
+    }
+    .promo-summary-panel .bordertop {
+        border-top: solid 1px #E3E6E8
+    }
+    .promo-summary-panel .borderright {
+        border-right: solid 1px #E3E6E8
+    }
+
+    .promo-summary-panel .table{
+        border-collapse: collapse;
+    }
+
+    .promo-summary-panel table td,
+    .promo-summary-panel table th {
+        border: 0.5px solid #E3E6E8;
+        border-top: 0;
+    }
+
+    .promo-summary-panel table tr:last-child td {
+        border-bottom: 0;
+    }
+
+    .promo-summary-panel table tr td:first-child,
+    .promo-summary-panel table tr th:first-child {
+        border-left: 0;
+    }
+
+    .promo-summary-panel table tr td:last-child,
+    .promo-summary-panel table tr th:last-child {
+        border-right: 0;
+    }
+
+    .promo-summary-panel table tr:last-child td .x-container {
+        padding-top: 10px
+    }
+
+    .promo-summary-panel .finance-planactual .x-fieldset-header-text {
+        color: #0000A0;
+        font-weight: normal !important;
+    }
+
+    .promo-summary-panel .finance-planactual .x-box-item {
+        color: #0000A0;
+        font-weight: normal !important;
+    }
+
+    .promo-summary-panel .roichart .chart-legend tspan,
+    .promo-summary-panel .roichart rect {
+        cursor: default !important;
+    }
 
 @media screen and (min-device-width: 1600px) {
-    .promo-summary-panel .uplift-result-label {
-        text-align: center;
-        font-size: 35px;
-        font-weight: bold;
-        height: 35px;
+    .chart-axis {
+        font: '17px Arial, Helvetica, sans-serif',
     }
 
-        .promo-summary-panel .uplift-result-label .positive-result-glyph,
-        .promo-summary-panel .uplift-result-label .negative-result-glyph {
-            font-size: 35px;
-        }
-
-    .promo-summary-panel .uplift-text {
-        text-align: center;
-        font-size: 15px;
-        font-weight: bold;
-        color: #8c9397;
+    .promo-summary-panel .summary-finance {
+        height: 320px
     }
 
+    .promo-summary-panel .summary-detail-btn .x-btn-inner,
+    .promo-summary-panel .x-panel-header-default,
+    .promo-summary-panel .chart-legend tspan {
+        font-size: 17px;
+    }
+    .promo-summary-panel .summary-uplift .x-fieldset-header-text,
+    .promo-summary-panel .x-panel-header-text,
+    .promo-summary-panel .summary-leftPanel .x-fieldset label,
+    .promo-summary-panel .fatheader .x-fieldset-header-text {
+        font-size: 23px;
+    }
+
+    .promo-summary-panel .mediumSummaryText,
+    .promo-summary-panel .finance-planactual .x-fieldset-header-text,
+    .promo-summary-panel .finance-planactual .x-box-item,
+    .promo-summary-panel .x-fieldset-header-text,
     .promo-summary-panel .border-left-box {
-        font-size: 13px;
-        padding: 1px 1px 1px 1px;
-        margin-top: 0;
+        font-size: 27px;
     }
 
-    .promo-summary-panel .roi-result-label {
+    .mediumSummaryText-lineHeight {
+        line-height: 29px;
+        height: 29px;
+    }
+
+    .bigSummaryText,
+    .promo-summary-panel .bigSummaryText .x-fieldset-header-text,
+    .promo-summary-panel .bigSummaryText {
+        font-size: 40px;
+    }
+
+    .bigSummaryText-lineHeight {
+        line-height: 42px;
+        height: 42px;
+        padding-top: 5px;
+    }
+
+    .promo-summary-panel .header-height .x-fieldset-header-text,
+    .promo-summary-panel .header-height .x-panel-header-text-container-default {
+        line-height: initial;
+    }
+
+    .promo-summary-panel .finance-planactual .x-fieldset-header-text {
+        line-height: 46px;
+    }
+
+    .promo-summary-panel .finance-planactual .x-box-item {
+        line-height: 24px;
+    }
+    .promo-summary-panel .finance-planactual .planactual-width{
+        width: 90px;
         text-align: center;
-        font-size: 45px;
-        font-weight: bold
-    }
-
-    .promo-summary-panel .roi-text {
-        text-align: center;
-        font-size: 20px;
-        font-weight: bold;
-        color: #8c9397;
-    }
-
-    .promo-summary-panel .custom-event-button .x-btn-glyph {
-        font-size: 50px;
-        line-height: 50px;
-        padding: 0;
-        color: #3f6895;
-        opacity: 1;
-    }
-
-    .promo-summary-panel .custom-event-button .x-btn-inner {
-        color: #000000 !important;
-        font-size: 19px;
-        text-align: center;
-        margin-top: 20px;
-        font-family: helvetica,arial,verdana,sans-serif;
-    }
-
-    .promo-summary-panel .promo-name-label {
-        margin: 10px;
-        color: #3f6895;
-        font-size: 35px;
-        font-weight: bold;
-        font-family: helvetica,arial,verdana,sans-serif;
-        text-align: left;
-    }
-
-    .promo-summary-panel .promo-mechanic-label {
-        margin: 3px;
-        color: #000000;
-        font-size: 20px;
-        font-weight: bold;
-        font-family: helvetica,arial,verdana,sans-serif;
-    }
-
-        .promo-summary-panel .promo-mechanic-label .x-btn-inner {
-            font-size: 14px;
-        }
-
-    .promo-summary-panel .promo-brandtech-button-empty .x-btn-inner {
-        text-decoration: none;
-    }
-
-    .promo-summary-panel .promo-dates-label {
-        margin: 3px;
-        color: #494949;
-        font-size: 20px;
-        font-weight: bold;
-        font-family: helvetica,arial,verdana,sans-serif;
     }
 }
 
 @media screen and (max-device-width: 1599px) {
-    .promo-summary-panel .uplift-result-label {
-        text-align: center;
-        font-size: 20px;
-        font-weight: bold;
-        height: 22px;
+    .chart-axis {
+        font: '13px Arial, Helvetica, sans-serif',
     }
 
-        .promo-summary-panel .uplift-result-label .positive-result-glyph,
-        .promo-summary-panel .uplift-result-label .negative-result-glyph {
-            font-size: 20px;
-        }
-
-    .promo-summary-panel .uplift-text {
-        text-align: center;
-        font-size: 9px;
-        font-weight: bold;
-        color: #8c9397;
+    .promo-summary-panel .summary-finance{
+        height: 255px
     }
 
-    .promo-summary-panel .border-left-box {
-        font-size: 9px;
-        padding: 1px 1px 1px 1px;
-        margin-top: 0;
-        height: 13px !important;
-    }
-
-    .promo-summary-panel .roi-result-label {
-        text-align: center;
-        font-size: 38px;
-        font-weight: bold
-    }
-
-    .promo-summary-panel .roi-text {
-        text-align: center;
-        font-size: 16px;
-        font-weight: bold;
-        color: #8c9397;
-    }
-
-    .promo-summary-panel .custom-event-button .x-btn-glyph {
-        font-size: 40px;
-        line-height: 40px;
-        padding: 0;
-        color: #3f6895;
-        opacity: 1;
-    }
-
-    .promo-summary-panel .custom-event-button .x-btn-inner {
-        color: #000000 !important;
+    .promo-summary-panel .summary-detail-btn .x-btn-inner,
+    .promo-summary-panel .x-panel-header-default,
+    .promo-summary-panel .chart-legend tspan {
         font-size: 13px;
-        text-align: center;
-        margin-top: 5px;
-        font-family: helvetica,arial,verdana,sans-serif;
     }
 
-    .promo-summary-panel .promo-name-label {
-        margin: 10px;
-        color: #3f6895;
+    .promo-summary-panel .summary-uplift .x-fieldset-header-text,
+    .promo-summary-panel .x-panel-header-text,
+    .promo-summary-panel .summary-leftPanel .x-fieldset label,
+    .promo-summary-panel .fatheader .x-fieldset-header-text {
         font-size: 18px;
-        font-weight: bold;
-        font-family: helvetica,arial,verdana,sans-serif;
-        text-align: left;
     }
 
-    .promo-summary-panel .promo-mechanic-label {
-        margin: 3px;
-        color: #000000;
-        font-size: 14px;
-        font-weight: bold;
-        font-family: helvetica,arial,verdana,sans-serif;
+    .promo-summary-panel .mediumSummaryText,
+    .promo-summary-panel .finance-planactual .x-fieldset-header-text,
+    .promo-summary-panel .finance-planactual .x-box-item,
+    .promo-summary-panel .x-fieldset-header-text,
+    .promo-summary-panel .border-left-box {
+        font-size: 16px;
     }
 
-        .promo-summary-panel .promo-mechanic-label .x-btn-inner {
-            font-size: 10px;
-        }
-
-    .promo-summary-panel .promo-brandtech-button-empty .x-btn-inner {
-        text-decoration: none;
+    .mediumSummaryText-lineHeight {
+        line-height: 18px;
+        height: 18px;
     }
 
-    .promo-summary-panel .promo-dates-label {
-        margin: 3px;
-        color: #494949;
-        font-size: 14px;
-        font-weight: bold;
-        font-family: helvetica,arial,verdana,sans-serif;
+    .bigSummaryText,
+    .promo-summary-panel .bigSummaryText .x-fieldset-header-text,
+    .promo-summary-panel .bigSummaryText {
+        font-size: 25px;
+    }
+
+    .bigSummaryText-lineHeight {
+        line-height: 27px;
+        height: 27px;
+    }
+
+    .promo-summary-panel .header-height .x-fieldset-header-text,
+    .promo-summary-panel .header-height .x-panel-header-text-container-default {
+        line-height: initial;
+    }
+
+    .promo-summary-panel .finance-planactual .x-fieldset-header-text {
+        line-height: 34px;
+    }
+
+    .promo-summary-panel .finance-planactual .x-box-item {
+        line-height: 18px;
+    }
+    .promo-summary-panel .finance-planactual .planactual-width {
+        width: 65px;
+        text-align: center;
     }
 }
 
@@ -3441,6 +3571,12 @@ x-slider-inner:before {
     padding-top: 48px !important;
 }
 
+.promobasic-choose-btn-in-out .x-btn-inner.x-btn-inner-center {
+    margin: 0 !important;
+    height: 100%;
+    padding-top: 25px !important;
+}
+
 .promobasic-choose-btn-disabled {
     opacity: 1.0 !important;
     cursor: default !important;
@@ -3448,4 +3584,87 @@ x-slider-inner:before {
 
 .cursor-pointer {
     cursor: pointer !important;
+}
+
+.in-out-product-selection-window-product-tree-grid .x-panel-body .x-tree-view::-webkit-scrollbar {
+    width: 7px;
+}
+
+.in-out-product-selection-window-product-tree-grid .x-panel-body .x-tree-view::-webkit-scrollbar-track {
+    margin: 10px 0;
+    border-radius: 10px;
+}
+
+.in-out-product-selection-window-product-tree-grid .x-panel-body .x-tree-view::-webkit-scrollbar-thumb {
+    height: 100px;
+    background-color: #ccd1d9;
+    border-radius: 10px;
+}
+
+.in-out-product-selection-window-product-toggled-button {
+    background-color: #00436f;
+}
+
+.in-out-product-selection-window-product-untoggled-button {
+    background-color: #5b8abc;
+}
+
+.in-out-promo-header-button {
+    background-color: #3f6895;
+    margin: 4px 10px;
+    padding: 4px 5px !important;
+    box-shadow: none !important;
+}
+
+.in-out-promo-header-button .x-btn-wrap {
+    background-color: #829cb8;
+    border-radius: 2px;
+    padding: 2px 4px;
+    height: 20px !important;
+}
+
+.in-out-promo-header-button .x-btn-wrap .x-btn-button .x-btn-inner {
+    line-height: 17px !important;
+    color: white !important;
+}
+
+.in-out-promo-header-button .x-btn-wrap .x-btn-button .x-btn-icon-el {
+    line-height: 16px !important;
+    color: white;
+}
+
+.custom-top-panel .x-box-inner .x-box-target .x-component {
+    line-height: 19px !important;
+}
+
+/*маркер InOut/Regular в календаре*/
+.inout-mark-text {
+    font-size: 12px;
+    color: #3f6895;
+    font-weight: 600;
+}
+
+.mdi-hexagon-slice-2:before {
+    content: "\FAC3";
+}
+
+.inout-mark-icon {
+    font-size: 12px;
+    line-height: 12px;
+    width: 12px;
+    height: 12px;
+    color: #ee7f2f;
+}
+
+.disableBG .x-form-text {
+    background-color: #f5f5f5 !important
+}
+
+.custom-jsp-pane {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.custom-jsp-pane::-webkit-scrollbar {
+    display: none;
 }

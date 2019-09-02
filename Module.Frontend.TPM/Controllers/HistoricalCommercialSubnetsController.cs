@@ -21,7 +21,7 @@ namespace Module.Frontend.TPM.Controllers {
             EnableConstantParameterization = false,
             MaxTop = 1024)]
         public IQueryable<HistoricalCommercialSubnet> GetHistoricalCommercialSubnets() {
-            return HistoryReader.Query<HistoricalCommercialSubnet>();
+            return HistoryReader.GetAll<HistoricalCommercialSubnet>();
         }
 
         protected override void Dispose(bool disposing) {

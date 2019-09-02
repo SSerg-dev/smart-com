@@ -94,7 +94,7 @@ namespace Module.Persist.TPM.PromoStateControl
 
                             _stateContext.Model = promoDraftPublished;
                             promoModel.PromoStatusId = onApprovalStatus.Id;
-                            return _stateContext.ChangeState(promoModel, userRole, out message);
+                            return _stateContext.ChangeState(promoModel, "System", out message);
                         }
 
                         return true;
@@ -113,27 +113,50 @@ namespace Module.Persist.TPM.PromoStateControl
                                 break;
 
                             case "DemandPlanning":
-                                // т.к. только Demand Planning может заполнить Plan Promo Uplift и загрузить Baseline на клиента,
-                                // то CMManager может согласовать промо без Uplift и Baseline, а Demand Planning уже не сможет
-                                bool okBaselineLSV = promoModel.PlanPromoBaselineLSV.HasValue && promoModel.PlanPromoBaselineLSV > 0;
-                                bool okUpliftPercent = promoModel.PlanPromoUpliftPercent.HasValue && promoModel.PlanPromoUpliftPercent > 0;
-
-                                if (okBaselineLSV && okUpliftPercent)
+                                // Если не InOut
+                                if (!promoModel.InOut.HasValue || !promoModel.InOut.Value)
                                 {
-                                    promoModel.IsDemandPlanningApproved = promoModel.IsCMManagerApproved;
-                                    // если промо прошло проверку на NoNego, но не прошло на 8 недель, то решает только DemandPlanning
-                                    // и в этом случае IsCMManagerApproved и IsDemandFinanceApproved = true
-                                    next = promoModel.IsDemandFinanceApproved.HasValue && promoModel.IsDemandFinanceApproved.Value;
+                                    // т.к. только Demand Planning может заполнить Plan Promo Uplift и загрузить Baseline на клиента,
+                                    // то CMManager может согласовать промо без Uplift и Baseline, а Demand Planning уже не сможет
+                                    bool okBaselineLSV = promoModel.PlanPromoBaselineLSV.HasValue && promoModel.PlanPromoBaselineLSV > 0;
+                                    bool okUpliftPercent = promoModel.PlanPromoUpliftPercent.HasValue && promoModel.PlanPromoUpliftPercent > 0;
+
+                                    if (okBaselineLSV && okUpliftPercent)
+                                    {
+                                        promoModel.IsDemandPlanningApproved = promoModel.IsCMManagerApproved;
+                                        // если промо прошло проверку на NoNego, но не прошло на 8 недель, то решает только DemandPlanning
+                                        // и в этом случае IsCMManagerApproved и IsDemandFinanceApproved = true
+                                        next = promoModel.IsDemandFinanceApproved.HasValue && promoModel.IsDemandFinanceApproved.Value;
+                                    }
+                                    else
+                                    {
+                                        message = "";
+
+                                        if (!okBaselineLSV)
+                                            message += "The Plan Baseline LSV must not be empty or equal to zero. ";
+
+                                        if (!okUpliftPercent)
+                                            message += "The Plan Promo Uplift must not be empty or equal to zero.";
+                                    }
                                 }
                                 else
                                 {
-                                    message = "";
+                                    bool okPlanPromoIncrementalLSV = promoModel.PlanPromoIncrementalLSV.HasValue && promoModel.PlanPromoIncrementalLSV.Value > 0;
 
-                                    if (!okBaselineLSV)
-                                        message += "The Plan Baseline LSV must not be empty or equal to zero. ";
+                                    if (okPlanPromoIncrementalLSV)
+                                    {
+                                        promoModel.IsDemandPlanningApproved = promoModel.IsCMManagerApproved;
+                                        // если промо прошло проверку на NoNego, но не прошло на 8 недель, то решает только DemandPlanning
+                                        // и в этом случае IsCMManagerApproved и IsDemandFinanceApproved = true
+                                        next = promoModel.IsDemandFinanceApproved.HasValue && promoModel.IsDemandFinanceApproved.Value;
+                                    }
+                                    else
+                                    {
+                                        message = "";
 
-                                    if (!okUpliftPercent)
-                                        message += "The Plan Promo Uplift must not be empty or equal to zero.";
+                                        if (!okPlanPromoIncrementalLSV)
+                                            message += "The Plan Promo Incremental LSV must not be empty or equal to zero. ";
+                                    }
                                 }
                                 break;
 

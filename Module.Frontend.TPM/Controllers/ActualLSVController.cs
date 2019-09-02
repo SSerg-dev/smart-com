@@ -57,7 +57,12 @@ namespace Module.Frontend.TPM.Controllers
                 .Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
                 .ToList() : new List<Constraint>();
 
-            IQueryable<ActualLSV> query = Context.Set<Promo>().Where(e => e.PromoStatus.SystemName.ToLower().IndexOf("finished") >= 0 && !e.Disabled)
+            IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
+            IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
+            IQueryable<Promo> promoes = Context.Set<Promo>().Where(e => e.PromoStatus.SystemName.ToLower().IndexOf("finished") >= 0 && !e.Disabled);
+
+            promoes = ModuleApplyFilterHelper.ApplyFilter(promoes, hierarchy, filters);
+            IQueryable<ActualLSV> query = promoes
                 .Select(n => new ActualLSV
                 {
                     Id = n.Id,
@@ -65,7 +70,7 @@ namespace Module.Frontend.TPM.Controllers
                     ClientHierarchy = n.ClientHierarchy,
                     Name = n.Name,
                     BrandTech = n.BrandTech.Name,
-                    Event = n.EventName,
+                    Event = n.Event.Name,
                     Mechanic = n.Mechanic,
                     MechanicIA = n.MechanicIA,
                     StartDate = n.StartDate,
@@ -92,7 +97,8 @@ namespace Module.Frontend.TPM.Controllers
                     PlanPromoPostPromoEffectLSVW2 = n.PlanPromoPostPromoEffectLSVW2,
                     ActualPromoPostPromoEffectLSVW2 = n.ActualPromoPostPromoEffectLSVW2,
                     PlanPromoPostPromoEffectLSV = n.PlanPromoPostPromoEffectLSV,
-                    ActualPromoPostPromoEffectLSV = n.ActualPromoPostPromoEffectLSV
+                    ActualPromoPostPromoEffectLSV = n.ActualPromoPostPromoEffectLSV,
+                    InOut = n.InOut
                 });
 
             return query;
@@ -298,7 +304,7 @@ namespace Module.Frontend.TPM.Controllers
                     Description = "Загрузка импорта из файла " + typeof(ImportActualLsv).Name,
                     Name = "Module.Host.TPM.Handlers." + importHandler,
                     ExecutionPeriod = null,
-                    CreateDate = DateTimeOffset.Now,
+                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
                     LastExecutionDate = null,
                     NextExecutionDate = null,
                     ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
@@ -335,7 +341,7 @@ namespace Module.Frontend.TPM.Controllers
                 Description = "Calculate Actuals after change ActualLSV",
                 Name = "Module.Host.TPM.Handlers.ActualLSVChangeHandler",
                 ExecutionPeriod = null,
-                CreateDate = DateTimeOffset.Now,
+                CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
                 LastExecutionDate = null,
                 NextExecutionDate = null,
                 ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,

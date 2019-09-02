@@ -122,6 +122,10 @@
                 dataIndex: 'Name',
                 width: 150,
             }, {
+                text: l10n.ns('tpm', 'ActualLSV').value('InOut'),
+                dataIndex: 'InOut',
+                width: 150
+            }, {
                 text: l10n.ns('tpm', 'ActualLSV').value('BrandTech'),
                 dataIndex: 'BrandTech',
                 width: 120,

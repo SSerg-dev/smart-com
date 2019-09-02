@@ -28,7 +28,16 @@
             { xtype: 'numberfield', name: 'PromoDuration', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('PromoDuration') },
             { xtype: 'textfield', name: 'EventName', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('EventName') },
             { xtype: 'textfield', name: 'PromoStatusName', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('PromoStatusName') },
-            { xtype: 'textfield', name: 'InOut', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('InOut') },
+            {
+                xtype: 'textfield',
+                name: 'InOut',
+                fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('InOut'),
+                listeners: {
+                    afterrender: function (value) {
+                        this.setValue(value.rawValue === 'true' ? l10n.ns('core', 'booleanValues').value('true') : l10n.ns('core', 'booleanValues').value('false'));
+                    }
+                }
+            },
             { xtype: 'textfield', name: 'PlanInstoreMechanicName', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('PlanInstoreMechanicName') },
             { xtype: 'textfield', name: 'PlanInstoreMechanicTypeName', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('PlanInstoreMechanicTypeName') },
             { xtype: 'numberfield', name: 'PlanInstoreMechanicDiscount', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('PlanInstoreMechanicDiscount') },

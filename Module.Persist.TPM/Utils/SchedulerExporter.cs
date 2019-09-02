@@ -1,4 +1,5 @@
-﻿using Core.MarsCalendar;
+﻿using AutoMapper;
+using Core.MarsCalendar;
 using Core.Settings;
 using Module.Persist.TPM.Model.TPM;
 using NPOI.SS.UserModel;
@@ -18,6 +19,7 @@ namespace Module.Persist.TPM.Utils {
 
         public SchedulerExporter() {
             isYearExport = false;
+            Mapper.CreateMap<ClientTree, SchedulerClientTreeDTO>();
         }
 
         public SchedulerExporter(DateTime startDate, DateTime endDate) {
@@ -57,35 +59,40 @@ namespace Module.Persist.TPM.Utils {
             List<Promo> promoDTOs = new List<Promo>();
             foreach (Promo promo in filteredPromoes) {
                 string[] clientsIds = promo.BaseClientTreeIds.Split('|');
-                if (promo.BaseClientTreeIds.Split('|').Length == 1) {
-                    promoDTOs.Add(new Promo() {
-                        BaseClientTreeIds = clientsIds[0],
-                        StartDate = promo.StartDate,
-                        EndDate = promo.EndDate,
-                        CalendarPriority = promo.CalendarPriority,
-                        ColorId = promo.ColorId,
-                        Color = promo.Color,
-                        Name = promo.Name
-                    });
-                } else {
-                    // Промо для нескольких клиентов разбиваем, создаём модель Promo для каждого, добавляем результат в общий список
-                    foreach (string id in clientsIds) {
+                if (clientsIds.Length == 1) {
+                    if (clientIDs.Contains(Int32.Parse(clientsIds[0]))) {
                         promoDTOs.Add(new Promo() {
-                            BaseClientTreeIds = id,
+                            BaseClientTreeIds = clientsIds[0],
                             StartDate = promo.StartDate,
                             EndDate = promo.EndDate,
                             CalendarPriority = promo.CalendarPriority,
                             ColorId = promo.ColorId,
                             Color = promo.Color,
-                            Name = promo.Name
+                            Name = promo.Name,
+                            InOut = promo.InOut
                         });
+                    }
+                } else {
+                    // Промо для нескольких клиентов разбиваем, создаём модель Promo для каждого, добавляем результат в общий список
+                    foreach (string id in clientsIds) {
+                        if (clientIDs.Contains(Int32.Parse(id))) {
+                            promoDTOs.Add(new Promo() {
+                                BaseClientTreeIds = id,
+                                StartDate = promo.StartDate,
+                                EndDate = promo.EndDate,
+                                CalendarPriority = promo.CalendarPriority,
+                                ColorId = promo.ColorId,
+                                Color = promo.Color,
+                                Name = promo.Name,
+                                InOut = promo.InOut
+                            });
+                        }
                     }
                 }
             }
             // сгруппированный по клиентам список промо
-            IEnumerable<IGrouping<int, Promo>> promoesByClients = promoDTOs.GroupBy(p => Int32.Parse(p.BaseClientTreeIds));
+            var promoesByClients = promoDTOs.OrderBy(x => x.BaseClientTreeIds).GroupBy(p => new { p.BaseClientTreeIds, p.InOut });
 
-            promoesByClients = promoesByClients.Where(p => clientIDs.Contains(p.Key));
             DateTime dt = DateTime.Now;
             // Получаем словарь клиентов
             IDictionary<int, ClientTree> clients = context.Set<ClientTree>().Where(cl => cl.IsBaseClient && clientIDs.Contains(cl.ObjectId) && (DateTime.Compare(cl.StartDate, dt) <= 0 && (!cl.EndDate.HasValue || DateTime.Compare(cl.EndDate.Value, dt) > 0))).Distinct().ToDictionary(x => x.ObjectId);
@@ -108,9 +115,9 @@ namespace Module.Persist.TPM.Utils {
                 WriteHeader(startdDate, endDate, style, ref wb, out colToDateMap);
                 int curRow = 3;
                 // Для каждого клиента заполняем его промо
-                foreach (IGrouping<int, Promo> clientPromo in promoesByClients) {
+                foreach (var clientPromo in promoesByClients) {
                     ClientTree client = null;
-                    if (clients.TryGetValue(clientPromo.Key, out client)) {
+                    if (clients.TryGetValue(Int32.Parse(clientPromo.Key.BaseClientTreeIds), out client)) {
                         PromoSortComparer cmp = new PromoSortComparer();
                         IEnumerable<Promo> sorted = clientPromo.OrderBy((p => p), cmp);
                         // Разбиваем Промо по строкам, получаем индекс последней строки
@@ -121,8 +128,8 @@ namespace Module.Persist.TPM.Utils {
                         ICellStyle verticalStyle = GetCellStyle(ref wb);
                         verticalStyle.Rotation = 90;
                         verticalStyle.WrapText = true;
-
-                        clientCell.SetCellValue(new XSSFRichTextString(client.Name));
+                        string InOutMark = clientPromo.Key.InOut.HasValue && clientPromo.Key.InOut.Value ? "InOut Promo" : "Regular promo";
+                        clientCell.SetCellValue(new XSSFRichTextString(String.Format("{0} {1}", client.Name, InOutMark)));
                         clientCell.Row.Height = (short) -1;
                         if (lastRow - curRow > 1) {
                             CellRangeAddress range = new CellRangeAddress(curRow, lastRow - 1, 0, 0);
@@ -273,7 +280,7 @@ namespace Module.Persist.TPM.Utils {
                 int cellsToMerge = period.Count();
                 ICell cell = row0.CreateCell(curCell);
                 cell.SetCellValue(new XSSFRichTextString(String.Format("P{0}", period.Key.Item2.ToString())));
-                int endColumn = curCell + cellsToMerge - 1;             
+                int endColumn = curCell + cellsToMerge - 1;
                 if (curCell != endColumn) {
                     CellRangeAddress range = new CellRangeAddress(0, 0, curCell, endColumn);
                     SetMergedRegionBorders(range, sheet1, wb);

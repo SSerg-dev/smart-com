@@ -135,7 +135,7 @@
                 },
 
                 //cost production
-                'costproduction[isSearch!=true] directorygrid': {                    
+                'costproduction[isSearch!=true] directorygrid': {
                     itemdblclick: this.onDetailPromoSupportClick
                 },
                 'costproduction #updatebutton': {
@@ -146,11 +146,17 @@
                 },
 
                 //filter
-                'extmasterfilter #detailfilter': {
+                'promosupport #detailfilter': {
                     click: this.onDetailFilterButtonClick
+                },
+                'extdetailfilter': {
+                    beforedestroy: this.onDetailFilterBeforeDestroy 
                 },
                 'extdetailfilter #detailapply': {
                     click: this.onDetailFilterApplyButtonClick
+                },
+                'extdetailfilter #reject': {
+                    click: this.onDetailFilterRejectButtonClick
                 },
                 'extdetailfilter #eftextmodelbutton': {
                     click: this.ondetailTextTypeMenuItemClick
@@ -203,7 +209,7 @@
                     url: '/odata/PromoSupports/GetUserTimestamp',
                     type: 'POST',
                     success: function (data) {
-                        var customPromoSupportEditor = Ext.widget('custompromosupporteditor');                       
+                        var customPromoSupportEditor = Ext.widget('custompromosupporteditor');
                         var choosenClient = {
                             fullPath: clientTreeField.rawValue,
                             id: clientTreeField.value
@@ -216,6 +222,8 @@
                             window.setLoading(false);
                             window.close();
                         });
+
+                        customPromoSupportEditor.down('#InvoiceNumber').show();
 
                         me.addPromoSupportPanel(promoSupportData, customPromoSupportEditor);
                         customPromoSupportEditor.down('#costProductionFieldset').setVisible(false);
@@ -380,7 +388,7 @@
 
                     selectedItem.model.destroy({
                         scope: this,
-                        success: function () {       
+                        success: function () {
                             mainContainer.remove(selectedItem);
                             //выбор предыдущей записи в контейнере
                             var length = mainContainer.items.items.length,
@@ -396,7 +404,7 @@
                                 this.selectPromoSupportPanel(prevPanel);
                                 this.updatePromoSupportForm(prevPanel);
                             }
-          
+
                             editor.setLoading(false);
                         },
                         failure: function () {
@@ -455,6 +463,7 @@
 
             Ext.ComponentQuery.query('#promoSupportFormParameters')[0].hide();
 
+            customPromoSupportEditor.down("#PONumber").show();
             // скрываем кнопки добавить и удалить в promolinkedviewer
             var promoLinkedViewer = customPromoSupportEditor.down('promolinkedviewer');
             promoLinkedViewer.addListener('afterrender', function () {
@@ -465,6 +474,7 @@
 
             promoLinkedGrid = associatedContainer.down('promolinkedcostprod').down('grid');
         } else {
+            customPromoSupportEditor.down("#InvoiceNumber").show();
             customPromoSupportEditor.down('#costProductionFieldset').setVisible(false);
             promoLinkedGrid = associatedContainer.down('promolinkedticosts').down('grid');
         }
@@ -499,7 +509,7 @@
             this.fillSinglePromoSupportForm(customPromoSupportEditor);
         } else {
             App.Notify.pushInfo('No selection');
-        }        
+        }
     },
 
     fillSinglePromoSupportForm: function (editor) {
@@ -521,6 +531,12 @@
             value: model.data.BudgetSubItemBudgetItemId
         })
         budgetSubItemField.setValue(model.data.BudgetSubItemId);
+
+        //PONumber
+        promoSupportForm.down('textfield[name=PONumber]').setValue(model.data.PONumber);
+
+        //InvoiceNumber
+        promoSupportForm.down('textfield[name=InvoiceNumber]').setValue(model.data.InvoiceNumber);
 
         //Parameters
         promoSupportForm.down('numberfield[name=PlanQuantity]').setValue(model.data.PlanQuantity);
@@ -558,7 +574,7 @@
             store = grid.getStore();
         var selModel = grid.getSelectionModel();
         var me = this;
-        var associatedcontainer = grid.up('#associatedpromosupportcontainer')||
+        var associatedcontainer = grid.up('#associatedpromosupportcontainer') ||
             grid.up('#associatedcostproductioncontainer');
 
         associatedcontainer.setLoading(true);
@@ -574,7 +590,7 @@
                 var result = Ext.JSON.decode(data.httpResponse.data.value);
                 if (result.success) {
                     var isCostProduction = button.up('costproduction') !== undefined;
-                    var customPromoSupportEditor = Ext.widget('custompromosupporteditor', { costProduction: isCostProduction });                    
+                    var customPromoSupportEditor = Ext.widget('custompromosupporteditor', { costProduction: isCostProduction });
 
                     if (isCostProduction) {
                         customPromoSupportEditor.down('#costProductionFieldset').setVisible(true);
@@ -599,7 +615,10 @@
                         // скрываем кнопки управления группой                     
                         customPromoSupportEditor.down('#buttonPromoSupportLeftToolbarContainer').hide();
 
+                        customPromoSupportEditor.down("#PONumber").show();
+
                     } else {
+                        customPromoSupportEditor.down("#InvoiceNumber").show();
                         customPromoSupportEditor.down('#costProductionFieldset').setVisible(false);
                     }
 
@@ -613,12 +632,12 @@
                     customPromoSupportEditor.userTimestamp = selected.data.UserTimestamp;
 
                     if (result.models.length !== 0) {
-                        var promoSupportModels = [];                   
+                        var promoSupportModels = [];
                         result.models.forEach(function (model) {
                             var record = store.getById(model.PromoSupportId);
                             if (record) {
                                 //record.PromoLinkedIds = model.PromoLinkedIds;
-                                
+
                                 record.PromoSupportPromoes = model.PromoSupportPromoes;
                                 promoSupportModels.push(record);
                             }
@@ -660,8 +679,10 @@
             promoSupportPanel.actualProdCost = model.data.ActualProdCost;
             promoSupportPanel.attachFileName = model.data.AttachFileName;
             promoSupportPanel.borderColor = model.data.BorderColor;
-            promoSupportPanel.planQuantity = model.data.PlanQuantity
-            promoSupportPanel.actualQuantity = model.data.ActualQuantity
+            promoSupportPanel.planQuantity = model.data.PlanQuantity;
+            promoSupportPanel.actualQuantity = model.data.ActualQuantity;
+            promoSupportPanel.poNumber = model.data.PONumber;
+            promoSupportPanel.invoiceNumber = model.data.InvoiceNumber;
 
             promoSupportPanel.down('#promoSupportTypeText').setText(model.data.BudgetSubItemBudgetItemName);
             promoSupportPanel.down('#promoLinkedText').setText(model.PromoSupportPromoes.length || '0');
@@ -678,7 +699,7 @@
             promoSupportPanel.down('#attachFileText').setText(model.data.AttachFileName);
 
             promoSupportPanel.style = 'border-left: 5px solid ' + promoSupportPanel.borderColor;
-            
+
             promoSupportPanel.saved = true;
 
             // Если эту строку убрать, то поломается удаление.
@@ -708,7 +729,7 @@
 
     addPromoSupportPanel: function (data, editor, onTheBasis) {
         var promoSupport = App.app.getController('tpm.promosupport.PromoSupport');
-        var promoSupportTypeWindow = Ext.ComponentQuery.query('promosupporttype')[0]; 
+        var promoSupportTypeWindow = Ext.ComponentQuery.query('promosupporttype')[0];
 
         var mainContainer = editor.down('#mainPromoSupportLeftToolbarContainer'),
             promoSupportPanel = Ext.widget('promosupportpanel'),
@@ -724,7 +745,7 @@
                 item.removeCls('selected');
             }
         });
-        
+
         promoSupportPanel.style = 'border-left: 5px solid ' + borderColor;
         mainContainer.add(promoSupportPanel);
         promoSupport.selectPromoSupportPanel(promoSupportPanel);
@@ -828,7 +849,7 @@
                     if (buttonId === 'yes') {
                         var saveButton = panel.up('custompromosupporteditor').down('#savePromoSupportForm');
                         me.SavePromoSupport(saveButton, function () {
-                            selectedItem.removeCls('selected');                            
+                            selectedItem.removeCls('selected');
                             me.selectPromoSupportPanel(panel);
                             me.clearPromoSupportForm(panel.up('custompromosupporteditor'));
                             me.updatePromoSupportForm(panel);
@@ -880,6 +901,13 @@
         //Promo Support Type (budgetItem)
         var promoSupportTypeText = panel.down('#promoSupportTypeText').text;
         promoSupportTypeField = promoSupportForm.down('#promoSupportTypeField').setValue(promoSupportTypeText);
+
+        //PONumber
+        promoSupportForm.down('textfield[name=PONumber]').setValue(panel.poNumber);
+
+        //InvoiceNumber
+        promoSupportForm.down('textfield[name=InvoiceNumber]').setValue(panel.invoiceNumber);
+
 
         //Parameters
         var planQuantityText = panel.down('#planQuantityText').text,
@@ -974,6 +1002,22 @@
             promoLinkedStore = promoLinkedGrid.getStore(),
             countStore = promoLinkedStore.getProxy().data.length;
 
+        //PONumber
+        var poNumber = promoSupportForm.down('textfield[name=PONumber]').getValue();
+
+        if (!poNumber) {
+            poNumber = '';
+            promoSupportForm.down('textfield[name=PONumber]').setValue('');
+        }
+
+        //InvoiceNumber
+        var invoiceNumber = promoSupportForm.down('textfield[name=InvoiceNumber]').getValue();
+
+        if (!invoiceNumber) {
+            invoiceNumber = '';
+            promoSupportForm.down('textfield[name=InvoiceNumber]').setValue('');
+        }
+
         //поля на форме PromoSupportForm
         //Parameters
         var planQuantityValue = promoSupportForm.down('numberfield[name=PlanQuantity]').getValue(),
@@ -1061,6 +1105,7 @@
             budgetSubItemId = budgetSubItemField.getValue(),
             budgetSubItemName = budgetSubItemField.rawValue;
 
+        model.editing = true;
         //budgetSubItemField.validate();
 
         if (currentPromoSupport && budgetSubItemId) {
@@ -1082,6 +1127,8 @@
             currentPromoSupport.down('#periodText').setText(' c ' + Ext.Date.format(startDateValue, "d.m.Y") + ' по ' + Ext.Date.format(endDateValue, "d.m.Y"));
 
             model.data.Id = currentPromoSupport.promoSupportId ? currentPromoSupport.promoSupportId : model.data.Id;
+            model.set('PONumber', poNumber);
+            model.set('InvoiceNumber', invoiceNumber);
             model.set('ClientTreeId', editor.clientId);
             model.set('BudgetSubItemId', budgetSubItemId);
             model.set('PlanQuantity', planQuantityValue);
@@ -1192,6 +1239,8 @@
                 }
             })
         } else if (editor.singleUpdateMode) {
+            model.set('PONumber', poNumber);
+            model.set('InvoiceNumber', invoiceNumber);
             model.set('BudgetSubItemId', budgetSubItemId);
             model.set('PlanQuantity', planQuantityValue);
             model.set('ActualQuantity', actualQuantityValue);
@@ -1603,9 +1652,11 @@
             customPromoSupportEditor.down('#cancelPromoSupportForm').setVisible(false);
 
             promoLinkedGrid = associatedContainer.down('promolinkedcostprod').down('grid');
+            customPromoSupportEditor.down("#PONumber").show();
         } else {
             promoLinkedGrid = associatedContainer.down('promolinkedticosts').down('grid');
 
+            customPromoSupportEditor.down("#InvoiceNumber").show();
             customPromoSupportEditor.down('#costProductionFieldset').setVisible(false);
 
             // можно ли редактировать -> скрываем/показываем кнопку "Редактировать"
@@ -1808,20 +1859,24 @@
         if (editor.costProduction) {
             var planProdCostValue = editor.down('numberfield[name=PlanProductionCost]');
             var actualProdCostValue = editor.down('numberfield[name=ActualProductionCost]');
+            var poNumberValue = editor.down('textfield[name=PONumber]');
 
             fieldsToValidate.push(planProdCostValue);
             fieldsToValidate.push(actualProdCostValue);
+            fieldsToValidate.push(poNumberValue);
         }
         else {
             var planQuantityValue = editor.down('numberfield[name=PlanQuantity]');
             var actualQuantityValue = editor.down('numberfield[name=ActualQuantity]');
             var planCostTEValue = editor.down('numberfield[name=PlanCostTE]');
             var actualCostTEValue = editor.down('numberfield[name=ActualCostTE]');
+            var invoiceNumberValue = editor.down('textfield[name=InvoiceNumber]');
 
             fieldsToValidate.push(planQuantityValue);
             fieldsToValidate.push(actualQuantityValue);
             fieldsToValidate.push(planCostTEValue);
             fieldsToValidate.push(actualCostTEValue);
+            fieldsToValidate.push(invoiceNumberValue);
         }
 
         var isValid = true;
@@ -1848,8 +1903,13 @@
         }
     },
     // Открывается окно дитэйл-фильтра
-    onDetailFilterButtonClick: function () {
-        var masterFilterWindow = Ext.ComponentQuery.query('extmasterfilter')[0],
+    onDetailFilterButtonClick: function (button) {
+        var grid = this.getGridByButton(button),
+            store = grid.getStore(),
+            masterFilterWindow = Ext.widget('extmasterfilter', store.getExtendedFilter());
+
+        masterFilterWindow.show();
+
             // старый дитэйл-контекст из контекста мастер-фильтра
             ctx = masterFilterWindow.getFilterContext().detailContext,
             // дитэйл-контекст, если перед повторным открытием дитэйл-фильтра, не был применён мастер-фильтр
@@ -1887,31 +1947,82 @@
         }
         win.show();
     },
+
+    onDetailFilterBeforeDestroy: function () {
+        var masterFilterWindow = Ext.ComponentQuery.query('extmasterfilter')[0];
+        if (masterFilterWindow) {
+            masterFilterWindow.close();
+        }
+    },
+
+    // Очищаем detail фильтр
+    onDetailFilterRejectButtonClick: function (button) {
+        var filterWindow = Ext.ComponentQuery.query('extmasterfilter')[0];
+        var detailFilterWindow = button.up('extdetailfilter');
+        // Нафига вы запихали это в LoopHandler?)
+        var combinedDirectoryPanel = Ext.ComponentQuery.query('combineddirectorypanel')[0];
+        var topGrid = (Ext.ComponentQuery.query('promosupport')[0] || Ext.ComponentQuery.query('costproduction')[0]).down('grid');
+        var topGridStore = topGrid.getStore();
+        var topGridStoreExtendedFilter = topGridStore.extendedFilter;
+        var masterFilterWindowApplyButton = filterWindow.down('#masterapply');
+
+        if (filterWindow && detailFilterWindow) {
+            var form = filterWindow.down('extselectionfilter'); // После очистки фильтра фокус остаётся на кнопке, перемещаем фокус на форму.
+            if (form) {
+                form.focus()
+            }
+
+            filterWindow.getFilterContext().detailContext = null;
+            filterWindow.detailFilterContext = null;
+            Ext.ComponentQuery.query('combineddirectorypanel')[0].detailFilter = null;
+
+            var newRules = [];
+
+            if (topGridStoreExtendedFilter.filter && topGridStoreExtendedFilter.filter.rules.length > 0) {
+                newRules = topGridStoreExtendedFilter.filter.rules.filter(function (item) {
+                    return item.entity ? item.entity != 'PromoSupportPromo' : true;
+                });
+                topGridStoreExtendedFilter.filter.rules = newRules;
+            }
+
+            masterFilterWindowApplyButton.fireEvent('click');
+            detailFilterWindow.close();
+        }
+    },
+
     // Применение дитэйл-фильтра
     onDetailFilterApplyButtonClick: function (button) {
         var filterWindow = button.up('extdetailfilter'),
-            masterFilterWindow = Ext.ComponentQuery.query('extmasterfilter')[0],
-            modelView = filterWindow.modelContainer.child();
-        if (modelView) {
-            if (!modelView.getForm().isValid()) {
-                Ext.Msg.show({
-                    title: l10n.ns('core').value('errorTitle'),
-                    msg: l10n.ns('core', 'filter').value('filterErrorMessage'),
-                    buttons: Ext.MessageBox.OK,
-                    icon: Ext.Msg.ERROR
-                });
-                return;
+            masterFilterWindow = Ext.ComponentQuery.query('extmasterfilter')[0];
+
+        if (masterFilterWindow) {
+            var modelView = filterWindow.modelContainer.child(),
+                masterFilterWindowApplyButton = masterFilterWindow.down('#masterapply');
+
+            if (modelView) {
+                if (!modelView.getForm().isValid()) {
+                    Ext.Msg.show({
+                        title: l10n.ns('core').value('errorTitle'),
+                        msg: l10n.ns('core', 'filter').value('filterErrorMessage'),
+                        buttons: Ext.MessageBox.OK,
+                        icon: Ext.Msg.ERROR
+                    });
+                    return;
+                }
+                modelView.commitChanges();
             }
-            modelView.commitChanges();
+            // сохранение дитэйл-контекста
+            var context = filterWindow.getFilterContext();
+            var model = context.getFilterModel();
+            model.commit();
+
+            context.filter = model.getFilter();
+            context.fireEvent('extfilterchange', context);
+            masterFilterWindow.detailFilterContext = context;
+            masterFilterWindowApplyButton.fireEvent('click');
+
+            filterWindow.close();
         }
-        // сохранение дитэйл-контекста
-        var context = filterWindow.getFilterContext();
-        var model = context.getFilterModel();
-        model.commit();
-        context.filter = model.getFilter();
-        context.fireEvent('extfilterchange', context);
-        masterFilterWindow.detailFilterContext = context;
-        filterWindow.close();
     },
     // необходим т.к. базовый метод открывает текстовый фильтр только для первого окна TODO: исправить в ядре?
     ondetailTextTypeMenuItemClick: function (menuitem) {
@@ -1940,92 +2051,120 @@
     },
     // Применение мастер-фильтра
     onMasterFilterApplyButtonClick: function (menuitem) {
-        var filterWindow = menuitem.up('extmasterfilter');
-        modelView = filterWindow.modelContainer.child();
-        if (modelView) {
-            if (!modelView.getForm().isValid()) {
-                Ext.Msg.show({
-                    title: l10n.ns('core').value('errorTitle'),
-                    msg: l10n.ns('core', 'filter').value('filterErrorMessage'),
-                    buttons: Ext.MessageBox.OK,
-                    icon: Ext.Msg.ERROR
-                });
-                return;
-            }
-            modelView.commitChanges();
-            // контекст дитэйл-фильтра
-            var detailFilterContext = filterWindow.detailFilterContext;
-            // последний дитэйл-фильтр
-            var lastDetailFilter = Ext.ComponentQuery.query('combineddirectorypanel')[0].detailFilter;
-            var context = filterWindow.getFilterContext();
-            var detailFilter;
-            // если был применён дитэйл-фильтр
-            if (detailFilterContext) {
-                context.detailContext = detailFilterContext;
-                detailFilter = detailFilterContext.filter;
-                // Если был применён не пустой дитэйл-фильтр  (как например при очистке)
-                if (detailFilter) {
-                    detailFilter.operator = 'any';
-                    detailFilter.entity = 'PromoSupportPromo';
-                    detailFilter.rules.map(function (rule) {
-                        function makeNode(rule) {
-                            if (rule) {
-                                if (rule.operator) {
-                                    return rule.rules.map(function (item) {
-                                        return makeNode.apply(this, [item]);
-                                    }, this);
-                                } else if (rule) {
-                                    rule.entity = "PromoSupportPromo";
-                                    return rule;
-                                }
-                            }
-                        };
-                        return makeNode.apply(this, [rule]);
+        var filterWindow = Ext.ComponentQuery.query('extmasterfilter')[0];
+
+        if (filterWindow) {
+            var modelView = filterWindow.modelContainer.child();
+
+            if (modelView) {
+                if (!modelView.getForm().isValid()) {
+                    Ext.Msg.show({
+                        title: l10n.ns('core').value('errorTitle'),
+                        msg: l10n.ns('core', 'filter').value('filterErrorMessage'),
+                        buttons: Ext.MessageBox.OK,
+                        icon: Ext.Msg.ERROR
                     });
-                    // Удалённые записи не учитывать при фильтрации (TODO: рассмотреть возможность реализации Condition Mapping || убрать реализацию IDeactivatable из PromoSupportPromo)
-                    detailFilter.rules.push({
-                        entity: "PromoSupportPromo",
-                        operation: "Equals",
-                        property: "Disabled",
-                        value: false
-                    })
+                    return;
                 }
-                // сохраняем фильтр
-                Ext.ComponentQuery.query('combineddirectorypanel')[0].detailFilter = detailFilter;
+                modelView.commitChanges();
+                // контекст дитэйл-фильтра
+                var detailFilterContext = filterWindow.detailFilterContext;
+                // последний дитэйл-фильтр
+                var lastDetailFilter = Ext.ComponentQuery.query('combineddirectorypanel')[0].detailFilter;
+                var context = filterWindow.getFilterContext();
+                var detailFilter;
+                // если был применён дитэйл-фильтр
+                if (detailFilterContext) {
+                    context.detailContext = detailFilterContext;
+                    detailFilter = detailFilterContext.filter;
+                    // Если был применён не пустой дитэйл-фильтр  (как например при очистке)
+                    if (detailFilter) {
+                        detailFilter.operator = 'any';
+                        detailFilter.entity = 'PromoSupportPromo';
+                        detailFilter.rules.map(function (rule) {
+                            function makeNode(rule) {
+                                if (rule) {
+                                    if (rule.operator) {
+                                        return rule.rules.map(function (item) {
+                                            return makeNode.apply(this, [item]);
+                                        }, this);
+                                    } else if (rule) {
+                                        rule.entity = "PromoSupportPromo";
+                                        return rule;
+                                    }
+                                }
+                            };
+                            return makeNode.apply(this, [rule]);
+                        });
+                        // Удалённые записи не учитывать при фильтрации (TODO: рассмотреть возможность реализации Condition Mapping || убрать реализацию IDeactivatable из PromoSupportPromo)
+                        detailFilter.rules.push({
+                            entity: "PromoSupportPromo",
+                            operation: "Equals",
+                            property: "Disabled",
+                            value: false
+                        })
+                    }
+                    // сохраняем фильтр
+                    Ext.ComponentQuery.query('combineddirectorypanel')[0].detailFilter = detailFilter;
+                }
+                // если дитэйл-фильтр уже был применён ранее, но не был модифицирован при повторном применении мастер-фильтра
+                else if (lastDetailFilter)
+                    detailFilter = lastDetailFilter;
+                // если есть дитэйл-фильтр, он добавляется к основному
+                if (detailFilter) {
+                    context.getFilterModel().commit();
+                    var masterFilter = context.getFilterModel().getFilter();
+                    if (masterFilter) {
+                        masterFilter.rules.push(detailFilter);
+                        // если мастер-фильтр пуст
+                    } else
+                        masterFilter = detailFilter;
+                    context.filter = masterFilter;
+                    // если дитэйл-фильтр пуст
+                } else {
+                    context.getFilterModel().commit();
+                    context.filter = context.getFilterModel().getFilter();
+                }
+                context.reloadStore();
+                context.fireEvent('extfilterchange', filterWindow.getFilterContext());
+                filterWindow.close();
             }
-            // если дитэйл-фильтр уже был применён ранее, но не был модифицирован при повторном применении мастер-фильтра
-            else if (lastDetailFilter)
-                detailFilter = lastDetailFilter;
-            // если есть дитэйл-фильтр, он добавляется к основному
-            if (detailFilter) {
-                context.getFilterModel().commit();
-                var masterFilter = context.getFilterModel().getFilter();
-                if (masterFilter) {
-                    masterFilter.rules.push(detailFilter);
-                    // если мастер-фильтр пуст
-                } else
-                    masterFilter = detailFilter;
-                context.filter = masterFilter;
-                // если дитэйл-фильтр пуст
-            } else {
-                context.getFilterModel().commit();
-                context.filter = context.getFilterModel().getFilter();
-            }
-            context.reloadStore();
-            context.fireEvent('extfilterchange', filterWindow.getFilterContext());
-            filterWindow.close();
         }
     },
     // Очистка главного фильтра. Дополнительно очищается дитэйл-фильтр
     onMasterRejectButtonClick: function (button) {
         var filterWindow = button.up('extmasterfilter');
-        var form = filterWindow.down('extselectionfilter'); // После очистки фильтра фокус остаётся на кнопке, перемещаем фокус на форму.
-        if (form) {
-            form.focus()
+        var topGrid = (Ext.ComponentQuery.query('promosupport')[0] || Ext.ComponentQuery.query('costproduction')[0]).down('grid');
+        var topGridStore = topGrid.getStore();
+        var topGridStoreExtendedFilter = topGridStore.extendedFilter;
+
+        if (filterWindow) {
+            var masterFilterWindowApplyButton = filterWindow.down('#masterapply');
+            var form = filterWindow.down('extselectionfilter'); // После очистки фильтра фокус остаётся на кнопке, перемещаем фокус на форму.
+
+            if (form) {
+                form.focus()
+            }
+
+            var newRules = []
+            if (topGridStoreExtendedFilter.filter && topGridStoreExtendedFilter.filter.rules.length > 0) {
+                newRules = topGridStoreExtendedFilter.filter.rules.filter(function (item) {
+                    return item.entity == 'PromoSupportPromo';
+                });
+            }
+
+            // Если detail фильтр пустой, чистим все, иначе оставляем только правила detail фильтра.
+            if (newRules.length == 0) {
+                filterWindow.getFilterContext().clear();
+            } else {
+                var model = filterWindow.getFilterContext().getFilterModel();
+                if (model) {
+                    model.clear();
+                }
+
+                topGridStoreExtendedFilter.filter.rules = newRules;
+                masterFilterWindowApplyButton.fireEvent('click');
+            }
         }
-        filterWindow.getFilterContext().clear();
-        filterWindow.getFilterContext().detailContext = null;
-        filterWindow.detailFilterContext = null;
-        Ext.ComponentQuery.query('combineddirectorypanel')[0].detailFilter = null;
     }
 });

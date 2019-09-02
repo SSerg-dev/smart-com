@@ -95,11 +95,15 @@
             fieldLabel: l10n.ns('tpm', 'HistoricalAssortmentMatrix').value('_Operation')
         }, {
             xtype: 'singlelinedisplayfield',
+            fieldLabel: l10n.ns('tpm', 'AssortmentMatrix').value('Id'),
+            name: 'Number'
+        }, {
+            xtype: 'singlelinedisplayfield',
             fieldLabel: l10n.ns('tpm', 'AssortmentMatrix').value('ClientTreeName'),
             name: 'ClientTreeName'
         }, {
             xtype: 'singlelinedisplayfield',
-            name: 'EAN_PC',
+            name: 'ProductEANPC',
             fieldLabel: l10n.ns('tpm', 'AssortmentMatrix').value('EAN_PC'),
         },{
             xtype: 'datefield',

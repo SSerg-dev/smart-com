@@ -8,6 +8,8 @@ using Frontend.Core.Extensions.Export;
 using Looper.Core;
 using Looper.Parameters;
 using Module.Persist.TPM.Model.TPM;
+using Module.Persist.TPM.Utils;
+using Module.Persist.TPM.Utils.Filter;
 using Persist;
 using Persist.Model;
 using System;
@@ -37,7 +39,7 @@ namespace Module.Frontend.TPM.Controllers
             this.authorizationManager = authorizationManager;
         }
 
-        protected IQueryable<Product> GetConstraintedQuery()
+        protected IQueryable<Product> GetConstraintedQuery(string inOutProductTreeObjectIds = "", bool needInOutFilteredProducts = false, bool needInOutExcludeAssortmentMatrixProducts = false, bool needInOutSelectedProducts = false, string inOutProductIdsForGetting = "")
         {
             UserInfo user = authorizationManager.GetCurrentUser();
             string role = authorizationManager.GetCurrentRoleName();
@@ -45,6 +47,35 @@ namespace Module.Frontend.TPM.Controllers
                 .Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
                 .ToList() : new List<Constraint>();
             IQueryable<Product> query = Context.Set<Product>().Where(e => !e.Disabled);
+
+            if (needInOutFilteredProducts)
+            {
+                var productTreeObjectStringIds = inOutProductTreeObjectIds.Split(";".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                var productIreeObjectIntIds = new List<int>();
+                foreach (var productTreeObjectStringId in productTreeObjectStringIds)
+                {
+                    int productTreeObjectIntId;
+                    if (int.TryParse(productTreeObjectStringId, out productTreeObjectIntId))
+                    {
+                        productIreeObjectIntIds.Add(productTreeObjectIntId);
+                    }
+                }
+
+                var filteredProducts = GetFilteredProducts(productIreeObjectIntIds);
+                if (!needInOutExcludeAssortmentMatrixProducts)
+                {
+                    query = filteredProducts.AsQueryable();
+                }
+                else
+                {
+                    var productsFromAssortmentMatrix = GetProductsFromAssortmentMatrix();
+                    query = filteredProducts.Except(productsFromAssortmentMatrix).AsQueryable();
+                }
+            }
+            else if (needInOutSelectedProducts)
+            {
+                query = GetProductsFromString(inOutProductIdsForGetting).AsQueryable();
+            }
 
             return query;
         }
@@ -58,12 +89,21 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
-        public IQueryable<Product> GetProducts()
+        public IQueryable<Product> GetProducts(string inOutProductTreeObjectIds, bool needInOutFilteredProducts, bool needInOutExcludeAssortmentMatrixProducts, bool needInOutSelectedProducts, string inOutProductIdsForGetting)
         {
-            return GetConstraintedQuery();
+            return GetConstraintedQuery(inOutProductTreeObjectIds, needInOutFilteredProducts, needInOutExcludeAssortmentMatrixProducts, needInOutSelectedProducts, inOutProductIdsForGetting);
         }
 
-        [ClaimsAuthorize]
+		[HttpPost]
+		[ClaimsAuthorize]
+		public IQueryable<Product> GetSelectedProducts(ODataActionParameters data)
+		{
+			var inOutProductIds = data["jsonData"] as IEnumerable<string>;
+			string inOutProductIdsString = String.Join(";", inOutProductIds);
+			return GetConstraintedQuery(null, false, false, true, inOutProductIdsString);
+		}
+
+		[ClaimsAuthorize]
         public IHttpActionResult Put([FromODataUri] System.Guid key, Delta<Product> patch)
         {
             var model = Context.Set<Product>().Find(key);
@@ -104,7 +144,8 @@ namespace Module.Frontend.TPM.Controllers
             {
                 CheckNewBrandTech(result.BrandFlag, result.SupplySegment);
                 Context.Set<Product>().Add(result);
-                Context.Set<ProductChangeIncident>().Add(CreateIncident(result, true, false));
+                // добавлен триггер на INSERT для импорта, поэтому создавать инцидент еще раз тут не надо
+                //Context.Set<ProductChangeIncident>().Add(CreateIncident(result, true, false));
                 Context.SaveChanges();
             }
             catch (Exception e)
@@ -166,8 +207,24 @@ namespace Module.Frontend.TPM.Controllers
                 model.DeletedDate = System.DateTime.Now;
                 model.Disabled = true;
                 Context.Set<ProductChangeIncident>().Add(CreateIncident(model, false, true));
-                Context.SaveChanges();
+                
+                // удаляем продукты и incremental у промо в статусе Draft (пока иерархия не зафиксирована)
+                var productsInDraftPromoes = Context.Set<PromoProduct>().Where(n => n.ProductId == key && n.Promo.PromoStatus != null && n.Promo.PromoStatus.SystemName.ToLower() == "draft");
+                var incrementalInDraftPromoes = Context.Set<IncrementalPromo>().Where(n => n.ProductId == key && n.Promo.PromoStatus != null && n.Promo.PromoStatus.SystemName.ToLower() == "draft");
 
+                foreach(PromoProduct pp in productsInDraftPromoes)
+                {
+                    pp.Disabled = true;
+                    pp.DeletedDate = DateTimeOffset.Now;
+                }
+
+                foreach (IncrementalPromo ip in incrementalInDraftPromoes)
+                {
+                    ip.Disabled = true;
+                    ip.DeletedDate = DateTimeOffset.Now;
+                }
+
+                Context.SaveChanges();
                 return StatusCode(HttpStatusCode.NoContent);
             }
             catch (Exception e)
@@ -275,7 +332,7 @@ namespace Module.Frontend.TPM.Controllers
         /// <returns></returns>
         private ProductChangeIncident CreateIncident(Product product, bool isCreate, bool isDelete) {
             return new ProductChangeIncident {
-                CreateDate = DateTime.Now,
+                CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
                 ProductId = product.Id,
                 IsCreate = isCreate,
                 IsDelete = isDelete
@@ -335,7 +392,7 @@ namespace Module.Frontend.TPM.Controllers
                     Description = "Загрузка импорта из файла " + typeof(ImportProduct).Name,
                     Name = "Module.Host.TPM.Handlers." + importHandler,
                     ExecutionPeriod = null,
-                    CreateDate = DateTimeOffset.Now,
+                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
                     LastExecutionDate = null,
                     NextExecutionDate = null,
                     ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
@@ -381,6 +438,66 @@ namespace Module.Frontend.TPM.Controllers
             {
                 return InternalServerError(e.InnerException);
             }
+        }
+
+        private IEnumerable<Product> GetFilteredProducts(List<int> productTreeObjectIds)
+        {
+            var productTreeNodes = Context.Set<ProductTree>().Where(x => productTreeObjectIds.Any(y => x.ObjectId == y) && !x.EndDate.HasValue);
+            var expressionList = new List<Func<Product, bool>>();
+            try
+            {
+                expressionList = GetExpressionList(productTreeNodes);
+            }
+            // На случай некорректного фильтра.
+            catch { }
+
+            var filteredProducts = Context.Set<Product>().Where(x => !x.Disabled).ToList();
+            return filteredProducts.Where(x => expressionList.Any(y => y.Invoke(x)));
+        }
+
+        private IEnumerable<Product> GetProductsFromAssortmentMatrix()
+        {
+            return Context.Set<AssortmentMatrix>().Where(x => !x.Disabled).Select(x => x.Product);
+        }
+
+        private static List<Func<Product, bool>> GetExpressionList(IEnumerable<ProductTree> productTreeNodes)
+        {
+            var expressionsList = new List<Func<Product, bool>>();
+            foreach (ProductTree node in productTreeNodes)
+            {
+                if (node != null && !String.IsNullOrEmpty(node.Filter))
+                {
+                    string stringFilter = node.Filter;
+                    // Преобразованиестроки фильтра в соответствующий класс
+                    FilterNode filter = stringFilter.ConvertToNode();
+                    // Создание функции фильтрации на основе построенного фильтра
+                    var expr = filter.ToExpressionTree<Product>();
+                    expressionsList.Add(expr.Compile());
+                }
+            }
+            return expressionsList;
+        }
+
+        private IEnumerable<Product> GetProductsFromString(string productIds)
+        {
+            List<Product> products = new List<Product>();
+
+            if (!String.IsNullOrEmpty(productIds))
+            {
+                var productGuidIds = productIds.Split(";".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(x => Guid.Parse(x)).ToList();
+
+                foreach (var productGuidId in productGuidIds)
+                {
+                    var product = Context.Set<Product>().FirstOrDefault(x => x.Id == productGuidId);
+
+                    if (product != null)
+                    {
+                        products.Add(product);
+                    }
+                }
+            }
+
+            return products;
         }
     }
 }

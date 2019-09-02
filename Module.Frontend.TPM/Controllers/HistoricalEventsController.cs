@@ -23,7 +23,7 @@ namespace Module.Frontend.TPM.Controllers
             MaxTop = 1024)]
         public IQueryable<HistoricalEvent> GetHistoricalEvents()
         {
-            return HistoryReader.Query<HistoricalEvent>();
+            return HistoryReader.GetAll<HistoricalEvent>();
         }
 
         protected override void Dispose(bool disposing)

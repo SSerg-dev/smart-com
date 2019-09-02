@@ -78,6 +78,36 @@
                             }
                         }
                     }]
+                }, {
+                    xtype: 'fieldset',
+                    id: 'PONumber',
+                    title: l10n.ns('tpm', 'PromoSupport').value('PONumber'),
+                    margin: '0 0 0 5',
+                    flex: 2,
+                    layout: 'fit',
+                    hidden: true,
+                    items: [{
+                        margin: '0 5 0 5',
+                        xtype: 'textfield',
+                        name: 'PONumber',
+                        regex: /^[0-9]*[0-9]$/,
+                        regexText: l10n.ns('tpm', 'PromoSupport').value('PONumberRegex'),
+                    }]
+                }, {
+                    xtype: 'fieldset',
+                    id: 'InvoiceNumber',
+                    title: l10n.ns('tpm', 'PromoSupport').value('InvoiceNumber'),
+                    margin: '0 0 0 5',
+                    flex: 2,
+                    layout: 'fit',
+                    hidden: true,
+                    items: [{
+                        margin: '0 5 0 5',
+                        xtype: 'textfield',
+                        name: 'InvoiceNumber',
+                        regex: /^[0-9]*[0-9]$/,
+                        regexText: l10n.ns('tpm', 'PromoSupport').value('InvoiceNumberRegex'),
+                    }]
                 }]
             }, {
                 xtype: 'fieldset',
@@ -89,6 +119,7 @@
                 },
                 defaults: {
                     minValue: 0,
+                    maxValue: 2000000000,
                     labelAlign: 'top',
                     hideTrigger: true,
                     needClear: true,
@@ -183,6 +214,7 @@
                         fieldLabel: 'Plan prod cost per 1 item',
                         needReadOnlyFromCostProduction: false,
                         minValue: 0,
+                        maxValue: 2000000000,
                         allowDecimal: true,
                         listeners: {
                             change: function (field) {
@@ -199,8 +231,9 @@
                         xtype: 'numberfield',
                         name: 'ActualProdCostPer1Item',
                         fieldLabel: 'Actual prod cost per 1 item',
-                        needReadOnlyFromCostProduction: false,
+                        needReadOnlyFromCostProduction: false,                        
                         minValue: 0,
+                        maxValue: 2000000000,
                         allowDecimal: true,
                         listeners: {
                             change: function (field) {
@@ -239,12 +272,12 @@
                         xtype: 'numberfield',
                         name: 'PlanQuantityCopy',
                         fieldLabel: 'Plan Quantity',
-                        needReadOnlyFromCostProduction: true,
+                        needReadOnlyFromCostProduction: true,                        
                     }, {
                         xtype: 'numberfield',
                         name: 'PlanProductionCost',
                         fieldLabel: 'Plan production cost',
-                        needReadOnlyFromCostProduction: true,
+                        needReadOnlyFromCostProduction: true,                        
                     }, {
                         xtype: 'numberfield',
                         name: 'ActualQuantityCopy',
@@ -277,7 +310,7 @@
                         xtype: 'container',
                         flex: 5,
                         layout: {
-                            type: 'vbox', 
+                            type: 'vbox',
                         },
                         items: [{
                             xtype: 'label',

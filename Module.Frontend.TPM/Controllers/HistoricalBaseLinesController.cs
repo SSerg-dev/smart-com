@@ -24,7 +24,7 @@ namespace Module.Frontend.TPM.Controllers
             MaxTop = 1024)]
         public IQueryable<HistoricalBaseLine> GetHistoricalBaseLines()
         {
-            return HistoryReader.Query<HistoricalBaseLine>();
+            return HistoryReader.GetAll<HistoricalBaseLine>();
         }
 
         protected override void Dispose(bool disposing)

@@ -7,7 +7,7 @@ Ext.define('App.model.core.xmlprocessinterfacesetting.HistoricalXMLProcessInterf
 		{ name: '_ObjectId', hidden: true, extendedFilterEntry: App.extfilter.core.ConfigSource.getEntryConfig('HistoricalXMLProcessInterfaceSetting', '_ObjectId') },
 		{ name: '_User', type: 'string', isDefault: true, extendedFilterEntry: App.extfilter.core.ConfigSource.getEntryConfig('HistoricalXMLProcessInterfaceSetting', '_User', 'string') },
 		{ name: '_Role', type: 'string', isDefault: true, extendedFilterEntry: App.extfilter.core.ConfigSource.getEntryConfig('HistoricalXMLProcessInterfaceSetting', '_Role', 'string') },
-		{ name: '_EditDate', type: 'date', isDefault: true, extendedFilterEntry: App.extfilter.core.ConfigSource.getEntryConfig('HistoricalXMLProcessInterfaceSetting', '_EditDate', 'date') },
+        { name: '_EditDate', type: 'date', isDefault: true, extendedFilterEntry: App.extfilter.core.ConfigSource.getEntryConfig('HistoricalXMLProcessInterfaceSetting', '_EditDate', 'date'), timeZone: +3, convert: dateConvertTimeZone },
 		{ name: '_Operation', type: 'string', isDefault: true, extendedFilterEntry: App.extfilter.core.ConfigSource.getEntryConfig('HistoricalXMLProcessInterfaceSetting', '_Operation', 'string') },
 		{ name: 'InterfaceId', hidden: true, extendedFilterEntry: App.extfilter.core.ConfigSource.getEntryConfig('HistoricalXMLProcessInterfaceSetting', 'InterfaceId') },
 		{ name: 'InterfaceName', type: 'string', isDefault: true, extendedFilterEntry: App.extfilter.core.ConfigSource.getEntryConfig('Interface', 'Name', 'search') },

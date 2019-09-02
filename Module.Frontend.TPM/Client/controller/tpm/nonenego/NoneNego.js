@@ -296,8 +296,8 @@
             myMask.show();
 
             var parameters = {
-                fromDate: breeze.DataType.DateTimeOffset.fmtOData(fromDate.getValue()),
-                toDate: breeze.DataType.DateTimeOffset.fmtOData(toDate.getValue()),
+                fromDate: breeze.DataType.DateTimeOffset.fmtOData(changeTimeZone(fromDate.getValue(), 3, -1)),
+                toDate: breeze.DataType.DateTimeOffset.fmtOData(changeTimeZone(toDate.getValue(), 3, -1)),
                 noneNegoId: noneNegoId,
                 clientTreeId: clientTreeId.getValue(),
                 productTreeId: productTreeId.getValue(),
@@ -371,6 +371,8 @@
 
         var nonenegoeditor = Ext.ComponentQuery.query('nonenegoeditor')[0];
         var createDate = nonenegoeditor.down('[name=CreateDate]');
-        createDate.setValue(new Date());
+        var date = new Date();
+        date.setHours(date.getHours() + (date.getTimezoneOffset() / 60) + 3);   // приведение к московской timezone
+        createDate.setValue(date);    
     },
 });

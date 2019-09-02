@@ -21,7 +21,7 @@ namespace Module.Frontend.TPM.Controllers {
             EnableConstantParameterization = false,
             MaxTop = 1024)]
         public IQueryable<HistoricalCOGS> GetHistoricalCOGSs() {
-            return HistoryReader.Query<HistoricalCOGS>();
+            return HistoryReader.GetAll<HistoricalCOGS>();
         }
 
         protected override void Dispose(bool disposing) {

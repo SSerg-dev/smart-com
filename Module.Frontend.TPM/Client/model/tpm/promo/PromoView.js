@@ -18,12 +18,13 @@
         { name: 'CreatorId', useNull: true, hidden: true, isDefault: false, defaultValue: null },
         { name: 'ClientTreeId', useNull: true, hidden: true, isDefault: false, defaultValue: null },
         { name: 'BaseClientTreeIds', useNull: true, hidden: true, isDefault: false, defaultValue: null },      
-        { name: 'StartDate', useNull: true, type: 'date', hidden: true },
-        { name: 'DateStart', useNull: true, type: 'date', hidden: false, isDefault: false, mapping: 'StartDate' },
-        { name: 'EndDate', useNull: true, type: 'date', hidden: false, isDefault: false },
+        { name: 'StartDate', useNull: true, type: 'date', hidden: true, timeZone: +3, convert: dateConvertTimeZone },
+        { name: 'DateStart', useNull: true, type: 'date', hidden: false, isDefault: false, mapping: 'StartDate', timeZone: +3, convert: dateConvertTimeZone },
+        { name: 'EndDate', useNull: true, type: 'date', hidden: false, isDefault: false, timeZone: +3, convert: dateConvertTimeZone },
         { name: 'CalendarPriority', useNull: true, type: 'int', hidden: false, isDefault: false },
-        { name: 'DispatchesStart', useNull: true, type: 'date', hidden: false, isDefault: true },
+        { name: 'DispatchesStart', useNull: true, type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
         { name: 'PromoStatusSystemName', type: 'string', hidden: false, isDefault: true },
+        { name: "InOut", type: "boolean", persist: false, hidden: true, defaultValue: true },
 
         //Дублирование встроенных полей Schedule для фильтрации списка полей фильтрации
         { name: "Draggable", type: "boolean", persist: false, hidden: true, defaultValue: true },

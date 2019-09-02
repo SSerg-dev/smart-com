@@ -20,7 +20,9 @@
 
                 return shortName;
             }
-        }
+        },
+        // ЧТО ЭТО? Угадай!
+        { name: 'BOIstring', hidden: true, type: 'string', mapping: 'BOI'}
     ],
     proxy: {
         type: 'breeze',

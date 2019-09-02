@@ -26,6 +26,7 @@ using Thinktecture.IdentityModel.Authorization.WebApi;
 using System.Web.Http.Results;
 using System.Data.SqlClient;
 using System.Net.Http.Headers;
+using Module.Persist.TPM.Utils;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -303,7 +304,7 @@ namespace Module.Frontend.TPM.Controllers
                     Description = "Загрузка импорта из файла " + typeof(ImportPromoSales).Name,
                     Name = "Module.Host.TPM.Handlers." + importHandler,
                     ExecutionPeriod = null,
-                    CreateDate = DateTimeOffset.Now,
+                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
                     LastExecutionDate = null,
                     NextExecutionDate = null,
                     ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,

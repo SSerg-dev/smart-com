@@ -29,6 +29,9 @@ using Core.Settings;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using System.Collections.Specialized;
+using Module.Persist.TPM.Utils;
+using Utility;
+using Module.Persist.TPM.Model.DTO;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -49,10 +52,14 @@ namespace Module.Frontend.TPM.Controllers
                 .Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
                 .ToList() : new List<Constraint>();
 
-            IQueryable<BaseLine> query = Context.Set<BaseLine>().Where(e => !e.Disabled);
+			IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
+			IQueryable<BaseLine> query = Context.Set<BaseLine>().Where(e => !e.Disabled);
+			IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
 
-            return query;
-        }
+			query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
+
+			return query;
+		}
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
@@ -106,10 +113,13 @@ namespace Module.Frontend.TPM.Controllers
                 return BadRequest(ModelState);
             }
 
+            // делаем UTC +3
+            model.StartDate = ChangeTimeZoneUtil.ResetTimeZone(model.StartDate);
+
             var proxy = Context.Set<BaseLine>().Create<BaseLine>();
             var result = (BaseLine)Mapper.Map(model, proxy, typeof(BaseLine), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
             Context.Set<BaseLine>().Add(result);
-            result.LastModifiedDate = DateTimeOffset.Now;
+            result.LastModifiedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
 
             try
             {
@@ -135,8 +145,9 @@ namespace Module.Frontend.TPM.Controllers
                     return NotFound();
                 }
 
-                patch.Patch(model);
-                model.LastModifiedDate = DateTimeOffset.Now;
+                patch.Patch(model);                
+                model.StartDate = ChangeTimeZoneUtil.ResetTimeZone(model.StartDate);
+                model.LastModifiedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
                 Context.SaveChanges();
 
                 return Updated(model);
@@ -314,7 +325,7 @@ namespace Module.Frontend.TPM.Controllers
                     Description = "Загрузка импорта из файла " + typeof(ImportBaseLine).Name,
                     Name = "Module.Host.TPM.Handlers." + importHandler,
                     ExecutionPeriod = null,
-                    CreateDate = DateTimeOffset.Now,
+                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
                     LastExecutionDate = null,
                     NextExecutionDate = null,
                     ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,

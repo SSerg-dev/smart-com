@@ -18,6 +18,10 @@ namespace Module.Persist.TPM.Model.DTO {
         public bool? IsCMManagerApproved { get; set; }
         public double? PlanInstoreMechanicDiscount { get; set; }
 
+        public DateTimeOffset? LastChangedDate { get; set; }
+        public DateTimeOffset? LastChangedDateDemand { get; set; }
+        public DateTimeOffset? LastChangedDateFinance { get; set; }
+
         public DateTimeOffset? EndDate { get; set; }
         public DateTimeOffset? StartDate { get; set; }
 
@@ -60,5 +64,8 @@ namespace Module.Persist.TPM.Model.DTO {
         public double? ActualPromoROIPercent { get; set; }
         public double? PlanPromoNetIncrementalNSV { get; set; }
         public double? PlanPromoIncrementalNSV { get; set; }
+        public bool? InOut { get; set; }
+        public double? PlanPromoIncrementalLSV { get; set; }
+        public double? PlanPromoBaselineLSV { get; set; }
     }
 }

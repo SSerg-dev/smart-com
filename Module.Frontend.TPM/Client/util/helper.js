@@ -357,6 +357,64 @@ Ext.override(App.view.core.toolbar.ReportsFilterToolbar, {
         glyph: 0xf349,
         text: l10n.ns('core', 'toptoolbar').value('filterButtonText'),
         tooltip: l10n.ns('core', 'toptoolbar').value('filterButtonText')
+    }, {
+        itemId: 'downloadlogbutton',
+        blocked: true,
+        glyph: 0xf1da,
+        text: l10n.ns('tpm', 'customtoptoolbar').value('downloadScheduleButtonText'),
+        tooltip: l10n.ns('tpm', 'customtoptoolbar').value('downloadScheduleButtonText'),
+        listeners: {
+            click: function (button) {
+                var me = this,
+                    grid = button.up('combineddirectorypanel').down('directorygrid'),
+                    selModel = grid.getSelectionModel(),
+                    resource = button.resource || 'LoopHandlers',
+                    action = button.action || 'Parameters';
+
+                if (selModel.hasSelection()) {
+                    grid.setLoading(true);
+                    record = selModel.getSelection()[0],
+
+                        breeze.EntityQuery
+                            .from(resource)
+                            .withParameters({
+                                $actionName: action,
+                                $method: 'POST',
+                                $entity: record.getProxy().getBreezeEntityByRecord(record)
+                            })
+                            .using(Ext.ux.data.BreezeEntityManager.getEntityManager())
+                            .execute()
+                            .then(function (data) {
+                                var resultData = data.httpResponse.data.value;
+                                var result = JSON.parse(resultData);
+
+                                var filePresent = result.OutcomingParameters != null &&
+                                    result.OutcomingParameters.File != null &&
+                                    result.OutcomingParameters.File.Value != null &&
+                                    result.OutcomingParameters.File.Value.Name != null;
+                                if (filePresent) {
+                                    var href = document.location.href + Ext.String.format('/api/File/{0}?{1}={2}', 'ExportDownload', 'filename', result.OutcomingParameters.File.Value.Name);
+                                    var aLink = document.createElement('a');
+                                    aLink.download = "FileData";
+                                    aLink.href = href;
+                                    document.body.appendChild(aLink);
+                                    aLink.click();
+                                    document.body.removeChild(aLink);
+                                } else {
+                                    App.Notify.pushInfo(l10n.ns('tpm', 'customtoptoolbar').value('downloadError'));
+                                }
+                                grid.setLoading(false);
+                            })
+                            .fail(function (data) {
+                                grid.setLoading(false);
+                                App.Notify.pushError(me.getErrorMessage(data));
+                            });
+                } else {
+                    console.log('No selection');
+                    App.Notify.pushInfo(l10n.ns('tpm', 'customtoptoolbar').value('noSelectionError'));
+                }
+            }
+        }
     }, '->', '-', {
         itemId: 'extfilterclearbutton',
         ui: 'blue-button-toolbar',
@@ -498,10 +556,10 @@ Ext.override(App.controller.core.associatedmailnotificationsetting.recipient.His
 // custom Vtype
 Ext.apply(Ext.form.field.VTypes, {
     eanNum: function (v) {
-        return /^\d{0,13}$/.test(v);
+        return /^\d{0,}$/.test(v);
     },
     eanNumText: 'Must be a numeric EAN Case',
-    eanNumMask: /\d{0,13}/i
+    eanNumMask: /\d{0,}/i
 });
 
 //Правка для IE при смене фокуса в гриде
@@ -549,3 +607,423 @@ var setMonthPicker = function (currentDateField, otherDateField) {
         picker.setValue(dateMonth);
     }
 };
+
+Ext.chart.LegendItem.override({
+    updateSpecPosition: function (relativeTo) {
+        var me = this,
+            items = me.items,
+            ln = items.length,
+            item, i, x, y, translate, o,
+            relativeX, relativeY;
+
+        if (!relativeTo) {
+            relativeTo = me.legend;
+        }
+
+        relativeX = relativeTo.x;
+        relativeY = relativeTo.y;
+        for (i = 0; i < ln; i++) {
+            translate = true;
+            item = items[i];
+            switch (item.type) {
+                case 'text':
+                    x = relativeX + item.bbox.transform.height + 5;
+                    y = relativeY;
+                    translate = false;
+                    break;
+                case 'rect':
+                    x = relativeX;
+                    y = relativeY - item.width/2;
+                    break;
+                default:
+                    x = relativeX;
+                    y = relativeY;
+            }
+
+            o = {
+                x: x,
+                y: y
+            };
+            item.setAttributes(translate ? {
+                translate: o
+            } : o, true);
+        }
+    },
+
+    //onMouseOver: function () {
+    //    if (!this.legend.gaugeMouse) {
+    //        this.callParent();
+    //    }
+    //},
+
+    //onMouseOut: function () {
+    //    if (!this.legend.gaugeMouse) {
+    //        this.callParent();
+    //    }
+    //},
+
+    onMouseDown: function () {
+        if (!this.legend.gaugeMouse) {
+            this.callParent();
+        }
+    }
+});
+
+Ext.chart.Legend.override({
+    updatePosition: function () {
+        var me = this;
+        if (!me.customLegend) {
+            this.callParent();
+        } else {
+            var items = me.items,
+                itemsInOneRow = me.itemsInOneRow,
+                pos, j, i, l, bbox, startX, itemHSpacing, itemWSpacing;
+            if (me.isDisplayed()) {
+                pos = me.calcPosition();
+                me.x = pos.x;
+                me.y = pos.y;
+                itemHSpacing = me.itemHSpacing != undefined ? me.itemHSpacing : 0;
+                itemWSpacing = me.itemWSpacing != undefined ? me.itemWSpacing : 0;
+                startX = (me.startX != undefined ? me.startX : me.x) + me.padding;
+                var posX = startX,
+                    posY = me.y + itemHSpacing + me.padding,
+                    itemHeight = items[0].getBBox().height;
+
+                bbox = me.getBBox();
+                for (j = 0; j < me.legendRow; j++) {
+                    i = itemsInOneRow * j;
+                    l = (j == me.legendRow - 1) ? items.length : itemsInOneRow + i;
+                    for (i; i < l; i++) {
+                        items[i].updateSpecPosition({ x: posX, y: posY });
+                        posX += me.maxItemWidth + itemWSpacing;
+                    }
+                    posY = posY + itemHeight + itemHSpacing;
+                    posX = startX;
+                }
+                if (isNaN(bbox.width) || isNaN(bbox.height)) {
+                    if (me.boxSprite) {
+                        me.boxSprite.hide(true);
+                    }
+                }
+                else {
+                    if (!me.boxSprite) {
+                        me.createBox();
+                    }
+                    me.boxSprite.setAttributes(bbox, true);
+                    me.boxSprite.show(true);
+                }
+            }
+
+        }
+    },
+
+    updateItemDimensions: function () {
+        var me = this;
+
+        if (!me.customLegend) {
+            dim = this.callParent();
+            return dim;
+        } else {
+            var items = me.items,
+                itemHSpacing,
+                itemWSpacing,
+                resMaxWidth = 0,
+                resMaxHeight = 0,
+                resTotalWidth = 0,
+                resTotalHeight = 0,
+                itemWidth;
+
+            itemHSpacing = me.itemHSpacing != undefined ? me.itemHSpacing : 0;
+            itemWSpacing = me.itemWSpacing != undefined ? me.itemWSpacing : 0;
+
+            me.maxItemWidth = 0;
+            for (i = 0; i < items.length; i++) {
+                items[i].addCls('chart-legend');
+                itemWidth = items[i].getBBox().width + itemWSpacing
+                if (me.maxItemWidth < itemWidth) {
+                    me.maxItemWidth = itemWidth;
+                }
+            };
+
+            me.itemsInOneRow = Math.floor(me.chart.surface.width / me.maxItemWidth);
+            me.legendRow = Math.ceil(items.length / me.itemsInOneRow);
+
+            resTotalWidth = (me.legendRow == 1 ? items.length : me.itemsInOneRow) * me.maxItemWidth;
+            resMaxWidth = resTotalWidth;
+
+            resTotalHeight = (items[0].getBBox().height) * me.legendRow + itemHSpacing * (me.legendRow-1);
+            resMaxHeight = resTotalHeight;
+
+            return {
+                totalWidth: resTotalWidth,
+                totalHeight: resTotalHeight,
+                maxWidth: resMaxWidth,
+                maxHeight: resMaxHeight
+            };
+        }
+    },
+
+    getBBox: function () {
+        var me = this,
+            surface = me.chart.surface,
+            width = (me.width < surface.width) ? me.width : surface.width
+        return {
+            x: Math.round(me.x) - me.boxStrokeWidth / 2,
+            y: Math.round(me.y) - me.boxStrokeWidth / 2,
+            width: width + me.boxStrokeWidth,
+            height: me.height + me.boxStrokeWidth
+        };
+    },
+});
+
+//Кастомные конфиги: custom, strokeColor
+Ext.chart.series.Gauge.override({
+
+    initialize: function () {
+        var me = this;
+        if (!me.custom) {
+            this.callParent();
+        } else {
+            var store = me.chart.getChartStore(),
+                data = store.data.items,
+                label = me.label,
+                ln = data.length;
+
+            me.yField = [];
+            if (label && label.field && ln > 0) {
+                for (var i = 0; i < ln; i++) {
+                    me.yField.push(data[i].get(label.field));
+                }
+            }
+        }
+    },
+
+    drawSeries: function () {
+        var me = this,
+            chart = me.chart,
+            store = chart.getChartStore();
+        if (!me.custom) {
+            this.callParent();
+        } else {
+            var group = me.group,
+                animate = me.chart.animate,
+                axis = me.chart.axes.get(0),
+                minimum = axis && axis.minimum || me.minimum || 0,
+                maximum = axis && axis.maximum || me.maximum || 0,
+                field = me.angleField || me.field || me.xField,
+                surface = chart.surface,
+                chartBBox = chart.chartBBox,
+                donut = +me.donut,
+                values = [],
+                startRho,
+                rhoOffset,
+                items = [],
+                seriesStyle = me.seriesStyle,
+                colorArrayStyle = me.colorArrayStyle,
+                colorArrayLength = colorArrayStyle && colorArrayStyle.length || 0,
+                cos = Math.cos,
+                sin = Math.sin,
+                defaultStart = -180,
+                rendererAttributes, centerX, centerY, slice, slices, sprite,
+                item, ln, i,
+                spriteOptions, splitAngle1, splitAngle2, sliceA, sliceB, sliceC;
+
+            Ext.apply(seriesStyle, me.style || {});
+
+            me.setBBox();
+            bbox = me.bbox;
+
+
+            if (me.colorSet) {
+                colorArrayStyle = me.colorSet;
+                colorArrayLength = colorArrayStyle.length;
+            }
+            colorArrayStyle = colorArrayStyle.slice().reverse();
+
+            if (!store || !store.getCount() || me.seriesIsHidden) {
+                me.hide();
+                me.items = [];
+                return;
+            }
+
+            centerX = me.centerX = chartBBox.x + (chartBBox.width / 2);
+            centerY = me.centerY = chartBBox.y + chartBBox.height;
+            me.radius = Math.min(centerX - chartBBox.x, centerY - chartBBox.y);
+            me.slices = slices = [];
+            me.items = items = [];
+
+            startRho = me.radius * +donut / 100;
+            rhoOffset = (me.radius - startRho) / 2 - 0.15;
+
+            for (i = 0; i < store.getCount(); i++) {
+                if (!values[i]) {
+                    values[i] = store.getAt(i).get(field);;
+                }
+            }
+
+            splitAngle1 = defaultStart * (1 - (values[0] - minimum) / (maximum - minimum));
+            splitAngle2 = defaultStart * (1 - (values[1] - minimum) / (maximum - minimum));
+            sliceA = {
+                series: me,
+                value: values[1],
+                startAngle: defaultStart,
+                endAngle: splitAngle2,
+                rho: me.radius,
+                startRho: startRho,
+                endRho: me.radius - rhoOffset
+            };
+            sliceB = {
+                series: me,
+                value: values[0],
+                startAngle: defaultStart,
+                endAngle: splitAngle1,
+                rho: me.radius,
+                startRho: startRho + rhoOffset,
+                endRho: me.radius
+            };
+            sliceC = {
+                series: me,
+                value: maximum,
+                startAngle: defaultStart,
+                endAngle: 0,
+                rho: me.radius,
+                startRho: startRho,
+                endRho: me.radius
+            };
+
+            slices.push(sliceC, sliceA, sliceB);
+
+            for (i = 0, ln = slices.length; i < ln; i++) {
+                slice = slices[i];
+                sprite = group.getAt(i);
+
+                rendererAttributes = Ext.apply({
+                    segment: {
+                        startAngle: slice.startAngle,
+                        endAngle: slice.endAngle,
+                        margin: 0,
+                        rho: slice.rho,
+                        startRho: slice.startRho,
+                        endRho: slice.endRho
+                    }
+                }, Ext.apply(seriesStyle, colorArrayStyle && { fill: colorArrayStyle[i % colorArrayLength] } || {}));
+
+                item = Ext.apply({},
+                    rendererAttributes.segment, {
+                        slice: slice,
+                        series: me,
+                        storeItem: store.getAt(i),
+                        index: i
+                    });
+                items[i] = item;
+
+                if (!sprite) {
+                    spriteOptions = Ext.apply({
+                        type: "path",
+                        group: group
+                    }, Ext.apply(seriesStyle, colorArrayStyle && { fill: colorArrayStyle[i % colorArrayLength] } || {}));
+                    sprite = surface.add(Ext.apply(spriteOptions, rendererAttributes));
+                }
+                slice.sprite = slice.sprite || [];
+                item.sprite = sprite;
+                slice.sprite.push(sprite);
+                if (animate) {
+                    rendererAttributes = me.renderer(sprite, store.getAt(i), rendererAttributes, i, store);
+                    sprite._to = rendererAttributes;
+                    me.onAnimate(sprite, {
+                        to: rendererAttributes
+                    });
+                } else {
+                    rendererAttributes = me.renderer(sprite, store.getAt(i), Ext.apply(rendererAttributes, {
+                        hidden: false
+                    }), i, store);
+                    sprite.setAttributes(rendererAttributes, true);
+                }
+            }
+            if (me.needle) {
+                splitAngle = splitAngle * Math.PI / 180;
+                var strokeColor = '#222';
+                if (me.strokeColor) strokeColor = me.strokeColor;
+                if (!me.needleSprite) {
+                    me.needleSprite = me.chart.surface.add({
+                        type: 'path',
+                        path: ['M', centerX + (me.radius * +donut / 100) * cos(splitAngle),
+                            centerY + -Math.abs((me.radius * +donut / 100) * sin(splitAngle)),
+                            'L', centerX + me.radius * cos(splitAngle),
+                            centerY + -Math.abs(me.radius * sin(splitAngle))],
+                        'stroke-width': 4,
+                        'stroke': strokeColor,
+                    });
+                } else {
+                    if (animate) {
+                        me.onAnimate(me.needleSprite, {
+                            to: {
+                                path: ['M', centerX + (me.radius * +donut / 100) * cos(splitAngle),
+                                    centerY + -Math.abs((me.radius * +donut / 100) * sin(splitAngle)),
+                                    'L', centerX + me.radius * cos(splitAngle),
+                                    centerY + -Math.abs(me.radius * sin(splitAngle))]
+                            }
+                        });
+                    } else {
+                        me.needleSprite.setAttributes({
+                            type: 'path',
+                            path: ['M', centerX + (me.radius * +donut / 100) * cos(splitAngle),
+                                centerY + -Math.abs((me.radius * +donut / 100) * sin(splitAngle)),
+                                'L', centerX + me.radius * cos(splitAngle),
+                                centerY + -Math.abs(me.radius * sin(splitAngle))]
+                        });
+                    }
+                }
+                me.needleSprite.setAttributes({
+                    hidden: false
+                }, true);
+            }
+
+            for (i = 0; i < store.getCount(); i++) {
+                delete values[i];
+            }
+        }
+    },
+});
+
+Ext.define('Override.RowExpander', {
+    override: 'Ext.grid.plugin.RowExpander',
+    toggleRow: function (rowIdx, record) {
+        var me = this,
+            view = me.view,
+            rowNode = view.getNode(rowIdx),
+            row = Ext.fly(rowNode, '_rowExpander'),
+            nextBd = row.down(me.rowBodyTrSelector, true),
+            isCollapsed = row.hasCls(me.rowCollapsedCls),
+            addOrRemoveCls = isCollapsed ? 'removeCls' : 'addCls';
+
+        row[addOrRemoveCls](me.rowCollapsedCls);
+        Ext.fly(nextBd)[addOrRemoveCls](me.rowBodyHiddenCls);
+        me.recordsExpanded[record.internalId] = isCollapsed;
+
+        var jspPane = Ext.fly(view.getEl().dom.children[0].children[0]);
+        var gridView = Ext.fly(view.getEl().dom.children[0].children[0].children[0]);
+
+        jspPane.addCls('custom-jsp-pane');
+        jspPane.setWidth(gridView.getWidth());
+        view.refresh();     // обновление вертикальной прокрутки при разворачивании/сворачивании строки 
+    }
+});
+
+Ext.chart.series.Bar.override({
+    drawSeries: function () {
+        this.getPaths();
+
+        var items = this.items,
+            ln = items.length,
+            isNull = true;
+        for (i = 0; i < ln; i++) {
+            if (items[i].value[1] != 0) {
+                isNull = false;
+            }
+        }
+        if (!isNull) {
+            this.callParent();
+        }
+    }
+});

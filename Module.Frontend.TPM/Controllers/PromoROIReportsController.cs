@@ -37,6 +37,7 @@ using System.Net.Http.Headers;
 using Module.Persist.TPM.CalculatePromoParametersModule;
 using Module.Frontend.TPM.Util;
 using System.Data.SqlClient;
+using System.Data.Entity;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -56,14 +57,16 @@ namespace Module.Frontend.TPM.Controllers
             IList<Constraint> constraints = user.Id.HasValue ? Context.Constraints
                 .Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
                 .ToList() : new List<Constraint>();
+			IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
 
-            var query = Context.Set<Promo>().Where(x => !x.Disabled).Select(x => new PromoROIReport
+			var query = Context.Set<Promo>().Where(x => !x.Disabled).Select(x => new PromoROIReport
             {
                 Id = x.Id,
                 Number = x.Number,
                 Client1LevelName = x.Client1LevelName,
                 Client2LevelName = x.Client2LevelName,
                 ClientName = x.ClientName,
+				ClientTreeId = x.ClientTreeId,
                 BrandName = x.Brand.Name,
                 TechnologyName = x.Technology.Name,
                 ProductSubrangesList = x.ProductSubrangesList,
@@ -73,7 +76,7 @@ namespace Module.Frontend.TPM.Controllers
                 MechanicComment = x.MechanicComment,
                 StartDate = x.StartDate,
                 EndDate = x.EndDate,
-                PromoDuration = x.PromoDuration,
+                PromoDuration = DbFunctions.DiffDays(x.StartDate, x.EndDate) + 1,
                 EventName = x.EventName,
                 PromoStatusName = x.PromoStatus.Name,
                 InOut = x.InOut,
@@ -171,7 +174,11 @@ namespace Module.Frontend.TPM.Controllers
                 ActualPromoNetROIPercent = x.ActualPromoNetROIPercent
             });
 
-            return query;
+			IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
+
+			query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
+
+			return query;
         }
 
         [ClaimsAuthorize]
@@ -267,15 +274,15 @@ namespace Module.Frontend.TPM.Controllers
                 new Column { Order = orderNumber++, Field = "PlanPromoNetBaseTI", Header = "Plan Promo Net Base TI", Quoting = false,  Format = "0.00"  },
                 new Column { Order = orderNumber++, Field = "PlanPromoNSV", Header = "Plan Promo NSV", Quoting = false,  Format = "0.00"  },
                 new Column { Order = orderNumber++, Field = "PlanPromoNetNSV", Header = "Plan Promo Net NSV", Quoting = false,  Format = "0.00"  },
-                new Column { Order = orderNumber++, Field = "PlanPromoIncrementalNSV", Header = "Plan Promo Total Net NSV", Quoting = false,  Format = "0.00"  },
-                new Column { Order = orderNumber++, Field = "PlanPromoNetIncrementalNSV", Header = "Plan Promo Incremental NSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoIncrementalNSV", Header = "Plan Promo Incremental NSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoNetIncrementalNSV", Header = "Plan Promo Net Incremental NSV", Quoting = false,  Format = "0.00"  },
                 new Column { Order = orderNumber++, Field = "PlanPromoIncrementalMAC", Header = "Plan Promo Incremental MAC", Quoting = false,  Format = "0.00"  },
                 new Column { Order = orderNumber++, Field = "PlanPromoNetIncrementalMAC", Header = "Plan Promo Net Incremental MAC", Quoting = false,  Format = "0.00"  },
                 new Column { Order = orderNumber++, Field = "PlanPromoIncrementalEarnings", Header = "Plan Promo Incremental Earnings", Quoting = false,  Format = "0.00"  },
                 new Column { Order = orderNumber++, Field = "PlanPromoNetIncrementalEarnings", Header = "Plan Promo Net Incremental Earnings", Quoting = false,  Format = "0.00"  },
-                new Column { Order = orderNumber++, Field = "PlanPromoROIPercent", Header = "Plan Promo ROI, %", Quoting = false,  Format = "0"  },
-                new Column { Order = orderNumber++, Field = "PlanPromoNetROIPercent", Header = "Plan Promo Net ROI, %", Quoting = false,  Format = "0"  },
-                new Column { Order = orderNumber++, Field = "PlanPromoNetUpliftPercent", Header = "Plan Promo Net Uplift %", Quoting = false,  Format = "0"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoROIPercent", Header = "Plan Promo ROI, %", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoNetROIPercent", Header = "Plan Promo Net ROI, %", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoNetUpliftPercent", Header = "Plan Promo Net Uplift %", Quoting = false,  Format = "0.00"  },
                 new Column { Order = orderNumber++, Field = "ActualInStoreMechanicName", Header = "Actual InStore Mechanic Name", Quoting = false },
                 new Column { Order = orderNumber++, Field = "ActualInStoreMechanicTypeName", Header = "Actual InStore Mechanic Type Name", Quoting = false  },
                 new Column { Order = orderNumber++, Field = "ActualInStoreDiscount", Header = "Actual InStore Mechanic Discount", Quoting = false,  Format = "0"  },
@@ -286,7 +293,7 @@ namespace Module.Frontend.TPM.Controllers
                 new Column { Order = orderNumber++, Field = "ActualPromoLSVByCompensation", Header = "Actual PromoLSV By Compensation", Quoting = false,  Format = "0.00"  },
                 new Column { Order = orderNumber++, Field = "ActualPromoLSV", Header = "Actual Promo LSV", Quoting = false,  Format = "0.00"  },
                 new Column { Order = orderNumber++, Field = "ActualPromoUpliftPercent", Header = "Actual Promo Uplift %", Quoting = false,  Format = "0.00"  },
-                new Column { Order = orderNumber++, Field = "ActualPromoNetUpliftPercent", Header = "Actual Promo Net Uplift Percent", Quoting = false,  Format = "0"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoNetUpliftPercent", Header = "Actual Promo Net Uplift Percent", Quoting = false,  Format = "0.00"  },
                 new Column { Order = orderNumber++, Field = "ActualPromoTIShopper", Header = "Actual Promo TI Shopper", Quoting = false,  Format = "0.00"  },
                 new Column { Order = orderNumber++, Field = "ActualPromoTIMarketing", Header = "Actual Promo TI Marketing", Quoting = false,  Format = "0.00"  },
                 new Column { Order = orderNumber++, Field = "ActualPromoXSites", Header = "Actual Promo Prod XSites", Quoting = false,  Format = "0.00"  },
@@ -318,8 +325,8 @@ namespace Module.Frontend.TPM.Controllers
                 new Column { Order = orderNumber++, Field = "ActualPromoNetIncrementalMAC", Header = "Actual Promo Net Incremental MAC", Quoting = false,  Format = "0.00"  },
                 new Column { Order = orderNumber++, Field = "ActualPromoIncrementalEarnings", Header = "Actual Promo Incremental Earnings", Quoting = false,  Format = "0.00"  },
                 new Column { Order = orderNumber++, Field = "ActualPromoNetIncrementalEarnings", Header = "Actual Promo Net Incremental Earnings", Quoting = false,  Format = "0.00"  },
-                new Column { Order = orderNumber++, Field = "ActualPromoROIPercent", Header = "Actual Promo ROI, %", Quoting = false,  Format = "0"  },
-                new Column { Order = orderNumber++, Field = "ActualPromoNetROIPercent", Header = "Actual Promo Net ROI%", Quoting = false,  Format = "0"  }};
+                new Column { Order = orderNumber++, Field = "ActualPromoROIPercent", Header = "Actual Promo ROI, %", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoNetROIPercent", Header = "Actual Promo Net ROI%", Quoting = false,  Format = "0.00"  }};
             return columns;
         }
     }

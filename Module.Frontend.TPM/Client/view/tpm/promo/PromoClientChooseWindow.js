@@ -5,7 +5,15 @@
     width: 1000,
     minWidth: 280,
     resizable: false,
-    title: l10n.ns('tpm', 'PromoClient').value('Clients'),
+	title: l10n.ns('tpm', 'PromoClient').value('Clients'),
+
+	tools: [{
+		xtype: 'button',
+		itemId: 'dateFilter',
+		text: '00.00.0000',
+		cls: 'custom-promo-date-button',
+		glyph: 0xf0f6
+	}],
 
     // Object ID изначально выбранного (чекнутого) клиента
     choosenClientObjectId: null,
@@ -20,9 +28,9 @@
         this.add({
             xtype: 'clienttree',
             header: false,
-            height: 547,
-            minHeight: 547,
-            maxHeight: 547,
+            height: 520,
+            minHeight: 520,
+            maxHeight: 520,
             chooseMode: true,
             choosenClientObjectId: this.choosenClientObjectId,
             needLoadTree: false,

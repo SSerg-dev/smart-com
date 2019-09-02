@@ -99,6 +99,10 @@
             fieldLabel: l10n.ns('tpm', 'Promo').value('Number'),
         }, {
             xtype: 'singlelinedisplayfield',
+            name: 'InOut',
+            fieldLabel: l10n.ns('tpm', 'Promo').value('InOut'),
+        }, {
+            xtype: 'singlelinedisplayfield',
             name: 'Name',
             fieldLabel: l10n.ns('tpm', 'Promo').value('Name'),
         }, {

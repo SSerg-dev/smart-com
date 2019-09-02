@@ -179,7 +179,16 @@
     getFields: function (isDefault) {
         var model = this.getModel();
 
-        return model.getFields().filter(function (field) {
+        var sortedFields = model.getFields().sort(function (f, s) {
+            if (f.originalIndex !== undefined && - s.originalIndex !== undefined) {
+                return f.originalIndex - s.originalIndex;
+            }
+            else {
+                return 0;
+            }
+        });
+
+        return sortedFields.filter(function (field) {
             return (!isDefault || field.isDefault) && ((Ext.isFunction(field.hidden) && !field.hidden()) || !field.hidden);
         }).map(function (field) {
             return field.name;

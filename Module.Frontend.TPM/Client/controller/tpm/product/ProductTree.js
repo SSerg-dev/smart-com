@@ -307,21 +307,34 @@
         }
     },
 
-    setCheckTree: function (nodes, checked, targetNodes, checkedArray) {
-        var me = this;
-        if (nodes && nodes.length > 0) {
-            nodes.forEach(function (node, index, array) {
-                if (checkedArray) {
-                    // для расширенного фильтра при выборе операции Список
-                    var c = false;
-                    Ext.Array.each(checkedArray.values, function (item, index, array) {
-                        if (item.value === node.get('FullPathName')) {
-                            c = true;
-                        }
-                    });
-                    node.set('checked', c);
-                } else {
-                    node.set('checked', checked);
+    setCheckTree: function (nodes, checked, targetNodes, checkedArray, treegrid) {
+		var me = this;
+		var promoeditorcustom = Ext.ComponentQuery.query('promoeditorcustom')[0];
+		if (nodes && nodes.length > 0) {
+			nodes.forEach(function (node, index, array) {
+				if (checkedArray) {
+					// для расширенного фильтра при выборе операции Список
+					var c = false;
+					Ext.Array.each(checkedArray.values, function (item, index, array) {
+						if (item.value === node.get('FullPathName')) {
+							c = true;
+						}
+					});
+					if (promoeditorcustom) {
+						if (node.get('Type').indexOf('Brand') < 0) {
+							node.set('checked', c);
+						}
+					} else {
+						node.set('checked', c);
+					}
+				} else {
+					if (promoeditorcustom) {
+						if (node.get('Type').indexOf('Brand') < 0) {
+							node.set('checked', checked);
+						}
+					} else {
+						node.set('checked', checked);
+					}
                 }
 
                 if (targetNodes && node.data.Target)
@@ -351,10 +364,11 @@
     onDeleteNodeButtonClick: function (button) {
         var treegrid = button.up('combineddirectorytreepanel').down('basetreegrid'),
             record = treegrid.getSelectionModel().getSelection()[0],
-            msg = record.isLeaf() ? l10n.ns('tpm', 'DeleteText').value('deleteConfirmMessage') : l10n.ns('tpm', 'DeleteText').value('cascadeDeleteConfirmMessage');
-        var me = this;
+			msg = l10n.ns('tpm', 'DeleteText').value('deleteNodeWarning'),
+			me = this;
+
         Ext.Msg.show({
-            title: l10n.ns('tpm', 'DeleteText').value('deleteWindowTitle'),
+			title: l10n.ns('tpm', 'DeleteText').value('deleteWindowTitle'),
             msg: msg,
             fn: function (buttonId) {
                 if (buttonId === 'yes') {
@@ -366,10 +380,40 @@
                     App.Util.makeRequestWithCallback('ProductTrees', 'Delete', parameters, function (data) {
                         var result = Ext.JSON.decode(data.httpResponse.data.value);
                         if (result.success) {
-                            treegrid.store.load();
-                            treegrid.setLoading(false);
-                            //Установка на корневую запись
                             me.setToRecordNode(null);
+
+                            var targetId;
+
+                            if (record.nextSibling) {
+                                targetId = record.nextSibling.get('ObjectId');
+                            }
+                            else if (record.previousSibling) {
+                                targetId = record.previousSibling.get('ObjectId');
+                            }
+                            else {
+                                targetId = record.get('parentId');
+                            }
+
+                            treegrid.store.getProxy().extraParams.productTreeObjectIds = targetId;
+                            treegrid.store.getRootNode().removeAll();
+                            treegrid.store.getRootNode().setId('root');
+                            treegrid.store.load({
+                                scope: this,
+                                callback: function (records, operation, success) {
+                                    if (success) {
+                                        var choosenRecord = treegrid.store.getById(targetId);
+                                        if (choosenRecord.parentNode.isExpanded()) {
+                                            treegrid.getSelectionModel().select(choosenRecord);
+                                            treegrid.fireEvent('itemclick', treegrid.getView(), choosenRecord);
+
+                                            me.setToRecordNode(choosenRecord);
+                                            me.scrollNodeToCenterTree(treegrid, choosenRecord);
+                                        }
+                                    }
+                                }
+                            });
+
+                            treegrid.setLoading(false);                            
                         } else {
                             treegrid.setLoading(false);
                         }
@@ -555,12 +599,12 @@
                     var nodes = node.childNodes.length !== 0 ? node.childNodes : records[0].childNodes.length !== 0 ? records[0].childNodes : null;
                     var targetNodes = [];
 
-                    this.setCheckTree(nodes, false, targetNodes);
+					this.setCheckTree(nodes, false, targetNodes);
                     this.controllCheckProduct(productTree, targetNodes);
                 } else if (treegrid.checkedNodes) {
                     // для расширенного фильтра при выборе операции Список
                     var nodes = node.childNodes.length !== 0 ? node.childNodes : records[0].childNodes.length !== 0 ? records[0].childNodes : null;
-                    this.setCheckTree(nodes, false, null, treegrid.checkedArray);
+					this.setCheckTree(nodes, false, null, treegrid.checkedArray);
                 }
 
                 store.getProxy().extraParams.promoId = null;
@@ -607,7 +651,8 @@
 
     createNode: function (tree, model) {
         this.tree = tree;
-        var editorModel = tree.editorModel;
+		var editorModel = tree.editorModel;
+
         editorModel.editor = editorModel.createEditor({
             title: l10n.ns('core').value('createWindowTitle'),
             buttons: [{
@@ -775,6 +820,12 @@
                 selectoperationwindow.show();
             }
         }
+
+        var tree = Ext.ComponentQuery.query('producttreegrid')[0];
+        var scroll = $('#vScrollProductTree' + tree.id).data('jsp');
+
+        tree.lastScrollHeight = scroll.getContentHeight();
+        tree.lastScrollY = scroll.getContentPositionY();
     },
 
     getStringFilter: function (editor, form) {
@@ -821,7 +872,7 @@
         var store = productTreeGrid.getStore();
         var selModel = productTreeGrid.getSelectionModel();
         var sels = selModel.getSelection();
-        var editorForm = productTree.down('editorform');
+		var editorForm = productTree.down('editorform');
 
         var window = button.up('window'),
             stringFilter = window.stringFilter;
@@ -855,8 +906,6 @@
         button.up('window').close();
 
         //Сохранение выбранной записи и замена фильтра в панели
-
-
         if (sels.length > 0) {
             var storedLoadFunction = function () {
                 if (record.data.Id != 0) {
@@ -866,11 +915,27 @@
                 }
                 if (store.storedLoadFunction) {
                     store.removeListener('load', store.storedLoadFunction);
-                }
+				}
             };
             store.storedLoadFunction = storedLoadFunction;
-            store.on('load', storedLoadFunction);
-        }
+			store.on('load', storedLoadFunction);
+
+			// Обновление даты
+			var dateFilter = productTree.down('#dateFilter');
+			var currentDate = new Date();
+
+			var days = currentDate.getDate().toString().length === 1 ? '0' + currentDate.getDate() : currentDate.getDate();
+			var month = (currentDate.getMonth() + 1).toString().length === 1 ? '0' + (currentDate.getMonth() + 1) : currentDate.getMonth() + 1;
+			var year = currentDate.getFullYear();
+
+			if (dateFilter) {
+				dateFilter.setText(days + '.' + month + '.' + year);
+				dateFilter.dateValue = currentDate;
+			}
+
+			store.getProxy().extraParams.dateFilter = dateFilter.dateValue;
+		}
+
     },
 
     onBackButtonClick: function (button) {
@@ -1239,11 +1304,11 @@
         if (textSearch && textSearch.length > 0 && textSearch.indexOf('Product search') == -1)
             proxy.extraParams.filterParameter = textSearch;
 
-        if (productTree.choosenClientObjectId.length > 0) {
-            productTree.choosenClientObjectId.forEach(function (objectId, index) {
+		if (productTree.choosenClientObjectId.length > 0) {
+			productTree.choosenClientObjectId.forEach(function (objectId, index) {
                 proxy.extraParams.productTreeObjectIds += objectId;
 
-                if (index != productTree.choosenClientObjectId.length - 1)
+				if (index != productTree.choosenClientObjectId.length - 1)
                     proxy.extraParams.productTreeObjectIds += ';';
             });
         }

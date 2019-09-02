@@ -21,7 +21,7 @@ namespace Module.Frontend.TPM.Controllers {
             EnableConstantParameterization = false,
             MaxTop = 1024)]
         public IQueryable<HistoricalBudgetItem> GetHistoricalBudgetItems() {
-            return HistoryReader.Query<HistoricalBudgetItem>();
+            return HistoryReader.GetAll<HistoricalBudgetItem>();
         }
 
         protected override void Dispose(bool disposing) {

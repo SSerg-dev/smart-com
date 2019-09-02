@@ -75,11 +75,6 @@
                 glyph: 0xf493,
                 text: l10n.ns('core', 'filter', 'buttons').value('settings'),
                 tooltip: l10n.ns('core', 'filter', 'buttons').value('settings')
-            }, {
-                itemId: 'detailfilter',
-                glyph: 0xf233,
-                text: l10n.ns('tpm', 'filter', 'buttons').value('PromoSupportDetailFilter'),
-                tooltip: l10n.ns('tpm', 'filter', 'buttons').value('PromoSupportDetailFilter')
             }, '-']
 
         }]

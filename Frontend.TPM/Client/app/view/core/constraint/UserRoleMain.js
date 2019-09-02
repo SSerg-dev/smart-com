@@ -39,27 +39,7 @@ Ext.define('App.view.core.constraint.UserRoleMain', {
             },
             items: [{
                 text: l10n.ns('core', 'UserRoleMain').value('Login'),
-                dataIndex: 'Login',
-                filter: {
-                    type: 'search',
-                    plugins: ['usersearchfield'],
-                    valueField: 'Name',
-                    store: {
-                        type: 'directorystore',
-                        model: 'App.model.core.user.User',
-                        extendedFilter: {
-                            xclass: 'App.ExtFilterContext',
-                            supportedModels: [{
-                                xclass: 'App.ExtSelectionFilterModel',
-                                model: 'App.model.core.user.User',
-                                modelId: 'efselectionmodel'
-                            }, {
-                                xclass: 'App.ExtTextFilterModel',
-                                modelId: 'eftextmodel'
-                            }]
-                        }
-                    }
-                }
+                dataIndex: 'Login'
             }, {
                 text: l10n.ns('core', 'UserRoleMain').value('DisplayName'),
                 dataIndex: 'RoleDisplayName',

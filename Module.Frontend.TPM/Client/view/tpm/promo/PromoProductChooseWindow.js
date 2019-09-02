@@ -5,7 +5,15 @@
     width: 1100,
     minWidth: 280,
     resizable: false,
-    title: l10n.ns('tpm', 'PromoBasicProducts').value('Products'),
+	title: l10n.ns('tpm', 'PromoBasicProducts').value('Products'),
+
+	tools: [{
+		xtype: 'button',
+		itemId: 'dateFilter',
+		text: '00.00.0000',
+		cls: 'custom-promo-date-button',
+		glyph: 0xf0f6
+	}],
 
     // ObjectID изначально выбранных (чекнутых) продуктов
     choosenProductObjectIds: [],
@@ -20,9 +28,9 @@
         this.add({
             xtype: 'producttree',
             header: false,
-            height: 547,
-            minHeight: 547,
-            maxHeight: 547,
+            height: 520,
+            minHeight: 520,
+            maxHeight: 520,
             chooseMode: true,
             needLoadTree: false,
             hideNotHierarchyBtns: true
@@ -46,7 +54,7 @@
         }
 
         if (this.treesChangingBlockDate) {
-            productTreeProxy.extraParams.dateFilter = treesChangingBlockDate;
+            productTreeProxy.extraParams.dateFilter = this.treesChangingBlockDate;
         } else {
             productTreeProxy.extraParams.dateFilter = null;
         }

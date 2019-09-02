@@ -20,5 +20,6 @@ namespace Module.Persist.TPM.Model.History
         public double? PlanProdCost { get; set; }
         public double? ActualProdCost { get; set; }
         public string AttachFileName { get; set; }
+        public string PONumber { get; set; }
     }
 }

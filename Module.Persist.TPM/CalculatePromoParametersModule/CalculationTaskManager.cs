@@ -1,6 +1,7 @@
 ﻿using Looper.Core;
 using Looper.Parameters;
 using Module.Persist.TPM.Model.TPM;
+using Module.Persist.TPM.Utils;
 using Persist;
 using Persist.Model;
 using System;
@@ -14,7 +15,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 {
     public class CalculationTaskManager
     {
-        public enum CalculationAction { Uplift, BaseLine, Budgets, Actual }
+        public enum CalculationAction { Uplift, BaseLine, Budgets, Actual, DataFlowFiltering, DataFlow }
         private static object locker = new object();
 
         /// <summary>
@@ -78,26 +79,50 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         description = "Calculate actual parameters";
                         nameHandler = "Module.Host.TPM.Handlers.CalculateActualParamatersHandler";
                         break;
+
+                    case CalculationAction.DataFlowFiltering:
+                        description = "Filtering for nightly recalculation (DataFlow)";
+                        nameHandler = "Module.Host.TPM.Handlers.DataFlow.DataFlowFilteringHandler";
+                        break;
+
+                    case CalculationAction.DataFlow:
+                        promoIdsForBlock = HandlerDataHelper.GetIncomingArgument<List<Guid>>("PromoIdsForBlock", data, false);
+                        description = "Nightly recalculation (DataFlow)";
+                        nameHandler = "Module.Host.TPM.Handlers.DataFlow.DataFlowRecalculatingHandler";
+                        break;
                 }
 
-                // при вызове patch/post идёт транзакция, для гарантии, что задача запустится только после изменения промо мы используем контекст этого метода
-                // чтобы другому потоку была видна блокировка используем другой контекст, который не входит в транзакцию
-                // иначе другой поток может просто её не увидеть
-                using (DatabaseContext contextOutOfTransaction = new DatabaseContext())
+                if (action != CalculationAction.DataFlow)
+                {
+                    // при вызове patch/post идёт транзакция, для гарантии, что задача запустится только после изменения промо мы используем контекст этого метода
+                    // чтобы другому потоку была видна блокировка используем другой контекст, который не входит в транзакцию
+                    // иначе другой поток может просто её не увидеть
+                    using (DatabaseContext contextOutOfTransaction = new DatabaseContext())
+                    {
+                        Guid handlerId = Guid.NewGuid();
+
+                        foreach (Guid idPromo in promoIdsForBlock)
+                        {
+                            promoAvaible = promoAvaible && BlockPromo(idPromo, handlerId, contextOutOfTransaction);
+
+                            if (!promoAvaible)
+                                break;
+                        }
+
+                        if (promoAvaible)
+                        {
+                            contextOutOfTransaction.SaveChanges();
+                            CreateHandler(handlerId, description, nameHandler, data, context);
+                        }
+                    }
+                }
+                else
                 {
                     Guid handlerId = Guid.NewGuid();
-
-                    foreach (Guid idPromo in promoIdsForBlock)
-                    {
-                        promoAvaible = promoAvaible && BlockPromo(idPromo, handlerId, contextOutOfTransaction);
-
-                        if (!promoAvaible)
-                            break;
-                    }
+                    promoAvaible = promoAvaible && BlockPromoRange(promoIdsForBlock, handlerId);
 
                     if (promoAvaible)
                     {
-                        contextOutOfTransaction.SaveChanges();
                         CreateHandler(handlerId, description, nameHandler, data, context);
                     }
                 }
@@ -118,7 +143,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 Description = description,
                 Name = nameHandler,
                 ExecutionPeriod = null,
-                CreateDate = DateTimeOffset.Now,
+                CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
                 LastExecutionDate = null,
                 NextExecutionDate = null,
                 ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
@@ -153,7 +178,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         Id = Guid.NewGuid(),
                         PromoId = promoId,
                         HandlerId = handlerId,
-                        CreateDate = DateTime.Now,
+                        CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
                         Disabled = false,
                     };
 
@@ -193,7 +218,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                 Id = Guid.NewGuid(),
                                 PromoId = promoId,
                                 HandlerId = handlerId,
-                                CreateDate = DateTime.Now,
+                                CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
                                 Disabled = false,
                             };
 
@@ -228,10 +253,48 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     using (DatabaseContext context = new DatabaseContext())
                     {
                         foreach (Promo p in promo)
+                        {
                             successBlock = successBlock && BlockPromo(p.Id, handlerId, context);
+                        }
 
                         if (successBlock)
+                        {
                             context.SaveChanges();
+                        }
+                    }
+                }
+            }
+            catch { }
+
+            return successBlock;
+        }
+
+        /// <summary>
+        /// Заблокировать перечень промо
+        /// </summary>
+        /// <param name="promoIds">Перечень промо</param>
+        /// <param name="handlerId">ID обработчика</param>
+        /// <returns></returns>
+        public static bool BlockPromoRange(List<Guid> promoIds, Guid handlerId)
+        {
+            bool successBlock = true;
+
+            try
+            {
+                lock (locker)
+                {
+                    using (DatabaseContext context = new DatabaseContext())
+                    {
+                        foreach (Guid promoId in promoIds)
+                        {
+                            Promo p = context.Set<Promo>().Where(x => x.Id == promoId && !x.Disabled).FirstOrDefault();
+                            successBlock = successBlock && BlockPromo(p.Id, handlerId, context);
+                        }
+
+                        if (successBlock)
+                        {
+                            context.SaveChanges();
+                        }
                     }
                 }
             }

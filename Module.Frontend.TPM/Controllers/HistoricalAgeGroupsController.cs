@@ -21,7 +21,7 @@ namespace Module.Frontend.TPM.Controllers {
             EnableConstantParameterization = false,
             MaxTop = 1024)]
         public IQueryable<HistoricalAgeGroup> GetHistoricalAgeGroups() {
-            return HistoryReader.Query<HistoricalAgeGroup>();
+            return HistoryReader.GetAll<HistoricalAgeGroup>();
         }
 
         protected override void Dispose(bool disposing) {

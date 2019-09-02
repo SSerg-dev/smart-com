@@ -3,7 +3,8 @@
     alias: 'widget.budgetitemeditor',
     width: 500,
     minWidth: 500,
-    maxHeight: 500,
+	maxHeight: 500,
+	cls: 'readOnlyFields',
 
     items: {
         xtype: 'editorform',

@@ -21,7 +21,7 @@ namespace Module.Frontend.TPM.Controllers {
             EnableConstantParameterization = false,
             MaxTop = 1024)]
         public IQueryable<HistoricalPromoStatus> GetHistoricalPromoStatuss() {
-            return HistoryReader.Query<HistoricalPromoStatus>();
+            return HistoryReader.GetAll<HistoricalPromoStatus>();
         }
 
         protected override void Dispose(bool disposing) {

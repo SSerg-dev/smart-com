@@ -6,17 +6,20 @@
         { name: 'Id', hidden: true },
         { name: 'ZREP', type: 'string', hidden: false, isDefault: true },
         { name: 'DemandCode', type: 'string', hidden: false, isDefault: true },
-        { name: 'PromoName', type: 'string', hidden: false, isDefault: true },
         { name: 'PromoNameId', type: 'string', hidden: false, isDefault: true },
         { name: 'LocApollo', type: 'string', hidden: false, isDefault: true },
         { name: 'TypeApollo', type: 'string', hidden: false, isDefault: true },
         { name: 'ModelApollo', type: 'string', hidden: false, isDefault: true },
-        { name: 'WeekStartDate', type: 'date', hidden: false, isDefault: true },
+        { name: 'WeekStartDate', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
         { name: 'PlanPostPromoEffectQty', type: 'number', hidden: false, isDefault: true },
-        { name: 'StartDate', type: 'date', hidden: false, isDefault: true },
-        { name: 'EndDate', type: 'date', hidden: false, isDefault: true },
-        { name: 'Status', type: 'string', hidden: false, isDefault: true },
-        { name: 'InOut', useNull: true, type: 'bool', hidden: false, isDefault: true },
+        { name: 'StartDate', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
+        { name: 'EndDate', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
+		{ name: 'Week', type: 'string', hidden: false, isDefault: true },
+		{ name: 'Status', type: 'string', hidden: false, isDefault: true, defaultFilterConfig: getDefaultFilterStatus() },
+		{ name: 'PlanProductBaselineCaseQty', type: 'number', hidden: false, isDefault: true },
+		{ name: 'PlanProductPostPromoEffectLSV', type: 'number', hidden: false, isDefault: true },
+		{ name: 'PlanProductBaselineLSV', type: 'number', hidden: false, isDefault: true },
+        { name: 'InOut', type: 'bool', hidden: false, isDefault: true },
     ],
     proxy: {
         type: 'breeze',
@@ -26,5 +29,16 @@
             totalProperty: 'inlineCount',
             root: 'results'
         }
-    },
+	},
 });
+
+function getDefaultFilterStatus() {
+	var statuses = ['Approved', 'Planned'];
+	var value = Ext.create('App.extfilter.core.ValueList', statuses);
+
+	var result = {
+		value: value,
+		operation: 'In'
+	};
+	return result;
+}

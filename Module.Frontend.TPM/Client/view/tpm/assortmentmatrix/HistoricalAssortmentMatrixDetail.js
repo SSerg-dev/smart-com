@@ -32,9 +32,18 @@
             name: 'ClientTreeName'
         }, {
             xtype: 'singlelinedisplayfield',
-            name: 'EAN_PC',
-            fieldLabel: l10n.ns('tpm', 'AssortmentMatrix').value('EAN_PC'),
-        },
-        ]
+            name: 'ProductEANPC',
+            fieldLabel: l10n.ns('tpm', 'AssortmentMatrix').value('EAN_PC')
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'StartDate',
+            renderer: Ext.util.Format.dateRenderer('d.m.Y H:i:s'),
+            fieldLabel: l10n.ns('tpm', 'AssortmentMatrix').value('StartDate')
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'EndDate',
+            renderer: Ext.util.Format.dateRenderer('d.m.Y H:i:s'),
+            fieldLabel: l10n.ns('tpm', 'AssortmentMatrix').value('EndDate')
+        }]
     }
 });

@@ -284,6 +284,27 @@ namespace Module.Host.TPM.Actions {
                     errorRecords,
                     warningRecords);
 
+                if (errorCount > 0 || warningCount > 0)
+                {
+                    string errorsPath = "/api/File/ImportResultErrorDownload?filename=";
+                    string warningsPath = "/api/File/ImportResultWarningDownload?filename=";
+
+                    if (errorCount > 0)
+                    {
+                        foreach (var record in errorRecords)
+                        {
+                            Errors.Add($"{ record.Item2 } <a href=\"{ errorsPath + resultFilesModel.TaskId }\">Download</a>");
+                        }
+                    }
+                    if (warningCount > 0)
+                    {
+                        foreach (var record in warningRecords)
+                        {
+                            Warnings.Add($"{ record.Item2 } <a href=\"{ warningsPath + resultFilesModel.TaskId }\">Download</a>");
+                        }
+                    }
+                }
+
                 return resultFilesModel;
             }
         }
@@ -382,6 +403,20 @@ namespace Module.Host.TPM.Actions {
                         IsDaysEnd = oldRecord.IsDaysEnd
                     };
                     toCreate.Add(oldRecordToSave);
+
+                    if (oldRecord.Share != newRecord.LeafShare)
+                    {
+                        ChangesIncident changesIncident = new ChangesIncident
+                        {
+                            Disabled = false,
+                            DeletedDate = null,
+                            DirectoryName = "ClientTree",
+                            ItemId = oldRecord.Id.ToString(),
+                            CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                            ProcessDate = null
+                        };
+                        context.Set<ChangesIncident>().Add(changesIncident);
+                    }
 
                     oldRecord.Share = (short)newRecord.LeafShare;
                     oldRecord.DemandCode = newRecord.DemandCode;

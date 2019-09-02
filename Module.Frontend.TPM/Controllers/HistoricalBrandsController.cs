@@ -21,7 +21,7 @@ namespace Module.Frontend.TPM.Controllers {
             EnableConstantParameterization = false,
             MaxTop = 1024)]
         public IQueryable<HistoricalBrand> GetHistoricalBrands() {
-            return HistoryReader.Query<HistoricalBrand>();
+            return HistoryReader.GetAll<HistoricalBrand>();
         }
 
         protected override void Dispose(bool disposing) {

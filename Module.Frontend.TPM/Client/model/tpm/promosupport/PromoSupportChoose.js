@@ -17,8 +17,9 @@
         },
         { name: 'PlanQuantity', type: 'int', hidden: false, isDefault: true },
         { name: 'PlanCostTE', type: 'float', hidden: false, isDefault: true },
-        { name: 'StartDate', type: 'date', hidden: false, isDefault: true },
-        { name: 'EndDate', type: 'date', hidden: false, isDefault: true },
+        { name: 'StartDate', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
+        { name: 'EndDate', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
+        { name: 'PONumber', type: 'string', hidden: false, isDefault: true }
     ],
 
     proxy: {

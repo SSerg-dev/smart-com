@@ -23,6 +23,7 @@ using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 using Utility;
 using Utility.Import;
 using Utility.Import.Cache;
@@ -254,12 +255,34 @@ namespace Module.Host.TPM.Actions {
                 errorCount = errorRecords.Count;
                 warningCount = warningRecords.Count;
                 successCount = successList.Count;
+
                 ImportResultFilesModel resultFilesModel = SaveProcessResultHelper.SaveResultToFile(
                     importModel.Id,
                     hasSuccessList ? successList : null,
                     null,
                     errorRecords,
                     warningRecords);
+
+                if (errorCount > 0 || warningCount > 0)
+                {
+                    string errorsPath = "/api/File/ImportResultErrorDownload?filename=";
+                    string warningsPath = "/api/File/ImportResultWarningDownload?filename=";
+
+                    if (errorCount > 0)
+                    {
+                        foreach (var record in errorRecords)
+                        {
+                            Errors.Add($"{ record.Item2 } <a href=\"{ errorsPath + resultFilesModel.TaskId }\">Download</a>");
+                        }
+                    }
+                    if (warningCount > 0)
+                    {
+                        foreach (var record in warningRecords)
+                        {
+                            Warnings.Add($"{ record.Item2 } <a href=\"{ warningsPath + resultFilesModel.TaskId }\">Download</a>");
+                        }
+                    }
+                }
 
                 return resultFilesModel;
             }
@@ -301,8 +324,20 @@ namespace Module.Host.TPM.Actions {
             }
             else
             {
+                var currentDateWithoutTime = new DateTime(DateTimeOffset.Now.Year, DateTimeOffset.Now.Month, DateTimeOffset.Now.Day);
+                if (importObj.StartDate < currentDateWithoutTime)
+                {
+                    isError = true;
+                    errors.Add("Start date must be after current date.");
+                }
 
-                if (importObj.StartDate > importObj.EndDate)
+                if (importObj.EndDate < currentDateWithoutTime)
+                {
+                    isError = true;
+                    errors.Add("End date must be after current date.");
+                }
+
+                if (importObj.StartDate >= importObj.EndDate)
                 {
                     isError = true;
                     errors.Add(" StartDate must be before EndDate");
@@ -342,7 +377,7 @@ namespace Module.Host.TPM.Actions {
                     ProductId = newRecord.ProductId,
                     StartDate = newRecord.StartDate,
                     EndDate = newRecord.EndDate,
-                    CreateDate = DateTimeOffset.Now
+                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)
                 };
 
                 toCreate.Add(toSave);

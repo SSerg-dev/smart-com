@@ -21,7 +21,7 @@ namespace Module.Frontend.TPM.Controllers {
             EnableConstantParameterization = false,
             MaxTop = 1024)]
         public IQueryable<HistoricalRegion> GetHistoricalRegions() {
-            return HistoryReader.Query<HistoricalRegion>();
+            return HistoryReader.GetAll<HistoricalRegion>();
         }
 
         protected override void Dispose(bool disposing) {

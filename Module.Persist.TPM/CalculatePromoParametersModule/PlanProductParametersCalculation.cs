@@ -8,6 +8,8 @@ using Persist;
 using Module.Persist.TPM.Utils.Filter;
 using System.Data.Entity;
 using Core.Extensions;
+using System.Data.Entity.Validation;
+using Module.Persist.TPM.Utils;
 
 namespace Module.Persist.TPM.CalculatePromoParametersModule
 {
@@ -31,67 +33,95 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         /// </summary>
         /// <param name="promoId">Id создаваемого/редактируемого промо</param>
         /// <param name="context">Текущий контекст</param>
-        public static void SetPromoProduct(Guid promoId, DatabaseContext context, out string error, bool? duringTheSave = false, List<PromoProductTree> promoProductTrees = null)
+        public static bool SetPromoProduct(Guid promoId, DatabaseContext context, out string error, bool? duringTheSave = false, List<PromoProductTree> promoProductTrees = null)
         {
             try
             {
+                bool needReturnToOnApprovalStatus = false;
                 var promo = context.Set<Promo>().Where(x => x.Id == promoId && !x.Disabled).FirstOrDefault();
+
                 var productTreeArray = context.Set<ProductTree>().Where(x => context.Set<PromoProductTree>().Where(p => p.PromoId == promoId && !p.Disabled).Any(p => p.ProductTreeObjectId == x.ObjectId && !x.EndDate.HasValue)).ToArray();
 
                 // добавление записей в таблицу PromoProduct может производиться и при сохранении промо (статус Draft) и при расчете промо (статус !Draft)
                 List<Product> filteredProducts = (duringTheSave.HasValue && duringTheSave.Value) ? GetProductFiltered(promoId, context, out error, promoProductTrees) : GetProductFiltered(promoId, context, out error);
                 List<string> eanPCs = GetProductListFromAssortmentMatrix(promo, context);
-                List<Product> resultProductList = GetResultProducts(filteredProducts, eanPCs, promo, context);
+                List<Product> resultProductList = null;
 
-                if (error == null)
+                if (promo.InOut.HasValue && promo.InOut.Value)
                 {
-                    IQueryable<PromoProduct> promoproducts = context.Set<PromoProduct>().Where(x => x.PromoId == promoId && !x.Disabled);
-                    // проверяем список, удаляем не вошедшие, оставляем предыдущие
-                    foreach (var oldPromoProduct in promoproducts)
-                    {
-                        Product existProduct = resultProductList.FirstOrDefault(n => n.ZREP == oldPromoProduct.ZREP);
-
-                        if (existProduct != null)
-                        {
-                            resultProductList.Remove(existProduct);
-                        }
-                        else
-                        {
-                            oldPromoProduct.Disabled = true;
-                            oldPromoProduct.DeletedDate = DateTime.Now;
-                        }
-                    }
-
-                    // Делаем для ускорения вставки записей, через Mapping всё очень долго                    
-                    String formatStr = "INSERT INTO [PromoProduct] ([Id], [Disabled], [DeletedDate], [PromoId], [ProductId], [ZREP], [EAN_Case], [EAN_PC], [ProductEN]) VALUES ('{0}', 0, NULL, '{1}', '{2}', '{3}', '{4}', '{5}', '{6}')";
-                    foreach (IEnumerable<Product> items in resultProductList.Partition(100))
-                    {
-                        //List<Core.History.OperationDescriptor<Guid>> toHis = new List<Core.History.OperationDescriptor<Guid>>();
-                        string insertScript = "";
-
-                        foreach (Product p in items)
-                        {
-                            insertScript += String.Format(formatStr, Guid.NewGuid(), promoId, p.Id, p.ZREP, p.EAN_Case, p.EAN_PC, p.ProductEN);
-                            //toHis.Add(new Core.History.OperationDescriptor<Guid>() { Operation = OperationType.Created, Entity = p });
-                        }
-
-                        context.Database.ExecuteSqlCommand(insertScript);
-                        //context.HistoryWriter.Write(toHis.ToArray(), context.AuthManager.GetCurrentUser(), context.AuthManager.GetCurrentRole());
-                    }
-
-                    // если добавление записей происходит при сохранении промо (статус Draft), то контекст сохранится в контроллере промо,
-                    // а если добавление записей происходит при расчете промо (статус !Draft), то сохраняем контекст тут
-                    if (duringTheSave.HasValue && !duringTheSave.Value)
-                    {
-                        context.SaveChanges();
-                    }
-
-                    error = null;
+                    resultProductList = GetCheckedProducts(context, promo);
                 }
+                else
+                {
+                    resultProductList = GetResultProducts(filteredProducts, eanPCs, promo, context);
+                }
+
+                var promoProducts = context.Set<PromoProduct>().Where(x => x.PromoId == promoId);
+                var incrementalPromoes = context.Set<IncrementalPromo>().Where(x => x.PromoId == promoId);
+
+                var promoProductsNotDisabled = promoProducts.Where(x => !x.Disabled);
+                // Если в таблице PromoProduct среди !Disabled не все продукты из нового списка.
+                if (!resultProductList.All(x => promoProductsNotDisabled.Any(y => x.ZREP == y.ZREP)))
+                {
+                    needReturnToOnApprovalStatus = true;
+                }
+
+                // Делаем для ускорения вставки записей, через Mapping всё очень долго                    
+                String formatStrPromoProduct = "INSERT INTO [PromoProduct] ([Id], [Disabled], [DeletedDate], [PromoId], [ProductId], [ZREP], [EAN_Case], [EAN_PC], [ProductEN]) VALUES ('{0}', 0, NULL, '{1}', '{2}', '{3}', '{4}', '{5}', '{6}')";
+                String formatStrIncremental = "INSERT INTO [IncrementalPromo] ([Id], [Disabled], [DeletedDate], [PromoId], [ProductId]) VALUES ('{0}', 0, NULL, '{1}', '{2}')";
+                foreach (IEnumerable<Product> items in resultProductList.Partition(100))
+                {
+                    string insertScript = String.Empty;
+
+                    foreach (Product p in items)
+                    {
+                        var promoProduct = promoProducts.FirstOrDefault(x => x.ZREP == p.ZREP);
+                        if (promoProduct != null && promoProduct.Disabled)
+                        {
+                            promoProduct.Disabled = false;
+                            promoProduct.DeletedDate = null;
+                        }
+                        else if (promoProduct == null)
+                        {
+                            insertScript += String.Format(formatStrPromoProduct, Guid.NewGuid(), promoId, p.Id, p.ZREP, p.EAN_Case, p.EAN_PC, p.ProductEN);
+                            needReturnToOnApprovalStatus = true;
+                        }
+
+                        if (promo.InOut.HasValue && promo.InOut.Value)
+                        {
+                            var incrementalPromo = incrementalPromoes.FirstOrDefault(x => x.Product.ZREP == p.ZREP);
+                            if (incrementalPromo != null && incrementalPromo.Disabled)
+                            {
+                                incrementalPromo.Disabled = false;
+                                incrementalPromo.DeletedDate = null;
+                            }
+                            else if (incrementalPromo == null)
+                            {
+                                insertScript += String.Format(formatStrIncremental, Guid.NewGuid(), promoId, p.Id);
+                                needReturnToOnApprovalStatus = true;
+                            }
+                        }
+                    }
+
+                    if (!String.IsNullOrEmpty(insertScript))
+                    {
+                        context.Database.ExecuteSqlCommand(insertScript);
+                    }
+                }
+
+                // если добавление записей происходит при сохранении промо (статус Draft), то контекст сохранится в контроллере промо,
+                // а если добавление записей происходит при расчете промо (статус !Draft), то сохраняем контекст тут
+                if (duringTheSave.HasValue && !duringTheSave.Value)
+                {
+                    context.SaveChanges();
+                }
+
+                return needReturnToOnApprovalStatus;
             }
             catch (Exception e)
             {
-                error = e.ToString();
+                error = e.Message.ToString();
+                return false;
             }
         }
 
@@ -106,26 +136,10 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         public static List<Product> GetResultProducts(List<Product> filteredProducts, List<string> eanPCs, Promo promo, DatabaseContext context)
         {
             List<Product> resultProductList = new List<Product>();
-            var filteredProductsGroup = filteredProducts.GroupBy(x => new { x.EAN_PC });
 
-            foreach (var product in filteredProductsGroup)
+            if (filteredProducts != null)
             {
-                if (eanPCs.Any(x => x == product.Key.EAN_PC))
-                {
-                    List<Product> products = filteredProducts.Where(x => x.EAN_PC == product.Key.EAN_PC).ToList();
-                    if (products.Count() > 1)
-                    {
-                        Product p = GetProductFromList(products, promo, context);
-                        if (p != null)
-                        {
-                            resultProductList.Add(p);
-                        }
-                    }
-                    else
-                    {
-                        resultProductList.Add(products[0]);
-                    }
-                }
+                resultProductList = filteredProducts.Where(x => eanPCs.Any(y => y == x.EAN_PC)).ToList();
             }
 
             return resultProductList;
@@ -160,12 +174,12 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         case BaseLineState.InitBaseLine:
                             // выбор BaseLine, на неделю которого попадает начало текущего промо (с учетом выбранного клиента промо)
                             clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == promo.ClientTreeId && !x.EndDate.HasValue).FirstOrDefault();
-                            baseLine = context.Set<BaseLine>().Where(x => x.ProductId == product.Id && x.ClientTreeId == clientNode.Id && x.StartDate.HasValue && DbFunctions.DiffDays(x.StartDate, promo.StartDate) <= 6 && x.StartDate <= promo.StartDate).FirstOrDefault();
+                            baseLine = context.Set<BaseLine>().Where(x => x.ProductId == product.Id && x.ClientTreeId == clientNode.Id && x.StartDate.HasValue && DbFunctions.DiffDays(x.StartDate, promo.StartDate) <= 6 && x.StartDate <= promo.StartDate && !x.Disabled).FirstOrDefault();
 
                             while (clientNode.Type != "root" && baseLine == null)
                             {
                                 clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == clientNode.parentId && !x.EndDate.HasValue).FirstOrDefault();
-                                baseLine = context.Set<BaseLine>().Where(x => x.ProductId == product.Id && x.ClientTreeId == clientNode.Id && x.StartDate.HasValue && DbFunctions.DiffDays(x.StartDate, promo.StartDate) <= 6 && x.StartDate <= promo.StartDate).FirstOrDefault();
+                                baseLine = context.Set<BaseLine>().Where(x => x.ProductId == product.Id && x.ClientTreeId == clientNode.Id && x.StartDate.HasValue && DbFunctions.DiffDays(x.StartDate, promo.StartDate) <= 6 && x.StartDate <= promo.StartDate && !x.Disabled).FirstOrDefault();
                             }
 
                             if (baseLine == null)
@@ -184,12 +198,12 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         case BaseLineState.NullBaseLine:
                             nextWeekPromoStartDate = currentWeekPromoStartDate.Value.AddDays(1);
                             clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == promo.ClientTreeId && !x.EndDate.HasValue).FirstOrDefault();
-                            baseLine = context.Set<BaseLine>().Where(x => x.ProductId == product.Id && x.ClientTreeId == clientNode.Id && x.StartDate.HasValue && DbFunctions.DiffDays(x.StartDate, nextWeekPromoStartDate) <= 6 && x.StartDate <= nextWeekPromoStartDate).FirstOrDefault();
+                            baseLine = context.Set<BaseLine>().Where(x => x.ProductId == product.Id && x.ClientTreeId == clientNode.Id && x.StartDate.HasValue && DbFunctions.DiffDays(x.StartDate, nextWeekPromoStartDate) <= 6 && x.StartDate <= nextWeekPromoStartDate && !x.Disabled).FirstOrDefault();
 
                             while (clientNode.Type != "root" && baseLine == null)
                             {
                                 clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == clientNode.parentId && !x.EndDate.HasValue).FirstOrDefault();
-                                baseLine = context.Set<BaseLine>().Where(x => x.ProductId == product.Id && x.ClientTreeId == clientNode.Id && x.StartDate.HasValue && DbFunctions.DiffDays(x.StartDate, nextWeekPromoStartDate) <= 6 && x.StartDate <= nextWeekPromoStartDate).FirstOrDefault();
+                                baseLine = context.Set<BaseLine>().Where(x => x.ProductId == product.Id && x.ClientTreeId == clientNode.Id && x.StartDate.HasValue && DbFunctions.DiffDays(x.StartDate, nextWeekPromoStartDate) <= 6 && x.StartDate <= nextWeekPromoStartDate && !x.Disabled).FirstOrDefault();
                             }
 
                             if (nextWeekPromoStartDate > promo.EndDate)
@@ -233,6 +247,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             {
                 var promo = context.Set<Promo>().Where(x => x.Id == promoId && !x.Disabled).FirstOrDefault();
                 string message = null;
+                Promo promoCopy = new Promo(promo);
 
                 if (promo.StartDate.HasValue && promo.EndDate.HasValue)
                 {
@@ -270,6 +285,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                             double price = 0;
 
                             bool exit = false;
+                            bool baseLineFound = false; // по "0" проверять не очень, а вдруг он есть, но равен нулю, поэтому через переменную
                             BaseLineState state = BaseLineState.InitBaseLine;
                             while (!exit)
                             {
@@ -278,13 +294,13 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                     case BaseLineState.InitBaseLine:
                                         // выбор BaseLine, на неделю которого попадает начало текущего промо (с учетом выбранного клиента промо)
                                         clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == promo.ClientTreeId && !x.EndDate.HasValue).FirstOrDefault();
-                                        baseLine = context.Set<BaseLine>().Where(x => x.ProductId == promoProduct.ProductId && x.ClientTreeId == clientNode.Id && x.StartDate.HasValue && DbFunctions.DiffDays(x.StartDate, promo.StartDate) <= 6 && x.StartDate <= promo.StartDate).FirstOrDefault();
+                                        baseLine = context.Set<BaseLine>().Where(x => x.ProductId == promoProduct.ProductId && x.ClientTreeId == clientNode.Id && x.StartDate.HasValue && DbFunctions.DiffDays(x.StartDate, promo.StartDate) <= 6 && x.StartDate <= promo.StartDate && !x.Disabled).FirstOrDefault();
 
                                         while (clientNode.Type != "root" && baseLine == null)
                                         {
                                             baseLineShareIndex *= ((double)clientNode.Share / 100);
                                             clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == clientNode.parentId && !x.EndDate.HasValue).FirstOrDefault();
-                                            baseLine = context.Set<BaseLine>().Where(x => x.ProductId == promoProduct.ProductId && x.ClientTreeId == clientNode.Id && x.StartDate.HasValue && DbFunctions.DiffDays(x.StartDate, promo.StartDate) <= 6 && x.StartDate <= promo.StartDate).FirstOrDefault();
+                                            baseLine = context.Set<BaseLine>().Where(x => x.ProductId == promoProduct.ProductId && x.ClientTreeId == clientNode.Id && x.StartDate.HasValue && DbFunctions.DiffDays(x.StartDate, promo.StartDate) <= 6 && x.StartDate <= promo.StartDate && !x.Disabled).FirstOrDefault();
                                         }
 
                                         if (baseLine == null)
@@ -307,13 +323,13 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                         nextWeekPromoStartDate = currentWeekPromoStartDate.Value.AddDays(1);
                                         baseLineShareIndex = 1;
                                         clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == promo.ClientTreeId && !x.EndDate.HasValue).FirstOrDefault();
-                                        baseLine = context.Set<BaseLine>().Where(x => x.ProductId == promoProduct.ProductId && x.ClientTreeId == clientNode.Id && x.StartDate.HasValue && DbFunctions.DiffDays(x.StartDate, nextWeekPromoStartDate) <= 6 && x.StartDate <= nextWeekPromoStartDate).FirstOrDefault();
+                                        baseLine = context.Set<BaseLine>().Where(x => x.ProductId == promoProduct.ProductId && x.ClientTreeId == clientNode.Id && x.StartDate.HasValue && DbFunctions.DiffDays(x.StartDate, nextWeekPromoStartDate) <= 6 && x.StartDate <= nextWeekPromoStartDate && !x.Disabled).FirstOrDefault();
 
                                         while (clientNode.Type != "root" && baseLine == null)
                                         {
                                             baseLineShareIndex *= ((double)clientNode.Share / 100);
                                             clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == clientNode.parentId && !x.EndDate.HasValue).FirstOrDefault();
-                                            baseLine = context.Set<BaseLine>().Where(x => x.ProductId == promoProduct.ProductId && x.ClientTreeId == clientNode.Id && x.StartDate.HasValue && DbFunctions.DiffDays(x.StartDate, nextWeekPromoStartDate) <= 6 && x.StartDate <= nextWeekPromoStartDate).FirstOrDefault();
+                                            baseLine = context.Set<BaseLine>().Where(x => x.ProductId == promoProduct.ProductId && x.ClientTreeId == clientNode.Id && x.StartDate.HasValue && DbFunctions.DiffDays(x.StartDate, nextWeekPromoStartDate) <= 6 && x.StartDate <= nextWeekPromoStartDate && !x.Disabled).FirstOrDefault();
                                         }
 
                                         if (nextWeekPromoStartDate > promo.EndDate)
@@ -341,13 +357,13 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                         nextBaseLineStartDate = currentBaseLineStartDate.Value.AddDays(7);
                                         baseLineShareIndex = 1;
                                         clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == promo.ClientTreeId && !x.EndDate.HasValue).FirstOrDefault();
-                                        baseLine = context.Set<BaseLine>().Where(x => x.ProductId == promoProduct.ProductId && x.ClientTreeId == clientNode.Id && x.StartDate.HasValue && x.StartDate.Value == nextBaseLineStartDate).FirstOrDefault();
+                                        baseLine = context.Set<BaseLine>().Where(x => x.ProductId == promoProduct.ProductId && x.ClientTreeId == clientNode.Id && x.StartDate.HasValue && x.StartDate.Value == nextBaseLineStartDate && !x.Disabled).FirstOrDefault();
 
                                         while (clientNode.Type != "root" && baseLine == null)
                                         {
                                             baseLineShareIndex *= ((double)clientNode.Share / 100);
                                             clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == clientNode.parentId && !x.EndDate.HasValue).FirstOrDefault();
-                                            baseLine = context.Set<BaseLine>().Where(x => x.ProductId == promoProduct.ProductId && x.ClientTreeId == clientNode.Id && x.StartDate.HasValue && x.StartDate.Value == nextBaseLineStartDate).FirstOrDefault();
+                                            baseLine = context.Set<BaseLine>().Where(x => x.ProductId == promoProduct.ProductId && x.ClientTreeId == clientNode.Id && x.StartDate.HasValue && x.StartDate.Value == nextBaseLineStartDate && !x.Disabled).FirstOrDefault();
                                         }
 
                                         if (nextBaseLineStartDate >= promo.EndDate)
@@ -381,6 +397,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                         price = baseLine.Price.Value; //значение цены должно быть равно полной цене для этой недели
 
                                         exit = true;
+                                        baseLineFound = true;
                                         break;
 
                                     case BaseLineState.FirstWeek:
@@ -394,6 +411,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                                         currentBaseLineStartDate = baseLine.StartDate.Value;
                                         state = BaseLineState.NextBaseLine;
+                                        baseLineFound = true;
                                         break;
 
                                     case BaseLineState.FullWeek:
@@ -403,6 +421,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                                         currentBaseLineStartDate = baseLine.StartDate.Value;
                                         state = BaseLineState.NextBaseLine;
+                                        baseLineFound = true;
                                         break;
 
                                     case BaseLineState.LastWeek:
@@ -414,8 +433,18 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                         productBaseLinePrice += (baseLine.Price.Value * baseLineShareIndex / 7) * lastBaseLineDays;
 
                                         exit = true;
+                                        baseLineFound = true;
                                         break;
                                 }
+                            }
+
+                            // если не нашли BaseLine, пишем об этом
+                            if (!baseLineFound)
+                            {
+                                if (message == null)
+                                    message = "";
+
+                                message += String.Format("\nPlan Product Baseline LSV was not found for product with ZREP: {0}", promoProduct.Product.ZREP);
                             }
 
                             //Расчет плановых значений PromoProduct
@@ -429,7 +458,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                             promoProduct.PlanProductCaseLSV = planProductBaseLineCaseQty * promoProduct.ProductBaselinePrice;
                             promoProduct.PlanProductPCLSV = promoProduct.Product.UOM_PC2Case != 0 ? (int?)promoProduct.PlanProductCaseLSV / promoProduct.Product.UOM_PC2Case : null;
                             promoProduct.PlanProductUpliftPercent = promo.PlanPromoUpliftPercent;
-                            promoProduct.PlanProductIncrementalLSV = promoProduct.PlanProductBaselineLSV * promo.PlanPromoUpliftPercent / 100;
+                            promoProduct.PlanProductIncrementalLSV = promoProduct.PlanProductBaselineLSV * promoProduct.PlanProductUpliftPercent / 100;
                             promoProduct.PlanProductLSV = promoProduct.PlanProductBaselineLSV + promoProduct.PlanProductIncrementalLSV;
 
                             if (clientNode != null)
@@ -455,51 +484,50 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         foreach (var promoProduct in promoProducts)
                         {
                             IncrementalPromo incrementalPromo = context.Set<IncrementalPromo>().Where(x => x.PromoId == promo.Id && x.ProductId == promoProduct.ProductId && !x.Disabled).FirstOrDefault();
-                            
-                            if(incrementalPromo != null)
+
+                            if (incrementalPromo != null)
                             {
                                 //Расчет плановых значений PromoProduct
-                                //promoProduct.PlanProductBaselineLSV = null;
-                                //promoProduct.PlanProductBaselineCaseQty = null;
-                                promoProduct.ProductBaselinePrice = incrementalPromo.IncrementalPrice;
+                                promoProduct.ProductBaselinePrice = incrementalPromo.CasePrice;
                                 promoProduct.PlanProductPCPrice = promoProduct.Product.UOM_PC2Case != 0 ? promoProduct.ProductBaselinePrice / promoProduct.Product.UOM_PC2Case : null;
-
-                                // TODO: Lookup Apollo;
-                                promoProduct.PlanProductIncrementalCaseQty = null;
-
-                                // TODO: для inout PlanProductBaselineCaseQty не известен; promoProduct.PlanProductBaselineCaseQty + promoProduct.PlanProductIncrementalCaseQty;
-                                promoProduct.PlanProductCaseQty = null;
-
-                                // TODO: пока не известно PlanProductCaseQty, это значение тоже не посчитается
+                                promoProduct.PlanProductIncrementalCaseQty = incrementalPromo.PlanPromoIncrementalCases;
+                                promoProduct.PlanProductCaseQty = promoProduct.PlanProductIncrementalCaseQty;
                                 promoProduct.PlanProductPCQty = promoProduct.Product.UOM_PC2Case != 0 ? (int?)promoProduct.PlanProductCaseQty * promoProduct.Product.UOM_PC2Case : null;
-
-                                // TODO: пока не известно PlanProductCaseQty, это значение тоже не посчитается
                                 promoProduct.PlanProductCaseLSV = promoProduct.PlanProductCaseQty * promoProduct.ProductBaselinePrice;
+                                promoProduct.PlanProductIncrementalLSV = incrementalPromo.PlanPromoIncrementalLSV;
+                                promoProduct.PlanProductLSV = promoProduct.PlanProductIncrementalLSV;
 
                                 // TODO: удаляем?
                                 //promoProduct.PlanProductPCLSV = promoProduct.Product.UOM_PC2Case != 0 ? (int?)promoProduct.PlanProductCaseLSV / promoProduct.Product.UOM_PC2Case : null;
-
-                                promoProduct.PlanProductUpliftPercent = promo.PlanPromoUpliftPercent;
-
-                                promoProduct.PlanProductPostPromoEffectQtyW1 = 0;
-                                promoProduct.PlanProductPostPromoEffectQtyW2 = 0;
-                                promoProduct.PlanProductPostPromoEffectQty = 0;
-                                promoProduct.PlanProductPostPromoEffectLSVW1 = 0;
-                                promoProduct.PlanProductPostPromoEffectLSVW2 = 0;
-                                promoProduct.PlanProductPostPromoEffectLSV = 0;
                             }
                             else
                             {
                                 message = String.Format("Incremental promo was not found for product with ZREP: {0}", promoProduct.Product.ZREP);
                             }
+
+                            promoProduct.PlanProductUpliftPercent = promo.PlanPromoUpliftPercent;
+
+                            promoProduct.PlanProductPostPromoEffectQtyW1 = 0;
+                            promoProduct.PlanProductPostPromoEffectQtyW2 = 0;
+                            promoProduct.PlanProductPostPromoEffectQty = 0;
+                            promoProduct.PlanProductPostPromoEffectLSVW1 = 0;
+                            promoProduct.PlanProductPostPromoEffectLSVW2 = 0;
+                            promoProduct.PlanProductPostPromoEffectLSV = 0;
                         }
 
                         promo.PlanPromoBaselineLSV = null;
 
-                        double? sumPlanProductIncrementalCaseQty = promoProducts.Sum(x => x.PlanProductIncrementalCaseQty);
+                        double? sumPlanProductIncrementalLSV = promoProducts.Sum(x => x.PlanProductIncrementalLSV);
                         // LSV = Qty ?
-                        promo.PlanPromoIncrementalLSV = sumPlanProductIncrementalCaseQty;
+                        promo.PlanPromoIncrementalLSV = sumPlanProductIncrementalLSV;
                         promo.PlanPromoLSV = promo.PlanPromoIncrementalLSV;
+                    }
+
+                    promo.LastChangedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                    if (IsDemandChanged(promo, promoCopy))
+                    {
+                        promo.LastChangedDateDemand = promo.LastChangedDate;
+                        promo.LastChangedDateFinance = promo.LastChangedDate;
                     }
 
                     context.SaveChanges();
@@ -510,6 +538,21 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 }
 
                 return message;
+            }
+            catch (DbEntityValidationException e)
+            {
+                foreach (var eve in e.EntityValidationErrors)
+                {
+                    Console.WriteLine("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                        eve.Entry.Entity.GetType().Name, eve.Entry.State);
+
+                    foreach (var ve in eve.ValidationErrors)
+                    {
+                        Console.WriteLine("- Property: \"{0}\", Error: \"{1}\"",
+                            ve.PropertyName, ve.ErrorMessage);
+                    }
+                }
+                throw;
             }
             catch (Exception e)
             {
@@ -546,7 +589,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 {
                     productTreeArray = context.Set<ProductTree>().Where(x => !x.EndDate.HasValue).ToArray().Where(n => promoProductTrees.Any(p => p.ProductTreeObjectId == n.ObjectId)).ToArray();
                 }
-                
+
                 product = context.Set<Product>().Where(x => !x.Disabled).ToList();
 
                 foreach (var productTree in productTreeArray)
@@ -630,8 +673,35 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 product.PlanProductPostPromoEffectLSVW2 = null;
                 product.PlanProductPostPromoEffectLSV = null;
             }
+        }
 
-            context.SaveChanges();
+        public static List<Product> GetCheckedProducts(DatabaseContext context, Promo promo)
+        {
+            List<Product> products = new List<Product>();
+
+            if (!String.IsNullOrEmpty(promo.InOutProductIds))
+            {
+                var productIds = promo.InOutProductIds.Split(";".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(x => Guid.Parse(x)).ToList();
+
+                foreach (var productId in productIds)
+                {
+                    var product = context.Set<Product>().FirstOrDefault(x => x.Id == productId && !x.Disabled);
+
+                    if (product != null)
+                    {
+                        products.Add(product);
+                    }
+                }
+            }
+
+            return products;
+        }
+        private static bool IsDemandChanged(Promo oldPromo, Promo newPromo)
+        {
+            if (oldPromo.PlanPromoLSV != newPromo.PlanPromoLSV
+                || oldPromo.PlanPromoIncrementalLSV != newPromo.PlanPromoIncrementalLSV)
+                return true;
+            else return false;
         }
     }
 }

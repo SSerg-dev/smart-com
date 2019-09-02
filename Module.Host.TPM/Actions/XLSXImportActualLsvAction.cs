@@ -18,6 +18,7 @@ using Persist.Model;
 using Module.Persist.TPM.CalculatePromoParametersModule;
 using Core.History;
 using Utility.LogWriter;
+using Module.Persist.TPM.Utils;
 
 namespace Module.Host.TPM.Actions {
     class XLSXImportActualLsvAction : FullXLSXImportAction
@@ -156,7 +157,7 @@ namespace Module.Host.TPM.Actions {
                 Description = "Calculate Actuals after change ActualLSV",
                 Name = "Module.Host.TPM.Handlers.ActualLSVChangeHandler",
                 ExecutionPeriod = null,
-                CreateDate = DateTimeOffset.Now,
+                CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
                 LastExecutionDate = null,
                 NextExecutionDate = null,
                 ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,

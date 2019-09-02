@@ -44,6 +44,8 @@
     'viewTextDataWindowTitle': 'Подробно',
     'Filter': 'Фильтр',
     'BigFilterDisplay': 'Сложный фильтр',
+    'SessionExpiredWindowTitle': 'Session is expired', 
+    'SessionExpiredMessage': 'Application will be reloaded',
 
     'customValidators': {
         'StartDateFinishDateOrder': 'Дата начала должна быть меньше даты окончания',

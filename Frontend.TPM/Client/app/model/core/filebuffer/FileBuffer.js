@@ -11,12 +11,12 @@ Ext.define('App.model.core.filebuffer.FileBuffer', {
 		{ name: 'InterfaceId', hidden: true },
 		{ name: 'InterfaceName', type: 'string', isDefault: true, mapping: 'Interface.Name', breezeEntityType: 'Interface' },
 		{ name: 'InterfaceDirection', type: 'string', isDefault: true, mapping: 'Interface.Direction', breezeEntityType: 'Interface' },
-		{ name: 'CreateDate', type: 'date', isDefault: true },
+        { name: 'CreateDate', type: 'date', isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
 		{ name: 'UserId', hidden: true },
 		{ name: 'HandlerId', hidden: true },
 		{ name: 'FileName', type: 'string', isDefault: true },
 		{ name: 'Status', type: 'string', isDefault: true },
-		{ name: 'ProcessDate', type: 'date', isDefault: true }
+        { name: 'ProcessDate', type: 'date', isDefault: true, timeZone: +3, convert: dateConvertTimeZone }
 	],
     proxy: {
         type: 'breeze',

@@ -26,6 +26,7 @@ using Module.Persist.TPM.Model.Import;
 using System.Web.Http.Results;
 using Module.Persist.TPM.CalculatePromoParametersModule;
 using Core.Settings;
+using Module.Persist.TPM.Utils;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -184,17 +185,57 @@ namespace Module.Frontend.TPM.Controllers
             return Context.Set<PromoProduct>().Count(e => e.Id == key) > 0;
         }
 
-        private IEnumerable<Column> GetExportSettings()
+        private IEnumerable<Column> GetExportSettings(string additionalColumn)
         {
-            IEnumerable<Column> columns = new List<Column>()
+            IEnumerable<Column> columns = new List<Column>();
+
+            // если импорт идет из детализации, приходит список столбцов и выбираем нужные
+            if (additionalColumn != null && additionalColumn.Length > 0)
             {
-                new Column() { Order = 0, Field = "EAN_PC", Header = "EAN PC", Quoting = false },
-                new Column() { Order = 1, Field = "ActualProductPCQty", Header = "Actual Product PC Qty", Quoting = false },
-                new Column() { Order = 2, Field = "ActualProductPCLSV", Header = "Actual Product PC LSV", Quoting = false },
-            };
+                Dictionary<string, Column> columnMap = new Dictionary<string, Column>()
+                {
+                    { "zrep", new Column() { Order = 0, Field = "ZREP", Header = "ZREP", Quoting = false }},
+                    { "producten", new Column() { Order = 1, Field = "ProductEN", Header = "Product EN", Quoting = false }},
+                    { "planproductbaselinelsv", new Column() { Order = 2, Field = "PlanProductBaselineLSV", Header = "Plan Product Baseline LSV", Quoting = false }},
+                    { "actualproductbaselinelsv", new Column() { Order = 2, Field = "ActualProductBaselineLSV", Header = "Actual Product Baseline LSV", Quoting = false }},
+                    { "planproductincrementallsv", new Column() { Order = 2, Field = "PlanProductIncrementalLSV", Header = "Plan Product Incremental LSV", Quoting = false }},
+                    { "actualproductincrementallsv", new Column() { Order = 2, Field = "ActualProductIncrementalLSV", Header = "Actual Product Incremental LSV", Quoting = false }},
+                    { "planproductlsv", new Column() { Order = 2, Field = "PlanProductLSV", Header = "Plan Product LSV", Quoting = false }},
+                    { "planproductpostpromoeffectlsv", new Column() { Order = 2, Field = "PlanProductPostPromoEffectLSV", Header = "Plan Product Post Promo Effect LSV", Quoting = false }},
+                    { "actualproductlsv", new Column() { Order = 2, Field = "ActualProductLSV", Header = "Actual Product LSV", Quoting = false }},
+                    { "actualproductpostpromoeffectlsv", new Column() { Order = 2, Field = "ActualProductPostPromoEffectLSV", Header = "Actual Product Post Promo Effect LSV", Quoting = false }},
+                    { "actualproductlsvbycompensation", new Column() { Order = 2, Field = "ActualProductLSVByCompensation", Header = "Actual Product LSV By Compensation", Quoting = false }},
+                };
+
+                additionalColumn = additionalColumn.ToLower();
+                string[] columnsName = additionalColumn.Split(";".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+
+                foreach (string columnName in columnsName)
+                {
+                    if (columnMap.ContainsKey(columnName))
+                    {
+                        columns = new List<Column>()
+                        {
+                            new Column() { Order = 0, Field = "ZREP", Header = "ZREP", Quoting = false },
+                            new Column() { Order = 1, Field = "ProductEN", Header = "Product EN", Quoting = false },
+                            columnMap[columnName]
+                        };
+                    }
+                }
+            }
+            else
+            {
+                columns = new List<Column>()
+                {
+                    new Column() { Order = 0, Field = "EAN_PC", Header = "EAN PC", Quoting = false },
+                    new Column() { Order = 1, Field = "ActualProductPCQty", Header = "Actual Product PC Qty", Quoting = false },
+                    new Column() { Order = 2, Field = "ActualProductPCLSV", Header = "Actual Product PC LSV", Quoting = false },
+                };
+            }            
 
             return columns;
         }
+
         private IEnumerable<Column> GetImportTemplateSettingsTLC()
         {
             IEnumerable<Column> columns = new List<Column>()
@@ -218,12 +259,14 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult ExportXLSX(ODataQueryOptions<PromoProduct> options)
+        public IHttpActionResult ExportXLSX(ODataQueryOptions<PromoProduct> options, string additionalColumn = null, Guid? promoId = null)
         {
+            // Во вкладке Promo -> Activity можно смотреть детализацию раличных параметров
+            // Это один грид с разными столбцами, additionalColumn - набор столбцов
             try
             {
-                IQueryable results = options.ApplyTo(GetConstraintedQuery().Where(x => !x.Disabled));
-                IEnumerable<Column> columns = GetExportSettings();
+                IQueryable results = options.ApplyTo(GetConstraintedQuery().Where(x => !x.Disabled && (!promoId.HasValue || x.PromoId == promoId.Value)));
+                IEnumerable<Column> columns = GetExportSettings(additionalColumn);
                 XLSXExporter exporter = new XLSXExporter(columns);
                 UserInfo user = authorizationManager.GetCurrentUser();
                 string username = user == null ? "" : user.Login;
@@ -318,7 +361,7 @@ namespace Module.Frontend.TPM.Controllers
                     Description = "Загрузка импорта из файла " + importModel.Name,
                     Name = "Module.Host.TPM.Handlers." + handlerName,
                     ExecutionPeriod = null,
-                    CreateDate = DateTimeOffset.Now,
+                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
                     LastExecutionDate = null,
                     NextExecutionDate = null,
                     ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
@@ -356,31 +399,26 @@ namespace Module.Frontend.TPM.Controllers
 
         }
         [ClaimsAuthorize]
-        public IHttpActionResult DownloadTemplateXLSXTLC(Guid promoId)
+        public IHttpActionResult DownloadTemplateXLSXTLC()
         {
             try
             {
-                //IQueryable results = options.ApplyTo(GetConstraintedQuery().Where(x => !x.Disabled));
-                var promo = Context.Set<Promo>().Where(x => x.Id == promoId && !x.Disabled).FirstOrDefault();
-                List<string> eanPCs = PlanProductParametersCalculation.GetProductListFromAssortmentMatrix(promo, Context);
-                IQueryable results = eanPCs.Select(n => new ImportPromoProductFromTLC
-                {
-                    EAN_PC = n,
-                }).AsQueryable();
-
-
                 IEnumerable<Column> columns = GetImportTemplateSettingsTLC();
                 XLSXExporter exporter = new XLSXExporter(columns);
-                UserInfo user = authorizationManager.GetCurrentUser();
-                string username = user == null ? "" : user.Login;
-                string filePath = exporter.GetExportFileName("PromoProduct", username);
-                exporter.Export(results, filePath);
-                string filename = System.IO.Path.GetFileName(filePath);
-                return Content<string>(HttpStatusCode.OK, filename);
+                string exportDir = AppSettingsManager.GetSetting("EXPORT_DIRECTORY", "~/ExportFiles");
+                string filename = string.Format("{0}TemplateTLC.xlsx", "PromoProduct");
+                if (!Directory.Exists(exportDir))
+                {
+                    Directory.CreateDirectory(exportDir);
+                }
+                string filePath = Path.Combine(exportDir, filename);
+                exporter.Export(Enumerable.Empty<PromoProduct>(), filePath);
+                string file = Path.GetFileName(filePath);
+                return Content(HttpStatusCode.OK, file);
             }
             catch (Exception e)
             {
-                return Content<string>(HttpStatusCode.InternalServerError, e.Message);
+                return Content(HttpStatusCode.InternalServerError, e.Message);
             }
         }
         
