@@ -253,7 +253,9 @@ namespace Module.Host.TPM.Handlers.DataFlow
 
                             // продуктовые параметры считаются только для промо не из TLC
                             // Фактические параметры могут быть рассчитаны только после завершения промо
-                            if (!promo.LoadFromTLC && promo.PromoStatus.SystemName == "Finished")
+                            // Продуктовые параметры считаем только, если были загружены Actuals
+                            var promoProductList = context.Set<PromoProduct>().Where(x => x.PromoId == promo.Id && !x.Disabled).ToList();
+                            if (!promo.LoadFromTLC && promo.PromoStatus.SystemName == "Finished" && promoProductList.Any(x => x.ActualProductPCQty.HasValue))
                             {
                                 swPromoParameters_Part02.Start();
                                 message = ActualProductParametersCalculation.CalculatePromoProductParameters(promo, context);
@@ -343,8 +345,11 @@ namespace Module.Host.TPM.Handlers.DataFlow
                     foreach (var promoId in promoIdsForAllRecalculating)
                     {
                         Promo promo = context.Set<Promo>().Where(x => x.Id == promoId && !x.Disabled).FirstOrDefault();
+                        var promoProductList = context.Set<PromoProduct>().Where(x => x.PromoId == promo.Id && !x.Disabled).ToList();
                         // Фактические параметры могут быть рассчитаны только после завершения промо
-                        if (promo != null && promo.PromoStatus.SystemName == "Finished")
+                        // Параметры промо считаем только, если промо из TLC или если были загружены Actuals
+                        if (promo != null && promo.PromoStatus.SystemName == "Finished" && 
+                           (promo.LoadFromTLC || promoProductList.Any(x => x.ActualProductPCQty.HasValue)))
                         {
                             logLine = String.Format("Recalculating promo (Actual promo parameters) number: {0}", promo.Number);
                             handlerLogger.Write(true, logLine, "Message");
