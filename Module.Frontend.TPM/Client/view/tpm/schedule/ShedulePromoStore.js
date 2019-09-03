@@ -11,7 +11,7 @@ Ext.define('App.store.core.SchedulePromoStore', {
     autoLoad: true,
     autoSync: false,
     remoteFilter: true,
-    pageSize: 1000,
+    pageSize: 20000, // TODO: загружать буферизированно
 
     constructor: function (config) {
         this.callParent(arguments);
