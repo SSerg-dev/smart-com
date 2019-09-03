@@ -2782,7 +2782,6 @@
 		// Если запись создаётся копированием, даты берутся из календаря, а не из копируемой записи
 		var startDate = isCopy ? record.schedulerContext.start : record.data.StartDate;
 		var endDate = isCopy ? record.schedulerContext.end : record.data.EndDate;
-
 		durationStartDate.setValue(startDate);
 		durationEndDate.setValue(endDate);
 
@@ -3141,7 +3140,6 @@
 				this.setPromoTitle(window, window.promoName, window.promoStatusName);
 			}
 
-			var model = this.buildPromoModel(window, record);
 			this.saveModel(model, window, close, reloadForm);
 		} else {
 			App.Notify.pushInfo(isModelComplete);
@@ -5405,6 +5403,7 @@
                 dispatchEnd = Ext.Date.add(durationEndDate.getValue(), Ext.Date.DAY,
                     schedulerController.getDaysForDispatchDateFromClientSettings(
                         promoClientRecord.IsBeforeEnd, promoClientRecord.DaysEnd, promoClientRecord.IsDaysEnd));
+                
             }
 
             if (isCopy) {
@@ -5418,12 +5417,14 @@
                 if (promoRecord.data.DispatchesStart != undefined && promoRecord.data.DispatchesStart != undefined) {
                     dispatchStartDate.setValue(promoRecord.data.DispatchesStart);
                     dispatchEndDate.setValue(promoRecord.data.DispatchesEnd);
-                }  if (dispatchStart != null){
-                    dispatchStartDate.setValue(dispatchStart);
-                    
-                }  if (dispatchEnd != null) {
-                    dispatchEndDate.setValue(dispatchEnd);
+                } else {
+                    if (dispatchStart != null) {
+                        dispatchStartDate.setValue(dispatchStart);
 
+                    } if (dispatchEnd != null) {
+                        dispatchEndDate.setValue(dispatchEnd);
+
+                    }
                 }
                 
             }

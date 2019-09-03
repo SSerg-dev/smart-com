@@ -65,7 +65,7 @@
                                     var dispatchStartDate = field.up('promoperiod').down('[name=DispatchStartDate]');
                                     var daysForDispatchStart = record.DaysStart;
 
-                                    if (isBeforeStart !== null && daysStart !== null && isDaysStart !== null && oldValue == undefined) {
+                                    if (isBeforeStart !== null && daysStart !== null && isDaysStart !== null) {
                                         if (!isDaysStart) {
                                             daysForDispatchStart *= 7;
                                         }
@@ -209,7 +209,7 @@
                                     var dispatchEndDate = field.up('promoperiod').down('[name=DispatchEndDate]');
                                     var daysForDispatchEnd = record.DaysEnd;
 
-                                    if (isBeforeEnd !== null && daysEnd !== null && isDaysEnd !== null && oldValue == undefined) {
+                                    if (isBeforeEnd !== null && daysEnd !== null && isDaysEnd !== null) {
                                          
                                         if (!isDaysEnd) {
                                             daysForDispatchEnd *= 7;
