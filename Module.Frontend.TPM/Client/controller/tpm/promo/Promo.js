@@ -3140,6 +3140,7 @@
 				this.setPromoTitle(window, window.promoName, window.promoStatusName);
 			}
 
+            var model = this.buildPromoModel(window, record);
 			this.saveModel(model, window, close, reloadForm);
 		} else {
 			App.Notify.pushInfo(isModelComplete);
