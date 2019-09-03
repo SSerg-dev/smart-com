@@ -163,8 +163,8 @@
                     xtype: 'treefsearchfield',
                     trigger2Cls: '',
                     selectorWidget: 'clienttree',
-                    valueField: 'FullPathName',
-                    displayField: 'FullPathName',
+                    valueField: 'Name',
+                    displayField: 'Name',
                     multiSelect: true,
                     operator: 'conts',
                     store: {

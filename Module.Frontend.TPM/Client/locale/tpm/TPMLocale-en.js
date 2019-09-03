@@ -1739,6 +1739,7 @@
         'Id': 'Id',
         'Number': 'ID',
         'EAN_PC': 'EAN PC',
+        'ProductEAN_PC': 'EAN PC',
         'ClientTreeName': 'Client',
         'ClientTreeObjectId': 'Client hierarchy code',
         'StartDate': 'Start Date',
