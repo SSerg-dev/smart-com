@@ -137,11 +137,16 @@ namespace Module.Host.TPM.Handlers
 
         private void CalulateActual(Promo promo, DatabaseContext context, ILogWriter handlerLogger)
         {
-            string errorString = ActualPromoParametersCalculation.CalculatePromoParameters(promo, context);
+            // Параметры промо считаем только, если промо из TLC или если были загружены Actuals
+            var promoProductList = context.Set<PromoProduct>().Where(x => x.PromoId == promo.Id && !x.Disabled).ToList();
+            if (promo.LoadFromTLC || promoProductList.Any(x => x.ActualProductPCQty.HasValue))
+            {
+                string errorString = ActualPromoParametersCalculation.CalculatePromoParameters(promo, context);
 
-            // записываем ошибки если они есть
-            if (errorString != null)
-                WriteErrorsInLog(handlerLogger, errorString);
+                // записываем ошибки если они есть
+                if (errorString != null)
+                    WriteErrorsInLog(handlerLogger, errorString);
+            }
         }
 
         /// <summary>

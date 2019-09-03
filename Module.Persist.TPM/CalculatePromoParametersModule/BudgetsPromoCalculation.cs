@@ -117,7 +117,10 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         }
                     }
 
-                    if (oldActualMarketingTI[i] != p.ActualPromoTIMarketing || oldActualCostProd[i] != p.ActualPromoCostProduction)
+                    var promoProductList = context.Set<PromoProduct>().Where(x => x.PromoId == promo.Id && !x.Disabled).ToList();
+                    // Параметры промо считаем только, если промо из TLC или если были загружены Actuals
+                    if ((oldActualMarketingTI[i] != p.ActualPromoTIMarketing || oldActualCostProd[i] != p.ActualPromoCostProduction) &&
+                        (promo.LoadFromTLC || promoProductList.Any(x => x.ActualProductPCQty.HasValue)))
                     {
                         string errorString = ActualPromoParametersCalculation.CalculatePromoParameters(p, context);
 

@@ -167,7 +167,9 @@ namespace Module.Host.TPM.Handlers
         private void CalulateActual(Promo promo, DatabaseContext context, ILogWriter handlerLogger, Guid handlerId)
         {
             string errorString = null;
-            if (!promo.LoadFromTLC)
+            // Продуктовые параметры считаем только, если были загружены Actuals
+            var promoProductList = context.Set<PromoProduct>().Where(x => x.PromoId == promo.Id && !x.Disabled).ToList();
+            if (!promo.LoadFromTLC && promoProductList.Any(x => x.ActualProductPCQty.HasValue))
             {
                 // если есть ошибки, они перечисленны через ;
                 errorString = ActualProductParametersCalculation.CalculatePromoProductParameters(promo, context);
@@ -179,7 +181,11 @@ namespace Module.Host.TPM.Handlers
             // пересчет фактических бюджетов (из-за LSV)
             BudgetsPromoCalculation.CalculateBudgets(promo, false, true, handlerLogger, handlerId, context);
 
-            errorString = ActualPromoParametersCalculation.CalculatePromoParameters(promo, context);
+            // Параметры промо считаем только, если промо из TLC или если были загружены Actuals
+            if (promo.LoadFromTLC || promoProductList.Any(x => x.ActualProductPCQty.HasValue))
+            {
+                errorString = ActualPromoParametersCalculation.CalculatePromoParameters(promo, context);
+            }
 
             // записываем ошибки если они есть
             if (errorString != null)

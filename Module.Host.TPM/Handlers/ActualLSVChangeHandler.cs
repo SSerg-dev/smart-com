@@ -49,8 +49,10 @@ namespace Module.Host.TPM.Handlers
                             CalculateAllActualProductPostPromoEffect(promo, context);
                             context.SaveChanges();
 
-                            string errorString = null;                            
-                            if (!promo.LoadFromTLC)
+                            string errorString = null;
+                            // Продуктовые параметры считаем только, если были загружены Actuals
+                            var promoProductList = context.Set<PromoProduct>().Where(x => x.PromoId == promo.Id && !x.Disabled).ToList();
+                            if (!promo.LoadFromTLC && promoProductList.Any(x => x.ActualProductPCQty.HasValue))
                             {
                                 // если есть ошибки, они перечисленны через ;
                                 errorString = ActualProductParametersCalculation.CalculatePromoProductParameters(promo, context, true);
@@ -59,7 +61,12 @@ namespace Module.Host.TPM.Handlers
                                     WriteErrorsInLog(handlerLogger, errorString);
                             }
 
-                            errorString = ActualPromoParametersCalculation.CalculatePromoParameters(promo, context, true);
+                            // Параметры промо считаем только, если промо из TLC или если были загружены Actuals
+                            if (promo.LoadFromTLC || promoProductList.Any(x => x.ActualProductPCQty.HasValue))
+                            {
+                                errorString = ActualPromoParametersCalculation.CalculatePromoParameters(promo, context, true);
+                            }
+
                             // записываем ошибки если они есть
                             if (errorString != null)
                                 WriteErrorsInLog(handlerLogger, errorString);
