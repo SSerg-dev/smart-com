@@ -22,16 +22,18 @@ namespace Module.Persist.TPM.Model.Import
         [Display(Name = "ZREP")]
         public string ProductZREP { get; set; }
 
-        [Display(Name = "Case Amount")]
+        [Display(Name = "Plan Promo Incremental Cases")]
         [ImportCSVColumn(ColumnNumber = 5)]
+        [Required(ErrorMessage = Core.Import.ImportConsts.ValidationMessage.RequiredErrorMessage)]
         public double? PlanPromoIncrementalCases { get; set; }
 
-        [Display(Name = "LSV")]
+        [Display(Name = "Case Price")]
+        [ImportCSVColumn(ColumnNumber = 6)]
+        [Required(ErrorMessage = Core.Import.ImportConsts.ValidationMessage.RequiredErrorMessage)]
+        public double? CasePrice { get; set; }
+
+        [Display(Name = "Plan Promo Incremental LSV")]
         [ImportCSVColumn(ColumnNumber = 7)]
         public double? PlanPromoIncrementalLSV { get; set; }
-
-        [Display(Name = "Price")]
-        [ImportCSVColumn(ColumnNumber = 6)]
-        public double? CasePrice { get; set; }
     }
 }
