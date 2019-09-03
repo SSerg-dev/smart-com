@@ -1601,7 +1601,7 @@ namespace Module.Frontend.TPM.Controllers {
                 List<Product> oldInOutProducts = PlanProductParametersCalculation.GetCheckedProducts(Context, oldPromo);
                 List<Product> newInOutProducts = PlanProductParametersCalculation.GetCheckedProducts(Context, newPromo);
 
-                needReacalculate = needReacalculate || !oldInOutProducts.All(x => newInOutProducts.Any(y => y.Id == x.Id));
+                needReacalculate = needReacalculate || oldInOutProducts.Count != newInOutProducts.Count || !oldInOutProducts.All(x => newInOutProducts.Any(y => y.Id == x.Id));
             } 
             else
             {

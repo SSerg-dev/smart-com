@@ -58,12 +58,16 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                 var promoProducts = context.Set<PromoProduct>().Where(x => x.PromoId == promoId);
                 var incrementalPromoes = context.Set<IncrementalPromo>().Where(x => x.PromoId == promoId);
-
                 var promoProductsNotDisabled = promoProducts.Where(x => !x.Disabled);
-                // Если в таблице PromoProduct среди !Disabled не все продукты из нового списка.
-                if (!resultProductList.All(x => promoProductsNotDisabled.Any(y => x.ZREP == y.ZREP)))
+
+                foreach (var promoProduct in promoProductsNotDisabled)
                 {
-                    needReturnToOnApprovalStatus = true;
+                    if (!resultProductList.Any(x => x.ZREP == promoProduct.ZREP))
+                    {
+                        promoProduct.Disabled = true;
+                        promoProduct.DeletedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                        needReturnToOnApprovalStatus = true;
+                    }
                 }
 
                 // Делаем для ускорения вставки записей, через Mapping всё очень долго                    
