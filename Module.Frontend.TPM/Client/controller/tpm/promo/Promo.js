@@ -2363,6 +2363,9 @@
         // Кнопки для изменения состояний промо
         var promoActions = Ext.ComponentQuery.query('button[isPromoAction=true]');
 
+        // Для InOut Promo
+        promoeditorcustom.isInOutPromo = record.data.InOut;
+
 		readOnly = isCopy? false : readOnly || calculating;
 		promoeditorcustom.readOnly = readOnly;
 		$.ajax({
@@ -2460,6 +2463,9 @@
 		var period = promoeditorcustom.down('container[name=promo_step4]');
 		var event = promoeditorcustom.down('container[name=promo_step5]');
 		var settings = promoeditorcustom.down('container[name=promo_step6]');
+
+        // InOut Products
+        promoeditorcustom.InOutProductIds = record.data.InOutProductIds;
 
 		// mechanic
 		var marsMechanicId = mechanic.down('searchcombobox[name=MarsMechanicId]');
