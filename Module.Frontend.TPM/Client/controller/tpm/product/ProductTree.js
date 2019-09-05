@@ -478,6 +478,7 @@
             // заполняем модель 
             model.set('parentId', record.get('ObjectId')); // id родительского элемента
             model.set('StartDate', new Date()); // дата, перепишется на сервер, но нужна т.к. иначе модель будет невалидна
+            model.set('EndDate', null); // дата нужна, иначе модель будет невалидна !!!
             model.set('depth', record.get('depth') + 1); // глубина вложенности 
             //tree.editorModel.startCreateRecord(model);
             this.createNode(tree, model);
