@@ -394,9 +394,22 @@
                                 targetId = record.get('parentId');
                             }
 
-                            treegrid.store.getProxy().extraParams.productTreeObjectIds = targetId;
+							treegrid.store.getProxy().extraParams.productTreeObjectIds = targetId;
+							treegrid.store.getProxy().extraParams.dateFilter = null;
                             treegrid.store.getRootNode().removeAll();
-                            treegrid.store.getRootNode().setId('root');
+							treegrid.store.getRootNode().setId('root');
+
+							var dateFilter = button.up('combineddirectorytreepanel').down('#dateFilter');
+							var currentDate = new Date();
+							var days = currentDate.getDate().toString().length === 1 ? '0' + currentDate.getDate() : currentDate.getDate();
+							var month = (currentDate.getMonth() + 1).toString().length === 1 ? '0' + (currentDate.getMonth() + 1) : currentDate.getMonth() + 1;
+							var year = currentDate.getFullYear();
+
+							if (dateFilter) {
+								dateFilter.setText(days + '.' + month + '.' + year);
+								dateFilter.dateValue = currentDate;
+							}
+
                             treegrid.store.load({
                                 scope: this,
                                 callback: function (records, operation, success) {
@@ -934,7 +947,7 @@
 				dateFilter.dateValue = currentDate;
 			}
 
-			store.getProxy().extraParams.dateFilter = dateFilter.dateValue;
+			store.getProxy().extraParams.dateFilter = null;
 		}
 
     },
