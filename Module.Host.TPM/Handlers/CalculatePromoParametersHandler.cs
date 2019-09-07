@@ -131,7 +131,11 @@ namespace Module.Host.TPM.Handlers
                                     handlerLogger.Write(true, logLine, "Error");
                                 }
 
-								string[] canBeReturnedToOnApproval = { "OnApproval", "Approved", "Planned" };
+                                // пересчет baseline должен происходить до попытки согласовать промо, т.к. к зависимости от результата пересчета
+                                // резльтат согласования может быть разный (после пересчета baseline может оказаться равен 0, тогда автосогласования не будет)
+                                calculateError = PlanProductParametersCalculation.CalculatePromoProductParameters(promoId, context);
+
+                                string[] canBeReturnedToOnApproval = { "OnApproval", "Approved", "Planned" };
 								if (needReturnToOnApprovalStatus && canBeReturnedToOnApproval.Contains(promo.PromoStatus.SystemName))
 								{
 									PromoStatus draftPublished = context.Set<PromoStatus>().First(x => x.SystemName.ToLower() == "draftpublished" && !x.Disabled);
@@ -156,8 +160,6 @@ namespace Module.Host.TPM.Handlers
 										handlerLogger.Write(true, logLine, "Error");
 									}
 								}
-
-                                calculateError = PlanProductParametersCalculation.CalculatePromoProductParameters(promoId, context);
                             }
 
                             if (calculateError != null)

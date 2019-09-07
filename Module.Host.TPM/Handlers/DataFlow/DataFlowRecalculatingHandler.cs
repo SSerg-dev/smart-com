@@ -98,6 +98,10 @@ namespace Module.Host.TPM.Handlers.DataFlow
                                         handlerLogger.Write(true, logLine, "Error");
                                     }
 
+                                    // пересчет baseline должен происходить до попытки согласовать промо, т.к. к зависимости от результата пересчета
+                                    // результат согласования может быть разный (после пересчета baseline может оказаться равен 0, тогда автосогласования не будет)
+                                    message = PlanProductParametersCalculation.CalculatePromoProductParameters(promoId, context);
+
                                     string[] canBeReturnedToOnApproval = { "OnApproval", "Approved", "Planned" };
                                     // возврат в статус OnApproval при изменении набора продуктов(с проверкой NoNego)
                                     if (needReturnToOnApprovalStatus && canBeReturnedToOnApproval.Contains(promo.PromoStatus.SystemName))
@@ -124,8 +128,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
                                             handlerLogger.Write(true, logLine, "Error");
                                         }
                                     }
-
-                                    message = PlanProductParametersCalculation.CalculatePromoProductParameters(promoId, context);
+                                    
                                     if (message != null)
                                     {
                                         logLine = String.Format("Error when calculating the planned parameters of the Product: {0}", message);

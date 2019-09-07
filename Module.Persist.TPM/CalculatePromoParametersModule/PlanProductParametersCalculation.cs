@@ -84,6 +84,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         {
                             promoProduct.Disabled = false;
                             promoProduct.DeletedDate = null;
+                            needReturnToOnApprovalStatus = true;
                         }
                         else if (promoProduct == null)
                         {
@@ -98,6 +99,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                             {
                                 incrementalPromo.Disabled = false;
                                 incrementalPromo.DeletedDate = null;
+                                needReturnToOnApprovalStatus = true;
                             }
                             else if (incrementalPromo == null)
                             {
