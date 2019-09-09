@@ -3078,24 +3078,49 @@
 					if (reloadPromo) {
 						App.model.tpm.promo.Promo.load(response.data.Id, {
 							callback: function (newModel, operation) {
-								var showLogBtn = window.down('#btn_showlog');
-								if (showLogBtn) {
-									showLogBtn.promoId = newModel.data.Id;
-								}
+                                var directorygrid = grid ? grid.down('directorygrid') : null;
+                                if (newModel) {
+                                    var showLogBtn = window.down('#btn_showlog');
+                                    if (showLogBtn) {
+                                        showLogBtn.promoId = newModel.data.Id;
+                                    }
 
-								window.model = newModel;
-								var directorygrid = grid ? grid.down('directorygrid') : null;
-								window.readOnly = true;
-								me.reFillPromoForm(window, newModel, directorygrid);
+                                    window.model = newModel;
+                                    window.readOnly = true;
+                                    me.reFillPromoForm(window, newModel, directorygrid);
+                                }
+                                else {
+                                    var statusData = null;
+                                    $.ajax({
+                                        dataType: 'json',
+                                        url: '/odata/PromoStatuss',
+                                        success: function (promoStatuses) {
+                                            for (var i = 0; i < promoStatuses.value.length; i++) {
+                                                if (promoStatuses.value[i].SystemName == 'Draft') {
+                                                    statusData = promoStatuses.value[i];
+                                                    break;
+                                                }
+                                            }
 
-								// если было создано, то id был обновлен
-								if (wasCreating)
-									me.initSignalR(window);
+                                            if (statusData) {
+                                                response.data.PromoStatusId = statusData.Id;
+                                                response.data.PromoStatusName = statusData.Name;
+                                                response.data.PromoStatusSystemName = statusData.SystemName;
+                                                window.readOnly = true;
 
-								//24.06.19 Лог не показываем
-								//if (newModel.get('Calculating'))
-								//    me.onPrintPromoLog(window, grid, close);
-								//window.setLoading(false);
+                                                me.reFillPromoForm(window, response, directorygrid);
+                                            }
+                                            else {
+                                                window.setLoading(false);
+                                            }
+                                        }
+                                    });
+                                }
+
+                                // если было создано, то id был обновлен
+                                if (wasCreating) {
+                                   me.initSignalR(window);
+                                }
 							}
 						});
 					}
