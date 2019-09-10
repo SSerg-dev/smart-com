@@ -14,7 +14,8 @@ namespace Module.Persist.TPM.Model.DTO {
         public string ModelApollo { get; set; }
         public DateTimeOffset? WeekStartDate { get; set; }
         public double? PlanPostPromoEffectQty { get; set; }
-        public DateTimeOffset? StartDate { get; set; }
+		public double? PlanUplift { get; set; }
+		public DateTimeOffset? StartDate { get; set; }
         public DateTimeOffset? EndDate { get; set; }
 		public string Week { get; set; }
 		public string Status { get; set; }

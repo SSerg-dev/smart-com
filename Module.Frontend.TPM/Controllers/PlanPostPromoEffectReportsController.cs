@@ -138,13 +138,13 @@ namespace Module.Frontend.TPM.Controllers {
             IEnumerable<Column> columns = new List<Column>() {
                 new Column() { Order = 1, Field = "ZREP", Header = "ZREP", Quoting = false },
                 new Column() { Order = 2, Field = "DemandCode", Header = "Demand Code", Quoting = false },
-                new Column() { Order = 3, Field = "PromoName", Header = "Promo Name", Quoting = false },
-                new Column() { Order = 4, Field = "PromoNameId", Header = "Promo Name Id", Quoting = false },
-                new Column() { Order = 5, Field = "LocApollo", Header = "Loc", Quoting = false },
-                new Column() { Order = 6, Field = "TypeApollo", Header = "Type", Quoting = false },
-                new Column() { Order = 7, Field = "ModelApollo", Header = "Model", Quoting = false },
-                new Column() { Order = 8, Field = "WeekStartDate", Header = "Week Start Date", Quoting = false, Format = "dd.MM.yyyy"  },
-                new Column() { Order = 9, Field = "PlanPostPromoEffectQty", Header = "Qty", Quoting = false },
+                new Column() { Order = 3, Field = "PromoNameId", Header = "Promo Name Id", Quoting = false },
+                new Column() { Order = 4, Field = "LocApollo", Header = "Loc", Quoting = false },
+                new Column() { Order = 5, Field = "TypeApollo", Header = "Type", Quoting = false },
+                new Column() { Order = 6, Field = "ModelApollo", Header = "Model", Quoting = false },
+                new Column() { Order = 7, Field = "WeekStartDate", Header = "Week Start Date", Quoting = false, Format = "dd.MM.yyyy"  },
+                new Column() { Order = 8, Field = "PlanPostPromoEffectQty", Header = "Qty", Quoting = false },
+				new Column() { Order = 9, Field = "PlanUplift", Header = "Uplift Plan", Quoting = false },
                 new Column() { Order = 10, Field = "StartDate", Header = "Start date", Quoting = false, Format = "dd.MM.yyyy"  },
                 new Column() { Order = 11, Field = "EndDate", Header = "End date", Quoting = false, Format = "dd.MM.yyyy" },
 				new Column() { Order = 12, Field = "Week", Header = "Week", Quoting = false },
@@ -192,6 +192,7 @@ namespace Module.Frontend.TPM.Controllers {
 			rep.PlanProductBaselineCaseQty = planProductBaselineCaseQty;
 			rep.PlanProductPostPromoEffectLSV = planProductPostPromoEffectLSV;
 			rep.PlanProductBaselineLSV = planProductBaselineLSV;
+			rep.PlanUplift = promo.PlanPromoUpliftPercent;
 
 			return rep;
         }
