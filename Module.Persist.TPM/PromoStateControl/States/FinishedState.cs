@@ -88,11 +88,6 @@ namespace Module.Persist.TPM.PromoStateControl
 
             private string CheckPromoForErrors(Promo promoModel)
             {
-                if (String.IsNullOrEmpty(promoModel.InvoiceNumber))
-                {
-                    return "Invoice Number cannot be empty.";
-                }
-
                 if (!promoModel.ActualPromoLSV.HasValue || promoModel.ActualPromoLSV.Value <= 0)
                 {
                     return "Actual Promo LSV must be greater than 0.";
