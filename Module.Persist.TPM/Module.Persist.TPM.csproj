@@ -1221,6 +1221,10 @@
     <Compile Include="Migrations\201909101042098_IncrementaPromoReport_ZREP_update.Designer.cs">
       <DependentUpon>201909101042098_IncrementaPromoReport_ZREP_update.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201909101433083_EmptyMigration8.cs" />
+    <Compile Include="Migrations\201909101433083_EmptyMigration8.Designer.cs">
+      <DependentUpon>201909101433083_EmptyMigration8.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\PlanPostPromoEffectReport.cs" />
     <Compile Include="Model\DTO\PlanIncrementalReport.cs" />
@@ -2230,6 +2234,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201909101042098_IncrementaPromoReport_ZREP_update.resx">
       <DependentUpon>201909101042098_IncrementaPromoReport_ZREP_update.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201909101433083_EmptyMigration8.resx">
+      <DependentUpon>201909101433083_EmptyMigration8.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
