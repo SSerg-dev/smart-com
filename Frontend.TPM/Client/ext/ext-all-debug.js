@@ -71754,7 +71754,7 @@ Ext.define('Ext.data.Model', {
                 if (success) {
                     record = operation.getRecords()[0];
                     
-                    if (!record.hasId()) {
+                    if (record && !record.hasId()) {
                         record.setId(id);
                     }
                     Ext.callback(config.success, scope, [record, operation]);

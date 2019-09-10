@@ -125,7 +125,7 @@ Ext.define('Ext.ux.grid.FilterBar', {
         submitLocaleSeparator: false,
         decimalPrecision: 20,
         allowDecimals: true,
-        minValue: 0,
+        decimalSeparator: ',',
         hideTrigger: true,
         keyNavEnabled: false,
         mouseWheelEnabled: false,

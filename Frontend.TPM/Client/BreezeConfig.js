@@ -265,7 +265,25 @@
 
         mappingContext.dataService.uriBuilder.buildUri = buildUrl;
 
-        var url = mappingContext.getUrl();
+		var url = mappingContext.getUrl();
+
+		// Проверка на лимит длинны URL
+		if (url.length > 1800) {
+			Ext.Msg.show({
+				title: 'Выбрано слишком много записей',
+				msg: 'Выбрано слишком много записей, привышен лимит длинны URL, уменьшите количество выбранных записей',
+				buttons: Ext.MessageBox.OK,
+				icon: Ext.Msg.INFO,
+				fn: function () { },
+				cls: 'over_all',
+				closable: true
+			});
+
+			var filterString = url.substring(url.indexOf('$filter=')).replace('$filter=', '').replace('&', '');
+			filterString = filterString.substring(0, filterString.indexOf('$'));
+
+			url = url.replace(`\$filter=${filterString}&`, '');
+		}
 
         // Add query params if .withParameters was used
         if (parameters) {

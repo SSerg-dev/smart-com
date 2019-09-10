@@ -36,6 +36,7 @@ Ext.application({
 
             if (data && data.success === false) {
                 if (data.message == "SESSION_EXPIRED") {
+                    /*
                     Ext.Msg.show({
                         title: l10n.ns('core').value('SessionExpiredWindowTitle'),
                         msg: l10n.ns('core').value('SessionExpiredMessage'),
@@ -47,10 +48,10 @@ Ext.application({
                         cls: 'over_all',
                         closable: false
                     });
+                    */
                 } else {
                     App.Notify.pushError(data.message);
                 }
-                App.Notify.pushError(data.message);
             }
         });
         Ext.ux.data.proxy.Breeze.on('exception', function (proxy, response, operation) {
