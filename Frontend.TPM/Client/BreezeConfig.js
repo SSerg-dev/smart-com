@@ -282,7 +282,7 @@
 			var filterString = url.substring(url.indexOf('$filter=')).replace('$filter=', '').replace('&', '');
 			filterString = filterString.substring(0, filterString.indexOf('$'));
 
-			url = url.replace(`\$filter=${filterString}&`, '');
+			url = url.replace('$filter=' + filterString + '&', '');
 		}
 
         // Add query params if .withParameters was used
