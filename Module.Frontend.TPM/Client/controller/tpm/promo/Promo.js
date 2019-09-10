@@ -1965,11 +1965,9 @@
 		var actMIsValid = !(actM.rawValue === "");
 		var actAISP = promoactivity.down('numberfield[name=ActualInStoreShelfPrice]');
 		var actAISPIsValid = !(actAISP.value === null);
-		var actIN = promoactivity.down('textfield[name = InvoiceNumber]');
-		var actINIsValid = !(actIN.value === "");
-		var isActivityPromoValid = actMIsValid && actAISPIsValid && actINIsValid;
+		var isActivityPromoValid = actMIsValid && actAISPIsValid;
 		if (CheckValid === '' && !isActivityPromoValid) {
-			CheckValid = 'In order to close promo Actual In Store and Invoice Number in Activity must be filled.';
+			CheckValid = 'In order to close promo Actual In Store in Activity must be filled.';
 		}
 
 		if ((CheckValid === '') && (isStep7Complete && isStep8Complete && isStep9Complete) && (isPromoValid && isActivityPromoValid)) {
