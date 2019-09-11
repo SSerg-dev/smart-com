@@ -11,6 +11,7 @@
     'core.loophandler.HistoricalLoopHandler',
     'core.loophandler.AdminLoopHandler',
     'core.loophandler.UserLoopHandler',
+    'core.loophandler.SingleLoopHandler',
 
     'core.ReportController',
 
