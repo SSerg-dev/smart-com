@@ -1,3 +1,0 @@
-﻿ResourceMgr.defineModuleSettings('core', {
-    SystemName: ''
-});

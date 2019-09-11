@@ -1,1 +1,0 @@
-migrate.exe Interfaces.Implementation.dll /startupConfigurationFile=ProcessingService.exe.config

@@ -1,1 +1,0 @@
-migrate.exe Persist.dll /startupConfigurationFile=ProcessingService.exe.config
