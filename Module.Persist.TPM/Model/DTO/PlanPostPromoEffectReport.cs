@@ -15,8 +15,8 @@ namespace Module.Persist.TPM.Model.DTO {
         public DateTimeOffset? WeekStartDate { get; set; }
         public double? PlanPostPromoEffectQty { get; set; }
 		public double? PlanUplift { get; set; }
-		public DateTimeOffset? StartDate { get; set; }
-        public DateTimeOffset? EndDate { get; set; }
+		public DateTimeOffset? DispatchesStart { get; set; }
+        public DateTimeOffset? DispatchesEnd { get; set; }
 		public string Week { get; set; }
 		public string Status { get; set; }
 		public double? PlanProductBaselineCaseQty { get; set; }

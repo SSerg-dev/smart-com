@@ -145,8 +145,8 @@ namespace Module.Frontend.TPM.Controllers {
                 new Column() { Order = 7, Field = "WeekStartDate", Header = "Week Start Date", Quoting = false, Format = "dd.MM.yyyy"  },
                 new Column() { Order = 8, Field = "PlanPostPromoEffectQty", Header = "Qty", Quoting = false },
 				new Column() { Order = 9, Field = "PlanUplift", Header = "Uplift Plan", Quoting = false },
-                new Column() { Order = 10, Field = "StartDate", Header = "Start date", Quoting = false, Format = "dd.MM.yyyy"  },
-                new Column() { Order = 11, Field = "EndDate", Header = "End date", Quoting = false, Format = "dd.MM.yyyy" },
+                new Column() { Order = 10, Field = "DispatchesStrat", Header = "Dispatch Strat", Quoting = false, Format = "dd.MM.yyyy"  },
+                new Column() { Order = 11, Field = "DispatchesEnd", Header = "Dispatch End", Quoting = false, Format = "dd.MM.yyyy" },
 				new Column() { Order = 12, Field = "Week", Header = "Week", Quoting = false },
 				new Column() { Order = 13, Field = "Status", Header = "Status", Quoting = false },
 				new Column() { Order = 14, Field = "PlanProductBaselineCaseQty", Header = "Plan Product Baseline Case Qty", Quoting = false, Format = "0.00" },
@@ -180,8 +180,8 @@ namespace Module.Frontend.TPM.Controllers {
             rep.Status = promoStatus;
             rep.PromoNameId = promo.Name + "#" + promo.Number.ToString();
             rep.WeekStartDate = weekStart;
-            rep.StartDate = promo.StartDate;
-            rep.EndDate = promo.EndDate;
+            rep.DispatchesStart = promo.DispatchesStart;
+            rep.DispatchesEnd = promo.DispatchesEnd;
             rep.DemandCode = String.IsNullOrEmpty(demandCode) ? "Demand code was not found" : demandCode;
             rep.InOut = promo.InOut;
             rep.Id = Guid.NewGuid();

@@ -13,8 +13,8 @@
         { name: 'WeekStartDate', type: 'date', hidden: false, isDefault: true, timeZone: 0, convert: dateConvertTimeZone }, // timeZone: 0, т.к. расширенный фильтр этого поля работает при таком значении
         { name: 'PlanProductCaseQty', type: 'number', hidden: false, isDefault: true },
         { name: 'PlanUplift', type: 'number', hidden: false, isDefault: true },
-        { name: 'StartDate', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
-		{ name: 'EndDate', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
+		{ name: 'DispatchesStart', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
+		{ name: 'DispatchesEnd', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
 		{ name: 'Week', type: 'string', hidden: false, isDefault: true },
 		{ name: 'Status', type: 'string', hidden: false, isDefault: true, defaultFilterConfig: getDefaultFilterStatus() },
 		{ name: 'PlanProductBaselineCaseQty', type: 'number', hidden: false, isDefault: true },
