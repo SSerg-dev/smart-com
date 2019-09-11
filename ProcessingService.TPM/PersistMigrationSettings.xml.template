@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<PersistMigrationConfigModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <FullUpdate>false</FullUpdate>
+  <NotifiersUpdate>false</NotifiersUpdate>
+  <SecurityUpdate>false</SecurityUpdate>
+  <DataCorrection>false</DataCorrection>
+</PersistMigrationConfigModel>
