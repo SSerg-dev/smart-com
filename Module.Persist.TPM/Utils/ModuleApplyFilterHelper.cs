@@ -416,14 +416,14 @@ namespace Module.Persist.TPM.Utils {
         /// <param name="query">Запрос</param>
         /// <param name="hierarchy">Иерархия</param>
         /// <param name="filter">Фильтр</param>
-        public static List<PromoProduct> ApplyFilter(List<PromoProduct> query, IQueryable<ClientTreeHierarchyView> hierarchy, IDictionary<string, IEnumerable<string>> filter = null)
+        public static IEnumerable<SimplePromoPromoProduct> ApplyFilter(IEnumerable<SimplePromoPromoProduct> query, IQueryable<ClientTreeHierarchyView> hierarchy, IDictionary<string, IEnumerable<string>> filter = null)
         {
             IEnumerable<string> clientFilter = FilterHelper.GetFilter(filter, ModuleFilterName.Client);
             if (clientFilter.Any())
             {
                 hierarchy = getFilteredHierarchy(hierarchy, clientFilter);
                 query = query.Where(x => 
-                    hierarchy.Any(h => h.Id == x.Promo.ClientTreeId)).ToList();
+                    hierarchy.Any(h => h.Id == x.ClientTreeId)).ToList();
             }
             return query;
         }
