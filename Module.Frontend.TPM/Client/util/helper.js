@@ -995,19 +995,33 @@ Ext.define('Override.RowExpander', {
             row = Ext.fly(rowNode, '_rowExpander'),
             nextBd = row.down(me.rowBodyTrSelector, true),
             isCollapsed = row.hasCls(me.rowCollapsedCls),
-            addOrRemoveCls = isCollapsed ? 'removeCls' : 'addCls';
+            addOrRemoveCls = isCollapsed ? 'removeCls' : 'addCls',
+            ownerLock, rowHeight, fireView;
 
+        // Suspend layouts because of possible TWO views having their height change
+        Ext.suspendLayouts();
         row[addOrRemoveCls](me.rowCollapsedCls);
         Ext.fly(nextBd)[addOrRemoveCls](me.rowBodyHiddenCls);
         me.recordsExpanded[record.internalId] = isCollapsed;
+        view.refreshSize();
 
-        var jspPane = Ext.fly(view.getEl().dom.children[0].children[0]);
-        var gridView = Ext.fly(view.getEl().dom.children[0].children[0].children[0]);
-
-        jspPane.addCls('custom-jsp-pane');
-        jspPane.setWidth(gridView.getWidth());
-        view.refresh();     // обновление вертикальной прокрутки при разворачивании/сворачивании строки 
-    }
+        // Sync the height and class of the row on the locked side
+        if (me.grid.ownerLockable) {
+            ownerLock = me.grid.ownerLockable;
+            fireView = ownerLock.getView();
+            view = ownerLock.lockedGrid.view;
+            rowHeight = row.getHeight();
+            row = Ext.fly(view.getNode(rowIdx), '_rowExpander');
+            row.setHeight(rowHeight);
+            row[addOrRemoveCls](me.rowCollapsedCls);
+            view.refreshSize();
+        } else {
+            fireView = view;
+        }
+        fireView.fireEvent(isCollapsed ? 'expandbody' : 'collapsebody', row.dom, record, nextBd);
+        // Coalesce laying out due to view size changes
+        Ext.resumeLayouts(true);
+    },
 });
 
 Ext.chart.series.Bar.override({
