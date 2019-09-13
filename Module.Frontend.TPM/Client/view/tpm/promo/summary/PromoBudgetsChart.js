@@ -27,7 +27,8 @@
             cls: 'summary-budget-tip',
 
             renderer: function (storeItem, item) {
-                this.update(storeItem.get('name') + ': ' + (storeItem.get('value') / 1000000.0));
+                var count = (storeItem.get('value') / 1000000.0);
+                this.update(storeItem.get('name') + ': ' + Ext.util.Format.round(count, 2) + '%');
             }
         },
     }],

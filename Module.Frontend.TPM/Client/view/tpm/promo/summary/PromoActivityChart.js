@@ -61,7 +61,7 @@ Ext.define('App.view.tpm.promo.PromoActivityChart', {
                         text = l10n.ns('tpm', 'PromoSummary').value('Baseline');
                     break;
                 };
-                this.update(text + ': ' + item.value[1] + '%');
+                this.update(text + ': ' + Ext.util.Format.round(item.value[1],2) + '%');
             },
         },
     }],
