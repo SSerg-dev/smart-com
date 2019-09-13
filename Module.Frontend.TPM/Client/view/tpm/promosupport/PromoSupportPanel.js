@@ -221,5 +221,11 @@
                 flex: 1
             }]
         }]
-    }]
+    }],
+    listeners: {
+        boxready: function (panel) {
+            panel.hide();
+            panel.show();
+        }
+    }
 })
