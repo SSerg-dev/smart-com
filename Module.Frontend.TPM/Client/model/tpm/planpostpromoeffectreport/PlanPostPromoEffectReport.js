@@ -1,7 +1,7 @@
 ﻿Ext.define('App.model.tpm.planpostpromoeffectreport.PlanPostPromoEffectReport', {
     extend: 'Ext.data.Model',
     idProperty: 'Id',
-    breezeEntityType: 'PlanPostPromoEffectReport',
+    breezeEntityType: 'PlanPostPromoEffectReportWeekView',
     fields: [
         { name: 'Id', hidden: true },
         { name: 'ZREP', type: 'string', hidden: false, isDefault: true },
@@ -11,15 +11,20 @@
         { name: 'TypeApollo', type: 'string', hidden: false, isDefault: true },
         { name: 'ModelApollo', type: 'string', hidden: false, isDefault: true },
         { name: 'WeekStartDate', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
-		{ name: 'PlanPostPromoEffectQty', type: 'number', hidden: false, isDefault: true },
-		{ name: 'PlanUplift', type: 'number', hidden: false, isDefault: true },
-		{ name: 'DispatchesStart', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
-		{ name: 'DispatchesEnd', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
-		{ name: 'Week', type: 'string', hidden: false, isDefault: true },
-		{ name: 'Status', type: 'string', hidden: false, isDefault: true, defaultFilterConfig: getDefaultFilterStatus() },
-		{ name: 'PlanProductBaselineCaseQty', type: 'number', hidden: false, isDefault: true },
-		{ name: 'PlanProductPostPromoEffectLSV', type: 'number', hidden: false, isDefault: true },
-		{ name: 'PlanProductBaselineLSV', type: 'number', hidden: false, isDefault: true },
+        { name: 'PlanUplift', type: 'number', hidden: false, isDefault: true },
+        { name: 'DispatchesStart', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
+        { name: 'DispatchesEnd', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
+        { name: 'Week', type: 'string', hidden: false, isDefault: true },
+        { name: 'Status', type: 'string', hidden: false, isDefault: true, defaultFilterConfig: getDefaultFilterStatus() },
+        { name: 'PlanPostPromoEffectQtyW1', type: 'number', hidden: false, isDefault: true },
+        { name: 'PlanProductBaselineCaseQtyW1', type: 'number', hidden: false, isDefault: true },
+        { name: 'PlanProductPostPromoEffectLSVW1', type: 'number', hidden: false, isDefault: true },
+        { name: 'PlanProductBaselineLSVW1', type: 'number', hidden: false, isDefault: true },
+        { name: 'PlanPostPromoEffectQtyW2', type: 'number', hidden: false, isDefault: true },
+        { name: 'PlanProductBaselineCaseQtyW2', type: 'number', hidden: false, isDefault: true },
+        { name: 'PlanProductPostPromoEffectLSVW2', type: 'number', hidden: false, isDefault: true },
+        { name: 'PlanProductBaselineLSVW2', type: 'number', hidden: false, isDefault: true },
+
         { name: 'InOut', type: 'bool', hidden: false, isDefault: true },
     ],
     proxy: {
@@ -30,16 +35,16 @@
             totalProperty: 'inlineCount',
             root: 'results'
         }
-	},
+    },
 });
 
 function getDefaultFilterStatus() {
-	var statuses = ['Approved', 'Planned'];
-	var value = Ext.create('App.extfilter.core.ValueList', statuses);
+    var statuses = ['Approved', 'Planned'];
+    var value = Ext.create('App.extfilter.core.ValueList', statuses);
 
-	var result = {
-		value: value,
-		operation: 'In'
-	};
-	return result;
+    var result = {
+        value: value,
+        operation: 'In'
+    };
+    return result;
 }

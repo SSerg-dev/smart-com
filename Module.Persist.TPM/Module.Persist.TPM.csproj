@@ -1236,6 +1236,7 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\PlanPostPromoEffectReport.cs" />
     <Compile Include="Model\DTO\PlanIncrementalReport.cs" />
+    <Compile Include="Model\DTO\PlanPostPromoEffectReportWeekView.cs" />
     <Compile Include="Model\DTO\ProductTreeHierarchyView.cs" />
     <Compile Include="Model\DTO\ClientTreeSharesView.cs" />
     <Compile Include="Model\DTO\DemandDTO.cs" />

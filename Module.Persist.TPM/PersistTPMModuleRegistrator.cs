@@ -536,8 +536,8 @@ namespace Module.Persist.TPM {
             builder.EntitySet<PlanIncrementalReport>("PlanIncrementalReports");
             builder.Entity<PlanIncrementalReport>().Collection.Action("ExportXLSX");
 
-            builder.EntitySet<PlanPostPromoEffectReport>("PlanPostPromoEffectReports");
-            builder.Entity<PlanPostPromoEffectReport>().Collection.Action("ExportXLSX");
+            builder.EntitySet<PlanPostPromoEffectReportWeekView>("PlanPostPromoEffectReports");
+            builder.Entity<PlanPostPromoEffectReportWeekView>().Collection.Action("ExportXLSX");
 
             builder.Entity<Promo>().Collection.Action("ReadPromoCalculatingLog");
             builder.Entity<Promo>().Collection.Action("GetHandlerIdForBlockedPromo");
