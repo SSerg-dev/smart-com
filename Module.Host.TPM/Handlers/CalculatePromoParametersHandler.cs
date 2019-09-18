@@ -20,6 +20,7 @@ using Module.Persist.TPM;
 using Core.Settings;
 using Core.Dependency;
 using Module.Persist.TPM.PromoStateControl;
+using Module.Persist.TPM.Utils;
 
 namespace Module.Host.TPM.Handlers
 {
@@ -152,9 +153,19 @@ namespace Module.Host.TPM.Handlers
 									promo.PromoStatusId = onApproval.Id;
 
                                     string statusChangeError;
-                                    promoStateContext.ChangeState(promo, "System", out statusChangeError);
+                                    var status = promoStateContext.ChangeState(promo, "System", out statusChangeError);
+                                    if (status)
+                                    {
+                                        //Сохранение изменения статуса
+                                        var promoStatusChange = context.Set<PromoStatusChange>().Create<PromoStatusChange>();
+                                        promoStatusChange.PromoId = promo.Id;
+                                        promoStatusChange.StatusId = promo.PromoStatusId;
+                                        promoStatusChange.Date = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).Value;
 
-									if (statusChangeError != null && statusChangeError != string.Empty)
+                                        context.Set<PromoStatusChange>().Add(promoStatusChange);
+                                    }
+
+                                    if (statusChangeError != null && statusChangeError != string.Empty)
 									{
 										logLine = String.Format("Error while changing status of promo: {0}", statusChangeError);
 										handlerLogger.Write(true, logLine, "Error");

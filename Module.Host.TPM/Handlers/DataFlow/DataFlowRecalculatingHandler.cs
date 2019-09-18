@@ -8,6 +8,7 @@ using Module.Host.TPM.Actions.Notifications;
 using Module.Persist.TPM.CalculatePromoParametersModule;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.PromoStateControl;
+using Module.Persist.TPM.Utils;
 using Persist;
 using ProcessingHost.Handlers;
 using System;
@@ -120,7 +121,17 @@ namespace Module.Host.TPM.Handlers.DataFlow
                                         promo.PromoStatusId = onApproval.Id;
 
                                         string statusChangeError;
-                                        promoStateContext.ChangeState(promo, "System", out statusChangeError);
+                                        var status = promoStateContext.ChangeState(promo, "System", out statusChangeError);
+                                        if (status)
+                                        {
+                                            //Сохранение изменения статуса
+                                            var promoStatusChange = context.Set<PromoStatusChange>().Create<PromoStatusChange>();
+                                            promoStatusChange.PromoId = promo.Id;
+                                            promoStatusChange.StatusId = promo.PromoStatusId;
+                                            promoStatusChange.Date = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).Value;
+
+                                            context.Set<PromoStatusChange>().Add(promoStatusChange);
+                                        }
 
                                         if (statusChangeError != null && statusChangeError != string.Empty)
                                         {
