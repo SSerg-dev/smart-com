@@ -285,6 +285,18 @@
 			url = url.replace('$filter=' + filterString + '&', '');
 		}
 
+		if (url.indexOf('$filter') != -1 && url.indexOf('GetSelectedProducts') != -1) {
+			var filterString = url.substring(url.indexOf('$filter=')).replace('$filter=', '').replace('&', '');
+			filterString = filterString.substring(0, filterString.indexOf('$'));
+
+			url = url.replace('$filter=' + filterString + '&', '');
+
+			var joinedJsonData = parameters.$data['jsonData'].join(';')
+			parameters.$data['jsonData'] = [];
+			parameters.$data['jsonData'].push(joinedJsonData);
+			parameters.$data['jsonData'].push(filterString);
+		}
+
         // Add query params if .withParameters was used
         if (parameters) {
             isPostMethod = parameters.$method && parameters.$method.toLocaleLowerCase() === 'post';
