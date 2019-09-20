@@ -160,11 +160,14 @@ var activityChangeListener = function (field, newValue, oldValue) {
 
     var panel = field.up('panel[name=promoActivity_step2]');
     var fields1 = panel.down('fieldset[name=activity]').items.items;
+    var promoIsInOut = panel.up('promoeditorcustom').isInOutPromo;      // для InOut другая валидация
 
     for (i = 0; i < fields1.length; i++) {
-        if ((fields1[i].getValue() === null || !fields1[i].isValid()) && fields1[i].isChecked === true) {
-            status = false;
-            break;
+        if (!(promoIsInOut && (fields1[i].name === 'ActualPromoUpliftPercent' || fields1[i].name === 'ActualPromoBaselineLSV'))) {
+            if ((fields1[i].getValue() === null || !fields1[i].isValid()) && fields1[i].isChecked === true) {
+                status = false;
+                break;
+            }
         }
     }
 

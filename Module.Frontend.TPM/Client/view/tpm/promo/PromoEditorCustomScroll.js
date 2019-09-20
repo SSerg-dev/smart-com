@@ -86,6 +86,7 @@
         this.down('#btn_promoActivity_step1').addCls('selected');
         //Необязательный шаг
         this.down('#btn_promoActivity_step1').removeCls('notcompleted');
+        this.down('#btn_promoActivity_step1').setGlyph(0xf133);
         this.down('#btn_promoActivity_step2').addCls('notcompleted');
 
         // при создании из календаря, promoGrid не существует

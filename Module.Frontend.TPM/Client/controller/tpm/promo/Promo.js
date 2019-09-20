@@ -1096,7 +1096,8 @@
 	onPromoActivityButtonStep2Click: function (button) {
 		var container = button.up('window').down('container[name=promoActivity]')
 
-		container.down('#btn_promoActivity_step1').removeCls('selected');
+        container.down('#btn_promoActivity_step1').removeCls('selected');
+        container.down('#btn_promoActivity_step1').setGlyph(0xf133);
 		var jspData = $(container.down('panel[name=promoActivityContainer]').getTargetEl().dom).data('jsp');
 		var el = $(container.down('panel[itemId=promoActivity_step2]').getTargetEl().dom);
 		jspData.scrollToElement(el, true, true);
