@@ -4869,7 +4869,7 @@
 		window.down('[name=InvoiceNumber]').setValue(record.data.InvoiceNumber);
 		window.down('[name=DocumentNumber]').setValue(record.data.DocumentNumber);
 		window.down('[name=ActualPromoUpliftPercent]').setValue(record.data.ActualPromoUpliftPercent);
-		window.down('[name=ActualPromoBaselineLSV]').setValue(record.data.PlanPromoBaselineLSV);
+		window.down('[name=ActualPromoBaselineLSV]').setValue(record.data.ActualPromoBaselineLSV);
 		window.down('[name=ActualPromoIncrementalLSV]').setValue(record.data.ActualPromoIncrementalLSV);
 		window.down('[name=ActualPromoLSVByCompensation]').setValue(record.data.ActualPromoLSVByCompensation);
 		window.down('[name=ActualPromoLSV]').setValue(record.data.ActualPromoLSV);
