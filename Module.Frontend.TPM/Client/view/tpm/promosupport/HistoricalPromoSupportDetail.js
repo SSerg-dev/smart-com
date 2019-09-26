@@ -27,12 +27,12 @@
         }, {
             xtype: 'singlelinedisplayfield',
             name: 'StartDate',
-            renderer: Ext.util.Format.dateRenderer('d.m.Y H:i:s'),
+            renderer: Ext.util.Format.dateRenderer('d.m.Y'),
             fieldLabel: l10n.ns('tpm', 'HistoricalPromoSupport').value('StartDate'),
         }, {
             xtype: 'singlelinedisplayfield',
             name: 'EndDate',
-            renderer: Ext.util.Format.dateRenderer('d.m.Y H:i:s'),
+            renderer: Ext.util.Format.dateRenderer('d.m.Y'),
             fieldLabel: l10n.ns('tpm', 'HistoricalPromoSupport').value('EndDate'),
         }, {
             xtype: 'singlelinedisplayfield',
