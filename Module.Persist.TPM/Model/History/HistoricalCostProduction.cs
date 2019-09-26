@@ -1,11 +1,9 @@
-using Core.History;
-using Module.Persist.TPM.Model.TPM;
+﻿using Core.History;
 using System;
 
 namespace Module.Persist.TPM.Model.History
 {
-    [AssociatedWith(typeof(PromoSupport))]
-    public class HistoricalPromoSupport : BaseHistoricalEntity<System.Guid>
+    public class HistoricalCostProduction : BaseHistoricalEntity<Guid>
     {
         public int Number { get; set; }
         public int? PlanQuantity { get; set; }
@@ -18,11 +16,9 @@ namespace Module.Persist.TPM.Model.History
         public double? ActualProdCostPer1Item { get; set; }
         public double? PlanProdCost { get; set; }
         public double? ActualProdCost { get; set; }
-        public string UserTimestamp { get; set; }
         public string AttachFileName { get; set; }
         public string BorderColor { get; set; }
         public string PONumber { get; set; }
-        public string InvoiceNumber { get; set; }
         public string ClientTreeFullPathName { get; set; }
         public string BudgetItemName { get; set; }
         public string BudgetSubItemBudgetItemName { get; set; }

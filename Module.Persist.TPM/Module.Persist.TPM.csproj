@@ -1244,6 +1244,7 @@
     <Compile Include="Model\DTO\SchedulerClientTreeDTO.cs" />
     <Compile Include="Model\History\HistoricalAssortmentMatrix.cs" />
     <Compile Include="Model\History\HistoricalBlockedPromo.cs" />
+    <Compile Include="Model\History\HistoricalCostProduction.cs" />
     <Compile Include="Model\History\HistoricalIncrementalPromo.cs" />
     <Compile Include="Model\History\HistoricalPromoProduct.cs" />
     <Compile Include="Model\History\HistoricalAgeGroup.cs" />
@@ -1405,6 +1406,7 @@
     <Compile Include="PromoStateControl\UserRoles.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CalculatePromoParametersModule\PlanProductParametersCalculation.cs" />
+    <Content Include="SQLInitialize\20190926_1600_HistoricalPromoSupport_AP.sql" />
     <Compile Include="Utils\SimpleModels.cs" />
     <Content Include="SQLInitialize\20190911_2100_Delete_SuperReader_AP.sql" />
     <Content Include="SQLInitialize\20190827_1330_Demand_Planning_AP.sql" />

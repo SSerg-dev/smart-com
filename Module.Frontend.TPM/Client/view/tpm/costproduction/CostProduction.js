@@ -69,6 +69,13 @@
             glyph: 0xf233,
             text: l10n.ns('tpm', 'filter', 'buttons').value('PromoSupportDetailFilter'),
             tooltip: l10n.ns('tpm', 'filter', 'buttons').value('PromoSupportDetailFilter')
+        }, {
+            itemId: 'historybutton',
+            resource: 'Historical{0}',
+            action: 'Get{0}',
+            glyph: 0xf2da,
+            text: l10n.ns('core', 'crud').value('historyButtonText'),
+            tooltip: l10n.ns('core', 'crud').value('historyButtonText')
         }, '-', '->', '-', {
             itemId: 'extfilterclearbutton',
             ui: 'blue-button-toolbar',
@@ -81,7 +88,6 @@
                 'cursor': 'default'
             }
         }],
-
         dock: 'right'
     }],
 

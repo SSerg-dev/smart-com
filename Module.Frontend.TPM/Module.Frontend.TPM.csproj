@@ -203,7 +203,9 @@
     <Compile Include="Controllers\DeletedAssortmentMatricesController.cs" />
     <Compile Include="Controllers\DeletedIncrementalPromoesController.cs" />
     <Compile Include="Controllers\HistoricalAssortmentMatricesController.cs" />
+    <Compile Include="Controllers\HistoricalCostProductionsController.cs" />
     <Compile Include="Controllers\HistoricalIncrementalPromoesController.cs" />
+    <Compile Include="Controllers\HistoricalPromoSupportsController.cs" />
     <Compile Include="Controllers\IncrementalPromoesController.cs" />
     <Compile Include="Controllers\PlanPostPromoEffectReportsController.cs" />
     <Compile Include="Controllers\PlanIncrementalReportsController.cs" />
