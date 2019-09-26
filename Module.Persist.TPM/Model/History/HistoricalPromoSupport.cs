@@ -24,7 +24,7 @@ namespace Module.Persist.TPM.Model.History
         public string PONumber { get; set; }
         public string InvoiceNumber { get; set; }
         public string ClientTreeFullPathName { get; set; }
-        public string BudgetItemName { get; set; }
+        public string BudgetSubItemName { get; set; }
         public string BudgetSubItemBudgetItemName { get; set; }
     }
 }

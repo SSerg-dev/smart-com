@@ -1006,11 +1006,17 @@
         'CreateOnTheBasisButton': 'Create on the basis',
         'PlanProdCostPer1Item': 'Plan Prod Cost Per 1 Item',
         'ActualProdCostPer1Item': 'Actual Prod Cost Per 1 Item',
+        'PlanProdCost': 'Plan Prod Cost',
+        'ActualProdCost': 'Actual Prod Cost',
         'PONumber': 'PO Number',
         'PONumberRegex': 'Only numbers',
+        'InvoiceNumberRegex': 'Only numbers',
+        'AttachFileName': 'Attach File Name',
+        'Name': 'Name',
         'InvoiceNumber': 'Invoice Number',
-        'InvoiceNumberRegex': 'Only numbers'
-    },
+        'PlanProdCost': 'Plan Prod Cost',
+        'ActualProdCost': 'Actual Prod Cost'
+     },
     'HistoricalPromoSupport': {
         'Number': 'ID',
         'ClientTreeFullPathName': 'Client',
@@ -1053,12 +1059,22 @@
         'ActualCostTE': 'Actual Cost TE Total',
         'StartDate': 'Start Date',
         'EndDate': 'End Date',
+        'RemoveIntactWindowTitle': 'Unpin recording',
+        'RemoveIntactConfirmMessage': 'Are you sure you want to unpin a post?',
+        'CreatePromoSupportButton': 'Create Promo Support',
+        'CreateOnTheBasisButton': 'Create on the basis',
         'PlanProdCostPer1Item': 'Plan Prod Cost Per 1 Item',
         'ActualProdCostPer1Item': 'Actual Prod Cost Per 1 Item',
         'PlanProdCost': 'Plan Prod Cost',
         'ActualProdCost': 'Actual Prod Cost',
         'PONumber': 'PO Number',
-        'Name': 'Name'
+        'PONumberRegex': 'Only numbers',
+        'InvoiceNumber': 'Invoice Number',
+        'InvoiceNumberRegex': 'Only numbers',
+        'AttachFileName': 'Attach File Name',
+        'Name': 'Name',
+        'PlanProdCost': 'Plan Prod Cost',
+        'ActualProdCost': 'Actual Prod Cost'
     },
     'HistoricalCostProduction': {
         'Number': 'ID',

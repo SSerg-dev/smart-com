@@ -10,34 +10,8 @@
         itemId: 'historicaldetailform',
         items: [{
             xtype: 'singlelinedisplayfield',
-            name: '_User',
-            fieldLabel: l10n.ns('tpm', 'HistoricalCostProduction').value('_User')
-        }, {
-            xtype: 'singlelinedisplayfield',
-            name: '_Role',
-            fieldLabel: l10n.ns('tpm', 'HistoricalCostProduction').value('_Role')
-        }, {
-            xtype: 'singlelinedisplayfield',
-            name: '_EditDate',
-            renderer: Ext.util.Format.dateRenderer('d.m.Y H:i:s'),
-            fieldLabel: l10n.ns('tpm', 'HistoricalCostProduction').value('_EditDate')
-        }, {
-            xtype: 'singlelinedisplayfield',
-            name: '_Operation',
-            renderer: App.RenderHelper.getLocalizedRenderer('tpm.HistoricalCostProduction', 'OperationType'),
-            fieldLabel: l10n.ns('tpm', 'HistoricalCostProduction').value('_Operation')
-        }, {
-            xtype: 'singlelinedisplayfield',
-            name: 'Number',
-            fieldLabel: l10n.ns('tpm', 'HistoricalCostProduction').value('Number'),
-        }, {
-            xtype: 'singlelinedisplayfield',
             name: 'PlanQuantity',
             fieldLabel: l10n.ns('tpm', 'HistoricalCostProduction').value('PlanQuantity'),
-        }, {
-            xtype: 'singlelinedisplayfield',
-            name: 'EndDate',
-            fieldLabel: l10n.ns('tpm', 'HistoricalCostProduction').value('EndDate'),
         }, {
             xtype: 'singlelinedisplayfield',
             name: 'ActualQuantity',
@@ -60,14 +34,6 @@
             name: 'EndDate',
             renderer: Ext.util.Format.dateRenderer('d.m.Y H:i:s'),
             fieldLabel: l10n.ns('tpm', 'HistoricalCostProduction').value('EndDate'),
-        }, {
-            xtype: 'singlelinedisplayfield',
-            name: 'PlanProdCostPer1Item',
-            fieldLabel: l10n.ns('tpm', 'HistoricalCostProduction').value('PlanProdCostPer1Item'),
-        }, {
-            xtype: 'singlelinedisplayfield',
-            name: 'ActualProdCostPer1Item',
-            fieldLabel: l10n.ns('tpm', 'HistoricalCostProduction').value('ActualProdCostPer1Item'),
         }, {
             xtype: 'singlelinedisplayfield',
             name: 'PlanProdCost',
