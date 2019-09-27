@@ -168,5 +168,10 @@
     onMasterRejectButtonClick: function (button) {
         var promoSupportController = App.app.getController('tpm.promosupport.PromoSupport');
         promoSupportController.onMasterRejectButtonClick(button);
+    },
+
+    onHistoryButtonClick: function (button) {
+        var promoSupportController = App.app.getController('tpm.promosupport.PromoSupport');
+        promoSupportController.onHistoryButtonClick(button);
     }
 });

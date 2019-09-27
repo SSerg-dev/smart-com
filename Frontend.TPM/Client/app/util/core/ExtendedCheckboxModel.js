@@ -5,6 +5,8 @@
     checkOnly: true,
     checkedRows: null,
     showHeaderCheckbox: true,
+    selectAllRecordsCallback: null,
+    deselectAllRecordsCallback: null,
 
     constructor: function (cfg) {
         this.callParent(arguments);
@@ -96,7 +98,8 @@
     },
 
     selectAllRecords: function (btn) {
-        var win = btn.up('selectorwindow'),
+        var me = this,
+            win = btn.up('selectorwindow'),
             grid = win ? win.down('directorygrid') : btn.up('directorygrid'); // Если базовый грид с мультиселектом (не в отдельном окне)
 
         if (grid) {
@@ -110,6 +113,11 @@
                     callback: function () {
                         if (recordsCount > 0) {
                             selModel.checkRows(store.getRange(0, recordsCount));
+
+                            if (me.selectAllRecordsCallback) {
+                                me.selectAllRecordsCallback();
+                            }
+
                             grid.setLoading(false);
                         }
                         if (win) {
@@ -122,17 +130,22 @@
     },
 
     deselectAllRecords: function (btn) {
-        var win = btn.up('selectorwindow'),
+        var me = this,
+            win = btn.up('selectorwindow'),
             grid = win ? win.down('directorygrid') : btn.up('directorygrid');
 
         if (grid) {
             var store = grid.getStore(),
                 selModel = grid.getSelectionModel(),
                 recordsCount = store.getTotalCount(),
-                selectedRecords = selModel.getCheckedRows();
+                selectedRecords = recordsCount > 0 ? store.getRange(0, recordsCount) : [];
 
             if (recordsCount > 0) {
                 selModel.uncheckRows(selectedRecords);
+
+                if (me.deselectAllRecordsCallback) {
+                    me.deselectAllRecordsCallback();
+                }
             }
             if (win) {
                 win.down('#select')[selModel.hasChecked() ? 'enable' : 'disable']();

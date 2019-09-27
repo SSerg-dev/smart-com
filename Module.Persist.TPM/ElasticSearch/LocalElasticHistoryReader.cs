@@ -203,6 +203,11 @@ namespace Module.Persist.TPM.ElasticSearch
             return resultHistoricalModels.AsQueryable();
         }
 
+        public IQueryable<T> GetAllById<T>(string id) where T : BaseHistoricalEntity<Guid>
+        {
+            return null;
+        }
+
         private static string GetElasticTypeName(Type entityType)
         {
             var entityName = entityType.Name;

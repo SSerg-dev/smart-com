@@ -234,7 +234,9 @@ Ext.override(Ext.Container, {
 
     onPanelAfterLayout: function (panel) {
         //Ломает скролл на большом экране
-        //this._refreshScroll(panel);
+        if (!panel.stopRefreshScroll) {
+            this._refreshScroll(panel);
+        }
     },
 
     _isScrollable: function () {
