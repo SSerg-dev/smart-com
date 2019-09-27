@@ -14,6 +14,7 @@ BEGIN
 	INSERT INTO AccessPointRole ([Id], [AccessPointId], [RoleId]) VALUES (NEWID(), @AccessPointId, @RoleId);
 	SET @RoleCounter = @RoleCounter + 1;
 END
+GO
 
 -- Вкладка CostProduction
 DECLARE @ResourceName VARCHAR(MAX) = 'HistoricalCostProductions';
@@ -31,3 +32,4 @@ BEGIN
 	INSERT INTO AccessPointRole ([Id], [AccessPointId], [RoleId]) VALUES (NEWID(), @AccessPointId, @RoleId);
 	SET @RoleCounter = @RoleCounter + 1;
 END
+GO
