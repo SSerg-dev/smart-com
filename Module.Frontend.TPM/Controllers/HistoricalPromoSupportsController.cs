@@ -25,7 +25,10 @@ namespace Module.Frontend.TPM.Controllers
             AllowedQueryOptions = AllowedQueryOptions.All,
             EnableConstantParameterization = false,
             MaxTop = 1024)]
-        public IQueryable<HistoricalPromoSupport> GetHistoricalPromoSupports() => HistoryReader.GetAll<HistoricalPromoSupport>();
+        public IQueryable<HistoricalPromoSupport> GetHistoricalPromoSupports()
+        {
+            return HistoryReader.GetAll<HistoricalPromoSupport>();
+        }
 
         protected override void Dispose(bool disposing) {
             if (disposing) {

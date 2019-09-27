@@ -25,7 +25,10 @@ namespace Module.Frontend.TPM.Controllers
             AllowedQueryOptions = AllowedQueryOptions.All,
             EnableConstantParameterization = false,
             MaxTop = 1024)]
-        public IQueryable<HistoricalCostProduction> GetHistoricalCostProductions() => HistoryReader.GetAll<HistoricalCostProduction>();
+        public IQueryable<HistoricalCostProduction> GetHistoricalCostProductions()
+        {
+            return HistoryReader.GetAll<HistoricalCostProduction>();
+        }
 
         protected override void Dispose(bool disposing) {
             if (disposing) {
