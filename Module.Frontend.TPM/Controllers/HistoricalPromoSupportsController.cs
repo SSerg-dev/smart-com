@@ -27,7 +27,7 @@ namespace Module.Frontend.TPM.Controllers
             MaxTop = 1024)]
         public IQueryable<HistoricalPromoSupport> GetHistoricalPromoSupports(Guid? Id)
         {
-            return HistoryReader.GetById<HistoricalPromoSupport>(Id.ToString());
+            return HistoryReader.GetAllById<HistoricalPromoSupport>(Id.ToString());
         }
 
         protected override void Dispose(bool disposing) {
