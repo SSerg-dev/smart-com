@@ -948,6 +948,10 @@
         elementsToClear.forEach(function (el) {
             el.setValue(null);
         });
+
+        var attachFileField = editor.down('#attachFileName');
+        attachFileField.setValue('');
+        attachFileField.attachFileName = '';
     },
 
     onSavePromoSupportFormClick: function (button) {
