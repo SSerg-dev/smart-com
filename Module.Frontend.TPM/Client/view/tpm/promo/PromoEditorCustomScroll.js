@@ -216,6 +216,7 @@
                 items: [{
                     xtype: 'panel',
                     itemId: 'basicPromoPanel',
+                    stopRefreshScroll: true,
                     name: 'basicPromo',
                     autoScroll: true,
                     cls: 'scrollpanel',
