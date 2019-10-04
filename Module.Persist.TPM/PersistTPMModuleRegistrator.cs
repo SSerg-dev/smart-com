@@ -192,7 +192,8 @@ namespace Module.Persist.TPM {
             builder.Entity<Product>().Collection.Action("FullImportXLSX");
             var getIfAllProductsInSubrangeAction = builder.Entity<Product>().Collection.Action("GetIfAllProductsInSubrange");
             getIfAllProductsInSubrangeAction.Parameter<string>("PromoId");
-            getIfAllProductsInSubrangeAction.Parameter<string>("ProductIds");
+            getIfAllProductsInSubrangeAction.Parameter<string>("inOutProductIds");
+            getIfAllProductsInSubrangeAction.Parameter<string>("NodesIds");
             getIfAllProductsInSubrangeAction.Parameter<string>("ClientTreeKeyId");
             getIfAllProductsInSubrangeAction.Parameter<string>("DispatchesStart");
             getIfAllProductsInSubrangeAction.Parameter<string>("DispatchesEnd");

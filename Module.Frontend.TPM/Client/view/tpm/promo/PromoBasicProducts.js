@@ -204,19 +204,19 @@
         this.treesChangingBlockDate = treesChangingBlockDate;
         this.promoProductRecord = promoBasicProductJSON ? JSON.parse(promoBasicProductJSON) : null;
 
-		if (this.promoProductRecord) {
-			this.brandAbbreviation = this.promoProductRecord.BrandAbbreviation;
-			this.technologyAbbreviation = this.promoProductRecord.TechnologyAbbreviation;
-		} else {
-			// Переделать. Нужно вынести BrandAbbreviation и TechnologyAbbreviation в модель промо, 
-			// чтобы информация о них не удалялась при удалении узла продукта (!!!)
-			var brandTechName = record.data.BrandTechName;
-			var brandName = record.data.BrandName;
-			var techName = brandTechName.replace(brandName + ' ', '');
+        if (this.promoProductRecord) {
+            this.brandAbbreviation = this.promoProductRecord.BrandAbbreviation;
+            this.technologyAbbreviation = this.promoProductRecord.TechnologyAbbreviation;
+        } else {
+            // Переделать. Нужно вынести BrandAbbreviation и TechnologyAbbreviation в модель промо, 
+            // чтобы информация о них не удалялась при удалении узла продукта (!!!)
+            var brandTechName = record.data.BrandTechName;
+            var brandName = record.data.BrandName;
+            var techName = brandTechName.replace(brandName + ' ', '');
 
-			this.brandAbbreviation = brandName;
-			this.technologyAbbreviation = techName;
-		}
+            this.brandAbbreviation = brandName;
+            this.technologyAbbreviation = techName;
+        }
 
         this.fillMainInfo(record);
     },
@@ -232,18 +232,18 @@
                 ProductsChoosen: []
             };
 
-			nodesProductTree.forEach(function (node) {
-				if (node) {
+            nodesProductTree.forEach(function (node) {
+                if (node) {
                     me.promoProductRecord.ProductsChoosen.push({
-						ObjectId: node.get('ObjectId'),
-						Name: node.get('Name'),
-						Type: node.get('Type'),
-						LogoFileName: node.get('LogoFileName'),
-						FullPathName: node.get('FullPathName'),
-						Filter: node.get('Filter'),
-					});
-				}
-			});
+                        ObjectId: node.get('ObjectId'),
+                        Name: node.get('Name'),
+                        Type: node.get('Type'),
+                        LogoFileName: node.get('LogoFileName'),
+                        FullPathName: node.get('FullPathName'),
+                        Filter: node.get('Filter'),
+                    });
+                }
+            });
 
             var current = nodesProductTree[0];
             while (current && current.data.root !== true) {
@@ -286,19 +286,19 @@
 
             this.down('[name=PromoProductBrand]').setValue(this.promoProductRecord.Brand);
             this.down('[name=PromoProductTechnology]').setValue(this.promoProductRecord.Technology);
-		} else if (record.data.BrandTechName != null && record.data.BrandTechName != '') {
-			var brandTechName = record.data.BrandTechName;
-			var brandName = record.data.BrandName;
-			var techName = brandTechName.replace(brandName + ' ', '');
+        } else if (record.data.BrandTechName != null && record.data.BrandTechName != '') {
+            var brandTechName = record.data.BrandTechName;
+            var brandName = record.data.BrandName;
+            var techName = brandTechName.replace(brandName + ' ', '');
 
-			chooseBtn.setText('<b>' + brandName + '<br/>...</b>');
-			chooseBtn.setGlyph();
-			chooseBtn.setIcon(iconSrc);
-			chooseBtn.setIconCls('promoClientChooseBtnIcon');
+            chooseBtn.setText('<b>' + brandName + '<br/>...</b>');
+            chooseBtn.setGlyph();
+            chooseBtn.setIcon(iconSrc);
+            chooseBtn.setIconCls('promoClientChooseBtnIcon');
 
-			this.down('[name=PromoProductBrand]').setValue(brandName);
-			this.down('[name=PromoProductTechnology]').setValue(techName);
-		} else {
+            this.down('[name=PromoProductBrand]').setValue(brandName);
+            this.down('[name=PromoProductTechnology]').setValue(techName);
+        } else {
             chooseBtn.setText('<b>' + l10n.ns('tpm', 'PromoBasicProducts').value('ChooseProduct') + '<br/>...</b>');
             chooseBtn.setIcon();
             chooseBtn.setIconCls('x-btn-glyph materialDesignIcons');
@@ -350,15 +350,16 @@
                 NodesIds = NodesIds.slice(0, -1);
                 if (inOutProductIdsString) {
                     inOutProductIdsString = inOutProductIdsString.slice(0, -1);
-
-                    var query = breeze.EntityQuery
+                }
+                var query = breeze.EntityQuery
                     .from('Products')
                     .withParameters({
                         $actionName: 'GetIfAllProductsInSubrange',
                         $method: 'POST',
                         $data: {
                             PromoId: promoEditorCustom.promoId || (record && record.data && record.data.Id),
-                            ProductIds: inOutProductIdsString + ";!;" + NodesIds,
+                            inOutProductIds: inOutProductIdsString,
+                            NodesIds: NodesIds,
                             ClientTreeKeyId: promoEditorCustom.clientTreeKeyId ? promoEditorCustom.clientTreeKeyId.toString() : null,
                             DispatchesStart: promoEditorCustom.down('[name=DispatchStartDate]').getValue(),
                             DispatchesEnd: promoEditorCustom.down('[name=DispatchEndDate]').getValue()
@@ -368,7 +369,9 @@
                     .execute()
                     .then(function (data) {
                         var result = Ext.JSON.decode(data.httpResponse.data.value);
-
+                        if (record && record.data) {
+                            var isTLC = record.data.LoadFromTLC;
+                        };
                         var allIncluded = true;
                         if (result.success) {
                             result.answer.forEach(function (item) {
@@ -382,7 +385,7 @@
                                 })
                             });
 
-                            if (!allIncluded) {
+                            if (!allIncluded && !isTLC) {
                                 excludedMessage.show();
                             } else {
                                 excludedMessage.hide();
@@ -395,7 +398,7 @@
                                 me.choosenProductObjectIds.push(item.ObjectId);
                                 // парсим фильтр из Json
                                 item.Filter = item.Filter && item.Filter.length > 0 ? JSON.parse(item.Filter) : null;
-                                if (item.isAllChecked) {
+                                if (item.isAllChecked || isTLC) {
                                     glyphCode = null;
                                     toolTipText = null;
                                 } else {
@@ -472,7 +475,6 @@
                     .fail(function (data) {
                         App.Notify.pushError(data.message);
                     })
-                }
             }
             if (isInOutPromo) {
                 var inOutProductIdsString = promoEditorCustom.InOutProductIds || (promoEditorCustom.model && promoEditorCustom.model.data.InOutProductIds) || record.data.InOutProductIds;
