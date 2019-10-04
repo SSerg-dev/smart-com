@@ -18,6 +18,10 @@ using Core.Dependency;
 using System.Data.Entity;
 using Utility.LogWriter;
 using Module.Persist.TPM.Utils;
+using Looper;
+using Module.Persist.TPM.Model.Import;
+using Persist.Model;
+using LoopHandler = Persist.Model.LoopHandler;
 
 namespace Module.Host.TPM.Handlers.DataFlow
 {
@@ -34,7 +38,28 @@ namespace Module.Host.TPM.Handlers.DataFlow
             try
             {
                 var handlerData = new HandlerData();
-                CalculationTaskManager.CreateCalculationTask(CalculationTaskManager.CalculationAction.DataFlowFiltering, handlerData, context);
+                Guid? userId = HandlerDataHelper.GetIncomingArgument<Guid>("UserId", handlerData, false);
+                Guid? roleId = HandlerDataHelper.GetIncomingArgument<Guid>("RoleId", handlerData, false);
+
+                var handler = new LoopHandler()
+                {
+                    Id = Guid.NewGuid(),
+                    ConfigurationName = "PROCESSING",
+                    Description = "Filtering for nightly recalculation (DataFlow)",
+                    Name = "Module.Host.TPM.Handlers.DataFlow.DataFlowFilteringHandler",
+                    ExecutionPeriod = null,
+                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                    LastExecutionDate = null,
+                    NextExecutionDate = null,
+                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                    UserId = userId == Guid.Empty ? null : userId,
+                    RoleId = roleId == Guid.Empty ? null : roleId
+                };
+
+                handler.SetParameterData(handlerData);
+                context.LoopHandlers.Add(handler);
+
+                context.SaveChanges();
                 handlerLogger.Write(true, "The task for filtering of promoes was created.", "Message");
             }
             catch (Exception e)

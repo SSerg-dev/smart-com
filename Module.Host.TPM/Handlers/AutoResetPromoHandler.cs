@@ -14,7 +14,7 @@ using Utility.LogWriter;
 namespace Module.Host.TPM.Handlers
 {
     /// <summary>
-    /// Класс для запуска экшена по автоматическому сбросу статуса из Draft(Published) в Draft
+    /// Класс для запуска экшена по автоматическому сбросу статуса промо по различным условиям
     /// </summary>
     public class AutoResetPromoHandler : BaseHandler
     {

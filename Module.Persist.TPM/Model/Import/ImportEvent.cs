@@ -16,14 +16,6 @@ namespace Module.Persist.TPM.Model.Import
         public string Name { get; set; }
 
         [ImportCSVColumn(ColumnNumber = 1)]
-        [Display(Name = "Year")]
-        public int Year { get; set; }
-
-        [ImportCSVColumn(ColumnNumber = 2)]
-        [Display(Name = "Period")]
-        public string Period { get; set; }
-
-        [ImportCSVColumn(ColumnNumber = 3)]
         [Display(Name = "Description")]
         public string Description { get; set; }
     }

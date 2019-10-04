@@ -2,7 +2,7 @@ using Core.Data;
 using System;
 
 namespace Module.Persist.TPM.Model.DTO {
-    public class PlanIncrementalReport : IEntity<Guid> {
+    public class PlanIncrementalReport : IEntity<Guid>, ICloneable {
         public Guid Id { get; set; }
         public string ZREP { get; set; }
         public string DemandCode { get; set; }
@@ -21,5 +21,10 @@ namespace Module.Persist.TPM.Model.DTO {
 		public double? PlanProductIncrementalLSV { get; set; }
 		public double? PlanProductBaselineLSV { get; set; }
 		public bool? InOut { get; set; }
-    }
+
+		public object Clone()
+		{
+			return this.MemberwiseClone();
+		}
+	}
 }

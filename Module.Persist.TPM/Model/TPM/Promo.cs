@@ -257,6 +257,7 @@ namespace Module.Persist.TPM.Model.TPM
         public bool? InOut { get; set; }
         public string InOutProductIds { get; set; }
         public bool InOutExcludeAssortmentMatrixProductsButtonPressed { get; set; }
+        public string RegularExcludedProductIds { get; set; }
 
         /// <summary>
         /// Copy Constructor
@@ -311,6 +312,7 @@ namespace Module.Persist.TPM.Model.TPM
             PlanPromoLSV = promoToCopy.PlanPromoLSV;
             EventId = promoToCopy.EventId;
             CalendarPriority = promoToCopy.CalendarPriority;
+            RegularExcludedProductIds = promoToCopy.RegularExcludedProductIds;
         }
 
         public Promo() {}

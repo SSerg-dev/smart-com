@@ -139,6 +139,7 @@ namespace Module.Persist.TPM.Utils
             promo.PlanPromoIncrementalEarnings = null;
             promo.PlanPromoNetIncrementalEarnings = null;
             promo.PlanPromoROIPercent = null;
+            promo.PlanPromoUpliftPercent = null;
             promo.PlanPromoNetROIPercent = null;
             promo.PlanPromoNetUpliftPercent = null;
             promo.ActualPromoBaselineLSV = null;

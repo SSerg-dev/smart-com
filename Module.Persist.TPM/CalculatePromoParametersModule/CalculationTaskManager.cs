@@ -80,11 +80,6 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         nameHandler = "Module.Host.TPM.Handlers.CalculateActualParamatersHandler";
                         break;
 
-                    case CalculationAction.DataFlowFiltering:
-                        description = "Filtering for nightly recalculation (DataFlow)";
-                        nameHandler = "Module.Host.TPM.Handlers.DataFlow.DataFlowFilteringHandler";
-                        break;
-
                     case CalculationAction.DataFlow:
                         promoIdsForBlock = HandlerDataHelper.GetIncomingArgument<List<Guid>>("PromoIdsForBlock", data, false);
                         description = "Nightly recalculation (DataFlow)";

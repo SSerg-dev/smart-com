@@ -10,13 +10,15 @@ namespace Module.Persist.TPM.Utils
     {
         public Guid Id { get; set; }
         public string PromoStatusName { get; set; }
-        public int? ClientTreeId { get; set; }
-        public DateTimeOffset? EndDate { get; set; }
+		public int? ClientTreeId { get; set; }
+		public int? ClientTreeKeyId { get; set; }
         public string Name { get; set; }
         public int? Number { get; set; }
-        public DateTimeOffset? DispatchesStart { get; set; }
-        public DateTimeOffset? DispatchesEnd { get; set; }
-        public bool? InOut { get; set; }
+        public DateTimeOffset? StartDate { get; set; }
+        public DateTimeOffset? EndDate { get; set; }
+		public DateTimeOffset? DispatchesStart { get; set; }
+		public DateTimeOffset? DispatchesEnd { get; set; }
+		public bool? InOut { get; set; }
         public double? PlanPromoUpliftPercent { get; set; }
         public string ZREP { get; set; }
         public double? PlanProductIncrementalCaseQty { get; set; }

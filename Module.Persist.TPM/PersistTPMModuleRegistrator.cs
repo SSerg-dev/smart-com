@@ -73,12 +73,13 @@ namespace Module.Persist.TPM {
             modelBuilder.Entity<PromoView>();
             modelBuilder.Entity<PromoGridView>();
             modelBuilder.Entity<PlanIncrementalReport>();
-            modelBuilder.Entity<PromoRejectIncident>();
 			modelBuilder.Entity<PromoCancelledIncident>();
             modelBuilder.Entity<ChangesIncident>();
 			modelBuilder.Entity<PromoOnApprovalIncident>();
 			modelBuilder.Entity<PromoOnRejectIncident>();
-			modelBuilder.Entity<PromoApprovedIncident>();
+            modelBuilder.Entity<PromoApprovedIncident>();
+            modelBuilder.Entity<EventClientTree>();
+            modelBuilder.Entity<BudgetSubItemClientTree>();
 
             modelBuilder.Entity<Promo>().Ignore(n => n.ProductTreeObjectIds);
             modelBuilder.Entity<Promo>().Ignore(n => n.Calculating);
@@ -107,6 +108,10 @@ namespace Module.Persist.TPM {
             builder.EntitySet<HistoricalEvent>("HistoricalEvents");
             builder.Entity<Event>().Collection.Action("ExportXLSX");
             builder.Entity<Event>().Collection.Action("FullImportXLSX");
+
+            builder.EntitySet<EventClientTree>("EventClientTrees");
+            builder.EntitySet<EventClientTree>("EventClientTrees").HasRequiredBinding(e => e.ClientTree,"ClientTrees");
+            builder.EntitySet<EventClientTree>("EventClientTrees").HasRequiredBinding(e => e.Event, "Events");
 
             builder.EntitySet<Technology>("Technologies");
             builder.EntitySet<Technology>("DeletedTechnologies");
@@ -185,6 +190,12 @@ namespace Module.Persist.TPM {
             builder.EntitySet<HistoricalProduct>("HistoricalProducts");
             builder.Entity<Product>().Collection.Action("ExportXLSX");
             builder.Entity<Product>().Collection.Action("FullImportXLSX");
+            var getIfAllProductsInSubrangeAction = builder.Entity<Product>().Collection.Action("GetIfAllProductsInSubrange");
+            getIfAllProductsInSubrangeAction.Parameter<string>("PromoId");
+            getIfAllProductsInSubrangeAction.Parameter<string>("ProductIds");
+            getIfAllProductsInSubrangeAction.Parameter<string>("ClientTreeKeyId");
+            getIfAllProductsInSubrangeAction.Parameter<string>("DispatchesStart");
+            getIfAllProductsInSubrangeAction.Parameter<string>("DispatchesEnd");
 
             builder.EntitySet<Region>("Regions");
             builder.EntitySet<Region>("DeletedRegions");
@@ -277,7 +288,8 @@ namespace Module.Persist.TPM {
             builder.Entity<Promo>().Collection.Action("ExportPromoROIReportXLSX");
             builder.Entity<Promo>().Collection.Action("RecalculatePromo");
             builder.Entity<Promo>().Collection.Action("CheckIfLogHasErrors");
-            builder.Entity<Promo>().Collection.Action("GetProducts").CollectionParameter<string>("InOutProductIds");
+			builder.Entity<Promo>().Collection.Action("CheckPromoCreator");
+			builder.Entity<Promo>().Collection.Action("GetProducts").CollectionParameter<string>("InOutProductIds");
 
             ActionConfiguration schedExp = builder.Entity<Promo>().Collection.Action("ExportSchedule");
             schedExp.CollectionParameter<int>("clients");
@@ -585,10 +597,20 @@ namespace Module.Persist.TPM {
             builder.Entity<PromoROIReport>().Collection.Action("ExportXLSX");
 
             builder.EntitySet<SchedulerClientTreeDTO>("SchedulerClientTreeDTOs");
-			
-			ActionConfiguration getSelectedProductsAction = builder.Entity<Product>().Collection.Action("GetSelectedProducts");
+
+            builder.EntitySet<BudgetSubItemClientTree>("BudgetSubItemClientTrees");
+            builder.EntitySet<BudgetSubItemClientTree>("BudgetSubItemClientTrees").HasRequiredBinding(e => e.BudgetSubItem, "BudgetSubItems");
+            builder.EntitySet<BudgetSubItemClientTree>("BudgetSubItemClientTrees").HasRequiredBinding(e => e.ClientTree, "ClientTrees");
+            //builder.Entity<BudgetSubItemClientTree>().HasRequired(e => e.ClientTree, (e, te) => e.ClientTreeId == te.Id);
+            //builder.Entity<BudgetSubItemClientTree>().HasRequired(e => e.BudgetSubItem, (e, te) => e.BudgetSubItemId == te.Id);
+
+            ActionConfiguration getSelectedProductsAction = builder.Entity<Product>().Collection.Action("GetSelectedProducts");
 			getSelectedProductsAction.ReturnsCollectionFromEntitySet<IQueryable<Product>>("SelectedProducts");
 			getSelectedProductsAction.CollectionParameter<string>("jsonData");
+
+            ActionConfiguration getRegularSelectedProductsAction = builder.Entity<Product>().Collection.Action("GetRegularSelectedProducts");
+			getRegularSelectedProductsAction.ReturnsCollectionFromEntitySet<IQueryable<Product>>("RegularSelectedProducts");
+			getRegularSelectedProductsAction.CollectionParameter<string>("jsonData");
         }
 
         public IEnumerable<Type> GetHistoricalEntities() {

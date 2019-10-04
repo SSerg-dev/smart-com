@@ -110,7 +110,6 @@ namespace Module.Host.TPM.Actions {
             {
                 Event typedRec = (Event)rec;
                 if (String.IsNullOrEmpty(typedRec.Name)) { errors.Add("Event must have a value"); isSuitable = false; }
-                if (String.IsNullOrEmpty(typedRec.Period)) { errors.Add("Period must have a value"); isSuitable = false; }
             }
 
             if (TypeTo == typeof(NodeType))

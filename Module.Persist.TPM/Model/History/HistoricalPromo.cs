@@ -27,9 +27,7 @@ namespace Module.Persist.TPM.Model.History {
         public string Comment { get; set; }
 
         //event
-        public int? PromoEventYear { get; set; }
         public string PromoEventName { get; set; }
-        public string PromoEventPeriod { get; set; }
         public string PromoEventDescription { get; set; }
 
         // Calculation

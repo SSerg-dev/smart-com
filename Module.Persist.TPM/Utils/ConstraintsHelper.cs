@@ -64,8 +64,37 @@ namespace Module.Persist.TPM.Utils
 							.Select(y => y.Id);
 						if (userIds.Count() > 1)
 						{
-							errors.Add(String.Format("{0} users found with same email: {1}", userIds.Count(), valueAndType.Item1));
-							continue;
+							//errors.Add(String.Format("{0} users found with same email: {1}", userIds.Count(), valueAndType.Item1));
+							//continue;
+
+							if (roles == null || roles?.GetLength(0) == 0)
+							{
+								users.Add(userIds.FirstOrDefault());
+							}
+							else
+							{
+								string[] roleIds = context.Roles
+								.Where(x => roles.Contains(x.SystemName) && !x.Disabled)
+								.Select(y => y.Id.ToString()).ToArray();
+
+								foreach (Guid userId in userIds)
+								{
+									Guid userIdWithDefRole = context.UserRoles
+									.Where(x => x.IsDefault && roleIds.Contains(x.RoleId.ToString()) && x.UserId == userId)
+									.Select(y => y.UserId).FirstOrDefault();
+
+									if (!userIdWithDefRole.Equals(Guid.Empty))
+									{
+										users.Add(userIdWithDefRole);
+										break;
+									}
+								}
+
+								if (users.Count() == 0)
+								{
+									errors.Add(String.Format("Users with default role: {0} wasn't found", string.Join(", ", roles)));
+								}
+							}
 						}
 						else if (Guid.Empty == userIds.FirstOrDefault())
 						{

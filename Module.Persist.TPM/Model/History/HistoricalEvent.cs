@@ -8,9 +8,6 @@ namespace Module.Persist.TPM.Model.History
     public class HistoricalEvent : BaseHistoricalEntity<System.Guid>
     {
         public string Name { get; set; }
-
-        public int Year { get; set; }
-        public string Period { get; set; }
         public string Description { get; set; }
     }
 }

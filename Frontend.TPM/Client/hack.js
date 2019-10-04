@@ -229,11 +229,12 @@ Ext.override(Ext.Container, {
 
     onPanelResize: function (panel) {
         this._refreshScroll(panel);
-        panel.doLayout();
+        //Закомментировано, т.к. ломает скролл на большом экране (в окне промо)
+        //panel.doLayout();
     },
 
     onPanelAfterLayout: function (panel) {
-        //Ломает скролл на большом экране
+        //Ломает скролл на большом экране (в окне промо)
         if (!panel.stopRefreshScroll) {
             this._refreshScroll(panel);
         }

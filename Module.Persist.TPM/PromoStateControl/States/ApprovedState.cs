@@ -3,6 +3,10 @@ using System.Linq;
 using System.Collections.Generic;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.PromoStateControl.RoleStateMap;
+using Module.Persist.TPM.Utils;
+using Persist.Utils;
+using Core.Settings;
+using Core.Dependency;
 
 namespace Module.Persist.TPM.PromoStateControl
 {
@@ -54,12 +58,17 @@ namespace Module.Persist.TPM.PromoStateControl
                 bool isAvailable;
                 bool isAvailableCurrent = PromoStateUtil.CheckAccess(Roles, userRole);
 
+                ISettingsManager settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
+                var backToOnApprovalDispatchDays = settingsManager.GetSetting<int>("BACK_TO_ON_APPROVAL_DISPATCH_DAYS_COUNT", 7 * 8);
+                bool isCorrectDispatchDifference = (promoModel.DispatchesStart - ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)).Value.Days >= backToOnApprovalDispatchDays;
+
                 // Условия для возврата
-                if ((_stateContext.Model.MarsMechanicDiscount < promoModel.MarsMechanicDiscount) ||
+                if (((_stateContext.Model.MarsMechanicDiscount < promoModel.MarsMechanicDiscount) ||
                     (_stateContext.Model.MarsMechanicId == stateIdVP && promoModel.MarsMechanicId == stateIdTPR) ||
                     (_stateContext.Model.ProductHierarchy != promoModel.ProductHierarchy) ||
                     (_stateContext.Model.StartDate != promoModel.StartDate) ||
-                    (_stateContext.Model.EndDate != promoModel.EndDate))
+                    (_stateContext.Model.EndDate != promoModel.EndDate)) &&
+                    !isCorrectDispatchDifference)
                 {
                     promoStatus = _stateContext.dbContext.Set<PromoStatus>().First(n => n.SystemName == "DraftPublished");
                     promoModel.PromoStatusId = promoStatus.Id;
@@ -108,6 +117,21 @@ namespace Module.Persist.TPM.PromoStateControl
 
                         return true;
                     }
+                    else if (statusName == PromoStates.OnApproval.ToString())
+                    {
+                        var onApprovalPromoStatusId = _stateContext.dbContext.Set<PromoStatus>().Where(x => x.SystemName == PromoStates.OnApproval.ToString() && !x.Disabled).FirstOrDefault().Id;
+
+                        promoModel.PromoStatusId = onApprovalPromoStatusId;
+                        promoModel.IsCMManagerApproved = false;
+                        promoModel.IsDemandPlanningApproved = false;
+                        promoModel.IsDemandFinanceApproved = false;
+                        promoModel.IsAutomaticallyApproved = false;
+
+						_stateContext.State = _stateContext._onApprovalState;
+                        _stateContext.Model = promoModel;
+
+                        return true; 
+                    }
                     else 
                     {
                         // Go to: CancelledState
@@ -135,8 +159,57 @@ namespace Module.Persist.TPM.PromoStateControl
 
             public bool ChangeState(Promo promoModel, PromoStates promoState, string userRole, out string message)
             {
-                throw new NotImplementedException();
-            }
+				bool isAvailable = false;
+				message = string.Empty;
+
+				if (userRole == "System")
+				{
+					isAvailable = true;
+				}
+				else
+				{
+					isAvailable = PromoStateUtil.CheckAccess(GetAvailableStates(), promoState.ToString(), userRole);
+				}
+
+				if (isAvailable)
+				{
+					// Go to: Cancelled
+					if (promoState == PromoStates.Cancelled)
+					{
+						Guid cancelledPromoStatusId = _stateContext.dbContext.Set<PromoStatus>().Where(x => x.SystemName == "Cancelled" && !x.Disabled).FirstOrDefault().Id;
+
+						_stateContext.Model.PromoStatusId = cancelledPromoStatusId;
+						_stateContext.State = _stateContext._cancelledState;
+
+						return true;
+					}
+					else if (promoState == PromoStates.OnApproval)
+                    {
+                        var onApprovalPromoStatusId = _stateContext.dbContext.Set<PromoStatus>().Where(x => x.SystemName == PromoStates.OnApproval.ToString() && !x.Disabled).FirstOrDefault().Id;
+
+                        _stateContext.Model.PromoStatusId = onApprovalPromoStatusId;
+                        _stateContext.Model.IsCMManagerApproved = false;
+                        _stateContext.Model.IsDemandPlanningApproved = false;
+                        _stateContext.Model.IsDemandFinanceApproved = false;
+                        _stateContext.Model.IsAutomaticallyApproved = false;
+						_stateContext.State = _stateContext._onApprovalState;
+
+                        return true; 
+                    }
+                    else
+					{
+						message = $"Action for status {promoState.ToString()} in not implemented";
+
+						return false;
+					}
+				}
+				else
+				{
+					message = "Action is not available";
+
+					return false;
+				}
+			}
         }
     }
 }

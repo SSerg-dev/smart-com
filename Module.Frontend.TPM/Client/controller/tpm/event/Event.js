@@ -11,7 +11,7 @@
                 },
                 'event directorygrid': {
                     selectionchange: this.onGridSelectionChange,
-                    afterrender: this.onGridAfterrender,
+                    afterrender: this.onGridAfterRender,
                     extfilterchange: this.onExtFilterChange
                 },
                 'event #datatable': {
@@ -71,5 +71,16 @@
                 }
             }
         });
-    }
+    },
+
+    onGridAfterRender: function (grid) {
+        var me = this,
+            eventGrid = grid,
+            proxyEventGrid = eventGrid.getStore().getProxy(),
+            event = eventGrid.up('event');
+
+        if (event) {
+            proxyEventGrid.extraParams.clientTreeKeyId = event.clientTreeKeyId;
+        }
+    },
 });

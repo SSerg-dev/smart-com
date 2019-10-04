@@ -94,6 +94,7 @@
     'tpm.budgetsubitem.BudgetSubItem',
     'tpm.budgetsubitem.DeletedBudgetSubItem',
     'tpm.budgetsubitem.HistoricalBudgetSubItem',
+    'tpm.budgetsubitem.BudgetSubItemClientTree',
 
     'tpm.promo.Promo',
     'tpm.promo.DeletedPromo',
@@ -135,6 +136,7 @@
     'tpm.event.Event',
     'tpm.event.DeletedEvent',
     'tpm.event.HistoricalEvent',
+    'tpm.event.EventClientTree',
 
     'tpm.nodetype.NodeType',
     'tpm.nodetype.DeletedNodeType',

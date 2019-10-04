@@ -12,7 +12,6 @@ namespace Module.Host.TPM {
 				new Handlers.Notifications.PromoDemandChangeNotificationHandler(),
 				new Handlers.Notifications.PromoProductChangeNotificationHandler(),
 				new Handlers.Notifications.PromoUpliftFailNotificationHandler(),
-				new Handlers.Notifications.RejectPromoNotificationHandler(),
 				new Handlers.Notifications.CancelledPromoNotificationHandler(),
 				new Handlers.Notifications.WeekBeforeDispatchPromoNotificationHandler(),
 				new Handlers.Notifications.PromoOnApprovalNotificationHandler(),

@@ -18,8 +18,6 @@ namespace Module.Persist.TPM.Model.TPM
         [Required]
         public string Name { get; set; }
 
-        public int Year { get; set; }
-        public string Period { get; set; }
         public string Description { get; set; }
     }
 }

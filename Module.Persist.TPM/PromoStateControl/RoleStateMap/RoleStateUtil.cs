@@ -21,16 +21,19 @@ namespace Module.Persist.TPM.PromoStateControl.RoleStateMap {
                 { StateNames.DELETED, new List<string> { "Administrator", "CustomerMarketing", "FunctionalExpert", "KeyAccountManager" } }
             }),
             new RoleStateMap(StateNames.ON_APPROVAL, new Dictionary<string, List<string>>() {
-                { StateNames.DRAFT_PUBLISHED, new List<string> { "Administrator", "CMManager", "CustomerMarketing", "DemandFinance", "DemandPlanning" } },
+                { StateNames.DRAFT_PUBLISHED, new List<string> { "Administrator", "CMManager", "CustomerMarketing", "DemandFinance", "DemandPlanning", "KeyAccountManager"} },
+                { StateNames.ON_APPROVAL, new List<string> { "System" } },
                 { StateNames.APPROVED, new List<string> { "CMManager", "DemandFinance", "DemandPlanning" } }
             }),
             new RoleStateMap(StateNames.APPROVED, new Dictionary<string, List<string>>() {
                 { StateNames.DRAFT_PUBLISHED, new List<string> { "Administrator" } },
                 { StateNames.PLANNED, new List<string> { "Administrator", "KeyAccountManager", "FunctionalExpert" } },
+                { StateNames.ON_APPROVAL, new List<string> { "System" } },
                 { StateNames.CANCELLED, new List<string> { "Administrator", "KeyAccountManager", "FunctionalExpert" } }
             }),
             new RoleStateMap(StateNames.CANCELLED, new Dictionary<string, List<string>>(){ }),
             new RoleStateMap(StateNames.PLANNED, new Dictionary<string, List<string>>(){
+                { StateNames.ON_APPROVAL, new List<string> { "System" } },
                 { StateNames.STARTED, new List<string> { "System" } },
                 { StateNames.DRAFT_PUBLISHED, new List<string> { "Administrator" } },
 				{ StateNames.CANCELLED, new List<string> { "Administrator", "KeyAccountManager", "FunctionalExpert" } }
@@ -73,7 +76,7 @@ namespace Module.Persist.TPM.PromoStateControl.RoleStateMap {
         public static bool RoleCanChangeState(string roleName, string statusName) {
 			bool isChangeAvailable = GetMapForStatus(statusName).Any(x => x.Value.Contains(roleName));
 
-			if (roleName.Equals("KeyAccountManager") && statusName.Equals(StateNames.PLANNED))
+			if (roleName.Equals("KeyAccountManager") && (statusName.Equals(StateNames.PLANNED) || statusName.Equals(StateNames.ON_APPROVAL)))
 			{
 				isChangeAvailable = false;
 			}

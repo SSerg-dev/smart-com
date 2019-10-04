@@ -27,9 +27,47 @@ namespace Module.Host.TPM.Handlers
 
                 using (DatabaseContext context = new DatabaseContext())
                 {
-                    // скрипт для "уничтожения" удаленных записей сроком от 6 недель из таблицы BaseLine
-                    string deleteScript = "DELETE FROM [dbo].[BaseLine] WHERE [Disabled] = 1 and [DeletedDate] IS NOT NULL and DATEADD(DAY, -(42), SYSDATETIME()) >= [DeletedDate]";
-                    context.Database.ExecuteSqlCommand(deleteScript);
+                    // удаление записей удаленных от 6 недель назад из таблицы BaseLine
+                    using (var transaction = context.Database.BeginTransaction())
+                    {
+                        try
+                        {
+                            string sqlCommand = "DELETE FROM [dbo].[BaseLine] WHERE [Disabled] = 1 and [DeletedDate] IS NOT NULL and DATEADD(DAY, -(42), SYSDATETIME()) >= [DeletedDate]";
+                            context.Database.ExecuteSqlCommand(sqlCommand);
+
+                            transaction.Commit();
+                        }
+                        catch (Exception e)
+                        {
+                            transaction.Rollback();
+
+                            if (handlerLogger != null)
+                            {
+                                handlerLogger.Write(true, e.ToString(), "Error");
+                            }
+                        }
+                    }
+
+                    // удаление записей созданных от 2 недель назад из таблицы ChangesIncident
+                    using (var transaction = context.Database.BeginTransaction())
+                    {
+                        try
+                        {
+                            string sqlCommand = "DELETE FROM [dbo].[ChangesIncident] WHERE [CreateDate] IS NOT NULL and DATEADD(DAY, -(14), SYSDATETIME()) >= [CreateDate]";
+                            context.Database.ExecuteSqlCommand(sqlCommand);
+
+                            transaction.Commit();
+                        }
+                        catch (Exception e)
+                        {
+                            transaction.Rollback();
+
+                            if (handlerLogger != null)
+                            {
+                                handlerLogger.Write(true, e.ToString(), "Error");
+                            }
+                        }
+                    }
                 }
             }
             catch (Exception e)

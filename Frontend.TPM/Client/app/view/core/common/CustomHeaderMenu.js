@@ -20,6 +20,9 @@
     beforeRender: function () {
         this.callSuper(arguments);
         this.layout.align = 'stretch';
+        var me = this;
+        Ext.EventManager.onWindowResize(function () {
+            me.hide()
+        });
     }
-
 });

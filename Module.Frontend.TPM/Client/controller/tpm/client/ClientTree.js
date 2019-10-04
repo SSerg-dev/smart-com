@@ -285,12 +285,14 @@
                         if (item.value === node.get('FullPathName')) {
                             c = true;
                         }
-                    });
-                    node.set('checked', c);
+					});
+					if (node.get('EndDate') == null) {
+						node.set('checked', c);
+					}
 				} else {
 					var promoeditorcustom = Ext.ComponentQuery.query('promoeditorcustom')[0];
 					if (promoeditorcustom) {
-						if (node.get('IsBaseClient')) {
+						if (node.get('IsBaseClient') && node.get('EndDate') == null) {
 							node.set('checked', checked);
 						}
 					} else {
@@ -853,6 +855,7 @@
         var store = clientTree.down('basetreegrid').store;
         var proxy = store.getProxy();
         var me = this;
+        var selectionWidget = clientTree.up('#associatedbudgetsubitemclienttree_clienttree_selectorwindow');
 
         var textSearch = textFieldSearch.getValue()
         if (textSearch && textSearch.length > 0 && textSearch.indexOf('Client search') == -1)
@@ -863,6 +866,10 @@
         if (clientTree.choosenClientObjectId)
             proxy.extraParams.clientObjectId = clientTree.choosenClientObjectId;
 
+        if (selectionWidget && selectionWidget.budgetSubItemId) {
+            proxy.extraParams.budgetSubItemId = selectionWidget.budgetSubItemId
+        }
+
         store.getRootNode().removeAll();
         store.getRootNode().setId('root');
         store.load();
@@ -870,6 +877,7 @@
         proxy.extraParams.filterParameter = null;
         proxy.extraParams.needBaseClients = false;
         proxy.extraParams.clientObjectId = null;
+        proxy.extraParams.budgetSubItemId = null;
     },
 
     // следит за галочками

@@ -171,7 +171,7 @@
         text: l10n.ns('tpm', 'mainmenu').value('BudgetSubItemItem'),
         tooltip: l10n.ns('tpm', 'mainmenu').value('BudgetSubItemItem'),
         glyph: 0xf0be,
-        widget: 'budgetsubitem'
+        widget: 'associatedbudgetsubitemclienttree'
     }, {
         text: l10n.ns('tpm', 'mainmenu').value('MechanicItem'),
         tooltip: l10n.ns('tpm', 'mainmenu').value('MechanicItem'),
@@ -201,7 +201,7 @@
         text: l10n.ns('tpm', 'mainmenu').value('EventItem'),
         tooltip: l10n.ns('tpm', 'mainmenu').value('EventItem'),
         glyph: 0xf0f6,
-        widget: 'event'
+            widget: 'associatedeventclienttree'
     }, {
         text: l10n.ns('tpm', 'mainmenu').value('NodeTypeItem'),
         tooltip: l10n.ns('tpm', 'mainmenu').value('NodeTypeItem'),

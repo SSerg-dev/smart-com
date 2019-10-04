@@ -17,6 +17,7 @@ namespace Module.Persist.TPM.Model.DTO {
         public string ColorSystemName { get; set; }
         public string PromoStatusColor { get; set; }
         public string PromoStatusSystemName { get; set; }
+        public string PromoStatusName { get; set; }
 
         public Guid? CreatorId { get; set; }
 

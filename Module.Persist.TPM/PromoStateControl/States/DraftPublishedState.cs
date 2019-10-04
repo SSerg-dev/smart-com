@@ -5,6 +5,8 @@ using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.PromoStateControl.RoleStateMap;
 using Module.Persist.TPM.Utils;
+using Core.Settings;
+using Core.Dependency;
 
 namespace Module.Persist.TPM.PromoStateControl
 {
@@ -119,11 +121,13 @@ namespace Module.Persist.TPM.PromoStateControl
                         bool isNoNego = CheckNoNego(promoModel);
                         if (isNoNego)
                         {
-                            TimeSpan difference = (DateTimeOffset)promoModel.DispatchesStart - DateTimeOffset.Now;
+                            ISettingsManager settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
+                            var toApprovedDispatchDays = settingsManager.GetSetting<int>("TO_APPROVED_DISPATCH_DAYS_COUNT", 7 * 8);
+                            bool isCorrectDispatchDifference = (promoModel.DispatchesStart - ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)).Value.Days >= toApprovedDispatchDays;
 
                             if (!promoModel.InOut.HasValue || !promoModel.InOut.Value)
                             {
-                                if ((difference.Days >= 56 || userRole == UserRoles.FunctionalExpert.ToString())
+                                if ((isCorrectDispatchDifference || userRole == UserRoles.FunctionalExpert.ToString())
                                     && promoModel.PlanPromoBaselineLSV.HasValue && promoModel.PlanPromoBaselineLSV > 0
                                     && promoModel.PlanPromoUpliftPercent.HasValue && promoModel.PlanPromoUpliftPercent > 0)
                                 {
@@ -155,7 +159,7 @@ namespace Module.Persist.TPM.PromoStateControl
                             }
                             else
                             {
-                                if ((difference.Days >= 56 || userRole == UserRoles.FunctionalExpert.ToString())
+                                if ((isCorrectDispatchDifference || userRole == UserRoles.FunctionalExpert.ToString())
                                     && promoModel.PlanPromoIncrementalLSV.HasValue && promoModel.PlanPromoIncrementalLSV.Value > 0)
                                 {
                                     PromoStatus approvedStatus = _stateContext.dbContext.Set<PromoStatus>().FirstOrDefault(e => e.SystemName == "Approved");
@@ -235,9 +239,10 @@ namespace Module.Persist.TPM.PromoStateControl
                     // Go to: DraftState
                     if (promoState == PromoStates.Draft)
                     {
-                        Guid startedPromoStatusId = _stateContext.dbContext.Set<PromoStatus>().Where(x => x.SystemName == "Draft" && !x.Disabled).FirstOrDefault().Id;
+                        Guid draftPromoStatusId = _stateContext.dbContext.Set<PromoStatus>().Where(x => x.SystemName == "Draft" && !x.Disabled).FirstOrDefault().Id;
 
-                        _stateContext.Model.PromoStatusId = startedPromoStatusId;
+                        _stateContext.Model.PromoStatusId = draftPromoStatusId;
+                        _stateContext.Model.NeedRecountUplift = true;
                         _stateContext.State = _stateContext._draftState;
 
                         return true;

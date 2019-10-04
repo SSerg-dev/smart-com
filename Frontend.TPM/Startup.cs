@@ -1,4 +1,8 @@
-﻿using Microsoft.Owin;
+﻿using Core.Settings;
+using Microsoft.AspNet.SignalR;
+using Microsoft.Owin;
+using Microsoft.Owin.Extensions;
+using Module.Persist.TPM.Session;
 //using Microsoft.Owin.Cors;
 using Owin;
 using System;
@@ -12,8 +16,10 @@ namespace Frontend
         {
             AppDomain.CurrentDomain.Load(typeof(Module.Persist.TPM.LogHub).Assembly.FullName);
             AppDomain.CurrentDomain.Load(typeof(Module.Persist.TPM.TasksLogHub).Assembly.FullName);
+            AppDomain.CurrentDomain.Load(typeof(Module.Persist.TPM.Session.SessionHub).Assembly.FullName);
 
-            //app.UseCors(CorsOptions.AllowAll);
+            GlobalHost.Configuration.DisconnectTimeout = TimeSpan.FromSeconds(AppSettingsManager.GetSetting<int>("SIGNALR_DISCONNECT_TIMEOUT_SECONDS", 30));
+            app.Use(typeof(SessionSignalRMiddleware));
             app.MapSignalR();
         }
     }
