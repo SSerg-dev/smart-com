@@ -272,9 +272,9 @@ namespace Module.Frontend.TPM.Controllers
             try
             {
                 var answer = new List<Tuple<int, bool>>();
-                if (data.ContainsKey("NodesIds") && data["NodesIds"] != null)
+                if (data.ContainsKey("ProductIds") && data["ProductIds"] != null)
                 {
-                    var NodesIds = data["NodesIds"] as string;
+                    var productIdsString = data["ProductIds"] as string;
 
                     IEnumerable<Product> productsFromAssortmentMatrixForCurrentPromo = null;
                     if (data.ContainsKey("PromoId") && data["PromoId"] != null)
@@ -299,16 +299,10 @@ namespace Module.Frontend.TPM.Controllers
 
                         productsFromAssortmentMatrixForCurrentPromo = Context.Set<Product>().Where(x => eanPCsFromAssortmentMatrixForCurrentPromo.Contains(x.EAN_PC));
                     }
-                    List<Guid> productIds = new List<Guid>();
-                    if (data.ContainsKey("inOutProductIds") && data["inOutProductIds"] != null)
-                    {
-                        var inOutProductIds = data["inOutProductIds"] as string;
-                        if (inOutProductIds != "")
-                        {
-                            productIds = inOutProductIds.Split(';').Select(Guid.Parse).ToList();
-                        }
-                    }
-                    var productTreeObjectIds = NodesIds.Split(';').Select(Int32.Parse).ToList();
+
+                    var ResultList = productIdsString.Split(new string[] { ";!;" }, StringSplitOptions.None).ToList();
+                    var productIds = ResultList[0].Split(';').Select(Guid.Parse).ToList();
+                    var productTreeObjectIds = ResultList[1].Split(';').Select(Int32.Parse).ToList();
                     List<int> idL;
                     foreach (var productTreeObjectId in productTreeObjectIds)
                     {
