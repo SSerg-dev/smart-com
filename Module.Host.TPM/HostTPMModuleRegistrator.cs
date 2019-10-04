@@ -45,7 +45,8 @@ namespace Module.Host.TPM {
                 new Handlers.DataFlow.DataFlowFilteringHandler(),
                 new Handlers.DataFlow.DataFlowRecalculatingHandler(),
                 new Handlers.PromoPartialWorkflowHandler(),
-                new Handlers.RemoveDeletedDataHandler()
+                new Handlers.RemoveDeletedDataHandler(),
+                new Handlers.FillInOutProductIdsHandler()
             };
         }
     }

@@ -1,0 +1,29 @@
+INSERT INTO [dbo].[LoopHandler]
+           ([Id]
+           ,[Description]
+           ,[Name]
+           ,[ExecutionPeriod]
+           ,[ExecutionMode]
+           ,[CreateDate]
+           ,[LastExecutionDate]
+           ,[NextExecutionDate]
+           ,[ConfigurationName]
+           ,[Status]
+           ,[RunGroup]
+           ,[UserId]
+           ,[RoleId])
+     VALUES
+           (NEWID()
+           ,'FillInOutProductIds'
+           ,'Module.Host.TPM.Handlers.FillInOutProductIdsHandler'
+           ,864000000000
+           ,'SCHEDULE'
+           ,SYSDATETIME()
+           ,NULL
+           ,NULL
+           ,'PROCESSING'
+           ,'WAITING'
+           ,NULL
+           ,NULL
+           ,NULL)
+GO

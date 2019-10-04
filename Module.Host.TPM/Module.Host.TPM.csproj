@@ -200,6 +200,7 @@
     <Compile Include="Actions\Notifications\PromoDemandChangeNotificationAction.cs" />
     <Compile Include="Actions\Notifications\PromoProductChangeNotificationAction.cs" />
     <Compile Include="Actions\NoGuidGeneratingScriptGenerator.cs" />
+    <Compile Include="Handlers\FillInOutProductIdsHandler.cs" />
     <Compile Include="Handlers\AutoResetPromoHandler.cs" />
     <Compile Include="Handlers\ActualLSVChangeHandler.cs" />
     <Compile Include="Handlers\DataFlow\DataFlowFilteringHandler.cs" />
