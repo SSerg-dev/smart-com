@@ -165,6 +165,9 @@
 				'promoeditorcustom #btn_reject': {
 					click: this.onRejectButtonClick
 				},
+				'promoeditorcustom #btn_backToDraftPublished': {
+					click: this.onBackToDraftPublishedButtonClick
+				},
 				'promoeditorcustom #btn_history': {
 					click: this.onPromoHistoryButtonClick
 				},
@@ -330,7 +333,9 @@
 	onBasicPanelAfterrender: function (component, eOpts) {
 		$(component.getTargetEl().dom).on('jsp-scroll-y', function (event, scrollPositionY, isAtTop, isAtBottom) {
 			var panel = component.up();
-			if (panel) { // TODO: отрефакторить?
+            if (panel) { // TODO: отрефакторить?
+                // Для отрисовки нижней части панели без которой выделятся не все шаги
+                //component._refreshScroll(component);
 				var btnStep1 = panel.down('#btn_promo_step1');
 				var btnStep2 = panel.down('#btn_promo_step2');
 				var btnStep3 = panel.down('#btn_promo_step3');
@@ -543,7 +548,7 @@
 			toolbar[0].setDisabled(false);
 
 		// закрываем подключение к хабу
-		$.connection.logHub.server.disconnectFromHub();
+		requestHub($.connection.logHub.server.disconnectFromHub);
 	},
 
 	// =============== Steps ===============
@@ -1207,13 +1212,7 @@
 					);
 
 					// event
-					event.down('chooseEventButton').updateMappingValues(new App.model.tpm.event.Event({
-						Id: null,
-						Name: 'Standard promo',
-						Year: 0,
-						Period: '',
-						Description: ''
-					}))
+					me.refreshPromoEvent(promoeditorcustom, false);
 
 					// settings
 					settings.down('sliderfield[name=priority]').setValue(3);
@@ -1267,6 +1266,10 @@
 							btn.statusId = promoStatusData.value[i].Id;
 							btn.statusName = promoStatusData.value[i].Name;
 							btn.statusSystemName = promoStatusData.value[i].SystemName;
+							var btn_backToDraftPublished = promoeditorcustom.down('button[itemId=btn_backToDraftPublished]');
+							btn_backToDraftPublished.statusId = promoStatusData.value[i].Id;
+							btn_backToDraftPublished.statusName = promoStatusData.value[i].Name;
+							btn_backToDraftPublished.statusSystemName = promoStatusData.value[i].SystemName;
 						}
 
 						if (promoStatusData.value[i].SystemName == 'OnApproval') {
@@ -1722,9 +1725,9 @@
 
 		var window = button.up('window');
 		var grid = choosepromowindow.down('grid');
-        var store = grid.getStore(),
-            proxy = store.getProxy();
-        proxy.extraParams.promoIdHistory = window.promoId;
+		var store = grid.getStore(),
+			proxy = store.getProxy();
+		proxy.extraParams.promoIdHistory = window.promoId;
 
 		store.setFixedFilter('HistoricalObjectId', {
 			property: '_ObjectId',
@@ -1736,28 +1739,28 @@
 			load: function (records, operation, success) {
 				var selModel = grid.getSelectionModel();
 
-                if (!selModel.hasSelection() && records.data.length > 0) {
-                    selModel.select(0);
-                    grid.fireEvent('itemclick', grid, grid.getSelectionModel().getLastSelected());
-                } else if (selModel.hasSelection() && records.data.length > 0) {
-                    var selected = selModel.getSelection()[0];
-                    if (store.indexOfId(selected.getId()) === -1) {
-                        selModel.select(0);
-                        grid.fireEvent('itemclick', grid, grid.getSelectionModel().getLastSelected());
-                    }
-                } else if (records.data.length === 0) {
-                    selModel.deselectAll();
-                }
+				if (!selModel.hasSelection() && records.data.length > 0) {
+					selModel.select(0);
+					grid.fireEvent('itemclick', grid, grid.getSelectionModel().getLastSelected());
+				} else if (selModel.hasSelection() && records.data.length > 0) {
+					var selected = selModel.getSelection()[0];
+					if (store.indexOfId(selected.getId()) === -1) {
+						selModel.select(0);
+						grid.fireEvent('itemclick', grid, grid.getSelectionModel().getLastSelected());
+					}
+				} else if (records.data.length === 0) {
+					selModel.deselectAll();
+				}
 
-                grid.setLoading(false);
-            }
-        });
+				grid.setLoading(false);
+			}
+		});
 
-        choosepromowindow.show(false, function () {
-            grid.setLoading(true);
-        });
+		choosepromowindow.show(false, function () {
+			grid.setLoading(true);
+		});
 
-        store.load();
+		store.load();
 
 
 		//Корректировка области прокрутки
@@ -2209,8 +2212,9 @@
 		});
 
 		record.data.InOutProductIds = window.InOutProductIds || record.data.InOutProductIds;
-		record.data.InOut = (record.data.InOutProductIds ? true : false) || (record.data.InOut ? true : false) || (window.isInOutPromo ? true : false);
+		record.data.InOut = (record.data.InOut ? true : false) || (window.isInOutPromo ? true : false);
 		record.data.InOutExcludeAssortmentMatrixProductsButtonPressed = window.excludeAssortmentMatrixProductsButtonPressed ? true : false;
+        //record.data.RegularExcludedProductIds = window.RegularExcludedProductIds;
 
 		record.data.Name = window.promoName;
 
@@ -2358,14 +2362,14 @@
 	//вызывается отложенно из fillPromoForm для корректной отрисовки лоадера
 	fillPromoFormAfterSetLoading: function (promoeditorcustom, record, readOnly, isCopy, parentWidget) {
 		var me = this,
-            calculating = isCopy ? false : record.get('Calculating');
-        // Кнопки для изменения состояний промо
-        var promoActions = Ext.ComponentQuery.query('button[isPromoAction=true]');
+			calculating = isCopy ? false : record.get('Calculating');
+		// Кнопки для изменения состояний промо
+		var promoActions = Ext.ComponentQuery.query('button[isPromoAction=true]');
 
-        // Для InOut Promo
-        promoeditorcustom.isInOutPromo = record.data.InOut;
+		// Для InOut Promo
+		promoeditorcustom.isInOutPromo = record.data.InOut;
 
-		readOnly = isCopy? false : readOnly || calculating;
+		readOnly = isCopy ? false : readOnly || calculating;
 		promoeditorcustom.readOnly = readOnly;
 		$.ajax({
 			dataType: 'json',
@@ -2384,6 +2388,10 @@
 						btn_publish.statusId = promoStatusData.value[i].Id;
 						btn_publish.statusName = promoStatusData.value[i].Name;
 						btn_publish.statusSystemName = promoStatusData.value[i].SystemName;
+						var btn_backToDraftPublished = promoeditorcustom.down('button[itemId=btn_backToDraftPublished]');
+						btn_backToDraftPublished.statusId = promoStatusData.value[i].Id;
+						btn_backToDraftPublished.statusName = promoStatusData.value[i].Name;
+						btn_backToDraftPublished.statusSystemName = promoStatusData.value[i].SystemName;
 					}
 
 					if (promoStatusData.value[i].SystemName == 'OnApproval') {
@@ -2436,13 +2444,13 @@
 						undoBtn.statusName = promoStatusData.value[i].Name;
 						undoBtn.statusSystemName = promoStatusData.value[i].SystemName;
 					}
-                }
-                if (isCopy) {
-                    promoeditorcustom.statusId = draftStatusData.Id;
-                    promoeditorcustom.promoStatusName = draftStatusData.Name;
-                    promoeditorcustom.promoStatusSystemName = draftStatusData.SystemName;
-                    me.setPromoTitle(promoeditorcustom, promoeditorcustom.promoName, promoeditorcustom.promoStatusName);
-                    me.defineAllowedActions(promoeditorcustom, promoActions, promoeditorcustom.promoStatusName);
+				}
+				if (isCopy) {
+					promoeditorcustom.statusId = draftStatusData.Id;
+					promoeditorcustom.promoStatusName = draftStatusData.Name;
+					promoeditorcustom.promoStatusSystemName = draftStatusData.SystemName;
+					me.setPromoTitle(promoeditorcustom, promoeditorcustom.promoName, promoeditorcustom.promoStatusName);
+					me.defineAllowedActions(promoeditorcustom, promoActions, promoeditorcustom.promoStatusName);
 				}
 			},
 			error: function () {
@@ -2463,8 +2471,10 @@
 		var event = promoeditorcustom.down('container[name=promo_step5]');
 		var settings = promoeditorcustom.down('container[name=promo_step6]');
 
-        // InOut Products
-        promoeditorcustom.InOutProductIds = record.data.InOutProductIds;
+		// InOut Products
+		promoeditorcustom.InOutProductIds = record.data.InOutProductIds;
+        // Regular Products
+        //promoeditorcustom.RegularExcludedProductIds = record.data.RegularExcludedProductIds;
 
 		// mechanic
 		var marsMechanicId = mechanic.down('searchcombobox[name=MarsMechanicId]');
@@ -2582,7 +2592,14 @@
 			priority.setReadOnly(true);
 
 			var elementsToReadOnly = promoeditorcustom.query('[needReadOnly=true]');
-			me.setReadOnlyProperty(true, elementsToReadOnly);
+            me.setReadOnlyProperty(true, elementsToReadOnly);
+
+            // --------------- budgets promo ---------------
+            // блокировка кнопки Add Promo Support в режиме просмотра.
+            var addSubItemButtons = promoBudgets.query('#addSubItem');
+            addSubItemButtons.forEach(function (button) {
+                button.setDisabled(true);
+            })
 
 			// --------------- buttons ---------------
 			promoeditorcustom.down('button[itemId=savePromo]').hide();
@@ -2600,11 +2617,11 @@
 			promoeditorcustom.down('button[itemId=btn_promoBudgets]').setDisabled(true);
 			promoeditorcustom.down('button[itemId=btn_promoBudgets]').addCls('disabled');
 			promoeditorcustom.down('button[itemId=btn_promoActivity]').setDisabled(true);
-            promoeditorcustom.down('button[itemId=btn_promoActivity]').addCls('disabled');
-            promoeditorcustom.promoName = 'Unpublish Promo';
+			promoeditorcustom.down('button[itemId=btn_promoActivity]').addCls('disabled');
+			promoeditorcustom.promoName = 'Unpublish Promo';
 		} else {
-            promoeditorcustom.promoId = record.data.Id;
-            promoeditorcustom.promoNumber = record.data.Number;
+			promoeditorcustom.promoId = record.data.Id;
+			promoeditorcustom.promoNumber = record.data.Number;
 			promoeditorcustom.statusId = record.data.PromoStatusId;
 			promoeditorcustom.promoName = record.data.Name;
 
@@ -2667,8 +2684,8 @@
 		}
 
 		var titleText = isCopy ?
-            Ext.String.format('Name: {0} (ID: {1}), Status: {2}', promoeditorcustom.promoName, promoeditorcustom.promoNumber, promoeditorcustom.promoStatusName) :
-            Ext.String.format('Name: {0} (ID: {1}), Status: {2}', record.data.Name, record.data.Number, record.data.PromoStatusName);
+			Ext.String.format('Name: {0} (ID: {1}), Status: {2}', promoeditorcustom.promoName, promoeditorcustom.promoNumber, promoeditorcustom.promoStatusName) :
+			Ext.String.format('Name: {0} (ID: {1}), Status: {2}', record.data.Name, record.data.Number, record.data.PromoStatusName);
 
 		customtoptoolbar.down('label[name=promoName]').setText(titleText);
 
@@ -2803,16 +2820,7 @@
 			me.afterInitClient(clientRecord, record, promoeditorcustom, isCopy);
 		}
 
-		var _event = new App.model.tpm.event.Event({
-			Id: record.data.EventId,
-			Name: record.data.PromoEventName,
-			Year: record.data.PromoEventYear,
-			Period: record.data.PromoEventPeriod,
-			Description: record.data.PromoEventDescription
-		})
-
-		promoEvent.setValue(_event);
-		promoEvent.updateMappingValues(_event);
+		me.refreshPromoEvent(promoeditorcustom, false);
 
 		if (promoEvent.crudAccess.indexOf(currentRole) === -1) {
 			promoEvent.setDisabled(true);
@@ -2912,18 +2920,18 @@
 
 		// --------------- promo activity ---------------
 
-        actualInstoreMechanicId.setValue(new App.model.tpm.mechanic.Mechanic({
-            Id: record.data.ActualInStoreMechanicId,
-            Name: record.data.ActualInStoreMechanicName
-        }));
-        if (record.data.ActualInStoreMechanicId) {
-            actualInstoreMechanicTypeId.setValue(new App.model.tpm.mechanictype.MechanicType({
-                Id: record.data.ActualInStoreMechanicTypeId,
-                Name: record.data.ActualInStoreMechanicTypeName
-            }));
-            actualInStoreDiscount.setValue(record.data.ActualInStoreDiscount);
-        } else if (record.data.ActualInStoreDiscount) {
-            actualInStoreDiscount.setValue(record.data.ActualInStoreDiscount);
+		actualInstoreMechanicId.setValue(new App.model.tpm.mechanic.Mechanic({
+			Id: record.data.ActualInStoreMechanicId,
+			Name: record.data.ActualInStoreMechanicName
+		}));
+		if (record.data.ActualInStoreMechanicId) {
+			actualInstoreMechanicTypeId.setValue(new App.model.tpm.mechanictype.MechanicType({
+				Id: record.data.ActualInStoreMechanicTypeId,
+				Name: record.data.ActualInStoreMechanicTypeName
+			}));
+			actualInStoreDiscount.setValue(record.data.ActualInStoreDiscount);
+		} else if (record.data.ActualInStoreDiscount) {
+			actualInStoreDiscount.setValue(record.data.ActualInStoreDiscount);
 		}
 
 		actualInstoreMechanicTypeId.clearInvalid();
@@ -3002,7 +3010,7 @@
 		if (calculating) {
 			toolbar.items.items.forEach(function (item, i, arr) {
 				item.el.setStyle('backgroundColor', '#B53333');
-				if (item.xtype == 'button' && ['btn_publish', 'btn_undoPublish', 'btn_sendForApproval', 'btn_reject', 'btn_approve', 'btn_cancel', 'btn_plan', 'btn_close', 'btn_backToFinished'].indexOf(item.itemId) > -1) {
+				if (item.xtype == 'button' && ['btn_publish', 'btn_undoPublish', 'btn_sendForApproval', 'btn_reject', 'btn_backToDraftPublished', 'btn_approve', 'btn_cancel', 'btn_plan', 'btn_close', 'btn_backToFinished'].indexOf(item.itemId) > -1) {
 					item.setDisabled(true);
 				}
 			});
@@ -3021,7 +3029,7 @@
 
 			//me.createTaskCheckCalculation(promoeditorcustom);
 		}
-        else if (App.UserInfo.getCurrentRole().SystemName.toLowerCase() == 'administrator' && !isCopy && record.data.PromoStatusSystemName != 'Draft')
+		else if (App.UserInfo.getCurrentRole().SystemName.toLowerCase() == 'administrator' && !isCopy && record.data.PromoStatusSystemName != 'Draft')
 			promoeditorcustom.down('#btn_recalculatePromo').show();
 		this.checkLogForErrors(record.getId());
 
@@ -3042,7 +3050,7 @@
 
 		// останавливаем подписку на статус до загрузки окна
 		if (reloadPromo)
-			$.connection.logHub.server.unsubscribeStatus();
+			requestHub($.connection.logHub.server.unsubscribeStatus);
 
 		// Response возвращается не полностью верный, mappings игнорируются
 		model.save({
@@ -3164,7 +3172,7 @@
 				this.setPromoTitle(window, window.promoName, window.promoStatusName);
 			}
 
-            var model = this.buildPromoModel(window, record);
+			var model = this.buildPromoModel(window, record);
 			this.saveModel(model, window, close, reloadForm);
 		} else {
 			App.Notify.pushInfo(isModelComplete);
@@ -3206,6 +3214,30 @@
 
 						case 'DemandFinance':
 							visible = record.get('IsCMManagerApproved') && record.get('IsDemandPlanningApproved') && !record.get('IsDemandFinanceApproved');
+							break;
+						case 'KeyAccountManager':
+							var parameters = 'promoId=' + record.get('Id');
+					
+							$.ajax({
+								dataType: 'json',
+								url: '/odata/Promoes/CheckPromoCreator?' + parameters,
+								type: 'POST',
+								async: false,
+								success: function (data) {
+									var result = Ext.JSON.decode(data.value);
+									// Устанавливаем видимость элемента внутри callback'a, потому что запрос асинхронный
+									if (result.isCreator) {
+										visible = true;
+									} else {
+										visible = false;
+									}
+								},
+								error: function (data) {
+									
+									window.setLoading(false);
+									App.Notify.pushError(data.statusText);
+								}
+							});
 							break;
 
 						default: break;
@@ -4055,6 +4087,25 @@
 		rejectreasonselectwindow.show();
 	},
 
+	onBackToDraftPublishedButtonClick: function (button) {
+		var window = button.up('promoeditorcustom');
+		var record = this.getRecord(window);
+		var me = this;
+
+		window.previousStatusId = window.statusId;
+		window.statusId = button.statusId;
+		window.promoName = this.getPromoName(window);
+
+		var model = this.buildPromoModel(window, record);
+
+		var pointsAccess = App.UserInfo.getCurrentRole().AccessPoints;
+		var access = pointsAccess.find(function (element) {
+			return element.Resource == 'Promoes' && element.Action == 'Patch';
+		});
+
+		me.changeStatusPromo(record.data.Id, button.statusId, window);
+	},
+
 	onApplyActionButtonClick: function (button) {
 		var windowReject = button.up('rejectreasonselectwindow');
 		var commentField = windowReject.down('textarea[name=comment]');
@@ -4437,12 +4488,12 @@
 		calculatingInfoWindow.on({
 			beforeclose: function () {
 				if ($.connection.logHub)
-					$.connection.logHub.server.unsubscribeLog();
+                    requestHub($.connection.logHub.server.unsubscribeLog);
 			}
 		});
 
 		calculatingInfoWindow.show();
-		$.connection.logHub.server.subscribeLog();
+        requestHub($.connection.logHub.server.subscribeLog);
 	},
 
 	createTaskCheckCalculation: function (window) {
@@ -4647,7 +4698,7 @@
 
 		toolbar.items.items.forEach(function (item, i, arr) {
 			item.el.setStyle('backgroundColor', '#B53333');
-			if (item.xtype == 'button' && ['btn_publish', 'btn_undoPublish', 'btn_sendForApproval', 'btn_reject', 'btn_approve', 'btn_cancel', 'btn_plan', 'btn_close', 'btn_backToFinished'].indexOf(item.itemId) > -1) {
+			if (item.xtype == 'button' && ['btn_publish', 'btn_undoPublish', 'btn_sendForApproval', 'btn_reject', 'btn_backToDraftPublished', 'btn_approve', 'btn_cancel', 'btn_plan', 'btn_close', 'btn_backToFinished'].indexOf(item.itemId) > -1) {
 				item.setDisabled(true);
 			}
 		});
@@ -4674,7 +4725,7 @@
 			toolbar.items.items.forEach(function (item, i, arr) {
 				item.el.setStyle('backgroundColor', '#3f6895');
 				if (item.xtype == 'button' && ['btn_publish', 'btn_undoPublish',
-					'btn_sendForApproval', 'btn_reject', 'btn_approve', 'btn_cancel', 'btn_plan', 'btn_close', 'btn_backToFinished'].indexOf(item.itemId) > -1) {
+					'btn_sendForApproval', 'btn_reject', 'btn_backToDraftPublished', 'btn_approve', 'btn_cancel', 'btn_plan', 'btn_close', 'btn_backToFinished'].indexOf(item.itemId) > -1) {
 					item.setDisabled(false);
 				}
 			});
@@ -4693,7 +4744,7 @@
 
 			if (this.detailButton) {
 				window.down('#closePromo').setVisible(true);
-				window.down('#cancelPromo').setVisible(false);
+                window.down('#cancelPromo').setVisible(false);
 			}
 			else {
 				window.down('#cancelPromo').setVisible(true);
@@ -4946,7 +4997,7 @@
 		var promoId = record.get('Id');
 		var blocked = record.get('Calculating');
 
-		$.connection.logHub.server.subscribeStatus(promoId, blocked);
+        requestHub($.connection.logHub.server.subscribeStatus, [promoId, blocked]);
 		window.down('#btn_showlog').setDisabled(false);
 	},
 
@@ -5000,7 +5051,7 @@
 		var promoClientForm = button.up('promoclient');
 
 		promoClientForm.showSettings();
-	},
+    },
 
 	// событие нажатия кнопки выбора клиента
 	onChoosePromoClientClick: function (button) {
@@ -5014,12 +5065,13 @@
 		}
 		// передаем также call-back функцию, отвечающую за dispatch
 		// также устанавливаем подписи кнопок (Promo Basic Steps)
-		promoClientForm.chooseClient(function (clientTreeRecord) {
-			var promoeditorcustom = promoClientForm.up('promoeditorcustom');
-			var clientTreeRecordRaw = clientTreeRecord ? clientTreeRecord.raw : null;
+        promoClientForm.chooseClient(function (clientTreeRecord) {
+            var promoeditorcustom = promoClientForm.up('promoeditorcustom');
+            var clientTreeRecordRaw = clientTreeRecord ? clientTreeRecord.raw : null;
 
 			me.checkParametersAfterChangeClient(clientTreeRecordRaw, promoeditorcustom);
-		});
+            me.refreshPromoEvent(promoeditorcustom, true);
+        });
 
 		var promoClientChooseWindow = Ext.ComponentQuery.query('promoclientchoosewindow')[0];
 
@@ -5039,7 +5091,7 @@
 			var chooseButton = promoClientChooseWindow.down('#choose');
 			chooseButton.setDisabled(true);
 		}
-	},
+    },
 
 	//onClientChooseWindowAfterrender: function (window) {
 		
@@ -5277,7 +5329,6 @@
             var dispatchEndDate = promoperiod.down('[name=DispatchEndDate]');
             var durationStartDate = promoperiod.down('[name=DurationStartDate]');
             var durationEndDate = promoperiod.down('[name=DurationEndDate]');
-
             dispatchStartDate.reset();
             dispatchEndDate.reset();
 
@@ -5310,7 +5361,6 @@
         var durationEndDate = promoeditorcustom.down('[name=DurationEndDate]');
         var calculation = Ext.ComponentQuery.query('promocalculation')[0];
         var activity = Ext.ComponentQuery.query('promoactivity')[0];
-
         if (calculation && activity) {
             var planPostPromoEffectFromCalculation = calculation.down('trigger[name=PlanPostPromoEffect]');
             var changePromoButton = promoeditorcustom.down('#changePromo');
@@ -5328,9 +5378,9 @@
         }
 
         if (durationStartDate.getValue() && durationEndDate.getValue()) {
-            dispatchStartDate.reset();
-            dispatchEndDate.reset();
-
+           dispatchStartDate.reset();
+           dispatchEndDate.reset();
+        
             if (clientTreeRecord) {
                 var isBeforeStart = clientTreeRecord.IsBeforeStart;
                 var daysStart = clientTreeRecord.DaysStart;
@@ -5340,44 +5390,44 @@
                 var daysEnd = clientTreeRecord.DaysEnd;
                 var isDaysEnd = clientTreeRecord.IsDaysEnd;
                 var daysForDispatchEnd = clientTreeRecord.DaysEnd;
-
+        
                 if (isBeforeStart !== null && daysStart !== null && isDaysStart !== null) {
                     var resultDateForDispatchStart = null;
-
+                
                     if (!isDaysStart) {
                         daysForDispatchStart *= 7;
                     }
-
+                
                     if (isBeforeStart) {
                         resultDateForDispatchStart = Ext.Date.add(durationStartDate.getValue(), Ext.Date.DAY, -daysForDispatchStart);
                     } else {
                         resultDateForDispatchStart = Ext.Date.add(durationStartDate.getValue(), Ext.Date.DAY, daysForDispatchStart);
                     }
-
+                
                     if (resultDateForDispatchStart) {
                         dispatchStartDate.setValue(resultDateForDispatchStart);
                         dispatchEndDate.setMinValue(dispatchStartDate.getValue())
                     }
                 }
-
+                
                 if (isBeforeEnd !== null && daysEnd !== null && isDaysEnd !== null) {
                     var resultDateForDispatchEnd = null;
-
+                
                     if (!isDaysEnd) {
                         daysForDispatchEnd *= 7;
                     }
-
+                
                     if (isBeforeEnd) {
                         resultDateForDispatchEnd = Ext.Date.add(durationEndDate.getValue(), Ext.Date.DAY, -daysForDispatchEnd);
                     } else {
                         resultDateForDispatchEnd = Ext.Date.add(durationEndDate.getValue(), Ext.Date.DAY, daysForDispatchEnd);
                     }
-
+                
                     if (resultDateForDispatchEnd) {
                         dispatchEndDate.setValue(resultDateForDispatchEnd);
                     }
                 }
-
+        
                 if (!dispatchStartDate.getValue() || !dispatchEndDate.getValue()) {
                     periodButton.addCls('notcompleted');
                     periodButton.setGlyph(0xf130);
@@ -5386,11 +5436,11 @@
                 var durationPeriod = 'c ' + Ext.Date.format(durationStartDate.getValue(), "d.m.Y") + ' по ' + Ext.Date.format(durationEndDate.getValue(), "d.m.Y"),
                     dispatchPeriod = dispatchStartDate.getValue() && dispatchEndDate.getValue() ? 'c ' + Ext.Date.format(dispatchStartDate.getValue(), "d.m.Y") + ' по ' + Ext.Date.format(dispatchEndDate.getValue(), "d.m.Y") : '',
                     text = '<b>' + l10n.ns('tpm', 'promoStap').value('basicStep4') + '</b><br><p>Promo: ' + durationPeriod + '<br>Dispatch: ' + dispatchPeriod + '</p>';
-
+        
                 periodButton.setText(text);
             }
         }
-
+        
         me.setInfoPromoBasicStep1(promoClientForm);
     },
 
@@ -5402,7 +5452,6 @@
             var dispatchEnd = null;
             var daysForDispatchStart = null;
             var daysForDispatchEnd = null;
-
             var period = window.down('container[name=promo_step4]');
             var dispatchStartDate = period.down('datefield[name=DispatchStartDate]');
             var dispatchEndDate = period.down('datefield[name=DispatchEndDate]');
@@ -5460,7 +5509,51 @@
 
             var currentDate = new Date();
             currentDate.setHours(0, 0, 0, 0);
+
+            // обновление информации Event
+            var me = this;
+            me.refreshPromoEvent(window, false);
         }
+        
+    },
+
+
+    // --------------------- Выбор события -----------------//
+
+    refreshPromoEvent: function (promoeditorcustom, needClearEvent) {
+        var me = this;
+        var promoEditorCustom = promoeditorcustom;
+        var record = me.getRecord(promoEditorCustom);
+        var promoEvent = promoEditorCustom.down('container[name=promo_step5]');
+        var chooseEventButton = promoEvent.down('chooseEventButton');
+        var clientTreeKeyId = promoEditorCustom.clientTreeKeyId;
+
+        // при каждом вызове этой функции Event сбрасывается до стандартного (в дальнейшем желательно сделать проверку на возможность оставить предзаполненный Event)
+        var _event = new App.model.tpm.event.Event({
+            Id: null,
+            Name: 'Standard promo',
+            Description: ''
+        });
+
+        // если не требуется стандартный Event назначить выбранный Event
+        if (!needClearEvent && record.data.EventId) {
+            _event = new App.model.tpm.event.Event({
+                Id: record.data.EventId,
+                Name: record.data.PromoEventName,
+                Description: record.data.PromoEventDescription
+            })
+        };
+
+        chooseEventButton.setValue(_event);
+        chooseEventButton.updateMappingValues(_event);
+
+        if (clientTreeKeyId !== null) {
+            promoEvent.setDisabled(false);
+        }
+        else {
+            promoEvent.setDisabled(true);
+        }
+        chooseEventButton.clientTreeKeyId = clientTreeKeyId;
     },
 
     // --------------------- Выбор продуктов -----------------//
@@ -5478,32 +5571,37 @@
                 });
             });
         } else {
-            var me = this;
-            var promoProductsForm = button.up('promobasicproducts');
+            setTimeout(function () {
+                Ext.widget('inoutselectionproductwindow').show(false, function () {
+                    promoEditorCustom.setLoading(false);
+                });
+            });
+   //         var me = this;
+   //         var promoProductsForm = button.up('promobasicproducts');
 
-            promoProductsForm.chooseProducts(function (nodesProductTree) {
-                promoProductsForm.fillForm(nodesProductTree);
-                me.setInfoPromoBasicStep2(promoProductsForm);
-			});
+   //         promoProductsForm.chooseProducts(function (nodesProductTree) {
+   //             promoProductsForm.fillForm(nodesProductTree);
+   //             me.setInfoPromoBasicStep2(promoProductsForm);
+			//});
 
-			var promoClientChooseWindow = Ext.ComponentQuery.query('promoproductchoosewindow')[0];
-			var dateFilter = promoClientChooseWindow.down('#dateFilter');
-			var currentDate = new Date();
+			//var promoClientChooseWindow = Ext.ComponentQuery.query('promoproductchoosewindow')[0];
+			//var dateFilter = promoClientChooseWindow.down('#dateFilter');
+			//var currentDate = new Date();
 
-			var days = currentDate.getDate().toString().length === 1 ? '0' + currentDate.getDate() : currentDate.getDate();
-			var month = (currentDate.getMonth() + 1).toString().length === 1 ? '0' + (currentDate.getMonth() + 1) : currentDate.getMonth() + 1;
-			var year = currentDate.getFullYear();
+			//var days = currentDate.getDate().toString().length === 1 ? '0' + currentDate.getDate() : currentDate.getDate();
+			//var month = (currentDate.getMonth() + 1).toString().length === 1 ? '0' + (currentDate.getMonth() + 1) : currentDate.getMonth() + 1;
+			//var year = currentDate.getFullYear();
 
-			if (dateFilter) {
-				dateFilter.setText(days + '.' + month + '.' + year);
-			}
+			//if (dateFilter) {
+			//	dateFilter.setText(days + '.' + month + '.' + year);
+			//}
 
 			// Если нет выбранных узлов включаем кнопку Choose
-			var promoProductChooseWindow = Ext.ComponentQuery.query('promoproductchoosewindow')[0];
-			if (promoProductChooseWindow.choosenProductObjectIds.length === 0) {
-				var chooseButton = promoProductChooseWindow.down('#choose');
-				chooseButton.setDisabled(true);
-			}
+			//var promoProductChooseWindow = Ext.ComponentQuery.query('promoproductchoosewindow')[0];
+			//if (promoProductChooseWindow.choosenProductObjectIds.length === 0) {
+			//	var chooseButton = promoProductChooseWindow.down('#choose');
+			//	chooseButton.setDisabled(true);
+			//}
         }
     },
 
@@ -5604,7 +5702,7 @@
         var productButton = promoWindow.down('button#btn_promo_step2');
 
         // если клиент выбран, то clientTreeRecord != null
-        if (promoProductForm.choosenProductObjectIds.length > 0) {
+        if (promoProductForm.choosenProductObjectIds.length > 0 || promoProductForm.promoProductRecord) {
             var text = '<b>' + l10n.ns('tpm', 'promoStap').value('basicStep2') + '</b><br><p>';
             var displayHierarchy = promoProductForm.fullPath.replace(/>/g, '<span style="font-size: 13px; font-family: MaterialDesignIcons; color: #A7AFB7"> </span>');
 
@@ -5631,57 +5729,42 @@
     // простмотр продуктов под выбранные Subranges
     onFilteredListBtnClick: function (button) {
         var promoController = this.getController('tpm.promo.Promo');
-        var promoProductsForm = button.up('promobasicproducts');
-        var filter = promoProductsForm.getFilterForSubranges(); // фильтр в JSON, но не пригодный для store
         var promoEditorCustom = button.up('promoeditorcustom');
         var record = promoController.getRecord(promoEditorCustom);
 
-        var productlist = Ext.widget('productlist', { title: (record.data.InOut || promoEditorCustom.isInOutPromo) ? 'Selected Products' : l10n.ns('tpm', 'button').value('FilteredProductList') });
+        var productlist = Ext.widget('productlist', { title: l10n.ns('tpm', 'PromoBasicProducts').value('SelectedProducts') });
         var grid = productlist.down('directorygrid');
         var store = grid.getStore();
 
-        if (record.data.InOut || promoEditorCustom.isInOutPromo) {
-			var inOutProductIdsString = promoEditorCustom.InOutProductIds || (promoEditorCustom.model && promoEditorCustom.model.data.InOutProductIds) || record.data.InOutProductIds;
-			var inOutProductIdsArray = inOutProductIdsString.split(';');
-			inOutProductIdsArray = inOutProductIdsArray.filter(function (el) {
-				return el != '';
-			});
+		var productIdsString = promoEditorCustom.InOutProductIds || (promoEditorCustom.model && promoEditorCustom.model.data.InOutProductIds) || record.data.InOutProductIds;
+		var productIdsArray = productIdsString.split(';');
+		productIdsArray = productIdsArray.filter(function (el) {
+			return el != '';
+		});
 
-			// Устанавливаем кастомный proxy 
-			// (если изменить только настройки прокси, то при буферизации записей в гриде будет использован прокси без настроек)
-			store.setProxy({
-				type: 'breeze',
-				resourceName: 'Products',
-				reader: {
-					type: 'json',
-					totalProperty: 'inlineCount',
-					root: 'results'
-				},
-				jsonData: inOutProductIdsArray,
-				actionName: 'GetSelectedProducts',
-				extraParams: {
-					inOutProductTreeObjectIds: '',
-					needInOutFilteredProducts: false,
-					needInOutExcludeAssortmentMatrixProducts: false,
-					needInOutSelectedProducts: false,
-					inOutProductIdsForGetting: '',
-				}
-			});
-            store.load();
-
-            productlist.show();
-        } else {
-            if (filter) {
-                var extendedFilter = store.extendedFilter;
-
-                extendedFilter.filter = filter;
-                extendedFilter.reloadStore();
-
-                productlist.show();
-            } else {
-                App.Notify.pushInfo('For one or more choosen product nodes, the filter is empty');
+        // Устанавливаем кастомный proxy 
+        // (если изменить только настройки прокси, то при буферизации записей в гриде будет использован прокси без настроек)
+        store.setProxy({
+            type: 'breeze',
+            resourceName: 'Products',
+            reader: {
+                type: 'json',
+                totalProperty: 'inlineCount',
+                root: 'results'
+            },
+            jsonData: productIdsArray,
+            actionName: 'GetSelectedProducts',
+            extraParams: {
+                inOutProductTreeObjectIds: '',
+                needInOutFilteredProducts: false,
+                needInOutExcludeAssortmentMatrixProducts: false,
+                needInOutSelectedProducts: false,
+                inOutProductIdsForGetting: '',
             }
-        }
+        });
+
+        store.load();
+        productlist.show();
     },
 
     // просмотр зафиксированных продуктов
@@ -5704,7 +5787,7 @@
         var promoEditorCustom = button.up('promoeditorcustom');
         var record = this.getRecord(promoEditorCustom);
         if (record.data.InOut || promoEditorCustom.isInOutPromo) {
-            button.setText('Selected Products');
+            button.setText(l10n.ns('tpm', 'PromoBasicProducts').value('SelectedProducts'));
         }
     },
 

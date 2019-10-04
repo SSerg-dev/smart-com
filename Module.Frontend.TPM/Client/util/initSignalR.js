@@ -107,13 +107,73 @@ function initSignalRPromoLog() {
     };
 };
 
+// проинициализировать callback-функции для хаба сессии
+function initSignalRPromoSession() {
+    var session = $.connection.sessionHub;
+    session.client.showSessionNotification = function () {
+        Ext.Msg.show({
+            title: l10n.ns('core').value('SessionExpiredWindowTitle'),
+            msg: l10n.ns('core').value('SessionExpiredMessage'),
+            buttons: Ext.MessageBox.OK,
+            icon: Ext.Msg.INFO,
+            fn: function () {
+                $.connection.hub.stop(true);
+                document.location.reload(true);
+            },
+            cls: 'over_all',
+            closable: false
+        });
+    };
+};
+
 // скачиваем файл для signalR сразу при загрузке страницы
 (function () {
     // проблемы из-за минификатора, можно сгененировать файл хабов сразу, но пока этого делать не будем
     $.getScript('/signalr/hubs', function () {
+        initSignalRPromoSession();
         initSignalRTasksLog();
         initSignalRPromoLog();
 
-        $.connection.hub.start().done(function () {});
+        var disconnectedEvent = function () {
+            var sessionExpiredWindowTitle = l10n.ns('core').value('SessionExpiredWindowTitle');
+            if (Ext.ComponentQuery.query('[title=' + sessionExpiredWindowTitle + ']'.replace('\"', '')).length == 0) {
+                Ext.Msg.show({
+                    title: l10n.ns('core').value('SignalRConnectionWasLost'),
+                    msg: l10n.ns('core').value('SignalRConnectionWasLostMessage'),
+                    buttons: Ext.MessageBox.OK,
+                    icon: Ext.Msg.INFO,
+                    fn: function () {
+                        document.location.reload(true);
+                    },
+                    cls: 'over_all',
+                    closable: false
+                });
+            }
+        }
+
+        $.connection.hub.start({ pingInterval: null })
+        .done(function () {
+            console.log('[SignalR] Connection successed!');
+        })
+        .fail(function () {
+            disconnectedEvent(); 
+        });
+
+        $.connection.hub.connectionSlow(function() {
+            console.log('[SignalR] Your connection is slow.');
+        });
+
+        $.connection.hub.reconnecting(function() {
+            console.log('[SignalR] Reconnecting...');
+        });
+
+        $.connection.hub.reconnected(function() {
+            console.log('[SignalR] Reconnected.');
+        });
+
+        $.connection.hub.disconnected(function() {
+            console.log('[SignalR] Disconnected.');
+            disconnectedEvent();
+        });
     });
 })();

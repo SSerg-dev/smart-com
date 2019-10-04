@@ -52,13 +52,13 @@ namespace Module.Frontend.TPM.Controllers {
 			IQueryable<PlanIncrementalReport> query = Context.Set<PlanIncrementalReport>();
 
 			query = ModuleApplyFilterHelper.ApplyFilter(query, Context, hierarchy, filters);
+
 			query = SetWeekByMarsDates(query);
 
 			if (!forExport)
 			{
 				query = JoinWeeklyDivision(query);
 			}
-
 			return query;
 		}
 
@@ -120,9 +120,9 @@ namespace Module.Frontend.TPM.Controllers {
 		}
 
 		//Простановка дат в формате Mars в поле Week
-		public IQueryable<PlanIncrementalReport> SetWeekByMarsDates(IQueryable<PlanIncrementalReport> report)
+		public IQueryable<PlanIncrementalReport> SetWeekByMarsDates(IQueryable<PlanIncrementalReport> query)
 		{
-			List<PlanIncrementalReport> result = new List<PlanIncrementalReport>(report);
+			List<PlanIncrementalReport> result = new List<PlanIncrementalReport>(query);
 			string stringFormatYP2W = "{0}P{1:D2}W{2}";
 			foreach (PlanIncrementalReport item in result)
 			{
@@ -147,20 +147,18 @@ namespace Module.Frontend.TPM.Controllers {
 				{
 					if (toAdd == null)
 					{
-						toAdd = item;
+						toAdd = (PlanIncrementalReport)item.Clone();
 						toAdd.PlanProductBaselineCaseQty = 0;
 						toAdd.PlanProductBaselineLSV = 0;
 						toAdd.PlanProductCaseQty = 0;
 						toAdd.PlanProductIncrementalLSV = 0;
-						toAdd.PlanUplift = 0;
 					}
 					toAdd.PlanProductBaselineCaseQty += item.PlanProductBaselineCaseQty;
 					toAdd.PlanProductBaselineLSV += item.PlanProductBaselineLSV;
 					toAdd.PlanProductCaseQty += item.PlanProductCaseQty;
 					toAdd.PlanProductIncrementalLSV += item.PlanProductIncrementalLSV;
-					toAdd.PlanUplift += item.PlanUplift;
 
-					if (DateTimeOffset.Compare((DateTimeOffset)toAdd.WeekStartDate, (DateTimeOffset)item.WeekStartDate) > 0 )
+					if (DateTimeOffset.Compare((DateTimeOffset)toAdd.WeekStartDate, (DateTimeOffset)item.WeekStartDate) > 0)
 					{
 						toAdd.WeekStartDate = item.WeekStartDate;
 						toAdd.Week = item.Week;

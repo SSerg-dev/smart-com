@@ -52,7 +52,9 @@
     'accessDeniedMessage': 'Access denied ({0}). If this error repeat, contact administrator.',
     'loginConfirmMessage': 'You will be redirected to the main page as user {0}.',
     'SessionExpiredWindowTitle': 'Session is expired',
-    'SessionExpiredMessage': 'Application will be reloaded',
+    'SessionExpiredMessage': 'Session timed out. Application will be reloaded',
+    'SignalRConnectionWasLost': 'Connection was lost.',
+    'SignalRConnectionWasLostMessage': 'Check your internet connection. Application will be reloaded.',
 
     'customValidators': {
         'StartDateFinishDateOrder': 'Stary date must be less then end date',
@@ -389,7 +391,14 @@
         'ParametersTitle': 'Parameters',
         'ResultTitle': 'Result',
         'TaskTitle': 'Task',
-        'ReadLogTitle': 'Log',
+		'ReadLogTitle': 'Log',
+		'CreateMessage': 'Handler task created successfully.',
+		'LogWindowError': 'Error while displaying the log window.',
+		'ManualDataExtractionTask': 'The task of manual data extraction successfully created.',
+		'NoSelectionMessage': 'First you need to select the record.',
+		'NoSelectionTaskMessage': 'First you need to select the task.',
+		'ParseTaskMessage': 'Message parsing task successfully created.',
+		'SendMsgTaskMessage': 'Message sending task created successfully.',
         'ParameterNames': {
             'File': 'File',
             'FileModel': 'Export file',
@@ -745,5 +754,5 @@
 
     'System': {
         'Tasks': 'Tasks'
-    }
+	},
 });

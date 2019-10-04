@@ -87,21 +87,33 @@ namespace Module.Frontend.TPM.Controllers
         /// <returns></returns>
         [ClaimsAuthorize]
         [HttpGet, AcceptVerbs("GET")]
-        public IHttpActionResult GetClientTrees(string node, string filterParameter, string clientObjectId, DateTime? dateFilter = null, bool view = false, bool needBaseClients = false)
+        public IHttpActionResult GetClientTrees(string node, string filterParameter, string clientObjectId, DateTime? dateFilter = null, bool view = false, 
+            bool needBaseClients = false, Guid? budgetSubItemId = null)
         {
             try
             {
                 // Получаем активные записи по диапазону дат
                 activeTree = GetConstraintedQuery(dateFilter);
+                List<ClientTree> budgetSubItemClientTrees = new List<ClientTree>();
+
+                if (budgetSubItemId != null)
+                {
+                    budgetSubItemClientTrees = Context.Set<BudgetSubItemClientTree>().Where(x => x.BudgetSubItemId == budgetSubItemId).Select(x => x.ClientTree).ToList();
+                }
+
                 if (activeTree.Count() != 0)
                 {
-                    if (filterParameter == null && clientObjectId == null && !needBaseClients)
+                    if (filterParameter == null && clientObjectId == null && !needBaseClients && budgetSubItemClientTrees.Count == 0)
                     {
                         return GetTreeForLevel(node);
                     }
                     else if (filterParameter != null || needBaseClients)
                     {
                         return GetFilteredNodes(clientObjectId, filterParameter, needBaseClients);
+                    }
+                    else if (budgetSubItemClientTrees.Count > 0)
+                    {
+                        return GetCheckedNodes(budgetSubItemClientTrees, filterParameter, needBaseClients);
                     }
                     else
                     {
@@ -290,6 +302,101 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         /// <summary>
+        /// Получить дерево с выбранными узлами
+        /// </summary>
+        /// <param name="linkedNodes">Целевые узлы</param>
+        /// <param name="filterParameter">Параметр фильтрации</param>
+        /// <param name="needBaseClients">Только базовые клиенты</param>
+        /// <returns>Дерево с выбранными узлами</returns>
+        private IHttpActionResult GetCheckedNodes(List<ClientTree> linkedNodes, string filterParameter, bool needBaseClients)
+        {
+            if (filterParameter != null && needBaseClients)
+            {
+                linkedNodes = linkedNodes.Where(x => x.Name.StartsWith(filterParameter) && x.IsBaseClient).ToList();
+            }
+            else if (needBaseClients)
+            {
+                linkedNodes = linkedNodes.Where(x => x.IsBaseClient).ToList();
+            }
+            else if (filterParameter != null)
+            {
+                linkedNodes = linkedNodes.Where(x => x.Name.StartsWith(filterParameter)).ToList();
+            }
+
+            ClientTree root = activeTree.First(n => n.Type == "root");
+            ClientTreeNode tree = new ClientTreeNode(root, false, false, true); // формируемое дерево, начинается с root           
+            List<ClientTreeNode> addedNodes = new List<ClientTreeNode>();
+
+            addedNodes.Add(tree);
+
+            for (int i = 0; i < linkedNodes.Count(); i++)
+            {
+                // оборачиваем найденный узел в класс
+                ClientTree treeNode = linkedNodes[i];
+                bool leaf = !activeTree.Any(x => x.parentId == treeNode.ObjectId);
+                ClientTreeNode currentNode = new ClientTreeNode(treeNode, false, leaf, false, true);
+
+                while (true)
+                {
+                    // узел, к которому присоединяем получаемую ветвь
+                    ClientTreeNode containsInTree = null;
+                    // ищем узел в дереве
+                    containsInTree = addedNodes.FirstOrDefault(n => n.ObjectId == currentNode.ObjectId);
+                    if (containsInTree != null)
+                    {
+                        // если есть дети, обновляем
+                        if (currentNode.children != null)
+                        {
+                            containsInTree.AddChild(currentNode.children);
+
+                            IQueryable<ClientTree> childNodes = activeTree.Where(x => x.parentId == currentNode.ObjectId);
+                            bool isCheckedNodeExist = linkedNodes.Select(x => x.ObjectId).Intersect(childNodes.Select(x => x.ObjectId)).Count() != 0;
+                            if (isCheckedNodeExist)
+                            {
+                                containsInTree.AddChild(GetChildrenTreeNode(currentNode, activeTree, addedNodes, false, false, linkedNodes));
+                            }
+
+                            containsInTree.expanded = true;
+                            containsInTree.loaded = true;
+                        }
+
+                        break;
+                    }
+                    
+                    ClientTree parent = activeTree.Where(x => x.ObjectId == currentNode.parentId).FirstOrDefault();
+                    bool isNodeChecked = linkedNodes.Any(x => x.ObjectId == parent.ObjectId);
+                    ClientTreeNode treeNodeParent = new ClientTreeNode(parent, true, false, false, isNodeChecked);
+
+                    addedNodes.Add(currentNode);
+                    treeNodeParent.AddChild(currentNode);
+
+                    // выбираем узлы, которые располагаются на одном уровне с текущим и добавляем их в дерево (чтобы вид открывшегося дерева был такой же, каким был когда производится выбор узлов)
+                    List<ClientTree> currentNodeFellows = activeTree.Where(x => x.parentId == currentNode.parentId 
+                            && x.ObjectId != currentNode.ObjectId  
+                            && x.Type != "root").ToList();
+                    foreach (var node in currentNodeFellows)
+                    {
+                        if (!addedNodes.Any(x => x.ObjectId == node.ObjectId))
+                        {
+                            leaf = !activeTree.Any(x => x.parentId == node.ObjectId);
+                            isNodeChecked = linkedNodes.Any(x => x.ObjectId == node.ObjectId); ;
+                            ClientTreeNode n = new ClientTreeNode(node, false, leaf, false, isNodeChecked);
+                            addedNodes.Add(n);
+                            treeNodeParent.AddChild(n);
+                        }
+                    }
+                    currentNode = treeNodeParent;
+                }
+            }
+
+            return Json(new
+            {
+                success = true,
+                children = tree
+            });
+        }
+
+        /// <summary>
         /// Получить дерево для промо
         /// </summary>
         /// <param name="clientObjectId">Целевой элемент</param>
@@ -377,7 +484,7 @@ namespace Module.Frontend.TPM.Controllers
 		/// <param name="full">Получить всех потомков или толькло для текущего уровня</param>
 		/// <param name="expandAll">Раскрывать ли потомков</param>
 		/// <returns></returns>
-		private List<ClientTreeNode> GetChildrenTreeNode(ClientTreeNode clientTree, IQueryable<ClientTree> activeTree, List<ClientTreeNode> addedNodes, bool full, bool expandAll)
+		private List<ClientTreeNode> GetChildrenTreeNode(ClientTreeNode clientTree, IQueryable<ClientTree> activeTree, List<ClientTreeNode> addedNodes, bool full, bool expandAll, List<ClientTree> linkedNodes = null)
         {
             List<ClientTreeNode> children = new List<ClientTreeNode>();
             IQueryable<ClientTree> clientTreeList = activeTree.Where(x => x.parentId == clientTree.ObjectId && x.parentId != x.ObjectId);
@@ -386,11 +493,18 @@ namespace Module.Frontend.TPM.Controllers
             {
                 bool leaf = !activeTree.Any(x => x.parentId == treeNode.ObjectId);
                 //избегаем дубликатов
-                if (clientTree.children == null || !clientTree.children.Any(n => n.ObjectId == treeNode.ObjectId))
+                if (clientTree.children == null || !addedNodes.Any(n => n.ObjectId == treeNode.ObjectId)/*!clientTree.children.Any(n => n.ObjectId == treeNode.ObjectId)*/)
                 {
-                    ClientTreeNode child = new ClientTreeNode(treeNode, expandAll, leaf, false);
+                    // если есть несколько выделенных узлов, то каждый из них надо отметить галочкой
+                    bool isNodeChecked = false;
+                    if (linkedNodes != null)
+                    {
+                        isNodeChecked = linkedNodes.Any(x => x.ObjectId == treeNode.ObjectId);
+                    }
+
+                    ClientTreeNode child = new ClientTreeNode(treeNode, expandAll, leaf, false, isNodeChecked);
                     if (full)
-                        child.AddChild(GetChildrenTreeNode(child, activeTree, addedNodes, full, expandAll));
+                        child.AddChild(GetChildrenTreeNode(child, activeTree, addedNodes, full, expandAll, linkedNodes));
 
                     children.Add(child);
                     addedNodes.Add(child);
@@ -840,6 +954,7 @@ namespace Module.Frontend.TPM.Controllers
         public bool leaf { get; set; }
         public bool loaded { get; set; }
         public bool expanded { get; set; }
+        public bool _checked { get; set; }
         public List<ClientTreeNode> children { get; set; }
         public int depth { get; set; }
         public bool? IsBeforeStart { get; set; }
@@ -853,7 +968,7 @@ namespace Module.Frontend.TPM.Controllers
 
         public string LogoFileName { get; set; }
 
-        public ClientTreeNode(ClientTree treeNode, bool expanded, bool leaf, bool loaded)
+        public ClientTreeNode(ClientTree treeNode, bool expanded, bool leaf, bool loaded, bool _checked = false)
         {
             Id = treeNode.Id;
             ObjectId = treeNode.ObjectId;
@@ -883,6 +998,7 @@ namespace Module.Frontend.TPM.Controllers
             this.leaf = leaf;
             this.loaded = loaded;
             this.expanded = expanded;
+            this._checked = _checked;
         }
 
         /// <summary>

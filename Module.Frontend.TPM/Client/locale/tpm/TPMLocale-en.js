@@ -234,7 +234,8 @@
         'customHistory': 'Changes',
         'publish': 'Publish',
         'sendForApproval': 'Send for approval',
-        'reject': 'Reject',
+		'reject': 'Reject',
+		'backToDraftPublished': 'Back to Draft (published)',
         'close': 'Close promo',
         'backtofinished': 'Back to finished',
         'approve': 'Approve',
@@ -572,8 +573,6 @@
         'InstoreAssumption': 'Instore assumption',
 
         'EventName': 'Event',
-        'EventYear': 'Year',
-        'EventPeriod': 'Period',
         'EventDescription': 'Description',
 
         'PlanPromoCost': 'Plan Total Cost, MRUR',
@@ -654,8 +653,6 @@
         'Reason': 'Reason',
 
         'PromoEventName': 'Promo Event Name',
-        'PromoEventYear': 'Promo Event Year',
-        'PromoEventPeriod': 'Promo Event Period',
         'PromoEventDescription': 'Promo Event Description',
         'PromoDuration': 'Promo duration',
         'DispatchDuration': 'Dispatch Duration',
@@ -916,6 +913,12 @@
         'PostPromoEffectW2': 'Post Promo Effect W2',
         'RetailTypeName': 'Retail Type Name',
         'FullPathName': 'Full PathName'
+    },
+
+    'EventClientTree': {
+        'EventClientTree': 'Clients',
+        'ClientTreeFullPathName': 'Client hierarchy',
+        'ClientTreeObjectId': 'Client hierarchy code'
     },
 
     'BaseClientTreeView': {
@@ -1245,8 +1248,14 @@
         'BudgetName': 'Budget',
         'BudgetItemBudgetName': 'Budget'
     },
+    'BudgetSubItemClientTree': {
+        'BudgetSubItemClientTree': 'Clients',
+        'ClientTreeFullPathName': 'Client hierarchy',
+        'ClientTreeObjectId': 'Client hierarchy code',
+    },
     'HistoricalBudgetSubItem': ['.tpm.BudgetSubItem', '.core.BaseHistoryEntity'],
     'DeletedBudgetSubItem': ['.tpm.BudgetSubItem', '.core.BaseDeletedEntity'],
+    'BudgetSubItemWithFilter': ['.tpm.BudgetSubItemClientTree', 'BudgetSubItem'],
 
     'PostPromoEffect': {
         'StartDate': 'Start date',
@@ -1437,8 +1446,8 @@
         'WeekStartDate': 'Week Start Date',
 		'PlanPostPromoEffectQty': 'Qty',
 		'PlanUplift': 'Uplift Plan',
-		'DispatchesStart': 'Dispatch Start',
-		'DispatchesEnd': 'Dispatch End',
+		'StartDate': 'Start Date',
+		'EndDate': 'End Date',
 		'Status': 'Status',
 		'Week': 'Week',
 		'PlanProductBaselineCaseQty': 'Plan Product Baseline Case Qty',
@@ -1525,8 +1534,6 @@
         'InstoreAssumption': 'Instore assumption',
 
         'EventName': 'Event',
-        'EventYear': 'Year',
-        'EventPeriod': 'Period',
         'EventDescription': 'Description',
 
         'PlanPromoCost': 'Plan Promo Cost',
@@ -1595,8 +1602,6 @@
         'Reason': 'Reason',
 
         'PromoEventName': 'Promo Event Name',
-        'PromoEventYear': 'Promo Event Year',
-        'PromoEventPeriod': 'Promo Event Period',
         'PromoEventDescription': 'Promo Event Description',
         'PromoDuration': 'Promo duration',
         'DispatchDuration': 'Dispatch Duration',
@@ -1838,7 +1843,9 @@
         'SelectedSubranges': 'Selected Subranges',
         'Products': 'Products',
         'ChooseBtn': 'Choose',
-        'SelectedProducts': 'Selected Products'
+        'SelectedProducts': 'Selected Products',
+        'PartialSelection': 'Partial selection',
+        'SeveralSKUsExcluded': 'Several SKU\'s excluded!'
     },
     'CalculatingInfoLog': {
         'Type': 'Type',

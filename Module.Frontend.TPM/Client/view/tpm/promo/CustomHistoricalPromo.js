@@ -79,8 +79,6 @@
                     { xtype: 'singlelinedisplayfield', name: 'DispatchesEnd', fieldLabel: l10n.ns('tpm', 'Promo').value('DispatchesEnd'), renderer: Ext.util.Format.dateRenderer('d.m.Y'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'EventName', fieldLabel: l10n.ns('tpm', 'Promo').value('EventName'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'PromoEventName', fieldLabel: l10n.ns('tpm', 'Promo').value('PromoEventName'), hidden: true },
-                    { xtype: 'singlelinedisplayfield', name: 'PromoEventYear', fieldLabel: l10n.ns('tpm', 'Promo').value('PromoEventYear'), renderer: Ext.util.Format.dateRenderer('d.m.Y'), hidden: true },
-                    { xtype: 'singlelinedisplayfield', name: 'PromoEventPeriod', fieldLabel: l10n.ns('tpm', 'Promo').value('PromoEventPeriod'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'PromoEventDescription', fieldLabel: l10n.ns('tpm', 'Promo').value('PromoEventDescription'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'CalendarPriority', fieldLabel: l10n.ns('tpm', 'Promo').value('CalendarPriority'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'PlanPromoTIShopper', fieldLabel: l10n.ns('tpm', 'Promo').value('PlanPromoTIShopper'), hidden: true },

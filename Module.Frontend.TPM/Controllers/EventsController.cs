@@ -64,9 +64,26 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
-        public IQueryable<Event> GetEvents()
+        public IQueryable<Event> GetEvents([FromODataUri] int? clientTreeKeyId)
         {
-            return GetConstraintedQuery();
+            // выборка всех Events
+            var result = GetConstraintedQuery();
+
+            // если есть фильтр по клиенту - сделать выборку связанных с ним Events
+            // иначе вернутся все Events
+            if (clientTreeKeyId != null)
+            {
+                // ID с привязкой к клиенту
+                List<Guid> eventIds = Context.Set<EventClientTree>().Where(x => x.ClientTreeId == clientTreeKeyId).Select(e => e.EventId).ToList();
+
+                // Events без привязок
+                IQueryable<Event> freeEvents = Context.Set<Event>().Where(x => !x.Disabled && !Context.Set<EventClientTree>().Any(y => y.EventId == x.Id));
+
+                // фильтр по Event-ам с приявязкой к текущему Client и добавление Event-ов без привязок
+                result = result.Where(x => eventIds.Any(e => e == x.Id)).Concat(freeEvents);
+            }
+
+            return result;
         }
 
         [ClaimsAuthorize]
@@ -185,9 +202,7 @@ namespace Module.Frontend.TPM.Controllers
         {
             IEnumerable<Column> columns = new List<Column>() {
                 new Column() { Order = 0, Field = "Name", Header = "Event", Quoting = false },
-                new Column() { Order = 1, Field = "Year", Header = "Year" },
-                new Column() { Order = 2, Field = "Period", Header = "Period" },
-                new Column() { Order = 2, Field = "Description", Header = "Description" }
+                new Column() { Order = 1, Field = "Description", Header = "Description" }
             };
             return columns;
         }

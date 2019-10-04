@@ -6,8 +6,6 @@
         { name: 'Id', hidden: true },
         { name: 'DeletedDate', type: 'date', isDefault: true },
         { name: 'Name', type: 'string', hidden: false, isDefault: true },
-        { name: 'Year', type: 'int', hidden: false, isDefault: true },
-        { name: 'Period', type: 'string', hidden: false, isDefault: true },
         { name: 'Description', type: 'string', hidden: false, isDefault: true }
     ],
     proxy: {

@@ -341,6 +341,7 @@
                 items: [{
                     xtype: 'panel',
                     itemId: 'promoBudgetsPanel',
+                    stopRefreshScroll: true,
                     name: 'promoBudgetsContainer',
                     autoScroll: true,
                     cls: 'scrollpanel',
@@ -462,6 +463,7 @@
                 items: [{
                     xtype: 'panel',
                     itemId: 'promoActivityPanel',
+                    stopRefreshScroll: true,
                     name: 'promoActivityContainer',
                     autoScroll: true,
                     cls: 'scrollpanel',
@@ -580,6 +582,22 @@
         statusName: null,
         statusSystemName: null,
         style: { "background-color": "#66BB6A" }
+		},
+	// Вернуть промо в DraftPublished
+    {
+        xtype: 'button',
+        itemId: 'btn_backToDraftPublished',
+		glyph: 0xf54d,
+		text: l10n.ns('tpm', 'customtoptoolbar').value('backToDraftPublished'),
+        cls: 'promo-action-button',
+        hidden: true,
+        isPromoAction: true,
+		roles: ['KeyAccountManager'],
+        statuses: ['OnApproval'],
+        statusId: null,
+        statusName: null,
+		statusSystemName: null,
+		style: { "background-color": "#66BB6A" }
     },
     // Отклонить промо
     {

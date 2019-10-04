@@ -13,6 +13,7 @@
         { name: 'StartDate', type: 'date', hidden: true, timeZone: +3, convert: dateConvertTimeZone },
         { name: 'EndDate', type: 'date', hidden: true, useNull: true, timeZone: +3, convert: dateConvertTimeZone },
         { name: 'leaf', type: 'bool', defaultValue: false, persist: false },
+        { name: '_checked', type: 'bool', defaultValue: false, persist: false },
         { name: 'IsBaseClient', type: 'bool', defaultValue: false },
         { name: 'ExecutionCode', type: 'string', hidden: false, isDefault: true },
         { name: 'DemandCode', type: 'string', hidden: false, isDefault: true },
@@ -40,6 +41,7 @@
         extraParams: {
             filterParameter: null,
             clientObjectId: null,
+            budgetSubItemId: null,
             needBaseClients: false,
             dateFilter: null,
             view: false,

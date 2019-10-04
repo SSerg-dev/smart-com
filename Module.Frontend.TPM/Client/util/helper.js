@@ -1044,3 +1044,34 @@ Ext.chart.series.Bar.override({
         }
     }
 });
+
+// проверка соединения signalR
+function requestHub(func, args) {
+    try {
+        var isConnected = ($.connection.hub && $.connection.hub.state === $.signalR.connectionState.connected);
+        if (isConnected) {
+            func.apply(this, args);
+        } else {
+            $.connection.hub.start()
+                .done(function () {
+                    console.log('Connection hub is started');
+                    func.apply(this, args);
+                })
+                .fail(function () { console.log('Connection hub is failed'); });
+        }
+    } catch (e) {
+        console.log('Error while ' + func);
+    }
+};
+
+Ext.override(Ext.selection.RowModel,
+    {
+        isRowSelected: function (record, index) {
+            try {
+                return this.isSelected(record);
+            }
+            catch (e) {
+                return false;
+            }
+        }
+    });

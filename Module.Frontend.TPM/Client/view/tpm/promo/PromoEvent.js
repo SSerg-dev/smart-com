@@ -62,12 +62,6 @@
                                 from: 'Name',
                                 to: 'PromoEventName'
                             }, {
-                                from: 'Year',
-                                to: 'PromoEventYear'
-                            }, {
-                                from: 'Period',
-                                to: 'PromoEventPeriod'
-                            }, {
                                 from: 'Description',
                                 to: 'PromoEventDescription'
                             }]
@@ -92,16 +86,6 @@
                                     }
                                 }
                             }
-                        }, {
-                            xtype: 'singlelinedisplayfield',
-                            name: 'PromoEventYear',
-                            width: '100%',
-                            fieldLabel: l10n.ns('tpm', 'Promo').value('EventYear')
-                        }, {
-                            xtype: 'singlelinedisplayfield',
-                            name: 'PromoEventPeriod',
-                            width: '100%',
-                            fieldLabel: l10n.ns('tpm', 'Promo').value('EventPeriod')
                         }, {
                             xtype: 'hiddenfield',
                             name: 'PromoEventDescription',

@@ -21,10 +21,10 @@
             { xtype: 'datefield', name: 'WeekStartDate', fieldLabel: l10n.ns('tpm', 'PlanPostPromoEffectReport').value('WeekStartDate') },
             
 			{ xtype: 'numberfield', name: 'PlanUplift', fieldLabel: l10n.ns('tpm', 'PlanPostPromoEffectReport').value('PlanUplift') },
-			{ xtype: 'datefield', name: 'DispatchesStart', fieldLabel: l10n.ns('tpm', 'PlanPostPromoEffectReport').value('DispatchesStart') },
-			{ xtype: 'datefield', name: 'DispatchesEnd', fieldLabel: l10n.ns('tpm', 'PlanPostPromoEffectReport').value('DispatchesEnd') },
-			{ xtype: 'textfield', name: 'Week', fieldLabel: l10n.ns('tpm', 'PlanPostPromoEffectReport').value('Week') },
+			{ xtype: 'datefield', name: 'StartDate', fieldLabel: l10n.ns('tpm', 'PlanPostPromoEffectReport').value('StartDate') },
+			{ xtype: 'datefield', name: 'EndDate', fieldLabel: l10n.ns('tpm', 'PlanPostPromoEffectReport').value('EndDate') },
 			{ xtype: 'textfield', name: 'Status', fieldLabel: l10n.ns('tpm', 'PlanPostPromoEffectReport').value('Status') },
+			{ xtype: 'textfield', name: 'Week', fieldLabel: l10n.ns('tpm', 'PlanPostPromoEffectReport').value('Week') },
             { xtype: 'numberfield', name: 'PlanPostPromoEffectQtyW1', fieldLabel: l10n.ns('tpm', 'PlanPostPromoEffectReport').value('PlanPostPromoEffectQtyW1'), dataIndex: 'PlanPostPromoEffectQtyW1' },
             { xtype: 'numberfield', name: 'PlanProductBaselineCaseQtyW1', fieldLabel: l10n.ns('tpm', 'PlanPostPromoEffectReport').value('PlanProductBaselineCaseQtyW1'), dataIndex: 'PlanProductBaselineCaseQtyW1' },
             { xtype: 'numberfield', name: 'PlanProductPostPromoEffectLSVW1', fieldLabel: l10n.ns('tpm', 'PlanPostPromoEffectReport').value('PlanProductPostPromoEffectLSVW1'), dataIndex: 'PlanProductPostPromoEffectLSVW1' },

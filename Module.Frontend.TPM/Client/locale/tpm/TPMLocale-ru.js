@@ -160,9 +160,9 @@
 
     'DeleteText': {
         'deleteWindowTitle': 'Удаление записи',
-		'deleteConfirmMessage': 'Вы действительно хотите удалить запись?',
-		'cascadeDeleteConfirmMessage': 'Вы действительно хотите удалить узел? Все дочерние элементы также будут удалены',
-		'deleteNodeWarning': 'Предупреждение! Если вы удалите узел, все связанные промо будут повреждены!'
+        'deleteConfirmMessage': 'Вы действительно хотите удалить запись?',
+        'cascadeDeleteConfirmMessage': 'Вы действительно хотите удалить узел? Все дочерние элементы также будут удалены',
+        'deleteNodeWarning': 'Предупреждение! Если вы удалите узел, все связанные промо будут повреждены!'
     },
 
     'promoMainTab': {
@@ -219,7 +219,8 @@
         'customHistory': 'Changes',
         'publish': 'Publish',
         'sendForApproval': 'Send for approval',
-        'reject': 'Reject',
+		'reject': 'Reject',
+		'backToDraftPublished': 'Back to Draft (published)',
         'close': 'Close promo',
         'approve': 'Approve',
         'undoPublish': 'Undo publish',
@@ -253,8 +254,6 @@
 
     'Event': {
         'Name': 'Event',
-        'Year': 'Year',
-        'Period': 'Period',
         'Description': 'Description'
     },
     'HistoricalEvent': ['.tpm.Event', '.core.BaseHistoryEntity'],
@@ -556,8 +555,6 @@
         'InstoreAssumption': 'Instore assumption',
 
         'EventName': 'Event',
-        'EventYear': 'Year',
-        'EventPeriod': 'Period',
         'EventDescription': 'Description',
 
         'PlanPromoCost': 'Total Cost, MRUR',
@@ -639,8 +636,6 @@
         'Reason': 'Reason',
 
         'PromoEventName': 'Promo Event Name',
-        'PromoEventYear': 'Promo Event Year',
-        'PromoEventPeriod': 'Promo Event Period',
         'PromoEventDescription': 'Promo Event Description',
         'PromoDuration': 'Promo duration',
         'DispatchDuration': 'Dispatch Duration',
@@ -690,7 +685,7 @@
         'ActualPromoBaselineBaseTI': 'Actual Promo Baseline Base TI',
         'ActualPromoBaseTI': 'Actual Promo Base TI',
         'ActualPromoNetNSV': 'Actual Promo Net NSV',
-        
+
         'failMinDate': 'The date in this field must be equal to or after {0}',
         'failMaxDate': 'The date in this field must be equal to or before {0}',
         'PlanPromoIncrementalNetLSV': 'Plan Promo Incremental Net LSV',
@@ -880,6 +875,12 @@
         'PostPromoEffectW2': 'Post Promo Effect W2',
         'RetailTypeName': 'Retail Type Name',
         'FullPathName': 'Full PathName'
+    },
+
+    'EventClientTree': {
+        'EventClientTree' : 'Clients',
+        'ClientTreeFullPathName': 'Client hierarchy',
+        'ClientTreeObjectId': 'Client hierarchy code'
     },
 
     'BaseClientTreeView': {
@@ -1133,8 +1134,14 @@
         'BudgetName': 'Budget',
         'BudgetItemBudgetName': 'Budget'
     },
+    'BudgetSubItemClientTree': {
+        'BudgetSubItemClientTree': 'Clients',
+        'ClientTreeFullPathName': 'Client hierarchy',
+        'ClientTreeObjectId': 'Client hierarchy code',
+    },
     'HistoricalBudgetSubItem': ['.tpm.BudgetSubItem', '.core.BaseHistoryEntity'],
     'DeletedBudgetSubItem': ['.tpm.BudgetSubItem', '.core.BaseDeletedEntity'],
+    'BudgetSubItemWithFilter': ['.tpm.BudgetSubItemClientTree', 'BudgetSubItem'],
 
     'PostPromoEffect': {
         'StartDate': 'Start date',
@@ -1322,8 +1329,8 @@
         'WeekStartDate': 'Week Start Date',
 		'PlanPostPromoEffectQty': 'Qty',
 		'PlanUplift': 'Uplift Plan',
-		'DispatchesStart': 'Dispatch Start',
-		'DispatchesEnd': 'Dispatch End',
+		'StartDate': 'Start Date',
+		'EndDate': 'End Date',
 		'Status': 'Status',
 		'Week': 'Week',
 		'PlanProductBaselineCaseQty': 'Plan Product Baseline Case Qty',
@@ -1410,8 +1417,6 @@
         'InstoreAssumption': 'Instore assumption',
 
         'EventName': 'Event',
-        'EventYear': 'Year',
-        'EventPeriod': 'Period',
         'EventDescription': 'Description',
 
         'PlanPromoCost': 'Plan Promo Cost',
@@ -1479,8 +1484,6 @@
         'Reason': 'Reason',
 
         'PromoEventName': 'Promo Event Name',
-        'PromoEventYear': 'Promo Event Year',
-        'PromoEventPeriod': 'Promo Event Period',
         'PromoEventDescription': 'Promo Event Description',
         'PromoDuration': 'Promo duration',
         'DispatchDuration': 'Dispatch Duration',
@@ -1679,6 +1682,8 @@
         'SelectedSubranges': 'Выбранные Subranges',
         'Products': 'Продукты',
         'ChooseBtn': 'Выбрать',
+        'PartialSelection': 'Частично выбрано',
+        'SeveralSKUsExcluded': 'Several SKU\'s excluded!'
     },
     'CalculatingInfoLog': {
         'Type': 'Type',

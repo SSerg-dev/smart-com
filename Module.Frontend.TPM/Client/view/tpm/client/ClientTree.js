@@ -82,6 +82,23 @@
                     },
                 }*/
             }, {
+                xtype: 'checkbox',
+                labelSeparator: '',
+                itemId: 'selectAllClientsCheckbox',
+                boxLabel: 'Select all',
+                labelAlign: 'right',
+                style: 'margin-left: 10px',
+                listeners: {
+                    afterrender: function (checkbox) {
+                        var selectionWidget = checkbox.up('clienttree').up('#associatedbudgetsubitemclienttree_clienttree_selectorwindow');
+                        if (selectionWidget) {
+                            checkbox.show();
+                        } else {
+                            checkbox.hide();
+                        }
+                    }
+                }
+            }, {
                 xtype: 'tbspacer',
                 flex: 10
             },/*{

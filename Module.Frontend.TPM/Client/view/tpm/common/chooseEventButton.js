@@ -12,6 +12,7 @@
     needUpdateMappings: false,
     defaultStoreState: null,
     selectValidate: true,
+    clientTreeKeyId: null,
 
     validator: function () {
         if (!this.selectValidate) {
@@ -45,6 +46,8 @@
             var picker = this.createPicker();
 
             if (picker) {
+                picker.down('event').clientTreeKeyId = this.clientTreeKeyId;    // фильтр по выбранному клиенту
+
                 picker.show();
                 this.getStore().load();
             }

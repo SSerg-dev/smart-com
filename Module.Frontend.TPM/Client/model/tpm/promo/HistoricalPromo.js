@@ -11,8 +11,6 @@
         { name: '_Operation', type: 'string', isDefault: true },
 
         { name: 'PromoEventName', type: 'string', useNull: true, hidden: false, isDefault: true, defaultValue: null },
-        { name: 'PromoEventYear', useNull: true, type: 'date', hidden: false, isDefault: false, defaultValue: null },
-        { name: 'PromoEventPeriod', type: 'string', useNull: true, hidden: false, isDefault: true, defaultValue: null },
         { name: 'PromoEventDescription', type: 'string', useNull: true, hidden: false, isDefault: true, defaultValue: null },
 
         { name: 'IsAutomaticallyApproved', type: "boolean", useNull: true, hidden: true, isDefault: false, defaultValue: null },

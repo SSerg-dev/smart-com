@@ -13,7 +13,6 @@
                     applySearch: this.applyFiltersForTree
                 },
                 'inoutselectionproductwindow producttreegrid': {
-                    beforerender: this.onProductTreeGridBeforeRender,
                     afterrender: this.onProductTreeGridAfterRender,
                     checkchange: this.onProductTreeCheckChange
                 },
@@ -31,65 +30,68 @@
                 },
                 'inoutselectionproductwindow product directorygrid gridcolumn[cls=select-all-header]': {
                     headerclick: this.onSelectAllRecordsClick
-				},
-				'inoutselectionproductwindow #dateFilter': {
-					click: this.onDateFilterButtonClick
-				},
+                },
+                'inoutselectionproductwindow #dateFilter': {
+                    click: this.onDateFilterButtonClick
+                },
             }
         });
     },
 
+    // Кнопка подтверждения выбора продуктов
     onOkButtonClick: function (button) {
         var inOutSelectionProductWindowController = App.app.getController('tpm.inoutselectionproductwindow.InOutSelectionProductWindow');
         var promoEditorCustom = Ext.ComponentQuery.query('promoeditorcustom')[0];
         var productTreeGrid = button.up('window').down('producttreegrid');
         var product = button.up('window').down('product');
         var productGrid = product.down('grid');
+        var productGridStore = productGrid.getStore();
         var excludeAssortmentMatrixProductsButton = product.down('#excludeassortmentmatrixproductsbutton');
         var checkedRecords = productGrid.getSelectionModel().getCheckedRows();
         var promoController = App.app.getController('tpm.promo.Promo');
+        var productTreeCheckedNodes = productTreeGrid.getChecked();
 
-        var inOutProductIds = '';
-        if (productTreeGrid.getChecked().length > 0 && checkedRecords.length > 0) {
-            checkedRecords.forEach(function (product) {
-                inOutProductIds += product.data.Id + ';';
+        if (productGridStore.getTotalCount() > 0) {
+            // Все продкуты из стора
+            var productRecords = productGridStore.getRange(0, productGridStore.getTotalCount());
+            // Все выбранные продукты, включая те, что отсеились по фильтрам, матрице.
+            var checkedRecords = productGrid.getSelectionModel().getCheckedRows();
+            // Только те выбранные, что видит пользователь.
+            var checkedProductsInGrid = productRecords.filter(function (record) {
+                return checkedRecords.some(function (checkedRecord) { return record.data.Id == checkedRecord.data.Id })
             });
 
-            promoEditorCustom.InOutProductIds = inOutProductIds;
+            if (checkedProductsInGrid.length != 0) {
+                // Хранит выбранные продукты через ;
+                promoEditorCustom.InOutProductIds = inOutSelectionProductWindowController.parseRecordsToString(checkedProductsInGrid);
+                // Хранит исключенные продукты через ;
+                //promoEditorCustom.RegularExcludedProductIds = inOutSelectionProductWindowController.getRegularExcludedProductsString(productRecords, checkedProductsInGrid);
+                // Хранит инфу о продуктовой иерархии
+                promoEditorCustom.productTreeNodes = productTreeCheckedNodes.slice();
+                promoEditorCustom.productHierarchy = productTreeCheckedNodes[productTreeCheckedNodes.length - 1].data.FullPathName;
 
-            var productTreeCheckedNodes = productTreeGrid.getChecked();
+                var promoProductsForm = promoEditorCustom.down('promobasicproducts');
+                promoProductsForm.choosenProductObjectIds = productTreeCheckedNodes;
+                // Нужно передать массив из последнего / последних узлов.
+                promoProductsForm.fillForm(inOutSelectionProductWindowController.getCheckedProductTreeLeafsArray(productTreeGrid.getChecked()));
+                promoController.setInfoPromoBasicStep2(promoProductsForm);
 
-            var productTreeNodes = [];
-            productTreeCheckedNodes.forEach(function (node) {
-                productTreeNodes.push(node);
-            });
-            promoEditorCustom.productTreeNodes = productTreeNodes;
-            promoEditorCustom.productHierarchy = productTreeCheckedNodes[productTreeCheckedNodes.length - 1].data.FullPathName;
-
-            var promoProductsForm = promoEditorCustom.down('promobasicproducts');
-            promoProductsForm.choosenProductObjectIds = productTreeCheckedNodes;
-
-            // Нужно передать массив из последнего / последних узлов.
-            promoProductsForm.fillForm(inOutSelectionProductWindowController.getCheckedProductTreeLeafsArray(productTreeGrid.getChecked()));
-            promoController.setInfoPromoBasicStep2(promoProductsForm);
-
-            promoEditorCustom.excludeAssortmentMatrixProductsButtonPressed = excludeAssortmentMatrixProductsButton.pressed;
-            button.up('window').close();
+                promoEditorCustom.excludeAssortmentMatrixProductsButtonPressed = excludeAssortmentMatrixProductsButton.pressed;
+                button.up('window').close();
+            } else {
+                App.Notify.pushInfo(l10n.ns('tpm', 'InOutProductSelectionWindow').value('productrequired'));
+            }
         } else {
             App.Notify.pushInfo(l10n.ns('tpm', 'InOutProductSelectionWindow').value('productrequired'));
         }
-    },
-
-    onProductTreeGridBeforeRender: function (productTreeGrid) {
-        productTreeGrid.selModel.selectionMode = 'MULTI';
     },
 
     onProductTreeGridAfterRender: function (productTreeGrid) {
         var me = this;
         var inOutSelectionProductWindowController = App.app.getController('tpm.inoutselectionproductwindow.InOutSelectionProductWindow');
         var productTreeGridStore = productTreeGrid.getStore();
-		var inOutProductSelectionWindowProductTreeGridContainer = productTreeGrid.up('#InOutProductSelectionWindowProductTreeGridContainer');
-		var inOutSelectionProductWindow = productTreeGrid.up('inoutselectionproductwindow');
+        var inOutProductSelectionWindowProductTreeGridContainer = productTreeGrid.up('#InOutProductSelectionWindowProductTreeGridContainer');
+        var inOutSelectionProductWindow = productTreeGrid.up('inoutselectionproductwindow');
         var promoBasicProductsRecord = Ext.ComponentQuery.query('promobasicproducts')[0].promoProductRecord;
         var productTreeGridStoreProxy = productTreeGridStore.getProxy();
         var excludeassortmentmatrixproductsbutton = productTreeGrid.up('window').down('#excludeassortmentmatrixproductsbutton');
@@ -105,9 +107,11 @@
 
         inOutProductSelectionWindowProductTreeGridContainer.setLoading(true);
         productTreeGridStore.addListener('load', function () {
-            var productsRootNodeObjectId = productTreeGrid.getRootNode().childNodes[0].data.ObjectId;
+            var rootNode = productTreeGrid.getRootNode().childNodes[0];
+            var productsRootNodeObjectId = rootNode.data.ObjectId;
+
             if (productsRootNodeObjectId == '1000000') {
-                productTreeGrid.setRootNode(productTreeGrid.getRootNode().childNodes[0], false);
+                productTreeGrid.setRootNode(rootNode, false);
                 productTreeGrid.getRootNode().expand();
             }
 
@@ -118,24 +122,25 @@
             productTreeGridStoreProxy.extraParams.productTreeObjectIds = null;
             excludeassortmentmatrixproductsbutton.fireEvent('toggle', excludeassortmentmatrixproductsbutton, excludeassortmentmatrixproductsbutton.pressed);
 
-            inOutSelectionProductWindowController.setInfoGridToolbar(Ext.ComponentQuery.query('product')[0].down('grid'));
-		});
+            var grid = Ext.ComponentQuery.query('product')[0].down('grid');
+            inOutSelectionProductWindowController.setInfoGridToolbar(grid);
+        });
 
-		var dateFilter = inOutSelectionProductWindow.down('#dateFilter');
-		var currentDate = new Date();
+        var dateFilter = inOutSelectionProductWindow.down('#dateFilter');
+        var currentDate = new Date();
 
-		var days = currentDate.getDate().toString().length === 1 ? '0' + currentDate.getDate() : currentDate.getDate();
-		var month = (currentDate.getMonth() + 1).toString().length === 1 ? '0' + (currentDate.getMonth() + 1) : currentDate.getMonth() + 1;
-		var year = currentDate.getFullYear();
+        var days = currentDate.getDate().toString().length === 1 ? '0' + currentDate.getDate() : currentDate.getDate();
+        var month = (currentDate.getMonth() + 1).toString().length === 1 ? '0' + (currentDate.getMonth() + 1) : currentDate.getMonth() + 1;
+        var year = currentDate.getFullYear();
 
-		if (dateFilter) {
-			dateFilter.setText(days + '.' + month + '.' + year);
-		}
+        if (dateFilter) {
+            dateFilter.setText(days + '.' + month + '.' + year);
+        }
 
         productTreeGridStore.load();
-	},
+    },
 
-	onDateFilterButtonClick: function (button) {
+    onDateFilterButtonClick: function (button) {
         var me = this;
         var datetimeField = Ext.widget('datetimefield');
         datetimeField.dateFormat = 'd.m.Y';
@@ -154,7 +159,7 @@
 
         datetimePicker.show();
 
-		var productTreeGrid = Ext.ComponentQuery.query('producttreegrid')[0];
+        var productTreeGrid = Ext.ComponentQuery.query('producttreegrid')[0];
         var okButton = Ext.ComponentQuery.query('button[action="ok"]')[0];
         var dateFilterButton = Ext.ComponentQuery.query('#dateFilter')[0];
         var store = productTreeGrid.store;
@@ -167,7 +172,7 @@
             button.dateValue = resultDate;
             dateFilterButton.setText(days + '.' + month + '.' + year);
             store.getProxy().extraParams.dateFilter = resultDate;
-			me.applyFiltersForTree(productTreeGrid);
+            me.applyFiltersForTree(productTreeGrid);
         });
     },
 
@@ -209,6 +214,7 @@
     },
 
     onProductTreeCheckChange: function (item, checked, eOpts) {
+        var inOutSelectionProductWindowController = App.app.getController('tpm.inoutselectionproductwindow.InOutSelectionProductWindow');
         var store = item.store;
         var treegrid = store.ownerTree;
         var nodes = treegrid.getRootNode().childNodes;
@@ -216,6 +222,7 @@
         var inOutProductSelectionWindowProductTreeGridContainer = treegrid.up('#InOutProductSelectionWindowProductTreeGridContainer');
         var product = treegrid.up('inoutselectionproductwindow').down('product');
         var productGrid = product.down('grid');
+        var productGridSelectionModel = productGrid.getSelectionModel();
         var productGridStore = productGrid.getStore();
 
         // если узел имеет тип subrange, то ищем отмеченные узлы на том же уровне        
@@ -242,11 +249,11 @@
 
             var parent = store.getNodeById(item.get('parentId'));
             if (parent) {
-				while (parent.data.root !== true) {
-					if (parent.get('Type').indexOf('Brand') < 0) {
-						parent.set('checked', true);
-					}
-					parent = store.getNodeById(parent.get('parentId'));
+                while (parent.data.root !== true) {
+                    if (parent.get('Type').indexOf('Brand') < 0) {
+                        parent.set('checked', true);
+                    }
+                    parent = store.getNodeById(parent.get('parentId'));
                 }
             }
         }
@@ -266,6 +273,45 @@
             }
         }
 
+        var promoEditorCustom = Ext.ComponentQuery.query('promoeditorcustom')[0]; 
+
+        // Если промо регулярное, отметить все продукты при выборе узла.
+        if (!promoEditorCustom.isInOutPromo && checked) {
+            productGridStore.on({
+                load: {
+                    fn: function () {
+                        if (!promoEditorCustom.InOutProductIds && !(promoEditorCustom.model && promoEditorCustom.model.data.InOutProductIds)) {
+                            var productGridSelectionModel = productGrid.getSelectionModel();
+                            productGridSelectionModel.selectAllRecords(productGrid.down('gridcolumn[cls=select-all-header]'));
+                            productGridSelectionModel.allSelected = true;
+
+                            inOutSelectionProductWindowController.setInfoGridToolbar(productGrid);
+                        }
+                    },
+                    single: true
+                },
+            });
+        }
+
+        var treegridChecked = treegrid.getChecked();
+        var checkedLeafs = inOutSelectionProductWindowController.getCheckedProductTreeLeafsArray(treegridChecked);
+
+        // Сохранить предыдущие выбранные узлы еирархии
+        treegrid.previousProductTreeNodes = treegrid.currentProductTreeNodes || [];
+        // Сохранить выбранные узлы иерархии
+        treegrid.currentProductTreeNodes = checkedLeafs
+
+        // Нужно ли сбросить выбранные продукты?
+        var needResetCheckboxes = inOutSelectionProductWindowController.needResetCheckboxes(inOutSelectionProductWindowController, treegrid.previousProductTreeNodes, treegrid.currentProductTreeNodes);
+        if (needResetCheckboxes && promoEditorCustom.isInOutPromo) {
+            productGridSelectionModel.uncheckRows(productGridSelectionModel.getCheckedRows());
+        }
+
+        if (treegrid.getChecked() > 0) {
+            productGridStore.removeFixedFilter('InOutProductSelectionWindow');
+        }
+
+        inOutSelectionProductWindowController.setInfoGridToolbar(productGrid);
         var excludeassortmentmatrixproductsbutton = product.down('#excludeassortmentmatrixproductsbutton');
         excludeassortmentmatrixproductsbutton.fireEvent('toggle', excludeassortmentmatrixproductsbutton, excludeassortmentmatrixproductsbutton.pressed);
     },
@@ -290,15 +336,28 @@
         }
     },
 
+    // Добавляет галки в грид
     productGridBeforeRender: function (grid) {
+        var productGridStore = grid.getStore();
+        var promoBasicProductsRecord = Ext.ComponentQuery.query('promobasicproducts')[0].promoProductRecord;
+
+        // Если есть выбранные продукты.
+        if (promoBasicProductsRecord && promoBasicProductsRecord.ProductsChoosen.length > 0) {
+            productGridStore.removeFixedFilter('InOutProductSelectionWindow');
+        } else {
+            productGridStore.setFixedFilter('InOutProductSelectionWindow', { operator: "and", rules: [{ property: "Id", operation: "Equals", value: null }] });
+        }
+
         grid.multiSelect = true;
     },
 
+    // Получить продуктовый контроллер
     getProductTreeController: function () {
         return App.app.getController('tpm.product.ProductTree');
     },
 
     onProductEditorAfterRender: function (window) {
+        // Скрыть кнопку редактирования продуктов
         window.down('#edit').hide();
     },
 
@@ -318,17 +377,11 @@
         var inOutProductSelectionWindowProductTreeGridContainer = window.down('#InOutProductSelectionWindowProductTreeGridContainer');
         var product = window.down('product');
         var productGrid = product.down('grid');
+        var productGridSelectionModel = productGrid.getSelectionModel();
         var productGridStore = productGrid.getStore();
         var productGridStoreProxy = productGridStore.getProxy();
         var toolBar = window.down('custombigtoolbar');
         var productTreeGrid = window.down('producttreegrid');
-
-        if (isPressed) {
-            button.checkedProducts = productGrid.getSelectionModel().getCheckedRows();
-        } else {
-            productGrid.getSelectionModel().checkRows(button.checkedProducts);
-            //button.checkedProducts = [];
-        }
 
         if (isPressed) {
             button.addCls('in-out-product-selection-window-product-toggled-button ');
@@ -341,6 +394,7 @@
         if (inOutProductSelectionWindowProductTreeGridContainer.choosenProductObjectId.length > 0) {
             inOutProductSelectionWindowProductTreeGridContainer.setLoading(true);
             toolBar.down('#excludeassortmentmatrixproductsbutton').setDisabled(true);
+
             productGridStore.addListener('load', function () {
                 inOutProductSelectionWindowProductTreeGridContainer.setLoading(false);
                 toolBar.down('#excludeassortmentmatrixproductsbutton').setDisabled(false);
@@ -403,107 +457,51 @@
         var productTreeGridStore = productGrid.up('window').down('producttreegrid').getStore();
         var promoEditorCustom = Ext.ComponentQuery.query('promoeditorcustom')[0];
         var promoModel = promoEditorCustom.model;
-        var productGridSelectiomModel = productGrid.getSelectionModel();
+        var productGridSelectionModel = productGrid.getSelectionModel();
         var isFirstOpening = true;
+        var nodeChanged = false;
         var excludeAssortmentMatrixProductsButton = productGrid.up('product').down('#excludeassortmentmatrixproductsbutton');
+        var inOut = promoEditorCustom.isInOutPromo || (promoEditorCustom.model && promoEditorCustom.model.data.InOut);
 
-        me.setInfoGridToolbar(productGrid);
-
-        // Id выбранных галками продуктов
-        var tempInOutCheckedProductIds = [];
-        // Предыдущие выбранные узлы дерева
-        var previousProductTreeNodes = [];
-        // Текущие выбранные узлы дерева
-        var currentProductTreeNodes = [];
+        if (inOut) {
+            excludeAssortmentMatrixProductsButton.show();
+        } else {
+            excludeAssortmentMatrixProductsButton.hide();
+        }
 
         productGrid.getStore().addListener('prefetch', function (store, records) {
             me.setInfoGridToolbar(productGrid);
         });
 
-        // Шаг 1: запонимаем куда-нибудть выбранные продукты
-        // Шаг 2: сбрасываем галки со всех продуктов (галки стоят даже на тех продкутах, которых нет в гриде)
-        // Шаг 3: из запомненных продуктов на шаге 1, отмечаем те, которые есть в гриде
-        productGrid.getStore().addListener('load', function (store, records) {
-            var checkedProducts = productGridSelectiomModel.getCheckedRows();
-            tempInOutCheckedProductIds = [];
-            checkedProducts.forEach(function (checkedProduct) {
-                tempInOutCheckedProductIds.push(checkedProduct.data.Id);
-            });
-            inOutSelectionProductWindowController.customUncheckRows(productGridSelectiomModel, checkedProducts);
+        var firstProductTreeGridStore = function () {
+            var productIdsForChecking = promoEditorCustom.InOutProductIds || (promoEditorCustom.model && promoEditorCustom.model.data.InOutProductIds);
+            var productIdsForCheckingArray = inOutSelectionProductWindowController.getProductIdsList(productIdsForChecking);
+            inOutSelectionProductWindowController.checkProductsByProductIds(productGrid, productIdsForCheckingArray, productTreeGrid, promoEditorCustom);
+        };
 
-            var checkedProductTreeLeafsArray = inOutSelectionProductWindowController.getCheckedProductTreeLeafsArray(productTreeGrid.getChecked());
-            var tempCurrentProductTreeNodes = [];
-            checkedProductTreeLeafsArray.forEach(function (leaf) {
-                tempCurrentProductTreeNodes.push(leaf);
-            });
-            currentProductTreeNodes = tempCurrentProductTreeNodes;
+        var maxStepsCount = 4;
+        var stepCounter = 0;
 
-            var needResetCheckboxes = inOutSelectionProductWindowController.needResetCheckboxes(inOutSelectionProductWindowController, previousProductTreeNodes, currentProductTreeNodes);
-            if (needResetCheckboxes) {
-                tempInOutCheckedProductIds = [];
-                inOutSelectionProductWindowController.customUncheckRows(productGridSelectiomModel, checkedProducts);
-                excludeAssortmentMatrixProductsButton.checkedProducts = [];
-            } else {
-                var inOutProductIds = [];
-                if (isFirstOpening) {
-                    inOutProductIds = tempInOutCheckedProductIds.length > 0 ? tempInOutCheckedProductIds : me.getProductIdsList(promoEditorCustom.InOutProductIds || (promoModel ? promoModel.data.InOutProductIds : ''));
+        // Создает событие, которое должно вызваться при первом появлении данных в гриде.
+        var maxStepsCount = 4;
+        var createFirstProductTreeGridStoreEvent = function () {
+            productGridStore.on('load', function (store) {
+                if (store.getTotalCount() == 0 && stepCounter < maxStepsCount) {
+                    stepCounter++;
+                    createFirstProductTreeGridStoreEvent();
                 } else {
-                    inOutProductIds = tempInOutCheckedProductIds;
+                    firstProductTreeGridStore();
                 }
+            }, this, { single: true });
+        }
+        createFirstProductTreeGridStoreEvent();
 
-                if (inOutProductIds) {
-                    var productModels = [];
-                    inOutProductIds.forEach(function (productId) {
-                        if (productId) {
-                            var searchedProductModel = productGrid.getStore().getById(productId);
-                            if (searchedProductModel) {
-                                productModels.push(searchedProductModel);
-                            }
-                        }
-                    });
-                    me.customCheckRows(productGridSelectiomModel, productModels);
-                }
-
-                if (productGridStore.getTotalCount() == 0) {
-                    me.customUncheckRows(productGridSelectiomModel, productGrid.getSelectionModel().getCheckedRows());
-                    tempInOutCheckedProductIds = [];
-                }
-            }
-
-            // Если выбраны все записи
-            if (productGridSelectiomModel.getCheckedRows().length == records.length) {
-                productGridSelectiomModel.allSelected = true;
-            }
-            else {
-                productGridSelectiomModel.allSelected = false;
-            }
-
-            // Предыдущие выбранные становятся текущими выбранным.
-            if (currentProductTreeNodes.length > 0) {
-                previousProductTreeNodes = currentProductTreeNodes;
-            }
-
-            isFirstOpening = false;
-            me.setInfoGridToolbar(productGrid);
+        productGridStore.addListener('load', function (store, records) {
+            inOutSelectionProductWindowController.setInfoGridToolbar(productGrid);
+            // Установить актуальные выбраныне продукты
+            inOutSelectionProductWindowController.removeHiddenRowsFromSelectionModel(productGridSelectionModel, productGrid);
         });
     },
-
-    customCheckRows: function (selectionModel, records) {
-        records.forEach(function (record) {
-            record.data.Checked = true;
-        });
-
-        selectionModel.checkRows(records);
-    },
-
-    customUncheckRows: function (selectionModel, records) {
-        records.forEach(function (record) {
-            record.data.Checked = false;
-        });
-
-        selectionModel.uncheckRows(records);
-    },
-
 
     // Возвращает массив из выбранных листов продуктового дерева.
     getCheckedProductTreeLeafsArray: function (checkedNodes) {
@@ -571,25 +569,35 @@
 
     // Нужно ли сбросить выбранные продукты
     needResetCheckboxes: function (inOutSelectionProductWindowController, previousProductTreeNodes, currentProductTreeNodes) {
-        // При первом октрытии сохраненного промо previousProductTreeNodes = null
+        // При первом выборе нет предыдущих узлов
         if (previousProductTreeNodes.length == 0) {
             return false;
         }
 
+        // Если предыдущие и текущие узлы одинаковые
         var previousProductTreeNodesEqualsCurrent = inOutSelectionProductWindowController.compareArrays(previousProductTreeNodes, currentProductTreeNodes);
-        var allNodesAreSubranges = inOutSelectionProductWindowController.allNodesAreSubranges(previousProductTreeNodes) && inOutSelectionProductWindowController.allNodesAreSubranges(currentProductTreeNodes);
-        var oneParent = inOutSelectionProductWindowController.getNodeParentObjectId(previousProductTreeNodes[0]) == inOutSelectionProductWindowController.getNodeParentObjectId(currentProductTreeNodes[0]);
-
-        // Если не subranges с одинаковым родителем
-        if (!previousProductTreeNodesEqualsCurrent && !(allNodesAreSubranges && oneParent)) {
-            return true;
+        if (previousProductTreeNodesEqualsCurrent) {
+            return false;
         }
 
-        return false;
+        // Если выбранные узлы это сабренжи с одинаковым родителем
+        var allNodesAreSubranges = inOutSelectionProductWindowController.allNodesAreSubranges(previousProductTreeNodes) && inOutSelectionProductWindowController.allNodesAreSubranges(currentProductTreeNodes);
+        var oneParent = inOutSelectionProductWindowController.getNodeParentObjectId(previousProductTreeNodes[0]) == inOutSelectionProductWindowController.getNodeParentObjectId(currentProductTreeNodes[0]);
+        if (allNodesAreSubranges && oneParent) {
+            return false;
+        }
+
+        return true;
     },
 
     onProductGridSelectionChange: function (model, selected) {
-        this.setInfoGridToolbar(Ext.ComponentQuery.query('product')[0].down('grid'));
+        var inOutSelectionProductWindowController = App.app.getController('tpm.inoutselectionproductwindow.InOutSelectionProductWindow');
+        var productGrid = Ext.ComponentQuery.query('product')[0].down('grid');
+        var productGridStore = productGrid.getStore();
+        var productGridSelectionModel = productGrid.getSelectionModel();
+
+        inOutSelectionProductWindowController.checkSelectAll(productGridSelectionModel, productGridStore);
+        this.setInfoGridToolbar(productGrid);
     },
 
     onProductAfterRender: function (panel) {
@@ -603,31 +611,170 @@
             proxy.extraParams.needInOutExcludeAssortmentMatrixProducts = false;
             proxy.extraParams.needInOutSelectedProducts = false;
             proxy.extraParams.inOutProductIdsForGetting = '';
-        }) 
+        })
     },
 
-    setInfoGridToolbar: function (grid) {
-        if (grid) {
-            var recordsCount = Ext.String.format(l10n.ns('core', 'gridInfoToolbar').value('gridInfoMsg'), grid.getStore().getTotalCount());
-            var checkedCount = Ext.String.format(l10n.ns('core', 'gridInfoToolbar').value('checkedRecordsCount'), grid.getSelectionModel().getCheckedRows().length);
-            var msg = recordsCount + ' ' + '<b>' + checkedCount + '</b>';
+    setInfoGridToolbar: function (productGrid) {
+        productGrid = productGrid || Ext.ComponentQuery.query('product')[0].down('grid');
+        var productGridSelectionModel = productGrid.getSelectionModel();
 
-            grid.query('#displayItem')[0].setText(msg);
+        if (productGridSelectionModel.getCheckedRows) {
+            var productGridStore = productGrid.getStore();
+            var checkedRows = productGridSelectionModel.getCheckedRows();
+
+            var recordsCount = productGridStore.getTotalCount();
+            var checkedRowsInGrid = [];
+
+            var recordsCountMessage = Ext.String.format(l10n.ns('core', 'gridInfoToolbar').value('gridInfoMsg'), recordsCount);
+            var checkedCountMessage = Ext.String.format(l10n.ns('core', 'gridInfoToolbar').value('checkedRecordsCount'), 0);
+            var resultMessage = recordsCountMessage + ' ' + '<b>' + checkedCountMessage + '</b>';
+            productGrid.query('#displayItem')[0].setText(resultMessage);
+
+            if (recordsCount > 0) {
+                var records = productGridStore.getRange(0, recordsCount, {
+                    callback: function () {
+                        records = productGridStore.getRange(0, recordsCount);
+
+                        checkedRowsInGrid = records.filter(function (record) {
+                            return checkedRows.some(function (checkedRow) { return record.data.Id == checkedRow.data.Id })
+                        });
+
+                        recordsCountMessage = Ext.String.format(l10n.ns('core', 'gridInfoToolbar').value('gridInfoMsg'), records.length);
+                        checkedCountMessage = Ext.String.format(l10n.ns('core', 'gridInfoToolbar').value('checkedRecordsCount'), checkedRowsInGrid.length);
+                        resultMessage = recordsCountMessage + ' ' + '<b>' + checkedCountMessage + '</b>';
+
+                        productGrid.query('#displayItem')[0].setText(resultMessage);
+                    }
+                });
+            }
         }
     },
 
     onSelectAllRecordsClick: function (headerCt, header) {
         var inOutSelectionProductWindowController = App.app.getController('tpm.inoutselectionproductwindow.InOutSelectionProductWindow');
-        var grid = header.up('directorygrid');
-        var store = grid.getStore();
-        var selModel = grid.getSelectionModel()
-        var recordsCount = store.getCount();
-        var functionChecker = selModel.checkedRows.length == recordsCount ? selModel.uncheckRows : selModel.checkRows;
+        var productGrid = header.up('directorygrid');
+        var productGridStore = productGrid.getStore();
+        var productGridSelectionModel = productGrid.getSelectionModel();
+        var recordsCount = productGridStore.getCount();
+        var checkedRowsCount = productGridSelectionModel.getCheckedRows(); 
 
-        for (var i = 0; i < recordsCount; i++) {
-            functionChecker.call(selModel, store.getAt(i));
+        productGridSelectionModel.selectAllRecordsCallback = inOutSelectionProductWindowController.setInfoGridToolbar;
+        productGridSelectionModel.deselectAllRecordsCallback = inOutSelectionProductWindowController.setInfoGridToolbar;
+
+        inOutSelectionProductWindowController.checkSelectAll(productGridSelectionModel, productGridStore);
+    },
+
+    // Следит за правильным состоянием флага allSelect
+    checkSelectAll: function (productGridSelectionModel, productGridStore) {
+        var checkedRows = productGridSelectionModel.getCheckedRows();
+        var recordsCount = productGridStore.getTotalCount();
+
+        if (recordsCount > 0) {
+            var records = productGridStore.getRange(0, recordsCount, {
+                callback: function () {
+                    records = productGridStore.getRange(0, recordsCount);
+
+                    // Если все записи из грида есть в выбранных
+                    if (records.every(function (record) { return checkedRows.some(function (checkedRow) { return record.data.Id == checkedRow.data.Id }) })) {
+                        productGridSelectionModel.allSelected = true;
+                    } else {
+                        productGridSelectionModel.allSelected = false;
+                    }
+                }
+            });
         }
+    },
 
-        inOutSelectionProductWindowController.setInfoGridToolbar(grid);
+    // Отметить только те записи, что находятся в гриде
+    removeHiddenRowsFromSelectionModel: function (selectionModel, productGrid) {
+        var inOutSelectionProductWindowController = App.app.getController('tpm.inoutselectionproductwindow.InOutSelectionProductWindow');
+        var productGridStore = productGrid.getStore();
+        var hasExtendedFilter = productGridStore.getExtendedFilter() && productGridStore.getExtendedFilter().filter;
+        var hasTableFilter = productGridStore.filters.items.length > 0;
+        var excludeAssortmentMatrixProductsButtonPressed = productGrid.up('product').down('#excludeassortmentmatrixproductsbutton').pressed;
+
+        // Если не применены фильтры и не нажата кнопка матрицы
+        if (!hasExtendedFilter && !hasTableFilter && !excludeAssortmentMatrixProductsButtonPressed && selectionModel) {
+            inOutSelectionProductWindowController.setInfoGridToolbar(productGrid);
+            var recordsCount = productGridStore.getTotalCount();
+            if (recordsCount > 0) {
+                var records = productGridStore.getRange(0, recordsCount, {
+                    callback: function () {
+                        records = productGridStore.getRange(0, recordsCount);
+                        var checkedRows = selectionModel.getCheckedRows();
+
+                        selectionModel.uncheckRows(checkedRows);
+                        checkedRows = checkedRows.filter(function (checkedRow) {
+                            return records.some(function (record) { return checkedRow.data.Id == record.data.Id; });
+                        });
+                        selectionModel.checkRows(checkedRows);
+
+                        inOutSelectionProductWindowController.checkSelectAll(selectionModel, productGridStore);
+                        inOutSelectionProductWindowController.setInfoGridToolbar(productGrid);
+                    }
+                });
+            }
+        }
+    },
+
+    // Возвращает строку из ID элкментов через ;
+    parseRecordsToString: function (records) {
+        var result = ''; 
+        records.forEach(function (record) {
+            result += record.data.Id + ';';
+        });
+        return result;
+    },
+
+    // Возвращает строку из исключенных продуктов через ;
+    getRegularExcludedProductsString: function (productRecords, checkedProductRecords) {
+        var inOutSelectionProductWindowController = App.app.getController('tpm.inoutselectionproductwindow.InOutSelectionProductWindow');
+
+        var excludedRecords = productRecords.filter(function (productRecord) {
+            return !checkedProductRecords.some(function (checkedProductRecord) {
+                return checkedProductRecord.data.Id == productRecord.data.Id;
+            });
+        });
+
+        return inOutSelectionProductWindowController.parseRecordsToString(excludedRecords);
+    },
+
+    // Получить массив продуктовых записей по массиву из Id
+    checkProductsByProductIds: function (productGrid, productIdsArray, productTreeGrid, promoEditorCustom) {
+        var productGridStore = productGrid.getStore();
+        var productGridSelectionModel = productGrid.getSelectionModel();
+        var recordsCount = productGridStore.getTotalCount();
+
+        if (productGridSelectionModel && recordsCount > 0) {
+            var records = productGridStore.getRange(0, recordsCount, {
+                callback: function () {
+                    records = productGridStore.getRange(0, recordsCount);
+                    records = records.filter(function (record) {
+                        return productIdsArray.some(function (productId) { return record.data.Id == productId; });
+                    });
+
+                    productGridSelectionModel.checkRows(records);
+
+                    // Если промо регулярное, отметить все продукты при выборе узла.
+                    // Вешается именно здесь не случайно.
+                    if (!promoEditorCustom.isInOutPromo) {
+                        productTreeGrid.addListener('checkchange', function (item, checked) {
+                            if (checked) {
+                                productGridStore.on({
+                                    load: {
+                                        fn: function () {
+                                            var productGridSelectionModel = productGrid.getSelectionModel();
+                                            productGridSelectionModel.selectAllRecords(productGrid.down('gridcolumn[cls=select-all-header]'));
+                                            productGridSelectionModel.allSelected = true;
+                                        },
+                                        single: true
+                                    },
+                                });
+                            }
+                        });
+                    }
+                }
+            });
+        }
     }
 });

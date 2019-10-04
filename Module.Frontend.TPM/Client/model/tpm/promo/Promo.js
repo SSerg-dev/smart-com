@@ -26,8 +26,6 @@
         { name: 'BaseClientTreeIds', useNull: true, hidden: true, isDefault: false, defaultValue: null },
 
         { name: 'PromoEventName', type: 'string', mapping: 'Event.Name', defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'Event' },
-        { name: 'PromoEventYear', type: 'int', mapping: 'Event.Year', defaultFilterConfig: { valueField: 'Year' }, breezeEntityType: 'Event' },
-        { name: 'PromoEventPeriod', type: 'string', mapping: 'Event.Period', defaultFilterConfig: { valueField: 'Period' }, breezeEntityType: 'Event' },
         { name: 'PromoEventDescription', type: 'string', mapping: 'Event.Description', defaultFilterConfig: { valueField: 'Description' }, breezeEntityType: 'Event' },
 
         //Дата последнего вхождения в статус Approved
@@ -219,6 +217,8 @@
         { name: 'InOut', useNull: true, type: 'boolean', hidden: false, isDefault: false },
         { name: 'InOutProductIds', type: 'string', hidden: true, isDefault: false },
         { name: 'InOutExcludeAssortmentMatrixProductsButtonPressed', type: 'boolean', hidden: true, isDefault: false, defaultValue: false },
+        //Regular
+        { name: 'RegularExcludedProductIds', type: 'string', hidden: true, isDefault: false },
     ],
     proxy: {
         type: 'breeze',

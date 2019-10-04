@@ -34,12 +34,13 @@
             displayField: 'Name',
             store: {
                 type: 'directorystore',
-                model: 'App.model.tpm.budgetsubitem.BudgetSubItem',
+                autoLoad: false,
+                model: 'App.model.tpm.budgetsubitem.BudgetSubItemWithFilter',
                 extendedFilter: {
                     xclass: 'App.ExtFilterContext',
                     supportedModels: [{
                         xclass: 'App.ExtSelectionFilterModel',
-                        model: 'App.model.tpm.budgetsubitem.BudgetSubItem',
+                        model: 'App.model.tpm.budgetsubitem.BudgetSubItemWithFilter',
                         modelId: 'efselectionmodel'
                     }]
                 }

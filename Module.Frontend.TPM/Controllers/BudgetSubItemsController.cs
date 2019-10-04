@@ -69,6 +69,21 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
+        [EnableQuery(MaxNodeCount = int.MaxValue)]
+        public IQueryable<BudgetSubItem> GetBudgetSubItems([FromODataUri] int ClientTreeId, Guid BudgetItemId)
+        {
+            var budgetSubItems = GetConstraintedQuery();
+            var budgetSubItemsType = budgetSubItems.Where(b => b.BudgetItemId == BudgetItemId).First().BudgetItem.Name;
+
+            var queryClientTree = Context.Set<BudgetSubItemClientTree>().Where(e => e.BudgetSubItem.BudgetItem.Name == budgetSubItemsType);
+            IQueryable<BudgetSubItem> query = Context.Set<BudgetSubItem>().Where(e => !e.Disabled && e.BudgetItem.Name == budgetSubItemsType && !queryClientTree.Any(x => x.BudgetSubItemId == e.Id));
+            var BSICT = Context.Set<BudgetSubItemClientTree>().Where(x => x.ClientTreeId == ClientTreeId);
+            budgetSubItems = budgetSubItems.Where(bsi => BSICT.Any(x => x.BudgetSubItemId == bsi.Id) && bsi.BudgetItemId == BudgetItemId);
+            var result = budgetSubItems.ToList().Concat(query);
+            return result.AsQueryable();
+        }
+
+        [ClaimsAuthorize]
         public IHttpActionResult Put([FromODataUri] System.Guid key, Delta<BudgetSubItem> patch)
         {
             var model = Context.Set<BudgetSubItem>().Find(key);

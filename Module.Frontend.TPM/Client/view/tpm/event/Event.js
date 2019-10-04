@@ -3,6 +3,8 @@
     alias: 'widget.event',
     title: l10n.ns('tpm', 'compositePanelTitles').value('Event'),
 
+    clientTreeKeyId: null,
+
     dockedItems: [{
         xtype: 'custombigtoolbar',
         dock: 'right'
@@ -86,31 +88,6 @@
                 text: l10n.ns('tpm', 'Event').value('Name'),
                 dataIndex: 'Name'
             }, {
-                xtype: 'numbercolumn',
-                format: '0',
-                text: l10n.ns('tpm', 'Event').value('Year'),
-                dataIndex: 'Year'
-            }, {
-                text: l10n.ns('tpm', 'Event').value('Period'),
-                dataIndex: 'Period',
-                filter: {
-                    type: 'combo',
-                    valueField: 'val',
-                    store: {
-                        type: 'simplestore',
-                        id: 'val',
-                        fields: ['val'],
-                        data: [{ val: 'P01' }, { val: 'P02' },
-                        { val: 'P03' }, { val: 'P04' }, { val: 'P05' },
-                        { val: 'P06' }, { val: 'P07' }, { val: 'P08' },
-                        { val: 'P09' }, { val: 'P10' }, { val: 'P11' },
-                        { val: 'P12' }, { val: 'P13' }]
-                    },
-                    displayField: 'val',
-                    queryMode: 'local',
-                    operator: 'eq'
-                }
-            }, {
                 text: l10n.ns('tpm', 'Event').value('Description'),
                 dataIndex: 'Description'
             },]
@@ -123,20 +100,6 @@
             xtype: 'textfield',
             name: 'Name',
             fieldLabel: l10n.ns('tpm', 'Event').value('Name')
-        }, {
-            xtype: 'numberfield',
-            name: 'Year',
-            allowDecimals: true,
-            allowExponential: false,
-            minValue: 0,
-            maxValue: 9999,
-            allowBlank: false,
-            allowOnlyWhitespace: false,
-            fieldLabel: l10n.ns('tpm', 'Event').value('Year')
-        }, {
-            xtype: 'textfield',
-            name: 'Period',
-            fieldLabel: l10n.ns('tpm', 'Event').value('Period')
         }, {
             xtype: 'textfield',
             name: 'Description',

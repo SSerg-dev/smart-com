@@ -118,6 +118,8 @@ Ext.define('App.view.tpm.tradeinvestment.TradeInvestmentEditor', {
             xtype: 'textfield',            name: 'TIType',            fieldLabel: l10n.ns('tpm', 'TradeInvestment').value('TIType'),
         }, {
             xtype: 'textfield',            name: 'TISubType',            fieldLabel: l10n.ns('tpm', 'TradeInvestment').value('TISubType'),
+            allowBlank: true,
+            allowOnlyWhitespace: true,
         }, {
             xtype: 'numberfield',
             name: 'SizePercent',

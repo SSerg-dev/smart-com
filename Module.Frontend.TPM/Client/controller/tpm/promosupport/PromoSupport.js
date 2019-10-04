@@ -525,6 +525,16 @@
         // фильтр по BudgetItemId для SearchComboBox Equipment Type
         var budgetSubItemField = promoSupportForm.down('searchcombobox[name=BudgetSubItemId]'),
             budgetSubItemFieldStore = budgetSubItemField.getStore();
+        budgetSubItemFieldStore.proxy.extraParams.ClientTreeId = model.data.ClientTreeId;
+        budgetSubItemFieldStore.proxy.extraParams.BudgetItemId = model.data.BudgetSubItemBudgetItemId;
+        //var parameters = {
+        //    ClientTreeId: model.data.ClientTreeId
+        //};
+        //App.Util.makeRequestWithCallback('BudgetSubItemClientTrees', 'GetByClient', parameters, function (data) {
+        //    var result = Ext.JSON.decode(data.httpResponse.data.value);
+        //    budgetSubItemFieldStore.add(result.models);
+        //    budgetSubItemField.setValue(model.data.BudgetSubItemId);
+        //});
         budgetSubItemFieldStore.setFixedFilter('BudgetSubItemFilter', {
             property: 'BudgetItemId',
             operation: 'Equals',
@@ -773,6 +783,16 @@
             budgetSubItemField = promoSupportForm.down('searchcombobox[name=BudgetSubItemId]'),
             budgetSubItemFieldStore = budgetSubItemField.getStore();
         promoSupportPanel.budgetItemId = budgetItemId;
+        budgetSubItemFieldStore.proxy.extraParams.ClientTreeId = editor.clientId;
+        budgetSubItemFieldStore.proxy.extraParams.BudgetItemId = budgetItemId;
+
+        //var parameters = {
+        //    ClientTreeId: editor.clientId
+        //};
+        //App.Util.makeRequestWithCallback('BudgetSubItemClientTrees', 'GetByClient', parameters, function (data) {
+        //    var result = Ext.JSON.decode(data.httpResponse.data.value);
+        //    budgetSubItemFieldStore.add(result.models);
+        //});
 
         budgetSubItemFieldStore.setFixedFilter('BudgetSubItemFilter', {
             property: 'BudgetItemId',
@@ -890,6 +910,17 @@
         var budgetItemId = panel.budgetItemId,
             budgetSubItemField = promoSupportForm.down('searchcombobox[name=BudgetSubItemId]'),
             budgetSubItemFieldStore = budgetSubItemField.getStore();
+        budgetSubItemFieldStore.proxy.extraParams.ClientTreeId = editor.clientId;
+        budgetSubItemFieldStore.proxy.extraParams.BudgetItemId = budgetItemId;
+        //var parameters = {
+        //    ClientTreeId: editor.clientId
+        //};
+        //App.Util.makeRequestWithCallback('BudgetSubItemClientTrees', 'GetByClient', parameters, function (data) {
+        //    var result = Ext.JSON.decode(data.httpResponse.data.value);
+        //    budgetSubItemFieldStore.add(result.models);
+        //    budgetSubItemField.setValue(model.data.BudgetSubItemId);
+        //});
+
 
         budgetSubItemFieldStore.setFixedFilter('BudgetSubItemFilter', {
             property: 'BudgetItemId',

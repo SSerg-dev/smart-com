@@ -27,6 +27,8 @@ using System.Web.Http.Results;
 using Newtonsoft.Json;
 using System.Data.Entity;
 using Module.Persist.TPM.CalculatePromoParametersModule;
+using Core.Settings;
+using Core.Dependency;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -111,10 +113,11 @@ namespace Module.Frontend.TPM.Controllers
             try
             {
                 // разница между промо в подстатье должно быть меньше 2 периодов (8 недель)
-                // TODO: Убрать константу из кода!
+                ISettingsManager settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
+                var diffBetweenPromoInDays = settingsManager.GetSetting<int>("DIFF_BETWEEN_PROMO_IN_DAYS", 7 * 8);
                 Promo promo = Context.Set<Promo>().Find(result.PromoId);
                 bool bigDifference = Context.Set<PromoSupportPromo>().Any(n => n.PromoSupportId == result.PromoSupportId
-                        && DbFunctions.DiffDays(n.Promo.StartDate.Value, promo.EndDate.Value).Value > 56 && !n.Disabled);
+                        && DbFunctions.DiffDays(n.Promo.StartDate.Value, promo.EndDate.Value).Value > diffBetweenPromoInDays && !n.Disabled);
 
                 if (bigDifference)
                     throw new Exception("The difference between the dates of the promo should be less than two periods");
@@ -149,9 +152,10 @@ namespace Module.Frontend.TPM.Controllers
                         if (promo.PromoStatus.SystemName.ToLower().IndexOf("close") < 0)
                         {
                             // разница между промо в подстатье должно быть меньше 2 периодов (8 недель)
-                            // TODO: Убрать константу из кода!
+                            ISettingsManager settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
+                            var diffBetweenPromoInDays = settingsManager.GetSetting<int>("DIFF_BETWEEN_PROMO_IN_DAYS", 7 * 8);
                             bool bigDifference = Context.Set<PromoSupportPromo>().Any(n => n.PromoSupportId == promoSupportId
-                                    && DbFunctions.DiffDays(n.Promo.StartDate.Value, promo.EndDate.Value).Value > 56 && !n.Disabled);
+                                    && DbFunctions.DiffDays(n.Promo.StartDate.Value, promo.EndDate.Value).Value > diffBetweenPromoInDays && !n.Disabled);
 
                             if (bigDifference)
                                 throw new Exception("The difference between the dates of the promo should be less than two periods");
@@ -213,10 +217,11 @@ namespace Module.Frontend.TPM.Controllers
                         newList[i].Promo = Context.Set<Promo>().Find(newList[i].PromoId);
                         newList[i].PromoSupport = Context.Set<PromoSupport>().Find(newList[i].PromoSupportId);
 
-                        // TODO: Убрать константу из кода!
+                        ISettingsManager settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
+                        var diffBetweenPromoInDays = settingsManager.GetSetting<int>("DIFF_BETWEEN_PROMO_IN_DAYS", 7 * 8);
                         DateTimeOffset endPromoDate = newList[i].Promo.EndDate.Value;
                         bool bigDifference = Context.Set<PromoSupportPromo>().Any(n => n.PromoSupportId == promoSupportId
-                                        && DbFunctions.DiffDays(n.Promo.StartDate.Value, endPromoDate).Value > 56 && !n.Disabled);
+                                        && DbFunctions.DiffDays(n.Promo.StartDate.Value, endPromoDate).Value > diffBetweenPromoInDays && !n.Disabled);
 
                         if (bigDifference)
                             throw new Exception("The difference between the dates of the promo should be less than two periods");
@@ -414,9 +419,10 @@ namespace Module.Frontend.TPM.Controllers
                     foreach (Guid promoSupportId in subItemsIdsList)
                     {
                         // разница между промо в подстатье должно быть меньше 2 периодов (8 недель)
-                        // TODO: Убрать константу из кода!
+                        ISettingsManager settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
+                        var diffBetweenPromoInDays = settingsManager.GetSetting<int>("DIFF_BETWEEN_PROMO_IN_DAYS", 7 * 8);
                         bool bigDifference = Context.Set<PromoSupportPromo>().Any(n => n.PromoSupportId == promoSupportId
-                            && DbFunctions.DiffDays(n.Promo.StartDate.Value, promo.EndDate.Value).Value > 56 && !n.Disabled);
+                            && DbFunctions.DiffDays(n.Promo.StartDate.Value, promo.EndDate.Value).Value > diffBetweenPromoInDays && !n.Disabled);
 
                         if (bigDifference)
                             throw new Exception("The difference between the dates of the promo in the promo support should be less than two periods");

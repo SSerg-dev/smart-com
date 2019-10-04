@@ -215,10 +215,10 @@ namespace Module.Frontend.TPM.Controllers
                 new Column() { Order = order++, Field = "PlanPromoLSV", Header = "Plan Promo LSV", Quoting = false },
                 new Column() { Order = order++, Field = "ActualPromoLSVByCompensation", Header = "Actual PromoLSV By Compensation", Quoting = false },
                 new Column() { Order = order++, Field = "ActualPromoLSV", Header = "Actual Promo LSV", Quoting = false },
-                new Column() { Order = order++, Field = "PlanPromoPostPromoEffectLSVW1", Header = "Plan Post Promo Effect W1, %", Quoting = false },
+                new Column() { Order = order++, Field = "PlanPromoPostPromoEffectLSVW1", Header = "Plan Post Promo Effect W1", Quoting = false },
                 new Column() { Order = order++, Field = "ActualPromoPostPromoEffectLSVW1", Header = "Actual Post Promo Effect W1", Quoting = false },
-                new Column() { Order = order++, Field = "PlanPromoPostPromoEffectLSVW2", Header = "Plan Post Promo Effect W2, %", Quoting = false },
-                new Column() { Order = order++, Field = "ActualPromoPostPromoEffectLSVW2", Header = "Actual Post Promo Effect W2, %", Quoting = false },
+                new Column() { Order = order++, Field = "PlanPromoPostPromoEffectLSVW2", Header = "Plan Post Promo Effect W2", Quoting = false },
+                new Column() { Order = order++, Field = "ActualPromoPostPromoEffectLSVW2", Header = "Actual Post Promo Effect W2", Quoting = false },
                 new Column() { Order = order++, Field = "PlanPromoPostPromoEffectLSV", Header = "Plan Post Promo Effect LSV total", Quoting = false },
                 new Column() { Order = order++, Field = "ActualPromoPostPromoEffectLSV", Header = "Actual Promo Effect LSV total", Quoting = false },
             };

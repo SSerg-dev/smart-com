@@ -125,6 +125,7 @@ namespace Module.Frontend.TPM.Controllers {
                 model.DispatchesEnd = ChangeTimeZoneUtil.ResetTimeZone(model.DispatchesEnd);
 
                 DateTimeOffset? ChangedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.Now);
+
                 if (model.EventId == null) {
                     Event promoEvent = Context.Set<Event>().FirstOrDefault(x => !x.Disabled && x.Name == "Standard promo");
                     if (promoEvent == null) {
@@ -136,7 +137,7 @@ namespace Module.Frontend.TPM.Controllers {
                 } else {
                     Event promoEvent = Context.Set<Event>().FirstOrDefault(x => !x.Disabled && x.Id == model.EventId);
                     if (promoEvent == null) {
-                        return InternalServerError(new Exception("Event 'Standard promo' not found"));
+                        return InternalServerError(new Exception("Event not found"));
                     }
                     model.EventName = promoEvent.Name;
                 }
@@ -383,7 +384,7 @@ namespace Module.Frontend.TPM.Controllers {
 
                     bool needRecalculatePromo = NeedRecalculatePromo(model, promoCopy);
                     //для ускорения перехода в следующий статус (если нет изменений параметров промо, то пропускаем следующие действия)
-                    if (needRecalculatePromo || statusName == "draft")
+                    if (needRecalculatePromo || statusName.ToLower() == "draft")
                     {
                         //Установка полей по дереву ProductTree
                         SetPromoByProductTree(model, promoProductTrees);
@@ -403,7 +404,19 @@ namespace Module.Frontend.TPM.Controllers {
                         }
                     }
 
-                    if (model.EventId != null) {
+                    if (model.EventId == null)
+                    {
+                        Event promoEvent = Context.Set<Event>().FirstOrDefault(x => !x.Disabled && x.Name == "Standard promo");
+                        if (promoEvent == null)
+                        {
+                            return InternalServerError(new Exception("Event 'Standard promo' not found"));
+                        }
+
+                        model.EventId = promoEvent.Id;
+                        model.EventName = promoEvent.Name;
+                    }
+                    else
+                    {
                         Event promoEvent = Context.Set<Event>().FirstOrDefault(x => !x.Disabled && x.Id == model.EventId);
                         if (promoEvent == null) {
                             return InternalServerError(new Exception("Event not found"));
@@ -447,12 +460,15 @@ namespace Module.Frontend.TPM.Controllers {
                     }
                     else if (needDetachPromoSupport)
                     {
+                        //UPD: Теперь не надо
+                        //UPD(17.09.19): A теперь надо !
                         List<PromoProduct> promoProductToDeleteList = Context.Set<PromoProduct>().Where(x => x.PromoId == model.Id && !x.Disabled).ToList();
-                        foreach(PromoProduct promoProduct in promoProductToDeleteList)
+                        foreach (PromoProduct promoProduct in promoProductToDeleteList)
                         {
                             promoProduct.DeletedDate = System.DateTime.Now;
                             promoProduct.Disabled = true;
                         }
+
                         //при сбросе статуса в Draft необходимо отвязать бюджеты от промо и пересчитать эти бюджеты
                         PromoCalculateHelper.RecalculateBudgets(model, user, Context);
                     }
@@ -470,7 +486,7 @@ namespace Module.Frontend.TPM.Controllers {
                 }
                 model.LastChangedDate = ChangedDate;
                 if ((promoCopy.PlanPromoUpliftPercent != null && model.PlanPromoUpliftPercent != null
-            && Math.Round(promoCopy.PlanPromoUpliftPercent.Value, 2, MidpointRounding.AwayFromZero) != Math.Round(model.PlanPromoUpliftPercent.Value, 2, MidpointRounding.AwayFromZero)))
+                    && Math.Round(promoCopy.PlanPromoUpliftPercent.Value, 2, MidpointRounding.AwayFromZero) != Math.Round(model.PlanPromoUpliftPercent.Value, 2, MidpointRounding.AwayFromZero)))
                 {
                     model.LastChangedDateDemand = ChangedDate;
                     model.LastChangedDateFinance = ChangedDate;
@@ -686,12 +702,6 @@ namespace Module.Frontend.TPM.Controllers {
                         psc.Comment = rejectreason.SystemName == "Other" ? rejectComment : null;
 
                         // Создание инцидента для оповещения об отмене промо
-                        Context.Set<PromoRejectIncident>().Add(new PromoRejectIncident()
-						{
-							PromoId = rejectPromoId,
-							CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-							Comment = rejectComment
-						});
 						Context.Set<PromoOnRejectIncident>().Add(new PromoOnRejectIncident()
 						{
 							UserLogin = user.Login,
@@ -1596,17 +1606,22 @@ namespace Module.Frontend.TPM.Controllers {
                 needReacalculate = true;
             }
 
-            if (newPromo.InOut.HasValue && newPromo.InOut.Value)
-            {
+            //if (newPromo.InOut.HasValue && newPromo.InOut.Value)
+            //{
                 List<Product> oldInOutProducts = PlanProductParametersCalculation.GetCheckedProducts(Context, oldPromo);
                 List<Product> newInOutProducts = PlanProductParametersCalculation.GetCheckedProducts(Context, newPromo);
 
                 needReacalculate = needReacalculate || oldInOutProducts.Count != newInOutProducts.Count || !oldInOutProducts.All(x => newInOutProducts.Any(y => y.Id == x.Id));
-            } 
-            else
-            {
-                needReacalculate = needReacalculate || oldPromo.ProductHierarchy != newPromo.ProductHierarchy;
-            }
+            //} 
+            //else
+            //{
+            //    needReacalculate = needReacalculate || oldPromo.ProductHierarchy != newPromo.ProductHierarchy;
+
+            //    List<Product> oldRegularProducts = PlanProductParametersCalculation.GetExcludedProducts(Context, oldPromo.RegularExcludedProductIds);
+            //    List<Product> newRegularProducts = PlanProductParametersCalculation.GetExcludedProducts(Context, newPromo.RegularExcludedProductIds);
+
+            //    needReacalculate = needReacalculate || oldRegularProducts.Count != newRegularProducts.Count || !oldRegularProducts.All(x => newRegularProducts.Any(y => y.Id == x.Id));
+            //}
 
             return needReacalculate;
         }
@@ -1663,5 +1678,21 @@ namespace Module.Frontend.TPM.Controllers {
                 return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, data = e.Message }));
             }
         }
-    }
+
+		[HttpPost]
+		[ClaimsAuthorize]
+		public IHttpActionResult CheckPromoCreator(string promoId)
+		{
+			UserInfo user = authorizationManager.GetCurrentUser();
+			bool isCreator = false;
+
+			var promo = Context.Set<Promo>().Where(p => p.Id.ToString() == promoId).FirstOrDefault();
+			if (promo != null)
+			{
+				isCreator = promo.CreatorId == user.Id;
+			}
+			
+			return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { isCreator = isCreator }));
+		}
+	}
 }

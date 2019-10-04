@@ -526,11 +526,15 @@ x-panel-header-text-container-blue-panel {
 }
 
 .sch-event-inner {
-    padding: 0px 5px 0px 0px;
+    padding: 0 1px 0 0;
+    margin-top: 1px;
     align-items: center;
     justify-content: left;
     display: inline-block;
     max-width: 90%;
+}
+.sch-schedulerpanel .x-grid-cell-inner {
+    min-height: 36px
 }
 /*Статус промо*/
 .event-status-border {
@@ -606,8 +610,13 @@ pre.code {
 
 /*Текст промо*/
 .sch-event-text {
+    padding-top: 0.5px;
+    margin-left: 2px;
+    font-family: verdana;
+    font-size: 8px;
     color: #293A54;
     line-height: 23px;
+    line-height: 9px;
     vertical-align: middle;
     margin-left: 3px;
     overflow: hidden;
@@ -701,7 +710,15 @@ pre.code {
 .promo-detail-panel-default {
     background-color: #E4E8ED !important;
 }
-
+/*Съехало поле поиска расположеное над справочниками при масштабе 80%*/
+.x-form-trigger-wrap .x-form-text {
+    border-width: 0;
+    height: 27px;
+}
+/*Для скрытия скрола на стартовой странице*/
+.x-panel-marengo-panel > .x-panel-body > .jspContainer > .jspVerticalBar .jspTrack {
+    display: none;
+}
 .promo-positive {
     border: 1px solid #8CBE8F;
 }
@@ -2974,9 +2991,9 @@ x-slider-inner:before {
     width: 100% !important;
 }
 
-.promo-budgets-details-window-trigger .x-field-label-cell {
+/*.promo-budgets-details-window-trigger .x-field-label-cell {
     width: 145px;
-}
+}*/
 
 .promo-budgets-details-window-trigger .x-field-label-cell + .x-form-item-body table.x-form-trigger-wrap {
     width: 100% !important;
@@ -3571,6 +3588,18 @@ x-slider-inner:before {
     padding-top: 48px !important;
 }
 
+.subrange-glyph,
+.subrange-glyph .x-btn-icon,
+.subrange-glyph .x-btn-glyph:hover,
+.subrange-glyph .x-btn-glyph {
+    color: #000000 !important;
+    width: 21px;
+    height: 21px;
+    line-height: 21px;
+    background-color: #FFFFFF;
+    background-image: none !important;
+} 
+
 .promobasic-choose-btn-in-out .x-btn-inner.x-btn-inner-center {
     margin: 0 !important;
     height: 100%;
@@ -3667,4 +3696,44 @@ x-slider-inner:before {
 
 .custom-jsp-pane::-webkit-scrollbar {
     display: none;
+}
+
+.noborder{
+    border: 0px !important;
+}
+
+.subranges-container {
+    border: 1.5px solid #DAE1E4;
+    border-radius: 1px;
+    background-color: #FFFFFF;
+    background-image: none !important;
+    width: 100px;
+    height: 100px;
+    padding-top: 5px;
+}
+
+    .subranges-container:hover {
+        border: 1.5px solid #809DBA;
+    }
+.subranges-inner-container {
+    width: 100px;
+    height: 70px;
+}
+.subranges-container .subrange-text {
+    font-weight: bold;
+    color: #8892a3 !important;
+    white-space: normal !important;
+    font-size: 10px;
+    text-align: center;
+    line-height: 120% !important;
+    font-family: helvetica,arial,verdana,sans-serif;
+}
+
+.button-as-text .x-btn-inner,
+.button-as-text .x-btn-glyph,
+.button-as-text,
+.button-as-text:hover {
+    background-color: #FFFFFF;
+    background-image: none !important;
+    color: #8892a3 !important;
 }

@@ -7,9 +7,11 @@ using Frontend.Core.Extensions;
 using Frontend.Core.Extensions.Export;
 using Looper.Core;
 using Looper.Parameters;
+using Module.Persist.TPM.CalculatePromoParametersModule;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
 using Module.Persist.TPM.Utils.Filter;
+using Newtonsoft.Json;
 using Persist;
 using Persist.Model;
 using System;
@@ -22,8 +24,10 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.OData;
+using System.Web.Http.OData.Extensions;
 using System.Web.Http.OData.Query;
 using System.Web.Http.Results;
 using Thinktecture.IdentityModel.Authorization.WebApi;
@@ -98,9 +102,38 @@ namespace Module.Frontend.TPM.Controllers
 		[ClaimsAuthorize]
 		public IQueryable<Product> GetSelectedProducts(ODataActionParameters data)
 		{
-			var inOutProductIds = data["jsonData"] as IEnumerable<string>;
-			string inOutProductIdsString = String.Join(";", inOutProductIds);
-			return GetConstraintedQuery(null, false, false, true, inOutProductIdsString);
+			var jsonData = (data["jsonData"] as IEnumerable<string>).ToArray();
+
+			
+			string filterValue = null;
+			// Если второй элемент – Guid, то это не фильтр
+			Guid tempGuid = Guid.Empty;
+			
+			if (jsonData.Count() == 2 && !String.IsNullOrEmpty(jsonData[1]) && !Guid.TryParse(jsonData[1], out tempGuid))
+			{
+				filterValue = jsonData.ToArray()[1];
+			}
+			if (filterValue != null)
+			{
+				var inOutProductIds = jsonData.ToArray()[0];
+				string filterRawValue = HttpUtility.UrlDecode(filterValue);
+				IQueryable<Product> query = GetConstraintedQuery(null, false, false, true, inOutProductIds);
+
+				var querySettings = new ODataQuerySettings
+				{
+					EnsureStableOrdering = false,
+					HandleNullPropagation = HandleNullPropagationOption.False
+				};
+				var context = new ODataQueryContext(Request.ODataProperties().Model, typeof(Product));
+				var filterQueryOption = new FilterQueryOption(filterRawValue, context);
+
+				return filterQueryOption.ApplyTo(query, querySettings) as IQueryable<Product>;
+			}
+			else
+			{
+				var inOutProductIds = String.Join(";", jsonData.ToArray());
+				return GetConstraintedQuery(null, false, false, true, inOutProductIds);
+			}
 		}
 
 		[ClaimsAuthorize]
@@ -230,6 +263,69 @@ namespace Module.Frontend.TPM.Controllers
             catch (Exception e)
             {
                 return InternalServerError(e.InnerException);
+            }
+        }
+
+        [HttpPost]
+        public IHttpActionResult GetIfAllProductsInSubrange(ODataActionParameters data)
+        {
+            try
+            {
+                var answer = new List<Tuple<int, bool>>();
+                if (data.ContainsKey("ProductIds") && data["ProductIds"] != null)
+                {
+                    var productIdsString = data["ProductIds"] as string;
+
+                    IEnumerable<Product> productsFromAssortmentMatrixForCurrentPromo = null;
+                    if (data.ContainsKey("PromoId") && data["PromoId"] != null)
+                    {
+                        var promoId = data["PromoId"] as string;
+                        var promoGuidId = Guid.Parse(promoId);
+                        var promo = Context.Set<Promo>().FirstOrDefault(x => x.Id == promoGuidId);
+
+                        var eanPCsFromAssortmentMatrixForCurrentPromo = PlanProductParametersCalculation.GetProductListFromAssortmentMatrix(promo, Context);
+                        productsFromAssortmentMatrixForCurrentPromo = Context.Set<Product>().Where(x => eanPCsFromAssortmentMatrixForCurrentPromo.Contains(x.EAN_PC));
+                    }
+                    else if (data.ContainsKey("ClientTreeKeyId") && data["ClientTreeKeyId"] != null &&
+                        data.ContainsKey("DispatchesStart") && data["DispatchesStart"] != null &&
+                        data.ContainsKey("DispatchesEnd") && data["DispatchesEnd"] != null)
+                    {
+                        var clientTreeKeyId = int.Parse(data["ClientTreeKeyId"] as string);
+                        var dispatchesStart = DateTimeOffset.Parse(data["DispatchesStart"] as string);
+                        var dispatchesEnd = DateTimeOffset.Parse(data["DispatchesEnd"] as string);
+
+                        var eanPCsFromAssortmentMatrixForCurrentPromo =
+                            PlanProductParametersCalculation.GetProductListFromAssortmentMatrix(Context, clientTreeKeyId, dispatchesStart, dispatchesEnd);
+
+                        productsFromAssortmentMatrixForCurrentPromo = Context.Set<Product>().Where(x => eanPCsFromAssortmentMatrixForCurrentPromo.Contains(x.EAN_PC));
+                    }
+
+                    var ResultList = productIdsString.Split(new string[] { ";!;" }, StringSplitOptions.None).ToList();
+                    var productIds = ResultList[0].Split(';').Select(Guid.Parse).ToList();
+                    var productTreeObjectIds = ResultList[1].Split(';').Select(Int32.Parse).ToList();
+                    List<int> idL;
+                    foreach (var productTreeObjectId in productTreeObjectIds)
+                    {
+                        idL = new List<int>();
+                        idL.Add(productTreeObjectId);
+                        var filteredProducts = GetFilteredProducts(idL);
+                        var resultProductList = productsFromAssortmentMatrixForCurrentPromo != null ? filteredProducts.Intersect(productsFromAssortmentMatrixForCurrentPromo) : filteredProducts;
+                        if (resultProductList.All(x => productIds.Contains(x.Id)))
+                        {
+                            answer.Add(new Tuple<int, bool>(productTreeObjectId, true));
+                        }
+                        else
+                        {
+                            answer.Add(new Tuple<int, bool>(productTreeObjectId, false));
+                        }
+                    }
+                }
+
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, answer }));
+            }
+            catch (Exception e)
+            {
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = e.Message }));
             }
         }
 
@@ -440,7 +536,7 @@ namespace Module.Frontend.TPM.Controllers
             }
         }
 
-        private IEnumerable<Product> GetFilteredProducts(List<int> productTreeObjectIds)
+        private IEnumerable<Product> GetFilteredProducts(IEnumerable<int> productTreeObjectIds)
         {
             var productTreeNodes = Context.Set<ProductTree>().Where(x => productTreeObjectIds.Any(y => x.ObjectId == y) && !x.EndDate.HasValue);
             var expressionList = new List<Func<Product, bool>>();

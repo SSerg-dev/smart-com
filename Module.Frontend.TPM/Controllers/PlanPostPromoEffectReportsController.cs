@@ -50,12 +50,14 @@ namespace Module.Frontend.TPM.Controllers {
             var simplePromoPromoProducts = Context.Database.SqlQuery<SimplePromoPromoProduct>
             (@"
                 SELECT  promo.Id,
-		                promo.ClientTreeId, 
-		                promo.EndDate,
+						promo.ClientTreeId, 
+		                promo.ClientTreeKeyId, 
 		                promo.Name,
 		                promo.Number,
-		                promo.DispatchesStart,
-		                promo.DispatchesEnd,
+		                promo.StartDate,
+		                promo.EndDate,
+						promo.DispatchesStart,
+						promo.DispatchesEnd,
 		                promo.InOut,
 		                promo.PlanPromoUpliftPercent,
 		                promoStatus.Name AS PromoStatusName,
@@ -65,11 +67,11 @@ namespace Module.Frontend.TPM.Controllers {
 		                promoProduct.PlanProductPostPromoEffectLSV, 
 		                promoProduct.PlanProductBaselineLSV 
 		
-                FROM Promo promo 
+                FROM Promo promo
 	                 INNER JOIN PromoProduct promoProduct ON promoProduct.PromoId = promo.Id  
 	                 INNER JOIN PromoStatus promoStatus ON promoStatus.Id = promo.PromoStatusId
 	
-                WHERE promoProduct.Disabled = 0 AND promoProduct.PlanProductCaseQty > 0
+                WHERE promoProduct.Disabled = 0 AND promoProduct.PlanProductCaseQty > 0 AND promo.Disabled = 0
             ").AsEnumerable();
 
             simplePromoPromoProducts.AsParallel().ForAll(simplePromoPromoProduct =>
@@ -77,18 +79,10 @@ namespace Module.Frontend.TPM.Controllers {
                     var promoStatus = simplePromoPromoProduct.PromoStatusName;
                     var demandCode = String.Empty;
 
-                    var clientTree = clientTrees.FirstOrDefault(x => x.ObjectId == simplePromoPromoProduct.ClientTreeId && DateTime.Compare(x.StartDate, dateTimeNow) <= 0 && (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, dateTimeNow) > 0));
+                    var clientTree = clientTrees.FirstOrDefault(x => x.Id == simplePromoPromoProduct.ClientTreeKeyId && DateTime.Compare(x.StartDate, dateTimeNow) <= 0 && (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, dateTimeNow) > 0));
                     if (clientTree == null)
                     {
                         demandCode = null;
-                    }
-                    else if (String.IsNullOrEmpty(clientTree.DemandCode))
-                    {
-                        clientTree = clientTrees.FirstOrDefault(y => y.ObjectId == clientTree.parentId && DateTime.Compare(y.StartDate, dateTimeNow) <= 0 && (!y.EndDate.HasValue || DateTime.Compare(y.EndDate.Value, dateTimeNow) > 0));
-                        if (clientTree != null && !String.IsNullOrEmpty(clientTree.DemandCode))
-                        {
-                            demandCode = clientTree.DemandCode;
-                        }
                     }
                     else
                     {
@@ -118,6 +112,7 @@ namespace Module.Frontend.TPM.Controllers {
                         planProductPostPromoEffectLSVW1 = simplePromoPromoProduct.PlanProductPostPromoEffectLSV * (postPromoEffectW1 / 100);
                         planProductBaselineLSVW1 = simplePromoPromoProduct.PlanProductBaselineLSV * (postPromoEffectW1 / 100);
                     }
+
                     if (postPromoEffectW2 != null)
                     {
                         postPromoEffectW2Qty = simplePromoPromoProduct.PlanProductIncrementalCaseQty * (postPromoEffectW2 / 100);
@@ -126,7 +121,7 @@ namespace Module.Frontend.TPM.Controllers {
                         planProductBaselineLSVW2 = simplePromoPromoProduct.PlanProductBaselineLSV * (postPromoEffectW2 / 100);
                     }
 
-                    postPromoEffectW1Qty = postPromoEffectW1Qty != null ? Math.Round(postPromoEffectW1Qty.Value, 2) : 0;
+					postPromoEffectW1Qty = postPromoEffectW1Qty != null ? Math.Round(postPromoEffectW1Qty.Value, 2) : 0;
                     planProductBaselineCaseQtyW1 = planProductBaselineCaseQtyW1 != null ? Math.Round(planProductBaselineCaseQtyW1.Value, 2) : 0;
                     planProductPostPromoEffectLSVW1 = planProductPostPromoEffectLSVW1 != null ? Math.Round(planProductPostPromoEffectLSVW1.Value, 2) : 0;
                     planProductBaselineLSVW1 = planProductBaselineLSVW1 != null ? Math.Round(planProductBaselineLSVW1.Value, 2) : 0;
@@ -136,7 +131,7 @@ namespace Module.Frontend.TPM.Controllers {
                     planProductPostPromoEffectLSVW2 = planProductPostPromoEffectLSVW2 != null ? Math.Round(planProductPostPromoEffectLSVW2.Value, 2) : 0;
                     planProductBaselineLSVW2 = planProductBaselineLSVW2 != null ? Math.Round(planProductBaselineLSVW2.Value, 2) : 0;
 
-                    var promoEffectBegin = ((DateTimeOffset)simplePromoPromoProduct.EndDate).Date.AddDays(1);
+                    var promoEffectBegin = ((DateTimeOffset)simplePromoPromoProduct.DispatchesEnd).Date.AddDays(1);
 
                     var marsWeekBeginDiff = DayOfWeek.Sunday - promoEffectBegin.DayOfWeek;
                     if (marsWeekBeginDiff < 0)
@@ -146,6 +141,15 @@ namespace Module.Frontend.TPM.Controllers {
 
                     var weekStart = promoEffectBegin.AddDays(marsWeekBeginDiff);
                     var week = TimeSpan.FromDays(7);
+
+					if (String.IsNullOrEmpty(clientTree.DemandCode))
+                    {
+                        clientTree = clientTrees.FirstOrDefault(y => y.ObjectId == clientTree.parentId && DateTime.Compare(y.StartDate, dateTimeNow) <= 0 && (!y.EndDate.HasValue || DateTime.Compare(y.EndDate.Value, dateTimeNow) > 0));
+                        if (clientTree != null && !String.IsNullOrEmpty(clientTree.DemandCode))
+                        {
+                            demandCode = clientTree.DemandCode;
+                        }
+                    }
 
                     result.Add(ReportCreateWeek(simplePromoPromoProduct, demandCode, promoStatus, weekStart, postPromoEffectW1Qty, postPromoEffectW2Qty, planProductBaselineCaseQtyW1, planProductBaselineCaseQtyW2, planProductPostPromoEffectLSVW1, planProductPostPromoEffectLSVW2, planProductBaselineLSVW1, planProductBaselineLSVW2));
             });
@@ -161,24 +165,25 @@ namespace Module.Frontend.TPM.Controllers {
         }
 
         private IEnumerable<Column> GetExportSettings() {
+			int order = 0;
             IEnumerable<Column> columns = new List<Column>() {
-                new Column() { Order = 1, Field = "ZREP", Header = "ZREP", Quoting = false },
-                new Column() { Order = 2, Field = "DemandCode", Header = "Demand Code", Quoting = false },
-                new Column() { Order = 3, Field = "PromoNameId", Header = "Promo Name Id", Quoting = false },
-                new Column() { Order = 4, Field = "LocApollo", Header = "Loc", Quoting = false },
-                new Column() { Order = 5, Field = "TypeApollo", Header = "Type", Quoting = false },
-                new Column() { Order = 6, Field = "ModelApollo", Header = "Model", Quoting = false },
-                new Column() { Order = 7, Field = "WeekStartDate", Header = "Week Start Date", Quoting = false, Format = "dd.MM.yyyy"  },
-                new Column() { Order = 8, Field = "PlanPostPromoEffectQty", Header = "Qty", Quoting = false },
-				new Column() { Order = 9, Field = "PlanUplift", Header = "Uplift Plan", Quoting = false },
-                new Column() { Order = 10, Field = "DispatchesStart", Header = "Dispatch Start", Quoting = false, Format = "dd.MM.yyyy"  },
-                new Column() { Order = 11, Field = "DispatchesEnd", Header = "Dispatch End", Quoting = false, Format = "dd.MM.yyyy" },
-				new Column() { Order = 12, Field = "Week", Header = "Week", Quoting = false },
-				new Column() { Order = 13, Field = "Status", Header = "Status", Quoting = false },
-				new Column() { Order = 14, Field = "PlanProductBaselineCaseQty", Header = "Plan Product Baseline Case Qty", Quoting = false, Format = "0.00" },
-				new Column() { Order = 15, Field = "PlanProductPostPromoEffectLSV", Header = "Plan Product Post Promo Effect LSV", Quoting = false, Format = "0.00" },
-				new Column() { Order = 16, Field = "PlanProductBaselineLSV", Header = "Plan Product Baseline LSV", Quoting = false, Format = "0.00" },
-				new Column() { Order = 17, Field = "InOut", Header = "InOut", Quoting = false },
+                new Column() { Order = order++, Field = "ZREP", Header = "ZREP", Quoting = false },
+                new Column() { Order = order++, Field = "DemandCode", Header = "Demand Code", Quoting = false },
+                new Column() { Order = order++, Field = "PromoNameId", Header = "Promo Name Id", Quoting = false },
+                new Column() { Order = order++, Field = "LocApollo", Header = "Loc", Quoting = false },
+                new Column() { Order = order++, Field = "TypeApollo", Header = "Type", Quoting = false },
+                new Column() { Order = order++, Field = "ModelApollo", Header = "Model", Quoting = false },
+                new Column() { Order = order++, Field = "WeekStartDate", Header = "Week Start Date", Quoting = false, Format = "dd.MM.yyyy"  },
+                new Column() { Order = order++, Field = "PlanPostPromoEffectQty", Header = "Qty", Quoting = false },
+				new Column() { Order = order++, Field = "PlanUplift", Header = "Uplift Plan", Quoting = false },
+                new Column() { Order = order++, Field = "StartDate", Header = "Start Date", Quoting = false, Format = "dd.MM.yyyy"  },
+                new Column() { Order = order++, Field = "EndDate", Header = "End Date", Quoting = false, Format = "dd.MM.yyyy" },
+				new Column() { Order = order++, Field = "Status", Header = "Status", Quoting = false },
+				new Column() { Order = order++, Field = "Week", Header = "Week", Quoting = false },
+				new Column() { Order = order++, Field = "PlanProductBaselineCaseQty", Header = "Plan Product Baseline Case Qty", Quoting = false, Format = "0.00" },
+				new Column() { Order = order++, Field = "PlanProductPostPromoEffectLSV", Header = "Plan Product Post Promo Effect LSV", Quoting = false, Format = "0.00" },
+				new Column() { Order = order++, Field = "PlanProductBaselineLSV", Header = "Plan Product Baseline LSV", Quoting = false, Format = "0.00" },
+				new Column() { Order = order++, Field = "InOut", Header = "InOut", Quoting = false },
             };
             return columns;
         }
@@ -218,8 +223,8 @@ namespace Module.Frontend.TPM.Controllers {
                     WeekStartDate = plan.WeekStartDate,
                     PlanPostPromoEffectQty = plan.PlanPostPromoEffectQtyW1,
                     PlanUplift = plan.PlanUplift,
-                    DispatchesStart = plan.DispatchesStart,
-                    DispatchesEnd = plan.DispatchesEnd,
+                    StartDate = plan.StartDate,
+                    EndDate = plan.EndDate,
                     Week = plan.Week,
                     Status = plan.Status,
                     PlanProductBaselineCaseQty = plan.PlanProductBaselineCaseQtyW1,
@@ -240,9 +245,9 @@ namespace Module.Frontend.TPM.Controllers {
                     WeekStartDate = plan.WeekStartDate + week,
                     PlanPostPromoEffectQty = plan.PlanPostPromoEffectQtyW2,
                     PlanUplift = plan.PlanUplift,
-                    DispatchesStart = plan.DispatchesStart,
-                    DispatchesEnd = plan.DispatchesEnd,
-                    Week = plan.Week,
+					StartDate = plan.StartDate,
+					EndDate = plan.EndDate,
+					Week = plan.Week,
                     Status = plan.Status,
                     PlanProductBaselineCaseQty = plan.PlanProductBaselineCaseQtyW2,
                     PlanProductPostPromoEffectLSV = plan.PlanProductPostPromoEffectLSVW2,
@@ -261,15 +266,15 @@ namespace Module.Frontend.TPM.Controllers {
             rep.Status = promoStatus;
             rep.PromoNameId = promo.Name + "#" + promo.Number.ToString();
             rep.WeekStartDate = weekStart;
-            rep.DispatchesStart = promo.DispatchesStart;
-            rep.DispatchesEnd = promo.DispatchesEnd;
+			rep.StartDate = promo.StartDate;
+			rep.EndDate = promo.EndDate;
             rep.DemandCode = String.IsNullOrEmpty(demandCode) ? "Demand code was not found" : demandCode;
             rep.InOut = promo.InOut;
             rep.Id = Guid.NewGuid();
             rep.LocApollo = "RU_0125";
             rep.TypeApollo = "7";
             rep.ModelApollo = "SHIP_LEWAND_CS";
-			rep.Week = SetWeekByMarsDates(weekStart);
+			rep.Week = SetWeekByMarsDates(promo.DispatchesStart.Value.DateTime);
 			rep.PlanProductBaselineCaseQty = planProductBaselineCaseQty;
 			rep.PlanProductPostPromoEffectLSV = planProductPostPromoEffectLSV;
 			rep.PlanProductBaselineLSV = planProductBaselineLSV;
@@ -284,15 +289,15 @@ namespace Module.Frontend.TPM.Controllers {
             rep.Status = promoStatus;
             rep.PromoNameId = simplePromoPromoProduct.Name + "#" + simplePromoPromoProduct.Number.ToString();
             rep.WeekStartDate = weekStart;
-            rep.DispatchesStart = simplePromoPromoProduct.DispatchesStart;
-            rep.DispatchesEnd = simplePromoPromoProduct.DispatchesEnd;
+            rep.StartDate = simplePromoPromoProduct.StartDate;
+            rep.EndDate = simplePromoPromoProduct.EndDate;
             rep.DemandCode = String.IsNullOrEmpty(demandCode) ? "Demand code was not found" : demandCode;
             rep.InOut = simplePromoPromoProduct.InOut;
             rep.Id = Guid.NewGuid();
             rep.LocApollo = "RU_0125";
             rep.TypeApollo = "7";
             rep.ModelApollo = "SHIP_LEWAND_CS";
-            rep.Week = SetWeekByMarsDates(weekStart);
+            rep.Week = SetWeekByMarsDates(simplePromoPromoProduct.DispatchesStart.Value.DateTime);
             rep.PlanPostPromoEffectQtyW1 = qtyW1;
             rep.PlanPostPromoEffectQtyW2 = qtyW2;
             rep.PlanProductBaselineCaseQtyW1 = planProductBaselineCaseQtyW1;
@@ -305,10 +310,10 @@ namespace Module.Frontend.TPM.Controllers {
 
             return rep;
         }
-        public string SetWeekByMarsDates(DateTime weekStartDate)
+        public string SetWeekByMarsDates(DateTime week)
 		{
 			string stringFormatYP2W = "{0}P{1:D2}W{2}";
-			string marsDate = (new MarsDate((DateTimeOffset)weekStartDate).ToString(stringFormatYP2W));
+			string marsDate = (new MarsDate((DateTimeOffset)week).ToString(stringFormatYP2W));
 			return marsDate;
 		}
 		private bool EntityExists(Guid key) {

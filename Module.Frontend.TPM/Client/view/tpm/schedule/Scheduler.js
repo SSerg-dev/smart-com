@@ -13,7 +13,7 @@
     controller: 'schedulerviewcontroller',
     viewPreset: 'marsweekMonth',
     loadMask: true,
-    rowHeight: 36,
+    rowHeight: 21,
     
     //startDate: new Date(new Date().getFullYear() - 1, 10, 01),
     //endDate: new Date(new Date().getFullYear() + 1, 3, 01),

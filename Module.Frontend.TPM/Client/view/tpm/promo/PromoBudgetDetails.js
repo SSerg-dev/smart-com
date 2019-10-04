@@ -52,7 +52,7 @@
             trigger1Cls: 'form-info-trigger',
             cls: 'borderedField-with-lable',
             labelCls: 'borderedField-label',
-            labelWidth: 110,
+            labelWidth: 190,
             labelSeparator: '',
             blockMillion: false, // если true - то преобразовывать в миллионы
             originValue: null, // настоящее значение

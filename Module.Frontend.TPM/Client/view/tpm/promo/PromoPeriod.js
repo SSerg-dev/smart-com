@@ -209,7 +209,7 @@
                                     var dispatchEndDate = field.up('promoperiod').down('[name=DispatchEndDate]');
                                     var daysForDispatchEnd = record.DaysEnd;
 
-                                    if (isBeforeEnd !== null && daysEnd !== null && isDaysEnd !== null) {
+                                    if (isBeforeEnd !== null && daysEnd !== null && isDaysEnd !== null ) {
                                          
                                         if (!isDaysEnd) {
                                             daysForDispatchEnd *= 7;

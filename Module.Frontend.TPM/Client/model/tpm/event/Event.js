@@ -5,8 +5,6 @@
     fields: [
         { name: 'Id', hidden: true },
         { name: 'Name', type: 'string', hidden: false, isDefault: true },
-        { name: 'Year', type: 'int', hidden: false, isDefault: true },
-        { name: 'Period', type: 'string', hidden: false, isDefault: true },
         { name: 'Description', type: 'string', hidden: false, isDefault: true, useNull: true }
     ],
     proxy: {
@@ -16,6 +14,10 @@
             type: 'json',
             totalProperty: 'inlineCount',
             root: 'results'
+        },
+        extraParams: {
+            clientTreeKeyId: null
         }
-    }
+    },
+    
 });

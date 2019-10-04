@@ -41,6 +41,10 @@ namespace Module.Frontend.TPM.Controllers {
             if (role != "Administrator") {
                 query = query.Where(e => e.PromoStatusSystemName != "Draft" || e.CreatorId == user.Id);
             }
+
+            var statusesForExcluding = new List<string>() { "Deleted", "Cancelled" };
+            query = query.Where(x => !statusesForExcluding.Contains(x.PromoStatusSystemName));
+
             return query;
         }
 

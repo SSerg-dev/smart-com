@@ -20,14 +20,6 @@
             fieldLabel: l10n.ns('tpm', 'Event').value('Name'),
         }, {
             xtype: 'singlelinedisplayfield',
-            name: 'Year',
-            fieldLabel: l10n.ns('tpm', 'Event').value('Year'),
-        }, {
-            xtype: 'singlelinedisplayfield',
-            name: 'Period',
-            fieldLabel: l10n.ns('tpm', 'Event').value('Period'),
-        }, {
-            xtype: 'singlelinedisplayfield',
             name: 'Description',
             fieldLabel: l10n.ns('tpm', 'Event').value('Description'),
         }, ]
