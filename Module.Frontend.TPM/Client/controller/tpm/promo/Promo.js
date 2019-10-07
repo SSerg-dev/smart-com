@@ -2883,121 +2883,123 @@
 			);
 		}
 
-		// --------------- promo budgets ---------------                
+        if (!isCopy) {
+            // --------------- promo budgets ---------------                
 
-		// total cost budgets
-		totalCost.setValue(record.data.PlanPromoCost || 0);
-		shopperTi.setValue(record.data.PlanPromoTIShopper);
-		marketingTi.setValue(record.data.PlanPromoTIMarketing);
-		branding.setValue(record.data.PlanPromoBranding);
-		btl.setValue(record.data.PlanPromoBTL);
-		costProduction.setValue(record.data.PlanPromoCostProduction);
+            // total cost budgets
+            totalCost.setValue(record.data.PlanPromoCost || 0);
+            shopperTi.setValue(record.data.PlanPromoTIShopper);
+            marketingTi.setValue(record.data.PlanPromoTIMarketing);
+            branding.setValue(record.data.PlanPromoBranding);
+            btl.setValue(record.data.PlanPromoBTL);
+            costProduction.setValue(record.data.PlanPromoCostProduction);
 
-		factTotalCost.setValue(record.data.ActualPromoCost || 0);
-		actualPromoTIShopper.setValue(record.data.ActualPromoTIShopper);
-		actualPromoTIMarketing.setValue(record.data.ActualPromoTIMarketing);
-		actualPromoBranding.setValue(record.data.ActualPromoBranding);
-		factBtl.setValue(record.data.ActualPromoBTL);
-		factCostProduction.setValue(record.data.ActualPromoCostProduction);
+            factTotalCost.setValue(record.data.ActualPromoCost || 0);
+            actualPromoTIShopper.setValue(record.data.ActualPromoTIShopper);
+            actualPromoTIMarketing.setValue(record.data.ActualPromoTIMarketing);
+            actualPromoBranding.setValue(record.data.ActualPromoBranding);
+            factBtl.setValue(record.data.ActualPromoBTL);
+            factCostProduction.setValue(record.data.ActualPromoCostProduction);
 
-		// marketing TI               
-		planPromoXSites.setValue(record.data.PlanPromoXSites);
-		planPromoCatalogue.setValue(record.data.PlanPromoCatalogue);
-		planPromoPOSMInClient.setValue(record.data.PlanPromoPOSMInClient);
+            // marketing TI               
+            planPromoXSites.setValue(record.data.PlanPromoXSites);
+            planPromoCatalogue.setValue(record.data.PlanPromoCatalogue);
+            planPromoPOSMInClient.setValue(record.data.PlanPromoPOSMInClient);
 
-		actualPromoXSites.setValue(record.data.ActualPromoXSites);
-		actualPromoCatalogue.setValue(record.data.ActualPromoCatalogue);
-		actualPromoPOSMInClient.setValue(record.data.ActualPromoPOSMInClient);
+            actualPromoXSites.setValue(record.data.ActualPromoXSites);
+            actualPromoCatalogue.setValue(record.data.ActualPromoCatalogue);
+            actualPromoPOSMInClient.setValue(record.data.ActualPromoPOSMInClient);
 
-		// cost production               
-		planPromoCostProdXSites.setValue(record.data.PlanPromoCostProdXSites);
-		planPromoCostProdCatalogue.setValue(record.data.PlanPromoCostProdCatalogue);
-		planPromoCostProdPOSMInClient.setValue(record.data.PlanPromoCostProdPOSMInClient);
+            // cost production               
+            planPromoCostProdXSites.setValue(record.data.PlanPromoCostProdXSites);
+            planPromoCostProdCatalogue.setValue(record.data.PlanPromoCostProdCatalogue);
+            planPromoCostProdPOSMInClient.setValue(record.data.PlanPromoCostProdPOSMInClient);
 
-		actualPromoCostProdXSites.setValue(record.data.ActualPromoCostProdXSites);
-		actualPromoCostProdCatalogue.setValue(record.data.ActualPromoCostProdCatalogue);
-		actualPromoCostProdPOSMInClient.setValue(record.data.ActualPromoCostProdPOSMInClient);
+            actualPromoCostProdXSites.setValue(record.data.ActualPromoCostProdXSites);
+            actualPromoCostProdCatalogue.setValue(record.data.ActualPromoCostProdCatalogue);
+            actualPromoCostProdPOSMInClient.setValue(record.data.ActualPromoCostProdPOSMInClient);
 
-		// --------------- promo activity ---------------
+            // --------------- promo activity ---------------
 
-		actualInstoreMechanicId.setValue(new App.model.tpm.mechanic.Mechanic({
-			Id: record.data.ActualInStoreMechanicId,
-			Name: record.data.ActualInStoreMechanicName
-		}));
-		if (record.data.ActualInStoreMechanicId) {
-			actualInstoreMechanicTypeId.setValue(new App.model.tpm.mechanictype.MechanicType({
-				Id: record.data.ActualInStoreMechanicTypeId,
-				Name: record.data.ActualInStoreMechanicTypeName
-			}));
-			actualInStoreDiscount.setValue(record.data.ActualInStoreDiscount);
-		} else if (record.data.ActualInStoreDiscount) {
-			actualInStoreDiscount.setValue(record.data.ActualInStoreDiscount);
-		}
+            actualInstoreMechanicId.setValue(new App.model.tpm.mechanic.Mechanic({
+                Id: record.data.ActualInStoreMechanicId,
+                Name: record.data.ActualInStoreMechanicName
+            }));
+            if (record.data.ActualInStoreMechanicId) {
+                actualInstoreMechanicTypeId.setValue(new App.model.tpm.mechanictype.MechanicType({
+                    Id: record.data.ActualInStoreMechanicTypeId,
+                    Name: record.data.ActualInStoreMechanicTypeName
+                }));
+                actualInStoreDiscount.setValue(record.data.ActualInStoreDiscount);
+            } else if (record.data.ActualInStoreDiscount) {
+                actualInStoreDiscount.setValue(record.data.ActualInStoreDiscount);
+            }
 
-		actualInstoreMechanicTypeId.clearInvalid();
-		actualInStoreDiscount.clearInvalid();
+            actualInstoreMechanicTypeId.clearInvalid();
+            actualInStoreDiscount.clearInvalid();
 
-		if (actualInstoreMechanicId.crudAccess.indexOf(currentRole) === -1) {
-			actualInstoreMechanicId.setReadOnly(true);
-		}
-		if (actualInstoreMechanicTypeId.crudAccess.indexOf(currentRole) === -1) {
-			actualInstoreMechanicTypeId.setReadOnly(true);
-		}
-		if (actualInStoreDiscount.crudAccess.indexOf(currentRole) === -1) {
-			actualInStoreDiscount.setReadOnly(true);
-		}
+            if (actualInstoreMechanicId.crudAccess.indexOf(currentRole) === -1) {
+                actualInstoreMechanicId.setReadOnly(true);
+            }
+            if (actualInstoreMechanicTypeId.crudAccess.indexOf(currentRole) === -1) {
+                actualInstoreMechanicTypeId.setReadOnly(true);
+            }
+            if (actualInStoreDiscount.crudAccess.indexOf(currentRole) === -1) {
+                actualInStoreDiscount.setReadOnly(true);
+            }
 
-		promoController.mechanicTypeChange(
-			actualInstoreMechanicId, actualInstoreMechanicTypeId, actualInStoreDiscount,
-			promoController.getMechanicListForUnlockDiscountField(),
-			readOnly
-		);
+            promoController.mechanicTypeChange(
+                actualInstoreMechanicId, actualInstoreMechanicTypeId, actualInStoreDiscount,
+                promoController.getMechanicListForUnlockDiscountField(),
+                readOnly
+            );
 
-		actualInStoreShelfPrice.setValue(record.data.ActualInStoreShelfPrice);
-		invoiceNumber.setValue(record.data.InvoiceNumber);
-		documentNumber.setValue(record.data.DocumentNumber);
+            actualInStoreShelfPrice.setValue(record.data.ActualInStoreShelfPrice);
+            invoiceNumber.setValue(record.data.InvoiceNumber);
+            documentNumber.setValue(record.data.DocumentNumber);
 
-		if (actualInStoreShelfPrice.crudAccess.indexOf(currentRole) === -1) {
-			actualInStoreShelfPrice.setReadOnly(true);
-		}
+            if (actualInStoreShelfPrice.crudAccess.indexOf(currentRole) === -1) {
+                actualInStoreShelfPrice.setReadOnly(true);
+            }
 
-		if (invoiceNumber.crudAccess.indexOf(currentRole) === -1) {
-			invoiceNumber.setReadOnly(true);
-		}
+            if (invoiceNumber.crudAccess.indexOf(currentRole) === -1) {
+                invoiceNumber.setReadOnly(true);
+            }
 
-		if (documentNumber.crudAccess.indexOf(currentRole) === -1) {
-			documentNumber.setReadOnly(true);
-		}
+            if (documentNumber.crudAccess.indexOf(currentRole) === -1) {
+                documentNumber.setReadOnly(true);
+            }
 
-		planPromoUpliftPercent.setValue(record.data.PlanPromoUpliftPercent);
-		promoUpliftLockedUpdateCheckbox.setValue(!record.data.NeedRecountUplift);
+            planPromoUpliftPercent.setValue(record.data.PlanPromoUpliftPercent);
+            promoUpliftLockedUpdateCheckbox.setValue(!record.data.NeedRecountUplift);
 
-		if (record.data.InOut) {
-			planPromoUpliftPercent.setReadOnly(true);
-			planPromoUpliftPercent.addCls('readOnlyField');
-			promoUpliftLockedUpdateCheckbox.setDisabled(true);
-		}
+            if (record.data.InOut) {
+                planPromoUpliftPercent.setReadOnly(true);
+                planPromoUpliftPercent.addCls('readOnlyField');
+                promoUpliftLockedUpdateCheckbox.setDisabled(true);
+            }
 
-		var promoStatusName = record.get('PromoStatusName');
-		//Начавшиеся promo не редактируются uplift
-		var isPromoWasStarted = (['Started', 'Finished', 'Closed'].indexOf(promoStatusName) >= 0);
-		if (isPromoWasStarted) {
-			me.blockStartedPromoUplift();
-		}
+            var promoStatusName = record.get('PromoStatusName');
+            //Начавшиеся promo не редактируются uplift
+            var isPromoWasStarted = (['Started', 'Finished', 'Closed'].indexOf(promoStatusName) >= 0);
+            if (isPromoWasStarted) {
+                me.blockStartedPromoUplift();
+            }
 
-		planPromoBaselineLSV.setValue(record.data.PlanPromoBaselineLSV);
-		planPromoIncrementalLSV.setValue(record.data.PlanPromoIncrementalLSV);
-		planPromoLSV.setValue(record.data.PlanPromoLSV);
-		planPostPromoEffect.setValue(record.data.PlanPromoPostPromoEffectLSV);
+            planPromoBaselineLSV.setValue(record.data.PlanPromoBaselineLSV);
+            planPromoIncrementalLSV.setValue(record.data.PlanPromoIncrementalLSV);
+            planPromoLSV.setValue(record.data.PlanPromoLSV);
+            planPostPromoEffect.setValue(record.data.PlanPromoPostPromoEffectLSV);
 
-		actualPromoUpliftPercent.setValue(record.data.ActualPromoUpliftPercent);
-		actualPromoBaselineLSV.setValue(record.data.ActualPromoBaselineLSV);
-		actualPromoIncrementalLSV.setValue(record.data.ActualPromoIncrementalLSV);
-		actualPromoLSVbyCompensation.setValue(record.data.ActualPromoLSVByCompensation);
-		actualPromoLSV.setValue(record.data.ActualPromoLSV);
-		factPostPromoEffect.setValue(record.data.ActualPromoPostPromoEffectLSV);
+            actualPromoUpliftPercent.setValue(record.data.ActualPromoUpliftPercent);
+            actualPromoBaselineLSV.setValue(record.data.ActualPromoBaselineLSV);
+            actualPromoIncrementalLSV.setValue(record.data.ActualPromoIncrementalLSV);
+            actualPromoLSVbyCompensation.setValue(record.data.ActualPromoLSVByCompensation);
+            actualPromoLSV.setValue(record.data.ActualPromoLSV);
+            factPostPromoEffect.setValue(record.data.ActualPromoPostPromoEffectLSV);
 
-		parentWidget.setLoading(false);
+            parentWidget.setLoading(false);
+        }
 
 		// Определяем доступные действия
 		me.defineAllowedActions(promoeditorcustom, promoActions, record.data.PromoStatusSystemName);
