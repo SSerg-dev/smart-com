@@ -14,7 +14,7 @@ Ext.define('App.view.tpm.tradeinvestment.TradeInvestmentEditor', {
             name: 'StartDate',
             fieldLabel: l10n.ns('tpm', 'TradeInvestment').value('StartDate'),
             readOnly: false,
-            editable: true,
+            editable: false,
             format: 'd.m.Y',
             listeners: {
                 change: function (newValue, oldValue) {
@@ -27,7 +27,7 @@ Ext.define('App.view.tpm.tradeinvestment.TradeInvestmentEditor', {
             name: 'EndDate',
             fieldLabel: l10n.ns('tpm', 'TradeInvestment').value('EndDate'),
             readOnly: false,
-            editable: true,
+            editable: false,
             format: 'd.m.Y',
             listeners: {
                 change: function (newValue, oldValue) {

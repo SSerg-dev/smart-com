@@ -69,7 +69,7 @@
             fieldLabel: l10n.ns('tpm', 'AssortmentMatrix').value('StartDate'),
             minValue: new Date(),
             allowBlank: false,
-            editable: true,
+            editable: false,
             format: 'd.m.Y',
             listeners: {
                 afterrender: function (field) {
@@ -94,7 +94,7 @@
             fieldLabel: l10n.ns('tpm', 'AssortmentMatrix').value('EndDate'),
             minValue: new Date(),
             allowBlank: false,
-            editable: true,
+            editable: false,
             format: 'd.m.Y',
             listeners: {
                 change: function (field) {

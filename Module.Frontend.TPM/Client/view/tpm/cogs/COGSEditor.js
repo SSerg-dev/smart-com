@@ -14,7 +14,7 @@
             name: 'StartDate',
             fieldLabel: l10n.ns('tpm', 'COGS').value('StartDate'),
             readOnly: false,
-            editable: true,
+            editable: false,
             format: 'd.m.Y',
             listeners: {
                 change: function (newValue, oldValue) {
@@ -27,7 +27,7 @@
             name: 'EndDate',
             fieldLabel: l10n.ns('tpm', 'COGS').value('EndDate'),
             readOnly: false,
-            editable: true,
+            editable: false,
             format: 'd.m.Y',
             listeners: {
                 change: function (newValue, oldValue) {
