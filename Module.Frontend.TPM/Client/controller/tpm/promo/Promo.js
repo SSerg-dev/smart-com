@@ -811,20 +811,20 @@
 		ActualPromoIncrementalEarnings = Ext.util.Format.round(ActualPromoIncrementalEarnings / 1000000, 2);
 		PlanPromoIncrementalEarnings = Ext.util.Format.round(PlanPromoIncrementalEarnings / 1000000, 2);
 
-		if (!(ActualPromoIncrementalNSV === 0)) {
-			PercentPromoIncrementalNSV = (PlanPromoIncrementalNSV / ActualPromoIncrementalNSV) * 100 - 100;
+        if (!(PlanPromoIncrementalNSV === 0)) {
+            PercentPromoIncrementalNSV = (ActualPromoIncrementalNSV / PlanPromoIncrementalNSV) * 100 - 100;
 			PercentPromoIncrementalNSV = Ext.util.Format.round(PercentPromoIncrementalNSV, 2);
 		}
-		if (!(ActualPromoIncrementalLSV === 0)) {
-			PercentPromoIncrementalLSV = (PlanPromoIncrementalLSV / ActualPromoIncrementalLSV) * 100 - 100;
+        if (!(PlanPromoIncrementalLSV === 0)) {
+            PercentPromoIncrementalLSV = (ActualPromoIncrementalLSV / PlanPromoIncrementalLSV) * 100 - 100;
 			PercentPromoIncrementalLSV = Ext.util.Format.round(PercentPromoIncrementalLSV, 2);
 		}
-		if (!(ActualPromoNSV === 0)) {
-			PercentPromoNSV = (PlanPromoNSV / ActualPromoNSV) * 100 - 100;
+        if (!(PlanPromoNSV === 0)) {
+            PercentPromoNSV = (ActualPromoNSV / PlanPromoNSV) * 100 - 100;
 			PercentPromoNSV = Ext.util.Format.round(PercentPromoNSV, 2);
 		}
-		if (!(ActualPromoIncrementalEarnings === 0)) {
-			PercentPromoIncrementalEarnings = (PlanPromoIncrementalEarnings / ActualPromoIncrementalEarnings) * 100 - 100;
+        if (!(PlanPromoIncrementalEarnings === 0)) {
+            PercentPromoIncrementalEarnings = (ActualPromoIncrementalEarnings / PlanPromoIncrementalEarnings) * 100 - 100;
 			PercentPromoIncrementalEarnings = Ext.util.Format.round(PercentPromoIncrementalEarnings, 2);
 		}
 
