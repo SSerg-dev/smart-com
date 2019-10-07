@@ -2998,8 +2998,8 @@
             actualPromoLSV.setValue(record.data.ActualPromoLSV);
             factPostPromoEffect.setValue(record.data.ActualPromoPostPromoEffectLSV);
 
-            parentWidget.setLoading(false);
         }
+        parentWidget.setLoading(false);
 
 		// Определяем доступные действия
 		me.defineAllowedActions(promoeditorcustom, promoActions, record.data.PromoStatusSystemName);
