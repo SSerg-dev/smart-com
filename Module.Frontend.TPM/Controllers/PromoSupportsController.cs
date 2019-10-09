@@ -5,6 +5,9 @@ using Core.Settings;
 using Frontend.Core.Controllers.Base;
 using Frontend.Core.Extensions;
 using Frontend.Core.Extensions.Export;
+using Looper.Core;
+using Looper.Parameters;
+using Module.Persist.TPM.CalculatePromoParametersModule;
 using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
@@ -136,18 +139,6 @@ namespace Module.Frontend.TPM.Controllers
                     return NotFound();
                 }
 
-                var changesIncidnet = new ChangesIncident
-                {
-                    Id = new Guid(),
-                    DirectoryName = "PromoSupport",
-                    ItemId = key.ToString(),
-                    CreateDate = DateTimeOffset.Now,
-                    ProcessDate = null,
-                    DeletedDate = null,
-                    Disabled = false
-                };
-                Context.Set<ChangesIncident>().Add(changesIncidnet);
-
                 patch.Patch(model);
                 // делаем UTC +3
                 model.StartDate = ChangeTimeZoneUtil.ResetTimeZone(model.StartDate);
@@ -185,28 +176,23 @@ namespace Module.Frontend.TPM.Controllers
                     return NotFound();
                 }
 
-                var changesIncidnet = new ChangesIncident
-                {
-                    Id = new Guid(),
-                    DirectoryName = "PromoSupport",
-                    ItemId = key.ToString(),
-                    CreateDate = DateTimeOffset.Now,
-                    ProcessDate = null,
-                    DeletedDate = null,
-                    Disabled = false
-                };
-                Context.Set<ChangesIncident>().Add(changesIncidnet);
-
                 model.DeletedDate = System.DateTime.Now;
                 model.Disabled = true;
                 Context.SaveChanges();
+
+                List<Guid> promoIdsToRecalculate = new List<Guid>();
 
                 IQueryable<PromoSupportPromo> pspQuery = Context.Set<PromoSupportPromo>().Where(x => x.PromoSupportId == model.Id && !x.Disabled);
                 foreach (var psp in pspQuery)
                 {
                     psp.DeletedDate = System.DateTime.Now;
                     psp.Disabled = true;
+
+                    promoIdsToRecalculate.Add(psp.PromoId);
                 }
+
+                CalculateBudgetsCreateTask(new List<Guid>() { key }, promoIdsToRecalculate);
+
                 Context.SaveChanges();
 
                 return StatusCode(HttpStatusCode.NoContent);
@@ -220,6 +206,38 @@ namespace Module.Frontend.TPM.Controllers
         private bool EntityExists(System.Guid key)
         {
             return Context.Set<PromoSupport>().Count(e => e.Id == key) > 0;
+        }
+        private void CalculateBudgetsCreateTask(List<Guid> promoSupportIds, List<Guid> unlinkedPromoIds = null)
+        {
+            UserInfo user = authorizationManager.GetCurrentUser();
+            Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
+            RoleInfo role = authorizationManager.GetCurrentRole();
+            Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
+
+            string promoSupportIdsString = FromListToString(promoSupportIds);
+            string unlinkedPromoIdsString = FromListToString(unlinkedPromoIds);
+
+            HandlerData data = new HandlerData();
+            HandlerDataHelper.SaveIncomingArgument("PromoSupportIds", promoSupportIdsString, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("UnlinkedPromoIds", unlinkedPromoIdsString, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+
+            bool success = CalculationTaskManager.CreateCalculationTask(CalculationTaskManager.CalculationAction.Budgets, data, Context);
+
+            if (!success)
+                throw new Exception("Promo was blocked for calculation");
+        }
+
+        private string FromListToString(List<Guid> list)
+        {
+            string result = "";
+
+            if (list != null)
+                foreach (Guid el in list.Distinct())
+                    result += el + ";";
+
+            return result;
         }
 
         private IEnumerable<Column> GetExportSettingsTiCosts()
