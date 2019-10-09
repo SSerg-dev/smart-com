@@ -64,6 +64,13 @@ namespace Module.Host.TPM.Handlers.DataFlow
                     List<Guid> linkedPromoIds = BudgetsPromoCalculation.GetLinkedPromoId(promo.Id, context).ToList();
                     promoIdsForBudgetRecalclating = promoIdsForBudgetRecalclating.Union(linkedPromoIds).ToList();
                 }
+
+                var promoIdsForBudgetRecalclatingbyIncident = FilterCollection.LinkedPromoIds;
+                if (promoIdsForBudgetRecalclatingbyIncident.Count() > 0)
+                {
+                    promoIdsForBudgetRecalclating = promoIdsForBudgetRecalclating.Union(promoIdsForBudgetRecalclatingbyIncident).ToList();
+                }
+
                 handlerLogger.Write(true, $"The budgets filtering of promoes duration:{innerStopWatch.Elapsed.Hours} hours and {innerStopWatch.Elapsed.Minutes} minutes and {innerStopWatch.Elapsed.Seconds} seconds", "Timing");
                 handlerLogger.Write(true, String.Format("The budgets filtering of promoes ended at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
 
@@ -322,6 +329,9 @@ namespace Module.Host.TPM.Handlers.DataFlow
         private static IEnumerable<int> ClientTreeChangesIntIds;
         private static IEnumerable<int> ProductTreeChangesIntIds;
         private static IEnumerable<Guid> IncrementalPromoChangesGuidIds;
+        private static IEnumerable<Guid> PromoSupportChangesGuidIds;
+
+        public static List<Guid> LinkedPromoIds { get; set; }
 
         public static void InitializeChangesIncidents(DatabaseContext context, ILogWriter handlerLogger)
         {
@@ -330,6 +340,9 @@ namespace Module.Host.TPM.Handlers.DataFlow
             ClientTreeChangesIntIds = new List<int>();
             ProductTreeChangesIntIds = new List<int>();
             IncrementalPromoChangesGuidIds = new List<Guid>();
+            PromoSupportChangesGuidIds = new List<Guid>();
+
+            LinkedPromoIds = new List<Guid>();
 
             handlerLogger.Write(true, String.Format("The initialize of incidents began at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
             Counter = 0;
@@ -371,6 +384,12 @@ namespace Module.Host.TPM.Handlers.DataFlow
             var incrementalPromoChanges = uniqueChangesIds.Where(x => x.DirectoryName == "IncrementalPromo");
             handlerLogger.Write(true, $"Amount of unique Incremental Promo incidents: {incrementalPromoChanges.Count()}", "Message");
             handlerLogger.Write(true, String.Format("The searching of unique Incremental Promo incidents end at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+
+            // Promo support
+            handlerLogger.Write(true, String.Format("The searching of unique Promo support incidents began at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+            var promoSupportChanges = uniqueChangesIds.Where(x => x.DirectoryName == "PromoSupport");
+            handlerLogger.Write(true, $"Amount of unique Promo support incidents: {promoSupportChanges.Count()}", "Message");
+            handlerLogger.Write(true, String.Format("The searching of unique Promo support incidents end at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
 
             // Base Line
             if (baseLineChanges.Any())
@@ -446,6 +465,23 @@ namespace Module.Host.TPM.Handlers.DataFlow
                 handlerLogger.Write(true, $"The count of parsed unique Incremental Promo incidents: {IncrementalPromoChangesGuidIds.Count()}", "Message");
                 handlerLogger.Write(true, String.Format("The parsing of unique Incremental Promo incidents ended at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
             }
+
+            // Promo support
+            if (promoSupportChanges.Any())
+            {
+                handlerLogger.Write(true, String.Format("The parsing of unique Promo support incidents began at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+                PromoSupportChangesGuidIds = promoSupportChanges.AsParallel().Select(x =>
+                {
+                    Guid itemGuidId;
+                    bool success = Guid.TryParse(x.ItemId, out itemGuidId);
+                    return new { itemGuidId, success };
+                })
+                .Where(x => x.success).Select(x => x.itemGuidId).ToList();
+                handlerLogger.Write(true, $"The count of parsed unique Promo support incidents: {PromoSupportChangesGuidIds.Count()}", "Message");
+                handlerLogger.Write(true, String.Format("The parsing of unique Promo support incidents ended at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+            }
+
+            LinkedPromoIds = BudgetsPromoCalculation.GetLinkedPromoId(PromoSupportChangesGuidIds.ToList(), context);
 
             handlerLogger.Write(true, String.Format("The initialize of incidents ended at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
         }

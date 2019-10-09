@@ -234,6 +234,31 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             return promoIds;
         }
 
+        /// <summary>
+        /// Получить список промо ID, участвующих в расчетах бюджетов
+        /// </summary>
+        /// <param name="promoSupportIds">Список ID подстатей</param>
+        /// <param name="context">Контекст БД</param>
+        /// <returns></returns>
+        public static List<Guid> GetLinkedPromoId(List<Guid> promoSupportIdsList, DatabaseContext context)
+        {
+            // список промо ID, участвующих в расчетах
+            List<Guid> promoIds = new List<Guid>();
+
+            foreach (Guid promoSupportId in promoSupportIdsList)
+            {
+                Promo[] promoes = context.Set<PromoSupportPromo>().Where(n => n.PromoSupportId == promoSupportId).Select(n => n.Promo).ToArray();
+
+                // страховка от повторений, сразу при включении
+                foreach (Promo p in promoes)
+                {
+                    if (!promoIds.Contains(p.Id))
+                        promoIds.Add(p.Id);
+                }
+            }
+
+            return promoIds;
+        }
 
         /// <summary>
         /// Расчет бюждетов по LSV

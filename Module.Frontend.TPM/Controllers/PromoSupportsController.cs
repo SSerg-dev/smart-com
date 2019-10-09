@@ -136,6 +136,18 @@ namespace Module.Frontend.TPM.Controllers
                     return NotFound();
                 }
 
+                var changesIncidnet = new ChangesIncident
+                {
+                    Id = new Guid(),
+                    DirectoryName = "PromoSupport",
+                    ItemId = key.ToString(),
+                    CreateDate = DateTimeOffset.Now,
+                    ProcessDate = null,
+                    DeletedDate = null,
+                    Disabled = false
+                };
+                Context.Set<ChangesIncident>().Add(changesIncidnet);
+
                 patch.Patch(model);
                 // делаем UTC +3
                 model.StartDate = ChangeTimeZoneUtil.ResetTimeZone(model.StartDate);
@@ -172,6 +184,18 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     return NotFound();
                 }
+
+                var changesIncidnet = new ChangesIncident
+                {
+                    Id = new Guid(),
+                    DirectoryName = "PromoSupport",
+                    ItemId = key.ToString(),
+                    CreateDate = DateTimeOffset.Now,
+                    ProcessDate = null,
+                    DeletedDate = null,
+                    Disabled = false
+                };
+                Context.Set<ChangesIncident>().Add(changesIncidnet);
 
                 model.DeletedDate = System.DateTime.Now;
                 model.Disabled = true;
