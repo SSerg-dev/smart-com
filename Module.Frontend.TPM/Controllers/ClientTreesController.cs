@@ -612,7 +612,7 @@ namespace Module.Frontend.TPM.Controllers
                     Context.Set<ChangesIncident>().Add(changesIncident);
                 }
 
-                if (!String.IsNullOrEmpty(model.DemandCode) && String.IsNullOrEmpty(currentRecord.DemandCode))
+                if (model.DemandCode != currentRecord.DemandCode)
                 {
                     ChangesIncident changesIncident = new ChangesIncident
                     {
@@ -625,7 +625,11 @@ namespace Module.Frontend.TPM.Controllers
                     };
                     Context.Set<ChangesIncident>().Add(changesIncident);
 
-                    var childNodes = activeTree.Where(x => x.parentId == currentRecord.ObjectId).ToList();
+                    List<ClientTree> childNodes = new List<ClientTree>();
+                    var firstchildNodes = activeTree.Where(x => x.parentId == currentRecord.ObjectId).ToList();
+
+                    GetChildNodes(firstchildNodes, childNodes);
+
                     foreach (var node in childNodes)
                     {
                         if (node.IsBaseClient)
@@ -694,6 +698,25 @@ namespace Module.Frontend.TPM.Controllers
             {
                 return InternalServerError(e);
             }
+        }
+
+        private void GetChildNodes(List<ClientTree> clientTreeList, List<ClientTree> nodes)
+        {
+            foreach (var client in clientTreeList)
+            {
+                bool leaf = !activeTree.Any(x => x.parentId == client.ObjectId);
+                if (!leaf)
+                {
+                    var childNodes = activeTree.Where(x => x.parentId == client.ObjectId).ToList();
+                    GetChildNodes(childNodes, nodes);
+                }
+                else if (client.IsBaseClient && !nodes.Any(x => x.ObjectId == client.ObjectId))
+                {
+                    nodes.Add(client);
+                }
+            }
+
+            return;
         }
 
         private bool EntityExists(int key)
