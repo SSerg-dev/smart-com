@@ -197,7 +197,7 @@ namespace Module.Frontend.TPM.Controllers
             IEnumerable<Column> columns = new List<Column>()
             {
                 new Column() { Order = 0, Field = "Product.ZREP", Header = "ZREP", Quoting = false },
-                new Column() { Order = 1, Field = "ClientTree.DemandCode", Header = "Client Demand Code", Quoting = false },
+                new Column() { Order = 1, Field = "DemandCode", Header = "Demand Code", Quoting = false },
                 new Column() { Order = 2, Field = "StartDate", Header = "Start date", Quoting = false, Format = "dd.MM.yyyy" },
                 new Column() { Order = 3, Field = "QTY", Header = "QTY", Quoting = false },
                 new Column() { Order = 4, Field = "Price", Header = "Price", Quoting = false },
@@ -212,7 +212,7 @@ namespace Module.Frontend.TPM.Controllers
             IEnumerable<Column> columns = new List<Column>()
             {
                 new Column() { Order = 0, Field = "Product.ZREP", Header = "ZREP", Quoting = false },
-                new Column() { Order = 1, Field = "ClientTree.DemandCode", Header = "Client Demand Code", Quoting = false },
+                new Column() { Order = 1, Field = "DemandCode", Header = "Demand Code", Quoting = false },
                 new Column() { Order = 2, Field = "StartDate", Header = "Start date", Quoting = false, Format = "dd.MM.yyyy" },
                 new Column() { Order = 3, Field = "Price", Header = "Price", Quoting = false },
             };

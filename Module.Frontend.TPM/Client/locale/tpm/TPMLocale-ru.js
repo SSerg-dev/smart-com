@@ -1057,6 +1057,7 @@
     'BaseLine': {
         'ProductZREP': 'ZREP',
         'ClientTreeDemandCode': 'Client Demand code',
+        'DemandCode': 'Demand code',
         'StartDate': 'Start date',
         'QTY': 'QTY',
         'Price': 'Price',
