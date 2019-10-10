@@ -612,6 +612,38 @@ namespace Module.Frontend.TPM.Controllers
                     Context.Set<ChangesIncident>().Add(changesIncident);
                 }
 
+                if (!String.IsNullOrEmpty(model.DemandCode) && String.IsNullOrEmpty(currentRecord.DemandCode))
+                {
+                    ChangesIncident changesIncident = new ChangesIncident
+                    {
+                        Disabled = false,
+                        DeletedDate = null,
+                        DirectoryName = "ClientTree",
+                        ItemId = model.Id.ToString(),
+                        CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                        ProcessDate = null
+                    };
+                    Context.Set<ChangesIncident>().Add(changesIncident);
+
+                    var childNodes = activeTree.Where(x => x.parentId == currentRecord.ObjectId).ToList();
+                    foreach (var node in childNodes)
+                    {
+                        if (node.IsBaseClient)
+                        {
+                            changesIncident = new ChangesIncident
+                            {
+                                Disabled = false,
+                                DeletedDate = null,
+                                DirectoryName = "ClientTree",
+                                ItemId = node.Id.ToString(),
+                                CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                                ProcessDate = null
+                            };
+                            Context.Set<ChangesIncident>().Add(changesIncident);
+                        }
+                    }
+                }
+
                 Context.Entry(currentRecord).CurrentValues.SetValues(model);
                 UpdateFullPathClientTree(currentRecord, Context.Set<ClientTree>());
                 Context.Set<ClientTree>().Add(oldRecord);
