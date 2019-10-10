@@ -127,17 +127,11 @@ namespace Module.Host.TPM.Handlers
                                 string setPromoProductError;
                                 bool needReturnToOnApprovalStatus = false;
 
-                                // в день старта промо продукты не переподбираются
-                                bool isStartToday = promo.StartDate != null &&
-                                                    (promo.StartDate - ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)).Value.Days == 0;
-                                if (!isStartToday)
+                                needReturnToOnApprovalStatus = PlanProductParametersCalculation.SetPromoProduct(promoId, context, out setPromoProductError);
+                                if (setPromoProductError != null)
                                 {
-                                    needReturnToOnApprovalStatus = PlanProductParametersCalculation.SetPromoProduct(promoId, context, out setPromoProductError);
-                                    if (setPromoProductError != null)
-                                    {
-                                        logLine = String.Format("Error filling Product: {0}", setPromoProductError);
-                                        handlerLogger.Write(true, logLine, "Error");
-                                    }
+                                    logLine = String.Format("Error filling Product: {0}", setPromoProductError);
+                                    handlerLogger.Write(true, logLine, "Error");
                                 }
 
                                 // пересчет baseline должен происходить до попытки согласовать промо, т.к. к зависимости от результата пересчета
