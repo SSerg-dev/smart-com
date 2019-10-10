@@ -441,8 +441,6 @@ namespace Module.Persist.TPM {
 
             builder.EntitySet<BaseLine>("BaseLines");
             builder.EntitySet<BaseLine>("DeletedBaseLines");
-            builder.EntitySet<BaseLine>("BaseLines").HasRequiredBinding(e => e.ClientTree, "ClientTrees");
-            builder.EntitySet<BaseLine>("DeletedBaseLines").HasRequiredBinding(e => e.ClientTree, "ClientTrees");
             builder.EntitySet<BaseLine>("BaseLines").HasRequiredBinding(e => e.Product, "Products");
             builder.EntitySet<BaseLine>("DeletedBaseLines").HasRequiredBinding(e => e.Product, "Products");
             builder.EntitySet<HistoricalBaseLine>("HistoricalBaseLines");

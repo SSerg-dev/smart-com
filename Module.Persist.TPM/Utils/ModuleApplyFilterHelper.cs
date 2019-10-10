@@ -284,24 +284,6 @@ namespace Module.Persist.TPM.Utils {
 		}
 
 		/// <summary>
-		/// Применить фильтр по клиентам к BaseLine
-		/// </summary>
-		/// <param name="query">Запрос</param>
-		/// <param name="hierarchy">Иерархия</param>
-		/// <param name="filter">Фильтр</param>
-		public static IQueryable<BaseLine> ApplyFilter(IQueryable<BaseLine> query, IQueryable<ClientTreeHierarchyView> hierarchy, IDictionary<string, IEnumerable<string>> filter = null)
-		{
-			IEnumerable<string> clientFilter = FilterHelper.GetFilter(filter, ModuleFilterName.Client);
-			if (clientFilter.Any())
-			{
-				hierarchy = getFilteredHierarchy(hierarchy, clientFilter);
-				query = query.Where(x =>
-					hierarchy.Any(h => h.Id == x.ClientTree.ObjectId));
-			}
-			return query;
-		}
-
-		/// <summary>
 		/// Применить фильтр по клиентам к COGSs
 		/// </summary>
 		/// <param name="query">Запрос</param>
@@ -467,10 +449,7 @@ namespace Module.Persist.TPM.Utils {
             if (finishDate.HasValue) {
                 result.Where.Rules.Add(new FilterRule("StartDate", Operations.LessOrEquals, finishDate.Value));
             }
-            IEnumerable<string> clientFilter = FilterHelper.GetFilter(filter, ModuleFilterName.Client);
-            if (clientFilter.Any()) {
-                result.Where.Rules.Add(new FilterRule("ClientTree.DemandCode", Operations.In, clientFilter));
-            }
+            
             return result;
         }
 

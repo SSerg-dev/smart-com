@@ -11,7 +11,7 @@
         { name: '_Operation', type: 'string', isDefault: true },
         { name: 'ProductZREP', type: 'string', isDefault: true },
         { name: 'StartDate', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
-        { name: 'ClientTreeDemandCode', type: 'string', hidden: false, isDefault: true },
+        { name: 'DemandCode', type: 'string', hidden: false, isDefault: true },
         { name: 'QTY', type: 'float', hidden: false, isDefault: true },
         { name: 'Price', type: 'float', hidden: false, isDefault: true },
         { name: 'BaselineLSV', type: 'float', hidden: false, isDefault: true },

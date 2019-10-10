@@ -9,7 +9,7 @@ namespace Module.Persist.TPM.Model.History
     public class HistoricalBaseLine : BaseHistoricalEntity<System.Guid>
     {
         public string ProductZREP { get; set; }
-        public string ClientTreeDemandCode { get; set; }
+        public string DemandCode { get; set; }
         public DateTimeOffset? StartDate { get; set; }
         public double? QTY { get; set; }
         public double? Price { get; set; }

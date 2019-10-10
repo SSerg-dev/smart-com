@@ -159,7 +159,7 @@ namespace Module.Host.TPM.Actions
                 List<BaseLine> baseLines = context.Set<BaseLine>().Where(x => !x.Disabled).ToList();
                 List<Tuple<string, string, DateTimeOffset?>> blBadBaseUniqueIdent = blUniqueIdent
                     .Where(y => baseLines
-                    .Any(z => z.Product.ZREP == y.Item1 && z.ClientTree.DemandCode == y.Item2 && z.StartDate == y.Item3))
+                    .Any(z => z.Product.ZREP == y.Item1 && z.DemandCode == y.Item2 && z.StartDate == y.Item3))
                     .ToList();
                 traceLogger.Trace("finish get blBadBaseUniqueIdent");
                 //stopwatch.Stop();
@@ -367,7 +367,7 @@ namespace Module.Host.TPM.Actions
                     if (product != null)
                     {
                         BaseLine oldRecord = baseLines
-                            .FirstOrDefault(x => x.ProductId == product.Id && x.ClientTreeId == newRecord.ClientTreeId && x.StartDate == newRecord.StartDate);
+                            .FirstOrDefault(x => x.ProductId == product.Id && x.DemandCode == newRecord.ClientTreeDemandCode && x.StartDate == newRecord.StartDate);
                         var oldRecordCopy = oldRecord;
                         if (oldRecord != null)
                         {
@@ -385,7 +385,7 @@ namespace Module.Host.TPM.Actions
                             {
                                 Id = Guid.NewGuid(),
                                 ProductId = product.Id,
-                                ClientTreeId = newRecord.ClientTreeId,
+                                DemandCode = newRecord.ClientTreeDemandCode,
                                 StartDate = newRecord.StartDate,
                                 QTY = newRecord.QTY,
                                 Price = newRecord.Price,
@@ -407,8 +407,8 @@ namespace Module.Host.TPM.Actions
             traceLogger.Trace("Start records creating");
             foreach (IEnumerable<BaseLine> items in toCreate.Partition(10000))
             {
-                string insertScript = String.Join("", items.Select(y => String.Format("INSERT INTO BaseLine (QTY, Price, BaselineLSV, Type,LastModifiedDate, ProductId ,StartDate, ClientTreeId, [Disabled], [Id]) VALUES ({0}, {1}, {2}, {3}, '{4:yyyy-MM-dd HH:mm:ss +03:00}', '{5}', '{6:yyyy-MM-dd HH:mm:ss +03:00}', {7}, '{8}', '{9}');",
-                    y.QTY, y.Price, y.BaselineLSV, y.Type, y.LastModifiedDate, y.ProductId.ToString(), y.StartDate, y.ClientTreeId, y.Disabled, y.Id)));
+                string insertScript = String.Join("", items.Select(y => String.Format("INSERT INTO BaseLine (QTY, Price, BaselineLSV, Type,LastModifiedDate, ProductId ,StartDate, DemandCode, [Disabled], [Id]) VALUES ({0}, {1}, {2}, {3}, '{4:yyyy-MM-dd HH:mm:ss +03:00}', '{5}', '{6:yyyy-MM-dd HH:mm:ss +03:00}', '{7}', '{8}', '{9}');",
+                    y.QTY, y.Price, y.BaselineLSV, y.Type, y.LastModifiedDate, y.ProductId.ToString(), y.StartDate, y.DemandCode, y.Disabled, y.Id)));
                 context.Database.ExecuteSqlCommand(insertScript);
             }
             traceLogger.Trace("Finish records creating");
@@ -419,8 +419,8 @@ namespace Module.Host.TPM.Actions
             traceLogger.Trace("Start records updating");
             foreach (IEnumerable<BaseLine> items in toUpdate.Partition(1000))
             {
-                string insertScript = String.Join("", items.Select(y => String.Format("UPDATE BaseLine SET QTY = {0}, Price = {1}, BaselineLSV = {2}, Type = {3},LastModifiedDate = '{4:yyyy-MM-dd HH:mm:ss +03:00}'  WHERE Id = '{5}';", y.QTY, y.Price, y.BaselineLSV, y.Type, y.LastModifiedDate, y.Id)));
-                context.Database.ExecuteSqlCommand(insertScript);
+                string updateScript = String.Join("", items.Select(y => String.Format("UPDATE BaseLine SET QTY = {0}, Price = {1}, BaselineLSV = {2}, Type = {3},LastModifiedDate = '{4:yyyy-MM-dd HH:mm:ss +03:00}'  WHERE Id = '{5}';", y.QTY, y.Price, y.BaselineLSV, y.Type, y.LastModifiedDate, y.Id)));
+                context.Database.ExecuteSqlCommand(updateScript);
             }
             traceLogger.Trace("Finish records updating");
             //stopwatch.Stop();

@@ -1274,6 +1274,14 @@
     <Compile Include="Migrations\201910011217491_EmptyMigrationHistory.Designer.cs">
       <DependentUpon>201910011217491_EmptyMigrationHistory.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201910100947085_BaseLine_DemandCode.cs" />
+    <Compile Include="Migrations\201910100947085_BaseLine_DemandCode.Designer.cs">
+      <DependentUpon>201910100947085_BaseLine_DemandCode.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201910101115443_Mod_Baseline_Col.cs" />
+    <Compile Include="Migrations\201910101115443_Mod_Baseline_Col.Designer.cs">
+      <DependentUpon>201910101115443_Mod_Baseline_Col.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\PlanPostPromoEffectReport.cs" />
     <Compile Include="Model\DTO\PlanIncrementalReport.cs" />
@@ -2344,6 +2352,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201910011217491_EmptyMigrationHistory.resx">
       <DependentUpon>201910011217491_EmptyMigrationHistory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910100947085_BaseLine_DemandCode.resx">
+      <DependentUpon>201910100947085_BaseLine_DemandCode.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910101115443_Mod_Baseline_Col.resx">
+      <DependentUpon>201910101115443_Mod_Baseline_Col.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -71,22 +71,7 @@
                 }
             }, {
                 text: l10n.ns('tpm', 'BaseLine').value('ClientTreeDemandCode'),
-                dataIndex: 'ClientTreeDemandCode',
-                minWidth: 200,
-                filter: {
-                    xtype: 'treefsearchfield',
-                    trigger2Cls: '',
-                    selectorWidget: 'clienttree',
-                    valueField: 'DemandCode',
-                    displayField: 'DemandCode',
-                    multiSelect: true,
-                    operator: 'conts',
-                    store: {
-                        model: 'App.model.tpm.clienttree.ClientTree',
-                        autoLoad: false,
-                        root: {}
-                    },
-                }
+                dataIndex: 'DemandCode'
             }, {
                 text: l10n.ns('tpm', 'BaseLine').value('StartDate'),
                 dataIndex: 'StartDate',
@@ -128,7 +113,7 @@
             fieldLabel: l10n.ns('tpm', 'BaseLine').value('ProductZREP'),
         }, {
             xtype: 'singlelinedisplayfield',
-            name: 'ClientTreeDemandCode',
+            name: 'DemandCode',
             fieldLabel: l10n.ns('tpm', 'BaseLine').value('ClientTreeDemandCode'),
         }, {
             xtype: 'singlelinedisplayfield',

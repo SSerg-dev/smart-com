@@ -82,7 +82,7 @@
             fieldLabel: l10n.ns('tpm', 'BaseLine').value('ProductZREP'),
         }, {
             xtype: 'singlelinedisplayfield',
-            name: 'ClientTreeDemandCode',
+            name: 'DemandCode',
             fieldLabel: l10n.ns('tpm', 'BaseLine').value('ClientTreeDemandCode'),
         }, {
             xtype: 'singlelinedisplayfield',

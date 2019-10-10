@@ -528,7 +528,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
                             {
                                 while (clientTree != null && clientTree.Type.ToLower() != "root")
                                 {
-                                    if (clientTree.Id == baseLine.ClientTreeId)
+                                    if (clientTree.DemandCode == baseLine.DemandCode)
                                     {
                                         break;
                                     }
@@ -536,7 +536,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
                                     clientTree = context.Set<ClientTree>().FirstOrDefault(x => x.ObjectId == clientTree.parentId && !x.EndDate.HasValue);
                                 }
 
-                                var clientTreeHierarchyContainsBaseLineClient = clientTree.Id == baseLine.ClientTreeId;
+                                var clientTreeHierarchyContainsBaseLineClient = clientTree.DemandCode == baseLine.DemandCode;
                                 if (clientTreeHierarchyContainsBaseLineClient)
                                 {
                                     handlerLogger.Write(true, $"Promo number { promo.Number } was filtered by Base Line.", "Message");

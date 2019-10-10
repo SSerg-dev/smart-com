@@ -51,12 +51,7 @@ namespace Module.Frontend.TPM.Controllers
             IList<Constraint> constraints = user.Id.HasValue ? Context.Constraints
                 .Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
                 .ToList() : new List<Constraint>();
-
-			IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
 			IQueryable<BaseLine> query = Context.Set<BaseLine>().Where(e => !e.Disabled);
-			IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
-
-			query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
 
 			return query;
 		}

@@ -186,12 +186,12 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         case BaseLineState.InitBaseLine:
                             // выбор BaseLine, на неделю которого попадает начало текущего промо (с учетом выбранного клиента промо)
                             clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == promo.ClientTreeId && !x.EndDate.HasValue).FirstOrDefault();
-                            baseLine = context.Set<BaseLine>().Where(x => x.ProductId == product.Id && x.ClientTreeId == clientNode.Id && x.StartDate.HasValue && DbFunctions.DiffDays(x.StartDate, promo.StartDate) <= 6 && x.StartDate <= promo.StartDate && !x.Disabled).FirstOrDefault();
+                            baseLine = context.Set<BaseLine>().Where(x => x.ProductId == product.Id && x.DemandCode == clientNode.DemandCode && x.StartDate.HasValue && DbFunctions.DiffDays(x.StartDate, promo.StartDate) <= 6 && x.StartDate <= promo.StartDate && !x.Disabled).FirstOrDefault();
 
                             while (clientNode.Type != "root" && baseLine == null)
                             {
                                 clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == clientNode.parentId && !x.EndDate.HasValue).FirstOrDefault();
-                                baseLine = context.Set<BaseLine>().Where(x => x.ProductId == product.Id && x.ClientTreeId == clientNode.Id && x.StartDate.HasValue && DbFunctions.DiffDays(x.StartDate, promo.StartDate) <= 6 && x.StartDate <= promo.StartDate && !x.Disabled).FirstOrDefault();
+                                baseLine = context.Set<BaseLine>().Where(x => x.ProductId == product.Id && x.DemandCode == clientNode.DemandCode && x.StartDate.HasValue && DbFunctions.DiffDays(x.StartDate, promo.StartDate) <= 6 && x.StartDate <= promo.StartDate && !x.Disabled).FirstOrDefault();
                             }
 
                             if (baseLine == null)
@@ -210,12 +210,12 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         case BaseLineState.NullBaseLine:
                             nextWeekPromoStartDate = currentWeekPromoStartDate.Value.AddDays(1);
                             clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == promo.ClientTreeId && !x.EndDate.HasValue).FirstOrDefault();
-                            baseLine = context.Set<BaseLine>().Where(x => x.ProductId == product.Id && x.ClientTreeId == clientNode.Id && x.StartDate.HasValue && DbFunctions.DiffDays(x.StartDate, nextWeekPromoStartDate) <= 6 && x.StartDate <= nextWeekPromoStartDate && !x.Disabled).FirstOrDefault();
+                            baseLine = context.Set<BaseLine>().Where(x => x.ProductId == product.Id && x.DemandCode == clientNode.DemandCode && x.StartDate.HasValue && DbFunctions.DiffDays(x.StartDate, nextWeekPromoStartDate) <= 6 && x.StartDate <= nextWeekPromoStartDate && !x.Disabled).FirstOrDefault();
 
                             while (clientNode.Type != "root" && baseLine == null)
                             {
                                 clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == clientNode.parentId && !x.EndDate.HasValue).FirstOrDefault();
-                                baseLine = context.Set<BaseLine>().Where(x => x.ProductId == product.Id && x.ClientTreeId == clientNode.Id && x.StartDate.HasValue && DbFunctions.DiffDays(x.StartDate, nextWeekPromoStartDate) <= 6 && x.StartDate <= nextWeekPromoStartDate && !x.Disabled).FirstOrDefault();
+                                baseLine = context.Set<BaseLine>().Where(x => x.ProductId == product.Id && x.DemandCode == clientNode.DemandCode && x.StartDate.HasValue && DbFunctions.DiffDays(x.StartDate, nextWeekPromoStartDate) <= 6 && x.StartDate <= nextWeekPromoStartDate && !x.Disabled).FirstOrDefault();
                             }
 
                             if (nextWeekPromoStartDate > promo.EndDate)
@@ -306,13 +306,13 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                     case BaseLineState.InitBaseLine:
                                         // выбор BaseLine, на неделю которого попадает начало текущего промо (с учетом выбранного клиента промо)
                                         clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == promo.ClientTreeId && !x.EndDate.HasValue).FirstOrDefault();
-                                        baseLine = context.Set<BaseLine>().Where(x => x.ProductId == promoProduct.ProductId && x.ClientTreeId == clientNode.Id && x.StartDate.HasValue && DbFunctions.DiffDays(x.StartDate, promo.StartDate) <= 6 && x.StartDate <= promo.StartDate && !x.Disabled).FirstOrDefault();
+                                        baseLine = context.Set<BaseLine>().Where(x => x.ProductId == promoProduct.ProductId && x.DemandCode == clientNode.DemandCode && x.StartDate.HasValue && DbFunctions.DiffDays(x.StartDate, promo.StartDate) <= 6 && x.StartDate <= promo.StartDate && !x.Disabled).FirstOrDefault();
 
                                         while (clientNode.Type != "root" && baseLine == null)
                                         {
                                             baseLineShareIndex *= ((double)clientNode.Share / 100);
                                             clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == clientNode.parentId && !x.EndDate.HasValue).FirstOrDefault();
-                                            baseLine = context.Set<BaseLine>().Where(x => x.ProductId == promoProduct.ProductId && x.ClientTreeId == clientNode.Id && x.StartDate.HasValue && DbFunctions.DiffDays(x.StartDate, promo.StartDate) <= 6 && x.StartDate <= promo.StartDate && !x.Disabled).FirstOrDefault();
+                                            baseLine = context.Set<BaseLine>().Where(x => x.ProductId == promoProduct.ProductId && x.DemandCode == clientNode.DemandCode && x.StartDate.HasValue && DbFunctions.DiffDays(x.StartDate, promo.StartDate) <= 6 && x.StartDate <= promo.StartDate && !x.Disabled).FirstOrDefault();
                                         }
 
                                         if (baseLine == null)
@@ -335,13 +335,13 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                         nextWeekPromoStartDate = currentWeekPromoStartDate.Value.AddDays(1);
                                         baseLineShareIndex = 1;
                                         clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == promo.ClientTreeId && !x.EndDate.HasValue).FirstOrDefault();
-                                        baseLine = context.Set<BaseLine>().Where(x => x.ProductId == promoProduct.ProductId && x.ClientTreeId == clientNode.Id && x.StartDate.HasValue && DbFunctions.DiffDays(x.StartDate, nextWeekPromoStartDate) <= 6 && x.StartDate <= nextWeekPromoStartDate && !x.Disabled).FirstOrDefault();
+                                        baseLine = context.Set<BaseLine>().Where(x => x.ProductId == promoProduct.ProductId && x.DemandCode == clientNode.DemandCode && x.StartDate.HasValue && DbFunctions.DiffDays(x.StartDate, nextWeekPromoStartDate) <= 6 && x.StartDate <= nextWeekPromoStartDate && !x.Disabled).FirstOrDefault();
 
                                         while (clientNode.Type != "root" && baseLine == null)
                                         {
                                             baseLineShareIndex *= ((double)clientNode.Share / 100);
                                             clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == clientNode.parentId && !x.EndDate.HasValue).FirstOrDefault();
-                                            baseLine = context.Set<BaseLine>().Where(x => x.ProductId == promoProduct.ProductId && x.ClientTreeId == clientNode.Id && x.StartDate.HasValue && DbFunctions.DiffDays(x.StartDate, nextWeekPromoStartDate) <= 6 && x.StartDate <= nextWeekPromoStartDate && !x.Disabled).FirstOrDefault();
+                                            baseLine = context.Set<BaseLine>().Where(x => x.ProductId == promoProduct.ProductId && x.DemandCode == clientNode.DemandCode && x.StartDate.HasValue && DbFunctions.DiffDays(x.StartDate, nextWeekPromoStartDate) <= 6 && x.StartDate <= nextWeekPromoStartDate && !x.Disabled).FirstOrDefault();
                                         }
 
                                         if (nextWeekPromoStartDate > promo.EndDate)
@@ -369,13 +369,13 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                         nextBaseLineStartDate = currentBaseLineStartDate.Value.AddDays(7);
                                         baseLineShareIndex = 1;
                                         clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == promo.ClientTreeId && !x.EndDate.HasValue).FirstOrDefault();
-                                        baseLine = context.Set<BaseLine>().Where(x => x.ProductId == promoProduct.ProductId && x.ClientTreeId == clientNode.Id && x.StartDate.HasValue && x.StartDate.Value == nextBaseLineStartDate && !x.Disabled).FirstOrDefault();
+                                        baseLine = context.Set<BaseLine>().Where(x => x.ProductId == promoProduct.ProductId && x.DemandCode == clientNode.DemandCode && x.StartDate.HasValue && x.StartDate.Value == nextBaseLineStartDate && !x.Disabled).FirstOrDefault();
 
                                         while (clientNode.Type != "root" && baseLine == null)
                                         {
                                             baseLineShareIndex *= ((double)clientNode.Share / 100);
                                             clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == clientNode.parentId && !x.EndDate.HasValue).FirstOrDefault();
-                                            baseLine = context.Set<BaseLine>().Where(x => x.ProductId == promoProduct.ProductId && x.ClientTreeId == clientNode.Id && x.StartDate.HasValue && x.StartDate.Value == nextBaseLineStartDate && !x.Disabled).FirstOrDefault();
+                                            baseLine = context.Set<BaseLine>().Where(x => x.ProductId == promoProduct.ProductId && x.DemandCode == clientNode.DemandCode && x.StartDate.HasValue && x.StartDate.Value == nextBaseLineStartDate && !x.Disabled).FirstOrDefault();
                                         }
 
                                         if (nextBaseLineStartDate >= promo.EndDate)

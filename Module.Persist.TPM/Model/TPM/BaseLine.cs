@@ -15,10 +15,8 @@ namespace Module.Persist.TPM.Model.TPM
 
         [Index("Unique_BaseLine", 2, IsUnique = true)]
         public Guid ProductId { get; set; }
-        [Index("Unique_BaseLine", 3, IsUnique = true)]
-        public int ClientTreeId { get; set; }
 
-        [Index("Unique_BaseLine", 4, IsUnique = true)]
+        [Index("Unique_BaseLine", 3, IsUnique = true)]
         [Required]
         public DateTimeOffset? StartDate { get; set; }
 
@@ -34,12 +32,15 @@ namespace Module.Persist.TPM.Model.TPM
         [Range(0, 10000000000)]
         public double? BaselineLSV { get; set; }
 
+        [StringLength(255)]
+        [Index("Unique_BaseLine", 4, IsUnique = true)]
+        public string DemandCode { get; set; }
+
         [Required]
         public int? Type { get; set; }
 
         public DateTimeOffset? LastModifiedDate { get; set; }
 
         public virtual Product Product { get; set; }
-        public virtual ClientTree ClientTree { get; set; }
     }
 }
