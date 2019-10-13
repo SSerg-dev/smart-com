@@ -1189,6 +1189,7 @@
     'DemandPriceList': {
         'ProductZREP': 'ZREP',
         'ClientTreeDemandCode': 'Client Demand code',
+        'DemandCode': 'Client Demand code',
         'StartDate': 'Start date',
         'Price': 'Price',
     },

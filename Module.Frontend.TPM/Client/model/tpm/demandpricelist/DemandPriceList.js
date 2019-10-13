@@ -12,10 +12,7 @@
             name: 'ProductZREP', type: 'string', mapping: 'Product.ZREP', defaultFilterConfig: { valueField: 'ZREP' },
             breezeEntityType: 'Product', hidden: false, isDefault: true
         },
-        {
-            name: 'ClientTreeDemandCode', type: 'string', mapping: 'ClientTree.DemandCode', tree: true,
-            defaultFilterConfig: { valueField: 'DemandCode' }, breezeEntityType: 'ClientTree', hidden: false, isDefault: true
-        },
+        { name: 'DemandCode', type: 'string', hidden: false, isDefault: true }
     ],
     proxy: {
         type: 'breeze',

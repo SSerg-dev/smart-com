@@ -32,7 +32,7 @@
             fieldLabel: l10n.ns('tpm', 'DemandPriceList').value('ProductZREP'),
         }, {
             xtype: 'singlelinedisplayfield',
-            name: 'ClientTreeDemandCode',
+            name: 'DemandCode',
             fieldLabel: l10n.ns('tpm', 'DemandPriceList').value('ClientTreeDemandCode'),
         }, {
             xtype: 'singlelinedisplayfield',
