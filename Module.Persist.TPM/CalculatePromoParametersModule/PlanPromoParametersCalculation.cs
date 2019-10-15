@@ -175,13 +175,13 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 {
                     tradeInvestments = context.Set<TradeInvestment>()
                         // Фильтр по клиенту
-                        .Where(x => x.ClientTreeId == currentClient.Id)
+                        .Where(x => x.ClientTreeId == currentClient.Id && !x.Disabled)
                         // Фильтр по брендтеху
-                        .Where(x => (x.BrandTech == null || x.BrandTechId == promo.BrandTechId) && !x.Disabled)
-                        // Фильтр по StartDate.
-                        .Where(x => x.StartDate.HasValue && promo.StartDate.HasValue && DateTimeOffset.Compare(x.StartDate.Value, promo.StartDate.Value) <= 0)
-                        // Фильтр по EndDate.
-                        .Where(x => x.EndDate.HasValue && promo.EndDate.HasValue && DateTimeOffset.Compare(x.EndDate.Value, promo.EndDate.Value) >= 0).ToList();
+                        .Where(x => x.BrandTech == null || x.BrandTechId == promo.BrandTechId)
+                        // promo start date должна лежать в интервале между TI start date и TI end date
+                        .Where(x => x.StartDate.HasValue && x.EndDate.HasValue && promo.StartDate.HasValue 
+                               && DateTimeOffset.Compare(x.StartDate.Value, promo.StartDate.Value) <= 0
+                               && DateTimeOffset.Compare(x.EndDate.Value, promo.StartDate.Value) >= 0).ToList();
 
                     currentClient = context.Set<ClientTree>().Where(x => x.ObjectId == currentClient.parentId && !x.EndDate.HasValue).FirstOrDefault();
                 }
@@ -234,7 +234,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         return null;
                     }
 
-                    // Суммируем все проценты подошедшых записей из TI
+                    // Суммируем все проценты подошедших записей из TI
                     foreach (var tradeInvestment in tradeInvestmentsList)
                     {
                         percentSum += tradeInvestment.SizePercent;
@@ -256,17 +256,18 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         {
             try
             {
+                List<COGS> cogsList = new List<COGS>();
                 ClientTree clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == promo.ClientTreeId && !x.EndDate.HasValue).FirstOrDefault();
-                List<COGS> cogsList = context.Set<COGS>().Where(x => x.ClientTreeId == clientNode.Id && x.BrandTechId == promo.BrandTechId && !x.Disabled).ToList();
-                cogsList = cogsList.Where(x => x.StartDate.HasValue && promo.StartDate.HasValue && DateTimeOffset.Compare(x.StartDate.Value, promo.DispatchesStart.Value) <= 0).ToList();
-                cogsList = cogsList.Where(x => x.EndDate.HasValue && promo.EndDate.HasValue && DateTimeOffset.Compare(x.EndDate.Value, promo.DispatchesEnd.Value) >= 0).ToList();
-                clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == clientNode.parentId && !x.EndDate.HasValue).FirstOrDefault();
 
-                while (cogsList.Count == 0 && clientNode.Type != "root")
+                while ((cogsList == null || cogsList.Count() == 0) && clientNode != null && clientNode.Type != "root")
                 {
-                    cogsList = context.Set<COGS>().Where(x => x.ClientTreeId == clientNode.Id && x.BrandTechId == promo.BrandTechId && !x.Disabled).ToList();
-                    cogsList = cogsList.Where(x => x.StartDate.HasValue && promo.StartDate.HasValue && DateTimeOffset.Compare(x.StartDate.Value, promo.DispatchesStart.Value) <= 0).ToList();
-                    cogsList = cogsList.Where(x => x.EndDate.HasValue && promo.EndDate.HasValue && DateTimeOffset.Compare(x.EndDate.Value, promo.DispatchesEnd.Value) >= 0).ToList();
+                    cogsList = context.Set<COGS>()
+                        .Where(x => x.ClientTreeId == clientNode.Id && x.BrandTechId == promo.BrandTechId && !x.Disabled)
+                        //promo DispatchesStart date должна лежать в интервале между COGS start date и COGS end date
+                        .Where(x => x.StartDate.HasValue && x.EndDate.HasValue && promo.DispatchesStart.HasValue
+                               && DateTimeOffset.Compare(x.StartDate.Value, promo.DispatchesStart.Value) <= 0
+                               && DateTimeOffset.Compare(x.EndDate.Value, promo.DispatchesStart.Value) >= 0).ToList();
+
                     clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == clientNode.parentId && !x.EndDate.HasValue).FirstOrDefault();
                 }
 
@@ -274,16 +275,16 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 if (cogsList.Count == 0)
                 {
                     clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == promo.ClientTreeId && !x.EndDate.HasValue).FirstOrDefault();
-                    cogsList = context.Set<COGS>().Where(x => x.ClientTreeId == clientNode.Id && x.BrandTechId == null && !x.Disabled).ToList();
-                    cogsList = cogsList.Where(x => x.StartDate.HasValue && promo.StartDate.HasValue && DateTimeOffset.Compare(x.StartDate.Value, promo.DispatchesStart.Value) <= 0).ToList();
-                    cogsList = cogsList.Where(x => x.EndDate.HasValue && promo.EndDate.HasValue && DateTimeOffset.Compare(x.EndDate.Value, promo.DispatchesEnd.Value) >= 0).ToList();
-                    clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == clientNode.parentId && !x.EndDate.HasValue).FirstOrDefault();
 
-                    while (cogsList.Count == 0 && clientNode.Type != "root")
+                    while ((cogsList == null || cogsList.Count() == 0) && clientNode != null && clientNode.Type != "root")
                     {
-                        cogsList = context.Set<COGS>().Where(x => x.ClientTreeId == clientNode.Id && x.BrandTechId == null && !x.Disabled).ToList();
-                        cogsList = cogsList.Where(x => x.StartDate.HasValue && promo.StartDate.HasValue && DateTimeOffset.Compare(x.StartDate.Value, promo.DispatchesStart.Value) <= 0).ToList();
-                        cogsList = cogsList.Where(x => x.EndDate.HasValue && promo.EndDate.HasValue && DateTimeOffset.Compare(x.EndDate.Value, promo.DispatchesEnd.Value) >= 0).ToList();
+                        cogsList = context.Set<COGS>()
+                            .Where(x => x.ClientTreeId == clientNode.Id && x.BrandTechId == null && !x.Disabled)
+                            //promo DispatchesStart date должна лежать в интервале между COGS start date и COGS end date
+                            .Where(x => x.StartDate.HasValue && x.EndDate.HasValue && promo.DispatchesStart.HasValue
+                                   && DateTimeOffset.Compare(x.StartDate.Value, promo.DispatchesStart.Value) <= 0
+                                   && DateTimeOffset.Compare(x.EndDate.Value, promo.DispatchesStart.Value) >= 0).ToList();
+
                         clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == clientNode.parentId && !x.EndDate.HasValue).FirstOrDefault();
                     }
                 }
