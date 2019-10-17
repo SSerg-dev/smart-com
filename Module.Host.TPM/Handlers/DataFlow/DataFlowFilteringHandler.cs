@@ -9,7 +9,6 @@ using Module.Persist.TPM.Utils.Filter;
 using Persist;
 using ProcessingHost.Handlers;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -48,17 +47,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
                 innerStopWatch.Restart();
                 FilterCollection.InitializeChangesIncidents(context, handlerLogger);
 
-                var promoesForRecalculatingConcurrent = new ConcurrentBag<Promo>();
-
-                Parallel.ForEach(promoesToCheck, promo =>
-                {
-                    if (FilterCollection.ApplyFilters(context, promo, promoesToCheck.Count, handlerLogger))
-                    {
-                        promoesForRecalculatingConcurrent.Add(promo);
-                    }
-                });
-
-                var promoesForRecalculating = promoesForRecalculatingConcurrent.ToList();//promoesToCheck.Where(x => FilterCollection.ApplyFilters(context, x, promoesToCheck.Count, handlerLogger));
+                var promoesForRecalculating = promoesToCheck.Where(x => FilterCollection.ApplyFilters(context, x, promoesToCheck.Count, handlerLogger));
                 handlerLogger.Write(true, $"The incident filtering of promoes duration:{innerStopWatch.Elapsed.Hours} hours and {innerStopWatch.Elapsed.Minutes} minutes and {innerStopWatch.Elapsed.Seconds} seconds", "Timing");
                 handlerLogger.Write(true, String.Format("The incident filtering of promoes ended at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
 
@@ -500,7 +489,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
 
         public static bool ApplyFilters(DatabaseContext context, Promo promo, int promoesAmount, ILogWriter handlerLogger)
         {
-            //handlerLogger.Write(true, $"Filtering promo number { promo.Number } ({ ++Counter } / { promoesAmount })", "Message");
+            handlerLogger.Write(true, $"Filtering promo number { promo.Number } ({ ++Counter } / { promoesAmount })", "Message");
 
             return IncrementalPromo(context, promo, handlerLogger)
                    || AssortmentMatrix(context, promo, handlerLogger)
@@ -517,53 +506,50 @@ namespace Module.Host.TPM.Handlers.DataFlow
         /// </summary>
         /// <param name="promo">Модель промо.</param>
         /// <returns>Нужно ли пересчитывать данное промо?</returns>
-        public static bool BaseLine(DatabaseContext _context, Promo promo, ILogWriter handlerLogger)
+        public static bool BaseLine(DatabaseContext context, Promo promo, ILogWriter handlerLogger)
         {
-            using (DatabaseContext context = new DatabaseContext())
+            foreach (var baseLineChangesGuidId in BaseLineChangesGuidIds)
             {
-                foreach (var baseLineChangesGuidId in BaseLineChangesGuidIds)
+                var baseLine = context.Set<BaseLine>().FirstOrDefault(x => x.Id == baseLineChangesGuidId);
+                if (baseLine != null)
                 {
-                    var baseLine = context.Set<BaseLine>().FirstOrDefault(x => x.Id == baseLineChangesGuidId);
-                    if (baseLine != null)
+                    // Пункт номер 1 из комментария к методу. 
+                    var baseLineStartDateBeetweenPromoDates = !(promo.StartDate > baseLine.StartDate.Value.AddDays(6) || promo.EndDate < baseLine.StartDate);
+                    if (baseLineStartDateBeetweenPromoDates)
                     {
-                        // Пункт номер 1 из комментария к методу. 
-                        var baseLineStartDateBeetweenPromoDates = !(promo.StartDate > baseLine.StartDate.Value.AddDays(6) || promo.EndDate < baseLine.StartDate);
-                        if (baseLineStartDateBeetweenPromoDates)
+                        // Пункт номер 2 из комментария к методу. 
+                        var promoProductContainsBaseLineProduct = context.Set<PromoProduct>()
+                            .Any(x => x.PromoId == promo.Id && x.ProductId == baseLine.ProductId && !x.Disabled);
+
+                        if (promoProductContainsBaseLineProduct)
                         {
-                            // Пункт номер 2 из комментария к методу. 
-                            var promoProductContainsBaseLineProduct = context.Set<PromoProduct>()
-                                .Any(x => x.PromoId == promo.Id && x.ProductId == baseLine.ProductId && !x.Disabled);
-
-                            if (promoProductContainsBaseLineProduct)
+                            // Пункт номер 3 из комментария к методу. 
+                            var clientTree = context.Set<ClientTree>().FirstOrDefault(x => x.ObjectId == promo.ClientTreeId && !x.EndDate.HasValue);
+                            if (clientTree != null)
                             {
-                                // Пункт номер 3 из комментария к методу. 
-                                var clientTree = context.Set<ClientTree>().FirstOrDefault(x => x.ObjectId == promo.ClientTreeId && !x.EndDate.HasValue);
-                                if (clientTree != null)
+                                while (clientTree != null && clientTree.Type.ToLower() != "root")
                                 {
-                                    while (clientTree != null && clientTree.Type.ToLower() != "root")
+                                    if (clientTree.DemandCode == baseLine.DemandCode)
                                     {
-                                        if (clientTree.DemandCode == baseLine.DemandCode)
-                                        {
-                                            break;
-                                        }
-
-                                        clientTree = context.Set<ClientTree>().FirstOrDefault(x => x.ObjectId == clientTree.parentId && !x.EndDate.HasValue);
+                                        break;
                                     }
 
-                                    var clientTreeHierarchyContainsBaseLineClient = clientTree.DemandCode == baseLine.DemandCode;
-                                    if (clientTreeHierarchyContainsBaseLineClient)
-                                    {
-                                        //handlerLogger.Write(true, $"Promo number { promo.Number } was filtered by Base Line.", "Message");
-                                        return true;
-                                    }
+                                    clientTree = context.Set<ClientTree>().FirstOrDefault(x => x.ObjectId == clientTree.parentId && !x.EndDate.HasValue);
+                                }
+
+                                var clientTreeHierarchyContainsBaseLineClient = clientTree.DemandCode == baseLine.DemandCode;
+                                if (clientTreeHierarchyContainsBaseLineClient)
+                                {
+                                    handlerLogger.Write(true, $"Promo number { promo.Number } was filtered by Base Line.", "Message");
+                                    return true;
                                 }
                             }
                         }
                     }
                 }
-
-                return false;
             }
+
+            return false;
         }
 
         /// <summary>
@@ -573,41 +559,38 @@ namespace Module.Host.TPM.Handlers.DataFlow
         /// </summary>
         /// <param name="promo">Модель промо.</param>
         /// <returns>Нужно ли пересчитывать данное промо?</returns>
-        public static bool AssortmentMatrix(DatabaseContext _context, Promo promo, ILogWriter handlerLogger)
+        public static bool AssortmentMatrix(DatabaseContext context, Promo promo, ILogWriter handlerLogger)
         {
-            using (DatabaseContext context = new DatabaseContext())
+            foreach (var assortmentMatrixChangesGuidId in AssortmentMatrixChangesGuidIds)
             {
-                foreach (var assortmentMatrixChangesGuidId in AssortmentMatrixChangesGuidIds)
+                var assortmentMatrix = context.Set<AssortmentMatrix>().FirstOrDefault(x => x.Id == assortmentMatrixChangesGuidId && !x.Disabled);
+                // Если запись добавляется
+                if (assortmentMatrix != null)
                 {
-                    var assortmentMatrix = context.Set<AssortmentMatrix>().FirstOrDefault(x => x.Id == assortmentMatrixChangesGuidId && !x.Disabled);
-                    // Если запись добавляется
-                    if (assortmentMatrix != null)
+                    // Пункт номер 1 из комментария к методу. 
+                    var matrixClientEqualsPromoClient = assortmentMatrix.ClientTreeId == promo.ClientTreeKeyId;
+                    if (matrixClientEqualsPromoClient)
                     {
-                        // Пункт номер 1 из комментария к методу. 
-                        var matrixClientEqualsPromoClient = assortmentMatrix.ClientTreeId == promo.ClientTreeKeyId;
-                        if (matrixClientEqualsPromoClient)
-                        {
-                            // Пункт номер 2 из комментария к методу. 
-                            var promoDatesBeetweenMatrixDates = promo.DispatchesStart >= assortmentMatrix.StartDate &&
-                                promo.DispatchesEnd <= assortmentMatrix.EndDate;
+                        // Пункт номер 2 из комментария к методу. 
+                        var promoDatesBeetweenMatrixDates = promo.DispatchesStart >= assortmentMatrix.StartDate &&
+                            promo.DispatchesEnd <= assortmentMatrix.EndDate;
 
-                            if (promoDatesBeetweenMatrixDates)
-                            {
-                                //handlerLogger.Write(true, $"Promo number { promo.Number } was filtered by Assortment Matrix.", "Message");
-                                return true;
-                            }
+                        if (promoDatesBeetweenMatrixDates)
+                        {
+                            handlerLogger.Write(true, $"Promo number { promo.Number } was filtered by Assortment Matrix.", "Message");
+                            return true;
                         }
                     }
-                    // Если запись удаляется
-                    else if (context.Set<AssortmentMatrix>().Where(x => x.Id == assortmentMatrixChangesGuidId && x.Disabled).Count() > 0)
-                    {
-                        //handlerLogger.Write(true, $"Promo number { promo.Number } was filtered by Assortment Matrix.", "Message");
-                        return true;
-                    }
                 }
-
-                return false;
+                // Если запись удаляется
+                else if (context.Set<AssortmentMatrix>().Where(x => x.Id == assortmentMatrixChangesGuidId && x.Disabled).Count() > 0)
+                {
+                    handlerLogger.Write(true, $"Promo number { promo.Number } was filtered by Assortment Matrix.", "Message");
+                    return true;
+                }
             }
+
+            return false;
         }
 
         /// <summary>
@@ -616,28 +599,25 @@ namespace Module.Host.TPM.Handlers.DataFlow
         /// </summary>
         /// <param name="promo">Модель промо.</param>
         /// <returns>Нужно ли пересчитывать данное промо?</returns>
-        public static bool ClientTree(DatabaseContext _context, Promo promo, ILogWriter handlerLogger)
+        public static bool ClientTree(DatabaseContext context, Promo promo, ILogWriter handlerLogger)
         {
-            using (DatabaseContext context = new DatabaseContext())
+            foreach (var clientTreeChangesIntId in ClientTreeChangesIntIds)
             {
-                foreach (var clientTreeChangesIntId in ClientTreeChangesIntIds)
+                var clientTree = context.Set<ClientTree>().FirstOrDefault(x => x.Id == clientTreeChangesIntId && !x.EndDate.HasValue);
+                if (clientTree != null)
                 {
-                    var clientTree = context.Set<ClientTree>().FirstOrDefault(x => x.Id == clientTreeChangesIntId && !x.EndDate.HasValue);
-                    if (clientTree != null)
-                    {
-                        var clientTreeShareChanged = context.Set<ClientTree>()
-                            .Any(x => x.Id == promo.ClientTreeKeyId && x.Id == clientTree.Id && !x.EndDate.HasValue);
+                    var clientTreeShareChanged = context.Set<ClientTree>()
+                        .Any(x => x.Id == promo.ClientTreeKeyId && x.Id == clientTree.Id && !x.EndDate.HasValue);
 
-                        if (clientTreeShareChanged)
-                        {
-                            //handlerLogger.Write(true, $"Promo number { promo.Number } was filtered by Client Tree.", "Message");
-                            return true;
-                        }
+                    if (clientTreeShareChanged)
+                    {
+                        handlerLogger.Write(true, $"Promo number { promo.Number } was filtered by Client Tree.", "Message");
+                        return true;
                     }
                 }
-
-                return false;
             }
+
+            return false;
         }
 
         /// <summary>
@@ -647,31 +627,28 @@ namespace Module.Host.TPM.Handlers.DataFlow
         /// </summary>
         /// <param name="promo">Модель промо.</param>
         /// <returns>Нужно ли пересчитывать данное промо?</returns>
-        public static bool ProductTree(DatabaseContext _context, Promo promo, ILogWriter handlerLogger)
+        public static bool ProductTree(DatabaseContext context, Promo promo, ILogWriter handlerLogger)
         {
-            using (DatabaseContext context = new DatabaseContext())
+            if (!promo.InOut.HasValue || !promo.InOut.Value)
             {
-                if (!promo.InOut.HasValue || !promo.InOut.Value)
+                foreach (var productTreeChangesIntId in ProductTreeChangesIntIds)
                 {
-                    foreach (var productTreeChangesIntId in ProductTreeChangesIntIds)
+                    var productTree = context.Set<ProductTree>().FirstOrDefault(x => x.Id == productTreeChangesIntId && !x.EndDate.HasValue);
+                    if (productTree != null)
                     {
-                        var productTree = context.Set<ProductTree>().FirstOrDefault(x => x.Id == productTreeChangesIntId && !x.EndDate.HasValue);
-                        if (productTree != null)
-                        {
-                            var productTreeFilterChanged = context.Set<PromoProductTree>()
-                                .Any(x => x.PromoId == promo.Id && x.ProductTreeObjectId == productTree.ObjectId && !x.Disabled);
+                        var productTreeFilterChanged = context.Set<PromoProductTree>()
+                            .Any(x => x.PromoId == promo.Id && x.ProductTreeObjectId == productTree.ObjectId && !x.Disabled);
 
-                            if (productTreeFilterChanged)
-                            {
-                                //handlerLogger.Write(true, $"Promo number { promo.Number } was filtered by Product Tree.", "Message");
-                                return true;
-                            }
+                        if (productTreeFilterChanged)
+                        {
+                            handlerLogger.Write(true, $"Promo number { promo.Number } was filtered by Product Tree.", "Message");
+                            return true;
                         }
                     }
                 }
-
-                return false;
             }
+
+            return false;
         }
 
         /// <summary>
@@ -679,29 +656,27 @@ namespace Module.Host.TPM.Handlers.DataFlow
         /// </summary>
         /// <param name="promo">Модель промо</param>
         /// <returns>Нужно ли пересчитывать данное промо?</returns>
-        public static bool IncrementalPromo(DatabaseContext _context, Promo promo, ILogWriter handlerLogger)
+        public static bool IncrementalPromo(DatabaseContext context, Promo promo, ILogWriter handlerLogger)
         {
-            using (DatabaseContext context = new DatabaseContext())
+
+            if (promo.InOut.HasValue && promo.InOut.Value)
             {
-                if (promo.InOut.HasValue && promo.InOut.Value)
+                foreach (var incrementalPromoChangeGuidId in IncrementalPromoChangesGuidIds)
                 {
-                    foreach (var incrementalPromoChangeGuidId in IncrementalPromoChangesGuidIds)
+                    var incrementalPromo = context.Set<IncrementalPromo>().FirstOrDefault(x => x.Id == incrementalPromoChangeGuidId && !x.Disabled);
+                    if (incrementalPromo != null)
                     {
-                        var incrementalPromo = context.Set<IncrementalPromo>().FirstOrDefault(x => x.Id == incrementalPromoChangeGuidId && !x.Disabled);
-                        if (incrementalPromo != null)
+                        // Пункт номер 1 из комментария к методу. 
+                        if (promo.Id == incrementalPromo.PromoId)
                         {
-                            // Пункт номер 1 из комментария к методу. 
-                            if (promo.Id == incrementalPromo.PromoId)
-                            {
-                                //handlerLogger.Write(true, $"Promo number { promo.Number } was filtered by Incremental Promo.", "Message");
-                                return true;
-                            }
+                            handlerLogger.Write(true, $"Promo number { promo.Number } was filtered by Incremental Promo.", "Message");
+                            return true;
                         }
                     }
                 }
-
-                return false;
             }
+
+            return false;
         }
     }
 }
