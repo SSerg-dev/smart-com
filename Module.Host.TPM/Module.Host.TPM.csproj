@@ -204,6 +204,8 @@
     <Compile Include="Handlers\AutoResetPromoHandler.cs" />
     <Compile Include="Handlers\ActualLSVChangeHandler.cs" />
     <Compile Include="Handlers\DataFlow\DataFlowFilteringHandler.cs" />
+    <Compile Include="Handlers\DataFlow\DataFlowFilters.cs" />
+    <Compile Include="Handlers\DataFlow\DataFlowSimpleModels.cs" />
     <Compile Include="Handlers\RemoveDeletedDataHandler.cs" />
     <Compile Include="Handlers\CalculateBudgetsHandler.cs" />
     <Compile Include="Handlers\BaseLineUpgradeHandler.cs" />
