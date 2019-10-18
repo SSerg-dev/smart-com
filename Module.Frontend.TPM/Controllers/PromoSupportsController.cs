@@ -191,6 +191,10 @@ namespace Module.Frontend.TPM.Controllers
                     promoIdsToRecalculate.Add(psp.PromoId);
                 }
 
+                IQueryable<Promo> promos = Context.Set<Promo>().Where(x => promoIdsToRecalculate.Any(y => x.Id == y));
+                if (promos.Any(x => x.PromoStatus.Name == "Closed"))
+                    return InternalServerError(new Exception("Cannot be deleted due to closed promo"));
+
                 CalculateBudgetsCreateTask(new List<Guid>() { key }, promoIdsToRecalculate);
 
                 Context.SaveChanges();

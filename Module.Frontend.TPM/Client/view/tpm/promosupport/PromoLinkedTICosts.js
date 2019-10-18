@@ -43,7 +43,7 @@
 
     listeners: {
         afterrender: function (grid) {
-            var toolbar = grid.down('addonlydirectorytoolbar');
+             var toolbar = grid.down('addonlydirectorytoolbar');
             var addBtn = toolbar.down('#addbutton');
             var deleteBtn = toolbar.down('#deletebutton');
 
@@ -52,13 +52,33 @@
                 addBtn.hide();
                 deleteBtn.hide();
             }
-        }
+        },
+        
     },
 
     items: [{
         xtype: 'directorygrid',
         itemId: 'datatable',
         editorModel: 'Core.form.EditorDetailWindowModel',
+        listeners: {
+           
+            selectionchange: function (grid) { 
+                if (grid.hasSelection()) 
+                var status = grid.getSelection()[0].data.PromoStatusName;
+                var panel = this.up();
+                 var toolbar = panel.down('addonlydirectorytoolbar'); 
+                var deleteBtn = toolbar.down('#deletebutton');
+
+                // для Cost Production нельзя редактировать список промо
+                if (status == 'Closed') {
+                    deleteBtn.hide();
+                } else if (!panel.up().down('costproduction')){ 
+                    deleteBtn.show();
+
+                }
+            }
+
+        },
         store: {
             type: 'directorystore',
             model: 'App.model.tpm.promosupportpromo.PromoSupportPromoTICost',
