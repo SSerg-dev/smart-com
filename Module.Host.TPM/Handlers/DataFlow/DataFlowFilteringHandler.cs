@@ -1,5 +1,4 @@
 ﻿using Core.Dependency;
-using Core.Extensions;
 using Core.Settings;
 using Looper.Core;
 using Looper.Parameters;
@@ -43,31 +42,24 @@ namespace Module.Host.TPM.Handlers.DataFlow
                 var statusesSetting = settingsManager.GetSetting<string>("NOT_CHECK_PROMO_STATUS_LIST", "Draft,Cancelled,Deleted,Closed");
                 var statuses = statusesSetting.Split(',');
 
-                IEnumerable<PromoDataFlowModule.PromoDataFlowSimpleModel> promoesToCheck = dataFlowModuleCollection.PromoDataFlowModule.Collection
+                var promoesToCheck = dataFlowModuleCollection.PromoDataFlowModule.Collection
                     .Where(x => !x.Disabled && x.StartDate.HasValue && !statuses.Contains(x.PromoStatusSystemName)).OrderBy(x => x.Number);
 
                 var syncLock = new object();
                 var promoesForRecalculating =  new List<PromoDataFlowModule.PromoDataFlowSimpleModel>();
 
-                foreach(var parItems in promoesToCheck.Partition(100))
+                Parallel.ForEach(promoesToCheck, promo => 
                 {
-                    handlerLogger.Write(true, $"Promo number from {parItems.ToList()[0].Number} to {parItems.ToList()[99].Number} start at {DateTimeOffset.Now}", "Message");
-
-                    Parallel.ForEach(parItems, promo =>
+                    var applyResult = dataFlowFilterCollection.Apply(promo);
+                    if (applyResult.Item1)
                     {
-                        var applyResult = dataFlowFilterCollection.Apply(promo);
-                        if (applyResult.Item1)
+                        lock (syncLock)
                         {
-                            lock (syncLock)
-                            {
-                                promoesForRecalculating.Add(promo);
-                                //handlerLogger.Write(true, $"Promo number {promo.Number} was filtered by {applyResult.Item2}", "Message");
-                            }
+                            promoesForRecalculating.Add(promo);
+                            handlerLogger.Write(true, $"Promo number {promo.Number} was filtered by {applyResult.Item2}", "Message");
                         }
-                    });
-
-                    handlerLogger.Write(true, $"Promo number from {parItems.ToList()[0].Number} to {parItems.ToList()[99].Number} end at {DateTimeOffset.Now}", "Message");
-                }
+                    }
+                });
 
                 // Список промо, набор продуктов в которых будет изменен.
                 var changedProductsPromoes = Products.GetChangedProductsPromoes(context, promoesToCheck.Where(x => x.PromoStatusSystemName != "Started" && x.PromoStatusSystemName != "Finished").ToList(), handlerLogger);
