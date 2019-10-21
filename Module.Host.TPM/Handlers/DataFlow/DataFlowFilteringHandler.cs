@@ -47,7 +47,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
                     .Where(x => !x.Disabled && x.StartDate.HasValue && !statuses.Contains(x.PromoStatusSystemName)).OrderBy(x => x.Number);
 
                 var syncLock = new object();
-                var promoesForRecalculatingConcurrentBag = new ConcurrentBag<PromoDataFlowModule.PromoDataFlowSimpleModel>();
+                var promoesForRecalculating =  new List<PromoDataFlowModule.PromoDataFlowSimpleModel>();
 
                 foreach(var parItems in promoesToCheck.Partition(100))
                 {
@@ -58,7 +58,11 @@ namespace Module.Host.TPM.Handlers.DataFlow
                         var applyResult = dataFlowFilterCollection.Apply(promo);
                         if (applyResult.Item1)
                         {
-                            promoesForRecalculatingConcurrentBag.Add(promo);
+                            lock (syncLock)
+                            {
+                                promoesForRecalculating.Add(promo);
+                                //handlerLogger.Write(true, $"Promo number {promo.Number} was filtered by {applyResult.Item2}", "Message");
+                            }
                         }
                     });
 
@@ -66,7 +70,6 @@ namespace Module.Host.TPM.Handlers.DataFlow
                 }
 
                 // Список промо, набор продуктов в которых будет изменен.
-                var promoesForRecalculating = promoesForRecalculatingConcurrentBag.ToList();
                 var changedProductsPromoes = Products.GetChangedProductsPromoes(context, promoesToCheck.Where(x => x.PromoStatusSystemName != "Started" && x.PromoStatusSystemName != "Finished").ToList(), handlerLogger);
                 promoesForRecalculating = promoesForRecalculating.Union(changedProductsPromoes).Distinct().ToList();
 
