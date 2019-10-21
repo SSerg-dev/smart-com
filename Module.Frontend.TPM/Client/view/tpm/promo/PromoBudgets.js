@@ -561,29 +561,43 @@
                         mouseWheelEnabled: false,
                         blockMillion: false, // если true - то преобразовывать в миллионы
                         originValue: null, // настоящее значение
-                        valueToRaw: function (value) {
+                            valueToRaw: function (value) {
+                                
+                                //если после двух знаков после запятой есть значения они не отобразятся, но они есть
                             var valueToDisplay = null; 
-
-                            if (value !== null && value !== undefined) {
+                             if (value !== null && value !== undefined) {
                                 if (this.blockMillion) {
                                     valueToDisplay = value;
                                 }
                                 else {
-                                    this.originValue = value;
-                                    valueToDisplay = value / 1000000.0;
+                                    if (this.readOnly) {
+                                        if (this.originValue == null || this.originValue == 0)
+                                            this.originValue = value; 
+                                            value = this.originValue;
+                                            valueToDisplay = value / 1000000.0;
+                                         
+                                    } else {
+                                        this.originValue = value;
+                                        valueToDisplay = value / 1000000.0;
+                                    }
+                                   
                                 }
                             }
 
+                             
                             return Ext.util.Format.number(valueToDisplay, '0.00');
                         },
                         rawToValue: function () {
-                            var parsedValue = parseFloat(String(this.originValue).replace(Ext.util.Format.decimalSeparator, "."))
-                            return isNaN(parsedValue) ? null : parsedValue;
+                            var parsedValue = parseFloat(String(this.originValue).replace(Ext.util.Format.decimalSeparator, "."));
+
+                             return isNaN(parsedValue) ? null : parsedValue;
                         },
                         listeners: {
                             //change: this.budgetsChangeListener
                             focus: function (field) {
-                                this.blockMillion = true;
+                                
+                                if(!this.readOnly)
+                                     this.blockMillion = true;
                                 field.setValue(this.originValue);
                                 this.blockMillion = false;
                             },
