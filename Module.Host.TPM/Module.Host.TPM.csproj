@@ -227,6 +227,7 @@
     <Compile Include="Handlers\Notifications\PromoProductChangeNotificationHandler.cs" />
     <Compile Include="Handlers\PromoWorkflowHandler.cs" />
     <Compile Include="Handlers\CalculatePromoParametersHandler.cs" />
+    <Compile Include="Handlers\UnblockPromoesHandler.cs" />
     <Compile Include="Handlers\UpdateUpliftHandler.cs" />
     <Compile Include="HostTPMModule.cs" />
     <Compile Include="HostTPMModuleRegistrator.cs" />
