@@ -200,7 +200,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ProcessingHostModule.cs" />
     <Compile Include="ProcessinService.cs">
       <SubType>Component</SubType>
     </Compile>
