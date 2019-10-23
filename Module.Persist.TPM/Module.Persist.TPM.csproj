@@ -1282,6 +1282,10 @@
     <Compile Include="Migrations\201910101115443_Mod_Baseline_Col.Designer.cs">
       <DependentUpon>201910101115443_Mod_Baseline_Col.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201910231352050_PromoIncrementalReport_View_Modify.cs" />
+    <Compile Include="Migrations\201910231352050_PromoIncrementalReport_View_Modify.Designer.cs">
+      <DependentUpon>201910231352050_PromoIncrementalReport_View_Modify.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\PlanPostPromoEffectReport.cs" />
     <Compile Include="Model\DTO\PlanIncrementalReport.cs" />
@@ -2358,6 +2362,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201910101115443_Mod_Baseline_Col.resx">
       <DependentUpon>201910101115443_Mod_Baseline_Col.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910231352050_PromoIncrementalReport_View_Modify.resx">
+      <DependentUpon>201910231352050_PromoIncrementalReport_View_Modify.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
