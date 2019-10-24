@@ -88,6 +88,8 @@ namespace Module.Host.TPM.Actions {
                     {
                         oldRecord.ActualPromoBaselineLSV = record.ActualPromoBaselineLSV;
                         oldRecord.ActualPromoLSV = record.ActualPromoLSV;
+                        oldRecord.ActualPromoPostPromoEffectLSVW1 = record.ActualPromoPostPromoEffectLSVW1;
+                        oldRecord.ActualPromoPostPromoEffectLSVW2 = record.ActualPromoPostPromoEffectLSVW2;
                         toUpdate.Add(oldRecord);
                     }
                     else
@@ -97,16 +99,31 @@ namespace Module.Host.TPM.Actions {
                 }
             }
 
-            String formatStr = "UPDATE [Promo] SET ActualPromoBaselineLSV={0}, ActualPromoLSV={1} WHERE Id='{2}' \n";
+            String formatStrRegularPromo = "UPDATE [Promo] SET ActualPromoBaselineLSV={0}, ActualPromoLSV={1}, ActualPromoPostPromoEffectLSVW1={2}, ActualPromoPostPromoEffectLSVW2={3} WHERE Id='{4}' \n";
+            String formatStrInOutPromo = "UPDATE [Promo] SET ActualPromoLSV={0} WHERE Id='{1}' \n";
+
             foreach (IEnumerable<Promo> items in toUpdate.Partition(10000))
             {                
                 string updateScript = "";
 
                 foreach (Promo p in items)
-                    updateScript += String.Format(formatStr, 
-                        p.ActualPromoBaselineLSV.HasValue ? p.ActualPromoBaselineLSV.Value.ToString() : "NULL", 
-                        p.ActualPromoLSV.HasValue ? p.ActualPromoLSV.Value.ToString() : "NULL", 
+                {
+                    if (!p.InOut.HasValue || !p.InOut.Value)
+                    {
+                        updateScript += String.Format(formatStrRegularPromo,
+                        p.ActualPromoBaselineLSV.HasValue ? p.ActualPromoBaselineLSV.Value.ToString() : "NULL",
+                        p.ActualPromoLSV.HasValue ? p.ActualPromoLSV.Value.ToString() : "NULL",
+                        p.ActualPromoPostPromoEffectLSVW1.HasValue ? p.ActualPromoPostPromoEffectLSVW1.Value.ToString() : "NULL",
+                        p.ActualPromoPostPromoEffectLSVW2.HasValue ? p.ActualPromoPostPromoEffectLSVW2.Value.ToString() : "NULL",
                         p.Id);
+                    }
+                    else
+                    {
+                        updateScript += String.Format(formatStrInOutPromo,
+                        p.ActualPromoLSV.HasValue ? p.ActualPromoLSV.Value.ToString() : "NULL",
+                        p.Id);
+                    }
+                }
 
                 context.Database.ExecuteSqlCommand(updateScript);
             }
