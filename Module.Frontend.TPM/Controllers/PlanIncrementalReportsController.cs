@@ -80,7 +80,7 @@ namespace Module.Frontend.TPM.Controllers {
 				new Column() { Order = 5, Field = "TypeApollo", Header = "Type", Quoting = false },
 				new Column() { Order = 6, Field = "ModelApollo", Header = "Model", Quoting = false },
 				new Column() { Order = 7, Field = "WeekStartDate", Header = "Week Start Date", Quoting = false, Format = "dd.MM.yyyy"  },
-				new Column() { Order = 8, Field = "PlanProductCaseQty", Header = "Qty", Quoting = false, Format = "0.00"},
+				new Column() { Order = 8, Field = "PlanProductIncrementalCaseQty", Header = "Plan Product Incremental Qty", Quoting = false, Format = "0.00"},
 				new Column() { Order = 9, Field = "PlanUplift", Header = "Uplift Plan", Quoting = false, Format = "0.00" },
 				new Column() { Order = 10, Field = "DispatchesStart", Header = "Dispatches Start", Quoting = false, Format = "dd.MM.yyyy"  },
 				new Column() { Order = 11, Field = "DispatchesEnd", Header = "Dispatches End", Quoting = false, Format = "dd.MM.yyyy" },
@@ -150,12 +150,12 @@ namespace Module.Frontend.TPM.Controllers {
 						toAdd = (PlanIncrementalReport)item.Clone();
 						toAdd.PlanProductBaselineCaseQty = 0;
 						toAdd.PlanProductBaselineLSV = 0;
-						toAdd.PlanProductCaseQty = 0;
+						toAdd.PlanProductIncrementalCaseQty = 0;
 						toAdd.PlanProductIncrementalLSV = 0;
 					}
 					toAdd.PlanProductBaselineCaseQty += item.PlanProductBaselineCaseQty;
 					toAdd.PlanProductBaselineLSV += item.PlanProductBaselineLSV;
-					toAdd.PlanProductCaseQty += item.PlanProductCaseQty;
+					toAdd.PlanProductIncrementalCaseQty += item.PlanProductIncrementalCaseQty;
 					toAdd.PlanProductIncrementalLSV += item.PlanProductIncrementalLSV;
 
 					if (DateTimeOffset.Compare((DateTimeOffset)toAdd.WeekStartDate, (DateTimeOffset)item.WeekStartDate) > 0)

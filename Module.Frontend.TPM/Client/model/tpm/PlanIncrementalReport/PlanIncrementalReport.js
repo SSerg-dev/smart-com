@@ -11,7 +11,7 @@
         { name: 'TypeApollo', type: 'string', hidden: false, isDefault: true },
         { name: 'ModelApollo', type: 'string', hidden: false, isDefault: true },
         { name: 'WeekStartDate', type: 'date', hidden: false, isDefault: true, timeZone: 0, convert: dateConvertTimeZone }, // timeZone: 0, т.к. расширенный фильтр этого поля работает при таком значении
-        { name: 'PlanProductCaseQty', type: 'number', hidden: false, isDefault: true },
+        { name: 'PlanProductIncrementalCaseQty', type: 'number', hidden: false, isDefault: true },
         { name: 'PlanUplift', type: 'number', hidden: false, isDefault: true },
 		{ name: 'DispatchesStart', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
 		{ name: 'DispatchesEnd', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },

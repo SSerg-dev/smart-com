@@ -1375,7 +1375,7 @@
         'TypeApollo': 'Type',
         'ModelApollo': 'Model',
         'WeekStartDate': 'Week Start Date',
-        'PlanProductCaseQty': 'Qty',
+        'PlanProductIncrementalCaseQty': 'Plan Product Incremental Case Qty',
         'PlanUplift': 'Uplift Plan',
 		'DispatchesStart': 'Dispatch Start',
 		'DispatchesEnd': 'Dispatch End',

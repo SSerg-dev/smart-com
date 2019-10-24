@@ -18,8 +18,8 @@ namespace Module.Persist.TPM.Migrations
                 'RU_0125' as LocApollo, '7' as TypeApollo,
                 'SHIP_LEWAND_CS' as ModelApollo, CONVERT(datetimeoffset(7), 
                 joined.WeekStartDate) as WeekStartDate, iif(joined.StartDay <> 1,
-                (joined.PlanProductCaseQty / DATEDIFF(DAY, p.DispatchesStart, p.DispatchesEnd)) * (8 - joined.StartDay),
-                (joined.PlanProductCaseQty / DATEDIFF(DAY, p.DispatchesStart, p.DispatchesEnd)) * joined.EndDay) as PlanProductCaseQty,
+                (joined.PlanProductIncrementalCaseQty / DATEDIFF(DAY, p.DispatchesStart, p.DispatchesEnd)) * (8 - joined.StartDay),
+                (joined.PlanProductIncrementalCaseQty / DATEDIFF(DAY, p.DispatchesStart, p.DispatchesEnd)) * joined.EndDay) as PlanProductIncrementalCaseQty,
                 iif(joined.StartDay <> 1,
                 (joined.PlanProductBaselineCaseQty / DATEDIFF(DAY, p.DispatchesStart, p.DispatchesEnd)) * (8 - joined.StartDay),
                 (joined.PlanProductBaselineCaseQty / DATEDIFF(DAY, p.DispatchesStart, p.DispatchesEnd)) * joined.EndDay) as PlanProductBaselineCaseQty, 
@@ -31,18 +31,18 @@ namespace Module.Persist.TPM.Migrations
                 (joined.PlanProductBaselineLSV / DATEDIFF(DAY, p.DispatchesStart, p.DispatchesEnd)) * joined.EndDay) as PlanProductBaselineLSV,
                 p.PlanPromoUpliftPercent as PlanUplift, p.DispatchesStart as DispatchesStart,
                 p.DispatchesEnd as DispatchesEnd, '' as Week, ps.[Name] as [Status] FROM( Select pp.PromoId as PromoId,
-                pp.ZREP as ZREP, pp.PlanProductCaseQty as PlanProductCaseQty,
+                pp.ZREP as ZREP, pp.PlanProductIncrementalCaseQty as PlanProductIncrementalCaseQty,
                 dc.DemandCode as DemandCode, MIN(dt.OriginalDate) as WeekStartDate,
                 MIN(dt.MarsDay) as StartDay, MAX(dt.MarsDay) as EndDay, pp.PlanProductBaselineCaseQty as PlanProductBaselineCaseQty,
                 pp.PlanProductIncrementalLSV as PlanProductIncrementalLSV,
                 pp.PlanProductBaselineLSV as PlanProductBaselineLSV FROM PromoProduct pp LEFT JOIN Promo p on pp.PromoId = p.Id 
                 LEFT JOIN DemandCodeView dc on p.ClientTreeId = dc.ObjectId 
                 INNER JOIN Dates dt on dt.OriginalDate >= (SELECT TOP(1) OriginalDate FROM Dates WHERE OriginalDate >= DATEADD(DAY, -7, p.DispatchesStart) AND MarsDayName = 'D1') and dt.OriginalDate <= p.DispatchesEnd 
-                where pp.[Disabled] = 0 and pp.PlanProductCaseQty > 0 and p.[Disabled] = 0 
-                GROUP BY pp.PromoId, pp.ZREP, pp.PlanProductCaseQty, pp.PlanProductBaselineCaseQty, pp.PlanProductIncrementalLSV, 
+                where pp.[Disabled] = 0 and pp.PlanProductIncrementalCaseQty > 0 and p.[Disabled] = 0 
+                GROUP BY pp.PromoId, pp.ZREP, pp.PlanProductIncrementalCaseQty, pp.PlanProductBaselineCaseQty, pp.PlanProductIncrementalLSV, 
                 pp.PlanProductBaselineLSV, dc.DemandCode, dt.MarsYear, dt.MarsPeriod, dt.MarsWeek ) as joined 
                 LEFT JOIN Promo p on PromoId = p.Id LEFT JOIN PromoStatus ps on p.PromoStatusId = ps.Id
-            ");
+			");
         }
         
         public override void Down()
