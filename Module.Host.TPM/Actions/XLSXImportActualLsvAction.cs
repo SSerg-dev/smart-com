@@ -58,6 +58,16 @@ namespace Module.Host.TPM.Actions {
                             handlerLogger.Write(true, "No Promo with ID: " + importObj.Number, "Warning");
                             success = false;
                         }
+                         if (importObj.ActualPromoLSV < 0) {
+                            errors.Add("Actual Promo LSV < 0 " );
+                            handlerLogger.Write(true, "Actual Promo LSV < 0 ", "Warning");
+                            success = false;
+                        }
+                        if (importObj.ActualPromoBaselineLSV < 0) {
+                            errors.Add("Actual Promo Baseline LSV < 0 " );
+                            handlerLogger.Write(true, "Actual Promo Baseline LSV < 0 ", "Warning");
+                            success = false;
+                        }
                     }
                 }
             }
