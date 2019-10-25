@@ -23,7 +23,8 @@ namespace Module.Persist.TPM.Utils
         public string ZREP { get; set; }
         public double? PlanProductIncrementalCaseQty { get; set; }
         public double? PlanProductBaselineCaseQty { get; set; }
-        public double? PlanProductPostPromoEffectLSV { get; set; }
+        public double? PlanProductPostPromoEffectLSVW1 { get; set; }
+        public double? PlanProductPostPromoEffectLSVW2 { get; set; }
         public double? PlanProductBaselineLSV { get; set; }
     }
 }
