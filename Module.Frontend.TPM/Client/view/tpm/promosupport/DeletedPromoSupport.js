@@ -138,7 +138,7 @@
     }, {
         xtype: 'editabledetailform',
         itemId: 'detailform',
-        model: 'App.model.tpm.promostatus.DeletedPromoStatus',
+        model: 'App.model.tpm.promosupport.DeletedPromoSupport',
         items: []
     }]
 });
