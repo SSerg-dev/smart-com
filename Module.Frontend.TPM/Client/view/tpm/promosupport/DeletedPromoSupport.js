@@ -8,7 +8,7 @@
         dock: 'right'
     }],
 
-    
+
 
     items: [{
         xtype: 'directorygrid',
@@ -135,5 +135,10 @@
                 renderer: Ext.util.Format.dateRenderer('d.m.Y')
             }]
         }
+    }, {
+        xtype: 'editabledetailform',
+        itemId: 'detailform',
+        model: 'App.model.tpm.promostatus.DeletedPromoStatus',
+        items: []
     }]
 });
