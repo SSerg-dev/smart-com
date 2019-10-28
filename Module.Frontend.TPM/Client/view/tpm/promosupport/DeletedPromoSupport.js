@@ -99,12 +99,12 @@
                     valueField: 'Name',
                     store: {
                         type: 'directorystore',
-                        model: 'App.model.tpm.budgetsubitem.BudgetSubItemWithFilter',
+                        model: 'App.model.tpm.budgetsubitem.BudgetSubItem',
                         extendedFilter: {
                             xclass: 'App.ExtFilterContext',
                             supportedModels: [{
                                 xclass: 'App.ExtSelectionFilterModel',
-                                model: 'App.model.tpm.budgetsubitem.BudgetSubItemWithFilter',
+                                model: 'App.model.tpm.budgetsubitem.BudgetSubItem',
                                 modelId: 'efselectionmodel'
                             }, {
                                 xclass: 'App.ExtTextFilterModel',
