@@ -69,6 +69,13 @@
             glyph: 0xf233,
             text: l10n.ns('tpm', 'filter', 'buttons').value('PromoSupportDetailFilter'),
             tooltip: l10n.ns('tpm', 'filter', 'buttons').value('PromoSupportDetailFilter')
+        },{
+            itemId: 'deletedbutton',
+            resource: 'Deleted{0}',
+            action: 'Get{0}',
+            glyph: 0xf258,
+            text: l10n.ns('core', 'toptoolbar').value('deletedButtonText'),
+            tooltip: l10n.ns('core', 'toptoolbar').value('deletedButtonText')
         }, {
             itemId: 'historybutton',
             resource: 'Historical{0}',
@@ -76,7 +83,14 @@
             glyph: 0xf2da,
             text: l10n.ns('core', 'crud').value('historyButtonText'),
             tooltip: l10n.ns('core', 'crud').value('historyButtonText')
-        }, '-', '->', '-', {
+            }, {
+                itemId: 'deletedbutton',
+                resource: 'Deleted{0}',
+                action: 'Get{0}',
+                glyph: 0xf258,
+                text: l10n.ns('core', 'toptoolbar').value('deletedButtonText'),
+                tooltip: l10n.ns('core', 'toptoolbar').value('deletedButtonText')
+            }, '-', '->', '-', {
             itemId: 'extfilterclearbutton',
             ui: 'blue-button-toolbar',
             disabled: true,

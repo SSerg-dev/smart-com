@@ -205,6 +205,7 @@
     <Compile Include="Controllers\BudgetSubItemClientTreesController.cs" />
     <Compile Include="Controllers\DeletedAssortmentMatricesController.cs" />
     <Compile Include="Controllers\DeletedIncrementalPromoesController.cs" />
+    <Compile Include="Controllers\DeletedPromoSupportsController.cs" />
     <Compile Include="Controllers\EventClientTreesController.cs" />
     <Compile Include="Controllers\HistoricalAssortmentMatricesController.cs" />
     <Compile Include="Controllers\HistoricalCostProductionsController.cs" />
