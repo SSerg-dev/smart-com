@@ -1290,6 +1290,10 @@
     <Compile Include="Migrations\201910241117189_Empty_Migration_RC.Designer.cs">
       <DependentUpon>201910241117189_Empty_Migration_RC.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201910291200043_PlanIncrementalReport_Update.cs" />
+    <Compile Include="Migrations\201910291200043_PlanIncrementalReport_Update.Designer.cs">
+      <DependentUpon>201910291200043_PlanIncrementalReport_Update.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\PlanPostPromoEffectReport.cs" />
     <Compile Include="Model\DTO\PlanIncrementalReport.cs" />
@@ -2373,6 +2377,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201910241117189_Empty_Migration_RC.resx">
       <DependentUpon>201910241117189_Empty_Migration_RC.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910291200043_PlanIncrementalReport_Update.resx">
+      <DependentUpon>201910291200043_PlanIncrementalReport_Update.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
