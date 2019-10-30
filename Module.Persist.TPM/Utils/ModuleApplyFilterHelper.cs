@@ -449,7 +449,11 @@ namespace Module.Persist.TPM.Utils {
             if (finishDate.HasValue) {
                 result.Where.Rules.Add(new FilterRule("StartDate", Operations.LessOrEquals, finishDate.Value));
             }
-            
+            IEnumerable<string> clientFilter = FilterHelper.GetFilter(filter, ModuleFilterName.Client);
+            if (clientFilter.Any())
+            {
+                result.Where.Rules.Add(new FilterRule("DemandCode", Operations.In, clientFilter));
+            }
             return result;
         }
 
