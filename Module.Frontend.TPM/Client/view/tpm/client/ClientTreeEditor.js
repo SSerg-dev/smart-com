@@ -45,26 +45,16 @@
             name: 'Name',
         }, {
             xtype: 'textfield',
-            fieldLabel: l10n.ns('tpm', 'ClientTree').value('ExecutionCode'),
-            name: 'ExecutionCode',
-            allowBlank: false,
-            allowOnlyWhitespace: false,
+            fieldLabel: l10n.ns('tpm', 'ClientTree').value('GHierarchyCode'),
+            name: 'GHierarchyCode',
+            allowBlank: true,
+            allowOnlyWhitespace: true,
         }, {
             xtype: 'textfield',
             fieldLabel: l10n.ns('tpm', 'ClientTree').value('DemandCode'),
             name: 'DemandCode',
             allowBlank: true,
             allowOnlyWhitespace: true,
-        }, {
-            xtype: 'numberfield',
-            fieldLabel: l10n.ns('tpm', 'ClientTree').value('Share'),
-            name: 'Share',
-            maxValue: 100,
-            minValue: 0,
-            step: 1,
-            allowBlank: false,
-            allowOnlyWhitespace: false,
-            allowDecimals: false
         }, {
             xtype: 'booleancombobox',
             fieldLabel: l10n.ns('tpm', 'ClientTree').value('IsBaseClient'),

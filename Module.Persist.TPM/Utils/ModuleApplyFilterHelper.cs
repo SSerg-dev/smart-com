@@ -176,6 +176,26 @@ namespace Module.Persist.TPM.Utils {
         }
 
         /// <summary>
+        /// Применение фильтра по ограничениям
+        /// </summary>
+        /// <param name="query"></param>
+        /// <param name="hierarchy"></param>
+        /// <param name="filter"></param>
+        /// <param name="filterMode"></param>
+        /// <returns></returns>
+        public static IQueryable<ClientTreeSharesView> ApplyFilter(IQueryable<ClientTreeSharesView> query, IQueryable<ClientTreeHierarchyView> hierarchy, IDictionary<string, IEnumerable<string>> filter = null, FilterQueryModes filterMode = FilterQueryModes.Active)
+        {
+            IEnumerable<string> clientFilter = FilterHelper.GetFilter(filter, ModuleFilterName.Client);
+            if (clientFilter.Any())
+            {
+                hierarchy = getFilteredHierarchy(hierarchy, clientFilter);
+                query = query.Where(x =>
+                    hierarchy.Any(h => h.Id == x.BOI));
+            }
+            return query;
+        }
+
+        /// <summary>
         /// Применение фильтра по ограничениям к базовым клиентам
         /// </summary>
         /// <param name="query"></param>
@@ -183,12 +203,12 @@ namespace Module.Persist.TPM.Utils {
         /// <param name="filter"></param>
         /// <param name="filterMode"></param>
         /// <returns></returns>
-        public static IQueryable<ClientTreeSharesView> ApplyFilter(IQueryable<ClientTreeSharesView> query, IQueryable<ClientTreeHierarchyView> hierarchy, IDictionary<string, IEnumerable<string>> filter = null, FilterQueryModes filterMode = FilterQueryModes.Active) {
+        public static IQueryable<ClientTreeBrandTech> ApplyFilter(IQueryable<ClientTreeBrandTech> query, IQueryable<ClientTreeHierarchyView> hierarchy, IDictionary<string, IEnumerable<string>> filter = null, FilterQueryModes filterMode = FilterQueryModes.Active) {
             IEnumerable<string> clientFilter = FilterHelper.GetFilter(filter, ModuleFilterName.Client);
             if (clientFilter.Any()) {
                 hierarchy = getFilteredHierarchy(hierarchy, clientFilter);
                 query = query.Where(x =>
-                    hierarchy.Any(h => h.Id == x.BOI));
+                    hierarchy.Any(h => h.Id == x.ClientTree.ObjectId));
             }
             return query;
         }

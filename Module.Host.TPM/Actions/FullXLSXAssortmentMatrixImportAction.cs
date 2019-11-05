@@ -367,11 +367,12 @@ namespace Module.Host.TPM.Actions {
         /// <returns></returns>
         protected int InsertDataToDatabase(IEnumerable<IEntity<Guid>> sourceRecords, DatabaseContext context) {
             IList<AssortmentMatrix> toCreate = new List<AssortmentMatrix>();
+			IList<ProductChangeIncident> incidents = new List<ProductChangeIncident>();
             var query = GetQuery(context).ToList();
+			IList<Product> products = context.Set<Product>().Where(x => !x.Disabled).ToList();
 
-            foreach (ImportAssortmentMatrix newRecord in sourceRecords) {
+			foreach (ImportAssortmentMatrix newRecord in sourceRecords) {
                 AssortmentMatrix oldRecord = query.FirstOrDefault(x => x.ClientTreeId == newRecord.ClientTreeId && x.ProductId == newRecord.ProductId && !x.Disabled);
-
                 AssortmentMatrix toSave = new AssortmentMatrix() {
                     ClientTreeId = newRecord.ClientTreeId,
                     ProductId = newRecord.ProductId,
@@ -379,14 +380,30 @@ namespace Module.Host.TPM.Actions {
                     EndDate = newRecord.EndDate,
                     CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)
                 };
-
                 toCreate.Add(toSave);
-            }
+
+				Product product = products.Where(x => x.Id == toSave.ProductId).FirstOrDefault();
+				ProductChangeIncident pci = new ProductChangeIncident
+				{
+					CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+					IsCreate = false,
+					IsDelete = false,
+					IsCreateInMatrix = true,
+					IsDeleteInMatrix = false,
+					Product = product,
+					ProductId = product.Id
+				};
+				incidents.Add(pci);
+			}
 
             foreach (IEnumerable<AssortmentMatrix> items in toCreate.Partition(100)) {
                 context.Set<AssortmentMatrix>().AddRange(items);
             }
-            context.SaveChanges();
+			foreach (IEnumerable<ProductChangeIncident> items in incidents.Partition(100))
+			{
+				context.Set<ProductChangeIncident>().AddRange(items);
+			}
+			context.SaveChanges();
 
             return sourceRecords.Count();
         }

@@ -250,7 +250,14 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
         private static void WriteUpliftIncident(Guid promoId, DatabaseContext context)
         {
-            context.Set<PromoUpliftFailIncident>().Add(new PromoUpliftFailIncident() { PromoId = promoId, CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow) });
+			// Закрываем неактуальные инциденты
+			var oldIncidents = context.Set<PromoUpliftFailIncident>().Where(x => x.PromoId == promoId && x.ProcessDate != null);
+			foreach (var incident in oldIncidents)
+			{
+				incident.ProcessDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+			}
+
+			context.Set<PromoUpliftFailIncident>().Add(new PromoUpliftFailIncident() { PromoId = promoId, CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow) });
             context.SaveChanges();
         }
 

@@ -112,13 +112,34 @@ namespace Module.Persist.TPM.PromoStateControl
                         _stateContext.Model = promoModel;
                         _stateContext.State = _stateContext._draftState;
 
-                        return true;
+						if (userRole != "System")
+						{
+							// Если в Draft переводит не система, то удаляем reject incident, если есть
+							var rejectIncidents = _stateContext.dbContext.Set<PromoOnRejectIncident>().Where(x => x.PromoId == promoModel.Id && !x.ProcessDate.HasValue);
+							foreach (var incident in rejectIncidents)
+							{
+								incident.ProcessDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+							}
+						}
+
+						return true;
                     }
                     // Go to: OnApprovalState
                     else
                     {
-                        // Проверка на NoNego
-                        bool isNoNego = CheckNoNego(promoModel);
+						if (userRole != "System")
+						{
+							// Если в Draft переводит не система, то удаляем reject incident, если есть
+							var rejectIncidents = _stateContext.dbContext.Set<PromoOnRejectIncident>().Where(x => x.PromoId == promoModel.Id && !x.ProcessDate.HasValue);
+							foreach (var incident in rejectIncidents)
+							{
+								incident.ProcessDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+							}
+						}
+
+						var oldIncidents = _stateContext.dbContext.Set<PromoOnApprovalIncident>().Where(x => x.PromoId == promoModel.Id && x.ProcessDate == null);
+						// Проверка на NoNego
+						bool isNoNego = CheckNoNego(promoModel);
                         if (isNoNego)
                         {
                             ISettingsManager settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
@@ -147,6 +168,11 @@ namespace Module.Persist.TPM.PromoStateControl
                                     _stateContext.Model = promoModel;
                                     _stateContext.State = _stateContext._onApprovalState;
 
+									// Закрываем все неактуальные инциденты
+									foreach (var incident in oldIncidents)
+									{
+										incident.ProcessDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+									}
 									_stateContext.dbContext.Set<PromoOnApprovalIncident>().Add(new PromoOnApprovalIncident()
 									{
 										PromoId = promoModel.Id,
@@ -178,6 +204,10 @@ namespace Module.Persist.TPM.PromoStateControl
                                     _stateContext.Model = promoModel;
                                     _stateContext.State = _stateContext._onApprovalState;
 
+									foreach (var incident in oldIncidents)
+									{
+										incident.ProcessDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+									}
 									_stateContext.dbContext.Set<PromoOnApprovalIncident>().Add(new PromoOnApprovalIncident()
 									{
 										PromoId = promoModel.Id,
@@ -191,6 +221,10 @@ namespace Module.Persist.TPM.PromoStateControl
                         }
                         else
                         {
+							foreach (var incident in oldIncidents)
+							{
+								incident.ProcessDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+							}
 							_stateContext.dbContext.Set<PromoOnApprovalIncident>().Add(new PromoOnApprovalIncident(){
 								PromoId = promoModel.Id,
 								ApprovingRole = "CMManager",
@@ -245,7 +279,17 @@ namespace Module.Persist.TPM.PromoStateControl
                         _stateContext.Model.NeedRecountUplift = true;
                         _stateContext.State = _stateContext._draftState;
 
-                        return true;
+						if (userRole != "System")
+						{
+							// Если в Draft переводит не система, то удаляем reject incident, если есть
+							var rejectIncidents = _stateContext.dbContext.Set<PromoOnRejectIncident>().Where(x => x.PromoId == promoModel.Id && !x.ProcessDate.HasValue);
+							foreach (var incident in rejectIncidents)
+							{
+								incident.ProcessDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+							}
+						}
+
+						return true;
                     }
                     // Go to: DraftPublishedState
                     else

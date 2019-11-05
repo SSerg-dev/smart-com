@@ -206,7 +206,12 @@ namespace Module.Frontend.TPM.Controllers {
                     string error;
                     PlanProductParametersCalculation.SetPromoProduct(Context.Set<Promo>().First(x => x.Number == result.Number).Id, Context, out error, true, promoProductTrees);
                 }
-                result.LastChangedDate = ChangedDate;
+
+                if (PromoUtils.HasChanges(Context.ChangeTracker))
+                {
+                    result.LastChangedDate = ChangedDate;
+                }
+
                 Context.SaveChanges();
 
                 return Created(result);
@@ -324,57 +329,6 @@ namespace Module.Frontend.TPM.Controllers {
 					}
 				}
 
-				// Создание инцедентов для оповещения следуюей роли о необходимости подтверждения промо
-				if (promoCopy.IsCMManagerApproved != model.IsCMManagerApproved
-					&& promoCopy.IsDemandPlanningApproved == model.IsDemandPlanningApproved
-					&& promoCopy.IsDemandFinanceApproved == model.IsDemandFinanceApproved)
-				{
-					Context.Set<PromoOnApprovalIncident>().Add(new PromoOnApprovalIncident()
-					{
-						CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-						PromoId = model.Id,
-						Promo = model,
-						ApprovingRole = "DemandPlanning"
-					});
-				}
-				else if (promoCopy.IsCMManagerApproved == model.IsCMManagerApproved
-					&& promoCopy.IsDemandPlanningApproved != model.IsDemandPlanningApproved
-					&& promoCopy.IsDemandFinanceApproved == model.IsDemandFinanceApproved
-					&& model.IsDemandFinanceApproved == false)
-				{
-					Context.Set<PromoOnApprovalIncident>().Add(new PromoOnApprovalIncident()
-					{
-						CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                        PromoId = model.Id,
-						Promo = model,
-						ApprovingRole = "DemandFinance"
-					});
-				}
-				else if (promoCopy.IsDemandFinanceApproved == model.IsDemandFinanceApproved == false
-				&& promoCopy.IsCMManagerApproved == model.IsCMManagerApproved == false
-				&& promoCopy.IsDemandPlanningApproved == model.IsDemandPlanningApproved == false
-				&& promoCopy.PromoStatusId != model.PromoStatusId)
-				{
-					Context.Set<PromoOnApprovalIncident>().Add(new PromoOnApprovalIncident()
-					{
-						CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-						PromoId = model.Id,
-						Promo = model,
-						ApprovingRole = "CMManager"
-					});
-				}
-
-				// Созданием инцидента при переводе промо из статуса On Approval в Approved
-				if (promoCopy.PromoStatus.SystemName == "OnApproval" && model.PromoStatus.SystemName == "Approved")
-				{
-					Context.Set<PromoApprovedIncident>().Add(new PromoApprovedIncident()
-					{
-						CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                        Promo = model,
-						PromoId = model.Id
-					});
-				}
-
                 SetBrandTechIdPromo(model);
 
 				if (statusName.ToLower() != "cancelled" && statusName.ToLower() != "finished")
@@ -484,15 +438,63 @@ namespace Module.Frontend.TPM.Controllers {
 					// Создание записи инцидента отмены промо
 					Context.Set<PromoCancelledIncident>().Add(new PromoCancelledIncident() { PromoId = model.Id, CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow) });
                 }
-                model.LastChangedDate = ChangedDate;
-                if ((promoCopy.PlanPromoUpliftPercent != null && model.PlanPromoUpliftPercent != null
-                    && Math.Round(promoCopy.PlanPromoUpliftPercent.Value, 2, MidpointRounding.AwayFromZero) != Math.Round(model.PlanPromoUpliftPercent.Value, 2, MidpointRounding.AwayFromZero)))
+
+                if (PromoUtils.HasChanges(Context.ChangeTracker))
                 {
-                    model.LastChangedDateDemand = ChangedDate;
-                    model.LastChangedDateFinance = ChangedDate;
+                    model.LastChangedDate = ChangedDate;
+                    if ((promoCopy.PlanPromoUpliftPercent != null && model.PlanPromoUpliftPercent != null
+                        && Math.Round(promoCopy.PlanPromoUpliftPercent.Value, 2, MidpointRounding.AwayFromZero) != Math.Round(model.PlanPromoUpliftPercent.Value, 2, MidpointRounding.AwayFromZero)))
+                    {
+                        model.LastChangedDateDemand = ChangedDate;
+                        model.LastChangedDateFinance = ChangedDate;
+                    }
                 }
 
-                    Context.SaveChanges();
+				if (promoCopy.InOutProductIds != model.InOutProductIds)
+				{
+					IList<Product> oldProductIdList = new List<Product>();
+					IList<Product> newProductIdList = new List<Product>();
+					foreach (var productId in promoCopy.InOutProductIds.Split(';'))
+					{
+						var productGuid = Guid.Empty;
+						if (Guid.TryParse(productId, out productGuid))
+						{
+							Product product = Context.Set<Product>().Where(x => x.Id == productGuid).FirstOrDefault();
+							if (product != null) oldProductIdList.Add(product);
+						}
+					}
+					foreach (var productId in model.InOutProductIds.Split(';'))
+					{
+						var productGuid = Guid.Empty;
+						if (Guid.TryParse(productId, out productGuid))
+						{
+							Product product = Context.Set<Product>().Where(x => x.Id == productGuid).FirstOrDefault();
+							if (product != null) newProductIdList.Add(product);
+						}
+					}
+
+					List<Product> forIncident = new List<Product>();
+					forIncident.AddRange(newProductIdList.Except(oldProductIdList));
+					forIncident.AddRange(oldProductIdList.Except(newProductIdList));
+					if (forIncident.Any())
+					{
+						foreach (var product in forIncident)
+						{
+							var pci = new ProductChangeIncident
+							{
+								CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+								IsCreate = false,
+								IsDelete = false,
+								IsCreateInMatrix = false,
+								IsDeleteInMatrix = false,
+								Product = product,
+								ProductId = product.Id
+							};
+							Context.Set<ProductChangeIncident>().Add(pci);
+						}
+					}
+				}
+                Context.SaveChanges();
                 PromoHelper.WritePromoDemandChangeIncident(Context, model, patch, promoCopy);
 
                 // TODO: ПЕРЕДЕЛАТЬ, просто оставалось 15 мин до релиза

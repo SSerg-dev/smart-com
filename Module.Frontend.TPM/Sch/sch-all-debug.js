@@ -4107,10 +4107,10 @@ Ext.define("Sch.feature.SchedulerDragZone", {
             Ext.EventManager.un(document, "keyup", this.onKey, this)
         }
         this.callParent(arguments);
-        this.proxy.el.setStyle({
-            left: 0,
-            top: 0
-        })
+        //this.proxy.el.setStyle({
+        //    left: 0,
+        //    top: 0
+        //})
     },
     updateRecords: function (b) {
         var g = this,

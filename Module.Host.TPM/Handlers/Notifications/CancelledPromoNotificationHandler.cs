@@ -35,7 +35,22 @@ namespace Module.Host.TPM.Handlers.Notifications
                         handlerLogger.Write(true, action.Errors, "Error");
                     }
                 }
-            }
+				if (action.Warnings.Any())
+				{
+					data.SetValue<bool>("HasWarnings", true);
+					if (handlerLogger != null)
+					{
+						handlerLogger.Write(true, action.Warnings, "Warning");
+					}
+				}
+				if (action.Results.Any())
+				{
+					if (handlerLogger != null)
+					{
+						handlerLogger.Write(true, action.Results.Keys, "Message");
+					}
+				}
+			}
             catch (Exception e)
             {
                 data.SetValue<bool>("HasErrors", true);

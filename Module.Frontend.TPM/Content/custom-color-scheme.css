@@ -542,6 +542,10 @@ x-panel-header-text-container-blue-panel {
     margin-top: 1px;
     margin-left: 1px;
 }
+.sch-timelineview .current-day-line,
+.sch-timelineview .sch-column-line {
+    height: 20000px !important;
+}
 
 .value {
     background: rgba(0, 0, 0, 0.1);
@@ -615,14 +619,19 @@ pre.code {
     font-family: verdana;
     font-size: 8px;
     color: #293A54;
-    line-height: 23px;
     line-height: 9px;
     vertical-align: middle;
-    margin-left: 3px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     display: block;
+}
+.overlay {
+    position: absolute;
+    left: 0em;
+    right: 5em;
+    padding: 11px;
+    text-align: center;
 }
 /*Тултип по промо*/
 .eventTip {
@@ -1662,6 +1671,275 @@ tr[data-recordindex="0"] .container-icon {
     left: 15px;
     background-color: #FFFFFF;
 }
+
+.approval-history-fieldset .x-panel x-panel-default {
+	height: 456px;
+}
+/*approval-status-toolbar*/
+.approval-status-toolbar {
+	margin: 0 0 15px 2.5% !important;
+	padding-top: 20px;
+}
+
+	.approval-status-toolbar:after {
+		position: relative;
+		content: '';
+		width: 98%;
+		left: 0px;
+		top: -12px;
+		border-bottom: 2px solid #cfd8dc;
+		display: inline-block;
+	}
+
+	.approval-status-toolbar .x-btn-default-toolbar-small .x-btn-inner,
+	.approval-status-toolbar .x-btn-default-toolbar-small .x-btn-glyph {
+		color: unset;
+		line-height: unset;
+		opacity: unset;
+	}
+
+	.approval-status-toolbar .x-btn-default-toolbar-small .x-btn-glyph {
+		font-size: medium;
+	}
+
+/*approval-status-state*/
+.approval-status-history-btn {
+	position: absolute;
+	left: 0px;
+	padding-bottom: 10px;
+	border: none;
+	border-radius: unset;
+	background: none;
+	color: #cfd8dc !important;
+	font-size: small;
+}
+
+	.approval-status-history-btn.selected {
+		padding-bottom: 8px;
+		border-bottom: 2px solid #3f6995 !important;
+		color: #3f6995 !important;
+		z-index: 100;
+	}
+
+	.approval-status-history-btn:hover {
+		color: #3f6995 !important;
+	}
+
+.approval-status-state-boxContainer {
+	display: inline-block;
+}
+
+.approval-status-state-box {
+	margin-top: 25px;
+	width: 130px;
+	height: 100px;
+	color: #ffffff;
+	background-color: #e9eff4;
+	display: inline-block;
+	margin-right: 10px;
+}
+
+	.approval-status-state-box.first {
+		margin-left: 25px;
+	}
+
+.approval-status-state-boxLine {
+	position: relative;
+	width: auto;
+	height: 38px;
+	padding-top: 2px;
+	text-align: center;
+	font-size: small;
+	white-space: nowrap;
+}
+
+.approval-status-state-box .approval-status-state-boxLine.draft {
+}
+
+.approval-status-state-box .approval-status-state-boxLine.draftpublished {
+}
+
+.approval-status-state-box .approval-status-state-boxLine.onapproval {
+    padding-top: 12px;
+}
+
+.approval-status-state-box .approval-status-state-boxLine.approved {
+    padding-top: 12px;
+}
+
+.approval-status-state-box .approval-status-state-boxLine.planned {
+    padding-top: 12px;
+}
+
+.approval-status-state-box .approval-status-state-boxLine.started {
+    padding-top: 12px;
+}
+
+.approval-status-state-box .approval-status-state-boxLine.finished {
+    padding-top: 12px;
+}
+
+.approval-status-state-box .approval-status-state-boxLine.closed {
+    padding-top: 12px;
+}
+
+.approval-status-state-box .approval-status-state-boxLine.deleted {
+    padding-top: 12px;
+}
+
+.approval-status-state-box .approval-status-state-boxLine.canceled {
+    padding-top: 12px; 
+	color: #8892a3;
+}
+
+.approval-status-state-boxDate {
+	position: relative;
+	text-align: center;
+	color: #8892a3;
+	padding-top: 2px;
+	font-size: x-small;
+	display:inline-block;
+	width:100%;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+.approval-status-state-box.selected .approval-status-state-boxDate {
+	font-weight: bold;
+}
+
+.approval-status-state-boxDiscription {
+	position: relative;
+	width: auto;
+	height: 40px;
+	top: 20px;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 3px;
+	color: #8892a3;
+	text-overflow: ellipsis;
+	text-align: left;
+	font-size: smaller;
+	overflow: hidden;
+	text-align: justify;
+}
+.approval-status-state-boxDiscription {
+	position: relative;
+	width: 130px;
+	height: 40px;
+	top: 0px;
+	padding-left: 10px;
+	padding-right: 10px;
+	color: #8892a3;
+	text-overflow: ellipsis;
+	text-align: left;
+	font-size: smaller;
+	overflow: hidden;
+	align-content: center;
+}
+
+.approval-status-selector {
+	position: absolute;
+	height: 100px;
+	width: 130px;
+	outline: 2px solid #396391;
+	outline-offset: 2px;
+}
+.approval-status-selector-corner {
+    position: absolute;
+    content: '';
+    bottom: -0.3ex;
+    right: -0.3ex;
+    z-index: 999999;
+    border-bottom: 10px solid #396391;
+    border-left: 10px solid transparent;
+} 
+/*.approval-status-selector:after {
+		position: relative;
+		content: '';
+		left: 120px;
+		top: 90px;
+		border: 6px solid transparent;
+		border-right: 6px solid #3f6895;
+		border-bottom: 6px solid #3f6895;
+		display: inline-block;
+	}*/
+
+.approval-state-selector {
+	position: absolute;
+	height: 85px;
+	width: 130px;
+	outline: 2px solid #396391;
+	outline-offset: 2px;
+}
+
+/*.approval-state-selector:after {
+		position: relative;
+		content: '';
+		left: 100%;
+		top: 75px;
+		border: 6px solid transparent;
+		border-right: 6px solid #3f6895;
+		border-bottom: 6px solid #3f6895;
+		display: inline-block;
+		z-index: 100;
+	}*/
+
+.approval-status-state-arrow {
+	position: absolute;
+	left: 100%;
+	color: #8892a3;
+	//display: inline-block;
+	overflow: visible;
+	bottom: 9px;
+}
+
+.approval-status-state-onapproval-arrow {
+	position: absolute;
+	left: 100%;
+	color: #8892a3;
+	display: inline-block;
+	overflow:visible;
+}
+
+.approval-status-state-pathLine {
+	position: absolute;
+}
+
+.approval-status-state-onapproval-box {
+	position: absolute;
+	width: 130px;
+	height: 85px;
+	color: #ffffff;
+	background-color: #e9eff4;
+}
+
+	.approval-status-state-onapproval-box .approval-status-state-onapproval-boxLine {
+		position: relative;
+		width: 100%;
+		height: 20px;
+		padding-top: 2px;
+		text-align: center;
+		font-size: small;
+		background-color: #FFD54F;
+		display: inline-block;
+		white-space: nowrap;
+	}
+
+	.approval-status-state-onapproval-box .approval-status-state-onapproval-boxDiscription {
+		position: relative;
+		width: auto;
+		height: 40px;
+		padding-left: 10px;
+		padding-right: 10px;
+		padding-top: 3px;
+		color: #3f6895;
+		text-overflow: ellipsis;
+		text-align: center;
+		font-size: smaller;
+		overflow: hidden;
+	}
+/*approval-status-state end*/
 
 .date-time-picker .x-window-header-default,
 .date-time-picker .x-window-body-default,

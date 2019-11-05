@@ -35,83 +35,83 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Antlr3.Runtime, Version=3.4.1.9004, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38387\lib\net451\Antlr3.Runtime.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38418\lib\net451\Antlr3.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="AutoMapper, Version=4.0.4.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38387\lib\net451\AutoMapper.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38418\lib\net451\AutoMapper.dll</HintPath>
     </Reference>
     <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38387\lib\net451\Castle.Core.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38418\lib\net451\Castle.Core.dll</HintPath>
     </Reference>
     <Reference Include="Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38387\lib\net451\Core.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38418\lib\net451\Core.dll</HintPath>
     </Reference>
     <Reference Include="DocumentFormat.OpenXml, Version=2.8.1.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38387\lib\net451\DocumentFormat.OpenXml.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38418\lib\net451\DocumentFormat.OpenXml.dll</HintPath>
     </Reference>
     <Reference Include="ElasticLinq, Version=1.4.3.0, Culture=neutral, PublicKeyToken=fad43a6f87827247, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38387\lib\net451\ElasticLinq.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38418\lib\net451\ElasticLinq.dll</HintPath>
     </Reference>
     <Reference Include="Elasticsearch.Net, Version=5.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38387\lib\net451\Elasticsearch.Net.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38418\lib\net451\Elasticsearch.Net.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38387\lib\net451\EntityFramework.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38418\lib\net451\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38387\lib\net451\EntityFramework.SqlServer.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38418\lib\net451\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework6.Npgsql, Version=3.1.1.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38387\lib\net451\EntityFramework6.Npgsql.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38418\lib\net451\EntityFramework6.Npgsql.dll</HintPath>
     </Reference>
     <Reference Include="ExtJsScaffolding, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38387\lib\net451\ExtJsScaffolding.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38418\lib\net451\ExtJsScaffolding.dll</HintPath>
     </Reference>
     <Reference Include="Frontend.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\RodMApp.Core.TPM.Frontend.0.1.0.38387\lib\net451\Frontend.Core.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Frontend.0.1.0.38418\lib\net451\Frontend.Core.dll</HintPath>
     </Reference>
     <Reference Include="History.ElasticSearch, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38387\lib\net451\History.ElasticSearch.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38418\lib\net451\History.ElasticSearch.dll</HintPath>
     </Reference>
     <Reference Include="History.RavenDB, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38387\lib\net451\History.RavenDB.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38418\lib\net451\History.RavenDB.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=1.1.0.145, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpZipLib.1.1.0\lib\net45\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="LiteDB, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38387\lib\net451\LiteDB.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38418\lib\net451\LiteDB.dll</HintPath>
     </Reference>
     <Reference Include="Looper, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38387\lib\net451\Looper.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38418\lib\net451\Looper.dll</HintPath>
     </Reference>
     <Reference Include="Looper.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38387\lib\net451\Looper.Core.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38418\lib\net451\Looper.Core.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Data.Edm, Version=5.6.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38387\lib\net451\Microsoft.Data.Edm.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38418\lib\net451\Microsoft.Data.Edm.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Data.OData, Version=5.6.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38387\lib\net451\Microsoft.Data.OData.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38418\lib\net451\Microsoft.Data.OData.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38387\lib\net451\Microsoft.Web.Infrastructure.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38418\lib\net451\Microsoft.Web.Infrastructure.dll</HintPath>
     </Reference>
     <Reference Include="Nest, Version=5.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38387\lib\net451\Nest.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38418\lib\net451\Nest.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38387\lib\net451\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38418\lib\net451\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Ninject, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38387\lib\net451\Ninject.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38418\lib\net451\Ninject.dll</HintPath>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38387\lib\net451\NLog.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38418\lib\net451\NLog.dll</HintPath>
     </Reference>
     <Reference Include="Npgsql, Version=3.2.3.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38387\lib\net451\Npgsql.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38418\lib\net451\Npgsql.dll</HintPath>
     </Reference>
     <Reference Include="NPOI, Version=2.4.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
       <HintPath>..\packages\NPOI.2.4.1\lib\net45\NPOI.dll</HintPath>
@@ -126,42 +126,42 @@
       <HintPath>..\packages\NPOI.2.4.1\lib\net45\NPOI.OpenXmlFormats.dll</HintPath>
     </Reference>
     <Reference Include="NSubstitute, Version=4.2.0.0, Culture=neutral, PublicKeyToken=92dd2e9066daa5ca, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38387\lib\net451\NSubstitute.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38418\lib\net451\NSubstitute.dll</HintPath>
     </Reference>
     <Reference Include="Persist, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38387\lib\net451\Persist.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38418\lib\net451\Persist.dll</HintPath>
     </Reference>
     <Reference Include="Raven.Abstractions, Version=3.0.0.0, Culture=neutral, PublicKeyToken=37f41c7f99471593, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38387\lib\net451\Raven.Abstractions.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38418\lib\net451\Raven.Abstractions.dll</HintPath>
     </Reference>
     <Reference Include="Raven.Client.Lightweight, Version=3.0.0.0, Culture=neutral, PublicKeyToken=37f41c7f99471593, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38387\lib\net451\Raven.Client.Lightweight.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38418\lib\net451\Raven.Client.Lightweight.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Management.Automation, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38387\lib\net451\System.Management.Automation.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38418\lib\net451\System.Management.Automation.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38387\lib\net451\System.Net.Http.Formatting.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38418\lib\net451\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
     <Reference Include="System.Spatial, Version=5.6.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38387\lib\net451\System.Spatial.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38418\lib\net451\System.Spatial.dll</HintPath>
     </Reference>
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.1.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38387\lib\net451\System.Threading.Tasks.Extensions.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38418\lib\net451\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Http, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38387\lib\net451\System.Web.Http.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38418\lib\net451\System.Web.Http.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.Http.OData, Version=5.5.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38387\lib\net451\System.Web.Http.OData.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38418\lib\net451\System.Web.Http.OData.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.Optimization, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38387\lib\net451\System.Web.Optimization.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38418\lib\net451\System.Web.Optimization.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -171,22 +171,24 @@
     <Reference Include="System.Xml" />
     <Reference Include="Thinktecture.IdentityModel, Version=3.6.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\RodMApp.Core.TPM.Frontend.0.1.0.38387\lib\net451\Thinktecture.IdentityModel.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Frontend.0.1.0.38418\lib\net451\Thinktecture.IdentityModel.dll</HintPath>
     </Reference>
     <Reference Include="Utility, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38387\lib\net451\Utility.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38418\lib\net451\Utility.dll</HintPath>
     </Reference>
     <Reference Include="WebGrease, Version=1.5.2.14234, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38387\lib\net451\WebGrease.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.38418\lib\net451\WebGrease.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Client\controller\tpm\actualLSV\ActualLSV.js" />
+    <Content Include="Client\controller\tpm\clienttreesharesview\ClientTreeSharesView.js" />
     <Content Include="Client\controller\tpm\event\EventClientTree.js" />
     <Content Include="Client\controller\tpm\assortmentmatrix\AssortmentMatrix.js" />
     <Content Include="Client\controller\tpm\assortmentmatrix\DeletedAssortmentMatrix.js" />
     <Content Include="Client\controller\tpm\assortmentmatrix\HistoricalAssortmentMatrix.js" />
     <Content Include="Client\controller\tpm\budgetsubitem\BudgetSubItemClientTree.js" />
+    <Content Include="Client\controller\tpm\clienttreebrandtech\ClientTreeBrandTech.js" />
     <Content Include="Client\controller\tpm\incrementalpromo\DeletedIncrementalPromo.js" />
     <Content Include="Client\controller\tpm\incrementalpromo\HistoricalIncrementalPromo.js" />
     <Content Include="Client\controller\tpm\incrementalpromo\IncrementalPromo.js" />
@@ -199,10 +201,10 @@
     <Content Include="Client\controller\tpm\budgetsubitem\BudgetSubItem.js" />
     <Content Include="Client\controller\tpm\budgetsubitem\DeletedBudgetSubItem.js" />
     <Content Include="Client\controller\tpm\budgetsubitem\HistoricalBudgetSubItem.js" />
-    <Content Include="Client\controller\tpm\clienttreesharesview\ClientTreeSharesView.js" />
     <Content Include="Client\controller\tpm\baseline\BaseLine.js" />
     <Compile Include="Controllers\AssortmentMatricesController.cs" />
     <Compile Include="Controllers\BudgetSubItemClientTreesController.cs" />
+    <Compile Include="Controllers\ClientTreeSharesViewsController.cs" />
     <Compile Include="Controllers\DeletedAssortmentMatricesController.cs" />
     <Compile Include="Controllers\DeletedIncrementalPromoesController.cs" />
     <Compile Include="Controllers\DeletedPromoSupportsController.cs" />
@@ -223,7 +225,7 @@
     <Compile Include="Controllers\PromoSupportPromoesController.cs" />
     <Compile Include="Controllers\PromoProductsController.cs" />
     <Compile Include="Controllers\BudgetSubItemsController.cs" />
-    <Compile Include="Controllers\ClientTreeSharesViewsController.cs" />
+    <Compile Include="Controllers\ClientTreeBrandTechesController.cs" />
     <Compile Include="Controllers\BaseLinesController.cs" />
     <Compile Include="Controllers\DeletedPromoProductsController.cs" />
     <Compile Include="Controllers\DeletedBaseLine.cs" />
@@ -285,6 +287,7 @@
     <Content Include="Client\locale\tpm\CoreLocale-ru.js" />
     <Content Include="Client\locale\tpm\TPMLocale-en.js" />
     <Content Include="Client\model\tpm\actualLSV\ActualLSV.js" />
+    <Content Include="Client\model\tpm\clienttreesharesview\ClientTreeSharesView.js" />
     <Content Include="Client\model\tpm\event\EventClientTree.js" />
     <Content Include="Client\model\tpm\assortmentmatrix\AssortmentMatrix.js" />
     <Content Include="Client\model\tpm\assortmentmatrix\DeletedAssortmentMatrix.js" />
@@ -292,6 +295,7 @@
     <Content Include="Client\model\tpm\baseclient\SchedulerBaseClientDTO.js" />
     <Content Include="Client\model\tpm\budgetsubitem\BudgetSubItemClientTree.js" />
     <Content Include="Client\model\tpm\budgetsubitem\BudgetSubItemWithFilter.js" />
+    <Content Include="Client\model\tpm\clienttreebrandtech\ClientTreeBrandTech.js" />
     <Content Include="Client\model\tpm\filter\CustomTextFilterModel.js" />
     <Content Include="Client\model\tpm\incrementalpromo\DeletedIncrementalPromo.js" />
     <Content Include="Client\model\tpm\incrementalpromo\HistoricalIncrementalPromo.js" />
@@ -315,7 +319,6 @@
     <Content Include="Client\model\tpm\budgetsubitem\DeletedBudgetSubItem.js" />
     <Content Include="Client\model\tpm\budgetsubitem\HistoricalBudgetSubItem.js" />
     <Content Include="Client\model\tpm\actualproductsview\ActualProductsView.js" />
-    <Content Include="Client\model\tpm\clienttreesharesview\ClientTreeSharesView.js" />
     <Content Include="Client\model\tpm\baseclienttreeview\BaseClientTreeView.js" />
     <Content Include="Client\model\tpm\baseline\BaseLine.js" />
     <Content Include="Client\model\tpm\baseline\DeletedBaseLine.js" />
@@ -370,8 +373,13 @@
     <Content Include="Client\view\tpm\baseline\ImportBaseLineParamForm.js" />
     <Content Include="Client\view\tpm\budgetsubitem\AssociatedBudgetSubItemClientTree.js" />
     <Content Include="Client\view\tpm\budgetsubitem\BudgetSubItemClientTree.js" />
+    <Content Include="Client\view\tpm\clienttreebrandtech\ClientTreeBrandTech.js" />
+    <Content Include="Client\view\tpm\clienttreebrandtech\ClientTreeBrandTechEditor.js" />
+    <Content Include="Client\view\tpm\clienttreesharesview\ClientTreeSharesView.js" />
+    <Content Include="Client\view\tpm\clienttreesharesview\ClientTreeSharesViewEditor.js" />
     <Content Include="Client\view\tpm\common\approvalHistoryDeclineTpl.js" />
     <Content Include="Client\view\tpm\common\approvalHistoryTpl.js" />
+    <Content Include="Client\view\tpm\common\approvalStatusStateTpl.js" />
     <Content Include="Client\view\tpm\common\chooseEventButton.js" />
     <Content Include="Client\view\tpm\common\ExtendedFilterWindow.js" />
     <Content Include="Client\view\tpm\event\EventClientTree.js" />
@@ -419,8 +427,6 @@
     <Content Include="Client\view\tpm\budgetsubitem\DeletedBudgetSubItemDetail.js" />
     <Content Include="Client\view\tpm\budgetsubitem\HistoricalBudgetSubItem.js" />
     <Content Include="Client\view\tpm\budgetsubitem\HistoricalBudgetSubItemDetail.js" />
-    <Content Include="Client\view\tpm\clienttreesharesview\ClientTreeSharesView.js" />
-    <Content Include="Client\view\tpm\clienttreesharesview\ClientTreeSharesViewEditor.js" />
     <Content Include="Client\view\tpm\client\DispatchDate.js" />
     <Content Include="Client\view\tpm\common\customPromoPanel.js" />
     <Content Include="Client\view\tpm\costproduction\CostProduction.js" />

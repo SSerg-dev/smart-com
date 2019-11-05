@@ -1,0 +1,1 @@
+UPDATE Setting SET [Value] = 'OnApproval,Approved,Planned' WHERE [Name] = 'CHECK_PRODUCT_CHANGE_PROMO_STATUS_LIST'

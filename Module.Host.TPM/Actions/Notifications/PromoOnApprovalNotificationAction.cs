@@ -43,19 +43,19 @@ namespace Module.Host.TPM.Actions.Notifications
 								switch (incident.ApprovingRole)
 								{
 									case "CMManager":
-										if (incident.Promo.IsCMManagerApproved == null || incident.Promo.IsCMManagerApproved == false)
+										if (!incident.Promo.IsCMManagerApproved.HasValue || incident.Promo.IsCMManagerApproved == false)
 										{
 											actualNotifyIncidents.Add(incident);
 										}
 										break;
 									case "DemandPlanning":
-										if (incident.Promo.IsDemandPlanningApproved == null || incident.Promo.IsDemandPlanningApproved == false)
+										if (!incident.Promo.IsDemandPlanningApproved.HasValue || incident.Promo.IsDemandPlanningApproved == false)
 										{
 											actualNotifyIncidents.Add(incident);
 										}
 										break;
 									case "DemandFinance":
-										if (incident.Promo.IsDemandFinanceApproved == null || incident.Promo.IsDemandFinanceApproved == false)
+										if (!incident.Promo.IsDemandFinanceApproved.HasValue || incident.Promo.IsDemandFinanceApproved == false)
 										{
 											actualNotifyIncidents.Add(incident);
 										}
@@ -78,6 +78,10 @@ namespace Module.Host.TPM.Actions.Notifications
 							if (notifyIncidentsForDF.Any())
 							{
 								CreateNotification(notifyIncidentsForDF, "PROMO_ON_APPROVAL_NOTIFICATION", template, context, "DemandFinance");
+							}
+							else if (!actualNotifyIncidents.Where(x => x.ApprovingRole == "CMManager" || x.ApprovingRole == "DemandPlanning" || x.ApprovingRole == "DemandFinance").Any())
+							{
+								Warnings.Add(String.Format("There are no incidents to send notifications."));
 							}
 						}
                         else
@@ -116,7 +120,10 @@ namespace Module.Host.TPM.Actions.Notifications
 
 			if (!recipients.Any())
 			{
-				Errors.Add(String.Format("There are no recipinets for notification: {0}", notificationName));
+				if (Errors.Count == 0)
+				{
+					Errors.Add(String.Format("There are no recipinets for notification: {0}.", notificationName));
+				}
 				return;
 			}
 
@@ -127,7 +134,7 @@ namespace Module.Host.TPM.Actions.Notifications
 			{
 				foreach (string error in userErrors)
 				{
-					Errors.Add(error);
+					Warnings.Add(error);
 				}
 			}
 			if (!userIds.Any())
@@ -136,13 +143,14 @@ namespace Module.Host.TPM.Actions.Notifications
 				{
 					incident.ProcessDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
 				}
+				Warnings.Add(String.Format("There are no appropriate recipinets for notification: {0} for role {1}.", notificationName, approvingRole));
 				context.SaveChanges();
 				return;
 			}
 
 			foreach (Guid userId in userIds)
 			{
-				string[] userEmail = context.Users.Where(x => x.Id == userId).Select(y => y.Email).ToArray();
+				string userEmail = context.Users.Where(x => x.Id == userId).Select(y => y.Email).FirstOrDefault();
 				List<Constraint> constraints = ConstraintsHelper.GetConstraitnsByUserId(userId, context);
 				IEnumerable<PromoOnApprovalIncident> constraintNotifies = incidentsForNotify;
 
@@ -160,15 +168,27 @@ namespace Module.Host.TPM.Actions.Notifications
 
 				if (constraintNotifies.Any())
 				{
+					IList<string> promoNumbers = new List<string>();
 					List<string> allRows = new List<string>();
 					foreach (PromoOnApprovalIncident incident in constraintNotifies)
 					{
 						List<string> allRowCells = GetRow(incident.Promo, propertiesOrder);
 						allRows.Add(String.Format(rowTemplate, string.Join("", allRowCells)));
+						promoNumbers.Add(incident.Promo.Number.ToString());
 					}
-
 					string notifyBody = String.Format(template, string.Join("", allRows));
-					SendNotificationByEmails(notifyBody, notificationName, userEmail);
+
+					string[] emailArray = new[] { userEmail };
+					if (!String.IsNullOrEmpty(userEmail))
+					{
+						SendNotificationByEmails(notifyBody, notificationName, emailArray);
+						Results.Add(String.Format("Notification about necessity of approving promoes with numbers {0} by {1} role were sent to {2}", String.Join(", ", promoNumbers.Distinct().ToArray()), approvingRole, String.Join(", ", emailArray)), null);
+					}
+					else
+					{
+						string userLogin = context.Users.Where(x => x.Id == userId).Select(x => x.Name).FirstOrDefault();
+						Warnings.Add(String.Format("Email not found for user: {0}", userLogin));
+					}
 				}
 			}
 

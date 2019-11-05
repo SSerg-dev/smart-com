@@ -11,6 +11,7 @@ using Module.Persist.TPM.Model.Import;
 using Module.Persist.TPM.Model.TPM;
 using Core.Extensions;
 using Looper.Parameters;
+using Module.Frontend.TPM.Controllers;
 
 namespace Module.Host.TPM.Actions
 {
@@ -49,12 +50,15 @@ namespace Module.Host.TPM.Actions
                 context.Database.ExecuteSqlCommand(insertScript);
             }
 
+            ClientTreeBrandTechesController.FillClientTreeBrandTechTable(context);
+
             foreach (IEnumerable<BrandTech> items in toUpdate.Partition(10000))
             {
                 string insertScript = generator.BuildUpdateScript(items);
                 context.Database.ExecuteSqlCommand(insertScript);
             }
 
+            ClientTreeBrandTechesController.DisableNotActualClientTreeBrandTech(context);
             return sourceRecords.Count();
         }
 

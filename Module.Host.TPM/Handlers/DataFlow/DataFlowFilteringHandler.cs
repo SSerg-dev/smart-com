@@ -327,6 +327,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
 
         private static IEnumerable<Guid> BaseLineChangesGuidIds;
         private static IEnumerable<Guid> AssortmentMatrixChangesGuidIds;
+        private static IEnumerable<Guid> ClientTreeBrandTechChangesGuidIds;
         private static IEnumerable<int> ClientTreeChangesIntIds;
         private static IEnumerable<int> ProductTreeChangesIntIds;
         private static IEnumerable<Guid> IncrementalPromoChangesGuidIds;
@@ -338,6 +339,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
         {
             BaseLineChangesGuidIds = new List<Guid>();
             AssortmentMatrixChangesGuidIds = new List<Guid>();
+            ClientTreeBrandTechChangesGuidIds = new List<Guid>();
             ClientTreeChangesIntIds = new List<int>();
             ProductTreeChangesIntIds = new List<int>();
             IncrementalPromoChangesGuidIds = new List<Guid>();
@@ -367,6 +369,12 @@ namespace Module.Host.TPM.Handlers.DataFlow
             var assortmentMatrixChanges = uniqueChangesIds.Where(x => x.DirectoryName == "AssortmentMatrix");
             handlerLogger.Write(true, $"Amount of unique Assortment Matrix incidents: {assortmentMatrixChanges.Count()}", "Message");
             handlerLogger.Write(true, String.Format("The searching of unique Assortment Matrix incidents end at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+
+            // ClientTree-BrandTech
+            handlerLogger.Write(true, String.Format("The searching of unique ClientTree-BrandTech incidents began at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+            var clientTreeBrandTechChanges = uniqueChangesIds.Where(x => x.DirectoryName == "ClientTreeBrandTech");
+            handlerLogger.Write(true, $"Amount of unique ClientTree-BrandTech incidents: {clientTreeBrandTechChanges.Count()}", "Message");
+            handlerLogger.Write(true, String.Format("The searching of unique ClientTree-BrandTech incidents end at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
 
             // Client Tree
             handlerLogger.Write(true, String.Format("The searching of unique Client Tree incidents began at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
@@ -420,6 +428,21 @@ namespace Module.Host.TPM.Handlers.DataFlow
                 .Where(x => x.success).Select(x => x.itemGuidId).ToList();
                 handlerLogger.Write(true, $"The count of parsed unique Assortment Matrix incidents: {AssortmentMatrixChangesGuidIds.Count()}", "Message");
                 handlerLogger.Write(true, String.Format("The parsing of unique Assortment Matrix incidents ended at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+            }
+
+            // ClientTree-BrandTech
+            if (clientTreeBrandTechChanges.Any())
+            {
+                handlerLogger.Write(true, String.Format("The parsing of unique ClientTree-BrandTech incidents began at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+                ClientTreeBrandTechChangesGuidIds = clientTreeBrandTechChanges.AsParallel().Select(x =>
+                {
+                    Guid itemGuidId;
+                    bool success = Guid.TryParse(x.ItemId, out itemGuidId);
+                    return new { itemGuidId, success };
+                })
+                .Where(x => x.success).Select(x => x.itemGuidId).ToList();
+                handlerLogger.Write(true, $"The count of parsed unique ClientTree-BrandTech incidents: {ClientTreeBrandTechChangesGuidIds.Count()}", "Message");
+                handlerLogger.Write(true, String.Format("The parsing of unique ClientTree-BrandTech incidents ended at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
             }
 
             // Client Tree
@@ -493,6 +516,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
 
             return IncrementalPromo(context, promo, handlerLogger)
                    || AssortmentMatrix(context, promo, handlerLogger)
+                   || ClientTreeBrandTech(context, promo, handlerLogger)
                    || ClientTree(context, promo, handlerLogger)
                    || ProductTree(context, promo, handlerLogger)
                    || BaseLine(context, promo, handlerLogger);
@@ -594,7 +618,34 @@ namespace Module.Host.TPM.Handlers.DataFlow
         }
 
         /// <summary>
-        /// 1. Если изменилась доля у любого выбранного узла.
+        /// 1. Если изменилась доля у любого ClientTree-BrandTech.
+        /// При выполнении этих всех этих условий нужно пересчитать промо.
+        /// </summary>
+        /// <param name="promo">Модель промо.</param>
+        /// <returns>Нужно ли пересчитывать данное промо?</returns>
+        public static bool ClientTreeBrandTech(DatabaseContext context, Promo promo, ILogWriter handlerLogger)
+        {
+            foreach (var clientTreeBrandTechChangesGuidId in ClientTreeBrandTechChangesGuidIds)
+            {
+                var clientTreeBrandTech = context.Set<ClientTreeBrandTech>().FirstOrDefault(x => x.Id == clientTreeBrandTechChangesGuidId);
+                if (clientTreeBrandTech != null)
+                {
+                    var clientTreeBrachTechShareChanged = context.Set<ClientTreeBrandTech>()
+                        .Any(x => x.ClientTreeId == promo.ClientTreeKeyId && x.BrandTechId == promo.BrandTechId && x.Id == clientTreeBrandTech.Id);
+
+                    if (clientTreeBrachTechShareChanged)
+                    {
+                        handlerLogger.Write(true, $"Promo number { promo.Number } was filtered by ClientTree-BrandTech.", "Message");
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// 1. Если изменился Demand Code у любого выбранного узла.
         /// При выполнении этих всех этих условий нужно пересчитать промо.
         /// </summary>
         /// <param name="promo">Модель промо.</param>
@@ -606,10 +657,10 @@ namespace Module.Host.TPM.Handlers.DataFlow
                 var clientTree = context.Set<ClientTree>().FirstOrDefault(x => x.Id == clientTreeChangesIntId && !x.EndDate.HasValue);
                 if (clientTree != null)
                 {
-                    var clientTreeShareChanged = context.Set<ClientTree>()
+                    var clientTreeChanged = context.Set<ClientTree>()
                         .Any(x => x.Id == promo.ClientTreeKeyId && x.Id == clientTree.Id && !x.EndDate.HasValue);
 
-                    if (clientTreeShareChanged)
+                    if (clientTreeChanged)
                     {
                         handlerLogger.Write(true, $"Promo number { promo.Number } was filtered by Client Tree.", "Message");
                         return true;

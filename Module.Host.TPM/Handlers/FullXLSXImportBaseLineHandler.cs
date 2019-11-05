@@ -27,10 +27,11 @@ namespace Module.Host.TPM.Handlers
         protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
         {
             IDictionary<string, IEnumerable<string>> filters = data.GetValue<IDictionary<string, IEnumerable<string>>>("Filters");
+            string demandCodesString = data.GetValue<string>("DemandCodesString");
             DateTimeOffset startDate = data.GetValue<DateTimeOffset>("StartDate");
             DateTimeOffset finishDate = data.GetValue<DateTimeOffset>("FinishDate");
             bool needClearData = data.GetValue<bool>("NeedClearData");
-            return new FullXLSXImportBaseLineAction(settings, startDate, finishDate, filters, needClearData, handlerId);
+            return new FullXLSXImportBaseLineAction(settings, demandCodesString, startDate, finishDate, filters, needClearData, handlerId);
         }
 
         protected override void InitializeParameters(HandlerData handlerData, ExecuteData data)
@@ -40,10 +41,12 @@ namespace Module.Host.TPM.Handlers
             bool needClearData = HandlerDataHelper.GetIncomingArgument<bool>("CrossParam.ClearTable", handlerData);
             data.SetValue<bool>("NeedClearData", needClearData);
             string clientFilter = HandlerDataHelper.GetIncomingArgument<TextListModel>("CrossParam.ClientFilter", handlerData).Value;
+            string demandCodesString = HandlerDataHelper.GetIncomingArgument<string>("CrossParam.DemandCodesString", handlerData);
             string startPeriodFilter = HandlerDataHelper.GetIncomingArgument<string>("CrossParam.StartDate", handlerData);
             string finishPeriodFilter = HandlerDataHelper.GetIncomingArgument<string>("CrossParam.FinishDate", handlerData);
             DateTimeOffset startDate = DateTime.ParseExact(startPeriodFilter, "dd.MM.yyyy", CultureInfo.InvariantCulture);
             DateTimeOffset endDate = DateTime.ParseExact(finishPeriodFilter, "dd.MM.yyyy", CultureInfo.InvariantCulture);
+            data.SetValue("DemandCodesString", demandCodesString);
             data.SetValue("StartDate", startDate);
             data.SetValue("FinishDate", endDate);
             IDictionary<string, IEnumerable<string>> filters = new Dictionary<string, IEnumerable<string>>() {

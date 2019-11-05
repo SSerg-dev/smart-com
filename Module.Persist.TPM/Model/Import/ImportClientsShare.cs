@@ -3,25 +3,29 @@ using Core.Import;
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Module.Persist.TPM.Model.Import {
-    public class ImportClientsShare : BaseImportEntity, IEntity<Guid> {
-
-        public Guid Id { get; set; }
+namespace Module.Persist.TPM.Model.Import
+{
+    public class ImportClientsShare : BaseImportEntity, IEntity<Guid>
+    {
 
         [ImportCSVColumn(ColumnNumber = 0)]
-        [Display(Name = "Client hierarchy")]
-        public String ResultNameStr { get; set; }
+        [Display(Name = "Demand code")]
+        public string DemandCode { get; set; }
 
         [ImportCSVColumn(ColumnNumber = 1)]
         [Display(Name = "Client hierarchy code")]
-        public int BOI { get; set; }
+        public int ClientTreeId { get; set; }
 
         [ImportCSVColumn(ColumnNumber = 2)]
-        [Display(Name = "Client hierarchy Share")]
-        public int LeafShare { get; set; }
+        [Display(Name = "Base client")]
+        public string Client { get; set; }
 
         [ImportCSVColumn(ColumnNumber = 3)]
-        [Display(Name = "Demand Code")]
-        public string DemandCode { get; set; }
+        [Display(Name = "Brand tech")]
+        public string BrandTech { get; set; }
+
+        [ImportCSVColumn(ColumnNumber = 4)]
+        [Display(Name = "Share")]
+        public double LeafShare { get; set; }
     }
 }

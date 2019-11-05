@@ -26,20 +26,6 @@
             menu: {
                 xtype: 'customheadermenu',
                 items: [{
-                    glyph: 0xf220,
-                    itemgroup: 'loadimportbutton',
-                    exactlyModelCompare: true,
-                    text: l10n.ns('core', 'additionalMenu').value('fullImportXLSX'),
-                    resource: '{0}',
-                    action: 'FullImportXLSX',
-                    allowFormat: ['zip', 'xlsx']
-                }, {
-                    glyph: 0xf21d,
-                    itemId: 'loadimporttemplatexlsxbutton',
-                    exactlyModelCompare: true,
-                    text: l10n.ns('core', 'additionalMenu').value('importTemplateXLSX'),
-                    action: 'DownloadTemplateXLSX'
-                }, {
                     glyph: 0xf21d,
                     itemId: 'exportxlsxbutton',
                     exactlyModelCompare: true,
@@ -108,10 +94,6 @@
                 text: l10n.ns('tpm', 'ClientTreeSharesView').value('BOI'),
                 dataIndex: 'BOI'
             }, {
-                text: l10n.ns('tpm', 'ClientTreeSharesView').value('LeafShare'),
-                dataIndex: 'LeafShare',
-                xtype: 'numbercolumn'
-            }, {
                 text: l10n.ns('tpm', 'ClientTreeSharesView').value('DemandCode'),
                 dataIndex: 'DemandCode'
             }]
@@ -131,10 +113,6 @@
             xtype: 'textfield',
             name: 'BOI',
             fieldLabel: l10n.ns('tpm', 'ClientTreeSharesView').value('BOI')
-        }, {
-            xtype: 'numberfield',
-            name: 'LeafShare',
-            fieldLabel: l10n.ns('tpm', 'ClientTreeSharesView').value('LeafShare')
         }, {
             text: l10n.ns('tpm', 'ClientTreeSharesView').value('DemandCode'),
             dataIndex: 'DemandCode'

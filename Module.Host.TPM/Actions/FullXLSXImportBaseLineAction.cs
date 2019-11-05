@@ -20,6 +20,7 @@ using Core.Settings;
 using Utility.LogWriter;
 using System.Diagnostics;
 using NLog;
+using System.Data.Entity;
 
 namespace Module.Host.TPM.Actions
 {
@@ -27,6 +28,7 @@ namespace Module.Host.TPM.Actions
     {
 
         private readonly bool NeedClearData;
+        private readonly string[] DemandCodes;
         private readonly DateTimeOffset StartDate;
         private readonly DateTimeOffset FinishDate;
         private readonly IDictionary<string, IEnumerable<string>> Filters;
@@ -34,9 +36,10 @@ namespace Module.Host.TPM.Actions
         Stopwatch stopwatch = new Stopwatch();
         protected readonly static Logger traceLogger = LogManager.GetCurrentClassLogger();
 
-        public FullXLSXImportBaseLineAction(FullImportSettings settings, DateTimeOffset startDate, DateTimeOffset finishDate, IDictionary<string, IEnumerable<string>> filters, bool needClearData, Guid handlerId) : base(settings)
+        public FullXLSXImportBaseLineAction(FullImportSettings settings, string demandCodesString, DateTimeOffset startDate, DateTimeOffset finishDate, IDictionary<string, IEnumerable<string>> filters, bool needClearData, Guid handlerId) : base(settings)
         {
             NeedClearData = needClearData;
+            DemandCodes = demandCodesString.Split(";".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
             StartDate = startDate;
             FinishDate = finishDate;
             Filters = filters;
@@ -319,14 +322,29 @@ namespace Module.Host.TPM.Actions
             ScriptGenerator generator = GetScriptGenerator();
             IList<BaseLine> toCreate = new List<BaseLine>();
             IList<BaseLine> toUpdate = new List<BaseLine>();
+
             List<Tuple<IEntity<Guid>, IEntity<Guid>>> toHisCreate = new List<Tuple<IEntity<Guid>, IEntity<Guid>>>();
             List<Tuple<IEntity<Guid>, IEntity<Guid>>> toHisUpdate = new List<Tuple<IEntity<Guid>, IEntity<Guid>>>();
+            List<Tuple<IEntity<Guid>, IEntity<Guid>>> toHisDisable = new List<Tuple<IEntity<Guid>, IEntity<Guid>>>();
+
             //handlerLogger.Write(true, String.Format("Filtered records started at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Timing");
             traceLogger.Trace("Start filter records");
             IQueryable<ImportBaseLine> filteredRecords = AddFilter(sourceRecords.Cast<ImportBaseLine>().AsQueryable());
             traceLogger.Trace("Finish filter records");
             if (NeedClearData)
             {
+                foreach (var demandCode in DemandCodes)
+                {
+                    var baseLinesToDisable = context.Set<BaseLine>().Where(x => !x.Disabled && DbFunctions.DiffDays(x.StartDate, StartDate) <= 0 && DbFunctions.DiffDays(x.StartDate, FinishDate) >= 0 && x.DemandCode == demandCode);
+                    foreach (var baseLine in baseLinesToDisable)
+                    {
+                        var copyBaseLine = (BaseLine)baseLine.Clone();
+                        copyBaseLine.Disabled = true;
+                        copyBaseLine.DeletedDate = DateTimeOffset.Now;
+                        toHisDisable.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(null, copyBaseLine));
+                    }
+                }
+
                 traceLogger.Trace("Start build filter for delete");
                 PersistFilter filter = ModuleApplyFilterHelper.BuildBaseLineFilter(StartDate, FinishDate, Filters);
                 traceLogger.Trace("Filter builded");
@@ -368,9 +386,9 @@ namespace Module.Host.TPM.Actions
                     {
                         BaseLine oldRecord = baseLines
                             .FirstOrDefault(x => x.ProductId == product.Id && x.DemandCode == newRecord.ClientTreeDemandCode && x.StartDate == newRecord.StartDate);
-                        var oldRecordCopy = oldRecord;
                         if (oldRecord != null)
                         {
+                            var oldRecordCopy = (BaseLine)oldRecord.Clone();
                             oldRecord.QTY = newRecord.QTY;
                             oldRecord.Price = newRecord.Price;
                             oldRecord.BaselineLSV = newRecord.BaselineLSV;
@@ -431,6 +449,7 @@ namespace Module.Host.TPM.Actions
             //traceLogger.Trace("Start history writing");
             context.HistoryWriter.Write(toHisCreate, context.AuthManager.GetCurrentUser(), context.AuthManager.GetCurrentRole(), OperationType.Created);
             context.HistoryWriter.Write(toHisUpdate, context.AuthManager.GetCurrentUser(), context.AuthManager.GetCurrentRole(), OperationType.Updated);
+            context.HistoryWriter.Write(toHisDisable, context.AuthManager.GetCurrentUser(), context.AuthManager.GetCurrentRole(), OperationType.Disabled);
             //traceLogger.Trace("finish history writing");
             //stopwatch.Stop();
             //handlerLogger.Write(true, String.Format("Insert in history ended at {0:yyyy-MM-dd HH:mm:ss}; Duration: {1} seconds", DateTimeOffset.Now, stopwatch.Elapsed.TotalSeconds), "Timing");

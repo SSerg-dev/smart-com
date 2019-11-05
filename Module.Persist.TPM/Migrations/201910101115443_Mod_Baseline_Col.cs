@@ -7,6 +7,7 @@ namespace Module.Persist.TPM.Migrations
     {
         public override void Up()
         {
+            Sql("DELETE FROM dbo.BaseLine WHERE DemandCode = ''");
             DropForeignKey("dbo.BaseLine", "ClientTreeId", "dbo.ClientTree");
             DropIndex("dbo.BaseLine", "Unique_BaseLine");
             AlterColumn("dbo.BaseLine", "DemandCode", c => c.String(maxLength: 255));

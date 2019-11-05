@@ -171,11 +171,14 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     //    promo.ActualPromoNetROIPercent = promo.ActualPromoTotalCost == 0 ? 0 : (promo.ActualPromoNetIncrementalEarnings / promo.ActualPromoTotalCost + 1) * 100;
                     //}
 
-                    promo.LastChangedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
-                    if (IsDemandChanged(promo, promoCopy))
+                    if (PromoUtils.HasChanges(context.ChangeTracker))
                     {
-                        promo.LastChangedDateDemand = promo.LastChangedDate;
-                        promo.LastChangedDateFinance = promo.LastChangedDate;
+                        promo.LastChangedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                        if (IsDemandChanged(promo, promoCopy))
+                        {
+                            promo.LastChangedDateDemand = promo.LastChangedDate;
+                            promo.LastChangedDateFinance = promo.LastChangedDate;
+                        }
                     }
 
                     try

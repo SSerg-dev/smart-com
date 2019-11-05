@@ -7,14 +7,6 @@
     minWidth: 800,
 	minHeight: 600,
 
-	tools: [{
-		xtype: 'button',
-		itemId: 'dateFilter',
-		text: '00.00.0000',
-		cls: 'custom-promo-date-button',
-		glyph: 0xf0f6
-	}],
-
     items: [{
         xtype: 'container',
         layout: {

@@ -124,7 +124,10 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                         promo.PlanPromoNetUpliftPercent = promo.PlanPromoBaselineLSV != 0 ? promo.PlanPromoNetIncrementalLSV / promo.PlanPromoBaselineLSV * 100 : 0;
 
-                        promo.LastChangedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                        if (PromoUtils.HasChanges(context.ChangeTracker))
+                        {
+                            promo.LastChangedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                        }
 
                         context.SaveChanges();
                     }

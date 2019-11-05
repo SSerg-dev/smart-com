@@ -21,9 +21,7 @@
                 return shortName;
             }
         },
-        { name: 'LeafShare', type: 'int', hidden: false, isDefault: true },
-        { name: 'DemandCode', type: 'string', hidden: false, isDefault: true },
-
+        { name: 'DemandCode', type: 'string', hidden: false, isDefault: true }
     ],
     proxy: {
         type: 'breeze',

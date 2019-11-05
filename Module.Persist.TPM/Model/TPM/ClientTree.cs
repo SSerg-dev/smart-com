@@ -19,9 +19,8 @@ namespace Module.Persist.TPM.Model.TPM {
         public DateTime StartDate { get; set; }
         [Index("CX_ObjDate", 2, IsUnique = true)]
         public DateTime? EndDate { get; set; }
-        public short Share { get; set; }
         [StringLength(255)]
-        public string ExecutionCode { get; set; }
+        public string GHierarchyCode { get; set; }
         [StringLength(255)]
         public string DemandCode { get; set; }
         public bool IsBaseClient { get; set; }

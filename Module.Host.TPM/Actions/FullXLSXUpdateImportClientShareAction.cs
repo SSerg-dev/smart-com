@@ -4,6 +4,7 @@ using Core.Settings;
 using Interfaces.Implementation.Action;
 using Interfaces.Implementation.Import.FullImport;
 using Looper.Parameters;
+using Module.Frontend.TPM.Controllers;
 using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.Import;
 using Module.Persist.TPM.Model.TPM;
@@ -180,18 +181,35 @@ namespace Module.Host.TPM.Actions {
                     .Where(x => x.UserRole.UserId.Equals(UserId) && x.UserRole.Role.Id.Equals(RoleId))
                     .ToList();
                 IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
-                IQueryable<ClientTree> query = context.Set<ClientTree>().AsNoTracking().Where(x => DateTime.Compare(x.StartDate, dtNow) <= 0 && (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, dtNow) > 0));
+                //здесь должны быть все записи, а не только неудаленные!
+                IQueryable<ClientTree> query = context.Set<ClientTree>().AsNoTracking();
                 IQueryable<ClientTreeHierarchyView> hierarchy = context.Set<ClientTreeHierarchyView>().AsNoTracking();
+                IQueryable<ClientTreeBrandTech> clientTreeBrandTeches = context.Set<ClientTreeBrandTech>().AsNoTracking();
                 query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
 
-                //Запрос действующих ObjectId
-                IList<int> existedObjIds = query.Where(y => y.EndDate == null || y.EndDate > dtNow).Select(y => y.ObjectId).ToList();
+                var shortClientTreeBrandTech = clientTreeBrandTeches.Select(x => new ShortClientTreeBrandTech(x.ClientTree.ObjectId, x.ParentClientTreeDemandCode));
+
+                IQueryable<ClientTree> actualQuery = context.Set<ClientTree>().AsNoTracking().Where(x => DateTime.Compare(x.StartDate, dtNow) <= 0 && (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, dtNow) > 0));
+                actualQuery = ModuleApplyFilterHelper.ApplyFilter(actualQuery, hierarchy, filters);
+
+                //Запрос ObjectId
+                //здесь должны быть все записи, а не только неудаленные!
+                List<ClientTree> existingClientTreeIds = query.ToList();
+
+                //здесь должны быть все записи, а не только неудаленные!
+                IList<string> existingBrandTechNames = context.Set<BrandTech>().Select(y => y.Name).ToList();
+
+                List<ClientTree> actualExistingClientTreeIds = actualQuery.Where(y => y.EndDate == null || y.EndDate > dtNow).ToList();
+                IList<string> actualExistingBrandTechNames = context.Set<BrandTech>().Where(y => y.Disabled == false).Select(y => y.Name).ToList();
 
                 //Повторяющиеся записи
-                IList<int> doubledObjIds = sourceRecords
-                    .GroupBy(y => ((ImportClientsShare) y).BOI)
+                IList<Tuple<int, string, string>> doubledObjs = sourceRecords
+                    .GroupBy(y => new { ((ImportClientsShare)y).ClientTreeId, ((ImportClientsShare) y).DemandCode, ((ImportClientsShare) y).BrandTech })
                     .Where(z => z.Count() > 1)
-                    .Select(t => ((ImportClientsShare) t.FirstOrDefault()).BOI).ToList();
+                    .Select(t => new Tuple<int, string, string>(t.Key.ClientTreeId, t.Key.DemandCode, t.Key.BrandTech)).ToList();
+
+                // Тоьлько актуальные записи.
+                IList<ClientTreeBrandTech> changedCTBTs = ClientTreeBrandTechesController.GetActualQuery(context);
 
                 //Стандартные проверки
                 Parallel.ForEach(sourceRecords, item =>
@@ -200,58 +218,76 @@ namespace Module.Host.TPM.Actions {
                     IList<string> warnings;
                     IList<string> validationErrors;
 
-                    if (!validator.Validate(item, out validationErrors)) {
+                    if (!validator.Validate(item, out validationErrors))
+                    {
                         HasErrors = true;
                         errorRecords.Add(new Tuple<IEntity<Guid>, string>(item, String.Join(", ", validationErrors)));
-                    } else if (!builder.Build(item, cache, context, out rec, out warnings, out validationErrors)) {
+                    }
+                    else if (!builder.Build(item, cache, context, out rec, out warnings, out validationErrors))
+                    {
                         HasErrors = true;
                         errorRecords.Add(new Tuple<IEntity<Guid>, string>(item, String.Join(", ", validationErrors)));
-                        if (warnings.Any()) {
+                        if (warnings.Any())
+                        {
                             warningRecords.Add(new Tuple<IEntity<Guid>, string>(item, String.Join(", ", warnings)));
                         }
-                    } else if (!IsFilterSuitable(rec, existedObjIds, doubledObjIds, out validationErrors)) {
+                    }
+                    else if (!IsFilterSuitable(changedCTBTs, rec, existingClientTreeIds, shortClientTreeBrandTech, existingBrandTechNames, doubledObjs, out validationErrors))
+                    {
                         HasErrors = true;
                         errorRecords.Add(new Tuple<IEntity<Guid>, string>(item, String.Join(", ", validationErrors)));
-                    } else {
+                    }
+                    else
+                    {
                         records.Add(rec);
                         successList.Add(item);
-                        if (warnings.Any()) {
+                        if (warnings.Any())
+                        {
                             warningRecords.Add(new Tuple<IEntity<Guid>, string>(item, String.Join(", ", warnings)));
                         }
                     }
                 });
 
-                ////Проверка по сумме
-                IList<ImportClientsShare> verifiedList = records.Select(y => (ImportClientsShare) y).ToList();
-                IList<int> changedCTObjIds = verifiedList.Select(y => y.BOI).ToList();
-                IList<ClientTree> changedCTs = query
-                    .Where(y => (y.EndDate == null || y.EndDate > dtNow) && changedCTObjIds.Contains(y.ObjectId))
-                    .ToList();
-                IList<int> parentIdsOfChangedCT = changedCTs
-                    .Select(y => y.parentId).ToList();
-                IEnumerable<IGrouping<int, ClientTree>> groups = query
-                    .Where(y => (y.EndDate == null || y.EndDate > dtNow) && parentIdsOfChangedCT.Contains(y.parentId))
-                    .GroupBy(y => y.parentId);
-                var badGroups = groups
-                    .Where(y => y
-                        .Sum(z => changedCTObjIds.Contains(z.ObjectId)
-                            ? verifiedList.FirstOrDefault(t => t.BOI == z.ObjectId).LeafShare
-                            : z.Share) > 100 && y.Key != ROOT_CLIENT_OBJECTID);
-                IList<int> badGroupsParentIds = badGroups.Select(g => g.Key).ToList();
-                if (badGroups.Any()) {
-                    HasErrors = true;
-                    IList<int> badGroupsObjectIds = new List<int>();
-                    foreach (var badGroup in badGroups) {
-                        foreach (var item in badGroup) {
-                            badGroupsObjectIds.Add(item.ObjectId);
-                            var badItem = successList.FirstOrDefault(y => ((ImportClientsShare) y).BOI == item.ObjectId);
-                            if (badItem != null) {
-                                errorRecords.Add(new Tuple<IEntity<Guid>, string>(badItem, "parent " + item.parentId.ToString() + " can't consist more than 100 percents"));
-                            }
+                //Ломается проверка, если есть ошибки в записях
+                if (!HasErrors)
+                {
+                    //Проверка по сумме
+                    IList<ImportClientsShare> verifiedList = records.Select(y => (ImportClientsShare)y).ToList();
+                    HashSet<string> changedCTBTObjIds = new HashSet<string>(verifiedList.Select(y => y.DemandCode));
+                    HashSet<int> changedCTBTclientIds = new HashSet<int>(verifiedList.Select(y => y.ClientTreeId));
+                    IList<string> parentDemandCodeOfChangedCTBTs = verifiedList.Select(y => y.DemandCode).ToList();
+                    IList<int> clientTreeOfChangedCTBTs = verifiedList.Select(y => y.ClientTreeId).ToList();
+                    IList<string> brandtechOfChangedCTBTs = verifiedList.Select(y => y.BrandTech).ToList();
+
+                    var groups = changedCTBTs
+                        .GroupBy(y => new { y.ParentClientTreeDemandCode, y.CurrentBrandTechName });
+                    var badGroups = groups.Where(y => y
+                        .Sum(z => (parentDemandCodeOfChangedCTBTs.Contains(z.ParentClientTreeDemandCode)
+                        && clientTreeOfChangedCTBTs.Contains(z.ClientTree.ObjectId) && brandtechOfChangedCTBTs.Contains(z.CurrentBrandTechName))
+                        ? Math.Round(verifiedList.FirstOrDefault(t =>
+                        t.DemandCode == z.ParentClientTreeDemandCode && t.ClientTreeId == z.ClientTree.ObjectId && t.BrandTech == z.CurrentBrandTechName).LeafShare, 5, MidpointRounding.AwayFromZero)
+                        : Math.Round(z.Share, 5, MidpointRounding.AwayFromZero)) > 100.0001);
+                    if (badGroups.Any())
+                    {
+                        HasErrors = true;
+                        IList<string> badGroupsObjectIds = new List<string>();
+                        foreach (var badGroup in badGroups)
+                        {
+                            foreach (var item in badGroup)
+                                if (item != null)
+                                {
+                                    badGroupsObjectIds.Add(item.ParentClientTreeDemandCode);
+                                    var badItem = successList.FirstOrDefault(y => ((ImportClientsShare)y).DemandCode == item.ParentClientTreeDemandCode && ((ImportClientsShare)y).BrandTech == item.CurrentBrandTechName && ((ImportClientsShare)y).ClientTreeId == item.ClientTree.ObjectId);
+                                    if (badItem != null)
+                                    {
+                                        errorRecords.Add(new Tuple<IEntity<Guid>, string>(badItem,
+                                            "Clients with Demand Code " + item.ParentClientTreeDemandCode.ToString() + " and Brand Tech " + item.CurrentBrandTechName + " can't have more than 100 percents in total"));
+                                    }
+                                }
                         }
+                        records = new ConcurrentBag<IEntity<Guid>>(records.Where(y => !badGroupsObjectIds.Contains(((ImportClientsShare)y).DemandCode)));
+                        successList = new ConcurrentBag<IEntity<Guid>>(successList.Where(y => !badGroupsObjectIds.Contains(((ImportClientsShare)y).DemandCode)));
                     }
-                    records = new ConcurrentBag<IEntity<Guid>>(records.Where(y => !badGroupsObjectIds.Contains(((ImportClientsShare) y).BOI)));
-                    successList = new ConcurrentBag<IEntity<Guid>>(successList.Where(y => !badGroupsObjectIds.Contains(((ImportClientsShare) y).BOI)));
                 }
 
 
@@ -268,7 +304,7 @@ namespace Module.Host.TPM.Actions {
                 if (hasSuccessList) {
                     // Закончить импорт
                     IEnumerable<IEntity<Guid>> items = BeforeInsert(records, context).ToList();
-                    resultRecordCount = InsertDataToDatabase(items, context);
+                    resultRecordCount = InsertDataToDatabase(items, context, query);
                 }
                 logger.Trace("Persist models inserted");
                 context.SaveChanges();
@@ -321,33 +357,46 @@ namespace Module.Host.TPM.Actions {
             }
         }
 
-
-
-
         protected ScriptGenerator _generator { get; set; }
 
-        //Кастомная проверка ClientTree
-        protected virtual bool IsFilterSuitable(IEntity<Guid> rec, IList<int> existedObjIds, IList<int> doubledObjIds, out IList<string> errors) {
+        //Кастомная проверка ClientTreeBrandTech
+        protected virtual bool IsFilterSuitable(IList<ClientTreeBrandTech> actualClientTreeBrandTeches, IEntity<Guid> rec, List<ClientTree> existingClientTreeIds, IQueryable<ShortClientTreeBrandTech> shortClientTreeBrandTech, IList<string> existingBrandTechNames, IList<Tuple<int, string, string>> doubledObjs, out IList<string> errors) {
             errors = new List<string>();
             bool isError = false;
 
-            ImportClientsShare importObj = (ImportClientsShare) rec;
-            //Проверка по существующим активным ClientTree для пользователя
-            if (!existedObjIds.Contains(importObj.BOI)) {
-                isError = true;
-                errors.Add(importObj.BOI.ToString() + " not in user's active ClientTree list");
-            }
+            var importObj = rec as ImportClientsShare;
 
-            //Проверка дублирования записей
-            if (doubledObjIds.Contains(importObj.BOI)) {
-                isError = true;
-                errors.Add(importObj.BOI.ToString() + " in list more than 1 time");
-            }
+            if (importObj != null)
+            {
+                var testRecord = actualClientTreeBrandTeches.FirstOrDefault();
 
-            // Доля не больше 100 процентов
-            if (importObj.LeafShare > 100 || importObj.LeafShare < 0) {
+                var isActualRecord = actualClientTreeBrandTeches.Any(x => x.ClientTree != null && x.BrandTech != null && x.ClientTree.ObjectId == importObj.ClientTreeId &&
+                    x.ParentClientTreeDemandCode == importObj.DemandCode && x.CurrentBrandTechName == importObj.BrandTech);
+
+                if (!isActualRecord)
+                {
+                    isError = true;
+                    errors.Add($"Record with Demand Code {importObj.DemandCode} and Brand Tech {importObj.BrandTech} is not actual.");
+                }
+
+                //Проверка дублирования записей
+                if (doubledObjs.Contains(new Tuple<int, string, string>(importObj.ClientTreeId, importObj.DemandCode, importObj.BrandTech)))
+                {
+                    isError = true;
+                    errors.Add(importObj.DemandCode.ToString() + " " + importObj.ClientTreeId.ToString() + " " + importObj.BrandTech.ToString() + " in list more than 1 time");
+                }
+
+                // Доля не больше 100 процентов
+                if (importObj.LeafShare > 100 || importObj.LeafShare < 0)
+                {
+                    isError = true;
+                    errors.Add("Share must be in percentage 0 up to 100");
+                }
+            }
+            else
+            {
                 isError = true;
-                errors.Add("Share must be in percentage 0 up to 100");
+                errors.Add("Import model is null.");
             }
 
             return !isError;
@@ -371,46 +420,23 @@ namespace Module.Host.TPM.Actions {
         /// <param name="sourceRecords"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        protected int InsertDataToDatabase(IEnumerable<IEntity<Guid>> sourceRecords, DatabaseContext context) {
-            IList<ClientTree> toCreate = new List<ClientTree>();
-            IList<ClientTree> toUpdate = new List<ClientTree>();
+        protected int InsertDataToDatabase(IEnumerable<IEntity<Guid>> sourceRecords, DatabaseContext context, IEnumerable<ClientTree> clientTrees) {
+            IList<ClientTreeBrandTech> toUpdate = new List<ClientTreeBrandTech>();
             var query = GetQuery(context).ToList();
+            var brandtechs = context.Set<BrandTech>().Where(x => !x.Disabled).ToList();
 
             DateTime dtNow = DateTime.Now;
             foreach (ImportClientsShare newRecord in sourceRecords) {
-                ClientTree oldRecord = query.FirstOrDefault(x => x.ObjectId == newRecord.BOI && (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, dtNow) > 0));
-                if (oldRecord != null && (oldRecord.Share != newRecord.LeafShare || oldRecord.DemandCode != newRecord.DemandCode)) {
-                    ClientTree oldRecordToSave = new ClientTree()
-                    {
-                        ObjectId = oldRecord.ObjectId,
-                        RetailTypeName = oldRecord.RetailTypeName,
-                        Type = oldRecord.Type,
-                        Name = oldRecord.Name,
-                        FullPathName = oldRecord.FullPathName,
-                        Share = oldRecord.Share,
-                        ExecutionCode = oldRecord.ExecutionCode,
-                        DemandCode = oldRecord.DemandCode,
-                        IsBaseClient = oldRecord.IsBaseClient,
-                        parentId = oldRecord.parentId,
-                        StartDate = oldRecord.StartDate,
-                        EndDate = dtNow,
-                        depth = oldRecord.depth,
-                        IsBeforeStart = oldRecord.IsBeforeStart,
-                        DaysStart = oldRecord.DaysStart,
-                        IsDaysStart = oldRecord.IsDaysStart,
-                        IsBeforeEnd = oldRecord.IsBeforeEnd,
-                        DaysEnd = oldRecord.DaysEnd,
-                        IsDaysEnd = oldRecord.IsDaysEnd
-                    };
-                    toCreate.Add(oldRecordToSave);
-
+                ClientTreeBrandTech oldRecord = query.FirstOrDefault(x => !x.Disabled && x.ClientTree.ObjectId == newRecord.ClientTreeId && x.ParentClientTreeDemandCode == newRecord.DemandCode && x.CurrentBrandTechName == newRecord.BrandTech);
+                if (oldRecord != null)
+                {
                     if (oldRecord.Share != newRecord.LeafShare)
                     {
                         ChangesIncident changesIncident = new ChangesIncident
                         {
                             Disabled = false,
                             DeletedDate = null,
-                            DirectoryName = "ClientTree",
+                            DirectoryName = "ClientTreeBrandTech",
                             ItemId = oldRecord.Id.ToString(),
                             CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
                             ProcessDate = null
@@ -418,18 +444,18 @@ namespace Module.Host.TPM.Actions {
                         context.Set<ChangesIncident>().Add(changesIncident);
                     }
 
-                    oldRecord.Share = (short)newRecord.LeafShare;
-                    oldRecord.DemandCode = newRecord.DemandCode;
+                    oldRecord.Share = newRecord.LeafShare;
+                    oldRecord.ParentClientTreeDemandCode = newRecord.DemandCode;
+                    oldRecord.ClientTreeId = clientTrees.First(x => x.ObjectId == newRecord.ClientTreeId).Id;
+                    oldRecord.BrandTechId = brandtechs.First(x => x.Name == newRecord.BrandTech).Id;
+                    oldRecord.CurrentBrandTechName = newRecord.BrandTech;
                     toUpdate.Add(oldRecord);
                 }
             }
 
-            foreach (IEnumerable<ClientTree> items in toCreate.Partition(100)) {
-                context.Set<ClientTree>().AddRange(items);
-            }
-
-            foreach (IEnumerable<ClientTree> items in toUpdate.Partition(10000)) {
-                string insertScript = String.Join("", items.Select(y => String.Format("UPDATE ClientTree SET Share = {0}, DemandCode = '{1}' WHERE Id = {2};", y.Share, y.DemandCode, y.Id)));
+            foreach (IEnumerable<ClientTreeBrandTech> items in toUpdate.Partition(10000)) {
+                string insertScript = String.Join("", items.Select(y => String.Format("UPDATE ClientTreeBrandTech SET Share = {0}, ParentClientTreeDemandCode = '{1}', ClientTreeId = {2}, BrandTechId = '{3}' WHERE Id = '{4}';", 
+                    y.Share, y.ParentClientTreeDemandCode, y.ClientTreeId, y.BrandTechId, y.Id)));
                 context.Database.ExecuteSqlCommand(insertScript);
             }
             context.SaveChanges();
@@ -440,10 +466,20 @@ namespace Module.Host.TPM.Actions {
             return records;
         }
 
-        private IEnumerable<ClientTree> GetQuery(DatabaseContext context) {
-            IQueryable<ClientTree> query = context.Set<ClientTree>().AsNoTracking();
+        private IEnumerable<ClientTreeBrandTech> GetQuery(DatabaseContext context) {
+            IQueryable<ClientTreeBrandTech> query = context.Set<ClientTreeBrandTech>();
             return query.ToList();
         }
 
+        public class ShortClientTreeBrandTech
+        {
+            public int ClientTreeId { get; set; }
+            public string DemandCode { get; set; }
+            public ShortClientTreeBrandTech(int clientTreeId, string demandCode)
+            {
+                ClientTreeId = clientTreeId;
+                DemandCode = demandCode;
+            }
+        }
     }
 }

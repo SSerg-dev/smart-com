@@ -7,6 +7,7 @@ using Module.Persist.TPM.Model.TPM;
 using System.Linq;
 using System.Collections.Generic;
 using Module.Persist.TPM.Utils;
+using Persist.Model.Settings;
 
 namespace Module.Host.TPM.Actions.Notifications {
     /// <summary>
@@ -21,11 +22,18 @@ namespace Module.Host.TPM.Actions.Notifications {
                     if (File.Exists(templateFileName)) {
                         string template = File.ReadAllText(templateFileName);
                         if (!String.IsNullOrEmpty(template)) {
-                            var incidentsForNotify = context.Set<PromoUpliftFailIncident>().Where(x => x.ProcessDate == null).GroupBy(x => x.PromoId);
-                            if (incidentsForNotify.Any()) {
+                            var incidentsForNotify = context.Set<PromoUpliftFailIncident>()
+								.Where(x => x.ProcessDate == null && x.Promo.PromoStatus.SystemName != "Draft").GroupBy(x => x.Promo.Number);
+
+                            if (incidentsForNotify.Any()) 
+							{
                                 CreateNotification(incidentsForNotify, "PROMO_UPLIFT_FAIL_NOTIFICATION", template, context);
                             }
-                        } else {
+							else
+							{
+								Warnings.Add("There are no incidents to send notifications.");
+							}
+						} else {
                             Errors.Add(String.Format("Empty alert template: {0}", templateFileName));
                         }
                     } else {
@@ -47,19 +55,48 @@ namespace Module.Host.TPM.Actions.Notifications {
         /// <param name="notificationName"></param>
         /// <param name="template"></param>
         /// <param name="context"></param>
-        private void CreateNotification(IQueryable<IGrouping<Guid, PromoUpliftFailIncident>> incidentsForNotify, string notificationName, string template, DatabaseContext context) {
+        private void CreateNotification(IQueryable<IGrouping<int?, PromoUpliftFailIncident>> incidentsForNotify, string notificationName, string template, DatabaseContext context) {
             List<string> allRows = new List<string>();
-            foreach (IGrouping<Guid, PromoUpliftFailIncident> incidentGroup in incidentsForNotify) {
-                foreach (PromoUpliftFailIncident incident in incidentGroup) {
+			IList<string> promoNumbers = new List<string>();
+			foreach (IGrouping<int?, PromoUpliftFailIncident> incidentGroup in incidentsForNotify) {
+				PromoUpliftFailIncident incident = incidentGroup.FirstOrDefault();
+				if (incident != null)
+				{
 					List<string> allRowCells = GetRow(incidentGroup.FirstOrDefault().Promo, propertiesOrder);
 					allRows.Add(String.Format(rowTemplate, string.Join("", allRowCells)));
-					incident.ProcessDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
-                }
-            }
+					
+					promoNumbers.Add(incidentGroup.Key.ToString());
+				}
+				foreach (var item in incidentGroup)
+				{
+					item.ProcessDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+				}
+			}
             string notifyBody = String.Format(template, string.Join("", allRows));
             SendNotification(notifyBody, notificationName);
-            context.SaveChanges();
-        }
+			context.SaveChanges();
+
+			//Получаем получателей для лога
+			IList<string> userErrors;
+			List<Recipient> recipients = ConstraintsHelper.GetRecipientsByNotifyName(notificationName, context);
+			List<Guid> userIds = ConstraintsHelper.GetUserIdsByRecipients(recipients, context, out userErrors);
+
+			if (userErrors.Any())
+			{
+				foreach (string error in userErrors)
+				{
+					Warnings.Add(error);
+				}
+			}
+			else if (!userIds.Any())
+			{
+				Warnings.Add(String.Format("There are no appropriate recipinets for notification: {0}.", notificationName));
+				return;
+			}
+
+			string[] userEmails = context.Users.Where(x => userIds.Contains(x.Id) && !String.IsNullOrEmpty(x.Email)).Select(x => x.Email).ToArray();
+			Results.Add(String.Format("Notifications about fail of uplift culculation for promoes {0} were sent to {1}.", String.Join(", ", promoNumbers.Distinct().ToArray()), String.Join(", ", userEmails)), null);
+		}
 
         private readonly string[] propertiesOrder = new string[] {
             "Number", "Name", "BrandTech.Name", "PromoStatus.Name", "StartDate", "EndDate" };

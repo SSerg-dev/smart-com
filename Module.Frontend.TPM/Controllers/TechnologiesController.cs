@@ -82,7 +82,7 @@ namespace Module.Frontend.TPM.Controllers
             patch.Put(model);
             try
             {
-                Context.SaveChanges();
+                var resultSaveChanges = Context.SaveChanges();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -111,7 +111,7 @@ namespace Module.Frontend.TPM.Controllers
 
             try
             {
-                Context.SaveChanges();
+                var resultSaveChanges = Context.SaveChanges();
             }
             catch (Exception e)
             {
@@ -135,8 +135,8 @@ namespace Module.Frontend.TPM.Controllers
 
                 patch.Patch(model);
                 UpdateProductTrees(model.Id, model.Name);
-                Context.SaveChanges();
 
+                var resultSaveChanges = Context.SaveChanges();
                 return Updated(model);
             }
             catch (DbUpdateConcurrencyException)
@@ -168,7 +168,8 @@ namespace Module.Frontend.TPM.Controllers
                 }
                 model.DeletedDate = System.DateTime.Now;
                 model.Disabled = true;
-                Context.SaveChanges();
+
+                var resultSaveChanges = Context.SaveChanges();
                 return StatusCode(HttpStatusCode.NoContent);
             }
             catch (Exception e)

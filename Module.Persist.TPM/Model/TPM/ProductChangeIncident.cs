@@ -13,7 +13,9 @@ namespace Module.Persist.TPM.Model.TPM {
 
         public Boolean IsCreate { get; set; }
         public Boolean IsDelete { get; set; }
+		public Boolean IsCreateInMatrix { get; set; }
+		public Boolean IsDeleteInMatrix { get; set; }
 
-        public virtual Product Product { get; set; }
+		public virtual Product Product { get; set; }
     }
 }

@@ -188,8 +188,10 @@ namespace Module.Host.TPM.Actions {
                             CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
                             ProductId = oldRecord.Id,
                             IsCreate = false,
-                            IsDelete = false
-                        };
+                            IsDelete = false,
+							IsCreateInMatrix = false,
+							IsDeleteInMatrix = false
+						};
                         context.Set<ProductChangeIncident>().Add(pci);
                     }
                 }

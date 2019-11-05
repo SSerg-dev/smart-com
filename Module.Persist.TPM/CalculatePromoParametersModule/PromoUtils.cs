@@ -6,6 +6,8 @@ using Module.Persist.TPM.Utils;
 using Persist;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -31,6 +33,13 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                                true;
 
             return !isCorrectDispatchDifference;
+        }
+
+        public static bool HasChanges(DbChangeTracker changeTracker)
+        {
+            changeTracker.DetectChanges();
+            var hasChanges = changeTracker.Entries<Promo>().Any(x => x.State == EntityState.Modified);
+            return hasChanges;
         }
     }
 }

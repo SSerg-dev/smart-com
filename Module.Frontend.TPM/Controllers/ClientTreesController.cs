@@ -538,11 +538,6 @@ namespace Module.Frontend.TPM.Controllers
             var proxy = Context.Set<ClientTree>().Create<ClientTree>();
             var result = (ClientTree)Mapper.Map(model, proxy, typeof(ClientTree), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
 
-            //Проверка долей
-            if (!CheckShares(model)) {
-                string msg = "The sum of one parent's hierarchies' shares can not be more than 100.";
-                return Json(new { success = false, message = msg });
-            }
             //Проверка DemandCode
             if (!CheckDemandCode(model)) {
                 string msg = "There is a ClientTree with such DemandCode";
@@ -551,7 +546,13 @@ namespace Module.Frontend.TPM.Controllers
 
             result.ObjectId = new int();
             Context.Set<ClientTree>().Add(result);
-            Context.SaveChanges();
+
+            var resultSaveChanges = Context.SaveChanges();
+            if (resultSaveChanges > 0)
+            {
+                ClientTreeBrandTechesController.FillClientTreeBrandTechTable(Context);
+            }
+
             Context.Entry(result).Reload();
 
             return Json(new { success = true, children = result });
@@ -568,7 +569,7 @@ namespace Module.Frontend.TPM.Controllers
             try
             {
                 activeTree = GetConstraintedQuery();
-                ClientTree currentRecord = activeTree.FirstOrDefault(x => x.ObjectId == model.ObjectId);                
+                ClientTree currentRecord = activeTree.FirstOrDefault(x => x.ObjectId == model.ObjectId);
 
                 if (currentRecord == null)
                 {
@@ -586,33 +587,14 @@ namespace Module.Frontend.TPM.Controllers
                 model.FullPathName = oldFullPath.Substring(0, ind) + model.Name;
                 model.StartDate = dt;
 
-                //Проверка долей
-                if (!CheckShares(model)) {
-                    string msg = "The sum of one parent's hierarchies' shares can not be more than 100.";
-                    return Json(new { success = false, message = msg });
-                }
                 //Проверка DemandCode
-                if (!CheckDemandCode(model)) {
+                if (!CheckDemandCode(model))
+                {
                     string msg = "There is a ClientTree with such DemandCode";
                     return Json(new { success = false, message = msg });
                 }
 
-                if (model.Share != currentRecord.Share)
-                {
-                    ChangesIncident changesIncident = new ChangesIncident
-                    {
-                        Disabled = false,
-                        DeletedDate = null,
-                        DirectoryName = "ClientTree",
-                        ItemId = model.Id.ToString(),
-                        CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                        ProcessDate = null
-                    };
-
-                    Context.Set<ChangesIncident>().Add(changesIncident);
-                }
-
-                if (model.DemandCode != currentRecord.DemandCode)
+                if (model.DemandCode != currentRecord.DemandCode || model.IsBaseClient != currentRecord.IsBaseClient)
                 {
                     ChangesIncident changesIncident = new ChangesIncident
                     {
@@ -652,13 +634,11 @@ namespace Module.Frontend.TPM.Controllers
                 UpdateFullPathClientTree(currentRecord, Context.Set<ClientTree>());
                 Context.Set<ClientTree>().Add(oldRecord);
 
-                try
+                var resultSaveChanges = Context.SaveChanges();
+                if (resultSaveChanges > 0)
                 {
-                    Context.SaveChanges();
-                }
-                catch (Exception e)
-                {
-                    int a = 5 + 6;
+                    ClientTreeBrandTechesController.FillClientTreeBrandTechTable(Context);
+                    ClientTreeBrandTechesController.DisableNotActualClientTreeBrandTech(Context);
                 }
 
                 return Created(currentRecord);
@@ -690,7 +670,13 @@ namespace Module.Frontend.TPM.Controllers
                 }
 
                 recordsToDelete.ForEach(x => x.EndDate = DateTime.Now);
-                Context.SaveChanges();
+
+                var resultSaveChanges = Context.SaveChanges();
+                if (resultSaveChanges > 0)
+                {
+                    ClientTreeBrandTechesController.FillClientTreeBrandTechTable(Context);
+                    ClientTreeBrandTechesController.DisableNotActualClientTreeBrandTech(Context);
+                }
 
                 return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
             }
@@ -887,16 +873,6 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         /// <summary>
-        /// Проверка на сумму долей в родительском клиенте
-        /// </summary>
-        /// <param name="tree"></param>
-        /// <returns></returns>
-        public bool CheckShares(ClientTree tree) {
-            List<ClientTree> siblings = GetConstraintedQuery().Where(y=>y.parentId == tree.parentId && y.ObjectId != tree.ObjectId).ToList();
-            return (siblings.Sum(y => y.Share) + tree.Share <= 100) || tree.parentId == 5000000;
-        }
-
-        /// <summary>
         /// Проверка DemandCode
         /// </summary>
         /// <param name="tree"></param>
@@ -1002,8 +978,7 @@ namespace Module.Frontend.TPM.Controllers
         public int parentId { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime? EndDate { get; set; }
-        public short Share { get; set; }
-        public string ExecutionCode { get; set; }
+        public string GHierarchyCode { get; set; }
         public string DemandCode { get; set; }
         public bool IsBaseClient { get; set; }
         public bool leaf { get; set; }
@@ -1034,8 +1009,7 @@ namespace Module.Frontend.TPM.Controllers
             parentId = treeNode.parentId;
             StartDate = treeNode.StartDate;
             EndDate = treeNode.EndDate;
-            Share = treeNode.Share;
-            ExecutionCode = treeNode.ExecutionCode;
+            GHierarchyCode = treeNode.GHierarchyCode;
             DemandCode = treeNode.DemandCode;
             IsBaseClient = treeNode.IsBaseClient;
             depth = treeNode.depth;

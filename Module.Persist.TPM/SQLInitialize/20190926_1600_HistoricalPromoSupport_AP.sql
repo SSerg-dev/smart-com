@@ -2,6 +2,11 @@
 DECLARE @ResourceName VARCHAR(MAX) = 'HistoricalPromoSupports';
 DECLARE @Action VARCHAR(MAX) = 'GetHistoricalPromoSupports';
 
+-- Удаляем роли у экшинов
+DELETE AccessPointRole WHERE AccessPointId IN (SELECT Id FROM AccessPoint WHERE Resource = @ResourceName);
+-- Удаляем экшины
+DELETE AccessPoint WHERE Resource = @ResourceName;
+
 INSERT INTO AccessPoint (Resource, Action, Disabled, DeletedDate) VALUES (@ResourceName, @Action, 0, NULL);
 DECLARE @AccessPointId UNIQUEIDENTIFIER = (SELECT TOP 1 Id FROM AccessPoint WHERE Resource = @ResourceName AND Action = @Action AND Disabled = 0);
 

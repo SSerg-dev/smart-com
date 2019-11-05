@@ -154,8 +154,34 @@
 
     eventStore: {
         type: 'schedulepromostore',
+        autoLoad: false,
         extendedFilter: {
             xclass: 'App.ExtFilterContext',
+            //Оверрайдим метод, т.к. загрузка стора внутри этого метода ломает загрузку
+            commit: function (suppressReload) {
+                var model = this.getFilterModel();
+
+                if (!model) {
+                    return;
+                }
+
+                model.commit();
+                this.filter = model.getFilter();
+                //this.reloadStore(suppressReload);
+                this.fireEvent('extfilterchange', this);
+            },
+            clear: function (suppressReload) {
+                var model = this.getFilterModel();
+
+                if (!model) {
+                    return;
+                }
+
+                model.clear();
+                this.filter = model.getFilter();
+                //this.reloadStore(suppressReload);
+                this.fireEvent('extfilterchange', this);
+            },
             supportedModels: [{
                 xclass: 'App.ExtSelectionFilterModel',
                 model: 'App.model.tpm.promo.PromoView',
@@ -171,6 +197,10 @@
                 operation: 'NotEqual',
                 value: 'Deleted'
             }
+        },
+        reload: function () {
+            var cntr = App.app.getController('tpm.schedule.SchedulerViewController');
+            cntr.eventStoreLoading(this);
         },
     },
 
@@ -189,15 +219,16 @@
         this.callParent();
     },
 
-    reloadEventsStore: function () {
-        var me = this;
-        me.setLoading('Loading promoes');
-        var store = me.getEventStore();
-        store.on('load', function (store, records, success) {
-            me.setLoading(false);
-        });
-        store.load();
-    },
+    //Не используется
+    //reloadEventsStore: function () {
+    //    var me = this;
+    //    me.setLoading('Loading promoes');
+    //    var store = me.getEventStore();
+    //    store.on('load', function (store, records, success) {
+    //        me.setLoading(false);
+    //    });
+    //    store.load();
+    //},
 
     onDestroy: function () {
         var system = Ext.ComponentQuery.query('system')[0];

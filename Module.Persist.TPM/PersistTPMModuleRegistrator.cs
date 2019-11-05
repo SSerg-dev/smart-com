@@ -77,9 +77,10 @@ namespace Module.Persist.TPM {
             modelBuilder.Entity<ChangesIncident>();
 			modelBuilder.Entity<PromoOnApprovalIncident>();
 			modelBuilder.Entity<PromoOnRejectIncident>();
-            modelBuilder.Entity<PromoApprovedIncident>();
             modelBuilder.Entity<EventClientTree>();
             modelBuilder.Entity<BudgetSubItemClientTree>();
+			modelBuilder.Entity<PromoApprovedIncident>();
+			modelBuilder.Entity<ClientTreeBrandTech>();
 
             modelBuilder.Entity<Promo>().Ignore(n => n.ProductTreeObjectIds);
             modelBuilder.Entity<Promo>().Ignore(n => n.Calculating);
@@ -402,10 +403,15 @@ namespace Module.Persist.TPM {
             builder.Entity<PromoDemand>().Collection.Action("ExportXLSX");
 
             builder.EntitySet<BaseClientTreeView>("BaseClientTreeViews");
-
             builder.EntitySet<ClientTreeSharesView>("ClientTreeSharesViews");
-            builder.Entity<ClientTreeSharesView>().Collection.Action("ExportXLSX");
-            builder.Entity<ClientTreeSharesView>().Collection.Action("FullImportXLSX");
+
+            builder.EntitySet<ClientTreeBrandTech>("ClientTreeBrandTeches");
+            builder.Entity<ClientTreeBrandTech>().Collection.Action("ExportXLSX");
+            builder.Entity<ClientTreeBrandTech>().Collection.Action("FullImportXLSX");
+            builder.EntitySet<ClientTreeBrandTech>("ClientTreeBrandTeches").HasRequiredBinding(e => e.ClientTree, "ClientTrees");
+            builder.Entity<ClientTreeBrandTech>().HasRequired(e => e.ClientTree, (e, te) => e.ClientTreeId == te.Id);
+            builder.EntitySet<ClientTreeBrandTech>("ClientTreeBrandTeches").HasRequiredBinding(e => e.BrandTech, "BrandTeches");
+            builder.Entity<ClientTreeBrandTech>().HasRequired(e => e.BrandTech, (e, te) => e.BrandTechId == te.Id);
 
             builder.EntitySet<NoneNego>("NoneNegoes");
             builder.EntitySet<NoneNego>("DeletedNoneNegoes");
@@ -573,7 +579,7 @@ namespace Module.Persist.TPM {
             builder.Entity<RejectReason>().Collection.Action("DownloadTemplateXLSX");
             builder.Entity<Mechanic>().Collection.Action("DownloadTemplateXLSX");
             builder.Entity<NodeType>().Collection.Action("DownloadTemplateXLSX");
-            builder.Entity<ClientTreeSharesView>().Collection.Action("DownloadTemplateXLSX");
+            builder.Entity<ClientTreeBrandTech>().Collection.Action("DownloadTemplateXLSX");
 
             builder.EntitySet<IncrementalPromo>("IncrementalPromoes");
             builder.EntitySet<IncrementalPromo>("IncrementalPromoes").HasRequiredBinding(e => e.Promo, "Promoes");

@@ -130,7 +130,19 @@ namespace Module.Frontend.TPM.Controllers
 
             Context.Set<AssortmentMatrix>().Add(result);
 
-            try
+			var pci = new ProductChangeIncident
+			{
+				CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+				IsCreate = false,
+				IsDelete = false,
+				IsCreateInMatrix = true,
+				IsDeleteInMatrix = false,
+				Product = result.Product,
+				ProductId = result.ProductId
+			};
+			Context.Set<ProductChangeIncident>().Add(pci);
+
+			try
             {
                 Context.SaveChanges();
             }
@@ -170,12 +182,24 @@ namespace Module.Frontend.TPM.Controllers
                 };
                 Context.Set<AssortmentMatrix>().Add(oldAssortmentMatrix);
 
-                var changesIncidnet = new ChangesIncident
+				var pci = new ProductChangeIncident
+				{
+					CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+					IsCreate = false,
+					IsDelete = false,
+					IsCreateInMatrix = true,
+					IsDeleteInMatrix = true,
+					Product = model.Product,
+					ProductId = model.ProductId
+				};
+				Context.Set<ProductChangeIncident>().Add(pci);
+
+				var changesIncidnet = new ChangesIncident
                 {
                     Id = new Guid(),
                     DirectoryName = "AssortmentMatrix",
                     ItemId = oldAssortmentMatrix.Id.ToString(),
-                    CreateDate = DateTimeOffset.Now,
+                    CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
                     ProcessDate = null,
                     DeletedDate = null,
                     Disabled = false
@@ -218,7 +242,19 @@ namespace Module.Frontend.TPM.Controllers
                     return NotFound();
                 }
 
-                model.DeletedDate = DateTime.Now;
+				var pci = new ProductChangeIncident
+				{
+					CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+					IsCreate = false,
+					IsDelete = false,
+					IsCreateInMatrix = false,
+					IsDeleteInMatrix = true,
+					Product = model.Product,
+					ProductId = model.ProductId
+				};
+				Context.Set<ProductChangeIncident>().Add(pci);
+
+				model.DeletedDate = DateTime.Now;
                 model.Disabled = true;
                 Context.SaveChanges();
 

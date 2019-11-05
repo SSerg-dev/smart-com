@@ -5,6 +5,7 @@ using Frontend.Core.Controllers.Base;
 using Frontend.Core.Extensions;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
+using Module.Persist.TPM.Utils.Filter;
 using Newtonsoft.Json;
 using Persist.Model;
 using System;
@@ -440,7 +441,37 @@ namespace Module.Frontend.TPM.Controllers
                     };
 
                     Context.Set<ChangesIncident>().Add(changesIncident);
-                }
+
+					List<Product> products = Context.Set<Product>().Where(x => !x.Disabled).ToList();
+					List<Func<Product, bool>> oldExpression = GetExpressionList(currentRecord);
+					List<Func<Product, bool>> newExpression = GetExpressionList(model);
+					if (oldExpression != null && newExpression != null)
+					{
+						List<Product> oldProductsList = products.Where(p => oldExpression.Any(e => e.Invoke(p))).ToList();
+						List<Product> newProductsList = products.Where(x => newExpression.Any(e => e.Invoke(x))).ToList();
+
+						var forIncident = new List<Product>();
+						forIncident.AddRange(oldProductsList.Except(newProductsList));
+						forIncident.AddRange(newProductsList.Except(oldProductsList));
+						if (forIncident.Any())
+						{
+							foreach (var product in forIncident)
+							{
+								var pci = new ProductChangeIncident
+								{
+									CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+									IsCreate = false,
+									IsDelete = false,
+									IsCreateInMatrix = false,
+									IsDeleteInMatrix = false,
+									Product = product,
+									ProductId = product.Id
+								};
+								Context.Set<ProductChangeIncident>().Add(pci);
+							}
+						}
+					}
+				}
 
                 Context.Entry(currentRecord).CurrentValues.SetValues(model);
                 UpdateFullPathProductTree(currentRecord, Context.Set<ProductTree>());
@@ -674,12 +705,31 @@ namespace Module.Frontend.TPM.Controllers
                 return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "The logo is not exists for current client." }));
             }
         }
-    }
 
-    /// <summary>
-    /// Класс-обертка для дерева (в ExtJS)
-    /// </summary>
-    public class ProductTreeNode
+		/// <summary>
+		/// Список преобразованных в функции фильтров из узлов иерархии
+		/// </summary>
+		/// <param name="productTreeNodes"></param>
+		/// <returns></returns>
+		private List<Func<Product, bool>> GetExpressionList(ProductTree productTreeNodes)
+		{
+			List<Func<Product, bool>> expressionsList = new List<Func<Product, bool>>();
+			if (productTreeNodes != null && !String.IsNullOrEmpty(productTreeNodes.Filter))
+			{
+				string stringFilter = productTreeNodes.Filter;
+				// Преобразованиестроки фильтра в соответствующий класс
+				FilterNode filter = stringFilter.ConvertToNode();
+				// Создание функции фильтрации на основе построенного фильтра
+				var expr = filter.ToExpressionTree<Product>();
+				expressionsList.Add(expr.Compile());
+			}
+			return expressionsList;	
+		}
+	}
+	/// <summary>
+	/// Класс-обертка для дерева (в ExtJS)
+	/// </summary>
+	public class ProductTreeNode
     {
         public int Id { get; set; }
         public int ObjectId { get; set; }

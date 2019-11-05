@@ -177,7 +177,7 @@ namespace Module.Host.TPM.Handlers
 
                             if (calculateError != null)
                             {
-                                logLine = String.Format("Error when calculating the planned parameters of the Product: {0}", calculateError);
+                                logLine = String.Format("Error when calculating the planned parameters of products: {0}", calculateError);
                                 handlerLogger.Write(true, logLine, "Error");
                             }
 

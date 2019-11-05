@@ -46,7 +46,7 @@
         'PromoProductItem': 'Promo Product',
         'BaseLineItem': 'Base Line',
         'DemandPriceListItem': 'Demand Price List',
-        'ClientTreeSharesView': 'Clients Share',
+        'ClientTreeBrandTech': 'Clients Share',
         'PromoSupport': 'Promo Support',
         'TICosts': 'TI Costs',
         'CostProduction': 'Cost Production',
@@ -105,12 +105,13 @@
         'PromoDemand': 'Demand',
         'ProductList': 'Fixed Product List',
         'BaseClientTreeView': 'Base clients',
+        'ClientTreeSharesView': 'Clients',
         'NoneNego': 'No Nego',
         'RetailType': 'Retail type',
         'PromoProduct': 'Promo Product',
         'BaseLine': 'Base Line',
         'DemandPriceList': 'Demand Price List',
-        'ClientTreeSharesView': 'Clients shares',
+        'ClientTreeBrandTech': 'Clients shares',
         'PromoSupport': 'Promo Support',
         'TICosts': 'TI Costs',
         'CostProduction': 'Cost Production',
@@ -171,7 +172,7 @@
         'calculations': 'Calculations',
         'support': 'Support',
         'promoActivity': 'Activity',
-        'changeStatusHistory': 'Change status history',
+		'changeStatusHistory': 'Promo Workflow',
         'summary': 'Summary'
     },
 
@@ -867,9 +868,8 @@
         'Name': 'Name',
         'Type': 'Type',
         'OutletCount': 'Outlet count',
-        'ExecutionCode': 'Execution Code',
+        'GHierarchyCode': 'G-Hierarchy code',
         'DemandCode': 'Demand Code',
-        'Share': 'Share',
         'IsBaseClient': 'Base client',
         'PostPromoEffectW1': 'Post Promo Effect W1',
         'PostPromoEffectW2': 'Post Promo Effect W2',
@@ -889,6 +889,12 @@
     },
 
     'ClientTreeSharesView': {
+        'ResultNameStr': 'Client hierarchy',
+        'BOI': 'Client hierarchy code',
+        'DemandCode': 'Demand Code'
+    },
+
+    'ClientTreeBrandTech': {
         'ResultNameStr': 'Client hierarchy',
         'BOI': 'Client hierarchy code',
         'LeafShare': 'Client hierarchy Share',

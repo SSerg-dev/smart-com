@@ -333,9 +333,8 @@
 	onBasicPanelAfterrender: function (component, eOpts) {
 		$(component.getTargetEl().dom).on('jsp-scroll-y', function (event, scrollPositionY, isAtTop, isAtBottom) {
 			var panel = component.up();
-            if (panel) { // TODO: отрефакторить?
-                // Для отрисовки нижней части панели без которой выделятся не все шаги
-                //component._refreshScroll(component);
+			if (panel) { // TODO: отрефакторить?
+
 				var btnStep1 = panel.down('#btn_promo_step1');
 				var btnStep2 = panel.down('#btn_promo_step2');
 				var btnStep3 = panel.down('#btn_promo_step3');
@@ -353,6 +352,8 @@
 				if (formStep6.needToSetHeight && isAtTop) {
 					formStep6.setHeight(panel.getHeight() - 20);
 					formStep6.needToSetHeight = false;
+				} else {
+					component._refreshScroll(component);
 				}
 
 				var h1 = formStep1.height;
@@ -503,6 +504,7 @@
 		if (promoEditorCustom.isInOutPromo || (promoEditorCustom.model && promoEditorCustom.model.data.InOut)
 			|| (promoEditorCustom.assignedRecord && promoEditorCustom.assignedRecord.data.InOut)) {
 			promoEditorCustom.query('#btn_promoInOut')[0].show();
+
 		}
 		this.hideEditButtonForSomeRole();
 	},
@@ -811,20 +813,20 @@
 		ActualPromoIncrementalEarnings = Ext.util.Format.round(ActualPromoIncrementalEarnings / 1000000, 2);
 		PlanPromoIncrementalEarnings = Ext.util.Format.round(PlanPromoIncrementalEarnings / 1000000, 2);
 
-        if (!(PlanPromoIncrementalNSV === 0)) {
-            PercentPromoIncrementalNSV = (ActualPromoIncrementalNSV / PlanPromoIncrementalNSV) * 100 - 100;
+		if (!(PlanPromoIncrementalNSV === 0)) {
+			PercentPromoIncrementalNSV = (ActualPromoIncrementalNSV / PlanPromoIncrementalNSV) * 100 - 100;
 			PercentPromoIncrementalNSV = Ext.util.Format.round(PercentPromoIncrementalNSV, 2);
 		}
-        if (!(PlanPromoIncrementalLSV === 0)) {
-            PercentPromoIncrementalLSV = (ActualPromoIncrementalLSV / PlanPromoIncrementalLSV) * 100 - 100;
+		if (!(PlanPromoIncrementalLSV === 0)) {
+			PercentPromoIncrementalLSV = (ActualPromoIncrementalLSV / PlanPromoIncrementalLSV) * 100 - 100;
 			PercentPromoIncrementalLSV = Ext.util.Format.round(PercentPromoIncrementalLSV, 2);
 		}
-        if (!(PlanPromoNSV === 0)) {
-            PercentPromoNSV = (ActualPromoNSV / PlanPromoNSV) * 100 - 100;
+		if (!(PlanPromoNSV === 0)) {
+			PercentPromoNSV = (ActualPromoNSV / PlanPromoNSV) * 100 - 100;
 			PercentPromoNSV = Ext.util.Format.round(PercentPromoNSV, 2);
 		}
-        if (!(PlanPromoIncrementalEarnings === 0)) {
-            PercentPromoIncrementalEarnings = (ActualPromoIncrementalEarnings / PlanPromoIncrementalEarnings) * 100 - 100;
+		if (!(PlanPromoIncrementalEarnings === 0)) {
+			PercentPromoIncrementalEarnings = (ActualPromoIncrementalEarnings / PlanPromoIncrementalEarnings) * 100 - 100;
 			PercentPromoIncrementalEarnings = Ext.util.Format.round(PercentPromoIncrementalEarnings, 2);
 		}
 
@@ -887,60 +889,115 @@
 		this.setButtonsState(button);
 		var window = button.up('window');
 		var approvalhistory = window.down('container[name=changes]');
+		var panel = approvalhistory.down('panel');
 		var parentHeight = approvalhistory.up().getHeight();
 		approvalhistory.down('fieldset').setHeight(parentHeight - 13);
 
-		if (!approvalhistory.isLoaded) {
-			var promoeditorcustom = button.up('promoeditorcustom');
-			var promoId = promoeditorcustom.promoId;
+		var promoeditorcustom = button.up('promoeditorcustom');
+		var promoId = promoeditorcustom.promoId;
 
-			if (promoId != null) {
-				promoeditorcustom.setLoading(true);
+		promoeditorcustom.setLoading(true);
 
-				var parameters = {
-					promoKey: promoId
-				};
-				App.Util.makeRequestWithCallback('PromoStatusChanges', 'PromoStatusChangesByPromo', parameters, function (data) {
-					var result = Ext.JSON.decode(data.httpResponse.data.value);
-					if (result.success) {
-						var tpl = Ext.create('App.view.tpm.common.approvalHistoryTpl').formatTpl;
-						var tplDecline = Ext.create('App.view.tpm.common.approvalHistoryDeclineTpl').formatTpl;
-						var itemsArray = [];
-						for (var i = 0; i < result.data.length; i++) {
-							if (i == result.data.length - 1) {
-								result.data[i].IsLast = true;
-							} else {
-								result.data[i].IsLast = false;
-							}
+		var parameters = {
+			promoKey: promoId
+		};
+		App.Util.makeRequestWithCallback('PromoStatusChanges', 'PromoStatusChangesByPromo', parameters, function (data) {
+			var result = Ext.JSON.decode(data.httpResponse.data.value);
+			var promoeditorcustom = Ext.ComponentQuery.query('promoeditorcustom')[0];
+			if (result.success) {
+				var tpl = Ext.create('App.view.tpm.common.approvalStatusStateTpl').formatTpl;
+				var itemsArray = [];
+				var promo = null;
+				var onApprovalState = null;
+				var promoStatusName = 'Draft';
 
-							// если есть Comment, то значит промо было оклонено
-							if (result.data[i].RejectReasonId !== null) {
-								itemsArray.push({
-									html: tplDecline.apply(result.data[i]),
-								});
-							}
-							else {
-								itemsArray.push({
-									html: tpl.apply(result.data[i]),
-								});
-							}
-						}
+				var panelWidthRatio = panel.getWidth() / 1160;
+				//Small sizes correction:
+				if (panelWidthRatio * 130 < 120) {
+					panelWidthRatio = panelWidthRatio * 0.95;
+				} else if (panelWidthRatio * 130 < 110) {
+					panelWidthRatio = panelWidthRatio * 0.85;
+				} else if (panelWidthRatio * 130 < 100) {
+					panelWidthRatio = panelWidthRatio * 0.60;
+				}
+				var panelHeightRatio = (panel.getWidth() / 1160) * (100 / 130);
 
-						var approvalhistoryPanel = approvalhistory.down('fieldset > panel');
-						approvalhistoryPanel.removeAll();
-						approvalhistoryPanel.add(itemsArray);
-						approvalhistoryPanel.doLayout();
-
-						approvalhistory.isLoaded = false;
-						approvalhistory.historyArray = result.data;
-						promoeditorcustom.setLoading(false);
+				if (!result.isEmpty) {
+					if (result.data.length == 0) {
+						promo = promoeditorcustom.model.data;
 					} else {
-						promoeditorcustom.setLoading(false);
-						App.Notify.pushError(l10n.ns('tpm', 'text').value('failedLoadData'));
+						promo = result.data[0].Promo;
 					}
+					promoStatusName = promo.PromoStatus == undefined ? promo.PromoStatusSystemName : promo.PromoStatus.SystemName
+
+					if (promo.IsCMManagerApproved == true && (promo.IsDemandPlanningApproved == false || promo.IsDemandPlanningApproved == null) && promo.IsDemandFinanceApproved == true)
+						onApprovalState = 'DemandPlanningNonego';
+					else if ((promo.IsCMManagerApproved == false || promo.IsCMManagerApproved == null) && (promo.IsDemandPlanningApproved == false || promo.IsDemandPlanningApproved == null) && (promo.IsDemandFinanceApproved == false || promo.IsDemandFinanceApproved == null))
+						onApprovalState = 'CMManager';
+					else if (promo.IsCMManagerApproved == true && (promo.IsDemandPlanningApproved == false || promo.IsDemandPlanningApproved == null) && (promo.IsDemandFinanceApproved == false || promo.IsDemandFinanceApproved == null))
+						onApprovalState = 'DemandPlanning';
+					else if (promo.IsCMManagerApproved == true && promo.IsDemandPlanningApproved == true && (promo.IsDemandFinanceApproved == false || promo.IsDemandFinanceApproved == null))
+						onApprovalState = 'DemandFinance';
+				}
+				
+				var settings = {
+					currentWidthRatio: panelWidthRatio,
+					currentHeightRatio: panelHeightRatio,
+					currentHeight: panel.body.getHeight(),
+					status: promoStatusName,
+					onApprovalState: onApprovalState,
+					isNonego: result.isNoNegoPassed == undefined ? false : result.isNoNegoPassed,
+					statusHistory: result.data == undefined ? [] : result.data,
+					statusColors: result.statusColors
+				}
+
+				itemsArray.push({
+					html: tpl.apply(settings),
 				});
+
+				panel.removeAll();
+				panel.add(itemsArray);
+				panel.doLayout();
+
+				var elementsWithTips = Ext.select('div[toolTip*=]');
+
+				elementsWithTips.elements.forEach(function (el) {
+					var me = el;
+					me.fieldLabelTip = Ext.create('Ext.tip.ToolTip', {
+						target: me,
+						preventLoseFocus: true,
+						trackMouse: true,
+						html: me.getAttribute('tooltip'),
+						dismissDelay: 15000
+					});
+				})
+
+				var workflowBtn = approvalhistory.down('button[id=workflowBtn]');
+				var historyBtn = approvalhistory.down('button[id=historyBtn]');
+				var dateOfChangeLable = approvalhistory.down('label');
+				var reverseBtn = approvalhistory.down('button[id=reverseBtn]');
+
+				if (historyBtn) {
+					historyBtn.removeCls('selected');
+				}
+				workflowBtn.addClass('selected');
+				dateOfChangeLable.hide();
+				reverseBtn.hide();
+
+				approvalhistory.isLoaded = false;
+				approvalhistory.historyArray = result.data == undefined ? null : result.data;
+				approvalhistory.isNonego = result.isNoNegoPassed == undefined ? false : result.isNoNegoPassed;
+				approvalhistory.promoStatus = promoStatusName;
+				approvalhistory.statusColors = result.statusColors;
+				promoeditorcustom.setLoading(false);
+			} else {
+				promoeditorcustom.setLoading(false);
+				App.Notify.pushError(l10n.ns('tpm', 'text').value('failedLoadData'));
 			}
-		}
+		});
+		if (promoId != null) {
+			
+		} 
 	},
 	// переключение между вкладками формы промо
 	setButtonsState: function (button) {
@@ -977,7 +1034,7 @@
 	},
 
 	onPromoButtonStep2Click: function (button) {
-		var container = button.up('window').down('container[name=promo]');
+        var container = button.up('window').down('container[name=promo]');
 
 		container.down('#btn_promo_step1').removeCls('selected');
 		container.down('#btn_promo_step3').removeCls('selected');
@@ -987,6 +1044,7 @@
 
 		var jspData = $(container.down('panel[name=basicPromo]').getTargetEl().dom).data('jsp');
 		var el = $(container.down('promobasicproducts#promo_step2').getTargetEl().dom);
+		jspData.scrollToElement(el, true, true);
 		jspData.scrollToElement(el, true, true);
 		button.addClass('selected');
 	},
@@ -1003,6 +1061,7 @@
 		var jspData = $(container.down('panel[name=basicPromo]').getTargetEl().dom).data('jsp');
 		var el = $(container.down('promomechanic[itemId=promo_step3]').getTargetEl().dom);
 		jspData.scrollToElement(el, true, true);
+		jspData.scrollToElement(el, true, true);
 		button.addClass('selected');
 	},
 
@@ -1017,6 +1076,7 @@
 
 		var jspData = $(container.down('panel[name=basicPromo]').getTargetEl().dom).data('jsp');
 		var el = $(container.down('promoperiod[itemId=promo_step4]').getTargetEl().dom);
+		jspData.scrollToElement(el, true, true);
 		jspData.scrollToElement(el, true, true);
 		button.addClass('selected');
 	},
@@ -1033,12 +1093,13 @@
 		var jspData = $(container.down('panel[name=basicPromo]').getTargetEl().dom).data('jsp');
 		var el = $(container.down('promoevent[itemId=promo_step5]').getTargetEl().dom);
 		jspData.scrollToElement(el, true, true);
+		jspData.scrollToElement(el, true, true);
 		button.addClass('selected');
 	},
 
 	onPromoButtonStep6Click: function (button) {
 		var container = button.up('window').down('container[name=promo]');
-
+		//   container._refreshScroll(container);
 		container.down('#btn_promo_step1').removeCls('selected');
 		container.down('#btn_promo_step2').removeCls('selected');
 		container.down('#btn_promo_step3').removeCls('selected');
@@ -1047,6 +1108,7 @@
 
 		var jspData = $(container.down('panel[name=basicPromo]').getTargetEl().dom).data('jsp');
 		var el = $(container.down('promosettings[itemId=promo_step6]').getTargetEl().dom);
+		jspData.scrollToElement(el, true, true);
 		jspData.scrollToElement(el, true, true);
 		button.addClass('selected');
 	},
@@ -1072,6 +1134,7 @@
 		var jspData = $(container.down('panel[name=promoBudgetsContainer]').getTargetEl().dom).data('jsp');
 		var el = $(container.down('panel[itemId=promoBudgets_step2]').getTargetEl().dom);
 		jspData.scrollToElement(el, true, true);
+		jspData.scrollToElement(el, true, true);
 		button.addClass('selected');
 	},
 
@@ -1084,6 +1147,7 @@
 		var jspData = $(container.down('panel[name=promoBudgetsContainer]').getTargetEl().dom).data('jsp');
 		var el = $(container.down('panel[itemId=promoBudgets_step3]').getTargetEl().dom);
 		jspData.scrollToElement(el, true, true);
+		jspData.scrollToElement(el, true, true);
 		button.addClass('selected');
 	},
 
@@ -1095,16 +1159,18 @@
 		var jspData = $(container.down('panel[name=promoActivityContainer]').getTargetEl().dom).data('jsp');
 		var el = $(container.down('panel[itemId=promoActivity_step1]').getTargetEl().dom);
 		jspData.scrollToElement(el, true, true);
+		jspData.scrollToElement(el, true, true);
 		button.addClass('selected');
 	},
 
 	onPromoActivityButtonStep2Click: function (button) {
 		var container = button.up('window').down('container[name=promoActivity]')
 
-        container.down('#btn_promoActivity_step1').removeCls('selected');
-        container.down('#btn_promoActivity_step1').setGlyph(0xf133);
+		container.down('#btn_promoActivity_step1').removeCls('selected');
+		container.down('#btn_promoActivity_step1').setGlyph(0xf133);
 		var jspData = $(container.down('panel[name=promoActivityContainer]').getTargetEl().dom).data('jsp');
 		var el = $(container.down('panel[itemId=promoActivity_step2]').getTargetEl().dom);
+		jspData.scrollToElement(el, true, true);
 		jspData.scrollToElement(el, true, true);
 		button.addClass('selected');
 	},
@@ -1119,6 +1185,7 @@
 		var jspData = $(container.down('panel[name=supportContainer]').getTargetEl().dom).data('jsp');
 		var el = $(container.down('panel[itemId=support_step1] customtoptreetoolbar').getTargetEl().dom);
 		jspData.scrollToElement(el, true, true);
+		jspData.scrollToElement(el, true, true);
 		button.addClass('selected');
 	},
 
@@ -1131,6 +1198,7 @@
 		var jspData = $(container.down('panel[name=supportContainer]').getTargetEl().dom).data('jsp');
 		var el = $(container.down('panel[itemId=support_step2] customtoptreetoolbar').getTargetEl().dom);
 		jspData.scrollToElement(el, true, true);
+		jspData.scrollToElement(el, true, true);
 		button.addClass('selected');
 	},
 
@@ -1142,6 +1210,7 @@
 
 		var jspData = $(container.down('panel[name=supportContainer]').getTargetEl().dom).data('jsp');
 		var el = $(container.down('panel[itemId=support_step3] customtoptreetoolbar').getTargetEl().dom);
+		jspData.scrollToElement(el, true, true);
 		jspData.scrollToElement(el, true, true);
 		button.addClass('selected');
 	},
@@ -1762,7 +1831,6 @@
 
 		store.load();
 
-
 		//Корректировка области прокрутки
 		var h = choosepromowindow.down('[itemId=datatable]').getHeight();
 		choosepromowindow.down('custompromopanel').setHeight(h - 34);
@@ -1781,39 +1849,41 @@
 
 			var model = this.buildPromoModel(window, record);
 			this.saveModel(model, window, false, true);
+			this.updateStatusHistoryState();
 		} else {
 			App.Notify.pushInfo(checkValid);
 		}
 	},
 
-	onUndoPublishButtonClick: function (button) {
-		var window = button.up('promoeditorcustom');
-		var checkValid = this.validatePromoModel(window);
-		if (checkValid === '') {
-			var record = this.getRecord(window);
+    onUndoPublishButtonClick: function (button) {
+        var window = button.up('promoeditorcustom');
+        var checkValid = this.validatePromoModel(window);
+        if (checkValid === '') {
+            var record = this.getRecord(window);
 
-			window.down('#PromoUpliftLockedUpdateCheckbox').setValue(false);
-			window.down('[name = PlanPromoUpliftPercent]').setValue(null);
+            window.down('#PromoUpliftLockedUpdateCheckbox').setValue(false);
+            window.down('[name = PlanPromoUpliftPercent]').setValue(null);
 
-			window.previousStatusId = window.statusId;
-			window.statusId = button.statusId;
-			window.promoName = 'Unpublish Promo';
-			window.down('#btn_recalculatePromo').hide();
+            window.previousStatusId = window.statusId;
+            window.statusId = button.statusId;
+            window.promoName = 'Unpublish Promo';
+            window.down('#btn_recalculatePromo').hide();
 
-			var model = this.buildPromoModel(window, record);
-			this.saveModel(model, window, false, true);
+            var model = this.buildPromoModel(window, record);
+            this.saveModel(model, window, false, true);
 
-			// если во время возврата была открыта вкладка Calculations/Activity нужно переключиться с них
-			var btn_promo = button.up('window').down('container[name=promo]');
-			//var btn_support = button.up('window').down('container[name=support]');
+            // если во время возврата была открыта вкладка Calculations/Activity нужно переключиться с них
+            var btn_promo = button.up('window').down('container[name=promo]');
+            var btn_work_flow = button.up('window').down('#btn_changes');
 
-			if (!btn_promo.hasCls('selected')) {// && !btn_support.hasCls('selected')) {
-				this.onPromoButtonClick(btn_promo);
-			}
-		} else {
-			App.Notify.pushInfo(checkValid);
-		}
-	},
+            if (!btn_promo.hasCls('selected') && !btn_work_flow.hasCls('selected')) {// && !btn_support.hasCls('selected')) {
+                this.onPromoButtonClick(btn_promo);
+            }
+        } else {
+            App.Notify.pushInfo(checkValid);
+        }
+    },
+
 
 	onSendForApprovalButtonClick: function (button) {
 		var window = button.up('promoeditorcustom');
@@ -2042,6 +2112,108 @@
 		} else {
 			App.Notify.pushInfo(checkValid);
 		}
+	},
+
+	updateStatusHistoryState: function () {
+		// Обновляем дерево статусов
+		var promoeditorcustom = Ext.ComponentQuery.query('promoeditorcustom')[0];
+		var approvalhistory = promoeditorcustom.down('container[name=changes]');
+		var panel = approvalhistory.down('panel');
+
+		var parameters = {
+			promoKey: promoeditorcustom.promoId,
+		}
+		App.Util.makeRequestWithCallback('PromoStatusChanges', 'PromoStatusChangesByPromo', parameters, function (data) {
+			var result = Ext.JSON.decode(data.httpResponse.data.value);
+			if (result.success) {
+				var tpl = Ext.create('App.view.tpm.common.approvalStatusStateTpl').formatTpl;
+				var itemsArray = [];
+				var promo = null;
+				var onApprovalState = null;
+				var promoStatusName = 'Draft';
+
+				var panelWidthRatio = panel.getWidth() / 1160;
+				//Small sizes correction:
+				if (panelWidthRatio * 130 < 120) {
+					panelWidthRatio = panelWidthRatio * 0.95;
+				} else if (panelWidthRatio * 130 < 110) {
+					panelWidthRatio = panelWidthRatio * 0.85;
+				} else if (panelWidthRatio * 130 < 100) {
+					panelWidthRatio = panelWidthRatio * 0.60;
+				}
+				var panelHeightRatio = (panel.getWidth() / 1160) * (100 / 130);
+				
+				if (!result.isEmpty) {
+					if (result.data.length == 0) {
+						promo = promoeditorcustom.model.data;
+					} else {
+						promo = result.data[0].Promo;
+					}
+					promoStatusName = promo.PromoStatus == undefined ? promo.PromoStatusSystemName : promo.PromoStatus.SystemName
+
+					if (promo.IsCMManagerApproved == true && (promo.IsDemandPlanningApproved == false || promo.IsDemandPlanningApproved == null) && promo.IsDemandFinanceApproved == true)
+						onApprovalState = 'DemandPlanningNonego';
+					else if ((promo.IsCMManagerApproved == false || promo.IsCMManagerApproved == null) && (promo.IsDemandPlanningApproved == false || promo.IsDemandPlanningApproved == null) && (promo.IsDemandFinanceApproved == false || promo.IsDemandFinanceApproved == null))
+						onApprovalState = 'CMManager';
+					else if (promo.IsCMManagerApproved == true && (promo.IsDemandPlanningApproved == false || promo.IsDemandPlanningApproved == null) && (promo.IsDemandFinanceApproved == false || promo.IsDemandFinanceApproved == null))
+						onApprovalState = 'DemandPlanning';
+					else if (promo.IsCMManagerApproved == true && promo.IsDemandPlanningApproved == true && (promo.IsDemandFinanceApproved == false || promo.IsDemandFinanceApproved == null))
+						onApprovalState = 'DemandFinance';
+				}
+				
+				var settings = {
+					currentWidthRatio: panelWidthRatio,
+					currentHeightRatio: panelHeightRatio,
+					currentHeight: panel.body.getHeight(),
+					status: promoStatusName,
+					onApprovalState: onApprovalState,
+					isNonego: result.isNoNegoPassed == undefined ? false : result.isNoNegoPassed,
+					statusHistory: result.data == undefined ? [] : result.data,
+					statusColors: result.statusColors
+				}
+
+				itemsArray.push({
+					html: tpl.apply(settings),
+				});
+
+				panel.removeAll();
+				panel.add(itemsArray);
+				panel.doLayout();
+
+				var elementsWithTips = Ext.select('div[toolTip*=]');
+
+				elementsWithTips.elements.forEach(function (el) {
+					var me = el;
+					me.fieldLabelTip = Ext.create('Ext.tip.ToolTip', {
+						target: me,
+						preventLoseFocus: true,
+						trackMouse: true,
+						html: me.getAttribute('tooltip'),
+						dismissDelay: 15000
+					});
+				})
+
+				var workflowBtn = approvalhistory.down('button[id=workflowBtn]');
+				var historyBtn = approvalhistory.down('button[id=historyBtn]');
+				var dateOfChangeLable = approvalhistory.down('label');
+				var reverseBtn = approvalhistory.down('button[id=reverseBtn]');
+
+				if (historyBtn) {
+					historyBtn.removeCls('selected');
+				}
+				workflowBtn.addClass('selected');
+				dateOfChangeLable.hide();
+				reverseBtn.hide();
+
+				approvalhistory.isLoaded = false;
+				approvalhistory.historyArray = result.data == undefined ? null : result.data;
+				approvalhistory.isNonego = result.isNoNegoPassed == undefined ? false : result.isNoNegoPassed;
+				approvalhistory.promoStatus = promoStatusName;
+				approvalhistory.statusColors = result.statusColors;
+			} else {
+				App.Notify.pushError(l10n.ns('tpm', 'text').value('failedLoadData'));
+			}
+		});
 	},
 
 	// =============== Other ===============
@@ -2452,6 +2624,7 @@
 					me.setPromoTitle(promoeditorcustom, promoeditorcustom.promoName, promoeditorcustom.promoStatusName);
 					me.defineAllowedActions(promoeditorcustom, promoActions, promoeditorcustom.promoStatusName);
 				}
+				me.updateStatusHistoryState();
 			},
 			error: function () {
 				parentWidget.setLoading(false);
@@ -2997,7 +3170,6 @@
             actualPromoLSVbyCompensation.setValue(record.data.ActualPromoLSVByCompensation);
             actualPromoLSV.setValue(record.data.ActualPromoLSV);
             factPostPromoEffect.setValue(record.data.ActualPromoPostPromoEffectLSV);
-
         }
         parentWidget.setLoading(false);
 
@@ -4078,7 +4250,6 @@
 	onRejectButtonClick: function (button) {
 		var window = button.up('window');
 		var record = this.getRecord(window);
-
 		this.showCommentWindow(record, window);
 	},
 
@@ -4106,6 +4277,7 @@
 		});
 
 		me.changeStatusPromo(record.data.Id, button.statusId, window);
+		me.updateStatusHistoryState();
 	},
 
 	onApplyActionButtonClick: function (button) {
@@ -4380,6 +4552,7 @@
 					scheduler.resourceStore.reload();
 					scheduler.eventStore.reload();
 				}
+				me.updateStatusHistoryState();
 			},
 			error: function (data) {
 				// при неудаче возвращаем старый статус
@@ -5028,6 +5201,7 @@
 							window.promoId = data.Id;
 							window.model = newModel;
 							me.reFillPromoForm(window, newModel, directorygrid);
+							me.updateStatusHistoryState();
 							//24.06.19 Лог не показываем
 							//if (newModel.get('Calculating'))
 							//    me.onPrintPromoLog(window, grid, close);

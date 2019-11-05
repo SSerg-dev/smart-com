@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Module.Persist.TPM.Model.TPM
 {
-    public class BaseLine : IEntity<Guid>, IDeactivatable
+    public class BaseLine : IEntity<Guid>, IDeactivatable, ICloneable
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public System.Guid Id { get; set; }
@@ -42,5 +42,24 @@ namespace Module.Persist.TPM.Model.TPM
         public DateTimeOffset? LastModifiedDate { get; set; }
 
         public virtual Product Product { get; set; }
+
+        public object Clone()
+        {
+            return new BaseLine()
+            {
+                Id = this.Id,
+                Disabled = this.Disabled,
+                DeletedDate = this.DeletedDate,
+                ProductId = this.ProductId,
+                StartDate = this.StartDate,
+                QTY = this.QTY,
+                Price = this.Price,
+                BaselineLSV = this.BaselineLSV,
+                DemandCode = this.DemandCode,
+                Type = this.Type,
+                LastModifiedDate = this.LastModifiedDate,
+                Product = this.Product
+            };
+        }
     }
 }

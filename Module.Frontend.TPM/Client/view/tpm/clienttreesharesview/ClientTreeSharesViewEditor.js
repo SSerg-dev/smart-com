@@ -20,10 +20,6 @@
             name: 'BOI',
             fieldLabel: l10n.ns('tpm', 'ClientTreeSharesView').value('BOI')
         }, {
-            xtype: 'numberfield',
-            name: 'LeafShare',
-            fieldLabel: l10n.ns('tpm', 'ClientTreeSharesView').value('LeafShare')
-        }, {
             xtype: 'textfield',
             name: 'DemandCode',
             fieldLabel: l10n.ns('tpm', 'ClientTreeSharesView').value('DemandCode')

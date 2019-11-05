@@ -302,6 +302,7 @@ namespace Module.Frontend.TPM.Controllers
                 };
                 // параметры импорта
                 HandlerDataHelper.SaveIncomingArgument("CrossParam.ClientFilter", new TextListModel(paramForm.GetStringValue("clientFilter")), data, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("CrossParam.DemandCodesString", paramForm.GetStringValue("clientFilter"), data, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("CrossParam.StartDate", paramForm.GetStringValue("startDate"), data, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("CrossParam.FinishDate", paramForm.GetStringValue("endDate"), data, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("CrossParam.ClearTable", Boolean.Parse(paramForm.GetStringValue("clearTable")), data, throwIfNotExists: false);

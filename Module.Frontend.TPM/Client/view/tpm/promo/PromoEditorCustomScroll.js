@@ -295,7 +295,7 @@
                 name: 'promoBudgets',
                 itemId: 'promoBudgets',
                 layout: 'fit',
-                dockedItems: [{
+                 dockedItems: [{
                     xtype: 'custompromotoolbar',
                     dock: 'left',
                     items: [{
@@ -373,6 +373,8 @@
                                 if (formStep3.needToSetHeight && isAtTop) {
                                     formStep3.setHeight(panel.getHeight() - 20);
                                     formStep3.needToSetHeight = false;
+                                } else {
+                                    component._refreshScroll(component);
                                 }
 
                                 var h1 = formStep1.getHeight();
@@ -465,6 +467,7 @@
                     itemId: 'promoActivityPanel',
                     stopRefreshScroll: true,
                     name: 'promoActivityContainer',
+                    stopRefreshScroll: true,
                     autoScroll: true,
                     cls: 'scrollpanel',
                     bodyStyle: { "background-color": "#ECEFF1" },
@@ -493,6 +496,8 @@
                                 if (formStep2.needToSetHeight && isAtTop) {
                                     formStep2.setHeight(panel.getHeight() - 20);
                                     formStep2.needToSetHeight = false;
+                                } else {
+                                    component._refreshScroll(component);
                                 }
 
                                 var h1 = formStep1.getHeight();

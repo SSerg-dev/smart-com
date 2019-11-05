@@ -55,7 +55,7 @@
         var store = grid.getStore(),
             selModel = grid.getSelectionModel();
 
-        if (!selModel.hasSelection() && records.length > 0) {
+        if (!selModel.hasSelection() && records.length > 0 && store.data && store.data.length > 0) {
             selModel.select(0);
         } else if (selModel.hasSelection() && records.length > 0) {
             var selected = selModel.getSelection()[0];

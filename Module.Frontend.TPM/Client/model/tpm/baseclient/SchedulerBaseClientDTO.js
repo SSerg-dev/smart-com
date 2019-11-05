@@ -7,7 +7,7 @@
         { name: 'ObjectId', hidden: true },
         { name: 'Type', type: 'string', hidden: false, isDefault: true },
         { name: 'Name', type: 'string', hidden: false, isDefault: true },
-        { name: 'ExecutionCode', type: 'string', hidden: false, isDefault: true },
+        { name: 'GHierarchyCode', type: 'string', hidden: false, isDefault: true },
         { name: 'DemandCode', type: 'string', hidden: false, isDefault: true },
         { name: 'Share', type: 'int' },
 

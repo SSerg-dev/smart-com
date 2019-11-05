@@ -82,7 +82,11 @@ namespace Module.Frontend.TPM.Controllers
             patch.Put(model);
             try
             {
-                Context.SaveChanges();
+                var resultSaveChanges = Context.SaveChanges();
+                if (resultSaveChanges > 0)
+                {
+                    ClientTreeBrandTechesController.FillClientTreeBrandTechTable(Context);
+                }
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -110,10 +114,13 @@ namespace Module.Frontend.TPM.Controllers
             var result = (BrandTech)Mapper.Map(model, proxy, typeof(BrandTech), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
 
             Context.Set<BrandTech>().Add(result);
-
             try
             {
-                Context.SaveChanges();
+                var resultSaveChanges = Context.SaveChanges();
+                if (resultSaveChanges > 0)
+                {
+                    ClientTreeBrandTechesController.FillClientTreeBrandTechTable(Context);
+                }
             }
             catch (Exception e)
             {
@@ -136,7 +143,13 @@ namespace Module.Frontend.TPM.Controllers
                 }
 
                 patch.Patch(model);
-                Context.SaveChanges();
+
+                var resultSaveChanges = Context.SaveChanges();
+                if (resultSaveChanges > 0)
+                {
+                    ClientTreeBrandTechesController.FillClientTreeBrandTechTable(Context);
+                    ClientTreeBrandTechesController.DisableNotActualClientTreeBrandTech(Context);
+                }
 
                 return Updated(model);
             }
@@ -166,7 +179,13 @@ namespace Module.Frontend.TPM.Controllers
 
                 model.DeletedDate = System.DateTime.Now;
                 model.Disabled = true;
-                Context.SaveChanges();
+
+                var resultSaveChanges = Context.SaveChanges();
+                if (resultSaveChanges > 0)
+                {
+                    ClientTreeBrandTechesController.FillClientTreeBrandTechTable(Context);
+                    ClientTreeBrandTechesController.DisableNotActualClientTreeBrandTech(Context);
+                }
 
                 return StatusCode(HttpStatusCode.NoContent);
             }
@@ -269,6 +288,7 @@ namespace Module.Frontend.TPM.Controllers
                     UserId = userId,
                     RoleId = roleId
                 };
+
                 handler.SetParameterData(data);
                 context.LoopHandlers.Add(handler);
                 context.SaveChanges();

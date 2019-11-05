@@ -81,7 +81,7 @@
         itemId: 'btn_changes',
         text: l10n.ns('tpm', 'promoMainTab').value('changeStatusHistory'),
         tooltip: l10n.ns('tpm', 'promoMainTab').value('changeStatusHistory'),
-        glyph: 0xf2da,
+        glyph: 0xf1a8,
         padding: 2,
         scale: 'large',
         iconAlign: 'top',

@@ -227,19 +227,14 @@
                             fieldLabel: l10n.ns('tpm', 'ClientTree').value('OutletCount')
                         }, {
                             xtype: 'singlelinedisplayfield',
-                            name: 'ExecutionCode',
+                            name: 'GHierarchyCode',
                             width: 280,
-                            fieldLabel: l10n.ns('tpm', 'ClientTree').value('ExecutionCode')
+                            fieldLabel: l10n.ns('tpm', 'ClientTree').value('GHierarchyCode')
                         }, {
                             xtype: 'singlelinedisplayfield',
                             name: 'DemandCode',
                             width: 280,
                             fieldLabel: l10n.ns('tpm', 'ClientTree').value('DemandCode')
-                        }, {
-                            xtype: 'singlelinedisplayfield',
-                            name: 'Share',
-                            width: 280,
-                            fieldLabel: l10n.ns('tpm', 'ClientTree').value('Share')
                         }, {
                             xtype: 'singlelinedisplayfield',
                             name: 'IsBaseClient',

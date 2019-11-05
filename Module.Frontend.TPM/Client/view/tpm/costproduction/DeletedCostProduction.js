@@ -133,7 +133,7 @@
                 text: l10n.ns('tpm', 'PromoSupport').value('EndDate'),
                 dataIndex: 'EndDate',
                 renderer: Ext.util.Format.dateRenderer('d.m.Y')
-            }]
+                }]
         }
     }, {
         xtype: 'editabledetailform',

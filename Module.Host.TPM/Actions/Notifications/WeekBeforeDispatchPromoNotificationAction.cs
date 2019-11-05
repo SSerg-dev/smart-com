@@ -45,7 +45,7 @@ namespace Module.Host.TPM.Actions.Notifications
 
 					if (promoesForNotify.Count().Equals(0))
 					{
-						Errors.Add("There are no promo with week before dispatch start");
+						Warnings.Add("There are no promo with week before dispatch start");
 						return;
 					}
 
@@ -105,17 +105,18 @@ namespace Module.Host.TPM.Actions.Notifications
 			{
 				foreach (string error in userErrors)
 				{
-					Errors.Add(error);
+					Warnings.Add(error);
 				}
 			}
 			else if (!userIds.Any())
 			{
+				Warnings.Add(String.Format("There are no appropriate recipinets for notification: {0}.", notificationName));
 				return;
 			}
 
 			foreach (Guid userId in userIds)
 			{
-				string[] userEmail = context.Users.Where(x => x.Id == userId).Select(y => y.Email).ToArray();
+				string userEmail = context.Users.Where(x => x.Id == userId).Select(y => y.Email).FirstOrDefault();
 				List<Constraint> constraints = ConstraintsHelper.GetConstraitnsByUserId(userId, context);
 				IQueryable<Promo> constraintPromoes = promoesForNotify;
 
@@ -133,15 +134,27 @@ namespace Module.Host.TPM.Actions.Notifications
 
 				if (constraintPromoes.Any())
 				{
+					IList<string> promoNumbers = new List<string>();
 					List<string> allRows = new List<string>();
 					foreach (Promo promo in constraintPromoes)
 					{
 						List<string> allRowCells = GetRow(promo, propertiesOrder);
 						allRows.Add(String.Format(rowTemplate, string.Join("", allRowCells)));
+						promoNumbers.Add(promo.Number.ToString());
 					}
-
 					string notifyBody = String.Format(template, string.Join("", allRows));
-					SendNotificationByEmails(notifyBody, notificationName, userEmail);
+
+					string[] emailArray = new[] { userEmail };
+					if (!String.IsNullOrEmpty(userEmail))
+					{
+						SendNotificationByEmails(notifyBody, notificationName, emailArray);
+						Results.Add(String.Format("Notification of promos (numbers: {0}) with less than a week left before dispatch were sent to {1}", String.Join(", ", promoNumbers.Distinct().ToArray()), String.Join(", ", emailArray)), null);
+					}
+					else
+					{
+						string userLogin = context.Users.Where(x => x.Id == userId).Select(x => x.Name).FirstOrDefault();
+						Warnings.Add(String.Format("Email not found for user: {0}", userLogin));
+					}
 				}
 			}
             

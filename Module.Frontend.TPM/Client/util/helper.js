@@ -1045,6 +1045,70 @@ Ext.chart.series.Bar.override({
     }
 });
 
+
+Ext.override(Sch.view.SchedulerGridView, {
+    onEventSelect: function (recordToSelect) {
+        if (recordToSelect.store.lastSelected) {
+            this.onEventDeselect(recordToSelect.store.lastSelected);
+        };
+
+        var b = this.getEventNodesByRecord(recordToSelect);
+        if (b) {
+            b.addCls(this.selectedEventCls)
+        }
+        recordToSelect.store.lastSelected = recordToSelect;
+    },
+});
+
+Ext.override(Sch.feature.ResizeZone, {
+    getStartEndDates: function () {
+        var e = this.resizer,
+            c = e.el,
+            d = this.schedulerView,
+            b = e.isStart,
+            g, a, f;
+        if (b) {
+            if (d.getMode() === "horizontal") {
+                f = [d.rtl ? c.getRight() : c.getLeft() + 1, c.getTop()]
+            } else {
+                f = [(c.getRight() + c.getLeft()) / 2, c.getTop()]
+            }
+            a = e.eventRecord.getEndDate();
+            if (d.snapRelativeToEventStartDate) {
+                g = d.getDateFromXY(f);
+                g = d.timeAxis.roundDate(g, e.eventRecord.getStartDate())
+            } else {
+                g = d.getDateFromXY(f, "round")
+            }
+        } else {
+            if (d.getMode() === "horizontal") {
+                f = [d.rtl ? c.getLeft() : c.getRight(), c.getBottom()]
+            } else {
+                f = [(c.getRight() + c.getLeft()) / 2, c.getBottom()]
+            }
+            g = e.eventRecord.getStartDate();
+            if (d.snapRelativeToEventStartDate) {
+                a = d.getDateFromXY(f);
+                a = d.timeAxis.roundDate(a, e.eventRecord.getEndDate())
+            } else {
+                a = d.getDateFromXY(f, "round");
+                //Удаляем одну секунд для корректного расчета даты
+                a.setTime(a.getTime() - 1000);
+            }
+        }
+        g = g || e.start;
+        a = a || e.end;
+        if (e.dateConstraints) {
+            g = Sch.util.Date.constrain(g, e.dateConstraints.start, e.dateConstraints.end);
+            a = Sch.util.Date.constrain(a, e.dateConstraints.start, e.dateConstraints.end)
+        }
+        return {
+            start: g,
+            end: a
+        }
+    },
+});
+
 // проверка соединения signalR
 function requestHub(func, args) {
     try {

@@ -92,7 +92,7 @@ namespace Module.Persist.TPM.Utils
 
 								if (users.Count() == 0)
 								{
-									errors.Add(String.Format("Users with default role: {0} wasn't found", string.Join(", ", roles)));
+									errors.Add(String.Format("Users with email {0} has inappropriate default role.", valueAndType.Item1));
 								}
 							}
 						}
@@ -122,7 +122,7 @@ namespace Module.Persist.TPM.Utils
 								}
 								else
 								{
-									errors.Add(String.Format("Users with default role: {0} wasn't found", string.Join(", ", roles)));
+									errors.Add(String.Format("Users with email {0} has inappropriate default role.", valueAndType.Item1));
 								}
 							}
 						}
@@ -213,7 +213,11 @@ namespace Module.Persist.TPM.Utils
 			// Находим дополнительных получателей
 			List<Recipient> recipients = context.Recipients
 				.Where(x => x.MailNotificationSettingId == mailNotificationSettingsId).ToList();
-			recipients.Add(new Recipient(){ Value = toMail, Type = "Email" });
+
+			if (toMail != null)
+			{
+				recipients.Add(new Recipient() { Value = toMail, Type = "Email" });
+			}
 
 			return recipients;
 		}

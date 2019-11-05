@@ -9,7 +9,6 @@ namespace Module.Persist.TPM.Model.DTO {
         public int Id { get; set; }
         public int BOI { get; set; }
         public string ResultNameStr { get; set; }
-        public Int16 LeafShare { get; set; }
         public string DemandCode { get; set; }
     }
 }

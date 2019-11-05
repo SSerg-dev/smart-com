@@ -431,7 +431,9 @@ namespace Module.Frontend.TPM.Controllers
                 CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
                 ProductId = product.Id,
                 IsCreate = isCreate,
-                IsDelete = isDelete
+                IsDelete = isDelete,
+				IsCreateInMatrix = false,
+				IsDeleteInMatrix = false,
             };
         }
 

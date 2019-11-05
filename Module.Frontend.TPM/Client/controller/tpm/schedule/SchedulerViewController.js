@@ -197,9 +197,8 @@
                             callback: function (record, operation, success) {
                                 if (success) {
                                     dragContext.finalize(true);
-                                    me.calendarSheduler.getEventStore().load(function (records, operation, success) {
-                                        me.calendarSheduler.setLoading(false);
-                                    });
+                                    me.eventStoreLoading(me.calendarSheduler.getEventStore());
+                                    me.calendarSheduler.setLoading(false);
                                 } else {
                                     me.calendarSheduler.setLoading(false);
                                     dragContext.finalize(false);
@@ -414,14 +413,17 @@
     onFilterDraftPublButtonClick: function (button) {
         var scheduler = button.up('panel').down('scheduler');
         var store = scheduler.getEventStore();
-        var baseFilter = store.fixedFilters['statusfilter']; // Сохраняем фильтр по типу
-        var ids = ['statusfilter'];
-        var nodes = [{
-            property: baseFilter.property,
-            operation: baseFilter.operation,
-            value: baseFilter.value,
-        }];
 
+        var ids = [];
+        var nodes = [];
+        //var baseFilter = store.fixedFilters['statusfilter']; // Сохраняем фильтр по типу
+        //var ids = ['statusfilter'];
+        //var nodes = [{
+        //    property: baseFilter.property,
+        //    operation: baseFilter.operation,
+        //    value: baseFilter.value,
+        //}];
+        //
         if (!button.hasCls('sheduler_promostatusfilter_button_selected')) {
             ids.push('PromoStatusfilter');
             nodes.push({
@@ -429,18 +431,18 @@
                 operation: 'Equals',
                 value: 'DraftPublished'
             });
-            store.clearFixedFilters(true);
-            store.setSeveralFixedFilters(ids, nodes, true);
+            //store.clearFixedFilters(true);
+            store.setSeveralFixedFilters(ids, nodes, false);
 
-
-            store.load();
+            this.eventStoreLoading(store);
             button.up('custombigtoolbar').down('#schedulefilterdraftbutton').removeCls('sheduler_promostatusfilter_button_selected');
             button.addClass('sheduler_promostatusfilter_button_selected');
         } else {
+            delete store.fixedFilters['PromoStatusfilter'];
             button.up('custombigtoolbar').down('#schedulefilterdraftbutton').removeCls('sheduler_promostatusfilter_button_selected');
-            store.clearFixedFilters(true);
-            store.setSeveralFixedFilters(ids, nodes, true);
-            store.load();
+            //store.clearFixedFilters(true);
+            store.setSeveralFixedFilters(ids, nodes, false);
+            this.eventStoreLoading(store);
             button.removeCls('sheduler_promostatusfilter_button_selected');
         }
     },
@@ -448,13 +450,16 @@
     onFilterDraftButtonClick: function (button) {
         var scheduler = button.up('panel').down('scheduler');
         var store = scheduler.getEventStore();
-        var baseFilter = store.fixedFilters['statusfilter']; // Сохраняем фильтр по типу
-        var ids = ['statusfilter'];
-        var nodes = [{
-            property: baseFilter.property,
-            operation: baseFilter.operation,
-            value: baseFilter.value,
-        }];
+        var ids = [];
+        var nodes = [];
+
+        //var baseFilter = store.fixedFilters['statusfilter']; // Сохраняем фильтр по типу
+        //var ids = ['statusfilter'];
+        //var nodes = [{
+        //    property: baseFilter.property,
+        //    operation: baseFilter.operation,
+        //    value: baseFilter.value,
+        //}];
 
         if (!button.hasCls('sheduler_promostatusfilter_button_selected')) {
             ids.push('PromoStatusfilter');
@@ -463,16 +468,17 @@
                 operation: 'Equals',
                 value: 'Draft'
             });
-            store.clearFixedFilters(true);
-            store.setSeveralFixedFilters(ids, nodes, true);
-            store.load();
+            //store.clearFixedFilters(true);
+            store.setSeveralFixedFilters(ids, nodes, false);
+            this.eventStoreLoading(store);
             button.up('custombigtoolbar').down('#schedulefilterdraftpublbutton').removeCls('sheduler_promostatusfilter_button_selected');
             button.addClass('sheduler_promostatusfilter_button_selected');
         } else {
+            delete store.fixedFilters['PromoStatusfilter'];
             button.up('custombigtoolbar').down('#schedulefilterdraftpublbutton').removeCls('sheduler_promostatusfilter_button_selected');
-            store.clearFixedFilters(true);
-            store.setSeveralFixedFilters(ids, nodes, true);
-            store.load();
+            //store.clearFixedFilters(true);
+            store.setSeveralFixedFilters(ids, nodes, false);
+            this.eventStoreLoading(store);
             button.removeCls('sheduler_promostatusfilter_button_selected');
         }
     },
@@ -480,6 +486,7 @@
         var me = this;
         e.stopEvent();
         var status = rec.get('PromoStatusSystemName').toLowerCase();
+        var promoStore = me.getPromoStore();
         var isDeletable = status == 'draft' || status == 'draftpublished';
         var postAccess = me.getAllowedActionsForCurrentRoleAndResource('Promoes').some(function (action) { return action === 'Post' });
         if (!panel.ctx) {
@@ -490,7 +497,20 @@
                     glyph: 0xf18f,
                     hidden: !postAccess,
                     handler: function () {
-                        panel.eventCopy = panel.ctx.rec;
+                        panel.setLoading(true);
+                        promoStore.load({
+                            id: panel.ctx.recId,
+                            scope: this,
+                            callback: function (records, operation, success) {
+                                if (success && records[0]) {
+                                    panel.eventCopy = records[0];
+                                    panel.setLoading(false);
+                                } else {
+                                    panel.setLoading(false);
+                                    App.Notify.pushError(l10n.ns('tpm', 'text').value('failedCopy'))
+                                }
+                            }
+                        });
                     },
 
                 }, {
@@ -515,17 +535,26 @@
                             // Удаление Промо
                             if (buttonId === 'yes') {
                                 panel.setLoading(true);
-                                var record = panel.ctx.rec;
-                                record.destroy({
+                                promoStore.load({
+                                    id: panel.ctx.recId,
                                     scope: this,
-                                    success: function () {
-                                        panel.getEventStore().load(function (records, operation, success) {
+                                    callback: function (records, operation, success) {
+                                        if (success && records[0]) {
+                                            records[0].destroy({
+                                                scope: this,
+                                                success: function () {
+                                                    me.eventStoreLoading(panel.getEventStore());
+                                                    panel.setLoading(false);
+                                                },
+                                                failure: function () {
+                                                    panel.setLoading(false);
+                                                    App.Notify.pushError(l10n.ns('tpm', 'text').value('failedStatusLoad'))
+                                                }
+                                            });;
+                                        } else {
                                             panel.setLoading(false);
-                                        });
-                                    },
-                                    failure: function () {
-                                        panel.setLoading(false);
-                                        App.Notify.pushError(l10n.ns('tpm', 'text').value('failedStatusLoad'))
+                                            App.Notify.pushError(l10n.ns('tpm', 'text').value('failedStatusLoad'));
+                                        }
                                     }
                                 });
                             }
@@ -534,26 +563,29 @@
                 }, {
                     text: l10n.ns('tpm', 'Schedule').value('View'),
                     glyph: 0xfba8,
-                    handler: function (button) {
-                        button.assignedRecord = panel.ctx.rec;
-                        me.mixins["App.controller.tpm.promo.Promo"].onDetailButtonClick.call(me, button);
+                        handler: function (button) {
+                            panel.up('schedulecontainer').setLoading(true);
+                            promoStore.load({
+                                id: panel.ctx.recId,
+                                scope: this,
+                                callback: function (records, operation, success) {
+                                    if (success && records[0]) {
+                                        button.assignedRecord = records[0];
+                                        me.mixins["App.controller.tpm.promo.Promo"].onDetailButtonClick.call(me, button);
+                                    } else {
+                                        panel.up('schedulecontainer').setLoading(false);
+                                        App.Notify.pushError(l10n.ns('tpm', 'text').value('failedView'));
+                                    }
+                                }
+                            });
                     }
                 }]
             });
         }
         if (panel.ctx) {
-            promoStore = me.getPromoStore();
-            promoStore.load({
-                id: rec.getId(),
-                scope: this,
-                callback: function (records, operation, success) {
-                    if (success) {
-                        panel.ctx.rec = records[0];
-                        panel.ctx.down('#promodeletebutton').setVisible(postAccess && isDeletable);
-                        panel.ctx.showAt(e.getXY());
-                    }
-                }
-            });
+            panel.ctx.recId = rec.getId();
+            panel.ctx.down('#promodeletebutton').setVisible(postAccess && isDeletable);
+            panel.ctx.showAt(e.getXY());
         }
     },
 
@@ -774,9 +806,8 @@
                                 callback: function (record, operation, success) {
                                     if (success) {
                                         me.__resizeContext.finalize(true);
-                                        me.calendarSheduler.getEventStore().load(function (records, operation, success) {
-                                            me.calendarSheduler.setLoading(false);
-                                        });
+                                        me.eventStoreLoading(me.calendarSheduler.getEventStore());
+                                        me.calendarSheduler.setLoading(false);
                                     } else {
                                         me.calendarSheduler.setLoading(false);
                                         me.__resizeContext.finalize(false);
@@ -816,6 +847,11 @@
             clearButton.setText(text);
             clearButton.setTooltip(text);
         }
+        var scheduler = container.down('scheduler');
+        var store = scheduler.getEventStore();
+        if (store.uniqueObjectIds) {
+            this.eventStoreLoading(store);
+        };
     },
 
     onFilterButtonClick: function (button) {
@@ -826,7 +862,8 @@
 
     onRefreshButtonClick: function (button) {
         var scheduler = button.up('panel').down('scheduler');
-        scheduler.reloadEventsStore();
+        var store = scheduler.getEventStore();
+        this.eventStoreLoading(store);
     },
 
     onPromoDetailButtonClick: function (button) {
@@ -982,6 +1019,44 @@
         // при сортировке клиентов пропадает выделение строки в календаре
         scheduler.lockedGrid.columns[0].getOwnerHeaderCt().on('sortchange', function () {
             me.highlightRow(scheduler.lockedGrid.getSelectionModel(), scheduler.lockedGrid.getSelectionModel().getSelection());
+
+            //Изменяем порядок загрузки при сортировке
+            var resourceStore = scheduler.getResourceStore();
+            var eventStore = scheduler.getEventStore();
+            var objectIds = me.getObjectIds(resourceStore);
+            var oldArray = eventStore.uniqueObjectIds;
+            var loaded = false;
+            var inoutPromoId, regPromoId;
+            var incldedIds = [];
+            eventStore.uniqueObjectIds = [];
+
+            for (var i = 0; i < objectIds.length; i++) {
+                for (var j = 0; j < oldArray.length; j++) {
+                    if (objectIds[i] == oldArray[j].objectId) {
+                        incldedIds.push(j);
+                        loaded = oldArray[j].loaded;
+                        regPromoId = oldArray[j].regPromoId;
+                        inoutPromoId = oldArray[j].inoutPromoId;
+                        break;
+                    }
+                };
+
+                eventStore.uniqueObjectIds.push({
+                    objectId: objectIds[i],
+                    loaded: loaded,
+                    regPromoId: regPromoId,
+                    inoutPromoId: inoutPromoId,
+                });
+            };
+
+            //Если часть записей скрыта и не отфильтровалась, всё равно добавляем их в загрузку
+            if (eventStore.uniqueObjectIds.length != oldArray.length) {
+                for (var i = 0; i < oldArray.length; i++) {
+                    if (!incldedIds.includes(i)) {
+                        eventStore.uniqueObjectIds.push(oldArray[i])
+                    }
+                }
+            }
         });
         scheduler.lockedGrid.relayEvents(scheduler.lockedGrid.getStore(), ['load']);
         scheduler.relayEvents(scheduler.lockedGrid.getSelectionModel(), ['selectionchange'], 'row');
@@ -1036,7 +1111,38 @@
         grid.fireEvent('rowclick', grid, 0);
         var record = grid.selModel.getSelection()[0];
         var scheduler = grid.up('#nascheduler');
+        var resourceStore = scheduler.getResourceStore();
+        var eventStore = scheduler.getEventStore();
+        var ng = scheduler.normalGrid;
 
+        scheduler.down('schedulergridview').preserveScrollOnRefresh = true;
+
+        var objectIds = this.getObjectIds(resourceStore);
+        eventStore.uniqueObjectIds = [];
+        for (var i = 0; i < objectIds.length; i++) {
+            eventStore.uniqueObjectIds.push({
+                objectId: objectIds[i],
+                loaded: false,
+                regPromoId: resourceStore.data.items[i * 2],
+                inoutPromoId: resourceStore.data.items[i * 2 + 1],
+            })
+        };
+
+        eventStore.on('load', function () {
+            // выделение первой строки после загрузки стора событий
+            me.highlightRow(scheduler.lockedGrid.getSelectionModel(), scheduler.lockedGrid.getSelectionModel().getSelection());
+            scheduler.setLoading(false);
+        });
+        resourceStore.on('refresh', function () {
+            me.setLoadingText(eventStore.uniqueObjectIds, ng);
+        });
+        //Удаляем фильтр при перезагрузке
+        if (!scheduler.up('panel').down('#schedulefilterdraftbutton').hasCls('sheduler_promostatusfilter_button_selected')
+            && !scheduler.up('panel').down('#schedulefilterdraftpublbutton').hasCls('sheduler_promostatusfilter_button_selected')) {
+            delete eventStore.fixedFilters['PromoStatusfilter'];
+        }
+
+        this.eventStoreLoading(eventStore);
         // при изменении содержимого календаря меняем скролл
         var me = this;
         $('#' + scheduler.down('schedulergridview').id).on("DOMSubtreeModified", function () {
@@ -1047,11 +1153,23 @@
             if (heightTable != undefined && heightTable != 0 && heightTable != currentHeightScroll)
                 me.setScroll();
         });
+        scheduler.down('schedulergridview').on("beforerefresh", function () {
+            return true;
+        });
 
         // Notifications
         if (this.getAllowedActionsForCurrentRoleAndResource('Promoes').some(function (action) { return action === 'Post'; })) {
             this.showOrHideNotificationsPanel();
         }
+    },
+
+    //Получаем уникальные Id
+    getObjectIds: function (resourceStore) {
+        var objectIds = [];
+        resourceStore.data.items.forEach(function (item) {
+            objectIds.push(item.data.ObjectId);
+        });
+        return Array.from(new Set(objectIds));
     },
 
     getPromoStore: function () {
@@ -1100,7 +1218,6 @@
         var table = schedulerHtml.find('table');
         var heightScroll = table.length > 0 ? table.height() : 0;
         var scrollSheduler = $('#scrollScheduler');
-
         // если скролла есть, то обновить, иначе создать
         if (scrollSheduler.length > 0) {
             scrollSheduler.height(schedulerHtml.height());
@@ -1218,5 +1335,97 @@
     // Возвращает переданную дату с временем 23:59:59. TODO: перенести в Util
     getDayEndDateTime: function (date) {
         return new Date(date.setHours(23, 59, 59))
+    },
+
+    eventStoreLoading: function (store, clientId) {
+        $('#scrollScheduler').data('jsp').scrollToY(0);
+        store.removeAll();
+        store.uniqueObjectIds.forEach(function (item) {
+            item.loaded = false;
+        });
+        var scheduler = Ext.ComponentQuery.query('#nascheduler')[0];
+        var ng = scheduler.normalGrid;
+
+        this.setLoadingText(store.uniqueObjectIds, ng);
+        if (store.isLoading()) {
+            store.resetLoading = true;
+        } else {
+            this.loadingRecursion(store, clientId);
+        }
+    },
+
+    //Для загрузки используйте функцию выше
+    loadingRecursion: function (store, clientId) {
+        if (store.resetLoading) {
+            clientId = 0;
+            store.resetLoading = false;
+        }
+        if (!clientId) clientId = 0;
+        var newFilter = {
+            property: 'ClientTreeId',
+            operation: 'Equals',
+            value: store.uniqueObjectIds[clientId].objectId
+        };
+
+        var filter = store.fixedFilters || {};
+        filter['clientfilter'] = newFilter;
+        store.fixedFilters = filter;
+
+        store.suspendEvent("refresh");
+        store.load({
+            scope: this,
+            addRecords: true,
+            callback: function (records, operation, success) {
+                if (!store.resetLoading) {
+                    var me = this;
+                    this.renderEvents(store.uniqueObjectIds[clientId].regPromoId, store.uniqueObjectIds[clientId].inoutPromoId);
+                    store.uniqueObjectIds[clientId].loaded = true;
+                    clientId = 0;
+                    while (store.uniqueObjectIds[clientId] && store.uniqueObjectIds[clientId].loaded) {
+                        clientId = clientId + 1;
+                    }; 
+                };
+                if (store.uniqueObjectIds.length > clientId) {
+                    this.loadingRecursion(store, clientId);     
+                }
+            }
+        });
+    },
+
+    renderEvents: function (regId, inoutId) {
+        var ng = Ext.ComponentQuery.query('#nascheduler')[0].normalGrid;
+        var lg = Ext.ComponentQuery.query('#nascheduler')[0].lockedGrid;
+        var records = []//ng.view.getViewRange();
+        for (var i = 0; i <= 1; i++) {
+            records.push(regId);
+            var eventNode = ng.view.getNode(regId, false);
+            var resourceNode = lg.view.getNode(regId, false);
+            if (eventNode) {
+                while (eventNode.hasChildNodes()) {
+                    eventNode.removeChild(eventNode.lastChild);
+                }
+                ng.view.tpl.append(eventNode, ng.view.collectData(records, ng.view.all.startIndex));
+                resourceNode.style.height = eventNode.scrollHeight.toString() + "px";
+            };
+            regId = inoutId;
+            records = [];
+        };
+    },
+
+    setLoadingText: function (uniqueObjectIds, ng) {
+        for (var j = 0; j < uniqueObjectIds.length; j++) {
+            if (!uniqueObjectIds[j].loaded) {
+
+                var node = ng.view.getNode(uniqueObjectIds[j].regPromoId, false);
+                if (node && !(node.childNodes[1] && node.childNodes[1].textContent === 'Loading...')) {
+                    Ext.DomHelper.append(node, '<td class="overlay">Loading...</td>');
+                }
+
+                node = ng.view.getNode(uniqueObjectIds[j].inoutPromoId, false);
+                if (node && !(node.childNodes[1] && node.childNodes[1].textContent === 'Loading...')) {
+                    Ext.DomHelper.append(node, '<td class="overlay">Loading...</td>');
+                }
+            }
+        };
     }
 });

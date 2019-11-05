@@ -178,6 +178,9 @@
     'tpm.demandpricelist.DeletedDemandPriceList',
     'tpm.demandpricelist.HistoricalDemandPriceList',
 
+    //ClientTreeBrandTech
+    'tpm.clienttreebrandtech.ClientTreeBrandTech',
+
     //ClientTreeSharesView
     'tpm.clienttreesharesview.ClientTreeSharesView',
 

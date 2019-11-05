@@ -163,6 +163,12 @@ namespace Module.Host.TPM.Actions
                                 promoStatusChange.Date = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).Value;
 
                                 context.Set<PromoStatusChange>().Add(promoStatusChange);
+								context.Set<PromoCancelledIncident>().Add(new PromoCancelledIncident()
+								{
+									CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+									Promo = promo,
+									PromoId = promo.Id
+								});
                             }
                         }
                     }

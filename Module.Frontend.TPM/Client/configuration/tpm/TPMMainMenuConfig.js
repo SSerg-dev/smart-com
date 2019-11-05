@@ -51,10 +51,10 @@
         
         widget: 'retailtype'
     }, {
-        text: l10n.ns('tpm', 'mainmenu').value('ClientTreeSharesView'),
-        tooltip: l10n.ns('tpm', 'mainmenu').value('ClientTreeSharesView'),
+        text: l10n.ns('tpm', 'mainmenu').value('ClientTreeBrandTech'),
+        tooltip: l10n.ns('tpm', 'mainmenu').value('ClientTreeBrandTech'),
         glyph: 0xf007,
-        widget: 'clienttreesharesview'
+        widget: 'clienttreebrandtech'
     }, {
         text: l10n.ns('tpm', 'mainmenu').value('AssortmentMatrix'),
         tooltip: l10n.ns('tpm', 'mainmenu').value('AssortmentMatrix'),
