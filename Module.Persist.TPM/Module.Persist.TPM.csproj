@@ -1370,6 +1370,10 @@
     <Compile Include="Migrations\201911010810317_Empty_Migration_Calendar.Designer.cs">
       <DependentUpon>201911010810317_Empty_Migration_Calendar.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201911050715286_EmptyMigrationRC1.cs" />
+    <Compile Include="Migrations\201911050715286_EmptyMigrationRC1.Designer.cs">
+      <DependentUpon>201911050715286_EmptyMigrationRC1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientTreeSharesView.cs" />
     <Compile Include="Model\DTO\PlanPostPromoEffectReport.cs" />
@@ -2522,6 +2526,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201910291200043_PlanIncrementalReport_Update.resx">
       <DependentUpon>201910291200043_PlanIncrementalReport_Update.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911050715286_EmptyMigrationRC1.resx">
+      <DependentUpon>201911050715286_EmptyMigrationRC1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
