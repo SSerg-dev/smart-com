@@ -123,7 +123,7 @@ Ext.define('Ext.ux.grid.FilterBar', {
     floatTpl: {
         xtype: 'numberfield',
         submitLocaleSeparator: false,
-        decimalPrecision: 20,
+        decimalPrecision: 2,
         allowDecimals: true,
         decimalSeparator: ',',
         hideTrigger: true,
@@ -752,7 +752,7 @@ Ext.define('Ext.ux.grid.FilterBar', {
         if (!Ext.isEmpty(newVal)) {
             if (!grid.store.remoteFilter) {
                 var operator = field.operator || column.filter.operator,
-					filterFn;
+                    filterFn;
                 switch (operator) {
                     case 'eq':
                         filterFn = function (item) {
@@ -829,7 +829,7 @@ Ext.define('Ext.ux.grid.FilterBar', {
 
                         date.setHours(date.getHours() - hour);
                         from = date;
-                    }  
+                    }
 
                     me.filterArray.push(Ext.create('Ext.util.Filter', {
                         property: column.dataIndex,
@@ -865,20 +865,43 @@ Ext.define('Ext.ux.grid.FilterBar', {
                 } else {
                     var operator = (field.operator || column.filter.operator);
 
-                    if (Ext.isArray(newVal)) {
-                        if (newVal.length > 1) {
-                            operator = 'in';
-                        } else if (newVal.length == 1) {
-                            newVal = newVal[0];
-                        }
-                    }
+                    if (column.extraOperator) {
+                        var decimalPrecision = (column.decimalPrecision || column.filter.decimalPrecision || 0);
+                        var additionalDivision = (column.additionalDivision || 1);
+                        var precision = Math.pow(10, -decimalPrecision) / 2;
+                        //var minValue = (parseFloat(newVal) - precision) * additionalDivision
+                        //var maxValue = (parseFloat(newVal) + precision) * additionalDivision
+                        if (column.extraOperator == 'gte_lt') {
+                            me.filterArray.push(Ext.create('Ext.util.Filter', {
+                                property: column.dataIndex,
+                                value: (parseFloat(newVal) - precision) * additionalDivision,
+                                type: column.filter.type,
+                                operator: 'gte'
+                            }));
 
-                    me.filterArray.push(Ext.create('Ext.util.Filter', {
-                        property: column.dataIndex,
-                        value: newVal,
-                        type: column.filter.type,
-                        operator: operator
-                    }));
+                            me.filterArray.push(Ext.create('Ext.util.Filter', {
+                                property: column.dataIndex,
+                                value: (parseFloat(newVal) + precision) * additionalDivision,
+                                type: column.filter.type,
+                                operator: 'lt'
+                            }));
+                        }
+                    } else {
+                        if (Ext.isArray(newVal)) {
+                            if (newVal.length > 1) {
+                                operator = 'in';
+                            } else if (newVal.length == 1) {
+                                newVal = newVal[0];
+                            }
+                        }
+
+                        me.filterArray.push(Ext.create('Ext.util.Filter', {
+                            property: column.dataIndex,
+                            value: newVal,
+                            type: column.filter.type,
+                            operator: operator
+                        }));
+                    }
                 }
             }
             if (!column.getEl().hasCls(me.columnFilteredCls)) {

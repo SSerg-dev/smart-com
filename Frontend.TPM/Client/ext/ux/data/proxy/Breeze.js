@@ -23,6 +23,8 @@
         'eq': breeze.FilterQueryOp.Equals,
         'gte': breeze.FilterQueryOp.GreaterThanOrEqual,
         'lte': breeze.FilterQueryOp.LessThanOrEqual,
+        'gt': breeze.FilterQueryOp.GreaterThan,
+        'lt': breeze.FilterQueryOp.LessThan,
         'ne': breeze.FilterQueryOp.NotEquals,
         'like': breeze.FilterQueryOp.StartsWith,
         'conts': breeze.FilterQueryOp.Contains,
