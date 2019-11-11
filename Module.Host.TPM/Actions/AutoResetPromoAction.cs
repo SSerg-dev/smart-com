@@ -77,7 +77,13 @@ namespace Module.Host.TPM.Actions
                         }
                         //при сбросе статуса в Draft необходимо отвязать бюджеты от промо и пересчитать эти бюджеты
                         List<Guid> promoSupportIds = PromoCalculateHelper.DetachPromoSupport(promo, context);
-                        mainPromoSupportIds.AddRange(promoSupportIds);
+                        foreach (var psId in promoSupportIds)
+                        {
+                            if (!mainPromoSupportIds.Contains(psId))
+                            {
+                                mainPromoSupportIds.Add(psId);
+                            }
+                        }
 
                         //необходимо сбросить наименование Promo до "Unpublish Promo"
                         promo.Name = "Unpublish Promo";
@@ -147,7 +153,8 @@ namespace Module.Host.TPM.Actions
 					//.Where(x => x.StartDate.HasValue && DbFunctions.DiffDays(DbFunctions.CreateDateTime(x.StartDate.Value.Year, x.StartDate.Value.Month, x.StartDate.Value.Day, 0, 0, 0), DbFunctions.CreateDateTime(today.Year, today.Month, today.Day, 0, 0, 0)) >= 0).ToList();
 
 				string message;
-				foreach (Promo promo in promoToCancelled)
+                List<Guid> mainPromoSupportIds = new List<Guid>();
+                foreach (Promo promo in promoToCancelled)
 				{
                     if (promo.StartDate.HasValue && promo.StartDate.Value <= today)
                     {
@@ -171,10 +178,25 @@ namespace Module.Host.TPM.Actions
 								});
                             }
                         }
+
+                        //при сбросе статуса в Cancelled необходимо отвязать бюджеты от промо и пересчитать эти бюджеты
+                        List<Guid> promoSupportIds = PromoCalculateHelper.DetachPromoSupport(promo, context);
+                        foreach(var psId in promoSupportIds)
+                        {
+                            if (!mainPromoSupportIds.Contains(psId))
+                            {
+                                mainPromoSupportIds.Add(psId);
+                            }
+                        }
                     }
 				}
 
-				context.SaveChanges();
+                if (mainPromoSupportIds.Count() > 0)
+                {
+                    PromoCalculateHelper.CalculateBudgetsCreateTask(mainPromoSupportIds, null, null, context);
+                }
+
+                context.SaveChanges();
 			}
 		}
 	}
