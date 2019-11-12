@@ -3223,8 +3223,8 @@
 		window.setLoading(l10n.ns('core').value('savingText'));
 
 		// останавливаем подписку на статус до загрузки окна
-		if (reloadPromo)
-			requestHub($.connection.logHub.server.unsubscribeStatus);
+		//if (reloadPromo)
+		requestHub($.connection.logHub.server.unsubscribeStatus);
 
 		// Response возвращается не полностью верный, mappings игнорируются
 		model.save({
