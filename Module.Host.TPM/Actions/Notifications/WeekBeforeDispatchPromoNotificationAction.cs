@@ -99,7 +99,7 @@ namespace Module.Host.TPM.Actions.Notifications
 			}
 
 			IList<string> userErrors;
-			List<Guid> userIds = ConstraintsHelper.GetUserIdsByRecipients(recipients, context, out userErrors, recipientsRole);
+			List<Guid> userIds = ConstraintsHelper.GetUserIdsByRecipients(notificationName, recipients, context, out userErrors, recipientsRole);
 
 			if (userErrors.Any())
 			{

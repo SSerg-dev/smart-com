@@ -29,19 +29,22 @@ namespace Module.Host.TPM.Actions.Notifications {
                             IQueryable<PromoDemandChangeIncident> incidents = context.Set<PromoDemandChangeIncident>().Where(x => x.ProcessDate == null).OrderBy(x => x.PromoIntId);
 							//Проверка на 12 недель
 							IList<PromoDemandChangeIncident> incidentsForNotify = new List<PromoDemandChangeIncident>();
+							IQueryable<Promo> incidentsPromo = context.Set<Promo>();
 							foreach (var incident in incidents)
 							{
-								IQueryable<Promo> incidentsPromo = context.Set<Promo>().Where(x => !x.Disabled);
 								DateTimeOffset today = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
 								DateTimeOffset after12Weeks = today.AddDays(84); // 12 недель
 								Promo incidentPromo = incidentsPromo.Where(x => x.Number == incident.PromoIntId).FirstOrDefault();
-								if (incidentPromo.StartDate.Value <= after12Weeks)
+								if (incidentPromo != null)
 								{
-									incidentsForNotify.Add(incident);
-								}
-								else
-								{
-									incident.ProcessDate = today;
+									if (incidentPromo.StartDate.Value <= after12Weeks && incidentPromo.Disabled == false)
+									{
+										incidentsForNotify.Add(incident);
+									}
+									else
+									{
+										incident.ProcessDate = today;
+									}
 								}
 							}
 
@@ -85,7 +88,7 @@ namespace Module.Host.TPM.Actions.Notifications {
 			}
 
 			IList<string> userErrors;
-			List<Guid> userIds = ConstraintsHelper.GetUserIdsByRecipients(recipients, context, out userErrors);
+			List<Guid> userIds = ConstraintsHelper.GetUserIdsByRecipients(notificationName, recipients, context, out userErrors);
 
 			if (userErrors.Any())
 			{

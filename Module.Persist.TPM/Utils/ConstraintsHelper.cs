@@ -40,12 +40,15 @@ namespace Module.Persist.TPM.Utils
 		/// <param name="errors"></param>
 		/// <param name="roles">Список необходимых ролей</param>
 		/// <returns></returns>
-		public static List<Guid> GetUserIdsByRecipients(List<Recipient> recipients, DatabaseContext context, out IList<string> errors, string[] roles = null)
+		public static List<Guid> GetUserIdsByRecipients(string notificationName, List<Recipient> recipients, DatabaseContext context, out IList<string> errors, string[] roles = null)
 		{
 			errors = new List<string>();
 			List<Constraint> constraints = new List<Constraint>();
 			List<Guid> users = new List<Guid>();
 			List<Tuple<string, string>> recipientsWithType = new List<Tuple<string, string>>();
+			Guid mailNotificationSettingsId = context.MailNotificationSettings
+								.Where(y => y.Name == notificationName && !y.Disabled)
+								.Select(x => x.Id).FirstOrDefault();
 
 			foreach (Recipient recipient in recipients)
 			{
@@ -55,6 +58,11 @@ namespace Module.Persist.TPM.Utils
 			foreach (Tuple<string, string> valueAndType in recipientsWithType)
 			{
 				IQueryable<Guid> userIds = null;
+				
+				string toMail = context.MailNotificationSettings
+					.Where(y => y.Id == mailNotificationSettingsId)
+					.Select(x => x.To).FirstOrDefault();
+				bool isGuaranteed = valueAndType.Item1 == toMail;
 				// Поиск пользователя по разным типам получателя (Email, User, Role)
 				switch (valueAndType.Item2)
 				{
@@ -62,12 +70,10 @@ namespace Module.Persist.TPM.Utils
 						userIds = context.Users
 							.Where(x => x.Email == valueAndType.Item1 && !x.Disabled)
 							.Select(y => y.Id);
+
 						if (userIds.Count() > 1)
 						{
-							//errors.Add(String.Format("{0} users found with same email: {1}", userIds.Count(), valueAndType.Item1));
-							//continue;
-
-							if (roles == null || roles?.GetLength(0) == 0)
+							if (roles == null || roles?.GetLength(0) == 0 || isGuaranteed)
 							{
 								users.Add(userIds.FirstOrDefault());
 							}
@@ -102,7 +108,7 @@ namespace Module.Persist.TPM.Utils
 						}
 						else
 						{
-							if (roles == null || roles?.GetLength(0) == 0)
+							if (roles == null || roles?.GetLength(0) == 0 || isGuaranteed)
 							{
 								users.Add(userIds.FirstOrDefault());
 							}
@@ -188,8 +194,26 @@ namespace Module.Persist.TPM.Utils
 				}
 			}
 
-			// Оставляем только уникальные Guid
+			// Оставляем только уникальные Guid 
 			users = users.Union(users).ToList();
+
+			// Проверяем, не остался ли только гарантированный пользователь
+			if (users.Count() == 1)
+			{
+				string guaranteedUserEmail = context.MailNotificationSettings.Where(y => y.Id == mailNotificationSettingsId)
+					.Select(x => x.To).FirstOrDefault();
+				if (guaranteedUserEmail != null)
+				{
+					var guaranteedUserId = context.Users.Where(x => x.Email == guaranteedUserEmail).Select(x => x.Id).FirstOrDefault();
+					if (guaranteedUserId != Guid.Empty)
+					{
+						if (users.FirstOrDefault() == guaranteedUserId)
+						{
+							return new List<Guid>();
+						}
+					}
+				}
+			} 
 			return users;
 		}
 
