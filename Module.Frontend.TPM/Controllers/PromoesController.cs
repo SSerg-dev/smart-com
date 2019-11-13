@@ -307,7 +307,6 @@ namespace Module.Frontend.TPM.Controllers {
                     }
                 }
 
-
                 //Сохранение изменения статуса.
                 if (promoCopy.PromoStatusId != model.PromoStatusId
                     || promoCopy.IsDemandFinanceApproved != model.IsDemandFinanceApproved
@@ -333,8 +332,12 @@ namespace Module.Frontend.TPM.Controllers {
 
 				if (statusName.ToLower() != "cancelled" && statusName.ToLower() != "finished")
                 {
-                    // Добавление продуктов                
-                    List<PromoProductTree> promoProductTrees = AddProductTrees(model.ProductTreeObjectIds, model);
+                    List<PromoProductTree> promoProductTrees = new List<PromoProductTree>();
+                    if (!model.LoadFromTLC)
+                    {
+                        // Добавление продуктов                
+                        promoProductTrees = AddProductTrees(model.ProductTreeObjectIds, model);
+                    }
 
                     bool needRecalculatePromo = NeedRecalculatePromo(model, promoCopy);
                     //для ускорения перехода в следующий статус (если нет изменений параметров промо, то пропускаем следующие действия)
@@ -454,24 +457,31 @@ namespace Module.Frontend.TPM.Controllers {
 				{
 					IList<Product> oldProductIdList = new List<Product>();
 					IList<Product> newProductIdList = new List<Product>();
-					foreach (var productId in promoCopy.InOutProductIds.Split(';'))
-					{
-						var productGuid = Guid.Empty;
-						if (Guid.TryParse(productId, out productGuid))
-						{
-							Product product = Context.Set<Product>().Where(x => x.Id == productGuid).FirstOrDefault();
-							if (product != null) oldProductIdList.Add(product);
-						}
-					}
-					foreach (var productId in model.InOutProductIds.Split(';'))
-					{
-						var productGuid = Guid.Empty;
-						if (Guid.TryParse(productId, out productGuid))
-						{
-							Product product = Context.Set<Product>().Where(x => x.Id == productGuid).FirstOrDefault();
-							if (product != null) newProductIdList.Add(product);
-						}
-					}
+                    if (promoCopy.InOutProductIds != null)
+                    {
+                        foreach (var productId in promoCopy.InOutProductIds.Split(';'))
+                        {
+                            var productGuid = Guid.Empty;
+                            if (Guid.TryParse(productId, out productGuid))
+                            {
+                                Product product = Context.Set<Product>().Where(x => x.Id == productGuid).FirstOrDefault();
+                                if (product != null) oldProductIdList.Add(product);
+                            }
+                        }
+                    }
+
+                    if (model.InOutProductIds != null)
+                    {
+                        foreach (var productId in model.InOutProductIds.Split(';'))
+                        {
+                            var productGuid = Guid.Empty;
+                            if (Guid.TryParse(productId, out productGuid))
+                            {
+                                Product product = Context.Set<Product>().Where(x => x.Id == productGuid).FirstOrDefault();
+                                if (product != null) newProductIdList.Add(product);
+                            }
+                        }
+                    }
 
 					List<Product> forIncident = new List<Product>();
 					forIncident.AddRange(newProductIdList.Except(oldProductIdList));
@@ -1414,6 +1424,7 @@ namespace Module.Frontend.TPM.Controllers {
             List<string> messagesError = new List<string>();
             string message = null;
             bool error;
+            products = null;
 
             // проверка на наличие TI
             PlanPromoParametersCalculation.GetTIBasePercent(promo, context, out message, out error);
@@ -1434,17 +1445,21 @@ namespace Module.Frontend.TPM.Controllers {
                 message = null;
             }
 
-            // проверка на наличие продуктов, попадающих под фильтр
-            if (promo.InOut.HasValue && promo.InOut.Value)
+            // проверка на наличие продуктов, попадающих под фильтр (для промо не из TLC)
+            if (!promo.LoadFromTLC)
             {
-                products = PlanProductParametersCalculation.GetCheckedProducts(context, promo);
-            }
-            else
-            {
-                products = PlanProductParametersCalculation.GetProductFiltered(promo.Id, context, out message, promoProductTrees);
-            }
-            if (message != null) {
-                messagesError.Add(message);
+                if (promo.InOut.HasValue && promo.InOut.Value)
+                {
+                    products = PlanProductParametersCalculation.GetCheckedProducts(context, promo);
+                }
+                else
+                {
+                    products = PlanProductParametersCalculation.GetProductFiltered(promo.Id, context, out message, promoProductTrees);
+                }
+                if (message != null)
+                {
+                    messagesError.Add(message);
+                }
             }
 
             // если что-то не найдено, то генерируем ошибку
