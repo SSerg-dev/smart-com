@@ -172,19 +172,20 @@
             name: 'FromDate',
             fieldLabel: l10n.ns('tpm', 'NoneNego').value('FromDate'),
             allowBlank: false,
-            minValue: new Date(),
+            //minValue: new Date(),
             isCurrentFieldValid: true,
             editable: false,
             format: 'd.m.Y',
-            trigger2Cls: Ext.baseCSSPrefix + 'form-clear-trigger',
+			trigger2Cls: Ext.baseCSSPrefix + 'form-clear-trigger',
+			firstChange: true,
+			valueChanged: false,
             onTrigger2Click: function () {
                 this.reset();
             },
             validator: function () {
-                if (!this.isCurrentFieldValid) {
-                    return l10n.ns('tpm', 'NoneNego').value('ValidatePeriodError');
-                }
-
+				if (!this.isCurrentFieldValid) {
+						return l10n.ns('tpm', 'NoneNego').value('ValidatePeriodError');
+				}
                 return true;
             },
             listeners: {
@@ -192,8 +193,7 @@
                     var minValue = new Date();
                     var currentTimeZoneOffsetInHours = minValue.getTimezoneOffset();
                     var minValueInt = minValue.getTime();
-                    field.setMinValue(new Date(minValueInt + currentTimeZoneOffsetInHours * 60000 + 10800000));
-                    field.getPicker().setValue(field.minValue);
+					field.getPicker().setValue(new Date(minValueInt + currentTimeZoneOffsetInHours * 60000 + 10800000));
                 },
                 change: function (newValue, oldValue) {
                     var toDate = this.up('form').down('[name=ToDate]');

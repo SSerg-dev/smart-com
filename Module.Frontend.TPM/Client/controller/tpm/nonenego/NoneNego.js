@@ -85,7 +85,7 @@
                     change: this.onProductTreeIdChange
                 },
                 'nonenegoeditor [name=FromDate]': {
-                    select: this.onFromDateSelect
+                    change: this.onFromDateChange
                 },
                 'nonenegoeditor [name=ToDate]': {
                     select: this.onToDateSelect
@@ -134,7 +134,7 @@
                 me.buttons.cancel = Ext.ComponentQuery.query('#cancel')[0];
                 me.buttons.cancel.addListener('click', function () {
                     me.removeClsElements([me.elements.mechanicTypeId, me.elements.discount, me.elements.fromDate,
-                    me.elements.toDate, me.elements.createDate], 'field-for-read-only');
+						me.elements.toDate, me.elements.createDate], 'field-for-read-only');
                 });
             });
         }
@@ -211,7 +211,7 @@
         }
 
         var me = App.app.getController('tpm.nonenego.NoneNego');
-        me.validateFields(me);
+        me.validateFields(/*me*/);
     },
 
     nonenegoMechanicTypeListener: function (field, newValue, oldValue) {
@@ -231,9 +231,20 @@
         this.validateFields();
     },
 
-    onFromDateSelect: function () {
-        var me = this;
-        me.validatePeriod(me.elements.fromDate, me.elements.toDate, me.elements.noneNegoId, me.elements.clientTreeId, me.elements.productTreeId, me.elements.mechanicId);
+	onFromDateChange: function (fromDate, newValue, oldValue) {
+		var me = this;
+		if (newValue != oldValue) {
+			if (fromDate.firstChange) {
+				fromDate.firstChange = false;
+			} else {
+				fromDate.valueChanged = true;
+				var minValue = new Date();
+				var currentTimeZoneOffsetInHours = minValue.getTimezoneOffset();
+				var minValueInt = minValue.getTime();
+				fromDate.setMinValue(new Date(minValueInt + currentTimeZoneOffsetInHours * 60000 + 10800000));
+				me.validatePeriod(me.elements.fromDate, me.elements.toDate, me.elements.noneNegoId, me.elements.clientTreeId, me.elements.productTreeId, me.elements.mechanicId);
+			}
+		}
     },
 
     onToDateSelect: function () {
@@ -274,14 +285,13 @@
     validateFields: function (scope) {
         var me = scope || this;
 
-        if (!me.elements.fromDate.getValue()) {
-            me.elements.fromDate.setValue(new Date());
-        }
-
         if (me.elements.clientTreeId.getValue() && me.elements.productTreeId.getValue() && me.elements.mechanicId.getValue()) {
             me.enableReadOnlyElements([me.elements.fromDate, me.elements.toDate]);
-            me.removeClsElements([me.elements.fromDate, me.elements.toDate], 'field-for-read-only');
-            me.validatePeriod(me.elements.fromDate, me.elements.toDate, me.elements.noneNegoId, me.elements.clientTreeId, me.elements.productTreeId, me.elements.mechanicId);
+			me.removeClsElements([me.elements.fromDate, me.elements.toDate], 'field-for-read-only');
+			if (me.elements.fromDate.valueChanged) {
+				 me.validatePeriod(me.elements.fromDate, me.elements.toDate, me.elements.noneNegoId, me.elements.clientTreeId, me.elements.productTreeId, me.elements.mechanicId);
+			}
+           
         } else {
             me.disableReadOnlyElements([me.elements.fromDate, me.elements.toDate]);
             me.addClsElements([me.elements.fromDate, me.elements.toDate], 'field-for-read-only');
@@ -304,35 +314,37 @@
                 mechanicId: mechanic.getValue()
             };
 
-            App.Util.makeRequestWithCallback('NoneNegoes', 'IsValidPeriod', parameters, function (data) {
-                if (data) {
-                    var nonenegoeditor = Ext.ComponentQuery.query('nonenegoeditor')[0];
-                    if (nonenegoeditor) {
-                        var fromDate = nonenegoeditor.down('[name=FromDate]');
-                        var toDate = nonenegoeditor.down('[name=ToDate]');
+			if (parameters.productTreeId != undefined && parameters.clientTreeId != undefined && parameters.mechanicId != undefined) {
+				App.Util.makeRequestWithCallback('NoneNegoes', 'IsValidPeriod', parameters, function (data) {
+					if (data) {
+						var nonenegoeditor = Ext.ComponentQuery.query('nonenegoeditor')[0];
+						if (nonenegoeditor) {
+							var fromDate = nonenegoeditor.down('[name=FromDate]');
+							var toDate = nonenegoeditor.down('[name=ToDate]');
 
-                        var result = Ext.JSON.decode(data.httpResponse.data.value);
-                        if (result.success) {
-                            fromDate.isCurrentFieldValid = true;
-                            toDate.isCurrentFieldValid = true;
+							var result = Ext.JSON.decode(data.httpResponse.data.value);
+							if (result.success) {
+								fromDate.isCurrentFieldValid = true;
+								toDate.isCurrentFieldValid = true;
 
-                            fromDate.clearInvalid();
-                            toDate.clearInvalid();
-                        } else {
-                            fromDate.isCurrentFieldValid = false;
-                            toDate.isCurrentFieldValid = false;
+								fromDate.clearInvalid();
+								toDate.clearInvalid();
+							} else {
+								fromDate.isCurrentFieldValid = false;
+								toDate.isCurrentFieldValid = false;
 
-                            fromDate.markInvalid(l10n.ns('tpm', 'NoneNego').value('ValidatePeriodError'));
-                            toDate.markInvalid(l10n.ns('tpm', 'NoneNego').value('ValidatePeriodError'));
-                        }
-                    }
+								fromDate.markInvalid(l10n.ns('tpm', 'NoneNego').value('ValidatePeriodError'));
+								toDate.markInvalid(l10n.ns('tpm', 'NoneNego').value('ValidatePeriodError'));
+							}
+						}
 
-                    myMask.hide();
-                }
-            }, function (data) {
-                App.Notify.pushError(data.message);
-                window.setLoading(false);
-            });
+						myMask.hide();
+					}
+				}, function (data) {
+					App.Notify.pushError(data.message);
+					window.setLoading(false);
+				});
+			}
         }
     },
 
