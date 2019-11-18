@@ -27,6 +27,7 @@ using System.Web.Http.Results;
 using Module.Persist.TPM.CalculatePromoParametersModule;
 using Core.Settings;
 using Module.Persist.TPM.Utils;
+using Microsoft.Ajax.Utilities;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -39,7 +40,7 @@ namespace Module.Frontend.TPM.Controllers
             this.authorizationManager = authorizationManager;
         }
 
-        protected IQueryable<PromoProduct> GetConstraintedQuery()
+        protected IQueryable<PromoProduct> GetConstraintedQuery(bool updateActualsMode = false, Guid? promoIdInUpdateActualsMode = null)
         {
             UserInfo user = authorizationManager.GetCurrentUser();
             string role = authorizationManager.GetCurrentRoleName();
@@ -47,9 +48,37 @@ namespace Module.Frontend.TPM.Controllers
                 .Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
                 .ToList() : new List<Constraint>();
 
-            IQueryable<PromoProduct> query = Context.Set<PromoProduct>().Where(e => !e.Disabled);
+            IQueryable<PromoProduct> query = null;
+            if (updateActualsMode && promoIdInUpdateActualsMode != null)
+            {
+                var sumGroup = Context.Set<PromoProduct>().Where(e => e.PromoId == promoIdInUpdateActualsMode && !e.Disabled)
+                                                          .GroupBy(x => x.EAN_PC)
+                                                          .Select(s => new
+                                                          {
+                                                              sumActualProductPCQty = s.Sum(x => x.ActualProductPCQty),
+                                                              sumActualProductPCLSV = s.Sum(x => x.ActualProductPCLSV),
+                                                              promoProduct = s.Select(x => x)
+                                                          })
+                                                          .ToList();
 
-            return query;
+                List<PromoProduct> promoProductList = new List<PromoProduct>();
+                foreach(var item in sumGroup)
+                {
+                    PromoProduct pp = item.promoProduct.ToList()[0];
+                    pp.ActualProductPCQty = item.sumActualProductPCQty;
+                    pp.ActualProductPCLSV = item.sumActualProductPCLSV;
+
+                    promoProductList.Add(pp);
+                }
+
+                //List<PromoProduct> promoProducts = Context.Set<PromoProduct>().Where(e => e.PromoId == promoIdInUpdateActualsMode && !e.Disabled).DistinctBy(x => x.EAN_PC).ToList();
+                return promoProductList.AsQueryable();
+            }
+            else
+            {
+                query = Context.Set<PromoProduct>().Where(e => !e.Disabled);
+                return query;
+            }
         }
 
         [ClaimsAuthorize]
@@ -60,10 +89,10 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        [EnableQuery(MaxNodeCount = int.MaxValue)]
-        public IQueryable<PromoProduct> GetPromoProducts()
+        [EnableQuery(MaxNodeCount = int.MaxValue, MaxExpansionDepth = 3)]
+        public IQueryable<PromoProduct> GetPromoProducts(bool updateActualsMode = false, Guid? promoIdInUpdateActualsMode = null)
         {
-            return GetConstraintedQuery();
+            return GetConstraintedQuery(updateActualsMode, promoIdInUpdateActualsMode);
         }
 
         [ClaimsAuthorize]
@@ -132,7 +161,59 @@ namespace Module.Frontend.TPM.Controllers
                     return NotFound();
                 }
 
+                bool rollbackModelValue = false;
+                var oldActualProductPCQtyValue = model.ActualProductPCQty;
                 patch.Patch(model);
+
+                //выбор продуктов с ненулевым BaseLine
+                var productsWithRealBaseline = Context.Set<PromoProduct>().Where(x => x.EAN_PC == model.EAN_PC && x.PromoId == model.PromoId
+                                                    && x.PlanProductBaselineLSV != null && x.PlanProductBaselineLSV != 0 && !x.Disabled);
+
+                if (productsWithRealBaseline != null && productsWithRealBaseline.Count() > 0)
+                {
+                    //распределение импортируемого количества пропорционально PlanProductBaselineLSV(или ActualProductBaselineLSV) не важно, т.к. пропорция будет одна и та же
+                    var sumBaseline = productsWithRealBaseline.Sum(x => x.PlanProductBaselineLSV);
+                    int? sumActualProductPCQty = 0;
+                    foreach (var p in productsWithRealBaseline)
+                    {
+                        p.ActualProductUOM = "PC";
+                        p.ActualProductPCQty = (int?)(model.ActualProductPCQty / sumBaseline * p.PlanProductBaselineLSV);
+                        sumActualProductPCQty += p.ActualProductPCQty;
+                    }
+
+                    var differenceActualProductPCQty = model.ActualProductPCQty - sumActualProductPCQty;
+                    if (differenceActualProductPCQty.HasValue && differenceActualProductPCQty != 0)
+                    {
+                        productsWithRealBaseline.FirstOrDefault().ActualProductPCQty += differenceActualProductPCQty;
+                    }
+
+                    // модель с клиента может оказаться с нулевым baseline, в это случае полю ActualProductPCQty этой записи надо вернуть старое значение, т.к. количество уже распределится по продуктам с ненулевым baselie
+                    if(!productsWithRealBaseline.Select(x => x.Id).Contains(model.Id))
+                    {
+                        rollbackModelValue = true;
+                    }
+                }
+                else
+                {
+                    //если не найдено продуктов с ненулевым basline просто записываем импортируемое количество в первый попавшийся продукт, чтобы сохранилось
+                    PromoProduct oldRecord = Context.Set<PromoProduct>().FirstOrDefault(x => x.EAN_PC == model.EAN_PC && x.PromoId == model.PromoId && !x.Disabled);
+                    if (oldRecord != null)
+                    {
+                        oldRecord.ActualProductUOM = "PC";
+                        oldRecord.ActualProductPCQty = model.ActualProductPCQty;
+
+                        if (oldRecord.Id != model.Id)
+                        {
+                            rollbackModelValue = true;
+                        }
+                    }
+                }
+
+                if (rollbackModelValue)
+                {
+                    model.ActualProductPCQty = oldActualProductPCQtyValue;
+                }
+
                 Context.SaveChanges();
 
                 // перерасчет фактических параметров
@@ -259,13 +340,13 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult ExportXLSX(ODataQueryOptions<PromoProduct> options, string additionalColumn = null, Guid? promoId = null)
+        public IHttpActionResult ExportXLSX(ODataQueryOptions<PromoProduct> options, string additionalColumn = null, Guid? promoId = null, bool updateActualsMode = false)
         {
             // Во вкладке Promo -> Activity можно смотреть детализацию раличных параметров
             // Это один грид с разными столбцами, additionalColumn - набор столбцов
             try
             {
-                IQueryable results = options.ApplyTo(GetConstraintedQuery().Where(x => !x.Disabled && (!promoId.HasValue || x.PromoId == promoId.Value)));
+                IQueryable results = options.ApplyTo(GetConstraintedQuery(updateActualsMode, promoId).Where(x => !x.Disabled && (!promoId.HasValue || x.PromoId == promoId.Value)));
                 IEnumerable<Column> columns = GetExportSettings(additionalColumn);
                 XLSXExporter exporter = new XLSXExporter(columns);
                 UserInfo user = authorizationManager.GetCurrentUser();
@@ -358,7 +439,7 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     Id = Guid.NewGuid(),
                     ConfigurationName = "PROCESSING",
-                    Description = "Загрузка импорта из файла " + importModel.Name,
+                    Description = "Загрузка импорта Actuals",
                     Name = "Module.Host.TPM.Handlers." + handlerName,
                     ExecutionPeriod = null,
                     CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),

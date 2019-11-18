@@ -48,7 +48,7 @@
                     hidden: true,
                 }, {
                     glyph: 0xf21d,
-                    itemId: 'exportxlsxbutton',
+                    itemId: 'uploadactualsexportxlsxbutton',
                     exactlyModelCompare: true,
                     text: 'Экспорт в XLSX',
                     action: 'ExportXLSX'

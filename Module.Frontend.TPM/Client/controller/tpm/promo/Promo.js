@@ -4607,15 +4607,20 @@
 			})
 
 			// загружать нужно только для текущего промо
-			var store = promoProductWidget.down('grid').getStore();
-			store.setFixedFilter('PromoIdFilter', {
-				property: 'PromoId',
-				operation: 'Equals',
-				value: record.get('Id')
-			})
+            var store = promoProductWidget.down('grid').getStore();
+            store.getProxy().extraParams.updateActualsMode = true;
+            store.getProxy().extraParams.promoIdInUpdateActualsMode = record.get('Id');
+
+            store.load();
+
+			//store.setFixedFilter('PromoIdFilter', {
+			//	property: 'PromoId',
+			//	operation: 'Equals',
+			//	value: record.get('Id')
+			//})
 
 			Ext.widget('selectorwindow', {
-				title: '',
+				title: 'Upload Actuals',
 				itemId: Ext.String.format('{0}_{1}_{2}', 'activityUploadPromoProducts', promoProductWidget.getXType(), 'selectorwindow'),
 				items: [promoProductWidget],
 				buttons: [{

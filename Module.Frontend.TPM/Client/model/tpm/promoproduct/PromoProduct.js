@@ -59,6 +59,10 @@
             type: 'json',
             totalProperty: 'inlineCount',
             root: 'results'
+        },
+        extraParams: {
+            updateActualsMode: false,
+            promoIdInUpdateActualsMode: null
         }
     }
 });

@@ -71,7 +71,10 @@
                 },
                 'promoproduct #applyimportbutton': {
                     click: this.onApplyImportButtonClick
-                }
+                },
+                'promoproduct #uploadactualsexportxlsxbutton': {
+                    click: this.onUploadActualsExportXLSXButtonClick
+                },
             }
         });
     },
@@ -107,5 +110,38 @@
                 App.Notify.pushError(me.getErrorMessage(data));
             });
     },
+
+    onUploadActualsExportXLSXButtonClick: function (button) {
+        var me = this;
+        var grid = me.getGridByButton(button);
+        var panel = grid.up('combineddirectorypanel');
+        var store = grid.getStore();
+        var proxy = store.getProxy();
+        var actionName = button.action || 'ExportXLSX';
+        var resource = button.resource || proxy.resourceName;
+        panel.setLoading(true);
+
+        var query = breeze.EntityQuery
+            .from(resource)
+            .withParameters({
+                $actionName: actionName,
+                $method: 'POST',
+                updateActualsMode: proxy.extraParams.updateActualsMode,
+                promoId: proxy.extraParams.promoIdInUpdateActualsMode
+            });
+
+        query = me.buildQuery(query, store)
+            .using(Ext.ux.data.BreezeEntityManager.getEntityManager())
+            .execute()
+            .then(function (data) {
+                panel.setLoading(false);
+                var filename = data.httpResponse.data.value;
+                me.downloadFile('ExportDownload', 'filename', filename);
+            })
+            .fail(function (data) {
+                panel.setLoading(false);
+                App.Notify.pushError(me.getErrorMessage(data));
+            });
+    }
 });
     
