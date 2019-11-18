@@ -164,6 +164,7 @@ namespace Module.Frontend.TPM.Controllers
                 bool rollbackModelValue = false;
                 var oldActualProductPCQtyValue = model.ActualProductPCQty;
                 patch.Patch(model);
+                var newActualProductPCQtyValue = model.ActualProductPCQty;
 
                 //выбор продуктов с ненулевым BaseLine
                 var productsWithRealBaseline = Context.Set<PromoProduct>().Where(x => x.EAN_PC == model.EAN_PC && x.PromoId == model.PromoId
@@ -177,11 +178,11 @@ namespace Module.Frontend.TPM.Controllers
                     foreach (var p in productsWithRealBaseline)
                     {
                         p.ActualProductUOM = "PC";
-                        p.ActualProductPCQty = (int?)(model.ActualProductPCQty / sumBaseline * p.PlanProductBaselineLSV);
+                        p.ActualProductPCQty = (int?)(newActualProductPCQtyValue / sumBaseline * p.PlanProductBaselineLSV);
                         sumActualProductPCQty += p.ActualProductPCQty;
                     }
 
-                    var differenceActualProductPCQty = model.ActualProductPCQty - sumActualProductPCQty;
+                    var differenceActualProductPCQty = newActualProductPCQtyValue - sumActualProductPCQty;
                     if (differenceActualProductPCQty.HasValue && differenceActualProductPCQty != 0)
                     {
                         productsWithRealBaseline.FirstOrDefault().ActualProductPCQty += differenceActualProductPCQty;
@@ -200,7 +201,7 @@ namespace Module.Frontend.TPM.Controllers
                     if (oldRecord != null)
                     {
                         oldRecord.ActualProductUOM = "PC";
-                        oldRecord.ActualProductPCQty = model.ActualProductPCQty;
+                        oldRecord.ActualProductPCQty = newActualProductPCQtyValue;
 
                         if (oldRecord.Id != model.Id)
                         {
