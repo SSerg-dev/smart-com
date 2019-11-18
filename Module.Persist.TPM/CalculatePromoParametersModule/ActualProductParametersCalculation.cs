@@ -58,8 +58,26 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                     if (errorsForProduct.Length == 0)
                     {
+                        double? actualProductPCPrice = 0;
+                        if (!promo.InOut.HasValue || !promo.InOut.Value)
+                        {
+                            if (product.Product.UOM_PC2Case != 0)
+                            {
+                                // Нужно будет пересчитывать ProductBaselinePrice.
+                                actualProductPCPrice = product.ProductBaselinePrice / product.Product.UOM_PC2Case;
+                            }
+                        }
+                        else
+                        {
+                            var incrementalPromo = context.Set<IncrementalPromo>().Where(x => x.PromoId == promo.Id && x.ProductId == product.ProductId && !x.Disabled).FirstOrDefault();
+                            if (incrementalPromo != null && product.Product.UOM_PC2Case != 0)
+                            {
+                                actualProductPCPrice = incrementalPromo.CasePrice / product.Product.UOM_PC2Case;
+                            }
+                        }
+
                         product.ActualProductCaseQty = product.Product.UOM_PC2Case != 0 ? (product.ActualProductPCQty ?? 0) / product.Product.UOM_PC2Case : 0;
-                        product.ActualProductSellInPrice = product.PlanProductPCPrice;
+                        product.ActualProductSellInPrice = actualProductPCPrice;
 
                         //удалять? 17/06/19
                         //все -таки не надо удалять 20/06/19
@@ -83,7 +101,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                 product.ActualProductPostPromoEffectQty = product.PlanProductPostPromoEffectQtyW1 + product.PlanProductPostPromoEffectQtyW2;
                             }
 
-                            product.ActualProductLSVByCompensation = (product.ActualProductPCQty * product.PlanProductPCPrice) ?? 0;
+                            product.ActualProductLSVByCompensation = (product.ActualProductPCQty * actualProductPCPrice) ?? 0;
                         }
                         else
                         {
@@ -100,10 +118,10 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                 product.ActualProductPostPromoEffectLSV = 0;
                             }
 
-                            product.ActualProductLSVByCompensation = (product.ActualProductPCQty * product.PlanProductPCPrice) ?? 0;
+                            product.ActualProductLSVByCompensation = (product.ActualProductPCQty * actualProductPCPrice) ?? 0;
                         }
 
-                        ActualPromoLSVByCompensation += (product.ActualProductPCQty * product.PlanProductPCPrice) ?? 0;
+                        ActualPromoLSVByCompensation += (product.ActualProductPCQty * actualProductPCPrice) ?? 0;
                         product.ActualProductIncrementalPCQty = product.ActualProductSellInPrice != 0 ? product.ActualProductIncrementalLSV / product.ActualProductSellInPrice : 0;
                         product.ActualProductIncrementalPCLSV = product.Product.UOM_PC2Case != 0 ? product.ActualProductIncrementalLSV / product.Product.UOM_PC2Case : 0;
                     }
