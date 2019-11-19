@@ -161,60 +161,91 @@ namespace Module.Frontend.TPM.Controllers
                     return NotFound();
                 }
 
-                bool rollbackModelValue = false;
-                var oldActualProductPCQtyValue = model.ActualProductPCQty;
                 patch.Patch(model);
                 var newActualProductPCQtyValue = model.ActualProductPCQty;
 
-                //выбор продуктов с ненулевым BaseLine
-                var productsWithRealBaseline = Context.Set<PromoProduct>().Where(x => x.EAN_PC == model.EAN_PC && x.PromoId == model.PromoId
-                                                    && x.PlanProductBaselineLSV != null && x.PlanProductBaselineLSV != 0 && !x.Disabled);
-
-                if (productsWithRealBaseline != null && productsWithRealBaseline.Count() > 0)
+                Promo promo = Context.Set<Promo>().Where(x => x.Id == model.PromoId && !x.Disabled).FirstOrDefault();
+                if (promo != null)
                 {
-                    //распределение импортируемого количества пропорционально PlanProductBaselineLSV(или ActualProductBaselineLSV) не важно, т.к. пропорция будет одна и та же
-                    var sumBaseline = productsWithRealBaseline.Sum(x => x.PlanProductBaselineLSV);
-                    int? sumActualProductPCQty = 0;
-                    foreach (var p in productsWithRealBaseline)
+                    // сброс старых значений ActualProductPCQty
+                    var productsToReset = Context.Set<PromoProduct>().Where(x => x.EAN_PC == model.EAN_PC && x.PromoId == model.PromoId && !x.Disabled);
+                    foreach(var item in productsToReset)
                     {
-                        p.ActualProductUOM = "PC";
-                        p.ActualProductPCQty = (int?)(newActualProductPCQtyValue / sumBaseline * p.PlanProductBaselineLSV);
-                        sumActualProductPCQty += p.ActualProductPCQty;
+                        item.ActualProductPCQty = null;
                     }
 
-                    var differenceActualProductPCQty = newActualProductPCQtyValue - sumActualProductPCQty;
-                    if (differenceActualProductPCQty.HasValue && differenceActualProductPCQty != 0)
+                    if (!promo.InOut.HasValue || !promo.InOut.Value)
                     {
-                        productsWithRealBaseline.FirstOrDefault().ActualProductPCQty += differenceActualProductPCQty;
-                    }
+                        //выбор продуктов с ненулевым BaseLine
+                        var productsWithRealBaseline = Context.Set<PromoProduct>().Where(x => x.EAN_PC == model.EAN_PC && x.PromoId == model.PromoId
+                                                       && x.PlanProductBaselineLSV != null && x.PlanProductBaselineLSV != 0 && !x.Disabled);
 
-                    // модель с клиента может оказаться с нулевым baseline, в это случае полю ActualProductPCQty этой записи надо вернуть старое значение, т.к. количество уже распределится по продуктам с ненулевым baselie
-                    if(!productsWithRealBaseline.Select(x => x.Id).Contains(model.Id))
-                    {
-                        rollbackModelValue = true;
-                    }
-                }
-                else
-                {
-                    //если не найдено продуктов с ненулевым basline просто записываем импортируемое количество в первый попавшийся продукт, чтобы сохранилось
-                    PromoProduct oldRecord = Context.Set<PromoProduct>().FirstOrDefault(x => x.EAN_PC == model.EAN_PC && x.PromoId == model.PromoId && !x.Disabled);
-                    if (oldRecord != null)
-                    {
-                        oldRecord.ActualProductUOM = "PC";
-                        oldRecord.ActualProductPCQty = newActualProductPCQtyValue;
-
-                        if (oldRecord.Id != model.Id)
+                        if (productsWithRealBaseline != null && productsWithRealBaseline.Count() > 0)
                         {
-                            rollbackModelValue = true;
+                            //распределение импортируемого количества пропорционально PlanProductBaselineLSV(или ActualProductBaselineLSV) не важно, т.к. пропорция будет одна и та же
+                            var sumBaseline = productsWithRealBaseline.Sum(x => x.PlanProductBaselineLSV);
+                            int? sumActualProductPCQty = 0;
+                            foreach (var p in productsWithRealBaseline)
+                            {
+                                p.ActualProductUOM = "PC";
+                                p.ActualProductPCQty = (int?)(newActualProductPCQtyValue / sumBaseline * p.PlanProductBaselineLSV);
+                                sumActualProductPCQty += p.ActualProductPCQty;
+                            }
+
+                            var differenceActualProductPCQty = newActualProductPCQtyValue - sumActualProductPCQty;
+                            if (differenceActualProductPCQty.HasValue && differenceActualProductPCQty != 0)
+                            {
+                                productsWithRealBaseline.FirstOrDefault().ActualProductPCQty += differenceActualProductPCQty;
+                            }
+                        }
+                        else
+                        {
+                            //если не найдено продуктов с ненулевым basline, просто записываем импортируемое количество в первый попавшийся продукт, чтобы сохранилось
+                            PromoProduct oldRecord = Context.Set<PromoProduct>().FirstOrDefault(x => x.EAN_PC == model.EAN_PC && x.PromoId == model.PromoId && !x.Disabled);
+                            if (oldRecord != null)
+                            {
+                                oldRecord.ActualProductUOM = "PC";
+                                oldRecord.ActualProductPCQty = newActualProductPCQtyValue;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        //в случае inout промо выбираем продукты с ненулевой ценой PlanProductPCPrice, которая подбирается из справочника IncrementalPromo
+                        var productsWithRealPCPrice = Context.Set<PromoProduct>().Where(x => x.EAN_PC == model.EAN_PC && x.PromoId == model.PromoId && x.PlanProductPCPrice != null
+                                                                                        && x.PlanProductPCPrice != 0 && !x.Disabled).ToList();
+
+                        if (productsWithRealPCPrice != null && productsWithRealPCPrice.Count() > 0)
+                        {
+                            //распределение импортируемого количества пропорционально PlanProductIncrementalLSV не важно, т.к. пропорция будет одна и та же
+                            var sumBaseline = productsWithRealPCPrice.Sum(x => x.PlanProductIncrementalLSV);
+                            int? sumActualProductPCQty = 0;
+                            foreach (var p in productsWithRealPCPrice)
+                            {
+                                p.ActualProductUOM = "PC";
+                                p.ActualProductPCQty = (int?)(newActualProductPCQtyValue / sumBaseline * p.PlanProductIncrementalLSV);
+                                sumActualProductPCQty += p.ActualProductPCQty;
+                            }
+
+                            var differenceActualProductPCQty = newActualProductPCQtyValue - sumActualProductPCQty;
+                            if (differenceActualProductPCQty.HasValue && differenceActualProductPCQty != 0)
+                            {
+                                productsWithRealPCPrice.FirstOrDefault().ActualProductPCQty += differenceActualProductPCQty;
+                            }
+                        }
+                        else
+                        {
+                            //если не найдено продуктов с ненулевой PC Price, просто записываем импортируемое количество в первый попавшийся продукт, чтобы сохранилось
+                            PromoProduct oldRecord = Context.Set<PromoProduct>().FirstOrDefault(x => x.EAN_PC == model.EAN_PC && x.PromoId == model.PromoId && !x.Disabled);
+                            if (oldRecord != null)
+                            {
+                                oldRecord.ActualProductUOM = "PC";
+                                oldRecord.ActualProductPCQty = newActualProductPCQtyValue;
+                            }
                         }
                     }
                 }
-
-                if (rollbackModelValue)
-                {
-                    model.ActualProductPCQty = oldActualProductPCQtyValue;
-                }
-
+              
                 Context.SaveChanges();
 
                 // перерасчет фактических параметров

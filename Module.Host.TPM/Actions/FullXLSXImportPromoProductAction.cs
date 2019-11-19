@@ -83,43 +83,110 @@ namespace Module.Host.TPM.Actions
             IQueryable<PromoProduct> sourceRecords = records.Cast<PromoProduct>().AsQueryable();
             IList<PromoProduct> query = GetQuery(context).ToList();
             List<PromoProduct> toUpdate = new List<PromoProduct>();
+            Promo promo = context.Set<Promo>().Where(x => x.Id == promoId && !x.Disabled).FirstOrDefault();
 
-            foreach (PromoProduct newRecord in sourceRecords)
+            if (promo != null)
             {
-                //выбор продуктов с ненулевым BaseLine
-                var productsWithRealBaseline = query.Where(x => x.EAN_PC == newRecord.EAN_PC && x.PromoId == promoId && x.PlanProductBaselineLSV != null 
-                                                           && x.PlanProductBaselineLSV != 0 && !x.Disabled).ToList();
-
-                if (productsWithRealBaseline != null && productsWithRealBaseline.Count() > 0)
+                if (!promo.InOut.HasValue || !promo.InOut.Value)
                 {
-                    //распределение импортируемого количества пропорционально ???
-                    var sumBaseline = productsWithRealBaseline.Sum(x => x.PlanProductBaselineLSV);
-                    List<PromoProduct> promoProductsToUpdate = new List<PromoProduct>();
-                    foreach (var p in productsWithRealBaseline)
+                    foreach (PromoProduct newRecord in sourceRecords)
                     {
-                        p.ActualProductUOM = "PC";
-                        p.ActualProductPCQty = (int?)(newRecord.ActualProductPCQty / sumBaseline * p.PlanProductBaselineLSV);
-                        promoProductsToUpdate.Add(p);
-                    }
+                        // выбор продуктов с ненулевым BaseLine (проверка Baseline ниже)
+                        var productsWithRealBaseline = query.Where(x => x.EAN_PC == newRecord.EAN_PC && x.PromoId == promoId && !x.Disabled).ToList();
 
-                    var differenceActualProductPCQty = newRecord.ActualProductPCQty - promoProductsToUpdate.Sum(x => x.ActualProductPCQty);
-                    if (differenceActualProductPCQty.HasValue && differenceActualProductPCQty != 0)
-                    {
-                        promoProductsToUpdate[0].ActualProductPCQty += differenceActualProductPCQty;
-                    }
+                        if (productsWithRealBaseline != null && productsWithRealBaseline.Count() > 0)
+                        {
+                            //распределение импортируемого количества пропорционально PlanProductBaselineLSV
+                            var sumBaseline = productsWithRealBaseline.Sum(x => x.PlanProductBaselineLSV);
+                            List<PromoProduct> promoProductsToUpdate = new List<PromoProduct>();
+                            foreach (var p in productsWithRealBaseline)
+                            {
+                                p.ActualProductUOM = "PC";
+                                // проверка Baseline (исправляет ActualProductPCQty)
+                                if (p.PlanProductBaselineLSV != null && p.PlanProductBaselineLSV != 0)
+                                {
+                                    p.ActualProductPCQty = (int?)(newRecord.ActualProductPCQty / sumBaseline * p.PlanProductBaselineLSV);
+                                }
+                                else
+                                {
+                                    p.ActualProductPCQty = null;
+                                }
 
-                    toUpdate.AddRange(promoProductsToUpdate);
+                                promoProductsToUpdate.Add(p);
+                            }
+
+                            var differenceActualProductPCQty = newRecord.ActualProductPCQty - promoProductsToUpdate.Sum(x => x.ActualProductPCQty);
+                            if (differenceActualProductPCQty.HasValue && differenceActualProductPCQty != 0)
+                            {
+                                var firstRealBaselineItem = promoProductsToUpdate.FirstOrDefault(x => x.ActualProductPCQty != null);
+                                firstRealBaselineItem.ActualProductPCQty += differenceActualProductPCQty;
+                            }
+
+                            toUpdate.AddRange(promoProductsToUpdate);
+                        }
+                        else
+                        {
+                            //TODO: вывод предупреждения
+                            //если не найдено продуктов с ненулевым basline, просто записываем импортируемое количество в первый попавшийся продукт, чтобы сохранилось
+                            PromoProduct oldRecord = query.FirstOrDefault(x => x.EAN_PC == newRecord.EAN_PC && x.PromoId == promoId && !x.Disabled);
+                            if (oldRecord != null)
+                            {
+                                oldRecord.ActualProductUOM = "PC";
+                                oldRecord.ActualProductPCQty = newRecord.ActualProductPCQty;
+                                toUpdate.Add(oldRecord);
+                            }
+                        }
+                    }
                 }
                 else
                 {
-                    //TODO: вывод предупреждения
-                    //если не найдено продуктов с ненулевым basline просто записываем импортируемое количество в первый попавшийся продукт, чтобы сохранилось
-                    PromoProduct oldRecord = query.FirstOrDefault(x => x.EAN_PC == newRecord.EAN_PC && x.PromoId == promoId && !x.Disabled);
-                    if (oldRecord != null)
+                    foreach (PromoProduct newRecord in sourceRecords)
                     {
-                        oldRecord.ActualProductUOM = "PC";
-                        oldRecord.ActualProductPCQty = newRecord.ActualProductPCQty;
-                        toUpdate.Add(oldRecord);
+                        //в случае inout промо выбираем продукты с ненулевой ценой PlanProductPCPrice, которая подбирается из справочника IncrementalPromo
+                        var productsWithRealPCPrice = query.Where(x => x.EAN_PC == newRecord.EAN_PC && x.PromoId == promoId && !x.Disabled).ToList();
+
+                        if (productsWithRealPCPrice != null && productsWithRealPCPrice.Count() > 0)
+                        {
+                            //распределение импортируемого количества пропорционально PlanProductIncrementalLSV
+                            var sumIncremental = productsWithRealPCPrice.Sum(x => x.PlanProductIncrementalLSV);
+                            List<PromoProduct> promoProductsToUpdate = new List<PromoProduct>();
+                            foreach (var p in productsWithRealPCPrice)
+                            {
+                                p.ActualProductUOM = "PC";
+                                // проверка Price (исправляет ActualProductPCQty)
+                                if (p.PlanProductPCPrice != null && p.PlanProductPCPrice != 0)
+                                {
+                                    p.ActualProductPCQty = (int?)(newRecord.ActualProductPCQty / sumIncremental * p.PlanProductIncrementalLSV);
+                                }
+                                else
+                                {
+                                    p.ActualProductPCQty = null;
+                                }
+
+                                promoProductsToUpdate.Add(p);
+                            }
+
+                            var differenceActualProductPCQty = newRecord.ActualProductPCQty - promoProductsToUpdate.Sum(x => x.ActualProductPCQty);
+                            if (differenceActualProductPCQty.HasValue && differenceActualProductPCQty != 0)
+                            {
+                                var firstRealPriceItem = promoProductsToUpdate.FirstOrDefault(x => x.ActualProductPCQty != null);
+                                firstRealPriceItem.ActualProductPCQty += differenceActualProductPCQty;
+                            }
+
+                            toUpdate.AddRange(promoProductsToUpdate);
+                        }
+                        else
+                        {
+                            //TODO: вывод предупреждения
+                            //если не найдено продуктов с ненулевым basline, просто записываем импортируемое количество в первый попавшийся продукт, чтобы сохранилось
+                            PromoProduct oldRecord = query.FirstOrDefault(x => x.EAN_PC == newRecord.EAN_PC && x.PromoId == promoId && !x.Disabled);
+                            if (oldRecord != null)
+                            {
+                                oldRecord.ActualProductUOM = "PC";
+                                oldRecord.ActualProductPCQty = newRecord.ActualProductPCQty;
+                                toUpdate.Add(oldRecord);
+                            }
+                        }
                     }
                 }
             }
