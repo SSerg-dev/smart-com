@@ -5,7 +5,8 @@
     cls: 'readOnlyFields',
     width: 800,
     minWidth: 800,
-    maxHeight: 500,
+	maxHeight: 500,
+	storeLoaded: false,
 
     items: {
         xtype: 'editorform',
@@ -96,7 +97,7 @@
             entityType: 'Mechanic',
             store: {
                 type: 'simplestore',
-                autoLoad: false,
+                autoLoad: true,
                 model: 'App.model.tpm.mechanic.Mechanic',
                 extendedFilter: {
                     xclass: 'App.ExtFilterContext',
@@ -134,9 +135,10 @@
             entityType: 'MechanicType',
             allowBlank: false,
             allowOnlyWhitespace: false,
+			readOnly: true,
             store: {
                 type: 'simplestore',
-                autoLoad: false,
+                autoLoad: true,
                 model: 'App.model.tpm.mechanictype.MechanicType',
                 extendedFilter: {
                     xclass: 'App.ExtFilterContext',

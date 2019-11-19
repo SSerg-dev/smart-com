@@ -89,7 +89,7 @@
                 },
                 'nonenegoeditor [name=ToDate]': {
                     select: this.onToDateSelect
-                },
+				},
                 'nonenegoeditor #ok': {
                     click: this.onOkButtonClick
                 }
@@ -129,8 +129,16 @@
                 me.isEditorForUpdateNode = true;
                 me.disableReadOnlyElements([me.elements.createDate]);
                 me.addClsElements([me.elements.createDate], 'field-for-read-only');
-                me.initMechanicFiled(window);
+				me.initMechanicFiled(window);
+				nonenegoeditor.storeLoaded = true;
 
+				if (nonenego.isEditorForUpdateNode) {
+					me.elements.fromDate.setMinValue(null);
+					me.elements.fromDate.valueChanged = false;
+					me.elements.fromDate.isCurrentFieldValid = true;
+					me.elements.toDate.isCurrentFieldValid = true;
+				}
+				
                 me.buttons.cancel = Ext.ComponentQuery.query('#cancel')[0];
                 me.buttons.cancel.addListener('click', function () {
                     me.removeClsElements([me.elements.mechanicTypeId, me.elements.discount, me.elements.fromDate,
@@ -188,30 +196,34 @@
         }
     },
 
-    nonenegoMechanicListener: function (field, newValue, oldValue) {
-        var mechanicType = field.up('nonenegoeditor').down('[name=MechanicTypeId]');
-        var discount = field.up('nonenegoeditor').down('[name=Discount]');        
+	nonenegoMechanicListener: function (field, newValue, oldValue) {
+		var nonenegoeditor = field.up('nonenegoeditor');
+		var mechanicType = nonenegoeditor.down('[name=MechanicTypeId]');
+		var discount = nonenegoeditor.down('[name=Discount]');        
 
-        mechanicType.clearValue();
+		if (nonenegoeditor.storeLoaded) {
+			mechanicType.clearValue();
 
-        if (field.rawValue != 'VP') {
-            mechanicType.addCls('field-for-read-only');
-            discount.removeCls('field-for-read-only');
+			if (field.rawValue != 'VP') {
+				mechanicType.addCls('field-for-read-only');
+				discount.removeCls('field-for-read-only');
 
-            mechanicType.setReadOnly(true);
-            discount.setReadOnly(false);
-        }
-        else {
-            mechanicType.removeCls('field-for-read-only');
-            discount.addCls('field-for-read-only');
+				mechanicType.setReadOnly(true);
+				discount.setReadOnly(false);
+			}
+			else {
+				mechanicType.removeCls('field-for-read-only');
+				discount.addCls('field-for-read-only');
 
-            mechanicType.setReadOnly(false);
-            discount.setValue(null);
-            discount.setReadOnly(true);
-        }
+				mechanicType.setReadOnly(false);
+				discount.setValue(null);
+				discount.setReadOnly(true);
+			}
 
-        var me = App.app.getController('tpm.nonenego.NoneNego');
-        me.validateFields(/*me*/);
+			var me = App.app.getController('tpm.nonenego.NoneNego');
+			me.validateFields(me);
+		}
+		nonenegoeditor.storeLoaded = true;
     },
 
     nonenegoMechanicTypeListener: function (field, newValue, oldValue) {
@@ -314,7 +326,8 @@
                 mechanicId: mechanic.getValue()
             };
 
-			if (parameters.productTreeId != undefined && parameters.clientTreeId != undefined && parameters.mechanicId != undefined) {
+			var correctMechanic = parameters.mechanicId != undefined && parameters.mechanicId != null && parameters.mechanicId != '';
+			if (parameters.productTreeId != undefined && parameters.clientTreeId != undefined && correctMechanic) {
 				App.Util.makeRequestWithCallback('NoneNegoes', 'IsValidPeriod', parameters, function (data) {
 					if (data) {
 						var nonenegoeditor = Ext.ComponentQuery.query('nonenegoeditor')[0];
@@ -329,6 +342,8 @@
 
 								fromDate.clearInvalid();
 								toDate.clearInvalid();
+								fromDate.validate();
+								toDate.validate();
 							} else {
 								fromDate.isCurrentFieldValid = false;
 								toDate.isCurrentFieldValid = false;
@@ -382,9 +397,18 @@
         this.callParent(arguments);
 
         var nonenegoeditor = Ext.ComponentQuery.query('nonenegoeditor')[0];
-        var createDate = nonenegoeditor.down('[name=CreateDate]');
+		var createDate = nonenegoeditor.down('[name=CreateDate]');
+		var fromDate = nonenegoeditor.down('[name=FromDate]');
+		var toDate = nonenegoeditor.down('[name=ToDate]');
+
         var date = new Date();
         date.setHours(date.getHours() + (date.getTimezoneOffset() / 60) + 3);   // приведение к московской timezone
-        createDate.setValue(date);    
+		createDate.setValue(date);    
+		fromDate.getPicker().setValue(date);
+		fromDate.setMinValue(date);
+		fromDate.valueChanged = true;
+		fromDate.isCurrentFieldValid = false;
+		toDate.isCurrentFieldValid = false;
+		nonenegoeditor.storeLoaded = true;
     },
 });

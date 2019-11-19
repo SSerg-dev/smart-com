@@ -352,6 +352,10 @@ namespace Module.Frontend.TPM.Controllers
             {
                 if (toDate == null)
                 {
+					if (fromDate == null)
+					{
+						return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false }));
+					}
                     foreach (var noneNego in neededNoneNegoes)
                     {
                         // [---] [===]
