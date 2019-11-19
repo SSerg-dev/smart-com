@@ -196,6 +196,7 @@
                     var currentTimeZoneOffsetInHours = minValue.getTimezoneOffset();
                     var minValueInt = minValue.getTime();
 					field.getPicker().setValue(new Date(minValueInt + currentTimeZoneOffsetInHours * 60000 + 10800000));
+					field.getPicker().setMinDate(new Date(minValueInt + currentTimeZoneOffsetInHours * 60000 + 10800000));
                 },
                 change: function (newValue, oldValue) {
                     var toDate = this.up('form').down('[name=ToDate]');
