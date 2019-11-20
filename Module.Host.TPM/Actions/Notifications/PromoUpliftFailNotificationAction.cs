@@ -23,7 +23,7 @@ namespace Module.Host.TPM.Actions.Notifications {
                         string template = File.ReadAllText(templateFileName);
                         if (!String.IsNullOrEmpty(template)) {
                             var incidentsForNotify = context.Set<PromoUpliftFailIncident>()
-								.Where(x => x.ProcessDate == null && x.Promo.PromoStatus.SystemName != "Draft").GroupBy(x => x.Promo.Number);
+								.Where(x => x.ProcessDate == null && x.Promo.PromoStatus.SystemName != "Draft" && !x.Promo.Disabled).GroupBy(x => x.Promo.Number);
 
                             if (incidentsForNotify.Any()) 
 							{
