@@ -1378,6 +1378,10 @@
     <Compile Include="Migrations\201911130723258_Empty_migration_PromoFilteringOptimization.Designer.cs">
       <DependentUpon>201911130723258_Empty_migration_PromoFilteringOptimization.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201911200835523_EmptyMigration_RC.cs" />
+    <Compile Include="Migrations\201911200835523_EmptyMigration_RC.Designer.cs">
+      <DependentUpon>201911200835523_EmptyMigration_RC.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientTreeSharesView.cs" />
     <Compile Include="Model\DTO\PlanPostPromoEffectReport.cs" />
@@ -2537,6 +2541,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201911130723258_Empty_migration_PromoFilteringOptimization.resx">
       <DependentUpon>201911130723258_Empty_migration_PromoFilteringOptimization.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911200835523_EmptyMigration_RC.resx">
+      <DependentUpon>201911200835523_EmptyMigration_RC.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
