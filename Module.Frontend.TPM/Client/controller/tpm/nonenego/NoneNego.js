@@ -137,6 +137,10 @@
 					me.elements.fromDate.valueChanged = false;
 					me.elements.fromDate.isCurrentFieldValid = true;
 					me.elements.toDate.isCurrentFieldValid = true;
+
+					var date = new Date();
+					date.setHours(date.getHours() + (date.getTimezoneOffset() / 60) + 3);
+					me.elements.fromDate.getPicker().setMinDate(date);
 				}
 				
                 me.buttons.cancel = Ext.ComponentQuery.query('#cancel')[0];
