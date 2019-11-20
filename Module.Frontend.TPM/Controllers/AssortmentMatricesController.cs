@@ -194,17 +194,7 @@ namespace Module.Frontend.TPM.Controllers
 				};
 				Context.Set<ProductChangeIncident>().Add(pci);
 
-				var changesIncidnet = new ChangesIncident
-                {
-                    Id = new Guid(),
-                    DirectoryName = "AssortmentMatrix",
-                    ItemId = oldAssortmentMatrix.Id.ToString(),
-                    CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                    ProcessDate = null,
-                    DeletedDate = null,
-                    Disabled = false
-                };
-                Context.Set<ChangesIncident>().Add(changesIncidnet);
+                //запись в таблицу ChangesIncident здесь создавать не надо, т.к. есть триггер на UPDATE
 
                 model.CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
 

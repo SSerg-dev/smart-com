@@ -96,7 +96,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
 
                                     // в день старта промо продукты не переподбираются
                                     bool isStartToday = promo.StartDate != null &&
-                                                        (promo.StartDate - ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow.Date)).Value.Days == 0;
+                                                        (promo.StartDate - ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)).Value.Days == 0;
                                     if (!isStartToday)
                                     {
                                         needReturnToOnApprovalStatus = PlanProductParametersCalculation.SetPromoProduct(promoId, context, out setPromoProductError);

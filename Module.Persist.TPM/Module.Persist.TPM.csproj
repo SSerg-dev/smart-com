@@ -1374,6 +1374,10 @@
     <Compile Include="Migrations\201911050715286_EmptyMigrationRC1.Designer.cs">
       <DependentUpon>201911050715286_EmptyMigrationRC1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201911130723258_Empty_migration_PromoFilteringOptimization.cs" />
+    <Compile Include="Migrations\201911130723258_Empty_migration_PromoFilteringOptimization.Designer.cs">
+      <DependentUpon>201911130723258_Empty_migration_PromoFilteringOptimization.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientTreeSharesView.cs" />
     <Compile Include="Model\DTO\PlanPostPromoEffectReport.cs" />
@@ -1556,6 +1560,7 @@
     <Content Include="SQLInitialize\20191016_1550_Settings_productChangeStatus_list_fix.sql" />
     <Content Include="SQLInitialize\20191104_1000_Settings_PromoChangeProps_Update.sql" />
     <Content Include="SQLInitialize\20191011_1007_Add_DeletedPromoSupport_AP.sql" />
+    <Content Include="SQLInitialize\20191114_1600_UnblockPromoesHandler.sql" />
     <Content Include="Sql\20191004_1540_FillInOutProductIdsHandler.sql" />
     <Content Include="SQLInitialize\20190926_1600_HistoricalPromoSupport_AP.sql" />
     <Compile Include="Utils\SimpleModels.cs" />
@@ -2529,6 +2534,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201911050715286_EmptyMigrationRC1.resx">
       <DependentUpon>201911050715286_EmptyMigrationRC1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911130723258_Empty_migration_PromoFilteringOptimization.resx">
+      <DependentUpon>201911130723258_Empty_migration_PromoFilteringOptimization.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

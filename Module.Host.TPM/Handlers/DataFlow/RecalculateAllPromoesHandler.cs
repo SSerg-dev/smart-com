@@ -34,33 +34,42 @@ namespace Module.Host.TPM.Handlers.DataFlow
             handlerLogger.Write(true, String.Format("The Data Flow initialization began at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
             handlerLogger.Write(true, "The task for filtering of promoes will be created in a few seconds.", "Message");
 
-            var context = new DatabaseContext();
+            var databaseContext = new DatabaseContext();
             try
             {
                 var handlerData = new HandlerData();
                 Guid? userId = HandlerDataHelper.GetIncomingArgument<Guid>("UserId", handlerData, false);
                 Guid? roleId = HandlerDataHelper.GetIncomingArgument<Guid>("RoleId", handlerData, false);
 
-                var handler = new LoopHandler()
+                var blockedPromoes = databaseContext.Set<BlockedPromo>().Where(x => x.Disabled == false);
+                if (blockedPromoes.Count() == 0)
                 {
-                    Id = Guid.NewGuid(),
-                    ConfigurationName = "PROCESSING",
-                    Description = "Filtering for nightly recalculation (DataFlow)",
-                    Name = "Module.Host.TPM.Handlers.DataFlow.DataFlowFilteringHandler",
-                    ExecutionPeriod = null,
-                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                    LastExecutionDate = null,
-                    NextExecutionDate = null,
-                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
-                    UserId = userId == Guid.Empty ? null : userId,
-                    RoleId = roleId == Guid.Empty ? null : roleId
-                };
+                    var handler = new LoopHandler()
+                    {
+                        Id = Guid.NewGuid(),
+                        ConfigurationName = "PROCESSING",
+                        Description = "Filtering for nightly recalculation (DataFlow)",
+                        Name = "Module.Host.TPM.Handlers.DataFlow.DataFlowFilteringHandler",
+                        ExecutionPeriod = null,
+                        CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                        LastExecutionDate = null,
+                        NextExecutionDate = null,
+                        ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                        UserId = userId == Guid.Empty ? null : userId,
+                        RoleId = roleId == Guid.Empty ? null : roleId
+                    };
 
-                handler.SetParameterData(handlerData);
-                context.LoopHandlers.Add(handler);
+                    handler.SetParameterData(handlerData);
+                    databaseContext.LoopHandlers.Add(handler);
 
-                context.SaveChanges();
-                handlerLogger.Write(true, "The task for filtering of promoes was created.", "Message");
+                    databaseContext.SaveChanges();
+                    handlerLogger.Write(true, "The task for filtering of promoes was created.", "Message");
+                }
+                else
+                {
+                    data.SetValue<bool>("HasErrors", true);
+                    handlerLogger.Write(true, $"Night recalculating is not possible, there are {blockedPromoes.Count()} blocked promoes.", "Error");
+                }
             }
             catch (Exception e)
             {
@@ -72,10 +81,10 @@ namespace Module.Host.TPM.Handlers.DataFlow
             }
             finally
             {
-                if (context != null)
+                if (databaseContext != null)
                 {
-                    context.SaveChanges();
-                    ((IDisposable)context).Dispose();
+                    databaseContext.SaveChanges();
+                    ((IDisposable)databaseContext).Dispose();
                 }
 
                 stopWatch.Stop();
