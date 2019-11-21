@@ -46,12 +46,14 @@ namespace Module.Host.TPM.Handlers
 				Guid nullGuid = new Guid();
 				Guid promoId = HandlerDataHelper.GetIncomingArgument<Guid>("PromoId", info.Data, false);
 				bool needCalculatePlanMarketingTI = HandlerDataHelper.GetIncomingArgument<bool>("NeedCalculatePlanMarketingTI", info.Data, false);
+                Promo promoCopy = null;
 
 				try
 				{
 					if (promoId != nullGuid)
 					{
-						Promo promo = context.Set<Promo>().Where(x => x.Id == promoId).FirstOrDefault();
+						Promo promo = context.Set<Promo>().FirstOrDefault(x => x.Id == promoId);
+                        promoCopy = new Promo(promo);
 
 						//добавление номера рассчитываемого промо в лог
 						handlerLogger.Write(true, String.Format("Calculating promo: №{0}", promo.Number), "Message");
@@ -217,6 +219,16 @@ namespace Module.Host.TPM.Handlers
                             handlerLogger.Write(true, "");
                             logLine = String.Format("The calculation of the actual parameters was completed at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", DateTimeOffset.Now, swActual.Elapsed.TotalSeconds);
                             handlerLogger.Write(true, logLine, "Message");
+                        }
+
+                        if (PromoUtils.HasChanges(context.ChangeTracker, promo.Id))
+                        {
+                            promo.LastChangedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                            if (PlanProductParametersCalculation.IsDemandChanged(promo, promoCopy))
+                            {
+                                promo.LastChangedDateDemand = promo.LastChangedDate;
+                                promo.LastChangedDateFinance = promo.LastChangedDate;
+                            }
                         }
 
 						//promo.Calculating = false;

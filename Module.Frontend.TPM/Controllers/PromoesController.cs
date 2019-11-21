@@ -207,11 +207,7 @@ namespace Module.Frontend.TPM.Controllers {
                     PlanProductParametersCalculation.SetPromoProduct(Context.Set<Promo>().First(x => x.Number == result.Number).Id, Context, out error, true, promoProductTrees);
                 }
 
-                if (PromoUtils.HasChanges(Context.ChangeTracker))
-                {
-                    result.LastChangedDate = ChangedDate;
-                }
-
+                result.LastChangedDate = ChangedDate;
                 Context.SaveChanges();
 
                 return Created(result);
@@ -361,6 +357,17 @@ namespace Module.Frontend.TPM.Controllers {
                         }
                     }
 
+                    if (needRecalculatePromo || patch.GetChangedPropertyNames().Contains("PromoStatusId"))
+                    {
+                        model.LastChangedDate = ChangedDate;
+                        if ((promoCopy.PlanPromoUpliftPercent != null && model.PlanPromoUpliftPercent != null
+                            && Math.Round(promoCopy.PlanPromoUpliftPercent.Value, 2, MidpointRounding.AwayFromZero) != Math.Round(model.PlanPromoUpliftPercent.Value, 2, MidpointRounding.AwayFromZero)))
+                        {
+                            model.LastChangedDateDemand = ChangedDate;
+                            model.LastChangedDateFinance = ChangedDate;
+                        }
+                    }
+
                     if (model.EventId == null)
                     {
                         Event promoEvent = Context.Set<Event>().FirstOrDefault(x => !x.Disabled && x.Name == "Standard promo");
@@ -442,17 +449,6 @@ namespace Module.Frontend.TPM.Controllers {
 					Context.Set<PromoCancelledIncident>().Add(new PromoCancelledIncident() { PromoId = model.Id, CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow) });
                 }
 
-                if (PromoUtils.HasChanges(Context.ChangeTracker))
-                {
-                    model.LastChangedDate = ChangedDate;
-                    if ((promoCopy.PlanPromoUpliftPercent != null && model.PlanPromoUpliftPercent != null
-                        && Math.Round(promoCopy.PlanPromoUpliftPercent.Value, 2, MidpointRounding.AwayFromZero) != Math.Round(model.PlanPromoUpliftPercent.Value, 2, MidpointRounding.AwayFromZero)))
-                    {
-                        model.LastChangedDateDemand = ChangedDate;
-                        model.LastChangedDateFinance = ChangedDate;
-                    }
-                }
-
 				if (promoCopy.InOutProductIds != model.InOutProductIds)
 				{
 					IList<Product> oldProductIdList = new List<Product>();
@@ -504,6 +500,7 @@ namespace Module.Frontend.TPM.Controllers {
 						}
 					}
 				}
+
                 Context.SaveChanges();
                 PromoHelper.WritePromoDemandChangeIncident(Context, model, patch, promoCopy);
 

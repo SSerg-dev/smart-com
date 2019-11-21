@@ -578,7 +578,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                             promo.PlanPromoLSV = promo.PlanPromoIncrementalLSV;
                         }
 
-                        if (PromoUtils.HasChanges(context.ChangeTracker))
+                        if (PromoUtils.HasChanges(context.ChangeTracker, promo.Id))
                         {
                             promo.LastChangedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
                             if (IsDemandChanged(promo, promoCopy))
@@ -774,7 +774,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             return products;
         }
 
-        private static bool IsDemandChanged(Promo oldPromo, Promo newPromo)
+        public static bool IsDemandChanged(Promo oldPromo, Promo newPromo)
         {
             if (oldPromo.PlanPromoLSV != newPromo.PlanPromoLSV
                 || oldPromo.PlanPromoIncrementalLSV != newPromo.PlanPromoIncrementalLSV)

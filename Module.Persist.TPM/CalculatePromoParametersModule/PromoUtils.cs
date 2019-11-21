@@ -1,4 +1,5 @@
-﻿using Core.Dependency;
+﻿using Core.Data;
+using Core.Dependency;
 using Core.Settings;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.PromoStateControl;
@@ -35,10 +36,10 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             return !isCorrectDispatchDifference;
         }
 
-        public static bool HasChanges(DbChangeTracker changeTracker)
+        public static bool HasChanges(DbChangeTracker changeTracker, Guid promoId)
         {
             changeTracker.DetectChanges();
-            var hasChanges = changeTracker.Entries<Promo>().Any(x => x.State == EntityState.Modified);
+            var hasChanges = changeTracker.Entries<Promo>().Any(x => x.Entity.Id == promoId && x.State == EntityState.Modified);
             return hasChanges;
         }
     }
