@@ -275,7 +275,7 @@
         },
 
         listeners: {
-            itemclick: function (cell, record, item, index, e, eOpts) {
+            select: function (cell, record) {
                 var form = this.up().down('editorform');
                 var fields = form.getForm().getFields();
 
