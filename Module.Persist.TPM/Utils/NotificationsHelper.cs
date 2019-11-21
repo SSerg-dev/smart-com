@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 namespace Module.Persist.TPM.Utils
 {
 	/// <summary>
-	/// Класс для получения ограничений
+	/// Класс для получения почты, userId и ограничений получателей,
 	/// </summary>
-	public static class ConstraintsHelper
+	public static class NotificationsHelper
 	{
 		/// <summary>
 		/// Получение списка ограничений по UserId
@@ -196,24 +196,6 @@ namespace Module.Persist.TPM.Utils
 
 			// Оставляем только уникальные Guid 
 			users = users.Union(users).ToList();
-
-			// Проверяем, не остался ли только гарантированный пользователь
-			if (users.Count() == 1)
-			{
-				string guaranteedUserEmail = context.MailNotificationSettings.Where(y => y.Id == mailNotificationSettingsId)
-					.Select(x => x.To).FirstOrDefault();
-				if (guaranteedUserEmail != null)
-				{
-					var guaranteedUserId = context.Users.Where(x => x.Email == guaranteedUserEmail).Select(x => x.Id).FirstOrDefault();
-					if (guaranteedUserId != Guid.Empty)
-					{
-						if (users.FirstOrDefault() == guaranteedUserId)
-						{
-							return new List<Guid>();
-						}
-					}
-				}
-			} 
 			return users;
 		}
 
@@ -223,27 +205,70 @@ namespace Module.Persist.TPM.Utils
 		/// <param name="notificationName"></param>
 		/// <param name="context"></param>
 		/// <returns></returns>
-		public static List<Recipient> GetRecipientsByNotifyName(string notificationName, DatabaseContext context)
+		public static List<Recipient> GetRecipientsByNotifyName(string notificationName, DatabaseContext context, bool getUserFromSettings = true)
 		{
 			Guid mailNotificationSettingsId = context.MailNotificationSettings
 				.Where(y => y.Name == notificationName && !y.Disabled)
 				.Select(x => x.Id).FirstOrDefault();
 
 			// Находим гарантированного получателя
-			string toMail = context.MailNotificationSettings
+			string toMail = String.Empty;
+			if (getUserFromSettings)
+			{
+				toMail = context.MailNotificationSettings
 				.Where(y => y.Id == mailNotificationSettingsId)
 				.Select(x => x.To).FirstOrDefault();
+
+			}
 
 			// Находим дополнительных получателей
 			List<Recipient> recipients = context.Recipients
 				.Where(x => x.MailNotificationSettingId == mailNotificationSettingsId).ToList();
 
-			if (toMail != null)
+			if (!String.IsNullOrEmpty(toMail))
 			{
 				recipients.Add(new Recipient() { Value = toMail, Type = "Email" });
 			}
 
 			return recipients;
+		}
+
+		/// <summary>
+		/// Получить все email нотификации по её названию из Recipients
+		/// </summary>
+		/// <param name="withLimits"></param>
+		/// <returns></returns>
+		public static List<string> GetUsersEmail(List<Guid> users, DatabaseContext context)
+		{
+			List<string> usersEmail = context.Users.Where(x => !x.Disabled && users.Contains(x.Id)).Select(x => x.Email).ToList();
+
+			return usersEmail;
+		}
+
+		/// <summary>
+		/// Получить все id юзеров с определённой ролью
+		/// </summary>
+		/// <param name="roleName"></param>
+		/// <param name="context"></param>
+		/// <param name="onlyDefault">По умолчанию ищутся пользователи с delault ролью</param>
+		/// <returns></returns>
+		public static List<Guid> GetUsersIdsWithRole(string roleName, DatabaseContext context, bool onlyDefault = true)
+		{
+			List<Guid> userIds = new List<Guid>();
+			if (onlyDefault)
+			{
+				userIds = context.UserRoles
+					.Where(x => x.Role.SystemName == roleName && !x.User.Disabled && !x.Role.Disabled && x.IsDefault)
+					.Select(x => x.UserId).ToList();
+			}
+			else
+			{
+				userIds = context.UserRoles
+					.Where(x => x.Role.SystemName == roleName && !x.User.Disabled && !x.Role.Disabled)
+					.Select(x => x.UserId).ToList();
+			}
+
+			return userIds;
 		}
 	}
 }

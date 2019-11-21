@@ -258,8 +258,8 @@ namespace Module.Host.TPM.Actions.Notifications
 
 			//Получаем получателей для лога
 			IList<string> userErrors;
-			List<Recipient> recipients = ConstraintsHelper.GetRecipientsByNotifyName(notificationName, context);
-			List<Guid> userIds = ConstraintsHelper.GetUserIdsByRecipients(notificationName, recipients, context, out userErrors);
+			List<Recipient> recipients = NotificationsHelper.GetRecipientsByNotifyName(notificationName, context);
+			List<Guid> userIds = NotificationsHelper.GetUserIdsByRecipients(notificationName, recipients, context, out userErrors);
 
 			if (userErrors.Any())
 			{

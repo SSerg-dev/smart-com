@@ -32,7 +32,7 @@ namespace Module.Host.TPM.Actions.Notifications
                         string template = File.ReadAllText(templateFileName);
                         if (!String.IsNullOrEmpty(template))
                         {
-							var notifyIncidents = context.Set<PromoOnRejectIncident>().Where(x => x.ProcessDate == null).GroupBy(y => y.Promo.CreatorId);
+							var notifyIncidents = context.Set<PromoOnRejectIncident>().Where(x => x.ProcessDate == null && !x.Promo.Disabled).GroupBy(y => y.Promo.CreatorId);
 
 							if (notifyIncidents.Any())
 							{
@@ -74,7 +74,18 @@ namespace Module.Host.TPM.Actions.Notifications
 		/// <param name="context"></param>
 		private void CreateNotification(IQueryable<IGrouping<Guid?, PromoOnRejectIncident>> incidentsForNotify, string notificationName, string template, DatabaseContext context)
 		{
-			string[] requiredRoles = { "KeyAccountManager" };
+			List<Recipient> recipients = NotificationsHelper.GetRecipientsByNotifyName(notificationName, context);
+			IList<string> userErrors;
+			List<Guid> userIds = NotificationsHelper.GetUserIdsByRecipients(notificationName, recipients, context, out userErrors);
+
+			if (userErrors.Any())
+			{
+				foreach (string error in userErrors)
+				{
+					Warnings.Add(error);
+				}
+			}
+
 			foreach (IGrouping<Guid?, PromoOnRejectIncident> incidentsGroup in incidentsForNotify)
 			{
 				IList<string> promoNumbers = new List<string>();
@@ -83,24 +94,20 @@ namespace Module.Host.TPM.Actions.Notifications
 				{
 					foreach (PromoOnRejectIncident incident in incidentsGroup)
 					{
-						incident.ProcessDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
 						promoNumbers.Add(incident.Promo.Number.ToString());
 					}
 					Warnings.Add(String.Format("Promo creator not specified or not found. Promo numbers: {0}", String.Join(", ", promoNumbers.Distinct().ToArray())));
-					continue;
 				}
 
 				string creatorEmail = context.Users.Where(x => x.Id == creatorId && !x.Disabled).Select(y => y.Email).FirstOrDefault();
-				if (String.IsNullOrEmpty(creatorEmail))
+				if (String.IsNullOrEmpty(creatorEmail) && !creatorId.Equals(Guid.Empty))
 				{
 					promoNumbers = new List<string>();
 					foreach (PromoOnRejectIncident incident in incidentsGroup)
 					{
-						incident.ProcessDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
 						promoNumbers.Add(incident.Promo.Number.ToString());
 					}
 					Warnings.Add(String.Format("Promo creator's email not found. Promo numbers: {0}", String.Join(", ", promoNumbers.Distinct().ToArray())));
-					continue;
 				}
 
 				List<string> allRows = new List<string>();
@@ -115,18 +122,25 @@ namespace Module.Host.TPM.Actions.Notifications
 				}
 
 				string notifyBody = String.Format(template, string.Join("", allRows));
-				string defaultRecipient = context.MailNotificationSettings.Where(x => x.Name == notificationName && !x.Disabled && !x.IsDisabled).Select(x => x.To).FirstOrDefault();
-
-				string[] emailArray = new[] { creatorEmail };
-				if (!String.IsNullOrEmpty(defaultRecipient))
-				{
-					emailArray = new[] { creatorEmail, defaultRecipient }; 
-				}
+				List<string> defaultRecipients = NotificationsHelper.GetUsersEmail(userIds, context);
 
 				if (!String.IsNullOrEmpty(creatorEmail))
 				{
+					if (!defaultRecipients.Contains(creatorEmail))
+					{
+						defaultRecipients.Add(creatorEmail);
+					}
+				}
+
+				string[] emailArray = defaultRecipients.ToArray();
+				if (emailArray.Length > 0)
+				{
 					SendNotificationByEmails(notifyBody, notificationName, emailArray);
 					Results.Add(String.Format("Notification about reject of promoes with numbers: {0} were sent to {1}", String.Join(", ", promoNumbers.Distinct().ToArray()), String.Join(", ", emailArray)), null);
+				}
+				else
+				{
+					Warnings.Add(String.Format("There is no recipient to send notification."));
 				}
 			}
 

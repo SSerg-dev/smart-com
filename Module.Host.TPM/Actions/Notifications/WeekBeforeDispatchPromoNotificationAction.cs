@@ -27,8 +27,7 @@ namespace Module.Host.TPM.Actions.Notifications
                 {
 					string[] statusesToCheck = { "DraftPublished", "OnApproval", "Approved" };
 					List<Promo> promoes = context.Set<Promo>()
-						.Where(x => statusesToCheck.Contains(x.PromoStatus.SystemName) 
-						&& !x.Disabled).ToList();
+						.Where(x => statusesToCheck.Contains(x.PromoStatus.SystemName) && !x.Disabled).ToList();
 
 					List<Promo> promoesForNotify = new List<Promo>();
 					foreach (Promo promo in promoes)
@@ -89,18 +88,17 @@ namespace Module.Host.TPM.Actions.Notifications
 		/// <param name="context"></param>
 		private void CreateNotification(IQueryable<Promo> promoesForNotify, string notificationName, string template, DatabaseContext context)
         {
-			string[] recipientsRole = { "KeyAccountManager" };
-			List<Recipient> recipients = ConstraintsHelper.GetRecipientsByNotifyName(notificationName, context);
+			const string NotificationRole = "KeyAccountManager";
 
-			if (!recipients.Any())
-			{
-				Errors.Add(String.Format("There are no recipinets for notification: {0}", notificationName));
-				return;
-			}
+			var notifyBody = String.Empty;
+			var allRows = new List<string>();
+			var logPromoNums = new List<string>();
+			var emailArray = new string[] { };
+
+			List<Recipient> recipients = NotificationsHelper.GetRecipientsByNotifyName(notificationName, context);
 
 			IList<string> userErrors;
-			List<Guid> userIds = ConstraintsHelper.GetUserIdsByRecipients(notificationName, recipients, context, out userErrors, recipientsRole);
-
+			List<Guid> userIdsWithoutConstraints = NotificationsHelper.GetUserIdsByRecipients(notificationName, recipients, context, out userErrors);
 			if (userErrors.Any())
 			{
 				foreach (string error in userErrors)
@@ -108,19 +106,21 @@ namespace Module.Host.TPM.Actions.Notifications
 					Warnings.Add(error);
 				}
 			}
-			else if (!userIds.Any())
+
+			List<Guid> userIdsWithConstraints = NotificationsHelper.GetUsersIdsWithRole(NotificationRole, context).Except(userIdsWithoutConstraints).ToList();
+			if (!userIdsWithConstraints.Any() && !userIdsWithoutConstraints.Any())
 			{
 				Warnings.Add(String.Format("There are no appropriate recipinets for notification: {0}.", notificationName));
 				return;
 			}
 
-			foreach (Guid userId in userIds)
+			// Отправка нотификаций для юзеров с дефолтной ролью KAM
+			foreach (Guid userId in userIdsWithConstraints)
 			{
 				string userEmail = context.Users.Where(x => x.Id == userId).Select(y => y.Email).FirstOrDefault();
-				List<Constraint> constraints = ConstraintsHelper.GetConstraitnsByUserId(userId, context);
+				List<Constraint> constraints = NotificationsHelper.GetConstraitnsByUserId(userId, context);
 				IQueryable<Promo> constraintPromoes = promoesForNotify;
 
-				// Применение ограничений
 				if (constraints.Any())
 				{
 					IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
@@ -134,21 +134,21 @@ namespace Module.Host.TPM.Actions.Notifications
 
 				if (constraintPromoes.Any())
 				{
-					IList<string> promoNumbers = new List<string>();
-					List<string> allRows = new List<string>();
+					logPromoNums = new List<string>();
+					allRows = new List<string>();
 					foreach (Promo promo in constraintPromoes)
 					{
 						List<string> allRowCells = GetRow(promo, propertiesOrder);
 						allRows.Add(String.Format(rowTemplate, string.Join("", allRowCells)));
-						promoNumbers.Add(promo.Number.ToString());
+						logPromoNums.Add(promo.Number.ToString());
 					}
-					string notifyBody = String.Format(template, string.Join("", allRows));
+					notifyBody = String.Format(template, string.Join("", allRows));
 
-					string[] emailArray = new[] { userEmail };
+					emailArray = new[] { userEmail };
 					if (!String.IsNullOrEmpty(userEmail))
 					{
 						SendNotificationByEmails(notifyBody, notificationName, emailArray);
-						Results.Add(String.Format("Notification of promos (numbers: {0}) with less than a week left before dispatch were sent to {1}", String.Join(", ", promoNumbers.Distinct().ToArray()), String.Join(", ", emailArray)), null);
+						Results.Add(String.Format("Notification of promos (numbers: {0}) with less than a week left before dispatch were sent to {1}", String.Join(", ", logPromoNums.Distinct()), String.Join(", ", emailArray)), null);
 					}
 					else
 					{
@@ -157,8 +157,39 @@ namespace Module.Host.TPM.Actions.Notifications
 					}
 				}
 			}
-            
-            context.SaveChanges();
+
+			// Отправка нотификаций для Recipients и Settings без проверок
+			foreach (Guid userId in userIdsWithoutConstraints)
+			{
+				string userEmail = context.Users.Where(x => x.Id == userId).Select(y => y.Email).FirstOrDefault();
+
+				if (promoesForNotify.Any())
+				{
+					logPromoNums = new List<string>();
+					allRows = new List<string>();
+					foreach (Promo promo in promoesForNotify)
+					{
+						List<string> allRowCells = GetRow(promo, propertiesOrder);
+						allRows.Add(String.Format(rowTemplate, string.Join("", allRowCells)));
+						logPromoNums.Add(promo.Number.ToString());
+					}
+					notifyBody = String.Format(template, string.Join("", allRows));
+
+					emailArray = new[] { userEmail };
+					if (!String.IsNullOrEmpty(userEmail))
+					{
+						SendNotificationByEmails(notifyBody, notificationName, emailArray);
+						Results.Add(String.Format("Notification of promos (numbers: {0}) with less than a week left before dispatch were sent to {1}", String.Join(", ", logPromoNums.Distinct()), String.Join(", ", emailArray)), null);
+					}
+					else
+					{
+						string userLogin = context.Users.Where(x => x.Id == userId).Select(x => x.Name).FirstOrDefault();
+						Warnings.Add(String.Format("Email not found for user: {0}", userLogin));
+					}
+				}
+			}
+
+			context.SaveChanges();
         }
 
         private readonly string[] propertiesOrder = new string[] {

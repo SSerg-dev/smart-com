@@ -29,7 +29,7 @@ namespace Module.Host.TPM.Actions.Notifications
                         string template = File.ReadAllText(templateFileName);
                         if (!String.IsNullOrEmpty(template))
                         {
-                            var incidentsForNotify = context.Set<PromoCancelledIncident>().Where(x => x.ProcessDate == null).GroupBy(x => x.PromoId);
+                            var incidentsForNotify = context.Set<PromoCancelledIncident>().Where(x => x.ProcessDate == null && !x.Promo.Disabled).GroupBy(x => x.PromoId);
 							if (incidentsForNotify.Any())
 							{
 								CreateNotification(incidentsForNotify, "CANCELLED_PROMO_NOTIFICATION", template, context);
@@ -88,8 +88,8 @@ namespace Module.Host.TPM.Actions.Notifications
 
 			//Получаем получателей для лога
 			IList<string> userErrors;
-			List<Recipient> recipients = ConstraintsHelper.GetRecipientsByNotifyName(notificationName, context);
-			List<Guid> userIds = ConstraintsHelper.GetUserIdsByRecipients(notificationName, recipients, context, out userErrors);
+			List<Recipient> recipients = NotificationsHelper.GetRecipientsByNotifyName(notificationName, context);
+			List<Guid> userIds = NotificationsHelper.GetUserIdsByRecipients(notificationName, recipients, context, out userErrors);
 
 			if (userErrors.Any())
 			{

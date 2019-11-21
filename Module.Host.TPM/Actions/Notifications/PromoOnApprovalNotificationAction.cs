@@ -1,5 +1,5 @@
-﻿using System;
-using Persist;
+﻿using Persist;
+using System;
 using Core.Settings;
 using Core.Dependency;
 using System.IO;
@@ -32,9 +32,8 @@ namespace Module.Host.TPM.Actions.Notifications
                         string template = File.ReadAllText(templateFileName);
                         if (!String.IsNullOrEmpty(template))
                         {
- 							var notifyIncidents = context.Set<PromoOnApprovalIncident>().Where(x => x.ProcessDate == null);
-							// Проверяем, что промо в статусе OnApproval 
-							notifyIncidents = notifyIncidents.Where(x => x.Promo.PromoStatus.SystemName == "OnApproval");
+ 							var notifyIncidents = context.Set<PromoOnApprovalIncident>()
+								.Where(x => x.ProcessDate == null && !x.Promo.Disabled && x.Promo.PromoStatus.SystemName == "OnApproval");
 
 							// Проверяем, что промо ещё не подтвреждено указанной ролью
 							List<PromoOnApprovalIncident> actualNotifyIncidents = new List<PromoOnApprovalIncident>();
@@ -115,21 +114,17 @@ namespace Module.Host.TPM.Actions.Notifications
         /// <param name="context"></param>
         private void CreateNotification(IEnumerable<PromoOnApprovalIncident> incidentsForNotify, string notificationName, string template, DatabaseContext context, string approvingRole)
         {
-			string[] recipientsRole = { approvingRole };
-			List<Recipient> recipients = ConstraintsHelper.GetRecipientsByNotifyName(notificationName, context);
+			string NotificationRole = approvingRole;
 
-			if (!recipients.Any())
-			{
-				if (Errors.Count == 0)
-				{
-					Errors.Add(String.Format("There are no recipinets for notification: {0}.", notificationName));
-				}
-				return;
-			}
+			var notifyBody = String.Empty;
+			var allRows = new List<string>();
+			var logPromoNums = new List<string>();
+			var emailArray = new string[] { };
+
+			List<Recipient> recipients = NotificationsHelper.GetRecipientsByNotifyName(notificationName, context);
 
 			IList<string> userErrors;
-			List<Guid> userIds = ConstraintsHelper.GetUserIdsByRecipients(notificationName, recipients, context, out userErrors, recipientsRole);
-
+			List<Guid> userIdsWithoutConstraints = NotificationsHelper.GetUserIdsByRecipients(notificationName, recipients, context, out userErrors).ToList();
 			if (userErrors.Any())
 			{
 				foreach (string error in userErrors)
@@ -137,21 +132,19 @@ namespace Module.Host.TPM.Actions.Notifications
 					Warnings.Add(error);
 				}
 			}
-			if (!userIds.Any())
+
+			List<Guid> userIdsWithConstraints = NotificationsHelper.GetUsersIdsWithRole(NotificationRole, context).Except(userIdsWithoutConstraints).ToList();
+			if (!userIdsWithConstraints.Any() && !userIdsWithoutConstraints.Any())
 			{
-				foreach (PromoOnApprovalIncident incident in incidentsForNotify)
-				{
-					incident.ProcessDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
-				}
-				Warnings.Add(String.Format("There are no appropriate recipinets for notification: {0} for role {1}.", notificationName, approvingRole));
-				context.SaveChanges();
+				Warnings.Add(String.Format("There are no appropriate recipinets for notification: {0}.", notificationName));
 				return;
 			}
 
-			foreach (Guid userId in userIds)
+			// Отправка нотификаций для юзеров с дефолтной ролью
+			foreach (Guid userId in userIdsWithConstraints)
 			{
 				string userEmail = context.Users.Where(x => x.Id == userId).Select(y => y.Email).FirstOrDefault();
-				List<Constraint> constraints = ConstraintsHelper.GetConstraitnsByUserId(userId, context);
+				List<Constraint> constraints = NotificationsHelper.GetConstraitnsByUserId(userId, context);
 				IEnumerable<PromoOnApprovalIncident> constraintNotifies = incidentsForNotify;
 
 				// Применение ограничений
@@ -168,21 +161,52 @@ namespace Module.Host.TPM.Actions.Notifications
 
 				if (constraintNotifies.Any())
 				{
-					IList<string> promoNumbers = new List<string>();
-					List<string> allRows = new List<string>();
+					logPromoNums = new List<string>();
+					allRows = new List<string>();
 					foreach (PromoOnApprovalIncident incident in constraintNotifies)
 					{
 						List<string> allRowCells = GetRow(incident.Promo, propertiesOrder);
 						allRows.Add(String.Format(rowTemplate, string.Join("", allRowCells)));
-						promoNumbers.Add(incident.Promo.Number.ToString());
+						logPromoNums.Add(incident.Promo.Number.ToString());
 					}
-					string notifyBody = String.Format(template, string.Join("", allRows));
+					notifyBody = String.Format(template, string.Join("", allRows));
 
-					string[] emailArray = new[] { userEmail };
+					emailArray = new[] { userEmail };
 					if (!String.IsNullOrEmpty(userEmail))
 					{
 						SendNotificationByEmails(notifyBody, notificationName, emailArray);
-						Results.Add(String.Format("Notification about necessity of approving promoes with numbers {0} by {1} role were sent to {2}", String.Join(", ", promoNumbers.Distinct().ToArray()), approvingRole, String.Join(", ", emailArray)), null);
+						Results.Add(String.Format("Notification about necessity of approving promoes with numbers {0} by {1} role were sent to {2}", String.Join(", ", logPromoNums.Distinct().ToArray()), approvingRole, String.Join(", ", emailArray)), null);
+					}
+					else
+					{
+						string userLogin = context.Users.Where(x => x.Id == userId).Select(x => x.Name).FirstOrDefault();
+						Warnings.Add(String.Format("Email not found for user: {0}", userLogin));
+					}
+				}
+			}
+
+			// Отправка нотификаций для Recipients и Settings без проверок
+			foreach (Guid userId in userIdsWithoutConstraints)
+			{
+				string userEmail = context.Users.Where(x => x.Id == userId).Select(y => y.Email).FirstOrDefault();
+
+				if (incidentsForNotify.Any())
+				{
+					logPromoNums = new List<string>();
+					allRows = new List<string>();
+					foreach (PromoOnApprovalIncident incident in incidentsForNotify)
+					{
+						List<string> allRowCells = GetRow(incident, propertiesOrder);
+						allRows.Add(String.Format(rowTemplate, string.Join("", allRowCells)));
+						logPromoNums.Add(incident.Promo.Number.ToString());
+					}
+					notifyBody = String.Format(template, string.Join("", allRows));
+
+					emailArray = new[] { userEmail };
+					if (!String.IsNullOrEmpty(userEmail))
+					{
+						SendNotificationByEmails(notifyBody, notificationName, emailArray);
+						Results.Add(String.Format("Notification about necessity of approving promoes with numbers {0} by {1} role were sent to {2}", String.Join(", ", logPromoNums.Distinct().ToArray()), approvingRole, String.Join(", ", emailArray)), null);
 					}
 					else
 					{

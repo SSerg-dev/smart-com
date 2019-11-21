@@ -7,6 +7,7 @@ using Module.Persist.TPM.Model.TPM;
 using System.Linq;
 using System.Collections.Generic;
 using Module.Persist.TPM.Utils;
+using Persist.Model.Settings;
 
 namespace Module.Host.TPM.Actions.Notifications
 {
@@ -28,7 +29,7 @@ namespace Module.Host.TPM.Actions.Notifications
                         string template = File.ReadAllText(templateFileName);
                         if (!String.IsNullOrEmpty(template))
                         {
-							var notifyIncidents = context.Set<PromoApprovedIncident>().Where(x => x.ProcessDate == null).GroupBy(y => y.Promo.CreatorId);
+							var notifyIncidents = context.Set<PromoApprovedIncident>().Where(x => x.ProcessDate == null && x.Promo.PromoStatus.SystemName == "Approved" && !x.Promo.Disabled).GroupBy(y => y.Promo.CreatorId);
 
 							if (notifyIncidents.Any())
                             {
@@ -70,6 +71,18 @@ namespace Module.Host.TPM.Actions.Notifications
         /// <param name="context"></param>
         private void CreateNotification(IQueryable<IGrouping<Guid?, PromoApprovedIncident>> incidentsForNotify, string notificationName, string template, DatabaseContext context)
         {
+			List<Recipient> recipients = NotificationsHelper.GetRecipientsByNotifyName(notificationName, context);
+			IList<string> userErrors;
+			List<Guid> userIds = NotificationsHelper.GetUserIdsByRecipients(notificationName, recipients, context, out userErrors);
+
+			if (userErrors.Any())
+			{
+				foreach (string error in userErrors)
+				{
+					Warnings.Add(error);
+				}
+			}
+
 			foreach (IGrouping<Guid?, PromoApprovedIncident> incidentsGroup in incidentsForNotify)
 			{
 				IList<string> promoNumbers = new List<string>();
@@ -78,57 +91,51 @@ namespace Module.Host.TPM.Actions.Notifications
 				{
 					foreach (PromoApprovedIncident incident in incidentsGroup)
 					{
-						incident.ProcessDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
 						promoNumbers.Add(incident.Promo.Number.ToString());
 					}
 					Warnings.Add(String.Format("Promo creator not specified or not found. Promo numbers: {0}", String.Join(", ", promoNumbers.Distinct().ToArray())));
-					continue;
 				}
 
 				string creatorEmail = context.Users.Where(x => x.Id == creatorId && !x.Disabled).Select(y => y.Email).FirstOrDefault();
-				if (String.IsNullOrEmpty(creatorEmail))
+				if (String.IsNullOrEmpty(creatorEmail) && !creatorId.Equals(Guid.Empty))
 				{
 					promoNumbers = new List<string>();
 					foreach (PromoApprovedIncident incident in incidentsGroup)
 					{
-						incident.ProcessDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
 						promoNumbers.Add(incident.Promo.Number.ToString());
 					}
 					Warnings.Add(String.Format("Promo creator's email not found. Promo numbers: {0}", String.Join(", ", promoNumbers.Distinct().ToArray())));
-					continue;
 				}
 
-				IQueryable<Promo> approvedPromoes = context.Set<Promo>().Where(x => x.PromoStatus.SystemName == "Approved");
 				List<string> allRows = new List<string>();
 				promoNumbers = new List<string>();
 				foreach (PromoApprovedIncident incident in incidentsGroup)
 				{
-					bool isApproved = approvedPromoes.Any(x => x.Id == incident.PromoId);
-					if (isApproved)
-					{
-						List<string> allRowCells = GetRow(incident.Promo, propertiesOrder);
-						allRows.Add(String.Format(rowTemplate, string.Join("", allRowCells)));
-						promoNumbers.Add(incident.Promo.Number.ToString());
-					}
-
+					List<string> allRowCells = GetRow(incident.Promo, propertiesOrder);
+					allRows.Add(String.Format(rowTemplate, string.Join("", allRowCells)));
+					promoNumbers.Add(incident.Promo.Number.ToString());
 					incident.ProcessDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
 				}
-				if (allRows.Count > 0)
-				{
-					string notifyBody = String.Format(template, string.Join("", allRows));
-					string defaultRecipient = context.MailNotificationSettings.Where(x => x.Name == notificationName && !x.Disabled && !x.IsDisabled).Select(x => x.To).FirstOrDefault();
+				string notifyBody = String.Format(template, string.Join("", allRows));
+				List<string> defaultRecipients = NotificationsHelper.GetUsersEmail(userIds, context);
 
-					string[] emailArray = new[] { creatorEmail };
-					if (!String.IsNullOrEmpty(defaultRecipient))
+				if (!String.IsNullOrEmpty(creatorEmail))
+				{
+					if (!defaultRecipients.Contains(creatorEmail))
 					{
-						emailArray = new[] { creatorEmail, defaultRecipient };
+						defaultRecipients.Add(creatorEmail);
 					}
-					
-					if (!String.IsNullOrEmpty(creatorEmail))
-					{
-						SendNotificationByEmails(notifyBody, notificationName, emailArray);
-						Results.Add(String.Format("Notifications about transition in approved status of promoes with numbers: {0} were sent to {1}", String.Join(", ", promoNumbers.Distinct().ToArray()), String.Join(", ", emailArray)), null);
-					}
+				}
+
+				string[] emailArray = defaultRecipients.ToArray();
+				if (emailArray.Length > 0)
+				{
+					SendNotificationByEmails(notifyBody, notificationName, emailArray);
+					Results.Add(String.Format("Notifications about transition in approved status of promoes with numbers: {0} were sent to {1}", String.Join(", ", promoNumbers.Distinct().ToArray()), String.Join(", ", emailArray)), null);
+				}
+				else
+				{
+					Warnings.Add(String.Format("There is no recipient to send notification."));
 				}
 			}
 			

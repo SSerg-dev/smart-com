@@ -1641,7 +1641,7 @@
     <Compile Include="Session\SessionHub.cs" />
     <Compile Include="Session\SessionSignalRMiddleware.cs" />
     <Compile Include="Utils\ChangeTimeZone.cs" />
-    <Compile Include="Utils\ConstraintsHelper.cs" />
+    <Compile Include="Utils\NotificationsHelper.cs" />
     <Compile Include="Utils\Filter\FilterConverter.cs" />
     <Compile Include="Utils\Filter\FilterRule.cs" />
     <Compile Include="Utils\Filter\FilterNode.cs" />
