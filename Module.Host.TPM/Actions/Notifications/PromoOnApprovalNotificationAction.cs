@@ -196,7 +196,7 @@ namespace Module.Host.TPM.Actions.Notifications
 					allRows = new List<string>();
 					foreach (PromoOnApprovalIncident incident in incidentsForNotify)
 					{
-						List<string> allRowCells = GetRow(incident, propertiesOrder);
+						List<string> allRowCells = GetRow(incident.Promo, propertiesOrder);
 						allRows.Add(String.Format(rowTemplate, string.Join("", allRowCells)));
 						logPromoNums.Add(incident.Promo.Number.ToString());
 					}
