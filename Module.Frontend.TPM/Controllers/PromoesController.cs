@@ -303,8 +303,8 @@ namespace Module.Frontend.TPM.Controllers {
                     }
                 }
 
-                //Сохранение изменения статуса.
-                if (promoCopy.PromoStatusId != model.PromoStatusId
+				//Сохранение изменения статуса.
+				if (promoCopy.PromoStatusId != model.PromoStatusId
                     || promoCopy.IsDemandFinanceApproved != model.IsDemandFinanceApproved
                     || promoCopy.IsCMManagerApproved != model.IsCMManagerApproved
                     || promoCopy.IsDemandPlanningApproved != model.IsDemandPlanningApproved)
@@ -449,57 +449,38 @@ namespace Module.Frontend.TPM.Controllers {
 					Context.Set<PromoCancelledIncident>().Add(new PromoCancelledIncident() { PromoId = model.Id, CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow) });
                 }
 
-				if (promoCopy.InOutProductIds != model.InOutProductIds)
+				// Проверка изменения списка выбранных продуктов
+				if (model.InOutProductIds != promoCopy.InOutProductIds && prevStatusName.ToLower() != "draftpublished")
 				{
-					IList<Product> oldProductIdList = new List<Product>();
-					IList<Product> newProductIdList = new List<Product>();
-                    if (promoCopy.InOutProductIds != null)
-                    {
-                        foreach (var productId in promoCopy.InOutProductIds.Split(';'))
-                        {
-                            var productGuid = Guid.Empty;
-                            if (Guid.TryParse(productId, out productGuid))
-                            {
-                                Product product = Context.Set<Product>().Where(x => x.Id == productGuid).FirstOrDefault();
-                                if (product != null) oldProductIdList.Add(product);
-                            }
-                        }
-                    }
+					var oldIds = promoCopy.InOutProductIds.ToLower().Split(';').ToList();
+					var newIds = model.InOutProductIds.ToLower().Split(';').ToList();
+					var deletedIds = oldIds.Except(newIds).ToList();
+					var addedIds = newIds.Except(oldIds).ToList();
+					var addedZREPs = Context.Set<Product>().Where(p => addedIds.Any(id => id == p.Id.ToString().ToLower())).Select(p => p.ZREP).ToList();
+					var deletedZREPs = Context.Set<Product>().Where(p => deletedIds.Any(id => id == p.Id.ToString().ToLower())).Select(p => p.ZREP).ToList();
 
-                    if (model.InOutProductIds != null)
-                    {
-                        foreach (var productId in model.InOutProductIds.Split(';'))
-                        {
-                            var productGuid = Guid.Empty;
-                            if (Guid.TryParse(productId, out productGuid))
-                            {
-                                Product product = Context.Set<Product>().Where(x => x.Id == productGuid).FirstOrDefault();
-                                if (product != null) newProductIdList.Add(product);
-                            }
-                        }
-                    }
-
-					List<Product> forIncident = new List<Product>();
-					forIncident.AddRange(newProductIdList.Except(oldProductIdList));
-					forIncident.AddRange(oldProductIdList.Except(newProductIdList));
-					if (forIncident.Any())
+					if (addedZREPs.Any() || deletedZREPs.Any())
 					{
-						foreach (var product in forIncident)
+						Product p = Context.Set<Product>().Where(x => addedZREPs.Contains(x.ZREP) || deletedZREPs.Contains(x.ZREP)).FirstOrDefault();
+						if (p != null)
 						{
-							var pci = new ProductChangeIncident
+							ProductChangeIncident pci = new ProductChangeIncident()
 							{
-								CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+								Product = p,
+								ProductId = p.Id,
+								IsRecalculated = false,
+								RecalculatedPromoId = model.Id,
+								AddedProductIds = addedZREPs.Any() ? String.Join(";", addedZREPs) : null,
+								ExcludedProductIds = deletedZREPs.Any() ? String.Join(";", deletedZREPs) : null,
+								CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).Value,
 								IsCreate = false,
-								IsDelete = false,
-								IsCreateInMatrix = false,
-								IsDeleteInMatrix = false,
-								Product = product,
-								ProductId = product.Id
+								IsChecked = true,
 							};
 							Context.Set<ProductChangeIncident>().Add(pci);
 						}
 					}
 				}
+			
 
                 Context.SaveChanges();
                 PromoHelper.WritePromoDemandChangeIncident(Context, model, patch, promoCopy);

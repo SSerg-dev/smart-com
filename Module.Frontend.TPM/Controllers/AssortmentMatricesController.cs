@@ -137,6 +137,7 @@ namespace Module.Frontend.TPM.Controllers
 				IsDelete = false,
 				IsCreateInMatrix = true,
 				IsDeleteInMatrix = false,
+				IsChecked = false,
 				Product = result.Product,
 				ProductId = result.ProductId
 			};
@@ -189,6 +190,7 @@ namespace Module.Frontend.TPM.Controllers
 					IsDelete = false,
 					IsCreateInMatrix = true,
 					IsDeleteInMatrix = true,
+					IsChecked = false,
 					Product = model.Product,
 					ProductId = model.ProductId
 				};
@@ -239,6 +241,7 @@ namespace Module.Frontend.TPM.Controllers
 					IsDelete = false,
 					IsCreateInMatrix = false,
 					IsDeleteInMatrix = true,
+					IsChecked = false,
 					Product = model.Product,
 					ProductId = model.ProductId
 				};

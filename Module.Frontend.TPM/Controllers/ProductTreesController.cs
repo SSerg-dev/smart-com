@@ -464,6 +464,7 @@ namespace Module.Frontend.TPM.Controllers
 									IsDelete = false,
 									IsCreateInMatrix = false,
 									IsDeleteInMatrix = false,
+									IsChecked = false,
 									Product = product,
 									ProductId = product.Id
 								};

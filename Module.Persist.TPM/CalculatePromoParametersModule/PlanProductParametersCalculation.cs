@@ -36,12 +36,19 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         /// <param name="context">Текущий контекст</param>
         public static bool SetPromoProduct(Guid promoId, DatabaseContext context, out string error, bool? duringTheSave = false, List<PromoProductTree> promoProductTrees = null)
         {
-            try
-            {
+			try
+			{
+				string[] statusesForIncidents = {"OnApproval", "Approved", "Planned"};
+				var addedZREPs = new List<string>();
+				var deletedZREPs = new List<string>();
                 bool needReturnToOnApprovalStatus = false;
                 var promo = context.Set<Promo>().Where(x => x.Id == promoId && !x.Disabled).FirstOrDefault();
+				var changeProductIncidents = context.Set<ProductChangeIncident>().Where(x => x.NotificationProcessDate == null);
+				var changedProducts = changeProductIncidents.Select(x => x.Product.ZREP).Distinct();
+				var createdProducts = changeProductIncidents.Where(p => p.IsCreate && !p.IsChecked).Select(i => i.Product.ZREP);
+				bool createIncidents = statusesForIncidents.Any(s => s.ToLower() == promo.PromoStatus.SystemName.ToLower());
 
-                var productTreeArray = context.Set<ProductTree>().Where(x => context.Set<PromoProductTree>().Where(p => p.PromoId == promoId && !p.Disabled).Any(p => p.ProductTreeObjectId == x.ObjectId && !x.EndDate.HasValue)).ToArray();
+				var productTreeArray = context.Set<ProductTree>().Where(x => context.Set<PromoProductTree>().Where(p => p.PromoId == promoId && !p.Disabled).Any(p => p.ProductTreeObjectId == x.ObjectId && !x.EndDate.HasValue)).ToArray();
 
                 // добавление записей в таблицу PromoProduct может производиться и при сохранении промо (статус Draft) и при расчете промо (статус !Draft)
                 List<Product> filteredProducts = (duringTheSave.HasValue && duringTheSave.Value) ? GetProductFiltered(promoId, context, out error, promoProductTrees) : GetProductFiltered(promoId, context, out error);
@@ -65,6 +72,10 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 {
 					if (!resultProductList.Any(x => x.ZREP == promoProduct.ZREP))
 					{
+						if (changedProducts.Contains(promoProduct.ZREP) && createIncidents)
+						{
+							deletedZREPs.Add(promoProduct.ZREP);
+						}
 						promoProduct.Disabled = true;
 						promoProduct.DeletedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
 						needReturnToOnApprovalStatus = true;
@@ -92,11 +103,20 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                             }
                             else if (promoProduct == null)
                             {
+								if (changedProducts.Contains(p.ZREP) && createIncidents)
+								{
+									addedZREPs.Add(p.ZREP);
+								}
                                 insertScript += String.Format(formatStrPromoProduct, Guid.NewGuid(), promoId, p.Id, p.ZREP, p.EAN_Case, p.EAN_PC, p.ProductEN);
                                 needReturnToOnApprovalStatus = true;
                             }
 
-                            if (promo.InOut.HasValue && promo.InOut.Value)
+							if (createdProducts.Any(x => x == p.ZREP) && !addedZREPs.Any(x => x == p.ZREP) && createIncidents)
+							{
+								addedZREPs.Add(p.ZREP);
+							}
+
+							if (promo.InOut.HasValue && promo.InOut.Value)
                             {
                                 var incrementalPromo = incrementalPromoes.FirstOrDefault(x => x.Product.ZREP == p.ZREP);
                                 if (incrementalPromo != null && incrementalPromo.Disabled)
@@ -120,6 +140,27 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     }
                 }
 
+				if (addedZREPs.Any() || deletedZREPs.Any())
+				{
+					Product p = changeProductIncidents.Select(x => x.Product).FirstOrDefault();
+					if (p != null)
+					{
+						ProductChangeIncident pci = new ProductChangeIncident()
+						{
+							Product = p,
+							ProductId = p.Id,
+							IsRecalculated = true,
+							RecalculatedPromoId = promoId,
+							AddedProductIds = addedZREPs.Any() ? String.Join(";", addedZREPs) : null,
+							ExcludedProductIds = deletedZREPs.Any() ? String.Join(";", deletedZREPs) : null,
+							CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).Value,
+							IsCreate = false,
+							IsChecked = false
+						};
+						context.Set<ProductChangeIncident>().Add(pci);
+					}
+				}
+				
                 // если добавление записей происходит при сохранении промо (статус Draft), то контекст сохранится в контроллере промо,
                 // а если добавление записей происходит при расчете промо (статус !Draft), то сохраняем контекст тут
                 if (duringTheSave.HasValue && !duringTheSave.Value)

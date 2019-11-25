@@ -390,6 +390,7 @@ namespace Module.Host.TPM.Actions {
 					IsDelete = false,
 					IsCreateInMatrix = true,
 					IsDeleteInMatrix = false,
+					IsChecked = false,
 					Product = product,
 					ProductId = product.Id
 				};

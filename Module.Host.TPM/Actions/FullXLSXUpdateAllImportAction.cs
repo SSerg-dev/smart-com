@@ -190,7 +190,8 @@ namespace Module.Host.TPM.Actions {
                             IsCreate = false,
                             IsDelete = false,
 							IsCreateInMatrix = false,
-							IsDeleteInMatrix = false
+							IsDeleteInMatrix = false,
+							IsChecked = false,
 						};
                         context.Set<ProductChangeIncident>().Add(pci);
                     }

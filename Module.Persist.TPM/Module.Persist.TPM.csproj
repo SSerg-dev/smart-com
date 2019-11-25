@@ -1382,6 +1382,10 @@
     <Compile Include="Migrations\201911200835523_EmptyMigration_RC.Designer.cs">
       <DependentUpon>201911200835523_EmptyMigration_RC.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201911251125439_ProductChangeINcident_UpdateFields.cs" />
+    <Compile Include="Migrations\201911251125439_ProductChangeINcident_UpdateFields.Designer.cs">
+      <DependentUpon>201911251125439_ProductChangeINcident_UpdateFields.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientTreeSharesView.cs" />
     <Compile Include="Model\DTO\PlanPostPromoEffectReport.cs" />
@@ -2544,6 +2548,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201911200835523_EmptyMigration_RC.resx">
       <DependentUpon>201911200835523_EmptyMigration_RC.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911251125439_ProductChangeINcident_UpdateFields.resx">
+      <DependentUpon>201911251125439_ProductChangeINcident_UpdateFields.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

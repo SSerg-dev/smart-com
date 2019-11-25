@@ -434,7 +434,8 @@ namespace Module.Frontend.TPM.Controllers
                 IsDelete = isDelete,
 				IsCreateInMatrix = false,
 				IsDeleteInMatrix = false,
-            };
+				IsChecked = false,
+			};
         }
 
         [ClaimsAuthorize]
