@@ -3180,7 +3180,7 @@
 
 		//если производится расчет данного промо, то необходимо сделать соотвествующие визуальные изменения окна: 
 		//цвет хедера меняется на красный, кнопка Редактировать - disable = true, появляется кнопка Show Log, заблокировать кнопки смены статусов
-        var toolbar = promoeditorcustom.down('customtoptoolbar'); \
+        var toolbar = promoeditorcustom.down('customtoptoolbar');
         //кнопки перехода статуса находятся не на customtoptoolbar, а на toolbar, при вызове down('toolbar') мы получаем customtoptoolbar, поэтому достаём через кнопку
         var toolbarbutton = promoeditorcustom.down('button[itemId=btn_sendForApproval]').up();
         if (calculating) { 
