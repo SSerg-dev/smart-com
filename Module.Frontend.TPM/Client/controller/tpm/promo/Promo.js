@@ -3180,14 +3180,23 @@
 
 		//если производится расчет данного промо, то необходимо сделать соотвествующие визуальные изменения окна: 
 		//цвет хедера меняется на красный, кнопка Редактировать - disable = true, появляется кнопка Show Log, заблокировать кнопки смены статусов
-		var toolbar = promoeditorcustom.down('customtoptoolbar');
-		if (calculating) {
-			toolbar.items.items.forEach(function (item, i, arr) {
-				item.el.setStyle('backgroundColor', '#B53333');
+        var toolbar = promoeditorcustom.down('customtoptoolbar'); \
+        //кнопки перехода статуса находятся не на customtoptoolbar, а на toolbar, при вызове down('toolbar') мы получаем customtoptoolbar, поэтому достаём через кнопку
+        var toolbarbutton = promoeditorcustom.down('button[itemId=btn_sendForApproval]').up();
+        if (calculating) { 
+            toolbar.items.items.forEach(function (item, i, arr) {
+                item.el.setStyle('backgroundColor', '#B53333');
+                //ненужный код, но и не проблеммный
 				if (item.xtype == 'button' && ['btn_publish', 'btn_undoPublish', 'btn_sendForApproval', 'btn_reject', 'btn_backToDraftPublished', 'btn_approve', 'btn_cancel', 'btn_plan', 'btn_close', 'btn_backToFinished'].indexOf(item.itemId) > -1) {
 					item.setDisabled(true);
 				}
-			});
+            });
+            toolbarbutton.items.items.forEach(function (item, i, arr) {
+              //  item.el.setStyle('backgroundColor', '#B53333');
+                if (item.xtype == 'button' && ['btn_publish', 'btn_undoPublish', 'btn_sendForApproval', 'btn_reject', 'btn_backToDraftPublished', 'btn_approve', 'btn_cancel', 'btn_plan', 'btn_close', 'btn_backToFinished'].indexOf(item.itemId) > -1) {
+                    item.setDisabled(true);
+                }
+            });
 			toolbar.el.setStyle('backgroundColor', '#B53333');
 
 			var label = toolbar.down('label[name=promoName]');
