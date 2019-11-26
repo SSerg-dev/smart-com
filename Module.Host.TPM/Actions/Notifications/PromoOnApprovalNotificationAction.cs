@@ -119,6 +119,7 @@ namespace Module.Host.TPM.Actions.Notifications
 			var notifyBody = String.Empty;
 			var allRows = new List<string>();
 			var logPromoNums = new List<string>();
+			var logPromoEmails = new List<string>();
 			var emailArray = new string[] { };
 
 			List<Recipient> recipients = NotificationsHelper.GetRecipientsByNotifyName(notificationName, context);
@@ -141,6 +142,7 @@ namespace Module.Host.TPM.Actions.Notifications
 			}
 
 			// Отправка нотификаций для юзеров с дефолтной ролью
+			Results.Add(String.Format("Sending notifications to users with default role {0}.", approvingRole), null);
 			foreach (Guid userId in userIdsWithConstraints)
 			{
 				string userEmail = context.Users.Where(x => x.Id == userId).Select(y => y.Email).FirstOrDefault();
@@ -175,51 +177,55 @@ namespace Module.Host.TPM.Actions.Notifications
 					if (!String.IsNullOrEmpty(userEmail))
 					{
 						SendNotificationByEmails(notifyBody, notificationName, emailArray);
-						Results.Add(String.Format("Notification about necessity of approving promoes with numbers {0} by {1} role were sent to {2}", String.Join(", ", logPromoNums.Distinct().ToArray()), approvingRole, String.Join(", ", emailArray)), null);
+						Results.Add(String.Format("Notification about necessity of approving promoes with numbers {0} by {1} role were sent to {2}.", String.Join(", ", logPromoNums.Distinct()), approvingRole, String.Join(", ", emailArray)), null);
 					}
 					else
 					{
 						string userLogin = context.Users.Where(x => x.Id == userId).Select(x => x.Name).FirstOrDefault();
-						Warnings.Add(String.Format("Email not found for user: {0}", userLogin));
+						Warnings.Add(String.Format("Email not found for user: {0}.", userLogin));
 					}
 				}
 			}
+
 
 			// Отправка нотификаций для Recipients и Settings без проверок
-			foreach (Guid userId in userIdsWithoutConstraints)
-			{
-				string userEmail = context.Users.Where(x => x.Id == userId).Select(y => y.Email).FirstOrDefault();
-
-				if (incidentsForNotify.Any())
+			Results.Add(String.Format("Sending notifications to users from recipients of {0}.", notificationName), null);
+			if (incidentsForNotify.Any()) {
+				logPromoNums = new List<string>();
+				allRows = new List<string>();
+				foreach (PromoOnApprovalIncident incident in incidentsForNotify)
 				{
-					logPromoNums = new List<string>();
-					allRows = new List<string>();
-					foreach (PromoOnApprovalIncident incident in incidentsForNotify)
-					{
-						List<string> allRowCells = GetRow(incident.Promo, propertiesOrder);
-						allRows.Add(String.Format(rowTemplate, string.Join("", allRowCells)));
-						logPromoNums.Add(incident.Promo.Number.ToString());
-					}
-					notifyBody = String.Format(template, string.Join("", allRows));
+					List<string> allRowCells = GetRow(incident.Promo, propertiesOrder);
+					allRows.Add(String.Format(rowTemplate, string.Join("", allRowCells)));
+					logPromoNums.Add(incident.Promo.Number.ToString());
+				}
+				notifyBody = String.Format(template, string.Join("", allRows));
 
-					emailArray = new[] { userEmail };
+				foreach (Guid userId in userIdsWithoutConstraints)
+				{
+					string userEmail = context.Users.Where(x => x.Id == userId).Select(y => y.Email).FirstOrDefault();
+
 					if (!String.IsNullOrEmpty(userEmail))
 					{
-						SendNotificationByEmails(notifyBody, notificationName, emailArray);
-						Results.Add(String.Format("Notification about necessity of approving promoes with numbers {0} by {1} role were sent to {2}", String.Join(", ", logPromoNums.Distinct().ToArray()), approvingRole, String.Join(", ", emailArray)), null);
+						logPromoEmails.Add(userEmail);
 					}
 					else
 					{
 						string userLogin = context.Users.Where(x => x.Id == userId).Select(x => x.Name).FirstOrDefault();
-						Warnings.Add(String.Format("Email not found for user: {0}", userLogin));
+						Warnings.Add(String.Format("Email not found for user: {0}.", userLogin));
 					}
 				}
-			}
 
-			foreach (PromoOnApprovalIncident incident in incidentsForNotify)
-			{
-				incident.ProcessDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+				SendNotificationByEmails(notifyBody, notificationName, logPromoEmails.Distinct().ToArray());
+				Results.Add(String.Format("Notification about necessity of approving promoes with numbers {0} by {1} role were sent to {2}.", 
+					String.Join(", ", logPromoNums.Distinct()), approvingRole, String.Join(", ", logPromoEmails.Distinct())), null);
+
+				foreach (PromoOnApprovalIncident incident in incidentsForNotify)
+				{
+					incident.ProcessDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+				}
 			}
+			
 			context.SaveChanges();
         }
 

@@ -168,7 +168,7 @@ namespace Module.Host.TPM.Actions.Notifications
 					if (!String.IsNullOrEmpty(userEmail))
 					{
 						SendNotificationByEmails(notifyBody, notificationName, emailArray);
-						Results.Add(String.Format("Notifications about changes in {0} promoes were sent to {1}", String.Join(", ", logPromoNums.Distinct().ToArray()), String.Join(", ", emailArray.Distinct())), null);
+						Results.Add(String.Format("Notifications about changes in {0} promoes were sent to {1}", String.Join(", ", logPromoNums.Distinct()), String.Join(", ", emailArray.Distinct())), null);
 					}
 					else
 					{
@@ -204,7 +204,7 @@ namespace Module.Host.TPM.Actions.Notifications
 			if (emailArray.Length != 0)
 			{
 				SendNotificationByEmails(notifyBody, notificationName, emailArray);
-				Results.Add(String.Format("Notifications about changes in {0} promoes were sent to {1}", String.Join(", ", logPromoNums.Distinct().ToArray()), String.Join(", ", emailArray.Distinct())), null);
+				Results.Add(String.Format("Notifications about changes in {0} promoes were sent to {1}", String.Join(", ", logPromoNums.Distinct()), String.Join(", ", emailArray.Distinct())), null);
 			}
 			
 			if (String.IsNullOrWhiteSpace(toEmail))
