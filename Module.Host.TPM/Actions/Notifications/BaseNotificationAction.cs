@@ -104,12 +104,14 @@ namespace Module.Host.TPM.Actions.Notifications {
 					"d/M/yyyy hh:mm:ss tt", "M/d/yyyy hh:mm:ss tt" };
 				DateTimeOffset date;
                 Boolean boolVal;
+				Double doubleVal;
 				if (DateTimeOffset.TryParseExact(value, dateFormats, CultureInfo.InvariantCulture, DateTimeStyles.None, out date)) {
                     value = date.ToString("dd.MM.yyyy");
-
 				} else if (Boolean.TryParse(value, out boolVal)) {
                     value = boolVal ? "Yes" : "No";
-                }
+                } else if (Double.TryParse(value, out doubleVal)) {
+					value = String.Format("{0:0.##}", val);
+				}
             }
             return value;
         }
