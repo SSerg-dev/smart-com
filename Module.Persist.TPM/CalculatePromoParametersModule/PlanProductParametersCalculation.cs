@@ -462,7 +462,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                                 baseLine = context.Set<BaseLine>().Where(x => x.ProductId == promoProduct.ProductId && x.DemandCode == clientNode.DemandCode && x.StartDate.HasValue && x.StartDate.Value == nextBaseLineStartDate && !x.Disabled).FirstOrDefault();
                                             }
 
-                                            if (nextBaseLineStartDate >= promo.EndDate)
+                                            if (nextBaseLineStartDate > promo.EndDate)
                                             {
                                                 exit = true;
                                             }
