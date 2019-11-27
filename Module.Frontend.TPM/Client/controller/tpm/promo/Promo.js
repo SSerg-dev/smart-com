@@ -4907,10 +4907,11 @@
 
 	unBlockPromo: function (window) {
 		var record = this.getRecord(window);
-		var toolbar = window.down('customtoptoolbar');
+        var toolbar = window.down('customtoptoolbar'); 
+        var toolbarbutton = window.down('button[itemId=btn_sendForApproval]').up();
 		var me = this;
 
-		if (toolbar) {
+        if (toolbar && toolbarbutton) {
 			toolbar.items.items.forEach(function (item, i, arr) {
 				item.el.setStyle('backgroundColor', '#3f6895');
 				if (item.xtype == 'button' && ['btn_publish', 'btn_undoPublish',
@@ -4918,7 +4919,12 @@
 					item.setDisabled(false);
 				}
 			});
-
+            toolbarbutton.items.items.forEach(function (item, i, arr) {
+                 if (item.xtype == 'button' && ['btn_publish', 'btn_undoPublish',
+                    'btn_sendForApproval', 'btn_reject', 'btn_backToDraftPublished', 'btn_approve', 'btn_cancel', 'btn_plan', 'btn_close', 'btn_backToFinished'].indexOf(item.itemId) > -1) {
+                    item.setDisabled(false);
+                }
+            });
 			toolbar.el.setStyle('backgroundColor', '#3f6895');
 
 			var label = toolbar.down('label[name=promoName]');
