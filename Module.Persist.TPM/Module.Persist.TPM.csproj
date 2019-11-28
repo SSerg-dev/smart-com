@@ -1466,6 +1466,10 @@
     <Compile Include="Migrations\201911211757201_PromoProductsCorrection_DatabaseGeneratedOption_Identity.Designer.cs">
       <DependentUpon>201911211757201_PromoProductsCorrection_DatabaseGeneratedOption_Identity.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201911281548201_EmptyMigration_RC1.cs" />
+    <Compile Include="Migrations\201911281548201_EmptyMigration_RC1.Designer.cs">
+      <DependentUpon>201911281548201_EmptyMigration_RC1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\PromoProductsView.cs" />
     <Compile Include="Model\DTO\ClientTreeSharesView.cs" />
@@ -2709,6 +2713,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201911211757201_PromoProductsCorrection_DatabaseGeneratedOption_Identity.resx">
       <DependentUpon>201911211757201_PromoProductsCorrection_DatabaseGeneratedOption_Identity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911281548201_EmptyMigration_RC1.resx">
+      <DependentUpon>201911281548201_EmptyMigration_RC1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
