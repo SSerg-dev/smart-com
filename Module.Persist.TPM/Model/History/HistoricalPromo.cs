@@ -238,10 +238,9 @@ namespace Module.Persist.TPM.Model.History {
         public double? ActualPromoNetIncrementalCOGS { get; set; }
         public double? ActualPromoNetBaseTI { get; set; }
         public double? ActualPromoNSV { get; set; }
-
         public bool? InOut { get; set; }
-
         // Id операции (по сути транзакции) для предотвращения дублирования
         public Guid? OperationId { get; set; }
+        public bool? IsGrowthAcceleration { get; set; }
     }
 }

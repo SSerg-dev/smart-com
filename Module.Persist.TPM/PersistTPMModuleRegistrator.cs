@@ -81,6 +81,8 @@ namespace Module.Persist.TPM {
             modelBuilder.Entity<BudgetSubItemClientTree>();
 			modelBuilder.Entity<PromoApprovedIncident>();
 			modelBuilder.Entity<ClientTreeBrandTech>();
+            modelBuilder.Entity<PromoProductsCorrection>();
+            modelBuilder.Entity<PromoProductsView>().ToTable("PromoProductsView"); ;
 
             modelBuilder.Entity<Promo>().Ignore(n => n.ProductTreeObjectIds);
             modelBuilder.Entity<Promo>().Ignore(n => n.Calculating);
@@ -191,6 +193,7 @@ namespace Module.Persist.TPM {
             builder.EntitySet<HistoricalProduct>("HistoricalProducts");
             builder.Entity<Product>().Collection.Action("ExportXLSX");
             builder.Entity<Product>().Collection.Action("FullImportXLSX");
+
             var getIfAllProductsInSubrangeAction = builder.Entity<Product>().Collection.Action("GetIfAllProductsInSubrange");
             getIfAllProductsInSubrangeAction.Parameter<string>("PromoId");
             getIfAllProductsInSubrangeAction.Parameter<string>("ProductIds");
@@ -445,6 +448,12 @@ namespace Module.Persist.TPM {
             builder.Entity<PromoProduct>().Collection.Action("DownloadTemplateXLSXTLC");
             builder.Entity<PromoProduct>().Collection.Action("DownloadTemplateXLSX");
 
+            builder.Entity<PromoProduct>().Collection.Action("GetPromoProductByPromoAndProduct");
+            builder.EntitySet<PromoProductsView>("PromoProductsViews");
+            builder.Entity<PromoProductsView>().Collection.Action("ExportXLSX");
+            builder.Entity<PromoProductsView>().Collection.Action("FullImportXLSX");
+            builder.Entity<PromoProductsView>().Collection.Action("DownloadTemplateXLSX");
+           
             builder.EntitySet<BaseLine>("BaseLines");
             builder.EntitySet<BaseLine>("DeletedBaseLines");
             builder.EntitySet<BaseLine>("BaseLines").HasRequiredBinding(e => e.Product, "Products");
@@ -472,6 +481,15 @@ namespace Module.Persist.TPM {
             builder.Entity<BudgetSubItem>().HasRequired(e => e.BudgetItem, (e, bi) => e.BudgetItemId == bi.Id);            
             builder.Entity<BudgetSubItem>().Collection.Action("ExportXLSX");
             builder.Entity<BudgetSubItem>().Collection.Action("FullImportXLSX");
+
+            builder.EntitySet<PromoProductsCorrection>("PromoProductsCorrections");
+            builder.EntitySet<PromoProductsCorrection>("DeletedPromoProductsCorrections");
+            builder.EntitySet<PromoProductsCorrection>("PromoProductsCorrections").HasOptionalBinding(e => e.PromoProduct, "PromoProducts");
+            builder.EntitySet<PromoProductsCorrection>("DeletedPromoProductsCorrections").HasOptionalBinding(e => e.PromoProduct, "PromoProducts");
+            builder.Entity<PromoProductsCorrection>().Collection.Action("ExportXLSX");
+            builder.Entity<PromoProductsCorrection>().Collection.Action("FullImportXLSX");
+            builder.Entity<PromoProductsCorrection>().Collection.Action("DownloadTemplateXLSX");
+            builder.EntitySet<HistoricalPromoProductsCorrection>("HistoricalPromoProductsCorrections");
 
             builder.EntitySet<PromoSupport>("PromoSupports");
             builder.EntitySet<PromoSupport>("DeletedPromoSupports");
@@ -608,6 +626,7 @@ namespace Module.Persist.TPM {
             //builder.Entity<BudgetSubItemClientTree>().HasRequired(e => e.ClientTree, (e, te) => e.ClientTreeId == te.Id);
             //builder.Entity<BudgetSubItemClientTree>().HasRequired(e => e.BudgetSubItem, (e, te) => e.BudgetSubItemId == te.Id);
 
+           
             ActionConfiguration getSelectedProductsAction = builder.Entity<Product>().Collection.Action("GetSelectedProducts");
 			getSelectedProductsAction.ReturnsCollectionFromEntitySet<IQueryable<Product>>("SelectedProducts");
 			getSelectedProductsAction.CollectionParameter<string>("jsonData");

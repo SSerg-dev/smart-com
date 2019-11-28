@@ -336,7 +336,7 @@
                     needReadOnly: true,
                     allowBlank: false,
                     allowOnlyWhitespace: false,
-                    crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
+                    crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager', 'DemandPlanning'],
                     maxText: l10n.ns('tpm', 'Promo').value('failMaxDate'),
                     minText: l10n.ns('tpm', 'Promo').value('failMinDate'),
                     onExpand: function () {
@@ -418,7 +418,7 @@
                     needReadOnly: true,
                     allowBlank: false,
                     allowOnlyWhitespace: false,
-                    crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
+                    crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager', 'DemandPlanning'],
                     maxText: l10n.ns('tpm', 'Promo').value('failMaxDate'),
                     minText: l10n.ns('tpm', 'Promo').value('failMinDate'),
                     onExpand: function () {

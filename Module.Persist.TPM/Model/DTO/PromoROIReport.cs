@@ -169,5 +169,6 @@ namespace Module.Persist.TPM.Model.DTO
         public string ProductTreeObjectIds { get; set; }
         public bool? Calculating { get; set; }
         public string BlockInformation { get; set; }
+        public bool IsGrowthAcceleration { get; set; }
     }
 }

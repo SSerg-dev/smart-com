@@ -17,6 +17,7 @@ namespace Module.Host.TPM.Handlers.DataFlow.Modules
             this.Collection = this.DatabaseContext.Set<PromoProduct>().AsNoTracking()
             .Select(x => new PromoProductDataFlowSimpleModel
             {
+                Id = x.Id,
                 PromoId = x.PromoId,
                 ProductId = x.ProductId,
                 Disabled = x.Disabled
@@ -25,6 +26,7 @@ namespace Module.Host.TPM.Handlers.DataFlow.Modules
         }
         public class PromoProductDataFlowSimpleModel : DataFlowSimpleModel
         {
+            public Guid Id { get; set; }
             public Guid? PromoId { get; set; }
             public Guid? ProductId { get; set; }
             public bool Disabled { get; set; }

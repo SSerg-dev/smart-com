@@ -119,6 +119,7 @@ namespace Module.Frontend.TPM.Util {
                 new Column() { Order = 0, Field = "Number", Header = "Promo ID", Quoting = false },
                 new Column() { Order = 0, Field = "ClientHierarchy", Header = "Client", Quoting = false },
                 new Column() { Order = 0, Field = "InOut", Header = "In-Out", Quoting = false },
+                new Column() { Order = 0, Field = "IsGrowthAcceleration", Header = "Growth acceleration", Quoting = false },
                 new Column() { Order = 0, Field = "Name", Header = "Promo name", Quoting = false },
                 new Column() { Order = 0, Field = "BrandTech.Name", Header = "Brandtech", Quoting = false },
                 new Column() { Order = 0, Field = "EventName", Header = "Event", Quoting = false },

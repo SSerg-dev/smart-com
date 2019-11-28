@@ -75,6 +75,19 @@ namespace Module.Host.TPM.Actions
                             promoProduct.DeletedDate = System.DateTime.Now;
                             promoProduct.Disabled = true;
                         }
+
+                        //при сбросе статуса в Draft необходимо удалить все коррекции
+                        var promoProductToDeleteListIds = promoProductToDeleteList.Select(x => x.Id).ToList();
+                        List<PromoProductsCorrection> promoProductCorrectionToDeleteList = context.Set<PromoProductsCorrection>()
+                            .Where(x => promoProductToDeleteListIds.Contains(x.PromoProductId) && x.Disabled != true).ToList();
+                        foreach (PromoProductsCorrection promoProductsCorrection in promoProductCorrectionToDeleteList)
+                        {
+                            promoProductsCorrection.DeletedDate = DateTimeOffset.UtcNow;
+                            promoProductsCorrection.Disabled = true;
+                            promoProductsCorrection.UserId = null;
+                            promoProductsCorrection.UserName = "System";
+                        }
+
                         //при сбросе статуса в Draft необходимо отвязать бюджеты от промо и пересчитать эти бюджеты
                         List<Guid> promoSupportIds = PromoCalculateHelper.DetachPromoSupport(promo, context);
                         foreach (var psId in promoSupportIds)

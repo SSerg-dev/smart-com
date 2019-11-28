@@ -28,6 +28,7 @@ using Module.Persist.TPM.CalculatePromoParametersModule;
 using Core.Settings;
 using Module.Persist.TPM.Utils;
 using Microsoft.Ajax.Utilities;
+using Newtonsoft.Json;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -291,8 +292,22 @@ namespace Module.Frontend.TPM.Controllers
             {
                 return InternalServerError(e.InnerException);
             }
-        }        
+        }
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IHttpActionResult GetPromoProductByPromoAndProduct([FromODataUri] Guid promoId, [FromODataUri] Guid productId)
+        {
+            try
+            {
+                PromoProduct promoProduct = Context.Set<PromoProduct>().FirstOrDefault(x => x.PromoId == promoId && x.ProductId == productId);
+                 return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, models = promoProduct }));
 
+            }
+            catch (Exception e)
+            {
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false }));
+            }
+        }
         private bool EntityExists(System.Guid key)
         {
             return Context.Set<PromoProduct>().Count(e => e.Id == key) > 0;
@@ -318,7 +333,8 @@ namespace Module.Frontend.TPM.Controllers
                     { "actualproductlsv", new Column() { Order = 2, Field = "ActualProductLSV", Header = "Actual Product LSV", Quoting = false }},
                     { "actualproductpostpromoeffectlsv", new Column() { Order = 2, Field = "ActualProductPostPromoEffectLSV", Header = "Actual Product Post Promo Effect LSV", Quoting = false }},
                     { "actualproductlsvbycompensation", new Column() { Order = 2, Field = "ActualProductLSVByCompensation", Header = "Actual Product LSV By Compensation", Quoting = false }},
-                };
+					{ "actualproductupliftpercent", new Column() { Order = 2, Field = "ActualProductUpliftPercent", Header = "Actual Product Uplift %", Quoting = false }},
+				};
 
                 additionalColumn = additionalColumn.ToLower();
                 string[] columnsName = additionalColumn.Split(";".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);

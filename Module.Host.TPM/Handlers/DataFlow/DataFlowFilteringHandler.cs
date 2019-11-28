@@ -183,6 +183,31 @@ namespace Module.Host.TPM.Handlers.DataFlow
                     }
                 });
 
+                // --- PromoProductsCorrection ---
+
+                handlerLogger.Write(true, $"{nameof(PromoProductsCorrectionDataFlowFilter)}: Amount of promoes to check: { promoesForRecalculatingForFilters.Count() }. " +
+                    $"Amount of {nameof(PromoProductsCorrection)} models: { dataFlowFilterCollection.PromoProductsCorrectionDataFlowFilter.ChangedModels.Count() }", "Message");
+
+                Parallel.ForEach(dataFlowFilterCollection.PromoProductsCorrectionDataFlowFilter.ChangedModels, 
+                    new ParallelOptions { MaxDegreeOfParallelism = MaxDegreeOfParallelism }, promoProductsCorrection =>
+                {
+                    var applyResult = dataFlowFilterCollection.PromoProductsCorrectionDataFlowFilter.Apply(promoProductsCorrection, promoesForRecalculatingForFilters.Values);
+                    if (applyResult.Item1.Count() > 0)
+                    {
+                        lock (syncLock)
+                        {
+                            promoesForRecalculating.AddRange(applyResult.Item1);
+                            handlerLogger.Write(true, $"Promo numbers {string.Join(", ", applyResult.Item1.Select(x => x.Number))} were filtered by {applyResult.Item2}", "Message");
+                        }
+
+                        var promoDataFlowSimpleModel = new PromoDataFlowModule.PromoDataFlowSimpleModel();
+                        foreach (var promoForRemoving in applyResult.Item1)
+                        {
+                            promoesForRecalculatingForFilters.TryRemove(promoForRemoving.Id, out promoDataFlowSimpleModel);
+                        }
+                    }
+                });
+
                 // --- BaseLine ---
 
                 handlerLogger.Write(true, $"{nameof(BaseLineDataFlowFilter)}: Amount of promoes to check: { promoesForRecalculatingForFilters.Count() }. " +

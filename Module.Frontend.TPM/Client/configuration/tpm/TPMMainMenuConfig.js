@@ -96,7 +96,13 @@
         glyph: 0xf619,
         
         widget: 'brandtech'
-    }]
+        },{
+            text: l10n.ns('tpm', 'mainmenu').value('PromoProductCorection'),
+            tooltip: l10n.ns('tpm', 'mainmenu').value('PromoProductCorection'),
+            glyph: 0xf619,
+
+            widget: 'promoproductcorrection'
+        }]
 }, {
         text: l10n.ns('tpm', 'mainmenu').value('DemandItem'),
         tooltip: l10n.ns('tpm', 'mainmenu').value('DemandItem'),

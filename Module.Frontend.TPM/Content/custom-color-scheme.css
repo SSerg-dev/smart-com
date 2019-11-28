@@ -563,9 +563,19 @@ div.sch-event-selected {
     border-width: 1px !important
 }
 
-    div.sch-event-selected .sch-event-text {
-        font-weight: bold !important;
-    }
+div.sch-event-selected .sch-event-text {
+    line-height: 10px;
+    font-weight: bold !important;
+}
+
+div.sch-event-selected .growth-acceleration-icon {
+    margin-top: 1px;
+    font-size: 14px;
+}
+
+div.sch-event-selected .event-status-border-growth-acceleration {
+    margin-left: 15px !important;
+}
 
 pre.code {
     background: #F8F8F8;
@@ -2921,6 +2931,25 @@ x-slider-inner:before {
     float: right !important;
 }
 
+.promo-calculation-activity-uplift-btnglyph {
+    background-color: rgba(0, 0, 0, 0);
+    border: none;
+    box-shadow: none !important;
+    padding: 0;
+    margin: 0;
+}
+
+.promo-calculation-activity-uplift-btnglyph .x-btn-glyph {
+    color: #3f6895;
+    font-size: 20px;
+    line-height: 30px;
+}
+
+.promo-calculation-activity-uplift-btnglyph:hover {
+    background-color: rgba(0, 0, 0, 0);
+    cursor: default;
+}
+
 .promo-calculation-activity-uplift-container .x-box-inner .x-box-target .x-container .x-field .x-form-item-input-row .x-form-item-body .x-form-trigger-wrap {
 }
 
@@ -3068,6 +3097,11 @@ x-slider-inner:before {
     background-repeat: no-repeat !important;
     background-position: center !important;
     background-size: 20px;
+}
+
+.editable-trigger-field .promo-activity-details-window-field input,
+.editable-trigger-field .form-info-trigger-cell {
+    background-color: white !important;
 }
 
 .form-info-trigger-cell {
@@ -3961,6 +3995,10 @@ x-slider-inner:before {
     width: 12px;
     height: 12px;
     color: #ee7f2f;
+}
+
+.alpha-g-box-outline:before {
+    content: "\FBD9";
 }
 
 .disableBG .x-form-text {

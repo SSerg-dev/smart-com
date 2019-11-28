@@ -202,6 +202,7 @@
                     { xtype: 'singlelinedisplayfield', name: 'Client2LevelName', fieldLabel: l10n.ns('tpm', 'Promo').value('Client2LevelName'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'ClientName', fieldLabel: l10n.ns('tpm', 'Promo').value('ClientName'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'ProductSubrangesList', fieldLabel: l10n.ns('tpm', 'Promo').value('ProductSubrangesList'), hidden: true },
+                    { xtype: 'singlelinedisplayfield', name: 'IsGrowthAcceleration', fieldLabel: l10n.ns('tpm', 'Promo').value('IsGrowthAcceleration'), hidden: true },
                 ]
             }]
         }]

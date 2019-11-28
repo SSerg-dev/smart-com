@@ -25,6 +25,9 @@ Ext.define('App.model.tpm.cogs.HistoricalCOGS', {
             type: 'json',
             totalProperty: 'inlineCount',
             root: 'results'
+        },
+        extraParams: {
+            id: null
         }
     }
 });

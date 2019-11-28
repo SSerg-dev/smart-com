@@ -45,7 +45,6 @@ namespace Module.Persist.TPM.PromoStateControl
             public bool ChangeState(Promo promoModel, string userRole, out string message)
             {
                 message = "Action is not available";
-
                 return false;
             }
 

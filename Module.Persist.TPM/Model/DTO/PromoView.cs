@@ -32,5 +32,6 @@ namespace Module.Persist.TPM.Model.DTO {
         public int? CalendarPriority { get; set; }
 
         public bool? InOut { get; set; }
+        public bool IsGrowthAcceleration { get; set; }
     }
 }

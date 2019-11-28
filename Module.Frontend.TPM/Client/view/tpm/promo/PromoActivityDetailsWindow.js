@@ -86,7 +86,7 @@
                             layout: 'anchor',
                             fieldLabel: 'Type',
                             labelAlign: 'top',
-                                name: 'PlanInstoreMechanicTypeIdInActivity',
+                            name: 'PlanInstoreMechanicTypeIdInActivity',
                             selectorWidget: 'mechanictype',
                             valueField: 'Id',
                             displayField: 'Name',
@@ -135,16 +135,20 @@
                     padding: '0 10',
                     layout: 'vbox',
                     items: [{
-                        xtype: 'numberfield',
-                        name: 'PlanPromoUpliftPercent',
-                        fieldLabel: l10n.ns('tpm', 'Promo').value('PromoUpliftPercent'),
-                        readOnly: true,
-                        cls: 'promo-activity-details-window-field',
-                        labelCls: 'borderedField-label',
-                        width: '100%',
-                        labelWidth: 190,
-                        labelSeparator: '',
-                        margin: '0 0 5 0',
+						xtype: 'triggerfielddetails',
+						name: 'PlanPromoUpliftPercent',
+						fieldLabel: l10n.ns('tpm', 'Promo').value('PromoUpliftPercent'),
+						windowType: 'promoproductsview',
+						dataIndexes: ['PlanPromoUpliftPercent'],
+						rawToValue: function () {
+							var parsedValue = parseFloat(String(this.originValue).replace(Ext.util.Format.decimalSeparator, "."))
+							return isNaN(parsedValue) ? null : parsedValue;
+						},
+						listeners: {
+							afterrender: function (el) {
+								el.triggerCell.addCls('form-info-trigger-cell')
+							}
+						}
                     }, {
                         xtype: 'triggerfielddetails',
                         name: 'PlanPromoBaselineLSV',
@@ -445,16 +449,19 @@
                     padding: '0 10',
                     layout: 'vbox',
                     items: [{
-                        xtype: 'numberfield',
-                        name: 'ActualPromoUpliftPercent',
-                        fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoUpliftPercent'),
-                        readOnly: true,
-                        cls: 'promo-activity-details-window-field',
-                        labelCls: 'borderedField-label',
-                        width: '100%',
-                        labelWidth: 190,
-                        labelSeparator: '',
-                        margin: '0 0 5 0',
+						xtype: 'triggerfielddetails',
+						name: 'ActualPromoUpliftPercent',
+						fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoUpliftPercent'),
+						dataIndexes: ['ActualProductUpliftPercent'],
+						rawToValue: function () {
+							var parsedValue = parseFloat(String(this.originValue).replace(Ext.util.Format.decimalSeparator, "."))
+							return isNaN(parsedValue) ? null : parsedValue;
+						},
+						listeners: {
+							afterrender: function (el) {
+								el.triggerCell.addCls('form-info-trigger-cell')
+							}
+						}
                     }, {
                         xtype: 'triggerfielddetails',
                         name: 'ActualPromoBaselineLSV',

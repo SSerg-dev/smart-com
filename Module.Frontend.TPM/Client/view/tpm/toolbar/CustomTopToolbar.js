@@ -33,6 +33,15 @@
         hidden: true,
         disabled: true
     }, {
+        xtype: 'button',
+        itemId: 'btn_promoGrowthAcceleration',
+        glyph: 0xfbd9,
+        cls: 'in-out-promo-header-button',
+        text: 'Growth Acceleration',
+        height: 20,
+        hidden: true,
+        disabled: true
+    }, {
         xtype: 'tbspacer',
         flex: 1
     }, {

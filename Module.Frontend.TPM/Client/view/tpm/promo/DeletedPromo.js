@@ -66,6 +66,12 @@
                     return value ? l10n.ns('core', 'booleanValues').value('true') : l10n.ns('core', 'booleanValues').value('false');
                 }
             }, {
+                text: l10n.ns('tpm', 'Promo').value('GrowthAcceleration'),
+                dataIndex: 'IsGrowthAcceleration',
+                renderer: function (value) {
+                    return value ? l10n.ns('core', 'booleanValues').value('true') : l10n.ns('core', 'booleanValues').value('false');
+                }
+            }, {
                 text: l10n.ns('tpm', 'Promo').value('Name'),
                 dataIndex: 'Name',
                 width: 150,

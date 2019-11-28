@@ -175,6 +175,8 @@
     <Compile Include="Actions\FullXLSXAssortmentMatrixImportAction.cs" />
     <Compile Include="Actions\FullXLSXImportPromoProductFromTLCAction.cs" />
     <Compile Include="Actions\FullXLSXUpdateImportIncrementalPromoAction.cs" />
+    <Compile Include="Actions\FullXLSXUpdateImportPromoProductsUpliftAction.cs" />
+    <Compile Include="Actions\FullXLSXUpdateImportPromoProductsCorrectionAction.cs" />
     <Compile Include="Actions\Notifications\PromoApprovedNotificationAction.cs" />
     <Compile Include="Actions\Notifications\PromoOnRejectNotificationAction.cs" />
     <Compile Include="Actions\Notifications\PromoOnApprovalNotificationAction.cs" />
@@ -211,6 +213,7 @@
     <Compile Include="Handlers\DataFlow\Filters\DataFlowFilter.cs" />
     <Compile Include="Handlers\DataFlow\Filters\IncrementalPromoDataFlowFilter.cs" />
     <Compile Include="Handlers\DataFlow\Filters\ProductTreeDataFlowFilter.cs" />
+    <Compile Include="Handlers\DataFlow\Filters\PromoProductsCorrectionDataFlowFilter.cs" />
     <Compile Include="Handlers\DataFlow\Modules\AssortmentMatrixDataFlowModule.cs" />
     <Compile Include="Handlers\DataFlow\Modules\BaseLineDataFlowModule.cs" />
     <Compile Include="Handlers\DataFlow\Modules\ChangesIncidentDataFlowModule.cs" />
@@ -222,6 +225,7 @@
     <Compile Include="Handlers\DataFlow\Modules\ProductTreeDataFlowModule.cs" />
     <Compile Include="Handlers\DataFlow\Modules\PromoDataFlowModule.cs" />
     <Compile Include="Handlers\DataFlow\Modules\PromoProductDataFlowModule.cs" />
+    <Compile Include="Handlers\DataFlow\Modules\PromoProductsCorrectionDataFlowModule.cs" />
     <Compile Include="Handlers\DataFlow\Modules\PromoProductTreeDataFlowModule.cs" />
     <Compile Include="Handlers\DataFlow\RecalculateAllPromoesHandler.cs" />
     <Compile Include="Handlers\FillInOutProductIdsHandler.cs" />

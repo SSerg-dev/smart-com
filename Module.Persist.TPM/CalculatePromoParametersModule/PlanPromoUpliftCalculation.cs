@@ -3,6 +3,7 @@ using Core.Settings;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
 using Persist;
+using Persist.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 {
     public class PlanPromoUpliftCalculation
     {
-        public static double? FindPlanPromoUplift(Guid promoId, DatabaseContext context, out string upliftMessage)
+        public static double? FindPlanPromoUplift(Guid promoId, DatabaseContext context, out string upliftMessage, bool needResetUpliftCorrections, Guid UserId)
         {
             try
             {
@@ -22,7 +23,29 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 currentPromo.PlanPromoUpliftPercent = null;
                 context.SaveChanges();
 
+
+                //Получаем все продукты по этому промо
+                List<PromoProduct> currentPromoProducts = context.Set<PromoProduct>().Where(x => x.PromoId == currentPromo.Id && x.Disabled != true).ToList();
+
                 upliftMessage = "";
+
+                if (needResetUpliftCorrections)
+                {
+                    User user = context.Set<User>().Where(x => x.Id == UserId && x.Disabled != true).FirstOrDefault();
+                    List<PromoProductsCorrection> promoProductsCorrectionsToDelete = context.Set<PromoProductsCorrection>().Where(x => x.PromoProduct.PromoId == promoId && x.Disabled != true).ToList();
+                    if(promoProductsCorrectionsToDelete.Count > 0)
+                    {
+                        foreach (PromoProductsCorrection promoProductsCorrection in promoProductsCorrectionsToDelete)
+                        {
+                            promoProductsCorrection.Disabled = true;
+                            promoProductsCorrection.DeletedDate = DateTimeOffset.UtcNow;
+                            promoProductsCorrection.ChangeDate = DateTimeOffset.UtcNow;
+                            promoProductsCorrection.UserId = user.Id;
+                            promoProductsCorrection.UserName = user.Name;
+                        }
+                    }
+                    context.SaveChanges();
+                }
 
                 //временно убрана проверка на наличие бюджетов
                 // TODO: решить, что с этим делать!
@@ -37,7 +60,6 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     // Исключить промо с признаком InOut из подбора uplift.
                     promoQuery = promoQuery.Where(x => x.InOut != true);
                 */
-
                 var promoQuery = context.Set<Promo>().Where(x => x.InOut != true);
                 if (promoQuery.Count() != 0)
                 {
@@ -98,7 +120,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         if (promoSubrangeList != null && promoSubrangeList.Count() != 0)
                         {
                             double? countedPlanUplift = 0;
-                            bool success = CalculatePlanPromoUpliftPersent(ref promoSubrangeList, currentPromo, out countedPlanUplift);
+                            bool success = CalculatePlanPromoUpliftPersent(ref promoSubrangeList, currentPromo, out countedPlanUplift, context, currentPromoProducts);
                             if (success)
                             {
                                 currentPromo.PlanPromoUpliftPercent = countedPlanUplift;
@@ -111,7 +133,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                             else
                             {
                                 string message;
-                                double? planPromoUpliftPercent = SingleSubrangeFinding(promoId, promoQuery, context, promoProductTreeArray, currentPromo, out message);
+                                double? planPromoUpliftPercent = SingleSubrangeFinding(promoId, promoQuery, context, promoProductTreeArray, currentPromo, out message, currentPromoProducts);
                                 upliftMessage = message;
                                 return planPromoUpliftPercent;
                             }
@@ -120,7 +142,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         else
                         {
                             string message;
-                            double? planPromoUpliftPercent = SingleSubrangeFinding(promoId, promoQuery, context, promoProductTreeArray, currentPromo, out message);
+                            double? planPromoUpliftPercent = SingleSubrangeFinding(promoId, promoQuery, context, promoProductTreeArray, currentPromo, out message, currentPromoProducts);
                             upliftMessage = message;
                             return planPromoUpliftPercent;
                         }
@@ -146,11 +168,12 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             }
         }
 
-        private static double? SingleSubrangeFinding(Guid promoId, IQueryable<Promo> promoQuery, DatabaseContext context, IQueryable<PromoProductTree> promoProductTreeArray, Promo currentPromo, out string message)
+        private static double? SingleSubrangeFinding(Guid promoId, IQueryable<Promo> promoQuery, DatabaseContext context, IQueryable<PromoProductTree> promoProductTreeArray, Promo currentPromo, out string message, List<PromoProduct> currentPromoProducts)
         {
             double? countedPlanUplift = 0;
             bool singleSubrangeSuccess = true;
             List<Promo> promoSingleSubrangeList = null;
+            List<Promo> promoMultipleSubrangeList = new List<Promo>();
             List<Promo> usedPromoes = new List<Promo>();
             foreach (var promoProductTree in promoProductTreeArray)
             {
@@ -171,38 +194,39 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                             promoSingleSubrangeList.Remove(promoSingleSubrange);
                         }
                     }
+                    if (promoSingleSubrangeList.Count > 0)
+                    {
+                        promoMultipleSubrangeList.AddRange(promoSingleSubrangeList);
+                    }
                 }
-
-                if (promoSingleSubrangeList != null && promoSingleSubrangeList.Count() != 0 && singleSubrangeSuccess)
+            }
+            if (promoMultipleSubrangeList != null && promoMultipleSubrangeList.Count() != 0 && singleSubrangeSuccess)
+            {
+                double? singleSubrangeCountedPlanUplift = 0;
+                bool success = CalculatePlanPromoUpliftPersent(ref promoMultipleSubrangeList, currentPromo, out singleSubrangeCountedPlanUplift, context, currentPromoProducts);
+                if (success)
                 {
-                    double? singleSubrangeCountedPlanUplift = 0;
-                    bool success = CalculatePlanPromoUpliftPersent(ref promoSingleSubrangeList, currentPromo, out singleSubrangeCountedPlanUplift);
-                    if (success)
-                    {
-                        countedPlanUplift += singleSubrangeCountedPlanUplift;                       
-                        usedPromoes.AddRange(promoSingleSubrangeList);  // так надёжнее
-                    }
-                    else
-                    {
-                        singleSubrangeSuccess = false;
-                    }
+                    countedPlanUplift += singleSubrangeCountedPlanUplift;
+                    usedPromoes.AddRange(promoMultipleSubrangeList);  // так надёжнее
                 }
                 else
                 {
                     singleSubrangeSuccess = false;
                 }
             }
+            else
+            {
+                singleSubrangeSuccess = false;
+            }
 
             if (singleSubrangeSuccess)
             {
-                double? resultPlanUplift = countedPlanUplift / promoProductTreeArray.Count();
-
-                currentPromo.PlanPromoUpliftPercent = resultPlanUplift;
+                currentPromo.PlanPromoUpliftPercent = countedPlanUplift;
                 context.SaveChanges();
 
                 message = GetMessagePromoList(usedPromoes);
                 //message = "Рассчитанное значение uplift";
-                return resultPlanUplift;
+                return countedPlanUplift;
             }
             // если не найдено исторических промо по каждому сабренжу отдельно, то осуществляется поиск исторических промо на основе брендтех текущего промо
             else
@@ -227,7 +251,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 }
 
                 double? brandTechCountedPlanUplift = 0;                
-                bool success = CalculatePlanPromoUpliftPersent(ref promoQueryList, currentPromo, out brandTechCountedPlanUplift);
+                bool success = CalculatePlanPromoUpliftPersent(ref promoQueryList, currentPromo, out brandTechCountedPlanUplift, context, currentPromoProducts);
                 if (success)
                 {
                     currentPromo.PlanPromoUpliftPercent = brandTechCountedPlanUplift;
@@ -236,6 +260,15 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     message = GetMessagePromoList(promoQueryList);
                     //message = "Рассчитанное значение uplift";
 
+                    return brandTechCountedPlanUplift;
+                }
+                //Если не нашли промо, но есть коррекции
+                else if (brandTechCountedPlanUplift != 0)
+                {
+                    currentPromo.PlanPromoUpliftPercent = brandTechCountedPlanUplift;
+                    context.SaveChanges();
+
+                    message = "Не найдено Promo для расчета Uplift. Uplift рассчитан по корректировкам";
                     return brandTechCountedPlanUplift;
                 }
                 else
@@ -261,8 +294,10 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             context.SaveChanges();
         }
 
-        private static bool CalculatePlanPromoUpliftPersent(ref List<Promo> promoList, Promo currentPromo, out double? countedPlanUplift)
+        private static bool CalculatePlanPromoUpliftPersent(ref List<Promo> promoList, Promo currentPromo, out double? countedPlanUplift, DatabaseContext context, List<PromoProduct> currentPromoProducts)
         {
+            countedPlanUplift = 0;
+
             if (promoList.Count() != 0)
             {
                 //промо, подходящие по механике
@@ -289,44 +324,97 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                             if (promoList.Count() != 0)
                             {
-                                double? factUpliftSum = 0;
-                                foreach (Promo promo in promoList)
-                                {
-                                    factUpliftSum += promo.ActualPromoUpliftPercent;
-                                }
-                                countedPlanUplift = factUpliftSum / promoList.Count();
+                                CalculateRealPlanPromoUpliftPercent(ref promoList, out countedPlanUplift, currentPromoProducts, context);
                                 return true;
                             }
-                            else
-                            {
-                                countedPlanUplift = 0;
-                                return false;
-                            }
-                        }
-                        else
-                        {
-                            countedPlanUplift = 0;
-                            return false;
                         }
                     }
-                    else
-                    {
-                        countedPlanUplift = 0;
-                        return false;
-                    }
+                }
+            }
+            countedPlanUplift = CalculateOnlyByCorrections(currentPromo, context, currentPromoProducts);
+            return false;
+        }
+
+        private static double? CalculateOnlyByCorrections(Promo currentPromo, DatabaseContext context, List<PromoProduct> currentPromoProducts)
+        {
+            double? countedPlanUplift = 0;
+            var promoProductsIds = currentPromoProducts.Select(y => y.Id);
+            List<PromoProductsCorrection> promoProductsCorrections = context.Set<PromoProductsCorrection>().Where(x => promoProductsIds.Contains(x.PromoProductId) && x.TempId == null && x.Disabled != true).ToList();
+            if (promoProductsCorrections.Count > 0)
+            {
+                double? summPlanIncremental = 0;
+                double? summPlanBaseline = 0;
+
+                foreach (PromoProductsCorrection promoProductsCorrection in promoProductsCorrections)
+                {
+                    summPlanIncremental += promoProductsCorrection.PromoProduct.PlanProductBaselineLSV * promoProductsCorrection.PlanProductUpliftPercentCorrected / 100;
+                }
+                summPlanBaseline += currentPromoProducts.Sum(x => x.PlanProductBaselineLSV);
+
+                if (summPlanBaseline != 0)
+                {
+                    countedPlanUplift = summPlanIncremental / summPlanBaseline * 100;
+                }
+            }
+            return countedPlanUplift;
+        }
+
+        public static void CalculateRealPlanPromoUpliftPercent(ref List<Promo> promoList, out double? countedPlanUplift, List<PromoProduct> currentPromoProducts, DatabaseContext context)
+        {
+            countedPlanUplift = 0;
+            List<PromoProduct> promoProductsList = new List<PromoProduct>();
+            List<PromoProduct> promoProductsSubList = new List<PromoProduct>();
+            double? factUpliftSum = 0;
+            double? factProductUplift = 0;
+            double? summPlanIncremental = 0;
+            double? summPlanBaseline = 0;
+            double? oldCountedPlanUplift;
+
+            foreach (Promo promo in promoList)
+            {
+                promoProductsList.AddRange(context.Set<PromoProduct>().Where(x => x.PromoId == promo.Id && x.Disabled != true).ToList());
+                if (promo.ActualPromoUpliftPercent != null)
+                {
+                    factUpliftSum += promo.ActualPromoUpliftPercent;
+                }
+            }
+            oldCountedPlanUplift = factUpliftSum / promoList.Count();
+            var promoProductsIds = currentPromoProducts.Select(y => y.Id);
+            List<PromoProductsCorrection> promoProductsCorrections = context.Set<PromoProductsCorrection>().Where(x => promoProductsIds.Contains(x.PromoProductId) && x.TempId == null && x.Disabled != true).ToList();
+            var promoProductsWithCorrectionIds = promoProductsCorrections.Select(y => y.PromoProductId);
+            //Подбираем аплифт для каждого отдельного продукта
+            foreach (PromoProduct promoProduct in currentPromoProducts)
+            {
+                promoProductsSubList = promoProductsList.Where(x => x.ZREP == promoProduct.ZREP).ToList();
+                if (promoProductsSubList.Count() > 0)
+                {
+                    factProductUplift = promoProductsSubList.Average(x => x.ActualProductUpliftPercent);
+                    promoProduct.AverageMarker = false;
+                }
+                //Если не подобрали аплифт по предыдущим промо - считаем средний аплифт для продукта
+                if(!(promoProductsSubList.Count() > 0) || factProductUplift == null)
+                {
+                    factProductUplift = oldCountedPlanUplift;
+                    promoProduct.AverageMarker = true;
+                }
+                promoProduct.PlanProductUpliftPercent = factProductUplift;
+                summPlanBaseline += promoProduct.PlanProductBaselineLSV;
+                //Если есть коррекция - считаем аплифт из коррекции
+                if (promoProductsWithCorrectionIds.Contains(promoProduct.Id))
+                {
+                    var uplift = promoProductsCorrections.Where(x => x.PromoProductId == promoProduct.Id).FirstOrDefault().PlanProductUpliftPercentCorrected / 100;
+                    summPlanIncremental += promoProduct.PlanProductBaselineLSV * uplift;
                 }
                 else
                 {
-                    countedPlanUplift = 0;
-                    return false;
+                    summPlanIncremental += promoProduct.PlanProductBaselineLSV * factProductUplift / 100;
                 }
             }
-            else
+            if (summPlanBaseline != 0)
             {
-                countedPlanUplift = 0;
-                return false;
+                countedPlanUplift = summPlanIncremental / summPlanBaseline * 100;
             }
-        }
+        } 
 
         private static void GetBrandTechnologyGuid(DatabaseContext context, Promo promo, out Guid? brandId, out Guid? technologyId)
         {
@@ -359,6 +447,87 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             message += "\nРассчитанное значение uplift";
 
             return message;
+        }
+
+        public static void DistributePlanPromoUpliftToProducts(Promo currentPromo, DatabaseContext context, Guid UserId)
+        {
+            double? newUplift = currentPromo.PlanPromoUpliftPercent;
+            if (newUplift != null)
+            {
+                User user = context.Set<User>().Where(x => x.Id == UserId && x.Disabled != true).FirstOrDefault();
+                List<PromoProduct> promoProducts = context.Set<PromoProduct>().Where(x => x.PromoId == currentPromo.Id && x.Disabled != true).ToList();
+                List<double?> incrementalList = promoProducts.Select(x => x.PlanProductIncrementalLSV).ToList();
+                if (promoProducts != null && promoProducts.Count != 0)
+                {
+                    double? summPlanBaseline = 0;
+                    double? summPlanIncremental = 0;
+                    double? upliftToInsert;
+                    var promoProductsIds = promoProducts.Select(y => y.Id);
+                    List <PromoProductsCorrection> promoProductsCorrections = context.Set<PromoProductsCorrection>().Where(x => promoProductsIds.Contains(x.PromoProductId) && x.Disabled != true && x.TempId == null).ToList();
+
+                    foreach (var singlePromoProduct in promoProducts)
+                    {
+                        if (singlePromoProduct.PlanProductIncrementalLSV != null && singlePromoProduct.PlanProductIncrementalLSV != 0
+                            && singlePromoProduct.PlanProductBaselineLSV != null && singlePromoProduct.PlanProductBaselineLSV != 0)
+                        {
+                            summPlanIncremental += singlePromoProduct.PlanProductIncrementalLSV;
+                            summPlanBaseline += singlePromoProduct.PlanProductBaselineLSV;
+                        }
+
+                        if (!promoProductsCorrections.Select(x => x.PromoProductId).Contains(singlePromoProduct.Id))
+                        {
+                            if (singlePromoProduct.PlanProductBaselineLSV != 0 && singlePromoProduct.PlanProductBaselineLSV != null && singlePromoProduct.PlanProductUpliftPercent != null)
+                            {
+                                upliftToInsert = singlePromoProduct.PlanProductUpliftPercent;
+                            }
+                            else
+                            {
+                                upliftToInsert = newUplift;
+                            }
+                            promoProductsCorrections.Add(context.Set<PromoProductsCorrection>().Add(new PromoProductsCorrection()
+                            {
+                                PromoProductId = singlePromoProduct.Id,
+                                PlanProductUpliftPercentCorrected = upliftToInsert,
+                                CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                                Id = new Guid()
+                            }));
+                        }
+                    }
+
+                    promoProductsCorrections = promoProductsCorrections.Where(x => x.PlanProductUpliftPercentCorrected != null).ToList();
+
+                    foreach (var singlePromoProductCorrection in promoProductsCorrections)
+                    {
+                        singlePromoProductCorrection.UserId = user.Id;
+                        singlePromoProductCorrection.UserName = user.Name;
+                        singlePromoProductCorrection.ChangeDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                    }
+
+                    double? oldUplift = 0;
+                    if (summPlanBaseline != 0)
+                    {
+                        oldUplift = summPlanIncremental / summPlanBaseline;
+                    }
+
+                    //Находим соотношение старого Uplift к новому
+                    double? upliftRatio = 0;
+                    if (oldUplift != 0)
+                    {
+                        upliftRatio = newUplift / oldUplift;
+                    }
+                    foreach (var singlePromoProductCorrection in promoProductsCorrections)
+                    {
+                        if (!(singlePromoProductCorrection.PromoProduct.PlanProductBaselineLSV == null || singlePromoProductCorrection.PromoProduct.PlanProductBaselineLSV == 0) 
+                            && !(singlePromoProductCorrection.PromoProduct.PlanProductIncrementalLSV == null || singlePromoProductCorrection.PromoProduct.PlanProductIncrementalLSV == 0)) { 
+                            singlePromoProductCorrection.PlanProductUpliftPercentCorrected = (singlePromoProductCorrection.PromoProduct.PlanProductIncrementalLSV * upliftRatio) / singlePromoProductCorrection.PromoProduct.PlanProductBaselineLSV;
+                        } else
+                        {
+                            singlePromoProductCorrection.PlanProductUpliftPercentCorrected = newUplift;
+                        }
+                    }
+                    context.SaveChanges();
+                }
+            }
         }
     }
 }

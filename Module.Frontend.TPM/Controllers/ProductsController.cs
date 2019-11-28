@@ -91,6 +91,17 @@ namespace Module.Frontend.TPM.Controllers
             return SingleResult.Create(GetConstraintedQuery());
         }
 
+        //Получаем продукты, привязанные к промо
+        [ClaimsAuthorize]
+        [EnableQuery(MaxNodeCount = int.MaxValue)]
+        public IQueryable<Product> GetProducts([FromODataUri] Guid promoId)
+        {
+            IQueryable<PromoProduct> promoProducts = Context.Set<PromoProduct>().Where(x => x.PromoId == promoId && !x.Disabled);
+            IQueryable<Product> products = GetConstraintedQuery();
+            products = products.Where(x => promoProducts.Any(y => x.Id == y.ProductId) && !x.Disabled);
+            return products;
+        }
+
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
         public IQueryable<Product> GetProducts(string inOutProductTreeObjectIds, bool needInOutFilteredProducts, bool needInOutExcludeAssortmentMatrixProducts, bool needInOutSelectedProducts, string inOutProductIdsForGetting)

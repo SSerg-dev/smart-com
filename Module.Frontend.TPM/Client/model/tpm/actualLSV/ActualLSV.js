@@ -39,7 +39,7 @@
         { name: 'PlanPromoIncrementalLSV', type: 'float', hidden: false, isDefault: true, useNull: true },
         { name: 'ActualPromoIncrementalLSV', type: 'float', hidden: false, isDefault: true, useNull: true },
         { name: 'PlanPromoLSV', type: 'float', hidden: false, isDefault: true, useNull: true },
-        { name: 'ActualPromoLSVByCompensation', type: 'float', hidden: false, isDefault: true, useNull: true },
+        { name: 'ActualPromoLSVByCompensation', type: 'float', hidden: false, isDefault: true, useNull: true, defaultFilterConfig: getDefaultFilterNotNull() },
         { name: 'ActualPromoLSV', type: 'float', hidden: false, isDefault: true, useNull: true, useNull: true },
         { name: 'PlanPromoPostPromoEffectLSVW1', type: 'float', hidden: false, isDefault: true },
         { name: 'ActualPromoPostPromoEffectLSVW1', type: 'float', hidden: false, isDefault: true, useNull: true },
@@ -68,3 +68,11 @@
         }
     }
 });
+
+function getDefaultFilterNotNull() {
+    var result = {
+        value: null,
+        operation: 'NotNull'
+    };
+    return result;
+}

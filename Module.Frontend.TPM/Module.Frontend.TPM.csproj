@@ -195,6 +195,10 @@
     <Content Include="Client\controller\tpm\inoutproductselectionwindow\InOutProductSelectionWindow.js" />
     <Content Include="Client\controller\tpm\promoactivitydetailsinfo\PromoActivityDetailsInfo.js" />
     <Content Include="Client\controller\tpm\promocalculating\CalculatingInfoLog.js" />
+    <Content Include="Client\controller\tpm\promoproductcorrection\DeletedPromoProductCorrection.js" />
+    <Content Include="Client\controller\tpm\promoproductcorrection\HistoricalPromoProductCorrection.js" />
+    <Content Include="Client\controller\tpm\promoproductcorrection\PromoProductCorrection.js" />
+    <Content Include="Client\controller\tpm\promoproductsview\PromoProductsView.js" />
     <Content Include="Client\controller\tpm\promoroireport\PromoROIReport.js" />
     <Content Include="Client\controller\tpm\planpostpromoeffectreport\PlanPostPromoEffectReport.js" />
     <Content Include="Client\controller\tpm\planincrementalreport\PlanIncrementalReport.js" />
@@ -207,11 +211,13 @@
     <Compile Include="Controllers\ClientTreeSharesViewsController.cs" />
     <Compile Include="Controllers\DeletedAssortmentMatricesController.cs" />
     <Compile Include="Controllers\DeletedIncrementalPromoesController.cs" />
+    <Compile Include="Controllers\DeletedPromoProductsCorrectionsController.cs" />
     <Compile Include="Controllers\DeletedPromoSupportsController.cs" />
     <Compile Include="Controllers\EventClientTreesController.cs" />
     <Compile Include="Controllers\HistoricalAssortmentMatricesController.cs" />
     <Compile Include="Controllers\HistoricalCostProductionsController.cs" />
     <Compile Include="Controllers\HistoricalIncrementalPromoesController.cs" />
+    <Compile Include="Controllers\HistoricalPromoProductsCorrectionsController.cs" />
     <Compile Include="Controllers\HistoricalPromoSupportsController.cs" />
     <Compile Include="Controllers\IncrementalPromoesController.cs" />
     <Compile Include="Controllers\PlanPostPromoEffectReportsController.cs" />
@@ -221,6 +227,7 @@
     <Compile Include="Controllers\HistoricalCOGSsController.cs" />
     <Compile Include="Controllers\HistoricalTradeInvestmentsController.cs" />
     <Compile Include="Controllers\ActualLSVController.cs" />
+    <Compile Include="Controllers\PromoProductsCorrectionsController.cs" />
     <Compile Include="Controllers\PromoROIReportsController.cs" />
     <Compile Include="Controllers\PromoSupportPromoesController.cs" />
     <Compile Include="Controllers\PromoProductsController.cs" />
@@ -239,6 +246,7 @@
     <Compile Include="Controllers\PromoSupportsController.cs" />
     <Compile Include="Controllers\COGSsController.cs" />
     <Compile Include="Controllers\PromoGridViewsController.cs" />
+    <Compile Include="Controllers\PromoProductsViewsController.cs" />
     <Compile Include="Controllers\PromoViewsController.cs" />
     <Compile Include="Controllers\SchedulerClientTreeDTOsController.cs" />
     <Compile Include="Controllers\TradeInvestmentsController.cs" />
@@ -302,6 +310,10 @@
     <Content Include="Client\model\tpm\incrementalpromo\IncrementalPromo.js" />
     <Content Include="Client\model\tpm\promoactivitydetailsinfo\PromoActivityDetailsInfo.js" />
     <Content Include="Client\model\tpm\promocalculating\CalculatingInfoLog.js" />
+    <Content Include="Client\model\tpm\promoproductcorrection\DeletedPromoProductCorrection.js" />
+    <Content Include="Client\model\tpm\promoproductcorrection\HistoricalPromoProductCorrection.js" />
+    <Content Include="Client\model\tpm\promoproductcorrection\PromoProductCorrection.js" />
+    <Content Include="Client\model\tpm\promoproductsview\PromoProductsView.js" />
     <Content Include="Client\model\tpm\promosupportpromo\PromoSupportPromoCostProd.js" />
     <Content Include="Client\model\tpm\promosupportpromo\PromoSupportPromoView.js" />
     <Content Include="Client\model\tpm\promosupportpromo\PromoSupportPromoTICost.js" />
@@ -397,6 +409,14 @@
     <Content Include="Client\view\tpm\promoactivitydetailsinfo\PromoActivityDetailsInfoEditor.js" />
     <Content Include="Client\view\tpm\promocalculating\CalculatingInfoLog.js" />
     <Content Include="Client\view\tpm\promocalculating\CalculatingInfoLogEditor.js" />
+    <Content Include="Client\view\tpm\promoproductcorrection\DeletedPromoProductCorrection.js" />
+    <Content Include="Client\view\tpm\promoproductcorrection\DeletedPromoProductCorrectionDetail.js" />
+    <Content Include="Client\view\tpm\promoproductcorrection\HistoricalPromoProductCorrection.js" />
+    <Content Include="Client\view\tpm\promoproductcorrection\HistoricalPromoProductCorrectionDetail.js" />
+    <Content Include="Client\view\tpm\promoproductcorrection\PromoProductCorrection.js" />
+    <Content Include="Client\view\tpm\promoproductcorrection\PromoProductCorrectionEditor.js" />
+    <Content Include="Client\view\tpm\promoproductsview\PromoProductsView.js" />
+    <Content Include="Client\view\tpm\promoproductsview\PromoProductsViewEditor.js" />
     <Content Include="Client\view\tpm\promoroireport\PromoROIReport.js" />
     <Content Include="Client\view\tpm\promoroireport\PromoROIReportEditor.js" />
     <Content Include="Client\view\tpm\planpostpromoeffectreport\PlanPostPromoEffectReport.js" />
@@ -588,6 +608,7 @@
     <Content Include="Client\view\tpm\toolbar\calculatinglog\CustomLogTopToolbar.js" />
     <Content Include="Content\images\complete-status.svg" />
     <Content Include="Content\images\error-status.svg" />
+    <Content Include="Content\images\GA.png" />
     <Content Include="Content\images\inprogress-status.svg" />
     <Content Include="Content\images\logoTest.svg" />
     <Content Include="Content\images\swith-glyph-gray.png" />

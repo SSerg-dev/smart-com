@@ -21,6 +21,7 @@
         { name: 'EventName', type: 'string', hidden: false, isDefault: true },
         { name: 'PromoStatusName', type: 'string', hidden: false, isDefault: true },
         { name: 'InOut', useNull: true, type: 'bool', hidden: false, isDefault: true },
+        { name: 'IsGrowthAcceleration', type: 'bool', hidden: false, isDefault: true },
         { name: 'PlanInstoreMechanicName', type: 'string', type: 'string', hidden: true, isDefault: false },
         { name: 'PlanInstoreMechanicTypeName', type: 'string', type: 'string', hidden: true, isDefault: false },
         { name: 'PlanInstoreMechanicDiscount', type: 'float', hidden: false, isDefault: false },

@@ -107,6 +107,7 @@
         xtype: 'directorygrid',
         itemId: 'datatable',
         editorModel: 'Core.form.EditorWindowModel',
+        hasExpandedRows: true,
         store: {
             type: 'directorystore',
             model: 'App.model.tpm.promo.PromoGridView',
@@ -176,6 +177,17 @@
                     }
                 }
                 grid.headerCt.insert(0, expandedCol);
+
+                grid.expandedRows = 0;
+
+                grid.view.on('expandBody', function (rowNode, record, expandRow, eOpts) {
+                    grid.expandedRows++;
+                    grid.view.refresh();
+                });
+                grid.view.on('collapseBody', function (rowNode, record, expandRow, eOpts) {
+                    grid.expandedRows--;
+                    grid.view.refresh();
+                })
             }
         },
 
@@ -213,6 +225,12 @@
             }, {
                 text: l10n.ns('tpm', 'Promo').value('InOut'),
                 dataIndex: 'InOut',
+                renderer: function (value) {
+                    return value ? l10n.ns('core', 'booleanValues').value('true') : l10n.ns('core', 'booleanValues').value('false');
+                }
+            }, {
+                text: l10n.ns('tpm', 'Promo').value('GrowthAcceleration'),
+                dataIndex: 'IsGrowthAcceleration',
                 renderer: function (value) {
                     return value ? l10n.ns('core', 'booleanValues').value('true') : l10n.ns('core', 'booleanValues').value('false');
                 }

@@ -1139,3 +1139,40 @@ Ext.override(Ext.selection.RowModel,
             }
         }
     });
+
+Ext.override(Ext.grid.plugin.BufferedRenderer, {
+    getScrollHeight: function () {
+        var me = this,
+            view = me.view,
+            store = me.store,
+            doCalcHeight = !me.hasOwnProperty('rowHeight'),
+            storeCount = me.store.getCount(),
+            additionalBottomShift = 50, // добавка к высоте прокрутки, чтобы нижняя строка грида была полностью видна (даже с запасом)
+            wrapHeight = 160; // высота раскрытой части строки (в данном случае это высота дашборда строки промо)
+
+        if (!storeCount) {
+            return 0;
+        }
+        if (doCalcHeight) {
+            if (view.all.getCount()) {
+                if (!me.cmp.hasExpandedRows || me.cmp.expandedRows === undefined || me.cmp.expandedRows === null) {
+                    me.rowHeight = Math.floor(view.body.getHeight() / view.all.getCount());
+                } else {
+                    // для корректного вычисления высоты прокрутки при наличии раскрытых строк рассчетное значение высоты строки не подходит
+                    me.rowHeight = 29;
+                }
+            }
+        }
+
+        if (me.cmp.hasExpandedRows) {
+            if (me.cmp.expandedRows === undefined || me.cmp.expandedRows === null) {
+                return this.scrollHeight = Math.floor((store.buffered ? store.getTotalCount() : store.getCount()) * me.rowHeight) + additionalBottomShift;
+            } else {
+                // для обновления прокрутки при сворачивании/разворачивании строки добавляем высоту раскрытых строк
+                return this.scrollHeight = Math.floor((store.buffered ? store.getTotalCount() : store.getCount()) * me.rowHeight) + wrapHeight * me.cmp.expandedRows;
+            }
+        } else {
+            return this.scrollHeight = Math.floor((store.buffered ? store.getTotalCount() : store.getCount()) * me.rowHeight) + additionalBottomShift;
+        }
+    }
+});

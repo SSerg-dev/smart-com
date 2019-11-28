@@ -169,6 +169,9 @@
         { name: 'Client2LevelName', type: 'string', useNull: true, hidden: false, isDefault: true, defaultValue: null },
         { name: 'ClientName', type: 'string', useNull: true, hidden: false, isDefault: true, defaultValue: null },
         { name: 'ProductSubrangesList', type: 'string', useNull: true, hidden: false, isDefault: true, defaultValue: null },
+
+        // Growth Acceleration
+        { name: 'IsGrowthAcceleration', useNull: true, type: 'boolean', hidden: false, isDefault: false, defaultValue: null },
     ],
     proxy: {
         type: 'breeze',

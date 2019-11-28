@@ -158,4 +158,45 @@ namespace Module.Host.TPM.Handlers
             return new XLSXImportActualLsvAction(settings, handlerId, userId, roleId);
         }
     }
+
+    class FullXLSXUpdateImportPromoProductsCorrectionHandler : FullXLSXImportHandler
+    {
+        private Guid userId;
+        private Guid handlerId;
+
+        public override void Action(HandlerInfo info, ExecuteData data)
+        {
+            userId = HandlerDataHelper.GetIncomingArgument<Guid>("UserId", info.Data, false);
+            handlerId = info.HandlerId;
+            base.Action(info, data);
+        }
+
+        protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
+        {
+            return new FullXLSXUpdateImportPromoProductsCorrectionAction(settings, userId, handlerId);
+        }
+    }
+
+    class FullXLSXUpdateImportPromoProductsUpliftHandler : FullXLSXImportHandler
+    {
+        /// <summary>
+        /// Id промо для которого загружаются ProductUplift-ы
+        /// </summary>
+        private Guid promoId;
+        private Guid userId;
+        private string TempId;
+
+        public override void Action(HandlerInfo info, ExecuteData data)
+        {
+            promoId = Looper.Parameters.HandlerDataHelper.GetIncomingArgument<Guid>("PromoId", info.Data, false);
+            userId = Looper.Parameters.HandlerDataHelper.GetIncomingArgument<Guid>("UserId", info.Data, false);
+            TempId = Looper.Parameters.HandlerDataHelper.GetIncomingArgument<string>("TempId", info.Data, false);
+            base.Action(info, data);
+        }
+
+        protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
+        {
+            return new FullXLSXUpdateImportPromoProductsUpliftAction(settings, promoId, userId, TempId);
+        }
+    }
 }

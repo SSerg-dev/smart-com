@@ -35,6 +35,8 @@
         { name: "Cls", hidden: true },
         { name: "ResourceId", hidden: true },
 
+        // Growth Acceleration
+        { name: 'IsGrowthAcceleration', type: 'boolean', hidden: false, isDefault: true },
     ],
     proxy: {
         type: 'breeze',

@@ -125,6 +125,13 @@
                         return value ? l10n.ns('core', 'booleanValues').value('true') : l10n.ns('core', 'booleanValues').value('false');
                     }
                 },
+                {
+                    text: l10n.ns('tpm', 'PromoROIReport').value('IsGrowthAcceleration'),
+                    dataIndex: 'IsGrowthAcceleration',
+                    renderer: function (value) {
+                        return value ? l10n.ns('core', 'booleanValues').value('true') : l10n.ns('core', 'booleanValues').value('false');
+                    }
+                },
                 { text: l10n.ns('tpm', 'PromoROIReport').value('PlanInstoreMechanicName'), dataIndex: 'PlanInstoreMechanicName' },
                 { text: l10n.ns('tpm', 'PromoROIReport').value('PlanInstoreMechanicTypeName'), dataIndex: 'PlanInstoreMechanicTypeName' },
                 { text: l10n.ns('tpm', 'PromoROIReport').value('PlanInstoreMechanicDiscount'), dataIndex: 'PlanInstoreMechanicDiscount', format: '0' },
@@ -238,6 +245,7 @@
             { xtype: 'textfield', name: 'EventName', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('EventName') },
             { xtype: 'textfield', name: 'PromoStatusName', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('PromoStatusName') },
             { xtype: 'numberfield', name: 'InOut', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('InOut') },
+            { xtype: 'numberfield', name: 'IsGrowthAcceleration', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('IsGrowthAcceleration') },
             { xtype: 'textfield', name: 'PlanInstoreMechanicName', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('PlanInstoreMechanicName') },
             { xtype: 'textfield', name: 'PlanInstoreMechanicTypeName', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('PlanInstoreMechanicTypeName') },
             { xtype: 'numberfield', name: 'PlanInstoreMechanicDiscount', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('PlanInstoreMechanicDiscount') },

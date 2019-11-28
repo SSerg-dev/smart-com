@@ -29,6 +29,9 @@ Ext.define('App.model.tpm.tradeinvestment.HistoricalTradeInvestment', {
             type: 'json',
             totalProperty: 'inlineCount',
             root: 'results'
+        },
+        extraParams: {
+            id: null
         }
     }
 });

@@ -109,7 +109,18 @@ namespace Module.Host.TPM.Handlers.DataFlow
 
                                     // пересчет baseline должен происходить до попытки согласовать промо, т.к. к зависимости от результата пересчета
                                     // результат согласования может быть разный (после пересчета baseline может оказаться равен 0, тогда автосогласования не будет)
+                                    string calculateBaselineError = null;
+                                    calculateBaselineError = PlanProductParametersCalculation.CalculateBaseline(context, promoId);
                                     message = PlanProductParametersCalculation.CalculatePromoProductParameters(promoId, context);
+
+                                    if (calculateBaselineError != null && message != null)
+                                    {
+                                        message += calculateBaselineError;
+                                    }
+                                    else if (calculateBaselineError != null && message == null)
+                                    {
+                                        message = calculateBaselineError;
+                                    }
 
                                     string[] canBeReturnedToOnApproval = { "OnApproval", "Approved", "Planned" };
                                     // возврат в статус OnApproval при изменении набора продуктов(с проверкой NoNego)

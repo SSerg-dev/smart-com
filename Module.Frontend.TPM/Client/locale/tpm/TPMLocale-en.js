@@ -44,6 +44,8 @@
         'NoneNego': 'No Nego',
         'RetailType': 'Retail type',
         'PromoProductItem': 'Promo Product',
+
+        'PromoProductCorection': 'Promo product correction',
         'BaseLineItem': 'Base Line',
         'DemandPriceListItem': 'Demand Price List',
         'ClientTreeBrandTech': 'Clients Share',
@@ -132,8 +134,10 @@
         'PromoFinanceDetailsWindow': 'Finance Details',
         'PromoProductSubrangeDetailsWindow': 'Products',
         'AssortmentMatrix': 'Assortment matrix',
-        'IncrementalPromo': 'Incremental Promo',        
-        'InOutProductSelectionWindow': 'Selected Products'
+        'IncrementalPromo': 'Incremental Promo',
+        'InOutProductSelectionWindow': 'Selected Products',
+        'PromoProductsView': 'Promo Uplift',
+        'PromoProductCorrection': 'Promo product correction',
     },
 
     'text': {
@@ -179,8 +183,8 @@
     'DeleteText': {
         'deleteWindowTitle': 'Delete record',
         'deleteConfirmMessage': 'Do you really want to delete the record?',
-		'cascadeDeleteConfirmMessage': 'Do you really want to delete the node? All child elements will be also removed',
-		'deleteNodeWarning': 'Warning! If you delete the node all related promos will be corrupted!'
+        'cascadeDeleteConfirmMessage': 'Do you really want to delete the node? All child elements will be also removed',
+        'deleteNodeWarning': 'Warning! If you delete the node all related promos will be corrupted!'
     },
 
     'promoMainTab': {
@@ -237,8 +241,8 @@
         'customHistory': 'Changes',
         'publish': 'Publish',
         'sendForApproval': 'Send for approval',
-		'reject': 'Reject',
-		'backToDraftPublished': 'Back to Draft (published)',
+        'reject': 'Reject',
+        'backToDraftPublished': 'Back to Draft (published)',
         'close': 'Close promo',
         'backtofinished': 'Back to finished',
         'approve': 'Approve',
@@ -415,7 +419,6 @@
         'PlanProductPCLSV': 'Plan Product PC LSV',
         'ProductBaselinePrice': 'Case Price',
         'PlanProductPCPrice': 'PC Price',
-        'PlanProductUplift': 'Plan Product Uplift',
         'ActualProductPCQty': 'Actual Product PC Qty',
         'ActualProductCaseQty': 'Actual Product Qty',
         'ActualProductUOM': 'Actual Product UOM',
@@ -425,7 +428,7 @@
         'ActualProductShelfDiscount': 'Actual Product Shelf Discount',
         'ActualProductPCLSV': 'Actual Product PC LSV',
         'ActualPromoShare': 'Actual Promo Share',
-        'ActualProductUplift': 'Actual Product Uplift',
+        'ActualProductUpliftPercent': 'Actual Product Uplift Percent',
         'ActualProductIncrementalPCQty': 'Actual Product Incremental PC Qty',
         'ActualProductIncrementalPCLSV': 'Actual Product Incremental PC LSV',
         'ActualProductIncrementalLSV': 'Actual Product Incremental LSV'
@@ -586,6 +589,7 @@
         'PlanPromoBTL': 'Plan BTL',
 
         'PlanPromoUpliftPercent': 'Plan Promo Uplift, %',
+        'PlanPromoUpliftPercentError': 'Uplift must be greater than 0',
         'PlanPromoIncrementalLSV': 'Plan Promo Incremental LSV',
         'PlanPromoLSV': 'Plan Promo LSV',
         'PlanPromoBaselineLSV': 'Plan Promo Baseline LSV',
@@ -730,6 +734,8 @@
         'ActualPromoNetIncrementalBaseTI': 'Actual Promo Net Incremental BaseTI',
         'ActualPromoNetIncrementalCOGS': 'Actual Promo Net Incremental COGS',
         'ActualPromoNSV': 'Actual Promo NSV',
+        'GrowthAcceleration': 'Growth acceleration',
+        'IsGrowthAcceleration': 'Growth acceleration',
 
         //Для исторической модели
         'PlanPromoNetROIPercent': 'Plan Promo Net ROI Percent',
@@ -1030,7 +1036,7 @@
         'InvoiceNumber': 'Invoice Number',
         'PlanProdCost': 'Plan Prod Cost',
         'ActualProdCost': 'Actual Prod Cost'
-     },
+    },
     'HistoricalPromoSupport': {
         'Number': 'ID',
         'ClientTreeFullPathName': 'Client',
@@ -1172,7 +1178,6 @@
         'PlanProductPCLSV': 'Plan Product PC LSV',
         'ProductBaselinePrice': 'Case Price',
         'PlanProductPCPrice': 'PC Price',
-        'PlanProductUplift': 'Plan Product Uplift',
         'ActualProductPCQty': 'Actual Product PC Qty',
         'ActualProductCaseQty': 'Actual Product Qty',
         'ActualProductUOM': 'Actual Product UOM',
@@ -1182,7 +1187,7 @@
         'ActualProductShelfDiscount': 'Actual Product Shelf Discount',
         'ActualProductPCLSV': 'Actual Product PC LSV',
         'ActualPromoShare': 'Actual Promo Share',
-        'ActualProductUplift': 'Actual Product Uplift',
+        'ActualProductUpliftPercent': 'Actual Product Uplift Percent',
         'ActualProductIncrementalPCQty': 'Actual Product Incremental PC Qty',
         'ActualProductIncrementalPCLSV': 'Actual Product Incremental PC LSV',
         'ActualProductIncrementalLSV': 'Actual Product Incremental LSV',
@@ -1202,10 +1207,27 @@
         'ActualPoductBaselineLSV': 'Actual Poduct Baseline LSV',
         'ProductEN': 'Product EN',
         'ActualProductLSVByCompensation': 'Actual Product LSV By Compensation',
-        'TemplateTLC':'Import TLC template XLSX'
+        'TemplateTLC': 'Import TLC template XLSX',
+        'AverageMarker': 'Average Marker',
+        'PlanProductUpliftPercent': 'Plan Product Uplift Percent',
+        'PlanProductBaselineCaseQty': 'Plan Product Baseline Case Qty'
     },
     'HistoricalPromoProduct': ['.tpm.PromoProduct', '.core.BaseHistoryEntity'],
     'DeletedPromoProduct': ['.tpm.PromoProduct', '.core.BaseDeletedEntity'],
+
+    'PromoProductsView': {
+        'ZREP': 'ZREP',
+        'ProductEN': 'ProductEN',
+        'PlanProductBaselineLSV': 'Plan Product Baseline LSV',
+        'PlanProductUpliftPercent': 'Plan Product Uplift Percent',
+        'PlanProductIncrementalLSV': 'Plan Product Incremental LSV',
+        'PlanProductLSV': 'Plan Product LSV',
+        'PlanProductBaselineCaseQty': 'Plan Product Baseline Case Qty',
+        'PlanProductIncrementalCaseQty': 'Plan Product Incremental Case Qty',
+        'PlanProductCaseQty': 'Plan Product Case Qty',
+        'AverageMarker': 'Average Marker',
+        'IsCorrection': 'Is Correction',
+    },
 
     'BaseLine': {
         'ProductZREP': 'ZREP',
@@ -1715,7 +1737,8 @@
         'PlanPromoNetIncrementalCOGS': 'Plan Promo Net Incremental COGS',
         'PCPrice': 'PC Price',
         'TIBasePercent': 'TI Base',
-        'COGSPercent': 'COGS'
+        'COGSPercent': 'COGS',
+        'IsGrowthAcceleration': 'Growth acceleration'
     },
 
     'PromoActivity': {
@@ -1832,7 +1855,6 @@
         'PlanProductPCLSV': 'Plan Product PC LSV',
         'ProductBaselinePrice': 'Case Price',
         'PlanProductPCPrice': 'PC Price',
-        'PlanProductUplift': 'Plan Product Uplift',
         'ActualProductPCQty': 'Actual Product PC Qty',
         'ActualProductCaseQty': 'Actual Product Qty',
         'ActualProductUOM': 'Actual Product UOM',
@@ -1842,7 +1864,7 @@
         'ActualProductShelfDiscount': 'Actual Product Shelf Discount',
         'ActualProductPCLSV': 'Actual Product PC LSV',
         'ActualPromoShare': 'Actual Promo Share',
-        'ActualProductUplift': 'Actual Product Uplift',
+        'ActualProductUpliftPercent': 'Actual Product Uplift Percent',
         'ActualProductIncrementalPCQty': 'Actual Product Incremental PC Qty',
         'ActualProductIncrementalPCLSV': 'Actual Product Incremental PC LSV',
         'ActualProductIncrementalLSV': 'Actual Product Incremental LSV',
@@ -1925,6 +1947,19 @@
     },
     'HistoricalIncrementalPromo': ['.tpm.IncrementalPromo', '.core.BaseHistoryEntity'],
     'DeletedIncrementalPromo': ['.tpm.IncrementalPromo', '.core.BaseDeletedEntity'],
+
+    'PromoProductCorrection': {
+        'ZREP': 'ZREP',
+        'Number': 'Promo ID',
+        'PlanProductUpliftPercentCorrected': 'Plan Product Uplift Percent Corrected',
+        'CreateDate': 'Create Date',
+        'ChangeDate': 'Last Change Date',
+        'UserName': 'User Name',
+        'GreaterThanZero': 'Uplift must be greater than zero',
+
+    },
+    'HistoricalPromoProductCorrection': ['.tpm.PromoProductCorrection', '.core.BaseHistoryEntity'],
+    'DeletedPromoProductCorrection': ['.tpm.PromoProductCorrection', '.core.BaseDeletedEntity'],
 
     'ActualLSV': {
         'ActualLSV': 'Actual LSV',

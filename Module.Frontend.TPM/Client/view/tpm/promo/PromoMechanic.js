@@ -267,9 +267,30 @@
             xtype: 'custompromopanel',
             minWidth: 245,
             flex: 1,
-            padding: '0 10 10 10',
+            padding: '10 10 2 10',
+            layout: {
+                type: 'vbox',
+                align: 'stretch',
+                pack: 'center '
+            },
             items: [{
+                xtype: 'container',
+                name: 'GrowthAcceleration',
+                height: 40,
+                margin: '4 0 10 0',
+                style: 'border: 1px solid #ebebeb',
+                items: [{
+                    xtype: 'checkboxfield',
+                    crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
+                    needReadOnly: true,
+                    //readOnly: true,
+                    margin: '5 0 0 10',
+                    name: 'GrowthAccelerationCheckbox',
+                    boxLabel: '<b>' + l10n.ns('tpm', 'Promo').value('GrowthAcceleration') + '</b>',
+                }]
+            }, {
                 xtype: 'textarea',
+                flex: 1,
                 name: 'PromoComment',
                 fieldLabel: l10n.ns('tpm', 'Promo').value('MechanicComment'),
                 labelAlign: 'top',

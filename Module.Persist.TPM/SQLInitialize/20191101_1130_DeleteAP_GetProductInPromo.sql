@@ -1,0 +1,2 @@
+﻿DELETE FROM AccessPointRole WHERE AccessPointId in (SELECT Id FROM ACCESSPOINT WHERE [Resource] IN ('Products') AND [Action] IN ('GetProductInPromo'))
+DELETE FROM AccessPoint WHERE [Resource] IN ('Products') AND [Action] IN ('GetProductInPromo') 

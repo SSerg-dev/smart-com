@@ -68,6 +68,27 @@ namespace Module.Host.TPM.Handlers
                             }
                         }
                     }
+
+                    // удаление временных записей из таблицы PromoProductsCorrection, измененных от двух дней назад
+                    using (var transaction = context.Database.BeginTransaction())
+                    {
+                        try
+                        {
+                            string sqlCommand = "DELETE FROM [dbo].[PromoProductsCorrection] WHERE [TempId] IS NOT NULL and DATEADD(DAY, -(2), SYSDATETIME()) >= [ChangeDate]";
+                            context.Database.ExecuteSqlCommand(sqlCommand);
+
+                            transaction.Commit();
+                        }
+                        catch (Exception e)
+                        {
+                            transaction.Rollback();
+
+                            if (handlerLogger != null)
+                            {
+                                handlerLogger.Write(true, e.ToString(), "Error");
+                            }
+                        }
+                    }
                 }
             }
             catch (Exception e)

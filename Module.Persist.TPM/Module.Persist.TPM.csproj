@@ -1294,6 +1294,38 @@
     <Compile Include="Migrations\201910011217491_EmptyMigrationHistory.Designer.cs">
       <DependentUpon>201910011217491_EmptyMigrationHistory.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201910111121592_AddPromoProductsCorrection.cs" />
+    <Compile Include="Migrations\201910111121592_AddPromoProductsCorrection.Designer.cs">
+      <DependentUpon>201910111121592_AddPromoProductsCorrection.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201910111417356_Add_AverageMarker_PromoProducts.cs" />
+    <Compile Include="Migrations\201910111417356_Add_AverageMarker_PromoProducts.designer.cs">
+      <DependentUpon>201910111417356_Add_AverageMarker_PromoProducts.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201910141507137_AddUserNameByPromoProductCorrection.cs" />
+    <Compile Include="Migrations\201910141507137_AddUserNameByPromoProductCorrection.Designer.cs">
+      <DependentUpon>201910141507137_AddUserNameByPromoProductCorrection.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201910150741533_PromoProductsView.cs" />
+    <Compile Include="Migrations\201910150741533_PromoProductsView.Designer.cs">
+      <DependentUpon>201910150741533_PromoProductsView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201910150828286_Update_PromoProductsCorrection.cs" />
+    <Compile Include="Migrations\201910150828286_Update_PromoProductsCorrection.Designer.cs">
+      <DependentUpon>201910150828286_Update_PromoProductsCorrection.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201910180626573_AddUniuePromoProductCorrection.cs" />
+    <Compile Include="Migrations\201910180626573_AddUniuePromoProductCorrection.Designer.cs">
+      <DependentUpon>201910180626573_AddUniuePromoProductCorrection.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201910280802334_PromoProductsCorrection_Add_TempId.cs" />
+    <Compile Include="Migrations\201910280802334_PromoProductsCorrection_Add_TempId.Designer.cs">
+      <DependentUpon>201910280802334_PromoProductsCorrection_Add_TempId.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201910290439402_Alter_PromoProductsView.cs" />
+    <Compile Include="Migrations\201910290439402_Alter_PromoProductsView.Designer.cs">
+      <DependentUpon>201910290439402_Alter_PromoProductsView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\201910100947085_BaseLine_DemandCode.cs" />
     <Compile Include="Migrations\201910100947085_BaseLine_DemandCode.Designer.cs">
       <DependentUpon>201910100947085_BaseLine_DemandCode.cs</DependentUpon>
@@ -1386,7 +1418,56 @@
     <Compile Include="Migrations\201911251125439_ProductChangeINcident_UpdateFields.Designer.cs">
       <DependentUpon>201911251125439_ProductChangeINcident_UpdateFields.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201911061222273_Promo_IsGrowthAcceleration.cs" />
+    <Compile Include="Migrations\201911061222273_Promo_IsGrowthAcceleration.Designer.cs">
+      <DependentUpon>201911061222273_Promo_IsGrowthAcceleration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201910291601387_EmptyMigrationUpliftbyZREP.cs" />
+    <Compile Include="Migrations\201910291601387_EmptyMigrationUpliftbyZREP.Designer.cs">
+      <DependentUpon>201910291601387_EmptyMigrationUpliftbyZREP.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911010718594_Add_AdditionalUserTimestamp_To_Promo.cs" />
+    <Compile Include="Migrations\201911010718594_Add_AdditionalUserTimestamp_To_Promo.Designer.cs">
+      <DependentUpon>201911010718594_Add_AdditionalUserTimestamp_To_Promo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911050655414_Empty_Migration_UpliftByZREP.cs" />
+    <Compile Include="Migrations\201911050655414_Empty_Migration_UpliftByZREP.Designer.cs">
+      <DependentUpon>201911050655414_Empty_Migration_UpliftByZREP.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911050744438_Alter_PromoProductsCorrectionView2.cs" />
+    <Compile Include="Migrations\201911050744438_Alter_PromoProductsCorrectionView2.Designer.cs">
+      <DependentUpon>201911050744438_Alter_PromoProductsCorrectionView2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911050741094_EmptyMigrationUpliftbyZREP1.cs" />
+    <Compile Include="Migrations\201911050741094_EmptyMigrationUpliftbyZREP1.Designer.cs">
+      <DependentUpon>201911050741094_EmptyMigrationUpliftbyZREP1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911111143142_Empty_Migration_UpliftByZREP1.cs" />
+    <Compile Include="Migrations\201911111143142_Empty_Migration_UpliftByZREP1.Designer.cs">
+      <DependentUpon>201911111143142_Empty_Migration_UpliftByZREP1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911121104194_PromoProduct_ChangeFields.cs" />
+    <Compile Include="Migrations\201911121104194_PromoProduct_ChangeFields.Designer.cs">
+      <DependentUpon>201911121104194_PromoProduct_ChangeFields.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911130642235_Empty_migration_13_11_2019.cs" />
+    <Compile Include="Migrations\201911130642235_Empty_migration_13_11_2019.Designer.cs">
+      <DependentUpon>201911130642235_Empty_migration_13_11_2019.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911201653143_EmptyMigration_UpliftbyZREP.cs" />
+    <Compile Include="Migrations\201911201653143_EmptyMigration_UpliftbyZREP.Designer.cs">
+      <DependentUpon>201911201653143_EmptyMigration_UpliftbyZREP.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911211542355_PromoProductsCorrection_DatabaseGeneratedOption_None.cs" />
+    <Compile Include="Migrations\201911211542355_PromoProductsCorrection_DatabaseGeneratedOption_None.Designer.cs">
+      <DependentUpon>201911211542355_PromoProductsCorrection_DatabaseGeneratedOption_None.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911211757201_PromoProductsCorrection_DatabaseGeneratedOption_Identity.cs" />
+    <Compile Include="Migrations\201911211757201_PromoProductsCorrection_DatabaseGeneratedOption_Identity.Designer.cs">
+      <DependentUpon>201911211757201_PromoProductsCorrection_DatabaseGeneratedOption_Identity.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Model\DTO\PromoProductsView.cs" />
     <Compile Include="Model\DTO\ClientTreeSharesView.cs" />
     <Compile Include="Model\DTO\PlanPostPromoEffectReport.cs" />
     <Compile Include="Model\DTO\PlanIncrementalReport.cs" />
@@ -1403,6 +1484,7 @@
     <Compile Include="Model\History\HistoricalAgeGroup.cs" />
     <Compile Include="Model\History\HistoricalBaseLine.cs" />
     <Compile Include="Model\History\HistoricalBrand.cs" />
+    <Compile Include="Model\History\HistoricalPromoProductsCorrection.cs" />
     <Compile Include="Model\History\HistoricalPromoProductTree.cs" />
     <Compile Include="Model\History\HistoricalBrandTech.cs" />
     <Compile Include="Model\History\HistoricalBudget.cs" />
@@ -1451,6 +1533,8 @@
     <Compile Include="Model\Import\ImportColor.cs" />
     <Compile Include="Model\Import\ImportActualLsv.cs" />
     <Compile Include="Model\Import\ImportPromoProductFromTLC.cs" />
+    <Compile Include="Model\Import\ImportPromoProductsUplift.cs" />
+    <Compile Include="Model\Import\ImportPromoProductsCorrection.cs" />
     <Compile Include="Model\Import\ImportRetailType.cs" />
     <Compile Include="Model\Import\ImportRejectReason.cs" />
     <Compile Include="Model\Import\ImportPromoStatus.cs" />
@@ -1499,6 +1583,7 @@
     <Compile Include="Model\DTO\ClientTreeHierarchyView.cs" />
     <Compile Include="Model\TPM\NoneNego.cs" />
     <Compile Include="Model\DTO\PromoROIReport.cs" />
+    <Compile Include="Model\TPM\PromoProductsCorrection.cs" />
     <Compile Include="Model\TPM\PromoUpliftFailIncident.cs" />
     <Compile Include="Model\TPM\ProductChangeIncident.cs" />
     <Compile Include="Model\TPM\PromoProductTree.cs" />
@@ -1561,6 +1646,14 @@
     <Compile Include="PromoStateControl\UserRoles.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CalculatePromoParametersModule\PlanProductParametersCalculation.cs" />
+    <Content Include="SQLInitialize\20191013_0125_PromoProductsView_AP.sql" />
+    <Content Include="SQLInitialize\20191022_1843_AddPromoProductCorrection_AP.sql" />
+    <Content Include="SQLInitialize\20191014_1847_AddDeletedPromoProductCorrection_AP.sql" />
+    <Content Include="SQLInitialize\20191018_0943_AddPromoProductCorrection_AP_Products_ProductInPromoId.sql" />
+    <Content Include="SQLInitialize\20191018_0944_AddPromoProductCorrection_AP_PromoProducts_PromoProductByPromoAndProduct.sql" />
+    <Content Include="SQLInitialize\20191018_1203_AddHistoricalPromoProductCorrection_AP.sql" />
+    <Content Include="SQLInitialize\20191029_0900_AddPromoProductCorrection_AP_Fixate.sql" />
+    <Content Include="SQLInitialize\20191017_2100_PromoProductsCorrection_DataFlow_Trigger.sql" />
     <Content Include="SQLInitialize\20191013_1230_Fix_ClientTreeSharesView.sql" />
     <Content Include="SQLInitialize\20191009_2035_Drop_ClientTreeBrandTech_Trigger.sql" />
     <Content Include="SQLInitialize\20191008_1530_MailNotificationSetting_Set_BCC.sql" />
@@ -1569,14 +1662,19 @@
     <Content Include="SQLInitialize\20191104_1000_Settings_PromoChangeProps_Update.sql" />
     <Content Include="SQLInitialize\20191011_1007_Add_DeletedPromoSupport_AP.sql" />
     <Content Include="SQLInitialize\20191114_1600_UnblockPromoesHandler.sql" />
+    <Content Include="SQLInitialize\20191106_1700_PromoView.sql" />
+    <Content Include="SQLInitialize\20191031_1824_Promo_Product_Correction_Statuses.sql" />
+    <Content Include="SQLInitialize\20191101_1130_DeleteAP_GetProductInPromo.sql" />
+    <Content Include="SQLInitialize\20191101_1546_DeletePromoProductCorrectionFixed_AP.sql" />
     <Content Include="Sql\20191004_1540_FillInOutProductIdsHandler.sql" />
     <Content Include="SQLInitialize\20190926_1600_HistoricalPromoSupport_AP.sql" />
+    <Content Include="SQLInitialize\20191106_1700_PromoGridView.sql" />
+    <Content Include="SQLInitialize\20191101_1801_PromoProductsCorrection_Drop_Trigger.sql" />
     <Compile Include="Utils\SimpleModels.cs" />
     <Content Include="SQLInitialize\20190904_1300_AddPromoStatusNameToPromoView.sql" />
     <Content Include="SQLInitialize\20190923_1806_Add_EventClientTree_AP.sql" />
     <Content Include="SQLInitialize\20190911_2100_Delete_SuperReader_AP.sql" />
     <Content Include="SQLInitialize\20190923_1220_ClientTreeBrandTech_Trigger.sql" />
-    <Content Include="SQLInitialize\20191011_1007_Add_DeletedPromoSupport_AP.sql" />
     <Content Include="SQLInitialize\20190827_1330_Demand_Planning_AP.sql" />
     <Content Include="SQLInitialize\20190806_1900_Calendar_Incremental_AM_AP.sql" />
     <Content Include="SQLInitialize\20190716_2140_DataFlow_Settings.sql" />
@@ -2551,6 +2649,66 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201911251125439_ProductChangeINcident_UpdateFields.resx">
       <DependentUpon>201911251125439_ProductChangeINcident_UpdateFields.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911061222273_Promo_IsGrowthAcceleration.resx">
+      <DependentUpon>201911061222273_Promo_IsGrowthAcceleration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910111121592_AddPromoProductsCorrection.resx">
+      <DependentUpon>201910111121592_AddPromoProductsCorrection.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910111417356_Add_AverageMarker_PromoProducts.resx">
+      <DependentUpon>201910111417356_Add_AverageMarker_PromoProducts.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910141507137_AddUserNameByPromoProductCorrection.resx">
+      <DependentUpon>201910141507137_AddUserNameByPromoProductCorrection.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910150741533_PromoProductsView.resx">
+      <DependentUpon>201910150741533_PromoProductsView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910150828286_Update_PromoProductsCorrection.resx">
+      <DependentUpon>201910150828286_Update_PromoProductsCorrection.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910180626573_AddUniuePromoProductCorrection.resx">
+      <DependentUpon>201910180626573_AddUniuePromoProductCorrection.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910280802334_PromoProductsCorrection_Add_TempId.resx">
+      <DependentUpon>201910280802334_PromoProductsCorrection_Add_TempId.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910290439402_Alter_PromoProductsView.resx">
+      <DependentUpon>201910290439402_Alter_PromoProductsView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910291601387_EmptyMigrationUpliftbyZREP.resx">
+      <DependentUpon>201910291601387_EmptyMigrationUpliftbyZREP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911010718594_Add_AdditionalUserTimestamp_To_Promo.resx">
+      <DependentUpon>201911010718594_Add_AdditionalUserTimestamp_To_Promo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911050655414_Empty_Migration_UpliftByZREP.resx">
+      <DependentUpon>201911050655414_Empty_Migration_UpliftByZREP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911050741094_EmptyMigrationUpliftbyZREP1.resx">
+      <DependentUpon>201911050741094_EmptyMigrationUpliftbyZREP1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911050744438_Alter_PromoProductsCorrectionView2.resx">
+      <DependentUpon>201911050744438_Alter_PromoProductsCorrectionView2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911111143142_Empty_Migration_UpliftByZREP1.resx">
+      <DependentUpon>201911111143142_Empty_Migration_UpliftByZREP1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911121104194_PromoProduct_ChangeFields.resx">
+      <DependentUpon>201911121104194_PromoProduct_ChangeFields.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911130642235_Empty_migration_13_11_2019.resx">
+      <DependentUpon>201911130642235_Empty_migration_13_11_2019.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911201653143_EmptyMigration_UpliftbyZREP.resx">
+      <DependentUpon>201911201653143_EmptyMigration_UpliftbyZREP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911211542355_PromoProductsCorrection_DatabaseGeneratedOption_None.resx">
+      <DependentUpon>201911211542355_PromoProductsCorrection_DatabaseGeneratedOption_None.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911211757201_PromoProductsCorrection_DatabaseGeneratedOption_Identity.resx">
+      <DependentUpon>201911211757201_PromoProductsCorrection_DatabaseGeneratedOption_Identity.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

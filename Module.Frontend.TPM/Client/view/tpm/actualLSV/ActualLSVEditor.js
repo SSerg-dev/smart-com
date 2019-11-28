@@ -137,6 +137,7 @@
             name: 'ActualPromoLSV',
             minValue: 0,
             maxValue: 100000000000000000000,
+            readOnly: true,
             allowDecimals: true,
             allowExponential: false,
             allowOnlyWhitespace: true,

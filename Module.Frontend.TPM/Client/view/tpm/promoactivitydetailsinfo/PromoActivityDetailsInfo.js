@@ -92,6 +92,8 @@
                 text: l10n.ns('tpm', 'PromoProduct').value('PlanProductBaselineLSV'),
                 dataIndex: 'PlanProductBaselineLSV',
                 hidden: true,
+                extraOperator: 'gte_lt',
+                additionalDivision: 1000000.0,
                 renderer: function (value) {
                     if (value !== null && value !== undefined) {
                         valueToDisplay = value / 1000000.0;
@@ -105,6 +107,8 @@
                 text: l10n.ns('tpm', 'PromoProduct').value('ActualProductBaselineLSV'),
                 dataIndex: 'ActualProductBaselineLSV',
                 hidden: true,
+                extraOperator: 'gte_lt',
+                additionalDivision: 1000000.0,
                 renderer: function (value) {
                     if (value !== null && value !== undefined) {
                         valueToDisplay = value / 1000000.0;
@@ -117,6 +121,8 @@
                 text: l10n.ns('tpm', 'PromoProduct').value('PlanProductIncrementalLSV'),
                 dataIndex: 'PlanProductIncrementalLSV',
                 hidden: true,
+                extraOperator: 'gte_lt',
+                additionalDivision: 1000000.0,
                 renderer: function (value) {
                     if (value !== null && value !== undefined) {
                         valueToDisplay = value / 1000000.0;
@@ -129,6 +135,8 @@
                 text: l10n.ns('tpm', 'PromoProduct').value('ActualProductIncrementalLSV'),
                 dataIndex: 'ActualProductIncrementalLSV',
                 hidden: true,
+                extraOperator: 'gte_lt',
+                additionalDivision: 1000000.0,
                 renderer: function (value) {
                     if (value !== null && value !== undefined) {
                         valueToDisplay = value / 1000000.0;
@@ -141,6 +149,8 @@
                 text: l10n.ns('tpm', 'PromoProduct').value('PlanProductLSV'),
                 dataIndex: 'PlanProductLSV',
                 hidden: true,
+                extraOperator: 'gte_lt',
+                additionalDivision: 1000000.0,
                 renderer: function (value) {
                     if (value !== null && value !== undefined) {
                         valueToDisplay = value / 1000000.0;
@@ -153,6 +163,8 @@
                 text: l10n.ns('tpm', 'PromoProduct').value('PlanProductPostPromoEffectLSV'),
                 dataIndex: 'PlanProductPostPromoEffectLSV',
                 hidden: true,
+                extraOperator: 'gte_lt',
+                additionalDivision: 1000000.0,
                 renderer: function (value) {
                     if (value !== null && value !== undefined) {
                         valueToDisplay = value / 1000000.0;
@@ -166,6 +178,8 @@
                 text: l10n.ns('tpm', 'PromoProduct').value('ActualProductLSV'),
                 dataIndex: 'ActualProductLSV',
                 hidden: true,
+                extraOperator: 'gte_lt',
+                additionalDivision: 1000000.0,
                 renderer: function (value) {
                     if (value !== null && value !== undefined) {
                         valueToDisplay = value / 1000000.0;
@@ -178,6 +192,8 @@
                 text: l10n.ns('tpm', 'PromoProduct').value('ActualProductPostPromoEffectLSV'),
                 dataIndex: 'ActualProductPostPromoEffectLSV',
                 hidden: true,
+                extraOperator: 'gte_lt',
+                additionalDivision: 1000000.0,
                 renderer: function (value) {
                     if (value !== null && value !== undefined) {
                         valueToDisplay = value / 1000000.0;
@@ -190,6 +206,8 @@
                 text: l10n.ns('tpm', 'PromoProduct').value('ActualProductLSVByCompensation'),
                 dataIndex: 'ActualProductLSVByCompensation',
                 hidden: true,
+                extraOperator: 'gte_lt',
+                additionalDivision: 1000000.0,
                 renderer: function (value) {
                     if (value !== null && value !== undefined) {
                         valueToDisplay = value / 1000000.0;
@@ -198,6 +216,11 @@
                         return null;
                     }
                 }
+            }, {
+                text: l10n.ns('tpm', 'PromoProduct').value('ActualProductUpliftPercent'),
+                dataIndex: 'ActualProductUpliftPercent',
+                hidden: true,
+                extraOperator: 'gte_lt',
             }]
         }
     }, {

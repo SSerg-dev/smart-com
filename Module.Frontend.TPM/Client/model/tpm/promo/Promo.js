@@ -218,6 +218,10 @@
         { name: 'InOutExcludeAssortmentMatrixProductsButtonPressed', type: 'boolean', hidden: true, isDefault: false, defaultValue: false },
         //Regular
         { name: 'RegularExcludedProductIds', type: 'string', hidden: true, isDefault: false },
+        // Growth Acceleration
+        { name: 'IsGrowthAcceleration', type: 'boolean', hidden: false, isDefault: false },
+        { name: 'AdditionalUserTimestamp', type: 'string', hidden: true, isDefault: false   },
+
     ],
     proxy: {
         type: 'breeze',

@@ -86,6 +86,8 @@
         '<dl style="border-left: 5px solid {PromoStatusColor}; margin: 0px;"><dt style="margin: 0 0 3px 2px;">Status</dt><dd style="margin: 0 0 3px 2px;">{PromoStatusSystemName}</dd></dl>' +
 		'<tpl if="InOut"><dd style="border-bottom: 1px solid rgba(197, 197, 197, 0.25); padding-bottom: 5px;"></dd>' +
 		'<dt><span class="mdi mdi-hexagon-slice-2 inout-mark-icon"></span>InOut promo</dt></tpl>' +
+		'<tpl if="IsGrowthAcceleration"><dd style="border-bottom: 1px solid rgba(197, 197, 197, 0.25); padding-bottom: 5px;"></dd>' +
+		'<dt><span class="mdi alpha-g-box-outline inout-mark-icon"></span>Growth Acceleration</dt></tpl>' +
 		'</dl>'
 	),
     tipCfg: {
@@ -100,7 +102,8 @@
         }
     },
     // Промо в две строки
-    eventBodyTemplate: '<div class="event-status-border" style ="border-left: 5px solid {statusColor};" ><span class="sch-event-text">{headerText}</span></div>',
+    eventBodyTemplate: '<span class="mdi alpha-g-box-outline inout-mark-icon growth-acceleration-icon" style="display: {display}; bacground-color: white; color: #426a97; float: left;"></span>' + 
+        '<div class="event-status-border {eventStatusBorderGrowthAcceleration}" style="margin-left: {marginLeft}; border-left: 5px solid {statusColor};"><span class="sch-event-text">{headerText}</span></div>',
 
     // возвращает объект заполняющий eventBodyTemplate
     eventRenderer: function (event, resource, tplData, row, col, ds) {
@@ -108,7 +111,10 @@
         tplData.style = Ext.String.format('background: {0} !important; border-color: white;', bgColor || '#DDDDDD');
         return {
             headerText: event.get('Name'),
-            statusColor: event.get('PromoStatusColor') || '#DDDDDD'
+            statusColor: event.get('PromoStatusColor') || '#DDDDDD',
+            display: event.data.IsGrowthAcceleration ? 'inline' : 'none',
+            marginLeft: event.data.IsGrowthAcceleration ? '13px' : '0px',
+            eventStatusBorderGrowthAcceleration:  event.data.IsGrowthAcceleration ? 'event-status-border-growth-acceleration' : ''
         };
     },
 

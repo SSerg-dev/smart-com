@@ -325,11 +325,12 @@
     onChoosePromoGridCheckChange: function (model) {
         var grid = model.view.up('grid'),
             checkedRows = grid.getSelectionModel().getCheckedRows();
-
-        if (checkedRows.length > 0) {
-            grid.up('basewindow[name=choosepromowindow]').down('#apply').setDisabled(false);
-        } else {
-            grid.up('basewindow[name=choosepromowindow]').down('#apply').setDisabled(true);
+        if (grid.up('basewindow[name=choosepromowindow]') != undefined) {
+            if (checkedRows.length > 0) {
+                grid.up('basewindow[name=choosepromowindow]').down('#apply').setDisabled(false);
+            } else {
+                grid.up('basewindow[name=choosepromowindow]').down('#apply').setDisabled(true);
+            }
         }
     },
 

@@ -269,6 +269,10 @@
 					afterrender: this.onBasicPanelAfterrender
 				},
 
+                'promoeditorcustom [name=GrowthAccelerationCheckbox]': {
+                    change: this.onGrowthAccelerationCheckboxChange
+                },
+
 				// choose client
 				'promoclient #promoClientSettignsBtn': {
 					click: this.onPromoClientSettignsClick
@@ -1463,11 +1467,13 @@
 		}
 
 		if (needRecountUplift.value === true) {
-			planUplift.setReadOnly(false);
-			planUplift.removeCls('readOnlyField');
-		} else {
-			planUplift.setReadOnly(true);
-			planUplift.addCls('readOnlyField');
+            planUplift.changeEditable(true);
+            planUplift.up('container').setReadable(true);
+            planUplift.up('container').down('button[itemId=GlyphLock]').setGlyph(0xf33e);
+        } else {
+            planUplift.changeEditable(false);
+            planUplift.up('container').setReadable(false);
+            planUplift.up('container').down('button[itemId=GlyphLock]').setGlyph(0xf33f);
 		}
 
 		//Начавшиеся promo не редактируются период
@@ -1598,12 +1604,14 @@
 			needRecountUplift.setDisabled(false);
 		}
 
-		if (needRecountUplift.value === true) {
-			planUplift.setReadOnly(false);
-			planUplift.removeCls('readOnlyField');
-		} else {
-			planUplift.setReadOnly(true);
-			planUplift.addCls('readOnlyField');
+        if (needRecountUplift.value === true) {
+            planUplift.changeEditable(true);
+            planUplift.up('container').setReadable(true);
+            planUplift.up('container').down('button[itemId=GlyphLock]').setGlyph(0xf33e);
+        } else {
+            planUplift.changeEditable(false);
+            planUplift.up('container').setReadable(false);
+            planUplift.up('container').down('button[itemId=GlyphLock]').setGlyph(0xf33f);
 		}
 
 		me.validatePromoModel(promoeditorcustom);
@@ -1728,9 +1736,10 @@
 		var planUplift = Ext.ComponentQuery.query('[name=PlanPromoUpliftPercent]')[0];
 		needRecountUplift.setDisabled(true);
 		needRecountUplift.setReadOnly(true);
-		needRecountUplift.addCls('readOnlyField');
-		planUplift.setReadOnly(true);
-		planUplift.addCls('readOnlyField');
+        needRecountUplift.addCls('readOnlyField');
+        planUplift.changeEditable(false);
+        planUplift.up('container').setReadable(true);
+        planUplift.up('container').down('button[itemId=GlyphLock]').setGlyph(0xf33f);
 	},
 
 	onCancelPromoButtonClick: function (button) {
@@ -1746,7 +1755,9 @@
 				calendarGrid[0].resourceStore.load();
 			}
 
-			if (window) {
+            if (window) {
+                promoeditorcustom.tempEditUpliftId = null;
+                promoeditorcustom.productUpliftChanged = false;
 				var grid = button.promoGridDetailMode;
 				if (grid) {
 					//var selectionModel = grid.getSelectionModel();
@@ -2388,6 +2399,8 @@
 		record.data.InOutExcludeAssortmentMatrixProductsButtonPressed = window.excludeAssortmentMatrixProductsButtonPressed ? true : false;
         //record.data.RegularExcludedProductIds = window.RegularExcludedProductIds;
 
+        record.data.IsGrowthAcceleration = window.isGrowthAcceleration ? true : false;
+
 		record.data.Name = window.promoName;
 
 		// promomechanic
@@ -2445,7 +2458,7 @@
 		//var financialIndicator = promocalculation.down('container[name=financialIndicator]');
 
 		// activity
-		//record.data.PlanPromoUpliftPercent = activity.down('numberfield[name=PlanPromoUpliftPercent]').getValue();
+		//record.data.PlanPromoUpliftPercent = activity.down('triggerfielddetails[name=PlanPromoUpliftPercent]').getValue();
 		//record.data.PlanPromoIncrementalLSV = activity.down('numberfield[name=PlanPromoIncrementalLSV]').getValue();
 		//record.data.PlanPromoIncrementalLSV = activity.down('numberfield[name=PlanPromoIncrementalLSV]').getValue();
 		//record.data.PlanPromoPostPromoEffectLSV = activity.down('trigger[name=PlanPostPromoEffectTotal]').getValue();
@@ -2480,7 +2493,7 @@
 
 		record.data.InvoiceNumber = promoActivityStep2.down('textfield[name=InvoiceNumber]').getValue();
 		record.data.DocumentNumber = promoActivityStep2.down('textfield[name=DocumentNumber]').getValue();
-		record.data.PlanPromoUpliftPercent = promoActivityStep2.down('numberfield[name=PlanPromoUpliftPercent]').getValue();
+        record.data.PlanPromoUpliftPercent = promoActivityStep2.down('triggerfielddetails[name=PlanPromoUpliftPercent]').getValue();
 
 		var needRecountUplift = promoActivityStep2.down('#PromoUpliftLockedUpdateCheckbox').getValue();
 		if (needRecountUplift === true) {
@@ -2540,6 +2553,11 @@
 
 		// Для InOut Promo
 		promoeditorcustom.isInOutPromo = record.data.InOut;
+
+		// Для Growth Acceleration Promo
+		promoeditorcustom.isGrowthAcceleration = record.data.IsGrowthAcceleration;
+        var growthAccelerationCheckbox = promoeditorcustom.down('[name=GrowthAccelerationCheckbox]');
+        growthAccelerationCheckbox.setValue(record.data.IsGrowthAcceleration);
 
 		readOnly = isCopy ? false : readOnly || calculating;
 		promoeditorcustom.readOnly = readOnly;
@@ -2773,6 +2791,9 @@
             addSubItemButtons.forEach(function (button) {
                 button.setDisabled(true);
             })
+
+            // --------------- promo activity ---------------
+            promoeditorcustom.down('container[itemId=ContainerPlanPromoUplift]').setReadable(true);
 
 			// --------------- buttons ---------------
 			promoeditorcustom.down('button[itemId=savePromo]').hide();
@@ -3147,9 +3168,10 @@
             promoUpliftLockedUpdateCheckbox.setValue(!record.data.NeedRecountUplift);
 
             if (record.data.InOut) {
-                planPromoUpliftPercent.setReadOnly(true);
-                planPromoUpliftPercent.addCls('readOnlyField');
+                planPromoUpliftPercent.changeEditable(false);
                 promoUpliftLockedUpdateCheckbox.setDisabled(true);
+                planPromoUpliftPercent.up('container').setReadable(true);
+                planPromoUpliftPercent.up('container').down('button[itemId=GlyphLock]').setGlyph(0xf33f);
             }
 
             var promoStatusName = record.get('PromoStatusName');
@@ -3184,6 +3206,8 @@
         //кнопки перехода статуса находятся не на customtoptoolbar, а на toolbar, при вызове down('toolbar') мы получаем customtoptoolbar, поэтому достаём через кнопку
         var toolbarbutton = promoeditorcustom.down('button[itemId=btn_sendForApproval]').up();
         if (calculating) { 
+            planPromoUpliftPercent.up('container').setReadable(true);
+            planPromoUpliftPercent.changeEditable(false);
             toolbar.items.items.forEach(function (item, i, arr) {
                 item.el.setStyle('backgroundColor', '#B53333');
                 //ненужный код, но и не проблеммный
@@ -3221,53 +3245,66 @@
 
 	saveModel: function (model, window, close, reloadPromo) {
 		var grid = Ext.ComponentQuery.query('#promoGrid')[0];
-		var scheduler = Ext.ComponentQuery.query('#nascheduler')[0];
+        var scheduler = Ext.ComponentQuery.query('#nascheduler')[0];
+        var promoeditorcustom = Ext.ComponentQuery.query('promoeditorcustom')[0];
 		var me = this;
 		var store = null;
-
 		if (grid) {
 			store = grid.down('directorygrid').promoStore;
-		}
-
+		} 
 		window.setLoading(l10n.ns('core').value('savingText'));
 
 		// останавливаем подписку на статус до загрузки окна
 		//if (reloadPromo)
 		requestHub($.connection.logHub.server.unsubscribeStatus);
 
-		// Response возвращается не полностью верный, mappings игнорируются
-		model.save({
-			success: function (response, req) {
-				if (req.response.length > 0 && req.response[0].value && req.response[0].value.length > 0)
-					App.Notify.pushInfo(req.response[0].value);
+        //Если были правки Product Uplift, сначала фиксируем их
+        if (promoeditorcustom.productUpliftChanged) {
+            
+            model.data.AdditionalUserTimestamp = promoeditorcustom.tempEditUpliftId; 
 
-				var wasCreating = window.isCreating;
-				if (store) {
-					store.on({
-						single: true,
-						scope: this,
-						load: function (records, operation, success) {
-							model.set('Key');
-							//window.setLoading(false);
-							if (typeof grid.afterSaveCallback === 'function') {
-								grid.afterSaveCallback(grid);
-							}
-						}
-					});
-				}
-				if (close) {
-					window.setLoading(false);
-					window.close();
-				} else {
-					me.currentPromoModel = model;
-					window.promoId = response.data.Id;
-					window.isCreating = false;
-					window.model = response;
+            me.saveModelRequest(model, window, close, reloadPromo, grid, scheduler, me, store);
+            
+        } else {
 
-					// перезаполнить промо
-					if (reloadPromo) {
-						App.model.tpm.promo.Promo.load(response.data.Id, {
-							callback: function (newModel, operation) {
+            me.saveModelRequest(model, window, close, reloadPromo, grid, scheduler, me, store);
+        }
+    },
+
+    saveModelRequest: function (model, window, close, reloadPromo, grid, scheduler, me, store) {
+        // Response возвращается не полностью верный, mappings игнорируются
+        model.save({
+            success: function (response, req) {
+                if (req.response.length > 0 && req.response[0].value && req.response[0].value.length > 0)
+                    App.Notify.pushInfo(req.response[0].value);
+
+                var wasCreating = window.isCreating;
+                if (store) {
+                    store.on({
+                        single: true,
+                        scope: this,
+                        load: function (records, operation, success) {
+                            model.set('Key');
+                            //window.setLoading(false);
+                            if (typeof grid.afterSaveCallback === 'function') {
+                                grid.afterSaveCallback(grid);
+                            }
+                        }
+                    });
+                }
+                if (close) {
+                    window.setLoading(false);
+                    window.close();
+                } else {
+                    me.currentPromoModel = model;
+                    window.promoId = response.data.Id;
+                    window.isCreating = false;
+                    window.model = response;
+
+                    // перезаполнить промо
+                    if (reloadPromo) {
+                        App.model.tpm.promo.Promo.load(response.data.Id, {
+                            callback: function (newModel, operation) {
                                 var directorygrid = grid ? grid.down('directorygrid') : null;
                                 if (newModel) {
                                     var showLogBtn = window.down('#btn_showlog');
@@ -3309,36 +3346,36 @@
 
                                 // если было создано, то id был обновлен
                                 if (wasCreating) {
-                                   me.initSignalR(window);
+                                    me.initSignalR(window);
                                 }
-							}
-						});
-					}
-					else {
-						window.setLoading(false);
-					}
-				}
-				// Если создание из календаря - обновляем календарь
-				if (scheduler) {
-					scheduler.resourceStore.reload();
-					scheduler.eventStore.reload();
-				}
+                            }
+                        });
+                    }
+                    else {
+                        window.setLoading(false);
+                    }
+                }
+                // Если создание из календаря - обновляем календарь
+                if (scheduler) {
+                    scheduler.resourceStore.reload();
+                    scheduler.eventStore.reload();
+                }
 
-				return response;
-			},
-			failure: function () {
-				// при неудаче возвращаем старый статус
-				if (window.previousStatusId) {
-					window.statusId = window.previousStatusId;
-				}
+                return response;
+            },
+            failure: function () {
+                // при неудаче возвращаем старый статус
+                if (window.previousStatusId) {
+                    window.statusId = window.previousStatusId;
+                }
 
-				model.reject();
-				window.setLoading(false);
+                model.reject();
+                window.setLoading(false);
 
-				return null;
-			}
-		});
-	},
+                return null;
+            }
+        });
+    },
 
 	savePromo: function (button, close, reloadForm) {
 		var window = button.up('promoeditorcustom');
@@ -4105,7 +4142,8 @@
 			}
 		});
 
-		// Блокировка кнопок Add Promo Support для роли DemandPlanning.
+		// Блокировка кнопок Add Promo Support для роли DemandPlanning. 
+        // Блокировка редактирования Growth Acceleration
 		if (currentRole == 'DemandPlanning') {
 			var addSubItemButtons = Ext.ComponentQuery.query('#addSubItem');
 			if (addSubItemButtons.length > 0) {
@@ -4114,6 +4152,9 @@
 					button.setDisabled = function () { return true; }
 				});
 			}
+
+            var growthAccelerationCheckbox = promoeditorcustom.down('[name=GrowthAccelerationCheckbox]');
+            growthAccelerationCheckbox.setReadOnly(true);
 		}
 	},
 
@@ -4135,22 +4176,23 @@
 			}
 		}
 
-		if (needRecountUplift.disabled === true || Ext.ComponentQuery.query('#changePromo')[0].isVisible()) {
-			planUplift.setReadOnly(true);
-			planUplift.addCls('readOnlyField');
+        if (needRecountUplift.disabled === true || Ext.ComponentQuery.query('#changePromo')[0].isVisible()) {
+            planUplift.changeEditable(false);
+            planUplift.up('container').down('button[itemId=GlyphLock]').setGlyph(0xf33f);
+            planUplift.up('container').setReadable(true);
 		}
 
 		if (Ext.ComponentQuery.query('#changePromo')[0].isVisible() === false) {
-
 			if (model.data.InOut) {
 				needRecountUplift.setDisabled(true);
 			} else {
 				needRecountUplift.setDisabled(false);
 			}
 
-			if (needRecountUplift.value === true) {
-				planUplift.setReadOnly(false);
-				planUplift.removeCls('readOnlyField');
+            if (needRecountUplift.value === true) {
+                planUplift.changeEditable(true);
+                planUplift.up('container').down('button[itemId=GlyphLock]').setGlyph(0xf33e);
+                planUplift.up('container').setReadable(true);
 			}
 		}
 
@@ -6000,5 +6042,41 @@
                 but.removeCls('errorinside');
             }
         })
+    },
+
+    getGrowthAccelerationWindowLabel: function () {
+        var growAccelerationComponent = Ext.ComponentQuery.query('#btn_promoGrowthAcceleration')[0];
+        return growAccelerationComponent;
+    },
+
+    showGrowthAccelerationWindowLabel: function () {
+        var growthAccelerationWindowLabel = this.getGrowthAccelerationWindowLabel();
+        if (growthAccelerationWindowLabel) {
+            growthAccelerationWindowLabel.show();
+        }
+    },
+
+    hideGrowthAccelerationWindowLabel: function () {
+        var growthAccelerationWindowLabel = this.getGrowthAccelerationWindowLabel();
+        if (growthAccelerationWindowLabel) {
+            growthAccelerationWindowLabel.hide();
+        }
+    },
+
+    changeGrowthAccelerationState: function (isGrowthAcceleration) {
+        this.onGrowthAccelerationCheckboxChange(null, isGrowthAcceleration);
+    },
+
+    onGrowthAccelerationCheckboxChange: function(component, newValue) {
+        var promoEditorCustom = Ext.ComponentQuery.query('promoeditorcustom')[0];
+        var promoController = App.app.getController('tpm.promo.Promo');
+
+        if (promoEditorCustom && newValue) {
+            promoController.showGrowthAccelerationWindowLabel();
+            promoEditorCustom.isGrowthAcceleration = true;
+        } else {
+            promoController.hideGrowthAccelerationWindowLabel();
+            promoEditorCustom.isGrowthAcceleration = false;
+        }
     }
 });

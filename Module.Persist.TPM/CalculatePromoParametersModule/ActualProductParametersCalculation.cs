@@ -37,7 +37,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                 ResetProductParameters(products, context, !isActualPromoProstPromoEffectLSVChangedByDemand);
 
-                double? ActualPromoLSVByCompensation = 0;
+                double? ActualPromoLSVByCompensation = null;
                 string errors = ""; // общий список ошибок
                 foreach (PromoProduct product in products)
                 {
@@ -93,7 +93,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         // если стоит флаг inout, ActualPromoPostPromoEffect = 0
                         if (!promo.InOut.HasValue || !promo.InOut.Value)
                         {
-                            product.ActualProductUplift = product.ActualProductBaselineLSV != 0 ? (product.ActualProductIncrementalLSV / product.ActualProductBaselineLSV) * 100 : 0;
+                            product.ActualProductUpliftPercent = product.ActualProductBaselineLSV != 0 ? (product.ActualProductIncrementalLSV / product.ActualProductBaselineLSV) * 100 : 0;
                             if (clientTree != null)
                             {
                                 product.ActualProductPostPromoEffectQtyW1 = product.PlanProductBaselineCaseQty * clientTree.PostPromoEffectW1 / 100;
@@ -101,11 +101,11 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                 product.ActualProductPostPromoEffectQty = product.PlanProductPostPromoEffectQtyW1 + product.PlanProductPostPromoEffectQtyW2;
                             }
 
-                            product.ActualProductLSVByCompensation = (product.ActualProductPCQty * actualProductPCPrice) ?? 0;
+                            product.ActualProductLSVByCompensation = (product.ActualProductPCQty * actualProductPCPrice) ?? null;
                         }
                         else
                         {
-                            product.ActualProductUplift = null;
+                            product.ActualProductUpliftPercent = null;
 
                             product.ActualProductPostPromoEffectQtyW1 = 0;
                             product.ActualProductPostPromoEffectQtyW2 = 0;
@@ -118,10 +118,10 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                 product.ActualProductPostPromoEffectLSV = 0;
                             }
 
-                            product.ActualProductLSVByCompensation = (product.ActualProductPCQty * actualProductPCPrice) ?? 0;
+                            product.ActualProductLSVByCompensation = (product.ActualProductPCQty * actualProductPCPrice) ?? null;
                         }
 
-                        ActualPromoLSVByCompensation += (product.ActualProductPCQty * actualProductPCPrice) ?? 0;
+                        ActualPromoLSVByCompensation += (product.ActualProductPCQty * actualProductPCPrice) ?? null;
                         product.ActualProductIncrementalPCQty = product.ActualProductSellInPrice != 0 ? product.ActualProductIncrementalLSV / product.ActualProductSellInPrice : 0;
                         product.ActualProductIncrementalPCLSV = product.Product.UOM_PC2Case != 0 ? product.ActualProductIncrementalLSV / product.Product.UOM_PC2Case : 0;
                     }
@@ -131,7 +131,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     }
                 }
 
-                promo.ActualPromoLSVByCompensation = ActualPromoLSVByCompensation != 0 ? ActualPromoLSVByCompensation : new double?();
+                promo.ActualPromoLSVByCompensation = ActualPromoLSVByCompensation != null ? ActualPromoLSVByCompensation : new double?();
 
                 try
                 {
@@ -166,7 +166,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 product.ActualProductIncrementalPCQty = null;
                 product.ActualProductIncrementalPCLSV = null;
                 product.ActualProductIncrementalLSV = null;
-                product.ActualProductUplift = null;
+                product.ActualProductUpliftPercent = null;
                 product.ActualProductLSVByCompensation = null;
             }
         }

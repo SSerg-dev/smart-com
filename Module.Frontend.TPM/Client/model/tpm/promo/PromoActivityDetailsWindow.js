@@ -11,7 +11,7 @@
         { name: 'ProductEN', useNull: true, type: 'string', hidden: false, isDefault: true },
         { name: 'PlanProductBaselineLSV', useNull: true, type: 'string', hidden: false, isDefault: true },
         { name: 'ActualProductBaselineLSV', useNull: true, type: 'string', hidden: false, isDefault: true/*, mapping:'PlanProductBaselineLSV'*/ },
-        { name: 'PlanProductBaselineLSV', useNull: true, type: 'string', hidden: false, isDefault: true },
+		{ name: 'ActualProductUpliftPercent', useNull: true, type: 'string', hidden: false, isDefault: true },
         { name: 'ProductEN', useNull: true, type: 'string', hidden: false, isDefault: true },
     ],
     proxy: {

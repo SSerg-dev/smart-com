@@ -30,6 +30,7 @@ namespace Module.Host.TPM.Handlers
             handlerLogger.Write(true, "");
 
             Guid promoId = HandlerDataHelper.GetIncomingArgument<Guid>("PromoId", info.Data, false);
+            bool? needRedistributeLSV = HandlerDataHelper.GetIncomingArgument<bool?>("needRedistributeLSV", info.Data, false);
 
             try
             {
@@ -44,6 +45,13 @@ namespace Module.Host.TPM.Handlers
                         var promoProductList = context.Set<PromoProduct>().Where(x => x.PromoId == promo.Id && !x.Disabled).ToList();
                         if (!promo.LoadFromTLC && promoProductList.Any(x => x.ActualProductPCQty.HasValue))
                         {
+                            if (needRedistributeLSV == true)
+                            {
+                                //Хак, что бы пересчет не переписывать
+                                ActualProductParametersCalculation.CalculatePromoProductParameters(promo, context);
+                                ActualLSVChangeHandler.CalculateAllActualLSV(promo, context);
+                                context.SaveChanges();
+                            }
                             // если есть ошибки, они перечисленны через ;
                             errorString = ActualProductParametersCalculation.CalculatePromoProductParameters(promo, context);
                             // записываем ошибки если они есть

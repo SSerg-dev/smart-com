@@ -168,6 +168,14 @@
     'tpm.promoproduct.DeletedPromoProduct',
     'tpm.promoproduct.HistoricalPromoProduct',
 
+    //PromoProductsView
+    'tpm.promoproductsview.PromoProductsView',
+
+    //promoproductcorrection
+    'tpm.promoproductcorrection.PromoProductCorrection',
+    'tpm.promoproductcorrection.DeletedPromoProductCorrection',
+    'tpm.promoproductcorrection.HistoricalPromoProductCorrection',
+
     //BaseLine
     'tpm.baseline.BaseLine',
     'tpm.baseline.DeletedBaseLine',

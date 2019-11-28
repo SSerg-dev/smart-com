@@ -44,11 +44,13 @@ namespace Module.Host.TPM.Handlers
 				handlerLogger.Write(true, "");
 
 				Guid nullGuid = new Guid();
-				Guid promoId = HandlerDataHelper.GetIncomingArgument<Guid>("PromoId", info.Data, false);
-				bool needCalculatePlanMarketingTI = HandlerDataHelper.GetIncomingArgument<bool>("NeedCalculatePlanMarketingTI", info.Data, false);
+                Guid promoId = HandlerDataHelper.GetIncomingArgument<Guid>("PromoId", info.Data, false);
+                Guid UserId = HandlerDataHelper.GetIncomingArgument<Guid>("UserId", info.Data, false);
+                bool needCalculatePlanMarketingTI = HandlerDataHelper.GetIncomingArgument<bool>("NeedCalculatePlanMarketingTI", info.Data, false);
+                bool needResetUpliftCorrections = HandlerDataHelper.GetIncomingArgument<bool>("needResetUpliftCorrections", info.Data, false);
                 Promo promoCopy = null;
 
-				try
+                try
 				{
 					if (promoId != nullGuid)
 					{
@@ -59,8 +61,32 @@ namespace Module.Host.TPM.Handlers
 						handlerLogger.Write(true, String.Format("Calculating promo: №{0}", promo.Number), "Message");
 						handlerLogger.Write(true, "");
 
-						//Подбор исторических промо и расчет PlanPromoUpliftPercent
-						if (NeedUpliftFinding(promo))
+                        //статусы, в которых не должен производиться пересчет плановых параметров промо
+                        ISettingsManager settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
+                        string promoStatusesNotPlanRecalculateSetting = settingsManager.GetSetting<string>("NOT_PLAN_RECALCULATE_PROMO_STATUS_LIST", "Started,Finished,Closed");
+                        string[] statuses = promoStatusesNotPlanRecalculateSetting.Split(',');
+                        string calculateBaselineError = null;
+                        bool needReturnToOnApprovalStatus = false;
+
+                        //Считаем Baseline до расчета Uplift
+                        if (!statuses.Contains(promo.PromoStatus.SystemName))
+                        {
+                            if (!promo.LoadFromTLC)
+                            {
+                                string setPromoProductError;
+
+                                needReturnToOnApprovalStatus = PlanProductParametersCalculation.SetPromoProduct(promoId, context, out setPromoProductError);
+                                if (setPromoProductError != null)
+                                {
+                                    logLine = String.Format("Error filling Product: {0}", setPromoProductError);
+                                    handlerLogger.Write(true, logLine, "Error");
+                                }
+
+                                calculateBaselineError = PlanProductParametersCalculation.CalculateBaseline(context, promoId);
+                            }
+                        }
+                        //Подбор исторических промо и расчет PlanPromoUpliftPercent
+                        if (NeedUpliftFinding(promo))
 						{
 							// Uplift не расчитывается для промо в статусе Starte, Finished, Closed
 							if (promo.PromoStatus.SystemName != "Started" && promo.PromoStatus.SystemName != "Finished" && promo.PromoStatus.SystemName != "Closed")
@@ -71,7 +97,8 @@ namespace Module.Host.TPM.Handlers
 								handlerLogger.Write(true, logLine, "Message");
 
 								string upliftMessage;
-								double? planPromoUpliftPercent = PlanPromoUpliftCalculation.FindPlanPromoUplift(promoId, context, out upliftMessage);
+
+								double? planPromoUpliftPercent = PlanPromoUpliftCalculation.FindPlanPromoUplift(promoId, context, out upliftMessage, needResetUpliftCorrections, UserId);
 
 								if (planPromoUpliftPercent != -1)
 								{
@@ -95,6 +122,10 @@ namespace Module.Host.TPM.Handlers
 								handlerLogger.Write(true, logLine, "Message");
 							}
 						}
+                        else
+                        {
+                            PlanPromoUpliftCalculation.DistributePlanPromoUpliftToProducts(promo, context, UserId);
+                        }
 
                         // возможно, придется это вернуть, НЕ УДАЛЯТЬ КОММЕНТАРИЙ
                         // если уже произошла отгрузка продукта, то перезаполнение таблицы PromoProduct не осуществляется
@@ -109,11 +140,6 @@ namespace Module.Host.TPM.Handlers
                         //    }
                         //}
 
-                        //статусы, в которых не должен производиться пересчет плановых параметров промо
-                        ISettingsManager settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
-                        string promoStatusesNotPlanRecalculateSetting = settingsManager.GetSetting<string>("NOT_PLAN_RECALCULATE_PROMO_STATUS_LIST", "Started,Finished,Closed");
-                        string[] statuses = promoStatusesNotPlanRecalculateSetting.Split(',');
-
                         // Плановые параметры не расчитывается для промо в статусах из настроек
                         if (!statuses.Contains(promo.PromoStatus.SystemName))
                         {
@@ -126,19 +152,16 @@ namespace Module.Host.TPM.Handlers
                             string calculateError = null;
                             if (!promo.LoadFromTLC)
                             {
-                                string setPromoProductError;
-                                bool needReturnToOnApprovalStatus = false;
-
-                                needReturnToOnApprovalStatus = PlanProductParametersCalculation.SetPromoProduct(promoId, context, out setPromoProductError);
-                                if (setPromoProductError != null)
-                                {
-                                    logLine = String.Format("Error filling Product: {0}", setPromoProductError);
-                                    handlerLogger.Write(true, logLine, "Error");
-                                }
-
                                 // пересчет baseline должен происходить до попытки согласовать промо, т.к. к зависимости от результата пересчета
                                 // резльтат согласования может быть разный (после пересчета baseline может оказаться равен 0, тогда автосогласования не будет)
                                 calculateError = PlanProductParametersCalculation.CalculatePromoProductParameters(promoId, context);
+                                if (calculateBaselineError != null && calculateError != null)
+                                {
+                                    calculateError += calculateBaselineError;
+                                } else if(calculateBaselineError != null && calculateError == null)
+                                {
+                                    calculateError = calculateBaselineError;
+                                }
 
                                 string[] canBeReturnedToOnApproval = { "OnApproval", "Approved", "Planned" };
 								if (needReturnToOnApprovalStatus && canBeReturnedToOnApproval.Contains(promo.PromoStatus.SystemName))

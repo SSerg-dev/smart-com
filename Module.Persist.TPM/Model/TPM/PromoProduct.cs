@@ -86,11 +86,6 @@ namespace Module.Persist.TPM.Model.TPM
         public double? PlanProductPCPrice { get; set; }
 
         /// <summary>
-        /// Значение планового аплифта
-        /// </summary>
-        public double? PlanProductUplift { get; set; }
-
-        /// <summary>
         /// Фактическое количество в штуках
         /// </summary>
         public int? ActualProductPCQty { get; set; }
@@ -138,7 +133,7 @@ namespace Module.Persist.TPM.Model.TPM
         /// <summary>
         /// Значение аплифта по отношению к baseline
         /// </summary>
-        public double? ActualProductUplift { get; set; }
+        public double? ActualProductUpliftPercent { get; set; }
 
         /// <summary>
         /// Увеличение продаж относительно плана (Qty) в штуках
@@ -194,6 +189,11 @@ namespace Module.Persist.TPM.Model.TPM
         /// Значение планового аплифта в процентах
         /// </summary>
         public double? PlanProductUpliftPercent { get; set; }
+
+        /// <summary>
+        /// Указывает как подсчитан PlanProductUpliftPercent - средний по всем продуктам или точно по этому продукту
+        /// </summary>
+        public bool AverageMarker { get; set; }
 
         /// <summary>
         /// Фактическая сумма продажи в кейсах

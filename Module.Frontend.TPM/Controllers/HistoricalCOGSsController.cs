@@ -1,6 +1,7 @@
 using Core.History;
 using Module.Persist.TPM.Model.History;
 using Ninject;
+using System;
 using System.Linq;
 using System.Web.Http.OData;
 using System.Web.Http.OData.Query;
@@ -20,8 +21,8 @@ namespace Module.Frontend.TPM.Controllers {
             AllowedQueryOptions = AllowedQueryOptions.All,
             EnableConstantParameterization = false,
             MaxTop = 1024)]
-        public IQueryable<HistoricalCOGS> GetHistoricalCOGSs() {
-            return HistoryReader.GetAll<HistoricalCOGS>();
+        public IQueryable<HistoricalCOGS> GetHistoricalCOGSs(Guid? id) {
+            return HistoryReader.GetAllById<HistoricalCOGS>(id.ToString());
         }
 
         protected override void Dispose(bool disposing) {

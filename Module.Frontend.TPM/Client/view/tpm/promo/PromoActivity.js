@@ -310,24 +310,66 @@
                         },
                         items: [{
                             xtype: 'container',
+                            itemId: 'ContainerPlanPromoUplift',
                             height: '100%',
+                            cls: 'editable-trigger-field',
                             layout: {
                                 type: 'hbox',
                                 align: 'top',
                                 pack: 'center'
                             },
+                            setReadable: function (read) {
+                                if (!read && !this.down('checkbox[itemId=PromoUpliftLockedUpdateCheckbox]').isDisabled()) {
+                                    this.down('triggerfielddetails[name=PlanPromoUpliftPercent]').isReadable = false;
+                                } else {
+                                    this.down('triggerfielddetails[name=PlanPromoUpliftPercent]').isReadable = true;
+                                }
+                            },
                             items: [{
-                                xtype: 'numberfield',
-                                name: 'PlanPromoUpliftPercent',
-                                hideTrigger: true,
-                                readOnly: true,
-                                needReadOnly: true,
+                                xtype: 'triggerfielddetails',
+								name: 'PlanPromoUpliftPercent',
+                                windowType: 'promoproductsview',
                                 labelWidth: 190,
                                 fieldLabel: l10n.ns('tpm', 'Promo').value('PromoUpliftPercent'),
-                                cls: 'borderedField-with-lable',
-                                labelCls: 'borderedField-label',
+                                tooltip: l10n.ns('tpm', 'PromoActivity').value('UpdateActuals'),
                                 flex: 1,
+                                isReadable: true,
+                                readOnly: false,
                                 crudAccess: ['Administrator', 'FunctionalExpert', 'DemandPlanning'],
+                                listeners: {
+                                    afterrender: function (el) {
+                                        el.triggerCell.addCls('form-info-trigger-cell');
+
+                                        var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
+                                        if (this.crudAccess.indexOf(currentRole) === -1) {
+                                            this.up('container[itemId=ContainerPlanPromoUplift]').setReadable(true);
+                                        }
+                                    }
+                                },
+                                validator: function (value) {
+                                    if (this.editable) {
+                                        //Заменяем запятую на точку для парсера
+                                        value = value.split(",").join(".");
+                                        var floatValue = parseFloat(value);
+                                        if (floatValue != value || floatValue <= 0 || value === "") {
+                                            return l10n.ns('tpm', 'Promo').value('PlanPromoUpliftPercentError');
+                                        } else {
+                                            return true;
+                                        }
+                                    } else {
+                                        return true;
+                                    }
+                                },
+                                changeEditable: function (setToEditable) {
+                                    if (setToEditable) {
+                                        this.setEditable(true);
+                                        this.up('container').addCls('editable-trigger-field');
+                                    } else {
+                                        this.setEditable(false);
+                                        this.up('container').removeCls('editable-trigger-field');
+                                    }
+                                    this.validate();
+                                }
                             }, {
                                 xtype: 'checkbox',
                                 labelSeparator: '',
@@ -335,32 +377,46 @@
                                 needReadOnly: true,
                                 itemId: 'PromoUpliftLockedUpdateCheckbox',
                                 name: 'NeedRecountUplift',
-                                boxLabel: 'Locked Update',
                                 labelAlign: 'right',
                                 style: 'margin-left: 10px',
                                 crudAccess: ['Administrator', 'FunctionalExpert', 'DemandPlanning'],
                                 listeners: {
                                     afterRender: function () {
-                                        var planPromoUpliftNumberField = this.up('container').down('numberfield[name=PlanPromoUpliftPercent]');
+                                        var planUpliftContainer = this.up('container');
+                                        var planPromoUpliftNumberField = planUpliftContainer.down('triggerfielddetails[name=PlanPromoUpliftPercent]');
+                                        var planPromoUpliftGlyphLock = planUpliftContainer.down('button[itemId=GlyphLock]');
                                         if (this.value) {
-                                            planPromoUpliftNumberField.setReadOnly(false);
-                                            planPromoUpliftNumberField.removeCls('readOnlyField');
+                                            planUpliftContainer.setReadable(true);
+                                            planPromoUpliftGlyphLock.setGlyph(0xf33e);
+                                            planPromoUpliftNumberField.changeEditable(true);
                                         } else {
-                                            planPromoUpliftNumberField.setReadOnly(true);
-                                            planPromoUpliftNumberField.addCls('readOnlyField');
+                                            planUpliftContainer.setReadable(false);
+                                            planPromoUpliftGlyphLock.setGlyph(0xf33f);
+                                            planPromoUpliftNumberField.changeEditable(false);
                                         }
                                     },
                                     change: function (checkbox, newValue, oldValue) {
-                                        var planPromoUpliftNumberField = this.up('container').down('numberfield[name=PlanPromoUpliftPercent]');
+                                        var planUpliftContainer = this.up('container');
+                                        var planPromoUpliftNumberField = planUpliftContainer.down('triggerfielddetails[name=PlanPromoUpliftPercent]');
+                                        var planPromoUpliftGlyphLock = planUpliftContainer.down('button[itemId=GlyphLock]');
                                         if (newValue) {
-                                            planPromoUpliftNumberField.setReadOnly(false);
-                                            planPromoUpliftNumberField.removeCls('readOnlyField');
+                                            planUpliftContainer.setReadable(true);
+                                            planPromoUpliftGlyphLock.setGlyph(0xf33e);
+                                            planPromoUpliftNumberField.changeEditable(true);
                                         } else {
-                                            planPromoUpliftNumberField.setReadOnly(true);
-                                            planPromoUpliftNumberField.addCls('readOnlyField');
+                                            planPromoUpliftGlyphLock.setGlyph(0xf33f);
+                                            planUpliftContainer.setReadable(false);
+                                            planPromoUpliftNumberField.changeEditable(false);
                                         }
                                     }
                                 }
+                            }, {
+                                xtype: 'button',
+                                itemId: 'GlyphLock',
+                                cls: 'promo-calculation-activity-uplift-btnglyph',
+                                glyph: 0xf33e,
+                                width: 30,
+                                height: 30,
                             }]
                         }, {
                             xtype: 'triggerfielddetails',
@@ -554,21 +610,20 @@
                             margin: '5 0 0 0'
                         },
                         items: [{
-                            xtype: 'numberfield',
-                            name: 'ActualPromoUpliftPercent',
-                            editable: false,
-                            hideTrigger: true,
-                            readOnly: true,
-                            needReadOnly: true,
-                            isChecked: true,
-                            setReadOnly: function () { return false },
-                            labelWidth: 190,
-                            fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoUpliftPercent'),
-                            cls: 'borderedField-with-lable',
-                            labelCls: 'borderedField-label',
-                            listeners: {
-                                change: this.activityChangeListener,
-                            }
+							xtype: 'triggerfielddetails',
+							name: 'ActualPromoUpliftPercent',
+							fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoUpliftPercent'),
+							dataIndexes: ['ActualProductUpliftPercent'],
+							rawToValue: function () {
+								var parsedValue = parseFloat(String(this.originValue).replace(Ext.util.Format.decimalSeparator, "."))
+								return isNaN(parsedValue) ? null : parsedValue;
+							},
+							listeners: {
+								change: this.activityChangeListener,
+								afterrender: function (el) {
+									el.triggerCell.addCls('form-info-trigger-cell')
+								}
+							}
                         }, {
                             xtype: 'triggerfielddetails',
                             name: 'ActualPromoBaselineLSV',

@@ -20,7 +20,6 @@ namespace Module.Persist.TPM.Model.History
         public double? PlanProductBaselineCaseQty { get; set; }
         public double? ProductBaselinePrice { get; set; }
         public double? PlanProductPCPrice { get; set; }
-        public double? PlanProductUplift { get; set; }
         public int? ActualProductPCQty { get; set; }
         public double? ActualProductCaseQty { get; set; }
         public string ActualProductUOM { get; set; }       
@@ -30,7 +29,7 @@ namespace Module.Persist.TPM.Model.History
         public double? ActualProductShelfDiscount { get; set; }
         public double? ActualProductPCLSV { get; set; }
         public double? ActualPromoShare { get; set; }
-        public double? ActualProductUplift { get; set; }
+        public double? ActualProductUpliftPercent { get; set; }
         public double? ActualProductIncrementalPCQty { get; set; }
         public double? ActualProductIncrementalPCLSV { get; set; }
         public double? ActualProductIncrementalLSV { get; set; }

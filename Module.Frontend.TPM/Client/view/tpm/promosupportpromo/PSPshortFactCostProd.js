@@ -44,6 +44,8 @@
                 dataIndex: 'BudgetSubItemName'
             }, {
                 xtype: 'numbercolumn',
+                extraOperator: 'gte_lt',
+                additionalDivision: 1000000.0,
                 renderer: function (value) {
                     if (value !== null && value !== undefined) {
                         valueToDisplay = value / 1000000.0;

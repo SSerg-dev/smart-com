@@ -69,6 +69,9 @@
         { name: 'InOut', type: 'boolean', hidden: false, isDefault: true },
         { name: 'PlanPromoIncrementalLSV', useNull: true, type: 'float', hidden: false, isDefault: true },
         { name: 'PlanPromoBaselineLSV', useNull: true, type: 'float', hidden: false, isDefault: true },
+
+        // Growth Acceleration
+        { name: 'IsGrowthAcceleration', type: 'boolean', hidden: false, isDefault: true },
     ],
     proxy: {
         type: 'breeze',

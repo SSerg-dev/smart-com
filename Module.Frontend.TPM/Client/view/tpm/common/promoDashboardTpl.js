@@ -150,7 +150,7 @@
         // Support plan
         '<div class="promo-rowexpander-frame" style="{[this.isDisplayPlan(values.PromoStatusName)]} padding: 0px 5px 0px 0px">',
             '<div class="custom-promo-panel" style="margin: 0px; width: 280px; height: 150px;">',
-                '<fieldset class="x-fieldset x-fieldset-with-title x-fieldset-with-legend" style="margin: 0px; width: 250px; height: 140px;">',
+                '<fieldset class="x-fieldset x-fieldset-with-title x-fieldset-with-legend" style="margin: 0px; width: 250px; height: 140px; border: 0;">',
                     '<legend class="x-fieldset-header x-fieldset-header-default" id="fieldset-1110-legend" tabindex="-1"><span id="fieldset-1110-legend-outerCt" style="display: table;" role="presentation">',
                     '<div id="fieldset-1110-legend-innerCt" style="height: 100%; vertical-align: top; display: table-cell;" class="" role="presentation">',
                     '<div class="x-component x-fieldset-header-text x-component-default" id="fieldset-1110-legendTitle">Support plan</div></div></span></legend>',
@@ -206,6 +206,9 @@
                         '</div>',
                     '</div>',
                 '</fieldset>',
+            '</div>',
+            '<div style="float: right; margin-top: -45px; margin-right: -25px; display: {[values.IsGrowthAcceleration ? \'inline\' : \'none\']};">',
+                '<img src="/Bundles/style/images/GA.png"/>',
             '</div>',
         '</div>',
         // Financial fact

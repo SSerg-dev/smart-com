@@ -132,6 +132,8 @@
         'PromoProductSubrangeDetailsWindow': 'Products',
         'AssortmentMatrix': 'Assortment matrix',
         'IncrementalPromo': 'Incremental Promo',
+        'InOutProductSelectionWindow': 'Selected Products',
+        'PromoProductsView': 'Promo Uplift'
     },
 
     'text': {
@@ -395,7 +397,6 @@
         'PlanProductPCLSV': 'Plan Product PC LSV',
         'ProductBaselinePrice': 'Product Baseline Price',
         'PlanProductPCPrice': 'PC Price',
-        'PlanProductUplift': 'Plan Product Uplift',
         'ActualProductPCQty': 'Actual Product PC Qty',
         'ActualProductCaseQty': 'Actual Product Qty',
         'ActualProductUOM': 'Actual Product UOM',
@@ -405,7 +406,7 @@
         'ActualProductShelfDiscount': 'Actual Product Shelf Discount',
         'ActualProductPCLSV': 'Actual Product PC LSV',
         'ActualPromoShare': 'Actual Promo Share',
-        'ActualProductUplift': 'Actual Product Uplift',
+        'ActualProductUpliftPercent': 'Actual Product Uplift Percent',
         'ActualProductIncrementalPCQty': 'Actual Product Incremental PC Qty',
         'ActualProductIncrementalPCLSV': 'Actual Product Incremental PC LSV',
         'ActualProductIncrementalLSV': 'Actual Product Incremental LSV'
@@ -1028,7 +1029,6 @@
         'PlanProductPCLSV': 'Plan Product PC LSV',
         'ProductBaselinePrice': 'Product Baseline Price',
         'PlanProductPCPrice': 'PC Price',
-        'PlanProductUplift': 'Plan Product Uplift',
         'ActualProductPCQty': 'Actual Product PC Qty',
         'ActualProductCaseQty': 'Actual Product Qty',
         'ActualProductUOM': 'Actual Product UOM',
@@ -1038,7 +1038,7 @@
         'ActualProductShelfDiscount': 'Actual Product Shelf Discount',
         'ActualProductPCLSV': 'Actual Product PC LSV',
         'ActualPromoShare': 'Actual Promo Share',
-        'ActualProductUplift': 'Actual Product Uplift',
+		'ActualProductUpliftPercent': 'Actual Product Uplift Percent',
         'ActualProductIncrementalPCQty': 'Actual Product Incremental PC Qty',
         'ActualProductIncrementalPCLSV': 'Actual Product Incremental PC LSV',
         'ActualProductIncrementalLSV': 'Actual Product Incremental LSV',
@@ -1055,10 +1055,27 @@
         'ActualPromoBaselineLSV': 'Actual Promo Baseline LSV',
         'ActualPoductBaselineLSV': 'Actual Poduct Baseline LSV',
         'ProductEN': 'Product EN',
-        'TemplateTLC': 'Import TLC template XLSX'
+        'TemplateTLC': 'Import TLC template XLSX',
+        'AverageMarker': 'Average Marker',
+        'PlanProductUpliftPercent': 'Plan Product Uplift Percent',
+        'PlanProductBaselineCaseQty': 'Plan Product Baseline Case Qty'
     },
     'HistoricalPromoProduct': ['.tpm.PromoProduct', '.core.BaseHistoryEntity'],
     'DeletedPromoProduct': ['.tpm.PromoProduct', '.core.BaseDeletedEntity'],
+
+    'PromoProductsView': {
+        'ZREP': 'ZREP',
+        'ProductEN': 'ProductEN',
+        'PlanProductBaselineLSV': 'Plan Product Baseline LSV',
+        'PlanProductUpliftPercent': 'Plan Product Uplift Percent',
+        'PlanProductIncrementalLSV': 'Plan Product Incremental LSV',
+        'PlanProductLSV': 'Plan Product LSV',
+        'PlanProductBaselineCaseQty': 'Plan Product Baseline Case Qty',
+        'PlanProductIncrementalCaseQty': 'Plan Product Incremental Case Qty',
+        'PlanProductCaseQty': 'Plan Product Case Qty',
+        'AverageMarker': 'Average Marker',
+        'IsCorrection': 'Is Correction',
+    },
 
     'BaseLine': {
         'ProductZREP': 'ZREP',

@@ -146,7 +146,7 @@ namespace Module.Host.TPM.Handlers
         /// <summary>
         /// Рассчитывает ActualProductLSV для каждой записи из таблицы PromoProduct.
         /// </summary>
-        private void CalculateAllActualLSV(Promo promo, DatabaseContext context)
+        public static void CalculateAllActualLSV(Promo promo, DatabaseContext context)
         {
             // Если Demand ввел корректное число.
             if (promo.ActualPromoLSV.HasValue && promo.ActualPromoLSV.Value > 0)

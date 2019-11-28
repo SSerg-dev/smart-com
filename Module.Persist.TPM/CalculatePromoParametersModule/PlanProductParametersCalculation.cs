@@ -68,7 +68,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 var incrementalPromoes = context.Set<IncrementalPromo>().Where(x => x.PromoId == promoId);
                 var promoProductsNotDisabled = promoProducts.Where(x => !x.Disabled);
 
-				foreach (var promoProduct in promoProductsNotDisabled)
+                foreach (var promoProduct in promoProductsNotDisabled)
                 {
 					if (!resultProductList.Any(x => x.ZREP == promoProduct.ZREP))
 					{
@@ -84,7 +84,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                 var draftStatus = context.Set<PromoStatus>().FirstOrDefault(x => x.SystemName == PromoStates.Draft.ToString() && !x.Disabled);
                 if (promo.PromoStatus.Id != draftStatus.Id)
-                { 
+                {
                     // Делаем для ускорения вставки записей, через Mapping всё очень долго                    
                     String formatStrPromoProduct = "INSERT INTO [PromoProduct] ([Id], [Disabled], [DeletedDate], [PromoId], [ProductId], [ZREP], [EAN_Case], [EAN_PC], [ProductEN]) VALUES ('{0}', 0, NULL, '{1}', '{2}', '{3}', '{4}', '{5}', '{6}')";
                     String formatStrIncremental = "INSERT INTO [IncrementalPromo] ([Id], [Disabled], [DeletedDate], [PromoId], [ProductId]) VALUES ('{0}', 0, NULL, '{1}', '{2}')";
@@ -317,245 +317,27 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         // если стоит флаг inout, расчет производися по другим формулам, подбирать baseline не требуется
                         if (!promo.InOut.HasValue || !promo.InOut.Value)
                         {
+                            var promoProductCorrections = context.Set<PromoProductsCorrection>().Where(x => !x.Disabled && x.PromoProduct.PromoId == promo.Id && x.TempId == null);
 
                             if (!promo.PlanPromoUpliftPercent.HasValue)
                             {
                                 message = String.Format("For promo №{0} is no Plan Promo Uplift value. Plan parameters will not be calculated.", promo.Number);
                             }
-
+                            
                             foreach (var promoProduct in promoProducts)
                             {
-                                // коэффициент для BaseLine с учетом долевого распределения
-                                double baseLineShareIndex = 1;
-                                BaseLine baseLine = null;
-                                ClientTreeBrandTech clientTreeBrandTech = null;
-                                List<ClientTreeBrandTech> disabledClientTreeBrandTechList = new List<ClientTreeBrandTech>();
-                                DateTimeOffset? nextBaseLineStartDate = null;
-                                DateTimeOffset? currentBaseLineStartDate = null;
-                                DateTimeOffset? nextWeekPromoStartDate = null;
-                                DateTimeOffset? currentWeekPromoStartDate = null;
-
-                                //расчетные параметры для каждого продукта в промо
-                                double planProductBaseLineLSV = 0;
-                                double planProductBaseLineCaseQty = 0;
-                                double productBaseLinePrice = 0;
-                                double price = 0;
-
-                                bool exit = false;
-                                bool baseLineFound = false; // по "0" проверять не очень, а вдруг он есть, но равен нулю, поэтому через переменную
-                                BaseLineState state = BaseLineState.InitBaseLine;
-                                while (!exit)
-                                {
-                                    switch (state)
-                                    {
-                                        case BaseLineState.InitBaseLine:
-                                            // выбор BaseLine, на неделю которого попадает начало текущего промо (с учетом выбранного клиента промо)
-                                            clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == promo.ClientTreeId && !x.EndDate.HasValue).FirstOrDefault();
-                                            baseLine = context.Set<BaseLine>().Where(x => x.ProductId == promoProduct.ProductId && x.DemandCode == clientNode.DemandCode && x.StartDate.HasValue && DbFunctions.DiffDays(x.StartDate, promo.StartDate) <= 6 && x.StartDate <= promo.StartDate && !x.Disabled).FirstOrDefault();
-
-                                            while (clientNode != null && clientNode.Type != "root" && baseLine == null)
-                                            {
-                                                clientTreeBrandTech = context.Set<ClientTreeBrandTech>().Where(x => x.ClientTreeId == clientNode.Id && x.BrandTechId == promo.BrandTechId && !x.Disabled).FirstOrDefault();
-                                                if (clientTreeBrandTech == null)
-                                                {
-                                                    disabledClientTreeBrandTechList = context.Set<ClientTreeBrandTech>().Where(x => x.ClientTreeId == clientNode.Id && x.BrandTechId == promo.BrandTechId && x.Disabled).OrderByDescending(x => x.DeletedDate).ToList();
-                                                    if (disabledClientTreeBrandTechList.Count > 0)
-                                                    {
-                                                        baseLineShareIndex *= disabledClientTreeBrandTechList[0].Share / 100;
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    baseLineShareIndex *= clientTreeBrandTech.Share / 100;
-                                                }
-
-                                                clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == clientNode.parentId && !x.EndDate.HasValue).FirstOrDefault();
-                                                baseLine = context.Set<BaseLine>().Where(x => x.ProductId == promoProduct.ProductId && x.DemandCode == clientNode.DemandCode && x.StartDate.HasValue && DbFunctions.DiffDays(x.StartDate, promo.StartDate) <= 6 && x.StartDate <= promo.StartDate && !x.Disabled).FirstOrDefault();
-                                            }
-
-                                            if (baseLine == null)
-                                            {
-                                                //если не подобран baseline на начало промо, прибавляем к дате начала промо 1 день до тех пор, пока не найдем подходящий baseline или пока не дойдем до даты окончания промо
-                                                currentWeekPromoStartDate = promo.StartDate.Value;
-                                                state = BaseLineState.NullBaseLine;
-                                            }
-                                            else if (baseLine.StartDate.Value.AddDays(6) >= promo.EndDate)
-                                            {
-                                                state = BaseLineState.SingleWeek;
-                                            }
-                                            else
-                                            {
-                                                state = BaseLineState.FirstWeek;
-                                            }
-                                            break;
-
-                                        case BaseLineState.NullBaseLine:
-                                            nextWeekPromoStartDate = currentWeekPromoStartDate.Value.AddDays(1);
-                                            baseLineShareIndex = 1;
-                                            clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == promo.ClientTreeId && !x.EndDate.HasValue).FirstOrDefault();
-                                            baseLine = context.Set<BaseLine>().Where(x => x.ProductId == promoProduct.ProductId && x.DemandCode == clientNode.DemandCode && x.StartDate.HasValue && DbFunctions.DiffDays(x.StartDate, nextWeekPromoStartDate) <= 6 && x.StartDate <= nextWeekPromoStartDate && !x.Disabled).FirstOrDefault();
-
-                                            while (clientNode != null && clientNode.Type != "root" && baseLine == null)
-                                            {
-                                                clientTreeBrandTech = context.Set<ClientTreeBrandTech>().Where(x => x.ClientTreeId == clientNode.Id && x.BrandTechId == promo.BrandTechId && !x.Disabled).FirstOrDefault();
-                                                if (clientTreeBrandTech == null)
-                                                {
-                                                    disabledClientTreeBrandTechList = context.Set<ClientTreeBrandTech>().Where(x => x.ClientTreeId == clientNode.Id && x.BrandTechId == promo.BrandTechId && x.Disabled).OrderByDescending(x => x.DeletedDate).ToList();
-                                                    if (disabledClientTreeBrandTechList.Count > 0)
-                                                    {
-                                                        baseLineShareIndex *= disabledClientTreeBrandTechList[0].Share / 100;
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    baseLineShareIndex *= clientTreeBrandTech.Share / 100;
-                                                }
-
-                                                clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == clientNode.parentId && !x.EndDate.HasValue).FirstOrDefault();
-                                                baseLine = context.Set<BaseLine>().Where(x => x.ProductId == promoProduct.ProductId && x.DemandCode == clientNode.DemandCode && x.StartDate.HasValue && DbFunctions.DiffDays(x.StartDate, nextWeekPromoStartDate) <= 6 && x.StartDate <= nextWeekPromoStartDate && !x.Disabled).FirstOrDefault();
-                                            }
-
-                                            if (nextWeekPromoStartDate > promo.EndDate)
-                                            {
-                                                exit = true;
-                                            }
-                                            else if (baseLine != null && baseLine.StartDate.HasValue && baseLine.StartDate.Value.AddDays(6) <= promo.EndDate)
-                                            {
-                                                //BaseLine, которые целиком входят в промо
-                                                state = BaseLineState.FullWeek;
-                                            }
-                                            else if (baseLine != null && baseLine.StartDate.HasValue && promo.EndDate >= baseLine.StartDate)
-                                            {
-                                                //если промо захватывает часть дней следующего BaseLine
-                                                state = BaseLineState.LastWeek;
-                                            }
-                                            else
-                                            {
-                                                currentWeekPromoStartDate = currentWeekPromoStartDate.Value.AddDays(1);
-                                            }
-
-                                            break;
-
-                                        case BaseLineState.NextBaseLine:
-                                            nextBaseLineStartDate = currentBaseLineStartDate.Value.AddDays(7);
-                                            baseLineShareIndex = 1;
-                                            clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == promo.ClientTreeId && !x.EndDate.HasValue).FirstOrDefault();
-                                            baseLine = context.Set<BaseLine>().Where(x => x.ProductId == promoProduct.ProductId && x.DemandCode == clientNode.DemandCode && x.StartDate.HasValue && x.StartDate.Value == nextBaseLineStartDate && !x.Disabled).FirstOrDefault();
-
-                                            while (clientNode != null && clientNode.Type != "root" && baseLine == null)
-                                            {
-                                                clientTreeBrandTech = context.Set<ClientTreeBrandTech>().Where(x => x.ClientTreeId == clientNode.Id && x.BrandTechId == promo.BrandTechId && !x.Disabled).FirstOrDefault();
-                                                if (clientTreeBrandTech == null)
-                                                {
-                                                    disabledClientTreeBrandTechList = context.Set<ClientTreeBrandTech>().Where(x => x.ClientTreeId == clientNode.Id && x.BrandTechId == promo.BrandTechId && x.Disabled).OrderByDescending(x => x.DeletedDate).ToList();
-                                                    if (disabledClientTreeBrandTechList.Count > 0)
-                                                    {
-                                                        baseLineShareIndex *= disabledClientTreeBrandTechList[0].Share / 100;
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    baseLineShareIndex *= clientTreeBrandTech.Share / 100;
-                                                }
-
-                                                clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == clientNode.parentId && !x.EndDate.HasValue).FirstOrDefault();
-                                                baseLine = context.Set<BaseLine>().Where(x => x.ProductId == promoProduct.ProductId && x.DemandCode == clientNode.DemandCode && x.StartDate.HasValue && x.StartDate.Value == nextBaseLineStartDate && !x.Disabled).FirstOrDefault();
-                                            }
-
-                                            if (nextBaseLineStartDate > promo.EndDate)
-                                            {
-                                                exit = true;
-                                            }
-                                            else if (baseLine != null && baseLine.StartDate.HasValue && baseLine.StartDate.Value.AddDays(6) <= promo.EndDate)
-                                            {
-                                                //BaseLine, которые целиком входят в промо
-                                                state = BaseLineState.FullWeek;
-                                            }
-                                            else if (baseLine != null && baseLine.StartDate.HasValue && promo.EndDate >= baseLine.StartDate)
-                                            {
-                                                //если промо захватывает часть дней следующего BaseLine
-                                                state = BaseLineState.LastWeek;
-                                            }
-                                            else
-                                            {
-                                                currentBaseLineStartDate = currentBaseLineStartDate.Value.AddDays(7);
-                                            }
-
-                                            break;
-
-                                        case BaseLineState.SingleWeek:
-                                            //длительность промо
-                                            var promoDuration = Math.Abs((promo.EndDate.Value - promo.StartDate.Value).Days) + 1;
-
-                                            planProductBaseLineLSV += (baseLine.BaselineLSV.Value * baseLineShareIndex / 7) * promoDuration;
-                                            planProductBaseLineCaseQty += (baseLine.QTY.Value * baseLineShareIndex / 7) * promoDuration;
-                                            productBaseLinePrice += (baseLine.Price.Value * baseLineShareIndex / 7) * promoDuration;
-                                            price = baseLine.Price.Value; //значение цены должно быть равно полной цене для этой недели
-
-                                            exit = true;
-                                            baseLineFound = true;
-                                            break;
-
-                                        case BaseLineState.FirstWeek:
-                                            //количество дней, которое надо взять от первого BaseLine
-                                            var firstBaseLineDays = Math.Abs((baseLine.StartDate.Value.AddDays(7) - promo.StartDate.Value).Days);
-
-                                            planProductBaseLineLSV += (baseLine.BaselineLSV.Value * baseLineShareIndex / 7) * firstBaseLineDays;
-                                            planProductBaseLineCaseQty += (baseLine.QTY.Value * baseLineShareIndex / 7) * firstBaseLineDays;
-                                            productBaseLinePrice += (baseLine.Price.Value * baseLineShareIndex / 7) * firstBaseLineDays;
-                                            price = baseLine.Price.Value; //значение цены должно быть равно цене из baseline, ближайшего к дате начала
-
-                                            currentBaseLineStartDate = baseLine.StartDate.Value;
-                                            state = BaseLineState.NextBaseLine;
-                                            baseLineFound = true;
-                                            break;
-
-                                        case BaseLineState.FullWeek:
-                                            planProductBaseLineLSV += baseLine.BaselineLSV.Value * baseLineShareIndex;
-                                            planProductBaseLineCaseQty += baseLine.QTY.Value * baseLineShareIndex;
-                                            productBaseLinePrice += baseLine.Price.Value * baseLineShareIndex;
-
-                                            currentBaseLineStartDate = baseLine.StartDate.Value;
-                                            state = BaseLineState.NextBaseLine;
-                                            baseLineFound = true;
-                                            break;
-
-                                        case BaseLineState.LastWeek:
-                                            //количество дней, которое надо взять от последнего BaseLine
-                                            var lastBaseLineDays = Math.Abs((promo.EndDate.Value - baseLine.StartDate.Value).Days) + 1;
-
-                                            planProductBaseLineLSV += (baseLine.BaselineLSV.Value * baseLineShareIndex / 7) * lastBaseLineDays;
-                                            planProductBaseLineCaseQty += (baseLine.QTY.Value * baseLineShareIndex / 7) * lastBaseLineDays;
-                                            productBaseLinePrice += (baseLine.Price.Value * baseLineShareIndex / 7) * lastBaseLineDays;
-
-                                            exit = true;
-                                            baseLineFound = true;
-                                            break;
-                                    }
-                                }
-
-                                // если не нашли BaseLine, пишем об этом
-                                if (!baseLineFound)
-                                {
-                                    if (message == null)
-                                        message = "";
-
-                                    message += String.Format("\nPlan Product Baseline LSV was not found for product with ZREP: {0}", promoProduct.Product.ZREP);
-                                }
+                                var promoProductCorrection = promoProductCorrections.FirstOrDefault(x => x.PromoProductId == promoProduct.Id && !x.Disabled);
+                                var promoProductUplift = promoProductCorrection?.PlanProductUpliftPercentCorrected ?? promoProduct.PlanProductUpliftPercent;
+                                promoProduct.PlanProductIncrementalLSV = promoProduct.PlanProductBaselineLSV * promoProductUplift / 100;
+                                promoProduct.PlanProductLSV = promoProduct.PlanProductBaselineLSV + promoProduct.PlanProductIncrementalLSV;
 
                                 //Расчет плановых значений PromoProduct
-                                promoProduct.PlanProductBaselineLSV = planProductBaseLineLSV;
-                                promoProduct.PlanProductBaselineCaseQty = planProductBaseLineCaseQty;
-                                promoProduct.ProductBaselinePrice = price; //productBaseLinePrice;
                                 promoProduct.PlanProductPCPrice = promoProduct.Product.UOM_PC2Case != 0 ? promoProduct.ProductBaselinePrice / promoProduct.Product.UOM_PC2Case : null;
-                                promoProduct.PlanProductIncrementalCaseQty = planProductBaseLineCaseQty * promo.PlanPromoUpliftPercent / 100;
+                                promoProduct.PlanProductIncrementalCaseQty = promoProduct.PlanProductBaselineCaseQty * promoProductUplift / 100;
                                 promoProduct.PlanProductCaseQty = promoProduct.PlanProductBaselineCaseQty + promoProduct.PlanProductIncrementalCaseQty;
                                 promoProduct.PlanProductPCQty = promoProduct.Product.UOM_PC2Case != 0 ? (int?)promoProduct.PlanProductCaseQty * promoProduct.Product.UOM_PC2Case : null;
-                                promoProduct.PlanProductCaseLSV = planProductBaseLineCaseQty * promoProduct.ProductBaselinePrice;
+                                promoProduct.PlanProductCaseLSV = promoProduct.PlanProductBaselineCaseQty * promoProduct.ProductBaselinePrice;
                                 promoProduct.PlanProductPCLSV = promoProduct.Product.UOM_PC2Case != 0 ? (int?)promoProduct.PlanProductCaseLSV / promoProduct.Product.UOM_PC2Case : null;
-                                promoProduct.PlanProductUpliftPercent = promo.PlanPromoUpliftPercent;
-                                promoProduct.PlanProductIncrementalLSV = promoProduct.PlanProductBaselineLSV * promoProduct.PlanProductUpliftPercent / 100;
-                                promoProduct.PlanProductLSV = promoProduct.PlanProductBaselineLSV + promoProduct.PlanProductIncrementalLSV;
 
                                 if (clientNode != null)
                                 {
@@ -571,8 +353,12 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                             }
 
                             double? sumPlanProductBaseLineLSV = promoProducts.Sum(x => x.PlanProductBaselineLSV);
+                            double? sumPlanProductIncrementalLSV = promoProducts.Sum(x => x.PlanProductIncrementalLSV);
+
+                            promo.PlanPromoUpliftPercent = sumPlanProductBaseLineLSV != 0 ? sumPlanProductIncrementalLSV / sumPlanProductBaseLineLSV * 100 : null;
+
+                            promo.PlanPromoIncrementalLSV = sumPlanProductIncrementalLSV;
                             promo.PlanPromoBaselineLSV = sumPlanProductBaseLineLSV;
-                            promo.PlanPromoIncrementalLSV = sumPlanProductBaseLineLSV * promo.PlanPromoUpliftPercent / 100;
                             promo.PlanPromoLSV = promo.PlanPromoBaselineLSV + promo.PlanPromoIncrementalLSV;
                         }
                         else
@@ -601,7 +387,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                     message = String.Format("Incremental promo was not found for product with ZREP: {0}", promoProduct.Product.ZREP);
                                 }
 
-                                promoProduct.PlanProductUpliftPercent = promo.PlanPromoUpliftPercent;
+                                //promoProduct.PlanProductUpliftPercent = promo.PlanPromoUpliftPercent;
 
                                 promoProduct.PlanProductPostPromoEffectQtyW1 = 0;
                                 promoProduct.PlanProductPostPromoEffectQtyW2 = 0;
@@ -638,9 +424,8 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 }
                 else
                 {
-                    message = String.Format("Promo has not start date or end date.");
+                    message = String.Format("Promo has not start date or end date");
                 }
-
                 return message;
             }
             catch (DbEntityValidationException e)
@@ -662,6 +447,256 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             {
                 return e.ToString();
             }
+        }
+
+        public static string CalculateBaseline(DatabaseContext context, Guid promoId)
+        {
+            string message = null;
+            var promo = context.Set<Promo>().Where(x => x.Id == promoId && !x.Disabled).FirstOrDefault();
+
+            if (promo.StartDate.HasValue && promo.EndDate.HasValue)
+            {
+                if (!promo.InOut.HasValue || !promo.InOut.Value)
+                {
+                    bool baseLineFound = false; // по "0" проверять не очень, а вдруг он есть, но равен нулю, поэтому через переменную
+
+                    ClientTree clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == promo.ClientTreeId && !x.EndDate.HasValue).FirstOrDefault();
+                    List<PromoProduct> promoProducts = context.Set<PromoProduct>().Where(x => x.PromoId == promo.Id && !x.Disabled).ToList();
+
+                    foreach (var promoProduct in promoProducts)
+                    {
+                        ClientTreeBrandTech clientTreeBrandTech = null;
+                        List<ClientTreeBrandTech> disabledClientTreeBrandTechList = new List<ClientTreeBrandTech>();
+
+                        //Сбрасываем параметры
+                        promoProduct.PlanProductBaselineLSV = null;
+                        promoProduct.PlanProductBaselineCaseQty = null;
+                        promoProduct.ProductBaselinePrice = null;
+
+                        //расчетные параметры для каждого продукта в промо
+                        double planProductBaseLineLSV = 0;
+                        double planProductBaseLineCaseQty = 0;
+                        double productBaseLinePrice = 0;
+                        double price = 0;
+
+                        // коэффициент для BaseLine с учетом долевого распределения
+                        double baseLineShareIndex = 1;
+                        BaseLine baseLine = null;
+                        DateTimeOffset? nextBaseLineStartDate = null;
+                        DateTimeOffset? currentBaseLineStartDate = null;
+                        DateTimeOffset? nextWeekPromoStartDate = null;
+                        DateTimeOffset? currentWeekPromoStartDate = null;
+
+                        bool exit = false;
+                        BaseLineState state = BaseLineState.InitBaseLine;
+                        while (!exit)
+                        {
+                            switch (state)
+                            {
+                                case BaseLineState.InitBaseLine:
+                                    // выбор BaseLine, на неделю которого попадает начало текущего промо (с учетом выбранного клиента промо)
+                                    clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == promo.ClientTreeId && !x.EndDate.HasValue).FirstOrDefault();
+                                    baseLine = context.Set<BaseLine>().Where(x => x.ProductId == promoProduct.ProductId && x.DemandCode == clientNode.DemandCode && x.StartDate.HasValue && DbFunctions.DiffDays(x.StartDate, promo.StartDate) <= 6 && x.StartDate <= promo.StartDate && !x.Disabled).FirstOrDefault();
+
+                                    while (clientNode != null && clientNode.Type != "root" && baseLine == null)
+                                    {
+                                        clientTreeBrandTech = context.Set<ClientTreeBrandTech>().Where(x => x.ClientTreeId == clientNode.Id && x.BrandTechId == promo.BrandTechId && !x.Disabled).FirstOrDefault();
+                                        if (clientTreeBrandTech == null)
+                                        {
+                                            disabledClientTreeBrandTechList = context.Set<ClientTreeBrandTech>().Where(x => x.ClientTreeId == clientNode.Id && x.BrandTechId == promo.BrandTechId && x.Disabled).OrderByDescending(x => x.DeletedDate).ToList();
+                                            if (disabledClientTreeBrandTechList.Count > 0)
+                                            {
+                                                baseLineShareIndex *= disabledClientTreeBrandTechList[0].Share / 100;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            baseLineShareIndex *= clientTreeBrandTech.Share / 100;
+                                        }
+
+                                        clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == clientNode.parentId && !x.EndDate.HasValue).FirstOrDefault();
+                                        baseLine = context.Set<BaseLine>().Where(x => x.ProductId == promoProduct.ProductId && x.DemandCode == clientNode.DemandCode && x.StartDate.HasValue && DbFunctions.DiffDays(x.StartDate, promo.StartDate) <= 6 && x.StartDate <= promo.StartDate && !x.Disabled).FirstOrDefault();
+                                    }
+
+                                    if (baseLine == null)
+                                    {
+                                        //если не подобран baseline на начало промо, прибавляем к дате начала промо 1 день до тех пор, пока не найдем подходящий baseline или пока не дойдем до даты окончания промо
+                                        currentWeekPromoStartDate = promo.StartDate.Value;
+                                        state = BaseLineState.NullBaseLine;
+                                    }
+                                    else if (baseLine.StartDate.Value.AddDays(6) >= promo.EndDate)
+                                    {
+                                        state = BaseLineState.SingleWeek;
+                                    }
+                                    else
+                                    {
+                                        state = BaseLineState.FirstWeek;
+                                    }
+                                    break;
+
+                                case BaseLineState.NullBaseLine:
+                                    nextWeekPromoStartDate = currentWeekPromoStartDate.Value.AddDays(1);
+                                    baseLineShareIndex = 1;
+                                    clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == promo.ClientTreeId && !x.EndDate.HasValue).FirstOrDefault();
+                                    baseLine = context.Set<BaseLine>().Where(x => x.ProductId == promoProduct.ProductId && x.DemandCode == clientNode.DemandCode && x.StartDate.HasValue && DbFunctions.DiffDays(x.StartDate, nextWeekPromoStartDate) <= 6 && x.StartDate <= nextWeekPromoStartDate && !x.Disabled).FirstOrDefault();
+
+                                    while (clientNode != null && clientNode.Type != "root" && baseLine == null)
+                                    {
+                                        clientTreeBrandTech = context.Set<ClientTreeBrandTech>().Where(x => x.ClientTreeId == clientNode.Id && x.BrandTechId == promo.BrandTechId && !x.Disabled).FirstOrDefault();
+                                        if (clientTreeBrandTech == null)
+                                        {
+                                            disabledClientTreeBrandTechList = context.Set<ClientTreeBrandTech>().Where(x => x.ClientTreeId == clientNode.Id && x.BrandTechId == promo.BrandTechId && x.Disabled).OrderByDescending(x => x.DeletedDate).ToList();
+                                            if (disabledClientTreeBrandTechList.Count > 0)
+                                            {
+                                                baseLineShareIndex *= disabledClientTreeBrandTechList[0].Share / 100;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            baseLineShareIndex *= clientTreeBrandTech.Share / 100;
+                                        }
+
+                                        clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == clientNode.parentId && !x.EndDate.HasValue).FirstOrDefault();
+                                        baseLine = context.Set<BaseLine>().Where(x => x.ProductId == promoProduct.ProductId && x.DemandCode == clientNode.DemandCode && x.StartDate.HasValue && DbFunctions.DiffDays(x.StartDate, nextWeekPromoStartDate) <= 6 && x.StartDate <= nextWeekPromoStartDate && !x.Disabled).FirstOrDefault();
+                                    }
+
+                                    if (nextWeekPromoStartDate > promo.EndDate)
+                                    {
+                                        exit = true;
+                                    }
+                                    else if (baseLine != null && baseLine.StartDate.HasValue && baseLine.StartDate.Value.AddDays(6) <= promo.EndDate)
+                                    {
+                                        //BaseLine, которые целиком входят в промо
+                                        state = BaseLineState.FullWeek;
+                                    }
+                                    else if (baseLine != null && baseLine.StartDate.HasValue && promo.EndDate >= baseLine.StartDate)
+                                    {
+                                        //если промо захватывает часть дней следующего BaseLine
+                                        state = BaseLineState.LastWeek;
+                                    }
+                                    else
+                                    {
+                                        currentWeekPromoStartDate = currentWeekPromoStartDate.Value.AddDays(1);
+                                    }
+
+                                    break;
+
+                                case BaseLineState.NextBaseLine:
+                                    nextBaseLineStartDate = currentBaseLineStartDate.Value.AddDays(7);
+                                    baseLineShareIndex = 1;
+                                    clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == promo.ClientTreeId && !x.EndDate.HasValue).FirstOrDefault();
+                                    baseLine = context.Set<BaseLine>().Where(x => x.ProductId == promoProduct.ProductId && x.DemandCode == clientNode.DemandCode && x.StartDate.HasValue && x.StartDate.Value == nextBaseLineStartDate && !x.Disabled).FirstOrDefault();
+
+                                    while (clientNode != null && clientNode.Type != "root" && baseLine == null)
+                                    {
+                                        clientTreeBrandTech = context.Set<ClientTreeBrandTech>().Where(x => x.ClientTreeId == clientNode.Id && x.BrandTechId == promo.BrandTechId && !x.Disabled).FirstOrDefault();
+                                        if (clientTreeBrandTech == null)
+                                        {
+                                            disabledClientTreeBrandTechList = context.Set<ClientTreeBrandTech>().Where(x => x.ClientTreeId == clientNode.Id && x.BrandTechId == promo.BrandTechId && x.Disabled).OrderByDescending(x => x.DeletedDate).ToList();
+                                            if (disabledClientTreeBrandTechList.Count > 0)
+                                            {
+                                                baseLineShareIndex *= disabledClientTreeBrandTechList[0].Share / 100;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            baseLineShareIndex *= clientTreeBrandTech.Share / 100;
+                                        }
+
+                                        clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == clientNode.parentId && !x.EndDate.HasValue).FirstOrDefault();
+                                        baseLine = context.Set<BaseLine>().Where(x => x.ProductId == promoProduct.ProductId && x.DemandCode == clientNode.DemandCode && x.StartDate.HasValue && x.StartDate.Value == nextBaseLineStartDate && !x.Disabled).FirstOrDefault();
+                                    }
+
+                                            if (nextBaseLineStartDate > promo.EndDate)
+                                            {
+                                                exit = true;
+                                            }
+                                            else if (baseLine != null && baseLine.StartDate.HasValue && baseLine.StartDate.Value.AddDays(6) <= promo.EndDate)
+                                            {
+                                                //BaseLine, которые целиком входят в промо
+                                                state = BaseLineState.FullWeek;
+                                            }
+                                            else if (baseLine != null && baseLine.StartDate.HasValue && promo.EndDate >= baseLine.StartDate)
+                                            {
+                                                //если промо захватывает часть дней следующего BaseLine
+                                                state = BaseLineState.LastWeek;
+                                            }
+                                            else
+                                            {
+                                                currentBaseLineStartDate = currentBaseLineStartDate.Value.AddDays(7);
+                                            }
+
+                                    break;
+
+                                case BaseLineState.SingleWeek:
+                                    //длительность промо
+                                    var promoDuration = Math.Abs((promo.EndDate.Value - promo.StartDate.Value).Days) + 1;
+
+                                    planProductBaseLineLSV += (baseLine.BaselineLSV.Value * baseLineShareIndex / 7) * promoDuration;
+                                    planProductBaseLineCaseQty += (baseLine.QTY.Value * baseLineShareIndex / 7) * promoDuration;
+                                    productBaseLinePrice += (baseLine.Price.Value * baseLineShareIndex / 7) * promoDuration;
+                                    price = baseLine.Price.Value; //значение цены должно быть равно полной цене для этой недели
+
+                                    exit = true;
+                                    baseLineFound = true;
+                                    break;
+
+                                case BaseLineState.FirstWeek:
+                                    //количество дней, которое надо взять от первого BaseLine
+                                    var firstBaseLineDays = Math.Abs((baseLine.StartDate.Value.AddDays(7) - promo.StartDate.Value).Days);
+
+                                    planProductBaseLineLSV += (baseLine.BaselineLSV.Value * baseLineShareIndex / 7) * firstBaseLineDays;
+                                    planProductBaseLineCaseQty += (baseLine.QTY.Value * baseLineShareIndex / 7) * firstBaseLineDays;
+                                    productBaseLinePrice += (baseLine.Price.Value * baseLineShareIndex / 7) * firstBaseLineDays;
+                                    price = baseLine.Price.Value; //значение цены должно быть равно цене из baseline, ближайшего к дате начала
+
+                                    currentBaseLineStartDate = baseLine.StartDate.Value;
+                                    state = BaseLineState.NextBaseLine;
+                                    baseLineFound = true;
+                                    break;
+
+                                case BaseLineState.FullWeek:
+                                    planProductBaseLineLSV += baseLine.BaselineLSV.Value * baseLineShareIndex;
+                                    planProductBaseLineCaseQty += baseLine.QTY.Value * baseLineShareIndex;
+                                    productBaseLinePrice += baseLine.Price.Value * baseLineShareIndex;
+
+                                    currentBaseLineStartDate = baseLine.StartDate.Value;
+                                    state = BaseLineState.NextBaseLine;
+                                    baseLineFound = true;
+                                    break;
+
+                                case BaseLineState.LastWeek:
+                                    //количество дней, которое надо взять от последнего BaseLine
+                                    var lastBaseLineDays = Math.Abs((promo.EndDate.Value - baseLine.StartDate.Value).Days) + 1;
+
+                                    planProductBaseLineLSV += (baseLine.BaselineLSV.Value * baseLineShareIndex / 7) * lastBaseLineDays;
+                                    planProductBaseLineCaseQty += (baseLine.QTY.Value * baseLineShareIndex / 7) * lastBaseLineDays;
+                                    productBaseLinePrice += (baseLine.Price.Value * baseLineShareIndex / 7) * lastBaseLineDays;
+
+                                    exit = true;
+                                    baseLineFound = true;
+                                    break;
+                            }
+                        }
+
+                        // если не нашли BaseLine, пишем об этом
+                        if (!baseLineFound)
+                        {
+                            if (message == null)
+                                message = "";
+
+                            message += String.Format("\nPlan Product Baseline LSV was not found for product with ZREP: {0}", promoProduct.Product.ZREP);
+                        }
+
+                        //Расчет плановых значений PromoProduct
+                        promoProduct.PlanProductBaselineLSV = planProductBaseLineLSV;
+                        promoProduct.PlanProductBaselineCaseQty = planProductBaseLineCaseQty;
+                        promoProduct.ProductBaselinePrice = price; //productBaseLinePrice;
+                    }
+                }
+            }
+            context.SaveChanges();
+            return message;
         }
 
         /// <summary>
@@ -774,16 +809,16 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         {
             foreach (PromoProduct product in promoProducts)
             {
-                product.PlanProductBaselineLSV = null;
-                product.PlanProductBaselineCaseQty = null;
-                product.ProductBaselinePrice = null;
+                //product.PlanProductBaselineLSV = null;
+                //product.PlanProductBaselineCaseQty = null;
+                //product.ProductBaselinePrice = null;
                 product.PlanProductPCPrice = null;
                 product.PlanProductIncrementalCaseQty = null;
                 product.PlanProductCaseQty = null;
                 product.PlanProductPCQty = null;
                 product.PlanProductCaseLSV = null;
                 product.PlanProductPCLSV = null;
-                product.PlanProductUpliftPercent = null;
+                //product.PlanProductUpliftPercent = null;
                 product.PlanProductPostPromoEffectQtyW1 = null;
                 product.PlanProductPostPromoEffectQtyW2 = null;
                 product.PlanProductPostPromoEffectQty = null;

@@ -147,7 +147,18 @@ namespace Module.Host.TPM.Handlers
                                     handlerLogger.Write(true, String.Format("Error filling Product: {0}", setPromoProductError), "Error");
                                 }
 
+                                string calculateBaselineError = PlanProductParametersCalculation.CalculateBaseline(context, promo.Id);
                                 string calculateError = PlanProductParametersCalculation.CalculatePromoProductParameters(promo.Id, context);
+
+                                if (calculateBaselineError != null && calculateError != null)
+                                {
+                                    calculateError += calculateBaselineError;
+                                }
+                                else if (calculateBaselineError != null && calculateError == null)
+                                {
+                                    calculateError = calculateBaselineError;
+                                }
+
                                 if (calculateError != null)
                                 {
                                     handlerLogger.Write(true, String.Format("Error when calculating the planned parameters of the Product: {0}", calculateError), "Error");

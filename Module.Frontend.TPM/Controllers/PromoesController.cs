@@ -199,7 +199,7 @@ namespace Module.Frontend.TPM.Controllers {
                     List<Product> filteredProducts; // продукты, подобранные по фильтрам
                     CheckSupportInfo(result, promoProductTrees, out filteredProducts);
                     //создание отложенной задачи, выполняющей подбор аплифта и расчет параметров
-                    CalculatePromo(result, false);
+                    CalculatePromo(result, false, false);
                 }
                 else
                 {
@@ -229,10 +229,12 @@ namespace Module.Frontend.TPM.Controllers {
                     return NotFound();
                 }
                 DateTimeOffset? ChangedDate = DateTimeOffset.UtcNow;
-
+                
                 Promo promoCopy = new Promo(model);
                 patch.Patch(model);
-
+                if (!String.IsNullOrEmpty(model.AdditionalUserTimestamp))
+                    FixateTempPromoProductsCorrections(model.Id, model.AdditionalUserTimestamp);
+            
                 // делаем UTC +3
                 model.StartDate = ChangeTimeZoneUtil.ResetTimeZone(model.StartDate);
                 model.EndDate = ChangeTimeZoneUtil.ResetTimeZone(model.EndDate);
@@ -338,6 +340,13 @@ namespace Module.Frontend.TPM.Controllers {
                     }
 
                     bool needRecalculatePromo = NeedRecalculatePromo(model, promoCopy);
+                    bool needResetUpliftCorrections = false;
+                    if (model.NeedRecountUplift != null && promoCopy.NeedRecountUplift != null && model.NeedRecountUplift != promoCopy.NeedRecountUplift)
+                    {
+                        needResetUpliftCorrections = true;
+                    }
+                    model.AdditionalUserTimestamp = null;
+
                     //для ускорения перехода в следующий статус (если нет изменений параметров промо, то пропускаем следующие действия)
                     if (needRecalculatePromo || statusName.ToLower() == "draft")
                     {
@@ -421,7 +430,7 @@ namespace Module.Frontend.TPM.Controllers {
                         if (changedProducts || needRecalculatePromo) {
                             // если меняем длительность промо, то пересчитываем Marketing TI
                             bool needCalculatePlanMarketingTI = promoCopy.StartDate != model.StartDate || promoCopy.EndDate != model.EndDate;
-                            CalculatePromo(model, needCalculatePlanMarketingTI); //TODO: Задача создаётся раньше чем сохраняются изменения промо.
+                            CalculatePromo(model, needCalculatePlanMarketingTI, needResetUpliftCorrections); //TODO: Задача создаётся раньше чем сохраняются изменения промо.
                         }                                                        //Сначала проверять заблокированно ли промо, если нет сохранять промо, затем сохранять задачу
                     }
                     else if (needDetachPromoSupport)
@@ -433,6 +442,18 @@ namespace Module.Frontend.TPM.Controllers {
                         {
                             promoProduct.DeletedDate = System.DateTime.Now;
                             promoProduct.Disabled = true;
+                        }
+                        
+                        //при сбросе статуса в Draft необходимо удалить все коррекции
+                        var promoProductToDeleteListIds = promoProductToDeleteList.Select(x => x.Id).ToList();
+                        List<PromoProductsCorrection> promoProductCorrectionToDeleteList = Context.Set<PromoProductsCorrection>()
+                            .Where(x => promoProductToDeleteListIds.Contains(x.PromoProductId) && x.Disabled != true).ToList();
+                        foreach (PromoProductsCorrection promoProductsCorrection in promoProductCorrectionToDeleteList)
+                        {
+                            promoProductsCorrection.DeletedDate = DateTimeOffset.UtcNow;
+                            promoProductsCorrection.Disabled = true;
+                            promoProductsCorrection.UserId = (Guid)user.Id;
+                            promoProductsCorrection.UserName = user.Login;
                         }
 
                         //при сбросе статуса в Draft необходимо отвязать бюджеты от промо и пересчитать эти бюджеты
@@ -514,7 +535,7 @@ namespace Module.Frontend.TPM.Controllers {
 
             using (var transaction = Context.Database.BeginTransaction()) {
                 try {
-                    CalculatePromo(promo, true);
+                    CalculatePromo(promo, true, false);
                     transaction.Commit();
                 } catch (Exception e) {
                     transaction.Rollback();
@@ -871,7 +892,7 @@ namespace Module.Frontend.TPM.Controllers {
         /// Создание отложенной задачи, выполняющей подбор аплифта и расчет параметров промо и продуктов
         /// </summary>
         /// <param name="promo"></param>
-        private void CalculatePromo(Promo promo, bool needCalculatePlanMarketingTI) {
+        private void CalculatePromo(Promo promo, bool needCalculatePlanMarketingTI, bool needResetUpliftCorrections) {
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
             RoleInfo role = authorizationManager.GetCurrentRole();
@@ -882,6 +903,7 @@ namespace Module.Frontend.TPM.Controllers {
             HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
             HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
             HandlerDataHelper.SaveIncomingArgument("NeedCalculatePlanMarketingTI", needCalculatePlanMarketingTI, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("needResetUpliftCorrections", needResetUpliftCorrections, data, visible: false, throwIfNotExists: false);
 
             bool success = CalculationTaskManager.CreateCalculationTask(CalculationTaskManager.CalculationAction.Uplift, data, Context, promo.Id);
 
@@ -1604,7 +1626,7 @@ namespace Module.Frontend.TPM.Controllers {
                     || oldPromo.EndDate != newPromo.EndDate
                     || oldPromo.DispatchesStart != newPromo.DispatchesStart
                     || oldPromo.DispatchesEnd != newPromo.DispatchesEnd
-                    || (oldPromo.ActualPromoBTL != null && newPromo.ActualPromoBTL != null 
+                    || (oldPromo.ActualPromoBTL != null && newPromo.ActualPromoBTL != null
                         && Math.Round(oldPromo.ActualPromoBTL.Value, 2, MidpointRounding.AwayFromZero) != Math.Round(newPromo.ActualPromoBTL.Value, 2, MidpointRounding.AwayFromZero))
                     || (oldPromo.PlanPromoBTL != null && newPromo.PlanPromoBTL != null
                         && Math.Round(oldPromo.PlanPromoBTL.Value, 2, MidpointRounding.AwayFromZero) != Math.Round(newPromo.PlanPromoBTL.Value, 2, MidpointRounding.AwayFromZero))
@@ -1615,7 +1637,10 @@ namespace Module.Frontend.TPM.Controllers {
                     || (oldPromo.PlanPromoUpliftPercent != null && newPromo.PlanPromoUpliftPercent != null
                         && Math.Round(oldPromo.PlanPromoUpliftPercent.Value, 2, MidpointRounding.AwayFromZero) != Math.Round(newPromo.PlanPromoUpliftPercent.Value, 2, MidpointRounding.AwayFromZero))
                     || (oldPromo.NeedRecountUplift != null && newPromo.NeedRecountUplift != null && oldPromo.NeedRecountUplift != newPromo.NeedRecountUplift)
-                    || oldPromo.PromoStatus.Name.ToLower() == "draft")
+                    || oldPromo.PromoStatus.Name.ToLower() == "draft"
+                || !String.IsNullOrEmpty(newPromo.AdditionalUserTimestamp))
+
+
             {
                 needReacalculate = true;
             }
@@ -1708,5 +1733,40 @@ namespace Module.Frontend.TPM.Controllers {
 			
 			return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { isCreator = isCreator }));
 		}
-	}
+        public void FixateTempPromoProductsCorrections(Guid promoId, string tempEditUpliftId)
+        {
+            var queryTemp = Context.Set<PromoProductsCorrection>().Where(x => x.PromoProduct.PromoId == promoId && x.TempId == tempEditUpliftId && x.Disabled != true);
+            var query = Context.Set<PromoProductsCorrection>().Where(x => x.PromoProduct.PromoId == promoId && x.TempId == null && x.Disabled != true);
+            var promoProductIds = query.Select(x => x.PromoProductId).ToList();
+            PromoProductsCorrection promoProductsCorrection;
+            UserInfo user = authorizationManager.GetCurrentUser();
+
+            foreach (var tempCorrection in queryTemp)
+            {
+                if (promoProductIds.Contains(tempCorrection.PromoProductId))
+                {
+                    promoProductsCorrection = query.Where(x => x.PromoProductId == tempCorrection.PromoProductId).FirstOrDefault();
+                    promoProductsCorrection.PlanProductUpliftPercentCorrected = tempCorrection.PlanProductUpliftPercentCorrected;
+                    promoProductsCorrection.UserId = user.Id;
+                    promoProductsCorrection.UserName = user.Login;
+                    promoProductsCorrection.ChangeDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                }
+                else
+                {
+                    promoProductsCorrection = new PromoProductsCorrection()
+                    {
+                        ChangeDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                        CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                        PromoProduct = tempCorrection.PromoProduct,
+                        PlanProductUpliftPercentCorrected = tempCorrection.PlanProductUpliftPercentCorrected,
+                        UserId = user.Id,
+                        UserName = user.Login
+                    };
+                    Context.Set<PromoProductsCorrection>().Add(promoProductsCorrection);
+                }
+                tempCorrection.Disabled = true;
+            }
+            
+        }
+    }
 }

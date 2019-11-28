@@ -259,6 +259,11 @@ namespace Module.Persist.TPM.Model.TPM
         public bool InOutExcludeAssortmentMatrixProductsButtonPressed { get; set; }
         public string RegularExcludedProductIds { get; set; }
 
+        [StringLength(100)]
+        public string AdditionalUserTimestamp { get; set; }
+
+        public bool IsGrowthAcceleration { get; set; }
+
         /// <summary>
         /// Copy Constructor
         /// </summary>
@@ -313,6 +318,7 @@ namespace Module.Persist.TPM.Model.TPM
             EventId = promoToCopy.EventId;
             CalendarPriority = promoToCopy.CalendarPriority;
             RegularExcludedProductIds = promoToCopy.RegularExcludedProductIds;
+            IsGrowthAcceleration = promoToCopy.IsGrowthAcceleration;
         }
 
         public Promo() {}

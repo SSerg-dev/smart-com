@@ -1376,25 +1376,29 @@
             scope: this,
             addRecords: true,
             callback: function (records, operation, success) {
-                if (!store.resetLoading) {
-                    var me = this;
-                    this.renderEvents(store.uniqueObjectIds[clientId].regPromoId, store.uniqueObjectIds[clientId].inoutPromoId);
-                    store.uniqueObjectIds[clientId].loaded = true;
-                    clientId = 0;
-                    while (store.uniqueObjectIds[clientId] && store.uniqueObjectIds[clientId].loaded) {
-                        clientId = clientId + 1;
-                    }; 
-                };
-                if (store.uniqueObjectIds.length > clientId) {
-                    this.loadingRecursion(store, clientId);     
+                //Если закрыли календарь - перестаем грузить
+                var nascheduler = Ext.ComponentQuery.query('#nascheduler')[0];
+                if (nascheduler) {
+                    if (!store.resetLoading) {
+                        var me = this;
+                        this.renderEvents(store.uniqueObjectIds[clientId].regPromoId, store.uniqueObjectIds[clientId].inoutPromoId, nascheduler);
+                        store.uniqueObjectIds[clientId].loaded = true;
+                        clientId = 0;
+                        while (store.uniqueObjectIds[clientId] && store.uniqueObjectIds[clientId].loaded) {
+                            clientId = clientId + 1;
+                        };
+                    };
+                    if (store.uniqueObjectIds.length > clientId) {
+                        this.loadingRecursion(store, clientId);
+                    }
                 }
             }
         });
     },
 
-    renderEvents: function (regId, inoutId) {
-        var ng = Ext.ComponentQuery.query('#nascheduler')[0].normalGrid;
-        var lg = Ext.ComponentQuery.query('#nascheduler')[0].lockedGrid;
+    renderEvents: function (regId, inoutId, nascheduler) {
+        var ng = nascheduler.normalGrid;
+        var lg = nascheduler.lockedGrid;
         var records = []//ng.view.getViewRange();
         for (var i = 0; i <= 1; i++) {
             records.push(regId);

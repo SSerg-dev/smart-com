@@ -95,7 +95,19 @@ namespace Module.Host.TPM.Handlers
                         string calculateError = null;
                         if (!promo.LoadFromTLC)
                         {
+                            string calculateBaselineError = null;
+                            calculateError = PlanProductParametersCalculation.CalculateBaseline(context, promo.Id);
                             calculateError = PlanProductParametersCalculation.CalculatePromoProductParameters(promo.Id, context);
+
+                            if (calculateBaselineError != null && calculateError != null)
+                            {
+                                calculateError += calculateBaselineError;
+                            }
+                            else if (calculateBaselineError != null && calculateError == null)
+                            {
+                                calculateError = calculateBaselineError;
+                            }
+
                             if (calculateError != null)
                             {
                                 handlerLogger.Write(true, String.Format("Error when calculating the planned parameters of the Product: {0}", calculateError), "Error");

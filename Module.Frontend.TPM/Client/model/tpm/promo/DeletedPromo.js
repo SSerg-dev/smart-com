@@ -173,6 +173,9 @@
         { name: 'InOut', useNull: true, type: 'boolean', hidden: false, isDefault: false },
         { name: 'InOutProductIds', type: 'string', hidden: true, isDefault: false },
         { name: 'InOutExcludeAssortmentMatrixProductsButtonPressed', type: 'boolean', hidden: true, isDefault: false, defaultValue: false },
+
+        // Growth Acceleration
+        { name: 'IsGrowthAcceleration', useNull: true, type: 'boolean', hidden: false, isDefault: false },
     ],
     proxy: {
         type: 'breeze',
