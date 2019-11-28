@@ -645,7 +645,7 @@
         hidden: true,
         isPromoAction: true,
 		roles: ['Administrator', 'KeyAccountManager', 'FunctionalExpert'],
-        statuses: ['Approved', 'Planned', 'Started'],
+        statuses: ['Approved', 'Planned'],
         statusId: null,
         statusName: null,
         statusSystemName: null,

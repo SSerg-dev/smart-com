@@ -39,8 +39,7 @@ namespace Module.Persist.TPM.PromoStateControl.RoleStateMap {
 				{ StateNames.CANCELLED, new List<string> { "Administrator", "KeyAccountManager", "FunctionalExpert" } }
 			}),
             new RoleStateMap(StateNames.STARTED, new Dictionary<string, List<string>>(){
-                { StateNames.FINISHED, new List<string> { "System" } },
-                { StateNames.CANCELLED, new List<string> { "Administrator", "KeyAccountManager", "FunctionalExpert" } }
+                { StateNames.FINISHED, new List<string> { "System" } }
             }),
             new RoleStateMap(StateNames.FINISHED, new Dictionary<string, List<string>>(){
                 { StateNames.CLOSED, new List<string> { "System", "Administrator", "KeyAccountManager", "FunctionalExpert" } }

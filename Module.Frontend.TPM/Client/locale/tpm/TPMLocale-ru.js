@@ -714,9 +714,6 @@
         'ActualPromoNetIncrementalCOGS': 'Actual Promo Net Incremental COGS',
         'ActualPromoNetBaseTI': 'Actual Promo Net Base TI',
         'PlanPromoNSV': 'Plan Promo NSV',
-
-        'ConfirmCancelTitle': 'Cancel promo',
-        'ConfirmCancelText': 'Do you really want to cancel this promo?',
     },
     'HistoricalPromo': ['.tpm.Promo', '.core.BaseHistoryEntity'],
     'DeletedPromo': ['.tpm.Promo', '.core.BaseDeletedEntity'],
