@@ -30,8 +30,8 @@ namespace Module.Frontend.TPM.Util {
         /// <param name="newRecord"></param>
         /// <param name="patch"></param>
         /// <param name="oldRecord"></param>
-        public static void WritePromoDemandChangeIncident(DatabaseContext Context, Promo newRecord, Delta<Promo> patch, Promo oldRecord) {
-            bool needCreateIncident = CheckCreateIncidentCondition(oldRecord, newRecord, patch);
+        public static void WritePromoDemandChangeIncident(DatabaseContext Context, Promo newRecord, Delta<Promo> patch, Promo oldRecord, bool isSubrangeChanged) {
+            bool needCreateIncident = CheckCreateIncidentCondition(oldRecord, newRecord, patch, isSubrangeChanged);
             if (needCreateIncident) {
                 PromoDemandChangeIncident change = new PromoDemandChangeIncident(oldRecord, newRecord) { };
                 Context.Set<PromoDemandChangeIncident>().Add(change);
@@ -46,7 +46,7 @@ namespace Module.Frontend.TPM.Util {
         /// <param name="newRecord"></param>
         /// <param name="patch"></param>
         /// <returns></returns>
-        private static bool CheckCreateIncidentCondition(Promo oldRecord, Promo newRecord, Delta<Promo> patch) {
+        private static bool CheckCreateIncidentCondition(Promo oldRecord, Promo newRecord, Delta<Promo> patch , bool isSubrangeChanged) {
             bool result = false;
             // TODO: Изменения продуктов не учитывается из-за удаления ProductTreeId из Promo
             // Получение настроек
@@ -72,7 +72,6 @@ namespace Module.Frontend.TPM.Util {
             if (relevantByTime && changedProperties.Any()) {
                 bool productChange = oldRecord.ProductHierarchy != newRecord.ProductHierarchy;
                 bool productListChange = oldRecord.InOutProductIds != newRecord.InOutProductIds;
-				bool subrangeChange = oldRecord.ProductTreeObjectIds != newRecord.ProductTreeObjectIds;
 				bool marsMechanicChange = oldRecord.MarsMechanic != newRecord.MarsMechanic;
                 bool instoreMechanicChange = oldRecord.PlanInstoreMechanic != newRecord.PlanInstoreMechanic;
                 bool marsDiscountChange = oldRecord.MarsMechanicDiscount.HasValue ? newRecord.MarsMechanicDiscount.HasValue ? Math.Abs(oldRecord.MarsMechanicDiscount.Value - newRecord.MarsMechanicDiscount.Value) > marsDiscountSetting : true : false;
@@ -85,7 +84,7 @@ namespace Module.Frontend.TPM.Util {
                 bool dispatchChange = dispatchStartDif.HasValue && dispatchEndDif.HasValue && Math.Abs(dispatchStartDif.Value.Days + dispatchEndDif.Value.Days) > dispatchSetting;
                 bool isDelete = newRecord.PromoStatus != null && newRecord.PromoStatus.SystemName == "Deleted";
 
-                List<bool> conditionnCheckResults = new List<bool>() { productChange, productListChange, subrangeChange, marsMechanicChange, instoreMechanicChange, marsDiscountChange, instoreDiscountChange, durationChange, dispatchChange, isDelete };
+                List<bool> conditionnCheckResults = new List<bool>() { productChange, productListChange, isSubrangeChanged, marsMechanicChange, instoreMechanicChange, marsDiscountChange, instoreDiscountChange, durationChange, dispatchChange, isDelete };
                 result = conditionnCheckResults.Any(x => x == true);
             }
             return result;

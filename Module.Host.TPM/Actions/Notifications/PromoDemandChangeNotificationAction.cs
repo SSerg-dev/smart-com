@@ -181,11 +181,6 @@ namespace Module.Host.TPM.Actions.Notifications
 					// Если нет ограничений, то отправляем для всех промо.
 					toEmails.Add(userEmail);
 				}
-
-				foreach (PromoDemandChangeIncident incident in incidentsForNotify)
-				{
-					incident.ProcessDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
-				}
 			}
 
 			// Отправляем получателю из настроек без огранечений
@@ -197,6 +192,7 @@ namespace Module.Host.TPM.Actions.Notifications
 				List<string> allRowCells = GetRow(incident, propertiesOrder);
 				allRows.Add(String.Format(rowTemplate, string.Join("", allRowCells)));
 				logPromoNums.Add(incident.PromoIntId.ToString());
+				incident.ProcessDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
 			}
 			notifyBody = String.Format(template, string.Join("", allRows));
 

@@ -73,7 +73,8 @@ namespace Module.Host.TPM.Handlers
                             {
                                 handlerLogger.Write(true, String.Format("Calculation of promo number {0}", promo.Number), "Message");
 
-                                List<PromoProductTree> promoProductTrees = promoesController.AddProductTrees(promo.ProductTreeObjectIds, promo, context);
+								bool isSubrangeChanged = false;
+                                List<PromoProductTree> promoProductTrees = promoesController.AddProductTrees(promo.ProductTreeObjectIds, promo, out isSubrangeChanged, context);
                                 promoesController.SetPromoByProductTree(promo, promoProductTrees, context);
                                 promoesController.SetPromoMarsDates(promo);
                                 promoesController.SetPromoByClientTree(promo, context);

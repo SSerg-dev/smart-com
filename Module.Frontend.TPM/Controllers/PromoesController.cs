@@ -163,8 +163,9 @@ namespace Module.Frontend.TPM.Controllers {
 
                 Context.Set<Promo>().Add(result);
                 Context.SaveChanges();
-                // Добавление продуктов
-                List<PromoProductTree> promoProductTrees = AddProductTrees(model.ProductTreeObjectIds, result);
+				// Добавление продуктов
+				bool isSubrangeChanged = false;
+                List<PromoProductTree> promoProductTrees = AddProductTrees(model.ProductTreeObjectIds, result, out isSubrangeChanged);
 
                 //Установка полей по дереву ProductTree
                 SetPromoByProductTree(result, promoProductTrees);
@@ -222,6 +223,7 @@ namespace Module.Frontend.TPM.Controllers {
         public IHttpActionResult Patch([FromODataUri] Guid key, Delta<Promo> patch) {
             try {
                 var model = Context.Set<Promo>().Find(key);
+				var isSubrangeChanged = false;
 
                 if (model == null) {
                     return NotFound();
@@ -332,7 +334,7 @@ namespace Module.Frontend.TPM.Controllers {
                     if (!model.LoadFromTLC)
                     {
                         // Добавление продуктов                
-                        promoProductTrees = AddProductTrees(model.ProductTreeObjectIds, model);
+                        promoProductTrees = AddProductTrees(model.ProductTreeObjectIds, model, out isSubrangeChanged);
                     }
 
                     bool needRecalculatePromo = NeedRecalculatePromo(model, promoCopy);
@@ -480,10 +482,9 @@ namespace Module.Frontend.TPM.Controllers {
 						}
 					}
 				}
-			
-
                 Context.SaveChanges();
-                PromoHelper.WritePromoDemandChangeIncident(Context, model, patch, promoCopy);
+
+				PromoHelper.WritePromoDemandChangeIncident(Context, model, patch, promoCopy, isSubrangeChanged);
 
                 // TODO: ПЕРЕДЕЛАТЬ, просто оставалось 15 мин до релиза
                 if (message != string.Empty && userRole == "DemandPlanning" && statusName.ToLower() == "onapproval")
@@ -1344,14 +1345,26 @@ namespace Module.Frontend.TPM.Controllers {
         /// </summary>
         /// <param name="objectIds">Список ObjectId продуктов в иерархии</param>
         /// <param name="promo">Промо к которому прикрепляются продукты</param>
-        public List<PromoProductTree> AddProductTrees(string objectIds, Promo promo, DatabaseContext databaseContext = null) {
+        public List<PromoProductTree> AddProductTrees(string objectIds, Promo promo, out bool isSubrangeChanged, DatabaseContext databaseContext = null) {
             var context = databaseContext ?? Context;
 
             // сформированный список продуктов - приходится использовать из-за отказа SaveChanges
             List<PromoProductTree> currentProducTrees = context.Set<PromoProductTree>().Where(n => n.PromoId == promo.Id && !n.Disabled).ToList();
+			List<string> currentProducTreesIds = currentProducTrees.Select(x => x.ProductTreeObjectId.ToString()).ToList();
+			List<string> newProductTreesIds = objectIds.Split(';').ToList();
+			List<string> dispatchIds = currentProducTreesIds.Except(newProductTreesIds).ToList();
+			dispatchIds.AddRange(newProductTreesIds.Except(currentProducTreesIds));
+			if (dispatchIds.Count == 0)
+			{
+				isSubrangeChanged = false;
+			}
+			else
+			{
+				isSubrangeChanged = true;
+			}
 
-            // Если Null, значит продукты не менялись
-            if (objectIds != null) {
+			// Если Null, значит продукты не менялись
+			if (isSubrangeChanged) {
                 List<int> productTreeObjectIds = new List<int>();
 
                 if (objectIds.Length > 0) {
