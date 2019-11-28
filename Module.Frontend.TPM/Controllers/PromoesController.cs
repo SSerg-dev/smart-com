@@ -1364,7 +1364,7 @@ namespace Module.Frontend.TPM.Controllers {
 			}
 
 			// Если Null, значит продукты не менялись
-			if (isSubrangeChanged) {
+			if (objectIds != null) {
                 List<int> productTreeObjectIds = new List<int>();
 
                 if (objectIds.Length > 0) {
