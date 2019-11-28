@@ -37,7 +37,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                 ResetProductParameters(products, context, !isActualPromoProstPromoEffectLSVChangedByDemand);
 
-                double? ActualPromoLSVByCompensation = null;
+                double? ActualPromoLSVByCompensation = 0;
                 string errors = ""; // общий список ошибок
                 foreach (PromoProduct product in products)
                 {
@@ -101,7 +101,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                 product.ActualProductPostPromoEffectQty = product.PlanProductPostPromoEffectQtyW1 + product.PlanProductPostPromoEffectQtyW2;
                             }
 
-                            product.ActualProductLSVByCompensation = (product.ActualProductPCQty * actualProductPCPrice) ?? null;
+                            product.ActualProductLSVByCompensation = (product.ActualProductPCQty * actualProductPCPrice) ?? 0;
                         }
                         else
                         {
@@ -118,10 +118,10 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                 product.ActualProductPostPromoEffectLSV = 0;
                             }
 
-                            product.ActualProductLSVByCompensation = (product.ActualProductPCQty * actualProductPCPrice) ?? null;
+                            product.ActualProductLSVByCompensation = (product.ActualProductPCQty * actualProductPCPrice) ?? 0;
                         }
 
-                        ActualPromoLSVByCompensation += (product.ActualProductPCQty * actualProductPCPrice) ?? null;
+                        ActualPromoLSVByCompensation += (product.ActualProductPCQty * actualProductPCPrice) ?? 0;
                         product.ActualProductIncrementalPCQty = product.ActualProductSellInPrice != 0 ? product.ActualProductIncrementalLSV / product.ActualProductSellInPrice : 0;
                         product.ActualProductIncrementalPCLSV = product.Product.UOM_PC2Case != 0 ? product.ActualProductIncrementalLSV / product.Product.UOM_PC2Case : 0;
                     }
@@ -131,7 +131,14 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     }
                 }
 
-                promo.ActualPromoLSVByCompensation = ActualPromoLSVByCompensation != null ? ActualPromoLSVByCompensation : new double?();
+                if(ActualPromoLSVByCompensation == 0)
+                {
+                    promo.ActualPromoLSVByCompensation = null;
+                }
+                else
+                {
+                    promo.ActualPromoLSVByCompensation = ActualPromoLSVByCompensation;
+                }
 
                 try
                 {
