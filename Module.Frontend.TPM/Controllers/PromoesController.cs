@@ -1351,7 +1351,12 @@ namespace Module.Frontend.TPM.Controllers {
             // сформированный список продуктов - приходится использовать из-за отказа SaveChanges
             List<PromoProductTree> currentProducTrees = context.Set<PromoProductTree>().Where(n => n.PromoId == promo.Id && !n.Disabled).ToList();
 			List<string> currentProducTreesIds = currentProducTrees.Select(x => x.ProductTreeObjectId.ToString()).ToList();
-			List<string> newProductTreesIds = objectIds.Split(';').ToList();
+			List<string> newProductTreesIds = new List<string>();
+
+			if (!String.IsNullOrEmpty(objectIds))
+			{
+				newProductTreesIds = objectIds.Split(';').ToList();
+			}
 			List<string> dispatchIds = currentProducTreesIds.Except(newProductTreesIds).ToList();
 			dispatchIds.AddRange(newProductTreesIds.Except(currentProducTreesIds));
 			if (dispatchIds.Count == 0)

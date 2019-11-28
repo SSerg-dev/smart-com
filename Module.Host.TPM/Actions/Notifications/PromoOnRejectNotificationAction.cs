@@ -28,7 +28,7 @@ namespace Module.Host.TPM.Actions.Notifications {
 							var notifyIncidents = context.Set<PromoOnRejectIncident>().Where(x => x.ProcessDate == null && !x.Promo.Disabled);
 							var notifyIncidentsByCreator = notifyIncidents.GroupBy(y => y.Promo.CreatorId);
 
-							if (notifyIncidentsByCreator.Any()) {
+							if (notifyIncidentsByCreator.Any() || notifyIncidents.Any()) {
 								CreateNotification(notifyIncidentsByCreator, notifyIncidents, "PROMO_ON_REJECT_NOTIFICATION", template, context);
 							} else {
 								Warnings.Add(String.Format("There are no incidents to send notifications."));
@@ -58,10 +58,49 @@ namespace Module.Host.TPM.Actions.Notifications {
 		/// <param name="template"></param>
 		/// <param name="context"></param>
 		private void CreateNotification (IQueryable<IGrouping<Guid?, PromoOnRejectIncident>> incidentsForNotifyByCreator, IQueryable<PromoOnRejectIncident> incidentsForNotify, string notificationName, string template, DatabaseContext context) {
-			var creatorsEmails = new List<string>();
+			var recipientsEmails = new List<string>();
 			var promoNumbers = new List<string>();
 
-			Results.Add(String.Format("Sending notifications to promo creators."), null);
+			// Отправка нотификаций для Recipients и Settings без проверок
+			if (incidentsForNotify.Any())
+			{
+				List<Recipient> recipients = NotificationsHelper.GetRecipientsByNotifyName(notificationName, context);
+				IList<string> userErrors;
+				List<Guid> userIds = NotificationsHelper.GetUserIdsByRecipients(notificationName, recipients, context, out userErrors);
+
+				if (userErrors.Any())
+				{
+					foreach (string error in userErrors)
+					{
+						Warnings.Add(error);
+					}
+				}
+
+				List<string> defaultRecipients = NotificationsHelper.GetUsersEmail(userIds, context);
+				List<string> allRows = new List<string>();
+				promoNumbers = new List<string>();
+				foreach (PromoOnRejectIncident incident in incidentsForNotify)
+				{
+					List<string> allRowCells = GetRow(incident.Promo, propertiesOrder);
+					allRowCells.Add(String.Format(cellTemplate, incident.UserLogin));
+					allRows.Add(String.Format(rowTemplate, string.Join("", allRowCells)));
+					incident.ProcessDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+					promoNumbers.Add(incident.Promo.Number.ToString());
+				}
+
+				string notifyBody = String.Format(template, string.Join("", allRows));
+
+				recipientsEmails = defaultRecipients.Distinct().ToList();
+				string[] emailArray = recipientsEmails.ToArray();
+				if (emailArray.Length > 0)
+				{
+					SendNotificationByEmails(notifyBody, notificationName, emailArray);
+					Results.Add(String.Format("Notification about reject of promoes with numbers: {0} were sent to {1}.",
+						String.Join(", ", promoNumbers.Distinct()), String.Join(", ", emailArray)), null);
+				}
+			}
+
+			// Нотификации создателям промо (если их нет в recipients, иначе им уже отправлены все нотификации)
 			foreach (IGrouping<Guid?, PromoOnRejectIncident> incidentsGroup in incidentsForNotifyByCreator) {
 				Guid? creatorId = incidentsGroup.Key != null ? incidentsGroup.Key : Guid.Empty;
 				if (creatorId.Equals(Guid.Empty)) {
@@ -79,7 +118,11 @@ namespace Module.Host.TPM.Actions.Notifications {
 					}
 					Warnings.Add(String.Format("Promo creator's email not found. Promo numbers: {0}.", String.Join(", ", promoNumbers.Distinct())));
 				} else {
-					creatorsEmails.Add(creatorEmail);
+					bool isInRecipients = recipientsEmails.Any(x => x == creatorEmail);
+					if (isInRecipients)
+					{
+						continue;
+					}
 				}
 
 				var allRows = new List<string>();
@@ -101,40 +144,6 @@ namespace Module.Host.TPM.Actions.Notifications {
 						String.Join(", ", promoNumbers.Distinct()), String.Join(", ", emailArray)), null);
 				} else {
 					Warnings.Add(String.Format("Promo creator's email not found. Promo numbers: {0}.", String.Join(", ", promoNumbers.Distinct())));
-				}
-			}
-
-			// Отправка нотификаций для Recipients и Settings без проверок
-			Results.Add(String.Format("Sending notifications to users from recipients of {0}.", notificationName), null);
-			if (incidentsForNotify.Any()) {
-				List<Recipient> recipients = NotificationsHelper.GetRecipientsByNotifyName(notificationName, context);
-				IList<string> userErrors;
-				List<Guid> userIds = NotificationsHelper.GetUserIdsByRecipients(notificationName, recipients, context, out userErrors);
-
-				if (userErrors.Any()) {
-					foreach (string error in userErrors) {
-						Warnings.Add(error);
-					}
-				}
-
-				List<string> defaultRecipients = NotificationsHelper.GetUsersEmail(userIds, context);
-				List<string> allRows = new List<string>();
-				promoNumbers = new List<string>();
-				foreach (PromoOnRejectIncident incident in incidentsForNotify) {
-					List<string> allRowCells = GetRow(incident.Promo, propertiesOrder);
-					allRowCells.Add(String.Format(cellTemplate, incident.UserLogin));
-					allRows.Add(String.Format(rowTemplate, string.Join("", allRowCells)));
-					incident.ProcessDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
-					promoNumbers.Add(incident.Promo.Number.ToString());
-				}
-
-				string notifyBody = String.Format(template, string.Join("", allRows));
-
-				string[] emailArray = defaultRecipients.Distinct().Except(creatorsEmails).ToArray();
-				if (emailArray.Length > 0) {
-					SendNotificationByEmails(notifyBody, notificationName, emailArray);
-					Results.Add(String.Format("Notification about reject of promoes with numbers: {0} were sent to {1}.",
-						String.Join(", ", promoNumbers.Distinct()), String.Join(", ", emailArray)), null);
 				}
 			}
 			
