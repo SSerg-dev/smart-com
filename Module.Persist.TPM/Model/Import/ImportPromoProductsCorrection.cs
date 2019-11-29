@@ -22,6 +22,7 @@ namespace Module.Persist.TPM.Model.Import
         public string ProductZREP { get; set; }
 
         [ImportCSVColumn(ColumnNumber = 2)]
+        [Display(Name = "Plan Product Uplift, %")]
         public double PlanProductUpliftPercentCorrected { get; set; }
     }
 }

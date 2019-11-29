@@ -316,10 +316,10 @@ namespace Module.Frontend.TPM.Controllers
             {
                  new Column { Order = orderNumber++, Field = "PromoProduct.Promo.Number", Header = "Number", Quoting = false,  Format = "0" },
                  new Column { Order = orderNumber++, Field = "PromoProduct.ZREP", Header = "ZREP", Quoting = false,  Format = "0" },
-                 new Column { Order = orderNumber++, Field = "PlanProductUpliftPercentCorrected", Header = "PlanProductUpliftPercentCorrected", Quoting = false,  Format = "0.00"  },
+                 new Column { Order = orderNumber++, Field = "PlanProductUpliftPercentCorrected", Header = "Plan Product Uplift, %", Quoting = false,  Format = "0.00"  },
                  new Column { Order = orderNumber++, Field = "CreateDate", Header = "CreateDate", Quoting = false,Format = "dd.MM.yyyy"},
                  new Column { Order = orderNumber++, Field = "ChangeDate", Header = "ChangeDate", Quoting = false,Format = "dd.MM.yyyy"},
-                    new Column { Order = orderNumber++, Field = "UserName", Header = "UserName", Quoting = false }
+                 new Column { Order = orderNumber++, Field = "UserName", Header = "UserName", Quoting = false }
 
             };
 
