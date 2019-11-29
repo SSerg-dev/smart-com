@@ -181,8 +181,8 @@ namespace Module.Frontend.TPM.Controllers {
                 {
                     var clientTreeBrandTech = clientTreeBrandTeches.FirstOrDefault(x => x.ClientTreeId == simplePromoPromoProduct.ClientTreeKeyId && x.BrandTechId == simplePromoPromoProduct.BrandTechId);
 
-                    postPromoEffectW1Qty = (baseLinePostPromoEffectW1?.QTY ?? 0) * (clientTreeBrandTech?.Share ?? 1) / 100 * postPromoEffectW1 / 100;
-                    postPromoEffectW2Qty = (baseLinePostPromoEffectW2?.QTY ?? 0) * (clientTreeBrandTech?.Share ?? 1) / 100 * postPromoEffectW2 / 100;
+                    postPromoEffectW1Qty = (baseLinePostPromoEffectW1?.QTY ?? 0) * (clientTreeBrandTech?.Share ?? 1) / 100 * (postPromoEffectW1 ?? 0) / 100;
+                    postPromoEffectW2Qty = (baseLinePostPromoEffectW2?.QTY ?? 0) * (clientTreeBrandTech?.Share ?? 1) / 100 * (postPromoEffectW2 ?? 0) / 100;
 
                     postPromoEffectW1QtyRounded = Math.Round(postPromoEffectW1Qty.Value, 2);
                     postPromoEffectW2QtyRounded = Math.Round(postPromoEffectW2Qty.Value, 2);
@@ -193,17 +193,18 @@ namespace Module.Frontend.TPM.Controllers {
                     planProductBaselineCaseQtyW1Rounded = Math.Round(planProductBaselineCaseQtyW1.Value, 2);
                     planProductBaselineCaseQtyW2Rounded = Math.Round(planProductBaselineCaseQtyW2.Value, 2);
 
-                    planProductPostPromoEffectLSVW1 = (baseLinePostPromoEffectW1?.BaselineLSV ?? 0) * postPromoEffectW1 / 100;
-                    planProductPostPromoEffectLSVW2 = (baseLinePostPromoEffectW2?.BaselineLSV ?? 0) * postPromoEffectW2 / 100;
-
-                    planProductPostPromoEffectLSVW1Rounded = Math.Round(planProductPostPromoEffectLSVW1.Value, 2);
-                    planProductPostPromoEffectLSVW2Rounded = Math.Round(planProductPostPromoEffectLSVW2.Value, 2);
-
                     planProductBaselineLSVW1 = (baseLinePostPromoEffectW1?.BaselineLSV ?? 0) * (clientTreeBrandTech?.Share ?? 1) / 100;
                     planProductBaselineLSVW2 = (baseLinePostPromoEffectW2?.BaselineLSV ?? 0) * (clientTreeBrandTech?.Share ?? 1) / 100;
 
                     planProductBaselineLSVW1Rounded = Math.Round(planProductBaselineLSVW1.Value, 2);
                     planProductBaselineLSVW2Rounded = Math.Round(planProductBaselineLSVW2.Value, 2);
+
+                    planProductPostPromoEffectLSVW1 = (planProductBaselineLSVW1 ?? 0) * (postPromoEffectW1 ?? 0) / 100;
+                    planProductPostPromoEffectLSVW2 = (planProductBaselineLSVW2 ?? 0) * (postPromoEffectW2 ?? 0) / 100;
+
+                    planProductPostPromoEffectLSVW1Rounded = Math.Round(planProductPostPromoEffectLSVW1.Value, 2);
+                    planProductPostPromoEffectLSVW2Rounded = Math.Round(planProductPostPromoEffectLSVW2.Value, 2);
+
                 }
 
                 result.Add(ReportCreateWeek(simplePromoPromoProduct, demandCode, promoStatus, weekStart, postPromoEffectW1QtyRounded, postPromoEffectW2QtyRounded, planProductBaselineCaseQtyW1Rounded, planProductBaselineCaseQtyW2Rounded, planProductPostPromoEffectLSVW1Rounded, planProductPostPromoEffectLSVW2Rounded, planProductBaselineLSVW1Rounded, planProductBaselineLSVW2Rounded));
@@ -281,7 +282,7 @@ namespace Module.Frontend.TPM.Controllers {
                     PlanUplift = Math.Round((plan.PlanUplift ?? 0), 2),
                     StartDate = plan.WeekStartDate,
                     EndDate = plan.WeekStartDate + week,
-                    Week = SetWeekByMarsDates(plan.WeekStartDate.Value.UtcDateTime),
+                    Week = SetWeekByMarsDates(plan.WeekStartDate.Value.Date),
                     Status = plan.Status,
                     PlanProductBaselineCaseQty = plan.PlanProductBaselineCaseQtyW1,
                     PlanProductPostPromoEffectLSV = plan.PlanProductPostPromoEffectLSVW1,
@@ -303,7 +304,7 @@ namespace Module.Frontend.TPM.Controllers {
                     PlanUplift = Math.Round((plan.PlanUplift ?? 0), 2),
 					StartDate = plan.WeekStartDate + week,
 					EndDate = plan.WeekStartDate + week + week,
-					Week = SetWeekByMarsDates((plan.WeekStartDate + week).Value.UtcDateTime),
+					Week = SetWeekByMarsDates(plan.WeekStartDate.Value.Date + week),
                     Status = plan.Status,
                     PlanProductBaselineCaseQty = plan.PlanProductBaselineCaseQtyW2,
                     PlanProductPostPromoEffectLSV = plan.PlanProductPostPromoEffectLSVW2,
@@ -317,13 +318,15 @@ namespace Module.Frontend.TPM.Controllers {
         
         private PlanPostPromoEffectReportWeekView ReportCreateWeek(SimplePromoPromoProduct simplePromoPromoProduct, String demandCode, String promoStatus, DateTime weekStart, double? qtyW1, double? qtyW2, double? planProductBaselineCaseQtyW1, double? planProductBaselineCaseQtyW2, double? planProductPostPromoEffectLSVW1, double? planProductPostPromoEffectLSVW2, double? planProductBaselineLSVW1, double? planProductBaselineLSVW2)
         {
+            TimeSpan week = TimeSpan.FromDays(7);
+
             PlanPostPromoEffectReportWeekView rep = new PlanPostPromoEffectReportWeekView();
             rep.ZREP = simplePromoPromoProduct.ZREP + "_0125";
             rep.Status = promoStatus;
             rep.PromoNameId = simplePromoPromoProduct.Name + "#" + simplePromoPromoProduct.Number.ToString();
             rep.WeekStartDate = weekStart;
-            rep.StartDate = simplePromoPromoProduct.StartDate;
-            rep.EndDate = simplePromoPromoProduct.EndDate;
+            rep.StartDate = rep.WeekStartDate;
+            rep.EndDate = rep.WeekStartDate + week + week;
             rep.DemandCode = String.IsNullOrEmpty(demandCode) ? "Demand code was not found" : demandCode;
             rep.InOut = simplePromoPromoProduct.InOut;
             rep.Id = Guid.NewGuid();
