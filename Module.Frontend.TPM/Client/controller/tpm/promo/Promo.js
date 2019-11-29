@@ -1974,20 +1974,37 @@
 	},
 
     onCancelButtonClick: function (button) {
-        var window = button.up('promoeditorcustom');
-        var record = this.getRecord(window);
-        window.previousStatusId = window.statusId;
-        window.statusId = button.statusId;
-        window.promoName = this.getPromoName(window);
-        var model = this.buildPromoModel(window, record);
-        window.readOnly = true;
-        this.saveModel(model, window, false, true);
-        window.down('#btn_showlog').hide();
-        window.down('#btn_recalculatePromo').hide();
-        window.down('#changePromo').hide();
-        window.down('#cancelPromo').hide();
-        window.down('#closePromo').show();
-	},
+        Ext.Msg.show({
+            title: l10n.ns('tpm', 'Promo').value('ConfirmCancelTitle'),
+            msg: l10n.ns('tpm', 'Promo').value('ConfirmCancelText'),
+            fn: onMsgBoxClose,
+            scope: this,
+            icon: Ext.Msg.QUESTION,
+            buttons: Ext.Msg.YESNO,
+            buttonText: {
+                yes: l10n.ns('core', 'booleanValues').value('true'),
+                no: l10n.ns('core', 'booleanValues').value('false')
+            }
+        });
+        function onMsgBoxClose(buttonId) {
+            // Удаление Промо
+            if (buttonId === 'yes') {
+                var window = button.up('promoeditorcustom');
+                var record = this.getRecord(window);
+                window.previousStatusId = window.statusId;
+                window.statusId = button.statusId;
+                window.promoName = this.getPromoName(window);
+                var model = this.buildPromoModel(window, record);
+                window.readOnly = true;
+                this.saveModel(model, window, false, true);
+                window.down('#btn_showlog').hide();
+                window.down('#btn_recalculatePromo').hide();
+                window.down('#changePromo').hide();
+                window.down('#cancelPromo').hide();
+                window.down('#closePromo').show();
+            }
+        }
+    },
 
 	onPlanButtonClick: function (button) {
 		var window = button.up('promoeditorcustom');

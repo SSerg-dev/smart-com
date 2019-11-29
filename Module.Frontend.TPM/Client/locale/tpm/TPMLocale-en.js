@@ -754,7 +754,10 @@
         'Client1LevelName': 'NA/RKA',
         'Client2LevelName': 'Client Group',
         'ClientName': 'Client',
-        'ProductSubrangesList': 'Subrange',
+        'ProductSubrangesList': 'Subrange',			
+
+        'ConfirmCancelTitle': 'Cancel promo',
+        'ConfirmCancelText': 'Do you really want to cancel this promo?',
     },
     'HistoricalPromo': ['.tpm.Promo', '.core.BaseHistoryEntity'],
     'DeletedPromo': ['.tpm.Promo', '.core.BaseDeletedEntity'],
