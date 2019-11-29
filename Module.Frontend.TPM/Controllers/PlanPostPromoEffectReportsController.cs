@@ -22,6 +22,7 @@ using Module.Persist.TPM.Utils;
 using Core.MarsCalendar;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
+using System.Data.Entity;
 
 namespace Module.Frontend.TPM.Controllers {
 
@@ -63,6 +64,7 @@ namespace Module.Frontend.TPM.Controllers {
 		                promo.InOut,
 		                promo.PlanPromoUpliftPercent,
 		                promoStatus.Name AS PromoStatusName,
+                        promo.BrandTechId,
 		                promoProduct.ZREP, 
 		                promoProduct.PlanProductIncrementalCaseQty, 
 		                promoProduct.PlanProductBaselineCaseQty, 
@@ -76,6 +78,18 @@ namespace Module.Frontend.TPM.Controllers {
 	
                 WHERE promoProduct.Disabled = 0 AND promoProduct.PlanProductCaseQty > 0 AND promo.Disabled = 0
             ").AsEnumerable();
+
+            var baseLines = Context.Set<BaseLine>().Where(x => !x.Disabled).Select(x => new BaseLineSimpleModel
+            {
+                ProductZREP = x.Product.ZREP,
+                QTY = x.QTY,
+                BaselineLSV = x.BaselineLSV,
+                StartDate = x.StartDate,
+                DemandCode = x.DemandCode
+            })
+            .ToList();
+
+            var clientTreeBrandTeches = Context.Set<ClientTreeBrandTech>().Where(x => !x.Disabled).ToList();
 
             simplePromoPromoProducts.AsParallel().ForAll(simplePromoPromoProduct =>
             {
@@ -94,45 +108,32 @@ namespace Module.Frontend.TPM.Controllers {
 
                 double? postPromoEffectW1 = null;
                 double? postPromoEffectW2 = null;
+
                 double? postPromoEffectW1Qty = null;
                 double? postPromoEffectW2Qty = null;
+                double? postPromoEffectW1QtyRounded = null;
+                double? postPromoEffectW2QtyRounded = null;
+
                 double? planProductBaselineCaseQtyW1 = null;
                 double? planProductBaselineCaseQtyW2 = null;
+                double? planProductBaselineCaseQtyW1Rounded = null;
+                double? planProductBaselineCaseQtyW2Rounded = null;
+
                 double? planProductPostPromoEffectLSVW1 = null;
                 double? planProductPostPromoEffectLSVW2 = null;
+                double? planProductPostPromoEffectLSVW1Rounded = null;
+                double? planProductPostPromoEffectLSVW2Rounded = null;
+
                 double? planProductBaselineLSVW1 = null;
                 double? planProductBaselineLSVW2 = null;
+                double? planProductBaselineLSVW1Rounded = null;
+                double? planProductBaselineLSVW2Rounded = null;
 
                 if (clientTree != null)
                 {
                     postPromoEffectW1 = Math.Abs(clientTree.PostPromoEffectW1.HasValue ? clientTree.PostPromoEffectW1.Value : 0);
                     postPromoEffectW2 = Math.Abs(clientTree.PostPromoEffectW2.HasValue ? clientTree.PostPromoEffectW2.Value : 0);
                 }
-                if (postPromoEffectW1 != null)
-                {
-                    postPromoEffectW1Qty = simplePromoPromoProduct.PlanProductIncrementalCaseQty * (postPromoEffectW1 / 100);
-                    planProductBaselineCaseQtyW1 = simplePromoPromoProduct.PlanProductBaselineCaseQty * (postPromoEffectW1 / 100);
-                    planProductPostPromoEffectLSVW1 = simplePromoPromoProduct.PlanProductPostPromoEffectLSVW1;
-                    planProductBaselineLSVW1 = simplePromoPromoProduct.PlanProductBaselineLSV * (postPromoEffectW1 / 100);
-                }
-
-                if (postPromoEffectW2 != null)
-                {
-                    postPromoEffectW2Qty = simplePromoPromoProduct.PlanProductIncrementalCaseQty * (postPromoEffectW2 / 100);
-                    planProductBaselineCaseQtyW2 = simplePromoPromoProduct.PlanProductBaselineCaseQty * (postPromoEffectW2 / 100);
-                    planProductPostPromoEffectLSVW2 = simplePromoPromoProduct.PlanProductPostPromoEffectLSVW2;
-                    planProductBaselineLSVW2 = simplePromoPromoProduct.PlanProductBaselineLSV * (postPromoEffectW2 / 100);
-                }
-
-				postPromoEffectW1Qty = postPromoEffectW1Qty != null ? Math.Round(postPromoEffectW1Qty.Value, 2) : 0;
-                planProductBaselineCaseQtyW1 = planProductBaselineCaseQtyW1 != null ? Math.Abs(Math.Round(planProductBaselineCaseQtyW1.Value, 2)) : 0;
-                planProductPostPromoEffectLSVW1 = planProductPostPromoEffectLSVW1 != null ? Math.Abs(Math.Round(planProductPostPromoEffectLSVW1.Value, 2)) : 0;
-                planProductBaselineLSVW1 = planProductBaselineLSVW1 != null ? Math.Abs(Math.Round(planProductBaselineLSVW1.Value, 2)) : 0;
-
-                postPromoEffectW2Qty = postPromoEffectW2Qty != null ? Math.Round(postPromoEffectW2Qty.Value, 2) : 0;
-                planProductBaselineCaseQtyW2 = planProductBaselineCaseQtyW2 != null ? Math.Abs(Math.Round(planProductBaselineCaseQtyW2.Value, 2)) : 0;
-                planProductPostPromoEffectLSVW2 = planProductPostPromoEffectLSVW2 != null ? Math.Abs(Math.Round(planProductPostPromoEffectLSVW2.Value, 2)) : 0;
-                planProductBaselineLSVW2 = planProductBaselineLSVW2 != null ? Math.Abs(Math.Round(planProductBaselineLSVW2.Value, 2)) : 0;
 
                 var promoEffectBegin = ((DateTimeOffset)simplePromoPromoProduct.DispatchesEnd).Date.AddDays(1);
 
@@ -154,7 +155,58 @@ namespace Module.Frontend.TPM.Controllers {
                     }
                 }
 
-                result.Add(ReportCreateWeek(simplePromoPromoProduct, demandCode, promoStatus, weekStart, postPromoEffectW1Qty, postPromoEffectW2Qty, planProductBaselineCaseQtyW1, planProductBaselineCaseQtyW2, planProductPostPromoEffectLSVW1, planProductPostPromoEffectLSVW2, planProductBaselineLSVW1, planProductBaselineLSVW2));
+                var baseLineW1 = weekStart;
+                var baseLineW2 = baseLineW1.Add(week);
+
+                BaseLineSimpleModel baseLinePostPromoEffectW1 = null;
+                BaseLineSimpleModel baseLinePostPromoEffectW2 = null;
+
+                var currentClient = new ClientTree { parentId = simplePromoPromoProduct.ClientTreeId.Value };
+                while (currentClient != null && currentClient.Type != "root")
+                {
+                    currentClient = clientTrees.FirstOrDefault(x => !x.EndDate.HasValue && x.ObjectId == currentClient.parentId);
+                    if (currentClient != null && !String.IsNullOrEmpty(currentClient.DemandCode))
+                    {
+                        baseLinePostPromoEffectW1 = baseLines.FirstOrDefault(x => x.DemandCode == currentClient.DemandCode && x.ProductZREP == simplePromoPromoProduct.ZREP && x.StartDate == baseLineW1);
+                        baseLinePostPromoEffectW2 = baseLines.FirstOrDefault(x => x.DemandCode == currentClient.DemandCode && x.ProductZREP == simplePromoPromoProduct.ZREP && x.StartDate == baseLineW2);
+
+                        if (baseLinePostPromoEffectW1 != null && baseLinePostPromoEffectW2 != null)
+                        {
+                            break;
+                        }
+                    }
+                }
+
+                if (baseLinePostPromoEffectW1 != null && baseLinePostPromoEffectW2 != null)
+                {
+                    var clientTreeBrandTech = clientTreeBrandTeches.FirstOrDefault(x => x.ClientTreeId == simplePromoPromoProduct.ClientTreeKeyId && x.BrandTechId == simplePromoPromoProduct.BrandTechId);
+
+                    postPromoEffectW1Qty = (baseLinePostPromoEffectW1?.QTY ?? 0) * (clientTreeBrandTech?.Share ?? 1) / 100 * postPromoEffectW1 / 100;
+                    postPromoEffectW2Qty = (baseLinePostPromoEffectW2?.QTY ?? 0) * (clientTreeBrandTech?.Share ?? 1) / 100 * postPromoEffectW2 / 100;
+
+                    postPromoEffectW1QtyRounded = Math.Round(postPromoEffectW1Qty.Value, 2);
+                    postPromoEffectW2QtyRounded = Math.Round(postPromoEffectW2Qty.Value, 2);
+
+                    planProductBaselineCaseQtyW1 = (baseLinePostPromoEffectW1?.QTY ?? 0) * (clientTreeBrandTech?.Share ?? 1) / 100;
+                    planProductBaselineCaseQtyW2 = (baseLinePostPromoEffectW2?.QTY ?? 0) * (clientTreeBrandTech?.Share ?? 1) / 100;
+
+                    planProductBaselineCaseQtyW1Rounded = Math.Round(planProductBaselineCaseQtyW1.Value, 2);
+                    planProductBaselineCaseQtyW2Rounded = Math.Round(planProductBaselineCaseQtyW2.Value, 2);
+
+                    planProductPostPromoEffectLSVW1 = (baseLinePostPromoEffectW1?.BaselineLSV ?? 0) * postPromoEffectW1 / 100;
+                    planProductPostPromoEffectLSVW2 = (baseLinePostPromoEffectW2?.BaselineLSV ?? 0) * postPromoEffectW2 / 100;
+
+                    planProductPostPromoEffectLSVW1Rounded = Math.Round(planProductPostPromoEffectLSVW1.Value, 2);
+                    planProductPostPromoEffectLSVW2Rounded = Math.Round(planProductPostPromoEffectLSVW2.Value, 2);
+
+                    planProductBaselineLSVW1 = (baseLinePostPromoEffectW1?.BaselineLSV ?? 0) * (clientTreeBrandTech?.Share ?? 1) / 100;
+                    planProductBaselineLSVW2 = (baseLinePostPromoEffectW2?.BaselineLSV ?? 0) * (clientTreeBrandTech?.Share ?? 1) / 100;
+
+                    planProductBaselineLSVW1Rounded = Math.Round(planProductBaselineLSVW1.Value, 2);
+                    planProductBaselineLSVW2Rounded = Math.Round(planProductBaselineLSVW2.Value, 2);
+                }
+
+                result.Add(ReportCreateWeek(simplePromoPromoProduct, demandCode, promoStatus, weekStart, postPromoEffectW1QtyRounded, postPromoEffectW2QtyRounded, planProductBaselineCaseQtyW1Rounded, planProductBaselineCaseQtyW2Rounded, planProductPostPromoEffectLSVW1Rounded, planProductPostPromoEffectLSVW2Rounded, planProductBaselineLSVW1Rounded, planProductBaselineLSVW2Rounded));
             });
 
             return result.AsQueryable();
@@ -214,6 +266,7 @@ namespace Module.Frontend.TPM.Controllers {
 
             foreach (PlanPostPromoEffectReportWeekView plan in data)
             {
+                TimeSpan week = TimeSpan.FromDays(7);
                 result.Add(new PlanPostPromoEffectReport()
                 {
                     Id = plan.Id,
@@ -225,17 +278,17 @@ namespace Module.Frontend.TPM.Controllers {
                     ModelApollo = plan.ModelApollo,
                     WeekStartDate = plan.WeekStartDate,
                     PlanPostPromoEffectQty = plan.PlanPostPromoEffectQtyW1,
-                    PlanUplift = plan.PlanUplift,
-                    StartDate = plan.StartDate,
-                    EndDate = plan.EndDate,
-                    Week = plan.Week,
+                    PlanUplift = Math.Round((plan.PlanUplift ?? 0), 2),
+                    StartDate = plan.WeekStartDate,
+                    EndDate = plan.WeekStartDate + week,
+                    Week = SetWeekByMarsDates(plan.WeekStartDate.Value.UtcDateTime),
                     Status = plan.Status,
                     PlanProductBaselineCaseQty = plan.PlanProductBaselineCaseQtyW1,
                     PlanProductPostPromoEffectLSV = plan.PlanProductPostPromoEffectLSVW1,
                     PlanProductBaselineLSV = plan.PlanProductBaselineLSVW1,
                     InOut = plan.InOut
                 });
-                TimeSpan week = TimeSpan.FromDays(7);
+
                 result.Add(new PlanPostPromoEffectReport()
                 {
                     Id = plan.Id,
@@ -247,10 +300,10 @@ namespace Module.Frontend.TPM.Controllers {
                     ModelApollo = plan.ModelApollo,
                     WeekStartDate = plan.WeekStartDate + week,
                     PlanPostPromoEffectQty = plan.PlanPostPromoEffectQtyW2,
-                    PlanUplift = plan.PlanUplift,
-					StartDate = plan.StartDate,
-					EndDate = plan.EndDate,
-					Week = plan.Week,
+                    PlanUplift = Math.Round((plan.PlanUplift ?? 0), 2),
+					StartDate = plan.WeekStartDate + week,
+					EndDate = plan.WeekStartDate + week + week,
+					Week = SetWeekByMarsDates((plan.WeekStartDate + week).Value.UtcDateTime),
                     Status = plan.Status,
                     PlanProductBaselineCaseQty = plan.PlanProductBaselineCaseQtyW2,
                     PlanProductPostPromoEffectLSV = plan.PlanProductPostPromoEffectLSVW2,

@@ -26,5 +26,15 @@ namespace Module.Persist.TPM.Utils
         public double? PlanProductPostPromoEffectLSVW1 { get; set; }
         public double? PlanProductPostPromoEffectLSVW2 { get; set; }
         public double? PlanProductBaselineLSV { get; set; }
+        public Guid BrandTechId { get; set; }
+    }
+
+    public class BaseLineSimpleModel
+    {
+        public string ProductZREP { get; set; }
+        public double? QTY { get; set; }
+        public double? BaselineLSV { get; set; }
+        public DateTimeOffset? StartDate {get; set; }
+        public string DemandCode { get; set; }
     }
 }
