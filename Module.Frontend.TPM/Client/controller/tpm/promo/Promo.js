@@ -3438,8 +3438,12 @@
 							break;
 
 						case 'Administrator':
-							visible = false;
+							visible = true;
 							break;
+
+                        case 'FunctionalExpert':
+                            visible = true;
+                            break;
 
 						case 'CustomerMarketing':
 							visible = true;
@@ -3451,30 +3455,33 @@
 
 						case 'DemandFinance':
 							visible = record.get('IsCMManagerApproved') && record.get('IsDemandPlanningApproved') && !record.get('IsDemandFinanceApproved');
-							break;
-						case 'KeyAccountManager':
-							var parameters = 'promoId=' + record.get('Id');
+                            break;
+
+                        case 'KeyAccountManager':
+                            visible = true;
+                            //Теперь любой KAM может переносить в Draft(published), если подходит по constrains
+							//var parameters = 'promoId=' + record.get('Id');
 					
-							$.ajax({
-								dataType: 'json',
-								url: '/odata/Promoes/CheckPromoCreator?' + parameters,
-								type: 'POST',
-								async: false,
-								success: function (data) {
-									var result = Ext.JSON.decode(data.value);
-									// Устанавливаем видимость элемента внутри callback'a, потому что запрос асинхронный
-									if (result.isCreator) {
-										visible = true;
-									} else {
-										visible = false;
-									}
-								},
-								error: function (data) {
+							//$.ajax({
+							//	dataType: 'json',
+							//	url: '/odata/Promoes/CheckPromoCreator?' + parameters,
+							//	type: 'POST',
+							//	async: false,
+							//	success: function (data) {
+							//		var result = Ext.JSON.decode(data.value);
+							//		 Устанавливаем видимость элемента внутри callback'a, потому что запрос асинхронный
+							//		if (result.isCreator) {
+							//			visible = true;
+							//		} else {
+							//			visible = false;
+							//		}
+							//	},
+							//	error: function (data) {
 									
-									window.setLoading(false);
-									App.Notify.pushError(data.statusText);
-								}
-							});
+							//		window.setLoading(false);
+							//		App.Notify.pushError(data.statusText);
+							//	}
+							//});
 							break;
 
 						default: break;
