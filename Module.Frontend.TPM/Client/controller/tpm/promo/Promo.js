@@ -3458,30 +3458,8 @@
                             break;
 
                         case 'KeyAccountManager':
-                            visible = true;
                             //Теперь любой KAM может переносить в Draft(published), если подходит по constrains
-							//var parameters = 'promoId=' + record.get('Id');
-					
-							//$.ajax({
-							//	dataType: 'json',
-							//	url: '/odata/Promoes/CheckPromoCreator?' + parameters,
-							//	type: 'POST',
-							//	async: false,
-							//	success: function (data) {
-							//		var result = Ext.JSON.decode(data.value);
-							//		 Устанавливаем видимость элемента внутри callback'a, потому что запрос асинхронный
-							//		if (result.isCreator) {
-							//			visible = true;
-							//		} else {
-							//			visible = false;
-							//		}
-							//	},
-							//	error: function (data) {
-									
-							//		window.setLoading(false);
-							//		App.Notify.pushError(data.statusText);
-							//	}
-							//});
+                            visible = true;
 							break;
 
 						default: break;
