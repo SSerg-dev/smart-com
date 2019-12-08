@@ -49,7 +49,9 @@ namespace Module.Host.TPM {
                 new Handlers.FillInOutProductIdsHandler(),
                 new Handlers.UnblockPromoesHandler(),
                 new Handlers.FullXLSXUpdateImportPromoProductsCorrectionHandler(),
-                new Handlers.FullXLSXUpdateImportPromoProductsUpliftHandler()
+                new Handlers.FullXLSXUpdateImportPromoProductsUpliftHandler(),
+                new Handlers.PromoListPlanRecalculationHandler(),
+                new Handlers.PromoListActualRecalculationHandler()
             };
         }
     }

@@ -290,7 +290,7 @@ namespace Module.Host.TPM.Handlers
         /// <param name="promo">Промо</param>
         /// <param name="context">Контекст БД</param>
         /// <param name="handlerLogger">Лог</param>
-        private void CalulateActual(Promo promo, DatabaseContext context, ILogWriter handlerLogger, Guid handlerId)
+        public static void CalulateActual(Promo promo, DatabaseContext context, ILogWriter handlerLogger, Guid handlerId)
         {
             string errorString = null;
             // Продуктовые параметры считаем только, если были загружены Actuals
@@ -322,7 +322,7 @@ namespace Module.Host.TPM.Handlers
 		/// </summary>
 		/// <param name="handlerLogger">Лог</param>
 		/// <param name="errorString">Список ошибок, записанных через ';'</param>
-		private void WriteErrorsInLog(ILogWriter handlerLogger, string errorString)
+		private static void WriteErrorsInLog(ILogWriter handlerLogger, string errorString)
 		{
 			string[] errors = errorString.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
 			string message = "";

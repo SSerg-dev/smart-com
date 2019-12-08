@@ -1650,6 +1650,9 @@
     <Compile Include="PromoStateControl\UserRoles.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CalculatePromoParametersModule\PlanProductParametersCalculation.cs" />
+    <Content Include="SQLInitialize\20191208_1635_PromoListForRecalculation_Settings.sql" />
+    <Content Include="SQLInitialize\20191208_0035_PromoListActualRecalculationHandler.sql" />
+    <Content Include="SQLInitialize\20191208_0030_PromoListPlanRecalculationHandler.sql" />
     <Content Include="SQLInitialize\20191013_0125_PromoProductsView_AP.sql" />
     <Content Include="SQLInitialize\20191022_1843_AddPromoProductCorrection_AP.sql" />
     <Content Include="SQLInitialize\20191014_1847_AddDeletedPromoProductCorrection_AP.sql" />

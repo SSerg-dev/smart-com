@@ -231,6 +231,8 @@
     <Compile Include="Handlers\FillInOutProductIdsHandler.cs" />
     <Compile Include="Handlers\AutoResetPromoHandler.cs" />
     <Compile Include="Handlers\ActualLSVChangeHandler.cs" />
+    <Compile Include="Handlers\PromoListActualRecalculationHandler.cs" />
+    <Compile Include="Handlers\PromoListPlanRecalculationHandler.cs" />
     <Compile Include="Handlers\RemoveDeletedDataHandler.cs" />
     <Compile Include="Handlers\CalculateBudgetsHandler.cs" />
     <Compile Include="Handlers\BaseLineUpgradeHandler.cs" />
