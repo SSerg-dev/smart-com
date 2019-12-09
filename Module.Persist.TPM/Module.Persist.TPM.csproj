@@ -1562,6 +1562,10 @@
     <Compile Include="Migrations\201912061242540_Add_Unique_Mechanic.Designer.cs">
       <DependentUpon>201912061242540_Add_Unique_Mechanic.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201912091414485_EmptyMigrationRC2.cs" />
+    <Compile Include="Migrations\201912091414485_EmptyMigrationRC2.Designer.cs">
+      <DependentUpon>201912091414485_EmptyMigrationRC2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\PromoProductsView.cs" />
     <Compile Include="Model\DTO\ClientTreeSharesView.cs" />
@@ -2916,6 +2920,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201912071724011_Add_ClientTreeNeedUpdateIncident_Fields.resx">
       <DependentUpon>201912071724011_Add_ClientTreeNeedUpdateIncident_Fields.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201912091414485_EmptyMigrationRC2.resx">
+      <DependentUpon>201912091414485_EmptyMigrationRC2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
