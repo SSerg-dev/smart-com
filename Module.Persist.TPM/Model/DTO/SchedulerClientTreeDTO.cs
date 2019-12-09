@@ -33,7 +33,7 @@ namespace Module.Persist.TPM.Model.TPM {
 
         public string LogoFileName { get; set; }
 
-        public bool InOut { get; set; }
+        public string TypeName { get; set; }
         public string InOutId { get; set; }
 
         public object Clone()

@@ -249,7 +249,10 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     {
                         foreach (Promo p in promo)
                         {
-                            successBlock = successBlock && BlockPromo(p.Id, handlerId, context);
+                            if (p != null)
+                            {
+                                successBlock = successBlock && BlockPromo(p.Id, handlerId, context);
+                            }
                         }
 
                         if (successBlock)
@@ -283,7 +286,10 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         foreach (Guid promoId in promoIds)
                         {
                             Promo p = context.Set<Promo>().Where(x => x.Id == promoId && !x.Disabled).FirstOrDefault();
-                            successBlock = successBlock && BlockPromo(p.Id, handlerId, context);
+                            if (p != null)
+                            {
+                                successBlock = successBlock && BlockPromo(p.Id, handlerId, context);
+                            }
                         }
 
                         if (successBlock)

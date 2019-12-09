@@ -32,6 +32,9 @@ using AutoMapper;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using Module.Persist.TPM.Model.DTO;
+using System.Collections.Specialized;
+using Core.Dependency;
+using System.Collections.Concurrent;
 
 namespace Module.Frontend.TPM.Controllers {
 
@@ -103,6 +106,7 @@ namespace Module.Frontend.TPM.Controllers {
             // делаем UTC +3
             model.StartDate = ChangeTimeZoneUtil.ResetTimeZone(model.StartDate);
             model.EndDate = ChangeTimeZoneUtil.ResetTimeZone(model.EndDate);
+            model.Year = model.StartDate.Value.Year;
 
             var proxy = Context.Set<TradeInvestment>().Create<TradeInvestment>();
             var result = (TradeInvestment) Mapper.Map(model, proxy, typeof(TradeInvestment), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
@@ -112,7 +116,11 @@ namespace Module.Frontend.TPM.Controllers {
                 string msg = "There can not be two TradeInvestment of such client, brandTech, Type and SubType in some Time";
                 return InternalServerError(new Exception(msg)); //Json(new { success = false, message = msg });
             }
-
+            if (result.StartDate.Value.Year != result.EndDate.Value.Year)
+            {
+                string msg = "Start and End date must be in same year";
+                return InternalServerError(new Exception(msg));
+            }
             Context.Set<TradeInvestment>().Add(result);
             try {
                 Context.SaveChanges();
@@ -127,7 +135,24 @@ namespace Module.Frontend.TPM.Controllers {
         [AcceptVerbs("PATCH", "MERGE")]
         public IHttpActionResult Patch([FromODataUri] System.Guid key, Delta<TradeInvestment> patch) {
             try {
-                var model = Context.Set<TradeInvestment>().Find(key);
+                var model = Context.Set<TradeInvestment>().FirstOrDefault(x => x.Id == key);
+
+                var oldModel = new TradeInvestment
+                {
+                    Disabled = model.Disabled,
+                    DeletedDate = model.DeletedDate,
+                    StartDate = model.StartDate,
+                    EndDate = model.EndDate,
+                    ClientTreeId = model.ClientTreeId,
+                    BrandTechId = model.BrandTechId,
+                    TIType = model.TIType,
+                    TISubType = model.TISubType,
+                    SizePercent = model.SizePercent,
+                    MarcCalcROI = model.MarcCalcROI,
+                    MarcCalcBudgets = model.MarcCalcBudgets,
+                    Year = model.Year
+                };
+
                 if (model == null) {
                     return NotFound();
                 }
@@ -136,12 +161,33 @@ namespace Module.Frontend.TPM.Controllers {
                 // делаем UTC +3
                 model.StartDate = ChangeTimeZoneUtil.ResetTimeZone(model.StartDate);
                 model.EndDate = ChangeTimeZoneUtil.ResetTimeZone(model.EndDate);
+                model.Year = model.StartDate.Value.Year;
+
+                string promoPatchDateCheckMsg = PromoDateCheck(oldModel, model.BrandTechId); 
+                if (promoPatchDateCheckMsg != null)
+                {
+                    return InternalServerError(new Exception(promoPatchDateCheckMsg));
+                }
 
                 //Проверка пересечения по времени на клиенте
                 if (!DateCheck(model)) {
                     string msg = "There can not be two TradeInvestment of such client, brandTech, Type and SubType in some Time";
                     return InternalServerError(new Exception(msg)); //Json(new { success = false, message = msg });
                 }
+                if (model.StartDate.Value.Year != model.EndDate.Value.Year)
+                {
+                    string msg = "Start and End date must be in same year";
+                    return InternalServerError(new Exception(msg));
+                }
+
+                Context.Set<ChangesIncident>().Add(new ChangesIncident
+                {
+                    Id = Guid.NewGuid(),
+                    DirectoryName = nameof(TradeInvestment),
+                    ItemId = model.Id.ToString(),
+                    CreateDate = DateTimeOffset.Now,
+                    Disabled = false
+                });
 
                 Context.SaveChanges();
 
@@ -167,6 +213,13 @@ namespace Module.Frontend.TPM.Controllers {
 
                 model.DeletedDate = System.DateTime.Now;
                 model.Disabled = true;
+
+                string promoDeleteDateCheckMsg = PromoDateCheck(model); 
+                if (promoDeleteDateCheckMsg != null)
+                {
+                    return InternalServerError(new Exception(promoDeleteDateCheckMsg));
+                }
+
                 Context.SaveChanges();
 
                 return StatusCode(HttpStatusCode.NoContent);
@@ -221,7 +274,8 @@ namespace Module.Frontend.TPM.Controllers {
                 string importDir = Core.Settings.AppSettingsManager.GetSetting("IMPORT_DIRECTORY", "ImportFiles");
                 string fileName = await FileUtility.UploadFile(Request, importDir);
 
-                CreateImportTask(fileName, "FullXLSXTradeInvestmentUpdateImporHandler");
+                NameValueCollection form = System.Web.HttpContext.Current.Request.Form;
+                CreateImportTask(fileName, "FullXLSXTradeInvestmentUpdateImporHandler", form);
 
                 HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
                 result.Content = new StringContent("success = true");
@@ -233,7 +287,7 @@ namespace Module.Frontend.TPM.Controllers {
             }
         }
 
-        private void CreateImportTask(string fileName, string importHandler) {
+        private void CreateImportTask(string fileName, string importHandler, NameValueCollection paramForm) {
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
             RoleInfo role = authorizationManager.GetCurrentRole();
@@ -249,6 +303,9 @@ namespace Module.Frontend.TPM.Controllers {
                     Name = System.IO.Path.GetFileName(fileName),
                     DisplayName = System.IO.Path.GetFileName(fileName)
                 };
+
+                // параметры импорта
+                HandlerDataHelper.SaveIncomingArgument("CrossParam.Year", paramForm.GetStringValue("year"), data, throwIfNotExists: false);
 
                 HandlerDataHelper.SaveIncomingArgument("File", file, data, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
@@ -350,6 +407,167 @@ namespace Module.Frontend.TPM.Controllers {
             } else {
                 return InternalServerError(e.InnerException);
             }
+        }
+
+        public string PromoDateCheck(TradeInvestment model, Guid? newBrandTechId = null)
+        {
+            var promoes = this.GetPromoesForCheck(Context).Where(x =>
+                x.StartDate.HasValue &&
+                x.StartDate.Value.Year == model.Year);
+
+            var models = Context.Set<TradeInvestment>().Where(x => !x.Disabled);
+            var clientTrees = Context.Set<ClientTree>().Where(x => !x.EndDate.HasValue);
+
+            var invalidPromoesByTradeInvestment = this.GetInvalidPromoesByTradeInvestment(model, models, promoes, clientTrees, newBrandTechId);
+            if (invalidPromoesByTradeInvestment.Any())
+            {
+                return $"Promo with numbers {string.Join(", ", invalidPromoesByTradeInvestment.Select(x => x.Number))} will not have TradeInvestment after that.";
+            }
+
+            return null;
+        }
+
+        private IEnumerable<PromoSimpleTradeInvestment> GetPromoesForCheck(DatabaseContext databaseContext)
+        {
+            var settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
+            var statusesSetting = settingsManager.GetSetting<string>("NOT_CHECK_PROMO_STATUS_LIST", "Draft,Cancelled,Deleted,Closed");
+            var notCheckPromoStatuses = statusesSetting.Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+
+            var promoes = databaseContext.Set<Promo>()
+            .Where(x => !x.Disabled)
+            .Select(x => new PromoSimpleTradeInvestment
+            {
+                PromoStatusName = x.PromoStatus.Name,
+                StartDate = x.StartDate,
+                EndDate = x.EndDate,
+                ClientTreeId = x.ClientTree.Id,
+                BrandTechId = x.BrandTechId,
+                Number = x.Number
+            })
+            .ToList()
+            .Where(x => !notCheckPromoStatuses.Contains(x.PromoStatusName));
+
+            return promoes;
+        }
+
+        private IEnumerable<PromoSimpleTradeInvestment> GetInvalidPromoesByTradeInvestmentCurrentAndUp( 
+            TradeInvestment model, IEnumerable<TradeInvestment> models, IEnumerable<PromoSimpleTradeInvestment> promoes, IEnumerable<ClientTree> clientTrees, 
+            IEnumerable<PromoSimpleTradeInvestment> invalidPromoes = null, PromoSimpleTradeInvestment checkedPromo = null, Guid? newBrandTechId = null)
+        {
+            invalidPromoes = invalidPromoes ?? new List<PromoSimpleTradeInvestment>();
+
+            var currentClientTree = new ClientTree { parentId = model.ClientTree.ObjectId };
+            while (currentClientTree != null && currentClientTree.Type != "root")
+            {
+                currentClientTree = clientTrees.FirstOrDefault(x => x.ObjectId == currentClientTree.parentId);
+                if (currentClientTree != null)
+                {
+                    var modelsForCurrentClientTree = models.Where(x => x.ClientTreeId == currentClientTree.Id);
+                    var modelsForCurrentClientTreeAndBrandTech = modelsForCurrentClientTree.Where(y => y.BrandTechId == null || y.BrandTechId == newBrandTechId || y.BrandTechId == model.BrandTechId);
+                    var modelsForCurrentClientTreeExceptBrandTech = modelsForCurrentClientTree.Except(modelsForCurrentClientTreeAndBrandTech);
+
+                    if (modelsForCurrentClientTreeExceptBrandTech.Any())
+                    {
+                        var promoesForCurrentClientTree = promoes.Where(x => x.ClientTreeId == currentClientTree.Id);
+                        if (newBrandTechId != null && model.BrandTechId != null)
+                        {
+                            promoesForCurrentClientTree = promoesForCurrentClientTree.Where(y => y.BrandTechId == null || y.BrandTechId == newBrandTechId || y.BrandTechId == model.BrandTechId);
+                        }
+
+                        if (checkedPromo != null)
+                        {
+                            List<PromoSimpleTradeInvestment> checkedPromoList = new List<PromoSimpleTradeInvestment>() { checkedPromo };
+                            promoesForCurrentClientTree = promoesForCurrentClientTree.Except(checkedPromoList);
+                        }
+
+                        foreach (var modelForCurrentClientTree in modelsForCurrentClientTreeAndBrandTech)
+                        {
+                            var invalidPromoesForCurrentClientTree = promoesForCurrentClientTree.Concat(invalidPromoes)
+                                .Where(x => !(x.StartDate >= modelForCurrentClientTree.StartDate && x.StartDate <= modelForCurrentClientTree.EndDate && 
+                                (modelForCurrentClientTree.BrandTechId == null || x.BrandTechId == modelForCurrentClientTree.BrandTechId) && !modelForCurrentClientTree.Disabled));
+
+                            invalidPromoes = invalidPromoesForCurrentClientTree.Where(x => !modelsForCurrentClientTreeExceptBrandTech.Any(y => y.StartDate <= x.StartDate && 
+                                y.EndDate >= x.StartDate && (y.BrandTechId == null || x.BrandTechId == y.BrandTechId) && !y.Disabled)).ToList();
+                        }
+                    }
+                }
+
+                if (!invalidPromoes.Any())
+                {
+                    break;
+                }
+            }
+
+            return invalidPromoes;
+        }
+
+        private IEnumerable<PromoSimpleTradeInvestment> GetInvalidPromoesByTradeInvestment( 
+            TradeInvestment model, IEnumerable<TradeInvestment> models, IEnumerable<PromoSimpleTradeInvestment> promoes, IEnumerable<ClientTree> clientTrees, Guid? newBrandTechId = null)
+        {
+            var invalidPromoes = new List<PromoSimpleTradeInvestment>();
+
+            var currentClientTree = clientTrees.FirstOrDefault(x => x.Id == model.ClientTreeId);
+            if (currentClientTree != null)
+            {
+                var stack = new Stack<ClientTree>(new List<ClientTree> { currentClientTree });
+                while (stack.Any())
+                {
+                    currentClientTree = stack.Pop();
+                    var tempInvalidPromoes = new List<PromoSimpleTradeInvestment>();
+
+                    var modelsForCurrentClientTree = models.Where(x => x.ClientTreeId == currentClientTree.Id);
+
+                    var currentPromoes = promoes.Where(x => x.ClientTreeId == currentClientTree.Id);
+                    if (newBrandTechId != null && model.BrandTechId != null)
+                    {
+                        currentPromoes = currentPromoes.Where(y => y.BrandTechId == null || y.BrandTechId == newBrandTechId || y.BrandTechId == model.BrandTechId);
+                    }
+
+                    foreach (var currentPromo in currentPromoes)
+                    {
+                        var modelsForCurrentPromo = modelsForCurrentClientTree.Where(x => (x.BrandTechId == null || x.BrandTechId == currentPromo.BrandTechId) &&
+                            x.StartDate <= currentPromo.StartDate && x.EndDate >= currentPromo.StartDate && !x.Disabled);
+
+                        if (modelsForCurrentPromo.Any())
+                        {
+                            foreach (var modelForCurrentPromo in modelsForCurrentPromo)
+                            {
+                                invalidPromoes.AddRange(this.GetInvalidPromoesByTradeInvestmentCurrentAndUp(modelForCurrentPromo, models, promoes, clientTrees, null, currentPromo, newBrandTechId));
+                            }
+                        }
+                        else
+                        {
+                            tempInvalidPromoes.Add(currentPromo);
+                        }
+                    }
+
+                    if (tempInvalidPromoes.Any())
+                    {
+                        var fakeModel = new TradeInvestment { ClientTree = new ClientTree { ObjectId = currentClientTree.ObjectId }, BrandTechId = model.BrandTechId };
+                        invalidPromoes.AddRange(this.GetInvalidPromoesByTradeInvestmentCurrentAndUp(fakeModel, models, promoes, clientTrees, tempInvalidPromoes, null, newBrandTechId));
+                    }
+
+                    var currentClientTreeChildren = clientTrees.Where(x => x.parentId == currentClientTree.ObjectId);
+                    foreach (var currentClientTreeChild in currentClientTreeChildren)
+                    {
+                        stack.Push(currentClientTreeChild);
+                    }
+                }
+            }
+
+            return invalidPromoes.Distinct();
+        }
+
+        public class PromoSimpleTradeInvestment
+        {
+            public int? Number { get; set; }
+            public DateTimeOffset? StartDate { get; set; }
+            public DateTimeOffset? EndDate { get; set; }
+            public int? ClientTreeId { get; set; }
+            public int? ClientTreeObjectId { get; set; }
+            public Guid? BrandTechId { get; set; }
+            public string BrandTechName { get; set; }
+            public string PromoStatusName { get; set; }
         }
     }
 }

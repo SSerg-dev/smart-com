@@ -55,15 +55,33 @@ namespace Module.Persist.TPM.PromoStateControl
                 {
                     // Go to: FinishedState
 
-                    if (promoModel.DispatchesEnd <= DateTimeOffset.Now)
+                    if (statusName == "Finished")
+                    {
+                        if (promoModel.DispatchesEnd <= DateTimeOffset.Now)
+                        {
+                            _stateContext.Model = promoModel;
+                            _stateContext.State = _stateContext._finishedState;
+
+                            return true;
+                        }
+                        else
+                        {
+                            message = "Error, Go To Finished Status From Started";
+                            _stateContext.Model = promoModel;
+
+                            return false;
+                        }
+                    }
+                    else if (statusName == "Cancelled")
                     {
                         _stateContext.Model = promoModel;
-                        _stateContext.State = _stateContext._finishedState;
+                        _stateContext.State = _stateContext._cancelledState;
 
                         return true;
                     }
                     else
                     {
+                        message = "Error, Go To Cancel Status From Started";
                         _stateContext.Model = promoModel;
 
                         return false;

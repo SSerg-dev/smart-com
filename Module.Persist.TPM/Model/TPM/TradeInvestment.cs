@@ -12,7 +12,7 @@ namespace Module.Persist.TPM.Model.TPM
     public class TradeInvestment : IEntity<Guid>, IDeactivatable
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public System.Guid Id {get; set;}
+        public System.Guid Id { get; set; } = Guid.NewGuid();
         public bool Disabled {get; set;}
         public DateTimeOffset? DeletedDate {get; set;}
 
@@ -36,5 +36,6 @@ namespace Module.Persist.TPM.Model.TPM
 
         public bool MarcCalcROI { get; set; }
         public bool MarcCalcBudgets { get; set; }
+        public int Year { get; set; }
     }
 }

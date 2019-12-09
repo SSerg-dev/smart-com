@@ -73,7 +73,7 @@ namespace Module.Persist.TPM.PromoStateControl
                             {
                                 if (noNego.ProductTree.ObjectId == productHierarchyArr[i])
                                 {
-                                    if (noNego.Mechanic == model.MarsMechanic)
+                                    if (noNego.Mechanic != null && model.MarsMechanic != null && noNego.Mechanic.SystemName == model.MarsMechanic.SystemName)
                                     {
                                         if (noNego.Discount >= model.MarsMechanicDiscount)
                                         {

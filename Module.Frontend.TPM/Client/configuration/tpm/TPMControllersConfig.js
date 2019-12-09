@@ -102,7 +102,16 @@
 
     'tpm.promosupport.PromoSupport',
     'tpm.promosupport.DeletedPromoSupport',
-    'tpm.promosupport.HistoricalPromoSupport',
+	'tpm.promosupport.HistoricalPromoSupport',
+
+	'tpm.nonpromosupport.NonPromoSupport',
+	'tpm.nonpromosupport.DeletedNonPromoSupport',
+	'tpm.nonpromosupport.HistoricalNonPromoSupport',
+	'tpm.nonpromosupport.NonPromoSupportBrandTechChoose',
+
+	'tpm.nonpromoequipment.NonPromoEquipment',
+	'tpm.nonpromoequipment.DeletedNonPromoEquipment',
+	'tpm.nonpromoequipment.HistoricalNonPromoEquipment',
 
     'tpm.costproduction.CostProduction',
     'tpm.costproduction.DeletedCostProduction',
@@ -115,6 +124,7 @@
     'tpm.sale.HistoricalSale',
 
     'tpm.schedule.SchedulerViewController',
+    'tpm.schedule.ClientPromoTypeFilter',
 
     'tpm.demand.Demand',
     'tpm.demand.DeletedDemand',
@@ -237,6 +247,10 @@
 
     //Actual LSV
     'tpm.actualLSV.ActualLSV',
+
+    'tpm.promotypes.PromoTypes',
+    'tpm.promotypes.DeletedPromoTypes',
+    'tpm.promotypes.HistoricalPromoTypes',
 
     'tpm.inoutselectionproductwindow.InOutSelectionProductWindow'
 ]);

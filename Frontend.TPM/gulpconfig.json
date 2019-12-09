@@ -29,8 +29,8 @@
     "../Frontend.TPM/Content/core/style.css",
     "../Frontend.TPM/Content/core/jquery.jscrollpane.css",
     "../Module.Frontend.TPM/Content/sch-all-debug.css",
-    "../Module.Frontend.TPM/Content/custom-color-scheme.css"
-
+    "../Module.Frontend.TPM/Content/custom-color-scheme.css",
+    "../Module.Frontend.TPM/Content/custom-color-scheme-scheduler.css"
   ],
   "resourceFiles": [
     "Scripts/jquery-3.0.0.min.js",

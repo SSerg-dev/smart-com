@@ -10,6 +10,7 @@ using Looper.Parameters;
 using Module.Persist.TPM.Model.Import;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
+using Newtonsoft.Json;
 using Persist;
 using Persist.Model;
 using System;
@@ -315,8 +316,44 @@ namespace Module.Frontend.TPM.Controllers
 
         }
 
+		[HttpPost]
+		[ClaimsAuthorize]
+		[EnableQuery(MaxNodeCount = int.MaxValue)]
+		public IHttpActionResult GetBrandTechById (ODataActionParameters data)
+		{
+			try
+			{
+				BrandTech brandTech = null;
+				var ids = data["id"] as IEnumerable<string>;
+				var id = ids.FirstOrDefault();
+				if (id != null)
+				{
+					Guid brandTechId = Guid.Empty;
+					bool idGuid = Guid.TryParse(id, out brandTechId);
 
-        private ExceptionResult GetErorrRequest(Exception e)
+					if (idGuid)
+					{
+						brandTech = Context.Set<BrandTech>().Where(x => x.Id == brandTechId).FirstOrDefault();
+					}
+				}
+
+				if (brandTech != null)
+				{
+					return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, data = JsonConvert.SerializeObject(brandTech) }));
+				}
+				else
+				{
+					return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, data = "BrandTech not found." }));
+				}
+			}
+			catch (Exception e)
+			{
+				return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, data = "BrandTech not found." }));
+			}
+			
+		}
+
+		private ExceptionResult GetErorrRequest(Exception e)
         {
             // обработка при создании дублирующей записи
             SqlException exc = e.GetBaseException() as SqlException;

@@ -57,11 +57,20 @@ namespace Module.Persist.TPM.Utils {
         public void Export(List<Promo> promoes, IEnumerable<int> clientIDs, string filePath, DatabaseContext context) {
             IEnumerable<Promo> filteredPromoes = promoes.Where(p => !String.IsNullOrEmpty(p.BaseClientTreeIds) && p.StartDate.HasValue && p.EndDate.HasValue);
             List<Promo> promoDTOs = new List<Promo>();
+            Promo promoToAdd;
+
+            PromoTypes otherPromoType = new PromoTypes()
+            {
+                SystemName = "Other",
+                Name = "Other Promo"
+            };
+
             foreach (Promo promo in filteredPromoes) {
                 string[] clientsIds = promo.BaseClientTreeIds.Split('|');
                 if (clientsIds.Length == 1) {
                     if (clientIDs.Contains(Int32.Parse(clientsIds[0]))) {
-                        promoDTOs.Add(new Promo() {
+                        promoToAdd = new Promo()
+                        {
                             BaseClientTreeIds = clientsIds[0],
                             StartDate = promo.StartDate,
                             EndDate = promo.EndDate,
@@ -70,13 +79,16 @@ namespace Module.Persist.TPM.Utils {
                             Color = promo.Color,
                             Name = promo.Name,
                             InOut = promo.InOut
-                        });
+                        };
+                        promoToAdd.PromoTypes = SetSchedulePromoTypeName(otherPromoType, promo.PromoTypes);
+                        promoDTOs.Add(promoToAdd);
                     }
                 } else {
                     // Промо для нескольких клиентов разбиваем, создаём модель Promo для каждого, добавляем результат в общий список
                     foreach (string id in clientsIds) {
                         if (clientIDs.Contains(Int32.Parse(id))) {
-                            promoDTOs.Add(new Promo() {
+                            promoToAdd = new Promo()
+                            {
                                 BaseClientTreeIds = id,
                                 StartDate = promo.StartDate,
                                 EndDate = promo.EndDate,
@@ -84,14 +96,18 @@ namespace Module.Persist.TPM.Utils {
                                 ColorId = promo.ColorId,
                                 Color = promo.Color,
                                 Name = promo.Name,
-                                InOut = promo.InOut
-                            });
+                                InOut = promo.InOut,
+                            };
+                            promoToAdd.PromoTypes = SetSchedulePromoTypeName(otherPromoType, promo.PromoTypes);
+                            promoDTOs.Add(promoToAdd);
                         }
                     }
                 }
-            }
-            // сгруппированный по клиентам список промо
-            var promoesByClients = promoDTOs.OrderBy(x => x.BaseClientTreeIds).GroupBy(p => new { p.BaseClientTreeIds, p.InOut });
+            };
+
+            SchedulerTypeComparer comparer = new SchedulerTypeComparer();
+        // сгруппированный по клиентам список промо
+        var promoesByClients = promoDTOs.OrderBy(x=> x.PromoTypes.Name, comparer).OrderBy(x => x.BaseClientTreeIds).GroupBy(p => new { p.BaseClientTreeIds, p.PromoTypes.Name });
 
             DateTime dt = DateTime.Now;
             // Получаем словарь клиентов
@@ -128,8 +144,8 @@ namespace Module.Persist.TPM.Utils {
                         ICellStyle verticalStyle = GetCellStyle(ref wb);
                         verticalStyle.Rotation = 90;
                         verticalStyle.WrapText = true;
-                        string InOutMark = clientPromo.Key.InOut.HasValue && clientPromo.Key.InOut.Value ? "InOut Promo" : "Regular promo";
-                        clientCell.SetCellValue(new XSSFRichTextString(String.Format("{0} {1}", client.Name, InOutMark)));
+                        string TypeName = clientPromo.Key.Name;
+                        clientCell.SetCellValue(new XSSFRichTextString(String.Format("{0} {1}", client.Name, TypeName)));
                         clientCell.Row.Height = (short) -1;
                         if (lastRow - curRow > 1) {
                             CellRangeAddress range = new CellRangeAddress(curRow, lastRow - 1, 0, 0);
@@ -392,5 +408,41 @@ namespace Module.Persist.TPM.Utils {
             RegionUtil.SetBorderRight(borderSize, range, sheet, wb);
             RegionUtil.SetBorderBottom(borderSize, range, sheet, wb);
         }
+
+        private PromoTypes SetSchedulePromoTypeName(PromoTypes otherPromoType, PromoTypes processingPromoType)
+        {
+            if (processingPromoType.SystemName != "Regular" && processingPromoType.SystemName != "InOut")
+            {
+                return otherPromoType;
+            }
+            return processingPromoType;
+        }
     }
+
+    //Сортировка типов в правильном порядке
+    class SchedulerTypeComparer : IComparer<string>
+    {
+        public int Compare(string first, string second)
+        {
+            if (first.StartsWith("R") && !second.StartsWith("R"))
+            {
+                return -1;
+            }
+            else if (first.StartsWith("O") && !second.StartsWith("O"))
+            {
+                return 1;
+            }
+            if (!first.StartsWith("R") && second.StartsWith("R"))
+            {
+                return 1;
+            }
+            else if (!first.StartsWith("O") && second.StartsWith("O"))
+            {
+                return -1;
+            }
+            else
+                return first.CompareTo(second);
+        }
+    }
+
 }

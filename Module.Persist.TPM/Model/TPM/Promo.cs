@@ -38,6 +38,7 @@ namespace Module.Persist.TPM.Model.TPM
         public Guid? PromoStatusId { get; set; }
         public Guid? MarsMechanicId { get; set; }
         public Guid? MarsMechanicTypeId { get; set; }
+        public Guid? PromoTypesId { get; set; }
         public Guid? PlanInstoreMechanicId { get; set; }
         public Guid? PlanInstoreMechanicTypeId { get; set; }
         public Guid? ColorId { get; set; }
@@ -76,9 +77,9 @@ namespace Module.Persist.TPM.Model.TPM
         public string InvoiceNumber { get; set; }
         public string DocumentNumber { get; set; }
 
-        [StringLength(20)]
+        [StringLength(255)]
         public string Mechanic { get; set; }
-        [StringLength(20)]
+        [StringLength(255)]
         public string MechanicIA { get; set; }
 
         //MarsDates
@@ -206,6 +207,8 @@ namespace Module.Persist.TPM.Model.TPM
         public virtual MechanicType MarsMechanicType { get; set; }
         [ForeignKey("PlanInstoreMechanicTypeId")]
         public virtual MechanicType PlanInstoreMechanicType { get; set; }
+        [ForeignKey("PromoTypesId")]
+        public virtual PromoTypes PromoTypes { get; set; }
         public virtual Color Color { get; set; }
         public virtual RejectReason RejectReason { get; set; }
         public virtual Event Event { get; set; }
@@ -319,6 +322,7 @@ namespace Module.Persist.TPM.Model.TPM
             CalendarPriority = promoToCopy.CalendarPriority;
             RegularExcludedProductIds = promoToCopy.RegularExcludedProductIds;
             IsGrowthAcceleration = promoToCopy.IsGrowthAcceleration;
+            PromoTypesId = promoToCopy.PromoTypesId;
         }
 
         public Promo() {}

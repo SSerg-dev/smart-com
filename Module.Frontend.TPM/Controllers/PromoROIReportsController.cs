@@ -172,7 +172,8 @@ namespace Module.Frontend.TPM.Controllers
                 ActualPromoIncrementalEarnings = x.ActualPromoIncrementalEarnings,
                 ActualPromoNetIncrementalEarnings = x.ActualPromoNetIncrementalEarnings,
                 ActualPromoROIPercent = x.ActualPromoROIPercent,
-                ActualPromoNetROIPercent = x.ActualPromoNetROIPercent
+                ActualPromoNetROIPercent = x.ActualPromoNetROIPercent,
+                PromoTypesName = x.PromoTypes.Name
             });
 
 			IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();

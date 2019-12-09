@@ -20,6 +20,8 @@ namespace Module.Host.TPM.Handlers.DataFlow
         public AssortmentMatrixDataFlowFilter AssortmentMatrixDataFlowFilter { get; }
         public PromoProductsCorrectionDataFlowFilter PromoProductsCorrectionDataFlowFilter { get; }
         public BaseLineDataFlowFilter BaseLineDataFlowFilter { get; }
+        public COGSDataFlowFilter COGSDataFlowFilter { get; }
+        public TradeInvestmentDataFlowFilter TradeInvestmentDataFlowFilter { get; }
 
         public DataFlowFilterCollection(DataFlowModuleCollection dataFlowModuleCollection)
         {
@@ -33,6 +35,8 @@ namespace Module.Host.TPM.Handlers.DataFlow
             this.AssortmentMatrixDataFlowFilter = new AssortmentMatrixDataFlowFilter(changesIncidents, dataFlowModuleCollection);
             this.PromoProductsCorrectionDataFlowFilter = new PromoProductsCorrectionDataFlowFilter(changesIncidents, dataFlowModuleCollection);
             this.BaseLineDataFlowFilter = new BaseLineDataFlowFilter(changesIncidents, dataFlowModuleCollection);
+            this.COGSDataFlowFilter = new COGSDataFlowFilter(changesIncidents, dataFlowModuleCollection);
+            this.TradeInvestmentDataFlowFilter = new TradeInvestmentDataFlowFilter(changesIncidents, dataFlowModuleCollection);
         }
     }
 }

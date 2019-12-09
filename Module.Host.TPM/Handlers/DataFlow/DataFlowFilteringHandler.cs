@@ -183,15 +183,15 @@ namespace Module.Host.TPM.Handlers.DataFlow
                     }
                 });
 
-                // --- PromoProductsCorrection ---
+                // --- COGS ---
 
-                handlerLogger.Write(true, $"{nameof(PromoProductsCorrectionDataFlowFilter)}: Amount of promoes to check: { promoesForRecalculatingForFilters.Count() }. " +
-                    $"Amount of {nameof(PromoProductsCorrection)} models: { dataFlowFilterCollection.PromoProductsCorrectionDataFlowFilter.ChangedModels.Count() }", "Message");
+                handlerLogger.Write(true, $"{nameof(COGSDataFlowFilter)}: Amount of promoes to check: { promoesForRecalculatingForFilters.Count() }. " +
+                    $"Amount of {nameof(COGS)} models: { dataFlowFilterCollection.COGSDataFlowFilter.ChangedModels.Count() }", "Message");
 
-                Parallel.ForEach(dataFlowFilterCollection.PromoProductsCorrectionDataFlowFilter.ChangedModels, 
-                    new ParallelOptions { MaxDegreeOfParallelism = MaxDegreeOfParallelism }, promoProductsCorrection =>
+                Parallel.ForEach(dataFlowFilterCollection.COGSDataFlowFilter.ChangedModels, 
+                    new ParallelOptions { MaxDegreeOfParallelism = MaxDegreeOfParallelism }, assortmentMatrix =>
                 {
-                    var applyResult = dataFlowFilterCollection.PromoProductsCorrectionDataFlowFilter.Apply(promoProductsCorrection, promoesForRecalculatingForFilters.Values);
+                    var applyResult = dataFlowFilterCollection.COGSDataFlowFilter.Apply(assortmentMatrix, promoesForRecalculatingForFilters.Values);
                     if (applyResult.Item1.Count() > 0)
                     {
                         lock (syncLock)
@@ -207,6 +207,56 @@ namespace Module.Host.TPM.Handlers.DataFlow
                         }
                     }
                 });
+
+                // --- TradeInvestment ---
+
+                handlerLogger.Write(true, $"{nameof(TradeInvestmentDataFlowFilter)}: Amount of promoes to check: { promoesForRecalculatingForFilters.Count() }. " +
+                    $"Amount of {nameof(TradeInvestment)} models: { dataFlowFilterCollection.TradeInvestmentDataFlowFilter.ChangedModels.Count() }", "Message");
+
+                Parallel.ForEach(dataFlowFilterCollection.TradeInvestmentDataFlowFilter.ChangedModels, 
+                    new ParallelOptions { MaxDegreeOfParallelism = MaxDegreeOfParallelism }, assortmentMatrix =>
+                {
+                    var applyResult = dataFlowFilterCollection.TradeInvestmentDataFlowFilter.Apply(assortmentMatrix, promoesForRecalculatingForFilters.Values);
+                    if (applyResult.Item1.Count() > 0)
+                    {
+                        lock (syncLock)
+                        {
+                            promoesForRecalculating.AddRange(applyResult.Item1);
+                            handlerLogger.Write(true, $"Promo numbers {string.Join(", ", applyResult.Item1.Select(x => x.Number))} were filtered by {applyResult.Item2}", "Message");
+                        }
+
+                        var promoDataFlowSimpleModel = new PromoDataFlowModule.PromoDataFlowSimpleModel();
+                        foreach (var promoForRemoving in applyResult.Item1)
+                        {
+                            promoesForRecalculatingForFilters.TryRemove(promoForRemoving.Id, out promoDataFlowSimpleModel);
+                        }
+                    }
+                });
+
+                // --- PromoProductsCorrection ---
+
+                handlerLogger.Write(true, $"{nameof(PromoProductsCorrectionDataFlowFilter)}: Amount of promoes to check: { promoesForRecalculatingForFilters.Count() }. " +
+                    $"Amount of {nameof(PromoProductsCorrection)} models: { dataFlowFilterCollection.PromoProductsCorrectionDataFlowFilter.ChangedModels.Count() }", "Message");
+
+                Parallel.ForEach(dataFlowFilterCollection.PromoProductsCorrectionDataFlowFilter.ChangedModels,
+                    new ParallelOptions { MaxDegreeOfParallelism = MaxDegreeOfParallelism }, promoProductsCorrection =>
+                    {
+                        var applyResult = dataFlowFilterCollection.PromoProductsCorrectionDataFlowFilter.Apply(promoProductsCorrection, promoesForRecalculatingForFilters.Values);
+                        if (applyResult.Item1.Count() > 0)
+                        {
+                            lock (syncLock)
+                            {
+                                promoesForRecalculating.AddRange(applyResult.Item1);
+                                handlerLogger.Write(true, $"Promo numbers {string.Join(", ", applyResult.Item1.Select(x => x.Number))} were filtered by {applyResult.Item2}", "Message");
+                            }
+
+                            var promoDataFlowSimpleModel = new PromoDataFlowModule.PromoDataFlowSimpleModel();
+                            foreach (var promoForRemoving in applyResult.Item1)
+                            {
+                                promoesForRecalculatingForFilters.TryRemove(promoForRemoving.Id, out promoDataFlowSimpleModel);
+                            }
+                        }
+                    });
 
                 // --- BaseLine ---
 

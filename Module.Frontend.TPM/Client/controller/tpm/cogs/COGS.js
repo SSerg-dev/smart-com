@@ -73,7 +73,7 @@ Ext.define('App.controller.tpm.cogs.COGS', {
         });
     },
 
-    onHistoryButtonClick: function (button) {
+     onHistoryButtonClick: function (button) {
         var grid = this.getGridByButton(button),
             selModel = grid.getSelectionModel();
 
@@ -87,7 +87,7 @@ Ext.define('App.controller.tpm.cogs.COGS', {
 
             var store = baseReviewWindow.down('grid').getStore();
             var proxy = store.getProxy();
-            proxy.extraParams.id = this.getRecordId(selModel.getSelection()[0]);
+            proxy.extraParams.Id = this.getRecordId(selModel.getSelection()[0]);
 
             store.setFixedFilter('HistoricalObjectId', {
                 property: '_ObjectId',

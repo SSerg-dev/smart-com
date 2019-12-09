@@ -22,6 +22,12 @@
         //roles: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager', 'SuperReader'],
         widget: 'associatedpromosupport',
     }, {
+        text: l10n.ns('tpm', 'mainmenu').value('NonPromoTICosts'),
+        tooltip: l10n.ns('tpm', 'mainmenu').value('NonPromoSupport'),
+        glyph: 0xf1b3,
+        //roles: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager', 'SuperReader'],
+        widget: 'associatednonpromosupport',
+    }, {
         text: l10n.ns('tpm', 'mainmenu').value('CostProduction'),
         tooltip: l10n.ns('tpm', 'mainmenu').value('CostProduction'),
         glyph: 0xf1b3,
@@ -169,6 +175,12 @@
         glyph: 0xf218,
         widget: 'budget'
     }, {
+            text: l10n.ns('tpm', 'mainmenu').value('PromoTypes'),
+            tooltip: l10n.ns('tpm', 'mainmenu').value('BudgetItem'),
+            glyph: 0xf218,
+            widget: 'promotypes'
+        },
+        {
         text: l10n.ns('tpm', 'mainmenu').value('BudgetItemItem'),
         tooltip: l10n.ns('tpm', 'mainmenu').value('BudgetItemItem'),
         glyph: 0xf0be,
@@ -178,6 +190,11 @@
         tooltip: l10n.ns('tpm', 'mainmenu').value('BudgetSubItemItem'),
         glyph: 0xf0be,
         widget: 'associatedbudgetsubitemclienttree'
+    }, {
+        text: l10n.ns('tpm', 'mainmenu').value('NonPromoEquipment'),
+        tooltip: l10n.ns('tpm', 'mainmenu').value('NonPromoEquipment'),
+        glyph: 0xf0be,
+        widget: 'nonpromoequipment'
     }, {
         text: l10n.ns('tpm', 'mainmenu').value('MechanicItem'),
         tooltip: l10n.ns('tpm', 'mainmenu').value('MechanicItem'),

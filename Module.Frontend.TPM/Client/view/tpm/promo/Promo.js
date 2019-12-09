@@ -25,34 +25,45 @@
                 var isCollapsed = this.isCollapsed();
                 target.setWidth(isCollapsed ? target.maxWidth : target.minWidth);
                 if (isCollapsed) {
+
                     target.down('#createbutton').setUI('create-promo-btn-toolbar-expanded');
                     target.down('#createbutton').setText(l10n.ns('tpm', 'Schedule').value('CreateExpanded'));
-                    target.down('#createinoutbutton').setUI('create-promo-btn-toolbar-expanded');
-                    target.down('#createinoutbutton').setText(l10n.ns('tpm', 'Schedule').value('CreateInOutExpanded'));
+
 
                 } else {
+
                     target.down('#createbutton').setUI('create-promo-btn-toolbar');
                     target.down('#createbutton').setText(l10n.ns('tpm', 'Schedule').value('CreateCollapsed'));
-                    target.down('#createinoutbutton').setUI('create-promo-btn-toolbar');
-                    target.down('#createinoutbutton').setText(l10n.ns('tpm', 'Schedule').value('CreateInOutCollapsed'));
+
                 }
                 target.isExpanded = !target.isExpanded;
             },
-        }, {
-            itemId: 'createbutton',
-            action: 'Post',
-            glyph: 0xf0f3,
-            text: l10n.ns('tpm', 'Promo').value('CreateCollapsed'),
-            tooltip: l10n.ns('tpm', 'Promo').value('CreateCollapsed'),
-            ui: 'create-promo-btn'
-        }, {
-            itemId: 'createinoutbutton',
-            action: 'Post',
-            glyph: 0xf0f3,
-            text: l10n.ns('tpm', 'Promo').value('CreateInOutCollapsed'),
-            tooltip: l10n.ns('tpm', 'Promo').value('CreateInOutCollapsed'),
-            ui: 'create-promo-btn'
-        }, {
+        },
+
+            {
+                itemId: 'createbutton',
+                action: 'Post',
+                glyph: 0xf0f3,
+                text: l10n.ns('tpm', 'Promo').value('CreateCollapsed'),
+                tooltip: l10n.ns('tpm', 'Promo').value('CreateCollapsed'),
+                ui: 'create-promo-btn'
+            },
+       //     {
+       //     itemId: 'createbutton',
+       //     action: 'Post',
+       //     glyph: 0xf0f3,
+       //     text: l10n.ns('tpm', 'Promo').value('CreateCollapsed'),
+       //     tooltip: l10n.ns('tpm', 'Promo').value('CreateCollapsed'),
+       //     ui: 'create-promo-btn'
+       // }, {
+       //     itemId: 'createinoutbutton',
+       //     action: 'Post',
+       //     glyph: 0xf0f3,
+       //     text: l10n.ns('tpm', 'Promo').value('CreateInOutCollapsed'),
+       //     tooltip: l10n.ns('tpm', 'Promo').value('CreateInOutCollapsed'),
+       //     ui: 'create-promo-btn'
+            // },
+            {
             itemId: 'updatebutton',
             action: 'Patch',
             glyph: 0xf64f,
@@ -566,7 +577,32 @@
                     }
                 },
                 hidden: true,
-            }]
+                }, {
+                    text: l10n.ns('tpm', 'Promo').value('PromoTypesName'),
+                    dataIndex: 'PromoTypesName',
+                    width: 130,
+                    filter: {
+                        type: 'search',
+                        selectorWidget: 'promotypes',
+                        valueField: 'Name',
+                        store: {
+                            type: 'directorystore',
+                            model: 'App.model.tpm.promotypes.PromoTypes',
+                            extendedFilter: {
+                                xclass: 'App.ExtFilterContext',
+                                supportedModels: [{
+                                    xclass: 'App.ExtSelectionFilterModel',
+                                    model: 'App.model.tpm.promotypes.PromoTypes',
+                                    modelId: 'efselectionmodel'
+                                }, {
+                                    xclass: 'App.ExtTextFilterModel',
+                                    modelId: 'eftextmodel'
+                                }]
+                            }
+                        }
+                    },
+                    hidden: false
+                }, ]
         }
     }]
 });

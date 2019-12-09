@@ -38,15 +38,33 @@ namespace Module.Host.TPM.Handlers
         }
     }
 
-    class FullXLSXCOGSUpdateImporHandler : FullXLSXImportHandler {
-        protected override IAction GetAction(FullImportSettings settings, ExecuteData data) {
-            return new FullXLSXCOGSUpdateImportAction(settings);
+    class FullXLSXCOGSUpdateImporHandler : FullXLSXImportHandler
+    {
+        protected override void InitializeParameters(HandlerData handlerData, ExecuteData data)
+        {
+            var year = Int32.Parse(HandlerDataHelper.GetIncomingArgument<string>("CrossParam.Year", handlerData));
+            data.SetValue("Year", year);
+        }
+
+        protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
+        {
+            var year = data.GetValue<int>("Year");
+            return new FullXLSXCOGSUpdateImportAction(settings, year);
         }
     }
 
-    class FullXLSXTradeInvestmentUpdateImporHandler : FullXLSXImportHandler {
-        protected override IAction GetAction(FullImportSettings settings, ExecuteData data) {
-            return new FullXLSXTradeInvestmentUpdateImportAction (settings);
+    class FullXLSXTradeInvestmentUpdateImporHandler : FullXLSXImportHandler
+    {
+        protected override void InitializeParameters(HandlerData handlerData, ExecuteData data)
+        {
+            var year = Int32.Parse(HandlerDataHelper.GetIncomingArgument<string>("CrossParam.Year", handlerData));
+            data.SetValue("Year", year);
+        }
+
+        protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
+        {
+            var year = data.GetValue<int>("Year");
+            return new FullXLSXTradeInvestmentUpdateImportAction(settings, year);
         }
     }
 

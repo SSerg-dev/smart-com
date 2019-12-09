@@ -427,16 +427,20 @@
 });
 
 function onChangeFieldEvent(field) {
-    var editor = field.up('custompromosupporteditor'),
-        mainContainer = editor.down('#mainPromoSupportLeftToolbarContainer'),
-        selectedItem;
+	var nonPromoEditor = field.up('customnonpromosupporteditor');
+	if (!nonPromoEditor) {
+		var editor = field.up('custompromosupporteditor'),
+			mainContainer = editor.down('#mainPromoSupportLeftToolbarContainer'),
+			selectedItem;
 
-    mainContainer.items.items.forEach(function (item) {
-        if (item.hasCls('selected')) {
-            selectedItemId = item.id;
-            selectedItem = item;
-        }
-    });
+		mainContainer.items.items.forEach(function (item) {
+			if (item.hasCls('selected')) {
+				selectedItemId = item.id;
+				selectedItem = item;
+			}
+		});
+	}
+    
 
     //TODO: требуется доработка при изменении сохраненной записи
     //if (selectedItem) {

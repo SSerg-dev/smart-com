@@ -114,6 +114,8 @@
         { name: 'ActualPromoNetIncrementalEarnings', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'ActualPromoROIPercent', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'ActualPromoNetROIPercent', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'PromoTypesName', useNull: true, type: 'string', hidden: false, isDefault: false },
+
     ],
     proxy: {
         type: 'breeze',

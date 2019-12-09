@@ -72,6 +72,7 @@
 
         // Growth Acceleration
         { name: 'IsGrowthAcceleration', type: 'boolean', hidden: false, isDefault: true },
+        { name: 'PromoTypesName', useNull: true, type: 'string', hidden: false, isDefault: true },
     ],
     proxy: {
         type: 'breeze',

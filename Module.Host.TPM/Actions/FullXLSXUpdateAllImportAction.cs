@@ -76,7 +76,7 @@ namespace Module.Host.TPM.Actions {
             {
                 Mechanic typedRec = (Mechanic)rec;
                 if (String.IsNullOrEmpty(typedRec.Name)) { errors.Add("Name must have a value"); isSuitable = false; }
-                if (String.IsNullOrEmpty(typedRec.SystemName)) { errors.Add("System Name must have a value"); isSuitable = false; }
+               // if (String.IsNullOrEmpty(typedRec.SystemName)) { errors.Add("System Name must have a value"); isSuitable = false; }
             }
 
             if (TypeTo == typeof(MechanicType))
@@ -124,7 +124,24 @@ namespace Module.Host.TPM.Actions {
                 RetailType typedRec = (RetailType)rec;
                 if (String.IsNullOrEmpty(typedRec.Name)) { errors.Add("Name must have a value"); isSuitable = false; }
             }
-            return isSuitable;
+
+			if (TypeTo == typeof(NonPromoSupport))
+			{
+				NonPromoSupport typedRec = (NonPromoSupport)rec;
+				Guid emptyGuid = Guid.Empty;
+				if (typedRec.BrandTechId != null && typedRec.BrandTechId != emptyGuid) { errors.Add("BrandTechId must have a value"); isSuitable = false; }
+				if (typedRec.ClientTreeId != 0) { errors.Add("ClientTreeId must have a value"); isSuitable = false; }
+				if (typedRec.NonPromoEquipmentId != null && typedRec.NonPromoEquipmentId != emptyGuid) { errors.Add("NonPromoEquipmentId must have a value"); isSuitable = false; }
+				if (typedRec.StartDate == null || typedRec.EndDate == null) { errors.Add("StartDate and EndDate must have a value"); isSuitable = false; }
+			}
+
+			if (TypeTo == typeof(NonPromoEquipment))
+			{
+				NonPromoEquipment typedRec = (NonPromoEquipment)rec;
+				if (String.IsNullOrEmpty(typedRec.EquipmentType)) { errors.Add("EquipmentType must have a value"); isSuitable = false; }
+			}
+
+			return isSuitable;
         }
 
         protected override int InsertDataToDatabase(IEnumerable<IEntity<Guid>> records, DatabaseContext context)
@@ -225,7 +242,15 @@ namespace Module.Host.TPM.Actions {
             {
                 query = context.Set<Brand>().AsNoTracking();
             }
-            else if (TypeTo == typeof(Technology))
+			else if (TypeTo == typeof(NonPromoSupport))
+			{
+				query = context.Set<NonPromoSupport>().AsNoTracking();
+			}
+			else if (TypeTo == typeof(NonPromoEquipment))
+			{
+				query = context.Set<NonPromoEquipment>().AsNoTracking();
+			}
+			else if (TypeTo == typeof(Technology))
             {
                 query = context.Set<Technology>().AsNoTracking();
             }

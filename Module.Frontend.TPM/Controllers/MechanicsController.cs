@@ -183,7 +183,8 @@ namespace Module.Frontend.TPM.Controllers
         {
             IEnumerable<Column> columns = new List<Column>() {
                 new Column() { Order = 0, Field = "Name", Header = "Mechanic", Quoting = false },
-                new Column() { Order = 1, Field = "SystemName", Header = "System Name", Quoting = false }
+                new Column() { Order = 1, Field = "SystemName", Header = "System Name", Quoting = false } ,
+                new Column() { Order = 2, Field = "PromoTypes.Name", Header = "Promo Type Name", Quoting = false } 
             };
             return columns;
         }
@@ -254,7 +255,7 @@ namespace Module.Frontend.TPM.Controllers
                 HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportMechanic), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportMechanic).Name, data, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(Mechanic), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("UniqueFields", new List<String>() { "Name" }, data);
+                HandlerDataHelper.SaveIncomingArgument("UniqueFields", new List<String>() { "Name", "PromoTypesId" }, data); 
 
                 LoopHandler handler = new LoopHandler() {
                     Id = Guid.NewGuid(),

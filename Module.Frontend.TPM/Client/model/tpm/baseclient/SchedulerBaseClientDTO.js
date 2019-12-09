@@ -18,7 +18,7 @@
         { name: 'IsBeforeEnd', type: 'bool', hidden: false, useNull: true },
         { name: 'IsDaysEnd', type: 'bool', hidden: false, useNull: true },
         { name: 'DaysEnd', type: 'int', hidden: false, useNull: true },
-        { name: 'InOut', type: 'bool', hidden: false, useNull: true },
+        { name: 'TypeName', type: 'string', hidden: false, useNull: true },
         { name: 'InOutId', type: 'string', hidden: true}
     ],
     proxy: {
@@ -32,17 +32,32 @@
     },
     getEvents: function (store) {
         var key = (this.get('ObjectId') || this.internalId).toString(),
-            isClientInOut = this.get('InOut'),
-            results = [];
+            ClientType = (this.get('TypeName')).toLowerCase(),
+            results = [],
+            notOtherTypes = ["regular", "inout"];
         if (store) {
-            for (var index = 0, count = store.getCount(); index < count; index++) {
-                var record = store.getAt(index);
-                var bcids = record.get('BaseClientTreeIds');
-                var isPromoInOut = !!record.get('InOut');
-                if (bcids) {
-                    var bIDs = bcids.split('|');
-                    if (bIDs.indexOf(key) >= 0 && isClientInOut == isPromoInOut) {
-                        results.push(record);
+            if (notOtherTypes.includes(ClientType)) {
+                for (var index = 0, count = store.getCount(); index < count; index++) {
+                    var record = store.getAt(index);
+                    var bcids = record.get('BaseClientTreeIds');
+                    var PromoType = record.get('TypeName').toLowerCase();
+                    if (bcids) {
+                        var bIDs = bcids.split('|');
+                        if (bIDs.indexOf(key) >= 0 && ClientType == PromoType) {
+                            results.push(record);
+                        }
+                    }
+                }
+            } else {
+                for (var index = 0, count = store.getCount(); index < count; index++) {
+                    var record = store.getAt(index);
+                    var bcids = record.get('BaseClientTreeIds');
+                    var PromoType = record.get('TypeName').toLowerCase();
+                    if (bcids) {
+                        var bIDs = bcids.split('|');
+                        if (bIDs.indexOf(key) >= 0 && !notOtherTypes.includes(PromoType)) {
+                            results.push(record);
+                        }
                     }
                 }
             }

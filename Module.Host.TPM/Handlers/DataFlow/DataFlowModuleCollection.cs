@@ -24,6 +24,8 @@ namespace Model.Host.TPM.Handlers.DataFlow
         public IncrementalPromoDataFlowModule IncrementalPromoDataFlowModule { get; }
         public ChangesIncidentDataFlowModule ChangesIncidentDataFlowModule { get; }
         public PromoProductsCorrectionDataFlowModule PromoProductsCorrectionDataFlowModule { get; }
+        public COGSDataFlowModule COGSDataFlowModule { get; }
+        public TradeInvestmentDataFlowModule TradeInvestmentDataFlowModule { get; }
 
         public DataFlowModuleCollection(DatabaseContext databaseContext)
         {
@@ -39,6 +41,8 @@ namespace Model.Host.TPM.Handlers.DataFlow
             this.IncrementalPromoDataFlowModule = new IncrementalPromoDataFlowModule(databaseContext);
             this.ChangesIncidentDataFlowModule = new ChangesIncidentDataFlowModule(databaseContext);
             this.PromoProductsCorrectionDataFlowModule = new PromoProductsCorrectionDataFlowModule(databaseContext);
+            this.COGSDataFlowModule = new COGSDataFlowModule(databaseContext);
+            this.TradeInvestmentDataFlowModule = new TradeInvestmentDataFlowModule(databaseContext);
         }
     }
 }

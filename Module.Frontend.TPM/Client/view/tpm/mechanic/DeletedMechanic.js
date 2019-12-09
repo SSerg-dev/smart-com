@@ -54,7 +54,30 @@
 			}, 			{
 				text: l10n.ns('tpm', 'Mechanic').value('SystemName'),
 				dataIndex: 'SystemName'
-			}
+                }, {
+                                text: l10n.ns('tpm', 'Mechanic').value('PromoType.Name'),
+                    dataIndex: 'PromoTypeName',
+                    filter: {
+                        type: 'search',
+                        selectorWidget: 'promotypes',
+                        valueField: 'Name',
+                        store: {
+                            type: 'directorystore',
+                            model: 'App.model.tpm.promotypes.PromoTypes',
+                            extendedFilter: {
+                                xclass: 'App.ExtFilterContext',
+                                supportedModels: [{
+                                    xclass: 'App.ExtSelectionFilterModel',
+                                    model: 'App.model.tpm.promotypes.PromoTypes',
+                                    modelId: 'efselectionmodel'
+                                }, {
+                                    xclass: 'App.ExtTextFilterModel',
+                                    modelId: 'eftextmodel'
+                                }]
+                            }
+                        }
+                    }
+                }
             ]
         }
     }, {

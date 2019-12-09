@@ -54,15 +54,20 @@ namespace Module.Frontend.TPM.Controllers {
             foreach (ClientTree client in GetConstraintedQuery()) {
                 SchedulerClientTreeDTO clientDef = Mapper.Map<SchedulerClientTreeDTO>(client);
                 string stringId = clientDef.Id.ToString();
-                clientDef.InOut = false;
+                clientDef.TypeName = "Regular";
                 clientDef.Id = clientDef.Id + 10001; // если Id одинаковый в стор календаря попадает только одна, даже есть idProperty - другое поле (баг?)
                 clientDef.InOutId = String.Format("{0}-1", stringId);
-                SchedulerClientTreeDTO clientInOut = (SchedulerClientTreeDTO) clientDef.Clone();
-                clientInOut.InOut = true;
+                SchedulerClientTreeDTO clientInOut = (SchedulerClientTreeDTO)clientDef.Clone();
+                clientInOut.TypeName = "InOut";
                 clientInOut.Id = clientInOut.Id + 10002;
                 clientInOut.InOutId = String.Format("{0}-2", stringId);
+                SchedulerClientTreeDTO clientOtherType = (SchedulerClientTreeDTO)clientInOut.Clone();
+                clientOtherType.TypeName = "Other";
+                clientOtherType.Id = clientOtherType.Id + 10003;
+                clientOtherType.InOutId = String.Format("{0}-3", stringId);
                 result.Add(clientDef);
                 result.Add(clientInOut);
+                result.Add(clientOtherType);
             }
             return result.AsQueryable();
         }

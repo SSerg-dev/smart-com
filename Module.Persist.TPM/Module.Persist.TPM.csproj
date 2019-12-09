@@ -1470,6 +1470,90 @@
     <Compile Include="Migrations\201911281548201_EmptyMigration_RC1.Designer.cs">
       <DependentUpon>201911281548201_EmptyMigration_RC1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201911071125214_Empty_Mirgration_OtherTypesPromo.cs" />
+    <Compile Include="Migrations\201911071125214_Empty_Mirgration_OtherTypesPromo.Designer.cs">
+      <DependentUpon>201911071125214_Empty_Mirgration_OtherTypesPromo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911071127455_Add_Table_Promo_Types.cs" />
+    <Compile Include="Migrations\201911071127455_Add_Table_Promo_Types.Designer.cs">
+      <DependentUpon>201911071127455_Add_Table_Promo_Types.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911110731390_Add_PromoType_To_Mechanic.cs" />
+    <Compile Include="Migrations\201911110731390_Add_PromoType_To_Mechanic.Designer.cs">
+      <DependentUpon>201911110731390_Add_PromoType_To_Mechanic.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911121110201_Add_PromoTypes_To_Promo.cs" />
+    <Compile Include="Migrations\201911121110201_Add_PromoTypes_To_Promo.Designer.cs">
+      <DependentUpon>201911121110201_Add_PromoTypes_To_Promo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911130733260_Add_PromoTypes_Glypg.cs" />
+    <Compile Include="Migrations\201911130733260_Add_PromoTypes_Glypg.Designer.cs">
+      <DependentUpon>201911130733260_Add_PromoTypes_Glypg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911191137432_Add_PromoType_SystemNAme.cs" />
+    <Compile Include="Migrations\201911191137432_Add_PromoType_SystemNAme.Designer.cs">
+      <DependentUpon>201911191137432_Add_PromoType_SystemNAme.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911211338079_EmptyMigration11.cs" />
+    <Compile Include="Migrations\201911211338079_EmptyMigration11.Designer.cs">
+      <DependentUpon>201911211338079_EmptyMigration11.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911211505264_Empty_Migration_OtherTypesPromo.cs" />
+    <Compile Include="Migrations\201911211505264_Empty_Migration_OtherTypesPromo.Designer.cs">
+      <DependentUpon>201911211505264_Empty_Migration_OtherTypesPromo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911220934598_Release_01_To_OtherTypesPromo.cs" />
+    <Compile Include="Migrations\201911220934598_Release_01_To_OtherTypesPromo.Designer.cs">
+      <DependentUpon>201911220934598_Release_01_To_OtherTypesPromo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911220939400_Empty_Migration_OtherTypesPromo1.cs" />
+    <Compile Include="Migrations\201911220939400_Empty_Migration_OtherTypesPromo1.Designer.cs">
+      <DependentUpon>201911220939400_Empty_Migration_OtherTypesPromo1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911221514174_COGS_TI_Year_Remove_Attribute.cs" />
+    <Compile Include="Migrations\201911221514174_COGS_TI_Year_Remove_Attribute.Designer.cs">
+      <DependentUpon>201911221514174_COGS_TI_Year_Remove_Attribute.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201912021326315_EmptyMigrationOtherTypePromo.cs" />
+    <Compile Include="Migrations\201912021326315_EmptyMigrationOtherTypePromo.Designer.cs">
+      <DependentUpon>201912021326315_EmptyMigrationOtherTypePromo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911191424325_Add_NonPromoEquipment.cs" />
+    <Compile Include="Migrations\201911191424325_Add_NonPromoEquipment.Designer.cs">
+      <DependentUpon>201911191424325_Add_NonPromoEquipment.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911271114305_Add_NonPromoSupport.cs" />
+    <Compile Include="Migrations\201911271114305_Add_NonPromoSupport.Designer.cs">
+      <DependentUpon>201911271114305_Add_NonPromoSupport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201912031415396_NonPromo_DeleteUselessFields.cs" />
+    <Compile Include="Migrations\201912031415396_NonPromo_DeleteUselessFields.Designer.cs">
+      <DependentUpon>201912031415396_NonPromo_DeleteUselessFields.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201912031945346_EmptyMigration_OtherTypePromo.cs" />
+    <Compile Include="Migrations\201912031945346_EmptyMigration_OtherTypePromo.Designer.cs">
+      <DependentUpon>201912031945346_EmptyMigration_OtherTypePromo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201912040814266_Update_Mechanic_PromoType_PromoTypes.cs" />
+    <Compile Include="Migrations\201912040814266_Update_Mechanic_PromoType_PromoTypes.Designer.cs">
+      <DependentUpon>201912040814266_Update_Mechanic_PromoType_PromoTypes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201912051036260_ChangePromoMechanicLength.cs" />
+    <Compile Include="Migrations\201912051036260_ChangePromoMechanicLength.Designer.cs">
+      <DependentUpon>201912051036260_ChangePromoMechanicLength.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201912051154241_ChangePromoMechanicLength1.cs" />
+    <Compile Include="Migrations\201912051154241_ChangePromoMechanicLength1.Designer.cs">
+      <DependentUpon>201912051154241_ChangePromoMechanicLength1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201912051208198_ChangeMechanicLength.cs" />
+    <Compile Include="Migrations\201912051208198_ChangeMechanicLength.Designer.cs">
+      <DependentUpon>201912051208198_ChangeMechanicLength.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201912061242540_Add_Unique_Mechanic.cs" />
+    <Compile Include="Migrations\201912061242540_Add_Unique_Mechanic.Designer.cs">
+      <DependentUpon>201912061242540_Add_Unique_Mechanic.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\PromoProductsView.cs" />
     <Compile Include="Model\DTO\ClientTreeSharesView.cs" />
@@ -1481,14 +1565,15 @@
     <Compile Include="Model\DTO\PromoGridView.cs" />
     <Compile Include="Model\DTO\SchedulerClientTreeDTO.cs" />
     <Compile Include="Model\History\HistoricalAssortmentMatrix.cs" />
-    <Compile Include="Model\History\HistoricalBlockedPromo.cs" />
+    <Compile Include="Model\History\HistoricalBrand.cs" />
+    <Compile Include="Model\History\HistoricalNonPromoEquipment.cs" />
     <Compile Include="Model\History\HistoricalCostProduction.cs" />
     <Compile Include="Model\History\HistoricalIncrementalPromo.cs" />
     <Compile Include="Model\History\HistoricalPromoProduct.cs" />
     <Compile Include="Model\History\HistoricalAgeGroup.cs" />
     <Compile Include="Model\History\HistoricalBaseLine.cs" />
-    <Compile Include="Model\History\HistoricalBrand.cs" />
     <Compile Include="Model\History\HistoricalPromoProductsCorrection.cs" />
+    <Compile Include="Model\History\HistoricalBlockedPromo.cs" />
     <Compile Include="Model\History\HistoricalPromoProductTree.cs" />
     <Compile Include="Model\History\HistoricalBrandTech.cs" />
     <Compile Include="Model\History\HistoricalBudget.cs" />
@@ -1512,8 +1597,10 @@
     <Compile Include="Model\History\HistoricalPromo.cs" />
     <Compile Include="Model\History\HistoricalPromoDemand.cs" />
     <Compile Include="Model\History\HistoricalPromoSales.cs" />
+    <Compile Include="Model\History\HistoricalNonPromoSupport.cs" />
     <Compile Include="Model\History\HistoricalPromoSupport.cs" />
     <Compile Include="Model\History\HistoricalPromoSupportPromo.cs" />
+    <Compile Include="Model\History\HistoricalPromoTypes.cs" />
     <Compile Include="Model\History\HistoricalRejectReason.cs" />
     <Compile Include="Model\History\HistoricalPromoStatus.cs" />
     <Compile Include="Model\History\HistoricalRegion.cs" />
@@ -1529,6 +1616,7 @@
     <Compile Include="Model\History\HistoricalVariety.cs" />
     <Compile Include="Model\Import\BaseLineComparer.cs" />
     <Compile Include="Model\Import\ImportAssortmentMatrix.cs" />
+    <Compile Include="Model\Import\ImportNonPromoEquipment.cs" />
     <Compile Include="Model\Import\ImportIncrementalPromo.cs" />
     <Compile Include="Model\Import\ImportNoNego.cs" />
     <Compile Include="Model\Import\ImportMechanicType.cs" />
@@ -1564,6 +1652,7 @@
     <Compile Include="Model\TPM\ActualLsvModel.cs" />
     <Compile Include="Model\TPM\BlockedPromo.cs" />
     <Compile Include="Model\TPM\AssortmentMatrix.cs" />
+    <Compile Include="Model\TPM\NonPromoEquipment.cs" />
     <Compile Include="Model\TPM\BudgetSubItemClientTree.cs" />
     <Compile Include="Model\TPM\ChangesIncident.cs" />
     <Compile Include="Model\TPM\EventClientTree.cs" />
@@ -1587,7 +1676,9 @@
     <Compile Include="Model\DTO\ClientTreeHierarchyView.cs" />
     <Compile Include="Model\TPM\NoneNego.cs" />
     <Compile Include="Model\DTO\PromoROIReport.cs" />
+    <Compile Include="Model\TPM\NonPromoSupport.cs" />
     <Compile Include="Model\TPM\PromoProductsCorrection.cs" />
+    <Compile Include="Model\TPM\PromoTypes.cs" />
     <Compile Include="Model\TPM\PromoUpliftFailIncident.cs" />
     <Compile Include="Model\TPM\ProductChangeIncident.cs" />
     <Compile Include="Model\TPM\PromoProductTree.cs" />
@@ -1650,6 +1741,7 @@
     <Compile Include="PromoStateControl\UserRoles.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CalculatePromoParametersModule\PlanProductParametersCalculation.cs" />
+    <Content Include="SQLInitialize\20191204_1300_AlterPromoView_RemoveDisabled.sql" />
     <Content Include="SQLInitialize\20191208_1635_PromoListForRecalculation_Settings.sql" />
     <Content Include="SQLInitialize\20191208_0035_PromoListActualRecalculationHandler.sql" />
     <Content Include="SQLInitialize\20191208_0030_PromoListPlanRecalculationHandler.sql" />
@@ -1673,10 +1765,33 @@
     <Content Include="SQLInitialize\20191031_1824_Promo_Product_Correction_Statuses.sql" />
     <Content Include="SQLInitialize\20191101_1130_DeleteAP_GetProductInPromo.sql" />
     <Content Include="SQLInitialize\20191101_1546_DeletePromoProductCorrectionFixed_AP.sql" />
+    <Content Include="SQLInitialize\20191011_1007_Add_DeletedPromoSupport_AP.sql" />
+    <Content Include="SQLInitialize\20191107_1629_AddPromoTypes_AP.sql" />
+    <Content Include="SQLInitialize\20191107_1704_AddDeletedPromoTypes_AP.sql" />
+    <Content Include="SQLInitialize\20191107_1716_AddHistoricalPromoTypes_AP.sql" />
+    <Content Include="SQLInitialize\20191112_Add_PromoGridView_PromoType.sql" />
+    <Content Include="SQLInitialize\20191113_1224_Insert_Data_PromoTypes.sql" />
+    <Content Include="SQLInitialize\20191113_1232_Norm_PromoTypes_AP.sql" />
+    <Content Include="SQLInitialize\20191113_1602_Update_Promo_PromoTypes.sql" />
+    <Content Include="SQLInitialize\20191119_1100_Alter_PromoView_AddTypeGlyph.sql" />
+    <Content Include="SQLInitialize\20191114_1315_Alter_PromoView_AddTypeName.sql" />
+    <Content Include="SQLInitialize\20191119_1444_Add_SystemName_PromoTypes_Data.sql" />
+    <Content Include="SQLInitialize\20191202_1702_AlterPromoGridView_TypeName_GA.sql" />
+    <Content Include="SQLInitialize\20191202_1700_AlterPromoView_TypeName_GA.sql" />
+    <Content Include="SQLInitialize\20191119_1600_AlterPromoView_SystemName.sql" />
+    <Content Include="SQLInitialize\20191120_1551_Deleted_Historical_AP_PromoTypes.sql" />
+    <Content Include="SQLInitialize\20191122_1428_Mechanick_Data_Types_Promo.sql" />
+    <Content Include="SQLInitialize\20191203_1348_Update_Mechanick.sql" />
+    <Content Include="SQLInitialize\20191104_1000_Settings_PromoChangeProps_Update.sql" />
+    <Content Include="SQLInitialize\20191202_2330_BrandTeches_AP_GetBradTechById.sql" />
+    <Content Include="SQLInitialize\20191203_1730_NonPromoEquipment_AP.sql" />
+    <Content Include="SQLInitialize\20191203_1730_NonPromoSupport_AP.sql" />
+    <Content Include="SQLInitialize\20191203_2300_NonPromoSupport_Incremental_Trigger.sql" />
     <Content Include="Sql\20191004_1540_FillInOutProductIdsHandler.sql" />
     <Content Include="SQLInitialize\20190926_1600_HistoricalPromoSupport_AP.sql" />
     <Content Include="SQLInitialize\20191106_1700_PromoGridView.sql" />
     <Content Include="SQLInitialize\20191101_1801_PromoProductsCorrection_Drop_Trigger.sql" />
+    <Content Include="SQLInitialize\20191122_1400_COGS_TI_Year.sql" />
     <Compile Include="Utils\SimpleModels.cs" />
     <Content Include="SQLInitialize\20190904_1300_AddPromoStatusNameToPromoView.sql" />
     <Content Include="SQLInitialize\20190923_1806_Add_EventClientTree_AP.sql" />
@@ -2719,6 +2834,69 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201911281548201_EmptyMigration_RC1.resx">
       <DependentUpon>201911281548201_EmptyMigration_RC1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911071125214_Empty_Mirgration_OtherTypesPromo.resx">
+      <DependentUpon>201911071125214_Empty_Mirgration_OtherTypesPromo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911071127455_Add_Table_Promo_Types.resx">
+      <DependentUpon>201911071127455_Add_Table_Promo_Types.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911110731390_Add_PromoType_To_Mechanic.resx">
+      <DependentUpon>201911110731390_Add_PromoType_To_Mechanic.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911121110201_Add_PromoTypes_To_Promo.resx">
+      <DependentUpon>201911121110201_Add_PromoTypes_To_Promo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911130733260_Add_PromoTypes_Glypg.resx">
+      <DependentUpon>201911130733260_Add_PromoTypes_Glypg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911191137432_Add_PromoType_SystemNAme.resx">
+      <DependentUpon>201911191137432_Add_PromoType_SystemNAme.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911211338079_EmptyMigration11.resx">
+      <DependentUpon>201911211338079_EmptyMigration11.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911211505264_Empty_Migration_OtherTypesPromo.resx">
+      <DependentUpon>201911211505264_Empty_Migration_OtherTypesPromo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911220934598_Release_01_To_OtherTypesPromo.resx">
+      <DependentUpon>201911220934598_Release_01_To_OtherTypesPromo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911220939400_Empty_Migration_OtherTypesPromo1.resx">
+      <DependentUpon>201911220939400_Empty_Migration_OtherTypesPromo1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911221514174_COGS_TI_Year_Remove_Attribute.resx">
+      <DependentUpon>201911221514174_COGS_TI_Year_Remove_Attribute.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201912021326315_EmptyMigrationOtherTypePromo.resx">
+      <DependentUpon>201912021326315_EmptyMigrationOtherTypePromo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911191424325_Add_NonPromoEquipment.resx">
+      <DependentUpon>201911191424325_Add_NonPromoEquipment.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911271114305_Add_NonPromoSupport.resx">
+      <DependentUpon>201911271114305_Add_NonPromoSupport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201912031415396_NonPromo_DeleteUselessFields.resx">
+      <DependentUpon>201912031415396_NonPromo_DeleteUselessFields.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201912031945346_EmptyMigration_OtherTypePromo.resx">
+      <DependentUpon>201912031945346_EmptyMigration_OtherTypePromo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201912040814266_Update_Mechanic_PromoType_PromoTypes.resx">
+      <DependentUpon>201912040814266_Update_Mechanic_PromoType_PromoTypes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201912051036260_ChangePromoMechanicLength.resx">
+      <DependentUpon>201912051036260_ChangePromoMechanicLength.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201912051154241_ChangePromoMechanicLength1.resx">
+      <DependentUpon>201912051154241_ChangePromoMechanicLength1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201912051208198_ChangeMechanicLength.resx">
+      <DependentUpon>201912051208198_ChangeMechanicLength.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201912061242540_Add_Unique_Mechanic.resx">
+      <DependentUpon>201912061242540_Add_Unique_Mechanic.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

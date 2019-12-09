@@ -15,7 +15,8 @@ namespace Module.Persist.TPM {
         public void ConfigurateDBModel(DbModelBuilder modelBuilder) {
             modelBuilder.Entity<Category>();
             modelBuilder.Entity<Brand>();
-            modelBuilder.Entity<Segment>();
+			modelBuilder.Entity<NonPromoEquipment>();
+			modelBuilder.Entity<Segment>();
             modelBuilder.Entity<Technology>();
             modelBuilder.Entity<TechHighLevel>();
             modelBuilder.Entity<Program>();
@@ -61,7 +62,8 @@ namespace Module.Persist.TPM {
             modelBuilder.Entity<BudgetSubItem>();
             modelBuilder.Entity<PromoSupport>().HasMany(p => p.PromoSupportPromo)
                 .WithRequired(p => p.PromoSupport);
-            modelBuilder.Entity<PostPromoEffect>();
+			modelBuilder.Entity<NonPromoSupport>();
+			modelBuilder.Entity<PostPromoEffect>();
             modelBuilder.Entity<PromoSupportPromo>();
             modelBuilder.Entity<PromoProductTree>();
             modelBuilder.Entity<COGS>();
@@ -83,6 +85,7 @@ namespace Module.Persist.TPM {
 			modelBuilder.Entity<ClientTreeBrandTech>();
             modelBuilder.Entity<PromoProductsCorrection>();
             modelBuilder.Entity<PromoProductsView>().ToTable("PromoProductsView"); ;
+			modelBuilder.Entity<PromoTypes>();
 
             modelBuilder.Entity<Promo>().Ignore(n => n.ProductTreeObjectIds);
             modelBuilder.Entity<Promo>().Ignore(n => n.Calculating);
@@ -101,7 +104,13 @@ namespace Module.Persist.TPM {
             builder.Entity<Brand>().Collection.Action("ExportXLSX");
             builder.Entity<Brand>().Collection.Action("FullImportXLSX");
 
-            builder.EntitySet<Segment>("Segments");
+			builder.EntitySet<NonPromoEquipment>("NonPromoEquipments");
+			builder.EntitySet<NonPromoEquipment>("DeletedNonPromoEquipments");
+			builder.EntitySet<HistoricalNonPromoEquipment>("HistoricalNonPromoEquipments");
+			builder.Entity<NonPromoEquipment>().Collection.Action("ExportXLSX");
+			builder.Entity<NonPromoEquipment>().Collection.Action("FullImportXLSX");
+
+			builder.EntitySet<Segment>("Segments");
             builder.EntitySet<Segment>("DeletedSegments");
             builder.EntitySet<HistoricalSegment>("HistoricalSegments");
             builder.Entity<Segment>().Collection.Action("ExportXLSX");
@@ -137,19 +146,26 @@ namespace Module.Persist.TPM {
             builder.EntitySet<HistoricalFormat>("HistoricalFormats");
             builder.Entity<Format>().Collection.Action("ExportXLSX");
 
+            builder.EntitySet<PromoTypes>("PromoTypes");
+            builder.EntitySet<PromoTypes>("DeletedPromoTypes");
+            builder.EntitySet<HistoricalPromoTypes>("HistoricalPromoTypes");
+            builder.Entity<PromoTypes>().Collection.Action("ExportXLSX");
+
+
             builder.EntitySet<BrandTech>("BrandTeches");
             builder.EntitySet<BrandTech>("DeletedBrandTeches");
             builder.EntitySet<HistoricalBrandTech>("HistoricalBrandTeches");
             builder.EntitySet<BrandTech>("BrandTeches").HasRequiredBinding(e => e.Brand, "Brands");
-            builder.EntitySet<BrandTech>("BrandTeches").HasRequiredBinding(e => e.Technology, "Technologies");            
-            builder.EntitySet<BrandTech>("DeletedBrandTeches").HasRequiredBinding(e => e.Brand, "Brands");            
+            builder.EntitySet<BrandTech>("BrandTeches").HasRequiredBinding(e => e.Technology, "Technologies");                 
+            builder.EntitySet<BrandTech>("DeletedBrandTeches").HasRequiredBinding(e => e.Brand, "Brands");       
             builder.EntitySet<BrandTech>("DeletedBrandTeches").HasRequiredBinding(e => e.Technology, "Technologies");
             builder.Entity<BrandTech>().HasRequired(n => n.Brand, (n, b) => n.BrandId == b.Id);
             builder.Entity<BrandTech>().HasRequired(n => n.Technology, (n, t) => n.TechnologyId == t.Id);
             builder.Entity<BrandTech>().Collection.Action("ExportXLSX");
             builder.Entity<BrandTech>().Collection.Action("FullImportXLSX");
+			builder.Entity<BrandTech>().Collection.Action("GetBrandTechById").CollectionParameter<string>("id");
 
-            builder.EntitySet<Subrange>("Subranges");
+			builder.EntitySet<Subrange>("Subranges");
             builder.EntitySet<Subrange>("DeletedSubranges");
             builder.EntitySet<HistoricalSubrange>("HistoricalSubranges");
             builder.Entity<Subrange>().Collection.Action("ExportXLSX");
@@ -168,7 +184,11 @@ namespace Module.Persist.TPM {
             builder.EntitySet<Mechanic>("DeletedMechanics");
             builder.EntitySet<HistoricalMechanic>("HistoricalMechanics");
             builder.Entity<Mechanic>().Collection.Action("ExportXLSX");
-            builder.Entity<Mechanic>().Collection.Action("FullImportXLSX");
+            builder.Entity<Mechanic>().Collection.Action("FullImportXLSX"); 
+            builder.EntitySet<Mechanic>("Mechanics").HasRequiredBinding(e => e.PromoTypes, "PromoTypes");
+            builder.EntitySet<Mechanic>("DeletedMechanics").HasRequiredBinding(e => e.PromoTypes, "PromoTypes");
+             
+
 
             builder.EntitySet<MechanicType>("MechanicTypes");
             builder.EntitySet<MechanicType>("DeletedMechanicTypes");
@@ -283,6 +303,8 @@ namespace Module.Persist.TPM {
             builder.EntitySet<Promo>("DeletedPromoes").HasOptionalBinding(e => e.ActualInStoreMechanicType, "MechanicTypes");
             builder.EntitySet<Promo>("Promoes").HasOptionalBinding(e => e.ClientTree, "ClientTrees");
             builder.EntitySet<Promo>("DeletedPromoes").HasOptionalBinding(e => e.ClientTree, "ClientTrees");
+             builder.EntitySet<Promo>("Promoes").HasOptionalBinding(e => e.PromoTypes, "PromoTypes");
+            builder.EntitySet<Promo>("DeletedPromoes").HasOptionalBinding(e => e.PromoTypes, "PromoTypes");
             builder.Entity<Promo>().Collection.Action("ExportXLSX");
             builder.Entity<Promo>().Collection.Action("FullImportXLSX");
             builder.Entity<Promo>().Collection.Action("DeclinePromo");
@@ -498,14 +520,31 @@ namespace Module.Persist.TPM {
             builder.EntitySet<PromoSupport>("DeletedPromoSupports").HasOptionalBinding(e => e.ClientTree, "ClientTrees");
             builder.EntitySet<PromoSupport>("PromoSupports").HasOptionalBinding(e => e.BudgetSubItem, "BudgetSubItems");
             builder.EntitySet<PromoSupport>("DeletedPromoSupports").HasOptionalBinding(e => e.BudgetSubItem, "BudgetSubItems");
-            builder.Entity<PromoSupport>().Collection.Action("ExportXLSX");
+			builder.Entity<PromoSupport>().Collection.Action("ExportXLSX");
             builder.Entity<PromoSupport>().Collection.Action("GetPromoSupportGroup");
             builder.Entity<PromoSupport>().Collection.Action("UploadFile");
             builder.Entity<PromoSupport>().Collection.Action("DownloadFile");
             builder.Entity<PromoSupport>().Collection.Action("GetUserTimestamp");
             builder.EntitySet<PromoSupport>("PromoSupports").HasManyBinding<PromoSupportPromo>(e => e.PromoSupportPromo, "PromoSupportPromoes");
             builder.EntitySet<PromoSupport>("DeletedPromoSupports").HasManyBinding<PromoSupportPromo>(e => e.PromoSupportPromo, "PromoSupportPromoes");
-            builder.EntitySet<PostPromoEffect>("PostPromoEffects");
+
+			builder.EntitySet<NonPromoSupport>("NonPromoSupports");
+			builder.EntitySet<NonPromoSupport>("DeletedNonPromoSupports");
+			builder.EntitySet<HistoricalNonPromoSupport>("HistoricalNonPromoSupports");
+			builder.EntitySet<NonPromoSupport>("NonPromoSupports").HasOptionalBinding(e => e.ClientTree, "ClientTrees");
+			builder.EntitySet<NonPromoSupport>("DeletedNonPromoSupports").HasOptionalBinding(e => e.ClientTree, "ClientTrees");
+			builder.EntitySet<NonPromoSupport>("NonPromoSupports").HasOptionalBinding(e => e.NonPromoEquipment, "NonPromoEquipments");
+			builder.EntitySet<NonPromoSupport>("DeletedNonPromoSupports").HasOptionalBinding(e => e.NonPromoEquipment, "NonPromoEquipments");
+			builder.EntitySet<NonPromoSupport>("NonPromoSupports").HasOptionalBinding(e => e.BrandTech, "BrandTeches");
+			builder.EntitySet<NonPromoSupport>("DeletedNonPromoSupports").HasOptionalBinding(e => e.BrandTech, "BrandTeches");
+			builder.Entity<NonPromoSupport>().Collection.Action("ExportXLSX");
+			builder.Entity<NonPromoSupport>().Collection.Action("FullImportXLSX");
+			builder.Entity<NonPromoSupport>().Collection.Action("GetNonPromoSupportGroup");
+			builder.Entity<NonPromoSupport>().Collection.Action("UploadFile");
+			builder.Entity<NonPromoSupport>().Collection.Action("DownloadFile");
+			builder.Entity<NonPromoSupport>().Collection.Action("GetUserTimestamp");
+
+			builder.EntitySet<PostPromoEffect>("PostPromoEffects");
             builder.EntitySet<PostPromoEffect>("DeletedPostPromoEffects");
             builder.EntitySet<HistoricalPostPromoEffect>("HistoricalPostPromoEffects");            
             builder.EntitySet<PostPromoEffect>("PostPromoEffects").HasRequiredBinding(e => e.ClientTree, "ClientTrees");
@@ -585,7 +624,9 @@ namespace Module.Persist.TPM {
             builder.Entity<BaseLine>().Collection.Action("DownloadTemplateXLSX");
             builder.Entity<Product>().Collection.Action("DownloadTemplateXLSX");
             builder.Entity<Brand>().Collection.Action("DownloadTemplateXLSX");
-            builder.Entity<Technology>().Collection.Action("DownloadTemplateXLSX");
+			builder.Entity<NonPromoEquipment>().Collection.Action("DownloadTemplateXLSX");
+			builder.Entity<NonPromoSupport>().Collection.Action("DownloadTemplateXLSX");
+			builder.Entity<Technology>().Collection.Action("DownloadTemplateXLSX");
             builder.Entity<BrandTech>().Collection.Action("DownloadTemplateXLSX");
             builder.Entity<Budget>().Collection.Action("DownloadTemplateXLSX");
             builder.Entity<BudgetItem>().Collection.Action("DownloadTemplateXLSX");

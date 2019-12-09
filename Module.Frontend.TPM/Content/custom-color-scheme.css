@@ -3019,6 +3019,16 @@ x-slider-inner:before {
     -moz-box-shadow: 1px 1px 3px 1px rgba(0,0,0,0.1);
 }
 
+.promo-type-select-list-container {
+    background-color: #eceff1;
+    height: 252px;
+    margin: 0 0 0 !important;
+    padding: 0;
+    box-shadow: 0 0 5px 5px rgba(0,0,0,0.1);
+    -webkit-box-shadow: 1px 1px 3px 1px rgba(0,0,0,0.1);
+    -moz-box-shadow: 1px 1px 3px 1px rgba(0,0,0,0.1);
+}
+
 .promo-support-type-select-list-container .jspContainer .jspVerticalBar {
     margin-right: 6px;
 }
@@ -3035,8 +3045,28 @@ x-slider-inner:before {
     height: 40px;
     background-color: white;
     border-radius: 0;
+  
 }
-
+.promo-type-select-list-button {
+    width: 100%;
+    height: 40px;
+    background-color: white;
+    border-radius: 0;
+}
+.promo-type-select-list-button {
+    width: 100%;
+    height: 40px;
+    background-color: white;
+    border-radius: 0;
+    left: 0;
+    top: 1px;
+     font-size: 1.4em;
+    color: orange;
+}
+.promo-type-select-list-button .x-btn-wrap {
+    margin-left: 0px;
+    height: 100%;
+}
 .promo-support-type-select-list-button .x-btn-wrap {
     margin-left: 10px;
     height: 100%;
@@ -3045,27 +3075,48 @@ x-slider-inner:before {
 .promo-support-type-select-list-button .x-btn-button {
     height: 100%;
 }
-
+.promo-type-select-list-button .x-btn-button {
+    height: 100%;
+    padding-left: 5px;
+}
 .promo-support-type-select-list-button .x-btn-inner {
     text-align: left;
     color: #70787e;
     font-size: 14px;
     line-height: 33px;
 }
-
+.promo-type-select-list-button .x-btn-inner {
+    text-align: left;
+    color: #70787e;
+    font-size: 14px;
+    line-height: 33px;
+        margin-left: 9px;
+}
 .promo-support-type-select-list-container-button {
     margin-bottom: 5px;
     border: 1px solid #e6ebed;
 }
-
+.promo-type-select-list-container-button {
+    margin-bottom: 5px;
+    border: 1px solid #e6ebed;
+}
 .promo-support-type-select-list-button {
     border: 0;
 }
-
-.promo-support-type-select-list-container-button-clicked {
-    border: 1px solid #587ca3;
+.promo-type-select-list-button {
+    border: 0;
+    padding-left: 4px !important;
 }
-
+.promo-support-type-select-list-container-button-clicked {
+    border: 1px solid #587ca3; 
+}
+.promo-type-select-list-container-button-clicked {
+    border: 1px solid #587ca3;
+    border-left: 6px solid rgb(87, 125, 164);
+}
+.promo-type-select-list-container-button-shplack { 
+    border-left: 6px solid rgb(179, 193, 210);
+}
 .promo-support-type-select-list-container-button-clicked .promo-support-type-select-list-button .x-btn-wrap .x-btn-button .x-btn-inner {
     color: #587ca3;
 }

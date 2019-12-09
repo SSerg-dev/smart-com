@@ -43,9 +43,9 @@ namespace Module.Persist.TPM.Model.DTO
         public int? PromoDuration { get; set; }
         public int? DispatchDuration { get; set; }
         public string InvoiceNumber { get; set; }
-        [StringLength(20)]
+        [StringLength(255)]
         public string Mechanic { get; set; }
-        [StringLength(20)]
+        [StringLength(255)]
         public string MechanicIA { get; set; }
         [StringLength(15)]
         public string MarsStartDate { get; set; }
@@ -170,5 +170,6 @@ namespace Module.Persist.TPM.Model.DTO
         public bool? Calculating { get; set; }
         public string BlockInformation { get; set; }
         public bool IsGrowthAcceleration { get; set; }
+        public string PromoTypesName { get; set; }
     }
 }

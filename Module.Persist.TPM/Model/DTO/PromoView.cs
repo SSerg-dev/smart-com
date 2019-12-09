@@ -33,5 +33,7 @@ namespace Module.Persist.TPM.Model.DTO {
 
         public bool? InOut { get; set; }
         public bool IsGrowthAcceleration { get; set; }
+        public string TypeName { get; set; }
+        public string TypeGlyph { get; set; }
     }
 }

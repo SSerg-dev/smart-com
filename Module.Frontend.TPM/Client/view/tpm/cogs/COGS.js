@@ -4,50 +4,50 @@
     title: l10n.ns('tpm', 'compositePanelTitles').value('COGS'),
 
     customHeaderItems: [
-    ResourceMgr.getAdditionalMenu('core').base = {
-        glyph: 0xf068,
-        text: l10n.ns('core', 'additionalMenu').value('additionalBtn'),
+        ResourceMgr.getAdditionalMenu('core').base = {
+            glyph: 0xf068,
+            text: l10n.ns('core', 'additionalMenu').value('additionalBtn'),
 
-        menu: {
-            xtype: 'customheadermenu',
-            items: [{
-                glyph: 0xf4eb,
-                itemId: 'gridsettings',
-                text: l10n.ns('core', 'additionalMenu').value('gridSettingsMenuItem'),
-                action: 'SaveGridSettings',
-                resource: 'Security'
-            }]
-        }
-    },
-    ResourceMgr.getAdditionalMenu('core').import = {
-        glyph: 0xf21b,
-        text: l10n.ns('core', 'additionalMenu').value('importExportBtn'),
+            menu: {
+                xtype: 'customheadermenu',
+                items: [{
+                    glyph: 0xf4eb,
+                    itemId: 'gridsettings',
+                    text: l10n.ns('core', 'additionalMenu').value('gridSettingsMenuItem'),
+                    action: 'SaveGridSettings',
+                    resource: 'Security'
+                }]
+            }
+        },
+        ResourceMgr.getAdditionalMenu('core').import = {
+            glyph: 0xf21b,
+            text: l10n.ns('core', 'additionalMenu').value('importExportBtn'),
 
-        menu: {
-            xtype: 'customheadermenu',
-            items: [{
-                glyph: 0xf220,
-                itemgroup: 'loadimportbutton',
-                exactlyModelCompare: true,
-                text: l10n.ns('core', 'additionalMenu').value('fullImportXLSX'),
-                resource: '{0}',
-                action: 'FullImportXLSX',
-                allowFormat: ['zip', 'xlsx']
-            }, {
-                glyph: 0xf21d,
-                itemId: 'loadimporttemplatexlsxbutton',
-                exactlyModelCompare: true,
-                text: l10n.ns('core', 'additionalMenu').value('importTemplateXLSX'),
-                action: 'DownloadTemplateXLSX'
-            }, {
-                glyph: 0xf21d,
-                itemId: 'exportxlsxbutton',
-                exactlyModelCompare: true,
-                text: l10n.ns('core', 'additionalMenu').value('exportXLSX'),
-                action: 'ExportXLSX'
-            }]
+            menu: {
+                xtype: 'customheadermenu',
+                items: [{
+                    glyph: 0xf220,
+                    itemgroup: 'loadimportbutton',
+                    exactlyModelCompare: true,
+                    text: l10n.ns('core', 'additionalMenu').value('fullImportXLSX'),
+                    resource: '{0}',
+                    action: 'FullImportXLSX',
+                    allowFormat: ['zip', 'xlsx']
+                }, {
+                    glyph: 0xf21d,
+                    itemId: 'loadimporttemplatexlsxbutton',
+                    exactlyModelCompare: true,
+                    text: l10n.ns('core', 'additionalMenu').value('importTemplateXLSX'),
+                    action: 'DownloadTemplateXLSX'
+                }, {
+                    glyph: 0xf21d,
+                    itemId: 'exportxlsxbutton',
+                    exactlyModelCompare: true,
+                    text: l10n.ns('core', 'additionalMenu').value('exportXLSX'),
+                    action: 'ExportXLSX'
+                }]
+            }
         }
-    }
     ],
 
     dockedItems: [{
@@ -84,7 +84,7 @@
                 flex: 1,
                 minWidth: 100
             },
-            items: [ {
+            items: [{
                 text: l10n.ns('tpm', 'COGS').value('StartDate'),
                 dataIndex: 'StartDate',
                 renderer: Ext.util.Format.dateRenderer('d.m.Y')
@@ -92,6 +92,9 @@
                 text: l10n.ns('tpm', 'COGS').value('EndDate'),
                 dataIndex: 'EndDate',
                 renderer: Ext.util.Format.dateRenderer('d.m.Y')
+            }, {
+                text: l10n.ns('tpm', 'COGS').value('Year'),
+                dataIndex: 'Year'
             }, {
                 text: l10n.ns('tpm', 'COGS').value('ClientTreeFullPathName'),
                 dataIndex: 'ClientTreeFullPathName',
@@ -244,7 +247,7 @@
                 to: 'BrandTechName'
             }]
         }
-        , {
+            , {
             xtype: 'numberfield',
             name: 'LVSpercent',
             fieldLabel: l10n.ns('tpm', 'COGS').value('LVSpercent'),
@@ -262,4 +265,4 @@
         }]
     }]
 });
-            
+

@@ -7,7 +7,7 @@
             component: {
                 'brandtech[isSearch!=true] directorygrid': {
                     load: this.onGridStoreLoad,
-                    itemdblclick: this.onDetailButtonClick
+                    itemdblclick: this.onBrandTechDetailButtonClick
                 },
                 'brandtech directorygrid': {
                     selectionchange: this.onGridSelectionChange,
@@ -71,5 +71,16 @@
                 }
             }
         });
+    },
+
+    onBrandTechDetailButtonClick: function (button) {
+        var widget = button.up('nonpromosupportbrandtechchoose');
+        if (widget === undefined || widget === null) {
+            this.onDetailButtonClick(button);
+        } else {
+            var c = App.app.getController('tpm.nonpromosupport.NonPromoSupportBrandTechChoose'),
+                okButton = widget.down('#ok');
+            c.onOkButtonClick(okButton);
+        }
     }
 });

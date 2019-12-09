@@ -88,7 +88,7 @@
             name: 'ProductTreeObjectId',
             fieldLabel: l10n.ns('tpm', 'NoneNego').value('ProductTreeObjectId')
         }, {
-            xtype: 'searchcombobox',
+                xtype: 'searchfield',
             fieldLabel: l10n.ns('tpm', 'PromoDemand').value('MechanicName'),
             name: 'MechanicId',
             selectorWidget: 'mechanic',

@@ -91,8 +91,13 @@ ResourceMgr.getAdditionalMenu('core').import = {
             }, {
                 text: l10n.ns('tpm', 'TradeInvestment').value('EndDate'),
                 dataIndex: 'EndDate',
-                renderer: Ext.util.Format.dateRenderer('d.m.Y')
-            }, {
+                    renderer: Ext.util.Format.dateRenderer('d.m.Y')
+                },
+                {
+                    text: l10n.ns('tpm', 'TradeInvestment').value('Year'),
+                    dataIndex: 'Year'
+                },
+                {
                 text: l10n.ns('tpm', 'TradeInvestment').value('ClientTreeFullPathName'),
                 dataIndex: 'ClientTreeFullPathName',
                 minWidth: 200,

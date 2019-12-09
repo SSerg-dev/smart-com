@@ -19,34 +19,31 @@
                 var isCollapsed = this.isCollapsed();
                 target.setWidth(isCollapsed ? target.maxWidth : target.minWidth);
                 if (isCollapsed) {
-                    target.down('#createbutton').setUI('create-promo-btn-toolbar-expanded');
-                    target.down('#createbutton').setText(l10n.ns('tpm', 'Schedule').value('CreateExpanded'));
-                    target.down('#createinoutbutton').setUI('create-promo-btn-toolbar-expanded');
-                    target.down('#createinoutbutton').setText(l10n.ns('tpm', 'Schedule').value('CreateInOutExpanded'));
-
+                    target.down('#createbuttonall').setUI('create-promo-btn-toolbar-expanded');
+                    target.down('#createbuttonall').setText(l10n.ns('tpm', 'Schedule').value('CreateExpanded'));
+                    
                 } else {
-                    target.down('#createbutton').setUI('create-promo-btn-toolbar');
-                    target.down('#createbutton').setText(l10n.ns('tpm', 'Schedule').value('CreateCollapsed'));
-                    target.down('#createinoutbutton').setUI('create-promo-btn-toolbar');
-                    target.down('#createinoutbutton').setText(l10n.ns('tpm', 'Schedule').value('CreateInOutCollapsed'));
-                }
+                    target.down('#createbuttonall').setUI('create-promo-btn-toolbar');
+                    target.down('#createbuttonall').setText(l10n.ns('tpm', 'Schedule').value('CreateCollapsed'));
+                     }
                 target.isExpanded = !target.isExpanded;
             },
         }, {
-            itemId: 'createbutton',
+            itemId: 'createbuttonall',
             action: 'Post',
             glyph: 0xf0f3,
             text: l10n.ns('tpm', 'Schedule').value('CreateCollapsed'),
             tooltip: l10n.ns('tpm', 'Schedule').value('CreateCollapsed'),
             ui: 'create-promo-btn'
-        }, {
-            itemId: 'createinoutbutton',
-            action: 'Post',
-            glyph: 0xf0f3,
-            text: l10n.ns('tpm', 'Schedule').value('CreateInOutCollapsed'),
-            tooltip: l10n.ns('tpm', 'Schedule').value('CreateInOutCollapsed'),
-            ui: 'create-promo-btn'
-        },
+            },
+       //    {
+       //    itemId: 'createinoutbutton',
+       //    action: 'Post',
+       //    glyph: 0xf0f3,
+       //    text: l10n.ns('tpm', 'Schedule').value('CreateInOutCollapsed'),
+       //    tooltip: l10n.ns('tpm', 'Schedule').value('CreateInOutCollapsed'),
+       //    ui: 'create-promo-btn'
+       //},
         //{
         //    xtype: 'schedulemultiselectbutton',
         //    text: l10n.ns('tpm', 'Schedule').value('Multiselectbutton'),

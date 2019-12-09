@@ -3,13 +3,14 @@
     mixins: ['App.controller.tpm.promo.Promo'],
     alias: 'controller.schedulerviewcontroller',
 
+    rowCount: 3,
+
     init: function () {
         this.listen({
             component: {
                 'schedulecontainer': {
                     afterrender: function () {
                         var createButton = Ext.ComponentQuery.query('#createbutton')[0];
-
                         if (createButton) {
                             if (!this.getAllowedActionsForCurrentRoleAndResource('Promoes').some(function (action) { return action === createButton.action; })) {
                                 createButton.hide();
@@ -47,6 +48,9 @@
                     load: this.onResourceStoreLoad,
                     resize: this.onResizeGrid
                 },
+                'schedulecontainer #clientsPromoTypeFilterLabel': {
+                    afterrender: this.onClientsPromoTypeFilterAfterrender
+                },
                 'readonlydirectorytoolbar #promoDetail': {
                     click: this.onPromoDetailButtonClick
                 },
@@ -56,8 +60,17 @@
                 'schedulecontainer #extfilterbutton': {
                     click: this.onFilterButtonClick
                 },
-                'schedulecontainer #createbutton': {
-                    click: this.onCreateButtonClick
+                'schedulecontainer #createbuttonall': {
+                    click: this.onAllCreateButtonClick
+                },
+                'scheduletypewindow #ok': {
+                    click: this.onPromoTypeOkButtonClick
+                },
+                'scheduletypewindow button[itemId!=ok]': {
+                    click: this.onSelectionButtonClick
+                },
+                'scheduletypewindow': {
+                    afterrender: this.onPromoTypeAfterRender
                 },
                 'schedulecontainer #createinoutbutton': {
                     click: this.onCreateInOutButtonClick
@@ -591,14 +604,28 @@
 
     onPromoDragCreation: function (view, createContext, e, el, eOpts) {
         var me = this;
+        var scheduler = Ext.ComponentQuery.query('#nascheduler')[0];
+        var typeToCreate = null;
         if (createContext.start > Date.now()) {
-                var schedulerData,
-                isInOutClient = createContext.resourceRecord.get('InOut');
+            var schedulerData,
+                ClientTypeName = createContext.resourceRecord.get('TypeName') + ' Promo',
+                isInOutClient = false,
+                needSelectWindow = false;
+
+            if (ClientTypeName === 'Regular Promo') {
+                typeToCreate = scheduler.regPromoType;
+            } else if (ClientTypeName === 'InOut Promo') {
+                typeToCreate = scheduler.inOutPromoType;
+                isInOutClient = true;
+            } else if (ClientTypeName === 'Other Promo') {
+                typeToCreate = scheduler.otherPromoTypes;
+                needSelectWindow = true;
+            };
             createContext.end = me.getDayEndDateTime(createContext.end);          
             if (!view.schedulerView.eventCopy) {
                 schedulerData = { schedulerContext: createContext };
                 schedulerData.isCopy = false;
-                me.createPromo(schedulerData, isInOutClient);
+                me.selectCreatePromoMethod(me, schedulerData, isInOutClient, typeToCreate, needSelectWindow, scheduler.otherPromoTypes);
             } else {
                 var ctx = new Ext.menu.Menu({
                     cls: "scheduler-context-menu",
@@ -606,13 +633,22 @@
                         text: 'Paste',
                         glyph: 0xf191,
                         handler: function () {
-                            if (!!isInOutClient != !!view.schedulerView.eventCopy.get('InOut')) {
+                            if ((ClientTypeName != 'Other Promo' && ClientTypeName != view.schedulerView.eventCopy.get('PromoTypesName'))
+                                || (ClientTypeName === 'Other Promo' && ['InOut Promo', 'Regular Promo'].includes(view.schedulerView.eventCopy.get('PromoTypesName')))) {
                                 return me.finalizeContextWithError(createContext, l10n.ns('tpm', 'Schedule').value('CopyInOutError'));
                             } else {
                                 schedulerData = view.schedulerView.eventCopy;
-                                schedulerData.schedulerContext = createContext
+                                schedulerData.schedulerContext = createContext;
                                 schedulerData.isCopy = true;
-								me.createPromo(schedulerData, isInOutClient);
+                                if (ClientTypeName === 'Other Promo') {
+                                    for (var i = 0; i < scheduler.otherPromoTypes.length; i++) {
+                                        if (scheduler.otherPromoTypes[i].Name == view.schedulerView.eventCopy.get('PromoTypesName')) {
+                                            typeToCreate = scheduler.otherPromoTypes[i];
+                                            break;
+                                        }
+                                    }
+                                }
+                                me.selectCreatePromoMethod(me, schedulerData, isInOutClient, typeToCreate, false, scheduler.otherPromoTypes);
                             }
                         }
                     }, {
@@ -621,7 +657,7 @@
                         handler: function () {
                             schedulerData = { schedulerContext: createContext };
                             schedulerData.isCopy = false;
-                            me.createPromo(schedulerData, isInOutClient);
+                            me.selectCreatePromoMethod(me, schedulerData, isInOutClient, typeToCreate, needSelectWindow, scheduler.otherPromoTypes);
                         }
                     }]
                 });
@@ -631,6 +667,14 @@
             return false; // чтобы предотвратить автоматическое создание промо
         } else {
             return me.finalizeContextWithError(createContext, l10n.ns('tpm', 'text').value('wrongStartDate'));
+        }
+    },
+
+    selectCreatePromoMethod: function (me, schedulerData, isInOutClient, typeToCreate, needSelectWindow, otherTypes) {
+        if (!needSelectWindow) {
+            me.createPromo(schedulerData, isInOutClient, typeToCreate);
+        } else {
+            me.promoDragCreationWindow(schedulerData, otherTypes);
         }
     },
 
@@ -645,13 +689,169 @@
         this.createPromo();
     },
 
-    createPromo: function (schedulerData, inOut) {
-        this.mixins["App.controller.tpm.promo.Promo"].onCreateButtonClick.call(this, null, null, schedulerData, inOut);
+    createPromo: function (schedulerData, inOut, promotype) {
+         
+        var promoController = App.app.getController('tpm.promo.Promo')
+        promoController.setPromoType(promotype.Name);
+        this.mixins["App.controller.tpm.promo.Promo"].onCreateButtonClick.call(this, null, null, schedulerData, inOut, promotype);
+    },
+    onCreateRegularButtonClick: function (promotype, schedulerData) {
+        this.detailButton = null;
+        this.createPromo(schedulerData, false, promotype);
+    },
+    onCreateInOutButtonClick: function (promotype, schedulerData) {
+        this.detailButton = null;
+        this.createPromo(schedulerData, true, promotype);
+    },
+    onCreateLoyaltyButtonClick: function (promotype, schedulerData) {
+        this.detailButton = null;
+        this.createPromo(schedulerData, false, promotype);
+    },
+    onCreateDynamicButtonClick: function (promotype, schedulerData) {
+        this.detailButton = null;
+        this.createPromo(schedulerData, false, promotype);
+    },
+    onSelectionButtonClick: function (button) {
+        var window = button.up('window');
+        var fieldsetWithButtons = window.down('fieldset');
+
+        fieldsetWithButtons.items.items.forEach(function (item) {
+            item.down('button').up('container').removeCls('promo-type-select-list-container-button-clicked');
+            item.down('button').addCls('promo-type-select-list-container-button-shplack');
+        });
+
+        button.up('container').addCls('promo-type-select-list-container-button-clicked');
+
+        button.removeCls('promo-type-select-list-container-button-shplack');
+        window.selectedButton = button;
+    }, 
+
+    onPromoTypeOkButtonClick: function (button, e) {
+        var me = this;
+        var window = button.up('window');
+        if (window.selectedButton != null) {
+
+            var selectedButtonText = window.selectedButton.budgetRecord;
+
+            var method = "onCreate" + selectedButtonText.SystemName + "ButtonClick";
+            if (me[method] != undefined) {
+                me[method](selectedButtonText, window.schedulerData);
+                window.close();
+            } else {
+                App.Notify.pushError('Не найдено типа промо ' + selectedButtonText.Name);
+            }
+        }else 
+            {
+                App.Notify.pushError('Не выбран тип промо');
+            }
+        
+        
+        // me.onCreateButtonClick(promoButton, e, schedulerData, false);
+
     },
 
-    onCreateInOutButtonClick: function () {
-        this.detailButton = null;
-        this.createPromo(null, true);
+    onPromoTypeAfterRender: function (window) {
+        var closeButton = window.down('#close');
+        var okButton = window.down('#ok');
+
+        closeButton.setText(l10n.ns('tpm', 'PromoType').value('ModalWindowCloseButton'));
+        okButton.setText(l10n.ns('tpm', 'PromoType').value('ModalWindowOkButton'));
+        window.selectedButton = null;
+    },
+
+    onAllCreateButtonClick: function (button) {
+        var supportType = Ext.widget('scheduletypewindow');
+        var mask = new Ext.LoadMask(supportType, { msg: "Please wait..." });
+
+        supportType.show();
+        mask.show();
+
+        supportType.createPromoSupportButton = button;
+
+        var query = breeze.EntityQuery
+            .from('PromoTypes')
+            .using(Ext.ux.data.BreezeEntityManager.getEntityManager())
+            .execute()
+            .then(function (data) {
+                if (data.httpResponse.data.results.length > 0) {
+                    supportType.down('#scheduletypewindowInnerContainer').show();
+                    data.httpResponse.data.results.forEach(function (item) {
+                        // Контейнер с кнопкой (обводится бордером при клике)
+                        var promoTypeItem = Ext.widget({
+                            extend: 'Ext.container.Container',
+                            width: 'auto',
+                            xtype: 'container',
+                            layout: {
+                                type: 'hbox',
+                                align: 'stretch'
+                            },
+                            items: [{
+                                xtype: 'button',
+                                enableToggle: true,
+                                cls: 'promo-type-select-list-button',
+                            }]
+                        });
+
+                        promoTypeItem.addCls('promo-type-select-list-container-button');
+                        //promoTypeItem.down('button').style = { borderLeft: '6px solid ' + 'rgb(179, 193, 210)' };
+                        promoTypeItem.down('button').addCls('promo-type-select-list-container-button-shplack');
+                        promoTypeItem.down('button').setText(item.Name);
+                        promoTypeItem.down('button').renderData.glyphCls = 'promo-type-select-list-button'; 
+                        promoTypeItem.down('button').setGlyph(parseInt('0x' + item.Glyph, 16)); 
+                      
+                        promoTypeItem.down('button').budgetRecord = item;
+                        supportType.down('fieldset').add(promoTypeItem);
+                    });
+                } else {
+                    Ext.ComponentQuery.query('promotypewindow')[0].close();
+                    App.Notify.pushError('Не найдено записей типа промо ');
+                }
+
+                mask.hide();
+            })
+            .fail(function () {
+                App.Notify.pushError('Ошибка при выполнении операции');
+                mask.hide();
+            })
+    },
+
+    promoDragCreationWindow: function (schedulerData, promoTypes) {
+        var supportType = Ext.widget('scheduletypewindow');
+        supportType.down('#scheduletypewindowInnerContainer').show();
+        var mask = new Ext.LoadMask(supportType, { msg: "Please wait..." });
+        supportType.show();
+        supportType.minHeight = 240;
+        supportType.setHeight(240);
+        supportType.schedulerData = schedulerData;
+        mask.show();
+
+        promoTypes.forEach(function (item) {
+            // Контейнер с кнопкой (обводится бордером при клике)
+            var promoTypeItem = Ext.widget({
+                extend: 'Ext.container.Container',
+                width: 'auto',
+                xtype: 'container',
+                layout: {
+                    type: 'hbox',
+                    align: 'stretch'
+                },
+                items: [{
+                    xtype: 'button',
+                    enableToggle: true,
+                    cls: 'promo-type-select-list-button',
+                }]
+            });
+
+            promoTypeItem.addCls('promo-type-select-list-container-button');
+            promoTypeItem.down('button').style = { borderLeft: '6px solid ' + 'rgb(179, 193, 210)' };
+            promoTypeItem.down('button').setText(item.Name);
+            promoTypeItem.down('button').renderData.glyphCls = 'promo-type-select-list-button';
+            promoTypeItem.down('button').setGlyph(parseInt('0x' + item.Glyph, 16));
+
+            promoTypeItem.down('button').budgetRecord = item;
+            supportType.down('fieldset').add(promoTypeItem);
+        });
+        mask.hide();
     },
 
     setButtonState: function (window, visible) {
@@ -860,6 +1060,14 @@
         Ext.widget('extfilter', store.getExtendedFilter()).show();
     },
 
+    onClientsPromoTypeFilterAfterrender: function (label) {
+        label.getEl().on('click', this.onClientsPromoTypeFilterClick, label);
+    },
+
+    onClientsPromoTypeFilterClick: function (mouseEvent, label) {
+        Ext.widget('clientPromoTypeFilter').show();
+    },
+
     onRefreshButtonClick: function (button) {
         var scheduler = button.up('panel').down('scheduler');
         var store = scheduler.getEventStore();
@@ -1006,7 +1214,63 @@
 
     onScheduleAfterRender: function (scheduler) {
         var me = this;
+
         scheduler.setLoading('Loading promoes'); // beforeCrudOperationStart - ставит лоадер, который снимается до окончания закрузки стора, TODO: оставить только этот лоадер
+
+        scheduler.baseClientsStore = Ext.create('Ext.data.Store', {
+            model: 'App.model.tpm.baseclient.BaseClient',
+            type: 'simplestore',
+            idProperty: 'Id',
+            autoLoad: true
+        });
+
+        breeze.EntityQuery
+            .from('PromoTypes')
+            .withParameters({
+            $method: 'GET'
+            })
+            .using(Ext.ux.data.BreezeEntityManager.getEntityManager())
+            .execute()
+            .then(function (data) {
+                scheduler.typesCheckboxesConfig = [];
+                scheduler.otherPromoTypes = [];
+                data.results.forEach(function (el) {
+                    if (el.Name === 'Regular Promo') {
+                        scheduler.regPromoType = el;
+                    } else if (el.Name === 'InOut Promo') {
+                        scheduler.inOutPromoType = el;
+                    } else {
+                        scheduler.otherPromoTypes.push(el);
+                    }
+
+                    var beforeBoxLabelTextTpl = new Ext.Template('<span class="mdi filter-mark-icon">&#x{glyph}</span>');
+                    scheduler.typesCheckboxesConfig.push({
+                        name: el.Name,
+                        inputValue: el.Name,
+                        checked: true,
+                        boxLabel: '<span style="vertical-align: text-top;">' + el.Name +'</span>',
+                        xtype: 'checkbox',
+                        beforeBoxLabelTextTpl: beforeBoxLabelTextTpl.apply({ glyph: el.Glyph }),
+                    })
+                });
+            })
+            .fail(function (data) {
+                App.Notify.pushError('Ошибка при выполнении операции');
+            });
+
+        scheduler.baseClientsStore.on('load', function (store, records) {
+            scheduler.clientsFilterConfig = [];
+            records.forEach(function (el) {
+                scheduler.clientsFilterConfig.push({
+                    name: el.data.Name,
+                    inputValue: el.data.Name,
+                    checked: true,
+                    boxLabel: el.data.Name,
+                    xtype: 'checkbox'
+                })
+            });
+        });
+
         scheduler.up('panel').down('[presetId=marsweekMonth]').addCls('sch-preset-btn-selected');
         //scheduler.up('panel').down('[marsMode=true]').addCls('sch-mode-btn-selected');
         // проброс load стора в грид для доступа из контроллера
@@ -1037,6 +1301,7 @@
                         loaded = oldArray[j].loaded;
                         regPromoId = oldArray[j].regPromoId;
                         inoutPromoId = oldArray[j].inoutPromoId;
+                        otherPromoId = oldArray[j].otherPromoId;
                         break;
                     }
                 };
@@ -1046,6 +1311,7 @@
                     loaded: loaded,
                     regPromoId: regPromoId,
                     inoutPromoId: inoutPromoId,
+                    otherPromoId: otherPromoId,
                 });
             };
 
@@ -1123,8 +1389,9 @@
             eventStore.uniqueObjectIds.push({
                 objectId: objectIds[i],
                 loaded: false,
-                regPromoId: resourceStore.data.items[i * 2],
-                inoutPromoId: resourceStore.data.items[i * 2 + 1],
+                regPromoId: resourceStore.data.items[i * this.rowCount],
+                inoutPromoId: resourceStore.data.items[i * this.rowCount + 1],
+                otherPromoId: resourceStore.data.items[i * this.rowCount + 2],
             })
         };
 
@@ -1381,7 +1648,7 @@
                 if (nascheduler) {
                     if (!store.resetLoading) {
                         var me = this;
-                        this.renderEvents(store.uniqueObjectIds[clientId].regPromoId, store.uniqueObjectIds[clientId].inoutPromoId, nascheduler);
+                        this.renderEvents(store.uniqueObjectIds[clientId].regPromoId, store.uniqueObjectIds[clientId].inoutPromoId, store.uniqueObjectIds[clientId].otherPromoId);
                         store.uniqueObjectIds[clientId].loaded = true;
                         clientId = 0;
                         while (store.uniqueObjectIds[clientId] && store.uniqueObjectIds[clientId].loaded) {
@@ -1396,14 +1663,15 @@
         });
     },
 
-    renderEvents: function (regId, inoutId, nascheduler) {
-        var ng = nascheduler.normalGrid;
-        var lg = nascheduler.lockedGrid;
+    renderEvents: function (regId, inoutId, otherPromoId) {
+        var ng = Ext.ComponentQuery.query('#nascheduler')[0].normalGrid;
+        var lg = Ext.ComponentQuery.query('#nascheduler')[0].lockedGrid;
+        var renderId = regId;
         var records = []//ng.view.getViewRange();
-        for (var i = 0; i <= 1; i++) {
-            records.push(regId);
-            var eventNode = ng.view.getNode(regId, false);
-            var resourceNode = lg.view.getNode(regId, false);
+        for (var i = 0; i <= this.rowCount; i++) {
+            records.push(renderId);
+            var eventNode = ng.view.getNode(renderId, false);
+            var resourceNode = lg.view.getNode(renderId, false);
             if (eventNode) {
                 while (eventNode.hasChildNodes()) {
                     eventNode.removeChild(eventNode.lastChild);
@@ -1411,7 +1679,12 @@
                 ng.view.tpl.append(eventNode, ng.view.collectData(records, ng.view.all.startIndex));
                 resourceNode.style.height = eventNode.scrollHeight.toString() + "px";
             };
-            regId = inoutId;
+            if (i == 0) {
+                renderId = inoutId;
+            } else if (i == 1) {
+                renderId = otherPromoId;
+            }
+
             records = [];
         };
     },
@@ -1426,6 +1699,11 @@
                 }
 
                 node = ng.view.getNode(uniqueObjectIds[j].inoutPromoId, false);
+                if (node && !(node.childNodes[1] && node.childNodes[1].textContent === 'Loading...')) {
+                    Ext.DomHelper.append(node, '<td class="overlay">Loading...</td>');
+                }
+
+                node = ng.view.getNode(uniqueObjectIds[j].otherPromoId, false);
                 if (node && !(node.childNodes[1] && node.childNodes[1].textContent === 'Loading...')) {
                     Ext.DomHelper.append(node, '<td class="overlay">Loading...</td>');
                 }

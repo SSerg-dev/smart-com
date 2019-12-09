@@ -14,9 +14,32 @@
             name: 'Name',
             fieldLabel: l10n.ns('tpm', 'Mechanic').value('Name'),
         }, {
-            xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
+            xtype: 'textfield',
             name: 'SystemName',
             fieldLabel: l10n.ns('tpm', 'Mechanic').value('SystemName'),
-        }]
+            }, {
+                xtype: 'searchfield',
+                fieldLabel: l10n.ns('tpm', 'Mechanic').value('PromoType.Name'),
+                name: 'PromoTypesId',
+                selectorWidget: 'promotypes',
+                valueField: 'Id',
+                displayField: 'Name',
+                store: {
+                    type: 'directorystore',
+                    model: 'App.model.tpm.promotypes.PromoTypes',
+                    extendedFilter: {
+                        xclass: 'App.ExtFilterContext',
+                        supportedModels: [{
+                            xclass: 'App.ExtSelectionFilterModel',
+                            model: 'App.model.tpm.promotypes.PromoTypes',
+                            modelId: 'efselectionmodel'
+                        }]
+                    }
+                },
+                mapping: [{
+                    from: 'Name',
+                    to: 'PromoTypes.Name'
+                }]
+            }]
     }
 });

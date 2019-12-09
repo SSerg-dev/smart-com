@@ -1,273 +1,284 @@
 ﻿Ext.define('App.controller.tpm.promo.Promo', {
-	extend: 'App.controller.core.AssociatedDirectory',
-	mixins: ['App.controller.core.ImportExportLogic'],
+    extend: 'App.controller.core.AssociatedDirectory',
+    mixins: ['App.controller.core.ImportExportLogic'],
 
-	init: function () {
-		this.listen({
-			component: {
-				'promo directorygrid': {
-					itemdblclick: this.onDetailButtonClick,
-					selectionchange: this.onPromoGridSelectionChange,
-					afterrender: this.onGridPromoAfterrender,
-					extfilterchange: this.onExtFilterChange,
-					load: this.onPromoGridStoreLoad
-				},
-				'promo': {
-					beforedestroy: this.onPromoGridBeforeDestroy
-				},
-				'promo #extfilterbutton': {
-					click: this.onFilterButtonClick
-				},
-				'promo #deletedbutton': {
-					click: this.onDeletedButtonClick
-				},
-				'promo #createbutton': {
-					click: this.onCreateButtonClick
-				},
-				'promo #createinoutbutton': {
-					click: this.onCreateInOutButtonClick
-				},
-				'promo #updatebutton': {
-					click: this.onUpdateButtonClick
-				},
-				'promo #deletebutton': {
-					click: this.onDeleteButtonClick
-				},
-				'promo #historybutton': {
-					click: this.onHistoryButtonClick
-				},
-				'promo #refresh': {
-					click: this.onRefreshButtonClick
-				},
-				'promo #canchangestateonlybutton': {
-					click: this.onShowEditableButtonClick
-				},
+    init: function () {
+        this.listen({
+            component: {
+                'promo directorygrid': {
+                    itemdblclick: this.onDetailButtonClick,
+                    selectionchange: this.onPromoGridSelectionChange,
+                    afterrender: this.onGridPromoAfterrender,
+                    extfilterchange: this.onExtFilterChange,
+                    load: this.onPromoGridStoreLoad
+                },
+                'promo': {
+                    beforedestroy: this.onPromoGridBeforeDestroy
+                },
+                'promo #extfilterbutton': {
+                    click: this.onFilterButtonClick
+                },
+                'promo #deletedbutton': {
+                    click: this.onDeletedButtonClick
+                },
+                'promo #createbutton': {
+                    click: this.onAllCreateButtonClick
+                },
+                //'promo #createbutton': {
+                //    click: this.onCreateButtonClick
+                //},
+               //'promo #createinoutbutton': {
+               //    click: this.onCreateInOutButtonClick
+               //},
+                'promo #updatebutton': {
+                    click: this.onUpdateButtonClick
+                },
+                'promo #deletebutton': {
+                    click: this.onDeleteButtonClick
+                },
+                'promo #historybutton': {
+                    click: this.onHistoryButtonClick
+                },
+                'promo #refresh': {
+                    click: this.onRefreshButtonClick
+                },
+                'promo #canchangestateonlybutton': {
+                    click: this.onShowEditableButtonClick
+                },
+                'promotypewindow #ok': {
+                    click: this.onPromoTypeOkButtonClick
+                },
+                'promotypewindow button[itemId!=ok]': {
+                    click: this.onSelectionButtonClick
+                },
+                'promotypewindow': {
+                    afterrender: this.onPromoTypeAfterRender
+                },
+                // promo window
+                'promoeditorcustom': {
+                    afterrender: this.onPromoEditorCustomAfterrender,
+                    beforerender: this.onPromoEditorCustomBeforerender,
+                    show: this.onPromoEditorCustomShow,
+                    close: this.onPromoEditorCustomClose,
+                },
 
-				// promo window
-				'promoeditorcustom': {
-					afterrender: this.onPromoEditorCustomAfterrender,
-					beforerender: this.onPromoEditorCustomBeforerender,
-					show: this.onPromoEditorCustomShow,
-					close: this.onPromoEditorCustomClose,
-				},
+                // promo main toolbar btn
+                'promoeditorcustom #btn_promo': {
+                    click: this.onPromoButtonClick
+                },
+                'promoeditorcustom #btn_support': {
+                    click: this.onSupportButtonClick
+                },
+                'promoeditorcustom #btn_promoBudgets': {
+                    click: this.onPromoBudgetsButtonClick
+                },
+                'promoeditorcustom #btn_promoActivity': {
+                    click: this.onPromoActivityButtonClick
+                },
+                'promoeditorcustom #btn_changes': {
+                    click: this.onChangesButtonClick
+                },
+                'promoeditorcustom #btn_summary': {
+                    click: this.onSummaryButtonClick
+                },
 
-				// promo main toolbar btn
-				'promoeditorcustom #btn_promo': {
-					click: this.onPromoButtonClick
-				},
-				'promoeditorcustom #btn_support': {
-					click: this.onSupportButtonClick
-				},
-				'promoeditorcustom #btn_promoBudgets': {
-					click: this.onPromoBudgetsButtonClick
-				},
-				'promoeditorcustom #btn_promoActivity': {
-					click: this.onPromoActivityButtonClick
-				},
-				'promoeditorcustom #btn_changes': {
-					click: this.onChangesButtonClick
-				},
-				'promoeditorcustom #btn_summary': {
-					click: this.onSummaryButtonClick
-				},
+                // promo basic steps
+                'promoeditorcustom #btn_promo_step1': {
+                    click: this.onPromoButtonStep1Click
+                },
+                'promoeditorcustom #btn_promo_step2': {
+                    click: this.onPromoButtonStep2Click
+                },
+                'promoeditorcustom #btn_promo_step3': {
+                    click: this.onPromoButtonStep3Click
+                },
+                'promoeditorcustom #btn_promo_step4': {
+                    click: this.onPromoButtonStep4Click
+                },
+                'promoeditorcustom #btn_promo_step5': {
+                    click: this.onPromoButtonStep5Click
+                },
+                'promoeditorcustom #btn_promo_step6': {
+                    click: this.onPromoButtonStep6Click
+                },
 
-				// promo basic steps
-				'promoeditorcustom #btn_promo_step1': {
-					click: this.onPromoButtonStep1Click
-				},
-				'promoeditorcustom #btn_promo_step2': {
-					click: this.onPromoButtonStep2Click
-				},
-				'promoeditorcustom #btn_promo_step3': {
-					click: this.onPromoButtonStep3Click
-				},
-				'promoeditorcustom #btn_promo_step4': {
-					click: this.onPromoButtonStep4Click
-				},
-				'promoeditorcustom #btn_promo_step5': {
-					click: this.onPromoButtonStep5Click
-				},
-				'promoeditorcustom #btn_promo_step6': {
-					click: this.onPromoButtonStep6Click
-				},
+                // support steps
+                'promoeditorcustom #btn_support_step1': {
+                    click: this.onSupportButtonStep1Click
+                },
+                'promoeditorcustom #btn_support_step2': {
+                    click: this.onSupportButtonStep2Click
+                },
+                'promoeditorcustom #btn_support_step3': {
+                    click: this.onSupportButtonStep3Click
+                },
 
-				// support steps
-				'promoeditorcustom #btn_support_step1': {
-					click: this.onSupportButtonStep1Click
-				},
-				'promoeditorcustom #btn_support_step2': {
-					click: this.onSupportButtonStep2Click
-				},
-				'promoeditorcustom #btn_support_step3': {
-					click: this.onSupportButtonStep3Click
-				},
+                // promo budgets steps
+                'promoeditorcustom #btn_promoBudgets_step1': {
+                    click: this.onPromoBudgetsButtonStep1Click
+                },
+                'promoeditorcustom #btn_promoBudgets_step2': {
+                    click: this.onPromoBudgetsButtonStep2Click
+                },
+                'promoeditorcustom #btn_promoBudgets_step3': {
+                    click: this.onPromoBudgetsButtonStep3Click
+                },
 
-				// promo budgets steps
-				'promoeditorcustom #btn_promoBudgets_step1': {
-					click: this.onPromoBudgetsButtonStep1Click
-				},
-				'promoeditorcustom #btn_promoBudgets_step2': {
-					click: this.onPromoBudgetsButtonStep2Click
-				},
-				'promoeditorcustom #btn_promoBudgets_step3': {
-					click: this.onPromoBudgetsButtonStep3Click
-				},
+                // promo activity steps
+                'promoeditorcustom #btn_promoActivity_step1': {
+                    click: this.onPromoActivityButtonStep1Click
+                },
+                'promoeditorcustom #btn_promoActivity_step2': {
+                    click: this.onPromoActivityButtonStep2Click
+                },
+                'promoeditorcustom #savePromo': {
+                    click: this.onSavePromoButtonClick
+                },
+                'promoeditorcustom #saveAndClosePromo': {
+                    click: this.onSaveAndClosePromoButtonClick
+                },
+                'promoeditorcustom #closePromo': {
+                    click: this.onClosePromoButtonClick
+                },
+                'promoeditorcustom #cancelPromo': {
+                    click: this.onCancelPromoButtonClick
+                },
+                'promoeditorcustom #changePromo': {
+                    click: this.onChangePromoButtonClick
+                },
 
-				// promo activity steps
-				'promoeditorcustom #btn_promoActivity_step1': {
-					click: this.onPromoActivityButtonStep1Click
-				},
-				'promoeditorcustom #btn_promoActivity_step2': {
-					click: this.onPromoActivityButtonStep2Click
-				},
-				'promoeditorcustom #savePromo': {
-					click: this.onSavePromoButtonClick
-				},
-				'promoeditorcustom #saveAndClosePromo': {
-					click: this.onSaveAndClosePromoButtonClick
-				},
-				'promoeditorcustom #closePromo': {
-					click: this.onClosePromoButtonClick
-				},
-				'promoeditorcustom #cancelPromo': {
-					click: this.onCancelPromoButtonClick
-				},
-				'promoeditorcustom #changePromo': {
-					click: this.onChangePromoButtonClick
-				},
+                // CustomTopToolbar
+                // Кнопки изменения состояния промо
+                'promoeditorcustom #btn_publish': {
+                    click: this.onPublishButtonClick
+                },
+                'promoeditorcustom #btn_undoPublish': {
+                    click: this.onUndoPublishButtonClick
+                },
+                'promoeditorcustom #btn_sendForApproval': {
+                    click: this.onSendForApprovalButtonClick
+                },
+                'promoeditorcustom #btn_approve': {
+                    click: this.onApproveButtonClick
+                },
+                'promoeditorcustom #btn_plan': {
+                    click: this.onPlanButtonClick
+                },
+                'promoeditorcustom #btn_cancel': {
+                    click: this.onCancelButtonClick
+                },
+                'promoeditorcustom #btn_close': {
+                    click: this.onToClosePromoButtonClick
+                },
+                'promoeditorcustom #btn_backToFinished': {
+                    click: this.onBackToFinishedPromoButtonClick
+                },
+                'promoeditorcustom #btn_reject': {
+                    click: this.onRejectButtonClick
+                },
+                'promoeditorcustom #btn_backToDraftPublished': {
+                    click: this.onBackToDraftPublishedButtonClick
+                },
+                'promoeditorcustom #btn_history': {
+                    click: this.onPromoHistoryButtonClick
+                },
+                'promoeditorcustom #btn_recalculatePromo': {
+                    click: this.recalculatePromo
+                },
+                'rejectreasonselectwindow #apply': {
+                    click: this.onApplyActionButtonClick
+                },
 
-				// CustomTopToolbar
-				// Кнопки изменения состояния промо
-				'promoeditorcustom #btn_publish': {
-					click: this.onPublishButtonClick
-				},
-				'promoeditorcustom #btn_undoPublish': {
-					click: this.onUndoPublishButtonClick
-				},
-				'promoeditorcustom #btn_sendForApproval': {
-					click: this.onSendForApprovalButtonClick
-				},
-				'promoeditorcustom #btn_approve': {
-					click: this.onApproveButtonClick
-				},
-				'promoeditorcustom #btn_plan': {
-					click: this.onPlanButtonClick
-				},
-				'promoeditorcustom #btn_cancel': {
-					click: this.onCancelButtonClick
-				},
-				'promoeditorcustom #btn_close': {
-					click: this.onToClosePromoButtonClick
-				},
-				'promoeditorcustom #btn_backToFinished': {
-					click: this.onBackToFinishedPromoButtonClick
-				},
-				'promoeditorcustom #btn_reject': {
-					click: this.onRejectButtonClick
-				},
-				'promoeditorcustom #btn_backToDraftPublished': {
-					click: this.onBackToDraftPublishedButtonClick
-				},
-				'promoeditorcustom #btn_history': {
-					click: this.onPromoHistoryButtonClick
-				},
-				'promoeditorcustom #btn_recalculatePromo': {
-					click: this.recalculatePromo
-				},
-				'rejectreasonselectwindow #apply': {
-					click: this.onApplyActionButtonClick
-				},
+                // import/export
+                'promo #exportbutton': {
+                    click: this.onExportButtonClick
+                },
+                'promo #loadimportbutton': {
+                    click: this.onShowImportFormButtonClick
+                },
+                'promo #loadimporttemplatebutton': {
+                    click: this.onLoadImportTemplateButtonClick
+                },
+                'promo #applyimportbutton': {
+                    click: this.onApplyImportButtonClick
+                },
 
-				// import/export
-				'promo #exportbutton': {
-					click: this.onExportButtonClick
-				},
-				'promo #loadimportbutton': {
-					click: this.onShowImportFormButtonClick
-				},
-				'promo #loadimporttemplatebutton': {
-					click: this.onLoadImportTemplateButtonClick
-				},
-				'promo #applyimportbutton': {
-					click: this.onApplyImportButtonClick
-				},
+                // promo budgets
+                'promobudgets': {
+                    afterrender: this.onPromoBudgetsAfterRender
+                },
+                'promobudgets #promoBudgets_step1 numberfield': {
+                    change: this.onPromoBudgetsStep1Change
+                },
 
-				// promo budgets
-				'promobudgets': {
-					afterrender: this.onPromoBudgetsAfterRender
-				},
-				'promobudgets #promoBudgets_step1 numberfield': {
-					change: this.onPromoBudgetsStep1Change
-				},
+                // promo calculation                
+                'promomechanic numberfield[name=MarsMechanicDiscount]': {
+                    change: this.onMarsMechanicDiscountChange
+                },
+                'promocalculation #calculations_step2 numberfield[name=PlanPromoIncrementalLSV]': {
+                    change: this.onPlanPromoIncrementalLSVChange
+                },
+                'promocalculation #calculations_step2 numberfield': {
+                    change: this.onCalculationPlanChange
+                },
+                'promocalculation #calculations_step3 numberfield': {
+                    change: this.onCalculationPlanChange
+                },
 
-				// promo calculation                
-				'promomechanic numberfield[name=MarsMechanicDiscount]': {
-					change: this.onMarsMechanicDiscountChange
-				},
-				'promocalculation #calculations_step2 numberfield[name=PlanPromoIncrementalLSV]': {
-					change: this.onPlanPromoIncrementalLSVChange
-				},
-				'promocalculation #calculations_step2 numberfield': {
-					change: this.onCalculationPlanChange
-				},
-				'promocalculation #calculations_step3 numberfield': {
-					change: this.onCalculationPlanChange
-				},
+                // promo activity
+                'promoactivity': {
+                    afterrender: this.onPromoActivityAfterRender
+                },
 
-				// promo activity
-				'promoactivity': {
-					afterrender: this.onPromoActivityAfterRender
-				},
+                'promoactivity #promoActivity_step2 #activityUploadPromoProducts': {
+                    click: this.onActivityUploadPromoProductsClick
+                },
 
-				'promoactivity #promoActivity_step2 #activityUploadPromoProducts': {
-					click: this.onActivityUploadPromoProductsClick
-				},
+                // методы решают проблему с "Настроить таблицу"
+                'promo customheadermenu #gridsettings': {
+                    click: this.onGridSettingsClick
+                },
+                'gridsettingswindow #save': {
+                    click: this.onGridSettingsSaveClick
+                },
+                'gridsettingswindow': {
+                    close: this.onGridSettingsWindowClose
+                },
 
-				// методы решают проблему с "Настроить таблицу"
-				'promo customheadermenu #gridsettings': {
-					click: this.onGridSettingsClick
-				},
-				'gridsettingswindow #save': {
-					click: this.onGridSettingsSaveClick
-				},
-				'gridsettingswindow': {
-					close: this.onGridSettingsWindowClose
-				},
-
-				'promoeditorcustom #btn_showlog': {
-					click: this.onShowLogButtonClick
-				},
-				// Promo Budgets Details Window
-				'promobudgetsdetailswindow': {
-					afterrender: this.onPromoBudgetsDetailsWindowAfterRender
-				},
-				// Promo Finance Details Window
-				'promofinancedetailswindow': {
-					afterrender: this.onPromoFinanceDetailsWindowAfterRender
-				},
-				// Promo Activity Details Window
-				'promoactivitydetailswindow': {
-					afterrender: this.onPromoActivityDetailsWindowAfterRender
-				},
-				// Promo Product Subrange Details Window
-				'promoproductsubrangedetailswindow': {
-					afterrender: this.onPromoProductSubrangeDetailsWindowAfterRender
-				},
-				'promoeditorcustom #activityDetailButton': {
-					click: this.onSummaryDetailButtonClick
-				},
-				'promoeditorcustom #budgetDetailButton': {
-					click: this.onSummaryDetailButtonClick
-				},
-				'promoeditorcustom #financeDetailButton': {
-					click: this.onSummaryDetailButtonClick
-				},
-				'promoeditorcustom #brandTechButton': {
-					click: this.onSummaryDetailButtonClick
-				},
-				'promoeditorcustom #basicPromoPanel': {
-					afterrender: this.onBasicPanelAfterrender
-				},
+                'promoeditorcustom #btn_showlog': {
+                    click: this.onShowLogButtonClick
+                },
+                // Promo Budgets Details Window
+                'promobudgetsdetailswindow': {
+                    afterrender: this.onPromoBudgetsDetailsWindowAfterRender
+                },
+                // Promo Finance Details Window
+                'promofinancedetailswindow': {
+                    afterrender: this.onPromoFinanceDetailsWindowAfterRender
+                },
+                // Promo Activity Details Window
+                'promoactivitydetailswindow': {
+                    afterrender: this.onPromoActivityDetailsWindowAfterRender
+                },
+                // Promo Product Subrange Details Window
+                'promoproductsubrangedetailswindow': {
+                    afterrender: this.onPromoProductSubrangeDetailsWindowAfterRender
+                },
+                'promoeditorcustom #activityDetailButton': {
+                    click: this.onSummaryDetailButtonClick
+                },
+                'promoeditorcustom #budgetDetailButton': {
+                    click: this.onSummaryDetailButtonClick
+                },
+                'promoeditorcustom #financeDetailButton': {
+                    click: this.onSummaryDetailButtonClick
+                },
+                'promoeditorcustom #brandTechButton': {
+                    click: this.onSummaryDetailButtonClick
+                },
+                'promoeditorcustom #basicPromoPanel': {
+                    afterrender: this.onBasicPanelAfterrender
+                },
 
                 'promoeditorcustom [name=GrowthAccelerationCheckbox]': {
                     change: this.onGrowthAccelerationCheckboxChange
@@ -290,1121 +301,1253 @@
 					click: this.onClientDateFilterButtonClick
 				},
 
-				// choose product
-				'promobasicproducts #choosePromoProductsBtn': {
-					click: this.onСhoosePromoProductsBtnClick
-				},
-				'promobasicproducts #promoBasicProducts_FilteredList': {
-					afterrender: this.onFilteredListBtnAfterRender,
-					click: this.onFilteredListBtnClick
-				},
-				'promobasicproducts #promoBasicProducts_ProductList': {
-					click: this.onProductListBtnClick
-				},
-				'promoproductchoosewindow producttree basetreegrid': {
-					checkchange: this.onProductTreeCheckChange
-				},
-				'promoproductchoosewindow #choose': {
-					click: this.onChooseProductTreeClick
-				},
-				'promoproductchoosewindow #dateFilter': {
-					click: this.onProductDateFilterButtonClick
-				},
-			}
-		});
-	},
+                // choose product
+                'promobasicproducts #choosePromoProductsBtn': {
+                    click: this.onСhoosePromoProductsBtnClick
+                },
+                'promobasicproducts #promoBasicProducts_FilteredList': {
+                    afterrender: this.onFilteredListBtnAfterRender,
+                    click: this.onFilteredListBtnClick
+                },
+                'promobasicproducts #promoBasicProducts_ProductList': {
+                    click: this.onProductListBtnClick
+                },
+                'promoproductchoosewindow producttree basetreegrid': {
+                    checkchange: this.onProductTreeCheckChange
+                },
+                'promoproductchoosewindow #choose': {
+                    click: this.onChooseProductTreeClick
+                },
+                'promoproductchoosewindow #dateFilter': {
+                    click: this.onProductDateFilterButtonClick
+                },
+            }
+        });
+    },
 
-	onGridPromoAfterrender: function (grid) {
-		var store = grid.getStore();
+    onGridPromoAfterrender: function (grid) {
+        var store = grid.getStore();
 
-		store.on('load', function (store) {
-			var selectionModel = grid.getSelectionModel();
-			if (selectionModel.hasSelection()) {
-				var view = grid.getView();
+        store.on('load', function (store) {
+            var selectionModel = grid.getSelectionModel();
+            if (selectionModel.hasSelection()) {
+                var view = grid.getView();
 
-				if (view && view.positionY) {
-					var jspData = $(view.getEl().dom).data('jsp');
+                if (view && view.positionY) {
+                    var jspData = $(view.getEl().dom).data('jsp');
 
-					jspData.scrollToY(view.positionY, false);
-					view.positionY = 0;
-				}
-			}
-		});
+                    jspData.scrollToY(view.positionY, false);
+                    view.positionY = 0;
+                }
+            }
+        });
 
-		this.onGridAfterrender(grid);
-	},
+        this.onGridAfterrender(grid);
+    },
 
-	onBasicPanelAfterrender: function (component, eOpts) {
-		$(component.getTargetEl().dom).on('jsp-scroll-y', function (event, scrollPositionY, isAtTop, isAtBottom) {
-			var panel = component.up();
-			if (panel) { // TODO: отрефакторить?
+    onBasicPanelAfterrender: function (component, eOpts) {
+        $(component.getTargetEl().dom).on('jsp-scroll-y', function (event, scrollPositionY, isAtTop, isAtBottom) {
+            var panel = component.up();
+            if (panel) { // TODO: отрефакторить?
 
-				var btnStep1 = panel.down('#btn_promo_step1');
-				var btnStep2 = panel.down('#btn_promo_step2');
-				var btnStep3 = panel.down('#btn_promo_step3');
-				var btnStep4 = panel.down('#btn_promo_step4');
-				var btnStep5 = panel.down('#btn_promo_step5');
-				var btnStep6 = panel.down('#btn_promo_step6');
+                var btnStep1 = panel.down('#btn_promo_step1');
+                var btnStep2 = panel.down('#btn_promo_step2');
+                var btnStep3 = panel.down('#btn_promo_step3');
+                var btnStep4 = panel.down('#btn_promo_step4');
+                var btnStep5 = panel.down('#btn_promo_step5');
+                var btnStep6 = panel.down('#btn_promo_step6');
 
-				var formStep1 = panel.down('#promo_step1');
-				var formStep2 = panel.down('#promo_step2');
-				var formStep3 = panel.down('#promo_step3');
-				var formStep4 = panel.down('#promo_step4');
-				var formStep5 = panel.down('#promo_step5');
-				var formStep6 = panel.down('#promo_step6');
+                var formStep1 = panel.down('#promo_step1');
+                var formStep2 = panel.down('#promo_step2');
+                var formStep3 = panel.down('#promo_step3');
+                var formStep4 = panel.down('#promo_step4');
+                var formStep5 = panel.down('#promo_step5');
+                var formStep6 = panel.down('#promo_step6');
 
-				if (formStep6.needToSetHeight && isAtTop) {
-					formStep6.setHeight(panel.getHeight() - 20);
-					formStep6.needToSetHeight = false;
-				} else {
-					component._refreshScroll(component);
-				}
+                if (formStep6.needToSetHeight && isAtTop) {
+                    formStep6.setHeight(panel.getHeight() - 20);
+                    formStep6.needToSetHeight = false;
+                } else {
+                    component._refreshScroll(component);
+                }
 
-				var h1 = formStep1.height;
-				var h1_2 = h1 + formStep2.height;
-				var h1_2_3 = h1_2 + formStep3.height;
-				var h1_2_3_4 = h1_2_3 + formStep4.height;
-				var h1_2_3_4_5 = h1_2_3_4 + formStep5.height;
-				var h1_2_3_4_5_6 = h1_2_3_4_5 + formStep6.height;
+                var h1 = formStep1.height;
+                var h1_2 = h1 + formStep2.height;
+                var h1_2_3 = h1_2 + formStep3.height;
+                var h1_2_3_4 = h1_2_3 + formStep4.height;
+                var h1_2_3_4_5 = h1_2_3_4 + formStep5.height;
+                var h1_2_3_4_5_6 = h1_2_3_4_5 + formStep6.height;
 
-				var _deltaY = scrollPositionY + 100;
+                var _deltaY = scrollPositionY + 100;
 
-				// Step 1 - client
-				if (_deltaY <= h1) {
-					btnStep1.addClass('selected');
-					btnStep2.removeCls('selected');
-					btnStep3.removeCls('selected');
-					btnStep4.removeCls('selected');
-					btnStep5.removeCls('selected');
-					btnStep6.removeCls('selected');
+                // Step 1 - client
+                if (_deltaY <= h1) {
+                    btnStep1.addClass('selected');
+                    btnStep2.removeCls('selected');
+                    btnStep3.removeCls('selected');
+                    btnStep4.removeCls('selected');
+                    btnStep5.removeCls('selected');
+                    btnStep6.removeCls('selected');
 
-					formStep1.header.addClass('promo-header-item-active');
-					formStep2.header.removeCls('promo-header-item-active');
-					formStep3.header.removeCls('promo-header-item-active');
-					formStep4.header.removeCls('promo-header-item-active');
-					formStep5.header.removeCls('promo-header-item-active');
-					formStep6.header.removeCls('promo-header-item-active');
+                    formStep1.header.addClass('promo-header-item-active');
+                    formStep2.header.removeCls('promo-header-item-active');
+                    formStep3.header.removeCls('promo-header-item-active');
+                    formStep4.header.removeCls('promo-header-item-active');
+                    formStep5.header.removeCls('promo-header-item-active');
+                    formStep6.header.removeCls('promo-header-item-active');
 
-					// Step 2 - product
-				} else if (_deltaY > h1 && _deltaY <= h1_2) {
-					btnStep1.removeCls('selected');
-					btnStep2.addClass('selected');
-					btnStep3.removeCls('selected');
-					btnStep4.removeCls('selected');
-					btnStep5.removeCls('selected');
-					btnStep6.removeCls('selected');
+                    // Step 2 - product
+                } else if (_deltaY > h1 && _deltaY <= h1_2) {
+                    btnStep1.removeCls('selected');
+                    btnStep2.addClass('selected');
+                    btnStep3.removeCls('selected');
+                    btnStep4.removeCls('selected');
+                    btnStep5.removeCls('selected');
+                    btnStep6.removeCls('selected');
 
-					formStep1.header.removeCls('promo-header-item-active');
-					formStep2.header.addClass('promo-header-item-active');
-					formStep3.header.removeCls('promo-header-item-active');
-					formStep4.header.removeCls('promo-header-item-active');
-					formStep5.header.removeCls('promo-header-item-active');
-					formStep6.header.removeCls('promo-header-item-active');
+                    formStep1.header.removeCls('promo-header-item-active');
+                    formStep2.header.addClass('promo-header-item-active');
+                    formStep3.header.removeCls('promo-header-item-active');
+                    formStep4.header.removeCls('promo-header-item-active');
+                    formStep5.header.removeCls('promo-header-item-active');
+                    formStep6.header.removeCls('promo-header-item-active');
 
-					var mousedownEvent = document.createEvent('MouseEvents');
-					mousedownEvent.initEvent('mousedown', true, true)
-					panel.el.dom.dispatchEvent(mousedownEvent);
+                    var mousedownEvent = document.createEvent('MouseEvents');
+                    mousedownEvent.initEvent('mousedown', true, true)
+                    panel.el.dom.dispatchEvent(mousedownEvent);
 
-					// Step 3 - mechanic
-				} else if (_deltaY > h1_2 && _deltaY <= h1_2_3) {
-					event.preventDefault();
+                    // Step 3 - mechanic
+                } else if (_deltaY > h1_2 && _deltaY <= h1_2_3) {
+                    event.preventDefault();
 
-					btnStep1.removeCls('selected');
-					btnStep2.removeCls('selected');
-					btnStep3.addClass('selected');
-					btnStep4.removeCls('selected');
-					btnStep5.removeCls('selected');
-					btnStep6.removeCls('selected');
+                    btnStep1.removeCls('selected');
+                    btnStep2.removeCls('selected');
+                    btnStep3.addClass('selected');
+                    btnStep4.removeCls('selected');
+                    btnStep5.removeCls('selected');
+                    btnStep6.removeCls('selected');
 
-					formStep1.header.removeCls('promo-header-item-active');
-					formStep2.header.removeCls('promo-header-item-active');
-					formStep3.header.addClass('promo-header-item-active');
-					formStep4.header.removeCls('promo-header-item-active');
-					formStep5.header.removeCls('promo-header-item-active');
-					formStep6.header.removeCls('promo-header-item-active');
+                    formStep1.header.removeCls('promo-header-item-active');
+                    formStep2.header.removeCls('promo-header-item-active');
+                    formStep3.header.addClass('promo-header-item-active');
+                    formStep4.header.removeCls('promo-header-item-active');
+                    formStep5.header.removeCls('promo-header-item-active');
+                    formStep6.header.removeCls('promo-header-item-active');
 
-					var mousedownEvent = document.createEvent('MouseEvents');
-					mousedownEvent.initEvent('mousedown', true, true)
-					panel.el.dom.dispatchEvent(mousedownEvent);
+                    var mousedownEvent = document.createEvent('MouseEvents');
+                    mousedownEvent.initEvent('mousedown', true, true)
+                    panel.el.dom.dispatchEvent(mousedownEvent);
 
-					// Step 4 - period
-				} else if (_deltaY > h1_2_3 && _deltaY <= h1_2_3_4) {
-					btnStep1.removeCls('selected');
-					btnStep2.removeCls('selected');
-					btnStep3.removeCls('selected');
-					btnStep4.addClass('selected');
-					btnStep5.removeCls('selected');
-					btnStep6.removeCls('selected');
+                    // Step 4 - period
+                } else if (_deltaY > h1_2_3 && _deltaY <= h1_2_3_4) {
+                    btnStep1.removeCls('selected');
+                    btnStep2.removeCls('selected');
+                    btnStep3.removeCls('selected');
+                    btnStep4.addClass('selected');
+                    btnStep5.removeCls('selected');
+                    btnStep6.removeCls('selected');
 
-					formStep1.header.removeCls('promo-header-item-active');
-					formStep2.header.removeCls('promo-header-item-active');
-					formStep3.header.removeCls('promo-header-item-active');
-					formStep4.header.addClass('promo-header-item-active');
-					formStep5.header.removeCls('promo-header-item-active');
-					formStep6.header.removeCls('promo-header-item-active');
-
-
-					var mousedownEvent = document.createEvent('MouseEvents');
-					mousedownEvent.initEvent('mousedown', true, true)
-					panel.el.dom.dispatchEvent(mousedownEvent);
-
-					// Step 5 - event
-				} else if (_deltaY > h1_2_3_4 && _deltaY <= h1_2_3_4_5) {
-					btnStep1.removeCls('selected');
-					btnStep2.removeCls('selected');
-					btnStep3.removeCls('selected');
-					btnStep4.removeCls('selected');
-					btnStep5.addClass('selected');
-					btnStep6.removeCls('selected');
-
-					formStep1.header.removeCls('promo-header-item-active');
-					formStep2.header.removeCls('promo-header-item-active');
-					formStep3.header.removeCls('promo-header-item-active');
-					formStep4.header.removeCls('promo-header-item-active');
-					formStep5.header.addClass('promo-header-item-active');
-					formStep6.header.removeCls('promo-header-item-active');
-
-					var mousedownEvent = document.createEvent('MouseEvents');
-					mousedownEvent.initEvent('mousedown', true, true)
-					panel.el.dom.dispatchEvent(mousedownEvent);
-
-					// Step 6 - settings
-				} else if (_deltaY > h1_2_3_4_5 && _deltaY <= h1_2_3_4_5_6) {
-					btnStep1.removeCls('selected');
-					btnStep2.removeCls('selected');
-					btnStep3.removeCls('selected');
-					btnStep4.removeCls('selected');
-					btnStep5.removeCls('selected');
-					btnStep6.addClass('selected');
-
-					formStep1.header.removeCls('promo-header-item-active');
-					formStep2.header.removeCls('promo-header-item-active');
-					formStep3.header.removeCls('promo-header-item-active');
-					formStep4.header.removeCls('promo-header-item-active');
-					formStep5.header.removeCls('promo-header-item-active');
-					formStep6.header.addClass('promo-header-item-active');
-
-					var mousedownEvent = document.createEvent('MouseEvents');
-					mousedownEvent.initEvent('mousedown', true, true)
-					panel.el.dom.dispatchEvent(mousedownEvent);
-				} else {
-					console.log('undefined step');
-				}
-			}
-		});
-
-		var mainTab = component.up('promoeditorcustom').down('button[itemId=btn_promo]');
-		var stepButtons = component.up('panel[name=promo]').down('custompromotoolbar');
-		checkMainTab(stepButtons, mainTab);
-	},
+                    formStep1.header.removeCls('promo-header-item-active');
+                    formStep2.header.removeCls('promo-header-item-active');
+                    formStep3.header.removeCls('promo-header-item-active');
+                    formStep4.header.addClass('promo-header-item-active');
+                    formStep5.header.removeCls('promo-header-item-active');
+                    formStep6.header.removeCls('promo-header-item-active');
 
 
-	// открытие окон просмотра детальной информации из дашборда
-	onSummaryDetailButtonClick: function (button) {
-		Ext.widget(button.windowName).show();
-	},
+                    var mousedownEvent = document.createEvent('MouseEvents');
+                    mousedownEvent.initEvent('mousedown', true, true)
+                    panel.el.dom.dispatchEvent(mousedownEvent);
 
-	onPromoEditorCustomAfterrender: function (promoEditorCustom) {
-		if (promoEditorCustom.isInOutPromo || (promoEditorCustom.model && promoEditorCustom.model.data.InOut)
-			|| (promoEditorCustom.assignedRecord && promoEditorCustom.assignedRecord.data.InOut)) {
-			promoEditorCustom.query('#btn_promoInOut')[0].show();
+                    // Step 5 - event
+                } else if (_deltaY > h1_2_3_4 && _deltaY <= h1_2_3_4_5) {
+                    btnStep1.removeCls('selected');
+                    btnStep2.removeCls('selected');
+                    btnStep3.removeCls('selected');
+                    btnStep4.removeCls('selected');
+                    btnStep5.addClass('selected');
+                    btnStep6.removeCls('selected');
 
-		}
-		this.hideEditButtonForSomeRole();
-	},
+                    formStep1.header.removeCls('promo-header-item-active');
+                    formStep2.header.removeCls('promo-header-item-active');
+                    formStep3.header.removeCls('promo-header-item-active');
+                    formStep4.header.removeCls('promo-header-item-active');
+                    formStep5.header.addClass('promo-header-item-active');
+                    formStep6.header.removeCls('promo-header-item-active');
 
-	onPromoEditorCustomShow: function () {
+                    var mousedownEvent = document.createEvent('MouseEvents');
+                    mousedownEvent.initEvent('mousedown', true, true)
+                    panel.el.dom.dispatchEvent(mousedownEvent);
+
+                    // Step 6 - settings
+                } else if (_deltaY > h1_2_3_4_5 && _deltaY <= h1_2_3_4_5_6) {
+                    btnStep1.removeCls('selected');
+                    btnStep2.removeCls('selected');
+                    btnStep3.removeCls('selected');
+                    btnStep4.removeCls('selected');
+                    btnStep5.removeCls('selected');
+                    btnStep6.addClass('selected');
+
+                    formStep1.header.removeCls('promo-header-item-active');
+                    formStep2.header.removeCls('promo-header-item-active');
+                    formStep3.header.removeCls('promo-header-item-active');
+                    formStep4.header.removeCls('promo-header-item-active');
+                    formStep5.header.removeCls('promo-header-item-active');
+                    formStep6.header.addClass('promo-header-item-active');
+
+                    var mousedownEvent = document.createEvent('MouseEvents');
+                    mousedownEvent.initEvent('mousedown', true, true)
+                    panel.el.dom.dispatchEvent(mousedownEvent);
+                } else {
+                    console.log('undefined step');
+                }
+            }
+        });
+
+        var mainTab = component.up('promoeditorcustom').down('button[itemId=btn_promo]');
+        var stepButtons = component.up('panel[name=promo]').down('custompromotoolbar');
+        checkMainTab(stepButtons, mainTab);
+    },
+
+
+    // открытие окон просмотра детальной информации из дашборда
+    onSummaryDetailButtonClick: function (button) {
+        Ext.widget(button.windowName).show();
+    },
+
+    onPromoEditorCustomAfterrender: function (promoEditorCustom) { 
+        if (promoEditorCustom.isInOutPromo || (promoEditorCustom.model && promoEditorCustom.model.data.InOut)
+            || (promoEditorCustom.assignedRecord && promoEditorCustom.assignedRecord.data.InOut)) {
+           
+            
+        }
+        //теперь каждое промо имеет глиф и название
+        promoEditorCustom.query('#btn_promoInOut')[0].show();
+        promoEditorCustom.query('#btn_promoInOut')[0].setGlyph(parseInt('0x' + promoEditorCustom.promotypeGlyph, 16)); 
+        promoEditorCustom.query('#btn_promoInOut')[0].setText(promoEditorCustom.promotypeName); 
+        this.hideEditButtonForSomeRole();
+    },
+
+    onPromoEditorCustomShow: function () {
         /*
         var promoBudgetsDetailsWindow = Ext.widget('promobudgetsdetailswindow');
         var promoActivityDetailsWindow = Ext.widget('promoactivitydetailswindow');
         var promoProductSubrangeDetailsWindow = Ext.widget('promoproductsubrangedetailswindow');
         */
-	},
-
-	onPromoEditorCustomBeforerender: function () {
-		this.setCustomTips();
-	},
-
-	setCustomTips: function () {
-		var elementsWithTips = Ext.ComponentQuery.query('*[customTip*=]');
-
-		elementsWithTips.forEach(function (el) {
-			var me = el;
-
-			// Перезапись стандартного создания ToolTip
-			Ext.override(me, {
-				afterFirstLayout: function () {
-					var me = this;
-					this.callParent(arguments);
-
-					me.fieldLabelTip = Ext.create('Ext.tip.ToolTip', {
-						target: me.labelEl,
-						preventLoseFocus: true,
-						trackMouse: true,
-						html: me.customTip
-					});
-				}
-			});
-		})
-	},
-
-	onPromoEditorCustomClose: function () {
-		var toolbar = Ext.ComponentQuery.query('readonlydirectorytoolbar');
-		if (toolbar.length > 0)
-			toolbar[0].setDisabled(false);
-
-		// закрываем подключение к хабу
-		requestHub($.connection.logHub.server.disconnectFromHub);
-	},
-
-	// =============== Steps ===============
-
-	// promo main toolbar btn
-	onPromoButtonClick: function (button) {
-		this.setButtonsState(button);
-	},
-
-	onSupportButtonClick: function (button) {
-		this.setButtonsState(button);
-	},
-
-	onPromoBudgetsButtonClick: function (button) {
-		this.setButtonsState(button);
-	},
-
-	onPromoActivityButtonClick: function (button) {
-		this.setButtonsState(button);
-	},
-	onSummaryButtonClick: function (button, e) {
-		var me = this,
-			promoeditorcustom = button.up('promoeditorcustom'),
-			mask = promoeditorcustom.setLoading(true);
-		// для того чтобы маска отрисовалась первой
-		Ext.Function.defer(me.fillSummaryPanel, 1, me, [button, mask]);
-	},
-
-	fillSummaryPanel: function (button, mask) {
-		var me = this,
-			window = button.up('window'),
-			record = me.getRecord(window),
-			promoEditorCustom = button.up('promoeditorcustom'),
-			isInOut = (promoEditorCustom.isInOutPromo || (promoEditorCustom.model && promoEditorCustom.model.data.InOut));
-		var summary = window.down('panel[name=summary]');
-
-		if (!isInOut) {
-			summary.down('[name=UpliftFieldset]').show();
-		}
-
-		me.updateSummaryInformationPanel(summary, record);
-
-		me.updateSummaryPlanFactLabels(summary, record, isInOut);
-
-		me.setButtonsState(button);
-
-		var budgetsFieldset = summary.down('panel[name=budgetsFieldset]'),
-			activityFieldset = summary.down('panel[name=activityFieldset]'),
-			roiFieldset = summary.down('panel[name=roiFieldset]');
-		// activity Data
-		var activityChartName, activityChartFields, ChartData;
-		if (isInOut) {
-			activityChartName = 'inoutpromoactivitychart';
-			activityChartFields = ['name', 'Inc'];
-		}
-		else {
-			activityChartName = 'promoactivitychart';
-			activityChartFields = ['name', 'Inc', 'BL'];
-		}
-
-		var factInc = record.get('ActualPromoIncrementalLSV') || 0,
-			planInc = record.get('PlanPromoIncrementalLSV') || 0;
-		if (isInOut) {
-			var ChartData = [
-				{ name: 'Plan', Inc: planInc },
-				{ name: 'Actual', Inc: factInc },
-			]
-		} else {
-			var factBL = record.get('ActualPromoBaselineLSV') || 0,
-				planBL = record.get('PlanPromoBaselineLSV') || 0;
-
-			if (factBL === -factInc) {
-				factBL = 0;
-				factInc = 0;
-			}
-			if (planBL === -planInc) {
-				planBL = 0;
-				planInc = 0;
-			}
-
-			if (!(factBL === 0 && factInc === 0)) {
-				factInc = (factInc / (factBL + factInc)) * 100;
-				factInc = Ext.util.Format.round(factInc, 2);
-				factBL = 100 - factInc;
-			}
-			if (!(planBL === 0 && planInc === 0)) {
-				planInc = (planInc / (planBL + planInc)) * 100;
-				planInc = Ext.util.Format.round(planInc, 2);
-				planBL = 100 - planInc;
-			}
-
-			var ChartData = [
-				{ name: 'Plan', BL: planBL, Inc: planInc },
-				{ name: 'Actual', BL: factBL, Inc: factInc },
-			]
-		}
-		// ROI Data
-		var planROI = record.get('PlanPromoNetROIPercent') || 0,
-			factROI = record.get('ActualPromoNetROIPercent') || 0;
-		planROI = Ext.util.Format.round(planROI, 2);
-		factROI = Ext.util.Format.round(factROI, 2);
-		var maximum = planROI > factROI ? planROI : factROI;
-		maximum = maximum == 0 ? 100 : Math.ceil(maximum / 100) * 100;
-		var ROIChartData = [
-			{ name: l10n.ns('tpm', 'PromoSummary').value('Plan'), value: planROI },
-			{ name: l10n.ns('tpm', 'PromoSummary').value('Actual'), value: factROI },
-		];
-
-		// budget Data
-		var Cost = record.get('ActualPromoCost') || 0;
-
-		if (Cost > 0) {
-			var Shopper = record.get('ActualPromoTIShopper') || 0,
-				CostProd = record.get('ActualPromoCostProduction') || 0,
-				Marketing = record.get('ActualPromoTIMarketing') || 0,
-				Branding = record.get('ActualPromoBranding') || 0,
-				BTL = record.get('ActualPromoBTL') || 0,
-				PlanOrActual = 'Actual';
-		} else {
-			var Shopper = record.get('PlanPromoTIShopper') || 0,
-				Cost = record.get('PlanPromoCost') || 0,
-				CostProd = record.get('PlanPromoCostProduction') || 0,
-				Marketing = record.get('PlanPromoTIMarketing') || 0,
-				Branding = record.get('PlanPromoBranding') || 0,
-				BTL = record.get('PlanPromoBTL') || 0,
-				PlanOrActual = 'Plan';
-		}
-
-		budgetData = [
-			{ name: l10n.ns('tpm', 'PromoSummary').value('MarketingTI'), value: Marketing },
-			{ name: l10n.ns('tpm', 'PromoSummary').value('ShopperTI'), value: Shopper },
-			{ name: l10n.ns('tpm', 'PromoSummary').value('BTL'), value: BTL },
-			{ name: l10n.ns('tpm', 'PromoSummary').value('CostProduction'), value: CostProd },
-			{ name: l10n.ns('tpm', 'PromoSummary').value('Branding'), value: Branding }
-		]
-		// Если графики уже добавлены в дашборд, просто перезагружаем их сторы
-		if (activityFieldset.items.length != 0) {
-			var activityChartStore = activityFieldset.down(activityChartName).getStore(),
-				budgetsChart = budgetsFieldset.down('promobudgetschart'),
-				budgetsChartStore = budgetsChart.getStore(),
-				roiChart = roiFieldset.down('promoroichart'),
-				roiChartStore = roiChart.getStore();
-
-			activityChartStore.loadData(ChartData);
-
-			roiChart.maximum = maximum;
-			roiChart.fireEvent('beforerender', roiChart);
-			roiChartStore.loadData(ROIChartData);
-			roiChart.fireEvent('resize', roiChart);
-
-			budgetsChart.cost = Cost;
-			budgetsChart.planOrActual = PlanOrActual;
-			budgetsChart.fireEvent('resize', budgetsChart);
-			budgetsChartStore.loadData(budgetData);
-		} else {
-			// Добавляем графики в дашборд, если их ещё нет там
-			activityFieldset.add({
-				width: 500,
-				height: 300,
-				xtype: activityChartName,
-				store: Ext.create('Ext.data.Store', {
-					storeId: 'planpromoactivitystore',
-					fields: activityChartFields,
-					data: ChartData
-				})
-			});
-
-			budgetsFieldset.add({
-				xtype: 'promobudgetschart',
-				store: Ext.create('Ext.data.Store', {
-					storeId: 'promobudgetsstore',
-					fields: ['name', 'value'],
-					data: budgetData
-				}),
-				cost: Cost,
-				planOrActual: PlanOrActual,
-			});
-
-			roiFieldset.add([{
-				xtype: 'promoroichart',
-				store: Ext.create('Ext.data.Store', {
-					storeId: 'promofinancechartstore',
-					fields: ['name', 'value'],
-					data: ROIChartData
-				}),
-				maximum: maximum
-			}]);
-		}
-		mask.destroy();
-	},
-
-	// Обновление данных на первой панели дашборда
-	updateSummaryInformationPanel: function (window, record) {
-		var promoInformationPanel = window.down('container[name=promoInformationPanel]'),
-			promoNameLabel = promoInformationPanel.down('label[name=promoNameLabel]'),
-			clientLabel = promoInformationPanel.down('label[name=clientLabel]'),
-			summaryStatusField = promoInformationPanel.down('fieldset[name=summaryStatusField]'),
-			marsMechanicLabel = promoInformationPanel.down('label[name=marsMechLabel]'),
-			instoreMechanicLabel = promoInformationPanel.down('label[name=instoreMechLabel]'),
-			durationDatesLabel = promoInformationPanel.down('label[name=durationDateLabel]'),
-			dispatchesDatesLabel = promoInformationPanel.down('label[name=dispatchDateLabel]');
-
-		var promoName = Ext.String.format('{0} (ID: {1})', record.get('Name'), record.get('Number'));
-		promoNameLabel.setText(promoName);
-
-		var client = record.get('PromoClientName');
-		clientLabel.setText(client)
-
-		summaryStatusField.update({ StatusColor: record.get('PromoStatusColor'), StatusName: record.get('PromoStatusName') });
-
-		instoreMechanicLabel.setText(record.get('MechanicIA'));
-		marsMechanicLabel.setText(record.get('Mechanic'));
-
-		var durationText = Ext.String.format('{0} - {1}', Ext.Date.format(record.get('StartDate'), 'd.m.Y'), Ext.Date.format(record.get('EndDate'), 'd.m.Y'));
-		durationDatesLabel.setText(durationText);
-
-		var dispatchDatesText = Ext.String.format('{0} - {1}', Ext.Date.format(record.get('DispatchesStart'), 'd.m.Y'), Ext.Date.format(record.get('DispatchesEnd'), 'd.m.Y'));
-		dispatchesDatesLabel.setText(dispatchDatesText);
-	},
-
-	// Обновление текстовых данных план/факт 
-	updateSummaryPlanFactLabels: function (summary, record, isInOut) {
-		var me = this;
-
-		if (!isInOut) {
-			var ActualPromoUpliftPercent = record.get('ActualPromoUpliftPercent') || 0,
-				PlanPromoUpliftPercent = record.get('PlanPromoUpliftPercent') || 0;
-			ActualPromoUpliftPercent = Ext.util.Format.round(ActualPromoUpliftPercent, 2);
-			PlanPromoUpliftPercent = Ext.util.Format.round(PlanPromoUpliftPercent, 2);
-
-			var planUpliftLabel = summary.down('fieldset[name=planUpliftLabel]'),
-				actualUpliftLabel = summary.down('fieldset[name=actualUpliftLabel]');
-
-			planUpliftLabel.setTitle(PlanPromoUpliftPercent + '%');
-			actualUpliftLabel.setTitle(ActualPromoUpliftPercent + '%');
-		}
-
-		var ActualPromoIncrementalNSV = record.get('ActualPromoNetIncrementalNSV') || 0,
-			PlanPromoIncrementalNSV = record.get('PlanPromoNetIncrementalNSV') || 0,
-			PercentPromoIncrementalNSV = 0,
-
-			ActualPromoIncrementalLSV = record.get('ActualPromoNetIncrementalLSV') || 0,
-			PlanPromoIncrementalLSV = record.get('PlanPromoNetIncrementalLSV') || 0,
-			PercentPromoIncrementalLSV = 0,
-
-			ActualPromoNSV = record.get('ActualPromoNetNSV') || 0,
-			PlanPromoNSV = record.get('PlanPromoNetNSV') || 0,
-			PercentPromoNSV = 0,
-
-			ActualPromoIncrementalEarnings = record.get('ActualPromoNetIncrementalEarnings') || 0,
-			PlanPromoIncrementalEarnings = record.get('PlanPromoNetIncrementalEarnings') || 0,
-			PercentPromoIncrementalEarnings = 0;
-
-		ActualPromoIncrementalNSV = Ext.util.Format.round(ActualPromoIncrementalNSV / 1000000, 2);
-		PlanPromoIncrementalNSV = Ext.util.Format.round(PlanPromoIncrementalNSV / 1000000, 2);
-		ActualPromoIncrementalLSV = Ext.util.Format.round(ActualPromoIncrementalLSV / 1000000, 2);
-		PlanPromoIncrementalLSV = Ext.util.Format.round(PlanPromoIncrementalLSV / 1000000, 2);
-		ActualPromoNSV = Ext.util.Format.round(ActualPromoNSV / 1000000, 2);
-		PlanPromoNSV = Ext.util.Format.round(PlanPromoNSV / 1000000, 2);
-		ActualPromoIncrementalEarnings = Ext.util.Format.round(ActualPromoIncrementalEarnings / 1000000, 2);
-		PlanPromoIncrementalEarnings = Ext.util.Format.round(PlanPromoIncrementalEarnings / 1000000, 2);
-
-		if (!(PlanPromoIncrementalNSV === 0)) {
-			PercentPromoIncrementalNSV = (ActualPromoIncrementalNSV / PlanPromoIncrementalNSV) * 100 - 100;
-			PercentPromoIncrementalNSV = Ext.util.Format.round(PercentPromoIncrementalNSV, 2);
-		}
-		if (!(PlanPromoIncrementalLSV === 0)) {
-			PercentPromoIncrementalLSV = (ActualPromoIncrementalLSV / PlanPromoIncrementalLSV) * 100 - 100;
-			PercentPromoIncrementalLSV = Ext.util.Format.round(PercentPromoIncrementalLSV, 2);
-		}
-		if (!(PlanPromoNSV === 0)) {
-			PercentPromoNSV = (ActualPromoNSV / PlanPromoNSV) * 100 - 100;
-			PercentPromoNSV = Ext.util.Format.round(PercentPromoNSV, 2);
-		}
-		if (!(PlanPromoIncrementalEarnings === 0)) {
-			PercentPromoIncrementalEarnings = (ActualPromoIncrementalEarnings / PlanPromoIncrementalEarnings) * 100 - 100;
-			PercentPromoIncrementalEarnings = Ext.util.Format.round(PercentPromoIncrementalEarnings, 2);
-		}
-
-
-		var actualIncNSVLabel = summary.down('label[name=actualIncNSVLabel]'),
-			planIncNSVLabel = summary.down('label[name=planIncNSVLabel]'),
-			percentIncNSVLabel = summary.down('label[name=percentIncNSVLabel]'),
-
-			actualIncLSVLabel = summary.down('label[name=actualIncLSVLabel]'),
-			planIncLSVLabel = summary.down('label[name=planIncLSVLabel]'),
-			percentIncLSVLabel = summary.down('label[name=percentIncLSVLabel]'),
-
-			actualPromoNSVLabel = summary.down('label[name=actualPromoNSVLabel]'),
-			planPromoNSVLabel = summary.down('label[name=planPromoNSVLabel]'),
-			percentPromoNSVLabel = summary.down('label[name=percentPromoNSVLabel]'),
-
-			actualEarningsLabel = summary.down('label[name=actualEarningsLabel]'),
-			planEarningsLabel = summary.down('label[name=planEarningsLabel]'),
-			percentEarningsLabel = summary.down('label[name=percentEarningsLabel]');
-
-		actualIncNSVLabel.setText(ActualPromoIncrementalNSV);
-		planIncNSVLabel.setText(PlanPromoIncrementalNSV);
-		percentIncNSVLabel.setText(PercentPromoIncrementalNSV + '%');
-
-		actualIncLSVLabel.setText(ActualPromoIncrementalLSV);
-		planIncLSVLabel.setText(PlanPromoIncrementalLSV);
-		percentIncLSVLabel.setText(PercentPromoIncrementalLSV + '%');
-
-		actualPromoNSVLabel.setText(ActualPromoNSV);
-		planPromoNSVLabel.setText(PlanPromoNSV);
-		percentPromoNSVLabel.setText(PercentPromoNSV + '%');
-
-		actualEarningsLabel.setText(ActualPromoIncrementalEarnings);
-		planEarningsLabel.setText(PlanPromoIncrementalEarnings);
-		percentEarningsLabel.setText(PercentPromoIncrementalEarnings + '%');
-
-		(PercentPromoIncrementalNSV < 0) ? percentIncNSVLabel.addCls('redPercent') : percentIncNSVLabel.addCls('greenPercent');
-		(PercentPromoIncrementalLSV < 0) ? percentIncLSVLabel.addCls('redPercent') : percentIncLSVLabel.addCls('greenPercent');
-		(PercentPromoNSV < 0) ? percentPromoNSVLabel.addCls('redPercent') : percentPromoNSVLabel.addCls('greenPercent');
-		(PercentPromoIncrementalEarnings < 0) ? percentEarningsLabel.addCls('redPercent') : percentEarningsLabel.addCls('greenPercent');
-	},
-
-	// Получение Цифры с иконкой для фактического значения в сравнении с плановым
-	getStyledFactValue: function (planValue, factValue, template) {
-		var isNegative = planValue > factValue;
-		var isPositive = planValue < factValue;
-		var style = 'default',
-			icon = '';
-		if (isNegative) {
-			style = 'negative';
-			icon = '<span class="mdi mdi-menu-down negative-result-glyph" style="font-family:MaterialDesignIcons;"></span>'
-		} else if (isPositive) {
-			style = 'positive';
-			icon = '<span class="mdi mdi-menu-up positive-result-glyph" style="font-family:MaterialDesignIcons;"></span>';
-		}
-		return Ext.String.format(template, style, factValue, icon);
-	},
-
-	onChangesButtonClick: function (button) {
-		this.setButtonsState(button);
-		var window = button.up('window');
-		var approvalhistory = window.down('container[name=changes]');
-		var panel = approvalhistory.down('panel');
-		var parentHeight = approvalhistory.up().getHeight();
-		approvalhistory.down('fieldset').setHeight(parentHeight - 13);
-
-		var promoeditorcustom = button.up('promoeditorcustom');
-		var promoId = promoeditorcustom.promoId;
-
-		promoeditorcustom.setLoading(true);
-
-		var parameters = {
-			promoKey: promoId
-		};
-		App.Util.makeRequestWithCallback('PromoStatusChanges', 'PromoStatusChangesByPromo', parameters, function (data) {
-			var result = Ext.JSON.decode(data.httpResponse.data.value);
-			var promoeditorcustom = Ext.ComponentQuery.query('promoeditorcustom')[0];
-			if (result.success) {
-				var tpl = Ext.create('App.view.tpm.common.approvalStatusStateTpl').formatTpl;
-				var itemsArray = [];
-				var promo = null;
-				var onApprovalState = null;
-				var promoStatusName = 'Draft';
-
-				var panelWidthRatio = panel.getWidth() / 1160;
-				//Small sizes correction:
-				if (panelWidthRatio * 130 < 120) {
-					panelWidthRatio = panelWidthRatio * 0.95;
-				} else if (panelWidthRatio * 130 < 110) {
-					panelWidthRatio = panelWidthRatio * 0.85;
-				} else if (panelWidthRatio * 130 < 100) {
-					panelWidthRatio = panelWidthRatio * 0.60;
-				}
-				var panelHeightRatio = (panel.getWidth() / 1160) * (100 / 130);
-
-				if (!result.isEmpty) {
-					if (result.data.length == 0) {
-						promo = promoeditorcustom.model.data;
-					} else {
-						promo = result.data[0].Promo;
-					}
-					promoStatusName = promo.PromoStatus == undefined ? promo.PromoStatusSystemName : promo.PromoStatus.SystemName
-
-					if (promo.IsCMManagerApproved == true && (promo.IsDemandPlanningApproved == false || promo.IsDemandPlanningApproved == null) && promo.IsDemandFinanceApproved == true)
-						onApprovalState = 'DemandPlanningNonego';
-					else if ((promo.IsCMManagerApproved == false || promo.IsCMManagerApproved == null) && (promo.IsDemandPlanningApproved == false || promo.IsDemandPlanningApproved == null) && (promo.IsDemandFinanceApproved == false || promo.IsDemandFinanceApproved == null))
-						onApprovalState = 'CMManager';
-					else if (promo.IsCMManagerApproved == true && (promo.IsDemandPlanningApproved == false || promo.IsDemandPlanningApproved == null) && (promo.IsDemandFinanceApproved == false || promo.IsDemandFinanceApproved == null))
-						onApprovalState = 'DemandPlanning';
-					else if (promo.IsCMManagerApproved == true && promo.IsDemandPlanningApproved == true && (promo.IsDemandFinanceApproved == false || promo.IsDemandFinanceApproved == null))
-						onApprovalState = 'DemandFinance';
-				}
-				
-				var settings = {
-					currentWidthRatio: panelWidthRatio,
-					currentHeightRatio: panelHeightRatio,
-					currentHeight: panel.body.getHeight(),
-					status: promoStatusName,
-					onApprovalState: onApprovalState,
-					isNonego: result.isNoNegoPassed == undefined ? false : result.isNoNegoPassed,
-					statusHistory: result.data == undefined ? [] : result.data,
-					statusColors: result.statusColors
-				}
-
-				itemsArray.push({
-					html: tpl.apply(settings),
-				});
-
-				panel.removeAll();
-				panel.add(itemsArray);
-				panel.doLayout();
-
-				var elementsWithTips = Ext.select('div[toolTip*=]');
-
-				elementsWithTips.elements.forEach(function (el) {
-					var me = el;
-					me.fieldLabelTip = Ext.create('Ext.tip.ToolTip', {
-						target: me,
-						preventLoseFocus: true,
-						trackMouse: true,
-						html: me.getAttribute('tooltip'),
-						dismissDelay: 15000
-					});
-				})
-
-				var workflowBtn = approvalhistory.down('button[id=workflowBtn]');
-				var historyBtn = approvalhistory.down('button[id=historyBtn]');
-				var dateOfChangeLable = approvalhistory.down('label');
-				var reverseBtn = approvalhistory.down('button[id=reverseBtn]');
-
-				if (historyBtn) {
-					historyBtn.removeCls('selected');
-				}
-				workflowBtn.addClass('selected');
-				dateOfChangeLable.hide();
-				reverseBtn.hide();
-
-				approvalhistory.isLoaded = false;
-				approvalhistory.historyArray = result.data == undefined ? null : result.data;
-				approvalhistory.isNonego = result.isNoNegoPassed == undefined ? false : result.isNoNegoPassed;
-				approvalhistory.promoStatus = promoStatusName;
-				approvalhistory.statusColors = result.statusColors;
-				promoeditorcustom.setLoading(false);
-			} else {
-				promoeditorcustom.setLoading(false);
-				App.Notify.pushError(l10n.ns('tpm', 'text').value('failedLoadData'));
-			}
-		});
-		if (promoId != null) {
-			
-		} 
-	},
-	// переключение между вкладками формы промо
-	setButtonsState: function (button) {
-		var window = button.up('window'),
-			itemNamesArray = ['promo', 'promoBudgets', 'promoActivity', 'summary', 'changes'],
-			buttonItem = button.itemId.replace('btn_', '');
-		itemNamesArray.forEach(function (item) {
-			var selectedButton = item == buttonItem,
-				query = Ext.String.format('[name={0}]', item),
-				curWin = window.down(Ext.String.format('container{0}', query)) || window.down(Ext.String.format('panel{0}', query));
-			curWin.setVisible(selectedButton);
-			var curBtn = window.down(Ext.String.format('#btn_{0}', item));
-			if (selectedButton) {
-				curBtn.addClass('selected');
-			} else {
-				curBtn.removeCls('selected');
-			}
-		})
-	},
-
-	// promo steps
-	onPromoButtonStep1Click: function (button) {
-		var container = button.up('window').down('container[name=promo]');
-
-		container.down('#btn_promo_step2').removeCls('selected');
-		container.down('#btn_promo_step3').removeCls('selected');
-		container.down('#btn_promo_step4').removeCls('selected');
-		container.down('#btn_promo_step5').removeCls('selected');
-		container.down('#btn_promo_step6').removeCls('selected');
-
-		var jspData = $(container.down('panel[name=basicPromo]').getTargetEl().dom).data('jsp');
-		jspData.scrollToY(0, true);
-		button.addClass('selected');
-	},
-
-	onPromoButtonStep2Click: function (button) {
+    },
+
+    onPromoEditorCustomBeforerender: function () {
+        this.setCustomTips();
+    },
+
+    setCustomTips: function () {
+        var elementsWithTips = Ext.ComponentQuery.query('*[customTip*=]');
+
+        elementsWithTips.forEach(function (el) {
+            var me = el;
+
+            // Перезапись стандартного создания ToolTip
+            Ext.override(me, {
+                afterFirstLayout: function () {
+                    var me = this;
+                    this.callParent(arguments);
+
+                    me.fieldLabelTip = Ext.create('Ext.tip.ToolTip', {
+                        target: me.labelEl,
+                        preventLoseFocus: true,
+                        trackMouse: true,
+                        html: me.customTip
+                    });
+                }
+            });
+        })
+    },
+
+    onPromoEditorCustomClose: function () {
+        var toolbar = Ext.ComponentQuery.query('readonlydirectorytoolbar');
+        if (toolbar.length > 0)
+            toolbar[0].setDisabled(false);
+
+        // закрываем подключение к хабу
+        requestHub($.connection.logHub.server.disconnectFromHub);
+    },
+
+    // =============== Steps ===============
+
+    // promo main toolbar btn
+    onPromoButtonClick: function (button) {
+        this.setButtonsState(button);
+    },
+
+    onSupportButtonClick: function (button) {
+        this.setButtonsState(button);
+    },
+
+    onPromoBudgetsButtonClick: function (button) {
+        this.setButtonsState(button);
+    },
+
+    onPromoActivityButtonClick: function (button) {
+        this.setButtonsState(button);
+    },
+    onSummaryButtonClick: function (button, e) {
+        var me = this,
+            promoeditorcustom = button.up('promoeditorcustom'),
+            mask = promoeditorcustom.setLoading(true);
+        // для того чтобы маска отрисовалась первой
+        Ext.Function.defer(me.fillSummaryPanel, 1, me, [button, mask]);
+    },
+
+    fillSummaryPanel: function (button, mask) {
+        var me = this,
+            window = button.up('window'),
+            record = me.getRecord(window),
+            promoEditorCustom = button.up('promoeditorcustom'),
+            isInOut = (promoEditorCustom.isInOutPromo || (promoEditorCustom.model && promoEditorCustom.model.data.InOut));
+        var summary = window.down('panel[name=summary]');
+
+        if (!isInOut) {
+            summary.down('[name=UpliftFieldset]').show();
+        }
+
+        me.updateSummaryInformationPanel(summary, record);
+
+        me.updateSummaryPlanFactLabels(summary, record, isInOut);
+
+        me.setButtonsState(button);
+
+        var budgetsFieldset = summary.down('panel[name=budgetsFieldset]'),
+            activityFieldset = summary.down('panel[name=activityFieldset]'),
+            roiFieldset = summary.down('panel[name=roiFieldset]');
+        // activity Data
+        var activityChartName, activityChartFields, ChartData;
+        if (isInOut) {
+            activityChartName = 'inoutpromoactivitychart';
+            activityChartFields = ['name', 'Inc'];
+        }
+        else {
+            activityChartName = 'promoactivitychart';
+            activityChartFields = ['name', 'Inc', 'BL'];
+        }
+
+        var factInc = record.get('ActualPromoIncrementalLSV') || 0,
+            planInc = record.get('PlanPromoIncrementalLSV') || 0;
+        if (isInOut) {
+            var ChartData = [
+                { name: 'Plan', Inc: planInc },
+                { name: 'Actual', Inc: factInc },
+            ]
+        } else {
+            var factBL = record.get('ActualPromoBaselineLSV') || 0,
+                planBL = record.get('PlanPromoBaselineLSV') || 0;
+
+            if (factBL === -factInc) {
+                factBL = 0;
+                factInc = 0;
+            }
+            if (planBL === -planInc) {
+                planBL = 0;
+                planInc = 0;
+            }
+
+            if (!(factBL === 0 && factInc === 0)) {
+                factInc = (factInc / (factBL + factInc)) * 100;
+                factInc = Ext.util.Format.round(factInc, 2);
+                factBL = 100 - factInc;
+            }
+            if (!(planBL === 0 && planInc === 0)) {
+                planInc = (planInc / (planBL + planInc)) * 100;
+                planInc = Ext.util.Format.round(planInc, 2);
+                planBL = 100 - planInc;
+            }
+
+            var ChartData = [
+                { name: 'Plan', BL: planBL, Inc: planInc },
+                { name: 'Actual', BL: factBL, Inc: factInc },
+            ]
+        }
+        // ROI Data
+        var planROI = record.get('PlanPromoNetROIPercent') || 0,
+            factROI = record.get('ActualPromoNetROIPercent') || 0;
+        planROI = Ext.util.Format.round(planROI, 2);
+        factROI = Ext.util.Format.round(factROI, 2);
+        var maximum = planROI > factROI ? planROI : factROI;
+        maximum = maximum == 0 ? 100 : Math.ceil(maximum / 100) * 100;
+        var ROIChartData = [
+            { name: l10n.ns('tpm', 'PromoSummary').value('Plan'), value: planROI },
+            { name: l10n.ns('tpm', 'PromoSummary').value('Actual'), value: factROI },
+        ];
+
+        // budget Data
+        var Cost = record.get('ActualPromoCost') || 0;
+
+        if (Cost > 0) {
+            var Shopper = record.get('ActualPromoTIShopper') || 0,
+                CostProd = record.get('ActualPromoCostProduction') || 0,
+                Marketing = record.get('ActualPromoTIMarketing') || 0,
+                Branding = record.get('ActualPromoBranding') || 0,
+                BTL = record.get('ActualPromoBTL') || 0,
+                PlanOrActual = 'Actual';
+        } else {
+            var Shopper = record.get('PlanPromoTIShopper') || 0,
+                Cost = record.get('PlanPromoCost') || 0,
+                CostProd = record.get('PlanPromoCostProduction') || 0,
+                Marketing = record.get('PlanPromoTIMarketing') || 0,
+                Branding = record.get('PlanPromoBranding') || 0,
+                BTL = record.get('PlanPromoBTL') || 0,
+                PlanOrActual = 'Plan';
+        }
+
+        budgetData = [
+            { name: l10n.ns('tpm', 'PromoSummary').value('MarketingTI'), value: Marketing },
+            { name: l10n.ns('tpm', 'PromoSummary').value('ShopperTI'), value: Shopper },
+            { name: l10n.ns('tpm', 'PromoSummary').value('BTL'), value: BTL },
+            { name: l10n.ns('tpm', 'PromoSummary').value('CostProduction'), value: CostProd },
+            { name: l10n.ns('tpm', 'PromoSummary').value('Branding'), value: Branding }
+        ]
+        // Если графики уже добавлены в дашборд, просто перезагружаем их сторы
+        if (activityFieldset.items.length != 0) {
+            var activityChartStore = activityFieldset.down(activityChartName).getStore(),
+                budgetsChart = budgetsFieldset.down('promobudgetschart'),
+                budgetsChartStore = budgetsChart.getStore(),
+                roiChart = roiFieldset.down('promoroichart'),
+                roiChartStore = roiChart.getStore();
+
+            activityChartStore.loadData(ChartData);
+
+            roiChart.maximum = maximum;
+            roiChart.fireEvent('beforerender', roiChart);
+            roiChartStore.loadData(ROIChartData);
+            roiChart.fireEvent('resize', roiChart);
+
+            budgetsChart.cost = Cost;
+            budgetsChart.planOrActual = PlanOrActual;
+            budgetsChart.fireEvent('resize', budgetsChart);
+            budgetsChartStore.loadData(budgetData);
+        } else {
+            // Добавляем графики в дашборд, если их ещё нет там
+            activityFieldset.add({
+                width: 500,
+                height: 300,
+                xtype: activityChartName,
+                store: Ext.create('Ext.data.Store', {
+                    storeId: 'planpromoactivitystore',
+                    fields: activityChartFields,
+                    data: ChartData
+                })
+            });
+
+            budgetsFieldset.add({
+                xtype: 'promobudgetschart',
+                store: Ext.create('Ext.data.Store', {
+                    storeId: 'promobudgetsstore',
+                    fields: ['name', 'value'],
+                    data: budgetData
+                }),
+                cost: Cost,
+                planOrActual: PlanOrActual,
+            });
+
+            roiFieldset.add([{
+                xtype: 'promoroichart',
+                store: Ext.create('Ext.data.Store', {
+                    storeId: 'promofinancechartstore',
+                    fields: ['name', 'value'],
+                    data: ROIChartData
+                }),
+                maximum: maximum
+            }]);
+        }
+        mask.destroy();
+    },
+
+    // Обновление данных на первой панели дашборда
+    updateSummaryInformationPanel: function (window, record) {
+        var promoInformationPanel = window.down('container[name=promoInformationPanel]'),
+            promoNameLabel = promoInformationPanel.down('label[name=promoNameLabel]'),
+            clientLabel = promoInformationPanel.down('label[name=clientLabel]'),
+            summaryStatusField = promoInformationPanel.down('fieldset[name=summaryStatusField]'),
+            marsMechanicLabel = promoInformationPanel.down('label[name=marsMechLabel]'),
+            instoreMechanicLabel = promoInformationPanel.down('label[name=instoreMechLabel]'),
+            durationDatesLabel = promoInformationPanel.down('label[name=durationDateLabel]'),
+            dispatchesDatesLabel = promoInformationPanel.down('label[name=dispatchDateLabel]');
+
+        var promoName = Ext.String.format('{0} (ID: {1})', record.get('Name'), record.get('Number'));
+        promoNameLabel.setText(promoName);
+
+        var client = record.get('PromoClientName');
+        clientLabel.setText(client)
+
+        summaryStatusField.update({ StatusColor: record.get('PromoStatusColor'), StatusName: record.get('PromoStatusName') });
+
+        instoreMechanicLabel.setText(record.get('MechanicIA'));
+        marsMechanicLabel.setText(record.get('Mechanic'));
+
+        var durationText = Ext.String.format('{0} - {1}', Ext.Date.format(record.get('StartDate'), 'd.m.Y'), Ext.Date.format(record.get('EndDate'), 'd.m.Y'));
+        durationDatesLabel.setText(durationText);
+
+        var dispatchDatesText = Ext.String.format('{0} - {1}', Ext.Date.format(record.get('DispatchesStart'), 'd.m.Y'), Ext.Date.format(record.get('DispatchesEnd'), 'd.m.Y'));
+        dispatchesDatesLabel.setText(dispatchDatesText);
+    },
+
+    // Обновление текстовых данных план/факт 
+    updateSummaryPlanFactLabels: function (summary, record, isInOut) {
+        var me = this;
+
+        if (!isInOut) {
+            var ActualPromoUpliftPercent = record.get('ActualPromoUpliftPercent') || 0,
+                PlanPromoUpliftPercent = record.get('PlanPromoUpliftPercent') || 0;
+            ActualPromoUpliftPercent = Ext.util.Format.round(ActualPromoUpliftPercent, 2);
+            PlanPromoUpliftPercent = Ext.util.Format.round(PlanPromoUpliftPercent, 2);
+
+            var planUpliftLabel = summary.down('fieldset[name=planUpliftLabel]'),
+                actualUpliftLabel = summary.down('fieldset[name=actualUpliftLabel]');
+
+            planUpliftLabel.setTitle(PlanPromoUpliftPercent + '%');
+            actualUpliftLabel.setTitle(ActualPromoUpliftPercent + '%');
+        }
+
+        var ActualPromoIncrementalNSV = record.get('ActualPromoNetIncrementalNSV') || 0,
+            PlanPromoIncrementalNSV = record.get('PlanPromoNetIncrementalNSV') || 0,
+            PercentPromoIncrementalNSV = 0,
+
+            ActualPromoIncrementalLSV = record.get('ActualPromoNetIncrementalLSV') || 0,
+            PlanPromoIncrementalLSV = record.get('PlanPromoNetIncrementalLSV') || 0,
+            PercentPromoIncrementalLSV = 0,
+
+            ActualPromoNSV = record.get('ActualPromoNetNSV') || 0,
+            PlanPromoNSV = record.get('PlanPromoNetNSV') || 0,
+            PercentPromoNSV = 0,
+
+            ActualPromoIncrementalEarnings = record.get('ActualPromoNetIncrementalEarnings') || 0,
+            PlanPromoIncrementalEarnings = record.get('PlanPromoNetIncrementalEarnings') || 0,
+            PercentPromoIncrementalEarnings = 0;
+
+        ActualPromoIncrementalNSV = Ext.util.Format.round(ActualPromoIncrementalNSV / 1000000, 2);
+        PlanPromoIncrementalNSV = Ext.util.Format.round(PlanPromoIncrementalNSV / 1000000, 2);
+        ActualPromoIncrementalLSV = Ext.util.Format.round(ActualPromoIncrementalLSV / 1000000, 2);
+        PlanPromoIncrementalLSV = Ext.util.Format.round(PlanPromoIncrementalLSV / 1000000, 2);
+        ActualPromoNSV = Ext.util.Format.round(ActualPromoNSV / 1000000, 2);
+        PlanPromoNSV = Ext.util.Format.round(PlanPromoNSV / 1000000, 2);
+        ActualPromoIncrementalEarnings = Ext.util.Format.round(ActualPromoIncrementalEarnings / 1000000, 2);
+        PlanPromoIncrementalEarnings = Ext.util.Format.round(PlanPromoIncrementalEarnings / 1000000, 2);
+
+        if (!(PlanPromoIncrementalNSV === 0)) {
+            PercentPromoIncrementalNSV = (ActualPromoIncrementalNSV / PlanPromoIncrementalNSV) * 100 - 100;
+            PercentPromoIncrementalNSV = Ext.util.Format.round(PercentPromoIncrementalNSV, 2);
+        }
+        if (!(PlanPromoIncrementalLSV === 0)) {
+            PercentPromoIncrementalLSV = (ActualPromoIncrementalLSV / PlanPromoIncrementalLSV) * 100 - 100;
+            PercentPromoIncrementalLSV = Ext.util.Format.round(PercentPromoIncrementalLSV, 2);
+        }
+        if (!(PlanPromoNSV === 0)) {
+            PercentPromoNSV = (ActualPromoNSV / PlanPromoNSV) * 100 - 100;
+            PercentPromoNSV = Ext.util.Format.round(PercentPromoNSV, 2);
+        }
+        if (!(PlanPromoIncrementalEarnings === 0)) {
+            PercentPromoIncrementalEarnings = (ActualPromoIncrementalEarnings / PlanPromoIncrementalEarnings) * 100 - 100;
+            PercentPromoIncrementalEarnings = Ext.util.Format.round(PercentPromoIncrementalEarnings, 2);
+        }
+
+
+        var actualIncNSVLabel = summary.down('label[name=actualIncNSVLabel]'),
+            planIncNSVLabel = summary.down('label[name=planIncNSVLabel]'),
+            percentIncNSVLabel = summary.down('label[name=percentIncNSVLabel]'),
+
+            actualIncLSVLabel = summary.down('label[name=actualIncLSVLabel]'),
+            planIncLSVLabel = summary.down('label[name=planIncLSVLabel]'),
+            percentIncLSVLabel = summary.down('label[name=percentIncLSVLabel]'),
+
+            actualPromoNSVLabel = summary.down('label[name=actualPromoNSVLabel]'),
+            planPromoNSVLabel = summary.down('label[name=planPromoNSVLabel]'),
+            percentPromoNSVLabel = summary.down('label[name=percentPromoNSVLabel]'),
+
+            actualEarningsLabel = summary.down('label[name=actualEarningsLabel]'),
+            planEarningsLabel = summary.down('label[name=planEarningsLabel]'),
+            percentEarningsLabel = summary.down('label[name=percentEarningsLabel]');
+
+        actualIncNSVLabel.setText(ActualPromoIncrementalNSV);
+        planIncNSVLabel.setText(PlanPromoIncrementalNSV);
+        percentIncNSVLabel.setText(PercentPromoIncrementalNSV + '%');
+
+        actualIncLSVLabel.setText(ActualPromoIncrementalLSV);
+        planIncLSVLabel.setText(PlanPromoIncrementalLSV);
+        percentIncLSVLabel.setText(PercentPromoIncrementalLSV + '%');
+
+        actualPromoNSVLabel.setText(ActualPromoNSV);
+        planPromoNSVLabel.setText(PlanPromoNSV);
+        percentPromoNSVLabel.setText(PercentPromoNSV + '%');
+
+        actualEarningsLabel.setText(ActualPromoIncrementalEarnings);
+        planEarningsLabel.setText(PlanPromoIncrementalEarnings);
+        percentEarningsLabel.setText(PercentPromoIncrementalEarnings + '%');
+
+        (PercentPromoIncrementalNSV < 0) ? percentIncNSVLabel.addCls('redPercent') : percentIncNSVLabel.addCls('greenPercent');
+        (PercentPromoIncrementalLSV < 0) ? percentIncLSVLabel.addCls('redPercent') : percentIncLSVLabel.addCls('greenPercent');
+        (PercentPromoNSV < 0) ? percentPromoNSVLabel.addCls('redPercent') : percentPromoNSVLabel.addCls('greenPercent');
+        (PercentPromoIncrementalEarnings < 0) ? percentEarningsLabel.addCls('redPercent') : percentEarningsLabel.addCls('greenPercent');
+    },
+
+    // Получение Цифры с иконкой для фактического значения в сравнении с плановым
+    getStyledFactValue: function (planValue, factValue, template) {
+        var isNegative = planValue > factValue;
+        var isPositive = planValue < factValue;
+        var style = 'default',
+            icon = '';
+        if (isNegative) {
+            style = 'negative';
+            icon = '<span class="mdi mdi-menu-down negative-result-glyph" style="font-family:MaterialDesignIcons;"></span>'
+        } else if (isPositive) {
+            style = 'positive';
+            icon = '<span class="mdi mdi-menu-up positive-result-glyph" style="font-family:MaterialDesignIcons;"></span>';
+        }
+        return Ext.String.format(template, style, factValue, icon);
+    },
+
+    onChangesButtonClick: function (button) {
+        this.setButtonsState(button);
+        var window = button.up('window');
+        var approvalhistory = window.down('container[name=changes]');
+        var panel = approvalhistory.down('panel');
+        var parentHeight = approvalhistory.up().getHeight();
+        approvalhistory.down('fieldset').setHeight(parentHeight - 13);
+
+        var promoeditorcustom = button.up('promoeditorcustom');
+        var promoId = promoeditorcustom.promoId;
+
+        promoeditorcustom.setLoading(true);
+
+        var parameters = {
+            promoKey: promoId
+        };
+        App.Util.makeRequestWithCallback('PromoStatusChanges', 'PromoStatusChangesByPromo', parameters, function (data) {
+            var result = Ext.JSON.decode(data.httpResponse.data.value);
+            var promoeditorcustom = Ext.ComponentQuery.query('promoeditorcustom')[0];
+            if (result.success) {
+                var tpl = Ext.create('App.view.tpm.common.approvalStatusStateTpl').formatTpl;
+                var itemsArray = [];
+                var promo = null;
+                var onApprovalState = null;
+                var promoStatusName = 'Draft';
+
+                var panelWidthRatio = panel.getWidth() / 1160;
+                //Small sizes correction:
+                if (panelWidthRatio * 130 < 120) {
+                    panelWidthRatio = panelWidthRatio * 0.95;
+                } else if (panelWidthRatio * 130 < 110) {
+                    panelWidthRatio = panelWidthRatio * 0.85;
+                } else if (panelWidthRatio * 130 < 100) {
+                    panelWidthRatio = panelWidthRatio * 0.60;
+                }
+                var panelHeightRatio = (panel.getWidth() / 1160) * (100 / 130);
+
+                if (!result.isEmpty) {
+                    if (result.data.length == 0) {
+                        promo = promoeditorcustom.model.data;
+                    } else {
+                        promo = result.data[0].Promo;
+                    }
+                    promoStatusName = promo.PromoStatus == undefined ? promo.PromoStatusSystemName : promo.PromoStatus.SystemName
+
+                    if (promo.IsCMManagerApproved == true && (promo.IsDemandPlanningApproved == false || promo.IsDemandPlanningApproved == null) && promo.IsDemandFinanceApproved == true)
+                        onApprovalState = 'DemandPlanningNonego';
+                    else if ((promo.IsCMManagerApproved == false || promo.IsCMManagerApproved == null) && (promo.IsDemandPlanningApproved == false || promo.IsDemandPlanningApproved == null) && (promo.IsDemandFinanceApproved == false || promo.IsDemandFinanceApproved == null))
+                        onApprovalState = 'CMManager';
+                    else if (promo.IsCMManagerApproved == true && (promo.IsDemandPlanningApproved == false || promo.IsDemandPlanningApproved == null) && (promo.IsDemandFinanceApproved == false || promo.IsDemandFinanceApproved == null))
+                        onApprovalState = 'DemandPlanning';
+                    else if (promo.IsCMManagerApproved == true && promo.IsDemandPlanningApproved == true && (promo.IsDemandFinanceApproved == false || promo.IsDemandFinanceApproved == null))
+                        onApprovalState = 'DemandFinance';
+                }
+
+                var settings = {
+                    currentWidthRatio: panelWidthRatio,
+                    currentHeightRatio: panelHeightRatio,
+                    currentHeight: panel.body.getHeight(),
+                    status: promoStatusName,
+                    onApprovalState: onApprovalState,
+                    isNonego: result.isNoNegoPassed == undefined ? false : result.isNoNegoPassed,
+                    statusHistory: result.data == undefined ? [] : result.data,
+                    statusColors: result.statusColors
+                }
+
+                itemsArray.push({
+                    html: tpl.apply(settings),
+                });
+
+                panel.removeAll();
+                panel.add(itemsArray);
+                panel.doLayout();
+
+                var elementsWithTips = Ext.select('div[toolTip*=]');
+
+                elementsWithTips.elements.forEach(function (el) {
+                    var me = el;
+                    me.fieldLabelTip = Ext.create('Ext.tip.ToolTip', {
+                        target: me,
+                        preventLoseFocus: true,
+                        trackMouse: true,
+                        html: me.getAttribute('tooltip'),
+                        dismissDelay: 15000
+                    });
+                })
+
+                var workflowBtn = approvalhistory.down('button[id=workflowBtn]');
+                var historyBtn = approvalhistory.down('button[id=historyBtn]');
+                var dateOfChangeLable = approvalhistory.down('label');
+                var reverseBtn = approvalhistory.down('button[id=reverseBtn]');
+
+                if (historyBtn) {
+                    historyBtn.removeCls('selected');
+                }
+                workflowBtn.addClass('selected');
+                dateOfChangeLable.hide();
+                reverseBtn.hide();
+
+                approvalhistory.isLoaded = false;
+                approvalhistory.historyArray = result.data == undefined ? null : result.data;
+                approvalhistory.isNonego = result.isNoNegoPassed == undefined ? false : result.isNoNegoPassed;
+                approvalhistory.promoStatus = promoStatusName;
+                approvalhistory.statusColors = result.statusColors;
+                promoeditorcustom.setLoading(false);
+            } else {
+                promoeditorcustom.setLoading(false);
+                App.Notify.pushError(l10n.ns('tpm', 'text').value('failedLoadData'));
+            }
+        });
+        if (promoId != null) {
+
+        }
+    },
+    // переключение между вкладками формы промо
+    setButtonsState: function (button) {
+        var window = button.up('window'),
+            itemNamesArray = ['promo', 'promoBudgets', 'promoActivity', 'summary', 'changes'],
+            buttonItem = button.itemId.replace('btn_', '');
+        itemNamesArray.forEach(function (item) {
+            var selectedButton = item == buttonItem,
+                query = Ext.String.format('[name={0}]', item),
+                curWin = window.down(Ext.String.format('container{0}', query)) || window.down(Ext.String.format('panel{0}', query));
+            curWin.setVisible(selectedButton);
+            var curBtn = window.down(Ext.String.format('#btn_{0}', item));
+            if (selectedButton) {
+                curBtn.addClass('selected');
+            } else {
+                curBtn.removeCls('selected');
+            }
+        })
+    },
+
+    // promo steps
+    onPromoButtonStep1Click: function (button) {
         var container = button.up('window').down('container[name=promo]');
 
-		container.down('#btn_promo_step1').removeCls('selected');
-		container.down('#btn_promo_step3').removeCls('selected');
-		container.down('#btn_promo_step4').removeCls('selected');
-		container.down('#btn_promo_step5').removeCls('selected');
-		container.down('#btn_promo_step6').removeCls('selected');
-
-		var jspData = $(container.down('panel[name=basicPromo]').getTargetEl().dom).data('jsp');
-		var el = $(container.down('promobasicproducts#promo_step2').getTargetEl().dom);
-		jspData.scrollToElement(el, true, true);
-		jspData.scrollToElement(el, true, true);
-		button.addClass('selected');
-	},
-
-	onPromoButtonStep3Click: function (button) {
-		var container = button.up('window').down('container[name=promo]');
-
-		container.down('#btn_promo_step1').removeCls('selected');
-		container.down('#btn_promo_step2').removeCls('selected');
-		container.down('#btn_promo_step4').removeCls('selected');
-		container.down('#btn_promo_step5').removeCls('selected');
-		container.down('#btn_promo_step6').removeCls('selected');
-
-		var jspData = $(container.down('panel[name=basicPromo]').getTargetEl().dom).data('jsp');
-		var el = $(container.down('promomechanic[itemId=promo_step3]').getTargetEl().dom);
-		jspData.scrollToElement(el, true, true);
-		jspData.scrollToElement(el, true, true);
-		button.addClass('selected');
-	},
-
-	onPromoButtonStep4Click: function (button) {
-		var container = button.up('window').down('container[name=promo]');
-
-		container.down('#btn_promo_step1').removeCls('selected');
-		container.down('#btn_promo_step2').removeCls('selected');
-		container.down('#btn_promo_step3').removeCls('selected');
-		container.down('#btn_promo_step5').removeCls('selected');
-		container.down('#btn_promo_step6').removeCls('selected');
-
-		var jspData = $(container.down('panel[name=basicPromo]').getTargetEl().dom).data('jsp');
-		var el = $(container.down('promoperiod[itemId=promo_step4]').getTargetEl().dom);
-		jspData.scrollToElement(el, true, true);
-		jspData.scrollToElement(el, true, true);
-		button.addClass('selected');
-	},
-
-	onPromoButtonStep5Click: function (button) {
-		var container = button.up('window').down('container[name=promo]');
-
-		container.down('#btn_promo_step1').removeCls('selected');
-		container.down('#btn_promo_step2').removeCls('selected');
-		container.down('#btn_promo_step3').removeCls('selected');
-		container.down('#btn_promo_step4').removeCls('selected');
-		container.down('#btn_promo_step6').removeCls('selected');
-
-		var jspData = $(container.down('panel[name=basicPromo]').getTargetEl().dom).data('jsp');
-		var el = $(container.down('promoevent[itemId=promo_step5]').getTargetEl().dom);
-		jspData.scrollToElement(el, true, true);
-		jspData.scrollToElement(el, true, true);
-		button.addClass('selected');
-	},
-
-	onPromoButtonStep6Click: function (button) {
-		var container = button.up('window').down('container[name=promo]');
-		//   container._refreshScroll(container);
-		container.down('#btn_promo_step1').removeCls('selected');
-		container.down('#btn_promo_step2').removeCls('selected');
-		container.down('#btn_promo_step3').removeCls('selected');
-		container.down('#btn_promo_step4').removeCls('selected');
-		container.down('#btn_promo_step5').removeCls('selected');
-
-		var jspData = $(container.down('panel[name=basicPromo]').getTargetEl().dom).data('jsp');
-		var el = $(container.down('promosettings[itemId=promo_step6]').getTargetEl().dom);
-		jspData.scrollToElement(el, true, true);
-		jspData.scrollToElement(el, true, true);
-		button.addClass('selected');
-	},
-
-	// promo budgets steps
-	onPromoBudgetsButtonStep1Click: function (button) {
-		var container = button.up('window').down('container[name=promoBudgets]')
-
-		container.down('#btn_promoBudgets_step2').removeCls('selected');
-		container.down('#btn_promoBudgets_step3').removeCls('selected');
-
-		var jspData = $(container.down('panel[name=promoBudgetsContainer]').getTargetEl().dom).data('jsp');
-		jspData.scrollToY(0, true);
-		button.addClass('selected');
-	},
-
-	onPromoBudgetsButtonStep2Click: function (button) {
-		var container = button.up('window').down('container[name=promoBudgets]')
-
-		container.down('#btn_promoBudgets_step1').removeCls('selected');
-		container.down('#btn_promoBudgets_step3').removeCls('selected');
-
-		var jspData = $(container.down('panel[name=promoBudgetsContainer]').getTargetEl().dom).data('jsp');
-		var el = $(container.down('panel[itemId=promoBudgets_step2]').getTargetEl().dom);
-		jspData.scrollToElement(el, true, true);
-		jspData.scrollToElement(el, true, true);
-		button.addClass('selected');
-	},
-
-	onPromoBudgetsButtonStep3Click: function (button) {
-		var container = button.up('window').down('container[name=promoBudgets]')
-
-		container.down('#btn_promoBudgets_step1').removeCls('selected');
-		container.down('#btn_promoBudgets_step2').removeCls('selected');
-
-		var jspData = $(container.down('panel[name=promoBudgetsContainer]').getTargetEl().dom).data('jsp');
-		var el = $(container.down('panel[itemId=promoBudgets_step3]').getTargetEl().dom);
-		jspData.scrollToElement(el, true, true);
-		jspData.scrollToElement(el, true, true);
-		button.addClass('selected');
-	},
-
-	// promo activity
-	onPromoActivityButtonStep1Click: function (button) {
-		var container = button.up('window').down('container[name=promoActivity]')
-
-		container.down('#btn_promoActivity_step2').removeCls('selected');
-		var jspData = $(container.down('panel[name=promoActivityContainer]').getTargetEl().dom).data('jsp');
-		var el = $(container.down('panel[itemId=promoActivity_step1]').getTargetEl().dom);
-		jspData.scrollToElement(el, true, true);
-		jspData.scrollToElement(el, true, true);
-		button.addClass('selected');
-	},
-
-	onPromoActivityButtonStep2Click: function (button) {
-		var container = button.up('window').down('container[name=promoActivity]')
-
-		container.down('#btn_promoActivity_step1').removeCls('selected');
-		container.down('#btn_promoActivity_step1').setGlyph(0xf133);
-		var jspData = $(container.down('panel[name=promoActivityContainer]').getTargetEl().dom).data('jsp');
-		var el = $(container.down('panel[itemId=promoActivity_step2]').getTargetEl().dom);
-		jspData.scrollToElement(el, true, true);
-		jspData.scrollToElement(el, true, true);
-		button.addClass('selected');
-	},
-
-	// support steps
-	onSupportButtonStep1Click: function (button) {
-		var container = button.up('window').down('container[name=support]')
-
-		container.down('#btn_support_step2').removeCls('selected');
-		container.down('#btn_support_step3').removeCls('selected');
-
-		var jspData = $(container.down('panel[name=supportContainer]').getTargetEl().dom).data('jsp');
-		var el = $(container.down('panel[itemId=support_step1] customtoptreetoolbar').getTargetEl().dom);
-		jspData.scrollToElement(el, true, true);
-		jspData.scrollToElement(el, true, true);
-		button.addClass('selected');
-	},
-
-	onSupportButtonStep2Click: function (button) {
-		var container = button.up('window').down('container[name=support]')
-
-		container.down('#btn_support_step1').removeCls('selected');
-		container.down('#btn_support_step3').removeCls('selected');
-
-		var jspData = $(container.down('panel[name=supportContainer]').getTargetEl().dom).data('jsp');
-		var el = $(container.down('panel[itemId=support_step2] customtoptreetoolbar').getTargetEl().dom);
-		jspData.scrollToElement(el, true, true);
-		jspData.scrollToElement(el, true, true);
-		button.addClass('selected');
-	},
-
-	onSupportButtonStep3Click: function (button) {
-		var container = button.up('window').down('container[name=support]')
-
-		container.down('#btn_support_step1').removeCls('selected');
-		container.down('#btn_support_step2').removeCls('selected');
-
-		var jspData = $(container.down('panel[name=supportContainer]').getTargetEl().dom).data('jsp');
-		var el = $(container.down('panel[itemId=support_step3] customtoptreetoolbar').getTargetEl().dom);
-		jspData.scrollToElement(el, true, true);
-		jspData.scrollToElement(el, true, true);
-		button.addClass('selected');
-	},
-
-	// =============== Promo buttons ===============
-
-	onCreateButtonClick: function (button, e, schedulerData, isInOutPromo) {
-		var me = this;
-		var promoeditorcustom = Ext.widget('promoeditorcustom');
-
-		promoeditorcustom.isInOutPromo = isInOutPromo;
-
-		promoeditorcustom.isCreating = true;
-		// из-за вызова из календаря, нужно конкретизировать
-		this.getController('tpm.promo.Promo').detailButton = null;
-		promoeditorcustom.isFromSchedule = schedulerData;
-
-		// для блокировки/разблокировки грида/календаря
-		// Если кнопка не null, то из грида, иначе из календаря
-		var parentWidget = button ? button.up('promo') : Ext.ComponentQuery.query('schedulecontainer')[0];
-		parentWidget.setLoading(true);
-
-		if (schedulerData && schedulerData.isCopy) {
-			this.bindAllLoadEvents(promoeditorcustom, schedulerData, true);
-			me.fillPromoForm(promoeditorcustom, schedulerData, false, true);
-		} else {
-			this.getScrollPosition(button);
-
-			this.bindAllLoadEvents(promoeditorcustom, null, false);
-			$.ajax({
-				dataType: 'json',
-				url: '/odata/PromoStatuss',
-				success: function (promoStatusData) {
-					var client = promoeditorcustom.down('container[name=promo_step1]');
-					var product = promoeditorcustom.down('container[name=promo_step2]');
-					var mechanic = promoeditorcustom.down('container[name=promo_step3]');
-					var period = promoeditorcustom.down('container[name=promo_step4]');
-					var event = promoeditorcustom.down('container[name=promo_step5]');
-					var settings = promoeditorcustom.down('container[name=promo_step6]');
-
-					// Кнопки для изменения состояний промо
-					var promoActions = Ext.ComponentQuery.query('button[isPromoAction=true]');
-
-					promoeditorcustom.down('button[itemId=btn_promoBudgets]').setDisabled(true);
-					promoeditorcustom.down('button[itemId=btn_promoBudgets]').addCls('disabled');
-
-					promoeditorcustom.down('button[itemId=btn_promoActivity]').setDisabled(true);
-					promoeditorcustom.down('button[itemId=btn_promoActivity]').addCls('disabled');
-
-					// mechanic
-					var promoController = App.app.getController('tpm.promo.Promo');
-					var marsMechanicId = mechanic.down('searchcombobox[name=MarsMechanicId]');
-					var instoreMechanicId = mechanic.down('searchcombobox[name=PlanInstoreMechanicId]');
-					var marsMechanicTypeId = mechanic.down('searchcombobox[name=MarsMechanicTypeId]');
-					var instoreMechanicTypeId = mechanic.down('searchcombobox[name=PlanInstoreMechanicTypeId]');
-					var marsMechanicDiscount = mechanic.down('numberfield[name=MarsMechanicDiscount]');
-					var instoreMechanicDiscount = mechanic.down('numberfield[name=PlanInstoreMechanicDiscount]');
-					var promoComment = mechanic.down('textarea[name=PromoComment]');
-
-					promoController.mechanicTypeChange(
-						marsMechanicId, marsMechanicTypeId, marsMechanicDiscount,
-						promoController.getMechanicListForUnlockDiscountField()
-					);
-
-					promoController.mechanicTypeChange(
-						instoreMechanicId, instoreMechanicTypeId, instoreMechanicDiscount,
-						promoController.getMechanicListForUnlockDiscountField()
-					);
-
-					// event
-					me.refreshPromoEvent(promoeditorcustom, false);
-
-					// settings
-					settings.down('sliderfield[name=priority]').setValue(3);
-					var promoEventButton = Ext.ComponentQuery.query('button[itemId=btn_promo_step6]')[0];
-					promoEventButton.setText('<b>' + l10n.ns('tpm', 'promoStap').value('basicStep6') + '</b><br><p> Calendar priority: ' + 3 + '</p>');
-					promoEventButton.removeCls('notcompleted');
-					promoEventButton.setGlyph(0xf133);
-
-					// если создание из календаря
-					if (schedulerData) {
-						var promoClientForm = promoeditorcustom.down('container[name=promo_step1]');
-						var durationDateStart = period.down('datefield[name=DurationStartDate]');
-						var durationDateEnd = period.down('datefield[name=DurationEndDate]');
-						var startDate = schedulerData.schedulerContext.start;
-						var endDate = schedulerData.schedulerContext.end;
-						var clientRecord;
-
-						if (schedulerData.isCopy) { }
-						else {
-							clientRecord = schedulerData.schedulerContext.resourceRecord.raw;
-						}
-
-						durationDateStart.setValue(startDate);
-						durationDateEnd.setValue(endDate);
-
-						if (clientRecord) {
-							promoClientForm.fillForm(clientRecord, false);
-							me.checkParametersAfterChangeClient(clientRecord, promoeditorcustom);
-							me.afterInitClient(clientRecord, schedulerData.schedulerContext.resourceRecord, promoeditorcustom, schedulerData.isCopy);
-						}
-					}
-
-					for (var i = 0; i < promoStatusData.value.length; i++) {
-						if (promoStatusData.value[i].SystemName == 'Draft') {
-							promoeditorcustom.statusId = promoStatusData.value[i].Id;
-							promoeditorcustom.promoStatusName = promoStatusData.value[i].Name;
-							promoeditorcustom.promoStatusSystemName = promoStatusData.value[i].SystemName;
-							promoeditorcustom.promoName = 'Unpublish Promo';
-
-							me.setPromoTitle(promoeditorcustom, promoeditorcustom.promoName, promoeditorcustom.promoStatusName);
-							me.defineAllowedActions(promoeditorcustom, promoActions, promoeditorcustom.promoStatusName);
-
-							var undoBtn = promoeditorcustom.down('button[itemId=btn_undoPublish]');
-							undoBtn.statusId = promoStatusData.value[i].Id;
-							undoBtn.statusName = promoStatusData.value[i].Name;
-							undoBtn.statusSystemName = promoStatusData.value[i].SystemName;
-						}
-
-						if (promoStatusData.value[i].SystemName == 'DraftPublished') {
-							var btn = promoeditorcustom.down('button[itemId=btn_publish]');
-							btn.statusId = promoStatusData.value[i].Id;
-							btn.statusName = promoStatusData.value[i].Name;
-							btn.statusSystemName = promoStatusData.value[i].SystemName;
-							var btn_backToDraftPublished = promoeditorcustom.down('button[itemId=btn_backToDraftPublished]');
-							btn_backToDraftPublished.statusId = promoStatusData.value[i].Id;
-							btn_backToDraftPublished.statusName = promoStatusData.value[i].Name;
-							btn_backToDraftPublished.statusSystemName = promoStatusData.value[i].SystemName;
-						}
-
-						if (promoStatusData.value[i].SystemName == 'OnApproval') {
-							var btn = promoeditorcustom.down('button[itemId=btn_sendForApproval]');
-							btn.statusId = promoStatusData.value[i].Id;
-							btn.statusName = promoStatusData.value[i].Name;
-							btn.statusSystemName = promoStatusData.value[i].SystemName;
-						}
-
-						if (promoStatusData.value[i].SystemName == 'Approved') {
-							var btn_approve = promoeditorcustom.down('button[itemId=btn_approve]');
-							btn_approve.statusId = promoStatusData.value[i].Id;
-							btn_approve.statusName = promoStatusData.value[i].Name;
-							btn_approve.statusSystemName = promoStatusData.value[i].SystemName;
-						}
-
-						if (promoStatusData.value[i].SystemName == 'Cancelled') {
-							var btn_cancel = promoeditorcustom.down('button[itemId=btn_cancel]');
-							btn_cancel.statusId = promoStatusData.value[i].Id;
-							btn_cancel.statusName = promoStatusData.value[i].Name;
-							btn_cancel.statusSystemName = promoStatusData.value[i].SystemName;
-						}
-
-						if (promoStatusData.value[i].SystemName == 'Planned') {
-							var btn_plan = promoeditorcustom.down('button[itemId=btn_plan]');
-							btn_plan.statusId = promoStatusData.value[i].Id;
-							btn_plan.statusName = promoStatusData.value[i].Name;
-							btn_plan.statusSystemName = promoStatusData.value[i].SystemName;
-						}
-
-						if (promoStatusData.value[i].SystemName == 'Closed') {
-							var btn_close = promoeditorcustom.down('button[itemId=btn_close]');
-							btn_close.statusId = promoStatusData.value[i].Id;
-							btn_close.statusName = promoStatusData.value[i].Name;
-							btn_close.statusSystemName = promoStatusData.value[i].SystemName;
-						}
-
-						if (promoStatusData.value[i].SystemName == 'Finished') {
-							var btn_backToFinished = promoeditorcustom.down('button[itemId=btn_backToFinished]');
-							btn_backToFinished.statusId = promoStatusData.value[i].Id;
-							btn_backToFinished.statusName = promoStatusData.value[i].Name;
-							btn_backToFinished.statusSystemName = promoStatusData.value[i].SystemName;
-						}
-					}
-
-					promoeditorcustom.show();
-					parentWidget.setLoading(false);
-					me.checkLoadingComponents();
-				},
-				error: function (XMLHttpRequest, textStatus, errorThrown) {
-					parentWidget.setLoading(false);
-					App.Notify.pushError(l10n.ns('tpm', 'text').value('failedStatusLoad'));
-				}
-			});
-		}
-	},
-
-	onCreateInOutButtonClick: function (button, e, schedulerData) {
-		var me = this;
-		e.isInOutPromo = true;
-		me.onCreateButtonClick(button, e, schedulerData, true);
-	},
+        container.down('#btn_promo_step2').removeCls('selected');
+        container.down('#btn_promo_step3').removeCls('selected');
+        container.down('#btn_promo_step4').removeCls('selected');
+        container.down('#btn_promo_step5').removeCls('selected');
+        container.down('#btn_promo_step6').removeCls('selected');
+
+        var jspData = $(container.down('panel[name=basicPromo]').getTargetEl().dom).data('jsp');
+        jspData.scrollToY(0, true);
+        button.addClass('selected');
+    },
+
+    onPromoButtonStep2Click: function (button) {
+        var container = button.up('window').down('container[name=promo]');
+
+        container.down('#btn_promo_step1').removeCls('selected');
+        container.down('#btn_promo_step3').removeCls('selected');
+        container.down('#btn_promo_step4').removeCls('selected');
+        container.down('#btn_promo_step5').removeCls('selected');
+        container.down('#btn_promo_step6').removeCls('selected');
+
+        var jspData = $(container.down('panel[name=basicPromo]').getTargetEl().dom).data('jsp');
+        var el = $(container.down('promobasicproducts#promo_step2').getTargetEl().dom);
+        jspData.scrollToElement(el, true, true);
+        jspData.scrollToElement(el, true, true);
+        button.addClass('selected');
+    },
+
+    onPromoButtonStep3Click: function (button) {
+        var container = button.up('window').down('container[name=promo]');
+
+        container.down('#btn_promo_step1').removeCls('selected');
+        container.down('#btn_promo_step2').removeCls('selected');
+        container.down('#btn_promo_step4').removeCls('selected');
+        container.down('#btn_promo_step5').removeCls('selected');
+        container.down('#btn_promo_step6').removeCls('selected');
+
+        var jspData = $(container.down('panel[name=basicPromo]').getTargetEl().dom).data('jsp');
+        var el = $(container.down('promomechanic[itemId=promo_step3]').getTargetEl().dom);
+        jspData.scrollToElement(el, true, true);
+        jspData.scrollToElement(el, true, true);
+        button.addClass('selected');
+    },
+
+    onPromoButtonStep4Click: function (button) {
+        var container = button.up('window').down('container[name=promo]');
+
+        container.down('#btn_promo_step1').removeCls('selected');
+        container.down('#btn_promo_step2').removeCls('selected');
+        container.down('#btn_promo_step3').removeCls('selected');
+        container.down('#btn_promo_step5').removeCls('selected');
+        container.down('#btn_promo_step6').removeCls('selected');
+
+        var jspData = $(container.down('panel[name=basicPromo]').getTargetEl().dom).data('jsp');
+        var el = $(container.down('promoperiod[itemId=promo_step4]').getTargetEl().dom);
+        jspData.scrollToElement(el, true, true);
+        jspData.scrollToElement(el, true, true);
+        button.addClass('selected');
+    },
+
+    onPromoButtonStep5Click: function (button) {
+        var container = button.up('window').down('container[name=promo]');
+
+        container.down('#btn_promo_step1').removeCls('selected');
+        container.down('#btn_promo_step2').removeCls('selected');
+        container.down('#btn_promo_step3').removeCls('selected');
+        container.down('#btn_promo_step4').removeCls('selected');
+        container.down('#btn_promo_step6').removeCls('selected');
+
+        var jspData = $(container.down('panel[name=basicPromo]').getTargetEl().dom).data('jsp');
+        var el = $(container.down('promoevent[itemId=promo_step5]').getTargetEl().dom);
+        jspData.scrollToElement(el, true, true);
+        jspData.scrollToElement(el, true, true);
+        button.addClass('selected');
+    },
+
+    onPromoButtonStep6Click: function (button) {
+        var container = button.up('window').down('container[name=promo]');
+        //   container._refreshScroll(container);
+        container.down('#btn_promo_step1').removeCls('selected');
+        container.down('#btn_promo_step2').removeCls('selected');
+        container.down('#btn_promo_step3').removeCls('selected');
+        container.down('#btn_promo_step4').removeCls('selected');
+        container.down('#btn_promo_step5').removeCls('selected');
+
+        var jspData = $(container.down('panel[name=basicPromo]').getTargetEl().dom).data('jsp');
+        var el = $(container.down('promosettings[itemId=promo_step6]').getTargetEl().dom);
+        jspData.scrollToElement(el, true, true);
+        jspData.scrollToElement(el, true, true);
+        button.addClass('selected');
+    },
+
+    // promo budgets steps
+    onPromoBudgetsButtonStep1Click: function (button) {
+        var container = button.up('window').down('container[name=promoBudgets]')
+
+        container.down('#btn_promoBudgets_step2').removeCls('selected');
+        container.down('#btn_promoBudgets_step3').removeCls('selected');
+
+        var jspData = $(container.down('panel[name=promoBudgetsContainer]').getTargetEl().dom).data('jsp');
+        jspData.scrollToY(0, true);
+        button.addClass('selected');
+    },
+
+    onPromoBudgetsButtonStep2Click: function (button) {
+        var container = button.up('window').down('container[name=promoBudgets]')
+
+        container.down('#btn_promoBudgets_step1').removeCls('selected');
+        container.down('#btn_promoBudgets_step3').removeCls('selected');
+
+        var jspData = $(container.down('panel[name=promoBudgetsContainer]').getTargetEl().dom).data('jsp');
+        var el = $(container.down('panel[itemId=promoBudgets_step2]').getTargetEl().dom);
+        jspData.scrollToElement(el, true, true);
+        jspData.scrollToElement(el, true, true);
+        button.addClass('selected');
+    },
+
+    onPromoBudgetsButtonStep3Click: function (button) {
+        var container = button.up('window').down('container[name=promoBudgets]')
+
+        container.down('#btn_promoBudgets_step1').removeCls('selected');
+        container.down('#btn_promoBudgets_step2').removeCls('selected');
+
+        var jspData = $(container.down('panel[name=promoBudgetsContainer]').getTargetEl().dom).data('jsp');
+        var el = $(container.down('panel[itemId=promoBudgets_step3]').getTargetEl().dom);
+        jspData.scrollToElement(el, true, true);
+        jspData.scrollToElement(el, true, true);
+        button.addClass('selected');
+    },
+
+    // promo activity
+    onPromoActivityButtonStep1Click: function (button) {
+        var container = button.up('window').down('container[name=promoActivity]')
+
+        container.down('#btn_promoActivity_step2').removeCls('selected');
+        var jspData = $(container.down('panel[name=promoActivityContainer]').getTargetEl().dom).data('jsp');
+        var el = $(container.down('panel[itemId=promoActivity_step1]').getTargetEl().dom);
+        jspData.scrollToElement(el, true, true);
+        jspData.scrollToElement(el, true, true);
+        button.addClass('selected');
+    },
+
+    onPromoActivityButtonStep2Click: function (button) {
+        var container = button.up('window').down('container[name=promoActivity]')
+
+        container.down('#btn_promoActivity_step1').removeCls('selected');
+        container.down('#btn_promoActivity_step1').setGlyph(0xf133);
+        var jspData = $(container.down('panel[name=promoActivityContainer]').getTargetEl().dom).data('jsp');
+        var el = $(container.down('panel[itemId=promoActivity_step2]').getTargetEl().dom);
+        jspData.scrollToElement(el, true, true);
+        jspData.scrollToElement(el, true, true);
+        button.addClass('selected');
+    },
+
+    // support steps
+    onSupportButtonStep1Click: function (button) {
+        var container = button.up('window').down('container[name=support]')
+
+        container.down('#btn_support_step2').removeCls('selected');
+        container.down('#btn_support_step3').removeCls('selected');
+
+        var jspData = $(container.down('panel[name=supportContainer]').getTargetEl().dom).data('jsp');
+        var el = $(container.down('panel[itemId=support_step1] customtoptreetoolbar').getTargetEl().dom);
+        jspData.scrollToElement(el, true, true);
+        jspData.scrollToElement(el, true, true);
+        button.addClass('selected');
+    },
+
+    onSupportButtonStep2Click: function (button) {
+        var container = button.up('window').down('container[name=support]')
+
+        container.down('#btn_support_step1').removeCls('selected');
+        container.down('#btn_support_step3').removeCls('selected');
+
+        var jspData = $(container.down('panel[name=supportContainer]').getTargetEl().dom).data('jsp');
+        var el = $(container.down('panel[itemId=support_step2] customtoptreetoolbar').getTargetEl().dom);
+        jspData.scrollToElement(el, true, true);
+        jspData.scrollToElement(el, true, true);
+        button.addClass('selected');
+    },
+
+    onSupportButtonStep3Click: function (button) {
+        var container = button.up('window').down('container[name=support]')
+
+        container.down('#btn_support_step1').removeCls('selected');
+        container.down('#btn_support_step2').removeCls('selected');
+
+        var jspData = $(container.down('panel[name=supportContainer]').getTargetEl().dom).data('jsp');
+        var el = $(container.down('panel[itemId=support_step3] customtoptreetoolbar').getTargetEl().dom);
+        jspData.scrollToElement(el, true, true);
+        jspData.scrollToElement(el, true, true);
+        button.addClass('selected');
+    },
+
+    // =============== Promo buttons ===============
+
+    onCreateButtonClick: function (button, e, schedulerData, isInOutPromo,promotype) {
+       
+        var me = this;
+        var promoeditorcustom = Ext.widget('promoeditorcustom'); 
+        promoeditorcustom.isInOutPromo = isInOutPromo;
+        promoeditorcustom.promotypeId = promotype.Id;
+        promoeditorcustom.promotypeName = promotype.Name; 
+        promoeditorcustom.promotypeGlyph = promotype.Glyph; 
+        promoeditorcustom.promotypeSystemName = promotype.SystemName; 
+        this.setPromoType(promotype.Name);
+        promoeditorcustom.isCreating = true;
+        // из-за вызова из календаря, нужно конкретизировать
+        this.getController('tpm.promo.Promo').detailButton = null;
+        promoeditorcustom.isFromSchedule = schedulerData;
+
+        // для блокировки/разблокировки грида/календаря
+        // Если кнопка не null, то из грида, иначе из календаря
+        var parentWidget = button ? button.up('promo') : Ext.ComponentQuery.query('schedulecontainer')[0];
+        parentWidget.setLoading(true);
+
+        if (schedulerData && schedulerData.isCopy) {
+            this.bindAllLoadEvents(promoeditorcustom, schedulerData, true);
+            me.fillPromoForm(promoeditorcustom, schedulerData, false, true);
+        } else {
+            this.getScrollPosition(button);
+
+            this.bindAllLoadEvents(promoeditorcustom, null, false);
+            $.ajax({
+                dataType: 'json',
+                url: '/odata/PromoStatuss',
+                success: function (promoStatusData) {
+                    var client = promoeditorcustom.down('container[name=promo_step1]');
+                    var product = promoeditorcustom.down('container[name=promo_step2]');
+                    var mechanic = promoeditorcustom.down('container[name=promo_step3]');
+                    var period = promoeditorcustom.down('container[name=promo_step4]');
+                    var event = promoeditorcustom.down('container[name=promo_step5]');
+                    var settings = promoeditorcustom.down('container[name=promo_step6]');
+
+                    // Кнопки для изменения состояний промо
+                    var promoActions = Ext.ComponentQuery.query('button[isPromoAction=true]');
+
+                    promoeditorcustom.down('button[itemId=btn_promoBudgets]').setDisabled(true);
+                    promoeditorcustom.down('button[itemId=btn_promoBudgets]').addCls('disabled');
+
+                    promoeditorcustom.down('button[itemId=btn_promoActivity]').setDisabled(true);
+                    promoeditorcustom.down('button[itemId=btn_promoActivity]').addCls('disabled');
+
+                    // mechanic
+                    var promoController = App.app.getController('tpm.promo.Promo');
+                    var marsMechanicId = mechanic.down('searchcombobox[name=MarsMechanicId]');
+                    var instoreMechanicId = mechanic.down('searchcombobox[name=PlanInstoreMechanicId]');
+                    var marsMechanicTypeId = mechanic.down('searchcombobox[name=MarsMechanicTypeId]');
+                    var instoreMechanicTypeId = mechanic.down('searchcombobox[name=PlanInstoreMechanicTypeId]');
+                    var marsMechanicDiscount = mechanic.down('numberfield[name=MarsMechanicDiscount]');
+                    var instoreMechanicDiscount = mechanic.down('numberfield[name=PlanInstoreMechanicDiscount]');
+                    var promoComment = mechanic.down('textarea[name=PromoComment]');
+
+                    promoController.mechanicTypeChange(
+                        marsMechanicId, marsMechanicTypeId, marsMechanicDiscount,
+                        promoController.getMechanicListForUnlockDiscountField()
+                    );
+
+                    promoController.mechanicTypeChange(
+                        instoreMechanicId, instoreMechanicTypeId, instoreMechanicDiscount,
+                        promoController.getMechanicListForUnlockDiscountField()
+                    );
+
+                    // event
+                    me.refreshPromoEvent(promoeditorcustom, false);
+
+                    // settings
+                    settings.down('sliderfield[name=priority]').setValue(3);
+                    var promoEventButton = Ext.ComponentQuery.query('button[itemId=btn_promo_step6]')[0];
+                    promoEventButton.setText('<b>' + l10n.ns('tpm', 'promoStap').value('basicStep6') + '</b><br><p> Calendar priority: ' + 3 + '</p>');
+                    promoEventButton.removeCls('notcompleted');
+                    promoEventButton.setGlyph(0xf133);
+
+                    // если создание из календаря
+                    if (schedulerData) {
+                        var promoClientForm = promoeditorcustom.down('container[name=promo_step1]');
+                        var durationDateStart = period.down('datefield[name=DurationStartDate]');
+                        var durationDateEnd = period.down('datefield[name=DurationEndDate]');
+                        var startDate = schedulerData.schedulerContext.start;
+                        var endDate = schedulerData.schedulerContext.end;
+                        var clientRecord;
+
+                        if (schedulerData.isCopy) { }
+                        else {
+                            clientRecord = schedulerData.schedulerContext.resourceRecord.raw;
+                        }
+
+                        durationDateStart.setValue(startDate);
+                        durationDateEnd.setValue(endDate);
+
+                        if (clientRecord) {
+                            promoClientForm.fillForm(clientRecord, false);
+                            me.checkParametersAfterChangeClient(clientRecord, promoeditorcustom);
+                            me.afterInitClient(clientRecord, schedulerData.schedulerContext.resourceRecord, promoeditorcustom, schedulerData.isCopy);
+                        }
+                    }
+
+                    for (var i = 0; i < promoStatusData.value.length; i++) {
+                        if (promoStatusData.value[i].SystemName == 'Draft') {
+                            promoeditorcustom.statusId = promoStatusData.value[i].Id;
+                            promoeditorcustom.promoStatusName = promoStatusData.value[i].Name;
+                            promoeditorcustom.promoStatusSystemName = promoStatusData.value[i].SystemName;
+                            promoeditorcustom.promoName = 'Unpublish Promo';
+
+                            me.setPromoTitle(promoeditorcustom, promoeditorcustom.promoName, promoeditorcustom.promoStatusName);
+                            me.defineAllowedActions(promoeditorcustom, promoActions, promoeditorcustom.promoStatusName);
+
+                            var undoBtn = promoeditorcustom.down('button[itemId=btn_undoPublish]');
+                            undoBtn.statusId = promoStatusData.value[i].Id;
+                            undoBtn.statusName = promoStatusData.value[i].Name;
+                            undoBtn.statusSystemName = promoStatusData.value[i].SystemName;
+                        }
+
+                        if (promoStatusData.value[i].SystemName == 'DraftPublished') {
+                            var btn = promoeditorcustom.down('button[itemId=btn_publish]');
+                            btn.statusId = promoStatusData.value[i].Id;
+                            btn.statusName = promoStatusData.value[i].Name;
+                            btn.statusSystemName = promoStatusData.value[i].SystemName;
+                            var btn_backToDraftPublished = promoeditorcustom.down('button[itemId=btn_backToDraftPublished]');
+                            btn_backToDraftPublished.statusId = promoStatusData.value[i].Id;
+                            btn_backToDraftPublished.statusName = promoStatusData.value[i].Name;
+                            btn_backToDraftPublished.statusSystemName = promoStatusData.value[i].SystemName;
+                        }
+
+                        if (promoStatusData.value[i].SystemName == 'OnApproval') {
+                            var btn = promoeditorcustom.down('button[itemId=btn_sendForApproval]');
+                            btn.statusId = promoStatusData.value[i].Id;
+                            btn.statusName = promoStatusData.value[i].Name;
+                            btn.statusSystemName = promoStatusData.value[i].SystemName;
+                        }
+
+                        if (promoStatusData.value[i].SystemName == 'Approved') {
+                            var btn_approve = promoeditorcustom.down('button[itemId=btn_approve]');
+                            btn_approve.statusId = promoStatusData.value[i].Id;
+                            btn_approve.statusName = promoStatusData.value[i].Name;
+                            btn_approve.statusSystemName = promoStatusData.value[i].SystemName;
+                        }
+
+                        if (promoStatusData.value[i].SystemName == 'Cancelled') {
+                            var btn_cancel = promoeditorcustom.down('button[itemId=btn_cancel]');
+                            btn_cancel.statusId = promoStatusData.value[i].Id;
+                            btn_cancel.statusName = promoStatusData.value[i].Name;
+                            btn_cancel.statusSystemName = promoStatusData.value[i].SystemName;
+                        }
+
+                        if (promoStatusData.value[i].SystemName == 'Planned') {
+                            var btn_plan = promoeditorcustom.down('button[itemId=btn_plan]');
+                            btn_plan.statusId = promoStatusData.value[i].Id;
+                            btn_plan.statusName = promoStatusData.value[i].Name;
+                            btn_plan.statusSystemName = promoStatusData.value[i].SystemName;
+                        }
+
+                        if (promoStatusData.value[i].SystemName == 'Closed') {
+                            var btn_close = promoeditorcustom.down('button[itemId=btn_close]');
+                            btn_close.statusId = promoStatusData.value[i].Id;
+                            btn_close.statusName = promoStatusData.value[i].Name;
+                            btn_close.statusSystemName = promoStatusData.value[i].SystemName;
+                        }
+
+                        if (promoStatusData.value[i].SystemName == 'Finished') {
+                            var btn_backToFinished = promoeditorcustom.down('button[itemId=btn_backToFinished]');
+                            btn_backToFinished.statusId = promoStatusData.value[i].Id;
+                            btn_backToFinished.statusName = promoStatusData.value[i].Name;
+                            btn_backToFinished.statusSystemName = promoStatusData.value[i].SystemName;
+                        }
+                    }
+
+                    promoeditorcustom.show();
+                    parentWidget.setLoading(false);
+                    me.checkLoadingComponents();
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    parentWidget.setLoading(false);
+                    App.Notify.pushError(l10n.ns('tpm', 'text').value('failedStatusLoad'));
+                }
+            });
+        }
+    },
+
+    onCreateInOutButtonClick: function (button, e, schedulerData, promotype) {
+     
+        var me = this; 
+        e.isInOutPromo = true;
+        me.onCreateButtonClick(button, e, schedulerData, true, promotype);
+    },
+    onCreateRegularButtonClick: function (button, e, schedulerData, promotype) {
+        var me = this;
+        me.onCreateButtonClick(button, e, schedulerData, false, promotype);
+    },
+    onCreateLoyaltyButtonClick: function (button, e, schedulerData, promotype) {
+        var me = this;
+        me.onCreateButtonClick(button, e, schedulerData, false, promotype);
+    },
+    onCreateDynamicButtonClick: function (button, e, schedulerData, promotype) {
+        var me = this;
+        me.onCreateButtonClick(button, e, schedulerData, false, promotype);
+    },
+    onSelectionButtonClick: function (button) {
+        var window = button.up('window');  
+        var fieldsetWithButtons = window.down('fieldset');
+
+        fieldsetWithButtons.items.items.forEach(function (item) {
+            item.down('button').up('container').removeCls('promo-type-select-list-container-button-clicked');
+            item.down('button').addCls('promo-type-select-list-container-button-shplack');
+        });
+       
+        button.up('container').addCls('promo-type-select-list-container-button-clicked');
+        button.removeCls('promo-type-select-list-container-button-shplack');
+        window.selectedButton = button;
+    },
+    onPromoTypeOkButtonClick: function (button, e) {
+        var me = this;
+        var window = button.up('window');
+          
+        var promoButton = Ext.ComponentQuery.query('promo')[0].down('#createbutton');
+         if (window.selectedButton != null) {
+
+            var selectedButtonText = window.selectedButton.budgetRecord;
+
+            var method = "onCreate" + selectedButtonText.SystemName + "ButtonClick";
+            if (me[method] != undefined) {
+                me[method](promoButton, e, null, selectedButtonText);
+                window.close();
+            } else {
+                App.Notify.pushError('Не найдено типа промо ' + selectedButtonText.Name);
+            }
+         } else {
+           
+             App.Notify.pushError(l10n.ns('tpm', 'PromoTypes').value('NoPromoType'));
+        }
+       // me.onCreateButtonClick(promoButton, e, schedulerData, false);
+
+    },
+    getPromoType: function () {
+        return this.promotype;
+    },
+    setPromoType: function (promotype) {
+        this.promotype = promotype;
+    },
+    onPromoTypeAfterRender: function (window) {
+        var closeButton = window.down('#close');
+        var okButton = window.down('#ok');
+
+        closeButton.setText(l10n.ns('tpm', 'PromoType').value('ModalWindowCloseButton'));
+        okButton.setText(l10n.ns('tpm', 'PromoType').value('ModalWindowOkButton'));
+        window.selectedButton = null;
+    },
+ 
+    onAllCreateButtonClick: function (button) {
+        
+        var supportType = Ext.widget('promotypewindow');
+        var mask = new Ext.LoadMask(supportType, { msg: "Please wait..." });
+        
+
+        supportType.show();
+        mask.show();
+
+       supportType.createPromoSupportButton = button;
+       
+       var query = breeze.EntityQuery
+           .from('PromoTypes')
+           .using(Ext.ux.data.BreezeEntityManager.getEntityManager())
+           .execute()
+           .then(function (data) {
+               if (data.httpResponse.data.results.length > 0) {
+                   supportType.down('#promotypewindowInnerContainer').show();
+                   data.httpResponse.data.results.forEach(function (item) {
+                     // Контейнер с кнопкой (обводится бордером при клике)
+                       var promoTypeItem = Ext.widget({
+                           extend: 'Ext.container.Container',
+                           width: 'auto',
+                           xtype: 'container',
+                           layout: {
+                               type: 'hbox',
+                               
+                               align: 'stretch'
+                           },
+                           items: [{
+                               xtype: 'button',
+                               enableToggle: true,
+                               cls: 'promo-type-select-list-button',
+                           }]
+                       });
+       
+                       promoTypeItem.addCls('promo-type-select-list-container-button'); 
+                       //promoTypeItem.down('button').style = {borderLeft: '6px solid ' + 'rgb(179, 193, 210)'};  
+                       promoTypeItem.down('button').addCls('promo-type-select-list-container-button-shplack');
+                       promoTypeItem.down('button').setText(item.Name); 
+                       promoTypeItem.down('button').renderData.glyphCls = 'promo-type-select-list-button'; 
+                       promoTypeItem.down('button').setGlyph(parseInt('0x' + item.Glyph, 16)); 
+                       promoTypeItem.down('button').budgetRecord = item; 
+                       supportType.down('fieldset').add(promoTypeItem);
+                     
+                   });
+               } else {
+                   Ext.ComponentQuery.query('promotypewindow')[0].close();
+                   App.Notify.pushError('Не найдено записей   типа промо '  );
+               }
+       
+             mask.hide();
+           })
+           .fail(function () {
+               App.Notify.pushError('Ошибка при выполнении операции');
+               mask.hide();
+           })
+       
+      
+    },
 	onUpdateButtonClick: function (button) {
 		var me = this;
 		var grid = this.getGridByButton(button);
@@ -2409,17 +2552,21 @@
 
 			if (index != window.productTreeNodes.length - 1)
 				record.data.ProductTreeObjectIds += ';';
-		});
-
+		}); 
 		record.data.InOutProductIds = window.InOutProductIds || record.data.InOutProductIds;
 		record.data.InOut = (record.data.InOut ? true : false) || (window.isInOutPromo ? true : false);
 		record.data.InOutExcludeAssortmentMatrixProductsButtonPressed = window.excludeAssortmentMatrixProductsButtonPressed ? true : false;
         //record.data.RegularExcludedProductIds = window.RegularExcludedProductIds;
+         
+        record.data.PromoTypesId = window.promotypeId || record.data.PromoTypesId;
+        record.data.PromoTypesName = window.promotypeName || record.data.PromoTypesName;
+        record.data.PromoTypesGlyph = window.promotypeGlyph || record.data.PromoTypesGlyph;
+       
 
         record.data.IsGrowthAcceleration = window.isGrowthAcceleration ? true : false;
 
 		record.data.Name = window.promoName;
-
+         
 		// promomechanic
 		var marsMechanicId = promomechanic.down('searchcombobox[name=MarsMechanicId]').getValue();
 		var marsMechanicTypeId = promomechanic.down('searchcombobox[name=MarsMechanicTypeId]').getValue();
@@ -2569,6 +2716,13 @@
 		var promoActions = Ext.ComponentQuery.query('button[isPromoAction=true]');
 
 		// Для InOut Promo
+        promoeditorcustom.isInOutPromo = record.data.InOut;
+         
+        promoeditorcustom.promotypeId = record.data.PromoTypesId;
+        promoeditorcustom.promotypeName = record.data.PromoTypesName; 
+        promoeditorcustom.promotypeGlyph = record.data.PromoTypesGlyph; 
+         this.setPromoType(record.data.PromoTypesName);
+       readOnly = isCopy ? false : readOnly || calculating;
 		promoeditorcustom.isInOutPromo = record.data.InOut;
 
 		// Для Growth Acceleration Promo
@@ -3407,8 +3561,7 @@
 			} else {
 				window.promoName = this.getPromoName(window);
 				this.setPromoTitle(window, window.promoName, window.promoStatusName);
-			}
-
+			} 
 			var model = this.buildPromoModel(window, record);
 			this.saveModel(model, window, close, reloadForm);
 		} else {
@@ -3659,7 +3812,7 @@
 			var mechanicListForUnlockDiscountField = promoController.getMechanicListForUnlockDiscountField();
 
 			if (oldValue) {
-				if (mechanicListForUnlockDiscountField.some(function (element) { return element === mechanicFields.marsMechanicFields.marsMechanicId.rawValue; })) {
+				if (mechanicListForUnlockDiscountField.some(function (element) { return element !== mechanicFields.marsMechanicFields.marsMechanicId.rawValue; })) {
 					mechanicFields.marsMechanicFields.marsMechanicTypeId.reset();
 					mechanicFields.marsMechanicFields.marsMechanicDiscount.reset();
 				}
@@ -3738,7 +3891,7 @@
 			var mechanicListForUnlockDiscountField = promoController.getMechanicListForUnlockDiscountField();
 
 			if (oldValue) {
-				if (mechanicListForUnlockDiscountField.some(function (element) { return element === mechanicFields.instoreMechanicFields.instoreMechanicId.rawValue; })) {
+				if (mechanicListForUnlockDiscountField.some(function (element) { return element !== mechanicFields.instoreMechanicFields.instoreMechanicId.rawValue; })) {
 					mechanicFields.instoreMechanicFields.instoreMechanicTypeId.reset();
 					mechanicFields.instoreMechanicFields.instoreMechanicDiscount.reset();
 				}
@@ -3816,13 +3969,14 @@
 			var mechanicListForUnlockDiscountField = promoController.getMechanicListForUnlockDiscountField();
 
 			if (oldValue) {
-				if (mechanicListForUnlockDiscountField.some(function (element) {
-					return element === mechanicFields.actualInstoreMechanicFields.actualInstoreMechanicId.rawValue;
-				})) {
+				//if (mechanicListForUnlockDiscountField.some(function (element) {
+                //    return element !== mechanicFields.actualInstoreMechanicFields.actualInstoreMechanicId.rawValue;
+                //    //тут ресетится только одно поле в зависимости от механики
+				//})) {
 					mechanicFields.actualInstoreMechanicFields.actualInstoreMechanicTypeId.reset();
-				} else {
+				//} else {
 					mechanicFields.actualInstoreMechanicFields.actualInStoreDiscount.reset();
-				}
+				//}
 			}
 
 			promoController.mechanicTypeChange(
@@ -3876,7 +4030,8 @@
 			mechanicId.setDisabled(false);
 			mechanicTypeId.setDisabled(false);
 			mechanicDiscount.setDisabled(false);
-		} else if (mechanicListForUnlockDiscountField.some(function (element) { return element === mechanicId.rawValue; })) {
+        } else if (mechanicId.rawValue && mechanicListForUnlockDiscountField.some(function (element)
+        { return element !== mechanicId.rawValue; })) {
 			mechanicTypeId.setDisabled(true);
 			mechanicDiscount.setDisabled(false);
 		} else if (mechanicId.rawValue) {
@@ -3888,9 +4043,9 @@
 		}
 	},
 
-	// Получить список механик, выбор которых может разблокировать поле MechanicDiscount и заблокировать поле MechanicTypeId.
+	// Получить список механик, при выборе которых нужно разблокировать поле MechanicTypeId и заблокировать поле MechanicDiscount.
 	getMechanicListForUnlockDiscountField: function () {
-		return ['TPR', 'Other'];
+        return ['VP'];
 	},
 
 	// Получить список полей MarsMechanic && получить список полей PlanInstoreMechanic.
@@ -5543,8 +5698,8 @@
 
             promoWindow.clientHierarchy = promoClientForm.clientTreeRecord.FullPathName;
             promoWindow.clientTreeId = promoClientForm.clientTreeRecord.ObjectId;
-			if (promoClientForm.clientTreeRecord.InOut !== null && promoClientForm.clientTreeRecord.InOut !== undefined /*&& (promoClientForm.clientTreeRecord.Id - 10002 > 0)*/) {
-                promoWindow.clientTreeKeyId = promoClientForm.clientTreeRecord.InOut ? promoClientForm.clientTreeRecord.Id - 20003 : promoClientForm.clientTreeRecord.Id - 10001;
+            if (promoClientForm.clientTreeRecord.InOutId !== null && promoClientForm.clientTreeRecord.InOutId !== undefined /*&& (promoClientForm.clientTreeRecord.Id - 10002 > 0)*/) {
+                promoWindow.clientTreeKeyId = promoClientForm.clientTreeRecord.InOutId.substr(0, promoClientForm.clientTreeRecord.InOutId.indexOf('-'));
             } else {
                 promoWindow.clientTreeKeyId = promoClientForm.clientTreeRecord.Id;
             }

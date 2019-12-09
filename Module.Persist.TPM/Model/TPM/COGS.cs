@@ -13,7 +13,7 @@ namespace Module.Persist.TPM.Model.TPM
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Index]
-        public System.Guid Id {get; set;}
+        public System.Guid Id { get; set; } = Guid.NewGuid();
         public bool Disabled {get; set;}
         public DateTimeOffset? DeletedDate {get; set;}
 
@@ -24,6 +24,7 @@ namespace Module.Persist.TPM.Model.TPM
 
         public int ClientTreeId { get; set; }
         public System.Guid? BrandTechId { get; set; }
+        public int Year { get; set; }
 
         public virtual BrandTech BrandTech { get; set; }
         public virtual ClientTree ClientTree { get; set; }

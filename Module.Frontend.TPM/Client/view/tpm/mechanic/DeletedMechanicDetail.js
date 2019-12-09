@@ -22,6 +22,10 @@
             xtype: 'singlelinedisplayfield',
             name: 'SystemName',
             fieldLabel: l10n.ns('tpm', 'Mechanic').value('SystemName'),
-        }]
+            }, {
+                xtype: 'singlelinedisplayfield',
+                name: 'PromoTypeName',
+                fieldLabel: l10n.ns('tpm', 'Mechanic').value('PromoType.Name'),
+            }]
     }
 })

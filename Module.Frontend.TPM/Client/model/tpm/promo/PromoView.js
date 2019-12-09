@@ -26,8 +26,9 @@
         { name: 'PromoStatusSystemName', type: 'string', hidden: true, isDefault: true },
         { name: 'PromoStatusName', type: 'string', mapping: 'PromoStatusName', defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'PromoStatus', hidden: false, isDefault: true },
 
-
         { name: "InOut", type: "boolean", persist: false, hidden: true, defaultValue: true },
+        { name: "TypeName", type: "string", persist: false, hidden: true, defaultValue: true },
+        { name: "TypeGlyph", type: "string", persist: false, hidden: true, defaultValue: true },
 
         //Дублирование встроенных полей Schedule для фильтрации списка полей фильтрации
         { name: "Draggable", type: "boolean", persist: false, hidden: true, defaultValue: true },

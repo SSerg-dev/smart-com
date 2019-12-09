@@ -49,8 +49,10 @@
         'BaseLineItem': 'Base Line',
         'DemandPriceListItem': 'Demand Price List',
         'ClientTreeBrandTech': 'Clients Share',
-        'PromoSupport': 'Promo Support',
-        'TICosts': 'TI Costs',
+        'PromoSupport': 'Support',
+		'NonPromoSupport': 'Non-Promo Support',
+		'TICosts': 'Promo TI Costs',
+		'NonPromoTICosts': 'Non-promo TI Costs',
         'CostProduction': 'Cost Production',
         'PostPromoEffectItem': 'Post Promo Effect',
         'COGS': 'COGS',
@@ -63,11 +65,14 @@
         'AssortmentMatrix': 'Assortment matrix',
         'PromoROIReport': 'Promo ROI Report',
         'IncrementalPromo': 'Incremental Promo',
-        'ActualLSV': 'Actual LSV',
+		'ActualLSV': 'Actual LSV',
+		'NonPromoEquipment': 'Non-Promo Equipment',
+        'PromoTypes': 'Promo Types'
     },
 
     'compositePanelTitles': {
-        'Category': 'Category',
+		'Category': 'Category',
+		'NonPromoEquipment': 'Non-Promo Equipment',
         'Brand': 'Brand',
         'Segment': 'Segment',
         'Technology': 'Technology',
@@ -80,6 +85,7 @@
         'Variety': 'Variety',
         'Product': 'Products',
         'Region': 'Regions',
+        'PromoTypes': 'Promo Types',
         'CommercialNet': 'Commecrial networks',
         'CommercialSubnet': 'Commercial subnetworks',
         'Distributor': 'Distributors',
@@ -90,7 +96,8 @@
         'NAScheduleTitle': 'National accounts',
         'Mechanic': 'Mechanics',
         'MechanicType': 'Mechanic Types',
-        'PromoStatus': 'Statuses',
+		'PromoStatus': 'Statuses',
+		'ChooseNonPromoSupportClient': 'Choose client',
         'RejectReason': 'Reasons for rejection',
         'Budget': 'Budget',
         'BudgetItem': 'Budget items',
@@ -115,13 +122,15 @@
         'BaseLine': 'Base Line',
         'DemandPriceList': 'Demand Price List',
         'ClientTreeBrandTech': 'Clients shares',
-        'PromoSupport': 'PromoSupport',
+		'PromoSupport': 'PromoSupport',
+		'NonPromoSupport': 'Support',
         'TICosts': 'TI Costs',
         'CostProduction': 'Cost Production',
         'PromoLinked': 'Promo linked',
         'PostPromoEffect': 'Post Promo Effect',
         'COGS': 'COGS',
         'AddPromoSupportType': 'Add Promo support type',
+        'AddPromoType': 'Create Promo',
         'TradeInvestment': 'TradeInvestment',
         'PlanIncrementalReport': 'Plan Incremental Report',
         'PromoSupportPromo': 'Promo Costs',
@@ -265,9 +274,15 @@
 
     'Brand': {
         'Name': 'Brand'
-    },
+	},
     'HistoricalBrand': ['.tpm.Brand', '.core.BaseHistoryEntity'],
     'DeletedBrand': ['.tpm.Brand', '.core.BaseDeletedEntity'],
+
+	'NonPromoEquipment': {
+		'EquipmentType': 'Equipment type'
+	},
+	'HistoricalNonPromoEquipment': ['.tpm.NonPromoEquipment', '.core.BaseHistoryEntity'],
+	'DeletedNonPromoEquipment': ['.tpm.NonPromoEquipment', '.core.BaseDeletedEntity'],
 
     'Segment': {
         'Name': 'Segment'
@@ -453,8 +468,16 @@
     'Region': {
         'Name': 'Region'
     },
+    'PromoTypes': {
+        'Name': 'Promo Types',
+        'NoPromoType': 'Promo type not selected',
+        'PromoTypesName': 'Promo Types Name',
+        'PromoTypes.Name': 'Promo type name',
+    },
     'HistoricalRegion': ['.tpm.Region', '.core.BaseHistoryEntity'],
     'DeletedRegion': ['.tpm.Region', '.core.BaseDeletedEntity'],
+    'HistoricalPromoTypes': ['.tpm.PromoTypes', '.core.BaseHistoryEntity'],
+    'DeletedPromoTypes': ['.tpm.PromoTypes', '.core.BaseDeletedEntity'],
 
     'CommercialNet': {
         'Name': 'Commercial network'
@@ -490,7 +513,10 @@
 
     'Mechanic': {
         'Name': 'Name',
-        'SystemName': 'System name'
+        'SystemName': 'System name',
+        'PromoType.Name': 'Promo type name',
+        'PromoTypes.Name': 'Promo type name',
+        'PromoTypeName': 'Promo type name',
     },
     'HistoricalMechanic': ['.tpm.Mechanic', '.core.BaseHistoryEntity'],
     'DeletedMechanic': ['.tpm.Mechanic', '.core.BaseDeletedEntity'],
@@ -755,9 +781,9 @@
         'Client2LevelName': 'Client Group',
         'ClientName': 'Client',
         'ProductSubrangesList': 'Subrange',			
-
         'ConfirmCancelTitle': 'Cancel promo',
         'ConfirmCancelText': 'Do you really want to cancel this promo?',
+        'PromoTypesName': 'Promo Types Name',
     },
     'HistoricalPromo': ['.tpm.Promo', '.core.BaseHistoryEntity'],
     'DeletedPromo': ['.tpm.Promo', '.core.BaseDeletedEntity'],
@@ -857,7 +883,9 @@
         'ExportTaskCreated': 'Export task was successfully created. Results file will be available here:',
         'ExportTaskComplete': 'Export task was successfully completed. Results file will be available in the task details.',
         'ExportTaskError': 'The export task failed. You can see the details of the task here:',
-        'CopyInOutError': 'Unable to copy to different type promo'
+        'CopyInOutError': 'Unable to copy to different type promo',
+        'AllSelected': 'All selected',
+        'Filtered': 'Filtered'
     },
 
     'Color': {
@@ -1069,7 +1097,70 @@
         'ActualProdCost': 'Actual Prod Cost'
     },
     'HistoricalPromoSupport': ['.tpm.PromoSupport', '.core.BaseHistoryEntity'],
-    'DeletedPromoSupport': ['.tpm.PromoSupport', '.core.BaseDeletedEntity'],
+	'DeletedPromoSupport': ['.tpm.PromoSupport', '.core.BaseDeletedEntity'],
+
+	'NonPromoSupport': {
+		'Number': 'ID',
+		'ClientTreeFullPathName': 'Client',
+		'BudgetSubItemBudgetItemName': 'Support',
+		'BudgetSubItemName': 'Equipment Type',
+		'PlanQuantity': 'Plan Quantity',
+		'ActualQuantity': 'Actual Quantity',
+		'PlanCostTE': 'Plan Cost TE Total',
+		'ActualCostTE': 'Actual Cost TE Total',
+		'StartDate': 'Start Date',
+		'BrandTechName': 'Brand tech',
+		'NonPromoEquipmentEquipmentType': 'Equipment Type',
+		'brandTechOk': 'Apply',
+		'BrandTech': 'Brand tech',
+		'EndDate': 'End Date',
+		'RemoveIntactWindowTitle': 'Unpin recording',
+		'RemoveIntactConfirmMessage': 'Are you sure you want to unpin a post?',
+		'CreateNonPromoSupportButton': 'Create Promo Support',
+		'CreateOnTheBasisButton': 'Create on the basis',
+		'PlanProdCostPer1Item': 'Plan Prod Cost Per 1 Item',
+		'ActualProdCostPer1Item': 'Actual Prod Cost Per 1 Item',
+		'PlanProdCost': 'Plan Prod Cost',
+		'ActualProdCost': 'Actual Prod Cost',
+		'PONumber': 'PO Number',
+		'PONumberRegex': 'Only numbers',
+		'InvoiceNumberRegex': 'Only numbers',
+		'AttachFileName': 'Attach File Name',
+		'Name': 'Name',
+		'InvoiceNumber': 'Invoice Number',
+		'PlanProdCost': 'Plan Prod Cost',
+		'ActualProdCost': 'Actual Prod Cost'
+	},
+	'HistoricalNonPromoSupport': {
+		'Number': 'ID',
+		'ClientTreeFullPathName': 'Client',
+		'BudgetSubItemBudgetItemName': 'Support',
+		'BudgetSubItemName': 'Equipment Type',
+		'PlanQuantity': 'Plan Quantity',
+		'ActualQuantity': 'Actual Quantity',
+		'PlanCostTE': 'Plan Cost TE Total',
+		'ActualCostTE': 'Actual Cost TE Total',
+		'StartDate': 'Start Date',
+		'EndDate': 'End Date',
+		'RemoveIntactWindowTitle': 'Unpin recording',
+		'RemoveIntactConfirmMessage': 'Are you sure you want to unpin a post?',
+		'CreateNonPromoSupportButton': 'Create Promo Support',
+		'CreateOnTheBasisButton': 'Create on the basis',
+		'PlanProdCostPer1Item': 'Plan Prod Cost Per 1 Item',
+		'ActualProdCostPer1Item': 'Actual Prod Cost Per 1 Item',
+		'PlanProdCost': 'Plan Prod Cost',
+		'ActualProdCost': 'Actual Prod Cost',
+		'PONumber': 'PO Number',
+		'PONumberRegex': 'Only numbers',
+		'InvoiceNumberRegex': 'Only numbers',
+		'AttachFileName': 'Attach File Name',
+		'Name': 'Name',
+		'InvoiceNumber': 'Invoice Number',
+		'PlanProdCost': 'Plan Prod Cost',
+		'ActualProdCost': 'Actual Prod Cost'
+	},
+	'HistoricalNonPromoSupport': ['.tpm.NonPromoSupport', '.core.BaseHistoryEntity'],
+	'DeletedNonPromoSupport': ['.tpm.NonPromoSupport', '.core.BaseDeletedEntity'],
 
     'CostProduction': {
         'Number': 'ID',
@@ -1163,8 +1254,27 @@
         'ModalWindowOkButton': 'Create',
         'NotSelected': 'Client and type must be selected.',
         'CreateButtonText': 'Create support type'
-    },
+	},
 
+	'NonPromoSupportClient': {
+		'ModalWindowCloseButton': 'Close',
+		'ModalWindowOkButton': 'Create',
+		'NotSelected': 'Client and type must be selected.',
+		'CreateButtonText': 'Create support type'
+	},
+
+	'NonPromoSupportBrandTech': {
+		'ChooseBrandTech': 'Choose Brand tech',
+		'Brand': 'Brand',
+		'Technology': 'Technology',
+		'InvalidMsg': 'You need to choose BrandTech'
+	},
+
+    'PromoType': {
+        'ModalWindowCloseButton': 'Cancel',
+        'ModalWindowOkButton': 'Create Promo',
+        'NotSelected': 'Client and type must be selected.', 
+    },
     'RetailType': {
         'Name': 'Retail type'
     },
@@ -1270,14 +1380,23 @@
         'CannotCreate': 'You can not create a new promo in the past.',
     },
 
+    'ClientPromoTypeFilter': {
+        'ClientsAndPromoType': 'Clients And Promo Type',
+        'Clients': 'Clients',
+        'PromoTypes': 'Promo Types',
+        'SelectAll': 'Select All',
+        'Error': 'Error',
+        'SelectOneFilter': 'Select at least one client and type'
+    },
+
     'COGS': {
         'StartDate': 'StartDate',
         'EndDate': 'EndDate',
         'ClientTreeFullPathName': 'ClientHierarchy',
         'ClientTreeObjectId': 'ClientId',
         'BrandTechName': 'BrandTech',
-        'LVSpercent': 'LSV percent'
-
+        'LVSpercent': 'LSV percent',
+         'Year': 'Year',
     },
     'HistoricalCOGS': ['.tpm.COGS', '.core.BaseHistoryEntity'],
     'DeletedCOGS': ['.tpm.COGS', '.core.BaseDeletedEntity'],
@@ -1293,6 +1412,7 @@
         'SizePercent': 'Size Percent',
         'MarcCalcROI': 'Marc Calc ROI',
         'MarcCalcBudgets': 'Marc Calc Budgets',
+        'Year': 'Year',
     },
     'HistoricalTradeInvestment': ['.tpm.TradeInvestment', '.core.BaseHistoryEntity'],
     'DeletedTradeInvestment': ['.tpm.TradeInvestment', '.core.BaseDeletedEntity'],
@@ -1741,6 +1861,7 @@
         'PCPrice': 'PC Price',
         'TIBasePercent': 'TI Base',
         'COGSPercent': 'COGS',
+        'PromoTypesName': 'Promo Types Name',
         'IsGrowthAcceleration': 'Growth acceleration'
     },
 

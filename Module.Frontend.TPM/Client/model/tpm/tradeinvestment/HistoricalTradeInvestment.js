@@ -31,7 +31,7 @@ Ext.define('App.model.tpm.tradeinvestment.HistoricalTradeInvestment', {
             root: 'results'
         },
         extraParams: {
-            id: null
+            Id: null
         }
     }
 });

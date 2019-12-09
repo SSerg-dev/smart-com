@@ -24,6 +24,7 @@
         { name: 'ClientTreeKeyId', useNull: true, hidden: true, isDefault: false, defaultValue: null },
         //{ name: 'ProductTreeId', useNull: true, hidden: true, isDefault: false, defaultValue: null },
         { name: 'BaseClientTreeIds', useNull: true, hidden: true, isDefault: false, defaultValue: null },
+        { name: 'PromoTypesId', useNull: true, hidden: true, isDefault: false, defaultValue: null },
 
         { name: 'PromoEventName', type: 'string', mapping: 'Event.Name', defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'Event' },
         { name: 'PromoEventDescription', type: 'string', mapping: 'Event.Description', defaultFilterConfig: { valueField: 'Description' }, breezeEntityType: 'Event' },
@@ -221,6 +222,9 @@
         // Growth Acceleration
         { name: 'IsGrowthAcceleration', type: 'boolean', hidden: false, isDefault: false },
         { name: 'AdditionalUserTimestamp', type: 'string', hidden: true, isDefault: false   },
+
+        { name: 'PromoTypesName', type: 'string', mapping: 'PromoTypes.Name', defaultFilterConfig: { valueField: 'PromoTypesName' }, /*breezeEntityType: 'ClientTree',*/ hidden: false, isDefault: false },
+        { name: 'PromoTypesGlyph', type: 'string', mapping: 'PromoTypes.Glyph', defaultFilterConfig: { valueField: 'PromoTypesGlyph' }, /*breezeEntityType: 'ClientTree',*/ hidden: false, isDefault: false },
 
     ],
     proxy: {

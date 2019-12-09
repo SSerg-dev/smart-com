@@ -27,7 +27,7 @@ Ext.define('App.model.tpm.cogs.HistoricalCOGS', {
             root: 'results'
         },
         extraParams: {
-            id: null
+            Id: null
         }
     }
 });

@@ -1,0 +1,88 @@
+.fillerText .x-form-text {
+    color: #c9c9c9;
+    font-style: italic;
+}
+
+.ClientPromoTypeFilter .filter-panel {
+    background-color: #ECEFF1;
+    padding: 10px;
+}
+    .ClientPromoTypeFilter .filter-panel > .x-panel-body-default {
+        background-color: #ECEFF1;
+    }
+
+.sch-event-header-na .ClientTypeFilterButton {
+    padding: 10px;
+    color: #3f6895;
+    text-decoration: underline;
+    text-decoration-style: dashed;
+}
+    .sch-event-header-na .ClientTypeFilterButton {
+        cursor: pointer;
+        line-height: 45px;
+    }
+.ClientPromoTypeFilter .selectAllFilters .x-form-item-body {
+    padding-left: 10px !important;
+}
+    .ClientPromoTypeFilter .selectAllFilters .x-form-cb-label {
+        font-weight: bold;
+    }
+
+.ClientPromoTypeFilter .selectAllClients {
+    padding-left: 10px;
+    border-top: 1px solid #ebebeb;
+    border-bottom: 1px solid #ebebeb;
+}
+
+.ClientPromoTypeFilter .selectAllTypes {
+    padding-left: 10px;
+    border: 1px solid #ebebeb;
+}
+
+.ClientPromoTypeFilter .scheduleFilterFieldset {
+    background-color: #fff;
+    margin: 5px;
+    padding: 5px 10px 10px 10px;
+}
+    .ClientPromoTypeFilter .scheduleFilterFieldset > .x-panel-body > .x-fieldset {
+        margin-bottom: 0px !important;
+        border: 1px solid #ebebeb;
+    }
+
+.ClientPromoTypeFilter .client-checkboxgroup {
+    top: 75px !important
+}
+
+    .ClientPromoTypeFilter .checkboxgroup .x-form-checkboxgroup-body {
+        padding: 0px
+    }
+
+.ClientPromoTypeFilter .type-checkboxgroup {
+    left: 0px !important;
+    width: 100% !important;
+}
+
+    .ClientPromoTypeFilter .type-checkboxgroup .x-form-cb-wrap {
+        padding: 0px 10px 5px 10px;
+    }
+
+    .ClientPromoTypeFilter .type-checkboxgroup .x-checkboxgroup-form-item {
+        width: 100%;
+        margin: 5px 0px 0px 0px;
+        border: 1px solid #ebebeb;
+    }
+
+
+
+.mdi-tag-multiple-2:before {
+    content: "\F4FB";
+}
+
+.filter-mark-icon {
+    float: left;
+    font-size: 20px;
+    line-height: 20px;
+    width: 20px;
+    height: 20px;
+    color: #ee7f2f;
+}

@@ -210,15 +210,18 @@
     <Compile Include="Handlers\DataFlow\Filters\BaseLineDataFlowFilter.cs" />
     <Compile Include="Handlers\DataFlow\Filters\ClientTreeBrandTechDataFlowFilter.cs" />
     <Compile Include="Handlers\DataFlow\Filters\ClientTreeDataFlowFilter.cs" />
+    <Compile Include="Handlers\DataFlow\Filters\COGSDataFlowFilter.cs" />
     <Compile Include="Handlers\DataFlow\Filters\DataFlowFilter.cs" />
     <Compile Include="Handlers\DataFlow\Filters\IncrementalPromoDataFlowFilter.cs" />
     <Compile Include="Handlers\DataFlow\Filters\ProductTreeDataFlowFilter.cs" />
     <Compile Include="Handlers\DataFlow\Filters\PromoProductsCorrectionDataFlowFilter.cs" />
+    <Compile Include="Handlers\DataFlow\Filters\TradeInvestmentDataFlowFilter.cs" />
     <Compile Include="Handlers\DataFlow\Modules\AssortmentMatrixDataFlowModule.cs" />
     <Compile Include="Handlers\DataFlow\Modules\BaseLineDataFlowModule.cs" />
     <Compile Include="Handlers\DataFlow\Modules\ChangesIncidentDataFlowModule.cs" />
     <Compile Include="Handlers\DataFlow\Modules\ClientTreeBrandTechDataFlowModule.cs" />
     <Compile Include="Handlers\DataFlow\Modules\ClientTreeDataFlowModule.cs" />
+    <Compile Include="Handlers\DataFlow\Modules\COGSDataFlowModule.cs" />
     <Compile Include="Handlers\DataFlow\Modules\DataFlowModule.cs" />
     <Compile Include="Handlers\DataFlow\Modules\IncrementalPromoDataFlowModule.cs" />
     <Compile Include="Handlers\DataFlow\Modules\ProductDataFlowModule.cs" />
@@ -227,6 +230,7 @@
     <Compile Include="Handlers\DataFlow\Modules\PromoProductDataFlowModule.cs" />
     <Compile Include="Handlers\DataFlow\Modules\PromoProductsCorrectionDataFlowModule.cs" />
     <Compile Include="Handlers\DataFlow\Modules\PromoProductTreeDataFlowModule.cs" />
+    <Compile Include="Handlers\DataFlow\Modules\TradeInvestmentDataFlowModule.cs" />
     <Compile Include="Handlers\DataFlow\RecalculateAllPromoesHandler.cs" />
     <Compile Include="Handlers\FillInOutProductIdsHandler.cs" />
     <Compile Include="Handlers\AutoResetPromoHandler.cs" />

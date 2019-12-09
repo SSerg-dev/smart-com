@@ -208,7 +208,7 @@
                 '</fieldset>',
             '</div>',
             '<div style="float: right; margin-top: -45px; margin-right: -25px; display: {[values.IsGrowthAcceleration ? \'inline\' : \'none\']};">',
-                '<img src="/Bundles/style/images/GA.png"/>',
+                '<img src="/Bundles/style/images/GA_img.png"/>',
             '</div>',
         '</div>',
         // Financial fact

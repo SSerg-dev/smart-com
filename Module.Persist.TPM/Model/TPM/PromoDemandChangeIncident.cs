@@ -15,9 +15,9 @@ namespace Module.Persist.TPM.Model.TPM {
         public string BrandTech { get; set; }
         public string PromoStatus { get; set; }
 
-        [StringLength(20)]
+        [StringLength(255)]
         public string OldMarsMechanic { get; set; }
-        [StringLength(20)]
+        [StringLength(255)]
         public string NewMarsMechanic { get; set; }
 
         public double? OldMarsMechanicDiscount { get; set; }

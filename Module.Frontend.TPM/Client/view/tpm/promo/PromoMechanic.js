@@ -42,9 +42,73 @@
                     allowDecimals: false,
                     allowExponential: false,
                     crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
+                   //store: {
+                   //    type: 'promoformmechanicstore'
+                   //},
                     store: {
-                        type: 'promoformmechanicstore'
+                        type: 'simplestore',
+                        autoLoad: false,
+                        model: 'App.model.tpm.mechanic.Mechanic',
+                        extendedFilter: {
+                            xclass: 'App.ExtFilterContext',
+
+                            supportedModels: [{
+                                xclass: 'App.ExtSelectionFilterModel',
+                                model: 'App.model.tpm.mechanic.Mechanic',
+                                modelId: 'efselectionmodel'
+                            }]
+                        }
                     },
+                    onFocus: function (field) {
+                        var promoController = App.app.getController('tpm.promo.Promo')
+                        var status = promoController.getPromoType();
+
+                        var filter = this.getStore().fixedFilters || {};
+                        filter['PromoStatusNameFilter'] = {
+                            property: 'PromoTypes.Name',
+                            operation: 'Equals',
+                            value: status
+                        };
+                        this.getStore().fixedFilters = filter;
+                        
+                    },
+                    onTrigger1Click: function () {
+                        var promoController = App.app.getController('tpm.promo.Promo')
+                        var status = promoController.getPromoType();
+
+                        var filter = this.getStore().fixedFilters || {};
+                        filter['PromoStatusNameFilter'] = {
+                            property: 'PromoTypes.Name',
+                            operation: 'Equals',
+                            value: status
+                        };
+                        this.getStore().fixedFilters = filter;
+                        this.self.superclass.onTriggerClick.call(this);
+                    },
+                    onTrigger2Click: function () {
+
+                        var window = this.createWindow();
+
+                        if (window) {
+                            var promoController = App.app.getController('tpm.promo.Promo')
+                            var status = promoController.getPromoType();
+                            var filter = this.getStore().fixedFilters || {};
+                            filter['PromoStatusNameFilter'] = {
+                                property: 'PromoTypes.Name',
+                                operation: 'Equals',
+                                value: status
+                            };
+                            this.getStore().fixedFilters = filter;
+                            //this.getStore().setFixedFilter('PromoStatusNameFilter', {
+                            //    property: 'PromoType.Name',
+                            //    operation: 'Equals',
+                            //    value: status
+                            //}); 
+                            window.show();
+
+                            this.getStore().load();
+                        }
+                   },
                     onTrigger3Click: function () {
                         Ext.util.Observable.capture(this, function (evname) { console.log(evname, arguments); })
 
@@ -87,8 +151,22 @@
                     allowDecimals: false,
                     allowExponential: false,
                     crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
+                    //store: {
+                    //    type: 'promoformmechanictypestore'
+                    //},
                     store: {
-                        type: 'promoformmechanictypestore'
+                        type: 'simplestore',
+                        autoLoad: false,
+                        alias: 'store.promoformmechanictypestore',
+                        model: 'App.model.tpm.mechanictype.MechanicType',
+                        extendedFilter: {
+                            xclass: 'App.ExtFilterContext',
+                            supportedModels: [{
+                                xclass: 'App.ExtSelectionFilterModel',
+                                model: 'App.model.tpm.mechanictype.MechanicType',
+                                modelId: 'efselectionmodel'
+                            }]
+                        }
                     },
                     onTrigger3Click: function () {
                         var promoController = App.app.getController('tpm.promo.Promo'),
@@ -148,8 +226,71 @@
                     allowBlank: true,
                     crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
                     customTip: l10n.ns('tpm', 'Promo').value('PlanInstoreMechanicNameTip'),
+                   // store: {
+                   //     type: 'promoformmechanicstore'
+                   // },
                     store: {
-                        type: 'promoformmechanicstore'
+                        type: 'simplestore',
+                        autoLoad: false,
+                        model: 'App.model.tpm.mechanic.Mechanic',
+                        extendedFilter: {
+                            xclass: 'App.ExtFilterContext',
+                            supportedModels: [{
+                                xclass: 'App.ExtSelectionFilterModel',
+                                model: 'App.model.tpm.mechanic.Mechanic',
+                                modelId: 'efselectionmodel'
+                            }]
+                        }
+                    },
+                    onFocus: function (field) {
+                        var promoController = App.app.getController('tpm.promo.Promo')
+                        var status = promoController.getPromoType();
+
+                        var filter = this.getStore().fixedFilters || {};
+                        filter['PromoStatusNameFilter'] = {
+                            property: 'PromoTypes.Name',
+                            operation: 'Equals',
+                            value: status
+                        };
+                        this.getStore().fixedFilters = filter;
+
+                    },
+                    onTrigger1Click: function () {
+                        var promoController = App.app.getController('tpm.promo.Promo')
+                        var status = promoController.getPromoType();
+
+                        var filter = this.getStore().fixedFilters || {};
+                        filter['PromoStatusNameFilter'] = {
+                            property: 'PromoTypes.Name',
+                            operation: 'Equals',
+                            value: status
+                        };
+                        this.getStore().fixedFilters = filter;
+                        this.self.superclass.onTriggerClick.call(this);
+                    },
+                    onTrigger2Click: function () {
+
+                        var window = this.createWindow();
+
+                        if (window) {
+                            var promoController = App.app.getController('tpm.promo.Promo')
+                            var status = promoController.getPromoType();
+                            var filter = this.getStore().fixedFilters || {};
+                            filter['PromoStatusNameFilter'] = {
+                                property: 'PromoTypes.Name',
+                                operation: 'Equals',
+                                value: status
+                            };
+                            this.getStore().fixedFilters = filter;
+                            //this.getStore().setFixedFilter('PromoStatusNameFilter', {
+                            //    property: 'PromoType.Name',
+                            //    operation: 'Equals',
+                            //    value: status
+                            //}); 
+                            window.show();
+
+                            this.getStore().load();
+                        }
                     },
                     onTrigger3Click: function () {
                         var promoController = App.app.getController('tpm.promo.Promo'),
@@ -197,8 +338,22 @@
                     allowExponential: false,
                     crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
                     customTip: l10n.ns('tpm', 'Promo').value('PlanInstoreMechanicTypeNameTip'),
+                    //store: {
+                    //    type: 'promoformmechanictypestore'
+                    //},
                     store: {
-                        type: 'promoformmechanictypestore'
+                        type: 'simplestore',
+                        autoLoad: false,
+                        alias: 'store.promoformmechanictypestore',
+                        model: 'App.model.tpm.mechanictype.MechanicType',
+                        extendedFilter: {
+                            xclass: 'App.ExtFilterContext',
+                            supportedModels: [{
+                                xclass: 'App.ExtSelectionFilterModel',
+                                model: 'App.model.tpm.mechanictype.MechanicType',
+                                modelId: 'efselectionmodel'
+                            }]
+                        }
                     },
                     onTrigger3Click: function () {
                         var promoController = App.app.getController('tpm.promo.Promo'),

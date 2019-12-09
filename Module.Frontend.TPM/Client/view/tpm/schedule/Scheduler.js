@@ -14,6 +14,7 @@
     viewPreset: 'marsweekMonth',
     loadMask: true,
     rowHeight: 21,
+    clientsFilterConfig: [],
     
     //startDate: new Date(new Date().getFullYear() - 1, 10, 01),
     //endDate: new Date(new Date().getFullYear() + 1, 3, 01),
@@ -84,12 +85,14 @@
         '<dt>Name</dt><dd>{Name}</dd>' +
         '<dt>Mechanic</dt><dd style="border-bottom: 1px solid rgba(197, 197, 197, 0.25); padding-bottom: 5px;">{MarsMechanicName} <tpl if="MarsMechanicName === \'TPR\' || MarsMechanicName === \'Other\'">{MarsMechanicDiscount}%</tpl><tpl if="MarsMechanicName === \'VP\'">{MarsMechanicTypeName}</tpl></dd>' +
         '<dl style="border-left: 5px solid {PromoStatusColor}; margin: 0px;"><dt style="margin: 0 0 3px 2px;">Status</dt><dd style="margin: 0 0 3px 2px;">{PromoStatusSystemName}</dd></dl>' +
-		'<tpl if="InOut"><dd style="border-bottom: 1px solid rgba(197, 197, 197, 0.25); padding-bottom: 5px;"></dd>' +
-		'<dt><span class="mdi mdi-hexagon-slice-2 inout-mark-icon"></span>InOut promo</dt></tpl>' +
-		'<tpl if="IsGrowthAcceleration"><dd style="border-bottom: 1px solid rgba(197, 197, 197, 0.25); padding-bottom: 5px;"></dd>' +
-		'<dt><span class="mdi alpha-g-box-outline inout-mark-icon"></span>Growth Acceleration</dt></tpl>' +
-		'</dl>'
-	),
+        '<tpl if="TypeName == \'InOut\'"><dd style="border-bottom: 1px solid rgba(197, 197, 197, 0.25); padding-bottom: 5px;"></dd>' +
+        '<dt><span class="mdi mdi-hexagon-slice-2 inout-mark-icon"></span>InOut promo</dt></tpl>' +
+        '<tpl if="TypeName != \'InOut\' && TypeName != \'Regular\'"><dd style="border-bottom: 1px solid rgba(197, 197, 197, 0.25); padding-bottom: 5px;"></dd>' +
+        '<dt><span class="mdi inout-mark-icon">&#x{TypeGlyph}</span>{TypeName} promo</dt></tpl>' +
+        '<tpl if="IsGrowthAcceleration"><dd style="border-bottom: 1px solid rgba(197, 197, 197, 0.25); padding-bottom: 5px;"></dd>' +
+        '<dt><span class="mdi alpha-g-box-outline inout-mark-icon"></span>Growth Acceleration</dt></tpl>' +
+        '</dl>'
+    ),
     tipCfg: {
         cls: 'sch-tip',
         height: 'auto',
@@ -127,19 +130,27 @@
         menuDisabled: true,
         cls: 'sch-event-header-na',
         items: [{
-            xtype: 'schedulefilterfield',
-            margin: '0 10 10 10',
-            property: 'Name',
-            flex: 1
+            xtype: 'label',
+            itemId: 'clientsPromoTypeFilterLabel',
+            height: 30,
+            text: l10n.ns('tpm', 'Schedule').value('AllSelected'),
+            cls: 'ClientTypeFilterButton',
+        //}, {
+        //    xtype: 'schedulefilterfield',
+        //    margin: '0 10 10 10',
+        //    property: 'Name',
+        //    flex: 1
         }],
         xtype: 'templatecolumn',
 
         tpl: new Ext.XTemplate(
             '<div style="font-weight: 600">{Name}</div>',
-            '<tpl if="InOut">',
+            '<tpl if="TypeName == \'InOut\'">',
             '<div class="inout-mark-text"><span class="mdi mdi-hexagon-slice-2 inout-mark-icon"></span>InOut promo</div>',
-            '<tpl else>',
+            '<tpl elseif="TypeName == \'Regular\'">',
             '<div class="inout-mark-text">Regular promo</div>',
+            '<tpl else>',
+            '<div class="inout-mark-text"><span class="mdi mdi-tag-multiple-2 inout-mark-icon"></span>Other promo</div>',
             '</tpl>'
         ),
 
@@ -160,6 +171,7 @@
 
     eventStore: {
         type: 'schedulepromostore',
+        storeId: 'eventStore',
         autoLoad: false,
         extendedFilter: {
             xclass: 'App.ExtFilterContext',
