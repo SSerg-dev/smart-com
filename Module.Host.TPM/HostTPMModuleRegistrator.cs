@@ -47,6 +47,8 @@ namespace Module.Host.TPM {
                 new Handlers.PromoPartialWorkflowHandler(),
                 new Handlers.RemoveDeletedDataHandler(),
                 new Handlers.FillInOutProductIdsHandler(),
+                new Handlers.MarsCustomersCheckHandler(),
+                new Handlers.Notifications.ClientTreeNeedUpdateNotificationHandler(),
                 new Handlers.UnblockPromoesHandler(),
                 new Handlers.FullXLSXUpdateImportPromoProductsCorrectionHandler(),
                 new Handlers.FullXLSXUpdateImportPromoProductsUpliftHandler(),

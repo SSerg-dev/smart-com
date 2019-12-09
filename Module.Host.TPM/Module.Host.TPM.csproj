@@ -172,9 +172,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Actions\AutoResetPromoAction.cs" />
+    <Compile Include="Actions\DataLakeIntegrationActions\MarsCustomersCheckAction.cs" />
     <Compile Include="Actions\FullXLSXAssortmentMatrixImportAction.cs" />
     <Compile Include="Actions\FullXLSXImportPromoProductFromTLCAction.cs" />
     <Compile Include="Actions\FullXLSXUpdateImportIncrementalPromoAction.cs" />
+    <Compile Include="Actions\Notifications\ClientTreeNeedUpdateNotificationAction.cs" />
     <Compile Include="Actions\FullXLSXUpdateImportPromoProductsUpliftAction.cs" />
     <Compile Include="Actions\FullXLSXUpdateImportPromoProductsCorrectionAction.cs" />
     <Compile Include="Actions\Notifications\PromoApprovedNotificationAction.cs" />
@@ -232,9 +234,11 @@
     <Compile Include="Handlers\DataFlow\Modules\PromoProductTreeDataFlowModule.cs" />
     <Compile Include="Handlers\DataFlow\Modules\TradeInvestmentDataFlowModule.cs" />
     <Compile Include="Handlers\DataFlow\RecalculateAllPromoesHandler.cs" />
+    <Compile Include="Handlers\DataLakeIntegrationHandlers\MarsCustomersCheckHandler.cs" />
     <Compile Include="Handlers\FillInOutProductIdsHandler.cs" />
     <Compile Include="Handlers\AutoResetPromoHandler.cs" />
     <Compile Include="Handlers\ActualLSVChangeHandler.cs" />
+    <Compile Include="Handlers\Notifications\ClientTreeNeedUpdateNotificationHandler.cs" />
     <Compile Include="Handlers\PromoListActualRecalculationHandler.cs" />
     <Compile Include="Handlers\PromoListPlanRecalculationHandler.cs" />
     <Compile Include="Handlers\RemoveDeletedDataHandler.cs" />

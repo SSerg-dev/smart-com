@@ -1546,6 +1546,14 @@
     <Compile Include="Migrations\201912051154241_ChangePromoMechanicLength1.Designer.cs">
       <DependentUpon>201912051154241_ChangePromoMechanicLength1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201912042136084_Create_ClientTreeNeedUpdateIncident_Table.cs" />
+    <Compile Include="Migrations\201912042136084_Create_ClientTreeNeedUpdateIncident_Table.Designer.cs">
+      <DependentUpon>201912042136084_Create_ClientTreeNeedUpdateIncident_Table.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201912071724011_Add_ClientTreeNeedUpdateIncident_Fields.cs" />
+    <Compile Include="Migrations\201912071724011_Add_ClientTreeNeedUpdateIncident_Fields.Designer.cs">
+      <DependentUpon>201912071724011_Add_ClientTreeNeedUpdateIncident_Fields.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\201912051208198_ChangeMechanicLength.cs" />
     <Compile Include="Migrations\201912051208198_ChangeMechanicLength.Designer.cs">
       <DependentUpon>201912051208198_ChangeMechanicLength.cs</DependentUpon>
@@ -1649,6 +1657,7 @@
     <Compile Include="Model\Import\PromoSalesComparer.cs" />
     <Compile Include="Model\Import\PromoComparer.cs" />
     <Compile Include="Model\Import\ImportTradeInvestment.cs" />
+    <Compile Include="Model\SimpleModel\MarsUniversalPetcareCustomers.cs" />
     <Compile Include="Model\TPM\ActualLsvModel.cs" />
     <Compile Include="Model\TPM\BlockedPromo.cs" />
     <Compile Include="Model\TPM\AssortmentMatrix.cs" />
@@ -1660,6 +1669,7 @@
     <Compile Include="Model\TPM\IncrementalPromo.cs" />
     <Compile Include="Model\TPM\PostPromoEffect.cs" />
     <Compile Include="Model\TPM\PromoApprovedIncident.cs" />
+    <Compile Include="Model\TPM\ClientTreeNeedUpdateIncident.cs" />
     <Compile Include="Model\TPM\PromoOnRejectIncident.cs" />
     <Compile Include="Model\TPM\PromoOnApprovalIncident.cs" />
     <Compile Include="Model\TPM\PromoCancelledIncident.cs" />
@@ -1741,6 +1751,9 @@
     <Compile Include="PromoStateControl\UserRoles.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CalculatePromoParametersModule\PlanProductParametersCalculation.cs" />
+    <Content Include="SQLInitialize\20191205_0022_Init_ClientTreeNeedUpdateNotification.sql" />
+    <Content Include="SQLInitialize\20191205_0020_AddClientTreeNeedUpdateNotificationHandler.sql" />
+    <Content Include="SQLInitialize\20191205_0015_AddMarsCutomersCheckHandler.sql" />
     <Content Include="SQLInitialize\20191204_1300_AlterPromoView_RemoveDisabled.sql" />
     <Content Include="SQLInitialize\20191208_1635_PromoListForRecalculation_Settings.sql" />
     <Content Include="SQLInitialize\20191208_0035_PromoListActualRecalculationHandler.sql" />
@@ -2897,6 +2910,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201912061242540_Add_Unique_Mechanic.resx">
       <DependentUpon>201912061242540_Add_Unique_Mechanic.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201912042136084_Create_ClientTreeNeedUpdateIncident_Table.resx">
+      <DependentUpon>201912042136084_Create_ClientTreeNeedUpdateIncident_Table.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201912071724011_Add_ClientTreeNeedUpdateIncident_Fields.resx">
+      <DependentUpon>201912071724011_Add_ClientTreeNeedUpdateIncident_Fields.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

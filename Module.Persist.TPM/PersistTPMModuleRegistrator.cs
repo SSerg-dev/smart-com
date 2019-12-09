@@ -83,6 +83,7 @@ namespace Module.Persist.TPM {
             modelBuilder.Entity<BudgetSubItemClientTree>();
 			modelBuilder.Entity<PromoApprovedIncident>();
 			modelBuilder.Entity<ClientTreeBrandTech>();
+            modelBuilder.Entity<ClientTreeNeedUpdateIncident>();
             modelBuilder.Entity<PromoProductsCorrection>();
             modelBuilder.Entity<PromoProductsView>().ToTable("PromoProductsView"); ;
 			modelBuilder.Entity<PromoTypes>();
