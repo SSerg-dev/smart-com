@@ -1617,9 +1617,7 @@
         if (store.isLoading()) {
             store.resetLoading = true;
         } else {
-            if (store.uniqueObjectIds.length > 0) {
-                this.loadingRecursion(store, clientId);
-            }
+            this.loadingRecursion(store, clientId);
         }
     },
 

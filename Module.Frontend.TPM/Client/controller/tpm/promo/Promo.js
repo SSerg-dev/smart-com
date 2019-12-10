@@ -1727,6 +1727,13 @@
 		}
 
 		// --------------- buttons ---------------
+        // Нельзя загружать актуальные параметры до окончания промо.
+        var uploadActualsButton = promoActivity.down('#activityUploadPromoProducts');
+        if (uploadActualsButton && record.data && record.data.PromoStatusSystemName == 'Finished' && !promoeditorcustom.readOnly) {
+            uploadActualsButton.setDisabled(false);
+        } else {
+            uploadActualsButton.setDisabled(true);
+        }
 
 		//uplift
 		promoeditorcustom.down('button[itemId=savePromo]').show();
@@ -2932,7 +2939,7 @@
 
 		// Нельзя загружать актуальные параметры до окончания промо.
 		var uploadActualsButton = promoActivityStep2.down('#activityUploadPromoProducts');
-		if (uploadActualsButton && record.data && record.data.PromoStatusSystemName == 'Finished') {
+        if (uploadActualsButton && record.data && record.data.PromoStatusSystemName == 'Finished' && !promoeditorcustom.readOnly) {
 			uploadActualsButton.setDisabled(false);
 		} else {
 			uploadActualsButton.setDisabled(true);
