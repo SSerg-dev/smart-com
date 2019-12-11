@@ -1804,6 +1804,7 @@
     <Content Include="SQLInitialize\20191203_1730_NonPromoEquipment_AP.sql" />
     <Content Include="SQLInitialize\20191203_1730_NonPromoSupport_AP.sql" />
     <Content Include="SQLInitialize\20191203_2300_NonPromoSupport_Incremental_Trigger.sql" />
+    <Content Include="SQLInitialize\20191211_1800_NonPromoEquipment_AP_CMM_Add.sql" />
     <Content Include="Sql\20191004_1540_FillInOutProductIdsHandler.sql" />
     <Content Include="SQLInitialize\20190926_1600_HistoricalPromoSupport_AP.sql" />
     <Content Include="SQLInitialize\20191106_1700_PromoGridView.sql" />
