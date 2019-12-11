@@ -574,6 +574,15 @@
 			case 'ImportErrorResult':
 				pattern = '/api/File/ImportResultErrorDownload?filename={0}';
 				break;
+			case 'DataLakeSyncSuccessResult':
+				pattern = '/api/File/DataLakeSyncResultSuccessDownload?filename={0}';
+				break;
+			case 'DataLakeSyncWarningResult':
+				pattern = '/api/File/DataLakeSyncResultWarningDownload?filename={0}';
+				break;
+			case 'DataLakeSyncErrorResult':
+				pattern = '/api/File/DataLakeSyncResultErrorDownload?filename={0}';
+				break;
 			case 'AdditionalFilesDownload':
 				pattern = 'api/File/AdditionalFilesDownload?filename={0}';
 				break;
@@ -726,7 +735,6 @@
 		editor.show();
 	},
 
-
 	openImportResultFilesWindow: function (taskId) {
 		var win = Ext.widget('importresultfileswindow');
 		function buildField(type) {
@@ -739,6 +747,21 @@
 		};
 		var fields = [buildField.call(this, 'Success'), buildField.call(this, 'Warning'), buildField.call(this, 'Error')];
 		win.down('#importresultfilesform').add(fields);
+		win.show();
+	},
+
+	openDataLakeSyncResultFilesWindow: function (taskId) {
+		var win = Ext.widget('datalakesyncresultfileswindow');
+		function buildField(type) {
+			return {
+				xtype: 'singlelinedisplayfield',
+				name: type + 'File',
+				fieldLabel: l10n.ns('core', 'FileBuffer', 'DataLakeSyncResultFileTypes').value(type),
+				value: this.getFileDownloadLink({ LogicType: 'DataLakeSync' + type + 'Result', DisplayName: l10n.ns('core', 'buttons').value('download'), Name: taskId })
+			};
+		};
+		var fields = [buildField.call(this, 'Success'), buildField.call(this, 'Warning'), buildField.call(this, 'Error')];
+		win.down('#datalakesyncresultfilesform').add(fields);
 		win.show();
 	},
 
@@ -922,6 +945,17 @@
 					text: l10n.ns('core', 'buttons').value('open'),
 					handler: function (button) {
 						me.openImportResultFilesWindow(param.Value.TaskId);
+					}
+				}];
+				break;
+			case 'Looper.Parameters.DataLakeSyncResultFilesModel':
+				model.xtype = 'fieldcontainer';
+				model.cls = 'labelable-button';
+				model.items = [{
+					xtype: 'button',
+					text: l10n.ns('core', 'buttons').value('open'),
+					handler: function (button) {
+						me.openDataLakeSyncResultFilesWindow(param.Value.TaskId);
 					}
 				}];
 				break;

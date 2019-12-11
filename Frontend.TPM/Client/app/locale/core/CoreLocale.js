@@ -9,7 +9,8 @@
     'reviewWindowTitle': 'Форма просмотра',
     'extractParamsWindowTitle': 'Параметры извлечения',
     'processParamsWindowTitle': 'Параметры разбора',
-    'importResultFilesWindowTitle': 'Результаты импорта',
+	'importResultFilesWindowTitle': 'Результаты импорта',
+	'dataLakeSyncResultFilesWindow': 'Результаты синхронизации',
     'uploadFileWindowTitle': 'Загрузка файла',
     'uploadingFileWaitMessageText': 'Загрузка',
     'uploadFileLabelText': 'Файл',
@@ -138,7 +139,8 @@
         'manualSend': 'Отправить',
         'manualDownload': 'Скачать',
         'readLog': 'Лог',
-        'importResults': 'Результаты импорта'
+		'importResults': 'Результаты импорта',
+		'syncResults': 'Результаты синхронизации'
     },
 
     'selectablePanelButtons': {
@@ -409,7 +411,12 @@
             'Success': 'Импортировано',
             'Warning': 'Предупреждения',
             'Error': 'Ошибки'
-        }
+		},
+		'DataLakeSyncResultFileTypes': {
+			'Success': 'Синхронизрованно',
+			'Warning': 'Предупреждения',
+			'Error': 'Ошибки'
+		}
     },
     'HistoricalFileBuffer': ['FileBuffer', 'BaseHistoryEntity'],
 
