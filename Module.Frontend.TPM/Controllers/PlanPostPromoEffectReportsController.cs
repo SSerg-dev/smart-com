@@ -40,14 +40,8 @@ namespace Module.Frontend.TPM.Controllers {
             var result = new ConcurrentBag<PlanPostPromoEffectReportWeekView>();
             var user = authorizationManager.GetCurrentUser();
             var role = authorizationManager.GetCurrentRoleName();
-
-            var constraints = user.Id.HasValue ? Context.Constraints
-                .Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
-                .ToList() : new List<Constraint>();
-
-            var filters = FilterHelper.GetFiltersDictionary(constraints);
             var clientTrees = Context.Set<ClientTree>().AsNoTracking().ToList();
-            var hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
+            
             var dateTimeNow = DateTime.Now;
 
             var simplePromoPromoProducts = Context.Database.SqlQuery<SimplePromoPromoProduct>
@@ -76,10 +70,10 @@ namespace Module.Frontend.TPM.Controllers {
 	                 INNER JOIN PromoProduct promoProduct ON promoProduct.PromoId = promo.Id  
 	                 INNER JOIN PromoStatus promoStatus ON promoStatus.Id = promo.PromoStatusId
 	
-                WHERE promoProduct.Disabled = 0 AND promoProduct.PlanProductCaseQty > 0 AND promo.Disabled = 0
+                WHERE promoProduct.Disabled = 0 AND promo.Disabled = 0
             ").AsEnumerable();
 
-            var baseLines = Context.Set<BaseLine>().Where(x => !x.Disabled).Select(x => new BaseLineSimpleModel
+			var baseLines = Context.Set<BaseLine>().Where(x => !x.Disabled).Select(x => new BaseLineSimpleModel
             {
                 ProductZREP = x.Product.ZREP,
                 QTY = x.QTY,
@@ -89,11 +83,33 @@ namespace Module.Frontend.TPM.Controllers {
             })
             .ToList();
 
-            var clientTreeBrandTeches = Context.Set<ClientTreeBrandTech>().Where(x => !x.Disabled).ToList();
+			string allowedClientIds = String.Empty;
+			var clientTreeBrandTeches = Context.Set<ClientTreeBrandTech>().Where(x => !x.Disabled).ToList();
+			var constraints = user.Id.HasValue ? Context.Constraints
+				.Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
+				.ToList() : new List<Constraint>();
+			if (constraints.Any())
+			{
+				var filters = FilterHelper.GetFiltersDictionary(constraints);
+				var clientFilter = FilterHelper.GetFilter(filters, ModuleFilterName.Client);
+				IEnumerable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
+				hierarchy = hierarchy.Where(h => clientFilter.Contains(h.Id.ToString()) || clientFilter.Any(c => h.Hierarchy.Contains(c)));
 
-            simplePromoPromoProducts.AsParallel().ForAll(simplePromoPromoProduct =>
-            {
-                var promoStatus = simplePromoPromoProduct.PromoStatusName;
+				var allowedClientHierarchy = hierarchy.Select(h => h.Hierarchy.Split(',')).ToList();
+				allowedClientHierarchy.AddRange(hierarchy.Select(h => new[] { h.Id.ToString() }));
+				allowedClientIds = String.Join(",", allowedClientHierarchy.Select(x => String.Join(",", x)));
+			}
+
+			simplePromoPromoProducts.AsParallel().ForAll(simplePromoPromoProduct => {
+				// Проверка ограничений по клиентам
+				if (!String.IsNullOrEmpty(allowedClientIds) && simplePromoPromoProduct.ClientTreeId.HasValue)
+				{
+					bool hasAccess = allowedClientIds.Contains(simplePromoPromoProduct.ClientTreeId.Value.ToString());
+					if (!hasAccess)
+						return;
+				}
+
+				var promoStatus = simplePromoPromoProduct.PromoStatusName;
                 var demandCode = String.Empty;
 
                 var clientTree = clientTrees.FirstOrDefault(x => x.Id == simplePromoPromoProduct.ClientTreeKeyId && DateTime.Compare(x.StartDate, dateTimeNow) <= 0 && (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, dateTimeNow) > 0));
@@ -131,11 +147,11 @@ namespace Module.Frontend.TPM.Controllers {
 
                 if (clientTree != null)
                 {
-                    postPromoEffectW1 = Math.Abs(clientTree.PostPromoEffectW1.HasValue ? clientTree.PostPromoEffectW1.Value : 0);
-                    postPromoEffectW2 = Math.Abs(clientTree.PostPromoEffectW2.HasValue ? clientTree.PostPromoEffectW2.Value : 0);
+                    postPromoEffectW1 = clientTree.PostPromoEffectW1.HasValue ? clientTree.PostPromoEffectW1.Value : 0;
+                    postPromoEffectW2 = clientTree.PostPromoEffectW2.HasValue ? clientTree.PostPromoEffectW2.Value : 0;
                 }
 
-                var promoEffectBegin = ((DateTimeOffset)simplePromoPromoProduct.DispatchesEnd).Date.AddDays(1);
+				var promoEffectBegin = ((DateTimeOffset)simplePromoPromoProduct.DispatchesEnd).Date;
 
                 var marsWeekBeginDiff = DayOfWeek.Sunday - promoEffectBegin.DayOfWeek;
                 if (marsWeekBeginDiff < 0)
