@@ -30,6 +30,16 @@ namespace Module.Persist.TPM.Utils
         /// Example 01.09.2019 00:00:00 +02:00 => 01.09.2019 00:00:00 +03:00
         /// </summary>
         /// <param name="original">Время, требуемое корректировки</param>
+        public static DateTimeOffset ResetTimeZone(DateTimeOffset original)
+        {
+            return new DateTimeOffset(original.DateTime, TimeSpan.FromHours(defaultTimeZone));
+        }
+
+        /// <summary>
+        /// Изменить только часовой пояс без смещения времени
+        /// Example 01.09.2019 00:00:00 +02:00 => 01.09.2019 00:00:00 +03:00
+        /// </summary>
+        /// <param name="original">Время, требуемое корректировки</param>
         /// <param name="timeZone">Требуемая временная зона</param>
         public static DateTimeOffset? ResetTimeZone(DateTimeOffset? original, byte timeZone)
         {

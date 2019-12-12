@@ -40,8 +40,8 @@ namespace Module.Host.TPM.Actions
         {
             NeedClearData = needClearData;
             DemandCodes = demandCodesString.Split(";".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-            StartDate = startDate;
-            FinishDate = finishDate;
+            StartDate = ChangeTimeZoneUtil.ResetTimeZone(startDate);
+            FinishDate = ChangeTimeZoneUtil.ResetTimeZone(finishDate);
             Filters = filters;
             UniqueErrorMessage = "This entry already exists in the database";
             ErrorMessageScaffold = "FullImportAction failed: {0}";
