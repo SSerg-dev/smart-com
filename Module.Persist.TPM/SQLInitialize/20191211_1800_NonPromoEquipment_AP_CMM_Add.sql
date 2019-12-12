@@ -1,5 +1,4 @@
-﻿USE TPM_NonPromoCost_Main_Dev_Current
--- точки доступа
+﻿-- точки доступа
 -- избавляемся от дуближа
 DELETE FROM AccessPointRole WHERE AccessPointId in (SELECT Id FROM ACCESSPOINT WHERE [Resource] IN ('NonPromoEquipments', 'HistoricalNonPromoEquipments', 'DeletedNonPromoEquipments') AND [Action] IN ('GetNonPromoEquipments', 'GetNonPromoEquipment', 'Patch', 'ExportXLSX', 'FullImportXLSX', 'DownloadTemplateXLSX', 'Put', 'Post', 'Delete', 'GetHistoricalNonPromoEquipments', 'GetDeletedNonPromoEquipments'));
 Delete FROM AccessPoint WHERE [Resource] IN ('NonPromoEquipments', 'HistoricalNonPromoEquipments', 'DeletedNonPromoEquipments') AND [Action] IN ('GetNonPromoEquipments', 'GetNonPromoEquipment', 'Patch', 'ExportXLSX', 'FullImportXLSX', 'DownloadTemplateXLSX', 'Put', 'Post', 'Delete', 'GetHistoricalNonPromoEquipments', 'GetDeletedNonPromoEquipments') AND [Disabled] = 'false';
@@ -15,8 +14,6 @@ INSERT INTO AccessPoint (Resource, Action, Disabled, DeletedDate) VALUES ('NonPr
 INSERT INTO AccessPoint (Resource, Action, Disabled, DeletedDate) VALUES ('NonPromoEquipments', 'Delete', 0, NULL);
 INSERT INTO AccessPoint (Resource, Action, Disabled, DeletedDate) VALUES ('HistoricalNonPromoEquipments', 'GetHistoricalNonPromoEquipments', 0, NULL);
 INSERT INTO AccessPoint (Resource, Action, Disabled, DeletedDate) VALUES ('DeletedNonPromoEquipments', 'GetDeletedNonPromoEquipments', 0, NULL);
-
-
 
 -- роли
 --Administrator
