@@ -8,11 +8,13 @@ using Frontend.Core.Extensions;
 using Frontend.Core.Extensions.Export;
 using Looper.Core;
 using Looper.Parameters;
+using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.Import;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
 using Persist;
 using Persist.Model;
+using Persist.ScriptGenerator.Filter;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -30,6 +32,7 @@ using System.Web.Http.OData;
 using System.Web.Http.OData.Query;
 using System.Web.Http.Results;
 using Thinktecture.IdentityModel.Authorization.WebApi;
+using Utility;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -48,8 +51,11 @@ namespace Module.Frontend.TPM.Controllers
             IList<Constraint> constraints = user.Id.HasValue ? Context.Constraints
                 .Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
                 .ToList() : new List<Constraint>();
-
+            IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
+            IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
             IQueryable<PromoProductsCorrection> query = Context.Set<PromoProductsCorrection>().Where(e => !e.Disabled && e.TempId == null);
+
+            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
 
             return query;
         }
