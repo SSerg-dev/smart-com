@@ -215,8 +215,10 @@ namespace Module.Frontend.TPM.Controllers {
                     planProductBaselineLSVW1Rounded = Math.Round(planProductBaselineLSVW1.Value, 2);
                     planProductBaselineLSVW2Rounded = Math.Round(planProductBaselineLSVW2.Value, 2);
 
-                    planProductPostPromoEffectLSVW1 = (planProductBaselineLSVW1 ?? 0) * (postPromoEffectW1 ?? 0) / 100;
-                    planProductPostPromoEffectLSVW2 = (planProductBaselineLSVW2 ?? 0) * (postPromoEffectW2 ?? 0) / 100;
+					var absPPEw1 = postPromoEffectW1.HasValue ? Math.Abs(postPromoEffectW1.Value) : 0;
+					var absPPEw2 = postPromoEffectW2.HasValue ? Math.Abs(postPromoEffectW2.Value) : 0;
+					planProductPostPromoEffectLSVW1 = (planProductBaselineLSVW1 ?? 0) * absPPEw1 / 100;
+                    planProductPostPromoEffectLSVW2 = (planProductBaselineLSVW2 ?? 0) * absPPEw2 / 100;
 
                     planProductPostPromoEffectLSVW1Rounded = Math.Round(planProductPostPromoEffectLSVW1.Value, 2);
                     planProductPostPromoEffectLSVW2Rounded = Math.Round(planProductPostPromoEffectLSVW2.Value, 2);
