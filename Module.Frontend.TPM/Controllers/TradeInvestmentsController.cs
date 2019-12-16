@@ -35,6 +35,7 @@ using Module.Persist.TPM.Model.DTO;
 using System.Collections.Specialized;
 using Core.Dependency;
 using System.Collections.Concurrent;
+using Module.Frontend.TPM.Util;
 
 namespace Module.Frontend.TPM.Controllers {
 
@@ -143,7 +144,7 @@ namespace Module.Frontend.TPM.Controllers {
                     DeletedDate = model.DeletedDate,
                     StartDate = model.StartDate,
                     EndDate = model.EndDate,
-                    ClientTreeId = model.ClientTreeId,
+                    ClientTreeId = model.ClientTree.Id,
                     BrandTechId = model.BrandTechId,
                     TIType = model.TIType,
                     TISubType = model.TISubType,
@@ -163,7 +164,7 @@ namespace Module.Frontend.TPM.Controllers {
                 model.EndDate = ChangeTimeZoneUtil.ResetTimeZone(model.EndDate);
                 model.Year = model.StartDate.Value.Year;
 
-                string promoPatchDateCheckMsg = PromoDateCheck(oldModel, model.BrandTechId); 
+                string promoPatchDateCheckMsg = PromoDateCheck(oldModel); 
                 if (promoPatchDateCheckMsg != null)
                 {
                     return InternalServerError(new Exception(promoPatchDateCheckMsg));
@@ -409,32 +410,51 @@ namespace Module.Frontend.TPM.Controllers {
             }
         }
 
-        public string PromoDateCheck(TradeInvestment model, Guid? newBrandTechId = null)
+        public string PromoDateCheck(TradeInvestment model)
         {
-            var promoes = this.GetPromoesForCheck(Context).Where(x =>
-                x.StartDate.HasValue &&
-                x.StartDate.Value.Year == model.Year);
+            //Получаем все дочерние ClientTreeId 
+            var currClientTree = Context.Set<ClientTree>().Where(x => !x.EndDate.HasValue && x.Id == model.ClientTreeId).FirstOrDefault();
+            var clientTreesIds = Helper.getClientTreeAllChildren(currClientTree.ObjectId, Context).Select(x => x.Id).ToList();
+            clientTreesIds.Add(currClientTree.Id);
 
-            var models = Context.Set<TradeInvestment>().Where(x => !x.Disabled);
-            var clientTrees = Context.Set<ClientTree>().Where(x => !x.EndDate.HasValue);
-
-            var invalidPromoesByTradeInvestment = this.GetInvalidPromoesByTradeInvestment(model, models, promoes, clientTrees, newBrandTechId);
-            if (invalidPromoesByTradeInvestment.Any())
+            List<int> parentIds = new List<int>();
+            while (currClientTree.Type != "root" && currClientTree.parentId != 5000000)
             {
-                return $"Promo with numbers {string.Join(", ", invalidPromoesByTradeInvestment.Select(x => x.Number))} will not have TradeInvestment after that.";
+                currClientTree = Context.Set<ClientTree>().Where(x => !x.EndDate.HasValue && x.ObjectId == currClientTree.parentId).FirstOrDefault();
+                parentIds.Add(currClientTree.Id);
+            };
+
+            //Получаем только те промо, которые могли быть привязаны к изменяемому TI
+            var promoesToCheck = this.GetPromoesForCheck(Context, model, clientTreesIds);
+
+            //Забираем TI только для соответствующего дерева клиентов
+            var models = Context.Set<TradeInvestment>().Where(x => !x.Disabled && (parentIds.Contains(x.ClientTreeId) || clientTreesIds.Contains(x.ClientTreeId)));
+
+            //Соединяем, для получения полного дерева
+            clientTreesIds.AddRange(parentIds);
+
+            var invalidPromoesByTI = this.GetInvalidPromoesByTradeInvestment(models, promoesToCheck, clientTreesIds);
+            if (invalidPromoesByTI.Any())
+            {
+                return $"Promo with numbers {string.Join(", ", invalidPromoesByTI)} will not have Trade Investment after that.";
             }
 
             return null;
         }
 
-        private IEnumerable<PromoSimpleTradeInvestment> GetPromoesForCheck(DatabaseContext databaseContext)
+        private IEnumerable<PromoSimpleTradeInvestment> GetPromoesForCheck(DatabaseContext databaseContext, TradeInvestment model, List<int> ClientTreeIds)
         {
             var settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
             var statusesSetting = settingsManager.GetSetting<string>("NOT_CHECK_PROMO_STATUS_LIST", "Draft,Cancelled,Deleted,Closed");
             var notCheckPromoStatuses = statusesSetting.Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
 
+            //Получаем промо, подходящие под этот TI
             var promoes = databaseContext.Set<Promo>()
-            .Where(x => !x.Disabled)
+            .Where(x => !x.Disabled && x.ClientTreeId.HasValue && ClientTreeIds.Contains((int)x.ClientTreeKeyId)
+                && model.StartDate.HasValue && model.EndDate.HasValue && x.StartDate.HasValue
+                && DateTimeOffset.Compare(model.StartDate.Value, x.StartDate.Value) <= 0
+                && DateTimeOffset.Compare(model.EndDate.Value, x.StartDate.Value) >= 0
+                && !notCheckPromoStatuses.Contains(x.PromoStatus.Name))
             .Select(x => new PromoSimpleTradeInvestment
             {
                 PromoStatusName = x.PromoStatus.Name,
@@ -443,119 +463,60 @@ namespace Module.Frontend.TPM.Controllers {
                 ClientTreeId = x.ClientTree.Id,
                 BrandTechId = x.BrandTechId,
                 Number = x.Number
-            })
-            .ToList()
-            .Where(x => !notCheckPromoStatuses.Contains(x.PromoStatusName));
+            });
 
             return promoes;
         }
 
-        private IEnumerable<PromoSimpleTradeInvestment> GetInvalidPromoesByTradeInvestmentCurrentAndUp( 
-            TradeInvestment model, IEnumerable<TradeInvestment> models, IEnumerable<PromoSimpleTradeInvestment> promoes, IEnumerable<ClientTree> clientTrees, 
-            IEnumerable<PromoSimpleTradeInvestment> invalidPromoes = null, PromoSimpleTradeInvestment checkedPromo = null, Guid? newBrandTechId = null)
+        private IEnumerable<int?> GetInvalidPromoesByTradeInvestment(
+            IEnumerable<TradeInvestment> models, IEnumerable<PromoSimpleTradeInvestment> promoes, List<int> clientTreeIds)
         {
-            invalidPromoes = invalidPromoes ?? new List<PromoSimpleTradeInvestment>();
+            IEnumerable<PromoSimpleTradeInvestment> invalidPromoes = new List<PromoSimpleTradeInvestment>();
 
-            var currentClientTree = new ClientTree { parentId = model.ClientTree.ObjectId };
-            while (currentClientTree != null && currentClientTree.Type != "root")
+            //Группируем промо, что бы проверять только родительские ClientTree
+            var promoGroups = promoes.GroupBy(x => x.ClientTreeId);
+            //Получаем всё дерево клиентов
+            List<ClientTree> clientTrees = Context.Set<ClientTree>().Where(x => clientTreeIds.Contains(x.Id)).ToList();
+            ClientTree clientTree;
+            List<PromoSimpleTradeInvestment> promoesToRemove;
+            List<PromoSimpleTradeInvestment> promoesGroupList;
+            List<TradeInvestment> ClientTI;
+            IEnumerable<TradeInvestment> FittedTI;
+            List<int?> invalidPromoesNumbers = new List<int?>();
+
+            foreach (var promoGroup in promoGroups)
             {
-                currentClientTree = clientTrees.FirstOrDefault(x => x.ObjectId == currentClientTree.parentId);
-                if (currentClientTree != null)
+                promoesGroupList = promoGroup.ToList();
+                promoesToRemove = new List<PromoSimpleTradeInvestment>();
+                clientTree = clientTrees.Where(x => x.Id == promoGroup.Key).FirstOrDefault();
+                if (clientTree != null)
                 {
-                    var modelsForCurrentClientTree = models.Where(x => x.ClientTreeId == currentClientTree.Id);
-                    var modelsForCurrentClientTreeAndBrandTech = modelsForCurrentClientTree.Where(y => y.BrandTechId == null || y.BrandTechId == newBrandTechId || y.BrandTechId == model.BrandTechId);
-                    var modelsForCurrentClientTreeExceptBrandTech = modelsForCurrentClientTree.Except(modelsForCurrentClientTreeAndBrandTech);
-
-                    if (modelsForCurrentClientTreeExceptBrandTech.Any())
+                    while (clientTree != null && promoesGroupList.Count > 0)
                     {
-                        var promoesForCurrentClientTree = promoes.Where(x => x.ClientTreeId == currentClientTree.Id);
-                        if (newBrandTechId != null && model.BrandTechId != null)
+                        ClientTI = models.Where(x => x.ClientTreeId == clientTree.Id).ToList();
+                        foreach (PromoSimpleTradeInvestment promo in promoesGroupList)
                         {
-                            promoesForCurrentClientTree = promoesForCurrentClientTree.Where(y => y.BrandTechId == null || y.BrandTechId == newBrandTechId || y.BrandTechId == model.BrandTechId);
-                        }
-
-                        if (checkedPromo != null)
-                        {
-                            List<PromoSimpleTradeInvestment> checkedPromoList = new List<PromoSimpleTradeInvestment>() { checkedPromo };
-                            promoesForCurrentClientTree = promoesForCurrentClientTree.Except(checkedPromoList);
-                        }
-
-                        foreach (var modelForCurrentClientTree in modelsForCurrentClientTreeAndBrandTech)
-                        {
-                            var invalidPromoesForCurrentClientTree = promoesForCurrentClientTree.Concat(invalidPromoes)
-                                .Where(x => !(x.StartDate >= modelForCurrentClientTree.StartDate && x.StartDate <= modelForCurrentClientTree.EndDate && 
-                                (modelForCurrentClientTree.BrandTechId == null || x.BrandTechId == modelForCurrentClientTree.BrandTechId) && !modelForCurrentClientTree.Disabled));
-
-                            invalidPromoes = invalidPromoesForCurrentClientTree.Where(x => !modelsForCurrentClientTreeExceptBrandTech.Any(y => y.StartDate <= x.StartDate && 
-                                y.EndDate >= x.StartDate && (y.BrandTechId == null || x.BrandTechId == y.BrandTechId) && !y.Disabled)).ToList();
-                        }
-                    }
-                }
-
-                if (!invalidPromoes.Any())
-                {
-                    break;
-                }
-            }
-
-            return invalidPromoes;
-        }
-
-        private IEnumerable<PromoSimpleTradeInvestment> GetInvalidPromoesByTradeInvestment( 
-            TradeInvestment model, IEnumerable<TradeInvestment> models, IEnumerable<PromoSimpleTradeInvestment> promoes, IEnumerable<ClientTree> clientTrees, Guid? newBrandTechId = null)
-        {
-            var invalidPromoes = new List<PromoSimpleTradeInvestment>();
-
-            var currentClientTree = clientTrees.FirstOrDefault(x => x.Id == model.ClientTreeId);
-            if (currentClientTree != null)
-            {
-                var stack = new Stack<ClientTree>(new List<ClientTree> { currentClientTree });
-                while (stack.Any())
-                {
-                    currentClientTree = stack.Pop();
-                    var tempInvalidPromoes = new List<PromoSimpleTradeInvestment>();
-
-                    var modelsForCurrentClientTree = models.Where(x => x.ClientTreeId == currentClientTree.Id);
-
-                    var currentPromoes = promoes.Where(x => x.ClientTreeId == currentClientTree.Id);
-                    if (newBrandTechId != null && model.BrandTechId != null)
-                    {
-                        currentPromoes = currentPromoes.Where(y => y.BrandTechId == null || y.BrandTechId == newBrandTechId || y.BrandTechId == model.BrandTechId);
-                    }
-
-                    foreach (var currentPromo in currentPromoes)
-                    {
-                        var modelsForCurrentPromo = modelsForCurrentClientTree.Where(x => (x.BrandTechId == null || x.BrandTechId == currentPromo.BrandTechId) &&
-                            x.StartDate <= currentPromo.StartDate && x.EndDate >= currentPromo.StartDate && !x.Disabled);
-
-                        if (modelsForCurrentPromo.Any())
-                        {
-                            foreach (var modelForCurrentPromo in modelsForCurrentPromo)
+                            if (ClientTI != null)
                             {
-                                invalidPromoes.AddRange(this.GetInvalidPromoesByTradeInvestmentCurrentAndUp(modelForCurrentPromo, models, promoes, clientTrees, null, currentPromo, newBrandTechId));
+                                FittedTI = ClientTI.Where(x => DateTimeOffset.Compare(x.StartDate.Value, promo.StartDate.Value) <= 0
+                                       && DateTimeOffset.Compare(x.EndDate.Value, promo.StartDate.Value) >= 0
+                                       && (promo.BrandTechId == x.BrandTechId || x.BrandTechId == null));
+                                if (FittedTI.Any())
+                                {
+                                    promoesToRemove.Add(promo);
+                                }
                             }
                         }
-                        else
-                        {
-                            tempInvalidPromoes.Add(currentPromo);
-                        }
+                        promoesGroupList = promoesGroupList.Except(promoesToRemove).ToList();
+                        clientTree = clientTrees.Where(x => x.ObjectId == clientTree.parentId).FirstOrDefault();
                     }
-
-                    if (tempInvalidPromoes.Any())
+                    if (promoesGroupList.Count > 0)
                     {
-                        var fakeModel = new TradeInvestment { ClientTree = new ClientTree { ObjectId = currentClientTree.ObjectId }, BrandTechId = model.BrandTechId };
-                        invalidPromoes.AddRange(this.GetInvalidPromoesByTradeInvestmentCurrentAndUp(fakeModel, models, promoes, clientTrees, tempInvalidPromoes, null, newBrandTechId));
-                    }
-
-                    var currentClientTreeChildren = clientTrees.Where(x => x.parentId == currentClientTree.ObjectId);
-                    foreach (var currentClientTreeChild in currentClientTreeChildren)
-                    {
-                        stack.Push(currentClientTreeChild);
+                        invalidPromoesNumbers.AddRange(promoesGroupList.Select(x => x.Number));
                     }
                 }
             }
-
-            return invalidPromoes.Distinct();
+            return invalidPromoesNumbers;
         }
 
         public class PromoSimpleTradeInvestment
