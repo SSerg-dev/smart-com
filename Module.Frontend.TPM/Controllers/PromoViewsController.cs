@@ -42,7 +42,7 @@ namespace Module.Frontend.TPM.Controllers {
                 query = query.Where(e => e.PromoStatusSystemName != "Draft" || e.CreatorId == user.Id);
             }
 
-            var statusesForExcluding = new List<string>() { "Deleted", "Cancelled" };
+            var statusesForExcluding = new List<string>() { "Deleted" };
             query = query.Where(x => !statusesForExcluding.Contains(x.PromoStatusSystemName));
 
             return query;
