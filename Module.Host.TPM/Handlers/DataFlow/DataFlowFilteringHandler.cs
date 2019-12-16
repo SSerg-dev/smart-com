@@ -189,9 +189,9 @@ namespace Module.Host.TPM.Handlers.DataFlow
                     $"Amount of {nameof(COGS)} models: { dataFlowFilterCollection.COGSDataFlowFilter.ChangedModels.Count() }", "Message");
 
                 Parallel.ForEach(dataFlowFilterCollection.COGSDataFlowFilter.ChangedModels, 
-                    new ParallelOptions { MaxDegreeOfParallelism = MaxDegreeOfParallelism }, assortmentMatrix =>
+                    new ParallelOptions { MaxDegreeOfParallelism = MaxDegreeOfParallelism }, cogs =>
                 {
-                    var applyResult = dataFlowFilterCollection.COGSDataFlowFilter.Apply(assortmentMatrix, promoesForRecalculatingForFilters.Values);
+                    var applyResult = dataFlowFilterCollection.COGSDataFlowFilter.Apply(cogs, promoesForRecalculatingForFilters.Values);
                     if (applyResult.Item1.Count() > 0)
                     {
                         lock (syncLock)
@@ -214,9 +214,9 @@ namespace Module.Host.TPM.Handlers.DataFlow
                     $"Amount of {nameof(TradeInvestment)} models: { dataFlowFilterCollection.TradeInvestmentDataFlowFilter.ChangedModels.Count() }", "Message");
 
                 Parallel.ForEach(dataFlowFilterCollection.TradeInvestmentDataFlowFilter.ChangedModels, 
-                    new ParallelOptions { MaxDegreeOfParallelism = MaxDegreeOfParallelism }, assortmentMatrix =>
+                    new ParallelOptions { MaxDegreeOfParallelism = MaxDegreeOfParallelism }, ti =>
                 {
-                    var applyResult = dataFlowFilterCollection.TradeInvestmentDataFlowFilter.Apply(assortmentMatrix, promoesForRecalculatingForFilters.Values);
+                    var applyResult = dataFlowFilterCollection.TradeInvestmentDataFlowFilter.Apply(ti, promoesForRecalculatingForFilters.Values);
                     if (applyResult.Item1.Count() > 0)
                     {
                         lock (syncLock)

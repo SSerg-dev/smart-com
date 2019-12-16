@@ -40,44 +40,22 @@ namespace Module.Host.TPM.Handlers.DataFlow.Filters
 
         private bool InnerApply(PromoDataFlowModule.PromoDataFlowSimpleModel promo, COGSDataFlowModule.COGSDataFlowSimpleModel cogs)
         {
-            var stack = new Stack<ClientTreeDataFlowModule.ClientTreeDataFlowSimpleModel>();
+            var clientNode = this.DataFlowModuleCollection.ClientTreeDataFlowModule.Collection.Where(x => x.ObjectId == promo.ClientTreeId && !x.EndDate.HasValue).FirstOrDefault();
+            var isPromoFiltered = false;
 
-            var currentClientTreeForCurrentCOGS = this.DataFlowModuleCollection.ClientTreeDataFlowModule.Collection
-                .FirstOrDefault(x => x.Id == cogs.ClientTreeId && !x.EndDate.HasValue);
-
-            if (currentClientTreeForCurrentCOGS != null)
+            // проверка текущей пары Promo-COGS, как если бы для данного промо подбирался COGS
+            // идем вверх по дереву клиентов промо, пока не дойдем до корневого узла или не найдется совпадение
+            while (!isPromoFiltered && clientNode != null && clientNode.Type != "root")
             {
-                stack.Push(currentClientTreeForCurrentCOGS);
-                while (stack.Any())
-                {
-                    var currentClientTree = stack.Pop();
+                isPromoFiltered = clientNode.ObjectId == cogs.ClientTreeObjectId
+                                && ((cogs.BrandTechId != null && cogs.BrandTechId == promo.BrandTechId) || cogs.BrandTechId == null)
+                                && cogs.StartDate <= promo.DispatchesStart
+                                && cogs.EndDate >= promo.DispatchesStart;
 
-                    if (promo.ClientTreeId == currentClientTree.ObjectId)
-                    {
-                        var cogsesForCurrentPromo = this.DataFlowModuleCollection.COGSDataFlowModule.Collection
-                            .Where(x =>
-                                x.ClientTreeId == promo.ClientTreeId &&
-                                (x.BrandTechId == null || x.BrandTechId == cogs.BrandTechId) &&
-                                x.StartDate <= promo.DispatchesStart &&
-                                x.EndDate >= promo.DispatchesStart);
-
-                        if (!cogsesForCurrentPromo.Any())
-                        {
-                            return true;
-                        }
-                    }
-
-                    var currentClientTreeChildren = this.DataFlowModuleCollection.ClientTreeDataFlowModule.Collection
-                        .Where(x => x.ParentId == currentClientTree.ObjectId && !x.EndDate.HasValue);
-
-                    foreach (var children in currentClientTreeChildren)
-                    {
-                        stack.Push(children);
-                    }
-                }
+                clientNode = this.DataFlowModuleCollection.ClientTreeDataFlowModule.Collection.Where(x => x.ParentId == clientNode.ObjectId && !x.EndDate.HasValue).FirstOrDefault();
             }
 
-            return false;
+            return isPromoFiltered;
         }
 
         public override string ToString()

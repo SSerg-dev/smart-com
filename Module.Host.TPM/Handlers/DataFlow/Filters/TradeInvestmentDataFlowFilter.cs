@@ -40,44 +40,22 @@ namespace Module.Host.TPM.Handlers.DataFlow.Filters
 
         private bool InnerApply(PromoDataFlowModule.PromoDataFlowSimpleModel promo, TradeInvestmentDataFlowModule.TradeInvestmentDataFlowSimpleModel tradeInvestment)
         {
-            var stack = new Stack<ClientTreeDataFlowModule.ClientTreeDataFlowSimpleModel>();
+            var clientNode = this.DataFlowModuleCollection.ClientTreeDataFlowModule.Collection.Where(x => x.ObjectId == promo.ClientTreeId && !x.EndDate.HasValue).FirstOrDefault();
+            var isPromoFiltered = false;
 
-            var currentClientTreeForCurrentTradeInvestment = this.DataFlowModuleCollection.ClientTreeDataFlowModule.Collection
-                .FirstOrDefault(x => x.Id == tradeInvestment.ClientTreeId && !x.EndDate.HasValue);
-
-            if (currentClientTreeForCurrentTradeInvestment != null)
+            // проверка текущей пары Promo-TI, как если бы для данного промо подбирался TI
+            // идем вверх по дереву клиентов промо, пока не дойдем до корневого узла или не найдется совпадение
+            while (!isPromoFiltered && clientNode != null && clientNode.Type != "root")
             {
-                stack.Push(currentClientTreeForCurrentTradeInvestment);
-                while (stack.Any())
-                {
-                    var currentClientTree = stack.Pop();
+                isPromoFiltered = clientNode.ObjectId == tradeInvestment.ClientTreeObjectId
+                                && ((tradeInvestment.BrandTechId != null && tradeInvestment.BrandTechId == promo.BrandTechId) || tradeInvestment.BrandTechId == null)
+                                && tradeInvestment.StartDate <= promo.StartDate
+                                && tradeInvestment.EndDate >= promo.StartDate;
 
-                    if (promo.ClientTreeId == currentClientTree.ObjectId)
-                    {
-                        var tradeInvestmentesForCurrentPromo = this.DataFlowModuleCollection.TradeInvestmentDataFlowModule.Collection
-                            .Where(x =>
-                                x.ClientTreeId == promo.ClientTreeId &&
-                                (x.BrandTechId == null || x.BrandTechId == tradeInvestment.BrandTechId) &&
-                                x.StartDate <= promo.StartDate &&
-                                x.EndDate >= promo.StartDate);
-
-                        if (!tradeInvestmentesForCurrentPromo.Any())
-                        {
-                            return true;
-                        }
-                    }
-
-                    var currentClientTreeChildren = this.DataFlowModuleCollection.ClientTreeDataFlowModule.Collection
-                        .Where(x => x.ParentId == currentClientTree.ObjectId && !x.EndDate.HasValue);
-
-                    foreach (var children in currentClientTreeChildren)
-                    {
-                        stack.Push(children);
-                    }
-                }
+                clientNode = this.DataFlowModuleCollection.ClientTreeDataFlowModule.Collection.Where(x => x.ParentId == clientNode.ObjectId && !x.EndDate.HasValue).FirstOrDefault();
             }
 
-            return false;
+            return isPromoFiltered;
         }
 
         public override string ToString()
