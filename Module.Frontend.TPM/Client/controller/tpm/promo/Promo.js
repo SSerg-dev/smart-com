@@ -3639,20 +3639,35 @@
 		promoTitle.setText('Name: ' + name + ', Status: ' + status);
 	},
 
-	getPromoName: function (promoForm) {
-		var promoProductForm = promoForm.down('promobasicproducts');
-		var promoMechanic = promoForm.down('panel').down('promomechanic');
+    getPromoName: function (promoForm) {
+        var promoProductForm = promoForm.down('promobasicproducts');
+        var promoMechanic = promoForm.down('panel').down('promomechanic');
 
-		var marsMechanic = promoMechanic.down('searchcombobox[name=MarsMechanicId]').getRawValue();
-		var marsMechanicType = promoMechanic.down('searchcombobox[name=MarsMechanicTypeId]').getRawValue();
-		var marsMechanicDiscountField = promoMechanic.down('[name=MarsMechanicDiscount]');
-		var marsMechanicDiscountValue = marsMechanicDiscountField.getValue();
+        var marsMechanic = promoMechanic.down('searchcombobox[name=MarsMechanicId]').getRawValue();
+        var marsMechanicType = promoMechanic.down('searchcombobox[name=MarsMechanicTypeId]').getRawValue();
+        var marsMechanicDiscountField = promoMechanic.down('[name=MarsMechanicDiscount]');
+        var marsMechanicDiscountValue = marsMechanicDiscountField.getValue();
 
-		var promoName = (promoProductForm.brandAbbreviation ? promoProductForm.brandAbbreviation : '') + ' ' + (promoProductForm.technologyAbbreviation ? promoProductForm.technologyAbbreviation : '') + ' ' +
-			marsMechanic + ' ' + (marsMechanic === 'TPR' || marsMechanic === 'Other' ? marsMechanicDiscountValue + '%' : marsMechanicType);
+        var promoName = (promoProductForm.brandAbbreviation ? promoProductForm.brandAbbreviation : '') + ' ' + (promoProductForm.technologyAbbreviation ? promoProductForm.technologyAbbreviation : '') + ' ' +
+            marsMechanic + ' ' + (marsMechanic === 'TPR' || marsMechanic === 'Other' ? marsMechanicDiscountValue + '%' : marsMechanicType);
 
-		return promoName;
-	},
+        return promoName;
+    },
+    getPromoName: function (promoForm) {
+        var promoProductForm = promoForm.down('promobasicproducts');
+        var promoMechanic = promoForm.down('panel').down('promomechanic');
+
+        var marsMechanic = promoMechanic.down('searchcombobox[name=MarsMechanicId]').getRawValue();
+        var marsMechanicType = promoMechanic.down('searchcombobox[name=MarsMechanicTypeId]').getRawValue();
+        var marsMechanicDiscountField = promoMechanic.down('[name=MarsMechanicDiscount]');
+        var marsMechanicDiscountValue = marsMechanicDiscountField.getValue();
+        var discountValue = marsMechanic !== 'VP'  ? marsMechanicDiscountValue + '%' : marsMechanicType
+
+        var promoName = (promoProductForm.brandAbbreviation ? promoProductForm.brandAbbreviation : '') + ' ' + (promoProductForm.technologyAbbreviation ? promoProductForm.technologyAbbreviation : '') + ' ' +
+            marsMechanic + ' ' + discountValue;
+
+        return promoName;
+    },
 
 	getInvalidFields: function (form) {
 		var invalidFields = [];
