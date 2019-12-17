@@ -218,8 +218,7 @@
         this.down('[name=Name]').setValue(record.Name);
         //'OutletCount',
         this.down('[name=GHierarchyCode]').setValue(record.GHierarchyCode);
-        this.down('[name=DemandCode]').setValue(record.DemandCode);
-        this.down('[name=Share]').setValue(record.Share);
+        this.down('[name=DemandCode]').setValue(record.DemandCode); 
         this.down('[name=IsBaseClient]').setValue(record.IsBaseClient);
         this.down('[name=RetailTypeName]').setValue(record.RetailTypeName);
         this.down('[name=PostPromoEffectW1]').setValue(record.PostPromoEffectW1);
