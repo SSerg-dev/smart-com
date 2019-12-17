@@ -94,14 +94,14 @@ namespace Module.Host.TPM.Actions.Notifications {
 			string value = val == null ? String.Empty : val.ToString();
 			if (!String.IsNullOrEmpty(value)) {
 				string[] dateFormats = new string[] {
-					"dd/MM/yyyy hh:mm:ss tt zzz", "MM/dd/yyyy hh:mm:ss tt zzz",
-					"d/MM/yyyy hh:mm:ss tt zzz", "MM/d/yyyy hh:mm:ss tt zzz",
-					"dd/M/yyyy hh:mm:ss tt zzz", "M/dd/yyyy hh:mm:ss tt zzz",
-					"d/M/yyyy hh:mm:ss tt zzz", "M/d/yyyy hh:mm:ss tt zzz",
-					"dd/MM/yyyy hh:mm:ss tt", "MM/dd/yyyy hh:mm:ss tt",
-					"d/MM/yyyy hh:mm:ss tt", "MM/d/yyyy hh:mm:ss tt",
-					"dd/M/yyyy hh:mm:ss tt", "M/dd/yyyy hh:mm:ss tt",
-					"d/M/yyyy hh:mm:ss tt", "M/d/yyyy hh:mm:ss tt" };
+                    "MM/dd/yyyy hh:mm:ss tt zzz", "MM/d/yyyy hh:mm:ss tt zzz",
+                    "M/dd/yyyy hh:mm:ss tt zzz",  "M/d/yyyy hh:mm:ss tt zzz",
+                    "MM/dd/yyyy hh:mm:ss tt",     "MM/d/yyyy hh:mm:ss tt",
+                    "M/dd/yyyy hh:mm:ss tt",      "M/d/yyyy hh:mm:ss tt",
+                    "dd/MM/yyyy hh:mm:ss tt zzz", "d/MM/yyyy hh:mm:ss tt zzz",
+                    "dd/M/yyyy hh:mm:ss tt zzz",  "d/M/yyyy hh:mm:ss tt zzz",
+                    "dd/MM/yyyy hh:mm:ss tt",     "d/MM/yyyy hh:mm:ss tt",
+                    "dd/M/yyyy hh:mm:ss tt",      "d/M/yyyy hh:mm:ss tt" };
 				DateTimeOffset date;
                 Boolean boolVal;
 				Double doubleVal;
