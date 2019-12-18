@@ -741,7 +741,6 @@
         } else {
             App.Notify.pushError('Не выбран тип промо');
         }
-         
     },
 
     onPromoTypeAfterRender: function (window) {

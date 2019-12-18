@@ -162,12 +162,12 @@
         picker.down(this.selectorWidget).down('grid').on('itemdblclick', this.onSelectiondbClick, this);
         picker.down('#select').on('click', this.onSelectButtonClick, this);
         picker.down('#cancel').on('click', this.onCancelButtonClick, this);
-
+        picker.on('resize', function () { picker.show() }, this);
         picker.on('close', function (panel, e) {
             var searchfieldstore = me.getStore(),
                 value = me.getValue();
 
-            if (value) {
+            if (value && me.getStore()) {
                 var num = searchfieldstore.find('Id', value);
                 if (num === -1) {
                     me.selectValidate = false;

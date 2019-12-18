@@ -3819,10 +3819,10 @@
 			var mechanicListForUnlockDiscountField = promoController.getMechanicListForUnlockDiscountField();
 
 			if (oldValue) {
-				if (mechanicListForUnlockDiscountField.some(function (element) { return element !== mechanicFields.marsMechanicFields.marsMechanicId.rawValue; })) {
+				//if (mechanicListForUnlockDiscountField.some(function (element) { return element !== mechanicFields.marsMechanicFields.marsMechanicId.rawValue; })) {
 					mechanicFields.marsMechanicFields.marsMechanicTypeId.reset();
 					mechanicFields.marsMechanicFields.marsMechanicDiscount.reset();
-				}
+				//}
 			}
 
 			promoController.mechanicTypeChange(
@@ -3898,10 +3898,10 @@
 			var mechanicListForUnlockDiscountField = promoController.getMechanicListForUnlockDiscountField();
 
 			if (oldValue) {
-				if (mechanicListForUnlockDiscountField.some(function (element) { return element !== mechanicFields.instoreMechanicFields.instoreMechanicId.rawValue; })) {
+				//if (mechanicListForUnlockDiscountField.some(function (element) { return element !== mechanicFields.instoreMechanicFields.instoreMechanicId.rawValue; })) {
 					mechanicFields.instoreMechanicFields.instoreMechanicTypeId.reset();
 					mechanicFields.instoreMechanicFields.instoreMechanicDiscount.reset();
-				}
+				//}
 				promoController.setCompletedMechanicStep(false);
 			} else {
 				promoController.setNotCompletedMechanicStep(false);
@@ -4040,13 +4040,14 @@
         } else if (mechanicId.rawValue && mechanicListForUnlockDiscountField.some(function (element)
         { return element !== mechanicId.rawValue; })) {
 			mechanicTypeId.setDisabled(true);
-			mechanicDiscount.setDisabled(false);
+            mechanicDiscount.setDisabled(false); 
+
 		} else if (mechanicId.rawValue) {
 			mechanicTypeId.setDisabled(false);
-			mechanicDiscount.setDisabled(true);
+            mechanicDiscount.setDisabled(true);  
 		} else {
 			mechanicTypeId.setDisabled(true);
-			mechanicDiscount.setDisabled(true);
+            mechanicDiscount.setDisabled(true);
 		}
 	},
 

@@ -10,7 +10,7 @@
           { name: 'PromoTypesId', hidden: true, isDefault: true },
 
         {
-            name: 'PromoTypeName', type: 'string', mapping: 'PromoTypes.Name',
+            name: 'PromoTypeName', type: 'string', mapping: 'PromoTypes.Name', defaultFilterConfig: { valueField: 'Name' },
             breezeEntityType: 'PromoTypes', hidden: false, isDefault: true
         },
     ],

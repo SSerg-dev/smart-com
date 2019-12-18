@@ -16,16 +16,14 @@ namespace Module.Persist.TPM.Model.Import
         public string Name { get; set; }
 
         [ImportCSVColumn(ColumnNumber = 1)]
-        [Display(Name = "SystemName")]
-        [Required]
+        [Display(Name = "SystemName")] 
         public string SystemName { get; set; }
 
         [ImportCSVColumn(ColumnNumber = 2)]
         [NavigationPropertyMap(LookupEntityType = typeof(PromoTypes), LookupPropertyName = "Name")]
-        [Display(Name = "PromoTypes.Name")]
-        [Required]
+        [Display(Name = "PromoTypes.Name")]  
         public String PromoTypeName { get; set; }
-        public System.Guid PromoTypesId { get; set; } 
+        public System.Guid? PromoTypesId { get; set; } 
         public virtual PromoTypes PromoTypes { get; set; }
     }
 }

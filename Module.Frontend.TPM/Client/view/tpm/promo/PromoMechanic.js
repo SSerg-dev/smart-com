@@ -98,6 +98,8 @@
                                 operation: 'Equals',
                                 value: status
                             };
+
+                            window.on('resize', function () { window.show() }, this);
                             this.getStore().fixedFilters = filter;
                             //this.getStore().setFixedFilter('PromoStatusNameFilter', {
                             //    property: 'PromoType.Name',
@@ -282,6 +284,7 @@
                                 value: status
                             };
                             this.getStore().fixedFilters = filter;
+                            window.on('resize', function () { window.show() }, this);
                             //this.getStore().setFixedFilter('PromoStatusNameFilter', {
                             //    property: 'PromoType.Name',
                             //    operation: 'Equals',

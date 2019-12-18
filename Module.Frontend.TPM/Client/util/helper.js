@@ -586,6 +586,25 @@ Ext.override(Ext.view.Table, {
     },
 });
 
+Ext.override(App.view.core.common.SearchComboBox, {
+    onWindowClose: function () {
+        if (this.defaultStoreState && this.getStore()) {
+            this.getStore().applyState(this.defaultStoreState);
+            this.getStore().extendedFilter.filter = null;
+            this.getStore().load();
+        }
+    },
+    onTrigger2Click: function () {
+        var window = this.createWindow();
+
+        if (window) {
+            window.show();
+            window.on('resize', function () { window.show() }, this);
+            this.getStore().load();
+        }
+    },
+});
+
 // посчитать количество дней между датами (без границ)
 var getDaysBetweenDates = function (date1, date2) {
     var date1WithoutHours = new Date(date1.getFullYear(), date1.getMonth(), date1.getDate());

@@ -75,8 +75,15 @@ namespace Module.Host.TPM.Actions {
             if (TypeTo == typeof(Mechanic))
             {
                 Mechanic typedRec = (Mechanic)rec;
+
+                Guid emptyGuid = Guid.Empty;
                 if (String.IsNullOrEmpty(typedRec.Name)) { errors.Add("Name must have a value"); isSuitable = false; }
-               // if (String.IsNullOrEmpty(typedRec.SystemName)) { errors.Add("System Name must have a value"); isSuitable = false; }
+                if (String.IsNullOrEmpty(typedRec.SystemName)) { errors.Add("System Name must have a value"); isSuitable = false; }
+                if (typedRec.PromoTypesId == null || typedRec.PromoTypesId == emptyGuid)
+                {
+                    errors.Add("PromoTypesId must have a value"); isSuitable = false;
+                }
+
             }
 
             if (TypeTo == typeof(MechanicType))
