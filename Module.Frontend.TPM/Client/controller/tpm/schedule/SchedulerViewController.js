@@ -739,7 +739,7 @@
                 App.Notify.pushError('Не найдено типа промо ' + selectedButtonText.Name);
             }
         } else {
-            App.Notify.pushError('Не выбран тип промо');
+            App.Notify.pushError(l10n.ns('tpm', 'PromoTypes').value('NoPromoType'));
         }
     },
 
