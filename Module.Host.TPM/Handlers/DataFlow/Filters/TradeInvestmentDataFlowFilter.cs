@@ -52,7 +52,7 @@ namespace Module.Host.TPM.Handlers.DataFlow.Filters
                                 && tradeInvestment.StartDate <= promo.StartDate
                                 && tradeInvestment.EndDate >= promo.StartDate;
 
-                clientNode = this.DataFlowModuleCollection.ClientTreeDataFlowModule.Collection.Where(x => x.ParentId == clientNode.ObjectId && !x.EndDate.HasValue).FirstOrDefault();
+                clientNode = this.DataFlowModuleCollection.ClientTreeDataFlowModule.Collection.Where(x => x.ObjectId == clientNode.ParentId && !x.EndDate.HasValue).FirstOrDefault();
             }
 
             return isPromoFiltered;
