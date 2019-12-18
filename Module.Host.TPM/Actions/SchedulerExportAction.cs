@@ -84,7 +84,7 @@ namespace Module.Host.TPM.Actions.Notifications {
                 .Where(x => x.UserRole.UserId.Equals(UserId) && x.UserRole.Role.SystemName.Equals(role))
                 .ToList();
             IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
-            IQueryable<Promo> query = context.Set<Promo>().Where(e => !e.Disabled);
+            IQueryable<Promo> query = context.Set<Promo>().Where(e => !e.Disabled && e.PromoStatus.SystemName != "Cancelled");
             IQueryable<ClientTreeHierarchyView> hierarchy = context.Set<ClientTreeHierarchyView>().AsNoTracking();
             query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters, FilterQueryModes.Active, String.Empty);
             // Не администраторы не смотрят чужие черновики

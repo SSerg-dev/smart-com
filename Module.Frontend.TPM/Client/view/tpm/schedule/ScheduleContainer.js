@@ -77,11 +77,6 @@
             glyph: 0xf258,
             text: l10n.ns('core', 'toptoolbar').value('deletedButtonText'),
             tooltip: l10n.ns('core', 'toptoolbar').value('deletedButtonText')
-        }, {
-            xtype: 'schedulecheckbutton',
-            text: l10n.ns('tpm', 'Schedule').value('Check'),
-            tooltip: l10n.ns('tpm', 'Schedule').value('Check'),
-            glyph: 0xf138,
         }, '->', '-', {
             itemId: 'extfilterclearbutton',
             ui: 'blue-button-toolbar',
