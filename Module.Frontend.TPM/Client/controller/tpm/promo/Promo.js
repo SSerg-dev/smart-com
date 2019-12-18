@@ -1453,9 +1453,9 @@
     onPromoTypeOkButtonClick: function (button, e) {
         var me = this;
         var window = button.up('window');
-          
+
         var promoButton = Ext.ComponentQuery.query('promo')[0].down('#createbutton');
-         if (window.selectedButton != null) {
+        if (window.selectedButton != null) {
 
             var selectedButtonText = window.selectedButton.budgetRecord;
 
@@ -1466,11 +1466,10 @@
             } else {
                 App.Notify.pushError('Не найдено типа промо ' + selectedButtonText.Name);
             }
-         } else {
-           
-             App.Notify.pushError(l10n.ns('tpm', 'PromoTypes').value('NoPromoType'));
-        }
-       // me.onCreateButtonClick(promoButton, e, schedulerData, false);
+        } else {
+
+            App.Notify.pushError(l10n.ns('tpm', 'PromoTypes').value('NoPromoType'));
+        } 
 
     },
     getPromoType: function () {
@@ -3639,20 +3638,6 @@
 		promoTitle.setText('Name: ' + name + ', Status: ' + status);
 	},
 
-    getPromoName: function (promoForm) {
-        var promoProductForm = promoForm.down('promobasicproducts');
-        var promoMechanic = promoForm.down('panel').down('promomechanic');
-
-        var marsMechanic = promoMechanic.down('searchcombobox[name=MarsMechanicId]').getRawValue();
-        var marsMechanicType = promoMechanic.down('searchcombobox[name=MarsMechanicTypeId]').getRawValue();
-        var marsMechanicDiscountField = promoMechanic.down('[name=MarsMechanicDiscount]');
-        var marsMechanicDiscountValue = marsMechanicDiscountField.getValue();
-
-        var promoName = (promoProductForm.brandAbbreviation ? promoProductForm.brandAbbreviation : '') + ' ' + (promoProductForm.technologyAbbreviation ? promoProductForm.technologyAbbreviation : '') + ' ' +
-            marsMechanic + ' ' + (marsMechanic === 'TPR' || marsMechanic === 'Other' ? marsMechanicDiscountValue + '%' : marsMechanicType);
-
-        return promoName;
-    },
     getPromoName: function (promoForm) {
         var promoProductForm = promoForm.down('promobasicproducts');
         var promoMechanic = promoForm.down('panel').down('promomechanic');

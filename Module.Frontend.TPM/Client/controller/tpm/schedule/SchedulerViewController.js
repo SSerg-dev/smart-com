@@ -730,9 +730,7 @@
         var me = this;
         var window = button.up('window');
         if (window.selectedButton != null) {
-
             var selectedButtonText = window.selectedButton.budgetRecord;
-
             var method = "onCreate" + selectedButtonText.SystemName + "ButtonClick";
             if (me[method] != undefined) {
                 me[method](selectedButtonText, window.schedulerData);
@@ -740,14 +738,10 @@
             } else {
                 App.Notify.pushError('Не найдено типа промо ' + selectedButtonText.Name);
             }
-        }else 
-            {
-                App.Notify.pushError('Не выбран тип промо');
-            }
-        
-        
-        // me.onCreateButtonClick(promoButton, e, schedulerData, false);
-
+        } else {
+            App.Notify.pushError('Не выбран тип промо');
+        }
+         
     },
 
     onPromoTypeAfterRender: function (window) {
