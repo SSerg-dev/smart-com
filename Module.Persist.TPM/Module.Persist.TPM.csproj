@@ -3009,6 +3009,7 @@
     <Content Include="Sql\DataFlow\ClientTree_ChangesIncident_Insert_Update_Triggers.sql" />
     <Content Include="SQLInitialize\20190725_1600_AccessPoints_PromoproductsTLCTemplate.sql" />
     <Content Include="Sql\Fill_MailNotificationSetting.sql" />
+    <Content Include="Sql\RenamePromoVP.sql" />
     <Content Include="Sql\SetPromoBlockInformationTrigger.sql" />
     <Content Include="Sql\ProductTreeTechnologyIdFix.sql" />
     <Content Include="Sql\SubBudgetItems_Init.sql" />
