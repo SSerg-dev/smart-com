@@ -11,7 +11,8 @@
     layout: {
         type: 'vbox',
         align: 'stretch',
-        pack: 'start'
+        pack: 'start',
+        overflowHandler: 'Scroller'
     },
 
     defaults: {

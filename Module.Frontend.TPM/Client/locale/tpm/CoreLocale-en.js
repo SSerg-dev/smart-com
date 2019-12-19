@@ -584,11 +584,16 @@
         'ModuleRoleModuleDisplayNameRu': 'Module name Ru',
         'ModuleRoleModuleDisplayNameEn': 'Module name En',
         'ModuleRoleModuleSystemName': 'Module system name',
+        'RoleDisplayName': 'User role',
+        'RoleSystemName': 'User role',
+        'RoleIsAllow': 'Is allow',
         'buttons': {
             'setdefault': 'Set default'
         }
     },
     'AssociatedUserRole': ['UserRole'],
+    'HistoricalAssociatedUserRole': ['AssociatedUserRole', 'BaseHistoryEntity'],
+    'DeletedAssociatedUserRole': ['AssociatedUserRole', 'BaseHistoryEntity'], //удаленные записи берутся из истории
 
     'ConstraintUserRole': {
         'IsDefault': 'Is default',

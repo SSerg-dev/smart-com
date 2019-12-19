@@ -8,57 +8,57 @@
         text: l10n.ns('core', 'mainmenu').value('loopHandlerItem'),
         tooltip: l10n.ns('core', 'mainmenu').value('loopHandlerItem'),
         glyph: 0xf51b,
-        roles: ['Administrator'],
+        roles: ['Administrator', 'SupportAdministrator'],
         widget: 'loophandler'
     }, {
         text: l10n.ns('core', 'mainmenu').value('singleLoopHandlerItem'),
         tooltip: l10n.ns('core', 'mainmenu').value('singleLoopHandlerItem'),
         glyph: 0xf51b,
-        roles: ['Administrator', 'User'],
+        roles: ['Administrator', 'SupportAdministrator', 'User'],
         exeptRoles: true,
         widget: 'singleloophandler'
     }, {
         text: l10n.ns('core', 'mainmenu').value('singleLoopHandlerItem'),
         tooltip: l10n.ns('core', 'mainmenu').value('singleLoopHandlerItem'),
         glyph: 0xf51b,
-        roles: ['Administrator'],
+        roles: ['Administrator', 'SupportAdministrator'],
         widget: 'adminloophandler'
     }, {
         text: l10n.ns('core', 'mainmenu').value('UserItem'),
         tooltip: l10n.ns('core', 'mainmenu').value('UserItem'),
         glyph: 0xf004,
-        roles: ['Administrator'],
+        roles: ['Administrator', 'SupportAdministrator'],
         itemId: 'user',
         widget: 'associateddbusercontainer'
     }, {
         text: l10n.ns('core', 'mainmenu').value('RoleItem'),
         tooltip: l10n.ns('core', 'mainmenu').value('RoleItem'),
         glyph: 0xf00e,
-        roles: ['Administrator'],
+        roles: ['Administrator', 'SupportAdministrator'],
         widget: 'role'
     }, {
         text: l10n.ns('core', 'mainmenu').value('AccessPointItem'),
         tooltip: l10n.ns('core', 'mainmenu').value('AccessPointItem'),
         glyph: 0xf483,
-        roles: ['Administrator'],
+        roles: ['Administrator', 'SupportAdministrator'],
         widget: 'associatedaccesspointcontainer'
     }, {
         text: l10n.ns('core', 'mainmenu').value('ConstraintItem'),
         tooltip: l10n.ns('core', 'mainmenu').value('ConstraintItem'),
         glyph: 0xf631,
-        roles: ['Administrator'],
+        roles: ['Administrator', 'SupportAdministrator'],
         widget: 'compositeconstraint'
     }, {
         text: l10n.ns('core', 'mainmenu').value('SettingItem'),
         tooltip: l10n.ns('core', 'mainmenu').value('SettingItem'),
         glyph: 0xf494,
-        roles: ['Administrator'],
+        roles: ['Administrator', 'SupportAdministrator'],
         widget: 'setting'
     }, {
         text: l10n.ns('core', 'mainmenu').value('MailNotificationSettingItem'),
         tooltip: l10n.ns('core', 'mainmenu').value('MailNotificationSettingItem'),
         glyph: 0xf1ee,
-        roles: ['Administrator'],
+        roles: ['Administrator', 'SupportAdministrator'],
         widget: 'associatedmailnotificationsettingcontainer'
     }]
 },

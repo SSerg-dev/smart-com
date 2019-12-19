@@ -51,7 +51,21 @@ Ext.define('App.view.core.associateduser.userrole.AssociatedUserRole', {
             text: l10n.ns('core', 'AssociatedUserRole', 'buttons').value('setdefault'),
             tooltip: l10n.ns('core', 'AssociatedUserRole', 'buttons').value('setdefault'),
             disabled: true
-        }, '-', '->', '-', {
+        }, {
+            itemId: 'historybutton',
+            resource: 'Historical{0}',
+            action: 'Get{0}',
+            glyph: 0xf2da,
+            text: l10n.ns('core', 'crud').value('historyButtonText'),
+            tooltip: l10n.ns('core', 'crud').value('historyButtonText')
+        }, {
+            itemId: 'deletedbutton',
+            resource: 'Deleted{0}',
+            action: 'Get{0}',
+            glyph: 0xf258,
+            text: l10n.ns('core', 'toptoolbar').value('deletedButtonText'),
+            tooltip: l10n.ns('core', 'toptoolbar').value('deletedButtonText')
+        },'-', '->', '-', {
             itemId: 'extfilterclearbutton',
             ui: 'blue-button-toolbar',
             disabled: true,

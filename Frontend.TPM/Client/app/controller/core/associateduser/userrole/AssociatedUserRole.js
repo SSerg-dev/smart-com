@@ -1,6 +1,6 @@
 Ext.define('App.controller.core.associateduser.userrole.AssociatedUserRole', {
     extend: 'App.controller.core.AssociatedDirectory',
-	mixins: ['App.controller.core.ImportExportLogic'],
+    mixins: ['App.controller.core.ImportExportLogic'],
 
     init: function () {
         this.listen({
@@ -20,7 +20,7 @@ Ext.define('App.controller.core.associateduser.userrole.AssociatedUserRole', {
                 },
                 'associateduseruserrole #detailform': {
                     activate: this.onActivateCard
-                },                
+                },
                 'associateduseruserrole #detailform #prev': {
                     click: this.onPrevButtonClick
                 },
@@ -53,6 +53,9 @@ Ext.define('App.controller.core.associateduser.userrole.AssociatedUserRole', {
                 'associateduseruserrole #historybutton': {
                     click: this.onHistoryButtonClick
                 },
+                'associateduseruserrole #deletedbutton': {
+                    click: this.onDeletedUserRoleButtonClick
+                },
 
                 'associateduseruserrole #refresh': {
                     click: this.onRefreshButtonClick
@@ -61,7 +64,7 @@ Ext.define('App.controller.core.associateduser.userrole.AssociatedUserRole', {
                     click: this.onCloseButtonClick
                 },
 
-	            // import/export
+                // import/export
                 'associateduseruserrole #exportbutton': {
                     click: this.onExportButtonClick
                 },
@@ -96,6 +99,22 @@ Ext.define('App.controller.core.associateduser.userrole.AssociatedUserRole', {
 
                 'associateduseruserrole #setdefaultbutton': {
                     click: this.onSetDefaultButtonClick
+                },
+
+                //historical
+                'historicalassociateduserrole directorygrid': {
+                    itemdblclick: this.switchToDetailForm,
+                },
+                'historicalassociateduserrole #extfilterbutton': {
+                    click: this.onFilterButtonClick
+                },
+
+                //deleted
+                'deletedassociateduserrole directorygrid': {
+                    itemdblclick: this.switchToDetailForm,
+                },
+                'deletedassociateduserrole #extfilterbutton': {
+                    click: this.onFilterButtonClick
                 }
             }
         });
@@ -190,6 +209,51 @@ Ext.define('App.controller.core.associateduser.userrole.AssociatedUserRole', {
                     });
             }
         }
-    }
+    },
 
+    onHistoryButtonClick: function (button) {
+        var grid = this.getGridByButton(button),
+            selModel = grid.getSelectionModel();
+        if (selModel.hasSelection()) {
+            var panel = grid.up('combineddirectorypanel'),
+                model = panel.getBaseModel(),
+                viewClassName = App.Util.buildViewClassName(panel, model, 'Historical');
+            var baseReviewWindow = Ext.widget('basereviewwindow', { items: Ext.create(viewClassName, { baseModel: model }) });
+            baseReviewWindow.show();
+            var store = baseReviewWindow.down('grid').getStore();
+            var proxy = store.getProxy();
+            proxy.extraParams.Id = this.getRecordId(selModel.getSelection()[0]);
+            store.setFixedFilter('HistoricalObjectId', {
+                property: '_ObjectId',
+                operation: 'Equals',
+                value: this.getRecordId(selModel.getSelection()[0])
+            });
+        }
+    },
+
+    onDeletedUserRoleButtonClick: function (button) {
+        var userGrid = button.up('combineddirectorypanel').up('associatedadusercontainer').down('associatedaduseruser').down('directorygrid');
+        if (userGrid) {
+            var selModel = userGrid.getSelectionModel();
+            if (selModel.hasSelection()) {
+                var record = selModel.getSelection()[0];
+                var grid = this.getGridByButton(button),
+                    panel = grid.up('combineddirectorypanel'),
+                    model = panel.getBaseModel(),
+                    viewClassName = App.Util.buildViewClassName(panel, model, 'Deleted');
+
+                var window = Ext.widget('basereviewwindow', {
+                    items: Ext.create(viewClassName, {
+                        baseModel: model
+                    })
+                });
+
+                var deletedStore = window.down('directorygrid').getStore();
+                var proxy = deletedStore.getProxy();
+                proxy.extraParams.userId = record.get('Id');
+
+                window.show();
+            }
+        }
+    }
 });
