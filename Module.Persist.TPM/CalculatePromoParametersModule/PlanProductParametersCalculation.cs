@@ -765,6 +765,31 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             return filteredProductList;
         }
 
+        public static bool IsProductListEmpty(Promo promo, DatabaseContext context, out string error, List<PromoProductTree> promoProductTrees = null)
+        {
+            List<Product> filteredProducts = GetProductFiltered(promo.Id, context, out error, promoProductTrees);
+            List<string> eanPCs = GetProductListFromAssortmentMatrix(promo, context);
+            List<Product> resultProductList = null;
+
+            if (promo.InOut.HasValue && promo.InOut.Value)
+            {
+                resultProductList = GetCheckedProducts(context, promo);
+            }
+            else
+            {
+                resultProductList = GetResultProducts(filteredProducts, eanPCs, promo, context);
+            }
+
+            if (resultProductList.Count() > 0)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
         /// <summary>
         /// Формирует список продуктов из записей таблицы AssortimentMatrix, которые предварительно фильтруются по клиенту и дате.
         /// Promo.Dispatches.Start должна быть между AssortimentMatrix.Start и AssortimentMatrix.End включительно.
