@@ -366,6 +366,8 @@
     <Content Include="Client\app\model\core\associatedmailnotificationsetting\recipient\AssociatedRecipient.js" />
     <Content Include="Client\app\model\core\associatedmailnotificationsetting\recipient\HistoricalAssociatedRecipient.js" />
     <Content Include="Client\app\model\core\associateduser\userrole\AssociatedUserRole.js" />
+    <Content Include="Client\app\model\core\associateduser\userrole\DeletedAssociatedUserRole.js" />
+    <Content Include="Client\app\model\core\associateduser\userrole\HistoricalAssociatedUserRole.js" />
     <Content Include="Client\app\model\core\associateduser\user\AdUser.js" />
     <Content Include="Client\app\model\core\associateduser\user\AssociatedUser.js" />
     <Content Include="Client\app\model\core\associateduser\user\DeletedAssociatedUser.js" />
@@ -466,6 +468,8 @@
     <Content Include="Client\app\view\core\associateduser\dbuser\DeletedAssociatedDbUser.js" />
     <Content Include="Client\app\view\core\associateduser\dbuser\HistoricalAssociatedDbUser.js" />
     <Content Include="Client\app\view\core\associateduser\userrole\AssociatedUserRole.js" />
+    <Content Include="Client\app\view\core\associateduser\userrole\DeletedAssociatedUserRole.js" />
+    <Content Include="Client\app\view\core\associateduser\userrole\HistoricalAssociatedUserRole.js" />
     <Content Include="Client\app\view\core\associateduser\user\User.js" />
     <Content Include="Client\app\view\core\base\BaseModalWindow.js" />
     <Content Include="Client\app\view\core\base\BaseReviewWindow.js" />
