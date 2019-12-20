@@ -25,6 +25,18 @@ namespace Module.Frontend.TPM.Util {
         }
 
         /// <summary>
+        /// Создание записи об изменении промо после пересчёта
+        /// </summary>
+        /// <param name="newRecord"></param>
+        /// <param name="isDelete"></param>
+        public static void WritePromoDemandChangeIncident (DatabaseContext Context, Promo record, string oldMarsMechanic, double? oldMarsMechanicDiscount, DateTimeOffset? oldDispatchesStart, double? oldPlanPromoUpliftPercent, double? oldPlanPromoIncrementalLSV)
+        {
+            PromoDemandChangeIncident change = new PromoDemandChangeIncident(record, oldMarsMechanic, oldMarsMechanicDiscount, oldDispatchesStart, oldPlanPromoUpliftPercent, oldPlanPromoIncrementalLSV) { };
+            Context.Set<PromoDemandChangeIncident>().Add(change);
+            Context.SaveChanges();
+        }
+
+        /// <summary>
         /// Создание записи об изменении/удалении промо
         /// </summary>
         /// <param name="newRecord"></param>
@@ -46,7 +58,7 @@ namespace Module.Frontend.TPM.Util {
         /// <param name="newRecord"></param>
         /// <param name="patch"></param>
         /// <returns></returns>
-        private static bool CheckCreateIncidentCondition(Promo oldRecord, Promo newRecord, Delta<Promo> patch , bool isSubrangeChanged) {
+        public static bool CheckCreateIncidentCondition(Promo oldRecord, Promo newRecord, Delta<Promo> patch , bool isSubrangeChanged) {
             bool result = false;
             // TODO: Изменения продуктов не учитывается из-за удаления ProductTreeId из Promo
             // Получение настроек

@@ -21,6 +21,7 @@ using Core.Settings;
 using Core.Dependency;
 using Module.Persist.TPM.PromoStateControl;
 using Module.Persist.TPM.Utils;
+using Module.Frontend.TPM.Util;
 
 namespace Module.Host.TPM.Handlers
 {
@@ -48,6 +49,14 @@ namespace Module.Host.TPM.Handlers
                 Guid UserId = HandlerDataHelper.GetIncomingArgument<Guid>("UserId", info.Data, false);
                 bool needCalculatePlanMarketingTI = HandlerDataHelper.GetIncomingArgument<bool>("NeedCalculatePlanMarketingTI", info.Data, false);
                 bool needResetUpliftCorrections = HandlerDataHelper.GetIncomingArgument<bool>("needResetUpliftCorrections", info.Data, false);
+                bool createDemandIncidentCreate = HandlerDataHelper.GetIncomingArgument<bool>("createDemandIncidentCreate", info.Data, false);
+                bool createDemandIncidentUpdate = HandlerDataHelper.GetIncomingArgument<bool>("createDemandIncidentUpdate", info.Data, false);
+
+                string oldMarsMechanic = HandlerDataHelper.GetIncomingArgument<string>("oldMarsMechanic", info.Data, false);
+                double? oldMarsMechanicDiscount = HandlerDataHelper.GetIncomingArgument<double?>("oldMarsMechanicDiscount", info.Data, false);
+                DateTimeOffset? oldDispatchesStart = HandlerDataHelper.GetIncomingArgument<DateTimeOffset?>("oldDispatchesStart", info.Data, false);
+                double? oldPlanPromoUpliftPercent = HandlerDataHelper.GetIncomingArgument<double?>("oldPlanPromoUpliftPercent", info.Data, false);
+                double? oldPlanPromoIncrementalLSV = HandlerDataHelper.GetIncomingArgument<double?>("oldPlanPromoIncrementalLSV", info.Data, false);
                 Promo promoCopy = null;
 
                 try
@@ -254,8 +263,16 @@ namespace Module.Host.TPM.Handlers
                             }
                         }
 
-						//promo.Calculating = false;
-						context.SaveChanges();
+                        if (createDemandIncidentCreate)
+                        {
+                            PromoHelper.WritePromoDemandChangeIncident(context, promo);
+                        }
+                        else if (createDemandIncidentUpdate)
+                        {
+                            PromoHelper.WritePromoDemandChangeIncident(context, promo, oldMarsMechanic, oldMarsMechanicDiscount, oldDispatchesStart, oldPlanPromoUpliftPercent, oldPlanPromoIncrementalLSV);
+                        }
+                        //promo.Calculating = false;
+                        context.SaveChanges();
 					}
 				}
 				catch (Exception e)

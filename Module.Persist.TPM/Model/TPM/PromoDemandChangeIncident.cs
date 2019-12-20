@@ -83,18 +83,44 @@ namespace Module.Persist.TPM.Model.TPM {
             ClientHierarchy = promo.ClientHierarchy;
             BrandTech = promo.BrandTech != null ? promo.BrandTech.Name : null;
 			PromoStatus = promo.PromoStatus.SystemName != null ? promo.PromoStatus.SystemName : null;
-			OldMarsMechanic = promo.MarsMechanic != null ? promo.MarsMechanic.Name : null;
+			OldMarsMechanic = isDelete ? (promo.MarsMechanic != null ? promo.MarsMechanic.Name : null) : null;
             NewMarsMechanic = promo.MarsMechanic != null ? promo.MarsMechanic.Name : null;
-            OldMarsMechanicDiscount = promo.MarsMechanicDiscount;
+            OldMarsMechanicDiscount = isDelete ? promo.MarsMechanicDiscount : null;
             NewMarsMechanicDiscount = promo.MarsMechanicDiscount;
-            OldDispatchesStart = promo.DispatchesStart;
+            OldDispatchesStart = isDelete ? promo.DispatchesStart : null;
             NewDispatchesStart = promo.DispatchesStart;
-            OldPlanPromoUpliftPercent = promo.PlanPromoUpliftPercent;
+            OldPlanPromoUpliftPercent = isDelete ? promo.PlanPromoUpliftPercent : null;
             NewPlanPromoUpliftPercent = promo.PlanPromoUpliftPercent;
-            OldPlanPromoIncrementalLSV = promo.PlanPromoIncrementalLSV;
+            OldPlanPromoIncrementalLSV = isDelete ? promo.PlanPromoIncrementalLSV : null;
             NewPlanPromoIncrementalLSV = promo.PlanPromoIncrementalLSV;
             IsCreate = !isDelete;
             IsDelete = isDelete;
+        }
+
+        /// <summary>
+		/// Конструктор для создания записи об изменении промо
+		/// </summary>
+		/// <param name="promo"></param>
+		/// <param name="isDelete"></param>
+		public PromoDemandChangeIncident (Promo promo, string oldMarsMechanic, double? oldMarsMechanicDiscount, DateTimeOffset? oldDispatchesStart, double? oldPlanPromoUpliftPercent, double? oldPlanPromoIncrementalLSV)
+        {
+            PromoIntId = promo.Number;
+            Name = promo.Name;
+            ClientHierarchy = promo.ClientHierarchy;
+            BrandTech = promo.BrandTech != null ? promo.BrandTech.Name : null;
+            PromoStatus = promo.PromoStatus.SystemName != null ? promo.PromoStatus.SystemName : null;
+            OldMarsMechanic = oldMarsMechanic;
+            NewMarsMechanic = promo.MarsMechanic != null ? promo.MarsMechanic.Name : null;
+            OldMarsMechanicDiscount = oldMarsMechanicDiscount;
+            NewMarsMechanicDiscount = promo.MarsMechanicDiscount;
+            OldDispatchesStart = oldDispatchesStart;
+            NewDispatchesStart = promo.DispatchesStart;
+            OldPlanPromoUpliftPercent = oldPlanPromoUpliftPercent;
+            NewPlanPromoUpliftPercent = promo.PlanPromoUpliftPercent;
+            OldPlanPromoIncrementalLSV = oldPlanPromoIncrementalLSV;
+            NewPlanPromoIncrementalLSV = promo.PlanPromoIncrementalLSV;
+            IsCreate = false;
+            IsDelete = false;
         }
     }
 }

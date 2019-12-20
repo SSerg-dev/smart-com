@@ -191,21 +191,22 @@ namespace Module.Frontend.TPM.Controllers {
                     result.LastApprovedDate = ChangeTimeZoneUtil.ResetTimeZone(DateTimeOffset.UtcNow);
                 }
 
-                PromoHelper.WritePromoDemandChangeIncident(Context, result);
 
-                // для draft не проверяем и не считаем && если у промо есть признак InOut, то Uplift считать не нужно.
+                // Для draft не проверяем и не считаем && если у промо есть признак InOut, то Uplift считать не нужно.
                 if (result.PromoStatus.SystemName.ToLower() != "draft") {
                     // если нет TI, COGS или продукты не подобраны по фильтрам, запретить сохранение (будет исключение)
                     List<Product> filteredProducts; // продукты, подобранные по фильтрам
                     CheckSupportInfo(result, promoProductTrees, out filteredProducts);
                     //создание отложенной задачи, выполняющей подбор аплифта и расчет параметров
-                    CalculatePromo(result, false, false);
+                    CalculatePromo(result, false, false, true);
                 }
                 else
                 {
                     // Добавить запись в таблицу PromoProduct при сохранении.
                     string error;
                     PlanProductParametersCalculation.SetPromoProduct(Context.Set<Promo>().First(x => x.Number == result.Number).Id, Context, out error, true, promoProductTrees);
+                    // Создаём инцидент для draft сразу
+                    PromoHelper.WritePromoDemandChangeIncident(Context, result);
                 }
 
                 result.LastChangedDate = ChangedDate;
@@ -243,6 +244,7 @@ namespace Module.Frontend.TPM.Controllers {
 
                 UserInfo user = authorizationManager.GetCurrentUser();
                 string userRole = user.GetCurrentRole().SystemName;
+                bool needToCreateDemandIncident = false;
 
                 string message;
                 PromoStateContext promoStateContext = new PromoStateContext(Context, promoCopy);
@@ -430,8 +432,12 @@ namespace Module.Frontend.TPM.Controllers {
                         if (changedProducts || needRecalculatePromo) {
                             // если меняем длительность промо, то пересчитываем Marketing TI
                             bool needCalculatePlanMarketingTI = promoCopy.StartDate != model.StartDate || promoCopy.EndDate != model.EndDate;
-                            CalculatePromo(model, needCalculatePlanMarketingTI, needResetUpliftCorrections); //TODO: Задача создаётся раньше чем сохраняются изменения промо.
-                        }                                                        //Сначала проверять заблокированно ли промо, если нет сохранять промо, затем сохранять задачу
+                            needToCreateDemandIncident = PromoHelper.CheckCreateIncidentCondition(promoCopy, model, patch, isSubrangeChanged);
+
+                            CalculatePromo(model, needCalculatePlanMarketingTI, needResetUpliftCorrections, false, needToCreateDemandIncident, promoCopy.MarsMechanic.Name, promoCopy.MarsMechanicDiscount, promoCopy.DispatchesStart, promoCopy.PlanPromoUpliftPercent, promoCopy.PlanPromoIncrementalLSV); //TODO: Задача создаётся раньше чем сохраняются изменения промо.
+
+                        }                                                        
+                        //Сначала проверять заблокированно ли промо, если нет сохранять промо, затем сохранять задачу
                     }
                     else if (needDetachPromoSupport)
                     {
@@ -505,7 +511,10 @@ namespace Module.Frontend.TPM.Controllers {
 				}
                 Context.SaveChanges();
 
-				PromoHelper.WritePromoDemandChangeIncident(Context, model, patch, promoCopy, isSubrangeChanged);
+                if (!needToCreateDemandIncident)
+                {
+                    PromoHelper.WritePromoDemandChangeIncident(Context, model, patch, promoCopy, isSubrangeChanged);
+                }
 
                 // TODO: ПЕРЕДЕЛАТЬ, просто оставалось 15 мин до релиза
                 if (message != string.Empty && userRole == "DemandPlanning" && statusName.ToLower() == "onapproval")
@@ -892,7 +901,7 @@ namespace Module.Frontend.TPM.Controllers {
         /// Создание отложенной задачи, выполняющей подбор аплифта и расчет параметров промо и продуктов
         /// </summary>
         /// <param name="promo"></param>
-        private void CalculatePromo(Promo promo, bool needCalculatePlanMarketingTI, bool needResetUpliftCorrections) {
+        private void CalculatePromo(Promo promo, bool needCalculatePlanMarketingTI, bool needResetUpliftCorrections, bool createDemandIncidentCreate = false, bool createDemandIncidentUpdate = false, string oldMarsMechanic = null, double? oldMarsMechanicDiscount = null, DateTimeOffset? oldDispatchesStart = null, double? oldPlanPromoUpliftPercent = null, double? oldPlanPromoIncrementalLSV = null) {
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
             RoleInfo role = authorizationManager.GetCurrentRole();
@@ -904,6 +913,14 @@ namespace Module.Frontend.TPM.Controllers {
             HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
             HandlerDataHelper.SaveIncomingArgument("NeedCalculatePlanMarketingTI", needCalculatePlanMarketingTI, data, visible: false, throwIfNotExists: false);
             HandlerDataHelper.SaveIncomingArgument("needResetUpliftCorrections", needResetUpliftCorrections, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("createDemandIncidentCreate", createDemandIncidentCreate, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("createDemandIncidentUpdate", createDemandIncidentUpdate, data, visible: false, throwIfNotExists: false);
+
+            HandlerDataHelper.SaveIncomingArgument("oldMarsMechanic", oldMarsMechanic, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("oldMarsMechanicDiscount", oldMarsMechanicDiscount, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("oldDispatchesStart", oldDispatchesStart, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("oldPlanPromoUpliftPercent", oldPlanPromoUpliftPercent, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("oldPlanPromoIncrementalLSV", oldPlanPromoIncrementalLSV, data, visible: false, throwIfNotExists: false);
 
             bool success = CalculationTaskManager.CreateCalculationTask(CalculationTaskManager.CalculationAction.Uplift, data, Context, promo.Id);
 
