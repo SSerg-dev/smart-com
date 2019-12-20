@@ -1442,6 +1442,7 @@ namespace Module.Frontend.TPM.Controllers {
             List<string> messagesError = new List<string>();
             string message = null;
             bool error;
+            bool isProductListEmpty = false;
             products = null;
 
             // проверка на наличие TI
@@ -1458,7 +1459,8 @@ namespace Module.Frontend.TPM.Controllers {
 
             // проверка на наличие COGS
             PlanPromoParametersCalculation.GetCOGSPercent(promo, context, out message);
-            if (message != null) {
+            if (message != null)
+            {
                 messagesError.Add(message);
                 message = null;
             }
@@ -1472,11 +1474,16 @@ namespace Module.Frontend.TPM.Controllers {
                 }
                 else
                 {
-                    products = PlanProductParametersCalculation.GetProductFiltered(promo.Id, context, out message, promoProductTrees);
+                    isProductListEmpty = PlanProductParametersCalculation.IsProductListEmpty(promo, context, out message, promoProductTrees);
                 }
                 if (message != null)
                 {
                     messagesError.Add(message);
+                }
+
+                if (isProductListEmpty)
+                {
+                    messagesError.Add("Product list is empty. Please, check assortment matrix");
                 }
             }
 
