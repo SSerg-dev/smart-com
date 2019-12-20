@@ -274,6 +274,8 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
             Promo[] notClosedPromo = psps.Select(n => n.Promo).Where(n => n.PromoStatus.SystemName != "Closed").ToArray();
 
+            PromoSupportPromo[] pspsNotClosed = psps.Where(n => n.Promo.PromoStatus.SystemName != "Closed").ToArray();
+
             double summPlanLSV = notClosedPromo.Where(n => n.PlanPromoLSV.HasValue).Sum(n => n.PlanPromoLSV.Value);
             //double summActualLSV = notClosedPromo.Where(n => n.ActualPromoLSVByCompensation.HasValue).Sum(n => n.ActualPromoLSVByCompensation.Value);
 
@@ -281,7 +283,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             double closedBudgetMarketingTi = psps.Where(n => n.Promo.PromoStatus.SystemName == "Closed").Sum(n => n.FactCalculation);
             double closedBudgetCostProd = psps.Where(n => n.Promo.PromoStatus.SystemName == "Closed").Sum(n => n.FactCostProd);
 
-            foreach (PromoSupportPromo psp in psps)
+            foreach (PromoSupportPromo psp in pspsNotClosed)
             {
                 Promo promo = psp.Promo;
 
@@ -304,7 +306,6 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     psp.FactCalculation = Math.Round((ps.ActualCostTE.Value - closedBudgetMarketingTi) * kPlan, 2, MidpointRounding.AwayFromZero);
                     psp.FactCostProd = Math.Round((ps.ActualProdCost.Value - closedBudgetCostProd) * kPlan, 2, MidpointRounding.AwayFromZero);
                 }
-
                 RecalculateSummBudgets(promo.Id, context);
             }
         }
