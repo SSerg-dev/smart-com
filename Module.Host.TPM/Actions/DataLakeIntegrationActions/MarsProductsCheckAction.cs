@@ -555,16 +555,17 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
 				return false;
 
 			bool result = false;
+            DateTimeOffset dateTimeOffsetResult;
 
 			if (date.Length == 8)
 			{
 				string format = "yyyyMMdd";
-				result = DateTimeOffset.TryParseExact(date, format, null, DateTimeStyles.None, out _);
-			}
+				result = DateTimeOffset.TryParseExact(date, format, null, DateTimeStyles.None, out dateTimeOffsetResult);
+            }
 			else if (date.Length == 10)
 			{
 				string format = "yyyy'-'MM'-'dd";
-				result = DateTimeOffset.TryParseExact(date, format, null, DateTimeStyles.None, out _);
+				result = DateTimeOffset.TryParseExact(date, format, null, DateTimeStyles.None, out dateTimeOffsetResult);
 			}
 
 			return result;
