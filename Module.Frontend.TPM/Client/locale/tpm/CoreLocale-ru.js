@@ -371,7 +371,12 @@
             'ImportResult': 'Загрузка',
             'ImportResultFilesModel': 'Результаты импорта',
             'ImportSourceRecordCount': 'Исходных записей',
-            'ImportResultRecordCount': 'Записей обработано',
+			'ImportResultRecordCount': 'Записей обработано',
+			'DataLakeSyncSourceRecordCount': 'Результаты импорта',
+			'DataLakeSyncResultRecordCount': 'Исходных записей',
+			'DataLakeSyncResultFilesModel': 'Записей обработано',
+			'DataLakeSyncTypeDisplay': 'Справочник',
+			'DataLakeSyncResult': 'Загрузка',
             'ErrorCount': 'Количество ошибок',
             'WarningCount': 'Количество предупреждений',
             'Materials': 'Материалы',
@@ -415,7 +420,12 @@
             'Success': 'Импортировано',
             'Warning': 'Предупреждения',
             'Error': 'Ошибки'
-        }
+		},
+        'DataLakeSyncResultFileTypes': {
+            'Success': 'Синхронизировано',
+            'Warning': 'Предупреждения',
+            'Error': 'Ошибки'
+        },
     },
     'HistoricalFileBuffer': ['FileBuffer', 'BaseHistoryEntity'],
 

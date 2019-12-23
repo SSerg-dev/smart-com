@@ -129,7 +129,10 @@
                         }
                     }
                 }
-            }]
+                }, {
+                    text: l10n.ns('tpm', 'BrandTech').value('BrandTech_code'),
+                    dataIndex: 'BrandTech_code',
+                }]
         }
     }, {
         xtype: 'editabledetailform',
@@ -181,6 +184,11 @@
                 from: 'Name',
                 to: 'TechnologyName'
             }]
-        }]
+            },
+            {
+                xtype: 'textfield',
+                name: 'BrandTech_code',
+                fieldLabel: l10n.ns('tpm', 'BrandTech').value('BrandTech_code'),
+            }]
     }]
 });

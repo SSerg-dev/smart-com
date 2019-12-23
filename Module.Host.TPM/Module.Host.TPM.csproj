@@ -172,6 +172,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Actions\AutoResetPromoAction.cs" />
+    <Compile Include="Actions\DataLakeIntegrationActions\MarsProductsCheckAction.cs" />
     <Compile Include="Actions\DataLakeIntegrationActions\MarsCustomersCheckAction.cs" />
     <Compile Include="Actions\FullXLSXAssortmentMatrixImportAction.cs" />
     <Compile Include="Actions\FullXLSXImportPromoProductFromTLCAction.cs" />
@@ -234,7 +235,9 @@
     <Compile Include="Handlers\DataFlow\Modules\PromoProductTreeDataFlowModule.cs" />
     <Compile Include="Handlers\DataFlow\Modules\TradeInvestmentDataFlowModule.cs" />
     <Compile Include="Handlers\DataFlow\RecalculateAllPromoesHandler.cs" />
+    <Compile Include="Handlers\DataLakeIntegrationHandlers\MarsProductsCheckHandler.cs" />
     <Compile Include="Handlers\DataLakeIntegrationHandlers\MarsCustomersCheckHandler.cs" />
+    <Compile Include="Handlers\DataLakeIntegrationHandlers\MarsProductsCheckStarterHandler.cs" />
     <Compile Include="Handlers\FillInOutProductIdsHandler.cs" />
     <Compile Include="Handlers\AutoResetPromoHandler.cs" />
     <Compile Include="Handlers\ActualLSVChangeHandler.cs" />

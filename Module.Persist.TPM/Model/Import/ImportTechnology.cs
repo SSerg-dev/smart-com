@@ -14,5 +14,8 @@ namespace Module.Persist.TPM.Model.Import
         [ImportCSVColumn(ColumnNumber = 0)]
         [Display(Name = "Name")]
         public string Name { get; set; }
+        [ImportCSVColumn(ColumnNumber = 1)]
+        [Display(Name = "Tech Code")]
+        public string Tech_code { get; set; }
     }
 }

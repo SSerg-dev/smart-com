@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Utility.LogWriter;
 
-namespace Module.Host.TPM.Handlers
+namespace Module.Host.TPM.Handlers.DataLakeIntegrationHandlers
 {
     /// <summary>
     /// Класс для запуска экшена по проверке наличия новых клиентов из DataLake

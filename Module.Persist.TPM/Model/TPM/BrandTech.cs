@@ -28,5 +28,7 @@ namespace Module.Persist.TPM.Model.TPM
 
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public string Name { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public string BrandTech_code { get; set; }
     }
 }

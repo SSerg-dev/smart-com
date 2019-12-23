@@ -55,12 +55,38 @@
             }, {
                 text: l10n.ns('tpm', 'Product').value('EAN_PC'),
                 dataIndex: 'EAN_PC'
-            }, {
-                text: l10n.ns('tpm', 'Product').value('ProductRU'),
-                dataIndex: 'ProductRU'
-            }, {
+            },{
                 text: l10n.ns('tpm', 'Product').value('ProductEN'),
                 dataIndex: 'ProductEN'
+				//----
+			}, {
+                text: l10n.ns('tpm', 'Product').value('Brand'),
+                dataIndex: 'Brand'
+			}, {
+                text: l10n.ns('tpm', 'Product').value('Brand_code'),
+                dataIndex: 'Brand_code'
+			}, {
+                text: l10n.ns('tpm', 'Product').value('Technology'),
+                dataIndex: 'Technology'
+			}, {
+                text: l10n.ns('tpm', 'Product').value('Tech_code'),
+                dataIndex: 'Tech_code'
+			}, {
+                text: l10n.ns('tpm', 'Product').value('BrandTech'),
+                dataIndex: 'BrandTech'
+			}, {
+                text: l10n.ns('tpm', 'Product').value('BrandTech_code'),
+                dataIndex: 'BrandTech_code'
+			}, {
+                text: l10n.ns('tpm', 'Product').value('Segmen_code'),
+                dataIndex: 'Segmen_code'
+				//-----
+            }, {
+                text: l10n.ns('tpm', 'ActualProductsView').value('BrandsegTech_code'),
+                dataIndex: 'BrandsegTech_code'
+            }, {
+                text: l10n.ns('tpm', 'ActualProductsView').value('Brandsegtech'),
+                dataIndex: 'Brandsegtech'
             }, {
                 text: l10n.ns('tpm', 'Product').value('BrandFlagAbbr'),
                 dataIndex: 'BrandFlagAbbr'
@@ -109,6 +135,9 @@
             }, {
                 text: l10n.ns('tpm', 'Product').value('UOM_PC2Case'),
                 dataIndex: 'UOM_PC2Case'
+            }, {
+                text: l10n.ns('tpm', 'Product').value('Division'),
+                dataIndex: 'Division'
             }]
         }
     }, {
@@ -134,12 +163,44 @@
             fieldLabel: l10n.ns('tpm', 'Product').value('EAN_PC'),
         }, {
             xtype: 'singlelinedisplayfield',
-            name: 'ProductRU',
-            fieldLabel: l10n.ns('tpm', 'Product').value('ProductRU'),
-        }, {
-            xtype: 'singlelinedisplayfield',
             name: 'ProductEN',
             fieldLabel: l10n.ns('tpm', 'Product').value('ProductEN'),
+        }, {
+			xtype: 'singlelinedisplayfield', 
+            name: 'Brand',
+            fieldLabel: l10n.ns('tpm', 'Product').value('Brand'),
+        }, {
+			xtype: 'singlelinedisplayfield', 
+            name: 'Brand_code',
+            fieldLabel: l10n.ns('tpm', 'Product').value('Brand_code'),
+        }, {
+			xtype: 'singlelinedisplayfield', 
+            name: 'Technology',
+            fieldLabel: l10n.ns('tpm', 'Product').value('Technology'),
+        }, {
+			xtype: 'singlelinedisplayfield', 
+            name: 'Tech_code',
+            fieldLabel: l10n.ns('tpm', 'Product').value('Tech_code'),
+        }, {
+			xtype: 'singlelinedisplayfield', 
+            name: 'BrandTech',
+            fieldLabel: l10n.ns('tpm', 'Product').value('BrandTech'),
+        }, {
+			xtype: 'singlelinedisplayfield', 
+            name: 'BrandTech_code',
+            fieldLabel: l10n.ns('tpm', 'Product').value('BrandTech_code'),
+        }, {
+			xtype: 'singlelinedisplayfield', 
+            name: 'Segmen_code',
+            fieldLabel: l10n.ns('tpm', 'Product').value('Segmen_code'),
+        }, {
+            xtype: 'singlelinedisplayfield', 
+            name: 'BrandsegTech_code',
+            fieldLabel: l10n.ns('tpm', 'Product').value('BrandsegTech_code'),
+        }, {
+            xtype: 'singlelinedisplayfield', 
+            name: 'Brandsegtech',
+            fieldLabel: l10n.ns('tpm', 'Product').value('Brandsegtech'),
         }, {
             xtype: 'singlelinedisplayfield',
             name: 'BrandFlagAbbr',
@@ -205,6 +266,16 @@
             name: 'UOM_PC2Case',
             fieldLabel: l10n.ns('tpm', 'Product').value('UOM_PC2Case'),
             allowDecimals: true,
+            allowExponential: false,
+            minValue: 0,
+            maxValue: 10000000000,
+            allowBlank: true,
+            allowOnlyWhitespace: true,
+        }, {
+            xtype: 'numberfield',
+            name: 'Division',
+            fieldLabel: l10n.ns('tpm', 'Product').value('Division'),
+            allowDecimals: false,
             allowExponential: false,
             minValue: 0,
             maxValue: 10000000000,

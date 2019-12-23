@@ -273,8 +273,11 @@
     'DeletedCategory': ['.tpm.Category', '.core.BaseDeletedEntity'],
 
     'Brand': {
-        'Name': 'Brand'
-	},
+        'Name': 'Brand',
+        'Brand_code': 'Brand Code',
+        'Segmen_code': 'Segment Code',
+        'DigitRegex': 'Only numbers allowed'
+    },
     'HistoricalBrand': ['.tpm.Brand', '.core.BaseHistoryEntity'],
     'DeletedBrand': ['.tpm.Brand', '.core.BaseDeletedEntity'],
 
@@ -300,7 +303,9 @@
     'DeletedEvent': ['.tpm.Event', '.core.BaseDeletedEntity'],
 
     'Technology': {
-        'Name': 'Technology'
+        'Name': 'Technology',
+        'Tech_code': 'Tech Code',
+        'DigitRegex': 'Only numbers allowed'
     },
     'HistoricalTechnology': ['.tpm.Technology', '.core.BaseHistoryEntity'],
     'DeletedTechnology': ['.tpm.Technology', '.core.BaseDeletedEntity'],
@@ -326,6 +331,7 @@
     'BrandTech': {
         'Name': 'Brand tech',
         'BrandName': 'Brand',
+        'BrandTech_code': 'Brand Tech Code',
         'TechnologyName': 'Technology',
     },
     'HistoricalBrandTech': ['.tpm.BrandTech', '.core.BaseHistoryEntity'],
@@ -353,7 +359,8 @@
         'ZREP': 'ZREP',
         'EAN_Case': 'EAN Case',
         'EAN_PC': 'EAN PC',
-        'ProductRU': 'Product RU',
+        'BrandsegTech_code': 'Brand Seg Tech Code',
+        'Brandsegtech': 'Brand Seg Tech',
         'ProductEN': 'Product EN',
         'BrandFlagAbbr': 'Brand flag abbr',
         'BrandFlag': 'Brand flag',
@@ -383,9 +390,17 @@
         'BrandTechName': 'Brand tech',
         'SubrangeName': 'Subrange',
         'AgeGroupName': 'Age group',
-        'VarietyName': 'Variety',
+		'VarietyName': 'Variety',
+		'Brand': 'Brand',
+		'Brand_code': 'Brand code',
+		'Technology': 'Technology',
+		'Tech_code': 'Tech code',
+		'BrandTech': 'Brand Tech',
+		'BrandTech_code': 'Brand Tech code',
+		'Segmen_code': 'Segment code',
 
-        'UOM_PC2Case': 'UOM_PC2Case'
+		'UOM_PC2Case': 'UOM_PC2Case',
+		'Division': 'Division'
     },
     'HistoricalProduct': ['.tpm.Product', '.core.BaseHistoryEntity'],
     'DeletedProduct': ['.tpm.Product', '.core.BaseDeletedEntity'],
@@ -394,8 +409,9 @@
         'ZREP': 'ZREP',
         'EAN_Case': 'EAN Case',
         'EAN_PC': 'EAN PC',
-        'ProductRU': 'Product RU',
         'ProductEN': 'Product EN',
+        'BrandsegTech_code': 'Brand Seg Tech Code',
+        'Brandsegtech': 'Brand Seg Tech',
         'BrandFlagAbbr': 'Brand flag abbr',
         'BrandFlag': 'Brand flag',
         'SubmarkFlag': 'Submark flag',
@@ -1319,6 +1335,8 @@
         'ActualPromoBaselineLSV': 'Actual Promo Baseline LSV',
         'ActualPoductBaselineLSV': 'Actual Poduct Baseline LSV',
         'ProductEN': 'Product EN',
+        'BrandsegTech_code': 'Brand Seg Tech Code',
+        'Brandsegtech': 'Brand Seg Tech',
         'ActualProductLSVByCompensation': 'Actual Product LSV By Compensation',
         'TemplateTLC': 'Import TLC template XLSX',
         'AverageMarker': 'Average Marker',
@@ -2005,6 +2023,8 @@
         'ActualPromoBaselineLSV': 'Actual Promo Baseline LSV',
         'ActualPoductBaselineLSV': 'Actual Poduct Baseline LSV',
         'ProductEN': 'Product EN',
+        'BrandsegTech_code': 'Brand Seg Tech Code',
+        'Brandsegtech': 'Brand Seg Tech',
         'ActualPromoLSVByCompensation': 'Actual Promo LSV By Compensation'
     },
 

@@ -13,6 +13,18 @@
             xtype: 'textfield',
             name: 'Name',
             fieldLabel: l10n.ns('tpm', 'Brand').value('Name'),
+        }, {
+            xtype: 'textfield',
+            name: 'Brand_code',
+            fieldLabel: l10n.ns('tpm', 'Brand').value('Brand_code'),
+            regex: /^\d+$/,
+            regexText: l10n.ns('tpm', 'Brand').value('DigitRegex')
+        }, {
+            xtype: 'textfield',
+            name: 'Segmen_code',
+            fieldLabel: l10n.ns('tpm', 'Brand').value('Segmen_code'),
+            regex: /^\d+$/,
+            regexText: l10n.ns('tpm', 'Brand').value('DigitRegex')
         }]
     }
 });     

@@ -46,8 +46,16 @@ namespace Module.Host.TPM.Actions
 
                     oldRecord.EAN_Case = newRecord.EAN_Case;
                     oldRecord.EAN_PC = newRecord.EAN_PC;
-                    oldRecord.ProductRU = newRecord.ProductRU;
                     oldRecord.ProductEN = newRecord.ProductEN;
+					oldRecord.Brand = newRecord.Brand;
+					oldRecord.Brand_code = newRecord.Brand_code;
+					oldRecord.Technology = newRecord.Technology;
+					oldRecord.Tech_code = newRecord.Tech_code;
+					oldRecord.BrandTech = newRecord.BrandTech;
+					oldRecord.BrandTech_code = newRecord.BrandTech_code;
+					oldRecord.Segmen_code = newRecord.Segmen_code;
+					oldRecord.BrandsegTech_code = newRecord.BrandsegTech_code;
+                    oldRecord.Brandsegtech = newRecord.Brandsegtech;
                     oldRecord.BrandFlagAbbr = newRecord.BrandFlagAbbr;
                     oldRecord.BrandFlag = newRecord.BrandFlag;
                     oldRecord.SubmarkFlag = newRecord.SubmarkFlag;
@@ -64,8 +72,9 @@ namespace Module.Host.TPM.Actions
                     oldRecord.TradedUnitFormat = newRecord.TradedUnitFormat;
                     oldRecord.ConsumerPackFormat = newRecord.ConsumerPackFormat;
                     oldRecord.UOM_PC2Case = newRecord.UOM_PC2Case;
+					oldRecord.Division = newRecord.Division;
 
-                    toHisUpdate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(oldRecordCopy, oldRecord));
+					toHisUpdate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(oldRecordCopy, oldRecord));
                     toUpdate.Add(oldRecord);
                 }
             }

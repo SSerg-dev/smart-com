@@ -92,7 +92,10 @@
                         }
                     }
                 }
-            }
+                }, {
+                    text: l10n.ns('tpm', 'BrandTech').value('BrandTech_code'),
+                    dataIndex: 'BrandTech_code',
+                }
             ]
         }
     }, {

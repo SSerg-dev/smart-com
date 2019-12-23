@@ -22,17 +22,22 @@
             name: 'EAN_PC',
             fieldLabel: l10n.ns('tpm', 'ActualProductsView').value('EAN_PC'),
             maxLength: 255,
-        }, {
-            xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
-            name: 'ProductRU',
-            fieldLabel: l10n.ns('tpm', 'ActualProductsView').value('ProductRU'),
-            maxLength: 255,
-        }, {
+        },{
             xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
             name: 'ProductEN',
             fieldLabel: l10n.ns('tpm', 'ActualProductsView').value('ProductEN'),
             maxLength: 255,
-        }, {
+            }, {
+                xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
+                name: 'BrandsegTech_code',
+                fieldLabel: l10n.ns('tpm', 'ActualProductsView').value('BrandsegTech_code'),
+                maxLength: 255,
+            }, {
+                xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
+                name: 'Brandsegtech',
+                fieldLabel: l10n.ns('tpm', 'ActualProductsView').value('Brandsegtech'),
+                maxLength: 255,
+            }, {
             xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
             name: 'BrandFlagAbbr',
             fieldLabel: l10n.ns('tpm', 'ActualProductsView').value('BrandFlagAbbr'),

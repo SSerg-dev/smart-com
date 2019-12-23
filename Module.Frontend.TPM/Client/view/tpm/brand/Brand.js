@@ -86,6 +86,12 @@
             items: [{
                 text: l10n.ns('tpm', 'Brand').value('Name'),
                 dataIndex: 'Name'
+            }, {
+                text: l10n.ns('tpm', 'Brand').value('Brand_code'),
+                dataIndex: 'Brand_code'
+            }, {
+                text: l10n.ns('tpm', 'Brand').value('Segmen_code'),
+                dataIndex: 'Segmen_code'
             }]
         }
     }, {

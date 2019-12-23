@@ -192,7 +192,9 @@ namespace Module.Frontend.TPM.Controllers
         private IEnumerable<Column> GetExportSettings()
         {
             IEnumerable<Column> columns = new List<Column>() {
-                new Column() { Order = 0, Field = "Name", Header = "Brand", Quoting = false }
+                new Column() { Order = 0, Field = "Name", Header = "Brand", Quoting = false },
+                new Column() { Order = 1, Field = "Brand_code", Header = "Brand Code", Quoting = false },
+                new Column() { Order = 2, Field = "Segmen_code", Header = "Segment Code", Quoting = false }
             };
             return columns;
         }

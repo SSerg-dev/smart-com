@@ -47,14 +47,16 @@ namespace Module.Host.TPM {
                 new Handlers.PromoPartialWorkflowHandler(),
                 new Handlers.RemoveDeletedDataHandler(),
                 new Handlers.FillInOutProductIdsHandler(),
-                new Handlers.MarsCustomersCheckHandler(),
+                new Handlers.DataLakeIntegrationHandlers.MarsCustomersCheckHandler(),
                 new Handlers.Notifications.ClientTreeNeedUpdateNotificationHandler(),
                 new Handlers.UnblockPromoesHandler(),
                 new Handlers.FullXLSXUpdateImportPromoProductsCorrectionHandler(),
                 new Handlers.FullXLSXUpdateImportPromoProductsUpliftHandler(),
                 new Handlers.PromoListPlanRecalculationHandler(),
-                new Handlers.PromoListActualRecalculationHandler()
-            };
+                new Handlers.PromoListActualRecalculationHandler(),
+				new Handlers.DataLakeIntegrationHandlers.MarsProductsCheckStarterHandler(),
+				new Handlers.DataLakeIntegrationHandlers.MarsProductsCheckHandler()
+			};
         }
     }
 }

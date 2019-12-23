@@ -352,8 +352,18 @@ namespace Module.Frontend.TPM.Controllers
                 new Column() { Order = orderNum++, Field = "ZREP", Header = "ZREP", Quoting = false },
                 new Column() { Order = orderNum++, Field = "EAN_Case", Header = "EAN Case", Quoting = false },
                 new Column() { Order = orderNum++, Field = "EAN_PC", Header = "EAN PC", Quoting = false },
-                new Column() { Order = orderNum++, Field = "ProductRU", Header = "Product RU", Quoting = false },
                 new Column() { Order = orderNum++, Field = "ProductEN", Header = "Product EN", Quoting = false },
+				//--
+				new Column() { Order = orderNum++, Field = "Brand", Header = "Brand", Quoting = false },
+				new Column() { Order = orderNum++, Field = "Brand_code", Header = "Brand code", Quoting = false },
+				new Column() { Order = orderNum++, Field = "Technology", Header = "Technology", Quoting = false },
+				new Column() { Order = orderNum++, Field = "Tech_code", Header = "Technology code", Quoting = false },
+				new Column() { Order = orderNum++, Field = "BrandTech", Header = "Brand Tech", Quoting = false },
+				new Column() { Order = orderNum++, Field = "BrandTech_code", Header = "Brand Tech code", Quoting = false },
+				new Column() { Order = orderNum++, Field = "Segmen_code", Header = "Segmen code", Quoting = false },
+				//--
+                new Column() { Order = orderNum++, Field = "BrandsegTech_code", Header = "Brand Seg Tech Code", Quoting = false },
+                new Column() { Order = orderNum++, Field = "Brandsegtech", Header = "Brand Seg Tech", Quoting = false },
                 new Column() { Order = orderNum++, Field = "BrandFlagAbbr", Header = "Brand flag abbr", Quoting = false },
                 new Column() { Order = orderNum++, Field = "BrandFlag", Header = "Brand flag", Quoting = false },
                 new Column() { Order = orderNum++, Field = "SubmarkFlag", Header = "Submark flag", Quoting = false },
@@ -369,8 +379,9 @@ namespace Module.Frontend.TPM.Controllers
                 new Column() { Order = orderNum++, Field = "GroupSize", Header = "Group size", Quoting = false },
                 new Column() { Order = orderNum++, Field = "TradedUnitFormat", Header = "Traded unit format", Quoting = false },
                 new Column() { Order = orderNum++, Field = "ConsumerPackFormat", Header = "Consumer pack format", Quoting = false },
-                new Column() { Order = orderNum++, Field = "UOM_PC2Case", Header = "UOM_PC2Case", Quoting = false }
-            };
+                new Column() { Order = orderNum++, Field = "UOM_PC2Case", Header = "UOM_PC2Case", Quoting = false },
+				new Column() { Order = orderNum++, Field = "Division", Header = "Division", Quoting = false }
+			};
             return columns;
         }
 

@@ -107,12 +107,46 @@
             fieldLabel: l10n.ns('tpm', 'Product').value('EAN_PC'),
         }, {
             xtype: 'singlelinedisplayfield',
-            name: 'ProductRU',
-            fieldLabel: l10n.ns('tpm', 'Product').value('ProductRU'),
-        }, {
-            xtype: 'singlelinedisplayfield',
             name: 'ProductEN',
             fieldLabel: l10n.ns('tpm', 'Product').value('ProductEN'),
+        }, {
+			//--
+			xtype: 'singlelinedisplayfield',
+            name: 'Brand',
+            fieldLabel: l10n.ns('tpm', 'Product').value('Brand'),
+        }, {
+			xtype: 'singlelinedisplayfield',
+            name: 'Brand_code',
+            fieldLabel: l10n.ns('tpm', 'Product').value('Brand_code'),
+        }, {
+			xtype: 'singlelinedisplayfield',
+            name: 'Technology',
+            fieldLabel: l10n.ns('tpm', 'Product').value('Technology'),
+        }, {
+			xtype: 'singlelinedisplayfield',
+            name: 'Tech_code',
+            fieldLabel: l10n.ns('tpm', 'Product').value('Tech_code'),
+        }, {
+			xtype: 'singlelinedisplayfield',
+            name: 'BrandTech',
+            fieldLabel: l10n.ns('tpm', 'Product').value('BrandTech'),
+        }, {
+			xtype: 'singlelinedisplayfield',
+            name: 'BrandTech_code',
+            fieldLabel: l10n.ns('tpm', 'Product').value('BrandTech_code'),
+        }, {
+			xtype: 'singlelinedisplayfield',
+            name: 'Segmen_code',
+            fieldLabel: l10n.ns('tpm', 'Product').value('Segmen_code'),
+        }, {
+			//--
+            xtype: 'singlelinedisplayfield',
+            name: 'BrandsegTech_code',
+            fieldLabel: l10n.ns('tpm', 'Product').value('BrandsegTech_code'),
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'Brandsegtech',
+            fieldLabel: l10n.ns('tpm', 'Product').value('Brandsegtech'),
         }, {
             xtype: 'singlelinedisplayfield',
             name: 'BrandFlagAbbr',
@@ -178,6 +212,16 @@
             name: 'UOM_PC2Case',
             fieldLabel: l10n.ns('tpm', 'Product').value('UOM_PC2Case'),
             allowDecimals: true,
+            allowExponential: false,
+            minValue: 0,
+            maxValue: 10000000000,
+            allowBlank: true,
+            allowOnlyWhitespace: true,
+        }, {
+            xtype: 'numberfield',
+            name: 'Division',
+            fieldLabel: l10n.ns('tpm', 'Product').value('Division'),
+            allowDecimals: false,
             allowExponential: false,
             minValue: 0,
             maxValue: 10000000000,

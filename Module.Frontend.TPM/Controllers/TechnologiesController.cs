@@ -186,7 +186,8 @@ namespace Module.Frontend.TPM.Controllers
         private IEnumerable<Column> GetExportSettings()
         {
             IEnumerable<Column> columns = new List<Column>() {
-                new Column() { Order = 0, Field = "Name", Header = "Technology", Quoting = false }
+                new Column() { Order = 0, Field = "Name", Header = "Technology", Quoting = false },
+                new Column() { Order = 1, Field = "Technology", Header = "Tech Code", Quoting = false }
             };
             return columns;
         }

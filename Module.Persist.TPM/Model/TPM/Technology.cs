@@ -17,5 +17,10 @@ namespace Module.Persist.TPM.Model.TPM
         [Index("Unique_Name", 1, IsUnique = true)]
         [Required]
         public string Name { get; set; }
+
+        [Column(TypeName = "VARCHAR")]
+        [StringLength(255)]
+        [Index("Unique_Name", 4, IsUnique = true)]
+        public string Tech_code { get; set; }
     }
 }

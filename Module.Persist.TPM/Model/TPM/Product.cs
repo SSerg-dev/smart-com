@@ -20,10 +20,29 @@ namespace Module.Persist.TPM.Model.TPM
         public string EAN_Case { get; set; }
         [StringLength(255)]
         public string EAN_PC { get; set; }
+		[StringLength(255)]
+		public string ProductEN { get; set; }
+		[StringLength(255)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public string Brand { get; set; }
         [StringLength(255)]
-        public string ProductRU { get; set; }
-        [StringLength(255)]
-        public string ProductEN { get; set; }
+		public string Brand_code { get; set; }
+		[StringLength(255)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public string Technology { get; set; }
+		[StringLength(255)]
+		public string Tech_code { get; set; }
+		[StringLength(255)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public string BrandTech { get; set; }
+		[StringLength(255)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public string BrandTech_code { get; set; }
+		[StringLength(255)]
+		public string Brandsegtech { get; set; }
+		[StringLength(255)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public string BrandsegTech_code { get; set; }
         [StringLength(255)]
         public string BrandFlagAbbr { get; set; }
         [StringLength(255)]
@@ -38,7 +57,9 @@ namespace Module.Persist.TPM.Model.TPM
         public string ProductType { get; set; }
         [StringLength(255)]
         public string MarketSegment { get; set; }
-        [StringLength(255)]
+		[StringLength(255)]
+		public string Segmen_code { get; set; }
+		[StringLength(255)]
         public string SupplySegment { get; set; }
         [StringLength(255)]
         public string FunctionalVariety { get; set; }
@@ -56,5 +77,6 @@ namespace Module.Persist.TPM.Model.TPM
         public string ConsumerPackFormat { get; set; }
 
         public int? UOM_PC2Case { get; set; }
-    }
+		public int? Division { get; set; }
+	}
 }

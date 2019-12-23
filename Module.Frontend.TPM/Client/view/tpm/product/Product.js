@@ -99,11 +99,37 @@ ResourceMgr.getAdditionalMenu('core').import = {
                 text: l10n.ns('tpm', 'Product').value('EAN_PC'),
                 dataIndex: 'EAN_PC'
             }, {
-                text: l10n.ns('tpm', 'Product').value('ProductRU'),
-                dataIndex: 'ProductRU'
-            }, {
                 text: l10n.ns('tpm', 'Product').value('ProductEN'),
                 dataIndex: 'ProductEN'
+            }, {
+				//--
+				text: l10n.ns('tpm', 'Product').value('Brand'),
+                dataIndex: 'Brand'
+            }, {
+                text: l10n.ns('tpm', 'Product').value('Brand_code'),
+                dataIndex: 'Brand_code'
+            }, {
+                text: l10n.ns('tpm', 'Product').value('Technology'),
+                dataIndex: 'Technology'
+            }, {
+                text: l10n.ns('tpm', 'Product').value('Tech_code'),
+                dataIndex: 'Tech_code'
+            }, {
+                text: l10n.ns('tpm', 'Product').value('BrandTech'),
+                dataIndex: 'BrandTech'
+            }, {
+                text: l10n.ns('tpm', 'Product').value('BrandTech_code'),
+                dataIndex: 'BrandTech_code'
+            }, {
+                text: l10n.ns('tpm', 'Product').value('Segmen_code'),
+                dataIndex: 'Segmen_code'
+            }, {
+				//--
+                text: l10n.ns('tpm', 'Product').value('BrandsegTech_code'),
+                dataIndex: 'BrandsegTech_code'
+            }, {
+                text: l10n.ns('tpm', 'Product').value('Brandsegtech'),
+                dataIndex: 'Brandsegtech'
             }, {
                 text: l10n.ns('tpm', 'Product').value('BrandFlagAbbr'),
                 dataIndex: 'BrandFlagAbbr'
@@ -152,6 +178,9 @@ ResourceMgr.getAdditionalMenu('core').import = {
             }, {
                 text: l10n.ns('tpm', 'Product').value('UOM_PC2Case'),
                 dataIndex: 'UOM_PC2Case'
+            }, {
+                text: l10n.ns('tpm', 'Product').value('Division'),
+                dataIndex: 'Division'
             }]
         }
     }, {
@@ -172,14 +201,48 @@ ResourceMgr.getAdditionalMenu('core').import = {
             name: 'EAN_PC',
             vtype: 'eanNum',
             fieldLabel: l10n.ns('tpm', 'Product').value('EAN_PC'),
-        }, {
-            xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
-            name: 'ProductRU',
-            fieldLabel: l10n.ns('tpm', 'Product').value('ProductRU'),
-        }, {
+        },  {
             xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
             name: 'ProductEN',
             fieldLabel: l10n.ns('tpm', 'Product').value('ProductEN'),
+        }, {
+			//--
+			xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
+            name: 'Brand',
+            fieldLabel: l10n.ns('tpm', 'Product').value('Brand'),
+        }, {
+            xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
+            name: 'Brand_code',
+            fieldLabel: l10n.ns('tpm', 'Product').value('Brand_code'),
+        }, {
+            xtype: 'textfield',
+            name: 'Technology',
+            fieldLabel: l10n.ns('tpm', 'Product').value('Technology'),
+        }, {
+            xtype: 'textfield',
+            name: 'Tech_code',
+            fieldLabel: l10n.ns('tpm', 'Product').value('Tech_code'),
+        }, {
+            xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
+            name: 'BrandTech',
+            fieldLabel: l10n.ns('tpm', 'Product').value('BrandTech'),
+        }, {
+            xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
+            name: 'BrandTech_code',
+            fieldLabel: l10n.ns('tpm', 'Product').value('BrandTech_code'),
+        }, {
+            xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
+            name: 'Segmen_code',
+            fieldLabel: l10n.ns('tpm', 'Product').value('Segmen_code'),
+        }, {
+			//--
+            xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
+            name: 'BrandsegTech_code',
+            fieldLabel: l10n.ns('tpm', 'Product').value('BrandsegTech_code'),
+        }, {
+            xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
+            name: 'Brandsegtech',
+            fieldLabel: l10n.ns('tpm', 'Product').value('Brandsegtech'),
         }, {
             xtype: 'textfield',
             name: 'BrandFlagAbbr',
@@ -244,6 +307,16 @@ ResourceMgr.getAdditionalMenu('core').import = {
             xtype: 'numberfield',
             name: 'UOM_PC2Case',
             fieldLabel: l10n.ns('tpm', 'Product').value('UOM_PC2Case'),
+            allowDecimals: false,
+            allowExponential: false,
+            minValue: 0,
+            maxValue: 999999999,
+            enforceMaxLength: true,
+            maxLength: 9
+        }, {
+            xtype: 'numberfield',
+            name: 'Division',
+            fieldLabel: l10n.ns('tpm', 'Product').value('Division'),
             allowDecimals: false,
             allowExponential: false,
             minValue: 0,

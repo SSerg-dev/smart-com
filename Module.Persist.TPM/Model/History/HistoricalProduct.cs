@@ -10,8 +10,16 @@ namespace Module.Persist.TPM.Model.History
         public string ZREP { get; set; }
         public string EAN_Case { get; set; }
         public string EAN_PC { get; set; }
-        public string ProductRU { get; set; }
         public string ProductEN { get; set; }
+		public string Brand { get; set; }
+		public string Brand_code { get; set; }
+		public string Technology { get; set; }
+		public string Tech_code { get; set; }
+		public string BrandTech { get; set; }
+		public string BrandTech_code { get; set; }
+		public string Segmen_code { get; set; }
+		public string BrandsegTech_code { get; set; }
+        public string Brandsegtech{ get; set; }
         public string BrandFlagAbbr { get; set; }
         public string BrandFlag { get; set; }
         public string SubmarkFlag { get; set; }
@@ -29,5 +37,6 @@ namespace Module.Persist.TPM.Model.History
         public string ConsumerPackFormat { get; set; }
 
         public int? UOM_PC2Case { get; set; }
-    }
+		public int? Division { get; set; }
+	}
 }

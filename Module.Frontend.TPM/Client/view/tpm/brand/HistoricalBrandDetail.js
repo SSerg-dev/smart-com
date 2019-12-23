@@ -30,6 +30,14 @@
             xtype: 'singlelinedisplayfield',
             name: 'Name',
             fieldLabel: l10n.ns('tpm', 'Brand').value('Name'),
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'Brand_code',
+            fieldLabel: l10n.ns('tpm', 'Brand').value('Brand_code'),
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'Segmen_code',
+            fieldLabel: l10n.ns('tpm', 'Brand').value('Segmen_code'),
         }]
     }
 });

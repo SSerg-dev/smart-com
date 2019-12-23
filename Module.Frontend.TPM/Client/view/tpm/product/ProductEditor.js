@@ -27,15 +27,57 @@
             maxLength: 255,
         }, {
             xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
-            name: 'ProductRU',
-            fieldLabel: l10n.ns('tpm', 'Product').value('ProductRU'),
-            maxLength: 255,
-        }, {
-            xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
             name: 'ProductEN',
             fieldLabel: l10n.ns('tpm', 'Product').value('ProductEN'),
             maxLength: 255,
         }, {
+			//--
+			xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
+            name: 'Brand',
+            fieldLabel: l10n.ns('tpm', 'Product').value('Brand'),
+            maxLength: 255,
+        }, {
+            xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
+            name: 'Brand_code',
+            fieldLabel: l10n.ns('tpm', 'Product').value('Brand_code'),
+            maxLength: 255,
+        },{
+            xtype: 'textfield',
+            name: 'Technology',
+            fieldLabel: l10n.ns('tpm', 'Product').value('Technology'),
+            maxLength: 255,
+        }, {
+            xtype: 'textfield',
+            name: 'Tech_code',
+            fieldLabel: l10n.ns('tpm', 'Product').value('Tech_code'),
+            maxLength: 255,
+        }, {
+            xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
+            name: 'BrandTech',
+            fieldLabel: l10n.ns('tpm', 'Product').value('BrandTech'),
+            maxLength: 255,
+        }, {
+            xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
+            name: 'BrandTech_code',
+            fieldLabel: l10n.ns('tpm', 'Product').value('BrandTech_code'),
+            maxLength: 255,
+        }, {
+            xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
+            name: 'Segmen_code',
+            fieldLabel: l10n.ns('tpm', 'Product').value('Segmen_code'),
+            maxLength: 255,
+        }, {
+			//--
+            xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
+            name: 'BrandsegTech_code',
+            fieldLabel: l10n.ns('tpm', 'Product').value('BrandsegTech_code'),
+            maxLength: 255,
+        }, {
+            xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
+            name: 'Brandsegtech',
+            fieldLabel: l10n.ns('tpm', 'Product').value('Brandsegtech'),
+            maxLength: 255,
+        },{
             xtype: 'textfield',
             name: 'BrandFlagAbbr',
             fieldLabel: l10n.ns('tpm', 'Product').value('BrandFlagAbbr'),
@@ -114,6 +156,16 @@
             xtype: 'numberfield',
             name: 'UOM_PC2Case',
             fieldLabel: l10n.ns('tpm', 'Product').value('UOM_PC2Case'),
+            allowDecimals: false,
+            allowExponential: false,
+            minValue: 0,
+            maxValue: 999999999,
+            enforceMaxLength: true,
+            maxLength: 9
+        }, {
+            xtype: 'numberfield',
+            name: 'Division',
+            fieldLabel: l10n.ns('tpm', 'Product').value('Division'),
             allowDecimals: false,
             allowExponential: false,
             minValue: 0,

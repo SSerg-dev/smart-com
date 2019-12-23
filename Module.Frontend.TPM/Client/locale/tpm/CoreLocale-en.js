@@ -415,7 +415,12 @@
             'ImportResult': 'Import Records',
             'ImportResultFilesModel': 'Import result',
             'ImportSourceRecordCount': 'Source record count',
-            'ImportResultRecordCount': 'Result record count',
+			'ImportResultRecordCount': 'Result record count',
+			'DataLakeSyncSourceRecordCount': 'Import result',
+			'DataLakeSyncResultRecordCount': 'Source record count',
+			'DataLakeSyncResultFilesModel': 'Result record count',
+			'DataLakeSyncTypeDisplay': 'Directory',
+			'DataLakeSyncResult': 'Import Records',
             'ErrorCount': 'Errors count',
             'WarningCount': 'Warnings count',
             'Materials': 'Materials',
@@ -444,11 +449,16 @@
         'Status': 'Status',
         'ProcessDate': 'Process date',
         'FileDataTitle': 'File data',
-        'ImportResultFileTypes': {
+		'ImportResultFileTypes': {
+			'Success': 'Successes',
+			'Warning': 'Warnings',
+			'Error': 'Errors'
+		},
+        'DataLakeSyncResultFileTypes': {
             'Success': 'Successes',
             'Warning': 'Warnings',
             'Error': 'Errors'
-        }
+        },
     },
     'HistoricalFileBuffer': ['FileBuffer', 'BaseHistoryEntity'],
 

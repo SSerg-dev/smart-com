@@ -14,5 +14,11 @@ namespace Module.Persist.TPM.Model.Import
         [ImportCSVColumn(ColumnNumber = 0)]
         [Display(Name = "Name")]
         public string Name { get; set; }
+        [ImportCSVColumn(ColumnNumber = 1)]
+        [Display(Name = "Brand Code")]
+        public string  Brand_code { get; set; }
+        [ImportCSVColumn(ColumnNumber = 2)]
+        [Display(Name = "Segment Code")]
+        public string Segmen_code { get; set; }
     }
 }

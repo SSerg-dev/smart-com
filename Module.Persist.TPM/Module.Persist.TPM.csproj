@@ -1566,6 +1566,38 @@
     <Compile Include="Migrations\201912091414485_EmptyMigrationRC2.Designer.cs">
       <DependentUpon>201912091414485_EmptyMigrationRC2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201910291509133_Delete_ProductRU.cs" />
+    <Compile Include="Migrations\201910291509133_Delete_ProductRU.Designer.cs">
+      <DependentUpon>201910291509133_Delete_ProductRU.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201910291528271_Add_Product_BrandsegTech_code_And_Brandsegtech.cs" />
+    <Compile Include="Migrations\201910291528271_Add_Product_BrandsegTech_code_And_Brandsegtech.Designer.cs">
+      <DependentUpon>201910291528271_Add_Product_BrandsegTech_code_And_Brandsegtech.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201910300724019_Add_Brand_Brand_code.cs" />
+    <Compile Include="Migrations\201910300724019_Add_Brand_Brand_code.Designer.cs">
+      <DependentUpon>201910300724019_Add_Brand_Brand_code.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201910300737206_Add_Technology_Tech_code.cs" />
+    <Compile Include="Migrations\201910300737206_Add_Technology_Tech_code.Designer.cs">
+      <DependentUpon>201910300737206_Add_Technology_Tech_code.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201910300758188_Add_BrandTech_BrandTech_code.cs" />
+    <Compile Include="Migrations\201910300758188_Add_BrandTech_BrandTech_code.Designer.cs">
+      <DependentUpon>201910300758188_Add_BrandTech_BrandTech_code.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201912041616534_Product_AddFields.cs" />
+    <Compile Include="Migrations\201912041616534_Product_AddFields.Designer.cs">
+      <DependentUpon>201912041616534_Product_AddFields.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201912181327133_Materials_Models_update.cs" />
+    <Compile Include="Migrations\201912181327133_Materials_Models_update.Designer.cs">
+      <DependentUpon>201912181327133_Materials_Models_update.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201912231631175_FixBrandTechnologyFields.cs" />
+    <Compile Include="Migrations\201912231631175_FixBrandTechnologyFields.Designer.cs">
+      <DependentUpon>201912231631175_FixBrandTechnologyFields.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\PromoProductsView.cs" />
     <Compile Include="Model\DTO\ClientTreeSharesView.cs" />
@@ -1661,6 +1693,7 @@
     <Compile Include="Model\Import\PromoSalesComparer.cs" />
     <Compile Include="Model\Import\PromoComparer.cs" />
     <Compile Include="Model\Import\ImportTradeInvestment.cs" />
+    <Compile Include="Model\SimpleModel\MARS_UNIVERSAL_PETCARE_MATERIALS.cs" />
     <Compile Include="Model\SimpleModel\MarsUniversalPetcareCustomers.cs" />
     <Compile Include="Model\TPM\ActualLsvModel.cs" />
     <Compile Include="Model\TPM\BlockedPromo.cs" />
@@ -1755,6 +1788,7 @@
     <Compile Include="PromoStateControl\UserRoles.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CalculatePromoParametersModule\PlanProductParametersCalculation.cs" />
+    <Content Include="SQLInitialize\20191223_2110_FixMarsCutomersCheckHandler.sql" />
     <Content Include="SQLInitialize\20191205_0022_Init_ClientTreeNeedUpdateNotification.sql" />
     <Content Include="SQLInitialize\20191205_0020_AddClientTreeNeedUpdateNotificationHandler.sql" />
     <Content Include="SQLInitialize\20191205_0015_AddMarsCutomersCheckHandler.sql" />
@@ -1806,6 +1840,11 @@
     <Content Include="SQLInitialize\20191203_2300_NonPromoSupport_Incremental_Trigger.sql" />
     <Content Include="SQLInitialize\20191219_1427_Historical_Delete_UserRole_AP.sql" />
     <Content Include="SQLInitialize\20191211_1800_NonPromoEquipment_AP_CMM_Add.sql" />
+    <Content Include="SQLInitialize\20191205_1730_Adding_Codes.sql" />
+    <Content Include="SQLInitialize\20191205_1735_Add_Setting_DATA_LAKE_MATERIALS_SYNC_TIME_RANGE.sql" />
+    <Content Include="SQLInitialize\20191205_1800_BrandTech_code_Computed_Add.sql" />
+    <Content Include="SQLInitialize\20191205_1830_AddMarsProductsCheckHandler.sql" />
+    <Content Include="SQLInitialize\20191219_1945_File_AP_ResultFilesDownload.sql" />
     <Content Include="Sql\20191004_1540_FillInOutProductIdsHandler.sql" />
     <Content Include="SQLInitialize\20190926_1600_HistoricalPromoSupport_AP.sql" />
     <Content Include="SQLInitialize\20191106_1700_PromoGridView.sql" />
@@ -2925,6 +2964,30 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201912091414485_EmptyMigrationRC2.resx">
       <DependentUpon>201912091414485_EmptyMigrationRC2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910291509133_Delete_ProductRU.resx">
+      <DependentUpon>201910291509133_Delete_ProductRU.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910291528271_Add_Product_BrandsegTech_code_And_Brandsegtech.resx">
+      <DependentUpon>201910291528271_Add_Product_BrandsegTech_code_And_Brandsegtech.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910300724019_Add_Brand_Brand_code.resx">
+      <DependentUpon>201910300724019_Add_Brand_Brand_code.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910300737206_Add_Technology_Tech_code.resx">
+      <DependentUpon>201910300737206_Add_Technology_Tech_code.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910300758188_Add_BrandTech_BrandTech_code.resx">
+      <DependentUpon>201910300758188_Add_BrandTech_BrandTech_code.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201912041616534_Product_AddFields.resx">
+      <DependentUpon>201912041616534_Product_AddFields.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201912181327133_Materials_Models_update.resx">
+      <DependentUpon>201912181327133_Materials_Models_update.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201912231631175_FixBrandTechnologyFields.resx">
+      <DependentUpon>201912231631175_FixBrandTechnologyFields.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -20,11 +20,17 @@
 
     items: {
         xtype: 'editorform',
-        columnsCount: 1,
+        columnsCount: 1, 
         items: [{
             xtype: 'textfield',
             name: 'Name',
             fieldLabel: l10n.ns('tpm', 'Technology').value('Name'),
+        }, {
+            xtype: 'textfield',
+            name: 'Tech_code',
+            fieldLabel: l10n.ns('tpm', 'Technology').value('Tech_code'),
+            regex: /^\d+$/,
+            regexText: l10n.ns('tpm', 'Technology').value('DigitRegex')
         }]
     }
 });  
