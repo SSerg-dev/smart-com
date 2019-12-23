@@ -129,11 +129,10 @@ namespace Module.Host.TPM.Actions.Notifications {
 				string notifyBody = String.Format(template, string.Join("", allRows));
 
 				string[] emailArray = new string[] { creatorEmail };
-				if (emailArray.Length > 0) {
+				if (!String.IsNullOrEmpty(creatorEmail))
+				{
 					SendNotificationByEmails(notifyBody, notificationName, emailArray);
 					Results.Add(String.Format("Notifications about transition in approved status of promoes with numbers {0} were sent to promo creator: {1}.", String.Join(", ", promoNumbers.Distinct()), String.Join(", ", emailArray)), null);
-				} else {
-					Warnings.Add(String.Format("There is no recipient to send notification."));
 				}
 			}
 
