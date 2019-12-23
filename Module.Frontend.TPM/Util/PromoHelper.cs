@@ -130,7 +130,7 @@ namespace Module.Frontend.TPM.Util {
         /// <summary>
         /// Удаление записей IncrementalPromo, связанных с текущим промо
         /// </summary>
-        public static void DisableInrementalPromo(DatabaseContext context, Promo promo)
+        public static void DisableIncrementalPromo(DatabaseContext context, Promo promo)
         {
             var incrementalPromoes = context.Set<IncrementalPromo>().Where(x => x.PromoId == promo.Id).ToList();
             foreach(var incrementalPromo in incrementalPromoes)
