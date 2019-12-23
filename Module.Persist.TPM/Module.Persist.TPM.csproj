@@ -1598,6 +1598,10 @@
     <Compile Include="Migrations\201912231631175_FixBrandTechnologyFields.Designer.cs">
       <DependentUpon>201912231631175_FixBrandTechnologyFields.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201912231818360_EmptyMigrationRC3.cs" />
+    <Compile Include="Migrations\201912231818360_EmptyMigrationRC3.Designer.cs">
+      <DependentUpon>201912231818360_EmptyMigrationRC3.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\PromoProductsView.cs" />
     <Compile Include="Model\DTO\ClientTreeSharesView.cs" />
@@ -2988,6 +2992,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201912231631175_FixBrandTechnologyFields.resx">
       <DependentUpon>201912231631175_FixBrandTechnologyFields.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201912231818360_EmptyMigrationRC3.resx">
+      <DependentUpon>201912231818360_EmptyMigrationRC3.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
