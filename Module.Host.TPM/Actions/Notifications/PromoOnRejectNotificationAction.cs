@@ -142,8 +142,6 @@ namespace Module.Host.TPM.Actions.Notifications {
 					SendNotificationByEmails(notifyBody, notificationName, emailArray);
 					Results.Add(String.Format("Notification about reject of promoes with numbers: {0} were sent to promo creator {1}.",
 						String.Join(", ", promoNumbers.Distinct()), String.Join(", ", emailArray)), null);
-				} else {
-					Warnings.Add(String.Format("Promo creator's email not found. Promo numbers: {0}.", String.Join(", ", promoNumbers.Distinct())));
 				}
 			}
 			
