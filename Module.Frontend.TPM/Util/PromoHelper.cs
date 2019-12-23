@@ -5,6 +5,7 @@ using Looper.Core;
 using Looper.Parameters;
 using Module.Persist.TPM.CalculatePromoParametersModule;
 using Module.Persist.TPM.Model.TPM;
+using Module.Persist.TPM.Utils;
 using Persist;
 using System;
 using System.Collections.Generic;
@@ -124,6 +125,20 @@ namespace Module.Frontend.TPM.Util {
 
             if (!success)
                 throw new Exception("Promo was blocked for calculation");
+        }
+
+        /// <summary>
+        /// Удаление записей IncrementalPromo, связанных с текущим промо
+        /// </summary>
+        public static void DisableInrementalPromo(DatabaseContext context, Promo promo)
+        {
+            var incrementalPromoes = context.Set<IncrementalPromo>().Where(x => x.PromoId == promo.Id).ToList();
+            foreach(var incrementalPromo in incrementalPromoes)
+            {
+                incrementalPromo.Disabled = true;
+                incrementalPromo.DeletedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+            }
+            context.SaveChanges();
         }
 
         public static IEnumerable<Column> GetExportSettings() {

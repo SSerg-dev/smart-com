@@ -105,6 +105,7 @@ namespace Module.Frontend.TPM.Controllers {
 
                 PromoCalculateHelper.RecalculateBudgets(model, user, Context);
                 PromoHelper.WritePromoDemandChangeIncident(Context, model, true);
+                PromoHelper.DisableInrementalPromo(Context, model);
 
                 return StatusCode(HttpStatusCode.OK);
             } catch (Exception e) {
