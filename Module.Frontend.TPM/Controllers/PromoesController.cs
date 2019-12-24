@@ -417,6 +417,7 @@ namespace Module.Frontend.TPM.Controllers {
                             if (!model.InOut.HasValue || !model.InOut.Value)
                             {
                                 List<string> eanPCs = PlanProductParametersCalculation.GetProductListFromAssortmentMatrix(model, Context);
+                                filteredProducts = PlanProductParametersCalculation.GetCheckedProducts(Context, model);
                                 resultProductList = PlanProductParametersCalculation.GetResultProducts(filteredProducts, eanPCs, model, Context);
                             }
                             else 
