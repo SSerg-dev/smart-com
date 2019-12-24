@@ -52,9 +52,8 @@ Ext.define('App.model.core.associateduser.userrole.DeletedAssociatedUserRole', {
         { name: 'UserId', hidden: true },
         { name: 'RoleId', hidden: true },
         { name: 'IsDefault', type: 'boolean', isDefault: true },
-        { name: 'RoleSystemName', type: 'string', isDefault: true },
         { name: 'RoleDisplayName', type: 'string', isDefault: true },
-        { name: 'RoleIsAllow', type: 'boolean', isDefault: true }
+        { name: 'RoleIsAllow', type: 'boolean', isDefault: false }
 	],
     proxy: {
         type: 'breeze',

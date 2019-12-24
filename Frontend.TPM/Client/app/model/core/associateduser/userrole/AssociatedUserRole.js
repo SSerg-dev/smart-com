@@ -9,7 +9,7 @@ Ext.define('App.model.core.associateduser.userrole.AssociatedUserRole', {
 		{ name: 'IsDefault', type: 'boolean', isDefault: true, defaultValue: false },
 		{ name: 'SystemName', type: 'string', isDefault: true, mapping: 'Role.SystemName' },
 		{ name: 'DisplayName', type: 'string', isDefault: true, mapping: 'Role.DisplayName' },
-		{ name: 'IsAllow', type: 'boolean', isDefault: true, mapping: 'Role.IsAllow' }
+		{ name: 'IsAllow', type: 'boolean', isDefault: false, mapping: 'Role.IsAllow' }
 	],
     proxy: {
         type: 'breeze',
