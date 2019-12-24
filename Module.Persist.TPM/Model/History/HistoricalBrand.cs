@@ -7,5 +7,7 @@ namespace Module.Persist.TPM.Model.History
     public class HistoricalBrand : BaseHistoricalEntity<System.Guid>
     {
         public string Name { get; set; }
+        public string Brand_code { get; set; }
+        public string Segmen_code { get; set; }
     }
 }

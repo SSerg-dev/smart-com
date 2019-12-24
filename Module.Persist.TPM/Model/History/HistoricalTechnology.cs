@@ -7,5 +7,6 @@ namespace Module.Persist.TPM.Model.History
     public class HistoricalTechnology : BaseHistoricalEntity<System.Guid>
     {
         public string Name { get; set; }
+        public string Tech_code { get; set; }
     }
 }

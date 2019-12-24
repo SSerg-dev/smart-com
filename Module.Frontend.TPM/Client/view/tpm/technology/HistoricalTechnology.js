@@ -97,6 +97,10 @@
             xtype: 'singlelinedisplayfield',
             name: 'Name',
             fieldLabel: l10n.ns('tpm', 'Technology').value('Name'),
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'Tech_code',
+            fieldLabel: l10n.ns('tpm', 'Technology').value('Tech_code'),
         }]
     }]
 });
