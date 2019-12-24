@@ -142,10 +142,10 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
 									IsNumeric(r.ZREP.TrimStart('0'), 6) &&
 									r.EAN_Case.HasValue && DecimalToString(r.EAN_Case).Length == 13 &&
 									r.EAN_PC.HasValue && DecimalToString(r.EAN_PC).Length == 13 &&
-									IsNumeric(r.UOM_PC2Case)));
-					foreach (var item in step1Log)
+									IsNumeric(r.UOM_PC2Case))).GroupBy(x => x.ZREP);
+					foreach (var group in step1Log)
 					{
-						warningList.Add(String.Format("GRD with ZREP {0} has inappropriate value for one or more of VKORG, 0DIVISION, 0DIVISION___T, 0MATL_TYPE___T, MATNR, VMSTD, 0CREATEDON, ZREP, EAN_Case, EAN_PC, UOM_PC2Case fields.", item.ZREP.TrimStart('0')));
+						warningList.Add(String.Format("{0} GRD with ZREP {1} has inappropriate value for one or more of VKORG, 0DIVISION, 0DIVISION___T, 0MATL_TYPE___T, MATNR, VMSTD, 0CREATEDON, ZREP, EAN_Case, EAN_PC, UOM_PC2Case fields.", group.Count(), group.Key.TrimStart('0')));
 					}
 
 					// Проверка заполненности полей MATERIAL, SKU, UOM_PC2Case, Segmen, Technology, Brand_Flag_abbr, Brand_Flag, Size, Brandsegtech 
@@ -169,10 +169,10 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
 									IsNotEmptyOrNotApplicable(r.Brand_Flag_abbr) &&
 									IsNotEmptyOrNotApplicable(r.Brand_Flag) &&
 									IsNotEmptyOrNotApplicable(r.Size) &&
-									IsNotEmptyOrNotApplicable(r.Brandsegtech)));
-					foreach (var item in step2Log)
+									IsNotEmptyOrNotApplicable(r.Brandsegtech))).GroupBy(x => x.ZREP);
+					foreach (var group in step2Log)
 					{
-						warningList.Add(String.Format("GRD with ZREP {0} has one of MATERIAL, SKU, UOM_PC2Case, Segmen, Technology, Brand_Flag_abbr, Brand_Flag, Size, Brandsegtech fields not applicable or empty.", item.ZREP.TrimStart('0')));
+						warningList.Add(String.Format("{0} GRD with ZREP {1} has one of MATERIAL, SKU, UOM_PC2Case, Segmen, Technology, Brand_Flag_abbr, Brand_Flag, Size, Brandsegtech fields not applicable or empty.", group.Count(), group.Key.TrimStart('0')));
 					}
 
 					// Проверка на заполненность хотя бы одного поля из Submark_Flag, Ingredient_variety, Product_Category, Product_Type, Supply_Segment, Functional_variety, Size, Brand_essence, Pack_Type, Traded_unit_format, Consumer_pack_format 
@@ -198,10 +198,10 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
 									IsNotEmptyOrNotApplicable(r.Size) ||
 									IsNotEmptyOrNotApplicable(r.Pack_Type) ||
 									IsNotEmptyOrNotApplicable(r.Traded_unit_format) ||
-									IsNotEmptyOrNotApplicable(r.Consumer_pack_format)));
-					foreach (var item in step3Log)
+									IsNotEmptyOrNotApplicable(r.Consumer_pack_format))).GroupBy(x => x.ZREP);
+					foreach (var group in step3Log)
 					{
-						warningList.Add(String.Format("GRD with ZREP {0} has all of Submark_Flag, Ingredient_variety, Product_Category, Product_Type, Supply_Segment, Functional_variety, Size, Brand_essence, Pack_Type, Traded_unit_format, Consumer_pack_format fields not applicable or empty.", item.ZREP.TrimStart('0')));
+						warningList.Add(String.Format("{0} GRD with ZREP {0} has all of Submark_Flag, Ingredient_variety, Product_Category, Product_Type, Supply_Segment, Functional_variety, Size, Brand_essence, Pack_Type, Traded_unit_format, Consumer_pack_format fields not applicable or empty.", group.Count(), group.Key.TrimStart('0')));
 					}
 
 					// Убираем различающиеся записи для одного ZREP (по полям Segmen, Technology, Brand_Flag_abbr, Brand_Flag, Size, Brandsegtech)
@@ -238,7 +238,7 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
 					// Проверяем есть ли новые ZREP
 					var products = context.Set<Product>().Where(p => !p.Disabled).ToList();
 					var newProductsMaterial = materialsToCheck.Where(x => !products.Any(p => p.ZREP == x.ZREP.TrimStart('0')));
-
+					var createdZREPs = new List<string>();
 					foreach (var material in newProductsMaterial)
 					{
 						var errors = CheckNewBrandTech(material.Brand_code, material.Brand, material.Segmen_code, material.Tech_code, material.Technology);
@@ -255,6 +255,7 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
 							try
 							{
 								context.SaveChanges();
+								createdZREPs.Add(newProduct.ZREP);
 								successList.Add(String.Format("Product with ZREP {0} was created.", newProduct.ZREP));
 							}
 							catch (Exception e)
@@ -267,9 +268,9 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
 							errorList.Add(String.Format("Product with ZREP {0} was not added because an error occurred while checking brand technology", material.ZREP.TrimStart('0')));
 						}
 					}
-					if (newProductsMaterial.Any())
+					if (createdZREPs.Any())
 					{
-						Results.Add(String.Format("Added notification incidents for created products with ZREPs: {0}", String.Join(",", newProductsMaterial.Select(p => p.ZREP.TrimStart('0')))), null);
+						Results.Add(String.Format("Added notification incidents for created products with ZREPs: {0}", String.Join(",", createdZREPs.Select(x => x.TrimStart('0')))), null);
 					}
 
 					// Проверяем, есть ли продукты, которые необходимо обновить
@@ -279,13 +280,13 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
 					{
 						material.ZREP = material.ZREP.TrimStart('0');
 						Product productToUpdate = products.Where(p => p.ZREP == material.ZREP).FirstOrDefault();
-
+						List<string> errors = new List<string>();
 						if (productToUpdate != null)
 						{
 							var updatedZREPs = new List<string>();
 							if (IsChange(material, productToUpdate))
 							{
-								var errors = CheckNewBrandTech(material.Brand_code, material.Brand, material.Segmen_code, material.Tech_code, material.Technology);
+								errors = CheckNewBrandTech(material.Brand_code, material.Brand, material.Segmen_code, material.Tech_code, material.Technology);
 
 								foreach (var error in errors)
 									errorList.Add(error);
@@ -296,11 +297,11 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
 									List<string> updatedFileds = ApplyChanges(material, product, context);
 
 									context.Set<ProductChangeIncident>().Add(CreateIncident(product, false, false));
-									updatedZREPs.Add(product.ZREP);
 
 									try
 									{
 										context.SaveChanges();
+										updatedZREPs.Add(product.ZREP);
 										successList.Add(String.Format("Product with ZREP {0} was updated. Fields changed: {1}.", product.ZREP, String.Join(",", updatedFileds)));
 									}
 									catch (Exception e)
@@ -315,9 +316,17 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
 							}
 							if (updatedZREPs.Any())
 							{
-								Results.Add(String.Format("Added notification incidents for updated products with ZREPs: {0}", String.Join(",", updatedZREPs)), null);
+								Results.Add(String.Format("Added notification incident for updated products with ZREPs: {0}", String.Join(",", updatedZREPs)), null);
 							}
 						}
+					}
+
+					if (newProductsMaterial.Any() || updateProductsMaterial.Any())
+					{
+						var errors = CheckBrandDoubles(context);
+
+						foreach (var error in errors)
+							errorList.Add(error);
 					}
 
 					DataLakeSyncResultFilesModel model = SaveResultToFile(handlerId, successList, errorList, warningList);
@@ -335,6 +344,55 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
 				string msg = String.Format("An error occurred while cheking Mars products", e.ToString());
 				Errors.Add(msg);
 			}
+		}
+
+		private List<string> CheckBrandDoubles (DatabaseContext context)
+		{
+			var errors = new List<string>();
+			var brandsByCode = context.Set<Brand>().Where(x => !x.Disabled).GroupBy(x => x.Brand_code).ToList();
+
+			foreach (var brandGroup in brandsByCode)
+			{
+				if (brandGroup.DistinctBy(x => new { x.Brand_code, x.Segmen_code }).Count() == 2)
+				{
+					string updateTemplate = "UPDATE Brand SET Name = '{0}' WHERE Id = '{1}'";
+
+					if (brandGroup.DistinctBy(x => x.Name).Count() != 1)
+					{
+						continue;
+					}
+
+					foreach (var brand in brandGroup)
+					{
+						try
+						{
+							if (brand.Segmen_code == "04")
+							{
+								string catName = String.Format("{0} Cat", brand.Name);
+								string catBrandUpdate = String.Format(updateTemplate, catName, brand.Id);
+								context.Database.ExecuteSqlCommand(catBrandUpdate);
+
+								Results.Add(String.Format("Added segment to Brand name for brand with code {0} (segment code: {1})", brand.Brand_code, brand.Segmen_code), null);
+							}
+							else if (brand.Segmen_code == "07")
+							{
+								string dogName = String.Format("{0} Dog", brand.Name);
+								string dogBrandUpdate = String.Format(updateTemplate, dogName, brand.Id);
+								context.Database.ExecuteSqlCommand(dogBrandUpdate);
+
+								Results.Add(String.Format("Added segment to Brand name for brand with code {0} (segment code: {1})", brand.Brand_code, brand.Segmen_code), null);
+							}
+						}
+						catch (Exception e)
+						{
+							errors.Add(String.Format("Error while checking brand doublecates by brand_code {0}. Message: {1}", brand.Brand_code, e.Message));
+						}
+
+					}
+				}
+			}
+
+			return errors;
 		}
 
 		private List<string> CheckNewBrandTech (string brandCode, string brandName, string segmenCode, string techCode, string techName)

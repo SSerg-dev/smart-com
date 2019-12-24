@@ -60,6 +60,14 @@
                 xtype: 'textfield',
                 name: 'BrandTech_code',
                 fieldLabel: l10n.ns('tpm', 'BrandTech').value('BrandTech_code'),
+                readOnly: true,
+                listeners: {
+                    writeablechange: function (field) {
+                        if (field.readOnly == false) {
+                            field.setReadOnly(true);
+                        }
+                    }
+                }
             }]
     }
 });

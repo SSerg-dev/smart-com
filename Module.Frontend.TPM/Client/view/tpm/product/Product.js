@@ -102,7 +102,6 @@ ResourceMgr.getAdditionalMenu('core').import = {
                 text: l10n.ns('tpm', 'Product').value('ProductEN'),
                 dataIndex: 'ProductEN'
             }, {
-				//--
 				text: l10n.ns('tpm', 'Product').value('Brand'),
                 dataIndex: 'Brand'
             }, {
@@ -124,7 +123,6 @@ ResourceMgr.getAdditionalMenu('core').import = {
                 text: l10n.ns('tpm', 'Product').value('Segmen_code'),
                 dataIndex: 'Segmen_code'
             }, {
-				//--
                 text: l10n.ns('tpm', 'Product').value('BrandsegTech_code'),
                 dataIndex: 'BrandsegTech_code'
             }, {
@@ -215,11 +213,11 @@ ResourceMgr.getAdditionalMenu('core').import = {
             name: 'Brand_code',
             fieldLabel: l10n.ns('tpm', 'Product').value('Brand_code'),
         }, {
-            xtype: 'textfield',
+            xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
             name: 'Technology',
             fieldLabel: l10n.ns('tpm', 'Product').value('Technology'),
         }, {
-            xtype: 'textfield',
+            xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
             name: 'Tech_code',
             fieldLabel: l10n.ns('tpm', 'Product').value('Tech_code'),
         }, {
@@ -235,7 +233,6 @@ ResourceMgr.getAdditionalMenu('core').import = {
             name: 'Segmen_code',
             fieldLabel: l10n.ns('tpm', 'Product').value('Segmen_code'),
         }, {
-			//--
             xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
             name: 'BrandsegTech_code',
             fieldLabel: l10n.ns('tpm', 'Product').value('BrandsegTech_code'),
@@ -322,7 +319,8 @@ ResourceMgr.getAdditionalMenu('core').import = {
             minValue: 0,
             maxValue: 999999999,
             enforceMaxLength: true,
-            maxLength: 9
+            maxLength: 9,
+            allowBlank: true
         }]
     }]
 });

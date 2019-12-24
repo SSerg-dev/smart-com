@@ -101,7 +101,10 @@
             xtype: 'singlelinedisplayfield',
             name: 'TechnologyName',
             fieldLabel: l10n.ns('tpm', 'BrandTech').value('TechnologyName'),
-        },
-        ]
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'BrandTech_code',
+            fieldLabel: l10n.ns('tpm', 'BrandTech').value('BrandTech_code'),
+        }]
     }]
 });

@@ -36,42 +36,88 @@
             name: 'Brand',
             fieldLabel: l10n.ns('tpm', 'Product').value('Brand'),
             maxLength: 255,
+            readOnly: true,
+            listeners: {
+                writeablechange: function (field) {
+                    if (field.readOnly == false) {
+                        field.setReadOnly(true);
+                    }
+                }
+            }
         }, {
             xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
             name: 'Brand_code',
             fieldLabel: l10n.ns('tpm', 'Product').value('Brand_code'),
             maxLength: 255,
+            regex: /^\d+$/,
+            regexText: l10n.ns('tpm', 'Brand').value('DigitRegex')
         },{
-            xtype: 'textfield',
+            xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
             name: 'Technology',
             fieldLabel: l10n.ns('tpm', 'Product').value('Technology'),
             maxLength: 255,
+            readOnly: true,
+            listeners: {
+                writeablechange: function (field) {
+                    if (field.readOnly == false) {
+                        field.setReadOnly(true);
+                    }
+                }
+            }
         }, {
-            xtype: 'textfield',
+            xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
             name: 'Tech_code',
             fieldLabel: l10n.ns('tpm', 'Product').value('Tech_code'),
             maxLength: 255,
+            regex: /^\d+$/,
+            regexText: l10n.ns('tpm', 'Brand').value('DigitRegex')
         }, {
             xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
             name: 'BrandTech',
             fieldLabel: l10n.ns('tpm', 'Product').value('BrandTech'),
             maxLength: 255,
+            readOnly: true,
+            listeners: {
+                writeablechange: function (field) {
+                    if (field.readOnly == false) {
+                        field.setReadOnly(true);
+                    }
+                }
+            }
         }, {
             xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
             name: 'BrandTech_code',
             fieldLabel: l10n.ns('tpm', 'Product').value('BrandTech_code'),
             maxLength: 255,
+            readOnly: true,
+            listeners: {
+                writeablechange: function (field) {
+                    if (field.readOnly == false) {
+                        field.setReadOnly(true);
+                    }
+                }
+            }
         }, {
             xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
             name: 'Segmen_code',
             fieldLabel: l10n.ns('tpm', 'Product').value('Segmen_code'),
             maxLength: 255,
+            regex: /^\d+$/,
+            regexText: l10n.ns('tpm', 'Brand').value('DigitRegex')
         }, {
 			//--
             xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
             name: 'BrandsegTech_code',
             fieldLabel: l10n.ns('tpm', 'Product').value('BrandsegTech_code'),
             maxLength: 255,
+            readOnly: true,
+            listeners: {
+                writeablechange: function (field) {
+                    if (field.readOnly == false) {
+                        field.setReadOnly(true);
+                    }
+                }
+            }
         }, {
             xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
             name: 'Brandsegtech',
@@ -171,7 +217,10 @@
             minValue: 0,
             maxValue: 999999999,
             enforceMaxLength: true,
-            maxLength: 9
+            minLength: 0,
+            maxLength: 9,
+            allowBlank: true,
+            allowOnlyWhitespace: true
         }]
     },
     listeners: {

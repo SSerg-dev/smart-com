@@ -134,7 +134,7 @@
         'fullImportCSV': 'Полный импорт CSV',
         'fullImportXLSX': 'Полный импорт XLSX',
         'importTemplateCSV': 'Шаблон импорта CSV',
-        'importTemplateXLSX': 'Шаблон импорта XLSX',
+        'importTemplateXLSX': 'Шаблон импорта XLSX
         'exportCSV': 'Экспорт в CSV',
         'exportXLSX': 'Экспорт в XLSX',
         'manualProcess': 'Разобрать',
@@ -372,7 +372,7 @@
             'ImportResultFilesModel': 'Результаты импорта',
             'ImportSourceRecordCount': 'Исходных записей',
 			'ImportResultRecordCount': 'Записей обработано',
-			'DataLakeSyncSourceRecordCount': 'Результаты импорта',
+			'DataLakeSyncSourceRecordCount': 'Результаты синхронизации',
 			'DataLakeSyncResultRecordCount': 'Исходных записей',
 			'DataLakeSyncResultFilesModel': 'Записей обработано',
 			'DataLakeSyncTypeDisplay': 'Справочник',

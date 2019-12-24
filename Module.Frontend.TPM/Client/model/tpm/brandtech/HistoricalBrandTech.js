@@ -13,6 +13,7 @@
         { name: 'TechnologyId', hidden: true, isDefault: true },
         { name: 'BrandName', type: 'string', isDefault: true },
         { name: 'TechnologyName', type: 'string', isDefault: true },
+        { name: 'BrandTech_code', type: 'string', isDefault: true },
     ],
     proxy: {
         type: 'breeze',
