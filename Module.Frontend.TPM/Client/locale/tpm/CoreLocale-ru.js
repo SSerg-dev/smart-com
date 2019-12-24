@@ -134,7 +134,7 @@
         'fullImportCSV': 'Полный импорт CSV',
         'fullImportXLSX': 'Полный импорт XLSX',
         'importTemplateCSV': 'Шаблон импорта CSV',
-        'importTemplateXLSX': 'Шаблон импорта XLSX
+        'importTemplateXLSX': 'Шаблон импорта XLSX',
         'exportCSV': 'Экспорт в CSV',
         'exportXLSX': 'Экспорт в XLSX',
         'manualProcess': 'Разобрать',
