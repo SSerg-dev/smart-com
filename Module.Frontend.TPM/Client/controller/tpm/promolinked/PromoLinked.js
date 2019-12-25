@@ -198,6 +198,10 @@
             }, {
                 operation: "NotEqual",
                 property: "PromoStatus.Name",
+                value: "Cancelled"
+            }, {
+                operation: "NotEqual",
+                property: "PromoStatus.Name",
                 value: "Closed"
             }, {
                 operation: "NotEqual",
