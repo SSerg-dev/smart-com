@@ -75,7 +75,7 @@
 
 				// Choose brand tech
 				'nonpromosupportbrandtech #chooseBrandTechBtn': {
-					click: this.onСhooseBrandTechBtnClick
+					click: this.onChooseBrandTechBtnClick
 				},
 
 				// NonPromoSupportClient
@@ -973,7 +973,7 @@
 		return isValid;
 	},
 
-	onСhooseBrandTechBtnClick: function (button) {
+	onChooseBrandTechBtnClick: function (button) {
         var widget = Ext.widget('nonpromosupportbrandtechchoose');
         widget.show();
     },

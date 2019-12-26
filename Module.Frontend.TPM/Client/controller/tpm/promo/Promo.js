@@ -303,7 +303,7 @@
 
                 // choose product
                 'promobasicproducts #choosePromoProductsBtn': {
-                    click: this.onСhoosePromoProductsBtnClick
+                    click: this.onChoosePromoProductsBtnClick
                 },
                 'promobasicproducts #promoBasicProducts_FilteredList': {
                     afterrender: this.onFilteredListBtnAfterRender,
@@ -5961,7 +5961,7 @@
     // --------------------- Выбор продуктов -----------------//
 
     // событие нажатия кновки выбора продуктов
-    onСhoosePromoProductsBtnClick: function (button) {
+    onChoosePromoProductsBtnClick: function (button) {
         var promoEditorCustom = button.up('promoeditorcustom');
 
         if (promoEditorCustom.isInOutPromo || (promoEditorCustom.model && promoEditorCustom.model.data.InOut)

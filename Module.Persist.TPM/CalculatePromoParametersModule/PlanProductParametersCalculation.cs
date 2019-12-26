@@ -477,6 +477,8 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         double planProductBaseLineLSV = 0;
                         double planProductBaseLineCaseQty = 0;
                         double productBaseLinePrice = 0;
+
+                        //значение цены должно быть равно цене из baseline, ближайшего к дате начала
                         double price = 0;
 
                         // коэффициент для BaseLine с учетом долевого распределения
@@ -607,24 +609,24 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                         baseLine = context.Set<BaseLine>().Where(x => x.ProductId == promoProduct.ProductId && x.DemandCode == clientNode.DemandCode && x.StartDate.HasValue && x.StartDate.Value == nextBaseLineStartDate && !x.Disabled).FirstOrDefault();
                                     }
 
-                                            if (nextBaseLineStartDate > promo.EndDate)
-                                            {
-                                                exit = true;
-                                            }
-                                            else if (baseLine != null && baseLine.StartDate.HasValue && baseLine.StartDate.Value.AddDays(6) <= promo.EndDate)
-                                            {
-                                                //BaseLine, которые целиком входят в промо
-                                                state = BaseLineState.FullWeek;
-                                            }
-                                            else if (baseLine != null && baseLine.StartDate.HasValue && promo.EndDate >= baseLine.StartDate)
-                                            {
-                                                //если промо захватывает часть дней следующего BaseLine
-                                                state = BaseLineState.LastWeek;
-                                            }
-                                            else
-                                            {
-                                                currentBaseLineStartDate = currentBaseLineStartDate.Value.AddDays(7);
-                                            }
+                                    if (nextBaseLineStartDate > promo.EndDate)
+                                    {
+                                        exit = true;
+                                    }
+                                    else if (baseLine != null && baseLine.StartDate.HasValue && baseLine.StartDate.Value.AddDays(6) <= promo.EndDate)
+                                    {
+                                        //BaseLine, которые целиком входят в промо
+                                        state = BaseLineState.FullWeek;
+                                    }
+                                    else if (baseLine != null && baseLine.StartDate.HasValue && promo.EndDate >= baseLine.StartDate)
+                                    {
+                                        //если промо захватывает часть дней следующего BaseLine
+                                        state = BaseLineState.LastWeek;
+                                    }
+                                    else
+                                    {
+                                        currentBaseLineStartDate = currentBaseLineStartDate.Value.AddDays(7);
+                                    }
 
                                     break;
 
@@ -635,7 +637,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                     planProductBaseLineLSV += (baseLine.BaselineLSV.Value * baseLineShareIndex / 7) * promoDuration;
                                     planProductBaseLineCaseQty += (baseLine.QTY.Value * baseLineShareIndex / 7) * promoDuration;
                                     productBaseLinePrice += (baseLine.Price.Value * baseLineShareIndex / 7) * promoDuration;
-                                    price = baseLine.Price.Value; //значение цены должно быть равно полной цене для этой недели
+                                    price = baseLine.Price.Value;
 
                                     exit = true;
                                     baseLineFound = true;
@@ -648,7 +650,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                     planProductBaseLineLSV += (baseLine.BaselineLSV.Value * baseLineShareIndex / 7) * firstBaseLineDays;
                                     planProductBaseLineCaseQty += (baseLine.QTY.Value * baseLineShareIndex / 7) * firstBaseLineDays;
                                     productBaseLinePrice += (baseLine.Price.Value * baseLineShareIndex / 7) * firstBaseLineDays;
-                                    price = baseLine.Price.Value; //значение цены должно быть равно цене из baseline, ближайшего к дате начала
+                                    price = baseLine.Price.Value; 
 
                                     currentBaseLineStartDate = baseLine.StartDate.Value;
                                     state = BaseLineState.NextBaseLine;
@@ -659,6 +661,10 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                     planProductBaseLineLSV += baseLine.BaselineLSV.Value * baseLineShareIndex;
                                     planProductBaseLineCaseQty += baseLine.QTY.Value * baseLineShareIndex;
                                     productBaseLinePrice += baseLine.Price.Value * baseLineShareIndex;
+                                    if (price == 0)
+                                    {
+                                        price = baseLine.Price.Value;
+                                    }
 
                                     currentBaseLineStartDate = baseLine.StartDate.Value;
                                     state = BaseLineState.NextBaseLine;
@@ -672,6 +678,10 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                     planProductBaseLineLSV += (baseLine.BaselineLSV.Value * baseLineShareIndex / 7) * lastBaseLineDays;
                                     planProductBaseLineCaseQty += (baseLine.QTY.Value * baseLineShareIndex / 7) * lastBaseLineDays;
                                     productBaseLinePrice += (baseLine.Price.Value * baseLineShareIndex / 7) * lastBaseLineDays;
+                                    if (price == 0)
+                                    {
+                                        price = baseLine.Price.Value;
+                                    }
 
                                     exit = true;
                                     baseLineFound = true;
