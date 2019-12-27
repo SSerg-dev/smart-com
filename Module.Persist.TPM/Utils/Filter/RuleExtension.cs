@@ -130,7 +130,7 @@ namespace Module.Persist.TPM.Utils.Filter {
 
                 case RuleOperator.Any:
                     var parY = Expression.Parameter(member.Type, "y");
-                    var eq = Expression.Equal(parY, member);
+                    var eq = Expression.Equal(parY, Expression.Call(member, typeof(String).GetMethod("ToUpper", new Type[] { })));
                     var innerExpression = Expression.Lambda(eq, parY);
                     var methodAny = Expression.Call(anyT.MakeGenericMethod(member.Type), selector, innerExpression);
                     return methodAny;
@@ -175,31 +175,35 @@ namespace Module.Persist.TPM.Utils.Filter {
                         .Select(t => t.GetGenericArguments()[0]);
         }
 
-            /// <summary>
-            /// This method is used to cast the Data field to a specifical item type.
-            /// As data will only hold numbers, strings or date, we don't need a big
-            /// method to reallize this cast
-            /// </summary>
-            /// <param name="t"></param>
-            /// <returns></returns>
-            private static object CastDataAs(this FilterRule rule, Type t) {
+        /// <summary>
+        /// This method is used to cast the Data field to a specifical item type.
+        /// As data will only hold numbers, strings or date, we don't need a big
+        /// method to reallize this cast
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        private static object CastDataAs(this FilterRule rule, Type t) {
             // ignore invalid casts
-            if (rule.Data == null) {
+            if (rule.Data == null)
+            {
                 return null;
             }
 
-            if (rule.Operator == RuleOperator.Any) {
+            if (rule.Operator == RuleOperator.Any)
+            {
                 var valuesArray = rule.Data.Split(',');
                 List<dynamic> castedList = new List<dynamic>();
-                foreach (string value in valuesArray) {
+                foreach (string value in valuesArray)
+                {
                     castedList.Add(CastDataAs(value, t));
                 }
                 return castedList;
-            } else {
+            }
+            else
+            {
                 return CastDataAs(rule.Data, t);
             }
         }
-
 
         private static object CastDataAs(String data, Type t) {
 
@@ -247,6 +251,5 @@ namespace Module.Persist.TPM.Utils.Filter {
 
             return data;
         }
-
     }
 }
