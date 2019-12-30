@@ -105,7 +105,12 @@ namespace Module.Frontend.TPM.Controllers {
 
                 PromoCalculateHelper.RecalculateBudgets(model, user, Context);
                 PromoHelper.WritePromoDemandChangeIncident(Context, model, true);
-                PromoHelper.DisableIncrementalPromo(Context, model);
+
+                //если промо инаут, необходимо убрать записи в IncrementalPromo при отмене промо
+                if (model.InOut.HasValue && model.InOut.Value)
+                {
+                    PromoHelper.DisableIncrementalPromo(Context, model);
+                }
 
                 return StatusCode(HttpStatusCode.OK);
             } catch (Exception e) {

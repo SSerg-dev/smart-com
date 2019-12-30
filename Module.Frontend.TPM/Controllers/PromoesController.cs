@@ -471,6 +471,12 @@ namespace Module.Frontend.TPM.Controllers {
                 {
                     //при отмене промо необходимо отвязать бюджеты от промо и пересчитать эти бюджеты
                     PromoCalculateHelper.RecalculateBudgets(model, user, Context);
+
+                    //если промо инаут, необходимо убрать записи в IncrementalPromo при отмене промо
+                    if (model.InOut.HasValue && model.InOut.Value)
+                    {
+                        PromoHelper.DisableIncrementalPromo(Context, model);
+                    }
                 }
 
 				if (model.PromoStatus.SystemName.ToLower() == "cancelled")
