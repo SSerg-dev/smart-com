@@ -1245,7 +1245,7 @@
         promoeditorcustom.promotypeName = promotype.Name;
         promoeditorcustom.promotypeGlyph = promotype.Glyph;
         promoeditorcustom.promotypeSystemName = promotype.SystemName;
-        this.setPromoType(promotype.Name);
+        this.setPromoType(promotype.Name, promoeditorcustom);
         promoeditorcustom.isCreating = true;
         // из-за вызова из календаря, нужно конкретизировать
         this.getController('tpm.promo.Promo').detailButton = null;
@@ -1473,10 +1473,15 @@
 
     },
     getPromoType: function () {
-        return this.promotype;
+        var promoeditorcustom = Ext.ComponentQuery.query('promoeditorcustom')[0];
+        if (promoeditorcustom && promoeditorcustom.promotype) {
+            return promoeditorcustom.promotype;
+        } else {
+            return false;
+        }
     },
-    setPromoType: function (promotype) {
-        this.promotype = promotype;
+    setPromoType: function (promotype, promoeditorcustom) {
+        promoeditorcustom.promotype = promotype;
     },
     onPromoTypeAfterRender: function (window) {
         var closeButton = window.down('#close');
@@ -2727,7 +2732,7 @@
         promoeditorcustom.promotypeId = record.data.PromoTypesId;
         promoeditorcustom.promotypeName = record.data.PromoTypesName;
         promoeditorcustom.promotypeGlyph = record.data.PromoTypesGlyph;
-        this.setPromoType(record.data.PromoTypesName);
+        this.setPromoType(record.data.PromoTypesName, promoeditorcustom);
         readOnly = isCopy ? false : readOnly || calculating;
         promoeditorcustom.isInOutPromo = record.data.InOut;
 

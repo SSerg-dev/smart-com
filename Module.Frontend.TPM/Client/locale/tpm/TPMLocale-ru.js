@@ -1517,6 +1517,7 @@
         'MechanicName': 'Mechanic',
         'MechanicDiscount': 'Mechanic discount, %',
         'MechanicTypeName': 'Mechanic type',
+        'MechanicGetError': 'This promo has no status',
         'ClientHierarchy': 'Client',
         'ProductHierarchy': 'Product hierarchy',
 

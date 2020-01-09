@@ -62,53 +62,64 @@
                     onFocus: function (field) {
                         var promoController = App.app.getController('tpm.promo.Promo')
                         var status = promoController.getPromoType();
+                        if (status != false) {
 
-                        var filter = this.getStore().fixedFilters || {};
-                        filter['PromoStatusNameFilter'] = {
-                            property: 'PromoTypes.Name',
-                            operation: 'Equals',
-                            value: status
-                        };
-                        this.getStore().fixedFilters = filter;
-                        
-                    },
-                    onTrigger1Click: function () {
-                        var promoController = App.app.getController('tpm.promo.Promo')
-                        var status = promoController.getPromoType();
-
-                        var filter = this.getStore().fixedFilters || {};
-                        filter['PromoStatusNameFilter'] = {
-                            property: 'PromoTypes.Name',
-                            operation: 'Equals',
-                            value: status
-                        };
-                        this.getStore().fixedFilters = filter;
-                        this.self.superclass.onTriggerClick.call(this);
-                    },
-                    onTrigger2Click: function () {
-
-                        var window = this.createWindow();
-
-                        if (window) {
-                            var promoController = App.app.getController('tpm.promo.Promo')
-                            var status = promoController.getPromoType();
                             var filter = this.getStore().fixedFilters || {};
                             filter['PromoStatusNameFilter'] = {
                                 property: 'PromoTypes.Name',
                                 operation: 'Equals',
                                 value: status
                             };
-
-                            window.on('resize', function () { window.show() }, this);
                             this.getStore().fixedFilters = filter;
-                            //this.getStore().setFixedFilter('PromoStatusNameFilter', {
-                            //    property: 'PromoType.Name',
-                            //    operation: 'Equals',
-                            //    value: status
-                            //}); 
-                            window.show();
+                        } else {
+                            App.Notify.pushError(l10n.ns('tpm', 'Promo').value('MechanicGetError'));
+                        }
+                        
+                    },
+                    onTrigger1Click: function () {
+                        var promoController = App.app.getController('tpm.promo.Promo')
+                        var status = promoController.getPromoType();
+                        if (status != false) {
+                            var filter = this.getStore().fixedFilters || {};
+                            filter['PromoStatusNameFilter'] = {
+                                property: 'PromoTypes.Name',
+                                operation: 'Equals',
+                                value: status
+                            };
+                            this.getStore().fixedFilters = filter;
+                            this.self.superclass.onTriggerClick.call(this);
+                        } else {
+                            App.Notify.pushError(l10n.ns('tpm', 'Promo').value('MechanicGetError'));
+                        }
+                    },
+                    onTrigger2Click: function () {
 
-                            this.getStore().load();
+                        var promoController = App.app.getController('tpm.promo.Promo')
+                        var status = promoController.getPromoType();
+                        if (status != false) {
+                            var window = this.createWindow();
+
+                            if (window) {
+                                var filter = this.getStore().fixedFilters || {};
+                                filter['PromoStatusNameFilter'] = {
+                                    property: 'PromoTypes.Name',
+                                    operation: 'Equals',
+                                    value: status
+                                };
+
+                                window.on('resize', function () { window.show() }, this);
+                                this.getStore().fixedFilters = filter;
+                                //this.getStore().setFixedFilter('PromoStatusNameFilter', {
+                                //    property: 'PromoType.Name',
+                                //    operation: 'Equals',
+                                //    value: status
+                                //}); 
+                                window.show();
+
+                                this.getStore().load();
+                            }
+                        } else {
+                            App.Notify.pushError(l10n.ns('tpm', 'Promo').value('MechanicGetError'));
                         }
                    },
                     onTrigger3Click: function () {
@@ -247,36 +258,8 @@
                     onFocus: function (field) {
                         var promoController = App.app.getController('tpm.promo.Promo')
                         var status = promoController.getPromoType();
+                        if (status != false) {
 
-                        var filter = this.getStore().fixedFilters || {};
-                        filter['PromoStatusNameFilter'] = {
-                            property: 'PromoTypes.Name',
-                            operation: 'Equals',
-                            value: status
-                        };
-                        this.getStore().fixedFilters = filter;
-
-                    },
-                    onTrigger1Click: function () {
-                        var promoController = App.app.getController('tpm.promo.Promo')
-                        var status = promoController.getPromoType();
-
-                        var filter = this.getStore().fixedFilters || {};
-                        filter['PromoStatusNameFilter'] = {
-                            property: 'PromoTypes.Name',
-                            operation: 'Equals',
-                            value: status
-                        };
-                        this.getStore().fixedFilters = filter;
-                        this.self.superclass.onTriggerClick.call(this);
-                    },
-                    onTrigger2Click: function () {
-
-                        var window = this.createWindow();
-
-                        if (window) {
-                            var promoController = App.app.getController('tpm.promo.Promo')
-                            var status = promoController.getPromoType();
                             var filter = this.getStore().fixedFilters || {};
                             filter['PromoStatusNameFilter'] = {
                                 property: 'PromoTypes.Name',
@@ -284,15 +267,54 @@
                                 value: status
                             };
                             this.getStore().fixedFilters = filter;
-                            window.on('resize', function () { window.show() }, this);
-                            //this.getStore().setFixedFilter('PromoStatusNameFilter', {
-                            //    property: 'PromoType.Name',
-                            //    operation: 'Equals',
-                            //    value: status
-                            //}); 
-                            window.show();
+                        } else {
+                            App.Notify.pushError(l10n.ns('tpm', 'Promo').value('MechanicGetError'));
+                        }
 
-                            this.getStore().load();
+                    },
+                    onTrigger1Click: function () {
+                        var promoController = App.app.getController('tpm.promo.Promo')
+                        var status = promoController.getPromoType();
+                        if (status != false) {
+
+                            var filter = this.getStore().fixedFilters || {};
+                            filter['PromoStatusNameFilter'] = {
+                                property: 'PromoTypes.Name',
+                                operation: 'Equals',
+                                value: status
+                            };
+                            this.getStore().fixedFilters = filter;
+                            this.self.superclass.onTriggerClick.call(this);
+                        } else {
+                            App.Notify.pushError(l10n.ns('tpm', 'Promo').value('MechanicGetError'));
+                        }
+                    },
+                    onTrigger2Click: function () {
+                        var promoController = App.app.getController('tpm.promo.Promo')
+                        var status = promoController.getPromoType();
+                        if (status != false) {
+                            var window = this.createWindow();
+
+                            if (window) {
+                                var filter = this.getStore().fixedFilters || {};
+                                filter['PromoStatusNameFilter'] = {
+                                    property: 'PromoTypes.Name',
+                                    operation: 'Equals',
+                                    value: status
+                                };
+                                this.getStore().fixedFilters = filter;
+                                window.on('resize', function () { window.show() }, this);
+                                //this.getStore().setFixedFilter('PromoStatusNameFilter', {
+                                //    property: 'PromoType.Name',
+                                //    operation: 'Equals',
+                                //    value: status
+                                //}); 
+                                window.show();
+
+                                this.getStore().load();
+                            }
+                        } else {
+                            App.Notify.pushError(l10n.ns('tpm', 'Promo').value('MechanicGetError'));
                         }
                     },
                     onTrigger3Click: function () {

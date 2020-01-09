@@ -690,9 +690,6 @@
     },
 
     createPromo: function (schedulerData, inOut, promotype) {
-         
-        var promoController = App.app.getController('tpm.promo.Promo')
-        promoController.setPromoType(promotype.Name);
         this.mixins["App.controller.tpm.promo.Promo"].onCreateButtonClick.call(this, null, null, schedulerData, inOut, promotype);
     },
     onCreateRegularButtonClick: function (promotype, schedulerData) {
