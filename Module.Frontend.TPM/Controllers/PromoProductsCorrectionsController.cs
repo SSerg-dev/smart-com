@@ -156,10 +156,11 @@ namespace Module.Frontend.TPM.Controllers
                 var proxy = Context.Set<PromoProductsCorrection>().Create<PromoProductsCorrection>();
                 var result = (PromoProductsCorrection)Mapper.Map(model, proxy, typeof(PromoProductsCorrection), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
                  var promoProduct = Context.Set<PromoProduct>().FirstOrDefault(x => x.Id == result.PromoProductId && !x.Disabled);
-                if (promoProduct.Promo.NeedRecountUplift == false)
-                {
-                    return InternalServerError(new Exception("Promo Locked Update"));
-                }
+             // эта часть может быть вызвана только через карточку промо при снятой галочке
+                // if (promoProduct.Promo.NeedRecountUplift == false)
+               // {
+               //     return InternalServerError(new Exception("Promo Locked Update"));
+               // }
                  result.CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
                 result.ChangeDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
                 result.UserId = user.Id;
