@@ -1,6 +1,7 @@
 ﻿using Core.Dependency;
 using Core.Settings;
 using Interfaces.Implementation.Action;
+using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.PromoStateControl;
 using Module.Persist.TPM.PromoStateControl.RoleStateMap;
@@ -74,6 +75,12 @@ namespace Module.Host.TPM.Actions
                         {
                             promoProduct.DeletedDate = System.DateTime.Now;
                             promoProduct.Disabled = true;
+                        }
+
+                        //если промо инаут, необходимо убрать записи в IncrementalPromo при сбросе статуса в Draft
+                        if (promo.InOut.HasValue && promo.InOut.Value)
+                        {
+                            PromoHelper.DisableIncrementalPromo(context, promo);
                         }
 
                         //при сбросе статуса в Draft необходимо удалить все коррекции

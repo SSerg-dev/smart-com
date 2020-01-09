@@ -450,7 +450,13 @@ namespace Module.Frontend.TPM.Controllers {
                             promoProduct.DeletedDate = System.DateTime.Now;
                             promoProduct.Disabled = true;
                         }
-                        
+
+                        //если промо инаут, необходимо убрать записи в IncrementalPromo при сбросе статуса в Draft
+                        if (model.InOut.HasValue && model.InOut.Value)
+                        {
+                            PromoHelper.DisableIncrementalPromo(Context, model);
+                        }
+
                         //при сбросе статуса в Draft необходимо удалить все коррекции
                         var promoProductToDeleteListIds = promoProductToDeleteList.Select(x => x.Id).ToList();
                         List<PromoProductsCorrection> promoProductCorrectionToDeleteList = Context.Set<PromoProductsCorrection>()
