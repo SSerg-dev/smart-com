@@ -123,6 +123,12 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                 {
                                     incrementalPromo.Disabled = false;
                                     incrementalPromo.DeletedDate = null;
+
+                                    incrementalPromo.CasePrice = null;
+                                    incrementalPromo.LastModifiedDate = null;
+                                    incrementalPromo.PlanPromoIncrementalCases = null;
+                                    incrementalPromo.PlanPromoIncrementalLSV = null;
+
                                     needReturnToOnApprovalStatus = true;
                                 }
                                 else if (incrementalPromo == null)

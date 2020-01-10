@@ -26,7 +26,7 @@ namespace Module.Host.TPM.Handlers
             try
             {
                 handlerLogger = new FileLogWriter(info.HandlerId.ToString());
-                handlerLogger.Write(true, String.Format("The formation of the message began at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+                handlerLogger.Write(true, String.Format("Auto reset started at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
                 //string param = HandlerDataHelper.GetIncomingArgument<paramType>("paramName", info.Data).Value;
 
                 IAction action = new AutoResetPromoAction();
@@ -56,7 +56,7 @@ namespace Module.Host.TPM.Handlers
                 sw.Stop();
                 if (handlerLogger != null)
                 {
-                    handlerLogger.Write(true, String.Format("Newsletter notifications ended at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", DateTimeOffset.Now, sw.Elapsed.TotalSeconds), "Message");
+                    handlerLogger.Write(true, String.Format("Auto reset ended at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", DateTimeOffset.Now, sw.Elapsed.TotalSeconds), "Message");
                 }
             }
         }
