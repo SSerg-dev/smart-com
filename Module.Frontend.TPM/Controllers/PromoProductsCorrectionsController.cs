@@ -126,7 +126,7 @@ namespace Module.Frontend.TPM.Controllers
 
             if (item != null)
             {
-                if (item.PromoProduct.Promo.NeedRecountUplift == false)
+                if (item.PromoProduct.Promo.NeedRecountUplift == false && String.IsNullOrEmpty(item.TempId))
                 {
                     return InternalServerError(new Exception("Promo Locked Update"));
                 }
