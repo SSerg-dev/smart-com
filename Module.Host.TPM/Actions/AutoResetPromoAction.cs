@@ -208,6 +208,12 @@ namespace Module.Host.TPM.Actions
                                 mainPromoSupportIds.Add(psId);
                             }
                         }
+
+                        //если промо инаут, необходимо убрать записи в IncrementalPromo при отмене промо
+                        if (promo.InOut.HasValue && promo.InOut.Value)
+                        {
+                            PromoHelper.DisableIncrementalPromo(context, promo);
+                        }
                     }
 				}
 
