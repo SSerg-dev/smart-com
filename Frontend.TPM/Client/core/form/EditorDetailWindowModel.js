@@ -96,24 +96,27 @@
     },
 
     onOkButtonClick: function (button) {
-        var form = this.getForm().getForm(),
-            record = form.getRecord();
+        var form = this.getForm();
+        if (form) {
+            form = form.getForm();
+            var record = form.getRecord();
 
-        if (!form.isValid()) {
-            return;
+            if (!form.isValid()) {
+                return;
+            }
+
+            form.updateRecord();
+
+            var errors = record.validate();
+
+            if (!errors.isValid()) {
+                form.markInvalid(errors);
+                return;
+            }
+
+            console.log('record data: ', record.getData());
+            this.saveModel(record);
         }
-
-        form.updateRecord();
-
-        var errors = record.validate();
-
-        if (!errors.isValid()) {
-            form.markInvalid(errors);
-            return;
-        }
-
-        console.log('record data: ', record.getData());
-        this.saveModel(record);
     },
 
     onEditButtonClick: function (button) {
@@ -132,24 +135,26 @@
 
     onCancelButtonClick: function (button) {
         //если редактирование вызвано из режима просмотра, то при отмене редактирования происходит возврат на форму просмотра
-        var form = this.getForm(),
-            record = form.getRecord();
-        form.loadRecord(record);
+        var form = this.getForm();
+        if (form) {
+            var record = form.getRecord();
+            form.loadRecord(record);
 
-        if (this.detailMode) {
-            this.editor.down('#ok').setVisible(false);
-            this.editor.down('#canceledit').setVisible(false);
-            this.editor.down('#edit').setVisible(true);
-            this.editor.down('#close').setVisible(true);
-            this.editor.setTitle(l10n.ns('core').value('detailWindowTitle'));
-            this.detailMode = false;
+            if (this.detailMode) {
+                this.editor.down('#ok').setVisible(false);
+                this.editor.down('#canceledit').setVisible(false);
+                this.editor.down('#edit').setVisible(true);
+                this.editor.down('#close').setVisible(true);
+                this.editor.setTitle(l10n.ns('core').value('detailWindowTitle'));
+                this.detailMode = false;
 
-            this.getForm().getForm().getFields().each(function (field, index, len) {
-                field.setReadOnly(true);
-                field.focus(false);
-            }, this);
-        } else {
-            this.editor.close();
+                this.getForm().getForm().getFields().each(function (field, index, len) {
+                    field.setReadOnly(true);
+                    field.focus(false);
+                }, this);
+            } else {
+                this.editor.close();
+            }
         }
     },
 
@@ -158,14 +163,16 @@
     },
 
     onEditorClose: function (window) {
-        var form = this.getForm(),
-            record = form.getRecord();
+        var form = this.getForm();
+        if (form) {
+            var record = form.getRecord();
 
-        if (record) {
-            record.reject();
+            if (record) {
+                record.reject();
+            }
+
+            form.getForm().reset(true);
         }
-
-        form.getForm().reset(true);
         this.editor = null;
         this.detailMode = null;
     },

@@ -71,14 +71,16 @@
     },
 
     onEditorClose: function (window) {
-        var form = this.getForm(),
+        var form = this.getForm();
+        if (form) {
             record = form.getRecord();
+            if (record) {
+                record.reject();
+            }
 
-        if (record) {
-            record.reject();
+            form.getForm().reset(true);
         }
 
-        form.getForm().reset(true);
         this.editor = null;
     },
 
