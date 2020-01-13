@@ -1195,3 +1195,17 @@ Ext.override(Ext.grid.plugin.BufferedRenderer, {
         }
     }
 });
+
+Ext.override(App.menu.core.MenuManager, {
+    init: function () {
+        var role = App.UserInfo.getCurrentRole();
+        if (role) {
+            this.callParent(arguments);
+        } else {
+            //Скрываем всё для неавторизованных пользователей
+            Ext.ComponentQuery.query('#drawer')[0].hide();
+            Ext.ComponentQuery.query('#header')[0].hide();
+            Ext.ComponentQuery.query('#systempanel')[0].hide();
+        }
+    }
+});
