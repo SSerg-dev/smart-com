@@ -629,12 +629,11 @@ namespace Module.Host.TPM.Actions {
                 foreach (ImportCOGS newRecord in sourceRecords)
                 {
                     BrandTech bt = context.Set<BrandTech>().FirstOrDefault(x => x.Name == newRecord.BrandTechName);
-                    float lsvpercent = newRecord.LVSpercent < 1 ? (float)Math.Round(newRecord.LVSpercent * 100, 2) : (float)Math.Round(newRecord.LVSpercent, 2);
                     COGS toSave = new COGS() {
                         StartDate = newRecord.StartDate,
                         EndDate = newRecord.EndDate,
-                        LVSpercent = lsvpercent,
-                        ClientTreeId = newRecord.ClientTreeId,//context.Set<ClientTree>().FirstOrDefault(x => x.ObjectId == newRecord.ClientTreeObjectId).Id,
+                        LVSpercent = newRecord.LVSpercent,
+                        ClientTreeId = newRecord.ClientTreeId,
                         BrandTechId = bt != null ? (Guid?) bt.Id : null,
                         Year = newRecord.StartDate.Value.Year
                     };

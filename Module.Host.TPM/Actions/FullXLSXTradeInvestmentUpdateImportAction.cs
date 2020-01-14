@@ -744,12 +744,11 @@ namespace Module.Host.TPM.Actions {
                 {
                     TradeInvestment oldRecord = query.FirstOrDefault(x => x.ClientTree?.ObjectId == newRecord.ClientTreeObjectId && !x.Disabled);
                     BrandTech bt = context.Set<BrandTech>().FirstOrDefault(x => x.Name == newRecord.BrandTechName && !x.Disabled);
-                    float sizepercent = newRecord.SizePercent < 1 ? (float)Math.Round(newRecord.SizePercent * 100, 2) : (float)Math.Round(newRecord.SizePercent, 2);
                     TradeInvestment toSave = new TradeInvestment()
                     {
                         StartDate = newRecord.StartDate,
                         EndDate = newRecord.EndDate,
-                        SizePercent = sizepercent,
+                        SizePercent = newRecord.SizePercent,
                         TISubType = newRecord.TISubType,
                         TIType = newRecord.TIType,
                         ClientTreeId = newRecord.ClientTreeId,

@@ -386,6 +386,7 @@
             'CrossParam.ClientFilter': 'Фильтр по клиенту',
             'CrossParam.StartDate': 'Дата начала',
             'CrossParam.FinishDate': 'Дата окончания',
+            'CrossParam.Year': 'Год'
         }
     },
     'HistoricalLoopHandler': ['LoopHandler', 'BaseHistoryEntity'],

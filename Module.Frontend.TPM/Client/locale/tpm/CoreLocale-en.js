@@ -430,6 +430,7 @@
             'CrossParam.ClientFilter': 'Client Filter',
             'CrossParam.StartDate': ' Start Date',
             'CrossParam.FinishDate': 'Finish Date',
+            'CrossParam.Year': 'Year'
         }
     },
     'HistoricalLoopHandler': ['LoopHandler', 'BaseHistoryEntity'],
