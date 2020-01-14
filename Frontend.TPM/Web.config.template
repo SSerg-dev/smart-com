@@ -38,7 +38,6 @@
     <add key="INTERFACE_USER_DIRECTORY" value="###PATH_TO_STORE_FOLDER###\InterfaceUserFiles" />
     <add key="INTERFACE_DIRECTORY" value="###PATH_TO_STORE_FOLDER###\InterfaceFiles" />
     <add key="IMPORT_RESULT_DIRECTORY" value="###PATH_TO_STORE_FOLDER###\ImportResultFiles" />
-    <add key="DATALAKESYNC_RESULT_DIRECTORY" value="###PATH_TO_STORE_FOLDER###\DataLakeSyncResultFiles" />
     <add key="HANDLER_CONFIG_DIRECTORY" value="###PATH_TO_STORE_FOLDER###\HandlerConfig" />
     <add key="MANUAL_DIRECTORY" value="###PATH_TO_STORE_FOLDER###\Manuals" />
     <add key="LOOPHANDLER_PARAMETER_DIRECTORY" value="###PATH_TO_STORE_FOLDER###\HandlerParameters" />

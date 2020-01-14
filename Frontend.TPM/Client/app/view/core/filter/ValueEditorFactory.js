@@ -9,6 +9,14 @@
         'date': 'datefield'
     },
 
+    newTypeConfigMap: {
+        'numberfield': {
+            'minValue': 'null',
+            'allowDecimals': 'true',
+            'decimalSeparator': ','
+        }
+    },
+
     constructor: function () {
         this.callParent(arguments);
 
@@ -29,7 +37,13 @@
             editorSign = valueType + '-' + fieldType;
 
         var atomConfig = entry.editors[fieldType] || {},
-            valueConfig = entry.values[fieldType] || {};
+            valueConfig = entry.values[fieldType] || {},
+            additionalTypeConfig = this.newTypeConfigMap[this.typeXTypeMap[fieldType]] || {};
+
+        for (var propertyName in additionalTypeConfig) {
+            var propertyValue = additionalTypeConfig[propertyName];
+            atomConfig[propertyName] = propertyValue;
+        }
 
         if (Ext.isString(atomConfig)) {
             atomConfig = { xtype: atomConfig };
