@@ -11,6 +11,9 @@ using Looper.Parameters;
 using Interfaces.Implementation.Action;
 using System.Threading;
 using Module.Persist.TPM;
+using System.Web.Http.OData.Query;
+using Module.Persist.TPM.Model.TPM;
+using System.Linq.Expressions;
 
 namespace Module.Host.TPM.Handlers {
     /// <summary>
@@ -27,10 +30,11 @@ namespace Module.Host.TPM.Handlers {
                 IEnumerable<int> clients = HandlerDataHelper.GetIncomingArgument<IEnumerable<int>>("clients", info.Data, false);
                 Guid userId = HandlerDataHelper.GetIncomingArgument<Guid>("UserId", info.Data);
                 Guid roleId = HandlerDataHelper.GetIncomingArgument<Guid>("RoleId", info.Data);
-
+                var rawFilters = HandlerDataHelper.GetIncomingArgument<string>("rawFilters", info.Data);
+                
                 handlerLogger.Write(true, String.Format("Start of calendar export at 10 {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
                 Thread.Sleep(10000);
-                IAction action = new SchedulerExportAction(clients, year, userId, roleId);
+                IAction action = new SchedulerExportAction(clients, year, userId, roleId, rawFilters);
                 action.Execute();
 
                 if (action.Errors.Any()) {

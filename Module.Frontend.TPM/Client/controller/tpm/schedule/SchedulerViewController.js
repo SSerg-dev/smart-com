@@ -239,7 +239,6 @@
             year = selectyearwindow.down("numberfield").getValue();
 
         setTimeout(App.System.openUserTasksPanel, 0);
-        button.up('window').setLoading(true);
 
         me.sendExportRequest(year);
     },
@@ -254,7 +253,7 @@
                     return client.get('ObjectId')
                 }),
             actionName = 'ExportSchedule',
-            resource = 'Promoes';
+            resource = 'PromoViews';
 
         var query = breeze.EntityQuery
             .from(resource)

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Core.MarsCalendar;
 using Core.Settings;
+using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.TPM;
 using NPOI.SS.UserModel;
 using NPOI.SS.Util;
@@ -54,10 +55,10 @@ namespace Module.Persist.TPM.Utils {
         /// <param name="clientIDs"></param>
         /// <param name="filePath"></param>
         /// <param name="context"></param>
-        public void Export(List<Promo> promoes, IEnumerable<int> clientIDs, string filePath, DatabaseContext context) {
-            IEnumerable<Promo> filteredPromoes = promoes.Where(p => !String.IsNullOrEmpty(p.BaseClientTreeIds) && p.StartDate.HasValue && p.EndDate.HasValue);
-            List<Promo> promoDTOs = new List<Promo>();
-            Promo promoToAdd;
+        public void Export(List<PromoView> promoes, IEnumerable<int> clientIDs, string filePath, DatabaseContext context) {
+            IEnumerable<PromoView> filteredPromoes = promoes.Where(p => !String.IsNullOrEmpty(p.BaseClientTreeIds) && p.StartDate.HasValue && p.EndDate.HasValue);
+            List<PromoView> promoDTOs = new List<PromoView>();
+            PromoView promoToAdd;
 
             PromoTypes otherPromoType = new PromoTypes()
             {
@@ -65,49 +66,27 @@ namespace Module.Persist.TPM.Utils {
                 Name = "Other Promo"
             };
 
-            foreach (Promo promo in filteredPromoes) {
-                string[] clientsIds = promo.BaseClientTreeIds.Split('|');
-                if (clientsIds.Length == 1) {
-                    if (clientIDs.Contains(Int32.Parse(clientsIds[0]))) {
-                        promoToAdd = new Promo()
+            foreach (PromoView promo in filteredPromoes) {
+                    if (clientIDs.Contains((int)promo.ClientTreeId)) {
+                        promoToAdd = new PromoView()
                         {
-                            BaseClientTreeIds = clientsIds[0],
+                            ClientTreeId = promo.ClientTreeId,
+                            BaseClientTreeIds = promo.BaseClientTreeIds,
                             StartDate = promo.StartDate,
                             EndDate = promo.EndDate,
                             CalendarPriority = promo.CalendarPriority,
-                            ColorId = promo.ColorId,
-                            Color = promo.Color,
+                            ColorSystemName = promo.ColorSystemName,
                             Name = promo.Name,
                             InOut = promo.InOut
                         };
-                        promoToAdd.PromoTypes = SetSchedulePromoTypeName(otherPromoType, promo.PromoTypes);
+                        promoToAdd.TypeName = SetSchedulePromoTypeName(otherPromoType, promo.TypeName);
                         promoDTOs.Add(promoToAdd);
                     }
-                } else {
-                    // Промо для нескольких клиентов разбиваем, создаём модель Promo для каждого, добавляем результат в общий список
-                    foreach (string id in clientsIds) {
-                        if (clientIDs.Contains(Int32.Parse(id))) {
-                            promoToAdd = new Promo()
-                            {
-                                BaseClientTreeIds = id,
-                                StartDate = promo.StartDate,
-                                EndDate = promo.EndDate,
-                                CalendarPriority = promo.CalendarPriority,
-                                ColorId = promo.ColorId,
-                                Color = promo.Color,
-                                Name = promo.Name,
-                                InOut = promo.InOut,
-                            };
-                            promoToAdd.PromoTypes = SetSchedulePromoTypeName(otherPromoType, promo.PromoTypes);
-                            promoDTOs.Add(promoToAdd);
-                        }
-                    }
-                }
             };
 
             SchedulerTypeComparer comparer = new SchedulerTypeComparer();
         // сгруппированный по клиентам список промо
-        var promoesByClients = promoDTOs.OrderBy(x=> x.PromoTypes.Name, comparer).OrderBy(x => x.BaseClientTreeIds).GroupBy(p => new { p.BaseClientTreeIds, p.PromoTypes.Name });
+        var promoesByClients = promoDTOs.OrderBy(x=> x.TypeName, comparer).OrderBy(x => x.BaseClientTreeIds).GroupBy(p => new { p.BaseClientTreeIds, p.TypeName });
 
             DateTime dt = DateTime.Now;
             // Получаем словарь клиентов
@@ -135,7 +114,7 @@ namespace Module.Persist.TPM.Utils {
                     ClientTree client = null;
                     if (clients.TryGetValue(Int32.Parse(clientPromo.Key.BaseClientTreeIds), out client)) {
                         PromoSortComparer cmp = new PromoSortComparer();
-                        IEnumerable<Promo> sorted = clientPromo.OrderBy((p => p), cmp);
+                        IEnumerable<PromoView> sorted = clientPromo.OrderBy((p => p), cmp);
                         // Разбиваем Промо по строкам, получаем индекс последней строки
                         int lastRow = SplitPromoByRows(curRow, sorted.ToList(), sheet, colToDateMap, ref wb);
                         ICell clientCell = sheet.GetRow(curRow).CreateCell(0);
@@ -144,7 +123,7 @@ namespace Module.Persist.TPM.Utils {
                         ICellStyle verticalStyle = GetCellStyle(ref wb);
                         verticalStyle.Rotation = 90;
                         verticalStyle.WrapText = true;
-                        string TypeName = clientPromo.Key.Name;
+                        string TypeName = clientPromo.Key.TypeName;
                         clientCell.SetCellValue(new XSSFRichTextString(String.Format("{0} {1}", client.Name, TypeName)));
                         clientCell.Row.Height = (short) -1;
                         if (lastRow - curRow > 1) {
@@ -177,10 +156,10 @@ namespace Module.Persist.TPM.Utils {
         /// <param name="colToDateMap"></param>
         /// <param name="wb"></param>
         /// <returns></returns>
-        private int SplitPromoByRows(int curRow, List<Promo> sortedPromoes, ISheet sheet, Dictionary<DateTime, int> colToDateMap, ref IWorkbook wb) {
+        private int SplitPromoByRows(int curRow, List<PromoView> sortedPromoes, ISheet sheet, Dictionary<DateTime, int> colToDateMap, ref IWorkbook wb) {
             do {    // Перебираем Промо для Клиента
                 IRow row = sheet.CreateRow(curRow);
-                Promo promo = sortedPromoes.FirstOrDefault();
+                PromoView promo = sortedPromoes.FirstOrDefault();
                 // Записываем в строку все промо, которые можно(по дате и приоритету), потом переходим на следующую
                 while (promo != null) {
                     // Промо отсортированы по приоритету и Дате, берём первое Промо
@@ -195,7 +174,7 @@ namespace Module.Persist.TPM.Utils {
                     ICell cell = row.CreateCell(startCol);
                     cell.SetCellValue(new XSSFRichTextString(String.IsNullOrEmpty(promo.Name) ? String.Empty : promo.Name));
 
-                    bool hasColor = promo.ColorId.HasValue;
+                    bool hasColor = !String.IsNullOrEmpty(promo.ColorSystemName);
                     IFont promoFont = wb.CreateFont();
                     promoFont.Color = IndexedColors.Black.Index;
                     promoFont.FontHeightInPoints = 11;
@@ -208,7 +187,7 @@ namespace Module.Persist.TPM.Utils {
 
                     // Если у Промо есть цвет, устанавливаем его и определяем цвет шрифта в зависимости от яркости
                     if (hasColor) {
-                        System.Drawing.Color promoColor = System.Drawing.ColorTranslator.FromHtml(promo.Color.SystemName);
+                        System.Drawing.Color promoColor = System.Drawing.ColorTranslator.FromHtml(promo.ColorSystemName);
                         float brightness = promoColor.GetBrightness();
                         promoFont.Color = brightness > 0.5 ? IndexedColors.Black.Index : IndexedColors.White.Index;
                         XSSFColor cellColor = new XSSFColor(promoColor);
@@ -235,9 +214,9 @@ namespace Module.Persist.TPM.Utils {
         /// <param name="promo"></param>
         /// <param name="sortedPromoes"></param>
         /// <returns></returns>
-        private Promo FindClosestPromoInRow(Promo promo, List<Promo> sortedPromoes) {
+        private PromoView FindClosestPromoInRow(PromoView promo, List<PromoView> sortedPromoes) {
             int compareDiff = Int32.MaxValue;
-            Promo closerPromo = null;
+            PromoView closerPromo = null;
             // Находим следующее промо, дата начала у которого ближайшая к дате окончания текущего
             for (int i = 0, d = sortedPromoes.Count; i < d; i++) {
                 int dateDiff = (sortedPromoes[i].StartDate - promo.EndDate).Value.Days;
@@ -409,11 +388,11 @@ namespace Module.Persist.TPM.Utils {
             RegionUtil.SetBorderBottom(borderSize, range, sheet, wb);
         }
 
-        private PromoTypes SetSchedulePromoTypeName(PromoTypes otherPromoType, PromoTypes processingPromoType)
+        private string SetSchedulePromoTypeName(PromoTypes otherPromoType, string processingPromoType)
         {
-            if (processingPromoType.SystemName != "Regular" && processingPromoType.SystemName != "InOut")
+            if (processingPromoType != "Regular" && processingPromoType != "InOut")
             {
-                return otherPromoType;
+                return otherPromoType.Name;
             }
             return processingPromoType;
         }

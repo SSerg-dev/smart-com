@@ -11,6 +11,9 @@ using Module.Persist.TPM.Utils;
 using Looper.Parameters;
 using Interfaces.Implementation.Action;
 using NLog;
+using System.Web.Http.OData.Query;
+using System.Linq.Expressions;
+using LinqToQuerystring;
 
 namespace Module.Host.TPM.Actions.Notifications {
     /// <summary>
@@ -25,19 +28,26 @@ namespace Module.Host.TPM.Actions.Notifications {
 
         private readonly Guid RoleId;
 
+        private readonly string RawFilters;
+
         protected readonly static Logger logger = LogManager.GetCurrentClassLogger();
 
-        public SchedulerExportAction(IEnumerable<int> clients, int year, Guid userId, Guid roleId) {
+        public SchedulerExportAction(IEnumerable<int> clients, int year, Guid userId, Guid roleId, string rawFilters) {
             Clients = clients;
             Year = year;
             UserId = userId;
             RoleId = roleId;
+            RawFilters = rawFilters;
         }
         public override void Execute() {
             try {
                 using (DatabaseContext context = new DatabaseContext()) {
 
-                    IQueryable<Promo> promoes = GetConstraintedQuery(context);
+                    IQueryable<PromoView> query = (GetConstraintedQuery(context));
+                    IQueryable<PromoView> promoes = query.Cast<PromoView>();
+
+                    promoes = promoes.LinqToQuerystring(RawFilters);
+
                     DateTime startDate = DateTime.Now;
                     DateTime endDate = DateTime.Now;
                     bool yearExport = Year != 0;
@@ -78,18 +88,18 @@ namespace Module.Host.TPM.Actions.Notifications {
         /// Получение списка промо с учётом ограничений
         /// </summary>
         /// <returns></returns>
-        private IQueryable<Promo> GetConstraintedQuery(DatabaseContext context) {
+        private IQueryable<PromoView> GetConstraintedQuery(DatabaseContext context) {
             string role = context.Roles.FirstOrDefault(r => r.Id == RoleId).SystemName;
             IList<Constraint> constraints = context.Constraints
                 .Where(x => x.UserRole.UserId.Equals(UserId) && x.UserRole.Role.SystemName.Equals(role))
                 .ToList();
             IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
-            IQueryable<Promo> query = context.Set<Promo>().Where(e => !e.Disabled && e.PromoStatus.SystemName != "Cancelled");
+            IQueryable<PromoView> query = context.Set<PromoView>();
             IQueryable<ClientTreeHierarchyView> hierarchy = context.Set<ClientTreeHierarchyView>().AsNoTracking();
             query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters, FilterQueryModes.Active, String.Empty);
             // Не администраторы не смотрят чужие черновики
             if (role != "Administrator") {
-                query = query.Where(e => e.PromoStatus.SystemName != "Draft" || e.CreatorId == UserId);
+                query = query.Where(e => e.PromoStatusSystemName != "Draft" || e.CreatorId == UserId);
             }
             return query;
         }

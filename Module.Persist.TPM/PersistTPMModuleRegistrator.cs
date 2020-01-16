@@ -318,7 +318,7 @@ namespace Module.Persist.TPM {
 			builder.Entity<Promo>().Collection.Action("CheckPromoCreator");
 			builder.Entity<Promo>().Collection.Action("GetProducts").CollectionParameter<string>("InOutProductIds");
 
-            ActionConfiguration schedExp = builder.Entity<Promo>().Collection.Action("ExportSchedule");
+            ActionConfiguration schedExp = builder.Entity<PromoView>().Collection.Action("ExportSchedule");
             schedExp.CollectionParameter<int>("clients");
             schedExp.Parameter<int?>("year");
 

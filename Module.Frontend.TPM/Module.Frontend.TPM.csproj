@@ -267,6 +267,7 @@
     <Compile Include="Controllers\SchedulerClientTreeDTOsController.cs" />
     <Compile Include="Controllers\TradeInvestmentsController.cs" />
     <Compile Include="Util\Helper.cs" />
+    <Compile Include="Util\LinqToQueryHelper.cs" />
     <Compile Include="Util\PromoHelper.cs" />
     <Compile Include="Util\NonGuidIdExporter.cs" />
     <Content Include="Client\controller\tpm\promoproduct\HistoricalPromoProduct.js" />

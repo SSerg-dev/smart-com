@@ -802,61 +802,6 @@ namespace Module.Frontend.TPM.Controllers {
             }
         }
 
-        /// <summary>
-        /// Экспорт календаря в эксель
-        /// </summary>
-        /// <param name="options"></param>
-        /// <param name="data">clients - список id клиентов соответствующих фильтру на клиенте, year - год</param>
-        /// <returns></returns>
-        [ClaimsAuthorize]
-        [HttpPost]
-        public IHttpActionResult ExportSchedule(ODataQueryOptions<Promo> options, ODataActionParameters data) {
-            try {
-                // TODO: Передавать фильтр в параметры задачи
-                //var tsts = options.RawValues.Filter;
-                //var tsts = JsonConvert.SerializeObject(options, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
-
-                UserInfo user = authorizationManager.GetCurrentUser();
-                Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
-                RoleInfo role = authorizationManager.GetCurrentRole();
-                Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
-
-                IEnumerable<int> clients = (IEnumerable<int>) data["clients"];
-
-                HandlerData handlerData = new HandlerData();
-                HandlerDataHelper.SaveIncomingArgument("UserId", userId, handlerData, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, handlerData, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("UserId", userId, handlerData, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("clients", clients.ToList(), handlerData, visible: false, throwIfNotExists: false);
-
-                //IQueryable results = options.ApplyTo(GetConstraintedQuery().Where(x => !x.Disabled));
-                //List<Promo> promoes = CastQueryToPromo(results);
-                if (data.Count() > 1) {
-                    HandlerDataHelper.SaveIncomingArgument("year", (int) data["year"], handlerData, visible: false, throwIfNotExists: false);
-                }
-                using (DatabaseContext context = new DatabaseContext()) {
-                    LoopHandler handler = new LoopHandler() {
-                        Id = Guid.NewGuid(),
-                        ConfigurationName = "PROCESSING",
-                        Description = "Scheduler Export",
-                        Name = "Module.Host.TPM.Handlers.SchedulerExportHandler",
-                        ExecutionPeriod = null,
-                        CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                        LastExecutionDate = null,
-                        NextExecutionDate = null,
-                        ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
-                        UserId = userId,
-                        RoleId = roleId
-                    };
-                    handler.SetParameterData(handlerData);
-                    context.LoopHandlers.Add(handler);
-                    context.SaveChanges();
-                }
-                return Content<string>(HttpStatusCode.OK, "Export task successfully created");
-            } catch (Exception e) {
-                return Content<string>(HttpStatusCode.InternalServerError, e.Message);
-            }
-        }
 
         private string GetUserName(string userName) {
             string[] userParts = userName.Split(new char[] { '/', '\\' });

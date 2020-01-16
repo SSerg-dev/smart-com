@@ -35,7 +35,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Antlr3.Runtime, Version=3.4.1.9004, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.39745\lib\net451\Antlr3.Runtime.dll</HintPath>
+      <HintPath>..\packages\Antlr.3.4.1.9004\lib\Antlr3.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="AutoMapper, Version=4.0.4.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
       <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.0.39745\lib\net451\AutoMapper.dll</HintPath>
@@ -82,6 +82,9 @@
     </Reference>
     <Reference Include="Interfaces.Implementation, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.0.39745\lib\net451\Interfaces.Implementation.dll</HintPath>
+    </Reference>
+    <Reference Include="LinqToQuerystring, Version=0.6.5.24695, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\LinqToQuerystring.0.6.5\lib\net35\LinqToQuerystring.dll</HintPath>
     </Reference>
     <Reference Include="LiteDB, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.39745\lib\net451\LiteDB.dll</HintPath>

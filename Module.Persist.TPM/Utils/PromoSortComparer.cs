@@ -1,4 +1,5 @@
-﻿using Module.Persist.TPM.Model.TPM;
+﻿using Module.Persist.TPM.Model.DTO;
+using Module.Persist.TPM.Model.TPM;
 using System;
 using System.Collections.Generic;
 
@@ -6,14 +7,14 @@ namespace Module.Persist.TPM.Utils {
     /// <summary>
     /// Класс для сортировки промо с учётом дат и приоритета для выгрузки в EXCEL
     /// </summary>
-    public class PromoSortComparer : IComparer<Promo> {
+    public class PromoSortComparer : IComparer<PromoView> {
         /// <summary>
         /// Сортировка промо с учётом дат и приоритета для выгрузки в EXCEL
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public int Compare(Promo x, Promo y) {
+        public int Compare(PromoView x, PromoView y) {
             DateTimeOffset? startdDate1 = x.StartDate;
             DateTimeOffset? endDate1 = x.EndDate;
             int? priority1 = x.CalendarPriority;
