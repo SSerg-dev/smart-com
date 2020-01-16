@@ -367,107 +367,109 @@
                     .using(Ext.ux.data.BreezeEntityManager.getEntityManager())
                     .execute()
                     .then(function (data) {
-                        var result = Ext.JSON.decode(data.httpResponse.data.value);
+                        if (!promoEditorCustom.isDestroyed) {
+                            var result = Ext.JSON.decode(data.httpResponse.data.value);
 
-                        var allIncluded = true;
-                        if (result.success) {
-                            result.answer.forEach(function (item) {
-                                choosenNodes.forEach(function (node) {
-                                    if (node.ObjectId == item.Item1) {
-                                        node.isAllChecked = item.Item2;
-                                        if (node.isAllChecked == false && allIncluded != false) {
-                                            allIncluded = false;
+                            var allIncluded = true;
+                            if (result.success) {
+                                result.answer.forEach(function (item) {
+                                    choosenNodes.forEach(function (node) {
+                                        if (node.ObjectId == item.Item1) {
+                                            node.isAllChecked = item.Item2;
+                                            if (node.isAllChecked == false && allIncluded != false) {
+                                                allIncluded = false;
+                                            }
                                         }
-                                    }
-                                })
-                            });
+                                    })
+                                });
 
-                            if (!allIncluded) {
-                                excludedMessage.show();
-                            } else {
-                                excludedMessage.hide();
-                            }
-
-                            var glyphCode;
-                            var toolTipText;
-                            choosenNodes.forEach(function (item, index) {
-                                var partial = false;
-                                me.choosenProductObjectIds.push(item.ObjectId);
-                                // парсим фильтр из Json
-                                item.Filter = item.Filter && item.Filter.length > 0 ? JSON.parse(item.Filter) : null;
-                                if (item.isAllChecked) {
-                                    glyphCode = null;
-                                    toolTipText = null;
+                                if (!allIncluded) {
+                                    excludedMessage.show();
                                 } else {
-                                    glyphCode = 0xFAC5;
-                                    toolTipText = l10n.ns('tpm', 'PromoBasicProducts').value('PartialSelection');
+                                    excludedMessage.hide();
                                 }
-                                // фильтруем только с типом subrange (можно же выбрать просто технологию например)
-                                if (item.Type.toLowerCase().indexOf('subrange') >= 0) {
-                                    var iconSrc = item.LogoFileName ? '/odata/ProductTrees/DownloadLogoFile?fileName=' + encodeURIComponent(item.LogoFileName) : '/bundles/style/images/swith-glyph-gray.png';
-                                    var butt = {
-                                        xtype: 'container',
-                                        layout: {
-                                            type: 'vbox',
-                                            align: 'middle',
-                                            pack: 'center'
-                                        },
-                                        cls: 'subranges-container cursor-pointer',
-                                        items: [{
+
+                                var glyphCode;
+                                var toolTipText;
+                                choosenNodes.forEach(function (item, index) {
+                                    var partial = false;
+                                    me.choosenProductObjectIds.push(item.ObjectId);
+                                    // парсим фильтр из Json
+                                    item.Filter = item.Filter && item.Filter.length > 0 ? JSON.parse(item.Filter) : null;
+                                    if (item.isAllChecked) {
+                                        glyphCode = null;
+                                        toolTipText = null;
+                                    } else {
+                                        glyphCode = 0xFAC5;
+                                        toolTipText = l10n.ns('tpm', 'PromoBasicProducts').value('PartialSelection');
+                                    }
+                                    // фильтруем только с типом subrange (можно же выбрать просто технологию например)
+                                    if (item.Type.toLowerCase().indexOf('subrange') >= 0) {
+                                        var iconSrc = item.LogoFileName ? '/odata/ProductTrees/DownloadLogoFile?fileName=' + encodeURIComponent(item.LogoFileName) : '/bundles/style/images/swith-glyph-gray.png';
+                                        var butt = {
                                             xtype: 'container',
                                             layout: {
-                                                type: 'hbox',
+                                                type: 'vbox',
                                                 align: 'middle',
                                                 pack: 'center'
                                             },
-                                            cls: 'subranges-inner-container cursor-pointer',
+                                            cls: 'subranges-container cursor-pointer',
                                             items: [{
-                                                xtype: 'button',
-                                                cls: 'promobasic-choose-btn custom-event-button noborder cursor-pointer',
-                                                width: 20,
-                                                height: 63,
-                                                style: 'padding: 0px; margin: 0px'
+                                                xtype: 'container',
+                                                layout: {
+                                                    type: 'hbox',
+                                                    align: 'middle',
+                                                    pack: 'center'
+                                                },
+                                                cls: 'subranges-inner-container cursor-pointer',
+                                                items: [{
+                                                    xtype: 'button',
+                                                    cls: 'promobasic-choose-btn custom-event-button noborder cursor-pointer',
+                                                    width: 20,
+                                                    height: 63,
+                                                    style: 'padding: 0px; margin: 0px'
+                                                }, {
+                                                    xtype: 'button',
+                                                    scale: 'large',
+                                                    width: 58,
+                                                    height: 63,
+                                                    iconAlign: 'top',
+                                                    icon: iconSrc,
+                                                    iconCls: 'promoClientChooseBtnIcon',
+                                                    text: '<b>' + '</b>',
+                                                    cls: 'promobasic-choose-btn custom-event-button noborder cursor-pointer',
+                                                    disabled: true,
+                                                    disabledCls: '',
+                                                    style: 'padding: 0px; margin: 0px; opacity: 1.0 !important; cursor: default',
+                                                }, {
+                                                    cls: 'subrange-glyph noborder',
+                                                    xtype: 'button',
+                                                    glyph: glyphCode,
+                                                    width: 20,
+                                                    height: 63,
+                                                    tooltip: toolTipText,
+                                                    style: 'padding: 0px; margin: 0px'
+                                                }]
                                             }, {
-                                                xtype: 'button',
-                                                scale: 'large',
-                                                width: 58,
-                                                height: 63,
-                                                iconAlign: 'top',
-                                                icon: iconSrc,
-                                                iconCls: 'promoClientChooseBtnIcon',
-                                                text: '<b>' + '</b>',
-                                                cls: 'promobasic-choose-btn custom-event-button noborder cursor-pointer',
-                                                disabled: true,
-                                                disabledCls: '',
-                                                style: 'padding: 0px; margin: 0px; opacity: 1.0 !important; cursor: default',
-                                            }, {
-                                                cls: 'subrange-glyph noborder',
-                                                xtype: 'button',
-                                                glyph: glyphCode,
-                                                width: 20,
-                                                height: 63,
-                                                tooltip: toolTipText,
-                                                style: 'padding: 0px; margin: 0px'
+                                                xtype: 'label',
+                                                header: {},
+                                                cls: 'cursor-pointer',
+                                                width: 98,
+                                                height: 30,
+                                                cls: 'subrange-text',
+                                                style: 'padding: 0px; margin: 0px',
+                                                text: item.Name,
                                             }]
-                                        }, {
-                                            xtype: 'label',
-                                            header: {},
-                                            cls: 'cursor-pointer',
-                                            width: 98,
-                                            height: 30,
-                                            cls: 'subrange-text',
-                                            style: 'padding: 0px; margin: 0px',
-                                            text: item.Name,
-                                        }]
-                                    };
-                                    subrangeBtns.push(butt);
-                                }
-                            });
-                            subrangePanel.add(subrangeBtns)
-                        }
+                                        };
+                                        subrangeBtns.push(butt);
+                                    }
+                                });
+                                subrangePanel.add(subrangeBtns)
+                            }
 
-                        var promoProductsForm = promoEditorCustom.down('promobasicproducts');
-                        App.app.getController('tpm.promo.Promo').setInfoPromoBasicStep2(promoProductsForm);
+                            var promoProductsForm = promoEditorCustom.down('promobasicproducts');
+                            App.app.getController('tpm.promo.Promo').setInfoPromoBasicStep2(promoProductsForm);
+                        }
                     })
                     .fail(function (data) {
                         App.Notify.pushError(data.message);

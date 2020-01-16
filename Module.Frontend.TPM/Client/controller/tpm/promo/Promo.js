@@ -2749,84 +2749,86 @@
             dataType: 'json',
             url: '/odata/PromoStatuss',
             success: function (promoStatusData) {
-                var draftStatusData = null;
-                for (var i = 0; i < promoStatusData.value.length; i++) {
-                    if (promoStatusData.value[i].Id == record.data.PromoStatusId) {
-                        promoeditorcustom.statusId = promoStatusData.value[i].Id;
-                        promoeditorcustom.promoStatusName = promoStatusData.value[i].Name;
-                        promoeditorcustom.promoStatusSystemName = promoStatusData.value[i].SystemName;
-                    }
+                if (!promoeditorcustom.isDestroyed) {
+                    var draftStatusData = null;
+                    for (var i = 0; i < promoStatusData.value.length; i++) {
+                        if (promoStatusData.value[i].Id == record.data.PromoStatusId) {
+                            promoeditorcustom.statusId = promoStatusData.value[i].Id;
+                            promoeditorcustom.promoStatusName = promoStatusData.value[i].Name;
+                            promoeditorcustom.promoStatusSystemName = promoStatusData.value[i].SystemName;
+                        }
 
-                    if (promoStatusData.value[i].SystemName == 'DraftPublished') {
-                        var btn_publish = promoeditorcustom.down('button[itemId=btn_publish]');
-                        btn_publish.statusId = promoStatusData.value[i].Id;
-                        btn_publish.statusName = promoStatusData.value[i].Name;
-                        btn_publish.statusSystemName = promoStatusData.value[i].SystemName;
-                        var btn_backToDraftPublished = promoeditorcustom.down('button[itemId=btn_backToDraftPublished]');
-                        btn_backToDraftPublished.statusId = promoStatusData.value[i].Id;
-                        btn_backToDraftPublished.statusName = promoStatusData.value[i].Name;
-                        btn_backToDraftPublished.statusSystemName = promoStatusData.value[i].SystemName;
-                    }
+                        if (promoStatusData.value[i].SystemName == 'DraftPublished') {
+                            var btn_publish = promoeditorcustom.down('button[itemId=btn_publish]');
+                            btn_publish.statusId = promoStatusData.value[i].Id;
+                            btn_publish.statusName = promoStatusData.value[i].Name;
+                            btn_publish.statusSystemName = promoStatusData.value[i].SystemName;
+                            var btn_backToDraftPublished = promoeditorcustom.down('button[itemId=btn_backToDraftPublished]');
+                            btn_backToDraftPublished.statusId = promoStatusData.value[i].Id;
+                            btn_backToDraftPublished.statusName = promoStatusData.value[i].Name;
+                            btn_backToDraftPublished.statusSystemName = promoStatusData.value[i].SystemName;
+                        }
 
-                    if (promoStatusData.value[i].SystemName == 'OnApproval') {
-                        var btn_sendForApproval = promoeditorcustom.down('button[itemId=btn_sendForApproval]');
-                        btn_sendForApproval.statusId = promoStatusData.value[i].Id;
-                        btn_sendForApproval.statusName = promoStatusData.value[i].Name;
-                        btn_sendForApproval.statusSystemName = promoStatusData.value[i].SystemName;
-                    }
+                        if (promoStatusData.value[i].SystemName == 'OnApproval') {
+                            var btn_sendForApproval = promoeditorcustom.down('button[itemId=btn_sendForApproval]');
+                            btn_sendForApproval.statusId = promoStatusData.value[i].Id;
+                            btn_sendForApproval.statusName = promoStatusData.value[i].Name;
+                            btn_sendForApproval.statusSystemName = promoStatusData.value[i].SystemName;
+                        }
 
-                    if (promoStatusData.value[i].SystemName == 'Approved') {
-                        var btn_approve = promoeditorcustom.down('button[itemId=btn_approve]');
-                        btn_approve.statusId = promoStatusData.value[i].Id;
-                        btn_approve.statusName = promoStatusData.value[i].Name;
-                        btn_approve.statusSystemName = promoStatusData.value[i].SystemName;
-                    }
+                        if (promoStatusData.value[i].SystemName == 'Approved') {
+                            var btn_approve = promoeditorcustom.down('button[itemId=btn_approve]');
+                            btn_approve.statusId = promoStatusData.value[i].Id;
+                            btn_approve.statusName = promoStatusData.value[i].Name;
+                            btn_approve.statusSystemName = promoStatusData.value[i].SystemName;
+                        }
 
-                    if (promoStatusData.value[i].SystemName == 'Cancelled') {
-                        var btn_cancel = promoeditorcustom.down('button[itemId=btn_cancel]');
-                        btn_cancel.statusId = promoStatusData.value[i].Id;
-                        btn_cancel.statusName = promoStatusData.value[i].Name;
-                        btn_cancel.statusSystemName = promoStatusData.value[i].SystemName;
-                    }
+                        if (promoStatusData.value[i].SystemName == 'Cancelled') {
+                            var btn_cancel = promoeditorcustom.down('button[itemId=btn_cancel]');
+                            btn_cancel.statusId = promoStatusData.value[i].Id;
+                            btn_cancel.statusName = promoStatusData.value[i].Name;
+                            btn_cancel.statusSystemName = promoStatusData.value[i].SystemName;
+                        }
 
-                    if (promoStatusData.value[i].SystemName == 'Planned') {
-                        var btn_plan = promoeditorcustom.down('button[itemId=btn_plan]');
-                        btn_plan.statusId = promoStatusData.value[i].Id;
-                        btn_plan.statusName = promoStatusData.value[i].Name;
-                        btn_plan.statusSystemName = promoStatusData.value[i].SystemName;
-                    }
+                        if (promoStatusData.value[i].SystemName == 'Planned') {
+                            var btn_plan = promoeditorcustom.down('button[itemId=btn_plan]');
+                            btn_plan.statusId = promoStatusData.value[i].Id;
+                            btn_plan.statusName = promoStatusData.value[i].Name;
+                            btn_plan.statusSystemName = promoStatusData.value[i].SystemName;
+                        }
 
-                    if (promoStatusData.value[i].SystemName == 'Closed') {
-                        var btn_close = promoeditorcustom.down('button[itemId=btn_close]');
-                        btn_close.statusId = promoStatusData.value[i].Id;
-                        btn_close.statusName = promoStatusData.value[i].Name;
-                        btn_close.statusSystemName = promoStatusData.value[i].SystemName;
-                    }
+                        if (promoStatusData.value[i].SystemName == 'Closed') {
+                            var btn_close = promoeditorcustom.down('button[itemId=btn_close]');
+                            btn_close.statusId = promoStatusData.value[i].Id;
+                            btn_close.statusName = promoStatusData.value[i].Name;
+                            btn_close.statusSystemName = promoStatusData.value[i].SystemName;
+                        }
 
-                    if (promoStatusData.value[i].SystemName == 'Finished') {
-                        var btn_backToFinished = promoeditorcustom.down('button[itemId=btn_backToFinished]');
-                        btn_backToFinished.statusId = promoStatusData.value[i].Id;
-                        btn_backToFinished.statusName = promoStatusData.value[i].Name;
-                        btn_backToFinished.statusSystemName = promoStatusData.value[i].SystemName;
-                    }
+                        if (promoStatusData.value[i].SystemName == 'Finished') {
+                            var btn_backToFinished = promoeditorcustom.down('button[itemId=btn_backToFinished]');
+                            btn_backToFinished.statusId = promoStatusData.value[i].Id;
+                            btn_backToFinished.statusName = promoStatusData.value[i].Name;
+                            btn_backToFinished.statusSystemName = promoStatusData.value[i].SystemName;
+                        }
 
-                    if (promoStatusData.value[i].SystemName == 'Draft') {
-                        draftStatusData = promoStatusData.value[i];
+                        if (promoStatusData.value[i].SystemName == 'Draft') {
+                            draftStatusData = promoStatusData.value[i];
 
-                        var undoBtn = promoeditorcustom.down('button[itemId=btn_undoPublish]');
-                        undoBtn.statusId = promoStatusData.value[i].Id;
-                        undoBtn.statusName = promoStatusData.value[i].Name;
-                        undoBtn.statusSystemName = promoStatusData.value[i].SystemName;
+                            var undoBtn = promoeditorcustom.down('button[itemId=btn_undoPublish]');
+                            undoBtn.statusId = promoStatusData.value[i].Id;
+                            undoBtn.statusName = promoStatusData.value[i].Name;
+                            undoBtn.statusSystemName = promoStatusData.value[i].SystemName;
+                        }
                     }
+                    if (isCopy) {
+                        promoeditorcustom.statusId = draftStatusData.Id;
+                        promoeditorcustom.promoStatusName = draftStatusData.Name;
+                        promoeditorcustom.promoStatusSystemName = draftStatusData.SystemName;
+                        me.setPromoTitle(promoeditorcustom, promoeditorcustom.promoName, promoeditorcustom.promoStatusName);
+                        me.defineAllowedActions(promoeditorcustom, promoActions, promoeditorcustom.promoStatusName);
+                    }
+                    me.updateStatusHistoryState();
                 }
-                if (isCopy) {
-                    promoeditorcustom.statusId = draftStatusData.Id;
-                    promoeditorcustom.promoStatusName = draftStatusData.Name;
-                    promoeditorcustom.promoStatusSystemName = draftStatusData.SystemName;
-                    me.setPromoTitle(promoeditorcustom, promoeditorcustom.promoName, promoeditorcustom.promoStatusName);
-                    me.defineAllowedActions(promoeditorcustom, promoActions, promoeditorcustom.promoStatusName);
-                }
-                me.updateStatusHistoryState();
             },
             error: function () {
                 parentWidget.setLoading(false);
