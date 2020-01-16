@@ -30,6 +30,19 @@ namespace Module.Frontend.TPM.Controllers
             return HistoryReader.GetAll<HistoricalPromoProductsCorrection>();
         }
 
+        [ClaimsAuthorize]
+        [EnableQuery(
+            MaxNodeCount = int.MaxValue,
+            EnsureStableOrdering = false,
+            HandleNullPropagation = HandleNullPropagationOption.False,
+            AllowedQueryOptions = AllowedQueryOptions.All,
+            EnableConstantParameterization = false,
+            MaxTop = 1024)]
+        public IQueryable<HistoricalPromoProductsCorrection> GetHistoricalPromoProductsCorrections(Guid? Id)
+        {
+            return HistoryReader.GetAllById<HistoricalPromoProductsCorrection>(Id.ToString());
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

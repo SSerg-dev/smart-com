@@ -382,24 +382,34 @@
         return query;
     },
 
-
     onHistoryButtonClick: function (button) {
-        var promoDetailPanel = button.up('promodetailtabpanel');
-        var record = promoDetailPanel.event;
+        var grid = this.getGridByButton(button),
+            selModel = grid.getSelectionModel();
 
-        if (record) {
-            var model = Ext.ModelManager.getModel('App.model.tpm.promo.Promo');
-            var viewClassName = "App.view.tpm.promo.HistoricalPromo";
-            Ext.widget('basereviewwindow', { items: Ext.create(viewClassName, { baseModel: model }) })
-                .show().down('grid').getStore()
-                .setFixedFilter('HistoricalObjectId', {
-                    property: '_ObjectId',
-                    operation: 'Equals',
-                    value: this.getRecordId(record)//selModel.getSelection()[0].getId()
-                });
+        if (selModel.hasSelection()) {
+            var model = Ext.ModelManager.getModel('App.model.tpm.promo.Promo'),
+                viewClassName = "App.view.tpm.promo.HistoricalPromo";
+
+            var baseReviewWindow = Ext.widget('basereviewwindow', { items: Ext.create(viewClassName, { baseModel: model }) });
+            baseReviewWindow.show();
+
+            var store = baseReviewWindow.down('grid').getStore();
+            var proxy = store.getProxy();
+            if (proxy.extraParams) {
+                proxy.extraParams.Id = this.getRecordId(selModel.getSelection()[0]);
+            } else {
+                proxy.extraParams = {
+                    Id: this.getRecordId(selModel.getSelection()[0])
+                }
+            }
+
+            store.setFixedFilter('HistoricalObjectId', {
+                property: '_ObjectId',
+                operation: 'Equals',
+                value: this.getRecordId(selModel.getSelection()[0])
+            });
         }
     },
-
 
     onDeletedButtonClick: function (button) {
         this.createDeletedWindow(button).show();

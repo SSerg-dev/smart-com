@@ -30,6 +30,19 @@ namespace Module.Frontend.TPM.Controllers
             return HistoryReader.GetAll<HistoricalCostProduction>();
         }
 
+        [ClaimsAuthorize]
+        [EnableQuery(
+            MaxNodeCount = int.MaxValue,
+            EnsureStableOrdering = false,
+            HandleNullPropagation = HandleNullPropagationOption.False,
+            AllowedQueryOptions = AllowedQueryOptions.All,
+            EnableConstantParameterization = false,
+            MaxTop = 1024)]
+        public IQueryable<HistoricalCostProduction> GetHistoricalCostProductions(Guid? Id)
+        {
+            return HistoryReader.GetAllById<HistoricalCostProduction>(Id.ToString());
+        }
+
         protected override void Dispose(bool disposing) {
             if (disposing) {
                 HistoryReader.Dispose();
