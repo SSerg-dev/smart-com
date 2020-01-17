@@ -199,13 +199,24 @@
                 model = panel.getBaseModel(),
                 viewClassName = App.Util.buildViewClassName(panel, model, 'Historical');
 
-            Ext.widget('basereviewwindow', { items: Ext.create(viewClassName, { baseModel: model }) })
-                .show().down('grid').getStore()
-                .setFixedFilter('HistoricalObjectId', {
-                    property: '_ObjectId',
-                    operation: 'Equals',
-                    value: this.getRecordId(selModel.getSelection()[0])//selModel.getSelection()[0].getId()
-                });
+            var baseReviewWindow = Ext.widget('basereviewwindow', { items: Ext.create(viewClassName, { baseModel: model }) });
+            baseReviewWindow.show();
+
+            var store = baseReviewWindow.down('grid').getStore();
+            var proxy = store.getProxy();
+            if (proxy.extraParams) {
+                proxy.extraParams.Id = this.getRecordId(selModel.getSelection()[0]);
+            } else {
+                proxy.extraParams = {
+                    Id: this.getRecordId(selModel.getSelection()[0])
+                }
+            }
+
+            store.setFixedFilter('HistoricalObjectId', {
+                property: '_ObjectId',
+                operation: 'Equals',
+                value: this.getRecordId(selModel.getSelection()[0])
+            });
         }
     },
 

@@ -274,8 +274,6 @@
 				msg: 'Выбрано слишком много записей, привышен лимит длинны URL, уменьшите количество выбранных записей',
 				buttons: Ext.MessageBox.OK,
 				icon: Ext.Msg.INFO,
-				fn: function () { },
-				cls: 'over_all',
 				closable: true
 			});
 

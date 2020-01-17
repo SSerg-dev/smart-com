@@ -142,14 +142,25 @@ Ext.define('App.controller.core.associateduser.dbuser.AssociatedDbUser', {
             var panel = grid.up('combineddirectorypanel'),
                 model = panel.getBaseModel();
 
-            Ext.widget('basereviewwindow', {
+            var baseReviewWindow = Ext.widget('basereviewwindow', {
                 items: {
                     xtype: 'historicalassociateddbuseruser',
                     baseModel: model
                 }
-            })
-            .show().down('grid').getStore()
-            .setFixedFilter('HistoricalObjectId', {
+            });
+            baseReviewWindow.show();
+
+            var store = baseReviewWindow.down('grid').getStore();
+            var proxy = store.getProxy();
+            if (proxy.extraParams) {
+                proxy.extraParams.Id = this.getRecordId(selModel.getSelection()[0]);
+            } else {
+                proxy.extraParams = {
+                    Id: this.getRecordId(selModel.getSelection()[0])
+                }
+            }
+
+            store.setFixedFilter('HistoricalObjectId', {
                 property: '_ObjectId',
                 operation: 'Equals',
                 value: this.getRecordId(selModel.getSelection()[0])
