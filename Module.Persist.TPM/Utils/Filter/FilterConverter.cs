@@ -54,12 +54,12 @@ namespace Module.Persist.TPM.Utils.Filter {
                             DeserializeJsonFilter(property.Value, obj);
                         } else {
                             obj.Add("Operation", op);
-                            obj.Add("Data", property.Value);
+                            obj.Add("Data", JToken.FromObject(property.Value.ToString().Trim()));
                         }
                     } else if (property.Name == "values") {
                         List<string> valList = new List<string>();
                         foreach (string val in property.Value) {
-                            valList.Add(val);
+                            valList.Add(val.Trim());
                         }
                         obj.Add("Data", String.Join(",", valList));
                     } else {
