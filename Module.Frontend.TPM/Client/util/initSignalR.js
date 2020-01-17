@@ -120,7 +120,6 @@ function initSignalRPromoSession() {
                 $.connection.hub.stop(true);
                 document.location.reload(true);
             },
-            cls: 'over_all',
             closable: false
         });
     };
@@ -145,7 +144,6 @@ function initSignalRPromoSession() {
                     fn: function () {
                         document.location.reload(true);
                     },
-                    cls: 'over_all',
                     closable: false
                 });
             }
