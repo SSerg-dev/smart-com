@@ -23,7 +23,9 @@ namespace Module.Host.TPM.Handlers.DataFlow.Modules
                 ClientTreeObjectId = x.ClientTree.ObjectId,
                 BrandTechId = x.BrandTechId,
                 StartDate = x.StartDate,
-                EndDate = x.EndDate
+                EndDate = x.EndDate,
+                TIType = x.TIType,
+                TISubType = x.TISubType
             })
             .ToList();
         }
@@ -36,6 +38,8 @@ namespace Module.Host.TPM.Handlers.DataFlow.Modules
             public DateTimeOffset? StartDate { get; set; }
             public DateTimeOffset? EndDate { get; set; }
             public bool Disabled { get; set; }
+            public string TIType { get; set; }
+            public string TISubType { get; set; }
         }
     }
 }

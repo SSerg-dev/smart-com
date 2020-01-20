@@ -435,7 +435,7 @@ namespace Module.Frontend.TPM.Controllers {
             var promoesToCheck = this.GetPromoesForCheck(Context, model, clientTreesIds);
 
             //Забираем COGS только для соответствующего дерева клиентов
-            var models = Context.Set<COGS>().Where(x => !x.Disabled && (parentIds.Contains(x.ClientTreeId) || clientTreesIds.Contains(x.ClientTreeId)));
+            var models = Context.Set<COGS>().Where(x => x.Id != model.Id && !x.Disabled && (parentIds.Contains(x.ClientTreeId) || clientTreesIds.Contains(x.ClientTreeId)));
 
             //Соединяем, для получения полного дерева
             clientTreesIds.AddRange(parentIds);

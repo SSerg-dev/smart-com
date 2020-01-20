@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Module.Host.TPM.Handlers.DataFlow.Modules.COGSDataFlowModule;
 
 namespace Module.Host.TPM.Handlers.DataFlow.Filters
 {
@@ -24,7 +25,7 @@ namespace Module.Host.TPM.Handlers.DataFlow.Filters
                 .Where(x => currentChangesIncidentsIds.Contains(x.Id));
         }
 
-        public Tuple<IEnumerable<PromoDataFlowModule.PromoDataFlowSimpleModel>, string> Apply(COGSDataFlowModule.COGSDataFlowSimpleModel cogs, IEnumerable<PromoDataFlowModule.PromoDataFlowSimpleModel> promoes)
+        public Tuple<IEnumerable<PromoDataFlowModule.PromoDataFlowSimpleModel>, string> Apply(COGSDataFlowSimpleModel cogs, IEnumerable<PromoDataFlowModule.PromoDataFlowSimpleModel> promoes)
         {
             var filteredPromoes = new List<PromoDataFlowModule.PromoDataFlowSimpleModel>();
             foreach (var promo in promoes)
@@ -38,21 +39,56 @@ namespace Module.Host.TPM.Handlers.DataFlow.Filters
             return new Tuple<IEnumerable<PromoDataFlowModule.PromoDataFlowSimpleModel>, string>(filteredPromoes, this.ToString());
         }
 
-        private bool InnerApply(PromoDataFlowModule.PromoDataFlowSimpleModel promo, COGSDataFlowModule.COGSDataFlowSimpleModel cogs)
+        private bool InnerApply(PromoDataFlowModule.PromoDataFlowSimpleModel promo, COGSDataFlowSimpleModel cogs)
         {
-            var clientNode = this.DataFlowModuleCollection.ClientTreeDataFlowModule.Collection.Where(x => x.ObjectId == promo.ClientTreeId && !x.EndDate.HasValue).FirstOrDefault();
+            //выполняется стандартный подбор COGS для проверяемого промо, если в результирующем наборе окажется 
+            //отобранный по инциденту COGS, то промо отберется на пересчет
+
+            var clientNode = this.DataFlowModuleCollection.ClientTreeDataFlowModule.Collection
+                .Where(x => x.ObjectId == promo.ClientTreeId && !x.EndDate.HasValue)
+                .FirstOrDefault();
             var isPromoFiltered = false;
+            List<COGSDataFlowSimpleModel> cogsList = new List<COGSDataFlowSimpleModel>();
 
-            // проверка текущей пары Promo-COGS, как если бы для данного промо подбирался COGS
-            // идем вверх по дереву клиентов промо, пока не дойдем до корневого узла или не найдется совпадение
-            while (!isPromoFiltered && clientNode != null && clientNode.Type != "root")
+            while ((cogsList == null || cogsList.Count() == 0) && clientNode != null && clientNode.Type != "root")
             {
-                isPromoFiltered = clientNode.ObjectId == cogs.ClientTreeObjectId
-                                && ((cogs.BrandTechId != null && cogs.BrandTechId == promo.BrandTechId) || cogs.BrandTechId == null)
-                                && cogs.StartDate <= promo.DispatchesStart
-                                && cogs.EndDate >= promo.DispatchesStart;
+                cogsList = this.DataFlowModuleCollection.COGSDataFlowModule.Collection
+                    .Where(x => x.ClientTreeId == clientNode.Id && x.BrandTechId == promo.BrandTechId && !x.Disabled)
+                    //promo DispatchesStart date должна лежать в интервале между COGS start date и COGS end date
+                    .Where(x => x.StartDate.HasValue && x.EndDate.HasValue && promo.DispatchesStart.HasValue
+                           && DateTimeOffset.Compare(x.StartDate.Value, promo.DispatchesStart.Value) <= 0
+                           && DateTimeOffset.Compare(x.EndDate.Value, promo.DispatchesStart.Value) >= 0).ToList();
 
-                clientNode = this.DataFlowModuleCollection.ClientTreeDataFlowModule.Collection.Where(x => x.ObjectId == clientNode.ParentId && !x.EndDate.HasValue).FirstOrDefault();
+                clientNode = this.DataFlowModuleCollection.ClientTreeDataFlowModule.Collection
+                    .Where(x => x.ObjectId == clientNode.ParentId && !x.EndDate.HasValue)
+                    .FirstOrDefault();
+            }
+
+            //если не найдено COGS для конкретного BranTech, ищем COGS с пустым BrandTech(пустое=любое)
+            if (cogsList.Count == 0)
+            {
+                clientNode = this.DataFlowModuleCollection.ClientTreeDataFlowModule.Collection
+                    .Where(x => x.ObjectId == promo.ClientTreeId && !x.EndDate.HasValue)
+                    .FirstOrDefault();
+
+                while ((cogsList == null || cogsList.Count() == 0) && clientNode != null && clientNode.Type != "root")
+                {
+                    cogsList = this.DataFlowModuleCollection.COGSDataFlowModule.Collection
+                        .Where(x => x.ClientTreeId == clientNode.Id && x.BrandTechId == null && !x.Disabled)
+                        //promo DispatchesStart date должна лежать в интервале между COGS start date и COGS end date
+                        .Where(x => x.StartDate.HasValue && x.EndDate.HasValue && promo.DispatchesStart.HasValue
+                               && DateTimeOffset.Compare(x.StartDate.Value, promo.DispatchesStart.Value) <= 0
+                               && DateTimeOffset.Compare(x.EndDate.Value, promo.DispatchesStart.Value) >= 0).ToList();
+
+                    clientNode = this.DataFlowModuleCollection.ClientTreeDataFlowModule.Collection
+                        .Where(x => x.ObjectId == clientNode.ParentId && !x.EndDate.HasValue)
+                        .FirstOrDefault();
+                }
+            }
+
+            if (cogsList.Contains(cogs))
+            {
+                isPromoFiltered = true;
             }
 
             return isPromoFiltered;

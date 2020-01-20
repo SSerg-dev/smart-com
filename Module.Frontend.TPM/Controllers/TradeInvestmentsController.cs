@@ -428,7 +428,7 @@ namespace Module.Frontend.TPM.Controllers {
             var promoesToCheck = this.GetPromoesForCheck(Context, model, clientTreesIds);
 
             //Забираем TI только для соответствующего дерева клиентов
-            var models = Context.Set<TradeInvestment>().Where(x => !x.Disabled && (parentIds.Contains(x.ClientTreeId) || clientTreesIds.Contains(x.ClientTreeId)));
+            var models = Context.Set<TradeInvestment>().Where(x => x.Id != model.Id && !x.Disabled && (parentIds.Contains(x.ClientTreeId) || clientTreesIds.Contains(x.ClientTreeId)));
 
             //Соединяем, для получения полного дерева
             clientTreesIds.AddRange(parentIds);
