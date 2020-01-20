@@ -1033,60 +1033,64 @@
                         }
                     });
 
-                    filterField.store = constructor.store;
-                    filterField.setValue(filterFieldValue);
-                    operationField.getStore().loadData(filterFieldValue.getAllowedOperations().map(function (op) {
-                        return {
-                            id: op,
-                            text: l10n.ns('core', 'filter', 'operations').value(op)
-                        };
-                    }));
-                    operationField.setValue(node.operation);
+                    if (filterFieldValue) {
+                        filterField.store = constructor.store;
+                        filterField.setValue(filterFieldValue);
+                        operationField.getStore().loadData(filterFieldValue.getAllowedOperations().map(function (op) {
+                            return {
+                                id: op,
+                                text: l10n.ns('core', 'filter', 'operations').value(op)
+                            };
+                        }));
+                        operationField.setValue(node.operation);
+                    }
                 } else {
                     filterField.setValue(node.property)
                 }
 
                 filterValue = filterField.getValue();
-                var valueContainer = ruleContent.down('container[name=valuecontainer]'),
-                    currentValueCmp = valueContainer.child(),
-                    editorFactory = App.view.core.filter.ValueEditorFactory;
+                if (filterValue) {
+                    var valueContainer = ruleContent.down('container[name=valuecontainer]'),
+                        currentValueCmp = valueContainer.child(),
+                        editorFactory = App.view.core.filter.ValueEditorFactory;
 
-                filterValue.set('operation', node.operation);
-                filterValue.set('value', null);
-                var valueCmp = editorFactory.createEditor(filterValue, currentValueCmp),
-                    //для операции In(Список)
-                    values = node.value.values ? new App.extfilter.core.ValueList(Ext.Array.unique(node.value.values)) : null;
+                    filterValue.set('operation', node.operation);
+                    filterValue.set('value', null);
+                    var valueCmp = editorFactory.createEditor(filterValue, currentValueCmp),
+                        //для операции In(Список)
+                        values = node.value.values ? new App.extfilter.core.ValueList(Ext.Array.unique(node.value.values)) : null;
 
-                if (valueCmp && valueCmp !== currentValueCmp) {
-                    valueCmp.setMargin(1);
-                    valueCmp.setHeight(22);
-                    valueCmp.addCls('filterText');
-                    valueCmp.setDisabled(filterReadOnly);
-                }
+                    if (valueCmp && valueCmp !== currentValueCmp) {
+                        valueCmp.setMargin(1);
+                        valueCmp.setHeight(22);
+                        valueCmp.addCls('filterText');
+                        valueCmp.setDisabled(filterReadOnly);
+                    }
 
-                if (valueCmp !== currentValueCmp) {
-                    Ext.suspendLayouts();
-                    valueContainer.removeAll();
-                    valueContainer.add(valueCmp);
-                    Ext.resumeLayouts(true);
-                }
+                    if (valueCmp !== currentValueCmp) {
+                        Ext.suspendLayouts();
+                        valueContainer.removeAll();
+                        valueContainer.add(valueCmp);
+                        Ext.resumeLayouts(true);
+                    }
 
-                if (valueCmp) {
-                    //для операции In(Список)
-                    values ? valueCmp.setValue(values) : valueCmp.setValue(node.value);
-                }
+                    if (valueCmp) {
+                        //для операции In(Список)
+                        values ? valueCmp.setValue(values) : valueCmp.setValue(node.value);
+                    }
 
-                filterField.setDisabled(filterReadOnly);
-                operationField.setDisabled(filterReadOnly);
+                    filterField.setDisabled(filterReadOnly);
+                    operationField.setDisabled(filterReadOnly);
 
-                if (filterReadOnly) {
-                    ruleContent.addCls('filterDetailMode');
-                    filterField.addCls('filterDetailMode');
-                    operationField.addCls('filterDetailMode');
-                } else {
-                    ruleContent.removeCls('filterDetailMode');
-                    filterField.removeCls('filterDetailMode');
-                    operationField.removeCls('filterDetailMode');
+                    if (filterReadOnly) {
+                        ruleContent.addCls('filterDetailMode');
+                        filterField.addCls('filterDetailMode');
+                        operationField.addCls('filterDetailMode');
+                    } else {
+                        ruleContent.removeCls('filterDetailMode');
+                        filterField.removeCls('filterDetailMode');
+                        operationField.removeCls('filterDetailMode');
+                    }
                 }
 
                 return ruleContent;

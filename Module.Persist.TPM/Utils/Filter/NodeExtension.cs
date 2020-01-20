@@ -60,25 +60,36 @@ namespace Module.Persist.TPM.Utils.Filter {
                 }
             }
 
+            var parameterTypeProperties = parameterType.GetProperties();
             //
             // Преобразование всех правил, содержащихся в узле, в Expression.
             //
             foreach (FilterRule r in subgroup.Rules) {
-                Expression ruleExpression = r.ToExpression(parameterType, param);
+                if (parameterTypeProperties.Any(x => x.Name == r.Field))
+                {
+                    Expression ruleExpression = r.ToExpression(parameterType, param);
 
-                if (ruleExpression == null) {
-                    // Пропустить правило, которое не удалось 
-                    // преобразовать в Expression.
-                    continue;
-                }
+                    if (ruleExpression == null)
+                    {
+                        // Пропустить правило, которое не удалось 
+                        // преобразовать в Expression.
+                        continue;
+                    }
 
-                if (body == null) {
-                    body = ruleExpression;
-                } else {
-                    if (subgroup.Operator == NodeOperator.and) {
-                        body = Expression.And(body, ruleExpression);
-                    } else {
-                        body = Expression.Or(body, ruleExpression);
+                    if (body == null)
+                    {
+                        body = ruleExpression;
+                    }
+                    else
+                    {
+                        if (subgroup.Operator == NodeOperator.and)
+                        {
+                            body = Expression.And(body, ruleExpression);
+                        }
+                        else
+                        {
+                            body = Expression.Or(body, ruleExpression);
+                        }
                     }
                 }
             }

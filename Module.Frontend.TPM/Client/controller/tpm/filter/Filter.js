@@ -219,55 +219,77 @@
                 jsonInObj.rules = new Array();
                 jsonInObj.operator = "or";
                 for (var j = 0; j < val.values.length; j++) {
-                    var rule = {
-                        operation: "Equals",
-                        property: item.down('combobox[name=filterfield]').getValue().data.id,
-                        value: val.values[j],
-                    };
-                    jsonInObj.rules.push(rule);
+                    var filterField = item.down('combobox[name=filterfield]');
+                    var property = filterField.getValue() ? filterField.getValue().data.id : null;
+                    if (property) {
+                        var rule = {
+                            operation: "Equals",
+                            property: property,
+                            value: val.values[j],
+                        };
+                        jsonInObj.rules.push(rule);
+                    } else {
+                        item.hide();
+                    }
                 }
                 jsonObj.rules.push(jsonInObj);
             } else if (operation === 'IsNull') {
                 var jsonIsNullObj = {};
                 jsonIsNullObj.rules = new Array();
                 jsonIsNullObj.operator = "or";
-                var rule = {
-                    operation: "Equals",
-                    property: item.down('combobox[name=filterfield]').getValue().data.id,
-                    value: null,
-                };
-                jsonIsNullObj.rules.push(rule);
-                rule = {
-                    operation: "Equals",
-                    property: item.down('combobox[name=filterfield]').getValue().data.id,
-                    value: '',
-                };
-                jsonIsNullObj.rules.push(rule);
-                jsonObj.rules.push(jsonIsNullObj);
+                var filterField = item.down('combobox[name=filterfield]');
+                var property = filterField.getValue() ? filterField.getValue().data.id : null;
+                if (property) {
+                    var rule = {
+                        operation: "Equals",
+                        property: property,
+                        value: null,
+                    };
+                    jsonIsNullObj.rules.push(rule);
+                    rule = {
+                        operation: "Equals",
+                        property: property,
+                        value: '',
+                    };
+                    jsonIsNullObj.rules.push(rule);
+                    jsonObj.rules.push(jsonIsNullObj);
+                } else {
+                    item.hide();
+                }
             } else if (operation === 'NotNull') {
                 var jsonNotNullObj = {};
                 jsonNotNullObj.rules = new Array();
                 jsonNotNullObj.operator = "and";
-                var rule = {
-                    operation: "NotEqual",
-                    property: item.down('combobox[name=filterfield]').getValue().data.id,
-                    value: null,
-                };
-                jsonNotNullObj.rules.push(rule);
-                rule = {
-                    operation: "NotEqual",
-                    property: item.down('combobox[name=filterfield]').getValue().data.id,
-                    value: '',
-                };
-                jsonNotNullObj.rules.push(rule);
-                jsonObj.rules.push(jsonNotNullObj);
+                var filterField = item.down('combobox[name=filterfield]');
+                var property = filterField.getValue() ? filterField.getValue().data.id : null;
+                if (property) {
+                    var rule = {
+                        operation: "NotEqual",
+                        property: property,
+                        value: null,
+                    };
+                    jsonNotNullObj.rules.push(rule);
+                    rule = {
+                        operation: "NotEqual",
+                        property: property,
+                        value: '',
+                    };
+                    jsonNotNullObj.rules.push(rule);
+                    jsonObj.rules.push(jsonNotNullObj);
+                }
             } else {
-                var rule = {
-                    operation: operation,
-                    property: item.down('combobox[name=filterfield]').getValue().data.id,
-                    value: val ? val : '',
-                };
-                jsonObj.rules.push(rule);
+                var filterField = item.down('combobox[name=filterfield]');
+                var property = filterField.getValue() ? filterField.getValue().data.id : null;
+                if (property) {
+                    var rule = {
+                        operation: operation,
+                        property: property,
+                        value: val ? val : '',
+                    };
+                    jsonObj.rules.push(rule);
+                } else {
+                    item.hide();
+                }
             }
         }
         var nodecontent = container.down('container[name=content]');
@@ -300,12 +322,19 @@
                 valueField = item.down('container[name=valuecontainer]').down('field');
             if (valueField)
                 var val = item.down('container[name=valuecontainer]').down('field').getValue();
-            var rule = {
-                operation: operation,
-                property: item.down('combobox[name=filterfield]').getValue().data.id,
-                value: val,
-            };
-            jsonObj.rules.push(rule);
+
+            var filterField = item.down('combobox[name=filterfield]');
+            var property = filterField.getValue() ? filterField.getValue().data.id : null;
+            if (property) {
+                var rule = {
+                    operation: operation,
+                    property: property,
+                    value: val,
+                };
+                jsonObj.rules.push(rule);
+            } else {
+                item.hide();
+            }
         }
         var nodecontent = container.down('container[name=content]');
         for (var i = 0; i < nodecontent.items.items.length; i++) {
