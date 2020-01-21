@@ -1876,11 +1876,9 @@
     <Content Include="SQLInitialize\20191220_1530_AddSupportAdminAP_3.sql" />
     <Content Include="SQLInitialize\20191222_Add_AP_Promo_SupportAdmin_ChangeResponsible.sql" />
     <Content Include="SQLInitialize\20191223_1313_Delete_AP_DependedOnMe_SupportAdmin.sql" />
-    <Content Include="SQLInitialize\20191226_1030_ShebaMini_MigrationToSubrange.sql" />
     <Content Include="SQLInitialize\20191226_1910_ChangeExportScheduleAP.sql" />
     <Content Include="SQLInitialize\20191227_1430_DeleteAP_PromoSupportPromo_Delete.sql" />
     <Content Include="SQLInitialize\20191227_1400_DeleteSomeAP.sql" />
-    <Content Include="SQLInitialize\20191230_1130_ShebaMini_PromoProductTree_Migration.sql" />
     <Content Include="SQLInitialize\20191230_1200_BrandTech_To_BrandsegTech.sql" />
     <Content Include="SQLInitialize\20191230_1230_Add_AppMix_ZREPsList_To_Settings.sql" />
     <Content Include="SQLInitialize\20191230_1235_Product_update_computed_fields.sql" />
