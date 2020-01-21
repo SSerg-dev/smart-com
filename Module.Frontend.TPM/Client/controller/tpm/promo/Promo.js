@@ -1428,15 +1428,10 @@
 
     },
     getPromoType: function () {
-        var promoeditorcustom = Ext.ComponentQuery.query('promoeditorcustom')[0];
-        if (promoeditorcustom && promoeditorcustom.promotype) {
-            return promoeditorcustom.promotype;
-        } else {
-            return false;
-        }
+        return this.promotype;
     },
-    setPromoType: function (promotype, promoeditorcustom) {
-        promoeditorcustom.promotype = promotype;
+    setPromoType: function (promotype) {
+        this.promotype = promotype;
     },
     onPromoTypeAfterRender: function (window) {
         var closeButton = window.down('#close');
