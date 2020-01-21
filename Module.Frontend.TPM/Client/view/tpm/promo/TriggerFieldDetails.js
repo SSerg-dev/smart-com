@@ -31,7 +31,7 @@
         var me = this;
         var promoController = App.app.getController('tpm.promo.Promo');
         var record = promoController.getRecord(Ext.ComponentQuery.query('promoeditorcustom')[0]);
-
+        var showMessage = false;
 
         switch (me.windowType) {
             case 'promoactivitydetailsinfo':
@@ -84,6 +84,7 @@
                         xtype: me.windowType,
                         promoId: record.data.Id,
                         isReadable: this.isReadable,
+                        defaultValue: this.defaultValue,
                         crudAccess: this.crudAccess,
                     }],
                     buttons: [{
@@ -96,7 +97,7 @@
                         listeners:
                         {
                             afterrender: function (button) {
-                                if (me.isReadable) {
+                                if (me.isReadable || me.defaultValue == true) {
                                     button.setVisible(false);
                                 }
                             },
@@ -143,6 +144,10 @@
                 }
                 store.load();
 
+                if (this.defaultValue == true && !this.isReadable) {
+                    showMessage = true;
+                } else { showMessage = false }
+
                 break;
 
             default:
@@ -164,5 +169,8 @@
         };
 
         newWindow.show();
+        if (showMessage) {
+            App.Notify.pushInfo(l10n.ns('tpm', 'PromoProductsView').value('SavePromoMessage'));
+        }
     }
 });

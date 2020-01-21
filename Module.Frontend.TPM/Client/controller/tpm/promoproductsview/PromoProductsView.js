@@ -100,7 +100,7 @@
         }
 
         // если грид открывается для чтения
-        if (promoProductsView.isReadable) {
+        if (promoProductsView.isReadable || promoProductsView.defaultValue == true) {
             promoProductsView.down('#updatebutton').setVisible(false);
 
             Ext.ComponentQuery.query('basewindow #ok').forEach(function (item) {
@@ -110,7 +110,6 @@
             promoProductsView.down('customheadermenu[itemId=importExport]').down('[itemgroup=customloadimportbutton]').setVisible(false);
             promoProductsView.down('customheadermenu[itemId=importExport]').down('[itemId=customloadimporttemplatexlsxbutton]').setVisible(false);
         };
-
         
     },
 

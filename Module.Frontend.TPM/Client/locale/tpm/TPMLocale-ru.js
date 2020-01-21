@@ -1148,6 +1148,7 @@
         'PlanProductCaseQty': 'Plan Product Case Qty',
         'AverageMarker': 'Average Marker',
         'IsCorrection': 'Is Correction',
+        'SavePromoMessage': 'Save promo to create new corrections'
     },
 
     'BaseLine': {

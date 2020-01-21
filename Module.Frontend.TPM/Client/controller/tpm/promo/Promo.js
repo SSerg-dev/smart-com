@@ -3352,6 +3352,7 @@
 
             planPromoUpliftPercent.setValue(record.data.PlanPromoUpliftPercent);
             promoUpliftLockedUpdateCheckbox.setValue(!record.data.NeedRecountUplift);
+            planPromoUpliftPercent.defaultValue = !record.data.NeedRecountUplift;
 
             if (record.data.InOut) {
                 planPromoUpliftPercent.changeEditable(false);
