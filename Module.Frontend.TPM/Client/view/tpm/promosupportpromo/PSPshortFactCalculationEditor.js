@@ -27,5 +27,33 @@ Ext.define('App.view.tpm.promosupportpromo.PSPshortFactCalculationEditor', {
             allowOnlyWhitespace: true,
             fieldLabel: l10n.ns('tpm', 'PSPshortFactCalculation').value('FactCalculation'),
         }]
-    }
+    },
+
+    buttons: [{
+        text: l10n.ns('core', 'buttons').value('close'),
+        itemId: 'close'
+    }, {
+        text: l10n.ns('core', 'buttons').value('cancel'),
+        itemId: 'canceledit',
+        hidden: true,
+        setVisible: function () {
+            return false;
+        }
+    }, {
+        text: l10n.ns('core', 'buttons').value('edit'),
+        itemId: 'edit',
+        ui: 'green-button-footer-toolbar',
+        hidden: true,
+        setVisible: function () {
+            return false;
+        }
+    }, {
+        text: l10n.ns('core', 'buttons').value('ok'),
+        itemId: 'ok',
+        ui: 'green-button-footer-toolbar',
+        hidden: true,
+        setVisible: function () {
+            return false;
+        }
+    }]
 });
