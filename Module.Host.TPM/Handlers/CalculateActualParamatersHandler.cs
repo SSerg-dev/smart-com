@@ -4,6 +4,7 @@ using Module.Persist.TPM;
 using Module.Persist.TPM.CalculatePromoParametersModule;
 using Module.Persist.TPM.Model.TPM;
 using Persist;
+using Persist.Model;
 using ProcessingHost.Handlers;
 using System;
 using System.Collections.Generic;
@@ -30,6 +31,7 @@ namespace Module.Host.TPM.Handlers
             handlerLogger.Write(true, "");
 
             Guid promoId = HandlerDataHelper.GetIncomingArgument<Guid>("PromoId", info.Data, false);
+            Guid RoleId = HandlerDataHelper.GetIncomingArgument<Guid>("RoleId", info.Data, false);
             bool? needRedistributeLSV = HandlerDataHelper.GetIncomingArgument<bool?>("needRedistributeLSV", info.Data, false);
 
             try
@@ -37,8 +39,13 @@ namespace Module.Host.TPM.Handlers
                 using (DatabaseContext context = new DatabaseContext())
                 {
                     Promo promo = context.Set<Promo>().FirstOrDefault(n => n.Id == promoId && !n.Disabled);
-
-                    if (promo != null && promo.PromoStatus.SystemName == "Finished")
+                    Role role = context.Set<Role>().FirstOrDefault(x => x.Id == RoleId);
+                    bool isSupportAdmin = false;
+                    if (role.SystemName == "SupportAdministrator")
+                    {
+                        isSupportAdmin = true;
+                    }
+                    if (promo != null && (promo.PromoStatus.SystemName == "Finished" || (promo.PromoStatus.SystemName == "Closed" && role != null && role.SystemName == "SupportAdministrator")))
                     {
                         string errorString = null;
                         // Продуктовые параметры считаем только, если были загружены Actuals
@@ -48,12 +55,12 @@ namespace Module.Host.TPM.Handlers
                             if (needRedistributeLSV == true)
                             {
                                 //Хак, что бы пересчет не переписывать
-                                ActualProductParametersCalculation.CalculatePromoProductParameters(promo, context);
+                                ActualProductParametersCalculation.CalculatePromoProductParameters(promo, context, isSupportAdmin: isSupportAdmin);
                                 ActualLSVChangeHandler.CalculateAllActualLSV(promo, context);
                                 context.SaveChanges();
                             }
                             // если есть ошибки, они перечисленны через ;
-                            errorString = ActualProductParametersCalculation.CalculatePromoProductParameters(promo, context);
+                            errorString = ActualProductParametersCalculation.CalculatePromoProductParameters(promo, context, isSupportAdmin: isSupportAdmin);
                             // записываем ошибки если они есть
                             if (errorString != null)
                                 WriteErrorsInLog(handlerLogger, errorString);

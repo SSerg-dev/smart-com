@@ -98,7 +98,8 @@ namespace Module.Host.TPM.Actions.Notifications {
             IQueryable<ClientTreeHierarchyView> hierarchy = context.Set<ClientTreeHierarchyView>().AsNoTracking();
             query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters, FilterQueryModes.Active, String.Empty);
             // Не администраторы не смотрят чужие черновики
-            if (role != "Administrator") {
+            if (role != "Administrator" && role != "SupportAdministrator")
+            {
                 query = query.Where(e => e.PromoStatusSystemName != "Draft" || e.CreatorId == UserId);
             }
             return query;

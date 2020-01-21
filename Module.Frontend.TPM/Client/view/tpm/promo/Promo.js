@@ -25,16 +25,14 @@
                 var isCollapsed = this.isCollapsed();
                 target.setWidth(isCollapsed ? target.maxWidth : target.minWidth);
                 if (isCollapsed) {
-
                     target.down('#createbutton').setUI('create-promo-btn-toolbar-expanded');
                     target.down('#createbutton').setText(l10n.ns('tpm', 'Schedule').value('CreateExpanded'));
 
 
-                } else {
 
+                } else {
                     target.down('#createbutton').setUI('create-promo-btn-toolbar');
                     target.down('#createbutton').setText(l10n.ns('tpm', 'Schedule').value('CreateCollapsed'));
-
                 }
                 target.isExpanded = !target.isExpanded;
             },
@@ -100,7 +98,15 @@
             glyph: 0xf5c7,
             text: l10n.ns('tpm', 'Promo').value('ChangeStateOnlyButtonText'),
             tooltip: l10n.ns('tpm', 'Promo').value('ChangeStateOnlyButtonText'),
-        }, '-', '->', '-', {
+        }, {
+            itemId: 'canchangeresponsible',
+            resource: 'Promoes',
+            action: 'ChangeResponsible',
+            glyph: 0xf00f,
+            text: l10n.ns('tpm', 'Promo').value('ChangeResponsible'),
+            tooltip: l10n.ns('tpm', 'Promo').value('ChangeResponsible'),
+        },
+            '-', '->', '-', {
             itemId: 'extfilterclearbutton',
             ui: 'blue-button-toolbar',
             disabled: true,
@@ -113,7 +119,7 @@
             }
         }]
     }],
-
+    
     items: [{
         xtype: 'directorygrid',
         itemId: 'datatable',

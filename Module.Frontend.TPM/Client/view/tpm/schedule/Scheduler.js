@@ -69,7 +69,7 @@
         // кастомный тултип календаря
         hoverTip: {
             getText: function (date, e) {
-                if (date > new Date()) {
+                if (date > new Date() || App.UserInfo.getCurrentRole()['SystemName'] == 'SupportAdministrator') {
                     return l10n.ns('tpm', 'Scheduler').value('CanCreate');
                 } else {
                     return l10n.ns('tpm', 'Scheduler').value('CannotCreate');

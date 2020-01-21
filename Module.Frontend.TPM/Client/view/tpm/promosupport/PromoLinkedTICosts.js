@@ -50,7 +50,7 @@
             // для Cost Production нельзя редактировать список промо
             if (grid.up().down('costproduction')) {
                 addBtn.hide();
-                deleteBtn.hide();
+                deleteBtn.disable();
             }
         },
         
@@ -71,9 +71,9 @@
 
                 // для Cost Production нельзя редактировать список промо
                 if (status == 'Closed') {
-                    deleteBtn.hide();
+                    deleteBtn.disable();
                 } else if (!panel.up().down('costproduction')){ 
-                    deleteBtn.show();
+                    deleteBtn.enable();
 
                 }
             }

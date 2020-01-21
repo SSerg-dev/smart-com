@@ -44,8 +44,23 @@ namespace Module.Persist.TPM.PromoStateControl
 
             public bool ChangeState(Promo promoModel, string userRole, out string message)
             {
-                message = "Action is not available";
-                return false;
+                message = string.Empty;
+                PromoStatus promoStatus = _stateContext.dbContext.Set<PromoStatus>().Find(promoModel.PromoStatusId);
+                string statusName = promoStatus.SystemName;
+
+                if (userRole == "SupportAdministrator")
+                {
+                    _stateContext.Model = promoModel;
+                    _stateContext.State = _stateContext.GetPromoState(statusName);
+
+                    return true;
+                }
+                else
+                {
+                    message = "Action is not available";
+
+                    return false;
+                }
             }
 
             public bool ChangeState(Promo promoModel, PromoStates promoState, string userRole, out string message)

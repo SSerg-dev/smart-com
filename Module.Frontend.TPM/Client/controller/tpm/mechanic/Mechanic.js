@@ -44,6 +44,12 @@
                 'mechanic #updatebutton': {
                     click: this.onUpdateButtonClick
                 },
+                'mechaniceditor #edit': {
+                    click: this.windowEditorStartEdit
+                },
+                'mechaniceditor #canceledit': {
+                    click: this.windowEditorCanselEdit
+                },
                 'mechanic #deletebutton': {
                     click: this.onDeleteButtonClick
                 },
@@ -71,5 +77,36 @@
                 }
             }
         });
+    },
+    onUpdateButtonClick: function () {
+        this.callParent(arguments);
+        var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
+        if (currentRole === 'SupportAdministrator') {
+    
+            var mechaniceditor = Ext.ComponentQuery.query('mechaniceditor')[0];
+            var systemName = mechaniceditor.down('[name=SystemName]');
+            systemName.setDisabled(true);
+        }
+    },
+    windowEditorStartEdit: function () { 
+        var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
+        if (currentRole === 'SupportAdministrator') {
+
+            var mechaniceditor = Ext.ComponentQuery.query('mechaniceditor')[0];
+            var systemName = mechaniceditor.down('[name=SystemName]');
+            systemName.setDisabled(true);
+        }
+        
+    },
+    windowEditorCanselEdit: function () { 
+        var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
+        if (currentRole === 'SupportAdministrator') {
+
+            var mechaniceditor = Ext.ComponentQuery.query('mechaniceditor')[0];
+            var systemName = mechaniceditor.down('[name=SystemName]');
+            systemName.setDisabled(false);
+        }
+
     }
+
 });

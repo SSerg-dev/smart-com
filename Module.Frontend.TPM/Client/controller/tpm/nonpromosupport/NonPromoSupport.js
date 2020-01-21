@@ -244,6 +244,11 @@
 		var promoSupportForm = editor.down('nonpromosupportform'),
 			promoSupprotBrandTech = editor.down('nonpromosupportbrandtech'),
 			model = editor.promoSupportModel;
+
+		if (!model) {
+			return;
+		}
+
 		// Заполнение поля имени клиента в хедере
 		editor.down('promosupporttoptoolbar').down('label[name=client]').setText('Client: ' + model.data.ClientTreeFullPathName);
 		editor.down('nonpromosupportbrandtech').down('label[name=client]').setText('Brand tech');

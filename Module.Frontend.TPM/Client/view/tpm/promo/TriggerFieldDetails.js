@@ -7,15 +7,24 @@
     width: '100%',
     labelWidth: 190,
     labelSeparator: '',
+    triggerNoEditCls: 'inputReadOnly',
     editable: false,
+    regex: /^(-?)(0|([1-9][0-9]*))(\,[0-9]+)?$/i,
+    regexText: l10n.ns('tpm', 'PromoActivity').value('triggerfieldOnlyNumbers'),
+    maxLength: 100,
     windowType: 'promoactivitydetailsinfo',
     isReadable: true,
     crudAccess: [],
 
     listeners: {
-        afterrender: function (el) {
-            el.triggerCell.addCls('form-info-trigger-cell')
+        beforerender: function (me) {
+            if (me.listenersToAdd) {
+                me.on(me.listenersToAdd);
+            }
         },
+        afterrender: function (me) {
+            me.setEditable(me.editable);
+        }
     },
 
     valueToRaw: function (value) {
@@ -23,7 +32,7 @@
     },
 
     rawToValue: function (value) {
-        var parsedValue = parseFloat(String(value).replace(Ext.util.Format.decimalSeparator, "."))
+        var parsedValue = parseFloat(String(this.rawValue).replace(Ext.util.Format.decimalSeparator, "."))
         return isNaN(parsedValue) ? null : parsedValue;
     },
 
@@ -171,6 +180,30 @@
         newWindow.show();
         if (showMessage) {
             App.Notify.pushInfo(l10n.ns('tpm', 'PromoProductsView').value('SavePromoMessage'));
+        }
+    },
+
+    setEditable: function (editable) {
+        this.callParent(arguments);
+        if (this.triggerCell && this.inputEl) {
+            if (!editable) {
+                this.triggerCell.addCls(this.triggerNoEditCls);
+                this.inputEl.addCls(this.triggerNoEditCls);
+            } else {
+                this.triggerCell.removeCls(this.triggerNoEditCls);
+                this.inputEl.removeCls(this.triggerNoEditCls);
+            }
+        }
+    },
+
+    setReadOnly: function (readOnly) {
+        this.callParent(arguments);
+        if (this.triggerCell) {
+            if (readOnly) {
+                this.triggerCell.addCls(this.triggerNoEditCls)
+            } else {
+                this.triggerCell.removeCls(this.triggerNoEditCls)
+            }
         }
     }
 });

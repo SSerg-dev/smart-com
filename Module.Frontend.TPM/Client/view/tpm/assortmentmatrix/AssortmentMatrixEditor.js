@@ -78,6 +78,10 @@
                     var minValueInt = minValue.getTime();
                     field.setMinValue(new Date(minValueInt + currentTimeZoneOffsetInHours * 60000 + 10800000));
                     field.getPicker().setValue(field.minValue);
+                    if (App.UserInfo.getCurrentRole()['SystemName'] == 'SupportAdministrator') {
+                        field.setMinValue(null);
+                        field.validate();
+                    }
                 },
                 change: function (field) {
                     var endDate = field.up('editorform').down('[name=EndDate]');
@@ -104,7 +108,7 @@
                         var maxValue = new Date(Date.parse(field.getValue()) - 24 * 60 * 60 * 1000);
                         startDate.setMaxValue(maxValue);
                     }
-                }
+                },
             }
         }, {
             xtype: 'datefield',

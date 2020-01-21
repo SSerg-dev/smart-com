@@ -44,11 +44,12 @@ namespace Module.Persist.TPM.Model.TPM
         public Guid? ColorId { get; set; }
         public Guid? RejectReasonId { get; set; }
         public Guid? EventId { get; set; }
-        public Guid? CreatorId { get; set; }
         public Guid? ActualInStoreMechanicId { get; set; }
         public Guid? ActualInStoreMechanicTypeId { get; set; }
         public int? ClientTreeId { get; set; }
         public int? ClientTreeKeyId { get; set; }
+        public Guid? CreatorId { get; set; }
+        public string CreatorLogin { get; set; }
 
         public int? BaseClientTreeId { get; set; }
         [StringLength(400)]

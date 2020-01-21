@@ -1,16 +1,22 @@
 ﻿using Core.Dependency;
+using Core.Security.Models;
 using Core.Settings;
 using Frontend.Core.Extensions.Export;
 using Looper.Core;
 using Looper.Parameters;
 using Module.Persist.TPM.CalculatePromoParametersModule;
+using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
 using Persist;
+using Persist.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Web.Http;
 using System.Web.Http.OData;
+using Utility;
 
 namespace Module.Frontend.TPM.Util {
     public static class PromoHelper {
@@ -125,6 +131,99 @@ namespace Module.Frontend.TPM.Util {
 
             if (!success)
                 throw new Exception("Promo was blocked for calculation");
+        }
+        public static string ChangeResponsible(DatabaseContext Context,Promo model, string userName)
+        {
+            HashSet<UserRole> result = new HashSet<UserRole>();
+            IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
+            Promo promo = model;
+            var client = promo.ClientTreeId.ToString();
+            IQueryable<Constraint> constraintsRes = Context.Constraints.AsQueryable();
+            IQueryable<ClientTree> clientTree = Context.Set<ClientTree>();
+            var hierarchyRes = hierarchy.Where(e => client.Equals(e.Id.ToString())).FirstOrDefault();
+            var hierarchyesId = hierarchyRes.Hierarchy.Split('.').ToList();
+            hierarchyesId.Add(client);
+            hierarchy = hierarchy.Where(x =>
+                     hierarchyesId.Any(h => h.Equals(x.Id.ToString())));
+
+            HashSet<UserRole> userRoleConstraints = new HashSet<UserRole>();
+            foreach (var item in constraintsRes)
+            {
+                userRoleConstraints.Add(item.UserRole);
+            }
+
+            var userRole = Context.Set<UserRole>().ToList();
+            var userNotConstraint = userRole.Where(e => !userRoleConstraints.Any(r => r.Id.Equals(e.Id)));
+
+            constraintsRes = ModuleApplyFilterHelper.ApplyFilter(constraintsRes, hierarchy);
+
+
+            foreach (var item in constraintsRes)
+            {
+                result.Add(item.UserRole);
+            }
+            foreach (var item in userNotConstraint)
+            {
+                result.Add(item);
+            }
+            HashSet<User> userResult = new HashSet<User>();
+            foreach (var item in result)
+            {
+                if(!item.User.Disabled)
+                    userResult.Add(item.User);
+            }
+            Guid userId = Context.Set<User>().Where(e => e.Name == userName).FirstOrDefault().Id;
+            if (!userResult.Any(e => e.Id == userId))
+                return "This user has restrictions on this client.";
+            if (model.CreatorId == userId)
+                return "This user is attached to the promo.";
+            model.CreatorId = userId;
+            model.CreatorLogin = userName;
+            Context.SaveChanges();
+            return null;
+        }
+
+        public static void ResetPromo(DatabaseContext Context, Promo model, UserInfo user)
+        {
+            
+            List<PromoProduct> promoProductToDeleteList = Context.Set<PromoProduct>().Where(x => x.PromoId == model.Id && !x.Disabled).ToList();
+            foreach (PromoProduct promoProduct in promoProductToDeleteList)
+            {
+                promoProduct.DeletedDate = System.DateTime.Now;
+                promoProduct.Disabled = true;
+            }
+            model.NeedRecountUplift = true;
+            //необходимо удалить все коррекции
+            var promoProductToDeleteListIds = promoProductToDeleteList.Select(x => x.Id).ToList();
+            List<PromoProductsCorrection> promoProductCorrectionToDeleteList = Context.Set<PromoProductsCorrection>()
+                .Where(x => promoProductToDeleteListIds.Contains(x.PromoProductId) && x.Disabled != true).ToList();
+            foreach (PromoProductsCorrection promoProductsCorrection in promoProductCorrectionToDeleteList)
+            {
+                promoProductsCorrection.DeletedDate = DateTimeOffset.UtcNow;
+                promoProductsCorrection.Disabled = true;
+                promoProductsCorrection.UserId = (Guid)user.Id;
+                promoProductsCorrection.UserName = user.Login;
+            }
+
+            model.ActualPromoLSV = null;
+            model.InvoiceNumber = null;
+            model.ActualInStoreShelfPrice = null;
+            model.PlanInStoreShelfPrice = null;
+            model.ActualPromoBaselineBaseTI = null;
+            model.ActualPromoBaseTI = null;
+            model.ActualPromoNetNSV = null;
+            model.DocumentNumber = null;  
+            model.ActualPromoPostPromoEffectLSV = null;
+            model.ActualPromoLSVByCompensation = null;
+            model.ActualInStoreDiscount = null;
+            model.ActualInStoreMechanic = null;
+            model.ActualInStoreMechanicId = null;
+            model.ActualInStoreMechanicType = null;
+            model.ActualInStoreMechanicTypeId = null; 
+            PromoCalculateHelper.RecalculateBudgets(model, user, Context);
+
+            Context.SaveChanges();
+
         }
 
         /// <summary>

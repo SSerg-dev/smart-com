@@ -59,7 +59,7 @@
                     displayField: 'FullPathName',
                     multiSelect: true,
                     operator: 'conts',
-                    crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
+                    crudAccess: ['Administrator', 'SupportAdministrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
                     store: {
                         model: 'App.model.tpm.clienttree.ClientTree',
                         autoLoad: false,

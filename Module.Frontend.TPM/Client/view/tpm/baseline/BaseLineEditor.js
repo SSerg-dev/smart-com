@@ -49,8 +49,13 @@
                     var minValue = new Date();
                     var currentTimeZoneOffsetInHours = minValue.getTimezoneOffset();
                     var minValueInt = minValue.getTime();
-                    field.setMinValue(new Date(minValueInt + currentTimeZoneOffsetInHours * 60000 + 10800000));
-                    field.getPicker().setValue(field.minValue);
+                    var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
+                    if (currentRole !== 'SupportAdministrator') {
+                        field.setMinValue(new Date(minValueInt + currentTimeZoneOffsetInHours * 60000 + 10800000));
+                        field.getPicker().setValue(field.minValue);
+                    } else {
+                        field.setMinValue(null);
+                    }
                 }
             }          
         }, {

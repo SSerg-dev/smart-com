@@ -97,8 +97,12 @@
     'tpm.budgetsubitem.BudgetSubItemClientTree',
 
     'tpm.promo.Promo',
+    'tpm.promo.PromoChangeStatus',
     'tpm.promo.DeletedPromo',
     'tpm.promo.HistoricalPromo',
+
+    'tpm.promo.UserRolePromo',
+    'tpm.promo.HistoricalUserRolePromo',
 
     'tpm.promosupport.PromoSupport',
     'tpm.promosupport.DeletedPromoSupport',
@@ -252,5 +256,8 @@
     'tpm.promotypes.DeletedPromoTypes',
     'tpm.promotypes.HistoricalPromoTypes',
 
-    'tpm.inoutselectionproductwindow.InOutSelectionProductWindow'
+    'tpm.inoutselectionproductwindow.InOutSelectionProductWindow',
+
+    // вспомогательный контроллер для промо
+    'tpm.promo.PromoHelper'
 ]);

@@ -239,6 +239,13 @@ namespace Module.Persist.TPM.PromoStateControl
                         }
                     }
                 }
+                else if (userRole == "SupportAdministrator")
+                {
+                    _stateContext.Model = promoModel;
+                    _stateContext.State = _stateContext.GetPromoState(statusName);
+
+                    return true;
+                }
                 // Current state
                 else if (isAvailableCurrent && statusName == Name)
                 {

@@ -139,30 +139,31 @@
         'PromoProductsView': 'Promo Uplift'
     },
 
-	'text': {
-		'incorrectStartDateTime': 'Дата начала не может быть больше даты окончания',
-		'incorrectEndDateTime': 'Дата окончания не может быть меньше даты начала',
-		'incorrectDateTime': 'Некорректное значение даты/времени',
-		'failedStatusLoad': 'Не удалось загрузить информацию о статусах',
-		'notSelected': 'Необходимо выбрать запись',
-		'rejectReason': 'Reject reason',
-		'Confirmation': 'Confirmation',
-		'DeleteNode': 'Delete node?',
-		'formLoadError': 'Ошибка при загрузки формы',
-		'failedLoadData': 'Не удалось загрузить данные',
-		'changeHistoryIsEmpty': 'История изменений не содержит записей',
-		'wrongStartDate': 'New start date must be after current date.',
-		'DocumentNumberValidate': 'Document Number',
-		'completeSteps': 'Заполните оставшиеся шаги',
-		'completeStepsValidate': 'Проверьте правильность заполнения следующих шагов: ',
-		'completeStep1Validate': 'клиент',
-		'completeStep2Validate': 'продукт',
-		'completeStep3Validate': 'механика',
-		'completeStep4Validate': 'период',
-		'completeStep5Validate': 'событие',
-		'completeStep6Validate': 'настройки',
-		'dateOfChange': 'Дата изменения'
-	},
+    'text': {
+        'incorrectStartDateTime': 'Дата начала не может быть больше даты окончания',
+        'incorrectEndDateTime': 'Дата окончания не может быть меньше даты начала',
+        'incorrectDateTime': 'Некорректное значение даты/времени',
+        'failedStatusLoad': 'Не удалось загрузить информацию о статусах',
+        'notSelected': 'Необходимо выбрать запись',
+        'rejectReason': 'Reject reason',
+        'Confirmation': 'Confirmation',
+        'DeleteNode': 'Delete node?',
+        'formLoadError': 'Ошибка при загрузки формы',
+        'failedLoadData': 'Не удалось загрузить данные',
+        'changeHistoryIsEmpty': 'История изменений не содержит записей',
+        'wrongStartDate': 'New start date must be after current date.',
+        'DocumentNumberValidate': 'Document Number',
+        'completeSteps': 'Заполните оставшиеся шаги',
+        'completeStepsValidate': 'Проверьте правильность заполнения следующих шагов: ',
+        'completeStep1Validate': 'клиент',
+        'completeStep2Validate': 'продукт',
+        'completeStep3Validate': 'механика',
+        'completeStep4Validate': 'период',
+        'completeStep5Validate': 'событие',
+        'completeStep6Validate': 'настройки',
+        'dateOfChange': 'Дата изменения',
+        'selectpromostatuswindow': 'Выбор статуса промо'
+    },
 
 	'DeleteText': {
 		'deleteWindowTitle': 'Удаление записи',
@@ -200,12 +201,6 @@
 		'promoActivityStep1': 'Step 1: Instore Mechanic & Prices',
 		'promoActivityStep2': 'Step 2: Activity',
 
-		//'promoClosureStep1': 'Step 1: Mechanic',
-		//'promoClosureStep2': 'Step 2: X-sites & Catalog',
-		//'promoClosureStep3': 'Step 3: POSM',
-		//'promoClosureStep4': 'Step 4: Costs and Budget',
-		//'promoClosureStep5': 'Step 5: Activity',
-		//'promoClosureStep6': 'Step 6: Financial indicators',
 
 		'supportStep1': 'Step 1: X-sites',
 		'supportStep2': 'Step 2: Catalog',
@@ -227,18 +222,19 @@
 		'sendForApproval': 'Send for approval',
 		'reject': 'Reject',
 		'backToDraftPublished': 'Back to Draft (published)',
-		'close': 'Close promo',
-		'approve': 'Approve',
-		'undoPublish': 'Undo publish',
-		'cancel': 'Cancel',
-		'plan': 'Plan',
-		'showLog': 'Show log',
-		'recalculate': 'Recalculate',
-		'promoBlockLabelText': 'Promo is blocked for recalculations',
-		'downloadScheduleButtonText': 'Download',
-		'downloadError': 'File for this task doesn\'t exist',
-		'noSelectionError': 'Select task',
-	},
+        'close': 'Close promo',
+        'approve': 'Approve',
+        'undoPublish': 'Undo publish',
+        'cancel': 'Cancel',
+        'plan': 'Plan',
+        'changestatus': 'Change status',
+        'showLog': 'Show log',
+        'recalculate': 'Recalculate',
+        'promoBlockLabelText': 'Promo is blocked for recalculations',
+        'downloadScheduleButtonText': 'Download',
+        'downloadError': 'File for this task doesn\'t exist',
+        'noSelectionError': 'Select task',
+    },
 
 	'Category': {
 		'Name': 'Category'
@@ -261,6 +257,12 @@
 	'HistoricalNonPromoEquipment': ['.tpm.NonPromoEquipment', '.core.BaseHistoryEntity'],
 	'DeletedNonPromoEquipment': ['.tpm.NonPromoEquipment', '.core.BaseDeletedEntity'],
 
+    'Event': {
+        'Name': 'Event',
+        'Description': 'Description'
+    },
+    'HistoricalEvent': ['.tpm.Event', '.core.BaseHistoryEntity'],
+    'DeletedEvent': ['.tpm.Event', '.core.BaseDeletedEntity'],
 	'Segment': {
 		'Name': 'Segment'
 	},
@@ -424,6 +426,7 @@
         'PlanProductPCLSV': 'Plan Product PC LSV',
         'ProductBaselinePrice': 'Product Baseline Price',
         'PlanProductPCPrice': 'PC Price',
+        'PlanProductUplift': 'Plan Product Uplift',
         'ActualProductPCQty': 'Actual Product PC Qty',
         'ActualProductCaseQty': 'Actual Product Qty',
         'ActualProductUOM': 'Actual Product UOM',
@@ -653,16 +656,18 @@
 		'ProdCostTotal': 'Prod cost total',
 		'Event': 'Event',
 
-		'Plan': 'Plan',
-		'Fact': 'Fact',
-		'Costs': 'Costs',
-		'PlannedCosts': 'Planned Costs',
-		'ActualCosts': 'Actual Costs',
-		'Budget': 'Budget',
-		'ROIHeader': 'ROIHeader',
-		'UpliftHeader': 'UpliftHeader',
-		'Confirm Approval': 'Do you really want to approve the PROMO form?',
-		'Reason': 'Reason',
+        'Plan': 'Plan',
+        'Fact': 'Fact',
+        'Costs': 'Costs',
+        'PlannedCosts': 'Planned Costs',
+        'ActualCosts': 'Actual Costs',
+        'Budget': 'Budget',
+        'ROIHeader': 'ROIHeader',
+        'UpliftHeader': 'UpliftHeader',
+        'Confirm Approval': 'Do you really want to approve the PROMO form?',
+        'ConfirmPromoStatusChange': 'Are you sure you want to do this action? It may not join in standart workflow process.',
+        'FailToSelectStatus': 'You can not select current status.',
+        'Reason': 'Reason',
 
 		'PromoEventName': 'Promo Event Name',
 		'PromoEventDescription': 'Promo Event Description',
@@ -744,6 +749,8 @@
 
         'ConfirmCancelTitle': 'Cancel promo',
         'ConfirmCancelText': 'Do you really want to cancel this promo?',
+
+        'CreatorLogin': 'Creator Name',
     },
     'HistoricalPromo': ['.tpm.Promo', '.core.BaseHistoryEntity'],
     'DeletedPromo': ['.tpm.Promo', '.core.BaseDeletedEntity'],
@@ -1102,6 +1109,7 @@
         'PlanProductPCLSV': 'Plan Product PC LSV',
         'ProductBaselinePrice': 'Product Baseline Price',
         'PlanProductPCPrice': 'PC Price',
+        'PlanProductUplift': 'Plan Product Uplift',
         'ActualProductPCQty': 'Actual Product PC Qty',
         'ActualProductCaseQty': 'Actual Product Qty',
         'ActualProductUOM': 'Actual Product UOM',
@@ -1131,7 +1139,15 @@
         'TemplateTLC': 'Import TLC template XLSX',
         'AverageMarker': 'Average Marker',
         'PlanProductUpliftPercent': 'Plan Product Uplift Percent',
-        'PlanProductBaselineCaseQty': 'Plan Product Baseline Case Qty'
+        'PlanProductBaselineCaseQty': 'Plan Product Baseline Case Qty',
+        'PlanProductPostPromoEffectLSVW1': 'Plan Product Post Promo Effect LSV W1',
+        'PlanProductPostPromoEffectLSVW2': 'Plan Product Post Promo Effect LSV W2',
+        'ActualProductPostPromoEffectLSVW1': 'Actual Product Post Promo Effect LSV W1',
+        'ActualProductPostPromoEffectLSVW2': 'Actual Product Post Promo Effect LSV W2',
+        'PlanProductPostPromoEffectQtyW1': 'Plan Product Post Promo Effect QTY W1',
+        'PlanProductPostPromoEffectQtyW2': 'Plan Product Post Promo Effect QTY W2',
+        'ActualProductPostPromoEffectQtyW1': 'Actual Product Post Promo Effect QTY W1',
+        'ActualProductPostPromoEffectQtyW2': 'Actual Product Post Promo Effect QTY W2',
     },
     'HistoricalPromoProduct': ['.tpm.PromoProduct', '.core.BaseHistoryEntity'],
     'DeletedPromoProduct': ['.tpm.PromoProduct', '.core.BaseDeletedEntity'],
@@ -1654,7 +1670,7 @@
         'PlanPromoNetIncrementalBaseTI': 'Plan Promo Net Incremental Base TI',
         'ActualPromoNetIncrementalBaseTI': 'Actual Promo Net Incremental Base TI',
         'ActualPromoNetIncrementalCOGS': 'Actual Promo Net Incremental COGS',
-        'ActualPromoTotalBaseTI': 'Actual Promo Total Base TI'
+        'ActualPromoTotalBaseTI': 'Actual Promo Total Base TI',
      },
 
     'PromoActivity': {
@@ -1665,7 +1681,9 @@
         'ActualInStoreDiscount': 'Actual Instore Mechanic Discount',
         'ActualInStore': 'Actual In Store',
         'Plan': 'Plan',
-        'Actuals': 'Actuals'
+        'Actuals': 'Actuals',
+        'ExportAllPromoProducts': 'Export All Promo Products',
+        'triggerfieldOnlyNumbers' : 'Only number allowed'
     },
 
     'PromoBudgetsDetailsWindow': {
@@ -1852,4 +1870,11 @@
     },
     'HistoricalIncrementalPromo': ['.tpm.IncrementalPromo', '.core.BaseHistoryEntity'],
     'DeletedIncrementalPromo': ['.tpm.IncrementalPromo', '.core.BaseDeletedEntity'],
+
+    'UserRolePromo': {
+        'Name': 'Login',
+        'CreatorLogin': 'Login',
+        'Email': 'Email',
+    },
+    'HistoricalUserRolePromo': ['.tpm.UserRolePromo', '.core.BaseHistoryEntity'],
 });

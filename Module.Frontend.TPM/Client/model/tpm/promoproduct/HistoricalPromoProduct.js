@@ -59,6 +59,9 @@
             type: 'json',
             totalProperty: 'inlineCount',
             root: 'results'
+        },
+        extraParams: {
+            Id: null
         }
     }
 });

@@ -58,7 +58,6 @@
                 'promoeditorcustom': {
                     afterrender: this.onPromoEditorCustomAfterrender,
                     beforerender: this.onPromoEditorCustomBeforerender,
-                    show: this.onPromoEditorCustomShow,
                     close: this.onPromoEditorCustomClose,
                 },
 
@@ -148,47 +147,12 @@
                 },
 
                 // CustomTopToolbar
-                // Кнопки изменения состояния промо
-                'promoeditorcustom #btn_publish': {
-                    click: this.onPublishButtonClick
-                },
-                'promoeditorcustom #btn_undoPublish': {
-                    click: this.onUndoPublishButtonClick
-                },
-                'promoeditorcustom #btn_sendForApproval': {
-                    click: this.onSendForApprovalButtonClick
-                },
-                'promoeditorcustom #btn_approve': {
-                    click: this.onApproveButtonClick
-                },
-                'promoeditorcustom #btn_plan': {
-                    click: this.onPlanButtonClick
-                },
-                'promoeditorcustom #btn_cancel': {
-                    click: this.onCancelButtonClick
-                },
-                'promoeditorcustom #btn_close': {
-                    click: this.onToClosePromoButtonClick
-                },
-                'promoeditorcustom #btn_backToFinished': {
-                    click: this.onBackToFinishedPromoButtonClick
-                },
-                'promoeditorcustom #btn_reject': {
-                    click: this.onRejectButtonClick
-                },
-                'promoeditorcustom #btn_backToDraftPublished': {
-                    click: this.onBackToDraftPublishedButtonClick
-                },
                 'promoeditorcustom #btn_history': {
                     click: this.onPromoHistoryButtonClick
                 },
                 'promoeditorcustom #btn_recalculatePromo': {
                     click: this.recalculatePromo
-                },
-                'rejectreasonselectwindow #apply': {
-                    click: this.onApplyActionButtonClick
-                },
-
+                },  
                 // import/export
                 'promo #exportbutton': {
                     click: this.onExportButtonClick
@@ -323,8 +287,7 @@
                 },
             }
         });
-    },
-
+    }, 
     onGridPromoAfterrender: function (grid) {
         var store = grid.getStore();
 
@@ -526,14 +489,6 @@
         promoEditorCustom.query('#btn_promoInOut')[0].setGlyph(parseInt('0x' + promoEditorCustom.promotypeGlyph, 16));
         promoEditorCustom.query('#btn_promoInOut')[0].setText(promoEditorCustom.promotypeName);
         this.hideEditButtonForSomeRole();
-    },
-
-    onPromoEditorCustomShow: function () {
-        /*
-        var promoBudgetsDetailsWindow = Ext.widget('promobudgetsdetailswindow');
-        var promoActivityDetailsWindow = Ext.widget('promoactivitydetailswindow');
-        var promoProductSubrangeDetailsWindow = Ext.widget('promoproductsubrangedetailswindow');
-        */
     },
 
     onPromoEditorCustomBeforerender: function () {
@@ -1604,36 +1559,37 @@
         //Установка readOnly полям, для которых текущая роль не входит в crudAccess
         me.setFieldsReadOnlyForSomeRole(promoeditorcustom);
 
-        var needRecountUplift = Ext.ComponentQuery.query('[itemId=PromoUpliftLockedUpdateCheckbox]')[0];
-        var planUplift = Ext.ComponentQuery.query('[name=PlanPromoUpliftPercent]')[0];
+        //var needRecountUplift = Ext.ComponentQuery.query('[itemId=PromoUpliftLockedUpdateCheckbox]')[0];
+        //var planUplift = Ext.ComponentQuery.query('[name=PlanPromoUpliftPercent]')[0];
 
-        if (record.data.InOut) {
-            needRecountUplift.setDisabled(true);
-        } else {
-            needRecountUplift.setDisabled(false);
-        }
+        //if (record.data.InOut) {
+        //	needRecountUplift.setDisabled(true);
+        //} else {
+        //	needRecountUplift.setDisabled(false);
+        //}
 
-        if (needRecountUplift.value === true) {
-            planUplift.changeEditable(true);
-            planUplift.up('container').setReadable(true);
-            planUplift.up('container').down('button[itemId=GlyphLock]').setGlyph(0xf33e);
-        } else {
-            planUplift.changeEditable(false);
-            planUplift.up('container').setReadable(false);
-            planUplift.up('container').down('button[itemId=GlyphLock]').setGlyph(0xf33f);
-        }
+        //if (needRecountUplift.value === true) {
+        //          planUplift.changeEditable(true);
+        //          planUplift.up('container').setReadable(true);
+        //          planUplift.up('container').down('button[itemId=GlyphLock]').setGlyph(0xf33e);
+        //      } else {
+        //          planUplift.changeEditable(false);
+        //          planUplift.up('container').setReadable(false);
+        //          planUplift.up('container').down('button[itemId=GlyphLock]').setGlyph(0xf33f);
+        //}
 
-        //Начавшиеся promo не редактируются период
+        //Начавшиеся promo не редактируются период (кроме роли Support Administrator)
         var isPromoWasStarted = (['Started', 'Finished', 'Closed'].indexOf(promoStatusName) >= 0);
-        if (isPromoWasStarted) {
+        var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
+        if (isPromoWasStarted && currentRole !== 'SupportAdministrator') {
             me.blockStartedPromoDateChange(promoeditorcustom, me);
         }
 
-        //Начавшиеся promo не редактируются uplift
-        var isPromoWasStarted = (['Started', 'Finished', 'Closed'].indexOf(promoStatusName) >= 0);
-        if (isPromoWasStarted) {
-            me.blockStartedPromoUplift();
-        }
+        //Начавшиеся promo не редактируются uplift (кроме роли Support Administrator)
+        //      var isPromoWasStarted = (['Started', 'Finished', 'Closed'].indexOf(promoStatusName) >= 0);
+        //      if (isPromoWasStarted && currentRole !== 'SupportAdministrator') {
+        //	me.blockStartedPromoUplift();
+        //}
 
         me.setFieldsReadOnlyForSomeRole(promoeditorcustom);
     },
@@ -1710,34 +1666,31 @@
         var promoProductForm = promoeditorcustom.down('container[name=promo_step2]');
         var mechanic = promoeditorcustom.down('container[name=promo_step3]');
         var promoActivityStep1 = promoActivity.down('container[name=promoActivity_step1]');
+        var promoBudgets = button.up('window').down('promobudgets');
+
+        me.setReadOnlyForChildrens(promoActivity, promoeditorcustom.promoStatusSystemName, true, record.data.InOut);
+        me.setReadOnlyForChildrens(promoBudgets, promoeditorcustom.promoStatusSystemName, true, record.data.InOut);
 
         var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
 
         // --------------- basic promo ---------------
 
         // Promo Client
-        var clientCrudAccess = ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'];
+        var clientCrudAccess = ['Administrator', 'SupportAdministrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'];
         if (clientCrudAccess.indexOf(currentRole) > -1) {
-            var window = button.up('promoeditorcustom');
 
             promoClientForm.down('#choosePromoClientBtn').setDisabled(false);
         }
 
         // Product tree
-        var productCrudAccess = ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'];
+        var productCrudAccess = ['Administrator', 'SupportAdministrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'];
+        var window = button.up('promoeditorcustom');
         if (productCrudAccess.indexOf(currentRole) > -1) {
             window.productsSetted = true;
             promoProductForm.setDisabledBtns(false);
         }
 
         // --------------- buttons ---------------
-        // Нельзя загружать актуальные параметры до окончания промо.
-        var uploadActualsButton = promoActivity.down('#activityUploadPromoProducts');
-        if (uploadActualsButton && record.data && record.data.PromoStatusSystemName == 'Finished' && !promoeditorcustom.readOnly) {
-            uploadActualsButton.setDisabled(false);
-        } else {
-            uploadActualsButton.setDisabled(true);
-        }
 
         //uplift
         promoeditorcustom.down('button[itemId=savePromo]').show();
@@ -1749,34 +1702,33 @@
         //Установка readOnly полям, для которых текущая роль не входит в crudAccess
         me.setFieldsReadOnlyForSomeRole(promoeditorcustom);
 
-        var needRecountUplift = Ext.ComponentQuery.query('[itemId=PromoUpliftLockedUpdateCheckbox]')[0];
-        var planUplift = Ext.ComponentQuery.query('[name=PlanPromoUpliftPercent]')[0];
+        //var needRecountUplift = Ext.ComponentQuery.query('[itemId=PromoUpliftLockedUpdateCheckbox]')[0];
+        //var planUplift = Ext.ComponentQuery.query('[name=PlanPromoUpliftPercent]')[0];
 
-        if (record.data.InOut) {
-            needRecountUplift.setDisabled(true);
-        } else {
-            needRecountUplift.setDisabled(false);
-        }
+        //if (record.data.InOut) {
+        //	needRecountUplift.setDisabled(true);
+        //} else {
+        //	needRecountUplift.setDisabled(false);
+        //}
 
-        if (needRecountUplift.value === true) {
-            planUplift.changeEditable(true);
-            planUplift.up('container').setReadable(true);
-            planUplift.up('container').down('button[itemId=GlyphLock]').setGlyph(0xf33e);
-        } else {
-            planUplift.changeEditable(false);
-            planUplift.up('container').setReadable(false);
-            planUplift.up('container').down('button[itemId=GlyphLock]').setGlyph(0xf33f);
-        }
+        //      if (needRecountUplift.value === true) {
+        //          planUplift.changeEditable(true);
+        //          planUplift.up('container').setReadable(true);
+        //          planUplift.up('container').down('button[itemId=GlyphLock]').setGlyph(0xf33e);
+        //      } else {
+        //          planUplift.changeEditable(false);
+        //          planUplift.up('container').setReadable(false);
+        //          planUplift.up('container').down('button[itemId=GlyphLock]').setGlyph(0xf33f);
+        //}
 
         me.validatePromoModel(promoeditorcustom);
 
         // Разблокировка кнопок Add Promo Support
-        var promoBudgets = button.up('window').down('promobudgets');
-        var addSubItemButtons = promoBudgets.query('#addSubItem');
+        //var addSubItemButtons = promoBudgets.query('#addSubItem');
 
-        addSubItemButtons.forEach(function (button) {
-            button.setDisabled(false);
-        });
+        //addSubItemButtons.forEach(function (button) {
+        //    button.setDisabled(false);
+        //});
 
         // Сброc полей Instore Mechanic
         var promoController = App.app.getController('tpm.promo.Promo'),
@@ -1821,18 +1773,18 @@
 
         //Начавшиеся promo не редактируются период
         var isPromoWasStarted = (['Started', 'Finished', 'Closed'].indexOf(promoeditorcustom.promoStatusName) >= 0);
-        if (isPromoWasStarted) {
+        if (isPromoWasStarted && currentRole !== 'SupportAdministrator') {
             me.blockStartedPromoDateChange(promoeditorcustom, me);
         }
 
-        //Начавшиеся promo не редактируются uplift
-        var isPromoWasStarted = (['Started', 'Finished', 'Closed'].indexOf(promoeditorcustom.promoStatusName) >= 0);
-        if (isPromoWasStarted) {
-            me.blockStartedPromoUplift();
-        }
+        ////Начавшиеся promo не редактируются uplift
+        //var isPromoWasStarted = (['Started', 'Finished', 'Closed'].indexOf(promoeditorcustom.promoStatusName) >= 0);
+        //if (isPromoWasStarted) {
+        //	me.blockStartedPromoUplift();
+        //}
 
         // Если Промо в статусе от Started, то заблокировать редактирование PromoBasic
-        if (['Started', 'Finished', 'Closed'].indexOf(promoeditorcustom.promoStatusName) >= 0) {
+        if (isPromoWasStarted && currentRole !== 'SupportAdministrator') {
             var promoEvent = promoeditorcustom.down('container[name=promo_step5]').down('chooseEventButton');
             var priority = promoeditorcustom.down('container[name=promo_step6]').down('sliderfield[name=priority]');
 
@@ -1885,16 +1837,16 @@
         }
     },
 
-    blockStartedPromoUplift: function () {
-        var needRecountUplift = Ext.ComponentQuery.query('[itemId=PromoUpliftLockedUpdateCheckbox]')[0];
-        var planUplift = Ext.ComponentQuery.query('[name=PlanPromoUpliftPercent]')[0];
-        needRecountUplift.setDisabled(true);
-        needRecountUplift.setReadOnly(true);
-        needRecountUplift.addCls('readOnlyField');
-        planUplift.changeEditable(false);
-        planUplift.up('container').setReadable(true);
-        planUplift.up('container').down('button[itemId=GlyphLock]').setGlyph(0xf33f);
-    },
+    //blockStartedPromoUplift: function () {
+    //	var needRecountUplift = Ext.ComponentQuery.query('[itemId=PromoUpliftLockedUpdateCheckbox]')[0];
+    //	var planUplift = Ext.ComponentQuery.query('[name=PlanPromoUpliftPercent]')[0];
+    //	needRecountUplift.setDisabled(true);
+    //	needRecountUplift.setReadOnly(true);
+    //       needRecountUplift.addCls('readOnlyField');
+    //       planUplift.changeEditable(false);
+    //       planUplift.up('container').setReadable(true);
+    //       planUplift.up('container').down('button[itemId=GlyphLock]').setGlyph(0xf33f);
+    //},
 
     onCancelPromoButtonClick: function (button) {
         var window = button.up('promoeditorcustom');
@@ -1999,301 +1951,6 @@
         //Корректировка области прокрутки
         var h = choosepromowindow.down('[itemId=datatable]').getHeight();
         choosepromowindow.down('custompromopanel').setHeight(h - 34);
-    },
-
-
-    onPublishButtonClick: function (button) {
-        var window = button.up('promoeditorcustom');
-        var checkValid = this.validatePromoModel(window);
-        if (checkValid === '') {
-            var record = this.getRecord(window);
-
-            window.previousStatusId = window.statusId;
-            window.statusId = button.statusId;
-            window.promoName = this.getPromoName(window);
-
-            var model = this.buildPromoModel(window, record);
-            this.saveModel(model, window, false, true);
-            this.updateStatusHistoryState();
-        } else {
-            App.Notify.pushInfo(checkValid);
-        }
-    },
-
-    onUndoPublishButtonClick: function (button) {
-        var window = button.up('promoeditorcustom');
-        var checkValid = this.validatePromoModel(window);
-        if (checkValid === '') {
-            var record = this.getRecord(window);
-
-            window.down('#PromoUpliftLockedUpdateCheckbox').setValue(false);
-            window.down('[name = PlanPromoUpliftPercent]').setValue(null);
-
-            window.previousStatusId = window.statusId;
-            window.statusId = button.statusId;
-            window.promoName = 'Unpublish Promo';
-            window.down('#btn_recalculatePromo').hide();
-
-            var model = this.buildPromoModel(window, record);
-            this.saveModel(model, window, false, true);
-
-            // если во время возврата была открыта вкладка Calculations/Activity нужно переключиться с них
-            var btn_promo = button.up('window').down('container[name=promo]');
-            var btn_work_flow = button.up('window').down('#btn_changes');
-
-            if (!btn_promo.hasCls('selected') && !btn_work_flow.hasCls('selected')) {// && !btn_support.hasCls('selected')) {
-                this.onPromoButtonClick(btn_promo);
-            }
-        } else {
-            App.Notify.pushInfo(checkValid);
-        }
-    },
-
-
-    onSendForApprovalButtonClick: function (button) {
-        var window = button.up('promoeditorcustom');
-
-        var checkValid = this.validatePromoModel(window);
-
-        var isStep7Complete = !window.down('#btn_promoBudgets_step1').hasCls('notcompleted');
-        var isStep8Complete = !window.down('#btn_promoBudgets_step2').hasCls('notcompleted');
-        var isStep9Complete = !window.down('#btn_promoBudgets_step3').hasCls('notcompleted');
-
-        if (checkValid === '' && isStep7Complete && isStep8Complete && isStep9Complete) {
-            var record = this.getRecord(window);
-
-            window.previousStatusId = window.statusId;
-            window.statusId = button.statusId;
-            window.promoName = this.getPromoName(window);
-
-            var model = this.buildPromoModel(window, record);
-            this.saveModel(model, window, false, true);
-        } else {
-            App.Notify.pushInfo(checkValid);
-        }
-    },
-
-    onApproveButtonClick: function (button) {
-        var window = button.up('promoeditorcustom');
-        var checkValid = this.validatePromoModel(window);
-
-        // TODO: необходимо точно выяснить ограничения
-        var isStep7Complete = !window.down('#btn_promoBudgets_step1').hasCls('notcompleted');
-        var isStep8Complete = !window.down('#btn_promoBudgets_step2').hasCls('notcompleted');
-        var isStep9Complete = !window.down('#btn_promoBudgets_step3').hasCls('notcompleted');
-
-        if (checkValid === '' && (isStep7Complete && isStep8Complete && isStep9Complete)) {
-            var me = this;
-            // окно подтверждения
-            Ext.Msg.show({
-                title: l10n.ns('tpm', 'text').value('Confirmation'),
-                msg: l10n.ns('tpm', 'Promo').value('Confirm Approval'),
-                fn: function (btn) {
-                    if (btn === 'yes') {
-                        // Логика для согласования
-                        var record = me.getRecord(window);
-
-                        window.previousStatusId = window.statusId;
-                        window.statusId = button.statusId;
-                        window.promoName = me.getPromoName(window);
-
-                        var model = me.buildPromoModel(window, record);
-
-                        // если есть доступ, то через сохранение (нужно протестировать механизмы)
-                        var pointsAccess = App.UserInfo.getCurrentRole().AccessPoints;
-                        var access = pointsAccess.find(function (element) {
-                            return (element.Resource == 'Promoes' && element.Action == 'Patch') ||
-                                (element.Resource == 'PromoGridViews' && element.Action == 'Patch');
-                        });
-
-                        if (access) {
-                            me.saveModel(model, window, false, true);
-                        }
-                        else {
-                            me.changeStatusPromo(record.data.Id, button.statusId, window);
-                        }
-                    }
-                },
-                scope: this,
-                icon: Ext.Msg.QUESTION,
-                buttons: Ext.Msg.YESNO,
-                buttonText: {
-                    yes: l10n.ns('tpm', 'button').value('confirm'),
-                    no: l10n.ns('tpm', 'button').value('cancel')
-                }
-            });
-        } else {
-            App.Notify.pushInfo(checkValid);
-        }
-    },
-
-    onCancelButtonClick: function (button) {
-        Ext.Msg.show({
-            title: l10n.ns('tpm', 'Promo').value('ConfirmCancelTitle'),
-            msg: l10n.ns('tpm', 'Promo').value('ConfirmCancelText'),
-            fn: onMsgBoxClose,
-            scope: this,
-            icon: Ext.Msg.QUESTION,
-            buttons: Ext.Msg.YESNO,
-            buttonText: {
-                yes: l10n.ns('core', 'booleanValues').value('true'),
-                no: l10n.ns('core', 'booleanValues').value('false')
-            }
-        });
-        function onMsgBoxClose(buttonId) {
-            // Удаление Промо
-            if (buttonId === 'yes') {
-                var window = button.up('promoeditorcustom');
-                var record = this.getRecord(window);
-                window.previousStatusId = window.statusId;
-                window.statusId = button.statusId;
-                window.promoName = this.getPromoName(window);
-                var model = this.buildPromoModel(window, record);
-                window.readOnly = true;
-                this.saveModel(model, window, false, true);
-                window.down('#btn_showlog').hide();
-                window.down('#btn_recalculatePromo').hide();
-                window.down('#changePromo').hide();
-                window.down('#cancelPromo').hide();
-                window.down('#closePromo').show();
-            }
-        }
-    },
-
-    onPlanButtonClick: function (button) {
-        var window = button.up('promoeditorcustom');
-
-        var checkValid = this.validatePromoModel(window);
-
-        // TODO: необходимо точно выяснить ограничения
-        var isStep7Complete = !window.down('#btn_promoBudgets_step1').hasCls('notcompleted');
-        var isStep8Complete = !window.down('#btn_promoBudgets_step2').hasCls('notcompleted');
-        var isStep9Complete = !window.down('#btn_promoBudgets_step3').hasCls('notcompleted');
-
-        if (checkValid === '' && (isStep7Complete && isStep8Complete && isStep9Complete)) {
-            var record = this.getRecord(window);
-            var me = this;
-
-            window.previousStatusId = window.statusId;
-            window.statusId = button.statusId;
-            window.promoName = this.getPromoName(window);
-
-            var model = this.buildPromoModel(window, record);
-
-            // если есть доступ, то через сохранение (нужно протестировать механизмы)
-            var pointsAccess = App.UserInfo.getCurrentRole().AccessPoints;
-            var access = pointsAccess.find(function (element) {
-                return element.Resource == 'Promoes' && element.Action == 'Patch';
-            });
-
-            if (access) {
-                me.saveModel(model, window, false, true);
-            }
-            else {
-                me.changeStatusPromo(record.data.Id, button.statusId, window);
-            }
-        } else {
-            App.Notify.pushInfo(checkValid);
-        }
-    },
-
-
-    onToClosePromoButtonClick: function (button) {
-        var window = button.up('promoeditorcustom');
-
-        // TODO: необходимо точно выяснить ограничения
-        var isStep7Complete = !window.down('#btn_promoBudgets_step1').hasCls('notcompleted');
-        var isStep8Complete = !window.down('#btn_promoBudgets_step2').hasCls('notcompleted');
-        var isStep9Complete = !window.down('#btn_promoBudgets_step3').hasCls('notcompleted');
-
-        var CheckValid = this.validatePromoModel(window);
-
-        //Упрощенная проверка для закрытия
-        var promomechanic = window.down('promomechanic');
-        var v1 = promomechanic.down('numberfield[name=MarsMechanicDiscount]').validate();
-        var v2 = promomechanic.down('numberfield[name=PlanInstoreMechanicDiscount]').validate();
-        var v3 = promomechanic.down('textarea[name=PromoComment]').validate();
-        var isPromoValid = v1 && v2 && v3;
-
-        //TODO: переделать
-        var promoactivity = window.down('promoactivity');
-        var actM = promoactivity.down('searchcombobox[name=ActualInstoreMechanicId]');
-        var actMIsValid = !(actM.rawValue === "");
-        var actAISP = promoactivity.down('numberfield[name=ActualInStoreShelfPrice]');
-        var actAISPIsValid = !(actAISP.value === null);
-        var isActivityPromoValid = actMIsValid && actAISPIsValid;
-        if (CheckValid === '' && !isActivityPromoValid) {
-            CheckValid = 'In order to close promo Actual In Store in Activity must be filled.';
-        }
-
-        if ((CheckValid === '') && (isStep7Complete && isStep8Complete && isStep9Complete) && (isPromoValid && isActivityPromoValid)) {
-            var record = this.getRecord(window);
-            var me = this;
-
-            window.previousStatusId = window.statusId;
-            window.statusId = button.statusId;
-            window.promoName = this.getPromoName(window);
-
-            var model = this.buildPromoModel(window, record);
-
-            // если есть доступ, то через сохранение (нужно протестировать механизмы)
-            var pointsAccess = App.UserInfo.getCurrentRole().AccessPoints;
-            var access = pointsAccess.find(function (element) {
-                return element.Resource == 'Promoes' && element.Action == 'Patch';
-            });
-
-            if (access) {
-                me.saveModel(model, window, false, true);
-            }
-            else {
-                me.changeStatusPromo(record.data.Id, button.statusId, window);
-            }
-        } else {
-            App.Notify.pushInfo(CheckValid);
-        }
-    },
-
-    onBackToFinishedPromoButtonClick: function (button) {
-        var window = button.up('promoeditorcustom');
-
-        var checkValid = this.validatePromoModel(window);
-
-        // TODO: необходимо точно выяснить ограничения
-        var isStep7Complete = !window.down('#btn_promoBudgets_step1').hasCls('notcompleted');
-        var isStep8Complete = !window.down('#btn_promoBudgets_step2').hasCls('notcompleted');
-        var isStep9Complete = !window.down('#btn_promoBudgets_step3').hasCls('notcompleted');
-
-        //Упрощенная проверка для закрытия
-        var promomechanic = window.down('promomechanic');
-        var v1 = promomechanic.down('numberfield[name=MarsMechanicDiscount]').validate();
-        var v2 = promomechanic.down('numberfield[name=PlanInstoreMechanicDiscount]').validate();
-        var v3 = promomechanic.down('textarea[name=PromoComment]').validate();
-        var isPromoValid = v1 && v2 && v3;
-
-        if ((checkValid === '') && (isStep7Complete && isStep8Complete && isStep9Complete)) {
-            if (isPromoValid) {
-                var record = this.getRecord(window);
-                var me = this;
-
-                window.previousStatusId = window.statusId;
-                window.statusId = button.statusId;
-                window.promoName = this.getPromoName(window);
-
-                var model = this.buildPromoModel(window, record);
-
-                // если есть доступ, то через сохранение (нужно протестировать механизмы)
-                var pointsAccess = App.UserInfo.getCurrentRole().AccessPoints;
-                var access = pointsAccess.find(function (element) {
-                    return element.Resource == 'Promoes' && element.Action == 'Patch';
-                });
-
-                me.changeStatusPromo(record.data.Id, button.statusId, window);
-            } else {
-                return;
-            }
-        } else {
-            App.Notify.pushInfo(checkValid);
-        }
     },
 
     updateStatusHistoryState: function () {
@@ -2688,6 +2345,51 @@
         //record.data.ActualPromoIncrementalLSV = promoActivityStep2.down('numberfield[name=ActualPromoIncrementalLSV]').getValue();
         //record.data.ActualPromoLSV = promoActivityStep2.down('numberfield[name=ActualPromoLSVByCompensation]').getValue();
         //record.data.FactPostPromoEffectTotal = promoActivityStep2.down('numberfield[name=FactPostPromoEffectTotal]').getValue();
+        //if (App.UserInfo.getCurrentRole()['SystemName'] == 'SupportAdministrator') {
+        //    //Только для SupportAdmin
+        //    record.data.PlanPromoBaselineLSV = promoActivityStep2.down('triggerfielddetails[name=PlanPromoBaselineLSV]').getValue();
+        //    record.data.PlanPromoIncrementalLSV = promoActivityStep2.down('triggerfielddetails[name=PlanPromoIncrementalLSV]').getValue();
+        //    record.data.PlanPromoLSV = promoActivityStep2.down('triggerfielddetails[name=PlanPromoLSV]').getValue();
+        //    record.data.PlanPromoPostPromoEffectLSV = promoActivityStep2.down('triggerfielddetails[name=PlanPromoPostPromoEffectLSV]').getValue();
+        //    record.data.ActualPromoUpliftPercent = promoActivityStep2.down('triggerfielddetails[name=ActualPromoUpliftPercent]').getValue();
+        //    record.data.ActualPromoBaselineLSV = promoActivityStep2.down('triggerfielddetails[name=ActualPromoBaselineLSV]').getValue();
+        //    record.data.ActualPromoIncrementalLSV = promoActivityStep2.down('triggerfielddetails[name=ActualPromoIncrementalLSV]').getValue();
+        //    record.data.ActualPromoPostPromoEffectLSV = promoActivityStep2.down('triggerfielddetails[name=ActualPromoPostPromoEffectLSV]').getValue();
+        //    record.data.ActualPromoLSV = promoActivityStep2.down('triggerfielddetails[name=ActualPromoLSV]').getValue();
+        //    record.data.ActualPromoLSVByCompensation = promoActivityStep2.down('triggerfielddetails[name=ActualPromoLSVByCompensation]').getValue();
+
+        //    record.data.PlanPromoCost = promoBudgets.down('numberfield[name=PlanPromoCost]').getValue();
+        //    record.data.PlanPromoTIMarketing = promoBudgets.down('numberfield[name=PlanPromoTIMarketing]').getValue();
+        //    record.data.PlanPromoCostProduction = promoBudgets.down('numberfield[name=PlanPromoCostProduction]').getValue();
+        //    record.data.PlanPromoTIShopper = promoBudgets.down('numberfield[name=PlanPromoTIShopper]').getValue();
+        //    record.data.ActualPromoCost = promoBudgets.down('numberfield[name=ActualPromoCost]').getValue();
+        //    record.data.ActualPromoTIMarketing = promoBudgets.down('numberfield[name=ActualPromoTIMarketing]').getValue();
+        //    record.data.ActualPromoCostProduction = promoBudgets.down('numberfield[name=ActualPromoCostProduction]').getValue();
+        //    record.data.ActualPromoTIShopper = promoBudgets.down('numberfield[name=ActualPromoTIShopper]').getValue();
+
+        //    var marketingTIStep = promoBudgets.down('container[name=promoBudgets_step2]');
+
+        //    record.data.PlanPromoXSites = marketingTIStep.down('triggerfield[name=budgetDet-PlanX-sites]').getValue();
+        //    record.data.PlanPromoCatalogue = marketingTIStep.down('triggerfield[name=budgetDet-PlanCatalog]').getValue();
+        //    record.data.PlanPromoPOSMInClient = marketingTIStep.down('triggerfield[name=budgetDet-PlanPOSM]').getValue();
+
+        //    record.data.ActualPromoXSites = marketingTIStep.down('triggerfield[name=budgetDet-ActualX-sites]').getValue();
+        //    record.data.ActualPromoCatalogue = marketingTIStep.down('triggerfield[name=budgetDet-ActualCatalog]').getValue();
+        //    record.data.ActualPromoPOSMInClient = marketingTIStep.down('triggerfield[name=budgetDet-ActualPOSM]').getValue();
+
+        //    // cost production
+        //    var costProductionStep = promoBudgets.down('container[name=promoBudgets_step3]');
+
+        //    record.data.PlanPromoCostProdXSites = costProductionStep.down('triggerfield[name=budgetDet-PlanCostProdX-sites]').getValue();
+        //    record.data.PlanPromoCostProdCatalogue = costProductionStep.down('triggerfield[name=budgetDet-PlanCostProdCatalog]').getValue();
+        //    record.data.PlanPromoCostProdPOSMInClient = costProductionStep.down('triggerfield[name=budgetDet-PlanCostProdPOSM]').getValue();
+
+        //    record.data.ActualPromoCostProdXSites = costProductionStep.down('triggerfield[name=budgetDet-ActualCostProdX-sites]').getValue();
+        //    record.data.ActualPromoCostProdCatalogue = costProductionStep.down('triggerfield[name=budgetDet-ActualCostProdCatalog]').getValue();
+        //    record.data.ActualPromoCostProdPOSMInClient = costProductionStep.down('triggerfield[name=budgetDet-ActualCostProdPOSM]').getValue();
+
+        //}
+
         return record;
     },
 
@@ -2734,8 +2436,13 @@
         promoeditorcustom.promotypeId = record.data.PromoTypesId;
         promoeditorcustom.promotypeName = record.data.PromoTypesName;
         promoeditorcustom.promotypeGlyph = record.data.PromoTypesGlyph;
-        this.setPromoType(record.data.PromoTypesName, promoeditorcustom);
-        readOnly = isCopy ? false : readOnly || calculating;
+        this.setPromoType(record.data.PromoTypesName);
+        //Промо в статусе Cancelled нельзя менять
+        if (record.data.PromoStatusSystemName == 'Cancelled') {
+            readOnly = true;
+        } else {
+            readOnly = isCopy ? false : readOnly || calculating;
+        };
         promoeditorcustom.isInOutPromo = record.data.InOut;
 
         // Для Growth Acceleration Promo
@@ -2743,7 +2450,6 @@
         var growthAccelerationCheckbox = promoeditorcustom.down('[name=GrowthAccelerationCheckbox]');
         growthAccelerationCheckbox.setValue(record.data.IsGrowthAcceleration);
 
-        readOnly = isCopy ? false : readOnly || calculating;
         promoeditorcustom.readOnly = readOnly;
         $.ajax({
             dataType: 'json',
@@ -2928,7 +2634,7 @@
         var actualInStoreDiscount = promoActivityStep1.down('numberfield[name=ActualInStoreDiscount]');
 
         var actualInStoreShelfPrice = promoActivityStep1.down('numberfield[name=ActualInStoreShelfPrice]');
-
+        var planInStoreShelfPrice = promoActivityStep1.down('numberfield[name=PlanInStoreShelfPrice]'); 
         var invoiceNumber = promoActivityStep2.down('textfield[name=InvoiceNumber]');
         var documentNumber = promoActivityStep2.down('textfield[name=DocumentNumber]');
         var planPromoUpliftPercent = promoActivityStep2.down('[name=PlanPromoUpliftPercent]');
@@ -2946,12 +2652,15 @@
         var factPostPromoEffect = promoActivityStep2.down('[name=ActualPromoPostPromoEffectLSV]');
 
         // Нельзя загружать актуальные параметры до окончания промо.
-        var uploadActualsButton = promoActivityStep2.down('#activityUploadPromoProducts');
-        if (uploadActualsButton && record.data && record.data.PromoStatusSystemName == 'Finished' && !promoeditorcustom.readOnly) {
-            uploadActualsButton.setDisabled(false);
-        } else {
-            uploadActualsButton.setDisabled(true);
-        }
+        //var uploadActualsButton = promoActivityStep2.down('#activityUploadPromoProducts');
+        //if (uploadActualsButton && record.data && record.data.PromoStatusSystemName == 'Finished') {
+        //	uploadActualsButton.setDisabled(false);
+        //} else {
+        //	uploadActualsButton.setDisabled(true);
+        //}
+
+        me.setReadOnlyForChildrens(promoActivity, record.data.PromoStatusSystemName, !readOnly, promoeditorcustom.isInOutPromo);
+        me.setReadOnlyForChildrens(promoBudgets, record.data.PromoStatusSystemName, !readOnly, promoeditorcustom.isInOutPromo);
 
         // Блокировка изменения значений
         if (readOnly) {
@@ -2973,13 +2682,13 @@
 
             // --------------- budgets promo ---------------
             // блокировка кнопки Add Promo Support в режиме просмотра.
-            var addSubItemButtons = promoBudgets.query('#addSubItem');
-            addSubItemButtons.forEach(function (button) {
-                button.setDisabled(true);
-            })
+            //var addSubItemButtons = promoBudgets.query('#addSubItem');
+            //addSubItemButtons.forEach(function (button) {
+            //    button.setDisabled(true);
+            //})
 
             // --------------- promo activity ---------------
-            promoeditorcustom.down('container[itemId=ContainerPlanPromoUplift]').setReadable(true);
+            //promoeditorcustom.down('container[itemId=ContainerPlanPromoUplift]').setReadable(true);
 
             // --------------- buttons ---------------
             promoeditorcustom.down('button[itemId=savePromo]').hide();
@@ -2994,72 +2703,87 @@
         }
 
         if (isCopy) {
-            promoeditorcustom.down('button[itemId=btn_promoBudgets]').setDisabled(true);
-            promoeditorcustom.down('button[itemId=btn_promoBudgets]').addCls('disabled');
-            promoeditorcustom.down('button[itemId=btn_promoActivity]').setDisabled(true);
-            promoeditorcustom.down('button[itemId=btn_promoActivity]').addCls('disabled');
             promoeditorcustom.promoName = 'Unpublish Promo';
-        } else {
+        }
+
+        if (App.UserInfo.getCurrentRole()['SystemName'] == 'SupportAdministrator') {
             promoeditorcustom.promoId = record.data.Id;
             promoeditorcustom.promoNumber = record.data.Number;
             promoeditorcustom.statusId = record.data.PromoStatusId;
             promoeditorcustom.promoName = record.data.Name;
 
-            switch (record.data.PromoStatusSystemName) {
-                case 'Draft':
-                    promoeditorcustom.down('button[itemId=btn_promoBudgets]').setDisabled(true);
-                    promoeditorcustom.down('button[itemId=btn_promoBudgets]').addCls('disabled');
-                    promoeditorcustom.down('button[itemId=btn_promoActivity]').setDisabled(true);
-                    promoeditorcustom.down('button[itemId=btn_promoActivity]').addCls('disabled');
-                    break;
-                case 'DraftPublished':
-                    promoeditorcustom.down('button[itemId=btn_promoBudgets]').setDisabled(false);
-                    promoeditorcustom.down('button[itemId=btn_promoBudgets]').removeCls('disabled');
-                    promoeditorcustom.down('button[itemId=btn_promoActivity]').setDisabled(false);
-                    promoeditorcustom.down('button[itemId=btn_promoActivity]').removeCls('disabled');
-                    break;
-                case 'OnApproval':
-                    promoeditorcustom.down('button[itemId=btn_promoBudgets]').setDisabled(false);
-                    promoeditorcustom.down('button[itemId=btn_promoBudgets]').removeCls('disabled');
-                    promoeditorcustom.down('button[itemId=btn_promoActivity]').setDisabled(false);
-                    promoeditorcustom.down('button[itemId=btn_promoActivity]').removeCls('disabled');
-                    break;
-                case 'Approved':
-                    promoeditorcustom.down('button[itemId=btn_promoBudgets]').setDisabled(false);
-                    promoeditorcustom.down('button[itemId=btn_promoBudgets]').removeCls('disabled');
-                    promoeditorcustom.down('button[itemId=btn_promoActivity]').setDisabled(false);
-                    promoeditorcustom.down('button[itemId=btn_promoActivity]').removeCls('disabled');
-                    break;
-                case 'Planned':
-                    promoeditorcustom.down('button[itemId=btn_promoBudgets]').setDisabled(false);
-                    promoeditorcustom.down('button[itemId=btn_promoBudgets]').removeCls('disabled');
-                    promoeditorcustom.down('button[itemId=btn_promoActivity]').setDisabled(false);
-                    promoeditorcustom.down('button[itemId=btn_promoActivity]').removeCls('disabled');
-                    break;
-                case 'Started':
-                    promoeditorcustom.down('button[itemId=btn_promoBudgets]').setDisabled(false);
-                    promoeditorcustom.down('button[itemId=btn_promoBudgets]').removeCls('disabled');
-                    promoeditorcustom.down('button[itemId=btn_promoActivity]').setDisabled(false);
-                    promoeditorcustom.down('button[itemId=btn_promoActivity]').removeCls('disabled');
-                    break;
-                case 'Finished':
-                    promoeditorcustom.down('button[itemId=btn_promoBudgets]').setDisabled(false);
-                    promoeditorcustom.down('button[itemId=btn_promoBudgets]').removeCls('disabled');
-                    promoeditorcustom.down('button[itemId=btn_promoActivity]').setDisabled(false);
-                    promoeditorcustom.down('button[itemId=btn_promoActivity]').removeCls('disabled');
-                    break;
-                case 'Closed':
-                    promoeditorcustom.down('button[itemId=btn_promoBudgets]').setDisabled(false);
-                    promoeditorcustom.down('button[itemId=btn_promoBudgets]').removeCls('disabled');
-                    promoeditorcustom.down('button[itemId=btn_promoActivity]').setDisabled(false);
-                    promoeditorcustom.down('button[itemId=btn_promoActivity]').removeCls('disabled');
-                    break;
-                default:
-                    promoeditorcustom.down('button[itemId=btn_promoBudgets]').setDisabled(true);
-                    promoeditorcustom.down('button[itemId=btn_promoBudgets]').addCls('disabled');
-                    promoeditorcustom.down('button[itemId=btn_promoActivity]').setDisabled(true);
-                    promoeditorcustom.down('button[itemId=btn_promoActivity]').addCls('disabled');
-                    break;
+            promoeditorcustom.down('button[itemId=btn_promoBudgets]').setDisabled(false);
+            promoeditorcustom.down('button[itemId=btn_promoBudgets]').removeCls('disabled');
+            promoeditorcustom.down('button[itemId=btn_promoActivity]').setDisabled(false);
+            promoeditorcustom.down('button[itemId=btn_promoActivity]').removeCls('disabled');
+        } else {
+            if (isCopy) {
+                promoeditorcustom.down('button[itemId=btn_promoBudgets]').setDisabled(true);
+                promoeditorcustom.down('button[itemId=btn_promoBudgets]').addCls('disabled');
+                promoeditorcustom.down('button[itemId=btn_promoActivity]').setDisabled(true);
+                promoeditorcustom.down('button[itemId=btn_promoActivity]').addCls('disabled');
+            } else {
+                promoeditorcustom.promoId = record.data.Id;
+                promoeditorcustom.promoNumber = record.data.Number;
+                promoeditorcustom.statusId = record.data.PromoStatusId;
+                promoeditorcustom.promoName = record.data.Name;
+
+                switch (record.data.PromoStatusSystemName) {
+                    case 'Draft':
+                        promoeditorcustom.down('button[itemId=btn_promoBudgets]').setDisabled(true);
+                        promoeditorcustom.down('button[itemId=btn_promoBudgets]').addCls('disabled');
+                        promoeditorcustom.down('button[itemId=btn_promoActivity]').setDisabled(true);
+                        promoeditorcustom.down('button[itemId=btn_promoActivity]').addCls('disabled');
+                        break;
+                    case 'DraftPublished':
+                        promoeditorcustom.down('button[itemId=btn_promoBudgets]').setDisabled(false);
+                        promoeditorcustom.down('button[itemId=btn_promoBudgets]').removeCls('disabled');
+                        promoeditorcustom.down('button[itemId=btn_promoActivity]').setDisabled(false);
+                        promoeditorcustom.down('button[itemId=btn_promoActivity]').removeCls('disabled');
+                        break;
+                    case 'OnApproval':
+                        promoeditorcustom.down('button[itemId=btn_promoBudgets]').setDisabled(false);
+                        promoeditorcustom.down('button[itemId=btn_promoBudgets]').removeCls('disabled');
+                        promoeditorcustom.down('button[itemId=btn_promoActivity]').setDisabled(false);
+                        promoeditorcustom.down('button[itemId=btn_promoActivity]').removeCls('disabled');
+                        break;
+                    case 'Approved':
+                        promoeditorcustom.down('button[itemId=btn_promoBudgets]').setDisabled(false);
+                        promoeditorcustom.down('button[itemId=btn_promoBudgets]').removeCls('disabled');
+                        promoeditorcustom.down('button[itemId=btn_promoActivity]').setDisabled(false);
+                        promoeditorcustom.down('button[itemId=btn_promoActivity]').removeCls('disabled');
+                        break;
+                    case 'Planned':
+                        promoeditorcustom.down('button[itemId=btn_promoBudgets]').setDisabled(false);
+                        promoeditorcustom.down('button[itemId=btn_promoBudgets]').removeCls('disabled');
+                        promoeditorcustom.down('button[itemId=btn_promoActivity]').setDisabled(false);
+                        promoeditorcustom.down('button[itemId=btn_promoActivity]').removeCls('disabled');
+                        break;
+                    case 'Started':
+                        promoeditorcustom.down('button[itemId=btn_promoBudgets]').setDisabled(false);
+                        promoeditorcustom.down('button[itemId=btn_promoBudgets]').removeCls('disabled');
+                        promoeditorcustom.down('button[itemId=btn_promoActivity]').setDisabled(false);
+                        promoeditorcustom.down('button[itemId=btn_promoActivity]').removeCls('disabled');
+                        break;
+                    case 'Finished':
+                        promoeditorcustom.down('button[itemId=btn_promoBudgets]').setDisabled(false);
+                        promoeditorcustom.down('button[itemId=btn_promoBudgets]').removeCls('disabled');
+                        promoeditorcustom.down('button[itemId=btn_promoActivity]').setDisabled(false);
+                        promoeditorcustom.down('button[itemId=btn_promoActivity]').removeCls('disabled');
+                        break;
+                    case 'Closed':
+                        promoeditorcustom.down('button[itemId=btn_promoBudgets]').setDisabled(false);
+                        promoeditorcustom.down('button[itemId=btn_promoBudgets]').removeCls('disabled');
+                        promoeditorcustom.down('button[itemId=btn_promoActivity]').setDisabled(false);
+                        promoeditorcustom.down('button[itemId=btn_promoActivity]').removeCls('disabled');
+                        break;
+                    default:
+                        promoeditorcustom.down('button[itemId=btn_promoBudgets]').setDisabled(true);
+                        promoeditorcustom.down('button[itemId=btn_promoBudgets]').addCls('disabled');
+                        promoeditorcustom.down('button[itemId=btn_promoActivity]').setDisabled(true);
+                        promoeditorcustom.down('button[itemId=btn_promoActivity]').addCls('disabled');
+                        break;
+                }
             }
         }
 
@@ -3084,7 +2808,7 @@
         }
 
         var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
-        var clientCrudAccess = ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'];
+        var clientCrudAccess = ['Administrator', 'SupportAdministrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'];
 
         if (clientCrudAccess.indexOf(currentRole) > -1) {
             promoClientForm.down('#choosePromoClientBtn').setDisabled(readOnly);
@@ -3097,7 +2821,7 @@
         if (record.data.PromoBasicProducts)
             me.setInfoPromoBasicStep2(promoProductForm);
 
-        var productCrudAccess = ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'];
+        var productCrudAccess = ['Administrator', 'SupportAdministrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'];
         if (productCrudAccess.indexOf(currentRole) > -1) {
             promoProductForm.setDisabledBtns(readOnly);
         } else {
@@ -3233,7 +2957,8 @@
         promoEventButton.setGlyph(0xf133);
 
         // Если Промо в статусе от Started, то заблокировать редактирование PromoBasic
-        if (['Started', 'Finished', 'Closed'].indexOf(record.data.PromoStatusSystemName) >= 0) {
+        var isPromoWasStarted = (['Started', 'Finished', 'Closed'].indexOf(record.data.PromoStatusSystemName) >= 0);
+        if (isPromoWasStarted && currentRole !== 'SupportAdministrator') {
             // --------------- basic promo ---------------
             // client
             promoClientForm.down('#choosePromoClientBtn').setDisabled(true);
@@ -3318,15 +3043,15 @@
             actualInstoreMechanicTypeId.clearInvalid();
             actualInStoreDiscount.clearInvalid();
 
-            if (actualInstoreMechanicId.crudAccess.indexOf(currentRole) === -1) {
-                actualInstoreMechanicId.setReadOnly(true);
-            }
-            if (actualInstoreMechanicTypeId.crudAccess.indexOf(currentRole) === -1) {
-                actualInstoreMechanicTypeId.setReadOnly(true);
-            }
-            if (actualInStoreDiscount.crudAccess.indexOf(currentRole) === -1) {
-                actualInStoreDiscount.setReadOnly(true);
-            }
+            //if (actualInstoreMechanicId.crudAccess.indexOf(currentRole) === -1) {
+            //    actualInstoreMechanicId.setReadOnly(true);
+            //}
+            //if (actualInstoreMechanicTypeId.crudAccess.indexOf(currentRole) === -1) {
+            //    actualInstoreMechanicTypeId.setReadOnly(true);
+            //}
+            //if (actualInStoreDiscount.crudAccess.indexOf(currentRole) === -1) {
+            //    actualInStoreDiscount.setReadOnly(true);
+            //}
 
             promoController.mechanicTypeChange(
                 actualInstoreMechanicId, actualInstoreMechanicTypeId, actualInStoreDiscount,
@@ -3335,38 +3060,39 @@
             );
 
             actualInStoreShelfPrice.setValue(record.data.ActualInStoreShelfPrice);
+            planInStoreShelfPrice.setValue(record.data.PlanInStoreShelfPrice); 
             invoiceNumber.setValue(record.data.InvoiceNumber);
             documentNumber.setValue(record.data.DocumentNumber);
 
-            if (actualInStoreShelfPrice.crudAccess.indexOf(currentRole) === -1) {
-                actualInStoreShelfPrice.setReadOnly(true);
-            }
+            //if (actualInStoreShelfPrice.crudAccess.indexOf(currentRole) === -1) {
+            //    actualInStoreShelfPrice.setReadOnly(true);
+            //}
 
-            if (invoiceNumber.crudAccess.indexOf(currentRole) === -1) {
-                invoiceNumber.setReadOnly(true);
-            }
+            //if (invoiceNumber.crudAccess.indexOf(currentRole) === -1) {
+            //    invoiceNumber.setReadOnly(true);
+            //}
 
-            if (documentNumber.crudAccess.indexOf(currentRole) === -1) {
-                documentNumber.setReadOnly(true);
-            }
+            //if (documentNumber.crudAccess.indexOf(currentRole) === -1) {
+            //    documentNumber.setReadOnly(true);
+            //}
 
             planPromoUpliftPercent.setValue(record.data.PlanPromoUpliftPercent);
             promoUpliftLockedUpdateCheckbox.setValue(!record.data.NeedRecountUplift);
             planPromoUpliftPercent.defaultValue = !record.data.NeedRecountUplift;
 
-            if (record.data.InOut) {
-                planPromoUpliftPercent.changeEditable(false);
-                promoUpliftLockedUpdateCheckbox.setDisabled(true);
-                planPromoUpliftPercent.up('container').setReadable(true);
-                planPromoUpliftPercent.up('container').down('button[itemId=GlyphLock]').setGlyph(0xf33f);
-            }
+            //if (record.data.InOut) {
+            //    planPromoUpliftPercent.changeEditable(false);
+            //    promoUpliftLockedUpdateCheckbox.setDisabled(true);
+            //    planPromoUpliftPercent.up('container').setReadable(true);
+            //    planPromoUpliftPercent.up('container').down('button[itemId=GlyphLock]').setGlyph(0xf33f);
+            //}
 
-            var promoStatusName = record.get('PromoStatusName');
-            //Начавшиеся promo не редактируются uplift
-            var isPromoWasStarted = (['Started', 'Finished', 'Closed'].indexOf(promoStatusName) >= 0);
-            if (isPromoWasStarted) {
-                me.blockStartedPromoUplift();
-            }
+            //var promoStatusName = record.get('PromoStatusName');
+            ////Начавшиеся promo не редактируются uplift
+            //var isPromoWasStarted = (['Started', 'Finished', 'Closed'].indexOf(promoStatusName) >= 0);
+            //if (isPromoWasStarted) {
+            //    me.blockStartedPromoUplift();
+            //}
 
             planPromoBaselineLSV.setValue(record.data.PlanPromoBaselineLSV);
             planPromoIncrementalLSV.setValue(record.data.PlanPromoIncrementalLSV);
@@ -3393,8 +3119,8 @@
         //кнопки перехода статуса находятся не на customtoptoolbar, а на toolbar, при вызове down('toolbar') мы получаем customtoptoolbar, поэтому достаём через кнопку
         var toolbarbutton = promoeditorcustom.down('button[itemId=btn_sendForApproval]').up();
         if (calculating) {
-            planPromoUpliftPercent.up('container').setReadable(true);
-            planPromoUpliftPercent.changeEditable(false);
+            //planPromoUpliftPercent.up('container').setReadable(true);
+            //planPromoUpliftPercent.changeEditable(false);
             toolbar.items.items.forEach(function (item, i, arr) {
                 item.el.setStyle('backgroundColor', '#B53333');
                 //ненужный код, но и не проблеммный
@@ -3420,11 +3146,22 @@
             //toolbar.down('#btn_showlog').show();
             toolbar.down('#btn_showlog').promoId = record.data.Id;
             promoeditorcustom.down('#btn_recalculatePromo').hide();
+            promoeditorcustom.down('#btn_resetPromo').hide();
 
             //me.createTaskCheckCalculation(promoeditorcustom);
         }
-        else if (App.UserInfo.getCurrentRole().SystemName.toLowerCase() == 'administrator' && !isCopy && record.data.PromoStatusSystemName != 'Draft')
+        else if (record.data.PromoStatusSystemName == 'Draft' && App.UserInfo.getCurrentRole().SystemName.toLowerCase() == 'supportadministrator') {
+            promoeditorcustom.down('#btn_recalculatePromo').hide();
+            promoeditorcustom.down('#btn_resetPromo').show();
+        } else if ((App.UserInfo.getCurrentRole().SystemName.toLowerCase() == 'administrator' || App.UserInfo.getCurrentRole().SystemName.toLowerCase() == 'supportadministrator')
+            && record.data.PromoStatusSystemName != 'Draft' && record.data.PromoStatusSystemName != 'Cancelled') {
             promoeditorcustom.down('#btn_recalculatePromo').show();
+            promoeditorcustom.down('#btn_resetPromo').hide();
+        } else {
+            promoeditorcustom.down('#btn_recalculatePromo').hide();
+            promoeditorcustom.down('#btn_resetPromo').hide();
+        }
+
         this.checkLogForErrors(record.getId());
 
         this.checkLoadingComponents();
@@ -4047,7 +3784,8 @@
             mechanicId.setDisabled(false);
             mechanicTypeId.setDisabled(false);
             mechanicDiscount.setDisabled(false);
-        } else if (mechanicId.rawValue && mechanicListForUnlockDiscountField.some(function (element) { return element !== mechanicId.rawValue; })) {
+        } else if (mechanicId.rawValue && mechanicListForUnlockDiscountField.some(function (element)
+        { return element !== mechanicId.rawValue; })) {
             mechanicTypeId.setDisabled(true);
             mechanicDiscount.setDisabled(false);
 
@@ -4268,17 +4006,17 @@
         this.setReadOnlyFields(fieldsForReadOnlyCls, false);
 
         // Блокировка кнопки Add Promo Support в режиме просмотра.
-        var addSubItemButtons = panel.query('#addSubItem');
-        addSubItemButtons.forEach(function (button) {
-            button.setDisabled(panel.up('window').down('#changePromo').isVisible());
-        })
+        //var addSubItemButtons = panel.query('#addSubItem');
+        //addSubItemButtons.forEach(function (button) {
+        //    button.setDisabled(panel.up('window').down('#changePromo').isVisible());
+        //})
     },
 
     setReadOnlyFields: function (fieldNames, all) {
         fieldNames.forEach(function (fieldName) {
             var fields = Ext.ComponentQuery.query('[name=' + fieldName + ']');
             for (var i = 0; i < fields.length; i++) {
-                fields[i].addCls('readOnlyField');
+                //fields[i].addCls('readOnlyField');
 
                 if (!all)
                     break;
@@ -4294,8 +4032,8 @@
         var promoClientForm = promoeditorcustom.down('promoclient');
         var promoProductForm = promoeditorcustom.down('promobasicproducts');
 
-        var clientCrudAccess = ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'];
-        var productCrudAccess = ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'];
+        var clientCrudAccess = ['Administrator', 'SupportAdministrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'];
+        var productCrudAccess = ['Administrator', 'SupportAdministrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'];
 
         if (clientCrudAccess.indexOf(currentRole) === -1) {
             promoClientForm.down('#choosePromoClientBtn').setDisabled(true);
@@ -4319,13 +4057,13 @@
         // Блокировка кнопок Add Promo Support для роли DemandPlanning. 
         // Блокировка редактирования Growth Acceleration
         if (currentRole == 'DemandPlanning') {
-            var addSubItemButtons = Ext.ComponentQuery.query('#addSubItem');
-            if (addSubItemButtons.length > 0) {
-                addSubItemButtons.forEach(function (button) {
-                    button.disabled = true;
-                    button.setDisabled = function () { return true; }
-                });
-            }
+            //var addSubItemButtons = Ext.ComponentQuery.query('#addSubItem');
+            //if (addSubItemButtons.length > 0) {
+            //    addSubItemButtons.forEach(function (button) {
+            //        button.disabled = true;
+            //        button.setDisabled = function () { return true; }
+            //    });
+            //}
 
             var growthAccelerationCheckbox = promoeditorcustom.down('[name=GrowthAccelerationCheckbox]');
             growthAccelerationCheckbox.setReadOnly(true);
@@ -4340,7 +4078,7 @@
 
         var needRecountUplift = Ext.ComponentQuery.query('[itemId=PromoUpliftLockedUpdateCheckbox]')[0];
         var model = this.getRecord(panel.up('window'));
-        var planUplift = Ext.ComponentQuery.query('[name=PlanPromoUpliftPercent]')[0];
+        //var planUplift = Ext.ComponentQuery.query('[name=PlanPromoUpliftPercent]')[0];
 
         if (model) {
             if (model.data.NeedRecountUplift === true) {
@@ -4350,40 +4088,95 @@
             }
         }
 
-        if (needRecountUplift.disabled === true || Ext.ComponentQuery.query('#changePromo')[0].isVisible()) {
-            planUplift.changeEditable(false);
-            planUplift.up('container').down('button[itemId=GlyphLock]').setGlyph(0xf33f);
-            planUplift.up('container').setReadable(true);
-        }
+        //      if (needRecountUplift.disabled === true || Ext.ComponentQuery.query('#changePromo')[0].isVisible()) {
+        //          planUplift.changeEditable(false);
+        //          planUplift.up('container').down('button[itemId=GlyphLock]').setGlyph(0xf33f);
+        //          planUplift.up('container').setReadable(true);
+        //}
 
-        if (Ext.ComponentQuery.query('#changePromo')[0].isVisible() === false) {
-            if (model.data.InOut) {
-                needRecountUplift.setDisabled(true);
+        //if (Ext.ComponentQuery.query('#changePromo')[0].isVisible() === false) {
+        //	if (model.data.InOut) {
+        //		needRecountUplift.setDisabled(true);
+        //	} else {
+        //		needRecountUplift.setDisabled(false);
+        //	}
+
+        //          if (needRecountUplift.value === true) {
+        //              planUplift.changeEditable(true);
+        //              planUplift.up('container').down('button[itemId=GlyphLock]').setGlyph(0xf33e);
+        //              planUplift.up('container').setReadable(true);
+        //	}
+        //}
+
+        //var promoStatusName = model.get('PromoStatusName')
+        ////Начавшиеся promo не редактируются uplift
+        //var isPromoWasStarted = (['Started', 'Finished', 'Closed'].indexOf(promoStatusName) >= 0);
+        //if (isPromoWasStarted) {
+        //	me.blockStartedPromoUplift();
+        //}
+
+        //// Установка стиля для readOnly полей.
+        //var fieldsForReadOnlyCls = [
+        //	'PlanPromoBaselineLSV', 'PlanPromoIncrementalLSV', 'PlanPromoLSV', 'PlanPromoPostPromoEffectLSV',
+        //	'ActualPromoUpliftPercent', 'ActualPromoBaselineLSV', 'ActualPromoIncrementalLSV', 'ActualPromoLSV', 'ActualPromoLSVByCompensation', 'ActualPromoPostPromoEffectLSV',
+        //];
+
+        //me.setReadOnlyFields(fieldsForReadOnlyCls, false);
+    },
+
+
+    setReadOnlyForChildrens: function (window, status, isPromoEditable, IsInOut) {
+        if (window) {
+            var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
+            this.setReadOnlyForChildrensRecursion(this, window, currentRole, status, false, isPromoEditable, IsInOut);
+        } else {
+            console.warn('Window does not exist');
+        }
+    },
+
+    setReadOnlyForChildrensRecursion: function (me, window, currentRole, currentStatus, isParentEditable, isPromoEditable, IsInOut) {
+        window.items.items.forEach(function (item) {
+            var isThisEditable = me.isActionAllowed(item, currentRole, currentStatus, isParentEditable, IsInOut, isPromoEditable);
+            if (item.setEditable && (item.xtype == 'triggerfielddetails' || item.xtype == 'triggerfield')) {
+                item.setEditable(isThisEditable);
+            } else if (item.setDisabled && (item.xtype == 'checkbox' || item.xtype == 'button')) {
+                item.setDisabled(!isThisEditable);
+            } else if (item.setReadOnly && item.xtype != 'triggerfielddetails') {
+                item.setReadOnly(!isThisEditable);
+            };
+            if (item.items && item.items.items) {
+                me.setReadOnlyForChildrensRecursion(me, item, currentRole, currentStatus, isThisEditable, isPromoEditable, IsInOut);
+            }
+        })
+    },
+
+    isActionAllowed: function (item, currentRole, currentStatus, isParentEditable, IsInOut, isPromoEditable) {
+        var isAvailable = isParentEditable;
+        if (isPromoEditable || item.availableInReadOnlyPromo) {
+            if (item.noneCanEdit) {
+                isAvailable = false;
             } else {
-                needRecountUplift.setDisabled(false);
-            }
-
-            if (needRecountUplift.value === true) {
-                planUplift.changeEditable(true);
-                planUplift.up('container').down('button[itemId=GlyphLock]').setGlyph(0xf33e);
-                planUplift.up('container').setReadable(true);
+                //Если промо InOut и есть отдельный конфиг ролей для инаута
+                if (IsInOut && item.availableRoleStatusActionsInOut) {
+                    if (item.availableRoleStatusActionsInOut[currentRole]) {
+                        if (item.availableRoleStatusActionsInOut[currentRole].includes(currentStatus)) {
+                            isAvailable = true;
+                        } else {
+                            isAvailable = false;
+                        }
+                    }
+                } else {
+                    if (item.availableRoleStatusActions && item.availableRoleStatusActions[currentRole]) {
+                        if (item.availableRoleStatusActions[currentRole].includes(currentStatus)) {
+                            isAvailable = true;
+                        } else {
+                            isAvailable = false;
+                        }
+                    }
+                }
             }
         }
-
-        var promoStatusName = model.get('PromoStatusName')
-        //Начавшиеся promo не редактируются uplift
-        var isPromoWasStarted = (['Started', 'Finished', 'Closed'].indexOf(promoStatusName) >= 0);
-        if (isPromoWasStarted) {
-            me.blockStartedPromoUplift();
-        }
-
-        // Установка стиля для readOnly полей.
-        var fieldsForReadOnlyCls = [
-            'PlanPromoBaselineLSV', 'PlanPromoIncrementalLSV', 'PlanPromoLSV', 'PlanPromoPostPromoEffectLSV',
-            'ActualPromoUpliftPercent', 'ActualPromoBaselineLSV', 'ActualPromoIncrementalLSV', 'ActualPromoLSV', 'ActualPromoLSVByCompensation', 'ActualPromoPostPromoEffectLSV',
-        ];
-
-        me.setReadOnlyFields(fieldsForReadOnlyCls, false);
+        return isAvailable;
     },
 
     // При изменении полей в Budgets Step 1 перерасчитываем Total Cost
@@ -4470,104 +4263,6 @@
         if (fieldActivity) {
             fieldActivity.setValue(newValue);
         }
-    },
-
-    onRejectButtonClick: function (button) {
-        var window = button.up('window');
-        var record = this.getRecord(window);
-        this.showCommentWindow(record, window);
-    },
-
-    showCommentWindow: function (record, window) {
-        var rejectreasonselectwindow = Ext.widget('rejectreasonselectwindow');
-        rejectreasonselectwindow.record = record;
-        rejectreasonselectwindow.promowindow = window;
-        rejectreasonselectwindow.show();
-    },
-
-    onBackToDraftPublishedButtonClick: function (button) {
-        var window = button.up('promoeditorcustom');
-        var record = this.getRecord(window);
-        var me = this;
-
-        window.previousStatusId = window.statusId;
-        window.statusId = button.statusId;
-        window.promoName = this.getPromoName(window);
-
-        var model = this.buildPromoModel(window, record);
-
-        var pointsAccess = App.UserInfo.getCurrentRole().AccessPoints;
-        var access = pointsAccess.find(function (element) {
-            return element.Resource == 'Promoes' && element.Action == 'Patch';
-        });
-
-        me.changeStatusPromo(record.data.Id, button.statusId, window);
-        me.updateStatusHistoryState();
-    },
-
-    onApplyActionButtonClick: function (button) {
-        var windowReject = button.up('rejectreasonselectwindow');
-        var commentField = windowReject.down('textarea[name=comment]');
-        var rejectReasonField = windowReject.down('searchfield[name=RejectReasonId]');
-        var me = this;
-
-        // проверка на валидность формы
-        if (!rejectReasonField.isValid() || (commentField.isVisible() && !commentField.isValid())) {
-            rejectReasonField.validate();
-            commentField.validate();
-            return;
-        }
-
-        parameters = {
-            rejectPromoId: breeze.DataType.Guid.fmtOData(windowReject.record.data.Id),
-            rejectReasonId: breeze.DataType.Guid.fmtOData(rejectReasonField.getValue()),
-            rejectComment: breeze.DataType.String.fmtOData(commentField.getValue())
-        };
-
-        windowReject.setLoading(l10n.ns('core').value('savingText'));
-
-        App.Util.makeRequestWithCallback('Promoes', 'DeclinePromo', parameters, function (data) {
-            var result = Ext.JSON.decode(data.httpResponse.data.value);
-
-            if (result.success) {
-                // TODO: логика при успешном отклонении
-                var windowPromo = Ext.ComponentQuery.query('promoeditorcustom')[0];
-                windowPromo.setLoading(l10n.ns('core').value('savingText'));
-
-                App.model.tpm.promo.Promo.load(windowReject.record.data.Id, {
-                    callback: function (newModel, operation) {
-                        if (newModel) {
-                            var grid = Ext.ComponentQuery.query('#promoGrid')[0];
-                            var directorygrid = grid ? grid.down('directorygrid') : null;
-
-                            windowPromo.promoId = newModel.data.Id;
-                            windowPromo.model = newModel;
-                            me.reFillPromoForm(windowPromo, newModel, directorygrid);
-                        }
-                        else {
-                            windowPromo.setLoading(false);
-                        }
-                    }
-                });
-
-                windowReject.close();
-            } else {
-                App.Notify.pushError(l10n.ns('tpm', 'text').value('failedLoadData'));
-            }
-
-            windowReject.setLoading(false);
-        }, function (data) {
-            if (data.body != undefined) {
-                if (data.body['odata.error'] != undefined) {
-                    App.Notify.pushError(data.body['odata.error'].innererror.message);
-                } else {
-                    App.Notify.pushError(data.message);
-                }
-            } else {
-                App.Notify.pushError(data.message);
-            }
-            windowReject.setLoading(false);
-        });
     },
 
     getRecord: function (window) {
@@ -4792,7 +4487,8 @@
     },
 
     onPromoGridSelectionChange: function (selModel, selected) {
-        this.onGridSelectionChange(selModel, selected);
+        this.onGridSelectionChange(selModel, selected); 
+        selModel.view.up('#viewcontainer').down('#canchangeresponsible').setDisabled(false);
     },
 
     onShowLogButtonClick: function (button) {
@@ -4803,8 +4499,9 @@
 
     // открывает грид с promoproducts для промо
     onActivityUploadPromoProductsClick: function (button) {
-        var promoProductWidget = Ext.widget('promoproduct');
+        var currentRole = App.UserInfo.getCurrentRole();
         var promoForm = button.up('promoeditorcustom');
+        var promoProductWidget = Ext.widget('promoproduct');
         var record = this.getRecord(promoForm);
         var me = this;
 
@@ -4819,11 +4516,10 @@
 
                 var tmplTLC = promoProductWidget.down('#loadimporttemplatexlsxbuttonTLC');
                 var tmplNotTLC = promoProductWidget.down('#loadimporttemplatexlsxbutton');
-                var currentRole = App.UserInfo.getCurrentRole();
-                if (currentRole.SystemName.toLowerCase() == 'keyaccountmanager' && record.data.LoadFromTLC) {
+                if ((currentRole.SystemName.toLowerCase() == 'keyaccountmanager' || currentRole.SystemName.toLowerCase() == 'supportadministrator') && record.data.LoadFromTLC) {
                     tmplTLC.show();
                     tmplNotTLC.hide();
-                } else if (currentRole.SystemName.toLowerCase() != 'keyaccountmanager' && record.data.LoadFromTLC) {
+                } else if (currentRole.SystemName.toLowerCase() != 'keyaccountmanager' && currentRole.SystemName.toLowerCase() != 'supportadministrator' && record.data.LoadFromTLC) {
                     importBtn.hide();
                 } else {
                     tmplNotTLC.show();
@@ -4882,6 +4578,9 @@
                 }
             }).show();
         }
+        if (currentRole.SystemName.toLowerCase() == 'supportadministrator' && promoForm.promoStatusSystemName != "Finished" && promoForm.promoStatusSystemName != "Closed") {
+            Ext.MessageBox.alert(l10n.ns('tpm', 'PromoActivity').value('Warning'), l10n.ns('tpm', 'PromoActivity').value('uploadActualsStatus'));
+        };
     },
 
     //окно логов
@@ -5164,8 +4863,17 @@
 
             //toolbar.down('#btn_showlog').hide();
 
-            if (App.UserInfo.getCurrentRole().SystemName.toLowerCase() == 'administrator' && record.data.PromoStatusSystemName != 'Draft')
+            if (record.data.PromoStatusSystemName == 'Draft' && App.UserInfo.getCurrentRole().SystemName.toLowerCase() == 'supportadministrator') {
+                window.down('#btn_recalculatePromo').hide();
+                window.down('#btn_resetPromo').show();
+            } else if ((App.UserInfo.getCurrentRole().SystemName.toLowerCase() == 'administrator' || App.UserInfo.getCurrentRole().SystemName.toLowerCase() == 'supportadministrator')
+                && record.data.PromoStatusSystemName != 'Draft' && record.data.PromoStatusSystemName != 'Cancelled') {
                 window.down('#btn_recalculatePromo').show();
+                window.down('#btn_resetPromo').hide();
+            } else {
+                window.down('#btn_recalculatePromo').hide();
+                window.down('#btn_resetPromo').hide();
+            }
         }
 
         // если расчеты закончились, необходимо обновить форму
@@ -5324,9 +5032,8 @@
         window.down('[name=PlanPromoPostPromoEffectLSV]').setValue(record.data.PlanPromoPostPromoEffectLSV);
 
         // In Store Shelf Price
-        window.down('[name=ActualInStoreShelfPrice]').setValue(record.data.ActualInStoreShelfPrice);
-        window.down('[name=PlanInStoreShelfPrice]').setValue(record.data.PlanInStoreShelfPrice);
-
+        window.down('[name=ActualInStoreShelfPrice]').setValue(record.data.ActualInStoreShelfPrice); 
+        window.down('[name=PlanInStoreShelfPrice]').setValue(record.data.PlanInStoreShelfPrice); 
         // Actual - Activityasa
         window.down('[name=InvoiceNumber]').setValue(record.data.InvoiceNumber);
         window.down('[name=DocumentNumber]').setValue(record.data.DocumentNumber);
@@ -5411,7 +5118,7 @@
         requestHub($.connection.logHub.server.subscribeStatus, [promoId, blocked]);
         window.down('#btn_showlog').setDisabled(false);
     },
-
+  
     recalculatePromo: function (btn) {
         var window = btn.up('promoeditorcustom');
         var record = this.getRecord(window);

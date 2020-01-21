@@ -111,8 +111,7 @@
                     if (result.models.length !== 0) {
                         var promoproductcorrectioneditor = Ext.ComponentQuery.query('promoproductcorrectioneditor')[0];
                         var promoProductId = promoproductcorrectioneditor.down('[name=PromoProductId]');
-
-                        console.log(result.models.Id);
+                         
                         promoProductId.setValue(result.models.Id);
                     } else {
                         App.Notify.pushError('Group is empty');

@@ -123,7 +123,7 @@ namespace Module.Frontend.TPM.Controllers
            
             // если существует коррекция на данный PromoProduct, то не создаем новый объект
             var item = Context.Set<PromoProductsCorrection>().FirstOrDefault(x => x.PromoProductId == model.PromoProductId && x.TempId == model.TempId && !x.Disabled);
-
+          
             if (item != null)
             {
                 if (item.PromoProduct.Promo.NeedRecountUplift == false && String.IsNullOrEmpty(item.TempId))
@@ -194,6 +194,8 @@ namespace Module.Frontend.TPM.Controllers
             {
                 UserInfo user = authorizationManager.GetCurrentUser();
                 var model = Context.Set<PromoProductsCorrection>().Find(key);
+                string role = authorizationManager.GetCurrentRoleName();
+
                 if (model == null)
                 {
                     return NotFound();
@@ -212,7 +214,7 @@ namespace Module.Frontend.TPM.Controllers
                 ISettingsManager settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
                 string promoStatuses = settingsManager.GetSetting<string>("PROMO_PRODUCT_CORRECTION_PROMO_STATUS_LIST", "Draft,Deleted,Cancelled,Started,Finished,Closed");
                 string[] status = promoStatuses.Split(',');
-                if (status.Any(x => x == promoStatus))
+                if (status.Any(x => x == promoStatus) && !role.Equals("SupportAdministrator"))
                     return InternalServerError(new Exception("Cannot be update correction where status promo = " + promoStatus));
                 if(model.PromoProduct.Promo.NeedRecountUplift == false)
                 {

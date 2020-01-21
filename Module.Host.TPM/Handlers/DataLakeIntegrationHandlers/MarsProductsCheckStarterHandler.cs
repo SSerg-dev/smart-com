@@ -31,8 +31,8 @@ namespace Module.Host.TPM.Handlers.DataLakeIntegrationHandlers
         {
             ILogWriter handlerLogger = new FileLogWriter(info.HandlerId.ToString(), new Dictionary<string, string>() { ["Timing"] = "TIMING" });
             var stopWatch = Stopwatch.StartNew();
-            handlerLogger.Write(true, String.Format("The checking of the Mars products initialization began at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
-            handlerLogger.Write(true, "The task for checking of the Mars products will be created in a few seconds.", "Message");
+            handlerLogger.Write(true, String.Format("Synchronization materials with products initialization began at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+            handlerLogger.Write(true, "The task for synchronization materials with products will be created in a few seconds.", "Message");
 
             var context = new DatabaseContext();
             try
@@ -66,14 +66,14 @@ namespace Module.Host.TPM.Handlers.DataLakeIntegrationHandlers
                 context.LoopHandlers.Add(handler);
 
                 context.SaveChanges();
-                handlerLogger.Write(true, "The task for checking of the Mars products was created.", "Message");
+                handlerLogger.Write(true, "The task for synchronization materials with products was created.", "Message");
             }
             catch (Exception e)
             {
                 data.SetValue<bool>("HasErrors", true);
                 logger.Error(e);
 
-                handlerLogger.Write(true, String.Format("The checking of the Mars products initialization ended with errors at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+                handlerLogger.Write(true, String.Format("Synchronization materials with products initialization ended with errors at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
                 handlerLogger.Write(true, e.ToString(), "Error");
             }
             finally
@@ -85,7 +85,7 @@ namespace Module.Host.TPM.Handlers.DataLakeIntegrationHandlers
                 }
 
                 stopWatch.Stop();
-                handlerLogger.Write(true, String.Format("The checking of the Mars products initialization ended at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+                handlerLogger.Write(true, String.Format("Synchronization materials with products initialization ended at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
             }
         }
     }

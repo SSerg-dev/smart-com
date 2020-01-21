@@ -76,12 +76,16 @@
                                 columns[0].show();
                             }
                         }
-                        var status = ['DraftPublished', 'OnApproval', 'Approved','Planned'];
-                         this.getStore().setFixedFilter('PromoStatusNameFilter', {
-                             property: 'PromoStatus.SystemName',
-                             operation: 'In',
-                             value: status
-                         }); 
+                        var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
+                        if (currentRole !== 'SupportAdministrator') {
+
+                            var status = ['DraftPublished', 'OnApproval', 'Approved', 'Planned'];
+                            this.getStore().setFixedFilter('PromoStatusNameFilter', {
+                                property: 'PromoStatus.SystemName',
+                                operation: 'In',
+                                value: status
+                            });
+                        }
                         this.getStore().load();
 
                     }

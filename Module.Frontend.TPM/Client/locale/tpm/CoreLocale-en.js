@@ -417,7 +417,7 @@
             'ImportSourceRecordCount': 'Source record count',
 			'ImportResultRecordCount': 'Result record count',
             'DataLakeSyncSourceRecordCount': 'Synchronization result',
-			'DataLakeSyncResultRecordCount': 'Source record count',
+            'DataLakeSyncResultRecordCount': 'Sync success count',
 			'DataLakeSyncResultFilesModel': 'Result record count',
 			'DataLakeSyncTypeDisplay': 'Directory',
 			'DataLakeSyncResult': 'Import Records',

@@ -35,7 +35,7 @@
                     maxValue: 5,
                     padding: '15 4 0 4',
                     useTips: false,
-                    crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
+                    crudAccess: ['Administrator', 'SupportAdministrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
                     listeners: {
                         change: function (slider, newValue, thumb, eOpts) {
                             if (newValue) {

@@ -38,7 +38,7 @@
             glyph: 0xf349,
             text: l10n.ns('core', 'toptoolbar').value('filterButtonText'),
             tooltip: l10n.ns('core', 'toptoolbar').value('filterButtonText')
-        }, {
+        }, '-', '->', '-', {
             itemId: 'extfilterclearbutton',
             ui: 'blue-button-toolbar',
             disabled: true,

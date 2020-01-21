@@ -68,6 +68,13 @@ namespace Module.Persist.TPM.PromoStateControl
                         return true;
                     }
                 }
+                else if (userRole == "SupportAdministrator")
+                {
+                    _stateContext.Model = promoModel;
+                    _stateContext.State = _stateContext.GetPromoState(statusName);
+
+                    return true;
+                }
                 else
                 {
                     message = "Action is not available";

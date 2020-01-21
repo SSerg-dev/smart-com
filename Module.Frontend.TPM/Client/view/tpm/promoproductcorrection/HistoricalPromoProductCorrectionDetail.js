@@ -24,7 +24,7 @@
         }, {
             xtype: 'singlelinedisplayfield',
             name: '_Operation',
-            renderer: App.RenderHelper.getLocalizedRenderer('tpm.HistoricalActual', 'OperationType'),
+                renderer: App.RenderHelper.getLocalizedRenderer('tpm.HistoricalPromoProduct', 'OperationType'),
             fieldLabel: l10n.ns('tpm', 'HistoricalPromoProduct').value('_Operation')
         }, {
             xtype: 'singlelinedisplayfield',

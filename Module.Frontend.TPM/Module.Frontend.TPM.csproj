@@ -288,6 +288,7 @@
     <Content Include="Client\controller\tpm\promotypes\DeletedPromoTypes.js" />
     <Content Include="Client\controller\tpm\promotypes\HistoricalPromoTypes.js" />
     <Content Include="Client\controller\tpm\promotypes\PromoTypes.js" />
+    <Content Include="Client\controller\tpm\promo\HistoricalUserRolePromo.js" />
     <Content Include="Client\controller\tpm\promo\PromoBudgetDetails.js" />
     <Content Include="Client\controller\tpm\nonenego\DeletedNoneNego.js" />
     <Content Include="Client\controller\tpm\nonenego\HistoricalNoneNego.js" />
@@ -306,7 +307,10 @@
     <Content Include="Client\controller\tpm\cogs\DeletedCOGS.js" />
     <Content Include="Client\controller\tpm\cogs\HistoricalCOGS.js" />
     <Content Include="Client\controller\tpm\cogs\COGS.js" />
+    <Content Include="Client\controller\tpm\promo\UserRolePromo.js" />
     <Content Include="Client\controller\tpm\schedule\ClientPromoTypeFilter.js" />
+    <Content Include="Client\controller\tpm\promo\PromoHelper.js" />
+    <Content Include="Client\controller\tpm\promo\PromoChangeStatus.js" />
     <Content Include="Client\controller\tpm\tradeinvestment\DeletedTradeInvestment.js" />
     <Content Include="Client\controller\tpm\tradeinvestment\HistoricalTradeInvestment.js" />
     <Content Include="Client\controller\tpm\tradeinvestment\TradeInvestment.js" />
@@ -349,10 +353,12 @@
     <Content Include="Client\model\tpm\promotypes\DeletedPromoTypes.js" />
     <Content Include="Client\model\tpm\promotypes\HistoricalPromoTypes.js" />
     <Content Include="Client\model\tpm\promotypes\PromoTypes.js" />
+    <Content Include="Client\model\tpm\promo\HistoricalUserRolePromo.js" />
     <Content Include="Client\model\tpm\promo\PromoActivityDetailsWindow.js" />
     <Content Include="Client\model\tpm\promoroireport\PromoROIReport.js" />
     <Content Include="Client\model\tpm\promo\PromoGridView.js" />
     <Content Include="Client\model\tpm\promo\PromoView.js" />
+    <Content Include="Client\model\tpm\promo\UserRolePromo.js" />
     <Content Include="Client\model\tpm\utils\ToChangeEditorDetailWindowModel.js" />
     <Content Include="Client\model\tpm\planpostpromoeffectreport\PlanPostPromoEffectReport.js" />
     <Content Include="Client\model\tpm\promoproduct\PromoProduct.js" />
@@ -650,7 +656,10 @@
     <Content Include="Client\view\tpm\promotypes\HistoricalPromoTypesDetail.js" />
     <Content Include="Client\view\tpm\promotypes\PromoTypes.js" />
     <Content Include="Client\view\tpm\promotypes\PromoTypesEditor.js" />
+    <Content Include="Client\view\tpm\promo\HistoricalUserRolePromoDetail.js" />
+    <Content Include="Client\view\tpm\promo\HistoricalUserRolePromo.js" />
     <Content Include="Client\view\tpm\promo\PromoBasicProducts.js" />
+    <Content Include="Client\view\tpm\promo\PromoChangeStatusWindow.js" />
     <Content Include="Client\view\tpm\promo\PromoClient.js" />
     <Content Include="Client\view\tpm\promo\PromoProductChooseWindow.js" />
     <Content Include="Client\view\tpm\promo\PromoClientChooseWindow.js" />
@@ -662,6 +671,8 @@
     <Content Include="Client\view\tpm\promo\summary\PromoActivityChart.js" />
     <Content Include="Client\view\tpm\promo\summary\PromoBudgetsChart.js" />
     <Content Include="Client\view\tpm\nonpromosupport\NonPromoSupport.js" />
+    <Content Include="Client\view\tpm\promo\UserRolePromo.js" />
+    <Content Include="Client\view\tpm\promo\UserRolePromoEditor.js" />
     <Content Include="Client\view\tpm\schedule\ClientPromoTypeFilter.js" />
     <Content Include="Client\view\tpm\schedule\ScheduleType.js" />
     <Content Include="Client\view\tpm\toolbar\calculatinglog\CustomLogTopToolbar.js" />

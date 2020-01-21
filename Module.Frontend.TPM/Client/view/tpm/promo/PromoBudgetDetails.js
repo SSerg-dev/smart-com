@@ -43,6 +43,7 @@
     addBudgetItemField: function (budgetItemName) {
         var prefix1 = this.fact ? 'Actual' : 'Plan';
         var prefix2 = this.costProd ? 'CostProd' : '';
+        var me = this;
 
         var trigger = Ext.create('widget.triggerfield', {
             xtype: 'triggerfield',
@@ -52,6 +53,9 @@
             trigger1Cls: 'form-info-trigger',
             cls: 'borderedField-with-lable',
             labelCls: 'borderedField-label',
+            regex: /^(-?)(0|([1-9][0-9]*))(\,[0-9]+)?$/i,
+            regexText: l10n.ns('tpm', 'PromoActivity').value('triggerfieldOnlyNumbers'),
+            maxLength: 100,
             labelWidth: 190,
             labelSeparator: '',
             blockMillion: false, // если true - то преобразовывать в миллионы
@@ -72,11 +76,11 @@
                 return Ext.util.Format.number(valueToDisplay, '0.00');
             },
             rawToValue: function (value) {
-                var parsedValue = parseFloat(String(value).replace(Ext.util.Format.decimalSeparator, "."))
+                var parsedValue = parseFloat(String(this.rawValue).replace(Ext.util.Format.decimalSeparator, "."))
                 return isNaN(parsedValue) ? null : parsedValue;
             },
             onTrigger1Click: function () {
-                var promobudgetdetails = this.up('promobudgetdetails') || this.up('fieldset').down('promobudgetdetails'); /* || Ext.ComponentQuery.query('promobudgetdetails')[0]*/;
+                    var promobudgetdetails = this.up('promobudgetdetails') || this.up('fieldset').down('promobudgetdetails'); /* || Ext.ComponentQuery.query('promobudgetdetails')[0]*/;
                 var controller = App.app.getController('tpm.promo.PromoBudgetDetails');
                 var promoId = promobudgetdetails.record.promoId;
                 var fact = promobudgetdetails.fact;
@@ -85,11 +89,27 @@
                 controller.showSubItemDetail(promoId, budgetItemName, editable, fact, promobudgetdetails);
             },
             listeners: {
-                afterrender: function (el) {
-                    el.addCls('readOnlyField');
-                    el.triggerCell.addCls('form-info-trigger-cell')
-                },
+                afterrender: function (me) {
+                    me.setEditable(me.editable);
+                }
             },
+
+            setEditable: function (editable) {
+                if (this.triggerCell && this.inputEl) {
+                    if (!editable) {
+                        this.triggerCell.addCls('form-info-trigger-cell');
+                        this.inputEl.addCls('inputReadOnly');
+                    } else {
+                        this.triggerCell.removeCls('form-info-trigger-cell');
+                        this.inputEl.removeCls('inputReadOnly');
+                    }
+                };
+                if (editable != this.editable) {
+                    this.editable = editable;
+                    this.updateLayout();
+                }
+            },
+
         });
 
         if (this.needCustomPromoPanel === false) {
@@ -130,7 +150,16 @@
             itemId: 'addSubItem',
             text: l10n.ns('tpm', 'PromoBudgetDetails').value('addSubItem'),
             tooltip: l10n.ns('tpm', 'PromoBudgetDetails').value('addSubItem'),
-            glyph: 0xf412
+            glyph: 0xf412,
+            availableRoleStatusActions: {
+                SupportAdministrator: App.global.Statuses.AllStatuses,
+                Administrator: App.global.Statuses.AllStatusesBeforeClosedWithoutDraft,
+                CMManager: App.global.Statuses.AllStatusesBeforeClosedWithoutDraft,
+                FunctionalExpert: App.global.Statuses.AllStatusesBeforeClosedWithoutDraft,
+                DemandPlanning: App.global.Statuses.AllStatusesBeforeClosedWithoutDraft,
+                KeyAccountManager: App.global.Statuses.AllStatusesBeforeClosedWithoutDraft,
+                CustomerMarketing: App.global.Statuses.AllStatusesBeforeClosedWithoutDraft,
+            }
         }]
     }]
 });

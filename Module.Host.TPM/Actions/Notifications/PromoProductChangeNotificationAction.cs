@@ -140,7 +140,7 @@ namespace Module.Host.TPM.Actions.Notifications
 									foreach (Product product in resultProductList)
 									{
 										var promoProduct = promoProducts.FirstOrDefault(x => x.ZREP == product.ZREP);
-										if (promoProduct == null && changedProducts.Any(cp => cp.ZREP == product.ZREP))
+										if ((promoProduct == null || promoProduct.Disabled) && changedProducts.Any(cp => cp.ZREP == product.ZREP))
 										{
 											addedProducts.Add(product);
 

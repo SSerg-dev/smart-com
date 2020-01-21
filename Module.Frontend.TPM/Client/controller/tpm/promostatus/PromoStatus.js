@@ -44,6 +44,12 @@
                 'promostatus #updatebutton': {
                     click: this.onUpdateButtonClick
                 },
+                'promostatuseditor #edit': {
+                    click: this.windowEditorStartEdit
+                },
+                'promostatuseditor #canceledit': {
+                    click: this.windowEditorCanselEdit
+                },
                 'promostatus #deletebutton': {
                     click: this.onDeleteButtonClick
                 },
@@ -71,5 +77,35 @@
                 }
             }
         });
+    },
+    onUpdateButtonClick: function () {
+        this.callParent(arguments);
+        var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
+        if (currentRole === 'SupportAdministrator') {
+
+            var mechaniceditor = Ext.ComponentQuery.query('promostatuseditor')[0];
+            var systemName = mechaniceditor.down('[name=SystemName]');
+            systemName.setDisabled(true);
+        }
+    },
+    windowEditorStartEdit: function () { 
+        var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
+        if (currentRole === 'SupportAdministrator') {
+
+            var mechaniceditor = Ext.ComponentQuery.query('promostatuseditor')[0];
+            var systemName = mechaniceditor.down('[name=SystemName]');
+            systemName.setDisabled(true);
+        }
+
+    },
+    windowEditorCanselEdit: function () {
+         var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
+        if (currentRole === 'SupportAdministrator') {
+
+            var mechaniceditor = Ext.ComponentQuery.query('promostatuseditor')[0];
+            var systemName = mechaniceditor.down('[name=SystemName]');
+            systemName.setDisabled(false);
+        }
+
     }
 });

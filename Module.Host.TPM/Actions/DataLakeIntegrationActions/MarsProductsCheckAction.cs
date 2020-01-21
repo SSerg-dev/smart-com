@@ -108,15 +108,7 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
 						Results.Add(String.Format("Founded {0} new materials for checking.", sourceRecordCount), null);
 					}
 
-					if (!String.IsNullOrEmpty(exceptedZREPs))
-					{
-						var exceptedZREPsList = newRecords.Where(r => exceptedZREPs.Split(',').Contains(r.ZREP.TrimStart('0'))).Select(x => x.ZREP.TrimStart('0'))
-							.Distinct();
-						warningList.Add(String.Format("ZREPs {0} is in except list (setting 'APP_MIX_EXCEPTED_ZREPs')", String.Join(", ", exceptedZREPsList)));
-						newRecords = newRecords.Where(r => !exceptedZREPs.Split(',').Contains(r.ZREP.TrimStart('0')));
-					}
-
-					// Проверка масок VKORG, 0DIVISION, 0DIVISION___T, 0MATL_TYPE___T, MATNR, VMSTD, 0CREATEDON, ZREP, EAN_Case, EAN_PC, UOM_PC2Case
+					// Проверка масок VKORG, 0DIVISION, 0DIVISION___T, 0MATL_TYPE___T, MATNR, VMSTD, 0CREATEDON, ZREP, EAN_PC, UOM_PC2Case
 					// и проверка на наличие исключенных ZREPов
 					var step1Records = newRecords.Where(r =>
 									IsExactNumeric(r.VKORG, 261) &&
@@ -127,7 +119,6 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
 									IsValidDate(r.VMSTD.ToString("yyyy'-'MM'-'dd")) &&
 									IsValidDate(r.CREATEDON) &&
 									IsNumeric(r.ZREP.TrimStart('0'), 6) &&
-									r.EAN_Case.HasValue && DecimalToString(r.EAN_Case).Length == 13 &&
 									r.EAN_PC.HasValue && DecimalToString(r.EAN_PC).Length == 13 &&
 									IsNumeric(r.UOM_PC2Case));
 
@@ -140,39 +131,40 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
 									IsValidDate(r.VMSTD.ToString("yyyy'-'MM'-'dd")) &&
 									IsValidDate(r.CREATEDON) &&
 									IsNumeric(r.ZREP.TrimStart('0'), 6) &&
-									r.EAN_Case.HasValue && DecimalToString(r.EAN_Case).Length == 13 &&
 									r.EAN_PC.HasValue && DecimalToString(r.EAN_PC).Length == 13 &&
 									IsNumeric(r.UOM_PC2Case))).GroupBy(x => x.ZREP);
 					foreach (var group in step1Log)
 					{
-						warningList.Add(String.Format("{0} GRD with ZREP {1} has inappropriate value for one or more of VKORG, 0DIVISION, 0DIVISION___T, 0MATL_TYPE___T, MATNR, VMSTD, 0CREATEDON, ZREP, EAN_Case, EAN_PC, UOM_PC2Case fields.", group.Count(), group.Key.TrimStart('0')));
+						warningList.Add(String.Format("{0} GRD with ZREP {1} has inappropriate value for one or more of VKORG, 0DIVISION, 0DIVISION___T, 0MATL_TYPE___T, MATNR, VMSTD, 0CREATEDON, ZREP, EAN_PC, UOM_PC2Case fields.", group.Count(), group.Key.TrimStart('0')));
 					}
 
-					// Проверка заполненности полей MATERIAL, SKU, UOM_PC2Case, Segmen, Technology, Brand_Flag_abbr, Brand_Flag, Size, Brandsegtech 
+					// Проверка заполненности полей MATERIAL, SKU, UOM_PC2Case, Segmen_code, Tech_code, Brand_Flag_abbr, Brand_Flag, Size, BrandsegTech_code, Brand_code 
 					var step2Records = step1Records.Where(r =>
 									IsNotEmptyOrNotApplicable(r.MATERIAL) &&
 									IsNotEmptyOrNotApplicable(r.SKU) &&
 									IsNotEmptyOrNotApplicable(r.UOM_PC2Case) &&
-									IsNotEmptyOrNotApplicable(r.Segmen) &&
-									IsNotEmptyOrNotApplicable(r.Technology) &&
+									IsNotEmptyOrNotApplicable(r.Segmen_code) &&
+									IsNotEmptyOrNotApplicable(r.Tech_code) &&
 									IsNotEmptyOrNotApplicable(r.Brand_Flag_abbr) &&
 									IsNotEmptyOrNotApplicable(r.Brand_Flag) &&
 									IsNotEmptyOrNotApplicable(r.Size) &&
-									IsNotEmptyOrNotApplicable(r.Brandsegtech));
+									IsNotEmptyOrNotApplicable(r.BrandsegTech_code) &&
+									IsNotEmptyOrNotApplicable(r.Brand_code));
 
 					var step2Log = step1Records.Where(r =>
 									!(IsNotEmptyOrNotApplicable(r.MATERIAL) &&
 									IsNotEmptyOrNotApplicable(r.SKU) &&
 									IsNotEmptyOrNotApplicable(r.UOM_PC2Case) &&
-									IsNotEmptyOrNotApplicable(r.Segmen) &&
-									IsNotEmptyOrNotApplicable(r.Technology) &&
+									IsNotEmptyOrNotApplicable(r.Segmen_code) &&
+									IsNotEmptyOrNotApplicable(r.Tech_code) &&
 									IsNotEmptyOrNotApplicable(r.Brand_Flag_abbr) &&
 									IsNotEmptyOrNotApplicable(r.Brand_Flag) &&
 									IsNotEmptyOrNotApplicable(r.Size) &&
-									IsNotEmptyOrNotApplicable(r.Brandsegtech))).GroupBy(x => x.ZREP);
+									IsNotEmptyOrNotApplicable(r.BrandsegTech_code) &&
+									IsNotEmptyOrNotApplicable(r.Brand_code))).GroupBy(x => x.ZREP);
 					foreach (var group in step2Log)
 					{
-						warningList.Add(String.Format("{0} GRD with ZREP {1} has one of MATERIAL, SKU, UOM_PC2Case, Segmen, Technology, Brand_Flag_abbr, Brand_Flag, Size, Brandsegtech fields not applicable or empty.", group.Count(), group.Key.TrimStart('0')));
+						warningList.Add(String.Format("{0} GRD with ZREP {1} has one of MATERIAL, SKU, UOM_PC2Case, Segmen_code, Tech_code, Brand_Flag_abbr, Brand_Flag, Size, BrandsegTech_code, Brand_code fields not applicable or empty.", group.Count(), group.Key.TrimStart('0')));
 					}
 
 					// Проверка на заполненность хотя бы одного поля из Submark_Flag, Ingredient_variety, Product_Category, Product_Type, Supply_Segment, Functional_variety, Size, Brand_essence, Pack_Type, Traded_unit_format, Consumer_pack_format 
@@ -204,8 +196,8 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
 						warningList.Add(String.Format("{0} GRD with ZREP {0} has all of Submark_Flag, Ingredient_variety, Product_Category, Product_Type, Supply_Segment, Functional_variety, Size, Brand_essence, Pack_Type, Traded_unit_format, Consumer_pack_format fields not applicable or empty.", group.Count(), group.Key.TrimStart('0')));
 					}
 
-					// Убираем различающиеся записи для одного ZREP (по полям Segmen, Technology, Brand_Flag_abbr, Brand_Flag, Size, Brandsegtech)
-					var groupedRecords = step3Records.DistinctBy(y => new { y.ZREP, y.Segmen, y.Technology, y.Brand_Flag_abbr, y.Brand_Flag, y.Size, y.Brandsegtech }).GroupBy(x => x.ZREP);
+					// Убираем различающиеся записи для одного ZREP (по полям Segmen_code, Tech_code, Brand_Flag_abbr, Brand_Flag, Size, BrandsegTech_code, Brand_code)
+					var groupedRecords = step3Records.DistinctBy(y => new { y.ZREP, y.Segmen_code, y.Tech_code, y.Brand_Flag_abbr, y.Brand_Flag, y.Size, y.BrandsegTech_code, y.Brand_code }).GroupBy(x => x.ZREP);
 
 					// Если остаётся более 2 подходящих записей по одному ZREP, то берем с последней датой
 					var materialsToCheck = new List<MARS_UNIVERSAL_PETCARE_MATERIALS>();
@@ -217,7 +209,18 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
 						}
 						else if (group.Count() > 1)
 						{
-							errorList.Add(String.Format("ZREP {0} has two or more GRD with different values in one or more of Segmen, Technology, Brand_Flag_abbr, Brand_Flag, Size, Brandsegtech fields", group.Key.TrimStart('0')));
+                            var orderedByDescDateRecords = group.OrderByDescending(x => x.VMSTD);
+							var firstRec = orderedByDescDateRecords.ElementAt(0);
+							var secondRec = orderedByDescDateRecords.ElementAt(1);
+
+							if (firstRec.VMSTD == secondRec.VMSTD)
+							{
+								errorList.Add(String.Format("ZREP {0} has two or more GRD with different values in one or more of Segmen_code, Tech_code, Brand_Flag_abbr, Brand_Flag, Size, BrandsegTech_code, Brand_code fields", group.Key.TrimStart('0')));
+							}
+							else
+							{
+								materialsToCheck.Add(orderedByDescDateRecords.First());
+							}
 						}
 					}
 
@@ -233,6 +236,29 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
 					if (!materialsToCheck.Any() && sourceRecordCount > 0)
 					{
 						Warnings.Add(String.Format("No materials found suitable for updating or creating products.", sourceRecordCount));
+					}
+					else
+					{
+						if (!String.IsNullOrEmpty(exceptedZREPs))
+						{
+							var appMixMaterials = new List<string>();
+							foreach (var material in materialsToCheck)
+							{
+								if (exceptedZREPs.Split(',').Contains(material.ZREP.TrimStart('0')))
+								{
+									material.Brandsegtech.Replace("Pouch", "Pouch App.Mix");
+									if (material.Brandsegtech.Contains("App.Mix"))
+									{
+										appMixMaterials.Add(material.ZREP.TrimStart('0'));
+									}
+								}
+							}
+							if (appMixMaterials.Any())
+							{
+								Results.Add(String.Format("Brandsegtech changed for ZREPs {0} from App.Mix ZREP list (setting 'APP_MIX_EXCEPTED_ZREPs')",
+									String.Join(",", appMixMaterials)), null);
+							}
+						}
 					}
 
 					// Проверяем есть ли новые ZREP

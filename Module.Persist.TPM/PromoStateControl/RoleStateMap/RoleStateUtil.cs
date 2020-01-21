@@ -12,45 +12,45 @@ namespace Module.Persist.TPM.PromoStateControl.RoleStateMap {
         public static List<RoleStateMap> StatusRoleStateMap = new List<RoleStateMap>() {
             new RoleStateMap(StateNames.DELETED, new Dictionary<string, List<string>>(){ }),
             new RoleStateMap(StateNames.DRAFT, new Dictionary<string, List<string>>(){
-                { StateNames.DRAFT_PUBLISHED, new List<string> { "Administrator", "CustomerMarketing", "KeyAccountManager", "FunctionalExpert" } },
-                { StateNames.DELETED, new List<string> { "Administrator", "CustomerMarketing", "KeyAccountManager", "FunctionalExpert" } }
+                { StateNames.DRAFT_PUBLISHED, new List<string> { "Administrator", "SupportAdministrator", "CustomerMarketing", "KeyAccountManager", "FunctionalExpert" } },
+                { StateNames.DELETED, new List<string> { "Administrator", "SupportAdministrator", "CustomerMarketing", "KeyAccountManager", "FunctionalExpert" } }
             }),
             new RoleStateMap(StateNames.DRAFT_PUBLISHED, new Dictionary<string, List<string>>(){
-                { StateNames.DRAFT, new List<string> { "Administrator", "CustomerMarketing", "FunctionalExpert", "KeyAccountManager" } },
-                { StateNames.ON_APPROVAL, new List<string> { "System", "Administrator",  "CustomerMarketing", "FunctionalExpert", "KeyAccountManager" } },
-                { StateNames.DELETED, new List<string> { "Administrator", "CustomerMarketing", "FunctionalExpert", "KeyAccountManager" } }
+                { StateNames.DRAFT, new List<string> { "Administrator", "SupportAdministrator", "CustomerMarketing", "FunctionalExpert", "KeyAccountManager" } },
+                { StateNames.ON_APPROVAL, new List<string> { "System", "Administrator", "SupportAdministrator", "CustomerMarketing", "FunctionalExpert", "KeyAccountManager" } },
+                { StateNames.DELETED, new List<string> { "Administrator", "SupportAdministrator", "CustomerMarketing", "FunctionalExpert", "KeyAccountManager" } }
             }),
             new RoleStateMap(StateNames.ON_APPROVAL, new Dictionary<string, List<string>>() {
-                { StateNames.DRAFT_PUBLISHED, new List<string> { "Administrator", "CMManager", "CustomerMarketing", "DemandFinance", "DemandPlanning", "KeyAccountManager", "FunctionalExpert" } },
+                { StateNames.DRAFT_PUBLISHED, new List<string> { "Administrator", "SupportAdministrator", "CMManager", "CustomerMarketing", "FunctionalExpert", "DemandFinance", "DemandPlanning", "KeyAccountManager"} },
                 { StateNames.ON_APPROVAL, new List<string> { "System" } },
-                { StateNames.APPROVED, new List<string> { "CMManager", "DemandFinance", "DemandPlanning" } }
+                { StateNames.APPROVED, new List<string> { "CMManager", "SupportAdministrator", "DemandFinance", "DemandPlanning" } }
             }),
             new RoleStateMap(StateNames.APPROVED, new Dictionary<string, List<string>>() {
-                { StateNames.DRAFT_PUBLISHED, new List<string> { "Administrator" } },
-                { StateNames.PLANNED, new List<string> { "Administrator", "KeyAccountManager", "FunctionalExpert" } },
-                { StateNames.ON_APPROVAL, new List<string> { "System" } },
-                { StateNames.CANCELLED, new List<string> { "Administrator", "KeyAccountManager", "FunctionalExpert" } }
+                { StateNames.DRAFT_PUBLISHED, new List<string> { "Administrator", "SupportAdministrator" } },
+                { StateNames.PLANNED, new List<string> { "Administrator", "SupportAdministrator", "KeyAccountManager", "FunctionalExpert" } },
+                { StateNames.ON_APPROVAL, new List<string> { "System", "SupportAdministrator" } },
+                { StateNames.CANCELLED, new List<string> { "Administrator", "SupportAdministrator", "KeyAccountManager", "FunctionalExpert" } }
             }),
             new RoleStateMap(StateNames.CANCELLED, new Dictionary<string, List<string>>(){ }),
             new RoleStateMap(StateNames.PLANNED, new Dictionary<string, List<string>>(){
-                { StateNames.ON_APPROVAL, new List<string> { "System" } },
-                { StateNames.STARTED, new List<string> { "System" } },
-                { StateNames.DRAFT_PUBLISHED, new List<string> { "Administrator" } },
-				{ StateNames.CANCELLED, new List<string> { "Administrator", "KeyAccountManager", "FunctionalExpert" } }
+                { StateNames.ON_APPROVAL, new List<string> { "System", "SupportAdministrator" } },
+                { StateNames.STARTED, new List<string> { "System", "SupportAdministrator"} },
+                { StateNames.DRAFT_PUBLISHED, new List<string> { "Administrator", "SupportAdministrator" } },
+				{ StateNames.CANCELLED, new List<string> { "Administrator", "SupportAdministrator", "KeyAccountManager", "FunctionalExpert" } }
 			}),
             new RoleStateMap(StateNames.STARTED, new Dictionary<string, List<string>>(){
-                { StateNames.FINISHED, new List<string> { "System" } },
-                { StateNames.CANCELLED, new List<string> { "Administrator", "KeyAccountManager", "FunctionalExpert" } }
+                { StateNames.FINISHED, new List<string> { "System", "SupportAdministrator" } },
+                { StateNames.CANCELLED, new List<string> { "Administrator", "KeyAccountManager", "SupportAdministrator", "FunctionalExpert" } }
             }),
             new RoleStateMap(StateNames.FINISHED, new Dictionary<string, List<string>>(){
-                { StateNames.CLOSED, new List<string> { "System", "Administrator", "KeyAccountManager", "FunctionalExpert" } }
+                { StateNames.CLOSED, new List<string> { "System", "Administrator", "SupportAdministrator", "KeyAccountManager", "FunctionalExpert" } }
             }),
             new RoleStateMap(StateNames.CLOSED, new Dictionary<string, List<string>>() {
-                { StateNames.FINISHED, new List<string> { "Administrator", "FunctionalExpert" } },
+                { StateNames.FINISHED, new List<string> { "Administrator", "SupportAdministrator", "FunctionalExpert" } },
             }),
             new RoleStateMap(StateNames.UNDEFINED, new Dictionary<string, List<string>>(){
-                { StateNames.DRAFT, new List<string> { "Administrator", "CMManager", "CustomerMarketing", "DemandFinance", "DemandPlanning", "FunctionalExpert", "KeyAccountManager" } },
-                { StateNames.DRAFT_PUBLISHED, new List<string> { "Administrator", "CMManager", "CustomerMarketing", "DemandFinance", "DemandPlanning", "FunctionalExpert", "KeyAccountManager" } }
+                { StateNames.DRAFT, new List<string> { "Administrator", "SupportAdministrator", "CMManager", "CustomerMarketing", "DemandFinance", "DemandPlanning", "FunctionalExpert", "KeyAccountManager" } },
+                { StateNames.DRAFT_PUBLISHED, new List<string> { "Administrator", "SupportAdministrator", "CMManager", "CustomerMarketing", "DemandFinance", "DemandPlanning", "FunctionalExpert", "KeyAccountManager" } }
             })
         };
 

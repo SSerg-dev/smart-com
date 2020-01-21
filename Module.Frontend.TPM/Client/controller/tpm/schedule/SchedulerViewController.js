@@ -100,7 +100,13 @@
     },
 
     isDraggable: function (rec) {
-        return rec.get('PromoStatusSystemName') && (rec.get('PromoStatusSystemName') == 'Draft' || rec.get('PromoStatusSystemName') == 'DraftPublished') && (rec.get('StartDate') > Date.now());
+        var res = false;
+        if (App.UserInfo.getCurrentRole()['SystemName'] == 'SupportAdministrator') {
+            res = true;
+        } else {
+            res = rec.get('PromoStatusSystemName') && (rec.get('PromoStatusSystemName') == 'Draft' || rec.get('PromoStatusSystemName') == 'DraftPublished') && (rec.get('StartDate') > Date.now())
+        }
+        return res;
     },
 
     onpromoBeforeEventDrop: function (view, dragContext, e, eOpts) {
@@ -114,7 +120,7 @@
         if (dragContext.timeDiff == 0) {
             dragContext.finalize(false);
             return false;
-        } else if (dragContext.startDate < Date.now()) {
+        } else if (dragContext.startDate < Date.now() && App.UserInfo.getCurrentRole()['SystemName'] != 'SupportAdministrator') {
             App.Notify.pushInfo('New start date must be after current date.');
             dragContext.finalize(false);
             return false;
@@ -615,7 +621,7 @@
         var me = this;
         var scheduler = Ext.ComponentQuery.query('#nascheduler')[0];
         var typeToCreate = null;
-        if (createContext.start > Date.now()) {
+        if (createContext.start > Date.now() || App.UserInfo.getCurrentRole()['SystemName'] == 'SupportAdministrator') {
             var schedulerData,
                 ClientTypeName = createContext.resourceRecord.get('TypeName') + ' Promo',
                 isInOutClient = false,
@@ -880,7 +886,7 @@
         var me = this;
         var calendarGrid = Ext.ComponentQuery.query('scheduler');
         //Проверка по дате начала
-        if (resizeContext.eventRecord.start < Date.now() || resizeContext.start < Date.now()) {
+        if ((resizeContext.eventRecord.start < Date.now() || resizeContext.start < Date.now()) && App.UserInfo.getCurrentRole()['SystemName'] != 'SupportAdministrator') {
             App.Notify.pushError(l10n.ns('tpm', 'text').value('wrongStartDate'));
             resizeContext.finalize(false);
             //Открытый календарь - обновить его

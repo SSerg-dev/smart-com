@@ -31,7 +31,7 @@
                     needReadOnly: true,
                     allowBlank: false,
                     allowOnlyWhitespace: false,
-                    crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
+                    crudAccess: ['Administrator', 'SupportAdministrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
                     maxText: l10n.ns('tpm', 'Promo').value('failMaxDate'),
                     minText: l10n.ns('tpm', 'Promo').value('failMinDate'),
                     onExpand: function () {
@@ -42,11 +42,13 @@
                     },
                     listeners: {
                         afterrender: function (field) {
-                            var minValue = new Date();
-                            var currentTimeZoneOffsetInHours = minValue.getTimezoneOffset();
-                            var minValueInt = minValue.getTime();
-                            field.setMinValue(new Date(minValueInt + currentTimeZoneOffsetInHours * 60000 + 10800000));
-                            field.getPicker().setValue(field.minValue);
+                            if (App.UserInfo.getCurrentRole()['SystemName'] != "SupportAdministrator") {
+                                var minValue = new Date();
+                                var currentTimeZoneOffsetInHours = minValue.getTimezoneOffset();
+                                var minValueInt = minValue.getTime();
+                                field.setMinValue(new Date(minValueInt + currentTimeZoneOffsetInHours * 60000 + 10800000));
+                                field.getPicker().setValue(field.minValue);
+                            }
                         },
                         change: function (field, newValue, oldValue) {
                             var validDates = false;
@@ -160,7 +162,7 @@
                     needReadOnly: true,
                     allowBlank: false,
                     allowOnlyWhitespace: false,
-                    crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
+                    crudAccess: ['Administrator', 'SupportAdministrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
                     maxText: l10n.ns('tpm', 'Promo').value('failMaxDate'),
                     minText: l10n.ns('tpm', 'Promo').value('failMinDate'),
                     // переопределение нужно для того чтобы при преобразовании значения в дату подклеивать время 23:59:59 для корректного отображения в календаре
@@ -336,7 +338,7 @@
                     needReadOnly: true,
                     allowBlank: false,
                     allowOnlyWhitespace: false,
-                    crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager', 'DemandPlanning'],
+                    crudAccess: ['Administrator', 'SupportAdministrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager', 'DemandPlanning'],
                     maxText: l10n.ns('tpm', 'Promo').value('failMaxDate'),
                     minText: l10n.ns('tpm', 'Promo').value('failMinDate'),
                     onExpand: function () {
@@ -418,7 +420,7 @@
                     needReadOnly: true,
                     allowBlank: false,
                     allowOnlyWhitespace: false,
-                    crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager', 'DemandPlanning'],
+                    crudAccess: ['Administrator', 'SupportAdministrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager', 'DemandPlanning'],
                     maxText: l10n.ns('tpm', 'Promo').value('failMaxDate'),
                     minText: l10n.ns('tpm', 'Promo').value('failMinDate'),
                     onExpand: function () {

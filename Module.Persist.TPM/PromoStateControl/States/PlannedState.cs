@@ -62,12 +62,13 @@ namespace Module.Persist.TPM.PromoStateControl
                 bool isCorrectDispatchDifference = (promoModel.DispatchesStart - ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)).Value.Days >= backToOnApprovalDispatchDays;
 
                 // Условия для возврата
-                if (((_stateContext.Model.MarsMechanicDiscount < promoModel.MarsMechanicDiscount) ||
+                if ((((_stateContext.Model.MarsMechanicDiscount < promoModel.MarsMechanicDiscount) ||
                     (_stateContext.Model.MarsMechanicId == stateIdVP && promoModel.MarsMechanicId == stateIdTPR) ||
                     (_stateContext.Model.ProductHierarchy != promoModel.ProductHierarchy) ||
                     (_stateContext.Model.StartDate != promoModel.StartDate) ||
                     (_stateContext.Model.EndDate != promoModel.EndDate)) &&
                     !isCorrectDispatchDifference)
+                    && userRole != "SupportAdministrator")
                 {
                     promoStatus = _stateContext.dbContext.Set<PromoStatus>().First(n => n.SystemName == "DraftPublished");
                     promoModel.PromoStatusId = promoStatus.Id;
@@ -82,26 +83,16 @@ namespace Module.Persist.TPM.PromoStateControl
 
                 string statusName = promoStatus.SystemName;
 
-                
-
                 if (isAvailable)
                 {
-                    // Go to: StartedState
+                    // Go to: StartedState (by Support Animistrator)
+                    // для этой роли не производится никаких проверок на даты
                     if (statusName == "Started")
                     {
-                        if (promoModel.DispatchesStart >= DateTimeOffset.Now)
-                        {
-                            _stateContext.Model = promoModel;
-                            _stateContext.State = _stateContext._startedState;
+                        _stateContext.Model = promoModel;
+                        _stateContext.State = _stateContext._startedState;
 
-                            return true;
-                        }
-                        else
-                        {
-                            _stateContext.Model = promoModel;
-
-                            return false;
-                        }
+                        return true;
                     }
                     else if (statusName == PromoStates.OnApproval.ToString())
                     {
@@ -141,6 +132,13 @@ namespace Module.Persist.TPM.PromoStateControl
 
                         return true;
                     }
+                }
+                else if (userRole == "SupportAdministrator")
+                {
+                    _stateContext.Model = promoModel;
+                    _stateContext.State = _stateContext.GetPromoState(statusName);
+
+                    return true;
                 }
                 // Current state
                 else if (isAvailableCurrent && statusName == Name)

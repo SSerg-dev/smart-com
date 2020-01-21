@@ -40,11 +40,9 @@
                     items: [{
                         xtype: 'numberfield',
                         name: 'PlanPromoCost',
-                        editable: false,
+                        readOnlyCls: 'readOnlyField',
                         hideTrigger: true,
                         readOnly: true,
-                        needReadOnly: true,
-                        setReadOnly: function () { return false },
                         labelWidth: 190,
                         fieldLabel: l10n.ns('tpm', 'Promo').value('PlanPromoCost'),
                         cls: 'borderedField-with-lable',
@@ -73,20 +71,17 @@
                         listeners: {
                             change: this.budgetsChangeListener,
                             focus: function (field) {
-                                this.blockMillion = true;                                
-                            },
-                            blur: function (field) {
+                                this.blockMillion = true;
+                                field.setValue(this.originValue);
                                 this.blockMillion = false;
                             },
                         }
                     }, {
                         xtype: 'numberfield',
                         name: 'PlanPromoTIMarketing',
-                        editable: false,
+                        readOnlyCls: 'readOnlyField',
                         hideTrigger: true,
                         readOnly: true,
-                        needReadOnly: true,
-                        setReadOnly: function () { return false },
                         labelWidth: 190,
                         fieldLabel: l10n.ns('tpm', 'Promo').value('PlanPromoTIMarketing'),
                         cls: 'borderedField-with-lable',
@@ -116,19 +111,16 @@
                             change: this.budgetsChangeListener,
                             focus: function (field) {
                                 this.blockMillion = true;
-                            },
-                            blur: function (field) {
+                                field.setValue(this.originValue);
                                 this.blockMillion = false;
                             },
                         }
                     }, {
                         xtype: 'numberfield',
                         name: 'PlanPromoCostProduction',
-                        editable: false,
+                        readOnlyCls: 'readOnlyField',
                         hideTrigger: true,
                         readOnly: true,
-                        needReadOnly: true,
-                        setReadOnly: function () { return false },
                         labelWidth: 190,
                         fieldLabel: l10n.ns('tpm', 'Promo').value('PlanPromoCostProduction'),
                         cls: 'borderedField-with-lable',
@@ -158,19 +150,16 @@
                             change: this.budgetsChangeListener,
                             focus: function (field) {
                                 this.blockMillion = true;
-                            },
-                            blur: function (field) {
+                                field.setValue(this.originValue);
                                 this.blockMillion = false;
                             },
                         }
                     }, {
                         xtype: 'numberfield',
                         name: 'PlanPromoTIShopper',
-                        editable: false,
+                        readOnlyCls: 'readOnlyField',
                         hideTrigger: true,
                         readOnly: true,
-                        needReadOnly: true,
-                        setReadOnly: function () { return false },
                         labelWidth: 190,
                         fieldLabel: l10n.ns('tpm', 'Promo').value('PlanPromoTIShopper'),
                         cls: 'borderedField-with-lable',
@@ -200,17 +189,16 @@
                             change: this.budgetsChangeListener,
                             focus: function (field) {
                                 this.blockMillion = true;
-                            },
-                            blur: function (field) {
+                                field.setValue(this.originValue);
                                 this.blockMillion = false;
                             },
                         }
                     }, {
                         xtype: 'numberfield',
                         name: 'PlanPromoBranding',
+                        readOnlyCls: 'readOnlyField',
                         hideTrigger: true,
                         readOnly: true,
-                        needReadOnly: true,
                         readOnlyCls: 'readOnlyField',
                         isChecked: true,
                         labelWidth: 190,
@@ -218,7 +206,14 @@
                         value: 0,
                         cls: 'borderedField-with-lable',
                         labelCls: 'borderedField-label',
-                        crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
+                        availableRoleStatusActions: {
+                            SupportAdministrator: App.global.Statuses.AllStatuses,
+                            Administrator: App.global.Statuses.AllStatusesWithoutDraft,
+                            FunctionalExpert: App.global.Statuses.AllStatusesWithoutDraft,
+                            CMManager: App.global.Statuses.AllStatusesWithoutDraft,
+                            CustomerMarketing: App.global.Statuses.AllStatusesWithoutDraft,
+                            KeyAccountManager: App.global.Statuses.AllStatusesWithoutDraft
+                        },
                         mouseWheelEnabled: false,
                         blockMillion: false, // если true - то преобразовывать в миллионы
                         originValue: null, // настоящее значение
@@ -252,17 +247,23 @@
                     }, {
                         xtype: 'numberfield',
                         name: 'PlanPromoBTL',
+                        readOnlyCls: 'readOnlyField',
                         hideTrigger: true,
                         readOnly: true,
                         readOnlyCls: 'readOnlyField',
-                        needReadOnly: true,
                         isChecked: true,
                         labelWidth: 190,
                         fieldLabel: l10n.ns('tpm', 'Promo').value('PlanPromoBTL'),
                         value: 0,
                         cls: 'borderedField-with-lable',
                         labelCls: 'borderedField-label',
-                        crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing'],
+                        availableRoleStatusActions: {
+                            SupportAdministrator: App.global.Statuses.AllStatuses,
+                            Administrator: App.global.Statuses.AllStatusesWithoutDraft,
+                            FunctionalExpert: App.global.Statuses.AllStatusesWithoutDraft,
+                            CMManager: App.global.Statuses.AllStatusesWithoutDraft,
+                            CustomerMarketing: App.global.Statuses.AllStatusesWithoutDraft
+                        },
                         mouseWheelEnabled: false,
                         blockMillion: false, // если true - то преобразовывать в миллионы
                         originValue: null, // настоящее значение
@@ -335,11 +336,9 @@
                     items: [{
                         xtype: 'numberfield',
                         name: 'ActualPromoCost',
-                        editable: false,
+                        readOnlyCls: 'readOnlyField',
                         hideTrigger: true,
                         readOnly: true,
-                        needReadOnly: true,
-                        setReadOnly: function () { return false },
                         labelWidth: 190,
                         fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoCost'),
                         cls: 'borderedField-with-lable',
@@ -369,19 +368,16 @@
                             //change: this.budgetsChangeListener,
                             focus: function (field) {
                                 this.blockMillion = true;
-                            },
-                            blur: function (field) {
+                                field.setValue(this.originValue);
                                 this.blockMillion = false;
-                            },                         
+                            },       
                         }
                     }, {
                         xtype: 'numberfield',
                         name: 'ActualPromoTIMarketing',
-                        editable: false,
+                        readOnlyCls: 'readOnlyField',
                         hideTrigger: true,
                         readOnly: true,
-                        needReadOnly: true,
-                        setReadOnly: function () { return false },
                         labelWidth: 190,
                         fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoTIMarketing'),
                         cls: 'borderedField-with-lable',
@@ -411,19 +407,16 @@
                             //change: this.budgetsChangeListener,
                             focus: function (field) {
                                 this.blockMillion = true;
-                            },
-                            blur: function (field) {
+                                field.setValue(this.originValue);
                                 this.blockMillion = false;
-                            },                        
+                            },          
                         }
                     }, {
                         xtype: 'numberfield',
                         name: 'ActualPromoCostProduction',
-                        editable: false,
+                        readOnlyCls: 'readOnlyField',
                         hideTrigger: true,
                         readOnly: true,
-                        needReadOnly: true,
-                        setReadOnly: function () { return false },
                         labelWidth: 190,
                         fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoCostProduction'),
                         cls: 'borderedField-with-lable',
@@ -453,20 +446,18 @@
                             //change: this.budgetsChangeListener,
                             focus: function (field) {
                                 this.blockMillion = true;
-                            },
-                            blur: function (field) {
+                                field.setValue(this.originValue);
                                 this.blockMillion = false;
-                            },                         
+                            },
                         }
                     }, {
                         xtype: 'numberfield',
                         name: 'ActualPromoTIShopper',
-                        editable: false,
+                        readOnlyCls: 'readOnlyField',
                         hideTrigger: true,
                         readOnly: true,
-                        needReadOnly: true,
-                        setReadOnly: function () { return false },
                         labelWidth: 190,
+                        value: 0,
                         fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoTIShopper'),
                         cls: 'borderedField-with-lable',
                         labelCls: 'borderedField-label',
@@ -495,25 +486,30 @@
                             //change: this.budgetsChangeListener,
                             focus: function (field) {
                                 this.blockMillion = true;
-                            },
-                            blur: function (field) {
+                                field.setValue(this.originValue);
                                 this.blockMillion = false;
-                            },                         
+                            },    
                         }
                     }, {
                         xtype: 'numberfield',
                         name: 'ActualPromoBranding',
+                        readOnlyCls: 'readOnlyField',
                         hideTrigger: true,
                         readOnly: true,
-                        readOnlyCls: 'readOnlyField',
-                        needReadOnly: true,
                         isChecked: true,
                         labelWidth: 190,
                         fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoBranding'),
                         value: 0,
                         cls: 'borderedField-with-lable',
                         labelCls: 'borderedField-label',
-                        crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
+                        availableRoleStatusActions: {
+                            SupportAdministrator: App.global.Statuses.AllStatuses,
+                            Administrator: App.global.Statuses.AllStatusesWithoutDraft,
+                            FunctionalExpert: App.global.Statuses.AllStatusesWithoutDraft,
+                            CMManager: App.global.Statuses.AllStatusesWithoutDraft,
+                            CustomerMarketing: App.global.Statuses.AllStatusesWithoutDraft,
+                            KeyAccountManager: App.global.Statuses.AllStatusesWithoutDraft,
+                        },
                         mouseWheelEnabled: false,
                         blockMillion: false, // если true - то преобразовывать в миллионы
                         originValue: null, // настоящее значение
@@ -547,17 +543,23 @@
                     }, {
                         xtype: 'numberfield',
                         name: 'ActualPromoBTL',
+                        readOnlyCls: 'readOnlyField',
                         hideTrigger: true,
                         readOnly: true,
                         readOnlyCls: 'readOnlyField',
-                        needReadOnly: true,
                         isChecked: true,
                         labelWidth: 190,
                         fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoBTL'),
                         value: 0,
                         cls: 'borderedField-with-lable',
                         labelCls: 'borderedField-label',
-                        crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing'],
+                        availableRoleStatusActions: {
+                            SupportAdministrator: App.global.Statuses.AllStatuses,
+                            Administrator: App.global.Statuses.AllStatusesWithoutDraft,
+                            FunctionalExpert: App.global.Statuses.AllStatusesWithoutDraft,
+                            CMManager: App.global.Statuses.AllStatusesWithoutDraft,
+                            CustomerMarketing: App.global.Statuses.AllStatusesWithoutDraft
+                        },
                         mouseWheelEnabled: false,
                         blockMillion: false, // если true - то преобразовывать в миллионы
                         originValue: null, // настоящее значение

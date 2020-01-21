@@ -1426,6 +1426,10 @@
     <Compile Include="Migrations\201910291601387_EmptyMigrationUpliftbyZREP.Designer.cs">
       <DependentUpon>201910291601387_EmptyMigrationUpliftbyZREP.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201912090752401_EmptyMigrationSupportADmin.cs" />
+    <Compile Include="Migrations\201912090752401_EmptyMigrationSupportADmin.Designer.cs">
+      <DependentUpon>201912090752401_EmptyMigrationSupportADmin.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\201911010718594_Add_AdditionalUserTimestamp_To_Promo.cs" />
     <Compile Include="Migrations\201911010718594_Add_AdditionalUserTimestamp_To_Promo.Designer.cs">
       <DependentUpon>201911010718594_Add_AdditionalUserTimestamp_To_Promo.cs</DependentUpon>
@@ -1562,6 +1566,10 @@
     <Compile Include="Migrations\201912061242540_Add_Unique_Mechanic.Designer.cs">
       <DependentUpon>201912061242540_Add_Unique_Mechanic.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201912120425181_EmptySupportAdmin.cs" />
+    <Compile Include="Migrations\201912120425181_EmptySupportAdmin.Designer.cs">
+      <DependentUpon>201912120425181_EmptySupportAdmin.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\201912091414485_EmptyMigrationRC2.cs" />
     <Compile Include="Migrations\201912091414485_EmptyMigrationRC2.Designer.cs">
       <DependentUpon>201912091414485_EmptyMigrationRC2.cs</DependentUpon>
@@ -1601,6 +1609,14 @@
     <Compile Include="Migrations\201912231818360_EmptyMigrationRC3.cs" />
     <Compile Include="Migrations\201912231818360_EmptyMigrationRC3.Designer.cs">
       <DependentUpon>201912231818360_EmptyMigrationRC3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201912251556302_EmptyMigrationSupportAdmin.cs" />
+    <Compile Include="Migrations\201912251556302_EmptyMigrationSupportAdmin.Designer.cs">
+      <DependentUpon>201912251556302_EmptyMigrationSupportAdmin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202001130905514_Add_CreatorLogin_To_Promo.cs" />
+    <Compile Include="Migrations\202001130905514_Add_CreatorLogin_To_Promo.Designer.cs">
+      <DependentUpon>202001130905514_Add_CreatorLogin_To_Promo.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\PromoProductsView.cs" />
@@ -1792,7 +1808,10 @@
     <Compile Include="PromoStateControl\UserRoles.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CalculatePromoParametersModule\PlanProductParametersCalculation.cs" />
+    <Content Include="SQLInitialize\201912301400_Delete_AP_DependedOnMe_SupportAdmin_2.sql" />
+    <Content Include="SQLInitialize\20191226_1400_File_AP_ResultFilesDownload_SupportAdmin.sql" />
     <Content Include="SQLInitialize\20191223_2110_FixMarsCutomersCheckHandler.sql" />
+    <Content Include="SQLInitialize\20191212_0712_AddSupportAdminRoleAP_Again.sql" />
     <Content Include="SQLInitialize\20191205_0022_Init_ClientTreeNeedUpdateNotification.sql" />
     <Content Include="SQLInitialize\20191205_0020_AddClientTreeNeedUpdateNotificationHandler.sql" />
     <Content Include="SQLInitialize\20191205_0015_AddMarsCutomersCheckHandler.sql" />
@@ -1815,6 +1834,8 @@
     <Content Include="SQLInitialize\20191016_1550_Settings_productChangeStatus_list_fix.sql" />
     <Content Include="SQLInitialize\20191104_1000_Settings_PromoChangeProps_Update.sql" />
     <Content Include="SQLInitialize\20191011_1007_Add_DeletedPromoSupport_AP.sql" />
+    <Content Include="SQLInitialize\20191201_1620_Add_Ap_ExportAllPromoProducts.sql" />
+    <Content Include="SQLInitialize\20191127_1200_AddSupportAdminRoleAndAP.sql" />
     <Content Include="SQLInitialize\20191114_1600_UnblockPromoesHandler.sql" />
     <Content Include="SQLInitialize\20191106_1700_PromoView.sql" />
     <Content Include="SQLInitialize\20191031_1824_Promo_Product_Correction_Statuses.sql" />
@@ -1842,6 +1863,9 @@
     <Content Include="SQLInitialize\20191203_1730_NonPromoEquipment_AP.sql" />
     <Content Include="SQLInitialize\20191203_1730_NonPromoSupport_AP.sql" />
     <Content Include="SQLInitialize\20191203_2300_NonPromoSupport_Incremental_Trigger.sql" />
+    <Content Include="SQLInitialize\20191217_1501_Delete_Statuses_AP_Delete.sql" />
+    <Content Include="SQLInitialize\20191218_1354_Add_Promo_Reset_Support_Admin_AP.sql" />
+    <Content Include="SQLInitialize\20191218_1650_Delete_GetCanChangeStatePromoes_AP_SupportAdministrator.sql" />
     <Content Include="SQLInitialize\20191219_1427_Historical_Delete_UserRole_AP.sql" />
     <Content Include="SQLInitialize\20191211_1800_NonPromoEquipment_AP_CMM_Add.sql" />
     <Content Include="SQLInitialize\20191205_1730_Adding_Codes.sql" />
@@ -1849,6 +1873,19 @@
     <Content Include="SQLInitialize\20191205_1800_BrandTech_code_Computed_Add.sql" />
     <Content Include="SQLInitialize\20191205_1830_AddMarsProductsCheckHandler.sql" />
     <Content Include="SQLInitialize\20191219_1945_File_AP_ResultFilesDownload.sql" />
+    <Content Include="SQLInitialize\20191220_1530_AddSupportAdminAP_3.sql" />
+    <Content Include="SQLInitialize\20191222_Add_AP_Promo_SupportAdmin_ChangeResponsible.sql" />
+    <Content Include="SQLInitialize\20191223_1313_Delete_AP_DependedOnMe_SupportAdmin.sql" />
+    <Content Include="SQLInitialize\20191226_1030_ShebaMini_MigrationToSubrange.sql" />
+    <Content Include="SQLInitialize\20191226_1910_ChangeExportScheduleAP.sql" />
+    <Content Include="SQLInitialize\20191227_1430_DeleteAP_PromoSupportPromo_Delete.sql" />
+    <Content Include="SQLInitialize\20191227_1400_DeleteSomeAP.sql" />
+    <Content Include="SQLInitialize\20191230_1130_ShebaMini_PromoProductTree_Migration.sql" />
+    <Content Include="SQLInitialize\20191230_1200_BrandTech_To_BrandsegTech.sql" />
+    <Content Include="SQLInitialize\20191230_1230_Add_AppMix_ZREPsList_To_Settings.sql" />
+    <Content Include="SQLInitialize\20191230_1235_Product_update_computed_fields.sql" />
+    <Content Include="SQLInitialize\20200113_1300_Add_AP_GetHistoricalPromoesCreatorLogin.sql" />
+    <Content Include="SQLInitialize\20200109_1600_Add_Handlers_MaterialsSync.sql" />
     <Content Include="Sql\20191004_1540_FillInOutProductIdsHandler.sql" />
     <Content Include="SQLInitialize\20190926_1600_HistoricalPromoSupport_AP.sql" />
     <Content Include="SQLInitialize\20191106_1700_PromoGridView.sql" />
@@ -2966,6 +3003,9 @@
     <EmbeddedResource Include="Migrations\201912071724011_Add_ClientTreeNeedUpdateIncident_Fields.resx">
       <DependentUpon>201912071724011_Add_ClientTreeNeedUpdateIncident_Fields.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201912120425181_EmptySupportAdmin.resx">
+      <DependentUpon>201912120425181_EmptySupportAdmin.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201912091414485_EmptyMigrationRC2.resx">
       <DependentUpon>201912091414485_EmptyMigrationRC2.cs</DependentUpon>
     </EmbeddedResource>
@@ -2995,6 +3035,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201912231818360_EmptyMigrationRC3.resx">
       <DependentUpon>201912231818360_EmptyMigrationRC3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201912251556302_EmptyMigrationSupportAdmin.resx">
+      <DependentUpon>201912251556302_EmptyMigrationSupportAdmin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001130905514_Add_CreatorLogin_To_Promo.resx">
+      <DependentUpon>202001130905514_Add_CreatorLogin_To_Promo.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

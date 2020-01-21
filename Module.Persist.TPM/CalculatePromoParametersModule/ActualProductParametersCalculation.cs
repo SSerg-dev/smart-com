@@ -17,9 +17,9 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         /// <param name="context">Контекст БД</param>
         /// <param name="lockedActualLSV">Блокировка значений, введенных Demand'ом</param>
         /// <returns>Null при успешном расчете, иначе строку с ошибками</returns>
-        public static string CalculatePromoProductParameters(Promo promo, DatabaseContext context, bool lockedActualLSV = false)
+        public static string CalculatePromoProductParameters(Promo promo, DatabaseContext context, bool lockedActualLSV = false, bool isSupportAdmin = false)
         {
-            if (promo != null && promo.PromoStatus.SystemName == "Finished")
+            if (promo != null && (promo.PromoStatus.SystemName == "Finished" || (isSupportAdmin && promo.PromoStatus.SystemName == "Closed")))
             {
                 List<PromoProduct> products = context.Set<PromoProduct>().Where(n => n.PromoId == promo.Id && !n.Disabled).ToList();
                 ClientTree clientTree = context.Set<ClientTree>().Where(x => x.ObjectId == promo.ClientTreeId && !x.EndDate.HasValue).FirstOrDefault();

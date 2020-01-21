@@ -1,6 +1,6 @@
 ﻿Ext.define('App.view.tpm.promoproduct.HistoricalPromoProductDetail', {
     extend: 'App.view.core.common.EditorDetailWindow',
-    alias: 'widget.historicalactualdetail',
+    alias: 'widget.historicalpromoproductdetail',
     width: 800,
     minWidth: 800,
     maxHeight: 600,

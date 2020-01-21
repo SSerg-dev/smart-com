@@ -28,6 +28,21 @@ namespace Module.Frontend.TPM.Controllers {
             return HistoryReader.GetById<HistoricalPromo>(promoIdHistory.ToString());// HistoryReader.GetAll<HistoricalPromo>();
         }
 
+        [ClaimsAuthorize]
+        [EnableQuery(
+            MaxNodeCount = int.MaxValue,
+            EnsureStableOrdering = false,
+            HandleNullPropagation = HandleNullPropagationOption.False,
+            AllowedQueryOptions = AllowedQueryOptions.All,
+            EnableConstantParameterization = false,
+            MaxTop = 1024)]
+        public IQueryable<HistoricalPromo> GetHistoricalPromoes(Guid? promoIdHistory, bool onlyCreator)
+        {
+            var result = HistoryReader.GetById<HistoricalPromo>(promoIdHistory.ToString());// HistoryReader.GetAll<HistoricalPromo>();
+            result = result.Where(x => x.CreatorLogin != null);
+            return result;
+        }
+
         protected override void Dispose(bool disposing) {
             if (disposing) {
                 HistoryReader.Dispose();

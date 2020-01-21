@@ -16,12 +16,12 @@
     },
 
     onAfterRender: function (widget) {
-        var addSubItemBtn = widget.down('#addSubItem');
-        var access = App.UserInfo.getCurrentRole().AccessPoints.find(function (el) {
-            return el.Resource.toLowerCase() == 'promosupportpromoes' && el.Action.toLowerCase() == 'managesubitems'
-        });
+        //var addSubItemBtn = widget.down('#addSubItem');
+        //var access = App.UserInfo.getCurrentRole().AccessPoints.find(function (el) {
+        //    return el.Resource.toLowerCase() == 'promosupportpromoes' && el.Action.toLowerCase() == 'managesubitems'
+        //});
 
-        addSubItemBtn.setDisabled(!access);
+        //addSubItemBtn.setDisabled(!access);
         widget.record = Ext.ComponentQuery.query('promoeditorcustom')[0];
     },
 
@@ -46,7 +46,7 @@
             toolbar.down('#createbutton').hide();
             toolbar.down('#deletebutton').hide();
 
-            if (!editable || Ext.ComponentQuery.query('promoeditorcustom')[0].down('#changePromo').isVisible()) {
+            if ((!editable || Ext.ComponentQuery.query('promoeditorcustom')[0].down('#changePromo').isVisible())) {
                 toolbar.down('#updatebutton').hide();
             }
         });
@@ -190,29 +190,32 @@
         // чекаем уже прикрепленные подстатьи
         var firstLoad = true;
         grid.on('load', function () {
-            if (firstLoad) {
-                promoSupport.setLoading(true);
-                $.ajax({
-                    dataType: 'json',
-                    url: '/odata/PromoSupportPromoes/GetLinkedSubItems?promoId=' + detailWidget.record.promoId,
-                    type: 'POST',
-                    success: function (data) {
-                        data.data.forEach(function (promoSupportId) {
-                            var record = store.getById(promoSupportId);
-                            if (record) {
-                                grid.getSelectionModel().checkRows(record);
-                            }
-                        });
+                if (firstLoad) {
+                    promoSupport.setLoading(true);
+                    setTimeout(function () {
+                    $.ajax({
+                        dataType: 'json',
+                        url: '/odata/PromoSupportPromoes/GetLinkedSubItems?promoId=' + detailWidget.record.promoId,
+                        type: 'POST',
+                        success: function (data) {
+                            data.data.forEach(function (promoSupportId) {
+                                var record = store.getById(promoSupportId);
+                                if (record) {
+                                    grid.getSelectionModel().checkRows(record);
+                                }
+                            });
 
-                        firstLoad = false;
-                        promoSupport.setLoading(false);
-                    },
-                    error: function (data) {
-                        promoSupport.setLoading(false);
-                        App.Notify.pushError(data.responseJSON["odata.error"].innererror.message);
-                    }
-                });
-            }
+                            firstLoad = false;
+                            promoSupport.setLoading(false);
+                        },
+                        error: function (data) {
+                            promoSupport.setLoading(false);
+                            App.Notify.pushError(data.responseJSON["odata.error"].innererror.message);
+                        }
+                    });
+                    }, 200);
+                }
+
         }, this);
 
         // загружать подстатьи нужно только для текущего клиента и текущего бюджета

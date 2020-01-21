@@ -3,10 +3,11 @@ using Module.Persist.TPM.Model.Import;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.PromoStateControl.RoleStateMap;
 using Persist;
+using Persist.Model;
 using Persist.ScriptGenerator;
 using Persist.ScriptGenerator.Filter;
 using System;
-using System.Collections.Generic;
+using System.Collections.Generic; 
 using System.Linq;
 using System.Text.RegularExpressions;
 using Utility;
@@ -333,6 +334,20 @@ namespace Module.Persist.TPM.Utils {
                 query = query.Where(x =>
                     hierarchy.Any(h => h.Id == x.PromoProduct.Promo.ClientTree.ObjectId));
             }
+            return query;
+        }
+        /// <summary>
+        /// Применить фильтр по клиентам к constraint
+        /// </summary>
+        /// <param name="query">Запрос</param>
+        /// <param name="hierarchy">Иерархия</param>
+        /// <param name="filter">Фильтр</param>
+        public static IQueryable<Constraint> ApplyFilter(IQueryable<Constraint> query, IQueryable<ClientTreeHierarchyView> hierarchy)
+        {
+
+            query = query.Where(x =>
+                hierarchy.Any(h => x.Value.Equals(h.Id.ToString())));
+
             return query;
         }
         /// <summary>

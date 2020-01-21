@@ -372,7 +372,7 @@
             'ImportResultFilesModel': 'Результаты импорта',
             'ImportSourceRecordCount': 'Исходных записей',
 			'ImportResultRecordCount': 'Записей обработано',
-			'DataLakeSyncSourceRecordCount': 'Результаты синхронизации',
+            'DataLakeSyncSourceRecordCount': 'Успешно синхронизировано',
 			'DataLakeSyncResultRecordCount': 'Исходных записей',
 			'DataLakeSyncResultFilesModel': 'Записей обработано',
 			'DataLakeSyncTypeDisplay': 'Справочник',

@@ -186,7 +186,8 @@
         'completeStep5Validate': 'Step 5',
         'completeStep6Validate': 'Step 6',
         'completeBasicValidate': 'Basic',
-        'completeActivityValidate': 'Activity'
+        'completeActivityValidate': 'Activity',
+        'selectpromostatuswindow': 'Select promo status'
     },
 
     'DeleteText': {
@@ -258,12 +259,14 @@
         'undoPublish': 'Undo publish',
         'cancel': 'Cancel',
         'plan': 'Plan',
+        'changestatus': 'Change status',
         'showLog': 'Show log',
         'recalculate': 'Recalculate',
         'promoBlockLabelText': 'Promo is blocked for recalculations',
         'downloadScheduleButtonText': 'Download',
         'downloadError': 'File for this task doesn\'t exist',
         'noSelectionError': 'Select task',
+        'resetPromo': 'Reset Promo',
     },
 
     'Category': {
@@ -450,6 +453,7 @@
         'PlanProductPCLSV': 'Plan Product PC LSV',
         'ProductBaselinePrice': 'Case Price',
         'PlanProductPCPrice': 'PC Price',
+        'PlanProductUplift': 'Plan Product Uplift',
         'ActualProductPCQty': 'Actual Product PC Qty',
         'ActualProductCaseQty': 'Actual Product Qty',
         'ActualProductUOM': 'Actual Product UOM',
@@ -659,7 +663,7 @@
         'ActualPromoTIMarketing': 'Actual Marketing TI',
         'ActualPromoCostProduction': 'Actual Cost Production',
         'ActualPromoTIShopper': 'Actual Shopper TI',
-        'ActualPromoBranding': 'Atual Branding',
+        'ActualPromoBranding': 'Actual Branding',
         'ActualPromoBTL': 'Actual BTL',
         'ActualPostPromoEffect': 'Actual Post Promo Effect',
 
@@ -700,6 +704,8 @@
         'ROIHeader': 'ROIHeader',
         'UpliftHeader': 'UpliftHeader',
         'Confirm Approval': 'Do you really want to approve the PROMO form?',
+        'ConfirmPromoStatusChange': 'Are you sure you want to do this action? It may not join in standart workflow process.',
+        'FailToSelectStatus' : 'You can not select current status.',
         'Reason': 'Reason',
 
         'PromoEventName': 'Promo Event Name',
@@ -744,6 +750,7 @@
         'ActualInStoreMechanicTypeNameTip': 'Actual mechanic type instore with co investment from client',
         'ActualInStoreMechanicDiscountTip': 'Actual discount instore with co investment from client',
         'ChangeStateOnlyButtonText': 'Dependent on me',
+        'ChangeResponsible': 'Change Responsible',
         'CreateCollapsed': 'Create<br>Promo',
         'CreateInOutCollapsed': 'Create<br>Promo<br>InOut',
         'CreateExpanded': 'Create Promo',
@@ -801,6 +808,8 @@
         'ConfirmCancelTitle': 'Cancel promo',
         'ConfirmCancelText': 'Do you really want to cancel this promo?',
         'PromoTypesName': 'Promo Types Name',
+
+        'CreatorLogin': 'Creator Name',
     },
     'HistoricalPromo': ['.tpm.Promo', '.core.BaseHistoryEntity'],
     'DeletedPromo': ['.tpm.Promo', '.core.BaseDeletedEntity'],
@@ -1308,6 +1317,7 @@
         'PlanProductPCLSV': 'Plan Product PC LSV',
         'ProductBaselinePrice': 'Case Price',
         'PlanProductPCPrice': 'PC Price',
+        'PlanProductUplift': 'Plan Product Uplift',
         'ActualProductPCQty': 'Actual Product PC Qty',
         'ActualProductCaseQty': 'Actual Product Qty',
         'ActualProductUOM': 'Actual Product UOM',
@@ -1342,7 +1352,15 @@
         'TemplateTLC': 'Import TLC template XLSX',
         'AverageMarker': 'Average Marker',
         'PlanProductUpliftPercent': 'Plan Product Uplift Percent',
-        'PlanProductBaselineCaseQty': 'Plan Product Baseline Case Qty'
+        'PlanProductBaselineCaseQty': 'Plan Product Baseline Case Qty',
+        'PlanProductPostPromoEffectLSVW1': 'Plan Product Post Promo Effect LSV W1',
+        'PlanProductPostPromoEffectLSVW2': 'Plan Product Post Promo Effect LSV W2',
+        'ActualProductPostPromoEffectLSVW1': 'Actual Product Post Promo Effect LSV W1',
+        'ActualProductPostPromoEffectLSVW2': 'Actual Product Post Promo Effect LSV W2',
+        'PlanProductPostPromoEffectQtyW1': 'Plan Product Post Promo Effect QTY W1',
+        'PlanProductPostPromoEffectQtyW2': 'Plan Product Post Promo Effect QTY W2',
+        'ActualProductPostPromoEffectQtyW1': 'Actual Product Post Promo Effect QTY W1',
+        'ActualProductPostPromoEffectQtyW2': 'Actual Product Post Promo Effect QTY W2',
     },
     'HistoricalPromoProduct': ['.tpm.PromoProduct', '.core.BaseHistoryEntity'],
     'DeletedPromoProduct': ['.tpm.PromoProduct', '.core.BaseDeletedEntity'],
@@ -1893,7 +1911,11 @@
         'ActualInStoreDiscount': 'Actual Instore Mechanic Discount',
         'ActualInStore': 'Actual Discount In Store',
         'Plan': 'Plan',
-        'Actuals': 'Actuals'
+        'Actuals': 'Actuals',
+        'ExportAllPromoProducts': 'Export All Promo Products',
+        'triggerfieldOnlyNumbers': 'Only number allowed',
+        'uploadActualsStatus': 'Actual parameters won\'t be recalculated in this status. For recalculation change status to Finished',
+        'warning': 'Warning'
     },
 
     'PromoBudgetsDetailsWindow': {
@@ -1999,6 +2021,7 @@
         'PlanProductPCLSV': 'Plan Product PC LSV',
         'ProductBaselinePrice': 'Case Price',
         'PlanProductPCPrice': 'PC Price',
+        'PlanProductUplift': 'Plan Product Uplift',
         'ActualProductPCQty': 'Actual Product PC Qty',
         'ActualProductCaseQty': 'Actual Product Qty',
         'ActualProductUOM': 'Actual Product UOM',
@@ -2148,5 +2171,12 @@
         'excludeassortmentmatrixproductsbutton': 'Exclude products from assortment matrix.',
         'ok': 'Choose products',
         'productrequired': 'You must select at least one product.'
-    }
+    },
+
+    'UserRolePromo': {
+        'Name': 'Login',
+        'CreatorLogin': 'Login',
+        'Email': 'Email',
+    },
+    'HistoricalUserRolePromo': ['.tpm.UserRolePromo', '.core.BaseHistoryEntity'],
 });

@@ -54,7 +54,7 @@ namespace Module.Persist.TPM.PromoStateControl
                 {
                     message = CheckPromoForErrors(promoModel);
                     // Go to: closedState
-                    if (message != null)
+                    if (message != null && userRole != "SupportAdministrator")
                     {
                         return false;
                     }
@@ -65,6 +65,13 @@ namespace Module.Persist.TPM.PromoStateControl
 
                         return true;
                     }
+                }
+                else if (userRole == "SupportAdministrator")
+                {
+                    _stateContext.Model = promoModel;
+                    _stateContext.State = _stateContext.GetPromoState(statusName);
+
+                    return true;
                 }
                 // Current state
                 else if (isAvailableCurrent && statusName == Name)

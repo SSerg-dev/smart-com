@@ -1,6 +1,6 @@
 Ext.define('App.view.tpm.promoproduct.HistoricalPromoProduct', {
     extend: 'App.view.core.common.CombinedDirectoryPanel',
-    alias: 'widget.historicalactual',
+    alias: 'widget.historicalpromoproduct',
     title: l10n.ns('core', 'compositePanelTitles').value('historyPanelTitle'),
 
     dockedItems: [{
@@ -61,7 +61,7 @@ Ext.define('App.view.tpm.promoproduct.HistoricalPromoProduct', {
                 }, {
                     text: l10n.ns('tpm', 'HistoricalPromoProduct').value('_Operation'),
                     dataIndex: '_Operation',
-                    renderer: App.RenderHelper.getLocalizedRenderer('tpm.HistoricalActual', 'OperationType'),
+                    renderer: App.RenderHelper.getLocalizedRenderer('tpm.HistoricalPromoProduct', 'OperationType'),
                     filter: {
                         type: 'combo',
                         valueField: 'id',

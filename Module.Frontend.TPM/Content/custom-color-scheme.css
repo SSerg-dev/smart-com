@@ -3150,13 +3150,8 @@ x-slider-inner:before {
     background-size: 20px;
 }
 
-.editable-trigger-field .promo-activity-details-window-field input,
-.editable-trigger-field .form-info-trigger-cell {
-    background-color: white !important;
-}
-
 .form-info-trigger-cell {
-    background-color: #f5f5f5 !important;
+    background-color: #f5f5f5;
     border-radius: 0 !important;
     width: 25px !important;
 }
@@ -3394,7 +3389,7 @@ x-slider-inner:before {
     cursor: default;
 }
 
-.promo-activity-details-window-field input {
+.promo-editor-custom-scroll-items .inputReadOnly {
     background-color: #f5f5f5;
 }
 

@@ -18,9 +18,9 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         /// <param name="context">Контекст БД</param>
         /// <param name="lockedActualLSV">Блокировка значений, введенных Demand'ом</param>
         /// <returns>Null при успешном расчете, иначе строку с ошибками</returns>
-        public static string CalculatePromoParameters(Promo promo, DatabaseContext context, bool lockedActualLSV = false)
+        public static string CalculatePromoParameters(Promo promo, DatabaseContext context, bool lockedActualLSV = false, bool isSupportAdmin = false)
         {
-            if (promo != null && promo.PromoStatus.SystemName == "Finished")
+            if (promo != null && (promo.PromoStatus.SystemName == "Finished" || (isSupportAdmin && promo.PromoStatus.SystemName == "Closed")))
             {
                 PromoStatus finishedStatus = context.Set<PromoStatus>().Where(x => x.SystemName.ToLower() == "finished" && !x.Disabled).FirstOrDefault();
                 Promo promoCopy = new Promo(promo);

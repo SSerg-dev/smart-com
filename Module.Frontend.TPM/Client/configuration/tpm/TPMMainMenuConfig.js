@@ -10,7 +10,7 @@
     scale: 'medium',
     glyph: 0xf392,
     widget: 'promo'
-}, {
+    },{
     text: l10n.ns('tpm', 'mainmenu').value('PromoSupport'),
     tooltip: l10n.ns('tpm', 'mainmenu').value('PromoSupport'),
     scale: 'medium',
@@ -140,28 +140,28 @@
             tooltip: l10n.ns('tpm', 'mainmenu').value('PlanIncrementalReport'),
             glyph: 0xf127,
             scale: 'medium',
-            roles: ['Administrator', 'FunctionalExpert', 'DemandPlanning', 'SuperReader', 'CustomerMarketing', 'CMManager'],
+            roles: ['Administrator', 'FunctionalExpert', 'DemandPlanning', 'SuperReader', 'CustomerMarketing', 'CMManager', 'SupportAdministrator'],
             widget: 'planincrementalreport' 
         }, {
             text: l10n.ns('tpm', 'mainmenu').value('PlanPostPromoEffectReport'),
             tooltip: l10n.ns('tpm', 'mainmenu').value('PlanPostPromoEffectReport'),
             glyph: 0xf127,
             scale: 'medium',
-            roles: ['Administrator', 'FunctionalExpert', 'DemandPlanning', 'SuperReader', 'CustomerMarketing', 'CMManager'],
+            roles: ['Administrator', 'FunctionalExpert', 'DemandPlanning', 'SuperReader', 'CustomerMarketing', 'CMManager', 'SupportAdministrator'],
             widget: 'planpostpromoeffectreport'
          }, {
             text: l10n.ns('tpm', 'mainmenu').value('IncrementalPromo'),
             tooltip: l10n.ns('tpm', 'mainmenu').value('IncrementalPromo'),
             glyph: 0xf127,
             scale: 'medium',
-            roles: ['Administrator', 'FunctionalExpert', 'DemandPlanning', 'SuperReader', 'CustomerMarketing', 'CMManager'],
+            roles: ['Administrator', 'FunctionalExpert', 'DemandPlanning', 'SuperReader', 'CustomerMarketing', 'CMManager', 'SupportAdministrator'],
             widget: 'incrementalpromo'
         }, {
             text: l10n.ns('tpm', 'mainmenu').value('ActualLSV'),
             tooltip: l10n.ns('tpm', 'mainmenu').value('ActualLSV'),
             glyph: 0xf127,
             scale: 'medium',
-            roles: ['Administrator', 'FunctionalExpert', 'DemandPlanning', 'SuperReader', 'CustomerMarketing', 'CMManager'],
+            roles: ['Administrator', 'FunctionalExpert', 'DemandPlanning', 'SuperReader', 'CustomerMarketing', 'CMManager', 'SupportAdministrator'],
             widget: 'actuallsv'
         }]
     }, {
@@ -245,13 +245,13 @@
             text: l10n.ns('tpm', 'mainmenu').value('COGS'),
             tooltip: l10n.ns('tpm', 'mainmenu').value('COGS'),
             glyph: 0xf152,
-            roles: ['Administrator', 'FunctionalExpert', 'DemandFinance', 'SuperReader', 'CustomerMarketing', 'CMManager'],
+            roles: ['Administrator', 'FunctionalExpert', 'DemandFinance', 'SuperReader', 'CustomerMarketing', 'CMManager', 'SupportAdministrator'],
             widget: 'cogs'
         }, {
             text: l10n.ns('tpm', 'mainmenu').value('TradeInvestment'),
             tooltip: l10n.ns('tpm', 'mainmenu').value('TradeInvestment'),
             glyph: 0xfb2d,
-            roles: ['Administrator', 'FunctionalExpert', 'DemandFinance', 'SuperReader', 'CustomerMarketing', 'CMManager'],
+            roles: ['Administrator', 'FunctionalExpert', 'DemandFinance', 'SuperReader', 'CustomerMarketing', 'CMManager', 'SupportAdministrator'],
             widget: 'tradeinvestment'
         }, {
             text: l10n.ns('tpm', 'mainmenu').value('PromoROIReport'),

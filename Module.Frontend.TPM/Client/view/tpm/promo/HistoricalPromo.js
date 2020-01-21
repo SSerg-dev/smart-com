@@ -95,6 +95,10 @@
             fieldLabel: l10n.ns('tpm', 'HistoricalPromo').value('_Operation')
         }, {
             xtype: 'singlelinedisplayfield',
+            name: 'CreatorLogin',
+            fieldLabel: l10n.ns('tpm', 'Promo').value('CreatorLogin'),
+        },{
+            xtype: 'singlelinedisplayfield',
             name: 'Number',
             fieldLabel: l10n.ns('tpm', 'Promo').value('Number'),
         }, {

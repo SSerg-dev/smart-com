@@ -13,6 +13,8 @@
         { name: 'PromoEventName', type: 'string', useNull: true, hidden: false, isDefault: true, defaultValue: null },
         { name: 'PromoEventDescription', type: 'string', useNull: true, hidden: false, isDefault: true, defaultValue: null },
 
+        { name: 'CreatorLogin', type: 'string', useNull: true, hidden: false, isDefault: true, defaultValue: null },
+
         { name: 'IsAutomaticallyApproved', type: "boolean", useNull: true, hidden: true, isDefault: false, defaultValue: null },
         { name: 'IsCMManagerApproved', type: "boolean", useNull: true, hidden: true, isDefault: false, defaultValue: null },
         { name: 'IsDemandPlanningApproved', type: "boolean", useNull: true, hidden: true, isDefault: false, defaultValue: null },

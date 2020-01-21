@@ -87,7 +87,6 @@
 
     onAfterRender: function (promoProductsView) {
         var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
-
         promoProductsView.storePromoProductsView = Ext.create('Ext.data.Store', {
             model: 'App.model.tpm.promoproductcorrection.PromoProductCorrection',
             autoLoad: false,
@@ -99,8 +98,10 @@
             promoProductsView.isReadable = true
         }
 
+
+        var sg = Ext.ComponentQuery.query('[itemId=GlyphLock]');
         // если грид открывается для чтения
-        if (promoProductsView.isReadable || promoProductsView.defaultValue == true) {
+        if (promoProductsView.isReadable || Ext.ComponentQuery.query('[itemId=GlyphLock]')[0].disabled) {
             promoProductsView.down('#updatebutton').setVisible(false);
 
             Ext.ComponentQuery.query('basewindow #ok').forEach(function (item) {

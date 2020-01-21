@@ -142,6 +142,30 @@
                 panel.setLoading(false);
                 App.Notify.pushError(me.getErrorMessage(data));
             });
+    },
+
+    onHistoryButtonClick: function (button) {
+        var grid = this.getGridByButton(button),
+            selModel = grid.getSelectionModel();
+
+        if (selModel.hasSelection()) {
+            var panel = grid.up('combineddirectorypanel'),
+                model = panel.getBaseModel(),
+                viewClassName = App.Util.buildViewClassName(panel, model, 'Historical');
+
+            var baseReviewWindow = Ext.widget('basereviewwindow', { items: Ext.create(viewClassName, { baseModel: model }) });
+            baseReviewWindow.show();
+
+            var store = baseReviewWindow.down('grid').getStore();
+            var proxy = store.getProxy();
+            proxy.extraParams.Id = this.getRecordId(selModel.getSelection()[0]);
+
+            store.setFixedFilter('HistoricalObjectId', {
+                property: '_ObjectId',
+                operation: 'Equals',
+                value: this.getRecordId(selModel.getSelection()[0])
+            });
+        }
     }
 });
     

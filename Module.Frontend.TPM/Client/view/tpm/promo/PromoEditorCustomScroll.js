@@ -697,14 +697,35 @@
         statusSystemName: null,
         style: { "background-color": "#66BB6A" }
     }, {
+        xtype: 'button',
+        itemId: 'btn_changeStatus',
+        glyph: 0xf4e1,
+        text: l10n.ns('tpm', 'customtoptoolbar').value('changestatus'),
+        cls: 'promo-action-button',
+        hidden: true,
+        isPromoAction: true,
+        roles: ['SupportAdministrator'],
+        statuses: ['Draft', 'DraftPublished', 'OnApproval', 'Approved', 'Planned', 'Started', 'Finished', 'Closed', 'Cancelled'],
+        statusId: null,
+        statusName: null,
+        statusSystemName: null,
+        style: { "background-color": "#66BB6A" }
+    }, {
         xtype: 'tbspacer',
         flex: 10
-    }, {
+        },
+        {
         text: l10n.ns('tpm', 'customtoptoolbar').value('recalculate'),
         itemId: 'btn_recalculatePromo',
         style: { "background-color": "#ffb74d" },
         hidden: true
-    }, {
+        },
+        {
+            text: l10n.ns('tpm', 'customtoptoolbar').value('resetPromo'),
+            itemId: 'btn_resetPromo',
+            style: { "background-color": "#ffb74d" },
+            hidden: true
+        },{
         text: l10n.ns('tpm', 'buttons').value('close'),
         itemId: 'closePromo',
         style: { "background-color": "#3F6895" },

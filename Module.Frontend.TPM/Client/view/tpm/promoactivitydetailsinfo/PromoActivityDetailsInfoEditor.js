@@ -22,48 +22,48 @@
             xtype: 'numberfield',
             format: '0.00',
             fieldLabel: l10n.ns('tpm', 'PromoProduct').value('PlanProductCaseQty'),
-            name: 'PlanProductBaselineLSV'
+            name: 'PlanProductBaselineLSV',
         }, {
             xtype: 'numberfield',
             format: '0.00',
             fieldLabel: l10n.ns('tpm', 'PromoProduct').value('PlanProductIncrementalLSV'),
-            name: 'PlanProductIncrementalLSV'
+            name: 'PlanProductIncrementalLSV',
         }, {
             xtype: 'numberfield',
             format: '0.00',
             fieldLabel: l10n.ns('tpm', 'PromoProduct').value('ActualProductIncrementalLSV'),
-            name: 'ActualProductIncrementalLSV'
+            name: 'ActualProductIncrementalLSV',
         }, {
             xtype: 'numberfield',
             format: '0.00',
             fieldLabel: l10n.ns('tpm', 'PromoProduct').value('PlanProductLSV'),
-            name: 'PlanProductLSV'
+            name: 'PlanProductLSV',
         }, {
             xtype: 'numberfield',
             format: '0.00',
             fieldLabel: l10n.ns('tpm', 'PromoProduct').value('PlanProductPostPromoEffectLSV'),
-            name: 'PlanProductPostPromoEffectLSV'
+            name: 'PlanProductPostPromoEffectLSV',
         }, {
             xtype: 'numberfield',
             format: '0.00',
             fieldLabel: l10n.ns('tpm', 'PromoProduct').value('ActualProductLSV'),
-            name: 'ActualProductLSV'
+            name: 'ActualProductLSV',
         }, {
             xtype: 'numberfield',
             format: '0.00',
             fieldLabel: l10n.ns('tpm', 'PromoProduct').value('ActualProductPostPromoEffectLSV'),
-            name: 'ActualProductPostPromoEffectLSV'
+            name: 'ActualProductPostPromoEffectLSV',
         }, {
             xtype: 'numberfield',
             format: '0.00',
             fieldLabel: l10n.ns('tpm', 'PromoProduct').value('ActualProductLSVByCompensation'),
-            name: 'ActualProductLSVByCompensation'
+            name: 'ActualProductLSVByCompensation',
         }] 
     },
 
     listeners: {
         beforerender: function (editor) {
-            editor.down('#edit').hidden = true;
+                editor.down('#edit').hidden = true;
         },
     }
 });

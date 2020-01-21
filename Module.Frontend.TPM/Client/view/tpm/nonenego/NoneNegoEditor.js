@@ -195,13 +195,22 @@
                     var minValue = new Date();
                     var currentTimeZoneOffsetInHours = minValue.getTimezoneOffset();
                     var minValueInt = minValue.getTime();
-					field.getPicker().setValue(new Date(minValueInt + currentTimeZoneOffsetInHours * 60000 + 10800000));
-					field.getPicker().setMinDate(new Date(minValueInt + currentTimeZoneOffsetInHours * 60000 + 10800000));
+                    var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
+                   
+                    field.getPicker().setValue(new Date(minValueInt + currentTimeZoneOffsetInHours * 60000 + 10800000));
+                    if (currentRole !== 'SupportAdministrator') {
+
+                        field.getPicker().setMinDate(new Date(minValueInt + currentTimeZoneOffsetInHours * 60000 + 10800000));
+                    }
                 },
                 change: function (newValue, oldValue) {
                     var toDate = this.up('form').down('[name=ToDate]');
-                    toDate.setMinValue(newValue.getValue());
-                }
+                    var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
+                    if (currentRole !== 'SupportAdministrator') {
+
+                        toDate.setMinValue(newValue.getValue());
+                    }
+                    }
             }
         }, {
             xtype: 'datefield',
@@ -224,10 +233,21 @@
 
                 return true;
             },
-            listeners: {
+                listeners: {
+                    afterrender: function (button) {
+
+                        var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
+                        if (currentRole === 'SupportAdministrator') {
+                            button.minValue = null;
+                        } 
+                    },
                 change: function (newValue, oldValue) {
                     var fromDate = this.up('form').down('[name=FromDate]');
-                    fromDate.setMaxValue(newValue.getValue());
+                    var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
+                 //   if (currentRole !== 'SupportAdministrator') {
+
+                        fromDate.setMaxValue(newValue.getValue());
+                   // }
                 }
             }
         }, {

@@ -1,4 +1,5 @@
-﻿Ext.define('App.view.tpm.promo.PromoActivity', {
+﻿
+Ext.define('App.view.tpm.promo.PromoActivity', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.promoactivity',
 
@@ -54,11 +55,11 @@
                             id: 'PlanInstoreMechanicIdInActivity',
                             readOnly: true,
                             readOnlyCls: 'readOnlyField',
-                            needReadOnly: true,
+                            noneCanEdit: true,
                             setReadOnly: function () { return false },
                             allowBlank: true,
                             customTip: l10n.ns('tpm', 'Promo').value('ActualInStoreMechanicNameTip'),
-                            crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager']
+                            //crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
                         }, {
                             xtype: 'textfield',
                             name: 'PlanInstoreMechanicTypeIdInActivity',
@@ -71,9 +72,9 @@
                             entityType: 'MechanicType',
                             readOnly: true,
                             readOnlyCls: 'readOnlyField',
-                            needReadOnly: true,
+                            noneCanEdit: true,
                             setReadOnly: function () { return false },
-                            crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager']
+                            //crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
                         }, {
                             xtype: 'numberfield',
                             name: 'PlanInstoreMechanicDiscountInActivity',
@@ -87,11 +88,11 @@
                             padding: '0 5 5 5',
                             readOnly: true,
                             readOnlyCls: 'readOnlyField',
-                            needReadOnly: true,
+                            noneCanEdit: true,
                             setReadOnly: function () { return false },
-                            crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager']
+                            //crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
                         }]
-                    },{
+                    }, {
                         xtype: 'numberfield',
                         flex: 1,
                         layout: 'anchor',
@@ -102,13 +103,21 @@
                         padding: '0 5 5 5',
                         readOnly: true,
                         readOnlyCls: 'readOnlyField',
-                        needReadOnly: true,
+                        //needReadOnly: true,
                         isChecked: true,
                         allowBlank: true,
                         allowOnlyWhitespace: true,
                         allowDecimals: true,
                         allowExponential: false,
-                        crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager']
+                        //crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
+                        availableRoleStatusActions: {
+                            SupportAdministrator: App.global.Statuses.AllStatuses,
+                            Administrator: App.global.Statuses.AllStatusesBeforeClosedWithoutDraft,
+                            FunctionalExpert: App.global.Statuses.AllStatusesBeforeClosedWithoutDraft,
+                            CMManager: App.global.Statuses.AllStatusesBeforeClosedWithoutDraft,
+                            CustomerMarketing: App.global.Statuses.AllStatusesBeforeClosedWithoutDraft,
+                            KeyAccountManager: App.global.Statuses.AllStatusesBeforeClosedWithoutDraft,
+                        },
                     }]
                 }]
             }, {
@@ -127,90 +136,85 @@
                         element: 'el'
                     }
                 }
-                }, {
-                    xtype: 'custompromopanel',
-                    minWidth: 245,
-                    flex: 1,
+            }, {
+                xtype: 'custompromopanel',
+                minWidth: 245,
+                flex: 1,
+                items: [{
+                    xtype: 'fieldset',
+                    title: l10n.ns('tpm', 'PromoActivity').value('ActualInStore'),
+                    name: 'actualInStoreFieldset',
+                    layout: {
+                        type: 'vbox',
+                        align: 'stretch'
+                    },
                     items: [{
-                        xtype: 'fieldset',
-                        title: l10n.ns('tpm', 'PromoActivity').value('ActualInStore'),
-                        name: 'actualInStoreFieldset',
+                        xtype: 'container',
                         layout: {
-                            type: 'vbox',
+                            type: 'hbox',
                             align: 'stretch'
                         },
                         items: [{
-                            xtype: 'container',
-                            layout: {
-                                type: 'hbox',
-                                align: 'stretch'
+                            xtype: 'searchcombobox',
+                            flex: 1,
+                            layout: 'anchor',
+                            padding: '0 5 5 5',
+                            fieldLabel: l10n.ns('tpm', 'PromoActivity').value('Mechanic'),
+                            labelAlign: 'top',
+                            name: 'ActualInstoreMechanicId',
+                            selectorWidget: 'mechanic',
+                            valueField: 'Id',
+                            displayField: 'Name',
+                            entityType: 'Mechanic',
+                            readOnlyCls: 'readOnlyField',
+                            //needReadOnly: true,
+                            allowBlank: true,
+                            //crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
+                            availableRoleStatusActions: {
+                                SupportAdministrator: App.global.Statuses.AllStatuses,
+                                Administrator: App.global.Statuses.AllStatusesBeforeClosedWithoutDraft,
+                                FunctionalExpert: App.global.Statuses.AllStatusesBeforeClosedWithoutDraft,
+                                CMManager: App.global.Statuses.AllStatusesBeforeClosedWithoutDraft,
+                                CustomerMarketing: App.global.Statuses.AllStatusesBeforeClosedWithoutDraft,
+                                KeyAccountManager: App.global.Statuses.AllStatusesBeforeClosedWithoutDraft,
                             },
-                            items: [{
-                                xtype: 'searchcombobox',
-                                flex: 1,
-                                layout: 'anchor',
-                                padding: '0 5 5 5',
-                                fieldLabel: l10n.ns('tpm', 'PromoActivity').value('Mechanic'),
-                                labelAlign: 'top',
-                                name: 'ActualInstoreMechanicId',
-                                selectorWidget: 'mechanic',
-                                valueField: 'Id',
-                                displayField: 'Name',
-                                entityType: 'Mechanic',
-                                readOnlyCls: 'readOnlyField',
-                                needReadOnly: true,
-                                allowBlank: true,
-                                crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
-                                customTip: l10n.ns('tpm', 'Promo').value('ActualInStoreMechanicNameTip'),
-                                //store: {
-                                //    type: 'promoformmechanicstore'
-                                //},
-                                store: {
-                                    type: 'simplestore',
-                                    autoLoad: false,
-                                    model: 'App.model.tpm.mechanic.Mechanic',
-                                    extendedFilter: {
-                                        xclass: 'App.ExtFilterContext',
-                                        supportedModels: [{
-                                            xclass: 'App.ExtSelectionFilterModel',
-                                            model: 'App.model.tpm.mechanic.Mechanic',
-                                            modelId: 'efselectionmodel'
-                                        }]
-                                    }
-                                },
-                                onFocus: function (field) {
-                                    var promoController = App.app.getController('tpm.promo.Promo')
-                                    var status = promoController.getPromoType();
-                                    if (status != false) {
-                                        var filter = this.getStore().fixedFilters || {};
-                                        filter['PromoStatusNameFilter'] = {
-                                            property: 'PromoTypes.Name',
-                                            operation: 'Equals',
-                                            value: status
-                                        };
-                                        this.getStore().fixedFilters = filter;
-                                    } else {
-                                        App.Notify.pushError(l10n.ns('tpm', 'Promo').value('MechanicGetError'));
-                                    }
-                                },
-                                onTrigger1Click: function () {
-                                    var promoController = App.app.getController('tpm.promo.Promo')
-                                    var status = promoController.getPromoType();
+                            customTip: l10n.ns('tpm', 'Promo').value('ActualInStoreMechanicNameTip'),
+                            store: {
+                                type: 'promoformmechanicstore'
+                            },
+                            onFocus: function (field) {
+                                var promoController = App.app.getController('tpm.promo.Promo')
+                                var status = promoController.getPromoType();
+                                if (status != false) {
+                                    var filter = this.getStore().fixedFilters || {};
+                                    filter['PromoStatusNameFilter'] = {
+                                        property: 'PromoTypes.Name',
+                                        operation: 'Equals',
+                                        value: status
+                                    };
+                                    this.getStore().fixedFilters = filter;
+                                } else {
+                                    App.Notify.pushError(l10n.ns('tpm', 'Promo').value('MechanicGetError'));
+                                }
+                            },
+                            onTrigger1Click: function () {
+                                var promoController = App.app.getController('tpm.promo.Promo')
+                                var status = promoController.getPromoType();
 
-                                    if (status != false) {
-                                        var filter = this.getStore().fixedFilters || {};
-                                        filter['PromoStatusNameFilter'] = {
-                                            property: 'PromoTypes.Name',
-                                            operation: 'Equals',
-                                            value: status
-                                        };
-                                        this.getStore().fixedFilters = filter;
-                                        this.self.superclass.onTriggerClick.call(this);
-                                    } else {
-                                        App.Notify.pushError(l10n.ns('tpm', 'Promo').value('MechanicGetError'));
-                                    }
-                                },
-                                onTrigger2Click: function () {
+                                if (status != false) {
+                                    var filter = this.getStore().fixedFilters || {};
+                                    filter['PromoStatusNameFilter'] = {
+                                        property: 'PromoTypes.Name',
+                                        operation: 'Equals',
+                                        value: status
+                                    };
+                                    this.getStore().fixedFilters = filter;
+                                    this.self.superclass.onTriggerClick.call(this);
+                                } else {
+                                    App.Notify.pushError(l10n.ns('tpm', 'Promo').value('MechanicGetError'));
+                                }
+                            },
+                            onTrigger2Click: function () {
 
                                     var promoController = App.app.getController('tpm.promo.Promo')
                                     var status = promoController.getPromoType();
@@ -243,118 +247,128 @@
                                         promoMechanic = Ext.ComponentQuery.query('#promoActivity_step1')[0],
                                         mechanicFields = promoController.getMechanicFields(promoMechanic);
 
-                                    promoController.resetFields([
-                                        mechanicFields.actualInstoreMechanicFields.actualInstoreMechanicId,
-                                        mechanicFields.actualInstoreMechanicFields.actualInstoreMechanicTypeId,
-                                        mechanicFields.actualInstoreMechanicFields.actualInStoreDiscount
-                                    ]);
+                                promoController.resetFields([
+                                    mechanicFields.actualInstoreMechanicFields.actualInstoreMechanicId,
+                                    mechanicFields.actualInstoreMechanicFields.actualInstoreMechanicTypeId,
+                                    mechanicFields.actualInstoreMechanicFields.actualInStoreDiscount
+                                ]);
 
-                                    promoController.disableFields([
-                                        mechanicFields.actualInstoreMechanicFields.actualInstoreMechanicTypeId,
-                                        mechanicFields.actualInstoreMechanicFields.actualInStoreDiscount
-                                    ]);
-                                },
-                                mapping: [{
-                                    from: 'Name',
-                                    to: 'ActualInstoreMechanicName'
-                                }]
-                            }, {
-                                xtype: 'searchcombobox',
-                                flex: 1,
-                                layout: 'anchor',
-                                padding: '0 5 5 5',
-                                fieldLabel: 'Type',
-                                labelAlign: 'top',
-                                name: 'ActualInstoreMechanicTypeId',
-                                selectorWidget: 'mechanictype',
-                                valueField: 'Id',
-                                displayField: 'Name',
-                                entityType: 'MechanicType',
-                                needUpdateMappings: true,
-                                readOnlyCls: 'readOnlyField',
-                                needReadOnly: true,
-                                allowBlank: false,
-                                allowOnlyWhitespace: false,
-                                allowDecimals: false,
-                                allowExponential: false,
-                                disabled: true,
-                                crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
-                                customTip: l10n.ns('tpm', 'Promo').value('ActualInStoreMechanicTypeNameTip'),
-                                //store: {
-                                //    type: 'promoformmechanictypestore'
-                                //},
-                                store: {
-                                    type: 'simplestore',
-                                    autoLoad: false,
-                                    alias: 'store.promoformmechanictypestore',
-                                    model: 'App.model.tpm.mechanictype.MechanicType',
-                                    extendedFilter: {
-                                        xclass: 'App.ExtFilterContext',
-                                        supportedModels: [{
-                                            xclass: 'App.ExtSelectionFilterModel',
-                                            model: 'App.model.tpm.mechanictype.MechanicType',
-                                            modelId: 'efselectionmodel'
-                                        }]
-                                    }
-                                },
-                                onTrigger3Click: function () {
-                                    var promoController = App.app.getController('tpm.promo.Promo'),
-                                        promoMechanic = Ext.ComponentQuery.query('#promoActivity_step1')[0],
-                                        mechanicFields = promoController.getMechanicFields(promoMechanic);
+                                promoController.disableFields([
+                                    mechanicFields.actualInstoreMechanicFields.actualInstoreMechanicTypeId,
+                                    mechanicFields.actualInstoreMechanicFields.actualInStoreDiscount
+                                ]);
+                            },
+                            mapping: [{
+                                from: 'Name',
+                                to: 'ActualInstoreMechanicName'
+                            }]
+                        }, {
+                            xtype: 'searchcombobox',
+                            flex: 1,
+                            layout: 'anchor',
+                            padding: '0 5 5 5',
+                            fieldLabel: 'Type',
+                            labelAlign: 'top',
+                            name: 'ActualInstoreMechanicTypeId',
+                            selectorWidget: 'mechanictype',
+                            valueField: 'Id',
+                            displayField: 'Name',
+                            entityType: 'MechanicType',
+                            needUpdateMappings: true,
+                            readOnlyCls: 'readOnlyField',
+                            //needReadOnly: true,
+                            allowBlank: false,
+                            allowOnlyWhitespace: false,
+                            allowDecimals: false,
+                            allowExponential: false,
+                            disabled: true,
+                            //crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
+                            availableRoleStatusActions: {
+                                SupportAdministrator: App.global.Statuses.AllStatuses,
+                                Administrator: App.global.Statuses.AllStatusesBeforeClosedWithoutDraft,
+                                FunctionalExpert: App.global.Statuses.AllStatusesBeforeClosedWithoutDraft,
+                                CMManager: App.global.Statuses.AllStatusesBeforeClosedWithoutDraft,
+                                CustomerMarketing: App.global.Statuses.AllStatusesBeforeClosedWithoutDraft,
+                                KeyAccountManager: App.global.Statuses.AllStatusesBeforeClosedWithoutDraft,
+                            },
+                            customTip: l10n.ns('tpm', 'Promo').value('ActualInStoreMechanicTypeNameTip'),
+                            store: {
+                                type: 'promoformmechanictypestore'
+                            },
+                            onTrigger3Click: function () {
+                                var promoController = App.app.getController('tpm.promo.Promo'),
+                                    promoMechanic = Ext.ComponentQuery.query('#promoActivity_step1')[0],
+                                    mechanicFields = promoController.getMechanicFields(promoMechanic);
 
-                                    promoController.resetFields([
-                                        mechanicFields.actualInstoreMechanicFields.actualInstoreMechanicTypeId,
-                                        mechanicFields.actualInstoreMechanicFields.actualInStoreDiscount
-                                    ]);
-                                },
-                                mapping: [{
-                                    from: 'Name',
-                                    to: 'ActualInstoreMechanicTypeName'
-                                }, {
-                                    from: 'Discount',
-                                    to: 'ActualInStoreDiscount'
-                                }]
+                                promoController.resetFields([
+                                    mechanicFields.actualInstoreMechanicFields.actualInstoreMechanicTypeId,
+                                    mechanicFields.actualInstoreMechanicFields.actualInStoreDiscount
+                                ]);
+                            },
+                            mapping: [{
+                                from: 'Name',
+                                to: 'ActualInstoreMechanicTypeName'
                             }, {
-                                xtype: 'numberfield',
-                                flex: 1,
-                                layout: 'anchor',
-                                name: 'ActualInStoreDiscount',
-                                minValue: 1,
-                                maxValue: 100,
-                                fieldLabel: 'Discount',
-                                labelAlign: 'top',
-                                padding: '0 5 5 5',
-                                readOnlyCls: 'readOnlyField',
-                                needReadOnly: true,
-                                isChecked: true,
-                                allowBlank: false,
-                                allowOnlyWhitespace: false,
-                                allowDecimals: false,
-                                allowExponential: false,
-                                disabled: true,
-                                crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
-                                customTip: l10n.ns('tpm', 'Promo').value('ActualInStoreMechanicDiscountTip'),
+                                from: 'Discount',
+                                to: 'ActualInStoreDiscount'
                             }]
                         }, {
                             xtype: 'numberfield',
                             flex: 1,
                             layout: 'anchor',
-                            name: 'ActualInStoreShelfPrice',
-                            fieldLabel: l10n.ns('tpm', 'Promo').value('ActualInStoreShelfPrice'),
-                            labelAlign: 'left',
-                            labelWidth: 120,
+                            name: 'ActualInStoreDiscount',
+                            minValue: 1,
+                            maxValue: 100,
+                            fieldLabel: 'Discount',
+                            labelAlign: 'top',
                             padding: '0 5 5 5',
                             readOnlyCls: 'readOnlyField',
-                            needReadOnly: true,
+                            //needReadOnly: true,
                             isChecked: true,
-                            allowBlank: true,
-                            allowOnlyWhitespace: true,
-                            allowDecimals: true,
+                            allowBlank: false,
+                            allowOnlyWhitespace: false,
+                            allowDecimals: false,
                             allowExponential: false,
-                            crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager']
+                            disabled: true,
+                            //crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
+                            availableRoleStatusActions: {
+                                SupportAdministrator: App.global.Statuses.AllStatuses,
+                                Administrator: App.global.Statuses.AllStatusesBeforeClosedWithoutDraft,
+                                FunctionalExpert: App.global.Statuses.AllStatusesBeforeClosedWithoutDraft,
+                                CMManager: App.global.Statuses.AllStatusesBeforeClosedWithoutDraft,
+                                CustomerMarketing: App.global.Statuses.AllStatusesBeforeClosedWithoutDraft,
+                                KeyAccountManager: App.global.Statuses.AllStatusesBeforeClosedWithoutDraft,
+                            },
+                            customTip: l10n.ns('tpm', 'Promo').value('ActualInStoreMechanicDiscountTip'),
                         }]
+                    }, {
+                        xtype: 'numberfield',
+                        flex: 1,
+                        layout: 'anchor',
+                        name: 'ActualInStoreShelfPrice',
+                        fieldLabel: l10n.ns('tpm', 'Promo').value('ActualInStoreShelfPrice'),
+                        labelAlign: 'left',
+                        labelWidth: 120,
+                        padding: '0 5 5 5',
+                        readOnlyCls: 'readOnlyField',
+                        //needReadOnly: true,
+                        isChecked: true,
+                        allowBlank: true,
+                        allowOnlyWhitespace: true,
+                        allowDecimals: true,
+                        allowExponential: false,
+                        //crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
+                        availableRoleStatusActions: {
+                            SupportAdministrator: App.global.Statuses.AllStatuses,
+                            Administrator: App.global.Statuses.AllStatusesBeforeClosedWithoutDraft,
+                            FunctionalExpert: App.global.Statuses.AllStatusesBeforeClosedWithoutDraft,
+                            CMManager: App.global.Statuses.AllStatusesBeforeClosedWithoutDraft,
+                            CustomerMarketing: App.global.Statuses.AllStatusesBeforeClosedWithoutDraft,
+                            KeyAccountManager: App.global.Statuses.AllStatusesBeforeClosedWithoutDraft,
+                        },
                     }]
                 }]
+            }]
         },
         // promoActivity_step2
         {
@@ -399,40 +413,29 @@
                             xtype: 'container',
                             itemId: 'ContainerPlanPromoUplift',
                             height: '100%',
-                            cls: 'editable-trigger-field',
                             layout: {
                                 type: 'hbox',
                                 align: 'top',
                                 pack: 'center'
                             },
-                            setReadable: function (read) {
-                                if (!read && !this.down('checkbox[itemId=PromoUpliftLockedUpdateCheckbox]').isDisabled()) {
-                                    this.down('triggerfielddetails[name=PlanPromoUpliftPercent]').isReadable = false;
-                                } else {
-                                    this.down('triggerfielddetails[name=PlanPromoUpliftPercent]').isReadable = true;
-                                }
-                            },
                             items: [{
                                 xtype: 'triggerfielddetails',
-								name: 'PlanPromoUpliftPercent',
+                                name: 'PlanPromoUpliftPercent',
                                 windowType: 'promoproductsview',
                                 labelWidth: 190,
                                 fieldLabel: l10n.ns('tpm', 'Promo').value('PromoUpliftPercent'),
                                 tooltip: l10n.ns('tpm', 'PromoActivity').value('UpdateActuals'),
                                 flex: 1,
-                                isReadable: true,
                                 readOnly: false,
-                                crudAccess: ['Administrator', 'FunctionalExpert', 'DemandPlanning'],
-                                listeners: {
-                                    afterrender: function (el) {
-                                        el.triggerCell.addCls('form-info-trigger-cell');
-
-                                        var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
-                                        if (this.crudAccess.indexOf(currentRole) === -1) {
-                                            this.up('container[itemId=ContainerPlanPromoUplift]').setReadable(true);
-                                        }
-                                    }
-                                },
+                                crudAccess: ['Administrator', 'SupportAdministrator', 'FunctionalExpert', 'DemandPlanning'],
+                                //listenersToAdd: {
+                                //    afterrender: function () {
+                                //        var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
+                                //        if (this.crudAccess.indexOf(currentRole) === -1) {
+                                //            this.up('container[itemId=ContainerPlanPromoUplift]').setReadable(true);
+                                //        }
+                                //    }
+                                //},
                                 validator: function (value) {
                                     if (this.editable) {
                                         //Заменяем запятую на точку для парсера
@@ -447,55 +450,84 @@
                                         return true;
                                     }
                                 },
-                                changeEditable: function (setToEditable) {
-                                    if (setToEditable) {
-                                        this.setEditable(true);
-                                        this.up('container').addCls('editable-trigger-field');
-                                    } else {
-                                        this.setEditable(false);
-                                        this.up('container').removeCls('editable-trigger-field');
-                                    }
-                                    this.validate();
-                                }
+                                //changeEditable: function (setToEditable) {
+                                //    if (setToEditable) {
+                                //        this.setEditable(true);
+                                //        this.up('container').addCls('editable-trigger-field');
+                                //    } else {
+                                //        this.setEditable(false);
+                                //        this.up('container').removeCls('editable-trigger-field');
+                                //    }
+                                //    this.validate();
+                                //}
                             }, {
                                 xtype: 'checkbox',
                                 labelSeparator: '',
-                                readOnly: true,
-                                needReadOnly: true,
                                 itemId: 'PromoUpliftLockedUpdateCheckbox',
                                 name: 'NeedRecountUplift',
                                 labelAlign: 'right',
                                 style: 'margin-left: 10px',
-                                crudAccess: ['Administrator', 'FunctionalExpert', 'DemandPlanning'],
+                                //crudAccess: ['Administrator', 'FunctionalExpert', 'DemandPlanning'],
+                                availableRoleStatusActions: {
+                                    SupportAdministrator: App.global.Statuses.AllStatuses,
+                                    Administrator: App.global.Statuses.AllStatusesBeforeStartedWithoutDraft,
+                                    FunctionalExpert: App.global.Statuses.AllStatusesBeforeStartedWithoutDraft,
+                                    DemandPlanning: App.global.Statuses.AllStatusesBeforeStartedWithoutDraft,
+                                },
+                                availableRoleStatusActionsInOut: {
+                                    
+                                },
                                 listeners: {
-                                    afterRender: function () {
-                                        var planUpliftContainer = this.up('container');
-                                        var planPromoUpliftNumberField = planUpliftContainer.down('triggerfielddetails[name=PlanPromoUpliftPercent]');
-                                        var planPromoUpliftGlyphLock = planUpliftContainer.down('button[itemId=GlyphLock]');
-                                        if (this.value) {
-                                            planUpliftContainer.setReadable(true);
-                                            planPromoUpliftGlyphLock.setGlyph(0xf33e);
-                                            planPromoUpliftNumberField.changeEditable(true);
+                                    afterRender: function (me) {
+                                        var readonly = me.up('promoeditorcustom').readOnly;
+                                        var planPromoUpliftNumberField = this.up('container').down('triggerfielddetails[name=PlanPromoUpliftPercent]');
+                                        var GlyphLock = this.up('container').down('#GlyphLock');
+                                        if (!this.value || readonly) {
+                                            planPromoUpliftNumberField.setEditable(false);
+                                            GlyphLock.setGlyph(0xf33e);
+                                            planPromoUpliftNumberField.isReadable = false;
+                                            //planPromoUpliftNumberField.removeCls('readOnlyField');
                                         } else {
-                                            planUpliftContainer.setReadable(false);
-                                            planPromoUpliftGlyphLock.setGlyph(0xf33f);
-                                            planPromoUpliftNumberField.changeEditable(false);
+                                            planPromoUpliftNumberField.setEditable(true);
+                                            GlyphLock.setGlyph(0xf33f);
+                                            planPromoUpliftNumberField.isReadable = true;
+                                            //planPromoUpliftNumberField.addCls('readOnlyField');
                                         }
                                     },
                                     change: function (checkbox, newValue, oldValue) {
-                                        var planUpliftContainer = this.up('container');
-                                        var planPromoUpliftNumberField = planUpliftContainer.down('triggerfielddetails[name=PlanPromoUpliftPercent]');
-                                        var planPromoUpliftGlyphLock = planUpliftContainer.down('button[itemId=GlyphLock]');
+                                        var planPromoUpliftNumberField = this.up('container').down('triggerfielddetails[name=PlanPromoUpliftPercent]');
+                                        var GlyphLock = this.up('container').down('#GlyphLock');
                                         if (newValue) {
-                                            planUpliftContainer.setReadable(true);
-                                            planPromoUpliftGlyphLock.setGlyph(0xf33e);
-                                            planPromoUpliftNumberField.changeEditable(true);
+                                            planPromoUpliftNumberField.setEditable(true);
+                                            GlyphLock.setGlyph(0xf33f);
+                                            planPromoUpliftNumberField.isReadable = true;
+                                            //planPromoUpliftNumberField.removeCls('readOnlyField');
                                         } else {
-                                            planPromoUpliftGlyphLock.setGlyph(0xf33f);
-                                            planUpliftContainer.setReadable(false);
-                                            planPromoUpliftNumberField.changeEditable(false);
+                                            planPromoUpliftNumberField.setEditable(false);
+                                            GlyphLock.setGlyph(0xf33e);
+                                            planPromoUpliftNumberField.isReadable = false;
+                                            //planPromoUpliftNumberField.addCls('readOnlyField');
                                         }
-                                    }
+                                    },
+                                    enable: function (me) {
+                                        var readonly = me.up('promoeditorcustom').readOnly;
+                                        var planPromoUpliftNumberField = this.up('container').down('triggerfielddetails[name=PlanPromoUpliftPercent]');
+                                        var GlyphLock = this.up('container').down('#GlyphLock');
+                                        if (!this.value || readonly) {
+                                            planPromoUpliftNumberField.setEditable(false);
+                                            planPromoUpliftNumberField.isReadable = false;
+                                            //planPromoUpliftNumberField.removeCls('readOnlyField');
+                                        } else {
+                                            planPromoUpliftNumberField.setEditable(true);
+                                            planPromoUpliftNumberField.isReadable = true;
+                                            //planPromoUpliftNumberField.addCls('readOnlyField');
+                                        } 
+                                        GlyphLock.setDisabled(false);
+                                    },
+                                    disable: function (me) {
+                                        var GlyphLock = this.up('container').down('#GlyphLock');
+                                        GlyphLock.setDisabled(true);
+                                    },
                                 }
                             }, {
                                 xtype: 'button',
@@ -504,6 +536,15 @@
                                 glyph: 0xf33e,
                                 width: 30,
                                 height: 30,
+                                availableRoleStatusActions: {
+                                    SupportAdministrator: App.global.Statuses.AllStatuses,
+                                    Administrator: App.global.Statuses.AllStatusesBeforeStartedWithoutDraft,
+                                    FunctionalExpert: App.global.Statuses.AllStatusesBeforeStartedWithoutDraft,
+                                    DemandPlanning: App.global.Statuses.AllStatusesBeforeStartedWithoutDraft,
+                                },
+                                availableRoleStatusActionsInOut: {
+                                    
+                                },
                             }]
                         }, {
                             xtype: 'triggerfielddetails',
@@ -513,7 +554,7 @@
                             blockMillion: false, // если true - то преобразовывать в миллионы
                             originValue: null, // настоящее значение
                             valueToRaw: function (value) {
-                                var valueToDisplay = null; 
+                                var valueToDisplay = null;
 
                                 if (value !== null && value !== undefined) {
                                     if (this.blockMillion) {
@@ -528,20 +569,17 @@
                                 return Ext.util.Format.number(valueToDisplay, '0.00');
                             },
                             rawToValue: function () {
-                                var parsedValue = parseFloat(String(this.originValue).replace(Ext.util.Format.decimalSeparator, "."))
+                                var parsedValue = parseFloat(String(this.rawValue).replace(Ext.util.Format.decimalSeparator, "."))
                                 return isNaN(parsedValue) ? null : parsedValue;
                             },
-                            listeners: {
-                                afterrender: function (el) {
-                                    el.triggerCell.addCls('form-info-trigger-cell')
-                                },
-                                focus: function (field) {
-                                    this.blockMillion = true;                                
-                                },
-                                blur: function (field) {
-                                    this.blockMillion = false;
-                                },
-                            }
+                                listenersToAdd: {
+                                    focus: function (field) {
+                                        this.blockMillion = true;
+                                    },
+                                    blur: function (field) {
+                                        this.blockMillion = false;
+                                    }
+                                }
                         }, {
                             xtype: 'triggerfielddetails',
                             name: 'PlanPromoIncrementalLSV',
@@ -550,7 +588,7 @@
                             blockMillion: false, // если true - то преобразовывать в миллионы
                             originValue: null, // настоящее значение
                             valueToRaw: function (value) {
-                                var valueToDisplay = null; 
+                                var valueToDisplay = null;
 
                                 if (value !== null && value !== undefined) {
                                     if (this.blockMillion) {
@@ -565,19 +603,17 @@
                                 return Ext.util.Format.number(valueToDisplay, '0.00');
                             },
                             rawToValue: function () {
-                                var parsedValue = parseFloat(String(this.originValue).replace(Ext.util.Format.decimalSeparator, "."))
+                                var parsedValue = parseFloat(String(this.rawValue).replace(Ext.util.Format.decimalSeparator, "."))
                                 return isNaN(parsedValue) ? null : parsedValue;
                             },
-                            listeners: {
-                                afterrender: function (el) {
-                                    el.triggerCell.addCls('form-info-trigger-cell')
-                                },
+                            listenersToAdd: {
                                 focus: function (field) {
-                                    this.blockMillion = true;                                
+                                    this.blockMillion = true;
                                 },
                                 blur: function (field) {
                                     this.blockMillion = false;
                                 },
+                                scope: this
                             }
                         }, {
                             xtype: 'triggerfielddetails',
@@ -587,7 +623,7 @@
                             blockMillion: false, // если true - то преобразовывать в миллионы
                             originValue: null, // настоящее значение
                             valueToRaw: function (value) {
-                                var valueToDisplay = null; 
+                                var valueToDisplay = null;
 
                                 if (value !== null && value !== undefined) {
                                     if (this.blockMillion) {
@@ -602,15 +638,12 @@
                                 return Ext.util.Format.number(valueToDisplay, '0.00');
                             },
                             rawToValue: function () {
-                                var parsedValue = parseFloat(String(this.originValue).replace(Ext.util.Format.decimalSeparator, "."))
+                                var parsedValue = parseFloat(String(this.rawValue).replace(Ext.util.Format.decimalSeparator, "."))
                                 return isNaN(parsedValue) ? null : parsedValue;
                             },
-                            listeners: {
-                                afterrender: function (el) {
-                                    el.triggerCell.addCls('form-info-trigger-cell')
-                                },
+                            listenersToAdd: {
                                 focus: function (field) {
-                                    this.blockMillion = true;                                
+                                    this.blockMillion = true;
                                 },
                                 blur: function (field) {
                                     this.blockMillion = false;
@@ -624,7 +657,7 @@
                             blockMillion: false, // если true - то преобразовывать в миллионы
                             originValue: null, // настоящее значение
                             valueToRaw: function (value) {
-                                var valueToDisplay = null; 
+                                var valueToDisplay = null;
 
                                 if (value !== null && value !== undefined) {
                                     if (this.blockMillion) {
@@ -639,15 +672,12 @@
                                 return Ext.util.Format.number(valueToDisplay, '0.00');
                             },
                             rawToValue: function () {
-                                var parsedValue = parseFloat(String(this.originValue).replace(Ext.util.Format.decimalSeparator, "."))
+                                var parsedValue = parseFloat(String(this.rawValue).replace(Ext.util.Format.decimalSeparator, "."))
                                 return isNaN(parsedValue) ? null : parsedValue;
                             },
-                            listeners: {
-                                afterrender: function (el) {
-                                    el.triggerCell.addCls('form-info-trigger-cell')
-                                },
+                            listenersToAdd: {
                                 focus: function (field) {
-                                    this.blockMillion = true;                                
+                                    this.blockMillion = true;
                                 },
                                 blur: function (field) {
                                     this.blockMillion = false;
@@ -697,20 +727,17 @@
                             margin: '5 0 0 0'
                         },
                         items: [{
-							xtype: 'triggerfielddetails',
-							name: 'ActualPromoUpliftPercent',
-							fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoUpliftPercent'),
-							dataIndexes: ['ActualProductUpliftPercent'],
-							rawToValue: function () {
-								var parsedValue = parseFloat(String(this.originValue).replace(Ext.util.Format.decimalSeparator, "."))
-								return isNaN(parsedValue) ? null : parsedValue;
-							},
-							listeners: {
-								change: this.activityChangeListener,
-								afterrender: function (el) {
-									el.triggerCell.addCls('form-info-trigger-cell')
-								}
-							}
+                            xtype: 'triggerfielddetails',
+                            name: 'ActualPromoUpliftPercent',
+                            fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoUpliftPercent'),
+                            dataIndexes: ['ActualProductUpliftPercent'],
+                            rawToValue: function () {
+                                var parsedValue = parseFloat(String(this.rawValue).replace(Ext.util.Format.decimalSeparator, "."))
+                                return isNaN(parsedValue) ? null : parsedValue;
+                            },
+                            listenersToAdd: {
+                                change: this.activityChangeListener,
+                            }
                         }, {
                             xtype: 'triggerfielddetails',
                             name: 'ActualPromoBaselineLSV',
@@ -719,7 +746,7 @@
                             blockMillion: false, // если true - то преобразовывать в миллионы
                             originValue: null, // настоящее значение
                             valueToRaw: function (value) {
-                                var valueToDisplay = null; 
+                                var valueToDisplay = null;
 
                                 if (value !== null && value !== undefined) {
                                     if (this.blockMillion) {
@@ -734,14 +761,11 @@
                                 return Ext.util.Format.number(valueToDisplay, '0.00');
                             },
                             rawToValue: function () {
-                                var parsedValue = parseFloat(String(this.originValue).replace(Ext.util.Format.decimalSeparator, "."))
+                                var parsedValue = parseFloat(String(this.rawValue).replace(Ext.util.Format.decimalSeparator, "."))
                                 return isNaN(parsedValue) ? null : parsedValue;
                             },
-                            listeners: {
+                            listenersToAdd: {
                                 change: this.activityChangeListener,
-                                afterrender: function (el) {
-                                    el.triggerCell.addCls('form-info-trigger-cell')
-                                },
                                 focus: function (field) {
                                     this.blockMillion = true;
                                 },
@@ -757,7 +781,7 @@
                             blockMillion: false, // если true - то преобразовывать в миллионы
                             originValue: null, // настоящее значение
                             valueToRaw: function (value) {
-                                var valueToDisplay = null; 
+                                var valueToDisplay = null;
 
                                 if (value !== null && value !== undefined) {
                                     if (this.blockMillion) {
@@ -772,14 +796,11 @@
                                 return Ext.util.Format.number(valueToDisplay, '0.00');
                             },
                             rawToValue: function () {
-                                var parsedValue = parseFloat(String(this.originValue).replace(Ext.util.Format.decimalSeparator, "."))
+                                var parsedValue = parseFloat(String(this.rawValue).replace(Ext.util.Format.decimalSeparator, "."))
                                 return isNaN(parsedValue) ? null : parsedValue;
                             },
-                            listeners: {
+                            listenersToAdd: {
                                 change: this.activityChangeListener,
-                                afterrender: function (el) {
-                                    el.triggerCell.addCls('form-info-trigger-cell')
-                                },
                                 focus: function (field) {
                                     this.blockMillion = true;
                                 },
@@ -787,125 +808,117 @@
                                     this.blockMillion = false;
                                 },
                             }
-                            }, {
-                                xtype: 'triggerfielddetails',
-                                name: 'ActualPromoPostPromoEffectLSV',
-                                fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoPostPromoEffectLSV'),
-                                dataIndexes: ['ActualProductPostPromoEffectLSV'],
-                                blockMillion: false, // если true - то преобразовывать в миллионы
-                                originValue: null, // настоящее значение
-                                valueToRaw: function (value) {
-                                    var valueToDisplay = null;
+                        }, {
+                            xtype: 'triggerfielddetails',
+                            name: 'ActualPromoPostPromoEffectLSV',
+                            fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoPostPromoEffectLSV'),
+                            dataIndexes: ['ActualProductPostPromoEffectLSV'],
+                            blockMillion: false, // если true - то преобразовывать в миллионы
+                            originValue: null, // настоящее значение
+                            valueToRaw: function (value) {
+                                var valueToDisplay = null;
 
-                                    if (value !== null && value !== undefined) {
-                                        if (this.blockMillion) {
-                                            valueToDisplay = value;
-                                        }
-                                        else {
-                                            this.originValue = value;
-                                            valueToDisplay = value / 1000000.0;
-                                        }
+                                if (value !== null && value !== undefined) {
+                                    if (this.blockMillion) {
+                                        valueToDisplay = value;
                                     }
-
-                                    return Ext.util.Format.number(valueToDisplay, '0.00');
-                                },
-                                rawToValue: function () {
-                                    var parsedValue = parseFloat(String(this.originValue).replace(Ext.util.Format.decimalSeparator, "."))
-                                    return isNaN(parsedValue) ? null : parsedValue;
-                                },
-                                listeners: {
-                                    change: this.activityChangeListener,
-                                    afterrender: function (el) {
-                                        el.triggerCell.addCls('form-info-trigger-cell')
-                                    },
-                                    focus: function (field) {
-                                        this.blockMillion = true;
-                                    },
-                                    blur: function (field) {
-                                        this.blockMillion = false;
-                                    },
+                                    else {
+                                        this.originValue = value;
+                                        valueToDisplay = value / 1000000.0;
+                                    }
                                 }
-                            }, {
-                                xtype: 'triggerfielddetails',
-                                name: 'ActualPromoLSV',
-                                fieldLabel: l10n.ns('tpm', 'Promo').value('PromoLSV'),
-                                dataIndexes: ['ActualProductLSV'],
-                                value: '0',
-                                blockMillion: false, // если true - то преобразовывать в миллионы
-                                originValue: null, // настоящее значение
-                                valueToRaw: function (value) {
-                                    var valueToDisplay = null;
 
-                                    if (value !== null && value !== undefined) {
-                                        if (this.blockMillion) {
-                                            valueToDisplay = value;
-                                        }
-                                        else {
-                                            this.originValue = value;
-                                            valueToDisplay = value / 1000000.0;
-                                        }
+                                return Ext.util.Format.number(valueToDisplay, '0.00');
+                            },
+                            rawToValue: function () {
+                                var parsedValue = parseFloat(String(this.rawValue).replace(Ext.util.Format.decimalSeparator, "."))
+                                return isNaN(parsedValue) ? null : parsedValue;
+                            },
+                            listenersToAdd: {
+                                change: this.activityChangeListener,
+                                focus: function (field) {
+                                    this.blockMillion = true;
+                                },
+                                blur: function (field) {
+                                    this.blockMillion = false;
+                                },
+                            }
+                        }, {
+                            xtype: 'triggerfielddetails',
+                            name: 'ActualPromoLSV',
+                            fieldLabel: l10n.ns('tpm', 'Promo').value('PromoLSV'),
+                            dataIndexes: ['ActualProductLSV'],
+                            value: '0',
+                            blockMillion: false, // если true - то преобразовывать в миллионы
+                            originValue: null, // настоящее значение
+                            valueToRaw: function (value) {
+                                var valueToDisplay = null;
+
+                                if (value !== null && value !== undefined) {
+                                    if (this.blockMillion) {
+                                        valueToDisplay = value;
                                     }
-
-                                    return Ext.util.Format.number(valueToDisplay, '0.00');
-                                },
-                                rawToValue: function () {
-                                    var parsedValue = parseFloat(String(this.originValue).replace(Ext.util.Format.decimalSeparator, "."))
-                                    return isNaN(parsedValue) ? null : parsedValue;
-                                },
-                                listeners: {
-                                    change: this.activityChangeListener,
-                                    afterrender: function (el) {
-                                        el.triggerCell.addCls('form-info-trigger-cell')
-                                    },
-                                    focus: function (field) {
-                                        this.blockMillion = true;
-                                    },
-                                    blur: function (field) {
-                                        this.blockMillion = false;
-                                    },
+                                    else {
+                                        this.originValue = value;
+                                        valueToDisplay = value / 1000000.0;
+                                    }
                                 }
-                            }, {
-                                xtype: 'triggerfielddetails',
-                                name: 'ActualPromoLSVByCompensation',
-                                fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoLSVByCompensation'),
-                                dataIndexes: ['ActualPromoLSVByCompensation', 'ActualProductLSVByCompensation'],
-                                blockMillion: false, // если true - то преобразовывать в миллионы
-                                originValue: null, // настоящее значение
-                                valueToRaw: function (value) {
-                                    var valueToDisplay = null; 
 
-                                    if (value !== null && value !== undefined) {
-                                        if (this.blockMillion) {
-                                            valueToDisplay = value;
-                                        }
-                                        else {
-                                            this.originValue = value;
-                                            valueToDisplay = value / 1000000.0;
-                                        }
+                                return Ext.util.Format.number(valueToDisplay, '0.00');
+                            },
+                            rawToValue: function () {
+                                var parsedValue = parseFloat(String(this.rawValue).replace(Ext.util.Format.decimalSeparator, "."))
+                                return isNaN(parsedValue) ? null : parsedValue;
+                            },
+                            listenersToAdd: {
+                                change: this.activityChangeListener,
+                                focus: function (field) {
+                                    this.blockMillion = true;
+                                },
+                                blur: function (field) {
+                                    this.blockMillion = false;
+                                },
+                            }
+                        }, {
+                            xtype: 'triggerfielddetails',
+                            name: 'ActualPromoLSVByCompensation',
+                            fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoLSVByCompensation'),
+                            dataIndexes: ['ActualPromoLSVByCompensation', 'ActualProductLSVByCompensation'],
+                            blockMillion: false, // если true - то преобразовывать в миллионы
+                            originValue: null, // настоящее значение
+                            valueToRaw: function (value) {
+                                var valueToDisplay = null;
+
+                                if (value !== null && value !== undefined) {
+                                    if (this.blockMillion) {
+                                        valueToDisplay = value;
                                     }
+                                    else {
+                                        this.originValue = value;
+                                        valueToDisplay = value / 1000000.0;
+                                    }
+                                }
 
-                                    return Ext.util.Format.number(valueToDisplay, '0.00');
+                                return Ext.util.Format.number(valueToDisplay, '0.00');
+                            },
+                            rawToValue: function () {
+                                var parsedValue = parseFloat(String(this.rawValue).replace(Ext.util.Format.decimalSeparator, "."))
+                                return isNaN(parsedValue) ? null : parsedValue;
+                            },
+                            listenersToAdd: {
+                                change: this.activityChangeListener,
+                                focus: function (field) {
+                                    this.blockMillion = true;
                                 },
-                                rawToValue: function () {
-                                    var parsedValue = parseFloat(String(this.originValue).replace(Ext.util.Format.decimalSeparator, "."))
-                                    return isNaN(parsedValue) ? null : parsedValue;
+                                blur: function (field) {
+                                    this.blockMillion = false;
                                 },
-                                listeners: {
-                                    change: this.activityChangeListener,
-                                    afterrender: function (el) {
-                                        el.triggerCell.addCls('form-info-trigger-cell')
-                                    },
-                                    focus: function (field) {
-                                        this.blockMillion = true;
-                                    },
-                                    blur: function (field) {
-                                        this.blockMillion = false;
-                                    },
                             }
                         }, {
                             xtype: 'textfield',
                             name: 'InvoiceNumber',
                             flex: 1,
+                            readOnlyCls: 'readOnlyField',
                             layout: 'anchor',
                             regex: /^([0-9a-zA-ZА-Яа-я]{4,}[,])*[0-9a-zA-ZА-Яа-я]{4,}$/,
                             regexText: l10n.ns('tpm', 'Promo').value('InvoiceNumberRegex'),
@@ -915,16 +928,24 @@
                             labelWidth: 190,
                             padding: '0 5 5 5',
                             margin: '25 0 0 0',
-                            needReadOnly: true,
                             isChecked: true,
                             allowBlank: true,
                             allowOnlyWhitespace: true,
-                            crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager']
+                            //crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager']
+                            availableRoleStatusActions: {
+                                SupportAdministrator: App.global.Statuses.AllStatuses,
+                                Administrator: App.global.Statuses.AllStatusesBeforeClosedWithoutDraft,
+                                FunctionalExpert: App.global.Statuses.AllStatusesBeforeClosedWithoutDraft,
+                                CMManager: App.global.Statuses.AllStatusesBeforeClosedWithoutDraft,
+                                CustomerMarketing: App.global.Statuses.AllStatusesBeforeClosedWithoutDraft,
+                                KeyAccountManager: App.global.Statuses.AllStatusesBeforeClosedWithoutDraft,
+                            },
                         }, {
                             xtype: 'textfield',
                             name: 'DocumentNumber',
                             flex: 1,
                             layout: 'anchor',
+                            readOnlyCls: 'readOnlyField',
                             regex: /^([0-9a-zA-ZА-Яа-я]{4,}[,])*[0-9a-zA-ZА-Яа-я]{4,}$/,
                             regexText: l10n.ns('tpm', 'Promo').value('DocumentNumberRegex'),
                             fieldLabel: l10n.ns('tpm', 'Promo').value('DocumentNumber'),
@@ -932,11 +953,18 @@
                             //Для одного уровня с остальными полями
                             labelWidth: 190,
                             padding: '0 5 5 5',
-                            needReadOnly: true,
                             isChecked: true,
                             allowBlank: true,
                             allowOnlyWhitespace: true,
-                            crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager']
+                            //crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager']
+                            availableRoleStatusActions: {
+                                SupportAdministrator: App.global.Statuses.AllStatuses,
+                                Administrator: App.global.Statuses.AllStatusesBeforeClosedWithoutDraft,
+                                FunctionalExpert: App.global.Statuses.AllStatusesBeforeClosedWithoutDraft,
+                                CMManager: App.global.Statuses.AllStatusesBeforeClosedWithoutDraft,
+                                CustomerMarketing: App.global.Statuses.AllStatusesBeforeClosedWithoutDraft,
+                                KeyAccountManager: App.global.Statuses.AllStatusesBeforeClosedWithoutDraft,
+                            },
                         }]
                     }, {
                         xtype: 'container',
@@ -948,6 +976,27 @@
                             pack: 'center'
                         },
                         items: [{
+                            xtype: 'button',
+                            cls: 'promoStep-dockedBtn',
+                            itemId: 'exportAllPromoProducts',
+                            text: l10n.ns('tpm', 'PromoActivity').value('ExportAllPromoProducts'),
+                            tooltip: l10n.ns('tpm', 'PromoActivity').value('ExportAllPromoProducts'),
+                            glyph: 0xF1DA,
+                            hidden: true,
+                            availableInReadOnlyPromo: true,
+                            listeners: {
+                                afterrender: function (button) {
+                                    var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
+                                    if (currentRole == 'SupportAdministrator') {
+                                        button.show();
+                                        button.setDisabled(false);
+                                    }
+                                }
+                            },
+                            availableRoleStatusActions: {
+                                SupportAdministrator: App.global.Statuses.AllStatuses,
+                            },
+                        }, {
                             xtype: 'tbspacer',
                             flex: 1
                         }, {
@@ -957,10 +1006,18 @@
                             text: l10n.ns('tpm', 'PromoActivity').value('UpdateActuals'),
                             tooltip: l10n.ns('tpm', 'PromoActivity').value('UpdateActuals'),
                             glyph: 0xf552,
-                            disabled: true
+                            availableRoleStatusActions: {
+                                SupportAdministrator: App.global.Statuses.AllStatuses,
+                                Administrator: App.global.Statuses.Finished,
+                                FunctionalExpert: App.global.Statuses.Finished,
+                                CMManager: App.global.Statuses.Finished,
+                                CustomerMarketing: App.global.Statuses.Finished,
+                                KeyAccountManager: App.global.Statuses.Finished
+                            },
+                            disabled: true,
                         }]
                     }]
-                }] 
+                }]
             }]
         }]
     }]

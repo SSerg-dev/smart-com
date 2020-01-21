@@ -97,6 +97,11 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                             var promoProduct = promoProducts.FirstOrDefault(x => x.ZREP == p.ZREP);
                             if (promoProduct != null && promoProduct.Disabled)
                             {
+                                if (changedProducts.Contains(p.ZREP) && createIncidents)
+                                {
+                                    addedZREPs.Add(p.ZREP);
+                                }
+
                                 promoProduct.Disabled = false;
                                 promoProduct.DeletedDate = null;
                                 needReturnToOnApprovalStatus = true;
@@ -107,6 +112,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 								{
 									addedZREPs.Add(p.ZREP);
 								}
+
                                 insertScript += String.Format(formatStrPromoProduct, Guid.NewGuid(), promoId, p.Id, p.ZREP, p.EAN_Case, p.EAN_PC, p.ProductEN);
                                 needReturnToOnApprovalStatus = true;
                             }

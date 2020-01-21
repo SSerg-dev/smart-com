@@ -39,7 +39,7 @@ namespace Module.Frontend.TPM.Controllers {
             query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters, FilterQueryModes.Active, canChangeStateOnly ? role : String.Empty);
 
             // Не администраторы не смотрят чужие черновики
-            if (role != "Administrator") {
+            if (role != "Administrator" && role != "SupportAdministrator") {
                 query = query.Where(e => e.PromoStatusSystemName != "Draft" || e.CreatorId == user.Id);
             }
             return query;
@@ -57,7 +57,8 @@ namespace Module.Frontend.TPM.Controllers {
             query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
 
             // Не администраторы не смотрят чужие черновики
-            if (role != "Administrator") {
+            if (role != "Administrator" && role != "SupportAdministrator")
+            {
                 query = query.Where(e => e.PromoStatus.SystemName != "Draft" || e.CreatorId == user.Id);
             }
             return query;
@@ -100,7 +101,24 @@ namespace Module.Frontend.TPM.Controllers {
                 if (!status) {
                     return InternalServerError(new Exception(message));
                 }
-
+                List<PromoProduct> promoProductToDeleteList = Context.Set<PromoProduct>().Where(x => x.PromoId == model.Id && !x.Disabled).ToList();
+                foreach (PromoProduct promoProduct in promoProductToDeleteList)
+                {
+                    promoProduct.DeletedDate = System.DateTime.Now;
+                    promoProduct.Disabled = true;
+                }
+                model.NeedRecountUplift = true;
+                //необходимо удалить все коррекции
+                var promoProductToDeleteListIds = promoProductToDeleteList.Select(x => x.Id).ToList();
+                List<PromoProductsCorrection> promoProductCorrectionToDeleteList = Context.Set<PromoProductsCorrection>()
+                    .Where(x => promoProductToDeleteListIds.Contains(x.PromoProductId) && x.Disabled != true).ToList();
+                foreach (PromoProductsCorrection promoProductsCorrection in promoProductCorrectionToDeleteList)
+                {
+                    promoProductsCorrection.DeletedDate = DateTimeOffset.UtcNow;
+                    promoProductsCorrection.Disabled = true;
+                    promoProductsCorrection.UserId = (Guid)user.Id;
+                    promoProductsCorrection.UserName = user.Login;
+                }
                 Context.SaveChanges();
 
                 PromoCalculateHelper.RecalculateBudgets(model, user, Context);

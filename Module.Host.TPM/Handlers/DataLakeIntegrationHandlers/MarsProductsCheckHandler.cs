@@ -29,7 +29,7 @@ namespace Module.Host.TPM.Handlers.DataLakeIntegrationHandlers
             try
             {
                 handlerLogger = new FileLogWriter(info.HandlerId.ToString());
-                handlerLogger.Write(true, String.Format("The checking of the Mars products began at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+                handlerLogger.Write(true, String.Format("Synchronization materials with products began at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
                 //string param = HandlerDataHelper.GetIncomingArgument<paramType>("paramName", info.Data).Value;
 
                 IAction action = new MarsProductsCheckAction(info.HandlerId.ToString());
@@ -85,7 +85,7 @@ namespace Module.Host.TPM.Handlers.DataLakeIntegrationHandlers
                 sw.Stop();
                 if (handlerLogger != null)
                 {
-                    handlerLogger.Write(true, String.Format("The checking of the Mars products ended at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", DateTimeOffset.Now, sw.Elapsed.TotalSeconds), "Message");
+                    handlerLogger.Write(true, String.Format("Synchronization materials with products ended at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", DateTimeOffset.Now, sw.Elapsed.TotalSeconds), "Message");
                 }
             }
         }

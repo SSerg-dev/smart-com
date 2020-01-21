@@ -47,6 +47,7 @@ namespace Module.Host.TPM.Handlers
 				Guid nullGuid = new Guid();
                 Guid promoId = HandlerDataHelper.GetIncomingArgument<Guid>("PromoId", info.Data, false);
                 Guid UserId = HandlerDataHelper.GetIncomingArgument<Guid>("UserId", info.Data, false);
+                Guid RoleId = HandlerDataHelper.GetIncomingArgument<Guid>("RoleId", info.Data, false);
                 bool needCalculatePlanMarketingTI = HandlerDataHelper.GetIncomingArgument<bool>("NeedCalculatePlanMarketingTI", info.Data, false);
                 bool needResetUpliftCorrections = HandlerDataHelper.GetIncomingArgument<bool>("needResetUpliftCorrections", info.Data, false);
                 bool createDemandIncidentCreate = HandlerDataHelper.GetIncomingArgument<bool>("createDemandIncidentCreate", info.Data, false);
@@ -63,7 +64,9 @@ namespace Module.Host.TPM.Handlers
 				{
 					if (promoId != nullGuid)
 					{
-						Promo promo = context.Set<Promo>().FirstOrDefault(x => x.Id == promoId);
+                        var role = context.Set<Role>().FirstOrDefault(x => x.Id == RoleId);
+                        bool isSupportAdmin = (role != null && role.SystemName == "SupportAdministrator") ? true : false;
+                        Promo promo = context.Set<Promo>().FirstOrDefault(x => x.Id == promoId);
                         promoCopy = new Promo(promo);
 
 						//добавление номера рассчитываемого промо в лог
@@ -73,7 +76,11 @@ namespace Module.Host.TPM.Handlers
                         //статусы, в которых не должен производиться пересчет плановых параметров промо
                         ISettingsManager settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
                         string promoStatusesNotPlanRecalculateSetting = settingsManager.GetSetting<string>("NOT_PLAN_RECALCULATE_PROMO_STATUS_LIST", "Started,Finished,Closed");
-                        string[] statuses = promoStatusesNotPlanRecalculateSetting.Split(',');
+                        string[] statuses = new string[0];
+                        if (!isSupportAdmin)
+                        {
+                            statuses = promoStatusesNotPlanRecalculateSetting.Split(',');
+                        }
                         string calculateBaselineError = null;
                         bool needReturnToOnApprovalStatus = false;
 
@@ -98,7 +105,7 @@ namespace Module.Host.TPM.Handlers
                         if (NeedUpliftFinding(promo))
 						{
 							// Uplift не расчитывается для промо в статусе Starte, Finished, Closed
-							if (promo.PromoStatus.SystemName != "Started" && promo.PromoStatus.SystemName != "Finished" && promo.PromoStatus.SystemName != "Closed")
+							if ((promo.PromoStatus.SystemName != "Started" && promo.PromoStatus.SystemName != "Finished" && promo.PromoStatus.SystemName != "Closed") || isSupportAdmin)
 							{
 								Stopwatch swUplift = new Stopwatch();
 								swUplift.Start();
@@ -173,7 +180,7 @@ namespace Module.Host.TPM.Handlers
                                 }
 
                                 string[] canBeReturnedToOnApproval = { "OnApproval", "Approved", "Planned" };
-								if (needReturnToOnApprovalStatus && canBeReturnedToOnApproval.Contains(promo.PromoStatus.SystemName))
+								if (needReturnToOnApprovalStatus && canBeReturnedToOnApproval.Contains(promo.PromoStatus.SystemName) && !isSupportAdmin)
 								{
 									PromoStatus draftPublished = context.Set<PromoStatus>().First(x => x.SystemName.ToLower() == "draftpublished" && !x.Disabled);
 									promo.PromoStatus = draftPublished;
@@ -237,7 +244,7 @@ namespace Module.Host.TPM.Handlers
                             handlerLogger.Write(true, logLine, "Warning");
                         }
 
-                        if (promo.PromoStatus.SystemName == "Finished")
+                        if (promo.PromoStatus.SystemName == "Finished" || (isSupportAdmin && promo.PromoStatus.SystemName == "Closed"))
                         {
                             Stopwatch swActual = new Stopwatch();
                             swActual.Start();
@@ -245,7 +252,7 @@ namespace Module.Host.TPM.Handlers
                             handlerLogger.Write(true, logLine, "Message");
                             handlerLogger.Write(true, "");
 
-                            CalulateActual(promo, context, handlerLogger, info.HandlerId);
+                            CalulateActual(promo, context, handlerLogger, info.HandlerId, isSupportAdmin);
 
                             swActual.Stop();
                             handlerLogger.Write(true, "");
@@ -307,7 +314,7 @@ namespace Module.Host.TPM.Handlers
         /// <param name="promo">Промо</param>
         /// <param name="context">Контекст БД</param>
         /// <param name="handlerLogger">Лог</param>
-        public static void CalulateActual(Promo promo, DatabaseContext context, ILogWriter handlerLogger, Guid handlerId)
+        public static void CalulateActual(Promo promo, DatabaseContext context, ILogWriter handlerLogger, Guid handlerId, bool isSupportAdmin = false)
         {
             string errorString = null;
             // Продуктовые параметры считаем только, если были загружены Actuals
@@ -315,7 +322,7 @@ namespace Module.Host.TPM.Handlers
             if (!promo.LoadFromTLC && promoProductList.Any(x => x.ActualProductPCQty.HasValue))
             {
                 // если есть ошибки, они перечисленны через ;
-                errorString = ActualProductParametersCalculation.CalculatePromoProductParameters(promo, context);
+                errorString = ActualProductParametersCalculation.CalculatePromoProductParameters(promo, context, isSupportAdmin: isSupportAdmin);
                 // записываем ошибки если они есть
                 if (errorString != null)
                     WriteErrorsInLog(handlerLogger, errorString);

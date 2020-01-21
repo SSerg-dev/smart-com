@@ -38,9 +38,13 @@
             maxLength: 255,
             readOnly: true,
             listeners: {
+                afterrender: function (field) {
+                    field.addCls('readOnlyField');
+                },
                 writeablechange: function (field) {
                     if (field.readOnly == false) {
                         field.setReadOnly(true);
+                        field.addCls('readOnlyField');
                     }
                 }
             }
@@ -58,9 +62,13 @@
             maxLength: 255,
             readOnly: true,
             listeners: {
+                afterrender: function (field) {
+                    field.addCls('readOnlyField');
+                },
                 writeablechange: function (field) {
                     if (field.readOnly == false) {
                         field.setReadOnly(true);
+                        field.addCls('readOnlyField');
                     }
                 }
             }
@@ -78,9 +86,13 @@
             maxLength: 255,
             readOnly: true,
             listeners: {
+                afterrender: function (field) {
+                    field.addCls('readOnlyField');
+                },
                 writeablechange: function (field) {
                     if (field.readOnly == false) {
                         field.setReadOnly(true);
+                        field.addCls('readOnlyField');
                     }
                 }
             }
@@ -91,9 +103,13 @@
             maxLength: 255,
             readOnly: true,
             listeners: {
+                afterrender: function (field) {
+                    field.addCls('readOnlyField');
+                },
                 writeablechange: function (field) {
                     if (field.readOnly == false) {
                         field.setReadOnly(true);
+                        field.addCls('readOnlyField');
                     }
                 }
             }
@@ -112,9 +128,13 @@
             maxLength: 255,
             readOnly: true,
             listeners: {
+                afterrender: function (field) {
+                    field.addCls('readOnlyField');
+                },
                 writeablechange: function (field) {
                     if (field.readOnly == false) {
                         field.setReadOnly(true);
+                        field.addCls('readOnlyField');
                     }
                 }
             }

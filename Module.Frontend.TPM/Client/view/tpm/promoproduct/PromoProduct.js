@@ -29,7 +29,7 @@
                     glyph: 0xf220,
                     itemgroup: 'loadimportbutton',
                     exactlyModelCompare: true,
-                    text: 'Полный импорт XLSX',
+                    text: l10n.ns('core', 'additionalMenu').value('fullImportXLSX'),
                     resource: '{0}',
                     action: 'FullImportXLSX',
                     allowFormat: ['zip', 'xlsx']
@@ -50,7 +50,7 @@
                     glyph: 0xf21d,
                     itemId: 'uploadactualsexportxlsxbutton',
                     exactlyModelCompare: true,
-                    text: 'Экспорт в XLSX',
+                    text: l10n.ns('core', 'additionalMenu').value('exportXLSX'),
                     action: 'ExportXLSX'
                 }]
             }
@@ -81,6 +81,13 @@
             glyph: 0xf64f,
             text: l10n.ns('core', 'crud').value('updateButtonText'),
             tooltip: l10n.ns('core', 'crud').value('updateButtonText')
+        }, {
+            itemId: 'historybutton',
+            resource: 'Historical{0}',
+            action: 'Get{0}',
+            glyph: 0xf2da,
+            text: l10n.ns('core', 'crud').value('historyButtonText'),
+            tooltip: l10n.ns('core', 'crud').value('historyButtonText')
         }, '-', {
             itemId: 'extfilterbutton',
             glyph: 0xf349,

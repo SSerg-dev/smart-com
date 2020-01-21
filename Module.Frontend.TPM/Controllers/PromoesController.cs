@@ -60,7 +60,8 @@ namespace Module.Frontend.TPM.Controllers {
             query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters, FilterQueryModes.Active, canChangeStateOnly ? role : String.Empty);
 
             // Не администраторы не смотрят чужие черновики
-            if (role != "Administrator") {
+            if (role != "Administrator" && role != "SupportAdministrator")
+            {
                 query = query.Where(e => e.PromoStatus.SystemName != "Draft" || e.CreatorId == user.Id);
             }
             return query;
@@ -159,6 +160,7 @@ namespace Module.Frontend.TPM.Controllers {
 
                 if (result.CreatorId == null) {
                     result.CreatorId = user.Id;
+                    result.CreatorLogin = user.Login;
                 }
 
                 Context.Set<Promo>().Add(result);
@@ -332,7 +334,7 @@ namespace Module.Frontend.TPM.Controllers {
 
                 SetBrandTechIdPromo(model);
 
-				if (statusName.ToLower() != "cancelled" && statusName.ToLower() != "finished")
+				if (statusName.ToLower() != "cancelled" && (statusName.ToLower() != "finished" || statusName.ToLower() == "finished" && userRole == "SupportAdministrator"))
                 {
                     List<PromoProductTree> promoProductTrees = new List<PromoProductTree>();
                     if (!model.LoadFromTLC)
@@ -430,7 +432,7 @@ namespace Module.Frontend.TPM.Controllers {
 
                         //создание отложенной задачи, выполняющей переподбор аплифта и перерассчет параметров                    
                         //если у промо есть признак InOut, то Uplift считать не нужно.
-                        if (changedProducts || needRecalculatePromo) {
+                        if ((changedProducts || needRecalculatePromo) && userRole != "SupportAdministrator") {
                             // если меняем длительность промо, то пересчитываем Marketing TI
                             bool needCalculatePlanMarketingTI = promoCopy.StartDate != model.StartDate || promoCopy.EndDate != model.EndDate;
                             needToCreateDemandIncident = PromoHelper.CheckCreateIncidentCondition(promoCopy, model, patch, isSubrangeChanged);
@@ -440,7 +442,7 @@ namespace Module.Frontend.TPM.Controllers {
                         }                                                        
                         //Сначала проверять заблокированно ли промо, если нет сохранять промо, затем сохранять задачу
                     }
-                    else if (needDetachPromoSupport)
+                    else if (needDetachPromoSupport && userRole != "SupportAdministrator")
                     {
                         //UPD: Теперь не надо
                         //UPD(17.09.19): A теперь надо !
@@ -487,8 +489,28 @@ namespace Module.Frontend.TPM.Controllers {
 
 				if (model.PromoStatus.SystemName.ToLower() == "cancelled")
 				{
-					// Создание записи инцидента отмены промо
-					Context.Set<PromoCancelledIncident>().Add(new PromoCancelledIncident() { PromoId = model.Id, CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow) });
+                    List<PromoProduct> promoProductToDeleteList = Context.Set<PromoProduct>().Where(x => x.PromoId == model.Id && !x.Disabled).ToList();
+                    foreach (PromoProduct promoProduct in promoProductToDeleteList)
+                    {
+                        promoProduct.DeletedDate = System.DateTime.Now;
+                        promoProduct.Disabled = true;
+                    }
+                    model.NeedRecountUplift = true;
+                    //необходимо удалить все коррекции
+                    var promoProductToDeleteListIds = promoProductToDeleteList.Select(x => x.Id).ToList();
+                    List<PromoProductsCorrection> promoProductCorrectionToDeleteList = Context.Set<PromoProductsCorrection>()
+                        .Where(x => promoProductToDeleteListIds.Contains(x.PromoProductId) && x.Disabled != true).ToList();
+                    foreach (PromoProductsCorrection promoProductsCorrection in promoProductCorrectionToDeleteList)
+                    {
+                        promoProductsCorrection.DeletedDate = DateTimeOffset.UtcNow;
+                        promoProductsCorrection.Disabled = true;
+                        promoProductsCorrection.UserId = (Guid)user.Id;
+                        promoProductsCorrection.UserName = user.Login;
+                    }
+
+
+                    // Создание записи инцидента отмены промо
+                    Context.Set<PromoCancelledIncident>().Add(new PromoCancelledIncident() { PromoId = model.Id, CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow) });
                 }
 
 				// Проверка изменения списка выбранных продуктов
@@ -566,8 +588,35 @@ namespace Module.Frontend.TPM.Controllers {
             }
 
             return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
-        }
+        } 
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IHttpActionResult ResetPromo(Guid promoId)
+        {
+            Promo model = Context.Set<Promo>().Find(promoId);
+            
+            if (model == null)
+                return NotFound();
+            UserInfo user = authorizationManager.GetCurrentUser();
 
+            PromoHelper.ResetPromo(Context, model, user);
+            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
+        }
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IHttpActionResult ChangeResponsible(Guid promoId,string userName)
+        {
+            Promo model = Context.Set<Promo>().Find(promoId); 
+            if (model == null)
+                return NotFound();
+            string result = PromoHelper.ChangeResponsible(Context, model, userName);
+            if (!String.IsNullOrEmpty(result))
+            {
+                return InternalServerError(new Exception(result));
+            }
+            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
+        }
+        
         private void SetBrandTechIdPromo(Promo model) {
             if (model.ProductTreeObjectIds != null) {
                 List<int> productTreeObjectIds = new List<int>();
@@ -650,7 +699,7 @@ namespace Module.Frontend.TPM.Controllers {
                 if (!status) {
                     return InternalServerError(new Exception(message));
                 }
-
+                
                 Context.SaveChanges();
 
                 PromoHelper.WritePromoDemandChangeIncident(Context, model, true);
@@ -695,8 +744,7 @@ namespace Module.Frontend.TPM.Controllers {
                     return InternalServerError(e);
                 }
             }
-        }
-
+        } 
         /// <summary>
         /// Отклонение промо
         /// </summary>
@@ -801,7 +849,62 @@ namespace Module.Frontend.TPM.Controllers {
                 return Content<string>(HttpStatusCode.InternalServerError, e.Message);
             }
         }
+        
+        /// <summary>
+        /// Экспорт календаря в эксель
+        /// </summary>
+        /// <param name="options"></param>
+        /// <param name="data">clients - список id клиентов соответствующих фильтру на клиенте, year - год</param>
+        /// <returns></returns>
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IHttpActionResult ExportSchedule(ODataQueryOptions<Promo> options, ODataActionParameters data) {
+            try {
+                // TODO: Передавать фильтр в параметры задачи
+                //var tsts = options.RawValues.Filter;
+                //var tsts = JsonConvert.SerializeObject(options, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
 
+                UserInfo user = authorizationManager.GetCurrentUser();
+                Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
+                RoleInfo role = authorizationManager.GetCurrentRole();
+                Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
+
+                IEnumerable<int> clients = (IEnumerable<int>) data["clients"];
+
+                HandlerData handlerData = new HandlerData();
+                HandlerDataHelper.SaveIncomingArgument("UserId", userId, handlerData, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, handlerData, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("UserId", userId, handlerData, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("clients", clients.ToList(), handlerData, visible: false, throwIfNotExists: false);
+
+                //IQueryable results = options.ApplyTo(GetConstraintedQuery().Where(x => !x.Disabled));
+                //List<Promo> promoes = CastQueryToPromo(results);
+                if (data.Count() > 1) {
+                    HandlerDataHelper.SaveIncomingArgument("year", (int) data["year"], handlerData, visible: false, throwIfNotExists: false);
+                }
+                using (DatabaseContext context = new DatabaseContext()) {
+                    LoopHandler handler = new LoopHandler() {
+                        Id = Guid.NewGuid(),
+                        ConfigurationName = "PROCESSING",
+                        Description = "Scheduler Export",
+                        Name = "Module.Host.TPM.Handlers.SchedulerExportHandler",
+                        ExecutionPeriod = null,
+                        CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                        LastExecutionDate = null,
+                        NextExecutionDate = null,
+                        ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                        UserId = userId,
+                        RoleId = roleId
+                    };
+                    handler.SetParameterData(handlerData);
+                    context.LoopHandlers.Add(handler);
+                    context.SaveChanges();
+                }
+                return Content<string>(HttpStatusCode.OK, "Export task successfully created");
+            } catch (Exception e) {
+                return Content<string>(HttpStatusCode.InternalServerError, e.Message);
+            }
+        }
 
         private string GetUserName(string userName) {
             string[] userParts = userName.Split(new char[] { '/', '\\' });

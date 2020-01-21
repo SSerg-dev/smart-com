@@ -62,9 +62,13 @@
                 fieldLabel: l10n.ns('tpm', 'BrandTech').value('BrandTech_code'),
                 readOnly: true,
                 listeners: {
+                    afterrender: function (field) {
+                        field.addCls('readOnlyField');
+                    },
                     writeablechange: function (field) {
                         if (field.readOnly == false) {
                             field.setReadOnly(true);
+                            field.addCls('readOnlyField');
                         }
                     }
                 }

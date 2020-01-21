@@ -132,15 +132,23 @@
 				me.initMechanicFiled(window);
 				nonenegoeditor.storeLoaded = true;
 
-				if (nonenego.isEditorForUpdateNode) {
-					me.elements.fromDate.setMinValue(null);
+                if (nonenego.isEditorForUpdateNode) {
+                    var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
+                    if (currentRole !== 'SupportAdministrator') {
+
+                        me.elements.fromDate.setMinValue(null);
+                    }
 					me.elements.fromDate.valueChanged = false;
 					me.elements.fromDate.isCurrentFieldValid = true;
 					me.elements.toDate.isCurrentFieldValid = true;
-
+                    var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
+                    if (currentRole !== 'SupportAdministrator') {
+                       
 					var date = new Date();
 					date.setHours(date.getHours() + (date.getTimezoneOffset() / 60) + 3);
-					me.elements.fromDate.getPicker().setMinDate(date);
+                        me.elements.fromDate.getPicker().setMinDate(date);
+
+                    }
 				}
 				
                 me.buttons.cancel = Ext.ComponentQuery.query('#cancel')[0];
@@ -257,7 +265,11 @@
 				var minValue = new Date();
 				var currentTimeZoneOffsetInHours = minValue.getTimezoneOffset();
 				var minValueInt = minValue.getTime();
-				fromDate.setMinValue(new Date(minValueInt + currentTimeZoneOffsetInHours * 60000 + 10800000));
+                var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
+                if (currentRole !== 'SupportAdministrator') {
+                     
+                    fromDate.setMinValue(new Date(minValueInt + currentTimeZoneOffsetInHours * 60000 + 10800000));
+                }
 				me.validatePeriod(me.elements.fromDate, me.elements.toDate, me.elements.noneNegoId, me.elements.clientTreeId, me.elements.productTreeId, me.elements.mechanicId);
 			}
 		}
@@ -408,8 +420,12 @@
         var date = new Date();
         date.setHours(date.getHours() + (date.getTimezoneOffset() / 60) + 3);   // приведение к московской timezone
 		createDate.setValue(date);    
-		fromDate.getPicker().setValue(date);
-		fromDate.setMinValue(date);
+        fromDate.getPicker().setValue(date);
+        var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
+        if (currentRole !== 'SupportAdministrator') {
+
+            fromDate.setMinValue(date);
+        }
 		fromDate.valueChanged = true;
 		fromDate.isCurrentFieldValid = false;
 		toDate.isCurrentFieldValid = false;

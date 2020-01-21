@@ -1195,6 +1195,15 @@ Ext.override(Ext.grid.plugin.BufferedRenderer, {
         }
     }
 });
+Ext.define('App.global.Statuses', {
+    statics: {
+        AllStatuses: ["Draft", "DraftPublished", "OnApproval", "Planned", "Approved", "Deleted", "Finished", "Cancelled", "Closed", "Started"],
+        AllStatusesWithoutDraft: ["DraftPublished", "OnApproval", "Planned", "Approved", "Finished", "Cancelled", "Closed", "Started"],
+        AllStatusesBeforeClosedWithoutDraft: ["DraftPublished", "OnApproval", "Planned", "Approved", "Finished", "Started"],
+        AllStatusesBeforeStartedWithoutDraft: ["DraftPublished", "OnApproval", "Planned", "Approved"],
+        Finished: ["Finished"],
+    }
+});
 
 Ext.override(App.menu.core.MenuManager, {
     init: function () {

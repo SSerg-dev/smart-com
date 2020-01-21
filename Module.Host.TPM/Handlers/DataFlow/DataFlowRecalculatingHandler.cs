@@ -10,6 +10,7 @@ using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.PromoStateControl;
 using Module.Persist.TPM.Utils;
 using Persist;
+using Persist.Model;
 using ProcessingHost.Handlers;
 using System;
 using System.Collections.Generic;
@@ -53,6 +54,9 @@ namespace Module.Host.TPM.Handlers.DataFlow
                     swDataFlow_Part01.Start();
                     handlerLogger.Write(true, String.Format("The recalculation of promo parameters (DataFlow Part 1) began at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
                     List<Guid> promoIdsForRecalculating = HandlerDataHelper.GetIncomingArgument<List<Guid>>("PromoIdsForRecalculating", info.Data, false);
+                    Guid RoleId = HandlerDataHelper.GetIncomingArgument<Guid>("RoleId", info.Data, false);
+                    var role = context.Set<Role>().FirstOrDefault(x => x.Id == RoleId);
+                    bool isSupportAdmin = (role != null && role.SystemName == "SupportAdministrator") ? true : false;
                     List<int?> promoNumbersForRecalculating = context.Set<Promo>().Where(x => promoIdsForRecalculating.Any(y => y == x.Id)).Select(x => x.Number).ToList();
 
                     handlerLogger.Write(true, String.Format("Promo numbers for recalculating in DataFLow Part 1: {0}", string.Join(", ", promoNumbersForRecalculating.ToArray())), "Message");
@@ -124,7 +128,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
 
                                     string[] canBeReturnedToOnApproval = { "OnApproval", "Approved", "Planned" };
                                     // возврат в статус OnApproval при изменении набора продуктов(с проверкой NoNego)
-                                    if (needReturnToOnApprovalStatus && canBeReturnedToOnApproval.Contains(promo.PromoStatus.SystemName))
+                                    if (needReturnToOnApprovalStatus && canBeReturnedToOnApproval.Contains(promo.PromoStatus.SystemName) && !isSupportAdmin)
                                     {
                                         PromoStatus draftPublished = context.Set<PromoStatus>().First(x => x.SystemName.ToLower() == "draftpublished" && !x.Disabled);
                                         promo.PromoStatus = draftPublished;

@@ -9,6 +9,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Reflection;
 using System.Web.Http.OData.Builder;
+using Persist.Model;
 
 namespace Module.Persist.TPM {
     public class PersistTPMModuleRegistrator : IPersistModuleRegistrator {
@@ -214,7 +215,6 @@ namespace Module.Persist.TPM {
             builder.EntitySet<HistoricalProduct>("HistoricalProducts");
             builder.Entity<Product>().Collection.Action("ExportXLSX");
             builder.Entity<Product>().Collection.Action("FullImportXLSX");
-
             var getIfAllProductsInSubrangeAction = builder.Entity<Product>().Collection.Action("GetIfAllProductsInSubrange");
             getIfAllProductsInSubrangeAction.Parameter<string>("PromoId");
             getIfAllProductsInSubrangeAction.Parameter<string>("ProductIds");
@@ -309,11 +309,13 @@ namespace Module.Persist.TPM {
             builder.Entity<Promo>().Collection.Action("ExportXLSX");
             builder.Entity<Promo>().Collection.Action("FullImportXLSX");
             builder.Entity<Promo>().Collection.Action("DeclinePromo");
-            builder.Entity<Promo>().Collection.Action("GetApprovalHistory");
+            builder.Entity<Promo>().Collection.Action("GetApprovalHistory"); 
             builder.Entity<Promo>().Collection.Action("CalculateMarketingTI");
             builder.Entity<Promo>().Collection.Action("ChangeStatus");
             builder.Entity<Promo>().Collection.Action("ExportPromoROIReportXLSX");
             builder.Entity<Promo>().Collection.Action("RecalculatePromo");
+            builder.Entity<Promo>().Collection.Action("ResetPromo");
+            builder.Entity<Promo>().Collection.Action("ChangeResponsible");
             builder.Entity<Promo>().Collection.Action("CheckIfLogHasErrors");
 			builder.Entity<Promo>().Collection.Action("CheckPromoCreator");
 			builder.Entity<Promo>().Collection.Action("GetProducts").CollectionParameter<string>("InOutProductIds");
@@ -335,8 +337,7 @@ namespace Module.Persist.TPM {
 
             //builder.EntitySet<DemandDTO>("DemandDTOs");
             //builder.Entity<DemandDTO>().Collection.Action("FullImportXLSX");
-            //builder.EntitySet<DemandDTO>("DemandDTOs").HasOptionalBinding(e => e.Brand, "Brands");
-
+            //builder.EntitySet<DemandDTO>("DemandDTOs").HasOptionalBinding(e => e.Brand, "Brands"); 
             builder.EntitySet<PromoSales>("PromoSaleses");
             builder.EntitySet<PromoSales>("DeletedPromoSaleses");
             builder.EntitySet<HistoricalPromoSales>("HistoricalPromoSaleses");
@@ -470,6 +471,7 @@ namespace Module.Persist.TPM {
             builder.Entity<PromoProduct>().Collection.Action("FullImportXLSX");
             builder.Entity<PromoProduct>().Collection.Action("DownloadTemplateXLSXTLC");
             builder.Entity<PromoProduct>().Collection.Action("DownloadTemplateXLSX");
+            builder.Entity<PromoProduct>().Collection.Action("SupportAdminExportXLSX");
 
             builder.Entity<PromoProduct>().Collection.Action("GetPromoProductByPromoAndProduct");
             builder.EntitySet<PromoProductsView>("PromoProductsViews");
@@ -668,7 +670,7 @@ namespace Module.Persist.TPM {
             //builder.Entity<BudgetSubItemClientTree>().HasRequired(e => e.ClientTree, (e, te) => e.ClientTreeId == te.Id);
             //builder.Entity<BudgetSubItemClientTree>().HasRequired(e => e.BudgetSubItem, (e, te) => e.BudgetSubItemId == te.Id);
 
-           
+
             ActionConfiguration getSelectedProductsAction = builder.Entity<Product>().Collection.Action("GetSelectedProducts");
 			getSelectedProductsAction.ReturnsCollectionFromEntitySet<IQueryable<Product>>("SelectedProducts");
 			getSelectedProductsAction.CollectionParameter<string>("jsonData");

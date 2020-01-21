@@ -25,6 +25,7 @@ namespace Module.Persist.TPM.Model.History {
         public string OtherEventName { get; set; }
         public string EventName { get; set; }
         public string Comment { get; set; }
+        public string CreatorLogin { get; set; }
 
         //event
         public string PromoEventName { get; set; }

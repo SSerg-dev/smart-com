@@ -127,6 +127,52 @@ namespace Module.Persist.TPM.PromoStateControl
             return State.ChangeState(promoModel, promoStates, userRole, out message);
         }
 
+        public IPromoState GetPromoState(string statusName)
+        {
+            IPromoState promoState = _undefinedState;
+
+            if (!String.IsNullOrEmpty(statusName))
+            {
+                switch (statusName)
+                {
+                    case "Draft":
+                        promoState = _draftState;
+                        break;
+                    case "DraftPublished":
+                        promoState = _draftPublishedState;
+                        break;
+                    case "OnApproval":
+                        promoState = _onApprovalState;
+                        break;
+                    case "Approved":
+                        promoState = _approvedState;
+                        break;
+                    case "Planned":
+                        promoState = _plannedState;
+                        break;
+                    case "Cancelled":
+                        promoState = _cancelledState;
+                        break;
+                    case "Started":
+                        promoState = _startedState;
+                        break;
+                    case "Finished":
+                        promoState = _finishedState;
+                        break;
+                    case "Closed":
+                        promoState = _closedState;
+                        break;
+                    case "Deleted":
+                        promoState = _deletedState;
+                        break;
+                    default:
+                        promoState = _undefinedState;
+                        break;
+                }
+            }
+
+            return promoState;
+        }
 
         Boolean isDisposed = false;
 

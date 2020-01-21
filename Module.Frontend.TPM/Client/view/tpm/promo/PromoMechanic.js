@@ -41,7 +41,7 @@
                     allowOnlyWhitespace: false,
                     allowDecimals: false,
                     allowExponential: false,
-                    crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
+                    crudAccess: ['Administrator', 'SupportAdministrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
                    //store: {
                    //    type: 'promoformmechanicstore'
                    //},
@@ -163,7 +163,7 @@
                     allowOnlyWhitespace: false,
                     allowDecimals: false,
                     allowExponential: false,
-                    crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
+                    crudAccess: ['Administrator', 'SupportAdministrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
                     //store: {
                     //    type: 'promoformmechanictypestore'
                     //},
@@ -214,7 +214,7 @@
                     allowOnlyWhitespace: false,
                     allowDecimals: false,
                     allowExponential: false,
-                    crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
+                    crudAccess: ['Administrator', 'SupportAdministrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
                 }]
             }, {
                 xtype: 'fieldset',
@@ -237,7 +237,7 @@
                     entityType: 'Mechanic',
                     needReadOnly: true,
                     allowBlank: true,
-                    crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
+                    crudAccess: ['Administrator', 'SupportAdministrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
                     customTip: l10n.ns('tpm', 'Promo').value('PlanInstoreMechanicNameTip'),
                    // store: {
                    //     type: 'promoformmechanicstore'
@@ -361,7 +361,7 @@
                     allowOnlyWhitespace: false,
                     allowDecimals: false,
                     allowExponential: false,
-                    crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
+                    crudAccess: ['Administrator', 'SupportAdministrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
                     customTip: l10n.ns('tpm', 'Promo').value('PlanInstoreMechanicTypeNameTip'),
                     //store: {
                     //    type: 'promoformmechanictypestore'
@@ -418,7 +418,7 @@
                     allowOnlyWhitespace: false,
                     allowDecimals: false,
                     allowExponential: false,
-                    crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
+                    crudAccess: ['Administrator', 'SupportAdministrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
                     customTip: l10n.ns('tpm', 'Promo').value('PlanInstoreMechanicDiscountTip'),
                     listeners: {
                         change: function (field, newVal, oldVal) {
@@ -461,7 +461,7 @@
                 style: 'border: 1px solid #ebebeb',
                 items: [{
                     xtype: 'checkboxfield',
-                    crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
+                    crudAccess: ['Administrator', 'SupportAdministrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
                     needReadOnly: true,
                     //readOnly: true,
                     margin: '5 0 0 10',
@@ -476,7 +476,7 @@
                 labelAlign: 'top',
                 cls: 'promo-textarea',
                 needReadOnly: true,
-                crudAccess: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
+                crudAccess: ['Administrator', 'SupportAdministrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
             }]
         }]
     }]

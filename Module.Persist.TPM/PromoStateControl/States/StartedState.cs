@@ -51,10 +51,18 @@ namespace Module.Persist.TPM.PromoStateControl
                 bool isAvailable = PromoStateUtil.CheckAccess(GetAvailableStates(), statusName, userRole);
                 bool isAvailableCurrent = PromoStateUtil.CheckAccess(Roles, userRole);
 
+                // для этой роли не производится никаких проверок
+                if (userRole == "SupportAdministrator")
+                {
+                    _stateContext.Model = promoModel;
+                    _stateContext.State = _stateContext.GetPromoState(statusName);
+
+                    return true;
+                }
+
                 if (isAvailable)
                 {
-                    // Go to: FinishedState
-
+                    // Go to: FinishedState (by Support Animistrator)
                     if (statusName == "Finished")
                     {
                         if (promoModel.DispatchesEnd <= DateTimeOffset.Now)
@@ -66,7 +74,7 @@ namespace Module.Persist.TPM.PromoStateControl
                         }
                         else
                         {
-                            message = "Error, Go To Finished Status From Started";
+                            message = "Error, dispatch not ended yet";
                             _stateContext.Model = promoModel;
 
                             return false;
@@ -75,7 +83,7 @@ namespace Module.Persist.TPM.PromoStateControl
                     else if (statusName == "Cancelled")
                     {
                         _stateContext.Model = promoModel;
-                        _stateContext.State = _stateContext._cancelledState;
+                        _stateContext.State = _stateContext._finishedState;
 
                         return true;
                     }
