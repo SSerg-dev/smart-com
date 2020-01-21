@@ -748,7 +748,7 @@ namespace Module.Host.TPM.Actions {
                     {
                         StartDate = newRecord.StartDate,
                         EndDate = newRecord.EndDate,
-                        SizePercent = newRecord.SizePercent,
+                        SizePercent = (float)Math.Round((decimal)newRecord.SizePercent, 2, MidpointRounding.AwayFromZero),
                         TISubType = newRecord.TISubType,
                         TIType = newRecord.TIType,
                         ClientTreeId = newRecord.ClientTreeId,

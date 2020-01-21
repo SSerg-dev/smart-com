@@ -632,7 +632,7 @@ namespace Module.Host.TPM.Actions {
                     COGS toSave = new COGS() {
                         StartDate = newRecord.StartDate,
                         EndDate = newRecord.EndDate,
-                        LVSpercent = newRecord.LVSpercent,
+                        LVSpercent = (float)Math.Round((decimal)newRecord.LVSpercent, 2, MidpointRounding.AwayFromZero),
                         ClientTreeId = newRecord.ClientTreeId,
                         BrandTechId = bt != null ? (Guid?) bt.Id : null,
                         Year = newRecord.StartDate.Value.Year
