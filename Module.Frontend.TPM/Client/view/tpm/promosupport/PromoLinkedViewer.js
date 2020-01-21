@@ -6,7 +6,7 @@
     deletedPromoLinkedIds: [],
 
     listeners: {
-        afterrender: function (grid) {
+        afterrender: function (grid) { 
             var toolbar = grid.down('custombigtoolbar');
             var addBtn = toolbar.down('#addbutton');
             var deleteBtn = toolbar.down('#deletebutton');
@@ -81,6 +81,22 @@
         xtype: 'directorygrid',
         itemId: 'datatable',
         editorModel: 'Core.form.EditorWindowModel',
+        listeners: { 
+            selectionchange: function (grid) {
+                var editorWind = this.up('custompromosupporteditor');
+                if (grid.hasSelection())
+                    var status = grid.getSelection()[0].data.PromoStatusName;
+                var panel = this.up();
+                var toolbar = panel.down('custombigtoolbar');
+                var deleteBtn = toolbar.down('#deletebutton');
+                if (status == 'Closed') {
+                    deleteBtn.hide();
+                } else if (editorWind && !editorWind.costProduction) {
+                    deleteBtn.show();
+
+                }
+            }
+        },
         store: {
             type: 'directorystore',
             autoLoad: false,
@@ -109,7 +125,7 @@
                     } else {
                         deleteBtn[0].setDisabled(false);
                     }
-                }
+                } 
             }
         },
 
