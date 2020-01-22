@@ -576,7 +576,6 @@
 
         promoLinkedProxy.data = promoSupportPromoes;
         promoLinkedStore.load();
-        promoLinkedStore.load();
     },
 
     onUpdateGroupButtonClick: function (button) {

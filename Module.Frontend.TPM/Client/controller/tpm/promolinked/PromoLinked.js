@@ -8,6 +8,7 @@
                 'promolinkedticosts directorygrid': {
                     itemdblclick: this.onDetailButtonClick,
                     selectionchange: this.onGridSelectionChange,
+                    selectionchange: this.onGridSelectionChangeCustom,
                     afterrender: this.onGridAfterrender,
                     extfilterchange: this.onExtFilterChange
                 },
@@ -359,7 +360,7 @@
                 var promoLinkedViewerStore = promoLinkedViewer.down('grid').getStore();
                 var promoLinkedViewerProxy = promoLinkedViewerStore.getProxy();
                 var mainPromoSupportRightToolbarContainer = Ext.ComponentQuery.query('#mainPromoSupportRightToolbarContainer')[0];
-                
+
                 promoLinkedViewerProxy.data = promoLinkedViewerProxy.data.filter(function (rec) { return rec.id != selectedRecord.id });
                 promoLinkedViewerStore.load();
             }
@@ -518,4 +519,12 @@
             planCostProdField.validate();
         }
     },
+
+    onGridSelectionChangeCustom: function (selModel, selected) {
+        if (selected[0] && selected[0].data.PromoStatusName != "Closed") {
+            Ext.ComponentQuery.query('promolinkedticosts')[0].down('#deletebutton').enable();
+        } else {
+            Ext.ComponentQuery.query('promolinkedticosts')[0].down('#deletebutton').disable();
+        }
+    }
 });
