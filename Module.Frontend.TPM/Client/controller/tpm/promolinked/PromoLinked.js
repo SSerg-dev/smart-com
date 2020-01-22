@@ -363,6 +363,7 @@
 
                 promoLinkedViewerProxy.data = promoLinkedViewerProxy.data.filter(function (rec) { return rec.id != selectedRecord.id });
                 promoLinkedViewerStore.load();
+                promoLinkedViewerStore.load();
             }
         }
     },
