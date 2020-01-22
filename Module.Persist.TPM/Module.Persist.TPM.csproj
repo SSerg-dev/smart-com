@@ -1884,6 +1884,7 @@
     <Content Include="SQLInitialize\20191230_1235_Product_update_computed_fields.sql" />
     <Content Include="SQLInitialize\20200113_1300_Add_AP_GetHistoricalPromoesCreatorLogin.sql" />
     <Content Include="SQLInitialize\20200109_1600_Add_Handlers_MaterialsSync.sql" />
+    <Content Include="SQLInitialize\20200122_0900_Sheba_from_tech_to_subrange.sql" />
     <Content Include="Sql\20191004_1540_FillInOutProductIdsHandler.sql" />
     <Content Include="SQLInitialize\20190926_1600_HistoricalPromoSupport_AP.sql" />
     <Content Include="SQLInitialize\20191106_1700_PromoGridView.sql" />
