@@ -389,10 +389,10 @@
     },
 
     onHistoryButtonClick: function (button) {
-        var grid = this.getGridByButton(button),
-            selModel = grid.getSelectionModel();
+        var promoDetailPanel = button.up('promodetailtabpanel');
+        var record = promoDetailPanel.event;
 
-        if (selModel.hasSelection()) {
+        if (record) {
             var model = Ext.ModelManager.getModel('App.model.tpm.promo.Promo'),
                 viewClassName = "App.view.tpm.promo.HistoricalPromo";
 
@@ -402,17 +402,17 @@
             var store = baseReviewWindow.down('grid').getStore();
             var proxy = store.getProxy();
             if (proxy.extraParams) {
-                proxy.extraParams.Id = this.getRecordId(selModel.getSelection()[0]);
+                proxy.extraParams.Id = this.getRecordId(record);
             } else {
                 proxy.extraParams = {
-                    Id: this.getRecordId(selModel.getSelection()[0])
+                    Id: this.getRecordId(record)
                 }
             }
 
             store.setFixedFilter('HistoricalObjectId', {
                 property: '_ObjectId',
                 operation: 'Equals',
-                value: this.getRecordId(selModel.getSelection()[0])
+                value: this.getRecordId(record)
             });
         }
     },
