@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Core.Data;
 using Persist;
-using Persist.ScriptGenerator;
 using Module.Persist.TPM.Model.Import;
 using Module.Persist.TPM.Model.TPM;
 using Core.Extensions;
@@ -15,6 +14,7 @@ using System.Reflection;
 using Core.History;
 using Module.Persist.TPM.Utils;
 using Module.Persist.TPM.ElasticSearch;
+using Module.Frontend.TPM.Util;
 
 namespace Module.Host.TPM.Actions {
     class FullXLSXUpdateByPropertyImportAction : FullXLSXImportAction {
@@ -154,7 +154,10 @@ namespace Module.Host.TPM.Actions {
         protected override int InsertDataToDatabase(IEnumerable<IEntity<Guid>> records, DatabaseContext context)
         {
             NoGuidGeneratingScriptGenerator generatorCreate = new NoGuidGeneratingScriptGenerator(TypeTo, false);
+
+            //здесь класс ScriptGenerator перенесен из ядра в Module.Frontend.TPM.Util
             ScriptGenerator generatorUpdate = new ScriptGenerator(TypeTo);
+
             IQueryable<IEntity<Guid>> sourceRecords = records.Cast<IEntity<Guid>>().AsQueryable();
             IList<IEntity<Guid>> query = GetQuery(context).ToList();
             IList<IEntity<Guid>> toCreate = new List<IEntity<Guid>>();
@@ -230,8 +233,8 @@ namespace Module.Host.TPM.Actions {
 
             foreach (IEnumerable<IEntity<Guid>> items in toUpdate.Partition(10000))
             {
-                string insertScript = generatorUpdate.BuildUpdateScript(items);
-                context.Database.ExecuteSqlCommand(insertScript);
+                string updateScript = generatorUpdate.BuildUpdateScript(items);
+                context.Database.ExecuteSqlCommand(updateScript);
             }
             //Добавление в историю
             context.HistoryWriter.Write(toHisCreate, context.AuthManager.GetCurrentUser(), context.AuthManager.GetCurrentRole(), OperationType.Created);

@@ -181,6 +181,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Util\NoGuidGeneratingScriptGenerator.cs" />
+    <Compile Include="Util\ScriptGenerator.cs" />
     <Content Include="Client\controller\tpm\actualLSV\ActualLSV.js" />
     <Content Include="Client\controller\tpm\clienttreesharesview\ClientTreeSharesView.js" />
     <Content Include="Client\controller\tpm\event\EventClientTree.js" />

@@ -207,7 +207,6 @@
     <Compile Include="Actions\Notifications\PromoUpliftFailNotificationAction.cs" />
     <Compile Include="Actions\Notifications\PromoDemandChangeNotificationAction.cs" />
     <Compile Include="Actions\Notifications\PromoProductChangeNotificationAction.cs" />
-    <Compile Include="Actions\NoGuidGeneratingScriptGenerator.cs" />
     <Compile Include="Handlers\DataFlow\DataFlowFilteringHandler.cs" />
     <Compile Include="Handlers\DataFlow\DataFlowFiltersCollection.cs" />
     <Compile Include="Handlers\DataFlow\DataFlowRecalculatingHandler.cs" />

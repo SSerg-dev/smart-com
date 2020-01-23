@@ -1891,6 +1891,7 @@
     <Content Include="SQLInitialize\20191106_1700_PromoGridView.sql" />
     <Content Include="SQLInitialize\20191101_1801_PromoProductsCorrection_Drop_Trigger.sql" />
     <Content Include="SQLInitialize\20191122_1400_COGS_TI_Year.sql" />
+    <Compile Include="Utils\SpecialNotKeyPropertyAttribute.cs" />
     <Compile Include="Utils\SimpleModels.cs" />
     <Content Include="SQLInitialize\20190904_1300_AddPromoStatusNameToPromoView.sql" />
     <Content Include="SQLInitialize\20190923_1806_Add_EventClientTree_AP.sql" />
