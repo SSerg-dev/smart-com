@@ -30,7 +30,15 @@ namespace Module.Persist.TPM.Model.TPM
 
         [ImportCSVColumn(ColumnNumber = 5)]
 		[Display(Name = "Brand code")]
-		public string Brand_code { get; set; }
+        public string Brand—ode { get; set; }
+        public string Brand_code
+        {
+            get
+            {
+                return this.Brand—ode.TrimStart('0').PadLeft(3, '0');
+            }
+            set { }
+        }
 
         [ImportCSVColumn(ColumnNumber = 6)]
         [Display(Name = "Technology")]
@@ -38,7 +46,15 @@ namespace Module.Persist.TPM.Model.TPM
 
         [ImportCSVColumn(ColumnNumber = 7)]
 		[Display(Name = "Technology code")]
-		public string Tech_code { get; set; }
+		public string Tech—ode { get; set; }
+        public string Tech_code
+        {
+            get
+            {
+                return this.Tech—ode.TrimStart('0').PadLeft(3, '0');
+            }
+            set { }
+        }
 
         [ImportCSVColumn(ColumnNumber = 8)]
         [Display(Name = "Brand Tech")]
@@ -50,7 +66,15 @@ namespace Module.Persist.TPM.Model.TPM
 
         [ImportCSVColumn(ColumnNumber = 10)]
 		[Display(Name = "Segmen code")]
-		public string Segmen_code { get; set; }
+		public string Segmen—ode { get; set; }
+        public string Segmen_code
+        {
+            get
+            {
+                return this.Segmen—ode.TrimStart('0').PadLeft(2, '0');
+            }
+            set { }
+        }
 
         [ImportCSVColumn(ColumnNumber = 11)]
         [Display(Name = "Brand Seg Tech Code")]
