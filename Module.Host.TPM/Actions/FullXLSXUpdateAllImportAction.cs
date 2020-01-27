@@ -208,7 +208,42 @@ namespace Module.Host.TPM.Actions {
                     {
                         //Для нормальной записи в историю необходимо передавать Id в новой записи
                         newRecord.Id = oldRecordCopy.Id;
-                        toHisUpdate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(oldRecordCopy, newRecord));
+
+                        // Поулчаем вычисляемые поля
+                        var product = (Product)newRecord;
+                        var brandCode = product.Brand_code;
+                        var segCode = product.Segmen_code;
+                        var techCode = product.Tech_code;
+
+                        var brandName = context.Set<Brand>().Where(b => b.Segmen_code == segCode && b.Brand_code == brandCode && !b.Disabled).Select(b => b.Name).FirstOrDefault();
+                        var techName = context.Set<Technology>().Where(t => t.Tech_code == techCode && !t.Disabled).Select(b => b.Name).FirstOrDefault();
+                        var brandTechName = context.Set<BrandTech>().Where(bt =>
+                                                                           bt.Technology.Tech_code == techCode &&
+                                                                           !bt.Technology.Disabled &&
+                                                                           bt.Brand.Brand_code == brandCode &&
+                                                                           bt.Brand.Segmen_code == segCode &&
+                                                                           !bt.Disabled).Select(bt => bt.Name).FirstOrDefault();
+
+                        product.Brand = String.Empty;
+                        product.Technology = String.Empty;
+                        product.BrandTech = String.Empty;
+                        if (!String.IsNullOrEmpty(brandName))
+                        {
+                            product.Brand = brandName;
+                        }
+                        if (!String.IsNullOrEmpty(techName))
+                        {
+                            product.Technology = techName;
+                        }
+                        if (!String.IsNullOrEmpty(brandTechName))
+                        {
+                            product.BrandTech = brandTechName;
+                        }
+
+                        var newProductChanged = (IEntity<Guid>)product;
+                        newProductChanged.Id = oldRecordCopy.Id;
+
+                        toHisUpdate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(oldRecordCopy, newProductChanged));
                         toUpdate.Add(oldRecord);
                         ProductChangeIncident pci = new ProductChangeIncident
                         {
@@ -236,6 +271,7 @@ namespace Module.Host.TPM.Actions {
                 string updateScript = generatorUpdate.BuildUpdateScript(items);
                 context.Database.ExecuteSqlCommand(updateScript);
             }
+
             //Добавление в историю
             context.HistoryWriter.Write(toHisCreate, context.AuthManager.GetCurrentUser(), context.AuthManager.GetCurrentRole(), OperationType.Created);
             context.HistoryWriter.Write(toHisUpdate, context.AuthManager.GetCurrentUser(), context.AuthManager.GetCurrentRole(), OperationType.Updated);
