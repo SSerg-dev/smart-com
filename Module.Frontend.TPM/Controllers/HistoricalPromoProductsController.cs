@@ -21,7 +21,7 @@ namespace Module.Frontend.TPM.Controllers {
             AllowedQueryOptions = AllowedQueryOptions.All,
             EnableConstantParameterization = false,
             MaxTop = 1024)]
-        public IQueryable<HistoricalPromoProduct> GetHistoricalActuals() {
+        public IQueryable<HistoricalPromoProduct> GetHistoricalPromoProducts() {
             return HistoryReader.GetAll<HistoricalPromoProduct>();
         }
 
@@ -33,7 +33,7 @@ namespace Module.Frontend.TPM.Controllers {
             AllowedQueryOptions = AllowedQueryOptions.All,
             EnableConstantParameterization = false,
             MaxTop = 1024)]
-        public IQueryable<HistoricalPromoProduct> GetHistoricalActuals(Guid? Id)
+        public IQueryable<HistoricalPromoProduct> GetHistoricalPromoProducts(Guid? Id)
         {
             return HistoryReader.GetAllById<HistoricalPromoProduct>(Id.ToString());
         }

@@ -82,7 +82,9 @@ namespace Module.Host.TPM.Actions
             ScriptGenerator generator = GetScriptGenerator();
             IQueryable<PromoProduct> sourceRecords = records.Cast<PromoProduct>().AsQueryable();
             IList<PromoProduct> query = GetQuery(context).ToList();
+
             List<PromoProduct> toUpdate = new List<PromoProduct>();
+            List<Tuple<IEntity<Guid>, IEntity<Guid>>> toHisUpdate = new List<Tuple<IEntity<Guid>, IEntity<Guid>>>();
             Promo promo = context.Set<Promo>().Where(x => x.Id == promoId && !x.Disabled).FirstOrDefault();
 
             if (promo != null)
@@ -98,10 +100,12 @@ namespace Module.Host.TPM.Actions
                         {
                             //распределение импортируемого количества пропорционально PlanProductBaselineLSV
                             var sumBaseline = productsWithRealBaseline.Sum(x => x.PlanProductBaselineLSV);
+                            List<Tuple<IEntity<Guid>, IEntity<Guid>>> promoProductsToUpdateHis = new List<Tuple<IEntity<Guid>, IEntity<Guid>>>();
                             List<PromoProduct> promoProductsToUpdate = new List<PromoProduct>();
                             bool isRealBaselineExist = false;
                             foreach (var p in productsWithRealBaseline)
                             {
+                                var oldProductClone = (PromoProduct)p.Clone();
                                 p.ActualProductUOM = "PC";
                                 // проверка Baseline (исправляет ActualProductPCQty)
                                 if (p.PlanProductBaselineLSV != null && p.PlanProductBaselineLSV != 0)
@@ -114,6 +118,8 @@ namespace Module.Host.TPM.Actions
                                     p.ActualProductPCQty = null;
                                 }
 
+                                var newProductClone = (PromoProduct)p.Clone();
+                                promoProductsToUpdateHis.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(oldProductClone, newProductClone));
                                 promoProductsToUpdate.Add(p);
                             }
 
@@ -133,13 +139,17 @@ namespace Module.Host.TPM.Actions
                                 PromoProduct oldRecord = query.FirstOrDefault(x => x.EAN_PC == newRecord.EAN_PC && x.PromoId == promoId && !x.Disabled);
                                 if (oldRecord != null)
                                 {
+                                    var oldRecClone = (PromoProduct)oldRecord.Clone();
                                     oldRecord.ActualProductUOM = "PC";
                                     oldRecord.ActualProductPCQty = newRecord.ActualProductPCQty;
                                     toUpdate.Add(oldRecord);
+                                    var newRecordClone = (PromoProduct)oldRecord.Clone();
+                                    toHisUpdate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(oldRecClone, newRecordClone));
                                 }
                             }
 
                             toUpdate.AddRange(promoProductsToUpdate);
+                            toHisUpdate.AddRange(promoProductsToUpdateHis);
                         }
                     }
                 }
@@ -155,9 +165,11 @@ namespace Module.Host.TPM.Actions
                             //распределение импортируемого количества пропорционально PlanProductIncrementalLSV
                             var sumIncremental = productsWithRealPCPrice.Sum(x => x.PlanProductIncrementalLSV);
                             List<PromoProduct> promoProductsToUpdate = new List<PromoProduct>();
+                            List<Tuple<IEntity<Guid>, IEntity<Guid>>> promoProductsToUpdateHis = new List<Tuple<IEntity<Guid>, IEntity<Guid>>>();
                             bool isRealPCPriceExist = false;
                             foreach (var p in productsWithRealPCPrice)
                             {
+                                var oldProductCopy = (PromoProduct)p.Clone();
                                 p.ActualProductUOM = "PC";
                                 // проверка Price (исправляет ActualProductPCQty)
                                 if (p.PlanProductPCPrice != null && p.PlanProductPCPrice != 0)
@@ -170,6 +182,8 @@ namespace Module.Host.TPM.Actions
                                     p.ActualProductPCQty = null;
                                 }
 
+                                var newProductClone = (PromoProduct)p.Clone();
+                                promoProductsToUpdateHis.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(oldProductCopy, newProductClone));
                                 promoProductsToUpdate.Add(p);
                             }
 
@@ -189,13 +203,17 @@ namespace Module.Host.TPM.Actions
                                 PromoProduct oldRecord = query.FirstOrDefault(x => x.EAN_PC == newRecord.EAN_PC && x.PromoId == promoId && !x.Disabled);
                                 if (oldRecord != null)
                                 {
+                                    var oldRecClone = (PromoProduct)oldRecord.Clone();
                                     oldRecord.ActualProductUOM = "PC";
                                     oldRecord.ActualProductPCQty = newRecord.ActualProductPCQty;
                                     toUpdate.Add(oldRecord);
+                                    var newRecordClone = (PromoProduct)oldRecord.Clone();
+                                    toHisUpdate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(oldRecClone, newRecordClone));
                                 }
                             }
 
                             toUpdate.AddRange(promoProductsToUpdate);
+                            toHisUpdate.AddRange(promoProductsToUpdateHis);
                         }
                     }
                 }
@@ -208,11 +226,7 @@ namespace Module.Host.TPM.Actions
             }
 
             //Добавление изменений в историю
-            List<Core.History.OperationDescriptor<Guid>> toHis = new List<Core.History.OperationDescriptor<Guid>>();
-            foreach (var item in toUpdate)
-            {
-                toHis.Add(new Core.History.OperationDescriptor<Guid>() { Operation = OperationType.Updated, Entity = item });
-            }
+            context.HistoryWriter.Write(toHisUpdate, context.AuthManager.GetCurrentUser(), context.AuthManager.GetCurrentRole(), OperationType.Updated);
 
             // Обновляем фактический значения
             CreateTaskCalculateActual(promoId);

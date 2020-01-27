@@ -1877,4 +1877,13 @@
         'Email': 'Email',
     },
     'HistoricalUserRolePromo': ['.tpm.UserRolePromo', '.core.BaseHistoryEntity'],
+
+    'HistoricalActual': {
+        'OperationType': {
+            'Created': 'Создание',
+            'Disabled': 'Удаление',
+            'Deleted': 'Удаление',
+            'Updated': 'Изменение'
+        }
+    },
 });

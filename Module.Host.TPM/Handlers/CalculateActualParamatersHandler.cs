@@ -33,6 +33,7 @@ namespace Module.Host.TPM.Handlers
             Guid promoId = HandlerDataHelper.GetIncomingArgument<Guid>("PromoId", info.Data, false);
             Guid RoleId = HandlerDataHelper.GetIncomingArgument<Guid>("RoleId", info.Data, false);
             bool? needRedistributeLSV = HandlerDataHelper.GetIncomingArgument<bool?>("needRedistributeLSV", info.Data, false);
+            bool needToSaveChanges = false;
 
             try
             {
@@ -55,12 +56,11 @@ namespace Module.Host.TPM.Handlers
                             if (needRedistributeLSV == true)
                             {
                                 //Хак, что бы пересчет не переписывать
-                                ActualProductParametersCalculation.CalculatePromoProductParameters(promo, context, isSupportAdmin: isSupportAdmin);
+                                ActualProductParametersCalculation.CalculatePromoProductParameters(promo, context, isSupportAdmin: isSupportAdmin, needToSaveChanges: needToSaveChanges);
                                 ActualLSVChangeHandler.CalculateAllActualLSV(promo, context);
-                                context.SaveChanges();
                             }
                             // если есть ошибки, они перечисленны через ;
-                            errorString = ActualProductParametersCalculation.CalculatePromoProductParameters(promo, context, isSupportAdmin: isSupportAdmin);
+                            errorString = ActualProductParametersCalculation.CalculatePromoProductParameters(promo, context, isSupportAdmin: isSupportAdmin, needToSaveChanges: needToSaveChanges);
                             // записываем ошибки если они есть
                             if (errorString != null)
                                 WriteErrorsInLog(handlerLogger, errorString);
@@ -72,7 +72,7 @@ namespace Module.Host.TPM.Handlers
                         // Параметры промо считаем только, если промо из TLC или если были загружены Actuals
                         if (promo.LoadFromTLC || promoProductList.Any(x => x.ActualProductPCQty.HasValue))
                         {
-                            errorString = ActualPromoParametersCalculation.CalculatePromoParameters(promo, context);
+                            errorString = ActualPromoParametersCalculation.CalculatePromoParameters(promo, context, needToSaveChanges: needToSaveChanges);
                         }
 
                         // записываем ошибки если они есть
