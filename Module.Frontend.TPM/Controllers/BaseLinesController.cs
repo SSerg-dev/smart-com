@@ -1,37 +1,44 @@
-﻿using AutoMapper;
-using Core.Security;
-using Core.Security.Models;
-using Frontend.Core.Controllers.Base;
-using Frontend.Core.Extensions.Export;
-using Module.Persist.TPM.Model.TPM;
-using Persist.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Data.Entity.Infrastructure;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.OData;
 using System.Web.Http.OData.Query;
-using Thinktecture.IdentityModel.Authorization.WebApi;
-using System.Data.SqlClient;
-using System.Threading.Tasks;
-using System.Net.Http;
-using Frontend.Core.Extensions;
-using Persist;
-using Looper.Parameters;
-using Looper.Core;
-using Module.Persist.TPM.Model.Import;
 using System.Web.Http.Results;
-using System.Net.Http.Headers;
+
+using AutoMapper;
+
+using Core.Security;
+using Core.Security.Models;
 using Core.Settings;
+using DocumentFormat.OpenXml.Drawing.Charts;
+using Frontend.Core.Controllers.Base;
+using Frontend.Core.Extensions;
+using Frontend.Core.Extensions.Export;
+
+using Looper.Core;
+using Looper.Parameters;
+
+using Module.Frontend.TPM.Util;
+using Module.Persist.TPM.Model.Import;
+using Module.Persist.TPM.Model.TPM;
+using Module.Persist.TPM.Utils;
+using Npgsql;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
-using System.Collections.Specialized;
-using Module.Persist.TPM.Utils;
-using Utility;
-using Module.Persist.TPM.Model.DTO;
+
+using Persist;
+using Persist.Model;
+
+using Thinktecture.IdentityModel.Authorization.WebApi;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -60,14 +67,19 @@ namespace Module.Frontend.TPM.Controllers
         [EnableQuery(MaxNodeCount = int.MaxValue)]
         public SingleResult<BaseLine> GetBaseLine([FromODataUri] System.Guid key)
         {
-            return SingleResult.Create(GetConstraintedQuery());
+            return SingleResult.Create(GetBaseLines());
         }
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
-        public IQueryable<BaseLine> GetBaseLines()
+        public IQueryable<BaseLine> GetBaseLines(ODataQueryOptions<BaseLine> queryOptions = null)
         {
-            return GetConstraintedQuery();
+            var query = GetConstraintedQuery();
+            if (queryOptions != null && queryOptions.Filter != null)
+            {
+                query = RoundingHelper.ModifyQuery(query);
+            }
+            return query;
         }
 
         [ClaimsAuthorize]

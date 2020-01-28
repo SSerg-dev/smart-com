@@ -1,27 +1,31 @@
-﻿using AutoMapper;
-using Core.Security;
-using Core.Security.Models;
-using Core.Settings;
-using Frontend.Core.Controllers.Base;
-using Frontend.Core.Extensions.Export;
-using Module.Persist.TPM.Model.TPM;
-using Module.Persist.TPM.Model.DTO;
-using Persist.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web.Http;
 using System.Web.Http.OData;
 using System.Web.Http.OData.Query;
-using Thinktecture.IdentityModel.Authorization.WebApi;
-using Utility;
-using Module.Persist.TPM.Utils;
-using Core.MarsCalendar;
 
-namespace Module.Frontend.TPM.Controllers {
+using Core.MarsCalendar;
+using Core.Security;
+using Core.Security.Models;
+
+using Frontend.Core.Controllers.Base;
+using Frontend.Core.Extensions.Export;
+
+using Module.Frontend.TPM.Util;
+using Module.Persist.TPM.Model.DTO;
+using Module.Persist.TPM.Model.TPM;
+using Module.Persist.TPM.Utils;
+
+using Persist.Model;
+
+using Thinktecture.IdentityModel.Authorization.WebApi;
+
+using Utility;
+
+namespace Module.Frontend.TPM.Controllers
+{
 
 	public class PlanIncrementalReportsController : EFContextController
 	{
@@ -65,9 +69,14 @@ namespace Module.Frontend.TPM.Controllers {
 
 		[ClaimsAuthorize]
 		[EnableQuery(MaxNodeCount = int.MaxValue)]
-		public IQueryable<PlanIncrementalReport> GetPlanIncrementalReports()
+		public IQueryable<PlanIncrementalReport> GetPlanIncrementalReports(ODataQueryOptions<PlanIncrementalReport> queryOptions = null)
 		{
-			return GetConstraintedQuery();
+			var query = GetConstraintedQuery();
+			if (queryOptions != null && queryOptions.Filter != null)
+            {
+                query = RoundingHelper.ModifyQuery(query);
+            }
+			return query;
 		}
 
 		private IEnumerable<Column> GetExportSettings()

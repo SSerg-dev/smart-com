@@ -1,43 +1,28 @@
-﻿using AutoMapper;
-using Core.Data;
-using Core.Security;
-using Core.Security.Models;
-using Frontend.Core.Controllers.Base;
-using Frontend.Core.Extensions;
-using Frontend.Core.Extensions.Export;
-using Looper.Core;
-using Looper.Parameters;
-using Module.Frontend.TPM.Model;
-using Module.Persist.TPM.Model.Import;
-using Module.Persist.TPM.Model.TPM;
-using Newtonsoft.Json;
-using Persist;
-using Persist.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
+using System.Data.Entity;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.OData;
 using System.Web.Http.OData.Query;
-using Thinktecture.IdentityModel.Authorization.WebApi;
-using Core.MarsCalendar;
-using Utility;
-using Module.Persist.TPM.Utils;
-using Module.Persist.TPM.Model.DTO;
-using Core.Settings;
-using Module.Persist.TPM.PromoStateControl;
-using System.Web.Http.Results;
-using System.IO;
-using Persist.ScriptGenerator.Filter;
-using System.Net.Http.Headers;
-using Module.Persist.TPM.CalculatePromoParametersModule;
+
+using Core.Security;
+using Core.Security.Models;
+
+using Frontend.Core.Controllers.Base;
+using Frontend.Core.Extensions.Export;
+
 using Module.Frontend.TPM.Util;
-using System.Data.SqlClient;
-using System.Data.Entity;
+using Module.Persist.TPM.Model.DTO;
+using Module.Persist.TPM.Model.TPM;
+using Module.Persist.TPM.Utils;
+
+using Persist.Model;
+
+using Thinktecture.IdentityModel.Authorization.WebApi;
+
+using Utility;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -187,15 +172,20 @@ namespace Module.Frontend.TPM.Controllers
         [EnableQuery(MaxNodeCount = int.MaxValue, MaxExpansionDepth = 3)]
         public SingleResult<PromoROIReport> GetPromoROIReport([FromODataUri] System.Guid key)
         {
-            return SingleResult.Create(GetConstraintedQuery());
+            return SingleResult.Create(GetPromoROIReports());
         }
 
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
-        public IQueryable<PromoROIReport> GetPromoROIReports()
+        public IQueryable<PromoROIReport> GetPromoROIReports(ODataQueryOptions<PromoROIReport> queryOptions = null)
         {
-            return GetConstraintedQuery();
+            var query = GetConstraintedQuery();
+            if (queryOptions != null && queryOptions.Filter != null)
+            {
+                query = RoundingHelper.ModifyQuery(query);
+            }
+            return query;
         }
 
         [ClaimsAuthorize]
