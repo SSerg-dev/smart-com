@@ -518,6 +518,9 @@
         var status = rec.get('PromoStatusSystemName').toLowerCase();
         var promoStore = me.getPromoStore();
         var isDeletable = status == 'draft' || status == 'draftpublished';
+        if (App.UserInfo.getCurrentRole()['SystemName'] == 'SupportAdministrator') {
+            isDeletable = true;
+        }
         var postAccess = me.getAllowedActionsForCurrentRoleAndResource('Promoes').some(function (action) { return action === 'Post' });
         if (!panel.ctx) {
             panel.ctx = new Ext.menu.Menu({
