@@ -12,6 +12,7 @@ using Module.Persist.TPM.Model.TPM;
 using Core.Extensions;
 using Looper.Parameters;
 using Module.Frontend.TPM.Controllers;
+using Core.History;
 
 namespace Module.Host.TPM.Actions
 {
@@ -26,13 +27,24 @@ namespace Module.Host.TPM.Actions
             IList<BrandTech> query = GetQuery(context).ToList();
             IList<BrandTech> toCreate = new List<BrandTech>();
             IList<BrandTech> toUpdate = new List<BrandTech>();
+            var toHisCreate = new List<Tuple<IEntity<Guid>, IEntity<Guid>>>();
 
             foreach (BrandTech newRecord in sourceRecords)
             {
                 BrandTech oldRecord = query.FirstOrDefault(x => x.BrandId == newRecord.BrandId && x.TechnologyId == newRecord.TechnologyId && !x.Disabled);
                 if (oldRecord == null)
                 {
+                    newRecord.Id = Guid.NewGuid();
                     toCreate.Add(newRecord);
+
+                    // Так как BrandTech_code вычисляемое поле, для истории нужно заполнить его вручную 
+                    if (!String.IsNullOrEmpty(newRecord.Brand.Brand_code) && 
+                        !String.IsNullOrEmpty(newRecord.Brand.Segmen_code) && 
+                        !String.IsNullOrEmpty(newRecord.Technology.Tech_code))
+                    {
+                        newRecord.BrandTech_code = String.Format("{0}-{1}-{2}", newRecord.Brand.Brand_code, newRecord.Brand.Segmen_code, newRecord.Technology.Tech_code);
+                    }
+                    toHisCreate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(null, newRecord));
                 }
                 else
                 {
@@ -46,7 +58,7 @@ namespace Module.Host.TPM.Actions
             foreach (IEnumerable<BrandTech> items in toCreate.Partition(10000))
             {
                 String formatStr = "INSERT INTO [BrandTech] ([Id], [Disabled], [DeletedDate], [BrandId], [TechnologyId]) VALUES ('{0}', 0, NULL, '{1}', '{2}')";
-                string insertScript = String.Join("\n", items.Select(y => String.Format(formatStr, Guid.NewGuid(), y.BrandId, y.TechnologyId)).ToList());
+                string insertScript = String.Join("\n", items.Select(y => String.Format(formatStr, y.Id, y.BrandId, y.TechnologyId)).ToList());
                 context.Database.ExecuteSqlCommand(insertScript);
             }
 
@@ -57,6 +69,9 @@ namespace Module.Host.TPM.Actions
                 string insertScript = generator.BuildUpdateScript(items);
                 context.Database.ExecuteSqlCommand(insertScript);
             }
+
+            //Добавление в историю
+            context.HistoryWriter.Write(toHisCreate, context.AuthManager.GetCurrentUser(), context.AuthManager.GetCurrentRole(), OperationType.Created);
 
             ClientTreeBrandTechesController.DisableNotActualClientTreeBrandTech(context);
             return sourceRecords.Count();
