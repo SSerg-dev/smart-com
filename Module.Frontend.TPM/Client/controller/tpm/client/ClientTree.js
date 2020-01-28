@@ -13,7 +13,7 @@
                 'clienttree basetreegrid': {
                     beforeload: this.onTreeBeforeLoad,
                     load: this.onTreeLoad,
-                    itemclick: this.onTreeNodeClick,
+                    select: this.onTreeNodeSelect,
                     beforeitemcollapse: this.beforeTreeNodeCollapse,
                     itemexpand: this.onTreeNodeExpandCollapse,
                     itemcollapse: this.onTreeNodeExpandCollapse,
@@ -189,10 +189,10 @@
         }
     },
 
-    onTreeNodeClick: function (cell, record, item, index, e, eOpts) {
-        var clientTree = cell.up('clienttree');
+    onTreeNodeSelect: function (cell, record, item, index, e, eOpts) {
+        var clientTree = cell.view.panel.up('clienttree');
         var form = clientTree.down('editorform');
-        var grid = cell.up(),
+        var grid = cell.view.panel,
             addButton = clientTree.down('#addNode'),
             deleteButton = clientTree.down('#deleteNode'),
             updateButton = clientTree.down('#updateNode'),

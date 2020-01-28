@@ -16,7 +16,7 @@
                 'producttree basetreegrid': {
                     beforeload: this.onTreeBeforeLoad,
                     load: this.onTreeLoad,
-                    itemclick: this.onTreeNodeClick,
+                    select: this.onTreeNodeSelect,
                     beforeitemcollapse: this.beforeTreeNodeCollapse,
                     afterrender: this.onBaseTreeGridAfterRender,
                     resize: this.onBaseTreeGridResize,
@@ -201,10 +201,10 @@
         }
     },
 
-    onTreeNodeClick: function (cell, record, item, index, e, eOpts) {
-        var productTree = cell.up('producttree');
+    onTreeNodeSelect: function (cell, record, item, index, e, eOpts) {
+        var productTree = cell.view.panel.up('producttree');
         var form = productTree.down('editorform');
-        var grid = cell.up(),
+        var grid = cell.view.panel,
             addButton = productTree.down('#addNode'),
             updateButton = productTree.down('#updateNode'),
             deleteButton = productTree.down('#deleteNode'),
