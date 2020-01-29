@@ -2245,11 +2245,11 @@
 
         record.data.MarsMechanicId = marsMechanicId ? marsMechanicId : null;
         record.data.MarsMechanicTypeId = marsMechanicTypeId ? marsMechanicTypeId : null;
-        record.data.MarsMechanicDiscount = marsMechanicDiscount ? marsMechanicDiscount : null;
+        record.data.MarsMechanicDiscount = marsMechanicDiscount != null ? marsMechanicDiscount : null;
 
         record.data.PlanInstoreMechanicId = instoreMechanicId ? instoreMechanicId : null;
         record.data.PlanInstoreMechanicTypeId = instoreMechanicTypeId ? instoreMechanicTypeId : null;
-        record.data.PlanInstoreMechanicDiscount = instoreMechanicDiscount ? instoreMechanicDiscount : null;
+        record.data.PlanInstoreMechanicDiscount = instoreMechanicDiscount != null ? instoreMechanicDiscount : null;
 
         // promoperiod
         record.data.StartDate = promoperiod.down('datefield[name=DurationStartDate]').getValue();
@@ -2834,7 +2834,7 @@
                 Name: record.data.MarsMechanicTypeName
             }));
             marsMechanicDiscount.setValue(record.data.MarsMechanicDiscount);
-        } else if (record.data.MarsMechanicDiscount) {
+        } else if (record.data.MarsMechanicDiscount != null) {
             marsMechanicDiscount.setValue(record.data.MarsMechanicDiscount);
             marsMechanicTypeId.clearInvalid();
         }
@@ -2859,7 +2859,7 @@
                 Name: record.data.PlanInstoreMechanicTypeName
             }));
             instoreMechanicDiscount.setValue(record.data.PlanInstoreMechanicDiscount);
-        } else if (record.data.PlanInstoreMechanicDiscount) {
+        } else if (record.data.PlanInstoreMechanicDiscount != null) {
             instoreMechanicDiscount.setValue(record.data.PlanInstoreMechanicDiscount);
         }
 
@@ -3558,13 +3558,9 @@
             var mechanicFields = promoController.getMechanicFields(promoMechanic),
                 promoMechanicButton = Ext.ComponentQuery.query('button[itemId=btn_promo_step3]')[0];
 
-            var mechanicListForUnlockDiscountField = promoController.getMechanicListForUnlockDiscountField();
-
             if (oldValue) {
-                //if (mechanicListForUnlockDiscountField.some(function (element) { return element !== mechanicFields.marsMechanicFields.marsMechanicId.rawValue; })) {
                 mechanicFields.marsMechanicFields.marsMechanicTypeId.reset();
                 mechanicFields.marsMechanicFields.marsMechanicDiscount.reset();
-                //}
             }
 
             promoController.mechanicTypeChange(
@@ -3575,6 +3571,12 @@
             );
 
             promoMechanicButton.setText(promoController.getFullTextForMechanicButton(promoController));
+
+            if (promoController.needUnblockZeroDiscount(promoMechanic, field)) {
+                mechanicFields.marsMechanicFields.marsMechanicDiscount.setMinValue(0);
+            } else {
+                mechanicFields.marsMechanicFields.marsMechanicDiscount.setMinValue(1);
+            }
         }
     },
 
@@ -3637,13 +3639,9 @@
             var mechanicFields = promoController.getMechanicFields(promoMechanic),
                 promoMechanicButton = Ext.ComponentQuery.query('button[itemId=btn_promo_step3]')[0];
 
-            var mechanicListForUnlockDiscountField = promoController.getMechanicListForUnlockDiscountField();
-
             if (oldValue) {
-                //if (mechanicListForUnlockDiscountField.some(function (element) { return element !== mechanicFields.instoreMechanicFields.instoreMechanicId.rawValue; })) {
                 mechanicFields.instoreMechanicFields.instoreMechanicTypeId.reset();
                 mechanicFields.instoreMechanicFields.instoreMechanicDiscount.reset();
-                //}
                 promoController.setCompletedMechanicStep(false);
             } else {
                 promoController.setNotCompletedMechanicStep(false);
@@ -3657,6 +3655,12 @@
             );
 
             promoMechanicButton.setText(promoController.getFullTextForMechanicButton(promoController));
+
+            if (promoController.needUnblockZeroDiscount(promoMechanic, field)) {
+                mechanicFields.instoreMechanicFields.instoreMechanicDiscount.setMinValue(0);
+            } else {
+                mechanicFields.instoreMechanicFields.instoreMechanicDiscount.setMinValue(1);
+            }
         }
     },
 
@@ -3718,14 +3722,8 @@
             var mechanicListForUnlockDiscountField = promoController.getMechanicListForUnlockDiscountField();
 
             if (oldValue) {
-                //if (mechanicListForUnlockDiscountField.some(function (element) {
-                //    return element !== mechanicFields.actualInstoreMechanicFields.actualInstoreMechanicId.rawValue;
-                //    //тут ресетится только одно поле в зависимости от механики
-                //})) {
                 mechanicFields.actualInstoreMechanicFields.actualInstoreMechanicTypeId.reset();
-                //} else {
                 mechanicFields.actualInstoreMechanicFields.actualInStoreDiscount.reset();
-                //}
             }
 
             promoController.mechanicTypeChange(
@@ -3734,6 +3732,12 @@
                 mechanicFields.actualInstoreMechanicFields.actualInStoreDiscount,
                 promoController.getMechanicListForUnlockDiscountField()
             );
+
+            if (promoController.needUnblockZeroDiscount(promoMechanic, field)) {
+                mechanicFields.actualInstoreMechanicFields.actualInStoreDiscount.setMinValue(0);
+            } else {
+                mechanicFields.actualInstoreMechanicFields.actualInStoreDiscount.setMinValue(1);
+            }
         }
     },
 
@@ -3894,6 +3898,23 @@
         fields.forEach(function (field) {
             field.setDisabled(true);
         });
+    },
+
+    needUnblockZeroDiscount: function (promoMechanic, mechanicIdField) {
+        var promoController = App.app.getController('tpm.promo.Promo');
+        var mechanicIdRawValuesNamesForUnblockZeroDiscount = promoController.getMechanicIdRawValuesNamesForUnblockZeroDiscount();
+        var window = promoMechanic.up('promoeditorcustom');
+        var record = promoController.getRecord(window);
+
+        if ((window.isInOutPromo || (record && record.data.InOut)) && mechanicIdRawValuesNamesForUnblockZeroDiscount.some(function (x) { return x == mechanicIdField.getRawValue() })) {
+            return true;
+        }
+
+        return false;
+    },
+
+    getMechanicIdRawValuesNamesForUnblockZeroDiscount: function () {
+        return ['Other'];
     },
 
     // =============== MECHANIC END =============== 
