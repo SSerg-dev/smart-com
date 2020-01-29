@@ -709,6 +709,7 @@ namespace Module.Host.TPM.Actions {
             var importTIes = sourceRecords.Cast<ImportTradeInvestment>().Where(x => x.StartDate.HasValue && x.EndDate.HasValue);
             var allTIForCurrentYear = context.Set<TradeInvestment>().Where(x => !x.Disabled && x.Year == this.Year);
             var clientTrees = context.Set<ClientTree>().ToList();
+            var brandTeches = context.Set<BrandTech>().ToList();
 
             foreach (var promo in promoes)
             {
@@ -719,7 +720,14 @@ namespace Module.Host.TPM.Actions {
                     var clientNode = clientTrees.Where(x => x.ObjectId == promo.ClientTreeObjectId && !x.EndDate.HasValue).FirstOrDefault();
                     while (!existTradeInvestment && clientNode != null && clientNode.Type != "root")
                     {
-                        existTradeInvestment = importTIes.Any(x => x.ClientTreeId == clientNode.Id && (x.BrandTechId == null || x.BrandTechId == promo.BrandTechId) && x.StartDate <= promo.StartDate && x.EndDate >= promo.StartDate);
+                        // Поле brandTechName в после не заполнено, поэтому находим брендтех по id и берем имя оттуда
+                        var promoBrandTechName = brandTeches.Where(bt => bt.Id == promo.BrandTechId).Select(x => x.Name).FirstOrDefault();
+                        var validBrandTeches = brandTeches.Where(bt => importTIes.Any(c => c.BrandTechName == bt.Name)).GroupBy(x => x.Name);
+
+                        existTradeInvestment = importTIes.Any(x => x.ClientTreeId == clientNode.Id 
+                                && (x.BrandTechId == null || validBrandTeches.Where(bt => bt.Key == promoBrandTechName).Any()) 
+                                && x.StartDate <= promo.StartDate 
+                                && x.EndDate >= promo.StartDate);
                         clientNode = clientTrees.Where(x => x.ObjectId == clientNode.parentId && !x.EndDate.HasValue).FirstOrDefault();
                     }
 

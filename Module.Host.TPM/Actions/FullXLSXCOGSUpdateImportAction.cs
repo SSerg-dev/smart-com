@@ -595,6 +595,7 @@ namespace Module.Host.TPM.Actions {
             var importCOGS = sourceRecords.Cast<ImportCOGS>().Where(x => x.StartDate.HasValue && x.EndDate.HasValue);
             var allCOGSForCurrentYear = context.Set<COGS>().Where(x => !x.Disabled && x.Year == this.Year);
             var clientTrees = context.Set<ClientTree>().ToList();
+            var brandTeches = context.Set<BrandTech>().ToList();
 
             foreach (var promo in promoes)
             {
@@ -605,7 +606,14 @@ namespace Module.Host.TPM.Actions {
                     var clientNode = clientTrees.Where(x => x.ObjectId == promo.ClientTreeObjectId && !x.EndDate.HasValue).FirstOrDefault();
                     while (!existCOGS && clientNode != null && clientNode.Type != "root")
                     {
-                        existCOGS = importCOGS.Any(x => x.ClientTreeId == clientNode.Id && (x.BrandTechId == null || x.BrandTechId == promo.BrandTechId) && x.StartDate <= promo.DispatchesStart && x.EndDate >= promo.DispatchesStart);
+                        // Поле brandTechName в после не заполнено, поэтому находим брендтех по id и берем имя оттуда
+                        var promoBrandTechName = brandTeches.Where(bt => bt.Id == promo.BrandTechId).Select(x => x.Name).FirstOrDefault();
+                        var validBrandTeches = brandTeches.Where(bt => importCOGS.Any(c => c.BrandTechName == bt.Name)).GroupBy(x => x.Name);
+
+                        existCOGS = importCOGS.Any(x => x.ClientTreeId == clientNode.Id 
+                                && (x.BrandTechId == null || validBrandTeches.Where(bt => bt.Key == promoBrandTechName).Any()) 
+                                && x.StartDate <= promo.DispatchesStart 
+                                && x.EndDate >= promo.DispatchesStart);             
                         clientNode = clientTrees.Where(x => x.ObjectId == clientNode.parentId && !x.EndDate.HasValue).FirstOrDefault();
                     }
 
