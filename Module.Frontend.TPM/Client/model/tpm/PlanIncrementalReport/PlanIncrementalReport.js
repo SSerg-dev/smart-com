@@ -34,7 +34,7 @@
 });
 
 function getDefaultFilterStatus() {
-	var statuses = ['Approved', 'Planned'];
+	var statuses = ['Approved', 'Planned', 'Started'];
 	var value = Ext.create('App.extfilter.core.ValueList', statuses);
 
 	var result = {
