@@ -514,7 +514,8 @@ namespace Module.Frontend.TPM.Controllers {
                 }
 
 				// Проверка изменения списка выбранных продуктов
-				if (model.InOutProductIds != promoCopy.InOutProductIds && prevStatusName.ToLower() != "draftpublished")
+				if (model.InOutProductIds != null && promoCopy.InOutProductIds != null &&
+                    model.InOutProductIds != promoCopy.InOutProductIds && prevStatusName.ToLower() != "draftpublished")
 				{
 					var oldIds = promoCopy.InOutProductIds.ToLower().Split(';').ToList();
 					var newIds = model.InOutProductIds.ToLower().Split(';').ToList();
