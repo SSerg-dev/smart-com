@@ -8,6 +8,9 @@ using System.Linq;
 using System.Collections.Generic;
 using Module.Persist.TPM.Utils;
 using Persist.Model.Settings;
+using Persist.Model;
+using Module.Persist.TPM.Model.DTO;
+using Utility;
 
 namespace Module.Host.TPM.Actions.Notifications {
     /// <summary>
@@ -23,7 +26,7 @@ namespace Module.Host.TPM.Actions.Notifications {
                         string template = File.ReadAllText(templateFileName);
                         if (!String.IsNullOrEmpty(template)) {
                             var incidentsForNotify = context.Set<PromoUpliftFailIncident>()
-								.Where(x => x.ProcessDate == null && x.Promo.PromoStatus.SystemName != "Draft" && !x.Promo.Disabled).GroupBy(x => x.Promo.Number);
+								.Where(x => x.ProcessDate == null && x.Promo.PromoStatus.SystemName != "Draft" && !x.Promo.Disabled);
 
                             if (incidentsForNotify.Any()) 
 							{
@@ -48,39 +51,25 @@ namespace Module.Host.TPM.Actions.Notifications {
                 logger.Trace("Finish");
             }
         }
-        /// <summary>
-        /// Формирование и отправка письма
-        /// </summary>
-        /// <param name="incidentsForNotify"></param>
-        /// <param name="notificationName"></param>
-        /// <param name="template"></param>
-        /// <param name="context"></param>
-        private void CreateNotification(IQueryable<IGrouping<int?, PromoUpliftFailIncident>> incidentsForNotify, string notificationName, string template, DatabaseContext context) {
-            List<string> allRows = new List<string>();
-			IList<string> promoNumbers = new List<string>();
-			foreach (IGrouping<int?, PromoUpliftFailIncident> incidentGroup in incidentsForNotify) {
-				PromoUpliftFailIncident incident = incidentGroup.FirstOrDefault();
-				if (incident != null)
-				{
-					List<string> allRowCells = GetRow(incidentGroup.FirstOrDefault().Promo, propertiesOrder);
-					allRows.Add(String.Format(rowTemplate, string.Join("", allRowCells)));
-					
-					promoNumbers.Add(incidentGroup.Key.ToString());
-				}
-				foreach (var item in incidentGroup)
-				{
-					item.ProcessDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
-				}
-			}
-            string notifyBody = String.Format(template, string.Join("", allRows));
-            SendNotification(notifyBody, notificationName);
-			context.SaveChanges();
+		/// <summary>
+		/// Формирование и отправка письма
+		/// </summary>
+		/// <param name="incidentsForNotify"></param>
+		/// <param name="notificationName"></param>
+		/// <param name="template"></param>
+		/// <param name="context"></param>
+		private void CreateNotification(IQueryable<PromoUpliftFailIncident> incidentsForNotify, string notificationName, string template, DatabaseContext context)
+		{
+			var notifyBody = String.Empty;
+			var allRows = new List<string>();
+			var logPromoNums = new List<string>();
+			var logPromoEmails = new List<string>();
+			var emailArray = new string[] { };
 
-			//Получаем получателей для лога
-			IList<string> userErrors;
 			List<Recipient> recipients = NotificationsHelper.GetRecipientsByNotifyName(notificationName, context);
-			List<Guid> userIds = NotificationsHelper.GetUserIdsByRecipients(notificationName, recipients, context, out userErrors);
 
+			IList<string> userErrors;
+			List<Guid> userIdsWithConstraints = NotificationsHelper.GetUserIdsByRecipients(notificationName, recipients, context, out userErrors).ToList();
 			if (userErrors.Any())
 			{
 				foreach (string error in userErrors)
@@ -88,17 +77,88 @@ namespace Module.Host.TPM.Actions.Notifications {
 					Warnings.Add(error);
 				}
 			}
-			else if (!userIds.Any())
+
+			Guid mailNotificationSettingsId = context.MailNotificationSettings
+						.Where(y => y.Name == notificationName && !y.Disabled)
+						.Select(x => x.Id).FirstOrDefault();
+			string toMail = context.MailNotificationSettings
+						.Where(y => y.Id == mailNotificationSettingsId)
+						.Select(x => x.To).FirstOrDefault();
+			var emailsWithoutConstraints = new List<string>();
+			if (!String.IsNullOrEmpty(toMail))
 			{
-				Warnings.Add(String.Format("There are no appropriate recipinets for notification: {0}.", notificationName));
-				return;
+				emailsWithoutConstraints = new List<string>() { toMail };
 			}
 
-			string[] userEmails = context.Users.Where(x => userIds.Contains(x.Id) && !String.IsNullOrEmpty(x.Email)).Select(x => x.Email).ToArray();
-			Results.Add(String.Format("Notifications about fail of uplift culculation for promoes {0} were sent to {1}.", String.Join(", ", promoNumbers.Distinct().ToArray()), String.Join(", ", userEmails)), null);
+			foreach (Guid userId in userIdsWithConstraints)
+			{
+				string userEmail = context.Users.Where(x => x.Id == userId).Select(y => y.Email).FirstOrDefault();
+				if (userEmail == null || emailsWithoutConstraints.Contains(userEmail)) { continue; }
+				List<Constraint> constraints = NotificationsHelper.GetConstraitnsByUserId(userId, context);
+				IEnumerable<PromoUpliftFailIncident> constraintNotifies = incidentsForNotify;
+
+				// Применение ограничений
+				if (constraints.Any())
+				{
+					IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
+					IQueryable<ClientTreeHierarchyView> hierarchy = context.Set<ClientTreeHierarchyView>().AsNoTracking();
+					IEnumerable<string> clientFilter = FilterHelper.GetFilter(filters, ModuleFilterName.Client);
+
+					hierarchy = hierarchy.Where(h => clientFilter.Contains(h.Id.ToString()) || clientFilter.Any(c => h.Hierarchy.Contains(c)));
+					constraintNotifies = incidentsForNotify.Where(x =>
+						hierarchy.Any(h => h.Id == x.Promo.ClientTreeId || h.Hierarchy.Contains(x.Promo.ClientTreeId.Value.ToString())));
+				}
+
+				if (constraintNotifies.Any())
+				{
+					logPromoNums = new List<string>();
+					allRows = new List<string>();
+					foreach (PromoUpliftFailIncident incident in constraintNotifies)
+					{
+						List<string> allRowCells = GetRow(incident.Promo, propertiesOrder);
+						allRows.Add(String.Format(rowTemplate, string.Join("", allRowCells)));
+						logPromoNums.Add(incident.Promo.Number.ToString());
+					}
+					notifyBody = String.Format(template, string.Join("", allRows));
+
+					emailArray = new[] { userEmail };
+					if (!String.IsNullOrEmpty(userEmail))
+					{
+						SendNotificationByEmails(notifyBody, notificationName, emailArray);
+						Results.Add(String.Format("Notifications about fail of uplift culculation for promoes {0} were sent to {1}.", String.Join(", ", logPromoNums.Distinct()), String.Join(", ", emailArray)), null);
+					}
+					else
+					{
+						string userLogin = context.Users.Where(x => x.Id == userId).Select(x => x.Name).FirstOrDefault();
+						Warnings.Add(String.Format("Email not found for user: {0}.", userLogin));
+					}
+				}
+			}
+
+			foreach (var email in emailsWithoutConstraints)
+			{
+				logPromoNums = new List<string>();
+				allRows = new List<string>();
+				foreach (PromoUpliftFailIncident incident in incidentsForNotify)
+				{
+					List<string> allRowCells = GetRow(incident.Promo, propertiesOrder);
+					allRows.Add(String.Format(rowTemplate, string.Join("", allRowCells)));
+					logPromoNums.Add(incident.Promo.Number.ToString());
+				}
+				notifyBody = String.Format(template, string.Join("", allRows));
+
+				emailArray = new[] { email };
+				SendNotificationByEmails(notifyBody, notificationName, emailArray);
+				Results.Add(String.Format("Notifications about fail of uplift culculation for promoes {0} were sent to {1}.", String.Join(", ", logPromoNums.Distinct()), String.Join(", ", emailArray)), null);
+			}
+			foreach (var incident in incidentsForNotify)
+			{
+				incident.ProcessDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+			}
+			context.SaveChanges();
 		}
 
         private readonly string[] propertiesOrder = new string[] {
-            "Number", "Name", "BrandTech.Name", "PromoStatus.Name", "StartDate", "EndDate" };
+			"ClientHierarchy", "Number", "Name", "BrandTech.Name", "PromoStatus.Name", "StartDate", "EndDate" };
     }
 }
