@@ -55,7 +55,14 @@
                     renderer: function (value) {
                         return value ? l10n.ns('core', 'booleanValues').value('true') : l10n.ns('core', 'booleanValues').value('false');
                     }
-                }
+                },
+                {
+                    text: l10n.ns('tpm', 'PlanIncrementalReport').value('IsGrowthAcceleration'),
+                    dataIndex: 'IsGrowthAcceleration',
+                    renderer: function (value) {
+                        return value ? l10n.ns('core', 'booleanValues').value('true') : l10n.ns('core', 'booleanValues').value('false');
+                    }
+                },
             ]
         }
     }, {
@@ -79,11 +86,8 @@
 				{ xtype: 'numberfield', name: 'PlanProductBaselineCaseQty', fieldLabel: l10n.ns('tpm', 'PlanIncrementalReport').value('PlanProductBaselineCaseQty') },
 				{ xtype: 'numberfield', name: 'PlanProductIncrementalLSV', fieldLabel: l10n.ns('tpm', 'PlanIncrementalReport').value('PlanProductIncrementalLSV') },
 				{ xtype: 'numberfield', name: 'PlanProductBaselineLSV', fieldLabel: l10n.ns('tpm', 'PlanIncrementalReport').value('PlanProductBaselineLSV') },
-                {
-                    xtype: 'textfield',
-                    name: 'InOut',
-                    fieldLabel: l10n.ns('tpm', 'PlanIncrementalReport').value('InOut'),
-                }
+                { xtype: 'textfield', name: 'InOut', fieldLabel: l10n.ns('tpm', 'PlanIncrementalReport').value('InOut') },
+                { xtype: 'numberfield', name: 'IsGrowthAcceleration', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('IsGrowthAcceleration') },
         ]
     }]
 });

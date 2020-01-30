@@ -1388,7 +1388,9 @@
 		'PlanProductBaselineCaseQty': 'Plan Product Baseline Case Qty',
 		'PlanProductIncrementalLSV': 'Plan Product Incremental LSV',
 		'PlanProductBaselineLSV': 'Plan Product Baseline LSV',
-		'InOut': 'In-Out'
+        'InOut': 'In-Out',
+        'GrowthAcceleration': 'Growth acceleration',
+        'IsGrowthAcceleration': 'Growth acceleration',
     },
 
     'PromoBudgetDetails': {

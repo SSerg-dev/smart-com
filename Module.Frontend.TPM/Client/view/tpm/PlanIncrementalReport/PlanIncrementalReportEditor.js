@@ -37,7 +37,17 @@
                         this.setValue(value.rawValue === 'true' ? l10n.ns('core', 'booleanValues').value('true') : l10n.ns('core', 'booleanValues').value('false'));
                     }
                 }
-            }
+            },
+            {
+                xtype: 'textfield',
+                name: 'IsGrowthAcceleration',
+                fieldLabel: l10n.ns('tpm', 'PlanIncrementalReport').value('IsGrowthAcceleration'),
+                listeners: {
+                    afterrender: function (value) {
+                        this.setValue(value.rawValue === 'true' ? l10n.ns('core', 'booleanValues').value('true') : l10n.ns('core', 'booleanValues').value('false'));
+                    }
+                }
+            },
         ]
     }
 });

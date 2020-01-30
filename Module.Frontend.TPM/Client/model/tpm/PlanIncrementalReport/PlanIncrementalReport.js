@@ -21,6 +21,7 @@
 		{ name: 'PlanProductIncrementalLSV', type: 'number', hidden: false, isDefault: true },
 		{ name: 'PlanProductBaselineLSV', type: 'number', hidden: false, isDefault: true },
         { name: 'InOut', type: 'bool', hidden: false, isDefault: true },
+        { name: 'IsGrowthAcceleration', type: 'bool', hidden: false, isDefault: true },
     ],
     proxy: {
         type: 'breeze',

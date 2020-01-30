@@ -99,6 +99,7 @@ namespace Module.Frontend.TPM.Controllers
 				new Column() { Order = 15, Field = "PlanProductIncrementalLSV", Header = "Plan Product Incremental LSV", Quoting = false, Format = "0.00" },
 				new Column() { Order = 16, Field = "PlanProductBaselineLSV", Header = "Plan Product Baseline LSV", Quoting = false, Format = "0.00" },
 				new Column() { Order = 17, Field = "InOut", Header = "InOut", Quoting = false },
+				new Column() { Order = 18, Field = "IsGrowthAcceleration", Header = "Growth Acceleration", Quoting = false },
 			};
 			return columns;
 		}

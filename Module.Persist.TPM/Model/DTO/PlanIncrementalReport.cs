@@ -21,8 +21,9 @@ namespace Module.Persist.TPM.Model.DTO {
 		public double? PlanProductIncrementalLSV { get; set; }
 		public double? PlanProductBaselineLSV { get; set; }
 		public bool? InOut { get; set; }
+        public bool? IsGrowthAcceleration { get; set; }
 
-		public object Clone()
+        public object Clone()
 		{
 			return this.MemberwiseClone();
 		}
