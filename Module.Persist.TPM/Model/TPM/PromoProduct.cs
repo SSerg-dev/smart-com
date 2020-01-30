@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Module.Persist.TPM.Model.TPM
 {
-    public class PromoProduct : IEntity<Guid>, IDeactivatable
+    public class PromoProduct : IEntity<Guid>, IDeactivatable, ICloneable
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public System.Guid Id { get; set; }
@@ -246,61 +246,7 @@ namespace Module.Persist.TPM.Model.TPM
 
         public object Clone()
         {
-            return new PromoProduct()
-            {
-                Id = this.Id,
-                ActualProductBaselineLSV = this.ActualProductBaselineLSV,
-                ActualProductCaseQty = this.ActualProductCaseQty,
-                ActualProductIncrementalLSV = this.ActualProductIncrementalLSV,
-                ActualProductIncrementalPCLSV = this.ActualProductIncrementalPCLSV,
-                ActualProductIncrementalPCQty = this.ActualProductIncrementalPCQty,
-                ActualProductLSV = this.ActualProductLSV,
-                ActualProductLSVByCompensation = this.ActualProductLSVByCompensation,
-                ActualProductPCLSV = this.ActualProductPCLSV,
-                ActualProductPCQty = this.ActualProductPCQty,
-                ActualProductPostPromoEffectLSV = this.ActualProductPostPromoEffectLSV,
-                ActualProductPostPromoEffectLSVW1 = this.ActualProductPostPromoEffectLSVW1,
-                ActualProductPostPromoEffectLSVW2 = this.ActualProductPostPromoEffectLSVW2,
-                ActualProductPostPromoEffectQty = this.ActualProductPostPromoEffectQty,
-                ActualProductPostPromoEffectQtyW1 = this.ActualProductPostPromoEffectQtyW1,
-                ActualProductPostPromoEffectQtyW2 = this.ActualProductPostPromoEffectQtyW2,
-                ActualProductSellInDiscount = this.ActualProductSellInDiscount,
-                ActualProductSellInPrice = this.ActualProductSellInPrice,
-                ActualProductShelfDiscount = this.ActualProductShelfDiscount,
-                ActualProductShelfPrice = this.ActualProductShelfPrice,
-                ActualProductUOM = this.ActualProductUOM,
-                ActualProductUpliftPercent = this.ActualProductUpliftPercent,
-                ActualPromoShare = this.ActualPromoShare,
-                AverageMarker = this.AverageMarker,
-                DeletedDate = this.DeletedDate,
-                Disabled = this.Disabled,
-                EAN_Case = this.EAN_Case,
-                EAN_PC = this.EAN_PC,
-                PlanProductBaselineCaseQty = this.PlanProductBaselineCaseQty,
-                PlanProductBaselineLSV = this.PlanProductBaselineLSV,
-                PlanProductCaseLSV = this.PlanProductCaseLSV,
-                PlanProductCaseQty = this.PlanProductCaseQty,
-                PlanProductIncrementalCaseQty = this.PlanProductIncrementalCaseQty,
-                PlanProductIncrementalLSV = this.PlanProductIncrementalLSV,
-                PlanProductLSV = this.PlanProductLSV,
-                PlanProductPCLSV = this.PlanProductPCLSV,
-                PlanProductPCPrice = this.PlanProductPCPrice,
-                PlanProductPCQty = this.PlanProductPCQty,
-                PlanProductPostPromoEffectLSV = this.PlanProductPostPromoEffectLSV,
-                PlanProductPostPromoEffectLSVW1 = this.PlanProductPostPromoEffectLSVW1,
-                PlanProductPostPromoEffectLSVW2 = this.PlanProductPostPromoEffectLSVW2,
-                PlanProductPostPromoEffectQty = this.PlanProductPostPromoEffectQty,
-                PlanProductPostPromoEffectQtyW1 = this.PlanProductPostPromoEffectQtyW1,
-                PlanProductPostPromoEffectQtyW2 = this.PlanProductPostPromoEffectQtyW2,
-                PlanProductUpliftPercent = this.PlanProductUpliftPercent,
-                Product = this.Product,
-                ProductBaselinePrice = this.ProductBaselinePrice,
-                ProductEN = this.ProductEN,
-                ProductId = this.ProductId,
-                Promo = this.Promo,
-                PromoId = this.PromoId,
-                ZREP = this.ZREP
-            };
+            return this.MemberwiseClone();
         }
     }
 }
