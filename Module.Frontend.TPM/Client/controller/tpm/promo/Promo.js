@@ -1428,10 +1428,15 @@
 
     },
     getPromoType: function () {
-        return this.promotype;
+        var promoeditorcustom = Ext.ComponentQuery.query('promoeditorcustom')[0];
+        if (promoeditorcustom && promoeditorcustom.promotype) {
+            return promoeditorcustom.promotype;
+        } else {
+            return false;
+        }
     },
-    setPromoType: function (promotype) {
-        this.promotype = promotype;
+    setPromoType: function (promotype, promoeditorcustom) {
+        promoeditorcustom.promotype = promotype;
     },
     onPromoTypeAfterRender: function (window) {
         var closeButton = window.down('#close');
@@ -2431,7 +2436,7 @@
         promoeditorcustom.promotypeId = record.data.PromoTypesId;
         promoeditorcustom.promotypeName = record.data.PromoTypesName;
         promoeditorcustom.promotypeGlyph = record.data.PromoTypesGlyph;
-        this.setPromoType(record.data.PromoTypesName);
+        this.setPromoType(record.data.PromoTypesName, promoeditorcustom);
         //Промо в статусе Cancelled нельзя менять
         if (record.data.PromoStatusSystemName == 'Cancelled') {
             readOnly = true;
