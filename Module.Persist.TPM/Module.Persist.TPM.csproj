@@ -1618,6 +1618,10 @@
     <Compile Include="Migrations\202001130905514_Add_CreatorLogin_To_Promo.Designer.cs">
       <DependentUpon>202001130905514_Add_CreatorLogin_To_Promo.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202001301617202_Add_GA_to_IncrementalReport.cs" />
+    <Compile Include="Migrations\202001301617202_Add_GA_to_IncrementalReport.Designer.cs">
+      <DependentUpon>202001301617202_Add_GA_to_IncrementalReport.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\PromoProductsView.cs" />
     <Compile Include="Model\DTO\ClientTreeSharesView.cs" />
@@ -3042,6 +3046,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202001130905514_Add_CreatorLogin_To_Promo.resx">
       <DependentUpon>202001130905514_Add_CreatorLogin_To_Promo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001301617202_Add_GA_to_IncrementalReport.resx">
+      <DependentUpon>202001301617202_Add_GA_to_IncrementalReport.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
