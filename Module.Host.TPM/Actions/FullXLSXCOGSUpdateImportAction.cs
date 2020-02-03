@@ -608,10 +608,10 @@ namespace Module.Host.TPM.Actions {
                     {
                         // Поле brandTechName в после не заполнено, поэтому находим брендтех по id и берем имя оттуда
                         var promoBrandTechName = brandTeches.Where(bt => bt.Id == promo.BrandTechId).Select(x => x.Name).FirstOrDefault();
-                        var validBrandTeches = brandTeches.Where(bt => importCOGS.Any(c => c.BrandTechName == bt.Name)).GroupBy(x => x.Name);
+                        var validBrandTeches = context.Set<BrandTech>().Where(x => x.Name == promoBrandTechName);
 
                         existCOGS = importCOGS.Any(x => x.ClientTreeId == clientNode.Id 
-                                && (x.BrandTechId == null || validBrandTeches.Where(bt => bt.Key == promoBrandTechName).Any()) 
+                                && (x.BrandTechId == null || validBrandTeches.Where(bt => bt.Id == x.BrandTechId).Any())
                                 && x.StartDate <= promo.DispatchesStart 
                                 && x.EndDate >= promo.DispatchesStart);             
                         clientNode = clientTrees.Where(x => x.ObjectId == clientNode.parentId && !x.EndDate.HasValue).FirstOrDefault();
