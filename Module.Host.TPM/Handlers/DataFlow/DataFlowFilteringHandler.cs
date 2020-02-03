@@ -30,7 +30,6 @@ namespace Module.Host.TPM.Handlers.DataFlow
         {
             var stopWatch = Stopwatch.StartNew();
             var handlerLogger = new FileLogWriter(info.HandlerId.ToString(), new Dictionary<string, string>() { ["Timing"] = "TIMING" });
-            var success = true;
 
             handlerLogger.Write(true, String.Format("The filtering of promoes began at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
 
@@ -309,7 +308,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
 
                 //список Id промо для блокировки на время пересчета
                 List<Guid> promoIdsForBlock = promoIdsForRecalculating.Union(promoIdsForBudgetRecalclating)
-                                                                        .Union(promoIdsForAllRecalculating).Distinct().ToList();
+                                                                      .Union(promoIdsForAllRecalculating).Distinct().ToList();
 
                 HandlerData handlerData = new HandlerData();
                 HandlerDataHelper.SaveIncomingArgument("PromoIdsForRecalculating", promoIdsForRecalculating, handlerData, visible: false, throwIfNotExists: false);
@@ -331,20 +330,10 @@ namespace Module.Host.TPM.Handlers.DataFlow
 
                 handlerLogger.Write(true, String.Format("The selection of promoes ended with errors at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
                 handlerLogger.Write(true, e.ToString(), "Error");
-                success = false;
                 throw;
             }
             finally
             {
-                if (success)
-                {
-                    var changesIncidents = context.Set<ChangesIncident>().Where(x => x.ProcessDate == null);
-                    foreach (var changesIncident in changesIncidents)
-                    {
-                        changesIncident.ProcessDate = DateTimeOffset.Now;
-                    }
-                }
-
                 if (context != null)
                 {
                     context.SaveChanges();
@@ -496,11 +485,6 @@ namespace Module.Host.TPM.Handlers.DataFlow
                             promoesForRecalculation.Add(promo);
                         }
                     }
-                }
-
-                foreach (var productChangeIncident in productChangeIncidents)
-                {
-                    productChangeIncident.RecalculationProcessDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
                 }
             }
 

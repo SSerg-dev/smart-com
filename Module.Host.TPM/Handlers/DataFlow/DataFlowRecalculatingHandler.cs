@@ -37,6 +37,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
                 Stopwatch sw = new Stopwatch();
                 Stopwatch swDataFlow_Part01 = new Stopwatch();
                 Stopwatch swDataFlow_Part02 = new Stopwatch();
+                var success = true;
                 sw.Start();
                 try
                 {
@@ -432,12 +433,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
                 }
                 catch (Exception e)
                 {
-                    var changesIncidents = context.Set<ChangesIncident>().Where(x => x.ProcessDate == null && x.Disabled);
-                    foreach (var changesIncident in changesIncidents)
-                    {
-                        changesIncident.Disabled = false;
-                    }
-
+                    success = false;
                     data.SetValue<bool>("HasErrors", true);
                     logger.Error(e);
                     if (handlerLogger != null)
@@ -455,6 +451,27 @@ namespace Module.Host.TPM.Handlers.DataFlow
                             DateTimeOffset.Now, swDataFlow_Part01.Elapsed.TotalSeconds, swDataFlow_Part02.Elapsed.TotalSeconds, sw.Elapsed.TotalSeconds), "Message");
                     }
                     CalculationTaskManager.UnLockPromoForHandler(info.HandlerId);
+
+                    if (success)
+                    {
+                        var changesIncidents = context.Set<ChangesIncident>().Where(x => x.ProcessDate == null);
+                        foreach (var changesIncident in changesIncidents)
+                        {
+                            changesIncident.ProcessDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                        }
+
+                        var productChangeIncidents = context.Set<ProductChangeIncident>().Where(x => x.RecalculationProcessDate == null);
+                        foreach (var productChangeIncident in productChangeIncidents)
+                        {
+                            productChangeIncident.RecalculationProcessDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                        }
+                    }
+
+                    if (context != null)
+                    {
+                        context.SaveChanges();
+                        ((IDisposable)context).Dispose();
+                    }
                 }
             }
         }
