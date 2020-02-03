@@ -879,91 +879,93 @@
             var result = Ext.JSON.decode(data.httpResponse.data.value);
             var promoeditorcustom = Ext.ComponentQuery.query('promoeditorcustom')[0];
             if (result.success) {
-                var tpl = Ext.create('App.view.tpm.common.approvalStatusStateTpl').formatTpl;
-                var itemsArray = [];
-                var promo = null;
-                var onApprovalState = null;
-                var promoStatusName = 'Draft';
+                if (!promoeditorcustom.isDestroyed) {
+                    var tpl = Ext.create('App.view.tpm.common.approvalStatusStateTpl').formatTpl;
+                    var itemsArray = [];
+                    var promo = null;
+                    var onApprovalState = null;
+                    var promoStatusName = 'Draft';
 
-                var panelWidthRatio = panel.getWidth() / 1160;
-                //Small sizes correction:
-                if (panelWidthRatio * 130 < 120) {
-                    panelWidthRatio = panelWidthRatio * 0.95;
-                } else if (panelWidthRatio * 130 < 110) {
-                    panelWidthRatio = panelWidthRatio * 0.85;
-                } else if (panelWidthRatio * 130 < 100) {
-                    panelWidthRatio = panelWidthRatio * 0.60;
-                }
-                var panelHeightRatio = (panel.getWidth() / 1160) * (100 / 130);
-
-                if (!result.isEmpty) {
-                    if (result.data.length == 0) {
-                        promo = promoeditorcustom.model.data;
-                    } else {
-                        promo = result.data[0].Promo;
+                    var panelWidthRatio = panel.getWidth() / 1160;
+                    //Small sizes correction:
+                    if (panelWidthRatio * 130 < 120) {
+                        panelWidthRatio = panelWidthRatio * 0.95;
+                    } else if (panelWidthRatio * 130 < 110) {
+                        panelWidthRatio = panelWidthRatio * 0.85;
+                    } else if (panelWidthRatio * 130 < 100) {
+                        panelWidthRatio = panelWidthRatio * 0.60;
                     }
-                    promoStatusName = promo.PromoStatus == undefined ? promo.PromoStatusSystemName : promo.PromoStatus.SystemName
+                    var panelHeightRatio = (panel.getWidth() / 1160) * (100 / 130);
 
-                    if (promo.IsCMManagerApproved == true && (promo.IsDemandPlanningApproved == false || promo.IsDemandPlanningApproved == null) && promo.IsDemandFinanceApproved == true)
-                        onApprovalState = 'DemandPlanningNonego';
-                    else if ((promo.IsCMManagerApproved == false || promo.IsCMManagerApproved == null) && (promo.IsDemandPlanningApproved == false || promo.IsDemandPlanningApproved == null) && (promo.IsDemandFinanceApproved == false || promo.IsDemandFinanceApproved == null))
-                        onApprovalState = 'CMManager';
-                    else if (promo.IsCMManagerApproved == true && (promo.IsDemandPlanningApproved == false || promo.IsDemandPlanningApproved == null) && (promo.IsDemandFinanceApproved == false || promo.IsDemandFinanceApproved == null))
-                        onApprovalState = 'DemandPlanning';
-                    else if (promo.IsCMManagerApproved == true && promo.IsDemandPlanningApproved == true && (promo.IsDemandFinanceApproved == false || promo.IsDemandFinanceApproved == null))
-                        onApprovalState = 'DemandFinance';
-                }
+                    if (!result.isEmpty) {
+                        if (result.data.length == 0) {
+                            promo = promoeditorcustom.model.data;
+                        } else {
+                            promo = result.data[0].Promo;
+                        }
+                        promoStatusName = promo.PromoStatus == undefined ? promo.PromoStatusSystemName : promo.PromoStatus.SystemName
 
-                var settings = {
-                    currentWidthRatio: panelWidthRatio,
-                    currentHeightRatio: panelHeightRatio,
-                    currentHeight: panel.body.getHeight(),
-                    status: promoStatusName,
-                    onApprovalState: onApprovalState,
-                    isNonego: result.isNoNegoPassed == undefined ? false : result.isNoNegoPassed,
-                    statusHistory: result.data == undefined ? [] : result.data,
-                    statusColors: result.statusColors
-                }
+                        if (promo.IsCMManagerApproved == true && (promo.IsDemandPlanningApproved == false || promo.IsDemandPlanningApproved == null) && promo.IsDemandFinanceApproved == true)
+                            onApprovalState = 'DemandPlanningNonego';
+                        else if ((promo.IsCMManagerApproved == false || promo.IsCMManagerApproved == null) && (promo.IsDemandPlanningApproved == false || promo.IsDemandPlanningApproved == null) && (promo.IsDemandFinanceApproved == false || promo.IsDemandFinanceApproved == null))
+                            onApprovalState = 'CMManager';
+                        else if (promo.IsCMManagerApproved == true && (promo.IsDemandPlanningApproved == false || promo.IsDemandPlanningApproved == null) && (promo.IsDemandFinanceApproved == false || promo.IsDemandFinanceApproved == null))
+                            onApprovalState = 'DemandPlanning';
+                        else if (promo.IsCMManagerApproved == true && promo.IsDemandPlanningApproved == true && (promo.IsDemandFinanceApproved == false || promo.IsDemandFinanceApproved == null))
+                            onApprovalState = 'DemandFinance';
+                    }
 
-                itemsArray.push({
-                    html: tpl.apply(settings),
-                });
+                    var settings = {
+                        currentWidthRatio: panelWidthRatio,
+                        currentHeightRatio: panelHeightRatio,
+                        currentHeight: panel.body.getHeight(),
+                        status: promoStatusName,
+                        onApprovalState: onApprovalState,
+                        isNonego: result.isNoNegoPassed == undefined ? false : result.isNoNegoPassed,
+                        statusHistory: result.data == undefined ? [] : result.data,
+                        statusColors: result.statusColors
+                    }
 
-                panel.removeAll();
-                panel.add(itemsArray);
-                panel.doLayout();
-
-                var elementsWithTips = Ext.select('div[toolTip*=]');
-
-                elementsWithTips.elements.forEach(function (el) {
-                    var me = el;
-                    me.fieldLabelTip = Ext.create('Ext.tip.ToolTip', {
-                        target: me,
-                        preventLoseFocus: true,
-                        trackMouse: true,
-                        html: me.getAttribute('tooltip'),
-                        dismissDelay: 15000
+                    itemsArray.push({
+                        html: tpl.apply(settings),
                     });
-                })
 
-                var workflowBtn = approvalhistory.down('button[id=workflowBtn]');
-                var historyBtn = approvalhistory.down('button[id=historyBtn]');
-                var dateOfChangeLable = approvalhistory.down('label');
-                var reverseBtn = approvalhistory.down('button[id=reverseBtn]');
+                    panel.removeAll();
+                    panel.add(itemsArray);
+                    panel.doLayout();
 
-                if (historyBtn) {
-                    historyBtn.removeCls('selected');
+                    var elementsWithTips = Ext.select('div[toolTip*=]');
+
+                    elementsWithTips.elements.forEach(function (el) {
+                        var me = el;
+                        me.fieldLabelTip = Ext.create('Ext.tip.ToolTip', {
+                            target: me,
+                            preventLoseFocus: true,
+                            trackMouse: true,
+                            html: me.getAttribute('tooltip'),
+                            dismissDelay: 15000
+                        });
+                    })
+
+                    var workflowBtn = approvalhistory.down('button[id=workflowBtn]');
+                    var historyBtn = approvalhistory.down('button[id=historyBtn]');
+                    var dateOfChangeLable = approvalhistory.down('label');
+                    var reverseBtn = approvalhistory.down('button[id=reverseBtn]');
+
+                    if (historyBtn) {
+                        historyBtn.removeCls('selected');
+                    }
+                    workflowBtn.addClass('selected');
+                    dateOfChangeLable.hide();
+                    reverseBtn.hide();
+
+                    approvalhistory.isLoaded = false;
+                    approvalhistory.historyArray = result.data == undefined ? null : result.data;
+                    approvalhistory.isNonego = result.isNoNegoPassed == undefined ? false : result.isNoNegoPassed;
+                    approvalhistory.promoStatus = promoStatusName;
+                    approvalhistory.statusColors = result.statusColors;
+                    promoeditorcustom.setLoading(false);
                 }
-                workflowBtn.addClass('selected');
-                dateOfChangeLable.hide();
-                reverseBtn.hide();
-
-                approvalhistory.isLoaded = false;
-                approvalhistory.historyArray = result.data == undefined ? null : result.data;
-                approvalhistory.isNonego = result.isNoNegoPassed == undefined ? false : result.isNoNegoPassed;
-                approvalhistory.promoStatus = promoStatusName;
-                approvalhistory.statusColors = result.statusColors;
-                promoeditorcustom.setLoading(false);
             } else {
                 promoeditorcustom.setLoading(false);
                 App.Notify.pushError(l10n.ns('tpm', 'text').value('failedLoadData'));
@@ -1222,149 +1224,153 @@
                 dataType: 'json',
                 url: '/odata/PromoStatuss',
                 success: function (promoStatusData) {
-                    var client = promoeditorcustom.down('container[name=promo_step1]');
-                    var product = promoeditorcustom.down('container[name=promo_step2]');
-                    var mechanic = promoeditorcustom.down('container[name=promo_step3]');
-                    var period = promoeditorcustom.down('container[name=promo_step4]');
-                    var event = promoeditorcustom.down('container[name=promo_step5]');
-                    var settings = promoeditorcustom.down('container[name=promo_step6]');
+                    if (!promoeditorcustom.isDestroyed) {
+                        var client = promoeditorcustom.down('container[name=promo_step1]');
+                        var product = promoeditorcustom.down('container[name=promo_step2]');
+                        var mechanic = promoeditorcustom.down('container[name=promo_step3]');
+                        var period = promoeditorcustom.down('container[name=promo_step4]');
+                        var event = promoeditorcustom.down('container[name=promo_step5]');
+                        var settings = promoeditorcustom.down('container[name=promo_step6]');
 
-                    // Кнопки для изменения состояний промо
-                    var promoActions = Ext.ComponentQuery.query('button[isPromoAction=true]');
+                        // Кнопки для изменения состояний промо
+                        var promoActions = Ext.ComponentQuery.query('button[isPromoAction=true]');
 
-                    promoeditorcustom.down('button[itemId=btn_promoBudgets]').setDisabled(true);
-                    promoeditorcustom.down('button[itemId=btn_promoBudgets]').addCls('disabled');
+                        promoeditorcustom.down('button[itemId=btn_promoBudgets]').setDisabled(true);
+                        promoeditorcustom.down('button[itemId=btn_promoBudgets]').addCls('disabled');
 
-                    promoeditorcustom.down('button[itemId=btn_promoActivity]').setDisabled(true);
-                    promoeditorcustom.down('button[itemId=btn_promoActivity]').addCls('disabled');
+                        promoeditorcustom.down('button[itemId=btn_promoActivity]').setDisabled(true);
+                        promoeditorcustom.down('button[itemId=btn_promoActivity]').addCls('disabled');
 
-                    // mechanic
-                    var promoController = App.app.getController('tpm.promo.Promo');
-                    var marsMechanicId = mechanic.down('searchcombobox[name=MarsMechanicId]');
-                    var instoreMechanicId = mechanic.down('searchcombobox[name=PlanInstoreMechanicId]');
-                    var marsMechanicTypeId = mechanic.down('searchcombobox[name=MarsMechanicTypeId]');
-                    var instoreMechanicTypeId = mechanic.down('searchcombobox[name=PlanInstoreMechanicTypeId]');
-                    var marsMechanicDiscount = mechanic.down('numberfield[name=MarsMechanicDiscount]');
-                    var instoreMechanicDiscount = mechanic.down('numberfield[name=PlanInstoreMechanicDiscount]');
-                    var promoComment = mechanic.down('textarea[name=PromoComment]');
+                        // mechanic
+                        var promoController = App.app.getController('tpm.promo.Promo');
+                        var marsMechanicId = mechanic.down('searchcombobox[name=MarsMechanicId]');
+                        var instoreMechanicId = mechanic.down('searchcombobox[name=PlanInstoreMechanicId]');
+                        var marsMechanicTypeId = mechanic.down('searchcombobox[name=MarsMechanicTypeId]');
+                        var instoreMechanicTypeId = mechanic.down('searchcombobox[name=PlanInstoreMechanicTypeId]');
+                        var marsMechanicDiscount = mechanic.down('numberfield[name=MarsMechanicDiscount]');
+                        var instoreMechanicDiscount = mechanic.down('numberfield[name=PlanInstoreMechanicDiscount]');
+                        var promoComment = mechanic.down('textarea[name=PromoComment]');
 
-                    promoController.mechanicTypeChange(
-                        marsMechanicId, marsMechanicTypeId, marsMechanicDiscount,
-                        promoController.getMechanicListForUnlockDiscountField()
-                    );
+                        promoController.mechanicTypeChange(
+                            marsMechanicId, marsMechanicTypeId, marsMechanicDiscount,
+                            promoController.getMechanicListForUnlockDiscountField()
+                        );
 
-                    promoController.mechanicTypeChange(
-                        instoreMechanicId, instoreMechanicTypeId, instoreMechanicDiscount,
-                        promoController.getMechanicListForUnlockDiscountField()
-                    );
+                        promoController.mechanicTypeChange(
+                            instoreMechanicId, instoreMechanicTypeId, instoreMechanicDiscount,
+                            promoController.getMechanicListForUnlockDiscountField()
+                        );
 
-                    // event
-                    me.refreshPromoEvent(promoeditorcustom, false);
+                        // event
+                        me.refreshPromoEvent(promoeditorcustom, false);
 
-                    // settings
-                    settings.down('sliderfield[name=priority]').setValue(3);
-                    var promoEventButton = Ext.ComponentQuery.query('button[itemId=btn_promo_step6]')[0];
-                    promoEventButton.setText('<b>' + l10n.ns('tpm', 'promoStap').value('basicStep6') + '</b><br><p> Calendar priority: ' + 3 + '</p>');
-                    promoEventButton.removeCls('notcompleted');
-                    promoEventButton.setGlyph(0xf133);
+                        // settings
+                        settings.down('sliderfield[name=priority]').setValue(3);
+                        var promoEventButton = Ext.ComponentQuery.query('button[itemId=btn_promo_step6]')[0];
+                        promoEventButton.setText('<b>' + l10n.ns('tpm', 'promoStap').value('basicStep6') + '</b><br><p> Calendar priority: ' + 3 + '</p>');
+                        promoEventButton.removeCls('notcompleted');
+                        promoEventButton.setGlyph(0xf133);
 
-                    // если создание из календаря
-                    if (schedulerData) {
-                        var promoClientForm = promoeditorcustom.down('container[name=promo_step1]');
-                        var durationDateStart = period.down('datefield[name=DurationStartDate]');
-                        var durationDateEnd = period.down('datefield[name=DurationEndDate]');
-                        var startDate = schedulerData.schedulerContext.start;
-                        var endDate = schedulerData.schedulerContext.end;
-                        var clientRecord;
+                        // если создание из календаря
+                        if (schedulerData) {
+                            var promoClientForm = promoeditorcustom.down('container[name=promo_step1]');
+                            var durationDateStart = period.down('datefield[name=DurationStartDate]');
+                            var durationDateEnd = period.down('datefield[name=DurationEndDate]');
+                            var startDate = schedulerData.schedulerContext.start;
+                            var endDate = schedulerData.schedulerContext.end;
+                            var clientRecord;
 
-                        if (schedulerData.isCopy) { }
-                        else {
-                            clientRecord = schedulerData.schedulerContext.resourceRecord.raw;
+                            if (schedulerData.isCopy) { }
+                            else {
+                                clientRecord = schedulerData.schedulerContext.resourceRecord.raw;
+                            }
+
+                            durationDateStart.setValue(startDate);
+                            durationDateEnd.setValue(endDate);
+
+                            if (clientRecord) {
+                                promoClientForm.fillForm(clientRecord, false);
+                                me.checkParametersAfterChangeClient(clientRecord, promoeditorcustom);
+                                me.afterInitClient(clientRecord, schedulerData.schedulerContext.resourceRecord, promoeditorcustom, schedulerData.isCopy);
+                            }
                         }
 
-                        durationDateStart.setValue(startDate);
-                        durationDateEnd.setValue(endDate);
+                        for (var i = 0; i < promoStatusData.value.length; i++) {
+                            if (promoStatusData.value[i].SystemName == 'Draft') {
+                                promoeditorcustom.statusId = promoStatusData.value[i].Id;
+                                promoeditorcustom.promoStatusName = promoStatusData.value[i].Name;
+                                promoeditorcustom.promoStatusSystemName = promoStatusData.value[i].SystemName;
+                                promoeditorcustom.promoName = 'Unpublish Promo';
 
-                        if (clientRecord) {
-                            promoClientForm.fillForm(clientRecord, false);
-                            me.checkParametersAfterChangeClient(clientRecord, promoeditorcustom);
-                            me.afterInitClient(clientRecord, schedulerData.schedulerContext.resourceRecord, promoeditorcustom, schedulerData.isCopy);
+                                me.setPromoTitle(promoeditorcustom, promoeditorcustom.promoName, promoeditorcustom.promoStatusName);
+                                me.defineAllowedActions(promoeditorcustom, promoActions, promoeditorcustom.promoStatusName);
+
+                                var undoBtn = promoeditorcustom.down('button[itemId=btn_undoPublish]');
+                                undoBtn.statusId = promoStatusData.value[i].Id;
+                                undoBtn.statusName = promoStatusData.value[i].Name;
+                                undoBtn.statusSystemName = promoStatusData.value[i].SystemName;
+                            }
+
+                            if (promoStatusData.value[i].SystemName == 'DraftPublished') {
+                                var btn = promoeditorcustom.down('button[itemId=btn_publish]');
+                                btn.statusId = promoStatusData.value[i].Id;
+                                btn.statusName = promoStatusData.value[i].Name;
+                                btn.statusSystemName = promoStatusData.value[i].SystemName;
+                                var btn_backToDraftPublished = promoeditorcustom.down('button[itemId=btn_backToDraftPublished]');
+                                btn_backToDraftPublished.statusId = promoStatusData.value[i].Id;
+                                btn_backToDraftPublished.statusName = promoStatusData.value[i].Name;
+                                btn_backToDraftPublished.statusSystemName = promoStatusData.value[i].SystemName;
+                            }
+
+                            if (promoStatusData.value[i].SystemName == 'OnApproval') {
+                                var btn = promoeditorcustom.down('button[itemId=btn_sendForApproval]');
+                                btn.statusId = promoStatusData.value[i].Id;
+                                btn.statusName = promoStatusData.value[i].Name;
+                                btn.statusSystemName = promoStatusData.value[i].SystemName;
+                            }
+
+                            if (promoStatusData.value[i].SystemName == 'Approved') {
+                                var btn_approve = promoeditorcustom.down('button[itemId=btn_approve]');
+                                btn_approve.statusId = promoStatusData.value[i].Id;
+                                btn_approve.statusName = promoStatusData.value[i].Name;
+                                btn_approve.statusSystemName = promoStatusData.value[i].SystemName;
+                            }
+
+                            if (promoStatusData.value[i].SystemName == 'Cancelled') {
+                                var btn_cancel = promoeditorcustom.down('button[itemId=btn_cancel]');
+                                btn_cancel.statusId = promoStatusData.value[i].Id;
+                                btn_cancel.statusName = promoStatusData.value[i].Name;
+                                btn_cancel.statusSystemName = promoStatusData.value[i].SystemName;
+                            }
+
+                            if (promoStatusData.value[i].SystemName == 'Planned') {
+                                var btn_plan = promoeditorcustom.down('button[itemId=btn_plan]');
+                                btn_plan.statusId = promoStatusData.value[i].Id;
+                                btn_plan.statusName = promoStatusData.value[i].Name;
+                                btn_plan.statusSystemName = promoStatusData.value[i].SystemName;
+                            }
+
+                            if (promoStatusData.value[i].SystemName == 'Closed') {
+                                var btn_close = promoeditorcustom.down('button[itemId=btn_close]');
+                                btn_close.statusId = promoStatusData.value[i].Id;
+                                btn_close.statusName = promoStatusData.value[i].Name;
+                                btn_close.statusSystemName = promoStatusData.value[i].SystemName;
+                            }
+
+                            if (promoStatusData.value[i].SystemName == 'Finished') {
+                                var btn_backToFinished = promoeditorcustom.down('button[itemId=btn_backToFinished]');
+                                btn_backToFinished.statusId = promoStatusData.value[i].Id;
+                                btn_backToFinished.statusName = promoStatusData.value[i].Name;
+                                btn_backToFinished.statusSystemName = promoStatusData.value[i].SystemName;
+                            }
                         }
+
+                        promoeditorcustom.show();
+                        parentWidget.setLoading(false);
+                        me.checkLoadingComponents();
+                    } else {
+                        parentWidget.setLoading(false);
                     }
-
-                    for (var i = 0; i < promoStatusData.value.length; i++) {
-                        if (promoStatusData.value[i].SystemName == 'Draft') {
-                            promoeditorcustom.statusId = promoStatusData.value[i].Id;
-                            promoeditorcustom.promoStatusName = promoStatusData.value[i].Name;
-                            promoeditorcustom.promoStatusSystemName = promoStatusData.value[i].SystemName;
-                            promoeditorcustom.promoName = 'Unpublish Promo';
-
-                            me.setPromoTitle(promoeditorcustom, promoeditorcustom.promoName, promoeditorcustom.promoStatusName);
-                            me.defineAllowedActions(promoeditorcustom, promoActions, promoeditorcustom.promoStatusName);
-
-                            var undoBtn = promoeditorcustom.down('button[itemId=btn_undoPublish]');
-                            undoBtn.statusId = promoStatusData.value[i].Id;
-                            undoBtn.statusName = promoStatusData.value[i].Name;
-                            undoBtn.statusSystemName = promoStatusData.value[i].SystemName;
-                        }
-
-                        if (promoStatusData.value[i].SystemName == 'DraftPublished') {
-                            var btn = promoeditorcustom.down('button[itemId=btn_publish]');
-                            btn.statusId = promoStatusData.value[i].Id;
-                            btn.statusName = promoStatusData.value[i].Name;
-                            btn.statusSystemName = promoStatusData.value[i].SystemName;
-                            var btn_backToDraftPublished = promoeditorcustom.down('button[itemId=btn_backToDraftPublished]');
-                            btn_backToDraftPublished.statusId = promoStatusData.value[i].Id;
-                            btn_backToDraftPublished.statusName = promoStatusData.value[i].Name;
-                            btn_backToDraftPublished.statusSystemName = promoStatusData.value[i].SystemName;
-                        }
-
-                        if (promoStatusData.value[i].SystemName == 'OnApproval') {
-                            var btn = promoeditorcustom.down('button[itemId=btn_sendForApproval]');
-                            btn.statusId = promoStatusData.value[i].Id;
-                            btn.statusName = promoStatusData.value[i].Name;
-                            btn.statusSystemName = promoStatusData.value[i].SystemName;
-                        }
-
-                        if (promoStatusData.value[i].SystemName == 'Approved') {
-                            var btn_approve = promoeditorcustom.down('button[itemId=btn_approve]');
-                            btn_approve.statusId = promoStatusData.value[i].Id;
-                            btn_approve.statusName = promoStatusData.value[i].Name;
-                            btn_approve.statusSystemName = promoStatusData.value[i].SystemName;
-                        }
-
-                        if (promoStatusData.value[i].SystemName == 'Cancelled') {
-                            var btn_cancel = promoeditorcustom.down('button[itemId=btn_cancel]');
-                            btn_cancel.statusId = promoStatusData.value[i].Id;
-                            btn_cancel.statusName = promoStatusData.value[i].Name;
-                            btn_cancel.statusSystemName = promoStatusData.value[i].SystemName;
-                        }
-
-                        if (promoStatusData.value[i].SystemName == 'Planned') {
-                            var btn_plan = promoeditorcustom.down('button[itemId=btn_plan]');
-                            btn_plan.statusId = promoStatusData.value[i].Id;
-                            btn_plan.statusName = promoStatusData.value[i].Name;
-                            btn_plan.statusSystemName = promoStatusData.value[i].SystemName;
-                        }
-
-                        if (promoStatusData.value[i].SystemName == 'Closed') {
-                            var btn_close = promoeditorcustom.down('button[itemId=btn_close]');
-                            btn_close.statusId = promoStatusData.value[i].Id;
-                            btn_close.statusName = promoStatusData.value[i].Name;
-                            btn_close.statusSystemName = promoStatusData.value[i].SystemName;
-                        }
-
-                        if (promoStatusData.value[i].SystemName == 'Finished') {
-                            var btn_backToFinished = promoeditorcustom.down('button[itemId=btn_backToFinished]');
-                            btn_backToFinished.statusId = promoStatusData.value[i].Id;
-                            btn_backToFinished.statusName = promoStatusData.value[i].Name;
-                            btn_backToFinished.statusSystemName = promoStatusData.value[i].SystemName;
-                        }
-                    }
-
-                    promoeditorcustom.show();
-                    parentWidget.setLoading(false);
-                    me.checkLoadingComponents();
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
                     parentWidget.setLoading(false);
@@ -1965,90 +1971,92 @@
         App.Util.makeRequestWithCallback('PromoStatusChanges', 'PromoStatusChangesByPromo', parameters, function (data) {
             var result = Ext.JSON.decode(data.httpResponse.data.value);
             if (result.success) {
-                var tpl = Ext.create('App.view.tpm.common.approvalStatusStateTpl').formatTpl;
-                var itemsArray = [];
-                var promo = null;
-                var onApprovalState = null;
-                var promoStatusName = 'Draft';
-                if (!panel.isDestroyed) {
-                    var panelWidthRatio = panel.getWidth() / 1160;
-                    //Small sizes correction:
-                    if (panelWidthRatio * 130 < 120) {
-                        panelWidthRatio = panelWidthRatio * 0.95;
-                    } else if (panelWidthRatio * 130 < 110) {
-                        panelWidthRatio = panelWidthRatio * 0.85;
-                    } else if (panelWidthRatio * 130 < 100) {
-                        panelWidthRatio = panelWidthRatio * 0.60;
-                    }
-                    var panelHeightRatio = (panel.getWidth() / 1160) * (100 / 130);
-
-                    if (!result.isEmpty) {
-                        if (result.data.length == 0) {
-                            promo = promoeditorcustom.model.data;
-                        } else {
-                            promo = result.data[0].Promo;
+                if (!promoeditorcustom.isDestroyed) {
+                    var tpl = Ext.create('App.view.tpm.common.approvalStatusStateTpl').formatTpl;
+                    var itemsArray = [];
+                    var promo = null;
+                    var onApprovalState = null;
+                    var promoStatusName = 'Draft';
+                    if (!panel.isDestroyed) {
+                        var panelWidthRatio = panel.getWidth() / 1160;
+                        //Small sizes correction:
+                        if (panelWidthRatio * 130 < 120) {
+                            panelWidthRatio = panelWidthRatio * 0.95;
+                        } else if (panelWidthRatio * 130 < 110) {
+                            panelWidthRatio = panelWidthRatio * 0.85;
+                        } else if (panelWidthRatio * 130 < 100) {
+                            panelWidthRatio = panelWidthRatio * 0.60;
                         }
-                        promoStatusName = promo.PromoStatus == undefined ? promo.PromoStatusSystemName : promo.PromoStatus.SystemName
+                        var panelHeightRatio = (panel.getWidth() / 1160) * (100 / 130);
 
-                        if (promo.IsCMManagerApproved == true && (promo.IsDemandPlanningApproved == false || promo.IsDemandPlanningApproved == null) && promo.IsDemandFinanceApproved == true)
-                            onApprovalState = 'DemandPlanningNonego';
-                        else if ((promo.IsCMManagerApproved == false || promo.IsCMManagerApproved == null) && (promo.IsDemandPlanningApproved == false || promo.IsDemandPlanningApproved == null) && (promo.IsDemandFinanceApproved == false || promo.IsDemandFinanceApproved == null))
-                            onApprovalState = 'CMManager';
-                        else if (promo.IsCMManagerApproved == true && (promo.IsDemandPlanningApproved == false || promo.IsDemandPlanningApproved == null) && (promo.IsDemandFinanceApproved == false || promo.IsDemandFinanceApproved == null))
-                            onApprovalState = 'DemandPlanning';
-                        else if (promo.IsCMManagerApproved == true && promo.IsDemandPlanningApproved == true && (promo.IsDemandFinanceApproved == false || promo.IsDemandFinanceApproved == null))
-                            onApprovalState = 'DemandFinance';
-                    }
+                        if (!result.isEmpty) {
+                            if (result.data.length == 0) {
+                                promo = promoeditorcustom.model.data;
+                            } else {
+                                promo = result.data[0].Promo;
+                            }
+                            promoStatusName = promo.PromoStatus == undefined ? promo.PromoStatusSystemName : promo.PromoStatus.SystemName
 
-                    var settings = {
-                        currentWidthRatio: panelWidthRatio,
-                        currentHeightRatio: panelHeightRatio,
-                        currentHeight: panel.body.getHeight(),
-                        status: promoStatusName,
-                        onApprovalState: onApprovalState,
-                        isNonego: result.isNoNegoPassed == undefined ? false : result.isNoNegoPassed,
-                        statusHistory: result.data == undefined ? [] : result.data,
-                        statusColors: result.statusColors
-                    }
+                            if (promo.IsCMManagerApproved == true && (promo.IsDemandPlanningApproved == false || promo.IsDemandPlanningApproved == null) && promo.IsDemandFinanceApproved == true)
+                                onApprovalState = 'DemandPlanningNonego';
+                            else if ((promo.IsCMManagerApproved == false || promo.IsCMManagerApproved == null) && (promo.IsDemandPlanningApproved == false || promo.IsDemandPlanningApproved == null) && (promo.IsDemandFinanceApproved == false || promo.IsDemandFinanceApproved == null))
+                                onApprovalState = 'CMManager';
+                            else if (promo.IsCMManagerApproved == true && (promo.IsDemandPlanningApproved == false || promo.IsDemandPlanningApproved == null) && (promo.IsDemandFinanceApproved == false || promo.IsDemandFinanceApproved == null))
+                                onApprovalState = 'DemandPlanning';
+                            else if (promo.IsCMManagerApproved == true && promo.IsDemandPlanningApproved == true && (promo.IsDemandFinanceApproved == false || promo.IsDemandFinanceApproved == null))
+                                onApprovalState = 'DemandFinance';
+                        }
 
-                    itemsArray.push({
-                        html: tpl.apply(settings),
-                    });
+                        var settings = {
+                            currentWidthRatio: panelWidthRatio,
+                            currentHeightRatio: panelHeightRatio,
+                            currentHeight: panel.body.getHeight(),
+                            status: promoStatusName,
+                            onApprovalState: onApprovalState,
+                            isNonego: result.isNoNegoPassed == undefined ? false : result.isNoNegoPassed,
+                            statusHistory: result.data == undefined ? [] : result.data,
+                            statusColors: result.statusColors
+                        }
 
-                    panel.removeAll();
-                    panel.add(itemsArray);
-                    panel.doLayout();
-
-                    var elementsWithTips = Ext.select('div[toolTip*=]');
-
-                    elementsWithTips.elements.forEach(function (el) {
-                        var me = el;
-                        me.fieldLabelTip = Ext.create('Ext.tip.ToolTip', {
-                            target: me,
-                            preventLoseFocus: true,
-                            trackMouse: true,
-                            html: me.getAttribute('tooltip'),
-                            dismissDelay: 15000
+                        itemsArray.push({
+                            html: tpl.apply(settings),
                         });
-                    })
 
-                    var workflowBtn = approvalhistory.down('button[id=workflowBtn]');
-                    var historyBtn = approvalhistory.down('button[id=historyBtn]');
-                    var dateOfChangeLable = approvalhistory.down('label');
-                    var reverseBtn = approvalhistory.down('button[id=reverseBtn]');
+                        panel.removeAll();
+                        panel.add(itemsArray);
+                        panel.doLayout();
 
-                    if (historyBtn) {
-                        historyBtn.removeCls('selected');
+                        var elementsWithTips = Ext.select('div[toolTip*=]');
+
+                        elementsWithTips.elements.forEach(function (el) {
+                            var me = el;
+                            me.fieldLabelTip = Ext.create('Ext.tip.ToolTip', {
+                                target: me,
+                                preventLoseFocus: true,
+                                trackMouse: true,
+                                html: me.getAttribute('tooltip'),
+                                dismissDelay: 15000
+                            });
+                        })
+
+                        var workflowBtn = approvalhistory.down('button[id=workflowBtn]');
+                        var historyBtn = approvalhistory.down('button[id=historyBtn]');
+                        var dateOfChangeLable = approvalhistory.down('label');
+                        var reverseBtn = approvalhistory.down('button[id=reverseBtn]');
+
+                        if (historyBtn) {
+                            historyBtn.removeCls('selected');
+                        }
+                        workflowBtn.addClass('selected');
+                        dateOfChangeLable.hide();
+                        reverseBtn.hide();
+
+                        approvalhistory.isLoaded = false;
+                        approvalhistory.historyArray = result.data == undefined ? null : result.data;
+                        approvalhistory.isNonego = result.isNoNegoPassed == undefined ? false : result.isNoNegoPassed;
+                        approvalhistory.promoStatus = promoStatusName;
+                        approvalhistory.statusColors = result.statusColors;
                     }
-                    workflowBtn.addClass('selected');
-                    dateOfChangeLable.hide();
-                    reverseBtn.hide();
-
-                    approvalhistory.isLoaded = false;
-                    approvalhistory.historyArray = result.data == undefined ? null : result.data;
-                    approvalhistory.isNonego = result.isNoNegoPassed == undefined ? false : result.isNoNegoPassed;
-                    approvalhistory.promoStatus = promoStatusName;
-                    approvalhistory.statusColors = result.statusColors;
                 }
             } else {
                 App.Notify.pushError(l10n.ns('tpm', 'text').value('failedLoadData'));
@@ -3246,23 +3254,25 @@
                                         dataType: 'json',
                                         url: '/odata/PromoStatuss',
                                         success: function (promoStatuses) {
-                                            for (var i = 0; i < promoStatuses.value.length; i++) {
-                                                if (promoStatuses.value[i].SystemName == 'Draft') {
-                                                    statusData = promoStatuses.value[i];
-                                                    break;
+                                            if (window && !window.isDestroyed) {
+                                                for (var i = 0; i < promoStatuses.value.length; i++) {
+                                                    if (promoStatuses.value[i].SystemName == 'Draft') {
+                                                        statusData = promoStatuses.value[i];
+                                                        break;
+                                                    }
                                                 }
-                                            }
 
-                                            if (statusData) {
-                                                response.data.PromoStatusId = statusData.Id;
-                                                response.data.PromoStatusName = statusData.Name;
-                                                response.data.PromoStatusSystemName = statusData.SystemName;
-                                                window.readOnly = true;
+                                                if (statusData) {
+                                                    response.data.PromoStatusId = statusData.Id;
+                                                    response.data.PromoStatusName = statusData.Name;
+                                                    response.data.PromoStatusSystemName = statusData.SystemName;
+                                                    window.readOnly = true;
 
-                                                me.reFillPromoForm(window, response, directorygrid);
-                                            }
-                                            else {
-                                                window.setLoading(false);
+                                                    me.reFillPromoForm(window, response, directorygrid);
+                                                }
+                                                else {
+                                                    window.setLoading(false);
+                                                }
                                             }
                                         }
                                     });
@@ -5160,15 +5170,17 @@
                     App.model.tpm.promo.Promo.load(promoId, {
                         callback: function (newModel, operation) {
                             var grid = Ext.ComponentQuery.query('#promoGrid')[0];
-                            var directorygrid = grid ? grid.down('directorygrid') : null;
+                            if (window && !window.isDestroyed) {
+                                var directorygrid = grid ? grid.down('directorygrid') : null;
 
-                            window.promoId = data.Id;
-                            window.model = newModel;
-                            me.reFillPromoForm(window, newModel, directorygrid);
-                            me.updateStatusHistoryState();
-                            //24.06.19 Лог не показываем
-                            //if (newModel.get('Calculating'))
-                            //    me.onPrintPromoLog(window, grid, close);
+                                window.promoId = data.Id;
+                                window.model = newModel;
+                                me.reFillPromoForm(window, newModel, directorygrid);
+                                me.updateStatusHistoryState();
+                                //24.06.19 Лог не показываем
+                                //if (newModel.get('Calculating'))
+                                //    me.onPrintPromoLog(window, grid, close);
+                            }
                         }
                     });
                 }
