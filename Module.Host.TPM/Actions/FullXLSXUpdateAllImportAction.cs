@@ -15,6 +15,7 @@ using Core.History;
 using Module.Persist.TPM.Utils;
 using Module.Persist.TPM.ElasticSearch;
 using Module.Frontend.TPM.Util;
+using System.Text.RegularExpressions;
 
 namespace Module.Host.TPM.Actions {
     class FullXLSXUpdateByPropertyImportAction : FullXLSXImportAction {
@@ -181,16 +182,18 @@ namespace Module.Host.TPM.Actions {
                 if (oldRecord == null)
                 {
                     newRecord.Id = Guid.NewGuid();
-                    toCreate.Add(newRecord);
 
                     if (TypeTo == typeof(Product))
                     {
-                        // Поулчаем вычисляемые поля для Product
+                        bool @continue = ValidateProductCodes(newRecord);
+                        if (@continue) { continue; }
                         IEntity<Guid> productWithComputedProps = GetComputedProps(newRecord, context);
+                        toCreate.Add(productWithComputedProps);
                         toHisCreate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(null, productWithComputedProps));
                     }
                     else
                     {
+                        toCreate.Add(newRecord);
                         toHisCreate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(null, newRecord));
                     }
                 }
@@ -216,13 +219,16 @@ namespace Module.Host.TPM.Actions {
                     // добавление записи в Update и создание ProductChangeIncident только в случае изменения какого-либо поля в импортируемой записи
                     if (TypeTo == typeof(Product) && hasNewRecordChanges)
                     {
+                        bool @continue = ValidateProductCodes(newRecord);
+                        if (@continue) { continue; }
+
                         // Поулчаем вычисляемые поля
                         var newProductChanged = GetComputedProps(newRecord, context);
                         //Для нормальной записи в историю необходимо передавать Id в новой записи
                         newProductChanged.Id = oldRecordCopy.Id;
 
                         toHisUpdate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(oldRecordCopy, newProductChanged));
-                        toUpdate.Add(oldRecord);
+                        toUpdate.Add(newProductChanged);
                         ProductChangeIncident pci = new ProductChangeIncident
                         {
                             CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
@@ -380,7 +386,7 @@ namespace Module.Host.TPM.Actions {
             return false;
         }
 
-        private IEntity<Guid> GetComputedProps(IEntity<Guid> newRecord, DatabaseContext context)
+        private IEntity<Guid> GetComputedProps(IEntity<Guid> newRecord, DatabaseContext context, IEntity<Guid> oldRecord = null)
         {
             var product = (Product)newRecord;
             var brandCode = product.Brand_code;
@@ -389,19 +395,60 @@ namespace Module.Host.TPM.Actions {
 
             var brandName = context.Set<Brand>().Where(b => b.Segmen_code == segCode && b.Brand_code == brandCode && !b.Disabled).Select(b => b.Name).FirstOrDefault();
             var techName = context.Set<Technology>().Where(t => t.Tech_code == techCode && !t.Disabled).Select(b => b.Name).FirstOrDefault();
-            var brandTechName = context.Set<BrandTech>().Where(bt =>
+            var brandTech = context.Set<BrandTech>().Where(bt =>
                                                                bt.Technology.Tech_code == techCode &&
                                                                !bt.Technology.Disabled &&
                                                                bt.Brand.Brand_code == brandCode &&
                                                                bt.Brand.Segmen_code == segCode &&
-                                                               !bt.Disabled).Select(bt => bt.Name).FirstOrDefault();
+                                                               !bt.Disabled).FirstOrDefault();
 
 
             product.Brand = !String.IsNullOrEmpty(brandName) ? brandName : String.Empty;
             product.Technology = !String.IsNullOrEmpty(techName) ? techName : String.Empty;
-            product.BrandTech = !String.IsNullOrEmpty(brandTechName) ? brandTechName : String.Empty;
+            product.BrandTech = !String.IsNullOrEmpty(brandTech?.Name) ? brandTech.Name : String.Empty;
+            product.BrandTech_code = brandTech != null ? String.Format("{0}-{1}", brandCode, techCode) : String.Empty;
+            product.BrandsegTech_code = brandTech != null ? String.Format("{0}-{1}-{2}", brandCode, segCode, techCode) : String.Empty;
 
             return (IEntity<Guid>)product;
+        }
+
+        private bool ValidateProductCodes(IEntity<Guid> record)
+        {
+            var product = (Product)record;
+            if (String.IsNullOrWhiteSpace(product.Brand_code) || String.IsNullOrWhiteSpace(product.Segmen_code) || String.IsNullOrWhiteSpace(product.Tech_code))
+            {
+                Errors.Add(String.Format("Brand, tech, segment codes shouldn't be null or empty. An error occurred while importing the product with ZREP {0}", product.ZREP));
+                return true;
+            }
+
+            var brandCodeIsNum = int.TryParse(product.Brand_code.TrimStart('0'), out _);
+            var segmenCodeIsNum = int.TryParse(product.Segmen_code.TrimStart('0'), out _);
+            var techCodeIsNum = int.TryParse(product.Tech_code.TrimStart('0'), out _);
+            if (!brandCodeIsNum || !segmenCodeIsNum || !techCodeIsNum)
+            {
+                Errors.Add(String.Format("Brand, tech, segment codes should be numeric. An error occurred while importing the product with ZREP {0}", product.ZREP));
+                return true;
+            }
+
+            var threeDigitReg = new Regex(@"^\d{3}$");
+            var twoDigitReg = new Regex(@"^\d{2}$");
+            bool result = false;
+            if (!threeDigitReg.IsMatch(product.Brand_code))
+            {
+                Errors.Add(String.Format("Brand code should contain 3 digits. An error occurred while importing the product with ZREP {0}", product.ZREP));
+                result = true;
+            }
+            if (!twoDigitReg.IsMatch(product.Segmen_code))
+            {
+                Errors.Add(String.Format("Segment code should contain 2 digits. An error occurred while importing the product with ZREP {0}", product.ZREP));
+                result = true;
+            }
+            if (!threeDigitReg.IsMatch(product.Tech_code))
+            {
+                Errors.Add(String.Format("Technology code should contain 3 digits. An error occurred while importing the product with ZREP {0}", product.ZREP));
+                result = true;
+            }
+            return result;
         }
     }
 }
