@@ -16,7 +16,7 @@
 		{ name: 'DispatchesStart', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
 		{ name: 'DispatchesEnd', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
 		{ name: 'Week', type: 'string', hidden: false, isDefault: true },
-		{ name: 'Status', type: 'string', hidden: false, isDefault: true, defaultFilterConfig: getDefaultFilterStatus() },
+		{ name: 'Status', type: 'string', hidden: false, isDefault: true, defaultFilterConfig: getPlanIncrementalReportDefaultFilterStatus() },
 		{ name: 'PlanProductBaselineCaseQty', type: 'number', hidden: false, isDefault: true },
 		{ name: 'PlanProductIncrementalLSV', type: 'number', hidden: false, isDefault: true },
 		{ name: 'PlanProductBaselineLSV', type: 'number', hidden: false, isDefault: true },
@@ -34,7 +34,7 @@
     },
 });
 
-function getDefaultFilterStatus() {
+function getPlanIncrementalReportDefaultFilterStatus() {
 	var statuses = ['Approved', 'Planned', 'Started'];
 	var value = Ext.create('App.extfilter.core.ValueList', statuses);
 

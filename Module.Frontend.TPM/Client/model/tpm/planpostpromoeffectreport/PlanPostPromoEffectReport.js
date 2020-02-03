@@ -14,7 +14,7 @@
         { name: 'PlanUplift', type: 'number', hidden: false, isDefault: true },
 		{ name: 'StartDate', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
 		{ name: 'EndDate', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
-		{ name: 'Status', type: 'string', hidden: false, isDefault: true, defaultFilterConfig: getDefaultFilterStatus() },
+		{ name: 'Status', type: 'string', hidden: false, isDefault: true, defaultFilterConfig: getPlanPostPromoEffectReportDefaultFilterStatus() },
         { name: 'Week', type: 'string', hidden: false, isDefault: true },
         { name: 'PlanPostPromoEffectQtyW1', type: 'number', hidden: false, isDefault: true },
         { name: 'PlanProductBaselineCaseQtyW1', type: 'number', hidden: false, isDefault: true },
@@ -38,7 +38,7 @@
     },
 });
 
-function getDefaultFilterStatus() {
+function getPlanPostPromoEffectReportDefaultFilterStatus() {
     var statuses = ['Approved', 'Planned'];
     var value = Ext.create('App.extfilter.core.ValueList', statuses);
 
