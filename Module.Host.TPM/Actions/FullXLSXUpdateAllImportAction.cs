@@ -421,9 +421,10 @@ namespace Module.Host.TPM.Actions {
                 return true;
             }
 
-            var brandCodeIsNum = int.TryParse(product.Brand_code.TrimStart('0'), out _);
-            var segmenCodeIsNum = int.TryParse(product.Segmen_code.TrimStart('0'), out _);
-            var techCodeIsNum = int.TryParse(product.Tech_code.TrimStart('0'), out _);
+            var num = 0;
+            var brandCodeIsNum = int.TryParse(product.Brand_code.TrimStart('0'), out num);
+            var segmenCodeIsNum = int.TryParse(product.Segmen_code.TrimStart('0'), out num);
+            var techCodeIsNum = int.TryParse(product.Tech_code.TrimStart('0'), out num);
             if (!brandCodeIsNum || !segmenCodeIsNum || !techCodeIsNum)
             {
                 Errors.Add(String.Format("Brand, tech, segment codes should be numeric. An error occurred while importing the product with ZREP {0}", product.ZREP));
