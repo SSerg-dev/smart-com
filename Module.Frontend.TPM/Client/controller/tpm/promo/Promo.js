@@ -2872,7 +2872,7 @@
                 Name: record.data.PlanInstoreMechanicTypeName
             }));
             instoreMechanicDiscount.setValue(record.data.PlanInstoreMechanicDiscount);
-        } else if (record.data.PlanInstoreMechanicDiscount != null) {
+        } else if (record.data.PlanInstoreMechanicId && record.data.PlanInstoreMechanicDiscount != null) {
             instoreMechanicDiscount.setValue(record.data.PlanInstoreMechanicDiscount);
         }
 
