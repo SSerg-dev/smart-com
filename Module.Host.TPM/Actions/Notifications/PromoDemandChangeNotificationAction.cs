@@ -108,7 +108,8 @@ namespace Module.Host.TPM.Actions.Notifications
 			}
 
 			IList<string> userErrors;
-			List<Guid> userIds = NotificationsHelper.GetUserIdsByRecipients(notificationName, recipients, context, out userErrors);
+			IList<string> guaranteedEmails;
+			List<Guid> userIds = NotificationsHelper.GetUserIdsByRecipients(notificationName, recipients, context, out userErrors, out guaranteedEmails);
 
 			if (userErrors.Any())
 			{
@@ -117,7 +118,7 @@ namespace Module.Host.TPM.Actions.Notifications
 					Warnings.Add(error);
 				}
 			}
-			else if (!userIds.Any() && String.IsNullOrWhiteSpace(toEmail))
+			else if (!userIds.Any() && String.IsNullOrWhiteSpace(toEmail) && !guaranteedEmails.Any())
 			{
 				foreach (PromoDemandChangeIncident incident in incidentsForNotify)
 				{
@@ -133,8 +134,8 @@ namespace Module.Host.TPM.Actions.Notifications
 			foreach (Guid userId in userIds)
 			{
 				string userEmail = context.Users.Where(x => x.Id == userId).Select(y => y.Email).FirstOrDefault();
+				if (guaranteedEmails.Any(x => x == userEmail)) { continue; }
 				List<Constraint> constraints = NotificationsHelper.GetConstraitnsByUserId(userId, context);
-				//IQueryable<PromoDemandChangeIncident> constraintIncidents = incidentsForNotify;
 				var constraintIncidents = new List<PromoDemandChangeIncident>();
 
 				// Применение ограничений
@@ -195,8 +196,8 @@ namespace Module.Host.TPM.Actions.Notifications
 				incident.ProcessDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
 			}
 			notifyBody = String.Format(template, string.Join("", allRows));
-
-			emailArray = toEmails.ToArray();
+			toEmails.AddRange(guaranteedEmails);
+			emailArray = toEmails.Distinct().ToArray();
 			if (emailArray.Length != 0)
 			{
 				SendNotificationByEmails(notifyBody, notificationName, emailArray);

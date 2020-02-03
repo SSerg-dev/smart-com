@@ -69,7 +69,8 @@ namespace Module.Host.TPM.Actions.Notifications {
 			List<Recipient> recipients = NotificationsHelper.GetRecipientsByNotifyName(notificationName, context);
 
 			IList<string> userErrors;
-			List<Guid> userIdsWithConstraints = NotificationsHelper.GetUserIdsByRecipients(notificationName, recipients, context, out userErrors).ToList();
+			IList<string> guaranteedEmails;
+			List<Guid> userIdsWithConstraints = NotificationsHelper.GetUserIdsByRecipients(notificationName, recipients, context, out userErrors, out guaranteedEmails).ToList();
 			if (userErrors.Any())
 			{
 				foreach (string error in userErrors)
@@ -77,27 +78,16 @@ namespace Module.Host.TPM.Actions.Notifications {
 					Warnings.Add(error);
 				}
 			}
+			var emailsWithoutConstraints = new List<string>(guaranteedEmails);
 
-			Guid mailNotificationSettingsId = context.MailNotificationSettings
-						.Where(y => y.Name == notificationName && !y.Disabled)
-						.Select(x => x.Id).FirstOrDefault();
-			string toMail = context.MailNotificationSettings
-						.Where(y => y.Id == mailNotificationSettingsId)
-						.Select(x => x.To).FirstOrDefault();
-			var emailsWithoutConstraints = new List<string>();
-			if (!String.IsNullOrEmpty(toMail))
-			{
-				emailsWithoutConstraints = new List<string>() { toMail };
-			}
-
+			// Отправка оповещений для recipients указанных по Role и User. С ограничениями по клиенту.
 			foreach (Guid userId in userIdsWithConstraints)
 			{
 				string userEmail = context.Users.Where(x => x.Id == userId).Select(y => y.Email).FirstOrDefault();
-				if (userEmail == null || emailsWithoutConstraints.Contains(userEmail)) { continue; }
+				if (emailsWithoutConstraints.Contains(userEmail)) { continue; }
 				List<Constraint> constraints = NotificationsHelper.GetConstraitnsByUserId(userId, context);
 				IEnumerable<PromoUpliftFailIncident> constraintNotifies = incidentsForNotify;
 
-				// Применение ограничений
 				if (constraints.Any())
 				{
 					IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
@@ -135,22 +125,20 @@ namespace Module.Host.TPM.Actions.Notifications {
 				}
 			}
 
-			foreach (var email in emailsWithoutConstraints)
+			// Отправка оповещений для "To" из настроек нотификации и recipients указанных по email. Без ограничений по клиенту.
+			logPromoNums = new List<string>();
+			allRows = new List<string>();
+			foreach (PromoUpliftFailIncident incident in incidentsForNotify)
 			{
-				logPromoNums = new List<string>();
-				allRows = new List<string>();
-				foreach (PromoUpliftFailIncident incident in incidentsForNotify)
-				{
-					List<string> allRowCells = GetRow(incident.Promo, propertiesOrder);
-					allRows.Add(String.Format(rowTemplate, string.Join("", allRowCells)));
-					logPromoNums.Add(incident.Promo.Number.ToString());
-				}
-				notifyBody = String.Format(template, string.Join("", allRows));
-
-				emailArray = new[] { email };
-				SendNotificationByEmails(notifyBody, notificationName, emailArray);
-				Results.Add(String.Format("Notifications about fail of uplift culculation for promoes {0} were sent to {1}.", String.Join(", ", logPromoNums.Distinct()), String.Join(", ", emailArray)), null);
+				List<string> allRowCells = GetRow(incident.Promo, propertiesOrder);
+				allRows.Add(String.Format(rowTemplate, string.Join("", allRowCells)));
+				logPromoNums.Add(incident.Promo.Number.ToString());
 			}
+			notifyBody = String.Format(template, string.Join("", allRows));
+
+			emailArray = emailsWithoutConstraints.ToArray();
+			SendNotificationByEmails(notifyBody, notificationName, emailArray);
+			Results.Add(String.Format("Notifications about fail of uplift culculation for promoes {0} were sent to {1}.", String.Join(", ", logPromoNums.Distinct()), String.Join(", ", emailArray)), null);
 			foreach (var incident in incidentsForNotify)
 			{
 				incident.ProcessDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);

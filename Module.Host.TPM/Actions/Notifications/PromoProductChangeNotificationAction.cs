@@ -76,7 +76,7 @@ namespace Module.Host.TPM.Actions.Notifications
 												IEnumerable<string> tempProductIds = incident.ExcludedProductIds.Split(';');
 												List<Product> tempProducts = allProducts.Where(p => tempProductIds.Contains(p.ZREP)).ToList();
 												excludedProducts.AddRange(tempProducts);
-												
+
 												var intersectProducts = addedProducts.Intersect(tempProducts);
 												excludedProducts.Except(intersectProducts);
 												addedProducts.Except(intersectProducts);
@@ -110,7 +110,7 @@ namespace Module.Host.TPM.Actions.Notifications
 									List<string> eanPCs = PlanProductParametersCalculation.GetProductListFromAssortmentMatrix(promo, context);
 									List<Product> resultProductList = null;
 
-									 if (promo.InOut.HasValue && promo.InOut.Value)
+									if (promo.InOut.HasValue && promo.InOut.Value)
 									{
 										resultProductList = PlanProductParametersCalculation.GetCheckedProducts(context, promo);
 									}
@@ -133,7 +133,7 @@ namespace Module.Host.TPM.Actions.Notifications
 												excludedProducts.Remove(promoProduct.Product);
 												addedProducts.Remove(promoProduct.Product);
 											}
-											
+
 										}
 									}
 
@@ -245,9 +245,10 @@ namespace Module.Host.TPM.Actions.Notifications
 			SendNotification(notifyBody, notificationName);
 
 			//Получаем получателей для лога
-			IList<string> userErrors;
 			List<Recipient> recipients = NotificationsHelper.GetRecipientsByNotifyName(notificationName, context);
-			List<Guid> userIds = NotificationsHelper.GetUserIdsByRecipients(notificationName, recipients, context, out userErrors);
+			IList<string> userErrors;
+			IList<string> guaranteedEmails;
+			List<Guid> userIds = NotificationsHelper.GetUserIdsByRecipients(notificationName, recipients, context, out userErrors, out guaranteedEmails);
 
 			if (userErrors.Any())
 			{
@@ -256,15 +257,15 @@ namespace Module.Host.TPM.Actions.Notifications
 					Warnings.Add(error);
 				}
 			}
-			else if (!userIds.Any())
+			else if (!userIds.Any() && !guaranteedEmails.Any())
 			{
 				Warnings.Add(String.Format("There are no appropriate recipinets for notification: {0}.", notificationName));
 				context.SaveChanges();
 				return;
 			}
-
-			string[] userEmails = context.Users.Where(x => userIds.Contains(x.Id) && !String.IsNullOrEmpty(x.Email)).Select(x => x.Email).ToArray();
-			Results.Add(String.Format("Notification {0} for promoes {1} were sent to {2}.", notificationName, String.Join(", ", promoNumbers.Distinct().ToArray()), String.Join(", ", userEmails)), null);
+			var emails = context.Users.Where(x => userIds.Contains(x.Id) && !String.IsNullOrEmpty(x.Email)).Select(x => x.Email).ToList();
+			emails.AddRange(guaranteedEmails);
+			Results.Add(String.Format("Notification {0} for promoes {1} were sent to {2}.", notificationName, String.Join(", ", promoNumbers.Distinct()), String.Join(", ", emails.Distinct())), null);
 		}
 
 		private readonly string[] propertiesOrder = new string[] {

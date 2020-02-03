@@ -125,7 +125,8 @@ namespace Module.Host.TPM.Actions.Notifications
 			List<Recipient> recipients = NotificationsHelper.GetRecipientsByNotifyName(notificationName, context);
 
 			IList<string> userErrors;
-			List<Guid> userIdsWithoutConstraints = NotificationsHelper.GetUserIdsByRecipients(notificationName, recipients, context, out userErrors).ToList();
+			IList<string> guaranteedEmails;
+			List<Guid> userIdsWithoutConstraints = NotificationsHelper.GetUserIdsByRecipients(notificationName, recipients, context, out userErrors, out guaranteedEmails).ToList();
 			if (userErrors.Any())
 			{
 				foreach (string error in userErrors)
@@ -135,9 +136,9 @@ namespace Module.Host.TPM.Actions.Notifications
 			}
 
 			List<Guid> userIdsWithConstraints = NotificationsHelper.GetUsersIdsWithRole(NotificationRole, context).Except(userIdsWithoutConstraints).ToList();
-			if (!userIdsWithConstraints.Any() && !userIdsWithoutConstraints.Any())
+			if (!userIdsWithConstraints.Any() && !userIdsWithoutConstraints.Any() && !guaranteedEmails.Any())
 			{
-				Warnings.Add(String.Format("There are no appropriate recipinets for notification: {0}.", notificationName));
+				Warnings.Add(String.Format("There are no appropriate recipinets for role: {0}.", approvingRole));
 				return;
 			}
 
@@ -146,6 +147,7 @@ namespace Module.Host.TPM.Actions.Notifications
 			foreach (Guid userId in userIdsWithConstraints)
 			{
 				string userEmail = context.Users.Where(x => x.Id == userId).Select(y => y.Email).FirstOrDefault();
+				if (guaranteedEmails.Contains(userEmail)) { continue; }
 				List<Constraint> constraints = NotificationsHelper.GetConstraitnsByUserId(userId, context);
 				IEnumerable<PromoOnApprovalIncident> constraintNotifies = incidentsForNotify;
 
@@ -187,9 +189,8 @@ namespace Module.Host.TPM.Actions.Notifications
 				}
 			}
 
-
 			// Отправка нотификаций для Recipients и Settings без проверок
-			Results.Add(String.Format("Sending notifications to users from recipients of {0}.", notificationName), null);
+			Results.Add(String.Format("Sending notifications to users from recipients of {0} (for {1} role).", notificationName, approvingRole), null);
 			if (incidentsForNotify.Any()) {
 				logPromoNums = new List<string>();
 				allRows = new List<string>();
@@ -215,6 +216,7 @@ namespace Module.Host.TPM.Actions.Notifications
 						Warnings.Add(String.Format("Email not found for user: {0}.", userLogin));
 					}
 				}
+				logPromoEmails.AddRange(guaranteedEmails);
 
 				SendNotificationByEmails(notifyBody, notificationName, logPromoEmails.Distinct().ToArray());
 				Results.Add(String.Format("Notification about necessity of approving promoes with numbers {0} by {1} role were sent to {2}.", 

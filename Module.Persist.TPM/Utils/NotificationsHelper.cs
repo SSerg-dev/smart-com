@@ -40,9 +40,10 @@ namespace Module.Persist.TPM.Utils
 		/// <param name="errors"></param>
 		/// <param name="roles">Список необходимых ролей</param>
 		/// <returns></returns>
-		public static List<Guid> GetUserIdsByRecipients(string notificationName, List<Recipient> recipients, DatabaseContext context, out IList<string> errors, string[] roles = null)
+		public static List<Guid> GetUserIdsByRecipients(string notificationName, List<Recipient> recipients, DatabaseContext context, out IList<string> errors, out IList<string> guaranteedEmails, string[] roles = null)
 		{
 			errors = new List<string>();
+			guaranteedEmails = new List<string>();
 			List<Constraint> constraints = new List<Constraint>();
 			List<Guid> users = new List<Guid>();
 			List<Tuple<string, string>> recipientsWithType = new List<Tuple<string, string>>();
@@ -58,81 +59,12 @@ namespace Module.Persist.TPM.Utils
 			foreach (Tuple<string, string> valueAndType in recipientsWithType)
 			{
 				IQueryable<Guid> userIds = null;
-				
-				string toMail = context.MailNotificationSettings
-					.Where(y => y.Id == mailNotificationSettingsId)
-					.Select(x => x.To).FirstOrDefault();
-				bool isGuaranteed = valueAndType.Item1 == toMail;
+
 				// Поиск пользователя по разным типам получателя (Email, User, Role)
 				switch (valueAndType.Item2)
 				{
 					case "Email":
-						userIds = context.Users
-							.Where(x => x.Email == valueAndType.Item1 && !x.Disabled)
-							.Select(y => y.Id);
-
-						if (userIds.Count() > 1)
-						{
-							if (roles == null || roles?.GetLength(0) == 0 || isGuaranteed)
-							{
-								users.Add(userIds.FirstOrDefault());
-							}
-							else
-							{
-								string[] roleIds = context.Roles
-								.Where(x => roles.Contains(x.SystemName) && !x.Disabled)
-								.Select(y => y.Id.ToString()).ToArray();
-
-								foreach (Guid userId in userIds)
-								{
-									Guid userIdWithDefRole = context.UserRoles
-									.Where(x => x.IsDefault && roleIds.Contains(x.RoleId.ToString()) && x.UserId == userId)
-									.Select(y => y.UserId).FirstOrDefault();
-
-									if (!userIdWithDefRole.Equals(Guid.Empty))
-									{
-										users.Add(userIdWithDefRole);
-										break;
-									}
-								}
-
-								if (users.Count() == 0)
-								{
-									errors.Add(String.Format("Users with email {0} has inappropriate default role.", valueAndType.Item1));
-								}
-							}
-						}
-						else if (Guid.Empty == userIds.FirstOrDefault())
-						{
-							errors.Add(String.Format("There is no User with such email: {0}", valueAndType.Item1));
-						}
-						else
-						{
-							if (roles == null || roles?.GetLength(0) == 0 || isGuaranteed)
-							{
-								users.Add(userIds.FirstOrDefault());
-							}
-							else
-							{
-								string[] roleIds = context.Roles
-								.Where(x => roles.Contains(x.SystemName) && !x.Disabled)
-								.Select(y => y.Id.ToString()).ToArray();
-
-								Guid userId = context.UserRoles
-									.Where(x => x.IsDefault && roleIds.Contains(x.RoleId.ToString()) && x.User.Email == valueAndType.Item1)
-									.Select(y => y.UserId).FirstOrDefault();
-
-								if (!userId.Equals(Guid.Empty))
-								{
-									users.Add(userId);
-								}
-								else
-								{
-									errors.Add(String.Format("Users with email {0} has inappropriate default role.", valueAndType.Item1));
-								}
-							}
-						}
-
+						guaranteedEmails.Add(valueAndType.Item1);
 						break;
 					case "User":
 						userIds = context.Users.Where(x => x.Name == valueAndType.Item1 && !x.Disabled).Select(y => y.Id);

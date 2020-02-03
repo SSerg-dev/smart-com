@@ -87,9 +87,10 @@ namespace Module.Host.TPM.Actions.Notifications
             SendNotification(notifyBody, notificationName);
 
 			//Получаем получателей для лога
-			IList<string> userErrors;
-			List<Recipient> recipients = NotificationsHelper.GetRecipientsByNotifyName(notificationName, context);
-			List<Guid> userIds = NotificationsHelper.GetUserIdsByRecipients(notificationName, recipients, context, out userErrors);
+            List<Recipient> recipients = NotificationsHelper.GetRecipientsByNotifyName(notificationName, context);
+            IList<string> userErrors;
+            IList<string> guaranteedEmails;
+            List<Guid> userIds = NotificationsHelper.GetUserIdsByRecipients(notificationName, recipients, context, out userErrors, out guaranteedEmails);
 
 			if (userErrors.Any())
 			{
@@ -98,15 +99,16 @@ namespace Module.Host.TPM.Actions.Notifications
 					Warnings.Add(error);
 				}
 			}
-			else if (!userIds.Any())
+			else if (!userIds.Any() && !guaranteedEmails.Any())
 			{
 				Warnings.Add(String.Format("There are no appropriate recipinets for notification: {0}.", notificationName));
 				context.SaveChanges();
 				return;
 			}
-			
-			string[] userEmails = context.Users.Where(x => userIds.Contains(x.Id) && !String.IsNullOrEmpty(x.Email)).Select(x => x.Email).ToArray();
-			Results.Add(String.Format("Notifications about cancellation of promo with numbers: {0} were sent to {1}.", String.Join(", ", promoNumbers.Distinct().ToArray()), String.Join(", ", userEmails)), null);
+
+            var emails = context.Users.Where(x => userIds.Contains(x.Id) && !String.IsNullOrEmpty(x.Email)).Select(x => x.Email).ToList();
+            emails.AddRange(guaranteedEmails);
+			Results.Add(String.Format("Notifications about cancellation of promo with numbers: {0} were sent to {1}.", String.Join(", ", promoNumbers.Distinct()), String.Join(", ", emails.ToArray())), null);
 
 			context.SaveChanges();
         }

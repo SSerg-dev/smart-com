@@ -62,7 +62,8 @@ namespace Module.Host.TPM.Actions.Notifications {
 			{
 				List<Recipient> recipients = NotificationsHelper.GetRecipientsByNotifyName(notificationName, context);
 				IList<string> userErrors;
-				List<Guid> userIds = NotificationsHelper.GetUserIdsByRecipients(notificationName, recipients, context, out userErrors);
+				IList<string> guaranteedEmails;
+				List<Guid> userIds = NotificationsHelper.GetUserIdsByRecipients(notificationName, recipients, context, out userErrors, out guaranteedEmails);
 
 				if (userErrors.Any())
 				{
@@ -86,7 +87,8 @@ namespace Module.Host.TPM.Actions.Notifications {
 				string notifyBody = String.Format(template, string.Join("", allRows));
 
 				recipientsEmails = defaultRecipients.Distinct().ToList();
-				string[] emailArray = recipientsEmails.ToArray();
+				recipientsEmails.AddRange(guaranteedEmails);
+				string[] emailArray = recipientsEmails.Distinct().ToArray();
 				if (emailArray.Length > 0)
 				{
 					SendNotificationByEmails(notifyBody, notificationName, emailArray);
@@ -135,8 +137,6 @@ namespace Module.Host.TPM.Actions.Notifications {
 					Results.Add(String.Format("Notifications about transition in approved status of promoes with numbers {0} were sent to promo creator: {1}.", String.Join(", ", promoNumbers.Distinct()), String.Join(", ", emailArray)), null);
 				}
 			}
-
-			
 
 			context.SaveChanges();
 		}
