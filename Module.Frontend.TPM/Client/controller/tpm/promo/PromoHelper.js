@@ -16,14 +16,19 @@
                     afterrender: this.onChangeResposibleButtonAfterRender,
                     click: this.onChangeResponsible
                 },
-                 
+
+                'promoeditorcustom': {
+                    fillWFPanel: this.fillWorkFlowPanel
+                }
             }
         });
     },
+
     onChangeResposibleButtonAfterRender: function (button) {
 
         button.setDisabled(true);
     },
+
     onChangeResponsible: function (button) {
         var grid = this.getGridByButton(button),
             panel = grid.up('combineddirectorypanel'),
@@ -48,6 +53,7 @@
             App.Notify.pushError(l10n.ns('tpm', 'text').value('failedLoadData'));
         }
     }, 
+
     onSelectButtonClick: function (button) { 
         promoId = button.promoId;
         var window = button.up('selectorwindow');
@@ -186,4 +192,98 @@
             App.Notify.pushError(me.getErrorMessage(data));
         });
     },
+
+    fillWorkFlowPanel: function (panel, result, approvalhistory, promoeditorcustom) {
+        var tpl = Ext.create('App.view.tpm.common.approvalStatusStateTpl').formatTpl;
+        var itemsArray = [];
+        var promo = null;
+        var onApprovalState = null;
+        var promoStatusName = 'Draft';
+        if (!panel.isDestroyed) {
+            var panelWidthRatio = panel.getWidth() / 1160;
+            //Small sizes correction:
+            if (panelWidthRatio * 130 < 120) {
+                panelWidthRatio = panelWidthRatio * 0.95;
+            } else if (panelWidthRatio * 130 < 110) {
+                panelWidthRatio = panelWidthRatio * 0.85;
+            } else if (panelWidthRatio * 130 < 100) {
+                panelWidthRatio = panelWidthRatio * 0.60;
+            }
+            var panelHeightRatio = (panel.getWidth() / 1160) * (100 / 130);
+
+            if (!result.isEmpty) {
+                if (result.data.length == 0) {
+                    promo = promoeditorcustom.model ? promoeditorcustom.model.data : promoeditorcustom.assignedRecord ? promoeditorcustom.assignedRecord.data : null;
+                } else {
+                    promo = result.data[0].Promo;
+                }
+
+                if (promo) {
+                    promoStatusName = promo.PromoStatus == undefined ? promo.PromoStatusSystemName : promo.PromoStatus.SystemName
+
+                    if (promo.IsCMManagerApproved == true && (promo.IsDemandPlanningApproved == false || promo.IsDemandPlanningApproved == null) && promo.IsDemandFinanceApproved == true)
+                        onApprovalState = 'DemandPlanningNonego';
+                    else if ((promo.IsCMManagerApproved == false || promo.IsCMManagerApproved == null) && (promo.IsDemandPlanningApproved == false || promo.IsDemandPlanningApproved == null) && (promo.IsDemandFinanceApproved == false || promo.IsDemandFinanceApproved == null))
+                        onApprovalState = 'CMManager';
+                    else if (promo.IsCMManagerApproved == true && (promo.IsDemandPlanningApproved == false || promo.IsDemandPlanningApproved == null) && (promo.IsDemandFinanceApproved == false || promo.IsDemandFinanceApproved == null))
+                        onApprovalState = 'DemandPlanning';
+                    else if (promo.IsCMManagerApproved == true && promo.IsDemandPlanningApproved == true && (promo.IsDemandFinanceApproved == false || promo.IsDemandFinanceApproved == null))
+                        onApprovalState = 'DemandFinance';
+                }
+            }
+
+            if (promo) {
+                var settings = {
+                    currentWidthRatio: panelWidthRatio,
+                    currentHeightRatio: panelHeightRatio,
+                    currentHeight: panel.body.getHeight(),
+                    status: promoStatusName,
+                    onApprovalState: onApprovalState,
+                    isNonego: result.isNoNegoPassed == undefined ? false : result.isNoNegoPassed,
+                    statusHistory: result.data == undefined ? [] : result.data,
+                    statusColors: result.statusColors
+                }
+            }
+
+            itemsArray.push({
+                html: tpl.apply(settings),
+            });
+
+            panel.removeAll();
+            panel.add(itemsArray);
+            panel.doLayout();
+
+            var elementsWithTips = Ext.select('div[toolTip*=]');
+
+            elementsWithTips.elements.forEach(function (el) {
+                var me = el;
+                me.fieldLabelTip = Ext.create('Ext.tip.ToolTip', {
+                    target: me,
+                    preventLoseFocus: true,
+                    trackMouse: true,
+                    html: me.getAttribute('tooltip'),
+                    dismissDelay: 15000
+                });
+            })
+
+            var workflowBtn = approvalhistory.down('button[id=workflowBtn]');
+            var historyBtn = approvalhistory.down('button[id=historyBtn]');
+            var dateOfChangeLable = approvalhistory.down('label');
+            var reverseBtn = approvalhistory.down('button[id=reverseBtn]');
+
+            if (historyBtn) {
+                historyBtn.removeCls('selected');
+            }
+            workflowBtn.addClass('selected');
+            dateOfChangeLable.hide();
+            reverseBtn.hide();
+
+            approvalhistory.isLoaded = false;
+            approvalhistory.historyArray = result.data == undefined ? null : result.data;
+            approvalhistory.isNonego = result.isNoNegoPassed == undefined ? false : result.isNoNegoPassed;
+            approvalhistory.promoStatus = promoStatusName;
+            approvalhistory.statusColors = result.statusColors;
+            promoeditorcustom.setLoading(false);
+        }
+    }
 });

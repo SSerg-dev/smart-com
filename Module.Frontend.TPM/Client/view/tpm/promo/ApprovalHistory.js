@@ -79,32 +79,36 @@
 							if (container.historyArray != null) {
 								if (container.historyArray.length == 0) {
 									var promoeditorcustom = container.up('promoeditorcustom');
-									promo = promoeditorcustom.model.data;
+                                    promo = promoeditorcustom.model ? promoeditorcustom.model.data : promoeditorcustom.assignedRecord ? promoeditorcustom.assignedRecord.data : null;
 								} else {
 									promo = container.historyArray[0].Promo;
 								}
 								promoStatusName = promo.PromoStatus == undefined ? promo.PromoStatusSystemName : promo.PromoStatus.SystemName
 
-								if (promo.IsCMManagerApproved == true && (promo.IsDemandPlanningApproved == false || promo.IsDemandPlanningApproved == null) && promo.IsDemandFinanceApproved == true)
-									onApprovalState = 'DemandPlanningNonego';
-								else if ((promo.IsCMManagerApproved == false || promo.IsCMManagerApproved == null) && (promo.IsDemandPlanningApproved == false || promo.IsDemandPlanningApproved == null) && (promo.IsDemandFinanceApproved == false || promo.IsDemandFinanceApproved == null))
-									onApprovalState = 'CMManager';
-								else if (promo.IsCMManagerApproved == true && (promo.IsDemandPlanningApproved == false || promo.IsDemandPlanningApproved == null) && (promo.IsDemandFinanceApproved == false || promo.IsDemandFinanceApproved == null))
-									onApprovalState = 'DemandPlanning';
-								else if (promo.IsCMManagerApproved == true && promo.IsDemandPlanningApproved == true && (promo.IsDemandFinanceApproved == false || promo.IsDemandFinanceApproved == null))
-									onApprovalState = 'DemandFinance';
+                                if (promo) {
+                                    if (promo.IsCMManagerApproved == true && (promo.IsDemandPlanningApproved == false || promo.IsDemandPlanningApproved == null) && promo.IsDemandFinanceApproved == true)
+                                        onApprovalState = 'DemandPlanningNonego';
+                                    else if ((promo.IsCMManagerApproved == false || promo.IsCMManagerApproved == null) && (promo.IsDemandPlanningApproved == false || promo.IsDemandPlanningApproved == null) && (promo.IsDemandFinanceApproved == false || promo.IsDemandFinanceApproved == null))
+                                        onApprovalState = 'CMManager';
+                                    else if (promo.IsCMManagerApproved == true && (promo.IsDemandPlanningApproved == false || promo.IsDemandPlanningApproved == null) && (promo.IsDemandFinanceApproved == false || promo.IsDemandFinanceApproved == null))
+                                        onApprovalState = 'DemandPlanning';
+                                    else if (promo.IsCMManagerApproved == true && promo.IsDemandPlanningApproved == true && (promo.IsDemandFinanceApproved == false || promo.IsDemandFinanceApproved == null))
+                                        onApprovalState = 'DemandFinance';
+                                }
 							}
-							
-							var settings = {
-								currentWidthRatio: panelWidthRatio,
-								currentHeightRatio: panelHeightRatio,
-								currentHeight: panel.body.getHeight(),
-								status: promoStatusName,
-								onApprovalState: onApprovalState,
-								isNonego: container.isNonego == null ? false : container.isNonego,
-								statusHistory: container.historyArray == null ? [] : container.historyArray,
-								statusColors: container.statusColors
-							}
+
+                            if (promo) {
+                                var settings = {
+                                    currentWidthRatio: panelWidthRatio,
+                                    currentHeightRatio: panelHeightRatio,
+                                    currentHeight: panel.body.getHeight(),
+                                    status: promoStatusName,
+                                    onApprovalState: onApprovalState,
+                                    isNonego: container.isNonego == null ? false : container.isNonego,
+                                    statusHistory: container.historyArray == null ? [] : container.historyArray,
+                                    statusColors: container.statusColors
+                                }
+                            }
 
 							itemsArray.push({
 								html: tpl.apply(settings),
