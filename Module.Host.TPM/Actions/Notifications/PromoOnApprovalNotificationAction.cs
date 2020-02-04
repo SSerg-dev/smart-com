@@ -114,8 +114,6 @@ namespace Module.Host.TPM.Actions.Notifications
         /// <param name="context"></param>
         private void CreateNotification(IEnumerable<PromoOnApprovalIncident> incidentsForNotify, string notificationName, string template, DatabaseContext context, string approvingRole)
         {
-			string NotificationRole = approvingRole;
-
 			var notifyBody = String.Empty;
 			var allRows = new List<string>();
 			var logPromoNums = new List<string>();
@@ -135,7 +133,7 @@ namespace Module.Host.TPM.Actions.Notifications
 				}
 			}
 
-			List<Guid> userIdsWithConstraints = NotificationsHelper.GetUsersIdsWithRole(NotificationRole, context).Except(userIdsWithoutConstraints).ToList();
+			List<Guid> userIdsWithConstraints = NotificationsHelper.GetUsersIdsWithRole(approvingRole, context).Except(userIdsWithoutConstraints).ToList();
 			if (!userIdsWithConstraints.Any() && !userIdsWithoutConstraints.Any() && !guaranteedEmails.Any())
 			{
 				Warnings.Add(String.Format("There are no appropriate recipinets for role: {0}.", approvingRole));
