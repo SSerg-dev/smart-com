@@ -1,6 +1,4 @@
-﻿BEGIN TRANSACTION;
-
-DECLARE @notificationName VARCHAR(255) = 'PROMO_ROI_REPORT_NOTIFICATION';
+﻿DECLARE @notificationName VARCHAR(255) = 'PROMO_ROI_REPORT_NOTIFICATION';
 DECLARE @handlerName VARCHAR(255) = 'Module.Host.TPM.Handlers.Notifications.PromoROIReportNotificationHandler';
 
 DELETE [dbo].[Recipient]  WHERE [MailNotificationSettingId] = (SELECT TOP(1) Id FROM [dbo].[MailNotificationSetting] WHERE [name] = @notificationname AND [Disabled] = 0);
@@ -18,5 +16,3 @@ INSERT INTO [dbo].[Setting] ([Id], [Name], [Type], [Value], [Description])
 
 INSERT INTO [dbo].[Setting] ([Id], [Name], [Type], [Value], [Description])
      VALUES (NEWID(), 'PROMO_ROI_REPORT_MARS_WEEK_NAME', 'string', 'W4', 'Mars week name.');
-
-COMMIT;
