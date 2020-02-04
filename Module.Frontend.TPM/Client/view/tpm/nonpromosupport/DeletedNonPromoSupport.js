@@ -66,43 +66,20 @@
                     return renderWithDelimiter(value, ' > ', '  ');
                 }
             }, {
-                text: l10n.ns('tpm', 'NonPromoSupport').value('BrandTechName'),
-                dataIndex: 'BrandTechName',
-                filter: {
-                    type: 'search',
-                    selectorWidget: 'brandtech',
-                    valueField: 'Name',
-                    store: {
-                        type: 'directorystore',
-						model: 'App.model.tpm.brandtech.BrandTech',
-                        extendedFilter: {
-                            xclass: 'App.ExtFilterContext',
-                            supportedModels: [{
-                                xclass: 'App.ExtSelectionFilterModel',
-								model: 'App.model.tpm.brandtech.BrandTech',
-                                modelId: 'efselectionmodel'
-                            }, {
-                                xclass: 'App.ExtTextFilterModel',
-                                modelId: 'eftextmodel'
-                            }]
-                        }
-                    }
-                }
-            }, {
                 text: l10n.ns('tpm', 'NonPromoSupport').value('NonPromoEquipmentEquipmentType'),
                 dataIndex: 'NonPromoEquipmentEquipmentType',
                 filter: {
                     type: 'search',
-					selectorWidget: 'nonpromoequipment',
-					valueField: 'EquipmentType',
+                    selectorWidget: 'nonpromoequipment',
+                    valueField: 'EquipmentType',
                     store: {
                         type: 'directorystore',
-						model: 'App.model.tpm.nonpromoequipment.NonPromoEquipment',
+                        model: 'App.model.tpm.nonpromoequipment.NonPromoEquipment',
                         extendedFilter: {
                             xclass: 'App.ExtFilterContext',
                             supportedModels: [{
                                 xclass: 'App.ExtSelectionFilterModel',
-								model: 'App.model.tpm.nonpromoequipment.NonPromoEquipment',
+                                model: 'App.model.tpm.nonpromoequipment.NonPromoEquipment',
                                 modelId: 'efselectionmodel'
                             }, {
                                 xclass: 'App.ExtTextFilterModel',
@@ -134,9 +111,9 @@
             }]
         }
     }, {
-            xtype: 'editabledetailform',
-            itemId: 'detailform',
-            model: 'App.model.tpm.nonpromosupport.DeletedNonPromoSupport',
-            items: [ ]
-        }]
+        xtype: 'editabledetailform',
+        itemId: 'detailform',
+        model: 'App.model.tpm.nonpromosupport.DeletedNonPromoSupport',
+        items: []
+    }]
 });

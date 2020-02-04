@@ -1,10 +1,11 @@
 using Core.ModuleRegistrator;
-using Looper.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
-namespace Module.Host.TPM {
+using Looper.Core;
+
+using System.Collections.Generic;
+
+namespace Module.Host.TPM
+{
     public class HostTPMModuleRegistrator : IHostModuleRegistrator {
         public IEnumerable<IHandler> GetHandlers() {
             return new List<IHandler>()
@@ -17,6 +18,7 @@ namespace Module.Host.TPM {
 				new Handlers.Notifications.PromoOnApprovalNotificationHandler(),
 				new Handlers.Notifications.PromoOnRejectNotificationHandler(),
 				new Handlers.Notifications.PromoApprovedNotificationHandler(),
+				new Handlers.Notifications.PromoROIReportNotificationHandler(),
 				new Handlers.FullXLSXUpdateImportPromoSalesHandler(),
                 new Handlers.FullXLSXUpdateImportDemandHandler(),
                 new Handlers.FullXLSXUpdateImportClientShareHandler(),

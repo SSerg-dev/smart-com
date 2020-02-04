@@ -137,7 +137,6 @@ namespace Module.Host.TPM.Actions {
 			{
 				NonPromoSupport typedRec = (NonPromoSupport)rec;
 				Guid emptyGuid = Guid.Empty;
-				if (typedRec.BrandTechId != null && typedRec.BrandTechId != emptyGuid) { errors.Add("BrandTechId must have a value"); isSuitable = false; }
 				if (typedRec.ClientTreeId != 0) { errors.Add("ClientTreeId must have a value"); isSuitable = false; }
 				if (typedRec.NonPromoEquipmentId != null && typedRec.NonPromoEquipmentId != emptyGuid) { errors.Add("NonPromoEquipmentId must have a value"); isSuitable = false; }
 				if (typedRec.StartDate == null || typedRec.EndDate == null) { errors.Add("StartDate and EndDate must have a value"); isSuitable = false; }

@@ -201,7 +201,6 @@ namespace Module.Frontend.TPM.Controllers
             IEnumerable<Column> columns = new List<Column>() {
                 new Column() { Order = 0, Field = "Number", Header = "ID", Quoting = false },
                 new Column() { Order = 1, Field = "ClientTree.FullPathName", Header = "Client", Quoting = false },
-                new Column() { Order = 2, Field = "BrandTech.Name", Header = "Brand Tech", Quoting = false },
                 new Column() { Order = 3, Field = "NonPromoEquipment.EquipmentType", Header = "Equipment Type", Quoting = false },
                 new Column() { Order = 4, Field = "PlanQuantity", Header = "Plan Quantity", Quoting = false },
                 new Column() { Order = 5, Field = "ActualQuantity", Header = "Actual Quantity", Quoting = false },
@@ -319,23 +318,6 @@ namespace Module.Frontend.TPM.Controllers
             else
             {
                 return InternalServerError(e.InnerException);
-            }
-        }
-
-        [ClaimsAuthorize]
-        [HttpPost]
-        public IHttpActionResult GetUserTimestamp()
-        {
-            try
-            {
-                string timeFormat = String.Format("{0:yyyyMMddHHmmssfff}", DateTime.Now);
-                UserInfo user = authorizationManager.GetCurrentUser();
-                string userTimestamp = (user.Login.Split('\\').Last() + timeFormat).Replace(" ", "");
-                return Json(new { success = true, userTimestamp });
-            }
-            catch (Exception e)
-            {
-                return Json(new { success = false });
             }
         }
 

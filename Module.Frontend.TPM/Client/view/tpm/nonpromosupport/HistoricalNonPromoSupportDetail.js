@@ -66,10 +66,6 @@
             fieldLabel: l10n.ns('tpm', 'HistoricalNonPromoSupport').value('ClientTreeFullPathName'),
         }, {
             xtype: 'singlelinedisplayfield',
-            name: 'BrandTechName',
-            fieldLabel: l10n.ns('tpm', 'HistoricalNonPromoSupport').value('BrandTechName'),
-        }, {
-            xtype: 'singlelinedisplayfield',
             name: 'NonPromoEquipmentEquipmentType',
             fieldLabel: l10n.ns('tpm', 'HistoricalNonPromoSupport').value('NonPromoEquipmentEquipmentType'),
         }]

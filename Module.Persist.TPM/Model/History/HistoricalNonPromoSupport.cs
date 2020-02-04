@@ -16,12 +16,10 @@ namespace Module.Persist.TPM.Model.History
         public DateTimeOffset? EndDate { get; set; }
         public double? PlanProdCostPer1Item { get; set; }
         public double? ActualProdCostPer1Item { get; set; }
-        public string UserTimestamp { get; set; }
         public string AttachFileName { get; set; }
         public string BorderColor { get; set; }
         public string InvoiceNumber { get; set; }
         public string ClientTreeFullPathName { get; set; }
-        public string BrandTechName { get; set; }
         public string NonPromoEquipmentEquipmentType { get; set; }
     }
 }

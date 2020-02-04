@@ -1,24 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Net;
-using System.Web.Http;
-using System.Web.Http.OData;
-using System.Web.Http.OData.Query;
-
-using Core.Security;
+﻿using Core.Security;
 using Core.Security.Models;
 
 using Frontend.Core.Controllers.Base;
 using Frontend.Core.Extensions.Export;
-
 using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
 
+using Persist;
 using Persist.Model;
+
+using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Web.Http;
+using System.Web.Http.OData;
+using System.Web.Http.OData.Query;
 
 using Thinktecture.IdentityModel.Authorization.WebApi;
 
@@ -44,7 +45,16 @@ namespace Module.Frontend.TPM.Controllers
                 .ToList() : new List<Constraint>();
 			IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
 
-			var query = Context.Set<Promo>().Where(x => !x.Disabled).Select(x => new PromoROIReport
+            var query = GetPromoROIReportsStatic(Context);			
+			IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
+			query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
+
+			return query;
+        }
+
+        public static IQueryable<PromoROIReport> GetPromoROIReportsStatic(DatabaseContext databaseContext)
+        {
+            var query = databaseContext.Set<Promo>().Where(x => !x.Disabled).Select(x => new PromoROIReport
             {
                 Id = x.Id,
                 Number = x.Number,
@@ -70,7 +80,7 @@ namespace Module.Frontend.TPM.Controllers
                 PlanInstoreMechanicTypeName = x.PlanInstoreMechanicType.Name,
                 PlanInstoreMechanicDiscount = x.PlanInstoreMechanicDiscount,
                 PlanInStoreShelfPrice = x.PlanInStoreShelfPrice,
-                PCPrice = Context.Set<PromoProduct>().Where(y => y.PromoId == x.Id && y.PlanProductPCPrice > 0 && !y.Disabled)
+                PCPrice = databaseContext.Set<PromoProduct>().Where(y => y.PromoId == x.Id && y.PlanProductPCPrice > 0 && !y.Disabled)
                     .Average(z => z.PlanProductPCPrice),
                 PlanPromoBaselineLSV = x.PlanPromoBaselineLSV,
                 PlanPromoIncrementalLSV = x.PlanPromoIncrementalLSV,
@@ -161,11 +171,7 @@ namespace Module.Frontend.TPM.Controllers
                 PromoTypesName = x.PromoTypes.Name
             });
 
-			IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
-
-			query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
-
-			return query;
+            return query;
         }
 
         [ClaimsAuthorize]
@@ -209,10 +215,49 @@ namespace Module.Frontend.TPM.Controllers
             }
         }
 
+        public static string ExportXLSXYearStatic(DatabaseContext databaseContext, User user, int year, Role defaultRole)
+        {
+            try
+            {
+                var userName = user?.Name ?? "NOT.USER";
+                var results = GetPromoROIReportsStatic(databaseContext).Where(x => x.PromoStatusName != "Cancelled" &&  x.StartDate != null && x.StartDate.Value.Year == year);
+                var hierarchy = databaseContext.Set<ClientTreeHierarchyView>().AsNoTracking();
+
+                var defaultRoleSystemName = defaultRole?.SystemName;
+
+                if (user != null)
+                {
+                    var constraints = databaseContext.Constraints.Where(x => x.UserRole.UserId.Equals(user.Id) && x.UserRole.Role.SystemName == defaultRoleSystemName).ToList();
+                    IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
+                    results = ModuleApplyFilterHelper.ApplyFilter(results, hierarchy, filters);
+                }
+
+                var columns = GetPromoROIExportSettingsStatic();
+                var exporter = new XLSXExporter(columns);
+                var currentDate = DateTimeOffset.Now;
+                string filePath = exporter.GetExportFileName($"{nameof(PromoROIReport)}", userName);
+                exporter.Export(results, filePath);
+                string fileName = Path.GetFileName(filePath);
+
+                return fileName;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
         private IEnumerable<Column> GetPromoROIExportSettings()
         {
+            var columns = GetPromoROIExportSettingsStatic();
+            return columns;
+        }
+
+        public static IEnumerable<Column> GetPromoROIExportSettingsStatic()
+        {
             int orderNumber = 1;
-            IEnumerable<Column> columns = new List<Column>() {
+            var columns = new List<Column>() 
+            {
                 new Column { Order = orderNumber++, Field = "Number", Header = "Promo ID", Quoting = false },
                 new Column { Order = orderNumber++, Field = "Client1LevelName", Header = "NA/RKA", Quoting = false },
                 new Column { Order = orderNumber++, Field = "Client2LevelName", Header = "Client Group", Quoting = false },
@@ -319,7 +364,9 @@ namespace Module.Frontend.TPM.Controllers
                 new Column { Order = orderNumber++, Field = "ActualPromoIncrementalEarnings", Header = "Actual Promo Incremental Earnings", Quoting = false,  Format = "0.00"  },
                 new Column { Order = orderNumber++, Field = "ActualPromoNetIncrementalEarnings", Header = "Actual Promo Net Incremental Earnings", Quoting = false,  Format = "0.00"  },
                 new Column { Order = orderNumber++, Field = "ActualPromoROIPercent", Header = "Actual Promo ROI, %", Quoting = false,  Format = "0.00"  },
-                new Column { Order = orderNumber++, Field = "ActualPromoNetROIPercent", Header = "Actual Promo Net ROI%", Quoting = false,  Format = "0.00"  }};
+                new Column { Order = orderNumber++, Field = "ActualPromoNetROIPercent", Header = "Actual Promo Net ROI%", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PromoTypesName", Header = "Promo Type Name", Quoting = false }
+            };
             return columns;
         }
     }

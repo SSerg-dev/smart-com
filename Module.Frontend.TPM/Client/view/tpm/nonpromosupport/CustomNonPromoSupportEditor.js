@@ -8,10 +8,10 @@
     constrain: true,
     layout: 'fit',
 
-    height: 540,
-    width: '85%',
-    minWidth: 1000,
-	minHeight: 540,
+    height: '90%',
+    width: '65%',
+    minWidth: 600,
+    minHeight: 540,
 
     items: [{
         xtype: 'panel',
@@ -57,7 +57,7 @@
 					height: 'auto'
 				}, {
 					xtype: 'nonpromosupportbrandtech',
-					height: 'auto'
+                    flex: 1
 				}]
 			}]
         }]
@@ -67,7 +67,7 @@
             var me = this,
                 ddConfig;
             var customHeader = me.items.items[0].dockedItems.items[1];
-            console.log(customHeader);
+            customHeader.items.items[0].setText(l10n.ns('tpm', 'compositePanelTitles').value('NonPromoSupport'));
 
             ddConfig = Ext.applyIf({
                 el: me.el,

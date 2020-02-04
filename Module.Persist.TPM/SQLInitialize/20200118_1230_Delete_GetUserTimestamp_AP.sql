@@ -1,0 +1,2 @@
+﻿DELETE FROM AccessPointRole WHERE AccessPointId IN (SELECT Id FROM ACCESSPOINT WHERE [Resource]='NonPromoSupports' AND [Action] IN ('GetUserTimestamp'));
+DELETE FROM AccessPoint WHERE [Resource]='NonPromoSupports' AND [Action] IN ('GetUserTimestamp');

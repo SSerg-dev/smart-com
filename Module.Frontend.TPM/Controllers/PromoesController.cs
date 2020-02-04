@@ -810,6 +810,29 @@ namespace Module.Frontend.TPM.Controllers {
                 }
             }
         }
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IHttpActionResult GetUserDashboardsCount([FromODataUri] String userrole)
+        {
+            switch (userrole)
+            {
+                case "KeyAccountManager": 
+                    return Content(HttpStatusCode.OK,  UserDashboard.GetKeyAccountManagerCount(authorizationManager,Context)); 
+                case "DemandPlanning":
+                    return Content(HttpStatusCode.OK, UserDashboard.GetDemandPlanningCount(authorizationManager, Context));
+                case "DemandFinance":
+                    return Content(HttpStatusCode.OK, UserDashboard.GetDemandFinanceCount(authorizationManager, Context));
+                case "CMManager":
+                    return Content(HttpStatusCode.OK, UserDashboard.GetCMManagerCount(authorizationManager, Context));
+                case "CustomerMarketing":
+                    return Content(HttpStatusCode.OK, UserDashboard.GetCustomerMarketingCount(authorizationManager, Context)); 
+            }
+            return Content(HttpStatusCode.InternalServerError, JsonConvert.SerializeObject(new { Error = "Fail to role"}));
+        }
+        
+
+
+
 
         private FilterContainer GetFilter(Delta<Promo> patch, string fieldName) {
             object fieldValue;

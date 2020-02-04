@@ -1,4 +1,13 @@
-﻿MenuMgr.defineMenu([{
+﻿MenuMgr.defineMenu([
+    {
+        text: l10n.ns('tpm', 'mainmenu').value('UserDashboard'),
+        tooltip: l10n.ns('tpm', 'mainmenu').value('UserDashboard'),
+        scale: 'medium',
+        glyph: 0xfa1c,
+        roles: ['DemandFinance', 'KeyAccountManager','DemandPlanning','CustomerMarketing', 'CMManager'],
+        widget: 'userdashboard'
+    },
+    {
     text: l10n.ns('tpm', 'mainmenu').value('SchedulerItem'),
     tooltip: l10n.ns('tpm', 'mainmenu').value('SchedulerItem'),
     glyph: 0xf0f1,

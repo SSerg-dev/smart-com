@@ -1622,6 +1622,26 @@
     <Compile Include="Migrations\202001301617202_Add_GA_to_IncrementalReport.Designer.cs">
       <DependentUpon>202001301617202_Add_GA_to_IncrementalReport.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202001172050596_EmptyMigrationUserDashboard.cs" />
+    <Compile Include="Migrations\202001172050596_EmptyMigrationUserDashboard.Designer.cs">
+      <DependentUpon>202001172050596_EmptyMigrationUserDashboard.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202001172053387_Create_NonPromoSupportBrandTech_Table.cs" />
+    <Compile Include="Migrations\202001172053387_Create_NonPromoSupportBrandTech_Table.Designer.cs">
+      <DependentUpon>202001172053387_Create_NonPromoSupportBrandTech_Table.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202001181806485_Delete_Field_From_NonPromoSupport.cs" />
+    <Compile Include="Migrations\202001181806485_Delete_Field_From_NonPromoSupport.Designer.cs">
+      <DependentUpon>202001181806485_Delete_Field_From_NonPromoSupport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202001220833483_EmptyMigrationUserDashboard1.cs" />
+    <Compile Include="Migrations\202001220833483_EmptyMigrationUserDashboard1.Designer.cs">
+      <DependentUpon>202001220833483_EmptyMigrationUserDashboard1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202002042005395_EmptyMigrationRC4.cs" />
+    <Compile Include="Migrations\202002042005395_EmptyMigrationRC4.Designer.cs">
+      <DependentUpon>202002042005395_EmptyMigrationRC4.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\PromoProductsView.cs" />
     <Compile Include="Model\DTO\ClientTreeSharesView.cs" />
@@ -1728,6 +1748,7 @@
     <Compile Include="Model\TPM\EventClientTree.cs" />
     <Compile Include="Model\TPM\ClientTreeBrandTech.cs" />
     <Compile Include="Model\TPM\IncrementalPromo.cs" />
+    <Compile Include="Model\TPM\NonPromoSupportBrandTech.cs" />
     <Compile Include="Model\TPM\PostPromoEffect.cs" />
     <Compile Include="Model\TPM\PromoApprovedIncident.cs" />
     <Compile Include="Model\TPM\ClientTreeNeedUpdateIncident.cs" />
@@ -1816,6 +1837,9 @@
     <Content Include="SQLInitialize\20191226_1400_File_AP_ResultFilesDownload_SupportAdmin.sql" />
     <Content Include="SQLInitialize\20191223_2110_FixMarsCutomersCheckHandler.sql" />
     <Content Include="SQLInitialize\20191212_0712_AddSupportAdminRoleAP_Again.sql" />
+    <Content Include="SQLInitialize\20200114_1452_AddApUserDashboard.sql" />
+    <Content Include="SQLInitialize\20200115_Add_NonPromoSupportBrandTech_AP.sql" />
+    <Content Include="SQLInitialize\20200118_1230_Delete_GetUserTimestamp_AP.sql" />
     <Content Include="SQLInitialize\20191205_0022_Init_ClientTreeNeedUpdateNotification.sql" />
     <Content Include="SQLInitialize\20191205_0020_AddClientTreeNeedUpdateNotificationHandler.sql" />
     <Content Include="SQLInitialize\20191205_0015_AddMarsCutomersCheckHandler.sql" />
@@ -1867,6 +1891,9 @@
     <Content Include="SQLInitialize\20191203_1730_NonPromoEquipment_AP.sql" />
     <Content Include="SQLInitialize\20191203_1730_NonPromoSupport_AP.sql" />
     <Content Include="SQLInitialize\20191203_2300_NonPromoSupport_Incremental_Trigger.sql" />
+    <Content Include="SQLInitialize\20200203_1500_AlterPromoGridView_For_UserDashboard.sql" />
+    <Content Include="SQLInitialize\20200203_1700_PromoROIReportNotificationAndHandler.sql" />
+    <Content Include="SQLInitialize\20200120_1500_AlterPromoGridView_For_UserDashboard.sql" />
     <Content Include="SQLInitialize\20191217_1501_Delete_Statuses_AP_Delete.sql" />
     <Content Include="SQLInitialize\20191218_1354_Add_Promo_Reset_Support_Admin_AP.sql" />
     <Content Include="SQLInitialize\20191218_1650_Delete_GetCanChangeStatePromoes_AP_SupportAdministrator.sql" />
@@ -1896,6 +1923,7 @@
     <Content Include="SQLInitialize\20191101_1801_PromoProductsCorrection_Drop_Trigger.sql" />
     <Content Include="SQLInitialize\20191122_1400_COGS_TI_Year.sql" />
     <Compile Include="Utils\SpecialNotKeyPropertyAttribute.cs" />
+    <Content Include="SQLInitialize\20200127_1300_PromoROIReportNotification_MarsDayFullNameWithoutYear.sql" />
     <Compile Include="Utils\SimpleModels.cs" />
     <Content Include="SQLInitialize\20190904_1300_AddPromoStatusNameToPromoView.sql" />
     <Content Include="SQLInitialize\20190923_1806_Add_EventClientTree_AP.sql" />
@@ -3047,8 +3075,23 @@
     <EmbeddedResource Include="Migrations\202001130905514_Add_CreatorLogin_To_Promo.resx">
       <DependentUpon>202001130905514_Add_CreatorLogin_To_Promo.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001172050596_EmptyMigrationUserDashboard.resx">
+      <DependentUpon>202001172050596_EmptyMigrationUserDashboard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001172053387_Create_NonPromoSupportBrandTech_Table.resx">
+      <DependentUpon>202001172053387_Create_NonPromoSupportBrandTech_Table.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001181806485_Delete_Field_From_NonPromoSupport.resx">
+      <DependentUpon>202001181806485_Delete_Field_From_NonPromoSupport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001220833483_EmptyMigrationUserDashboard1.resx">
+      <DependentUpon>202001220833483_EmptyMigrationUserDashboard1.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202001301617202_Add_GA_to_IncrementalReport.resx">
       <DependentUpon>202001301617202_Add_GA_to_IncrementalReport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002042005395_EmptyMigrationRC4.resx">
+      <DependentUpon>202002042005395_EmptyMigrationRC4.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

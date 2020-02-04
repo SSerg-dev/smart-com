@@ -15,7 +15,6 @@ namespace Module.Persist.TPM.Model.TPM {
         public DateTimeOffset? DeletedDate { get; set; }
         public int Number { get; set; }
         public int ClientTreeId { get; set; }
-		public Guid? BrandTechId { get; set; }
 		public Guid? NonPromoEquipmentId { get; set; }
 		public int? PlanQuantity { get; set; }
         public int? ActualQuantity { get; set; }
@@ -23,14 +22,11 @@ namespace Module.Persist.TPM.Model.TPM {
         public double? ActualCostTE { get; set; }
         public DateTimeOffset? StartDate { get; set; }
         public DateTimeOffset? EndDate { get; set; }
-        public string UserTimestamp { get; set; }
         public string AttachFileName { get; set; }
         public string BorderColor { get; set; }
         public string InvoiceNumber { get; set; }
 
-
         public virtual ClientTree ClientTree { get; set; }
-		public virtual BrandTech BrandTech { get; set; }
 		public virtual NonPromoEquipment NonPromoEquipment { get; set; }
     }
 }

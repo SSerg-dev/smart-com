@@ -115,7 +115,10 @@
 
 	'tpm.nonpromoequipment.NonPromoEquipment',
 	'tpm.nonpromoequipment.DeletedNonPromoEquipment',
-	'tpm.nonpromoequipment.HistoricalNonPromoEquipment',
+    'tpm.nonpromoequipment.HistoricalNonPromoEquipment',
+
+    'tpm.nonpromosupportbrandtech.NonPromoSupportBrandTech',
+    'tpm.nonpromosupportbrandtech.NonPromoSupportBrandTechDetail',
 
     'tpm.costproduction.CostProduction',
     'tpm.costproduction.DeletedCostProduction',
@@ -258,6 +261,7 @@
 
     'tpm.inoutselectionproductwindow.InOutSelectionProductWindow',
 
+    'tpm.userdashboard.UserDashboard',
     // вспомогательный контроллер для промо
     'tpm.promo.PromoHelper'
 ]);

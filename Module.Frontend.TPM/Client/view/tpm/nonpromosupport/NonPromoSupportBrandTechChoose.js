@@ -61,6 +61,7 @@
 	}, {
 		text: l10n.ns('tpm', 'NonPromoSupport').value('brandTechOk'),
 		ui: 'green-button-footer-toolbar',
-		itemId: 'ok'
+        itemId: 'applyBrandtech',
+        disabled: true
 	}]
 });

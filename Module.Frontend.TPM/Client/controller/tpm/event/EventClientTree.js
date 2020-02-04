@@ -106,7 +106,7 @@
                     afterrender: function () {
                         var me = this,
                             grid = me.down('directorygrid');
-                        grid.multiSelect = true;                            // включение множественной выборки
+                        grid.multiSelect = true;// включение множественной выборки
                     }
                 }
             }],
@@ -121,8 +121,6 @@
             }]
         });
 
-        //chooseclienttreewindow.show();
-
         // проверка на наличие проставленных галок
         var chooseClientTreeWindowGrid = chooseclienttreewindow.down('grid');
 
@@ -133,18 +131,17 @@
                 eventClientTreeRecords = count > 0 ? eventClientTreeStore.getRange(0, count) : [],
                 chooseClientTreeStore = chooseClientTreeWindowGrid.getStore();
 
-                chooseClientTreeStore.on('load', function () {
-                    var checkedEventClientTreeRecords = [];
+            chooseClientTreeStore.on('load', function () {
+                var checkedEventClientTreeRecords = [];
 
-                    eventClientTreeRecords.forEach(function (checkedRow) {
-                        var item = chooseClientTreeStore.findRecord('Id', checkedRow.data.ClientTreeId);
-                        if (item)
-                        {
-                            checkedEventClientTreeRecords.push(item);
-                        }
-                    });
-                        chooseClientTreeWindowGrid.getSelectionModel().checkRows(checkedEventClientTreeRecords);
-                })
+                eventClientTreeRecords.forEach(function (checkedRow) {
+                    var item = chooseClientTreeStore.findRecord('Id', checkedRow.data.ClientTreeId);
+                    if (item) {
+                        checkedEventClientTreeRecords.push(item);
+                    }
+                });
+                chooseClientTreeWindowGrid.getSelectionModel().checkRows(checkedEventClientTreeRecords);
+            })
             chooseclienttreewindow.show();
         }
     },

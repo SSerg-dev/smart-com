@@ -1195,13 +1195,16 @@ Ext.override(Ext.grid.plugin.BufferedRenderer, {
         }
     }
 });
-Ext.define('App.global.Statuses', {
-    statics: {
-        AllStatuses: ["Draft", "DraftPublished", "OnApproval", "Planned", "Approved", "Deleted", "Finished", "Cancelled", "Closed", "Started"],
-        AllStatusesWithoutDraft: ["DraftPublished", "OnApproval", "Planned", "Approved", "Finished", "Cancelled", "Closed", "Started"],
-        AllStatusesBeforeClosedWithoutDraft: ["DraftPublished", "OnApproval", "Planned", "Approved", "Finished", "Started"],
-        AllStatusesBeforeStartedWithoutDraft: ["DraftPublished", "OnApproval", "Planned", "Approved"],
-        Finished: ["Finished"],
+
+Ext.override(App.controller.core.Main, {
+    showUserDashboard: function (me) {
+        var button = {
+            widget: 'userdashboard',
+            cloneConfig: function () {
+                //Что бы ошибки в консоли не было
+            }
+        }
+        me.onOpenViewButtonClick(button);
     }
 });
 
@@ -1210,11 +1213,24 @@ Ext.override(App.menu.core.MenuManager, {
         var role = App.UserInfo.getCurrentRole();
         if (role) {
             this.callParent(arguments);
+            var controller = App.app.getController('core.Main');
+            if (['DemandFinance', 'KeyAccountManager', 'DemandPlanning', 'CustomerMarketing', 'CMManager'].includes(role.SystemName)) {
+                controller.showUserDashboard(controller);
+            }
         } else {
             //Скрываем всё для неавторизованных пользователей
             Ext.ComponentQuery.query('#drawer')[0].hide();
             Ext.ComponentQuery.query('#header')[0].hide();
             Ext.ComponentQuery.query('#systempanel')[0].hide();
         }
+    }
+});
+Ext.define('App.global.Statuses', {
+    statics: {
+        AllStatuses: ["Draft", "DraftPublished", "OnApproval", "Planned", "Approved", "Deleted", "Finished", "Cancelled", "Closed", "Started"],
+        AllStatusesWithoutDraft: ["DraftPublished", "OnApproval", "Planned", "Approved", "Finished", "Cancelled", "Closed", "Started"],
+        AllStatusesBeforeClosedWithoutDraft: ["DraftPublished", "OnApproval", "Planned", "Approved", "Finished", "Started"],
+        AllStatusesBeforeStartedWithoutDraft: ["DraftPublished", "OnApproval", "Planned", "Approved"],
+        Finished: ["Finished"],
     }
 });

@@ -48,7 +48,7 @@
 		'DemandPriceListItem': 'Demand Price List',
 		'ClientTreeBrandTech': 'Clients Share',
 		'PromoSupport': 'Support',
-		'NonPromoSupport': 'Non-Promo Support',
+		'NonPromoSupport': 'Non-promo support',
 		'TICosts': 'Promo TI Costs',
 		'NonPromoTICosts': 'Non-promo TI Costs',
 		'CostProduction': 'Cost Production',
@@ -1035,7 +1035,6 @@
 		'PlanCostTE': 'Plan Cost TE Total',
 		'ActualCostTE': 'Actual Cost TE Total',
 		'StartDate': 'Start Date',
-		'BrandTechName': 'Brand tech',
 		'NonPromoEquipmentEquipmentType': 'Equipment Type',
 		'brandTechOk': 'Apply',
 		'BrandTech': 'Brand tech',
@@ -1050,7 +1049,28 @@
 		'InvoiceNumberRegex': 'Only numbers'
 	},
 	'HistoricalNonPromoSupport': ['.tpm.NonPromoSupport', '.core.BaseHistoryEntity'],
-	'DeletedNonPromoSupport': ['.tpm.NonPromoSupport', '.core.BaseDeletedEntity'],
+    'DeletedNonPromoSupport': ['.tpm.NonPromoSupport', '.core.BaseDeletedEntity'],
+
+    'NonPromoSupportBrandTech': {
+        'BrandTechBrandName': 'Бренд',
+        'BrandTechTechnologyName': 'Технология',
+        'BrandTechBrandTech_code': 'Код бренд-технологии',
+        'ChooseBrandTech': 'Choose Brand tech',
+        'Brand': 'Brand',
+        'Technology': 'Technology',
+        'InvalidMsg': 'Необходимо выбрать BrandTech'
+    },
+
+    'NonPromoSupportBrandTechDetail': {
+        'BrandTechBrandName': 'Бренд',
+        'BrandTechTechnologyName': 'Технология',
+        'BrandTechBrandTech_code': 'Код бренд-технологии',
+        'ChooseBrandTech': 'Choose Brand tech',
+        'Brand': 'Brand',
+        'Technology': 'Technology',
+        'InvalidMsg': 'Необходимо выбрать бренд-технологию',
+        'EmptyBrandTechErrorMsg': 'Список бренд-технологий не может быть пустым.'
+    },
 
 	'CostProduction': {
 		'Number': 'ID',
@@ -1084,13 +1104,6 @@
 		'ModalWindowOkButton': 'Создать',
 		'NotSelected': 'Должн быть выбран клиент.',
 		'CreateButtonText': 'Create support client'
-	},
-
-	'NonPromoSupportBrandTech': {
-		'ChooseBrandTech': 'Choose Brand tech',
-		'Brand': 'Brand',
-		'Technology': 'Technology',
-		'InvalidMsg': 'Необходимо выбрать BrandTech'
 	},
 
     'RetailType': {

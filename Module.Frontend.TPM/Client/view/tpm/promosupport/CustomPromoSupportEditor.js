@@ -74,7 +74,6 @@
             var me = this,
                 ddConfig;
             var customHeader = me.items.items[0].dockedItems.items[1];
-            console.log(customHeader);
 
             ddConfig = Ext.applyIf({
                 el: me.el,

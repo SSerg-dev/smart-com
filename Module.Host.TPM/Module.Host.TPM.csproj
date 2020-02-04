@@ -186,6 +186,7 @@
     <Compile Include="Actions\Notifications\PromoApprovedNotificationAction.cs" />
     <Compile Include="Actions\Notifications\PromoOnRejectNotificationAction.cs" />
     <Compile Include="Actions\Notifications\PromoOnApprovalNotificationAction.cs" />
+    <Compile Include="Actions\Notifications\PromoROIReportNotificationAction.cs" />
     <Compile Include="Actions\Notifications\WeekBeforeDispatchPromoNotificationAction.cs" />
     <Compile Include="Actions\Notifications\CancelledPromoNotificationAction.cs" />
     <Compile Include="Actions\XLSXImportActualLsvAction.cs" />
@@ -246,6 +247,7 @@
     <Compile Include="Handlers\Notifications\ClientTreeNeedUpdateNotificationHandler.cs" />
     <Compile Include="Handlers\PromoListActualRecalculationHandler.cs" />
     <Compile Include="Handlers\PromoListPlanRecalculationHandler.cs" />
+    <Compile Include="Handlers\Notifications\PromoROIReportNotificationHandler.cs" />
     <Compile Include="Handlers\RemoveDeletedDataHandler.cs" />
     <Compile Include="Handlers\CalculateBudgetsHandler.cs" />
     <Compile Include="Handlers\BaseLineUpgradeHandler.cs" />

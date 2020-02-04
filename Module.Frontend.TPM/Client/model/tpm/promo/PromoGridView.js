@@ -73,6 +73,12 @@
         // Growth Acceleration
         { name: 'IsGrowthAcceleration', type: 'boolean', hidden: false, isDefault: true },
         { name: 'PromoTypesName', useNull: true, type: 'string', hidden: false, isDefault: true },
+
+        { name: 'ActualPromoLSVByCompensation', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'PlanPromoLSV', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'ActualPromoLSV', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'ActualPromoBaselineLSV', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'ActualPromoIncrementalLSV', useNull: true, type: 'float', hidden: false, isDefault: false }
     ],
     proxy: {
         type: 'breeze',

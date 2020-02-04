@@ -9,7 +9,7 @@
 
 	items: [{
 		xtype: 'container',
-		itemId: 'associatedpromosupportcontainer',
+        itemId: 'associatednonpromosupportcontainer',
 		margin: '10 0 20 20',
 		layout: {
 			type: 'vbox',
@@ -19,7 +19,19 @@
 			xtype: 'nonpromosupport',
 			minHeight: 150,
 			flex: 1,
-			suppressSelection: false,
-		}]
+            suppressSelection: false,
+            linkConfig: {
+                'nonpromosupportbrandtechdetail': { masterField: 'Id', detailField: 'NonPromoSupportId' }
+            }
+        }, {
+            flex: 0,
+            xtype: 'splitter',
+            cls: 'associated-splitter'
+        }, {
+            xtype: 'nonpromosupportbrandtechdetail',
+            minHeight: 150,
+            flex: 1,
+            suppressSelection: false
+        }]
 	}]
 });

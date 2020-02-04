@@ -64,7 +64,8 @@ namespace Module.Persist.TPM {
             modelBuilder.Entity<PromoSupport>().HasMany(p => p.PromoSupportPromo)
                 .WithRequired(p => p.PromoSupport);
 			modelBuilder.Entity<NonPromoSupport>();
-			modelBuilder.Entity<PostPromoEffect>();
+            modelBuilder.Entity<NonPromoSupportBrandTech>();
+            modelBuilder.Entity<PostPromoEffect>();
             modelBuilder.Entity<PromoSupportPromo>();
             modelBuilder.Entity<PromoProductTree>();
             modelBuilder.Entity<COGS>();
@@ -272,6 +273,8 @@ namespace Module.Persist.TPM {
             builder.EntitySet<BudgetItem>("DeletedBudgetItems").HasRequiredBinding(e => e.Budget, "Budgets");
             builder.Entity<BudgetItem>().Collection.Action("ExportXLSX");
             builder.Entity<BudgetItem>().Collection.Action("FullImportXLSX");
+  
+             
 
             builder.EntitySet<Promo>("Promoes");
             builder.EntitySet<Promo>("DeletedPromoes");
@@ -309,7 +312,8 @@ namespace Module.Persist.TPM {
             builder.Entity<Promo>().Collection.Action("ExportXLSX");
             builder.Entity<Promo>().Collection.Action("FullImportXLSX");
             builder.Entity<Promo>().Collection.Action("DeclinePromo");
-            builder.Entity<Promo>().Collection.Action("GetApprovalHistory"); 
+            builder.Entity<Promo>().Collection.Action("GetUserDashboardsCount");
+            builder.Entity<Promo>().Collection.Action("GetApprovalHistory");
             builder.Entity<Promo>().Collection.Action("CalculateMarketingTI");
             builder.Entity<Promo>().Collection.Action("ChangeStatus");
             builder.Entity<Promo>().Collection.Action("ExportPromoROIReportXLSX");
@@ -538,16 +542,23 @@ namespace Module.Persist.TPM {
 			builder.EntitySet<NonPromoSupport>("DeletedNonPromoSupports").HasOptionalBinding(e => e.ClientTree, "ClientTrees");
 			builder.EntitySet<NonPromoSupport>("NonPromoSupports").HasOptionalBinding(e => e.NonPromoEquipment, "NonPromoEquipments");
 			builder.EntitySet<NonPromoSupport>("DeletedNonPromoSupports").HasOptionalBinding(e => e.NonPromoEquipment, "NonPromoEquipments");
-			builder.EntitySet<NonPromoSupport>("NonPromoSupports").HasOptionalBinding(e => e.BrandTech, "BrandTeches");
-			builder.EntitySet<NonPromoSupport>("DeletedNonPromoSupports").HasOptionalBinding(e => e.BrandTech, "BrandTeches");
 			builder.Entity<NonPromoSupport>().Collection.Action("ExportXLSX");
 			builder.Entity<NonPromoSupport>().Collection.Action("FullImportXLSX");
 			builder.Entity<NonPromoSupport>().Collection.Action("GetNonPromoSupportGroup");
 			builder.Entity<NonPromoSupport>().Collection.Action("UploadFile");
 			builder.Entity<NonPromoSupport>().Collection.Action("DownloadFile");
-			builder.Entity<NonPromoSupport>().Collection.Action("GetUserTimestamp");
 
-			builder.EntitySet<PostPromoEffect>("PostPromoEffects");
+            builder.EntitySet<NonPromoSupportBrandTech>("NonPromoSupportBrandTeches");
+            builder.EntitySet<NonPromoSupportBrandTech>("DeletedNonPromoSupportBrandTeches");
+            builder.EntitySet<NonPromoSupportBrandTech>("NonPromoSupportBrandTeches").HasRequiredBinding(e => e.NonPromoSupport, "NonPromoSupports");
+            builder.EntitySet<NonPromoSupportBrandTech>("NonPromoSupportBrandTeches").HasRequiredBinding(e => e.BrandTech, "BrandTeches");
+            builder.EntitySet<NonPromoSupportBrandTech>("DeletedNonPromoSupportBrandTeches").HasRequiredBinding(e => e.NonPromoSupport, "NonPromoSupports");
+            builder.EntitySet<NonPromoSupportBrandTech>("DeletedNonPromoSupportBrandTeches").HasRequiredBinding(e => e.BrandTech, "BrandTeches");
+            builder.Entity<NonPromoSupportBrandTech>().HasRequired(n => n.NonPromoSupport, (n, nps) => n.NonPromoSupportId == nps.Id);
+            builder.Entity<NonPromoSupportBrandTech>().HasRequired(n => n.BrandTech, (n, bt) => n.NonPromoSupportId == bt.Id);
+            builder.Entity<NonPromoSupportBrandTech>().Collection.Action("ModifyNonPromoSupportBrandTechList");
+
+            builder.EntitySet<PostPromoEffect>("PostPromoEffects");
             builder.EntitySet<PostPromoEffect>("DeletedPostPromoEffects");
             builder.EntitySet<HistoricalPostPromoEffect>("HistoricalPostPromoEffects");            
             builder.EntitySet<PostPromoEffect>("PostPromoEffects").HasRequiredBinding(e => e.ClientTree, "ClientTrees");
