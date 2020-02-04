@@ -176,7 +176,7 @@ namespace Module.Host.TPM.Handlers {
 
         private void WriteUpliftIncident(Guid promoId, DatabaseContext context) {
 			// Закрываем неактуальные инциденты
-			var oldIncidents = context.Set<PromoUpliftFailIncident>().Where(x => x.PromoId == promoId && x.ProcessDate != null);
+			var oldIncidents = context.Set<PromoUpliftFailIncident>().Where(x => x.PromoId == promoId && x.ProcessDate == null);
 			foreach (var incident in oldIncidents)
 			{
 				incident.ProcessDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
