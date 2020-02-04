@@ -22,6 +22,8 @@ namespace Module.Persist.TPM.Model.TPM {
         public double? ActualCostTE { get; set; }
         public DateTimeOffset? StartDate { get; set; }
         public DateTimeOffset? EndDate { get; set; }
+        public double? PlanProdCostPer1Item { get; set; }
+        public double? ActualProdCostPer1Item { get; set; }
         public double? PlanProdCost { get; set; }
         public double? ActualProdCost { get; set; }
         public string UserTimestamp { get; set; }

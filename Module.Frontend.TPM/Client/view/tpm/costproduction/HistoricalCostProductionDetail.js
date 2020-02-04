@@ -36,6 +36,14 @@
             fieldLabel: l10n.ns('tpm', 'HistoricalCostProduction').value('EndDate'),
         }, {
             xtype: 'singlelinedisplayfield',
+            name: 'PlanProdCostPer1Item',
+            fieldLabel: l10n.ns('tpm', 'HistoricalCostProduction').value('PlanProdCostPer1Item'),
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'ActualProdCostPer1Item',
+            fieldLabel: l10n.ns('tpm', 'HistoricalCostProduction').value('ActualProdCostPer1Item'),
+        }, {
+            xtype: 'singlelinedisplayfield',
             name: 'PlanProdCost',
             fieldLabel: l10n.ns('tpm', 'HistoricalCostProduction').value('PlanProdCost'),
         }, {

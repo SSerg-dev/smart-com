@@ -15,6 +15,8 @@
         { name: 'ActualCostTE', type: 'float', hidden: false, isDefault: true },
         { name: 'StartDate', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
         { name: 'EndDate', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
+        { name: 'PlanProdCostPer1Item', type: 'float', hidden: true, isDefault: false },
+        { name: 'ActualProdCostPer1Item', type: 'float', hidden: true, isDefault: false },
         { name: 'PlanProdCost', type: 'float', hidden: true, isDefault: false },
         { name: 'ActualProdCost', type: 'float', hidden: true, isDefault: false },
         { name: 'AttachFileName', type: 'string', hidden: true, isDefault: false },
