@@ -137,8 +137,11 @@ namespace Module.Host.TPM.Actions.Notifications {
 			notifyBody = String.Format(template, string.Join("", allRows));
 
 			emailArray = emailsWithoutConstraints.ToArray();
-			SendNotificationByEmails(notifyBody, notificationName, emailArray);
-			Results.Add(String.Format("Notifications about fail of uplift culculation for promoes {0} were sent to {1}.", String.Join(", ", logPromoNums.Distinct()), String.Join(", ", emailArray)), null);
+			if (emailArray.Any())
+			{
+				SendNotificationByEmails(notifyBody, notificationName, emailArray);
+				Results.Add(String.Format("Notifications about fail of uplift culculation for promoes {0} were sent to {1}.", String.Join(", ", logPromoNums.Distinct()), String.Join(", ", emailArray)), null);
+			}
 			foreach (var incident in incidentsForNotify)
 			{
 				incident.ProcessDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);

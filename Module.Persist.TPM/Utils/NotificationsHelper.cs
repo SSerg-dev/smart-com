@@ -86,7 +86,7 @@ namespace Module.Persist.TPM.Utils
 								.Where(x => roles.Contains(x.SystemName) && !x.Disabled)
 								.Select(y => y.Id.ToString()).ToArray();
 
-							if (!context.UserRoles.Any(x => x.IsDefault && roleIds.Contains(x.RoleId.ToString()) && x.User.Name == valueAndType.Item1))
+							if (!context.UserRoles.Any(x => x.IsDefault && !x.Role.Disabled && !x.User.Disabled && roleIds.Contains(x.RoleId.ToString()) && x.User.Name == valueAndType.Item1))
 							{
 								errors.Add(String.Format("The user with the name {0} has an inappropriate default role", valueAndType.Item1));
 								continue;
@@ -96,7 +96,7 @@ namespace Module.Persist.TPM.Utils
 
 						break;
 					case "Role":
-						Guid roleId = context.Roles.Where(x => x.SystemName == valueAndType.Item1).Select(y => y.Id).FirstOrDefault();
+						Guid roleId = context.Roles.Where(x => x.SystemName == valueAndType.Item1 && !x.Disabled).Select(y => y.Id).FirstOrDefault();
 
 						if (roleId.Equals(Guid.Empty))
 						{
@@ -113,13 +113,13 @@ namespace Module.Persist.TPM.Utils
 							}
 
 							users.AddRange(context.UserRoles
-								.Where(x => x.RoleId == roleId && x.IsDefault && roles.Contains(x.Role.SystemName))
+								.Where(x => x.RoleId == roleId && x.IsDefault && roles.Contains(x.Role.SystemName) && !x.Role.Disabled && !x.User.Disabled)
 								.Select(y => y.UserId));
 						}
 						else
 						{
 							users.AddRange(context.UserRoles
-								.Where(x => x.RoleId == roleId && x.IsDefault)
+								.Where(x => x.RoleId == roleId && x.IsDefault && !x.User.Disabled && !x.Role.Disabled)
 								.Select(y => y.UserId));
 						}
 						break;
@@ -143,7 +143,6 @@ namespace Module.Persist.TPM.Utils
 				.Where(y => y.Name == notificationName && !y.Disabled)
 				.Select(x => x.Id).FirstOrDefault();
 
-			// Находим гарантированного получателя
 			string toMail = String.Empty;
 			if (getUserFromSettings)
 			{
@@ -153,7 +152,6 @@ namespace Module.Persist.TPM.Utils
 
 			}
 
-			// Находим дополнительных получателей
 			List<Recipient> recipients = context.Recipients
 				.Where(x => x.MailNotificationSettingId == mailNotificationSettingsId).ToList();
 
