@@ -1155,8 +1155,10 @@ Ext.override(Ext.LoadMask, {
             // it seems silly to add 1 to have it subtracted in the call below,
             // but this allows the x-mask el to have the correct z-index (same as the component)
             // so instead of directly changing the zIndexStack just get the z-index of the owner comp
-            var zIndex = owner.el.getStyle('zIndex');
-            index = (Ext.isNumeric(zIndex) ? parseInt(zIndex, 10) : 1) + 1;
+            if (owner.el) {
+                var zIndex = owner.el.getStyle('zIndex');
+                index = (Ext.isNumeric(zIndex) ? parseInt(zIndex, 10) : 1) + 1;
+            }
         }
 
         me.getMaskEl().setStyle('zIndex', this.fixedZIndex || index - 1);

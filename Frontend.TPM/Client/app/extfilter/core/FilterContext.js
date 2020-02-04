@@ -5,6 +5,8 @@
         bindable: 'Ext.util.Bindable'
     },
 
+    needShowTextFilterFirst: false,
+
     constructor: function (config) {
         this.callParent(arguments);
         this.mixins.observable.constructor.call(this, config);
@@ -71,6 +73,17 @@
 
     getFilterModel: function () {
         return this.activeModel;
+    },
+
+    getFilterModelById: function (modelId) {
+        var supportedModels = this.getSupportedModels();
+        var model = supportedModels.filter(function (x) { return x.modelId == modelId })[0];
+
+        if (model) {
+            this.activeModel = model;
+        }
+
+        return model;
     },
 
     getSupportedModels: function () {

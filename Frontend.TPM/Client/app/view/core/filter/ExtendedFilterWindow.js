@@ -110,7 +110,7 @@
 
         App.Util.callWhenRendered(this, function () {
             this.initButtons();
-            this.renderContext();
+            this.renderContext(ctx.needShowTextFilterFirst);
         });
     },
 
@@ -118,8 +118,17 @@
         return this.filterContext;
     },
 
-    renderContext: function () {
-        var filterModel = this.getFilterContext().getFilterModel();
+    renderContext: function (needShowTextFilterFirst) {
+        var filterContext = this.getFilterContext();
+        var filterModel = filterContext.getFilterModel();
+
+        if (needShowTextFilterFirst) {
+            var textFilterModel = filterContext.getFilterModelById('eftextmodel');
+            if (textFilterModel) {
+                textFilterModel.updateFromFilter(filterContext.filter);
+                filterModel = textFilterModel;
+            }
+        }
 
         if (!filterModel) {
             return;
@@ -132,6 +141,8 @@
         this.modelContainer.removeAll();
         this.modelContainer.add(this.activeView);
         Ext.resumeLayouts(true);
+
+        filterContext.needShowTextFilterFirst = false;
     },
 
     initButtons: function () {

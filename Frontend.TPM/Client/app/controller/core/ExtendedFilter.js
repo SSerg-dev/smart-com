@@ -60,7 +60,10 @@
 
     onWindowShow: function (window) {
         this.constrainExtFilterWindow(window);
-        window.down('extfilterrow').focus(); // При открыти окна перемещаем фокус на форму
+        var filterRow = window.down('extfilterrow');
+        if (filterRow) {
+            filterRow.focus();
+        }
     },
 
     onWindowResize: function (window) {
@@ -108,7 +111,12 @@
 
     onRejectButtonClick: function (button) {
         var filterWindow = button.up('extfilter');
-        filterWindow.down('extselectionfilter').focus(); // После очистки фильтра фокус остаётся на кнопке, перемещаем фокус на форму.
+
+        var selectionFilter = filterWindow.down('extselectionfilter');
+        if (selectionFilter) {
+            selectionFilter.focus();
+        }
+
         filterWindow.getFilterContext().clear();   
     },
 
