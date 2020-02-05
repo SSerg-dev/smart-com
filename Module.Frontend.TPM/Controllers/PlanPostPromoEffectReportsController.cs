@@ -162,7 +162,7 @@ namespace Module.Frontend.TPM.Controllers {
                 var weekStart = promoEffectBegin.AddDays(marsWeekBeginDiff);
                 var week = TimeSpan.FromDays(7);
 
-				if (String.IsNullOrEmpty(clientTree.DemandCode))
+				if (clientTree != null && String.IsNullOrEmpty(clientTree.DemandCode))
                 {
                     clientTree = clientTrees.FirstOrDefault(y => y.ObjectId == clientTree.parentId && DateTime.Compare(y.StartDate, dateTimeNow) <= 0 && (!y.EndDate.HasValue || DateTime.Compare(y.EndDate.Value, dateTimeNow) > 0));
                     if (clientTree != null && !String.IsNullOrEmpty(clientTree.DemandCode))
