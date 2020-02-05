@@ -6,8 +6,8 @@ DECLARE @promoRoiReportMarsWeekName VARCHAR(255) = 'PROMO_ROI_REPORT_MARS_WEEK_N
 DELETE [dbo].[Recipient]  WHERE [MailNotificationSettingId] = (SELECT TOP(1) Id FROM [dbo].[MailNotificationSetting] WHERE [name] = @notificationname AND [Disabled] = 0);
 DELETE [dbo].[MailNotificationSetting]  WHERE [Name] = @notificationName;
 DELETE [dbo].[LoopHandler]  WHERE [Name] = @handlerName;
-DELETE [dbo].[LoopHandler]  WHERE [Name] = @promoRoiReportMarsDayFullNameWithoutYear;
-DELETE [dbo].[LoopHandler]  WHERE [Name] = @promoRoiReportMarsWeekName;
+DELETE [dbo].[Setting]  WHERE [Name] = @promoRoiReportMarsDayFullNameWithoutYear;
+DELETE [dbo].[Setting]  WHERE [Name] = @promoRoiReportMarsWeekName;
 
 INSERT INTO [dbo].[MailNotificationSetting] ([Id] ,[Name] ,[Description] ,[Subject] ,[Body] ,[IsDisabled] ,[To] ,[CC] ,[BCC] ,[Disabled] ,[DeletedDate])
      VALUES (NEWID() ,@notificationName ,'Promo ROI Report notification.' ,'Promo ROI Report' ,'/' ,0 ,'' ,NULL ,NULL ,0 ,NULL);

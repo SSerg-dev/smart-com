@@ -1892,7 +1892,7 @@
     <Content Include="SQLInitialize\20191203_1730_NonPromoSupport_AP.sql" />
     <Content Include="SQLInitialize\20191203_2300_NonPromoSupport_Incremental_Trigger.sql" />
     <Content Include="SQLInitialize\20200203_1500_AlterPromoGridView_For_UserDashboard.sql" />
-    <Content Include="SQLInitialize\20200203_1700_PromoROIReportNotificationAndHandler.sql" />
+    <Content Include="SQLInitialize\20200205_1700_PromoROIReportNotificationAndHandler.sql" />
     <Content Include="SQLInitialize\20200120_1500_AlterPromoGridView_For_UserDashboard.sql" />
     <Content Include="SQLInitialize\20191217_1501_Delete_Statuses_AP_Delete.sql" />
     <Content Include="SQLInitialize\20191218_1354_Add_Promo_Reset_Support_Admin_AP.sql" />
