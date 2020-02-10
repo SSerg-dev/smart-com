@@ -1,7 +1,7 @@
 ﻿l10n.defineLocalization('tpm', {
     'mainmenu': {
         'ProductItem': 'Product',
-        'UserDashboard':'Home',
+        'UserDashboard':'User Dashboard',
         'SubrangeItem': 'Subrange',
         'CategoryItem': 'Category',
         'BrandItem': 'Brand',
