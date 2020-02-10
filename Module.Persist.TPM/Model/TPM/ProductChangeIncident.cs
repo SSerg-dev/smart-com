@@ -21,6 +21,8 @@ namespace Module.Persist.TPM.Model.TPM {
 		public Boolean IsDeleteInMatrix { get; set; }
 		public Boolean IsRecalculated { get; set; }
 
+		public bool Disabled { get; set; }
+
 		public virtual Product Product { get; set; }
     }
 }

@@ -49,6 +49,11 @@ namespace Module.Host.TPM.Handlers.DataFlow
                         changeIncident.Disabled = true;
                     }
 
+                    foreach (var productChangeIncident in databaseContext.Set<ProductChangeIncident>().Where(x => x.RecalculationProcessDate == null))
+                    {
+                        productChangeIncident.Disabled = true;
+                    }
+
                     var handler = new LoopHandler()
                     {
                         Id = Guid.NewGuid(),

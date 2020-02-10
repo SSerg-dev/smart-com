@@ -460,7 +460,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
                             changesIncident.ProcessDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
                         }
 
-                        var productChangeIncidents = context.Set<ProductChangeIncident>().Where(x => x.RecalculationProcessDate == null);
+                        var productChangeIncidents = context.Set<ProductChangeIncident>().Where(x => x.RecalculationProcessDate == null && x.Disabled);
                         foreach (var productChangeIncident in productChangeIncidents)
                         {
                             productChangeIncident.RecalculationProcessDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
