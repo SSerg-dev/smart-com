@@ -460,7 +460,7 @@ Ext.override(Ext.view.Table, {
 
     refresh: function () {
         var isScheduler = this.xtype == "schedulergridview" || this.up('scheduler');
-        if (this.panel.scroll === false || !this.getTargetEl() || this.xtype === "treeview" || isScheduler) {
+        if ((this.panel.scroll === false && this.lockingPartner && this.lockingPartner.scroll === false) || !this.getTargetEl() || this.xtype === "treeview" || isScheduler) {
             this.callParent(arguments);
             return;
         }
@@ -954,7 +954,7 @@ Ext.override(Ext.grid.plugin.BufferedRenderer, {
         // Keep other side synced immediately if there was no rendering work to do.
         if (!scrollHandled) {
             if (me.lockingPartner && me.lockingPartner.scrollTop !== scrollTop) {
-                me.lockingPartner.view.getTargetEl().dom.scrollTop = scrollTop;
+                this.setLockedScroll(me);
             }
         }
     },
@@ -1002,7 +1002,7 @@ Ext.override(Ext.grid.plugin.BufferedRenderer, {
 
         // If we did not have to render, then just sync the partner's scroll position
         if (me.lockingPartner && me.lockingPartner.view.getTargetEl() && me.lockingPartner.scrollTop !== me.scrollTop) {
-            me.lockingPartner.view.getTargetEl().dom.scrollTop = me.scrollTop;
+            this.setLockedScroll(me);
         }
     },
 
@@ -1088,9 +1088,27 @@ Ext.override(Ext.grid.plugin.BufferedRenderer, {
         if (lockingPartner && !lockingPartner.disabled && !fromLockingPartner) {
             lockingPartner.onRangeFetched(range, start, end, true);
             if (lockingPartner.scrollTop !== me.scrollTop) {
-                lockingPartner.view.getTargetEl().dom.scrollTop = me.scrollTop;
+                this.setLockedScroll(me);
             }
         }
+    },
+
+    setLockedScroll: function (me) {
+        var gridView = me.lockingPartner.view.getEl();
+        var partPane = me.lockingPartner.view.getTargetEl();
+        var partDrag = gridView.down('.jspDrag');
+        var verticalBar = gridView.down('.jspTrack');
+        var diff = partPane.dom.scrollHeight - verticalBar.dom.scrollHeight;
+        if (diff === 0 || diff === null) { diff = 1 }
+        var topScroll = me.scrollTop / diff;
+        if (topScroll > 1) topScroll = 1;
+        var dragMax = verticalBar.dom.scrollHeight - partDrag.dom.scrollHeight;
+
+        partPane.dom.scrollTop = me.scrollTop;
+        partPane.dom.style.top = -me.scrollTop + "px";
+        partDrag.dom.style.top = (topScroll * dragMax) + "px";
+        me.lockingPartner.view.getTargetEl().dom.scrollTop = me.scrollTop;
+        me.lockingPartner.scrollTop = me.scrollTop;
     },
 
     setBodyTop: function (bodyTop, calculatedTop) {
