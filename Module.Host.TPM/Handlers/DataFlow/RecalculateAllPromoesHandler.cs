@@ -44,6 +44,11 @@ namespace Module.Host.TPM.Handlers.DataFlow
                 var blockedPromoes = databaseContext.Set<BlockedPromo>().Where(x => x.Disabled == false);
                 if (blockedPromoes.Count() == 0)
                 {
+                    foreach (var changeIncident in databaseContext.Set<ChangesIncident>().Where(x => x.ProcessDate == null))
+                    {
+                        changeIncident.Disabled = true;
+                    }
+
                     var handler = new LoopHandler()
                     {
                         Id = Guid.NewGuid(),

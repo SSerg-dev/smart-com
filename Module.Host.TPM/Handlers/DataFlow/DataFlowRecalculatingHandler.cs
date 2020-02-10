@@ -454,7 +454,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
 
                     if (success)
                     {
-                        var changesIncidents = context.Set<ChangesIncident>().Where(x => x.ProcessDate == null);
+                        var changesIncidents = context.Set<ChangesIncident>().Where(x => x.ProcessDate == null && x.Disabled);
                         foreach (var changesIncident in changesIncidents)
                         {
                             changesIncident.ProcessDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
