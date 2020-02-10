@@ -332,7 +332,17 @@
                 },
                 {
                     property: "DispatchesStart", operation: "LessThan", value: date
-                }
+                    },{
+                        property: "IsCMManagerApproved", operation: "Equals", value: true
+                    }, {
+                        operator: "or",
+                        rules: [{
+                            property: "IsDemandPlanningApproved", operation: "Equals", value: null
+                        },
+                        {
+                            property: "IsDemandPlanningApproved", operation: "Equals", value: false
+                        }]
+                    }, 
                 ]
             };
 
@@ -504,7 +514,20 @@
                 },
                 {
                     property: "DispatchesStart", operation: "LessThan", value: date
-                }
+                    }, {
+                        property: "IsCMManagerApproved", operation: "Equals", value: true
+                    }, {
+                        property: "IsDemandPlanningApproved", operation: "Equals", value: true
+                    },
+                    {
+                        operator: "or",
+                        rules: [{
+                            property: "IsDemandFinanceApproved", operation: "Equals", value: null
+                        },
+                        {
+                            property: "IsDemandFinanceApproved", operation: "Equals", value: false
+                        }]
+                    }, 
                 ]
             };
 
@@ -769,7 +792,15 @@
                 },
                 {
                     property: "DispatchesStart", operation: "LessThan", value: date
-                }
+                    }, {
+                        operator: "or",
+                        rules: [{
+                            property: "IsCMManagerApproved", operation: "Equals", value: null
+                        },
+                        {
+                            property: "IsCMManagerApproved", operation: "Equals", value: false
+                        }]
+                    }
                 ]
             };
 
