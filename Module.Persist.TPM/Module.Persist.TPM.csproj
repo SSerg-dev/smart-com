@@ -1654,6 +1654,10 @@
     <Compile Include="Migrations\202002101348033_ProductChangeIncident_Disabled.Designer.cs">
       <DependentUpon>202002101348033_ProductChangeIncident_Disabled.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202002121059314_EmptyMigrationRC5.cs" />
+    <Compile Include="Migrations\202002121059314_EmptyMigrationRC5.Designer.cs">
+      <DependentUpon>202002121059314_EmptyMigrationRC5.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\PromoProductsView.cs" />
     <Compile Include="Model\DTO\ClientTreeSharesView.cs" />
@@ -3119,6 +3123,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202002101348033_ProductChangeIncident_Disabled.resx">
       <DependentUpon>202002101348033_ProductChangeIncident_Disabled.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002121059314_EmptyMigrationRC5.resx">
+      <DependentUpon>202002121059314_EmptyMigrationRC5.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
