@@ -53,7 +53,7 @@ namespace Module.Frontend.TPM.Controllers
                 .ToList() : new List<Constraint>();
             IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
 
-            var query = Context.Set<ClientTreeBrandTech>().AsQueryable();
+            var query = Context.Set<ClientTreeBrandTech>().Where(x => !x.Disabled).AsQueryable();
             IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
             query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
 
@@ -251,9 +251,8 @@ namespace Module.Frontend.TPM.Controllers
         /// <returns></returns>
         private IQueryable<ClientTreeBrandTech> GetFilteredActualQuery()
         {
-            var clientTreeBrandTeches = GetConstraintedQuery().ToList();
             var actualClientTreeBrandTeches = GetActualQuery(Context);
-            return clientTreeBrandTeches.Intersect(actualClientTreeBrandTeches).AsQueryable();
+            return actualClientTreeBrandTeches.AsQueryable();
         }
 
         /// <summary>
