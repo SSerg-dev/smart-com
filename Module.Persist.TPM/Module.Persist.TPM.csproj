@@ -1642,6 +1642,14 @@
     <Compile Include="Migrations\202002042005395_EmptyMigrationRC4.Designer.cs">
       <DependentUpon>202002042005395_EmptyMigrationRC4.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202001301211250_Add_ActualCOGSTI_Tables.cs" />
+    <Compile Include="Migrations\202001301211250_Add_ActualCOGSTI_Tables.Designer.cs">
+      <DependentUpon>202001301211250_Add_ActualCOGSTI_Tables.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202002060843055_EmptyMigrationActualCOGSTI.cs" />
+    <Compile Include="Migrations\202002060843055_EmptyMigrationActualCOGSTI.Designer.cs">
+      <DependentUpon>202002060843055_EmptyMigrationActualCOGSTI.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\202002101348033_ProductChangeIncident_Disabled.cs" />
     <Compile Include="Migrations\202002101348033_ProductChangeIncident_Disabled.Designer.cs">
       <DependentUpon>202002101348033_ProductChangeIncident_Disabled.cs</DependentUpon>
@@ -1658,6 +1666,7 @@
     <Compile Include="Model\DTO\SchedulerClientTreeDTO.cs" />
     <Compile Include="Model\History\HistoricalAssortmentMatrix.cs" />
     <Compile Include="Model\History\HistoricalBrand.cs" />
+    <Compile Include="Model\History\HistoricalActualCOGS.cs" />
     <Compile Include="Model\History\HistoricalNonPromoEquipment.cs" />
     <Compile Include="Model\History\HistoricalCostProduction.cs" />
     <Compile Include="Model\History\HistoricalIncrementalPromo.cs" />
@@ -1697,6 +1706,7 @@
     <Compile Include="Model\History\HistoricalPromoStatus.cs" />
     <Compile Include="Model\History\HistoricalRegion.cs" />
     <Compile Include="Model\History\HistoricalCOGS.cs" />
+    <Compile Include="Model\History\HistoricalActualTradeInvestment.cs" />
     <Compile Include="Model\History\HistoricalTradeInvestment.cs" />
     <Compile Include="Model\History\HistoricalRetailType.cs" />
     <Compile Include="Model\History\HistoricalSale.cs" />
@@ -1743,6 +1753,7 @@
     <Compile Include="Model\Import\ImportTradeInvestment.cs" />
     <Compile Include="Model\SimpleModel\MARS_UNIVERSAL_PETCARE_MATERIALS.cs" />
     <Compile Include="Model\SimpleModel\MarsUniversalPetcareCustomers.cs" />
+    <Compile Include="Model\SimpleModel\SimplePromoCOGSTI.cs" />
     <Compile Include="Model\TPM\ActualLsvModel.cs" />
     <Compile Include="Model\TPM\BlockedPromo.cs" />
     <Compile Include="Model\TPM\AssortmentMatrix.cs" />
@@ -1837,6 +1848,10 @@
     <Compile Include="PromoStateControl\UserRoles.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CalculatePromoParametersModule\PlanProductParametersCalculation.cs" />
+    <Content Include="SQLInitialize\20200127_2140_Add_ActualCOGSTIMethods_AP.sql" />
+    <Content Include="SQLInitialize\20200127_1940_Add_ActualCOGSTICheckPromoStatusList_Setting.sql" />
+    <Content Include="SQLInitialize\20200126_1935_Add_ActualTI_AP.sql" />
+    <Content Include="SQLInitialize\20200126_1930_Add_ActualCOGS_AP.sql" />
     <Content Include="SQLInitialize\201912301400_Delete_AP_DependedOnMe_SupportAdmin_2.sql" />
     <Content Include="SQLInitialize\20191226_1400_File_AP_ResultFilesDownload_SupportAdmin.sql" />
     <Content Include="SQLInitialize\20191223_2110_FixMarsCutomersCheckHandler.sql" />
@@ -3095,6 +3110,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202002042005395_EmptyMigrationRC4.resx">
       <DependentUpon>202002042005395_EmptyMigrationRC4.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001301211250_Add_ActualCOGSTI_Tables.resx">
+      <DependentUpon>202001301211250_Add_ActualCOGSTI_Tables.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002060843055_EmptyMigrationActualCOGSTI.resx">
+      <DependentUpon>202002060843055_EmptyMigrationActualCOGSTI.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202002101348033_ProductChangeIncident_Disabled.resx">
       <DependentUpon>202002101348033_ProductChangeIncident_Disabled.cs</DependentUpon>

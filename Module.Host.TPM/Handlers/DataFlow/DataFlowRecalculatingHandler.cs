@@ -419,6 +419,47 @@ namespace Module.Host.TPM.Handlers.DataFlow
                         }
                     }
 
+                    List<Guid> promoIdsForRecalculatingActualOnly = HandlerDataHelper.GetIncomingArgument<List<Guid>>("PromoIdsForRecalculatingActualOnly", info.Data, false);
+                    handlerLogger.Write(true, String.Format("Amount of promo (previous year) for recalculating actual parameters in DataFLow Part 2: {0}", promoIdsForRecalculatingActualOnly.Count), "Message");
+
+                    List<Guid> actualCOGSPromoIds = HandlerDataHelper.GetIncomingArgument<List<Guid>>("ActualCOGSPromoIds", info.Data, false);
+                    List<Guid> actualTIPromoIds = HandlerDataHelper.GetIncomingArgument<List<Guid>>("ActualTIPromoIds", info.Data, false);
+
+                    foreach (var promoId in promoIdsForRecalculatingActualOnly)
+                    {
+                        Promo promo = context.Set<Promo>().Where(x => x.Id == promoId && !x.Disabled).FirstOrDefault();
+                        logLine = String.Format("Recalculating promo from previous year (Actual promo parameters) number: {0}", promo.Number);
+                        handlerLogger.Write(true, logLine, "Message");
+
+                        var useActualCOGS = actualCOGSPromoIds.Contains(promoId);
+                        var useActualTI = actualTIPromoIds.Contains(promoId);
+
+                        swActualPromoParameters_Part02.Restart();
+                        message = ActualPromoParametersCalculation.CalculatePromoParameters(promo, context, false, true, useActualCOGS, useActualTI);
+                        swActualPromoParameters_Part02.Stop();
+                        // записываем ошибки если они есть
+                        if (message != null)
+                        {
+                            WriteErrorsInLog(handlerLogger, message);
+                        }
+
+                        totalSecondActualPromoCalculatingPart02 += swActualPromoParameters_Part02.Elapsed.TotalSeconds;
+
+                        if (!minActualCalculatingDurationPart02.HasValue || minActualCalculatingDurationPart02.Value > swActualPromoParameters_Part02.Elapsed.TotalSeconds)
+                        {
+                            minActualCalculatingDurationPart02 = swActualPromoParameters_Part02.Elapsed.TotalSeconds;
+                            minActualCalculatinPromoNumberPart02 = promo.Number;
+                        }
+
+                        if (!maxActualCalculatingDurationPart02.HasValue || maxActualCalculatingDurationPart02.Value < swActualPromoParameters_Part02.Elapsed.TotalSeconds)
+                        {
+                            maxActualCalculatingDurationPart02 = swActualPromoParameters_Part02.Elapsed.TotalSeconds;
+                            maxActualCalculatinPromoNumberPart02 = promo.Number;
+                        }
+
+                        handlerLogger.Write(true, String.Format("Promo number: {0}. Duration: {1} seconds", promo.Number, swActualPromoParameters_Part02.Elapsed.TotalSeconds), "Timing");
+                    }
+
                     if (promoIdsForAllRecalculating.Count > 0)
                     {
                         double averageSecond = promoIdsForAllRecalculating.Count != 0 ? totalSecondActualPromoCalculatingPart02 / promoIdsForAllRecalculating.Count : 0;

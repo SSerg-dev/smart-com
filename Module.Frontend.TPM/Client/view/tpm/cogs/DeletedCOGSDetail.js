@@ -38,8 +38,8 @@
             fieldLabel: l10n.ns('tpm', 'COGS').value('BrandTechName')
         }, {
             xtype: 'singlelinedisplayfield',
-            name: 'LVSpercent',
-            fieldLabel: l10n.ns('tpm', 'COGS').value('LVSpercent')
+            name: 'LSVpercent',
+            fieldLabel: l10n.ns('tpm', 'COGS').value('LSVpercent')
         }]
     }
 })

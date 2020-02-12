@@ -35,6 +35,7 @@ using Module.Persist.TPM.Model.DTO;
 using System.Collections.Specialized;
 using Core.Dependency;
 using Module.Frontend.TPM.Util;
+using Module.Persist.TPM.Model.SimpleModel;
 
 namespace Module.Frontend.TPM.Controllers {
 
@@ -148,10 +149,12 @@ namespace Module.Frontend.TPM.Controllers {
                     DeletedDate = model.DeletedDate,
                     StartDate = model.StartDate,
                     EndDate = model.EndDate,
-                    LVSpercent = model.LVSpercent,
+                    LSVpercent = model.LSVpercent,
                     ClientTreeId = model.ClientTree.Id,
+                    BrandTech = model.BrandTech,
                     BrandTechId = model.BrandTechId,
-                    Year = model.Year
+                    Year = model.Year,
+                    Id = model.Id
                 };
 
                 patch.Patch(model);
@@ -160,7 +163,22 @@ namespace Module.Frontend.TPM.Controllers {
                 model.EndDate = ChangeTimeZoneUtil.ResetTimeZone(model.EndDate);
                 model.Year = model.StartDate.Value.Year;
 
-                string promoPatchDateCheckMsg = PromoDateCheck(oldModel); 
+                BrandTech newBrandtech = model.BrandTechId != null ? Context.Set<BrandTech>().Find(model.BrandTechId) : null;
+                var newModel = new COGS
+                {
+                    Disabled = model.Disabled,
+                    DeletedDate = model.DeletedDate,
+                    StartDate = model.StartDate,
+                    EndDate = model.EndDate,
+                    LSVpercent = model.LSVpercent,
+                    ClientTreeId = model.ClientTree.Id,
+                    BrandTech = newBrandtech != null ? newBrandtech : null,
+                    BrandTechId = model.BrandTechId,
+                    Year = model.Year,
+                    Id = model.Id
+                };
+
+                string promoPatchDateCheckMsg = PromoDateCheck(oldModel, newModel); 
                 if (promoPatchDateCheckMsg != null)
                 {
                     return InternalServerError(new Exception(promoPatchDateCheckMsg));
@@ -216,7 +234,7 @@ namespace Module.Frontend.TPM.Controllers {
                 model.DeletedDate = System.DateTime.Now;
                 model.Disabled = true;
 
-                string promoDeleteDateCheckMsg = PromoDateCheck(model); 
+                string promoDeleteDateCheckMsg = PromoDateCheck(model, null); 
                 if (promoDeleteDateCheckMsg != null)
                 {
                     return InternalServerError(new Exception(promoDeleteDateCheckMsg));
@@ -241,7 +259,7 @@ namespace Module.Frontend.TPM.Controllers {
                 new Column() { Order = 2, Field = "ClientTree.FullPathName", Header = "Client", Quoting = false },
                 new Column() { Order = 3, Field = "ClientTree.ObjectId", Header = "ClientId", Quoting = false },
                 new Column() { Order = 4, Field = "BrandTech.Name", Header = "BrandTech", Quoting = false },
-                new Column() { Order = 5, Field = "LVSpercent", Header = "LSVpercent", Quoting = false }
+                new Column() { Order = 5, Field = "LSVpercent", Header = "LSVpercent", Quoting = false }
             };
             return columns;
         }
@@ -273,7 +291,7 @@ namespace Module.Frontend.TPM.Controllers {
                 string fileName = await FileUtility.UploadFile(Request, importDir);
 
                 NameValueCollection form = System.Web.HttpContext.Current.Request.Form;
-                CreateImportTask(fileName, "FullXLSXCOGSUpdateImporHandler", form);
+                CreateImportTask(fileName, "FullXLSXCOGSUpdateImportHandler", form);
 
                 HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
                 result.Content = new StringContent("success = true");
@@ -305,6 +323,7 @@ namespace Module.Frontend.TPM.Controllers {
 
                 // параметры импорта
                 HandlerDataHelper.SaveIncomingArgument("CrossParam.Year", paramForm.GetStringValue("year"), data, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("ImportDestination", "COGS", data, throwIfNotExists: false);
 
                 HandlerDataHelper.SaveIncomingArgument("File", file, data, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
@@ -335,7 +354,6 @@ namespace Module.Frontend.TPM.Controllers {
         [ClaimsAuthorize]
         public IHttpActionResult DownloadTemplateXLSX() {
             try {
-
                 string templateDir = AppSettingsManager.GetSetting("TEMPLATE_DIRECTORY", "Templates");
                 string templateFilePath = Path.Combine(templateDir, "COGSPreTemplate.xlsx");
                 using (FileStream templateStream = new FileStream(templateFilePath, FileMode.Open, FileAccess.Read)) {
@@ -417,7 +435,7 @@ namespace Module.Frontend.TPM.Controllers {
             return true;
         }
 
-        public string PromoDateCheck(COGS model)
+        public string PromoDateCheck(COGS model, COGS newModel)
         {
             //Получаем все дочерние ClientTreeId 
             var currClientTree = Context.Set<ClientTree>().Where(x => !x.EndDate.HasValue && x.Id == model.ClientTreeId).FirstOrDefault();
@@ -435,7 +453,12 @@ namespace Module.Frontend.TPM.Controllers {
             var promoesToCheck = this.GetPromoesForCheck(Context, model, clientTreesIds);
 
             //Забираем COGS только для соответствующего дерева клиентов
-            var models = Context.Set<COGS>().Where(x => x.Id != model.Id && !x.Disabled && (parentIds.Contains(x.ClientTreeId) || clientTreesIds.Contains(x.ClientTreeId)));
+            var models = Context.Set<COGS>().Where(x => x.Id != model.Id && !x.Disabled && (parentIds.Contains(x.ClientTreeId) || clientTreesIds.Contains(x.ClientTreeId))).ToList();
+
+            if (newModel != null)
+            {
+                models.Add(newModel);
+            }
 
             //Соединяем, для получения полного дерева
             clientTreesIds.AddRange(parentIds);
@@ -449,66 +472,78 @@ namespace Module.Frontend.TPM.Controllers {
             return null;
         }
 
-        private IEnumerable<PromoSimpleCOGS> GetPromoesForCheck(DatabaseContext databaseContext, COGS model, List<int> ClientTreeIds)
+        private IEnumerable<SimplePromoCOGS> GetPromoesForCheck(DatabaseContext databaseContext, COGS model, List<int> ClientTreeIds)
         {
             var settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
             var statusesSetting = settingsManager.GetSetting<string>("NOT_CHECK_PROMO_STATUS_LIST", "Draft,Cancelled,Deleted,Closed");
             var notCheckPromoStatuses = statusesSetting.Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
 
-            //Получаем промо, подходящие под этот COGS
-            var promoes = databaseContext.Set<Promo>()
-            .Where(x => !x.Disabled && x.ClientTreeId.HasValue && ClientTreeIds.Contains((int)x.ClientTreeKeyId)
+            var query = databaseContext.Set<Promo>()
+                .Where(x => !x.Disabled && x.ClientTreeId.HasValue && ClientTreeIds.Contains((int)x.ClientTreeKeyId)
                 && model.StartDate.HasValue && model.EndDate.HasValue && x.DispatchesStart.HasValue
                 && DateTimeOffset.Compare(model.StartDate.Value, x.DispatchesStart.Value) <= 0
                 && DateTimeOffset.Compare(model.EndDate.Value, x.DispatchesStart.Value) >= 0
-                && !notCheckPromoStatuses.Contains(x.PromoStatus.Name))
-            .Select(x => new PromoSimpleCOGS
-            {
-                PromoStatusName = x.PromoStatus.Name,
-                DispatchesStart = x.DispatchesStart,
-                DispatchesEnd = x.DispatchesEnd,
-                ClientTreeId = x.ClientTree.Id,
-                BrandTechId = x.BrandTechId,
-                Number = x.Number
-            })
-            .ToList();
+                && !notCheckPromoStatuses.Contains(x.PromoStatus.Name));
 
-            return promoes;
+            if (model.BrandTech != null)
+            {
+                query = query.Where(x => x.BrandTech.Name == model.BrandTech.Name);
+            }
+
+            List<SimplePromoCOGS> promos = new List<SimplePromoCOGS>();
+            foreach (var item in query)
+            {
+                promos.Add(new SimplePromoCOGS(item));
+            }
+
+            return promos;
         }
 
         private IEnumerable<int?> GetInvalidPromoesByCOGS(
-            IEnumerable<COGS> models, IEnumerable<PromoSimpleCOGS> promoes, List<int> clientTreeIds)
+            IEnumerable<COGS> models, IEnumerable<SimplePromoCOGS> promoes, List<int> clientTreeIds)
         {
-            IEnumerable<PromoSimpleCOGS> invalidPromoes = new List<PromoSimpleCOGS>();
+            IEnumerable<SimplePromoCOGS> invalidPromoes = new List<SimplePromoCOGS>();
 
             //Группируем промо, что бы проверять только родительские ClientTree
             var promoGroups = promoes.GroupBy(x=>x.ClientTreeId);
             //Получаем всё дерево клиентов
             List<ClientTree> clientTrees = Context.Set<ClientTree>().Where(x => clientTreeIds.Contains(x.Id)).ToList();
             ClientTree clientTree;
-            List<PromoSimpleCOGS> promoesToRemove;
-            List<PromoSimpleCOGS> promoesGroupList;
-            List<COGS> ClientCOGS;
+            List<SimplePromoCOGS> promoesToRemove;
+            List<SimplePromoCOGS> promoesGroupList;
+            List<COGS> ClientCOGSEmptyBrandtech;
+            List<COGS> ClientCOGSNotEmptyBrandtech;
             IEnumerable<COGS> FittedCOGS;
             List<int?> invalidPromoesNumbers = new List<int?>();
 
             foreach (var promoGroup in promoGroups)
             {
                 promoesGroupList = promoGroup.ToList();
-                promoesToRemove = new List<PromoSimpleCOGS>();
+                promoesToRemove = new List<SimplePromoCOGS>();
                 clientTree = clientTrees.Where(x => x.Id == promoGroup.Key).FirstOrDefault();
                 if (clientTree != null)
                 {
                     while (clientTree != null && promoesGroupList.Count > 0)
                     {
-                        ClientCOGS = models.Where(x => x.ClientTreeId == clientTree.Id).ToList();
-                        foreach (PromoSimpleCOGS promo in promoesGroupList)
+                        ClientCOGSEmptyBrandtech = models.Where(x => x.ClientTreeId == clientTree.Id && x.BrandTech == null).ToList();
+                        ClientCOGSNotEmptyBrandtech = models.Where(x => x.ClientTreeId == clientTree.Id && x.BrandTech != null).ToList();
+                        foreach (SimplePromoCOGS promo in promoesGroupList)
                         {
-                            if (ClientCOGS != null)
+                            if (ClientCOGSEmptyBrandtech != null)
                             {
-                                FittedCOGS = ClientCOGS.Where(x => DateTimeOffset.Compare(x.StartDate.Value, promo.DispatchesStart.Value) <= 0
+                                FittedCOGS = ClientCOGSEmptyBrandtech.Where(x => DateTimeOffset.Compare(x.StartDate.Value, promo.DispatchesStart.Value) <= 0
+                                       && DateTimeOffset.Compare(x.EndDate.Value, promo.DispatchesStart.Value) >= 0);
+                                if (FittedCOGS.Any())
+                                {
+                                    promoesToRemove.Add(promo);
+                                }
+                            }
+
+                            if (ClientCOGSNotEmptyBrandtech != null)
+                            {
+                                FittedCOGS = ClientCOGSNotEmptyBrandtech.Where(x => DateTimeOffset.Compare(x.StartDate.Value, promo.DispatchesStart.Value) <= 0
                                        && DateTimeOffset.Compare(x.EndDate.Value, promo.DispatchesStart.Value) >= 0
-                                       && (promo.BrandTechId == x.BrandTechId || x.BrandTechId == null));
+                                       && (promo.BrandTechName == x.BrandTech.Name));
                                 if (FittedCOGS.Any())
                                 {
                                     promoesToRemove.Add(promo);
@@ -525,18 +560,6 @@ namespace Module.Frontend.TPM.Controllers {
                 }
             }
             return invalidPromoesNumbers;
-        }
-
-        public class PromoSimpleCOGS
-        {
-            public int? Number { get; set; }
-            public DateTimeOffset? DispatchesStart { get; set; }
-            public DateTimeOffset? DispatchesEnd { get; set; }
-            public int? ClientTreeId { get; set; }
-            public int? ClientTreeObjectId { get; set; }
-            public Guid? BrandTechId { get; set; }
-            public string BrandTechName { get; set; }
-            public string PromoStatusName { get; set; }
         }
     }
 }

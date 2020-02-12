@@ -306,14 +306,28 @@ namespace Module.Host.TPM.Handlers.DataFlow
                 //список Id промо для полномасштабного пересчета(второй этап)
                 List<Guid> promoIdsForAllRecalculating = promoesToCheck.Select(x => x.Id).ToList();
 
+                //список Id промо за предыдущий год для пересчета фактических параметров с учетом Actual COGS и TI
+                var actualCOGSChangesIncidents = context.Set<ChangesIncident>().Where(x => x.DirectoryName == nameof(Promo) + nameof(ActualCOGS) && !x.ProcessDate.HasValue).ToList();
+                var actualCOGSPromoIds = GetPromoIds(actualCOGSChangesIncidents);
+                var actualTIChangesIncidents = context.Set<ChangesIncident>().Where(x => x.DirectoryName == nameof(Promo) + nameof(ActualTradeInvestment) && !x.ProcessDate.HasValue).ToList();
+                var actualTIPromoIds = GetPromoIds(actualTIChangesIncidents);
+
+                List<Guid> promoIdsForRecalculatingActualOnly = actualCOGSPromoIds.Union(actualTIPromoIds).ToList();
+
                 //список Id промо для блокировки на время пересчета
                 List<Guid> promoIdsForBlock = promoIdsForRecalculating.Union(promoIdsForBudgetRecalclating)
-                                                                      .Union(promoIdsForAllRecalculating).Distinct().ToList();
+                                                                      .Union(promoIdsForAllRecalculating)
+                                                                      .Union(actualCOGSPromoIds)
+                                                                      .Union(actualTIPromoIds)
+                                                                      .Distinct().ToList();
 
                 HandlerData handlerData = new HandlerData();
                 HandlerDataHelper.SaveIncomingArgument("PromoIdsForRecalculating", promoIdsForRecalculating, handlerData, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("PromoIdsForBudgetRecalclating", promoIdsForBudgetRecalclating, handlerData, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("PromoIdsForAllRecalculating", promoIdsForAllRecalculating, handlerData, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("ActualCOGSPromoIds", actualCOGSPromoIds, handlerData, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("ActualTIPromoIds", actualTIPromoIds, handlerData, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("PromoIdsForRecalculatingActualOnly", promoIdsForRecalculatingActualOnly, handlerData, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("PromoIdsForBlock", promoIdsForBlock, handlerData, visible: false, throwIfNotExists: false);
 
                 handlerLogger.Write(true, $"The selection of promoes duration:  {stopWatch.Elapsed.Hours} hours and {stopWatch.Elapsed.Minutes} minutes and {stopWatch.Elapsed.Seconds} seconds.", "Timing");
@@ -343,6 +357,16 @@ namespace Module.Host.TPM.Handlers.DataFlow
                 stopWatch.Stop();
                 handlerLogger.Write(true, String.Format("The filtering of promoes ended at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
             }
+        }
+
+        List<Guid> GetPromoIds(IEnumerable<ChangesIncident> changesIncidents)
+        {
+            return changesIncidents.Select(x =>
+            {
+                Guid itemGuidId;
+                bool successParse = Guid.TryParse(x.ItemId, out itemGuidId);
+                return new { itemGuidId, successParse };
+            }).Where(x => x.successParse).Select(x => x.itemGuidId).ToList();
         }
     }
 

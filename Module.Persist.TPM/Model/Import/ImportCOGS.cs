@@ -42,8 +42,8 @@ namespace Module.Persist.TPM.Model.Import
         public String BrandTechName { get; set; }
 
         [ImportCSVColumn(ColumnNumber = 5)]
-        [Display(Name = "LVS percent")]
-        public float LVSpercent { get; set; }
+        [Display(Name = "LSV percent")]
+        public float LSVpercent { get; set; }
 
 
         public int ClientTreeId { get; set; }

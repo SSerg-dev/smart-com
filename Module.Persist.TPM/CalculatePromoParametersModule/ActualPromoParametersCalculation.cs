@@ -1,4 +1,5 @@
-﻿using Module.Persist.TPM.Model.TPM;
+﻿using Module.Persist.TPM.Model.SimpleModel;
+using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
 using Persist;
 using System;
@@ -18,22 +19,26 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         /// <param name="context">Контекст БД</param>
         /// <param name="lockedActualLSV">Блокировка значений, введенных Demand'ом</param>
         /// <returns>Null при успешном расчете, иначе строку с ошибками</returns>
-        public static string CalculatePromoParameters(Promo promo, DatabaseContext context, bool lockedActualLSV = false, bool isSupportAdmin = false, bool needToSaveChanges = true)
+        public static string CalculatePromoParameters(Promo promo, DatabaseContext context, bool lockedActualLSV = false, bool needToSaveChanges = true, bool useActualCOGS = false, bool useActualTI = false)
         {
-            if (promo != null && (promo.PromoStatus.SystemName == "Finished" || (isSupportAdmin && promo.PromoStatus.SystemName == "Closed")))
+            if (promo != null && (promo.PromoStatus.SystemName == "Finished" || (promo.PromoStatus.SystemName == "Closed" && (useActualCOGS || useActualTI))))
             {
                 PromoStatus finishedStatus = context.Set<PromoStatus>().Where(x => x.SystemName.ToLower() == "finished" && !x.Disabled).FirstOrDefault();
+                PromoStatus closedStatus = context.Set<PromoStatus>().Where(x => x.SystemName.ToLower() == "closed" && !x.Disabled).FirstOrDefault();
                 Promo promoCopy = new Promo(promo);
 
-                bool isActualPromoBaseLineLSVChangedByDemand = promo.PromoStatusId == finishedStatus.Id
+                bool isActualPromoBaseLineLSVChangedByDemand = promo.PromoStatusId == closedStatus.Id ||
+                                                            (promo.PromoStatusId == finishedStatus.Id
                                                             && promo.ActualPromoBaselineLSV != null
-                                                            && promo.ActualPromoBaselineLSV != promo.PlanPromoBaselineLSV;
-                bool isActualPromoLSVChangedByDemand = promo.PromoStatusId == finishedStatus.Id
+                                                            && promo.ActualPromoBaselineLSV != promo.PlanPromoBaselineLSV);
+                bool isActualPromoLSVChangedByDemand = promo.PromoStatusId == closedStatus.Id ||
+                                                    (promo.PromoStatusId == finishedStatus.Id
                                                     && promo.ActualPromoLSV != null
-                                                    && promo.ActualPromoLSV != 0;
-                bool isActualPromoProstPromoEffectLSVChangedByDemand = promo.PromoStatusId == finishedStatus.Id
+                                                    && promo.ActualPromoLSV != 0);
+                bool isActualPromoProstPromoEffectLSVChangedByDemand = promo.PromoStatusId == closedStatus.Id ||
+                                                                    (promo.PromoStatusId == finishedStatus.Id
                                                                     && promo.ActualPromoPostPromoEffectLSV != null
-                                                                    && promo.ActualPromoPostPromoEffectLSV != 0;
+                                                                    && promo.ActualPromoPostPromoEffectLSV != 0);
 
                 ResetValues(promo, context, !isActualPromoBaseLineLSVChangedByDemand, !isActualPromoProstPromoEffectLSVChangedByDemand);
                 // подготовительная часть, проверяем все ли данные имеются
@@ -50,15 +55,51 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 // ищем TI Base
                 string message = null;
                 bool error;
-                double? TIBasePercent = PlanPromoParametersCalculation.GetTIBasePercent(promo, context, out message, out error);
+                double? TIBasePercent;
+                double? COGSPercent;
+                SimplePromoTradeInvestment simplePromoTradeInvestment = new SimplePromoTradeInvestment(promo);
+                if (useActualTI)
+                {
+                    IQueryable<ActualTradeInvestment> actualTIQuery = context.Set<ActualTradeInvestment>().Where(x => !x.Disabled);
+                    TIBasePercent = PromoUtils.GetTIBasePercent(simplePromoTradeInvestment, context, actualTIQuery, out message, out error);
+                    if (TIBasePercent == null)
+                    {
+                        IQueryable<TradeInvestment> TIQuery = context.Set<TradeInvestment>().Where(x => !x.Disabled);
+                        TIBasePercent = PromoUtils.GetTIBasePercent(simplePromoTradeInvestment, context, TIQuery, out message, out error);
+                    }
+                }
+                else
+                {
+                    IQueryable<TradeInvestment> TIQuery = context.Set<TradeInvestment>().Where(x => !x.Disabled);
+                    TIBasePercent = PromoUtils.GetTIBasePercent(simplePromoTradeInvestment, context, TIQuery, out message, out error);
+                }
+
                 if (message != null)
                     errors += message + ";";
 
-                // ищем TI COGS
-                promo.PlanPromoIncrementalBaseTI = promo.PlanPromoIncrementalLSV * TIBasePercent / 100;
-                double? COGSPercent = PlanPromoParametersCalculation.GetCOGSPercent(promo, context, out message);
+                // ищем COGS
+                SimplePromoCOGS simplePromoCOGS = new SimplePromoCOGS(promo);
+                if (useActualCOGS)
+                {
+                    IQueryable<ActualCOGS> actualcogsQuery = context.Set<ActualCOGS>().Where(x => !x.Disabled);
+                    COGSPercent = PromoUtils.GetCOGSPercent(simplePromoCOGS, context, actualcogsQuery, out message);
+                    if (COGSPercent == null)
+                    {
+                        IQueryable<COGS> cogsQuery = context.Set<COGS>().Where(x => !x.Disabled);
+                        COGSPercent = PromoUtils.GetCOGSPercent(simplePromoCOGS, context, cogsQuery, out message);
+                    }
+                }
+                else
+                {
+                    IQueryable<COGS> cogsQuery = context.Set<COGS>().Where(x => !x.Disabled);
+                    COGSPercent = PromoUtils.GetCOGSPercent(simplePromoCOGS, context, cogsQuery, out message);
+                }
+                
                 if (message != null)
                     errors += message + ";";
+
+                //зачем этот тут? О_о
+                //promo.PlanPromoIncrementalBaseTI = promo.PlanPromoIncrementalLSV * TIBasePercent / 100;
 
                 // обращение к БД в try-catch, всё не нужно и производительнее будет
                 ClientTree clientTree = null;

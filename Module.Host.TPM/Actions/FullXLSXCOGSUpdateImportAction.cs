@@ -37,7 +37,7 @@ namespace Module.Host.TPM.Actions {
     /// </summary>
     public class FullXLSXCOGSUpdateImportAction : BaseAction {
 
-        public FullXLSXCOGSUpdateImportAction(FullImportSettings settings, int year) {
+        public FullXLSXCOGSUpdateImportAction(FullImportSettings settings, int year, string importDestination) {
             UserId = settings.UserId;
             RoleId = settings.RoleId;
             ImportFile = settings.ImportFile;
@@ -47,6 +47,7 @@ namespace Module.Host.TPM.Actions {
             Quote = settings.Quote;
             HasHeader = settings.HasHeader;
             Year = year;
+            ImportDestination = importDestination;
 
             AllowPartialApply = false;
         }
@@ -60,6 +61,7 @@ namespace Module.Host.TPM.Actions {
         protected readonly string Quote;
         protected readonly bool HasHeader;
         protected readonly int Year;
+        protected readonly string ImportDestination;
 
         protected bool AllowPartialApply { get; set; }
 
@@ -424,7 +426,14 @@ namespace Module.Host.TPM.Actions {
                 if (hasSuccessList) {
                     // Закончить импорт
                     IEnumerable<IEntity<Guid>> items = BeforeInsert(records, context).ToList();
-                    resultRecordCount = InsertDataToDatabase(items, context);
+                    if (this.ImportDestination == "COGS")
+                    {
+                        resultRecordCount = InsertCOGSDataToDatabase(items, context);
+                    }
+                    else if (this.ImportDestination == "ActualCOGS")
+                    {
+                        resultRecordCount = InsertActualCOGSDataToDatabase(items, context);
+                    }
                 }
                 if (!HasErrors)
                 {
@@ -541,10 +550,10 @@ namespace Module.Host.TPM.Actions {
                 errors.Add(importObj.BrandTechName + " is not active BrandTech's Name");
             }
 
-            // LVS percent не больше 100 процентов
-            if (importObj.LVSpercent > 100 || importObj.LVSpercent < 0) {
+            // LSV percent не больше 100 процентов
+            if (importObj.LSVpercent > 100 || importObj.LSVpercent < 0) {
                 isError = true;
-                errors.Add("LVS percent must be in percentage 0 up to 100");
+                errors.Add("LSV percent must be in percentage 0 up to 100");
             }
 
             return !isError;
@@ -568,7 +577,7 @@ namespace Module.Host.TPM.Actions {
         /// <param name="sourceRecords"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        protected int InsertDataToDatabase(IEnumerable<IEntity<Guid>> sourceRecords, DatabaseContext context) {
+        protected int InsertCOGSDataToDatabase(IEnumerable<IEntity<Guid>> sourceRecords, DatabaseContext context) {
             IList<COGS> toCreate = new List<COGS>();
             var query = GetQuery(context).ToList();
 
@@ -606,7 +615,7 @@ namespace Module.Host.TPM.Actions {
                     var clientNode = clientTrees.Where(x => x.ObjectId == promo.ClientTreeObjectId && !x.EndDate.HasValue).FirstOrDefault();
                     while (!existCOGS && clientNode != null && clientNode.Type != "root")
                     {
-                        // Поле brandTechName в после не заполнено, поэтому находим брендтех по id и берем имя оттуда
+                        //промо может быть привязно к удаленному брендтеху(в более общем случае - к бредтеху с другим Id), поэтому сравнение приходится производить по Name, а не по Id
                         var promoBrandTechName = brandTeches.Where(bt => bt.Id == promo.BrandTechId).Select(x => x.Name).FirstOrDefault();
                         var validBrandTeches = context.Set<BrandTech>().Where(x => x.Name == promoBrandTechName);
 
@@ -633,14 +642,13 @@ namespace Module.Host.TPM.Actions {
                     item.DeletedDate = DateTimeOffset.Now;
                 }
 
-                DateTime dtNow = DateTime.Now;
                 foreach (ImportCOGS newRecord in sourceRecords)
                 {
                     BrandTech bt = context.Set<BrandTech>().FirstOrDefault(x => x.Name == newRecord.BrandTechName);
                     COGS toSave = new COGS() {
                         StartDate = newRecord.StartDate,
                         EndDate = newRecord.EndDate,
-                        LVSpercent = (float)Math.Round((decimal)newRecord.LVSpercent, 2, MidpointRounding.AwayFromZero),
+                        LSVpercent = (float)Math.Round((decimal)newRecord.LSVpercent, 2, MidpointRounding.AwayFromZero),
                         ClientTreeId = newRecord.ClientTreeId,
                         BrandTechId = bt != null ? (Guid?) bt.Id : null,
                         Year = newRecord.StartDate.Value.Year
@@ -672,6 +680,103 @@ namespace Module.Host.TPM.Actions {
                         });
                     }
                 }
+            }
+
+            context.SaveChanges();
+            return sourceRecords.Count();
+        }
+
+        /// <summary>
+        /// Запись в базу аналогично изменению ActualCOGS из интерфейса через контекст
+        /// </summary>
+        /// <param name="sourceRecords"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        protected int InsertActualCOGSDataToDatabase(IEnumerable<IEntity<Guid>> sourceRecords, DatabaseContext context)
+        {
+            IList<ActualCOGS> toCreate = new List<ActualCOGS>();
+
+            var settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
+            var statusesSetting = settingsManager.GetSetting<string>("ACTUAL_COGSTI_CHECK_PROMO_STATUS_LIST", "Finished, Closed");
+            var checkPromoStatuses = statusesSetting.Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+
+            var promoes = context.Set<Promo>().Where(x => !x.Disabled && x.DispatchesStart.HasValue && x.DispatchesStart.Value.Year == this.Year)
+                .Select(x => new PromoSimpleCOGS
+                {
+                    PromoStatusName = x.PromoStatus.Name,
+                    Number = x.Number,
+                    DispatchesStart = x.DispatchesStart,
+                    DispatchesEnd = x.DispatchesEnd,
+                    ClientTreeId = x.ClientTree.Id,
+                    ClientTreeObjectId = x.ClientTreeId,
+                    BrandTechId = x.BrandTechId
+                })
+                .ToList()
+                .Where(x => checkPromoStatuses.Contains(x.PromoStatusName));
+
+            var importCOGS = sourceRecords.Cast<ImportCOGS>().Where(x => x.StartDate.HasValue && x.EndDate.HasValue);
+            var allActualCOGSForYear = context.Set<ActualCOGS>().Where(x => !x.Disabled && x.Year == this.Year);
+            var clientTrees = context.Set<ClientTree>().ToList();
+            var brandTeches = context.Set<BrandTech>().ToList();
+
+            foreach (var promo in promoes)
+            {
+                if (!importCOGS.Any(x => x.ClientTreeId == promo.ClientTreeId && (x.BrandTechId == null || x.BrandTechId == promo.BrandTechId) && x.StartDate <= promo.DispatchesStart && x.EndDate >= promo.DispatchesStart))
+                {
+                    bool existCOGS = false;
+
+                    var clientNode = clientTrees.Where(x => x.ObjectId == promo.ClientTreeObjectId && !x.EndDate.HasValue).FirstOrDefault();
+                    while (!existCOGS && clientNode != null && clientNode.Type != "root")
+                    {
+                        //промо может быть привязно к удаленному брендтеху(в более общем случае - к бредтеху с другим Id), поэтому сравнение приходится производить по Name, а не по Id
+                        var promoBrandTechName = brandTeches.Where(bt => bt.Id == promo.BrandTechId).Select(x => x.Name).FirstOrDefault();
+                        var validBrandTeches = context.Set<BrandTech>().Where(x => x.Name == promoBrandTechName);
+
+                        existCOGS = importCOGS.Any(x => x.ClientTreeId == clientNode.Id
+                                && (x.BrandTechId == null || validBrandTeches.Where(bt => bt.Id == x.BrandTechId).Any())
+                                && x.StartDate <= promo.DispatchesStart
+                                && x.EndDate >= promo.DispatchesStart);
+                        clientNode = clientTrees.Where(x => x.ObjectId == clientNode.parentId && !x.EndDate.HasValue).FirstOrDefault();
+                    }
+
+                    if (!existCOGS)
+                    {
+                        HasErrors = true;
+                        Errors.Add($"Not found interval for promo number {promo.Number}.");
+                    }
+                }
+            }
+
+            if (!HasErrors)
+            {
+                foreach (var item in allActualCOGSForYear)
+                {
+                    item.Disabled = true;
+                    item.DeletedDate = DateTimeOffset.Now;
+                }
+
+                foreach (ImportCOGS newRecord in sourceRecords)
+                {
+                    BrandTech bt = context.Set<BrandTech>().FirstOrDefault(x => x.Name == newRecord.BrandTechName);
+                    ActualCOGS toSave = new ActualCOGS()
+                    {
+                        StartDate = newRecord.StartDate,
+                        EndDate = newRecord.EndDate,
+                        LSVpercent = (float)Math.Round((decimal)newRecord.LSVpercent, 2, MidpointRounding.AwayFromZero),
+                        ClientTreeId = newRecord.ClientTreeId,
+                        BrandTechId = bt != null ? (Guid?)bt.Id : null,
+                        Year = newRecord.StartDate.Value.Year,
+                        IsCOGSIncidentCreated = false
+                    };
+                    toCreate.Add(toSave);
+                }
+
+                foreach (IEnumerable<ActualCOGS> items in toCreate.Partition(100))
+                {
+                    context.Set<ActualCOGS>().AddRange(items);
+                }
+
+                //инциденты при импорте ActualCOGS не создаются
             }
 
             context.SaveChanges();

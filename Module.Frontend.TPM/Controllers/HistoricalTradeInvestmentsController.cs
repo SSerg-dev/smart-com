@@ -31,10 +31,5 @@ namespace Module.Frontend.TPM.Controllers {
             }
             base.Dispose(disposing);
         }
-
     }
-
 }
-
-
-

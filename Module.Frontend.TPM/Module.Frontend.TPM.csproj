@@ -181,13 +181,22 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\ActualCOGSsController.cs" />
+    <Compile Include="Controllers\DeletedActualCOGSsController.cs" />
+    <Compile Include="Controllers\DeletedActualTradeInvestmentsController.cs" />
+    <Compile Include="Controllers\HistoricalActualTradeInvestmentsController.cs" />
+    <Compile Include="Controllers\HistoricalActualCOGSsController.cs" />
     <Compile Include="Util\NoGuidGeneratingScriptGenerator.cs" />
     <Compile Include="Util\RoundingHelper.cs" />
     <Compile Include="Util\ScriptGenerator.cs" />
     <Compile Include="Controllers\NonPromoSupportBrandTechesController.cs" />
+    <Compile Include="Controllers\ActualTradeInvestmentsController.cs" />
     <Compile Include="Util\UserDashboard.cs" />
     <Content Include="Client\controller\tpm\actualLSV\ActualLSV.js" />
     <Content Include="Client\controller\tpm\clienttreesharesview\ClientTreeSharesView.js" />
+    <Content Include="Client\controller\tpm\actualcogs\ActualCOGS.js" />
+    <Content Include="Client\controller\tpm\actualcogs\DeletedActualCOGS.js" />
+    <Content Include="Client\controller\tpm\actualcogs\HistoricalActualCOGS.js" />
     <Content Include="Client\controller\tpm\event\EventClientTree.js" />
     <Content Include="Client\controller\tpm\assortmentmatrix\AssortmentMatrix.js" />
     <Content Include="Client\controller\tpm\assortmentmatrix\DeletedAssortmentMatrix.js" />
@@ -318,6 +327,9 @@
     <Content Include="Client\controller\tpm\schedule\ClientPromoTypeFilter.js" />
     <Content Include="Client\controller\tpm\promo\PromoHelper.js" />
     <Content Include="Client\controller\tpm\promo\PromoChangeStatus.js" />
+    <Content Include="Client\controller\tpm\actualtradeinvestment\DeletedActualTradeInvestment.js" />
+    <Content Include="Client\controller\tpm\actualtradeinvestment\HistoricalActualTradeInvestment.js" />
+    <Content Include="Client\controller\tpm\actualtradeinvestment\ActualTradeInvestment.js" />
     <Content Include="Client\controller\tpm\tradeinvestment\DeletedTradeInvestment.js" />
     <Content Include="Client\controller\tpm\tradeinvestment\HistoricalTradeInvestment.js" />
     <Content Include="Client\controller\tpm\tradeinvestment\TradeInvestment.js" />
@@ -330,6 +342,9 @@
     <Content Include="Client\locale\tpm\TPMLocale-en.js" />
     <Content Include="Client\model\tpm\actualLSV\ActualLSV.js" />
     <Content Include="Client\model\tpm\clienttreesharesview\ClientTreeSharesView.js" />
+    <Content Include="Client\model\tpm\actualcogs\ActualCOGS.js" />
+    <Content Include="Client\model\tpm\actualcogs\DeletedActualCOGS.js" />
+    <Content Include="Client\model\tpm\actualcogs\HistoricalActualCOGS.js" />
     <Content Include="Client\model\tpm\event\EventClientTree.js" />
     <Content Include="Client\model\tpm\assortmentmatrix\AssortmentMatrix.js" />
     <Content Include="Client\model\tpm\assortmentmatrix\DeletedAssortmentMatrix.js" />
@@ -347,6 +362,24 @@
     <Content Include="Client\model\tpm\nonpromoequipment\HistoricalNonPromoEquipment.js" />
     <Content Include="Client\model\tpm\nonpromosupportbrandtech\NonPromoSupportBrandTech.js" />
     <Content Include="Client\model\tpm\nonpromosupportbrandtech\NonPromoSupportBrandTechDetail.js" />
+    <Content Include="Client\model\tpm\actualtradeinvestment\DeletedActualTradeInvestment.js" />
+    <Content Include="Client\model\tpm\actualtradeinvestment\HistoricalActualTradeInvestment.js" />
+    <Content Include="Client\model\tpm\actualtradeinvestment\ActualTradeInvestment.js" />
+    <Content Include="Client\model\tpm\promo\SimplePromo.js" />
+    <Content Include="Client\view\tpm\actualcogs\ActualCOGS.js" />
+    <Content Include="Client\view\tpm\actualcogs\ActualCOGSEditor.js" />
+    <Content Include="Client\view\tpm\actualcogs\DeletedActualCOGS.js" />
+    <Content Include="Client\view\tpm\actualcogs\DeletedActualCOGSDetail.js" />
+    <Content Include="Client\view\tpm\actualcogs\HistoricalActualCOGS.js" />
+    <Content Include="Client\view\tpm\actualcogs\HistoricalActualCOGSDetail.js" />
+    <Content Include="Client\view\tpm\actualcogs\ImportActualCOGSParamForm.js" />
+    <Content Include="Client\view\tpm\actualtradeinvestment\ActualTradeInvestment.js" />
+    <Content Include="Client\view\tpm\actualtradeinvestment\ActualTradeInvestmentEditor.js" />
+    <Content Include="Client\view\tpm\actualtradeinvestment\DeletedActualTradeInvestment.js" />
+    <Content Include="Client\view\tpm\actualtradeinvestment\DeletedActualTradeInvestmentDetail.js" />
+    <Content Include="Client\view\tpm\actualtradeinvestment\HistoricalActualTradeInvestment.js" />
+    <Content Include="Client\view\tpm\actualtradeinvestment\HistoricalActualTradeInvestmentDetail.js" />
+    <Content Include="Client\view\tpm\actualtradeinvestment\ImportActualTradeInvestmentParamForm.js" />
     <Content Include="Client\view\tpm\nonpromosupport\NonPromoSupportBrandTechChoose.js" />
     <Content Include="Client\model\tpm\nonpromosupport\DeletedNonPromoSupport.js" />
     <Content Include="Client\model\tpm\nonpromosupport\HistoricalNonPromoSupport.js" />
@@ -677,6 +710,7 @@
     <Content Include="Client\view\tpm\promo\PromoClientChooseWindow.js" />
     <Content Include="Client\view\tpm\promo\PromoClientSettingsWindow.js" />
     <Content Include="Client\view\tpm\promo\PromoType.js" />
+    <Content Include="Client\view\tpm\promo\SimplePromoViewer.js" />
     <Content Include="Client\view\tpm\promo\summary\InOutPromoActivityChart.js" />
     <Content Include="Client\view\tpm\promo\summary\PromoSummary.js" />
     <Content Include="Client\view\tpm\promo\summary\PromoRoiChart.js" />
@@ -719,6 +753,8 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Templates\ActualCOGSPreTemplate.xlsx" />
+    <None Include="Templates\ActualTIPreTemplate.xlsx" />
     <None Include="Templates\BaseLineTemplate.xlsx" />
     <None Include="Templates\COGSPreTemplate.xlsx" />
     <None Include="Templates\TIPreTemplate.xlsx" />

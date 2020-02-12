@@ -36,6 +36,7 @@ using Persist.ScriptGenerator.Filter;
 using System.Net.Http.Headers;
 using Module.Persist.TPM.CalculatePromoParametersModule;
 using Module.Frontend.TPM.Util;
+using Module.Persist.TPM.Model.SimpleModel;
 
 namespace Module.Frontend.TPM.Controllers {
     public class PromoesController : EFContextController {
@@ -847,10 +848,6 @@ namespace Module.Frontend.TPM.Controllers {
             }
             return Content(HttpStatusCode.InternalServerError, JsonConvert.SerializeObject(new { Error = "Fail to role"}));
         }
-        
-
-
-
 
         private FilterContainer GetFilter(Delta<Promo> patch, string fieldName) {
             object fieldValue;
@@ -1566,7 +1563,9 @@ namespace Module.Frontend.TPM.Controllers {
             products = null;
 
             // проверка на наличие TI
-            PlanPromoParametersCalculation.GetTIBasePercent(promo, context, out message, out error);
+            IQueryable<TradeInvestment> TIQuery = context.Set<TradeInvestment>().Where(x => !x.Disabled);
+            SimplePromoTradeInvestment simplePromoTradeInvestment = new SimplePromoTradeInvestment(promo);
+            PromoUtils.GetTIBasePercent(simplePromoTradeInvestment, context, TIQuery, out message, out error);
             if (message != null && error)
             {
                 messagesError.Add(message);
@@ -1578,7 +1577,9 @@ namespace Module.Frontend.TPM.Controllers {
             }
 
             // проверка на наличие COGS
-            PlanPromoParametersCalculation.GetCOGSPercent(promo, context, out message);
+            IQueryable<COGS> cogsQuery = context.Set<COGS>().Where(x => !x.Disabled);
+            SimplePromoCOGS simplePromoCOGS = new SimplePromoCOGS(promo);
+            PromoUtils.GetCOGSPercent(simplePromoCOGS, context, cogsQuery, out message);
             if (message != null)
             {
                 messagesError.Add(message);

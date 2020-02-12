@@ -220,10 +220,18 @@
     'tpm.cogs.COGS',
     'tpm.cogs.DeletedCOGS',
     'tpm.cogs.HistoricalCOGS',
-
+    
     'tpm.tradeinvestment.DeletedTradeInvestment',
     'tpm.tradeinvestment.HistoricalTradeInvestment',
     'tpm.tradeinvestment.TradeInvestment',
+
+    'tpm.actualcogs.ActualCOGS',
+    'tpm.actualcogs.DeletedActualCOGS',
+    'tpm.actualcogs.HistoricalActualCOGS',
+
+    'tpm.actualtradeinvestment.ActualTradeInvestment',
+    'tpm.actualtradeinvestment.DeletedActualTradeInvestment',
+    'tpm.actualtradeinvestment.HistoricalActualTradeInvestment',
 
     'tpm.actualproductsview.ActualProductsView',
     'tpm.planincrementalreport.PlanIncrementalReport',

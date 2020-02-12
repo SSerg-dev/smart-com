@@ -89,6 +89,8 @@ namespace Module.Persist.TPM {
             modelBuilder.Entity<PromoProductsCorrection>();
             modelBuilder.Entity<PromoProductsView>().ToTable("PromoProductsView"); ;
 			modelBuilder.Entity<PromoTypes>();
+            modelBuilder.Entity<ActualCOGS>();
+            modelBuilder.Entity<ActualTradeInvestment>();
 
             modelBuilder.Entity<Promo>().Ignore(n => n.ProductTreeObjectIds);
             modelBuilder.Entity<Promo>().Ignore(n => n.Calculating);
@@ -273,8 +275,6 @@ namespace Module.Persist.TPM {
             builder.EntitySet<BudgetItem>("DeletedBudgetItems").HasRequiredBinding(e => e.Budget, "Budgets");
             builder.Entity<BudgetItem>().Collection.Action("ExportXLSX");
             builder.Entity<BudgetItem>().Collection.Action("FullImportXLSX");
-  
-             
 
             builder.EntitySet<Promo>("Promoes");
             builder.EntitySet<Promo>("DeletedPromoes");
@@ -307,7 +307,7 @@ namespace Module.Persist.TPM {
             builder.EntitySet<Promo>("DeletedPromoes").HasOptionalBinding(e => e.ActualInStoreMechanicType, "MechanicTypes");
             builder.EntitySet<Promo>("Promoes").HasOptionalBinding(e => e.ClientTree, "ClientTrees");
             builder.EntitySet<Promo>("DeletedPromoes").HasOptionalBinding(e => e.ClientTree, "ClientTrees");
-             builder.EntitySet<Promo>("Promoes").HasOptionalBinding(e => e.PromoTypes, "PromoTypes");
+            builder.EntitySet<Promo>("Promoes").HasOptionalBinding(e => e.PromoTypes, "PromoTypes");
             builder.EntitySet<Promo>("DeletedPromoes").HasOptionalBinding(e => e.PromoTypes, "PromoTypes");
             builder.Entity<Promo>().Collection.Action("ExportXLSX");
             builder.Entity<Promo>().Collection.Action("FullImportXLSX");
@@ -339,9 +339,6 @@ namespace Module.Persist.TPM {
             builder.EntitySet<Sale>("DeletedSales").HasOptionalBinding(e => e.BudgetItem, "BudgetItems");
             builder.Entity<Sale>().Collection.Action("ExportXLSX");
 
-            //builder.EntitySet<DemandDTO>("DemandDTOs");
-            //builder.Entity<DemandDTO>().Collection.Action("FullImportXLSX");
-            //builder.EntitySet<DemandDTO>("DemandDTOs").HasOptionalBinding(e => e.Brand, "Brands"); 
             builder.EntitySet<PromoSales>("PromoSaleses");
             builder.EntitySet<PromoSales>("DeletedPromoSaleses");
             builder.EntitySet<HistoricalPromoSales>("HistoricalPromoSaleses");
@@ -604,6 +601,34 @@ namespace Module.Persist.TPM {
             builder.EntitySet<TradeInvestment>("DeletedTradeInvestments").HasOptionalBinding(e => e.BrandTech, "BrandTeches");
             builder.Entity<TradeInvestment>().Collection.Action("FullImportXLSX");
             builder.Entity<TradeInvestment>().Collection.Action("DownloadTemplateXLSX");
+
+            builder.EntitySet<ActualCOGS>("ActualCOGSs");
+            builder.EntitySet<ActualCOGS>("DeletedActualCOGSs");
+            builder.EntitySet<HistoricalActualCOGS>("HistoricalActualCOGSs");
+            builder.Entity<ActualCOGS>().Collection.Action("ExportXLSX");
+            builder.EntitySet<ActualCOGS>("ActualCOGSs").HasRequiredBinding(e => e.ClientTree, "ClientTrees");
+            builder.EntitySet<ActualCOGS>("DeletedActualCOGSs").HasRequiredBinding(e => e.ClientTree, "ClientTrees");
+            builder.EntitySet<ActualCOGS>("ActualCOGSs").HasOptionalBinding(e => e.BrandTech, "BrandTeches");
+            builder.EntitySet<ActualCOGS>("DeletedActualCOGSs").HasOptionalBinding(e => e.BrandTech, "BrandTeches");
+            builder.Entity<ActualCOGS>().Collection.Action("FullImportXLSX");
+            builder.Entity<ActualCOGS>().Collection.Action("DownloadTemplateXLSX");
+            builder.Entity<ActualCOGS>().Collection.Action("IsCOGSRecalculatePreviousYearButtonAvailable");
+            builder.Entity<ActualCOGS>().Collection.Action("PreviousYearPromoList");
+            builder.Entity<ActualCOGS>().Collection.Action("CreateActualCOGSChangeIncidents");
+
+            builder.EntitySet<ActualTradeInvestment>("ActualTradeInvestments");
+            builder.EntitySet<ActualTradeInvestment>("DeletedActualTradeInvestments");
+            builder.EntitySet<HistoricalActualTradeInvestment>("HistoricalActualTradeInvestments");
+            builder.Entity<ActualTradeInvestment>().Collection.Action("ExportXLSX");
+            builder.EntitySet<ActualTradeInvestment>("ActualTradeInvestments").HasRequiredBinding(e => e.ClientTree, "ClientTrees");
+            builder.EntitySet<ActualTradeInvestment>("DeletedActualTradeInvestments").HasRequiredBinding(e => e.ClientTree, "ClientTrees");
+            builder.EntitySet<ActualTradeInvestment>("ActualTradeInvestments").HasOptionalBinding(e => e.BrandTech, "BrandTeches");
+            builder.EntitySet<ActualTradeInvestment>("DeletedActualTradeInvestments").HasOptionalBinding(e => e.BrandTech, "BrandTeches");
+            builder.Entity<ActualTradeInvestment>().Collection.Action("FullImportXLSX");
+            builder.Entity<ActualTradeInvestment>().Collection.Action("DownloadTemplateXLSX");
+            builder.Entity<ActualTradeInvestment>().Collection.Action("IsTIRecalculatePreviousYearButtonAvailable");
+            builder.Entity<ActualTradeInvestment>().Collection.Action("PreviousYearPromoList");
+            builder.Entity<ActualTradeInvestment>().Collection.Action("CreateActualTIChangeIncidents");
 
             builder.EntitySet<AssortmentMatrix>("AssortmentMatrices");
             builder.EntitySet<AssortmentMatrix>("DeletedAssortmentMatrices");

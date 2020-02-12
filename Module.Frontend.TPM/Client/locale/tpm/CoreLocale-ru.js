@@ -74,7 +74,8 @@
         'upload': 'Загрузить',
         'download': 'Скачать',
         'edit': 'Редактировать',
-        'save': 'Сохранить'
+        'save': 'Сохранить',
+        'confirm': 'Подтвердить'
     },
 
     'createWindowButtons': {

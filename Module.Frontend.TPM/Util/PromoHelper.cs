@@ -303,6 +303,5 @@ namespace Module.Frontend.TPM.Util {
             };
             return columns;
         }
-
     }
 }

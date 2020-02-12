@@ -16,7 +16,7 @@ Ext.define('App.model.tpm.cogs.HistoricalCOGS', {
         { name: 'ClientTreeId', hidden: true, isDefault: true },
         { name: 'ClientTreeFullPathName', type: 'string', hidden: false, isDefault: true },
         { name: 'ClientTreeObjectId', type: 'int', hidden: false, isDefault: true },
-        { name: 'LVSpercent', type: 'float', hidden: false, isDefault: true }
+        { name: 'LSVpercent', type: 'float', hidden: false, isDefault: true }
     ],
     proxy: {
         type: 'breeze',

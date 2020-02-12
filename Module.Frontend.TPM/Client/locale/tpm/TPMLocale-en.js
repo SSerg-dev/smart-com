@@ -56,9 +56,11 @@
         'NonPromoTICosts': 'Non-promo TI Costs',
         'CostProduction': 'Cost Production',
         'PostPromoEffectItem': 'Post Promo Effect',
-        'COGS': 'COGS',
+        'COGS': 'Plan COGS',
+        'ActualCOGS': 'Actual COGS',
         'Finance': 'Finance',
-        'TradeInvestment': 'TradeInvestment',
+        'TradeInvestment': 'Plan TradeInvestment',
+        'ActualTradeInvestment': 'Actual TradeInvestment',
         'PlanIncrementalReport': 'Plan Incremental Report',
         'PlanPostPromoEffectReport': 'Plan Post Promo Effect Report',
         'PlanPostPromoEffectReportWeek': 'Plan Post Promo Effect Report',
@@ -130,9 +132,11 @@
         'PromoLinked': 'Promo linked',
         'PostPromoEffect': 'Post Promo Effect',
         'COGS': 'COGS',
+        'ActualCOGS': 'Actual COGS',
         'AddPromoSupportType': 'Add Promo support type',
         'AddPromoType': 'Create Promo',
         'TradeInvestment': 'TradeInvestment',
+        'ActualTradeInvestment': 'Actual TradeInvestment',
         'PlanIncrementalReport': 'Plan Incremental Report',
         'PromoSupportPromo': 'Promo Costs',
         'PlanPostPromoEffectReport': 'Plan Post Promo Effect Report',
@@ -1447,11 +1451,24 @@
         'ClientTreeFullPathName': 'ClientHierarchy',
         'ClientTreeObjectId': 'ClientId',
         'BrandTechName': 'BrandTech',
-        'LVSpercent': 'LSV percent',
+        'LSVpercent': 'LSV percent',
         'Year': 'Year',
     },
     'HistoricalCOGS': ['.tpm.COGS', '.core.BaseHistoryEntity'],
     'DeletedCOGS': ['.tpm.COGS', '.core.BaseDeletedEntity'],
+
+    'ActualCOGS': {
+        'StartDate': 'StartDate',
+        'EndDate': 'EndDate',
+        'ClientTreeFullPathName': 'ClientHierarchy',
+        'ClientTreeObjectId': 'ClientId',
+        'BrandTechName': 'BrandTech',
+        'LSVpercent': 'LSV percent',
+        'Year': 'Year',
+        'recalculatePreviousYearButtonYearText': 'Recalculate previous year'
+    },
+    'HistoricalActualCOGS': ['.tpm.ActualCOGS', '.core.BaseHistoryEntity'],
+    'DeletedActualCOGS': ['.tpm.ActualCOGS', '.core.BaseDeletedEntity'],
 
     'TradeInvestment': {
         'StartDate': 'StartDate',
@@ -1468,6 +1485,23 @@
     },
     'HistoricalTradeInvestment': ['.tpm.TradeInvestment', '.core.BaseHistoryEntity'],
     'DeletedTradeInvestment': ['.tpm.TradeInvestment', '.core.BaseDeletedEntity'],
+
+    'ActualTradeInvestment': {
+        'StartDate': 'StartDate',
+        'EndDate': 'EndDate',
+        'ClientTreeFullPathName': 'ClientHierarchy',
+        'ClientTreeObjectId': 'ClientId',
+        'BrandTechName': 'BrandTech',
+        'TIType': 'TI Type',
+        'TISubType': 'TI SubType',
+        'SizePercent': 'Size Percent',
+        'MarcCalcROI': 'Marc Calc ROI',
+        'MarcCalcBudgets': 'Marc Calc Budgets',
+        'Year': 'Year',
+        'recalculatePreviousYearButtonYearText': 'Recalculate previous year'
+    },
+    'HistoricalActualTradeInvestment': ['.tpm.ActualTradeInvestment', '.core.BaseHistoryEntity'],
+    'DeletedActualTradeInvestment': ['.tpm.ActualTradeInvestment', '.core.BaseDeletedEntity'],
 
     additionalMenu: {
         'ScheduleExport': 'Export',
@@ -2204,4 +2238,15 @@
             'Updated': 'Update'
         }
     },
+
+    'SimplePromo': {
+        'DispatchesStart': 'Dispatches start',
+        'DispatchesEnd': 'Dispatches end',
+        'StartDate': 'Start date',
+        'EndDate': 'End date',
+        'Number': 'Promo ID',
+        'Name': 'Promo name',
+        'BrandTechName': 'Brandtech',
+        'PromoStatusName': 'Status'
+    }
 });

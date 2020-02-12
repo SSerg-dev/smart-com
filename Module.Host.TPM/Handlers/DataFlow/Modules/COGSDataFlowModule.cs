@@ -27,6 +27,7 @@ namespace Module.Host.TPM.Handlers.DataFlow.Modules
             })
             .ToList();
         }
+
         public class COGSDataFlowSimpleModel : DataFlowSimpleModel
         {
             public Guid Id { get; set; }

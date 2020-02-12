@@ -84,7 +84,8 @@
         'upload': 'Upload',
         'download': 'Download',
         'edit': 'Edit',
-        'save': 'Save'
+        'save': 'Save',
+        'confirm': 'Confirm'
     },
 
     'createWindowButtons': {

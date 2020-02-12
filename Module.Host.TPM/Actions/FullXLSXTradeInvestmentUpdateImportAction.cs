@@ -38,7 +38,7 @@ namespace Module.Host.TPM.Actions {
     public class FullXLSXTradeInvestmentUpdateImportAction : BaseAction
     {
 
-        public FullXLSXTradeInvestmentUpdateImportAction(FullImportSettings settings, int year)
+        public FullXLSXTradeInvestmentUpdateImportAction(FullImportSettings settings, int year, string importDestination)
         {
             UserId = settings.UserId;
             RoleId = settings.RoleId;
@@ -49,6 +49,7 @@ namespace Module.Host.TPM.Actions {
             Quote = settings.Quote;
             HasHeader = settings.HasHeader;
             Year = year;
+            ImportDestination = importDestination;
 
             AllowPartialApply = false;
         }
@@ -62,6 +63,7 @@ namespace Module.Host.TPM.Actions {
         protected readonly string Quote;
         protected readonly bool HasHeader;
         protected readonly int Year;
+        protected readonly string ImportDestination;
 
         protected bool AllowPartialApply { get; set; }
 
@@ -520,7 +522,14 @@ namespace Module.Host.TPM.Actions {
                 {
                     // Закончить импорт
                     IEnumerable<IEntity<Guid>> importObjs = BeforeInsert(records, context).ToList();
-                    resultRecordCount = InsertDataToDatabase(importObjs, context);
+                    if (this.ImportDestination == "TI")
+                    {
+                        resultRecordCount = InsertTIDataToDatabase(importObjs, context);
+                    }
+                    else if (this.ImportDestination == "ActualTI")
+                    {
+                        resultRecordCount = InsertActualTIDataToDatabase(importObjs, context);
+                    }
                 }
                 if (!HasErrors)
                 {
@@ -681,7 +690,7 @@ namespace Module.Host.TPM.Actions {
         /// <param name="sourceRecords"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        protected int InsertDataToDatabase(IEnumerable<IEntity<Guid>> sourceRecords, DatabaseContext context)
+        protected int InsertTIDataToDatabase(IEnumerable<IEntity<Guid>> sourceRecords, DatabaseContext context)
         {
             IList<TradeInvestment> toCreate = new List<TradeInvestment>();
             var query = GetQuery(context).ToList();
@@ -720,7 +729,7 @@ namespace Module.Host.TPM.Actions {
                     var clientNode = clientTrees.Where(x => x.ObjectId == promo.ClientTreeObjectId && !x.EndDate.HasValue).FirstOrDefault();
                     while (!existTradeInvestment && clientNode != null && clientNode.Type != "root")
                     {
-                        // Поле brandTechName в после не заполнено, поэтому находим брендтех по id и берем имя оттуда
+                        //промо может быть привязно к удаленному брендтеху(в более общем случае - к бредтеху с другим Id), поэтому сравнение приходится производить по Name, а не по Id
                         var promoBrandTechName = brandTeches.Where(bt => bt.Id == promo.BrandTechId).Select(x => x.Name).FirstOrDefault();
                         var validBrandTeches = context.Set<BrandTech>().Where(x => x.Name == promoBrandTechName);
 
@@ -747,7 +756,6 @@ namespace Module.Host.TPM.Actions {
                     importObj.DeletedDate = DateTimeOffset.Now;
                 }
 
-                DateTime dtNow = DateTime.Now;
                 foreach (ImportTradeInvestment newRecord in sourceRecords)
                 {
                     TradeInvestment oldRecord = query.FirstOrDefault(x => x.ClientTree?.ObjectId == newRecord.ClientTreeObjectId && !x.Disabled);
@@ -792,6 +800,110 @@ namespace Module.Host.TPM.Actions {
                         });
                     }
                 }
+            }
+
+            context.SaveChanges();
+            return sourceRecords.Count();
+        }
+
+        /// <summary>
+        /// Запись в базу аналогично изменению TradeInvestment из интерфейса через контекст
+        /// </summary>
+        /// <param name="sourceRecords"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        protected int InsertActualTIDataToDatabase(IEnumerable<IEntity<Guid>> sourceRecords, DatabaseContext context)
+        {
+            IList<ActualTradeInvestment> toCreate = new List<ActualTradeInvestment>();
+
+            var tiChangeIncidents = new List<ActualTradeInvestment>();
+
+            var settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
+            var statusesSetting = settingsManager.GetSetting<string>("ACTUAL_COGSTI_CHECK_PROMO_STATUS_LIST", "Finished, Closed");
+            var checkPromoStatuses = statusesSetting.Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+
+            var promoes = context.Set<Promo>().Where(x => !x.Disabled && x.StartDate.HasValue && x.StartDate.Value.Year == this.Year)
+                .Select(x => new PromoSimpleTI
+                {
+                    PromoStatusName = x.PromoStatus.Name,
+                    Number = x.Number,
+                    StartDate = x.StartDate,
+                    EndDate = x.EndDate,
+                    ClientTreeId = x.ClientTree.Id,
+                    ClientTreeObjectId = x.ClientTreeId,
+                    BrandTechId = x.BrandTechId
+                })
+                .ToList()
+                .Where(x => checkPromoStatuses.Contains(x.PromoStatusName));
+
+            var importTIes = sourceRecords.Cast<ImportTradeInvestment>().Where(x => x.StartDate.HasValue && x.EndDate.HasValue);
+            var allActualTIForYear = context.Set<ActualTradeInvestment>().Where(x => !x.Disabled && x.Year == this.Year);
+            var clientTrees = context.Set<ClientTree>().ToList();
+            var brandTeches = context.Set<BrandTech>().ToList();
+
+            foreach (var promo in promoes)
+            {
+                if (!importTIes.Any(x => x.ClientTreeId == promo.ClientTreeId && (x.BrandTechId == null || x.BrandTechId == promo.BrandTechId) && x.StartDate <= promo.StartDate && x.EndDate >= promo.StartDate))
+                {
+                    bool existTradeInvestment = false;
+
+                    var clientNode = clientTrees.Where(x => x.ObjectId == promo.ClientTreeObjectId && !x.EndDate.HasValue).FirstOrDefault();
+                    while (!existTradeInvestment && clientNode != null && clientNode.Type != "root")
+                    {
+                        //промо может быть привязно к удаленному брендтеху(в более общем случае - к бредтеху с другим Id), поэтому сравнение приходится производить по Name, а не по Id
+                        var promoBrandTechName = brandTeches.Where(bt => bt.Id == promo.BrandTechId).Select(x => x.Name).FirstOrDefault();
+                        var validBrandTeches = context.Set<BrandTech>().Where(x => x.Name == promoBrandTechName);
+
+                        existTradeInvestment = importTIes.Any(x => x.ClientTreeId == clientNode.Id
+                                && (x.BrandTechId == null || validBrandTeches.Where(bt => bt.Id == x.BrandTechId).Any())
+                                && x.StartDate <= promo.StartDate
+                                && x.EndDate >= promo.StartDate);
+                        clientNode = clientTrees.Where(x => x.ObjectId == clientNode.parentId && !x.EndDate.HasValue).FirstOrDefault();
+                    }
+
+                    if (!existTradeInvestment)
+                    {
+                        HasErrors = true;
+                        Errors.Add($"Not found interval for promo number {promo.Number}.");
+                    }
+                }
+            }
+
+            if (!HasErrors)
+            {
+                foreach (var importObj in allActualTIForYear)
+                {
+                    importObj.Disabled = true;
+                    importObj.DeletedDate = DateTimeOffset.Now;
+                }
+
+                foreach (ImportTradeInvestment newRecord in sourceRecords)
+                {
+                    BrandTech bt = context.Set<BrandTech>().FirstOrDefault(x => x.Name == newRecord.BrandTechName && !x.Disabled);
+                    ActualTradeInvestment toSave = new ActualTradeInvestment()
+                    {
+                        StartDate = newRecord.StartDate,
+                        EndDate = newRecord.EndDate,
+                        SizePercent = (float)Math.Round((decimal)newRecord.SizePercent, 2, MidpointRounding.AwayFromZero),
+                        TISubType = newRecord.TISubType,
+                        TIType = newRecord.TIType,
+                        ClientTreeId = newRecord.ClientTreeId,
+                        MarcCalcROI = newRecord.MarcCalcROIBool,
+                        MarcCalcBudgets = newRecord.MarcCalcBudgetsBool,
+                        BrandTechId = bt != null ? (Guid?)bt.Id : null,
+                        Year = newRecord.StartDate.Value.Year,
+                        IsTIIncidentCreated = false
+                    };
+                    toCreate.Add(toSave);
+                    tiChangeIncidents.Add(toSave);
+                }
+
+                foreach (IEnumerable<ActualTradeInvestment> importObjs in toCreate.Partition(100))
+                {
+                    context.Set<ActualTradeInvestment>().AddRange(importObjs);
+                }
+
+                //инциденты при импорте ActualTI не создаются
             }
 
             context.SaveChanges();

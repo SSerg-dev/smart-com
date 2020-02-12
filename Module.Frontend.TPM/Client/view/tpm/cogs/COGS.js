@@ -145,8 +145,8 @@
                 }
             },
             {
-                text: l10n.ns('tpm', 'COGS').value('LVSpercent'),
-                dataIndex: 'LVSpercent'
+                text: l10n.ns('tpm', 'COGS').value('LSVpercent'),
+                dataIndex: 'LSVpercent'
             }]
         }
     }, {
@@ -249,8 +249,8 @@
         }
             , {
             xtype: 'numberfield',
-            name: 'LVSpercent',
-            fieldLabel: l10n.ns('tpm', 'COGS').value('LVSpercent'),
+            name: 'LSVpercent',
+            fieldLabel: l10n.ns('tpm', 'COGS').value('LSVpercent'),
             minValue: 0,
             maxValue: 100,
             readOnly: true,
