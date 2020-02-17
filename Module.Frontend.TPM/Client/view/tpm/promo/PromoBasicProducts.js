@@ -496,25 +496,27 @@
                     .using(Ext.ux.data.BreezeEntityManager.getEntityManager())
                     .execute()
                     .then(function (data) {
-                        var result = Ext.JSON.decode(data.httpResponse.data.value);
-                        result = Ext.JSON.decode(result.data);
+                        if (!promoEditorCustom.isDestroyed) {
+                            var result = Ext.JSON.decode(data.httpResponse.data.value);
+                            result = Ext.JSON.decode(result.data);
 
-                        if (result.length > 0) {
-                            result.forEach(function (product) {
-                                subrangeBtns.push({
-                                    xtype: 'button',
-                                    height: 98,
-                                    width: 110,
-                                    text: '<b style="display: block !important; padding-bottom: 10px; min-height: 35px !important; max-height: 35px !important;">' + product.ProductEN + '</b><br/>' + '<b>' + product.ZREP + '<br/></b>',
-                                    cls: 'custom-event-button promobasic-choose-btn-in-out cursor-pointer',
-                                    disabled: true,
-                                    disabledCls: '',
-                                    style: 'opacity: 1.0 !important; cursor: default',
+                            if (result.length > 0) {
+                                result.forEach(function (product) {
+                                    subrangeBtns.push({
+                                        xtype: 'button',
+                                        height: 98,
+                                        width: 110,
+                                        text: '<b style="display: block !important; padding-bottom: 10px; min-height: 35px !important; max-height: 35px !important;">' + product.ProductEN + '</b><br/>' + '<b>' + product.ZREP + '<br/></b>',
+                                        cls: 'custom-event-button promobasic-choose-btn-in-out cursor-pointer',
+                                        disabled: true,
+                                        disabledCls: '',
+                                        style: 'opacity: 1.0 !important; cursor: default',
+                                    });
                                 });
-                            });
-                            subrangePanel.add(subrangeBtns);
-                            var promoProductsForm = promoEditorCustom.down('promobasicproducts');
-                            App.app.getController('tpm.promo.Promo').setInfoPromoBasicStep2(promoProductsForm);
+                                subrangePanel.add(subrangeBtns);
+                                var promoProductsForm = promoEditorCustom.down('promobasicproducts');
+                                App.app.getController('tpm.promo.Promo').setInfoPromoBasicStep2(promoProductsForm);
+                            }
                         }
                     })
                     .fail(function (data) {

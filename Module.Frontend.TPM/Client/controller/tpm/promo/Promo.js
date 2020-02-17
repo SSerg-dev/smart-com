@@ -5782,7 +5782,7 @@
         App.Util.makeRequestWithCallback('Promoes', 'CheckIfLogHasErrors', parameters, function (data) {
             var result = Ext.JSON.decode(data.httpResponse.data.value);
             var but = Ext.ComponentQuery.query('promoeditorcustom #btn_showlog')[0];
-            if (but) {
+            if (but && !but.isDestroyed) {
                 if (result.LogHasErrors) {
                     but.addCls('errorinside');
                 } else {
