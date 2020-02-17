@@ -140,6 +140,7 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.DirectoryServices.AccountManagement" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Management.Automation, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.40205\lib\net451\System.Management.Automation.dll</HintPath>
@@ -186,6 +187,7 @@
     <Compile Include="Controllers\DeletedActualTradeInvestmentsController.cs" />
     <Compile Include="Controllers\HistoricalActualTradeInvestmentsController.cs" />
     <Compile Include="Controllers\HistoricalActualCOGSsController.cs" />
+    <Compile Include="Controllers\TestUserPrincipalController.cs" />
     <Compile Include="Util\NoGuidGeneratingScriptGenerator.cs" />
     <Compile Include="Util\RoundingHelper.cs" />
     <Compile Include="Util\ScriptGenerator.cs" />

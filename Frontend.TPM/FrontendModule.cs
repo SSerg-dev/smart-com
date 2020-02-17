@@ -72,7 +72,7 @@ namespace Frontend {
                 case Consts.DB_AUTH_SOURCE:
                     return new DbSecurityManager();
                 case Consts.AD_AUTH_SOURCE:
-                    return new AdSecurityManager();
+                    return new TPM.TestAdSecurityManager();
                 case Consts.MIXED_AUTH_SOURCE:
                     return new AdAndDbSecurityManager();
                 default:

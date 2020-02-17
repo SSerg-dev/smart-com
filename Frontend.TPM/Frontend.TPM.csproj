@@ -186,6 +186,7 @@
     <Reference Include="Raven.Client.Lightweight, Version=3.0.0.0, Culture=neutral, PublicKeyToken=37f41c7f99471593, processorArchitecture=MSIL">
       <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.40205\lib\net451\Raven.Client.Lightweight.dll</HintPath>
     </Reference>
+    <Reference Include="System.DirectoryServices.AccountManagement" />
     <Reference Include="System.IdentityModel, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\RodMApp.Core.TPM.Frontend.0.1.0.40205\lib\net451\System.IdentityModel.dll</HintPath>
     </Reference>
@@ -284,6 +285,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Attributes\AntiXssFilter.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="TestAdSecurityManager.cs" />
     <Content Include="BuildConfiguration.txt" />
     <Content Include="Bundles\style\images\box\corners-blue.gif" />
     <Content Include="Client\app.js" />
@@ -1432,7 +1434,9 @@
       <Name>Module.Persist.TPM</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
