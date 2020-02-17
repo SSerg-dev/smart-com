@@ -721,10 +721,14 @@ namespace Module.Frontend.TPM.Controllers {
                     promoProductsCorrection.UserName = user.Login;
                 }
                 Context.SaveChanges();
-
+                
                 PromoHelper.WritePromoDemandChangeIncident(Context, model, true);
                 PromoCalculateHelper.RecalculateBudgets(model, user, Context);
-
+                //если промо инаут, необходимо убрать записи в IncrementalPromo при отмене промо
+                if (model.InOut.HasValue && model.InOut.Value)
+                {
+                    PromoHelper.DisableIncrementalPromo(Context, model);
+                }
                 return StatusCode(HttpStatusCode.NoContent);
             } catch (Exception e) {
                 return InternalServerError(e);
