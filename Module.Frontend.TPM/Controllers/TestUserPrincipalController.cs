@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
 using Core.Security;
+using System.Web;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -61,7 +62,7 @@ namespace Module.Frontend.TPM.Controllers
             }
             catch (Exception e)
             {
-                return Json(new { success = false, result = e.Message });
+                return Json(new { success = false, result = e });
             }
         }
     }
