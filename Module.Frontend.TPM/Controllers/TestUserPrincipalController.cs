@@ -22,7 +22,7 @@ namespace Module.Frontend.TPM.Controllers
         {
             try
             {
-                UserPrincipal currUP = UserPrincipal.Current;
+                var currUP = UserPrincipal.Current;
                 var currPC = currUP.Context;
 
                 var pc = new PrincipalContext(
@@ -32,8 +32,8 @@ namespace Module.Frontend.TPM.Controllers
                     AppSettingsManager.GetSetting<string>("AD_CONNECTION_PASSWORD", "")
                 );
 
-                UserPrincipal up = UserPrincipal.FindByIdentity(currPC, IdentityType.SamAccountName, "test");
-                UserPrincipal _up = UserPrincipal.FindByIdentity(pc, IdentityType.SamAccountName, "test");
+                var up = UserPrincipal.FindByIdentity(currPC, IdentityType.SamAccountName, "test");
+                var _up = UserPrincipal.FindByIdentity(pc, IdentityType.SamAccountName, "test");
 
                 List<string> upData = new List<string>(){
                     currPC.Name,

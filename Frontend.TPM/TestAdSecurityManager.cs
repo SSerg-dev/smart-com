@@ -32,12 +32,12 @@ namespace Frontend.TPM
                 ConfigurationManager.AppSettings[Consts.AD_CONNECTION_USERNAME],
                 ConfigurationManager.AppSettings[Consts.AD_CONNECTION_PASSWORD]
             );
-            UserPrincipal _up = UserPrincipal.FindByIdentity(pc, IdentityType.SamAccountName, user.Name);
+            var _up = UserPrincipal.FindByIdentity(pc, IdentityType.SamAccountName, user.Name);
 
-            UserPrincipal currUP = UserPrincipal.Current;
+            var currUP = UserPrincipal.Current;
             var currPC = currUP.Context;
             
-            UserPrincipal up = UserPrincipal.FindByIdentity(currPC, IdentityType.SamAccountName, user.Name);
+            var up = UserPrincipal.FindByIdentity(currPC, IdentityType.SamAccountName, user.Name);
 
             if (up == null)
             {
