@@ -36,7 +36,7 @@ namespace Module.Frontend.TPM.Controllers
 
                 //var currUP = UserPrincipal.Current;
                 //var currPC = currUP.Context;
-                //var up = UserPrincipal.FindByIdentity(currPC, IdentityType.SamAccountName, "test");
+                var up = UserPrincipal.FindByIdentity(d_pc, IdentityType.SamAccountName, "test");
 
                 List<string> upData = new List<string>(){
                     d_pc.Name,
@@ -51,7 +51,7 @@ namespace Module.Frontend.TPM.Controllers
                     pc.Options.ToString(),
                     pc.ContextType.ToString(),
 
-                    //currUP != null ? currUP.Name : "currUP is empty",
+                    up != null ? up.Name : "currUP is empty",
                     _up != null ? _up.Name : "_UP is empty",
                     _up != null ? _up.DistinguishedName : "_UP is empty",
                 };
