@@ -460,7 +460,7 @@ Ext.override(Ext.view.Table, {
 
     refresh: function () {
         var isScheduler = this.xtype == "schedulergridview" || this.up('scheduler');
-        if ((this.panel.scroll === false && this.lockingPartner && this.lockingPartner.scroll === false) || !this.getTargetEl() || this.xtype === "treeview" || isScheduler) {
+        if (this.panel.scroll === false && (!this.lockingPartner || this.lockingPartner.scroll === false) || !this.getTargetEl() || this.xtype === "treeview" || isScheduler) {
             this.callParent(arguments);
             return;
         }

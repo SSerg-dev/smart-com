@@ -7,6 +7,7 @@
     caseSensitive: false,
     anyMatch: true,
     forceSelection: true,
+    maxHeight: 30,
 
     store: {
         fields: ['id', 'text'],
