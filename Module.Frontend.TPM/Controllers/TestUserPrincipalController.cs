@@ -44,6 +44,7 @@ namespace Module.Frontend.TPM.Controllers
                     d_pc.ConnectedServer,
                     d_pc.Options.ToString(),
                     d_pc.ContextType.ToString(),
+                    d_pc.Container,
 
                     pc.Name,
                     pc.UserName,

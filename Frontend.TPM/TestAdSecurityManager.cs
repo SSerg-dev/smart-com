@@ -34,9 +34,7 @@ namespace Frontend.TPM
             );
             var _up = UserPrincipal.FindByIdentity(pc, IdentityType.SamAccountName, user.Name);
 
-            var currUP = UserPrincipal.Current;
-            var currPC = currUP.Context;
-            
+            var currPC = new PrincipalContext(ContextType.Domain);
             var up = UserPrincipal.FindByIdentity(currPC, IdentityType.SamAccountName, user.Name);
 
             if (up == null)
