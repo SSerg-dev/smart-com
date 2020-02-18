@@ -83,8 +83,8 @@
     <Reference Include="Interfaces.Implementation, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.0.40353\lib\net451\Interfaces.Implementation.dll</HintPath>
     </Reference>
-    <Reference Include="LinqToQuerystringCore, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\LinqToQuerystring.1.36298\lib\net_core\LinqToQuerystringCore.dll</HintPath>
+    <Reference Include="LinqToQuerystring, Version=0.6.5.24695, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\LinqToQuerystring.0.6.5\lib\net35\LinqToQuerystring.dll</HintPath>
     </Reference>
     <Reference Include="LiteDB, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.40353\lib\net451\LiteDB.dll</HintPath>
