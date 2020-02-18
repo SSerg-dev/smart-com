@@ -23,9 +23,6 @@ namespace Module.Frontend.TPM.Controllers
         {
             try
             {
-                var currUP = UserPrincipal.Current;
-                var currPC = currUP.Context;
-
                 var pc = new PrincipalContext(
                     ContextType.Domain,
                     AppSettingsManager.GetSetting<string>("DOMAIN_NAME", ""),
@@ -33,15 +30,18 @@ namespace Module.Frontend.TPM.Controllers
                     AppSettingsManager.GetSetting<string>("AD_CONNECTION_PASSWORD", "")
                 );
 
-                var up = UserPrincipal.FindByIdentity(currPC, IdentityType.SamAccountName, "test");
                 var _up = UserPrincipal.FindByIdentity(pc, IdentityType.SamAccountName, "test");
+                //var currUP = UserPrincipal.Current;
+                //var currPC = currUP.Context;
+
+                //var up = UserPrincipal.FindByIdentity(currPC, IdentityType.SamAccountName, "test");
 
                 List<string> upData = new List<string>(){
-                    currPC.Name,
-                    currPC.UserName,
-                    currPC.ConnectedServer,
-                    currPC.Options.ToString(),
-                    currPC.ContextType.ToString(),
+                    //currPC.Name,
+                    //currPC.UserName,
+                    //currPC.ConnectedServer,
+                    //currPC.Options.ToString(),
+                    //currPC.ContextType.ToString(),
 
                     pc.Name,
                     pc.UserName,
@@ -49,8 +49,9 @@ namespace Module.Frontend.TPM.Controllers
                     pc.Options.ToString(),
                     pc.ContextType.ToString(),
 
-                    up != null ? up.Name : "UP is empty",
+                    //up != null ? up.Name : "UP is empty",
                     _up != null ? _up.Name : "_UP is empty",
+                    _up != null ? _up.DistinguishedName : "_UP is empty",
                 };
 
                 return Json(new
