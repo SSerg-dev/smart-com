@@ -285,7 +285,6 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Attributes\AntiXssFilter.cs" />
     <Compile Include="Startup.cs" />
-    <Compile Include="TestAdSecurityManager.cs" />
     <Content Include="BuildConfiguration.txt" />
     <Content Include="Bundles\style\images\box\corners-blue.gif" />
     <Content Include="Client\app.js" />

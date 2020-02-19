@@ -187,7 +187,6 @@
     <Compile Include="Controllers\DeletedActualTradeInvestmentsController.cs" />
     <Compile Include="Controllers\HistoricalActualTradeInvestmentsController.cs" />
     <Compile Include="Controllers\HistoricalActualCOGSsController.cs" />
-    <Compile Include="Controllers\TestUserPrincipalController.cs" />
     <Compile Include="Util\NoGuidGeneratingScriptGenerator.cs" />
     <Compile Include="Util\RoundingHelper.cs" />
     <Compile Include="Util\ScriptGenerator.cs" />
