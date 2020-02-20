@@ -488,7 +488,34 @@ namespace Module.Frontend.TPM.Controllers {
                     }
                 }
 
-				if (model.PromoStatus.SystemName.ToLower() == "cancelled")
+                if (promoCopy.PromoStatus.SystemName.ToLower() == "cancelled")
+                {
+                    model.PlanPromoXSites = null;
+                    model.PlanPromoCatalogue = null;
+                    model.PlanPromoPOSMInClient = null;
+                    model.PlanPromoCostProdXSites = null;
+                    model.PlanPromoCostProdCatalogue = null;
+                    model.PlanPromoCostProdPOSMInClient = null;
+                    model.ActualPromoXSites = null;
+                    model.ActualPromoCatalogue = null;
+                    model.ActualPromoPOSMInClient = null;
+                    model.ActualPromoCostProdXSites = null;
+                    model.ActualPromoCostProdCatalogue = null;
+                    model.ActualPromoCostProdPOSMInClient = null;
+                    model.PlanPromoTIShopper = null;
+                    model.PlanPromoTIMarketing = null;
+                    model.PlanPromoBranding = null;
+                    model.PlanPromoCost = null;
+                    model.PlanPromoBTL = null;
+                    model.PlanPromoCostProduction = null;
+                    model.ActualPromoTIShopper = null;
+                    model.ActualPromoTIMarketing = null;
+                    model.ActualPromoBranding = null;
+                    model.ActualPromoBTL = null;
+                    model.ActualPromoCostProduction = null;
+                    model.ActualPromoCost = null;
+                }
+                    if (model.PromoStatus.SystemName.ToLower() == "cancelled")
 				{
                     List<PromoProduct> promoProductToDeleteList = Context.Set<PromoProduct>().Where(x => x.PromoId == model.Id && !x.Disabled).ToList();
                     foreach (PromoProduct promoProduct in promoProductToDeleteList)
@@ -496,7 +523,7 @@ namespace Module.Frontend.TPM.Controllers {
                         promoProduct.DeletedDate = System.DateTime.Now;
                         promoProduct.Disabled = true;
                     }
-                    model.NeedRecountUplift = true;
+                    //model.NeedRecountUplift = true;
                     //необходимо удалить все коррекции
                     var promoProductToDeleteListIds = promoProductToDeleteList.Select(x => x.Id).ToList();
                     List<PromoProductsCorrection> promoProductCorrectionToDeleteList = Context.Set<PromoProductsCorrection>()
@@ -507,7 +534,7 @@ namespace Module.Frontend.TPM.Controllers {
                         promoProductsCorrection.Disabled = true;
                         promoProductsCorrection.UserId = (Guid)user.Id;
                         promoProductsCorrection.UserName = user.Login;
-                    }
+                    } 
 
 
                     // Создание записи инцидента отмены промо

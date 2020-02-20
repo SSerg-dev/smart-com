@@ -202,7 +202,7 @@ namespace Module.Host.TPM.Actions
                                     promoProduct.DeletedDate = System.DateTime.Now;
                                     promoProduct.Disabled = true;
                                 }
-                                promo.NeedRecountUplift = true;
+                                //promo.NeedRecountUplift = true;
                                 //необходимо удалить все коррекции
                                 var promoProductToDeleteListIds = promoProductToDeleteList.Select(x => x.Id).ToList();
                                 List<PromoProductsCorrection> promoProductCorrectionToDeleteList = context.Set<PromoProductsCorrection>()
