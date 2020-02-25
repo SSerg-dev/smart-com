@@ -53,7 +53,8 @@
 function schedulerStatusFilter() {
     var result = {
         value: 'Cancelled',
-        operation: 'NotEqual'
+        operation: 'NotEqual',
+        valueField: 'Name'
     };
     return result;
 }
