@@ -231,7 +231,11 @@
             var val = field.defaultFilterConfig ? field.defaultFilterConfig.value : undefined;
             var op = field.defaultFilterConfig ? field.defaultFilterConfig.operation : undefined;
 
-            var fsearchValueDisplayField = field.mapping ? field.mapping.split('.')[field.mapping.split('.').length - 1] : fieldName;
+            if (field.viewTree) {
+                var fsearchValueDisplayField = field.defaultFilterConfig.valueField;
+            } else {
+                var fsearchValueDisplayField = field.mapping ? field.mapping.split('.')[field.mapping.split('.').length - 1] : fieldName;
+            }
             var entryConfig = App.extfilter.core.ConfigSource.getEntryConfig(model, field, fsearchValueDisplayField)
 
             if (field.hasOwnProperty('extendedFilterEntry')) {

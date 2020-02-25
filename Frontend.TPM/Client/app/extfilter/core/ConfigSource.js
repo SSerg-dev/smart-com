@@ -10,6 +10,7 @@
                 moduleName = App.Util.getSubdirectory(modelClassName),
                 customLocale = field.localeConfig,
                 tree = field.tree,
+                viewTree = field.viewTree,
                 timeZone = field.timeZone;
 
             var cfg = field.filterOperationsConfig ? field.filterOperationsConfig : {};

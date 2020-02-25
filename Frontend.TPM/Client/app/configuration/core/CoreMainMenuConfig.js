@@ -61,54 +61,52 @@
         roles: ['Administrator', 'SupportAdministrator'],
         widget: 'associatedmailnotificationsettingcontainer'
     }]
-},
-//{
-//    text: l10n.ns('core', 'mainmenu').value('InterfaceItem'),
-//    tooltip: l10n.ns('core', 'mainmenu').value('InterfaceItem'),
-//    glyph: 0xf318,
-//    scale: 'medium',
-//    children: [{
-//        text: l10n.ns('core', 'mainmenu').value('InterfaceItem'),
-//        tooltip: l10n.ns('core', 'mainmenu').value('InterfaceItem'),
-//        glyph: 0xf497,
-//        roles: ['Administrator'],
-//        widget: 'interface'
-//    }, {
-//        text: l10n.ns('core', 'mainmenu').value('FileBufferItem'),
-//        tooltip: l10n.ns('core', 'mainmenu').value('FileBufferItem'),
-//        glyph: 0xf222,
-//        roles: ['Administrator', 'Manager'],
-//        widget: 'filebuffer'
-//    }, {
-//        text: l10n.ns('core', 'mainmenu').value('FileCollectInterfaceSettingItem'),
-//        tooltip: l10n.ns('core', 'mainmenu').value('FileCollectInterfaceSettingItem'),
-//        glyph: 0xf493,
-//        roles: ['Administrator'],
-//        widget: 'filecollectinterfacesetting'
-//    }, {
-//        text: l10n.ns('core', 'mainmenu').value('CSVProcessInterfaceSettingItem'),
-//        tooltip: l10n.ns('core', 'mainmenu').value('CSVProcessInterfaceSettingItem'),
-//        glyph: 0xf218,
-//        roles: ['Administrator'],
-//        widget: 'csvprocessinterfacesetting'
-//    }, {
-//        text: l10n.ns('core', 'mainmenu').value('XMLProcessInterfaceSettingItem'),
-//        tooltip: l10n.ns('core', 'mainmenu').value('XMLProcessInterfaceSettingItem'),
-//        glyph: 0xf22e,
-//        roles: ['Administrator'],
-//        widget: 'xmlprocessinterfacesetting'
-//    }, {
-//        text: l10n.ns('core', 'mainmenu').value('CSVExtractInterfaceSettingItem'),
-//        tooltip: l10n.ns('core', 'mainmenu').value('CSVExtractInterfaceSettingItem'),
-//        glyph: 0xf218,
-//        roles: ['Administrator'],
-//        widget: 'csvextractinterfacesetting'
-//    }, {
-//        text: l10n.ns('core', 'mainmenu').value('FileSendInterfaceSettingItem'),
-//        tooltip: l10n.ns('core', 'mainmenu').value('FileSendInterfaceSettingItem'),
-//        glyph: 0xf22a,
-//        roles: ['Administrator'],
-//        widget: 'filesendinterfacesetting'
-//    }]
-//}
-]);
+}, {
+    text: l10n.ns('core', 'mainmenu').value('InterfaceItem'),
+    tooltip: l10n.ns('core', 'mainmenu').value('InterfaceItem'),
+    glyph: 0xf318,
+    scale: 'medium',
+    children: [{
+        text: l10n.ns('core', 'mainmenu').value('InterfaceItem'),
+        tooltip: l10n.ns('core', 'mainmenu').value('InterfaceItem'),
+        glyph: 0xf497,
+        roles: ['Administrator'],
+        widget: 'interface'
+    }, {
+        text: l10n.ns('core', 'mainmenu').value('FileBufferItem'),
+        tooltip: l10n.ns('core', 'mainmenu').value('FileBufferItem'),
+        glyph: 0xf222,
+        roles: ['Administrator'],
+        widget: 'filebuffer'
+    }, {
+        text: l10n.ns('core', 'mainmenu').value('FileCollectInterfaceSettingItem'),
+        tooltip: l10n.ns('core', 'mainmenu').value('FileCollectInterfaceSettingItem'),
+        glyph: 0xf493,
+        roles: ['Administrator'],
+        widget: 'filecollectinterfacesetting'
+    }, {
+        text: l10n.ns('core', 'mainmenu').value('CSVProcessInterfaceSettingItem'),
+        tooltip: l10n.ns('core', 'mainmenu').value('CSVProcessInterfaceSettingItem'),
+        glyph: 0xf218,
+        roles: ['Administrator'],
+        widget: 'csvprocessinterfacesetting'
+    }, {
+        text: l10n.ns('core', 'mainmenu').value('XMLProcessInterfaceSettingItem'),
+        tooltip: l10n.ns('core', 'mainmenu').value('XMLProcessInterfaceSettingItem'),
+        glyph: 0xf22e,
+        roles: ['Administrator'],
+        widget: 'xmlprocessinterfacesetting'
+    }, {
+        text: l10n.ns('core', 'mainmenu').value('CSVExtractInterfaceSettingItem'),
+        tooltip: l10n.ns('core', 'mainmenu').value('CSVExtractInterfaceSettingItem'),
+        glyph: 0xf218,
+        roles: ['Administrator'],
+        widget: 'csvextractinterfacesetting'
+    }, {
+        text: l10n.ns('core', 'mainmenu').value('FileSendInterfaceSettingItem'),
+        tooltip: l10n.ns('core', 'mainmenu').value('FileSendInterfaceSettingItem'),
+        glyph: 0xf22a,
+        roles: ['Administrator'],
+        widget: 'filesendinterfacesetting'
+    }]
+}]);
