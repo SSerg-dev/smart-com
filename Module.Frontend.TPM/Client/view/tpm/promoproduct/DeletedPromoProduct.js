@@ -79,21 +79,7 @@ Ext.define('App.view.tpm.promoproduct.DeletedPromoProduct', {
             xtype: 'singlelinedisplayfield',
             name: 'ActualProductPCQty',
             fieldLabel: l10n.ns('tpm', 'PromoProduct').value('ActualProductPCQty'),
-            },
-        //    {
-        //    xtype: 'singlelinedisplayfield',
-        //    name: 'ActualProductCaseQty',
-        //    fieldLabel: l10n.ns('tpm', 'PromoProduct').value('ActualProductCaseQty'),
-        //}, {
-        //    xtype: 'singlelinedisplayfield',
-        //    name: 'ActualProductUOM',
-        //    fieldLabel: l10n.ns('tpm', 'PromoProduct').value('ActualProductUOM'),
-        //}, {
-        //    xtype: 'singlelinedisplayfield',
-        //    name: 'ActualProductShelfPrice',
-        //    fieldLabel: l10n.ns('tpm', 'PromoProduct').value('ActualProductShelfPrice'),
-        //    },
-            {
+         }, {
             xtype: 'singlelinedisplayfield',
             name: 'ActualProductPCLSV',
             fieldLabel: l10n.ns('tpm', 'PromoProduct').value('ActualProductPCLSV'),

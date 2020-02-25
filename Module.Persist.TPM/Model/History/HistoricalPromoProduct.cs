@@ -24,11 +24,7 @@ namespace Module.Persist.TPM.Model.History
         public double? ActualProductCaseQty { get; set; }
         public string ActualProductUOM { get; set; }       
         public double? ActualProductSellInPrice { get; set; }
-        public double? ActualProductSellInDiscount { get; set; }        
-        public double? ActualProductShelfPrice { get; set; }
-        public double? ActualProductShelfDiscount { get; set; }
         public double? ActualProductPCLSV { get; set; }
-        public double? ActualPromoShare { get; set; }
         public double? ActualProductUpliftPercent { get; set; }
         public double? ActualProductIncrementalPCQty { get; set; }
         public double? ActualProductIncrementalPCLSV { get; set; }
@@ -36,8 +32,6 @@ namespace Module.Persist.TPM.Model.History
         public double? PlanProductPostPromoEffectLSVW1 { get; set; }
         public double? PlanProductPostPromoEffectLSVW2 { get; set; }
         public double? PlanProductPostPromoEffectLSV { get; set; }
-        public double? ActualProductPostPromoEffectLSVW1 { get; set; }
-        public double? ActualProductPostPromoEffectLSVW2 { get; set; }
         public double? ActualProductPostPromoEffectLSV { get; set; }
         public double? PlanProductIncrementalCaseQty { get; set; }
         public double? PlanProductUpliftPercent { get; set; }

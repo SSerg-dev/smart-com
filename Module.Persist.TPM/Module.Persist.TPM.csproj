@@ -1658,6 +1658,10 @@
     <Compile Include="Migrations\202002121059314_EmptyMigrationRC5.Designer.cs">
       <DependentUpon>202002121059314_EmptyMigrationRC5.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202002251957252_Delete_PromoProductsProperties.cs" />
+    <Compile Include="Migrations\202002251957252_Delete_PromoProductsProperties.Designer.cs">
+      <DependentUpon>202002251957252_Delete_PromoProductsProperties.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\PromoProductsView.cs" />
     <Compile Include="Model\DTO\ClientTreeSharesView.cs" />
@@ -3126,6 +3130,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202002121059314_EmptyMigrationRC5.resx">
       <DependentUpon>202002121059314_EmptyMigrationRC5.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002251957252_Delete_PromoProductsProperties.resx">
+      <DependentUpon>202002251957252_Delete_PromoProductsProperties.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

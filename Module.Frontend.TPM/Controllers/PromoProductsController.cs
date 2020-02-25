@@ -595,7 +595,13 @@ namespace Module.Frontend.TPM.Controllers
         {
             try
             {
-                IQueryable results = options.ApplyTo(GetConstraintedQuery(false, promoId).Where(x => !x.Disabled && (!promoId.HasValue || x.PromoId == promoId.Value)));
+                var products = GetConstraintedQuery(false, promoId).Where(x => !x.Disabled && (!promoId.HasValue || x.PromoId == promoId.Value));
+                var corrections = Context.Set<PromoProductsCorrection>().Where(x => products.Select(y => y.Id).Contains(x.PromoProductId) && x.TempId == null && x.Disabled != true);
+                foreach(var singleCorrection in corrections)
+                {
+                    products.Where(x => x.Id == singleCorrection.PromoProductId).FirstOrDefault().PlanProductUpliftPercent = singleCorrection.PlanProductUpliftPercentCorrected;
+                };
+                IQueryable results = options.ApplyTo(products);
                 IEnumerable<Column> columns = GetSupportAdminExportSettings();
                 XLSXExporter exporter = new XLSXExporter(columns);
                 UserInfo user = authorizationManager.GetCurrentUser();
@@ -629,16 +635,11 @@ namespace Module.Frontend.TPM.Controllers
                 new Column() { Order = orderNum++, Field = "PlanProductBaselineCaseQty", Header = "PlanProductBaselineCaseQty", Quoting = false },
                 new Column() { Order = orderNum++, Field = "ProductBaselinePrice", Header = "ProductBaselinePrice", Quoting = false },
                 new Column() { Order = orderNum++, Field = "PlanProductPCPrice", Header = "PlanProductPCPrice", Quoting = false },
-                new Column() { Order = orderNum++, Field = "PlanProductUplift", Header = "PlanProductUplift", Quoting = false },
                 new Column() { Order = orderNum++, Field = "ActualProductPCQty", Header = "ActualProductPCQty", Quoting = false },
                 new Column() { Order = orderNum++, Field = "ActualProductCaseQty", Header = "ActualProductCaseQty", Quoting = false },
                 new Column() { Order = orderNum++, Field = "ActualProductUOM", Header = "ActualProductUOM", Quoting = false },
                 new Column() { Order = orderNum++, Field = "ActualProductSellInPrice", Header = "ActualProductSellInPrice", Quoting = false },
-                new Column() { Order = orderNum++, Field = "ActualProductSellInDiscount", Header = "ActualProductSellInDiscount", Quoting = false },
-                new Column() { Order = orderNum++, Field = "ActualProductShelfPrice", Header = "ActualProductShelfPrice", Quoting = false },
-                new Column() { Order = orderNum++, Field = "ActualProductShelfDiscount", Header = "ActualProductShelfDiscount", Quoting = false },
                 new Column() { Order = orderNum++, Field = "ActualProductPCLSV", Header = "ActualProductPCLSV", Quoting = false },
-                new Column() { Order = orderNum++, Field = "ActualPromoShare", Header = "ActualPromoShare", Quoting = false },
                 new Column() { Order = orderNum++, Field = "ActualProductUpliftPercent", Header = "ActualProductUpliftPercent", Quoting = false },
                 new Column() { Order = orderNum++, Field = "ActualProductIncrementalPCQty", Header = "ActualProductIncrementalPCQty", Quoting = false },
                 new Column() { Order = orderNum++, Field = "ActualProductIncrementalPCLSV", Header = "ActualProductIncrementalPCLSV", Quoting = false },
@@ -646,8 +647,6 @@ namespace Module.Frontend.TPM.Controllers
                 new Column() { Order = orderNum++, Field = "PlanProductPostPromoEffectLSVW1", Header = "PlanProductPostPromoEffectLSVW1", Quoting = false },
                 new Column() { Order = orderNum++, Field = "PlanProductPostPromoEffectLSVW2", Header = "PlanProductPostPromoEffectLSVW2", Quoting = false },
                 new Column() { Order = orderNum++, Field = "PlanProductPostPromoEffectLSV", Header = "PlanProductPostPromoEffectLSV", Quoting = false },
-                new Column() { Order = orderNum++, Field = "ActualProductPostPromoEffectLSVW1", Header = "ActualProductPostPromoEffectLSVW1", Quoting = false },
-                new Column() { Order = orderNum++, Field = "ActualProductPostPromoEffectLSVW2", Header = "ActualProductPostPromoEffectLSVW2", Quoting = false },
                 new Column() { Order = orderNum++, Field = "ActualProductPostPromoEffectLSV", Header = "ActualProductPostPromoEffectLSV", Quoting = false },
                 new Column() { Order = orderNum++, Field = "PlanProductIncrementalCaseQty", Header = "PlanProductIncrementalCaseQty", Quoting = false },
                 new Column() { Order = orderNum++, Field = "PlanProductUpliftPercent", Header = "PlanProductUpliftPercent", Quoting = false },

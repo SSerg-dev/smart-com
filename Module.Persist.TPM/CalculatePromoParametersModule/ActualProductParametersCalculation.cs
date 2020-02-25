@@ -113,8 +113,6 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                             if (!isActualPromoProstPromoEffectLSVChangedByDemand)
                             {
-                                product.ActualProductPostPromoEffectLSVW1 = 0;
-                                product.ActualProductPostPromoEffectLSVW2 = 0;
                                 product.ActualProductPostPromoEffectLSV = 0;
                             }
 
@@ -168,8 +166,6 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             {
                 if (resetActualProductPostPromoEffectLSV)
                 {
-                    product.ActualProductPostPromoEffectLSVW1 = null;
-                    product.ActualProductPostPromoEffectLSVW2 = null;
                     product.ActualProductPostPromoEffectLSV = null;
                 }
 

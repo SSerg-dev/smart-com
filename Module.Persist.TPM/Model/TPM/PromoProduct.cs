@@ -106,16 +106,6 @@ namespace Module.Persist.TPM.Model.TPM
         public double? ActualProductSellInPrice { get; set; }
 
         /// <summary>
-        /// Фактическая закупочная скидка
-        /// </summary>
-        public double? ActualProductSellInDiscount { get; set; }
-
-        /// <summary>
-        /// Цена на полке
-        /// </summary>
-        public double? ActualProductShelfPrice { get; set; }
-
-        /// <summary>
         /// Размер фактической скидки на полке
         /// </summary>
         public double? ActualProductShelfDiscount { get; set; }
@@ -124,11 +114,6 @@ namespace Module.Persist.TPM.Model.TPM
         /// Общая сумма продажи
         /// </summary>
         public double? ActualProductPCLSV { get; set; }
-
-        /// <summary>
-        /// Сколько продукт составляет от общей суммы промо
-        /// </summary>
-        public double? ActualPromoShare { get; set; }
 
         /// <summary>
         /// Значение аплифта по отношению к baseline
@@ -164,16 +149,6 @@ namespace Module.Persist.TPM.Model.TPM
         /// Плановое изменение продаж в первую и вторую недели после проведения промо
         /// </summary>
         public double? PlanProductPostPromoEffectLSV { get; set; }
-
-        /// <summary>
-        /// Фактическое изменение продаж в первую неделю после проведения промо
-        /// </summary>
-        public double? ActualProductPostPromoEffectLSVW1 { get; set; }
-
-        /// <summary>
-        /// Фактическое изменение продаж во вторую неделю после проведения промо
-        /// </summary>
-        public double? ActualProductPostPromoEffectLSVW2 { get; set; }
 
         /// <summary>
         /// Фактическое изменение продаж в первую и вторую недели после проведения промо
