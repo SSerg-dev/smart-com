@@ -282,8 +282,9 @@
             approvalhistory.historyArray = result.data == undefined ? null : result.data;
             approvalhistory.isNonego = result.isNoNegoPassed == undefined ? false : result.isNoNegoPassed;
             approvalhistory.promoStatus = promoStatusName;
-            approvalhistory.statusColors = result.statusColors;
-            promoeditorcustom.setLoading(false);
+            approvalhistory.statusColors = result.statusColors; 
+            if (promoeditorcustom.down('#btn_changes').hasCls('selected'))
+                promoeditorcustom.setLoading(false);
         }
     }
 });
