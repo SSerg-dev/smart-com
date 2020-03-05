@@ -366,8 +366,8 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                             double? sumPlanProductBaseLineLSV = promoProducts.Sum(x => x.PlanProductBaselineLSV);
                             double? sumPlanProductIncrementalLSV = promoProducts.Sum(x => x.PlanProductIncrementalLSV);
-
-                            promo.PlanPromoUpliftPercent = sumPlanProductBaseLineLSV != 0 ? sumPlanProductIncrementalLSV / sumPlanProductBaseLineLSV * 100 : null;
+                            if(promo.NeedRecountUplift.Value)
+                               promo.PlanPromoUpliftPercent = sumPlanProductBaseLineLSV != 0 ? sumPlanProductIncrementalLSV / sumPlanProductBaseLineLSV * 100 : null;
 
                             promo.PlanPromoIncrementalLSV = sumPlanProductIncrementalLSV;
                             promo.PlanPromoBaselineLSV = sumPlanProductBaseLineLSV;
