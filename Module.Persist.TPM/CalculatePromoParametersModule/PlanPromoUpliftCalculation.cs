@@ -21,11 +21,15 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 var currentPromo = context.Set<Promo>().Where(x => x.Id == promoId).FirstOrDefault();
                 // сбрасываем uplift
                 currentPromo.PlanPromoUpliftPercent = null;
-                context.SaveChanges();
-
-
+               
                 //Получаем все продукты по этому промо
                 List<PromoProduct> currentPromoProducts = context.Set<PromoProduct>().Where(x => x.PromoId == currentPromo.Id && x.Disabled != true).ToList();
+                foreach(var promoProduct in currentPromoProducts)
+                {
+                    promoProduct.PlanProductUpliftPercent = null;
+                }
+                context.SaveChanges();
+
 
                 upliftMessage = "";
 
