@@ -142,10 +142,6 @@ namespace Module.Frontend.TPM.Controllers
         public IQueryable<ClientTreeBrandTech> GetClientTreeBrandTeches(ODataQueryOptions<ClientTreeBrandTech> queryOptions = null) 
         {
             var query = GetConstraintedQuery();
-            if (queryOptions != null && queryOptions.Filter != null)
-            {
-                query = RoundingHelper.ModifyQuery(query);
-            }
             return query;
         }
 

@@ -145,6 +145,20 @@
             }, {
                 text: l10n.ns('tpm', 'ClientTreeBrandTech').value('Share'),
                 dataIndex: 'Share',
+                renderer: function (value, meta) {
+                    return value.toString().replace('.', ',')
+                },
+                filter: {
+                    xtype: 'numberfield',
+                    submitLocaleSeparator: false,
+                    decimalPrecision: 15,
+                    allowDecimals: true,
+                    decimalSeparator: ',',
+                    hideTrigger: true,
+                    keyNavEnabled: false,
+                    mouseWheelEnabled: false,
+                    operator: 'eq'
+                }
             }]
         }
     }, {
