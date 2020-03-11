@@ -1,4 +1,4 @@
-Ext.define('App.view.core.loophandler.UserLoopHandler', {
+п»їExt.define('App.view.core.loophandler.UserLoopHandler', {
     extend: 'App.view.core.common.CombinedDirectoryPanel',
     alias: 'widget.userloophandler',
     title: l10n.ns('core', 'compositePanelTitles').value('UserLoopHandlerTitle'),
@@ -94,7 +94,7 @@ Ext.define('App.view.core.loophandler.UserLoopHandler', {
     initComponent: function () {
         this.callParent(arguments);
 
-        // Workaround в связи с багом в loadmask
+        // Workaround РІ СЃРІСЏР·Рё СЃ Р±Р°РіРѕРј РІ loadmask
         this.down('directorygrid').getView().loadMask = {
             maskOnDisable: false,
             fixedZIndex: 3

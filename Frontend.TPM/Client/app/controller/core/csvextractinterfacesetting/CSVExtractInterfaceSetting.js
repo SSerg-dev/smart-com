@@ -1,67 +1,62 @@
-﻿Ext.define('App.controller.core.xmlprocessinterfacesetting.XMLProcessInterfaceSetting', {
+﻿Ext.define('App.controller.core.csvextractinterfacesetting.CSVExtractInterfaceSetting', {
     extend: 'App.controller.core.AssociatedDirectory',
 
     init: function () {
         this.listen({
             component: {
-                'xmlprocessinterfacesetting[isSearch!=true] directorygrid': {
+                'csvextractinterfacesetting[isSearch!=true] directorygrid': {
                     load: this.onGridStoreLoad,
                     itemdblclick: this.onDetailButtonClick
                 },
-                'xmlprocessinterfacesetting directorygrid': {
+                'csvextractinterfacesetting directorygrid': {
                     selectionchange: this.onGridSelectionChange,
                     afterrender: this.onGridAfterrender,
                     extfilterchange: this.onExtFilterChange
                 },
-                'xmlprocessinterfacesetting #datatable': {
+                'csvextractinterfacesetting #datatable': {
                     activate: this.onActivateCard
                 },
-                'xmlprocessinterfacesetting #detailform': {
+                'csvextractinterfacesetting #detailform': {
                     activate: this.onActivateCard
                 },
-                'xmlprocessinterfacesetting #detailform #ok': {
-                    click: this.onOkButtonClick
-                },
-                'xmlprocessinterfacesetting #detailform #cancel': {
-                    click: this.onCancelButtonClick
-                },
-                'xmlprocessinterfacesetting #detailform #prev': {
+                'csvextractinterfacesetting #detailform #prev': {
                     click: this.onPrevButtonClick
                 },
-                'xmlprocessinterfacesetting #detailform #next': {
+                'csvextractinterfacesetting #detailform #next': {
                     click: this.onNextButtonClick
                 },
-                'xmlprocessinterfacesetting #detail': {
+                'csvextractinterfacesetting #detail': {
                     click: this.onDetailButtonClick
                 },
-                'xmlprocessinterfacesetting #table': {
+                'csvextractinterfacesetting #table': {
                     click: this.onTableButtonClick
                 },
-                'xmlprocessinterfacesetting #extfilterbutton': {
+                'csvextractinterfacesetting #extfilterbutton': {
                     click: this.onFilterButtonClick
                 },
-                'xmlprocessinterfacesetting #deletedbutton': {
+                'csvextractinterfacesetting #deletedbutton': {
                     click: this.onDeletedButtonClick
                 },
-                'xmlprocessinterfacesetting #createbutton': {
+                'csvextractinterfacesetting #createbutton': {
                     click: this.onCreateButtonClick
                 },
-                'xmlprocessinterfacesetting #updatebutton': {
+                'csvextractinterfacesetting #updatebutton': {
                     click: this.onUpdateButtonClick
                 },
-                'xmlprocessinterfacesetting #deletebutton': {
+                'csvextractinterfacesetting #deletebutton': {
                     click: this.onDeleteButtonClick
                 },
-                'xmlprocessinterfacesetting #historybutton': {
+                'csvextractinterfacesetting #historybutton': {
                     click: this.onHistoryButtonClick
                 },
-                'xmlprocessinterfacesetting #refresh': {
+                'csvextractinterfacesetting #refresh': {
                     click: this.onRefreshButtonClick
                 },
-                'xmlprocessinterfacesetting #close': {
+                'csvextractinterfacesetting #close': {
                     click: this.onCloseButtonClick
                 }
             }
         });
-    }
+    },
+
 });

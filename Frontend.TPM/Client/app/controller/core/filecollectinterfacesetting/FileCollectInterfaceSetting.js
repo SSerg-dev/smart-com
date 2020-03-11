@@ -1,12 +1,12 @@
 ﻿Ext.define('App.controller.core.filecollectinterfacesetting.FileCollectInterfaceSetting', {
-    extend: 'App.controller.core.CombinedDirectory',
+    extend: 'App.controller.core.AssociatedDirectory',
 
     init: function () {
         this.listen({
             component: {
                 'filecollectinterfacesetting[isSearch!=true] directorygrid': {
                     load: this.onGridStoreLoad,
-                    itemdblclick: this.switchToDetailForm
+                    itemdblclick: this.onDetailButtonClick
                 },
                 'filecollectinterfacesetting directorygrid': {
                     selectionchange: this.onGridSelectionChange,
@@ -32,7 +32,7 @@
                     click: this.onNextButtonClick
                 },
                 'filecollectinterfacesetting #detail': {
-                    click: this.switchToDetailForm
+                    click: this.onDetailButtonClick
                 },
                 'filecollectinterfacesetting #table': {
                     click: this.onTableButtonClick

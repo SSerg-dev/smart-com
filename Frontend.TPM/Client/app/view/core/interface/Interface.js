@@ -11,6 +11,7 @@ Ext.define('App.view.core.interface.Interface', {
     items: [{
         xtype: 'directorygrid',
         itemId: 'datatable',
+        editorModel: 'Core.form.EditorDetailWindowModel',
 
         store: {
             type: 'directorystore',

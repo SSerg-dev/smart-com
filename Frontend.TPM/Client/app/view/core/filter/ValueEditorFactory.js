@@ -40,9 +40,16 @@
             valueConfig = entry.values[fieldType] || {},
             additionalTypeConfig = this.newTypeConfigMap[this.typeXTypeMap[fieldType]] || {};
 
-        for (var propertyName in additionalTypeConfig) {
-            var propertyValue = additionalTypeConfig[propertyName];
-            atomConfig[propertyName] = propertyValue;
+        var modelKeyFields = entry.model.getFields().filter(function (field) { return field['isKey'] === true; });
+
+        if (!modelKeyFields.some(function (field) { return field['name'] == entry.data['id']; })) {
+            for (var propertyName in additionalTypeConfig) {
+                var propertyValue = additionalTypeConfig[propertyName];
+                atomConfig[propertyName] = propertyValue;
+            }
+        } else {
+            atomConfig['minValue'] = 0;
+            atomConfig['allowDecimals'] = false;
         }
 
         if (Ext.isString(atomConfig)) {

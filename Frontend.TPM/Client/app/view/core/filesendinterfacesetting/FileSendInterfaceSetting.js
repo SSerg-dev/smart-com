@@ -11,6 +11,7 @@ Ext.define('App.view.core.filesendinterfacesetting.FileSendInterfaceSetting', {
     items: [{
         xtype: 'directorygrid',
         itemId: 'datatable',
+        editorModel: 'Core.form.EditorDetailWindowModel',
 
         store: {
             type: 'directorystore',
@@ -19,16 +20,16 @@ Ext.define('App.view.core.filesendinterfacesetting.FileSendInterfaceSetting', {
             autoLoad: true,
             extendedFilter: {
                 xclass: 'App.ExtFilterContext',
-				supportedModels: [{
+                supportedModels: [{
                     xclass: 'App.ExtSelectionFilterModel',
                     model: 'App.model.core.filesendinterfacesetting.FileSendInterfaceSetting',
                     modelId: 'efselectionmodel'
-				}, {
+                }, {
                     xclass: 'App.ExtTextFilterModel',
                     modelId: 'eftextmodel'
-				}]
-            }        
-		},
+                }]
+            }
+        },
 
         columns: {
             defaults: {
@@ -37,56 +38,56 @@ Ext.define('App.view.core.filesendinterfacesetting.FileSendInterfaceSetting', {
                 filter: true,
                 flex: 1
             },
-            items: [{ 
-				text: l10n.ns('core', 'FileSendInterfaceSetting').value('InterfaceName'),
-				dataIndex: 'InterfaceName',
-				filter: {
-					type: 'search',
-					selectorWidget: 'interface',
-					valueField: 'Name',
-					store: {
-						type: 'directorystore',
-						model: 'App.model.core.interface.Interface',
-						extendedFilter: {
-							xclass: 'App.ExtFilterContext',
-							supportedModels: [{
-								xclass: 'App.ExtSelectionFilterModel',
-								model: 'App.model.core.interface.Interface',
-								modelId: 'efselectionmodel'
-							}, {
-								xclass: 'App.ExtTextFilterModel',
-								modelId: 'eftextmodel'
-							}]
-						}
-					}
-				}
-			}, { 
-				text: l10n.ns('core', 'FileSendInterfaceSetting').value('TargetPath'),
-				dataIndex: 'TargetPath'
-			}, { 
-				text: l10n.ns('core', 'FileSendInterfaceSetting').value('TargetFileMask'),
-				dataIndex: 'TargetFileMask'
-			}, { 
-				text: l10n.ns('core', 'FileSendInterfaceSetting').value('SendHandler'),
-				dataIndex: 'SendHandler'
-			}]
+            items: [{
+                text: l10n.ns('core', 'FileSendInterfaceSetting').value('InterfaceName'),
+                dataIndex: 'InterfaceName',
+                filter: {
+                    type: 'search',
+                    selectorWidget: 'interface',
+                    valueField: 'Name',
+                    store: {
+                        type: 'directorystore',
+                        model: 'App.model.core.interface.Interface',
+                        extendedFilter: {
+                            xclass: 'App.ExtFilterContext',
+                            supportedModels: [{
+                                xclass: 'App.ExtSelectionFilterModel',
+                                model: 'App.model.core.interface.Interface',
+                                modelId: 'efselectionmodel'
+                            }, {
+                                xclass: 'App.ExtTextFilterModel',
+                                modelId: 'eftextmodel'
+                            }]
+                        }
+                    }
+                }
+            }, {
+                text: l10n.ns('core', 'FileSendInterfaceSetting').value('TargetPath'),
+                dataIndex: 'TargetPath'
+            }, {
+                text: l10n.ns('core', 'FileSendInterfaceSetting').value('TargetFileMask'),
+                dataIndex: 'TargetFileMask'
+            }, {
+                text: l10n.ns('core', 'FileSendInterfaceSetting').value('SendHandler'),
+                dataIndex: 'SendHandler'
+            }]
         }
     }, {
-        xtype: 'detailform',
+        xtype: 'editabledetailform',
         itemId: 'detailform',
         items: [{
-			name: 'InterfaceName',
-			fieldLabel: l10n.ns('core', 'FileSendInterfaceSetting').value('InterfaceName')
-		}, {
-			name: 'TargetPath',
-			fieldLabel: l10n.ns('core', 'FileSendInterfaceSetting').value('TargetPath')
-		}, {
-			name: 'TargetFileMask',
-			fieldLabel: l10n.ns('core', 'FileSendInterfaceSetting').value('TargetFileMask')
-		}, {
-			name: 'SendHandler',
-			fieldLabel: l10n.ns('core', 'FileSendInterfaceSetting').value('SendHandler')
-		}]
+            name: 'InterfaceName',
+            fieldLabel: l10n.ns('core', 'FileSendInterfaceSetting').value('InterfaceName')
+        }, {
+            name: 'TargetPath',
+            fieldLabel: l10n.ns('core', 'FileSendInterfaceSetting').value('TargetPath')
+        }, {
+            name: 'TargetFileMask',
+            fieldLabel: l10n.ns('core', 'FileSendInterfaceSetting').value('TargetFileMask')
+        }, {
+            name: 'SendHandler',
+            fieldLabel: l10n.ns('core', 'FileSendInterfaceSetting').value('SendHandler')
+        }]
     }]
 
 });

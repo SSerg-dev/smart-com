@@ -1,12 +1,12 @@
 Ext.define('App.controller.core.interface.Interface', {
-    extend: 'App.controller.core.CombinedDirectory',
+    extend: 'App.controller.core.AssociatedDirectory',
 
     init: function () {
         this.listen({
             component: {
                 'interface[isSearch!=true] directorygrid': {
                     load: this.onGridStoreLoad,
-                    itemdblclick: this.switchToDetailForm
+                    itemdblclick: this.onDetailButtonClick
                 },
                 'interface directorygrid': {
                     selectionchange: this.onGridSelectionChange,
@@ -26,7 +26,7 @@ Ext.define('App.controller.core.interface.Interface', {
                     click: this.onNextButtonClick
                 },
                 'interface #detail': {
-                    click: this.switchToDetailForm
+                    click: this.onDetailButtonClick
                 },
                 'interface #table': {
                     click: this.onTableButtonClick
@@ -57,5 +57,6 @@ Ext.define('App.controller.core.interface.Interface', {
                 }
             }
         });
-    }
+    },
+
 });

@@ -1,67 +1,61 @@
-﻿Ext.define('App.controller.core.xmlprocessinterfacesetting.XMLProcessInterfaceSetting', {
+﻿Ext.define('App.controller.core.filesendinterfacesetting.FileSendInterfaceSetting', {
     extend: 'App.controller.core.AssociatedDirectory',
 
     init: function () {
         this.listen({
             component: {
-                'xmlprocessinterfacesetting[isSearch!=true] directorygrid': {
+                'filesendinterfacesetting[isSearch!=true] directorygrid': {
                     load: this.onGridStoreLoad,
                     itemdblclick: this.onDetailButtonClick
                 },
-                'xmlprocessinterfacesetting directorygrid': {
+                'filesendinterfacesetting directorygrid': {
                     selectionchange: this.onGridSelectionChange,
                     afterrender: this.onGridAfterrender,
                     extfilterchange: this.onExtFilterChange
                 },
-                'xmlprocessinterfacesetting #datatable': {
+                'filesendinterfacesetting #datatable': {
                     activate: this.onActivateCard
                 },
-                'xmlprocessinterfacesetting #detailform': {
+                'filesendinterfacesetting #detailform': {
                     activate: this.onActivateCard
                 },
-                'xmlprocessinterfacesetting #detailform #ok': {
-                    click: this.onOkButtonClick
-                },
-                'xmlprocessinterfacesetting #detailform #cancel': {
-                    click: this.onCancelButtonClick
-                },
-                'xmlprocessinterfacesetting #detailform #prev': {
+                'filesendinterfacesetting #detailform #prev': {
                     click: this.onPrevButtonClick
                 },
-                'xmlprocessinterfacesetting #detailform #next': {
+                'filesendinterfacesetting #detailform #next': {
                     click: this.onNextButtonClick
                 },
-                'xmlprocessinterfacesetting #detail': {
+                'filesendinterfacesetting #detail': {
                     click: this.onDetailButtonClick
                 },
-                'xmlprocessinterfacesetting #table': {
+                'filesendinterfacesetting #table': {
                     click: this.onTableButtonClick
                 },
-                'xmlprocessinterfacesetting #extfilterbutton': {
+                'filesendinterfacesetting #extfilterbutton': {
                     click: this.onFilterButtonClick
                 },
-                'xmlprocessinterfacesetting #deletedbutton': {
+                'filesendinterfacesetting #deletedbutton': {
                     click: this.onDeletedButtonClick
                 },
-                'xmlprocessinterfacesetting #createbutton': {
+                'filesendinterfacesetting #createbutton': {
                     click: this.onCreateButtonClick
                 },
-                'xmlprocessinterfacesetting #updatebutton': {
+                'filesendinterfacesetting #updatebutton': {
                     click: this.onUpdateButtonClick
                 },
-                'xmlprocessinterfacesetting #deletebutton': {
+                'filesendinterfacesetting #deletebutton': {
                     click: this.onDeleteButtonClick
                 },
-                'xmlprocessinterfacesetting #historybutton': {
+                'filesendinterfacesetting #historybutton': {
                     click: this.onHistoryButtonClick
                 },
-                'xmlprocessinterfacesetting #refresh': {
+                'filesendinterfacesetting #refresh': {
                     click: this.onRefreshButtonClick
                 },
-                'xmlprocessinterfacesetting #close': {
+                'filesendinterfacesetting #close': {
                     click: this.onCloseButtonClick
                 }
             }
         });
-    }
+    },
 });

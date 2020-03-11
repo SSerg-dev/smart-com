@@ -11,6 +11,7 @@ Ext.define('App.view.core.csvprocessinterfacesetting.CSVProcessInterfaceSetting'
     items: [{
         xtype: 'directorygrid',
         itemId: 'datatable',
+        editorModel: 'Core.form.EditorDetailWindowModel',
 
         store: {
             type: 'directorystore',
@@ -19,16 +20,16 @@ Ext.define('App.view.core.csvprocessinterfacesetting.CSVProcessInterfaceSetting'
             autoLoad: true,
             extendedFilter: {
                 xclass: 'App.ExtFilterContext',
-				supportedModels: [{
+                supportedModels: [{
                     xclass: 'App.ExtSelectionFilterModel',
                     model: 'App.model.core.csvprocessinterfacesetting.CSVProcessInterfaceSetting',
                     modelId: 'efselectionmodel'
-				}, {
+                }, {
                     xclass: 'App.ExtTextFilterModel',
                     modelId: 'eftextmodel'
-				}]
-            }        
-		},
+                }]
+            }
+        },
 
         columns: {
             defaults: {
@@ -37,62 +38,62 @@ Ext.define('App.view.core.csvprocessinterfacesetting.CSVProcessInterfaceSetting'
                 filter: true,
                 flex: 1
             },
-            items: [{ 
-				text: l10n.ns('core', 'CSVProcessInterfaceSetting').value('InterfaceName'),
-				dataIndex: 'InterfaceName',
-				filter: {
-					type: 'search',
-					selectorWidget: 'interface',
-					valueField: 'Name',
-					store: {
-						type: 'directorystore',
-						model: 'App.model.core.interface.Interface',
-						extendedFilter: {
-							xclass: 'App.ExtFilterContext',
-							supportedModels: [{
-								xclass: 'App.ExtSelectionFilterModel',
-								model: 'App.model.core.interface.Interface',
-								modelId: 'efselectionmodel'
-							}, {
-								xclass: 'App.ExtTextFilterModel',
-								modelId: 'eftextmodel'
-							}]
-						}
-					}
-				}
-			}, { 
-				text: l10n.ns('core', 'CSVProcessInterfaceSetting').value('Delimiter'),
-				dataIndex: 'Delimiter'
-			}, { 
-				text: l10n.ns('core', 'CSVProcessInterfaceSetting').value('UseQuoting'),
-				dataIndex: 'UseQuoting'
-			}, { 
-				text: l10n.ns('core', 'CSVProcessInterfaceSetting').value('QuoteChar'),
-				dataIndex: 'QuoteChar'
-			}, { 
-				text: l10n.ns('core', 'CSVProcessInterfaceSetting').value('ProcessHandler'),
-				dataIndex: 'ProcessHandler'
-			}]
+            items: [{
+                text: l10n.ns('core', 'CSVProcessInterfaceSetting').value('InterfaceName'),
+                dataIndex: 'InterfaceName',
+                filter: {
+                    type: 'search',
+                    selectorWidget: 'interface',
+                    valueField: 'Name',
+                    store: {
+                        type: 'directorystore',
+                        model: 'App.model.core.interface.Interface',
+                        extendedFilter: {
+                            xclass: 'App.ExtFilterContext',
+                            supportedModels: [{
+                                xclass: 'App.ExtSelectionFilterModel',
+                                model: 'App.model.core.interface.Interface',
+                                modelId: 'efselectionmodel'
+                            }, {
+                                xclass: 'App.ExtTextFilterModel',
+                                modelId: 'eftextmodel'
+                            }]
+                        }
+                    }
+                }
+            }, {
+                text: l10n.ns('core', 'CSVProcessInterfaceSetting').value('Delimiter'),
+                dataIndex: 'Delimiter'
+            }, {
+                text: l10n.ns('core', 'CSVProcessInterfaceSetting').value('UseQuoting'),
+                dataIndex: 'UseQuoting'
+            }, {
+                text: l10n.ns('core', 'CSVProcessInterfaceSetting').value('QuoteChar'),
+                dataIndex: 'QuoteChar'
+            }, {
+                text: l10n.ns('core', 'CSVProcessInterfaceSetting').value('ProcessHandler'),
+                dataIndex: 'ProcessHandler'
+            }]
         }
     }, {
-        xtype: 'detailform',
+        xtype: 'editabledetailform',
         itemId: 'detailform',
         items: [{
-			name: 'InterfaceName',
-			fieldLabel: l10n.ns('core', 'CSVProcessInterfaceSetting').value('InterfaceName')
-		}, {
-			name: 'Delimiter',
-			fieldLabel: l10n.ns('core', 'CSVProcessInterfaceSetting').value('Delimiter')
-		}, {
-			name: 'UseQuoting',
-			fieldLabel: l10n.ns('core', 'CSVProcessInterfaceSetting').value('UseQuoting')
-		}, {
-			name: 'QuoteChar',
-			fieldLabel: l10n.ns('core', 'CSVProcessInterfaceSetting').value('QuoteChar')
-		}, {
-			name: 'ProcessHandler',
-			fieldLabel: l10n.ns('core', 'CSVProcessInterfaceSetting').value('ProcessHandler')
-		}]
+            name: 'InterfaceName',
+            fieldLabel: l10n.ns('core', 'CSVProcessInterfaceSetting').value('InterfaceName')
+        }, {
+            name: 'Delimiter',
+            fieldLabel: l10n.ns('core', 'CSVProcessInterfaceSetting').value('Delimiter')
+        }, {
+            name: 'UseQuoting',
+            fieldLabel: l10n.ns('core', 'CSVProcessInterfaceSetting').value('UseQuoting')
+        }, {
+            name: 'QuoteChar',
+            fieldLabel: l10n.ns('core', 'CSVProcessInterfaceSetting').value('QuoteChar')
+        }, {
+            name: 'ProcessHandler',
+            fieldLabel: l10n.ns('core', 'CSVProcessInterfaceSetting').value('ProcessHandler')
+        }]
     }]
 
 });

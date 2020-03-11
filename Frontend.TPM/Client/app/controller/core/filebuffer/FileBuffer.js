@@ -1,5 +1,5 @@
 Ext.define('App.controller.core.filebuffer.FileBuffer', {
-    extend: 'App.controller.core.CombinedDirectory',
+    extend: 'App.controller.core.AssociatedDirectory',
     mixins: ['App.controller.core.ImportExportLogic'],
 
     init: function () {
@@ -7,7 +7,7 @@ Ext.define('App.controller.core.filebuffer.FileBuffer', {
             component: {
                 'filebuffer[isSearch!=true] directorygrid': {
                     load: this.onGridStoreLoad,
-                    itemdblclick: this.switchToDetailForm,
+                    itemdblclick: this.onDetailButtonClick,
                 },
                 'filebuffer directorygrid': {
                     selectionchange: this.onGridSelectionChange,
@@ -27,7 +27,7 @@ Ext.define('App.controller.core.filebuffer.FileBuffer', {
                     click: this.onNextButtonClick
                 },
                 'filebuffer #detail': {
-                    click: this.switchToDetailForm
+                    click: this.onDetailButtonClick
                 },
                 'filebuffer #table': {
                     click: this.onTableButtonClick

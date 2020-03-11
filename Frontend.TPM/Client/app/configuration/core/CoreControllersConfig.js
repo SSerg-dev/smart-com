@@ -3,6 +3,7 @@
     'core.CombinedDirectory',
     'core.ExtendedFilter',
     'core.ExtendedFilterSettings',
+    'core.ExtendedDetailFilter',
     'core.RecipientSettings',
     'core.ImportExportLogic',
 
@@ -63,12 +64,25 @@
 
     // Interface
     'core.interface.Interface',
+    'core.interface.HistoricalInterface',
+
+    //CSVProcessInterfaceSetting
+    'core.csvprocessinterfacesetting.CSVProcessInterfaceSetting',
+    'core.csvprocessinterfacesetting.HistoricalCSVProcessInterfaceSetting',
+    //CSVExtractInterfaceSetting
+    'core.csvextractinterfacesetting.CSVExtractInterfaceSetting',
+    'core.csvextractinterfacesetting.HistoricalCSVExtractInterfaceSetting',
+    //FileSendInterfaceSetting
+    'core.filesendinterfacesetting.FileSendInterfaceSetting',
+    'core.filesendinterfacesetting.HistoricalFileSendInterfaceSetting',
 
     // FileCollectInterfaceSetting
     'core.filecollectinterfacesetting.FileCollectInterfaceSetting',
+    'core.filecollectinterfacesetting.HistoricalFileCollectInterfaceSetting',
 
     // XMLProcessInterfaceSetting
     'core.xmlprocessinterfacesetting.XMLProcessInterfaceSetting',
+    'core.xmlprocessinterfacesetting.HistoricalXMLProcessInterfaceSetting',
 
     // Constraint
     'core.associatedconstraint.constraint.AssociatedConstraint',

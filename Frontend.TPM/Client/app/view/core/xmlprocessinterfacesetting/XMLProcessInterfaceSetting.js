@@ -11,6 +11,7 @@ Ext.define('App.view.core.xmlprocessinterfacesetting.XMLProcessInterfaceSetting'
     items: [{
         xtype: 'directorygrid',
         itemId: 'datatable',
+        editorModel: 'Core.form.EditorDetailWindowModel',
 
         store: {
             type: 'directorystore',
@@ -19,16 +20,16 @@ Ext.define('App.view.core.xmlprocessinterfacesetting.XMLProcessInterfaceSetting'
             autoLoad: true,
             extendedFilter: {
                 xclass: 'App.ExtFilterContext',
-				supportedModels: [{
+                supportedModels: [{
                     xclass: 'App.ExtSelectionFilterModel',
                     model: 'App.model.core.xmlprocessinterfacesetting.XMLProcessInterfaceSetting',
                     modelId: 'efselectionmodel'
-				}, {
+                }, {
                     xclass: 'App.ExtTextFilterModel',
                     modelId: 'eftextmodel'
-				}]
-            }        
-		},
+                }]
+            }
+        },
 
         columns: {
             defaults: {
@@ -37,36 +38,36 @@ Ext.define('App.view.core.xmlprocessinterfacesetting.XMLProcessInterfaceSetting'
                 filter: true,
                 flex: 1
             },
-            items: [{ 
-				text: l10n.ns('core', 'XMLProcessInterfaceSetting').value('InterfaceName'),
-				dataIndex: 'InterfaceName',
-				filter: {
-					type: 'search',
-					selectorWidget: 'interface',
-					valueField: 'Name',
-					store: {
-						type: 'directorystore',
-						model: 'App.model.core.interface.Interface',
-						extendedFilter: {
-							xclass: 'App.ExtFilterContext',
-							supportedModels: [{
-								xclass: 'App.ExtSelectionFilterModel',
-								model: 'App.model.core.interface.Interface',
-								modelId: 'efselectionmodel'
-							}, {
-								xclass: 'App.ExtTextFilterModel',
-								modelId: 'eftextmodel'
-							}]
-						}
-					}
-				}
-			}, { 
-				text: l10n.ns('core', 'XMLProcessInterfaceSetting').value('RootElement'),
-				dataIndex: 'RootElement'
-			}, { 
-				text: l10n.ns('core', 'XMLProcessInterfaceSetting').value('ProcessHandler'),
-				dataIndex: 'ProcessHandler'
-			}]
+            items: [{
+                text: l10n.ns('core', 'XMLProcessInterfaceSetting').value('InterfaceName'),
+                dataIndex: 'InterfaceName',
+                filter: {
+                    type: 'search',
+                    selectorWidget: 'interface',
+                    valueField: 'Name',
+                    store: {
+                        type: 'directorystore',
+                        model: 'App.model.core.interface.Interface',
+                        extendedFilter: {
+                            xclass: 'App.ExtFilterContext',
+                            supportedModels: [{
+                                xclass: 'App.ExtSelectionFilterModel',
+                                model: 'App.model.core.interface.Interface',
+                                modelId: 'efselectionmodel'
+                            }, {
+                                xclass: 'App.ExtTextFilterModel',
+                                modelId: 'eftextmodel'
+                            }]
+                        }
+                    }
+                }
+            }, {
+                text: l10n.ns('core', 'XMLProcessInterfaceSetting').value('RootElement'),
+                dataIndex: 'RootElement'
+            }, {
+                text: l10n.ns('core', 'XMLProcessInterfaceSetting').value('ProcessHandler'),
+                dataIndex: 'ProcessHandler'
+            }]
         }
     }, {
         xtype: 'editabledetailform',
@@ -100,13 +101,13 @@ Ext.define('App.view.core.xmlprocessinterfacesetting.XMLProcessInterfaceSetting'
             }]
         }, {
             xtype: 'textfield',
-			name: 'RootElement',
-			fieldLabel: l10n.ns('core', 'XMLProcessInterfaceSetting').value('RootElement')
+            name: 'RootElement',
+            fieldLabel: l10n.ns('core', 'XMLProcessInterfaceSetting').value('RootElement')
         }, {
             xtype: 'textfield',
-			name: 'ProcessHandler',
-			fieldLabel: l10n.ns('core', 'XMLProcessInterfaceSetting').value('ProcessHandler')
-		}]
+            name: 'ProcessHandler',
+            fieldLabel: l10n.ns('core', 'XMLProcessInterfaceSetting').value('ProcessHandler')
+        }]
     }]
 
 });

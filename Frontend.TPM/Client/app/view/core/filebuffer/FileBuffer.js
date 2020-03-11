@@ -15,6 +15,7 @@ Ext.define('App.view.core.filebuffer.FileBuffer', {
     items: [{
         xtype: 'directorygrid',
         itemId: 'datatable',
+        editorModel: 'Core.form.EditorDetailWindowModel',
 
         store: {
             type: 'directorystore',
@@ -98,13 +99,7 @@ Ext.define('App.view.core.filebuffer.FileBuffer', {
                 from: 'Direction',
                 to: 'InterfaceDirection'
             }]
-        },
-        //{
-		//	xtype: 'singlelinedisplayfield',
-		//	name: 'InterfaceName',
-		//	fieldLabel: l10n.ns('core', 'FileBuffer').value('InterfaceName')		
-		//},
-        {
+        }, {
             xtype: 'singlelinedisplayfield',
             name: 'InterfaceDirection',
             fieldLabel: l10n.ns('core', 'FileBuffer').value('InterfaceDirection')
@@ -113,13 +108,7 @@ Ext.define('App.view.core.filebuffer.FileBuffer', {
             name: 'CreateDate',
             renderer: Ext.util.Format.dateRenderer('d.m.Y H:i:s'),
             fieldLabel: l10n.ns('core', 'FileBuffer').value('CreateDate')
-        },
-        //{
-		//	xtype: 'singlelinedisplayfield',
-		//	name: 'HandlerId',
-		//	fieldLabel: l10n.ns('core', 'FileBuffer').value('HandlerId')		
-        //},
-        {
+        }, {
             xtype: 'textfield',
             name: 'FileName',
             fieldLabel: l10n.ns('core', 'FileBuffer').value('FileName')

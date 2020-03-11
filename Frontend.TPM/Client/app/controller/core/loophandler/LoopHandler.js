@@ -443,7 +443,9 @@
 				.withParameters({
 					$actionName: action,
 					$method: 'POST',
-					$entity: record.getProxy().getBreezeEntityByRecord(record)
+					$entity: record.getProxy().getBreezeEntityByRecord(record),
+					Id: breeze.DataType.Guid.fmtOData(record.get('Id')),
+					CreateDate: breeze.DataType.DateTimeOffset.fmtOData(record.get('CreateDate'))
 				})
 				.using(Ext.ux.data.BreezeEntityManager.getEntityManager())
 				.execute()

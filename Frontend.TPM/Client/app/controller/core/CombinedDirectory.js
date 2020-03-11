@@ -1,6 +1,16 @@
 ﻿Ext.define('App.controller.core.CombinedDirectory', {
     extend: 'Ext.app.Controller',
 
+    init: function () {
+        this.listen({
+            component: {
+                '#detailfilter': {
+                    click: this.onDetailFilterButtonClick
+                },
+            }
+        });
+    },
+
     getDefaultResource: function (button) {
         var result = null;
         var panel = button.up('combineddirectorypanel');
@@ -113,6 +123,53 @@
         } else {
             console.error('Extended filter does not implemented for this store');
         }
+    },
+
+    onDetailFilterButtonClick: function (button) {
+        var grid = this.getGridByButton(button),
+            store = grid.getStore(),
+            masterFilterWindow = Ext.widget('extmasterfilter', store.getExtendedFilter()),
+            linkedWindow = Ext.ComponentQuery.query('#linkedwindow')[0],
+            linkedGrid = linkedWindow.down('grid'),
+            linkedStore = linkedGrid.getStore(),
+            linkedModelName = linkedStore.model.modelName;
+
+        masterFilterWindow.show();
+
+        // Старый дитэйл-контекст из контекста мастер-фильтра
+        ctx = masterFilterWindow.getFilterContext().detailContext,
+        // Дитэйл-контекст, если перед повторным открытием дитэйл-фильтра, не был применён мастер-фильтр
+        notImplementCtx = masterFilterWindow.detailFilterContext;
+        if (notImplementCtx) {
+            var win = Ext.widget('extdetailfilter', notImplementCtx);
+        } else if (ctx) {
+            var win = Ext.widget('extdetailfilter', ctx);
+        } else {
+            var storeConfig = {
+                type: 'directorystore',
+                model: linkedModelName,
+                storeId: 'promosupportdetailfilterstore',
+                extendedFilter: {
+                    xclass: 'App.ExtFilterContext',
+                    supportedModels: [{
+                        xclass: 'App.ExtSelectionFilterModel',
+                        model: linkedModelName,
+                        modelId: 'efselectionmodel'
+                    }, {
+                        xclass: 'App.ExtTextFilterModel',
+                        modelId: 'eftextmodel'
+                    }]
+                }
+            };
+            // Если взять стор из грида, доп. фильтр будет работать некорректно
+            var store = Ext.create('Ext.ux.data.ExtendedStore', storeConfig);
+            if (store.isExtendedStore) {
+                var win = Ext.widget('extdetailfilter', store.getExtendedFilter());
+            } else {
+                console.error('Extended filter does not implemented for this store');
+            }
+        }
+        win.show();
     },
 
     onDeleteButtonClick: function (button) {
