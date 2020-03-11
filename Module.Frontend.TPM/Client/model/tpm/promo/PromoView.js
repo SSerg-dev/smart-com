@@ -5,7 +5,7 @@
     breezeEntityType: 'PromoView',
     fields: [
         { name: 'Id', hidden: true },
-        { name: 'Number', type: 'int', hidden: false, isDefault: true },
+        { name: 'Number', type: 'int', hidden: false, isDefault: true, isKey: true },
         { name: 'Name', type: 'string', hidden: false, isDefault: true },
         { name: 'BrandTechName', type: 'string', mapping: 'BrandTechName', defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'BrandTech', hidden: false, isDefault: true },
         { name: 'EventName', type: 'string', useNull: true, hidden: false, isDefault: true },

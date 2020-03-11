@@ -160,7 +160,7 @@
         { name: 'LastChangedDateFinance', useNull: true, type: 'date', hidden: false, isDefault: false, defaultValue: null },
         { name: 'PromoDuration', useNull: true, type: 'int', hidden: false, isDefault: false, defaultValue: null },
         { name: 'DispatchDuration', useNull: true, type: 'int', hidden: false, isDefault: false, defaultValue: null },
-        { name: 'Number', useNull: true, type: 'int', hidden: false, isDefault: false, defaultValue: null },
+        { name: 'Number', useNull: true, type: 'int', hidden: false, isDefault: false, defaultValue: null, isKey: true },
         { name: 'Comment', type: 'string', useNull: true, hidden: false, isDefault: true, defaultValue: null },
         { name: 'ProductZREP', type: 'string', useNull: true, hidden: false, isDefault: true, defaultValue: null },
         { name: 'InstoreMechanicName', type: 'string', useNull: true, hidden: false, isDefault: true, defaultValue: null },

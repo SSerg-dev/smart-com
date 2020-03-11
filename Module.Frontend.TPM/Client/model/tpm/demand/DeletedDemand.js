@@ -8,7 +8,7 @@
         { name: 'ClientId', useNull: true, hidden: true, isDefault: true },
         { name: 'BrandId', useNull: true, hidden: true, isDefault: true },
         { name: 'BrandTechId', useNull: true, hidden: true, isDefault: true },
-        { name: 'Number', type: 'int', hidden: false, isDefault: true },
+        { name: 'Number', type: 'int', hidden: false, isDefault: true, isKey: true },
         { name: 'Name', type: 'string', hidden: false, isDefault: true },
         { name: 'StartDate', useNull: true, type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
         { name: 'EndDate', useNull: true, type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },

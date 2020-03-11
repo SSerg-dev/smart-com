@@ -20,7 +20,7 @@
         },
         {
             name: 'PromoNumber', type: 'int', mapping: 'Promo.Number', defaultFilterConfig: { valueField: 'Number' },
-            breezeEntityType: 'Promo', hidden: false, isDefault: true
+            breezeEntityType: 'Promo', hidden: false, isDefault: true, isKey: true
         },
         {
             name: 'PromoName', type: 'string', mapping: 'Promo.Name', defaultFilterConfig: { valueField: 'Name' },

@@ -4,7 +4,7 @@
     breezeEntityType: 'AssortmentMatrix',
     fields: [
         { name: 'Id', hidden: true },
-        { name: 'Number', type: 'int', hidden: false, isDefault: true },
+        { name: 'Number', type: 'int', hidden: false, isDefault: true, isKey: true },
         { name: 'ClientTreeId', hidden: true, isDefault: true },
         {
             name: 'ClientTreeName', type: 'string', mapping: 'ClientTree.Name',

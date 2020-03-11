@@ -15,7 +15,7 @@
         { name: 'ProductZREP', type: 'string', hidden: false, isDefault: true },
         { name: 'ProductProductEN', type: 'string', hidden: false, isDefault: true },
         { name: 'PromoClientHierarchy', type: 'string', hidden: false, isDefault: true },
-        { name: 'PromoNumber', type: 'int', hidden: false, isDefault: true },
+        { name: 'PromoNumber', type: 'int', hidden: false, isDefault: true, isKey: true },
         { name: 'PromoName', type: 'string', hidden: false, isDefault: true },
         { name: 'PlanPromoIncrementalCases', type: 'float', hidden: false, isDefault: true },
         { name: 'CasePrice', type: 'float', hidden: false, isDefault: true },

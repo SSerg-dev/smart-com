@@ -21,7 +21,7 @@
 
         /***Порядок полей для расширенного фильтра***/
         // Поле из "Basic"
-        { name: 'Number', type: 'int', hidden: false, isDefault: true },
+        { name: 'Number', type: 'int', hidden: false, isDefault: true, isKey: true },
         // Поле из "Basic"
         { name: 'ClientHierarchy', type: 'string', hidden: false, isDefault: true },
         // Поле из "Basic"

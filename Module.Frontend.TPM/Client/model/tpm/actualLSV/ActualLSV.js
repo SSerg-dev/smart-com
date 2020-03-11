@@ -4,7 +4,7 @@
     breezeEntityType: 'ActualLSV',
     fields: [
         { name: 'Id', hidden: true },
-        { name: 'Number', type: 'int', hidden: false, isDefault: true },
+        { name: 'Number', type: 'int', hidden: false, isDefault: true, isKey: true },
         { name: 'ClientHierarchy', type: 'string', hidden: false, isDefault: true },
         { name: 'Name', type: 'string', hidden: false, isDefault: true },
         {
