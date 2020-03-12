@@ -32,7 +32,7 @@ namespace Module.Host.TPM.Handlers
                     {
                         try
                         {
-                            string sqlCommand = "DELETE FROM [dbo].[BaseLine] WHERE [Disabled] = 1 and [DeletedDate] IS NOT NULL and DATEADD(DAY, -(42), SYSDATETIME()) >= [DeletedDate]";
+                            string sqlCommand = "DELETE FROM [dbo].[BaseLine] WHERE [Disabled] = 1 and [DeletedDate] IS NOT NULL and DATEADD(DAY, -(43), SYSDATETIME()) >= [DeletedDate]";
                             context.Database.ExecuteSqlCommand(sqlCommand);
 
                             transaction.Commit();
