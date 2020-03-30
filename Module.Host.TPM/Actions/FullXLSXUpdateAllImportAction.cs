@@ -148,7 +148,13 @@ namespace Module.Host.TPM.Actions {
 				if (String.IsNullOrEmpty(typedRec.EquipmentType)) { errors.Add("EquipmentType must have a value"); isSuitable = false; }
 			}
 
-			return isSuitable;
+            if (TypeTo == typeof(BTL))
+            {
+                BTL typedRec = (BTL)rec;
+                if (String.IsNullOrEmpty(typedRec.Number.ToString())) { errors.Add("BTL must have a value"); isSuitable = false; }
+            }
+
+            return isSuitable;
         }
 
         protected override int InsertDataToDatabase(IEnumerable<IEntity<Guid>> records, DatabaseContext context)

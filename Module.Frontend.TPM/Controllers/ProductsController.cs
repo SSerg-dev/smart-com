@@ -7,6 +7,7 @@ using Frontend.Core.Extensions;
 using Frontend.Core.Extensions.Export;
 using Looper.Core;
 using Looper.Parameters;
+using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.CalculatePromoParametersModule;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
@@ -31,6 +32,7 @@ using System.Web.Http.OData.Extensions;
 using System.Web.Http.OData.Query;
 using System.Web.Http.Results;
 using Thinktecture.IdentityModel.Authorization.WebApi;
+using Utility;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -43,7 +45,7 @@ namespace Module.Frontend.TPM.Controllers
             this.authorizationManager = authorizationManager;
         }
 
-        protected IQueryable<Product> GetConstraintedQuery(string inOutProductTreeObjectIds = "", bool needInOutFilteredProducts = false, bool needInOutExcludeAssortmentMatrixProducts = false, bool needInOutSelectedProducts = false, string inOutProductIdsForGetting = "")
+        protected IQueryable<Product> GetConstraintedQuery(string inOutProductTreeObjectIds = "", bool needInOutFilteredProducts = false, bool needInOutExcludeAssortmentMatrixProducts = false)
         {
             UserInfo user = authorizationManager.GetCurrentUser();
             string role = authorizationManager.GetCurrentRoleName();
@@ -76,10 +78,6 @@ namespace Module.Frontend.TPM.Controllers
                     query = filteredProducts.Except(productsFromAssortmentMatrix).AsQueryable();
                 }
             }
-            else if (needInOutSelectedProducts)
-            {
-                query = GetProductsFromString(inOutProductIdsForGetting).AsQueryable();
-            }
 
             return query;
         }
@@ -104,48 +102,44 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
-        public IQueryable<Product> GetProducts(string inOutProductTreeObjectIds, bool needInOutFilteredProducts, bool needInOutExcludeAssortmentMatrixProducts, bool needInOutSelectedProducts, string inOutProductIdsForGetting)
+        public IQueryable<Product> GetProducts(string inOutProductTreeObjectIds, bool needInOutFilteredProducts, bool needInOutExcludeAssortmentMatrixProducts)
         {
-            return GetConstraintedQuery(inOutProductTreeObjectIds, needInOutFilteredProducts, needInOutExcludeAssortmentMatrixProducts, needInOutSelectedProducts, inOutProductIdsForGetting);
+            return GetConstraintedQuery(inOutProductTreeObjectIds, needInOutFilteredProducts, needInOutExcludeAssortmentMatrixProducts);
         }
 
-		[HttpPost]
-		[ClaimsAuthorize]
-		public IQueryable<Product> GetSelectedProducts(ODataActionParameters data)
-		{
-			var jsonData = (data["jsonData"] as IEnumerable<string>).ToArray();
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IQueryable<Product> GetFilteredData(ODataQueryOptions<Product> options)
+        {
+            string bodyText = Helper.GetRequestBody(HttpContext.Current.Request);
+            var isPromoIdExists = JsonHelper.IsValueExists(bodyText, "promoId");
 
-			
-			string filterValue = null;
-			// Если второй элемент – Guid, то это не фильтр
-			Guid tempGuid = Guid.Empty;
-			
-			if (jsonData.Count() == 2 && !String.IsNullOrEmpty(jsonData[1]) && !Guid.TryParse(jsonData[1], out tempGuid))
-			{
-				filterValue = jsonData.ToArray()[1];
-			}
-			if (filterValue != null)
-			{
-				var inOutProductIds = jsonData.ToArray()[0];
-				string filterRawValue = HttpUtility.UrlDecode(filterValue);
-				IQueryable<Product> query = GetConstraintedQuery(null, false, false, true, inOutProductIds);
+            var querySettings = new ODataQuerySettings
+            {
+                EnsureStableOrdering = false,
+                HandleNullPropagation = HandleNullPropagationOption.False
+            };
 
-				var querySettings = new ODataQuerySettings
-				{
-					EnsureStableOrdering = false,
-					HandleNullPropagation = HandleNullPropagationOption.False
-				};
-				var context = new ODataQueryContext(Request.ODataProperties().Model, typeof(Product));
-				var filterQueryOption = new FilterQueryOption(filterRawValue, context);
+            var optionsPost = new ODataQueryOptionsPost<Product>(options.Context, Request, HttpContext.Current.Request);
+            if (isPromoIdExists)
+            {
+                Guid promoId = Helper.GetValueIfExists<Guid>(bodyText, "promoId");
 
-				return filterQueryOption.ApplyTo(query, querySettings) as IQueryable<Product>;
-			}
-			else
-			{
-				var inOutProductIds = String.Join(";", jsonData.ToArray());
-				return GetConstraintedQuery(null, false, false, true, inOutProductIds);
-			}
-		}
+                IQueryable<Product> query = GetConstraintedQuery();
+                IQueryable<PromoProduct> promoProducts = Context.Set<PromoProduct>().Where(x => x.PromoId == promoId && !x.Disabled);
+                query = query.Where(x => promoProducts.Any(y => x.Id == y.ProductId) && !x.Disabled);
+                return optionsPost.ApplyTo(query, querySettings) as IQueryable<Product>;
+            }
+            else
+            {
+                string inOutProductTreeObjectIds = Helper.GetValueIfExists<string>(bodyText, "inOutProductTreeObjectIds");
+                bool needInOutFilteredProducts = Helper.GetValueIfExists<bool>(bodyText, "needInOutFilteredProducts");
+                bool needInOutExcludeAssortmentMatrixProducts = Helper.GetValueIfExists<bool>(bodyText, "needInOutExcludeAssortmentMatrixProducts");
+
+                IQueryable<Product> query = GetConstraintedQuery(inOutProductTreeObjectIds, needInOutFilteredProducts, needInOutExcludeAssortmentMatrixProducts);
+                return optionsPost.ApplyTo(query, querySettings) as IQueryable<Product>;
+            }
+        }
 
 		[ClaimsAuthorize]
         public IHttpActionResult Put([FromODataUri] System.Guid key, Delta<Product> patch)
@@ -597,28 +591,6 @@ namespace Module.Frontend.TPM.Controllers
                 }
             }
             return expressionsList;
-        }
-
-        private IEnumerable<Product> GetProductsFromString(string productIds)
-        {
-            List<Product> products = new List<Product>();
-
-            if (!String.IsNullOrEmpty(productIds))
-            {
-                var productGuidIds = productIds.Split(";".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(x => Guid.Parse(x)).ToList();
-
-                foreach (var productGuidId in productGuidIds)
-                {
-                    var product = Context.Set<Product>().FirstOrDefault(x => x.Id == productGuidId);
-
-                    if (product != null)
-                    {
-                        products.Add(product);
-                    }
-                }
-            }
-
-            return products;
         }
     }
 }

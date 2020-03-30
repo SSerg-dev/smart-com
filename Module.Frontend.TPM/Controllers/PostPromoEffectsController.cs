@@ -20,6 +20,8 @@ using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Utils;
 using System.Web.Http.Results;
 using System.Data.SqlClient;
+using Module.Frontend.TPM.Util;
+using System.Web;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -52,7 +54,6 @@ namespace Module.Frontend.TPM.Controllers
             return SingleResult.Create(GetConstraintedQuery());
         }
 
-
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
         public IQueryable<PostPromoEffect> GetPostPromoEffects()
@@ -60,6 +61,21 @@ namespace Module.Frontend.TPM.Controllers
             return GetConstraintedQuery();
         }
 
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IQueryable<PostPromoEffect> GetFilteredData(ODataQueryOptions<PostPromoEffect> options)
+        {
+            var query = GetConstraintedQuery();
+
+            var querySettings = new ODataQuerySettings
+            {
+                EnsureStableOrdering = false,
+                HandleNullPropagation = HandleNullPropagationOption.False
+            };
+
+            var optionsPost = new ODataQueryOptionsPost<PostPromoEffect>(options.Context, Request, HttpContext.Current.Request);
+            return optionsPost.ApplyTo(query, querySettings) as IQueryable<PostPromoEffect>;
+        }
 
         [ClaimsAuthorize]
         public IHttpActionResult Put([FromODataUri] System.Guid key, Delta<PostPromoEffect> patch)

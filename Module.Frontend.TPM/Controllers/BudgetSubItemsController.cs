@@ -7,9 +7,11 @@ using Frontend.Core.Extensions;
 using Frontend.Core.Extensions.Export;
 using Looper.Core;
 using Looper.Parameters;
+using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.Import;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
+using Newtonsoft.Json.Linq;
 using Persist;
 using Persist.Model;
 using System;
@@ -22,11 +24,13 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.OData;
 using System.Web.Http.OData.Query;
 using System.Web.Http.Results;
 using Thinktecture.IdentityModel.Authorization.WebApi;
+using Utility;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -81,6 +85,42 @@ namespace Module.Frontend.TPM.Controllers
             budgetSubItems = budgetSubItems.Where(bsi => BSICT.Any(x => x.BudgetSubItemId == bsi.Id) && bsi.BudgetItemId == BudgetItemId);
             var result = budgetSubItems.ToList().Concat(query);
             return result.AsQueryable();
+        }
+
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IQueryable<BudgetSubItem> GetFilteredData(ODataQueryOptions<BudgetSubItem> options)
+        {
+            string bodyText = HttpContext.Current.Request.GetRequestBody();
+
+            var querySettings = new ODataQuerySettings
+            {
+                EnsureStableOrdering = false,
+                HandleNullPropagation = HandleNullPropagationOption.False
+            };
+            var optionsPost = new ODataQueryOptionsPost<BudgetSubItem>(options.Context, Request, HttpContext.Current.Request);
+
+            if (JsonHelper.IsValueExists(bodyText, "ClientTreeId") && JsonHelper.IsValueExists(bodyText, "BudgetItemId"))
+            {
+                var ClientTreeId = JsonHelper.GetValueIfExists<int>(bodyText, "ClientTreeId");
+                var BudgetItemId = JsonHelper.GetValueIfExists<Guid>(bodyText, "BudgetItemId");
+
+                var budgetSubItems = GetConstraintedQuery();
+                var budgetSubItemsType = budgetSubItems.Where(b => b.BudgetItemId == BudgetItemId).First().BudgetItem.Name;
+
+                var queryClientTree = Context.Set<BudgetSubItemClientTree>().Where(e => e.BudgetSubItem.BudgetItem.Name == budgetSubItemsType);
+                IQueryable<BudgetSubItem> query = Context.Set<BudgetSubItem>().Where(e => !e.Disabled && e.BudgetItem.Name == budgetSubItemsType && !queryClientTree.Any(x => x.BudgetSubItemId == e.Id));
+                var BSICT = Context.Set<BudgetSubItemClientTree>().Where(x => x.ClientTreeId == ClientTreeId);
+                budgetSubItems = budgetSubItems.Where(bsi => BSICT.Any(x => x.BudgetSubItemId == bsi.Id) && bsi.BudgetItemId == BudgetItemId);
+                var result = budgetSubItems.ToList().Concat(query);
+
+                return optionsPost.ApplyTo(result.AsQueryable(), querySettings) as IQueryable<BudgetSubItem>;
+            }
+            else
+            {
+                var query = GetConstraintedQuery();
+                return optionsPost.ApplyTo(query, querySettings) as IQueryable<BudgetSubItem>;
+            }
         }
 
         [ClaimsAuthorize]

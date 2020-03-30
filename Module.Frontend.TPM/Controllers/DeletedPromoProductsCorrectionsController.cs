@@ -1,14 +1,17 @@
 ﻿using Core.Security;
 using Core.Security.Models;
 using Frontend.Core.Controllers.Base;
+using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
 using Persist.Model;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.OData;
+using System.Web.Http.OData.Query;
 using Thinktecture.IdentityModel.Authorization.WebApi;
 using Utility;
 
@@ -53,6 +56,22 @@ namespace Module.Frontend.TPM.Controllers
             return SingleResult.Create(GetConstraintedQuery()
                 .Where(e => e.Id == key)
                 .Where(e => e.Disabled));
+        }
+
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IQueryable<PromoProductsCorrection> GetFilteredData(ODataQueryOptions<PromoProductsCorrection> options)
+        {
+            var query = GetConstraintedQuery().Where(e => e.Disabled);
+
+            var querySettings = new ODataQuerySettings
+            {
+                EnsureStableOrdering = false,
+                HandleNullPropagation = HandleNullPropagationOption.False
+            };
+
+            var optionsPost = new ODataQueryOptionsPost<PromoProductsCorrection>(options.Context, Request, HttpContext.Current.Request);
+            return optionsPost.ApplyTo(query, querySettings) as IQueryable<PromoProductsCorrection>;
         }
     }
 }

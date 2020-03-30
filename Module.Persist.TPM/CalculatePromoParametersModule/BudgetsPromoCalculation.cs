@@ -1,4 +1,6 @@
-﻿using Looper.Core;
+﻿using Core.Dependency;
+using Core.Settings;
+using Looper.Core;
 using Module.Persist.TPM.Model.TPM;
 using Persist;
 using System;
@@ -261,6 +263,28 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         }
 
         /// <summary>
+        /// Получить список промо ID, участвующих в расчетах бюджетов BTL
+        /// </summary>
+        /// <param name="btlId">Id BTL статьи</param>
+        /// <param name="context">Контекст БД</param>
+        /// <returns></returns>
+        public static List<Guid> GetLinkedPromoId(string btlId, DatabaseContext context, List<Guid> unlinkedPromoIds = null)
+        {
+            List<Guid> promoIds = new List<Guid>();
+            var guidBTLId = Guid.Empty;
+            Guid.TryParse(btlId, out guidBTLId);
+
+            if (guidBTLId != Guid.Empty)
+            {
+                promoIds = context.Set<BTLPromo>().Where(x => !x.Disabled && x.DeletedDate == null && x.BTLId == guidBTLId).Select(x => x.PromoId).ToList();
+
+                if(unlinkedPromoIds != null)
+                    promoIds.AddRange(unlinkedPromoIds);
+            }
+            return promoIds.Distinct().ToList();
+        }
+
+        /// <summary>
         /// Расчет бюждетов по LSV
         /// </summary>
         /// <param name="promoSupportId">ID подстатьи</param>
@@ -352,6 +376,97 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             promo.ActualPromoCostProdCatalogue = catalog.Length > 0 ? catalog.Sum(n => n.FactCostProd) : new double?();
             promo.ActualPromoCostProdPOSMInClient = posm.Length > 0 ? posm.Sum(n => n.FactCostProd) : new double?();
             promo.ActualPromoCostProduction = subItems.Length > 0 ? subItems.Sum(n => n.FactCostProd) : new double?();
+        }
+
+        /// <summary>
+        /// Расчет бюджетов BTL
+        /// </summary>
+        /// <param name="btl">BTL статья</param>
+        /// <param name="plan">True, если необходимо считать плановые</param>
+        /// <param name="actual">True, если необходимо считать фактические</param>
+        /// <param name="context">Контекст БД</param>
+        /// <returns></returns>
+        public static void CalculateBTLBudgets(BTL btl, bool plan, bool actual, ILogWriter handlerLogger, DatabaseContext context)
+        {
+            try
+            {
+                // Статусы, в которых промо необходимо отвязать от BTL
+                var settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
+                string notAllowedBTLStatusesList = settingsManager.GetSetting<string>("NOT_ALLOWED_BTL_STATUS_LIST", "Draft,Cancelled,Deleted");
+
+                var promoes = context.Set<BTLPromo>().Where(x => x.BTLId == btl.Id && !x.Disabled && x.DeletedDate == null).Select(x => x.Promo);
+                var promoesToUnlink = promoes.Where(x => notAllowedBTLStatusesList.Contains(x.PromoStatus.SystemName));
+                promoes = promoes.Except(promoesToUnlink);
+                var closedPromoes = promoes.Where(x => x.PromoStatus.SystemName == "Closed");
+                promoes = promoes.Except(closedPromoes);
+                string logLine = string.Empty;
+
+                if (handlerLogger != null)
+                {
+                    logLine = String.Format("The calculation of the BTL budgets started at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now);
+                    handlerLogger.Write(true, logLine, "Message");
+                }
+
+                if (promoes.Any())
+                {
+                    double? promoSummPlanLSV = promoes.Any() ? promoes.Where(n => n.PlanPromoLSV.HasValue).Sum(n => n.PlanPromoLSV.Value) : 0;
+                    double? closedBudgetBTL = closedPromoes.Any() ? closedPromoes.Where(n => n.ActualPromoBTL.HasValue).Sum(n => n.ActualPromoBTL.Value) : 0;
+                    if (promoSummPlanLSV == null) promoSummPlanLSV = 0;
+                    if (closedBudgetBTL == null) closedBudgetBTL = 0;
+
+                    foreach (var promo in promoes)
+                    {
+                        double kPlan = promo.PlanPromoLSV.HasValue ? promo.PlanPromoLSV.Value / promoSummPlanLSV.Value : 0;
+
+                        if (double.IsNaN(kPlan))
+                            kPlan = 0;
+
+                        if (plan)
+                        {
+                            promo.PlanPromoBTL = Math.Round((btl.PlanBTLTotal.Value - closedBudgetBTL.Value) * kPlan, 2, MidpointRounding.AwayFromZero);
+                        }
+                        if (actual)
+                        {
+                            promo.ActualPromoBTL = Math.Round((btl.ActualBTLTotal.Value - closedBudgetBTL.Value) * kPlan, 2, MidpointRounding.AwayFromZero);
+                        }
+                    }
+
+                    foreach (var promoToUnlink in promoesToUnlink)
+                    {
+                        // Отвязываем промо от BTL
+                        BTLPromo BTLPromoToUnlink = context.Set<BTLPromo>().Where(x => x.BTLId == btl.Id && x.PromoId == promoToUnlink.Id && !x.Disabled && x.DeletedDate == null).FirstOrDefault();
+
+                        if (BTLPromoToUnlink != null)
+                        {
+                            BTLPromoToUnlink.Disabled = true;
+                            BTLPromoToUnlink.DeletedDate = DateTimeOffset.Now;
+                        }
+
+                        // Обнуляем BTL бюджет для промо
+                        promoToUnlink.PlanPromoBTL = 0;
+                        promoToUnlink.ActualPromoBTL = 0;
+                    }
+                    context.SaveChanges();
+                }
+
+                if (handlerLogger != null)
+                {
+                    logLine = String.Format("The calculation of the BTL budgets completed at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now);
+                    handlerLogger.Write(true, logLine, "Message");
+                }
+            }
+            catch (Exception e)
+            {
+                if (handlerLogger != null)
+                {
+                    var logLine = String.Format("Error while BTL budgets calculation: ", e.Message);
+                    handlerLogger.Write(true, logLine, "Error");
+                }
+                else
+                {
+                    throw e;
+                }
+            }
         }
     }
 }

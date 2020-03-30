@@ -28,6 +28,10 @@
             fieldLabel: l10n.ns('tpm', 'HistoricalBudgetSubItem').value('_Operation')
         }, {
             xtype: 'singlelinedisplayfield',
+            name: 'Number',
+            fieldLabel: l10n.ns('tpm', 'HistoricalNonPromoSupport').value('Number'),
+        }, {
+            xtype: 'singlelinedisplayfield',
             name: 'PlanQuantity',
             fieldLabel: l10n.ns('tpm', 'HistoricalNonPromoSupport').value('PlanQuantity'),
         }, {

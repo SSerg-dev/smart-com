@@ -29,6 +29,8 @@ using System.Data.Entity.Infrastructure;
 using System.Web.Http.Results;
 using System.Data.SqlClient;
 using Newtonsoft.Json;
+using Module.Frontend.TPM.Util;
+using System.Web;
 
 namespace Module.Frontend.TPM.Controllers {
     public class PromoProductsViewsController : EFContextController {
@@ -85,7 +87,39 @@ namespace Module.Frontend.TPM.Controllers {
             return query;
         }
 
-        
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IQueryable<PromoProductsView> GetFilteredData(ODataQueryOptions<PromoProductsView> options)
+        {
+            string bodyText = Helper.GetRequestBody(HttpContext.Current.Request);
+            var promoId = Helper.GetValueIfExists<Guid?>(bodyText, "promoId");
+            var tempEditUpliftId = Helper.GetValueIfExists<string>(bodyText, "tempEditUpliftId");
+            var query = GetConstraintedQuery(promoId);
+
+            var querySettings = new ODataQuerySettings
+            {
+                EnsureStableOrdering = false,
+                HandleNullPropagation = HandleNullPropagationOption.False
+            };
+            var optionsPost = new ODataQueryOptionsPost<PromoProductsView>(options.Context, Request, HttpContext.Current.Request);
+
+            if (tempEditUpliftId != null)
+            {
+                var tempQuery = Context.Set<PromoProductsCorrection>().Where(x => x.TempId == tempEditUpliftId && x.Disabled != true);
+                var ZrepList = tempQuery.Select(x => x.PromoProduct.ZREP);
+                foreach (var promoProduct in query)
+                {
+                    if (ZrepList.Contains(promoProduct.ZREP))
+                    {
+                        promoProduct.IsCorrection = true;
+                        promoProduct.PlanProductUpliftPercent = tempQuery.First(x => x.PromoProduct.ZREP == promoProduct.ZREP).PlanProductUpliftPercentCorrected;
+                    }
+                }
+            };
+
+            return optionsPost.ApplyTo(query, querySettings) as IQueryable<PromoProductsView>;
+        }
+
         [ClaimsAuthorize]
         public IHttpActionResult ExportXLSX(ODataQueryOptions<PromoProductsView> options, [FromODataUri] Guid? promoId = null)
         {

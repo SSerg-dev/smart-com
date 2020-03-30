@@ -1589,7 +1589,7 @@
         var mechanic = promoeditorcustom.down('container[name=promo_step3]');
         var promoActivityStep1 = promoActivity.down('container[name=promoActivity_step1]');
         var promoBudgets = button.up('window').down('promobudgets');
-
+        
         me.setReadOnlyForChildrens(promoActivity, promoeditorcustom.promoStatusSystemName, true, record.data.InOut);
         me.setReadOnlyForChildrens(promoBudgets, promoeditorcustom.promoStatusSystemName, true, record.data.InOut);
 
@@ -2526,7 +2526,7 @@
             //addSubItemButtons.forEach(function (button) {
             //    button.setDisabled(true);
             //})
-
+            
             // --------------- promo activity ---------------
             //promoeditorcustom.down('container[itemId=ContainerPlanPromoUplift]').setReadable(true);
 
@@ -5715,10 +5715,8 @@
         var promoController = this.getController('tpm.promo.Promo');
         var promoEditorCustom = button.up('promoeditorcustom');
         var record = promoController.getRecord(promoEditorCustom);
-
         var productlist = Ext.widget('productlist', { title: l10n.ns('tpm', 'PromoBasicProducts').value('SelectedProducts') });
         var grid = productlist.down('directorygrid');
-        var store = grid.getStore();
 
         var productIdsString = promoEditorCustom.InOutProductIds || (promoEditorCustom.model && promoEditorCustom.model.data.InOutProductIds) || record.data.InOutProductIds;
         var productIdsArray = productIdsString.split(';');
@@ -5726,28 +5724,19 @@
             return el != '';
         });
 
-        // Устанавливаем кастомный proxy 
-        // (если изменить только настройки прокси, то при буферизации записей в гриде будет использован прокси без настроек)
-        store.setProxy({
-            type: 'breeze',
-            resourceName: 'Products',
-            reader: {
-                type: 'json',
-                totalProperty: 'inlineCount',
-                root: 'results'
-            },
-            jsonData: productIdsArray,
-            actionName: 'GetSelectedProducts',
-            extraParams: {
-                inOutProductTreeObjectIds: '',
-                needInOutFilteredProducts: false,
-                needInOutExcludeAssortmentMatrixProducts: false,
-                needInOutSelectedProducts: false,
-                inOutProductIdsForGetting: '',
-            }
+        var prefilter = {
+            operator: "or",
+            rules: []
+        };
+        productIdsArray.forEach(function (id) {
+            prefilter.rules.push({
+                operation: "Equals",
+                property: "Id",
+                value: id
+            });
         });
-
-        store.load();
+        
+        grid.getStore().setFixedFilter('PreFilter', prefilter);
         productlist.show();
     },
 

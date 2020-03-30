@@ -1,12 +1,15 @@
 using Core.Security;
 using Core.Security.Models;
 using Frontend.Core.Controllers.Base;
+using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.TPM;
 using Persist.Model;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.OData;
+using System.Web.Http.OData.Query;
 using Thinktecture.IdentityModel.Authorization.WebApi;
 
 namespace Module.Frontend.TPM.Controllers {
@@ -43,7 +46,21 @@ namespace Module.Frontend.TPM.Controllers {
                 .Where(e => e.Disabled));
         }
 
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IQueryable<RetailType> GetFilteredData(ODataQueryOptions<RetailType> options)
+        {
+            var query = GetConstraintedQuery().Where(e => e.Disabled);
 
+            var querySettings = new ODataQuerySettings
+            {
+                EnsureStableOrdering = false,
+                HandleNullPropagation = HandleNullPropagationOption.False
+            };
+
+            var optionsPost = new ODataQueryOptionsPost<RetailType>(options.Context, Request, HttpContext.Current.Request);
+            return optionsPost.ApplyTo(query, querySettings) as IQueryable<RetailType>;
+        }
     }
 
 }

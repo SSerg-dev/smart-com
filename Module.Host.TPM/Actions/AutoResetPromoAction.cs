@@ -51,7 +51,8 @@ namespace Module.Host.TPM.Actions
 
 			    string message;
 			    List<Guid> mainPromoSupportIds = new List<Guid>();
-			    foreach (Promo promo in promoToDraft)
+			    List<Guid> mainBTLIds = new List<Guid>();
+                foreach (Promo promo in promoToDraft)
 			    {
                     if (promo.StartDate.HasValue && promo.StartDate.Value <= today)
                     {
@@ -104,6 +105,13 @@ namespace Module.Host.TPM.Actions
                                 mainPromoSupportIds.Add(psId);
                             }
                         }
+                        BTLPromo btlPromo = context.Set<BTLPromo>().Where(x => !x.Disabled && x.PromoId == promo.Id).FirstOrDefault();
+                        if (btlPromo != null)
+                        {
+                            btlPromo.DeletedDate = DateTimeOffset.UtcNow;
+                            btlPromo.Disabled = true;
+                            mainBTLIds.Add(btlPromo.BTLId);
+                        }
 
                         //необходимо сбросить наименование Promo до "Unpublish Promo"
                         promo.Name = "Unpublish Promo";
@@ -114,8 +122,12 @@ namespace Module.Host.TPM.Actions
 			    {
 				    PromoCalculateHelper.CalculateBudgetsCreateTask(mainPromoSupportIds, null, null, context);
 			    }
-
-			    context.SaveChanges();
+                foreach (Guid btlId in mainBTLIds)
+                {
+                    PromoCalculateHelper.CalculateBTLBudgetsCreateTask(btlId.ToString(), null, null, context);
+                }
+                
+                context.SaveChanges();
 			}
 		}
 
@@ -174,6 +186,7 @@ namespace Module.Host.TPM.Actions
 
 				string message;
                 List<Guid> mainPromoSupportIds = new List<Guid>();
+                List<Guid> mainBTLIds = new List<Guid>();
                 foreach (Promo promo in promoToCancelled)
 				{
                     if (promo.StartDate.HasValue && promo.StartDate.Value <= today)
@@ -226,6 +239,13 @@ namespace Module.Host.TPM.Actions
                                 mainPromoSupportIds.Add(psId);
                             }
                         }
+                        BTLPromo btlPromo = context.Set<BTLPromo>().Where(x => !x.Disabled && x.PromoId == promo.Id).FirstOrDefault();
+                        if (btlPromo != null)
+                        {
+                            btlPromo.DeletedDate = DateTimeOffset.UtcNow;
+                            btlPromo.Disabled = true;
+                            mainBTLIds.Add(btlPromo.BTLId);
+                        }
 
                         //если промо инаут, необходимо убрать записи в IncrementalPromo при отмене промо
                         if (promo.InOut.HasValue && promo.InOut.Value)
@@ -238,6 +258,10 @@ namespace Module.Host.TPM.Actions
                 if (mainPromoSupportIds.Count() > 0)
                 {
                     PromoCalculateHelper.CalculateBudgetsCreateTask(mainPromoSupportIds, null, null, context);
+                }
+                foreach (Guid btlId in mainBTLIds)
+                {
+                    PromoCalculateHelper.CalculateBTLBudgetsCreateTask(btlId.ToString(), null, null, context);
                 }
 
                 context.SaveChanges();

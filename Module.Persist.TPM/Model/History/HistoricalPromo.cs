@@ -223,10 +223,6 @@ namespace Module.Persist.TPM.Model.History {
 
         public bool? NeedRecountUplift { get; set; }
 
-        //Поля для отчёта ROIReport
-        public string Client1LevelName { get; set; }
-        public string Client2LevelName { get; set; }
-        public string ClientName { get; set; }
         public string ProductSubrangesList { get; set; }
 
         //

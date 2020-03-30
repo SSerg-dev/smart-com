@@ -63,14 +63,7 @@
                 glyph: 0xf16b,
                 text: l10n.ns('core', 'filter').value('selectionFilter'),
                 tooltip: l10n.ns('core', 'filter').value('selectionFilter')
-                },
-                //{
-                //itemId: 'eftextmodelbutton',
-                //glyph: 0xf60e,
-                //text: l10n.ns('core', 'filter').value('textFilter'),
-                //tooltip: l10n.ns('core', 'filter').value('textFilter')
-                //}, '-',
-                {
+            }, {
                 itemId: 'efsettingsbutton',
                 glyph: 0xf493,
                 text: l10n.ns('core', 'filter', 'buttons').value('settings'),

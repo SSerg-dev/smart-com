@@ -35,55 +35,55 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Antlr3.Runtime, Version=3.4.1.9004, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.40740\lib\net451\Antlr3.Runtime.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41001\lib\net451\Antlr3.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="AutoMapper, Version=4.0.4.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.40740\lib\net451\AutoMapper.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41001\lib\net451\AutoMapper.dll</HintPath>
     </Reference>
     <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.40740\lib\net451\Castle.Core.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41001\lib\net451\Castle.Core.dll</HintPath>
     </Reference>
     <Reference Include="Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.40740\lib\net451\Core.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41001\lib\net451\Core.dll</HintPath>
     </Reference>
     <Reference Include="DocumentFormat.OpenXml, Version=2.8.1.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.40740\lib\net451\DocumentFormat.OpenXml.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41001\lib\net451\DocumentFormat.OpenXml.dll</HintPath>
     </Reference>
     <Reference Include="ElasticLinq, Version=1.4.3.0, Culture=neutral, PublicKeyToken=fad43a6f87827247, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.40740\lib\net451\ElasticLinq.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41001\lib\net451\ElasticLinq.dll</HintPath>
     </Reference>
     <Reference Include="Elasticsearch.Net, Version=5.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.40740\lib\net451\Elasticsearch.Net.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41001\lib\net451\Elasticsearch.Net.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.40740\lib\net451\EntityFramework.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41001\lib\net451\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.40740\lib\net451\EntityFramework.SqlServer.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41001\lib\net451\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework6.Npgsql, Version=3.1.1.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.40740\lib\net451\EntityFramework6.Npgsql.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41001\lib\net451\EntityFramework6.Npgsql.dll</HintPath>
     </Reference>
     <Reference Include="ExtJsScaffolding, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.40740\lib\net451\ExtJsScaffolding.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41001\lib\net451\ExtJsScaffolding.dll</HintPath>
     </Reference>
     <Reference Include="History.ElasticSearch, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.40740\lib\net451\History.ElasticSearch.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41001\lib\net451\History.ElasticSearch.dll</HintPath>
     </Reference>
     <Reference Include="History.RavenDB, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.40740\lib\net451\History.RavenDB.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41001\lib\net451\History.RavenDB.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=1.1.0.145, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpZipLib.1.1.0\lib\net45\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="LiteDB, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.40740\lib\net451\LiteDB.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41001\lib\net451\LiteDB.dll</HintPath>
     </Reference>
     <Reference Include="Looper, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.40740\lib\net451\Looper.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41001\lib\net451\Looper.dll</HintPath>
     </Reference>
     <Reference Include="Looper.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.40740\lib\net451\Looper.Core.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41001\lib\net451\Looper.Core.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNet.SignalR.Core, Version=2.4.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.SignalR.Core.2.4.1\lib\net45\Microsoft.AspNet.SignalR.Core.dll</HintPath>
@@ -92,10 +92,10 @@
       <HintPath>..\packages\Microsoft.AspNet.SignalR.SystemWeb.2.4.1\lib\net45\Microsoft.AspNet.SignalR.SystemWeb.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Data.Edm, Version=5.6.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.40740\lib\net451\Microsoft.Data.Edm.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41001\lib\net451\Microsoft.Data.Edm.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Data.OData, Version=5.6.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.40740\lib\net451\Microsoft.Data.OData.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41001\lib\net451\Microsoft.Data.OData.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Owin, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Owin.2.1.0\lib\net45\Microsoft.Owin.dll</HintPath>
@@ -107,22 +107,22 @@
       <HintPath>..\packages\Microsoft.Owin.Security.2.1.0\lib\net45\Microsoft.Owin.Security.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.40740\lib\net451\Microsoft.Web.Infrastructure.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41001\lib\net451\Microsoft.Web.Infrastructure.dll</HintPath>
     </Reference>
     <Reference Include="Nest, Version=5.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.40740\lib\net451\Nest.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41001\lib\net451\Nest.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.40740\lib\net451\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Ninject, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.40740\lib\net451\Ninject.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41001\lib\net451\Ninject.dll</HintPath>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.40740\lib\net451\NLog.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41001\lib\net451\NLog.dll</HintPath>
     </Reference>
     <Reference Include="Npgsql, Version=3.2.3.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.40740\lib\net451\Npgsql.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41001\lib\net451\Npgsql.dll</HintPath>
     </Reference>
     <Reference Include="NPOI, Version=2.4.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
       <HintPath>..\packages\NPOI.2.4.1\lib\net45\NPOI.dll</HintPath>
@@ -137,47 +137,47 @@
       <HintPath>..\packages\NPOI.2.4.1\lib\net45\NPOI.OpenXmlFormats.dll</HintPath>
     </Reference>
     <Reference Include="NSubstitute, Version=4.2.0.0, Culture=neutral, PublicKeyToken=92dd2e9066daa5ca, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.40740\lib\net451\NSubstitute.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41001\lib\net451\NSubstitute.dll</HintPath>
     </Reference>
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
     </Reference>
     <Reference Include="Persist, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.40740\lib\net451\Persist.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41001\lib\net451\Persist.dll</HintPath>
     </Reference>
     <Reference Include="Raven.Abstractions, Version=3.0.0.0, Culture=neutral, PublicKeyToken=37f41c7f99471593, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.40740\lib\net451\Raven.Abstractions.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41001\lib\net451\Raven.Abstractions.dll</HintPath>
     </Reference>
     <Reference Include="Raven.Client.Lightweight, Version=3.0.0.0, Culture=neutral, PublicKeyToken=37f41c7f99471593, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.40740\lib\net451\Raven.Client.Lightweight.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41001\lib\net451\Raven.Client.Lightweight.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Management.Automation, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.40740\lib\net451\System.Management.Automation.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41001\lib\net451\System.Management.Automation.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.40740\lib\net451\System.Net.Http.Formatting.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41001\lib\net451\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.Spatial, Version=5.6.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.40740\lib\net451\System.Spatial.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41001\lib\net451\System.Spatial.dll</HintPath>
     </Reference>
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.1.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.40740\lib\net451\System.Threading.Tasks.Extensions.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41001\lib\net451\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Http, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.40740\lib\net451\System.Web.Http.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41001\lib\net451\System.Web.Http.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.Http.OData, Version=5.5.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.40740\lib\net451\System.Web.Http.OData.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41001\lib\net451\System.Web.Http.OData.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.Optimization, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.40740\lib\net451\System.Web.Optimization.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41001\lib\net451\System.Web.Optimization.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -186,10 +186,10 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="Utility, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.40740\lib\net451\Utility.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41001\lib\net451\Utility.dll</HintPath>
     </Reference>
     <Reference Include="WebGrease, Version=1.5.2.14234, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.40740\lib\net451\WebGrease.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41001\lib\net451\WebGrease.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -1638,6 +1638,14 @@
     <Compile Include="Migrations\202001220833483_EmptyMigrationUserDashboard1.Designer.cs">
       <DependentUpon>202001220833483_EmptyMigrationUserDashboard1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202001241526011_Create_YEAR_END_ESTIMATE_FDM_Table.cs" />
+    <Compile Include="Migrations\202001241526011_Create_YEAR_END_ESTIMATE_FDM_Table.Designer.cs">
+      <DependentUpon>202001241526011_Create_YEAR_END_ESTIMATE_FDM_Table.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202001281958128_Create_ClientDashboard.cs" />
+    <Compile Include="Migrations\202001281958128_Create_ClientDashboard.Designer.cs">
+      <DependentUpon>202001281958128_Create_ClientDashboard.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\202002042005395_EmptyMigrationRC4.cs" />
     <Compile Include="Migrations\202002042005395_EmptyMigrationRC4.Designer.cs">
       <DependentUpon>202002042005395_EmptyMigrationRC4.cs</DependentUpon>
@@ -1658,11 +1666,60 @@
     <Compile Include="Migrations\202002121059314_EmptyMigrationRC5.Designer.cs">
       <DependentUpon>202002121059314_EmptyMigrationRC5.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202002121411037_EmptyMigrationClientDashboard.cs" />
+    <Compile Include="Migrations\202002121411037_EmptyMigrationClientDashboard.Designer.cs">
+      <DependentUpon>202002121411037_EmptyMigrationClientDashboard.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202002131059078_EmptyMigrationClientDashboard1.cs" />
+    <Compile Include="Migrations\202002131059078_EmptyMigrationClientDashboard1.Designer.cs">
+      <DependentUpon>202002131059078_EmptyMigrationClientDashboard1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202002170937569_EmptyMigrationClientDashboard2.cs" />
+    <Compile Include="Migrations\202002170937569_EmptyMigrationClientDashboard2.Designer.cs">
+      <DependentUpon>202002170937569_EmptyMigrationClientDashboard2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202002201104200_EmptyMigrationClientDashboard3.cs" />
+    <Compile Include="Migrations\202002201104200_EmptyMigrationClientDashboard3.Designer.cs">
+      <DependentUpon>202002201104200_EmptyMigrationClientDashboard3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202002201529287_EmptyMigrationClientDashboard4.cs" />
+    <Compile Include="Migrations\202002201529287_EmptyMigrationClientDashboard4.Designer.cs">
+      <DependentUpon>202002201529287_EmptyMigrationClientDashboard4.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202002251010173_EmptyMigrationClientDashboard5.cs" />
+    <Compile Include="Migrations\202002251010173_EmptyMigrationClientDashboard5.Designer.cs">
+      <DependentUpon>202002251010173_EmptyMigrationClientDashboard5.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202002131217344_AddBTL.cs" />
+    <Compile Include="Migrations\202002131217344_AddBTL.Designer.cs">
+      <DependentUpon>202002131217344_AddBTL.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202002140759226_Add_BTLPromo.cs" />
+    <Compile Include="Migrations\202002140759226_Add_BTLPromo.Designer.cs">
+      <DependentUpon>202002140759226_Add_BTLPromo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202003031138044_BTLPromo_Add_ClientTree_Field.cs" />
+    <Compile Include="Migrations\202003031138044_BTLPromo_Add_ClientTree_Field.Designer.cs">
+      <DependentUpon>202003031138044_BTLPromo_Add_ClientTree_Field.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202003042023568_EmptyMigration_ClientDashboard.cs" />
+    <Compile Include="Migrations\202003042023568_EmptyMigration_ClientDashboard.Designer.cs">
+      <DependentUpon>202003042023568_EmptyMigration_ClientDashboard.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202003230010389_EmptyMigrationClientDashboard6.cs" />
+    <Compile Include="Migrations\202003230010389_EmptyMigrationClientDashboard6.Designer.cs">
+      <DependentUpon>202003230010389_EmptyMigrationClientDashboard6.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202003261127120_Remove_Client1LevelName_Client2LevelName_ClientName_Promo.cs" />
+    <Compile Include="Migrations\202003261127120_Remove_Client1LevelName_Client2LevelName_ClientName_Promo.Designer.cs">
+      <DependentUpon>202003261127120_Remove_Client1LevelName_Client2LevelName_ClientName_Promo.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\202002251957252_Delete_PromoProductsProperties.cs" />
     <Compile Include="Migrations\202002251957252_Delete_PromoProductsProperties.Designer.cs">
       <DependentUpon>202002251957252_Delete_PromoProductsProperties.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PromoProductsView.cs" />
     <Compile Include="Model\DTO\ClientTreeSharesView.cs" />
     <Compile Include="Model\DTO\PlanPostPromoEffectReport.cs" />
@@ -1675,6 +1732,9 @@
     <Compile Include="Model\History\HistoricalAssortmentMatrix.cs" />
     <Compile Include="Model\History\HistoricalBrand.cs" />
     <Compile Include="Model\History\HistoricalActualCOGS.cs" />
+    <Compile Include="Model\History\HistoricalBTL.cs" />
+    <Compile Include="Model\History\HistoricalBTLPromo.cs" />
+    <Compile Include="Model\History\HistoricalClientDashboardView.cs" />
     <Compile Include="Model\History\HistoricalNonPromoEquipment.cs" />
     <Compile Include="Model\History\HistoricalCostProduction.cs" />
     <Compile Include="Model\History\HistoricalIncrementalPromo.cs" />
@@ -1726,6 +1786,8 @@
     <Compile Include="Model\History\HistoricalVariety.cs" />
     <Compile Include="Model\Import\BaseLineComparer.cs" />
     <Compile Include="Model\Import\ImportAssortmentMatrix.cs" />
+    <Compile Include="Model\Import\ImportBTL.cs" />
+    <Compile Include="Model\Import\ImportClientDashboard.cs" />
     <Compile Include="Model\Import\ImportNonPromoEquipment.cs" />
     <Compile Include="Model\Import\ImportIncrementalPromo.cs" />
     <Compile Include="Model\Import\ImportNoNego.cs" />
@@ -1762,9 +1824,13 @@
     <Compile Include="Model\SimpleModel\MARS_UNIVERSAL_PETCARE_MATERIALS.cs" />
     <Compile Include="Model\SimpleModel\MarsUniversalPetcareCustomers.cs" />
     <Compile Include="Model\SimpleModel\SimplePromoCOGSTI.cs" />
+    <Compile Include="Model\SimpleModel\YEAR_END_ESTIMATE_FDM.cs" />
     <Compile Include="Model\TPM\ActualLsvModel.cs" />
     <Compile Include="Model\TPM\BlockedPromo.cs" />
     <Compile Include="Model\TPM\AssortmentMatrix.cs" />
+    <Compile Include="Model\TPM\BTL.cs" />
+    <Compile Include="Model\TPM\BTLPromo.cs" />
+    <Compile Include="Model\TPM\ClientDashboard.cs" />
     <Compile Include="Model\TPM\NonPromoEquipment.cs" />
     <Compile Include="Model\TPM\BudgetSubItemClientTree.cs" />
     <Compile Include="Model\TPM\ChangesIncident.cs" />
@@ -1914,6 +1980,9 @@
     <Content Include="SQLInitialize\20191122_1428_Mechanick_Data_Types_Promo.sql" />
     <Content Include="SQLInitialize\20191203_1348_Update_Mechanick.sql" />
     <Content Include="SQLInitialize\20191104_1000_Settings_PromoChangeProps_Update.sql" />
+    <Content Include="SQLInitialize\20200211_2000_Alter_ClientDashboardView.sql" />
+    <Content Include="SQLInitialize\20200130_1600_Alter_ClientDashboardView.sql" />
+    <Content Include="SQLInitialize\20200130_1300_ClientDashboardView_AP.sql" />
     <Content Include="SQLInitialize\20191202_2330_BrandTeches_AP_GetBradTechById.sql" />
     <Content Include="SQLInitialize\20191203_1730_NonPromoEquipment_AP.sql" />
     <Content Include="SQLInitialize\20191203_1730_NonPromoSupport_AP.sql" />
@@ -1944,12 +2013,36 @@
     <Content Include="SQLInitialize\20200109_1600_Add_Handlers_MaterialsSync.sql" />
     <Content Include="SQLInitialize\20200122_0900_Sheba_from_tech_to_subrange.sql" />
     <Content Include="SQLInitialize\20200122_1300_Promo_GetSelectedProducts_CMM.sql" />
+    <Content Include="SQLInitialize\20200129_1600_Create_ClientDashboardView.sql" />
+    <Content Include="SQLInitialize\20200213_1100_HistoricalClientDashboard_AP.sql" />
+    <Content Include="SQLInitialize\20200211_2355_ClientDashboardView_AP.sql" />
+    <Content Include="SQLInitialize\20200219_1700_Alter_ClientDashboardView.sql" />
+    <Content Include="SQLInitialize\20200217_1123_Fix_ClientDashboardView.sql" />
+    <Content Include="SQLInitialize\20200213_1344_Alter_Grid_Client_Dashboard.sql" />
+    <Content Include="SQLInitialize\20200323_0200_Alter_ClientDashboardView.sql" />
+    <Content Include="SQLInitialize\20200304_1600_Alter_ClientDashboardView.sql" />
+    <Content Include="SQLInitialize\20200302_0800_Alter_ClientDashboardView.sql" />
+    <Content Include="SQLInitialize\20200225_2000_Alter_ClientDashboardView.sql" />
+    <Content Include="SQLInitialize\20200220_2000_Alter_ClientDashboardView.sql" />
+    <Content Include="SQLInitialize\20200220_1600_Alter_ClientDashboardView.sql" />
+    <Content Include="SQLInitialize\20200218_1530_PromoBTL_AP_Add.sql" />
+    <Content Include="SQLInitialize\20200225_1700_Settings_Not_Allowed_BTL_Sstatus_List.sql" />
+    <Content Include="SQLInitialize\20200312_1500_Settings_Materials_LastSuccessfulExecutionDate.sql" />
+    <Content Include="SQLInitialize\20200327_1245_Add_GetFilteredData_APs_part1.sql" />
+    <Content Include="SQLInitialize\20200327_1246_Add_GetFilteredData_APs_part2.sql" />
+    <Content Include="SQLInitialize\20200327_1247_Add_GetFilteredData_APs_part3.sql" />
     <Content Include="Sql\20191004_1540_FillInOutProductIdsHandler.sql" />
     <Content Include="SQLInitialize\20190926_1600_HistoricalPromoSupport_AP.sql" />
     <Content Include="SQLInitialize\20191106_1700_PromoGridView.sql" />
     <Content Include="SQLInitialize\20191101_1801_PromoProductsCorrection_Drop_Trigger.sql" />
     <Content Include="SQLInitialize\20191122_1400_COGS_TI_Year.sql" />
+    <Content Include="SQLInitialize\20200213_1510_BTL_Incremental_Trigger.sql" />
+    <Content Include="SQLInitialize\20200213_1525_BTL_AP.sql" />
+    <Content Include="SQLInitialize\20200214_1105_BTLPromo_AP.sql" />
+    <Content Include="SQLInitialize\20200311_1600_Edit_BTL_AP.sql" />
+    <Content Include="SQLInitialize\20200311_1645_Edit_BTLPromo_AP.sql" />
     <Compile Include="Utils\SpecialNotKeyPropertyAttribute.cs" />
+    <Content Include="SQLInitialize\20200210_1300_ClientDashboardViewController_Import_AP.sql" />
     <Compile Include="Utils\SimpleModels.cs" />
     <Content Include="SQLInitialize\20190904_1300_AddPromoStatusNameToPromoView.sql" />
     <Content Include="SQLInitialize\20190923_1806_Add_EventClientTree_AP.sql" />
@@ -3113,6 +3206,12 @@
     <EmbeddedResource Include="Migrations\202001220833483_EmptyMigrationUserDashboard1.resx">
       <DependentUpon>202001220833483_EmptyMigrationUserDashboard1.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001241526011_Create_YEAR_END_ESTIMATE_FDM_Table.resx">
+      <DependentUpon>202001241526011_Create_YEAR_END_ESTIMATE_FDM_Table.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001281958128_Create_ClientDashboard.resx">
+      <DependentUpon>202001281958128_Create_ClientDashboard.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202001301617202_Add_GA_to_IncrementalReport.resx">
       <DependentUpon>202001301617202_Add_GA_to_IncrementalReport.cs</DependentUpon>
     </EmbeddedResource>
@@ -3130,6 +3229,42 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202002121059314_EmptyMigrationRC5.resx">
       <DependentUpon>202002121059314_EmptyMigrationRC5.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002121411037_EmptyMigrationClientDashboard.resx">
+      <DependentUpon>202002121411037_EmptyMigrationClientDashboard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002131059078_EmptyMigrationClientDashboard1.resx">
+      <DependentUpon>202002131059078_EmptyMigrationClientDashboard1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002170937569_EmptyMigrationClientDashboard2.resx">
+      <DependentUpon>202002170937569_EmptyMigrationClientDashboard2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002201104200_EmptyMigrationClientDashboard3.resx">
+      <DependentUpon>202002201104200_EmptyMigrationClientDashboard3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002201529287_EmptyMigrationClientDashboard4.resx">
+      <DependentUpon>202002201529287_EmptyMigrationClientDashboard4.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002251010173_EmptyMigrationClientDashboard5.resx">
+      <DependentUpon>202002251010173_EmptyMigrationClientDashboard5.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002131217344_AddBTL.resx">
+      <DependentUpon>202002131217344_AddBTL.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002140759226_Add_BTLPromo.resx">
+      <DependentUpon>202002140759226_Add_BTLPromo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003031138044_BTLPromo_Add_ClientTree_Field.resx">
+      <DependentUpon>202003031138044_BTLPromo_Add_ClientTree_Field.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003042023568_EmptyMigration_ClientDashboard.resx">
+      <DependentUpon>202003042023568_EmptyMigration_ClientDashboard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003230010389_EmptyMigrationClientDashboard6.resx">
+      <DependentUpon>202003230010389_EmptyMigrationClientDashboard6.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003261127120_Remove_Client1LevelName_Client2LevelName_ClientName_Promo.resx">
+      <DependentUpon>202003261127120_Remove_Client1LevelName_Client2LevelName_ClientName_Promo.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202002251957252_Delete_PromoProductsProperties.resx">
       <DependentUpon>202002251957252_Delete_PromoProductsProperties.cs</DependentUpon>

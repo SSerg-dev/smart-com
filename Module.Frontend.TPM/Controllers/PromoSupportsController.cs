@@ -7,6 +7,7 @@ using Frontend.Core.Extensions;
 using Frontend.Core.Extensions.Export;
 using Looper.Core;
 using Looper.Parameters;
+using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.CalculatePromoParametersModule;
 using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.TPM;
@@ -70,6 +71,22 @@ namespace Module.Frontend.TPM.Controllers
         public IQueryable<PromoSupport> GetPromoSupports()
         {
             return GetConstraintedQuery();
+        }
+
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IQueryable<PromoSupport> GetFilteredData(ODataQueryOptions<PromoSupport> options)
+        {
+            var query = GetConstraintedQuery();
+
+            var querySettings = new ODataQuerySettings
+            {
+                EnsureStableOrdering = false,
+                HandleNullPropagation = HandleNullPropagationOption.False
+            };
+
+            var optionsPost = new ODataQueryOptionsPost<PromoSupport>(options.Context, Request, HttpContext.Current.Request);
+            return optionsPost.ApplyTo(query, querySettings) as IQueryable<PromoSupport>;
         }
 
         [ClaimsAuthorize]

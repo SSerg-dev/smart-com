@@ -221,6 +221,7 @@ namespace Module.Frontend.TPM.Util {
             model.ActualInStoreMechanicType = null;
             model.ActualInStoreMechanicTypeId = null; 
             PromoCalculateHelper.RecalculateBudgets(model, user, Context);
+            PromoCalculateHelper.RecalculateBTLBudgets(model, user, Context);
 
             Context.SaveChanges();
 

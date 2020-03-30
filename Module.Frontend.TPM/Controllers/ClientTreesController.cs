@@ -87,8 +87,66 @@ namespace Module.Frontend.TPM.Controllers
         /// <returns></returns>
         [ClaimsAuthorize]
         [HttpGet, AcceptVerbs("GET")]
-        public IHttpActionResult GetClientTrees(string node, string filterParameter, string clientObjectId, DateTime? dateFilter = null, bool view = false, 
-            bool needBaseClients = false, Guid? budgetSubItemId = null)
+        public IHttpActionResult GetClientTrees()
+        {
+            DateTime? dateFilter = null;
+            Guid? budgetSubItemId = null;
+            bool needBaseClients = false;
+            bool view = false;
+            string node = "root";
+            string filterParameter = null;
+            string clientObjectId = null;
+
+            try
+            {
+                // Получаем активные записи по диапазону дат
+                activeTree = GetConstraintedQuery(dateFilter);
+                List<ClientTree> budgetSubItemClientTrees = new List<ClientTree>();
+
+                if (budgetSubItemId != null)
+                {
+                    budgetSubItemClientTrees = Context.Set<BudgetSubItemClientTree>().Where(x => x.BudgetSubItemId == budgetSubItemId).Select(x => x.ClientTree).ToList();
+                }
+
+                if (activeTree.Count() != 0)
+                {
+                    if (filterParameter == null && clientObjectId == null && !needBaseClients && budgetSubItemClientTrees.Count == 0)
+                    {
+                        return GetTreeForLevel(node);
+                    }
+                    else if (filterParameter != null || needBaseClients)
+                    {
+                        return GetFilteredNodes(clientObjectId, filterParameter, needBaseClients);
+                    }
+                    else if (budgetSubItemClientTrees.Count > 0)
+                    {
+                        return GetCheckedNodes(budgetSubItemClientTrees, filterParameter, needBaseClients);
+                    }
+                    else
+                    {
+                        return GetTreeForPromo(clientObjectId, view);
+                    }
+                }
+                else
+                {
+                    ClientTree rootNode = Context.Set<ClientTree>().Where(x => x.ObjectId == 5000000 && !x.EndDate.HasValue).FirstOrDefault();
+                
+                    return Json(new
+                    {
+                        success = true,
+                        children = new ClientTreeNode(rootNode, false, false, true)                        
+                    });
+                }
+            }
+            catch (Exception e)
+            {
+                return InternalServerError(e);
+            }
+        }
+        [ClaimsAuthorize]
+        [HttpGet, AcceptVerbs("GET")]
+        public IHttpActionResult GetClientTrees(string node, string filterParameter, string clientObjectId, DateTime? dateFilter = null, bool view = false,
+           bool needBaseClients = false, Guid? budgetSubItemId = null)
         {
             try
             {
@@ -127,7 +185,7 @@ namespace Module.Frontend.TPM.Controllers
                     return Json(new
                     {
                         success = true,
-                        children = new ClientTreeNode(rootNode, false, false, true)                        
+                        children = new ClientTreeNode(rootNode, false, false, true)
                     });
                 }
             }
@@ -136,7 +194,6 @@ namespace Module.Frontend.TPM.Controllers
                 return InternalServerError(e);
             }
         }
-
         /// <summary>
         /// Получить дерево для определенного уровня
         /// </summary>

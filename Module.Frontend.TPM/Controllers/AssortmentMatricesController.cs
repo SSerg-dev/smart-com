@@ -7,6 +7,7 @@ using Frontend.Core.Extensions;
 using Frontend.Core.Extensions.Export;
 using Looper.Core;
 using Looper.Parameters;
+using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.Import;
 using Module.Persist.TPM.Model.TPM;
@@ -24,6 +25,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.OData;
 using System.Web.Http.OData.Query;
@@ -84,6 +86,25 @@ namespace Module.Frontend.TPM.Controllers
             return GetConstraintedQuery(needActualAssortmentMatrix);
         }
 
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IQueryable<AssortmentMatrix> GetFilteredData(ODataQueryOptions<AssortmentMatrix> options)
+        {
+            var bodyText = HttpContext.Current.Request.GetRequestBody();
+            
+            var query = JsonHelper.IsValueExists(bodyText, "needActualAssortmentMatrix") 
+                ? GetConstraintedQuery(JsonHelper.GetValueIfExists<bool>(bodyText, "needActualAssortmentMatrix")) 
+                : GetConstraintedQuery();
+
+            var querySettings = new ODataQuerySettings
+            {
+                EnsureStableOrdering = false,
+                HandleNullPropagation = HandleNullPropagationOption.False
+            };
+
+            var optionsPost = new ODataQueryOptionsPost<AssortmentMatrix>(options.Context, Request, HttpContext.Current.Request);
+            return optionsPost.ApplyTo(query, querySettings) as IQueryable<AssortmentMatrix>;
+        }
 
         [ClaimsAuthorize]
         public IHttpActionResult Put([FromODataUri] System.Guid key, Delta<AssortmentMatrix> patch)

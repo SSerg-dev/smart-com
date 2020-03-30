@@ -48,8 +48,6 @@
             inOutProductTreeObjectIds: '',
             needInOutFilteredProducts: false,
             needInOutExcludeAssortmentMatrixProducts: false,
-            needInOutSelectedProducts: false,
-            inOutProductIdsForGetting: '',
         }
     }
 });

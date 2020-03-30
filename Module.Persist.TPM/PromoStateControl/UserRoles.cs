@@ -9,6 +9,7 @@
         DemandFinance,
         DemandPlanning,
         FunctionalExpert,
-        KeyAccountManager
+        KeyAccountManager,
+        SupportAdministrator
     };
 }

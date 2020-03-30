@@ -24,6 +24,8 @@ using Module.Persist.TPM.Utils;
 using System.Net.Http.Headers;
 using Core.Settings;
 using System.IO;
+using Module.Frontend.TPM.Util;
+using System.Web;
 
 namespace Module.Frontend.TPM.Controllers {
 
@@ -63,6 +65,21 @@ namespace Module.Frontend.TPM.Controllers {
             return GetConstraintedQuery();
         }
 
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IQueryable<ClientTreeSharesView> GetFilteredData(ODataQueryOptions<ClientTreeSharesView> options)
+        {
+            var query = GetConstraintedQuery();
+
+            var querySettings = new ODataQuerySettings
+            {
+                EnsureStableOrdering = false,
+                HandleNullPropagation = HandleNullPropagationOption.False
+            };
+
+            var optionsPost = new ODataQueryOptionsPost<ClientTreeSharesView>(options.Context, Request, HttpContext.Current.Request);
+            return optionsPost.ApplyTo(query, querySettings) as IQueryable<ClientTreeSharesView>;
+        }
 
         private bool EntityExists(int key) {
             return Context.Set<ClientTreeSharesView>().Count(e => e.BOI == key) > 0;

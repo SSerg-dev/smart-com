@@ -7,6 +7,7 @@ using Frontend.Core.Extensions;
 using Frontend.Core.Extensions.Export;
 using Looper.Core;
 using Looper.Parameters;
+using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.Import;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
@@ -22,6 +23,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.OData;
 using System.Web.Http.OData.Query;
@@ -67,6 +69,23 @@ namespace Module.Frontend.TPM.Controllers
         {
             return GetConstraintedQuery();
         }
+
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IQueryable<PromoTypes> GetFilteredData(ODataQueryOptions<PromoTypes> options)
+        {
+            var query = GetConstraintedQuery();
+
+            var querySettings = new ODataQuerySettings
+            {
+                EnsureStableOrdering = false,
+                HandleNullPropagation = HandleNullPropagationOption.False
+            };
+
+            var optionsPost = new ODataQueryOptionsPost<PromoTypes>(options.Context, Request, HttpContext.Current.Request);
+            return optionsPost.ApplyTo(query, querySettings) as IQueryable<PromoTypes>;
+        }
+
         [ClaimsAuthorize]
         public IHttpActionResult Put([FromODataUri] System.Guid key, Delta<PromoTypes> patch)
         {

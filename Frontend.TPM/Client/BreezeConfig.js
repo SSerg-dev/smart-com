@@ -175,7 +175,6 @@
         }
 
         var queryOptions = {};
-        queryOptions["$filter"] = toWhereODataFragment(entityQuery.wherePredicate);
         queryOptions["$orderby"] = toOrderByODataFragment(entityQuery.orderByClause);
 
         if (entityQuery.skipCount) {
@@ -194,8 +193,16 @@
         }
 
         var qoText = toQueryOptionsString(queryOptions);
+        var filter = toWhereODataFragment(entityQuery.wherePredicate);
+
+        var isFilterTooLong = filter ? filter.length + entityQuery.resourceName.length + qoText.length > 1400 : false;
+        if (!isFilterTooLong) {
+            queryOptions["$filter"] = filter;
+            qoText = toQueryOptionsString(queryOptions);
+        }
+
         var actionName = entityQuery.parameters.$actionName;
-        var actionNameText = actionName ? '/' + actionName : '';
+        var actionNameText = actionName ? '/' + actionName : isFilterTooLong ? '/GetFilteredData' : '';
         return entityQuery.resourceName + actionNameText + qoText;
 
         // private methods to this func.
@@ -258,6 +265,50 @@
         }
     };
 
+    function getFilter(entityQuery, metadataStore) {
+        // force entityType validation;
+        var entityType = entityQuery._getFromEntityType(metadataStore, false);
+        if (!entityType) {
+            // anonymous type but still has naming convention info avail
+            entityType = new EntityType(metadataStore);
+        }
+
+        var queryOptions = {};
+        queryOptions["$filter"] = toWhereODataFragment(entityQuery.wherePredicate);
+
+        var filterText = toQueryOptionsString(queryOptions);
+        return filterText;
+
+        // private methods to this func.
+
+        function toWhereODataFragment(wherePredicate) {
+            if (!wherePredicate) return undefined;
+            // validation occurs inside of the toODataFragment call here.
+            return wherePredicate.visit({ entityType: entityType }, toODataFragmentVisitor);
+        }
+        function toQueryOptionsString(queryOptions) {
+            var qoStrings = [];
+            for (var qoName in queryOptions) {
+                var qoValue = queryOptions[qoName];
+                if (qoValue !== undefined) {
+                    if (qoValue instanceof Array) {
+                        qoValue.forEach(function (qov) {
+                            qoStrings.push(qov);
+                        });
+                    } else {
+                        qoStrings.push(qoValue);
+                    }
+                }
+            }
+
+            if (qoStrings.length > 0) {
+                return qoStrings.join("&");
+            } else {
+                return "";
+            }
+        }
+    };
+
     function executeQuery(mappingContext) {
         var deferred = breeze.Q.defer(),
             parameters = mappingContext.query.parameters,
@@ -267,45 +318,34 @@
 
 		var url = mappingContext.getUrl();
 
-		// Проверка на лимит длинны URL
-		if (url.length > 1800) {
-			Ext.Msg.show({
-				title: 'Выбрано слишком много записей',
-				msg: 'Выбрано слишком много записей, привышен лимит длинны URL, уменьшите количество выбранных записей',
-				buttons: Ext.MessageBox.OK,
-				icon: Ext.Msg.INFO,
-				closable: true
-			});
+        if (url.indexOf('/GetFilteredData') != -1) {
+            var filter = getFilter(mappingContext.query, mappingContext.metadataStore);
 
-			var filterString = url.substring(url.indexOf('$filter=')).replace('$filter=', '').replace('&', '');
-			filterString = filterString.substring(0, filterString.indexOf('$'));
+            if (filter != "") {
+                if (!parameters) {
+                    parameters = {
+                        $data: { filterRaw: filter }
+                    }
+                } else {
+                    parameters.$data = { filterRaw: filter }
+                }
 
-			url = url.replace('$filter=' + filterString + '&', '');
-		}
-
-		if (url.indexOf('$filter') != -1 && url.indexOf('GetSelectedProducts') != -1) {
-			var filterString = url.substring(url.indexOf('$filter=')).replace('$filter=', '').replace('&', '');
-			filterString = filterString.substring(0, filterString.indexOf('$'));
-
-			url = url.replace('$filter=' + filterString + '&', '');
-
-			var joinedJsonData = parameters.$data['jsonData'].join(';')
-			parameters.$data['jsonData'] = [];
-			parameters.$data['jsonData'].push(joinedJsonData);
-			parameters.$data['jsonData'].push(filterString);
-		}
+                parameters.$isPost = true;
+                setParamsForBody(parameters);
+            } 
+        } else {
+            if (parameters && parameters.$isPost) {
+                delete parameters.$isPost;
+                delete parameters.$data.filterRaw;
+            }
+        }
 
         // Add query params if .withParameters was used
         if (parameters) {
-            isPostMethod = parameters.$method && parameters.$method.toLocaleLowerCase() === 'post';
-
-            //if (parameters.$actionName && !parameters.$entity) {
-            //    url += '/' + encodeURIComponent(parameters.$actionName);
-            //}
-
+            isPostMethod = (parameters.$method && parameters.$method.toLocaleLowerCase() === 'post') || (parameters.$isPost);
             var paramString = toQueryString(parameters);
 
-            if (!Ext.isEmpty(paramString)) {
+            if (!Ext.isEmpty(paramString) && !parameters.$isPost) {
                 var sep = url.indexOf('?') < 0 ? '?' : '&';
                 url = url + sep + paramString;
             }
@@ -360,7 +400,13 @@
                         return;
                     }
 
-                    return deferred.resolve({ results: results, httpResponse: response });
+                    var inlineCount;
+                    if (data.__count) {
+                        // OData can return data.__count as a string
+                        inlineCount = parseInt(data.__count, 10);
+                    }
+
+                    return deferred.resolve({ results: results, inlineCount: inlineCount, httpResponse: response });
                 }, function (err) {
                     return deferred.reject(createError(err, url));
                 });
@@ -383,6 +429,26 @@
         }
         return parts.join("&");
     };
+
+    function setParamsForBody(params) {
+        for (var i in params) {
+            if (i.startsWith('$')) {
+                continue;
+            }
+
+            if (params.hasOwnProperty(i)) {
+                if (params.$data) {
+                    params.$data[i] = params[i];
+                } else {
+                    var data = new Object;
+                    data[i] = params[i];
+                    params = {
+                        $data: data
+                    }
+                }
+            }
+        }
+    }
 
     function getUriKey(aspect) {
         var entityType = aspect.entity.entityType;

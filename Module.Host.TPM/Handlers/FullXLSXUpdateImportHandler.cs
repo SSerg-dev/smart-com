@@ -4,6 +4,7 @@ using Interfaces.Implementation.Import.FullImport;
 using Looper.Core;
 using Looper.Parameters;
 using Module.Host.TPM.Actions;
+using Moule.Host.TPM.Actions;
 using ProcessingHost.Handlers;
 using ProcessingHost.Handlers.Import;
 using System;
@@ -221,6 +222,14 @@ namespace Module.Host.TPM.Handlers
         protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
         {
             return new FullXLSXUpdateImportPromoProductsUpliftAction(settings, promoId, userId, TempId);
+        }
+    }
+
+    public class FullXLSXUpdateImportClientDashboardHandler : FullXLSXImportHandler
+    {
+        protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
+        {
+            return new FullXLSXUpdateImportClientDashboardAction(settings);
         }
     }
 }

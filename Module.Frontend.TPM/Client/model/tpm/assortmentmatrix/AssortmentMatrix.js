@@ -8,11 +8,11 @@
         { name: 'ClientTreeId', hidden: true, isDefault: true },
         {
             name: 'ClientTreeName', type: 'string', mapping: 'ClientTree.Name',
-            tree: true, defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'ClientTree', hidden: false, isDefault: true
+            defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'ClientTree', tree: true, hidden: false, isDefault: true
         },
         { name: 'ProductId', hidden: true, isDefault: true },
         {
-            name: 'ProductEAN_PC', type: 'string', mapping: 'Product.EAN_PC', tree: true,
+            name: 'ProductEAN_PC', type: 'string', mapping: 'Product.EAN_PC', 
             defaultFilterConfig: { valueField: 'EAN_PC' }, breezeEntityType: 'Product', hidden: false, isDefault: true
         },
         { name: 'StartDate', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },

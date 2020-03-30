@@ -8,6 +8,7 @@ using Frontend.Core.Extensions.Export;
 using Looper.Core;
 using Looper.Parameters;
 using Module.Frontend.TPM.Model;
+using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.Import;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
@@ -24,6 +25,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.OData;
 using System.Web.Http.OData.Query;
@@ -65,6 +67,22 @@ namespace Module.Frontend.TPM.Controllers
         public IQueryable<NodeType> GetNodeTypes()
         {
             return GetConstraintedQuery();
+        }
+
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IQueryable<NodeType> GetFilteredData(ODataQueryOptions<NodeType> options)
+        {
+            var query = GetConstraintedQuery();
+
+            var querySettings = new ODataQuerySettings
+            {
+                EnsureStableOrdering = false,
+                HandleNullPropagation = HandleNullPropagationOption.False
+            };
+
+            var optionsPost = new ODataQueryOptionsPost<NodeType>(options.Context, Request, HttpContext.Current.Request);
+            return optionsPost.ApplyTo(query, querySettings) as IQueryable<NodeType>;
         }
 
         [ClaimsAuthorize]

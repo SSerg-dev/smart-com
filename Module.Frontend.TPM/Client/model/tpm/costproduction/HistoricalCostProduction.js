@@ -25,6 +25,7 @@
         { name: 'ClientTreeFullPathName', type: 'string', hidden: false, isDefault: true },
         { name: 'BudgetSubItemName', type: 'string', hidden: false, isDefault: true },
         { name: 'BudgetSubItemBudgetItemName', type: 'string', hidden: false, isDefault: true },
+        { name: 'Number', type: 'int', hidden: false, isDefault: true }
     ],
     proxy: {
         type: 'breeze',

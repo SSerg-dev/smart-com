@@ -270,6 +270,16 @@
     'tpm.inoutselectionproductwindow.InOutSelectionProductWindow',
 
     'tpm.userdashboard.UserDashboard',
+    'tpm.clientdashboard.ClientDashboard',
+
+    'tpm.clientkpidata.ClientKPIData',
+    'tpm.clientkpidata.HistoricalClientKPIData',
+
     // вспомогательный контроллер для промо
-    'tpm.promo.PromoHelper'
+    'tpm.promo.PromoHelper',
+
+    'tpm.btl.BTL',
+    'tpm.btl.BTLPromo',
+    'tpm.btl.DeletedBTL',
+    'tpm.btl.HistoricalBTL',
 ]);

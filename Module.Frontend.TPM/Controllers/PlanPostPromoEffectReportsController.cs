@@ -23,6 +23,8 @@ using Core.MarsCalendar;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using System.Data.Entity;
+using Module.Frontend.TPM.Util;
+using System.Web;
 
 namespace Module.Frontend.TPM.Controllers {
 
@@ -231,11 +233,26 @@ namespace Module.Frontend.TPM.Controllers {
             return result.AsQueryable();
         }
 
-
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
         public IQueryable<PlanPostPromoEffectReportWeekView> GetPlanPostPromoEffectReports() {
             return GetConstraintedQuery();
+        }
+
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IQueryable<PlanPostPromoEffectReportWeekView> GetFilteredData(ODataQueryOptions<PlanPostPromoEffectReportWeekView> options)
+        {
+            var query = GetConstraintedQuery();
+
+            var querySettings = new ODataQuerySettings
+            {
+                EnsureStableOrdering = false,
+                HandleNullPropagation = HandleNullPropagationOption.False
+            };
+
+            var optionsPost = new ODataQueryOptionsPost<PlanPostPromoEffectReportWeekView>(options.Context, Request, HttpContext.Current.Request);
+            return optionsPost.ApplyTo(query, querySettings) as IQueryable<PlanPostPromoEffectReportWeekView>;
         }
 
         private IEnumerable<Column> GetExportSettings() {

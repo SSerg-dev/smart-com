@@ -65,7 +65,11 @@
 		'AssortmentMatrix': 'Assortment matrix',
 		'ActualLSV': 'Actual LSV',
 		'IncrementalPromo': 'Incremental Promo',
-		'NonPromoEquipment': 'Non-Promo Equipment',
+        'BTL': 'BTL',
+        'NonPromoEquipment': 'Non-Promo Equipment',
+        'ClientDashboard': 'Client Dashboard',
+        'Dashboard': 'Dashboard',
+        'ClientKPIdata': 'Client KPI Data'
 	},
 
     'compositePanelTitles': {
@@ -140,7 +144,11 @@
         'AssortmentMatrix': 'Assortment matrix',
         'IncrementalPromo': 'Incremental Promo',
         'InOutProductSelectionWindow': 'Selected Products',
-        'PromoProductsView': 'Promo Uplift'
+        'BTL': 'BTL',
+        'PromoProductsView': 'Promo Uplift',
+        'ClientDashboard': 'Client Dashboard',
+        'Dashboard': 'Dashboard',
+        'ClientKPIdata': 'Client KPI Data'
     },
 
     'text': {
@@ -751,6 +759,18 @@
         'ConfirmCancelText': 'Do you really want to cancel this promo?',
 
         'CreatorLogin': 'Creator Name',
+
+        'PromoClientName': 'Promo Client Name',
+        'PromoClientObjectId': 'Promo Client ObjectId',
+        'PromoClientType': 'Promo Client Type',
+        'PromoClientGHierarchyCode': 'Promo Client G-Hierarchy Code',
+        'PromoClientDemandCode': 'Promo Client Demand Code',
+        'PromoClientIsBaseClient': 'Promo Client IsBaseClient',
+        'PromoClientRetailTypeName': 'Promo Client RetailType Name',
+        'PromoClientPPEW1': 'Promo Client PPE W1',
+        'PromoClientPPEW2': 'Promo Client PPE W2',
+        'PromoBasicProducts': 'Promo Basic Products',
+        'PromoTypesGlyph': 'Promo Types Glyph'
     },
     'HistoricalPromo': ['.tpm.Promo', '.core.BaseHistoryEntity'],
     'DeletedPromo': ['.tpm.Promo', '.core.BaseDeletedEntity'],
@@ -1910,6 +1930,29 @@
     'HistoricalIncrementalPromo': ['.tpm.IncrementalPromo', '.core.BaseHistoryEntity'],
     'DeletedIncrementalPromo': ['.tpm.IncrementalPromo', '.core.BaseDeletedEntity'],
 
+    'ClientKPIData': {
+        'ClientId': 'Client Id',
+        'ClientHierarchy': 'Client Hierarchy',
+        'BrandTech': 'BrandTech',
+        'Year': 'Year',
+        'PlanPercent': 'Plan, %',
+        'PlanMln': 'Plan, mln',
+        'YTD': 'YTD',
+        'YTDPercent': 'YTD, %',
+        'YEE': 'YEE',
+        'YEEPercent': 'YTD, %',
+
+        'ShopperTI': 'Shopper TI',
+        'MarketingTI': 'Marketing TI',
+        'Production': 'Production',
+        'Branding': 'Branding',
+        'BTL': 'BTL',
+        'ROI': 'ROI',
+        'LSV': 'LSV',
+        'IncrementalNSV': 'Incremental NSV',
+        'PromoNSV': 'Promo NSV'
+    },
+
     'UserRolePromo': {
         'Name': 'Login',
         'CreatorLogin': 'Login',
@@ -1925,4 +1968,51 @@
             'Updated': 'Изменение'
         }
     },
+
+    'BTLPromo': {
+        'ViewTitle': 'Promo linked',
+
+        'PromoStartDate': 'Start date',
+        'PromoEndDate': 'End date',
+        'PromoNumber': 'Promo ID',
+        'PromoName': 'Promo name',
+        'PromoEventName': 'Event',
+        'ClientTreeFullPathName': 'Client Hierarchy',
+        'PromoBrandTechName': 'Brandtech',
+        'PromoStatusName': 'Status',
+        'ActualPromoBTL': 'Actual Promo BTL',
+        'PlanPromoBTL': 'Plan Promo BTL',
+    },
+    'BTL': {
+        'Number': 'ID',
+        'StartDate': 'Start Date',
+        'EndDate': 'End Date',
+        'RemoveIntactWindowTitle': 'Unpin recording',
+        'RemoveIntactConfirmMessage': 'Are you sure you want to unpin a post?',
+        'CreateBTLButton': 'Create BTL',
+        'CreateOnTheBasisButton': 'Create on the basis',
+        'InvoiceNumberRegex': 'Only numbers',
+        'AttachFileName': 'Attach File Name',
+        'Name': 'Name',
+        'InvoiceNumber': 'Invoice Number',
+        'PlanBTLTotal': 'Plan BTL Total',
+        'ActualPromoBTL': 'Actual Promo BTL',
+        'PlanPromoBTL': 'Plan Promo BTL',
+    },
+    'HistoricalBTL': {
+        'Number': 'ID',
+        'StartDate': 'Start Date',
+        'EndDate': 'End Date',
+        'RemoveIntactWindowTitle': 'Unpin recording',
+        'RemoveIntactConfirmMessage': 'Are you sure you want to unpin a post?',
+        'CreateBTLButton': 'Create BTL',
+        'CreateOnTheBasisButton': 'Create on the basis',
+        'InvoiceNumberRegex': 'Only numbers',
+        'AttachFileName': 'Attach File Name',
+        'Name': 'Name',
+        'InvoiceNumber': 'Invoice Number',
+        'PlanBTLTotal': 'Plan BTL Total'
+    },
+    'HistoricalBTL': ['.tpm.BTL', '.core.BaseHistoryEntity'],
+    'DeletedBTL': ['.tpm.BTL', '.core.BaseDeletedEntity'],
 });

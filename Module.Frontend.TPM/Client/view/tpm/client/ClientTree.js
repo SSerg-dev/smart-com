@@ -173,6 +173,7 @@
             }
         }, {
             xtype: 'panel',
+            itemId: 'clientTreeSettingsPanel',
             autoScroll: true,
             cls: 'scrollpanel scrollSettingsClientTree',
             //minWidth: 263,

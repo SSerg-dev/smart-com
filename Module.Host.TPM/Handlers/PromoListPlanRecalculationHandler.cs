@@ -182,6 +182,12 @@ namespace Module.Host.TPM.Handlers
                                 // пересчет плановых бюджетов (из-за LSV)
                                 BudgetsPromoCalculation.CalculateBudgets(promo, true, false, handlerLogger, info.HandlerId, context);
 
+                                BTL btl = context.Set<BTLPromo>().Where(x => x.PromoId == promo.Id && !x.Disabled && x.DeletedDate == null).FirstOrDefault()?.BTL;
+                                if (btl != null)
+                                {
+                                    BudgetsPromoCalculation.CalculateBTLBudgets(btl, true, false, handlerLogger, context);
+                                }
+
                                 calculateError = PlanPromoParametersCalculation.CalculatePromoParameters(promoId, context);
 
                                 if (calculateError != null)

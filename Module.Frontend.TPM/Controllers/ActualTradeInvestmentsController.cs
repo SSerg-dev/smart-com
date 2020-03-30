@@ -37,6 +37,7 @@ using Core.Dependency;
 using System.Collections.Concurrent;
 using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.SimpleModel;
+using System.Web;
 
 namespace Module.Frontend.TPM.Controllers {
 
@@ -78,6 +79,21 @@ namespace Module.Frontend.TPM.Controllers {
             return GetConstraintedQuery();
         }
 
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IQueryable<ActualTradeInvestment> GetFilteredData(ODataQueryOptions<ActualTradeInvestment> options)
+        {
+            var query = GetConstraintedQuery();
+
+            var querySettings = new ODataQuerySettings
+            {
+                EnsureStableOrdering = false,
+                HandleNullPropagation = HandleNullPropagationOption.False
+            };
+
+            var optionsPost = new ODataQueryOptionsPost<ActualTradeInvestment>(options.Context, Request, HttpContext.Current.Request);
+            return optionsPost.ApplyTo(query, querySettings) as IQueryable<ActualTradeInvestment>;
+        }
 
         [ClaimsAuthorize]
         public IHttpActionResult Put([FromODataUri] System.Guid key, Delta<ActualTradeInvestment> patch) {

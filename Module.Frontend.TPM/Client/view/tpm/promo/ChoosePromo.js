@@ -99,8 +99,8 @@
                 }
             }, {
                 text: l10n.ns('tpm', 'Promo').value('EventName'),
-                dataIndex: 'EventName',
-                width: 110,
+                dataIndex: 'PromoEventName',
+                width: 110
             },  {
                 xtype: 'datecolumn',
                 text: l10n.ns('tpm', 'Promo').value('LastChangedDate'),

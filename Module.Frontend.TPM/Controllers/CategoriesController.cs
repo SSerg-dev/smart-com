@@ -4,6 +4,7 @@ using Core.Security.Models;
 using Core.Settings;
 using Frontend.Core.Controllers.Base;
 using Frontend.Core.Extensions.Export;
+using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.TPM;
 using Persist.Model;
 using System;
@@ -13,6 +14,7 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.OData;
 using System.Web.Http.OData.Query;
@@ -61,6 +63,21 @@ namespace Module.Frontend.TPM.Controllers
             return GetConstraintedQuery();
         }
 
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IQueryable<Category> GetFilteredData(ODataQueryOptions<Category> options)
+        {
+            var query = GetConstraintedQuery();
+
+            var querySettings = new ODataQuerySettings
+            {
+                EnsureStableOrdering = false,
+                HandleNullPropagation = HandleNullPropagationOption.False
+            };
+
+            var optionsPost = new ODataQueryOptionsPost<Category>(options.Context, Request, HttpContext.Current.Request);
+            return optionsPost.ApplyTo(query, querySettings) as IQueryable<Category>;
+        }
 
         [ClaimsAuthorize]
         public IHttpActionResult Put([FromODataUri] System.Guid key, Delta<Category> patch)

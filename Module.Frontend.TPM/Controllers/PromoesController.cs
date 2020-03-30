@@ -37,6 +37,7 @@ using System.Net.Http.Headers;
 using Module.Persist.TPM.CalculatePromoParametersModule;
 using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.SimpleModel;
+using System.Web;
 
 namespace Module.Frontend.TPM.Controllers {
     public class PromoesController : EFContextController {
@@ -84,6 +85,23 @@ namespace Module.Frontend.TPM.Controllers {
         [EnableQuery(MaxNodeCount = int.MaxValue, MaxExpansionDepth = 3)]
         public IQueryable<Promo> GetCanChangeStatePromoes(bool canChangeStateOnly = false) {
             return GetConstraintedQuery(canChangeStateOnly);
+        }
+
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IQueryable<Promo> GetFilteredData(ODataQueryOptions<Promo> options)
+        {
+            string bodyText = Helper.GetRequestBody(HttpContext.Current.Request);
+            var query = GetConstraintedQuery(Helper.GetValueIfExists<bool>(bodyText, "canChangeStateOnly"));
+
+            var querySettings = new ODataQuerySettings
+            {
+                EnsureStableOrdering = false,
+                HandleNullPropagation = HandleNullPropagationOption.False
+            };
+            var optionsPost = new ODataQueryOptionsPost<Promo>(options.Context, Request, HttpContext.Current.Request);
+
+            return optionsPost.ApplyTo(query, querySettings) as IQueryable<Promo>;
         }
 
         [ClaimsAuthorize]
@@ -474,12 +492,14 @@ namespace Module.Frontend.TPM.Controllers {
 
                         //при сбросе статуса в Draft необходимо отвязать бюджеты от промо и пересчитать эти бюджеты
                         PromoCalculateHelper.RecalculateBudgets(model, user, Context);
+                        PromoCalculateHelper.RecalculateBTLBudgets(model, user, Context);
                     }
                 }
                 else if (statusName.ToLower() != "finished")
                 {
                     //при отмене промо необходимо отвязать бюджеты от промо и пересчитать эти бюджеты
                     PromoCalculateHelper.RecalculateBudgets(model, user, Context);
+                    PromoCalculateHelper.RecalculateBTLBudgets(model, user, Context);
 
                     //если промо инаут, необходимо убрать записи в IncrementalPromo при отмене промо
                     if (model.InOut.HasValue && model.InOut.Value)
@@ -749,8 +769,11 @@ namespace Module.Frontend.TPM.Controllers {
                 }
                 Context.SaveChanges();
                 
+                bool safe = true;
                 PromoHelper.WritePromoDemandChangeIncident(Context, model, true);
                 PromoCalculateHelper.RecalculateBudgets(model, user, Context);
+                PromoCalculateHelper.RecalculateBTLBudgets(model, user, Context, safe);
+
                 //если промо инаут, необходимо убрать записи в IncrementalPromo при отмене промо
                 if (model.InOut.HasValue && model.InOut.Value)
                 {
@@ -1388,18 +1411,8 @@ namespace Module.Frontend.TPM.Controllers {
 
                 IQueryable<ClientTree> ctQuery = context.Set<ClientTree>().Where(x => x.Type == "root"
                || (DateTime.Compare(x.StartDate, DateTime.Now) <= 0 && (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, DateTime.Now) > 0)));
-                ClientTree ct = ctQuery.FirstOrDefault(y => y.ObjectId == promo.ClientTreeId); ;
-                if (ct != null) {
-                    promo.ClientName = ct.Name;
-                }
-                while (ct != null && ct.depth != 0) {
-                    if (ct.depth == 1) {
-                        promo.Client1LevelName = ct.Name;
-                    } else if (ct.depth == 2) {
-                        promo.Client2LevelName = ct.Name;
-                    }
-                    ct = ctQuery.FirstOrDefault(y => y.ObjectId == ct.parentId);
-                }
+                ClientTree ct = ctQuery.FirstOrDefault(y => y.ObjectId == promo.ClientTreeId);
+                
 
                 int? upBaseClientId = RecursiveUpBaseClientsFind(ClientTreeId, context);
                 if (upBaseClientId.HasValue) {
@@ -1656,9 +1669,6 @@ namespace Module.Frontend.TPM.Controllers {
             int orderNumber = 1;
             IEnumerable<Column> columns = new List<Column>() {
                 new Column { Order = orderNumber++, Field = "Number", Header = "Promo ID", Quoting = false },
-                new Column { Order = orderNumber++, Field = "Client1LevelName", Header = "NA/RKA", Quoting = false },
-                new Column { Order = orderNumber++, Field = "Client2LevelName", Header = "Client Group", Quoting = false },
-                new Column { Order = orderNumber++, Field = "ClientName", Header = "Client", Quoting = false },
                 new Column { Order = orderNumber++, Field = "Brand.Name", Header = "Brand", Quoting = false },
                 new Column { Order = orderNumber++, Field = "Technology.Name", Header = "Technology", Quoting = false },
                 new Column { Order = orderNumber++, Field = "ProductSubrangesList", Header = "Subrange", Quoting = false },
@@ -1756,6 +1766,8 @@ namespace Module.Frontend.TPM.Controllers {
                 new Column { Order = orderNumber++, Field = "ActualPromoNetUpliftPercent", Header = "Actual Promo Net Uplift Percent", Quoting = false,  Format = "0"  }};
             return columns;
         }
+
+        //Out of date, Export in ROI controller
         [ClaimsAuthorize]
         public IHttpActionResult ExportPromoROIReportXLSX(ODataQueryOptions<Promo> options) {
             try {

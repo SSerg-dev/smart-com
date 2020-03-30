@@ -199,7 +199,55 @@ namespace Module.Host.TPM.Handlers.DataFlow
                     }
 
                     List<Guid> promoIdsForBudgetRecalclating = HandlerDataHelper.GetIncomingArgument<List<Guid>>("PromoIdsForBudgetRecalclating", info.Data, false);
+                    List<Guid> promoIdsForBTLBudgetRecalclating = HandlerDataHelper.GetIncomingArgument<List<Guid>>("PromoIdsForBTLBudgetRecalclating", info.Data, false);
                     List<Guid> promoSupportIdsForRecalculating = new List<Guid>();
+
+                    Stopwatch swBTLBudgetParameters_Part01 = new Stopwatch();
+                    double totalSecondPlanBTLBudgetCalculatingPart01 = 0;
+                    double? minPlanBTLBudgetCalculatingDurationPart01 = null;
+                    double? maxPlanBTLBudgetCalculatingDurationPart01 = null;
+                    int? minPlanCalculatinBTLBudgetNumber = 0;
+                    int? maxPlanCalculatinBTLBudgetNumber = 0;
+                    List<int> btlNumbers = new List<int>();
+
+					foreach (var promoId in promoIdsForBTLBudgetRecalclating)
+					{
+						swBTLBudgetParameters_Part01.Restart();
+
+						BTL btl = context.Set<BTLPromo>().Where(x => x.PromoId == promoId && !x.Disabled && x.DeletedDate == null).FirstOrDefault()?.BTL;
+						// пересчет плановых BTL бюджетов
+						if (btl != null && !btlNumbers.Contains(btl.Number))
+						{
+							BudgetsPromoCalculation.CalculateBTLBudgets(btl, true, false, handlerLogger, context);
+							btlNumbers.Add(btl.Number);
+
+							swBTLBudgetParameters_Part01.Stop();
+							totalSecondPlanBTLBudgetCalculatingPart01 += swBTLBudgetParameters_Part01.Elapsed.TotalSeconds;
+
+							if (!minPlanBTLBudgetCalculatingDurationPart01.HasValue || minPlanBTLBudgetCalculatingDurationPart01.Value > swBTLBudgetParameters_Part01.Elapsed.TotalSeconds)
+							{
+								minPlanBTLBudgetCalculatingDurationPart01 = swBTLBudgetParameters_Part01.Elapsed.TotalSeconds;
+								minPlanCalculatinBTLBudgetNumber = btl.Number;
+							}
+
+							if (!maxPlanBTLBudgetCalculatingDurationPart01.HasValue || maxPlanBTLBudgetCalculatingDurationPart01.Value < swBTLBudgetParameters_Part01.Elapsed.TotalSeconds)
+							{
+								maxPlanBTLBudgetCalculatingDurationPart01 = swBTLBudgetParameters_Part01.Elapsed.TotalSeconds;
+								maxPlanCalculatinBTLBudgetNumber = btl.Number;
+							}
+
+							handlerLogger.Write(true, String.Format("BTL Budget number: {0}. Duration: {1} seconds", btl.Number, swBTLBudgetParameters_Part01.Elapsed.TotalSeconds), "Timing");
+						}
+					}
+
+					if (promoSupportIdsForRecalculating.Count > 0)
+                    {
+                        double averageSecond = promoSupportIdsForRecalculating.Count != 0 ? totalSecondPlanBTLBudgetCalculatingPart01 / promoSupportIdsForRecalculating.Count : 0;
+                        handlerLogger.Write(true, String.Format("Min duration (BTL Budgets DataFlow Part 1): {0}. Budget number: {1}.", minPlanBTLBudgetCalculatingDurationPart01 ?? 0, minPlanCalculatinBTLBudgetNumber ?? 0), "Timing");
+                        handlerLogger.Write(true, String.Format("Max duration (BTL Budgets DataFlow Part 1): {0}. Budget number: {1}.", maxPlanBTLBudgetCalculatingDurationPart01 ?? 0, maxPlanCalculatinBTLBudgetNumber ?? 0), "Timing");
+                        handlerLogger.Write(true, String.Format("Average duration (BTL Budgets DataFlow Part 1): {0}", averageSecond), "Timing");
+                        handlerLogger.Write(true, String.Format("Total duration (BTL Budgets DataFlow Part 1): {0}", totalSecondPlanBTLBudgetCalculatingPart01), "Timing");
+                    }
 
                     Stopwatch swBudgetParameters_Part01 = new Stopwatch();
                     double totalSecondPlanBudgetCalculatingPart01 = 0;
@@ -250,6 +298,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
                         handlerLogger.Write(true, String.Format("Total duration (Budgets DataFlow Part 1): {0}", totalSecondPlanBudgetCalculatingPart01), "Timing");
                     }
 
+                    handlerLogger.Write(true, String.Format("Total amount of BTL for recalculating: {0}", btlNumbers.Count), "Message");
                     handlerLogger.Write(true, String.Format("Total amount of promo support for recalculating: {0}", promoSupportIdsForRecalculating.Count), "Message");
                     swDataFlow_Part01.Stop();
                     handlerLogger.Write(true, String.Format("The recalculation of promo parameters (DataFlow Part 1) ended at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", DateTimeOffset.Now, swDataFlow_Part01.Elapsed.TotalSeconds), "Message");
@@ -330,6 +379,51 @@ namespace Module.Host.TPM.Handlers.DataFlow
                         handlerLogger.Write(true, String.Format("Max duration (Promo parameters DataFlow Part 2): {0}. Promo number: {1}.", maxCalculatingDurationPart02 ?? 0, maxCalculatinPromoNumberPart02 ?? 0), "Timing");
                         handlerLogger.Write(true, String.Format("Average duration (Promo parameters DataFlow Part 2): {0}", averageSecond), "Timing");
                         handlerLogger.Write(true, String.Format("Total duration (Promo parameters DataFlow Part 2: {0}", totalSecondPromoCalculatingPart02), "Timing");
+                    }
+
+                    Stopwatch swBTLBudgetParameters_Part02 = new Stopwatch();
+                    double totalSecondActualBTLBudgetCalculatingPart01 = 0;
+                    double? minActualBTLBudgetCalculatingDurationPart01 = null;
+                    double? maxActualBTLBudgetCalculatingDurationPart01 = null;
+                    int? minActualCalculatinBTLBudgetNumber = 0;
+                    int? maxActualCalculatinBTLBudgetNumber = 0;
+
+                    foreach (var promoId in promoIdsForBTLBudgetRecalclating)
+                    {
+                        swBTLBudgetParameters_Part02.Restart();
+
+                        BTL btl = context.Set<BTLPromo>().Where(x => x.PromoId == promoId && !x.Disabled && x.DeletedDate == null).FirstOrDefault()?.BTL;
+                        // пересчет плановых BTL бюджетов
+                        if (btl != null)
+                        {
+                            BudgetsPromoCalculation.CalculateBTLBudgets(btl, false, true, handlerLogger, context);
+                        }
+
+                        swBTLBudgetParameters_Part02.Stop();
+                        totalSecondActualBTLBudgetCalculatingPart01 += swBudgetParameters_Part01.Elapsed.TotalSeconds;
+
+                        if (!minActualBTLBudgetCalculatingDurationPart01.HasValue || minActualBTLBudgetCalculatingDurationPart01.Value > swBTLBudgetParameters_Part02.Elapsed.TotalSeconds)
+                        {
+                            minActualBTLBudgetCalculatingDurationPart01 = swBTLBudgetParameters_Part02.Elapsed.TotalSeconds;
+                            minActualCalculatinBTLBudgetNumber = btl.Number;
+                        }
+
+                        if (!maxActualBTLBudgetCalculatingDurationPart01.HasValue || maxActualBTLBudgetCalculatingDurationPart01.Value < swBTLBudgetParameters_Part02.Elapsed.TotalSeconds)
+                        {
+                            maxActualBTLBudgetCalculatingDurationPart01 = swBTLBudgetParameters_Part02.Elapsed.TotalSeconds;
+                            maxActualCalculatinBTLBudgetNumber = btl.Number;
+                        }
+
+                        handlerLogger.Write(true, String.Format("BTL Budget number: {0}. Duration: {1} seconds", btl.Number, swBTLBudgetParameters_Part02.Elapsed.TotalSeconds), "Timing");
+                    }
+
+                    if (promoIdsForBTLBudgetRecalclating.Count > 0)
+                    {
+                        double averageSecond = promoIdsForBTLBudgetRecalclating.Count != 0 ? totalSecondActualBTLBudgetCalculatingPart01 / promoIdsForBTLBudgetRecalclating.Count : 0;
+                        handlerLogger.Write(true, String.Format("Min duration (BTL Budgets DataFlow Part 2): {0}. Budget number: {1}.", minActualBTLBudgetCalculatingDurationPart01 ?? 0, minActualCalculatinBTLBudgetNumber ?? 0), "Timing");
+                        handlerLogger.Write(true, String.Format("Max duration (BTL Budgets DataFlow Part 2): {0}. Budget number: {1}.", maxActualBTLBudgetCalculatingDurationPart01 ?? 0, maxActualCalculatinBTLBudgetNumber ?? 0), "Timing");
+                        handlerLogger.Write(true, String.Format("Average duration (BTL Budgets DataFlow Part 2): {0}", averageSecond), "Timing");
+                        handlerLogger.Write(true, String.Format("Total duration (BTL Budgets DataFlow Part 2): {0}", totalSecondActualBTLBudgetCalculatingPart01), "Timing");
                     }
 
                     Stopwatch swBudgetParameters_Part02 = new Stopwatch();

@@ -18,7 +18,8 @@
         { name: 'AttachFileName', type: 'string', hidden: true, isDefault: false },
         { name: 'InvoiceNumber', type: 'string', hidden: false, isDefault: true },
         { name: 'ClientTreeFullPathName', type: 'string', hidden: false, isDefault: true },
-		{ name: 'NonPromoEquipmentEquipmentType', type: 'string', hidden: false, isDefault: true }
+        { name: 'NonPromoEquipmentEquipmentType', type: 'string', hidden: false, isDefault: true },
+        { name: 'Number', type: 'int', hidden: false, isDefault: true }
     ],
     proxy: {
         type: 'breeze',

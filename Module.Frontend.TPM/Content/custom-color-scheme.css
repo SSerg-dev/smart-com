@@ -1700,6 +1700,7 @@ tr[data-recordindex="0"] .container-icon {
 		border-bottom: 2px solid #cfd8dc;
 		display: inline-block;
 	}
+  
 
 	.approval-status-toolbar .x-btn-default-toolbar-small .x-btn-inner,
 	.approval-status-toolbar .x-btn-default-toolbar-small .x-btn-glyph {
@@ -3142,6 +3143,72 @@ x-slider-inner:before {
     width: 100% !important;
 
 }
+
+.client-dashboard-toolbar {
+    margin: 10px 0;
+}
+
+.client-dashboard-toolbar-button .x-btn-wrap .x-btn-button .x-btn-inner {
+    font-size: 14px;
+    color: #849db8;
+}
+
+.client-dashboard-toolbar-button .x-btn-wrap .x-btn-button .x-btn-icon-el {
+    color: #849db8;
+}
+
+.client-dashboard-toolbar-button-selected .x-btn-wrap .x-btn-button .x-btn-icon-el {
+    opacity: 1;
+    color: #486f99;
+}
+
+.client-dashboard-toolbar-button-selected .x-btn-wrap .x-btn-button .x-btn-inner {
+    color: #486f99;
+}
+
+.client-dashboard-toolbar .x-box-inner {
+    box-shadow: inset 0px -2px #cfd8dc;
+}
+
+.client-dashboard .panel-vertical-account-information-left {
+}
+.client-dashboard .panel-account-information-left:not(:last-child) {
+    margin-bottom: 5px;
+}
+
+.client-dashboard .panel-vertical-account-information-right {
+    padding-left: 5px;
+}
+.client-dashboard .panel-vertical-account-information-right-second { 
+    padding-left: 5px;
+}
+.client-dashboard .panel-information-right-second {
+    padding-top: 5px;
+} 
+.client-dashboard .test-lbl-text-align {
+    padding-left: 5px;
+}
+.client-dashboard .button-account-information-client {
+    background-color: inherit;
+    border: none; 
+    padding: 1px;
+}
+
+.client-dashboard .button-account-information-client .x-btn-inner {
+    color: #0000A0 !important;
+    font-weight: normal !important;
+    text-decoration: none;
+    font-size: 14px;
+    line-height: 10px !important;
+    text-align: right;
+}
+ 
+.client-dashboard .x-btn-inner { 
+    color: black !important; 
+}
+.client-dashboard .x-btn-glyph {
+    color: black !important;
+}
 .user-dashboard .title-first {
     color: #57697c;
     font-weight: 600;
@@ -4170,3 +4237,400 @@ x-slider-inner:before {
     background-image: none !important;
     color: #8892a3 !important;
 }
+
+.client-dashboard {
+    background-color: white;
+}
+
+.client-dashboard-first-child-container {
+    background-color: white;
+    padding: 10px;
+}
+
+.client-dashboard-buttons-container {
+    margin: 15px 10px;
+}
+
+.client-dashboard-fieldset {
+    margin: 0px;
+    padding: 0px;
+    border: none;
+}
+
+.client-dashboard-button {
+    font-size: 13px;
+}
+
+.client-dashboard-client-year-choose-window .x-window-body .jspContainer {
+}
+
+.client-dashboard-client-year-choose-window-item {
+    left: 0 !important;    
+    right: 0 !important;
+    margin: 0 15px 8px 15px !important;
+}
+
+.client-dashboard-client-year-choose-window-item-last {
+    margin-bottom: 15px !important;
+}
+
+.client-dashboard-client-year-choose-window-field-label .x-form-item-label {
+    font-size: 17px;
+    color: white;
+    margin-bottom: 4px;
+    margin-top: 0px;
+}
+
+.promo-weeks-panels-container .jspContainer .jspPane {
+    position: relative;
+    float: left;
+    margin-right: 0px;
+}
+
+.promo-weeks-panels-container .jspContainer .jspVerticalBar {
+    position: relative;
+    float: right;
+    width: 10px;
+    background-color: white;
+}
+
+.promo-weeks-panels-container .jspContainer .jspVerticalBar .jspTrack {
+    width: 8px;
+    height: 100% !important;
+    border-radius: 8px;
+    border: 1px solid #ccd1d9;
+    background-color: white;
+}
+
+.promo-weeks-panels-container .jspContainer .jspVerticalBar .jspTrack .jspDrag {
+    margin: -1px 0px 0px 0px;
+    background-color: #ccd1d9;
+    border-radius: 8px;
+}
+
+.promo-weeks-panel {
+    margin: 0px 2px 5px 2px;
+    box-shadow: 0px 1px 3px 1px #ccd1d9;
+    -webkit-box-shadow: 0px 1px 3px 1px #ccd1d9;
+    -moz-box-shadow: 0px 1px 3px 1px #ccd1d9;
+}
+
+.promo-weeks-panel:first-child {
+    border-top: 1px solid #e9e9e9;
+}
+
+.client-dashboard-promo-weeks-panel-logo-container {
+    margin-left: 5px;
+}
+
+.client-dashboard-promo-weeks-panel-logo {
+    height: 50px !important;
+    width: 80px !important;
+}
+
+.client-dashboard-promo-weeks-panel-lable {
+    color: #b8c2c7;
+}
+
+.client-dashboard-promo-weeks-panel-value {
+    font-size: 17px;
+    margin-top: 5px;
+    font-weight: 300;
+}
+
+@media screen and (max-device-width: 1599px) {
+    .client-dashboard .button-account-information-client-glyph .x-btn-glyph {
+        font-size: 20px !important;
+        padding: unset !important;
+        height: 100%;
+        width: 100%;
+        padding-top: 20% !important;
+        background-color: #d5dde7 !important;
+        color: #0000a0 !important;
+        opacity: 1;
+    }
+
+    .client-dashboard .incrementalHeader {
+        min-height: 22px;
+    }
+
+    .client-dashboard-account-panel-border-title {
+        font-size: 18px;
+        color: #0000A0;
+        font-weight: bold;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+
+    .client-dashboard-account-panel-LSV-bold-label {
+        font-size: 18px;
+        color: #0000A0;
+        font-weight: bold;
+        white-space: nowrap;
+        padding-left: 16px;
+        text-align: left;
+        width: 60px;
+    }
+
+    .client-dashboard-account-panel-LSV-thin-label {
+        font-size: 17px;
+        color: #0000A0;
+        white-space: nowrap;
+        text-align: center;
+        width: 30px;
+    }
+
+    .client-dashboard-account-panel-LSV-text {
+        font-size: 26px;
+        color: #0000A0;
+        font-weight: bold;
+        overflow: hidden;
+        white-space: nowrap;
+        text-align: left;
+        padding-left: 20px;
+    }
+
+    .client-dashboard-account-panel-text,
+    .client-dashboard-account-panel-NSV-text {
+        font-size: 17px;
+        color: #0000A0;
+        padding-top: 10px;
+        padding-left: 20px;
+    }
+
+    .client-dashboard-account-panel-button-client-label,
+    .client-dashboard-account-panel-button-year-label {
+        font-size: 15px;
+        color: #0000A0;
+        cursor: pointer;
+    }
+
+    .client-dashboard-account-panel-button-panel {
+        cursor: pointer;
+    }
+
+    .client-dashboard-account-panel-button-client-value,
+    .client-dashboard-account-panel-button-year-value {
+        font-size: 15px;
+        color: #0000A0;
+        font-weight: bold;
+        white-space: nowrap;
+        cursor: pointer;
+        border-bottom: 1px dotted #5858b5
+    }
+
+    .client-dashboard-account-panel-NSV-text {
+        padding-top: 10px;
+    }
+
+    .client-dashboard-account-panel-blue-values {
+        font-size: 18px;
+        color: #0000A0;
+        font-weight: bold;
+        padding-top: 10px;
+    }
+
+    .client-dashboard-account-panel-green-values {
+        font-size: 18px;
+        color: #00D7B8;
+        font-weight: bold;
+        padding-top: 10px;
+    }
+
+    .client-dashboard-account-panel-red-values {
+        font-size: 18px;
+        color: #F92F00;
+        font-weight: bold;
+        padding-top: 10px;
+    }
+
+    .client-dashboard-account-panel-label {
+        font-size: 16px;
+        color: #0000A0;
+    }
+}
+
+@media screen and (min-device-width: 1600px) {
+    .client-dashboard .button-account-information-client-glyph .x-btn-glyph {
+        font-size: 25px !important;
+        padding: unset !important;
+        height: 100%;
+        width: 100%;
+        padding-top: 30% !important;
+        background-color: #d5dde7 !important;
+        color: #0000a0 !important;
+        opacity: 1;
+    }
+
+    .client-dashboard .incrementalHeader {
+        min-height: 30px;
+    }
+
+    .client-dashboard-account-panel-border-title {
+        font-size: 23px;
+        color: #0000A0;
+        font-weight: bold;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+
+    .client-dashboard-account-panel-LSV-bold-label {
+        font-size: 23px;
+        color: #0000A0;
+        font-weight: bold;
+        white-space: nowrap;
+        padding-left: 16px;
+        text-align: left;
+        width: 72px;
+    }
+
+    .client-dashboard-account-panel-LSV-thin-label {
+        font-size: 22px;
+        color: #0000A0;
+        white-space: nowrap;
+        text-align: center;
+        width: 37px;
+    }
+
+    .client-dashboard-account-panel-LSV-text {
+        font-size: 32px;
+        color: #0000A0;
+        font-weight: bold;
+        overflow: hidden;
+        white-space: nowrap;
+        text-align: left;
+        padding-left: 20px;
+    }
+
+    .client-dashboard-account-panel-text,
+    .client-dashboard-account-panel-NSV-text {
+        font-size: 22px;
+        color: #0000A0;
+        padding-top: 10px;
+        padding-left: 20px;
+    }
+
+    .client-dashboard-account-panel-button-client-label,
+    .client-dashboard-account-panel-button-year-label {
+        font-size: 22px;
+        color: #0000A0;
+        cursor: pointer;
+    }
+
+    .client-dashboard-account-panel-button-panel {
+        cursor: pointer;
+    }
+
+    .client-dashboard-account-panel-button-client-value,
+    .client-dashboard-account-panel-button-year-value {
+        font-size: 22px;
+        color: #0000A0;
+        font-weight: bold;
+        white-space: nowrap;
+        cursor: pointer;
+        border-bottom: 1px dotted #5858b5
+    }
+
+    .client-dashboard-account-panel-NSV-text {
+        padding-top: 10px;
+    }
+
+    .client-dashboard-account-panel-blue-values {
+        font-size: 23px;
+        color: #0000A0;
+        font-weight: bold;
+        padding-top: 10px;
+    }
+
+    .client-dashboard-account-panel-green-values {
+        font-size: 23px;
+        color: #00D7B8;
+        font-weight: bold;
+        padding-top: 10px;
+    }
+
+    .client-dashboard-account-panel-red-values {
+        font-size: 23px;
+        color: #F92F00;
+        font-weight: bold;
+        padding-top: 10px;
+    }
+
+    .client-dashboard-account-panel-label {
+        font-size: 21px;
+        color: #0000A0;
+    }
+}
+
+    .hidden-component {
+        display: none;
+    }
+
+    .customlockedgrid {
+    }
+
+        .customlockedgrid .grid-info-toolbar {
+            position: relative !important;
+            top: -13px !important;
+            height: 16px !important;
+            background-color: transparent;
+            pointer-events: none;
+        }
+
+        .customlockedgrid .x-grid-view {
+            border-bottom: none !important;
+        }
+
+        .customlockedgrid .x-grid-inner-locked .x-grid-header-ct {
+            border-right-width: 0px !important;
+        }
+
+        .customlockedgrid .x-grid .x-grid-header-ct {
+            border-left-width: 0px !important;
+        }
+
+        .customlockedgrid .x-grid-inner-locked .x-grid-view .jspVerticalBar {
+            border-width: 0px;
+            width: 0px;
+        }
+
+        .customlockedgrid .x-clear-filter-button {
+            z-index: 10
+        }
+
+        .customlockedgrid .x-grid-cell,
+        .customlockedgrid .x-column-header,
+        .customlockedgrid .x-form-text {
+            font-size: 11px;
+        }
+
+        .customlockedgrid .x-grid-cell-inner {
+            padding: 2px 5px 2px;
+        }
+
+        .customlockedgrid .x-grid .x-grid-header-ct .x-column-header-inner {
+            border-bottom: 1px solid #c5c5c5;
+            border-right: 1px solid #c5c5c5;
+        }
+
+        .customlockedgrid .x-form-text {
+            padding: 2px 1px 1px;
+        }
+
+        .customlockedgrid .x-trigger-cell,
+        .customlockedgrid div.x-form-spinner-up,
+        .customlockedgrid div.x-form-spinner-down {
+            width: 18px;
+        }
+
+        .customlockedgrid .ux-fieldclearbutton .x-form-clear-trigger {
+            width: 12px;
+        }
+
+        .customlockedgrid ::-webkit-scrollbar {
+            display: none;
+        }
+
+    .clientkpidataeditor .singlelinedisplayfield {
+        background-color: #f5f5f5 !important;
+    }

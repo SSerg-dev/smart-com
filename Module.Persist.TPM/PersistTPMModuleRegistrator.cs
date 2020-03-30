@@ -91,6 +91,11 @@ namespace Module.Persist.TPM {
 			modelBuilder.Entity<PromoTypes>();
             modelBuilder.Entity<ActualCOGS>();
             modelBuilder.Entity<ActualTradeInvestment>();
+            modelBuilder.Entity<BTL>().HasMany(p => p.BTLPromo)
+                .WithRequired(p => p.BTL);
+            modelBuilder.Entity<BTLPromo>();
+            modelBuilder.Entity<ClientDashboard>();
+            modelBuilder.Entity<ClientDashboardView>().ToTable("ClientDashboardView");
 
             modelBuilder.Entity<Promo>().Ignore(n => n.ProductTreeObjectIds);
             modelBuilder.Entity<Promo>().Ignore(n => n.Calculating);
@@ -102,59 +107,80 @@ namespace Module.Persist.TPM {
             builder.EntitySet<Category>("DeletedCategories");
             builder.EntitySet<HistoricalCategory>("HistoricalCategories");
             builder.Entity<Category>().Collection.Action("ExportXLSX");
+            builder.Entity<Category>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<Category>("Categories");
+            builder.Entity<HistoricalCategory>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalCategory>("HistoricalCategories");
 
             builder.EntitySet<Brand>("Brands");
             builder.EntitySet<Brand>("DeletedBrands");
             builder.EntitySet<HistoricalBrand>("HistoricalBrands");
             builder.Entity<Brand>().Collection.Action("ExportXLSX");
             builder.Entity<Brand>().Collection.Action("FullImportXLSX");
+            builder.Entity<Brand>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<Brand>("Brands");
+            builder.Entity<HistoricalBrand>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalBrand>("HistoricalBrands");
 
-			builder.EntitySet<NonPromoEquipment>("NonPromoEquipments");
+            builder.EntitySet<NonPromoEquipment>("NonPromoEquipments");
 			builder.EntitySet<NonPromoEquipment>("DeletedNonPromoEquipments");
 			builder.EntitySet<HistoricalNonPromoEquipment>("HistoricalNonPromoEquipments");
 			builder.Entity<NonPromoEquipment>().Collection.Action("ExportXLSX");
 			builder.Entity<NonPromoEquipment>().Collection.Action("FullImportXLSX");
+            builder.Entity<NonPromoEquipment>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<NonPromoEquipment>("NonPromoEquipments");
+            builder.Entity<HistoricalNonPromoEquipment>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalNonPromoEquipment>("HistoricalNonPromoEquipments");
 
-			builder.EntitySet<Segment>("Segments");
+            builder.EntitySet<Segment>("Segments");
             builder.EntitySet<Segment>("DeletedSegments");
             builder.EntitySet<HistoricalSegment>("HistoricalSegments");
             builder.Entity<Segment>().Collection.Action("ExportXLSX");
+            builder.Entity<Segment>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<Segment>("Segments");
+            builder.Entity<HistoricalSegment>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalSegment>("HistoricalSegments");
 
             builder.EntitySet<Event>("Events");
             builder.EntitySet<Event>("DeletedEvents");
             builder.EntitySet<HistoricalEvent>("HistoricalEvents");
             builder.Entity<Event>().Collection.Action("ExportXLSX");
             builder.Entity<Event>().Collection.Action("FullImportXLSX");
+            builder.Entity<Event>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<Event>("Events");
+            builder.Entity<HistoricalEvent>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalEvent>("HistoricalEvents");
 
             builder.EntitySet<EventClientTree>("EventClientTrees");
             builder.EntitySet<EventClientTree>("EventClientTrees").HasRequiredBinding(e => e.ClientTree,"ClientTrees");
             builder.EntitySet<EventClientTree>("EventClientTrees").HasRequiredBinding(e => e.Event, "Events");
+            builder.Entity<EventClientTree>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<EventClientTree>("EventClientTrees");
 
             builder.EntitySet<Technology>("Technologies");
             builder.EntitySet<Technology>("DeletedTechnologies");
             builder.EntitySet<HistoricalTechnology>("HistoricalTechnologies");
             builder.Entity<Technology>().Collection.Action("ExportXLSX");
             builder.Entity<Technology>().Collection.Action("FullImportXLSX");
+            builder.Entity<Technology>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<Technology>("Technologies");
+            builder.Entity<HistoricalTechnology>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalTechnology>("HistoricalTechnologies");
 
             builder.EntitySet<TechHighLevel>("TechHighLevels");
             builder.EntitySet<TechHighLevel>("DeletedTechHighLevels");
             builder.EntitySet<HistoricalTechHighLevel>("HistoricalTechHighLevels");
             builder.Entity<TechHighLevel>().Collection.Action("ExportXLSX");
+            builder.Entity<TechHighLevel>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<TechHighLevel>("TechHighLevels");
+            builder.Entity<HistoricalTechHighLevel>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalTechHighLevel>("HistoricalTechHighLevels");
 
             builder.EntitySet<Program>("Programs");
             builder.EntitySet<Program>("DeletedPrograms");
             builder.EntitySet<HistoricalProgram>("HistoricalPrograms");
             builder.Entity<Program>().Collection.Action("ExportXLSX");
+            builder.Entity<Program>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<Program>("Programs");
+            builder.Entity<HistoricalProgram>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalProgram>("HistoricalPrograms");
 
             builder.EntitySet<Format>("Formats");
             builder.EntitySet<Format>("DeletedFormats");
             builder.EntitySet<HistoricalFormat>("HistoricalFormats");
             builder.Entity<Format>().Collection.Action("ExportXLSX");
+            builder.Entity<Format>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<Format>("Formats");
+            builder.Entity<HistoricalFormat>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalFormat>("HistoricalFormats");
 
             builder.EntitySet<PromoTypes>("PromoTypes");
             builder.EntitySet<PromoTypes>("DeletedPromoTypes");
             builder.EntitySet<HistoricalPromoTypes>("HistoricalPromoTypes");
             builder.Entity<PromoTypes>().Collection.Action("ExportXLSX");
+            builder.Entity<PromoTypes>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PromoTypes>("PromoTypes");
+            builder.Entity<HistoricalPromoTypes>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalPromoTypes>("HistoricalPromoTypes");
 
 
             builder.EntitySet<BrandTech>("BrandTeches");
@@ -169,21 +195,29 @@ namespace Module.Persist.TPM {
             builder.Entity<BrandTech>().Collection.Action("ExportXLSX");
             builder.Entity<BrandTech>().Collection.Action("FullImportXLSX");
 			builder.Entity<BrandTech>().Collection.Action("GetBrandTechById").CollectionParameter<string>("id");
+            builder.Entity<BrandTech>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<BrandTech>("BrandTeches");
+            builder.Entity<HistoricalBrandTech>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalBrandTech>("HistoricalBrandTechs");
 
-			builder.EntitySet<Subrange>("Subranges");
+            builder.EntitySet<Subrange>("Subranges");
             builder.EntitySet<Subrange>("DeletedSubranges");
             builder.EntitySet<HistoricalSubrange>("HistoricalSubranges");
             builder.Entity<Subrange>().Collection.Action("ExportXLSX");
+            builder.Entity<Subrange>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<Subrange>("Subranges");
+            builder.Entity<HistoricalSubrange>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalSubrange>("HistoricalSubranges");
 
             builder.EntitySet<AgeGroup>("AgeGroups");
             builder.EntitySet<AgeGroup>("DeletedAgeGroups");
             builder.EntitySet<HistoricalAgeGroup>("HistoricalAgeGroups");
             builder.Entity<AgeGroup>().Collection.Action("ExportXLSX");
+            builder.Entity<AgeGroup>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<AgeGroup>("AgeGroups");
+            builder.Entity<HistoricalAgeGroup>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalAgeGroup>("HistoricalAgeGroups");
 
             builder.EntitySet<Variety>("Varieties");
             builder.EntitySet<Variety>("DeletedVarieties");
             builder.EntitySet<HistoricalVariety>("HistoricalVarieties");
             builder.Entity<Variety>().Collection.Action("ExportXLSX");
+            builder.Entity<Variety>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<Variety>("Varieties");
+            builder.Entity<HistoricalVariety>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalVariety>("HistoricalVarieties");
 
             builder.EntitySet<Mechanic>("Mechanics");
             builder.EntitySet<Mechanic>("DeletedMechanics");
@@ -192,32 +226,40 @@ namespace Module.Persist.TPM {
             builder.Entity<Mechanic>().Collection.Action("FullImportXLSX"); 
             builder.EntitySet<Mechanic>("Mechanics").HasRequiredBinding(e => e.PromoTypes, "PromoTypes");
             builder.EntitySet<Mechanic>("DeletedMechanics").HasRequiredBinding(e => e.PromoTypes, "PromoTypes");
-             
-
+            builder.Entity<Mechanic>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<Mechanic>("Mechanics");
+            builder.Entity<HistoricalMechanic>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalMechanic>("HistoricalMechanics");
 
             builder.EntitySet<MechanicType>("MechanicTypes");
             builder.EntitySet<MechanicType>("DeletedMechanicTypes");
             builder.EntitySet<HistoricalMechanicType>("HistoricalMechanicTypes");
             builder.Entity<MechanicType>().Collection.Action("ExportXLSX");
             builder.Entity<MechanicType>().Collection.Action("FullImportXLSX");
+            builder.Entity<MechanicType>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<MechanicType>("MechanicTypes");
+            builder.Entity<HistoricalMechanicType>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalMechanicType>("HistoricalMechanicTypes");
 
             builder.EntitySet<PromoStatus>("PromoStatuss");
             builder.EntitySet<PromoStatus>("DeletedPromoStatuss");
             builder.EntitySet<HistoricalPromoStatus>("HistoricalPromoStatuss");
             builder.Entity<PromoStatus>().Collection.Action("ExportXLSX");
             builder.Entity<PromoStatus>().Collection.Action("FullImportXLSX");
+            builder.Entity<PromoStatus>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PromoStatus>("PromoStatuss");
+            builder.Entity<HistoricalPromoStatus>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalPromoStatus>("HistoricalPromoStatuss");
 
             builder.EntitySet<RejectReason>("RejectReasons");
             builder.EntitySet<RejectReason>("DeletedRejectReasons");
             builder.EntitySet<HistoricalRejectReason>("HistoricalRejectReasons");
             builder.Entity<RejectReason>().Collection.Action("ExportXLSX");
             builder.Entity<RejectReason>().Collection.Action("FullImportXLSX");
+            builder.Entity<RejectReason>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<RejectReason>("RejectReasons");
+            builder.Entity<HistoricalRejectReason>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalRejectReason>("HistoricalRejectReasons");
 
             builder.EntitySet<Product>("Products");
             builder.EntitySet<Product>("DeletedProducts");
             builder.EntitySet<HistoricalProduct>("HistoricalProducts");
             builder.Entity<Product>().Collection.Action("ExportXLSX");
             builder.Entity<Product>().Collection.Action("FullImportXLSX");
+            builder.Entity<Product>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<Product>("Products");
+            builder.Entity<HistoricalProduct>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalProduct>("HistoricalProducts");
             var getIfAllProductsInSubrangeAction = builder.Entity<Product>().Collection.Action("GetIfAllProductsInSubrange");
             getIfAllProductsInSubrangeAction.Parameter<string>("PromoId");
             getIfAllProductsInSubrangeAction.Parameter<string>("ProductIds");
@@ -229,11 +271,15 @@ namespace Module.Persist.TPM {
             builder.EntitySet<Region>("DeletedRegions");
             builder.EntitySet<HistoricalRegion>("HistoricalRegions");
             builder.Entity<Region>().Collection.Action("ExportXLSX");
+            builder.Entity<Region>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<Region>("Regions");
+            builder.Entity<HistoricalRegion>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalRegion>("HistoricalRegions");
 
             builder.EntitySet<CommercialNet>("CommercialNets");
             builder.EntitySet<CommercialNet>("DeletedCommercialNets");
             builder.EntitySet<HistoricalCommercialNet>("HistoricalCommercialNets");
             builder.Entity<CommercialNet>().Collection.Action("ExportXLSX");
+            builder.Entity<CommercialNet>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<CommercialNet>("CommercialNets");
+            builder.Entity<HistoricalCommercialNet>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalCommercialNet>("HistoricalCommercialNets");
 
             builder.EntitySet<CommercialSubnet>("CommercialSubnets");
             builder.EntitySet<CommercialSubnet>("DeletedCommercialSubnets");
@@ -242,16 +288,22 @@ namespace Module.Persist.TPM {
             builder.Entity<CommercialSubnet>().HasRequired(e => e.CommercialNet, (e, te) => e.CommercialNetId == te.Id);
             builder.EntitySet<CommercialSubnet>("DeletedCommercialSubnets").HasRequiredBinding(e => e.CommercialNet, "CommercialNets");
             builder.Entity<CommercialSubnet>().Collection.Action("ExportXLSX");
+            builder.Entity<CommercialSubnet>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<CommercialSubnet>("CommercialSubnets");
+            builder.Entity<HistoricalCommercialSubnet>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalCommercialSubnet>("HistoricalCommercialSubnets");
 
             builder.EntitySet<Distributor>("Distributors");
             builder.EntitySet<Distributor>("DeletedDistributors");
             builder.EntitySet<HistoricalDistributor>("HistoricalDistributors");
             builder.Entity<Distributor>().Collection.Action("ExportXLSX");
+            builder.Entity<Distributor>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<Distributor>("Distributors");
+            builder.Entity<HistoricalDistributor>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalDistributor>("HistoricalDistributors");
 
             builder.EntitySet<StoreType>("StoreTypes");
             builder.EntitySet<StoreType>("DeletedStoreTypes");
             builder.EntitySet<HistoricalStoreType>("HistoricalStoreTypes");
             builder.Entity<StoreType>().Collection.Action("ExportXLSX");
+            builder.Entity<StoreType>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<StoreType>("StoreTypes");
+            builder.Entity<HistoricalStoreType>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalStoreType>("HistoricalStoreTypes");
 
             builder.EntitySet<Client>("Clients");
             builder.EntitySet<Client>("DeletedClients");
@@ -260,12 +312,16 @@ namespace Module.Persist.TPM {
             builder.Entity<Client>().HasRequired(e => e.CommercialSubnet, (e, te) => e.CommercialSubnetId == te.Id);
             builder.EntitySet<Client>("DeletedClients").HasRequiredBinding(e => e.CommercialSubnet, "CommercialSubnets");
             builder.Entity<Client>().Collection.Action("ExportXLSX");
+            builder.Entity<Client>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<Client>("Clients");
+            builder.Entity<HistoricalClient>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalClient>("HistoricalClients");
 
             builder.EntitySet<Budget>("Budgets");
             builder.EntitySet<Budget>("DeletedBudgets");
             builder.EntitySet<HistoricalBudget>("HistoricalBudgets");
             builder.Entity<Budget>().Collection.Action("ExportXLSX");
             builder.Entity<Budget>().Collection.Action("FullImportXLSX");
+            builder.Entity<Budget>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<Budget>("Budgets");
+            builder.Entity<HistoricalBudget>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalBudget>("HistoricalBudgets");
 
             builder.EntitySet<BudgetItem>("BudgetItems");
             builder.EntitySet<BudgetItem>("DeletedBudgetItems");
@@ -275,6 +331,8 @@ namespace Module.Persist.TPM {
             builder.EntitySet<BudgetItem>("DeletedBudgetItems").HasRequiredBinding(e => e.Budget, "Budgets");
             builder.Entity<BudgetItem>().Collection.Action("ExportXLSX");
             builder.Entity<BudgetItem>().Collection.Action("FullImportXLSX");
+            builder.Entity<BudgetItem>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<BudgetItem>("BudgetItems");
+            builder.Entity<HistoricalBudgetItem>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalBudgetItem>("HistoricalBudgetItems");
 
             builder.EntitySet<Promo>("Promoes");
             builder.EntitySet<Promo>("DeletedPromoes");
@@ -323,6 +381,10 @@ namespace Module.Persist.TPM {
             builder.Entity<Promo>().Collection.Action("CheckIfLogHasErrors");
 			builder.Entity<Promo>().Collection.Action("CheckPromoCreator");
 			builder.Entity<Promo>().Collection.Action("GetProducts").CollectionParameter<string>("InOutProductIds");
+            builder.Entity<Promo>().Collection.Action("ReadPromoCalculatingLog");
+            builder.Entity<Promo>().Collection.Action("GetHandlerIdForBlockedPromo");
+            builder.Entity<Promo>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<Promo>("Promoes");
+            builder.Entity<HistoricalPromo>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalPromo>("HistoricalPromoes");
 
             ActionConfiguration schedExp = builder.Entity<PromoView>().Collection.Action("ExportSchedule");
             schedExp.CollectionParameter<int>("clients");
@@ -338,6 +400,8 @@ namespace Module.Persist.TPM {
             builder.EntitySet<Sale>("Sales").HasOptionalBinding(e => e.BudgetItem, "BudgetItems");
             builder.EntitySet<Sale>("DeletedSales").HasOptionalBinding(e => e.BudgetItem, "BudgetItems");
             builder.Entity<Sale>().Collection.Action("ExportXLSX");
+            builder.Entity<Sale>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<Sale>("Sales");
+            builder.Entity<HistoricalSale>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalSale>("HistoricalSales");
 
             builder.EntitySet<PromoSales>("PromoSaleses");
             builder.EntitySet<PromoSales>("DeletedPromoSaleses");
@@ -358,6 +422,8 @@ namespace Module.Persist.TPM {
             builder.EntitySet<PromoSales>("DeletedPromoSaleses").HasOptionalBinding(e => e.BudgetItem, "BudgetItems");
             builder.Entity<PromoSales>().Collection.Action("ExportXLSX");
             builder.Entity<PromoSales>().Collection.Action("FullImportXLSX");
+            builder.Entity<PromoSales>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PromoSales>("PromoSaleses");
+            builder.Entity<HistoricalPromoSales>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalPromoSales>("HistoricalPromoSaleses");
 
             builder.EntitySet<Demand>("Demands");
             builder.EntitySet<Demand>("DeletedDemands");
@@ -370,6 +436,7 @@ namespace Module.Persist.TPM {
             builder.EntitySet<Demand>("DeletedDemands").HasOptionalBinding(e => e.BrandTech, "BrandTeches");
             builder.Entity<Demand>().Collection.Action("ExportXLSX");
             builder.Entity<Demand>().Collection.Action("FullImportXLSX");
+            builder.Entity<Demand>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<Demand>("Demands");
 
             builder.EntitySet<Color>("Colors");
             builder.EntitySet<Color>("DeletedColors");
@@ -379,6 +446,8 @@ namespace Module.Persist.TPM {
             builder.Entity<Color>().Collection.Action("GetSuitable");
             builder.Entity<Color>().Collection.Action("FullImportXLSX");
             builder.Entity<Color>().Collection.Action("ExportXLSX");
+            builder.Entity<Color>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<Color>("Colors");
+            builder.Entity<HistoricalColor>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalColor>("HistoricalColors");
 
             builder.EntitySet<ClientTree>("ClientTrees");
             builder.EntitySet<ClientTree>("BaseClients"); // Для получение только базовых клиентов из иерархии
@@ -391,6 +460,7 @@ namespace Module.Persist.TPM {
             builder.Entity<ClientTree>().Collection.Action("DownloadLogoFile");
             builder.Entity<ClientTree>().Collection.Action("DeleteLogo");
             builder.Entity<BaseClientTreeView>().Collection.Action("ExportXLSX");
+            builder.Entity<ClientTree>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<ClientTree>("ClientTrees");
 
             builder.EntitySet<ProductTree>("ProductTrees");
             builder.Entity<ProductTree>().Collection.Action("Delete");
@@ -400,12 +470,15 @@ namespace Module.Persist.TPM {
             builder.Entity<ProductTree>().Collection.Action("DeleteLogo");
             ActionConfiguration updateProductNodeAction = builder.Entity<ProductTree>().Collection.Action("UpdateNode");
             updateProductNodeAction.ReturnsFromEntitySet<ProductTree>("ProductTrees"); //какого типа параметр принимает экшн.
+            builder.Entity<ProductTree>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<ProductTree>("ProductTrees");
 
             builder.EntitySet<NodeType>("NodeTypes");
             builder.EntitySet<NodeType>("DeletedNodeTypes");
             builder.EntitySet<HistoricalNodeType>("HistoricalNodeTypes");
             builder.Entity<NodeType>().Collection.Action("FullImportXLSX");
             builder.Entity<NodeType>().Collection.Action("ExportXLSX");
+            builder.Entity<NodeType>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<NodeType>("NodeTypes");
+            builder.Entity<HistoricalNodeType>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalNodeType>("HistoricalNodeTypes");
 
             builder.EntitySet<PromoStatusChange>("PromoStatusChanges");
             builder.EntitySet<PromoStatusChange>("PromoStatusChanges").HasOptionalBinding(e => e.PromoStatus, "PromoStatuss");
@@ -416,6 +489,7 @@ namespace Module.Persist.TPM {
             builder.StructuralTypes.First(t => t.ClrType == typeof(PromoStatusChange)).AddProperty(typeof(PromoStatusChange).GetProperty("StatusColor"));
             builder.StructuralTypes.First(t => t.ClrType == typeof(PromoStatusChange)).AddProperty(typeof(PromoStatusChange).GetProperty("StatusName"));
             builder.Entity<PromoStatusChange>().Collection.Action("PromoStatusChangesByPromo");
+            builder.Entity<PromoStatusChange>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PromoStatusChange>("PromoStatusChanges");
 
             builder.EntitySet<PromoDemand>("PromoDemands");
             builder.EntitySet<PromoDemand>("DeletedPromoDemands");
@@ -429,9 +503,14 @@ namespace Module.Persist.TPM {
             builder.EntitySet<PromoDemand>("DeletedPromoDemands").HasRequiredBinding(e => e.Mechanic, "Mechanics");
             builder.EntitySet<PromoDemand>("DeletedPromoDemands").HasOptionalBinding(e => e.MechanicType, "MechanicTypes");
             builder.Entity<PromoDemand>().Collection.Action("ExportXLSX");
+            builder.Entity<PromoDemand>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PromoDemand>("PromoDemands");
+            builder.Entity<HistoricalPromoDemand>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalPromoDemand>("HistoricalPromoDemands");
 
             builder.EntitySet<BaseClientTreeView>("BaseClientTreeViews");
+            builder.Entity<BaseClientTreeView>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<BaseClientTreeView>("BaseClientTreeViews");
             builder.EntitySet<ClientTreeSharesView>("ClientTreeSharesViews");
+            builder.Entity<ClientTreeSharesView>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<ClientTreeSharesView>("ClientTreeSharesViews");
+
 
             builder.EntitySet<ClientTreeBrandTech>("ClientTreeBrandTeches");
             builder.Entity<ClientTreeBrandTech>().Collection.Action("ExportXLSX");
@@ -440,6 +519,7 @@ namespace Module.Persist.TPM {
             builder.Entity<ClientTreeBrandTech>().HasRequired(e => e.ClientTree, (e, te) => e.ClientTreeId == te.Id);
             builder.EntitySet<ClientTreeBrandTech>("ClientTreeBrandTeches").HasRequiredBinding(e => e.BrandTech, "BrandTeches");
             builder.Entity<ClientTreeBrandTech>().HasRequired(e => e.BrandTech, (e, te) => e.BrandTechId == te.Id);
+            builder.Entity<ClientTreeBrandTech>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<ClientTreeBrandTech>("ClientTreeBrandTeches");
 
             builder.EntitySet<NoneNego>("NoneNegoes");
             builder.EntitySet<NoneNego>("DeletedNoneNegoes");
@@ -456,6 +536,8 @@ namespace Module.Persist.TPM {
             builder.Entity<NoneNego>().Collection.Action("IsValidPeriod");
             builder.Entity<NoneNego>().Collection.Action("FullImportXLSX");
             builder.Entity<NoneNego>().Collection.Action("DownloadTemplateXLSX");
+            builder.Entity<HistoricalNoneNego>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalNoneNego>("HistoricalNoneNegoes");
+            builder.Entity<NoneNego>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<NoneNego>("NoneNegoes");
 
             builder.EntitySet<PromoProduct>("PromoProducts");
             builder.EntitySet<PromoProduct>("DeletedPromoProducts");
@@ -473,13 +555,16 @@ namespace Module.Persist.TPM {
             builder.Entity<PromoProduct>().Collection.Action("DownloadTemplateXLSXTLC");
             builder.Entity<PromoProduct>().Collection.Action("DownloadTemplateXLSX");
             builder.Entity<PromoProduct>().Collection.Action("SupportAdminExportXLSX");
-
             builder.Entity<PromoProduct>().Collection.Action("GetPromoProductByPromoAndProduct");
+            builder.Entity<PromoProduct>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PromoProduct>("PromoProducts");
+            builder.Entity<HistoricalPromoProduct>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalPromoProduct>("HistoricalPromoProducts");
+
             builder.EntitySet<PromoProductsView>("PromoProductsViews");
             builder.Entity<PromoProductsView>().Collection.Action("ExportXLSX");
             builder.Entity<PromoProductsView>().Collection.Action("FullImportXLSX");
             builder.Entity<PromoProductsView>().Collection.Action("DownloadTemplateXLSX");
-           
+            builder.Entity<PromoProductsView>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PromoProductsView>("PromoProductsViews");
+
             builder.EntitySet<BaseLine>("BaseLines");
             builder.EntitySet<BaseLine>("DeletedBaseLines");
             builder.EntitySet<BaseLine>("BaseLines").HasRequiredBinding(e => e.Product, "Products");
@@ -488,6 +573,8 @@ namespace Module.Persist.TPM {
             builder.Entity<BaseLine>().Collection.Action("ExportXLSX");
             builder.Entity<BaseLine>().Collection.Action("ExportDemandPriceListXLSX");
             builder.Entity<BaseLine>().Collection.Action("FullImportXLSX");
+            builder.Entity<BaseLine>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<BaseLine>("BaseLines");
+            builder.Entity<HistoricalBaseLine>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalBaseLine>("HistoricalBaseLines");
 
             builder.EntitySet<RetailType>("RetailTypes");
             builder.EntitySet<RetailType>("DeletedRetailTypes");
@@ -495,6 +582,8 @@ namespace Module.Persist.TPM {
             builder.Entity<RetailType>().Collection.Action("ExportXLSX");
             builder.Entity<RetailType>().Collection.Action("FullImportXLSX");
             builder.Entity<RetailType>().Collection.Action("DownloadTemplateXLSX");
+            builder.Entity<RetailType>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<RetailType>("RetailTypes");
+            builder.Entity<HistoricalRetailType>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalRetailType>("HistoricalRetailTypes");
 
             builder.EntitySet<ProductChangeIncident>("ProductChangeIncidents").HasRequiredBinding(e => e.Product, "Products");
             builder.Entity<ProductChangeIncident>().HasRequired(e => e.Product, (e, te) => e.ProductId == te.Id);
@@ -507,6 +596,8 @@ namespace Module.Persist.TPM {
             builder.Entity<BudgetSubItem>().HasRequired(e => e.BudgetItem, (e, bi) => e.BudgetItemId == bi.Id);            
             builder.Entity<BudgetSubItem>().Collection.Action("ExportXLSX");
             builder.Entity<BudgetSubItem>().Collection.Action("FullImportXLSX");
+            builder.Entity<BudgetSubItem>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<BudgetSubItem>("BudgetSubItems");
+            builder.Entity<HistoricalBudgetSubItem>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalBudgetSubItem>("HistoricalBudgetSubItems");
 
             builder.EntitySet<PromoProductsCorrection>("PromoProductsCorrections");
             builder.EntitySet<PromoProductsCorrection>("DeletedPromoProductsCorrections");
@@ -515,7 +606,9 @@ namespace Module.Persist.TPM {
             builder.Entity<PromoProductsCorrection>().Collection.Action("ExportXLSX");
             builder.Entity<PromoProductsCorrection>().Collection.Action("FullImportXLSX");
             builder.Entity<PromoProductsCorrection>().Collection.Action("DownloadTemplateXLSX");
+            builder.Entity<PromoProductsCorrection>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PromoProductsCorrection>("PromoProductsCorrections");
             builder.EntitySet<HistoricalPromoProductsCorrection>("HistoricalPromoProductsCorrections");
+            builder.Entity<HistoricalPromoProductsCorrection>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalPromoProductsCorrection>("HistoricalPromoProductsCorrections");
 
             builder.EntitySet<PromoSupport>("PromoSupports");
             builder.EntitySet<PromoSupport>("DeletedPromoSupports");
@@ -531,8 +624,10 @@ namespace Module.Persist.TPM {
             builder.Entity<PromoSupport>().Collection.Action("GetUserTimestamp");
             builder.EntitySet<PromoSupport>("PromoSupports").HasManyBinding<PromoSupportPromo>(e => e.PromoSupportPromo, "PromoSupportPromoes");
             builder.EntitySet<PromoSupport>("DeletedPromoSupports").HasManyBinding<PromoSupportPromo>(e => e.PromoSupportPromo, "PromoSupportPromoes");
+            builder.Entity<PromoSupport>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PromoSupport>("PromoSupports");
+            builder.Entity<HistoricalPromoSupport>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalPromoSupport>("HistoricalPromoSupports");
 
-			builder.EntitySet<NonPromoSupport>("NonPromoSupports");
+            builder.EntitySet<NonPromoSupport>("NonPromoSupports");
 			builder.EntitySet<NonPromoSupport>("DeletedNonPromoSupports");
 			builder.EntitySet<HistoricalNonPromoSupport>("HistoricalNonPromoSupports");
 			builder.EntitySet<NonPromoSupport>("NonPromoSupports").HasOptionalBinding(e => e.ClientTree, "ClientTrees");
@@ -544,6 +639,8 @@ namespace Module.Persist.TPM {
 			builder.Entity<NonPromoSupport>().Collection.Action("GetNonPromoSupportGroup");
 			builder.Entity<NonPromoSupport>().Collection.Action("UploadFile");
 			builder.Entity<NonPromoSupport>().Collection.Action("DownloadFile");
+            builder.Entity<NonPromoSupport>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<NonPromoSupport>("NonPromoSupports");
+            builder.Entity<HistoricalNonPromoSupport>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalNonPromoSupport>("HistoricalNonPromoSupports");
 
             builder.EntitySet<NonPromoSupportBrandTech>("NonPromoSupportBrandTeches");
             builder.EntitySet<NonPromoSupportBrandTech>("DeletedNonPromoSupportBrandTeches");
@@ -554,6 +651,7 @@ namespace Module.Persist.TPM {
             builder.Entity<NonPromoSupportBrandTech>().HasRequired(n => n.NonPromoSupport, (n, nps) => n.NonPromoSupportId == nps.Id);
             builder.Entity<NonPromoSupportBrandTech>().HasRequired(n => n.BrandTech, (n, bt) => n.NonPromoSupportId == bt.Id);
             builder.Entity<NonPromoSupportBrandTech>().Collection.Action("ModifyNonPromoSupportBrandTechList");
+            builder.Entity<NonPromoSupportBrandTech>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<NonPromoSupportBrandTech>("NonPromoSupportBrandTeches");
 
             builder.EntitySet<PostPromoEffect>("PostPromoEffects");
             builder.EntitySet<PostPromoEffect>("DeletedPostPromoEffects");
@@ -563,6 +661,8 @@ namespace Module.Persist.TPM {
             builder.EntitySet<PostPromoEffect>("DeletedPostPromoEffects").HasRequiredBinding(e => e.ClientTree, "ClientTrees");
             builder.EntitySet<PostPromoEffect>("DeletedPostPromoEffects").HasRequiredBinding(e => e.ProductTree, "ProductTrees");
             builder.Entity<PostPromoEffect>().Collection.Action("ExportXLSX");
+            builder.Entity<PostPromoEffect>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PostPromoEffect>("PostPromoEffects");
+            builder.Entity<HistoricalPostPromoEffect>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalPostPromoEffect>("HistoricalPostPromoEffects");
 
             builder.EntitySet<PromoSupportPromo>("PromoSupportPromoes");
             builder.EntitySet<PromoSupportPromo>("DeletedPromoSupportPromoes");
@@ -579,6 +679,7 @@ namespace Module.Persist.TPM {
             builder.Entity<PromoSupportPromo>().Collection.Action("PromoSuportPromoPost");
             builder.Entity<PromoSupportPromo>().Collection.Action("ExportXLSX");
             builder.Entity<PromoSupportPromo>().Collection.Action("ChangeListPSP");
+            builder.Entity<PromoSupportPromo>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PromoSupportPromo>("PromoSupportPromoes");
 
             builder.EntitySet<COGS>("COGSs");
             builder.EntitySet<COGS>("DeletedCOGSs");
@@ -590,6 +691,8 @@ namespace Module.Persist.TPM {
             builder.EntitySet<COGS>("DeletedCOGSs").HasOptionalBinding(e => e.BrandTech, "BrandTeches");
             builder.Entity<COGS>().Collection.Action("FullImportXLSX");
             builder.Entity<COGS>().Collection.Action("DownloadTemplateXLSX");
+            builder.Entity<COGS>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<COGS>("COGSs");
+            builder.Entity<HistoricalCOGS>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalCOGS>("HistoricalCOGSs");
 
             builder.EntitySet<TradeInvestment>("TradeInvestments");
             builder.EntitySet<TradeInvestment>("DeletedTradeInvestments");
@@ -601,6 +704,8 @@ namespace Module.Persist.TPM {
             builder.EntitySet<TradeInvestment>("DeletedTradeInvestments").HasOptionalBinding(e => e.BrandTech, "BrandTeches");
             builder.Entity<TradeInvestment>().Collection.Action("FullImportXLSX");
             builder.Entity<TradeInvestment>().Collection.Action("DownloadTemplateXLSX");
+            builder.Entity<TradeInvestment>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<TradeInvestment>("TradeInvestments");
+            builder.Entity<HistoricalTradeInvestment>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalTradeInvestment>("HistoricalTradeInvestments");
 
             builder.EntitySet<ActualCOGS>("ActualCOGSs");
             builder.EntitySet<ActualCOGS>("DeletedActualCOGSs");
@@ -615,6 +720,8 @@ namespace Module.Persist.TPM {
             builder.Entity<ActualCOGS>().Collection.Action("IsCOGSRecalculatePreviousYearButtonAvailable");
             builder.Entity<ActualCOGS>().Collection.Action("PreviousYearPromoList");
             builder.Entity<ActualCOGS>().Collection.Action("CreateActualCOGSChangeIncidents");
+            builder.Entity<ActualCOGS>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<ActualCOGS>("ActualCOGSs");
+            builder.Entity<HistoricalActualCOGS>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalActualCOGS>("HistoricalActualCOGSs");
 
             builder.EntitySet<ActualTradeInvestment>("ActualTradeInvestments");
             builder.EntitySet<ActualTradeInvestment>("DeletedActualTradeInvestments");
@@ -629,6 +736,8 @@ namespace Module.Persist.TPM {
             builder.Entity<ActualTradeInvestment>().Collection.Action("IsTIRecalculatePreviousYearButtonAvailable");
             builder.Entity<ActualTradeInvestment>().Collection.Action("PreviousYearPromoList");
             builder.Entity<ActualTradeInvestment>().Collection.Action("CreateActualTIChangeIncidents");
+            builder.Entity<ActualTradeInvestment>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<ActualTradeInvestment>("ActualTradeInvestments");
+            builder.Entity<HistoricalActualTradeInvestment>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalActualTradeInvestment>("HistoricalActualTradeInvestments");
 
             builder.EntitySet<AssortmentMatrix>("AssortmentMatrices");
             builder.EntitySet<AssortmentMatrix>("DeletedAssortmentMatrices");
@@ -642,20 +751,23 @@ namespace Module.Persist.TPM {
             builder.Entity<AssortmentMatrix>().HasRequired(n => n.Product, (n, p) => n.ProductId == p.Id);
             builder.Entity<AssortmentMatrix>().Collection.Action("FullImportXLSX");
             builder.Entity<AssortmentMatrix>().Collection.Action("DownloadTemplateXLSX");
+            builder.Entity<AssortmentMatrix>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<AssortmentMatrix>("AssortmentMatrices");
+            builder.Entity<HistoricalAssortmentMatrix>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalAssortmentMatrix>("HistoricalAssortmentMatrices");
 
             builder.Entity<PromoProductTree>().HasRequired(n => n.Promo, (n, p) => n.PromoId == p.Id);
 
             builder.EntitySet<PlanIncrementalReport>("PlanIncrementalReports");
             builder.Entity<PlanIncrementalReport>().Collection.Action("ExportXLSX");
+            builder.Entity<PlanIncrementalReport>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PlanIncrementalReport>("PlanIncrementalReports");
 
             builder.EntitySet<PlanPostPromoEffectReportWeekView>("PlanPostPromoEffectReports");
             builder.Entity<PlanPostPromoEffectReportWeekView>().Collection.Action("ExportXLSX");
-
-            builder.Entity<Promo>().Collection.Action("ReadPromoCalculatingLog");
-            builder.Entity<Promo>().Collection.Action("GetHandlerIdForBlockedPromo");
+            builder.Entity<PlanPostPromoEffectReportWeekView>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PlanPostPromoEffectReportWeekView>("PlanPostPromoEffectReports");
 
             builder.EntitySet<PromoView>("PromoViews");
+            builder.Entity<PromoView>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PromoView>("PromoViews");
             builder.EntitySet<PromoGridView>("PromoGridViews");
+            builder.Entity<PromoGridView>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PromoGridView>("PromoGridViews");
             builder.Entity<PromoGridView>().Collection.Action("ExportXLSX");
             builder.EntitySet<PlanIncrementalReport>("PlanIncrementalReports");
 
@@ -690,30 +802,57 @@ namespace Module.Persist.TPM {
             builder.Entity<IncrementalPromo>().Collection.Action("ExportDemandPriceListXLSX");
             builder.Entity<IncrementalPromo>().Collection.Action("FullImportXLSX");
             builder.Entity<IncrementalPromo>().Collection.Action("DownloadTemplateXLSX");
+            builder.Entity<IncrementalPromo>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<IncrementalPromo>("IncrementalPromoes");
+            builder.Entity<HistoricalIncrementalPromo>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalIncrementalPromo>("HistoricalIncrementalPromoes");
 
             builder.EntitySet<ActualLSV>("ActualLSVs");
             builder.Entity<ActualLSV>().Collection.Action("ExportXLSX");
             builder.Entity<ActualLSV>().Collection.Action("FullImportXLSX");
+            builder.Entity<ActualLSV>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<ActualLSV>("ActualLSVs");
 
             builder.EntitySet<PromoROIReport>("PromoROIReports");
             builder.Entity<PromoROIReport>().Collection.Action("ExportXLSX");
+            builder.Entity<PromoROIReport>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PromoROIReport>("PromoROIReports");
 
             builder.EntitySet<SchedulerClientTreeDTO>("SchedulerClientTreeDTOs");
+            builder.Entity<SchedulerClientTreeDTO>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<SchedulerClientTreeDTO>("SchedulerClientTreeDTOs");
 
             builder.EntitySet<BudgetSubItemClientTree>("BudgetSubItemClientTrees");
             builder.EntitySet<BudgetSubItemClientTree>("BudgetSubItemClientTrees").HasRequiredBinding(e => e.BudgetSubItem, "BudgetSubItems");
             builder.EntitySet<BudgetSubItemClientTree>("BudgetSubItemClientTrees").HasRequiredBinding(e => e.ClientTree, "ClientTrees");
+            builder.Entity<BudgetSubItemClientTree>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<BudgetSubItemClientTree>("BudgetSubItemClientTrees");
             //builder.Entity<BudgetSubItemClientTree>().HasRequired(e => e.ClientTree, (e, te) => e.ClientTreeId == te.Id);
             //builder.Entity<BudgetSubItemClientTree>().HasRequired(e => e.BudgetSubItem, (e, te) => e.BudgetSubItemId == te.Id);
 
+            builder.EntitySet<BTL>("BTLs");
+            builder.EntitySet<BTL>("BTLs").HasOptionalBinding(e => e.Event, "Events"); 
+            builder.EntitySet<BTL>("DeletedBTLs");
+            builder.EntitySet<BTL>("DeletedBTLs").HasOptionalBinding(e => e.Event, "Events");
+            builder.EntitySet<HistoricalBTL>("HistoricalBTLs");
+            builder.Entity<BTL>().Collection.Action("ExportXLSX");
+            builder.Entity<BTL>().Collection.Action("FullImportXLSX");
+            builder.EntitySet<BTL>("BTLs").HasManyBinding<BTLPromo>(e => e.BTLPromo, "BTLPromoes");
+            builder.Entity<BTL>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<BTL>("BTLs");
+            builder.Entity<HistoricalBTL>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalBTL>("HistoricalBTLs");
 
-            ActionConfiguration getSelectedProductsAction = builder.Entity<Product>().Collection.Action("GetSelectedProducts");
-			getSelectedProductsAction.ReturnsCollectionFromEntitySet<IQueryable<Product>>("SelectedProducts");
-			getSelectedProductsAction.CollectionParameter<string>("jsonData");
+            builder.EntitySet<BTLPromo>("BTLPromoes");
+            builder.EntitySet<BTLPromo>("BTLPromoes").HasRequiredBinding(e => e.BTL, "BTLs");
+            builder.EntitySet<BTLPromo>("BTLPromoes").HasRequiredBinding(e => e.Promo, "Promoes");
+            builder.EntitySet<BTLPromo>("BTLPromoes").HasRequiredBinding(e => e.ClientTree, "ClientTrees");
+            builder.Entity<BTLPromo>().Collection.Action("GetPromoesWithBTL").Parameter<string>("eventId");
+            builder.Entity<BTLPromo>().Collection.Action("BTLPromoPost");
+            builder.Entity<BTLPromo>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<BTLPromo>("BTLPromoes");
 
-            ActionConfiguration getRegularSelectedProductsAction = builder.Entity<Product>().Collection.Action("GetRegularSelectedProducts");
-			getRegularSelectedProductsAction.ReturnsCollectionFromEntitySet<IQueryable<Product>>("RegularSelectedProducts");
-			getRegularSelectedProductsAction.CollectionParameter<string>("jsonData");
+            builder.EntitySet<ClientDashboard>("ClientDashboards");
+            builder.Entity<ClientDashboard>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<ClientDashboardView>("ClientDashboardViews");
+            builder.EntitySet<ClientDashboardView>("ClientDashboardViews");
+            builder.Entity<ClientDashboardView>().Collection.Action("Update");
+            builder.Entity<ClientDashboardView>().Collection.Action("ExportXLSX");
+            builder.Entity<ClientDashboardView>().Collection.Action("FullImportXLSX");
+            builder.Entity<ClientDashboardView>().Collection.Action("DownloadTemplateXLSX");
+            builder.Entity<ClientDashboardView>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<ClientDashboardView>("ClientDashboardViews");
+            builder.EntitySet<HistoricalClientDashboardView>("HistoricalClientDashboards");
+            builder.Entity<HistoricalClientDashboardView>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalClientDashboardView>("HistoricalClientDashboards");
         }
 
         public IEnumerable<Type> GetHistoricalEntities() {

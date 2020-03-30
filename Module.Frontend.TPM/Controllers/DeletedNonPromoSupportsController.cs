@@ -5,6 +5,7 @@ using Core.Settings;
 using Frontend.Core.Controllers.Base;
 using Frontend.Core.Extensions;
 using Frontend.Core.Extensions.Export;
+using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
@@ -29,49 +30,64 @@ using Utility;
 
 namespace Module.Frontend.TPM.Controllers
 {
-    
-        public class DeletedNonPromoSupportsController : EFContextController
-        {
-            private readonly IAuthorizationManager authorizationManager;
 
-            public DeletedNonPromoSupportsController(IAuthorizationManager authorizationManager)
-            {
-                this.authorizationManager = authorizationManager;
-            }
+	public class DeletedNonPromoSupportsController : EFContextController
+	{
+		private readonly IAuthorizationManager authorizationManager;
 
-            protected IQueryable<NonPromoSupport> GetConstraintedQuery()
-            {
-                UserInfo user = authorizationManager.GetCurrentUser();
-                string role = authorizationManager.GetCurrentRoleName();
-                IList<Constraint> constraints = user.Id.HasValue ? Context.Constraints
-                    .Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
-                    .ToList() : new List<Constraint>();
+		public DeletedNonPromoSupportsController(IAuthorizationManager authorizationManager)
+		{
+			this.authorizationManager = authorizationManager;
+		}
 
-                IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
-                IQueryable<NonPromoSupport> query = Context.Set<NonPromoSupport>();
-                IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
+		protected IQueryable<NonPromoSupport> GetConstraintedQuery()
+		{
+			UserInfo user = authorizationManager.GetCurrentUser();
+			string role = authorizationManager.GetCurrentRoleName();
+			IList<Constraint> constraints = user.Id.HasValue ? Context.Constraints
+				.Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
+				.ToList() : new List<Constraint>();
 
-                query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
+			IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
+			IQueryable<NonPromoSupport> query = Context.Set<NonPromoSupport>();
+			IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
 
-                return query;
-            }
+			query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
 
-            [ClaimsAuthorize]
-            [EnableQuery(MaxNodeCount = int.MaxValue)]
-            public IQueryable<NonPromoSupport> GetDeletedNonPromoSupports()
-            {
-                return GetConstraintedQuery().Where(e => e.Disabled);
-            }
-             [ClaimsAuthorize]
-             [EnableQuery(MaxNodeCount = int.MaxValue)]
-             public SingleResult<NonPromoSupport> GetDeletedNonPromoSupport ([FromODataUri] System.Guid key)
-             {
-                 return SingleResult.Create(GetConstraintedQuery()
-                     .Where(e => e.Id == key)
-                     .Where(e => e.Disabled));
-             }
+			return query;
+		}
 
+		[ClaimsAuthorize]
+		[EnableQuery(MaxNodeCount = int.MaxValue)]
+		public IQueryable<NonPromoSupport> GetDeletedNonPromoSupports()
+		{
+			return GetConstraintedQuery().Where(e => e.Disabled);
+		}
 
-    }
-    
+		[ClaimsAuthorize]
+		[EnableQuery(MaxNodeCount = int.MaxValue)]
+		public SingleResult<NonPromoSupport> GetDeletedNonPromoSupport([FromODataUri] System.Guid key)
+		{
+			return SingleResult.Create(GetConstraintedQuery()
+				.Where(e => e.Id == key)
+				.Where(e => e.Disabled));
+		}
+
+		[ClaimsAuthorize]
+		[HttpPost]
+		public IQueryable<NonPromoSupport> GetFilteredData(ODataQueryOptions<NonPromoSupport> options)
+		{
+			var query = GetConstraintedQuery().Where(e => e.Disabled);
+
+			var querySettings = new ODataQuerySettings
+			{
+				EnsureStableOrdering = false,
+				HandleNullPropagation = HandleNullPropagationOption.False
+			};
+
+			var optionsPost = new ODataQueryOptionsPost<NonPromoSupport>(options.Context, Request, HttpContext.Current.Request);
+			return optionsPost.ApplyTo(query, querySettings) as IQueryable<NonPromoSupport>;
+		}
+	}
+
 }

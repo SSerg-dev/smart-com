@@ -27,6 +27,8 @@ using System.Web.Http.Results;
 using System.Data.SqlClient;
 using System.Net.Http.Headers;
 using Module.Persist.TPM.Utils;
+using Module.Frontend.TPM.Util;
+using System.Web;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -63,6 +65,22 @@ namespace Module.Frontend.TPM.Controllers
         public IQueryable<Demand> GetDemands()
         {
             return GetConstraintedQuery();
+        }
+
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IQueryable<Demand> GetFilteredData(ODataQueryOptions<Demand> options)
+        {
+            var query = GetConstraintedQuery();
+
+            var querySettings = new ODataQuerySettings
+            {
+                EnsureStableOrdering = false,
+                HandleNullPropagation = HandleNullPropagationOption.False
+            };
+
+            var optionsPost = new ODataQueryOptionsPost<Demand>(options.Context, Request, HttpContext.Current.Request);
+            return optionsPost.ApplyTo(query, querySettings) as IQueryable<Demand>;
         }
 
         [ClaimsAuthorize]

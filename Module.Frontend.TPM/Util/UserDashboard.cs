@@ -44,8 +44,19 @@ namespace Module.Frontend.TPM.Util
                 query = query.Where(e => e.PromoStatusSystemName != "Draft" || e.CreatorId == user.Id);
             }
             return query; 
-        } 
-        private static IQueryable<PromoSupport> GetConstraintedQueryPromoSupport(IAuthorizationManager authorizationManager, DatabaseContext Context)
+        }
+        private static IQueryable<BTL> GetBTLConstraintedQuery(IAuthorizationManager authorizationManager, DatabaseContext Context) 
+        {
+            UserInfo user = authorizationManager.GetCurrentUser();
+            string role = authorizationManager.GetCurrentRoleName();
+            IList<Constraint> constraints = user.Id.HasValue ? Context.Constraints
+                .Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
+                .ToList() : new List<Constraint>();
+            IQueryable<BTL> query = Context.Set<BTL>().Where(e => !e.Disabled);
+
+            return query;
+        }
+    private static IQueryable<PromoSupport> GetConstraintedQueryPromoSupport(IAuthorizationManager authorizationManager, DatabaseContext Context)
         {
             UserInfo user = authorizationManager.GetCurrentUser();
             string role = authorizationManager.GetCurrentRoleName();
@@ -181,11 +192,15 @@ namespace Module.Frontend.TPM.Util
         public static string GetCustomerMarketingCount(IAuthorizationManager authorizationManager, DatabaseContext Context)
         {
             var promoSupport = GetConstraintedQueryPromoSupport(authorizationManager, Context);
+            var promoBTLSupport = GetBTLConstraintedQuery(authorizationManager, Context);
             var nowDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault();
             //ProductionCost
             var dayEnd = new DateTime(nowDate.Year, nowDate.Month, nowDate.Day - 1, 23, 59, 59); 
-            var productionCost = promoSupport.Where(p => (p.ActualCostTE == 0 || p.ActualCostTE == null) && p.EndDate <= dayEnd).Count(); 
-            return JsonConvert.SerializeObject(new { ProductionCost = productionCost });
+            var productionCost = promoSupport.Where(p => (p.ActualCostTE == 0 || p.ActualCostTE == null) && p.EndDate <= dayEnd).Count();
+            //BTLCost 
+            var bTLCost = promoBTLSupport.Where(p => (p.ActualBTLTotal == 0 || p.ActualBTLTotal == null) && p.EndDate <= dayEnd).Count();
+
+            return JsonConvert.SerializeObject(new { ProductionCost = productionCost, BTLCost = bTLCost });
         }
     }
 }

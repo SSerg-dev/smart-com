@@ -2,6 +2,7 @@
 using Core.Security;
 using Core.Security.Models;
 using Frontend.Core.Controllers.Base;
+using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
@@ -9,8 +10,10 @@ using Persist.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.OData;
+using System.Web.Http.OData.Query;
 using Thinktecture.IdentityModel.Authorization.WebApi;
 using Utility;
 
@@ -70,6 +73,43 @@ namespace Module.Frontend.TPM.Controllers {
                 result.Add(clientOtherType);
             }
             return result.AsQueryable();
+        }
+
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IQueryable<SchedulerClientTreeDTO> GetFilteredData(ODataQueryOptions<SchedulerClientTreeDTO> options)
+        {
+            List<SchedulerClientTreeDTO> result = new List<SchedulerClientTreeDTO>();
+            foreach (ClientTree client in GetConstraintedQuery())
+            {
+                SchedulerClientTreeDTO clientDef = Mapper.Map<SchedulerClientTreeDTO>(client);
+                string stringId = clientDef.Id.ToString();
+                clientDef.TypeName = "Regular";
+                clientDef.Id = clientDef.Id + 10001; // если Id одинаковый в стор календаря попадает только одна, даже есть idProperty - другое поле (баг?)
+                clientDef.InOutId = String.Format("{0}-1", stringId);
+                SchedulerClientTreeDTO clientInOut = (SchedulerClientTreeDTO)clientDef.Clone();
+                clientInOut.TypeName = "InOut";
+                clientInOut.Id = clientInOut.Id + 10002;
+                clientInOut.InOutId = String.Format("{0}-2", stringId);
+                SchedulerClientTreeDTO clientOtherType = (SchedulerClientTreeDTO)clientInOut.Clone();
+                clientOtherType.TypeName = "Other";
+                clientOtherType.Id = clientOtherType.Id + 10003;
+                clientOtherType.InOutId = String.Format("{0}-3", stringId);
+                result.Add(clientDef);
+                result.Add(clientInOut);
+                result.Add(clientOtherType);
+            }
+
+            var query = result.AsQueryable();
+
+            var querySettings = new ODataQuerySettings
+            {
+                EnsureStableOrdering = false,
+                HandleNullPropagation = HandleNullPropagationOption.False
+            };
+
+            var optionsPost = new ODataQueryOptionsPost<SchedulerClientTreeDTO>(options.Context, Request, HttpContext.Current.Request);
+            return optionsPost.ApplyTo(query, querySettings) as IQueryable<SchedulerClientTreeDTO>;
         }
     }
 }

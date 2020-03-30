@@ -17,6 +17,7 @@
 		},
 		items: [{
 			xtype: 'nonpromosupport',
+			itemId: 'mainwindow',
 			minHeight: 150,
 			flex: 1,
             suppressSelection: false,
@@ -29,6 +30,7 @@
             cls: 'associated-splitter'
         }, {
             xtype: 'nonpromosupportbrandtechdetail',
+			itemId: 'linkedwindow',
             minHeight: 150,
             flex: 1,
             suppressSelection: false

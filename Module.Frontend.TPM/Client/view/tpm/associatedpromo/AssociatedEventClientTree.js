@@ -9,6 +9,7 @@
 
     items: [{
         xtype: 'event',
+        itemId: 'mainwindow',
         minHeight: 150,
         flex: 1,
         suppressSelection: true,
@@ -21,6 +22,7 @@
         cls: 'associated-splitter'
     }, {
         xtype: 'eventclienttree',
+        itemId: 'linkedwindow',
         minHeight: 150,
         flex: 1,
         autoLoad: false,

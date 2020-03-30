@@ -42,6 +42,12 @@
             glyph: 0xf1b3,
             //roles: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'SuperReader'],
             widget: 'associatedcostproduction'
+        }, {
+            text: l10n.ns('tpm', 'mainmenu').value('BTL'),
+            tooltip: l10n.ns('tpm', 'mainmenu').value('BTL'),
+            glyph: 0xf1b3,
+            //roles: [],
+            widget: 'associatedbtlpromo'
         }]
     }, {
         text: l10n.ns('tpm', 'mainmenu').value('ClientItem'),
@@ -281,5 +287,22 @@
             //roles: ['Administrator', 'FunctionalExpert', 'DemandFinance', 'SuperReader'],
             widget: 'promoroireport'
         }]
-    }
+    },
+    //{
+    //    text: l10n.ns('tpm', 'mainmenu').value('ClientDashboard'),
+    //    tooltip: l10n.ns('tpm', 'mainmenu').value('ClientDashboard'),
+    //    scale: 'medium',
+    //    glyph: 0xF56E,
+    //    children: [{
+    //        text: l10n.ns('tpm', 'mainmenu').value('Dashboard'),
+    //        tooltip: l10n.ns('tpm', 'mainmenu').value('Dashboard'),
+    //        glyph: 0xFA1C,
+    //        widget: 'clientdashboard'
+    //    }, {
+    //        text: l10n.ns('tpm', 'mainmenu').value('ClientKPIdata'),
+    //        tooltip: l10n.ns('tpm', 'mainmenu').value('ClientKPIdata'),
+    //        glyph: 0xF572,
+    //        widget: 'clientkpidata'
+    //    }]
+    //}
 ]);

@@ -4,6 +4,7 @@ using Core.Security;
 using Core.Security.Models;
 using Frontend.Core.Controllers.Base;
 using Frontend.Core.Extensions.Export;
+using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.TPM;
 using Persist.Model;
@@ -13,6 +14,7 @@ using System.Data.Entity.Infrastructure;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.OData;
 using System.Web.Http.OData.Query;
@@ -62,6 +64,21 @@ namespace Module.Frontend.TPM.Controllers
             return GetConstraintedQuery().ProjectTo<DemandDTO>();
         }
 
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IQueryable<DemandDTO> GetFilteredData(ODataQueryOptions<DemandDTO> options)
+        {
+            var query = GetConstraintedQuery().ProjectTo<DemandDTO>();
+
+            var querySettings = new ODataQuerySettings
+            {
+                EnsureStableOrdering = false,
+                HandleNullPropagation = HandleNullPropagationOption.False
+            };
+
+            var optionsPost = new ODataQueryOptionsPost<DemandDTO>(options.Context, Request, HttpContext.Current.Request);
+            return optionsPost.ApplyTo(query, querySettings) as IQueryable<DemandDTO>;
+        }
 
         [ClaimsAuthorize]
         public IHttpActionResult Put([FromODataUri] System.Guid key, Delta<DemandDTO> patch)

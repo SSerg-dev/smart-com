@@ -11,6 +11,7 @@ using System.Data.Entity.Infrastructure;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.OData;
 using System.Web.Http.OData.Query;
@@ -29,6 +30,7 @@ using Core.Settings;
 using Module.Persist.TPM.Utils;
 using Microsoft.Ajax.Utilities;
 using Newtonsoft.Json;
+using Module.Frontend.TPM.Util;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -94,6 +96,25 @@ namespace Module.Frontend.TPM.Controllers
         public IQueryable<PromoProduct> GetPromoProducts(bool updateActualsMode = false, Guid? promoIdInUpdateActualsMode = null)
         {
             return GetConstraintedQuery(updateActualsMode, promoIdInUpdateActualsMode);
+        }
+
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IQueryable<PromoProduct> GetFilteredData(ODataQueryOptions<PromoProduct> options)
+        {
+            string bodyText = Helper.GetRequestBody(HttpContext.Current.Request);
+            var updateActualsMode = Helper.GetValueIfExists<bool>(bodyText, "updateActualsMode");
+            var promoIdInUpdateActualsMode = Helper.GetValueIfExists<Guid?>(bodyText, "promoIdInUpdateActualsMode");
+            var query = GetConstraintedQuery(updateActualsMode, promoIdInUpdateActualsMode);
+
+            var querySettings = new ODataQuerySettings
+            {
+                EnsureStableOrdering = false,
+                HandleNullPropagation = HandleNullPropagationOption.False
+            };
+            var optionsPost = new ODataQueryOptionsPost<PromoProduct>(options.Context, Request, HttpContext.Current.Request);
+
+            return optionsPost.ApplyTo(query, querySettings) as IQueryable<PromoProduct>;
         }
 
         [ClaimsAuthorize]

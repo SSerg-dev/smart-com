@@ -22,6 +22,8 @@ using Looper.Parameters;
 using Persist;
 using System.Linq.Expressions;
 using Module.Frontend.TPM.Util;
+using System.Web;
+using System.Web.Http.OData.Extensions;
 
 namespace Module.Frontend.TPM.Controllers {
     public class PromoViewsController : EFContextController {
@@ -63,6 +65,22 @@ namespace Module.Frontend.TPM.Controllers {
         [EnableQuery(MaxNodeCount = int.MaxValue, MaxExpansionDepth = 3)]
         public IQueryable<PromoView> GetPromoViews() {
             return GetConstraintedQuery();
+        }
+
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IQueryable<PromoView> GetFilteredData(ODataQueryOptions<PromoView> options)
+        {
+            var query = GetConstraintedQuery();
+
+            var querySettings = new ODataQuerySettings
+            {
+                EnsureStableOrdering = false,
+                HandleNullPropagation = HandleNullPropagationOption.False
+            };
+
+            var optionsPost = new ODataQueryOptionsPost<PromoView>(options.Context, Request, HttpContext.Current.Request);
+            return optionsPost.ApplyTo(query, querySettings) as IQueryable<PromoView>;
         }
 
         private bool EntityExists(Guid key) {

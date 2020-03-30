@@ -20,6 +20,8 @@ using Thinktecture.IdentityModel.Authorization.WebApi;
 using Core.MarsCalendar;
 using System.Data.SqlClient;
 using System.Web.Http.Results;
+using Module.Frontend.TPM.Util;
+using System.Web;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -57,6 +59,22 @@ namespace Module.Frontend.TPM.Controllers
         public IQueryable<PromoDemand> GetPromoDemands()
         {
             return GetConstraintedQuery();
+        }
+
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IQueryable<PromoDemand> GetFilteredData(ODataQueryOptions<PromoDemand> options)
+        {
+            var query = GetConstraintedQuery();
+
+            var querySettings = new ODataQuerySettings
+            {
+                EnsureStableOrdering = false,
+                HandleNullPropagation = HandleNullPropagationOption.False
+            };
+
+            var optionsPost = new ODataQueryOptionsPost<PromoDemand>(options.Context, Request, HttpContext.Current.Request);
+            return optionsPost.ApplyTo(query, querySettings) as IQueryable<PromoDemand>;
         }
 
         [ClaimsAuthorize]

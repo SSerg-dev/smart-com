@@ -216,15 +216,7 @@ namespace Module.Persist.TPM.Model.TPM
         [ForeignKey("ActualInStoreMechanicId")]
         public virtual Mechanic ActualInStoreMechanic { get; set; }
         [ForeignKey("ActualInStoreMechanicTypeId")]
-        public virtual MechanicType ActualInStoreMechanicType { get; set; }
-
-        //Поля для отчёта ROIReport
-        [StringLength(255)]
-        public string Client1LevelName { get; set; }
-        [StringLength(255)]
-        public string Client2LevelName { get; set; }
-        [StringLength(255)]
-        public string ClientName { get; set; }
+        public virtual MechanicType ActualInStoreMechanicType { get; set; } 
         [StringLength(500)]
         public string ProductSubrangesList { get; set; }
 
@@ -339,7 +331,7 @@ namespace Module.Persist.TPM.Model.TPM
             }
             catch { }
         }
-
+        
         /// <summary>
         /// Поиск сведений о выбранных узлах в дереве продуктов
         /// </summary>

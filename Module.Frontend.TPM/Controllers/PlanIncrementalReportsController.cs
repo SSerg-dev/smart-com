@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.OData;
 using System.Web.Http.OData.Query;
@@ -77,6 +78,22 @@ namespace Module.Frontend.TPM.Controllers
                 query = RoundingHelper.ModifyQuery(query);
             }
 			return query;
+		}
+
+		[ClaimsAuthorize]
+		[HttpPost]
+		public IQueryable<PlanIncrementalReport> GetFilteredData(ODataQueryOptions<PlanIncrementalReport> options)
+		{
+			var query = GetConstraintedQuery();
+
+			var querySettings = new ODataQuerySettings
+			{
+				EnsureStableOrdering = false,
+				HandleNullPropagation = HandleNullPropagationOption.False
+			};
+
+			var optionsPost = new ODataQueryOptionsPost<PlanIncrementalReport>(options.Context, Request, HttpContext.Current.Request);
+			return RoundingHelper.ModifyQuery(optionsPost.ApplyTo(query, querySettings) as IQueryable<PlanIncrementalReport>); 
 		}
 
 		private IEnumerable<Column> GetExportSettings()

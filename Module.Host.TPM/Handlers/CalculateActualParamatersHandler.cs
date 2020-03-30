@@ -69,6 +69,12 @@ namespace Module.Host.TPM.Handlers
                         // пересчет фактических бюджетов (из-за LSV)
                         BudgetsPromoCalculation.CalculateBudgets(promo, false, true, handlerLogger, info.HandlerId, context);
 
+                        BTL btl = context.Set<BTLPromo>().Where(x => x.PromoId == promo.Id && !x.Disabled && x.DeletedDate == null).FirstOrDefault()?.BTL;
+                        if (btl != null)
+                        {
+                            BudgetsPromoCalculation.CalculateBTLBudgets(btl, false, true, handlerLogger, context);
+                        }
+
                         // Параметры промо считаем только, если промо из TLC или если были загружены Actuals
                         if (promo.LoadFromTLC || promoProductList.Any(x => x.ActualProductPCQty.HasValue))
                         {

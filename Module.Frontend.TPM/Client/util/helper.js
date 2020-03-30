@@ -276,6 +276,13 @@ function dateDiff(str1, str2) {
     };
 }
 
+function rounder(value, toMln) {
+    if (toMln) {
+        value = value / 1000000;
+    }
+    return Math.round(value * 100) / 100;
+}
+
 //Обход параметров ядра для стилей
 
 var bbStyleToOverrryde = {
@@ -691,6 +698,183 @@ Ext.chart.LegendItem.override({
     }
 });
 
+Ext.chart.axis.Axis.override({
+    drawAxis: function (init) {
+        var me = this,
+            i, 
+            x = me.x,
+            y = me.y,
+            dashSize = me.dashSize,
+            length = me.length,
+            position = me.position,
+            verticalAxis = (position == 'left' || position == 'right'),
+            inflections = [],
+            calcLabels = (me.isNumericAxis),
+            stepCalcs = me.applyData(),
+            step = stepCalcs.step,
+            steps = stepCalcs.steps,
+            stepsArray = Ext.isArray(steps),
+            from = stepCalcs.from,
+            to = stepCalcs.to,
+            axisRange = (to - from) || 1,
+            trueLength,
+            currentX,
+            currentY,
+            path,
+            subDashesX = me.minorTickSteps || 0,
+            subDashesY = me.minorTickSteps || 0,
+            dashesX = Math.max(subDashesX + 1, 0),
+            dashesY = Math.max(subDashesY + 1, 0),
+            dashDirection = (position == 'left' || position == 'top' ? -1 : 1),
+            dashLength = dashSize * dashDirection,
+            series = me.chart.series.items,
+            firstSeries = series[0],
+            gutters = firstSeries ? firstSeries.nullGutters : me.nullGutters,
+            padding,
+            subDashes,
+            subDashValue,
+            delta = 0,
+            stepCount = 0,
+            tick, axes, ln, val, begin, end;
+
+        me.from = from;
+        me.to = to;
+
+        if (me.hidden || (from > to)) {
+            return;
+        }
+        if ((stepsArray && (steps.length == 0)) || (!stepsArray && isNaN(step))) {
+            return;
+        }
+
+        if (stepsArray) {
+            steps = Ext.Array.filter(steps, function(elem, index, array) {
+                return (+elem > +me.from && +elem < +me.to);
+            }, this);
+
+            steps = Ext.Array.union([me.from], steps, [me.to]);
+        }
+        else {
+            steps = new Array;
+            for (val = +me.from; val < +me.to; val += step) {
+                steps.push(val);
+            }
+            steps.push(+me.to);
+        }
+        stepCount = steps.length;
+
+        for (i = 0, ln = series.length; i < ln; i++) {
+            if (series[i].seriesIsHidden) {
+                continue;
+            }
+            if (!series[i].getAxesForXAndYFields) {
+                continue;
+            }
+            axes = series[i].getAxesForXAndYFields();
+            if (!axes.xAxis || !axes.yAxis || (axes.xAxis === position) || (axes.yAxis === position)) {
+                gutters = series[i].getGutters();
+                if ((gutters.verticalAxis !== undefined) && (gutters.verticalAxis != verticalAxis)) {
+                    padding = series[i].getPadding();
+                    if (verticalAxis) {
+                        gutters = { lower: padding.bottom, upper: padding.top, verticalAxis: true };
+                    } else {
+                        gutters = { lower: padding.left, upper: padding.right, verticalAxis: false };
+                    }
+                }
+                break;
+            }
+        }
+
+        if (calcLabels) {
+            me.labels = [];
+        }
+        if (gutters) {
+            if (verticalAxis) {
+                currentX = Math.floor(x);
+                path = ["M", currentX + 0.5, y, "l", 0, -length];
+                trueLength = length - (gutters.lower + gutters.upper);
+
+                for (tick = 0; tick < stepCount; tick++) {
+                    currentY = y - gutters.lower - (steps[tick] - steps[0]) * trueLength / axisRange;
+                    path.push("M", currentX, Math.floor(currentY) + 0.5, "l", dashLength * 2, 0);
+
+                    inflections.push([ currentX, Math.floor(currentY) ]);
+
+                    if (calcLabels) {
+                        me.labels.push(steps[tick]);
+                    }
+                }
+            } else {
+                currentY = Math.floor(y);
+                path = ["M", x, currentY + 0.5, "l", length, 0];
+                trueLength = length - (gutters.lower + gutters.upper);
+
+                for (tick = 0; tick < stepCount; tick++) {
+                    currentX = x + gutters.lower + (steps[tick] - steps[0]) * trueLength / axisRange;
+                    path.push("M", Math.floor(currentX) + 0.5, currentY, "l", 0, dashLength * 2 + 1);
+
+                    inflections.push([ Math.floor(currentX), currentY ]);
+
+                    if (calcLabels) {
+                        me.labels.push(steps[tick]);
+                    }
+                }
+            }
+        }
+
+        subDashes = (verticalAxis ? subDashesY : subDashesX);
+        if (Ext.isArray(subDashes)) {
+            if (subDashes.length == 2) {
+                subDashValue = +Ext.Date.add(new Date(), subDashes[0], subDashes[1]) - Date.now();
+            } else {
+                subDashValue = subDashes[0];
+            }
+        }
+        else {
+            if (Ext.isNumber(subDashes) && subDashes > 0) {
+                subDashValue = step / (subDashes + 1);
+            }
+        }
+        if (gutters && subDashValue) {
+            for (tick = 0; tick < stepCount - 1; tick++) {
+                begin = +steps[tick];
+                end = +steps[tick+1];
+                if (verticalAxis) {
+                    for (value = begin + subDashValue; value < end; value += subDashValue) {
+                        currentY = y - gutters.lower - (value - steps[0]) * trueLength / axisRange;
+                        path.push("M", currentX, Math.floor(currentY) + 0.5, "l", dashLength, 0);
+                    }
+                }
+                else {
+                    for (value = begin + subDashValue; value < end; value += subDashValue) {
+                        currentX = x + gutters.upper + (value - steps[0]) * trueLength / axisRange;
+                        path.push("M", Math.floor(currentX) + 0.5, currentY, "l", 0, dashLength + 1);
+                    }
+                }
+            }            
+        }
+        // Render
+        if (!me.axis) {
+            me.axis = me.chart.surface.add(Ext.apply({
+                type: 'path',
+                path: path
+            }, me.axisStyle));
+        }
+        var blockRender = me.axis.blockRender ? true : false;
+        me.axis.setAttributes({
+            path: path
+        }, blockRender);
+        me.inflections = inflections;
+        if (!init && me.grid) {
+            me.drawGrid();
+        }
+        me.axisBBox = me.axis.getBBox();
+        if (blockRender) {
+            me.drawLabel();
+        }
+    },
+});
+
 Ext.chart.Legend.override({
     updatePosition: function () {
         var me = this;
@@ -736,6 +920,31 @@ Ext.chart.Legend.override({
                 }
             }
 
+            if (me.displayValue) {
+                var surfaceItems = me.chart.surface.items.items.slice();
+                surfaceItems.forEach(function (item) {
+                    if (item.legend) {
+                        me.chart.surface.remove(item);
+                    }
+                });
+                me.chart.legend.items.forEach(function (item, index) {
+                    var textSprite = me.chart.surface.add({
+                        type: 'text',
+                        fill: '#0000A0',
+                        text: me.chart.store.data.items[index].raw.value + '%',
+                        x: item.items[1].attr.translation.x,
+                        y: item.items[1].attr.translation.y,
+                        font: me.valueFont,
+                        zIndex: 101,
+                        legend: true,
+                    }).show(true);
+                    textSprite.setAttributes({
+                        translate: {
+                            y: +textSprite.getBBox().height + me.valueHSpacing,
+                        }
+                    }, true);
+                });
+            }
         }
     },
 
@@ -798,6 +1007,18 @@ Ext.chart.Legend.override({
     },
 });
 
+Ext.chart.series.Bar.override({
+    isItemInPoint: function(x, y, item) {
+        if (!item.sprite) {
+            return false;
+        }
+        var bbox = item.sprite.getBBox();
+        return bbox.x <= x && bbox.y <= y
+            && (bbox.x + bbox.width) >= x
+            && (bbox.y + bbox.height) >= y;
+    },
+});
+
 //Кастомные конфиги: custom, strokeColor
 Ext.chart.series.Gauge.override({
 
@@ -837,6 +1058,7 @@ Ext.chart.series.Gauge.override({
                 chartBBox = chart.chartBBox,
                 donut = +me.donut,
                 values = [],
+                showNegative = me.chart.showNegative,
                 startRho,
                 rhoOffset,
                 items = [],
@@ -874,36 +1096,20 @@ Ext.chart.series.Gauge.override({
             me.slices = slices = [];
             me.items = items = [];
 
-            startRho = me.radius * +donut / 100;
-            rhoOffset = (me.radius - startRho) / 2 - 0.15;
-
             for (i = 0; i < store.getCount(); i++) {
                 if (!values[i]) {
-                    values[i] = store.getAt(i).get(field);;
+                    if (showNegative) {
+                        values[i] = store.getAt(i).get(field);
+                    } else {
+                        values[i] = store.getAt(i).get(field) >= 0 ? store.getAt(i).get(field) : 0;
+                    }
                 }
             }
 
-            splitAngle1 = defaultStart * (1 - (values[0] - minimum) / (maximum - minimum));
-            splitAngle2 = defaultStart * (1 - (values[1] - minimum) / (maximum - minimum));
-            sliceA = {
-                series: me,
-                value: values[1],
-                startAngle: defaultStart,
-                endAngle: splitAngle2,
-                rho: me.radius,
-                startRho: startRho,
-                endRho: me.radius - rhoOffset
-            };
-            sliceB = {
-                series: me,
-                value: values[0],
-                startAngle: defaultStart,
-                endAngle: splitAngle1,
-                rho: me.radius,
-                startRho: startRho + rhoOffset,
-                endRho: me.radius
-            };
-            sliceC = {
+            startRho = me.radius * +donut / 100;
+            rhoOffset = (me.radius - startRho) / values.length - 0.15;
+            
+            sliceDefault = {
                 series: me,
                 value: maximum,
                 startAngle: defaultStart,
@@ -913,7 +1119,64 @@ Ext.chart.series.Gauge.override({
                 endRho: me.radius
             };
 
-            slices.push(sliceC, sliceA, sliceB);
+            if (values.length == 3) {
+                minimum = Math.min(values[0], values[1], values[2]);
+                splitAngle1 = defaultStart * (1 - (values[0] - minimum) / (maximum - minimum));
+                splitAngle2 = defaultStart * (1 - (values[1] - minimum) / (maximum - minimum));
+                splitAngle3 = defaultStart * (1 - (values[2] - minimum) / (maximum - minimum));
+
+                slice1 = {
+                    series: me,
+                    value: values[0],
+                    startAngle: defaultStart,
+                    endAngle: splitAngle1,
+                    rho: me.radius,
+                    startRho: startRho,
+                    endRho: me.radius - rhoOffset * 2
+                };
+                slice2 = {
+                    series: me,
+                    value: values[1],
+                    startAngle: defaultStart,
+                    endAngle: splitAngle2,
+                    rho: me.radius,
+                    startRho: startRho + rhoOffset,
+                    endRho: me.radius - rhoOffset
+                };
+                slice3 = {
+                    series: me,
+                    value: values[2],
+                    startAngle: defaultStart,
+                    endAngle: splitAngle3,
+                    rho: me.radius,
+                    startRho: startRho + rhoOffset * 2,
+                    endRho: me.radius
+                };
+                slices.push(sliceDefault, slice3, slice2, slice1);
+            } else {
+                splitAngle1 = defaultStart * (1 - (values[0] - minimum) / (maximum - minimum));
+                splitAngle2 = defaultStart * (1 - (values[1] - minimum) / (maximum - minimum));
+
+                slice1 = {
+                    series: me,
+                    value: values[1],
+                    startAngle: defaultStart,
+                    endAngle: splitAngle2,
+                    rho: me.radius,
+                    startRho: startRho,
+                    endRho: me.radius - rhoOffset
+                };
+                slice2 = {
+                    series: me,
+                    value: values[0],
+                    startAngle: defaultStart,
+                    endAngle: splitAngle1,
+                    rho: me.radius,
+                    startRho: startRho + rhoOffset,
+                    endRho: me.radius
+                };
+                slices.push(sliceDefault, slice1, slice2);
+            }
 
             for (i = 0, ln = slices.length; i < ln; i++) {
                 slice = slices[i];
@@ -1225,6 +1488,7 @@ Ext.override(App.menu.core.MenuManager, {
         }
     }
 });
+
 Ext.define('App.global.Statuses', {
     statics: {
         AllStatuses: ["Draft", "DraftPublished", "OnApproval", "Planned", "Approved", "Deleted", "Finished", "Cancelled", "Closed", "Started"],
@@ -1233,4 +1497,49 @@ Ext.define('App.global.Statuses', {
         AllStatusesBeforeStartedWithoutDraft: ["DraftPublished", "OnApproval", "Planned", "Approved"],
         Finished: ["Finished"],
     }
+});
+
+Ext.override(Ext.grid.plugin.HeaderResizer, {
+
+    // get the region to constrain to, takes into account max and min col widths
+    getConstrainRegion: function () {
+        var me = this,
+            dragHdEl = me.dragHd.el,
+            rightAdjust = 0,
+            nextHd,
+            lockedGrid;
+
+        // If forceFit, then right constraint is based upon not being able to force the next header
+        // beyond the minColWidth. If there is no next header, then the header may not be expanded.
+        if (me.headerCt.forceFit) {
+            nextHd = me.dragHd.nextNode('gridcolumn:not([hidden]):not([isGroupHeader])');
+            if (nextHd) {
+                //Отличные исходники
+                if (!me.headerInSameGrid(nextHd)) {
+                    nextHd = null;
+                    rightAdjust = 0;
+                } else {
+                    rightAdjust = nextHd.getWidth() - me.minColWidth;
+                }
+            }
+        }
+
+        // If resize header is in a locked grid, the maxWidth has to be 30px within the available locking grid's width
+        else if ((lockedGrid = me.dragHd.up('tablepanel')).isLocked) {
+            rightAdjust = me.dragHd.up('[scrollerOwner]').getWidth() - lockedGrid.getWidth() - 30;
+        }
+
+        // Else ue our default max width
+        else {
+            rightAdjust = me.maxColWidth - dragHdEl.getWidth();
+        }
+
+        return me.adjustConstrainRegion(
+            dragHdEl.getRegion(),
+            0,
+            rightAdjust,
+            0,
+            me.minColWidth
+        );
+    },
 });

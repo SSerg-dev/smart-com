@@ -169,26 +169,6 @@
 
         var choosePromoWindowGrid = choosepromowindow.down('grid');
 
-        //установака галочек на уже выбранные промо при открытии грида в окне создания/редактирования Promo Support
-        if (promoLinkedGrid) {
-            var promoLinkedStore = promoLinkedGrid.getStore(),
-                count = promoLinkedStore.getCount(),
-                promoLinkedRecords = count > 0 ? promoLinkedStore.getRange(0, count) : [],
-                choosePromoStore = choosePromoWindowGrid.getStore();         
-
-            // скрываем уже выбранные промо
-            choosePromoStore.addListener('load', function () {
-                var viewChoosePromoGrid = choosePromoWindowGrid.getView();
-
-                promoLinkedRecords.forEach(function (checkedRow) {
-                    var recordInChoosePromo = choosePromoStore.findRecord('Id', checkedRow.data.PromoId);
-                    if (recordInChoosePromo)
-                        viewChoosePromoGrid.addRowCls(recordInChoosePromo.index, 'hidden-row-grid');
-                });
-            });
-            choosepromowindow.show();
-        }
-          
         var editor = promoLinkedGrid.up('custompromosupporteditor');
         var prefilter = {
             operator: "and",
@@ -256,6 +236,22 @@
             });
         }
 
+        // Установака галочек на уже выбранные промо при открытии грида в окне создания/редактирования Promo Support
+        if (promoLinkedGrid) {
+            var promoLinkedStore = promoLinkedGrid.getStore(),
+                count = promoLinkedStore.getCount(),
+                promoLinkedRecords = count > 0 ? promoLinkedStore.getRange(0, count) : []    
+
+            promoLinkedRecords.forEach(function (checkedRow) {
+                prefilter.rules.push({
+                    operation: "NotEqual",
+                    property: "Number",
+                    value: checkedRow.data.Number
+                });
+            });
+            choosepromowindow.show();
+        }
+          
         // устанавливаем префильтр
         choosePromoWindowGrid.getStore().setFixedFilter('PreFilter', prefilter);
     },
@@ -264,38 +260,45 @@
         var window = button.up('basewindow[name=choosepromowindow]'),
             grid = window.down('grid'),
             checkedRows = grid.getSelectionModel().getCheckedRows(),
-            promoIdString = '';        
+            promoIds = [];        
 
         if (window.promoSupportId && window.promoSupportGrid) {
             //привязка нескольких промо к существующему PromoSupport (делается в мастер-детейл)
-            checkedRows.forEach(function (item) {
-                promoIdString += item.data.Id + ';';
-            });
-
-            parameters = {
-                promoIdString: breeze.DataType.String.fmtOData(promoIdString),
-                promoSupportId: breeze.DataType.Guid.fmtOData(window.promoSupportId)
-            };
+            if (checkedRows) {
+                checkedRows.forEach(function (item) {
+                    promoIds.push(item.data.Id);
+                });
+            }
 
             var associated = window.promoSupportGrid.up('associatedpromosupport') || window.promoSupportGrid.up('associatedcostproduction');
             var promoLinkedGrid = associated.down('promolinkedticosts').down('grid') || associated.down('costproductionpromolinked').down('grid');;
 
             window.setLoading(l10n.ns('core').value('savingText'));
-            App.Util.makeRequestWithCallback('PromoSupportPromoes', 'PromoSuportPromoPost', parameters, function (data) {
-                var result = Ext.JSON.decode(data.httpResponse.data.value);
-                if (result.success) {
-                    promoLinkedGrid.getStore().on('load', function () {
-                        window.setLoading(false);
-                    });
 
-                    promoLinkedGrid.getStore().load();
-                    window.close();
-                }
-                else {
-                    App.Notify.pushError(result.message);
-                    window.setLoading(false);
-                }
-            });
+            $.ajax({
+               type: "POST",
+               cache: false,
+               url: "/odata/PromoSupportPromoes/PromoSuportPromoPost?promoSupportId=" + window.promoSupportId,
+               data: JSON.stringify(promoIds),
+               dataType: "json",
+               contentType: false,
+               processData: false,
+               success: function (response) {
+                   var result = Ext.JSON.decode(response.value);
+                   if (result.success) {
+                       promoLinkedGrid.getStore().on('load', function () {
+                           window.setLoading(false);
+                       });
+
+                       promoLinkedGrid.getStore().load();
+                       window.close();
+                   }
+                   else {
+                       App.Notify.pushError(result.message);
+                       window.setLoading(false);
+                   }
+               }
+               });
         } else if (window.promoLinkedGrid) {
             //окно создания PromoSupport
             var promoLinkedStore = window.promoLinkedGrid.getStore();

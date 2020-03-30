@@ -19,6 +19,8 @@ using System.Web.Http.OData.Query;
 using Thinktecture.IdentityModel.Authorization.WebApi;
 using Utility;
 using Module.Persist.TPM.Utils;
+using System.Web;
+using Module.Frontend.TPM.Util;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -64,6 +66,21 @@ namespace Module.Frontend.TPM.Controllers
             return GetConstraintedQuery();
         }
 
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IQueryable<BaseClientTreeView> GetFilteredData(ODataQueryOptions<BaseClientTreeView> options)
+        {
+            var query = GetConstraintedQuery();
+
+            var querySettings = new ODataQuerySettings
+            {
+                EnsureStableOrdering = false,
+                HandleNullPropagation = HandleNullPropagationOption.False
+            };
+
+            var optionsPost = new ODataQueryOptionsPost<BaseClientTreeView>(options.Context, Request, HttpContext.Current.Request);
+            return optionsPost.ApplyTo(query, querySettings) as IQueryable<BaseClientTreeView>;
+        }
 
         private bool EntityExists(int key)
         {

@@ -23,6 +23,7 @@ using System.Reflection;
 using Persist.Model.Import;
 using Interfaces.Implementation.Import.FullImport;
 using Persist.Model;
+using Persist.Model.Settings;
 
 namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
 {
@@ -46,7 +47,7 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
 				using (DatabaseContext context = new DatabaseContext())
 				{
 					var settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
-					var timeRangeToCheck = settingsManager.GetSetting<int>("DATA_LAKE_MATERIALS_SYNC_TIME_RANGE", 24);
+					var lastSuccessDate = settingsManager.GetSetting<string>("MATERIALS_LAST_SUCCESSFUL_EXECUTION_DATE", "2020-03-12 10:00:00.000");
 					var exceptedZREPs = settingsManager.GetSetting<string>("APP_MIX_EXCEPTED_ZREPS", null);
 					var successList = new ConcurrentBag<string>();
 					var errorList = new ConcurrentBag<string>();
@@ -95,7 +96,7 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
 		
 						FROM MARS_UNIVERSAL_PETCARE_MATERIALS materials
 	
-						WHERE materials.ZREP IS NOT NULL AND (DATEDIFF(hour, materials.VMSTD, '{today.ToString("yyyy'-'MM'-'dd HH':'mm':'ss.fff")}') < {timeRangeToCheck})
+						WHERE materials.ZREP IS NOT NULL AND (DATEDIFF(MINUTE, materials.VMSTD, '{today.ToString("yyyy'-'MM'-'dd HH':'mm':'ss.fff")}') < DATEDIFF(MINUTE, '{today.ToString("yyyy'-'MM'-'dd HH':'mm':'ss.fff")}', '{lastSuccessDate}'))
 					").AsEnumerable();
 
 					sourceRecordCount = newRecords.Count();
@@ -257,7 +258,7 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
 							{
 								Results.Add(String.Format("Brandsegtech changed for ZREPs {0} from App.Mix ZREP list (setting 'APP_MIX_EXCEPTED_ZREPs')",
 									String.Join(",", appMixMaterials)), null);
-							}
+							}    
 						}
 					}
 
@@ -265,6 +266,8 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
 					var products = context.Set<Product>().Where(p => !p.Disabled).ToList();
 					var newProductsMaterial = materialsToCheck.Where(x => !products.Any(p => p.ZREP == x.ZREP.TrimStart('0')));
 					var createdZREPs = new List<string>();
+					bool isExecutionSuccess = false;
+
 					foreach (var material in newProductsMaterial)
 					{
 						var errors = CheckNewBrandTech(material.Brand_code, material.Brand, material.Segmen_code, material.Tech_code, material.Technology);
@@ -283,6 +286,7 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
 								context.SaveChanges();
 								createdZREPs.Add(newProduct.ZREP);
 								successList.Add(String.Format("Product with ZREP {0} was created.", newProduct.ZREP));
+								isExecutionSuccess = true;
 							}
 							catch (Exception e)
 							{
@@ -329,6 +333,7 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
 										context.SaveChanges();
 										updatedZREPs.Add(product.ZREP);
 										successList.Add(String.Format("Product with ZREP {0} was updated. Fields changed: {1}.", product.ZREP, String.Join(",", updatedFileds)));
+										isExecutionSuccess = true;
 									}
 									catch (Exception e)
 									{
@@ -344,6 +349,16 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
 							{
 								Results.Add(String.Format("Added notification incident for updated products with ZREPs: {0}", String.Join(",", updatedZREPs)), null);
 							}
+						}
+					}
+
+					if (isExecutionSuccess)
+					{
+						Setting lastSuccessDateSetting = context.Settings.Where(x => x.Name == "MATERIALS_LAST_SUCCESSFUL_EXECUTION_DATE").FirstOrDefault();
+						if (lastSuccessDateSetting != null)
+						{
+							lastSuccessDateSetting.Value = today.ToString("yyyy'-'MM'-'dd HH':'mm':'ss.fff");
+							context.SaveChanges();
 						}
 					}
 

@@ -885,6 +885,39 @@
         var buttonColor = '#e6fcf9';
         return { filter: filter, widget: widget, text: text, panel: panel, image: image, color: color, buttonColor: buttonColor };
     },
+    //BTL cost
+    getBTLCostCustomerMarketing: function () {
+        var date = new Date();
+        date.setHours(date.getHours() + (date.getTimezoneOffset() / 60) + 3);
+        date.setHours(23);
+        date.setMinutes(59);
+        date.setSeconds(59);
+
+        var dateEnd = Ext.Date.add(date, Ext.Date.DAY, -1);
+        var filter = {
+            operator: "and",
+            rules: [
+                {
+                    operator: "or",
+                    rules: [{
+                        property: "ActualBTLTotal", operation: "Equals", value: 0
+                    }, {
+                        property: "ActualBTLTotal", operation: "Equals", value: null
+                    }],
+                }, {
+                    property: "EndDate", operation: "LessOrEqual", value: dateEnd
+                }
+
+            ]
+        }
+        var widget = 'associatedbtlpromo';
+        var text = "BTL cost";
+        var panel = 'panel1';
+        var image = 'closednew.png';
+        var color = '#00dabe';
+        var buttonColor = '#e6fcf9';
+        return { filter: filter, widget: widget, text: text, panel: panel, image: image, color: color, buttonColor: buttonColor };
+    },
     getCard: function (window) {
         var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
         var view = window.up('userdashboard');

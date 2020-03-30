@@ -15,7 +15,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 {
     public class CalculationTaskManager
     {
-        public enum CalculationAction { Uplift, BaseLine, Budgets, Actual, DataFlowFiltering, DataFlow }
+        public enum CalculationAction { Uplift, BaseLine, Budgets, Actual, DataFlowFiltering, DataFlow, BTL }
         private static object locker = new object();
 
         /// <summary>
@@ -26,7 +26,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         /// <param name="context">Контекст БД</param>
         /// <param name="promoId">ID блокируемого Промо</param>
         /// <returns></returns>
-        public static bool CreateCalculationTask(CalculationAction action, HandlerData data, DatabaseContext context, Guid? promoId = null)
+        public static bool CreateCalculationTask(CalculationAction action, HandlerData data, DatabaseContext context, Guid? promoId = null, bool safe = false)
         {
             bool promoAvaible = true;
 
@@ -74,6 +74,17 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         nameHandler = "Module.Host.TPM.Handlers.CalculateBudgetsHandler";
                         break;
 
+                    case CalculationAction.BTL:
+                        // список ID подстатей/промо
+                        string btlId = HandlerDataHelper.GetIncomingArgument<string>("BTLId", data, false);
+                        var unlinkedPromoIdsList = HandlerDataHelper.GetIncomingArgument<List<Guid>>("UnlinkedPromoIds", data, false);
+                        promoIdsForBlock = unlinkedPromoIdsList != null
+                            ? BudgetsPromoCalculation.GetLinkedPromoId(btlId, context, unlinkedPromoIdsList)
+                            : BudgetsPromoCalculation.GetLinkedPromoId(btlId, context);
+                        description = "Calculate promo BTL budgets";
+                        nameHandler = "Module.Host.TPM.Handlers.CalculateBTLBudgetsHandler";
+                        break;
+
                     case CalculationAction.Actual:
                         promoIdsForBlock.Add(promoId.Value);
                         description = "Calculate actual parameters";
@@ -98,7 +109,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                         foreach (Guid idPromo in promoIdsForBlock)
                         {
-                            promoAvaible = promoAvaible && BlockPromo(idPromo, handlerId, contextOutOfTransaction);
+                            promoAvaible = promoAvaible && BlockPromo(idPromo, handlerId, contextOutOfTransaction, safe);
 
                             if (!promoAvaible)
                                 break;
@@ -158,7 +169,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         /// <param name="handlerId">ID обработчика</param>
         /// <param name="context">Контекст БД</param>
         /// <returns></returns>
-        public static bool BlockPromo(Guid promoId, Guid handlerId, DatabaseContext context)
+        public static bool BlockPromo(Guid promoId, Guid handlerId, DatabaseContext context, bool safe = false)
         {
             bool promoAvaible = false;
 
@@ -185,7 +196,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 promoAvaible = false;
             }
 
-            return promoAvaible;
+            return safe ? safe : promoAvaible;
         }
 
         /// <summary>

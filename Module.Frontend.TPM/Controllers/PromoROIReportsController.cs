@@ -17,6 +17,7 @@ using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.OData;
 using System.Web.Http.OData.Query;
@@ -58,10 +59,10 @@ namespace Module.Frontend.TPM.Controllers
             {
                 Id = x.Id,
                 Number = x.Number,
-                Client1LevelName = x.Client1LevelName,
-                Client2LevelName = x.Client2LevelName,
-                ClientName = x.ClientName,
-				ClientTreeId = x.ClientTreeId,
+                Client1LevelName = x.ClientHierarchy,
+                Client2LevelName = x.ClientHierarchy,
+                ClientName = databaseContext.Set<ClientTree>().Where(c => c.ObjectId == x.ClientTreeId).Select(v => v.Name).FirstOrDefault(),
+                ClientTreeId = x.ClientTreeId,
                 BrandName = x.Brand.Name ?? (x.BrandTech != null ? (x.BrandTech.Brand != null ? x.BrandTech.Brand.Name : null) : null),
                 TechnologyName = x.Technology.Name ?? (x.BrandTech != null ? (x.BrandTech.Technology != null ? x.BrandTech.Technology.Name : null) : null),
                 ProductSubrangesList = x.ProductSubrangesList,
@@ -98,11 +99,11 @@ namespace Module.Frontend.TPM.Controllers
                 PlanPromoCostProdCatalogue = x.PlanPromoCostProdCatalogue,
                 PlanPromoCostProdPOSMInClient = x.PlanPromoCostProdPOSMInClient,
                 PlanPromoCost = x.PlanPromoCost,
-                TIBasePercent = x.PlanPromoIncrementalLSV.HasValue && x.PlanPromoIncrementalLSV.Value != 0 ? 
+                TIBasePercent = x.PlanPromoIncrementalLSV.HasValue && x.PlanPromoIncrementalLSV.Value != 0 ?
                     x.PlanPromoIncrementalBaseTI / x.PlanPromoIncrementalLSV * 100 : null,
                 PlanPromoIncrementalBaseTI = x.PlanPromoIncrementalBaseTI,
                 PlanPromoNetIncrementalBaseTI = x.PlanPromoNetIncrementalBaseTI,
-                COGSPercent = x.PlanPromoIncrementalLSV.HasValue && x.PlanPromoIncrementalLSV.Value != 0 ? 
+                COGSPercent = x.PlanPromoIncrementalLSV.HasValue && x.PlanPromoIncrementalLSV.Value != 0 ?
                     x.PlanPromoIncrementalCOGS / x.PlanPromoIncrementalLSV * 100 : null,
                 PlanPromoIncrementalCOGS = x.PlanPromoIncrementalCOGS,
                 PlanPromoNetIncrementalCOGS = x.PlanPromoNetIncrementalCOGS,
@@ -169,10 +170,16 @@ namespace Module.Frontend.TPM.Controllers
                 ActualPromoROIPercent = x.ActualPromoROIPercent,
                 ActualPromoNetROIPercent = x.ActualPromoNetROIPercent,
                 PromoTypesName = x.PromoTypes.Name
-            });
+            }).ToList();
+            foreach (var item in query)
+            {
+                item.Client1LevelName = item.Client1LevelName.Split('>')[0];
+                item.Client2LevelName = item.Client2LevelName.Split('>')[1];
+            }
+            return query.AsQueryable();
+        } 
 
-            return query;
-        }
+
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue, MaxExpansionDepth = 3)]
@@ -192,6 +199,22 @@ namespace Module.Frontend.TPM.Controllers
                 query = RoundingHelper.ModifyQuery(query);
             }
             return query;
+        }
+
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IQueryable<PromoROIReport> GetFilteredData(ODataQueryOptions<PromoROIReport> options)
+        {
+            var query = GetConstraintedQuery();
+
+            var querySettings = new ODataQuerySettings
+            {
+                EnsureStableOrdering = false,
+                HandleNullPropagation = HandleNullPropagationOption.False
+            };
+
+            var optionsPost = new ODataQueryOptionsPost<PromoROIReport>(options.Context, Request, HttpContext.Current.Request);
+            return RoundingHelper.ModifyQuery(optionsPost.ApplyTo(query, querySettings) as IQueryable<PromoROIReport>);
         }
 
         [ClaimsAuthorize]

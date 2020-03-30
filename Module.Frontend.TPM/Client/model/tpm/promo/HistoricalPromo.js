@@ -167,9 +167,6 @@
         { name: 'InstoreMechanicTypeName', type: 'string', useNull: true, hidden: false, isDefault: true, defaultValue: null },
         { name: 'InstoreMechanicDiscount', useNull: true, type: 'float', hidden: false, isDefault: false, defaultValue: null },
         { name: 'Priority', useNull: true, type: 'int', hidden: false, isDefault: false, defaultValue: null },
-        { name: 'Client1LevelName', type: 'string', useNull: true, hidden: false, isDefault: true, defaultValue: null },
-        { name: 'Client2LevelName', type: 'string', useNull: true, hidden: false, isDefault: true, defaultValue: null },
-        { name: 'ClientName', type: 'string', useNull: true, hidden: false, isDefault: true, defaultValue: null },
         { name: 'ProductSubrangesList', type: 'string', useNull: true, hidden: false, isDefault: true, defaultValue: null },
 
         // Growth Acceleration

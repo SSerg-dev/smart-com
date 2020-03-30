@@ -33,6 +33,8 @@ using Module.Persist.TPM.Utils;
 using Module.Persist.TPM.Model.DTO;
 using Persist.ScriptGenerator.Filter;
 using Utility;
+using Module.Frontend.TPM.Util;
+using System.Web;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -75,6 +77,22 @@ namespace Module.Frontend.TPM.Controllers
         public IQueryable<IncrementalPromo> GetIncrementalPromoes()
         {
             return GetConstraintedQuery();
+        }
+
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IQueryable<IncrementalPromo> GetFilteredData(ODataQueryOptions<IncrementalPromo> options)
+        {
+            var query = GetConstraintedQuery();
+
+            var querySettings = new ODataQuerySettings
+            {
+                EnsureStableOrdering = false,
+                HandleNullPropagation = HandleNullPropagationOption.False
+            };
+
+            var optionsPost = new ODataQueryOptionsPost<IncrementalPromo>(options.Context, Request, HttpContext.Current.Request);
+            return optionsPost.ApplyTo(query, querySettings) as IQueryable<IncrementalPromo>;
         }
 
         [ClaimsAuthorize]

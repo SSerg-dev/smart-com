@@ -23,6 +23,19 @@ namespace Module.Persist.TPM.Utils
             CalculateBudgetsCreateTask(promoSupportIds, userId, roleId, context);
         }
 
+        public static void RecalculateBTLBudgets(Promo promo, UserInfo user, DatabaseContext context, bool safe = false)
+        {
+            Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
+            RoleInfo role = user.GetCurrentRole();
+            Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
+
+            string btlId = context.Set<BTLPromo>().Where(x => x.PromoId == promo.Id && !x.Disabled && x.DeletedDate == null).FirstOrDefault()?.BTLId.ToString();
+            if (!string.IsNullOrEmpty(btlId))
+            {
+                CalculateBTLBudgetsCreateTask(btlId, userId, roleId, context, safe: safe);
+            }
+        }
+
         /// <summary>
         /// Создание задачи на пересчет бюджетов
         /// </summary>
@@ -46,6 +59,32 @@ namespace Module.Persist.TPM.Utils
             if (!success)
                 throw new Exception("Promo was blocked for calculation");
         }
+
+        /// <summary>
+        /// Создание отложенной задачи, выполняющей перерасчет бюджетов BTL
+        /// </summary>
+        /// <param name="btlId">Id BTL статьи</param>
+        /// <param name="userId">Id пользователя</param>
+        /// <param name="roleId">Id роли</param>
+        /// <param name="context">Текущий контекст</param>
+        /// <param name="unlinkedPromoIds">Список Id открпряемых промо (default = null)</param>
+        public static void CalculateBTLBudgetsCreateTask(string btlId, Guid? userId, Guid? roleId, DatabaseContext context, List<Guid> unlinkedPromoIds = null, bool safe = false)
+        {
+            HandlerData data = new HandlerData();
+            HandlerDataHelper.SaveIncomingArgument("BTLId", btlId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("UserId", userId == null ? Guid.Empty : userId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("RoleId", roleId == null ? Guid.Empty : roleId, data, visible: false, throwIfNotExists: false);
+            if (unlinkedPromoIds != null)
+            {
+                HandlerDataHelper.SaveIncomingArgument("UnlinkedPromoIds", unlinkedPromoIds, data, visible: false, throwIfNotExists: false);
+            }
+
+            bool success = CalculationTaskManager.CreateCalculationTask(CalculationTaskManager.CalculationAction.BTL, data, context, safe: safe);
+
+            if (!success)
+                throw new Exception("Promo was blocked for calculation");
+        }
+
         private static string FromListToString(List<Guid> list)
         {
             string result = "";

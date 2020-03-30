@@ -678,7 +678,7 @@ namespace Module.Frontend.TPM.Controllers
             }
             catch (Exception e)
             {
-                return new HttpResponseMessage(HttpStatusCode.Accepted);
+                return new HttpResponseMessage(HttpStatusCode.BadRequest);
             }
         }
 

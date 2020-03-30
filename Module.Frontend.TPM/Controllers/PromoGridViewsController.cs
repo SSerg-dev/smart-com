@@ -18,6 +18,12 @@ using Module.Frontend.TPM.Util;
 using Frontend.Core.Extensions.Export;
 using System.Web.Http.OData.Query;
 using Persist.ScriptGenerator.Filter;
+using System.Web;
+using System.Web.Http.OData.Extensions;
+using System.IO;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Dynamic;
 
 namespace Module.Frontend.TPM.Controllers {
     public class PromoGridViewsController : EFContextController {
@@ -77,6 +83,23 @@ namespace Module.Frontend.TPM.Controllers {
         }
 
         [ClaimsAuthorize]
+        [HttpPost]
+        public IQueryable<PromoGridView> GetFilteredData(ODataQueryOptions<PromoGridView> options)
+        {
+            string bodyText = Helper.GetRequestBody(HttpContext.Current.Request);
+            var query = GetConstraintedQuery(Helper.GetValueIfExists<bool>(bodyText, "canChangeStateOnly"));
+
+            var querySettings = new ODataQuerySettings
+            {
+                EnsureStableOrdering = false,
+                HandleNullPropagation = HandleNullPropagationOption.False
+            };
+            var optionsPost = new ODataQueryOptionsPost<PromoGridView>(options.Context, Request, HttpContext.Current.Request);
+
+            return optionsPost.ApplyTo(query, querySettings) as IQueryable<PromoGridView>;
+        }
+
+        [ClaimsAuthorize]
         public IHttpActionResult Delete([FromODataUri] Guid key) {
             try {
                 var model = Context.Set<Promo>().Find(key);
@@ -122,6 +145,7 @@ namespace Module.Frontend.TPM.Controllers {
                 Context.SaveChanges();
 
                 PromoCalculateHelper.RecalculateBudgets(model, user, Context);
+                PromoCalculateHelper.RecalculateBTLBudgets(model, user, Context);
                 PromoHelper.WritePromoDemandChangeIncident(Context, model, true);
 
                 //если промо инаут, необходимо убрать записи в IncrementalPromo при отмене промо

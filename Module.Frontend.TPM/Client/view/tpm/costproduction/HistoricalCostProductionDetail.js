@@ -10,6 +10,10 @@
         itemId: 'historicaldetailform',
         items: [{
             xtype: 'singlelinedisplayfield',
+            name: 'Number',
+            fieldLabel: l10n.ns('tpm', 'HistoricalCostProduction').value('Number'),
+        },   {
+            xtype: 'singlelinedisplayfield',
             name: 'PlanQuantity',
             fieldLabel: l10n.ns('tpm', 'HistoricalCostProduction').value('PlanQuantity'),
         }, {

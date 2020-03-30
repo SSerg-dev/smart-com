@@ -29,6 +29,8 @@ using System.Data.Entity;
 using Module.Persist.TPM.CalculatePromoParametersModule;
 using Core.Settings;
 using Core.Dependency;
+using Module.Frontend.TPM.Util;
+using System.Web;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -66,6 +68,22 @@ namespace Module.Frontend.TPM.Controllers
         public IQueryable<PromoSupportPromo> GetPromoSupportPromoes()
         {
             return GetConstraintedQuery();
+        }
+
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IQueryable<PromoSupportPromo> GetFilteredData(ODataQueryOptions<PromoSupportPromo> options)
+        {
+            var query = GetConstraintedQuery();
+
+            var querySettings = new ODataQuerySettings
+            {
+                EnsureStableOrdering = false,
+                HandleNullPropagation = HandleNullPropagationOption.False
+            };
+
+            var optionsPost = new ODataQueryOptionsPost<PromoSupportPromo>(options.Context, Request, HttpContext.Current.Request);
+            return optionsPost.ApplyTo(query, querySettings) as IQueryable<PromoSupportPromo>;
         }
 
         [ClaimsAuthorize]
@@ -135,32 +153,42 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult PromoSuportPromoPost([FromODataUri] string promoIdString, [FromODataUri] Guid promoSupportId)
+        public IHttpActionResult PromoSuportPromoPost(Guid promoSupportId)
         {
             using (var transaction = Context.Database.BeginTransaction())
             {
                 try
                 {
-                    string[] promoIds = promoIdString.Split(";".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-                    List<Guid> promoIdList = new List<Guid>();
+                    ISettingsManager settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
+                    var diffBetweenPromoInDays = settingsManager.GetSetting<int>("DIFF_BETWEEN_PROMO_IN_DAYS", 7 * 8);
+                    List<string> promoIdsList = new List<string>();
+                    string promoIds = Request.Content.ReadAsStringAsync().Result;
+                    if (promoIds != null)
+                    {
+                        promoIdsList = JsonConvert.DeserializeObject<List<string>>(promoIds);
+                    }
 
-                    foreach (var id in promoIds)
+                    List<Guid> guidPromoIds = new List<Guid>();
+                    foreach (var id in promoIdsList)
                     {
                         Guid promoId = Guid.Parse(id);
-                        Promo promo = Context.Set<Promo>().Find(promoId);
+                        guidPromoIds.Add(promoId);
+                    }
+
+                    foreach (var id in guidPromoIds)
+                    {
+                        Promo promo = Context.Set<Promo>().Find(id);
                         // закрытые не берем
                         if (promo.PromoStatus.SystemName.ToLower().IndexOf("close") < 0)
                         {
                             // разница между промо в подстатье должно быть меньше 2 периодов (8 недель)
-                            ISettingsManager settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
-                            var diffBetweenPromoInDays = settingsManager.GetSetting<int>("DIFF_BETWEEN_PROMO_IN_DAYS", 7 * 8);
                             bool bigDifference = Context.Set<PromoSupportPromo>().Any(n => n.PromoSupportId == promoSupportId
                                     && DbFunctions.DiffDays(n.Promo.StartDate.Value, promo.EndDate.Value).Value > diffBetweenPromoInDays && !n.Disabled);
 
                             if (bigDifference)
                                 throw new Exception("The difference between the dates of the promo should be less than two periods");
 
-                            PromoSupportPromo psp = new PromoSupportPromo(promoSupportId, promoId);
+                            PromoSupportPromo psp = new PromoSupportPromo(promoSupportId, id);
                             Context.Set<PromoSupportPromo>().Add(psp);
                             Context.SaveChanges();
                         }

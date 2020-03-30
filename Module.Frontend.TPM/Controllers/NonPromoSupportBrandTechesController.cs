@@ -4,6 +4,7 @@ using Core.Security;
 using Core.Security.Models;
 using Core.Settings;
 using Frontend.Core.Controllers.Base;
+using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.TPM;
 using Newtonsoft.Json;
 using Persist.Model;
@@ -13,8 +14,10 @@ using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.OData;
+using System.Web.Http.OData.Query;
 using Thinktecture.IdentityModel.Authorization.WebApi;
 
 namespace Module.Frontend.TPM.Controllers
@@ -53,6 +56,22 @@ namespace Module.Frontend.TPM.Controllers
         public IQueryable<NonPromoSupportBrandTech> GetNonPromoSupportBrandTeches()
         {
             return GetConstraintedQuery();
+        }
+
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IQueryable<NonPromoSupportBrandTech> GetFilteredData(ODataQueryOptions<NonPromoSupportBrandTech> options)
+        {
+            var query = GetConstraintedQuery();
+
+            var querySettings = new ODataQuerySettings
+            {
+                EnsureStableOrdering = false,
+                HandleNullPropagation = HandleNullPropagationOption.False
+            };
+
+            var optionsPost = new ODataQueryOptionsPost<NonPromoSupportBrandTech>(options.Context, Request, HttpContext.Current.Request);
+            return optionsPost.ApplyTo(query, querySettings) as IQueryable<NonPromoSupportBrandTech>;
         }
 
         [ClaimsAuthorize]

@@ -295,10 +295,16 @@ namespace Module.Host.TPM.Handlers.DataFlow
                 innerStopWatch.Restart();
                 //список Id промо, для пересчета бюджетов
                 List<Guid> promoIdsForBudgetRecalclating = new List<Guid>();
+                List<Guid> promoIdsForBTLBudgetRecalclating = new List<Guid>();
                 foreach (var promo in promoesForRecalculating)
                 {
                     List<Guid> linkedPromoIds = BudgetsPromoCalculation.GetLinkedPromoId(promo.Id, context).ToList();
                     promoIdsForBudgetRecalclating = promoIdsForBudgetRecalclating.Union(linkedPromoIds).ToList();
+                    string btlId = context.Set<BTLPromo>().Where(x => x.PromoId == promo.Id && !x.Disabled && x.DeletedDate == null).FirstOrDefault()?.BTLId.ToString();
+                    if (!string.IsNullOrEmpty(btlId))
+                    {
+                        promoIdsForBTLBudgetRecalclating = promoIdsForBTLBudgetRecalclating.Union(BudgetsPromoCalculation.GetLinkedPromoId(btlId, context)).ToList();
+                    }
                 }
                 handlerLogger.Write(true, $"The budgets filtering of promoes duration:{innerStopWatch.Elapsed.Hours} hours and {innerStopWatch.Elapsed.Minutes} minutes and {innerStopWatch.Elapsed.Seconds} seconds", "Timing");
                 handlerLogger.Write(true, String.Format("The budgets filtering of promoes ended at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
@@ -316,6 +322,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
 
                 //список Id промо для блокировки на время пересчета
                 List<Guid> promoIdsForBlock = promoIdsForRecalculating.Union(promoIdsForBudgetRecalclating)
+                                                                      .Union(promoIdsForBTLBudgetRecalclating)
                                                                       .Union(promoIdsForAllRecalculating)
                                                                       .Union(actualCOGSPromoIds)
                                                                       .Union(actualTIPromoIds)
@@ -324,6 +331,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
                 HandlerData handlerData = new HandlerData();
                 HandlerDataHelper.SaveIncomingArgument("PromoIdsForRecalculating", promoIdsForRecalculating, handlerData, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("PromoIdsForBudgetRecalclating", promoIdsForBudgetRecalclating, handlerData, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("PromoIdsForBTLBudgetRecalclating", promoIdsForBTLBudgetRecalclating, handlerData, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("PromoIdsForAllRecalculating", promoIdsForAllRecalculating, handlerData, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("ActualCOGSPromoIds", actualCOGSPromoIds, handlerData, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("ActualTIPromoIds", actualTIPromoIds, handlerData, visible: false, throwIfNotExists: false);

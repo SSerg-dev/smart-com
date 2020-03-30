@@ -337,6 +337,23 @@ namespace Module.Persist.TPM.Utils {
             return query;
         }
         /// <summary>
+        /// Применить фильтр по клиентам к ClienDashboard kpidata
+        /// </summary>
+        /// <param name="query">Запрос</param>
+        /// <param name="hierarchy">Иерархия</param>
+        /// <param name="filter">Фильтр</param>
+        public static IQueryable<ClientDashboardView> ApplyFilter(IQueryable<ClientDashboardView> query, IQueryable<ClientTreeHierarchyView> hierarchy, IDictionary<string, IEnumerable<string>> filter = null)
+        {
+            IEnumerable<string> clientFilter = FilterHelper.GetFilter(filter, ModuleFilterName.Client);
+            if (clientFilter.Any())
+            {
+                hierarchy = getFilteredHierarchy(hierarchy, clientFilter);
+                query = query.Where(x =>
+                    hierarchy.Any(h => h.Id == x.ObjectId));
+            }
+            return query;
+        }
+        /// <summary>
         /// Применить фильтр по клиентам к constraint
         /// </summary>
         /// <param name="query">Запрос</param>
@@ -472,6 +489,24 @@ namespace Module.Persist.TPM.Utils {
                 hierarchy = getFilteredHierarchy(hierarchy, clientFilter);
                 query = query.Where(x =>
                     hierarchy.Any(h => h.Id == x.ClientTreeId));
+            }
+            return query;
+        }
+
+        /// <summary>
+        /// Применить фильтр по клиентам к BTLPromo
+        /// </summary>
+        /// <param name="query">Запрос</param>
+        /// <param name="hierarchy">Иерархия</param>
+        /// <param name="filter">Фильтр</param>
+        public static IQueryable<BTLPromo> ApplyFilter(IQueryable<BTLPromo> query, IQueryable<ClientTreeHierarchyView> hierarchy, IDictionary<string, IEnumerable<string>> filter = null)
+        {
+            IEnumerable<string> clientFilter = FilterHelper.GetFilter(filter, ModuleFilterName.Client);
+            if (clientFilter.Any())
+            {
+                hierarchy = getFilteredHierarchy(hierarchy, clientFilter);
+                query = query.Where(x =>
+                    hierarchy.Any(h => h.Id == x.Promo.ClientTreeId));
             }
             return query;
         }
