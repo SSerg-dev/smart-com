@@ -4,7 +4,7 @@ AS
 	(SELECT SystemName, Id FROM dbo.PromoStatus),
 	PromoParams
 AS 
-	(SELECT pr.ClientTreeId AS ClientTreeId, MIN(ClientName) AS ClientName, MIN(pr.ClientHierarchy) AS ClientHierarchy, YEAR(pr.StartDate) AS [Year], pr.BrandTechId AS BrandTechId, pr.PromoStatusId AS Status,
+	(SELECT pr.ClientTreeId AS ClientTreeId, MIN(pr.ClientHierarchy) AS ClientHierarchy, YEAR(pr.StartDate) AS [Year], pr.BrandTechId AS BrandTechId, pr.PromoStatusId AS Status,
 
 			SUM(CASE WHEN pr.EndDate <= GETDATE() THEN pr.PromoDuration ELSE
 			(CASE WHEN pr.StartDate < GETDATE() AND pr.EndDate > GETDATE() THEN DATEDIFF(day, pr.StartDate, GETDATE()) ELSE
@@ -18,9 +18,6 @@ AS
 			SUM(CASE WHEN CS.SystemName = 'Closed' THEN pr.ActualPromoCatalogue ELSE 0 END) AS ActualPromoCatalogue,
 			SUM(CASE WHEN CS.SystemName = 'Closed' THEN pr.ActualPromoPOSMInClient ELSE 0 END) AS ActualPromoPOSMInClient,
 			SUM(CASE WHEN CS.SystemName = 'Closed' THEN pr.ActualPromoCostProduction ELSE 0 END) AS ActualPromoCostProduction,
-			SUM(CASE WHEN CS.SystemName = 'Closed' THEN pr.ActualPromoCostProdXSites ELSE 0 END) AS ActualPromoCostProdXSites,
-			SUM(CASE WHEN CS.SystemName = 'Closed' THEN pr.ActualPromoCostProdCatalogue ELSE 0 END) AS ActualPromoCostProdCatalogue,
-			SUM(CASE WHEN CS.SystemName = 'Closed' THEN pr.ActualPromoCostProdPOSMInClient ELSE 0 END) AS ActualPromoCostProdPOSMInClient,
 			SUM(CASE WHEN CS.SystemName = 'Closed' THEN pr.ActualPromoBranding ELSE 0 END) AS ActualPromoBranding,
 			SUM(CASE WHEN CS.SystemName = 'Closed' THEN pr.ActualPromoBTL ELSE 0 END) AS ActualPromoBTL,
 			SUM(CASE WHEN CS.SystemName = 'Closed' THEN pr.ActualPromoIncrementalEarnings ELSE 0 END) AS ActualPromoIncrementalEarnings,
@@ -40,9 +37,6 @@ AS
 			SUM(CASE WHEN CS.SystemName != 'Closed' THEN pr.PlanPromoBTL ELSE 0 END) AS PlanPromoBTL,
 			SUM(CASE WHEN CS.SystemName != 'Closed' THEN pr.PlanPromoBranding ELSE 0 END) AS PlanPromoBranding,
 			SUM(CASE WHEN CS.SystemName != 'Closed' THEN pr.PlanPromoCostProduction ELSE 0 END) AS PlanPromoCostProduction,
-			SUM(CASE WHEN CS.SystemName != 'Closed' THEN pr.PlanPromoCostProdXSites ELSE 0 END) AS PlanPromoCostProdXSites,
-			SUM(CASE WHEN CS.SystemName != 'Closed' THEN pr.PlanPromoCostProdCatalogue ELSE 0 END) AS PlanPromoCostProdCatalogue,
-			SUM(CASE WHEN CS.SystemName != 'Closed' THEN pr.PlanPromoCostProdPOSMInClient ELSE 0 END) AS PlanPromoCostProdPOSMInClient,
 			SUM(CASE WHEN CS.SystemName != 'Closed' THEN pr.PlanPromoNSV ELSE 0 END) AS PlanPromoNSV
 		FROM dbo.Promo AS pr 
 		LEFT JOIN Statuses AS CS ON CS.Id = pr.PromoStatusId
@@ -55,7 +49,7 @@ AS
 	GROUP BY G_HIERARCHY_ID, BRAND_SEG_TECH_CODE, YEAR)
 
 SELECT
-	NEWID() AS Id, MIN(CD.Id) AS HistoryId, pp.ClientTreeId AS ObjectId, MIN(pp.ClientName) AS ClientName, MIN(pp.ClientHierarchy) AS ClientHierarchy, pp.BrandTechId AS BrandTechId, pp.Year AS Year,
+	NEWID() AS Id, MIN(CD.Id) AS HistoryId, pp.ClientTreeId AS ObjectId, MIN(pp.ClientHierarchy) AS ClientHierarchy, pp.BrandTechId AS BrandTechId, pp.Year AS Year,
 	(SELECT [Name] FROM BrandTech WHERE BrandTech.Id = pp.BrandTechId) AS BrandTechName, 
 	(SELECT MIN([LogoFileName]) FROM ProductTree WHERE ProductTree.BrandId = (SELECT BrandId FROM BrandTech WHERE BrandTech.Id = pp.BrandTechId)) AS LogoFileName,
 	ROUND(SUM(pp.promoDays)/7, 0) AS PromoWeeks,
@@ -109,16 +103,10 @@ SELECT
 		THEN 0 ELSE (MAX(CD.ProductionPlan)/SUM(YEE.PlanLSV)) * 100 END) END AS ProductionPlanPercent,
 	CASE WHEN (MAX(CD.ProductionPlan) IS NULL) THEN 0 ELSE MAX(CD.ProductionPlan) END AS ProductionPlan,
 	CASE WHEN (SUM(pp.ActualPromoCostProduction) IS NULL) THEN 0 ELSE SUM(pp.ActualPromoCostProduction) END AS ProductionYTD,
-	CASE WHEN (SUM(pp.ActualPromoCostProdXSites) IS NULL) THEN 0 ELSE SUM(pp.ActualPromoCostProdXSites) END AS ProdXSitesYTD,
-	CASE WHEN (SUM(pp.PlanPromoCostProdCatalogue) IS NULL) THEN 0 ELSE SUM(pp.PlanPromoCostProdCatalogue) END AS ProdCatalogueYTD,
-	CASE WHEN (SUM(pp.PlanPromoCostProdPOSMInClient) IS NULL) THEN 0 ELSE SUM(pp.PlanPromoCostProdPOSMInClient) END AS ProdPOSMInClientYTD,
 	(CASE WHEN (SUM(pp.ActualPromoLSV) != 0 AND SUM(pp.ActualPromoLSV) IS NOT NULL AND SUM(pp.ActualPromoCostProduction) != 0 AND SUM(pp.ActualPromoCostProduction) IS NOT NULL) THEN
 		(SUM(pp.ActualPromoCostProduction)/SUM(pp.ActualPromoLSV) * 100)
 		ELSE 0 END) AS ProductionYTDPercent,
 	CASE WHEN (SUM(pp.ActualPromoCostProduction) + SUM(pp.PlanPromoCostProduction) IS NULL) THEN 0 ELSE SUM(pp.ActualPromoCostProduction) + SUM(pp.PlanPromoCostProduction) END AS ProductionYEE,
-	CASE WHEN (SUM(pp.ActualPromoCostProdXSites) + SUM(pp.PlanPromoCostProdXSites) IS NULL) THEN 0 ELSE SUM(pp.ActualPromoCostProdXSites) + SUM(pp.PlanPromoCostProdXSites) END AS ProdXSitesYEE,
-	CASE WHEN (SUM(pp.ActualPromoCostProdCatalogue) + SUM(pp.PlanPromoCostProdCatalogue) IS NULL) THEN 0 ELSE SUM(pp.ActualPromoCostProdCatalogue) + SUM(pp.PlanPromoCostProdCatalogue) END AS ProdCatalogueYEE,
-	CASE WHEN (SUM(pp.ActualPromoCostProdPOSMInClient) + SUM(pp.PlanPromoCostProdPOSMInClient) IS NULL) THEN 0 ELSE SUM(pp.ActualPromoCostProdPOSMInClient) + SUM(pp.PlanPromoCostProdPOSMInClient) END AS ProdPOSMInClientYEE,
 	(CASE WHEN (SUM(pp.ActualPromoLSV) + SUM(pp.PlanPromoLSV) != 0 AND (SUM(pp.ActualPromoLSV) + SUM(pp.PlanPromoLSV) IS NOT NULL)
 		AND SUM(pp.ActualPromoCostProduction) + SUM(pp.PlanPromoCostProduction) != 0 AND SUM(pp.ActualPromoCostProduction) + SUM(pp.PlanPromoCostProduction) IS NOT NULL) THEN 
 		((SUM(pp.ActualPromoCostProduction) + SUM(pp.PlanPromoCostProduction))/(SUM(pp.ActualPromoLSV) + SUM(pp.PlanPromoLSV))) * 100
@@ -177,7 +165,7 @@ SELECT
 FROM PromoParams AS pp
 LEFT JOIN dbo.ClientDashboard AS CD ON CD.ClientTreeId = pp.ClientTreeId AND CD.BrandTechId = pp.BrandTechId AND CD.Year = pp.Year
 LEFT JOIN YEEF AS YEE ON YEE.YEAR = pp.Year
-AND YEE.BRAND_SEG_TECH_CODE = (Select BrandTech_code FROM BrandTech WHERE Id = pp.BrandTechId)
-AND '00' + YEE.G_HIERARCHY_ID LIKE (Select GHierarchyCode FROM ClientTree WHERE ObjectId = pp.ClientTreeId AND EndDate IS NULL)
+	AND YEE.BRAND_SEG_TECH_CODE = (Select BrandTech_code FROM BrandTech WHERE Id = pp.BrandTechId)
+	AND YEE.G_HIERARCHY_ID LIKE '%' + (Select GHierarchyCode FROM ClientTree WHERE ObjectId = pp.ClientTreeId AND EndDate IS NULL)
 		GROUP BY pp.ClientTreeId, pp.BrandTechId, pp.Year
 GO

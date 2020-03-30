@@ -7,7 +7,6 @@
         { name: 'HistoryId', type: 'string', hidden: true, isDefault: false },
         { name: 'ObjectId', type: 'int', hidden: false, isDefault: true },
         { name: 'ClientHierarchy', type: 'string', mapping: 'ClientHierarchy', tree: true, viewTree: true, defaultFilterConfig: { valueField: 'FullPathName' }, breezeEntityType: 'ClientTree', hidden: false, isDefault: true },
-        { name: 'ClientName', type: 'string', hidden: true, isDefault: false },
         { name: 'BrandTechId', type: 'string', hidden: true, isDefault: false },
         { name: 'BrandTechName', type: 'string',mapping: 'BrandTechName', defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'BrandTech', hidden: false, isDefault: true },
         { name: 'LogoFileName', type: 'string', hidden: true, isDefault: false },

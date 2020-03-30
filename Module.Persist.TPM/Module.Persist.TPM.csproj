@@ -1984,8 +1984,6 @@
     <Content Include="SQLInitialize\20191122_1428_Mechanick_Data_Types_Promo.sql" />
     <Content Include="SQLInitialize\20191203_1348_Update_Mechanick.sql" />
     <Content Include="SQLInitialize\20191104_1000_Settings_PromoChangeProps_Update.sql" />
-    <Content Include="SQLInitialize\20200211_2000_Alter_ClientDashboardView.sql" />
-    <Content Include="SQLInitialize\20200130_1600_Alter_ClientDashboardView.sql" />
     <Content Include="SQLInitialize\20200130_1300_ClientDashboardView_AP.sql" />
     <Content Include="SQLInitialize\20191202_2330_BrandTeches_AP_GetBradTechById.sql" />
     <Content Include="SQLInitialize\20191203_1730_NonPromoEquipment_AP.sql" />
@@ -2020,15 +2018,7 @@
     <Content Include="SQLInitialize\20200129_1600_Create_ClientDashboardView.sql" />
     <Content Include="SQLInitialize\20200213_1100_HistoricalClientDashboard_AP.sql" />
     <Content Include="SQLInitialize\20200211_2355_ClientDashboardView_AP.sql" />
-    <Content Include="SQLInitialize\20200219_1700_Alter_ClientDashboardView.sql" />
-    <Content Include="SQLInitialize\20200217_1123_Fix_ClientDashboardView.sql" />
-    <Content Include="SQLInitialize\20200213_1344_Alter_Grid_Client_Dashboard.sql" />
-    <Content Include="SQLInitialize\20200323_0200_Alter_ClientDashboardView.sql" />
-    <Content Include="SQLInitialize\20200304_1600_Alter_ClientDashboardView.sql" />
-    <Content Include="SQLInitialize\20200302_0800_Alter_ClientDashboardView.sql" />
-    <Content Include="SQLInitialize\20200225_2000_Alter_ClientDashboardView.sql" />
-    <Content Include="SQLInitialize\20200220_2000_Alter_ClientDashboardView.sql" />
-    <Content Include="SQLInitialize\20200220_1600_Alter_ClientDashboardView.sql" />
+    <Content Include="SQLInitialize\20200330_2330_Alter_ClientDashboardView.sql" />
     <Content Include="SQLInitialize\20200218_1530_PromoBTL_AP_Add.sql" />
     <Content Include="SQLInitialize\20200225_1700_Settings_Not_Allowed_BTL_Sstatus_List.sql" />
     <Content Include="SQLInitialize\20200312_1500_Settings_Materials_LastSuccessfulExecutionDate.sql" />
