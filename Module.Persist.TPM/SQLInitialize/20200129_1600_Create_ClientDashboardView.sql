@@ -1,4 +1,10 @@
-﻿CREATE VIEW [dbo].[ClientDashboardView] AS
+﻿IF OBJECT_ID('[dbo].[ClientDashboardView]', 'V') IS NOT NULL
+	BEGIN
+		DROP VIEW [dbo].[ClientDashboardView]
+	END
+GO
+
+CREATE VIEW [dbo].[ClientDashboardView] AS
 WITH ClosedStatus
 AS
 	(SELECT SystemName, Id FROM dbo.PromoStatus WHERE SystemName = 'Closed'),
