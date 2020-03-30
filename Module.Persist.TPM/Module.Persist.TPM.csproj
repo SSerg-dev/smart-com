@@ -1722,6 +1722,10 @@
     <Compile Include="Migrations\202003301924463_EmptyMigrationRC6.Designer.cs">
       <DependentUpon>202003301924463_EmptyMigrationRC6.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202003302141389_EmptyMigrationRC7.cs" />
+    <Compile Include="Migrations\202003302141389_EmptyMigrationRC7.Designer.cs">
+      <DependentUpon>202003302141389_EmptyMigrationRC7.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PromoProductsView.cs" />
@@ -3265,6 +3269,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202003301924463_EmptyMigrationRC6.resx">
       <DependentUpon>202003301924463_EmptyMigrationRC6.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003302141389_EmptyMigrationRC7.resx">
+      <DependentUpon>202003302141389_EmptyMigrationRC7.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
