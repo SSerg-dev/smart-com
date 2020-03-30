@@ -1718,6 +1718,10 @@
     <Compile Include="Migrations\202002251957252_Delete_PromoProductsProperties.Designer.cs">
       <DependentUpon>202002251957252_Delete_PromoProductsProperties.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202003301924463_EmptyMigrationRC6.cs" />
+    <Compile Include="Migrations\202003301924463_EmptyMigrationRC6.Designer.cs">
+      <DependentUpon>202003301924463_EmptyMigrationRC6.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PromoProductsView.cs" />
@@ -3268,6 +3272,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202002251957252_Delete_PromoProductsProperties.resx">
       <DependentUpon>202002251957252_Delete_PromoProductsProperties.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003301924463_EmptyMigrationRC6.resx">
+      <DependentUpon>202003301924463_EmptyMigrationRC6.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
