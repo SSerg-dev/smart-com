@@ -9,11 +9,11 @@
         { name: 'DisplayName', useNull: false, type: 'string', hidden: false, isDefault: true },
         { name: 'BrandTechId', useNull: true, hidden: true, isDefault: true },
         {
-            name: 'BrandName', type: 'string', mapping: 'BrandTech.Brand.Name', defaultFilterConfig: { valueField: 'Brand.Name' },
+            name: 'BrandName', type: 'string', mapping: 'BrandTech.Brand.Name', defaultFilterConfig: { valueField: 'Name' },
             breezeEntityType: 'Brand', hidden: false, isDefault: true
         },
         {
-            name: 'TechnologyName', type: 'string', mapping: 'BrandTech.Technology.Name', defaultFilterConfig: { valueField: 'Technology.Name' },
+            name: 'TechnologyName', type: 'string', mapping: 'BrandTech.Technology.Name', defaultFilterConfig: { valueField: 'Name' },
             breezeEntityType: 'Technology', hidden: false, isDefault: true
         }
     ],
