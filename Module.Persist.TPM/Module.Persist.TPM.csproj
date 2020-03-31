@@ -2039,6 +2039,7 @@
     <Content Include="SQLInitialize\20200214_1105_BTLPromo_AP.sql" />
     <Content Include="SQLInitialize\20200311_1600_Edit_BTL_AP.sql" />
     <Content Include="SQLInitialize\20200311_1645_Edit_BTLPromo_AP.sql" />
+    <Content Include="SQLInitialize\20200331_1740_Alter_NonPromoSupportBrandTech_AP.sql" />
     <Compile Include="Utils\SpecialNotKeyPropertyAttribute.cs" />
     <Content Include="SQLInitialize\20200210_1300_ClientDashboardViewController_Import_AP.sql" />
     <Compile Include="Utils\SimpleModels.cs" />
