@@ -73,7 +73,7 @@ namespace Module.Frontend.TPM.Controllers
                 StartDate = x.StartDate,
                 EndDate = x.EndDate,
                 PromoDuration = DbFunctions.DiffDays(x.StartDate, x.EndDate) + 1,
-                EventName = x.EventName,
+                EventName = x.Event.Name,
                 PromoStatusName = x.PromoStatus.Name,
                 InOut = x.InOut,
                 IsGrowthAcceleration = x.IsGrowthAcceleration,
@@ -178,8 +178,6 @@ namespace Module.Frontend.TPM.Controllers
             }
             return query.AsQueryable();
         } 
-
-
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue, MaxExpansionDepth = 3)]
