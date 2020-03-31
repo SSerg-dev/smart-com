@@ -12,7 +12,7 @@
         { name: 'CreateDate', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
         { name: 'ChangeDate', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
         {
-            name: 'ZREP', type: 'string', mapping: 'PromoProduct.ZREP', breezeEntityType: 'PromoProduct', hidden: false, isDefault: true
+            name: 'ZREP', type: 'string', mapping: 'PromoProduct.Product.ZREP', breezeEntityType: 'Product', hidden: false, isDefault: true
         },
         {
             name: 'Number', type: 'int', mapping: 'PromoProduct.Promo.Number', breezeEntityType: 'Promo', hidden: false, isDefault: true, defaultFilterConfig: { valueField: 'Number' }, isKey: true
