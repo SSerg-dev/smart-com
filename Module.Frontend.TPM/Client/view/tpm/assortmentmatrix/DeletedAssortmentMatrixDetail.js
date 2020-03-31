@@ -20,7 +20,7 @@
             fieldLabel: l10n.ns('tpm', 'AssortmentMatrix').value('ClientTreeName'),
         }, {
             xtype: 'singlelinedisplayfield',
-            name: 'EAN_PC',
+            name: 'ProductEAN_PC',
             fieldLabel: l10n.ns('tpm', 'AssortmentMatrix').value('EAN_PC')
         }]
     }

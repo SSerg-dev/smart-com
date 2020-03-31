@@ -69,7 +69,7 @@
                 }
             }, {
                 text: l10n.ns('tpm', 'AssortmentMatrix').value('EAN_PC'),
-                dataIndex: 'EAN_PC',
+                dataIndex: 'ProductEAN_PC',
                 filter: {
                     type: 'search',
                     selectorWidget: 'product',
