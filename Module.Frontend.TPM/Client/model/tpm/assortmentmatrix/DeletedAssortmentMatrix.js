@@ -13,7 +13,7 @@
         },
         { name: 'ProductId', hidden: true, isDefault: true },
         {
-            name: 'EAN_PC', type: 'string', mapping: 'Product.EAN_PC', tree: true,
+            name: 'ProductEAN_PC', type: 'string', mapping: 'Product.EAN_PC', 
             defaultFilterConfig: { valueField: 'EAN_PC' }, breezeEntityType: 'Product', hidden: false, isDefault: true
         },
         { name: 'StartDate', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },

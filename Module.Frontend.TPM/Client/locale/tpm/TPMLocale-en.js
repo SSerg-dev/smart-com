@@ -160,7 +160,8 @@
         'BTL': 'BTL',
         'ClientDashboard': 'Client Dashboard',
         'Dashboard': 'Dashboard',
-        'ClientKPIData': 'Client KPI Data'
+        'ClientKPIData': 'Client KPI Data',
+        'NonPromoLinked': "Non-Promo Linked",
     },
 
     'text': {
@@ -2174,6 +2175,7 @@
         'Number': 'ID',
         'EAN_PC': 'EAN PC',
         'ProductEANPC': 'EAN PC',
+        'ProductEAN_PC': 'EAN PC',
         'ClientTreeName': 'Client',
         'ClientTreeObjectId': 'Client hierarchy code',
         'StartDate': 'Start Date',
