@@ -15,8 +15,8 @@
             breezeEntityType: 'Product', hidden: false, isDefault: true
         },
         {
-            name: 'PromoClient', type: 'string', mapping: 'Promo.ClientHierarchy', defaultFilterConfig: { valueField: 'ClientHierarchy' },
-            breezeEntityType: 'ClientTree', hidden: false, isDefault: true, tree: true,
+            name: 'PromoClient', type: 'string', mapping: 'Promo.ClientHierarchy', defaultFilterConfig: { valueField: 'FullPathName' },
+            breezeEntityType: 'ClientTree', hidden: false, isDefault: true, tree: true, viewTree: true
         },
         {
             name: 'PromoNumber', type: 'int', mapping: 'Promo.Number', defaultFilterConfig: { valueField: 'Number' },
