@@ -1837,10 +1837,16 @@
     },
 
     'AssortmentMatrix': {
+        'Id': 'Id',
+        'Number': 'ID',
         'EAN_PC': 'EAN PC',
+        'ProductEANPC': 'EAN PC',
         'ClientTreeName': 'Client',
+        'ClientTreeObjectId': 'Client hierarchy code',
         'StartDate': 'Start Date',
-        'EndDate': 'End Date'
+        'EndDate': 'End Date',
+        'CreateDate': 'Create Date',
+        'actualAssortmentMatrixButtonText': 'Get actual assortment matrix.'
     },
     'HistoricalAssortmentMatrix': ['.tpm.AssortmentMatrix', '.core.BaseHistoryEntity'],
     'DeletedAssortmentMatrix': ['.tpm.AssortmentMatrix', '.core.BaseDeletedEntity'],
