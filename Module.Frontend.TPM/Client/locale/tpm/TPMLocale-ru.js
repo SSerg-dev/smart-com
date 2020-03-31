@@ -898,7 +898,9 @@
 		'BrandTechName': 'Brand tech',
 		'SubrangeName': 'Subrange',
 		'AgeGroupName': 'Age group',
-		'VarietyName': 'Variety'
+		'VarietyName': 'Variety',
+        'BrandTechBrandName': 'Brand',
+        'BrandTechTechnologyName': 'Technology',
 	},
 	'HistoricalColor': ['.tpm.Color', '.core.BaseHistoryEntity'],
 	'DeletedColor': ['.tpm.Color', '.core.BaseDeletedEntity'],
