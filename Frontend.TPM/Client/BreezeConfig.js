@@ -400,10 +400,12 @@
                         return;
                     }
 
-                    var inlineCount;
-                    if (data.__count) {
-                        // OData can return data.__count as a string
-                        inlineCount = parseInt(data.__count, 10);
+                    if (data) {
+                        var inlineCount;
+                        if (data.__count) {
+                            // OData can return data.__count as a string
+                            inlineCount = parseInt(data.__count, 10);
+                        }
                     }
 
                     return deferred.resolve({ results: results, inlineCount: inlineCount, httpResponse: response });

@@ -16,6 +16,10 @@ Ext.define('App.view.core.filebuffer.FileBuffer', {
         xtype: 'directorygrid',
         itemId: 'datatable',
         editorModel: 'Core.form.EditorDetailWindowModel',
+        sorters: [{
+            property: 'CreateDate',
+            direction: 'DESC'
+        }],
 
         store: {
             type: 'directorystore',
