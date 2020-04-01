@@ -37,7 +37,7 @@
     ],
 
     dockedItems: [{
-        xtype: 'readonlydirectorytoolbar',
+        xtype: 'custombigtoolbar',
         items: [{
             xtype: 'widthexpandbutton',
             ui: 'fill-gray-button-toolbar',
