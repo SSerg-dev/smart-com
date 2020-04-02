@@ -201,15 +201,28 @@
         });
     },
 
-    selectFields: function (newNames) {
+     selectFields: function (newNames) {
         var currentNames = this.getSelectedFields(),
             toInsert = Ext.Array.difference(newNames, currentNames),
             toRemove = Ext.Array.difference(currentNames, newNames);
 
-        this.remove(toRemove.map(function (name) {
-            return this.entries.getByKey(name);
-        }, this));
-        this.add(this.createFilterEntries(toInsert));
+        
+        if (toInsert.length < 20) {
+            this.add(this.createFilterEntries(toInsert));
+        } else {
+            this.entries.addAll(this.createFilterEntries(toInsert));
+            this.addFull(this);
+        }
+        if (toRemove.length < 20) {
+            this.remove(toRemove.map(function (name) {
+                return this.entries.getByKey(name);
+            }, this));  
+        } else {
+            this.entries.removeAll(toRemove.map(function (name) {
+                return this.entries.getByKey(name);
+            }, this));
+            this.removeFull(this);
+        }
     },
 
     getFilterEntries: function () {

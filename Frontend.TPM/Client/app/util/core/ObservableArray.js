@@ -9,7 +9,9 @@
 
         this.addEvents(
             'add',
+            'addFull',
             'remove',
+            'removeFull',
             'commit',
             'reject',
             'clear'
@@ -38,7 +40,12 @@
             }
         }, this);
     },
-
+    addFull: function (items) {
+        this.fireEvent('addFull', this, items);
+    },
+    removeFull: function (items) {
+        this.fireEvent('removeFull', this, items);
+    },
     remove: function (items) {
         var entries = this.entries,
             removedEntries = this.removedEntries;

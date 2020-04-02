@@ -20,7 +20,10 @@
             destroyable: true,
             clear: this.onClearModel,
             remove: this.onRemoveEntry,
-            add: this.onAddEntry
+            removeFull: this.onRemoveFullEntry,
+            add: this.onAddEntry,
+            addFull: this.onAddFullEntry
+
         });
 
         App.Util.callWhenRendered(this, this.renderModel);
@@ -35,7 +38,23 @@
         this.add(rows);
         Ext.resumeLayouts(true);
     },
+    onAddFullEntry: function (entry) {
+        var filterEntries = entry.getFilterEntries(),
+            rows = this.createRowWidgets(filterEntries);
 
+        Ext.suspendLayouts();
+        this.removeAll();
+        this.add(rows);
+        Ext.resumeLayouts(true);
+    },
+    onRemoveFullEntry: function (entry) {
+        var filterEntries = entry.getFilterEntries(),
+            rows = this.createRowWidgets(filterEntries);
+        Ext.suspendLayouts();
+        this.removeAll();
+        this.add(rows);
+        Ext.resumeLayouts(true);
+    },
     onAddEntry: function (model, entry) {
         this.add(this.createRowWidgets(entry));
     },
