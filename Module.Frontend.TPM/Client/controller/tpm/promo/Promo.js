@@ -3002,6 +3002,11 @@
             promoeditorcustom.down('#btn_resetPromo').hide();
         }
 
+        //чтобы убрать кнопку Recalculate при копировании промо в календаре
+        if (isCopy) {
+            promoeditorcustom.down('#btn_recalculatePromo').hide();
+        }
+
         this.checkLogForErrors(record.getId());
 
         this.checkLoadingComponents();
