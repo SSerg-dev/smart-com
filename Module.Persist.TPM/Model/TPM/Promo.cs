@@ -142,6 +142,8 @@ namespace Module.Persist.TPM.Model.TPM
         public double? PlanPromoNetIncrementalEarnings { get; set; }
         public double? PlanPromoNetROIPercent { get; set; }
         public double? PlanPromoNetUpliftPercent { get; set; }
+        public double? PlanTIBasePercent { get; set; }
+        public double? PlanCOGSPercent { get; set; }
         public double? ActualPromoBaselineLSV { get; set; }
         public double? ActualInStoreDiscount { get; set; }
         public double? ActualInStoreShelfPrice { get; set; }
@@ -158,6 +160,8 @@ namespace Module.Persist.TPM.Model.TPM
         public double? ActualPromoNetIncrementalEarnings { get; set; }
         public double? ActualPromoNetROIPercent { get; set; }
         public double? ActualPromoNetUpliftPercent { get; set; }
+        public double? ActualTIBasePercent { get; set; }
+        public double? ActualCOGSPercent { get; set; }
         public double? PlanPromoBaselineBaseTI { get; set; }
         public double? PlanPromoBaseTI { get; set; }
         public double? PlanPromoNetBaseTI { get; set; }
@@ -316,6 +320,10 @@ namespace Module.Persist.TPM.Model.TPM
             RegularExcludedProductIds = promoToCopy.RegularExcludedProductIds;
             IsGrowthAcceleration = promoToCopy.IsGrowthAcceleration;
             PromoTypesId = promoToCopy.PromoTypesId;
+            PlanTIBasePercent = promoToCopy.PlanTIBasePercent;
+            ActualTIBasePercent = promoToCopy.ActualTIBasePercent;
+            PlanCOGSPercent = promoToCopy.PlanCOGSPercent;
+            ActualCOGSPercent = promoToCopy.ActualCOGSPercent;
         }
 
         public Promo() {}

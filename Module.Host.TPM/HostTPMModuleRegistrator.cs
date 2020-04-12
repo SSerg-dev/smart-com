@@ -59,8 +59,10 @@ namespace Module.Host.TPM
                 new Handlers.PromoListActualRecalculationHandler(),
 				new Handlers.DataLakeIntegrationHandlers.MarsProductsCheckStarterHandler(),
 				new Handlers.DataLakeIntegrationHandlers.MarsProductsCheckHandler(),
-                new Handlers.FullXLSXUpdateImportClientDashboardHandler()
-			};
+                new Handlers.FullXLSXUpdateImportClientDashboardHandler(),
+                new Handlers.SetTIBasePercentValuesHandler(),
+                new Handlers.SetCOGSPercentValuesHandler()
+            };
         }
     }
 }

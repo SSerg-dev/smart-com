@@ -46,6 +46,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 IQueryable<TradeInvestment> TIQuery = context.Set<TradeInvestment>().Where(x => !x.Disabled);
                 SimplePromoTradeInvestment simplePromoTradeInvestment = new SimplePromoTradeInvestment(promo);
                 double? TIBasePercent = PromoUtils.GetTIBasePercent(simplePromoTradeInvestment, context, TIQuery, out message, out error);
+                promo.PlanTIBasePercent = TIBasePercent;
                 if (message == null)
                 {
                     promo.PlanPromoIncrementalBaseTI = promo.PlanPromoIncrementalLSV * TIBasePercent / 100;
@@ -53,6 +54,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     IQueryable<COGS> cogsQuery = context.Set<COGS>().Where(x => !x.Disabled);
                     SimplePromoCOGS simplePromoCOGS = new SimplePromoCOGS(promo);
                     double? COGSPercent = PromoUtils.GetCOGSPercent(simplePromoCOGS, context, cogsQuery, out message);
+                    promo.PlanCOGSPercent = COGSPercent;
                     if (message == null)
                     {
                         promo.PlanPromoIncrementalCOGS = promo.PlanPromoIncrementalLSV * COGSPercent / 100;

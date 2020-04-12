@@ -1726,6 +1726,10 @@
     <Compile Include="Migrations\202003302141389_EmptyMigrationRC7.Designer.cs">
       <DependentUpon>202003302141389_EmptyMigrationRC7.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202004111518509_Add_TI_COGS_Fields_to_Promo.cs" />
+    <Compile Include="Migrations\202004111518509_Add_TI_COGS_Fields_to_Promo.Designer.cs">
+      <DependentUpon>202004111518509_Add_TI_COGS_Fields_to_Promo.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PromoProductsView.cs" />
@@ -2029,6 +2033,8 @@
     <Content Include="SQLInitialize\20200327_1245_Add_GetFilteredData_APs_part1.sql" />
     <Content Include="SQLInitialize\20200327_1246_Add_GetFilteredData_APs_part2.sql" />
     <Content Include="SQLInitialize\20200327_1247_Add_GetFilteredData_APs_part3.sql" />
+    <Content Include="SQLInitialize\20200412_1810_Create_SetCOGSPercentValuesHandler.sql" />
+    <Content Include="SQLInitialize\20200411_2145_Create_SetTIBasePercentValuesHandler.sql" />
     <Content Include="Sql\20191004_1540_FillInOutProductIdsHandler.sql" />
     <Content Include="SQLInitialize\20190926_1600_HistoricalPromoSupport_AP.sql" />
     <Content Include="SQLInitialize\20191106_1700_PromoGridView.sql" />
@@ -3273,6 +3279,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202003302141389_EmptyMigrationRC7.resx">
       <DependentUpon>202003302141389_EmptyMigrationRC7.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004111518509_Add_TI_COGS_Fields_to_Promo.resx">
+      <DependentUpon>202004111518509_Add_TI_COGS_Fields_to_Promo.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,7 @@
-﻿using Core.Security;
+﻿using Core.Dependency;
+using Core.Security;
 using Core.Security.Models;
-
+using Core.Settings;
 using Frontend.Core.Controllers.Base;
 using Frontend.Core.Extensions.Export;
 using Module.Frontend.TPM.Util;
@@ -55,6 +56,16 @@ namespace Module.Frontend.TPM.Controllers
 
         public static IQueryable<PromoROIReport> GetPromoROIReportsStatic(DatabaseContext databaseContext)
         {
+            var currentYear = DateTimeOffset.Now.Year;
+            var settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
+            var statusesSetting = settingsManager.GetSetting<string>("ACTUAL_COGSTI_CHECK_PROMO_STATUS_LIST", "Finished,Closed");
+            var checkPromoStatuses = statusesSetting.Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+
+            var previousYearsPromoIds = databaseContext.Set<Promo>()
+                .Where(x => !x.Disabled && x.StartDate.HasValue && x.StartDate.Value.Year != currentYear)
+                .Where(x => checkPromoStatuses.Contains(x.PromoStatus.Name))
+                .Select(x => x.Id).ToList();
+
             var query = databaseContext.Set<Promo>().Where(x => !x.Disabled).Select(x => new PromoROIReport
             {
                 Id = x.Id,
@@ -99,12 +110,10 @@ namespace Module.Frontend.TPM.Controllers
                 PlanPromoCostProdCatalogue = x.PlanPromoCostProdCatalogue,
                 PlanPromoCostProdPOSMInClient = x.PlanPromoCostProdPOSMInClient,
                 PlanPromoCost = x.PlanPromoCost,
-                TIBasePercent = x.PlanPromoIncrementalLSV.HasValue && x.PlanPromoIncrementalLSV.Value != 0 ?
-                    x.PlanPromoIncrementalBaseTI / x.PlanPromoIncrementalLSV * 100 : null,
+                TIBasePercent = previousYearsPromoIds.Contains(x.Id) ? x.ActualTIBasePercent : x.PlanTIBasePercent,
                 PlanPromoIncrementalBaseTI = x.PlanPromoIncrementalBaseTI,
                 PlanPromoNetIncrementalBaseTI = x.PlanPromoNetIncrementalBaseTI,
-                COGSPercent = x.PlanPromoIncrementalLSV.HasValue && x.PlanPromoIncrementalLSV.Value != 0 ?
-                    x.PlanPromoIncrementalCOGS / x.PlanPromoIncrementalLSV * 100 : null,
+                COGSPercent = previousYearsPromoIds.Contains(x.Id) ? x.ActualCOGSPercent : x.PlanCOGSPercent,
                 PlanPromoIncrementalCOGS = x.PlanPromoIncrementalCOGS,
                 PlanPromoNetIncrementalCOGS = x.PlanPromoNetIncrementalCOGS,
                 PlanPromoTotalCost = x.PlanPromoTotalCost,

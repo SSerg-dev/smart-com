@@ -62,16 +62,19 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 {
                     IQueryable<ActualTradeInvestment> actualTIQuery = context.Set<ActualTradeInvestment>().Where(x => !x.Disabled);
                     TIBasePercent = PromoUtils.GetTIBasePercent(simplePromoTradeInvestment, context, actualTIQuery, out message, out error);
+                    promo.ActualTIBasePercent = TIBasePercent;
                     if (TIBasePercent == null)
                     {
                         IQueryable<TradeInvestment> TIQuery = context.Set<TradeInvestment>().Where(x => !x.Disabled);
                         TIBasePercent = PromoUtils.GetTIBasePercent(simplePromoTradeInvestment, context, TIQuery, out message, out error);
+                        promo.ActualTIBasePercent = TIBasePercent;
                     }
                 }
                 else
                 {
                     IQueryable<TradeInvestment> TIQuery = context.Set<TradeInvestment>().Where(x => !x.Disabled);
                     TIBasePercent = PromoUtils.GetTIBasePercent(simplePromoTradeInvestment, context, TIQuery, out message, out error);
+                    promo.PlanTIBasePercent = TIBasePercent;
                 }
 
                 if (message != null)
@@ -83,16 +86,19 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 {
                     IQueryable<ActualCOGS> actualcogsQuery = context.Set<ActualCOGS>().Where(x => !x.Disabled);
                     COGSPercent = PromoUtils.GetCOGSPercent(simplePromoCOGS, context, actualcogsQuery, out message);
+                    promo.ActualCOGSPercent = COGSPercent;
                     if (COGSPercent == null)
                     {
                         IQueryable<COGS> cogsQuery = context.Set<COGS>().Where(x => !x.Disabled);
                         COGSPercent = PromoUtils.GetCOGSPercent(simplePromoCOGS, context, cogsQuery, out message);
+                        promo.ActualCOGSPercent = COGSPercent;
                     }
                 }
                 else
                 {
                     IQueryable<COGS> cogsQuery = context.Set<COGS>().Where(x => !x.Disabled);
                     COGSPercent = PromoUtils.GetCOGSPercent(simplePromoCOGS, context, cogsQuery, out message);
+                    promo.PlanCOGSPercent = COGSPercent;
                 }
                 
                 if (message != null)
