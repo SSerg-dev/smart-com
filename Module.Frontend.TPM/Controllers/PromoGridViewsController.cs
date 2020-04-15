@@ -145,7 +145,7 @@ namespace Module.Frontend.TPM.Controllers {
                 Context.SaveChanges();
 
                 PromoCalculateHelper.RecalculateBudgets(model, user, Context);
-                PromoCalculateHelper.RecalculateBTLBudgets(model, user, Context);
+                PromoCalculateHelper.RecalculateBTLBudgets(model, user, Context, safe: true);
                 PromoHelper.WritePromoDemandChangeIncident(Context, model, true);
 
                 //если промо инаут, необходимо убрать записи в IncrementalPromo при отмене промо

@@ -219,12 +219,12 @@ namespace Module.Frontend.TPM.Util {
             model.ActualInStoreMechanic = null;
             model.ActualInStoreMechanicId = null;
             model.ActualInStoreMechanicType = null;
-            model.ActualInStoreMechanicTypeId = null; 
+            model.ActualInStoreMechanicTypeId = null;
+
             PromoCalculateHelper.RecalculateBudgets(model, user, Context);
-            PromoCalculateHelper.RecalculateBTLBudgets(model, user, Context);
+            PromoCalculateHelper.RecalculateBTLBudgets(model, user, Context, safe: true);
 
             Context.SaveChanges();
-
         }
 
         /// <summary>

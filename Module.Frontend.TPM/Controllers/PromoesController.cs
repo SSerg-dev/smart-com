@@ -492,14 +492,14 @@ namespace Module.Frontend.TPM.Controllers {
 
                         //при сбросе статуса в Draft необходимо отвязать бюджеты от промо и пересчитать эти бюджеты
                         PromoCalculateHelper.RecalculateBudgets(model, user, Context);
-                        PromoCalculateHelper.RecalculateBTLBudgets(model, user, Context);
+                        PromoCalculateHelper.RecalculateBTLBudgets(model, user, Context, safe: true);
                     }
                 }
                 else if (statusName.ToLower() != "finished")
                 {
                     //при отмене промо необходимо отвязать бюджеты от промо и пересчитать эти бюджеты
                     PromoCalculateHelper.RecalculateBudgets(model, user, Context);
-                    PromoCalculateHelper.RecalculateBTLBudgets(model, user, Context);
+                    PromoCalculateHelper.RecalculateBTLBudgets(model, user, Context, safe: true);
 
                     //если промо инаут, необходимо убрать записи в IncrementalPromo при отмене промо
                     if (model.InOut.HasValue && model.InOut.Value)
@@ -769,10 +769,9 @@ namespace Module.Frontend.TPM.Controllers {
                 }
                 Context.SaveChanges();
                 
-                bool safe = true;
                 PromoHelper.WritePromoDemandChangeIncident(Context, model, true);
                 PromoCalculateHelper.RecalculateBudgets(model, user, Context);
-                PromoCalculateHelper.RecalculateBTLBudgets(model, user, Context, safe);
+                PromoCalculateHelper.RecalculateBTLBudgets(model, user, Context, safe: true);
 
                 //если промо инаут, необходимо убрать записи в IncrementalPromo при отмене промо
                 if (model.InOut.HasValue && model.InOut.Value)

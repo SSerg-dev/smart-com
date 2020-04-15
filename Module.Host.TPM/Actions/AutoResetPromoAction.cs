@@ -124,7 +124,7 @@ namespace Module.Host.TPM.Actions
 			    }
                 foreach (Guid btlId in mainBTLIds)
                 {
-                    PromoCalculateHelper.CalculateBTLBudgetsCreateTask(btlId.ToString(), null, null, context);
+                    PromoCalculateHelper.CalculateBTLBudgetsCreateTask(btlId.ToString(), null, null, context, safe: true);
                 }
                 
                 context.SaveChanges();
@@ -261,7 +261,7 @@ namespace Module.Host.TPM.Actions
                 }
                 foreach (Guid btlId in mainBTLIds)
                 {
-                    PromoCalculateHelper.CalculateBTLBudgetsCreateTask(btlId.ToString(), null, null, context);
+                    PromoCalculateHelper.CalculateBTLBudgetsCreateTask(btlId.ToString(), null, null, context, safe: true);
                 }
 
                 context.SaveChanges();
