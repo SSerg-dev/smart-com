@@ -2134,7 +2134,16 @@
         'ProductEN': 'Product EN',
         'BrandsegTech_code': 'Brand Seg Tech Code',
         'Brandsegtech': 'Brand Seg Tech',
-        'ActualPromoLSVByCompensation': 'Actual Promo LSV By Compensation'
+        'ActualPromoLSVByCompensation': 'Actual Promo LSV By Compensation',
+        'PlanProductBaselineCaseQty': 'Plan Product Baseline CaseQty',
+        'PlanProductPostPromoEffectLSVW1': 'Plan Product Post Promo Effect LSV W1',
+        'PlanProductPostPromoEffectLSVW2': 'Plan Product Post Promo Effect LSV W2',
+        'PlanProductPostPromoEffectLSV': 'Plan Product Post Promo Effect LSV',
+        'PlanProductPostPromoEffectLSVW': 'Plan Product Post Promo Effect LSV',
+        'ActualProductPostPromoEffectLSV': 'Actual Product Post Promo Effect LSV',
+        'PlanProductUpliftPercent': 'Plan Product Uplift Percent',
+        'ActualProductLSVByCompensation': 'Actual Product LSV By Compensation',
+
     },
 
     'Logo': {
