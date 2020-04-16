@@ -100,10 +100,10 @@ namespace Module.Persist.TPM.Utils.Filter {
                 case RuleOperator.LessOrEqual:
                     content = this.Field + " <= " + "''" + this.Data + "''";
                     break;
-                case RuleOperator.GraterThan:
+                case RuleOperator.GreaterThan:
                     content = this.Field + " > " + "''" + this.Data + "''";
                     break;
-                case RuleOperator.GraterOrEqual:
+                case RuleOperator.GreaterOrEqual:
                     content = this.Field + " >= " + "''" + this.Data + "''";
                     break;
                 case RuleOperator.EndsWith:
@@ -183,13 +183,13 @@ namespace Module.Persist.TPM.Utils.Filter {
         /// >
         /// </summary>
         [EnumMember]
-        GraterThan,
+        GreaterThan,
 
         /// <summary>
         /// >=
         /// </summary>
         [EnumMember]
-        GraterOrEqual,
+        GreaterOrEqual,
 
         /// <summary>
         /// заканчивая

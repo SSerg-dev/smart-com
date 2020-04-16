@@ -288,8 +288,8 @@
         'operations': {
             'Equals': 'Equals',
             'NotEqual': 'Not Equal',
-            'GraterThan': 'Grater Than',
-            'GraterOrEqual': 'Grater Or Equal',
+            'GreaterThen': 'Greater Than',
+            'GreaterOrEqual': 'Greater Or Equal',
             'LessThan': 'Less Than',
             'LessOrEqual': 'Less Or Equal',
             'Between': 'Between',

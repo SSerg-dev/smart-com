@@ -94,10 +94,10 @@ namespace Module.Persist.TPM.Utils.Filter {
                 case RuleOperator.LessOrEqual:
                     return Expression.LessThanOrEqual(member, selector);
 
-                case RuleOperator.GraterThan:
+                case RuleOperator.GreaterThan:
                     return Expression.GreaterThan(member, selector);
 
-                case RuleOperator.GraterOrEqual:
+                case RuleOperator.GreaterOrEqual:
                     return Expression.GreaterThanOrEqual(member, selector);
 
                 // available only for string fields

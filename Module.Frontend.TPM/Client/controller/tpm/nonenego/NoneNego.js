@@ -400,7 +400,7 @@
                 operator: 'and',
                 rules: [{
                     property: 'ToDate',
-                    operation: 'GraterOrEqual',
+                    operation: 'GreaterOrEqual',
                     value: dateFilter
                 }]
             }]

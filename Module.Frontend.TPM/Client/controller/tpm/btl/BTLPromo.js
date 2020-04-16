@@ -138,7 +138,7 @@
 
         if (startDate) {
             prefilter.rules.push({
-                operation: "GraterOrEqual",
+                operation: "GreaterOrEqual",
                 property: "EndDate",
                 value: startDate
             });

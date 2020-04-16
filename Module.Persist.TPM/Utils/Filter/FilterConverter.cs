@@ -110,8 +110,8 @@ namespace Module.Persist.TPM.Utils.Filter {
                 case "NotContains": r.Operator = RuleOperator.NotContains; break;
                 case "EndsWith": r.Operator = RuleOperator.EndsWith; break;
                 case "Equals": r.Operator = RuleOperator.Equals; break;
-                case "GraterOrEqual": r.Operator = RuleOperator.GraterOrEqual; break;
-                case "GraterThan": r.Operator = RuleOperator.GraterThan; break;
+                case "GreaterOrEqual": r.Operator = RuleOperator.GreaterOrEqual; break;
+                case "GreaterThen": r.Operator = RuleOperator.GreaterThan; break;
                 case "IsNull": r.Operator = RuleOperator.IsNull; break;
                 case "LessOrEqual": r.Operator = RuleOperator.LessOrEqual; break;
                 case "LessThan": r.Operator = RuleOperator.LessThan; break;
@@ -132,14 +132,14 @@ namespace Module.Persist.TPM.Utils.Filter {
             { "notcontains", "NotContains"},
             //{ "", "ContainsEx"},
             { "endswith", "EndsWith"},
-            { "ge", "GraterOrEqual"},
+            { "ge", "GreaterOrEqual"},
             { "isnull", "IsNull"},
             { "", "LessOrEqual"},
             { "lt", "LessThan"},
             { "ne", "NotEqual"},
             { "notnull", "NotNull"},
             { "startswith", "StartsWith"},
-            { "gt", "GraterThan"},
+            { "gt", "GreaterThen"},
             { "in", "Any"},
         };
     }

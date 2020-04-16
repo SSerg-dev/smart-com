@@ -247,8 +247,8 @@
         'operations': {
             'Equals': 'Равно',
             'NotEqual': 'Не равно',
-            'GraterThan': 'Больше',
-            'GraterOrEqual': 'Больше или равно',
+            'GreaterThen': 'Больше',
+            'GreaterOrEqual': 'Больше или равно',
             'LessThan': 'Меньше',
             'LessOrEqual': 'Меньше или равно',
             'Between': 'Диапазон',
