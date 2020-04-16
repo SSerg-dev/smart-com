@@ -18,7 +18,7 @@ namespace ProcessingService {
             string serviceName = AppSettingsManager.GetSetting(configPath, Consts.AppSettingNames.ServiceName, "Demand2Supply Processing Host");
             
             if (String.IsNullOrEmpty(serviceName)) {
-                throw new ApplicationException(String.Format("ProcessingServiceInstaller: Не задано значение настройки '{0}'", Consts.AppSettingNames.ServiceName));
+                throw new ApplicationException(String.Format("ProcessingServiceInstaller: Setting '{0}' has no value", Consts.AppSettingNames.ServiceName));
             }
 
             process = new ServiceProcessInstaller();
