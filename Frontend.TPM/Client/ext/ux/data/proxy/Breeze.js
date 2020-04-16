@@ -5,8 +5,8 @@
     extFilterOperationMap: {
         'Equals': breeze.FilterQueryOp.Equals,
         'NotEqual': breeze.FilterQueryOp.NotEquals,
-        'GraterThan': breeze.FilterQueryOp.GreaterThan,
-        'GraterOrEqual': breeze.FilterQueryOp.GreaterThanOrEqual,
+        'GreaterThen': breeze.FilterQueryOp.GreaterThan,
+        'GreaterOrEqual': breeze.FilterQueryOp.GreaterThanOrEqual,
         'LessThan': breeze.FilterQueryOp.LessThan,
         'LessOrEqual': breeze.FilterQueryOp.LessThanOrEqual,
         'Between': null,

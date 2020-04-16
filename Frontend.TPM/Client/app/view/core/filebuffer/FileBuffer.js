@@ -16,15 +16,15 @@ Ext.define('App.view.core.filebuffer.FileBuffer', {
         xtype: 'directorygrid',
         itemId: 'datatable',
         editorModel: 'Core.form.EditorDetailWindowModel',
-        sorters: [{
-            property: 'CreateDate',
-            direction: 'DESC'
-        }],
 
         store: {
             type: 'directorystore',
             model: 'App.model.core.filebuffer.FileBuffer',
             storeId: 'filebufferstore',
+            sorters: [{
+                property: 'CreateDate',
+                direction: 'DESC'
+            }],
             extendedFilter: {
                 xclass: 'App.ExtFilterContext',
                 supportedModels: [{

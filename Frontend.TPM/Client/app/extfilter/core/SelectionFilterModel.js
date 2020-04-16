@@ -72,7 +72,7 @@
             }
 
             var nodes = [
-                this.makeRule(property1, 'GraterOrEqual', from),
+                this.makeRule(property1, 'GreaterOrEqual', from),
                 this.makeRule(property2, 'LessOrEqual', to)
             ].filter(function (node) {
                 return !Ext.isEmpty(node);
@@ -136,7 +136,7 @@
 
             if (value instanceof App.MarsDate) {
                 var nodes = [
-                    this.makeRule(metadata && metadata.MDStartFieldName || 'StartDate', 'GraterOrEqual', value.getStartDate()),
+                    this.makeRule(metadata && metadata.MDStartFieldName || 'StartDate', 'GreaterOrEqual', value.getStartDate()),
                     this.makeRule(metadata && metadata.MDEndFieldName || 'FinishDate', 'LessOrEqual', value.getEndDate())
                 ].filter(function (node) {
                     return !Ext.isEmpty(node);

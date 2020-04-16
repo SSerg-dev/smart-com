@@ -3,17 +3,17 @@
 
     typeOperationsMap: {
         'string': ['Equals', 'NotEqual', 'In', 'IsNull', 'NotNull', 'Contains', 'NotContains', 'StartsWith', 'EndsWith'],
-        'int': ['Equals', 'NotEqual', 'GraterThan', 'GraterOrEqual', 'LessThan', 'LessOrEqual', 'Between', 'In', 'IsNull', 'NotNull'],
-        'float': ['Equals', 'NotEqual', 'GraterThan', 'GraterOrEqual', 'LessThan', 'LessOrEqual', 'Between', 'In', 'IsNull', 'NotNull'],
+        'int': ['Equals', 'NotEqual', 'GreaterThen', 'GreaterOrEqual', 'LessThan', 'LessOrEqual', 'Between', 'In', 'IsNull', 'NotNull'],
+        'float': ['Equals', 'NotEqual', 'GreaterThen', 'GreaterOrEqual', 'LessThan', 'LessOrEqual', 'Between', 'In', 'IsNull', 'NotNull'],
         'boolean': ['Equals', 'NotEqual', 'IsNull', 'NotNull'],
-        'date': ['Equals', 'NotEqual', 'GraterThan', 'GraterOrEqual', 'LessThan', 'LessOrEqual', 'Between', 'In', 'IsNull', 'NotNull']
+        'date': ['Equals', 'NotEqual', 'GreaterThen', 'GreaterOrEqual', 'LessThan', 'LessOrEqual', 'Between', 'In', 'IsNull', 'NotNull']
     },
     configAllowedOperations: undefined,
     operationValueTypesMap: {
         'Equals': ['atom', 'field'],
         'NotEqual': ['atom', 'field'],
-        'GraterThan': ['atom', 'field'],
-        'GraterOrEqual': ['atom', 'field'],
+        'GreaterThen': ['atom', 'field'],
+        'GreaterOrEqual': ['atom', 'field'],
         'LessThan': ['atom', 'field'],
         'LessOrEqual': ['atom', 'field'],
         'Contains': ['atom', 'field'],

@@ -203,7 +203,7 @@
 		if (selModel.hasSelection()) {
 			var record = selModel.getSelection()[0];
 			if (record.get('InterfaceDirection') !== 'OUTBOUND') {
-				App.Notify.pushInfo('Интерфейс не является исходящим');
+				App.Notify.pushInfo('The interface is not outgoing');
 			} else {
 				var resource = button.resource || 'FileBuffers';
 				var action = button.action || 'ManualSend';
@@ -318,7 +318,7 @@
 		if (selModel.hasSelection()) {
 			var record = selModel.getSelection()[0];
 			if (record.get('InterfaceDirection') !== 'INBOUND') {
-				App.Notify.pushInfo('Интерфейс не является входящим');
+				App.Notify.pushInfo('The interface is not inbound');
 			} else {
 				var resource = button.resource || 'FileBuffers';
 				var action = button.action || 'ManualProcess';
@@ -589,7 +589,7 @@
 				pattern = 'api/File/AdditionalFilesDownload?filename={0}';
 				break;
 			default:
-				throw Ext.String.format("Логический тип файла '{0}' не поддерживается", fileModel.LogicType);
+				throw Ext.String.format("Logical file type '{0}' is not supported", fileModel.LogicType);
 		}
 		var url = document.location.href + Ext.String.format(pattern, fileModel.Name);
 		var result = Ext.String.format('<a href="{0}" download="{1}" target="_blank">{1}</a>', url, fileModel.DisplayName);
@@ -775,7 +775,7 @@
 		if (selModel.hasSelection()) {
 			var record = selModel.getSelection()[0];
 			if (record.get('InterfaceDirection') !== 'INBOUND') {
-				App.Notify.pushInfo('Интерфейс не является входящим');
+				App.Notify.pushInfo('The interface is not inbound');
 			} else {
 				this.openImportResultFilesWindow(record.get('Id'));
 			}
@@ -790,7 +790,7 @@
 			title: l10n.ns('core').value('uploadFileWindowTitle'),
 			parentGrid: form,
 			needCloseParentAfterUpload: true,
-			successMessage: 'Задача ручного сбора интерфейсного файла успешно создана',
+			successMessage: 'The task of manually collecting the interface file has been successfully created',
 			resource: resource,
 			action: action
 		});
