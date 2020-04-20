@@ -577,7 +577,8 @@ namespace Module.Host.TPM.Actions {
         /// <param name="sourceRecords"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        protected int InsertCOGSDataToDatabase(IEnumerable<IEntity<Guid>> sourceRecords, DatabaseContext context) {
+        protected int InsertCOGSDataToDatabase(IEnumerable<IEntity<Guid>> sourceRecords, DatabaseContext context)
+        {
             IList<COGS> toCreate = new List<COGS>();
             var query = GetQuery(context).ToList();
 
@@ -613,17 +614,32 @@ namespace Module.Host.TPM.Actions {
                     bool existCOGS = false;
 
                     var clientNode = clientTrees.Where(x => x.ObjectId == promo.ClientTreeObjectId && !x.EndDate.HasValue).FirstOrDefault();
+                    if (clientNode == null)
+                    {
+                        clientNode = clientTrees.Where(x => x.ObjectId == promo.ClientTreeObjectId).FirstOrDefault();
+                    }
                     while (!existCOGS && clientNode != null && clientNode.Type != "root")
                     {
                         //промо может быть привязно к удаленному брендтеху(в более общем случае - к бредтеху с другим Id), поэтому сравнение приходится производить по Name, а не по Id
                         var promoBrandTechName = brandTeches.Where(bt => bt.Id == promo.BrandTechId).Select(x => x.Name).FirstOrDefault();
                         var validBrandTeches = context.Set<BrandTech>().Where(x => x.Name == promoBrandTechName);
 
-                        existCOGS = importCOGS.Any(x => x.ClientTreeId == clientNode.Id 
+                        existCOGS = importCOGS.Any(x => x.ClientTreeId == clientNode.Id
                                 && (x.BrandTechId == null || validBrandTeches.Where(bt => bt.Id == x.BrandTechId).Any())
-                                && x.StartDate <= promo.DispatchesStart 
-                                && x.EndDate >= promo.DispatchesStart);             
+                                && x.StartDate <= promo.DispatchesStart
+                                && x.EndDate >= promo.DispatchesStart);
+                        if (!existCOGS)
+                        {
+                            existCOGS = importCOGS.Any(x => x.ClientTreeFullPath.Split(" > ".ToCharArray()).Last().Equals(clientNode.FullPathName.Split(" > ".ToCharArray()).Last())
+                               && (x.BrandTechId == null || validBrandTeches.Where(bt => bt.Id == x.BrandTechId).Any())
+                               && x.StartDate <= promo.DispatchesStart
+                               && x.EndDate >= promo.DispatchesStart);
+                        }
                         clientNode = clientTrees.Where(x => x.ObjectId == clientNode.parentId && !x.EndDate.HasValue).FirstOrDefault();
+                        if (clientNode == null)
+                        {
+                            clientNode = clientTrees.Where(x => x.ObjectId == clientNode.parentId).FirstOrDefault();
+                        }
                     }
 
                     if (!existCOGS)
@@ -645,12 +661,13 @@ namespace Module.Host.TPM.Actions {
                 foreach (ImportCOGS newRecord in sourceRecords)
                 {
                     BrandTech bt = context.Set<BrandTech>().FirstOrDefault(x => x.Name == newRecord.BrandTechName);
-                    COGS toSave = new COGS() {
+                    COGS toSave = new COGS()
+                    {
                         StartDate = newRecord.StartDate,
                         EndDate = newRecord.EndDate,
                         LSVpercent = (float)Math.Round((decimal)newRecord.LSVpercent, 2, MidpointRounding.AwayFromZero),
                         ClientTreeId = newRecord.ClientTreeId,
-                        BrandTechId = bt != null ? (Guid?) bt.Id : null,
+                        BrandTechId = bt != null ? (Guid?)bt.Id : null,
                         Year = newRecord.StartDate.Value.Year
                     };
                     toCreate.Add(toSave);
