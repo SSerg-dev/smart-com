@@ -668,7 +668,13 @@ namespace Module.Frontend.TPM.Controllers
                     var firstchildNodes = activeTree.Where(x => x.parentId == currentRecord.ObjectId).ToList();
 
                     GetChildNodes(firstchildNodes, childNodes);
-
+                    if (model.DemandCode != currentRecord.DemandCode)
+                    {
+                        if (!currentRecord.IsBaseClient)
+                            ClientTreeBrandTechesController.ResetClientTreeBrandTechDemandGroup(model.DemandCode, firstchildNodes,currentRecord, Context);
+                        else
+                            ClientTreeBrandTechesController.ResetClientTreeBrandTechDemandGroup(model.DemandCode, new List<ClientTree>() { currentRecord }, currentRecord, Context);
+                    }
                     foreach (var node in childNodes)
                     {
                         if (node.IsBaseClient)

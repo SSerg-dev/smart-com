@@ -77,6 +77,27 @@ namespace Module.Frontend.TPM.Controllers
             return optionsPost.ApplyTo(query, querySettings) as IQueryable<ClientTreeBrandTech>;
         }
 
+        public static void ResetClientTreeBrandTechDemandGroup(String newDemandCode, List<ClientTree> clientTrees, ClientTree oldClientTree, DatabaseContext databaseContext)
+        {
+             var clientTreeBrandTeches = databaseContext.Set<ClientTreeBrandTech>().Where(d=> d.ParentClientTreeDemandCode.Equals(oldClientTree.DemandCode) && !d.Disabled);
+            foreach (var item in clientTrees)
+            {
+                if (item.IsBaseClient)
+                {
+                    string demandCode;
+                    if (oldClientTree.Equals(clientTrees.FirstOrDefault()))
+                        demandCode = newDemandCode;
+                    else
+                        demandCode = String.IsNullOrEmpty(item.DemandCode) ? newDemandCode : item.DemandCode;
+                    var clients = databaseContext.Set<ClientTreeBrandTech>().Where(e => e.ClientTreeId == item.Id && !e.Disabled);
+                    foreach (var client in clients)
+                    {
+                        if(client.ParentClientTreeDemandCode.Equals(oldClientTree.DemandCode))
+                            client.ParentClientTreeDemandCode = demandCode;
+                    }
+                }
+            }
+        }
         public static int FillClientTreeBrandTechTable(DatabaseContext databaseContext)
         {
             var deleteScript = GetDeleteScript();
@@ -132,7 +153,7 @@ namespace Module.Frontend.TPM.Controllers
 
 				                SELECT @BrandTechId = {nameof(BrandTech.Id)}, @CurrentBrandTechName = {nameof(BrandTech.Name)} FROM {nameof(BrandTech)} WHERE {nameof(BrandTech.Disabled)} = 0 ORDER BY {nameof(BrandTech.Id)} OFFSET @BrandTechCounter ROWS FETCH NEXT 1 ROWS ONLY;
 
-				                IF (SELECT COUNT(*) FROM {nameof(ClientTreeBrandTech)} WHERE {nameof(ClientTreeBrandTech.ParentClientTreeDemandCode)} = @ParentDemandCode AND {nameof(ClientTreeBrandTech.ClientTreeId)} = @ClientTreeId AND {nameof(ClientTreeBrandTech.BrandTechId)} = @BrandTechId AND {nameof(ClientTreeBrandTech.CurrentBrandTechName)} = @CurrentBrandTechName AND {nameof(ClientTreeBrandTech.Disabled)} = 0) = 0
+				                IF (SELECT COUNT(*) FROM {nameof(ClientTreeBrandTech)} WHERE {nameof(ClientTreeBrandTech.ClientTreeId)} = @ClientTreeId AND {nameof(ClientTreeBrandTech.BrandTechId)} = @BrandTechId AND {nameof(ClientTreeBrandTech.Disabled)} = 0) = 0
 				                
                                 BEGIN
 					                INSERT INTO {nameof(ClientTreeBrandTech)} ([{nameof(ClientTreeBrandTech.Id)}], [{nameof(ClientTreeBrandTech.ClientTreeId)}], [{nameof(ClientTreeBrandTech.BrandTechId)}], [{nameof(ClientTreeBrandTech.ParentClientTreeDemandCode)}], [{nameof(ClientTreeBrandTech.Share)}], [{nameof(ClientTreeBrandTech.CurrentBrandTechName)}], [{nameof(ClientTreeBrandTech.DeletedDate)}], [{nameof(ClientTreeBrandTech.Disabled)}]) VALUES (NEWID(), @ClientTreeId, @BrandTechId, @ParentDemandCode, 0, @CurrentBrandTechName, null, 0);

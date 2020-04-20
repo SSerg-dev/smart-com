@@ -15,7 +15,10 @@
             name: 'ClientTreeName', type: 'string', mapping: 'ClientTree.Name', tree: true,
             defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'ClientTree', hidden: false, isDefault: true
         },
-        { name: 'CurrentBrandTechName', type: 'string', hidden: false, isDefault: true },
+        {
+            name: 'CurrentBrandTechName', type: 'string', mapping: 'BrandTech.Name',
+            defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'ClientTree', hidden: false, isDefault: true
+        },
         { name: 'Share', type: 'float', hidden: false, isDefault: true },
     ],
     proxy: {
