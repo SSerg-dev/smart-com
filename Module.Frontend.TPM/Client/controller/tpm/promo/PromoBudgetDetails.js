@@ -36,7 +36,7 @@
 
     // просмотр подстатей для статьи
     showSubItemDetail: function (promoId, itemName, editable, fact, detailWidget) {
-        var me = this;        
+        var me = this;
         var promoSupportPromolWidget = Ext.widget(detailWidget.widget);
 
         // оставляем только нужные кнопки
@@ -67,7 +67,7 @@
                 property: 'PromoSupport.BudgetSubItem.BudgetItem.Budget.Name',
                 operation: 'Contains',
                 value: detailWidget.budgetName
-            }]            
+            }]
         });
 
         var selectWindow = Ext.widget('selectorwindow', {
@@ -86,7 +86,7 @@
         });
 
         // если можем редактировать - обновляем значения после закрытия
-        if (editable) {            
+        if (editable) {
             selectWindow.addListener('beforeclose', function () {
                 me.updateValuesInPromoForm(detailWidget);
             });
@@ -110,6 +110,7 @@
         var promoSupport = picker.down('promosupportchoose');
         var grid = promoSupport.down('grid');
         var store = grid.getStore();
+        var selectedIds = [];
 
         promoSupport.addListener('afterrender', function () {
             // редактировать ничего нельзя
@@ -120,7 +121,7 @@
                     el.hide();
             });
         });
-        
+
         picker.show();
         picker.down('#select').setDisabled(false);
         picker.down('#select').addListener('click', function () {
@@ -161,7 +162,7 @@
 
                     // привет Odata и её контроллерам
                     var checked = '';
-                    selModel.checkedRows.keys.forEach(function (subItemId) {
+                    selectedIds.forEach(function (subItemId) {
                         checked += subItemId + ';';
                     });
                     checked = checked.slice(0, -1);
@@ -189,19 +190,34 @@
 
         // чекаем уже прикрепленные подстатьи
         var firstLoad = true;
-        grid.on('load', function () {
-                if (firstLoad) {
-                    promoSupport.setLoading(true);
-                    setTimeout(function () {
+        store.on('load', function () {
+            if (firstLoad) {
+                promoSupport.setLoading(true);
+                setTimeout(function () {
                     $.ajax({
                         dataType: 'json',
                         url: '/odata/PromoSupportPromoes/GetLinkedSubItems?promoId=' + detailWidget.record.promoId,
                         type: 'POST',
                         success: function (data) {
-                            data.data.forEach(function (promoSupportId) {
+                            selectedIds = data.data;
+                            var selModel = grid.getSelectionModel();
+
+                            selectedIds.forEach(function (promoSupportId) {
                                 var record = store.getById(promoSupportId);
                                 if (record) {
-                                    grid.getSelectionModel().checkRows(record);
+                                    selModel.checkRows(record);
+                                }
+                            });
+
+                            selModel.on('checked', function (record) {
+                                if (selectedIds.indexOf(record.internalId) == -1) {
+                                    selectedIds.push(record.internalId);
+                                }
+                            });
+
+                            selModel.on('unchecked', function (record) {
+                                if (selectedIds.indexOf(record.internalId) != -1) {
+                                    delete selectedIds[selectedIds.indexOf(record.internalId)];
                                 }
                             });
 
@@ -213,9 +229,20 @@
                             App.Notify.pushError(data.responseJSON["odata.error"].innererror.message);
                         }
                     });
-                    }, 200);
-                }
+                }, 200);
+            }
+        }, this);
 
+        store.on('prefetch', function () {
+            if (selectedIds) {
+                var selModel = grid.getSelectionModel();
+                selectedIds.forEach(function (promoSupportId) {
+                    var record = store.getById(promoSupportId);
+                    if (record) {
+                        selModel.checkRows(record);
+                    }
+                });
+            }
         }, this);
 
         // загружать подстатьи нужно только для текущего клиента и текущего бюджета
@@ -224,7 +251,7 @@
         columns = grid.headerCt.getGridColumns();
         if (columns.length > 0 && columns[0].hasOwnProperty('isCheckerHd')) {
             columns[0].show();
-        }        
+        }
     },
 
     // Обновление значений полей в форме PROMO
@@ -301,7 +328,7 @@
     getFilterForGetPromoSupport: function (widget) {
         // идем по иерархии и родительских тоже подбираем
         var clientHierarchy = '';
-        var clientRules = [];        
+        var clientRules = [];
         var clients = widget.record.clientHierarchy.split('>');
         clients.forEach(function (client) {
             if (clientHierarchy.length > 0)
