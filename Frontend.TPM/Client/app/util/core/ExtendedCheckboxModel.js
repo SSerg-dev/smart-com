@@ -200,6 +200,7 @@
                     me.checkRows(record);
                 } else {
                     me.checkedRows.remove(record);
+                    me.fireEvent('unchecked', record);
                     Ext.fly(item).removeCls(Ext.baseCSSPrefix + 'grid-row-checked');
                 }
             }
@@ -244,6 +245,7 @@
 
                 if (!me.isChecked(item)) {
                     me.checkedRows.add(item);
+                    me.fireEvent('checked', item);
                 }
 
                 if (el) {
@@ -263,6 +265,7 @@
 
                 if (me.isChecked(item)) {
                     me.checkedRows.remove(item);
+                    me.fireEvent('unchecked', item);
                 }
 
                 if (el) {
