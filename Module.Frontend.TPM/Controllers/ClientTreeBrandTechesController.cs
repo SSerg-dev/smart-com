@@ -304,7 +304,7 @@ namespace Module.Frontend.TPM.Controllers
             {
                 if (clientTreeBrandTech.ClientTree.EndDate == null && clientTreeBrandTech.ClientTree.IsBaseClient)
                 {
-                    if (actualBrandTeches.Any(x => x.Name == clientTreeBrandTech.CurrentBrandTechName /*&& !x.Brand.Disabled && !x.Technology.Disabled*/))
+                    if (actualBrandTeches.Any(x => x.Name == clientTreeBrandTech.BrandTech.Name /*&& !x.Brand.Disabled && !x.Technology.Disabled*/))
                     {
                         var currentClientTree = clientTreeBrandTech.ClientTree;
                         while (currentClientTree != null && currentClientTree.Type != "root" && String.IsNullOrEmpty(currentClientTree.DemandCode))
