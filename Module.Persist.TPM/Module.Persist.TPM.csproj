@@ -1730,6 +1730,10 @@
     <Compile Include="Migrations\202004111518509_Add_TI_COGS_Fields_to_Promo.Designer.cs">
       <DependentUpon>202004111518509_Add_TI_COGS_Fields_to_Promo.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202004280800394_IncrementalReport_View_Fixes.cs" />
+    <Compile Include="Migrations\202004280800394_IncrementalReport_View_Fixes.Designer.cs">
+      <DependentUpon>202004280800394_IncrementalReport_View_Fixes.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PromoProductsView.cs" />
@@ -3282,6 +3286,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202004111518509_Add_TI_COGS_Fields_to_Promo.resx">
       <DependentUpon>202004111518509_Add_TI_COGS_Fields_to_Promo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004280800394_IncrementalReport_View_Fixes.resx">
+      <DependentUpon>202004280800394_IncrementalReport_View_Fixes.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
