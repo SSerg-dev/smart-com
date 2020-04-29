@@ -276,14 +276,26 @@
     },
 
     onSelectAllRecordsClick: function (headerCt, header) {
-        var grid = header.up('directorygrid');
-        var store = grid.getStore();
-        var selModel = grid.getSelectionModel()
-        var recordsCount = store.getCount();
-        var functionChecker = selModel.checkedRows.length == recordsCount ? selModel.uncheckRows : selModel.checkRows;
+        var grid = header.up('directorygrid'),
+            win = headerCt.up('selectorwindow'),
+            store = grid.getStore(),
+            selModel = grid.getSelectionModel(),
+            recordsCount = store.getTotalCount(),
+            functionChecker = selModel.checkedRows.length == recordsCount ? selModel.uncheckRows : selModel.checkRows;
 
-        for (var i = 0; i < recordsCount; i++) {
-            functionChecker.call(selModel, store.getAt(i));
+        if (recordsCount > 0) {
+            grid.setLoading(true);
+            store.getRange(0, recordsCount, {
+                callback: function () {
+                    if (recordsCount > 0) {
+                        functionChecker.call(selModel, store.getRange(0, recordsCount));
+                        grid.setLoading(false);
+                    }
+                    if (win) {
+                        win.down('#select')[selModel.hasChecked() ? 'enable' : 'disable']();
+                    }
+                }
+            });
         }
 
         grid.fireEvent('selectionchange', selModel);
