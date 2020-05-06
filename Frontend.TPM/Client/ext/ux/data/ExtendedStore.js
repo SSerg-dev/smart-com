@@ -23,6 +23,10 @@
             }
             options.extendedFilters = this.prepareExtendedFilter();
         }
+        if (this.currentPage === 1) {
+            this.removeAll();
+        }
+
         return this.callParent([options]);
     },
 
