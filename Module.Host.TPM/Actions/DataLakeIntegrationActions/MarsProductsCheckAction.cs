@@ -96,10 +96,10 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
 		
 						FROM MARS_UNIVERSAL_PETCARE_MATERIALS materials
 	
-						WHERE materials.ZREP IS NOT NULL AND (DATEDIFF(MINUTE, materials.VMSTD, '{today.ToString("yyyy'-'MM'-'dd HH':'mm':'ss.fff")}') < DATEDIFF(MINUTE, '{today.ToString("yyyy'-'MM'-'dd HH':'mm':'ss.fff")}', '{lastSuccessDate}'))
+                        WHERE materials.ZREP IS NOT NULL AND (DATEDIFF(MINUTE, '{lastSuccessDate}', materials.VMSTD) >= 0)
 					").AsEnumerable();
 
-					sourceRecordCount = newRecords.Count();
+                    sourceRecordCount = newRecords.Count();
 					if (sourceRecordCount == 0)
 					{
 						Warnings.Add("No new materials for current date");
