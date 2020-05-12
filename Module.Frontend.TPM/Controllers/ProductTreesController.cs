@@ -3,6 +3,7 @@ using Core.Security;
 using Core.Security.Models;
 using Frontend.Core.Controllers.Base;
 using Frontend.Core.Extensions;
+using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
 using Module.Persist.TPM.Utils.Filter;
@@ -24,7 +25,7 @@ namespace Module.Frontend.TPM.Controllers
 {
     public class ProductTreesController : EFContextController
     {
-        private readonly IAuthorizationManager authorizationManager;        
+        private readonly IAuthorizationManager authorizationManager;
         private IQueryable<ProductTree> activeTree;
 
         public ProductTreesController(IAuthorizationManager authorizationManager)
@@ -85,7 +86,7 @@ namespace Module.Frontend.TPM.Controllers
                 else
                 {
                     return GetTreeForPromo(promoId, productTreeObjectIds, view);
-                }                
+                }
             }
             catch (Exception e)
             {
@@ -162,7 +163,7 @@ namespace Module.Frontend.TPM.Controllers
             IQueryable<ProductTree> filterTreeList = activeTree.Where(x => x.Name.StartsWith(filterParameter));
             ProductTree root = activeTree.First(n => n.Type == "root");
             ProductTreeNode tree = new ProductTreeNode(root, false, false, true); // формируемое дерево, начинается с root           
-            List<ProductTreeNode> addedNodes = new List<ProductTreeNode>();            
+            List<ProductTreeNode> addedNodes = new List<ProductTreeNode>();
             List<ProductTree> filterList = filterTreeList.ToList();
 
             addedNodes.Add(tree);
@@ -217,7 +218,7 @@ namespace Module.Frontend.TPM.Controllers
                     List<int> objectIds = productTreeObjectIds.Split(";".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(n => Int32.Parse(n)).ToList();
 
                     foreach (int objectId in objectIds)
-                    {                        
+                    {
                         ProductTree checkedProduct = activeTree.First(n => n.ObjectId == objectId);
                         ProductTreeNode currentNode = addedNodes.FirstOrDefault(n => n.ObjectId == objectId);
 
@@ -231,7 +232,7 @@ namespace Module.Frontend.TPM.Controllers
                             currentNode.AddChild(GetChildrenTreeNode(currentNode, activeTree, addedNodes, true, false));
 
                         currentNode = addedNodes.FirstOrDefault(n => n.ObjectId == objectId);
-                        if(currentNode != null)
+                        if (currentNode != null)
                             currentNode.Target = true;
                     }
                 }
@@ -259,7 +260,7 @@ namespace Module.Frontend.TPM.Controllers
         {
             List<ProductTreeNode> children = new List<ProductTreeNode>();
             List<ProductTreeNode> nodeList = new List<ProductTreeNode>();
-            List<ProductTreeNode> outList = new List<ProductTreeNode>();            
+            List<ProductTreeNode> outList = new List<ProductTreeNode>();
             int rootObjectId = 1000000;
             ProductTree rootNode = activeTree.Where(x => x.ObjectId == rootObjectId).FirstOrDefault();
             ProductTreeNode branch = null;
@@ -279,11 +280,11 @@ namespace Module.Frontend.TPM.Controllers
 
                 foreach (int objectId in objectIds)
                 {
-					ProductTree productTreeNode = activeTree.Where(n => n.ObjectId == objectId).FirstOrDefault();
-					if (productTreeNode != default(ProductTree))
-					{
-						targetNodes.Add(activeTree.Where(n => n.ObjectId == objectId).First());
-					}
+                    ProductTree productTreeNode = activeTree.Where(n => n.ObjectId == objectId).FirstOrDefault();
+                    if (productTreeNode != default(ProductTree))
+                    {
+                        targetNodes.Add(activeTree.Where(n => n.ObjectId == objectId).First());
+                    }
                 }
             }
 
@@ -340,29 +341,29 @@ namespace Module.Frontend.TPM.Controllers
                 branch.AddChild(outList.Count == 0 ? children : outList);
             }
 
-			if (branch == null)
-			{
-				return GetTreeForLevel("root");
-			}
-			else
-			{
-				return Json(new
-				{
-					success = branch != null,
-					children = branch
-				});
-			}
-		}
+            if (branch == null)
+            {
+                return GetTreeForLevel("root");
+            }
+            else
+            {
+                return Json(new
+                {
+                    success = branch != null,
+                    children = branch
+                });
+            }
+        }
 
-		[ClaimsAuthorize]
+        [ClaimsAuthorize]
         public IHttpActionResult Post(ProductTree model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            
-            activeTree = GetConstraintedQuery();            
+
+            activeTree = GetConstraintedQuery();
             ProductTree parent = activeTree.FirstOrDefault(x => x.ObjectId == model.parentId);
             string fullPathClientName = model.Name;
             model.StartDate = DateTime.Now; // Устанавливаем время сервера
@@ -406,7 +407,7 @@ namespace Module.Frontend.TPM.Controllers
 
                 DateTime dt = DateTime.Now;
                 ProductTree oldRecord = (ProductTree)currentRecord.Clone();
-                oldRecord.EndDate = dt;            
+                oldRecord.EndDate = dt;
 
                 string oldFullPath = currentRecord.FullPathName;
                 int ind = oldFullPath.LastIndexOf(">");
@@ -442,38 +443,45 @@ namespace Module.Frontend.TPM.Controllers
 
                     Context.Set<ChangesIncident>().Add(changesIncident);
 
-					List<Product> products = Context.Set<Product>().Where(x => !x.Disabled).ToList();
-					List<Func<Product, bool>> oldExpression = GetExpressionList(currentRecord);
-					List<Func<Product, bool>> newExpression = GetExpressionList(model);
-					if (oldExpression != null && newExpression != null)
-					{
-						List<Product> oldProductsList = products.Where(p => oldExpression.Any(e => e.Invoke(p))).ToList();
-						List<Product> newProductsList = products.Where(x => newExpression.Any(e => e.Invoke(x))).ToList();
+                    List<Product> products = Context.Set<Product>().Where(x => !x.Disabled).ToList();
+                    List<Func<Product, bool>> oldExpression = GetExpressionList(currentRecord);
+                    List<Func<Product, bool>> newExpression = GetExpressionList(model);
+                    if (oldExpression != null && newExpression != null)
+                    {
+                        List<Product> oldProductsList = products.Where(p => oldExpression.Any(e => e.Invoke(p))).ToList();
+                        List<Product> newProductsList = products.Where(x => newExpression.Any(e => e.Invoke(x))).ToList();
 
-						var forIncident = new List<Product>();
-						forIncident.AddRange(oldProductsList.Except(newProductsList));
-						forIncident.AddRange(newProductsList.Except(oldProductsList));
-						if (forIncident.Any())
-						{
-							foreach (var product in forIncident)
-							{
-								var pci = new ProductChangeIncident
-								{
-									CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-									IsCreate = false,
-									IsDelete = false,
-									IsCreateInMatrix = false,
-									IsDeleteInMatrix = false,
-									IsChecked = false,
-									Product = product,
-									ProductId = product.Id
-								};
-								Context.Set<ProductChangeIncident>().Add(pci);
-							}
-						}
-					}
-				}
+                        var forIncident = new List<Product>();
+                        forIncident.AddRange(oldProductsList.Except(newProductsList));
+                        forIncident.AddRange(newProductsList.Except(oldProductsList));
+                        if (forIncident.Any())
+                        {
+                            foreach (var product in forIncident)
+                            {
+                                var pci = new ProductChangeIncident
+                                {
+                                    CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                                    IsCreate = false,
+                                    IsDelete = false,
+                                    IsCreateInMatrix = false,
+                                    IsDeleteInMatrix = false,
+                                    IsChecked = false,
+                                    Product = product,
+                                    ProductId = product.Id
+                                };
+                                Context.Set<ProductChangeIncident>().Add(pci);
+                            }
+                        }
+                    }
+                }
 
+                if (currentRecord.Type == "Subrange")
+                {
+                    var oldName = currentRecord.FullPathName;
+                    var newName = model.FullPathName;
+                    //Асинхронно, т.к. долго выполняется и иначе фронт не дождется ответа
+                    Task.Run(() => PromoHelper.UpdateProductHierarchy(currentRecord.Type, newName, oldName));
+                }
                 Context.Entry(currentRecord).CurrentValues.SetValues(model);
                 UpdateFullPathProductTree(currentRecord, Context.Set<ProductTree>());
                 Context.Set<ProductTree>().Add(oldRecord);
@@ -495,7 +503,7 @@ namespace Module.Frontend.TPM.Controllers
             {
                 activeTree = GetConstraintedQuery();
                 ProductTree record = activeTree.FirstOrDefault(x => x.Id == key);
-                List<ProductTree> recordsToDelete = new List<ProductTree>();                
+                List<ProductTree> recordsToDelete = new List<ProductTree>();
                 List<ProductTree> childs = activeTree.Where(x => x.parentId == record.ObjectId).ToList();
 
                 recordsToDelete.Add(record);
@@ -524,13 +532,13 @@ namespace Module.Frontend.TPM.Controllers
         {
             activeTree = GetConstraintedQuery();
             ProductTree productTree = activeTree.Where(x => x.Id == key).FirstOrDefault();
-            List<ProductTreeNode> nodes = new List<ProductTreeNode>();            
+            List<ProductTreeNode> nodes = new List<ProductTreeNode>();
 
             //получаем всех предков
             while (productTree.Type != "root")
             {
                 nodes.Add(new ProductTreeNode(productTree, false, false, false));
-                productTree = activeTree.Where(x => x.ObjectId == productTree.parentId).FirstOrDefault();                
+                productTree = activeTree.Where(x => x.ObjectId == productTree.parentId).FirstOrDefault();
             }
 
             return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, data = nodes }));
@@ -564,7 +572,7 @@ namespace Module.Frontend.TPM.Controllers
                 newRecord.parentId = destinationRecord.ObjectId;
                 newRecord.StartDate = dt;
                 newRecord.depth = destinationRecord.depth + 1;
-                
+
                 recordToMove.EndDate = dt;
                 Context.Set<ProductTree>().Add(newRecord);
                 Context.SaveChanges();
@@ -630,7 +638,7 @@ namespace Module.Frontend.TPM.Controllers
         public async Task<IHttpActionResult> UploadLogoFile(int productTreeId)
         {
             try
-            { 
+            {
                 if (!Request.Content.IsMimeMultipartContent())
                     throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
 
@@ -707,30 +715,30 @@ namespace Module.Frontend.TPM.Controllers
             }
         }
 
-		/// <summary>
-		/// Список преобразованных в функции фильтров из узлов иерархии
-		/// </summary>
-		/// <param name="productTreeNodes"></param>
-		/// <returns></returns>
-		private List<Func<Product, bool>> GetExpressionList(ProductTree productTreeNodes)
-		{
-			List<Func<Product, bool>> expressionsList = new List<Func<Product, bool>>();
-			if (productTreeNodes != null && !String.IsNullOrEmpty(productTreeNodes.Filter))
-			{
-				string stringFilter = productTreeNodes.Filter;
-				// Преобразованиестроки фильтра в соответствующий класс
-				FilterNode filter = stringFilter.ConvertToNode();
-				// Создание функции фильтрации на основе построенного фильтра
-				var expr = filter.ToExpressionTree<Product>();
-				expressionsList.Add(expr.Compile());
-			}
-			return expressionsList;	
-		}
-	}
-	/// <summary>
-	/// Класс-обертка для дерева (в ExtJS)
-	/// </summary>
-	public class ProductTreeNode
+        /// <summary>
+        /// Список преобразованных в функции фильтров из узлов иерархии
+        /// </summary>
+        /// <param name="productTreeNodes"></param>
+        /// <returns></returns>
+        private List<Func<Product, bool>> GetExpressionList(ProductTree productTreeNodes)
+        {
+            List<Func<Product, bool>> expressionsList = new List<Func<Product, bool>>();
+            if (productTreeNodes != null && !String.IsNullOrEmpty(productTreeNodes.Filter))
+            {
+                string stringFilter = productTreeNodes.Filter;
+                // Преобразованиестроки фильтра в соответствующий класс
+                FilterNode filter = stringFilter.ConvertToNode();
+                // Создание функции фильтрации на основе построенного фильтра
+                var expr = filter.ToExpressionTree<Product>();
+                expressionsList.Add(expr.Compile());
+            }
+            return expressionsList;
+        }
+    }
+    /// <summary>
+    /// Класс-обертка для дерева (в ExtJS)
+    /// </summary>
+    public class ProductTreeNode
     {
         public int Id { get; set; }
         public int ObjectId { get; set; }
@@ -767,7 +775,7 @@ namespace Module.Frontend.TPM.Controllers
             parentId = treeNode.parentId;
             StartDate = treeNode.StartDate;
             EndDate = treeNode.EndDate;
-            Filter = treeNode.Filter;                              
+            Filter = treeNode.Filter;
             depth = treeNode.depth;
             NodePriority = treeNode.NodePriority;
             LogoFileName = treeNode.LogoFileName;

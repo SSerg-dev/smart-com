@@ -12,20 +12,24 @@ using Persist;
 using Persist.Model;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Web.Http;
 using System.Web.Http.OData;
 using Utility;
 
-namespace Module.Frontend.TPM.Util {
-    public static class PromoHelper {
+namespace Module.Frontend.TPM.Util
+{
+    public static class PromoHelper
+    {
         /// <summary>
         /// Создание записи о создании/удалении нового промо
         /// </summary>
         /// <param name="newRecord"></param>
         /// <param name="isDelete"></param>
-        public static void WritePromoDemandChangeIncident(DatabaseContext Context, Promo record, bool isDelete = false) {
+        public static void WritePromoDemandChangeIncident(DatabaseContext Context, Promo record, bool isDelete = false)
+        {
             PromoDemandChangeIncident change = new PromoDemandChangeIncident(record, isDelete) { };
             Context.Set<PromoDemandChangeIncident>().Add(change);
             Context.SaveChanges();
@@ -36,7 +40,7 @@ namespace Module.Frontend.TPM.Util {
         /// </summary>
         /// <param name="newRecord"></param>
         /// <param name="isDelete"></param>
-        public static void WritePromoDemandChangeIncident (DatabaseContext Context, Promo record, string oldMarsMechanic, double? oldMarsMechanicDiscount, DateTimeOffset? oldDispatchesStart, double? oldPlanPromoUpliftPercent, double? oldPlanPromoIncrementalLSV)
+        public static void WritePromoDemandChangeIncident(DatabaseContext Context, Promo record, string oldMarsMechanic, double? oldMarsMechanicDiscount, DateTimeOffset? oldDispatchesStart, double? oldPlanPromoUpliftPercent, double? oldPlanPromoIncrementalLSV)
         {
             PromoDemandChangeIncident change = new PromoDemandChangeIncident(record, oldMarsMechanic, oldMarsMechanicDiscount, oldDispatchesStart, oldPlanPromoUpliftPercent, oldPlanPromoIncrementalLSV) { };
             Context.Set<PromoDemandChangeIncident>().Add(change);
@@ -49,9 +53,11 @@ namespace Module.Frontend.TPM.Util {
         /// <param name="newRecord"></param>
         /// <param name="patch"></param>
         /// <param name="oldRecord"></param>
-        public static void WritePromoDemandChangeIncident(DatabaseContext Context, Promo newRecord, Delta<Promo> patch, Promo oldRecord, bool isSubrangeChanged) {
+        public static void WritePromoDemandChangeIncident(DatabaseContext Context, Promo newRecord, Delta<Promo> patch, Promo oldRecord, bool isSubrangeChanged)
+        {
             bool needCreateIncident = CheckCreateIncidentCondition(oldRecord, newRecord, patch, isSubrangeChanged);
-            if (needCreateIncident) {
+            if (needCreateIncident)
+            {
                 PromoDemandChangeIncident change = new PromoDemandChangeIncident(oldRecord, newRecord) { };
                 Context.Set<PromoDemandChangeIncident>().Add(change);
                 Context.SaveChanges();
@@ -65,14 +71,15 @@ namespace Module.Frontend.TPM.Util {
         /// <param name="newRecord"></param>
         /// <param name="patch"></param>
         /// <returns></returns>
-        public static bool CheckCreateIncidentCondition(Promo oldRecord, Promo newRecord, Delta<Promo> patch , bool isSubrangeChanged) {
+        public static bool CheckCreateIncidentCondition(Promo oldRecord, Promo newRecord, Delta<Promo> patch, bool isSubrangeChanged)
+        {
             bool result = false;
             // TODO: Изменения продуктов не учитывается из-за удаления ProductTreeId из Promo
             // Получение настроек
-            ISettingsManager settingsManager = (ISettingsManager) IoC.Kernel.GetService(typeof(ISettingsManager));
+            ISettingsManager settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
 
             string promoPropertiesSetting = settingsManager.GetSetting<string>("PROMO_CHANGE_PROPERTIES",
-				"InOutProductIds, ProductHierarchy, ProductTreeObjectIds, StartDate, EndDate, DispatchesStart, DispatchesEnd, MarsMechanicDiscount, PlanInstoreMechanicDiscount, MarsMechanicTypeId, PlanInstoreMechanicTypeId");
+                "InOutProductIds, ProductHierarchy, ProductTreeObjectIds, StartDate, EndDate, DispatchesStart, DispatchesEnd, MarsMechanicDiscount, PlanInstoreMechanicDiscount, MarsMechanicTypeId, PlanInstoreMechanicTypeId");
             int daysToCheckSetting = settingsManager.GetSetting<int>("PROMO_CHANGE_PERIOD_DAYS", 84);
             int marsDiscountSetting = settingsManager.GetSetting<int>("PROMO_CHANGE_MARS_DISCOUNT", 3);
             int instoreDiscountSetting = settingsManager.GetSetting<int>("PROMO_CHANGE_INSTORE_DISCOUNT", 5);
@@ -88,10 +95,11 @@ namespace Module.Frontend.TPM.Util {
             changedProperties = changedProperties.Where(p => propertiesToCheck.Contains(p));
             bool relevantByTime = isOldStartInCheckPeriod || isNewStartInCheckPeriod;
             // Если дата начала промо соответствует настройке и изменилось какое-либо поле из указанных в настройках создаётся запись об изменении
-            if (relevantByTime && changedProperties.Any()) {
+            if (relevantByTime && changedProperties.Any())
+            {
                 bool productChange = oldRecord.ProductHierarchy != newRecord.ProductHierarchy;
                 bool productListChange = oldRecord.InOutProductIds != newRecord.InOutProductIds;
-				bool marsMechanicChange = oldRecord.MarsMechanic != newRecord.MarsMechanic;
+                bool marsMechanicChange = oldRecord.MarsMechanic != newRecord.MarsMechanic;
                 bool instoreMechanicChange = oldRecord.PlanInstoreMechanic != newRecord.PlanInstoreMechanic;
                 bool marsDiscountChange = oldRecord.MarsMechanicDiscount.HasValue ? newRecord.MarsMechanicDiscount.HasValue ? Math.Abs(oldRecord.MarsMechanicDiscount.Value - newRecord.MarsMechanicDiscount.Value) > marsDiscountSetting : true : false;
                 bool instoreDiscountChange = oldRecord.PlanInstoreMechanicDiscount.HasValue ? newRecord.PlanInstoreMechanicDiscount.HasValue ? Math.Abs(oldRecord.PlanInstoreMechanicDiscount.Value - newRecord.PlanInstoreMechanicDiscount.Value) > instoreDiscountSetting : true : false;
@@ -117,7 +125,8 @@ namespace Module.Frontend.TPM.Util {
         /// <param name="calculateFactCostTE">Необходимо ли пересчитывать значения фактические Cost TE</param>
         /// <param name="calculatePlanCostProd">Необходимо ли пересчитывать значения плановые Cost Production</param>
         /// <param name="calculateFactCostProd">Необходимо ли пересчитывать значения фактические Cost Production</param>
-        public static void CalculateBudgetsCreateTask(string promoSupportPromoIds, bool calculatePlanCostTE, bool calculateFactCostTE, bool calculatePlanCostProd, bool calculateFactCostProd, Guid userId, Guid roleId, DatabaseContext Context) {
+        public static void CalculateBudgetsCreateTask(string promoSupportPromoIds, bool calculatePlanCostTE, bool calculateFactCostTE, bool calculatePlanCostProd, bool calculateFactCostProd, Guid userId, Guid roleId, DatabaseContext Context)
+        {
             HandlerData data = new HandlerData();
             HandlerDataHelper.SaveIncomingArgument("PromoSupportPromoIds", promoSupportPromoIds, data, visible: false, throwIfNotExists: false);
             HandlerDataHelper.SaveIncomingArgument("CalculatePlanCostTE", calculatePlanCostTE, data, visible: false, throwIfNotExists: false);
@@ -132,7 +141,7 @@ namespace Module.Frontend.TPM.Util {
             if (!success)
                 throw new Exception("Promo was blocked for calculation");
         }
-        public static string ChangeResponsible(DatabaseContext Context,Promo model, string userName)
+        public static string ChangeResponsible(DatabaseContext Context, Promo model, string userName)
         {
             HashSet<UserRole> result = new HashSet<UserRole>();
             IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
@@ -169,7 +178,7 @@ namespace Module.Frontend.TPM.Util {
             HashSet<User> userResult = new HashSet<User>();
             foreach (var item in result)
             {
-                if(!item.User.Disabled)
+                if (!item.User.Disabled)
                     userResult.Add(item.User);
             }
             Guid userId = Context.Set<User>().Where(e => e.Name == userName).FirstOrDefault().Id;
@@ -185,7 +194,7 @@ namespace Module.Frontend.TPM.Util {
 
         public static void ResetPromo(DatabaseContext Context, Promo model, UserInfo user)
         {
-            
+
             List<PromoProduct> promoProductToDeleteList = Context.Set<PromoProduct>().Where(x => x.PromoId == model.Id && !x.Disabled).ToList();
             foreach (PromoProduct promoProduct in promoProductToDeleteList)
             {
@@ -212,7 +221,7 @@ namespace Module.Frontend.TPM.Util {
             model.ActualPromoBaselineBaseTI = null;
             model.ActualPromoBaseTI = null;
             model.ActualPromoNetNSV = null;
-            model.DocumentNumber = null;  
+            model.DocumentNumber = null;
             model.ActualPromoPostPromoEffectLSV = null;
             model.ActualPromoLSVByCompensation = null;
             model.ActualInStoreDiscount = null;
@@ -233,7 +242,7 @@ namespace Module.Frontend.TPM.Util {
         public static void DisableIncrementalPromo(DatabaseContext context, Promo promo)
         {
             var incrementalPromoes = context.Set<IncrementalPromo>().Where(x => x.PromoId == promo.Id).ToList();
-            foreach(var incrementalPromo in incrementalPromoes)
+            foreach (var incrementalPromo in incrementalPromoes)
             {
                 incrementalPromo.Disabled = true;
                 incrementalPromo.DeletedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
@@ -241,7 +250,70 @@ namespace Module.Frontend.TPM.Util {
             context.SaveChanges();
         }
 
-        public static IEnumerable<Column> GetExportSettings() {
+        //TODO: Оптимизировать и сделать вызовы синхроннымы
+        public static void UpdateProductHierarchy(string ChangedType, string NewName, string OldName, Guid? Id = null)
+        {
+            DatabaseContext context = new DatabaseContext();
+            IQueryable<Promo> Promoes;
+            switch (ChangedType)
+            {
+                case "Brand":
+                    if (Id != null)
+                    {
+                        Stopwatch s = new Stopwatch();
+                        s.Start();
+                        Promoes = context.Set<Promo>().Where(x => x.BrandId == Id);
+                        foreach (var Promo in Promoes)
+                        {
+                            if (Promo.ProductHierarchy.StartsWith(OldName + " >"))
+                            {
+                                Promo.ProductHierarchy = Promo.ProductHierarchy.Remove(0, OldName.Length);
+                                Promo.ProductHierarchy = Promo.ProductHierarchy.Insert(0, NewName);
+                            }
+                        }
+                        s.Stop();
+                        var g = s.Elapsed.TotalSeconds;
+                    }
+                    break;
+
+                case "Technology":
+                    if (Id != null)
+                    {
+                        Promoes = context.Set<Promo>().Where(x => x.TechnologyId == Id);
+                        var s = Promoes.Count();
+                        foreach (var Promo in Promoes)
+                        {
+                            if (Promo.ProductHierarchy.StartsWith(OldName + " >"))
+                            {
+                                Promo.ProductHierarchy = Promo.ProductHierarchy.Remove(0, OldName.Length);
+                                Promo.ProductHierarchy = Promo.ProductHierarchy.Insert(0, NewName);
+                            }
+                            else if (Promo.ProductHierarchy.Contains("> " + OldName + " >"))
+                            {
+                                Promo.ProductHierarchy = Promo.ProductHierarchy.Replace("> " + OldName + " >", "> " + NewName + " >");
+                            }
+                            else if (Promo.ProductHierarchy.EndsWith("> " + OldName))
+                            {
+                                Promo.ProductHierarchy = Promo.ProductHierarchy.Remove(Promo.ProductHierarchy.Length - OldName.Length);
+                                Promo.ProductHierarchy = Promo.ProductHierarchy.Insert(Promo.ProductHierarchy.Length, NewName);
+                            }
+                        }
+                    }
+                    break;
+
+                case "Subrange":
+                    Promoes = context.Set<Promo>().Where(x => x.ProductHierarchy == OldName);
+                    foreach (var Promo in Promoes)
+                    {
+                        Promo.ProductHierarchy = NewName;
+                    }
+                    break;
+            }
+            context.SaveChanges();
+        }
+
+        public static IEnumerable<Column> GetExportSettings()
+        {
             IEnumerable<Column> columns = new List<Column>() {
                 new Column() { Order = 0, Field = "Number", Header = "Promo ID", Quoting = false },
                 new Column() { Order = 0, Field = "ClientHierarchy", Header = "Client", Quoting = false },
