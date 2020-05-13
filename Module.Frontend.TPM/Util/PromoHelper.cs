@@ -260,8 +260,6 @@ namespace Module.Frontend.TPM.Util
                 case "Brand":
                     if (Id != null)
                     {
-                        Stopwatch s = new Stopwatch();
-                        s.Start();
                         Promoes = context.Set<Promo>().Where(x => x.BrandId == Id);
                         foreach (var Promo in Promoes)
                         {
@@ -271,8 +269,6 @@ namespace Module.Frontend.TPM.Util
                                 Promo.ProductHierarchy = Promo.ProductHierarchy.Insert(0, NewName);
                             }
                         }
-                        s.Stop();
-                        var g = s.Elapsed.TotalSeconds;
                     }
                     break;
 
