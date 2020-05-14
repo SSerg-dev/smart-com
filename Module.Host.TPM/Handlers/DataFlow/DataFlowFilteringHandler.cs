@@ -395,7 +395,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
             var stopWatch = Stopwatch.StartNew();
 
             var promoesForRecalculation = new List<PromoDataFlowModule.PromoDataFlowSimpleModel>();
-            // ПЕРЕДЕЛАТЬ НА ChangesIncident
+            //TODO: ПЕРЕДЕЛАТЬ НА ChangesIncident
             var productChangeIncidents = context.Set<ProductChangeIncident>().Where(x => x.RecalculationProcessDate == null);
             var productChangeIncidentsActual = productChangeIncidents.GroupBy(x => new { x.ProductId, x.IsCreate, x.IsDelete }).Select(x => x.FirstOrDefault());
 
@@ -534,7 +534,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
                 if (node != null && !String.IsNullOrEmpty(node.Filter))
                 {
                     string stringFilter = node.Filter;
-                    // Преобразованиестроки фильтра в соответствующий класс
+                    // Преобразование строки фильтра в соответствующий класс
                     FilterNode filter = stringFilter.ConvertToNode();
                     // Создание функции фильтрации на основе построенного фильтра
                     var expr = filter.ToExpressionTree<Product>();
