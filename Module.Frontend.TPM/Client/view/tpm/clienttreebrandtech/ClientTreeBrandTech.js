@@ -128,8 +128,8 @@
                     },                         
                 }
             }, {
-                text: l10n.ns('tpm', 'ClientTreeBrandTech').value('CurrentBrandTechName'),
-                dataIndex: 'CurrentBrandTechName',
+                text: l10n.ns('tpm', 'ClientTreeBrandTech').value('BrandTechName'),
+                dataIndex: 'BrandTechName',
                 filter: {
                     xtype: 'fsearchfield',
                     trigger2Cls: '',
@@ -140,6 +140,8 @@
                     operator: 'conts',
                     store: {
                         model: 'App.model.tpm.brandtech.BrandTech',
+                        autoLoad: false,
+                        root: {}
                     },                         
                 }
             }, {
