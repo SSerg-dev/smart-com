@@ -139,9 +139,19 @@
                     multiSelect: true,
                     operator: 'conts',
                     store: {
+                        type: 'directorystore',
                         model: 'App.model.tpm.brandtech.BrandTech',
-                        autoLoad: false,
-                        root: {}
+                        extendedFilter: {
+                            xclass: 'App.ExtFilterContext',
+                            supportedModels: [{
+                                xclass: 'App.ExtSelectionFilterModel',
+                                model: 'App.model.tpm.brandtech.BrandTech',
+                                modelId: 'efselectionmodel'
+                            }, {
+                                xclass: 'App.ExtTextFilterModel',
+                                modelId: 'eftextmodel'
+                            }]
+                        }
                     },                         
                 }
             }, {
@@ -177,8 +187,8 @@
             name: 'ClientTreeName',
             fieldLabel: l10n.ns('tpm', 'ClientTreeBrandTech').value('ClientTreeName')
         }, {
-            text: l10n.ns('tpm', 'ClientTreeBrandTech').value('CurrentBrandTechName'),
-            dataIndex: 'CurrentBrandTechName'
+            text: l10n.ns('tpm', 'ClientTreeBrandTech').value('BrandTechName'),
+            dataIndex: 'BrandTechName'
         }, {
             text: l10n.ns('tpm', 'ClientTreeBrandTech').value('Share'),
             dataIndex: 'Share'
