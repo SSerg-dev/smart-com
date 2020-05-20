@@ -7,22 +7,13 @@ using Module.Persist.TPM.Utils;
 using Persist;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Interfaces.Implementation.Utils.Serialization;
 using Looper.Parameters;
 using System.IO;
-using Core.Data;
 using System.Collections.Concurrent;
-using Utility.Import;
-using System.Reflection;
-using Persist.Model.Import;
-using Interfaces.Implementation.Import.FullImport;
-using Persist.Model;
 using Persist.Model.Settings;
 
 namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
@@ -483,6 +474,8 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
 						try
 						{
 							context.SaveChanges();
+							CreateActualCloneWithZeroShareByBrandTech(context, newBrandTech);
+
 							Results.Add(String.Format("Added new BrandTech: {0}. BrandTech code: {1}", newBrandTech.Name, newBrandTech.BrandTech_code), null);
 						}
 						catch (Exception e)
@@ -495,6 +488,70 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
 
 			return errors;
 		}
+
+		public static void CreateActualCloneWithZeroShareByBrandTech(DatabaseContext databaseContext, BrandTech brandTech)
+		{
+			var newClientTreeBrandTeches = new List<ClientTreeBrandTech>();
+			var actualClientTreeBrandTeches = GetActualQuery(databaseContext);
+			var clientTrees = databaseContext.Set<ClientTree>().Where(x => x.EndDate == null);
+
+			foreach (var clientTree in clientTrees)
+			{
+				var parentDemandCode = actualClientTreeBrandTeches.FirstOrDefault(x => x.ClientTreeId == clientTree.Id)?.ParentClientTreeDemandCode;
+				if (!String.IsNullOrEmpty(parentDemandCode))
+				{
+					var newClientTreeBrandTech = new ClientTreeBrandTech
+					{
+						Id = Guid.NewGuid(),
+						ClientTreeId = clientTree.Id,
+						BrandTechId = brandTech.Id,
+						Share = 0,
+						ParentClientTreeDemandCode = parentDemandCode,
+						CurrentBrandTechName = brandTech.Name
+					};
+
+					newClientTreeBrandTeches.Add(newClientTreeBrandTech);
+				}
+			}
+
+			databaseContext.Set<ClientTreeBrandTech>().AddRange(newClientTreeBrandTeches);
+			databaseContext.SaveChanges();
+		}
+
+		public static List<ClientTreeBrandTech> GetActualQuery(DatabaseContext databaseContext)
+		{
+			var actualClientTreeBrandTeches = new List<ClientTreeBrandTech>();
+
+			var clientTreeBrandTeches = databaseContext.Set<ClientTreeBrandTech>().Where(x => !x.Disabled).ToList();
+			var actualBrandTeches = databaseContext.Set<BrandTech>().Where(x => !x.Disabled).ToList();
+			var actualClientTrees = databaseContext.Set<ClientTree>().Where(x => x.EndDate == null && !x.IsBaseClient).ToList();
+
+			foreach (var clientTreeBrandTech in clientTreeBrandTeches)
+			{
+				if (clientTreeBrandTech.ClientTree.EndDate == null && clientTreeBrandTech.ClientTree.IsBaseClient)
+				{
+					if (actualBrandTeches.Any(x => x.Name == clientTreeBrandTech.BrandTech.Name /*&& !x.Brand.Disabled && !x.Technology.Disabled*/))
+					{
+						var currentClientTree = clientTreeBrandTech.ClientTree;
+						while (currentClientTree != null && currentClientTree.Type != "root" && String.IsNullOrEmpty(currentClientTree.DemandCode))
+						{
+							currentClientTree = actualClientTrees.FirstOrDefault(x => x.ObjectId == currentClientTree.parentId);
+						}
+
+						// Если родитель узла существует и его DemandCode равен DemandCode из ClientTreeBrandTech.
+						if (currentClientTree != null &&
+							!String.IsNullOrEmpty(currentClientTree.DemandCode)
+							&& currentClientTree.DemandCode == clientTreeBrandTech.ParentClientTreeDemandCode)
+						{
+							actualClientTreeBrandTeches.Add(clientTreeBrandTech);
+						}
+					}
+				}
+			}
+
+			return actualClientTreeBrandTeches;
+		}
+
 
 		private Product CreateProduct (MARS_UNIVERSAL_PETCARE_MATERIALS material)
 		{
