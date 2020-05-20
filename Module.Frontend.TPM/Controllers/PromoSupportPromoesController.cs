@@ -450,7 +450,9 @@ namespace Module.Frontend.TPM.Controllers
                         ISettingsManager settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
                         var diffBetweenPromoInDays = settingsManager.GetSetting<int>("DIFF_BETWEEN_PROMO_IN_DAYS", 7 * 8);
                         bool bigDifference = Context.Set<PromoSupportPromo>().Any(n => n.PromoSupportId == promoSupportId
-                            && DbFunctions.DiffDays(n.Promo.StartDate.Value, promo.EndDate.Value).Value > diffBetweenPromoInDays && !n.Disabled);
+                            && (DbFunctions.DiffDays(n.Promo.StartDate.Value, promo.EndDate.Value).Value > diffBetweenPromoInDays
+                                || DbFunctions.DiffDays(n.Promo.StartDate.Value, promo.EndDate.Value).Value < -diffBetweenPromoInDays)
+                            && !n.Disabled);
 
                         if (bigDifference)
                             throw new Exception("The difference between the dates of the promo in the promo support should be less than two periods");
