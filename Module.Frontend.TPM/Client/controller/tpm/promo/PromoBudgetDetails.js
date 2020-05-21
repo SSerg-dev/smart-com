@@ -157,21 +157,12 @@
                 if (buttonId === 'yes') {
                     // отправляем выбранные статьи           
                     promoSupport.setLoading(true);
-
-                    var selModel = grid.getSelectionModel();
-
-                    // привет Odata и её контроллерам
-                    var checked = '';
-                    selectedIds.forEach(function (subItemId) {
-                        checked += subItemId + ';';
-                    });
-                    checked = checked.slice(0, -1);
-
-                    var params = 'promoId=' + detailWidget.record.promoId + '&subItemsIds=' + checked + '&budgetName=' + detailWidget.budgetName;
+                    var params = 'promoId=' + detailWidget.record.promoId + '&budgetName=' + detailWidget.budgetName;
 
                     $.ajax({
                         dataType: 'json',
                         url: '/odata/PromoSupportPromoes/ManageSubItems?' + params,
+                        data: JSON.stringify(selectedIds),
                         type: 'POST',
                         success: function () {
                             me.clearFields(detailWidget);

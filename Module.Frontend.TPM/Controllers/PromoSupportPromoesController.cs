@@ -400,19 +400,26 @@ namespace Module.Frontend.TPM.Controllers
         /// <returns></returns>
         [ClaimsAuthorize]
         [HttpPost]
-        public IHttpActionResult ManageSubItems(Guid promoId, string subItemsIds, string budgetName)
+        public IHttpActionResult ManageSubItems(Guid promoId, string budgetName)
         {
             using (var transaction = Context.Database.BeginTransaction())
             {
                 try
                 {
                     List<Guid> subItemsIdsList = new List<Guid>();
+                    List<string> tmp = new List<string>();
                     Promo promo = Context.Set<Promo>().Find(promoId);
 
-                    if (subItemsIds != null && subItemsIds.Length > 0)
+                    string subItemsIds = Request.Content.ReadAsStringAsync().Result;
+                    if (subItemsIds != null)
                     {
-                        subItemsIdsList = subItemsIds.Split(';').Select(n => Guid.Parse(n)).ToList();
+                        tmp = JsonConvert.DeserializeObject<List<string>>(subItemsIds);
                     }
+                    tmp.ForEach(id => 
+                    {
+                        Guid itemId = Guid.Parse(id);
+                        subItemsIdsList.Add(itemId);
+                    });
 
                     // находим прежние записи, если они остались то ислючаем их из нового списка
                     // иначе удаляем
