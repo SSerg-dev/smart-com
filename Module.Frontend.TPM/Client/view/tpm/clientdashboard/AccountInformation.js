@@ -79,8 +79,9 @@
                                 type: 'hbox',
                                 align: 'left'
                             },
-                            width: '45%',
-                            height: '100%',
+                            width: '53%',
+                                height: '100%',
+                                style: 'box-shadow:2px 1px 1px 2px rgba(0,0,0,1);',
                             items: [{
                                 xtype: 'label',
                                 text: 'Client:',
@@ -94,14 +95,33 @@
                                 style: 'padding-top: 0.6ex',
                                 cls: 'client-dashboard-account-panel-button-client-value'
                             }]
-                        }, {
+                            }, {
+                                xtype: 'panel',
+                                layout: {
+                                    type: 'hbox',
+                                    align: 'left'
+                                },
+                                width: '19%',
+                                height: '100%',
+                                style: 'box-shadow:2px 1px 1px 2px rgba(0,0,0,1);',
+                                items: [{
+                                    xtype: 'label',
+                                    text: '',
+                                    itemId: 'accountInformationClientType',
+                                    //  width: '60%',
+                                    style: 'padding-left:10px; padding-top: 0.6ex',
+                                    cls: 'client-dashboard-account-panel-button-year-label'
+                                }]
+                            }, {
                             xtype: 'panel',
                             layout: {
                                 type: 'hbox',
                                 pack: 'end'
                             },
-                            width: '47%',
-                            height: '100%',
+                            width: '18%',
+                                height: '100%',
+
+                                style: 'box-shadow: -0.2px 1px 0px 0px rgba(0,0,0,1);',
                             items: [{
                                 xtype: 'label',
                                 text: 'Year:',
@@ -112,7 +132,7 @@
                                 xtype: 'label',
                                 text: new Date().getFullYear(),
                                 itemId: 'accountInformationYearText',
-                                style: 'padding-top: 0.6ex;text-align: left;',
+                                    style: 'padding-top: 0.6ex;text-align: left;',
                                 cls: 'client-dashboard-account-panel-button-year-value'
                             }]
                         }]
@@ -491,12 +511,19 @@
                                 xtype: 'button',
                                 itemId: 'detailsButton',
                                 text: l10n.ns('tpm', 'ClientDashboard').value('Details'),
-                                POSMInClientYTD: 0,
-                                CatalogueYTD: 0,
-                                XSitesYTD: 0,
-                                CatalogueYEE: 0,
-                                POSMInClientTiYEE: 0,
-                                XSitesYEE: 0
+                                PromoTiCostPlanPercent: 0,
+                                PromoTiCostPlan: 0,
+                                PromoTiCostYTD: 0,
+                                PromoTiCostYTDPercent: 0,
+                                PromoTiCostYEE: 0,
+                                PromoTiCostYEEPercent: 0,
+
+                                NonPromoTiCostPlanPercent: 0,
+                                NonPromoTiCostPlan: 0,
+                                NonPromoTiCostYTD: 0,
+                                NonPromoTiCostYTDPercent: 0,
+                                NonPromoTiCostYEE: 0,
+                                NonPromoTiCostYEEPercent: 0
                             }]
                         }]
                     }, {

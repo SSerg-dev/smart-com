@@ -539,7 +539,7 @@
                             ids.push('priorityfilter');
                             nodes.push({
                                 property: 'Priority',
-                                operation: 'GreaterThen',
+                                operation: 'GreaterThan',
                                 value: nt['Priority']
                             });
 

@@ -101,14 +101,7 @@
             }, {
                 xtype: 'tbspacer',
                 flex: 10
-            },/*{
-            itemId: 'moveNode',
-            glyph: 0xf252,
-            text: 'Move',
-            tooltip: 'Move',
-            hierarchyOnly: true,
-            needDisable: true
-        },*/{
+            }, {
                 xtype: 'button',
                 action: 'Post',
                 cls: 'hierarchyButton hierarchyButtonAdd',
@@ -152,7 +145,6 @@
         },
         items: [{
             xtype: 'clienttreegrid',
-            //minWidth: 263,
             flex: 1,
             height: '100%',
         }, {
@@ -176,7 +168,6 @@
             itemId: 'clientTreeSettingsPanel',
             autoScroll: true,
             cls: 'scrollpanel scrollSettingsClientTree',
-            //minWidth: 263,
             height: '100%',
             flex: 1,
             bodyStyle: { "background-color": "#ECEFF1"},
@@ -242,6 +233,20 @@
                             renderer: App.RenderHelper.getBooleanRenderer('Yes', 'No'),
                             width: 280,
                             fieldLabel: l10n.ns('tpm', 'ClientTree').value('IsBaseClient')
+                        }, {
+                            xtype: 'singlelinedisplayfield',
+                            name: 'IsOnInvoice',
+                            renderer: App.RenderHelper.getBooleanRenderer(
+                                l10n.ns('tpm', 'InvoiceTypes').value('OnInvoice'),
+                                l10n.ns('tpm', 'InvoiceTypes').value('OffInvoice')
+                            ),
+                            width: 280,
+                            fieldLabel: l10n.ns('tpm', 'ClientTree').value('InvoiceType')
+                        }, {
+                            xtype: 'singlelinedisplayfield',
+                            name: 'DMDGroup',
+                            width: 280,
+                            fieldLabel: l10n.ns('tpm', 'ClientTree').value('DMDGroup')
                         }, {
                             xtype: 'singlelinedisplayfield',
                             name: 'RetailTypeName',

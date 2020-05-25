@@ -77,6 +77,7 @@ namespace Module.Persist.TPM.Model.TPM
         public int? DispatchDuration { get; set; }
         public string InvoiceNumber { get; set; }
         public string DocumentNumber { get; set; }
+        public bool IsOnInvoice { get; set; }
 
         [StringLength(255)]
         public string Mechanic { get; set; }
@@ -172,6 +173,8 @@ namespace Module.Persist.TPM.Model.TPM
         public double? ActualPromoNSV { get; set; }
         public double? ActualPromoBaseTI { get; set; }
         public double? ActualPromoNetNSV { get; set; }
+        public double? InvoiceTotal { get; set; }
+
 
         // Promo Closure
         public double? ActualPromoTIShopper { get; set; }
@@ -184,6 +187,8 @@ namespace Module.Persist.TPM.Model.TPM
         public double? ActualPromoIncrementalLSV { get; set; }
         public double? ActualPromoLSVByCompensation { get; set; }
         public double? ActualPromoLSV { get; set; }
+        public double? ActualPromoLSVSI { get; set; }
+        public double? ActualPromoLSVSO { get; set; }
 
         public double? ActualPromoPostPromoEffectLSVW1 { get; set; }
         public double? ActualPromoPostPromoEffectLSVW2 { get; set; }
@@ -264,6 +269,8 @@ namespace Module.Persist.TPM.Model.TPM
 
         public bool IsGrowthAcceleration { get; set; }
 
+        public bool IsApolloExport { get; set; }
+
         /// <summary>
         /// Copy Constructor
         /// </summary>
@@ -306,6 +313,8 @@ namespace Module.Persist.TPM.Model.TPM
             ActualPromoIncrementalMAC = promoToCopy.ActualPromoIncrementalMAC;
             ActualPromoIncrementalNSV = promoToCopy.ActualPromoIncrementalNSV;
             ActualPromoLSV = promoToCopy.ActualPromoLSV;
+            ActualPromoLSVSI = promoToCopy.ActualPromoLSVSI;
+            ActualPromoLSVSO = promoToCopy.ActualPromoLSVSO;
             ActualPromoLSVByCompensation = promoToCopy.ActualPromoLSVByCompensation;
             PlanPromoUpliftPercent = promoToCopy.PlanPromoUpliftPercent;
             PlanPromoIncrementalBaseTI = promoToCopy.PlanPromoIncrementalBaseTI;
@@ -324,6 +333,8 @@ namespace Module.Persist.TPM.Model.TPM
             ActualTIBasePercent = promoToCopy.ActualTIBasePercent;
             PlanCOGSPercent = promoToCopy.PlanCOGSPercent;
             ActualCOGSPercent = promoToCopy.ActualCOGSPercent;
+            IsOnInvoice = promoToCopy.IsOnInvoice;
+            IsApolloExport = promoToCopy.IsApolloExport;
         }
 
         public Promo() {}

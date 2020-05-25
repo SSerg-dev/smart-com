@@ -4,7 +4,7 @@
     filterOperationMap: {
         'Equals': breeze.FilterQueryOp.Equals.operator,
         'NotEqual': breeze.FilterQueryOp.NotEquals.operator,
-        'GreaterThen': breeze.FilterQueryOp.GreaterThan.operator,
+        'GreaterThan': breeze.FilterQueryOp.GreaterThan.operator,
         'GreaterOrEqual': breeze.FilterQueryOp.GreaterThanOrEqual.operator,
         'LessThan': breeze.FilterQueryOp.LessThan.operator,
         'LessOrEqual': breeze.FilterQueryOp.LessThanOrEqual.operator,

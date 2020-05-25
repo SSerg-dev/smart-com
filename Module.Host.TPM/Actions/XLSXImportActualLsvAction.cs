@@ -58,13 +58,27 @@ namespace Module.Host.TPM.Actions {
                             handlerLogger.Write(true, "No Promo with ID: " + importObj.Number, "Warning");
                             success = false;
                         }
-                         if (importObj.ActualPromoLSV < 0) {
-                            errors.Add("Actual Promo LSV < 0 " );
+                        if (importObj.ActualPromoLSV < 0)
+                        {
+                            errors.Add("Actual Promo LSV < 0 ");
                             handlerLogger.Write(true, "Actual Promo LSV < 0 ", "Warning");
                             success = false;
                         }
-                        if (importObj.ActualPromoBaselineLSV < 0) {
-                            errors.Add("Actual Promo Baseline LSV < 0 " );
+                        if (importObj.ActualPromoLSVSI < 0)
+                        {
+                            errors.Add("Actual Promo LSV SI < 0 ");
+                            handlerLogger.Write(true, "Actual Promo LSV SI < 0 ", "Warning");
+                            success = false;
+                        }
+                        if (importObj.ActualPromoLSVSO < 0)
+                        {
+                            errors.Add("Actual Promo LSV SO < 0 ");
+                            handlerLogger.Write(true, "Actual Promo LSV SO < 0 ", "Warning");
+                            success = false;
+                        }
+                        if (importObj.ActualPromoBaselineLSV < 0)
+                        {
+                            errors.Add("Actual Promo Baseline LSV < 0 ");
                             handlerLogger.Write(true, "Actual Promo Baseline LSV < 0 ", "Warning");
                             success = false;
                         }
@@ -98,6 +112,8 @@ namespace Module.Host.TPM.Actions {
                     {
                         oldRecord.ActualPromoBaselineLSV = record.ActualPromoBaselineLSV;
                         oldRecord.ActualPromoLSV = record.ActualPromoLSV;
+                        oldRecord.ActualPromoLSVSI = record.ActualPromoLSVSI;
+                        oldRecord.ActualPromoLSVSO = record.ActualPromoLSVSO;
                         oldRecord.ActualPromoPostPromoEffectLSVW1 = record.ActualPromoPostPromoEffectLSVW1;
                         oldRecord.ActualPromoPostPromoEffectLSVW2 = record.ActualPromoPostPromoEffectLSVW2;
                         toUpdate.Add(oldRecord);
@@ -109,8 +125,8 @@ namespace Module.Host.TPM.Actions {
                 }
             }
 
-            String formatStrRegularPromo = "UPDATE [Promo] SET ActualPromoBaselineLSV={0}, ActualPromoLSV={1}, ActualPromoPostPromoEffectLSVW1={2}, ActualPromoPostPromoEffectLSVW2={3} WHERE Id='{4}' \n";
-            String formatStrInOutPromo = "UPDATE [Promo] SET ActualPromoLSV={0} WHERE Id='{1}' \n";
+            String formatStrRegularPromo = "UPDATE [Promo] SET ActualPromoBaselineLSV={0}, ActualPromoLSV={1}, ActualPromoLSVSI={2}, ActualPromoLSVSO={3}, ActualPromoPostPromoEffectLSVW1={4}, ActualPromoPostPromoEffectLSVW2={5} WHERE Id='{6}' \n";
+            String formatStrInOutPromo = "UPDATE [Promo] SET ActualPromoLSV={0}, ActualPromoLSVSI={1}, ActualPromoLSVSO={2} WHERE Id='{3}' \n";
 
             foreach (IEnumerable<Promo> items in toUpdate.Partition(10000))
             {                
@@ -123,6 +139,8 @@ namespace Module.Host.TPM.Actions {
                         updateScript += String.Format(formatStrRegularPromo,
                         p.ActualPromoBaselineLSV.HasValue ? p.ActualPromoBaselineLSV.Value.ToString() : "NULL",
                         p.ActualPromoLSV.HasValue ? p.ActualPromoLSV.Value.ToString() : "NULL",
+                        p.ActualPromoLSVSI.HasValue ? p.ActualPromoLSVSI.Value.ToString() : "NULL",
+                        p.ActualPromoLSVSO.HasValue ? p.ActualPromoLSVSO.Value.ToString() : "NULL",
                         p.ActualPromoPostPromoEffectLSVW1.HasValue ? p.ActualPromoPostPromoEffectLSVW1.Value.ToString() : "NULL",
                         p.ActualPromoPostPromoEffectLSVW2.HasValue ? p.ActualPromoPostPromoEffectLSVW2.Value.ToString() : "NULL",
                         p.Id);
@@ -131,6 +149,8 @@ namespace Module.Host.TPM.Actions {
                     {
                         updateScript += String.Format(formatStrInOutPromo,
                         p.ActualPromoLSV.HasValue ? p.ActualPromoLSV.Value.ToString() : "NULL",
+                        p.ActualPromoLSVSI.HasValue ? p.ActualPromoLSVSI.Value.ToString() : "NULL",
+                        p.ActualPromoLSVSO.HasValue ? p.ActualPromoLSVSO.Value.ToString() : "NULL",
                         p.Id);
                     }
                 }

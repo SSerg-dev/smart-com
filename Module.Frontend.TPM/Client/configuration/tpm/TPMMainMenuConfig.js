@@ -144,13 +144,6 @@
                 //roles: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'DemandFinance', 'DemandPlanning', 'KeyAccountManager'],
                 widget: 'baseline'
             }, {
-                text: l10n.ns('tpm', 'mainmenu').value('DemandPriceListItem'),
-                tooltip: l10n.ns('tpm', 'mainmenu').value('DemandPriceListItem'),
-                glyph: 0xf127,
-                scale: 'medium',
-                //roles: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'DemandFinance', 'DemandPlanning', 'KeyAccountManager'],
-                widget: 'demandpricelist'
-            }, {
                 text: l10n.ns('tpm', 'mainmenu').value('PlanIncrementalReport'),
                 tooltip: l10n.ns('tpm', 'mainmenu').value('PlanIncrementalReport'),
                 glyph: 0xf127,
@@ -178,6 +171,27 @@
                 scale: 'medium',
                 roles: ['Administrator', 'FunctionalExpert', 'DemandPlanning', 'SuperReader', 'CustomerMarketing', 'CMManager', 'SupportAdministrator'],
                 widget: 'actuallsv'
+            }, {
+                text: l10n.ns('tpm', 'mainmenu').value('PriceList'),
+                tooltip: l10n.ns('tpm', 'mainmenu').value('PriceList'),
+                glyph: 0xf127,
+                scale: 'medium',
+                roles: ['Administrator', 'FunctionalExpert', 'DemandPlanning', 'SuperReader', 'CustomerMarketing', 'CMManager', 'SupportAdministrator'],
+                widget: 'pricelist'
+            }, {
+                text: l10n.ns('tpm', 'mainmenu').value('CoefficientSI2SO'),
+                tooltip: l10n.ns('tpm', 'mainmenu').value('CoefficientSI2SO'),
+                glyph: 0xf127,
+                scale: 'medium',
+                roles: ['Administrator', 'DemandPlanning', 'SuperReader', 'SupportAdministrator'],
+                widget: 'coefficientsi2so'
+            }, {
+                text: l10n.ns('tpm', 'mainmenu').value('PreviousDayIncremental'),
+                tooltip: l10n.ns('tpm', 'mainmenu').value('PreviousDayIncremental'),
+                glyph: 0xf127,
+                scale: 'medium',
+                roles: ['Administrator', 'DemandPlanning', 'SuperReader', 'SupportAdministrator'],
+                widget: 'previousdayincremental'
             }]
     }, {
         text: l10n.ns('tpm', 'mainmenu').value('TablesItem'),
@@ -287,22 +301,21 @@
             //roles: ['Administrator', 'FunctionalExpert', 'DemandFinance', 'SuperReader'],
             widget: 'promoroireport'
         }]
-    },
-    //{
-    //    text: l10n.ns('tpm', 'mainmenu').value('ClientDashboard'),
-    //    tooltip: l10n.ns('tpm', 'mainmenu').value('ClientDashboard'),
-    //    scale: 'medium',
-    //    glyph: 0xF56E,
-    //    children: [{
-    //        text: l10n.ns('tpm', 'mainmenu').value('Dashboard'),
-    //        tooltip: l10n.ns('tpm', 'mainmenu').value('Dashboard'),
-    //        glyph: 0xFA1C,
-    //        widget: 'clientdashboard'
-    //    }, {
-    //        text: l10n.ns('tpm', 'mainmenu').value('ClientKPIdata'),
-    //        tooltip: l10n.ns('tpm', 'mainmenu').value('ClientKPIdata'),
-    //        glyph: 0xF572,
-    //        widget: 'clientkpidata'
-    //    }]
-    //}
+    }, {
+        text: l10n.ns('tpm', 'mainmenu').value('ClientDashboard'),
+        tooltip: l10n.ns('tpm', 'mainmenu').value('ClientDashboard'),
+        scale: 'medium',
+        glyph: 0xF56E,
+        children: [{
+            text: l10n.ns('tpm', 'mainmenu').value('Dashboard'),
+            tooltip: l10n.ns('tpm', 'mainmenu').value('Dashboard'),
+            glyph: 0xFA1C,
+            widget: 'clientdashboard'
+        }, {
+            text: l10n.ns('tpm', 'mainmenu').value('ClientKPIdata'),
+            tooltip: l10n.ns('tpm', 'mainmenu').value('ClientKPIdata'),
+            glyph: 0xF572,
+            widget: 'clientkpidata'
+        }]
+    }
 ]);

@@ -8,12 +8,12 @@ namespace Module.Persist.TPM.Model.History
     [AssociatedWith(typeof(ClientDashboardView))]
     public class HistoricalClientDashboardView : BaseHistoricalEntity<Guid>
     {
-        public int ObjectId { get; set; }
+        public int? ObjectId { get; set; }
         public string ClientHierarchy { get; set; }
         public Guid? BrandTechId { get; set; }
         public string BrandTechName { get; set; }
         public string LogoFileName { get; set; }
-        public int Year { get; set; }
+        public int? Year { get; set; }
 
         public double? ShopperTiPlanPercent { get; set; }
         public double? ShopperTiPlan { get; set; }
@@ -65,6 +65,20 @@ namespace Module.Persist.TPM.Model.History
         public double? PromoNSVPlan { get; set; }
         public double? PromoNSVYTD { get; set; }
         public double? PromoNSVYEE { get; set; }
+
+        public double? PromoTiCostPlanPercent { get; set; }
+        public double? PromoTiCostPlan { get; set; }
+        public double? PromoTiCostYTD { get; set; }
+        public double? PromoTiCostYTDPercent { get; set; }
+        public double? PromoTiCostYEE { get; set; }
+        public double? PromoTiCostYEEPercent { get; set; }
+
+        public double? NonPromoTiCostPlanPercent { get; set; }
+        public double? NonPromoTiCostPlan { get; set; }
+        public double? NonPromoTiCostYTD { get; set; }
+        public double? NonPromoTiCostYTDPercent { get; set; }
+        public double? NonPromoTiCostYEE { get; set; }
+        public double? NonPromoTiCostYEEPercent { get; set; }
 
         public int? PromoWeeks { get; set; }
         public double? VodYTD { get; set; }

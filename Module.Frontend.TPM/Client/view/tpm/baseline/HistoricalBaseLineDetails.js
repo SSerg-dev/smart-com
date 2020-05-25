@@ -41,16 +41,16 @@
             renderer: Ext.util.Format.dateRenderer('d.m.Y'),
         }, {
             xtype: 'singlelinedisplayfield',
-            name: 'QTY',
-            fieldLabel: l10n.ns('tpm', 'BaseLine').value('QTY'),
+            name: 'InputBaselineQTY',
+            fieldLabel: l10n.ns('tpm', 'BaseLine').value('InputBaselineQTY'),
         }, {
             xtype: 'singlelinedisplayfield',
-            name: 'Price',
-            fieldLabel: l10n.ns('tpm', 'BaseLine').value('Price'),
+            name: 'SellInBaselineQTY',
+            fieldLabel: l10n.ns('tpm', 'BaseLine').value('SellInBaselineQTY'),
         }, {
             xtype: 'singlelinedisplayfield',
-            name: 'BaselineLSV',
-            fieldLabel: l10n.ns('tpm', 'BaseLine').value('BaselineLSV'),
+            name: 'SellOutBaselineQTY',
+            fieldLabel: l10n.ns('tpm', 'BaseLine').value('SellOutBaselineQTY'),
         }, {
             xtype: 'singlelinedisplayfield',
             name: 'Type',

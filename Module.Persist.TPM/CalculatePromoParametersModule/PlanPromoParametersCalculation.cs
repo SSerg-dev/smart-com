@@ -78,7 +78,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         }
                         else
                         {
-                            promo.PlanPromoTotalCost = (promo.PlanPromoCost ?? 0) + (promo.PlanPromoBaseTI ?? 0); ;// (promo.PlanPromoCost ?? 0) + (promo.PlanPromoIncrementalBaseTI ?? 0) + (promo.PlanPromoIncrementalCOGS ?? 0);
+                            promo.PlanPromoTotalCost = (promo.PlanPromoCost ?? 0) + (promo.PlanPromoBaseTI ?? 0); // (promo.PlanPromoCost ?? 0) + (promo.PlanPromoIncrementalBaseTI ?? 0) + (promo.PlanPromoIncrementalCOGS ?? 0);
 
                             promo.PlanPromoPostPromoEffectLSVW1 = 0;
                             promo.PlanPromoPostPromoEffectLSVW2 = 0;

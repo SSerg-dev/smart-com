@@ -79,18 +79,18 @@
             }, {
                 xtype: 'numbercolumn',
                 format: '0.00',
-                text: l10n.ns('tpm', 'BaseLine').value('QTY'),
-                dataIndex: 'QTY'
+                text: l10n.ns('tpm', 'BaseLine').value('InputBaselineQTY'),
+                dataIndex: 'InputBaselineQTY'
             }, {
                 xtype: 'numbercolumn',
                 format: '0.00',
-                text: l10n.ns('tpm', 'BaseLine').value('Price'),
-                dataIndex: 'Price'
+                text: l10n.ns('tpm', 'BaseLine').value('SellInBaselineQTY'),
+                dataIndex: 'SellInBaselineQTY'
             }, {
                 xtype: 'numbercolumn',
                 format: '0.00',
-                text: l10n.ns('tpm', 'BaseLine').value('BaselineLSV'),
-                dataIndex: 'BaselineLSV'
+                text: l10n.ns('tpm', 'BaseLine').value('SellOutBaselineQTY'),
+                dataIndex: 'SellOutBaselineQTY'
             }, {
                 xtype: 'numbercolumn',
                 format: '0.',
@@ -121,16 +121,16 @@
             fieldLabel: l10n.ns('tpm', 'BaseLine').value('StartDate'),
         }, {
             xtype: 'singlelinedisplayfield',
-            name: 'QTY',
-            fieldLabel: l10n.ns('tpm', 'BaseLine').value('QTY'),
+            name: 'InputBaselineQTY',
+            fieldLabel: l10n.ns('tpm', 'BaseLine').value('InputBaselineQTY'),
         }, {
             xtype: 'singlelinedisplayfield',
-            name: 'Price',
-            fieldLabel: l10n.ns('tpm', 'BaseLine').value('Price'),
+            name: 'SellInBaselineQTY',
+            fieldLabel: l10n.ns('tpm', 'BaseLine').value('SellInBaselineQTY'),
         }, {
             xtype: 'singlelinedisplayfield',
-            name: 'BaselineLSV',
-            fieldLabel: l10n.ns('tpm', 'BaseLine').value('BaselineLSV'),
+            name: 'SellOutBaselineQTY',
+            fieldLabel: l10n.ns('tpm', 'BaseLine').value('SellOutBaselineQTY'),
         }, {
             xtype: 'singlelinedisplayfield',
             name: 'Type',

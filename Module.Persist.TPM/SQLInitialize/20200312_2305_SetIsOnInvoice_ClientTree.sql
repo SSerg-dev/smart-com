@@ -1,0 +1,5 @@
+﻿UPDATE ClientTree SET IsOnInvoice = 0
+WHERE parentId IN (5000003, 5000011, 5000018, 5000026, 5000015) AND IsBaseClient = 1
+
+UPDATE ClientTree SET IsOnInvoice = 1
+WHERE parentId IN (5000007, 5000021, 5000023, 5000104) AND IsBaseClient = 1

@@ -103,11 +103,6 @@
             format: '0.00',
         }, {
             xtype: 'singlelinedisplayfield',
-            fieldLabel: l10n.ns('tpm', 'IncrementalPromo').value('CasePrice'),
-            name: 'CasePrice',
-            format: '0.00',
-        }, {
-            xtype: 'singlelinedisplayfield',
             fieldLabel: l10n.ns('tpm', 'IncrementalPromo').value('PlanPromoIncrementalLSV'),
             name: 'PlanPromoIncrementalLSV',
             format: '0.00',

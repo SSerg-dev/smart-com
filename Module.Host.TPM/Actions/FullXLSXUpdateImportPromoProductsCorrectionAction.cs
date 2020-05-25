@@ -148,7 +148,7 @@ namespace Module.Host.TPM.Actions
             }
             if (errors.Any()) {
                 HasErrors = true;
-                throw new ApplicationException(FileParseErrorMessage);
+                throw new ImportException(FileParseErrorMessage);
             }
 
             return records;

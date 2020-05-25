@@ -191,6 +191,7 @@ namespace Module.Persist.TPM.Model.History {
         public double? ActualPromoNetIncrementalNSV { get; set; }
         public double? ActualPromoIncrementalMAC { get; set; }
 
+        public bool IsOnInvoice { get; set; }
         public string BrandName { get; set; }
         public string BrandTechName { get; set; }
         public string ProductZREP { get; set; }
@@ -239,5 +240,6 @@ namespace Module.Persist.TPM.Model.History {
         // Id операции (по сути транзакции) для предотвращения дублирования
         public Guid? OperationId { get; set; }
         public bool? IsGrowthAcceleration { get; set; }
+        public bool? IsApolloExport { get; set; }
     }
 }

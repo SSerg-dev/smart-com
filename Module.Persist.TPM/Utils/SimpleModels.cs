@@ -20,6 +20,8 @@ namespace Module.Persist.TPM.Utils
 		public DateTimeOffset? DispatchesEnd { get; set; }
 		public bool? InOut { get; set; }
         public double? PlanPromoUpliftPercent { get; set; }
+        public bool IsOnInvoice { get; set; }
+        public Guid ProductId { get; set; }
         public string ZREP { get; set; }
         public double? PlanProductIncrementalCaseQty { get; set; }
         public double? PlanProductBaselineCaseQty { get; set; }
@@ -32,8 +34,8 @@ namespace Module.Persist.TPM.Utils
     public class BaseLineSimpleModel
     {
         public string ProductZREP { get; set; }
-        public double? QTY { get; set; }
-        public double? BaselineLSV { get; set; }
+        public double? SellInBaselineQTY { get; set; }
+        public double? SellOutBaselineQTY { get; set; }
         public DateTimeOffset? StartDate {get; set; }
         public string DemandCode { get; set; }
     }

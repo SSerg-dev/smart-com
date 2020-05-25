@@ -43,6 +43,7 @@ namespace Module.Frontend.TPM.Controllers {
             var user = authorizationManager.GetCurrentUser();
             var role = authorizationManager.GetCurrentRoleName();
             var clientTrees = Context.Set<ClientTree>().AsNoTracking().ToList();
+            var priceLists = Context.Set<PriceList>().AsNoTracking().ToArray();
             
             var dateTimeNow = DateTime.Now;
 
@@ -61,6 +62,8 @@ namespace Module.Frontend.TPM.Controllers {
 		                promo.PlanPromoUpliftPercent,
 		                promoStatus.Name AS PromoStatusName,
                         promo.BrandTechId,
+                        promo.IsOnInvoice,
+                        promoProduct.ProductId,
 		                promoProduct.ZREP, 
 		                promoProduct.PlanProductIncrementalCaseQty, 
 		                promoProduct.PlanProductBaselineCaseQty, 
@@ -78,8 +81,8 @@ namespace Module.Frontend.TPM.Controllers {
 			var baseLines = Context.Set<BaseLine>().Where(x => !x.Disabled).Select(x => new BaseLineSimpleModel
             {
                 ProductZREP = x.Product.ZREP,
-                QTY = x.QTY,
-                BaselineLSV = x.BaselineLSV,
+                SellInBaselineQTY = x.SellInBaselineQTY,
+                SellOutBaselineQTY = x.SellOutBaselineQTY,
                 StartDate = x.StartDate,
                 DemandCode = x.DemandCode
             })
@@ -102,17 +105,18 @@ namespace Module.Frontend.TPM.Controllers {
 				allowedClientIds = String.Join(",", allowedClientHierarchy.Select(x => String.Join(",", x)));
 			}
 
-			simplePromoPromoProducts.AsParallel().ForAll(simplePromoPromoProduct => {
-				// Проверка ограничений по клиентам
-				if (!String.IsNullOrEmpty(allowedClientIds) && simplePromoPromoProduct.ClientTreeId.HasValue)
-				{
-					bool hasAccess = allowedClientIds.Contains(simplePromoPromoProduct.ClientTreeId.Value.ToString());
-					if (!hasAccess)
-						return;
-				}
+			simplePromoPromoProducts.AsParallel().ForAll(simplePromoPromoProduct =>
+            {
+                // Проверка ограничений по клиентам
+                if (!string.IsNullOrEmpty(allowedClientIds) && simplePromoPromoProduct.ClientTreeId.HasValue)
+                {
+                    bool hasAccess = allowedClientIds.Contains(simplePromoPromoProduct.ClientTreeId.Value.ToString());
+                    if (!hasAccess)
+                        return;
+                }
 
-				var promoStatus = simplePromoPromoProduct.PromoStatusName;
-                var demandCode = String.Empty;
+                var promoStatus = simplePromoPromoProduct.PromoStatusName;
+                var demandCode = string.Empty;
 
                 var clientTree = clientTrees.FirstOrDefault(x => x.Id == simplePromoPromoProduct.ClientTreeKeyId && DateTime.Compare(x.StartDate, dateTimeNow) <= 0 && (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, dateTimeNow) > 0));
                 if (clientTree == null)
@@ -153,7 +157,7 @@ namespace Module.Frontend.TPM.Controllers {
                     postPromoEffectW2 = clientTree.PostPromoEffectW2.HasValue ? clientTree.PostPromoEffectW2.Value : 0;
                 }
 
-				var promoEffectBegin = ((DateTimeOffset)simplePromoPromoProduct.DispatchesEnd).Date;
+                var promoEffectBegin = ((DateTimeOffset)simplePromoPromoProduct.DispatchesEnd).Date;
 
                 var marsWeekBeginDiff = DayOfWeek.Sunday - promoEffectBegin.DayOfWeek;
                 if (marsWeekBeginDiff < 0)
@@ -164,10 +168,10 @@ namespace Module.Frontend.TPM.Controllers {
                 var weekStart = promoEffectBegin.AddDays(marsWeekBeginDiff);
                 var week = TimeSpan.FromDays(7);
 
-				if (clientTree != null && String.IsNullOrEmpty(clientTree.DemandCode))
+                if (clientTree != null && string.IsNullOrEmpty(clientTree.DemandCode))
                 {
                     clientTree = clientTrees.FirstOrDefault(y => y.ObjectId == clientTree.parentId && DateTime.Compare(y.StartDate, dateTimeNow) <= 0 && (!y.EndDate.HasValue || DateTime.Compare(y.EndDate.Value, dateTimeNow) > 0));
-                    if (clientTree != null && !String.IsNullOrEmpty(clientTree.DemandCode))
+                    if (clientTree != null && !string.IsNullOrEmpty(clientTree.DemandCode))
                     {
                         demandCode = clientTree.DemandCode;
                     }
@@ -183,7 +187,7 @@ namespace Module.Frontend.TPM.Controllers {
                 while (currentClient != null && currentClient.Type != "root")
                 {
                     currentClient = clientTrees.FirstOrDefault(x => !x.EndDate.HasValue && x.ObjectId == currentClient.parentId);
-                    if (currentClient != null && !String.IsNullOrEmpty(currentClient.DemandCode))
+                    if (currentClient != null && !string.IsNullOrEmpty(currentClient.DemandCode))
                     {
                         baseLinePostPromoEffectW1 = baseLines.FirstOrDefault(x => x.DemandCode == currentClient.DemandCode && x.ProductZREP == simplePromoPromoProduct.ZREP && x.StartDate == baseLineW1);
                         baseLinePostPromoEffectW2 = baseLines.FirstOrDefault(x => x.DemandCode == currentClient.DemandCode && x.ProductZREP == simplePromoPromoProduct.ZREP && x.StartDate == baseLineW2);
@@ -199,27 +203,33 @@ namespace Module.Frontend.TPM.Controllers {
                 {
                     var clientTreeBrandTech = clientTreeBrandTeches.FirstOrDefault(x => x.ClientTreeId == simplePromoPromoProduct.ClientTreeKeyId && x.BrandTechId == simplePromoPromoProduct.BrandTechId);
 
-                    postPromoEffectW1Qty = (baseLinePostPromoEffectW1?.QTY ?? 0) * (clientTreeBrandTech?.Share ?? 1) / 100 * (postPromoEffectW1 ?? 0) / 100;
-                    postPromoEffectW2Qty = (baseLinePostPromoEffectW2?.QTY ?? 0) * (clientTreeBrandTech?.Share ?? 1) / 100 * (postPromoEffectW2 ?? 0) / 100;
+                    var baseLinePostPromoEffectW1QTY = simplePromoPromoProduct.IsOnInvoice ? baseLinePostPromoEffectW1.SellInBaselineQTY : baseLinePostPromoEffectW1.SellOutBaselineQTY;
+                    var baseLinePostPromoEffectW2QTY = simplePromoPromoProduct.IsOnInvoice ? baseLinePostPromoEffectW2.SellInBaselineQTY : baseLinePostPromoEffectW2.SellOutBaselineQTY;
+
+                    postPromoEffectW1Qty = (baseLinePostPromoEffectW1QTY ?? 0) * (clientTreeBrandTech?.Share ?? 1) / 100 * (postPromoEffectW1 ?? 0) / 100;
+                    postPromoEffectW2Qty = (baseLinePostPromoEffectW2QTY ?? 0) * (clientTreeBrandTech?.Share ?? 1) / 100 * (postPromoEffectW2 ?? 0) / 100;
 
                     postPromoEffectW1QtyRounded = Math.Round(postPromoEffectW1Qty.Value, 2);
                     postPromoEffectW2QtyRounded = Math.Round(postPromoEffectW2Qty.Value, 2);
 
-                    planProductBaselineCaseQtyW1 = (baseLinePostPromoEffectW1?.QTY ?? 0) * (clientTreeBrandTech?.Share ?? 1) / 100;
-                    planProductBaselineCaseQtyW2 = (baseLinePostPromoEffectW2?.QTY ?? 0) * (clientTreeBrandTech?.Share ?? 1) / 100;
+                    planProductBaselineCaseQtyW1 = (baseLinePostPromoEffectW1QTY ?? 0) * (clientTreeBrandTech?.Share ?? 1) / 100;
+                    planProductBaselineCaseQtyW2 = (baseLinePostPromoEffectW2QTY ?? 0) * (clientTreeBrandTech?.Share ?? 1) / 100;
 
                     planProductBaselineCaseQtyW1Rounded = Math.Round(planProductBaselineCaseQtyW1.Value, 2);
                     planProductBaselineCaseQtyW2Rounded = Math.Round(planProductBaselineCaseQtyW2.Value, 2);
 
-                    planProductBaselineLSVW1 = (baseLinePostPromoEffectW1?.BaselineLSV ?? 0) * (clientTreeBrandTech?.Share ?? 1) / 100;
-                    planProductBaselineLSVW2 = (baseLinePostPromoEffectW2?.BaselineLSV ?? 0) * (clientTreeBrandTech?.Share ?? 1) / 100;
+                    var currentPriceList = priceLists.Where(x => !x.Disabled && x.ClientTreeId == simplePromoPromoProduct.ClientTreeKeyId && x.ProductId == simplePromoPromoProduct.ProductId &&
+                        x.StartDate <= simplePromoPromoProduct.DispatchesStart && x.EndDate >= simplePromoPromoProduct.DispatchesStart).OrderByDescending(x => x.StartDate).FirstOrDefault();
+
+                    planProductBaselineLSVW1 = (baseLinePostPromoEffectW1QTY ?? 0) * (currentPriceList?.Price ?? 0) * (clientTreeBrandTech?.Share ?? 1) / 100;
+                    planProductBaselineLSVW2 = (baseLinePostPromoEffectW2QTY ?? 0) * (currentPriceList?.Price ?? 0) * (clientTreeBrandTech?.Share ?? 1) / 100;
 
                     planProductBaselineLSVW1Rounded = Math.Round(planProductBaselineLSVW1.Value, 2);
                     planProductBaselineLSVW2Rounded = Math.Round(planProductBaselineLSVW2.Value, 2);
 
-					var absPPEw1 = postPromoEffectW1.HasValue ? Math.Abs(postPromoEffectW1.Value) : 0;
-					var absPPEw2 = postPromoEffectW2.HasValue ? Math.Abs(postPromoEffectW2.Value) : 0;
-					planProductPostPromoEffectLSVW1 = (planProductBaselineLSVW1 ?? 0) * absPPEw1 / 100;
+                    var absPPEw1 = postPromoEffectW1.HasValue ? Math.Abs(postPromoEffectW1.Value) : 0;
+                    var absPPEw2 = postPromoEffectW2.HasValue ? Math.Abs(postPromoEffectW2.Value) : 0;
+                    planProductPostPromoEffectLSVW1 = (planProductBaselineLSVW1 ?? 0) * absPPEw1 / 100;
                     planProductPostPromoEffectLSVW2 = (planProductBaselineLSVW2 ?? 0) * absPPEw2 / 100;
 
                     planProductPostPromoEffectLSVW1Rounded = Math.Round(planProductPostPromoEffectLSVW1.Value, 2);
@@ -275,6 +285,7 @@ namespace Module.Frontend.TPM.Controllers {
 				new Column() { Order = order++, Field = "PlanProductPostPromoEffectLSV", Header = "Plan Product Post Promo Effect LSV", Quoting = false, Format = "0.00" },
 				new Column() { Order = order++, Field = "PlanProductBaselineLSV", Header = "Plan Product Baseline LSV", Quoting = false, Format = "0.00" },
 				new Column() { Order = order++, Field = "InOut", Header = "InOut", Quoting = false },
+				new Column() { Order = order++, Field = "IsOnInvoice", Header = "On-Invoice", Quoting = false },
             };
             return columns;
         }
@@ -322,7 +333,8 @@ namespace Module.Frontend.TPM.Controllers {
                     PlanProductBaselineCaseQty = plan.PlanProductBaselineCaseQtyW1,
                     PlanProductPostPromoEffectLSV = plan.PlanProductPostPromoEffectLSVW1,
                     PlanProductBaselineLSV = plan.PlanProductBaselineLSVW1,
-                    InOut = plan.InOut
+                    InOut = plan.InOut,
+                    IsOnInvoice = plan.IsOnInvoice
                 });
 
                 result.Add(new PlanPostPromoEffectReport()
@@ -344,9 +356,9 @@ namespace Module.Frontend.TPM.Controllers {
                     PlanProductBaselineCaseQty = plan.PlanProductBaselineCaseQtyW2,
                     PlanProductPostPromoEffectLSV = plan.PlanProductPostPromoEffectLSVW2,
                     PlanProductBaselineLSV = plan.PlanProductBaselineLSVW2,
-                    InOut = plan.InOut
+                    InOut = plan.InOut,
+                    IsOnInvoice = plan.IsOnInvoice
                 });
-             
             }
             return result.AsQueryable();
         }
@@ -378,6 +390,7 @@ namespace Module.Frontend.TPM.Controllers {
             rep.PlanProductBaselineLSVW1 = planProductBaselineLSVW1;
             rep.PlanProductBaselineLSVW2= planProductBaselineLSVW2;
             rep.PlanUplift = simplePromoPromoProduct.PlanPromoUpliftPercent;
+            rep.IsOnInvoice = simplePromoPromoProduct.IsOnInvoice;
 
             return rep;
         }

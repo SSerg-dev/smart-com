@@ -36,6 +36,8 @@ namespace Module.Persist.TPM.Model.TPM
         public double? PlanPromoLSV { get; set; }
         public double? ActualPromoLSVByCompensation { get; set; }
         public double? ActualPromoLSV { get; set; }
+        public double? ActualPromoLSVSI { get; set; }
+        public double? ActualPromoLSVSO { get; set; }
         public double? PlanPromoPostPromoEffectLSVW1 { get; set; }
         public double? ActualPromoPostPromoEffectLSVW1 { get; set; }
         public double? PlanPromoPostPromoEffectLSVW2 { get; set; }
@@ -43,5 +45,6 @@ namespace Module.Persist.TPM.Model.TPM
         public double? PlanPromoPostPromoEffectLSV { get; set; }
         public double? ActualPromoPostPromoEffectLSV { get; set; }
         public bool? InOut { get; set; }
+        public bool? IsOnInvoice { get; set; }
     }
 }

@@ -68,6 +68,40 @@
             },
             allowBlank: false,
             allowOnlyWhitespace: false,
+            listeners: {
+                change: function (booleancombobox, newValue, oldValue) {
+                    var isOnInvoiceCombobox = this.up('container').down('combobox[name=IsOnInvoice]');
+                    if (newValue) {
+                        isOnInvoiceCombobox.setDisabled(false);
+                    } else {
+                        isOnInvoiceCombobox.setDisabled(true);
+                        isOnInvoiceCombobox.setValue('');
+                    }
+                }
+            }
+        }, {
+            xtype: 'booleancombobox',
+            fieldLabel: l10n.ns('tpm', 'ClientTree').value('InvoiceType'),
+            name: 'IsOnInvoice',
+            editable: false,
+            store: {
+                type: 'booleanstore',
+                fields: ['id', 'text'],
+                data: [
+                    { id: null, text: '\u00a0' },
+                    { id: true, text: l10n.ns('tpm', 'InvoiceTypes').value('OnInvoice') },
+                    { id: false, text: l10n.ns('tpm', 'InvoiceTypes').value('OffInvoice') }
+                ]
+            },
+        }, {
+            xtype: 'textfield',
+            name: 'DMDGroup',
+            allowBlank: true,
+            allowOnlyWhitespace: true,
+            regex: /^[0-9]*[0-9]$/,
+            fieldLabel: l10n.ns('tpm', 'ClientTree').value('DMDGroup'),
+            regexText: l10n.ns('tpm', 'ClientTree').value('DMDGroupRegex'),
+
         }, {
             xtype: 'searchcombobox',
             fieldLabel: l10n.ns('tpm', 'RetailType').value('Name'),

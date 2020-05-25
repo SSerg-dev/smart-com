@@ -34,39 +34,41 @@ namespace Module.Host.TPM.Handlers.DataLakeIntegrationHandlers
             handlerLogger.Write(true, String.Format("Synchronization materials with products initialization began at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
             handlerLogger.Write(true, "The task for synchronization materials with products will be created in a few seconds.", "Message");
 
-            var context = new DatabaseContext();
             try
             {
-				Guid? userId = Guid.Empty;
-				Guid? roleId = Guid.Empty;
-				LoopHandler currentHandler = context.LoopHandlers.Find(info.HandlerId);
-				if (currentHandler != null)
-				{
-					userId = currentHandler.UserId;
-					roleId = currentHandler.RoleId;
-				}
-                
-				var handlerData = new HandlerData();
-				var handler = new LoopHandler()
+                using (DatabaseContext context = new DatabaseContext())
                 {
-                    Id = Guid.NewGuid(),
-                    ConfigurationName = "PROCESSING",
-                    Description = "Synchronization materials with products.",
-                    Name = "Module.Host.TPM.Handlers.DataLakeIntegrationHandlers.MarsProductsCheckHandler",
-                    ExecutionPeriod = null,
-                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                    LastExecutionDate = null,
-                    NextExecutionDate = null,
-                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
-                    UserId = userId == Guid.Empty ? null : userId,
-                    RoleId = roleId == Guid.Empty ? null : roleId
-                };
+                    Guid? userId = Guid.Empty;
+                    Guid? roleId = Guid.Empty;
+                    LoopHandler currentHandler = context.LoopHandlers.Find(info.HandlerId);
+                    if (currentHandler != null)
+                    {
+                        userId = currentHandler.UserId;
+                        roleId = currentHandler.RoleId;
+                    }
 
-                handler.SetParameterData(handlerData);
-                context.LoopHandlers.Add(handler);
+                    var handlerData = new HandlerData();
+                    var handler = new LoopHandler()
+                    {
+                        Id = Guid.NewGuid(),
+                        ConfigurationName = "PROCESSING",
+                        Description = "Synchronization materials with products.",
+                        Name = "Module.Host.TPM.Handlers.DataLakeIntegrationHandlers.MarsProductsCheckHandler",
+                        ExecutionPeriod = null,
+                        CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                        LastExecutionDate = null,
+                        NextExecutionDate = null,
+                        ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                        UserId = userId == Guid.Empty ? null : userId,
+                        RoleId = roleId == Guid.Empty ? null : roleId
+                    };
 
-                context.SaveChanges();
-                handlerLogger.Write(true, "The task for synchronization materials with products was created.", "Message");
+                    handler.SetParameterData(handlerData);
+                    context.LoopHandlers.Add(handler);
+
+                    context.SaveChanges();
+                    handlerLogger.Write(true, "The task for synchronization materials with products was created.", "Message");
+                }
             }
             catch (Exception e)
             {
@@ -78,12 +80,6 @@ namespace Module.Host.TPM.Handlers.DataLakeIntegrationHandlers
             }
             finally
             {
-                if (context != null)
-                {
-                    context.SaveChanges();
-                    ((IDisposable)context).Dispose();
-                }
-
                 stopWatch.Stop();
                 handlerLogger.Write(true, String.Format("Synchronization materials with products initialization ended at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
             }

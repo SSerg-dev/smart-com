@@ -111,7 +111,7 @@ namespace Module.Persist.TPM.Utils.Filter {
                 case "EndsWith": r.Operator = RuleOperator.EndsWith; break;
                 case "Equals": r.Operator = RuleOperator.Equals; break;
                 case "GreaterOrEqual": r.Operator = RuleOperator.GreaterOrEqual; break;
-                case "GreaterThen": r.Operator = RuleOperator.GreaterThan; break;
+                case "GreaterThan": r.Operator = RuleOperator.GreaterThan; break;
                 case "IsNull": r.Operator = RuleOperator.IsNull; break;
                 case "LessOrEqual": r.Operator = RuleOperator.LessOrEqual; break;
                 case "LessThan": r.Operator = RuleOperator.LessThan; break;
@@ -139,7 +139,7 @@ namespace Module.Persist.TPM.Utils.Filter {
             { "ne", "NotEqual"},
             { "notnull", "NotNull"},
             { "startswith", "StartsWith"},
-            { "gt", "GreaterThen"},
+            { "gt", "GreaterThan"},
             { "in", "Any"},
         };
     }

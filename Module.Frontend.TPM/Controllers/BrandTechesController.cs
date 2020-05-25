@@ -130,8 +130,9 @@ namespace Module.Frontend.TPM.Controllers
 
             var proxy = Context.Set<BrandTech>().Create<BrandTech>();
             var result = (BrandTech)Mapper.Map(model, proxy, typeof(BrandTech), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
-
+            
             Context.Set<BrandTech>().Add(result);
+
             try
             {
                 var resultSaveChanges = Context.SaveChanges();
@@ -144,6 +145,13 @@ namespace Module.Frontend.TPM.Controllers
             {
                 return GetErorrRequest(e);
             }
+
+            List<string> brtc = new List<string>
+            {
+                result.BrandTech_code
+            };
+
+            CreateCoefficientSI2SOHandler(brtc, null, 1);
 
             return Created(result);
         }
@@ -216,6 +224,44 @@ namespace Module.Frontend.TPM.Controllers
         private bool EntityExists(System.Guid key)
         {
             return Context.Set<BrandTech>().Count(e => e.Id == key) > 0;
+        }
+
+        /// <summary>
+        /// Создание задачи на добавление новых записей коэффицициентов
+        /// </summary>
+        /// <param name="promo"></param>
+        private void CreateCoefficientSI2SOHandler(List<string> brandTechCode, string demandCode, double cValue)
+        {
+            UserInfo user = authorizationManager.GetCurrentUser();
+            Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
+            RoleInfo role = authorizationManager.GetCurrentRole();
+            Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
+
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                HandlerData data = new HandlerData();
+                HandlerDataHelper.SaveIncomingArgument("brandTechCode", brandTechCode, data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("demandCode", demandCode, data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("cValue", cValue, data, visible: false, throwIfNotExists: false);
+
+                LoopHandler handler = new LoopHandler()
+                {
+                    Id = Guid.NewGuid(),
+                    ConfigurationName = "PROCESSING",
+                    Description = "Adding new records for coefficients SI/SO",
+                    Name = "Module.Host.TPM.Handlers.CreateCoefficientSI2SOHandler",
+                    ExecutionPeriod = null,
+                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                    LastExecutionDate = null,
+                    NextExecutionDate = null,
+                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                    UserId = userId,
+                    RoleId = roleId
+                };
+                handler.SetParameterData(data);
+                context.LoopHandlers.Add(handler);
+                context.SaveChanges();
+            }
         }
 
         private IEnumerable<Column> GetExportSettings()

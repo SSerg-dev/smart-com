@@ -66,12 +66,18 @@ namespace Moule.Host.TPM.Actions
                     nameof(ClientDashboard.ROIPlanPercent),
                     nameof(ClientDashboard.IncrementalNSVPlan),
                     nameof(ClientDashboard.PromoNSVPlan),
+                    nameof(ClientDashboard.NonPromoTiCostPlanPercent),
+                    nameof(ClientDashboard.PromoTiCostPlanPercent),
                 },
                 [UserRoles.KeyAccountManager.ToString()] = new List<string>
                 {
                     nameof(ClientDashboard.ProductionPlan),
                     nameof(ClientDashboard.BrandingPlan),
                     nameof(ClientDashboard.BTLPlan),
+                },
+                [UserRoles.DemandPlanning.ToString()] = new List<string>
+                {
+                    nameof(ClientDashboard.PlanLSV),
                 },
             };
         }
@@ -178,7 +184,7 @@ namespace Moule.Host.TPM.Actions
                     resultRecordCount = InsertDataToDatabase(items, context);
                 }
                 logger.Trace("Persist models inserted");
-                context.SaveChanges();
+               // context.SaveChanges();
                 logger.Trace("Data saved");
 
                 errorCount = errorRecords.Count;
@@ -289,12 +295,20 @@ namespace Moule.Host.TPM.Actions
 
         protected override int InsertDataToDatabase(IEnumerable<IEntity<Guid>> records, DatabaseContext context)
         {
-            //List<Tuple<IEntity<Guid>, IEntity<Guid>>> toHisCreate = new List<Tuple<IEntity<Guid>, IEntity<Guid>>>();
-            //List<Tuple<IEntity<Guid>, IEntity<Guid>>> toHisUpdate = new List<Tuple<IEntity<Guid>, IEntity<Guid>>>();
+            List<Tuple<IEntity<Guid>, IEntity<Guid>>> toHisCreate = new List<Tuple<IEntity<Guid>, IEntity<Guid>>>();
+            List<Tuple<IEntity<Guid>, IEntity<Guid>>> toHisUpdate = new List<Tuple<IEntity<Guid>, IEntity<Guid>>>(); 
+            List<ClientDashboardView> toHisUpdateTemp = new List<ClientDashboardView>();
+            List<ClientDashboardView> toHisCreateTemp = new List<ClientDashboardView>();
 
             var clientDashboardView = context.Set<ClientDashboardView>();
+            var clientDashboard = context.Set<ClientDashboard>();
+            var clientTrees = context.Set<ClientTree>();
+            var brandTechs = context.Set<BrandTech>();
             IList<ClientDashboard> toCreate = new List<ClientDashboard>();
             IList<ClientDashboard> toUpdate = new List<ClientDashboard>();
+
+            ClientDashboardView hisModel = null;
+            ClientDashboardView oldHisModel = null;
 
             var currentRole = context.Set<Role>().FirstOrDefault(x => !x.Disabled && x.Id == _roleId);
             if (currentRole != null)
@@ -302,33 +316,29 @@ namespace Moule.Host.TPM.Actions
                 var clientDashboardRecords = records.Cast<ClientDashboard>();
                 foreach (var clientDashboardRecord in clientDashboardRecords)
                 {
-                    //ClientDashboardView hisModel = null;
-                    //ClientDashboardView oldHisModel = null;
 
-                    var notMaterializedClientDashboardRecord = context.Set<ClientDashboard>()
+                    var notMaterializedClientDashboardRecord = clientDashboard
                         .FirstOrDefault(x => x.ClientTreeId == clientDashboardRecord.ClientTreeId && x.BrandTechName == clientDashboardRecord.BrandTechName && x.Year == clientDashboardRecord.Year);
+                    oldHisModel = clientDashboardView.Where(x => x.ObjectId == clientDashboardRecord.ClientTreeId && x.BrandTechName == clientDashboardRecord.BrandTechName && x.Year.ToString() == clientDashboardRecord.Year).FirstOrDefault();
 
                     if (notMaterializedClientDashboardRecord != null)
                     {
-                        //oldHisModel = clientDashboardView.Where(x => x.ObjectId == clientDashboardRecord.ClientTreeId && x.BrandTechName == clientDashboardRecord.BrandTechName && x.Year.ToString() == clientDashboardRecord.Year).FirstOrDefault();
-                        //hisModel = oldHisModel.Clone();
-                        //ToView(oldHisModel, notMaterializedClientDashboardRecord);
-
                         SetValues(clientDashboardRecord, notMaterializedClientDashboardRecord, _modelProperties, currentRole, false);
 
-                        //ToView(hisModel, notMaterializedClientDashboardRecord);
-                        //toHisUpdate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(oldHisModel, hisModel));
+                        oldHisModel.Id = notMaterializedClientDashboardRecord.Id;
+                        toHisUpdateTemp.Add(oldHisModel);
                         toUpdate.Add(notMaterializedClientDashboardRecord);
                     }
                     else
                     {
-                        var clientTree = context.Set<ClientTree>().FirstOrDefault(x => !x.EndDate.HasValue && x.ObjectId == clientDashboardRecord.ClientTreeId);
-                        var brandTech = context.Set<BrandTech>().FirstOrDefault(x => !x.Disabled && x.Name == clientDashboardRecord.BrandTechName);
+                        var clientTree = clientTrees.FirstOrDefault(x => !x.EndDate.HasValue && x.ObjectId == clientDashboardRecord.ClientTreeId);
+                        var brandTech = brandTechs.FirstOrDefault(x => !x.Disabled && x.Name == clientDashboardRecord.BrandTechName);
 
                         if (clientTree != null && brandTech != null)
                         {
                             var newClientDashboardRecord = new ClientDashboard
                             {
+                                Id = Guid.NewGuid(),
                                 ClientHierarchy = clientTree?.FullPathName,
                                 BrandTechId = brandTech?.Id,
                                 BrandTechName = brandTech?.Name
@@ -336,19 +346,32 @@ namespace Moule.Host.TPM.Actions
 
                             SetValues(clientDashboardRecord, newClientDashboardRecord, _modelProperties, currentRole, true);
 
-                            //oldHisModel = new ClientDashboardView();
-                            //ToView(oldHisModel, newClientDashboardRecord);
-                            //toHisCreate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(null, oldHisModel));
+                            oldHisModel.Id = newClientDashboardRecord.Id;
+                            toHisCreateTemp.Add(oldHisModel);
                             toCreate.Add(newClientDashboardRecord);
                         }
                     }
                 }
 
                 logger.Trace("Persist models inserted");
-                //context.HistoryWriter.Write(toHisCreate, context.AuthManager.GetCurrentUser(), context.AuthManager.GetCurrentRole(), OperationType.Created);
                 SaveToDatabase(toCreate, OperationType.Created, context);
-                //context.HistoryWriter.Write(toHisUpdate, context.AuthManager.GetCurrentUser(), context.AuthManager.GetCurrentRole(), OperationType.Updated);
                 SaveToDatabase(toUpdate, OperationType.Updated, context);
+
+                foreach (var oldModel in toHisUpdateTemp)
+                {
+                    hisModel = clientDashboardView.Where(x => x.ObjectId == oldModel.ObjectId && x.BrandTechId == oldModel.BrandTechId && x.Year == oldModel.Year).FirstOrDefault();
+                    hisModel.Id = oldModel.Id;
+                    toHisUpdate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(oldModel, hisModel));
+                }
+                foreach (var oldModel in toHisCreateTemp)
+                {
+                    hisModel = clientDashboardView.Where(x => x.ObjectId == oldModel.ObjectId && x.BrandTechId == oldModel.BrandTechId && x.Year == oldModel.Year).FirstOrDefault();
+                    hisModel.Id = oldModel.Id;
+                    toHisCreate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(null, hisModel));
+                }
+
+                context.HistoryWriter.Write(toHisCreate, context.AuthManager.GetCurrentUser(), context.AuthManager.GetCurrentRole(), OperationType.Created);
+                context.HistoryWriter.Write(toHisUpdate, context.AuthManager.GetCurrentUser(), context.AuthManager.GetCurrentRole(), OperationType.Updated);
                 logger.Trace("Data saved");
             }
             else
@@ -395,6 +418,9 @@ namespace Moule.Host.TPM.Actions
                 clientDashboardView.ROIPlanPercent = model.ROIPlanPercent;
                 clientDashboardView.IncrementalNSVPlan = model.IncrementalNSVPlan;
                 clientDashboardView.PromoNSVPlan = model.PromoNSVPlan;
+                clientDashboardView.LSVPlan = model.PlanLSV;
+                clientDashboardView.NonPromoTiCostPlanPercent = model.NonPromoTiCostPlanPercent;
+                clientDashboardView.PromoTiCostPlanPercent = model.PromoTiCostPlanPercent;
             }
         }
 
@@ -406,11 +432,12 @@ namespace Moule.Host.TPM.Actions
                 {
                     string updateScript = String.Join("", items.Select(y =>
                     String.Format("INSERT INTO ClientDashboard (ShopperTiPlanPercent, MarketingTiPlanPercent, ProductionPlan, BrandingPlan, BTLPlan, " +
-                    "ROIPlanPercent ,IncrementalNSVPlan, PromoNSVPlan, ClientTreeId, BrandTechName, Year, ClientHierarchy, BrandTechId)" +
-                    " VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}');",
+                    "ROIPlanPercent ,IncrementalNSVPlan, PromoNSVPlan, ClientTreeId, BrandTechName, Year, ClientHierarchy, BrandTechId, " +
+                    "PromoTiCostPlanPercent, NonPromoTiCostPlanPercent, PlanLSV, [Id])" +
+                    " VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}', '{13}', '{14}', '{15}', '{16}');",
                     y.ShopperTiPlanPercent, y.MarketingTiPlanPercent, y.ProductionPlan.ToString(), y.BrandingPlan, y.BTLPlan,
                     y.ROIPlanPercent, y.IncrementalNSVPlan, y.PromoNSVPlan, y.ClientTreeId, y.BrandTechName,
-                    y.Year, y.ClientHierarchy, y.BrandTechId)));
+                    y.Year, y.ClientHierarchy, y.BrandTechId, y.PromoTiCostPlanPercent, y.NonPromoTiCostPlanPercent, y.PlanLSV, y.Id)));
                     context.Database.ExecuteSqlCommand(updateScript);
                 }
             }
@@ -420,9 +447,12 @@ namespace Moule.Host.TPM.Actions
                 {
                     string updateScript = String.Join("", items.Select(y =>
                     String.Format("UPDATE ClientDashboard SET ShopperTiPlanPercent = '{0}', MarketingTiPlanPercent = '{1}', ProductionPlan = '{2}', BrandingPlan = '{3}'," +
-                            "BTLPlan = '{4}', ROIPlanPercent = '{5}', IncrementalNSVPlan = '{6}', PromoNSVPlan = '{7}'  WHERE (ClientTreeId = '{8}' AND BrandTechName = '{9}' AND Year = '{10}');",
+                            "BTLPlan = '{4}', ROIPlanPercent = '{5}', IncrementalNSVPlan = '{6}', PromoNSVPlan = '{7}', " +
+                            "PromoTiCostPlanPercent = {8}, NonPromoTiCostPlanPercent = {9}, PlanLSV = {10}" +
+                            "WHERE [Id] = '{11}';",
                             y.ShopperTiPlanPercent, y.MarketingTiPlanPercent, y.ProductionPlan, y.BrandingPlan, y.BTLPlan,
-                            y.ROIPlanPercent, y.IncrementalNSVPlan, y.PromoNSVPlan, y.ClientTreeId, y.BrandTechName, y.Year)));
+                            y.ROIPlanPercent, y.IncrementalNSVPlan, y.PromoNSVPlan, 
+                            y.PromoTiCostPlanPercent, y.NonPromoTiCostPlanPercent, y.PlanLSV, y.Id)));
                     context.Database.ExecuteSqlCommand(updateScript);
                 }
             }

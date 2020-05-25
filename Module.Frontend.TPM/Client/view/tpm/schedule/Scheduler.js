@@ -90,7 +90,8 @@
         '<tpl if="TypeName != \'InOut\' && TypeName != \'Regular\'"><dd style="border-bottom: 1px solid rgba(197, 197, 197, 0.25); padding-bottom: 5px;"></dd>' +
         '<dt><span class="mdi inout-mark-icon">&#x{TypeGlyph}</span>{TypeName} promo</dt></tpl>' +
         '<tpl if="IsGrowthAcceleration"><dd style="border-bottom: 1px solid rgba(197, 197, 197, 0.25); padding-bottom: 5px;"></dd>' +
-        '<dt><span class="mdi alpha-g-box-outline inout-mark-icon"></span>Growth Acceleration</dt></tpl>' +
+        '<dt><span class="mdi alpha-g-box-outline inout-mark-icon"></span>Growth Acceleration</dt></tpl>' + 
+        '<dt style="border-top: 1px solid rgba(197, 197, 197, 0.25); padding-top: 5px;">Invoice Type</dt><dd>{IsOnInvoice}</dd>' +
         '</dl>'
     ),
     tipCfg: {

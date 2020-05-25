@@ -26,6 +26,8 @@ namespace Model.Host.TPM.Handlers.DataFlow
         public PromoProductsCorrectionDataFlowModule PromoProductsCorrectionDataFlowModule { get; }
         public COGSDataFlowModule COGSDataFlowModule { get; }
         public TradeInvestmentDataFlowModule TradeInvestmentDataFlowModule { get; }
+        public PriceListDataFlowModule PriceListDataFlowModule { get; }
+        public BrandTechDataFlowModule BrandTechDataFlowModule { get; }
 
         public DataFlowModuleCollection(DatabaseContext databaseContext)
         {
@@ -43,6 +45,8 @@ namespace Model.Host.TPM.Handlers.DataFlow
             this.PromoProductsCorrectionDataFlowModule = new PromoProductsCorrectionDataFlowModule(databaseContext);
             this.COGSDataFlowModule = new COGSDataFlowModule(databaseContext);
             this.TradeInvestmentDataFlowModule = new TradeInvestmentDataFlowModule(databaseContext);
+            this.PriceListDataFlowModule = new PriceListDataFlowModule(databaseContext);
+            this.BrandTechDataFlowModule = new BrandTechDataFlowModule(databaseContext);
         }
     }
 }

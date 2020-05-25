@@ -123,10 +123,6 @@
                 dataIndex: 'PlanPromoIncrementalCases',
                 format: '0.00',
             }, {
-                text: l10n.ns('tpm', 'IncrementalPromo').value('CasePrice'),
-                dataIndex: 'CasePrice',
-                format: '0.00',
-            }, {
                 text: l10n.ns('tpm', 'IncrementalPromo').value('PlanPromoIncrementalLSV'),
                 dataIndex: 'PlanPromoIncrementalLSV',
                 format: '0.00',

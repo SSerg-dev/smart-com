@@ -29,8 +29,8 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                                             && promo.ActualPromoBaselineLSV != null
                                                             && promo.ActualPromoBaselineLSV != promo.PlanPromoBaselineLSV;
                 bool isActualPromoLSVChangedByDemand = promo.PromoStatusId == finishedStatus.Id
-                                                    && promo.ActualPromoLSV != null
-                                                    && promo.ActualPromoLSV != 0;
+                                                    && promo.ActualPromoLSVSO != null
+                                                    && promo.ActualPromoLSVSO != 0;
                 bool isActualPromoProstPromoEffectLSVChangedByDemand = promo.PromoStatusId == finishedStatus.Id
                                                                     && promo.ActualPromoPostPromoEffectLSV != null
                                                                     && promo.ActualPromoPostPromoEffectLSV != 0;
@@ -46,11 +46,6 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     if (!product.Product.UOM_PC2Case.HasValue)
                         errorsForProduct += Log.GenerateLogLine(Log.MessageType["Warning"], "For product with EAN Case:") + product.EAN_Case + " is no UOM_PC2Case value;";
 
-                    if (!isActualPromoLSVChangedByDemand)
-                    {
-                        product.ActualProductLSV = 0;
-                    }
-
                     if (!isActualPromoBaseLineLSVChangedByDemand && (!promo.InOut.HasValue || !promo.InOut.Value))
                     {
                         product.ActualProductBaselineLSV = product.PlanProductBaselineLSV;
@@ -59,12 +54,31 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     if (errorsForProduct.Length == 0)
                     {
                         double? actualProductPCPrice = 0;
+
+                        if (!product.Price.HasValue || (product.Price.HasValue && product.Price.Value == 0))
+                        {
+                            var priceLists = context.Set<PriceList>().Where(x => !x.Disabled && x.StartDate <= promo.DispatchesStart && x.EndDate >= promo.DispatchesStart && x.ClientTreeId == promo.ClientTreeKeyId);
+                            var priceList = priceLists.Where(x => x.ProductId == product.ProductId).OrderByDescending(x => x.StartDate).FirstOrDefault();
+                            var incrementalPromo = context.Set<IncrementalPromo>().Where(x => !x.Disabled && x.PromoId == promo.Id
+                                                                                  && x.ProductId == product.ProductId).FirstOrDefault();
+                            if (priceList != null)
+                            {
+                                product.Price = priceList.Price;
+                                if (incrementalPromo != null) incrementalPromo.CasePrice = priceList.Price;
+                            }
+                            else
+                            {
+                                product.Price = null;
+                                if (incrementalPromo != null) incrementalPromo.CasePrice = null;
+                            }
+                        }
+
                         if (!promo.InOut.HasValue || !promo.InOut.Value)
                         {
                             if (product.Product.UOM_PC2Case != 0)
                             {
-                                // Нужно будет пересчитывать ProductBaselinePrice.
-                                actualProductPCPrice = product.ProductBaselinePrice / product.Product.UOM_PC2Case;
+                                var price = product.Price;
+                                actualProductPCPrice = product.Price / product.Product.UOM_PC2Case;
                             }
                         }
                         else
@@ -72,16 +86,28 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                             var incrementalPromo = context.Set<IncrementalPromo>().Where(x => x.PromoId == promo.Id && x.ProductId == product.ProductId && !x.Disabled).FirstOrDefault();
                             if (incrementalPromo != null && product.Product.UOM_PC2Case != 0)
                             {
-                                actualProductPCPrice = incrementalPromo.CasePrice / product.Product.UOM_PC2Case;
+                                var price = product.Price;
+                                actualProductPCPrice = price / product.Product.UOM_PC2Case;
                             }
                         }
 
                         product.ActualProductCaseQty = product.Product.UOM_PC2Case != 0 ? (product.ActualProductPCQty ?? 0) / product.Product.UOM_PC2Case : 0;
                         product.ActualProductSellInPrice = actualProductPCPrice;
+                        product.ActualProductBaselineCaseQty = (product.Price != 0 && product.Price != null) ?
+                                                                product.ActualProductBaselineLSV / product.Price : 0;
 
                         //удалять? 17/06/19
                         //все -таки не надо удалять 20/06/19
                         product.ActualProductPCLSV = (product.ActualProductPCQty * product.ActualProductSellInPrice) ?? 0;// * (product.ActualProductShelfDiscount / 100);
+
+                        if (promo.IsOnInvoice)
+                        {
+                            product.ActualProductLSV = product.ActualProductPCLSV;
+                        }
+                        else if (!isActualPromoLSVChangedByDemand)
+                        {
+                            product.ActualProductLSV = 0;
+                        }
 
                         // Plan Product Baseline PC Qty = Plan Product Baseline Case Qty * UOM_PC2Case
                         double? planProductBaselinePCQty = product.PlanProductBaselineCaseQty * product.Product.UOM_PC2Case;
@@ -129,13 +155,15 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     }
                 }
 
-                if(ActualPromoLSVByCompensation == 0)
+                if (ActualPromoLSVByCompensation == 0)
                 {
                     promo.ActualPromoLSVByCompensation = null;
+                    promo.ActualPromoLSVSI = null;
                 }
                 else
                 {
                     promo.ActualPromoLSVByCompensation = ActualPromoLSVByCompensation;
+                    promo.ActualPromoLSVSI = ActualPromoLSVByCompensation;
                 }
 
                 try

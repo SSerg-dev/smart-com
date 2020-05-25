@@ -41,6 +41,8 @@
         { name: 'PlanPromoLSV', type: 'float', hidden: false, isDefault: true, useNull: true },
         { name: 'ActualPromoLSVByCompensation', type: 'float', hidden: false, isDefault: true, useNull: true, defaultFilterConfig: getDefaultFilterNotNull() },
         { name: 'ActualPromoLSV', type: 'float', hidden: false, isDefault: true, useNull: true, useNull: true },
+        { name: 'ActualPromoLSVSI', type: 'float', hidden: false, isDefault: true, useNull: true, useNull: true },
+        { name: 'ActualPromoLSVSO', type: 'float', hidden: false, isDefault: true, useNull: true, useNull: true },
         { name: 'PlanPromoPostPromoEffectLSVW1', type: 'float', hidden: false, isDefault: true },
         { name: 'ActualPromoPostPromoEffectLSVW1', type: 'float', hidden: false, isDefault: true, useNull: true },
         { name: 'PlanPromoPostPromoEffectLSVW2', type: 'float', hidden: false, isDefault: true, useNull: true },
@@ -49,6 +51,16 @@
         { name: 'ActualPromoPostPromoEffectLSV', type: 'float', hidden: false, isDefault: true, useNull: true },
         {
             name: 'InOut',
+            type: 'boolean',
+            hidden: false,
+            isDefault: true,
+            useNull: true,
+            convert: function (value) {
+                return (value === true || value === 'Yes') ? l10n.ns('core', 'booleanValues').value('true') : l10n.ns('core', 'booleanValues').value('false');
+            }
+        },
+        {
+            name: 'IsOnInvoice',
             type: 'boolean',
             hidden: false,
             isDefault: true,

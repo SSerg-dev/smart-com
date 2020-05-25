@@ -593,6 +593,17 @@ namespace Module.Frontend.TPM.Controllers {
 						}
 					}
 				}
+
+                if (model.PromoStatus.SystemName.ToLower() != "finished" && userRole == "SupportAdministrator")
+                {
+                    PromoHelper.CalculateInvoiceTotalProduct(Context, model);
+                }
+
+                if (model.PromoStatus.SystemName.ToLower() == "finished")
+                {
+                    PromoHelper.CalculateInvoiceTotalProduct(Context, model);
+                    CreateTaskCalculateActual(model.Id);
+                }
                 Context.SaveChanges();
 
                 if (!needToCreateDemandIncident)
@@ -1075,6 +1086,7 @@ namespace Module.Frontend.TPM.Controllers {
             HandlerDataHelper.SaveIncomingArgument("oldPlanPromoUpliftPercent", oldPlanPromoUpliftPercent, data, visible: false, throwIfNotExists: false);
             HandlerDataHelper.SaveIncomingArgument("oldPlanPromoIncrementalLSV", oldPlanPromoIncrementalLSV, data, visible: false, throwIfNotExists: false);
 
+
             bool success = CalculationTaskManager.CreateCalculationTask(CalculationTaskManager.CalculationAction.Uplift, data, Context, promo.Id);
 
             if (!success)
@@ -1485,7 +1497,28 @@ namespace Module.Frontend.TPM.Controllers {
             }
         }
 
+        /// <summary>
+        /// Создание отложенной задачи, выполняющей расчет фактических параметров продуктов и промо
+        /// </summary>
+        /// <param name="promoId">ID промо</param>
+        private void CreateTaskCalculateActual(Guid promoId)
+        {
+            UserInfo user = authorizationManager.GetCurrentUser();
+            Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
+            RoleInfo role = authorizationManager.GetCurrentRole();
+            Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
 
+            HandlerData data = new HandlerData();
+            HandlerDataHelper.SaveIncomingArgument("PromoId", promoId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("needRedistributeLSV", true, data, visible: false, throwIfNotExists: false);
+
+            bool success = CalculationTaskManager.CreateCalculationTask(CalculationTaskManager.CalculationAction.Actual, data, Context, promoId);
+
+            if (!success)
+                throw new Exception("Promo was blocked for calculation");
+        }
 
         /// <summary>
         /// Создание отложенной задачи для расчета планового аплифта
@@ -1807,10 +1840,9 @@ namespace Module.Frontend.TPM.Controllers {
                     || (oldPromo.PlanPromoUpliftPercent != null && newPromo.PlanPromoUpliftPercent != null
                         && Math.Round(oldPromo.PlanPromoUpliftPercent.Value, 2, MidpointRounding.AwayFromZero) != Math.Round(newPromo.PlanPromoUpliftPercent.Value, 2, MidpointRounding.AwayFromZero))
                     || (oldPromo.NeedRecountUplift != null && newPromo.NeedRecountUplift != null && oldPromo.NeedRecountUplift != newPromo.NeedRecountUplift)
+                    || oldPromo.IsOnInvoice != newPromo.IsOnInvoice
                     || oldPromo.PromoStatus.Name.ToLower() == "draft"
                 || !String.IsNullOrEmpty(newPromo.AdditionalUserTimestamp))
-
-
             {
                 needReacalculate = true;
             }

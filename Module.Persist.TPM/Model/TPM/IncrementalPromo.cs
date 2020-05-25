@@ -21,10 +21,12 @@ namespace Module.Persist.TPM.Model.TPM
         public Guid ProductId { get; set; }
 
         public double? PlanPromoIncrementalCases { get; set; }
-        public double? CasePrice { get; set; }
+
         public double? PlanPromoIncrementalLSV { get; set; }        
 
         public DateTimeOffset? LastModifiedDate { get; set; }
+
+        public double? CasePrice { get; set; }
 
         public virtual Promo Promo { get; set; }
         public virtual Product Product { get; set; }

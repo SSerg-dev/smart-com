@@ -22,6 +22,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
         public BaseLineDataFlowFilter BaseLineDataFlowFilter { get; }
         public COGSDataFlowFilter COGSDataFlowFilter { get; }
         public TradeInvestmentDataFlowFilter TradeInvestmentDataFlowFilter { get; }
+        public PriceListDataFlowFilter PriceListDataFlowFilter { get; }
 
         public DataFlowFilterCollection(DataFlowModuleCollection dataFlowModuleCollection)
         {
@@ -37,6 +38,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
             this.BaseLineDataFlowFilter = new BaseLineDataFlowFilter(changesIncidents, dataFlowModuleCollection);
             this.COGSDataFlowFilter = new COGSDataFlowFilter(changesIncidents, dataFlowModuleCollection);
             this.TradeInvestmentDataFlowFilter = new TradeInvestmentDataFlowFilter(changesIncidents, dataFlowModuleCollection);
+            this.PriceListDataFlowFilter = new PriceListDataFlowFilter(changesIncidents, dataFlowModuleCollection);
         }
     }
 }

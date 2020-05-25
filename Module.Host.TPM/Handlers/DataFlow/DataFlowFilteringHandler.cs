@@ -282,6 +282,31 @@ namespace Module.Host.TPM.Handlers.DataFlow
                     }
                 });
 
+                // --- PriceList ---
+
+                handlerLogger.Write(true, $"{nameof(PriceListDataFlowFilter)}: Amount of promoes to check: { promoesForRecalculatingForFilters.Count() }. " +
+                    $"Amount of {nameof(PriceList)} models: { dataFlowFilterCollection.PriceListDataFlowFilter.ChangedModels.Count() }", "Message");
+
+                Parallel.ForEach(dataFlowFilterCollection.PriceListDataFlowFilter.ChangedModels, 
+                    new ParallelOptions { MaxDegreeOfParallelism = MaxDegreeOfParallelism }, priceList =>
+                {
+                    var applyResult = dataFlowFilterCollection.PriceListDataFlowFilter.Apply(priceList, promoesForRecalculatingForFilters.Values);
+                    if (applyResult.Item1.Count() > 0)
+                    {
+                        lock (syncLock)
+                        {
+                            promoesForRecalculating.AddRange(applyResult.Item1);
+                            handlerLogger.Write(true, $"Promo numbers {string.Join(", ", applyResult.Item1.Select(x => x.Number))} were filtered by {applyResult.Item2}", "Message");
+                        }
+
+                        var promoDataFlowSimpleModel = new PromoDataFlowModule.PromoDataFlowSimpleModel();
+                        foreach (var promoForRemoving in applyResult.Item1)
+                        {
+                            promoesForRecalculatingForFilters.TryRemove(promoForRemoving.Id, out promoDataFlowSimpleModel);
+                        }
+                    }
+                });
+
                 promoesForRecalculating = promoesForRecalculating.Distinct().ToList();
 
                 // Список промо, набор продуктов в которых будет изменен.
@@ -342,6 +367,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
                 handlerLogger.Write(true, String.Format("The selection of promoes ended at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
                 handlerLogger.Write(true, "The task for recalculating of promoes will be created in a few seconds.", "Message");
 
+                context.SaveChanges();
                 CalculationTaskManager.CreateCalculationTask(CalculationTaskManager.CalculationAction.DataFlow, handlerData, context);
                 handlerLogger.Write(true, "The task for recalculating of promoes was created.", "Message");
             }

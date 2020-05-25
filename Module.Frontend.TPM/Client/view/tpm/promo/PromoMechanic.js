@@ -455,18 +455,56 @@
             },
             items: [{
                 xtype: 'container',
-                name: 'GrowthAcceleration',
-                height: 40,
-                margin: '4 0 10 0',
-                style: 'border: 1px solid #ebebeb',
+                flex: 1,
+                maxHeight: 56,
+                layout: {
+                    type: 'hbox',
+                    align: 'stretch'
+                },
+                defaults: {
+                    labelAlign: 'left',
+                    flex: 1,
+                },
                 items: [{
-                    xtype: 'checkboxfield',
-                    crudAccess: ['Administrator', 'SupportAdministrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
-                    needReadOnly: true,
-                    //readOnly: true,
-                    margin: '5 0 0 10',
-                    name: 'GrowthAccelerationCheckbox',
-                    boxLabel: '<b>' + l10n.ns('tpm', 'Promo').value('GrowthAcceleration') + '</b>',
+                    xtype: 'container',
+                    name: 'GrowthAcceleration',
+                    height: 40,
+                    margin: '4 0 10 0',
+                    style: 'border: 1px solid #ebebeb',
+                    items: [{
+                        xtype: 'checkboxfield',
+                        crudAccess: ['Administrator', 'SupportAdministrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
+                        needReadOnly: true,
+                        //readOnly: true,
+                        margin: '5 0 0 5',
+                        name: 'GrowthAccelerationCheckbox',
+                        boxLabel: '<b>' + l10n.ns('tpm', 'Promo').value('GrowthAcceleration') + '</b>',
+                    }]
+                }, {
+                    xtype: 'container',
+                    flex: 0.1,
+                    height: 40,
+                    layout: {
+                        type: 'hbox',
+                        align: 'top',
+                        pack: 'center',
+                        width: 1,
+                    },
+                }, {
+                    xtype: 'container',
+                    name: 'ApolloExport',
+                    height: 40,
+                    margin: '4 0 10 0',
+                    style: 'border: 1px solid #ebebeb',
+                    items: [{
+                        xtype: 'checkboxfield',
+                        crudAccess: ['Administrator', 'SupportAdministrator', 'CustomerMarketing', 'KeyAccountManager', 'DemandPlanning'],
+                        needReadOnly: true,
+                        //readOnly: true,
+                        margin: '5 0 0 5',
+                        name: 'ApolloExportCheckbox',
+                        boxLabel: '<b>' + l10n.ns('tpm', 'Promo').value('ApolloExport') + '</b>',
+                    }]
                 }]
             }, {
                 xtype: 'textarea',

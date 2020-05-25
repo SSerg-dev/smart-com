@@ -116,26 +116,34 @@ namespace Module.Persist.TPM.Model.TPM
         public double? ActualPromoLSV { get; set; }
 
         [ImportCSVColumn(ColumnNumber = 27)]
+        [Display(Name = "Actual Promo LSV SI")]
+        public double? ActualPromoLSVSI { get; set; }
+
+        [ImportCSVColumn(ColumnNumber = 28)]
+        [Display(Name = "Actual Promo LSV SO")]
+        public double? ActualPromoLSVSO { get; set; }
+
+        [ImportCSVColumn(ColumnNumber = 29)]
         [Display(Name = "Plan Post Promo Effect W1, %")]
         public double? PlanPromoPostPromoEffectLSVW1 { get; set; }
 
-        [ImportCSVColumn(ColumnNumber = 28)]
+        [ImportCSVColumn(ColumnNumber = 30)]
         [Display(Name = "Actual Post Promo Effect W1")]
         public double? ActualPromoPostPromoEffectLSVW1 { get; set; }
 
-        [ImportCSVColumn(ColumnNumber = 29)]
+        [ImportCSVColumn(ColumnNumber = 31)]
         [Display(Name = "Plan Post Promo Effect W2, %")]
         public double? PlanPromoPostPromoEffectLSVW2 { get; set; }
 
-        [ImportCSVColumn(ColumnNumber = 30)]
+        [ImportCSVColumn(ColumnNumber = 32)]
         [Display(Name = "Actual Post Promo Effect W2, %")]
         public double? ActualPromoPostPromoEffectLSVW2 { get; set; }
 
-        [ImportCSVColumn(ColumnNumber = 31)]
+        [ImportCSVColumn(ColumnNumber = 33)]
         [Display(Name = "Plan Post Promo Effect LSV total")]
         public double? PlanPromoPostPromoEffectLSV { get; set; }
 
-        [ImportCSVColumn(ColumnNumber = 32)]
+        [ImportCSVColumn(ColumnNumber = 34)]
         [Display(Name = "Actual Promo Effect LSV total")]
         public double? ActualPromoPostPromoEffectLSV { get; set; }
     }

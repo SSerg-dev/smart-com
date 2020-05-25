@@ -1,5 +1,6 @@
 ﻿using Looper.Core;
 using Looper.Parameters;
+using Microsoft.Ajax.Utilities;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
 using Persist;
@@ -124,10 +125,15 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 }
                 else
                 {
-                    Guid handlerId = Guid.NewGuid();
-                    promoAvaible = promoAvaible && BlockPromoRange(promoIdsForBlock, handlerId);
+                    var handlerId = Guid.NewGuid();
+                    using (var transaction = context.Database.BeginTransaction())
+                    {
+                        BlockPromoRangeDataFlow(context, promoIdsForBlock, handlerId);
+                        transaction.Commit();
+                    }
 
-                    if (promoAvaible)
+                    var blockedPromoes = GetBlockedPromoRangeDataFlow(context);
+                    if (!blockedPromoes.Any())
                     {
                         CreateHandler(handlerId, description, nameHandler, data, context);
                     }
@@ -278,42 +284,35 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             return successBlock;
         }
 
-        /// <summary>
-        /// Заблокировать перечень промо
-        /// </summary>
-        /// <param name="promoIds">Перечень промо</param>
-        /// <param name="handlerId">ID обработчика</param>
-        /// <returns></returns>
-        public static bool BlockPromoRange(List<Guid> promoIds, Guid handlerId)
+        private static void BlockPromoRangeDataFlow(DatabaseContext databaseContext, List<Guid> promoIds, Guid handlerId)
         {
-            bool successBlock = true;
-
-            try
+            var blockedPromoes = new List<BlockedPromo>();
+            foreach (var promoId in promoIds)
             {
-                lock (locker)
-                {
-                    using (DatabaseContext context = new DatabaseContext())
-                    {
-                        foreach (Guid promoId in promoIds)
-                        {
-                            Promo p = context.Set<Promo>().Where(x => x.Id == promoId && !x.Disabled).FirstOrDefault();
-                            if (p != null)
-                            {
-                                successBlock = successBlock && BlockPromo(p.Id, handlerId, context);
-                            }
-                        }
-
-                        if (successBlock)
-                        {
-                            context.SaveChanges();
-                        }
-                    }
-                }
+                blockedPromoes.Add(BlockPromoDataFlow(promoId, handlerId));
             }
-            catch { }
-
-            return successBlock;
+            databaseContext.Set<BlockedPromo>().AddRange(blockedPromoes);
         }
+
+        private static BlockedPromo BlockPromoDataFlow(Guid promoId, Guid handlerId)
+        {
+            return new BlockedPromo
+            {
+                Id = Guid.NewGuid(),
+                Disabled = false,
+                DeletedDate = null,
+                PromoId = promoId,
+                HandlerId = handlerId,
+                CreateDate = DateTimeOffset.Now
+            };
+        }
+
+        private static IEnumerable<BlockedPromo> GetBlockedPromoRangeDataFlow(DatabaseContext databasesContext)
+        {
+            var blockedPromoes = databasesContext.Set<BlockedPromo>().Where(x => !x.Disabled);
+            return blockedPromoes;
+        }
+
 
         /// <summary>
         /// Получить список заблокированных Промо

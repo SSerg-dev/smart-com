@@ -26,9 +26,8 @@
             name: 'PlanProductBaselineLSV',
             fieldLabel: l10n.ns('tpm', 'PromoProductsView').value('PlanProductBaselineLSV'),
             renderer: function (value) {
-                if (value !== null && value !== undefined) {
-                    valueToDisplay = value / 1000000.0;
-                    return Ext.util.Format.number(valueToDisplay, '0.00');
+                if (value !== null && value !== undefined) { 
+                    return Ext.util.Format.number(value, '0.00');
                 } else {
                     return null;
                 }
@@ -65,9 +64,8 @@
             name: 'PlanProductIncrementalLSV',
             fieldLabel: l10n.ns('tpm', 'PromoProductsView').value('PlanProductIncrementalLSV'),
             renderer: function (value) {
-                if (value !== null && value !== undefined) {
-                    valueToDisplay = value / 1000000.0;
-                    return Ext.util.Format.number(valueToDisplay, '0.00');
+                if (value !== null && value !== undefined) { 
+                    return Ext.util.Format.number(value, '0.00');
                 } else {
                     return null;
                 }
@@ -77,9 +75,8 @@
             name: 'PlanProductLSV',
             fieldLabel: l10n.ns('tpm', 'PromoProductsView').value('PlanProductLSV'),
             renderer: function (value) {
-                if (value !== null && value !== undefined) {
-                    valueToDisplay = value / 1000000.0;
-                    return Ext.util.Format.number(valueToDisplay, '0.00');
+                if (value !== null && value !== undefined) { 
+                    return Ext.util.Format.number(value, '0.00');
                 } else {
                     return null;
                 }

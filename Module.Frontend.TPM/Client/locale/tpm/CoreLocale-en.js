@@ -288,7 +288,7 @@
         'operations': {
             'Equals': 'Equals',
             'NotEqual': 'Not Equal',
-            'GreaterThen': 'Greater Than',
+            'GreaterThan': 'Greater Than',
             'GreaterOrEqual': 'Greater Or Equal',
             'LessThan': 'Less Than',
             'LessOrEqual': 'Less Or Equal',
@@ -403,6 +403,7 @@
 		'SendMsgTaskMessage': 'Message sending task created successfully.',
         'ParameterNames': {
             'File': 'File',
+            'fileCount':'File Count',
             'FileModel': 'Export file',
             'CrossParam.ClearTable': 'Clear data',
             'InterfaceName': 'Interface',

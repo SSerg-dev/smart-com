@@ -247,6 +247,9 @@
                 'promoeditorcustom [name=GrowthAccelerationCheckbox]': {
                     change: this.onGrowthAccelerationCheckboxChange
                 },
+                'promoeditorcustom [name=ApolloExportCheckbox]': {
+                    change: this.onApolloExportCheckboxChange
+                },
 
                 // choose client
                 'promoclient #promoClientSettignsBtn': {
@@ -1124,6 +1127,16 @@
         this.getController('tpm.promo.Promo').detailButton = null;
         promoeditorcustom.isFromSchedule = schedulerData;
 
+        // установка флага Apollo Export
+        var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
+        var apolloExportCheckbox = promoeditorcustom.down('[name=ApolloExportCheckbox]');
+        apolloExportCheckbox.setValue(true);
+        var apolloExportAccess = ['Administrator', 'SupportAdministrator', 'CustomerMarketing', 'KeyAccountManager', 'DemandPlanning'];
+
+        if (apolloExportAccess.indexOf(currentRole) === -1) {
+            apolloExportCheckbox.setReadOnly(true);
+        }
+
         // для блокировки/разблокировки грида/календаря
         // Если кнопка не null, то из грида, иначе из календаря
         var parentWidget = button ? button.up('promo') : Ext.ComponentQuery.query('schedulecontainer')[0];
@@ -1147,6 +1160,10 @@
                         var period = promoeditorcustom.down('container[name=promo_step4]');
                         var event = promoeditorcustom.down('container[name=promo_step5]');
                         var settings = promoeditorcustom.down('container[name=promo_step6]');
+
+
+                        client.down('[id=OffInvoice]').setDisabled(true);
+                        client.down('[id=OnInvoice]').setDisabled(true);
 
                         // Кнопки для изменения состояний промо
                         var promoActions = Ext.ComponentQuery.query('button[isPromoAction=true]');
@@ -1602,6 +1619,8 @@
         if (clientCrudAccess.indexOf(currentRole) > -1) {
 
             promoClientForm.down('#choosePromoClientBtn').setDisabled(false);
+            promoClientForm.down('[id=OffInvoice]').setReadOnly(false);
+            promoClientForm.down('[id=OnInvoice]').setReadOnly(false);
         }
 
         // Product tree
@@ -1682,7 +1701,7 @@
             instoreMechanicId, instoreMechanicTypeId, instoreMechanicDiscount,
             promoController.getMechanicListForUnlockDiscountField()
         );
-
+        
         //Actual механники
         var actualInstoreMechanicId = promoActivityStep1.down('searchcombobox[name=ActualInstoreMechanicId]');
         var actualInstoreMechanicTypeId = promoActivityStep1.down('searchcombobox[name=ActualInstoreMechanicTypeId]');
@@ -1714,6 +1733,8 @@
             // --------------- basic promo ---------------
             // client
             promoClientForm.down('#choosePromoClientBtn').setDisabled(true);
+            promoClientForm.down('[id=OnInvoice]').setReadOnly(true);
+            promoClientForm.down('[id=OffInvoice]').setReadOnly(true);
 
             // product
             promoProductForm.setDisabledBtns(true);
@@ -1739,7 +1760,15 @@
                 true
             );
         }
-
+        // Заблокировать IsApolloExport для редактирования в указанных ниже статусах
+        var isPromoEnd = (['Finished', 'Closed', 'Cancelled', 'Deleted'].indexOf(record.data.PromoStatusSystemName) >= 0);
+        if (isPromoEnd) {
+            promoeditorcustom.down('[name=ApolloExportCheckbox]').setReadOnly(true);
+        }
+        if (record.data.PromoStatusSystemName === 'Started') {
+            promoeditorcustom.down('[name=ApolloExportCheckbox]').setDisabled(false);
+            promoeditorcustom.down('[name=ApolloExportCheckbox]').setReadOnly(false);
+        }
 
         me.checkLoadingComponents();
         promoeditorcustom.setLoading(false);
@@ -1993,6 +2022,14 @@
             }
 
             //Activity - step 2
+            if (!promoactivity.down('triggerfielddetails[name=PlanPromoUpliftPercent]').validate()) {
+                errorTrirdLayer += l10n.ns('tpm', 'text').value('PlanPromoUpliftPercentError') + ", ";
+            }
+
+            if (!promoactivity.down('triggerfielddetails[name=InvoiceTotal]').validate()) {
+                errorTrirdLayer += l10n.ns('tpm', 'text').value('InvoiceTotalValidate') + ", ";
+            }
+
             if (!promoactivity.down('textfield[name=InvoiceNumber]').validate()) {
                 errorTrirdLayer += l10n.ns('tpm', 'text').value('InvoiceNumberValidate') + ", ";
             }
@@ -2045,6 +2082,7 @@
         record.data.ClientTreeId = window.clientTreeId;
         record.data.ClientHierarchy = window.clientHierarchy;
         record.data.ClientTreeKeyId = window.clientTreeKeyId;
+        record.data.IsOnInvoice = promoClientForm.getInvoiceType();
         //if (promoClientForm.clientTreeRecord.InOut !== null && promoClientForm.clientTreeRecord.InOut !== undefined && (window.clientTreeKeyId - 10002 > 0)) {
         //	record.data.ClientTreeKeyId = promoClientForm.clientTreeRecord.InOut ? window.clientTreeKeyId - 10002 : window.clientTreeKeyId - 10001;
         //} else {
@@ -2074,6 +2112,8 @@
 
 
         record.data.IsGrowthAcceleration = window.isGrowthAcceleration ? true : false;
+
+        record.data.IsApolloExport = window.isApolloExport ? true : false;
 
         record.data.Name = window.promoName;
 
@@ -2166,6 +2206,8 @@
         record.data.PlanInStoreShelfPrice = promoActivityStep1.down('numberfield[name=PlanInStoreShelfPrice]').getValue();
 
         record.data.InvoiceNumber = promoActivityStep2.down('textfield[name=InvoiceNumber]').getValue();
+        record.data.InvoiceTotal = promoActivityStep2.down('triggerfielddetails[name=InvoiceTotal]').originValue;
+
         record.data.DocumentNumber = promoActivityStep2.down('textfield[name=DocumentNumber]').getValue();
         record.data.PlanPromoUpliftPercent = promoActivityStep2.down('triggerfielddetails[name=PlanPromoUpliftPercent]').getValue();
 
@@ -2289,6 +2331,11 @@
         promoeditorcustom.isGrowthAcceleration = record.data.IsGrowthAcceleration;
         var growthAccelerationCheckbox = promoeditorcustom.down('[name=GrowthAccelerationCheckbox]');
         growthAccelerationCheckbox.setValue(record.data.IsGrowthAcceleration);
+
+        // Для Apollo Export Promo
+        promoeditorcustom.isApolloExport = record.data.IsApolloExport;
+        var apolloExportCheckbox = promoeditorcustom.down('[name=ApolloExportCheckbox]');
+        apolloExportCheckbox.setValue(record.data.IsApolloExport);
 
         promoeditorcustom.readOnly = readOnly;
         $.ajax({
@@ -2475,6 +2522,7 @@
 
         var actualInStoreShelfPrice = promoActivityStep1.down('numberfield[name=ActualInStoreShelfPrice]');
         var planInStoreShelfPrice = promoActivityStep1.down('numberfield[name=PlanInStoreShelfPrice]'); 
+        var invoiceTotal = promoActivityStep2.down('triggerfielddetails[name=InvoiceTotal]');
         var invoiceNumber = promoActivityStep2.down('textfield[name=InvoiceNumber]');
         var documentNumber = promoActivityStep2.down('textfield[name=DocumentNumber]');
         var planPromoUpliftPercent = promoActivityStep2.down('[name=PlanPromoUpliftPercent]');
@@ -2802,6 +2850,8 @@
             // --------------- basic promo ---------------
             // client
             promoClientForm.down('#choosePromoClientBtn').setDisabled(true);
+            promoClientForm.down('[id=OnInvoice]').setReadOnly(true);
+            promoClientForm.down('[id=OffInvoice]').setReadOnly(true);
 
             // product
             promoProductForm.setDisabledBtns(true);
@@ -2827,6 +2877,18 @@
                 true
             );
         }
+
+        // Заблокировать IsApolloExport для редактирования в указанных ниже статусах
+        var isPromoEnd = (['Finished', 'Closed', 'Cancelled', 'Deleted'].indexOf(record.data.PromoStatusSystemName) >= 0);
+        if (isPromoEnd) {
+            promoeditorcustom.down('[name=ApolloExportCheckbox]').setReadOnly(true);
+        }
+        if (record.data.PromoStatusSystemName === 'Started' && !readOnly)
+        {
+            promoeditorcustom.down('[name=ApolloExportCheckbox]').setDisabled(false);
+            promoeditorcustom.down('[name=ApolloExportCheckbox]').setReadOnly(false);
+        }
+
 
         if (!isCopy) {
             // --------------- promo budgets ---------------                
@@ -2900,7 +2962,8 @@
             );
 
             actualInStoreShelfPrice.setValue(record.data.ActualInStoreShelfPrice);
-            planInStoreShelfPrice.setValue(record.data.PlanInStoreShelfPrice); 
+            planInStoreShelfPrice.setValue(record.data.PlanInStoreShelfPrice);
+            invoiceTotal.setValue(record.data.InvoiceTotal);
             invoiceNumber.setValue(record.data.InvoiceNumber);
             documentNumber.setValue(record.data.DocumentNumber);
 
@@ -3902,7 +3965,7 @@
 
         var clientCrudAccess = ['Administrator', 'SupportAdministrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'];
         var productCrudAccess = ['Administrator', 'SupportAdministrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'];
-
+        
         if (clientCrudAccess.indexOf(currentRole) === -1) {
             promoClientForm.down('#choosePromoClientBtn').setDisabled(true);
         }
@@ -3935,6 +3998,22 @@
 
             var growthAccelerationCheckbox = promoeditorcustom.down('[name=GrowthAccelerationCheckbox]');
             growthAccelerationCheckbox.setReadOnly(true);
+
+            var client = promoeditorcustom.down('container[name=promo_step1]');
+            client.down('[id=OffInvoice]').setDisabled(true);
+            client.down('[id=OnInvoice]').setDisabled(true);
+        }
+
+        // ------------------------ Mechanic->ApolloExport -----------------------    
+        var apolloExportAccess = ['Administrator', 'SupportAdministrator', 'CustomerMarketing', 'KeyAccountManager', 'DemandPlanning'];
+        var apolloExportCheckbox = promoeditorcustom.down('[name=ApolloExportCheckbox]');
+
+        if (apolloExportAccess.indexOf(currentRole) === -1) {
+            apolloExportCheckbox.setDisabled(true);
+        }
+        else {
+            apolloExportCheckbox.setReadOnly(false);
+            apolloExportCheckbox.setDisabled(false);
         }
     },
 
@@ -4563,7 +4642,10 @@
             }
 
             if (logData.length > 0) {
-                infoStore.loadRecords(logData);
+                infoStore.loadData(logData.slice(0, 10000));
+                for (var i = 10001; i < logData.length; i += 10000) {
+                    infoStore.loadData(logData.slice(i, i + 10000), true);
+                }
                 this.colorRaws(infoGrid);
 
                 var displayItem = gridInfoToolbar.child('#displayItem'),
@@ -4902,7 +4984,9 @@
         // In Store Shelf Price
         window.down('[name=ActualInStoreShelfPrice]').setValue(record.data.ActualInStoreShelfPrice); 
         window.down('[name=PlanInStoreShelfPrice]').setValue(record.data.PlanInStoreShelfPrice); 
+
         // Actual - Activityasa
+        window.down('[name=InvoiceTotal]').setValue(record.data.InvoiceTotal);
         window.down('[name=InvoiceNumber]').setValue(record.data.InvoiceNumber);
         window.down('[name=DocumentNumber]').setValue(record.data.DocumentNumber);
         window.down('[name=ActualPromoUpliftPercent]').setValue(record.data.ActualPromoUpliftPercent);
@@ -5819,6 +5903,16 @@
         } else {
             promoController.hideGrowthAccelerationWindowLabel();
             promoEditorCustom.isGrowthAcceleration = false;
+        }
+    },
+
+    onApolloExportCheckboxChange: function (component, newValue) {
+        var promoEditorCustom = Ext.ComponentQuery.query('promoeditorcustom')[0];
+
+        if (promoEditorCustom && newValue) {
+            promoEditorCustom.isApolloExport = true;
+        } else {
+            promoEditorCustom.isApolloExport = false;
         }
     }
 });

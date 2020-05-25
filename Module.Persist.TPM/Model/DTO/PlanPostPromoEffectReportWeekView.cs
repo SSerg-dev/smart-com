@@ -31,5 +31,6 @@ namespace Module.Persist.TPM.Model.DTO
         public double? PlanProductPostPromoEffectLSVW2 { get; set; }
         public double? PlanProductBaselineLSVW2 { get; set; }
         public bool? InOut { get; set; }
+        public bool IsOnInvoice { get; set; }
     }
 }

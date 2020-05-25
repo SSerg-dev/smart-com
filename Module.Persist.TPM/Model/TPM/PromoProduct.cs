@@ -78,7 +78,7 @@ namespace Module.Persist.TPM.Model.TPM
         /// <summary>
         /// Базовая цена продажи
         /// </summary>
-        public double? ProductBaselinePrice { get; set; }
+        public double? Price { get; set; }
 
         /// <summary>
         /// Базовая цена продажи
@@ -215,6 +215,10 @@ namespace Module.Persist.TPM.Model.TPM
         /// 
         /// </summary>
         public double? ActualProductLSVByCompensation { get; set; }
+
+        public double? ActualProductBaselineCaseQty { get; set; }
+
+        public double? InvoiceTotalProduct { get; set; }
 
         public virtual Promo Promo { get; set; }
         public virtual Product Product { get; set; }

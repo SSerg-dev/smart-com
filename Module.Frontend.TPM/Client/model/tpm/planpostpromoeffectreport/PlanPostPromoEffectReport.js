@@ -26,6 +26,7 @@
         { name: 'PlanProductBaselineLSVW2', type: 'number', hidden: false, isDefault: true },
 
         { name: 'InOut', type: 'bool', hidden: false, isDefault: true },
+        { name: 'IsOnInvoice', type: 'bool', hidden: false, isDefault: true },
     ],
     proxy: {
         type: 'breeze',

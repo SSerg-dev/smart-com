@@ -63,6 +63,13 @@
                     renderer: function (value) {
                         return value ? l10n.ns('core', 'booleanValues').value('true') : l10n.ns('core', 'booleanValues').value('false');
                     }
+                },
+                {
+                    text: l10n.ns('tpm', 'PlanPostPromoEffectReport').value('IsOnInvoice'),
+                    dataIndex: 'IsOnInvoice',
+                    renderer: function (value) {
+                        return value ? l10n.ns('core', 'booleanValues').value('true') : l10n.ns('core', 'booleanValues').value('false');
+                    }
                 }
             ]
         }
@@ -90,7 +97,8 @@
                  { xtype: 'numbercolumn', text: l10n.ns('tpm', 'PlanPostPromoEffectReport').value('PlanProductBaselineCaseQtyW2'), dataIndex: 'PlanProductBaselineCaseQtyW2'},
                 { xtype: 'numbercolumn', text: l10n.ns('tpm', 'PlanPostPromoEffectReport').value('PlanProductPostPromoEffectLSVW2'), dataIndex: 'PlanProductPostPromoEffectLSVW2' },
                   { xtype: 'numbercolumn', text: l10n.ns('tpm', 'PlanPostPromoEffectReport').value('PlanProductBaselineLSVW2'), dataIndex: 'PlanProductBaselineLSVW2' },
-                  { xtype: 'textfield', name: 'InOut', fieldLabel: l10n.ns('tpm', 'PlanPostPromoEffectReport').value('InOut') }
+                  { xtype: 'textfield', name: 'InOut', fieldLabel: l10n.ns('tpm', 'PlanPostPromoEffectReport').value('InOut') },
+                  { xtype: 'textfield', name: 'IsOnInvoice', fieldLabel: l10n.ns('tpm', 'PlanPostPromoEffectReport').value('IsOnInvoice') }
         ]
     }]
 });

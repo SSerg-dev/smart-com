@@ -18,7 +18,7 @@
             xtype: 'custompromopanel',
             name: 'chooseClient',
             minWidth: 245,
-            height: 202,
+            height: 262,
             flex: 1,
             layout: {
                 type: 'vbox',
@@ -29,7 +29,7 @@
                 xtype: 'fieldset',
                 title: l10n.ns('tpm', 'PromoClient').value('ChooseClient'),
                 padding: '1 4 0 4',
-                height: 154,
+                height: 184,
                 items: [{
                     xtype: 'container',
                     layout: {
@@ -37,7 +37,7 @@
                         align: 'stretch'
                     },
                     items: [{
-                        xtype: 'container',                        
+                        xtype: 'container',
                         padding: '0 5 0 7',
                         items: [{
                             xtype: 'button',
@@ -47,7 +47,7 @@
                             height: 98,
                             width: 110,
                             text: '<b>' + l10n.ns('tpm', 'PromoClient').value('ChooseClient') + '<br/>...</b>',
-                            iconAlign: 'top',                            
+                            iconAlign: 'top',
                             cls: 'custom-event-button promobasic-choose-btn',
                             disabledCls: 'promobasic-choose-btn-disabled',
                         }]
@@ -74,18 +74,60 @@
                     }]
                 }]
             }, {
-                xtype: 'container',
-                height: 33,
-                flex: 1,
-                layout: {
-                    type: 'hbox',
-                    align: 'top',
-                    pack: 'center'
-                },
+                xtype: 'fieldset',
+                title: l10n.ns('tpm', 'PromoClient').value('InvoiceType'),
+                padding: '1 2 0 4',
+                height: 58,
                 items: [{
-                    xtype: 'tbspacer',
-                    flex: 1
-                }]
+                    xtype: 'fieldcontainer',
+                    defaultType: 'radiofield', 
+                    id: 'invoiceRadiogroup',
+                    defaults: {
+                        flex: 1
+                    },
+                    layout: 'hbox',
+                    items: [
+                        {
+                            readOnly: true,
+                            boxLabel: l10n.ns('tpm', 'InvoiceTypes').value('OnInvoice'),
+                            id: 'OnInvoice',
+                            name: 'InvoiceType',
+                            inputValue: l10n.ns('tpm', 'InvoiceTypes').value('OnInvoice'),
+                            listeners: {
+                                render: function (me) {
+                                    Ext.QuickTips.register(
+                                        {
+                                            target: me.id,
+                                            text: l10n.ns('tpm', 'InvoiceTypes').value('OnInvoice'),
+                                            dismissDelay: 5000
+                                        });
+                                },
+                                destroy: function (me) {
+                                    Ext.QuickTips.unregister(me.id);
+                                }   
+                            }
+                        }, {
+                            readOnly: true,
+                            boxLabel: l10n.ns('tpm', 'InvoiceTypes').value('OffInvoice'),
+                            id: 'OffInvoice',
+                            name: 'InvoiceType',
+                            inputValue: l10n.ns('tpm', 'InvoiceTypes').value('OffInvoice'),
+                            listeners: {
+                                render: function (me, eOpts) {
+                                    Ext.QuickTips.register(
+                                        {
+                                            target: me.id,
+                                            text: l10n.ns('tpm', 'InvoiceTypes').value('OffInvoice'),
+                                            dismissDelay: 5000
+                                        });
+                                },
+                                destroy: function (me) {
+                                    Ext.QuickTips.unregister(me.id);
+                                }
+                            }
+                        }
+                    ],
+                }],
             }]
         }, {
             xtype: 'splitter',
@@ -164,7 +206,7 @@
                     itemId: 'promoClientSettignsBtn',
                     width: 90,
                     padding: '3 7 3 10',
-                    cls: 'hierarchyButton hierarchyButtonList',                    
+                    cls: 'hierarchyButton hierarchyButtonList',
                     text: l10n.ns('tpm', 'PromoClient').value('Settings'),
                     tooltip: l10n.ns('tpm', 'PromoClient').value('Settings'),
                     glyph: 0xf8de
@@ -172,9 +214,9 @@
             }]
         }]
     }],
-
+    
     // заполнение формы
-    fillForm: function (clientTreeRecord, treesChangingBlockDate) {
+    fillForm: function (clientTreeRecord, treesChangingBlockDate) { 
         var chooseBtn = this.down('#choosePromoClientBtn');
 
         this.clientTreeRecord = clientTreeRecord;
@@ -186,8 +228,8 @@
             chooseBtn.setText('<b>' + clientTreeRecord.Name + '<br/>...</b>');
             chooseBtn.setGlyph();
             chooseBtn.setIcon(iconSrc);
-            chooseBtn.setIconCls('promoClientChooseBtnIcon'); 
-            
+            chooseBtn.setIconCls('promoClientChooseBtnIcon');
+
             this.down('[name=PromoClientName]').setValue(clientTreeRecord.Name);
             this.down('[name=PromoClientType]').setValue(clientTreeRecord.Type);
             this.down('[name=PromoClientRetailType]').setValue(clientTreeRecord.RetailTypeName);
@@ -196,11 +238,40 @@
             this.down('[name=PromoClientPPEW1]').setValue(clientTreeRecord.PostPromoEffectW1);
             this.down('[name=PromoClientPPEW2]').setValue(clientTreeRecord.PostPromoEffectW2);
 
+            var promoeditorcustom = this.up('promoeditorcustom');
+            var radioOFFInvoice = this.down('[id=OffInvoice]');
+            var radioONInvoice = this.down('[id=OnInvoice]');
+
+            if (!promoeditorcustom.readOnly) {
+                radioOFFInvoice.setReadOnly(false);
+                radioONInvoice.setReadOnly(false);
+            } else {
+                radioOFFInvoice.setReadOnly(true);
+                radioONInvoice.setReadOnly(true);
+            }
+
+            if (promoeditorcustom.model !== null) {  
+                if (promoeditorcustom.model.data.IsOnInvoice != null) {
+                    radioOFFInvoice.setValue(!promoeditorcustom.model.data.IsOnInvoice);
+                    radioONInvoice.setValue(promoeditorcustom.model.data.IsOnInvoice); 
+                    if (clientTreeRecord.IsOnInvoice != null && clientTreeRecord.ObjectId != promoeditorcustom.model.data.ClientTreeId) {
+                        radioOFFInvoice.setValue(!clientTreeRecord.IsOnInvoice);
+                        radioONInvoice.setValue(clientTreeRecord.IsOnInvoice); 
+                    }
+                }
+            }
+            else if (clientTreeRecord.IsOnInvoice != null) { 
+                radioOFFInvoice.setValue(!clientTreeRecord.IsOnInvoice);
+                radioONInvoice.setValue(clientTreeRecord.IsOnInvoice);
+                radioOFFInvoice.setDisabled(false);
+                radioONInvoice.setDisabled(false);
+            }
+          
         } else {
-            chooseBtn.setText('<b>' + l10n.ns('tpm', 'PromoClient').value('ChooseClient') + '<br/>...</b>');            
+            chooseBtn.setText('<b>' + l10n.ns('tpm', 'PromoClient').value('ChooseClient') + '<br/>...</b>');
             chooseBtn.setIcon();
-            chooseBtn.setIconCls('x-btn-glyph materialDesignIcons');           
-            chooseBtn.setGlyph(0xf968);            
+            chooseBtn.setIconCls('x-btn-glyph materialDesignIcons');
+            chooseBtn.setGlyph(0xf968);
 
             this.down('[name=PromoClientName]').setValue(null);
             this.down('[name=PromoClientType]').setValue(null);
@@ -236,5 +307,15 @@
         });
 
         choosePromoClientWind.show();
-    }
-})
+    },
+
+    getInvoiceType: function () {
+        var radioOFFInvoice = this.down('[id=OffInvoice]');
+        var radioONInvoice = this.down('[id=OnInvoice]');
+        if (radioOFFInvoice.getValue())
+            return false;
+
+        if (radioONInvoice.getValue())
+            return true;
+    },
+});

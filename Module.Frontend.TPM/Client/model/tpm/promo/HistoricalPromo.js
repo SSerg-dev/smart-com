@@ -52,6 +52,7 @@
         { name: 'NeedRecountUplift', type: 'bool', useNull: true, hidden: true, isDefault: false, defaultValue: null },
         { name: 'InvoiceNumber', type: 'string', useNull: true, hidden: false, isDefault: false, defaultValue: null },
         { name: 'DocumentNumber', type: 'string', useNull: true, hidden: false, isDefault: false, defaultValue: null },
+        { name: 'IsOnInvoice', type: 'boolean', hidden: false, isDefault: true },
 
         // Calculation
         { name: 'PlanPromoTIShopper', useNull: true, type: 'float', hidden: false, isDefault: false, defaultValue: null },
@@ -171,6 +172,9 @@
 
         // Growth Acceleration
         { name: 'IsGrowthAcceleration', useNull: true, type: 'boolean', hidden: false, isDefault: false, defaultValue: null },
+
+        //Apollo Export
+        { name: 'IsApolloExport', type: 'boolean', hidden: false, isDefault: false }
     ],
     proxy: {
         type: 'breeze',

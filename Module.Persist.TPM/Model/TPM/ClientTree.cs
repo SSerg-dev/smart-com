@@ -16,6 +16,8 @@ namespace Module.Persist.TPM.Model.TPM {
         public string RetailTypeName { get; set; }
         public string Name { get; set; }
         public string FullPathName { get; set; }
+        public bool? IsOnInvoice { get; set; }
+        public string DMDGroup { get; set; }
         public DateTime StartDate { get; set; }
         [Index("CX_ObjDate", 2, IsUnique = true)]
         public DateTime? EndDate { get; set; }

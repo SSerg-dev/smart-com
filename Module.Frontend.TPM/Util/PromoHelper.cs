@@ -308,13 +308,52 @@ namespace Module.Frontend.TPM.Util
             context.SaveChanges();
         }
 
+        public static void CalculateInvoiceTotalProduct(DatabaseContext context, Promo promo)
+        {
+            // Получаем все записи из таблицы PromoProduct для текущего промо.
+            var promoProductsForCurrentPromo = context.Set<PromoProduct>()
+                .Where(x => x.PromoId == promo.Id);
+
+            double sumActualProductPCQty = 0; 
+            // Доля от всего InvoiceTotal
+            double invoiceTotalProductPart = 0;
+
+            sumActualProductPCQty = Convert.ToDouble(promoProductsForCurrentPromo.Select(p => p.ActualProductPCQty).Sum());
+
+            // Перебираем все найденные для текущего промо записи из таблицы PromoProduct.
+            foreach (var promoProduct in promoProductsForCurrentPromo)
+            {
+                // Если ActualProductPCQty нет, то мы не сможем посчитать долю
+                if (promoProduct.ActualProductPCQty.HasValue)
+                {
+                    invoiceTotalProductPart = 0;
+                    // Если показатель ActualProductPCQty == 0, то он составляет 0 процентов от показателя PlanPromoBaselineLSV.
+                    if (promoProduct.ActualProductPCQty.Value != 0)
+                    {
+                        // Считаем долю ActualProductPCQty от InvoiceTotal.
+                        invoiceTotalProductPart = promoProduct.ActualProductPCQty.Value/sumActualProductPCQty;
+                    }
+                    // Устанавливаем InvoiceTotalProduct в запись таблицы PromoProduct.
+                    promoProduct.InvoiceTotalProduct = invoiceTotalProductPart*promo.InvoiceTotal;
+
+                }
+                else
+                {
+                    promoProduct.InvoiceTotalProduct = 0;
+                }
+            }
+            context.SaveChanges();
+        }
+
         public static IEnumerable<Column> GetExportSettings()
         {
-            IEnumerable<Column> columns = new List<Column>() {
+            IEnumerable<Column> columns = new List<Column>()
+            {
                 new Column() { Order = 0, Field = "Number", Header = "Promo ID", Quoting = false },
                 new Column() { Order = 0, Field = "ClientHierarchy", Header = "Client", Quoting = false },
                 new Column() { Order = 0, Field = "InOut", Header = "In-Out", Quoting = false },
                 new Column() { Order = 0, Field = "IsGrowthAcceleration", Header = "Growth acceleration", Quoting = false },
+                new Column() { Order = 0, Field = "IsApolloExport", Header = "Apollo export", Quoting = false },
                 new Column() { Order = 0, Field = "Name", Header = "Promo name", Quoting = false },
                 new Column() { Order = 0, Field = "BrandTech.Name", Header = "Brandtech", Quoting = false },
                 new Column() { Order = 0, Field = "EventName", Header = "Event", Quoting = false },
@@ -336,6 +375,8 @@ namespace Module.Frontend.TPM.Util
                 new Column() { Order = 0, Field = "DispatchesEnd", Header = "Dispatch end", Quoting = false, Format = "dd.MM.yyyy" },
                 new Column() { Order = 0, Field = "MarsDispatchesEnd", Header = "Mars Dispatch end", Quoting = false, Format = "dd.MM.yyyy" },
                 new Column() { Order = 0, Field = "PromoStatus.Name", Header = "Status", Quoting = false },
+                new Column() { Order = 0, Field = "PromoTypes.Name", Header = "Promo Types Name", Quoting = false },
+                new Column() { Order = 0, Field = "IsOnInvoice", Header = "Is On Invoice", Quoting = false },
 
                 //new Column() { Order = 0, Field = "Brand.Name", Header = "Brand", Quoting = false },
                 //new Column() { Order = 0, Field = "Priority", Header = "Priority", Quoting = false },

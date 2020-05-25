@@ -3,10 +3,13 @@ using Core.Security;
 using Core.Security.Models;
 using Frontend.Core.Controllers.Base;
 using Frontend.Core.Extensions;
+using Looper.Core;
+using Looper.Parameters;
 using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
 using Newtonsoft.Json;
+using Persist;
 using Persist.Model;
 using Persist.ScriptGenerator.Filter;
 using System;
@@ -604,6 +607,11 @@ namespace Module.Frontend.TPM.Controllers
             result.ObjectId = new int();
             Context.Set<ClientTree>().Add(result);
 
+            if (result.DemandCode != null && result.DemandCode != "")
+            {
+                CreateCoefficientSI2SOHandler(null, result.DemandCode, 1);
+            }
+
             var resultSaveChanges = Context.SaveChanges();
             if (resultSaveChanges > 0)
             {
@@ -643,7 +651,10 @@ namespace Module.Frontend.TPM.Controllers
 
                 model.FullPathName = oldFullPath.Substring(0, ind) + model.Name;
                 model.StartDate = dt;
-
+                if (!model.IsBaseClient)
+                {
+                    model.IsOnInvoice = null; 
+                }
                 //Проверка DemandCode
                 if (!CheckDemandCode(model))
                 {
@@ -696,6 +707,11 @@ namespace Module.Frontend.TPM.Controllers
                 Context.Entry(currentRecord).CurrentValues.SetValues(model);
                 UpdateFullPathClientTree(currentRecord, Context.Set<ClientTree>());
                 Context.Set<ClientTree>().Add(oldRecord);
+
+                if (currentRecord.DemandCode != null && currentRecord.DemandCode != "")
+                {
+                    CreateCoefficientSI2SOHandler(null, currentRecord.DemandCode, 1);
+                }
 
                 var resultSaveChanges = Context.SaveChanges();
                 if (resultSaveChanges > 0)
@@ -1025,6 +1041,46 @@ namespace Module.Frontend.TPM.Controllers
                 return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "The logo is not exists for current client." }));
             }
         }
+
+        /// <summary>
+        /// Создание задачи на добавление новых записей коэффицициентов
+        /// </summary>
+        /// <param name="promo"></param>
+        private void CreateCoefficientSI2SOHandler(string brandTechCode, string demandCode, double cValue)
+        {
+            UserInfo user = authorizationManager.GetCurrentUser();
+            Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
+            RoleInfo role = authorizationManager.GetCurrentRole();
+            Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
+
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                HandlerData data = new HandlerData();
+                HandlerDataHelper.SaveIncomingArgument("brandTechCode", brandTechCode, data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("demandCode", demandCode, data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("cValue", cValue, data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+
+                LoopHandler handler = new LoopHandler()
+                {
+                    Id = Guid.NewGuid(),
+                    ConfigurationName = "PROCESSING",
+                    Description = "Adding new records for coefficients SI/SO",
+                    Name = "Module.Host.TPM.Handlers.CreateCoefficientSI2SOHandler",
+                    ExecutionPeriod = null,
+                    CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                    LastExecutionDate = null,
+                    NextExecutionDate = null,
+                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                    UserId = userId,
+                    RoleId = roleId
+                };
+                handler.SetParameterData(data);
+                context.LoopHandlers.Add(handler);
+                context.SaveChanges();
+            }
+        }
     }
 
     /// <summary>
@@ -1038,11 +1094,13 @@ namespace Module.Frontend.TPM.Controllers
         public string Type { get; set; }
         public string Name { get; set; }
         public string FullPathName { get; set; }
+        public bool? IsOnInvoice { get; set; }
         public int parentId { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public string GHierarchyCode { get; set; }
         public string DemandCode { get; set; }
+        public string DMDGroup { get; set; }
         public bool IsBaseClient { get; set; }
         public bool leaf { get; set; }
         public bool loaded { get; set; }
@@ -1069,6 +1127,7 @@ namespace Module.Frontend.TPM.Controllers
             Type = treeNode.Type;
             Name = treeNode.Name;
             FullPathName = treeNode.FullPathName;
+            IsOnInvoice = treeNode.IsOnInvoice;
             parentId = treeNode.parentId;
             StartDate = treeNode.StartDate;
             EndDate = treeNode.EndDate;
@@ -1085,7 +1144,7 @@ namespace Module.Frontend.TPM.Controllers
             PostPromoEffectW1 = treeNode.PostPromoEffectW1;
             PostPromoEffectW2 = treeNode.PostPromoEffectW2;
             LogoFileName = treeNode.LogoFileName;
-
+            DMDGroup = treeNode.DMDGroup;
 
             this.leaf = leaf;
             this.loaded = loaded;

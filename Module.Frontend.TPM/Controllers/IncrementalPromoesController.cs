@@ -35,6 +35,7 @@ using Persist.ScriptGenerator.Filter;
 using Utility;
 using Module.Frontend.TPM.Util;
 using System.Web;
+using Module.Persist.TPM.CalculatePromoParametersModule;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -164,6 +165,11 @@ namespace Module.Frontend.TPM.Controllers
 
                 patch.Patch(model);
                 model.LastModifiedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+
+                var casePrice = BaselineAndPriceCalculation.CalculateCasePrice(model, Context);
+                model.CasePrice = casePrice;
+                model.PlanPromoIncrementalLSV = model.CasePrice * model.PlanPromoIncrementalCases;
+
                 Context.SaveChanges();
 
                 return Updated(model);
@@ -223,7 +229,7 @@ namespace Module.Frontend.TPM.Controllers
                 new Column() { Order = 3, Field = "Promo.Number", Header = "Promo ID", Quoting = false, },
                 new Column() { Order = 4, Field = "Promo.Name", Header = "Promo Name", Quoting = false, },
                 new Column() { Order = 5, Field = "PlanPromoIncrementalCases", Header = "Plan Promo Incremental Cases", },
-                new Column() { Order = 6, Field = "CasePrice", Header = "Case Price", Quoting = false, },
+                new Column() { Order = 6, Field = "CasePrice", Header = "Case Price", },
                 new Column() { Order = 7, Field = "PlanPromoIncrementalLSV", Header = "Plan Promo Incremental LSV", Quoting = false },
             };
 
@@ -354,7 +360,7 @@ namespace Module.Frontend.TPM.Controllers
         {
             try
             {
-                IEnumerable<Column> columns = GetExportSettings();
+                IEnumerable<Column> columns = GetExportSettings().Where(col => col.Field != "PlanPromoIncrementalLSV");
                 XLSXExporter exporter = new XLSXExporter(columns);
                 string exportDir = AppSettingsManager.GetSetting("EXPORT_DIRECTORY", "~/ExportFiles");
                 string filename = string.Format("{0}Template.xlsx", "IncrementalPromo");

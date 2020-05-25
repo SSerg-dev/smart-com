@@ -45,6 +45,8 @@ namespace Module.Persist.TPM.Model.DTO {
         public string PromoStatusSystemName { get; set; }
         public string PlanInstoreMechanicTypeName { get; set; }
         public string ProductHierarchy { get; set; }
+        public bool IsOnInvoice { get; set; }
+        public bool IsApolloExport { get; set; }
 
         public double? PlanPromoTIShopper { get; set; }
         public double? PlanPromoTIMarketing { get; set; }

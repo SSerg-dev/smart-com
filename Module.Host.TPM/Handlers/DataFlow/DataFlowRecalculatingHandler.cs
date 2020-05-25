@@ -5,6 +5,7 @@ using Looper.Core;
 using Looper.Parameters;
 using Module.Host.TPM.Actions;
 using Module.Host.TPM.Actions.Notifications;
+using Module.Host.TPM.Handlers.MainNightProcessing;
 using Module.Persist.TPM.CalculatePromoParametersModule;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.PromoStateControl;
@@ -602,11 +603,10 @@ namespace Module.Host.TPM.Handlers.DataFlow
                         }
                     }
 
-                    if (context != null)
-                    {
-                        context.SaveChanges();
-                        ((IDisposable)context).Dispose();
-                    }
+                    string mainNightProcessingStepPrefix = AppSettingsManager.GetSetting<string>("MAIN_NIGHT_PROCESSING_STEP_PREFIX", "MainNightProcessingStep");
+                    MainNightProcessingHelper.SetProcessingFlagDown(context, mainNightProcessingStepPrefix);
+
+                    context.SaveChanges();
                 }
             }
         }

@@ -10,22 +10,23 @@ namespace Module.Host.TPM
         public IEnumerable<IHandler> GetHandlers() {
             return new List<IHandler>()
             {
-				new Handlers.Notifications.PromoDemandChangeNotificationHandler(),
-				new Handlers.Notifications.PromoProductChangeNotificationHandler(),
-				new Handlers.Notifications.PromoUpliftFailNotificationHandler(),
-				new Handlers.Notifications.CancelledPromoNotificationHandler(),
-				new Handlers.Notifications.WeekBeforeDispatchPromoNotificationHandler(),
-				new Handlers.Notifications.PromoOnApprovalNotificationHandler(),
-				new Handlers.Notifications.PromoOnRejectNotificationHandler(),
-				new Handlers.Notifications.PromoApprovedNotificationHandler(),
-				new Handlers.Notifications.PromoROIReportNotificationHandler(),
-				new Handlers.FullXLSXUpdateImportPromoSalesHandler(),
+                new Handlers.Notifications.PromoDemandChangeNotificationHandler(),
+                new Handlers.Notifications.PromoProductChangeNotificationHandler(),
+                new Handlers.Notifications.PromoUpliftFailNotificationHandler(),
+                new Handlers.Notifications.CancelledPromoNotificationHandler(),
+                new Handlers.Notifications.WeekBeforeDispatchPromoNotificationHandler(),
+                new Handlers.Notifications.PromoOnApprovalNotificationHandler(),
+                new Handlers.Notifications.PromoOnRejectNotificationHandler(),
+                new Handlers.Notifications.PromoApprovedNotificationHandler(),
+                new Handlers.Notifications.PromoROIReportNotificationHandler(),
+                new Handlers.Notifications.ProductSyncFailNotificationHandler(),
+                new Handlers.FullXLSXUpdateImportPromoSalesHandler(),
                 new Handlers.FullXLSXUpdateImportDemandHandler(),
                 new Handlers.FullXLSXUpdateImportClientShareHandler(),
                 new Handlers.FullXLSXCOGSUpdateImportHandler(),
                 new Handlers.FullXLSXTradeInvestmentUpdateImportHandler(),
                 new Handlers.FullXLSXImportBaseLineHandler(),
-				new Handlers.FullXLSXUpdateImportIncrementalPromoHandler(),
+                new Handlers.FullXLSXUpdateImportIncrementalPromoHandler(),
                 new Handlers.UpdateUpliftHandler(),
                 new Handlers.CalculatePromoParametersHandler(),
                 new Handlers.CalculateBudgetsHandler(),
@@ -42,7 +43,7 @@ namespace Module.Host.TPM
                 new Handlers.FullXLSXNoNegoUpdateImporHandler(),
                 new Handlers.FullXLSXAssortmentMatrixImportHandler(),
                 new Handlers.AutoResetPromoHandler(),
-				new Handlers.XLSXImportActualLsvHandler(),
+                new Handlers.XLSXImportActualLsvHandler(),
                 new Handlers.ActualLSVChangeHandler(),
                 new Handlers.DataFlow.RecalculateAllPromoesHandler(),
                 new Handlers.DataFlow.DataFlowFilteringHandler(),
@@ -59,10 +60,19 @@ namespace Module.Host.TPM
                 new Handlers.PromoListActualRecalculationHandler(),
 				new Handlers.DataLakeIntegrationHandlers.MarsProductsCheckStarterHandler(),
 				new Handlers.DataLakeIntegrationHandlers.MarsProductsCheckHandler(),
-                new Handlers.FullXLSXUpdateImportClientDashboardHandler(),
                 new Handlers.SetTIBasePercentValuesHandler(),
-                new Handlers.SetCOGSPercentValuesHandler()
-            };
+                new Handlers.SetCOGSPercentValuesHandler(),
+                new Handlers.PriceListMergeHandler(),
+                new Handlers.Interface.Incoming.InputBaseLineProcessHandler(),
+                new Handlers.StartSISOBaselineCalculationHandler(),
+                new Handlers.FullXLSXUpdateCoefficientSI2SOHandler(),
+                new Handlers.SellOutBaselineQtyCalculationHandler(),
+                new Handlers.NightProcessingMainHandler(),
+                new Handlers.Interface.Outcoming.OutputIncrementalProcessHandler(),
+                new Handlers.DayIncrementalQTYRecalculationHandler(),
+                new Handlers.CreateCoefficientSI2SOHandler(),
+                new Handlers.FullXLSXUpdateImportClientDashboardHandler()
+			};
         }
     }
 }

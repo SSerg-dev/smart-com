@@ -15,6 +15,8 @@
         { name: 'PlanProductBaselineLSV', useNull: true, type: 'string', hidden: false, isDefault: true },
         { name: 'ActualProductUpliftPercent', useNull: true, type: 'string', hidden: false, isDefault: true },
         { name: 'ProductEN', useNull: true, type: 'string', hidden: false, isDefault: true },
+        { name: 'InvoiceTotalProduct', useNull: true, type: 'float', hidden: false, isDefault: false }
+
     ],
     proxy: {
         type: 'breeze',

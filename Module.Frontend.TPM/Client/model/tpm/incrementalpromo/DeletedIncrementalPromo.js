@@ -28,7 +28,6 @@
             breezeEntityType: 'Promo', hidden: false, isDefault: true
         },            
         { name: 'PlanPromoIncrementalCases', type: 'float', hidden: false, isDefault: true, useNull: true },
-        { name: 'CasePrice', type: 'float', hidden: false, isDefault: true, useNull: true },
         { name: 'PlanPromoIncrementalLSV', type: 'float', hidden: false, isDefault: true, useNull: true },
     ],
     proxy: {

@@ -26,20 +26,6 @@
             menu: {
                 xtype: 'customheadermenu',
                 items: [{
-                    glyph: 0xf220,
-                    itemgroup: 'loadimportbutton',
-                    exactlyModelCompare: true,
-                    text: l10n.ns('core', 'additionalMenu').value('fullImportXLSX'),
-                    resource: '{0}',
-                    action: 'FullImportXLSX',
-                    allowFormat: ['zip', 'xlsx']
-                }, {
-                    glyph: 0xf21d,
-                    itemId: 'loadimporttemplatexlsxbutton',
-                    exactlyModelCompare: true,
-                    text: l10n.ns('core', 'additionalMenu').value('importTemplateXLSX'),
-                    action: 'DownloadTemplateXLSX'
-                }, {
                     glyph: 0xf21d,
                     itemId: 'exportxlsxbutton',
                     exactlyModelCompare: true,
@@ -51,7 +37,7 @@
     ],
 
     dockedItems: [{
-        xtype: 'custombigtoolbar',
+        xtype: 'readonlydeleteddirectorytoolbar',
         dock: 'right'
     }],
 
@@ -117,18 +103,18 @@
             }, {
                 xtype: 'numbercolumn',
                 format: '0.00',
-                text: l10n.ns('tpm', 'BaseLine').value('QTY'),
-                dataIndex: 'QTY'
+                text: l10n.ns('tpm', 'BaseLine').value('InputBaselineQTY'),
+                dataIndex: 'InputBaselineQTY'
             }, {
                 xtype: 'numbercolumn',
                 format: '0.00',
-                text: l10n.ns('tpm', 'BaseLine').value('Price'),
-                dataIndex: 'Price'
+                text: l10n.ns('tpm', 'BaseLine').value('SellInBaselineQTY'),
+                dataIndex: 'SellInBaselineQTY'
             }, {
                 xtype: 'numbercolumn',
                 format: '0.00',
-                text: l10n.ns('tpm', 'BaseLine').value('BaselineLSV'),
-                dataIndex: 'BaselineLSV'
+                text: l10n.ns('tpm', 'BaseLine').value('SellOutBaselineQTY'),
+                dataIndex: 'SellOutBaselineQTY'
             }, {
                 xtype: 'numbercolumn',
                 format: '0.',
@@ -175,31 +161,31 @@
             allowOnlyWhitespace: false,
         }, {
             xtype: 'numberfield',
-            name: 'QTY',
+            name: 'InputBaselineQTY',
             allowDecimals: true,
             allowExponential: false,
             minValue: 0,
             maxValue: 10000000000,
             allowBlank: false,
-            fieldLabel: l10n.ns('tpm', 'BaseLine').value('QTY'),
+            fieldLabel: l10n.ns('tpm', 'BaseLine').value('InputBaselineQTY'),
         }, {
             xtype: 'numberfield',
-            name: 'Price',
+            name: 'SellInBaselineQTY',
             allowDecimals: true,
             allowExponential: false,
             minValue: 0,
             maxValue: 10000000000,
             allowBlank: false,
-            fieldLabel: l10n.ns('tpm', 'BaseLine').value('Price'),
+            fieldLabel: l10n.ns('tpm', 'BaseLine').value('SellInBaselineQTY'),
         }, {
             xtype: 'numberfield',
-            name: 'BaselineLSV',
+            name: 'SellOutBaselineQTY',
             allowDecimals: true,
             allowExponential: false,
             minValue: 0,
             maxValue: 10000000000,
             allowBlank: false,
-            fieldLabel: l10n.ns('tpm', 'BaseLine').value('BaselineLSV'),
+            fieldLabel: l10n.ns('tpm', 'BaseLine').value('SellOutBaselineQTY'),
         }, {
             xtype: 'numberfield',
             name: 'Type',

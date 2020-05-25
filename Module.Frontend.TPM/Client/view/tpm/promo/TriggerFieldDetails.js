@@ -47,15 +47,15 @@
                 var newWindow = Ext.create('App.view.core.base.BaseModalWindow', {
                     title: 'Details',
                     width: '90%',
-                    minWidth: '90%',
+                    minWidth: 600,
                     height: '90%',
-                    minHeight: '90%',
+                    minHeight: 450,
                     items: [{
                         xtype: me.windowType,
                         promoId: record.data.Id
                     }],
                     buttons: [{
-                        text: l10n.ns('core', 'buttons').value('cancel'),
+                        text: l10n.ns('core', 'buttons').value('close'),
                         itemId: 'close'
                     }]
                 });
@@ -86,9 +86,9 @@
                 var newWindow = Ext.create('App.view.core.base.BaseModalWindow', {
                     title: 'Details',
                     width: '90%',
-                    minWidth: '90%',
+                    minWidth: 600,
                     height: '90%',
-                    minHeight: '90%',
+                    minHeight: 450,
                     items: [{
                         xtype: me.windowType,
                         promoId: record.data.Id,
@@ -163,9 +163,9 @@
                 var newWindow = Ext.create('App.view.core.base.BaseModalWindow', {
                     title: 'Details',
                     width: '90%',
-                    minWidth: '90%',
+                    minWidth: 600,
                     height: '90%',
-                    minHeight: '90%',
+                    minHeight: 450,
                     items: [{
                         xtype: me.windowType,
                         promoId: record.data.Id

@@ -68,5 +68,4 @@ namespace Module.Frontend.TPM.Controllers
             return optionsPost.ApplyTo(query, querySettings) as IQueryable<IncrementalPromo>;
         }
     }
-
 }

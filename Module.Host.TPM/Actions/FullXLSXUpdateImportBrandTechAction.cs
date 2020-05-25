@@ -12,13 +12,26 @@ using Module.Persist.TPM.Model.TPM;
 using Core.Extensions;
 using Looper.Parameters;
 using Module.Frontend.TPM.Controllers;
+using Looper.Core;
+using Persist.Model;
 using Core.History;
+using Module.Persist.TPM.Utils;
+using Module.Host.TPM.Handlers;
+using Core.Security.Models;
+using Core.Security;
 
 namespace Module.Host.TPM.Actions
 {
     class FullXLSXUpdateImportBrandTechAction : FullXLSXImportAction
     {
-        public FullXLSXUpdateImportBrandTechAction(FullImportSettings settings) : base(settings) { }
+        private Guid roleId;
+        private Guid userId;
+
+        public FullXLSXUpdateImportBrandTechAction(FullImportSettings settings, Guid userId, Guid roleId) : base(settings) 
+        {
+            this.roleId = roleId;
+            this.userId = userId;
+        }
 
         protected override int InsertDataToDatabase(IEnumerable<IEntity<Guid>> records, DatabaseContext context)
         {
@@ -44,6 +57,7 @@ namespace Module.Host.TPM.Actions
                     {
                         newRecord.BrandTech_code = String.Format("{0}-{1}-{2}", newRecord.Brand.Brand_code, newRecord.Brand.Segmen_code, newRecord.Technology.Tech_code);
                     }
+
                     toHisCreate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(null, newRecord));
                 }
                 else
@@ -59,6 +73,7 @@ namespace Module.Host.TPM.Actions
             {
                 String formatStr = "INSERT INTO [BrandTech] ([Id], [Disabled], [DeletedDate], [BrandId], [TechnologyId]) VALUES ('{0}', 0, NULL, '{1}', '{2}')";
                 string insertScript = String.Join("\n", items.Select(y => String.Format(formatStr, y.Id, y.BrandId, y.TechnologyId)).ToList());
+
                 context.Database.ExecuteSqlCommand(insertScript);
             }
 
@@ -74,6 +89,8 @@ namespace Module.Host.TPM.Actions
             context.HistoryWriter.Write(toHisCreate, context.AuthManager.GetCurrentUser(), context.AuthManager.GetCurrentRole(), OperationType.Created);
 
             ClientTreeBrandTechesController.DisableNotActualClientTreeBrandTech(context);
+            CreateCoefficientSI2SOHandler(toCreate.Select(b => b.BrandTech_code).ToList(), null, 1);
+
             return sourceRecords.Count();
         }
 
@@ -81,6 +98,35 @@ namespace Module.Host.TPM.Actions
         {
             IQueryable<BrandTech> query = context.Set<BrandTech>().AsNoTracking();
             return query.ToList();
+        }
+
+        private void CreateCoefficientSI2SOHandler(List<string> brandTechCode, string demandCode, double cValue)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                HandlerData data = new HandlerData();
+                HandlerDataHelper.SaveIncomingArgument("brandTechCode", brandTechCode, data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("demandCode", demandCode, data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("cValue", cValue, data, visible: false, throwIfNotExists: false);
+
+                LoopHandler handler = new LoopHandler()
+                {
+                    Id = Guid.NewGuid(),
+                    ConfigurationName = "PROCESSING",
+                    Description = "Adding new records for coefficients SI/SO",
+                    Name = "Module.Host.TPM.Handlers.CreateCoefficientSI2SOHandler",
+                    ExecutionPeriod = null,
+                    CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                    LastExecutionDate = null,
+                    NextExecutionDate = null,
+                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                    UserId = userId,
+                    RoleId = roleId
+                };
+                handler.SetParameterData(data);
+                context.LoopHandlers.Add(handler);
+                context.SaveChanges();
+            }
         }
     }
 }

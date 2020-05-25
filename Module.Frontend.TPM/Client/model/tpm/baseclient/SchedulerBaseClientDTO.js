@@ -19,6 +19,8 @@
         { name: 'IsDaysEnd', type: 'bool', hidden: false, useNull: true },
         { name: 'DaysEnd', type: 'int', hidden: false, useNull: true },
         { name: 'TypeName', type: 'string', hidden: false, useNull: true },
+
+        { name: 'IsOnInvoice', type: 'bool', useNull: true, defaultValue: null },
         { name: 'InOutId', type: 'string', hidden: true}
     ],
     proxy: {

@@ -25,7 +25,9 @@
         { name: 'DaysEnd', type: 'int', hidden: false, useNull: true },
         { name: 'PostPromoEffectW1', type: 'float', hidden: false, useNull: true, defaultValue: 0 },
         { name: 'PostPromoEffectW2', type: 'float', hidden: false, useNull: true, defaultValue: 0 },
-        { name: 'LogoFileName', type: 'string', hidden: false, useNull: true, defaultValue: null }
+        { name: 'LogoFileName', type: 'string', hidden: false, useNull: true, defaultValue: null },
+        { name: 'IsOnInvoice', type: 'bool', useNull: true, defaultValue: null },
+        { name: 'DMDGroup', type: 'string', hidden: false, isDefault: true  }
     ],
 
     proxy: {

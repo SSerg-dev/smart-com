@@ -4,6 +4,7 @@ namespace Module.Persist.TPM.Migrations
     using global::Persist;
     using global::Persist.Migrations;
     using global::Persist.Model;
+    using Module.Persist.TPM.Utils;
     using System;
     using System.Collections.Generic;
     using System.IO;
@@ -101,9 +102,12 @@ namespace Module.Persist.TPM.Migrations
         protected override void AddInterfaceSettings(DatabaseContext context, bool updateHandlers, bool updateInterfaces)
         {
             base.AddInterfaceSettings(context, updateHandlers, updateInterfaces);
-            //if (updateHandlers || updateInterfaces) {
-            //    ConfigManager.AddMaterialAtlasInterfaceSettings(updateInterfaces, context);
-            //}
+            if (updateHandlers || updateInterfaces)
+            {
+                // ConfigManager.AddInputBaselineInterfaceSettings(updateInterfaces, context);
+               
+                // ConfigManager.AddOutputIncrementalInterfaceSettings(updateInterfaces, context);
+            }
         }
 
         protected override void SystemSettings(DatabaseContext context)

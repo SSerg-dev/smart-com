@@ -34,6 +34,12 @@
                 jspData.scrollToElement(el, true, true);
                 container.down('#btn_promo_step3').addClass('selected');
             }
+
+            var radios = wind.down('[name=promo_step1]').down('[id=invoiceRadiogroup]').items.items;
+            Ext.each(radios, function (r) {
+                r.fieldLabelTip.setDisabled(true);
+                r.fieldValueTip.setDisabled(true);
+            });  
         }
     },
 
@@ -233,7 +239,7 @@
                             xtype: 'promoclient',
                             name: 'promo_step1',
                             itemId: 'promo_step1',
-                            height: 221 + 36,
+                            height: 281 + 36,
                             header: {
                                 title: l10n.ns('tpm', 'promoStap').value('basicStep1'),
                                 cls: 'promo-header-item'

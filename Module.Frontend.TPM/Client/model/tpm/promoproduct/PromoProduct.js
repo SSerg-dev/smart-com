@@ -45,6 +45,8 @@
         { name: 'ActualProductPostPromoEffectQtyW1', type: 'float', hidden: true, isDefault: false, useNull: true },
         { name: 'ActualProductPostPromoEffectQtyW2', type: 'float', hidden: true, isDefault: false, useNull: true },
         { name: 'ActualProductLSVByCompensation', type: 'float', hidden: true, isDefault: false, useNull: true },
+        { name: 'InvoiceTotalProduct', useNull: true, type: 'float', hidden: true, isDefault: false }
+
     ],
     proxy: {
         type: 'breeze',

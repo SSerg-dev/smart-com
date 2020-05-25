@@ -80,6 +80,7 @@
         { name: 'DispatchDuration', useNull: true, type: 'int', hidden: false, isDefault: false },
         { name: 'InvoiceNumber', type: 'string', hidden: false, isDefault: false },
         { name: 'DocumentNumber', type: 'string', hidden: false, isDefault: false },
+        { name: 'IsOnInvoice', type: 'boolean', hidden: false, isDefault: true },
 
         // Calculation
         { name: 'PlanPromoTIShopper', useNull: true, type: 'float', hidden: false, isDefault: false },
@@ -141,6 +142,7 @@
         { name: 'ActualPromoBaselineBaseTI', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'ActualPromoBaseTI', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'ActualPromoNetNSV', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'InvoiceTotal', useNull: true, type: 'float', hidden: false, isDefault: false },
 
         // Promo Closure
         { name: 'ActualPromoTIShopper', useNull: true, type: 'float', hidden: false, isDefault: false },
@@ -227,6 +229,8 @@
         { name: 'PromoTypesName', type: 'string', mapping: 'PromoTypes.Name', defaultFilterConfig: { valueField: 'PromoTypesName' }, /*breezeEntityType: 'ClientTree',*/ hidden: false, isDefault: false },
         { name: 'PromoTypesGlyph', type: 'string', mapping: 'PromoTypes.Glyph', defaultFilterConfig: { valueField: 'PromoTypesGlyph' }, /*breezeEntityType: 'ClientTree',*/ hidden: false, isDefault: false },
 
+        //Apollo Export
+        { name: 'IsApolloExport', type: 'boolean', hidden: false, isDefault: false }
     ],
     proxy: {
         type: 'breeze',

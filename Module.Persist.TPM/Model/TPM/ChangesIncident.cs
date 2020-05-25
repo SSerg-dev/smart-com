@@ -15,5 +15,19 @@ namespace Module.Persist.TPM.Model.TPM
         public DateTimeOffset? ProcessDate { get; set; }
         public DateTimeOffset? DeletedDate { get; set; }
         public bool Disabled { get; set; }
+
+        public static ChangesIncident CreateIncident(string directoryName, Guid id)
+        {
+            return new ChangesIncident
+            {
+                Id = Guid.NewGuid(),
+                DirectoryName = directoryName,
+                ItemId = id.ToString(),
+                CreateDate = DateTimeOffset.Now,
+                ProcessDate = null,
+                DeletedDate = null,
+                Disabled = false
+            };
+        }
     }
 }

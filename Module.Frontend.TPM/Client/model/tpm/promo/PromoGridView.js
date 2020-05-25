@@ -43,6 +43,7 @@
         { name: 'PlanInstoreMechanicName', type: 'string', mapping: 'PlanInstoreMechanicName', defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'Mechanic', useNull: true, hidden: false, isDefault: false },
         { name: 'PromoStatusSystemName', type: 'string', mapping: 'PromoStatusSystemName', defaultFilterConfig: { valueField: 'SystemName' }, breezeEntityType: 'PromoStatus', hidden: true, isDefault: false },
         { name: 'PlanInstoreMechanicTypeName', type: 'string', mapping: 'PlanInstoreMechanicTypeName', defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'MechanicType', useNull: true, hidden: false, isDefault: false },
+        { name: 'IsOnInvoice', type: 'boolean', hidden: false, isDefault: true },
 
         { name: 'PlanPromoTIShopper', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'PlanPromoTIMarketing', useNull: true, type: 'float', hidden: false, isDefault: false },
@@ -78,7 +79,10 @@
         { name: 'PlanPromoLSV', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'ActualPromoLSV', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'ActualPromoBaselineLSV', useNull: true, type: 'float', hidden: false, isDefault: false },
-        { name: 'ActualPromoIncrementalLSV', useNull: true, type: 'float', hidden: false, isDefault: false }
+        { name: 'ActualPromoIncrementalLSV', useNull: true, type: 'float', hidden: false, isDefault: false },
+
+        //Apollo Export
+        { name: 'IsApolloExport', type: 'boolean', hidden: false, isDefault: false }
     ],
     proxy: {
         type: 'breeze',

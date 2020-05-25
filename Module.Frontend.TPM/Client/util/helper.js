@@ -1070,7 +1070,7 @@ Ext.chart.series.Gauge.override({
                 defaultStart = -180,
                 rendererAttributes, centerX, centerY, slice, slices, sprite,
                 item, ln, i,
-                spriteOptions, splitAngle1, splitAngle2, sliceA, sliceB, sliceC;
+                spriteOptions, splitAngle1, splitAngle2, splitAngle3, sliceA, sliceB, sliceC;
 
             Ext.apply(seriesStyle, me.style || {});
 
@@ -1120,7 +1120,7 @@ Ext.chart.series.Gauge.override({
             };
 
             if (values.length == 3) {
-                minimum = Math.min(values[0], values[1], values[2]);
+                //minimum = Math.min(values[0], values[1], values[2]);
                 splitAngle1 = defaultStart * (1 - (values[0] - minimum) / (maximum - minimum));
                 splitAngle2 = defaultStart * (1 - (values[1] - minimum) / (maximum - minimum));
                 splitAngle3 = defaultStart * (1 - (values[2] - minimum) / (maximum - minimum));

@@ -245,7 +245,7 @@
         'operations': {
             'Equals': 'Равно',
             'NotEqual': 'Не равно',
-            'GreaterThen': 'Больше',
+            'GreaterThan': 'Больше',
             'GreaterOrEqual': 'Больше или равно',
             'LessThan': 'Меньше',
             'LessOrEqual': 'Меньше или равно',

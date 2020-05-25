@@ -11,10 +11,10 @@
         { name: '_Operation', type: 'string', isDefault: true },
         { name: 'ProductZREP', type: 'string', isDefault: true },
         { name: 'StartDate', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
-        { name: 'DemandCode', type: 'string', hidden: false, isDefault: true },
-        { name: 'QTY', type: 'float', hidden: false, isDefault: true },
-        { name: 'Price', type: 'float', hidden: false, isDefault: true },
-        { name: 'BaselineLSV', type: 'float', hidden: false, isDefault: true },
+        { name: 'DemandCode', type: 'string', hidden: false, isDefault: true }, 
+        { name: 'InputBaselineQTY', type: 'float', hidden: false, isDefault: true },
+        { name: 'SellInBaselineQTY', type: 'float', hidden: false, isDefault: true },
+        { name: 'SellOutBaselineQTY', type: 'float', hidden: false, isDefault: true },
         { name: 'Type', type: 'int', hidden: false, isDefault: true }
     ],
     proxy: {

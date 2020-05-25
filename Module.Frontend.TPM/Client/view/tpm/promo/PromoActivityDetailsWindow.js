@@ -646,8 +646,46 @@
                             blur: function (field) {
                                 this.blockMillion = false;
                             },
+                        }
+                    }, {
+                            xtype: 'triggerfielddetails',
+                            name: 'InvoiceTotal',
+                            fieldLabel: l10n.ns('tpm', 'Promo').value('InvoiceTotal'),
+                            dataIndexes: ['InvoiceTotal', 'InvoiceTotalProduct', 'ActualProductPCQty'],
+                            labelAlign: 'left',
+                            blockMillion: false, // если true - то преобразовывать в миллионы
+                            originValue: null, // настоящее значение
+                            valueToRaw: function (value) {
+                                var valueToDisplay = null;
+
+                                if (value !== null && value !== undefined) {
+                                    if (this.blockMillion) {
+                                        valueToDisplay = value;
+                                    }
+                                    else {
+                                        this.originValue = value;
+                                        valueToDisplay = value / 1000000.0;
+                                    }
+                                }
+
+                                return Ext.util.Format.number(valueToDisplay, '0.00');
+                            },
+                            rawToValue: function () {
+                                var parsedValue = parseFloat(String(this.originValue).replace(Ext.util.Format.decimalSeparator, "."))
+                                return isNaN(parsedValue) ? null : parsedValue;
+                            },
+                            listeners: {
+                                afterrender: function (el) {
+                                    el.triggerCell.addCls('form-info-trigger-cell')
+                                },
+                                focus: function (field) {
+                                    this.blockMillion = true;
+                                },
+                                blur: function (field) {
+                                    this.blockMillion = false;
+                                },
                             }
-                        }, {
+                    }, {
                             xtype: 'textfield',
                             name: 'InvoiceNumber',
                             flex: 1,
@@ -664,7 +702,7 @@
                             allowBlank: true,
                             allowOnlyWhitespace: true,
                             cls: 'disableBG',
-                        }, {
+                    }, {
                             xtype: 'textfield',
                             name: 'DocumentNumber',
                             flex: 1,

@@ -58,7 +58,13 @@
             format: '0.00',
             fieldLabel: l10n.ns('tpm', 'PromoProduct').value('ActualProductLSVByCompensation'),
             name: 'ActualProductLSVByCompensation',
-        }] 
+        }, {
+                xtype: 'numberfield',
+                format: '0.00',
+                fieldLabel: l10n.ns('tpm', 'PromoProduct').value('InvoiceTotalProduct'),
+                name: 'InvoiceTotalProduct',
+           }
+        ] 
     },
 
     listeners: {

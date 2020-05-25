@@ -1,7 +1,7 @@
 ﻿l10n.defineLocalization('tpm', {
     'mainmenu': {
         'ProductItem': 'Product',
-        'UserDashboard':'User Dashboard',
+        'UserDashboard': 'User Dashboard',
         'SubrangeItem': 'Subrange',
         'CategoryItem': 'Category',
         'BrandItem': 'Brand',
@@ -47,8 +47,8 @@
         'PromoProductItem': 'Promo Product',
 
         'PromoProductCorection': 'Promo product correction',
+        'PreviousDayIncremental': 'Previous Day Incremental',
         'BaseLineItem': 'Base Line',
-        'DemandPriceListItem': 'Demand Price List',
         'ClientTreeBrandTech': 'Clients Share',
         'PromoSupport': 'Support',
         'NonPromoSupport': 'Non-Promo Support',
@@ -74,7 +74,12 @@
         'PromoTypes': 'Promo Types',
         'ClientDashboard': 'Client Dashboard',
         'Dashboard': 'Dashboard',
-        'ClientKPIdata': 'Client KPI Data'
+        'ClientKPIdata': 'Client KPI Data',
+        'ActualLSV': 'Actual LSV',
+        'NonPromoEquipment': 'Non-Promo Equipment',
+        'PromoTypes': 'Promo Types',
+        'PriceList': 'Price list',
+        'CoefficientSI2SO': 'Coefficient SI->SO',
     },
 
     'compositePanelTitles': {
@@ -127,9 +132,8 @@
         'RetailType': 'Retail type',
         'PromoProduct': 'Promo Product',
         'BaseLine': 'Base Line',
-        'DemandPriceList': 'Demand Price List',
         'ClientTreeBrandTech': 'Clients shares',
-		'PromoSupport': 'PromoSupport',
+        'PromoSupport': 'PromoSupport',
         'NonPromoSupport': 'Non-promo Support',
         'ClientDetailsWindow': 'Details',
         'TICosts': 'TI Costs',
@@ -162,6 +166,9 @@
         'Dashboard': 'Dashboard',
         'ClientKPIData': 'Client KPI Data',
         'NonPromoLinked': "Non-Promo Linked",
+        'PreviousDayIncremental': 'Previous Day Incremental',
+        'PriceList': 'Price list',
+        'CoefficientSI2SO': 'Coefficient SI->SO',
     },
 
     'text': {
@@ -192,6 +199,7 @@
         'ActualInstoreAssumptionValidate': 'Actual Instore',
         'PlanInstoreAssumptionValidate': 'Plan Instore Assumption',
         'ActualInstoreValidate': 'Instore Assumption Mechanic',
+        'InvoiceTotalValidate': 'Invoice Total',
         'InvoiceNumberValidate': 'Invoice Number',
         'DocumentNumberValidate': 'Document Number',
         'completeStep1Validate': 'Step 1',
@@ -537,7 +545,7 @@
 
     'Client': {
         'CommercialSubnetCommercialNetName': 'Commecrical network',
-        'CommercialSubnetName': 'Commercial subnetwork',
+        'CommercialSubnetName': 'Commercial subnetwork'
     },
     'HistoricalClient': ['.tpm.Client', '.core.BaseHistoryEntity'],
     'DeletedClient': ['.tpm.Client', '.core.BaseDeletedEntity'],
@@ -633,6 +641,8 @@
         'MechanicGetError': 'This promo has no status',
         'ClientHierarchy': 'Client',
         'ProductHierarchy': 'Product hierarchy',
+        'IsOnInvoice': 'On Invoice',
+        'InvoiceType': 'Invoice Type',
 
         'InstoreAssumption': 'Instore assumption',
 
@@ -695,7 +705,9 @@
 
         'ActualInStoreShelfPrice': 'Actual In Store Shelf Price',
         'PlanInStoreShelfPrice': 'Plan In Store Shelf Price',
+        'InvoiceTotal': 'Invoice total',
         'InvoiceNumber': 'Invoice number',
+        'InvoiceTotalRegex': 'Only numbers and \',\' allowed',
         'InvoiceNumberRegex': 'Only letters, numbers and \',\' allowed. Each code must be at least 4 symbols long.',
         'DocumentNumber': 'Document number',
         'DocumentNumberRegex': 'Only letters, numbers and \',\' allowed. Each code must be at least 4 symbols long.',
@@ -797,6 +809,8 @@
         'ActualPromoNSV': 'Actual Promo NSV',
         'GrowthAcceleration': 'Growth acceleration',
         'IsGrowthAcceleration': 'Growth acceleration',
+        'ApolloExport': 'Apollo export',
+        'IsApolloExport': 'Apollo export',
 
         //Для исторической модели
         'PlanPromoNetROIPercent': 'Plan Promo Net ROI Percent',
@@ -1002,7 +1016,11 @@
         'PostPromoEffectW1': 'Post Promo Effect W1',
         'PostPromoEffectW2': 'Post Promo Effect W2',
         'RetailTypeName': 'Retail Type Name',
-        'FullPathName': 'Full PathName'
+        'FullPathName': 'Full PathName',
+        'IsOnInvoice': 'On Invoice',
+        'InvoiceType': 'Invoice Type',
+        'DMDGroup': 'DMD Group',
+        'DMDGroupRegex': 'Only numbers'
     },
 
     'EventClientTree': {
@@ -1150,66 +1168,66 @@
     'HistoricalPromoSupport': ['.tpm.PromoSupport', '.core.BaseHistoryEntity'],
     'DeletedPromoSupport': ['.tpm.PromoSupport', '.core.BaseDeletedEntity'],
 
-	'NonPromoSupport': {
-		'Number': 'ID',
-		'ClientTreeFullPathName': 'Client',
-		'BudgetSubItemBudgetItemName': 'Support',
-		'BudgetSubItemName': 'Equipment Type',
-		'PlanQuantity': 'Plan Quantity',
-		'ActualQuantity': 'Actual Quantity',
-		'PlanCostTE': 'Plan Cost TE Total',
-		'ActualCostTE': 'Actual Cost TE Total',
-		'StartDate': 'Start Date',
-		'NonPromoEquipmentEquipmentType': 'Equipment Type',
-		'brandTechOk': 'Apply',
-		'BrandTech': 'Brand tech',
-		'EndDate': 'End Date',
-		'RemoveIntactWindowTitle': 'Unpin recording',
-		'RemoveIntactConfirmMessage': 'Are you sure you want to unpin a post?',
-		'CreateNonPromoSupportButton': 'Create Promo Support',
-		'CreateOnTheBasisButton': 'Create on the basis',
-		'PlanProdCostPer1Item': 'Plan Prod Cost Per 1 Item',
-		'ActualProdCostPer1Item': 'Actual Prod Cost Per 1 Item',
-		'PlanProdCost': 'Plan Prod Cost',
-		'ActualProdCost': 'Actual Prod Cost',
-		'PONumber': 'PO Number',
-		'PONumberRegex': 'Only numbers',
-		'InvoiceNumberRegex': 'Only numbers',
-		'AttachFileName': 'Attach File Name',
-		'Name': 'Name',
-		'InvoiceNumber': 'Invoice Number',
-		'PlanProdCost': 'Plan Prod Cost',
-		'ActualProdCost': 'Actual Prod Cost'
-	},
-	'HistoricalNonPromoSupport': {
-		'Number': 'ID',
-		'ClientTreeFullPathName': 'Client',
-		'BudgetSubItemBudgetItemName': 'Support',
-		'BudgetSubItemName': 'Equipment Type',
-		'PlanQuantity': 'Plan Quantity',
-		'ActualQuantity': 'Actual Quantity',
-		'PlanCostTE': 'Plan Cost TE Total',
-		'ActualCostTE': 'Actual Cost TE Total',
-		'StartDate': 'Start Date',
-		'EndDate': 'End Date',
-		'RemoveIntactWindowTitle': 'Unpin recording',
-		'RemoveIntactConfirmMessage': 'Are you sure you want to unpin a post?',
-		'CreateNonPromoSupportButton': 'Create Promo Support',
-		'CreateOnTheBasisButton': 'Create on the basis',
-		'PlanProdCostPer1Item': 'Plan Prod Cost Per 1 Item',
-		'ActualProdCostPer1Item': 'Actual Prod Cost Per 1 Item',
-		'PlanProdCost': 'Plan Prod Cost',
-		'ActualProdCost': 'Actual Prod Cost',
-		'PONumber': 'PO Number',
-		'PONumberRegex': 'Only numbers',
-		'InvoiceNumberRegex': 'Only numbers',
-		'AttachFileName': 'Attach File Name',
-		'Name': 'Name',
-		'InvoiceNumber': 'Invoice Number',
-		'PlanProdCost': 'Plan Prod Cost',
-		'ActualProdCost': 'Actual Prod Cost'
-	},
-	'HistoricalNonPromoSupport': ['.tpm.NonPromoSupport', '.core.BaseHistoryEntity'],
+    'NonPromoSupport': {
+        'Number': 'ID',
+        'ClientTreeFullPathName': 'Client',
+        'BudgetSubItemBudgetItemName': 'Support',
+        'BudgetSubItemName': 'Equipment Type',
+        'PlanQuantity': 'Plan Quantity',
+        'ActualQuantity': 'Actual Quantity',
+        'PlanCostTE': 'Plan Cost TE Total',
+        'ActualCostTE': 'Actual Cost TE Total',
+        'StartDate': 'Start Date',
+        'NonPromoEquipmentEquipmentType': 'Equipment Type',
+        'brandTechOk': 'Apply',
+        'BrandTech': 'Brand tech',
+        'EndDate': 'End Date',
+        'RemoveIntactWindowTitle': 'Unpin recording',
+        'RemoveIntactConfirmMessage': 'Are you sure you want to unpin a post?',
+        'CreateNonPromoSupportButton': 'Create Promo Support',
+        'CreateOnTheBasisButton': 'Create on the basis',
+        'PlanProdCostPer1Item': 'Plan Prod Cost Per 1 Item',
+        'ActualProdCostPer1Item': 'Actual Prod Cost Per 1 Item',
+        'PlanProdCost': 'Plan Prod Cost',
+        'ActualProdCost': 'Actual Prod Cost',
+        'PONumber': 'PO Number',
+        'PONumberRegex': 'Only numbers',
+        'InvoiceNumberRegex': 'Only numbers',
+        'AttachFileName': 'Attach File Name',
+        'Name': 'Name',
+        'InvoiceNumber': 'Invoice Number',
+        'PlanProdCost': 'Plan Prod Cost',
+        'ActualProdCost': 'Actual Prod Cost'
+    },
+    'HistoricalNonPromoSupport': {
+        'Number': 'ID',
+        'ClientTreeFullPathName': 'Client',
+        'BudgetSubItemBudgetItemName': 'Support',
+        'BudgetSubItemName': 'Equipment Type',
+        'PlanQuantity': 'Plan Quantity',
+        'ActualQuantity': 'Actual Quantity',
+        'PlanCostTE': 'Plan Cost TE Total',
+        'ActualCostTE': 'Actual Cost TE Total',
+        'StartDate': 'Start Date',
+        'EndDate': 'End Date',
+        'RemoveIntactWindowTitle': 'Unpin recording',
+        'RemoveIntactConfirmMessage': 'Are you sure you want to unpin a post?',
+        'CreateNonPromoSupportButton': 'Create Promo Support',
+        'CreateOnTheBasisButton': 'Create on the basis',
+        'PlanProdCostPer1Item': 'Plan Prod Cost Per 1 Item',
+        'ActualProdCostPer1Item': 'Actual Prod Cost Per 1 Item',
+        'PlanProdCost': 'Plan Prod Cost',
+        'ActualProdCost': 'Actual Prod Cost',
+        'PONumber': 'PO Number',
+        'PONumberRegex': 'Only numbers',
+        'InvoiceNumberRegex': 'Only numbers',
+        'AttachFileName': 'Attach File Name',
+        'Name': 'Name',
+        'InvoiceNumber': 'Invoice Number',
+        'PlanProdCost': 'Plan Prod Cost',
+        'ActualProdCost': 'Actual Prod Cost'
+    },
+    'HistoricalNonPromoSupport': ['.tpm.NonPromoSupport', '.core.BaseHistoryEntity'],
     'DeletedNonPromoSupport': ['.tpm.NonPromoSupport', '.core.BaseDeletedEntity'],
 
     'NonPromoSupportBrandTech': {
@@ -1383,6 +1401,7 @@
         'BrandsegTech_code': 'Brand Seg Tech Code',
         'Brandsegtech': 'Brand Seg Tech',
         'ActualProductLSVByCompensation': 'Actual Product LSV By Compensation',
+        'InvoiceTotalProduct': 'Invoice Total Product',
         'TemplateTLC': 'Import TLC template XLSX',
         'AverageMarker': 'Average Marker',
         'PlanProductUpliftPercent': 'Plan Product Uplift Percent',
@@ -1409,7 +1428,8 @@
         'PlanProductCaseQty': 'Plan Product Case Qty',
         'AverageMarker': 'Average Marker',
         'IsCorrection': 'Is Correction',
-        'SavePromoMessage': 'Save promo to create new corrections'
+        'SavePromoMessage': 'Save promo to create new corrections',
+        'InvoiceTotalProduct': 'Invoice Total Product'
     },
 
     'BaseLine': {
@@ -1417,6 +1437,9 @@
         'ClientTreeDemandCode': 'Client Demand code',
         'DemandCode': 'Demand code',
         'StartDate': 'Start date',
+        'InputBaselineQTY':'Input Baseline QTY',
+        'SellInBaselineQTY':'Sell In Baseline QTY',
+        'SellOutBaselineQTY':'Sell Out Baseline QTY',
         'QTY': 'QTY',
         'Price': 'Price',
         'BaselineLSV': 'Baseline, LSV',
@@ -1429,16 +1452,6 @@
     },
     'HistoricalBaseLine': ['.tpm.BaseLine', '.core.BaseHistoryEntity'],
     'DeletedBaseLine': ['.tpm.BaseLine', '.core.BaseDeletedEntity'],
-
-    'DemandPriceList': {
-        'ProductZREP': 'ZREP',
-        'ClientTreeDemandCode': 'Client Demand code',
-        'DemandCode': 'Client Demand code',
-        'StartDate': 'Start date',
-        'Price': 'Price',
-    },
-    'HistoricalDemandPriceList': ['.tpm.DemandPriceList', '.core.BaseHistoryEntity'],
-    'DeletedDemandPriceList': ['.tpm.DemandPriceList', '.core.BaseDeletedEntity'],
 
     'ChangeHistoryWindow': {
         'ChangeHistoryTitle': 'Change history',
@@ -1750,7 +1763,8 @@
         'PlanProductPostPromoEffectLSVW2': 'Plan Product Post Promo Effect LSV W2',
         'PlanProductBaselineLSVW2': 'Plan Product Baseline LSV W2',
 
-        'InOut': 'In-Out'
+        'InOut': 'In-Out',
+        'IsOnInvoice': 'On-Invoice'
     },
     'PlanPostPromoEffectReportWeek': {
         'ZREP': 'ZREP',
@@ -1779,7 +1793,8 @@
         'PlanProductPostPromoEffectLSVW2': 'Plan Product Post Promo Effect LSV W2',
         'PlanProductBaselineLSVW2': 'Plan Product Baseline LSV W2',
 
-        'InOut': 'In-Out'
+        'InOut': 'In-Out',
+        'IsOnInvoice': 'On-Invoice'
     },
     'PromoROIReport': {
         'StartDate': 'Start date',
@@ -1997,22 +2012,19 @@
         'ProdYTD': 'Production YTD',
         'ProdYEE': 'Production YEE', 
 
-        'XSitesYTD': 'XSites',
-        'CatalogueYTD': 'Catalogue',
-        'POSMInClientYTD': 'POSM',
+        'PromoTiCostPlanPercent': 'PromoTiCostPlanPercent',
+        'PromoTiCostPlan': 'PromoTiCostPlan',
+        'PromoTiCostYTD': 'PromoTiCostYTD',
+        'PromoTiCostYTDPercent': 'PromoTiCostYTDPercent',
+        'PromoTiCostYEE': 'PromoTiCostYEE',
+        'PromoTiCostYEEPercent': 'PromoTiCostYEEPercent',
 
-        'XSitesYEE': 'XSites',
-        'CatalogueYEE': 'Catalogue ',
-        'POSMInClientTiYEE': 'POSM ',
-
-        'ProdXSitesYTD': 'XSites',
-        'ProdCatalogueYTD': 'Catalogue',
-        'ProdPOSMInClientYTD': 'POSM',
-
-        'ProdXSitesYEE': 'XSites',
-        'ProdCatalogueYEE': 'Catalogue',
-        'ProdPOSMInClientYEE': 'POSM',
-
+        'NonPromoTiCostPlanPercent': 'NonPromoTiCostPlanPercent',
+        'NonPromoTiCostPlan': 'NonPromoTiCostPlan',
+        'NonPromoTiCostYTD': 'NonPromoTiCostYTD',
+        'NonPromoTiCostYTDPercent': 'NonPromoTiCostYTDPercent',
+        'NonPromoTiCostYEE': 'NonPromoTiCostYEE',
+        'NonPromoTiCostYEEPercent': 'NonPromoTiCostYEEPercent',
     },
 
     'PromoActivityDetailsWindow': {
@@ -2135,6 +2147,10 @@
         'BrandsegTech_code': 'Brand Seg Tech Code',
         'Brandsegtech': 'Brand Seg Tech',
         'ActualPromoLSVByCompensation': 'Actual Promo LSV By Compensation',
+        'PlanProductPostPromoEffectQtyW1': 'Plan Product Post Promo Effect QTY W1',
+        'PlanProductPostPromoEffectQtyW2': 'Plan Product Post Promo Effect QTY W2',
+        'ActualProductPostPromoEffectQtyW1': 'Actual Product Post Promo Effect QTY W1',
+        'ActualProductPostPromoEffectQtyW2': 'Actual Product Post Promo Effect QTY W2',
         'PlanProductBaselineCaseQty': 'Plan Product Baseline CaseQty',
         'PlanProductPostPromoEffectLSVW1': 'Plan Product Post Promo Effect LSV W1',
         'PlanProductPostPromoEffectLSVW2': 'Plan Product Post Promo Effect LSV W2',
@@ -2143,7 +2159,7 @@
         'ActualProductPostPromoEffectLSV': 'Actual Product Post Promo Effect LSV',
         'PlanProductUpliftPercent': 'Plan Product Uplift Percent',
         'ActualProductLSVByCompensation': 'Actual Product LSV By Compensation',
-
+        'InvoiceTotalProduct': 'Invoice Total Product'
     },
 
     'Logo': {
@@ -2158,6 +2174,7 @@
         'Settings': 'Settings',
         'ChooseBtn': 'Choose',
         'Clients': 'Clients',
+        'InvoiceType': 'Invoice Type',
     },
 
     'PromoBasicProducts': {
@@ -2221,6 +2238,16 @@
         'GreaterThanZero': 'Uplift must be greater than zero',
 
     },
+    'PreviousDayIncremental': {
+        'ZREP': 'ZREP',
+        'Number': 'Promo ID',
+        'Week': 'Week',
+        'DemandCode': 'Demand Code',
+        'DMDGroup': 'DMD Group',
+        'IncrementalQty': 'Incremental Qty',
+        'LastChangeDate': 'Last Change Date',
+
+    },
     'HistoricalPromoProductCorrection': ['.tpm.PromoProductCorrection', '.core.BaseHistoryEntity'],
     'DeletedPromoProductCorrection': ['.tpm.PromoProductCorrection', '.core.BaseDeletedEntity'],
 
@@ -2252,6 +2279,8 @@
         'PlanPromoLSV': 'Plan Promo LSV',
         'ActualPromoLSVByCompensation': 'Actual PromoLSV By Compensation',
         'ActualPromoLSV': 'Actual Promo LSV',
+        'ActualPromoLSVSI': 'Actual Promo LSV SI',
+        'ActualPromoLSVSO': 'Actual Promo LSV SO',
         'PlanPromoPostPromoEffectLSVW1': 'Plan Post Promo Effect W1, %',
         'ActualPromoPostPromoEffectLSVW1': 'Actual Post Promo Effect W1, %',
         'PlanPromoPostPromoEffectLSVW2': 'Plan Post Promo Effect W2, %',
@@ -2289,6 +2318,8 @@
         'LSV': 'LSV',
         'IncrementalNSV': 'Incremental NSV',
         'PromoNSV': 'Promo NSV',
+        'PromoTiCost': 'Promo TI Cost',
+        'NonPromoTiCost': 'Non-Promo TI Cost',
 
         'ShopperTiPlanPercent': 'Shopper Ti Plan, %',
         'ShopperTiPlan': 'Shopper Ti Plan',
@@ -2332,6 +2363,18 @@
         'PromoNSVPlan': 'Promo NSV Plan',
         'PromoNSVYTD': 'Promo NSV YTD',
         'PromoNSVYEE': 'Promo NSV YEE',
+        'PromoTiCostPlanPercent': 'Promo TI Cost Plan, %',
+        'PromoTiCostPlan': 'Promo TI Cost Plan',
+        'PromoTiCostYTD': 'Promo TI Cost YTD',
+        'PromoTiCostYTDPercent': 'Promo TI Cost YTD, %',
+        'PromoTiCostYEE': 'Promo TI Cost YEE',
+        'PromoTiCostYEEPercent': 'Promo TI Cost YEE, %',
+        'NonPromoTiCostPlanPercent': 'Non-Promo TI Cost Plan, %',
+        'NonPromoTiCostPlan': 'Non-Promo TI Cost Plan',
+        'NonPromoTiCostYTD': 'Non-Promo TI Cost YTD',
+        'NonPromoTiCostYTDPercent': 'Non-Promo TI Cost YTD, %',
+        'NonPromoTiCostYEE': 'Non-Promo TI Cost YEE',
+        'NonPromoTiCostYEEPercent': 'Non-Promo TI Cost YEE, %',
         'PromoWeeks': 'PromoWeeks',
         'VodYTD': 'Vod YTD',
         'VodYEE': 'Vod YEE',
@@ -2442,5 +2485,34 @@
         'PromoWeeks': 'Promo weeks',
         'VodYtd': 'VoD YTD, %',
         'VodYee': 'VoD YEE, %',
+    },
+
+    'PriceList': {
+        'PriceList': 'Price list',
+        'ClientTreeObjectId': 'Client ID',
+        'ClientTreeGHierarchyCode': 'G-Hierarchy Code',
+        'ClientTreeFullPathName': 'Client',
+        'ProductZREP': 'ZREP',
+        'StartDate': 'StartDate',
+        'EndDate': 'EndDate',
+        'Price': 'Price',
+    },
+
+    'CoefficientSI2SO': {
+        'DemandCode': 'Client demand code',
+        'MarsDatePeriod': 'Mars period',
+        'MarsYear': 'Mars year',
+        'CoefficientValue': 'Coefficient value',
+        'BrandTechName': 'Brandtech name',
+        'BrandTechBrandTech_code': 'Brandtech code',
+        'Lock': 'Lock',
+        'CoefficientSI2SORegex': 'Only numbers',
+    },
+    'HistoricalCoefficientSI2SO': ['.tpm.CoefficientSI2SO', '.core.BaseHistoryEntity'],
+    'DeletedCoefficientSI2SO': ['.tpm.CoefficientSI2SO', '.core.BaseDeletedEntity'],
+
+    'InvoiceTypes': {
+        'OnInvoice': 'On-invoice',
+        'OffInvoice': 'Off-invoice'
     }
 });

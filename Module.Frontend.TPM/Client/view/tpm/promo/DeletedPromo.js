@@ -66,8 +66,28 @@
                     return value ? l10n.ns('core', 'booleanValues').value('true') : l10n.ns('core', 'booleanValues').value('false');
                 }
             }, {
+                text: l10n.ns('tpm', 'Promo').value('InvoiceType'),
+                dataIndex: 'IsOnInvoice',
+                width: 100,
+                xtype: 'booleancolumn',
+                trueText: l10n.ns('tpm', 'InvoiceTypes').value('OnInvoice'),
+                falseText: l10n.ns('tpm', 'InvoiceTypes').value('OffInvoice'),
+                filter: {
+                    type: 'bool',
+                    store: [
+                        [true, l10n.ns('tpm', 'InvoiceTypes').value('OnInvoice')],
+                        [false, l10n.ns('tpm', 'InvoiceTypes').value('OffInvoice')]
+                    ]
+                }
+            }, {
                 text: l10n.ns('tpm', 'Promo').value('GrowthAcceleration'),
                 dataIndex: 'IsGrowthAcceleration',
+                renderer: function (value) {
+                    return value ? l10n.ns('core', 'booleanValues').value('true') : l10n.ns('core', 'booleanValues').value('false');
+                }
+            }, {
+                text: l10n.ns('tpm', 'Promo').value('ApolloExport'),
+                dataIndex: 'IsApolloExport',
                 renderer: function (value) {
                     return value ? l10n.ns('core', 'booleanValues').value('true') : l10n.ns('core', 'booleanValues').value('false');
                 }
@@ -611,6 +631,10 @@
             xtype: 'singlelinedisplayfield',
             name: 'ActualPromoIncrementalMAC',
             fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoIncrementalMAC'),
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'InvoiceType',
+            fieldLabel: l10n.ns('tpm', 'Promo').value('InvoiceType'),
         }]
     }]
 });

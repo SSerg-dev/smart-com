@@ -217,6 +217,25 @@
                     }
                 }
             }, {
+                text: l10n.ns('tpm', 'PromoProduct').value('InvoiceTotalProduct'),
+                dataIndex: 'InvoiceTotalProduct',
+                hidden: true,
+                extraOperator: 'gte_lt',
+                additionalDivision: 1000000.0,
+                renderer: function (value) {
+                    if (value !== null && value !== undefined) {
+                        valueToDisplay = value / 1000000.0;
+                        return Ext.util.Format.number(valueToDisplay, '0.00');
+                    } else {
+                        return null;
+                    }
+                }
+            }, {
+                text: l10n.ns('tpm', 'PromoProduct').value('ActualProductPCQty'),
+                dataIndex: 'ActualProductPCQty',
+                hidden: true,
+                extraOperator: 'gte_lt',
+            }, {
                 text: l10n.ns('tpm', 'PromoProduct').value('ActualProductUpliftPercent'),
                 dataIndex: 'ActualProductUpliftPercent',
                 hidden: true,

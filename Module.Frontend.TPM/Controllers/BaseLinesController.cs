@@ -228,22 +228,10 @@ namespace Module.Frontend.TPM.Controllers
                 new Column() { Order = 0, Field = "Product.ZREP", Header = "ZREP", Quoting = false },
                 new Column() { Order = 1, Field = "DemandCode", Header = "Demand Code", Quoting = false },
                 new Column() { Order = 2, Field = "StartDate", Header = "Start date", Quoting = false, Format = "dd.MM.yyyy" },
-                new Column() { Order = 3, Field = "QTY", Header = "QTY", Quoting = false },
-                new Column() { Order = 4, Field = "Price", Header = "Price", Quoting = false },
-                new Column() { Order = 5, Field = "BaselineLSV", Header = "Baseline, LSV", Quoting = false },
+                new Column() { Order = 3, Field = "InputBaselineQTY", Header = "Input Baseline QTY", Quoting = false },
+                new Column() { Order = 4, Field = "SellInBaselineQTY", Header = "Sell In Baseline QTY", Quoting = false },
+                new Column() { Order = 5, Field = "SellOutBaselineQTY", Header = "Sell Out Baseline QTY", Quoting = false },
                 new Column() { Order = 6, Field = "Type", Header = "Type", Quoting = false },
-            };
-
-            return columns;
-        }
-
-        private IEnumerable<Column> GetExportDemandPriceListSettings() {
-            IEnumerable<Column> columns = new List<Column>()
-            {
-                new Column() { Order = 0, Field = "Product.ZREP", Header = "ZREP", Quoting = false },
-                new Column() { Order = 1, Field = "DemandCode", Header = "Demand Code", Quoting = false },
-                new Column() { Order = 2, Field = "StartDate", Header = "Start date", Quoting = false, Format = "dd.MM.yyyy" },
-                new Column() { Order = 3, Field = "Price", Header = "Price", Quoting = false },
             };
 
             return columns;
@@ -266,23 +254,6 @@ namespace Module.Frontend.TPM.Controllers
             }
             catch (Exception e)
             {
-                return Content<string>(HttpStatusCode.InternalServerError, e.Message);
-            }
-        }
-
-        [ClaimsAuthorize]
-        public IHttpActionResult ExportDemandPriceListXLSX(ODataQueryOptions<BaseLine> options) {
-            try {
-                IQueryable results = options.ApplyTo(GetConstraintedQuery().Where(x => !x.Disabled));
-                IEnumerable<Column> columns = GetExportDemandPriceListSettings();
-                XLSXExporter exporter = new XLSXExporter(columns);
-                UserInfo user = authorizationManager.GetCurrentUser();
-                string username = user == null ? "" : user.Login;
-                string filePath = exporter.GetExportFileName("DemandPriceList", username);
-                exporter.Export(results, filePath);
-                string filename = System.IO.Path.GetFileName(filePath);
-                return Content<string>(HttpStatusCode.OK, filename);
-            } catch (Exception e) {
                 return Content<string>(HttpStatusCode.InternalServerError, e.Message);
             }
         }
@@ -388,7 +359,6 @@ namespace Module.Frontend.TPM.Controllers
             } catch (Exception e) {
                 return Content(HttpStatusCode.InternalServerError, e.Message);
             }
-
         }
 
         private ExceptionResult GetErorrRequest(Exception e)

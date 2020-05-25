@@ -29,7 +29,7 @@ namespace Module.Persist.TPM.Session
             this.EndSessionDate = DateTimeOffset.Now.AddSeconds(5);
             */
 
-            var sessionTimeout = AppSettingsManager.GetSetting<int>(Consts.SESSION_TIME, 15);
+            var sessionTimeout = AppSettingsManager.GetSetting<int>(Core.Security.Consts.SESSION_TIME, 15);
             this.EndSessionDate = DateTimeOffset.Now.AddMinutes(sessionTimeout).AddSeconds(1);
         }
 

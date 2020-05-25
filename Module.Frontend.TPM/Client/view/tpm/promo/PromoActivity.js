@@ -915,19 +915,82 @@ Ext.define('App.view.tpm.promo.PromoActivity', {
                                 },
                             }
                         }, {
+                                xtype: 'triggerfielddetails',
+                                name: 'InvoiceTotal',
+                                fieldLabel: l10n.ns('tpm', 'Promo').value('InvoiceTotal'),
+                                dataIndexes: ['ActualProductPCQty', 'InvoiceTotalProduct'],
+                                regex: /^-?\d*\,?\d*$/,
+                                regexText: l10n.ns('tpm', 'Promo').value('InvoiceTotalRegex'),
+                                readOnlyCls: 'readOnlyField',
+                                flex: 1,
+                                layout: 'anchor',
+                                labelAlign: 'left',
+                                //Для одного уровня с остальными полями
+                                labelWidth: 190,
+                                padding: '0 0 0 0',
+                                margin: '5 0 0 0',
+                                isChecked: true,
+                                allowBlank: true,
+                                allowOnlyWhitespace: true,
+                                availableRoleStatusActions: {
+                                    SupportAdministrator: App.global.Statuses.AllStatuses,
+                                    Administrator: App.global.Statuses.Finished,
+                                    FunctionalExpert: App.global.Statuses.Finished,
+                                    CMManager: App.global.Statuses.Finished,
+                                    CustomerMarketing: App.global.Statuses.Finished,
+                                    KeyAccountManager: App.global.Statuses.Finished
+                                },
+                                blockMillion: true, // если true - то преобразовывать в миллионы
+                                originValue: null, // настоящее значение
+                                valueToRaw: function (value) {
+                                    var valueToDisplay = null;
+
+                                    if (value !== null && value !== undefined) {
+                                        if (!this.blockMillion) {
+                                            this.originValue = value;
+                                            valueToDisplay = value;
+                                        }
+                                        else {
+                                            this.originValue = value;
+                                            valueToDisplay = value / 1000000.0;
+                                        }
+                                    }
+
+                                    return Ext.util.Format.number(valueToDisplay, '0.00');
+                                },
+                                rawToValue: function () {
+                                    var parsedValue = parseFloat(String(this.rawValue).replace(Ext.util.Format.decimalSeparator, "."))
+                                    return isNaN(parsedValue) ? null : parsedValue;
+                                },
+                                listenersToAdd: {
+                                    change: function (field, newValue, oldValue) {
+                                        if (!this.blockMillion) {
+                                            this.originValue = newValue;
+                                        }
+                                    },
+                                    focus: function (field) {
+                                        this.blockMillion = false;
+                                        field.setValue(this.originValue);
+                                    },
+                                    blur: function (field) {
+                                        this.blockMillion = true;
+                                        field.setValue(this.originValue);
+                                    }
+                                }
+                        }, {
                             xtype: 'textfield',
                             name: 'InvoiceNumber',
+                            fieldLabel: l10n.ns('tpm', 'Promo').value('InvoiceNumber'),
                             flex: 1,
-                            readOnlyCls: 'readOnlyField',
                             layout: 'anchor',
+                            readOnlyCls: 'readOnlyField',
                             regex: /^([0-9a-zA-ZА-Яа-я]{4,}[,])*[0-9a-zA-ZА-Яа-я]{4,}$/,
                             regexText: l10n.ns('tpm', 'Promo').value('InvoiceNumberRegex'),
-                            fieldLabel: l10n.ns('tpm', 'Promo').value('InvoiceNumber'),
                             labelAlign: 'left',
                             //Для одного уровня с остальными полями
                             labelWidth: 190,
                             padding: '0 5 5 5',
-                            margin: '25 0 0 0',
+                            margin: '5 0 0 0',
                             isChecked: true,
                             allowBlank: true,
                             allowOnlyWhitespace: true,
@@ -1005,7 +1068,14 @@ Ext.define('App.view.tpm.promo.PromoActivity', {
                             itemId: 'activityUploadPromoProducts',
                             text: l10n.ns('tpm', 'PromoActivity').value('UpdateActuals'),
                             tooltip: l10n.ns('tpm', 'PromoActivity').value('UpdateActuals'),
-                            glyph: 0xf552,
+                                glyph: 0xf552,
+                                layout: {
+                                    type: 'hbox',
+                                    align: 'top',
+                                    pack: 'center'
+                                },
+                                padding: '2 0 0 2',
+                                margin: '0 0 0 0',
                             availableRoleStatusActions: {
                                 SupportAdministrator: App.global.Statuses.AllStatuses,
                                 Administrator: App.global.Statuses.Finished,

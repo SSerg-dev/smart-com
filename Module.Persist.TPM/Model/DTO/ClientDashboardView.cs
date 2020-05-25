@@ -72,6 +72,20 @@ namespace Module.Persist.TPM.Model.DTO
         public double? PromoNSVYTD { get; set; }
         public double? PromoNSVYEE { get; set; }
 
+        public double? PromoTiCostPlanPercent { get; set; }
+        public double? PromoTiCostPlan { get; set; }
+        public double? PromoTiCostYTD { get; set; }
+        public double? PromoTiCostYTDPercent { get; set; }
+        public double? PromoTiCostYEE { get; set; }
+        public double? PromoTiCostYEEPercent { get; set; }
+
+        public double? NonPromoTiCostPlanPercent { get; set; }
+        public double? NonPromoTiCostPlan { get; set; }
+        public double? NonPromoTiCostYTD { get; set; }
+        public double? NonPromoTiCostYTDPercent { get; set; }
+        public double? NonPromoTiCostYEE { get; set; }
+        public double? NonPromoTiCostYEEPercent { get; set; }
+
         public int? PromoWeeks { get; set; }
         public double? TotalPromoIncrementalEarnings { get; set; }
         public double? ActualPromoCost { get; set; }
@@ -81,12 +95,6 @@ namespace Module.Persist.TPM.Model.DTO
         public double? VodYEE { get; set; }
         public double? ActualPromoLSV { get; set; }
         public double? PlanPromoLSV { get; set; }
-        public double? POSMInClientYTD { get; set; }
-        public double? CatalogueYTD { get; set; }
-        public double? XSitesYTD { get; set; }
-        public double? CatalogueYEE { get; set; }
-        public double? POSMInClientTiYEE { get; set; }
-        public double? XSitesYEE { get; set; }
 
         public ClientDashboardView Clone()
         {
@@ -114,6 +122,20 @@ namespace Module.Persist.TPM.Model.DTO
                 MarketingTiYTDPercent = this.MarketingTiYTDPercent,
                 MarketingTiYEE = this.MarketingTiYEE,
                 MarketingTiYEEPercent = this.MarketingTiYEEPercent,
+
+                PromoTiCostPlan = this.PromoTiCostPlan,
+                PromoTiCostPlanPercent = this.PromoTiCostPlanPercent,
+                PromoTiCostYEE = this.PromoTiCostYEE,
+                PromoTiCostYEEPercent = this.PromoTiCostYEEPercent,
+                PromoTiCostYTD = this.PromoTiCostYTD,
+                PromoTiCostYTDPercent = this.PromoTiCostYTDPercent,
+
+                NonPromoTiCostPlan = this.NonPromoTiCostPlan,
+                NonPromoTiCostPlanPercent = this.NonPromoTiCostPlanPercent,
+                NonPromoTiCostYEE = this.NonPromoTiCostYEE,
+                NonPromoTiCostYEEPercent = this.NonPromoTiCostYEEPercent,
+                NonPromoTiCostYTD = this.NonPromoTiCostYTD,
+                NonPromoTiCostYTDPercent = this.NonPromoTiCostYTDPercent,
 
                 ProductionPlanPercent = this.ProductionPlanPercent,
                 ProductionPlan = this.ProductionPlan,
@@ -155,14 +177,13 @@ namespace Module.Persist.TPM.Model.DTO
                 PromoWeeks = this.PromoWeeks,
                 VodYTD = this.VodYTD,
                 VodYEE = this.VodYEE,
+
+                ActualPromoCost = this.ActualPromoCost,
+                ActualPromoIncrementalEarnings = this.ActualPromoIncrementalEarnings,
                 ActualPromoLSV = this.ActualPromoLSV,
                 PlanPromoLSV = this.PlanPromoLSV,
-                POSMInClientYTD = this.POSMInClientYTD,
-                CatalogueYTD = this.CatalogueYTD,
-                XSitesYTD = this.XSitesYTD,
-                CatalogueYEE = this.CatalogueYEE,
-                POSMInClientTiYEE = this.POSMInClientTiYEE,
-                XSitesYEE = this.XSitesYEE
+                TotalPromoCost = this.TotalPromoCost,
+                TotalPromoIncrementalEarnings=this.TotalPromoIncrementalEarnings
             };
         }
     }

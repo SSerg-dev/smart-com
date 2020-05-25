@@ -263,7 +263,7 @@
                 }
             }
         }, {
-                xtype: 'numberfield',
+            xtype: 'numberfield',
             name: 'PlanProductIncrementalCaseQty',
             fieldLabel: l10n.ns('tpm', 'PromoProductsView').value('PlanProductIncrementalCaseQty'),
             renderer: function (value) {
@@ -286,6 +286,10 @@
             }
         }, {
             xtype: 'singlelinedisplayfield',
+            name: 'InvoiceTotalProduct',
+            fieldLabel: l10n.ns('tpm', 'PromoProductsView').value('InvoiceTotalProduct')
+        }, {
+            xtype: 'singlelinedisplayfield',
             name: 'AverageMarker',
             fieldLabel: l10n.ns('tpm', 'PromoProductsView').value('AverageMarker')
         }, {
@@ -295,5 +299,3 @@
         }]
     }]
 });
-    
-

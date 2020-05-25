@@ -26,9 +26,10 @@ using Looper.Parameters;
 using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.Import;
+using Module.Persist.TPM.Model.SimpleModel;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
-
+using Newtonsoft.Json;
 using Persist;
 using Persist.Model;
 
@@ -54,9 +55,9 @@ namespace Module.Frontend.TPM.Controllers
                 .Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
                 .ToList() : new List<Constraint>();
             IQueryable<ClientDashboardView> query = Context.Set<ClientDashboardView>();
-            IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints); 
+            IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
             IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
-           
+
             query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
 
             return query;
@@ -75,6 +76,69 @@ namespace Module.Frontend.TPM.Controllers
         public IQueryable<ClientDashboardView> GetClientDashboardViews()
         {
             return GetConstraintedQuery();
+        }
+
+        [ClaimsAuthorize]
+        [EnableQuery(MaxNodeCount = int.MaxValue)]
+        public IQueryable<ClientDashboardView> GetClientDashboardViews(bool needFullYEEF)
+        {
+            return GetConstraintedQuery();
+        }
+
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IHttpActionResult GetAllYEEF(int? clientTreeId, string year)
+        {
+            string GHierarchyCode = null;
+            var clientTrees = Context.Set<ClientTree>().Where(x => x.EndDate == null);
+            ClientTree clientTree = clientTrees.Where(x => x.ObjectId == clientTreeId).FirstOrDefault(); ;
+            int? clientTreeKeyId = null;
+            clientTreeKeyId = clientTree.Id;
+            do
+            {
+                clientTree = clientTrees.Where(x => x.ObjectId == clientTreeId).FirstOrDefault();
+                if (clientTree != null)
+                {
+                    GHierarchyCode = clientTree.GHierarchyCode;
+                    clientTreeId = clientTree.parentId;
+                }
+            } while (GHierarchyCode == null && clientTreeId != null && clientTreeId != 5000000);
+
+
+            double YEE = 0;
+            double YTD = 0;
+            if (GHierarchyCode != null && year != null && clientTreeKeyId!= null)
+            {
+                var shares = Context.Set<ClientTreeBrandTech>().Where(x => x.ClientTreeId == clientTreeKeyId && !x.Disabled);
+                var brandTechs = Context.Set<BrandTech>().Where(x => !x.Disabled);
+                ClientTreeBrandTech share;
+
+                GHierarchyCode = GHierarchyCode.TrimStart('0');
+
+                var YEEFscript = String.Format(
+                    "SELECT * FROM [YEAR_END_ESTIMATE_FDM] WHERE [G_HIERARCHY_ID] = '{0}' AND [YEAR] = '{1}'", GHierarchyCode, year);
+                var YEEFlist = Context.Database.SqlQuery<YEAR_END_ESTIMATE_FDM>(YEEFscript).ToList();
+
+                foreach (var YEEF in YEEFlist)
+                {
+                    var brandTech = brandTechs.Where(y => y.BrandTech_code == YEEF.BRAND_SEG_TECH_CODE && !y.Disabled).Select(y => y.Id).FirstOrDefault();
+                    share = shares.Where(x => brandTech == x.BrandTechId).FirstOrDefault();
+                    if (share != null)
+                    {
+                        YEEF.YTD_LSV = YEEF.YTD_LSV * share.Share / 100;
+                        YEEF.YEE_LSV = YEEF.YEE_LSV * share.Share / 100;
+                    }
+                    else
+                    {
+                        YEEF.YTD_LSV = 0;
+                        YEEF.YEE_LSV = 0;
+                    }
+                }
+
+                 YTD = YEEFlist.Sum(x => x.YTD_LSV);
+                 YEE = YEEFlist.Sum(x => x.YEE_LSV);
+            }
+            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { YTD, YEE }));
         }
 
         [ClaimsAuthorize]
@@ -98,16 +162,17 @@ namespace Module.Frontend.TPM.Controllers
         public IHttpActionResult Update(
             [FromODataUri] int ObjectId, string ClientHierarchy, string BrandTechName, Guid? BrandTechId, string Year,
             double? ShopperTiPlanPercent, double? MarketingTiPlanPercent, double? ProductionPlan, double? BrandingPlan,
-            double? BTLPlan, double? ROIPlanPercent, double? IncrementalNSVPlan, double? PromoNSVPlan)
+            double? BTLPlan, double? ROIPlanPercent, double? IncrementalNSVPlan, double? PromoNSVPlan, double? PlanLSV,
+            double? PromoTiCostPlanPercent, double? NonPromoTiCostPlanPercent)
         {
             try
             {
                 List<Tuple<IEntity<Guid>, IEntity<Guid>>> toHis = new List<Tuple<IEntity<Guid>, IEntity<Guid>>>();
                 var model = Context.Set<ClientDashboard>().Where(x => x.ClientTreeId == ObjectId && x.BrandTechName == BrandTechName && x.Year == Year).FirstOrDefault();
-                var hisModel = Context.Set<ClientDashboardView>().Where(x => x.ObjectId == ObjectId && x.BrandTechName == BrandTechName && x.Year.ToString() == Year).FirstOrDefault();
+                var oldHisModel = Context.Set<ClientDashboardView>().Where(x => x.ObjectId == ObjectId && x.BrandTechName == BrandTechName && x.Year.ToString() == Year).FirstOrDefault();
                 OperationType operation;
-                ClientDashboardView oldHisModel = null;
-                if (hisModel != null)
+                ClientDashboardView hisModel = null;
+                if (oldHisModel != null)
                 {
                     if (model == null)
                     {
@@ -126,19 +191,24 @@ namespace Module.Frontend.TPM.Controllers
                             BTLPlan = BTLPlan,
                             ROIPlanPercent = ROIPlanPercent,
                             IncrementalNSVPlan = IncrementalNSVPlan,
-                            PromoNSVPlan = PromoNSVPlan
+                            PromoNSVPlan = PromoNSVPlan,
+                            PlanLSV = PlanLSV,
+                            PromoTiCostPlanPercent = PromoTiCostPlanPercent,
+                            NonPromoTiCostPlanPercent = NonPromoTiCostPlanPercent
                         };
                         Context.Set<ClientDashboard>().Add(model);
                         operation = OperationType.Created;
                         toHis.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(null, model));
                         Context.HistoryWriter.Write(toHis, Context.AuthManager.GetCurrentUser(), Context.AuthManager.GetCurrentRole(), OperationType.Created);
                         string insertScript = String.Format("INSERT INTO ClientDashboard (ShopperTiPlanPercent, MarketingTiPlanPercent, ProductionPlan, BrandingPlan, BTLPlan, " +
-                            "ROIPlanPercent ,IncrementalNSVPlan, PromoNSVPlan, ClientTreeId, BrandTechName, Year, [Id], ClientHierarchy, BrandTechId)" +
-                            " VALUES ({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, '{9}', '{10}', '{11}', '{12}', '{13}');",
+                            "ROIPlanPercent ,IncrementalNSVPlan, PromoNSVPlan, ClientTreeId, BrandTechName, Year, [Id], ClientHierarchy, BrandTechId, PlanLSV, PromoTiCostPlanPercent, NonPromoTiCostPlanPercent)" +
+                            " VALUES ({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, '{9}', '{10}', '{11}', '{12}', '{13}', {14}, {15}, {16});",
                             model.ShopperTiPlanPercent, model.MarketingTiPlanPercent, model.ProductionPlan, model.BrandingPlan, model.BTLPlan,
                             model.ROIPlanPercent, model.IncrementalNSVPlan, model.PromoNSVPlan, model.ClientTreeId, model.BrandTechName,
-                            model.Year, model.Id, model.ClientHierarchy, model.BrandTechId);
+                            model.Year, model.Id, model.ClientHierarchy, model.BrandTechId, model.PlanLSV, model.PromoTiCostPlanPercent, model.NonPromoTiCostPlanPercent);
                         Context.Database.ExecuteSqlCommand(insertScript);
+                        hisModel = Context.Set<ClientDashboardView>().Where(x => x.ObjectId == ObjectId && x.BrandTechName == BrandTechName && x.Year.ToString() == Year).FirstOrDefault();
+                        oldHisModel = null;
                     }
                     else
                     {
@@ -150,25 +220,20 @@ namespace Module.Frontend.TPM.Controllers
                         model.ROIPlanPercent = ROIPlanPercent;
                         model.IncrementalNSVPlan = IncrementalNSVPlan;
                         model.PromoNSVPlan = PromoNSVPlan;
+                        model.PlanLSV = PlanLSV;
+                        model.PromoTiCostPlanPercent = PromoTiCostPlanPercent;
+                        model.NonPromoTiCostPlanPercent = NonPromoTiCostPlanPercent;
 
-                        oldHisModel = hisModel.Clone();
                         operation = OperationType.Updated;
                         string updateScript = String.Format("UPDATE ClientDashboard SET ShopperTiPlanPercent = {0}, MarketingTiPlanPercent = {1}, ProductionPlan = {2}, BrandingPlan = {3}," +
-                            "BTLPlan = {4}, ROIPlanPercent = {5}, IncrementalNSVPlan = {6}, PromoNSVPlan = {7}  WHERE Id = '{8}'",
+                            "BTLPlan = {4}, ROIPlanPercent = {5}, IncrementalNSVPlan = {6}, PromoNSVPlan = {7}, PlanLSV = {8}, PromoTiCostPlanPercent = {9}, NonPromoTiCostPlanPercent = {10} WHERE Id = '{11}'",
                             model.ShopperTiPlanPercent, model.MarketingTiPlanPercent, model.ProductionPlan, model.BrandingPlan, model.BTLPlan,
-                            model.ROIPlanPercent, model.IncrementalNSVPlan, model.PromoNSVPlan, model.Id);
+                            model.ROIPlanPercent, model.IncrementalNSVPlan, model.PromoNSVPlan, model.PlanLSV, model.PromoTiCostPlanPercent, model.NonPromoTiCostPlanPercent, model.Id);
                         Context.Database.ExecuteSqlCommand(updateScript);
-
+                        hisModel = Context.Set<ClientDashboardView>().Where(x => x.ObjectId == ObjectId && x.BrandTechName == BrandTechName && x.Year.ToString() == Year).FirstOrDefault();
                     }
                     hisModel.Id = model.Id;
-                    hisModel.ShopperTiPlanPercent = model.ShopperTiPlanPercent;
-                    hisModel.MarketingTiPlanPercent = model.MarketingTiPlanPercent;
-                    hisModel.ProductionPlan = model.ProductionPlan;
-                    hisModel.BrandingPlan = model.BrandingPlan;
-                    hisModel.BTLPlan = model.BTLPlan;
-                    hisModel.ROIPlanPercent = model.ROIPlanPercent;
-                    hisModel.IncrementalNSVPlan = model.IncrementalNSVPlan;
-                    hisModel.PromoNSVPlan = model.PromoNSVPlan;
+                    if (oldHisModel != null) oldHisModel.Id = model.Id;
                     toHis.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(oldHisModel, hisModel));
                     Context.HistoryWriter.Write(toHis, Context.AuthManager.GetCurrentUser(), Context.AuthManager.GetCurrentRole(), operation);
 
@@ -295,20 +360,25 @@ namespace Module.Frontend.TPM.Controllers
                 new Column() { Order = order++, Field = nameof(ClientDashboardView.ClientHierarchy), Header = "Client hierarchy", Quoting = false },
                 new Column() { Order = order++, Field = nameof(ClientDashboardView.BrandTechName), Header = "Brand Tech", Quoting = false },
                 new Column() { Order = order++, Field = nameof(ClientDashboardView.Year), Header = "Year", Quoting = false },
-
+                
                 new Column() { Order = order++, Field = nameof(ClientDashboardView.ShopperTiPlanPercent), Header = "Shopper TI Plan, %", Quoting = false, Format = "0.00" },
                 new Column() { Order = order++, Field = nameof(ClientDashboardView.ShopperTiPlan), Header = "Shopper TI Plan", Quoting = false, Format = "0.00" },
                 new Column() { Order = order++, Field = nameof(ClientDashboardView.ShopperTiYTD), Header = "Shopper TI YTD", Quoting = false, Format = "0.00" },
                 new Column() { Order = order++, Field = nameof(ClientDashboardView.ShopperTiYTDPercent), Header = "Shopper TI YTD, %", Quoting = false, Format = "0.00" },
                 new Column() { Order = order++, Field = nameof(ClientDashboardView.ShopperTiYEE), Header = "Shopper TI YEE", Quoting = false, Format = "0.00" },
                 new Column() { Order = order++, Field = nameof(ClientDashboardView.ShopperTiYEEPercent), Header = "Shopper TI YEE, %", Quoting = false, Format = "0.00" },
-
+                
                 new Column() { Order = order++, Field = nameof(ClientDashboardView.MarketingTiPlanPercent), Header = "Marketing TI Plan, %", Quoting = false, Format = "0.00" },
                 new Column() { Order = order++, Field = nameof(ClientDashboardView.MarketingTiPlan), Header = "Marketing TI Plan", Quoting = false, Format = "0.00" },
-                new Column() { Order = order++, Field = nameof(ClientDashboardView.MarketingTiYTD), Header = "Marketing TI YTD", Quoting = false, Format = "0.00" },
-                new Column() { Order = order++, Field = nameof(ClientDashboardView.MarketingTiYTDPercent), Header = "Marketing TI YTD, %", Quoting = false, Format = "0.00" },
-                new Column() { Order = order++, Field = nameof(ClientDashboardView.MarketingTiYEE), Header = "Marketing TI YEE", Quoting = false, Format = "0.00" },
-                new Column() { Order = order++, Field = nameof(ClientDashboardView.MarketingTiYEEPercent), Header = "Marketing TI YEE, %", Quoting = false, Format = "0.00" },
+
+                new Column() { Order = order++, Field = nameof(ClientDashboardView.PromoTiCostPlanPercent), Header = "Promo Ti Cost Plan, %", Quoting = false, Format = "0.00" },
+                new Column() { Order = order++, Field = nameof(ClientDashboardView.PromoTiCostPlan), Header = "Promo Ti Cost Plan", Quoting = false, Format = "0.00" },
+                new Column() { Order = order++, Field = nameof(ClientDashboardView.PromoTiCostYTD), Header = "Promo Ti Cost YTD", Quoting = false, Format = "0.00" },
+                new Column() { Order = order++, Field = nameof(ClientDashboardView.PromoTiCostYTDPercent), Header = "Promo Ti Cost YTD, %", Quoting = false, Format = "0.00" },
+                new Column() { Order = order++, Field = nameof(ClientDashboardView.PromoTiCostYEE), Header = "Promo Ti Cost YEE", Quoting = false, Format = "0.00" },
+                new Column() { Order = order++, Field = nameof(ClientDashboardView.PromoTiCostYEEPercent), Header = "Promo Ti Cost YEE, %", Quoting = false, Format = "0.00" },
+
+                new Column() { Order = order++, Field = nameof(ClientDashboardView.NonPromoTiCostPlanPercent), Header = "Non Promo Ti Cost Plan, %", Quoting = false, Format = "0.00" },
 
                 new Column() { Order = order++, Field = nameof(ClientDashboardView.ProductionPlanPercent), Header = "Production Plan, %", Quoting = false, Format = "0.00" },
                 new Column() { Order = order++, Field = nameof(ClientDashboardView.ProductionPlan), Header = "Production Plan", Quoting = false, Format = "0.00" },
@@ -316,33 +386,33 @@ namespace Module.Frontend.TPM.Controllers
                 new Column() { Order = order++, Field = nameof(ClientDashboardView.ProductionYTDPercent), Header = "Production YTD, %", Quoting = false, Format = "0.00" },
                 new Column() { Order = order++, Field = nameof(ClientDashboardView.ProductionYEE), Header = "Production YEE", Quoting = false, Format = "0.00" },
                 new Column() { Order = order++, Field = nameof(ClientDashboardView.ProductionYEEPercent), Header = "Production YEE, %", Quoting = false, Format = "0.00" },
-
+                
                 new Column() { Order = order++, Field = nameof(ClientDashboardView.BrandingPlanPercent), Header = "Branding Plan, %", Quoting = false, Format = "0.00" },
                 new Column() { Order = order++, Field = nameof(ClientDashboardView.BrandingPlan), Header = "Branding Plan", Quoting = false, Format = "0.00" },
                 new Column() { Order = order++, Field = nameof(ClientDashboardView.BrandingYTD), Header = "Branding YTD", Quoting = false, Format = "0.00" },
                 new Column() { Order = order++, Field = nameof(ClientDashboardView.BrandingYTDPercent), Header = "Branding YTD, %", Quoting = false, Format = "0.00" },
                 new Column() { Order = order++, Field = nameof(ClientDashboardView.BrandingYEE), Header = "Branding YEE", Quoting = false, Format = "0.00" },
                 new Column() { Order = order++, Field = nameof(ClientDashboardView.BrandingYEEPercent), Header = "Branding YEE, %", Quoting = false, Format = "0.00" },
-
+               
                 new Column() { Order = order++, Field = nameof(ClientDashboardView.BTLPlanPercent), Header = "BTL Plan, %", Quoting = false, Format = "0.00" },
                 new Column() { Order = order++, Field = nameof(ClientDashboardView.BTLPlan), Header = "BTL Plan", Quoting = false, Format = "0.00" },
                 new Column() { Order = order++, Field = nameof(ClientDashboardView.BTLYTD), Header = "BTL YTD", Quoting = false, Format = "0.00" },
                 new Column() { Order = order++, Field = nameof(ClientDashboardView.BTLYTDPercent), Header = "BTL YTD, %", Quoting = false, Format = "0.00" },
                 new Column() { Order = order++, Field = nameof(ClientDashboardView.BTLYEE), Header = "BTL YEE", Quoting = false, Format = "0.00" },
                 new Column() { Order = order++, Field = nameof(ClientDashboardView.BTLYEEPercent), Header = "BTL YEE, %", Quoting = false, Format = "0.00" },
-
+                
                 new Column() { Order = order++, Field = nameof(ClientDashboardView.ROIPlanPercent), Header = "ROI Plan, %", Quoting = false, Format = "0.00" },
                 new Column() { Order = order++, Field = nameof(ClientDashboardView.ROIYTDPercent), Header = "ROI YTD, %", Quoting = false, Format = "0.00" },
                 new Column() { Order = order++, Field = nameof(ClientDashboardView.ROIYEEPercent), Header = "ROI YEE, %", Quoting = false, Format = "0.00" },
-
+                
                 new Column() { Order = order++, Field = nameof(ClientDashboardView.LSVPlan), Header = "LSV Plan", Quoting = false, Format = "0.00" },
                 new Column() { Order = order++, Field = nameof(ClientDashboardView.LSVYTD), Header = "LSV YTD", Quoting = false, Format = "0.00" },
                 new Column() { Order = order++, Field = nameof(ClientDashboardView.LSVYEE), Header = "LSV YEE", Quoting = false, Format = "0.00" },
-
+                
                 new Column() { Order = order++, Field = nameof(ClientDashboardView.IncrementalNSVPlan), Header = "Incremental NSV Plan", Quoting = false, Format = "0.00" },
                 new Column() { Order = order++, Field = nameof(ClientDashboardView.IncrementalNSVYTD), Header = "Incremental NSV YTD", Quoting = false, Format = "0.00" },
                 new Column() { Order = order++, Field = nameof(ClientDashboardView.IncrementalNSVYEE), Header = "Incremental NSV YEE", Quoting = false, Format = "0.00" },
-
+                
                 new Column() { Order = order++, Field = nameof(ClientDashboardView.PromoNSVPlan), Header = "Promo NSV Plan", Quoting = false, Format = "0.00" },
                 new Column() { Order = order++, Field = nameof(ClientDashboardView.PromoNSVYTD), Header = "Promo NSV YTD", Quoting = false, Format = "0.00" },
                 new Column() { Order = order++, Field = nameof(ClientDashboardView.PromoNSVYEE), Header = "Promo NSV YEE", Quoting = false, Format = "0.00" },

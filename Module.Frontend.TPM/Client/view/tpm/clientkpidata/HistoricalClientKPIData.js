@@ -144,20 +144,32 @@
             fieldLabel: l10n.ns('tpm', 'ClientKPIData').value('MarketingTiPlan')
         }, {
             xtype: 'singlelinedisplayfield',
-            name: 'MarketingTiYTD',
-            fieldLabel: l10n.ns('tpm', 'ClientKPIData').value('MarketingTiYTD')
+            name: 'PromoTiCostPlanPercent',
+            fieldLabel: l10n.ns('tpm', 'ClientKPIData').value('PromoTiCostPlanPercent')
         }, {
             xtype: 'singlelinedisplayfield',
-            name: 'MarketingTiYTDPercent',
-            fieldLabel: l10n.ns('tpm', 'ClientKPIData').value('MarketingTiYTDPercent')
+            name: 'PromoTiCostPlan',
+            fieldLabel: l10n.ns('tpm', 'ClientKPIData').value('PromoTiCostPlan')
         }, {
             xtype: 'singlelinedisplayfield',
-            name: 'MarketingTiYEE',
-            fieldLabel: l10n.ns('tpm', 'ClientKPIData').value('MarketingTiYEE')
+            name: 'PromoTiCostYTD',
+            fieldLabel: l10n.ns('tpm', 'ClientKPIData').value('PromoTiCostYTD')
         }, {
             xtype: 'singlelinedisplayfield',
-            name: 'MarketingTiYEEPercent',
-            fieldLabel: l10n.ns('tpm', 'ClientKPIData').value('MarketingTiYEEPercent')
+            name: 'PromoTiCostYTDPercent',
+            fieldLabel: l10n.ns('tpm', 'ClientKPIData').value('PromoTiCostYTDPercent')
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'PromoTiCostYEE',
+            fieldLabel: l10n.ns('tpm', 'ClientKPIData').value('PromoTiCostYEE')
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'PromoTiCostYEEPercent',
+            fieldLabel: l10n.ns('tpm', 'ClientKPIData').value('PromoTiCostYEEPercent')
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'NonPromoTiCostPlanPercent',
+            fieldLabel: l10n.ns('tpm', 'ClientKPIData').value('NonPromoTiCostPlanPercent')
         }, {
             xtype: 'singlelinedisplayfield',
             name: 'ProductionPlanPercent',

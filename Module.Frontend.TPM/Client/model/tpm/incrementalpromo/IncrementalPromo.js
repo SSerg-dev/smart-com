@@ -24,8 +24,8 @@
         },
         {name: 'PromoName', type: 'string', hidden: false, isDefault: true, mapping: 'Promo.Name' },  
         { name: 'PlanPromoIncrementalCases', type: 'float', hidden: false, isDefault: true, useNull: true },
-        { name: 'CasePrice', type: 'float', hidden: false, isDefault: true, useNull: true  },
-        { name: 'PlanPromoIncrementalLSV', type: 'float', hidden: false, isDefault: true, useNull: true  },
+        { name: 'PlanPromoIncrementalLSV', type: 'float', hidden: false, isDefault: true, useNull: true },
+        { name: 'CasePrice', type: 'float', hidden: false, isDefault: true, useNull: true }
     ],
     proxy: {
         type: 'breeze',

@@ -76,8 +76,18 @@ namespace Module.Host.TPM.Handlers
     }
 
     class FullXLSXUpdateBrandTechHandler : FullXLSXImportHandler {
+
+        private Guid roleId;
+        private Guid userId;
+        public override void Action(HandlerInfo info, ExecuteData data)
+        {
+            userId = HandlerDataHelper.GetIncomingArgument<Guid>("UserId", info.Data, false);
+            roleId = Looper.Parameters.HandlerDataHelper.GetIncomingArgument<Guid>("RoleId", info.Data, false);
+            base.Action(info, data);
+        }
+
         protected override IAction GetAction(FullImportSettings settings, ExecuteData data) {
-            return new FullXLSXUpdateImportBrandTechAction(settings);
+            return new FullXLSXUpdateImportBrandTechAction(settings, userId, roleId);
         }
     }
 
@@ -95,6 +105,20 @@ namespace Module.Host.TPM.Handlers
 
         protected override IAction GetAction(FullImportSettings settings, ExecuteData data) {
             return new FullXLSXUpdateByPropertyImportAction(settings, settings.ModelType, data.GetValue<List<String>>("uniqueFields"));
+        }
+    }
+
+    class FullXLSXUpdateCoefficientSI2SOHandler : FullXLSXImportHandler 
+    {
+        private Guid handlerId;
+
+        public override void Action(HandlerInfo info, ExecuteData data)
+        {
+            handlerId = info.HandlerId;
+            base.Action(info, data);
+        }
+        protected override IAction GetAction(FullImportSettings settings, ExecuteData data) {
+            return new FullXLSXUpdateImportCoefficientSI2SOAction(settings, handlerId);
         }
     }
 

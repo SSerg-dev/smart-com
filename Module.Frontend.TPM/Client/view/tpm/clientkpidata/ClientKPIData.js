@@ -340,9 +340,34 @@
                 renderer: function (value) {
                     return rounder(value, true);
                 }
+            }]
+        }, {
+            text: l10n.ns('tpm', 'ClientKPIData').value('PromoTiCost'),
+            columns: [{
+                text: l10n.ns('tpm', 'ClientKPIData').value('PlanPercent'),
+                dataIndex: 'PromoTiCostPlanPercent',
+                plugins: ['sortbutton'],
+                menuDisabled: true,
+                sortable: true,
+                minWidth: 70,
+                width: 70,
+                renderer: function (value) {
+                    return rounder(value);
+                }
+            }, {
+                text: l10n.ns('tpm', 'ClientKPIData').value('PlanMln'),
+                dataIndex: 'PromoTiCostPlan',
+                plugins: ['sortbutton'],
+                menuDisabled: true,
+                sortable: true,
+                minWidth: 80,
+                width: 80,
+                renderer: function (value) {
+                    return rounder(value, true);
+                }
             }, {
                 text: l10n.ns('tpm', 'ClientKPIData').value('YTDPercent'),
-                dataIndex: 'MarketingTiYTDPercent',
+                dataIndex: 'PromoTiCostYTDPercent',
                 plugins: ['sortbutton'],
                 menuDisabled: true,
                 sortable: true,
@@ -353,7 +378,7 @@
                 }
             }, {
                 text: l10n.ns('tpm', 'ClientKPIData').value('YTD'),
-                dataIndex: 'MarketingTiYTD',
+                dataIndex: 'PromoTiCostYTD',
                 plugins: ['sortbutton'],
                 menuDisabled: true,
                 sortable: true,
@@ -364,7 +389,7 @@
                 }
             }, {
                 text: l10n.ns('tpm', 'ClientKPIData').value('YEEPercent'),
-                dataIndex: 'MarketingTiYEEPercent',
+                dataIndex: 'PromoTiCostYEEPercent',
                 plugins: ['sortbutton'],
                 menuDisabled: true,
                 sortable: true,
@@ -375,7 +400,7 @@
                 }
             }, {
                 text: l10n.ns('tpm', 'ClientKPIData').value('YEE'),
-                dataIndex: 'MarketingTiYEE',
+                dataIndex: 'PromoTiCostYEE',
                 plugins: ['sortbutton'],
                 menuDisabled: true,
                 sortable: true,
@@ -385,7 +410,22 @@
                     return rounder(value, true);
                 }
             }]
-        }, {
+            }, {
+                text: l10n.ns('tpm', 'ClientKPIData').value('NonPromoTiCost'),
+                minWidth: 140,
+                columns: [{
+                    text: l10n.ns('tpm', 'ClientKPIData').value('PlanPercent'),
+                    dataIndex: 'NonPromoTiCostPlanPercent',
+                    plugins: ['sortbutton'],
+                    menuDisabled: true,
+                    sortable: true,
+                    minWidth: 140,
+                    width: 140,
+                    renderer: function (value) {
+                        return rounder(value);
+                    }
+                },]
+            }, {
             text: l10n.ns('tpm', 'ClientKPIData').value('Production'),
             columns: [{
                 text: l10n.ns('tpm', 'ClientKPIData').value('PlanPercent'),

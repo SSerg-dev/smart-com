@@ -31,5 +31,8 @@ namespace Module.Persist.TPM.Model.TPM
         public double? ROIPlanPercent { get; set; }
         public double? IncrementalNSVPlan { get; set; }
         public double? PromoNSVPlan { get; set; }
+        public double? PlanLSV { get; set; }
+        public double? PromoTiCostPlanPercent { get; set; }
+        public double? NonPromoTiCostPlanPercent { get; set; }
     }
 }

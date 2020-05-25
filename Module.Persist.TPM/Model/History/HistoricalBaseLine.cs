@@ -11,9 +11,9 @@ namespace Module.Persist.TPM.Model.History
         public string ProductZREP { get; set; }
         public string DemandCode { get; set; }
         public DateTimeOffset? StartDate { get; set; }
-        public double? QTY { get; set; }
-        public double? Price { get; set; }
-        public double? BaselineLSV { get; set; }
+        public double? InputBaselineQTY { get; set; }
+        public double? SellInBaselineQTY { get; set; }
+        public double? SellOutBaselineQTY { get; set; }
         public int? Type { get; set; }
         public DateTimeOffset? LastModifiedDate { get; set; }
     }

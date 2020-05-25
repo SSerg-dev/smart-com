@@ -25,13 +25,32 @@
     },
     onDetailButtonClick: function (button) { 
         var window = Ext.widget('clentdashboarddetailswindow');
-        window.show(); 
-        window.down('[name=POSMInClientYTD]').setValue(button.POSMInClientYTD); 
-        window.down('[name=CatalogueYTD]').setValue(button.CatalogueYTD); 
-        window.down('[name=XSitesYTD]').setValue(button.XSitesYTD ); 
-        window.down('[name=CatalogueYEE]').setValue(button.CatalogueYEE); 
-        window.down('[name=POSMInClientTiYEE]').setValue(button.POSMInClientTiYEE); 
-        window.down('[name=XSitesYEE]').setValue(button.XSitesYEE); 
+        var controller = App.app.getController('tpm.clientdashboard.ClientDashboard');
+        window.show();
+        window.down('#PromoTiCostPlanPercent').originalValue = button.PromoTiCostPlanPercent.toFixed(2);
+        window.down('#PromoTiCostPlan').originalValue = button.PromoTiCostPlan.toFixed(2);
+        window.down('#PromoTiCostYTD').originalValue = button.PromoTiCostYTD.toFixed(2);
+        window.down('#PromoTiCostYTDPercent').originalValue = button.PromoTiCostYTDPercent.toFixed(2);
+        window.down('#PromoTiCostYEE').originalValue = button.PromoTiCostYEE.toFixed(2);
+        window.down('#PromoTiCostYEEPercent').originalValue = button.PromoTiCostYEEPercent.toFixed(2);
+
+        window.down('#NonPromoTiCostPlanPercent').originalValue = button.NonPromoTiCostPlanPercent.toFixed(2);
+        window.down('#NonPromoTiCostPlan').originalValue = button.NonPromoTiCostPlan.toFixed(2);
+        window.down('#NonPromoTiCostYTD').originalValue = button.NonPromoTiCostYTD.toFixed(2);
+        window.down('#NonPromoTiCostYTDPercent').originalValue = button.NonPromoTiCostYTDPercent.toFixed(2);
+        window.down('#NonPromoTiCostYEE').originalValue = button.NonPromoTiCostYEE.toFixed(2);
+        window.down('#NonPromoTiCostYEEPercent').originalValue = button.NonPromoTiCostYEEPercent.toFixed(2);
+
+        controller.setValueFieldColor(window.down('#PromoTiCostYTDPercent'), button.PromoTiCostPlanPercent, button.PromoTiCostYTDPercent, window.down('#PromoTiCostYTDPercentArrow'));
+        controller.setValueFieldColor(window.down('#PromoTiCostYEEPercent'), button.PromoTiCostPlanPercent, button.PromoTiCostYEEPercent, window.down('#PromoTiCostYEEPercentArrow'));
+        controller.setValueFieldColor(window.down('#PromoTiCostYTD'), button.PromoTiCostPlan, button.PromoTiCostYTD, window.down('#PromoTiCostYTDArrow'));
+        controller.setValueFieldColor(window.down('#PromoTiCostYEE'), button.PromoTiCostPlan, button.PromoTiCostYEE, window.down('#PromoTiCostYEEArrow'));
+
+        controller.setValueFieldColor(window.down('#NonPromoTiCostYTDPercent'), button.NonPromoTiCostPlanPercent, button.NonPromoTiCostYTDPercent, window.down('#NonPromoTiCostYTDPercentArrow'));
+        controller.setValueFieldColor(window.down('#NonPromoTiCostYEEPercent'), button.NonPromoTiCostPlanPercent, button.NonPromoTiCostYEEPercent, window.down('#NonPromoTiCostYEEPercentArrow'));
+        controller.setValueFieldColor(window.down('#NonPromoTiCostYTD'), button.NonPromoTiCostPlan, button.NonPromoTiCostYTD, window.down('#NonPromoTiCostYTDArrow'));
+        controller.setValueFieldColor(window.down('#NonPromoTiCostYEE'), button.NonPromoTiCostPlan, button.NonPromoTiCostYEE, window.down('#NonPromoTiCostYEEArrow'));
+        controller.setupValuesAndTips()
     },
    
     onClientDashboardBeforeRender: function (panel) {
@@ -88,6 +107,7 @@
                             Id: baseClients[0].Id,
                             Name: baseClients[0].Name,
                             ObjectId: baseClients[0].ObjectId,
+                            IsOnInvoice: baseClients[0].IsOnInvoice,
                         }));
 
                         clientDashboardClientYearWindowChoose.down('#choose').fireEvent('click', clientDashboardClientYearWindowChoose.down('#choose'));
@@ -143,6 +163,16 @@
             clientDashboard['choosenClientTreeRecord'] = selectedClientRecord;
             clientDashboard['choosenYear'] = selectedYear;
 
+            if (selectedClientRecord.data.IsOnInvoice != null) {
+                if (selectedClientRecord.data.IsOnInvoice) {
+                    accountInformation.down('#accountInformationClientType').setText('On Invoice');
+                } else {
+                    accountInformation.down('#accountInformationClientType').setText('Off Invoice');
+                }
+            } else { 
+                accountInformation.down('#accountInformationClientType').setText('');
+            }
+
             accountInformation.down('#accountInformationClientText').setText(selectedClientRecord.data.Name);
             accountInformation.down('#accountInformationYearText').setText(selectedYear);
 
@@ -162,8 +192,7 @@
     onTrigger1Click: function (picker) {
         var picker = picker.createPicker();
         var clientDashboardController = App.app.getController('tpm.clientdashboard.ClientDashboard');
-        var clientTreeField = clientDashboardController.getClientTreeField();
-
+        var clientTreeField = clientDashboardController.getClientTreeField(); 
         var clientTreeStore = clientDashboardController.getClientTreeStore();
         var clientTreeStoreProxy = clientTreeStore.getProxy();
 
@@ -269,6 +298,8 @@
                 Id: clientTreeRecord.data.Id,
                 Name: clientTreeRecord.data.Name,
                 ObjectId: clientTreeRecord.data.ObjectId,
+                IsOnInvoice: clientTreeRecord.data.IsOnInvoice,
+
             }));
         }
 
@@ -297,6 +328,7 @@
                 Id: clientTreeRecord.data.Id,
                 Name: clientTreeRecord.data.Name,
                 ObjectId: clientTreeRecord.data.ObjectId,
+                IsOnInvoice: clientTreeRecord.data.IsOnInvoice,
             }));
             clientDashboard['choosenClientTreeRecord'] = clientTreeRecord;
             clientDashboard['choosenYear'] = accountInformationYearText.text;
@@ -308,7 +340,7 @@
         yearField.setValue(accountInformationYearText.text);
     },
 
-    fillAccountInformationCallback: function (records, clientDashboard) {
+    fillAccountInformationCallback: function (records, clientDashboard, YtdYee) {
         var controller = App.app.getController('tpm.clientdashboard.ClientDashboard');
         var accountinformation = clientDashboard.down('accountinformation');
         var ROIPanel = clientDashboard.down('#ROIChartPanel');
@@ -348,27 +380,39 @@
         var roiYTDPercent = 0;
         var roiYEEPercent = 0;
         var lsvPlanMln = 0;
-        var lsvYTDMln = 0;
-        var lsvYEEMln = 0;
+        var lsvYTDMln = YtdYee.YTD;
+        var lsvYEEMln = YtdYee.YEE;
         var incrementalNSVPlanMln = 0;
         var incrementalNSVYTDMln = 0;
         var incrementalNSVYEEMln = 0;
         var promoNSVPlanMln = 0;
         var promoNSVYTDMln = 0;
         var promoNSVYEEMln = 0;
-        var pOSMInClientYTD = 0;
-        var catalogueYTD = 0;
-        var xSitesYTD = 0;
-        var catalogueYEE = 0;
-        var pOSMInClientTiYEE = 0;
-        var xSitesYEE = 0;
 
-        var ActualPromoLSV = 0;
-        var PlanAndActualPromoLSV = 0;
+        var PromoTiCostPlanPercent = 0;
+        var PromoTiCostPlan = 0;
+        var PromoTiCostYTD = 0;
+        var PromoTiCostYTDPercent = 0;
+        var PromoTiCostYEE = 0;
+        var PromoTiCostYEEPercent = 0;
+
+        var NonPromoTiCostPlanPercent = 0;
+        var NonPromoTiCostPlan = 0;
+        var NonPromoTiCostYTD = 0;
+        var NonPromoTiCostYTDPercent = 0;
+        var NonPromoTiCostYEE = 0;
+        var NonPromoTiCostYEEPercent = 0;
+
         var TotalPromoIncrementalEarnings = 0;
         var ActualPromoCost = 0;
         var TotalPromoCost = 0;
         var ActualPromoIncrementalEarnings = 0;
+
+        //Берем первую, т.к. везде одинаковые значения
+        if (records[0]) {
+            NonPromoTiCostYTD = records[0].data.NonPromoTiCostYTD;
+            NonPromoTiCostYEE = records[0].data.NonPromoTiCostYEE;
+        }
 
         records.forEach(function (record) {
             shopperTIPlanPercent += record.data.ShopperTiPlanPercent;
@@ -376,8 +420,6 @@
             shopperTIYEEMln += record.data.ShopperTiYEE;
 
             marketingTIPlanPercent += record.data.MarketingTiPlanPercent;
-            marketingTIYTDMln += record.data.MarketingTiYTD;
-            marketingTIYEEMln += record.data.MarketingTiYEE;
 
             productionPlanMln += record.data.ProductionPlan;
             productionYTDMln += record.data.ProductionYTD;
@@ -394,8 +436,6 @@
             roiPlanPercent += record.data.ROIPlanPercent;
 
             lsvPlanMln += record.data.LSVPlan;
-            lsvYTDMln += record.data.LSVYTD;
-            lsvYEEMln += record.data.LSVYEE;
 
             incrementalNSVPlanMln += record.data.IncrementalNSVPlan;
             incrementalNSVYTDMln += record.data.IncrementalNSVYTD;
@@ -405,47 +445,55 @@
             promoNSVYTDMln += record.data.PromoNSVYTD;
             promoNSVYEEMln += record.data.PromoNSVYEE;
 
-            pOSMInClientYTD += record.data.POSMInClientYTD;
-            catalogueYTD += record.data.CatalogueYTD;
-            xSitesYTD += record.data.XSitesYTD;
-            catalogueYEE += record.data.CatalogueYEE;
-            pOSMInClientTiYEE += record.data.POSMInClientTiYEE;
-            xSitesYEE += record.data.XSitesYEE;
+            PromoTiCostPlanPercent += record.data.PromoTiCostPlanPercent;
+            PromoTiCostYTD += record.data.PromoTiCostYTD;
+            PromoTiCostYEE += record.data.PromoTiCostYEE;
 
-            ActualPromoLSV += record.data.ActualPromoLSV;
-            PlanAndActualPromoLSV += record.data.PlanPromoLSV;
+            NonPromoTiCostPlanPercent += record.data.NonPromoTiCostPlanPercent;
+
             ActualPromoIncrementalEarnings += record.data.ActualPromoIncrementalEarnings;
             TotalPromoIncrementalEarnings += record.data.TotalPromoIncrementalEarnings;
             ActualPromoCost += record.data.ActualPromoCost;
             TotalPromoCost += record.data.TotalPromoCost;
         });
-        PlanAndActualPromoLSV = PlanAndActualPromoLSV + ActualPromoLSV;
 
         shopperTIPlanPercent = shopperTIPlanPercent / records.length;
         marketingTIPlanPercent = marketingTIPlanPercent / records.length;
         roiPlanPercent = roiPlanPercent / records.length;
 
+        PromoTiCostPlanPercent = PromoTiCostPlanPercent / records.length;
+        NonPromoTiCostPlanPercent = NonPromoTiCostPlanPercent / records.length;
+
         shopperTIPlanMln = shopperTIPlanPercent * lsvPlanMln / 100;
         marketingTIPlanMln = marketingTIPlanPercent * lsvPlanMln / 100;
+
+        PromoTiCostPlan = PromoTiCostPlanPercent * lsvPlanMln / 100;
+        NonPromoTiCostPlan = NonPromoTiCostPlanPercent * lsvPlanMln / 100;
 
         productionPlanPercent = (lsvPlanMln != 0 ? (productionPlanMln / lsvPlanMln * 100) : 0);
         brandingPlanPercent = (lsvPlanMln != 0 ? (brandingPlanMln / lsvPlanMln * 100) : 0);
         btlPlanPercent = (lsvPlanMln != 0 ? (btlPlanMln / lsvPlanMln * 100) : 0);
 
-        shopperTIYTDPercent = (ActualPromoLSV != 0 ? (shopperTIYTDMln / ActualPromoLSV * 100) : 0);
-        marketingTIYTDPercent = (ActualPromoLSV != 0 ? (marketingTIYTDMln / ActualPromoLSV * 100) : 0);
-        productionYTDPercent = (ActualPromoLSV != 0 ? (productionYTDMln / ActualPromoLSV * 100) : 0);
-        brandingYTDPercent = (ActualPromoLSV != 0 ? (brandingYTDMln / ActualPromoLSV * 100) : 0);
-        btlYTDPercent = (ActualPromoLSV != 0 ? (btlYTDMln / ActualPromoLSV * 100) : 0);
+        marketingTIYTDMln = PromoTiCostYTD + NonPromoTiCostYTD;
+        marketingTIYEEMln = PromoTiCostYEE + NonPromoTiCostYEE;
+
+        shopperTIYTDPercent = (lsvYTDMln != 0 ? (shopperTIYTDMln / lsvYTDMln * 100) : 0);
+        marketingTIYTDPercent = (lsvYTDMln != 0 ? (marketingTIYTDMln / lsvYTDMln * 100) : 0);
+        PromoTiCostYTDPercent = (lsvYTDMln != 0 ? (PromoTiCostYTD / lsvYTDMln * 100) : 0);
+        NonPromoTiCostYTDPercent = (lsvYTDMln != 0 ? (NonPromoTiCostYTD / lsvYTDMln * 100) : 0);
+        productionYTDPercent = (lsvYTDMln != 0 ? (productionYTDMln / lsvYTDMln * 100) : 0);
+        brandingYTDPercent = (lsvYTDMln != 0 ? (brandingYTDMln / lsvYTDMln * 100) : 0);
+        btlYTDPercent = (lsvYTDMln != 0 ? (btlYTDMln / lsvYTDMln * 100) : 0);
         roiYTDPercent = (ActualPromoCost != 0 ? (((ActualPromoIncrementalEarnings / ActualPromoCost) + 1) * 100) : 0);
 
-        shopperTIYEEPercent = (PlanAndActualPromoLSV != 0 ? (shopperTIYEEMln / PlanAndActualPromoLSV * 100) : 0);
-        marketingTIYEEPercent = (PlanAndActualPromoLSV != 0 ? (marketingTIYEEMln / PlanAndActualPromoLSV * 100) : 0);
-        productionYEEPercent = (PlanAndActualPromoLSV != 0 ? (productionYEEMln / PlanAndActualPromoLSV * 100) : 0);
-        brandingYEEPercent = (PlanAndActualPromoLSV != 0 ? (brandingYEEMln / PlanAndActualPromoLSV * 100) : 0);
-        btlYEEPercent = (PlanAndActualPromoLSV != 0 ? (btlYEEMln / PlanAndActualPromoLSV * 100) : 0);
+        shopperTIYEEPercent = (lsvYEEMln != 0 ? (shopperTIYEEMln / lsvYEEMln * 100) : 0);
+        marketingTIYEEPercent = (lsvYEEMln != 0 ? (marketingTIYEEMln / lsvYEEMln * 100) : 0);
+        PromoTiCostYEEPercent = (lsvYEEMln != 0 ? (PromoTiCostYEE / lsvYEEMln * 100) : 0);
+        NonPromoTiCostYEEPercent = (lsvYEEMln != 0 ? (NonPromoTiCostYEE / lsvYEEMln * 100) : 0);
+        productionYEEPercent = (lsvYEEMln != 0 ? (productionYEEMln / lsvYEEMln * 100) : 0);
+        brandingYEEPercent = (lsvYEEMln != 0 ? (brandingYEEMln / lsvYEEMln * 100) : 0);
+        btlYEEPercent = (lsvYEEMln != 0 ? (btlYEEMln / lsvYEEMln * 100) : 0);
         roiYEEPercent = (TotalPromoCost != 0 ? (((TotalPromoIncrementalEarnings / TotalPromoCost) + 1) * 100) : 0);
-
 
         accountinformation.down('#shopperTIPlanPercent').originalValue = shopperTIPlanPercent.toFixed(2);
         accountinformation.down('#shopperTIYTDPercent').originalValue = shopperTIYTDPercent.toFixed(2);
@@ -485,16 +533,23 @@
         accountinformation.down('#lsvPlanMln').originalValue = lsvPlanMln.toFixed(2);
         accountinformation.down('#lsvYTDMln').originalValue = lsvYTDMln.toFixed(2);
         accountinformation.down('#lsvYEEMln').originalValue = lsvYEEMln.toFixed(2);
-       
-        accountinformation.down('#detailsButton').POSMInClientYTD = pOSMInClientYTD;
-        accountinformation.down('#detailsButton').CatalogueYTD = catalogueYTD;
-        accountinformation.down('#detailsButton').XSitesYTD = xSitesYTD;
-        accountinformation.down('#detailsButton').CatalogueYEE = catalogueYEE;
-        accountinformation.down('#detailsButton').POSMInClientTiYEE = pOSMInClientTiYEE;
-        accountinformation.down('#detailsButton').XSitesYEE = xSitesYEE; 
+
+        accountinformation.down('#detailsButton').PromoTiCostPlanPercent = PromoTiCostPlanPercent;
+        accountinformation.down('#detailsButton').PromoTiCostPlan = PromoTiCostPlan;
+        accountinformation.down('#detailsButton').PromoTiCostYTD = PromoTiCostYTD;
+        accountinformation.down('#detailsButton').PromoTiCostYTDPercent = PromoTiCostYTDPercent;
+        accountinformation.down('#detailsButton').PromoTiCostYEE = PromoTiCostYEE;
+        accountinformation.down('#detailsButton').PromoTiCostYEEPercent = PromoTiCostYEEPercent; 
+
+        accountinformation.down('#detailsButton').NonPromoTiCostPlanPercent = NonPromoTiCostPlanPercent;
+        accountinformation.down('#detailsButton').NonPromoTiCostPlan = NonPromoTiCostPlan;
+        accountinformation.down('#detailsButton').NonPromoTiCostYTD = NonPromoTiCostYTD;
+        accountinformation.down('#detailsButton').NonPromoTiCostYTDPercent = NonPromoTiCostYTDPercent;
+        accountinformation.down('#detailsButton').NonPromoTiCostYEE = NonPromoTiCostYEE;
+        accountinformation.down('#detailsButton').NonPromoTiCostYEEPercent = NonPromoTiCostYEEPercent; 
 
         controller.setValueFieldColor(accountinformation.down('#shopperTIYTDPercent'), shopperTIPlanPercent, shopperTIYTDPercent, accountinformation.down('#shopperTIYTDPercentArrow'));
-        controller.setValueFieldColor(accountinformation.down('#shopperTIYEEPercent'), shopperTIPlanPercent, shopperTIYTDPercent, accountinformation.down('#shopperTIYEEPercentArrow'));
+        controller.setValueFieldColor(accountinformation.down('#shopperTIYEEPercent'), shopperTIPlanPercent, shopperTIYEEPercent, accountinformation.down('#shopperTIYEEPercentArrow'));
         controller.setValueFieldColor(accountinformation.down('#shopperTIYTDMln'), shopperTIPlanMln, shopperTIYTDMln, accountinformation.down('#shopperTIYTDMlnArrow'));
         controller.setValueFieldColor(accountinformation.down('#shopperTIYEEMln'), shopperTIPlanMln, shopperTIYEEMln, accountinformation.down('#shopperTIYEEMlnArrow'));
 
@@ -623,14 +678,14 @@
         promoWeeks.addPromoWeeksPanels(promoWeeksPanels);
     },
 
-    loadStoreWithFilters: function (clientDashboard, fillAccountInformationCallback, fillPromoWeeksCallback,refresh) {
+    loadStoreWithFilters: function (clientDashboard, fillAccountInformationCallback, fillPromoWeeksCallback, refresh) {
         var clientKPIDataStore = Ext.create('App.store.core.DirectoryStore', {
             model: 'App.model.tpm.clientkpidata.ClientKPIData',
             autoLoad: false,
             sorters: [{
                 property: 'BrandTechName',
                 direction: 'ASC'
-            }]
+            }],
         })
 
         if (clientDashboard) {
@@ -652,24 +707,31 @@
             clientKPIDataStore.on({
                 load: {
                     fn: function (store, records) {
-                        if (!refresh) {
-                            if (fillAccountInformationCallback) {
-                                fillAccountInformationCallback(records, clientDashboard);
-                            }
-                            if (fillPromoWeeksCallback) {
-                                fillPromoWeeksCallback(records, clientDashboard);
-                            }
-                            clientDashboard.setLoading(false);
-                        } else {
-                            if (fillAccountInformationCallback && clientDashboard.down('#accountInformationButton').active) {
-                                fillAccountInformationCallback(records, clientDashboard);
-                            }
-                            if (fillPromoWeeksCallback && clientDashboard.down('#promoWeeksButton').active) {
-                                fillPromoWeeksCallback(records, clientDashboard);
-                                
-                            }
-                            clientDashboard.setLoading(false);
+                        var params = {
+                            year: clientDashboard['choosenYear'],
+                            clientTreeId: clientDashboard['choosenClientTreeRecord'].data.ObjectId
                         }
+                        App.Util.makeRequestWithCallback('ClientDashboardViews', 'GetAllYEEF', params, function (data) {
+                            var result = Ext.JSON.decode(data.httpResponse.data.value);
+                            if (!refresh) {
+                                if (fillAccountInformationCallback) {
+                                    fillAccountInformationCallback(records, clientDashboard, result);
+                                }
+                                if (fillPromoWeeksCallback) {
+                                    fillPromoWeeksCallback(records, clientDashboard);
+                                }
+                                clientDashboard.setLoading(false);
+                            } else {
+                                if (fillAccountInformationCallback && clientDashboard.down('#accountInformationButton').active) {
+                                    fillAccountInformationCallback(records, clientDashboard,result);
+                                }
+                                if (fillPromoWeeksCallback && clientDashboard.down('#promoWeeksButton').active) {
+                                    fillPromoWeeksCallback(records, clientDashboard, result);
+
+                                }
+                                clientDashboard.setLoading(false);
+                            }
+                        });
                     },
                     single: true
                 }
@@ -780,10 +842,22 @@
                 x: item.attr.x + item.attr.width / 2,
                 y: textValue < 0 ? zeroY + 15 : zeroY - 15,
                 font: 'Bold 18px Arial',
-            }).show(true);
-
-            if ((item.attr.height < textSprite.getBBox().height + 5) || item.attr.height === 0) {
+            }).show(true); 
+            if (textValue ===  '0.0') {
                 NSVChart.surface.remove(textSprite);
+            }
+            else if (item.attr.height < textSprite.getBBox().height + 5) {
+                textSprite.setAttributes({
+                    translate: {
+                        x: -textSprite.getBBox().width / 2,
+                        y: -textSprite.getBBox().height / 2 - 5,
+                    },
+                    
+                }, true);
+                textSprite.setAttributes({
+                        fill: item.attr.fill
+                }, true);
+                seriesLabels.push(textSprite);
             } else {
                 textSprite.setAttributes({
                     translate: {

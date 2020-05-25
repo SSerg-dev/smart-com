@@ -43,6 +43,16 @@
                         this.setValue(value.rawValue === 'true' ? l10n.ns('core', 'booleanValues').value('true') : l10n.ns('core', 'booleanValues').value('false'));
                     }
                 }
+            },
+            {
+                xtype: 'textfield',
+                name: 'IsOnInvoice',
+                fieldLabel: l10n.ns('tpm', 'PlanPostPromoEffectReport').value('IsOnInvoice'),
+                listeners: {
+                    afterrender: function (value) {
+                        this.setValue(value.rawValue === 'true' ? l10n.ns('core', 'booleanValues').value('true') : l10n.ns('core', 'booleanValues').value('false'));
+                    }
+                }
             }
         ]
     }

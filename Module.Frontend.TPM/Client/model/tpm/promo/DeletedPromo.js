@@ -62,6 +62,7 @@
         { name: 'DispatchDuration', useNull: true, type: 'int', hidden: false, isDefault: false },
         { name: 'InvoiceNumber', type: 'string', hidden: false, isDefault: false },
         { name: 'DocumentNumber', type: 'string', hidden: false, isDefault: false },
+        { name: 'IsOnInvoice', type: 'boolean', hidden: false, isDefault: true },
 
         // Calculation
         { name: 'PlanPromoTIShopper', useNull: true, type: 'int', hidden: false, isDefault: false },
@@ -176,6 +177,9 @@
 
         // Growth Acceleration
         { name: 'IsGrowthAcceleration', useNull: true, type: 'boolean', hidden: false, isDefault: false },
+
+        //Apollo Export
+        { name: 'IsApolloExport', type: 'boolean', hidden: false, isDefault: false }
     ],
     proxy: {
         type: 'breeze',

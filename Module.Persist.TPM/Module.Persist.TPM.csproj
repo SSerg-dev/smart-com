@@ -35,55 +35,55 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Antlr3.Runtime, Version=3.4.1.9004, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41761\lib\net451\Antlr3.Runtime.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41961\lib\net451\Antlr3.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="AutoMapper, Version=4.0.4.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41761\lib\net451\AutoMapper.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41961\lib\net451\AutoMapper.dll</HintPath>
     </Reference>
     <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41761\lib\net451\Castle.Core.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41961\lib\net451\Castle.Core.dll</HintPath>
     </Reference>
     <Reference Include="Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41761\lib\net451\Core.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41961\lib\net451\Core.dll</HintPath>
     </Reference>
     <Reference Include="DocumentFormat.OpenXml, Version=2.8.1.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41761\lib\net451\DocumentFormat.OpenXml.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41961\lib\net451\DocumentFormat.OpenXml.dll</HintPath>
     </Reference>
     <Reference Include="ElasticLinq, Version=1.4.3.0, Culture=neutral, PublicKeyToken=fad43a6f87827247, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41761\lib\net451\ElasticLinq.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41961\lib\net451\ElasticLinq.dll</HintPath>
     </Reference>
     <Reference Include="Elasticsearch.Net, Version=5.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41761\lib\net451\Elasticsearch.Net.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41961\lib\net451\Elasticsearch.Net.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41761\lib\net451\EntityFramework.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41961\lib\net451\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41761\lib\net451\EntityFramework.SqlServer.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41961\lib\net451\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework6.Npgsql, Version=3.1.1.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41761\lib\net451\EntityFramework6.Npgsql.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41961\lib\net451\EntityFramework6.Npgsql.dll</HintPath>
     </Reference>
     <Reference Include="ExtJsScaffolding, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41761\lib\net451\ExtJsScaffolding.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41961\lib\net451\ExtJsScaffolding.dll</HintPath>
     </Reference>
     <Reference Include="History.ElasticSearch, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41761\lib\net451\History.ElasticSearch.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41961\lib\net451\History.ElasticSearch.dll</HintPath>
     </Reference>
     <Reference Include="History.RavenDB, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41761\lib\net451\History.RavenDB.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41961\lib\net451\History.RavenDB.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=1.1.0.145, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpZipLib.1.1.0\lib\net45\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="LiteDB, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41761\lib\net451\LiteDB.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41961\lib\net451\LiteDB.dll</HintPath>
     </Reference>
     <Reference Include="Looper, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41761\lib\net451\Looper.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41961\lib\net451\Looper.dll</HintPath>
     </Reference>
     <Reference Include="Looper.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41761\lib\net451\Looper.Core.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41961\lib\net451\Looper.Core.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNet.SignalR.Core, Version=2.4.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.SignalR.Core.2.4.1\lib\net45\Microsoft.AspNet.SignalR.Core.dll</HintPath>
@@ -92,10 +92,10 @@
       <HintPath>..\packages\Microsoft.AspNet.SignalR.SystemWeb.2.4.1\lib\net45\Microsoft.AspNet.SignalR.SystemWeb.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Data.Edm, Version=5.6.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41761\lib\net451\Microsoft.Data.Edm.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41961\lib\net451\Microsoft.Data.Edm.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Data.OData, Version=5.6.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41761\lib\net451\Microsoft.Data.OData.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41961\lib\net451\Microsoft.Data.OData.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Owin, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Owin.2.1.0\lib\net45\Microsoft.Owin.dll</HintPath>
@@ -107,22 +107,22 @@
       <HintPath>..\packages\Microsoft.Owin.Security.2.1.0\lib\net45\Microsoft.Owin.Security.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41761\lib\net451\Microsoft.Web.Infrastructure.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41961\lib\net451\Microsoft.Web.Infrastructure.dll</HintPath>
     </Reference>
     <Reference Include="Nest, Version=5.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41761\lib\net451\Nest.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41961\lib\net451\Nest.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Ninject, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41761\lib\net451\Ninject.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41961\lib\net451\Ninject.dll</HintPath>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41761\lib\net451\NLog.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41961\lib\net451\NLog.dll</HintPath>
     </Reference>
     <Reference Include="Npgsql, Version=3.2.3.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41761\lib\net451\Npgsql.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41961\lib\net451\Npgsql.dll</HintPath>
     </Reference>
     <Reference Include="NPOI, Version=2.4.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
       <HintPath>..\packages\NPOI.2.4.1\lib\net45\NPOI.dll</HintPath>
@@ -137,47 +137,47 @@
       <HintPath>..\packages\NPOI.2.4.1\lib\net45\NPOI.OpenXmlFormats.dll</HintPath>
     </Reference>
     <Reference Include="NSubstitute, Version=4.2.0.0, Culture=neutral, PublicKeyToken=92dd2e9066daa5ca, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41761\lib\net451\NSubstitute.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41961\lib\net451\NSubstitute.dll</HintPath>
     </Reference>
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
     </Reference>
     <Reference Include="Persist, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41761\lib\net451\Persist.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41961\lib\net451\Persist.dll</HintPath>
     </Reference>
     <Reference Include="Raven.Abstractions, Version=3.0.0.0, Culture=neutral, PublicKeyToken=37f41c7f99471593, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41761\lib\net451\Raven.Abstractions.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41961\lib\net451\Raven.Abstractions.dll</HintPath>
     </Reference>
     <Reference Include="Raven.Client.Lightweight, Version=3.0.0.0, Culture=neutral, PublicKeyToken=37f41c7f99471593, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41761\lib\net451\Raven.Client.Lightweight.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41961\lib\net451\Raven.Client.Lightweight.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Management.Automation, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41761\lib\net451\System.Management.Automation.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41961\lib\net451\System.Management.Automation.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41761\lib\net451\System.Net.Http.Formatting.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41961\lib\net451\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.Spatial, Version=5.6.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41761\lib\net451\System.Spatial.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41961\lib\net451\System.Spatial.dll</HintPath>
     </Reference>
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.1.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41761\lib\net451\System.Threading.Tasks.Extensions.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41961\lib\net451\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Http, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41761\lib\net451\System.Web.Http.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41961\lib\net451\System.Web.Http.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.Http.OData, Version=5.5.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41761\lib\net451\System.Web.Http.OData.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41961\lib\net451\System.Web.Http.OData.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.Optimization, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41761\lib\net451\System.Web.Optimization.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41961\lib\net451\System.Web.Optimization.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -186,15 +186,16 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="Utility, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41761\lib\net451\Utility.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41961\lib\net451\Utility.dll</HintPath>
     </Reference>
     <Reference Include="WebGrease, Version=1.5.2.14234, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41761\lib\net451\WebGrease.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.0.41961\lib\net451\WebGrease.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CalculatePromoParametersModule\ActualProductParametersCalculation.cs" />
     <Compile Include="CalculatePromoParametersModule\ActualPromoParametersCalculation.cs" />
+    <Compile Include="CalculatePromoParametersModule\BaselineAndPriceCalculation.cs" />
     <Compile Include="CalculatePromoParametersModule\BudgetsPromoCalculation.cs" />
     <Compile Include="CalculatePromoParametersModule\CalculationTaskManager.cs" />
     <Compile Include="CalculatePromoParametersModule\PlanPromoParametersCalculation.cs" />
@@ -1666,6 +1667,94 @@
     <Compile Include="Migrations\202002121059314_EmptyMigrationRC5.Designer.cs">
       <DependentUpon>202002121059314_EmptyMigrationRC5.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202002131308018_Create_PRICELIST_FDM.cs" />
+    <Compile Include="Migrations\202002131308018_Create_PRICELIST_FDM.Designer.cs">
+      <DependentUpon>202002131308018_Create_PRICELIST_FDM.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202002171549063_Add_PriceList.cs" />
+    <Compile Include="Migrations\202002171549063_Add_PriceList.Designer.cs">
+      <DependentUpon>202002171549063_Add_PriceList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202002171557283_Edit_Index_PriceList.cs" />
+    <Compile Include="Migrations\202002171557283_Edit_Index_PriceList.Designer.cs">
+      <DependentUpon>202002171557283_Edit_Index_PriceList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202002171607231_Add_CoefficientSI2SO.cs" />
+    <Compile Include="Migrations\202002171607231_Add_CoefficientSI2SO.Designer.cs">
+      <DependentUpon>202002171607231_Add_CoefficientSI2SO.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202002171804333_Edit_PriceList.cs" />
+    <Compile Include="Migrations\202002171804333_Edit_PriceList.Designer.cs">
+      <DependentUpon>202002171804333_Edit_PriceList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202002191221310_PriceList_UpdateFields.cs" />
+    <Compile Include="Migrations\202002191221310_PriceList_UpdateFields.Designer.cs">
+      <DependentUpon>202002191221310_PriceList_UpdateFields.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202002200740078_PriceList_UpdateFields1.cs" />
+    <Compile Include="Migrations\202002200740078_PriceList_UpdateFields1.Designer.cs">
+      <DependentUpon>202002200740078_PriceList_UpdateFields1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202002241426254_Add_Column_Into_Baseline_Table.cs" />
+    <Compile Include="Migrations\202002241426254_Add_Column_Into_Baseline_Table.Designer.cs">
+      <DependentUpon>202002241426254_Add_Column_Into_Baseline_Table.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202002271348224_Add_NeedProcessingColumn_toBaselineTable.cs" />
+    <Compile Include="Migrations\202002271348224_Add_NeedProcessingColumn_toBaselineTable.Designer.cs">
+      <DependentUpon>202002271348224_Add_NeedProcessingColumn_toBaselineTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202003011737063_Add_DateFields_CoefficientSI2SO.cs" />
+    <Compile Include="Migrations\202003011737063_Add_DateFields_CoefficientSI2SO.Designer.cs">
+      <DependentUpon>202003011737063_Add_DateFields_CoefficientSI2SO.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202003031346023_IncrementalPromo_PromoProduct_Update_Fields.cs" />
+    <Compile Include="Migrations\202003031346023_IncrementalPromo_PromoProduct_Update_Fields.Designer.cs">
+      <DependentUpon>202003031346023_IncrementalPromo_PromoProduct_Update_Fields.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202003050849508_Add_DMDGroup_ClientTree.cs" />
+    <Compile Include="Migrations\202003050849508_Add_DMDGroup_ClientTree.Designer.cs">
+      <DependentUpon>202003050849508_Add_DMDGroup_ClientTree.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202003091024562_Add_NeedProcessingColumn_toCoefficientSI2SOTable.cs" />
+    <Compile Include="Migrations\202003091024562_Add_NeedProcessingColumn_toCoefficientSI2SOTable.Designer.cs">
+      <DependentUpon>202003091024562_Add_NeedProcessingColumn_toCoefficientSI2SOTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202003111132344_EmptyMethodology.cs" />
+    <Compile Include="Migrations\202003111132344_EmptyMethodology.Designer.cs">
+      <DependentUpon>202003111132344_EmptyMethodology.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202003120853487_Edit_CoefficientSI2SO.cs" />
+    <Compile Include="Migrations\202003120853487_Edit_CoefficientSI2SO.Designer.cs">
+      <DependentUpon>202003120853487_Edit_CoefficientSI2SO.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202003121322563_ChangePromoField.cs" />
+    <Compile Include="Migrations\202003121322563_ChangePromoField.Designer.cs">
+      <DependentUpon>202003121322563_ChangePromoField.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202003122107092_ChangeClientTreeField.cs" />
+    <Compile Include="Migrations\202003122107092_ChangeClientTreeField.Designer.cs">
+      <DependentUpon>202003122107092_ChangeClientTreeField.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202003130625457_EmptyMigrationMethodology.cs" />
+    <Compile Include="Migrations\202003130625457_EmptyMigrationMethodology.Designer.cs">
+      <DependentUpon>202003130625457_EmptyMigrationMethodology.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202003161726390_Remove_Coefficient_Fields.cs" />
+    <Compile Include="Migrations\202003161726390_Remove_Coefficient_Fields.Designer.cs">
+      <DependentUpon>202003161726390_Remove_Coefficient_Fields.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202003171258259_Remove_Qty_Price_BaselineLSV_from_BaseLine.cs" />
+    <Compile Include="Migrations\202003171258259_Remove_Qty_Price_BaselineLSV_from_BaseLine.Designer.cs">
+      <DependentUpon>202003171258259_Remove_Qty_Price_BaselineLSV_from_BaseLine.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202003221552153_Create_JobFlag_Table.cs" />
+    <Compile Include="Migrations\202003221552153_Create_JobFlag_Table.Designer.cs">
+      <DependentUpon>202003221552153_Create_JobFlag_Table.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202003231452161_Create_JobErrorLog_Table.cs" />
+    <Compile Include="Migrations\202003231452161_Create_JobErrorLog_Table.Designer.cs">
+      <DependentUpon>202003231452161_Create_JobErrorLog_Table.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\202002121411037_EmptyMigrationClientDashboard.cs" />
     <Compile Include="Migrations\202002121411037_EmptyMigrationClientDashboard.Designer.cs">
       <DependentUpon>202002121411037_EmptyMigrationClientDashboard.cs</DependentUpon>
@@ -1710,9 +1799,29 @@
     <Compile Include="Migrations\202003230010389_EmptyMigrationClientDashboard6.Designer.cs">
       <DependentUpon>202003230010389_EmptyMigrationClientDashboard6.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202003241412330_Create_CalculateBaselineValues_Job.cs" />
+    <Compile Include="Migrations\202003241412330_Create_CalculateBaselineValues_Job.Designer.cs">
+      <DependentUpon>202003241412330_Create_CalculateBaselineValues_Job.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202003251227426_Create_DayIncrementalQTYRecalculation_Job.cs" />
+    <Compile Include="Migrations\202003251227426_Create_DayIncrementalQTYRecalculation_Job.Designer.cs">
+      <DependentUpon>202003251227426_Create_DayIncrementalQTYRecalculation_Job.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\202003261127120_Remove_Client1LevelName_Client2LevelName_ClientName_Promo.cs" />
     <Compile Include="Migrations\202003261127120_Remove_Client1LevelName_Client2LevelName_ClientName_Promo.Designer.cs">
       <DependentUpon>202003261127120_Remove_Client1LevelName_Client2LevelName_ClientName_Promo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202003161126077_EmptyIncremental2Appollo.cs" />
+    <Compile Include="Migrations\202003161126077_EmptyIncremental2Appollo.Designer.cs">
+      <DependentUpon>202003161126077_EmptyIncremental2Appollo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202003161142141_Create_PreviousDayIncremental_Table.cs" />
+    <Compile Include="Migrations\202003161142141_Create_PreviousDayIncremental_Table.Designer.cs">
+      <DependentUpon>202003161142141_Create_PreviousDayIncremental_Table.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202003161511264_Create_PromoProductDifference_Table.cs" />
+    <Compile Include="Migrations\202003161511264_Create_PromoProductDifference_Table.Designer.cs">
+      <DependentUpon>202003161511264_Create_PromoProductDifference_Table.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\202002251957252_Delete_PromoProductsProperties.cs" />
     <Compile Include="Migrations\202002251957252_Delete_PromoProductsProperties.Designer.cs">
@@ -1726,6 +1835,30 @@
     <Compile Include="Migrations\202003302141389_EmptyMigrationRC7.Designer.cs">
       <DependentUpon>202003302141389_EmptyMigrationRC7.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202003241841200_EmptyMigration_Metodology.cs" />
+    <Compile Include="Migrations\202003241841200_EmptyMigration_Metodology.Designer.cs">
+      <DependentUpon>202003241841200_EmptyMigration_Metodology.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202003310847532_EmptyMigrationMetodology.cs" />
+    <Compile Include="Migrations\202003310847532_EmptyMigrationMetodology.Designer.cs">
+      <DependentUpon>202003310847532_EmptyMigrationMetodology.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202003311939472_EmptyMigrationMethodology2.cs" />
+    <Compile Include="Migrations\202003311939472_EmptyMigrationMethodology2.Designer.cs">
+      <DependentUpon>202003311939472_EmptyMigrationMethodology2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202003312104285_Insert_CoefficientSI2SO_Values.cs" />
+    <Compile Include="Migrations\202003312104285_Insert_CoefficientSI2SO_Values.Designer.cs">
+      <DependentUpon>202003312104285_Insert_CoefficientSI2SO_Values.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202003241849518_EmptyMigration_Incremental2Apollo.cs" />
+    <Compile Include="Migrations\202003241849518_EmptyMigration_Incremental2Apollo.Designer.cs">
+      <DependentUpon>202003241849518_EmptyMigration_Incremental2Apollo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202004011810546_EmptyMigrationIncremental2Apollo.cs" />
+    <Compile Include="Migrations\202004011810546_EmptyMigrationIncremental2Apollo.Designer.cs">
+      <DependentUpon>202004011810546_EmptyMigrationIncremental2Apollo.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\202004111518509_Add_TI_COGS_Fields_to_Promo.cs" />
     <Compile Include="Migrations\202004111518509_Add_TI_COGS_Fields_to_Promo.Designer.cs">
       <DependentUpon>202004111518509_Add_TI_COGS_Fields_to_Promo.cs</DependentUpon>
@@ -1734,8 +1867,101 @@
     <Compile Include="Migrations\202004280800394_IncrementalReport_View_Fixes.Designer.cs">
       <DependentUpon>202004280800394_IncrementalReport_View_Fixes.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202003051626093_Add_InvoiceTotal_and_InvoiceTotalProduct.cs" />
+    <Compile Include="Migrations\202003051626093_Add_InvoiceTotal_and_InvoiceTotalProduct.Designer.cs">
+      <DependentUpon>202003051626093_Add_InvoiceTotal_and_InvoiceTotalProduct.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202003160815421_EmptyMigrationInvoiceTotal.cs" />
+    <Compile Include="Migrations\202003160815421_EmptyMigrationInvoiceTotal.Designer.cs">
+      <DependentUpon>202003160815421_EmptyMigrationInvoiceTotal.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202004060826092_EmptyMigrationIncremental2Apollo1.cs" />
+    <Compile Include="Migrations\202004060826092_EmptyMigrationIncremental2Apollo1.Designer.cs">
+      <DependentUpon>202004060826092_EmptyMigrationIncremental2Apollo1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202004080722297_Edit_PromoProductDifference.cs" />
+    <Compile Include="Migrations\202004080722297_Edit_PromoProductDifference.Designer.cs">
+      <DependentUpon>202004080722297_Edit_PromoProductDifference.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202004110359307_Edit_PreviousDayIncremental.cs" />
+    <Compile Include="Migrations\202004110359307_Edit_PreviousDayIncremental.Designer.cs">
+      <DependentUpon>202004110359307_Edit_PreviousDayIncremental.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202004161128500_Add_Fields_To_Promo_PromoProduct.cs" />
+    <Compile Include="Migrations\202004161128500_Add_Fields_To_Promo_PromoProduct.Designer.cs">
+      <DependentUpon>202004161128500_Add_Fields_To_Promo_PromoProduct.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202004060753280_EmptyMigrationMetodology1.cs" />
+    <Compile Include="Migrations\202004060753280_EmptyMigrationMetodology1.Designer.cs">
+      <DependentUpon>202004060753280_EmptyMigrationMetodology1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202004132058417_ClientDashboard_PlanLSV.cs" />
+    <Compile Include="Migrations\202004132058417_ClientDashboard_PlanLSV.Designer.cs">
+      <DependentUpon>202004132058417_ClientDashboard_PlanLSV.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202004140602269_Edit_ClientDashboard.cs" />
+    <Compile Include="Migrations\202004140602269_Edit_ClientDashboard.Designer.cs">
+      <DependentUpon>202004140602269_Edit_ClientDashboard.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202004152330316_EmptyMigrationClientDashboardv2.cs" />
+    <Compile Include="Migrations\202004152330316_EmptyMigrationClientDashboardv2.Designer.cs">
+      <DependentUpon>202004152330316_EmptyMigrationClientDashboardv2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202004271610591_EmptyMethodology1.cs" />
+    <Compile Include="Migrations\202004271610591_EmptyMethodology1.Designer.cs">
+      <DependentUpon>202004271610591_EmptyMethodology1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202004201954594_Create PromoProductDifference_Log.cs" />
+    <Compile Include="Migrations\202004201954594_Create PromoProductDifference_Log.Designer.cs">
+      <DependentUpon>202004201954594_Create PromoProductDifference_Log.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202004211243579_PromoProductDifference_Fields_Mod.cs" />
+    <Compile Include="Migrations\202004211243579_PromoProductDifference_Fields_Mod.Designer.cs">
+      <DependentUpon>202004211243579_PromoProductDifference_Fields_Mod.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202004211315418_PromoProductDifference_Fields_Mod_Qty.cs" />
+    <Compile Include="Migrations\202004211315418_PromoProductDifference_Fields_Mod_Qty.Designer.cs">
+      <DependentUpon>202004211315418_PromoProductDifference_Fields_Mod_Qty.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202004211402322_EmptyMigrationIncremental2Appolo.cs" />
+    <Compile Include="Migrations\202004211402322_EmptyMigrationIncremental2Appolo.Designer.cs">
+      <DependentUpon>202004211402322_EmptyMigrationIncremental2Appolo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202004271625366_EmptyIncrementalToApollo.cs" />
+    <Compile Include="Migrations\202004271625366_EmptyIncrementalToApollo.Designer.cs">
+      <DependentUpon>202004271625366_EmptyIncrementalToApollo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202004281339020_EmptyMigration_IncrementalToApollo.cs" />
+    <Compile Include="Migrations\202004281339020_EmptyMigration_IncrementalToApollo.Designer.cs">
+      <DependentUpon>202004281339020_EmptyMigration_IncrementalToApollo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202004291057158_EmptyI2A.cs" />
+    <Compile Include="Migrations\202004291057158_EmptyI2A.Designer.cs">
+      <DependentUpon>202004291057158_EmptyI2A.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202004291212021_Add_CasePrice_Incremental_Promo.cs" />
+    <Compile Include="Migrations\202004291212021_Add_CasePrice_Incremental_Promo.Designer.cs">
+      <DependentUpon>202004291212021_Add_CasePrice_Incremental_Promo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005141232084_Add_IsOnInvoice_ActualLSV.cs" />
+    <Compile Include="Migrations\202005141232084_Add_IsOnInvoice_ActualLSV.Designer.cs">
+      <DependentUpon>202005141232084_Add_IsOnInvoice_ActualLSV.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005190920418_EmptyMigrationI2A.cs" />
+    <Compile Include="Migrations\202005190920418_EmptyMigrationI2A.Designer.cs">
+      <DependentUpon>202005190920418_EmptyMigrationI2A.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005191220173_Add_IsApolloExport_Promo.cs" />
+    <Compile Include="Migrations\202005191220173_Add_IsApolloExport_Promo.Designer.cs">
+      <DependentUpon>202005191220173_Add_IsApolloExport_Promo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005191538104_EmptyMigrationIncremental2Apollo2.cs" />
+    <Compile Include="Migrations\202005191538104_EmptyMigrationIncremental2Apollo2.Designer.cs">
+      <DependentUpon>202005191538104_EmptyMigrationIncremental2Apollo2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
+    <Compile Include="Model\DTO\PriceListFDM.cs" />
     <Compile Include="Model\DTO\PromoProductsView.cs" />
     <Compile Include="Model\DTO\ClientTreeSharesView.cs" />
     <Compile Include="Model\DTO\PlanPostPromoEffectReport.cs" />
@@ -1751,6 +1977,7 @@
     <Compile Include="Model\History\HistoricalBTL.cs" />
     <Compile Include="Model\History\HistoricalBTLPromo.cs" />
     <Compile Include="Model\History\HistoricalClientDashboardView.cs" />
+    <Compile Include="Model\History\HistoricalCoefficientSI2SO.cs" />
     <Compile Include="Model\History\HistoricalNonPromoEquipment.cs" />
     <Compile Include="Model\History\HistoricalCostProduction.cs" />
     <Compile Include="Model\History\HistoricalIncrementalPromo.cs" />
@@ -1804,6 +2031,7 @@
     <Compile Include="Model\Import\ImportAssortmentMatrix.cs" />
     <Compile Include="Model\Import\ImportBTL.cs" />
     <Compile Include="Model\Import\ImportClientDashboard.cs" />
+    <Compile Include="Model\Import\ImportCoefficientSI2SO.cs" />
     <Compile Include="Model\Import\ImportNonPromoEquipment.cs" />
     <Compile Include="Model\Import\ImportIncrementalPromo.cs" />
     <Compile Include="Model\Import\ImportNoNego.cs" />
@@ -1842,11 +2070,14 @@
     <Compile Include="Model\SimpleModel\SimplePromoCOGSTI.cs" />
     <Compile Include="Model\SimpleModel\YEAR_END_ESTIMATE_FDM.cs" />
     <Compile Include="Model\TPM\ActualLsvModel.cs" />
+    <Compile Include="Model\TPM\PreviousDayIncremental.cs" />
+    <Compile Include="Model\TPM\InputBaseline.cs" />
     <Compile Include="Model\TPM\BlockedPromo.cs" />
     <Compile Include="Model\TPM\AssortmentMatrix.cs" />
     <Compile Include="Model\TPM\BTL.cs" />
     <Compile Include="Model\TPM\BTLPromo.cs" />
     <Compile Include="Model\TPM\ClientDashboard.cs" />
+    <Compile Include="Model\TPM\CoefficientSI2SO.cs" />
     <Compile Include="Model\TPM\NonPromoEquipment.cs" />
     <Compile Include="Model\TPM\BudgetSubItemClientTree.cs" />
     <Compile Include="Model\TPM\ChangesIncident.cs" />
@@ -1855,6 +2086,7 @@
     <Compile Include="Model\TPM\IncrementalPromo.cs" />
     <Compile Include="Model\TPM\NonPromoSupportBrandTech.cs" />
     <Compile Include="Model\TPM\PostPromoEffect.cs" />
+    <Compile Include="Model\TPM\PriceList.cs" />
     <Compile Include="Model\TPM\PromoApprovedIncident.cs" />
     <Compile Include="Model\TPM\ClientTreeNeedUpdateIncident.cs" />
     <Compile Include="Model\TPM\PromoOnRejectIncident.cs" />
@@ -1874,6 +2106,7 @@
     <Compile Include="Model\TPM\NoneNego.cs" />
     <Compile Include="Model\DTO\PromoROIReport.cs" />
     <Compile Include="Model\TPM\NonPromoSupport.cs" />
+    <Compile Include="Model\TPM\PromoProductDifference.cs" />
     <Compile Include="Model\TPM\PromoProductsCorrection.cs" />
     <Compile Include="Model\TPM\PromoTypes.cs" />
     <Compile Include="Model\TPM\PromoUpliftFailIncident.cs" />
@@ -1938,6 +2171,22 @@
     <Compile Include="PromoStateControl\UserRoles.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CalculatePromoParametersModule\PlanProductParametersCalculation.cs" />
+    <Content Include="SQLInitialize\20200220_1730_AlterPromoGridView_Add_OnOffInvoice.sql" />
+    <Content Include="SQLInitialize\20200225_2150_AlterPromoView_AddONOFFInvoice.sql" />
+    <Content Include="SQLInitialize\20200402_1535_Add_AP_for_CMManager_CoefficientSI2SO.sql" />
+    <Content Include="SQLInitialize\20200407_1645_Create_Out_Interfaces.sql" />
+    <Content Include="SQLInitialize\20200406_2202_AlterPromoGridView_FixAfterMerge.sql" />
+    <Content Include="SQLInitialize\20200402_0005_Create_Interfaces.sql" />
+    <Content Include="SQLInitialize\20200331_2245_Update_Handlers_NextExecutionDate.sql" />
+    <Content Include="SQLInitialize\20200325_2030_Insert_JobFlagValue.sql" />
+    <Content Include="SQLInitialize\20200323_2120_CreateNightProcessingMainHandler.sql" />
+    <Content Include="SQLInitialize\20200312_2305_SetIsOnInvoice_ClientTree.sql" />
+    <Content Include="SQLInitialize\20200322_1900_Insert_JobFlagValue.sql" />
+    <Content Include="SQLInitialize\20200312_2307_SetIsOnInvoice_Promo.sql" />
+    <Content Include="SQLInitialize\20200312_2300_AlterPromoGridView_Add_IsOnInvoice.sql" />
+    <Content Include="SQLInitialize\20200312_2302_AlterPromoView_Add_IsOnInvoice.sql" />
+    <Content Include="SQLInitialize\20191216_1302_AlterPromoGridView_Actual_Promo_LSV_By_Compensation.sql" />
+    <Content Include="SQLInitialize\20200305_1920_CreateStartSISOBaselineCalculationHandler.sql" />
     <Content Include="SQLInitialize\20200127_2140_Add_ActualCOGSTIMethods_AP.sql" />
     <Content Include="SQLInitialize\20200127_1940_Add_ActualCOGSTICheckPromoStatusList_Setting.sql" />
     <Content Include="SQLInitialize\20200126_1935_Add_ActualTI_AP.sql" />
@@ -2037,8 +2286,47 @@
     <Content Include="SQLInitialize\20200327_1245_Add_GetFilteredData_APs_part1.sql" />
     <Content Include="SQLInitialize\20200327_1246_Add_GetFilteredData_APs_part2.sql" />
     <Content Include="SQLInitialize\20200327_1247_Add_GetFilteredData_APs_part3.sql" />
+    <Content Include="SQLInitialize\20200303_1515_CreateCountAverageFunction.sql" />
+    <Content Include="SQLInitialize\20200303_1535_CreateSOCalculationProcedure.sql" />
+    <Content Include="SQLInitialize\20200303_1530_CreateSICalculationProcedure.sql" />
+    <Content Include="SQLInitialize\20200228_1610_Deleted_Some_AP_BaseLine.sql" />
+    <Content Include="SQLInitialize\20200305_1900_CreateBaselineIndex.sql" />
+    <Content Include="SQLInitialize\20200324_1900_UpdateLoopHandlersParams.sql" />
+    <Content Include="SQLInitialize\20200402_1155_Delete_DemandPriceList_from_AccessPoint.sql" />
+    <Content Include="SQLInitialize\20200316_1641_AddPreviousDayIncremental_AP.sql" />
     <Content Include="SQLInitialize\20200412_1810_Create_SetCOGSPercentValuesHandler.sql" />
     <Content Include="SQLInitialize\20200411_2145_Create_SetTIBasePercentValuesHandler.sql" />
+    <Content Include="SQLInitialize\20200310_1547_UpdatePromoGridView_and_UpdatePromo_InvoiceTotal.sql" />
+    <Content Include="SQLInitialize\20200406_1800_Add_GetFilteredData_APs_part5.sql" />
+    <Content Include="SQLInitialize\20200410_1505_Add_Dates.sql" />
+    <Content Include="SQLInitialize\20200413_1914_Add_AP_CoefficientSI2SO.sql" />
+    <Content Include="SQLInitialize\20200413_1914_Add_AP_PreviousDayIncremental.sql" />
+    <Content Include="SQLInitialize\20200415_0104_Add_AP_CoefficientSI2SO_2.sql" />
+    <Content Include="SQLInitialize\20200415_0104_Add_AP_PreviousDayIncremental_2.sql" />
+    <Content Include="SQLInitialize\20200415_0136_Add_AP_SuperReader_PromoProducts.sql" />
+    <Content Include="SQLInitialize\20200420_1613_Create_PromoProductDifference_Log_with_PARTITION_FUNCTION.sql" />
+    <Content Include="SQLInitialize\20200420_1800_Add_ProductSyncFail_Notification_Settings.sql" />
+    <Content Include="SQLInitialize\20200420_1800_MailNotificationSettings_ProductSyncFail_Add.sql" />
+    <Content Include="SQLInitialize\20200420_1825_Alter_Proc_FillPromoProductDifference.sql" />
+    <Content Include="SQLInitialize\20200421_1440_Alter_Proc_FillPromoProductDifference.sql" />
+    <Content Include="SQLInitialize\20200402_1557_Add_AP_CMManager_PriceList.sql" />
+    <Content Include="SQLInitialize\20200422_1900_Update_ActualPromoLSVSISO_Fields.sql" />
+    <Content Include="SQLInitialize\20200406_1700_Add_GetFilteredData_APs_part4.sql" />
+    <Content Include="SQLInitialize\20200414_1400_Alter_ClientDashboardView.sql" />
+    <Content Include="SQLInitialize\20200414_0100_Alter_ClientDashboardView.sql" />
+    <Content Include="SQLInitialize\20200410_1700_Alter_ClientDashboardView.sql" />
+    <Content Include="SQLInitialize\20200417_1000_Add_AP_ClientDashboard_GetAllYEEF.sql" />
+    <Content Include="SQLInitialize\20200417_1000_Alter_ClientDashboardView.sql" />
+    <Content Include="SQLInitialize\20200417_1500_ClientDashboardView_AP_DP.sql" />
+    <Content Include="SQLInitialize\20200421_1330_Add_Ap_DemandPlaning_Importsql.sql" />
+    <Content Include="SQLInitialize\20200427_1600_Alter_ClientDashboardView.sql" />
+    <Content Include="SQLInitialize\20200525_0030_FixIncrementalPromoDisabled.sql" />
+    <Content Include="SQLInitialize\20200521_0937_Alter_ClientDashboardView.sql" />
+    <Content Include="SQLInitialize\20200505_2130_FillCasePriceInIncrementalPromo.sql" />
+    <Content Include="SQLInitialize\20200507_1430_Incremental_Report_Rework.sql" />
+    <Content Include="SQLInitialize\20200518_1602_Insert_Old_PriceList.sql" />
+    <Content Include="SQLInitialize\20200518_1601_Insert_Old_Baseline.sql" />
+    <Content Include="SQLInitialize\20200518_1600_Truncate_Baseline.sql" />
     <Content Include="Sql\20191004_1540_FillInOutProductIdsHandler.sql" />
     <Content Include="SQLInitialize\20190926_1600_HistoricalPromoSupport_AP.sql" />
     <Content Include="SQLInitialize\20191106_1700_PromoGridView.sql" />
@@ -2049,6 +2337,57 @@
     <Content Include="SQLInitialize\20200214_1105_BTLPromo_AP.sql" />
     <Content Include="SQLInitialize\20200311_1600_Edit_BTL_AP.sql" />
     <Content Include="SQLInitialize\20200311_1645_Edit_BTLPromo_AP.sql" />
+    <Content Include="SQLInitialize\20200217_2000_Add_PriceList_AP.sql" />
+    <Content Include="SQLInitialize\20200217_2300_Add_CoefficientSI2SO_AP.sql" />
+    <Content Include="SQLInitialize\20200220_1100_Add_PriceListMerge_Handler_Action.sql" />
+    <Content Include="SQLInitialize\20200227_1500_Remove_Interfaces_AP.sql" />
+    <Content Include="SQLInitialize\20200305_1440_Update_DMDGroup_ClientTree.sql" />
+    <Content Include="SQLInitialize\20200318_1300_Create_CurrentDayIncremental.sql" />
+    <Content Include="SQLInitialize\20200318_1315_CreateProcedure_FillCurrentDayIncremental.sql" />
+    <Content Include="SQLInitialize\20200319_1430_Create_UpdatePreviousDayIncrementalHandler.sql" />
+    <Content Include="SQLInitialize\20200321_1450_Alter_FillCurrentDayIncremental.sql" />
+    <Content Include="SQLInitialize\20200321_1500_Create_FillPromoProductDifference.sql" />
+    <Content Include="SQLInitialize\20200324_1430_Alter_FillPromoProductDifference.sql" />
+    <Content Include="SQLInitialize\20200325_1500_Rename_UpdatePreviousDayIncrementalHandler.sql" />
+    <Content Include="SQLInitialize\20200325_1630_Insert_JobFlagValue.sql" />
+    <Content Include="SQLInitialize\20200326_1420_Alter_FillPromoProductDifference.sql" />
+    <Content Include="SQLInitialize\20200326_1425_Alter_FillCurrentDayIncremental.sql" />
+    <Content Include="SQLInitialize\20200326_1700_Update_LoopHandler.sql" />
+    <Content Include="SQLInitialize\20200326_1735_Create_Proc_FillPreviousDayIncremental.sql" />
+    <Content Include="SQLInitialize\20200407_2000_Alter_FillCurrentDayIncremental.sql" />
+    <Content Include="SQLInitialize\20200407_2010_Alter_FillPromoProductDifference.sql" />
+    <Content Include="SQLInitialize\20200408_1955_Alter_FillPromoProductDifference.sql" />
+    <Content Include="SQLInitialize\20200410_1100_Alter_FillCurrentDayIncremental.sql" />
+    <Content Include="SQLInitialize\20200410_1105_Alter_FillPromoProductDifference.sql" />
+    <Content Include="SQLInitialize\20200411_1145_Alter_FillPromoProductDifference.sql" />
+    <Content Include="SQLInitialize\20200411_1920_Alter_PreviousDayIncremental_AP.sql" />
+    <Content Include="SQLInitialize\20200413_1900_Alter_FillCurrentDayIncremental.sql" />
+    <Content Include="SQLInitialize\20200416_1400_Alter_FillPromoProductDifference.sql" />
+    <Content Include="SQLInitialize\20200416_2045_Alter_FillPromoProductDifference.sql" />
+    <Content Include="SQLInitialize\20200417_1230_Alter_FillPromoProductDifference.sql" />
+    <Content Include="SQLInitialize\20200416_1430_Alter_ClientDashboardView.sql" />
+    <Content Include="SQLInitialize\20200417_2000_Alter_ClientDashboardView.sql" />
+    <Content Include="SQLInitialize\20200421_2030_AlterClientDashboardView.sql" />
+    <Content Include="SQLInitialize\20200423_1340_Alter_ClientDashboardView.sql" />
+    <Content Include="SQLInitialize\20200424_1715_Alter_ClientDashboardView.sql" />
+    <Content Include="SQLInitialize\20200428_1530_Alter_FillPromoProductDifference.sql" />
+    <Content Include="SQLInitialize\20200428_1620_Alter_ClientDashboardView.sql" />
+    <Content Include="SQLInitialize\20200506_1350_Alter_FillPromoProductDifference.sql" />
+    <Content Include="SQLInitialize\20200518_1550_Alter_PromoGridView_Add_IsApolloExport.sql" />
+    <Content Include="SQLInitialize\20200518_1930_Alter_FillPromoProductDifference.sql" />
+    <Content Include="SQLInitialize\20200518_1935_Alter_FillCurrentDayIncremental.sql" />
+    <Content Include="SQLInitialize\20200519_1615_Alter_PromoIncrementalReport.sql" />
+    <Content Include="SQLInitialize\20200520_1330_Insert_PRICELIST_DATE_SEPARATOR_Setting.sql" />
+    <Content Include="SQLInitialize\20200521_1250_Add_Current_Previous_Incremental_Index.sql" />
+    <Content Include="SQLInitialize\20200521_1251_Add_Proc_CreateIncrementalIndex.sql" />
+    <Content Include="SQLInitialize\20200521_1252_Add_Proc_DropIncrementalIndex.sql" />
+    <Content Include="SQLInitialize\20200521_1253_Alter_FillCurrentDayIncremental.sql" />
+    <Content Include="SQLInitialize\20200521_1254_Alter_FillPreviousDayIncremental.sql" />
+    <Compile Include="Utils\ConfigManager.cs" />
+    <Compile Include="Utils\ExportCSVBuilderFactory.cs" />
+    <Compile Include="Utils\ExportCSVModelBuilders\IncrementalToApolloModelBuilder.cs" />
+    <Compile Include="Utils\FileBufferExtention.cs" />
+    <Compile Include="Utils\Consts.cs" />
     <Content Include="SQLInitialize\20200331_1740_Alter_NonPromoSupportBrandTech_AP.sql" />
     <Content Include="Sql\ProductTreeJSONParser.sql" />
     <Compile Include="Utils\SpecialNotKeyPropertyAttribute.cs" />
@@ -2137,6 +2476,10 @@
     <Compile Include="Utils\PromoCalculateHelper.cs" />
     <Compile Include="Utils\PromoSortComparer.cs" />
     <Compile Include="Utils\SchedulerExporter.cs" />
+    <Content Include="Sql\UsersAndRoles\Local_Users_Insert.sql" />
+    <Content Include="Sql\UsersAndRoles\Local_Users_Role_Insert.sql" />
+    <Content Include="Sql\UsersAndRoles\USERS_Insert.sql" />
+    <Content Include="Sql\UsersAndRoles\USER_ROLES_Insert.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">
@@ -3240,6 +3583,72 @@
     <EmbeddedResource Include="Migrations\202002121059314_EmptyMigrationRC5.resx">
       <DependentUpon>202002121059314_EmptyMigrationRC5.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002131308018_Create_PRICELIST_FDM.resx">
+      <DependentUpon>202002131308018_Create_PRICELIST_FDM.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002171549063_Add_PriceList.resx">
+      <DependentUpon>202002171549063_Add_PriceList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002171557283_Edit_Index_PriceList.resx">
+      <DependentUpon>202002171557283_Edit_Index_PriceList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002171607231_Add_CoefficientSI2SO.resx">
+      <DependentUpon>202002171607231_Add_CoefficientSI2SO.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002171804333_Edit_PriceList.resx">
+      <DependentUpon>202002171804333_Edit_PriceList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002191221310_PriceList_UpdateFields.resx">
+      <DependentUpon>202002191221310_PriceList_UpdateFields.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002200740078_PriceList_UpdateFields1.resx">
+      <DependentUpon>202002200740078_PriceList_UpdateFields1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002241426254_Add_Column_Into_Baseline_Table.resx">
+      <DependentUpon>202002241426254_Add_Column_Into_Baseline_Table.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002271348224_Add_NeedProcessingColumn_toBaselineTable.resx">
+      <DependentUpon>202002271348224_Add_NeedProcessingColumn_toBaselineTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003011737063_Add_DateFields_CoefficientSI2SO.resx">
+      <DependentUpon>202003011737063_Add_DateFields_CoefficientSI2SO.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003031346023_IncrementalPromo_PromoProduct_Update_Fields.resx">
+      <DependentUpon>202003031346023_IncrementalPromo_PromoProduct_Update_Fields.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003050849508_Add_DMDGroup_ClientTree.resx">
+      <DependentUpon>202003050849508_Add_DMDGroup_ClientTree.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003091024562_Add_NeedProcessingColumn_toCoefficientSI2SOTable.resx">
+      <DependentUpon>202003091024562_Add_NeedProcessingColumn_toCoefficientSI2SOTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003111132344_EmptyMethodology.resx">
+      <DependentUpon>202003111132344_EmptyMethodology.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003120853487_Edit_CoefficientSI2SO.resx">
+      <DependentUpon>202003120853487_Edit_CoefficientSI2SO.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003121322563_ChangePromoField.resx">
+      <DependentUpon>202003121322563_ChangePromoField.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003122107092_ChangeClientTreeField.resx">
+      <DependentUpon>202003122107092_ChangeClientTreeField.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003130625457_EmptyMigrationMethodology.resx">
+      <DependentUpon>202003130625457_EmptyMigrationMethodology.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003161726390_Remove_Coefficient_Fields.resx">
+      <DependentUpon>202003161726390_Remove_Coefficient_Fields.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003171258259_Remove_Qty_Price_BaselineLSV_from_BaseLine.resx">
+      <DependentUpon>202003171258259_Remove_Qty_Price_BaselineLSV_from_BaseLine.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003221552153_Create_JobFlag_Table.resx">
+      <DependentUpon>202003221552153_Create_JobFlag_Table.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003231452161_Create_JobErrorLog_Table.resx">
+      <DependentUpon>202003231452161_Create_JobErrorLog_Table.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202002121411037_EmptyMigrationClientDashboard.resx">
       <DependentUpon>202002121411037_EmptyMigrationClientDashboard.cs</DependentUpon>
     </EmbeddedResource>
@@ -3273,8 +3682,23 @@
     <EmbeddedResource Include="Migrations\202003230010389_EmptyMigrationClientDashboard6.resx">
       <DependentUpon>202003230010389_EmptyMigrationClientDashboard6.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003241412330_Create_CalculateBaselineValues_Job.resx">
+      <DependentUpon>202003241412330_Create_CalculateBaselineValues_Job.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003251227426_Create_DayIncrementalQTYRecalculation_Job.resx">
+      <DependentUpon>202003251227426_Create_DayIncrementalQTYRecalculation_Job.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202003261127120_Remove_Client1LevelName_Client2LevelName_ClientName_Promo.resx">
       <DependentUpon>202003261127120_Remove_Client1LevelName_Client2LevelName_ClientName_Promo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003161126077_EmptyIncremental2Appollo.resx">
+      <DependentUpon>202003161126077_EmptyIncremental2Appollo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003161142141_Create_PreviousDayIncremental_Table.resx">
+      <DependentUpon>202003161142141_Create_PreviousDayIncremental_Table.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003161511264_Create_PromoProductDifference_Table.resx">
+      <DependentUpon>202003161511264_Create_PromoProductDifference_Table.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202002251957252_Delete_PromoProductsProperties.resx">
       <DependentUpon>202002251957252_Delete_PromoProductsProperties.cs</DependentUpon>
@@ -3285,11 +3709,98 @@
     <EmbeddedResource Include="Migrations\202003302141389_EmptyMigrationRC7.resx">
       <DependentUpon>202003302141389_EmptyMigrationRC7.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003241841200_EmptyMigration_Metodology.resx">
+      <DependentUpon>202003241841200_EmptyMigration_Metodology.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003310847532_EmptyMigrationMetodology.resx">
+      <DependentUpon>202003310847532_EmptyMigrationMetodology.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003311939472_EmptyMigrationMethodology2.resx">
+      <DependentUpon>202003311939472_EmptyMigrationMethodology2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003312104285_Insert_CoefficientSI2SO_Values.resx">
+      <DependentUpon>202003312104285_Insert_CoefficientSI2SO_Values.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003241849518_EmptyMigration_Incremental2Apollo.resx">
+      <DependentUpon>202003241849518_EmptyMigration_Incremental2Apollo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004011810546_EmptyMigrationIncremental2Apollo.resx">
+      <DependentUpon>202004011810546_EmptyMigrationIncremental2Apollo.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202004111518509_Add_TI_COGS_Fields_to_Promo.resx">
       <DependentUpon>202004111518509_Add_TI_COGS_Fields_to_Promo.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202004280800394_IncrementalReport_View_Fixes.resx">
       <DependentUpon>202004280800394_IncrementalReport_View_Fixes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003051626093_Add_InvoiceTotal_and_InvoiceTotalProduct.resx">
+      <DependentUpon>202003051626093_Add_InvoiceTotal_and_InvoiceTotalProduct.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003160815421_EmptyMigrationInvoiceTotal.resx">
+      <DependentUpon>202003160815421_EmptyMigrationInvoiceTotal.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004060826092_EmptyMigrationIncremental2Apollo1.resx">
+      <DependentUpon>202004060826092_EmptyMigrationIncremental2Apollo1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004080722297_Edit_PromoProductDifference.resx">
+      <DependentUpon>202004080722297_Edit_PromoProductDifference.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004110359307_Edit_PreviousDayIncremental.resx">
+      <DependentUpon>202004110359307_Edit_PreviousDayIncremental.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004161128500_Add_Fields_To_Promo_PromoProduct.resx">
+      <DependentUpon>202004161128500_Add_Fields_To_Promo_PromoProduct.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004060753280_EmptyMigrationMetodology1.resx">
+      <DependentUpon>202004060753280_EmptyMigrationMetodology1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004132058417_ClientDashboard_PlanLSV.resx">
+      <DependentUpon>202004132058417_ClientDashboard_PlanLSV.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004140602269_Edit_ClientDashboard.resx">
+      <DependentUpon>202004140602269_Edit_ClientDashboard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004152330316_EmptyMigrationClientDashboardv2.resx">
+      <DependentUpon>202004152330316_EmptyMigrationClientDashboardv2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004271610591_EmptyMethodology1.resx">
+      <DependentUpon>202004271610591_EmptyMethodology1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004201954594_Create PromoProductDifference_Log.resx">
+      <DependentUpon>202004201954594_Create PromoProductDifference_Log.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004211243579_PromoProductDifference_Fields_Mod.resx">
+      <DependentUpon>202004211243579_PromoProductDifference_Fields_Mod.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004211315418_PromoProductDifference_Fields_Mod_Qty.resx">
+      <DependentUpon>202004211315418_PromoProductDifference_Fields_Mod_Qty.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004211402322_EmptyMigrationIncremental2Appolo.resx">
+      <DependentUpon>202004211402322_EmptyMigrationIncremental2Appolo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004271625366_EmptyIncrementalToApollo.resx">
+      <DependentUpon>202004271625366_EmptyIncrementalToApollo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004281339020_EmptyMigration_IncrementalToApollo.resx">
+      <DependentUpon>202004281339020_EmptyMigration_IncrementalToApollo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004291057158_EmptyI2A.resx">
+      <DependentUpon>202004291057158_EmptyI2A.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004291212021_Add_CasePrice_Incremental_Promo.resx">
+      <DependentUpon>202004291212021_Add_CasePrice_Incremental_Promo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005141232084_Add_IsOnInvoice_ActualLSV.resx">
+      <DependentUpon>202005141232084_Add_IsOnInvoice_ActualLSV.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005191220173_Add_IsApolloExport_Promo.resx">
+      <DependentUpon>202005191220173_Add_IsApolloExport_Promo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005190920418_EmptyMigrationI2A.resx">
+      <DependentUpon>202005190920418_EmptyMigrationI2A.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005191538104_EmptyMigrationIncremental2Apollo2.resx">
+      <DependentUpon>202005191538104_EmptyMigrationIncremental2Apollo2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -14,6 +14,7 @@ Ext.define('App.model.tpm.promoproductsview.PromoProductsView', {
         { name: 'PlanProductBaselineCaseQty', type: 'float', hidden: false, isDefault: true, useNull: true },
         { name: 'PlanProductIncrementalCaseQty', type: 'float', hidden: false, isDefault: true, useNull: true },
         { name: 'PlanProductCaseQty', type: 'float', hidden: false, isDefault: true, useNull: true },
+        { name: 'InvoiceTotalProduct',  type: 'float', hidden: false, isDefault: false, useNull: true },
         {
             name: 'AverageMarker', type: 'bool', hidden: false, isDefault: true,
             convert: function (value) {

@@ -132,16 +132,26 @@
             name: 'ActualPromoLSVByCompensation'
         },
         {
-            xtype: 'numberfield',
+            xtype: 'singlelinedisplayfield',
             fieldLabel: l10n.ns('tpm', 'ActualLSV').value('ActualPromoLSV'),
-            name: 'ActualPromoLSV',
+            name: 'ActualPromoLSV'
+        },
+        {
+            xtype: 'singlelinedisplayfield',
+            fieldLabel: l10n.ns('tpm', 'ActualLSV').value('ActualPromoLSVSI'),
+            name: 'ActualPromoLSVSI'
+        },
+        {
+            xtype: 'numberfield',
+            fieldLabel: l10n.ns('tpm', 'ActualLSV').value('ActualPromoLSVSO'),
+            name: 'ActualPromoLSVSO',
             minValue: 0,
             maxValue: 100000000000000000000,
             readOnly: true,
             allowDecimals: true,
             allowExponential: false,
             allowOnlyWhitespace: true,
-            allowBlank: true,
+            allowBlank: true
         },
         {
             xtype: 'singlelinedisplayfield',

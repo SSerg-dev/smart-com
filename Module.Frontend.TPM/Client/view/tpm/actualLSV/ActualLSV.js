@@ -319,6 +319,14 @@
                 dataIndex: 'ActualPromoLSV'
             },
             {
+                text: l10n.ns('tpm', 'ActualLSV').value('ActualPromoLSVSI'),
+                dataIndex: 'ActualPromoLSVSI'
+            },
+            {
+                text: l10n.ns('tpm', 'ActualLSV').value('ActualPromoLSVSO'),
+                dataIndex: 'ActualPromoLSVSO'
+            },
+            {
                 text: l10n.ns('tpm', 'ActualLSV').value('PlanPromoPostPromoEffectLSVW1'),
                 dataIndex: 'PlanPromoPostPromoEffectLSVW1'
             },

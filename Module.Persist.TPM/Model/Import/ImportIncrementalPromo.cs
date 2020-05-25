@@ -26,14 +26,5 @@ namespace Module.Persist.TPM.Model.Import
         [ImportCSVColumn(ColumnNumber = 5)]
         [Required(ErrorMessage = Core.Import.ImportConsts.ValidationMessage.RequiredErrorMessage)]
         public double? PlanPromoIncrementalCases { get; set; }
-
-        [Display(Name = "Case Price")]
-        [ImportCSVColumn(ColumnNumber = 6)]
-        [Required(ErrorMessage = Core.Import.ImportConsts.ValidationMessage.RequiredErrorMessage)]
-        public double? CasePrice { get; set; }
-
-        [Display(Name = "Plan Promo Incremental LSV")]
-        [ImportCSVColumn(ColumnNumber = 7)]
-        public double? PlanPromoIncrementalLSV { get; set; }
     }
 }

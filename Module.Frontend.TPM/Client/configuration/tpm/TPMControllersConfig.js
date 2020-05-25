@@ -188,6 +188,9 @@
     //PromoProductsView
     'tpm.promoproductsview.PromoProductsView',
 
+    //previousdayincremental
+    'tpm.previousdayincremental.PreviousDayIncremental', 
+
     //promoproductcorrection
     'tpm.promoproductcorrection.PromoProductCorrection',
     'tpm.promoproductcorrection.DeletedPromoProductCorrection',
@@ -197,11 +200,6 @@
     'tpm.baseline.BaseLine',
     'tpm.baseline.DeletedBaseLine',
     'tpm.baseline.HistoricalBaseLine',
-
-    //DemandPriceList
-    'tpm.demandpricelist.DemandPriceList',
-    'tpm.demandpricelist.DeletedDemandPriceList',
-    'tpm.demandpricelist.HistoricalDemandPriceList',
 
     //ClientTreeBrandTech
     'tpm.clienttreebrandtech.ClientTreeBrandTech',
@@ -266,6 +264,12 @@
     'tpm.promotypes.PromoTypes',
     'tpm.promotypes.DeletedPromoTypes',
     'tpm.promotypes.HistoricalPromoTypes',
+
+    'tpm.pricelist.PriceList',
+
+    'tpm.coefficientsi2so.CoefficientSI2SO',
+    'tpm.coefficientsi2so.DeletedCoefficientSI2SO',
+    'tpm.coefficientsi2so.HistoricalCoefficientSI2SO',
 
     'tpm.inoutselectionproductwindow.InOutSelectionProductWindow',
 

@@ -45,7 +45,6 @@
         'RetailType': 'Retail type',
         'PromoProductItem': 'Promo Product',
         'BaseLineItem': 'Base Line',
-        'DemandPriceListItem': 'Demand Price List',
         'ClientTreeBrandTech': 'Clients Share',
         'PromoSupport': 'Support',
         'NonPromoSupport': 'Non-promo support',
@@ -69,8 +68,10 @@
         'NonPromoEquipment': 'Non-Promo Equipment',
         'ClientDashboard': 'Client Dashboard',
         'Dashboard': 'Dashboard',
-        'ClientKPIdata': 'Client KPI Data'
-    },
+        'ClientKPIdata': 'Client KPI Data',
+        'PriceList': 'Price list',
+        'CoefficientSI2SO': 'Coefficient SI->SO',
+	},
 
     'compositePanelTitles': {
         'Category': 'Category',
@@ -119,7 +120,6 @@
         'RetailType': 'Retail type',
         'PromoProduct': 'Promo Product',
         'BaseLine': 'Base Line',
-        'DemandPriceList': 'Demand Price List',
         'ClientTreeBrandTech': 'Clients shares',
         'PromoSupport': 'Promo Support',
         'TICosts': 'TI Costs',
@@ -150,6 +150,8 @@
         'Dashboard': 'Dashboard',
         'ClientKPIdata': 'Client KPI Data',
         'NonPromoLinked': "Non-Promo Linked",
+        'PriceList': 'Price list',
+        'CoefficientSI2SO': 'Coefficient SI->SO',
     },
 
     'text': {
@@ -175,7 +177,8 @@
         'completeStep5Validate': 'событие',
         'completeStep6Validate': 'настройки',
         'dateOfChange': 'Дата изменения',
-        'selectpromostatuswindow': 'Выбор статуса промо'
+        'selectpromostatuswindow': 'Выбор статуса промо',
+        'InvoiceTotalValidate': 'Invoice Total'
     },
 
 	'DeleteText': {
@@ -652,7 +655,9 @@
 		'ActualPromoIncrementalMAC': 'Actual Promo Incremental MAC, RUR',
 
 		'PlanInStoreShelfPrice': 'In Store Shelf Price',
-		'ActualInStoreShelfPrice': 'In Store Shelf Price',
+        'ActualInStoreShelfPrice': 'In Store Shelf Price',
+        'InvoiceTotal': 'Invoice total',
+        'InvoiceTotalRegex': 'Только цифры и \',\' разрешено вводить',
 		'InvoiceNumber': 'Invoice number',
 		'InvoiceNumberRegex': 'Only letters, numbers and \',\' allowed. Each code must be at least 4 symbols long.',
 		'DocumentNumber': 'Document number',
@@ -1178,6 +1183,7 @@
         'PlanProductPostPromoEffectQtyW2': 'Plan Product Post Promo Effect QTY W2',
         'ActualProductPostPromoEffectQtyW1': 'Actual Product Post Promo Effect QTY W1',
         'ActualProductPostPromoEffectQtyW2': 'Actual Product Post Promo Effect QTY W2',
+        'InvoiceTotalProduct': 'Invoice Total Product',
     },
     'HistoricalPromoProduct': ['.tpm.PromoProduct', '.core.BaseHistoryEntity'],
     'DeletedPromoProduct': ['.tpm.PromoProduct', '.core.BaseDeletedEntity'],
@@ -1214,16 +1220,6 @@
     },
     'HistoricalBaseLine': ['.tpm.BaseLine', '.core.BaseHistoryEntity'],
     'DeletedBaseLine': ['.tpm.BaseLine', '.core.BaseDeletedEntity'],
-
-    'DemandPriceList': {
-        'ProductZREP': 'ZREP',
-        'ClientTreeDemandCode': 'Client Demand code',
-        'DemandCode': 'Client Demand code',
-        'StartDate': 'Start date',
-        'Price': 'Price',
-    },
-    'HistoricalDemandPriceList': ['.tpm.DemandPriceList', '.core.BaseHistoryEntity'],
-    'DeletedDemandPriceList': ['.tpm.DemandPriceList', '.core.BaseDeletedEntity'],
 
     'ChangeHistoryWindow': {
         'ChangeHistoryTitle': 'Change history',
@@ -1917,6 +1913,8 @@
         'PlanPromoLSV': 'Plan Promo LSV',
         'ActualPromoLSVByCompensation': 'Actual PromoLSV By Compensation',
         'ActualPromoLSV': 'Actual Promo LSV',
+        'ActualPromoLSVSI': 'Actual Promo LSV SI',
+        'ActualPromoLSVSO': 'Actual Promo LSV SO',
         'PlanPromoPostPromoEffectLSVW1': 'Plan Post Promo Effect W1, %',
         'ActualPromoPostPromoEffectLSVW1': 'Actual Post Promo Effect W1, %',
         'PlanPromoPostPromoEffectLSVW2': 'Plan Post Promo Effect W2, %',
@@ -2024,4 +2022,22 @@
     },
     'HistoricalBTL': ['.tpm.BTL', '.core.BaseHistoryEntity'],
     'DeletedBTL': ['.tpm.BTL', '.core.BaseDeletedEntity'],
+
+    'PriceList': {
+        'GHierarchyCode': 'G-Hierarchy code',
+        'ProductZREP': 'ZREP',
+        'StartDate': 'StartDate',
+        'EndDate': 'EndDate',
+        'Price': 'Price',
+    },
+
+    'CoefficientSI2SO': {
+        'DemandCode': 'Client demand code',
+        'MarsPeriod': 'Mars period',
+        'CoefficientValue': 'Coefficient value',
+        'BrandTechName': 'Brandtech name',
+        'BrandTechBrandTech_code': 'Brandtech code',
+    },
+    'HistoricalCoefficientSI2SO': ['.tpm.CoefficientSI2SO', '.core.BaseHistoryEntity'],
+    'DeletedCoefficientSI2SO': ['.tpm.CoefficientSI2SO', '.core.BaseDeletedEntity'],
 });

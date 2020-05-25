@@ -3,6 +3,7 @@ using Core.Settings;
 using Frontend.Core.Extensions.Export;
 using Looper.Core;
 using Looper.Parameters;
+using Microsoft.Ajax.Utilities;
 using Module.Persist.TPM.CalculatePromoParametersModule;
 using Module.Persist.TPM.Model.TPM;
 using Newtonsoft.Json.Linq;
@@ -17,7 +18,7 @@ using System.Web.Http.OData;
 
 namespace Module.Frontend.TPM.Util
 {
-    static class Helper
+    public static class Helper
     {
         static public List<ClientTree> getClientTreeAllChildren(int parentId, DatabaseContext Context)
         {
@@ -26,6 +27,25 @@ namespace Module.Frontend.TPM.Util
             foreach (var clientTree in tempClientTrees)
             {
                 resClientTrees.AddRange(getClientTreeAllChildren(clientTree.ObjectId, Context));
+            }
+            return resClientTrees;
+        }
+
+        static public List<ClientTree> getClientTreeAllChildrenWithoutContext(int parentId, List<ClientTree> clientTrees, bool stopAtDMDGroup = false)
+        {
+            List<ClientTree> tempClientTrees;
+            if (stopAtDMDGroup)
+            {
+                tempClientTrees = clientTrees.Where(x => !x.EndDate.HasValue && x.parentId == parentId && x.DMDGroup.IsNullOrWhiteSpace()).ToList();
+            }
+            else
+            {
+                tempClientTrees = clientTrees.Where(x => !x.EndDate.HasValue && x.parentId == parentId).ToList();
+            }
+            var resClientTrees = new List<ClientTree>(tempClientTrees);
+            foreach (var clientTree in tempClientTrees)
+            {
+                resClientTrees.AddRange(getClientTreeAllChildrenWithoutContext(clientTree.ObjectId, clientTrees));
             }
             return resClientTrees;
         }

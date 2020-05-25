@@ -95,22 +95,29 @@ namespace Module.Persist.TPM.PromoStateControl
 
             private string CheckPromoForErrors(Promo promoModel)
             {
+                string message = null;
+
                 if (!promoModel.ActualPromoLSV.HasValue || promoModel.ActualPromoLSV.Value <= 0)
                 {
-                    return "Actual Promo LSV must be greater than 0.";
+                    message += "Actual Promo LSV must be greater than 0. \r\n";
+                }
+
+                if (!promoModel.ActualPromoLSVSO.HasValue || promoModel.ActualPromoLSVSO.Value <= 0)
+                {
+                    message += "Actual Promo LSV SO must be greater than 0. \r\n";
                 }
 
                 if (promoModel.ActualPromoTIMarketing.HasValue && promoModel.ActualPromoTIMarketing.Value < 0)
                 {
-                    return "Actual Marketing TI must be greater or equal 0.";
+                    message += "Actual Marketing TI must be greater or equal 0. \r\n";
                 }
 
                 if (promoModel.ActualPromoCostProduction.HasValue && promoModel.ActualPromoCostProduction.Value < 0)
                 {
-                    return "Actual Promo Cost Production must be greater or equal 0.";
+                    message += "Actual Promo Cost Production must be greater or equal 0. \r\n";
                 }
 
-                return null;
+                return message;
             }
         }
     }

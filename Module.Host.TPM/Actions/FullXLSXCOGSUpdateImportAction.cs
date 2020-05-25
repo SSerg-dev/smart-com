@@ -148,7 +148,7 @@ namespace Module.Host.TPM.Actions {
             }
             if (errors.Any()) {
                 HasErrors = true;
-                throw new ApplicationException("An error occurred while loading the import file.");
+                throw new ImportException("An error occurred while loading the import file.");
             }
 
             return records;

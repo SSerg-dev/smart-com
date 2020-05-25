@@ -64,7 +64,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     // Исключить промо с признаком InOut из подбора uplift.
                     promoQuery = promoQuery.Where(x => x.InOut != true);
                 */
-                var promoQuery = context.Set<Promo>().Where(x => x.InOut != true);
+                var promoQuery = context.Set<Promo>().Where(x => x.InOut != true && x.IsOnInvoice == currentPromo.IsOnInvoice);
                 if (promoQuery.Count() != 0)
                 {
                     //выбираем закрытые промо (дата окончания в пределах N лет до текущей даты)

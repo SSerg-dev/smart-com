@@ -240,9 +240,13 @@
         var actMIsValid = !(actM.rawValue === "");
         var actAISP = promoactivity.down('numberfield[name=ActualInStoreShelfPrice]');
         var actAISPIsValid = !(actAISP.value === null);
-        var isActivityPromoValid = actMIsValid && actAISPIsValid;
+        var invTot = promoactivity.down('triggerfielddetails[name=InvoiceTotal]');
+        var invTotIsValid = !(invTot.rawValue === "");
+
+        var isActivityPromoValid = actMIsValid && actAISPIsValid && invTotIsValid;
+
         if (CheckValid === '' && !isActivityPromoValid) {
-            CheckValid = 'In order to close promo Actual In Store in Activity must be filled.';
+            CheckValid = 'In order to close promo Actual In Store and Invoice Total in Activity must be filled.';
         }
 
         if ((CheckValid === '') && (isStep7Complete && isStep8Complete && isStep9Complete) && (isPromoValid && isActivityPromoValid)) {

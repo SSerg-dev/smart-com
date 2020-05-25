@@ -17,6 +17,7 @@ using Core.History;
 using Module.Persist.TPM.Utils;
 using Utility;
 using Core.Settings;
+using Module.Persist.TPM.CalculatePromoParametersModule;
 
 namespace Module.Host.TPM.Actions {
     class FullXLSXUpdateImportIncrementalPromoAction : FullXLSXImportAction {
@@ -178,7 +179,6 @@ namespace Module.Host.TPM.Actions {
 			{
 				ProductZREP = ipRec.Product.ZREP,
 				PromoNumber = ipRec.Promo.Number,
-				CasePrice = ipRec.CasePrice,
 				PlanPromoIncrementalCases = ipRec.PlanPromoIncrementalCases
 			};
 
@@ -203,11 +203,6 @@ namespace Module.Host.TPM.Actions {
 				isSuitable = false;
 				errors.Add("The entry has an inappropriate ClientId");
 			}
-			else if (ipRec.CasePrice < 0)
-			{
-				isSuitable = false;
-				errors.Add("The CasePrice can't have negative value");
-			}
 			else if (ipRec.PlanPromoIncrementalCases < 0)
 			{
 				isSuitable = false;
@@ -225,11 +220,9 @@ namespace Module.Host.TPM.Actions {
 
             foreach (IncrementalPromo incrementalPromo in sourceRecords)
 			{
-				ImportIncrementalPromo newRecord = new ImportIncrementalPromo()
-				{
-					CasePrice = incrementalPromo.CasePrice,
+                ImportIncrementalPromo newRecord = new ImportIncrementalPromo()
+                {
 					PlanPromoIncrementalCases = incrementalPromo.PlanPromoIncrementalCases,
-					PlanPromoIncrementalLSV = incrementalPromo.CasePrice * incrementalPromo.PlanPromoIncrementalCases,
 					PromoNumber = incrementalPromo.Promo.Number,
 					ProductZREP = incrementalPromo.Product.ZREP
 				};
@@ -254,10 +247,11 @@ namespace Module.Host.TPM.Actions {
                         if (oldRecord != null)
                         {
                             newRecord.Id = oldRecord.Id;
-                            oldRecord.CasePrice = newRecord.CasePrice;
 							oldRecord.PlanPromoIncrementalCases = newRecord.PlanPromoIncrementalCases;
-							oldRecord.PlanPromoIncrementalLSV = newRecord.PlanPromoIncrementalLSV;
-							oldRecord.LastModifiedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                            var casePrice = BaselineAndPriceCalculation.CalculateCasePrice(oldRecord, context);
+                            oldRecord.CasePrice = casePrice;
+                            oldRecord.PlanPromoIncrementalLSV = oldRecord.CasePrice * oldRecord.PlanPromoIncrementalCases;
+                            oldRecord.LastModifiedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
                             toHisUpdate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(oldRecordCopy, oldRecord));
                             toUpdate.Add(oldRecord);
 						}
@@ -267,7 +261,12 @@ namespace Module.Host.TPM.Actions {
 
             foreach (IEnumerable<IncrementalPromo> items in toUpdate.Partition(1000))
             {
-                string insertScript = String.Join("", items.Select(y => String.Format("UPDATE IncrementalPromo SET PlanPromoIncrementalLSV = {0}, CasePrice = {1}, PlanPromoIncrementalCases = {2},LastModifiedDate = '{3:yyyy-MM-dd HH:mm:ss +03:00}'  WHERE Id = '{4}';", y.PlanPromoIncrementalLSV, y.CasePrice, y.PlanPromoIncrementalCases, y.LastModifiedDate, y.Id)));
+                string insertScript = String.Join("", items.Select(y => String.Format("UPDATE IncrementalPromo SET PlanPromoIncrementalCases = {0}, " +
+                                                                                    "CasePrice = {1}, " +
+                                                                                    "PlanPromoIncrementalLSV = {2}, " +
+                                                                                    "LastModifiedDate = '{3:yyyy-MM-dd HH:mm:ss +03:00}'  " +
+                                                                                    "WHERE Id = '{4}';", 
+                                                                                    y.PlanPromoIncrementalCases, y.CasePrice, y.PlanPromoIncrementalLSV, y.LastModifiedDate, y.Id)));
                 context.Database.ExecuteSqlCommand(insertScript);
             }
             //Добавление изменений в историю

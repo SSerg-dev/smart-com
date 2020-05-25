@@ -18,7 +18,6 @@
         { name: 'PromoNumber', type: 'int', hidden: false, isDefault: true, isKey: true },
         { name: 'PromoName', type: 'string', hidden: false, isDefault: true },
         { name: 'PlanPromoIncrementalCases', type: 'float', hidden: false, isDefault: true },
-        { name: 'CasePrice', type: 'float', hidden: false, isDefault: true },
         { name: 'PlanPromoIncrementalLSV', type: 'float', hidden: false, isDefault: true },
     ],
     proxy: {

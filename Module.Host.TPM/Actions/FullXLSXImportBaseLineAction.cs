@@ -389,9 +389,6 @@ namespace Module.Host.TPM.Actions
                         if (oldRecord != null)
                         {
                             var oldRecordCopy = (BaseLine)oldRecord.Clone();
-                            oldRecord.QTY = newRecord.QTY;
-                            oldRecord.Price = newRecord.Price;
-                            oldRecord.BaselineLSV = newRecord.BaselineLSV;
                             oldRecord.Type = newRecord.Type;
                             oldRecord.LastModifiedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
                             toHisUpdate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(oldRecordCopy, oldRecord));
@@ -405,9 +402,6 @@ namespace Module.Host.TPM.Actions
                                 ProductId = product.Id,
                                 DemandCode = newRecord.ClientTreeDemandCode,
                                 StartDate = newRecord.StartDate,
-                                QTY = newRecord.QTY,
-                                Price = newRecord.Price,
-                                BaselineLSV = newRecord.BaselineLSV,
                                 Type = newRecord.Type,
                                 LastModifiedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)
                             };
@@ -425,8 +419,8 @@ namespace Module.Host.TPM.Actions
             traceLogger.Trace("Start records creating");
             foreach (IEnumerable<BaseLine> items in toCreate.Partition(10000))
             {
-                string insertScript = String.Join("", items.Select(y => String.Format("INSERT INTO BaseLine (QTY, Price, BaselineLSV, Type,LastModifiedDate, ProductId ,StartDate, DemandCode, [Disabled], [Id]) VALUES ({0}, {1}, {2}, {3}, '{4:yyyy-MM-dd HH:mm:ss +03:00}', '{5}', '{6:yyyy-MM-dd HH:mm:ss +03:00}', '{7}', '{8}', '{9}');",
-                    y.QTY, y.Price, y.BaselineLSV, y.Type, y.LastModifiedDate, y.ProductId.ToString(), y.StartDate, y.DemandCode, y.Disabled, y.Id)));
+                string insertScript = String.Join("", items.Select(y => String.Format("INSERT INTO BaseLine (Type,LastModifiedDate, ProductId ,StartDate, DemandCode, [Disabled], [Id]) VALUES ({0}, '{1:yyyy-MM-dd HH:mm:ss +03:00}', '{2}', '{3:yyyy-MM-dd HH:mm:ss +03:00}', '{4}', '{5}', '{6}');",
+                    y.Type, y.LastModifiedDate, y.ProductId.ToString(), y.StartDate, y.DemandCode, y.Disabled, y.Id)));
                 context.Database.ExecuteSqlCommand(insertScript);
             }
             traceLogger.Trace("Finish records creating");
@@ -437,7 +431,8 @@ namespace Module.Host.TPM.Actions
             traceLogger.Trace("Start records updating");
             foreach (IEnumerable<BaseLine> items in toUpdate.Partition(1000))
             {
-                string updateScript = String.Join("", items.Select(y => String.Format("UPDATE BaseLine SET QTY = {0}, Price = {1}, BaselineLSV = {2}, Type = {3},LastModifiedDate = '{4:yyyy-MM-dd HH:mm:ss +03:00}'  WHERE Id = '{5}';", y.QTY, y.Price, y.BaselineLSV, y.Type, y.LastModifiedDate, y.Id)));
+                string updateScript = String.Join("", items.Select(y => String.Format("UPDATE BaseLine SET Type = {0},LastModifiedDate = '{1:yyyy-MM-dd HH:mm:ss +03:00}'  WHERE Id = '{2}';",
+                     y.Type, y.LastModifiedDate, y.Id)));
                 context.Database.ExecuteSqlCommand(updateScript);
             }
             traceLogger.Trace("Finish records updating");

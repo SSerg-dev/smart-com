@@ -3209,6 +3209,10 @@ x-slider-inner:before {
 .client-dashboard .x-btn-glyph {
     color: black !important;
 }
+.clientDashboardDetailsWindow .x-panel .x-panel-body{
+    padding: 15px 10px 10px 10px; 
+}
+
 .user-dashboard .title-first {
     color: #57697c;
     font-weight: 600;

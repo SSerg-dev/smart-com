@@ -33,8 +33,8 @@
         var filterEntries = this.filterModel.getFilterEntries(),
             rows = this.createRowWidgets(filterEntries);
 
-        Ext.suspendLayouts();
         this.removeAll();
+        Ext.suspendLayouts();
         this.add(rows);
         Ext.resumeLayouts(true);
     },

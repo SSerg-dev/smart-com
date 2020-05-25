@@ -88,13 +88,16 @@ namespace Module.Frontend.TPM.Controllers
                     PlanPromoLSV = n.PlanPromoLSV,
                     ActualPromoLSVByCompensation = n.ActualPromoLSVByCompensation,
                     ActualPromoLSV = n.ActualPromoLSV,
+                    ActualPromoLSVSI = n.ActualPromoLSVSI,
+                    ActualPromoLSVSO = n.ActualPromoLSVSO,
                     PlanPromoPostPromoEffectLSVW1 = n.PlanPromoPostPromoEffectLSVW1,
                     ActualPromoPostPromoEffectLSVW1 = n.ActualPromoPostPromoEffectLSVW1,
                     PlanPromoPostPromoEffectLSVW2 = n.PlanPromoPostPromoEffectLSVW2,
                     ActualPromoPostPromoEffectLSVW2 = n.ActualPromoPostPromoEffectLSVW2,
                     PlanPromoPostPromoEffectLSV = n.PlanPromoPostPromoEffectLSV,
                     ActualPromoPostPromoEffectLSV = n.ActualPromoPostPromoEffectLSV,
-                    InOut = n.InOut
+                    InOut = n.InOut,
+                    IsOnInvoice = n.IsOnInvoice
                 });
 
             return query;
@@ -232,6 +235,8 @@ namespace Module.Frontend.TPM.Controllers
                 new Column() { Order = order++, Field = "PlanPromoLSV", Header = "Plan Promo LSV", Quoting = false },
                 new Column() { Order = order++, Field = "ActualPromoLSVByCompensation", Header = "Actual PromoLSV By Compensation", Quoting = false },
                 new Column() { Order = order++, Field = "ActualPromoLSV", Header = "Actual Promo LSV", Quoting = false },
+                new Column() { Order = order++, Field = "ActualPromoLSVSI", Header = "Actual Promo LSV SI", Quoting = false },
+                new Column() { Order = order++, Field = "ActualPromoLSVSO", Header = "Actual Promo LSV SO", Quoting = false },
                 new Column() { Order = order++, Field = "PlanPromoPostPromoEffectLSVW1", Header = "Plan Post Promo Effect W1", Quoting = false },
                 new Column() { Order = order++, Field = "ActualPromoPostPromoEffectLSVW1", Header = "Actual Post Promo Effect W1", Quoting = false },
                 new Column() { Order = order++, Field = "PlanPromoPostPromoEffectLSVW2", Header = "Plan Post Promo Effect W2", Quoting = false },

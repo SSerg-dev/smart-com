@@ -11,8 +11,7 @@ namespace Module.Persist.TPM.Model.Import
     {
         public bool Equals(BaseLine x, BaseLine y)
         {
-            return x.ProductId.Equals(y.ProductId) && x.DemandCode.Equals(y.DemandCode) &&
-                   x.QTY.Equals(y.QTY) && x.Price.Equals(y.Price) && x.Type.Equals(y.Type);
+            return x.ProductId.Equals(y.ProductId) && x.DemandCode.Equals(y.DemandCode) && x.Type.Equals(y.Type);
         }
 
         public int GetHashCode(BaseLine obj)
@@ -21,8 +20,6 @@ namespace Module.Persist.TPM.Model.Import
 
             result ^= obj.ProductId.GetHashCode();
             result ^= obj.DemandCode.GetHashCode();
-            result ^= obj.QTY.GetHashCode();
-            result ^= obj.Price.GetHashCode();
             result ^= obj.Type.GetHashCode();
 
             return result;

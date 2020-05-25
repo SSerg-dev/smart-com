@@ -128,19 +128,31 @@
             ROIPlanPercent = window.down('numberfield[name=ROIPlanPercent]'),
             IncrementalNSVPlan = window.down('numberfield[name=IncrementalNSVPlan]'),
             PromoNSVPlan = window.down('numberfield[name=PromoNSVPlan]'),
+            LSVPlan = window.down('numberfield[name=LSVPlan]'),
+            PromoTiCostPlanPercent = window.down('numberfield[name=PromoTiCostPlanPercent]'),
+            NonPromoTiCostPlanPercent = window.down('numberfield[name=NonPromoTiCostPlanPercent]'),
             KAMEdit, DFEdit, canEdit = false;
         if (App.UserInfo.getCurrentRole()['SystemName'] === 'KeyAccountManager') {
             KAMEdit = true;
             DFEdit = false;
+            DPEdit = false;
             canEdit = true;
         } else if (App.UserInfo.getCurrentRole()['SystemName'] === 'DemandFinance') {
             KAMEdit = false;
             DFEdit = true;
+            DPEdit = false;
+            canEdit = true;
+        }
+        else if (App.UserInfo.getCurrentRole()['SystemName'] === 'DemandPlanning') {
+            KAMEdit = false;
+            DFEdit = false;
+            DPEdit = true;
             canEdit = true;
         } else if (App.UserInfo.getCurrentRole()['SystemName'] === 'Administrator'
             || App.UserInfo.getCurrentRole()['SystemName'] === 'SupportAdministrator') {
             KAMEdit = true;
             DFEdit = true;
+            DPEdit = true;
             canEdit = true;
         }
         if (canEdit) {
@@ -152,6 +164,9 @@
             ROIPlanPercent.setReadOnly(!DFEdit);
             IncrementalNSVPlan.setReadOnly(!DFEdit);
             PromoNSVPlan.setReadOnly(!DFEdit);
+            LSVPlan.setReadOnly(!DPEdit);
+            PromoTiCostPlanPercent.setReadOnly(!DFEdit);
+            NonPromoTiCostPlanPercent.setReadOnly(!DFEdit);
         }
     },
 
@@ -188,7 +203,10 @@
                 BTLPlan: record.data.BTLPlan,
                 ROIPlanPercent: record.data.ROIPlanPercent,
                 IncrementalNSVPlan: record.data.IncrementalNSVPlan,
-                PromoNSVPlan: record.data.PromoNSVPlan
+                PromoNSVPlan: record.data.PromoNSVPlan,
+                PlanLSV: record.data.LSVPlan,
+                PromoTiCostPlanPercent: record.data.PromoTiCostPlanPercent,
+                NonPromoTiCostPlanPercent: record.data.NonPromoTiCostPlanPercent
             }
             var grid = this.grid;
             var me = this;

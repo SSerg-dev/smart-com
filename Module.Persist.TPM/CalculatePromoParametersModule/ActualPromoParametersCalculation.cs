@@ -33,8 +33,8 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                                             && promo.ActualPromoBaselineLSV != promo.PlanPromoBaselineLSV);
                 bool isActualPromoLSVChangedByDemand = promo.PromoStatusId == closedStatus.Id ||
                                                     (promo.PromoStatusId == finishedStatus.Id
-                                                    && promo.ActualPromoLSV != null
-                                                    && promo.ActualPromoLSV != 0);
+                                                    && promo.ActualPromoLSVSO != null
+                                                    && promo.ActualPromoLSVSO != 0);
                 bool isActualPromoProstPromoEffectLSVChangedByDemand = promo.PromoStatusId == closedStatus.Id ||
                                                                     (promo.PromoStatusId == finishedStatus.Id
                                                                     && promo.ActualPromoPostPromoEffectLSV != null
@@ -123,13 +123,17 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 // если ошибок нет - считаем
                 if (errors.Length == 0)
                 {
-                    // если значения введены вручную через грид ActualLSV, то ненужно обновлять
-                    if (!isActualPromoLSVChangedByDemand)
+                    // если значения введены вручную через грид ActualLSV, то не нужно обновлять
+                    if (promo.IsOnInvoice)
+                    {
+                        promo.ActualPromoLSV = promo.ActualPromoLSVSI;
+                    }
+                    else if (!isActualPromoLSVChangedByDemand)
                     {
                         promo.ActualPromoLSV = 0;
                     }
 
-                    promo.ActualPromoTIShopper = (promo.ActualPromoLSVByCompensation ?? 0) * promo.MarsMechanicDiscount / 100;
+                    promo.ActualPromoTIShopper = (promo.InvoiceTotal ?? 0) * promo.MarsMechanicDiscount / 100;
                     promo.ActualPromoCost = (promo.ActualPromoTIShopper ?? 0) + (promo.ActualPromoTIMarketing ?? 0) + (promo.ActualPromoBranding ?? 0) + (promo.ActualPromoBTL ?? 0) + (promo.ActualPromoCostProduction ?? 0);
 
                     promo.ActualPromoBaseTI = (promo.ActualPromoLSV ?? 0) * TIBasePercent / 100;
@@ -142,8 +146,24 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         }
 
                         promo.ActualPromoIncrementalLSV = (promo.ActualPromoLSV ?? 0) - (promo.ActualPromoBaselineLSV ?? 0);
-                        promo.ActualPromoNetIncrementalLSV = (promo.ActualPromoIncrementalLSV ?? 0) - (promo.ActualPromoPostPromoEffectLSVW1 ?? 0) - (promo.ActualPromoPostPromoEffectLSVW2 ?? 0);
 
+                        promo.ActualPromoPostPromoEffectLSV = promo.IsOnInvoice ? (promo.ActualPromoLSVSO ?? 0) - (promo.ActualPromoLSVSI ?? 0) : promo.ActualPromoPostPromoEffectLSVW1 + promo.ActualPromoPostPromoEffectLSVW2;
+
+                        // Если эффект получился отрицательным, то приравниваем его к 0
+                        if (promo.ActualPromoPostPromoEffectLSV < 0)
+                        { 
+                            promo.ActualPromoPostPromoEffectLSV = 0;
+                            promo.ActualPromoPostPromoEffectLSVW1 = 0;
+                            promo.ActualPromoPostPromoEffectLSVW2 = 0;
+                        }
+
+                        if (promo.IsOnInvoice)
+                        {
+                            promo.ActualPromoPostPromoEffectLSVW1 = promo.ActualPromoPostPromoEffectLSV * (clientTree.PostPromoEffectW1 / (clientTree.PostPromoEffectW1 + clientTree.PostPromoEffectW2));
+                            promo.ActualPromoPostPromoEffectLSVW2 = promo.ActualPromoPostPromoEffectLSV * (clientTree.PostPromoEffectW2 / (clientTree.PostPromoEffectW1 + clientTree.PostPromoEffectW2));
+                        }
+
+                        promo.ActualPromoNetIncrementalLSV = (promo.ActualPromoIncrementalLSV ?? 0) + (promo.ActualPromoPostPromoEffectLSV ?? 0);
                         promo.ActualPromoUpliftPercent = promo.ActualPromoBaselineLSV == 0 ? 0 : promo.ActualPromoIncrementalLSV / promo.ActualPromoBaselineLSV * 100;
                         promo.ActualPromoNetUpliftPercent = promo.ActualPromoBaselineLSV == 0 ? 0 : promo.ActualPromoNetIncrementalLSV / promo.ActualPromoBaselineLSV * 100;
                     }
@@ -155,7 +175,9 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         }
 
                         promo.ActualPromoIncrementalLSV = (promo.ActualPromoLSV ?? 0) - (promo.ActualPromoBaselineLSV ?? 0);
-                        promo.ActualPromoNetIncrementalLSV = (promo.ActualPromoIncrementalLSV ?? 0) - (promo.ActualPromoPostPromoEffectLSVW1 ?? 0) - (promo.ActualPromoPostPromoEffectLSVW2 ?? 0);
+                        if (promo.ActualPromoIncrementalLSV < 0) promo.ActualPromoIncrementalLSV = 0;
+
+                        promo.ActualPromoNetIncrementalLSV = (promo.ActualPromoIncrementalLSV ?? 0);
 
                         promo.ActualPromoUpliftPercent = null;
                         promo.ActualPromoNetUpliftPercent = null;

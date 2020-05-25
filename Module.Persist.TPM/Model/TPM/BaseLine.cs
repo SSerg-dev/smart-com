@@ -20,21 +20,20 @@ namespace Module.Persist.TPM.Model.TPM
         [Required]
         public DateTimeOffset? StartDate { get; set; }
 
-        [Required]
-        [Range(0, 10000000000)]
-        public double? QTY { get; set; }
-
-        [Required]
-        [Range(0, 10000000000)]
-        public double? Price { get; set; }
-
-        [Required]
-        [Range(0, 10000000000)]
-        public double? BaselineLSV { get; set; }
-
         [StringLength(255)]
         [Index("Unique_BaseLine", 4, IsUnique = true)]
         public string DemandCode { get; set; }
+
+        [Range(0, 10000000000)]
+        public double? InputBaselineQTY { get; set; }
+
+        [Range(0, 10000000000)]
+        public double? SellInBaselineQTY { get; set; }
+
+        [Range(0, 10000000000)]
+        public double? SellOutBaselineQTY { get; set; }
+
+        public bool NeedProcessing { get; set; }
 
         [Required]
         public int? Type { get; set; }
@@ -52,13 +51,33 @@ namespace Module.Persist.TPM.Model.TPM
                 DeletedDate = this.DeletedDate,
                 ProductId = this.ProductId,
                 StartDate = this.StartDate,
-                QTY = this.QTY,
-                Price = this.Price,
-                BaselineLSV = this.BaselineLSV,
                 DemandCode = this.DemandCode,
                 Type = this.Type,
                 LastModifiedDate = this.LastModifiedDate,
-                Product = this.Product
+                Product = this.Product,
+                InputBaselineQTY = this.InputBaselineQTY,
+                SellInBaselineQTY = this.SellInBaselineQTY,
+                SellOutBaselineQTY = this.SellOutBaselineQTY,
+                NeedProcessing = this.NeedProcessing
+            };
+        }
+
+        public object CloneWithoutDB()
+        {
+            return new BaseLine()
+            {
+                Id = this.Id,
+                Disabled = this.Disabled,
+                DeletedDate = this.DeletedDate,
+                ProductId = this.ProductId,
+                StartDate = this.StartDate,
+                DemandCode = this.DemandCode,
+                Type = this.Type,
+                LastModifiedDate = this.LastModifiedDate,
+                InputBaselineQTY = this.InputBaselineQTY,
+                SellInBaselineQTY = this.SellInBaselineQTY,
+                SellOutBaselineQTY = this.SellOutBaselineQTY,
+                NeedProcessing = this.NeedProcessing
             };
         }
     }
