@@ -196,14 +196,6 @@ namespace Module.Host.TPM.Handlers
 
                 promo.ActualPromoPostPromoEffectLSV = promo.IsOnInvoice ? (promo.ActualPromoLSVSO ?? 0) - (promo.ActualPromoLSVSI ?? 0) : promo.ActualPromoPostPromoEffectLSVW1 + promo.ActualPromoPostPromoEffectLSVW2;
 
-                // Если эффект получился отрицательным, то приравниваем его к 0
-                if (promo.ActualPromoPostPromoEffectLSV < 0)
-                {
-                    promo.ActualPromoPostPromoEffectLSV = 0;
-                    promo.ActualPromoPostPromoEffectLSVW1 = 0;
-                    promo.ActualPromoPostPromoEffectLSVW2 = 0;
-                }
-
                 if (promo.IsOnInvoice)
                 {
                     promo.ActualPromoPostPromoEffectLSVW1 = promo.ActualPromoPostPromoEffectLSV * (clientTree.PostPromoEffectW1 / (clientTree.PostPromoEffectW1 + clientTree.PostPromoEffectW2));

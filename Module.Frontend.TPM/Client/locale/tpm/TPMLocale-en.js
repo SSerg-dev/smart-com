@@ -2287,7 +2287,8 @@
         'ActualPromoPostPromoEffectLSVW2': 'Actual Post Promo Effect W2, %',
         'PlanPromoPostPromoEffectLSV': 'Plan Post Promo Effect LSV total',
         'ActualPromoPostPromoEffectLSV': 'Actual Promo Effect LSV total',
-        'InOut': 'InOut'
+        'InOut': 'InOut',
+        'IsOnInvoice': 'On-Invoice'
     },
 
     'InOutProductSelectionWindow': {
