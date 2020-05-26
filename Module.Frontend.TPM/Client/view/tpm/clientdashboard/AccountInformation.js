@@ -233,7 +233,7 @@
                                     items: [{
                                         xtype: 'fieldset',
                                         border: false,
-                                        html: '<span class="border-left-box" style="border-color: #00D7B8; padding-right: 5px"><span style="text-align: left; padding-left: 5px;">Shooper TI, %</br></span>',
+                                        html: '<span class="border-left-box" style="border-color: #00D7B8; padding-right: 5px"><span style="text-align: left; padding-left: 5px;">Shopper TI, %</br></span>',
                                         width: '40%',
                                         cls: 'client-dashboard-account-panel-border-title'
                                     }, {
