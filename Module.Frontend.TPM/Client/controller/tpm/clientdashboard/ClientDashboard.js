@@ -666,14 +666,16 @@
         promoWeeks.removePromoWeeksPanels();
         var promoWeeksPanels = [];
         records.forEach(function (record) {
-            var promoWeeksPanel = Ext.widget('promoweekspanel', {
-                logoFileName: record.data.LogoFileName,
-                brandTechName: record.data.BrandTechName,
-                promoWeeks: record.data.PromoWeeks,
-                vodYTD: (record.data.VodYTD * 100).toFixed(2),
-                vodYEE: (record.data.VodYEE * 100).toFixed(2)
-            });
-            promoWeeksPanels.push(promoWeeksPanel);
+            if (record.data.PromoWeeks != 0 || record.data.VodYEE != 0 || record.data.VodYTD != 0) {
+                var promoWeeksPanel = Ext.widget('promoweekspanel', {
+                    logoFileName: record.data.LogoFileName,
+                    brandTechName: record.data.BrandTechName,
+                    promoWeeks: record.data.PromoWeeks,
+                    vodYTD: (record.data.VodYTD * 100).toFixed(2),
+                    vodYEE: (record.data.VodYEE * 100).toFixed(2)
+                });
+                promoWeeksPanels.push(promoWeeksPanel);
+            }
         });
         promoWeeks.addPromoWeeksPanels(promoWeeksPanels);
     },
