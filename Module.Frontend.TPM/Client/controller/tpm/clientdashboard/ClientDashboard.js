@@ -665,14 +665,18 @@
         var promoWeeks = clientDashboard.query('promoweeks')[0];
         promoWeeks.removePromoWeeksPanels();
         var promoWeeksPanels = [];
+        var VodYEE, VodYTD, Weeks;
         records.forEach(function (record) {
-            if (record.data.PromoWeeks != 0 || record.data.VodYEE != 0 || record.data.VodYTD != 0) {
+            Weeks = record.data.PromoWeeks;
+            VodYTD = (record.data.VodYTD * 100).toFixed(2);
+            VodYEE = (record.data.VodYEE * 100).toFixed(2);
+            if (Weeks != 0 || VodYTD != 0 || VodYEE != 0) {
                 var promoWeeksPanel = Ext.widget('promoweekspanel', {
                     logoFileName: record.data.LogoFileName,
                     brandTechName: record.data.BrandTechName,
-                    promoWeeks: record.data.PromoWeeks,
-                    vodYTD: (record.data.VodYTD * 100).toFixed(2),
-                    vodYEE: (record.data.VodYEE * 100).toFixed(2)
+                    promoWeeks: Weeks,
+                    vodYTD: VodYTD,
+                    vodYEE: VodYEE
                 });
                 promoWeeksPanels.push(promoWeeksPanel);
             }
