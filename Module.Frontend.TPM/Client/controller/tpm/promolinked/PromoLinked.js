@@ -163,7 +163,7 @@
                 text: l10n.ns('core', 'buttons').value('ok'),
                 ui: 'green-button-footer-toolbar',
                 itemId: 'apply',
-                disabled: true
+                disabled: true                   
             }]
         });
 
@@ -240,7 +240,7 @@
         if (promoLinkedGrid) {
             var promoLinkedStore = promoLinkedGrid.getStore(),
                 count = promoLinkedStore.getCount(),
-                promoLinkedRecords = count > 0 ? promoLinkedStore.getRange(0, count) : []    
+                promoLinkedRecords = count > 0 ? promoLinkedStore.getRange(0, count) : []
 
             promoLinkedRecords.forEach(function (checkedRow) {
                 prefilter.rules.push({
@@ -332,14 +332,10 @@
     // блокировка/разблокировка кнопки Применить при изменении набора галочек в гриде привязки Promo к PromoSupport
     onChoosePromoGridCheckChange: function (model) {
         var grid = model.view.up('grid'),
-            checkedRows = grid.getSelectionModel().getCheckedRows();
-        if (grid.up('basewindow[name=choosepromowindow]') != undefined) {
-            if (checkedRows.length > 0) {
-                grid.up('basewindow[name=choosepromowindow]').down('#apply').setDisabled(false);
-            } else {
-                grid.up('basewindow[name=choosepromowindow]').down('#apply').setDisabled(true);
-            }
-        }
+            checkedRows = grid.getSelectionModel().getCheckedRows(),
+            applyButton = grid.up('basewindow[name=choosepromowindow]').down('#apply');
+
+        applyButton.setDisabled(!checkedRows.length);
     },
 
     onPromoLinkedViewerDeleteButtonClick: function (button) {

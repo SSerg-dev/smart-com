@@ -191,9 +191,9 @@
     onChoosePromoGridCheckChange: function (item) {
         var checkedRows = item.checkedRows;
         var grid = item.view.up('grid');
-        var button = grid.up('basewindow[name=choosepromowindow]').down('#apply');
+        var applyButton = grid.up('basewindow[name=choosepromowindow]').down('#apply');
 
-        button.setDisabled(false);
+        applyButton.setDisabled(!checkedRows.length);
     },
 
     onApplyActionButtonClick: function (button) {
