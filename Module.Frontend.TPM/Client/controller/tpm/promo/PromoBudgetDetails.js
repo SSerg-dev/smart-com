@@ -158,11 +158,14 @@
                     // отправляем выбранные статьи           
                     promoSupport.setLoading(true);
                     var params = 'promoId=' + detailWidget.record.promoId + '&budgetName=' + detailWidget.budgetName;
+                    var filteredIds = selectedIds.filter(function (element) {
+                        return element != null;
+                    });
 
                     $.ajax({
                         dataType: 'json',
                         url: '/odata/PromoSupportPromoes/ManageSubItems?' + params,
-                        data: JSON.stringify(selectedIds),
+                        data: JSON.stringify(filteredIds),
                         type: 'POST',
                         success: function () {
                             me.clearFields(detailWidget);
