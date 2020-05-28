@@ -56,7 +56,7 @@ namespace Module.Frontend.TPM.Controllers
 
 			IQueryable<PlanIncrementalReport> query = Context.Set<PlanIncrementalReport>();
 
-			query = ModuleApplyFilterHelper.ApplyFilter(query, Context, hierarchy, filters);
+			//query = ModuleApplyFilterHelper.ApplyFilter(query, Context, hierarchy, filters);
 
 			query = SetWeekByMarsDates(query);
 
@@ -64,7 +64,10 @@ namespace Module.Frontend.TPM.Controllers
 			{
 				query = JoinWeeklyDivision(query);
 			}
-			return query;
+
+            query = ModuleApplyFilterHelper.ApplyFilter(query, Context, hierarchy, filters);
+
+            return query;
 		}
 
 
