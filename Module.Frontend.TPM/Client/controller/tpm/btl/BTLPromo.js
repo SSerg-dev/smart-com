@@ -54,7 +54,7 @@
                 '#btlpromochoose #apply': {
                     click: this.onApplyActionButtonClick
                 },
-                'basewindow[name=choosepromowindow] directorygrid': {
+                '#btlpromochoose directorygrid': {
                     selectionchange: this.onChoosePromoGridCheckChange,
                 },
             }
