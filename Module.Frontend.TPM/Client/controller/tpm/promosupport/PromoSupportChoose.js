@@ -103,7 +103,7 @@
                         grid.setLoading(false);
                     }
                     if (win) {
-                        win.down('#select')[selModel.hasChecked() ? 'enable' : 'disable']();
+                        win.down('#select')['enable']();
                     }
                 }
             });
