@@ -522,12 +522,12 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
 						newBrandTech = context.Set<BrandTech>().Add(newBrandTech);
 						try
 						{
+							context.SaveChanges();
 							List<string> brandTechList = new List<string>
 							{
 								newBrandTech.BrandTech_code
 							};
 							CreateCoefficientSI2SOHandler(brandTechList, null, 1);
-							context.SaveChanges();
 							CreateActualCloneWithZeroShareByBrandTech(context, newBrandTech);
 
 							Results.Add(String.Format("Added new BrandTech: {0}. BrandTech code: {1}", newBrandTech.Name, newBrandTech.BrandTech_code), null);
