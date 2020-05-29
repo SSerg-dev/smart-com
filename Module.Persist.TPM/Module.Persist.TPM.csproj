@@ -1959,6 +1959,10 @@
     <Compile Include="Migrations\202005191538104_EmptyMigrationIncremental2Apollo2.Designer.cs">
       <DependentUpon>202005191538104_EmptyMigrationIncremental2Apollo2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202005291916320_EmptyMigrationRC8.cs" />
+    <Compile Include="Migrations\202005291916320_EmptyMigrationRC8.Designer.cs">
+      <DependentUpon>202005291916320_EmptyMigrationRC8.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -3802,6 +3806,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005191538104_EmptyMigrationIncremental2Apollo2.resx">
       <DependentUpon>202005191538104_EmptyMigrationIncremental2Apollo2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005291916320_EmptyMigrationRC8.resx">
+      <DependentUpon>202005291916320_EmptyMigrationRC8.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
