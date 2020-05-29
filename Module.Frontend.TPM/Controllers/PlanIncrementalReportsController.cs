@@ -56,7 +56,7 @@ namespace Module.Frontend.TPM.Controllers
 
 			IQueryable<PlanIncrementalReport> query = Context.Set<PlanIncrementalReport>();
 
-			//query = ModuleApplyFilterHelper.ApplyFilter(query, Context, hierarchy, filters);
+			query = ModuleApplyFilterHelper.ApplyFilter(query, Context, hierarchy, filters);
 
 			query = SetWeekByMarsDates(query);
 
@@ -65,7 +65,7 @@ namespace Module.Frontend.TPM.Controllers
 				query = JoinWeeklyDivision(query);
 			}
 
-            query = ModuleApplyFilterHelper.ApplyFilter(query, Context, hierarchy, filters);
+            //query = ModuleApplyFilterHelper.ApplyFilter(query, Context, hierarchy, filters);
 
             return query;
 		}
@@ -149,18 +149,24 @@ namespace Module.Frontend.TPM.Controllers
 			return Context.Set<PromoProduct>().Count(e => e.Id == key) > 0;
 		}
 
-		//Простановка дат в формате Mars в поле Week
+		/// <summary>
+		/// Простановка дат в формате Mars в поле Week
+		/// </summary>
+		/// <param name="query">Массив данных</param>
+		/// <returns></returns>
 		public IQueryable<PlanIncrementalReport> SetWeekByMarsDates(IQueryable<PlanIncrementalReport> query)
 		{
 			List<PlanIncrementalReport> result = new List<PlanIncrementalReport>(query);
-			string stringFormatYP2W = "{0}P{1:D2}W{2}";
-			foreach (PlanIncrementalReport item in result)
-			{
-				if (item.WeekStartDate != null)
-				{
-					item.Week = (new MarsDate((DateTimeOffset)item.WeekStartDate)).ToString(stringFormatYP2W);
-				}
-			}
+			//string stringFormatYP2W = "{0}P{1:D2}W{2}";
+
+			//result.ForEach(item => 
+			//{
+			//	if (item.WeekStartDate != null)
+			//	{
+			//		item.Week = (new MarsDate((DateTimeOffset)item.WeekStartDate)).ToString(stringFormatYP2W);
+			//	}
+			//});
+
 			return result.AsQueryable();
 		}
 
@@ -168,36 +174,47 @@ namespace Module.Frontend.TPM.Controllers
 		{
 			List<PlanIncrementalReport> result = new List<PlanIncrementalReport>();
 
-			var temp = query.GroupBy(x => new { x.PromoNameId, x.ZREP });
-
-			foreach (var group in temp)
+			List<GroupedPlanValues> grouped = query
+							.GroupBy(q => new { q.PromoNameId, q.ZREP })
+							.Select(q => new GroupedPlanValues()
+							{
+								PlanProductBaselineCaseQty = q.Sum(s => s.PlanProductBaselineCaseQty),
+								PlanProductBaselineLSV = q.Sum(s => s.PlanProductBaselineLSV),
+								PlanProductIncrementalCaseQty = q.Sum(s => s.PlanProductIncrementalCaseQty),
+								PlanProductIncrementalLSV = q.Sum(s => s.PlanProductIncrementalLSV),
+								WeekStartDate = q.Min(m => m.WeekStartDate),
+								Week = q.Min(m => m.Week),
+								Pir = q.Select(i => i).FirstOrDefault()
+							}).ToList();
+			grouped.ForEach(item => 
 			{
-				PlanIncrementalReport toAdd = null;
-				foreach (var item in group)
-				{
-					if (toAdd == null)
-					{
-						toAdd = (PlanIncrementalReport)item.Clone();
-						toAdd.PlanProductBaselineCaseQty = 0;
-						toAdd.PlanProductBaselineLSV = 0;
-						toAdd.PlanProductIncrementalCaseQty = 0;
-						toAdd.PlanProductIncrementalLSV = 0;
-					}
-					toAdd.PlanProductBaselineCaseQty += item.PlanProductBaselineCaseQty;
-					toAdd.PlanProductBaselineLSV += item.PlanProductBaselineLSV;
-					toAdd.PlanProductIncrementalCaseQty += item.PlanProductIncrementalCaseQty;
-					toAdd.PlanProductIncrementalLSV += item.PlanProductIncrementalLSV;
+				PlanIncrementalReport toAdd = (PlanIncrementalReport)item.Pir.Clone();
 
-					if (DateTimeOffset.Compare((DateTimeOffset)toAdd.WeekStartDate, (DateTimeOffset)item.WeekStartDate) > 0)
-					{
-						toAdd.WeekStartDate = item.WeekStartDate;
-						toAdd.Week = item.Week;
+				toAdd.PlanProductBaselineCaseQty += item.PlanProductBaselineCaseQty;
+				toAdd.PlanProductBaselineLSV += item.PlanProductBaselineLSV;
+				toAdd.PlanProductIncrementalCaseQty += item.PlanProductIncrementalCaseQty;
+				toAdd.PlanProductIncrementalLSV += item.PlanProductIncrementalLSV;
+				toAdd.WeekStartDate = item.WeekStartDate;
+				toAdd.Week = item.Week;
 
-					}
-				}
 				result.Add(toAdd);
-			}
+			});
+
 			return result.AsQueryable();
+		}
+
+		/// <summary>
+		/// Класс для суммирования плановых показателей сгруппированных по PromoNameId, ZREP объектов PlanIncrementalReport 
+		/// </summary>
+		private class GroupedPlanValues
+		{
+			public double? PlanProductBaselineCaseQty { get; set; }
+			public double? PlanProductBaselineLSV { get; set; }
+			public double? PlanProductIncrementalCaseQty { get; set; }
+			public double? PlanProductIncrementalLSV { get; set; }
+			public DateTimeOffset? WeekStartDate { get; set; }
+			public string Week { get; set; }
+			public PlanIncrementalReport Pir { get; set; }
 		}
 	}
 }

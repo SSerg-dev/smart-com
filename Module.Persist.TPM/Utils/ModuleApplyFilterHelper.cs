@@ -541,27 +541,17 @@ namespace Module.Persist.TPM.Utils {
 
             if (clientFilter.Any())
             {
-                Regex rg = new Regex(@"([0-9]){1,}$");
-                //Получаем список Number и выбираем промо
-                List<string> stringNumbers = new List<string>();
-                List<string> queryIds = new List<string>();
-                foreach (PlanIncrementalReport planIncrementalReport in query)
-                {
-                    stringNumbers.Add(rg.Match(planIncrementalReport.PromoNameId).Value);
-                    queryIds.Add(planIncrementalReport.PromoNameId);
-                }
-
+                IQueryable<int> numbers = query.Select(q => q.PromoNumber);
+               
                 hierarchy = getFilteredHierarchy(hierarchy, clientFilter);
-                IQueryable<Promo> promos = context.Set<Promo>().Where(x => stringNumbers.Contains(x.Number.ToString())
-                    && hierarchy.Any(h => h.Id == x.ClientTreeId));
-                List<string> Numbers = promos.Select(x => x.Number.ToString()).ToList();
-                for (int i = stringNumbers.Count() - 1; i >= 0; i--)
-                {
-                    if (!Numbers.Contains(stringNumbers[i])) queryIds.RemoveAt(i);
-                }
+                IQueryable<string> queryIds = context.Set<Promo>()
+                    .Where(x 
+                        => numbers.Contains(x.Number.Value)
+                            && hierarchy.Any(h => h.Id == x.ClientTreeId))
+                    .Select(x => x.Name + "#" + x.Number.ToString());
 
                 query = query.Where(x =>
-                 queryIds.Contains(x.PromoNameId));
+                queryIds.Contains(x.PromoNameId));
             }
             return query;
         }

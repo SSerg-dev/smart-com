@@ -2383,6 +2383,7 @@
     <Content Include="SQLInitialize\20200521_1252_Add_Proc_DropIncrementalIndex.sql" />
     <Content Include="SQLInitialize\20200521_1253_Alter_FillCurrentDayIncremental.sql" />
     <Content Include="SQLInitialize\20200521_1254_Alter_FillPreviousDayIncremental.sql" />
+    <Content Include="SQLInitialize\20200529_1935_Alter_PlanIncrementalReport.sql" />
     <Compile Include="Utils\ConfigManager.cs" />
     <Compile Include="Utils\ExportCSVBuilderFactory.cs" />
     <Compile Include="Utils\ExportCSVModelBuilders\IncrementalToApolloModelBuilder.cs" />
