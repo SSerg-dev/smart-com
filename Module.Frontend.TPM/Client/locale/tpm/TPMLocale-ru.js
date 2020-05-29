@@ -178,6 +178,7 @@
         'completeStep6Validate': 'настройки',
         'dateOfChange': 'Дата изменения',
         'selectpromostatuswindow': 'Выбор статуса промо',
+        'PlanPromoUpliftPercentError': 'Plan Promo Uplift %',
         'InvoiceTotalValidate': 'Invoice Total'
     },
 

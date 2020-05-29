@@ -189,7 +189,7 @@
         'completeSteps': 'Complete the remaining steps.',
         'dateOfChange': 'Date of change',
 
-        'completeStepsValidate': 'Check if folowing steps completed correctly: ',
+        'completeStepsValidate': 'Check if following steps completed correctly: ',
         'MarsMechanicValidate': 'Mars Mechanic',
         'PlanInstoreMechanicValidate': 'Instore Assumption',
         'PromoCommentValidate': 'Mechanic Comment',
@@ -200,6 +200,7 @@
         'PlanInstoreAssumptionValidate': 'Plan Instore Assumption',
         'ActualInstoreValidate': 'Instore Assumption Mechanic',
         'InvoiceTotalValidate': 'Invoice Total',
+        'PlanPromoUpliftPercentError': 'Plan Promo Uplift %',
         'InvoiceNumberValidate': 'Invoice Number',
         'DocumentNumberValidate': 'Document Number',
         'completeStep1Validate': 'Step 1',
