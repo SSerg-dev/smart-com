@@ -590,16 +590,38 @@ namespace Module.Host.TPM.Handlers.DataFlow
 
                     if (success)
                     {
-                        var changesIncidents = context.Set<ChangesIncident>().Where(x => x.ProcessDate == null && x.Disabled);
-                        foreach (var changesIncident in changesIncidents)
+                        while (true)
                         {
-                            changesIncident.ProcessDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                            using (DatabaseContext databaseContext = new DatabaseContext())
+                            {
+                                var changesIncidents = databaseContext.Set<ChangesIncident>().Where(x => x.ProcessDate == null && x.Disabled).Take(1000);
+                                if (changesIncidents.Count() > 0)
+                                {
+                                    foreach (var item in changesIncidents)
+                                    {
+                                        item.ProcessDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                                    }
+                                    databaseContext.SaveChanges();
+                                }
+                                else break;
+                            }
                         }
 
-                        var productChangeIncidents = context.Set<ProductChangeIncident>().Where(x => x.RecalculationProcessDate == null && x.Disabled);
-                        foreach (var productChangeIncident in productChangeIncidents)
+                        while (true)
                         {
-                            productChangeIncident.RecalculationProcessDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                            using (DatabaseContext databaseContext = new DatabaseContext())
+                            {
+                                var productChangesIncidents = databaseContext.Set<ProductChangeIncident>().Where(x => x.RecalculationProcessDate == null && x.Disabled).Take(1000);
+                                if (productChangesIncidents.Count() > 0)
+                                {
+                                    foreach (var item in productChangesIncidents)
+                                    {
+                                        item.RecalculationProcessDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                                    }
+                                    databaseContext.SaveChanges();
+                                }
+                                else break;
+                            }
                         }
                     }
 

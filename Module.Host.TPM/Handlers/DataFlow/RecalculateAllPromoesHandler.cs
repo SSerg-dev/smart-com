@@ -44,14 +44,32 @@ namespace Module.Host.TPM.Handlers.DataFlow
                 var blockedPromoes = databaseContext.Set<BlockedPromo>().Where(x => x.Disabled == false);
                 if (blockedPromoes.Count() == 0)
                 {
-                    foreach (var changeIncident in databaseContext.Set<ChangesIncident>().Where(x => x.ProcessDate == null))
+                    while (true)
                     {
-                        changeIncident.Disabled = true;
+                        using (DatabaseContext context = new DatabaseContext())
+                        {
+                            var changesIncidents = context.Set<ChangesIncident>().Where(x => x.ProcessDate == null && !x.Disabled).Take(1000);
+                            if (changesIncidents.Count() > 0)
+                            {
+                                foreach (var item in changesIncidents) item.Disabled = true;
+                                context.SaveChanges();
+                            }
+                            else break;
+                        }
                     }
 
-                    foreach (var productChangeIncident in databaseContext.Set<ProductChangeIncident>().Where(x => x.RecalculationProcessDate == null))
+                    while (true)
                     {
-                        productChangeIncident.Disabled = true;
+                        using (DatabaseContext context = new DatabaseContext())
+                        {
+                            var productChangesIncidents = context.Set<ProductChangeIncident>().Where(x => x.RecalculationProcessDate == null && !x.Disabled).Take(1000);
+                            if (productChangesIncidents.Count() > 0)
+                            {
+                                foreach (var item in productChangesIncidents) item.Disabled = true;
+                                context.SaveChanges();
+                            }
+                            else break;
+                        }
                     }
 
                     var handler = new LoopHandler()
