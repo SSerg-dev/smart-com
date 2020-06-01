@@ -550,10 +550,9 @@ namespace Module.Persist.TPM.Utils {
                             && hierarchy.Any(h => h.Id == x.ClientTreeId))
                     .Select(x => x.Name + "#" + x.Number.ToString());
 
-                query = query.Where(x =>
-                queryIds.Contains(x.PromoNameId));
+                query = query.Where(x => queryIds.Contains(x.PromoNameId));
             }
-            return query;
+            return query.ToList().AsQueryable();
         }
 
         /// <summary>

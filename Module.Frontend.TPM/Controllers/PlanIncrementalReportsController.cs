@@ -37,12 +37,6 @@ namespace Module.Frontend.TPM.Controllers
 			this.authorizationManager = authorizationManager;
 		}
 
-		//[ClaimsAuthorize]
-		//[EnableQuery(MaxNodeCount = int.MaxValue)]
-		//public SingleResult<PlanIncrementalReport> GetPlanIncrementalReport([FromODataUri] System.Guid key) {
-		//    return SingleResult.Create(GetConstraintedQuery());
-		//}
-
 		public IQueryable<PlanIncrementalReport> GetConstraintedQuery(bool forExport = false)
 		{
 			UserInfo user = authorizationManager.GetCurrentUser();
@@ -57,16 +51,10 @@ namespace Module.Frontend.TPM.Controllers
 			IQueryable<PlanIncrementalReport> query = Context.Set<PlanIncrementalReport>();
 
 			query = ModuleApplyFilterHelper.ApplyFilter(query, Context, hierarchy, filters);
-
-			query = SetWeekByMarsDates(query);
-
+			
 			if (!forExport)
-			{
 				query = JoinWeeklyDivision(query);
-			}
-
-            //query = ModuleApplyFilterHelper.ApplyFilter(query, Context, hierarchy, filters);
-
+						
             return query;
 		}
 
@@ -148,28 +136,7 @@ namespace Module.Frontend.TPM.Controllers
 		{
 			return Context.Set<PromoProduct>().Count(e => e.Id == key) > 0;
 		}
-
-		/// <summary>
-		/// Простановка дат в формате Mars в поле Week
-		/// </summary>
-		/// <param name="query">Массив данных</param>
-		/// <returns></returns>
-		public IQueryable<PlanIncrementalReport> SetWeekByMarsDates(IQueryable<PlanIncrementalReport> query)
-		{
-			List<PlanIncrementalReport> result = new List<PlanIncrementalReport>(query);
-			//string stringFormatYP2W = "{0}P{1:D2}W{2}";
-
-			//result.ForEach(item => 
-			//{
-			//	if (item.WeekStartDate != null)
-			//	{
-			//		item.Week = (new MarsDate((DateTimeOffset)item.WeekStartDate)).ToString(stringFormatYP2W);
-			//	}
-			//});
-
-			return result.AsQueryable();
-		}
-
+		
 		public IQueryable<PlanIncrementalReport> JoinWeeklyDivision(IQueryable<PlanIncrementalReport> query)
 		{
 			List<PlanIncrementalReport> result = new List<PlanIncrementalReport>();
