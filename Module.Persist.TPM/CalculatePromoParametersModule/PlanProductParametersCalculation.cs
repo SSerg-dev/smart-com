@@ -369,9 +369,8 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 BaselineAndPriceCalculation.SetPriceForPromoProducts(context, promo);
 
                 bool isOnInvoice = promo.IsOnInvoice;
-                DateTimeOffset? promoStartDate = isOnInvoice ? promo.DispatchesStart : promo.StartDate;
-                DateTimeOffset? promoEndDate = isOnInvoice ? promo.DispatchesEnd : promo.EndDate;
-                message = BaselineAndPriceCalculation.CalculateBaselineQtyAndLSV(promo, context, promoStartDate, promoEndDate, isOnInvoice);
+                //Подбор baseline производится по датам ПРОВЕДЕНИЯ промо независимо от типа промо (on/off-invoice)
+                message = BaselineAndPriceCalculation.CalculateBaselineQtyAndLSV(promo, context, promo.StartDate, promo.EndDate, isOnInvoice);
             }
             else
             {

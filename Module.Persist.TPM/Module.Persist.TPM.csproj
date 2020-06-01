@@ -2324,6 +2324,7 @@
     <Content Include="SQLInitialize\20200417_1500_ClientDashboardView_AP_DP.sql" />
     <Content Include="SQLInitialize\20200421_1330_Add_Ap_DemandPlaning_Importsql.sql" />
     <Content Include="SQLInitialize\20200427_1600_Alter_ClientDashboardView.sql" />
+    <Content Include="SQLInitialize\20200601_2350_CreateOnInvoiceBaselineIncidents.sql" />
     <Content Include="SQLInitialize\20200525_0030_FixIncrementalPromoDisabled.sql" />
     <Content Include="SQLInitialize\20200521_0937_Alter_ClientDashboardView.sql" />
     <Content Include="SQLInitialize\20200505_2130_FillCasePriceInIncrementalPromo.sql" />
