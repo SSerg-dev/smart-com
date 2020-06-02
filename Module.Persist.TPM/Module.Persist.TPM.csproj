@@ -2390,6 +2390,7 @@
     <Content Include="SQLInitialize\20200521_1254_Alter_FillPreviousDayIncremental.sql" />
     <Content Include="SQLInitialize\20200529_1935_Alter_PlanIncrementalReport.sql" />
     <Content Include="SQLInitialize\20200601_1735_Alter_FillPromoProductDifference.sql" />
+    <Content Include="SQLInitialize\20200602_1800_Alter_FillPromoProductDifference.sql" />
     <Compile Include="Utils\ConfigManager.cs" />
     <Compile Include="Utils\ExportCSVBuilderFactory.cs" />
     <Compile Include="Utils\ExportCSVModelBuilders\IncrementalToApolloModelBuilder.cs" />
