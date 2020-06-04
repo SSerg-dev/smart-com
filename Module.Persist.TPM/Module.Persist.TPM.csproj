@@ -2158,6 +2158,7 @@
     <Compile Include="PromoStateControl\PromoStateContext.cs" />
     <Compile Include="PromoStateControl\PromoStates.cs" />
     <Compile Include="PromoStateControl\PromoStateUtil.cs" />
+    <Compile Include="PromoStateControl\PromoStatusHelper.cs" />
     <Compile Include="PromoStateControl\RoleStateMap\RoleStateMap.cs" />
     <Compile Include="PromoStateControl\RoleStateMap\RoleStateUtil.cs" />
     <Compile Include="PromoStateControl\RoleStateMap\StateNames.cs" />

@@ -62,14 +62,12 @@ namespace Module.Persist.TPM.PromoStateControl
                 var backToOnApprovalDispatchDays = settingsManager.GetSetting<int>("BACK_TO_ON_APPROVAL_DISPATCH_DAYS_COUNT", 7 * 8);
                 bool isCorrectDispatchDifference = (promoModel.DispatchesStart - ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)).Value.Days >= backToOnApprovalDispatchDays;
 
+                var sf = PromoStatusHelper.isParametersChanged(promoModel, _stateContext.Model, stateIdVP, stateIdTPR);
+                var asd = PromoStatusHelper.isDispatchChanged(isCorrectDispatchDifference, promoModel, _stateContext.Model);
                 // Условия для возврата
-                if ((((_stateContext.Model.MarsMechanicDiscount < promoModel.MarsMechanicDiscount) ||
-                    (_stateContext.Model.MarsMechanicId == stateIdVP && promoModel.MarsMechanicId == stateIdTPR) ||
-                    (_stateContext.Model.ProductHierarchy != promoModel.ProductHierarchy) ||
-                    (_stateContext.Model.StartDate != promoModel.StartDate) ||
-                    (_stateContext.Model.EndDate != promoModel.EndDate)) &&
-                    !isCorrectDispatchDifference)
-                    && userRole != "SupportAdministrator")
+                if ((PromoStatusHelper.isParametersChanged(promoModel, _stateContext.Model, stateIdVP, stateIdTPR) ||
+                    PromoStatusHelper.isDispatchChanged(isCorrectDispatchDifference, promoModel, _stateContext.Model)
+                    && userRole != "SupportAdministrator"))
                 {
                     promoStatus = _stateContext.dbContext.Set<PromoStatus>().First(n => n.SystemName == "DraftPublished");
                     promoModel.PromoStatusId = promoStatus.Id;
