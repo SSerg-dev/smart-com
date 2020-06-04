@@ -62,8 +62,8 @@ namespace Module.Persist.TPM.PromoStateControl
                 bool isCorrectDispatchDifference = (promoModel.DispatchesStart - ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)).Value.Days >= backToOnApprovalDispatchDays;
 
                 // Условия для возврата
-                if ((PromoStatusHelper.isParametersChanged(promoModel, _stateContext.Model, stateIdVP, stateIdTPR) ||
-                    PromoStatusHelper.isDispatchChanged(isCorrectDispatchDifference, promoModel, _stateContext.Model)
+                if ((PromoStatusHelper.IsParametersChanged(promoModel, _stateContext.Model, stateIdVP, stateIdTPR) ||
+                    PromoStatusHelper.IsDispatchChanged(isCorrectDispatchDifference, promoModel, _stateContext.Model)
                     && userRole != "SupportAdministrator"))
                 {
                     promoStatus = _stateContext.dbContext.Set<PromoStatus>().First(n => n.SystemName == "DraftPublished");
