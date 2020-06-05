@@ -213,7 +213,6 @@
 		var mechanicType = nonenegoeditor.down('[name=MechanicTypeId]');
 		var discount = nonenegoeditor.down('[name=Discount]');        
 
-		if (nonenegoeditor.storeLoaded) {
 			mechanicType.clearValue();
 
 			if (field.rawValue != 'VP') {
@@ -234,8 +233,6 @@
 
 			var me = App.app.getController('tpm.nonenego.NoneNego');
 			me.validateFields(me);
-		}
-		nonenegoeditor.storeLoaded = true;
     },
 
     nonenegoMechanicTypeListener: function (field, newValue, oldValue) {
