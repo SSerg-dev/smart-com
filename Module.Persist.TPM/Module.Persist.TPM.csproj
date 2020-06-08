@@ -1967,6 +1967,10 @@
     <Compile Include="Migrations\202006041007014_TemporalFieldInBrandTech.Designer.cs">
       <DependentUpon>202006041007014_TemporalFieldInBrandTech.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202006081222578_DeleteTempSub_Code.cs" />
+    <Compile Include="Migrations\202006081222578_DeleteTempSub_Code.Designer.cs">
+      <DependentUpon>202006081222578_DeleteTempSub_Code.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -2183,6 +2187,7 @@
     <Content Include="SQLInitialize\20200220_1730_AlterPromoGridView_Add_OnOffInvoice.sql" />
     <Content Include="SQLInitialize\20200225_2150_AlterPromoView_AddONOFFInvoice.sql" />
     <Content Include="SQLInitialize\20200604_1300_BrandTech_FillTempField.sql" />
+    <Content Include="SQLInitialize\20200608_1500_Alter_ClientDashboardView.sql" />
     <Content Include="SQLInitialize\20200604_1400_Alter_ClientDashboardView.sql" />
     <Content Include="SQLInitialize\20200603_1350_UpdatePriceSyncHandlerExecTime.sql" />
     <Content Include="SQLInitialize\20200402_1535_Add_AP_for_CMManager_CoefficientSI2SO.sql" />
@@ -3823,6 +3828,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202006041007014_TemporalFieldInBrandTech.resx">
       <DependentUpon>202006041007014_TemporalFieldInBrandTech.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006081222578_DeleteTempSub_Code.resx">
+      <DependentUpon>202006081222578_DeleteTempSub_Code.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
