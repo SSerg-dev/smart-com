@@ -2186,6 +2186,7 @@
     <Compile Include="CalculatePromoParametersModule\PlanProductParametersCalculation.cs" />
     <Content Include="SQLInitialize\20200220_1730_AlterPromoGridView_Add_OnOffInvoice.sql" />
     <Content Include="SQLInitialize\20200225_2150_AlterPromoView_AddONOFFInvoice.sql" />
+    <Content Include="SQLInitialize\20200608_1720_FixPromoStatuses.sql" />
     <Content Include="SQLInitialize\20200604_1300_BrandTech_FillTempField.sql" />
     <Content Include="SQLInitialize\20200608_1500_Alter_ClientDashboardView.sql" />
     <Content Include="SQLInitialize\20200604_1400_Alter_ClientDashboardView.sql" />
