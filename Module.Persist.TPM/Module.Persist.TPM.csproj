@@ -1963,14 +1963,6 @@
     <Compile Include="Migrations\202005291916320_EmptyMigrationRC8.Designer.cs">
       <DependentUpon>202005291916320_EmptyMigrationRC8.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202006041007014_TemporalFieldInBrandTech.cs" />
-    <Compile Include="Migrations\202006041007014_TemporalFieldInBrandTech.Designer.cs">
-      <DependentUpon>202006041007014_TemporalFieldInBrandTech.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202006081222578_DeleteTempSub_Code.cs" />
-    <Compile Include="Migrations\202006081222578_DeleteTempSub_Code.Designer.cs">
-      <DependentUpon>202006081222578_DeleteTempSub_Code.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -3825,12 +3817,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005291916320_EmptyMigrationRC8.resx">
       <DependentUpon>202005291916320_EmptyMigrationRC8.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202006041007014_TemporalFieldInBrandTech.resx">
-      <DependentUpon>202006041007014_TemporalFieldInBrandTech.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202006081222578_DeleteTempSub_Code.resx">
-      <DependentUpon>202006081222578_DeleteTempSub_Code.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
