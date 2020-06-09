@@ -38,7 +38,7 @@ AS
 	CROSS JOIN ClientTree AS CT (NOLOCK)
 	CROSS JOIN Years AS Y (NOLOCK)
 	LEFT JOIN YEEF AS YEE (NOLOCK) ON YEE.YEAR = Y.[Year]
-		AND YEE.BRAND_SEG_TECH_CODE = CASE WHEN ([TempSub_code] IS NULL) THEN [BrandTech_code] ELSE [BrandTech_code]+[TempSub_code] END
+		AND YEE.BRAND_SEG_TECH_CODE = [BrandTech_code]
 		AND YEE.G_HIERARCHY_ID LIKE dbo.ClientDashboardGetParentGHierarchyCode(CT.ObjectId)
 	WHERE 
 		CT.EndDate IS NULL AND CT.IsBaseClient = 1
