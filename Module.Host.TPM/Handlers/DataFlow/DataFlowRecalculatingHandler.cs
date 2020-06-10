@@ -590,6 +590,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
 
                     if (success)
                     {
+                        //TODO: It is not a bad practice, it just means that you did not think your code through.
                         while (true)
                         {
                             using (DatabaseContext databaseContext = new DatabaseContext())
@@ -607,6 +608,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
                             }
                         }
 
+                        //TODO: It is not a bad practice, it just means that you did not think your code through.
                         while (true)
                         {
                             using (DatabaseContext databaseContext = new DatabaseContext())

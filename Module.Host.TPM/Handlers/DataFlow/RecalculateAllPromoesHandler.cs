@@ -44,6 +44,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
                 var blockedPromoes = databaseContext.Set<BlockedPromo>().Where(x => x.Disabled == false);
                 if (blockedPromoes.Count() == 0)
                 {
+                    //TODO: It is not a bad practice, it just means that you did not think your code through.
                     while (true)
                     {
                         using (DatabaseContext context = new DatabaseContext())
@@ -57,7 +58,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
                             else break;
                         }
                     }
-
+                    //TODO: It is not a bad practice, it just means that you did not think your code through.
                     while (true)
                     {
                         using (DatabaseContext context = new DatabaseContext())

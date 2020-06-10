@@ -179,6 +179,7 @@ namespace Module.Frontend.TPM.Controllers
                     ProductTreeNode currentNodeFilter = new ProductTreeNode(treeNode, false, leaf, false);
                     ProductTreeNode currentNode = currentNodeFilter;
 
+                    //TODO: It is not a bad practice, it just means that you did not think your code through.
                     while (true)
                     {
                         // узел, к которому присоединяем получаемую ветвь

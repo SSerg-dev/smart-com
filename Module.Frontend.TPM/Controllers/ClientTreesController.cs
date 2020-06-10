@@ -297,6 +297,7 @@ namespace Module.Frontend.TPM.Controllers
                     bool leaf = !activeTree.Any(x => x.parentId == treeNode.ObjectId);
                     ClientTreeNode currentNode = new ClientTreeNode(treeNode, false, leaf, false);
 
+                    //TODO: It is not a bad practice, it just means that you did not think your code through.
                     while (true)
                     {
                         // узел, к которому присоединяем получаемую ветвь
@@ -396,6 +397,7 @@ namespace Module.Frontend.TPM.Controllers
                 bool leaf = !activeTree.Any(x => x.parentId == treeNode.ObjectId);
                 ClientTreeNode currentNode = new ClientTreeNode(treeNode, false, leaf, false, true);
 
+                //TODO: It is not a bad practice, it just means that you did not think your code through.
                 while (true)
                 {
                     // узел, к которому присоединяем получаемую ветвь

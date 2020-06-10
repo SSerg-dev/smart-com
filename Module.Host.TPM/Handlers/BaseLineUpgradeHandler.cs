@@ -71,6 +71,7 @@ namespace Module.Host.TPM.Handlers
                     promoQuery = GetPromo(baseLineList, context);
                     string promoNumbers = "";
 
+                    //TODO: It is not a bad practice, it just means that you did not think your code through.
                     while (true)
                     {
                         if (CalculationTaskManager.BlockPromoRange(promoQuery, info.HandlerId))
