@@ -12,9 +12,11 @@ using Persist;
 using Persist.Model;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.OData;
 using Utility;
@@ -251,7 +253,7 @@ namespace Module.Frontend.TPM.Util
         }
 
         //TODO: Оптимизировать и сделать вызовы синхроннымы
-        public static void UpdateProductHierarchy(string ChangedType, string NewName, string OldName, Guid? Id = null)
+        public static async Task UpdateProductHierarchy(string ChangedType, string NewName, string OldName, Guid? Id = null)
         {
             DatabaseContext context = new DatabaseContext();
             IQueryable<Promo> Promoes;
@@ -260,15 +262,18 @@ namespace Module.Frontend.TPM.Util
                 case "Brand":
                     if (Id != null)
                     {
-                        Promoes = context.Set<Promo>().Where(x => x.BrandId == Id);
-                        foreach (var Promo in Promoes)
-                        {
-                            if (Promo.ProductHierarchy.StartsWith(OldName + " >"))
+                        Promoes = context.Set<Promo>().Where(x => x.BrandId == Id && 
+                                                                    x.PromoStatus.SystemName != "Closed" &&
+                                                                    x.PromoStatus.SystemName != "Deleted" &&
+                                                                    x.PromoStatus.SystemName != "Cancelled" );
+
+                        Parallel.ForEach(Promoes, promo => {
+                            if (promo.ProductHierarchy.StartsWith(OldName + " >"))
                             {
-                                Promo.ProductHierarchy = Promo.ProductHierarchy.Remove(0, OldName.Length);
-                                Promo.ProductHierarchy = Promo.ProductHierarchy.Insert(0, NewName);
+                                promo.ProductHierarchy = promo.ProductHierarchy.Remove(0, OldName.Length);
+                                promo.ProductHierarchy = promo.ProductHierarchy.Insert(0, NewName);
                             }
-                        }
+                        });
                     }
                     break;
 
@@ -277,35 +282,34 @@ namespace Module.Frontend.TPM.Util
                     {
                         Promoes = context.Set<Promo>().Where(x => x.TechnologyId == Id);
                         var s = Promoes.Count();
-                        foreach (var Promo in Promoes)
-                        {
-                            if (Promo.ProductHierarchy.StartsWith(OldName + " >"))
+
+                        Parallel.ForEach(Promoes, promo => {
+                            if (promo.ProductHierarchy.StartsWith(OldName + " >"))
                             {
-                                Promo.ProductHierarchy = Promo.ProductHierarchy.Remove(0, OldName.Length);
-                                Promo.ProductHierarchy = Promo.ProductHierarchy.Insert(0, NewName);
+                                promo.ProductHierarchy = promo.ProductHierarchy.Remove(0, OldName.Length);
+                                promo.ProductHierarchy = promo.ProductHierarchy.Insert(0, NewName);
                             }
-                            else if (Promo.ProductHierarchy.Contains("> " + OldName + " >"))
+                            else if (promo.ProductHierarchy.Contains("> " + OldName + " >"))
                             {
-                                Promo.ProductHierarchy = Promo.ProductHierarchy.Replace("> " + OldName + " >", "> " + NewName + " >");
+                                promo.ProductHierarchy = promo.ProductHierarchy.Replace("> " + OldName + " >", "> " + NewName + " >");
                             }
-                            else if (Promo.ProductHierarchy.EndsWith("> " + OldName))
+                            else if (promo.ProductHierarchy.EndsWith("> " + OldName))
                             {
-                                Promo.ProductHierarchy = Promo.ProductHierarchy.Remove(Promo.ProductHierarchy.Length - OldName.Length);
-                                Promo.ProductHierarchy = Promo.ProductHierarchy.Insert(Promo.ProductHierarchy.Length, NewName);
+                                promo.ProductHierarchy = promo.ProductHierarchy.Remove(promo.ProductHierarchy.Length - OldName.Length);
+                                promo.ProductHierarchy = promo.ProductHierarchy.Insert(promo.ProductHierarchy.Length, NewName);
                             }
-                        }
+                        });
                     }
                     break;
 
                 case "Subrange":
                     Promoes = context.Set<Promo>().Where(x => x.ProductHierarchy == OldName);
-                    foreach (var Promo in Promoes)
-                    {
-                        Promo.ProductHierarchy = NewName;
-                    }
+
+                    Parallel.ForEach(Promoes, promo => promo.ProductHierarchy = NewName);
+
                     break;
             }
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
 
         public static void CalculateInvoiceTotalProduct(DatabaseContext context, Promo promo)
