@@ -320,7 +320,7 @@ namespace Module.Host.TPM.Handlers
         /// <param name="promo">Промо</param>
         /// <param name="context">Контекст БД</param>
         /// <param name="handlerLogger">Лог</param>
-        public static void CalulateActual(Promo promo, DatabaseContext context, ILogWriter handlerLogger, Guid handlerId, bool isSupportAdmin = false)
+        public static void CalulateActual(Promo promo, DatabaseContext context, ILogWriter handlerLogger, Guid handlerId, bool isSupportAdmin = false, bool useActualCOGS = false, bool useActualTI = false)
         {
             string errorString = null;
             // Продуктовые параметры считаем только, если были загружены Actuals
@@ -345,7 +345,7 @@ namespace Module.Host.TPM.Handlers
             // Параметры промо считаем только, если промо из TLC или если были загружены Actuals
             if (promo.LoadFromTLC || promoProductList.Any(x => x.ActualProductPCQty.HasValue))
             {
-                errorString = ActualPromoParametersCalculation.CalculatePromoParameters(promo, context);
+                errorString = ActualPromoParametersCalculation.CalculatePromoParameters(promo, context, useActualCOGS: useActualCOGS, useActualTI: useActualTI);
             }
 
 			// записываем ошибки если они есть

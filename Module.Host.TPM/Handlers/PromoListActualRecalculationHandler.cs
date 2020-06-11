@@ -95,7 +95,16 @@ namespace Module.Host.TPM.Handlers
                                 handlerLogger.Write(true, logLine, "Message");
                                 handlerLogger.Write(true, "");
 
-                                CalculatePromoParametersHandler.CalulateActual(promo, context, handlerLogger, info.HandlerId);
+                                var previousYear = DateTimeOffset.Now.AddYears(-1).Year;
+                                var useActualCOGS = false;
+                                var useActualTI = false;
+                                if (promo.StartDate.HasValue && promo.StartDate.Value.Year == previousYear)
+                                {
+                                    useActualCOGS = true;
+                                    useActualTI = true;
+                                }
+
+                                CalculatePromoParametersHandler.CalulateActual(promo, context, handlerLogger, info.HandlerId, useActualCOGS: useActualCOGS, useActualTI: useActualTI);
 
                                 swActual.Stop();
                                 handlerLogger.Write(true, "");
