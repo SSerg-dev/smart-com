@@ -320,7 +320,9 @@ namespace Module.Host.TPM.Handlers
         /// <param name="promo">Промо</param>
         /// <param name="context">Контекст БД</param>
         /// <param name="handlerLogger">Лог</param>
-        public static void CalulateActual(Promo promo, DatabaseContext context, ILogWriter handlerLogger, Guid handlerId, bool isSupportAdmin = false, bool useActualCOGS = false, bool useActualTI = false)
+        public static void CalulateActual(Promo promo, DatabaseContext context, ILogWriter handlerLogger, Guid handlerId,
+                                        bool isSupportAdmin = false, bool calculateBudgets = true,
+                                        bool useActualCOGS = false, bool useActualTI = false)
         {
             string errorString = null;
             // Продуктовые параметры считаем только, если были загружены Actuals
@@ -333,13 +335,17 @@ namespace Module.Host.TPM.Handlers
                 if (errorString != null)
                     WriteErrorsInLog(handlerLogger, errorString);
             }
-            // пересчет актуальных бюджетов (из-за LSV)
-            BudgetsPromoCalculation.CalculateBudgets(promo, false, true, handlerLogger, handlerId, context);
 
-            BTL btl = context.Set<BTLPromo>().Where(x => x.PromoId == promo.Id && !x.Disabled && x.DeletedDate == null).FirstOrDefault()?.BTL;
-            if (btl != null)
+            if (calculateBudgets)
             {
-                BudgetsPromoCalculation.CalculateBTLBudgets(btl, false, true, handlerLogger, context);
+                // пересчет актуальных бюджетов (из-за LSV)
+                BudgetsPromoCalculation.CalculateBudgets(promo, false, true, handlerLogger, handlerId, context);
+
+                BTL btl = context.Set<BTLPromo>().Where(x => x.PromoId == promo.Id && !x.Disabled && x.DeletedDate == null).FirstOrDefault()?.BTL;
+                if (btl != null)
+                {
+                    BudgetsPromoCalculation.CalculateBTLBudgets(btl, false, true, handlerLogger, context);
+                }
             }
 
             // Параметры промо считаем только, если промо из TLC или если были загружены Actuals

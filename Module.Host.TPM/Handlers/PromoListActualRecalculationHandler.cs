@@ -104,7 +104,8 @@ namespace Module.Host.TPM.Handlers
                                     useActualTI = true;
                                 }
 
-                                CalculatePromoParametersHandler.CalulateActual(promo, context, handlerLogger, info.HandlerId, useActualCOGS: useActualCOGS, useActualTI: useActualTI);
+                                CalculatePromoParametersHandler.CalulateActual(promo, context, handlerLogger, info.HandlerId, 
+                                    calculateBudgets: false, useActualCOGS: useActualCOGS, useActualTI: useActualTI);
 
                                 swActual.Stop();
                                 handlerLogger.Write(true, "");
