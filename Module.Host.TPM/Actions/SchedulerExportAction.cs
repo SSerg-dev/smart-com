@@ -45,8 +45,8 @@ namespace Module.Host.TPM.Actions.Notifications {
 
                     IQueryable<PromoView> query = (GetConstraintedQuery(context));
                     IQueryable<PromoView> promoes = query.Cast<PromoView>();
-
-                    promoes = promoes.LinqToQuerystring(RawFilters);
+                    var row = RawFilters.Replace("datetimeoffset", "datetime").Replace(".000Z", "").Replace(".00Z", "");
+                    promoes = promoes.LinqToQuerystring(row);
 
                     DateTime startDate = DateTime.Now;
                     DateTime endDate = DateTime.Now;
