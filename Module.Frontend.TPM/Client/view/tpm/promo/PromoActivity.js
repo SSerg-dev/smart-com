@@ -441,7 +441,9 @@ Ext.define('App.view.tpm.promo.PromoActivity', {
                                         //Заменяем запятую на точку для парсера
                                         value = value.split(",").join(".");
                                         var floatValue = parseFloat(value);
-                                        if (floatValue != value || floatValue <= 0 || value === "") {
+                                        if (floatValue != value) {
+                                            return l10n.ns('tpm', 'PromoActivity').value('triggerfieldOnlyNumbers');
+                                        } else if (floatValue <= 0 || value === "") {
                                             return l10n.ns('tpm', 'Promo').value('PlanPromoUpliftPercentError');
                                         } else {
                                             return true;

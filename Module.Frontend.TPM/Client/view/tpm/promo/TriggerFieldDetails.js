@@ -9,7 +9,7 @@
     labelSeparator: '',
     triggerNoEditCls: 'inputReadOnly',
     editable: false,
-    regex: /^(-?)(0|([1-9][0-9]*))(\,[0-9]+)?$/i,
+    regex: /^(-?)(0|([1-9][0-9]*))(\,[0-9]+)|(\.[0-9]+)?$/i,
     regexText: l10n.ns('tpm', 'PromoActivity').value('triggerfieldOnlyNumbers'),
     maxLength: 100,
     windowType: 'promoactivitydetailsinfo',
