@@ -180,7 +180,11 @@ namespace Module.Host.TPM.Handlers
                                 }
 
                                 string[] canBeReturnedToOnApproval = { "OnApproval", "Approved", "Planned" };
-								if (needReturnToOnApprovalStatus && canBeReturnedToOnApproval.Contains(promo.PromoStatus.SystemName) && !isSupportAdmin)
+                                bool needReturnToOnApprovalStatusByZeroUplift = promo.PromoStatus.SystemName.ToLower() == "approved" && (!promo.PlanPromoUpliftPercent.HasValue || promo.PlanPromoUpliftPercent.Value == 0);
+
+                                if (((needReturnToOnApprovalStatus && canBeReturnedToOnApproval.Contains(promo.PromoStatus.SystemName))
+                                    || needReturnToOnApprovalStatusByZeroUplift)
+                                    && !isSupportAdmin)
 								{
 									PromoStatus draftPublished = context.Set<PromoStatus>().First(x => x.SystemName.ToLower() == "draftpublished" && !x.Disabled);
 									promo.PromoStatus = draftPublished;
@@ -213,7 +217,7 @@ namespace Module.Host.TPM.Handlers
 										logLine = String.Format("Error while changing status of promo: {0}", statusChangeError);
 										handlerLogger.Write(true, logLine, "Error");
 									}
-								}
+                                }
                             }
 
                             if (calculateError != null)
