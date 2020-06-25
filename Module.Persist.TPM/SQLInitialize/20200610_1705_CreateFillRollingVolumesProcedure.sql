@@ -1,5 +1,5 @@
 CREATE OR ALTER PROCEDURE [dbo].[FillRollingVolumes] AS
-    BEGIN
+  BEGIN
 	   TRUNCATE TABLE [dbo].[RollingVolume];
 
 	   DECLARE @today DATE = GETDATE();
@@ -8,7 +8,7 @@ CREATE OR ALTER PROCEDURE [dbo].[FillRollingVolumes] AS
 	   SELECT @currentWeekName = MarsWeekFullName FROM Dates WHERE OriginalDate = @today;
 	   SELECT @currentWeekStartDate = MIN(OriginalDate) FROM Dates WHERE MarsWeekFullName = @currentWeekName;
 
-       INSERT INTO [dbo].[RollingVolume]
+    INSERT INTO [dbo].[RollingVolume]
            ([Id]
            ,[DemandGroup]
            ,[Week]
@@ -18,11 +18,14 @@ CREATE OR ALTER PROCEDURE [dbo].[FillRollingVolumes] AS
            ,[Baseline]
            ,[ActualIncremental]
            ,[PreviousRollingVolumes]
-           ,[RollingVolumes]
            ,[Lock]
            ,[ProductId]
            ,[DMDGroup]
-           ,[PromoDifference])
+           ,[PromoDifference]
+           ,[ActualOO]
+           ,[PreliminaryRollingVolumes]
+           ,[RollingVolumesTotal]
+           ,[ManualRollingTotalVolumes])
 		SELECT 
 			NEWID(), 
 			CONCAT(rvf.DMDGROUP, '_05_0125'),
@@ -33,11 +36,15 @@ CREATE OR ALTER PROCEDURE [dbo].[FillRollingVolumes] AS
 			rvf.BaselineQty, 
 			rvf.ActualIncrementalQty,
 			rvf.PreviousRollingVolumesQty, 
-			rvf.RollingVolumesQty, 
 			0, 
 			p.Id, 
 			ct.DMDGroup, 
-			NULL
+			rvf.PromoDifferenceQty,
+			rvf.ActualOpenOrdersQty,
+			rvf.PreliminaryRollingVolumesQty,
+			rvf.RollingVolumesQty,
+			rvf.RollingVolumesQty
+
 		FROM [dbo].[ROLLING_VOLUMES_FDM] AS rvf
 		JOIN [dbo].[Product] AS p ON p.ZREP = rvf.ZREP
 		JOIN [dbo].[Dates] AS d ON d.OriginalDate = rvf.WeekStartDate
@@ -45,3 +52,7 @@ CREATE OR ALTER PROCEDURE [dbo].[FillRollingVolumes] AS
 											AND ct.EndDate IS NULL)
 		WHERE rvf.WeekStartDate = @currentWeekStartDate
    END
+
+
+
+
