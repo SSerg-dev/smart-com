@@ -381,6 +381,68 @@
                                 flex: 2,
                                 readOnly: true
                             }]
+                        }, {
+                            xtype: 'fieldcontainer',
+                            height: 'auto',
+                            width: 'auto',
+                            layout: 'fit',
+                            minHeight: 132,
+                            cls: 'dispatchsettingsfieldcontainer',
+                            itemId: 'fieldcontainerAdjustment',
+                            labelAlign: 'top',
+                            labelSeparator: ' ',
+                            width: '100%',
+                            layout: {
+                                type: 'vbox',
+                                align: 'stretch',
+                                pack: 'center'
+                            },
+                            style: 'margin-bottom: 0',
+                            items: [{
+                                xtype: 'singlelinedisplayfield',
+                                width: '100%',
+                                fieldLabel: l10n.ns('tpm', 'ClientTree').value('Adjustment'),
+                                name: 'Adjustment',
+                                width: 280,
+                                style: 'margin-top: 10px; margin-bottom: 10px;'
+                            }, {
+                                xtype: 'sliderfield',
+                                minHeight: 40,
+                                flex: 1,
+                                margin: '0 -7 0 -7',
+                                name: 'DeviationCoefficient',
+                                minValue: -100,
+                                maxValue: 100,
+                                cls: 'readonly-adjustment-slider-horz',
+                                readOnly: true,
+                                style: 'transform: scaleX(-1); opacity: 0.4;',
+                                listeners: {
+                                    change: function (me, newValue, oldValue) {
+                                        var adjustment = this.up('container').down('singlelinedisplayfield[name=Adjustment]');
+                                        adjustment.setValue(newValue);
+                                    },
+                                    render: function (me) {
+                                        var adjustment = this.up('container').down('singlelinedisplayfield[name=Adjustment]');
+                                        adjustment.setValue(me.getValue());
+                                    }
+                                }
+                            }, {
+                                flex: 1,
+                                xtype: 'panel',
+                                items: [{
+                                    xtype: 'label',
+                                    html: '\n +100%',
+                                    cls: 'slider-left-lable'
+                                }, {
+                                    xtype: 'label',
+                                    html: '\n 0',
+                                    cls: 'slider-center-lable'
+                                }, {
+                                    xtype: 'label',
+                                    html: '\n -100%',
+                                    cls: 'slider-right-lable'
+                                }]
+                            }]
                         }]
                     }, {
                         xtype: 'container',

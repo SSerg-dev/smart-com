@@ -13,7 +13,9 @@
         { name: 'TechnologyId', hidden: true, isDefault: true },
         { name: 'BrandName', type: 'string', isDefault: true },
         { name: 'TechnologyName', type: 'string', isDefault: true },
+        { name: 'TechnologySubBrand', type: 'string', isDefault: true },
         { name: 'BrandTech_code', type: 'string', isDefault: true },
+        { name: 'BrandsegTechsub_code', type: 'string', hidden: false, isDefault: true }
     ],
     proxy: {
         type: 'breeze',

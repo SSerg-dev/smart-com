@@ -130,7 +130,7 @@ namespace Module.Frontend.TPM.Controllers
 
             var proxy = Context.Set<BrandTech>().Create<BrandTech>();
             var result = (BrandTech)Mapper.Map(model, proxy, typeof(BrandTech), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
-            
+
             Context.Set<BrandTech>().Add(result);
 
             try
@@ -148,7 +148,7 @@ namespace Module.Frontend.TPM.Controllers
 
             List<string> brtc = new List<string>
             {
-                result.BrandTech_code
+                result.BrandsegTechsub_code
             };
 
             CreateCoefficientSI2SOHandler(brtc, null, 1);
@@ -159,7 +159,7 @@ namespace Module.Frontend.TPM.Controllers
         [ClaimsAuthorize]
         [AcceptVerbs("PATCH", "MERGE")]
         public IHttpActionResult Patch([FromODataUri] System.Guid key, Delta<BrandTech> patch)
-        {            
+        {
             try
             {
                 var model = Context.Set<BrandTech>().Find(key);
@@ -189,7 +189,7 @@ namespace Module.Frontend.TPM.Controllers
             catch (Exception e)
             {
                 return GetErorrRequest(e);
-            }                    
+            }
         }
 
         [ClaimsAuthorize]
@@ -269,7 +269,9 @@ namespace Module.Frontend.TPM.Controllers
             IEnumerable<Column> columns = new List<Column>() {
                 new Column() { Order = 0, Field = "Brand.Name", Header = "Brand", Quoting = false },
                 new Column() { Order = 1, Field = "Technology.Name", Header = "Technology", Quoting = false },
-                new Column() { Order = 2, Field = "BrandTech_code", Header = "Brand Tech Code", Quoting = false }
+                new Column() { Order = 2, Field = "Technology.SubBrand", Header = "Sub", Quoting = false },
+                new Column() { Order = 3, Field = "BrandTech_code", Header = "Brand Tech Code", Quoting = false },
+                new Column() { Order = 4, Field = "BrandsegTechsub_code", Header = "Brand Seg Tech Sub Code", Quoting = false }
             };
             return columns;
         }
@@ -295,9 +297,12 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public async Task<HttpResponseMessage> FullImportXLSX() {
-            try {
-                if (!Request.Content.IsMimeMultipartContent()) {
+        public async Task<HttpResponseMessage> FullImportXLSX()
+        {
+            try
+            {
+                if (!Request.Content.IsMimeMultipartContent())
+                {
                     throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
                 }
 
@@ -311,23 +316,28 @@ namespace Module.Frontend.TPM.Controllers
                 result.Content.Headers.ContentType = new MediaTypeHeaderValue("text/plain");
 
                 return result;
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e.Message);
             }
         }
 
-        private void CreateImportTask(string fileName, string importHandler) {
+        private void CreateImportTask(string fileName, string importHandler)
+        {
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
             RoleInfo role = authorizationManager.GetCurrentRole();
             Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
 
-            using (DatabaseContext context = new DatabaseContext()) {
+            using (DatabaseContext context = new DatabaseContext())
+            {
                 ImportResultFilesModel resiltfile = new ImportResultFilesModel();
                 ImportResultModel resultmodel = new ImportResultModel();
 
                 HandlerData data = new HandlerData();
-                FileModel file = new FileModel() {
+                FileModel file = new FileModel()
+                {
                     LogicType = "Import",
                     Name = System.IO.Path.GetFileName(fileName),
                     DisplayName = System.IO.Path.GetFileName(fileName)
@@ -340,7 +350,8 @@ namespace Module.Frontend.TPM.Controllers
                 HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportBrandTech).Name, data, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(BrandTech), data, visible: false, throwIfNotExists: false);
 
-                LoopHandler handler = new LoopHandler() {
+                LoopHandler handler = new LoopHandler()
+                {
                     Id = Guid.NewGuid(),
                     ConfigurationName = "PROCESSING",
                     Description = "Загрузка импорта из файла " + typeof(ImportBrandTech).Name,
@@ -361,63 +372,68 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult DownloadTemplateXLSX() {
-            try {
+        public IHttpActionResult DownloadTemplateXLSX()
+        {
+            try
+            {
                 IEnumerable<Column> columns = GetExportSettings();
                 XLSXExporter exporter = new XLSXExporter(columns);
                 string exportDir = AppSettingsManager.GetSetting("EXPORT_DIRECTORY", "~/ExportFiles");
                 string filename = string.Format("{0}Template.xlsx", "BrandTech");
-                if (!Directory.Exists(exportDir)) {
+                if (!Directory.Exists(exportDir))
+                {
                     Directory.CreateDirectory(exportDir);
                 }
                 string filePath = Path.Combine(exportDir, filename);
                 exporter.Export(Enumerable.Empty<BrandTech>(), filePath);
                 string file = Path.GetFileName(filePath);
                 return Content(HttpStatusCode.OK, file);
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 return Content(HttpStatusCode.InternalServerError, e.Message);
             }
 
         }
 
-		[HttpPost]
-		[ClaimsAuthorize]
-		[EnableQuery(MaxNodeCount = int.MaxValue)]
-		public IHttpActionResult GetBrandTechById (ODataActionParameters data)
-		{
-			try
-			{
-				BrandTech brandTech = null;
-				var ids = data["id"] as IEnumerable<string>;
-				var id = ids.FirstOrDefault();
-				if (id != null)
-				{
-					Guid brandTechId = Guid.Empty;
-					bool idGuid = Guid.TryParse(id, out brandTechId);
+        [HttpPost]
+        [ClaimsAuthorize]
+        [EnableQuery(MaxNodeCount = int.MaxValue)]
+        public IHttpActionResult GetBrandTechById(ODataActionParameters data)
+        {
+            try
+            {
+                BrandTech brandTech = null;
+                var ids = data["id"] as IEnumerable<string>;
+                var id = ids.FirstOrDefault();
+                if (id != null)
+                {
+                    Guid brandTechId = Guid.Empty;
+                    bool idGuid = Guid.TryParse(id, out brandTechId);
 
-					if (idGuid)
-					{
-						brandTech = Context.Set<BrandTech>().Where(x => x.Id == brandTechId).FirstOrDefault();
-					}
-				}
+                    if (idGuid)
+                    {
+                        brandTech = Context.Set<BrandTech>().Where(x => x.Id == brandTechId).FirstOrDefault();
+                    }
+                }
 
-				if (brandTech != null)
-				{
-					return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, data = JsonConvert.SerializeObject(brandTech) }));
-				}
-				else
-				{
-					return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, data = "BrandTech not found." }));
-				}
-			}
-			catch (Exception e)
-			{
-				return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, data = "BrandTech not found." }));
-			}
-			
-		}
+                if (brandTech != null)
+                {
+                    return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, data = JsonConvert.SerializeObject(brandTech) }));
+                }
+                else
+                {
+                    return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, data = "BrandTech not found." }));
+                }
+            }
+            catch (Exception e)
+            {
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, data = "BrandTech not found." }));
+            }
 
-		private ExceptionResult GetErorrRequest(Exception e)
+        }
+
+        private ExceptionResult GetErorrRequest(Exception e)
         {
             // обработка при создании дублирующей записи
             SqlException exc = e.GetBaseException() as SqlException;

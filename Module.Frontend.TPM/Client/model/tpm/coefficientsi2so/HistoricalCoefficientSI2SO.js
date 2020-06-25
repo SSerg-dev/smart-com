@@ -13,7 +13,7 @@
         { name: 'CoefficientValue', type: 'float', hidden: false, isDefault: true },
         { name: 'Lock', type: 'boolean', hidden: true, isDefault: true },
         { name: 'BrandTechName', type: 'string', isDefault: true },
-        { name: 'BrandTechBrandTech_code', type: 'string', isDefault: true } 
+        { name: 'BrandTechBrandTech_code', type: 'string', isDefault: true }
     ],
     proxy: {
         type: 'breeze',

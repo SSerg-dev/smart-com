@@ -34,45 +34,45 @@
             xtype: 'singlelinedisplayfield',
             name: 'EAN_Case',
             fieldLabel: l10n.ns('tpm', 'Product').value('EAN_Case'),
-        },{
+        }, {
             xtype: 'singlelinedisplayfield',
             name: 'EAN_PC',
             fieldLabel: l10n.ns('tpm', 'Product').value('EAN_PC'),
-        },  {
+        }, {
             xtype: 'singlelinedisplayfield',
             name: 'ProductEN',
             fieldLabel: l10n.ns('tpm', 'Product').value('ProductEN'),
         }, {
-			//--
-			xtype: 'singlelinedisplayfield',
+            //--
+            xtype: 'singlelinedisplayfield',
             name: 'Brand',
             fieldLabel: l10n.ns('tpm', 'Product').value('Brand'),
         }, {
-			xtype: 'singlelinedisplayfield',
+            xtype: 'singlelinedisplayfield',
             name: 'Brand_code',
             fieldLabel: l10n.ns('tpm', 'Product').value('Brand_code'),
         }, {
-			xtype: 'singlelinedisplayfield',
+            xtype: 'singlelinedisplayfield',
             name: 'Technology',
             fieldLabel: l10n.ns('tpm', 'Product').value('Technology'),
         }, {
-			xtype: 'singlelinedisplayfield',
+            xtype: 'singlelinedisplayfield',
             name: 'Tech_code',
             fieldLabel: l10n.ns('tpm', 'Product').value('Tech_code'),
         }, {
-			xtype: 'singlelinedisplayfield',
+            xtype: 'singlelinedisplayfield',
             name: 'BrandTech',
             fieldLabel: l10n.ns('tpm', 'Product').value('BrandTech'),
         }, {
-			xtype: 'singlelinedisplayfield',
+            xtype: 'singlelinedisplayfield',
             name: 'BrandTech_code',
             fieldLabel: l10n.ns('tpm', 'Product').value('BrandTech_code'),
         }, {
-			xtype: 'singlelinedisplayfield',
+            xtype: 'singlelinedisplayfield',
             name: 'Segmen_code',
             fieldLabel: l10n.ns('tpm', 'Product').value('Segmen_code'),
         }, {
-			//---
+            //---
             xtype: 'singlelinedisplayfield',
             name: 'BrandsegTech_code',
             fieldLabel: l10n.ns('tpm', 'Product').value('BrandsegTech_code'),
@@ -80,6 +80,22 @@
             xtype: 'singlelinedisplayfield',
             name: 'Brandsegtech',
             fieldLabel: l10n.ns('tpm', 'Product').value('Brandsegtech'),
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'BrandsegTechsub_code',
+            fieldLabel: l10n.ns('tpm', 'Product').value('BrandsegTechsub_code'),
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'BrandsegTechsub',
+            fieldLabel: l10n.ns('tpm', 'Product').value('BrandsegTechsub'),
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'SubBrand_code',
+            fieldLabel: l10n.ns('tpm', 'Product').value('SubBrand_code'),
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'SubBrand',
+            fieldLabel: l10n.ns('tpm', 'Product').value('SubBrand'),
         }, {
             xtype: 'singlelinedisplayfield',
             name: 'BrandFlagAbbr',

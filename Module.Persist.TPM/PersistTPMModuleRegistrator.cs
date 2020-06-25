@@ -64,6 +64,7 @@ namespace Module.Persist.TPM {
             modelBuilder.Entity<PromoSupport>().HasMany(p => p.PromoSupportPromo)
                 .WithRequired(p => p.PromoSupport);
 			modelBuilder.Entity<NonPromoSupport>();
+			modelBuilder.Entity<ServiceInfo>();
             modelBuilder.Entity<NonPromoSupportBrandTech>();
             modelBuilder.Entity<PostPromoEffect>();
             modelBuilder.Entity<PromoSupportPromo>();
@@ -100,6 +101,7 @@ namespace Module.Persist.TPM {
             modelBuilder.Entity<PriceList>();
             modelBuilder.Entity<CoefficientSI2SO>();
             modelBuilder.Entity<PromoProductDifference>();
+            modelBuilder.Entity<RollingVolume>();
 
             modelBuilder.Entity<InputBaseline>();
 
@@ -339,7 +341,7 @@ namespace Module.Persist.TPM {
             builder.Entity<BudgetItem>().Collection.Action("FullImportXLSX");
             builder.Entity<BudgetItem>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<BudgetItem>("BudgetItems");
             builder.Entity<HistoricalBudgetItem>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalBudgetItem>("HistoricalBudgetItems");
-
+            
             builder.EntitySet<Promo>("Promoes");
             builder.EntitySet<Promo>("DeletedPromoes");
             builder.EntitySet<HistoricalPromo>("HistoricalPromoes");
@@ -454,6 +456,13 @@ namespace Module.Persist.TPM {
             builder.Entity<Color>().Collection.Action("ExportXLSX");
             builder.Entity<Color>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<Color>("Colors");
             builder.Entity<HistoricalColor>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalColor>("HistoricalColors");
+            
+            builder.EntitySet<RollingVolume>("RollingVolumes");  
+            builder.EntitySet<RollingVolume>("RollingVolumes").HasOptionalBinding(e => e.Product, "Products");  
+            builder.Entity<RollingVolume>().Collection.Action("FullImportXLSX");
+            builder.Entity<RollingVolume>().Collection.Action("ExportXLSX");
+            builder.Entity<RollingVolume>().Collection.Action("IsRollingVolumeDay");
+            builder.Entity<RollingVolume>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<RollingVolume>("RollingVolumes");
 
             builder.EntitySet<ClientTree>("ClientTrees");
             builder.EntitySet<ClientTree>("BaseClients"); // Для получение только базовых клиентов из иерархии

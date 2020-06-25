@@ -228,7 +228,7 @@ namespace Module.Frontend.TPM.Controllers
                 new Column() { Order = 1, Field = "Name", Header = "Promo name", Quoting = false },
                 new Column() { Order = 2, Field = "Client.CommercialSubnet.CommercialNet.Name", Header = "Customer", Quoting = false },
                 new Column() { Order = 3, Field = "Brand.Name", Header = "Brand", Quoting = false },
-                new Column() { Order = 4, Field = "BrandTech.Name", Header = "BrandTech", Quoting = false },
+                new Column() { Order = 4, Field = "BrandTech.BrandsegTechsub", Header = "BrandTech", Quoting = false },
                 new Column() { Order = 5, Field = "PromoStatus.Name", Header = "PromoStatus", Quoting = false },
                 new Column() { Order = 6, Field = "Mechanic.MechanicName", Header = "Mechanic", Quoting = false },
                 new Column() { Order = 7, Field = "Mechanic.Discount", Header = "Mechanic discount, %", Quoting = false },

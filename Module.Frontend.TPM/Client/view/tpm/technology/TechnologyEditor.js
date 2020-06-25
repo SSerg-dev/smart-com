@@ -20,7 +20,7 @@
 
     items: {
         xtype: 'editorform',
-        columnsCount: 1, 
+        columnsCount: 1,
         items: [{
             xtype: 'textfield',
             name: 'Name',
@@ -31,6 +31,33 @@
             fieldLabel: l10n.ns('tpm', 'Technology').value('Tech_code'),
             regex: /^\d+$/,
             regexText: l10n.ns('tpm', 'Technology').value('DigitRegex')
+        }, {
+            xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
+            name: 'SubBrand',
+            fieldLabel: l10n.ns('tpm', 'Technology').value('SubBrand'),
+            validator: function (value) {
+                var SubCode = this.up('editorform').down('[name = SubBrand_code]');
+                if ((!SubCode.getValue() == "" || !SubCode.getValue() == null) && (value == "" || value == null)) {
+                    return l10n.ns('tpm', 'Technology').value('ValidateSubBrandRequired');
+                }
+
+                if ((SubCode.getValue() == "" || SubCode.getValue() == null) && (value != "" && value != null)) {
+                    return l10n.ns('tpm', 'Technology').value('ValidateSubBrandNotRequired');
+                }
+
+                return true;
+            }
+        }, {
+            xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
+            name: 'SubBrand_code',
+            fieldLabel: l10n.ns('tpm', 'Technology').value('SubBrand_code'),
+            regex: /^\d+$/,
+            regexText: l10n.ns('tpm', 'Technology').value('DigitRegex'),
+            listeners: {
+                change: function (me) {
+                    me.up('editorform').down('[name = SubBrand]').validate();
+                }
+            }
         }]
     }
 });  

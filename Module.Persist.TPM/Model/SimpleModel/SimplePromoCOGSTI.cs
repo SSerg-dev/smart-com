@@ -34,7 +34,7 @@ namespace Module.Persist.TPM.Model.SimpleModel
             ClientTreeId = promo.ClientTreeKeyId;
             ClientTreeObjectId = promo.ClientTreeId;
             BrandTechId = promo.BrandTechId;
-            BrandTechName = promo.BrandTech != null ? promo.BrandTech.Name : String.Empty;
+            BrandTechName = promo.BrandTech != null ? promo.BrandTech.BrandsegTechsub : String.Empty;
             PromoStatusName = promo.PromoStatus != null ? promo.PromoStatus.Name : String.Empty;
             ClientHierarchy = promo.ClientHierarchy;
         }
@@ -52,7 +52,7 @@ namespace Module.Persist.TPM.Model.SimpleModel
             ClientTreeId = promo.ClientTreeKeyId;
             ClientTreeObjectId = promo.ClientTreeId;
             BrandTechId = promo.BrandTechId;
-            BrandTechName = promo.BrandTech != null ? promo.BrandTech.Name : String.Empty;
+            BrandTechName = promo.BrandTech != null ? promo.BrandTech.BrandsegTechsub : String.Empty;
             PromoStatusName = promo.PromoStatus != null ? promo.PromoStatus.Name : String.Empty;
             ClientHierarchy = promo.ClientHierarchy;
         }

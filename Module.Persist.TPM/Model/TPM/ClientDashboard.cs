@@ -17,7 +17,7 @@ namespace Module.Persist.TPM.Model.TPM
         public int? ClientTreeId { get; set; }
         public string ClientHierarchy { get; set; }
         public Guid? BrandTechId { get; set; }
-        public string BrandTechName { get; set; }
+        public string BrandsegTechsubName { get; set; }
 
         [StringLength(50)]
         public string Year { get; set; }

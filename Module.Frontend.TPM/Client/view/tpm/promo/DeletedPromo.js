@@ -92,6 +92,10 @@
                     return value ? l10n.ns('core', 'booleanValues').value('true') : l10n.ns('core', 'booleanValues').value('false');
                 }
             }, {
+                text: l10n.ns('tpm', 'Promo').value('Adjustment'),
+                dataIndex: 'DeviationCoefficient',
+                width: 130,
+            }, {
                 text: l10n.ns('tpm', 'Promo').value('Name'),
                 dataIndex: 'Name',
                 width: 150,
@@ -114,7 +118,7 @@
                 filter: {
                     type: 'search',
                     selectorWidget: 'brandtech',
-                    valueField: 'Name',
+                    valueField: 'BrandsegTechsub',
                     store: {
                         type: 'directorystore',
                         model: 'App.model.tpm.brandtech.BrandTech',

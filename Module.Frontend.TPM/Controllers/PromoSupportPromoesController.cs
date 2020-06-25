@@ -599,7 +599,7 @@ namespace Module.Frontend.TPM.Controllers
             IEnumerable<Column> columns = new List<Column>() {
                 new Column() { Order = 0, Field = "Promo.Number", Header = "Promo ID", Quoting = false },
                 new Column() { Order = 1, Field = "Promo.Name", Header = "Promo name", Quoting = false },
-                new Column() { Order = 2, Field = "Promo.BrandTech.Name", Header = "Brandtech", Quoting = false },
+                new Column() { Order = 2, Field = "Promo.BrandTech.BrandsegTechsub", Header = "Brandtech", Quoting = false },
                 new Column() { Order = 2, Field = "PlanCalculation", Header = "Plan Cost TE Total", Quoting = false },
                 new Column() { Order = 2, Field = "FactCalculation", Header = "Actual Cost TE Total", Quoting = false },
                 new Column() { Order = 3, Field = "Promo.EventName", Header = "Event", Quoting = false },                
@@ -615,7 +615,7 @@ namespace Module.Frontend.TPM.Controllers
             IEnumerable<Column> columns = new List<Column>() {
                 new Column() { Order = 0, Field = "Promo.Number", Header = "Promo ID", Quoting = false },
                 new Column() { Order = 1, Field = "Promo.Name", Header = "Promo name", Quoting = false },
-                new Column() { Order = 2, Field = "Promo.BrandTech.Name", Header = "Brandtech", Quoting = false },
+                new Column() { Order = 2, Field = "Promo.BrandTech.BrandsegTechsub", Header = "Brandtech", Quoting = false },
                 new Column() { Order = 2, Field = "PlanCostProd", Header = "Plan Cost Production", Quoting = false },
                 new Column() { Order = 2, Field = "FactCostProd", Header = "Actual Cost Production", Quoting = false },
                 new Column() { Order = 3, Field = "Promo.EventName", Header = "Event", Quoting = false },

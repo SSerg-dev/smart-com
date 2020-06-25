@@ -437,7 +437,7 @@ namespace Module.Host.TPM.Actions {
 
                 //Действующие BrandTech
                 IList<BrandTech> brandTeches = context.Set<BrandTech>().Where(z => !z.Disabled).ToList();
-                IList<Tuple<String, Guid?>> brandTechesTuples = brandTeches.Select(y => new Tuple<String, Guid?>(y.Name, y.Id)).ToList();
+                IList<Tuple<String, Guid?>> brandTechesTuples = brandTeches.Select(y => new Tuple<String, Guid?>(y.BrandsegTechsub, y.Id)).ToList();
 
                 //Присваивание ID
                 Parallel.ForEach(sourceRecords, importObj =>
@@ -453,7 +453,7 @@ namespace Module.Host.TPM.Actions {
                         }
                     }
 
-                    var bt = brandTechesTuples.FirstOrDefault(y => y.Item1 == typedItem.BrandTechName);
+                    var bt = brandTechesTuples.FirstOrDefault(y => y.Item1 == typedItem.BrandsegTechsub);
                     ((ImportTradeInvestment)importObj).BrandTechId = bt == null ? null : bt.Item2;
 
                     typedItem.MarcCalcBudgetsBool = typedItem.MarcCalcBudgets.ToUpper() == "YES";
@@ -465,10 +465,10 @@ namespace Module.Host.TPM.Actions {
                 IList<Tuple<int, Guid?, String, String>> badTimesIds = new List<Tuple<int, Guid?, String, String>>();
 
                 IList<Tuple<int, String, String, String, DateTimeOffset?, DateTimeOffset?>> existedTradeInvestmentsTimes =
-                    this.GetQuery(context).Where(x => !x.Disabled).Select(y => new Tuple<int, String, String, String, DateTimeOffset?, DateTimeOffset?>(y.ClientTreeId, y.BrandTech != null ? y.BrandTech.Name : null, y.TIType, y.TISubType, y.StartDate, y.EndDate)).ToList();
+                    this.GetQuery(context).Where(x => !x.Disabled).Select(y => new Tuple<int, String, String, String, DateTimeOffset?, DateTimeOffset?>(y.ClientTreeId, y.BrandTech != null ? y.BrandTech.BrandsegTechsub : null, y.TIType, y.TISubType, y.StartDate, y.EndDate)).ToList();
 
                 IList<Tuple<int, String, String, String, DateTimeOffset?, DateTimeOffset?>> importedTradeInvestmentsTimes =
-                    sourceRecords.Select(y => new Tuple<int, String, String, String, DateTimeOffset?, DateTimeOffset?>(((ImportTradeInvestment)y).ClientTreeId, ((ImportTradeInvestment)y).BrandTechName, ((ImportTradeInvestment)y).TIType, ((ImportTradeInvestment)y).TISubType, ((ImportTradeInvestment)y).StartDate, ((ImportTradeInvestment)y).EndDate)).ToList();
+                    sourceRecords.Select(y => new Tuple<int, String, String, String, DateTimeOffset?, DateTimeOffset?>(((ImportTradeInvestment)y).ClientTreeId, ((ImportTradeInvestment)y).BrandsegTechsub, ((ImportTradeInvestment)y).TIType, ((ImportTradeInvestment)y).TISubType, ((ImportTradeInvestment)y).StartDate, ((ImportTradeInvestment)y).EndDate)).ToList();
 
                 var importTradeInvestments = sourceRecords.Cast<ImportTradeInvestment>().Where(x => x.StartDate.HasValue && x.EndDate.HasValue);
 
@@ -613,8 +613,8 @@ namespace Module.Host.TPM.Actions {
                 errors.Add(importObj.ClientTreeObjectId.ToString() + " not in user's active ClientTree list");
             } 
 
-            Tuple<String, Guid?> btech = brandTechesTuples.FirstOrDefault(x => x.Item1 == importObj.BrandTechName);
-            if (importObj.BrandTechName != "All" && !String.IsNullOrEmpty(importObj.BrandTechName) && btech == null)
+            Tuple<String, Guid?> btech = brandTechesTuples.FirstOrDefault(x => x.Item1 == importObj.BrandsegTechsub);
+            if (importObj.BrandsegTechsub != "All" && !String.IsNullOrEmpty(importObj.BrandsegTechsub) && btech == null)
             {
                 isError = true;
                 errors.Add(" There is no such BrandTech");
@@ -640,23 +640,23 @@ namespace Module.Host.TPM.Actions {
             if (importObj.StartDate.HasValue && importObj.StartDate.Value.Year != this.Year)
             {
                 isError = true;
-                errors.Add($"({importObj.ClientTreeObjectId}, {importObj.BrandTechName}) Start Date year must be equal {this.Year}.");
+                errors.Add($"({importObj.ClientTreeObjectId}, {importObj.BrandsegTechsub}) Start Date year must be equal {this.Year}.");
             }
 
             if (importObj.EndDate.HasValue && importObj.EndDate.Value.Year != this.Year)
             {
                 isError = true;
-                errors.Add($"({importObj.ClientTreeObjectId}, {importObj.BrandTechName}) End Date year must be equal {this.Year}.");
+                errors.Add($"({importObj.ClientTreeObjectId}, {importObj.BrandsegTechsub}) End Date year must be equal {this.Year}.");
             }
 
             var intersectDatesTradeInvestments = importTradeInvestments.Where(x => 
-                importObj.ClientTreeObjectId == x.ClientTreeObjectId && importObj.BrandTechName == x.BrandTechName && x.TIType == importObj.TIType && x.TISubType == importObj.TISubType && importObj.StartDate >= x.StartDate && importObj.StartDate <= x.EndDate || 
-                importObj.ClientTreeObjectId == x.ClientTreeObjectId && importObj.BrandTechName == x.BrandTechName && x.TIType == importObj.TIType && x.TISubType == importObj.TISubType && importObj.EndDate >= x.StartDate && importObj.EndDate <= x.EndDate);
+                importObj.ClientTreeObjectId == x.ClientTreeObjectId && importObj.BrandsegTechsub == x.BrandsegTechsub && x.TIType == importObj.TIType && x.TISubType == importObj.TISubType && importObj.StartDate >= x.StartDate && importObj.StartDate <= x.EndDate || 
+                importObj.ClientTreeObjectId == x.ClientTreeObjectId && importObj.BrandsegTechsub == x.BrandsegTechsub && x.TIType == importObj.TIType && x.TISubType == importObj.TISubType && importObj.EndDate >= x.StartDate && importObj.EndDate <= x.EndDate);
 
             if (intersectDatesTradeInvestments.Count() > 1)
             {
                 isError = true;
-                errors.Add($"({importObj.ClientTreeObjectId}, {importObj.BrandTechName}, {importObj.TIType}, {importObj.TISubType}) there can not be two TI of Client, BrandTech, Type, SubType in some Time.");
+                errors.Add($"({importObj.ClientTreeObjectId}, {importObj.BrandsegTechsub}, {importObj.TIType}, {importObj.TISubType}) there can not be two TI of Client, BrandTech, Type, SubType in some Time.");
             }
 
             // SizePercent не больше 100 процентов
@@ -730,8 +730,8 @@ namespace Module.Host.TPM.Actions {
                     while (!existTradeInvestment && clientNode != null && clientNode.Type != "root")
                     {
                         //промо может быть привязно к удаленному брендтеху(в более общем случае - к бредтеху с другим Id), поэтому сравнение приходится производить по Name, а не по Id
-                        var promoBrandTechName = brandTeches.Where(bt => bt.Id == promo.BrandTechId).Select(x => x.Name).FirstOrDefault();
-                        var validBrandTeches = context.Set<BrandTech>().Where(x => x.Name == promoBrandTechName);
+                        var promoBrandTechName = brandTeches.Where(bt => bt.Id == promo.BrandTechId).Select(x => x.BrandsegTechsub).FirstOrDefault();
+                        var validBrandTeches = context.Set<BrandTech>().Where(x => x.BrandsegTechsub == promoBrandTechName);
 
                         existTradeInvestment = importTIes.Any(x => x.ClientTreeId == clientNode.Id 
                                 && (x.BrandTechId == null || validBrandTeches.Where(bt => bt.Id == x.BrandTechId).Any()) 
@@ -759,7 +759,7 @@ namespace Module.Host.TPM.Actions {
                 foreach (ImportTradeInvestment newRecord in sourceRecords)
                 {
                     TradeInvestment oldRecord = query.FirstOrDefault(x => x.ClientTree?.ObjectId == newRecord.ClientTreeObjectId && !x.Disabled);
-                    BrandTech bt = context.Set<BrandTech>().FirstOrDefault(x => x.Name == newRecord.BrandTechName && !x.Disabled);
+                    BrandTech bt = context.Set<BrandTech>().FirstOrDefault(x => x.BrandsegTechsub == newRecord.BrandsegTechsub && !x.Disabled);
                     TradeInvestment toSave = new TradeInvestment()
                     {
                         StartDate = newRecord.StartDate,
@@ -851,8 +851,8 @@ namespace Module.Host.TPM.Actions {
                     while (!existTradeInvestment && clientNode != null && clientNode.Type != "root")
                     {
                         //промо может быть привязно к удаленному брендтеху(в более общем случае - к бредтеху с другим Id), поэтому сравнение приходится производить по Name, а не по Id
-                        var promoBrandTechName = brandTeches.Where(bt => bt.Id == promo.BrandTechId).Select(x => x.Name).FirstOrDefault();
-                        var validBrandTeches = context.Set<BrandTech>().Where(x => x.Name == promoBrandTechName);
+                        var promoBrandTechName = brandTeches.Where(bt => bt.Id == promo.BrandTechId).Select(x => x.BrandsegTechsub).FirstOrDefault();
+                        var validBrandTeches = context.Set<BrandTech>().Where(x => x.BrandsegTechsub == promoBrandTechName);
 
                         existTradeInvestment = importTIes.Any(x => x.ClientTreeId == clientNode.Id
                                 && (x.BrandTechId == null || validBrandTeches.Where(bt => bt.Id == x.BrandTechId).Any())
@@ -879,7 +879,7 @@ namespace Module.Host.TPM.Actions {
 
                 foreach (ImportTradeInvestment newRecord in sourceRecords)
                 {
-                    BrandTech bt = context.Set<BrandTech>().FirstOrDefault(x => x.Name == newRecord.BrandTechName && !x.Disabled);
+                    BrandTech bt = context.Set<BrandTech>().FirstOrDefault(x => x.BrandsegTechsub == newRecord.BrandsegTechsub && !x.Disabled);
                     ActualTradeInvestment toSave = new ActualTradeInvestment()
                     {
                         StartDate = newRecord.StartDate,

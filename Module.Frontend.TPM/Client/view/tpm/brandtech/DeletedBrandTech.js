@@ -11,7 +11,7 @@
     items: [{
         xtype: 'directorygrid',
         itemId: 'datatable',
-		editorModel: 'Core.form.EditorDetailWindowModel',
+        editorModel: 'Core.form.EditorDetailWindowModel',
         store: {
             type: 'directorystore',
             model: 'App.model.tpm.brandtech.DeletedBrandTech',
@@ -41,12 +41,12 @@
                 flex: 1,
                 minWidth: 100
             },
-            items: [{ 
+            items: [{
                 text: l10n.ns('core', 'BaseDeletedEntity').value('DeletedDate'),
-				dataIndex: 'DeletedDate',
-				xtype: 'datecolumn',
-				renderer: Ext.util.Format.dateRenderer('d.m.Y H:i:s')
-			}, {
+                dataIndex: 'DeletedDate',
+                xtype: 'datecolumn',
+                renderer: Ext.util.Format.dateRenderer('d.m.Y H:i:s')
+            }, {
                 text: l10n.ns('tpm', 'Product').value('BrandName'),
                 dataIndex: 'BrandName',
                 filter: {
@@ -92,30 +92,56 @@
                         }
                     }
                 }
-                }, {
-                    text: l10n.ns('tpm', 'BrandTech').value('BrandTech_code'),
-                    dataIndex: 'BrandTech_code',
+            }, {
+                text: l10n.ns('tpm', 'Product').value('SubBrandName'),
+                dataIndex: 'SubBrandName',
+                filter: {
+                    type: 'search',
+                    selectorWidget: 'technology',
+                    valueField: 'SubBrand',
+                    store: {
+                        type: 'directorystore',
+                        model: 'App.model.tpm.technology.Technology',
+                        extendedFilter: {
+                            xclass: 'App.ExtFilterContext',
+                            supportedModels: [{
+                                xclass: 'App.ExtSelectionFilterModel',
+                                model: 'App.model.tpm.technology.Technology',
+                                modelId: 'efselectionmodel'
+                            }, {
+                                xclass: 'App.ExtTextFilterModel',
+                                modelId: 'eftextmodel'
+                            }]
+                        }
+                    }
                 }
+            }, {
+                text: l10n.ns('tpm', 'BrandTech').value('BrandTech_code'),
+                dataIndex: 'BrandTech_code',
+            }, {
+                text: l10n.ns('tpm', 'BrandTech').value('BrandsegTechsub_code'),
+                dataIndex: 'BrandsegTechsub_code',
+            }
             ]
         }
     }, {
-            xtype: 'editabledetailform',
-            itemId: 'detailform',
-            model: 'App.model.tpm.brandtech.DeletedBrandTech',
-            items: [{
-                xtype: 'singlelinedisplayfield',
-                name: 'DeletedDate',
-                renderer: Ext.util.Format.dateRenderer('d.m.Y H:i:s'),
-                fieldLabel: l10n.ns('core', 'BaseDeletedEntity').value('DeletedDate')
-            }, {
-                xtype: 'singlelinedisplayfield',
-                name: 'BrandId',
-                fieldLabel: l10n.ns('tpm', 'BrandTech').value('BrandName'),
-            }, {
-                 xtype: 'singlelinedisplayfield',
-                 name: 'TechnologyId',
-                 fieldLabel: l10n.ns('tpm', 'BrandTech').value('TechnologyName'),
-            }]
+        xtype: 'editabledetailform',
+        itemId: 'detailform',
+        model: 'App.model.tpm.brandtech.DeletedBrandTech',
+        items: [{
+            xtype: 'singlelinedisplayfield',
+            name: 'DeletedDate',
+            renderer: Ext.util.Format.dateRenderer('d.m.Y H:i:s'),
+            fieldLabel: l10n.ns('core', 'BaseDeletedEntity').value('DeletedDate')
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'BrandId',
+            fieldLabel: l10n.ns('tpm', 'BrandTech').value('BrandName'),
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'TechnologyId',
+            fieldLabel: l10n.ns('tpm', 'BrandTech').value('TechnologyName'),
         }]
+    }]
 
 });

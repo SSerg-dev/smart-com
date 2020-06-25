@@ -201,7 +201,7 @@ namespace Module.Frontend.TPM.Controllers
             IEnumerable<Column> columns = new List<Column>()
             {
                 new Column() { Order = 0, Field = "BrandTech.Brand.Name", Header = "Brand", Quoting = false },
-                new Column() { Order = 1, Field = "BrandTech.Name", Header = "Brand Tech", Quoting = false },
+                new Column() { Order = 1, Field = "BrandTech.BrandsegTechsub", Header = "Brand Tech", Quoting = false },
                 new Column() { Order = 2, Field = "Account", Header = "Account", Quoting = false },
                 new Column() { Order = 3, Field = "Mechanic.Name", Header = "Mechanic", Quoting = false },
                 new Column() { Order = 4, Field = "MechanicType.Name", Header = "Mechanic Type", Quoting = false },

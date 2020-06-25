@@ -125,7 +125,7 @@
                 filter: {
                     type: 'search',
                     selectorWidget: 'brandtech',
-                    valueField: 'Name',
+                    valueField: 'BrandsegTechsub',
                     store: {
                         type: 'directorystore',
                         model: 'App.model.tpm.brandtech.BrandTech',

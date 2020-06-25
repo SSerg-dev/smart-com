@@ -46,16 +46,18 @@ namespace Module.Host.TPM.Handlers
                     _Interface.Interface incomingInterface = context.Set<_Interface.Interface>().Where(x => x.Name == incomingInterfaceName).FirstOrDefault();
                     _Interface.Interface outcomingInterface = context.Set<_Interface.Interface>().Where(x => x.Name == outcomingInterfaceName).FirstOrDefault();
 
-                    // значение по умолчанию 6 часов
-                    int inputBaseLineProcessHandlerTimeout = AppSettingsManager.GetSetting<int>("INPUT_BASELINE_PROCESS_HANDLER_TIMEOUT", 21600000);
-                    // значение по умолчанию 2 часа
-                    int startSISOBaselineCalculationHandlerTimeout = AppSettingsManager.GetSetting<int>("START_SISO_BASELINE_CALCULATION_HANDLER_TIMEOUT", 7200000);
-                    // значение по умолчанию 18 часов
-                    int recalculateAllPromoesHandlerTimeout = AppSettingsManager.GetSetting<int>("RECALCULATE_ALL_PROMOES_HANDLER_TIMEOUT", 64800000);
-                    // значение по умолчанию 6 часов
-                    int dayIncrementalQTYRecalculationHandlerTimeout = AppSettingsManager.GetSetting<int>("DAY_INCREMENTAL_QTY_RECALCULATION_HANDLER_TIMEOUT", 21600000);
-                    // значение по умолчанию 2 часa
-                    int outputIncrementalProcessHandlerTimeout = AppSettingsManager.GetSetting<int>("OUTPUT_INCREMENTAL_PROCESS_HANDLER_TIMEOUT", 7200000);
+                    // значение по умолчанию 5 часов
+                    int inputBaseLineProcessHandlerTimeout = AppSettingsManager.GetSetting<int>("INPUT_BASELINE_PROCESS_HANDLER_TIMEOUT", 18000000);
+                    // значение по умолчанию 1.5 часа
+                    int startSISOBaselineCalculationHandlerTimeout = AppSettingsManager.GetSetting<int>("START_SISO_BASELINE_CALCULATION_HANDLER_TIMEOUT", 5400000);
+                    // значение по умолчанию 12 часов
+                    int recalculateAllPromoesHandlerTimeout = AppSettingsManager.GetSetting<int>("RECALCULATE_ALL_PROMOES_HANDLER_TIMEOUT", 43200000);
+                    // значение по умолчанию 4 часа
+                    int dayIncrementalQTYRecalculationHandlerTimeout = AppSettingsManager.GetSetting<int>("DAY_INCREMENTAL_QTY_RECALCULATION_HANDLER_TIMEOUT", 14400000);
+                    // значение по умолчанию 0.5 часа
+                    int rollingVolumeQTYRecalculationHandlerTimeout = AppSettingsManager.GetSetting<int>("ROLLING_VOLUME_QTY_RECALCULATION_HANDLER_TIMEOUT", 1800000);
+                    // значение по умолчанию 0.5 часa
+                    int outputIncrementalProcessHandlerTimeout = AppSettingsManager.GetSetting<int>("OUTPUT_INCREMENTAL_PROCESS_HANDLER_TIMEOUT", 1800000);
 
                     string mainNightProcessingStepPrefix = AppSettingsManager.GetSetting<string>("MAIN_NIGHT_PROCESSING_STEP_PREFIX", "MainNightProcessingStep");
 
@@ -68,14 +70,14 @@ namespace Module.Host.TPM.Handlers
                         "Incoming baseline processing",
                         "Module.Host.TPM.Handlers.Interface.Incoming.InputBaseLineProcessHandler"
                         );
-
+                   
                     handler.SetParameterData(GetProcessorHandlerData(incomingInterface));
                     context.LoopHandlers.Add(handler);
                     context.SaveChanges();
-
+                   
                     MainNightProcessingHelper.SetProcessingFlagUp(context, mainNightProcessingStepPrefix);
                     HandlerWaiting(context, handler, inputBaseLineProcessHandlerTimeout, handlerLogger);
-
+                   
                     // расчет sell-in и sell-out Baseline
                     HandlerData handlerData = handler.GetParameterData();
                     int fileCount = HandlerDataHelper.GetOutcomingArgument<int>("fileCount", handlerData, false);
@@ -84,11 +86,11 @@ namespace Module.Host.TPM.Handlers
                     {
                         context.LoopHandlers.Add(handler);
                         context.SaveChanges();
-
+                    
                         MainNightProcessingHelper.SetProcessingFlagUp(context, mainNightProcessingStepPrefix);
                         HandlerWaiting(context, handler, startSISOBaselineCalculationHandlerTimeout, handlerLogger);
                     }
-
+                    
                     // пересчет промо
                     handler = CreateSingleLoopHandler(
                         "Promo recalculation in dataflow process",
@@ -96,10 +98,10 @@ namespace Module.Host.TPM.Handlers
                         );
                     context.LoopHandlers.Add(handler);
                     context.SaveChanges();
-
+                    
                     MainNightProcessingHelper.SetProcessingFlagUp(context, mainNightProcessingStepPrefix);
                     HandlerWaiting(context, handler, recalculateAllPromoesHandlerTimeout, handlerLogger);
-
+                    
                     // хендлер для формирования CurrentDayIncremental, Difference и PreviousDayIncremental
                     handler = CreateSingleLoopHandler(
                         "Day Incremental QTY recalculation",
@@ -107,9 +109,24 @@ namespace Module.Host.TPM.Handlers
                         );
                     context.LoopHandlers.Add(handler);
                     context.SaveChanges();
-
+                    
                     MainNightProcessingHelper.SetProcessingFlagUp(context, mainNightProcessingStepPrefix);
                     HandlerWaiting(context, handler, dayIncrementalQTYRecalculationHandlerTimeout, handlerLogger);
+                    
+                    // хендлер для формирования Difference из rolling volume
+                    var currentDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                    if (currentDate.DayOfWeek == ((DayOfWeek)DayOfWeek()) || DayOfWeek() > 6)
+                    {
+                        handler = CreateSingleLoopHandler(
+                        "Rolling promo collecting",
+                        "Module.Host.TPM.Handlers.RollingVolumeQTYRecalculationHandler"
+                        );
+                        context.LoopHandlers.Add(handler);
+                        context.SaveChanges();
+
+                        MainNightProcessingHelper.SetProcessingFlagUp(context, mainNightProcessingStepPrefix);
+                        HandlerWaiting(context, handler, rollingVolumeQTYRecalculationHandlerTimeout, handlerLogger);
+                    }
 
                     // формирование исходящего файла
                     handler = CreateSingleLoopHandler(
@@ -264,6 +281,15 @@ namespace Module.Host.TPM.Handlers
                 message = e.Message;
                 return false;
             }
+        }
+        private int DayOfWeek()
+        {
+            var settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
+            int dayOfWeek = settingsManager.GetSetting<int>("DAY_OF_WEEK_Rolling_Volume", 99);
+            dayOfWeek = dayOfWeek < 0 ? -2 : dayOfWeek;
+            dayOfWeek++;
+            dayOfWeek = dayOfWeek == 7 ? 0 : dayOfWeek;
+            return dayOfWeek;
         }
     }
 }

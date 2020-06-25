@@ -1,7 +1,9 @@
+using AutoMapper.Internal;
 using Core.History;
 using Frontend.Core.Controllers.Base;
 using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.History;
+using Module.Persist.TPM.Model.TPM;
 using Ninject;
 using System;
 using System.Linq;
@@ -11,9 +13,11 @@ using System.Web.Http.OData;
 using System.Web.Http.OData.Query;
 using Thinktecture.IdentityModel.Authorization.WebApi;
 
-namespace Module.Frontend.TPM.Controllers {
+namespace Module.Frontend.TPM.Controllers
+{
 
-    public class HistoricalPromoProductsController : ODataController {
+    public class HistoricalPromoProductsController : EFContextController
+    {
         [Inject]
         public IHistoryReader HistoryReader { get; set; }
 
@@ -25,7 +29,8 @@ namespace Module.Frontend.TPM.Controllers {
             AllowedQueryOptions = AllowedQueryOptions.All,
             EnableConstantParameterization = false,
             MaxTop = 1024)]
-        public IQueryable<HistoricalPromoProduct> GetHistoricalPromoProducts() {
+        public IQueryable<HistoricalPromoProduct> GetHistoricalPromoProducts()
+        {
             return HistoryReader.GetAll<HistoricalPromoProduct>();
         }
 
@@ -39,7 +44,10 @@ namespace Module.Frontend.TPM.Controllers {
             MaxTop = 1024)]
         public IQueryable<HistoricalPromoProduct> GetHistoricalPromoProducts(Guid? Id)
         {
-            return HistoryReader.GetAllById<HistoricalPromoProduct>(Id.ToString());
+            var product = Context.Set<PromoProduct>().Find(Id);
+            var promoProducts = HistoryReader.GetAllById<HistoricalPromoProduct>(Id.ToString());
+            promoProducts.Each(pp => pp.EAN_PC = product.EAN_PC);
+            return promoProducts;
         }
 
         [ClaimsAuthorize]
@@ -71,8 +79,10 @@ namespace Module.Frontend.TPM.Controllers {
             return optionsPost.ApplyTo(query, querySettings) as IQueryable<HistoricalPromoProduct>;
         }
 
-        protected override void Dispose(bool disposing) {
-            if (disposing) {
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
                 HistoryReader.Dispose();
             }
             base.Dispose(disposing);

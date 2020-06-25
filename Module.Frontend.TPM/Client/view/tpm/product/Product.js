@@ -9,50 +9,50 @@
     }],
 
     customHeaderItems: [
-ResourceMgr.getAdditionalMenu('core').base = {
-    glyph: 0xf068,
-    text: l10n.ns('core', 'additionalMenu').value('additionalBtn'),
+        ResourceMgr.getAdditionalMenu('core').base = {
+            glyph: 0xf068,
+            text: l10n.ns('core', 'additionalMenu').value('additionalBtn'),
 
-    menu: {
-        xtype: 'customheadermenu',
-        items: [{
-            glyph: 0xf4eb,
-            itemId: 'gridsettings',
-            text: l10n.ns('core', 'additionalMenu').value('gridSettingsMenuItem'),
-            action: 'SaveGridSettings',
-            resource: 'Security'
-        }]
-    }
-},
-ResourceMgr.getAdditionalMenu('core').import = {
-    glyph: 0xf21b,
-    text: l10n.ns('core', 'additionalMenu').value('importExportBtn'),
+            menu: {
+                xtype: 'customheadermenu',
+                items: [{
+                    glyph: 0xf4eb,
+                    itemId: 'gridsettings',
+                    text: l10n.ns('core', 'additionalMenu').value('gridSettingsMenuItem'),
+                    action: 'SaveGridSettings',
+                    resource: 'Security'
+                }]
+            }
+        },
+        ResourceMgr.getAdditionalMenu('core').import = {
+            glyph: 0xf21b,
+            text: l10n.ns('core', 'additionalMenu').value('importExportBtn'),
 
-    menu: {
-        xtype: 'customheadermenu',
-        items: [{
-            glyph: 0xf220,
-            itemgroup: 'loadimportbutton',
-            exactlyModelCompare: true,
-            text: l10n.ns('core', 'additionalMenu').value('fullImportXLSX'),
-            resource: 'Products',
-            action: 'FullImportXLSX',
-            allowFormat: ['zip', 'xlsx']
-        }, {
-            glyph: 0xf21d,
-            itemId: 'loadimporttemplatexlsxbutton',
-            exactlyModelCompare: true,
-            text: l10n.ns('core', 'additionalMenu').value('importTemplateXLSX'),
-            action: 'DownloadTemplateXLSX'
-        }, {
-            glyph: 0xf21d,
-            itemId: 'exportxlsxbutton',
-            exactlyModelCompare: true,
-            text: l10n.ns('core', 'additionalMenu').value('exportXLSX'),
-            action: 'ExportXLSX'
-        }]
-    }
-}
+            menu: {
+                xtype: 'customheadermenu',
+                items: [{
+                    glyph: 0xf220,
+                    itemgroup: 'loadimportbutton',
+                    exactlyModelCompare: true,
+                    text: l10n.ns('core', 'additionalMenu').value('fullImportXLSX'),
+                    resource: 'Products',
+                    action: 'FullImportXLSX',
+                    allowFormat: ['zip', 'xlsx']
+                }, {
+                    glyph: 0xf21d,
+                    itemId: 'loadimporttemplatexlsxbutton',
+                    exactlyModelCompare: true,
+                    text: l10n.ns('core', 'additionalMenu').value('importTemplateXLSX'),
+                    action: 'DownloadTemplateXLSX'
+                }, {
+                    glyph: 0xf21d,
+                    itemId: 'exportxlsxbutton',
+                    exactlyModelCompare: true,
+                    text: l10n.ns('core', 'additionalMenu').value('exportXLSX'),
+                    action: 'ExportXLSX'
+                }]
+            }
+        }
 
     ],
     items: [{
@@ -95,14 +95,14 @@ ResourceMgr.getAdditionalMenu('core').import = {
             }, {
                 text: l10n.ns('tpm', 'Product').value('EAN_Case'),
                 dataIndex: 'EAN_Case'
-            },{
+            }, {
                 text: l10n.ns('tpm', 'Product').value('EAN_PC'),
                 dataIndex: 'EAN_PC'
             }, {
                 text: l10n.ns('tpm', 'Product').value('ProductEN'),
                 dataIndex: 'ProductEN'
             }, {
-				text: l10n.ns('tpm', 'Product').value('Brand'),
+                text: l10n.ns('tpm', 'Product').value('Brand'),
                 dataIndex: 'Brand'
             }, {
                 text: l10n.ns('tpm', 'Product').value('Brand_code'),
@@ -128,6 +128,18 @@ ResourceMgr.getAdditionalMenu('core').import = {
             }, {
                 text: l10n.ns('tpm', 'Product').value('Brandsegtech'),
                 dataIndex: 'Brandsegtech'
+            }, {
+                text: l10n.ns('tpm', 'Product').value('BrandsegTechsub_code'),
+                dataIndex: 'BrandsegTechsub_code'
+            }, {
+                text: l10n.ns('tpm', 'Product').value('BrandsegTechsub'),
+                dataIndex: 'BrandsegTechsub'
+            }, {
+                text: l10n.ns('tpm', 'Product').value('SubBrand_code'),
+                dataIndex: 'SubBrand_code'
+            }, {
+                text: l10n.ns('tpm', 'Product').value('SubBrand'),
+                dataIndex: 'SubBrand'
             }, {
                 text: l10n.ns('tpm', 'Product').value('BrandFlagAbbr'),
                 dataIndex: 'BrandFlagAbbr'
@@ -199,17 +211,17 @@ ResourceMgr.getAdditionalMenu('core').import = {
             name: 'EAN_PC',
             vtype: 'eanNum',
             fieldLabel: l10n.ns('tpm', 'Product').value('EAN_PC'),
-        },  {
+        }, {
             xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
             name: 'ProductEN',
             fieldLabel: l10n.ns('tpm', 'Product').value('ProductEN'),
         }, {
-			//--
-			xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
+            //--
+            xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
             name: 'Brand',
             fieldLabel: l10n.ns('tpm', 'Product').value('Brand'),
         }, {
-            xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
+            xtype: 'textfield', 
             name: 'Brand_code',
             fieldLabel: l10n.ns('tpm', 'Product').value('Brand_code'),
         }, {
@@ -217,7 +229,7 @@ ResourceMgr.getAdditionalMenu('core').import = {
             name: 'Technology',
             fieldLabel: l10n.ns('tpm', 'Product').value('Technology'),
         }, {
-            xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
+            xtype: 'textfield', 
             name: 'Tech_code',
             fieldLabel: l10n.ns('tpm', 'Product').value('Tech_code'),
         }, {
@@ -240,6 +252,14 @@ ResourceMgr.getAdditionalMenu('core').import = {
             xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
             name: 'Brandsegtech',
             fieldLabel: l10n.ns('tpm', 'Product').value('Brandsegtech'),
+        }, {
+            xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
+            name: 'SubBrand_code',
+            fieldLabel: l10n.ns('tpm', 'Product').value('SubBrand_code'),
+        }, {
+            xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
+            name: 'SubBrand',
+            fieldLabel: l10n.ns('tpm', 'Product').value('SubBrand'),
         }, {
             xtype: 'textfield',
             name: 'BrandFlagAbbr',

@@ -16,14 +16,14 @@ namespace Module.Persist.TPM.Model.Import
         public string DemandCode { get; set; }
 
         [ImportCSVColumn(ColumnNumber = 1)]
-        [NavigationPropertyMap(LookupEntityType = typeof(BrandTech), LookupPropertyName = "BrandTech_code")]
+        [NavigationPropertyMap(LookupEntityType = typeof(BrandTech), LookupPropertyName = "BrandsegTechsub_code")]
         [Display(Name = "Brand Tech Code")]
-        public String BrandTechBrandTech_code { get; set; }
+        public String BrandsegTechsub_code { get; set; }
 
         [ImportCSVColumn(ColumnNumber = 2)]
-        [NavigationPropertyMap(LookupEntityType = typeof(BrandTech), LookupPropertyName = "Name")]
+        [NavigationPropertyMap(LookupEntityType = typeof(BrandTech), LookupPropertyName = "BrandsegTechsub")]
         [Display(Name = "Brand Tech Name")]
-        public String BrandTechName { get; set; }
+        public String BrandsegTechsub { get; set; }
 
         [ImportCSVColumn(ColumnNumber = 3)]
         [Display(Name = "Coefficient Value")]

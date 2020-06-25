@@ -395,15 +395,22 @@
         },
         //Adjust data
         getAdjustDataDemandPlanning: function () {
-   
-
             var filter = {
                 operator: "and",
                 rules: [
                     {
                         property: "PromoStatusName", operation: "Equals", value: 'On Approval'
-                    },
-                    {
+                    },{
+                        property: "IsCMManagerApproved", operation: "Equals", value: true
+                    },{
+                        operator: "or",
+                        rules: [{
+                            property: "IsDemandPlanningApproved", operation: "Equals", value: null
+                        },
+                        {
+                            property: "IsDemandPlanningApproved", operation: "Equals", value: false
+                        }]
+                    },{
                         operator: "or",
                         rules: [{
                             operator: "and",

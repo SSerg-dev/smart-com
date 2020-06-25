@@ -10,6 +10,9 @@ using Looper.Parameters;
 using Microsoft.Ajax.Utilities;
 using Module.Frontend.TPM.Util;
 using Module.Host.TPM.Handlers.MainNightProcessing;
+using Module.Host.TPM.Util.DispatcherLogger;
+using Module.Host.TPM.Util.Interface;
+using Module.Host.TPM.Util.Model;
 using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
@@ -111,6 +114,7 @@ namespace Module.Host.TPM.Actions.Interface.Incoming
                 ConcurrentBag<Tuple<IEntity<Guid>, string>> warningRecords = new ConcurrentBag<Tuple<IEntity<Guid>, string>>();
                 ConcurrentBag<Tuple<IEntity<Guid>, string>> errorRecordsForFile = new ConcurrentBag<Tuple<IEntity<Guid>, string>>();
                 ConcurrentBag<Tuple<IEntity<Guid>, string>> warningRecordsForFile = new ConcurrentBag<Tuple<IEntity<Guid>, string>>();
+                BaseDispatcherLogger dispatcherLogger = new BaseDispatcherLogger();
 
                 ConcurrentBag<IEntity<Guid>> successRecords = new ConcurrentBag<IEntity<Guid>>();
                 ConcurrentBag<BaseLine> modelsToCreate = new ConcurrentBag<BaseLine>();
@@ -250,13 +254,13 @@ namespace Module.Host.TPM.Actions.Interface.Incoming
                         IList<string> warnings;
                         IList<string> validationErrors;
                         IList<Guid> idsToRecalculate;
-                        if (!IsModelSuitable(item, productList, clientTrees, hierarchy, priceLists, promoProductLists, promoLists, out validationErrors, out warnings, baseClientTrees, parallelStopwatch))
+                        if (!IsModelSuitable(item, productList, clientTrees, hierarchy, priceLists, promoProductLists, promoLists, dispatcherLogger,out validationErrors, out warnings, baseClientTrees, parallelStopwatch))
                         {
-                            errorRecords.Add(new Tuple<IEntity<Guid>, string>(item, String.Join(", ", validationErrors)));
+                            //errorRecords.Add(new Tuple<IEntity<Guid>, string>(item, String.Join(", ", dispatcherLogger.GetError())));
                         }
-                        else if (!IsConvertToBaselineSuccess(item, baseLines, productList, clientTrees, out idsToRecalculate, out modelToCreate, out modelToUpdate, out modelToHisCreate, out modelToHisUpdate, out validationErrors, parallelStopwatch))
+                        else if (!IsConvertToBaselineSuccess(item, baseLines, productList, clientTrees, out idsToRecalculate, out modelToCreate, out modelToUpdate, out modelToHisCreate, out modelToHisUpdate,dispatcherLogger, out validationErrors, parallelStopwatch))
                         {
-                            errorRecords.Add(new Tuple<IEntity<Guid>, string>(item, String.Join(", ", validationErrors)));
+                            //errorRecords.Add(new Tuple<IEntity<Guid>, string>(item, String.Join(", ", dispatcherLogger.GetError())));
                         }
                         else
                         {
@@ -280,10 +284,6 @@ namespace Module.Host.TPM.Actions.Interface.Incoming
                                 }
                             }
 
-                            if (warnings.Any())
-                            {
-                                warningRecords.Add(new Tuple<IEntity<Guid>, string>(item, String.Join(", ", warnings)));
-                            }
 
                             successRecords.Add(item);
                         }
@@ -324,8 +324,8 @@ namespace Module.Host.TPM.Actions.Interface.Incoming
                             if (singleGroup.Select(x => x.InputBaselineQTY).Distinct().Count() > 1)
                             {
                                 var dublicateIds = singleGroup.Select(x => x.Id);
-                                errorRecords.Add(new Tuple<IEntity<Guid>, string>(singleGroup.First(), String.Format("There is dublicate {0} {1} {2}",
-                                    singleGroup.First().StartDate, singleGroup.First().Product.ZREP, singleGroup.First().DemandCode)));
+                                dispatcherLogger.Add<ErrorLogInfo>(singleGroup.First(),"There is dublicate", "StartDate,ZREP,DemandCode", String.Join(",", singleGroup.First().StartDate, singleGroup.First().Product.ZREP, singleGroup.First().DemandCode));
+                                //errorRecords.Add(new Tuple<IEntity<Guid>, string>(singleGroup.First(), String.Join(",",dispatcherLogger.GetError()));
                                 createBaselineList = createBaselineList.Where(c => !c.DemandCode.Equals(singleGroup.Key.DemandCode) || !c.ProductId.Equals(singleGroup.Key.ProductId) || !c.StartDate.Equals(singleGroup.Key.StartDate)).ToList();
                                 updateBaselineList = updateBaselineList.Where(c => !c.DemandCode.Equals(singleGroup.Key.DemandCode) || !c.ProductId.Equals(singleGroup.Key.ProductId) || !c.StartDate.Equals(singleGroup.Key.StartDate)).ToList();
                                 toHisCreate = toHisCreate.Where(x => !dublicateIds.Contains(x.Item2.Id)).ToList();
@@ -471,25 +471,24 @@ namespace Module.Host.TPM.Actions.Interface.Incoming
 
                     int processedCount = createBaselineList.Count + updateBaselineList.Count;
                     fileLogger.Write(true, "Количество обработанных записей: " + processedCount + Environment.NewLine, "Message");
+                    warningRecords = dispatcherLogger.GetWarningRecords();
+                    errorRecords = dispatcherLogger.GetErrorRecords();                 
                     Results["ImportResultRecordCount"] = processedCount;
                     Results["ErrorCount"] = errorRecords.Count;
                     Results["WarningCount"] = warningRecords.Count;
-                    if (errorRecords.Count > 0)
-                    {
-                        hasErrors = true;
-                        foreach (var record in errorRecords)
-                        {
-                            Errors.Add($"{ record.Item2 }");
-                        }
-                    }
-                    if (warningRecords.Count > 0)
+                    hasWarnings = false;
+                    hasErrors = false;
+
+                    foreach (var item in dispatcherLogger.GetWarning())
                     {
                         hasWarnings = true;
-                        foreach (var record in warningRecords)
-                        {
-                            Warnings.Add($"{ record.Item2 }");
-                        }
+                        Warnings.Add(item);
                     }
+                    foreach (var item in dispatcherLogger.GetError())
+                    {
+                        hasErrors = true;
+                        Errors.Add(item);
+                    } 
                     stopwatch.Stop();
                     fileLogger.Write(true, String.Format("Save arguments ended at {0:yyyy-MM-dd HH:mm:ss}; Duration: {1} seconds", DateTimeOffset.Now, stopwatch.Elapsed.TotalSeconds), "Message");
                     stopwatch.Restart();
@@ -576,7 +575,7 @@ namespace Module.Host.TPM.Actions.Interface.Incoming
             }
         }
 
-        protected virtual bool IsModelSuitable(InputBaseline rec, List<SimpleProduct> products, List<ClientTree> clientTrees, IEnumerable<ClientTreeHierarchyView> hierarchy, List<SimplePriseList> priceLists, List<SimplePromoProduct> promoProducts, List<SimplePromo> promoes, out IList<string> errors, out IList<string> warnings, List<SimpleClientTreeDMDGroup> baseClientTrees, Stopwatch parallelStopwatch)
+        protected virtual bool IsModelSuitable(InputBaseline rec, List<SimpleProduct> products, List<ClientTree> clientTrees, IEnumerable<ClientTreeHierarchyView> hierarchy, List<SimplePriseList> priceLists, List<SimplePromoProduct> promoProducts, List<SimplePromo> promoes, BaseDispatcherLogger dispatcherLogger ,out IList<string> errors, out IList<string> warnings, List<SimpleClientTreeDMDGroup> baseClientTrees, Stopwatch parallelStopwatch)
         {
             Stopwatch validateStopwatch = new Stopwatch();
             validateStopwatch.Restart();
@@ -592,8 +591,7 @@ namespace Module.Host.TPM.Actions.Interface.Incoming
             if (!Regex.IsMatch(rec.DMDGroup, @"^0*[\d]{8}") || rec.DurInMinutes != 10080 || !Regex.IsMatch(rec.REP, @"^0*[\d]{6}"))
             {
                 isError = true;
-                message = "DMDGroup should be 8 digits long, DurInMinutes should be equal to 10080, REP should be 6 digits long.";
-                errors.Add(message);
+                dispatcherLogger.Add<ErrorLogInfo>(rec,"DMDGroup should be 8 digits long, DurInMinutes should be equal to 10080, REP should be 6 digits long.","","");
             }
             parallelStopwatch.Stop();
             dmdDur += parallelStopwatch.Elapsed.TotalSeconds;
@@ -601,8 +599,7 @@ namespace Module.Host.TPM.Actions.Interface.Incoming
             if (rec.SALES_ORG != 261 || rec.SALES_DIVISON != 51 || rec.BUS_SEG != 5 || rec.MOE != 125)
             {
                 isError = true;
-                message = "There are baselines with wrong SALES_ORG, SALES_DIVISON, BUS_SEG or MOE.";
-                errors.Add(message);
+                dispatcherLogger.Add<ErrorLogInfo>(rec, "DMDGrThere are baselines with wrong SALES_ORG, SALES_DIVISON, BUS_SEG or MOE.", "", "");
             }
             parallelStopwatch.Stop();
             SalesORGDur += parallelStopwatch.Elapsed.TotalSeconds;
@@ -611,8 +608,7 @@ namespace Module.Host.TPM.Actions.Interface.Incoming
             if (!products.Select(x => x.ZREP).Contains(rec.REP))
             {
                 isError = true;
-                message = String.Format("Product with ZREP {0} was not found.", rec.REP);
-                errors.Add(message);
+                dispatcherLogger.Add<ErrorLogInfo>(rec, "Product was not found", "ZREP", rec.REP);
             }
             parallelStopwatch.Stop();
             ProductDur += parallelStopwatch.Elapsed.TotalSeconds;
@@ -620,8 +616,7 @@ namespace Module.Host.TPM.Actions.Interface.Incoming
             if (rec.SALES_DIST_CHANNEL != 11 && rec.SALES_DIST_CHANNEL != 22)
             {
                 isError = true;
-                message = String.Format("Sales dist channel not equals 11 or 22. ZREP = {0}, DMDGroup = {1}", rec.REP, rec.DMDGroup);
-                errors.Add(message);
+                dispatcherLogger.Add<ErrorLogInfo>(rec, "Sales dist channel not equals 11 or 22.", "ZREP,DMDGroup", string.Join(",", rec.REP, rec.DMDGroup));
             }
             parallelStopwatch.Stop();
             SalesDISTDur += parallelStopwatch.Elapsed.TotalSeconds;
@@ -629,8 +624,7 @@ namespace Module.Host.TPM.Actions.Interface.Incoming
             if (!clientTrees.Select(x => x.DMDGroup).Contains(rec.DMDGroup))
             {
                 isError = true;
-                message = String.Format("Client with DMD Group {0} was not found.", rec.DMDGroup);
-                errors.Add(message);
+                dispatcherLogger.Add<ErrorLogInfo>(rec, "Client was not found", "DmdGroup", rec.DMDGroup);
             }
             parallelStopwatch.Stop();
             clientDur += parallelStopwatch.Elapsed.TotalSeconds;
@@ -639,8 +633,7 @@ namespace Module.Host.TPM.Actions.Interface.Incoming
             if (rec.STARTDATE.DayOfWeek != DayOfWeek.Sunday)
             {
                 isError = true;
-                message = String.Format("Start date must be on Sunday, record: ZREP = {0}, DMDGroup = {1}, Start Date = {2}", rec.REP, rec.DMDGroup, rec.STARTDATE);
-                errors.Add(message);
+                dispatcherLogger.Add<ErrorLogInfo>(rec, "Start date must be on Sunday", "ZREP, Dmd Group, Start Date", String.Join(",",rec.REP,rec.DMDGroup,rec.STARTDATE));
             }
             parallelStopwatch.Stop();
             sundayDur += parallelStopwatch.Elapsed.TotalSeconds;
@@ -651,8 +644,7 @@ namespace Module.Host.TPM.Actions.Interface.Incoming
             {
                 if (!priceLists.Any(x => x.StartDate <= rec.STARTDATE && x.EndDate >= rec.STARTDATE && x.ZREP == rec.REP && client.Id == x.ClientTreeId))
                 {
-                    message = String.Format("Price List for Client with DMD Group {2} or it's children, ZREP {0}, Start Date {1:yyyy-MM-dd} was not found.", rec.REP, rec.STARTDATE, rec.DMDGroup);
-                    warnings.Add(message);
+                    dispatcherLogger.Add<WarningLogInfo>(rec, "Price List for Client Not Found","ZREP ,Start Date , DMD Group",String.Join(",",rec.REP,rec.STARTDATE,rec.DMDGroup));
                 }
             }
             parallelStopwatch.Stop();
@@ -661,9 +653,8 @@ namespace Module.Host.TPM.Actions.Interface.Incoming
 
             if (rec.QTY < 0)
             {
-                message = String.Format("QTY cannot be less than 0, QTY will be equal to 0. ZREP = {0}, DMDGroup = {1}", rec.REP, rec.DMDGroup);
                 rec.QTY = 0;
-                warnings.Add(message);
+                dispatcherLogger.Add<WarningLogInfo>(rec, "QTY cannot be less than 0, QTY will be equal to 0. ","ZREP,DMDGroup",String.Join(",",rec.REP,rec.DMDGroup));
             }
             parallelStopwatch.Stop();
             qtyDur += parallelStopwatch.Elapsed.TotalSeconds;
@@ -685,9 +676,7 @@ namespace Module.Host.TPM.Actions.Interface.Incoming
 
                     if (affectedPromoes.Any())
                     {
-                        message = "QTY = 0 downloaded for promo in Started, Planned or Approved status with ID: " +
-                            String.Join(", ", affectedPromoes.Distinct());
-                        warnings.Add(message);
+                        dispatcherLogger.Add<WarningLogInfo>(rec, "QTY = 0 downloaded for promo in Started, Planned or Approved status: ", "Id", String.Join(", ", affectedPromoes.Distinct()));
                     }
                 }
             }
@@ -699,7 +688,7 @@ namespace Module.Host.TPM.Actions.Interface.Incoming
             return !isError;
         }
 
-        private bool IsConvertToBaselineSuccess(InputBaseline rec, List<BaseLine> baseLines, List<SimpleProduct> products, List<ClientTree> clientTrees, out IList<Guid> needRecalculateBaselineIds, out BaseLine modelToCreate, out BaseLine modelToUpdate, out Tuple<IEntity<Guid>, IEntity<Guid>> modelToHisCreate, out Tuple<IEntity<Guid>, IEntity<Guid>> modelToHisUpdate, out IList<string> errors, Stopwatch parallelStopwatch)
+        private bool IsConvertToBaselineSuccess(InputBaseline rec, List<BaseLine> baseLines, List<SimpleProduct> products, List<ClientTree> clientTrees, out IList<Guid> needRecalculateBaselineIds, out BaseLine modelToCreate, out BaseLine modelToUpdate, out Tuple<IEntity<Guid>, IEntity<Guid>> modelToHisCreate, out Tuple<IEntity<Guid>, IEntity<Guid>> modelToHisUpdate,BaseDispatcherLogger dispatcherLogger, out IList<string> errors, Stopwatch parallelStopwatch)
         {
             Stopwatch convertStopwatch = new Stopwatch();
             convertStopwatch.Restart();
@@ -745,8 +734,7 @@ namespace Module.Host.TPM.Actions.Interface.Incoming
                 }
                 else
                 {
-                    message = String.Format("Wrong start date in record with ZREP {0}, DMDGroup {1} and StartDate {2}", rec.REP, rec.DMDGroup, rec.STARTDATE);
-                    errors.Add(message);
+                    dispatcherLogger.Add<ErrorLogInfo>(rec, "Wrong start date in record", "ZREP,DMD Group, Start Date", string.Join(",", rec.REP, rec.DMDGroup, rec.STARTDATE)); ;
                     convertStopwatch.Stop();
                     convertDur = convertStopwatch.Elapsed.TotalSeconds;
                     return false;
@@ -804,6 +792,8 @@ namespace Module.Host.TPM.Actions.Interface.Incoming
             {
                 isError = true;
                 message = e.ToString();
+                dispatcherLogger.Add<ErrorLogInfo>(rec, message,"",""); 
+
                 errors.Add(message);
             }
 

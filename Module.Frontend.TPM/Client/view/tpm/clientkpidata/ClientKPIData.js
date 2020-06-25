@@ -114,7 +114,7 @@
                 property: 'ObjectId',
                 direction: 'ASC'
             }, {
-                property: 'BrandTechName',
+                property: 'BrandsegTechsubName',
                 direction: 'ASC'
             }],
             extendedFilter: {
@@ -158,20 +158,20 @@
             locked: true,
             plugins: ['sortbutton'],
             menuDisabled: true,
-                filter: {
-                    xtype: 'treefsearchfield',
-                    trigger2Cls: '',
-                    selectorWidget: 'clienttree',
-                    valueField: 'FullPathName',
-                    displayField: 'FullPathName',
-                    multiSelect: true,
-                    operator: 'conts',
-                    store: {
-                        model: 'App.model.tpm.clienttree.ClientTree',
-                        autoLoad: false,
-                        root: {}
-                    },
+            filter: {
+                xtype: 'treefsearchfield',
+                trigger2Cls: '',
+                selectorWidget: 'clienttree',
+                valueField: 'FullPathName',
+                displayField: 'FullPathName',
+                multiSelect: true,
+                operator: 'conts',
+                store: {
+                    model: 'App.model.tpm.clienttree.ClientTree',
+                    autoLoad: false,
+                    root: {}
                 },
+            },
             minWidth: 200,
             width: 200,
             listeners: {
@@ -187,31 +187,31 @@
                 }
             }
         }, {
-            text: l10n.ns('tpm', 'ClientKPIData').value('BrandTechName'),
-            dataIndex: 'BrandTechName',
+            text: l10n.ns('tpm', 'ClientKPIData').value('BrandsegTechsubName'),
+            dataIndex: 'BrandsegTechsubName',
             locked: true,
             plugins: ['sortbutton'],
-                menuDisabled: true,
-                filter: {
-                    type: 'search',
-                    selectorWidget: 'brandtech',
-                    valueField: 'Name',
-                    store: {
-                        type: 'directorystore',
-                        model: 'App.model.tpm.brandtech.BrandTech',
-                        extendedFilter: {
-                            xclass: 'App.ExtFilterContext',
-                            supportedModels: [{
-                                xclass: 'App.ExtSelectionFilterModel',
-                                model: 'App.model.tpm.brandtech.BrandTech',
-                                modelId: 'efselectionmodel'
-                            }, {
-                                xclass: 'App.ExtTextFilterModel',
-                                modelId: 'eftextmodel'
-                            }]
-                        }
+            menuDisabled: true,
+            filter: {
+                type: 'search',
+                selectorWidget: 'brandtech',
+                valueField: 'BrandsegTechsub',
+                store: {
+                    type: 'directorystore',
+                    model: 'App.model.tpm.brandtech.BrandTech',
+                    extendedFilter: {
+                        xclass: 'App.ExtFilterContext',
+                        supportedModels: [{
+                            xclass: 'App.ExtSelectionFilterModel',
+                            model: 'App.model.tpm.brandtech.BrandTech',
+                            modelId: 'efselectionmodel'
+                        }, {
+                            xclass: 'App.ExtTextFilterModel',
+                            modelId: 'eftextmodel'
+                        }]
                     }
-                },
+                }
+            },
             minWidth: 135,
             width: 135,
             listeners: {
@@ -410,22 +410,22 @@
                     return rounder(value, true);
                 }
             }]
-            }, {
-                text: l10n.ns('tpm', 'ClientKPIData').value('NonPromoTiCost'),
+        }, {
+            text: l10n.ns('tpm', 'ClientKPIData').value('NonPromoTiCost'),
+            minWidth: 140,
+            columns: [{
+                text: l10n.ns('tpm', 'ClientKPIData').value('PlanPercent'),
+                dataIndex: 'NonPromoTiCostPlanPercent',
+                plugins: ['sortbutton'],
+                menuDisabled: true,
+                sortable: true,
                 minWidth: 140,
-                columns: [{
-                    text: l10n.ns('tpm', 'ClientKPIData').value('PlanPercent'),
-                    dataIndex: 'NonPromoTiCostPlanPercent',
-                    plugins: ['sortbutton'],
-                    menuDisabled: true,
-                    sortable: true,
-                    minWidth: 140,
-                    width: 140,
-                    renderer: function (value) {
-                        return rounder(value);
-                    }
-                },]
-            }, {
+                width: 140,
+                renderer: function (value) {
+                    return rounder(value);
+                }
+            },]
+        }, {
             text: l10n.ns('tpm', 'ClientKPIData').value('Production'),
             columns: [{
                 text: l10n.ns('tpm', 'ClientKPIData').value('PlanPercent'),

@@ -90,7 +90,7 @@
     onApplyProductFilterClick: function (button) {
         var textarea = button.up().up().down('textarea'),
             text = textarea.getValue(),
-            
+
             productGrid = button.up().up().up().down('product').down('directorygrid'),
             productStore = productGrid.getStore(),
             extendedFilter = productStore.extendedFilter;

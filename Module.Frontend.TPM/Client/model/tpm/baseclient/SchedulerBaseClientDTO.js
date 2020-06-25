@@ -21,7 +21,8 @@
         { name: 'TypeName', type: 'string', hidden: false, useNull: true },
 
         { name: 'IsOnInvoice', type: 'bool', useNull: true, defaultValue: null },
-        { name: 'InOutId', type: 'string', hidden: true}
+        { name: 'InOutId', type: 'string', hidden: true },
+        {name: 'DeviationCoefficient', type: 'float', hidden: false, isDefault: true}
     ],
     proxy: {
         type: 'breeze',

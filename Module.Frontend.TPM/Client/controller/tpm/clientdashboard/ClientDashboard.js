@@ -673,7 +673,7 @@
             if (Weeks != 0 || VodYTD != 0 || VodYEE != 0) {
                 var promoWeeksPanel = Ext.widget('promoweekspanel', {
                     logoFileName: record.data.LogoFileName,
-                    brandTechName: record.data.BrandTechName,
+                    brandsegTechsubName: record.data.BrandsegTechsubName,
                     promoWeeks: Weeks,
                     vodYTD: VodYTD,
                     vodYEE: VodYEE
@@ -689,7 +689,7 @@
             model: 'App.model.tpm.clientkpidata.ClientKPIData',
             autoLoad: false,
             sorters: [{
-                property: 'BrandTechName',
+                property: 'BrandsegTechsubName',
                 direction: 'ASC'
             }],
         })

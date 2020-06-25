@@ -176,6 +176,8 @@ namespace Module.Host.TPM.Actions
                 
                 var logLine = $"New {nameof(PriceList)}: {differentPriceList.ToString()}";
                 _fileLogWriter.Write(true, logLine, "Message");
+                differentPriceList.Product = null;
+                differentPriceList.ClientTree = null;
             }
 
             priceLists.AddRange(differentPriceLists);
@@ -225,6 +227,8 @@ namespace Module.Host.TPM.Actions
                             Price = priceListFDM.PRICE,
                             ClientTreeId = baseClientTree.Id,
                             ProductId = product.Id,
+                            ClientTree = baseClientTree,
+                            Product = product
                         };
 
                         newPriceListRecords.Add(newPriceListRecord);

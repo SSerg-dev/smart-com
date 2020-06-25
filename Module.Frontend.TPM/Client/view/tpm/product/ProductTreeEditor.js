@@ -133,7 +133,7 @@
             name: 'TechnologyId',
             selectorWidget: 'technology',
             valueField: 'TechnologyId',
-            displayField: 'TechnologyName',
+            displayField: 'TechSubName',
             entityType: 'Technology',
             allowBlank: true,
             allowOnlyWhitespace: true,
@@ -150,7 +150,7 @@
                 }
             },
             mapping: [{
-                from: 'TechnologyName',
+                from: 'TechSubName',
                 to: 'Name'
             }],
             onTrigger2Click: function () {
@@ -168,8 +168,8 @@
                             }]
                         }
                     }
-                );
-                
+                    );
+
                 var selectorWidgetConfig = this.selectorWidgetConfig || {};
                 selectorWidgetConfig.xtype = this.selectorWidget;
 

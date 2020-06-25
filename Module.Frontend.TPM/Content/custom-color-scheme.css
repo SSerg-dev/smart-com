@@ -2304,15 +2304,30 @@ tr[data-recordindex="0"] .container-icon {
     padding-bottom: 3px;
 }
 
+.adjustment-custom-panel .x-panel-body {
+    background-color: #eeeeee !important;
+    margin-top: 5px;
+}
+
 /*Стиль слайдера*/
-.x-slider-horz {
+.x-slider-horz, .readonly-adjustment-slider-horz {
     background-image: none;
 }
 
-.x-slider-horz .x-slider-inner {
+.adjustment-slider-horz {
+    background-image: url(images/RiskiAdjuctment.gif);
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+.x-slider-horz .x-slider-inner, .readonly-adjustment-slider-horz .x-slider-inner {
     height: 10px;
     border: 1px solid #D2D7D8;
     border-radius: 1px;
+}
+
+.adjustment-slider-horz .x-slider-inner {
+    border: 0px;
 }
 
 x-slider-inner:before {
@@ -2324,7 +2339,9 @@ x-slider-inner:before {
     background: #809DBA;
 }
 
-.x-slider-horz .x-slider-end, .x-slider-horz .x-slider-inner {
+.x-slider-horz .x-slider-end, .x-slider-horz .x-slider-inner,
+.adjustment-slider-horz .x-slider-end, .adjustment-slider-horz .x-slider-inner,
+.readonly-adjustment-slider-horz .x-slider-end, .readonly-adjustment-slider-horz .x-slider-inner {
     background-image: none;
 }
 
@@ -2338,6 +2355,38 @@ x-slider-inner:before {
     cursor: pointer;
     color: #fff;
     border-radius: 2px;
+}
+
+.readonly-adjustment-slider-horz .x-slider-thumb {
+    background-image: none;
+    background-color: #3f6895;
+    width: 15px;
+    height: 19px;
+    margin-left: -7px;
+    margin-top: -6px;
+    color: #fff;
+    border-radius: 2px;
+    cursor: default;
+}
+
+.x-slider-horz-disabled {
+    opacity: 0.6;
+}
+
+.x-slider-horz-disabled .x-slider-thumb {
+    cursor: default;
+    opacity: 1;
+    background-image: none;
+    background-color: #b2c3d5;
+}
+
+.x-promo-slider-horz-disabled {
+    opacity: 1;
+}
+
+.x-promo-slider-horz-disabled .x-slider-thumb {
+    cursor: default;
+    opacity: 1;
 }
 
 .x-slider-horz .x-slider-thumb:before {
@@ -2354,6 +2403,14 @@ x-slider-inner:before {
     margin: 0px 0px 0px 10px;
     position: absolute;
     left: 0;
+    color: #C2C9D0;
+}
+
+.slider-center-lable {
+    font-weight: bold;
+    margin: 0px 0px 0px 0px;
+    position: absolute;
+    left: 49%;
     color: #C2C9D0;
 }
 

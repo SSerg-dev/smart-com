@@ -147,10 +147,10 @@
                 text: l10n.ns('tpm', 'PromoSupportPromoView').value('BrandTechName'),
                 dataIndex: 'BrandTechName',
                 width: 120,
-                /*filter: {
+                filter: {
                     type: 'search',
                     selectorWidget: 'brandtech',
-                    valueField: 'Name',
+                    valueField: 'BrandsegTechsub',
                     store: {
                         type: 'directorystore',
                         model: 'App.model.tpm.brandtech.BrandTech',
@@ -166,7 +166,7 @@
                             }]
                         }
                     }
-                }*/
+                }
             }, {
                 xtype: 'numbercolumn',
                 format: '0.00',

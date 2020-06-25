@@ -38,6 +38,10 @@
             xtype: 'singlelinedisplayfield',
             name: 'BrandTechTechnologyName',
             fieldLabel: l10n.ns('tpm', 'Color').value('TechnologyName'),
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'BrandTechTechnologySubBrand',
+            fieldLabel: l10n.ns('tpm', 'Color').value('SubBrandName'),
         }]
     }
 });

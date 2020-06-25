@@ -13,9 +13,9 @@ namespace Module.Persist.TPM.Model.Import
     {
 
         [ImportCSVColumn(ColumnNumber = 0)]
-        [NavigationPropertyMap(LookupEntityType = typeof(BrandTech), LookupPropertyName = "Name")]
-        [Display(Name = "BrandTech.Name")]
-        public string BrandTechName { get; set; }
+        [NavigationPropertyMap(LookupEntityType = typeof(BrandTech), LookupPropertyName = "BrandsegTechsub")]
+        [Display(Name = "BrandTech.BrandsegTechsub")]
+        public string BrandsegTechsub { get; set; }
 
         [ImportCSVColumn(ColumnNumber = 1)]
         [Display(Name = "SystemName")]

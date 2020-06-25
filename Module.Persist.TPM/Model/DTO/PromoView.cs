@@ -36,5 +36,6 @@ namespace Module.Persist.TPM.Model.DTO {
         public string TypeName { get; set; }
         public string TypeGlyph { get; set; }
         public bool IsOnInvoice { get; set; }
+        public double DeviationCoefficient { get; set; }
     }
 }

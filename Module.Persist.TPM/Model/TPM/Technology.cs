@@ -9,18 +9,28 @@ namespace Module.Persist.TPM.Model.TPM
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public System.Guid Id { get; set; }
-        [Index("Unique_Name", 2, IsUnique = true)]
+
+        [Index("Unique_Tech", 3, IsUnique = true)]
         public bool Disabled { get; set; }
-        [Index("Unique_Name", 3, IsUnique = true)]
+
+        [Index("Unique_Tech", 4, IsUnique = true)]
         public DateTimeOffset? DeletedDate { get; set; }
+
+        [Index("Unique_Tech", 5, IsUnique = true)]
         [StringLength(255)]
-        [Index("Unique_Name", 1, IsUnique = true)]
         [Required]
         public string Name { get; set; }
 
+        [Index("Unique_Tech", 1, IsUnique = true)]
         [Column(TypeName = "VARCHAR")]
         [StringLength(255)]
-        [Index("Unique_Name", 4, IsUnique = true)]
         public string Tech_code { get; set; }
+
+        [StringLength(255)]
+        public string SubBrand { get; set; }
+
+        [Index("Unique_Tech", 2, IsUnique = true)]
+        [StringLength(255)]
+        public string SubBrand_code { get; set; }
     }
 }

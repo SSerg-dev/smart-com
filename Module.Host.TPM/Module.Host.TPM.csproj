@@ -183,6 +183,8 @@
     <Compile Include="Actions\FullXLSXUpdateImportClientDashboardAction.cs" />
     <Compile Include="Actions\FullXLSXUpdateImportCoefficientSI2SOAction.cs" />
     <Compile Include="Actions\FullXLSXUpdateImportIncrementalPromoAction.cs" />
+    <Compile Include="Actions\FullXLSXUpdateImportRollingVolumesAction.cs" />
+    <Compile Include="Actions\FullXLSXUpdateImportTechnologyAction.cs" />
     <Compile Include="Actions\Interface\Incoming\InputBaseLineCSVProcessorAction.cs" />
     <Compile Include="Actions\Interface\Outcoming\OutputIncrementalProcessAction.cs" />
     <Compile Include="Actions\Notifications\ProductSyncFailNotificationAction.cs" />
@@ -198,6 +200,7 @@
     <Compile Include="Actions\SetCOGSPercentValuesAction.cs" />
     <Compile Include="Actions\SetTIBasePercentValuesAction.cs" />
     <Compile Include="Actions\PriceListMergeAction.cs" />
+    <Compile Include="Actions\RollingVolumeQTYRecalculationActions.cs" />
     <Compile Include="Actions\SellOutBaselineQtyCalculationAction.cs" />
     <Compile Include="Actions\XLSXImportActualLsvAction.cs" />
     <Compile Include="Actions\FullXLSXNoNegoUpdateImportAction.cs" />
@@ -222,6 +225,7 @@
     <Compile Include="Handlers\CreateCoefficientSI2SOHandler.cs" />
     <Compile Include="Handlers\MainNightProcessing\MainNightProcessingHelper.cs" />
     <Compile Include="Handlers\Notifications\ProductSyncFailNotificationHandler.cs" />
+    <Compile Include="Handlers\RollingVolumeQTYRecalculationHandler.cs" />
     <Compile Include="Handlers\SellOutBaselineQtyCalculationHandler.cs" />
     <Compile Include="Handlers\MainNightProcessing\NightProcessingMainHandler.cs" />
     <Compile Include="Handlers\Interface\Outcoming\OutputIncrementalProcessHandler.cs" />
@@ -299,6 +303,13 @@
     <Compile Include="HostTPMModule.cs" />
     <Compile Include="HostTPMModuleRegistrator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\DispatcherLogger\BaseDispatcherLogger.cs" />
+    <Compile Include="Util\Interface\IDispatcherLogInfo.cs" />
+    <Compile Include="Util\Interface\IErrorLogger.cs" />
+    <Compile Include="Util\Interface\ILogInfo.cs" />
+    <Compile Include="Util\Interface\IWarningLogger.cs" />
+    <Compile Include="Util\Model\ErrorLogInfo.cs" />
+    <Compile Include="Util\Model\WarningLogInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">

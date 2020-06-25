@@ -111,7 +111,7 @@ namespace Module.Frontend.TPM.Controllers {
                 return NotFound();
             }
             patch.Put(model);
-
+            model.DeviationCoefficient /= 100;
             try {
                 //Установка полей по дереву ProductTree
                 //SetPromoByProductTree(model);
@@ -138,6 +138,7 @@ namespace Module.Frontend.TPM.Controllers {
                     return BadRequest(ModelState);
                 }
 
+                model.DeviationCoefficient /= 100;
                 // делаем UTC +3
                 model.StartDate = ChangeTimeZoneUtil.ResetTimeZone(model.StartDate);
                 model.EndDate = ChangeTimeZoneUtil.ResetTimeZone(model.EndDate);
@@ -254,6 +255,7 @@ namespace Module.Frontend.TPM.Controllers {
                 
                 Promo promoCopy = new Promo(model);
                 patch.Patch(model);
+                model.DeviationCoefficient /= 100;
                 if (!String.IsNullOrEmpty(model.AdditionalUserTimestamp))
                     FixateTempPromoProductsCorrections(model.Id, model.AdditionalUserTimestamp);
             
@@ -702,7 +704,7 @@ namespace Module.Frontend.TPM.Controllers {
                             }
                         }
                         if (productTree.Type == "Technology") {
-                            technology = Context.Set<Technology>().FirstOrDefault(x => x.Name == productTree.Name);
+                            technology = Context.Set<Technology>().FirstOrDefault(x => (x.Name + " " + x.SubBrand).Trim() == productTree.Name.Trim());
                             if (technology != null) {
                                 technologyId = technology.Id;
                             }
@@ -1322,7 +1324,7 @@ namespace Module.Frontend.TPM.Controllers {
                             }
                         }
                         if (pt.Type == "Technology") {
-                            var tech = context.Set<Technology>().FirstOrDefault(x => x.Name == pt.Name);
+                            var tech = context.Set<Technology>().FirstOrDefault(x => (x.Name + " " + x.SubBrand).Trim() == pt.Name.Trim());
                             if (tech != null) {
                                 TechId = tech.Id;
                                 promo.TechnologyId = tech.Id;

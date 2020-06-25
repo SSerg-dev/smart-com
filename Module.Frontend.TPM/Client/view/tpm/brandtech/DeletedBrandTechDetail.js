@@ -16,16 +16,24 @@
             fieldLabel: l10n.ns('core', 'BaseDeletedEntity').value('DeletedDate')
         }, {
             xtype: 'singlelinedisplayfield',
-                name: 'BrandName',
+            name: 'BrandName',
             fieldLabel: l10n.ns('tpm', 'BrandTech').value('BrandName'),
         }, {
             xtype: 'singlelinedisplayfield',
             name: 'TechnologyName',
             fieldLabel: l10n.ns('tpm', 'BrandTech').value('TechnologyName'),
-            }, {
-                xtype: 'textfield',
-                name: 'BrandTech_code',
-                fieldLabel: l10n.ns('tpm', 'BrandTech').value('BrandTech_code'),
-            }]
+        }, {
+            xtype: 'textfield',
+            name: 'SubBrandName',
+            fieldLabel: l10n.ns('tpm', 'BrandTech').value('SubBrandName'),
+        }, {
+            xtype: 'textfield',
+            name: 'BrandTech_code',
+            fieldLabel: l10n.ns('tpm', 'BrandTech').value('BrandTech_code'),
+        }, {
+            xtype: 'textfield',
+            name: 'BrandsegTechsub_code',
+            fieldLabel: l10n.ns('tpm', 'BrandTech').value('BrandsegTechsub_code'),
+        }]
     }
 })

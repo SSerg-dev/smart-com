@@ -43,8 +43,8 @@ namespace Module.Persist.TPM.Model.TPM
               $"{nameof(StartDate)} = {StartDate}, " +
               $"{nameof(EndDate)} = {EndDate}, " +
               $"{nameof(Price)} = {Price}, " +
-              $"{nameof(ClientTreeId)} = {ClientTreeId}, " +
-              $"{nameof(ProductId)} = {ProductId}";
+              $"Client hierarchy code = {ClientTree.ObjectId}, " +
+              $"{nameof(Product.ZREP)} = {Product.ZREP}";
 
             return stringData;
         }

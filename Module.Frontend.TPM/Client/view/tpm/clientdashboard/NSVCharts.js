@@ -25,6 +25,7 @@ Ext.define('App.view.tpm.clientdashboard.NSVChart', {
     theme: 'NSVTheme',
     shadow: false,
     created: false,
+    minColumnHeight: 3,
     axes: [{
         type: 'Numeric',
         position: 'left',
@@ -46,7 +47,7 @@ Ext.define('App.view.tpm.clientdashboard.NSVChart', {
         hidden: true,
     }],
     series: [{
-        type: 'column',
+        type: 'minheightcolumn',
         gutter: 32.5,
         yField: 'value',
         xField: 'name',

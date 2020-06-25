@@ -17,7 +17,7 @@ namespace Module.Persist.TPM.Model.DTO
         public int ObjectId { get; set; }
         public string ClientHierarchy { get; set; }
         public Guid? BrandTechId { get; set; }
-        public string BrandTechName { get; set; }
+        public string BrandsegTechsubName { get; set; }
         public string LogoFileName { get; set; }
         public int Year { get; set; }
 
@@ -105,7 +105,7 @@ namespace Module.Persist.TPM.Model.DTO
                 ObjectId = this.ObjectId,
                 ClientHierarchy = this.ClientHierarchy,
                 BrandTechId = this.BrandTechId,
-                BrandTechName = this.BrandTechName,
+                BrandsegTechsubName = this.BrandsegTechsubName,
                 LogoFileName = this.LogoFileName,
                 Year = this.Year,
 

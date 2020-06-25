@@ -51,7 +51,7 @@ namespace Moule.Host.TPM.Actions
                 nameof(ClientDashboard.ClientTreeId),
                 nameof(ClientDashboard.ClientHierarchy),
                 nameof(ClientDashboard.BrandTechId),
-                nameof(ClientDashboard.BrandTechName),
+                nameof(ClientDashboard.BrandsegTechsubName),
                 nameof(ClientDashboard.Year),
             };
 
@@ -256,18 +256,18 @@ namespace Moule.Host.TPM.Actions
             var clientDashboardRecord = (ClientDashboard)rec;
 
             var clientTree = clientTrees.FirstOrDefault(x => !x.EndDate.HasValue && x.ObjectId == clientDashboardRecord.ClientTreeId);
-            var brandTech = brandTeches.FirstOrDefault(x => !x.Disabled && x.Name == clientDashboardRecord.BrandTechName);
+            var brandTech = brandTeches.FirstOrDefault(x => !x.Disabled && x.BrandsegTechsub == clientDashboardRecord.BrandsegTechsubName);
 
             //Проверка по существующим активным ClientTree для пользователя
             if (!existedObjIds.Contains(clientDashboardRecord.ClientTreeId.Value))
             { 
                 errors.Add(clientDashboardRecord.ClientTreeId.ToString() + " not in user's active ClientTree list");
             }
-            if (importClientDashboardRecords.GroupBy(x => new { x.ClientTreeId, x.BrandTechName, x.Year })
-                .FirstOrDefault(x => x.Key.ClientTreeId == clientDashboardRecord.ClientTreeId && x.Key.BrandTechName == clientDashboardRecord.BrandTechName && x.Key.Year.ToString() == clientDashboardRecord.Year)?.Count() > 1)
+            if (importClientDashboardRecords.GroupBy(x => new { x.ClientTreeId, x.BrandsegTechsubName, x.Year })
+                .FirstOrDefault(x => x.Key.ClientTreeId == clientDashboardRecord.ClientTreeId && x.Key.BrandsegTechsubName == clientDashboardRecord.BrandsegTechsubName && x.Key.Year.ToString() == clientDashboardRecord.Year)?.Count() > 1)
             {
-                errors.Add($"You can't create more than one entry per {nameof(ImportClientDashboard.ClientTreeId)}, {nameof(ImportClientDashboard.BrandTechName)}, {nameof(ImportClientDashboard.Year)} " +
-                    $"({clientDashboardRecord.ClientTreeId}, {clientDashboardRecord.BrandTechName}, {clientDashboardRecord.Year})");
+                errors.Add($"You can't create more than one entry per {nameof(ImportClientDashboard.ClientTreeId)}, {nameof(ImportClientDashboard.BrandsegTechsubName)}, {nameof(ImportClientDashboard.Year)} " +
+                    $"({clientDashboardRecord.ClientTreeId}, {clientDashboardRecord.BrandsegTechsubName}, {clientDashboardRecord.Year})");
             }
 
             if (clientTree == null)
@@ -277,15 +277,15 @@ namespace Moule.Host.TPM.Actions
 
             if (brandTech == null)
             {
-                errors.Add($"Brandtech with name {clientDashboardRecord.BrandTechName} not found.");
+                errors.Add($"Brandtech with BrandsegTechsub {clientDashboardRecord.BrandsegTechsubName} not found.");
             }
 
             if (clientTree != null && brandTech != null)
             {
-                var clientDashboardViewsContainsImportedRecord = clientDashboardViews.Any(x => x.ObjectId == clientTree.ObjectId && x.BrandTechName == brandTech.Name && x.Year.ToString() == clientDashboardRecord.Year);
+                var clientDashboardViewsContainsImportedRecord = clientDashboardViews.Any(x => x.ObjectId == clientTree.ObjectId && x.BrandsegTechsubName == brandTech.BrandsegTechsub && x.Year.ToString() == clientDashboardRecord.Year);
                 if (!clientDashboardViewsContainsImportedRecord)
                 {
-                    var message = $"Record with Client ID = {clientDashboardRecord.ClientTreeId}, Brand Tech = {clientDashboardRecord.BrandTechName}, Year = {clientDashboardRecord.Year} doesn't exist.";
+                    var message = $"Record with Client ID = {clientDashboardRecord.ClientTreeId}, Brand Tech = {clientDashboardRecord.BrandsegTechsubName}, Year = {clientDashboardRecord.Year} doesn't exist.";
                     errors.Add(message);
                 }
             }
@@ -318,8 +318,8 @@ namespace Moule.Host.TPM.Actions
                 {
 
                     var notMaterializedClientDashboardRecord = clientDashboard
-                        .FirstOrDefault(x => x.ClientTreeId == clientDashboardRecord.ClientTreeId && x.BrandTechName == clientDashboardRecord.BrandTechName && x.Year == clientDashboardRecord.Year);
-                    oldHisModel = clientDashboardView.Where(x => x.ObjectId == clientDashboardRecord.ClientTreeId && x.BrandTechName == clientDashboardRecord.BrandTechName && x.Year.ToString() == clientDashboardRecord.Year).FirstOrDefault();
+                        .FirstOrDefault(x => x.ClientTreeId == clientDashboardRecord.ClientTreeId && x.BrandsegTechsubName == clientDashboardRecord.BrandsegTechsubName && x.Year == clientDashboardRecord.Year);
+                    oldHisModel = clientDashboardView.Where(x => x.ObjectId == clientDashboardRecord.ClientTreeId && x.BrandsegTechsubName == clientDashboardRecord.BrandsegTechsubName && x.Year.ToString() == clientDashboardRecord.Year).FirstOrDefault();
 
                     if (notMaterializedClientDashboardRecord != null)
                     {
@@ -332,7 +332,7 @@ namespace Moule.Host.TPM.Actions
                     else
                     {
                         var clientTree = clientTrees.FirstOrDefault(x => !x.EndDate.HasValue && x.ObjectId == clientDashboardRecord.ClientTreeId);
-                        var brandTech = brandTechs.FirstOrDefault(x => !x.Disabled && x.Name == clientDashboardRecord.BrandTechName);
+                        var brandTech = brandTechs.FirstOrDefault(x => !x.Disabled && x.BrandsegTechsub == clientDashboardRecord.BrandsegTechsubName);
 
                         if (clientTree != null && brandTech != null)
                         {
@@ -341,7 +341,7 @@ namespace Moule.Host.TPM.Actions
                                 Id = Guid.NewGuid(),
                                 ClientHierarchy = clientTree?.FullPathName,
                                 BrandTechId = brandTech?.Id,
-                                BrandTechName = brandTech?.Name
+                                BrandsegTechsubName = brandTech?.BrandsegTechsub
                             };
 
                             SetValues(clientDashboardRecord, newClientDashboardRecord, _modelProperties, currentRole, true);
@@ -432,11 +432,11 @@ namespace Moule.Host.TPM.Actions
                 {
                     string updateScript = String.Join("", items.Select(y =>
                     String.Format("INSERT INTO ClientDashboard (ShopperTiPlanPercent, MarketingTiPlanPercent, ProductionPlan, BrandingPlan, BTLPlan, " +
-                    "ROIPlanPercent ,IncrementalNSVPlan, PromoNSVPlan, ClientTreeId, BrandTechName, Year, ClientHierarchy, BrandTechId, " +
+                    "ROIPlanPercent ,IncrementalNSVPlan, PromoNSVPlan, ClientTreeId, BrandsegTechsubName, Year, ClientHierarchy, BrandTechId, " +
                     "PromoTiCostPlanPercent, NonPromoTiCostPlanPercent, PlanLSV, [Id])" +
                     " VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}', '{13}', '{14}', '{15}', '{16}');",
                     y.ShopperTiPlanPercent, y.MarketingTiPlanPercent, y.ProductionPlan.ToString(), y.BrandingPlan, y.BTLPlan,
-                    y.ROIPlanPercent, y.IncrementalNSVPlan, y.PromoNSVPlan, y.ClientTreeId, y.BrandTechName,
+                    y.ROIPlanPercent, y.IncrementalNSVPlan, y.PromoNSVPlan, y.ClientTreeId, y.BrandsegTechsubName,
                     y.Year, y.ClientHierarchy, y.BrandTechId, y.PromoTiCostPlanPercent, y.NonPromoTiCostPlanPercent, y.PlanLSV, y.Id)));
                     context.Database.ExecuteSqlCommand(updateScript);
                 }

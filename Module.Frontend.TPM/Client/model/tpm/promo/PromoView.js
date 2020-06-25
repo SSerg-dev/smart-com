@@ -7,7 +7,7 @@
         { name: 'Id', hidden: true },
         { name: 'Number', type: 'int', hidden: false, isDefault: true, isKey: true },
         { name: 'Name', type: 'string', hidden: false, isDefault: true },
-        { name: 'BrandTechName', type: 'string', mapping: 'BrandTechName', defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'BrandTech', hidden: false, isDefault: true },
+        { name: 'BrandTechName', type: 'string', mapping: 'BrandTechName', defaultFilterConfig: { valueField: 'BrandsegTechsub' }, breezeEntityType: 'BrandTech', hidden: false, isDefault: true },
         { name: 'EventName', type: 'string', useNull: true, hidden: false, isDefault: true },
         { name: 'MarsMechanicName', type: 'string', useNull: true, hidden: false, isDefault: true },
         { name: 'MarsMechanicDiscount', type: 'float', hidden: false, isDefault: false },
@@ -39,6 +39,13 @@
 
         // Growth Acceleration
         { name: 'IsGrowthAcceleration', type: 'boolean', hidden: false, isDefault: true },
+
+        {
+            name: 'DeviationCoefficient', type: 'float', hidden: false, isDefault: true,
+            convert: function (value) {
+                return value * 100;
+            }
+        },
 
         //Apollo Export
         { name: 'IsApolloExport', type: 'boolean', hidden: false, isDefault: false }

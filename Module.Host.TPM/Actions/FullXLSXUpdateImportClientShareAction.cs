@@ -197,10 +197,10 @@ namespace Module.Host.TPM.Actions {
                 List<ClientTree> existingClientTreeIds = query.ToList();
 
                 //здесь должны быть все записи, а не только неудаленные!
-                IList<string> existingBrandTechNames = context.Set<BrandTech>().Select(y => y.Name).ToList();
+                IList<string> existingBrandTechNames = context.Set<BrandTech>().Select(y => y.BrandsegTechsub).ToList();
 
                 List<ClientTree> actualExistingClientTreeIds = actualQuery.Where(y => y.EndDate == null || y.EndDate > dtNow).ToList();
-                IList<string> actualExistingBrandTechNames = context.Set<BrandTech>().Where(y => y.Disabled == false).Select(y => y.Name).ToList();
+                IList<string> actualExistingBrandTechNames = context.Set<BrandTech>().Where(y => y.Disabled == false).Select(y => y.BrandsegTechsub).ToList();
 
                 //Повторяющиеся записи
                 IList<Tuple<int, string, string>> doubledObjs = sourceRecords
@@ -447,7 +447,7 @@ namespace Module.Host.TPM.Actions {
                     oldRecord.Share = newRecord.LeafShare;
                     oldRecord.ParentClientTreeDemandCode = newRecord.DemandCode;
                     oldRecord.ClientTreeId = clientTrees.First(x => x.ObjectId == newRecord.ClientTreeId).Id;
-                    oldRecord.BrandTechId = brandtechs.First(x => x.Name == newRecord.BrandTech).Id;
+                    oldRecord.BrandTechId = brandtechs.First(x => x.BrandsegTechsub == newRecord.BrandTech).Id;
                     oldRecord.CurrentBrandTechName = newRecord.BrandTech;
                     toUpdate.Add(oldRecord);
                 }

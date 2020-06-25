@@ -363,12 +363,12 @@ namespace Module.Host.TPM.Actions {
                 IList<int> existedexistedClientTreesIds = existedClientTreesTuples.Select(y => y.Item2).ToList();
 
                 IList<BrandTech> brandTeches = context.Set<BrandTech>().Where(z => !z.Disabled).ToList();
-                IList<Tuple<String, Guid?>> brandTechesTuples = brandTeches.Select(y => new Tuple<String, Guid?>(y.Name, y.Id)).ToList();
+                IList<Tuple<String, Guid?>> brandTechesTuples = brandTeches.Select(y => new Tuple<String, Guid?>(y.BrandsegTechsub, y.Id)).ToList();
 
                 //Присваивание ID
                 Parallel.ForEach(sourceRecords, item => {
                     int objId = ((ImportCOGS) item).ClientTreeObjectId;
-                    String btName = ((ImportCOGS) item).BrandTechName;
+                    String btName = ((ImportCOGS) item).BrandsegTechsub;
                     if (existedexistedClientTreesIds.Contains(objId)) {
                         var finden = existedClientTreesTuples.FirstOrDefault(y => y.Item2 == objId);
                         if (finden != null) {
@@ -524,30 +524,30 @@ namespace Module.Host.TPM.Actions {
             if (importObj.StartDate.HasValue && importObj.StartDate.Value.Year != this.Year)
             {
                 isError = true;
-                errors.Add($"({importObj.ClientTreeObjectId}, {importObj.BrandTechName}) Start Date year must be equal {this.Year}.");
+                errors.Add($"({importObj.ClientTreeObjectId}, {importObj.BrandsegTechsub}) Start Date year must be equal {this.Year}.");
             }
 
             if (importObj.EndDate.HasValue && importObj.EndDate.Value.Year != this.Year)
             {
                 isError = true;
-                errors.Add($"({importObj.ClientTreeObjectId}, {importObj.BrandTechName}) End Date year must be equal {this.Year}.");
+                errors.Add($"({importObj.ClientTreeObjectId}, {importObj.BrandsegTechsub}) End Date year must be equal {this.Year}.");
             }
 
             var intersectDatesCOGSes = importCOGSes.Where(x => 
-                importObj.ClientTreeObjectId == x.ClientTreeObjectId && importObj.BrandTechName == x.BrandTechName && importObj.StartDate >= x.StartDate && importObj.StartDate <= x.EndDate || 
-                importObj.ClientTreeObjectId == x.ClientTreeObjectId && importObj.BrandTechName == x.BrandTechName && importObj.EndDate >= x.StartDate && importObj.EndDate <= x.EndDate);
+                importObj.ClientTreeObjectId == x.ClientTreeObjectId && importObj.BrandsegTechsub == x.BrandsegTechsub && importObj.StartDate >= x.StartDate && importObj.StartDate <= x.EndDate || 
+                importObj.ClientTreeObjectId == x.ClientTreeObjectId && importObj.BrandsegTechsub == x.BrandsegTechsub && importObj.EndDate >= x.StartDate && importObj.EndDate <= x.EndDate);
 
             if (intersectDatesCOGSes.Count() > 1)
             {
                 isError = true;
-                errors.Add($"({importObj.ClientTreeObjectId}, {importObj.BrandTechName}) there can not be two COGS of client and BrandTech in some Time.");
+                errors.Add($"({importObj.ClientTreeObjectId}, {importObj.BrandsegTechsub}) there can not be two COGS of client and BrandTech in some Time.");
             }
 
             ////Проверка BrandTech
-            if (!String.IsNullOrEmpty(importObj.BrandTechName)
-                && !brandTechesTuples.Any(y => y.Item1 == importObj.BrandTechName)) {
+            if (!String.IsNullOrEmpty(importObj.BrandsegTechsub)
+                && !brandTechesTuples.Any(y => y.Item1 == importObj.BrandsegTechsub)) {
                 isError = true;
-                errors.Add(importObj.BrandTechName + " is not active BrandTech's Name");
+                errors.Add(importObj.BrandsegTechsub + " is not active BrandTech's Name");
             }
 
             // LSV percent не больше 100 процентов
@@ -621,8 +621,8 @@ namespace Module.Host.TPM.Actions {
                     while (!existCOGS && clientNode != null && clientNode.Type != "root")
                     {
                         //промо может быть привязно к удаленному брендтеху(в более общем случае - к бредтеху с другим Id), поэтому сравнение приходится производить по Name, а не по Id
-                        var promoBrandTechName = brandTeches.Where(bt => bt.Id == promo.BrandTechId).Select(x => x.Name).FirstOrDefault();
-                        var validBrandTeches = context.Set<BrandTech>().Where(x => x.Name == promoBrandTechName);
+                        var promoBrandTechName = brandTeches.Where(bt => bt.Id == promo.BrandTechId).Select(x => x.BrandsegTechsub).FirstOrDefault();
+                        var validBrandTeches = context.Set<BrandTech>().Where(x => x.BrandsegTechsub == promoBrandTechName);
 
                         existCOGS = importCOGS.Any(x => x.ClientTreeId == clientNode.Id
                                 && (x.BrandTechId == null || validBrandTeches.Where(bt => bt.Id == x.BrandTechId).Any())
@@ -660,7 +660,7 @@ namespace Module.Host.TPM.Actions {
 
                 foreach (ImportCOGS newRecord in sourceRecords)
                 {
-                    BrandTech bt = context.Set<BrandTech>().FirstOrDefault(x => x.Name == newRecord.BrandTechName);
+                    BrandTech bt = context.Set<BrandTech>().FirstOrDefault(x => x.BrandsegTechsub == newRecord.BrandsegTechsub);
                     COGS toSave = new COGS()
                     {
                         StartDate = newRecord.StartDate,
@@ -746,8 +746,8 @@ namespace Module.Host.TPM.Actions {
                     while (!existCOGS && clientNode != null && clientNode.Type != "root")
                     {
                         //промо может быть привязно к удаленному брендтеху(в более общем случае - к бредтеху с другим Id), поэтому сравнение приходится производить по Name, а не по Id
-                        var promoBrandTechName = brandTeches.Where(bt => bt.Id == promo.BrandTechId).Select(x => x.Name).FirstOrDefault();
-                        var validBrandTeches = context.Set<BrandTech>().Where(x => x.Name == promoBrandTechName);
+                        var promoBrandTechName = brandTeches.Where(bt => bt.Id == promo.BrandTechId).Select(x => x.BrandsegTechsub).FirstOrDefault();
+                        var validBrandTeches = context.Set<BrandTech>().Where(x => x.BrandsegTechsub == promoBrandTechName);
 
                         existCOGS = importCOGS.Any(x => x.ClientTreeId == clientNode.Id
                                 && (x.BrandTechId == null || validBrandTeches.Where(bt => bt.Id == x.BrandTechId).Any())
@@ -774,7 +774,7 @@ namespace Module.Host.TPM.Actions {
 
                 foreach (ImportCOGS newRecord in sourceRecords)
                 {
-                    BrandTech bt = context.Set<BrandTech>().FirstOrDefault(x => x.Name == newRecord.BrandTechName);
+                    BrandTech bt = context.Set<BrandTech>().FirstOrDefault(x => x.BrandsegTechsub == newRecord.BrandsegTechsub);
                     ActualCOGS toSave = new ActualCOGS()
                     {
                         StartDate = newRecord.StartDate,

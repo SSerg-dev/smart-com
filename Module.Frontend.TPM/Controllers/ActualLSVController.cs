@@ -65,7 +65,7 @@ namespace Module.Frontend.TPM.Controllers
                     Number = n.Number,
                     ClientHierarchy = n.ClientHierarchy,
                     Name = n.Name,
-                    BrandTech = n.BrandTech.Name,
+                    BrandTech = n.BrandTech.BrandsegTechsub,
                     Event = n.Event.Name,
                     Mechanic = n.Mechanic,
                     MechanicIA = n.MechanicIA,

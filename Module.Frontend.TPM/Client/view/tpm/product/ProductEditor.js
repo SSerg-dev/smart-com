@@ -19,7 +19,7 @@
             vtype: 'eanNum',
             fieldLabel: l10n.ns('tpm', 'Product').value('EAN_Case'),
             maxLength: 255,
-        },{
+        }, {
             xtype: 'textfield',
             name: 'EAN_PC',
             vtype: 'eanNum',
@@ -31,8 +31,8 @@
             fieldLabel: l10n.ns('tpm', 'Product').value('ProductEN'),
             maxLength: 255,
         }, {
-			//--
-			xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
+            //--
+            xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
             name: 'Brand',
             fieldLabel: l10n.ns('tpm', 'Product').value('Brand'),
             maxLength: 255,
@@ -49,13 +49,32 @@
                 }
             }
         }, {
-            xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
+            xtype: 'searchfield',
             name: 'Brand_code',
             fieldLabel: l10n.ns('tpm', 'Product').value('Brand_code'),
             maxLength: 255,
             regex: /^\d+$/,
-            regexText: l10n.ns('tpm', 'Brand').value('DigitRegex')
-        },{
+            regexText: l10n.ns('tpm', 'Brand').value('DigitRegex'),
+            selectorWidget: 'brand',
+            valueField: 'Brand_code',
+            displayField: 'Brand_code',
+            store: {
+                type: 'directorystore',
+                model: 'App.model.tpm.brand.Brand',
+                extendedFilter: {
+                    xclass: 'App.ExtFilterContext',
+                    supportedModels: [{
+                        xclass: 'App.ExtSelectionFilterModel',
+                        model: 'App.model.tpm.brand.Brand',
+                        modelId: 'efselectionmodel'
+                    }]
+                }
+            },
+            mapping: [{
+                from: 'Brand_code',
+                to: 'Brand_code'
+            }]
+        }, {
             xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
             name: 'Technology',
             fieldLabel: l10n.ns('tpm', 'Product').value('Technology'),
@@ -73,12 +92,47 @@
                 }
             }
         }, {
-            xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
+            xtype: 'searchfield',
             name: 'Tech_code',
             fieldLabel: l10n.ns('tpm', 'Product').value('Tech_code'),
             maxLength: 255,
             regex: /^\d+$/,
-            regexText: l10n.ns('tpm', 'Brand').value('DigitRegex')
+            regexText: l10n.ns('tpm', 'Brand').value('DigitRegex'),
+            selectorWidget: 'technology',
+            valueField: 'Tech_code',
+            displayField: 'Tech_code',
+            onSelectButtonClick: function (button) {
+                var picker = this.picker,
+                    selModel = picker.down(this.selectorWidget).down('grid').getSelectionModel(),
+                    record = selModel.hasSelection() ? selModel.getSelection()[0] : null;
+
+                this.setValue(record);
+                if (this.needUpdateMappings) {
+                    this.updateMappingValues(record);
+                }
+                this.afterSetValue(record);
+
+                this.up('editorform').down('[name=SubBrand_code]').setValue(record.get('SubBrand_code'));
+                this.up('editorform').down('[name=SubBrand]').setValue(record.get('SubBrand'));
+
+                picker.close();
+            },
+            store: {
+                type: 'directorystore',
+                model: 'App.model.tpm.technology.Technology',
+                extendedFilter: {
+                    xclass: 'App.ExtFilterContext',
+                    supportedModels: [{
+                        xclass: 'App.ExtSelectionFilterModel',
+                        model: 'App.model.tpm.technology.Technology',
+                        modelId: 'efselectionmodel'
+                    }]
+                }
+            },
+            mapping: [{
+                from: 'Tech_code',
+                to: 'Tech_code'
+            }]
         }, {
             xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
             name: 'BrandTech',
@@ -114,14 +168,14 @@
                 }
             }
         }, {
-            xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
+            xtype: 'textfield',
             name: 'Segmen_code',
             fieldLabel: l10n.ns('tpm', 'Product').value('Segmen_code'),
             maxLength: 255,
             regex: /^\d+$/,
             regexText: l10n.ns('tpm', 'Brand').value('DigitRegex')
         }, {
-			//--
+            //--
             xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
             name: 'BrandsegTech_code',
             fieldLabel: l10n.ns('tpm', 'Product').value('BrandsegTech_code'),
@@ -143,7 +197,88 @@
             name: 'Brandsegtech',
             fieldLabel: l10n.ns('tpm', 'Product').value('Brandsegtech'),
             maxLength: 255,
-        },{
+            readOnly: true,
+            listeners: {
+                afterrender: function (field) {
+                    field.addCls('readOnlyField');
+                },
+                writeablechange: function (field) {
+                    if (field.readOnly == false) {
+                        field.setReadOnly(true);
+                        field.addCls('readOnlyField');
+                    }
+                }
+            }
+        }, {
+            //--
+            xtype: 'textfield',
+            name: 'BrandsegTechsub_code',
+            fieldLabel: l10n.ns('tpm', 'Product').value('BrandsegTechsub_code'),
+            maxLength: 255,
+            readOnly: true,
+            listeners: {
+                afterrender: function (field) {
+                    field.addCls('readOnlyField');
+                },
+                writeablechange: function (field) {
+                    if (field.readOnly == false) {
+                        field.setReadOnly(true);
+                        field.addCls('readOnlyField');
+                    }
+                }
+            }
+        }, {
+            xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
+            name: 'BrandsegTechsub',
+            fieldLabel: l10n.ns('tpm', 'Product').value('BrandsegTechsub'),
+            maxLength: 255,
+            readOnly: true,
+            listeners: {
+                afterrender: function (field) {
+                    field.addCls('readOnlyField');
+                },
+                writeablechange: function (field) {
+                    if (field.readOnly == false) {
+                        field.setReadOnly(true);
+                        field.addCls('readOnlyField');
+                    }
+                }
+            }
+        }, {
+            xtype: 'textfield',
+            name: 'SubBrand_code',
+            fieldLabel: l10n.ns('tpm', 'Product').value('SubBrand_code'),
+            maxLength: 255,
+            readOnly: true,
+            listeners: {
+                afterrender: function (field) {
+                    field.addCls('readOnlyField');
+                },
+                writeablechange: function (field) {
+                    if (field.readOnly == false) {
+                        field.setReadOnly(true);
+                        field.addCls('readOnlyField');
+                    }
+                }
+            }
+        }, {
+            xtype: 'textfield',
+            name: 'SubBrand',
+            fieldLabel: l10n.ns('tpm', 'Product').value('SubBrand'),
+            maxLength: 255,
+            readOnly: true,
+            listeners: {
+                afterrender: function (field) {
+                    field.addCls('readOnlyField');
+                },
+                writeablechange: function (field) {
+                    if (field.readOnly == false) {
+                        field.setReadOnly(true);
+                        field.addCls('readOnlyField');
+                    }
+                }
+            }
+        }, {
             xtype: 'textfield',
             name: 'BrandFlagAbbr',
             fieldLabel: l10n.ns('tpm', 'Product').value('BrandFlagAbbr'),

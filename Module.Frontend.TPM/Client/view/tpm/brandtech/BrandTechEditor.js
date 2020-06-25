@@ -52,26 +52,84 @@
                     }]
                 }
             },
+            listeners: {
+                change: function (field, newValue, oldValue) {
+                    var sub = field.up('editorform').down('[name=SubBrandName]');
+                    var subValue = newValue != undefined ? field.record.get('SubBrand') : null;
+
+                    sub.setValue(subValue);
+                }
+            },
             mapping: [{
                 from: 'Name',
                 to: 'TechnologyName'
             }]
-            }, {
-                xtype: 'textfield',
-                name: 'BrandTech_code',
-                fieldLabel: l10n.ns('tpm', 'BrandTech').value('BrandTech_code'),
-                readOnly: true,
-                listeners: {
-                    afterrender: function (field) {
+        }, {
+            xtype: 'textfield',
+            fieldLabel: l10n.ns('tpm', 'Product').value('SubBrandName'),
+            name: 'SubBrandName',
+            valueField: 'SubBrand', 
+            displayField: 'SubBrand',
+            readOnly: true,
+            store: {
+                type: 'directorystore',
+                model: 'App.model.tpm.technology.Technology',
+                extendedFilter: {
+                    xclass: 'App.ExtFilterContext',
+                    supportedModels: [{
+                        xclass: 'App.ExtSelectionFilterModel',
+                        model: 'App.model.tpm.technology.Technology',
+                        modelId: 'efselectionmodel'
+                    }]
+                }
+            },
+            listeners: {
+                afterrender: function (field) {
+                    field.addCls('readOnlyField');
+                },
+                writeablechange: function (field) {
+                    if (field.readOnly == false) {
+                        field.setReadOnly(true);
                         field.addCls('readOnlyField');
-                    },
-                    writeablechange: function (field) {
-                        if (field.readOnly == false) {
-                            field.setReadOnly(true);
-                            field.addCls('readOnlyField');
-                        }
                     }
                 }
+            },
+            mapping: [{
+                from: 'SubBrand',
+                to: 'SubBrandName'
             }]
+        }, {
+            xtype: 'textfield',
+            name: 'BrandTech_code',
+            fieldLabel: l10n.ns('tpm', 'BrandTech').value('BrandTech_code'),
+            readOnly: true,
+            listeners: {
+                afterrender: function (field) {
+                    field.addCls('readOnlyField');
+                },
+                writeablechange: function (field) {
+                    if (field.readOnly == false) {
+                        field.setReadOnly(true);
+                        field.addCls('readOnlyField');
+                    }
+                }
+            }
+        }, {
+            xtype: 'textfield',
+            name: 'BrandsegTechsub_code',
+            fieldLabel: l10n.ns('tpm', 'BrandTech').value('BrandsegTechsub_code'),
+            readOnly: true,
+            listeners: {
+                afterrender: function (field) {
+                    field.addCls('readOnlyField');
+                },
+                writeablechange: function (field) {
+                    if (field.readOnly == false) {
+                        field.setReadOnly(true);
+                        field.addCls('readOnlyField');
+                    }
+                }
+            }
+        }]
     }
 });

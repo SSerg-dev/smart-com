@@ -151,7 +151,7 @@ namespace Module.Frontend.TPM.Controllers
                                 DECLARE @BrandTechId UNIQUEIDENTIFIER;
                                 DECLARE @CurrentBrandTechName VARCHAR(MAX);
 
-				                SELECT @BrandTechId = {nameof(BrandTech.Id)}, @CurrentBrandTechName = {nameof(BrandTech.Name)} FROM {nameof(BrandTech)} WHERE {nameof(BrandTech.Disabled)} = 0 ORDER BY {nameof(BrandTech.Id)} OFFSET @BrandTechCounter ROWS FETCH NEXT 1 ROWS ONLY;
+				                SELECT @BrandTechId = {nameof(BrandTech.Id)}, @CurrentBrandTechName = {nameof(BrandTech.BrandsegTechsub)} FROM {nameof(BrandTech)} WHERE {nameof(BrandTech.Disabled)} = 0 ORDER BY {nameof(BrandTech.Id)} OFFSET @BrandTechCounter ROWS FETCH NEXT 1 ROWS ONLY;
 
 				                IF (SELECT COUNT(*) FROM {nameof(ClientTreeBrandTech)} WHERE {nameof(ClientTreeBrandTech.ClientTreeId)} = @ClientTreeId AND {nameof(ClientTreeBrandTech.BrandTechId)} = @BrandTechId AND {nameof(ClientTreeBrandTech.Disabled)} = 0) = 0
 				                
@@ -211,7 +211,7 @@ namespace Module.Frontend.TPM.Controllers
                         BrandTechId = brandTech.Id,
                         Share = 0,
                         ParentClientTreeDemandCode = parentDemandCode,
-                        CurrentBrandTechName = brandTech.Name
+                        CurrentBrandTechName = brandTech.BrandsegTechsub
                     };
 
                     newClientTreeBrandTeches.Add(newClientTreeBrandTech);
@@ -250,7 +250,7 @@ namespace Module.Frontend.TPM.Controllers
                         BrandTechId = brandTech.Id,
                         Share = 0,
                         ParentClientTreeDemandCode = parentDemandCode,
-                        CurrentBrandTechName = brandTech.Name
+                        CurrentBrandTechName = brandTech.BrandsegTechsub
                     };
 
                     newClientTreeBrandTeches.Add(newClientTreeBrandTech);
@@ -304,7 +304,7 @@ namespace Module.Frontend.TPM.Controllers
             {
                 if (clientTreeBrandTech.ClientTree.EndDate == null && clientTreeBrandTech.ClientTree.IsBaseClient)
                 {
-                    if (actualBrandTeches.Any(x => x.Name == clientTreeBrandTech.BrandTech.Name /*&& !x.Brand.Disabled && !x.Technology.Disabled*/))
+                    if (actualBrandTeches.Any(x => x.BrandsegTechsub == clientTreeBrandTech.BrandTech.BrandsegTechsub /*&& !x.Brand.Disabled && !x.Technology.Disabled*/))
                     {
                         var currentClientTree = clientTreeBrandTech.ClientTree;
                         while (currentClientTree != null && currentClientTree.Type != "root" && String.IsNullOrEmpty(currentClientTree.DemandCode))
@@ -331,7 +331,7 @@ namespace Module.Frontend.TPM.Controllers
                 new Column() { Order = 0, Field = "ParentClientTreeDemandCode", Header = "Demand code", Quoting = false },
                 new Column() { Order = 1, Field = "ClientTree.ObjectId", Header = "Client hierarchy code", Quoting = false },
                 new Column() { Order = 2, Field = "ClientTree.Name", Header = "Base client", Quoting = false },
-                new Column() { Order = 3, Field = "CurrentBrandTechName", Header = "Brand tech", Quoting = false },
+                new Column() { Order = 3, Field = "BrandTech.BrandsegTechsub", Header = "Brand tech", Quoting = false },
                 new Column() { Order = 4, Field = "Share", Header = "Share", Quoting = false }
             };
             return columns;

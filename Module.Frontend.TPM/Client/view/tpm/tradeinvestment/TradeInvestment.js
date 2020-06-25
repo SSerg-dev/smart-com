@@ -128,7 +128,7 @@ ResourceMgr.getAdditionalMenu('core').import = {
                 filter: {
                     type: 'search',
                     selectorWidget: 'brandtech',
-                    valueField: 'Name',
+                    valueField: 'BrandsegTechsub',
                     store: {
                         type: 'directorystore',
                         model: 'App.model.tpm.brandtech.BrandTech',
@@ -229,7 +229,7 @@ ResourceMgr.getAdditionalMenu('core').import = {
             name: 'BrandTechName',
             selectorWidget: 'brandtech',
             valueField: 'Id',
-            displayField: 'Name',
+            displayField: 'BrandsegTechsub',
             allowBlank: true,
             allowOnlyWhitespace: true,
             onTrigger2Click: function () {
@@ -264,7 +264,7 @@ ResourceMgr.getAdditionalMenu('core').import = {
                 }
             },
             mapping: [{
-                from: 'Name',
+                from: 'BrandsegTechsub',
                 to: 'BrandTechName'
             }]
         }, {

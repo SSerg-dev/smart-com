@@ -44,5 +44,11 @@ namespace Module.Persist.TPM.Model.SimpleModel
 		public string Segmen_code { get; set; }
 		public string BrandsegTech_code { get; set; }
 		public string Brandsegtech { get; set; }
+		public string BrandSegTechSub_code { get; set; }
+		public string BrandSegTechSub { get; set; }
+		public string SubBrand_code { get; set; }
+		public string SubBrand { get; set; }
+		//public DateTime StartDate { get; set; }
+		//public DateTime EndDate { get; set; }
 	}
 }

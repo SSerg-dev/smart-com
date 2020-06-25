@@ -15,8 +15,16 @@
             defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'Technology', hidden: false, isDefault: true
         },
         {
+            name: 'BrandTechSubName', type: 'string', mapping: 'BrandTech.Technology.SubBrand',
+            defaultFilterConfig: { valueField: 'SubBrand' }, breezeEntityType: 'Technology', hidden: false, isDefault: true
+        },
+        {
             name: 'BrandTechBrandTech_code', type: 'string', mapping: 'BrandTech.BrandTech_code',
             defaultFilterConfig: { valueField: 'BrandTech_code' }, breezeEntityType: 'BrandTech', hidden: false, isDefault: true
+        },
+        {
+            name: 'BrandTechBrandsegTechsub_code', type: 'string', mapping: 'BrandTech.BrandsegTechsub_code',
+            defaultFilterConfig: { valueField: 'BrandsegTechsub_code' }, breezeEntityType: 'BrandTech', hidden: false, isDefault: true
         }
     ],
     proxy: {

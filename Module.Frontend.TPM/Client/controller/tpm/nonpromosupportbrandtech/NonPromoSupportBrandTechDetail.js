@@ -213,6 +213,9 @@
 
         this.editor.down('[name=BrandId]').setRawValue(model.data.BrandTechBrandName);
         this.editor.down('[name=TechnologyId]').setRawValue(model.data.BrandTechTechnologyName);
+        this.editor.down('[name=SubBrandName]').setRawValue(model.data.BrandTechSubName);
+        this.editor.down('[name=BrandTech_code]').setRawValue(model.data.BrandTechBrandTech_code);
+        this.editor.down('[name=BrandsegTechsub_code]').setRawValue(model.data.BrandTechBrandsegTechsub_code);
 
         this.editor.down('editorform').getForm().getFields().each(function (field, index, len) {
             field.setReadOnly(true);

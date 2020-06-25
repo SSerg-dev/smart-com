@@ -19,6 +19,7 @@ using Module.Persist.TPM.Utils;
 using Module.Host.TPM.Handlers;
 using Core.Security.Models;
 using Core.Security;
+using AutoMapper.Internal;
 
 namespace Module.Host.TPM.Actions
 {
@@ -42,20 +43,45 @@ namespace Module.Host.TPM.Actions
             IList<BrandTech> toUpdate = new List<BrandTech>();
             var toHisCreate = new List<Tuple<IEntity<Guid>, IEntity<Guid>>>();
 
+            foreach (var item in sourceRecords)
+            {
+                var techCode_index = 2;
+                var subCode_index = 3;
+                var splitedBrandsegTechsub_code = item.BrandsegTechsub_code.Split('-');
+
+                if (splitedBrandsegTechsub_code.Length == 4)
+                {
+                    var sub = splitedBrandsegTechsub_code.GetValue(subCode_index).ToString();
+                    var technology = splitedBrandsegTechsub_code.GetValue(techCode_index).ToString();
+                    if (!sub.Equals(item.Technology.SubBrand_code))
+                    {
+                        var changedTech = context.Set<Technology>().FirstOrDefault(tech => tech.Tech_code.Equals(technology) &&
+                                                                                  tech.SubBrand_code.Equals(sub));
+                        item.Technology = changedTech;
+                        item.TechnologyId = changedTech.Id;
+                    }
+                }
+            }
+
             foreach (BrandTech newRecord in sourceRecords)
             {
-                BrandTech oldRecord = query.FirstOrDefault(x => x.BrandId == newRecord.BrandId && x.TechnologyId == newRecord.TechnologyId && !x.Disabled);
+                BrandTech oldRecord = query.FirstOrDefault(x => x.BrandId == newRecord.BrandId && 
+                                                                x.TechnologyId == newRecord.TechnologyId &&
+                                                                !x.Disabled);
                 if (oldRecord == null)
                 {
                     newRecord.Id = Guid.NewGuid();
                     toCreate.Add(newRecord);
 
-                    // Так как BrandTech_code вычисляемое поле, для истории нужно заполнить его вручную 
+                    // Так как BrandTech_code, BrandsegTechsub_code вычисляемые поля, для истории нужно заполнить их вручную 
                     if (!String.IsNullOrEmpty(newRecord.Brand.Brand_code) && 
                         !String.IsNullOrEmpty(newRecord.Brand.Segmen_code) && 
                         !String.IsNullOrEmpty(newRecord.Technology.Tech_code))
                     {
                         newRecord.BrandTech_code = String.Format("{0}-{1}-{2}", newRecord.Brand.Brand_code, newRecord.Brand.Segmen_code, newRecord.Technology.Tech_code);
+                        if(!String.IsNullOrEmpty(newRecord.Technology.SubBrand_code) &&
+                            !String.IsNullOrEmpty(newRecord.Technology.SubBrand))
+                        newRecord.BrandsegTechsub_code = String.Format("{0}-{1}-{2}-{3}", newRecord.Brand.Brand_code, newRecord.Brand.Segmen_code, newRecord.Technology.Tech_code, newRecord.Technology.SubBrand_code);
                     }
 
                     toHisCreate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(null, newRecord));
@@ -89,7 +115,7 @@ namespace Module.Host.TPM.Actions
             context.HistoryWriter.Write(toHisCreate, context.AuthManager.GetCurrentUser(), context.AuthManager.GetCurrentRole(), OperationType.Created);
 
             ClientTreeBrandTechesController.DisableNotActualClientTreeBrandTech(context);
-            CreateCoefficientSI2SOHandler(toCreate.Select(b => b.BrandTech_code).ToList(), null, 1);
+            CreateCoefficientSI2SOHandler(toCreate.Select(b => b.BrandsegTechsub_code).ToList(), null, 1);
 
             return sourceRecords.Count();
         }

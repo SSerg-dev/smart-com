@@ -28,7 +28,7 @@
         { name: 'FactSteal', useNull: true, type: 'int', hidden: false, isDefault: true },
         { name: 'ClientCommercialSubnetCommercialNetName', type: 'string', mapping: 'Client.CommercialSubnet.CommercialNet.Name', defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'CommercialNet', hidden: false, isDefault: true },
         { name: 'BrandName', type: 'string', mapping: 'Brand.Name', defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'Brand', hidden: false, isDefault: true },
-        { name: 'BrandTechName', type: 'string', mapping: 'BrandTech.Name', defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'BrandTech', hidden: false, isDefault: true },
+        { name: 'BrandTechName', type: 'string', mapping: 'BrandTech.BrandsegTechsub', defaultFilterConfig: { valueField: 'BrandsegTechsub' }, breezeEntityType: 'BrandTech', hidden: false, isDefault: true },
     ],
     proxy: {
         type: 'breeze',

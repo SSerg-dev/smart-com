@@ -13,7 +13,21 @@ namespace Module.Persist.TPM.Model.History
         public DateTimeOffset? EndDate { get; set; }
         public float? LSVpercent { get; set; }
 
-        public string BrandTechName { get; set; }
+        private string brandTechName;
+        public string BrandTechName
+        {
+            get
+            {
+                return string.IsNullOrEmpty(BrandTechBrandsegTechsub)
+              ? brandTechName
+              : BrandTechBrandsegTechsub;
+            }
+            set
+            {
+                brandTechName = value;
+            }
+        }
+        public string BrandTechBrandsegTechsub { get; set; }
         public string ClientTreeFullPathName { get; set; }
         public int? ClientTreeObjectId { get; set; }
     }

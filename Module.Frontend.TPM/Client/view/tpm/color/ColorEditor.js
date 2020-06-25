@@ -32,15 +32,19 @@
             onTrigger2Click: function () {
                 var technology = this.up().down('[name=TechnologyName]');
 
-                this.clearValue();            
+                this.clearValue();
                 technology.setValue(null);
             },
             listeners: {
                 change: function (field, newValue, oldValue) {
-                    var technology = field.up().down('[name=TechnologyName]');
+                    var technology = field.up('editorform').down('[name=TechnologyName]');
                     var techValue = newValue != undefined ? field.record.get('TechnologyName') : null;
 
+                    var sub = field.up('editorform').down('[name=SubBrandName]');
+                    var subValue = newValue != undefined ? field.record.get('SubBrandName') : null;
+
                     technology.setValue(techValue);
+                    sub.setValue(subValue);
                 }
             },
             store: {
@@ -62,7 +66,11 @@
         }, {
             xtype: 'singlelinedisplayfield',
             fieldLabel: l10n.ns('tpm', 'Product').value('TechnologyName'),
-            name: 'TechnologyName',      
+            name: 'TechnologyName',
+        }, {
+            xtype: 'singlelinedisplayfield',
+            fieldLabel: l10n.ns('tpm', 'Product').value('SubBrandName'),
+            name: 'SubBrandName',
         }]
     }
 });

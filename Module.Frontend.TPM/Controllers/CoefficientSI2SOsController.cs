@@ -132,7 +132,7 @@ namespace Module.Frontend.TPM.Controllers
                 var resultSaveChanges = Context.SaveChanges();
 
                 double cValue = result.CoefficientValue ?? 0;
-                CreateSellOutBaselineQtyCalculationHandler(null, null, result.BrandTech?.BrandTech_code, result.DemandCode, cValue);
+                CreateSellOutBaselineQtyCalculationHandler(null, null, result.BrandTech?.BrandsegTechsub_code, result.DemandCode, cValue);
             }
             catch (Exception e)
             {
@@ -161,12 +161,12 @@ namespace Module.Frontend.TPM.Controllers
                 if (model.BrandTechId != oldModel.BrandTechId || model.DemandCode != oldModel.DemandCode)
                 {
                     double cValue = model.CoefficientValue ?? 0;
-                    CreateSellOutBaselineQtyCalculationHandler(oldModel.BrandTech?.BrandTech_code, oldModel.DemandCode, model.BrandTech?.BrandTech_code, model.DemandCode, cValue);
+                    CreateSellOutBaselineQtyCalculationHandler(oldModel.BrandTech?.BrandsegTechsub_code, oldModel.DemandCode, model.BrandTech?.BrandsegTechsub_code, model.DemandCode, cValue);
                 }
                 else if (model.CoefficientValue != oldModel.CoefficientValue)
                 {
                     double cValue = model.CoefficientValue ?? 0;
-                    CreateSellOutBaselineQtyCalculationHandler(null, null, model.BrandTech?.BrandTech_code, model.DemandCode, cValue);
+                    CreateSellOutBaselineQtyCalculationHandler(null, null, model.BrandTech?.BrandsegTechsub_code, model.DemandCode, cValue);
                 }
                 return Updated(model);
             }
@@ -204,7 +204,7 @@ namespace Module.Frontend.TPM.Controllers
 
                 var resultSaveChanges = Context.SaveChanges();
 
-                CreateSellOutBaselineQtyCalculationHandler(null, null, model.BrandTech.BrandTech_code, model.DemandCode, 0);
+                CreateSellOutBaselineQtyCalculationHandler(null, null, model.BrandTech.BrandsegTechsub_code, model.DemandCode, 0);
                 return StatusCode(HttpStatusCode.NoContent);
             }
             catch (Exception e)
@@ -264,8 +264,8 @@ namespace Module.Frontend.TPM.Controllers
         {
             IEnumerable<Column> columns = new List<Column>() {
                 new Column() { Order = 0, Field = "DemandCode", Header = "Client demand code", Quoting = false },
-                new Column() { Order = 1, Field = "BrandTech.BrandTech_code", Header = "Brandtech code", Quoting = false },
-                new Column() { Order = 2, Field = "BrandTech.Name", Header = "Brandtech name", Quoting = false },
+                new Column() { Order = 1, Field = "BrandTech.BrandsegTechsub_code", Header = "Brandtech code", Quoting = false },
+                new Column() { Order = 2, Field = "BrandTech.BrandsegTechsub", Header = "Brandtech name", Quoting = false },
                 new Column() { Order = 3, Field = "CoefficientValue", Header = "Coefficient value", Quoting = false, Format = "0.00" },
                 new Column() { Order = 4, Field = "Lock", Header = "Lock", Quoting = false }
             };

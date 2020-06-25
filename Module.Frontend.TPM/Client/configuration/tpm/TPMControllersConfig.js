@@ -172,6 +172,8 @@
     //BaseClientTreeView
     'tpm.baseclienttreeview.BaseClientTreeView',
 
+    'tpm.rollingvolume.RollingVolume',
+
     'tpm.nonenego.NoneNego',
     'tpm.nonenego.DeletedNoneNego',
     'tpm.nonenego.HistoricalNoneNego',

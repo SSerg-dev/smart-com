@@ -27,7 +27,16 @@
         { name: 'PostPromoEffectW2', type: 'float', hidden: false, useNull: true, defaultValue: 0 },
         { name: 'LogoFileName', type: 'string', hidden: false, useNull: true, defaultValue: null },
         { name: 'IsOnInvoice', type: 'bool', useNull: true, defaultValue: null },
-        { name: 'DMDGroup', type: 'string', hidden: false, isDefault: true  }
+        { name: 'DMDGroup', type: 'string', hidden: false, isDefault: true  },
+        {
+            name: 'DeviationCoefficient', type: 'float', hidden: false, isDefault: true,
+            convert: function (value) {
+                if (value === null)
+                    value = 0;
+
+                return value * 100;
+            }
+        }
     ],
 
     proxy: {

@@ -297,7 +297,7 @@ namespace Module.Frontend.TPM.Controllers {
                 {
                     Number = x.Number,
                     Name = x.Name,
-                    BrandTechName = x.BrandTech.Name,
+                    BrandTechName = x.BrandTech.BrandsegTechsub,
                     StartDate = x.StartDate,
                     EndDate = x.EndDate,
                     DispatchesStart = x.DispatchesStart,
@@ -358,7 +358,7 @@ namespace Module.Frontend.TPM.Controllers {
                 new Column() { Order = 1, Field = "EndDate", Header = "EndDate", Quoting = false, Format = "dd.MM.yyyy"  },
                 new Column() { Order = 2, Field = "ClientTree.FullPathName", Header = "Client", Quoting = false },
                 new Column() { Order = 3, Field = "ClientTree.ObjectId", Header = "ClientId", Quoting = false },
-                new Column() { Order = 4, Field = "BrandTech.Name", Header = "BrandTech", Quoting = false },
+                new Column() { Order = 4, Field = "BrandTech.BrandsegTechsub", Header = "BrandTech", Quoting = false },
                 new Column() { Order = 5, Field = "LSVpercent", Header = "LSVpercent", Quoting = false }
             };
             return columns;
@@ -589,7 +589,7 @@ namespace Module.Frontend.TPM.Controllers {
 
             if (model.BrandTech != null)
             {
-                query = query.Where(x => x.BrandTech.Name == model.BrandTech.Name);
+                query = query.Where(x => x.BrandTech.BrandsegTechsub == model.BrandTech.BrandsegTechsub);
             }
 
             List<SimplePromoCOGS> promos = new List<SimplePromoCOGS>();
@@ -645,7 +645,7 @@ namespace Module.Frontend.TPM.Controllers {
                             {
                                 FittedActualCOGS = ClientActualCOGSNotEmptyBrandtech.Where(x => DateTimeOffset.Compare(x.StartDate.Value, promo.DispatchesStart.Value) <= 0
                                        && DateTimeOffset.Compare(x.EndDate.Value, promo.DispatchesStart.Value) >= 0
-                                       && (promo.BrandTechName == x.BrandTech.Name));
+                                       && (promo.BrandTechName == x.BrandTech.BrandsegTechsub));
                                 if (FittedActualCOGS.Any())
                                 {
                                     promoesToRemove.Add(promo);

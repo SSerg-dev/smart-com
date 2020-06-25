@@ -42,6 +42,24 @@ namespace Module.Host.TPM.Actions {
                     isSuitable = false;
                 }
                 if (String.IsNullOrEmpty(typedRec.ZREP)) { errors.Add("ZREP must have a value"); isSuitable = false; }
+
+                using (DatabaseContext context = new DatabaseContext())
+                {
+                    var technology = context.Set<Technology>().Where(t => t.Tech_code == typedRec.Tech_code && t.SubBrand_code == typedRec.SubBrand_code).FirstOrDefault();
+                    var brandTech = context.Set<BrandTech>().Where(bt =>
+                                                                bt.Technology != null && bt.Brand != null
+                                                               && bt.Technology.Tech_code == typedRec.Tech_code
+                                                               && bt.Technology.SubBrand_code == typedRec.SubBrand_code
+                                                               && !bt.Technology.Disabled 
+                                                               && bt.Brand.Brand_code == typedRec.Brand_code
+                                                               && bt.Brand.Segmen_code == typedRec.Segmen_code
+                                                               && !bt.Disabled).FirstOrDefault();
+                    var brand = context.Set<Brand>().Where(b => b.Segmen_code == typedRec.Segmen_code && b.Brand_code == typedRec.Brand_code && !b.Disabled).FirstOrDefault();
+
+                    if (brand == null) { errors.Add("Brand was not found"); isSuitable = false; }
+                    if (technology == null) { errors.Add("Technology was not found"); isSuitable = false; }
+                    if (brandTech == null) { errors.Add("Brand Tech was not found"); isSuitable = false; }
+                }
             }
 
 
@@ -49,12 +67,6 @@ namespace Module.Host.TPM.Actions {
             {
                 Brand typedRec = (Brand)rec;
                 if (String.IsNullOrEmpty(typedRec.Name)) { errors.Add("Brand must have a value"); isSuitable = false; }
-            }
-
-            if (TypeTo == typeof(Technology))
-            {
-                Technology typedRec = (Technology)rec;
-                if (String.IsNullOrEmpty(typedRec.Name)) { errors.Add("Name must have a value"); isSuitable = false; }
             }
 
             if (TypeTo == typeof(Budget))
@@ -399,11 +411,14 @@ namespace Module.Host.TPM.Actions {
             var brandCode = product.Brand_code;
             var segCode = product.Segmen_code;
             var techCode = product.Tech_code;
+            var subCode = product.SubBrand_code;
 
             var brandName = context.Set<Brand>().Where(b => b.Segmen_code == segCode && b.Brand_code == brandCode && !b.Disabled).Select(b => b.Name).FirstOrDefault();
-            var techName = context.Set<Technology>().Where(t => t.Tech_code == techCode && !t.Disabled).Select(b => b.Name).FirstOrDefault();
+            var techName = context.Set<Technology>().Where(t => t.Tech_code == techCode && t.SubBrand_code == subCode && !t.Disabled).Select(b => b.Name).FirstOrDefault();
             var brandTech = context.Set<BrandTech>().Where(bt =>
+                                                               bt.Technology != null && bt.Brand != null &&
                                                                bt.Technology.Tech_code == techCode &&
+                                                               bt.Technology.SubBrand_code == subCode &&
                                                                !bt.Technology.Disabled &&
                                                                bt.Brand.Brand_code == brandCode &&
                                                                bt.Brand.Segmen_code == segCode &&

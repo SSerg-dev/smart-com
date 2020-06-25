@@ -37,9 +37,9 @@ namespace Module.Persist.TPM.Model.Import
         public int ClientTreeObjectId { get; set; }
 
         [ImportCSVColumn(ColumnNumber = 4)]
-        [NavigationPropertyMap(LookupEntityType = typeof(BrandTech), LookupPropertyName = "Name")]
+        [NavigationPropertyMap(LookupEntityType = typeof(BrandTech), LookupPropertyName = "BrandsegTechsub")]
         [Display(Name = "BrandTech")]
-        public String BrandTechName { get; set; }
+        public String BrandsegTechsub { get; set; }
 
         [ImportCSVColumn(ColumnNumber = 5)]
         [Display(Name = "LSV percent")]

@@ -8,7 +8,7 @@
 
     data: {
         logoFileName: null,
-        brandTechName: null,
+        brandsegTechsubName: null,
         promoWeeks: null,
         vodYTD: null,
         vodYEE: null
@@ -43,7 +43,7 @@
                     itemId: 'logoFileNameValue',
                     cls: 'client-dashboard-promo-weeks-panel-logo',
                     listeners: {
-                        render: function(el) {
+                        render: function (el) {
                             el.imgEl.on('error', function () {
                                 el.setSrc('/bundles/style/images/swith-glyph-gray.png');
                             });
@@ -64,12 +64,12 @@
                 width: '100%',
                 items: [{
                     xtype: 'container',
-                    html: l10n.ns('tpm', 'ClientDashboardPromoWeeksPanel').value('BrandTechName'),
+                    html: l10n.ns('tpm', 'ClientDashboardPromoWeeksPanel').value('BrandsegTechsubName'),
                     itemId: 'brandTechNameLable',
                     cls: 'client-dashboard-promo-weeks-panel-lable',
                 }, {
                     xtype: 'container',
-                    itemId: 'brandTechNameValue',
+                    itemId: 'brandsegTechsubNameValue',
                     cls: 'client-dashboard-promo-weeks-panel-value',
                 }],
             }],
@@ -147,7 +147,7 @@
         this.callParent(arguments);
 
         this.data.logoFileName = config.logoFileName;
-        this.data.brandTechName = config.brandTechName;
+        this.data.brandsegTechsubName = config.brandsegTechsubName;
         this.data.promoWeeks = config.promoWeeks;
         this.data.vodYTD = config.vodYTD;
         this.data.vodYEE = config.vodYEE;
@@ -161,7 +161,7 @@
             this.down('#logoFileNameValue').setSrc('/bundles/style/images/swith-glyph-gray.png');
         }
 
-        this.down('#brandTechNameValue').html = this.data.brandTechName ? this.data.brandTechName : '-';
+        this.down('#brandsegTechsubNameValue').html = this.data.brandsegTechsubName ? this.data.brandsegTechsubName : '-';
         this.down('#promoWeeksValue').html = this.data.promoWeeks ? this.data.promoWeeks : '-';
         this.down('#vodYtdValue').html = this.data.vodYTD ? this.data.vodYTD : '-';
         this.down('#vodYeeValue').html = this.data.vodYEE ? this.data.vodYEE : '-';

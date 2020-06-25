@@ -18,6 +18,7 @@
             { xtype: 'textfield', name: 'ClientName', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('ClientName') },
             { xtype: 'textfield', name: 'BrandName', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('BrandName') },
             { xtype: 'textfield', name: 'TechnologyName', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('TechnologyName') },
+            { xtype: 'textfield', name: 'SubName', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('SubName') },
             { xtype: 'textfield', name: 'ProductSubrangesList', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('ProductSubrangesList') },
             { xtype: 'textfield', name: 'MarsMechanicName', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('MarsMechanicName') },
             { xtype: 'textfield', name: 'MarsMechanicTypeName', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('MarsMechanicTypeName') },

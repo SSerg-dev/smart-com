@@ -20,6 +20,10 @@ namespace Module.Persist.TPM.Model.History
 		public string Segmen_code { get; set; }
 		public string BrandsegTech_code { get; set; }
         public string Brandsegtech{ get; set; }
+        public string BrandsegTechsub_code { get; set; }
+        public string BrandsegTechsub { get; set; }
+        public string SubBrand_code { get; set; }
+        public string SubBrand { get; set; }
         public string BrandFlagAbbr { get; set; }
         public string BrandFlag { get; set; }
         public string SubmarkFlag { get; set; }

@@ -36,8 +36,16 @@
             fieldLabel: l10n.ns('tpm', 'BrandTech').value('TechnologyName'),
         }, {
             xtype: 'singlelinedisplayfield',
+            name: 'TechnologySubBrand',
+            fieldLabel: l10n.ns('tpm', 'BrandTech').value('SubBrandName'),
+        }, {
+            xtype: 'singlelinedisplayfield',
             name: 'BrandTech_code',
             fieldLabel: l10n.ns('tpm', 'BrandTech').value('BrandTech_code'),
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'BrandsegTechsub_code',
+            fieldLabel: l10n.ns('tpm', 'BrandTech').value('BrandsegTechsub_code'),
         }]
     }
 });

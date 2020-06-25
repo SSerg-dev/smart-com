@@ -98,6 +98,29 @@
                         }
                     }
                 }
+            }, {
+                text: l10n.ns('tpm', 'Product').value('SubBrandName'),
+                dataIndex: 'SubBrandName',
+                filter: {
+                    type: 'search',
+                    selectorWidget: 'technology',
+                    valueField: 'SubBrand',
+                    store: {
+                        type: 'directorystore',
+                        model: 'App.model.tpm.technology.Technology',
+                        extendedFilter: {
+                            xclass: 'App.ExtFilterContext',
+                            supportedModels: [{
+                                xclass: 'App.ExtSelectionFilterModel',
+                                model: 'App.model.tpm.technology.Technology',
+                                modelId: 'efselectionmodel'
+                            }, {
+                                xclass: 'App.ExtTextFilterModel',
+                                modelId: 'eftextmodel'
+                            }]
+                        }
+                    }
+                }
             }]
         }
     }, {
@@ -120,6 +143,10 @@
             xtype: 'singlelinedisplayfield',
             fieldLabel: l10n.ns('tpm', 'Product').value('TechnologyName'),
             name: 'TechnologyName',
+        }, {
+            xtype: 'singlelinedisplayfield',
+            fieldLabel: l10n.ns('tpm', 'Product').value('SubBrandName'),
+            name: 'SubBrandName',
         }]
     }]
 });

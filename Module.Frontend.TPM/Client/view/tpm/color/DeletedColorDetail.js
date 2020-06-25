@@ -29,6 +29,10 @@
             xtype: 'singlelinedisplayfield',
             fieldLabel: l10n.ns('tpm', 'Product').value('TechnologyName'),
             name: 'TechnologyName',
+        }, {
+            xtype: 'singlelinedisplayfield',
+            fieldLabel: l10n.ns('tpm', 'Product').value('SubBrandName'),
+            name: 'SubBrandName',
         }]
     }
 })

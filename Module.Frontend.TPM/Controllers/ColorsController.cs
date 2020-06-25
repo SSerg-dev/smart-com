@@ -261,7 +261,7 @@ namespace Module.Frontend.TPM.Controllers
 
         private IEnumerable<Column> GetExportSettings() {
             IEnumerable<Column> columns = new List<Column>() {
-                new Column() { Order = 0, Field = "BrandTech.Name", Header = "BrandTech Name", Quoting = false },
+                new Column() { Order = 0, Field = "BrandTech.BrandsegTechsub", Header = "BrandTech Name", Quoting = false },
                 new Column() { Order = 1, Field = "SystemName", Header = "Color RGB" },
                 new Column() { Order = 2, Field = "DisplayName", Header = "Color Name" }
             };

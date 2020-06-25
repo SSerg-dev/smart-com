@@ -2,7 +2,7 @@
 -------------------- SECTION: Функция вычисления Name Для BrandTech --------------------
 ----------------------------------------------------------------------------------------
 
-CREATE FUNCTION [dbo].[GetBrandTechName]
+CREATE OR ALTER FUNCTION [dbo].[GetBrandTechName]
 (
 	@brandId uniqueidentifier,
 	@technologyId uniqueidentifier

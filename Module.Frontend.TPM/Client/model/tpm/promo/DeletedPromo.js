@@ -27,7 +27,7 @@
         // Поле из "Basic"
         { name: 'Name', type: 'string', hidden: false, isDefault: true },
         // Поле из "Calculation"
-        { name: 'BrandTechName', type: 'string', mapping: 'BrandTech.Name', defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'BrandTech', hidden: false, isDefault: true },
+        { name: 'BrandTechName', type: 'string', mapping: 'BrandTech.BrandsegTechsub', defaultFilterConfig: { valueField: 'BrandsegTechsub' }, breezeEntityType: 'BrandTech', hidden: false, isDefault: true },
         // Поле из "Calculation"
         { name: 'EventName', type: 'string', hidden: false, isDefault: true },
         // Поле из "Calculation"
@@ -179,7 +179,14 @@
         { name: 'IsGrowthAcceleration', useNull: true, type: 'boolean', hidden: false, isDefault: false },
 
         //Apollo Export
-        { name: 'IsApolloExport', type: 'boolean', hidden: false, isDefault: false }
+        { name: 'IsApolloExport', type: 'boolean', hidden: false, isDefault: false },
+
+        {
+            name: 'DeviationCoefficient', type: 'float', hidden: false, isDefault: true,
+            convert: function (value) {
+                return value * 100;
+            }
+        }
     ],
     proxy: {
         type: 'breeze',

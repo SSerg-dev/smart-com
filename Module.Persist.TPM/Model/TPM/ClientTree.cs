@@ -40,6 +40,8 @@ namespace Module.Persist.TPM.Model.TPM {
         public double? PostPromoEffectW1 { get; set; }
         public double? PostPromoEffectW2 { get; set; }
 
+        public double? DeviationCoefficient { get; set; }
+
         public string LogoFileName { get; set; }
 
         public object Clone()

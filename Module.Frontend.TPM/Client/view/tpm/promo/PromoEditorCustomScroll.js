@@ -28,6 +28,7 @@
                 container.down('#btn_promo_step4').removeCls('selected');
                 container.down('#btn_promo_step5').removeCls('selected');
                 container.down('#btn_promo_step6').removeCls('selected');
+                container.down('#btn_promo_step7').removeCls('selected');
 
                 var jspData = $(wind.down('panel[name=basicPromo]').getTargetEl().dom).data('jsp');
                 var el = $(container.down('#promo_step2').getTargetEl().dom);
@@ -81,6 +82,7 @@
         this.down('#btn_promo_step4').addCls('notcompleted');
         this.down('#btn_promo_step5').addCls('notcompleted');
         this.down('#btn_promo_step6').addCls('notcompleted');
+        this.down('#btn_promo_step7').addCls('notcompleted');
 
         // promo budgets
         this.down('#btn_promoBudgets_step1').addCls('selected');
@@ -212,6 +214,17 @@
                         width: 300,
                         margin: '5 5 0 5',
                         isComplete: true
+                    }, {
+                        xtype: 'button',
+                        glyph: 0xf130,
+                        cls: 'custom-promo-toolbar-button',
+                        itemId: 'btn_promo_step7',
+                        text: '<b>' + l10n.ns('tpm', 'promoStap').value('basicStep7') + '</b>',
+                        tooltip: l10n.ns('tpm', 'promoStap').value('basicStep7'),
+                        height: 80,
+                        width: 300,
+                        margin: '5 5 0 5',
+                        isComplete: true
                     }],
                 }, {
                     xtype: 'custombottomtoolbar',
@@ -287,6 +300,15 @@
                             height: 123 + 36,
                             header: {
                                 title: l10n.ns('tpm', 'promoStap').value('basicStep6'),
+                                cls: 'promo-header-item'
+                            }
+                        }, {
+                            xtype: 'promoadjustment',
+                            name: 'promo_step7',
+                            itemId: 'promo_step7',
+                            height: 293 + 36,
+                            header: {
+                                title: l10n.ns('tpm', 'promoStap').value('basicStep7'),
                                 cls: 'promo-header-item'
                             }
                         }]

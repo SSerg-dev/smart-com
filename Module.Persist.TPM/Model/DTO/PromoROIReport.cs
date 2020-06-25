@@ -162,6 +162,7 @@ namespace Module.Persist.TPM.Model.DTO
         public string ClientName { get; set; }
         public string BrandName { get; set; }
         public string TechnologyName { get; set; }
+        public string SubName { get; set; }
 
         public string ProductSubrangesList { get; set; }
         public string MarsMechanicName { get; set; }

@@ -241,30 +241,65 @@
             var promoeditorcustom = this.up('promoeditorcustom');
             var radioOFFInvoice = this.down('[id=OffInvoice]');
             var radioONInvoice = this.down('[id=OnInvoice]');
+            var adjustmentSlider = promoeditorcustom.down('sliderfield[name=DeviationCoefficient]');
+            var adjustmentNumber = promoeditorcustom.down('numberfield[name=Adjustment]');
 
+            var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
             if (!promoeditorcustom.readOnly) {
                 radioOFFInvoice.setReadOnly(false);
                 radioONInvoice.setReadOnly(false);
+
+                if (adjustmentSlider.crudAccess.indexOf(currentRole) !== -1) {
+                    adjustmentSlider.setReadOnly(false);
+                    adjustmentNumber.setReadOnly(false);
+                }
             } else {
                 radioOFFInvoice.setReadOnly(true);
                 radioONInvoice.setReadOnly(true);
+
+                adjustmentSlider.setDisabled(true);
+                adjustmentNumber.setReadOnly(true);
+                adjustmentNumber.addCls('readOnlyField');
             }
 
-            if (promoeditorcustom.model !== null) {  
+            if (promoeditorcustom.model !== null) {
                 if (promoeditorcustom.model.data.IsOnInvoice != null) {
                     radioOFFInvoice.setValue(!promoeditorcustom.model.data.IsOnInvoice);
-                    radioONInvoice.setValue(promoeditorcustom.model.data.IsOnInvoice); 
+                    radioONInvoice.setValue(promoeditorcustom.model.data.IsOnInvoice);
                     if (clientTreeRecord.IsOnInvoice != null && clientTreeRecord.ObjectId != promoeditorcustom.model.data.ClientTreeId) {
                         radioOFFInvoice.setValue(!clientTreeRecord.IsOnInvoice);
-                        radioONInvoice.setValue(clientTreeRecord.IsOnInvoice); 
+                        radioONInvoice.setValue(clientTreeRecord.IsOnInvoice);
+                    }
+                }
+                if (clientTreeRecord.ObjectId != promoeditorcustom.model.data.ClientTreeId) {
+                    clientTreeRecord.DeviationCoefficient = clientTreeRecord.DeviationCoefficient === null ? 0 : clientTreeRecord.DeviationCoefficient;
+                    adjustmentSlider.setValue(clientTreeRecord.DeviationCoefficient * -100);
+                    adjustmentNumber.setValue(clientTreeRecord.DeviationCoefficient * 100);
+
+                    if (adjustmentSlider.crudAccess.indexOf(currentRole) !== -1) {
+                        adjustmentSlider.setDisabled(false);
+                        adjustmentNumber.setReadOnly(false);
+                        adjustmentNumber.removeCls('readOnlyField');
                     }
                 }
             }
-            else if (clientTreeRecord.IsOnInvoice != null) { 
-                radioOFFInvoice.setValue(!clientTreeRecord.IsOnInvoice);
-                radioONInvoice.setValue(clientTreeRecord.IsOnInvoice);
-                radioOFFInvoice.setDisabled(false);
-                radioONInvoice.setDisabled(false);
+            else {
+                if (clientTreeRecord.IsOnInvoice != null) {
+                    radioOFFInvoice.setValue(!clientTreeRecord.IsOnInvoice);
+                    radioONInvoice.setValue(clientTreeRecord.IsOnInvoice);
+                    radioOFFInvoice.setDisabled(false);
+                    radioONInvoice.setDisabled(false);
+                }
+                if (clientTreeRecord.DeviationCoefficient != null) {
+                    adjustmentSlider.setValue(clientTreeRecord.DeviationCoefficient * -100);
+                    adjustmentNumber.setValue(clientTreeRecord.DeviationCoefficient * 100);
+
+                    if (adjustmentSlider.crudAccess.indexOf(currentRole) !== -1) {
+                        adjustmentSlider.setDisabled(false);
+                        adjustmentNumber.setReadOnly(false);
+                        adjustmentNumber.removeCls('readOnlyField');
+                    }
+                }
             }
           
         } else {

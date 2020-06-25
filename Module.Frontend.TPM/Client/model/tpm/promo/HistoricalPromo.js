@@ -173,6 +173,13 @@
         // Growth Acceleration
         { name: 'IsGrowthAcceleration', useNull: true, type: 'boolean', hidden: false, isDefault: false, defaultValue: null },
 
+        {
+            name: 'DeviationCoefficient', type: 'float', hidden: false, isDefault: true,
+            convert: function (value) {
+                return value * 100;
+            }
+        },
+
         //Apollo Export
         { name: 'IsApolloExport', type: 'boolean', hidden: false, isDefault: false }
     ],

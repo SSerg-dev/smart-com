@@ -192,7 +192,7 @@
                 filter: {
                     type: 'search',
                     selectorWidget: 'brandtech',
-                    valueField: 'Name',
+                    valueField: 'BrandsegTechsub',
                     store: {
                         type: 'directorystore',
                         model: 'App.model.tpm.brandtech.BrandTech',
@@ -273,7 +273,7 @@
             name: 'BrandTechName',
             selectorWidget: 'brandtech',
             valueField: 'Id',
-            displayField: 'Name',
+            displayField: 'BrandsegTechsub',
             allowBlank: true,
             allowOnlyWhitespace: true,
             onTrigger2Click: function () {
@@ -308,7 +308,7 @@
                 }
             },
             mapping: [{
-                from: 'Name',
+                from: 'BrandsegTechsub',
                 to: 'BrandTechName'
             }]
         }, {

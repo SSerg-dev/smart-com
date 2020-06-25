@@ -78,7 +78,7 @@ Ext.define('App.view.tpm.actualtradeinvestment.ActualTradeInvestmentEditor', {
             allowBlank: true,
             allowOnlyWhitespace: true,
             valueField: 'Id',
-            displayField: 'Name',
+            displayField: 'BrandsegTechsub',
             onTrigger2Click: function () {
                 var technology = this.up().down('[name=BrandTechId]');
 
@@ -93,7 +93,7 @@ Ext.define('App.view.tpm.actualtradeinvestment.ActualTradeInvestmentEditor', {
                 },
                 change: function (field, newValue, oldValue) {
                     var brandtech = field.up().down('[name=BrandTechId]');
-                    var brandtechValue = newValue ? field.record.get('Name') : null;
+                    var brandtechValue = newValue ? field.record.get('BrandsegTechsub') : null;
 
                     brandtech.setValue(brandtechValue);
                 }
@@ -111,7 +111,7 @@ Ext.define('App.view.tpm.actualtradeinvestment.ActualTradeInvestmentEditor', {
                 }
             },
             mapping: [{
-                from: 'Name',
+                from: 'BrandsegTechsub',
                 to: 'BrandTechName'
             }]
         }, {

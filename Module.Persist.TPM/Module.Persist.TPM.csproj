@@ -1959,13 +1959,145 @@
     <Compile Include="Migrations\202005191538104_EmptyMigrationIncremental2Apollo2.Designer.cs">
       <DependentUpon>202005191538104_EmptyMigrationIncremental2Apollo2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202005291128427_Add_BrandsegTech_and_BrandsegTech_code_into_products.cs" />
+    <Compile Include="Migrations\202005291128427_Add_BrandsegTech_and_BrandsegTech_code_into_products.Designer.cs">
+      <DependentUpon>202005291128427_Add_BrandsegTech_and_BrandsegTech_code_into_products.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005291332206_20200529_1427_Add_BrandsegTech_and_BrandsegTech_code_into_BrandTech.cs" />
+    <Compile Include="Migrations\202005291332206_20200529_1427_Add_BrandsegTech_and_BrandsegTech_code_into_BrandTech.Designer.cs">
+      <DependentUpon>202005291332206_20200529_1427_Add_BrandsegTech_and_BrandsegTech_code_into_BrandTech.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005291400077_20200529_1427_Add_SubBrand_and_SubBrand_code_into_Technology.cs" />
+    <Compile Include="Migrations\202005291400077_20200529_1427_Add_SubBrand_and_SubBrand_code_into_Technology.Designer.cs">
+      <DependentUpon>202005291400077_20200529_1427_Add_SubBrand_and_SubBrand_code_into_Technology.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006010653457_20200601_0952_Add_SubBrand_and_SubBrand_code_into_MARS_UNIVERSAL_PETCARE_MATERIALS.cs" />
+    <Compile Include="Migrations\202006010653457_20200601_0952_Add_SubBrand_and_SubBrand_code_into_MARS_UNIVERSAL_PETCARE_MATERIALS.Designer.cs">
+      <DependentUpon>202006010653457_20200601_0952_Add_SubBrand_and_SubBrand_code_into_MARS_UNIVERSAL_PETCARE_MATERIALS.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006010815162_20200601_1114_Add_StartDate_and_EndDate_into_MARS_UNIVERSAL_PETCARE_MATERIALS.cs" />
+    <Compile Include="Migrations\202006010815162_20200601_1114_Add_StartDate_and_EndDate_into_MARS_UNIVERSAL_PETCARE_MATERIALS.Designer.cs">
+      <DependentUpon>202006010815162_20200601_1114_Add_StartDate_and_EndDate_into_MARS_UNIVERSAL_PETCARE_MATERIALS.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006010902284_20200601_1201_Add_BrandsegTech_and_BrandsegTech_code_into_MARS_UNIVERSAL_PETCARE_MATERIALS.cs" />
+    <Compile Include="Migrations\202006010902284_20200601_1201_Add_BrandsegTech_and_BrandsegTech_code_into_MARS_UNIVERSAL_PETCARE_MATERIALS.Designer.cs">
+      <DependentUpon>202006010902284_20200601_1201_Add_BrandsegTech_and_BrandsegTech_code_into_MARS_UNIVERSAL_PETCARE_MATERIALS.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006011234540_20200601_1402_Delete_unique_field_from_Tech_code_in_Technologies.cs" />
+    <Compile Include="Migrations\202006011234540_20200601_1402_Delete_unique_field_from_Tech_code_in_Technologies.Designer.cs">
+      <DependentUpon>202006011234540_20200601_1402_Delete_unique_field_from_Tech_code_in_Technologies.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006011602032_Add_SubBrand_and_SubBrand_code_into_Products.cs" />
+    <Compile Include="Migrations\202006011602032_Add_SubBrand_and_SubBrand_code_into_Products.Designer.cs">
+      <DependentUpon>202006011602032_Add_SubBrand_and_SubBrand_code_into_Products.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006041230134_Replace_BrandTech_to_BrandsegTechsub_in_ClientDashboard.cs" />
+    <Compile Include="Migrations\202006041230134_Replace_BrandTech_to_BrandsegTechsub_in_ClientDashboard.Designer.cs">
+      <DependentUpon>202006041230134_Replace_BrandTech_to_BrandsegTechsub_in_ClientDashboard.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006090826557_Remove_Drop_StartDate_andEndDate_From_MARS_UNIVERSAL_PETCARE_MATER.cs" />
+    <Compile Include="Migrations\202006090826557_Remove_Drop_StartDate_andEndDate_From_MARS_UNIVERSAL_PETCARE_MATER.Designer.cs">
+      <DependentUpon>202006090826557_Remove_Drop_StartDate_andEndDate_From_MARS_UNIVERSAL_PETCARE_MATER.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202004201348183_Add_DeviationCoefficient_ClientTree.cs" />
+    <Compile Include="Migrations\202004201348183_Add_DeviationCoefficient_ClientTree.Designer.cs">
+      <DependentUpon>202004201348183_Add_DeviationCoefficient_ClientTree.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202004271227412_Create_Table_RollingVolume.cs" />
+    <Compile Include="Migrations\202004271227412_Create_Table_RollingVolume.Designer.cs">
+      <DependentUpon>202004271227412_Create_Table_RollingVolume.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202004281450463_AddDMDGroup_RollingVolume.cs" />
+    <Compile Include="Migrations\202004281450463_AddDMDGroup_RollingVolume.Designer.cs">
+      <DependentUpon>202004281450463_AddDMDGroup_RollingVolume.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005071041470_Add_Table_ServiceInfo.cs" />
+    <Compile Include="Migrations\202005071041470_Add_Table_ServiceInfo.Designer.cs">
+      <DependentUpon>202005071041470_Add_Table_ServiceInfo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005251717452_Add_DeviationCoefficient_Promo.cs" />
+    <Compile Include="Migrations\202005251717452_Add_DeviationCoefficient_Promo.Designer.cs">
+      <DependentUpon>202005251717452_Add_DeviationCoefficient_Promo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006011710070_EmptyAdjustment.cs" />
+    <Compile Include="Migrations\202006011710070_EmptyAdjustment.Designer.cs">
+      <DependentUpon>202006011710070_EmptyAdjustment.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006081303540_RenameColumnRollingVolumePlanQTY.cs" />
+    <Compile Include="Migrations\202006081303540_RenameColumnRollingVolumePlanQTY.Designer.cs">
+      <DependentUpon>202006081303540_RenameColumnRollingVolumePlanQTY.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006091803398_Add_PromoDifference_RollingVolume.cs" />
+    <Compile Include="Migrations\202006091803398_Add_PromoDifference_RollingVolume.Designer.cs">
+      <DependentUpon>202006091803398_Add_PromoDifference_RollingVolume.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\202005291916320_EmptyMigrationRC8.cs" />
     <Compile Include="Migrations\202005291916320_EmptyMigrationRC8.Designer.cs">
       <DependentUpon>202005291916320_EmptyMigrationRC8.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202006091931316_EmptyMigrationAdjustment.cs" />
+    <Compile Include="Migrations\202006091931316_EmptyMigrationAdjustment.Designer.cs">
+      <DependentUpon>202006091931316_EmptyMigrationAdjustment.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006092019123_EmptyMigrationAdjustment1.cs" />
+    <Compile Include="Migrations\202006092019123_EmptyMigrationAdjustment1.Designer.cs">
+      <DependentUpon>202006092019123_EmptyMigrationAdjustment1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\202006141548311_FixSettingField.cs" />
     <Compile Include="Migrations\202006141548311_FixSettingField.Designer.cs">
       <DependentUpon>202006141548311_FixSettingField.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006101355203_Create_ROLLING_VOLUMES_FDM.cs" />
+    <Compile Include="Migrations\202006101355203_Create_ROLLING_VOLUMES_FDM.Designer.cs">
+      <DependentUpon>202006101355203_Create_ROLLING_VOLUMES_FDM.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006141749434_EmptyMigrationAdjustment2.cs" />
+    <Compile Include="Migrations\202006141749434_EmptyMigrationAdjustment2.Designer.cs">
+      <DependentUpon>202006141749434_EmptyMigrationAdjustment2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006111005518_EmptyPremiumMaterials.cs" />
+    <Compile Include="Migrations\202006111005518_EmptyPremiumMaterials.Designer.cs">
+      <DependentUpon>202006111005518_EmptyPremiumMaterials.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006131602023_Add_Unique_to_Technology.cs" />
+    <Compile Include="Migrations\202006131602023_Add_Unique_to_Technology.Designer.cs">
+      <DependentUpon>202006131602023_Add_Unique_to_Technology.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006151943587_EmptyMigrationPremiumMaterials.cs" />
+    <Compile Include="Migrations\202006151943587_EmptyMigrationPremiumMaterials.Designer.cs">
+      <DependentUpon>202006151943587_EmptyMigrationPremiumMaterials.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006161329268_Add_TechSub_to_BrandTech.cs" />
+    <Compile Include="Migrations\202006161329268_Add_TechSub_to_BrandTech.Designer.cs">
+      <DependentUpon>202006161329268_Add_TechSub_to_BrandTech.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006171300348_Delete_UniqueIndex_from_Name_in_Technologies.cs" />
+    <Compile Include="Migrations\202006171300348_Delete_UniqueIndex_from_Name_in_Technologies.Designer.cs">
+      <DependentUpon>202006171300348_Delete_UniqueIndex_from_Name_in_Technologies.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006172249340_Rename_BrandSegTechSub_In_MARS_UNIVERSAL_PETCARE_MATERIALS.cs" />
+    <Compile Include="Migrations\202006172249340_Rename_BrandSegTechSub_In_MARS_UNIVERSAL_PETCARE_MATERIALS.Designer.cs">
+      <DependentUpon>202006172249340_Rename_BrandSegTechSub_In_MARS_UNIVERSAL_PETCARE_MATERIALS.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006180642367_Modify_RollingVolume.cs" />
+    <Compile Include="Migrations\202006180642367_Modify_RollingVolume.Designer.cs">
+      <DependentUpon>202006180642367_Modify_RollingVolume.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006180722465_ChangeIndex.cs" />
+    <Compile Include="Migrations\202006180722465_ChangeIndex.Designer.cs">
+      <DependentUpon>202006180722465_ChangeIndex.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006180915589_CreateNew_ROLLING_VOLUMES_FDM.cs" />
+    <Compile Include="Migrations\202006180915589_CreateNew_ROLLING_VOLUMES_FDM.Designer.cs">
+      <DependentUpon>202006180915589_CreateNew_ROLLING_VOLUMES_FDM.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006181158410_EmptyMigrationPremiumMaterials1.cs" />
+    <Compile Include="Migrations\202006181158410_EmptyMigrationPremiumMaterials1.Designer.cs">
+      <DependentUpon>202006181158410_EmptyMigrationPremiumMaterials1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006191158238_EmptyPremiumMaterials1.cs" />
+    <Compile Include="Migrations\202006191158238_EmptyPremiumMaterials1.Designer.cs">
+      <DependentUpon>202006191158238_EmptyPremiumMaterials1.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
@@ -2059,6 +2191,7 @@
     <Compile Include="Model\Import\ImportBudgetItem.cs" />
     <Compile Include="Model\Import\ImportBudget.cs" />
     <Compile Include="Model\Import\ImportBrandTech.cs" />
+    <Compile Include="Model\Import\ImportRollingVolume.cs" />
     <Compile Include="Model\Import\ImportTechnology.cs" />
     <Compile Include="Model\Import\ImportBrand.cs" />
     <Compile Include="Model\Import\ImportPromoProduct.cs" />
@@ -2147,6 +2280,8 @@
     <Compile Include="Model\TPM\PromoStatus.cs" />
     <Compile Include="Model\TPM\Region.cs" />
     <Compile Include="Model\TPM\COGS.cs" />
+    <Compile Include="Model\TPM\RollingVolume.cs" />
+    <Compile Include="Model\TPM\ServiceInfo.cs" />
     <Compile Include="Model\TPM\TradeInvestment.cs" />
     <Compile Include="Model\TPM\RetailType.cs" />
     <Compile Include="Model\TPM\Sale.cs" />
@@ -2182,6 +2317,10 @@
     <Compile Include="CalculatePromoParametersModule\PlanProductParametersCalculation.cs" />
     <Content Include="SQLInitialize\20200220_1730_AlterPromoGridView_Add_OnOffInvoice.sql" />
     <Content Include="SQLInitialize\20200225_2150_AlterPromoView_AddONOFFInvoice.sql" />
+    <Content Include="SQLInitialize\20200616_1330_Alter_СlientDashboarView.sql" />
+    <Content Include="SQLInitialize\20200615_1716_Alter_GetProductBrandsegTechSubByCode.sql" />
+    <Content Include="SQLInitialize\20200610_2010_Alter_clientDashboarView.sql" />
+    <Content Include="SQLInitialize\20200610_1705_CreateFillRollingVolumesProcedure.sql" />
     <Content Include="SQLInitialize\20200608_1720_FixPromoStatuses.sql" />
     <Content Include="SQLInitialize\20200608_1500_Alter_ClientDashboardView.sql" />
     <Content Include="SQLInitialize\20200604_1400_Alter_ClientDashboardView.sql" />
@@ -2320,6 +2459,26 @@
     <Content Include="SQLInitialize\20200420_1613_Create_PromoProductDifference_Log_with_PARTITION_FUNCTION.sql" />
     <Content Include="SQLInitialize\20200420_1800_Add_ProductSyncFail_Notification_Settings.sql" />
     <Content Include="SQLInitialize\20200420_1800_MailNotificationSettings_ProductSyncFail_Add.sql" />
+    <Content Include="SQLInitialize\20200427_2338_AddAp_RollingVolumes.sql" />
+    <Content Include="SQLInitialize\20200430_AddSetting_DayOfWeek.sql" />
+    <Content Include="SQLInitialize\20200506_1100_AddHandlerRollingVolumeQTY.sql" />
+    <Content Include="SQLInitialize\20200507_1353_Add_rolling_promo_start_date.sql" />
+    <Content Include="SQLInitialize\20200604_0600_Alter_ClientDashboardView.sql" />
+    <Content Include="SQLInitialize\20200603_0400_Alter_ClientDashboardView.sql" />
+    <Content Include="SQLInitialize\20200525_2010_Alter_PromoView_Add_DeviationCoefficient.sql" />
+    <Content Include="SQLInitialize\20200525_2015_Alter_PromoGridView_Add_DeviationCoefficient.sql" />
+    <Content Include="SQLInitialize\20200602_2130_Alter_FillPromoProductDifference.sql" />
+    <Content Include="SQLInitialize\20200609_1636_Add_Ap_RollingVolume_SuperReader_Get.sql" />
+    <Content Include="SQLInitialize\20200616_1255_Alter_PromoGridView.sql" />
+    <Content Include="SQLInitialize\20200616_1632_Add_Computed_TechSubNAme.sql" />
+    <Content Include="SQLInitialize\20200618_1344_UpdateProcedureFillRollingVolumes.sql" />
+    <Content Include="SQLInitialize\20200619_0944_ChangeTypeOnBrandsegTechsub_codeInProduct.sql" />
+    <Content Include="SQLInitialize\20200619_0947_ChangeTypeOnBrandsegTechsub_codeInBrandTech.sql" />
+    <Content Include="SQLInitialize\20200619_1518_Alter_ProductBrandsegTechsubByCode.sql" />
+    <Content Include="SQLInitialize\20200622_1323_Add_Ap_SuperReader_RollingVolume_Export.sql" />
+    <Content Include="SQLInitialize\20200625_1618_BrandTech_Computed_BrandsegTechsub_code.sql" />
+    <Content Include="SQLInitialize\20200625_1618_Product_Computed_BrandsegTechsub_code.sql" />
+    <Content Include="SQLInitialize\2020402_1557_Add_AP_CMManager_PriceList.sql" />
     <Content Include="SQLInitialize\20200420_1825_Alter_Proc_FillPromoProductDifference.sql" />
     <Content Include="SQLInitialize\20200421_1440_Alter_Proc_FillPromoProductDifference.sql" />
     <Content Include="SQLInitialize\20200402_1557_Add_AP_CMManager_PriceList.sql" />
@@ -2341,6 +2500,13 @@
     <Content Include="SQLInitialize\20200518_1602_Insert_Old_PriceList.sql" />
     <Content Include="SQLInitialize\20200518_1601_Insert_Old_Baseline.sql" />
     <Content Include="SQLInitialize\20200518_1600_Truncate_Baseline.sql" />
+    <Content Include="SQLInitialize\20200601_1655_BrandTech_Computed_BrandsegTechsub_code.sql" />
+    <Content Include="SQLInitialize\20200601_1655_BrandTech_Computed_BrandsegTechsub_name.sql" />
+    <Content Include="SQLInitialize\20200601_1655_Product_Computed_BrandsegTechsub_code.sql" />
+    <Content Include="SQLInitialize\20200602_1327_Product_Computed_BrandsegTechsub.sql" />
+    <Content Include="SQLInitialize\20200602_1327_Product_Computed_SubBrand.sql" />
+    <Content Include="SQLInitialize\20200605_1342_Alter_ClientDashboardView.sql" />
+    <Content Include="SQLInitialize\20200602_1917_AddApRollingVolumeIsRollingVolumeDay.sql" />
     <Content Include="Sql\20191004_1540_FillInOutProductIdsHandler.sql" />
     <Content Include="SQLInitialize\20190926_1600_HistoricalPromoSupport_AP.sql" />
     <Content Include="SQLInitialize\20191106_1700_PromoGridView.sql" />
@@ -2397,9 +2563,22 @@
     <Content Include="SQLInitialize\20200521_1252_Add_Proc_DropIncrementalIndex.sql" />
     <Content Include="SQLInitialize\20200521_1253_Alter_FillCurrentDayIncremental.sql" />
     <Content Include="SQLInitialize\20200521_1254_Alter_FillPreviousDayIncremental.sql" />
+    <Content Include="SQLInitialize\20200422_1810_Alter_FillCurrentDayIncremental.sql" />
+    <Content Include="SQLInitialize\20200526_1600_Alter_FillPromoProductDifference.sql" />
+    <Content Include="SQLInitialize\20200601_1335_AlterFillCurrentDayIncremental.sql" />
+    <Content Include="SQLInitialize\20200603_1425_Alter_PlanIncrementalReport.sql" />
+    <Content Include="SQLInitialize\20200603_1420_Add_Func_WeekIncrementalQTY.sql" />
+    <Content Include="SQLInitialize\20200603_1430_Alter_FillCurrentDayIncremental.sql" />
+    <Content Include="SQLInitialize\20200608_2015_Alter_PromoGridView.sql" />
     <Content Include="SQLInitialize\20200529_1935_Alter_PlanIncrementalReport.sql" />
     <Content Include="SQLInitialize\20200601_1735_Alter_FillPromoProductDifference.sql" />
     <Content Include="SQLInitialize\20200602_1800_Alter_FillPromoProductDifference.sql" />
+    <Content Include="SQLInitialize\20200609_2200_Alter_PlanIncrementalReport.sql" />
+    <Content Include="SQLInitialize\20200619_1340_Alter_FillCurrentDayIncremental.sql" />
+    <Content Include="SQLInitialize\20200619_1345_Alter_FillPromoProductDifference.sql" />
+    <Content Include="SQLInitialize\20200623_2015_Alter_WeekIncrementalQTY.sql" />
+    <Content Include="SQLInitialize\20200625_1555_Alter_GetProductTechByCode.sql" />
+    <Content Include="SQLInitialize\20200625_1630_Alter_WeekIncrementalQTY.sql" />
     <Compile Include="Utils\ConfigManager.cs" />
     <Compile Include="Utils\ExportCSVBuilderFactory.cs" />
     <Compile Include="Utils\ExportCSVModelBuilders\IncrementalToApolloModelBuilder.cs" />
@@ -2578,6 +2757,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201809061613423_Finance.resx">
       <DependentUpon>201809061613423_Finance.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201809091203088_Promo_Number.resx">
       <DependentUpon>201809091203088_Promo_Number.cs</DependentUpon>
@@ -3819,11 +3999,110 @@
     <EmbeddedResource Include="Migrations\202005191538104_EmptyMigrationIncremental2Apollo2.resx">
       <DependentUpon>202005191538104_EmptyMigrationIncremental2Apollo2.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005291128427_Add_BrandsegTech_and_BrandsegTech_code_into_products.resx">
+      <DependentUpon>202005291128427_Add_BrandsegTech_and_BrandsegTech_code_into_products.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005291332206_20200529_1427_Add_BrandsegTech_and_BrandsegTech_code_into_BrandTech.resx">
+      <DependentUpon>202005291332206_20200529_1427_Add_BrandsegTech_and_BrandsegTech_code_into_BrandTech.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005291400077_20200529_1427_Add_SubBrand_and_SubBrand_code_into_Technology.resx">
+      <DependentUpon>202005291400077_20200529_1427_Add_SubBrand_and_SubBrand_code_into_Technology.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006010653457_20200601_0952_Add_SubBrand_and_SubBrand_code_into_MARS_UNIVERSAL_PETCARE_MATERIALS.resx">
+      <DependentUpon>202006010653457_20200601_0952_Add_SubBrand_and_SubBrand_code_into_MARS_UNIVERSAL_PETCARE_MATERIALS.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006010815162_20200601_1114_Add_StartDate_and_EndDate_into_MARS_UNIVERSAL_PETCARE_MATERIALS.resx">
+      <DependentUpon>202006010815162_20200601_1114_Add_StartDate_and_EndDate_into_MARS_UNIVERSAL_PETCARE_MATERIALS.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006010902284_20200601_1201_Add_BrandsegTech_and_BrandsegTech_code_into_MARS_UNIVERSAL_PETCARE_MATERIALS.resx">
+      <DependentUpon>202006010902284_20200601_1201_Add_BrandsegTech_and_BrandsegTech_code_into_MARS_UNIVERSAL_PETCARE_MATERIALS.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006011234540_20200601_1402_Delete_unique_field_from_Tech_code_in_Technologies.resx">
+      <DependentUpon>202006011234540_20200601_1402_Delete_unique_field_from_Tech_code_in_Technologies.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006011602032_Add_SubBrand_and_SubBrand_code_into_Products.resx">
+      <DependentUpon>202006011602032_Add_SubBrand_and_SubBrand_code_into_Products.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006041230134_Replace_BrandTech_to_BrandsegTechsub_in_ClientDashboard.resx">
+      <DependentUpon>202006041230134_Replace_BrandTech_to_BrandsegTechsub_in_ClientDashboard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006090826557_Remove_Drop_StartDate_andEndDate_From_MARS_UNIVERSAL_PETCARE_MATER.resx">
+      <DependentUpon>202006090826557_Remove_Drop_StartDate_andEndDate_From_MARS_UNIVERSAL_PETCARE_MATER.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004201348183_Add_DeviationCoefficient_ClientTree.resx">
+      <DependentUpon>202004201348183_Add_DeviationCoefficient_ClientTree.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004271227412_Create_Table_RollingVolume.resx">
+      <DependentUpon>202004271227412_Create_Table_RollingVolume.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004281450463_AddDMDGroup_RollingVolume.resx">
+      <DependentUpon>202004281450463_AddDMDGroup_RollingVolume.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005071041470_Add_Table_ServiceInfo.resx">
+      <DependentUpon>202005071041470_Add_Table_ServiceInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005251717452_Add_DeviationCoefficient_Promo.resx">
+      <DependentUpon>202005251717452_Add_DeviationCoefficient_Promo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006011710070_EmptyAdjustment.resx">
+      <DependentUpon>202006011710070_EmptyAdjustment.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006081303540_RenameColumnRollingVolumePlanQTY.resx">
+      <DependentUpon>202006081303540_RenameColumnRollingVolumePlanQTY.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006091803398_Add_PromoDifference_RollingVolume.resx">
+      <DependentUpon>202006091803398_Add_PromoDifference_RollingVolume.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005291916320_EmptyMigrationRC8.resx">
       <DependentUpon>202005291916320_EmptyMigrationRC8.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006091931316_EmptyMigrationAdjustment.resx">
+      <DependentUpon>202006091931316_EmptyMigrationAdjustment.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006092019123_EmptyMigrationAdjustment1.resx">
+      <DependentUpon>202006092019123_EmptyMigrationAdjustment1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006101355203_Create_ROLLING_VOLUMES_FDM.resx">
+      <DependentUpon>202006101355203_Create_ROLLING_VOLUMES_FDM.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202006141548311_FixSettingField.resx">
       <DependentUpon>202006141548311_FixSettingField.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006141749434_EmptyMigrationAdjustment2.resx">
+      <DependentUpon>202006141749434_EmptyMigrationAdjustment2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006111005518_EmptyPremiumMaterials.resx">
+      <DependentUpon>202006111005518_EmptyPremiumMaterials.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006131602023_Add_Unique_to_Technology.resx">
+      <DependentUpon>202006131602023_Add_Unique_to_Technology.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006151943587_EmptyMigrationPremiumMaterials.resx">
+      <DependentUpon>202006151943587_EmptyMigrationPremiumMaterials.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006161329268_Add_TechSub_to_BrandTech.resx">
+      <DependentUpon>202006161329268_Add_TechSub_to_BrandTech.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006171300348_Delete_UniqueIndex_from_Name_in_Technologies.resx">
+      <DependentUpon>202006171300348_Delete_UniqueIndex_from_Name_in_Technologies.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006172249340_Rename_BrandSegTechSub_In_MARS_UNIVERSAL_PETCARE_MATERIALS.resx">
+      <DependentUpon>202006172249340_Rename_BrandSegTechSub_In_MARS_UNIVERSAL_PETCARE_MATERIALS.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006180642367_Modify_RollingVolume.resx">
+      <DependentUpon>202006180642367_Modify_RollingVolume.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006180722465_ChangeIndex.resx">
+      <DependentUpon>202006180722465_ChangeIndex.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006180915589_CreateNew_ROLLING_VOLUMES_FDM.resx">
+      <DependentUpon>202006180915589_CreateNew_ROLLING_VOLUMES_FDM.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006181158410_EmptyMigrationPremiumMaterials1.resx">
+      <DependentUpon>202006181158410_EmptyMigrationPremiumMaterials1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006191158238_EmptyPremiumMaterials1.resx">
+      <DependentUpon>202006191158238_EmptyPremiumMaterials1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

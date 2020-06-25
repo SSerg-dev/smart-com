@@ -47,6 +47,7 @@ namespace Module.Persist.TPM.Model.DTO {
         public string ProductHierarchy { get; set; }
         public bool IsOnInvoice { get; set; }
         public bool IsApolloExport { get; set; }
+        public double DeviationCoefficient { get; set; }
 
         public double? PlanPromoTIShopper { get; set; }
         public double? PlanPromoTIMarketing { get; set; }

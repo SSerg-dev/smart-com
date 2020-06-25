@@ -11,7 +11,7 @@
     items: [{
         xtype: 'directorygrid',
         itemId: 'datatable',
-		editorModel: 'Core.form.EditorDetailWindowModel',
+        editorModel: 'Core.form.EditorDetailWindowModel',
         store: {
             type: 'directorystore',
             model: 'App.model.tpm.color.HistoricalColor',
@@ -39,46 +39,45 @@
                 minWidth: 100
             },
             items: [
-            {
-                text: l10n.ns('tpm', 'HistoricalColor').value('_User'),
-                dataIndex: '_User',
-                filter: {
-                    type: 'string',
-                    operator: 'eq'
+                {
+                    text: l10n.ns('tpm', 'HistoricalColor').value('_User'),
+                    dataIndex: '_User',
+                    filter: {
+                        type: 'string',
+                        operator: 'eq'
+                    }
+                }, {
+                    text: l10n.ns('tpm', 'HistoricalColor').value('_Role'),
+                    dataIndex: '_Role',
+                    filter: {
+                        type: 'string',
+                        operator: 'eq'
+                    }
+                }, {
+                    text: l10n.ns('tpm', 'HistoricalColor').value('_EditDate'),
+                    dataIndex: '_EditDate',
+                    xtype: 'datecolumn',
+                    renderer: Ext.util.Format.dateRenderer('d.m.Y H:i:s')
+                }, {
+                    text: l10n.ns('tpm', 'HistoricalColor').value('_Operation'),
+                    dataIndex: '_Operation',
+                    renderer: App.RenderHelper.getLocalizedRenderer('tpm.HistoricalColor', 'OperationType'),
+                    filter: {
+                        type: 'combo',
+                        valueField: 'id',
+                        store: {
+                            type: 'operationtypestore'
+                        },
+                        operator: 'eq'
+                    }
                 }
-            }, {
-                text: l10n.ns('tpm', 'HistoricalColor').value('_Role'),
-                dataIndex: '_Role',
-                filter: {
-                    type: 'string',
-                    operator: 'eq'
-                }
-            }, {
-                text: l10n.ns('tpm', 'HistoricalColor').value('_EditDate'),
-                dataIndex: '_EditDate',
-                xtype: 'datecolumn',
-                renderer: Ext.util.Format.dateRenderer('d.m.Y H:i:s')
-            }, {
-                text: l10n.ns('tpm', 'HistoricalColor').value('_Operation'),
-                dataIndex: '_Operation',
-                renderer: App.RenderHelper.getLocalizedRenderer('tpm.HistoricalColor', 'OperationType'),
-                filter: {
-                    type: 'combo',
-                    valueField: 'id',
-                    store: {
-                        type: 'operationtypestore'
-                    },
-                    operator: 'eq'
-                }
-            }
             ]
         }
     }, {
         xtype: 'editabledetailform',
         itemId: 'detailform',
         model: 'App.model.tpm.color.HistoricalColor',
-        items: [
-        {
+        items: [{
             xtype: 'singlelinedisplayfield',
             name: '_User',
             fieldLabel: l10n.ns('tpm', 'HistoricalColor').value('_User')
@@ -112,6 +111,10 @@
             xtype: 'singlelinedisplayfield',
             name: 'BrandTechTechnologyName',
             fieldLabel: l10n.ns('tpm', 'Color').value('TechnologyName'),
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'BrandTechTechnologySubBrand',
+            fieldLabel: l10n.ns('tpm', 'Color').value('SubBrandName'),
         }]
     }]
 });

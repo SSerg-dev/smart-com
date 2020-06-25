@@ -12,7 +12,8 @@
         { name: 'SystemName', type: 'string', isDefault: true },
         { name: 'DisplayName', type: 'string', isDefault: true },
         { name: 'BrandTechBrandName', type: 'string', isDefault: true },
-        { name: 'BrandTechTechnologyName', type: 'string', isDefault: true }
+        { name: 'BrandTechTechnologyName', type: 'string', isDefault: true },
+        { name: 'BrandTechTechnologySubBrand', type: 'string', isDefault: true }
     ],
     proxy: {
         type: 'breeze',

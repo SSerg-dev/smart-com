@@ -12,8 +12,8 @@ namespace Module.Persist.TPM.Model.Import
         public int ClientTreeId { get; set; }
 
         [ImportCSVColumn(ColumnNumber = 2)]
-        [Display(Name = "Brand Tech")]
-        public string BrandTechName { get; set; }
+        [Display(Name = "Brand Seg Tech Sub")]
+        public string BrandsegTechsubName { get; set; }
 
         [ImportCSVColumn(ColumnNumber = 3)]
         [Display(Name = "Year")]

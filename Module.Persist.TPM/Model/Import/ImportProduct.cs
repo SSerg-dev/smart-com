@@ -85,70 +85,86 @@ namespace Module.Persist.TPM.Model.TPM
         public string Brandsegtech { get; set; }
 
         [ImportCSVColumn(ColumnNumber = 13)]
+        [Display(Name = "Brand Seg Tech Sub Code")]
+        public string BrandsegTechsub_code { get; set; }
+
+        [ImportCSVColumn(ColumnNumber = 14)]
+        [Display(Name = "Brand Seg Tech Sub")]
+        public string BrandsegTechsub { get; set; }
+
+        [ImportCSVColumn(ColumnNumber = 15)]
+        [Display(Name = "Sub Code")]
+        public string SubBrand_code { get; set; }
+
+        [ImportCSVColumn(ColumnNumber = 16)]
+        [Display(Name = "Sub")]
+        public string SubBrand { get; set; }
+
+        [ImportCSVColumn(ColumnNumber = 17)]
         [Display(Name = "Brand flag abbr")]
         public string BrandFlagAbbr { get; set; }
 
-        [ImportCSVColumn(ColumnNumber = 14)]
+        [ImportCSVColumn(ColumnNumber = 18)]
         [Display(Name = "Brand flag")]
         public string BrandFlag { get; set; }
 
-        [ImportCSVColumn(ColumnNumber = 15)]
+        [ImportCSVColumn(ColumnNumber = 19)]
         [Display(Name = "Submark flag")]
         public string SubmarkFlag { get; set; }
 
-        [ImportCSVColumn(ColumnNumber = 16)]
+        [ImportCSVColumn(ColumnNumber = 20)]
         [Display(Name = "Ingredient variety")]
         public string IngredientVariety { get; set; }
 
-        [ImportCSVColumn(ColumnNumber = 17)]
+        [ImportCSVColumn(ColumnNumber = 21)]
         [Display(Name = "Product category")]
         public string ProductCategory { get; set; }
 
-        [ImportCSVColumn(ColumnNumber = 18)]
+        [ImportCSVColumn(ColumnNumber = 22)]
         [Display(Name = "Product type")]
         public string ProductType { get; set; }
 
-        [ImportCSVColumn(ColumnNumber = 19)]
+        [ImportCSVColumn(ColumnNumber = 23)]
         [Display(Name = "Market segment")]
         public string MarketSegment { get; set; }
 
-        [ImportCSVColumn(ColumnNumber = 20)]
+        [ImportCSVColumn(ColumnNumber = 24)]
         [Display(Name = "Supply segment")]
         public string SupplySegment { get; set; }
 
-        [ImportCSVColumn(ColumnNumber = 21)]
+        [ImportCSVColumn(ColumnNumber = 25)]
         [Display(Name = "Functional variety")]
         public string FunctionalVariety { get; set; }
 
-        [ImportCSVColumn(ColumnNumber = 22)]
+        [ImportCSVColumn(ColumnNumber = 26)]
         [Display(Name = "Size")]
         public string Size { get; set; }
 
-        [ImportCSVColumn(ColumnNumber = 23)]
+        [ImportCSVColumn(ColumnNumber = 27)]
         [Display(Name = "Brand essence")]
         public string BrandEssence { get; set; }
 
-        [ImportCSVColumn(ColumnNumber = 24)]
+        [ImportCSVColumn(ColumnNumber = 28)]
         [Display(Name = "Pack type")]
         public string PackType { get; set; }
 
-        [ImportCSVColumn(ColumnNumber = 25)]
+        [ImportCSVColumn(ColumnNumber = 29)]
         [Display(Name = "Group size")]
         public string GroupSize { get; set; }
 
-        [ImportCSVColumn(ColumnNumber = 26)]
+        [ImportCSVColumn(ColumnNumber = 30)]
         [Display(Name = "Traded unit format")]
         public string TradedUnitFormat { get; set; }
 
-        [ImportCSVColumn(ColumnNumber = 27)]
+        [ImportCSVColumn(ColumnNumber = 31)]
         [Display(Name = "Consumer pack format")]
         public string ConsumerPackFormat { get; set; }
 
-        [ImportCSVColumn(ColumnNumber = 28)]
+        [ImportCSVColumn(ColumnNumber = 32)]
         [Display(Name = "UOM_PC2Case")]
         public int? UOM_PC2Case { get; set; }
 
-		[ImportCSVColumn(ColumnNumber = 29)]
+		[ImportCSVColumn(ColumnNumber = 33)]
 		[Display(Name = "Division")]
 		public int? Division { get; set; }
 	}

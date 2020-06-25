@@ -37,7 +37,7 @@ namespace Module.Host.TPM.Actions
             {
                 using (DatabaseContext context = new DatabaseContext())
                 {
-                    var ZREPs = context.Set<Product>().Where(x => x.BrandsegTech_code == BrandTechCode && !x.Disabled).Select(x => x.ZREP).ToList();
+                    var ZREPs = context.Set<Product>().Where(x => x.BrandsegTechsub_code == BrandTechCode && !x.Disabled).Select(x => x.ZREP).ToList();
                     var baseLines = context.Set<BaseLine>().Where(x => x.DemandCode == DemandCode && ZREPs.Contains(x.Product.ZREP) && !x.Disabled).ToList();
                     
                     foreach (IEnumerable<BaseLine> items in baseLines.Partition(10000))
@@ -48,7 +48,7 @@ namespace Module.Host.TPM.Actions
 
                     if (OldBrandTechCode != null && OldDemandCode != null)
                     {
-                        ZREPs = context.Set<Product>().Where(x => x.BrandsegTech_code == OldBrandTechCode && !x.Disabled).Select(x => x.ZREP).ToList();
+                        ZREPs = context.Set<Product>().Where(x => x.BrandsegTechsub_code == OldBrandTechCode && !x.Disabled).Select(x => x.ZREP).ToList();
                         baseLines = context.Set<BaseLine>().Where(x => x.DemandCode == OldDemandCode && ZREPs.Contains(x.Product.ZREP) && !x.Disabled).ToList();
 
                         foreach (IEnumerable<BaseLine> items in baseLines.Partition(10000))

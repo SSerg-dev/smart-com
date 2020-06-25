@@ -134,7 +134,7 @@ namespace Module.Frontend.TPM.Util
 
             var onApporval = promo.Where(p => (p.PromoStatusName.Equals("On Approval") && p.IsCMManagerApproved == true && (p.IsDemandPlanningApproved == false || p.IsDemandPlanningApproved == null) && p.DispatchesStart < calculateDate)).Count();
             //AdjustData
-            var adjustData = promo.Where(p => (p.PromoStatusName.Equals("On Approval") && (((p.InOut == false)&& (p.PlanPromoLSV == 0 || p.PlanPromoLSV == null ||
+            var adjustData = promo.Where(p => (p.PromoStatusName.Equals("On Approval") && p.IsCMManagerApproved == true && (p.IsDemandPlanningApproved == false || p.IsDemandPlanningApproved == null) && (((p.InOut == false)&& (p.PlanPromoLSV == 0 || p.PlanPromoLSV == null ||
                             p.PlanPromoBaselineLSV == 0 || p.PlanPromoBaselineLSV == null ||
                             p.PlanPromoUpliftPercent == 0 || p.PlanPromoUpliftPercent == null)) ||((p.InOut == true) &&((p.PlanPromoLSV == 0 || p.PlanPromoLSV == null)))))).Count();
             //UploadActuals

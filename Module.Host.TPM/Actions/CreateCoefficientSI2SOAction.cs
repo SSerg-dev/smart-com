@@ -43,7 +43,7 @@ namespace Module.Host.TPM.Actions
 
                         foreach (string bTCode in BrandTechCode)
                         {
-                            brandTechIds.Add(context.Set<BrandTech>().Where(b => b.BrandTech_code == bTCode && !b.Disabled).Select(b => b.Id).FirstOrDefault());
+                            brandTechIds.Add(context.Set<BrandTech>().Where(b => b.BrandsegTechsub_code == bTCode && !b.Disabled).Select(b => b.Id).FirstOrDefault());
                         }
 
                         var demandCodes = context.Set<ClientTree>().Where(d => !d.EndDate.HasValue).Select(d => d.DemandCode).Distinct().ToList();

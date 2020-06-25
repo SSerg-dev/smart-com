@@ -125,7 +125,7 @@
                         },
                         success: function (jsondata) {
                             if (jsondata.value.length == 2
-                            || (destinationNodeType == 'root' && jsondata.value.length == 1)) {
+                                || (destinationNodeType == 'root' && jsondata.value.length == 1)) {
                                 var nodePriority = jsondata.value.find(function (el) {
                                     return el["Name"] == nodeType;
                                 })["Priority"];
@@ -225,8 +225,8 @@
         if (form) {
             this.updateTreeDetail(form, record);
             var filter = this.getJsonFilter(record.get('Filter')),
-                        filterConstructor = Ext.create('App.view.tpm.filter.FilterConstructior'),
-                        filterProductContainer = form.down('container[name=filterProductContainer]');
+                filterConstructor = Ext.create('App.view.tpm.filter.FilterConstructior'),
+                filterProductContainer = form.down('container[name=filterProductContainer]');
             if (filter) {
                 this.nodeCount = 0;
                 var filterContent = this.parseJsonFilter(filter, true, filterConstructor);
@@ -308,33 +308,33 @@
     },
 
     setCheckTree: function (nodes, checked, targetNodes, checkedArray, treegrid) {
-		var me = this;
-		var promoeditorcustom = Ext.ComponentQuery.query('promoeditorcustom')[0];
-		if (nodes && nodes.length > 0) {
-			nodes.forEach(function (node, index, array) {
-				if (checkedArray) {
-					// для расширенного фильтра при выборе операции Список
-					var c = false;
-					Ext.Array.each(checkedArray.values, function (item, index, array) {
-						if (item.value === node.get('FullPathName')) {
-							c = true;
-						}
-					});
-					if (promoeditorcustom) {
-						if (node.get('Type').indexOf('Brand') < 0 && node.get('EndDate') == null) {
-							node.set('checked', c);
-						}
-					} else {
-						node.set('checked', c);
-					}
-				} else {
-					if (promoeditorcustom) {
-						if (node.get('Type').indexOf('Brand') < 0 && node.get('EndDate') == null) {
-							node.set('checked', checked);
-						}
-					} else {
-						node.set('checked', checked);
-					}
+        var me = this;
+        var promoeditorcustom = Ext.ComponentQuery.query('promoeditorcustom')[0];
+        if (nodes && nodes.length > 0) {
+            nodes.forEach(function (node, index, array) {
+                if (checkedArray) {
+                    // для расширенного фильтра при выборе операции Список
+                    var c = false;
+                    Ext.Array.each(checkedArray.values, function (item, index, array) {
+                        if (item.value === node.get('FullPathName')) {
+                            c = true;
+                        }
+                    });
+                    if (promoeditorcustom) {
+                        if (node.get('Type').indexOf('Brand') < 0 && node.get('EndDate') == null) {
+                            node.set('checked', c);
+                        }
+                    } else {
+                        node.set('checked', c);
+                    }
+                } else {
+                    if (promoeditorcustom) {
+                        if (node.get('Type').indexOf('Brand') < 0 && node.get('EndDate') == null) {
+                            node.set('checked', checked);
+                        }
+                    } else {
+                        node.set('checked', checked);
+                    }
                 }
 
                 if (targetNodes && node.data.Target)
@@ -364,11 +364,11 @@
     onDeleteNodeButtonClick: function (button) {
         var treegrid = button.up('combineddirectorytreepanel').down('basetreegrid'),
             record = treegrid.getSelectionModel().getSelection()[0],
-			msg = l10n.ns('tpm', 'DeleteText').value('deleteNodeWarning'),
-			me = this;
+            msg = l10n.ns('tpm', 'DeleteText').value('deleteNodeWarning'),
+            me = this;
 
         Ext.Msg.show({
-			title: l10n.ns('tpm', 'DeleteText').value('deleteWindowTitle'),
+            title: l10n.ns('tpm', 'DeleteText').value('deleteWindowTitle'),
             msg: msg,
             fn: function (buttonId) {
                 if (buttonId === 'yes') {
@@ -394,22 +394,22 @@
                                 targetId = record.get('parentId');
                             }
 
-							treegrid.store.getProxy().extraParams.productTreeObjectIds = targetId;
-							treegrid.store.getProxy().extraParams.dateFilter = null;
+                            treegrid.store.getProxy().extraParams.productTreeObjectIds = targetId;
+                            treegrid.store.getProxy().extraParams.dateFilter = null;
                             treegrid.store.getRootNode().removeAll();
-							treegrid.store.getRootNode().setId('root');
+                            treegrid.store.getRootNode().setId('root');
 
-							var dateFilter = button.up('combineddirectorytreepanel').down('#dateFilter');
-							var currentDate = new Date();
-							var days = currentDate.getDate().toString().length === 1 ? '0' + currentDate.getDate() : currentDate.getDate();
-							var month = (currentDate.getMonth() + 1).toString().length === 1 ? '0' + (currentDate.getMonth() + 1) : currentDate.getMonth() + 1;
-							var year = currentDate.getFullYear();
+                            var dateFilter = button.up('combineddirectorytreepanel').down('#dateFilter');
+                            var currentDate = new Date();
+                            var days = currentDate.getDate().toString().length === 1 ? '0' + currentDate.getDate() : currentDate.getDate();
+                            var month = (currentDate.getMonth() + 1).toString().length === 1 ? '0' + (currentDate.getMonth() + 1) : currentDate.getMonth() + 1;
+                            var year = currentDate.getFullYear();
 
-							if (dateFilter) {
-								dateFilter.setText(days + '.' + month + '.' + year);
-								dateFilter.dateValue = currentDate;
-							}
-							
+                            if (dateFilter) {
+                                dateFilter.setText(days + '.' + month + '.' + year);
+                                dateFilter.dateValue = currentDate;
+                            }
+
                             treegrid.store.load({
                                 scope: this,
                                 callback: function (records, operation, success) {
@@ -426,7 +426,7 @@
                                 }
                             });
 
-                            treegrid.setLoading(false);                            
+                            treegrid.setLoading(false);
                         } else {
                             treegrid.setLoading(false);
                         }
@@ -490,8 +490,8 @@
             var record = selModel.getSelection()[0];
             // заполняем модель 
             model.set('parentId', record.get('ObjectId')); // id родительского элемента
-			model.set('StartDate', new Date()); // дата, перепишется на сервер, но нужна т.к. иначе модель будет невалидна
-			model.set('EndDate', null); // дата нужна, иначе модель будет невалидна !!!
+            model.set('StartDate', new Date()); // дата, перепишется на сервер, но нужна т.к. иначе модель будет невалидна
+            model.set('EndDate', null); // дата нужна, иначе модель будет невалидна !!!
             model.set('depth', record.get('depth') + 1); // глубина вложенности 
             //tree.editorModel.startCreateRecord(model);
             this.createNode(tree, model);
@@ -608,21 +608,21 @@
                     treegrid.mask();
                     $('#' + treegrid.id + ' .x-mask').css('opacity', '0.1');
                 }
-                
+
                 if (productTree.chooseMode) {
                     var nodes = node.childNodes.length !== 0 ? node.childNodes : records[0].childNodes.length !== 0 ? records[0].childNodes : null;
                     var targetNodes = [];
 
-					this.setCheckTree(nodes, false, targetNodes);
+                    this.setCheckTree(nodes, false, targetNodes);
                     this.controllCheckProduct(productTree, targetNodes);
                 } else if (treegrid.checkedNodes) {
                     // для расширенного фильтра при выборе операции Список
                     var nodes = node.childNodes.length !== 0 ? node.childNodes : records[0].childNodes.length !== 0 ? records[0].childNodes : null;
-					this.setCheckTree(nodes, false, null, treegrid.checkedArray);
+                    this.setCheckTree(nodes, false, null, treegrid.checkedArray);
                 }
 
                 store.getProxy().extraParams.promoId = null;
-				store.getProxy().extraParams.productTreeObjectIds = null;
+                store.getProxy().extraParams.productTreeObjectIds = null;
             }
         } else {
             App.Notify.pushError('Node is not found');
@@ -665,7 +665,7 @@
 
     createNode: function (tree, model) {
         this.tree = tree;
-		var editorModel = tree.editorModel;
+        var editorModel = tree.editorModel;
 
         editorModel.editor = editorModel.createEditor({
             title: l10n.ns('core').value('createWindowTitle'),
@@ -865,12 +865,20 @@
 
                 if (record && record.data) {
                     var technologyName = record.data.TechnologyName;
+                    var subName = record.data.SubBrandName;
 
                     if (parent.data.Type === 'Brand') {
-                        return '{"and": [{"BrandFlag": {"eq": "' + parent.data.Name + '" }},' +
-                            '{ "SupplySegment": { "eq": "' + technologyName + '" }}]}';
+                        return subName != "" ? '{"and": [{"Brand": {"eq": "' + parent.data.Name + '" }},' +
+                            '{ "Technology": { "eq": "' + technologyName + '" }},' +
+                            '{ "SubBrand": { "eq": "' + subName + '" }}]}' :
+
+                            '{"and": [{"Brand": {"eq": "' + parent.data.Name + '" }},' +
+                            '{ "Technology": { "eq": "' + technologyName + '" }}]}';
                     } else {
-                        return '{"and": [{ "SupplySegment": { "eq": "' + technologyName + '" }}]}';
+                        return subName != "" ? '{"and": [{ "Technology": { "eq": "' + technologyName + '" }},' +
+                            '{ "SubBrand": { "eq": "' + subName + '" }}]}' : 
+
+                            '{"and": [{ "Technology": { "eq": "' + technologyName + '" }}]}';
                     }
                 }
             } else if (parent.data.Type === 'Brand') {
@@ -886,7 +894,7 @@
         var store = productTreeGrid.getStore();
         var selModel = productTreeGrid.getSelectionModel();
         var sels = selModel.getSelection();
-		var editorForm = productTree.down('editorform');
+        var editorForm = productTree.down('editorform');
 
         var window = button.up('window'),
             stringFilter = window.stringFilter;
@@ -894,7 +902,7 @@
 
         //if (stringFilter) {
         var form = this.editorModel.getForm().getForm(),
-        record = form.getRecord();
+            record = form.getRecord();
 
         if (!form.isValid()) {
             return;
@@ -929,26 +937,26 @@
                 }
                 if (store.storedLoadFunction) {
                     store.removeListener('load', store.storedLoadFunction);
-				}
+                }
             };
             store.storedLoadFunction = storedLoadFunction;
-			store.on('load', storedLoadFunction);
+            store.on('load', storedLoadFunction);
 
-			// Обновление даты
-			var dateFilter = productTree.down('#dateFilter');
-			var currentDate = new Date();
+            // Обновление даты
+            var dateFilter = productTree.down('#dateFilter');
+            var currentDate = new Date();
 
-			var days = currentDate.getDate().toString().length === 1 ? '0' + currentDate.getDate() : currentDate.getDate();
-			var month = (currentDate.getMonth() + 1).toString().length === 1 ? '0' + (currentDate.getMonth() + 1) : currentDate.getMonth() + 1;
-			var year = currentDate.getFullYear();
+            var days = currentDate.getDate().toString().length === 1 ? '0' + currentDate.getDate() : currentDate.getDate();
+            var month = (currentDate.getMonth() + 1).toString().length === 1 ? '0' + (currentDate.getMonth() + 1) : currentDate.getMonth() + 1;
+            var year = currentDate.getFullYear();
 
-			if (dateFilter) {
-				dateFilter.setText(days + '.' + month + '.' + year);
-				dateFilter.dateValue = currentDate;
-			}
+            if (dateFilter) {
+                dateFilter.setText(days + '.' + month + '.' + year);
+                dateFilter.dateValue = currentDate;
+            }
 
-			store.getProxy().extraParams.dateFilter = null;
-		}
+            store.getProxy().extraParams.dateFilter = null;
+        }
 
     },
 
@@ -1163,8 +1171,8 @@
             $('#vScrollProductTree' + tree.id).data('jsp').scrollToY(treeViewHtml.scrollTop());
         } else {
             treeViewHtml.css('overflow', 'hidden');
-            treeHtml.append('<div id="vScrollProductTree'+ tree.id +'" class="vScrollTree scrollpanel" style="height: ' + treeViewHtml.height() + 'px;">'
-                + '<div id="vScrollProductTreeDiv' + tree.id +'" style="height: ' + heightScroll + 'px;"></div></div>');
+            treeHtml.append('<div id="vScrollProductTree' + tree.id + '" class="vScrollTree scrollpanel" style="height: ' + treeViewHtml.height() + 'px;">'
+                + '<div id="vScrollProductTreeDiv' + tree.id + '" style="height: ' + heightScroll + 'px;"></div></div>');
 
             $('#vScrollProductTree' + tree.id).jScrollPane();
             $('#vScrollProductTree' + tree.id).data('jsp').scrollToY(treeViewHtml.scrollTop());
@@ -1180,8 +1188,8 @@
             jspH.data('jsp').reinitialise();
             $('#hScrollProductTree' + tree.id).data('jsp').scrollToX(treeViewHtml.scrollLeft());
         } else {
-            treeHtml.append('<div id="hScrollProductTree' + tree.id +'" class="hScrollTree scrollpanel">'
-                + '<div id="hScrollProductTreeDiv' + tree.id +'" style="width: ' + widthScroll + 'px;"></div></div>');
+            treeHtml.append('<div id="hScrollProductTree' + tree.id + '" class="hScrollTree scrollpanel">'
+                + '<div id="hScrollProductTreeDiv' + tree.id + '" style="width: ' + widthScroll + 'px;"></div></div>');
 
             $('#hScrollProductTree' + tree.id).jScrollPane();
             $('#hScrollProductTree' + tree.id).data('jsp').scrollToX(treeViewHtml.scrollLeft());
@@ -1292,7 +1300,7 @@
             var pointsAccess = App.UserInfo.getCurrentRole().AccessPoints;
 
             // кнопки которые проверяем на доступ
-            var btns = ['#addNode', '#deleteNode', '#updateNode', '#editFilter', '#attachFileName' , '#attachFile' , '#deleteAttachFile'];
+            var btns = ['#addNode', '#deleteNode', '#updateNode', '#editFilter', '#attachFileName', '#attachFile', '#deleteAttachFile'];
 
             Ext.each(btns, function (btnName) {
                 var btn = productTree.down(btnName);
@@ -1322,11 +1330,11 @@
         if (textSearch && textSearch.length > 0 && textSearch.indexOf('Product search') == -1)
             proxy.extraParams.filterParameter = textSearch;
 
-		if (productTree.choosenClientObjectId.length > 0) {
-			productTree.choosenClientObjectId.forEach(function (objectId, index) {
+        if (productTree.choosenClientObjectId.length > 0) {
+            productTree.choosenClientObjectId.forEach(function (objectId, index) {
                 proxy.extraParams.productTreeObjectIds += objectId;
 
-				if (index != productTree.choosenClientObjectId.length - 1)
+                if (index != productTree.choosenClientObjectId.length - 1)
                     proxy.extraParams.productTreeObjectIds += ';';
             });
         }
@@ -1341,7 +1349,7 @@
     },
 
     // следит за галочками
-    controllCheckProduct: function (productTree, targetNodes) {        
+    controllCheckProduct: function (productTree, targetNodes) {
         var productTreeGrid = productTree.down('basetreegrid');
 
         if (targetNodes && targetNodes.length > 0) {
@@ -1407,8 +1415,8 @@
         });
 
         uploadFileWindow.down('filefield').regex = /^.*\.(png|jpg)$/,
-        uploadFileWindow.down('filefield').regexText = 'Only .png or .jpg file supported',
-        uploadFileWindow.show();
+            uploadFileWindow.down('filefield').regexText = 'Only .png or .jpg file supported',
+            uploadFileWindow.show();
     },
 
     onDeleteAttachFileButtonClick: function (button) {
@@ -1504,11 +1512,11 @@
             var downloadFileUrl = document.location.href + Ext.String.format(pattern, logoFileName);
 
             attachFileName.setValue('<a href=' + downloadFileUrl + '>' + logoFileName + '</a>');
-            attachFileName.attachFileName = logoFileName;            
+            attachFileName.attachFileName = logoFileName;
             logoImage.setSrc(downloadFileUrl);
             deleteAtachFile.setDisabled(false);
         } else {
-            logoImage.setSrc('/bundles/style/images/swith-glyph-gray.png');            
+            logoImage.setSrc('/bundles/style/images/swith-glyph-gray.png');
             attachFileName.setValue(null);
             deleteAtachFile.setDisabled(true);
         }

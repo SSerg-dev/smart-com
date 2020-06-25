@@ -134,8 +134,8 @@
                     xtype: 'fsearchfield',
                     trigger2Cls: '',
                     selectorWidget: 'brandtech',
-                    valueField: 'Name',
-                    displayField: 'Name',
+                    valueField: 'BrandsegTechsub',
+                    displayField: 'BrandsegTechsub',
                     multiSelect: true,
                     operator: 'conts',
                     store: {

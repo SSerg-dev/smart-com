@@ -216,6 +216,7 @@ namespace Module.Persist.TPM.Model.History {
         public int? Priority { get; set; }
         public string ColorDisplayName { get; set; }
         public string ColorSystemName { get; set; }
+        public double DeviationCoefficient { get; set; }
 
         public bool? IsAutomaticallyApproved { get; set; }
         public bool? IsCMManagerApproved { get; set; }

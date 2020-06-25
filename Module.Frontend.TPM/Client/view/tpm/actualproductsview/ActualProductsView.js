@@ -46,16 +46,28 @@
             }, {
                 text: l10n.ns('tpm', 'ActualProductsView').value('EAN_PC'),
                 dataIndex: 'EAN_PC'
-            },{
+            }, {
                 text: l10n.ns('tpm', 'ActualProductsView').value('ProductEN'),
                 dataIndex: 'ProductEN'
-                }, {
-                    text: l10n.ns('tpm', 'ActualProductsView').value('BrandsegTech_code'),
-                    dataIndex: 'BrandsegTech_code'
-                }, {
-                    text: l10n.ns('tpm', 'ActualProductsView').value('Brandsegtech'),
-                    dataIndex: 'Brandsegtech'
-                },{
+            }, {
+                text: l10n.ns('tpm', 'ActualProductsView').value('BrandsegTech_code'),
+                dataIndex: 'BrandsegTech_code'
+            }, {
+                text: l10n.ns('tpm', 'ActualProductsView').value('Brandsegtech'),
+                dataIndex: 'Brandsegtech'
+            }, {
+                text: l10n.ns('tpm', 'ActualProductsView').value('BrandsegTechsub_code'),
+                dataIndex: 'BrandsegTechsub_code'
+            }, {
+                text: l10n.ns('tpm', 'ActualProductsView').value('BrandsegTechsub'),
+                dataIndex: 'BrandsegTechsub'
+            }, {
+                text: l10n.ns('tpm', 'ActualProductsView').value('SubBrand_code'),
+                dataIndex: 'SubBrand_code'
+            }, {
+                text: l10n.ns('tpm', 'ActualProductsView').value('SubBrand'),
+                dataIndex: 'SubBrand'
+            }, {
                 text: l10n.ns('tpm', 'ActualProductsView').value('BrandFlagAbbr'),
                 dataIndex: 'BrandFlagAbbr'
             }, {
@@ -121,19 +133,35 @@
             xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
             name: 'EAN_PC',
             fieldLabel: l10n.ns('tpm', 'ActualProductsView').value('EAN_PC'),
-            }, {
-                xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
-                name: 'ProductEN',
-                fieldLabel: l10n.ns('tpm', 'ActualProductsView').value('ProductEN'),
-            }, {
-                xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
-                name: 'BrandsegTech_code',
-                fieldLabel: l10n.ns('tpm', 'ActualProductsView').value('BrandsegTech_code'),
-            }, {
-                xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
-                name: 'Brandsegtech',
-                fieldLabel: l10n.ns('tpm', 'ActualProductsView').value('Brandsegtech'),
-            }, {
+        }, {
+            xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
+            name: 'ProductEN',
+            fieldLabel: l10n.ns('tpm', 'ActualProductsView').value('ProductEN'),
+        }, {
+            xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
+            name: 'BrandsegTech_code',
+            fieldLabel: l10n.ns('tpm', 'ActualProductsView').value('BrandsegTech_code'),
+        }, {
+            xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
+            name: 'Brandsegtech',
+            fieldLabel: l10n.ns('tpm', 'ActualProductsView').value('Brandsegtech'),
+        }, {
+            xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
+            name: 'BrandsegTechsub_code',
+            fieldLabel: l10n.ns('tpm', 'ActualProductsView').value('BrandsegTechsub_code'),
+        }, {
+            xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
+            name: 'BrandsegTechsub',
+            fieldLabel: l10n.ns('tpm', 'ActualProductsView').value('BrandsegTechsub'),
+        }, {
+            xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
+            name: 'SubBrand_code',
+            fieldLabel: l10n.ns('tpm', 'ActualProductsView').value('SubBrand_code'),
+        }, {
+            xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
+            name: 'SubBrand',
+            fieldLabel: l10n.ns('tpm', 'ActualProductsView').value('SubBrand'),
+        }, {
             xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
             name: 'BrandFlagAbbr',
             fieldLabel: l10n.ns('tpm', 'ActualProductsView').value('BrandFlagAbbr'),

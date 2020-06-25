@@ -1,9 +1,7 @@
 ﻿Ext.define('App.view.tpm.promo.PromoSettings', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.promosettings',
-
-    needToSetHeight: true,
-
+    
     bodyStyle: { "background-color": "#99A9B1" },
 
     items: [{

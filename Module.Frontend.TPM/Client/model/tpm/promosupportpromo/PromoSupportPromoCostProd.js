@@ -9,7 +9,7 @@
 
         { name: 'Number', type: 'int', hidden: false, isDefault: true, mapping: 'Promo.Number', isKey: true },
         { name: 'Name', type: 'string', hidden: false, isDefault: true, mapping: 'Promo.Name' },
-        { name: 'BrandTechName', type: 'string', mapping: 'Promo.BrandTech.Name', defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'BrandTech', hidden: false, isDefault: true },
+        { name: 'BrandTechName', type: 'string', mapping: 'Promo.BrandTech.BrandsegTechsub', defaultFilterConfig: { valueField: 'BrandsegTechsub' }, breezeEntityType: 'BrandTech', hidden: false, isDefault: true },
         { name: 'PlanCostProd', type: 'float', isDefault: true },
         { name: 'FactCostProd', type: 'float', isDefault: true },
         { name: 'EventName', type: 'string', hidden: false, isDefault: true, mapping: 'Promo.EventName' },

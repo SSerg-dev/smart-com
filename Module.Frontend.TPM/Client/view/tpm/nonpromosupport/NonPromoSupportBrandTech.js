@@ -90,8 +90,14 @@
                 text: l10n.ns('tpm', 'NonPromoSupportBrandTech').value('BrandTechTechnologyName'),
                 dataIndex: 'BrandTechTechnologyName'
             }, {
+                text: l10n.ns('tpm', 'NonPromoSupportBrandTech').value('BrandTechSubName'),
+                dataIndex: 'BrandTechSubName'
+            }, {
                 text: l10n.ns('tpm', 'NonPromoSupportBrandTech').value('BrandTechBrandTech_code'),
                 dataIndex: 'BrandTechBrandTech_code'
+            }, {
+                text: l10n.ns('tpm', 'NonPromoSupportBrandTech').value('BrandTechBrandsegTechsub_code'),
+                dataIndex: 'BrandTechBrandsegTechsub_code'
             }]
         }
     }, {

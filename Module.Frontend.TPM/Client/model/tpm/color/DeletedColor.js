@@ -15,6 +15,10 @@
         {
             name: 'TechnologyName', type: 'string', mapping: 'BrandTech.Technology.Name', defaultFilterConfig: { valueField: 'Name' },
             breezeEntityType: 'Technology', hidden: false, isDefault: true
+        },
+        {
+            name: 'SubBrandName', type: 'string', mapping: 'BrandTech.Technology.SubBrand', defaultFilterConfig: { valueField: 'SubBrand' },
+            breezeEntityType: 'Technology', hidden: false, isDefault: true
         }
     ],
     proxy: {

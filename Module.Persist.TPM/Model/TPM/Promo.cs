@@ -83,6 +83,7 @@ namespace Module.Persist.TPM.Model.TPM
         public string Mechanic { get; set; }
         [StringLength(255)]
         public string MechanicIA { get; set; }
+        public double DeviationCoefficient { get; set; }
 
         //MarsDates
         [StringLength(15)]

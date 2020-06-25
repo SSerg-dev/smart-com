@@ -122,6 +122,20 @@ namespace Module.Host.TPM.Handlers
         }
     }
 
+    class FullXLSXUpdateTechnologyHandler : FullXLSXImportHandler 
+    {
+        private Guid handlerId;
+
+        public override void Action(HandlerInfo info, ExecuteData data)
+        {
+            handlerId = info.HandlerId;
+            base.Action(info, data);
+        }
+        protected override IAction GetAction(FullImportSettings settings, ExecuteData data) {
+            return new FullXLSXUpdateImportTechnologyAction(settings, handlerId);
+        }
+    }
+
     class FullXLSXUpdateProductHandler : FullXLSXImportHandler {
         protected override IAction GetAction(FullImportSettings settings, ExecuteData data) {
             return new FullXLSXUpdateImportProductAction(settings);
@@ -254,6 +268,13 @@ namespace Module.Host.TPM.Handlers
         protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
         {
             return new FullXLSXUpdateImportClientDashboardAction(settings);
+        }
+    }
+    public class FullXLSXUpdateImportRollingVolumesHandler : FullXLSXImportHandler
+    {
+        protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
+        {
+            return new FullXLSXUpdateImportRollingVolumesAction(settings);
         }
     }
 }

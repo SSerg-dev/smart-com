@@ -193,7 +193,7 @@
             var parameters = {
                 ObjectId: record.data.ObjectId,
                 ClientHierarchy: record.data.ClientHierarchy,
-                BrandTechName: record.data.BrandTechName,
+                BrandsegTechsubName: record.data.BrandsegTechsubName,
                 BrandTechId: record.data.BrandTechId,
                 Year: record.data.Year,
                 ShopperTiPlanPercent: record.data.ShopperTiPlanPercent,

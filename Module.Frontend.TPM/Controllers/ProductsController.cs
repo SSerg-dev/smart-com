@@ -141,7 +141,7 @@ namespace Module.Frontend.TPM.Controllers
             }
         }
 
-		[ClaimsAuthorize]
+        [ClaimsAuthorize]
         public IHttpActionResult Put([FromODataUri] System.Guid key, Delta<Product> patch)
         {
             var model = Context.Set<Product>().Find(key);
@@ -180,7 +180,7 @@ namespace Module.Frontend.TPM.Controllers
 
             try
             {
-                CheckNewBrandTech(result.BrandFlag, result.SupplySegment);
+                CheckNewBrandTech(result.BrandFlag, result.SupplySegment, model.SubBrand_code);
                 Context.Set<Product>().Add(result);
                 // добавлен триггер на INSERT для импорта, поэтому создавать инцидент еще раз тут не надо
                 //Context.Set<ProductChangeIncident>().Add(CreateIncident(result, true, false));
@@ -198,7 +198,7 @@ namespace Module.Frontend.TPM.Controllers
         [AcceptVerbs("PATCH", "MERGE")]
         public IHttpActionResult Patch([FromODataUri] System.Guid key, Delta<Product> patch)
         {
-            
+
             try
             {
                 var model = Context.Set<Product>().Find(key);
@@ -208,7 +208,7 @@ namespace Module.Frontend.TPM.Controllers
                 }
 
                 patch.Patch(model);
-                CheckNewBrandTech(model.BrandFlag, model.SupplySegment);
+                CheckNewBrandTech(model.BrandFlag, model.SupplySegment, model.SubBrand_code);
                 Context.Set<ProductChangeIncident>().Add(CreateIncident(model, false, false));
                 Context.SaveChanges();
 
@@ -228,7 +228,7 @@ namespace Module.Frontend.TPM.Controllers
             catch (Exception e)
             {
                 return GetErorrRequest(e);
-            }           
+            }
         }
 
         [ClaimsAuthorize]
@@ -245,12 +245,12 @@ namespace Module.Frontend.TPM.Controllers
                 model.DeletedDate = System.DateTime.Now;
                 model.Disabled = true;
                 Context.Set<ProductChangeIncident>().Add(CreateIncident(model, false, true));
-                
+
                 // удаляем продукты и incremental у промо в статусе Draft (пока иерархия не зафиксирована)
                 var productsInDraftPromoes = Context.Set<PromoProduct>().Where(n => n.ProductId == key && n.Promo.PromoStatus != null && n.Promo.PromoStatus.SystemName.ToLower() == "draft");
                 var incrementalInDraftPromoes = Context.Set<IncrementalPromo>().Where(n => n.ProductId == key && n.Promo.PromoStatus != null && n.Promo.PromoStatus.SystemName.ToLower() == "draft");
 
-                foreach(PromoProduct pp in productsInDraftPromoes)
+                foreach (PromoProduct pp in productsInDraftPromoes)
                 {
                     pp.Disabled = true;
                     pp.DeletedDate = DateTimeOffset.Now;
@@ -349,15 +349,19 @@ namespace Module.Frontend.TPM.Controllers
                 new Column() { Order = orderNum++, Field = "ProductEN", Header = "Product EN", Quoting = false },
 				//--
 				new Column() { Order = orderNum++, Field = "Brand", Header = "Brand", Quoting = false },
-				new Column() { Order = orderNum++, Field = "Brand_code", Header = "Brand code", Quoting = false },
-				new Column() { Order = orderNum++, Field = "Technology", Header = "Technology", Quoting = false },
-				new Column() { Order = orderNum++, Field = "Tech_code", Header = "Technology code", Quoting = false },
-				new Column() { Order = orderNum++, Field = "BrandTech", Header = "Brand Tech", Quoting = false },
-				new Column() { Order = orderNum++, Field = "BrandTech_code", Header = "Brand Tech code", Quoting = false },
-				new Column() { Order = orderNum++, Field = "Segmen_code", Header = "Segmen code", Quoting = false },
+                new Column() { Order = orderNum++, Field = "Brand_code", Header = "Brand code", Quoting = false },
+                new Column() { Order = orderNum++, Field = "Technology", Header = "Technology", Quoting = false },
+                new Column() { Order = orderNum++, Field = "Tech_code", Header = "Technology code", Quoting = false },
+                new Column() { Order = orderNum++, Field = "BrandTech", Header = "Brand Tech", Quoting = false },
+                new Column() { Order = orderNum++, Field = "BrandTech_code", Header = "Brand Tech code", Quoting = false },
+                new Column() { Order = orderNum++, Field = "Segmen_code", Header = "Segmen code", Quoting = false },
 				//--
                 new Column() { Order = orderNum++, Field = "BrandsegTech_code", Header = "Brand Seg Tech Code", Quoting = false },
                 new Column() { Order = orderNum++, Field = "Brandsegtech", Header = "Brand Seg Tech", Quoting = false },
+                new Column() { Order = orderNum++, Field = "BrandsegTechsub_code", Header = "Brand Seg Tech Sub Code", Quoting = false },
+                new Column() { Order = orderNum++, Field = "BrandsegTechsub", Header = "Brand Seg Tech Sub", Quoting = false },
+                new Column() { Order = orderNum++, Field = "SubBrand_code", Header = "Sub Code", Quoting = false },
+                new Column() { Order = orderNum++, Field = "SubBrand", Header = "Sub", Quoting = false },
                 new Column() { Order = orderNum++, Field = "BrandFlagAbbr", Header = "Brand flag abbr", Quoting = false },
                 new Column() { Order = orderNum++, Field = "BrandFlag", Header = "Brand flag", Quoting = false },
                 new Column() { Order = orderNum++, Field = "SubmarkFlag", Header = "Submark flag", Quoting = false },
@@ -374,8 +378,8 @@ namespace Module.Frontend.TPM.Controllers
                 new Column() { Order = orderNum++, Field = "TradedUnitFormat", Header = "Traded unit format", Quoting = false },
                 new Column() { Order = orderNum++, Field = "ConsumerPackFormat", Header = "Consumer pack format", Quoting = false },
                 new Column() { Order = orderNum++, Field = "UOM_PC2Case", Header = "UOM_PC2Case", Quoting = false },
-				new Column() { Order = orderNum++, Field = "Division", Header = "Division", Quoting = false }
-			};
+                new Column() { Order = orderNum++, Field = "Division", Header = "Division", Quoting = false }
+            };
             return columns;
         }
 
@@ -405,12 +409,14 @@ namespace Module.Frontend.TPM.Controllers
         /// </summary>
         /// <param name="brand">Наименование Бренда</param>
         /// <param name="tech">Наименование Технологии</param>
-        private void CheckNewBrandTech(string brand, string tech)
+        private void CheckNewBrandTech(string brand, string tech, string subCode)
         {
             if (brand.Length != 0 && tech.Length != 0)
             {
                 Brand checkBrand = Context.Set<Brand>().FirstOrDefault(n => n.Name.ToLower() == brand.ToLower() && !n.Disabled);
-                Technology checkTech = Context.Set<Technology>().FirstOrDefault(n => n.Name.ToLower() == tech.ToLower() && !n.Disabled);
+                Technology checkTech = Context.Set<Technology>().FirstOrDefault(n => n.Name.ToLower() == tech.ToLower() && 
+                                                                                    n.SubBrand_code.Equals(subCode) &&
+                                                                                    !n.Disabled);
 
                 if (checkBrand == null || checkTech == null)
                 {
@@ -422,7 +428,7 @@ namespace Module.Frontend.TPM.Controllers
 
                     if (checkTech == null)
                     {
-                        checkTech = new Technology { Disabled = false, Name = tech };
+                        checkTech = new Technology { Disabled = false, Name = tech, SubBrand_code = subCode };
                         Context.Set<Technology>().Add(checkTech);
                     }
 
@@ -442,22 +448,27 @@ namespace Module.Frontend.TPM.Controllers
         /// <param name="isCreate"></param>
         /// <param name="isDelete"></param>
         /// <returns></returns>
-        private ProductChangeIncident CreateIncident(Product product, bool isCreate, bool isDelete) {
-            return new ProductChangeIncident {
+        private ProductChangeIncident CreateIncident(Product product, bool isCreate, bool isDelete)
+        {
+            return new ProductChangeIncident
+            {
                 CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
                 ProductId = product.Id,
                 IsCreate = isCreate,
                 IsDelete = isDelete,
-				IsCreateInMatrix = false,
-				IsDeleteInMatrix = false,
-				IsChecked = false,
-			};
+                IsCreateInMatrix = false,
+                IsDeleteInMatrix = false,
+                IsChecked = false,
+            };
         }
 
         [ClaimsAuthorize]
-        public async Task<HttpResponseMessage> FullImportXLSX() {
-            try {
-                if (!Request.Content.IsMimeMultipartContent()) {
+        public async Task<HttpResponseMessage> FullImportXLSX()
+        {
+            try
+            {
+                if (!Request.Content.IsMimeMultipartContent())
+                {
                     throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
                 }
 
@@ -471,23 +482,28 @@ namespace Module.Frontend.TPM.Controllers
                 result.Content.Headers.ContentType = new MediaTypeHeaderValue("text/plain");
 
                 return result;
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e.Message);
             }
         }
 
-        private void CreateImportTask(string fileName, string importHandler) {
+        private void CreateImportTask(string fileName, string importHandler)
+        {
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
             RoleInfo role = authorizationManager.GetCurrentRole();
             Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
 
-            using (DatabaseContext context = new DatabaseContext()) {
+            using (DatabaseContext context = new DatabaseContext())
+            {
                 ImportResultFilesModel resiltfile = new ImportResultFilesModel();
                 ImportResultModel resultmodel = new ImportResultModel();
 
                 HandlerData data = new HandlerData();
-                FileModel file = new FileModel() {
+                FileModel file = new FileModel()
+                {
                     LogicType = "Import",
                     Name = System.IO.Path.GetFileName(fileName),
                     DisplayName = System.IO.Path.GetFileName(fileName)
@@ -501,7 +517,8 @@ namespace Module.Frontend.TPM.Controllers
                 HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(Product), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("UniqueFields", new List<String>() { "ZREP" }, data);
 
-                LoopHandler handler = new LoopHandler() {
+                LoopHandler handler = new LoopHandler()
+                {
                     Id = Guid.NewGuid(),
                     ConfigurationName = "PROCESSING",
                     Description = "Загрузка импорта из файла " + typeof(ImportProduct).Name,
@@ -521,20 +538,25 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult DownloadTemplateXLSX() {
-            try {
+        public IHttpActionResult DownloadTemplateXLSX()
+        {
+            try
+            {
                 IEnumerable<Column> columns = GetExportSettings();
                 XLSXExporter exporter = new XLSXExporter(columns);
                 string exportDir = AppSettingsManager.GetSetting("EXPORT_DIRECTORY", "~/ExportFiles");
                 string filename = string.Format("{0}Template.xlsx", "Product");
-                if (!Directory.Exists(exportDir)) {
+                if (!Directory.Exists(exportDir))
+                {
                     Directory.CreateDirectory(exportDir);
                 }
                 string filePath = Path.Combine(exportDir, filename);
                 exporter.Export(Enumerable.Empty<Product>(), filePath);
                 string file = Path.GetFileName(filePath);
                 return Content(HttpStatusCode.OK, file);
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 return Content(HttpStatusCode.InternalServerError, e.Message);
             }
 

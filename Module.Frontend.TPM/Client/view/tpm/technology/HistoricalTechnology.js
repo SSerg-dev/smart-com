@@ -11,7 +11,7 @@
     items: [{
         xtype: 'directorygrid',
         itemId: 'datatable',
-		editorModel: 'Core.form.EditorDetailWindowModel',
+        editorModel: 'Core.form.EditorDetailWindowModel',
         store: {
             type: 'directorystore',
             model: 'App.model.tpm.technology.HistoricalTechnology',
@@ -101,6 +101,14 @@
             xtype: 'singlelinedisplayfield',
             name: 'Tech_code',
             fieldLabel: l10n.ns('tpm', 'Technology').value('Tech_code'),
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'SubBrand',
+            fieldLabel: l10n.ns('tpm', 'Technology').value('SubBrand'),
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'SubBrand_code',
+            fieldLabel: l10n.ns('tpm', 'Technology').value('SubBrand_code'),
         }]
     }]
 });

@@ -102,12 +102,11 @@ namespace Module.Frontend.TPM.Controllers
                     GHierarchyCode = clientTree.GHierarchyCode;
                     clientTreeId = clientTree.parentId;
                 }
-            } while (GHierarchyCode == null && clientTreeId != null && clientTreeId != 5000000);
-
+            } while (String.IsNullOrWhiteSpace(GHierarchyCode) && clientTreeId != null && clientTreeId != 5000000);
 
             double YEE = 0;
             double YTD = 0;
-            if (GHierarchyCode != null && year != null && clientTreeKeyId!= null)
+            if (!String.IsNullOrWhiteSpace(GHierarchyCode) && year != null && clientTreeKeyId!= null)
             {
                 var shares = Context.Set<ClientTreeBrandTech>().Where(x => x.ClientTreeId == clientTreeKeyId && !x.Disabled);
                 var brandTechs = Context.Set<BrandTech>().Where(x => !x.Disabled);
@@ -121,7 +120,7 @@ namespace Module.Frontend.TPM.Controllers
 
                 foreach (var YEEF in YEEFlist)
                 {
-                    var brandTech = brandTechs.Where(y => y.BrandTech_code == YEEF.BRAND_SEG_TECH_CODE && !y.Disabled).Select(y => y.Id).FirstOrDefault();
+                    var brandTech = brandTechs.Where(y => y.BrandsegTechsub_code == YEEF.BRAND_SEG_TECH_CODE && !y.Disabled).Select(y => y.Id).FirstOrDefault();
                     share = shares.Where(x => brandTech == x.BrandTechId).FirstOrDefault();
                     if (share != null)
                     {
@@ -160,7 +159,7 @@ namespace Module.Frontend.TPM.Controllers
         [ClaimsAuthorize]
         [AcceptVerbs("POST")]
         public IHttpActionResult Update(
-            [FromODataUri] int ObjectId, string ClientHierarchy, string BrandTechName, Guid? BrandTechId, string Year,
+            [FromODataUri] int ObjectId, string ClientHierarchy, string BrandsegTechsubName, Guid? BrandTechId, string Year,
             double? ShopperTiPlanPercent, double? MarketingTiPlanPercent, double? ProductionPlan, double? BrandingPlan,
             double? BTLPlan, double? ROIPlanPercent, double? IncrementalNSVPlan, double? PromoNSVPlan, double? PlanLSV,
             double? PromoTiCostPlanPercent, double? NonPromoTiCostPlanPercent)
@@ -168,8 +167,8 @@ namespace Module.Frontend.TPM.Controllers
             try
             {
                 List<Tuple<IEntity<Guid>, IEntity<Guid>>> toHis = new List<Tuple<IEntity<Guid>, IEntity<Guid>>>();
-                var model = Context.Set<ClientDashboard>().Where(x => x.ClientTreeId == ObjectId && x.BrandTechName == BrandTechName && x.Year == Year).FirstOrDefault();
-                var oldHisModel = Context.Set<ClientDashboardView>().Where(x => x.ObjectId == ObjectId && x.BrandTechName == BrandTechName && x.Year.ToString() == Year).FirstOrDefault();
+                var model = Context.Set<ClientDashboard>().Where(x => x.ClientTreeId == ObjectId && x.BrandsegTechsubName == BrandsegTechsubName && x.Year == Year).FirstOrDefault();
+                var oldHisModel = Context.Set<ClientDashboardView>().Where(x => x.ObjectId == ObjectId && x.BrandsegTechsubName == BrandsegTechsubName && x.Year.ToString() == Year).FirstOrDefault();
                 OperationType operation;
                 ClientDashboardView hisModel = null;
                 if (oldHisModel != null)
@@ -181,7 +180,7 @@ namespace Module.Frontend.TPM.Controllers
                             Id = Guid.NewGuid(),
                             ClientTreeId = ObjectId,
                             ClientHierarchy = ClientHierarchy,
-                            BrandTechName = BrandTechName,
+                            BrandsegTechsubName = BrandsegTechsubName,
                             BrandTechId = BrandTechId,
                             Year = Year,
                             ShopperTiPlanPercent = ShopperTiPlanPercent,
@@ -201,13 +200,13 @@ namespace Module.Frontend.TPM.Controllers
                         toHis.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(null, model));
                         Context.HistoryWriter.Write(toHis, Context.AuthManager.GetCurrentUser(), Context.AuthManager.GetCurrentRole(), OperationType.Created);
                         string insertScript = String.Format("INSERT INTO ClientDashboard (ShopperTiPlanPercent, MarketingTiPlanPercent, ProductionPlan, BrandingPlan, BTLPlan, " +
-                            "ROIPlanPercent ,IncrementalNSVPlan, PromoNSVPlan, ClientTreeId, BrandTechName, Year, [Id], ClientHierarchy, BrandTechId, PlanLSV, PromoTiCostPlanPercent, NonPromoTiCostPlanPercent)" +
+                            "ROIPlanPercent ,IncrementalNSVPlan, PromoNSVPlan, ClientTreeId, BrandsegTechsubName, Year, [Id], ClientHierarchy, BrandTechId, PlanLSV, PromoTiCostPlanPercent, NonPromoTiCostPlanPercent)" +
                             " VALUES ({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, '{9}', '{10}', '{11}', '{12}', '{13}', {14}, {15}, {16});",
                             model.ShopperTiPlanPercent, model.MarketingTiPlanPercent, model.ProductionPlan, model.BrandingPlan, model.BTLPlan,
-                            model.ROIPlanPercent, model.IncrementalNSVPlan, model.PromoNSVPlan, model.ClientTreeId, model.BrandTechName,
+                            model.ROIPlanPercent, model.IncrementalNSVPlan, model.PromoNSVPlan, model.ClientTreeId, model.BrandsegTechsubName,
                             model.Year, model.Id, model.ClientHierarchy, model.BrandTechId, model.PlanLSV, model.PromoTiCostPlanPercent, model.NonPromoTiCostPlanPercent);
                         Context.Database.ExecuteSqlCommand(insertScript);
-                        hisModel = Context.Set<ClientDashboardView>().Where(x => x.ObjectId == ObjectId && x.BrandTechName == BrandTechName && x.Year.ToString() == Year).FirstOrDefault();
+                        hisModel = Context.Set<ClientDashboardView>().Where(x => x.ObjectId == ObjectId && x.BrandsegTechsubName == BrandsegTechsubName && x.Year.ToString() == Year).FirstOrDefault();
                         oldHisModel = null;
                     }
                     else
@@ -230,7 +229,7 @@ namespace Module.Frontend.TPM.Controllers
                             model.ShopperTiPlanPercent, model.MarketingTiPlanPercent, model.ProductionPlan, model.BrandingPlan, model.BTLPlan,
                             model.ROIPlanPercent, model.IncrementalNSVPlan, model.PromoNSVPlan, model.PlanLSV, model.PromoTiCostPlanPercent, model.NonPromoTiCostPlanPercent, model.Id);
                         Context.Database.ExecuteSqlCommand(updateScript);
-                        hisModel = Context.Set<ClientDashboardView>().Where(x => x.ObjectId == ObjectId && x.BrandTechName == BrandTechName && x.Year.ToString() == Year).FirstOrDefault();
+                        hisModel = Context.Set<ClientDashboardView>().Where(x => x.ObjectId == ObjectId && x.BrandsegTechsubName == BrandsegTechsubName && x.Year.ToString() == Year).FirstOrDefault();
                     }
                     hisModel.Id = model.Id;
                     if (oldHisModel != null) oldHisModel.Id = model.Id;
@@ -358,7 +357,7 @@ namespace Module.Frontend.TPM.Controllers
             {
                 new Column() { Order = order++, Field = nameof(ClientDashboardView.ObjectId), Header = "Client ID", Quoting = false },
                 new Column() { Order = order++, Field = nameof(ClientDashboardView.ClientHierarchy), Header = "Client hierarchy", Quoting = false },
-                new Column() { Order = order++, Field = nameof(ClientDashboardView.BrandTechName), Header = "Brand Tech", Quoting = false },
+                new Column() { Order = order++, Field = nameof(ClientDashboardView.BrandsegTechsubName), Header = "Brand Seg Tech Sub", Quoting = false },
                 new Column() { Order = order++, Field = nameof(ClientDashboardView.Year), Header = "Year", Quoting = false },
                 
                 new Column() { Order = order++, Field = nameof(ClientDashboardView.ShopperTiPlanPercent), Header = "Shopper TI Plan, %", Quoting = false, Format = "0.00" },

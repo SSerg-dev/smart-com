@@ -100,6 +100,9 @@
                 'promoeditorcustom #btn_promo_step6': {
                     click: this.onPromoButtonStep6Click
                 },
+                'promoeditorcustom #btn_promo_step7': {
+                    click: this.onPromoButtonStep7Click
+                },
 
                 // support steps
                 'promoeditorcustom #btn_support_step1': {
@@ -322,6 +325,7 @@
                 var btnStep4 = panel.down('#btn_promo_step4');
                 var btnStep5 = panel.down('#btn_promo_step5');
                 var btnStep6 = panel.down('#btn_promo_step6');
+                var btnStep7 = panel.down('#btn_promo_step7');
 
                 var formStep1 = panel.down('#promo_step1');
                 var formStep2 = panel.down('#promo_step2');
@@ -329,10 +333,11 @@
                 var formStep4 = panel.down('#promo_step4');
                 var formStep5 = panel.down('#promo_step5');
                 var formStep6 = panel.down('#promo_step6');
+                var formStep7 = panel.down('#promo_step7');
 
-                if (formStep6.needToSetHeight && isAtTop) {
-                    formStep6.setHeight(panel.getHeight() - 20);
-                    formStep6.needToSetHeight = false;
+                if (formStep7.needToSetHeight && isAtTop) {
+                    formStep7.setHeight(panel.getHeight() - 20);
+                    formStep7.needToSetHeight = false;
                 } else {
                     component._refreshScroll(component);
                 }
@@ -343,6 +348,7 @@
                 var h1_2_3_4 = h1_2_3 + formStep4.height;
                 var h1_2_3_4_5 = h1_2_3_4 + formStep5.height;
                 var h1_2_3_4_5_6 = h1_2_3_4_5 + formStep6.height;
+                var h1_2_3_4_5_6_7 = h1_2_3_4_5_6 + formStep7.height;
 
                 var _deltaY = scrollPositionY + 100;
 
@@ -354,6 +360,7 @@
                     btnStep4.removeCls('selected');
                     btnStep5.removeCls('selected');
                     btnStep6.removeCls('selected');
+                    btnStep7.removeCls('selected');
 
                     formStep1.header.addClass('promo-header-item-active');
                     formStep2.header.removeCls('promo-header-item-active');
@@ -361,6 +368,7 @@
                     formStep4.header.removeCls('promo-header-item-active');
                     formStep5.header.removeCls('promo-header-item-active');
                     formStep6.header.removeCls('promo-header-item-active');
+                    formStep7.header.removeCls('promo-header-item-active');
 
                     // Step 2 - product
                 } else if (_deltaY > h1 && _deltaY <= h1_2) {
@@ -370,6 +378,7 @@
                     btnStep4.removeCls('selected');
                     btnStep5.removeCls('selected');
                     btnStep6.removeCls('selected');
+                    btnStep7.removeCls('selected');
 
                     formStep1.header.removeCls('promo-header-item-active');
                     formStep2.header.addClass('promo-header-item-active');
@@ -377,6 +386,7 @@
                     formStep4.header.removeCls('promo-header-item-active');
                     formStep5.header.removeCls('promo-header-item-active');
                     formStep6.header.removeCls('promo-header-item-active');
+                    formStep7.header.removeCls('promo-header-item-active');
 
                     var mousedownEvent = document.createEvent('MouseEvents');
                     mousedownEvent.initEvent('mousedown', true, true)
@@ -392,6 +402,7 @@
                     btnStep4.removeCls('selected');
                     btnStep5.removeCls('selected');
                     btnStep6.removeCls('selected');
+                    btnStep7.removeCls('selected');
 
                     formStep1.header.removeCls('promo-header-item-active');
                     formStep2.header.removeCls('promo-header-item-active');
@@ -399,6 +410,7 @@
                     formStep4.header.removeCls('promo-header-item-active');
                     formStep5.header.removeCls('promo-header-item-active');
                     formStep6.header.removeCls('promo-header-item-active');
+                    formStep7.header.removeCls('promo-header-item-active');
 
                     var mousedownEvent = document.createEvent('MouseEvents');
                     mousedownEvent.initEvent('mousedown', true, true)
@@ -412,6 +424,7 @@
                     btnStep4.addClass('selected');
                     btnStep5.removeCls('selected');
                     btnStep6.removeCls('selected');
+                    btnStep7.removeCls('selected');
 
                     formStep1.header.removeCls('promo-header-item-active');
                     formStep2.header.removeCls('promo-header-item-active');
@@ -419,6 +432,7 @@
                     formStep4.header.addClass('promo-header-item-active');
                     formStep5.header.removeCls('promo-header-item-active');
                     formStep6.header.removeCls('promo-header-item-active');
+                    formStep7.header.removeCls('promo-header-item-active');
 
 
                     var mousedownEvent = document.createEvent('MouseEvents');
@@ -433,6 +447,7 @@
                     btnStep4.removeCls('selected');
                     btnStep5.addClass('selected');
                     btnStep6.removeCls('selected');
+                    btnStep7.removeCls('selected');
 
                     formStep1.header.removeCls('promo-header-item-active');
                     formStep2.header.removeCls('promo-header-item-active');
@@ -440,6 +455,7 @@
                     formStep4.header.removeCls('promo-header-item-active');
                     formStep5.header.addClass('promo-header-item-active');
                     formStep6.header.removeCls('promo-header-item-active');
+                    formStep7.header.removeCls('promo-header-item-active');
 
                     var mousedownEvent = document.createEvent('MouseEvents');
                     mousedownEvent.initEvent('mousedown', true, true)
@@ -453,6 +469,7 @@
                     btnStep4.removeCls('selected');
                     btnStep5.removeCls('selected');
                     btnStep6.addClass('selected');
+                    btnStep7.removeCls('selected');
 
                     formStep1.header.removeCls('promo-header-item-active');
                     formStep2.header.removeCls('promo-header-item-active');
@@ -460,6 +477,28 @@
                     formStep4.header.removeCls('promo-header-item-active');
                     formStep5.header.removeCls('promo-header-item-active');
                     formStep6.header.addClass('promo-header-item-active');
+                    formStep7.header.removeCls('promo-header-item-active');
+
+                    var mousedownEvent = document.createEvent('MouseEvents');
+                    mousedownEvent.initEvent('mousedown', true, true)
+                    panel.el.dom.dispatchEvent(mousedownEvent);
+                // Step 6 - settings
+                } else if (_deltaY > h1_2_3_4_5_6 && _deltaY <= h1_2_3_4_5_6_7) {
+                    btnStep1.removeCls('selected');
+                    btnStep2.removeCls('selected');
+                    btnStep3.removeCls('selected');
+                    btnStep4.removeCls('selected');
+                    btnStep5.removeCls('selected');
+                    btnStep6.removeCls('selected');
+                    btnStep7.addClass('selected');
+
+                    formStep1.header.removeCls('promo-header-item-active');
+                    formStep2.header.removeCls('promo-header-item-active');
+                    formStep3.header.removeCls('promo-header-item-active');
+                    formStep4.header.removeCls('promo-header-item-active');
+                    formStep5.header.removeCls('promo-header-item-active');
+                    formStep6.header.removeCls('promo-header-item-active');
+                    formStep7.header.addClass('promo-header-item-active');
 
                     var mousedownEvent = document.createEvent('MouseEvents');
                     mousedownEvent.initEvent('mousedown', true, true)
@@ -922,6 +961,7 @@
         container.down('#btn_promo_step4').removeCls('selected');
         container.down('#btn_promo_step5').removeCls('selected');
         container.down('#btn_promo_step6').removeCls('selected');
+        container.down('#btn_promo_step7').removeCls('selected');
 
         var jspData = $(container.down('panel[name=basicPromo]').getTargetEl().dom).data('jsp');
         jspData.scrollToY(0, true);
@@ -936,6 +976,7 @@
         container.down('#btn_promo_step4').removeCls('selected');
         container.down('#btn_promo_step5').removeCls('selected');
         container.down('#btn_promo_step6').removeCls('selected');
+        container.down('#btn_promo_step7').removeCls('selected');
 
         var jspData = $(container.down('panel[name=basicPromo]').getTargetEl().dom).data('jsp');
         var el = $(container.down('promobasicproducts#promo_step2').getTargetEl().dom);
@@ -952,6 +993,7 @@
         container.down('#btn_promo_step4').removeCls('selected');
         container.down('#btn_promo_step5').removeCls('selected');
         container.down('#btn_promo_step6').removeCls('selected');
+        container.down('#btn_promo_step7').removeCls('selected');
 
         var jspData = $(container.down('panel[name=basicPromo]').getTargetEl().dom).data('jsp');
         var el = $(container.down('promomechanic[itemId=promo_step3]').getTargetEl().dom);
@@ -968,6 +1010,7 @@
         container.down('#btn_promo_step3').removeCls('selected');
         container.down('#btn_promo_step5').removeCls('selected');
         container.down('#btn_promo_step6').removeCls('selected');
+        container.down('#btn_promo_step7').removeCls('selected');
 
         var jspData = $(container.down('panel[name=basicPromo]').getTargetEl().dom).data('jsp');
         var el = $(container.down('promoperiod[itemId=promo_step4]').getTargetEl().dom);
@@ -984,6 +1027,7 @@
         container.down('#btn_promo_step3').removeCls('selected');
         container.down('#btn_promo_step4').removeCls('selected');
         container.down('#btn_promo_step6').removeCls('selected');
+        container.down('#btn_promo_step7').removeCls('selected');
 
         var jspData = $(container.down('panel[name=basicPromo]').getTargetEl().dom).data('jsp');
         var el = $(container.down('promoevent[itemId=promo_step5]').getTargetEl().dom);
@@ -1000,9 +1044,27 @@
         container.down('#btn_promo_step3').removeCls('selected');
         container.down('#btn_promo_step4').removeCls('selected');
         container.down('#btn_promo_step5').removeCls('selected');
+        container.down('#btn_promo_step7').removeCls('selected');
 
         var jspData = $(container.down('panel[name=basicPromo]').getTargetEl().dom).data('jsp');
         var el = $(container.down('promosettings[itemId=promo_step6]').getTargetEl().dom);
+        jspData.scrollToElement(el, true, true);
+        jspData.scrollToElement(el, true, true);
+        button.addClass('selected');
+    },
+
+    onPromoButtonStep7Click: function (button) {
+        var container = button.up('window').down('container[name=promo]');
+        //   container._refreshScroll(container);
+        container.down('#btn_promo_step1').removeCls('selected');
+        container.down('#btn_promo_step2').removeCls('selected');
+        container.down('#btn_promo_step3').removeCls('selected');
+        container.down('#btn_promo_step4').removeCls('selected');
+        container.down('#btn_promo_step5').removeCls('selected');
+        container.down('#btn_promo_step6').removeCls('selected');
+
+        var jspData = $(container.down('panel[name=basicPromo]').getTargetEl().dom).data('jsp');
+        var el = $(container.down('promoadjustment[itemId=promo_step7]').getTargetEl().dom);
         jspData.scrollToElement(el, true, true);
         jspData.scrollToElement(el, true, true);
         button.addClass('selected');
@@ -1131,9 +1193,8 @@
         var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
         var apolloExportCheckbox = promoeditorcustom.down('[name=ApolloExportCheckbox]');
         apolloExportCheckbox.setValue(true);
-        var apolloExportAccess = ['Administrator', 'SupportAdministrator', 'CustomerMarketing', 'KeyAccountManager', 'DemandPlanning'];
 
-        if (apolloExportAccess.indexOf(currentRole) === -1) {
+        if (apolloExportCheckbox.crudAccess.indexOf(currentRole) === -1) {
             apolloExportCheckbox.setReadOnly(true);
         }
 
@@ -1160,11 +1221,12 @@
                         var period = promoeditorcustom.down('container[name=promo_step4]');
                         var event = promoeditorcustom.down('container[name=promo_step5]');
                         var settings = promoeditorcustom.down('container[name=promo_step6]');
+                        var adjustment = promoeditorcustom.down('container[name=promo_step7]');
 
-
+                        //disable On/Off invoice group
                         client.down('[id=OffInvoice]').setDisabled(true);
                         client.down('[id=OnInvoice]').setDisabled(true);
-
+                        
                         // Кнопки для изменения состояний промо
                         var promoActions = Ext.ComponentQuery.query('button[isPromoAction=true]');
 
@@ -1203,6 +1265,18 @@
                         promoEventButton.setText('<b>' + l10n.ns('tpm', 'promoStap').value('basicStep6') + '</b><br><p> Calendar priority: ' + 3 + '</p>');
                         promoEventButton.removeCls('notcompleted');
                         promoEventButton.setGlyph(0xf133);
+
+                        // Установки Adjustment   
+                        adjustment.down('sliderfield[name=DeviationCoefficient]').setDisabled(true);
+                        adjustment.down('numberfield[name=Adjustment]').setReadOnly(true);
+                        adjustment.down('numberfield[name=Adjustment]').addCls('readOnlyField');
+
+                        adjustment.down('sliderfield[name=DeviationCoefficient]').setValue(0);
+                        adjustment.down('numberfield[name=Adjustment]').setValue(0);
+                        var promoAdjustmentButton = Ext.ComponentQuery.query('button[itemId=btn_promo_step7]')[0];
+                        promoAdjustmentButton.setText('<b>' + l10n.ns('tpm', 'promoStap').value('basicStep7') + '</b><br><p>' + l10n.ns('tpm', 'Promo').value('Adjustment') + ': ' + 0 + '%' + '</p>');
+                        promoAdjustmentButton.removeCls('notcompleted');
+                        promoAdjustmentButton.setGlyph(0xf133);
 
                         // если создание из календаря
                         if (schedulerData) {
@@ -1765,9 +1839,29 @@
         if (isPromoEnd) {
             promoeditorcustom.down('[name=ApolloExportCheckbox]').setReadOnly(true);
         }
-        if (record.data.PromoStatusSystemName === 'Started') {
+        if (record.data.PromoStatusSystemName === 'Started'
+                && promoeditorcustom.down('[name=ApolloExportCheckbox]').crudAccess.indexOf(App.UserInfo.getCurrentRole()['SystemName']) >= 0) {
             promoeditorcustom.down('[name=ApolloExportCheckbox]').setDisabled(false);
             promoeditorcustom.down('[name=ApolloExportCheckbox]').setReadOnly(false);
+        }
+
+        // Заблокировать Adjusment для редактирования в указанных ниже статусах
+        var isPromoEnd = (['Finished', 'Closed', 'Cancelled', 'Deleted'].indexOf(record.data.PromoStatusSystemName) >= 0);
+        if (isPromoEnd
+            || promoeditorcustom.down('sliderfield[name = DeviationCoefficient]').crudAccess.indexOf(App.UserInfo.getCurrentRole()['SystemName']) === -1) {
+            promoeditorcustom.down('sliderfield[name = DeviationCoefficient]').setDisabled(true);
+            promoeditorcustom.down('numberfield[name=Adjustment]').setReadOnly(true);
+            promoeditorcustom.down('numberfield[name=Adjustment]').addCls('readOnlyField');
+        }
+        if ((record.data.PromoStatusSystemName === 'Started'
+            && promoeditorcustom.down('sliderfield[name = DeviationCoefficient]').crudAccess.indexOf(App.UserInfo.getCurrentRole()['SystemName']) >= 0)
+            || ((['Finished', 'Closed'].indexOf(record.data.PromoStatusSystemName) >= 0)
+                && App.UserInfo.getCurrentRole()['SystemName'] === 'SupportAdministrator')) {
+            promoeditorcustom.down('sliderfield[name = DeviationCoefficient]').setDisabled(false);
+            promoeditorcustom.down('sliderfield[name = DeviationCoefficient]').setReadOnly(false);
+            promoeditorcustom.down('numberfield[name=Adjustment]').setDisabled(false);
+            promoeditorcustom.down('numberfield[name=Adjustment]').setReadOnly(false);
+            promoeditorcustom.down('numberfield[name=Adjustment]').removeCls('readOnlyField');
         }
 
         me.checkLoadingComponents();
@@ -2063,6 +2157,7 @@
         var promoperiod = window.down('promoperiod');
         var promoevent = window.down('promoevent');
         var promosettings = window.down('promosettings');
+        var promoadjustment = window.down('promoadjustment');
 
         // promo budgets
         var promoBudgets = window.down('promobudgets');
@@ -2147,6 +2242,9 @@
 
         // promosettings
         record.data.CalendarPriority = promosettings.down('sliderfield[name=priority]').getValue();
+
+        // promoadjustment
+        record.data.DeviationCoefficient = -promoadjustment.down('sliderfield[name=DeviationCoefficient]').getValue();
 
         // --------------- promo budgets ---------------
         var totalCostBudgets = promoBudgets.down('container[name=promoBudgets_step1]');
@@ -2440,6 +2538,7 @@
         var period = promoeditorcustom.down('container[name=promo_step4]');
         var event = promoeditorcustom.down('container[name=promo_step5]');
         var settings = promoeditorcustom.down('container[name=promo_step6]');
+        var adjustment = promoeditorcustom.down('container[name=promo_step7]');
 
         // InOut Products
         promoeditorcustom.InOutProductIds = record.data.InOutProductIds;
@@ -2536,6 +2635,7 @@
         var actualPromoBaselineLSV = promoActivityStep2.down('[name=ActualPromoBaselineLSV]');
         var actualPromoIncrementalLSV = promoActivityStep2.down('[name=ActualPromoIncrementalLSV]');
         var actualPromoLSV = promoActivityStep2.down('[name=ActualPromoLSV]');
+        var actualPromoLSVSO = promoActivityStep2.down('[name=ActualPromoLSVSO]');
         var actualPromoLSVbyCompensation = promoActivityStep2.down('[name=ActualPromoLSVByCompensation]');
         var factPostPromoEffect = promoActivityStep2.down('[name=ActualPromoPostPromoEffectLSV]');
 
@@ -2834,11 +2934,7 @@
         // settings
         priorityValue = isCopy ? 3 : record.data.CalendarPriority;
         priority.setValue(priorityValue);
-
-        if (priority.crudAccess.indexOf(currentRole) === -1) {
-            priority.setReadOnly(true);
-        }
-
+        
         var promoEventButton = Ext.ComponentQuery.query('button[itemId=btn_promo_step6]')[0];
         promoEventButton.setText('<b>' + l10n.ns('tpm', 'promoStap').value('basicStep6') + '</b><br><p>' + l10n.ns('tpm', 'Promo').value('CalendarPriority') + ': ' + priorityValue + '</p>');
         promoEventButton.removeCls('notcompleted');
@@ -2883,10 +2979,32 @@
         if (isPromoEnd) {
             promoeditorcustom.down('[name=ApolloExportCheckbox]').setReadOnly(true);
         }
-        if (record.data.PromoStatusSystemName === 'Started' && !readOnly)
-        {
+        if (record.data.PromoStatusSystemName === 'Started'
+            && !readOnly
+            && promoeditorcustom.down('[name=ApolloExportCheckbox]').crudAccess.indexOf(App.UserInfo.getCurrentRole()['SystemName']) >= 0) {
             promoeditorcustom.down('[name=ApolloExportCheckbox]').setDisabled(false);
             promoeditorcustom.down('[name=ApolloExportCheckbox]').setReadOnly(false);
+        }
+
+
+        // Заблокировать Adjustment для редактирования в указанных ниже статусах
+        var isPromoEnd = (['Finished', 'Closed', 'Cancelled', 'Deleted'].indexOf(record.data.PromoStatusSystemName) >= 0);
+        if (isPromoEnd
+            || promoeditorcustom.down('sliderfield[name = DeviationCoefficient]').crudAccess.indexOf(App.UserInfo.getCurrentRole()['SystemName']) === -1) {
+            promoeditorcustom.down('sliderfield[name = DeviationCoefficient]').setDisabled(true);
+            promoeditorcustom.down('numberfield[name=Adjustment]').setReadOnly(true);
+            promoeditorcustom.down('numberfield[name=Adjustment]').addCls('readOnlyField');
+        }
+        if ((record.data.PromoStatusSystemName === 'Started'
+            && promoeditorcustom.down('sliderfield[name = DeviationCoefficient]').crudAccess.indexOf(App.UserInfo.getCurrentRole()['SystemName']) >= 0)
+            || ((['Finished', 'Closed'].indexOf(record.data.PromoStatusSystemName) >= 0)
+                && App.UserInfo.getCurrentRole()['SystemName'] === 'SupportAdministrator')
+            && !readOnly) {
+            promoeditorcustom.down('sliderfield[name = DeviationCoefficient]').setDisabled(false);
+            promoeditorcustom.down('sliderfield[name = DeviationCoefficient]').setReadOnly(false);
+            promoeditorcustom.down('numberfield[name=Adjustment]').setDisabled(false);
+            promoeditorcustom.down('numberfield[name=Adjustment]').setReadOnly(false);
+            promoeditorcustom.down('numberfield[name=Adjustment]').removeCls('readOnlyField');
         }
 
 
@@ -3007,8 +3125,22 @@
             actualPromoIncrementalLSV.setValue(record.data.ActualPromoIncrementalLSV);
             actualPromoLSVbyCompensation.setValue(record.data.ActualPromoLSVByCompensation);
             actualPromoLSV.setValue(record.data.ActualPromoLSV);
+            actualPromoLSVSO.setValue(record.data.ActualPromoLSVSO);
             factPostPromoEffect.setValue(record.data.ActualPromoPostPromoEffectLSV);
+
+            //Для Adjustment
+            promoeditorcustom.deviationCoefficient = record.data.DeviationCoefficient === null ? 0 : record.data.DeviationCoefficient;
+            var adjustmentSlider = promoeditorcustom.down('sliderfield[name = DeviationCoefficient]');
+            var adjustmentNumber = promoeditorcustom.down('numberfield[name = Adjustment]');
+            adjustmentSlider.setValue(record.data.DeviationCoefficient);
+            adjustmentNumber.setValue(record.data.DeviationCoefficient);
+
         }
+
+        var promoAdjustmentButton = Ext.ComponentQuery.query('button[itemId=btn_promo_step7]')[0];
+        promoAdjustmentButton.removeCls('notcompleted');
+        promoAdjustmentButton.setGlyph(0xf133);
+
         parentWidget.setLoading(false);
 
         // Определяем доступные действия
@@ -3817,19 +3949,32 @@
 
     needUnblockZeroDiscount: function (promoMechanic, mechanicIdField) {
         var promoController = App.app.getController('tpm.promo.Promo');
-        var mechanicIdRawValuesNamesForUnblockZeroDiscount = promoController.getMechanicIdRawValuesNamesForUnblockZeroDiscount();
+        var mechanicIdRawValuesNamesForUnblockZeroDiscountInOut = promoController.getMechanicIdRawValuesNamesForUnblockZeroDiscountInOut();
+        var mechanicIdRawValuesNamesForUnblockZeroDiscountRegular = promoController.getMechanicIdRawValuesNamesForUnblockZeroDiscountRegular();
+        var mechanicIdRawValuesNamesForUnblockZeroDiscountLoyalty = promoController.getMechanicIdRawValuesNamesForUnblockZeroDiscountLoyalty();
         var window = promoMechanic.up('promoeditorcustom');
         var record = promoController.getRecord(window);
 
-        if ((window.isInOutPromo || (record && record.data.InOut)) && mechanicIdRawValuesNamesForUnblockZeroDiscount.some(function (x) { return x == mechanicIdField.getRawValue() })) {
+        if ((window.isInOutPromo || (record && record.data.InOut)) && mechanicIdRawValuesNamesForUnblockZeroDiscountInOut.some(function (x) { return x == mechanicIdField.getRawValue() })) {
             return true;
         }
-
+        if ((window.promotype.split(' ')[0] == 'Regular' || (record && record.data.PromoTypesName.split(' ')[0] == 'Regular')) && mechanicIdRawValuesNamesForUnblockZeroDiscountRegular.some(function (x) { return x == mechanicIdField.getRawValue() })) {
+            return true;
+        } 
+        if ((window.promotype.split(' ')[0] == 'Loyalty' || (record && record.data.PromoTypesName.split(' ')[0] == 'Loyalty')) && mechanicIdRawValuesNamesForUnblockZeroDiscountLoyalty.some(function (x) { return x == mechanicIdField.getRawValue() })) {
+            return true;
+        } 
         return false;
     },
 
-    getMechanicIdRawValuesNamesForUnblockZeroDiscount: function () {
+    getMechanicIdRawValuesNamesForUnblockZeroDiscountInOut: function () {
         return ['Other'];
+    },
+    getMechanicIdRawValuesNamesForUnblockZeroDiscountRegular: function () {
+        return ['Other'];
+    },
+    getMechanicIdRawValuesNamesForUnblockZeroDiscountLoyalty: function () {
+        return ['Coupons', 'Points','Programs'];
     },
 
     // =============== MECHANIC END =============== 
@@ -3974,6 +4119,21 @@
             promoProductForm.setDisabledBtns(true);
         }
 
+        // ------------------------ Adjustment-----------------------    
+        var adjustmentSlider = promoeditorcustom.down('sliderfield[name=DeviationCoefficient]');
+        var adjustmentNumber = promoeditorcustom.down('numberfield[name=Adjustment]');
+
+        if (adjustmentSlider.crudAccess.indexOf(currentRole) === -1) {
+            adjustmentSlider.setDisabled(true);
+            adjustmentNumber.setReadOnly(true);
+        }
+        else {
+            adjustmentSlider.setReadOnly(false);
+            adjustmentNumber.setReadOnly(false);
+            adjustmentSlider.setDisabled(false);
+            adjustmentNumber.setDisabled(false);
+        }
+
         // ---------------Other---------------  
         fieldsWithCrud.forEach(function (field) {
             field.removeCls('readOnlyField');
@@ -4005,10 +4165,9 @@
         }
 
         // ------------------------ Mechanic->ApolloExport -----------------------    
-        var apolloExportAccess = ['Administrator', 'SupportAdministrator', 'CustomerMarketing', 'KeyAccountManager', 'DemandPlanning'];
         var apolloExportCheckbox = promoeditorcustom.down('[name=ApolloExportCheckbox]');
 
-        if (apolloExportAccess.indexOf(currentRole) === -1) {
+        if (apolloExportCheckbox.crudAccess.indexOf(currentRole) === -1) {
             apolloExportCheckbox.setDisabled(true);
         }
         else {
@@ -4994,6 +5153,7 @@
         window.down('[name=ActualPromoIncrementalLSV]').setValue(record.data.ActualPromoIncrementalLSV);
         window.down('[name=ActualPromoLSVByCompensation]').setValue(record.data.ActualPromoLSVByCompensation);
         window.down('[name=ActualPromoLSV]').setValue(record.data.ActualPromoLSV);
+        window.down('[name=ActualPromoLSVSO]').setValue(record.data.ActualPromoLSVSO);
         window.down('[name=ActualPromoPostPromoEffectLSV]').setValue(record.data.ActualPromoPostPromoEffectLSV);
     },
 

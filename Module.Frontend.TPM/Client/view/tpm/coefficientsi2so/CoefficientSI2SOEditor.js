@@ -19,7 +19,7 @@
             name: 'BrandTechId',
             selectorWidget: 'brandtech',
             valueField: 'Id',
-            displayField: 'Name',
+            displayField: 'BrandsegTechsub',
             store: {
                 type: 'directorystore',
                 model: 'App.model.tpm.brandtech.BrandTech',
@@ -33,7 +33,7 @@
                 }
             },
             mapping: [{
-                from: 'Name',
+                from: 'BrandsegTechsub',
                 to: 'BrandTechName'
             }]
         }, {

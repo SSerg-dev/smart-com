@@ -122,6 +122,11 @@ namespace Module.Frontend.TPM.Controllers
             {
                 return BadRequest(ModelState);
             }
+            if (Context.Set<Technology>().Any(t=>t.Tech_code == model.Tech_code && t.SubBrand_code == model.SubBrand_code))
+            {
+                ModelState.AddModelError("Error", $"Technology with tech_code {model.Tech_code} and sub_code {model.SubBrand_code} already exists");
+                return BadRequest(ModelState);
+            }
             var proxy = Context.Set<Technology>().Create<Technology>();
             var result = (Technology)Mapper.Map(model, proxy, typeof(Technology), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
             Context.Set<Technology>().Add(result);
@@ -141,7 +146,7 @@ namespace Module.Frontend.TPM.Controllers
         [ClaimsAuthorize]
         [AcceptVerbs("PATCH", "MERGE")]
         public IHttpActionResult Patch([FromODataUri] System.Guid key, Delta<Technology> patch)
-        {            
+        {
             try
             {
                 var model = Context.Set<Technology>().Find(key);
@@ -149,12 +154,18 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     return NotFound();
                 }
+
+                var oldTC = model.Tech_code;
+                var oldTN = model.Name;
+                var oldSC = model.SubBrand_code;
                 var oldName = model.Name;
                 patch.Patch(model);
-                var newName = model.Name;
+                var newName = String.Format("{0} {1}", model.Name, model.SubBrand);
                 //Асинхронно, т.к. долго выполняется и иначе фронт не дождется ответа
                 Task.Run(() => PromoHelper.UpdateProductHierarchy("Technology", newName, oldName, key));
-                UpdateProductTrees(model.Id, model.Name);
+                UpdateProductTrees(model.Id, newName);
+                //Асинхронно, т.к. долго выполняется и иначе фронт не дождется ответа
+                Task.Run(() => UpdateProducts(model, oldTC, oldTN, oldSC));
 
                 var resultSaveChanges = Context.SaveChanges();
                 return Updated(model);
@@ -173,7 +184,7 @@ namespace Module.Frontend.TPM.Controllers
             catch (Exception e)
             {
                 return GetErorrRequest(e);
-            }            
+            }
         }
 
         [ClaimsAuthorize]
@@ -207,7 +218,9 @@ namespace Module.Frontend.TPM.Controllers
         {
             IEnumerable<Column> columns = new List<Column>() {
                 new Column() { Order = 0, Field = "Name", Header = "Technology", Quoting = false },
-                new Column() { Order = 1, Field = "Tech_code", Header = "Tech Code", Quoting = false }
+                new Column() { Order = 1, Field = "Tech_code", Header = "Tech Code", Quoting = false },
+                new Column() { Order = 2, Field = "SubBrand", Header = "Sub Brand", Quoting = false },
+                new Column() { Order = 3, Field = "SubBrand_code", Header = "Sub Brand Code", Quoting = false }
             };
             return columns;
         }
@@ -233,39 +246,47 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public async Task<HttpResponseMessage> FullImportXLSX() {
-            try {
-                if (!Request.Content.IsMimeMultipartContent()) {
+        public async Task<HttpResponseMessage> FullImportXLSX()
+        {
+            try
+            {
+                if (!Request.Content.IsMimeMultipartContent())
+                {
                     throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
                 }
 
                 string importDir = Core.Settings.AppSettingsManager.GetSetting("IMPORT_DIRECTORY", "ImportFiles");
                 string fileName = await FileUtility.UploadFile(Request, importDir);
 
-                CreateImportTask(fileName, "FullXLSXUpdateAllHandler");
+                CreateImportTask(fileName, "FullXLSXUpdateTechnologyHandler");
 
                 HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
                 result.Content = new StringContent("success = true");
                 result.Content.Headers.ContentType = new MediaTypeHeaderValue("text/plain");
 
                 return result;
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e.Message);
             }
         }
 
-        private void CreateImportTask(string fileName, string importHandler) {
+        private void CreateImportTask(string fileName, string importHandler)
+        {
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
             RoleInfo role = authorizationManager.GetCurrentRole();
             Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
 
-            using (DatabaseContext context = new DatabaseContext()) {
+            using (DatabaseContext context = new DatabaseContext())
+            {
                 ImportResultFilesModel resiltfile = new ImportResultFilesModel();
                 ImportResultModel resultmodel = new ImportResultModel();
 
                 HandlerData data = new HandlerData();
-                FileModel file = new FileModel() {
+                FileModel file = new FileModel()
+                {
                     LogicType = "Import",
                     Name = System.IO.Path.GetFileName(fileName),
                     DisplayName = System.IO.Path.GetFileName(fileName)
@@ -279,7 +300,8 @@ namespace Module.Frontend.TPM.Controllers
                 HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(Technology), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("UniqueFields", new List<String>() { "Name" }, data);
 
-                LoopHandler handler = new LoopHandler() {
+                LoopHandler handler = new LoopHandler()
+                {
                     Id = Guid.NewGuid(),
                     ConfigurationName = "PROCESSING",
                     Description = "Загрузка импорта из файла " + typeof(ImportTechnology).Name,
@@ -299,20 +321,25 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult DownloadTemplateXLSX() {
-            try {
+        public IHttpActionResult DownloadTemplateXLSX()
+        {
+            try
+            {
                 IEnumerable<Column> columns = GetExportSettings();
                 XLSXExporter exporter = new XLSXExporter(columns);
                 string exportDir = AppSettingsManager.GetSetting("EXPORT_DIRECTORY", "~/ExportFiles");
                 string filename = string.Format("{0}Template.xlsx", "Technology");
-                if (!Directory.Exists(exportDir)) {
+                if (!Directory.Exists(exportDir))
+                {
                     Directory.CreateDirectory(exportDir);
                 }
                 string filePath = Path.Combine(exportDir, filename);
                 exporter.Export(Enumerable.Empty<Technology>(), filePath);
                 string file = Path.GetFileName(filePath);
                 return Content(HttpStatusCode.OK, file);
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 return Content(HttpStatusCode.InternalServerError, e.Message);
             }
 
@@ -323,19 +350,39 @@ namespace Module.Frontend.TPM.Controllers
         /// </summary>
         /// <param name="id">Id Технологии</param>
         /// <param name="newName">Новое наименование Технологии</param>
-        private void UpdateProductTrees(Guid id, string newName)
+        public static void UpdateProductTrees(Guid id, string newName)
         {
-            ProductTree[] productTree = Context.Set<ProductTree>().Where(n => n.TechnologyId == id).ToArray();
-            for (int i = 0; i < productTree.Length; i++)
+            using (DatabaseContext context = new DatabaseContext())
             {
-                // меняем также FullPathName
-                string oldFullPath = productTree[i].FullPathName;
-                int ind = oldFullPath.LastIndexOf(">");
-                ind = ind < 0 ? 0 : ind + 2;
+                ProductTree[] productTree = context.Set<ProductTree>().Where(n => n.TechnologyId == id).ToArray();
+                for (int i = 0; i < productTree.Length; i++)
+                {
+                    // меняем также FullPathName
+                    string oldFullPath = productTree[i].FullPathName;
+                    int ind = oldFullPath.LastIndexOf(">");
+                    ind = ind < 0 ? 0 : ind + 2;
 
-                productTree[i].FullPathName = oldFullPath.Substring(0, ind) + newName;
-                productTree[i].Name = newName;
-                ProductTreesController.UpdateFullPathProductTree(productTree[i], Context.Set<ProductTree>());
+                    productTree[i].FullPathName = oldFullPath.Substring(0, ind) + newName;
+                    productTree[i].Name = newName;
+                    ProductTreesController.UpdateFullPathProductTree(productTree[i], context.Set<ProductTree>());
+                }
+            }
+        }
+
+        public static void UpdateProducts(Technology model, string oldTC, string oldTN, string oldSC)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                var products = context.Set<Product>().Where(p => p.Tech_code.Equals(oldTC) && p.Technology.Equals(oldTN) && p.SubBrand_code.Equals(oldSC) && !p.Disabled).ToList();
+                foreach (var product in products)
+                {
+                    Delta<Product> newProduct = new Delta<Product>();
+                    newProduct.TrySetPropertyValue("SubBrand_code", model.SubBrand_code);
+                    newProduct.TrySetPropertyValue("Tech_code", model.Tech_code);
+                    newProduct.Patch(product);
+                }
+
+                context.SaveChanges();
             }
         }
 

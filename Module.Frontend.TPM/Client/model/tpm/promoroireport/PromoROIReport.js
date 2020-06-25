@@ -9,7 +9,8 @@
         { name: 'Client2LevelName', type: 'string', hidden: false, isDefault: true },//Client Group (2 level)
         { name: 'ClientName', type: 'string', hidden: false, isDefault: true },//Client (3 level)
         { name: 'BrandName', type: 'string', hidden: false, isDefault: false },
-        { name: 'TechnologyName', type: 'string', hidden: false, isDefault: true },//Product (2 level)
+        { name: 'TechnologyName', type: 'string', hidden: false, isDefault: true },
+        { name: 'SubName', type: 'string', hidden: false, isDefault: true },//Product (2 level)
         { name: 'ProductSubrangesList', type: 'string', hidden: false, isDefault: true },//Product (3 level)
         { name: 'MarsMechanicName', type: 'string', hidden: false, isDefault: false },
         { name: 'MarsMechanicTypeName', type: 'string', hidden: true, isDefault: false },

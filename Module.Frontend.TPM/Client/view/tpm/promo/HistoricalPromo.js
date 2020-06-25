@@ -115,6 +115,10 @@
             fieldLabel: l10n.ns('tpm', 'Promo').value('ApolloExport'),
         }, {
             xtype: 'singlelinedisplayfield',
+            name: 'DeviationCoefficient',
+            fieldLabel: l10n.ns('tpm', 'Promo').value('Adjustment'),
+        }, {
+            xtype: 'singlelinedisplayfield',
             name: 'Name',
             fieldLabel: l10n.ns('tpm', 'Promo').value('Name'),
         }, {
@@ -205,6 +209,14 @@
             xtype: 'singlelinedisplayfield',
             name: 'MechanicComment',
             fieldLabel: l10n.ns('tpm', 'Promo').value('MechanicComment'),
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'IsGrowthAcceleration',
+            fieldLabel: l10n.ns('tpm', 'Promo').value('IsGrowthAcceleration'),
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'DeviationCoefficient',
+            fieldLabel: l10n.ns('tpm', 'Promo').value('AdjustmentP'),
         }, {
             xtype: 'singlelinedisplayfield',
             name: 'InvoiceType',

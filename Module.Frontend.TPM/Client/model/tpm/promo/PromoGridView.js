@@ -7,7 +7,7 @@
         { name: 'Number', type: 'int', hidden: false, isDefault: true, isKey: true },
         { name: 'ClientHierarchy', type: 'string', useNull: true, hidden: false, isDefault: true },
         { name: 'Name', type: 'string', hidden: false, isDefault: true },
-        { name: 'BrandTechName', type: 'string', mapping: 'BrandTechName', defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'BrandTech', hidden: false, isDefault: true },
+        { name: 'BrandTechName', type: 'string', mapping: 'BrandTechName', defaultFilterConfig: { valueField: 'BrandsegTechsub' }, breezeEntityType: 'BrandTech', hidden: false, isDefault: true },
         { name: 'PromoEventName', type: 'string', mapping: 'PromoEventName', defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'Event', hidden: false, isDefault: true },
         { name: 'Mechanic', type: 'string', useNull: true, hidden: false, isDefault: true },
         { name: 'MechanicIA', type: 'string', useNull: true, hidden: false, isDefault: true },
@@ -82,7 +82,9 @@
         { name: 'ActualPromoIncrementalLSV', useNull: true, type: 'float', hidden: false, isDefault: false },
 
         //Apollo Export
-        { name: 'IsApolloExport', type: 'boolean', hidden: false, isDefault: false }
+        { name: 'IsApolloExport', type: 'boolean', hidden: false, isDefault: false },
+
+        {name: 'DeviationCoefficient', type: 'float', hidden: false, isDefault: true}
     ],
     proxy: {
         type: 'breeze',

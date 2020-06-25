@@ -37,6 +37,8 @@ namespace Module.Persist.TPM.Model.TPM {
         public string TypeName { get; set; }
         public string InOutId { get; set; }
 
+        public double? DeviationCoefficient { get; set; }
+
         public object Clone()
         {
             return this.MemberwiseClone();

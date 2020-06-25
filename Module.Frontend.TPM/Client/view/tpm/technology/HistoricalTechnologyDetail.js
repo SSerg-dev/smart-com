@@ -34,6 +34,14 @@
             xtype: 'singlelinedisplayfield',
             name: 'Tech_code',
             fieldLabel: l10n.ns('tpm', 'Technology').value('Tech_code'),
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'SubBrand',
+            fieldLabel: l10n.ns('tpm', 'Technology').value('SubBrand'),
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'SubBrand_code',
+            fieldLabel: l10n.ns('tpm', 'Technology').value('SubBrand_code'),
         }]
     }
 });

@@ -266,6 +266,14 @@
                     return value ? l10n.ns('core', 'booleanValues').value('true') : l10n.ns('core', 'booleanValues').value('false');
                 }
             }, {
+                text: l10n.ns('tpm', 'Promo').value('Adjustment'),
+                dataIndex: 'DeviationCoefficient',
+                filter: {
+                    xtype: 'numberfield',
+                    sourceallowDecimals: true,
+                    operator: 'eq'
+                }
+            }, {
                 text: l10n.ns('tpm', 'Promo').value('ApolloExport'),
                 dataIndex: 'IsApolloExport',
                 renderer: function (value) {
@@ -282,7 +290,7 @@
                 filter: {
                     type: 'search',
                     selectorWidget: 'brandtech',
-                    valueField: 'Name',
+                    valueField: 'BrandsegTechsub',
                     store: {
                         type: 'directorystore',
                         model: 'App.model.tpm.brandtech.BrandTech',

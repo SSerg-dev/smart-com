@@ -71,11 +71,21 @@
             listeners: {
                 change: function (booleancombobox, newValue, oldValue) {
                     var isOnInvoiceCombobox = this.up('container').down('combobox[name=IsOnInvoice]');
+                    var deviationCoefficient = this.up('container').down('sliderfield[name=DeviationCoefficient]');
+                    var adjustment = this.up('container').down('numberfield[name=Adjustment]');
                     if (newValue) {
                         isOnInvoiceCombobox.setDisabled(false);
+
+                        deviationCoefficient.setDisabled(false);
+                        adjustment.setDisabled(false);
                     } else {
                         isOnInvoiceCombobox.setDisabled(true);
                         isOnInvoiceCombobox.setValue('');
+
+                        adjustment.setDisabled(true);
+                        adjustment.setValue(0);
+                        deviationCoefficient.setDisabled(true);
+                        deviationCoefficient.setValue(0);
                     }
                 }
             }

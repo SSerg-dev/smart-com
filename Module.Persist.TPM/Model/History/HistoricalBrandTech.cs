@@ -10,6 +10,8 @@ namespace Module.Persist.TPM.Model.History
         public string Name { get; set; }
         public string BrandName { get; set; }
         public string TechnologyName { get; set; }
+        public string TechnologySubBrand { get; set; }
         public string BrandTech_code { get; set; }
+        public string BrandsegTechsub_code { get; set; }
     }
 }

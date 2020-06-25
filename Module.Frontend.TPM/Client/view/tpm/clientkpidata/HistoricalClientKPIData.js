@@ -104,8 +104,8 @@
             fieldLabel: l10n.ns('tpm', 'ClientKPIData').value('ClientHierarchy')
         }, {
             xtype: 'singlelinedisplayfield',
-            name: 'BrandTechName',
-            fieldLabel: l10n.ns('tpm', 'ClientKPIData').value('BrandTechName')
+            name: 'BrandsegTechsubName',
+            fieldLabel: l10n.ns('tpm', 'ClientKPIData').value('BrandsegTechsubName')
         }, {
             xtype: 'singlelinedisplayfield',
             name: 'Year',

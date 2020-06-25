@@ -59,10 +59,28 @@ namespace Module.Persist.TPM.Model.TPM
 		[StringLength(255)]
 		public string Brandsegtech { get; set; }
 
-		[StringLength(255)]
+        [StringLength(255)]
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         [SpecialNotKeyProperty]
         public string BrandsegTech_code { get; set; }
+
+        [StringLength(255)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        [SpecialNotKeyProperty]
+        public string BrandsegTechsub { get; set; }
+
+        [StringLength(255)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        [SpecialNotKeyProperty]
+        public string BrandsegTechsub_code { get; set; }
+
+        [StringLength(255)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        [SpecialNotKeyProperty]
+        public string SubBrand { get; set; }
+
+        [StringLength(255)]
+        public string SubBrand_code { get; set; }
 
         [StringLength(255)]
         public string BrandFlagAbbr { get; set; }

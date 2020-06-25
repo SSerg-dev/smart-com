@@ -596,6 +596,9 @@ namespace Module.Frontend.TPM.Controllers
             }
 
             model.FullPathName = fullPathClientName;
+            model.DeviationCoefficient = model.IsBaseClient
+                                                ? model.DeviationCoefficient / -10000
+                                                : 0;
 
             var proxy = Context.Set<ClientTree>().Create<ClientTree>();
             var result = (ClientTree)Mapper.Map(model, proxy, typeof(ClientTree), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
@@ -705,6 +708,9 @@ namespace Module.Frontend.TPM.Controllers
                         }
                     }
                 }
+                model.DeviationCoefficient = model.IsBaseClient 
+                                                ? model.DeviationCoefficient / -10000
+                                                : 0;
 
                 Context.Entry(currentRecord).CurrentValues.SetValues(model);
                 UpdateFullPathClientTree(currentRecord, Context.Set<ClientTree>());
@@ -1118,6 +1124,7 @@ namespace Module.Frontend.TPM.Controllers
         public bool? IsDaysEnd { get; set; }
         public double? PostPromoEffectW1 { get; set; }
         public double? PostPromoEffectW2 { get; set; }
+        public double? DeviationCoefficient { get; set; }
 
         public string LogoFileName { get; set; }
 
@@ -1147,6 +1154,7 @@ namespace Module.Frontend.TPM.Controllers
             PostPromoEffectW2 = treeNode.PostPromoEffectW2;
             LogoFileName = treeNode.LogoFileName;
             DMDGroup = treeNode.DMDGroup;
+            DeviationCoefficient = treeNode.DeviationCoefficient;
 
             this.leaf = leaf;
             this.loaded = loaded;

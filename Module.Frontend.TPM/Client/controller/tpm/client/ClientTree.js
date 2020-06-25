@@ -339,6 +339,13 @@
                 me.updateTreeDetail(form, record);
             };
 
+            if (record.data.DeviationCoefficient === null || record.data.DeviationCoefficient === 0) {
+                record.data.DeviationCoefficient = 0;
+
+                var adjustmentNumber = clientTreeEditorWindow.down('numberfield[name=Adjustment]');
+                adjustmentNumber.setValue(0);
+            }
+
             tree.createMode = false;
             srch.hide();
         } else {

@@ -76,7 +76,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         // Фильтр по клиенту
                         .Where(x => x.ClientTreeId == currentClient.Id && !x.Disabled)
                         // Фильтр по брендтеху
-                        .Where(x => x.BrandTech == null || x.BrandTech.Name == promo.BrandTechName)
+                        .Where(x => x.BrandTech == null || x.BrandTech.BrandsegTechsub == promo.BrandTechName)
                         // promo start date должна лежать в интервале между TI start date и TI end date
                         .Where(x => x.StartDate.HasValue && x.EndDate.HasValue && promo.StartDate.HasValue
                                && DateTimeOffset.Compare(x.StartDate.Value, promo.StartDate.Value) <= 0
@@ -162,7 +162,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 while (notNullBrandtechCOGS != null && (cogsList == null || cogsList.Count() == 0) && clientNode != null && clientNode.Type != "root")
                 {
                     cogsList = notNullBrandtechCOGS
-                        .Where(x => x.ClientTreeId == clientNode.Id && x.BrandTech.Name == promo.BrandTechName && !x.Disabled)
+                        .Where(x => x.ClientTreeId == clientNode.Id && x.BrandTech.BrandsegTechsub == promo.BrandTechName && !x.Disabled)
                         //promo DispatchesStart date должна лежать в интервале между COGS start date и COGS end date
                         .Where(x => x.StartDate.HasValue && x.EndDate.HasValue && promo.DispatchesStart.HasValue
                                && DateTimeOffset.Compare(x.StartDate.Value, promo.DispatchesStart.Value) <= 0
@@ -226,7 +226,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             string result = baseMessage + " for client " + promo.ClientHierarchy;
 
             if (brandTech != null)
-                result += " and BrandTech " + brandTech.Name;
+                result += " and BrandTech " + brandTech.BrandsegTechsub;
 
             if (ti)
                 result += " for the period from " + promo.StartDate.Value.ToString("dd.MM.yyyy") + " to " + promo.EndDate.Value.ToString("dd.MM.yyyy") + ".";

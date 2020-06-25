@@ -56,7 +56,7 @@ namespace Module.Persist.TPM.Model.TPM {
             PromoIntId = newPromo.Number;
             Name = newPromo.Name;
             ClientHierarchy = newPromo.ClientHierarchy;
-            BrandTech = newPromo.BrandTech != null ? newPromo.BrandTech.Name : null;
+            BrandTech = newPromo.BrandTech != null ? newPromo.BrandTech.BrandsegTechsub : null;
 			PromoStatus = newPromo.PromoStatus.SystemName != null ? newPromo.PromoStatus.SystemName : null;
 			OldMarsMechanic = oldPromo.MarsMechanic != null ? oldPromo.MarsMechanic.Name : null;
             NewMarsMechanic = newPromo.MarsMechanic != null ? newPromo.MarsMechanic.Name : null;
@@ -81,7 +81,7 @@ namespace Module.Persist.TPM.Model.TPM {
             PromoIntId = promo.Number;
             Name = promo.Name;
             ClientHierarchy = promo.ClientHierarchy;
-            BrandTech = promo.BrandTech != null ? promo.BrandTech.Name : null;
+            BrandTech = promo.BrandTech != null ? promo.BrandTech.BrandsegTechsub : null;
 			PromoStatus = promo.PromoStatus.SystemName != null ? promo.PromoStatus.SystemName : null;
 			OldMarsMechanic = isDelete ? (promo.MarsMechanic != null ? promo.MarsMechanic.Name : null) : null;
             NewMarsMechanic = promo.MarsMechanic != null ? promo.MarsMechanic.Name : null;
@@ -107,7 +107,7 @@ namespace Module.Persist.TPM.Model.TPM {
             PromoIntId = promo.Number;
             Name = promo.Name;
             ClientHierarchy = promo.ClientHierarchy;
-            BrandTech = promo.BrandTech != null ? promo.BrandTech.Name : null;
+            BrandTech = promo.BrandTech != null ? promo.BrandTech.BrandsegTechsub : null;
             PromoStatus = promo.PromoStatus.SystemName != null ? promo.PromoStatus.SystemName : null;
             OldMarsMechanic = oldMarsMechanic;
             NewMarsMechanic = promo.MarsMechanic != null ? promo.MarsMechanic.Name : null;

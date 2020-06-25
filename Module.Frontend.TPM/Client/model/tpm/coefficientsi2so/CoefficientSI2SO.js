@@ -9,8 +9,8 @@
         { name: 'CoefficientValue', type: 'float', hidden: false, isDefault: true },
         { name: 'Lock', type: 'bool', hidden: true, isDefault: true },
 
-        { name: 'BrandTechName', type: 'string', isDefault: true, mapping: 'BrandTech.Name', defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'BrandTech' },
-        { name: 'BrandTechBrandTech_code', type: 'string', isDefault: true, mapping: 'BrandTech.BrandTech_code', defaultFilterConfig: { valueField: 'BrandTech_code' } },
+        { name: 'BrandTechName', type: 'string', isDefault: true, mapping: 'BrandTech.BrandsegTechsub', defaultFilterConfig: { valueField: 'BrandsegTechsub' }, breezeEntityType: 'BrandTech' },
+        { name: 'BrandTechBrandTech_code', type: 'string', isDefault: true, mapping: 'BrandTech.BrandsegTechsub_code', defaultFilterConfig: { valueField: 'BrandsegTechsub_code' } },
     ],
     proxy: {
         type: 'breeze',
