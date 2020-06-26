@@ -469,6 +469,7 @@ Ext.define('App.view.tpm.promo.PromoActivity', {
                                 itemId: 'PromoUpliftLockedUpdateCheckbox',
                                 name: 'NeedRecountUplift',
                                 labelAlign: 'right',
+                                crudAccess: ['Administrator', 'SupportAdministrator', 'FunctionalExpert', 'DemandPlanning'],
                                 style: 'margin-left: 10px',
                                 //crudAccess: ['Administrator', 'FunctionalExpert', 'DemandPlanning'],
                                 availableRoleStatusActions: {
@@ -485,7 +486,13 @@ Ext.define('App.view.tpm.promo.PromoActivity', {
                                         var readonly = me.up('promoeditorcustom').readOnly;
                                         var planPromoUpliftNumberField = this.up('container').down('triggerfielddetails[name=PlanPromoUpliftPercent]');
                                         var GlyphLock = this.up('container').down('#GlyphLock');
-                                        if (!this.value || readonly) {
+                                        var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
+                                        var lockAccessCrud = false;
+
+                                        if (planPromoUpliftNumberField.crudAccess.indexOf(currentRole) === -1) {
+                                            lockAccessCrud = true;
+                                        }
+                                        if ((!this.value || readonly) || lockAccessCrud) {
                                             planPromoUpliftNumberField.setEditable(false);
                                             GlyphLock.setGlyph(0xf33e);
                                             planPromoUpliftNumberField.isReadable = false;
