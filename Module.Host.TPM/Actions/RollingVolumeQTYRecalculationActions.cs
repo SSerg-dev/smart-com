@@ -58,8 +58,7 @@ namespace Module.Host.TPM.Actions
                 {
                     var dmd = item.Key.DMDGroup;
                     var ghierarhy = GetGHierarhyCode(context, dmd);
-                    var salesDistChannel = context.Database.SqlQuery<string>(
-                       String.Format("SELECT TOP 1 [0DISTR_CHAN] FROM dbo.MARS_UNIVERSAL_PETCARE_CUSTOMERS where ZCUSTHG04 = {0} ", ghierarhy)).FirstOrDefault();
+                    var salesDistChannel = GetSalesDistChannel(ghierarhy,context);
 
                     if (String.IsNullOrEmpty(salesDistChannel))
                     {
@@ -112,6 +111,29 @@ namespace Module.Host.TPM.Actions
             return strDate;
         }
 
+        private string GetSalesDistChannel(string ghierarhy, DatabaseContext context)
+        {
+            var salesDistChannel = context.Database.SqlQuery<string>(
+                       String.Format("SELECT TOP 1 [0DISTR_CHAN] FROM dbo.MARS_UNIVERSAL_PETCARE_CUSTOMERS where ZCUSTHG04 = {0} ", ghierarhy)).FirstOrDefault();
+           
+            if (String.IsNullOrEmpty(salesDistChannel))
+            {
+                int objectId = context.Set<ClientTree>().Where(e => e.GHierarchyCode.Equals(ghierarhy) && e.EndDate == null).FirstOrDefault().ObjectId;
+
+                var baseClient = context.Set<ClientTree>().Where(e => e.parentId.Equals(objectId) && e.IsBaseClient && e.EndDate == null).FirstOrDefault();
+                if(baseClient == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    salesDistChannel = context.Database.SqlQuery<string>(
+                       String.Format("SELECT TOP 1 [0DISTR_CHAN] FROM dbo.MARS_UNIVERSAL_PETCARE_CUSTOMERS where ZCUSTHG04 = {0} ", baseClient.GHierarchyCode)).FirstOrDefault();
+                }
+
+            }
+            return salesDistChannel;
+        }
         private string GetGHierarhyCode(DatabaseContext context, string DMDGroup)
         { 
             int objectId = context.Set<ClientTree>().Where(e => e.DMDGroup.Equals(DMDGroup) && e.EndDate == null).FirstOrDefault().ObjectId;
