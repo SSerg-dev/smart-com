@@ -52,8 +52,6 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
                     var lastSuccessDate = settingsManager.GetSetting<string>("MATERIALS_LAST_SUCCESSFUL_EXECUTION_DATE", "2020-03-12 10:00:00.000");
                     var exceptedZREPs = settingsManager.GetSetting<string>("APP_MIX_EXCEPTED_ZREPS", null);
                     var successMessages = new ConcurrentBag<string>();
-                    var errorMeassages = new ConcurrentBag<string>();
-                    var warningMessages = new ConcurrentBag<string>();
                     int sourceRecordCount;
 
                     var notifyErrors = new Dictionary<string, string>(); // ZREP, Error message
@@ -146,7 +144,7 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
                                     IsNumeric(r.UOM_PC2Case))).GroupBy(x => x.ZREP);
                     foreach (var group in step1Log)
                     {
-                        warningMessages.Add(String.Format("{0} GRD with ZREP {1} has inappropriate value for one or more of VKORG, 0DIVISION, 0DIVISION___T, 0MATL_TYPE___T, MATNR, VMSTD, 0CREATEDON, ZREP, EAN_PC, UOM_PC2Case fields.", group.Count(), group.Key.TrimStart('0')));
+                        Warnings.Add(String.Format("{0} GRD with ZREP {1} has inappropriate value for one or more of VKORG, 0DIVISION, 0DIVISION___T, 0MATL_TYPE___T, MATNR, VMSTD, 0CREATEDON, ZREP, EAN_PC, UOM_PC2Case fields.", group.Count(), group.Key.TrimStart('0')));
                         notifyErrors[group.Key.TrimStart('0')] = "ZREP has inappropriate value for one or more of VKORG, 0DIVISION, 0DIVISION___T, 0MATL_TYPE___T, MATNR, VMSTD, 0CREATEDON, ZREP, EAN_PC, UOM_PC2Case fields.";
                     }
 
@@ -178,7 +176,7 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
                                     IsNotEmptyOrNotApplicable(r.Brand_code))).GroupBy(x => x.ZREP);
                     foreach (var group in step2Log)
                     {
-                        warningMessages.Add(String.Format("{0} GRD with ZREP {1} has one of MATERIAL, SKU, UOM_PC2Case, Segmen_code, Tech_code, Brand_Flag_abbr, Brand_Flag, Size, BrandsegTech_code, BrandSegTechSub_code, Brand_code fields not applicable or empty.", group.Count(), group.Key.TrimStart('0')));
+                        Warnings.Add(String.Format("{0} GRD with ZREP {1} has one of MATERIAL, SKU, UOM_PC2Case, Segmen_code, Tech_code, Brand_Flag_abbr, Brand_Flag, Size, BrandsegTech_code, BrandSegTechSub_code, Brand_code fields not applicable or empty.", group.Count(), group.Key.TrimStart('0')));
                         notifyErrors[group.Key.TrimStart('0')] = "ZREP has one of MATERIAL, SKU, UOM_PC2Case, Segmen_code, Tech_code, Brand_Flag_abbr, Brand_Flag, Size, BrandsegTech_code, BrandSegTechSub_code, Brand_code fields not applicable or empty.";
                     }
 
@@ -208,7 +206,7 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
                                     IsNotEmptyOrNotApplicable(r.Consumer_pack_format))).GroupBy(x => x.ZREP);
                     foreach (var group in step3Log)
                     {
-                        warningMessages.Add(String.Format("{0} GRD with ZREP {0} has all of Submark_Flag, Ingredient_variety, Product_Category, Product_Type, Supply_Segment, Functional_variety, Size, Brand_essence, Pack_Type, Traded_unit_format, Consumer_pack_format fields not applicable or empty.", group.Count(), group.Key.TrimStart('0')));
+                        Warnings.Add(String.Format("{0} GRD with ZREP {0} has all of Submark_Flag, Ingredient_variety, Product_Category, Product_Type, Supply_Segment, Functional_variety, Size, Brand_essence, Pack_Type, Traded_unit_format, Consumer_pack_format fields not applicable or empty.", group.Count(), group.Key.TrimStart('0')));
                         notifyErrors[group.Key.TrimStart('0')] = "ZREP has all of Submark_Flag, Ingredient_variety, Product_Category, Product_Type, Supply_Segment, Functional_variety, Size, Brand_essence, Pack_Type, Traded_unit_format, Consumer_pack_format fields not applicable or empty.";
                     }
 
@@ -232,7 +230,7 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
 
                             if (firstRec.VMSTD == secondRec.VMSTD)
                             {
-                                errorMeassages.Add(String.Format("ZREP {0} has two or more GRD with different values in one or more of Segmen_code, Tech_code, Brand_Flag_abbr, Brand_Flag, Size, BrandsegTech_code, Brand_code fields.", group.Key.TrimStart('0')));
+                                Errors.Add(String.Format("ZREP {0} has two or more GRD with different values in one or more of Segmen_code, Tech_code, Brand_Flag_abbr, Brand_Flag, Size, BrandsegTech_code, Brand_code fields.", group.Key.TrimStart('0')));
                                 notifyErrors[group.Key.TrimStart('0')] = "ZREP has two or more GRD with different values in one or more of Segmen_code, Tech_code, Brand_Flag_abbr, Brand_Flag, Size, BrandsegTech_code, Brand_code fields.";
                             }
                             else
@@ -247,7 +245,7 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
                     {
                         if (group.Count() > 1)
                         {
-                            warningMessages.Add(String.Format("ZREP {0} has two or more GRD with different values in one or more of Submark_Flag, Ingredient_variety, Product_Category, Product_Type, Supply_Segment, Functional_variety, Size, Brand_essence, Pack_Type, Traded_unit_format, Consumer_pack_format fields.", group.Key.TrimStart('0')));
+                            Warnings.Add(String.Format("ZREP {0} has two or more GRD with different values in one or more of Submark_Flag, Ingredient_variety, Product_Category, Product_Type, Supply_Segment, Functional_variety, Size, Brand_essence, Pack_Type, Traded_unit_format, Consumer_pack_format fields.", group.Key.TrimStart('0')));
                             notifyErrors[group.Key.TrimStart('0')] = "ZREP has two or more GRD with different values in one or more of Submark_Flag, Ingredient_variety, Product_Category, Product_Type, Supply_Segment, Functional_variety, Size, Brand_essence, Pack_Type, Traded_unit_format, Consumer_pack_format fields.";
                         }
                     }
@@ -299,7 +297,7 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
                         errors.AddRange(CheckNewBrandTech(material.Brand_code, material.Brand, material.Segmen_code, material.Tech_code, material.Technology, material.SubBrand_code, material.SubBrand));
 
                         foreach (var error in errors)
-                            errorMeassages.Add(error);
+                            Errors.Add(error);
 
                         if (!errors.Any())
                         {
@@ -316,13 +314,13 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
                             }
                             catch (Exception e)
                             {
-                                errorMeassages.Add(String.Format("Error while creating product with ZREP {0}. Message: {1}", newProduct.ZREP, e.Message));
+                                Errors.Add(String.Format("Error while creating product with ZREP {0}. Message: {1}", newProduct.ZREP, e.Message));
                                 notifyErrors[material.ZREP.TrimStart('0')] = String.Format("Error while creating ZREP. Message: {0}.", e.Message);
                             }
                         }
                         else
                         {
-                            errorMeassages.Add(String.Format("Product with ZREP {0} was not added because an error occurred while checking brand technology.", material.ZREP.TrimStart('0')));
+                            Errors.Add(String.Format("Product with ZREP {0} was not added because an error occurred while checking brand technology.", material.ZREP.TrimStart('0')));
                             notifyErrors[material.ZREP.TrimStart('0')] = "ZREP was not added because an error occurred while checking brand technology.";
                         }
                     }
@@ -349,7 +347,7 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
                                 errors.AddRange(CheckNewBrandTech(material.Brand_code, material.Brand, material.Segmen_code, material.Tech_code, material.Technology, material.SubBrand_code, material.SubBrand));
 
                                 foreach (var error in errors)
-                                    errorMeassages.Add(error);
+                                    Errors.Add(error);
 
                                 if (!errors.Any())
                                 {
@@ -367,13 +365,13 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
                                     }
                                     catch (Exception e)
                                     {
-                                        errorMeassages.Add(String.Format("Error while updating product with ZREP {0}. Message: {1}", product.ZREP, e.Message));
+                                        Errors.Add(String.Format("Error while updating product with ZREP {0}. Message: {1}", product.ZREP, e.Message));
                                         notifyErrors[material.ZREP.TrimStart('0')] = String.Format("Error while updating ZREP. Message: {0}.", e.Message);
                                     }
                                 }
                                 else
                                 {
-                                    errorMeassages.Add(String.Format("Product with ZREP {0} was not updated because an error occurred while checking brand technology.", material.ZREP.TrimStart('0')));
+                                    Errors.Add(String.Format("Product with ZREP {0} was not updated because an error occurred while checking brand technology.", material.ZREP.TrimStart('0')));
                                     notifyErrors[material.ZREP.TrimStart('0')] = "ZREP was not updated because an error occurred while checking brand technology.";
                                 }
                             }
@@ -402,16 +400,16 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
                         var errors = CheckBrandDoubles(context);
 
                         foreach (var error in errors)
-                            errorMeassages.Add(error);
+                            Errors.Add(error);
                     }
 
-                    DataLakeSyncResultFilesModel model = SaveResultToFile(handlerId, successMessages, errorMeassages, warningMessages);
-
+                    DataLakeSyncResultFilesModel model = SaveResultToFile(handlerId, successMessages, Errors, Warnings);
+                    
                     // Сохранить выходные параметры
                     Results["DataLakeSyncSourceRecordCount"] = sourceRecordCount;
                     Results["DataLakeSyncResultRecordCount"] = successMessages.Count();
-                    Results["ErrorCount"] = errorMeassages.Count();
-                    Results["WarningCount"] = warningMessages.Count();
+                    Results["ErrorCount"] = Errors.Count();
+                    Results["WarningCount"] = Warnings.Count();
                     Results["DataLakeSyncResultFilesModel"] = model;
                 }
             }
@@ -574,8 +572,8 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
             {
                 if (!String.IsNullOrEmpty(techName))
                 {
-                    var checkTech = context.Set<Technology>().FirstOrDefault(t => t.Tech_code.Equals(techCode) &&
-                                                                                    t.SubBrand_code.Equals(subCode) &&
+                    var checkTech = context.Set<Technology>().FirstOrDefault(t => t.Tech_code == techCode &&
+                                                                                    t.SubBrand_code == subCode &&
                                                                                     !t.Disabled);             
 
                     if (checkTech != null)
@@ -592,7 +590,9 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
                             var oldName = checkTech.Name;
                             checkTech.Name = techName;
                             var newName = String.Format($"{checkTech.Name} {checkTech.SubBrand}");
-                            Task.Run(() => PromoHelper.UpdateProductHierarchy("Technology", newName, oldName, checkTech.Id));
+                            var UpdateProductHierarchy = Task.Run(() => PromoHelper.UpdateProductHierarchy("Technology", newName, oldName, checkTech.Id));
+                            //Что бы не выводилось предупреждение и выполнение было синхронным
+                            UpdateProductHierarchy.Wait();
                             UpdateProductTrees(checkTech.Id, newName, context);
                             isUpdated = true;
                         }
@@ -602,7 +602,11 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
                             try
                             {
                                 context.SaveChanges();
-                                Results.Add(String.Format("Updated Technology with technology code {0} and sub code {1}", checkTech.Tech_code, checkTech.SubBrand_code), null);
+                                var resultText = String.Format("Updated Technology with technology code {0} and sub code {1}", checkTech.Tech_code, checkTech.SubBrand_code);
+                                if (!Results.ContainsKey(resultText))
+                                {
+                                    Results.Add(resultText, null);
+                                };
                             }
                             catch (Exception e)
                             {
