@@ -144,7 +144,7 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
                                     IsNumeric(r.UOM_PC2Case))).GroupBy(x => x.ZREP);
                     foreach (var group in step1Log)
                     {
-                        Warnings.Add(String.Format("{0} GRD with ZREP {1} has inappropriate value for one or more of VKORG, 0DIVISION, 0DIVISION___T, 0MATL_TYPE___T, MATNR, VMSTD, 0CREATEDON, ZREP, EAN_PC, UOM_PC2Case fields.", group.Count(), group.Key.TrimStart('0')));
+                        Errors.Add(String.Format("{0} GRD with ZREP {1} has inappropriate value for one or more of VKORG, 0DIVISION, 0DIVISION___T, 0MATL_TYPE___T, MATNR, VMSTD, 0CREATEDON, ZREP, EAN_PC, UOM_PC2Case fields.", group.Count(), group.Key.TrimStart('0')));
                         notifyErrors[group.Key.TrimStart('0')] = "ZREP has inappropriate value for one or more of VKORG, 0DIVISION, 0DIVISION___T, 0MATL_TYPE___T, MATNR, VMSTD, 0CREATEDON, ZREP, EAN_PC, UOM_PC2Case fields.";
                     }
 
@@ -176,7 +176,7 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
                                     IsNotEmptyOrNotApplicable(r.Brand_code))).GroupBy(x => x.ZREP);
                     foreach (var group in step2Log)
                     {
-                        Warnings.Add(String.Format("{0} GRD with ZREP {1} has one of MATERIAL, SKU, UOM_PC2Case, Segmen_code, Tech_code, Brand_Flag_abbr, Brand_Flag, Size, BrandsegTech_code, BrandSegTechSub_code, Brand_code fields not applicable or empty.", group.Count(), group.Key.TrimStart('0')));
+                        Errors.Add(String.Format("{0} GRD with ZREP {1} has one of MATERIAL, SKU, UOM_PC2Case, Segmen_code, Tech_code, Brand_Flag_abbr, Brand_Flag, Size, BrandsegTech_code, BrandSegTechSub_code, Brand_code fields not applicable or empty.", group.Count(), group.Key.TrimStart('0')));
                         notifyErrors[group.Key.TrimStart('0')] = "ZREP has one of MATERIAL, SKU, UOM_PC2Case, Segmen_code, Tech_code, Brand_Flag_abbr, Brand_Flag, Size, BrandsegTech_code, BrandSegTechSub_code, Brand_code fields not applicable or empty.";
                     }
 
@@ -206,7 +206,7 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
                                     IsNotEmptyOrNotApplicable(r.Consumer_pack_format))).GroupBy(x => x.ZREP);
                     foreach (var group in step3Log)
                     {
-                        Warnings.Add(String.Format("{0} GRD with ZREP {0} has all of Submark_Flag, Ingredient_variety, Product_Category, Product_Type, Supply_Segment, Functional_variety, Size, Brand_essence, Pack_Type, Traded_unit_format, Consumer_pack_format fields not applicable or empty.", group.Count(), group.Key.TrimStart('0')));
+                        Errors.Add(String.Format("{0} GRD with ZREP {0} has all of Submark_Flag, Ingredient_variety, Product_Category, Product_Type, Supply_Segment, Functional_variety, Size, Brand_essence, Pack_Type, Traded_unit_format, Consumer_pack_format fields not applicable or empty.", group.Count(), group.Key.TrimStart('0')));
                         notifyErrors[group.Key.TrimStart('0')] = "ZREP has all of Submark_Flag, Ingredient_variety, Product_Category, Product_Type, Supply_Segment, Functional_variety, Size, Brand_essence, Pack_Type, Traded_unit_format, Consumer_pack_format fields not applicable or empty.";
                     }
 
