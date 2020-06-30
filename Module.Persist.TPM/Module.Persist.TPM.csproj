@@ -2483,6 +2483,7 @@
     <Content Include="SQLInitialize\20200625_1618_BrandTech_Computed_BrandsegTechsub_code.sql" />
     <Content Include="SQLInitialize\20200625_1618_Product_Computed_BrandsegTechsub_code.sql" />
     <Content Include="SQLInitialize\20200630_1241_Delete_AppMix_From_GetProductBrandTechByCode.sql" />
+    <Content Include="SQLInitialize\20200630_1354_Alter_PromoView_Replace_BrandTech_to_Brandsegtechsub.sql" />
     <Content Include="SQLInitialize\2020402_1557_Add_AP_CMManager_PriceList.sql" />
     <Content Include="SQLInitialize\20200420_1825_Alter_Proc_FillPromoProductDifference.sql" />
     <Content Include="SQLInitialize\20200421_1440_Alter_Proc_FillPromoProductDifference.sql" />
