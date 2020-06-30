@@ -146,27 +146,7 @@
             }, {
                 text: l10n.ns('tpm', 'PromoSupportPromoView').value('BrandTechName'),
                 dataIndex: 'BrandTechName',
-                width: 120,
-                filter: {
-                    type: 'search',
-                    selectorWidget: 'brandtech',
-                    valueField: 'BrandsegTechsub',
-                    store: {
-                        type: 'directorystore',
-                        model: 'App.model.tpm.brandtech.BrandTech',
-                        extendedFilter: {
-                            xclass: 'App.ExtFilterContext',
-                            supportedModels: [{
-                                xclass: 'App.ExtSelectionFilterModel',
-                                model: 'App.model.tpm.brandtech.BrandTech',
-                                modelId: 'efselectionmodel'
-                            }, {
-                                xclass: 'App.ExtTextFilterModel',
-                                modelId: 'eftextmodel'
-                            }]
-                        }
-                    }
-                }
+                width: 120
             }, {
                 xtype: 'numbercolumn',
                 format: '0.00',
