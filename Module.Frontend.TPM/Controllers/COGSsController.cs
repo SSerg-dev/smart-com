@@ -409,7 +409,7 @@ namespace Module.Frontend.TPM.Controllers {
                         foreach (BrandTech bt in brandtechs) {
                             IRow clientRow = sheet3.CreateRow(i);
                             ICell hcell = clientRow.CreateCell(0);
-                            hcell.SetCellValue(bt.Name);
+                            hcell.SetCellValue(bt.BrandsegTechsub);
                             i++;
                         }
                         sheet2.AutoSizeColumn(0);
