@@ -505,6 +505,9 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
             {
                 if (!String.IsNullOrEmpty(brandCode) && !String.IsNullOrEmpty(segmenCode) && !String.IsNullOrEmpty(techCode))
                 {
+                    //Преобразовываем WhiteSpace в null, чтобы избежать задвоек
+                    subCode = String.IsNullOrEmpty(subCode) ? null : subCode;
+                    subName = String.IsNullOrEmpty(subName) ? null : subName;
                     Brand checkBrand = context.Set<Brand>().FirstOrDefault(n => n.Brand_code == brandCode && n.Segmen_code == segmenCode && !n.Disabled);
                     Technology checkTech = context.Set<Technology>().FirstOrDefault(n => n.Tech_code == techCode && n.SubBrand_code == subCode && !n.Disabled);
 
@@ -572,28 +575,27 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
             {
                 if (!String.IsNullOrEmpty(techName))
                 {
+                    //Преобразовываем WhiteSpace в null, чтобы избежать задвоек
+                    subCode = String.IsNullOrEmpty(subCode) ? null : subCode;
+                    subName = String.IsNullOrEmpty(subName) ? null : subName;
                     var checkTech = context.Set<Technology>().FirstOrDefault(t => t.Tech_code == techCode &&
                                                                                     t.SubBrand_code == subCode &&
-                                                                                    !t.Disabled);             
+                                                                                    !t.Disabled);
 
                     if (checkTech != null)
                     {
                         bool isUpdated = false;
+                        var oldName = String.Format($"{checkTech.Name} {checkTech.SubBrand}");
 
-                        if (String.IsNullOrEmpty(checkTech.SubBrand_code))
+                        if (checkTech.Name != techName)
                         {
-                            checkTech.SubBrand_code = subCode;
+                            checkTech.Name = techName;
                             isUpdated = true;
                         }
-                        if (checkTech.SubBrand_code == subCode && checkTech.Name != techName)
+
+                        if (checkTech.SubBrand != subName && checkTech.SubBrand_code != null)
                         {
-                            var oldName = checkTech.Name;
-                            checkTech.Name = techName;
-                            var newName = String.Format($"{checkTech.Name} {checkTech.SubBrand}");
-                            var UpdateProductHierarchy = Task.Run(() => PromoHelper.UpdateProductHierarchy("Technology", newName, oldName, checkTech.Id));
-                            //Что бы не выводилось предупреждение и выполнение было синхронным
-                            UpdateProductHierarchy.Wait();
-                            UpdateProductTrees(checkTech.Id, newName, context);
+                            checkTech.SubBrand = subName;
                             isUpdated = true;
                         }
 
@@ -602,7 +604,17 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
                             try
                             {
                                 context.SaveChanges();
-                                var resultText = String.Format("Updated Technology with technology code {0} and sub code {1}", checkTech.Tech_code, checkTech.SubBrand_code);
+
+                                var newName = String.Format($"{checkTech.Name} {checkTech.SubBrand}");
+                                var UpdateProductHierarchy = Task.Run(() => PromoHelper.UpdateProductHierarchy("Technology", newName, oldName, checkTech.Id));
+                                //Что бы не выводилось предупреждение и выполнение было синхронным
+                                UpdateProductHierarchy.Wait();
+                                UpdateProductTrees(checkTech.Id, newName, context);
+
+                                var resultText = !String.IsNullOrEmpty(checkTech.SubBrand_code) ?
+                                    String.Format("Updated Technology with technology code {0} and sub code {1}", checkTech.Tech_code, checkTech.SubBrand_code)
+                                    : String.Format("Updated Technology with technology code {0}", checkTech.Tech_code, checkTech.SubBrand_code);
+
                                 if (!Results.ContainsKey(resultText))
                                 {
                                     Results.Add(resultText, null);
