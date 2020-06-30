@@ -50,7 +50,6 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
                 {
                     var settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
                     var lastSuccessDate = settingsManager.GetSetting<string>("MATERIALS_LAST_SUCCESSFUL_EXECUTION_DATE", "2020-03-12 10:00:00.000");
-                    var exceptedZREPs = settingsManager.GetSetting<string>("APP_MIX_EXCEPTED_ZREPS", null);
                     var successMessages = new ConcurrentBag<string>();
                     int sourceRecordCount;
 
@@ -253,29 +252,6 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
                     if (!materialsToCheck.Any() && sourceRecordCount > 0)
                     {
                         Warnings.Add(String.Format("No materials found suitable for updating or creating products.", sourceRecordCount));
-                    }
-                    else
-                    {
-                        if (!String.IsNullOrEmpty(exceptedZREPs))
-                        {
-                            var appMixMaterials = new List<string>();
-                            foreach (var material in materialsToCheck)
-                            {
-                                if (exceptedZREPs.Split(',').Contains(material.ZREP.TrimStart('0')))
-                                {
-                                    material.Brandsegtech.Replace("Pouch", "Pouch App.Mix");
-                                    if (material.Brandsegtech.Contains("App.Mix"))
-                                    {
-                                        appMixMaterials.Add(material.ZREP.TrimStart('0'));
-                                    }
-                                }
-                            }
-                            if (appMixMaterials.Any())
-                            {
-                                Results.Add(String.Format("Brandsegtech changed for ZREPs {0} from App.Mix ZREP list (setting 'APP_MIX_EXCEPTED_ZREPs')",
-                                    String.Join(",", appMixMaterials)), null);
-                            }
-                        }
                     }
 
                     // Проверяем есть ли новые ZREP
