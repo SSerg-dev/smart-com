@@ -122,9 +122,25 @@ namespace Module.Frontend.TPM.Controllers
             {
                 return BadRequest(ModelState);
             }
+            model.SubBrand_code = String.IsNullOrWhiteSpace(model.SubBrand_code) ? null : model.SubBrand_code;
+            model.SubBrand = String.IsNullOrWhiteSpace(model.SubBrand) ? null : model.SubBrand;
             if (Context.Set<Technology>().Any(t=>t.Tech_code == model.Tech_code && t.SubBrand_code == model.SubBrand_code))
             {
-                ModelState.AddModelError("Error", $"Technology with tech_code {model.Tech_code} and sub_code {model.SubBrand_code} already exists");
+                var errorText = !String.IsNullOrEmpty(model.SubBrand_code) ?
+                    $"Technology with tech_code {model.Tech_code} and sub_code {model.SubBrand_code} already exists"
+                    : $"Technology with tech_code {model.Tech_code} already exists";
+                ModelState.AddModelError("Error", errorText);
+                return BadRequest(ModelState);
+            }
+            if (!String.IsNullOrEmpty(model.SubBrand_code) && String.IsNullOrEmpty(model.SubBrand))
+            {
+                var errorText = $"Sub Brand required";
+                ModelState.AddModelError("Error", errorText);
+                return BadRequest(ModelState);
+            }else if (String.IsNullOrEmpty(model.SubBrand_code) && !String.IsNullOrEmpty(model.SubBrand))
+            {
+                var errorText = $"Sub Brand not required";
+                ModelState.AddModelError("Error", errorText);
                 return BadRequest(ModelState);
             }
             var proxy = Context.Set<Technology>().Create<Technology>();
