@@ -22,7 +22,7 @@
         { name: 'ManualRollingTotalVolumes', useNull: true, type: 'float', hidden: false, isDefault: true },
         { name: 'ZREP', type: 'string',  mapping: 'Product.ZREP', isDefault: true, defaultFilterConfig: { valueField: 'ZREP' }, breezeEntityType: 'Product', hidden: false},
         { name: 'SKU', type: 'string', mapping: 'Product.ProductEN', isDefault: true, defaultFilterConfig: { valueField: 'ProductEN' }, breezeEntityType: 'Product', hidden: false},
-        { name: 'BrandTech', type: 'string', mapping: 'Product.BrandTech', isDefault: true, defaultFilterConfig: { valueField: 'BrandsegTechsub' }, breezeEntityType: 'BrandTech', hidden: false},
+        { name: 'BrandTech', type: 'string', mapping: 'Product.BrandsegTechsub', isDefault: true, defaultFilterConfig: { valueField: 'BrandsegTechsub' }, breezeEntityType: 'Product', hidden: false},
     ],
     proxy: {
         type: 'breeze',
