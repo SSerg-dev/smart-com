@@ -2995,10 +2995,10 @@
             promoeditorcustom.down('numberfield[name=Adjustment]').setReadOnly(true);
             promoeditorcustom.down('numberfield[name=Adjustment]').addCls('readOnlyField');
         }
-        if ((record.data.PromoStatusSystemName === 'Started'
+        if (((record.data.PromoStatusSystemName === 'Started'
             && promoeditorcustom.down('sliderfield[name = DeviationCoefficient]').crudAccess.indexOf(App.UserInfo.getCurrentRole()['SystemName']) >= 0)
             || ((['Finished', 'Closed'].indexOf(record.data.PromoStatusSystemName) >= 0)
-                && App.UserInfo.getCurrentRole()['SystemName'] === 'SupportAdministrator')
+                && App.UserInfo.getCurrentRole()['SystemName'] === 'SupportAdministrator'))
             && !readOnly) {
             promoeditorcustom.down('sliderfield[name = DeviationCoefficient]').setDisabled(false);
             promoeditorcustom.down('sliderfield[name = DeviationCoefficient]').setReadOnly(false);
