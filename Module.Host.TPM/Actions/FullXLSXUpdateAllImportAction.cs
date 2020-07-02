@@ -45,6 +45,7 @@ namespace Module.Host.TPM.Actions {
 
                 using (DatabaseContext context = new DatabaseContext())
                 {
+                    typedRec.SubBrand_code = String.IsNullOrEmpty(typedRec.SubBrand_code) ? null : typedRec.SubBrand_code;
                     var technology = context.Set<Technology>().Where(t => t.Tech_code == typedRec.Tech_code && t.SubBrand_code == typedRec.SubBrand_code).FirstOrDefault();
                     var brandTech = context.Set<BrandTech>().Where(bt =>
                                                                 bt.Technology != null && bt.Brand != null
