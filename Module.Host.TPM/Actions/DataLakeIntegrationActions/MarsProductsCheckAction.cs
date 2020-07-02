@@ -698,7 +698,6 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
                 BrandEssence = material.Brand_essence,
                 BrandFlag = material.Brand_Flag,
                 BrandFlagAbbr = material.Brand_Flag_abbr,
-                Brandsegtech = material.Brandsegtech,
                 SubBrand_code = material.SubBrand_code,
                 Brand_code = material.Brand_code,
                 ConsumerPackFormat = material.Consumer_pack_format,

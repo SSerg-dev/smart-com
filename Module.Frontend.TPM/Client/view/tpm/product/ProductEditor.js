@@ -58,6 +58,21 @@
             selectorWidget: 'brand',
             valueField: 'Brand_code',
             displayField: 'Brand_code',
+            onSelectButtonClick: function (button) {
+                var picker = this.picker,
+                    selModel = picker.down(this.selectorWidget).down('grid').getSelectionModel(),
+                    record = selModel.hasSelection() ? selModel.getSelection()[0] : null;
+
+                this.setValue(record);
+                if (this.needUpdateMappings) {
+                    this.updateMappingValues(record);
+                }
+                this.afterSetValue(record);
+
+                this.up('editorform').down('[name=Segmen_code]').setValue(record.get('Segmen_code'));
+
+                picker.close();
+            },
             store: {
                 type: 'directorystore',
                 model: 'App.model.tpm.brand.Brand',
@@ -168,12 +183,24 @@
                 }
             }
         }, {
-            xtype: 'textfield',
+            xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
             name: 'Segmen_code',
             fieldLabel: l10n.ns('tpm', 'Product').value('Segmen_code'),
             maxLength: 255,
             regex: /^\d+$/,
-            regexText: l10n.ns('tpm', 'Brand').value('DigitRegex')
+            regexText: l10n.ns('tpm', 'Brand').value('DigitRegex'),
+            readOnly: true,
+            listeners: {
+                afterrender: function (field) {
+                    field.addCls('readOnlyField');
+                },
+                writeablechange: function (field) {
+                    if (field.readOnly == false) {
+                        field.setReadOnly(true);
+                        field.addCls('readOnlyField');
+                    }
+                }
+            }
         }, {
             //--
             xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,

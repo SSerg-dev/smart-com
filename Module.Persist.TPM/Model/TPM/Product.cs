@@ -57,7 +57,9 @@ namespace Module.Persist.TPM.Model.TPM
         public string BrandTech_code { get; set; }
 
 		[StringLength(255)]
-		public string Brandsegtech { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        [SpecialNotKeyProperty]
+        public string Brandsegtech { get; set; }
 
         [StringLength(255)]
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
