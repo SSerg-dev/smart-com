@@ -377,7 +377,8 @@
             'Infinities': 'Инфинити',
             'ResultMessage': 'Результат',
             'NoValidFile': 'Ошибки'
-        }
+        },
+        'DownloadLogTitle': 'Результаты'
     },
     'HistoricalLoopHandler': ['LoopHandler', 'BaseHistoryEntity'],
 
@@ -613,5 +614,12 @@
 
     'System': {
         'Tasks': 'Задачи'
+    },
+
+    'HandlerLogFileDownload': {
+        'Info': 'Infos',
+        'Warning': 'Warnings',
+        'Error': 'Errors',
+        'Title': 'Results'
     }
 });

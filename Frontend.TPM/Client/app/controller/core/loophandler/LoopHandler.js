@@ -523,7 +523,7 @@
 					var resultData = data.httpResponse.data.value;
 					var result = JSON.parse(resultData);
 
-					me.fillTaskDetailsForm(window.down('#resultform'), result['OutcomingParameters'], result, record);
+					me.fillTaskResultForm(window.down('#resultform'), result['OutcomingParameters'], result, record);
 					me.fillTaskDetailsForm(window.down('#parametersform'), result['IncomingParameters'], result, record);
 					window.setLoading(false);
 				})
@@ -534,6 +534,38 @@
 		} else {
 			console.log('No selection');
 			App.Notify.pushInfo(l10n.ns('core', 'LoopHandler').value('NoSelectionTaskMessage'));
+		}
+	},
+
+	fillTaskResultForm: function (form, parameters, handlerData, record) {
+		var models = this.buildParametersFieldList(form, parameters, handlerData, record)
+		me = this;
+
+		if (record.get('Status') === 'COMPLETE' || record.get('Status') === 'ERROR' || record.get('Status') === 'WARNING') {
+			models.splice(0, 0, {
+				xtype: 'fieldcontainer',
+				cls: 'labelable-button',
+				fieldLabel: l10n.ns('core', 'LoopHandler').value('DownloadLogTitle'),
+				items: [{
+					xtype: 'button',
+					text: l10n.ns('core', 'buttons').value('open'),
+					handler: function (button) {
+						// Открыть окно просмотра результата
+						me.openDowloadLogFilesWindow(record.get('Id'));
+					}
+				}]
+			});
+			form.up('simplecombineddirectorypanel').minHeight = 50;
+		}
+
+		if (models && models.length) {
+			Ext.suspendLayouts();
+			form.removeAll();
+			form.add(models);
+			Ext.resumeLayouts(true);
+		} else {
+			//Скрываем грид если нет данных для отображения
+			form.up('simplecombineddirectorypanel').hide();
 		}
 	},
 
@@ -587,6 +619,15 @@
 				break;
 			case 'AdditionalFilesDownload':
 				pattern = 'api/File/AdditionalFilesDownload?filename={0}';
+				break;
+			case 'InfoHandlerLogFileDownload':
+				pattern = 'api/File/DownloadHandlerLogFile?filename={0}&type=Info';
+				break;
+			case 'WarningHandlerLogFileDownload':
+				pattern = 'api/File/DownloadHandlerLogFile?filename={0}&type=Warning';
+				break;
+			case 'ErrorHandlerLogFileDownload':
+				pattern = 'api/File/DownloadHandlerLogFile?filename={0}&type=Error';
 				break;
 			default:
 				throw Ext.String.format("Logical file type '{0}' is not supported", fileModel.LogicType);
@@ -748,6 +789,27 @@
 			};
 		};
 		var fields = [buildField.call(this, 'Success'), buildField.call(this, 'Warning'), buildField.call(this, 'Error')];
+		win.down('#importresultfilesform').add(fields);
+		win.show();
+	},
+
+	openDowloadLogFilesWindow: function (taskId) {
+		var win = Ext.widget('importresultfileswindow');
+		win.title = l10n.ns('core', 'LoopHandler').value('DownloadLogTitle');
+		function buildField(type) {
+			return {
+				xtype: 'singlelinedisplayfield',
+				name: type + 'File',
+				fieldLabel: l10n.ns('core', 'HandlerLogFileDownload').value(type),
+				value: this.getFileDownloadLink(
+					{
+						LogicType: type + 'HandlerLogFileDownload',
+						DisplayName: l10n.ns('core', 'buttons').value('download'),
+						Name: taskId + '.txt'
+					})
+			};
+		};
+		var fields = [buildField.call(this, 'Info'), buildField.call(this, 'Warning'), buildField.call(this, 'Error')];
 		win.down('#importresultfilesform').add(fields);
 		win.show();
 	},
