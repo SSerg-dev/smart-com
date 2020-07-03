@@ -433,7 +433,8 @@
             'CrossParam.StartDate': ' Start Date',
             'CrossParam.FinishDate': 'Finish Date',
             'CrossParam.Year': 'Year'
-        }
+        },
+        'DownloadLogTitle': 'Results'
     },
     'HistoricalLoopHandler': ['LoopHandler', 'BaseHistoryEntity'],
     'SingleLoopHandler': ['LoopHandler'],
@@ -773,5 +774,12 @@
 
     'System': {
         'Tasks': 'Tasks'
-	},
+    },
+
+    'HandlerLogFileDownload': {
+        'Info': 'Infos',
+        'Warning': 'Warnings',
+        'Error': 'Errors',
+        'Title': 'Results'
+    }
 });

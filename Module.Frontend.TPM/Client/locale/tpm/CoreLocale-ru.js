@@ -388,7 +388,8 @@
             'CrossParam.StartDate': 'Дата начала',
             'CrossParam.FinishDate': 'Дата окончания',
             'CrossParam.Year': 'Год'
-        }
+        },
+        'DownloadLogTitle': 'Результаты'
     },
     'HistoricalLoopHandler': ['LoopHandler', 'BaseHistoryEntity'],
 
@@ -624,5 +625,12 @@
 
     'System': {
         'Tasks': 'Задачи'
+    },
+
+    'HandlerLogFileDownload': {
+        'Info': 'Infos',
+        'Warning': 'Warnings',
+        'Error': 'Errors',
+        'Title': 'Results'
     }
 });
