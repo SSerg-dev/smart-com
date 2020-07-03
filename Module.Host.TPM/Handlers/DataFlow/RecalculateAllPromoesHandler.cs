@@ -22,6 +22,7 @@ using Looper;
 using Module.Persist.TPM.Model.Import;
 using Persist.Model;
 using LoopHandler = Persist.Model.LoopHandler;
+using Module.Host.TPM.Handlers.MainNightProcessing;
 
 namespace Module.Host.TPM.Handlers.DataFlow
 {
@@ -96,12 +97,22 @@ namespace Module.Host.TPM.Handlers.DataFlow
                 }
                 else
                 {
+                    string mainNightProcessingStepPrefix = AppSettingsManager.GetSetting<string>("MAIN_NIGHT_PROCESSING_STEP_PREFIX", "MainNightProcessingStep");
+                    using (DatabaseContext context = new DatabaseContext())
+                    {
+                        MainNightProcessingHelper.SetProcessingFlagDown(context, mainNightProcessingStepPrefix);
+                    }
                     data.SetValue<bool>("HasErrors", true);
                     handlerLogger.Write(true, $"Night recalculating is not possible, there are {blockedPromoes.Count()} blocked promoes.", "Error");
                 }
             }
             catch (Exception e)
             {
+                string mainNightProcessingStepPrefix = AppSettingsManager.GetSetting<string>("MAIN_NIGHT_PROCESSING_STEP_PREFIX", "MainNightProcessingStep");
+                using (DatabaseContext context = new DatabaseContext())
+                {
+                    MainNightProcessingHelper.SetProcessingFlagDown(context, mainNightProcessingStepPrefix);
+                }
                 data.SetValue<bool>("HasErrors", true);
                 logger.Error(e);
 
