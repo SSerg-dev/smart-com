@@ -14,6 +14,7 @@ using NLog;
 using System.Web.Http.OData.Query;
 using System.Linq.Expressions;
 using LinqToQuerystring;
+using System.Text.RegularExpressions;
 
 namespace Module.Host.TPM.Actions.Notifications {
     /// <summary>
@@ -45,7 +46,10 @@ namespace Module.Host.TPM.Actions.Notifications {
 
                     IQueryable<PromoView> query = (GetConstraintedQuery(context));
                     IQueryable<PromoView> promoes = query.Cast<PromoView>();
+                    //из библиотеки LinqToQuerystring нашей версии убрали datetimeoffset заменяем
                     var row = RawFilters.Replace("datetimeoffset", "datetime").Replace(".000Z", "").Replace(".00Z", "");
+                    //из библиотеки LinqToQuerystring нашей версии нет данных в вииде 12d что есть в нашей версии odata заменяем
+                    row = Regex.Replace(row, @"(\d+)[d]", @"$1");
                     promoes = promoes.LinqToQuerystring(row);
 
                     DateTime startDate = DateTime.Now;
