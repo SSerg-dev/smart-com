@@ -220,7 +220,7 @@
         'deleteWindowTitle': 'Delete record',
         'deleteConfirmMessage': 'Do you really want to delete the record?',
         'cascadeDeleteConfirmMessage': 'Do you really want to delete the node? All child elements will be also removed',
-        'deleteNodeWarning': 'Warning! If you delete the node all related promos will be corrupted!'
+        'deleteNodeWarning': 'Warning! If you delete the node all related promos will be corrupted and other problems with the system!'
     },
 
     'promoMainTab': {
