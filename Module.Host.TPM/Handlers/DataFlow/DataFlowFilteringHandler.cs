@@ -5,6 +5,7 @@ using Looper.Parameters;
 using Model.Host.TPM.Handlers.DataFlow;
 using Module.Host.TPM.Handlers.DataFlow.Filters;
 using Module.Host.TPM.Handlers.DataFlow.Modules;
+using Module.Host.TPM.Handlers.MainNightProcessing;
 using Module.Persist.TPM.CalculatePromoParametersModule;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
@@ -49,7 +50,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
                     .Where(x => !x.Disabled && x.StartDate.HasValue && !statuses.Contains(x.PromoStatusSystemName)).OrderBy(x => x.Number);
 
                 var syncLock = new object();
-                var promoesForRecalculating =  new List<PromoDataFlowModule.PromoDataFlowSimpleModel>();
+                var promoesForRecalculating = new List<PromoDataFlowModule.PromoDataFlowSimpleModel>();
 
                 var promoesForRecalculatingForFilters = new ConcurrentDictionary<Guid, PromoDataFlowModule.PromoDataFlowSimpleModel>();
                 foreach (var promo in promoesToCheck)
@@ -62,7 +63,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
                 handlerLogger.Write(true, $"{nameof(ClientTreeDataFlowFilter)}: Amount of promoes to check: { promoesForRecalculatingForFilters.Count() }. " +
                     $"Amount of {nameof(ClientTree)} models: { dataFlowFilterCollection.ClientTreeDataFlowFilter.ChangedModels.Count() }", "Message");
 
-                Parallel.ForEach(dataFlowFilterCollection.ClientTreeDataFlowFilter.ChangedModels.Where(x => !x.EndDate.HasValue), 
+                Parallel.ForEach(dataFlowFilterCollection.ClientTreeDataFlowFilter.ChangedModels.Where(x => !x.EndDate.HasValue),
                     new ParallelOptions { MaxDegreeOfParallelism = this.MaxDegreeOfParallelism }, clientTree =>
                 {
                     var applyResult = dataFlowFilterCollection.ClientTreeDataFlowFilter.Apply(clientTree, promoesForRecalculatingForFilters.Values);
@@ -87,7 +88,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
                 handlerLogger.Write(true, $"{nameof(ClientTreeBrandTechDataFlowFilter)}: Amount of promoes to check: { promoesForRecalculatingForFilters.Count() }. " +
                     $"Amount of {nameof(ClientTreeBrandTech)} models: { dataFlowFilterCollection.ClientTreeBrandTechDataFlowFilter.ChangedModels.Count() }", "Message");
 
-                Parallel.ForEach(dataFlowFilterCollection.ClientTreeBrandTechDataFlowFilter.ChangedModels, 
+                Parallel.ForEach(dataFlowFilterCollection.ClientTreeBrandTechDataFlowFilter.ChangedModels,
                     new ParallelOptions { MaxDegreeOfParallelism = MaxDegreeOfParallelism }, clientTreeBrandTech =>
                 {
                     var applyResult = dataFlowFilterCollection.ClientTreeBrandTechDataFlowFilter.Apply(clientTreeBrandTech, promoesForRecalculatingForFilters.Values);
@@ -112,7 +113,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
                 handlerLogger.Write(true, $"{nameof(ProductTreeDataFlowFilter)}: Amount of promoes to check: { promoesForRecalculatingForFilters.Count() }. " +
                     $"Amount of {nameof(ProductTree)} models: { dataFlowFilterCollection.ProductTreeDataFlowFilter.ChangedModels.Count() }", "Message");
 
-                Parallel.ForEach(dataFlowFilterCollection.ProductTreeDataFlowFilter.ChangedModels.Where(x => !x.EndDate.HasValue), 
+                Parallel.ForEach(dataFlowFilterCollection.ProductTreeDataFlowFilter.ChangedModels.Where(x => !x.EndDate.HasValue),
                     new ParallelOptions { MaxDegreeOfParallelism = MaxDegreeOfParallelism }, productTree =>
                 {
                     var applyResult = dataFlowFilterCollection.ProductTreeDataFlowFilter.Apply(productTree, promoesForRecalculatingForFilters.Values);
@@ -137,7 +138,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
                 handlerLogger.Write(true, $"{nameof(IncrementalPromoDataFlowFilter)}: Amount of promoes to check: { promoesForRecalculatingForFilters.Count() }. " +
                     $"Amount of {nameof(IncrementalPromo)} models: { dataFlowFilterCollection.IncrementalPromoDataFlowFilter.ChangedModels.Count() }", "Message");
 
-                Parallel.ForEach(dataFlowFilterCollection.IncrementalPromoDataFlowFilter.ChangedModels.Where(x => !x.Disabled), 
+                Parallel.ForEach(dataFlowFilterCollection.IncrementalPromoDataFlowFilter.ChangedModels.Where(x => !x.Disabled),
                     new ParallelOptions { MaxDegreeOfParallelism = MaxDegreeOfParallelism }, incrementalPromo =>
                 {
                     var applyResult = dataFlowFilterCollection.IncrementalPromoDataFlowFilter.Apply(incrementalPromo, promoesForRecalculatingForFilters.Values);
@@ -162,7 +163,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
                 handlerLogger.Write(true, $"{nameof(AssortmentMatrixDataFlowFilter)}: Amount of promoes to check: { promoesForRecalculatingForFilters.Count() }. " +
                     $"Amount of {nameof(AssortmentMatrix)} models: { dataFlowFilterCollection.AssortmentMatrixDataFlowFilter.ChangedModels.Count() }", "Message");
 
-                Parallel.ForEach(dataFlowFilterCollection.AssortmentMatrixDataFlowFilter.ChangedModels, 
+                Parallel.ForEach(dataFlowFilterCollection.AssortmentMatrixDataFlowFilter.ChangedModels,
                     new ParallelOptions { MaxDegreeOfParallelism = MaxDegreeOfParallelism }, assortmentMatrix =>
                 {
                     var applyResult = dataFlowFilterCollection.AssortmentMatrixDataFlowFilter.Apply(assortmentMatrix, promoesForRecalculatingForFilters.Values);
@@ -187,7 +188,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
                 handlerLogger.Write(true, $"{nameof(COGSDataFlowFilter)}: Amount of promoes to check: { promoesForRecalculatingForFilters.Count() }. " +
                     $"Amount of {nameof(COGS)} models: { dataFlowFilterCollection.COGSDataFlowFilter.ChangedModels.Count() }", "Message");
 
-                Parallel.ForEach(dataFlowFilterCollection.COGSDataFlowFilter.ChangedModels, 
+                Parallel.ForEach(dataFlowFilterCollection.COGSDataFlowFilter.ChangedModels,
                     new ParallelOptions { MaxDegreeOfParallelism = MaxDegreeOfParallelism }, cogs =>
                 {
                     var applyResult = dataFlowFilterCollection.COGSDataFlowFilter.Apply(cogs, promoesForRecalculatingForFilters.Values);
@@ -212,7 +213,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
                 handlerLogger.Write(true, $"{nameof(TradeInvestmentDataFlowFilter)}: Amount of promoes to check: { promoesForRecalculatingForFilters.Count() }. " +
                     $"Amount of {nameof(TradeInvestment)} models: { dataFlowFilterCollection.TradeInvestmentDataFlowFilter.ChangedModels.Count() }", "Message");
 
-                Parallel.ForEach(dataFlowFilterCollection.TradeInvestmentDataFlowFilter.ChangedModels, 
+                Parallel.ForEach(dataFlowFilterCollection.TradeInvestmentDataFlowFilter.ChangedModels,
                     new ParallelOptions { MaxDegreeOfParallelism = MaxDegreeOfParallelism }, ti =>
                 {
                     var applyResult = dataFlowFilterCollection.TradeInvestmentDataFlowFilter.Apply(ti, promoesForRecalculatingForFilters.Values);
@@ -262,7 +263,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
                 handlerLogger.Write(true, $"{nameof(BaseLineDataFlowFilter)}: Amount of promoes to check: { promoesForRecalculatingForFilters.Count() }. " +
                     $"Amount of {nameof(BaseLine)} models: { dataFlowFilterCollection.BaseLineDataFlowFilter.ChangedModels.Count() }", "Message");
 
-                Parallel.ForEach(dataFlowFilterCollection.BaseLineDataFlowFilter.ChangedModels, 
+                Parallel.ForEach(dataFlowFilterCollection.BaseLineDataFlowFilter.ChangedModels,
                     new ParallelOptions { MaxDegreeOfParallelism = MaxDegreeOfParallelism }, baseLine =>
                 {
                     var applyResult = dataFlowFilterCollection.BaseLineDataFlowFilter.Apply(baseLine, promoesForRecalculatingForFilters.Values);
@@ -287,7 +288,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
                 handlerLogger.Write(true, $"{nameof(PriceListDataFlowFilter)}: Amount of promoes to check: { promoesForRecalculatingForFilters.Count() }. " +
                     $"Amount of {nameof(PriceList)} models: { dataFlowFilterCollection.PriceListDataFlowFilter.ChangedModels.Count() }", "Message");
 
-                Parallel.ForEach(dataFlowFilterCollection.PriceListDataFlowFilter.ChangedModels, 
+                Parallel.ForEach(dataFlowFilterCollection.PriceListDataFlowFilter.ChangedModels,
                     new ParallelOptions { MaxDegreeOfParallelism = MaxDegreeOfParallelism }, priceList =>
                 {
                     var applyResult = dataFlowFilterCollection.PriceListDataFlowFilter.Apply(priceList, promoesForRecalculatingForFilters.Values);
@@ -368,11 +369,19 @@ namespace Module.Host.TPM.Handlers.DataFlow
                 handlerLogger.Write(true, "The task for recalculating of promoes will be created in a few seconds.", "Message");
 
                 context.SaveChanges();
-                CalculationTaskManager.CreateCalculationTask(CalculationTaskManager.CalculationAction.DataFlow, handlerData, context);
+                if (CalculationTaskManager.CreateCalculationTask(CalculationTaskManager.CalculationAction.DataFlow, handlerData, context))
+                {
+                    string mainNightProcessingStepPrefix = AppSettingsManager.GetSetting<string>("MAIN_NIGHT_PROCESSING_STEP_PREFIX", "MainNightProcessingStep");
+                    MainNightProcessingHelper.SetProcessingFlagDown(context, mainNightProcessingStepPrefix);
+                }
+
                 handlerLogger.Write(true, "The task for recalculating of promoes was created.", "Message");
             }
             catch (Exception e)
             {
+                string mainNightProcessingStepPrefix = AppSettingsManager.GetSetting<string>("MAIN_NIGHT_PROCESSING_STEP_PREFIX", "MainNightProcessingStep");
+                MainNightProcessingHelper.SetProcessingFlagDown(context, mainNightProcessingStepPrefix);
+
                 data.SetValue<bool>("HasErrors", true);
                 logger.Error(e);
 

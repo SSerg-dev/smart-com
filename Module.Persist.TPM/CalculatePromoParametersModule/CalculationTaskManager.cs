@@ -126,6 +126,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 else
                 {
                     var handlerId = Guid.NewGuid();
+                    var handlerCreated = true;
                     using (var transaction = context.Database.BeginTransaction())
                     {
                         BlockPromoRangeDataFlow(context, promoIdsForBlock, handlerId);
@@ -136,6 +137,11 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     if (!blockedPromoes.Any())
                     {
                         CreateHandler(handlerId, description, nameHandler, data, context);
+                    }
+                    else
+                    {
+                        handlerCreated = false;
+                        return handlerCreated;
                     }
                 }
             }
