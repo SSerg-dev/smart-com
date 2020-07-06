@@ -369,7 +369,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
                 handlerLogger.Write(true, "The task for recalculating of promoes will be created in a few seconds.", "Message");
 
                 context.SaveChanges();
-                if (CalculationTaskManager.CreateCalculationTask(CalculationTaskManager.CalculationAction.DataFlow, handlerData, context))
+                if (!CalculationTaskManager.CreateCalculationTask(CalculationTaskManager.CalculationAction.DataFlow, handlerData, context))
                 {
                     string mainNightProcessingStepPrefix = AppSettingsManager.GetSetting<string>("MAIN_NIGHT_PROCESSING_STEP_PREFIX", "MainNightProcessingStep");
                     MainNightProcessingHelper.SetProcessingFlagDown(context, mainNightProcessingStepPrefix);
