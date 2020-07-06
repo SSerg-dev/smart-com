@@ -1,5 +1,4 @@
 ﻿using Core.History;
-using Module.Persist.TPM.ElasticSearch;
 using Module.Persist.TPM.Model.TPM;
 using System;
 namespace Module.Persist.TPM.Model.History {
@@ -242,5 +241,6 @@ namespace Module.Persist.TPM.Model.History {
         public Guid? OperationId { get; set; }
         public bool? IsGrowthAcceleration { get; set; }
         public bool? IsApolloExport { get; set; }
+        public double? InvoiceTotal { get; set; }
     }
 }

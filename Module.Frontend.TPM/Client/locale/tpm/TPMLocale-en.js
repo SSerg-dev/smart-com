@@ -2037,7 +2037,8 @@
         'TIBasePercent': 'TI Base',
         'COGSPercent': 'COGS',
         'PromoTypesName': 'Promo Types Name',
-        'IsGrowthAcceleration': 'Growth acceleration'
+        'IsGrowthAcceleration': 'Growth acceleration',
+        'InvoiceTotal': 'Invoice Total'
     },
 
     'PromoActivity': {

@@ -179,7 +179,8 @@ namespace Module.Frontend.TPM.Controllers
                 ActualPromoNetIncrementalEarnings = x.ActualPromoNetIncrementalEarnings,
                 ActualPromoROIPercent = x.ActualPromoROIPercent,
                 ActualPromoNetROIPercent = x.ActualPromoNetROIPercent,
-                PromoTypesName = x.PromoTypes.Name
+                PromoTypesName = x.PromoTypes.Name,
+                InvoiceTotal = x.InvoiceTotal
             }).ToList();
             foreach (var item in query)
             {
@@ -394,7 +395,8 @@ namespace Module.Frontend.TPM.Controllers
                 new Column { Order = orderNumber++, Field = "ActualPromoNetIncrementalEarnings", Header = "Actual Promo Net Incremental Earnings", Quoting = false,  Format = "0.00"  },
                 new Column { Order = orderNumber++, Field = "ActualPromoROIPercent", Header = "Actual Promo ROI, %", Quoting = false,  Format = "0.00"  },
                 new Column { Order = orderNumber++, Field = "ActualPromoNetROIPercent", Header = "Actual Promo Net ROI%", Quoting = false,  Format = "0.00"  },
-                new Column { Order = orderNumber++, Field = "PromoTypesName", Header = "Promo Type Name", Quoting = false }
+                new Column { Order = orderNumber++, Field = "PromoTypesName", Header = "Promo Type Name", Quoting = false },
+                new Column { Order = orderNumber++, Field = "InvoiceTotal", Header = "Invoice Total", Quoting = false,  Format = "0.00"  },
             };
             return columns;
         }
