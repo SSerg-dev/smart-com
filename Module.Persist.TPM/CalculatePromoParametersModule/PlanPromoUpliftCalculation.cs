@@ -235,9 +235,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             // если не найдено исторических промо по каждому сабренжу отдельно, то осуществляется поиск исторических промо на основе брендтех текущего промо
             else
             {
-                Guid? brandId, technologyId;
-                GetBrandTechnologyGuid(context, currentPromo, out brandId, out technologyId);
-                promoQuery = promoQuery.Where(x => x.BrandId.HasValue && x.BrandId == brandId && x.TechnologyId.HasValue && x.TechnologyId == technologyId);
+                promoQuery = promoQuery.Where(x => x.BrandTechId.HasValue && x.BrandTechId == currentPromo.BrandTechId);
                 List<Promo> promoQueryList = new List<Promo>();
 
                 // по brand и technology должен быть выбран именно узел Technology
@@ -417,28 +415,6 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             if (summPlanBaseline != 0)
             {
                 countedPlanUplift = summPlanIncremental / summPlanBaseline * 100;
-            }
-        } 
-
-        private static void GetBrandTechnologyGuid(DatabaseContext context, Promo promo, out Guid? brandId, out Guid? technologyId)
-        {
-            brandId = Guid.Empty;
-            technologyId = Guid.Empty;
-            // можно брать первый, т.к. даже если ProductTree несколько, то они в одной технологии
-            int objectId = context.Set<PromoProductTree>().First(n => n.PromoId == promo.Id && !n.Disabled).ProductTreeObjectId;
-            var productTree = context.Set<ProductTree>().Where(x => x.ObjectId == objectId && !x.EndDate.HasValue).FirstOrDefault();
-            while (productTree.Type != "root")
-            {
-                if (productTree.Type == "Brand")
-                {
-                    brandId = productTree.BrandId;
-                }
-                else if (productTree.Type == "Technology")
-                {
-                    technologyId = productTree.TechnologyId;
-                }
-
-                productTree = context.Set<ProductTree>().Where(x => x.ObjectId == productTree.parentId && !x.EndDate.HasValue).FirstOrDefault();
             }
         }
 
