@@ -862,6 +862,26 @@ Ext.define('Ext.ux.grid.FilterBar', {
                         type: column.filter.type,
                         operator: 'lte'
                     }));
+                } else if (column.filter.type == 'float') {
+
+                    var a = newVal.includes('.') ? '0.' + newVal.split('.')[1].replace(/[0-9]/g, '0') : 1;
+
+                    var b = a.toString().substring(0, a.length - 1) + '1';
+                    var updateVal = parseFloat(newVal) + parseFloat(b);
+
+                    me.filterArray.push(Ext.create('Ext.util.Filter', {
+                        property: column.dataIndex,
+                        value: newVal,
+                        type: column.filter.type,
+                        operator: 'gte'
+                    }));
+
+                    me.filterArray.push(Ext.create('Ext.util.Filter', {
+                        property: column.dataIndex,
+                        value: updateVal,
+                        type: column.filter.type,
+                        operator: 'lt'
+                    }));
                 } else {
                     var operator = (field.operator || column.filter.operator);
 
