@@ -150,6 +150,6 @@ namespace Module.Host.TPM.Actions.Notifications {
 		}
 
         private readonly string[] propertiesOrder = new string[] {
-			"ClientHierarchy", "Number", "Name", "BrandTech.Name", "PromoStatus.Name", "StartDate", "EndDate" };
+			"ClientHierarchy", "Number", "Name", "BrandTech.BrandsegTechsub", "PromoStatus.Name", "StartDate", "EndDate" };
     }
 }

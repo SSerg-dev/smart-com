@@ -114,6 +114,6 @@ namespace Module.Host.TPM.Actions.Notifications
         }
 
         private readonly string[] propertiesOrder = new string[] {
-            "Number", "Name", "BrandTech.Name", "PromoStatus.Name", "StartDate", "EndDate" };
+            "Number", "Name", "BrandTech.BrandsegTechsub", "PromoStatus.Name", "StartDate", "EndDate" };
     }
 }

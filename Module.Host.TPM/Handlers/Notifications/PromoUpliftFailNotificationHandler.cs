@@ -10,7 +10,7 @@ using Module.Host.TPM.Actions.Notifications;
 namespace Module.Host.TPM.Handlers.Notifications
 {
     /// <summary>
-    /// Класс для запуска экшена по формированияю и рассылке списка промо для которых подходит новый продукт
+    /// Класс для запуска экшена по формированию и рассылке списка промо, для которых подходит новый продукт
     /// </summary>
     public class PromoUpliftFailNotificationHandler : BaseHandler {
         public override void Action(HandlerInfo info, ExecuteData data) {
