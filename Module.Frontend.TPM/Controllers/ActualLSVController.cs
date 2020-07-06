@@ -116,10 +116,7 @@ namespace Module.Frontend.TPM.Controllers
         public IQueryable<ActualLSV> GetActualLSVs(ODataQueryOptions<ActualLSV> queryOptions = null)
         {
             var query = GetConstraintedQuery();
-            if (queryOptions != null && queryOptions.Filter != null)
-            {
-                query = RoundingHelper.ModifyQuery(query);
-            }
+           
             return query;
         }
 

@@ -283,70 +283,104 @@
                 dataIndex: 'ActualInStoreDiscount'
             },
             {
+                xtype: 'numbercolumn',
+                format: '0.00',
                 text: l10n.ns('tpm', 'ActualLSV').value('PlanPromoUpliftPercent'),
                 dataIndex: 'PlanPromoUpliftPercent'
             },
             {
+                xtype: 'numbercolumn',
+                format: '0.00',
                 text: l10n.ns('tpm', 'ActualLSV').value('ActualPromoUpliftPercent'),
                 dataIndex: 'ActualPromoUpliftPercent'
             },
             {
+                xtype: 'numbercolumn',
+                format: '0.00',
                 text: l10n.ns('tpm', 'ActualLSV').value('PlanPromoBaselineLSV'),
                 dataIndex: 'PlanPromoBaselineLSV'
             },
             {
+                xtype: 'numbercolumn',
+                format: '0.00',
                 text: l10n.ns('tpm', 'ActualLSV').value('ActualPromoBaselineLSV'),
                 dataIndex: 'ActualPromoBaselineLSV'
             },
             {
+                xtype: 'numbercolumn',
+                format: '0.00',
                 text: l10n.ns('tpm', 'ActualLSV').value('PlanPromoIncrementalLSV'),
                 dataIndex: 'PlanPromoIncrementalLSV'
             },
             {
+                xtype: 'numbercolumn',
+                format: '0.00',
                 text: l10n.ns('tpm', 'ActualLSV').value('ActualPromoIncrementalLSV'),
                 dataIndex: 'ActualPromoIncrementalLSV'
             },
             {
+                xtype: 'numbercolumn',
+                format: '0.00',
                 text: l10n.ns('tpm', 'ActualLSV').value('PlanPromoLSV'),
                 dataIndex: 'PlanPromoLSV'
             },
             {
+                xtype: 'numbercolumn',
+                format: '0.00',
                 text: l10n.ns('tpm', 'ActualLSV').value('ActualPromoLSVByCompensation'),
                 dataIndex: 'ActualPromoLSVByCompensation'
             },
             {
+                xtype: 'numbercolumn',
+                format: '0.00',
                 text: l10n.ns('tpm', 'ActualLSV').value('ActualPromoLSV'),
                 dataIndex: 'ActualPromoLSV'
             },
             {
+                xtype: 'numbercolumn',
+                format: '0.00',
                 text: l10n.ns('tpm', 'ActualLSV').value('ActualPromoLSVSI'),
                 dataIndex: 'ActualPromoLSVSI'
             },
             {
+                xtype: 'numbercolumn',
+                format: '0.00',
                 text: l10n.ns('tpm', 'ActualLSV').value('ActualPromoLSVSO'),
                 dataIndex: 'ActualPromoLSVSO'
             },
             {
+                xtype: 'numbercolumn',
+                format: '0.00',
                 text: l10n.ns('tpm', 'ActualLSV').value('PlanPromoPostPromoEffectLSVW1'),
                 dataIndex: 'PlanPromoPostPromoEffectLSVW1'
             },
             {
+                xtype: 'numbercolumn',
+                format: '0.00',
                 text: l10n.ns('tpm', 'ActualLSV').value('ActualPromoPostPromoEffectLSVW1'),
                 dataIndex: 'ActualPromoPostPromoEffectLSVW1'
             },
             {
+                xtype: 'numbercolumn',
+                format: '0.00',
                 text: l10n.ns('tpm', 'ActualLSV').value('PlanPromoPostPromoEffectLSVW2'),
                 dataIndex: 'PlanPromoPostPromoEffectLSVW2'
             },
             {
+                xtype: 'numbercolumn',
+                format: '0.00',
                 text: l10n.ns('tpm', 'ActualLSV').value('ActualPromoPostPromoEffectLSVW2'),
                 dataIndex: 'ActualPromoPostPromoEffectLSVW2'
             },
             {
+                xtype: 'numbercolumn',
+                format: '0.00',
                 text: l10n.ns('tpm', 'ActualLSV').value('PlanPromoPostPromoEffectLSV'),
                 dataIndex: 'PlanPromoPostPromoEffectLSV'
             },
             {
+                xtype: 'numbercolumn',
+                format: '0.00',
                 text: l10n.ns('tpm', 'ActualLSV').value('ActualPromoPostPromoEffectLSV'),
                 dataIndex: 'ActualPromoPostPromoEffectLSV'
             }]

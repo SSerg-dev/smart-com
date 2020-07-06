@@ -76,10 +76,7 @@ namespace Module.Frontend.TPM.Controllers
         public IQueryable<BaseLine> GetBaseLines(ODataQueryOptions<BaseLine> queryOptions = null)
         {
             var query = GetConstraintedQuery();
-            if (queryOptions != null && queryOptions.Filter != null)
-            {
-                query = RoundingHelper.ModifyQuery(query);
-            }
+            
             return query;
         }
 

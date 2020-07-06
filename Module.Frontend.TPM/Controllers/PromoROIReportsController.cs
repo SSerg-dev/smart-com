@@ -202,10 +202,7 @@ namespace Module.Frontend.TPM.Controllers
         public IQueryable<PromoROIReport> GetPromoROIReports(ODataQueryOptions<PromoROIReport> queryOptions = null)
         {
             var query = GetConstraintedQuery();
-            if (queryOptions != null && queryOptions.Filter != null)
-            {
-                query = RoundingHelper.ModifyQuery(query);
-            }
+            
             return query;
         }
 

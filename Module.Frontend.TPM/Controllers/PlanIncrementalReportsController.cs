@@ -64,10 +64,7 @@ namespace Module.Frontend.TPM.Controllers
 		public IQueryable<PlanIncrementalReport> GetPlanIncrementalReports(ODataQueryOptions<PlanIncrementalReport> queryOptions = null)
 		{
 			var query = GetConstraintedQuery();
-			if (queryOptions != null && queryOptions.Filter != null)
-            {
-                query = RoundingHelper.ModifyQuery(query);
-            }
+			 
 			return query;
 		}
 

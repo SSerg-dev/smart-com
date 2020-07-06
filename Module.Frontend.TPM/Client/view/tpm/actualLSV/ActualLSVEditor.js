@@ -87,16 +87,19 @@
         },
         {
             xtype: 'singlelinedisplayfield',
+            renderer: Ext.util.Format.numberRenderer('0.00'),
             fieldLabel: l10n.ns('tpm', 'ActualLSV').value('PlanPromoUpliftPercent'),
             name: 'PlanPromoUpliftPercent'
         },
         {
             xtype: 'singlelinedisplayfield',
+            renderer: Ext.util.Format.numberRenderer('0.00'),
             fieldLabel: l10n.ns('tpm', 'ActualLSV').value('ActualPromoUpliftPercent'),
             name: 'ActualPromoUpliftPercent'
         },
         {
             xtype: 'singlelinedisplayfield',
+            renderer: Ext.util.Format.numberRenderer('0.00'),
             fieldLabel: l10n.ns('tpm', 'ActualLSV').value('PlanPromoBaselineLSV'),
             name: 'PlanPromoBaselineLSV'
         },
@@ -113,31 +116,37 @@
         },
         {
             xtype: 'singlelinedisplayfield',
+            renderer: Ext.util.Format.numberRenderer('0.00'),
             fieldLabel: l10n.ns('tpm', 'ActualLSV').value('PlanPromoIncrementalLSV'),
             name: 'PlanPromoIncrementalLSV'
         },
         {
             xtype: 'singlelinedisplayfield',
+            renderer: Ext.util.Format.numberRenderer('0.00'),
             fieldLabel: l10n.ns('tpm', 'ActualLSV').value('ActualPromoIncrementalLSV'),
             name: 'ActualPromoIncrementalLSV'
         },
         {
             xtype: 'singlelinedisplayfield',
+            renderer: Ext.util.Format.numberRenderer('0.00'),
             fieldLabel: l10n.ns('tpm', 'ActualLSV').value('PlanPromoLSV'),
             name: 'PlanPromoLSV'
         },
         {
             xtype: 'singlelinedisplayfield',
+            renderer: Ext.util.Format.numberRenderer('0.00'),
             fieldLabel: l10n.ns('tpm', 'ActualLSV').value('ActualPromoLSVByCompensation'),
             name: 'ActualPromoLSVByCompensation'
         },
         {
             xtype: 'singlelinedisplayfield',
+            renderer: Ext.util.Format.numberRenderer('0.00'),
             fieldLabel: l10n.ns('tpm', 'ActualLSV').value('ActualPromoLSV'),
             name: 'ActualPromoLSV'
         },
         {
             xtype: 'singlelinedisplayfield',
+            renderer: Ext.util.Format.numberRenderer('0.00'),
             fieldLabel: l10n.ns('tpm', 'ActualLSV').value('ActualPromoLSVSI'),
             name: 'ActualPromoLSVSI'
         },
@@ -155,6 +164,7 @@
         },
         {
             xtype: 'singlelinedisplayfield',
+            renderer: Ext.util.Format.numberRenderer('0.00'),
             fieldLabel: l10n.ns('tpm', 'ActualLSV').value('PlanPromoPostPromoEffectLSVW1'),
             name: 'PlanPromoPostPromoEffectLSVW1'
         },
@@ -168,6 +178,7 @@
             allowBlank: true,
         },
         {
+            renderer: Ext.util.Format.numberRenderer('0.00'),
             xtype: 'singlelinedisplayfield',
             fieldLabel: l10n.ns('tpm', 'ActualLSV').value('PlanPromoPostPromoEffectLSVW2'),
             name: 'PlanPromoPostPromoEffectLSVW2'
@@ -182,11 +193,13 @@
             allowBlank: true,
         },
         {
+            renderer: Ext.util.Format.numberRenderer('0.00'),
             xtype: 'singlelinedisplayfield',
             fieldLabel: l10n.ns('tpm', 'ActualLSV').value('PlanPromoPostPromoEffectLSV'),
             name: 'PlanPromoPostPromoEffectLSV'
         },
         {
+            renderer: Ext.util.Format.numberRenderer('0.00'),
             xtype: 'singlelinedisplayfield',
             fieldLabel: l10n.ns('tpm', 'ActualLSV').value('ActualPromoPostPromoEffectLSV'),
             name: 'ActualPromoPostPromoEffectLSV'
