@@ -33,6 +33,7 @@
                     maxValue: 100,
                     allowBlank: false,
                     allowDecimals: false,
+                    allowExponential: false,
                     onAdjustmentChange: false,
                     needReadOnly: true,
                     fieldLabel: l10n.ns('tpm', 'Promo').value('Adjustment'),
