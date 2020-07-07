@@ -333,14 +333,14 @@ namespace Module.Host.TPM.Actions
 
             foreach (Technology newRecord in sourceRecords)
             {
+                newRecord.SubBrand_code = String.IsNullOrEmpty(newRecord.SubBrand_code) ? null : newRecord.SubBrand_code;
                 Technology oldRecord = technologies
                     .FirstOrDefault(t
-                        => (t.Tech_code == newRecord.Tech_code && t.SubBrand_code == newRecord.SubBrand_code)
-                            || (t.Tech_code == newRecord.Tech_code && string.IsNullOrEmpty(t.SubBrand_code))
-                            && !t.Disabled);
+                        => (t.Tech_code == newRecord.Tech_code && t.SubBrand_code == newRecord.SubBrand_code && !t.Disabled));
 
                 if (oldRecord == null)
                 {
+                    newRecord.Id = Guid.NewGuid();
                     toCreate.Add(newRecord);
                     toHisCreate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(null, newRecord));
                 }
@@ -355,8 +355,6 @@ namespace Module.Host.TPM.Actions
 
                     oldRecord.Name = newRecord.Name;
                     oldRecord.SubBrand = newRecord.SubBrand;
-                    if (string.IsNullOrEmpty(oldRecord.SubBrand_code))
-                        oldRecord.SubBrand_code = newRecord.SubBrand_code;
 
                     var newName = String.Format("{0} {1}", oldRecord.Name, oldRecord.SubBrand);
 
