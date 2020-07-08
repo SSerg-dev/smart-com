@@ -114,9 +114,14 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                     List<PromoProduct> promoProducts = context.Set<PromoProduct>().Where(x => x.PromoId == promo.Id && !x.Disabled).ToList();
                     List<Guid> productIds = promoProducts.Select(x => x.ProductId).ToList();
-                    var baselines = context.Set<BaseLine>().Where(x => !x.Disabled && productIds.Contains(x.ProductId)
-                                                        && x.StartDate >= startPromoMarsWeek && x.StartDate <= endPromoMarsWeek
-                                                        && x.DemandCode == clientNode.DemandCode).ToList();
+                    var baselines = new List<BaseLine>();
+                    if (productIds != null && clientNode != null && startPromoMarsWeek != null && endPromoMarsWeek != null)
+                    {
+                        baselines = context.Set<BaseLine>().Where(x => !x.Disabled && productIds.Contains(x.ProductId)
+                                    && x.StartDate >= startPromoMarsWeek && x.StartDate <= endPromoMarsWeek
+                                    && x.DemandCode == clientNode.DemandCode).ToList();
+                    }
+
                     if (baseLineShareIndex == 0)
                     {
                         if (message == null)
