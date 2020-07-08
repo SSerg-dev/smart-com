@@ -355,8 +355,6 @@ namespace Module.Host.TPM.Actions
             context.HistoryWriter.Write(toHisCreate, context.AuthManager.GetCurrentUser(), context.AuthManager.GetCurrentRole(), OperationType.Created);
             context.HistoryWriter.Write(toHisUpdate, context.AuthManager.GetCurrentUser(), context.AuthManager.GetCurrentRole(), OperationType.Updated);
 
-            context.SaveChanges();
-
             return sourceRecords.Count();
         }
         

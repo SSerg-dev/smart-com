@@ -1,16 +1,10 @@
 ﻿using AutoMapper;
-using Core.Data;
-using Core.Extensions;
-using Core.History;
 using Interfaces.Implementation.Action;
-using Module.Persist.TPM.Model.History;
 using Module.Persist.TPM.Model.TPM;
 using Persist;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Module.Host.TPM.Actions
 {
@@ -54,7 +48,7 @@ namespace Module.Host.TPM.Actions
                             {
                                 foreach (Guid id in brandTechIds)
                                 {
-                                        CoefficientSI2SO newRecord = new CoefficientSI2SO { Id = Guid.NewGuid(), DemandCode = demCode, BrandTechId = id, CoefficientValue = CValue, Disabled = false };
+                                    CoefficientSI2SO newRecord = new CoefficientSI2SO { Id = Guid.NewGuid(), DemandCode = demCode, BrandTechId = id, CoefficientValue = CValue, Disabled = false };
                                     var proxy = context.Set<CoefficientSI2SO>().Create<CoefficientSI2SO>();
                                     var result = (CoefficientSI2SO)Mapper.Map(newRecord, proxy, typeof(CoefficientSI2SO), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
                                     context.Set<CoefficientSI2SO>().Add(result);
