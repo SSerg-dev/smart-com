@@ -48,17 +48,18 @@ namespace Module.Persist.TPM.Model.DTO {
         public bool IsOnInvoice { get; set; }
         public bool IsApolloExport { get; set; }
 
-        private double deviationCoefficient;
-        public double DeviationCoefficient { 
-            get 
-            {
-                return Math.Round(deviationCoefficient);
-            }
-            set 
-            {
-                deviationCoefficient = value;
-            } 
-        }
+        //private double deviationCoefficient;
+        public double DeviationCoefficient { get; set; }
+        //{ 
+        //    get 
+        //    {
+        //        return Math.Round(deviationCoefficient);
+        //    }
+        //    set 
+        //    {
+        //        deviationCoefficient = value;
+        //    } 
+        //}
 
         public double? PlanPromoTIShopper { get; set; }
         public double? PlanPromoTIMarketing { get; set; }

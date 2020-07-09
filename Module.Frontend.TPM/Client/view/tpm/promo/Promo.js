@@ -267,12 +267,7 @@
                 }
             }, {
                 text: l10n.ns('tpm', 'Promo').value('Adjustment'),
-                dataIndex: 'DeviationCoefficient',
-                filter: {
-                    xtype: 'numberfield',
-                    sourceallowDecimals: true,
-                    operator: 'eq'
-                }
+                dataIndex: 'DeviationCoefficient'
             }, {
                 text: l10n.ns('tpm', 'Promo').value('ApolloExport'),
                 dataIndex: 'IsApolloExport',

@@ -2494,6 +2494,7 @@
     <Content Include="SQLInitialize\20200702_1658_Alter_Computed_BrandTech_in_Product.sql" />
     <Content Include="SQLInitialize\20200702_1518_Product_Computed_BrandsegTechsub_code.sql" />
     <Content Include="SQLInitialize\20200702_1532_Add_Computed_TechSubNAme.sql" />
+    <Content Include="SQLInitialize\20200709_1641_Alter_PromoView_Cast_Adjustment_to_decimal.sql" />
     <Content Include="SQLInitialize\2020402_1557_Add_AP_CMManager_PriceList.sql" />
     <Content Include="SQLInitialize\20200420_1825_Alter_Proc_FillPromoProductDifference.sql" />
     <Content Include="SQLInitialize\20200421_1440_Alter_Proc_FillPromoProductDifference.sql" />
@@ -2597,6 +2598,7 @@
     <Content Include="SQLInitialize\20200625_1630_Alter_WeekIncrementalQTY.sql" />
     <Content Include="SQLInitialize\20200629_1430_Alter_WeekIncrementalQTY.sql" />
     <Content Include="SQLInitialize\20200703_1300_Add_File_AP_DownloadHandlerLogFile.sql" />
+    <Content Include="SQLInitialize\20200709_1620_Alter_PromoGridView_Cast_Adjustment_to_decimal.sql" />
     <Content Include="SQLInitialize\20200709_1100_Alter_GetProductBrandTechByCode.sql" />
     <Content Include="SQLInitialize\20200709_1140_Alter_GetProductBrandsegTechSubByCode.sql" />
     <Compile Include="Utils\ConfigManager.cs" />
