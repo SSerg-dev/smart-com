@@ -2601,6 +2601,7 @@
     <Content Include="SQLInitialize\20200709_1620_Alter_PromoGridView_Cast_Adjustment_to_decimal.sql" />
     <Content Include="SQLInitialize\20200709_1100_Alter_GetProductBrandTechByCode.sql" />
     <Content Include="SQLInitialize\20200709_1140_Alter_GetProductBrandsegTechSubByCode.sql" />
+    <Content Include="SQLInitialize\20200709_1715_Alter_GetProductBrandsegtechByCode.sql" />
     <Compile Include="Utils\ConfigManager.cs" />
     <Compile Include="Utils\ExportCSVBuilderFactory.cs" />
     <Compile Include="Utils\ExportCSVModelBuilders\IncrementalToApolloModelBuilder.cs" />
