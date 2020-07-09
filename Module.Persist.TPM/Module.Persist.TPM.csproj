@@ -2597,6 +2597,8 @@
     <Content Include="SQLInitialize\20200625_1630_Alter_WeekIncrementalQTY.sql" />
     <Content Include="SQLInitialize\20200629_1430_Alter_WeekIncrementalQTY.sql" />
     <Content Include="SQLInitialize\20200703_1300_Add_File_AP_DownloadHandlerLogFile.sql" />
+    <Content Include="SQLInitialize\20200709_1100_Alter_GetProductBrandTechByCode.sql" />
+    <Content Include="SQLInitialize\20200709_1140_Alter_GetProductBrandsegTechSubByCode.sql" />
     <Compile Include="Utils\ConfigManager.cs" />
     <Compile Include="Utils\ExportCSVBuilderFactory.cs" />
     <Compile Include="Utils\ExportCSVModelBuilders\IncrementalToApolloModelBuilder.cs" />
