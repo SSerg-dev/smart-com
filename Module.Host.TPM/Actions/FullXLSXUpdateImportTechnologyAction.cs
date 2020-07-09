@@ -303,18 +303,6 @@ namespace Module.Host.TPM.Actions
                     errors.Add("Tech Code must have a value");
                     isSuitable = false;
                 }
-                else if (!String.IsNullOrEmpty(typedRec.Name))
-                {
-                    var isTechHaveSub = context.Set<Technology>()
-                            .Where(t 
-                                => t.Tech_code == typedRec.Tech_code)
-                            .Any(t => !string.IsNullOrEmpty(t.SubBrand));
-                    if (isTechHaveSub && String.IsNullOrEmpty(typedRec.SubBrand_code))
-                    {
-                        errors.Add($"Sub Brand and Sub Brand Code must have a value for record with Tech Code = {typedRec.Tech_code}");
-                        isSuitable = false;
-                    }
-                }
             }
 
             return isSuitable;
