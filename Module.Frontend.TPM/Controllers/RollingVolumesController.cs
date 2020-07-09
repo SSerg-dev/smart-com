@@ -234,7 +234,7 @@ namespace Module.Frontend.TPM.Controllers
             IEnumerable<Column> columns = new List<Column>() {
                 new Column() { Order = order++, Field = "Product.ZREP", Header = "ZREP", Quoting = false },
                 new Column() { Order = order++, Field = "Product.ProductEN", Header = "SKU", Quoting = false },
-                new Column() { Order = order++, Field = "Product.BrandTech", Header = "BrandTech", Quoting = false },
+                new Column() { Order = order++, Field = "Product.BrandsegTechsub", Header = "BrandTech", Quoting = false },
                 new Column() { Order = order++, Field = "DemandGroup", Header = "DemandGroup", Quoting = false }, 
                 new Column() { Order = order++, Field = "Week", Header = "Week", Quoting = false }, 
                 new Column() { Order = order++, Field = "PlanProductIncrementalQTY", Header = "PlanProductIncrementalQTY", Quoting = false,Format = "0.00" }, 
