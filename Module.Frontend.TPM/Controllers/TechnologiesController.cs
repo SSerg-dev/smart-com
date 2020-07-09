@@ -124,7 +124,7 @@ namespace Module.Frontend.TPM.Controllers
             }
             model.SubBrand_code = String.IsNullOrWhiteSpace(model.SubBrand_code) ? null : model.SubBrand_code;
             model.SubBrand = String.IsNullOrWhiteSpace(model.SubBrand) ? null : model.SubBrand;
-            if (Context.Set<Technology>().Any(t=>t.Tech_code == model.Tech_code && t.SubBrand_code == model.SubBrand_code))
+            if (Context.Set<Technology>().Any(t=>t.Tech_code == model.Tech_code && t.SubBrand_code == model.SubBrand_code && !t.Disabled))
             {
                 var errorText = !String.IsNullOrEmpty(model.SubBrand_code) ?
                     $"Technology with tech_code {model.Tech_code} and sub_code {model.SubBrand_code} already exists"
