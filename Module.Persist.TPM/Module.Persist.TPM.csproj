@@ -2495,6 +2495,8 @@
     <Content Include="SQLInitialize\20200702_1518_Product_Computed_BrandsegTechsub_code.sql" />
     <Content Include="SQLInitialize\20200702_1532_Add_Computed_TechSubNAme.sql" />
     <Content Include="SQLInitialize\20200709_1641_Alter_PromoView_Cast_Adjustment_to_decimal.sql" />
+    <Content Include="SQLInitialize\20200710_1702_AddHandler_AutoResetNightProcess.sql" />
+    <Content Include="SQLInitialize\20200710_1702_Setting_AutoResetMainNightProcces.sql" />
     <Content Include="SQLInitialize\2020402_1557_Add_AP_CMManager_PriceList.sql" />
     <Content Include="SQLInitialize\20200420_1825_Alter_Proc_FillPromoProductDifference.sql" />
     <Content Include="SQLInitialize\20200421_1440_Alter_Proc_FillPromoProductDifference.sql" />
