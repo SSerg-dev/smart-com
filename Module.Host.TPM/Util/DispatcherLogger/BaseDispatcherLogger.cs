@@ -1,12 +1,12 @@
 ﻿using Core.Data;
+
 using Module.Host.TPM.Util.Interface;
 using Module.Host.TPM.Util.Model;
+
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Module.Host.TPM.Util.DispatcherLogger
 {
@@ -27,12 +27,9 @@ namespace Module.Host.TPM.Util.DispatcherLogger
 
                 if (result == null)
                 {
-
-
                     T log = new T();
                     log.Add(entity,message, column, data);
                     LogInfos.Add(log);
-
                 }
                 else
                 {
@@ -41,52 +38,23 @@ namespace Module.Host.TPM.Util.DispatcherLogger
             }
 
         }
-        public ConcurrentBag<Tuple<IEntity<Guid>, string>> GetErrorRecords()
+
+        public ConcurrentBag<Tuple<IEntity<Guid>, string>> GetRecords<T>() where T : class, ILogInfo, new()
         {
             ConcurrentBag<Tuple<IEntity<Guid>, string>> record = new ConcurrentBag<Tuple<IEntity<Guid>, string>>();
-            foreach (var item in LogInfos.Where(e => e is IErrorLogger))
+            foreach (var item in LogInfos.Where(e => e is T))
             {
-                foreach (var item1 in item.BuildToRecord())
+                item.BuildToRecord().ForEach(i =>
                 {
-                    record.Add(item1);
-                }
-               
+                    record.Add(i);
+                });
             }
             return record;
         }
-        public ConcurrentBag<Tuple<IEntity<Guid>, string>> GetWarningRecords()
-        {
-            ConcurrentBag<Tuple<IEntity<Guid>, string>> record = new ConcurrentBag<Tuple<IEntity<Guid>, string>>();
-            foreach (var item in LogInfos.Where(e => e is IWarningLogger))
-            {
-                foreach (var item1 in item.BuildToRecord())
-                {
-                    record.Add(item1);
-                }
-            }
-            return record;
-        }
-        
-        public IList<string> GetError()
-        {
-            List<string> buffer = new List<string>();
-            foreach (var item in LogInfos.Where(e => e is IErrorLogger))
-            {
-                buffer.Add(item.Build());
-            }
-            return buffer;
-        }
 
-        public IList<string> GetWarning()
+        public IList<string> GetLog<T>() where T : class, ILogInfo, new()
         {
-            List<string> buffer = new List<string>();
-            foreach (var item in LogInfos.Where(e => e is IWarningLogger))
-            {
-                buffer.Add(item.Build());
-            }
-            return buffer;
+            return LogInfos.Where(e => e is T).Select(e => e.Build()).ToList();
         }
-
-        
     }
 }

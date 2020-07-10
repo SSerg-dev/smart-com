@@ -308,6 +308,7 @@
     <Compile Include="Util\Interface\IErrorLogger.cs" />
     <Compile Include="Util\Interface\ILogInfo.cs" />
     <Compile Include="Util\Interface\IWarningLogger.cs" />
+    <Compile Include="Util\Model\Base\LogInfo.cs" />
     <Compile Include="Util\Model\ErrorLogInfo.cs" />
     <Compile Include="Util\Model\WarningLogInfo.cs" />
   </ItemGroup>

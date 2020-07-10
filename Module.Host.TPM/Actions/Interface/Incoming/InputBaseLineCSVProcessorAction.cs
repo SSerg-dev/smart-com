@@ -471,20 +471,20 @@ namespace Module.Host.TPM.Actions.Interface.Incoming
 
                     int processedCount = createBaselineList.Count + updateBaselineList.Count;
                     fileLogger.Write(true, "Количество обработанных записей: " + processedCount + Environment.NewLine, "Message");
-                    warningRecords = dispatcherLogger.GetWarningRecords();
-                    errorRecords = dispatcherLogger.GetErrorRecords();                 
+                    warningRecords = dispatcherLogger.GetRecords<WarningLogInfo>();
+                    errorRecords = dispatcherLogger.GetRecords<ErrorLogInfo>();                 
                     Results["ImportResultRecordCount"] = processedCount;
                     Results["ErrorCount"] = errorRecords.Count;
                     Results["WarningCount"] = warningRecords.Count;
                     hasWarnings = false;
                     hasErrors = false;
 
-                    foreach (var item in dispatcherLogger.GetWarning())
+                    foreach (var item in dispatcherLogger.GetLog<WarningLogInfo>())
                     {
                         hasWarnings = true;
                         Warnings.Add(item);
                     }
-                    foreach (var item in dispatcherLogger.GetError())
+                    foreach (var item in dispatcherLogger.GetLog<ErrorLogInfo>())
                     {
                         hasErrors = true;
                         Errors.Add(item);
