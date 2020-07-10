@@ -58,8 +58,8 @@ namespace Module.Host.TPM
                 new Handlers.FullXLSXUpdateImportPromoProductsUpliftHandler(),
                 new Handlers.PromoListPlanRecalculationHandler(),
                 new Handlers.PromoListActualRecalculationHandler(),
-				new Handlers.DataLakeIntegrationHandlers.MarsProductsCheckStarterHandler(),
-				new Handlers.DataLakeIntegrationHandlers.MarsProductsCheckHandler(),
+                new Handlers.DataLakeIntegrationHandlers.MarsProductsCheckStarterHandler(),
+                new Handlers.DataLakeIntegrationHandlers.MarsProductsCheckHandler(),
                 new Handlers.SetTIBasePercentValuesHandler(),
                 new Handlers.SetCOGSPercentValuesHandler(),
                 new Handlers.PriceListMergeHandler(),
@@ -75,6 +75,7 @@ namespace Module.Host.TPM
                 new Handlers.FullXLSXUpdateImportRollingVolumesHandler(),
                 new Handlers.RollingVolumeQTYRecalculationHandler(),
                 new Handlers.FullXLSXUpdateTechnologyHandler(),
+                new Handlers.RestartMainNightProcessingHandler()
             };
         }
     }
