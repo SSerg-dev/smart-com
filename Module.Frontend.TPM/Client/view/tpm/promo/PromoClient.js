@@ -294,7 +294,7 @@
                     adjustmentSlider.setValue(clientTreeRecord.DeviationCoefficient * -100);
                     adjustmentNumber.setValue(clientTreeRecord.DeviationCoefficient * 100);
 
-                    if (adjustmentSlider.crudAccess.indexOf(currentRole) !== -1) {
+                    if (adjustmentSlider.crudAccess.indexOf(currentRole) !== -1 && !promoeditorcustom.readOnly) {
                         adjustmentSlider.setDisabled(false);
                         adjustmentNumber.setReadOnly(false);
                         adjustmentNumber.removeCls('readOnlyField');
