@@ -8,7 +8,7 @@
         { name: 'PromoId', hidden: true },
         { name: 'PlanPromoBTL', type: 'float', mapping: 'Promo.PlanPromoBTL', hidden: false, isDefault: true },
         { name: 'ActualPromoBTL', type: 'float', mapping: 'Promo.ActualPromoBTL', hidden: false, isDefault: true },
-        { name: 'PromoNumber', type: 'int', isDefault: true, mapping: 'Promo.Number', defaultFilterConfig: { valueField: 'Number' } },
+        { name: 'PromoNumber', type: 'int', isDefault: true, mapping: 'Promo.Number', defaultFilterConfig: { valueField: 'Number' }, isKey: true},
         { name: 'PromoName', type: 'string', isDefault: true, mapping: 'Promo.Name', defaultFilterConfig: { valueField: 'Name' } },
         { name: 'PromoEventName', type: 'string', mapping: 'Promo.Event.Name', defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'Event', hidden: false, isDefault: true },
         {

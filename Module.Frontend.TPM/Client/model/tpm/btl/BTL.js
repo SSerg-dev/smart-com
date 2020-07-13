@@ -5,7 +5,7 @@
     fields: [
         { name: 'Id', hidden: true },
         { name: 'EventId', hidden: true, isDefault: true },
-        { name: 'Number', type: 'int', hidden: false, isDefault: true },
+        { name: 'Number', type: 'int', hidden: false, isDefault: true ,isKey: true },
         { name: 'PlanBTLTotal', type: 'float', hidden: false, isDefault: true },
         { name: 'ActualBTLTotal', type: 'float', hidden: false, isDefault: true },
         { name: 'StartDate', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
