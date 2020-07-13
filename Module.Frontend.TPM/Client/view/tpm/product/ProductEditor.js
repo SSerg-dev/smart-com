@@ -58,6 +58,26 @@
             selectorWidget: 'brand',
             valueField: 'Brand_code',
             displayField: 'Brand_code',
+            onTrigger2Click: function () {
+                var brand = this.up('editorform').down('[name=Brand]');
+                var seg = this.up('editorform').down('[name=Segmen_code]');
+                var brandtech_code = this.up('editorform').down('[name=BrandTech_code]');
+                var brandsegtech_code = this.up('editorform').down('[name=BrandsegTech_code]');
+                var brandsegtechsub_code = this.up('editorform').down('[name=BrandsegTechsub_code]');
+                var brandtech = this.up('editorform').down('[name=BrandTech]');
+                var brandsegtech = this.up('editorform').down('[name=Brandsegtech]');
+                var brandsegtechsub = this.up('editorform').down('[name=BrandsegTechsub]');
+
+                this.clearValue();
+                brand.setValue(null);
+                seg.setValue(null);
+                brandtech_code.setValue(null);
+                brandsegtech_code.setValue(null);
+                brandsegtechsub_code.setValue(null);
+                brandtech.setValue(null);
+                brandsegtech.setValue(null);
+                brandsegtechsub.setValue(null);
+            },
             onSelectButtonClick: function (button) {
                 var picker = this.picker,
                     selModel = picker.down(this.selectorWidget).down('grid').getSelectionModel(),
@@ -69,6 +89,44 @@
                 }
                 this.afterSetValue(record);
 
+                if (this.up('editorform').down('[name=Tech_code]').rawValue != null && this.up('editorform').down('[name=Tech_code]').rawValue != '') {
+                    var tech_code = this.up('editorform').down('[name=Tech_code]').rawValue;
+                    var sub_code = this.up('editorform').down('[name=SubBrand_code]').rawValue;
+                    var tech = this.up('editorform').down('[name=Technology]').rawValue;
+                    var sub = this.up('editorform').down('[name=SubBrand]').rawValue;
+                    var brandtech_code = this.up('editorform').down('[name=BrandTech_code]');
+                    var brandsegtech_code = this.up('editorform').down('[name=BrandsegTech_code]');
+                    var brandsegtechsub_code = this.up('editorform').down('[name=BrandsegTechsub_code]');
+                    var brandtech = this.up('editorform').down('[name=BrandTech]');
+                    var brandsegtech = this.up('editorform').down('[name=Brandsegtech]');
+                    var brandsegtechsub = this.up('editorform').down('[name=BrandsegTechsub]');
+
+                    var brandtech_codeValue = record.get('Brand_code') + '-' + tech_code;
+                    var brandsegtech_codeValue = record.get('Brand_code') + '-' + record.get('Segmen_code') + '-' + tech_code;
+                    var brandsegtechsub_codeValue = sub_code == null || sub_code == '' ?
+                        record.get('Brand_code') + '-' + record.get('Segmen_code') + '-' + tech_code
+                        : record.get('Brand_code') + '-' + record.get('Segmen_code') + '-' + tech_code + '-' + sub_code;
+
+                    var brandtechValue = record.get('Name') + ' ' + tech;
+                    var brandsegtechValue = record.get('Name') + ' ' + tech;
+                    var brandsegtechsubValue = sub_code == null || sub_code == '' ?
+                        record.get('Name') + ' ' + tech
+                        : record.get('Name') + ' ' + tech + ' ' + sub;
+
+                    var brandtechCodeValue = brandtech_codeValue;
+                    var brandsegtechCodeValue = brandsegtech_codeValue;
+                    var brandsegtechsubCodeValue = brandsegtechsub_codeValue;
+
+                    brandtech_code.setValue(brandtechCodeValue);
+                    brandsegtech_code.setValue(brandsegtechCodeValue);
+                    brandsegtechsub_code.setValue(brandsegtechsubCodeValue);
+
+                    brandtech.setValue(brandtechValue);
+                    brandsegtech.setValue(brandsegtechValue);
+                    brandsegtechsub.setValue(brandsegtechsubValue);
+                }
+
+                this.up('editorform').down('[name=Brand]').setValue(record.get('Name'));
                 this.up('editorform').down('[name=Segmen_code]').setValue(record.get('Segmen_code'));
 
                 picker.close();
@@ -116,6 +174,28 @@
             selectorWidget: 'technology',
             valueField: 'Tech_code',
             displayField: 'Tech_code',
+            onTrigger2Click: function () {
+                var tech = this.up('editorform').down('[name=Technology]');
+                var sub_code = this.up('editorform').down('[name=SubBrand_code]');
+                var sub = this.up('editorform').down('[name=SubBrand]');
+                var brandtech_code = this.up('editorform').down('[name=BrandTech_code]');
+                var brandsegtech_code = this.up('editorform').down('[name=BrandsegTech_code]');
+                var brandsegtechsub_code = this.up('editorform').down('[name=BrandsegTechsub_code]');
+                var brandtech = this.up('editorform').down('[name=BrandTech]');
+                var brandsegtech = this.up('editorform').down('[name=Brandsegtech]');
+                var brandsegtechsub = this.up('editorform').down('[name=BrandsegTechsub]');
+
+                this.clearValue();
+                tech.setValue(null);
+                sub_code.setValue(null);
+                sub.setValue(null);
+                brandtech_code.setValue(null);
+                brandsegtech_code.setValue(null);
+                brandsegtechsub_code.setValue(null);
+                brandtech.setValue(null);
+                brandsegtech.setValue(null);
+                brandsegtechsub.setValue(null);
+            },
             onSelectButtonClick: function (button) {
                 var picker = this.picker,
                     selModel = picker.down(this.selectorWidget).down('grid').getSelectionModel(),
@@ -127,6 +207,43 @@
                 }
                 this.afterSetValue(record);
 
+                if (this.up('editorform').down('[name=Brand_code]').rawValue != null && this.up('editorform').down('[name=Brand_code]').rawValue != '') {
+                    var brand_code = this.up('editorform').down('[name=Brand_code]').rawValue;
+                    var seg_code = this.up('editorform').down('[name=Segmen_code]').rawValue;
+                    var brand = this.up('editorform').down('[name=Brand]').rawValue;
+                    var brandtech_code = this.up('editorform').down('[name=BrandTech_code]');
+                    var brandsegtech_code = this.up('editorform').down('[name=BrandsegTech_code]');
+                    var brandsegtechsub_code = this.up('editorform').down('[name=BrandsegTechsub_code]');
+                    var brandtech = this.up('editorform').down('[name=BrandTech]');
+                    var brandsegtech = this.up('editorform').down('[name=Brandsegtech]');
+                    var brandsegtechsub = this.up('editorform').down('[name=BrandsegTechsub]');
+
+                    var brandtech_codeValue = brand_code + '-' + record.get('Tech_code');
+                    var brandsegtech_codeValue = brand_code + '-' + seg_code + '-' + record.get('Tech_code');
+                    var brandsegtechsub_codeValue = record.get('SubBrand_code') == null || record.get('SubBrand_code') == '' ?
+                        brand_code + '-' + seg_code + '-' + record.get('Tech_code')
+                        : brand_code + '-' + seg_code + '-' + record.get('Tech_code') + '-' + record.get('SubBrand_code');
+
+                    var brandtechValue = brand + ' ' + record.get('Name');
+                    var brandsegtechValue = brand + ' ' + record.get('Name');
+                    var brandsegtechsubValue = record.get('SubBrand') == null || record.get('SubBrand') == '' ?
+                        brand + ' ' + record.get('Name')
+                        : brand + ' ' + record.get('Name') + ' ' + record.get('SubBrand');
+
+                    var brandtechCodeValue = brandtech_codeValue;
+                    var brandsegtechCodeValue = brandsegtech_codeValue;
+                    var brandsegtechsubCodeValue = brandsegtechsub_codeValue;
+
+                    brandtech_code.setValue(brandtechCodeValue);
+                    brandsegtech_code.setValue(brandsegtechCodeValue);
+                    brandsegtechsub_code.setValue(brandsegtechsubCodeValue);
+
+                    brandtech.setValue(brandtechValue);
+                    brandsegtech.setValue(brandsegtechValue);
+                    brandsegtechsub.setValue(brandsegtechsubValue);
+                }
+
+                this.up('editorform').down('[name=Technology]').setValue(record.get('Name'));
                 this.up('editorform').down('[name=SubBrand_code]').setValue(record.get('SubBrand_code'));
                 this.up('editorform').down('[name=SubBrand]').setValue(record.get('SubBrand'));
 
