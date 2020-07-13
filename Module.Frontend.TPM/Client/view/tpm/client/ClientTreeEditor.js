@@ -70,6 +70,7 @@
             allowOnlyWhitespace: false,
             listeners: {
                 change: function (booleancombobox, newValue, oldValue) {
+                    Ext.Msg.alert('Warning', 'Change in customer basicity may welcome problems with settlements');
                     var isOnInvoiceCombobox = this.up('container').down('combobox[name=IsOnInvoice]');
                     var deviationCoefficient = this.up('container').down('sliderfield[name=DeviationCoefficient]');
                     var adjustment = this.up('container').down('numberfield[name=Adjustment]');
