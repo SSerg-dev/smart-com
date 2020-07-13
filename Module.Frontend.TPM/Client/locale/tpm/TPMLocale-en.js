@@ -1039,6 +1039,7 @@
         'GHierarchyCode': 'G-Hierarchy code',
         'DemandCode': 'Demand Code',
         'IsBaseClient': 'Base client',
+        'WarningChangeIsBase':'Change in customer basicity may welcome problems with settlements',
         'PostPromoEffectW1': 'Post Promo Effect W1',
         'PostPromoEffectW2': 'Post Promo Effect W2',
         'RetailTypeName': 'Retail Type Name',

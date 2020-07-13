@@ -70,7 +70,14 @@
             allowOnlyWhitespace: false,
             listeners: {
                 change: function (booleancombobox, newValue, oldValue) {
-                    Ext.Msg.alert('Warning', 'Change in customer basicity may welcome problems with settlements');
+                    if (!Ext.ComponentQuery.query('clienttree')[0].down('clienttreegrid').createMode && newValue != undefined && oldValue != undefined) {
+                        Ext.Msg.show({
+                            title: l10n.ns('core').value('alertTitle'),
+                            msg: l10n.ns('tpm', 'ClientTree').value('WarningChangeIsBase'),
+                            buttons: Ext.MessageBox.OK,
+                            icon: Ext.Msg.INFO
+                        });
+                    }
                     var isOnInvoiceCombobox = this.up('container').down('combobox[name=IsOnInvoice]');
                     var deviationCoefficient = this.up('container').down('sliderfield[name=DeviationCoefficient]');
                     var adjustment = this.up('container').down('numberfield[name=Adjustment]');
