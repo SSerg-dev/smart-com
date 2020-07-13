@@ -182,16 +182,20 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Client\controller\tpm\clienttreebrandtech\HistoricalClientTreeBrandTech.js" />
     <Content Include="Client\controller\tpm\rollingvolume\RollingVolume.js" />
     <Content Include="Client\model\tpm\btl\BTLPromo.js" />
     <Content Include="Client\model\tpm\btl\DeletedBTL.js" />
     <Content Include="Client\model\tpm\btl\HistoricalBTL.js" />
+    <Content Include="Client\model\tpm\clienttreebrandtech\HistoricalClientTreeBrandTech.js" />
     <Content Include="Client\model\tpm\rollingvolume\RollingVolume.js" />
     <Content Include="Client\util\MinHeightColumn.js" />
     <Content Include="Client\view\tpm\btl\BTLPromoEditor.js" />
     <Content Include="Client\view\tpm\btl\BTLEditor.js" />
     <Content Include="Client\controller\tpm\previousdayincremental\PreviousDayIncremental.js" />
     <Content Include="Client\model\tpm\previousdayincremental\PreviousDayIncremental.js" />
+    <Content Include="Client\view\tpm\clienttreebrandtech\HistoricalClientTreeBrandTech.js" />
+    <Content Include="Client\view\tpm\clienttreebrandtech\HistoricalClientTreeBrandTechDetail.js" />
     <Content Include="Client\view\tpm\coefficientsi2so\CustomMarsPeriodField.js" />
     <Compile Include="Controllers\ActualCOGSsController.cs" />
     <Compile Include="Controllers\BTLPromoesController.cs" />
@@ -205,6 +209,7 @@
     <Compile Include="Controllers\HistoricalActualCOGSsController.cs" />
     <Compile Include="Controllers\HistoricalBTLsController.cs" />
     <Compile Include="Controllers\HistoricalClientDashboardsController.cs" />
+    <Compile Include="Controllers\HistoricalClientTreeBrandTechesController.cs" />
     <Compile Include="Controllers\HistoricalCoefficientSI2SOsController.cs" />
     <Compile Include="Controllers\PreviousDayIncrementalsController.cs" />
     <Compile Include="Controllers\PriceListsController.cs" />

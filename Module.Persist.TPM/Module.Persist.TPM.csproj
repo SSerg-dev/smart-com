@@ -2125,6 +2125,7 @@
     <Compile Include="Model\History\HistoricalBTL.cs" />
     <Compile Include="Model\History\HistoricalBTLPromo.cs" />
     <Compile Include="Model\History\HistoricalClientDashboardView.cs" />
+    <Compile Include="Model\History\HistoricalClientTreeBrandTech.cs" />
     <Compile Include="Model\History\HistoricalCoefficientSI2SO.cs" />
     <Compile Include="Model\History\HistoricalNonPromoEquipment.cs" />
     <Compile Include="Model\History\HistoricalCostProduction.cs" />
@@ -2604,6 +2605,7 @@
     <Content Include="SQLInitialize\20200709_1100_Alter_GetProductBrandTechByCode.sql" />
     <Content Include="SQLInitialize\20200709_1140_Alter_GetProductBrandsegTechSubByCode.sql" />
     <Content Include="SQLInitialize\20200709_1715_Alter_GetProductBrandsegtechByCode.sql" />
+    <Content Include="SQLInitialize\20200713_1530_HistoricalClientTreeBrandTeches_AP.sql" />
     <Compile Include="Utils\ConfigManager.cs" />
     <Compile Include="Utils\ExportCSVBuilderFactory.cs" />
     <Compile Include="Utils\ExportCSVModelBuilders\IncrementalToApolloModelBuilder.cs" />

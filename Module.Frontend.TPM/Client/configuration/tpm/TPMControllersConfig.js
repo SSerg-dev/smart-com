@@ -205,6 +205,7 @@
 
     //ClientTreeBrandTech
     'tpm.clienttreebrandtech.ClientTreeBrandTech',
+    'tpm.clienttreebrandtech.HistoricalClientTreeBrandTech',
 
     //ClientTreeSharesView
     'tpm.clienttreesharesview.ClientTreeSharesView',

@@ -79,7 +79,7 @@ namespace Module.Frontend.TPM.Controllers
 
         public static void ResetClientTreeBrandTechDemandGroup(String newDemandCode, List<ClientTree> clientTrees, ClientTree oldClientTree, DatabaseContext databaseContext)
         {
-             var clientTreeBrandTeches = databaseContext.Set<ClientTreeBrandTech>().Where(d=> d.ParentClientTreeDemandCode.Equals(oldClientTree.DemandCode) && !d.Disabled);
+            var clientTreeBrandTeches = databaseContext.Set<ClientTreeBrandTech>().Where(d => d.ParentClientTreeDemandCode.Equals(oldClientTree.DemandCode) && !d.Disabled);
             foreach (var item in clientTrees)
             {
                 if (item.IsBaseClient)
@@ -92,81 +92,62 @@ namespace Module.Frontend.TPM.Controllers
                     var clients = databaseContext.Set<ClientTreeBrandTech>().Where(e => e.ClientTreeId == item.Id && !e.Disabled);
                     foreach (var client in clients)
                     {
-                        if(client.ParentClientTreeDemandCode.Equals(oldClientTree.DemandCode))
+                        if (client.ParentClientTreeDemandCode.Equals(oldClientTree.DemandCode))
                             client.ParentClientTreeDemandCode = demandCode;
                     }
                 }
             }
         }
-        public static int FillClientTreeBrandTechTable(DatabaseContext databaseContext)
-        {
-            var deleteScript = GetDeleteScript();
-            var insertScript = GetInsertScript();
 
-            var insertScriptExists = !String.IsNullOrEmpty(insertScript) && !String.IsNullOrWhiteSpace(insertScript); 
-            if (insertScriptExists)
+        public static int FillClientTreeBrandTechTable(DatabaseContext context)
+        {
+            var clients = context.Set<ClientTree>().Where(ct => ct.IsBaseClient && ct.EndDate == null).ToList();
+            var brandTeches = context.Set<BrandTech>().AsNoTracking().Where(bt => !bt.Disabled).ToList();
+
+            clients.ForEach(c =>
             {
-                databaseContext.Database.ExecuteSqlCommand(insertScript);
-            }
+                string demandCode = GetDemandCode(c, context);
+                brandTeches.ForEach(bt =>
+                {
+                    int shareRecordCounnt = context.Set<ClientTreeBrandTech>()
+                                .Where(s => s.ClientTreeId == c.Id
+                                            && s.BrandTechId == bt.Id
+                                            && !s.Disabled).Count();
+                    if (shareRecordCounnt == 0)
+                    {
+                        context.Set<ClientTreeBrandTech>().Add(new ClientTreeBrandTech()
+                        {
+                            Id = Guid.NewGuid(),
+                            ClientTreeId = c.Id,
+                            BrandTechId = bt.Id,
+                            ParentClientTreeDemandCode = demandCode,
+                            Share = 0,
+                            CurrentBrandTechName = bt.BrandsegTechsub,
+                            DeletedDate = null,
+                            Disabled = false
+                        });
+                    }
+                });
+            });
 
-            return databaseContext.SaveChanges();
+            return context.SaveChanges();
         }
 
-        public static string GetDeleteScript()
+        private static string GetDemandCode(ClientTree clientTree, DatabaseContext context)
         {
-            var deleteScript = $@"";
-            return deleteScript;
+            if (clientTree == null)
+                return "";
+            if (!string.IsNullOrEmpty(clientTree.DemandCode.Trim()))
+                return clientTree.DemandCode;
+
+            return GetDemandCode(GetParent(clientTree, context), context);
         }
 
-        public static string GetInsertScript()
+        private static ClientTree GetParent(ClientTree clientTree, DatabaseContext context)
         {
-            var insertScript = 
-            $@"
-                DECLARE @ClientTreeCount INT = (SELECT COUNT(*) FROM {nameof(ClientTree)} WHERE {nameof(ClientTree.EndDate)} IS NULL AND {nameof(ClientTree.IsBaseClient)} = 1);
-                DECLARE @ClientTreeCounter INT = 0;
-
-                WHILE (@ClientTreeCounter < @ClientTreeCount)
-                BEGIN
-	                DECLARE @ClientTreeId INT;
-	                DECLARE @ObjectId VARCHAR(MAX);
-	                SELECT @ClientTreeId = {nameof(ClientTree.Id)}, @ObjectId = {nameof(ClientTree.ObjectId)} FROM {nameof(ClientTree)} WHERE {nameof(ClientTree.EndDate)} IS NULL AND {nameof(ClientTree.IsBaseClient)} = 1 ORDER BY {nameof(ClientTree.Id)} OFFSET @ClientTreeCounter ROWS FETCH NEXT 1 ROWS ONLY;
-	
-	                IF @ObjectId IS NOT NULL 
-	                BEGIN
-		                DECLARE @ParentDemandCode VARCHAR(MAX) = NULL;
-		                DECLARE @ParentClientTreeType VARCHAR(MAX) = NULL;
-
-		                WHILE ((@ParentClientTreeType IS NULL OR @ParentClientTreeType != 'root') AND (@ParentDemandCode IS NULL OR LEN(@ParentDemandCode) = 0))
-		                BEGIN
-			                SELECT @ObjectId = {nameof(ClientTree.parentId)}, @ParentClientTreeType = {nameof(ClientTree.Type)}, @ParentDemandCode = {nameof(ClientTree.DemandCode)} FROM {nameof(ClientTree)} WHERE {nameof(ClientTree.EndDate)} IS NULL AND {nameof(ClientTree.ObjectId)} = @ObjectId;
-		                END
-
-		                IF @ParentDemandCode IS NOT NULL AND LEN(@ParentDemandCode) > 0
-		                BEGIN
-			                DECLARE @BrandTechCounter INT = 0;
-			                DECLARE @BrandTechCount INT = (SELECT COUNT(*) FROM {nameof(BrandTech)} WHERE {nameof(BrandTech.Disabled)} = 0)
-
-			                WHILE (@BrandTechCounter < @BrandTechCount)
-			                BEGIN
-                                DECLARE @BrandTechId UNIQUEIDENTIFIER;
-                                DECLARE @CurrentBrandTechName VARCHAR(MAX);
-
-				                SELECT @BrandTechId = {nameof(BrandTech.Id)}, @CurrentBrandTechName = {nameof(BrandTech.BrandsegTechsub)} FROM {nameof(BrandTech)} WHERE {nameof(BrandTech.Disabled)} = 0 ORDER BY {nameof(BrandTech.Id)} OFFSET @BrandTechCounter ROWS FETCH NEXT 1 ROWS ONLY;
-
-				                IF (SELECT COUNT(*) FROM {nameof(ClientTreeBrandTech)} WHERE {nameof(ClientTreeBrandTech.ClientTreeId)} = @ClientTreeId AND {nameof(ClientTreeBrandTech.BrandTechId)} = @BrandTechId AND {nameof(ClientTreeBrandTech.Disabled)} = 0) = 0
-				                
-                                BEGIN
-					                INSERT INTO {nameof(ClientTreeBrandTech)} ([{nameof(ClientTreeBrandTech.Id)}], [{nameof(ClientTreeBrandTech.ClientTreeId)}], [{nameof(ClientTreeBrandTech.BrandTechId)}], [{nameof(ClientTreeBrandTech.ParentClientTreeDemandCode)}], [{nameof(ClientTreeBrandTech.Share)}], [{nameof(ClientTreeBrandTech.CurrentBrandTechName)}], [{nameof(ClientTreeBrandTech.DeletedDate)}], [{nameof(ClientTreeBrandTech.Disabled)}]) VALUES (NEWID(), @ClientTreeId, @BrandTechId, @ParentDemandCode, 0, @CurrentBrandTechName, null, 0);
-				                END
-				                SET @BrandTechCounter = @BrandTechCounter + 1;
-			                END
-		                END
-	                END
-	                SET @ClientTreeCounter = @ClientTreeCounter + 1;
-                END
-            ";
-
-            return insertScript;
+            return context.Set<ClientTree>()
+                .Where(ct => ct.EndDate == null && ct.ObjectId == clientTree.parentId && ct.Type != "root")
+                .FirstOrDefault();
         }
 
         [ClaimsAuthorize]
@@ -177,7 +158,7 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
-        public IQueryable<ClientTreeBrandTech> GetClientTreeBrandTeches(ODataQueryOptions<ClientTreeBrandTech> queryOptions = null) 
+        public IQueryable<ClientTreeBrandTech> GetClientTreeBrandTeches(ODataQueryOptions<ClientTreeBrandTech> queryOptions = null)
         {
             var query = GetConstraintedQuery();
             return query;
@@ -195,7 +176,7 @@ namespace Module.Frontend.TPM.Controllers
 
             foreach (var actualClientTreeBrandTechForCurrentClient in actualClientTreeBrandTechesForCurrentClient)
             {
-                actualClientTreeBrandTechForCurrentClient.DeletedDate = DateTimeOffset.Now; 
+                actualClientTreeBrandTechForCurrentClient.DeletedDate = DateTimeOffset.Now;
                 actualClientTreeBrandTechForCurrentClient.Disabled = true;
             }
 

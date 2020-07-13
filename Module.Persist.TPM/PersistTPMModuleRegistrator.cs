@@ -528,6 +528,7 @@ namespace Module.Persist.TPM {
 
 
             builder.EntitySet<ClientTreeBrandTech>("ClientTreeBrandTeches");
+            builder.EntitySet<HistoricalClientTreeBrandTech>("HistoricalClientTreeBrandTeches");
             builder.Entity<ClientTreeBrandTech>().Collection.Action("ExportXLSX");
             builder.Entity<ClientTreeBrandTech>().Collection.Action("FullImportXLSX");
             builder.EntitySet<ClientTreeBrandTech>("ClientTreeBrandTeches").HasRequiredBinding(e => e.ClientTree, "ClientTrees");
@@ -535,6 +536,7 @@ namespace Module.Persist.TPM {
             builder.EntitySet<ClientTreeBrandTech>("ClientTreeBrandTeches").HasRequiredBinding(e => e.BrandTech, "BrandTeches");
             builder.Entity<ClientTreeBrandTech>().HasRequired(e => e.BrandTech, (e, te) => e.BrandTechId == te.Id);
             builder.Entity<ClientTreeBrandTech>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<ClientTreeBrandTech>("ClientTreeBrandTeches");
+            builder.Entity<HistoricalClientTreeBrandTech>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalClientTreeBrandTech>("HistoricalClientTreeBrandTeches");
 
             builder.EntitySet<NoneNego>("NoneNegoes");
             builder.EntitySet<NoneNego>("DeletedNoneNegoes");

@@ -1078,6 +1078,7 @@
         'Share': 'Share',
         'CurrentBrandTechName': 'Brand tech',
     },
+    'HistoricalClientTreeBrandTech': ['.tpm.ClientTreeBrandTech', '.core.BaseHistoryEntity'],
 
     'PromoDemand': {
         'BrandTechId': 'BrandTechId',
