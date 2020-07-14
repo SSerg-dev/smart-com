@@ -255,27 +255,11 @@
         if (fieldValue == nonegoController.getMechanicListForUnlockDiscountField()) {
             var record = client.value;
 
-            var filter = {
-                operator: "or",
-                rules: [{
-                    operation: "Equals",
-                    property: "ClientTreeId",
-                    value: null
-                }, {
-                    operation: "Equals",
-                    property: "ClientTreeId",
-                    value: record
-                }]
-            };
-
-            store.setFixedFilter('ClientTreeId', filter);
-
-            if (record == null) {
-                store.setFixedFilter('ClientTreeId', {
-                    property: 'ClientTreeId',
-                    operation: 'Equals',
-                    value: null
-                });
+            if (record !== null) {
+                store.getProxy().extraParams = {
+                    byClient: breeze.DataType.Boolean.fmtOData('true'),
+                    clientTreeId: breeze.DataType.Int32.fmtOData(record),
+                };
             }
         }
     },

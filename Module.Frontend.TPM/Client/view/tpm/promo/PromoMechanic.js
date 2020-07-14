@@ -171,12 +171,12 @@
                         type: 'simplestore',
                         autoLoad: false,
                         alias: 'store.promoformmechanictypestore',
-                        model: 'App.model.tpm.mechanictype.MechanicType',
+                        model: 'App.model.tpm.mechanictype.MechanicTypeForClient',
                         extendedFilter: {
                             xclass: 'App.ExtFilterContext',
                             supportedModels: [{
                                 xclass: 'App.ExtSelectionFilterModel',
-                                model: 'App.model.tpm.mechanictype.MechanicType',
+                                model: 'App.model.tpm.mechanictype.MechanicTypeForClient',
                                 modelId: 'efselectionmodel'
                             }]
                         }
@@ -370,12 +370,12 @@
                         type: 'simplestore',
                         autoLoad: false,
                         alias: 'store.promoformmechanictypestore',
-                        model: 'App.model.tpm.mechanictype.MechanicType',
+                        model: 'App.model.tpm.mechanictype.MechanicTypeForClient',
                         extendedFilter: {
                             xclass: 'App.ExtFilterContext',
                             supportedModels: [{
                                 xclass: 'App.ExtSelectionFilterModel',
-                                model: 'App.model.tpm.mechanictype.MechanicType',
+                                model: 'App.model.tpm.mechanictype.MechanicTypeForClient',
                                 modelId: 'efselectionmodel'
                             }]
                         }

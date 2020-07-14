@@ -188,6 +188,7 @@
     <Content Include="Client\model\tpm\btl\DeletedBTL.js" />
     <Content Include="Client\model\tpm\btl\HistoricalBTL.js" />
     <Content Include="Client\model\tpm\clienttreebrandtech\HistoricalClientTreeBrandTech.js" />
+    <Content Include="Client\model\tpm\mechanictype\MechanicTypeForClient.js" />
     <Content Include="Client\model\tpm\rollingvolume\RollingVolume.js" />
     <Content Include="Client\util\MinHeightColumn.js" />
     <Content Include="Client\view\tpm\btl\BTLPromoEditor.js" />
