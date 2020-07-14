@@ -345,6 +345,8 @@
             var discountValue = newValue != undefined ? field.record.get('Discount') : 0;
 
             discount.setValue(discountValue);
+
+            me.validateFields(me);
         }
         field.firstChange = true;
     },
@@ -375,7 +377,7 @@
 
                     fromDate.setMinValue(new Date(minValueInt + currentTimeZoneOffsetInHours * 60000 + 10800000));
                 }
-                me.validatePeriod(me.elements.fromDate, me.elements.toDate, me.elements.noneNegoId, me.elements.clientTreeId, me.elements.productTreeId, me.elements.mechanicId);
+                me.validatePeriod(me.elements.fromDate, me.elements.toDate, me.elements.noneNegoId, me.elements.clientTreeId, me.elements.productTreeId, me.elements.mechanicId, me.elements.mechanicTypeId, me.elements.discount);
             }
         }
     },
@@ -383,7 +385,7 @@
     onToDateSelect: function () {
         var me = this;
         if (me.elements.fromDate.getValue()) {
-            me.validatePeriod(me.elements.fromDate, me.elements.toDate, me.elements.noneNegoId, me.elements.clientTreeId, me.elements.productTreeId, me.elements.mechanicId);
+            me.validatePeriod(me.elements.fromDate, me.elements.toDate, me.elements.noneNegoId, me.elements.clientTreeId, me.elements.productTreeId, me.elements.mechanicId, me.elements.mechanicTypeId, me.elements.discount);
         }
     },
 
@@ -422,7 +424,7 @@
             me.enableReadOnlyElements([me.elements.fromDate, me.elements.toDate]);
             me.removeClsElements([me.elements.fromDate, me.elements.toDate], 'field-for-read-only');
             if (me.elements.fromDate.valueChanged) {
-                me.validatePeriod(me.elements.fromDate, me.elements.toDate, me.elements.noneNegoId, me.elements.clientTreeId, me.elements.productTreeId, me.elements.mechanicId);
+                me.validatePeriod(me.elements.fromDate, me.elements.toDate, me.elements.noneNegoId, me.elements.clientTreeId, me.elements.productTreeId, me.elements.mechanicId, me.elements.mechanicTypeId, me.elements.discount);
             }
 
         } else {
@@ -431,7 +433,7 @@
         }
     },
 
-    validatePeriod: function (fromDate, toDate, noneNegoId, clientTreeId, productTreeId, mechanic) {
+    validatePeriod: function (fromDate, toDate, noneNegoId, clientTreeId, productTreeId, mechanic, mechanicType, discount) {
         var me = this;
         if (!fromDate.isDisabled()) {
             var nonenegoeditor = Ext.ComponentQuery.query('nonenegoeditor')[0];
@@ -444,7 +446,9 @@
                 noneNegoId: noneNegoId,
                 clientTreeId: clientTreeId.getValue(),
                 productTreeId: productTreeId.getValue(),
-                mechanicId: mechanic.getValue()
+                mechanicId: mechanic.getValue(),
+                mechanicTypeId: mechanicType.getValue(),
+                discount: discount.getValue()
             };
 
             var correctMechanic = parameters.mechanicId != undefined && parameters.mechanicId != null && parameters.mechanicId != '';
@@ -481,6 +485,7 @@
                     window.setLoading(false);
                 });
             }
+            myMask.hide();
         }
     },
 

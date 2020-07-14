@@ -343,7 +343,7 @@ namespace Module.Frontend.TPM.Controllers
 
         [HttpPost]
         [ClaimsAuthorize]
-        public IHttpActionResult IsValidPeriod([FromODataUri] DateTimeOffset? fromDate, [FromODataUri] DateTimeOffset? toDate, Guid? noneNegoId, int clientTreeId, int productTreeId, Guid mechanicId)
+        public IHttpActionResult IsValidPeriod([FromODataUri] DateTimeOffset? fromDate, [FromODataUri] DateTimeOffset? toDate, Guid? noneNegoId, int clientTreeId, int productTreeId, Guid mechanicId, Guid? mechanicTypeId, double discount)
         {
             List<NoneNego> neededNoneNegoes = null;
 
@@ -353,26 +353,30 @@ namespace Module.Frontend.TPM.Controllers
             // При создании новой записи.
             if (noneNegoId == null)
             {
-                neededNoneNegoes = GetNoneNegoes().Where(x => 
-                    (x.ClientTreeId == clientTreeId) && (x.ProductTreeId == productTreeId) 
-                        && (x.MechanicId.Value == mechanicId)).ToList();
+                neededNoneNegoes = GetNoneNegoes().Where(x =>
+                    (x.ClientTreeId == clientTreeId) && (x.ProductTreeId == productTreeId)
+                        && (x.MechanicId.Value == mechanicId)
+                        && (x.MechanicTypeId == mechanicTypeId)
+                        && (x.Discount.Value == discount)).ToList();
             }
             // При редактировании выбранной записи.
             else
             {
-                neededNoneNegoes = GetNoneNegoes().Where(x => 
-                    (x.ClientTreeId == clientTreeId) && (x.ProductTreeId == productTreeId) 
-                        && (x.MechanicId.Value == mechanicId) && (x.Id != noneNegoId.Value)).ToList();
+                neededNoneNegoes = GetNoneNegoes().Where(x =>
+                    (x.ClientTreeId == clientTreeId) && (x.ProductTreeId == productTreeId)
+                        && (x.MechanicId.Value == mechanicId) && (x.Id != noneNegoId.Value)
+                        && (x.MechanicTypeId == mechanicTypeId)
+                        && (x.Discount.Value == discount)).ToList();
             }
 
             if (neededNoneNegoes.Count != 0)
             {
                 if (toDate == null)
                 {
-					if (fromDate == null)
-					{
-						return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false }));
-					}
+                    if (fromDate == null)
+                    {
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false }));
+                    }
                     foreach (var noneNego in neededNoneNegoes)
                     {
                         // [---] [===]
