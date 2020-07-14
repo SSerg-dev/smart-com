@@ -798,6 +798,7 @@
     <Content Include="Content\images\AdjustmentPromo_Graph_1.png" />
     <Content Include="Content\images\AdjustmentPromo_Graph_2.png" />
     <Content Include="Content\images\adjust_data.png" />
+    <Content Include="Content\images\closed.png" />
     <Content Include="Content\images\closednew.png" />
     <Content Include="Content\images\complete-status.svg" />
     <Content Include="Content\images\error-status.svg" />
@@ -809,7 +810,9 @@
     <Content Include="Content\images\RiskiAdjuctment.gif" />
     <Content Include="Content\images\RiskiAdjuctment_2.gif" />
     <Content Include="Content\images\swith-glyph-gray.png" />
+    <Content Include="Content\images\time_critical.png" />
     <Content Include="Content\images\time_criticalnew.png" />
+    <Content Include="Content\images\workflow.png" />
     <Content Include="Content\images\workflownew.png" />
     <Content Include="Scripts\jquery-1.6.4-vsdoc.js" />
     <Content Include="Scripts\jquery-1.6.4.js" />

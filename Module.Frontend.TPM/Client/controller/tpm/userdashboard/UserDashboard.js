@@ -100,7 +100,7 @@
                 styleStandart: 'panel-time-critical-standart',
                 styleZero: 'panel-time-critical-zero'
             }
-            var image = 'time_criticalnew.png';
+            var image = 'time_critical.png';
             var color = '#e1312c';
             var buttonColor = '#feeded';
             return { filter: filter, widget: widget, text: text, panel: panel, style: style, image: image, color: color, buttonColor: buttonColor };
@@ -123,7 +123,7 @@
             var widget = 'promo';
             var text = "To approval";
             var panel = 'panel1';
-            var image = 'workflownew.png';
+            var image = 'workflow.png';
             var color = '#00009b';
             var buttonColor = '#eef2fc';
             return { filter: filter, widget: widget, text: text, panel: panel, image: image, color: color, buttonColor: buttonColor };
@@ -145,7 +145,7 @@
             var widget = 'promo';
             var text = "To Plan";
             var panel = 'panel1';
-            var image = 'workflownew.png';
+            var image = 'workflow.png';
             var color = '#00009b';
             var buttonColor = '#eef2fc';
             return { filter: filter, widget: widget, text: text, panel: panel, image: image, color: color, buttonColor: buttonColor };
@@ -171,7 +171,7 @@
             var widget = 'promo';
             var text = "Upload Actuals";
             var panel = 'panel2';
-            var image = 'closednew.png';
+            var image = 'closed.png';
             var color = '#00dabe';
             var buttonColor = '#e6fcf9';
             return { filter: filter, widget: widget, text: text, panel: panel, image: image, color: color, buttonColor: buttonColor };
@@ -246,7 +246,7 @@
             var widget = 'promo';
             var text = "Promo to Close";
             var panel = 'panel2';
-            var image = 'closednew.png';
+            var image = 'closed.png';
             var color = '#00dabe';
             var buttonColor = '#e6fcf9';
             return { filter: filter, widget: widget, text: text, panel: panel, image: image, color: color, buttonColor: buttonColor };
@@ -279,7 +279,7 @@
             var widget = 'associatedpromosupport';
             var text = "Promo TI cost";
             var panel = 'panel2';
-            var image = 'closednew.png';
+            var image = 'closed.png';
             var color = '#00dabe';
             var buttonColor = '#e6fcf9';
             return { filter: filter, widget: widget, text: text, panel: panel, image: image, color: color, buttonColor: buttonColor };
@@ -312,7 +312,7 @@
             var widget = 'associatednonpromosupport';
             var text = "Non-promo TI cost";
             var panel = 'panel2';
-            var image = 'closednew.png';
+            var image = 'closed.png';
             var color = '#00dabe';
             var buttonColor = '#e6fcf9';
             return { filter: filter, widget: widget, text: text, panel: panel, image: image, color: color, buttonColor: buttonColor };
@@ -353,7 +353,7 @@
                 styleStandart: 'panel-time-critical-standart',
                 styleZero: 'panel-time-critical-zero'
             }
-            var image = 'time_criticalnew.png';
+            var image = 'time_critical.png';
             var color = '#e1312c';
             var buttonColor = '#feeded';
             return { filter: filter, widget: widget, text: text, panel: panel, style: style, image: image, color: color, buttonColor: buttonColor };
@@ -388,7 +388,7 @@
             var widget = 'promo';
             var text = "On approval";
             var panel = 'panel1';
-            var image = 'workflownew.png';
+            var image = 'workflow.png';
             var color = '#00009b';
             var buttonColor = '#eef2fc';
             return { filter: filter, widget: widget, text: text, panel: panel, image: image, color: color, buttonColor: buttonColor };
@@ -503,7 +503,7 @@
             var widget = 'promo';
             var text = "Upload Actuals";
             var panel = 'panel2';
-            var image = 'closednew.png';
+            var image = 'closed.png';
             var color = '#00dabe';
             var buttonColor = '#e6fcf9';
             return { filter: filter, widget: widget, text: text, panel: panel, image: image, color: color, buttonColor: buttonColor };
@@ -545,7 +545,7 @@
                 styleStandart: 'panel-time-critical-standart',
                 styleZero: 'panel-time-critical-zero'
             }
-            var image = 'time_criticalnew.png';
+            var image = 'time_critical.png';
             var color = '#e1312c';
             var buttonColor = '#feeded';
             return { filter: filter, widget: widget, text: text, panel: panel, style: style, image: image, color: color, buttonColor: buttonColor };
@@ -583,7 +583,7 @@
             var widget = 'promo';
             var text = "On approval";
             var panel = 'panel1';
-            var image = 'workflownew.png';
+            var image = 'workflow.png';
             var color = '#00009b';
             var buttonColor = '#eef2fc';
             return { filter: filter, widget: widget, text: text, panel: panel, image: image, color: color, buttonColor: buttonColor };
@@ -609,7 +609,7 @@
             var widget = 'promo';
             var text = "Actual Shopper TI ";
             var panel = 'panel1';
-            var image = 'workflownew.png';
+            var image = 'workflow.png';
             var color = '#00009b';
             var buttonColor = '#eef2fc';
             return { filter: filter, widget: widget, text: text, panel: panel, image: image, color: color, buttonColor: buttonColor };
@@ -641,7 +641,7 @@
             var widget = 'associatedpromosupport';
             var text = "Promo TI cost";
             var panel = 'panel2';
-            var image = 'closednew.png';
+            var image = 'closed.png';
             var color = '#00dabe';
             var buttonColor = '#e6fcf9';
             return { filter: filter, widget: widget, text: text, panel: panel, image: image, color: color, buttonColor: buttonColor };
@@ -674,7 +674,7 @@
             var widget = 'associatednonpromosupport';
             var text = "Non-promo TI cost";
             var panel = 'panel2';
-            var image = 'closednew.png';
+            var image = 'closed.png';
             var color = '#00dabe';
             var buttonColor = '#e6fcf9';
             return { filter: filter, widget: widget, text: text, panel: panel, image: image, color: color, buttonColor: buttonColor };
@@ -744,7 +744,7 @@
             var widget = 'promo';
             var text = "Demand planning Plan";
             var panel = 'panel2';
-            var image = 'closednew.png';
+            var image = 'closed.png';
             var color = '#00dabe';
             var buttonColor = '#e6fcf9';
             return { filter: filter, widget: widget, text: text, panel: panel, image: image, color: color, buttonColor: buttonColor };
@@ -781,7 +781,7 @@
             var widget = 'promo';
             var text = "Demand planning Fact";
             var panel = 'panel2';
-            var image = 'closednew.png';
+            var image = 'closed.png';
             var color = '#00dabe';
             var buttonColor = '#e6fcf9';
             return { filter: filter, widget: widget, text: text, panel: panel, image: image, color: color, buttonColor: buttonColor };
@@ -818,7 +818,7 @@
                 styleStandart: 'panel-time-critical-standart',
                 styleZero: 'panel-time-critical-zero'
             }
-            var image = 'time_criticalnew.png';
+            var image = 'time_critical.png';
             var color = '#e1312c';
             var buttonColor = '#feeded';
             return { filter: filter, widget: widget, text: text, panel: panel, style: style, image: image, color: color, buttonColor: buttonColor };
@@ -851,7 +851,7 @@
             var widget = 'promo';
             var text = "On approval";
             var panel = 'panel1';
-            var image = 'workflownew.png';
+            var image = 'workflow.png';
             var color = '#0e0d9e';
             var buttonColor = '#eef2fc';
             return { filter: filter, widget: widget, text: text, panel: panel, image: image, color: color, buttonColor: buttonColor };
@@ -887,7 +887,7 @@
         var widget = 'associatedcostproduction';
         var text = "Production cost";
         var panel = 'panel1';
-        var image = 'closednew.png';
+        var image = 'closed.png';
         var color = '#00dabe';
         var buttonColor = '#e6fcf9';
         return { filter: filter, widget: widget, text: text, panel: panel, image: image, color: color, buttonColor: buttonColor };
@@ -920,7 +920,7 @@
         var widget = 'associatedbtlpromo';
         var text = "BTL cost";
         var panel = 'panel1';
-        var image = 'closednew.png';
+        var image = 'closed.png';
         var color = '#00dabe';
         var buttonColor = '#e6fcf9';
         return { filter: filter, widget: widget, text: text, panel: panel, image: image, color: color, buttonColor: buttonColor };
