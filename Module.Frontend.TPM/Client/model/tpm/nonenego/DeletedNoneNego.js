@@ -10,7 +10,7 @@
         { name: 'MechanicTypeId', hidden: true, isDefault: true, useNull: true, defaultValue: null },
         { name: 'MechanicName', type: 'string', mapping: 'Mechanic.Name', defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'Mechanic', hidden: false, isDefault: true },
         { name: 'MechanicTypeName', type: 'string', mapping: 'MechanicType.Name', defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'MechanicType', hidden: false, isDefault: true },
-        { name: 'Discount', type: 'int', hidden: false, isDefault: true },
+        { name: 'Discount', type: 'float', hidden: false, isDefault: true },
         { name: 'FromDate', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
         { name: 'ToDate', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
         { name: 'CreateDate', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
