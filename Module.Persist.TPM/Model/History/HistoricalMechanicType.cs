@@ -7,6 +7,7 @@ namespace Module.Persist.TPM.Model.History
     public class HistoricalMechanicType : BaseHistoricalEntity<System.Guid>
     {
         public string Name { get; set; }
-        public int? Discount { get; set; }
+        public double? Discount { get; set; }
+        public string ClientTreeFullPathName { get; set; }
     }
 }

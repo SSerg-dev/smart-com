@@ -42,9 +42,9 @@
                     allowDecimals: false,
                     allowExponential: false,
                     crudAccess: ['Administrator', 'SupportAdministrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
-                   //store: {
-                   //    type: 'promoformmechanicstore'
-                   //},
+                    //store: {
+                    //    type: 'promoformmechanicstore'
+                    //},
                     store: {
                         type: 'simplestore',
                         autoLoad: false,
@@ -74,7 +74,7 @@
                         } else {
                             App.Notify.pushError(l10n.ns('tpm', 'Promo').value('MechanicGetError'));
                         }
-                        
+
                     },
                     onTrigger1Click: function () {
                         var promoController = App.app.getController('tpm.promo.Promo')
@@ -121,7 +121,7 @@
                         } else {
                             App.Notify.pushError(l10n.ns('tpm', 'Promo').value('MechanicGetError'));
                         }
-                   },
+                    },
                     onTrigger3Click: function () {
                         Ext.util.Observable.capture(this, function (evname) { console.log(evname, arguments); })
 
@@ -212,7 +212,7 @@
                     needReadOnly: true,
                     allowBlank: false,
                     allowOnlyWhitespace: false,
-                    allowDecimals: false,
+                    allowDecimals: true,
                     allowExponential: false,
                     crudAccess: ['Administrator', 'SupportAdministrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
                 }]
@@ -239,9 +239,9 @@
                     allowBlank: true,
                     crudAccess: ['Administrator', 'SupportAdministrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
                     customTip: l10n.ns('tpm', 'Promo').value('PlanInstoreMechanicNameTip'),
-                   // store: {
-                   //     type: 'promoformmechanicstore'
-                   // },
+                    // store: {
+                    //     type: 'promoformmechanicstore'
+                    // },
                     store: {
                         type: 'simplestore',
                         autoLoad: false,
@@ -416,13 +416,14 @@
                     needReadOnly: true,
                     allowBlank: false,
                     allowOnlyWhitespace: false,
-                    allowDecimals: false,
+                    allowDecimals: true,
                     allowExponential: false,
                     crudAccess: ['Administrator', 'SupportAdministrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
                     customTip: l10n.ns('tpm', 'Promo').value('PlanInstoreMechanicDiscountTip'),
                     listeners: {
                         change: function (field, newVal, oldVal) {
-                            this.up('promoeditorcustom').down('#PlanInstoreMechanicDiscountInActivity').setRawValue(field.rawValue);
+                            var discount = field.rawValue.replace(",", ".");
+                            this.up('promoeditorcustom').down('#PlanInstoreMechanicDiscountInActivity').setRawValue(parseFloat(discount).toFixed(2));
                         }
                     },
                 }]

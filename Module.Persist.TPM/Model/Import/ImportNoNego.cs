@@ -38,7 +38,7 @@ namespace Module.Persist.TPM.Model.Import {
 
         [ImportCSVColumn(ColumnNumber = 6)]
         [Display(Name = "Mechanic Discount")]
-        public int? MechanicDiscount { get; set; }
+        public double? MechanicDiscount { get; set; }
 
         [ImportCSVColumn(ColumnNumber = 7)]
         [Display(Name = "From Date")]

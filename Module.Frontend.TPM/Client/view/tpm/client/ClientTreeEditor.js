@@ -147,6 +147,26 @@
                 to: 'RetailTypeName'
             }]
         }, {
+            xtype: 'numberfield',
+            fieldLabel: l10n.ns('tpm', 'ClientTree').value('DistrMarkUp'),
+            name: 'DistrMarkUp',
+            allowBlank: false,
+            allowDecimals: true,
+            allowOnlyWhitespace: false,
+            allowExponential: false,
+            regex: /^\d+\,?\d*$/,
+            regexText: l10n.ns('tpm', 'ClientTree').value('DMDGroupRegex'),
+            validator: function() {
+                value = this.getValue();
+                if (value === 0) {
+                    return 'The value "0" is not allowed';
+                }
+                if (value < 0) {
+                    return 'Negative values are not allowed';
+                }
+                return true;
+            }
+        }, {
             xtype: 'dispatchdate',
             itemId: 'dispatchClientTreeEditor'
         }, {

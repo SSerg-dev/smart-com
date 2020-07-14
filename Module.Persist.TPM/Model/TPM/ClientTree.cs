@@ -44,6 +44,8 @@ namespace Module.Persist.TPM.Model.TPM {
 
         public string LogoFileName { get; set; }
 
+        public double? DistrMarkUp { get; set; }
+
         public object Clone()
         {
             return this.MemberwiseClone();

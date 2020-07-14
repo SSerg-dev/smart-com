@@ -89,7 +89,7 @@
                 },
                 'nonenegoeditor [name=ToDate]': {
                     select: this.onToDateSelect
-				},
+                },
                 'nonenegoeditor #ok': {
                     click: this.onOkButtonClick
                 }
@@ -129,8 +129,8 @@
                 me.isEditorForUpdateNode = true;
                 me.disableReadOnlyElements([me.elements.createDate]);
                 me.addClsElements([me.elements.createDate], 'field-for-read-only');
-				me.initMechanicFiled(window);
-				nonenegoeditor.storeLoaded = true;
+                me.initMechanicFiled(window);
+                nonenegoeditor.storeLoaded = true;
 
                 if (nonenego.isEditorForUpdateNode) {
                     var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
@@ -138,23 +138,23 @@
 
                         me.elements.fromDate.setMinValue(null);
                     }
-					me.elements.fromDate.valueChanged = false;
-					me.elements.fromDate.isCurrentFieldValid = true;
-					me.elements.toDate.isCurrentFieldValid = true;
+                    me.elements.fromDate.valueChanged = false;
+                    me.elements.fromDate.isCurrentFieldValid = true;
+                    me.elements.toDate.isCurrentFieldValid = true;
                     var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
                     if (currentRole !== 'SupportAdministrator') {
-                       
-					var date = new Date();
-					date.setHours(date.getHours() + (date.getTimezoneOffset() / 60) + 3);
+
+                        var date = new Date();
+                        date.setHours(date.getHours() + (date.getTimezoneOffset() / 60) + 3);
                         me.elements.fromDate.getPicker().setMinDate(date);
 
                     }
-				}
-				
+                }
+
                 me.buttons.cancel = Ext.ComponentQuery.query('#cancel')[0];
                 me.buttons.cancel.addListener('click', function () {
                     me.removeClsElements([me.elements.mechanicTypeId, me.elements.discount, me.elements.fromDate,
-						me.elements.toDate, me.elements.createDate], 'field-for-read-only');
+                    me.elements.toDate, me.elements.createDate], 'field-for-read-only');
                 });
             });
         }
@@ -186,90 +186,198 @@
 
     initMechanicFiled: function (window) {
         var me = this;
-
+        me.elements.clientTreeId.addListener('change', this.nonenegoClientListener);
         me.elements.mechanicId.addListener('change', this.nonenegoMechanicListener);
         me.elements.mechanicTypeId.addListener('change', this.nonenegoMechanicTypeListener);
+        me.elements.clientTreeId.checkChange();
+        me.elements.mechanicId.checkChange();
+        me.elements.mechanicTypeId.checkChange();
 
-        if (me.elements.mechanicId.rawValue != 'VP') {
-            me.disableReadOnlyElements([me.elements.mechanicTypeId]);
-            if (Ext.ComponentQuery.query('nonenego')[0].isEditorForUpdateNode) {
-                me.enableReadOnlyElements([me.elements.discount]);
+        if (me.elements.clientTreeId.rawValue != '' && me.elements.clientTreeId.rawValue != null) {
+            if (me.elements.mechanicId.rawValue != 'VP') {
+                me.disableReadOnlyElements([me.elements.mechanicTypeId]);
+                if (Ext.ComponentQuery.query('nonenego')[0].isEditorForUpdateNode) {
+                    me.enableReadOnlyElements([me.elements.discount]);
+                }
+
+                me.addClsElements([me.elements.mechanicTypeId], 'field-for-read-only');
+                me.removeClsElements([me.elements.discount], 'field-for-read-only');
             }
+            else {
+                me.enableReadOnlyElements([me.elements.mechanicTypeId]);
+                me.disableReadOnlyElements([me.elements.discount]);
 
-            me.addClsElements([me.elements.mechanicTypeId], 'field-for-read-only');
-            me.removeClsElements([me.elements.discount], 'field-for-read-only');
-        }
-        else {
-            me.enableReadOnlyElements([me.elements.mechanicTypeId]);
-            me.disableReadOnlyElements([me.elements.discount]);
+                me.removeClsElements([me.elements.mechanicTypeId], 'field-for-read-only');
+                me.addClsElements([me.elements.discount], 'field-for-read-only');
 
-            me.removeClsElements([me.elements.mechanicTypeId], 'field-for-read-only');
-            me.addClsElements([me.elements.discount], 'field-for-read-only');
+                var nonegoController = App.app.getController('tpm.nonenego.NoneNego');
+                nonegoController.getMechanicTypesByClient(window);
+            }
+        } else {
+            me.disableReadOnlyElements([me.elements.discount, me.elements.mechanicId, me.elements.mechanicTypeId]);
+            me.addClsElements([me.elements.discount, me.elements.mechanicId, me.elements.mechanicTypeId], 'field-for-read-only');
         }
     },
 
-	nonenegoMechanicListener: function (field, newValue, oldValue) {
-		var nonenegoeditor = field.up('nonenegoeditor');
-		var mechanicType = nonenegoeditor.down('[name=MechanicTypeId]');
-		var discount = nonenegoeditor.down('[name=Discount]');        
+    nonenegoClientListener: function (field, newValue, oldValue) {
+        var nonenegoeditor = field.up('nonenegoeditor');
+        var mechanic = nonenegoeditor.down('[name=MechanicId]');
 
-			mechanicType.clearValue();
+        if (nonenegoeditor.storeLoaded) {
+            mechanic.clearValue();
 
-			if (field.rawValue != 'VP') {
-				mechanicType.addCls('field-for-read-only');
-				discount.removeCls('field-for-read-only');
+            if (field.rawValue != '' && field.rawValue != null) {
+                mechanic.removeCls('field-for-read-only');
 
-				mechanicType.setReadOnly(true);
-				discount.setReadOnly(false);
-			}
-			else {
-				mechanicType.removeCls('field-for-read-only');
-				discount.addCls('field-for-read-only');
+                mechanic.setReadOnly(false);
+            }
+            else {
+                mechanic.addCls('field-for-read-only');
 
-				mechanicType.setReadOnly(false);
-				discount.setValue(null);
-				discount.setReadOnly(true);
-			}
+                mechanic.setValue(null);
+                mechanic.setReadOnly(true);
+            }
 
-			var me = App.app.getController('tpm.nonenego.NoneNego');
-			me.validateFields(me);
+            var me = App.app.getController('tpm.nonenego.NoneNego');
+            me.validateFields(me);
+        }
+        nonenegoeditor.storeLoaded = true;
+    },
+
+    getMechanicTypesByClient: function (nonenegoeditor) {
+        var nonegoController = App.app.getController('tpm.nonenego.NoneNego');
+        var client = nonenegoeditor.down('[name=ClientTreeId]');
+        mechanicFields = nonegoController.getMechanicFields(nonenegoeditor);
+        store = mechanicFields.mechanicTypeId.getStore();
+
+        var fieldValue = mechanicFields.mechanicId.rawValue;
+
+        if (fieldValue == nonegoController.getMechanicListForUnlockDiscountField()) {
+            var record = client.value;
+
+            var filter = {
+                operator: "or",
+                rules: [{
+                    operation: "Equals",
+                    property: "ClientTreeId",
+                    value: null
+                }, {
+                    operation: "Equals",
+                    property: "ClientTreeId",
+                    value: record
+                }]
+            };
+
+            store.setFixedFilter('ClientTreeId', filter);
+
+            if (record == null) {
+                store.setFixedFilter('ClientTreeId', {
+                    property: 'ClientTreeId',
+                    operation: 'Equals',
+                    value: null
+                });
+            }
+        }
+    },
+
+    getMechanicListForUnlockDiscountField: function () {
+        return ['VP'];
+    },
+
+    getMechanicFields: function (nonenegoeditor) {
+        return {
+            mechanicId: nonenegoeditor.down('searchfield[name=MechanicId]'),
+            mechanicTypeId: nonenegoeditor.down('searchcombobox[name=MechanicTypeId]'),
+            mechanicDiscount: nonenegoeditor.down('numberfield[name=Discount]')
+        }
+    },
+
+    nonenegoMechanicListener: function (field, newValue, oldValue) {
+        var me = App.app.getController('tpm.nonenego.NoneNego');
+        if (!me.buttons.edit || field.firstChange) {
+            var nonenegoeditor = field.up('nonenegoeditor');
+            var mechanicType = nonenegoeditor.down('[name=MechanicTypeId]');
+            var discount = nonenegoeditor.down('[name=Discount]');
+
+            if (nonenegoeditor.storeLoaded) {
+                mechanicType.clearValue();
+
+                if (field.rawValue != '' && field.rawValue != null) {
+                    if (field.rawValue != 'VP') {
+                        mechanicType.addCls('field-for-read-only');
+                        discount.removeCls('field-for-read-only');
+
+                        mechanicType.setReadOnly(true);
+                        discount.setReadOnly(false);
+                    }
+                    else {
+                        mechanicType.removeCls('field-for-read-only');
+                        discount.addCls('field-for-read-only');
+
+                        mechanicType.setReadOnly(false);
+                        discount.setValue(0);
+                        discount.setReadOnly(true);
+
+                        var nonegoController = App.app.getController('tpm.nonenego.NoneNego');
+                        nonegoController.getMechanicTypesByClient(nonenegoeditor);
+                    }
+                } else {
+                    mechanicType.addCls('field-for-read-only');
+                    mechanicType.setReadOnly(true);
+
+                    discount.addCls('field-for-read-only');
+                    discount.setValue(0);
+                    discount.setReadOnly(true);
+                }
+
+                var me = App.app.getController('tpm.nonenego.NoneNego');
+                me.validateFields(me);
+            }
+            nonenegoeditor.storeLoaded = true;
+        }
+        field.firstChange = true;
     },
 
     nonenegoMechanicTypeListener: function (field, newValue, oldValue) {
-        var discount = field.up('nonenegoeditor').down('[name=Discount]');
-        var discountValue = newValue != undefined ? field.record.get('Discount') : null;
+        var me = App.app.getController('tpm.nonenego.NoneNego');
+        if (!me.buttons.edit || field.firstChange) {
+            var discount = field.up('nonenegoeditor').down('[name=Discount]');
+            var discountValue = newValue != undefined ? field.record.get('Discount') : 0;
 
-        discount.setValue(discountValue);
+            discount.setValue(discountValue);
+        }
+        field.firstChange = true;
     },
 
     onClientTreeIdChange: function () {
-        this.elements.clientTreeObjectId.setValue(this.elements.clientTreeId.getModelData().ClientTreeObjectId);
+        if (this.elements.clientTreeId.getModelData().ClientTreeObjectId)
+            this.elements.clientTreeObjectId.setValue(this.elements.clientTreeId.getModelData().ClientTreeObjectId);
         this.validateFields();
     },
-
-    onProductTreeIdChange: function () {        
+    
+    onProductTreeIdChange: function () {
         this.elements.productTreeObjectId.setValue(this.elements.productTreeId.getModelData().ProductTreeObjectId);
         this.validateFields();
     },
 
-	onFromDateChange: function (fromDate, newValue, oldValue) {
-		var me = this;
-		if (newValue != oldValue) {
-			if (fromDate.firstChange) {
-				fromDate.firstChange = false;
-			} else {
-				fromDate.valueChanged = true;
-				var minValue = new Date();
-				var currentTimeZoneOffsetInHours = minValue.getTimezoneOffset();
-				var minValueInt = minValue.getTime();
+    onFromDateChange: function (fromDate, newValue, oldValue) {
+        var me = this;
+        if (newValue != oldValue) {
+            if (fromDate.firstChange) {
+                fromDate.firstChange = false;
+            } else {
+                fromDate.valueChanged = true;
+                var minValue = new Date();
+                var currentTimeZoneOffsetInHours = minValue.getTimezoneOffset();
+                var minValueInt = minValue.getTime();
                 var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
                 if (currentRole !== 'SupportAdministrator') {
-                     
+
                     fromDate.setMinValue(new Date(minValueInt + currentTimeZoneOffsetInHours * 60000 + 10800000));
                 }
-				me.validatePeriod(me.elements.fromDate, me.elements.toDate, me.elements.noneNegoId, me.elements.clientTreeId, me.elements.productTreeId, me.elements.mechanicId);
-			}
-		}
+                me.validatePeriod(me.elements.fromDate, me.elements.toDate, me.elements.noneNegoId, me.elements.clientTreeId, me.elements.productTreeId, me.elements.mechanicId);
+            }
+        }
     },
 
     onToDateSelect: function () {
@@ -312,11 +420,11 @@
 
         if (me.elements.clientTreeId.getValue() && me.elements.productTreeId.getValue() && me.elements.mechanicId.getValue()) {
             me.enableReadOnlyElements([me.elements.fromDate, me.elements.toDate]);
-			me.removeClsElements([me.elements.fromDate, me.elements.toDate], 'field-for-read-only');
-			if (me.elements.fromDate.valueChanged) {
-				 me.validatePeriod(me.elements.fromDate, me.elements.toDate, me.elements.noneNegoId, me.elements.clientTreeId, me.elements.productTreeId, me.elements.mechanicId);
-			}
-           
+            me.removeClsElements([me.elements.fromDate, me.elements.toDate], 'field-for-read-only');
+            if (me.elements.fromDate.valueChanged) {
+                me.validatePeriod(me.elements.fromDate, me.elements.toDate, me.elements.noneNegoId, me.elements.clientTreeId, me.elements.productTreeId, me.elements.mechanicId);
+            }
+
         } else {
             me.disableReadOnlyElements([me.elements.fromDate, me.elements.toDate]);
             me.addClsElements([me.elements.fromDate, me.elements.toDate], 'field-for-read-only');
@@ -339,45 +447,45 @@
                 mechanicId: mechanic.getValue()
             };
 
-			var correctMechanic = parameters.mechanicId != undefined && parameters.mechanicId != null && parameters.mechanicId != '';
-			if (parameters.productTreeId != undefined && parameters.clientTreeId != undefined && correctMechanic) {
-				App.Util.makeRequestWithCallback('NoneNegoes', 'IsValidPeriod', parameters, function (data) {
-					if (data) {
-						var nonenegoeditor = Ext.ComponentQuery.query('nonenegoeditor')[0];
-						if (nonenegoeditor) {
-							var fromDate = nonenegoeditor.down('[name=FromDate]');
-							var toDate = nonenegoeditor.down('[name=ToDate]');
+            var correctMechanic = parameters.mechanicId != undefined && parameters.mechanicId != null && parameters.mechanicId != '';
+            if (parameters.productTreeId != undefined && parameters.clientTreeId != undefined && correctMechanic) {
+                App.Util.makeRequestWithCallback('NoneNegoes', 'IsValidPeriod', parameters, function (data) {
+                    if (data) {
+                        var nonenegoeditor = Ext.ComponentQuery.query('nonenegoeditor')[0];
+                        if (nonenegoeditor) {
+                            var fromDate = nonenegoeditor.down('[name=FromDate]');
+                            var toDate = nonenegoeditor.down('[name=ToDate]');
 
-							var result = Ext.JSON.decode(data.httpResponse.data.value);
-							if (result.success) {
-								fromDate.isCurrentFieldValid = true;
-								toDate.isCurrentFieldValid = true;
+                            var result = Ext.JSON.decode(data.httpResponse.data.value);
+                            if (result.success) {
+                                fromDate.isCurrentFieldValid = true;
+                                toDate.isCurrentFieldValid = true;
 
-								fromDate.clearInvalid();
-								toDate.clearInvalid();
-								fromDate.validate();
-								toDate.validate();
-							} else {
-								fromDate.isCurrentFieldValid = false;
-								toDate.isCurrentFieldValid = false;
+                                fromDate.clearInvalid();
+                                toDate.clearInvalid();
+                                fromDate.validate();
+                                toDate.validate();
+                            } else {
+                                fromDate.isCurrentFieldValid = false;
+                                toDate.isCurrentFieldValid = false;
 
-								fromDate.markInvalid(l10n.ns('tpm', 'NoneNego').value('ValidatePeriodError'));
-								toDate.markInvalid(l10n.ns('tpm', 'NoneNego').value('ValidatePeriodError'));
-							}
-						}
+                                fromDate.markInvalid(l10n.ns('tpm', 'NoneNego').value('ValidatePeriodError'));
+                                toDate.markInvalid(l10n.ns('tpm', 'NoneNego').value('ValidatePeriodError'));
+                            }
+                        }
 
-						myMask.hide();
-					}
-				}, function (data) {
-					App.Notify.pushError(data.message);
-					window.setLoading(false);
-				});
-			}
+                        myMask.hide();
+                    }
+                }, function (data) {
+                    App.Notify.pushError(data.message);
+                    window.setLoading(false);
+                });
+            }
         }
     },
 
     onGridAfterrender: function (grid, eOpts) {
-        var store = grid.getStore(); 
+        var store = grid.getStore();
         var extendedFilter = store.getExtendedFilter();
         // выравниваем дату по UTC
         var currentTime = new Date();
@@ -410,22 +518,22 @@
         this.callParent(arguments);
 
         var nonenegoeditor = Ext.ComponentQuery.query('nonenegoeditor')[0];
-		var createDate = nonenegoeditor.down('[name=CreateDate]');
-		var fromDate = nonenegoeditor.down('[name=FromDate]');
-		var toDate = nonenegoeditor.down('[name=ToDate]');
+        var createDate = nonenegoeditor.down('[name=CreateDate]');
+        var fromDate = nonenegoeditor.down('[name=FromDate]');
+        var toDate = nonenegoeditor.down('[name=ToDate]');
 
         var date = new Date();
         date.setHours(date.getHours() + (date.getTimezoneOffset() / 60) + 3);   // приведение к московской timezone
-		createDate.setValue(date);    
+        createDate.setValue(date);
         fromDate.getPicker().setValue(date);
         var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
         if (currentRole !== 'SupportAdministrator') {
 
             fromDate.setMinValue(date);
         }
-		fromDate.valueChanged = true;
-		fromDate.isCurrentFieldValid = false;
-		toDate.isCurrentFieldValid = false;
-		nonenegoeditor.storeLoaded = true;
+        fromDate.valueChanged = true;
+        fromDate.isCurrentFieldValid = false;
+        toDate.isCurrentFieldValid = false;
+        nonenegoeditor.storeLoaded = true;
     },
 });

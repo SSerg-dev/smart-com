@@ -99,14 +99,25 @@
                     title: l10n.ns('tpm', 'PromoSupport').value('InvoiceNumber'),
                     margin: '0 0 0 5',
                     flex: 2,
-                    layout: 'fit',
                     hidden: true,
+                    layout: {
+                        type: 'hbox',
+                        align: 'stretch'
+                    },
                     items: [{
+                        flex: 1,
                         margin: '0 5 0 5',
                         xtype: 'textfield',
                         name: 'InvoiceNumber',
                         regex: /^[0-9]*[0-9]$/,
                         regexText: l10n.ns('tpm', 'PromoSupport').value('InvoiceNumberRegex'),
+                    }, {
+                        flex: 1,
+                        xtype: 'checkboxfield',
+                        margin: '0 0 0 5',
+                        name: 'OffAllocationCheckbox',
+                        readOnly: true,
+                        boxLabel: l10n.ns('tpm', 'PromoSupport').value('OffAllocation'),
                     }]
                 }]
             }, {

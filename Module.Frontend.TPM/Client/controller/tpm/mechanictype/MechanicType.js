@@ -65,8 +65,47 @@
                 },
                 'mechanictype #applyimportbutton': {
                     click: this.onApplyImportButtonClick
-                }
+                },
+
             }
         });
-    }
+    },
+
+    onTrigger1Click: function (picker) {
+        var picker = picker.createPicker();
+        var mechanicTypeController = App.app.getController('tpm.mechanictype.MechanicType');
+        var clientTreeStore = mechanicTypeController.getClientTreeStore();
+
+        var clientTree = picker.down(this.selectorWidget);
+        var clientTreeGrid = clientTree.down('baseclienttreesearchfield');
+
+        clientTreeGrid.addListener('select', mechanicTypeController.onTreeNodeSelect);
+
+        picker.show();
+        var addNodeButton = clientTree.down('#addNode');
+        var deleteNodeButton = clientTree.down('#deleteNode');
+
+        addNodeButton.hide();
+        deleteNodeButton.hide();
+    },
+
+    onTreeNodeSelect: function (cell, record, item, index, e, eOpts) {
+        var treegrid = record.store.ownerTree;
+        var clientTree = treegrid.up('clienttree');
+        var clientChooseWindow = clientTree.up('window');
+        var chooseButton = clientChooseWindow.down('#select');
+
+        if (record.data.IsBaseClient == false) {
+            chooseButton.disable();
+        }
+    },
+
+    getClientTreeStore: function () {
+        var clientTreeStore = Ext.create('Ext.data.Store', {
+            model: 'App.model.tpm.clienttree.ClientTree',
+        });
+
+        return clientTreeStore;
+    },
+
 });

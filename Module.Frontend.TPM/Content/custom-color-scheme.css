@@ -3428,9 +3428,25 @@ x-slider-inner:before {
     height: 23px !important;
 }
 
-.promosupport-fieldset .x-form-item-input-row .x-form-item-body .x-form-field {
+.promosupport-fieldset .x-form-item-input-row .x-form-item-body .x-form-field:not(.x-form-checkbox) {
     height: 26px !important;
 }
+
+.promosupport-fieldset .x-form-type-checkbox {
+    top: 0px !important;
+}
+
+    .promosupport-fieldset .x-form-type-checkbox .x-form-cb-wrap {
+        height: unset;
+    }
+
+    .promosupport-fieldset .x-form-type-checkbox .x-form-cb-label {
+        margin-top: 5px;
+    }
+
+    .promosupport-fieldset .x-form-type-checkbox .x-form-cb {
+        margin-top: 6px;
+    }
 
 .promo-support-custom-promo-panel-container {
     background-color: #e2e9ec;

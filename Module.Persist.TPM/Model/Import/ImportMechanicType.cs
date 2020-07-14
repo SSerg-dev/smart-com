@@ -17,7 +17,13 @@ namespace Module.Persist.TPM.Model.Import
 
         [ImportCSVColumn(ColumnNumber = 1)]
         [Display(Name = "Discount")]
-        public int? Discount { get; set; }
+        public double? Discount { get; set; }
+
+        [ImportCSVColumn(ColumnNumber = 2)]
+        [Display(Name = "ClientTree")]
+        public String ClientTreeFullPathName { get; set; }
+
+        public int? ClientTreeId { get; set; }
 
     }
 }

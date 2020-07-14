@@ -2103,9 +2103,45 @@
     <Compile Include="Migrations\202006251506203_EmptyMigrationRC9.Designer.cs">
       <DependentUpon>202006251506203_EmptyMigrationRC9.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202006091202321_MechanicType_ClientTreeId.cs" />
+    <Compile Include="Migrations\202006091202321_MechanicType_ClientTreeId.Designer.cs">
+      <DependentUpon>202006091202321_MechanicType_ClientTreeId.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006091228269_MechanicType_Unique.cs" />
+    <Compile Include="Migrations\202006091228269_MechanicType_Unique.Designer.cs">
+      <DependentUpon>202006091228269_MechanicType_Unique.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006181602504_Discount_ToDouble_MechanicType.cs" />
+    <Compile Include="Migrations\202006181602504_Discount_ToDouble_MechanicType.Designer.cs">
+      <DependentUpon>202006181602504_Discount_ToDouble_MechanicType.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006191201557_Change_Index_MechanicType.cs" />
+    <Compile Include="Migrations\202006191201557_Change_Index_MechanicType.Designer.cs">
+      <DependentUpon>202006191201557_Change_Index_MechanicType.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202004231347525_Promo_Support_Add_OffAllocation.cs" />
+    <Compile Include="Migrations\202004231347525_Promo_Support_Add_OffAllocation.Designer.cs">
+      <DependentUpon>202004231347525_Promo_Support_Add_OffAllocation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202004271249487_Add_DistrMarkUp.cs" />
+    <Compile Include="Migrations\202004271249487_Add_DistrMarkUp.Designer.cs">
+      <DependentUpon>202004271249487_Add_DistrMarkUp.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202007011355006_EmptyMigrationCMT.cs" />
+    <Compile Include="Migrations\202007011355006_EmptyMigrationCMT.Designer.cs">
+      <DependentUpon>202007011355006_EmptyMigrationCMT.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202007061141147_Change_discount_type_in_NoNego_from_int_to_double.cs" />
+    <Compile Include="Migrations\202007061141147_Change_discount_type_in_NoNego_from_int_to_double.Designer.cs">
+      <DependentUpon>202007061141147_Change_discount_type_in_NoNego_from_int_to_double.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\202007030649409_EmptyMigrationRC10.cs" />
     <Compile Include="Migrations\202007030649409_EmptyMigrationRC10.Designer.cs">
       <DependentUpon>202007030649409_EmptyMigrationRC10.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202007101510083_EmptyCMT.cs" />
+    <Compile Include="Migrations\202007101510083_EmptyCMT.Designer.cs">
+      <DependentUpon>202007101510083_EmptyCMT.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
@@ -2527,6 +2563,7 @@
     <Content Include="SQLInitialize\20200602_1327_Product_Computed_SubBrand.sql" />
     <Content Include="SQLInitialize\20200605_1342_Alter_ClientDashboardView.sql" />
     <Content Include="SQLInitialize\20200602_1917_AddApRollingVolumeIsRollingVolumeDay.sql" />
+    <Content Include="SQLInitialize\20200423_1528_Set_Values_to_DistrMarkUp.sql" />
     <Content Include="Sql\20191004_1540_FillInOutProductIdsHandler.sql" />
     <Content Include="SQLInitialize\20190926_1600_HistoricalPromoSupport_AP.sql" />
     <Content Include="SQLInitialize\20191106_1700_PromoGridView.sql" />
@@ -4135,8 +4172,35 @@
     <EmbeddedResource Include="Migrations\202006251506203_EmptyMigrationRC9.resx">
       <DependentUpon>202006251506203_EmptyMigrationRC9.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006091202321_MechanicType_ClientTreeId.resx">
+      <DependentUpon>202006091202321_MechanicType_ClientTreeId.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006091228269_MechanicType_Unique.resx">
+      <DependentUpon>202006091228269_MechanicType_Unique.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006181602504_Discount_ToDouble_MechanicType.resx">
+      <DependentUpon>202006181602504_Discount_ToDouble_MechanicType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006191201557_Change_Index_MechanicType.resx">
+      <DependentUpon>202006191201557_Change_Index_MechanicType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004231347525_Promo_Support_Add_OffAllocation.resx">
+      <DependentUpon>202004231347525_Promo_Support_Add_OffAllocation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004271249487_Add_DistrMarkUp.resx">
+      <DependentUpon>202004271249487_Add_DistrMarkUp.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202007011355006_EmptyMigrationCMT.resx">
+      <DependentUpon>202007011355006_EmptyMigrationCMT.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202007061141147_Change_discount_type_in_NoNego_from_int_to_double.resx">
+      <DependentUpon>202007061141147_Change_discount_type_in_NoNego_from_int_to_double.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202007030649409_EmptyMigrationRC10.resx">
       <DependentUpon>202007030649409_EmptyMigrationRC10.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202007101510083_EmptyCMT.resx">
+      <DependentUpon>202007101510083_EmptyCMT.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

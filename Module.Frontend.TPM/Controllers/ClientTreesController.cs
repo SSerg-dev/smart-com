@@ -48,6 +48,14 @@ namespace Module.Frontend.TPM.Controllers
 
             IQueryable<ClientTree> query = Context.Set<ClientTree>().Where(x => x.Type == "root" 
                 || (DateTime.Compare(x.StartDate, dt) <= 0 && (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, dt) > 0)));
+            
+            foreach (ClientTree q in query)
+            {
+                if (q.DistrMarkUp == 0)
+                {
+                    q.DistrMarkUp = 1;
+                }
+            }
 
             //IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
             IQueryable<ClientTreeHierarchyView> hierarchy = Context.Database.SqlQuery<ClientTreeHierarchyView>(
@@ -658,7 +666,8 @@ namespace Module.Frontend.TPM.Controllers
                 model.StartDate = dt;
                 if (!model.IsBaseClient)
                 {
-                    model.IsOnInvoice = null; 
+                    model.IsOnInvoice = null;
+                    model.DistrMarkUp = null;
                 }
                 //Проверка DemandCode
                 if (!CheckDemandCode(model))
@@ -1124,6 +1133,8 @@ namespace Module.Frontend.TPM.Controllers
         public bool? IsDaysEnd { get; set; }
         public double? PostPromoEffectW1 { get; set; }
         public double? PostPromoEffectW2 { get; set; }
+        public double? DistrMarkUp { get; set; }
+
         public double? DeviationCoefficient { get; set; }
 
         public string LogoFileName { get; set; }
@@ -1154,6 +1165,7 @@ namespace Module.Frontend.TPM.Controllers
             PostPromoEffectW2 = treeNode.PostPromoEffectW2;
             LogoFileName = treeNode.LogoFileName;
             DMDGroup = treeNode.DMDGroup;
+            DistrMarkUp = treeNode.DistrMarkUp;
             DeviationCoefficient = treeNode.DeviationCoefficient;
 
             this.leaf = leaf;

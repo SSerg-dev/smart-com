@@ -36,7 +36,8 @@
 
                 return value * 100;
             }
-        }
+        },
+        { name: 'DistrMarkUp', type: 'float', hidden: false, useNull: true, defaultValue: null },
     ],
 
     proxy: {

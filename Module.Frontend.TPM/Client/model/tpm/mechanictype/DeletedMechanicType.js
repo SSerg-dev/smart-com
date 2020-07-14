@@ -6,7 +6,11 @@
         { name: 'Id', hidden: true },
         { name: 'DeletedDate', type: 'date', isDefault: true },
         { name: 'Name', type: 'string', hidden: false, isDefault: true },
-        { name: 'Discount', useNull: true, type: 'int', hidden: false, isDefault: true }
+        { name: 'Discount', useNull: true, type: 'float', hidden: false, isDefault: true },
+        {
+            name: 'ClientTreeFullPathName', type: 'string', mapping: 'ClientTree.FullPathName', tree: true,
+            defaultFilterConfig: { valueField: 'FullPathName' }, breezeEntityType: 'ClientTree', hidden: false, isDefault: true
+        }
     ],
     proxy: {
         type: 'breeze',

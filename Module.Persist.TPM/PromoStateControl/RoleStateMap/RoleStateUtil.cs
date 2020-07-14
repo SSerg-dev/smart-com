@@ -92,20 +92,37 @@ namespace Module.Persist.TPM.PromoStateControl.RoleStateMap {
         /// <returns></returns>
         public static bool IsOnApprovalRoleOrder(string roleName, Promo promo) {
             bool isAvailable = true;
+            bool IsCMManagerApproved = promo.IsCMManagerApproved ?? false;
+            bool IsDemandPlanningApproved = promo.IsDemandPlanningApproved ?? false;
+            bool IsDemandFinanceApproved = promo.IsDemandFinanceApproved ?? false;
             if (promo.PromoStatus.SystemName == StateNames.ON_APPROVAL) {
-                switch (roleName) {
-                    case "CustomerMarketing":
-						break;
-                    case "CMManager":
-                        isAvailable = !promo.IsCMManagerApproved.HasValue || (promo.IsCMManagerApproved.HasValue && !promo.IsCMManagerApproved.Value); //TODO: зачем флаги nullable?
-                        break;
-                    case "DemandPlanning":
-                        isAvailable = (promo.IsCMManagerApproved.HasValue && promo.IsCMManagerApproved.Value) && (!promo.IsDemandPlanningApproved.HasValue || (promo.IsDemandPlanningApproved.HasValue && !promo.IsDemandPlanningApproved.Value));
-                        break;
-                    case "DemandFinance":
-                        isAvailable = (promo.IsCMManagerApproved.HasValue && promo.IsCMManagerApproved.Value) && (promo.IsDemandPlanningApproved.HasValue && promo.IsDemandPlanningApproved.Value) && (!promo.IsDemandFinanceApproved.HasValue || (promo.IsDemandFinanceApproved.HasValue && !promo.IsDemandFinanceApproved.Value));
-                        break;
-                }
+                if (!promo.IsGrowthAcceleration)
+                    switch (roleName)
+                    {
+                        case "CustomerMarketing":
+                        case "CMManager":
+                            isAvailable = !IsCMManagerApproved;
+                            break;
+                        case "DemandPlanning":
+                            isAvailable = IsCMManagerApproved && !IsDemandPlanningApproved;
+                            break;
+                        case "DemandFinance":
+                            isAvailable = false;
+                            break;
+                    }
+                else
+                    switch (roleName)
+                    {
+                        case "CMManager":
+                            isAvailable = !IsCMManagerApproved || (IsDemandPlanningApproved && IsDemandFinanceApproved);
+                            break;
+                        case "DemandPlanning":
+                            isAvailable = IsCMManagerApproved && !IsDemandPlanningApproved;
+                            break;
+                        case "DemandFinance":
+                            isAvailable = IsCMManagerApproved && IsDemandPlanningApproved && !IsDemandFinanceApproved;
+                            break;
+                    }
             }
             return isAvailable;
         }
@@ -117,19 +134,37 @@ namespace Module.Persist.TPM.PromoStateControl.RoleStateMap {
         /// <returns></returns>
         public static bool IsOnApprovalRoleOrder(string roleName, PromoGridView promo) {
             bool isAvailable = true;
+            bool IsCMManagerApproved = promo.IsCMManagerApproved ?? false;
+            bool IsDemandPlanningApproved = promo.IsDemandPlanningApproved ?? false;
+            bool IsDemandFinanceApproved = promo.IsDemandFinanceApproved ?? false;
             if (promo.PromoStatusSystemName == StateNames.ON_APPROVAL) {
-                switch (roleName) {
-                    case "CustomerMarketing":
-                    case "CMManager":
-                        isAvailable = !promo.IsCMManagerApproved.HasValue || (promo.IsCMManagerApproved.HasValue && !promo.IsCMManagerApproved.Value);
-                        break;
-                    case "DemandPlanning":
-                        isAvailable = (promo.IsCMManagerApproved.HasValue && promo.IsCMManagerApproved.Value) && (!promo.IsDemandPlanningApproved.HasValue || (promo.IsDemandPlanningApproved.HasValue && !promo.IsDemandPlanningApproved.Value));
-                        break;
-                    case "DemandFinance":
-                        isAvailable = (promo.IsCMManagerApproved.HasValue && promo.IsCMManagerApproved.Value) && (promo.IsDemandPlanningApproved.HasValue && promo.IsDemandPlanningApproved.Value) && (!promo.IsDemandFinanceApproved.HasValue || (promo.IsDemandFinanceApproved.HasValue && !promo.IsDemandFinanceApproved.Value));
-                        break;
-                }
+                if (!promo.IsGrowthAcceleration)
+                    switch (roleName)
+                    {
+                        case "CustomerMarketing":
+                        case "CMManager":
+                            isAvailable = !IsCMManagerApproved;
+                            break;
+                        case "DemandPlanning":
+                            isAvailable = IsCMManagerApproved && !IsDemandPlanningApproved;
+                            break;
+                        case "DemandFinance":
+                            isAvailable = false;
+                            break;
+                    }
+                else
+                    switch (roleName)
+                    {
+                        case "CMManager":
+                            isAvailable = !IsCMManagerApproved || (IsDemandPlanningApproved && IsDemandFinanceApproved);
+                            break;
+                        case "DemandPlanning":
+                            isAvailable = IsCMManagerApproved && !IsDemandPlanningApproved;
+                            break;
+                        case "DemandFinance":
+                            isAvailable = IsCMManagerApproved && IsDemandPlanningApproved && !IsDemandFinanceApproved;
+                            break;
+                    }
             }
             return isAvailable;
         }

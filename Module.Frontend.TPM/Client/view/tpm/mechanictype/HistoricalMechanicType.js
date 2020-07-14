@@ -96,11 +96,15 @@
         }, {
             xtype: 'singlelinedisplayfield',
             name: 'Name',
-            fieldLabel: l10n.ns('tpm', 'MechanicType').value('Name'),
+            fieldLabel: l10n.ns('tpm', 'HistoricalMechanicType').value('Name'),
         }, {
             xtype: 'singlelinedisplayfield',
             name: 'Discount',
-            fieldLabel: l10n.ns('tpm', 'MechanicType').value('Discount')
+            fieldLabel: l10n.ns('tpm', 'HistoricalMechanicType').value('Discount')
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'ClientTreeFullPathName',
+            fieldLabel: l10n.ns('tpm', 'HistoricalMechanicType').value('ClientTreeFullPathName')
         }]
     }]
 });

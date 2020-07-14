@@ -23,6 +23,7 @@
         { name: 'ActualProdCostPer1Item', type: 'float', hidden: false, isDefault: true },
         { name: 'PONumber', type: 'string', hidden: false, isDefault: true },
         { name: 'InvoiceNumber', type: 'string', hidden: false, isDefault: true },
+        { name: 'OffAllocation', type: 'boolean', hidden: false, isDefault: true },
         {
             name: 'ClientTreeFullPathName', type: 'string', mapping: 'ClientTree.FullPathName', tree: true,
             defaultFilterConfig: { valueField: 'FullPathName' }, breezeEntityType: 'ClientTree', hidden: false, isDefault: true

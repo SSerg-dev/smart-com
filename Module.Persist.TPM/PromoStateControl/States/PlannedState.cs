@@ -51,8 +51,8 @@ namespace Module.Persist.TPM.PromoStateControl
                 bool sendForApproval = false;
                 PromoStatus promoStatus;
 
-                Guid? stateIdVP = _stateContext.dbContext.Set<Mechanic>().FirstOrDefault(x => x.SystemName == "VP").Id;
-                Guid? stateIdTPR = _stateContext.dbContext.Set<Mechanic>().FirstOrDefault(x => x.SystemName == "TPR").Id;
+                List<Guid> stateIdVP = _stateContext.dbContext.Set<Mechanic>().Where(x => x.SystemName == "VP").Select(x => x.Id).ToList();
+                List<Guid> stateIdTPR = _stateContext.dbContext.Set<Mechanic>().Where(x => x.SystemName == "TPR").Select(x => x.Id).ToList();
 
                 bool isAvailable;
                 bool isAvailableCurrent = PromoStateUtil.CheckAccess(Roles, userRole);

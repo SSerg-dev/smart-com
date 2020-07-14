@@ -14,11 +14,45 @@
             name: 'Name',
             fieldLabel: l10n.ns('tpm', 'MechanicType').value('Name'),
         }, {
-            xtype: 'numberfield', allowDecimals: false, allowExponential: false, allowBlank: false, allowOnlyWhitespace: false,
+            xtype: 'numberfield',
             name: 'Discount',
             minValue: 0,
             maxValue: 100,
+            allowDecimals: true, 
+            allowExponential: false, 
+            allowBlank: true, 
+            allowOnlyWhitespace: true,
             fieldLabel: l10n.ns('tpm', 'MechanicType').value('Discount')
+        }, {
+            xtype: 'baseclienttreesearchfield',
+            name: 'ClientTreeId',
+            fieldLabel: l10n.ns('tpm', 'MechanicType').value('ClientTreeFullPathName'),
+            selectorWidget: 'clienttree',
+            valueField: 'Id',
+            displayField: 'FullPathName',
+            clientTreeIdValid: true,
+            allowBlank: true,
+            allowOnlyWhitespace: true,
+            store: {
+                storeId: 'clienttreestore',
+                model: 'App.model.tpm.clienttree.ClientTree',
+                autoLoad: false,
+                root: {}
+            },
+            //listeners: {
+            //    beforerender: function (picker) {
+            //        var newOnTrigger1Click = function () {
+            //            var mechanicTypeController = App.app.getController('tpm.mechanictype.MechanicType');
+            //            mechanicTypeController.onTrigger1Click(picker);
+            //        }
+            //        picker.onTrigger1Click = newOnTrigger1Click;
+            //    }
+            //},
+
+            mapping: [{
+                from: 'FullPathName',
+                to: 'ClientTreeFullPathName'
+            }]
         }]
     }
 });

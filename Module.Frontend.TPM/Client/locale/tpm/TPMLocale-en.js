@@ -581,7 +581,11 @@
 
     'MechanicType': {
         'Name': 'Name',
-        'Discount': 'Discount, %'
+        'Discount': 'Discount, %',
+        'ClientTreeFullPathName': 'Client',
+        'BaseClientValidate': 'Choose base client',
+        'ChooseBtn': 'Choose',
+        'Clients': 'Clients'
     },
     'HistoricalMechanicType': ['.tpm.MechanicType', '.core.BaseHistoryEntity'],
     'DeletedMechanicType': ['.tpm.MechanicType', '.core.BaseDeletedEntity'],
@@ -1047,9 +1051,10 @@
         'IsOnInvoice': 'On Invoice',
         'InvoiceType': 'Invoice Type',
         'DMDGroup': 'DMD Group',
-        'DMDGroupRegex': 'Only numbers',
+        'DMDGroupRegex': 'Only positive values greater than 0',
         'Adjustment': 'Adjustment',
-        'AdjustmentP': 'Adjustment, %'
+        'AdjustmentP': 'Adjustment, %',
+        'DistrMarkUp' : 'Distr MarkUp'
     },
 
     'EventClientTree': {
@@ -1188,7 +1193,8 @@
         'Name': 'Name',
         'InvoiceNumber': 'Invoice Number',
         'PlanProdCost': 'Plan Prod Cost',
-        'ActualProdCost': 'Actual Prod Cost'
+        'ActualProdCost': 'Actual Prod Cost',
+        'OffAllocation': 'Off allocation by LSV',
     },
     'HistoricalPromoSupport': {
         'Number': 'ID',

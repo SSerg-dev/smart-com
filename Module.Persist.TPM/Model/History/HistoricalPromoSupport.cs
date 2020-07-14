@@ -26,5 +26,6 @@ namespace Module.Persist.TPM.Model.History
         public string ClientTreeFullPathName { get; set; }
         public string BudgetSubItemName { get; set; }
         public string BudgetSubItemBudgetItemName { get; set; }
+        public bool OffAllocation { get; set; }
     }
 }

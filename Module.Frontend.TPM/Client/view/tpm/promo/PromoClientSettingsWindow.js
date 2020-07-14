@@ -80,6 +80,11 @@
                     fieldLabel: l10n.ns('tpm', 'RetailType').value('Name')
                 }, {
                     xtype: 'singlelinedisplayfield',
+                    name: 'DistrMarkUp',
+                    width: 280,
+                    fieldLabel: l10n.ns('tpm', 'ClientTree').value('DistrMarkUp')
+                }, {
+                    xtype: 'singlelinedisplayfield',
                     name: 'PostPromoEffectW1',
                     width: 280,
                     fieldLabel: l10n.ns('tpm', 'ClientTree').value('PostPromoEffectW1')
@@ -221,6 +226,7 @@
         this.down('[name=DemandCode]').setValue(record.DemandCode); 
         this.down('[name=IsBaseClient]').setValue(record.IsBaseClient);
         this.down('[name=RetailTypeName]').setValue(record.RetailTypeName);
+        this.down('[name=DistrMarkUp]').setValue(record.DistrMarkUp);
         this.down('[name=PostPromoEffectW1]').setValue(record.PostPromoEffectW1);
         this.down('[name=PostPromoEffectW2]').setValue(record.PostPromoEffectW2);
 

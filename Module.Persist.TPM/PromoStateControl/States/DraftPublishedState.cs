@@ -138,6 +138,27 @@ namespace Module.Persist.TPM.PromoStateControl
 						}
 
 						var oldIncidents = _stateContext.dbContext.Set<PromoOnApprovalIncident>().Where(x => x.PromoId == promoModel.Id && x.ProcessDate == null);
+                        // Проверка на GA
+                        if (promoModel.IsGrowthAcceleration)
+                        {
+                            _stateContext.Model = promoModel;
+                            _stateContext.State = _stateContext._onApprovalState;
+
+                            // Закрываем все неактуальные инциденты
+                            foreach (var incident in oldIncidents)
+                            {
+                                incident.ProcessDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                            }
+                            _stateContext.dbContext.Set<PromoOnApprovalIncident>().Add(new PromoOnApprovalIncident()
+                            {
+                                PromoId = promoModel.Id,
+                                ApprovingRole = "CMManager", // Или DemandPlanning? Артём должен уточнить
+                                CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                                Promo = promoModel
+                            });
+                            return true;
+                        }
+
 						// Проверка на NoNego
 						bool isNoNego = CheckNoNego(promoModel);
                         if (isNoNego)

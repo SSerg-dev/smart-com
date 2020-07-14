@@ -10,50 +10,50 @@
         }
     },
     customHeaderItems: [
-ResourceMgr.getAdditionalMenu('core').base = {
-    glyph: 0xf068,
-    text: l10n.ns('core', 'additionalMenu').value('additionalBtn'),
+        ResourceMgr.getAdditionalMenu('core').base = {
+            glyph: 0xf068,
+            text: l10n.ns('core', 'additionalMenu').value('additionalBtn'),
 
-    menu: {
-        xtype: 'customheadermenu',
-        items: [{
-            glyph: 0xf4eb,
-            itemId: 'gridsettings',
-            text: l10n.ns('core', 'additionalMenu').value('gridSettingsMenuItem'),
-            action: 'SaveGridSettings',
-            resource: 'Security'
-        }]
-    }
-},
-ResourceMgr.getAdditionalMenu('core').import = {
-    glyph: 0xf21b,
-    text: l10n.ns('core', 'additionalMenu').value('importExportBtn'),
+            menu: {
+                xtype: 'customheadermenu',
+                items: [{
+                    glyph: 0xf4eb,
+                    itemId: 'gridsettings',
+                    text: l10n.ns('core', 'additionalMenu').value('gridSettingsMenuItem'),
+                    action: 'SaveGridSettings',
+                    resource: 'Security'
+                }]
+            }
+        },
+        ResourceMgr.getAdditionalMenu('core').import = {
+            glyph: 0xf21b,
+            text: l10n.ns('core', 'additionalMenu').value('importExportBtn'),
 
-    menu: {
-        xtype: 'customheadermenu',
-        items: [{
-            glyph: 0xf220,
-            itemgroup: 'loadimportbutton',
-            exactlyModelCompare: true,
-            text: l10n.ns('core', 'additionalMenu').value('fullImportXLSX'),
-            resource: '{0}',
-            action: 'FullImportXLSX',
-            allowFormat: ['zip', 'xlsx']
-        }, {
-            glyph: 0xf21d,
-            itemId: 'loadimporttemplatexlsxbutton',
-            exactlyModelCompare: true,
-            text: l10n.ns('core', 'additionalMenu').value('importTemplateXLSX'),
-            action: 'DownloadTemplateXLSX'
-        }, {
-            glyph: 0xf21d,
-            itemId: 'exportxlsxbutton',
-            exactlyModelCompare: true,
-            text: l10n.ns('core', 'additionalMenu').value('exportXLSX'),
-            action: 'ExportXLSX'
-        }]
-    }
-}
+            menu: {
+                xtype: 'customheadermenu',
+                items: [{
+                    glyph: 0xf220,
+                    itemgroup: 'loadimportbutton',
+                    exactlyModelCompare: true,
+                    text: l10n.ns('core', 'additionalMenu').value('fullImportXLSX'),
+                    resource: '{0}',
+                    action: 'FullImportXLSX',
+                    allowFormat: ['zip', 'xlsx']
+                }, {
+                    glyph: 0xf21d,
+                    itemId: 'loadimporttemplatexlsxbutton',
+                    exactlyModelCompare: true,
+                    text: l10n.ns('core', 'additionalMenu').value('importTemplateXLSX'),
+                    action: 'DownloadTemplateXLSX'
+                }, {
+                    glyph: 0xf21d,
+                    itemId: 'exportxlsxbutton',
+                    exactlyModelCompare: true,
+                    text: l10n.ns('core', 'additionalMenu').value('exportXLSX'),
+                    action: 'ExportXLSX'
+                }]
+            }
+        }
     ],
     dockedItems: [{
         xtype: 'custombigtoolbar',
@@ -122,11 +122,11 @@ ResourceMgr.getAdditionalMenu('core').import = {
                         model: 'App.model.tpm.clienttree.ClientTree',
                         autoLoad: false,
                         root: {}
-                    },                         
+                    },
                 },
                 renderer: function (value) {
                     return renderWithDelimiter(value, ' > ', '  ');
-                }                
+                }
             }, {
                 text: l10n.ns('tpm', 'NoneNego').value('ClientTreeObjectId'),
                 dataIndex: 'ClientTreeObjectId'
@@ -146,7 +146,7 @@ ResourceMgr.getAdditionalMenu('core').import = {
                         model: 'App.model.tpm.producttree.ProductTree',
                         autoLoad: false,
                         root: {}
-                    },                         
+                    },
                 },
                 renderer: function (value) {
                     return renderWithDelimiter(value, ' > ', '  ');
@@ -201,8 +201,10 @@ ResourceMgr.getAdditionalMenu('core').import = {
                     }
                 }
             }, {
+                xtype: 'numbercolumn',
+                format: '0.00',
                 text: l10n.ns('tpm', 'NoneNego').value('Discount'),
-                dataIndex: 'Discount'
+                dataIndex: 'Discount',
             }, {
                 text: l10n.ns('tpm', 'NoneNego').value('FromDate'),
                 dataIndex: 'FromDate',
@@ -363,6 +365,7 @@ ResourceMgr.getAdditionalMenu('core').import = {
             maxValue: 100,
             allowBlank: false,
             allowOnlyWhitespace: false,
+            allowDecimals: true,
             readOnly: true
         }, {
             xtype: 'datefield',

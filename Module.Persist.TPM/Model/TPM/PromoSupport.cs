@@ -31,6 +31,7 @@ namespace Module.Persist.TPM.Model.TPM {
         public string BorderColor { get; set; }
         public string PONumber { get; set; }
         public string InvoiceNumber { get; set; }
+        public bool OffAllocation { get; set; }
 
 
         public virtual ClientTree ClientTree { get; set; }

@@ -1049,7 +1049,8 @@
 		'PONumber': 'PO Number',
 		'PONumberRegex': 'Only numbers',
 		'InvoiceNumber': 'Invoice Number',
-		'InvoiceNumberRegex': 'Only numbers'
+		'InvoiceNumberRegex': 'Only numbers',
+        'OffAllocation': 'Off allocation by LSV',
 	},
 	'HistoricalPromoSupport': ['.tpm.PromoSupport', '.core.BaseHistoryEntity'],
 	'DeletedPromoSupport': ['.tpm.PromoSupport', '.core.BaseDeletedEntity'],

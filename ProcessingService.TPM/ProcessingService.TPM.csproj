@@ -243,10 +243,6 @@
       <Project>{2c62beb7-5d98-4fd6-a491-523473ea5019}</Project>
       <Name>Module.Host.TPM</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Module.Persist.TPM\Module.Persist.TPM.csproj">
-      <Project>{a4e76df0-0b6a-4848-a99c-b6bf261623f2}</Project>
-      <Name>Module.Persist.TPM</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="ClientTreeNeedUpdateTemplate.txt">

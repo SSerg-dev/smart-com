@@ -7,7 +7,7 @@ namespace Module.Persist.TPM.Model.History
     [AssociatedWith(typeof(NoneNego))]
     public class HistoricalNoneNego : BaseHistoricalEntity<Guid>
     {
-        public int? Discount { get; set; }
+        public double? Discount { get; set; }
         public DateTimeOffset? FromDate { get; set; }
         public DateTimeOffset? ToDate { get; set; }
         public DateTimeOffset? CreateDate { get; set; }

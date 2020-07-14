@@ -15,7 +15,7 @@ namespace Module.Persist.TPM.Model.TPM
         public int ClientTreeId { get; set; }
         public int ProductTreeId { get; set; }
 
-        public int? Discount { get; set; }
+        public double? Discount { get; set; }
         public DateTimeOffset? FromDate { get; set; }
         public DateTimeOffset? ToDate { get; set; }
         public DateTimeOffset? CreateDate { get; set; }

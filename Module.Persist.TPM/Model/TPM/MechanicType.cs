@@ -1,11 +1,7 @@
 using Core.Data;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Module.Persist.TPM.Model.TPM
 {
@@ -16,10 +12,19 @@ namespace Module.Persist.TPM.Model.TPM
 
         public bool Disabled {get; set;}
 
+        [Index("Unique_MechanicType", 1, IsUnique = true)]
         public DateTimeOffset? DeletedDate {get; set;}
+
+        [Index("Unique_MechanicType", 2, IsUnique = true)]
         [StringLength(255)]
         [Required]
         public string Name {get; set;}
-        public int? Discount { get; set; }
+
+        public double? Discount { get; set; }
+
+        [Index("Unique_MechanicType", 3, IsUnique = true)]
+        public int? ClientTreeId { get; set; }
+
+        public virtual ClientTree ClientTree { get; set; }
     }
 }

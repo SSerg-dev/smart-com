@@ -5,8 +5,8 @@
     cls: 'readOnlyFields',
     width: 800,
     minWidth: 800,
-	maxHeight: 500,
-	storeLoaded: false,
+    maxHeight: 500,
+    storeLoaded: false,
 
     items: {
         xtype: 'editorform',
@@ -88,12 +88,13 @@
             name: 'ProductTreeObjectId',
             fieldLabel: l10n.ns('tpm', 'NoneNego').value('ProductTreeObjectId')
         }, {
-                xtype: 'searchfield',
+            xtype: 'searchfield',
             fieldLabel: l10n.ns('tpm', 'PromoDemand').value('MechanicName'),
             name: 'MechanicId',
             selectorWidget: 'mechanic',
             valueField: 'Id',
             displayField: 'Name',
+            firstChange: false,
             entityType: 'Mechanic',
             store: {
                 type: 'simplestore',
@@ -108,19 +109,20 @@
                     }]
                 }
             },
-            onTrigger3Click: function () {
+            onTrigger2Click: function () {
                 var mechanicType = this.up('nonenegoeditor').down('[name=MechanicTypeId]');
                 var discount = this.up('nonenegoeditor').down('[name=Discount]');
 
                 this.clearValue();
                 mechanicType.setReadOnly(true);
-                discount.setValue(null);
+                mechanicType.clearValue();
+                discount.setValue(0);
                 discount.setReadOnly(true);
 
                 discount.addCls('field-for-read-only');
                 mechanicType.addCls('field-for-read-only');
 
-            }, 
+            },
             mapping: [{
                 from: 'Name',
                 to: 'MechanicName'
@@ -135,7 +137,8 @@
             entityType: 'MechanicType',
             allowBlank: false,
             allowOnlyWhitespace: false,
-			readOnly: true,
+            firstChange: false,
+            readOnly: true,
             store: {
                 type: 'simplestore',
                 autoLoad: true,
@@ -153,9 +156,9 @@
                 var discount = this.up().down('[name=Discount]');
 
                 this.clearValue();
-                discount.setValue(null);
+                discount.setValue(0);
                 discount.addCls('field-for-read-only');
-            }, 
+            },
             mapping: [{
                 from: 'Name',
                 to: 'MechanicTypeName'
@@ -164,11 +167,12 @@
             xtype: 'numberfield',
             name: 'Discount',
             fieldLabel: l10n.ns('tpm', 'NoneNego').value('Discount'),
+            format: "0.00",
             minValue: 1,
             maxValue: 100,
             readOnly: true,
             allowBlank: false,
-            allowDecimals: false,
+            allowDecimals: true,
         }, {
             xtype: 'datefield',
             name: 'FromDate',
@@ -178,16 +182,16 @@
             isCurrentFieldValid: true,
             editable: false,
             format: 'd.m.Y',
-			trigger2Cls: Ext.baseCSSPrefix + 'form-clear-trigger',
-			firstChange: true,
-			valueChanged: false,
+            trigger2Cls: Ext.baseCSSPrefix + 'form-clear-trigger',
+            firstChange: true,
+            valueChanged: false,
             onTrigger2Click: function () {
                 this.reset();
             },
             validator: function () {
-				if (!this.isCurrentFieldValid) {
-						return l10n.ns('tpm', 'NoneNego').value('ValidatePeriodError');
-				}
+                if (!this.isCurrentFieldValid) {
+                    return l10n.ns('tpm', 'NoneNego').value('ValidatePeriodError');
+                }
                 return true;
             },
             listeners: {
@@ -196,7 +200,7 @@
                     var currentTimeZoneOffsetInHours = minValue.getTimezoneOffset();
                     var minValueInt = minValue.getTime();
                     var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
-                   
+
                     field.getPicker().setValue(new Date(minValueInt + currentTimeZoneOffsetInHours * 60000 + 10800000));
                     if (currentRole !== 'SupportAdministrator') {
 
@@ -210,7 +214,7 @@
 
                         toDate.setMinValue(newValue.getValue());
                     }
-                    }
+                }
             }
         }, {
             xtype: 'datefield',
@@ -233,21 +237,21 @@
 
                 return true;
             },
-                listeners: {
-                    afterrender: function (button) {
+            listeners: {
+                afterrender: function (button) {
 
-                        var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
-                        if (currentRole === 'SupportAdministrator') {
-                            button.minValue = null;
-                        } 
-                    },
+                    var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
+                    if (currentRole === 'SupportAdministrator') {
+                        button.minValue = null;
+                    }
+                },
                 change: function (newValue, oldValue) {
                     var fromDate = this.up('form').down('[name=FromDate]');
                     var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
-                 //   if (currentRole !== 'SupportAdministrator') {
+                    //   if (currentRole !== 'SupportAdministrator') {
 
-                        fromDate.setMaxValue(newValue.getValue());
-                   // }
+                    fromDate.setMaxValue(newValue.getValue());
+                    // }
                 }
             }
         }, {

@@ -5,7 +5,12 @@
     fields: [
         { name: 'Id', hidden: true },
         { name: 'Name', type: 'string', hidden: false, isDefault: true },
-        { name: 'Discount', type: 'int', hidden: false, isDefault: true }
+        { name: 'Discount', type: 'float', hidden: false, isDefault: true },
+        { name: 'ClientTreeId', hidden: true, isDefault: false },
+        {
+            name: 'ClientTreeFullPathName', type: 'string', mapping: 'ClientTree.FullPathName', tree: true,
+            defaultFilterConfig: { valueField: 'FullPathName' }, breezeEntityType: 'ClientTree', hidden: false, isDefault: true
+        },
     ],
     proxy: {
         type: 'breeze',

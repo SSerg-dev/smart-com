@@ -141,6 +141,14 @@ namespace Module.Host.TPM.Handlers
         }
     }
 
+    class FullXLSXMechanicTypeUpdateImporHandler : FullXLSXImportHandler
+    {
+        protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
+        {
+            return new FullXLSXMechanicTypeUpdateImportAction(settings);
+        }
+    }
+
     class FullXLSXAssortmentMatrixImportHandler : FullXLSXImportHandler
     {
         protected override IAction GetAction(FullImportSettings settings, ExecuteData data)

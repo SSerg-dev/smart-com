@@ -155,7 +155,7 @@
                 },
                 'promoeditorcustom #btn_recalculatePromo': {
                     click: this.recalculatePromo
-                },  
+                },
                 // import/export
                 'promo #exportbutton': {
                     click: this.onExportButtonClick
@@ -293,7 +293,7 @@
                 },
             }
         });
-    }, 
+    },
     onGridPromoAfterrender: function (grid) {
         var store = grid.getStore();
 
@@ -1245,15 +1245,19 @@
                         var marsMechanicDiscount = mechanic.down('numberfield[name=MarsMechanicDiscount]');
                         var instoreMechanicDiscount = mechanic.down('numberfield[name=PlanInstoreMechanicDiscount]');
                         var promoComment = mechanic.down('textarea[name=PromoComment]');
+                        var isEdit = false;
+                        var isReadOnly = false;
 
                         promoController.mechanicTypeChange(
                             marsMechanicId, marsMechanicTypeId, marsMechanicDiscount,
-                            promoController.getMechanicListForUnlockDiscountField()
+                            promoController.getMechanicListForUnlockDiscountField(),
+                            isReadOnly, isEdit
                         );
 
                         promoController.mechanicTypeChange(
                             instoreMechanicId, instoreMechanicTypeId, instoreMechanicDiscount,
-                            promoController.getMechanicListForUnlockDiscountField()
+                            promoController.getMechanicListForUnlockDiscountField(),
+                            isReadOnly, isEdit
                         );
 
                         // event
@@ -1680,7 +1684,7 @@
         var mechanic = promoeditorcustom.down('container[name=promo_step3]');
         var promoActivityStep1 = promoActivity.down('container[name=promoActivity_step1]');
         var promoBudgets = button.up('window').down('promobudgets');
-        
+
         me.setReadOnlyForChildrens(promoActivity, promoeditorcustom.promoStatusSystemName, true, record.data.InOut);
         me.setReadOnlyForChildrens(promoBudgets, promoeditorcustom.promoStatusSystemName, true, record.data.InOut);
 
@@ -1765,17 +1769,21 @@
         var instoreMechanicTypeId = mechanic.down('searchcombobox[name=PlanInstoreMechanicTypeId]');
         var marsMechanicDiscount = mechanic.down('numberfield[name=MarsMechanicDiscount]');
         var instoreMechanicDiscount = mechanic.down('numberfield[name=PlanInstoreMechanicDiscount]');
+        var isEdit = true;
+        var isReadOnly = false;
 
         promoController.mechanicTypeChange(
             marsMechanicId, marsMechanicTypeId, marsMechanicDiscount,
-            promoController.getMechanicListForUnlockDiscountField()
+            promoController.getMechanicListForUnlockDiscountField(),
+            isReadOnly, isEdit
         );
 
         promoController.mechanicTypeChange(
             instoreMechanicId, instoreMechanicTypeId, instoreMechanicDiscount,
-            promoController.getMechanicListForUnlockDiscountField()
+            promoController.getMechanicListForUnlockDiscountField(),
+            isReadOnly, isEdit
         );
-        
+
         //Actual механники
         var actualInstoreMechanicId = promoActivityStep1.down('searchcombobox[name=ActualInstoreMechanicId]');
         var actualInstoreMechanicTypeId = promoActivityStep1.down('searchcombobox[name=ActualInstoreMechanicTypeId]');
@@ -1783,7 +1791,8 @@
 
         promoController.mechanicTypeChange(
             actualInstoreMechanicId, actualInstoreMechanicTypeId, actualInStoreDiscount,
-            promoController.getMechanicListForUnlockDiscountField()
+            promoController.getMechanicListForUnlockDiscountField(),
+            isReadOnly, isEdit
         );
 
         //Начавшиеся promo не редактируются период
@@ -1863,6 +1872,13 @@
             promoeditorcustom.down('numberfield[name=Adjustment]').setReadOnly(false);
             promoeditorcustom.down('numberfield[name=Adjustment]').removeCls('readOnlyField');
         }
+        // Для Growth Acceleration Promo
+        var growthAccelerationCheckbox = promoeditorcustom.down('[name=GrowthAccelerationCheckbox]');
+        var gaReadOnlyStatuses = ['Approved', 'Planned', 'Started', 'Finished'];
+        if (gaReadOnlyStatuses.indexOf(promoeditorcustom.promoStatusSystemName) != -1 && currentRole !== 'SupportAdministrator') {
+            growthAccelerationCheckbox.setReadOnly(true);
+        }
+
 
         me.checkLoadingComponents();
         promoeditorcustom.setLoading(false);
@@ -2435,6 +2451,11 @@
         var apolloExportCheckbox = promoeditorcustom.down('[name=ApolloExportCheckbox]');
         apolloExportCheckbox.setValue(record.data.IsApolloExport);
 
+        var gaReadOnlyStatuses = ['Approved', 'Planned', 'Started', 'Finished'];
+        if (gaReadOnlyStatuses.indexOf(record.data.PromoStatusSystemName) != -1) {
+            growthAccelerationCheckbox.setReadOnly(true);
+        }
+
         promoeditorcustom.readOnly = readOnly;
         $.ajax({
             dataType: 'json',
@@ -2620,7 +2641,7 @@
         var actualInStoreDiscount = promoActivityStep1.down('numberfield[name=ActualInStoreDiscount]');
 
         var actualInStoreShelfPrice = promoActivityStep1.down('numberfield[name=ActualInStoreShelfPrice]');
-        var planInStoreShelfPrice = promoActivityStep1.down('numberfield[name=PlanInStoreShelfPrice]'); 
+        var planInStoreShelfPrice = promoActivityStep1.down('numberfield[name=PlanInStoreShelfPrice]');
         var invoiceTotal = promoActivityStep2.down('triggerfielddetails[name=InvoiceTotal]');
         var invoiceNumber = promoActivityStep2.down('textfield[name=InvoiceNumber]');
         var documentNumber = promoActivityStep2.down('textfield[name=DocumentNumber]');
@@ -2674,7 +2695,7 @@
             //addSubItemButtons.forEach(function (button) {
             //    button.setDisabled(true);
             //})
-            
+
             // --------------- promo activity ---------------
             //promoeditorcustom.down('container[itemId=ContainerPlanPromoUplift]').setReadable(true);
 
@@ -2872,13 +2893,13 @@
         promoController.mechanicTypeChange(
             marsMechanicId, marsMechanicTypeId, marsMechanicDiscount,
             promoController.getMechanicListForUnlockDiscountField(),
-            readOnly
+            readOnly, true
         );
 
         promoController.mechanicTypeChange(
             instoreMechanicId, instoreMechanicTypeId, instoreMechanicDiscount,
             promoController.getMechanicListForUnlockDiscountField(),
-            readOnly
+            readOnly, true
         );
 
         promoComment.setValue(record.data.MechanicComment);
@@ -3076,7 +3097,7 @@
             promoController.mechanicTypeChange(
                 actualInstoreMechanicId, actualInstoreMechanicTypeId, actualInStoreDiscount,
                 promoController.getMechanicListForUnlockDiscountField(),
-                readOnly
+                readOnly, true
             );
 
             actualInStoreShelfPrice.setValue(record.data.ActualInStoreShelfPrice);
@@ -3617,6 +3638,9 @@
                 promoController.getMechanicListForUnlockDiscountField()
             );
 
+            promoController.getMechanicTypesByClient(mechanicFields.marsMechanicFields.marsMechanicId,
+                mechanicFields.marsMechanicFields.marsMechanicTypeId);
+
             promoMechanicButton.setText(promoController.getFullTextForMechanicButton(promoController));
 
             if (promoController.needUnblockZeroDiscount(promoMechanic, field)) {
@@ -3701,6 +3725,9 @@
                 promoController.getMechanicListForUnlockDiscountField()
             );
 
+            promoController.getMechanicTypesByClient(mechanicFields.instoreMechanicFields.instoreMechanicId,
+                mechanicFields.instoreMechanicFields.instoreMechanicTypeId);
+
             promoMechanicButton.setText(promoController.getFullTextForMechanicButton(promoController));
 
             if (promoController.needUnblockZeroDiscount(promoMechanic, field)) {
@@ -3766,8 +3793,6 @@
         if (promoMechanic) {
             var mechanicFields = promoController.getMechanicFields(promoMechanic);
 
-            var mechanicListForUnlockDiscountField = promoController.getMechanicListForUnlockDiscountField();
-
             if (oldValue) {
                 mechanicFields.actualInstoreMechanicFields.actualInstoreMechanicTypeId.reset();
                 mechanicFields.actualInstoreMechanicFields.actualInStoreDiscount.reset();
@@ -3779,6 +3804,9 @@
                 mechanicFields.actualInstoreMechanicFields.actualInStoreDiscount,
                 promoController.getMechanicListForUnlockDiscountField()
             );
+
+            promoController.getMechanicTypesByClient(mechanicFields.actualInstoreMechanicFields.actualInstoreMechanicId,
+                mechanicFields.actualInstoreMechanicFields.actualInstoreMechanicTypeId);
 
             if (promoController.needUnblockZeroDiscount(promoMechanic, field)) {
                 mechanicFields.actualInstoreMechanicFields.actualInStoreDiscount.setMinValue(0);
@@ -3825,20 +3853,25 @@
     },
 
     // Вызвать при изменении поля MechanicType.
-    mechanicTypeChange: function (mechanicId, mechanicTypeId, mechanicDiscount, mechanicListForUnlockDiscountField, readOnly) {
+    mechanicTypeChange: function (mechanicId, mechanicTypeId, mechanicDiscount, mechanicListForUnlockDiscountField, readOnly, isEdit) {
         if (readOnly) {
             mechanicId.setDisabled(false);
             mechanicTypeId.setDisabled(false);
             mechanicDiscount.setDisabled(false);
-        } else if (mechanicId.rawValue && mechanicListForUnlockDiscountField.some(function (element)
-        { return element !== mechanicId.rawValue; })) {
+        } else if (mechanicId.rawValue && mechanicListForUnlockDiscountField.some(function (element) { return element !== mechanicId.rawValue; })) {
+            mechanicId.setDisabled(false);
             mechanicTypeId.setDisabled(true);
             mechanicDiscount.setDisabled(false);
-
         } else if (mechanicId.rawValue) {
+            mechanicId.setDisabled(false);
             mechanicTypeId.setDisabled(false);
             mechanicDiscount.setDisabled(true);
+        } else if (isEdit && !readOnly) {
+            mechanicId.setDisabled(false);
+            mechanicTypeId.setDisabled(true);
+            mechanicDiscount.setDisabled(true);
         } else {
+            mechanicId.setDisabled(true);
             mechanicTypeId.setDisabled(true);
             mechanicDiscount.setDisabled(true);
         }
@@ -3882,6 +3915,27 @@
             actualInstoreMechanicId: promoMechanic.down('searchcombobox[name=ActualInstoreMechanicId]'),
             actualInstoreMechanicTypeId: promoMechanic.down('searchcombobox[name=ActualInstoreMechanicTypeId]'),
             actualInStoreDiscount: promoMechanic.down('numberfield[name=ActualInStoreDiscount]')
+        }
+    },
+
+    //фильтруем записи в списке MechanicType по клиенту
+    getMechanicTypesByClient: function (mechanicField, mechanicTypeField) {
+        var promoController = App.app.getController('tpm.promo.Promo'),
+            window = Ext.ComponentQuery.query('promoeditorcustom')[0],
+            promoclient = window.down('promoclient'),
+            mechanicTypeStore = mechanicTypeField.getStore();
+
+        var fieldValue = mechanicField.rawValue;
+
+        if (fieldValue == promoController.getMechanicListForUnlockDiscountField()) {
+            var client = promoclient.clientTreeRecord;
+
+            if (client !== null) {
+                mechanicTypeStore.getProxy().extraParams = {
+                    byClient: breeze.DataType.Boolean.fmtOData('true'),
+                    clientTreeId: breeze.DataType.Int32.fmtOData(client.Id),
+                };
+            }
         }
     },
 
@@ -4110,7 +4164,7 @@
 
         var clientCrudAccess = ['Administrator', 'SupportAdministrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'];
         var productCrudAccess = ['Administrator', 'SupportAdministrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'];
-        
+
         if (clientCrudAccess.indexOf(currentRole) === -1) {
             promoClientForm.down('#choosePromoClientBtn').setDisabled(true);
         }
@@ -4593,7 +4647,7 @@
     },
 
     onPromoGridSelectionChange: function (selModel, selected) {
-        this.onGridSelectionChange(selModel, selected); 
+        this.onGridSelectionChange(selModel, selected);
         selModel.view.up('#viewcontainer').down('#canchangeresponsible').setDisabled(false);
     },
 
@@ -5141,8 +5195,8 @@
         window.down('[name=PlanPromoPostPromoEffectLSV]').setValue(record.data.PlanPromoPostPromoEffectLSV);
 
         // In Store Shelf Price
-        window.down('[name=ActualInStoreShelfPrice]').setValue(record.data.ActualInStoreShelfPrice); 
-        window.down('[name=PlanInStoreShelfPrice]').setValue(record.data.PlanInStoreShelfPrice); 
+        window.down('[name=ActualInStoreShelfPrice]').setValue(record.data.ActualInStoreShelfPrice);
+        window.down('[name=PlanInStoreShelfPrice]').setValue(record.data.PlanInStoreShelfPrice);
 
         // Actual - Activityasa
         window.down('[name=InvoiceTotal]').setValue(record.data.InvoiceTotal);
@@ -5230,7 +5284,7 @@
         requestHub($.connection.logHub.server.subscribeStatus, [promoId, blocked]);
         window.down('#btn_showlog').setDisabled(false);
     },
-  
+
     recalculatePromo: function (btn) {
         var window = btn.up('promoeditorcustom');
         var record = this.getRecord(window);
@@ -5304,6 +5358,23 @@
 
             me.checkParametersAfterChangeClient(clientTreeRecordRaw, promoeditorcustom);
             me.refreshPromoEvent(promoeditorcustom, true);
+
+            //Разрешаем выбор механики, когда выбран клиент, а при смене клиента очищаем поля
+            if (clientTreeRecordRaw !== null) {
+                var promoActivityMechanic = promoeditorcustom.down('container[name=promoActivity_step1]');
+                var promoMechanics = promoeditorcustom.down('promomechanic');
+                var marsMechanicId = promoMechanics.down('[name=MarsMechanicId]');
+                var instoreMechanicId = promoMechanics.down('[name=PlanInstoreMechanicId]');
+                var actualMechanicId = promoActivityMechanic.down('[name=ActualInstoreMechanicId]');
+
+                marsMechanicId.reset();
+                instoreMechanicId.reset();
+                actualMechanicId.reset();
+
+                marsMechanicId.setDisabled(false);
+                instoreMechanicId.setDisabled(false);
+                actualMechanicId.setDisabled(false);
+            }
         });
 
         var promoClientChooseWindow = Ext.ComponentQuery.query('promoclientchoosewindow')[0];
@@ -5541,6 +5612,7 @@
             } else {
                 promoWindow.clientTreeKeyId = promoClientForm.clientTreeRecord.Id;
             }
+
             clientButton.setText(text + displayHierarchy + '</p>');
             clientButton.removeCls('notcompleted');
             clientButton.setGlyph(0xf133);
@@ -5562,6 +5634,7 @@
             var dispatchEndDate = promoperiod.down('[name=DispatchEndDate]');
             var durationStartDate = promoperiod.down('[name=DurationStartDate]');
             var durationEndDate = promoperiod.down('[name=DurationEndDate]');
+
             dispatchStartDate.reset();
             dispatchEndDate.reset();
 
@@ -5984,7 +6057,7 @@
                 value: id
             });
         });
-        
+
         grid.getStore().setFixedFilter('PreFilter', prefilter);
         productlist.show();
     },

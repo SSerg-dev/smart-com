@@ -238,7 +238,9 @@ namespace Module.Persist.TPM {
             builder.Entity<HistoricalMechanic>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalMechanic>("HistoricalMechanics");
 
             builder.EntitySet<MechanicType>("MechanicTypes");
+            builder.EntitySet<MechanicType>("MechanicTypes").HasOptionalBinding(e => e.ClientTree, "ClientTrees");
             builder.EntitySet<MechanicType>("DeletedMechanicTypes");
+            builder.EntitySet<MechanicType>("DeletedMechanicTypes").HasOptionalBinding(e => e.ClientTree, "ClientTrees");
             builder.EntitySet<HistoricalMechanicType>("HistoricalMechanicTypes");
             builder.Entity<MechanicType>().Collection.Action("ExportXLSX");
             builder.Entity<MechanicType>().Collection.Action("FullImportXLSX");

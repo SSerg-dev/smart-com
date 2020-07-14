@@ -22,6 +22,10 @@
             xtype: 'singlelinedisplayfield',
             name: 'Discount',
             fieldLabel: l10n.ns('tpm', 'MechanicType').value('Discount'),
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'ClientTreeFullPathName',
+            fieldLabel: l10n.ns('tpm', 'MechanicType').value('ClientTreeFullPathName'),
         }]
     }
 })

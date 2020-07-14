@@ -87,9 +87,30 @@
 				dataIndex: 'Name'
             }, {
                 xtype: 'numbercolumn',
-                format: '0',
+                format: '0.00',
                 text: l10n.ns('tpm', 'MechanicType').value('Discount'),
                 dataIndex: 'Discount'
+            }, {
+                text: l10n.ns('tpm', 'MechanicType').value('ClientTreeFullPathName'),
+                dataIndex: 'ClientTreeFullPathName',
+                minWidth: 200,
+                filter: {
+                    xtype: 'treefsearchfield',
+                    trigger2Cls: '',
+                    selectorWidget: 'clienttree',
+                    valueField: 'FullPathName',
+                    displayField: 'FullPathName',
+                    multiSelect: true,
+                    operator: 'conts',
+                    store: {
+                        model: 'App.model.tpm.clienttree.ClientTree',
+                        autoLoad: false,
+                        root: {}
+                    },
+                },
+                renderer: function (value) {
+                    return renderWithDelimiter(value, ' > ', '  ');
+                }
             }]
         }
     }, {
@@ -101,11 +122,32 @@
             name: 'Name',
             fieldLabel: l10n.ns('tpm', 'MechanicType').value('Name'),
         }, {
-            xtype: 'numberfield', allowDecimals: false, allowExponential: false, allowBlank: true, allowOnlyWhitespace: true,
+            xtype: 'numberfield', 
             name: 'Discount',
             minValue: 0,
             maxValue: 100,
+            allowDecimals: true, 
+            allowExponential: false, 
+            allowBlank: true, 
+            allowOnlyWhitespace: true,
             fieldLabel: l10n.ns('tpm', 'MechanicType').value('Discount')
+        }, {
+            xtype: 'treesearchfield',
+            name: 'ClientTreeId',
+            fieldLabel: l10n.ns('tpm', 'MechanicType').value('ClientTreeFullPathName'),
+            selectorWidget: 'clienttree',
+            valueField: 'Id',
+            displayField: 'FullPathName',
+            store: {
+                storeId: 'clienttreestore',
+                model: 'App.model.tpm.clienttree.ClientTree',
+                autoLoad: false,
+                root: {}
+            },
+            mapping: [{
+                from: 'FullPathName',
+                to: 'ClientTreeFullPathName'
+            }]
         }]
     }]
 });

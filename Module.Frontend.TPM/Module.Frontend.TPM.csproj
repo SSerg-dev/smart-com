@@ -451,6 +451,7 @@
     <Content Include="Client\view\tpm\coefficientsi2so\DeletedCoefficientSI2SODetail.js" />
     <Content Include="Client\view\tpm\coefficientsi2so\HistoricalCoefficientSI2SO.js" />
     <Content Include="Client\view\tpm\coefficientsi2so\HistoricalCoefficientSI2SODetail.js" />
+    <Content Include="Client\view\tpm\mechanictype\BaseClientTreeSearchField.js" />
     <Content Include="Client\view\tpm\nonpromosupport\NonPromoSupportBrandTechChoose.js" />
     <Content Include="Client\model\tpm\nonpromosupport\DeletedNonPromoSupport.js" />
     <Content Include="Client\model\tpm\nonpromosupport\HistoricalNonPromoSupport.js" />

@@ -1,7 +1,7 @@
 ﻿Ext.define('App.view.tpm.common.approvalStatusStateTpl', {
     formatTpl: new Ext.XTemplate([
         '<div class="approval-status-state-pathLine">',
-			'<svg height="456" width="1160">',
+			'<svg height="{[values.svgHeight]}" width="{[values.svgWidth]}">',
 				/*OnApproval -> DraftPublished*/
 				'<polyline points="{[this.getLinePoints("FromOnApproval", values.currentHeightRatio, values.currentWidthRatio, values.currentHeight)]}" style="fill:none; stroke:#829cb8; stroke-width:1" />',
 				'<polygon points="{[this.getPointerPoints("FromOnApproval", values.currentHeightRatio, values.currentWidthRatio, values.currentHeight)]}" fill="#829cb8" stroke-width="0" />',
@@ -18,15 +18,17 @@
 				'<polyline points="{[this.getLinePoints("ToApproval", values.currentHeightRatio, values.currentWidthRatio, values.currentHeight)]}" style="fill:none; stroke:#829cb8; stroke-width:1" />',
 				'<polygon points="{[this.getPointerPoints("ToApprovalFirst", values.currentHeightRatio, values.currentWidthRatio, values.currentHeight)]}" fill="#829cb8" stroke-width="0" />',
 				'<polygon points="{[this.getPointerPoints("ToApprovalSecond", values.currentHeightRatio, values.currentWidthRatio, values.currentHeight)]}" fill="#829cb8" stroke-width="0" />',
+				'<polygon points="{[this.getPointerPoints("ToApprovalThird", values.currentHeightRatio, values.currentWidthRatio, values.currentHeight)]}" fill="#829cb8" stroke-width="0" />',
 				/*ToCanceled*/
 				'<polyline points="{[this.getLinePoints("ToCanceled", values.currentHeightRatio, values.currentWidthRatio, values.currentHeight)]}" style="fill:none; stroke:#829cb8; stroke-width:1" />',
 				'<polygon points="{[this.getPointerPoints("ToCanceled", values.currentHeightRatio, values.currentWidthRatio, values.currentHeight)]}" fill="#829cb8" stroke-width="0" />',
 			'</svg>',
 		'</div>',
 
-        '<div class="approval-status-selector " style="{[this.getStatusSelectorStyle(values.status, values.currentWidthRatio, values.currentHeightRatio, values.currentHeight)]}"><div class = "approval-status-selector-corner"></div></div>',
+        '<div class="approval-status-selector" style="{[this.getStatusSelectorStyle(values.status, values.currentWidthRatio, values.currentHeightRatio, values.currentHeight)]}"><div class = "approval-status-selector-corner"></div></div>',
 		'<div class="approval-state-selector" style="{[this.getStateSelectorStyle(values.status, values.isNonego, values.onApprovalState, values.currentWidthRatio, values.currentHeightRatio)]}"><div class = "approval-status-selector-corner"></div></div>',
 
+		/* Draft */
 		'<div class="approval-status-state-boxContainer">',
 			'<div class="approval-status-state-box first {[this.getStatusBoxClass(values.status, "Draft")]}" style="{[this.getStatusBoxStyle(values.currentWidthRatio, values.currentHeightRatio)]}">',
 				'<div class="approval-status-state-boxDate">{[this.getDate(values.status, values.statusHistory, "Draft")]}</div>', 
@@ -42,6 +44,7 @@
 			'</div>',
 		'</div>',
 
+		/* Draft(published) */
 		'<div class="approval-status-state-boxContainer">',
 			'<div class="approval-status-state-box {[this.getStatusBoxClass(values.status, "DraftPublished")]}" style="{[this.getStatusBoxStyle(values.currentWidthRatio, values.currentHeightRatio)]}">',
 				'<div class="approval-status-state-boxDate">{[this.getDate(values.status, values.statusHistory, "Draft(published)")]}</div>',
@@ -57,6 +60,7 @@
 			'</div>',
 		'</div>',
 
+		/* OnApproval */
 		'<div class="approval-status-state-boxContainer">',
 			'<div class="approval-status-state-box {[this.getStatusBoxClass(values.status, "OnApproval")]}" style="{[this.getStatusBoxStyle(values.currentWidthRatio, values.currentHeightRatio)]}">',
 				'<div class="approval-status-state-boxDate">{[this.getDate(values.status, values.statusHistory, "On Approval")]}</div>',
@@ -72,6 +76,7 @@
 			'</div>',
 		'</div>',
 
+		/* Approved */
 		'<div class="approval-status-state-boxContainer">',
 			'<div class="approval-status-state-box {[this.getStatusBoxClass(values.status, "Approved")]}" style="{[this.getStatusBoxStyle(values.currentWidthRatio, values.currentHeightRatio)]}">',
 				'<div class="approval-status-state-boxDate">{[this.getDate(values.status, values.statusHistory, "Approved")]}</div>',
@@ -87,6 +92,7 @@
 			'</div>',
 		'</div>',
 
+		/* Planned */
 		'<div class="approval-status-state-boxContainer">',
 			'<div class="approval-status-state-box {[this.getStatusBoxClass(values.status, "Planned")]}" style="{[this.getStatusBoxStyle(values.currentWidthRatio, values.currentHeightRatio)]}">',
 				'<div class="approval-status-state-boxDate">{[this.getDate(values.status, values.statusHistory, "Planned")]}</div>',
@@ -102,6 +108,7 @@
 			'</div>',
 		'</div>',
 
+		/* Started */
 		'<div class="approval-status-state-boxContainer">',
 			'<div class="approval-status-state-box {[this.getStatusBoxClass(values.status, "Started")]}" style="{[this.getStatusBoxStyle(values.currentWidthRatio, values.currentHeightRatio)]}">',
 				'<div class="approval-status-state-boxDate">{[this.getDate(values.status, values.statusHistory, "Started")]}</div>',
@@ -117,6 +124,7 @@
 			'</div>',
 		'</div>',
 
+		/* Finished */
 		'<div class="approval-status-state-boxContainer">',
 			'<div class="approval-status-state-box {[this.getStatusBoxClass(values.status, "Finished")]}" style="{[this.getStatusBoxStyle(values.currentWidthRatio, values.currentHeightRatio)]}">',
 				'<div class="approval-status-state-boxDate">{[this.getDate(values.status, values.statusHistory, "Finished")]}</div>',
@@ -132,6 +140,7 @@
 			'</div>',
 		'</div>',
 
+		/* Closed */
 		'<div class="approval-status-state-boxContainer">',
 			'<div class="approval-status-state-box {[this.getStatusBoxClass(values.status, "Closed")]}" style="{[this.getStatusBoxStyle(values.currentWidthRatio, values.currentHeightRatio)]}">',
 				'<div class="approval-status-state-boxDate">{[this.getDate(values.status, values.statusHistory, "Closed")]}</div>',
@@ -139,8 +148,20 @@
 				'<div toolTip="The status comes after all the actual values have been calculated." id="discription" class="approval-status-state-boxDiscription" style="{[this.getDiscriptionBoxStyle(values.currentWidthRatio, values.currentHeightRatio)]}">The status comes after all the actual values have been...</div>',
 			'</div>',
 		'</div>',
+		
+/*-----------------------------OnApproval FirstLine----------------------------------*/
 
-		'<div class="approval-status-state-onapproval-box" style="{[this.getOnApprovalBoxStyle("CMManager", values.currentWidthRatio, values.currentHeightRatio)]}">',
+		/* DP */
+		'<div class="approval-status-state-onapproval-box" style="{[this.getOnApprovalBoxStyle("DemandPlanningNonego", values.currentWidthRatio, values.currentHeightRatio, false)]}">',
+			'<div class="approval-status-state-boxDate">{[this.getOnApprovalDate(values.statusHistory, values.status, "DemandPlanningNonego")]}</div>',
+			'<div class="approval-status-state-onapproval-boxLine" style="{[this.getStatusColor(values.statusColors, "OnApproval")]}"><b style="overflow:hidden;">On Approval</b></div> ',
+			'<div id="onapproval-discription" class="approval-status-state-onapproval-boxDiscription" style="{[this.getOnApprovalDiscriptionBoxStyle(values.currentWidthRatio, values.currentHeightRatio)]}"><b>Demand Planning</b></div>',
+		'</div>',
+		
+/*-----------------------------OnApproval SecondLine---------------------------------*/
+
+		/* CMM */
+		'<div class="approval-status-state-onapproval-box" style="{[this.getOnApprovalBoxStyle("CMManager", values.currentWidthRatio, values.currentHeightRatio, false)]}">',
 			'<div class="approval-status-state-boxDate">{[this.getOnApprovalDate(values.statusHistory, values.status, "CMManager")]}</div>',
 			'<div class="approval-status-state-onapproval-boxLine" style="{[this.getStatusColor(values.statusColors, "OnApproval")]}">',
 				'<b style="overflow:hidden;">On Approval</b>',
@@ -153,9 +174,33 @@
 			'<div id="onapproval-discription" class="approval-status-state-onapproval-boxDiscription" style="{[this.getOnApprovalDiscriptionBoxStyle(values.currentWidthRatio, values.currentHeightRatio)]}"><b>Customer Marketing Manager</b></div>',
 		'</div>',
 		
-
-		'<div class="approval-status-state-onapproval-box" style="{[this.getOnApprovalBoxStyle("DemandPlanning", values.currentWidthRatio, values.currentHeightRatio)]}">',
+		/* DP */
+		'<div class="approval-status-state-onapproval-box" style="{[this.getOnApprovalBoxStyle("DemandPlanning", values.currentWidthRatio, values.currentHeightRatio, false)]}">',
 			'<div class="approval-status-state-boxDate">{[this.getOnApprovalDate(values.statusHistory, values.status, "DemandPlanning")]}</div>',
+			'<div class="approval-status-state-onapproval-boxLine" style="{[this.getStatusColor(values.statusColors, "OnApproval")]}">',
+				'<b style="overflow:hidden;">On Approval</b>',
+			'</div > ',
+			'<div id="onapproval-discription" class="approval-status-state-onapproval-boxDiscription" style="{[this.getOnApprovalDiscriptionBoxStyle(values.currentWidthRatio, values.currentHeightRatio)]}"><b>Demand Planning</b></div>',
+		'</div>',
+
+/*-----------------------------OnApproval ThirdLine-----------------------------------*/
+		/* CMM */
+		'<div class="approval-status-state-onapproval-box" style="{[this.getOnApprovalBoxStyle("CMManagerGAFirst", values.currentWidthRatio, values.currentHeightRatio, true)]}">',
+			'<div class="approval-status-state-boxDate">{[this.getOnApprovalDate(values.statusHistory, values.status, "CMManagerGAFirst")]}</div>',
+			'<div class="approval-status-state-onapproval-boxLine" style="{[this.getStatusColor(values.statusColors, "OnApproval")]}">',
+				'<b style="overflow:hidden;">On Approval</b>',
+				'<div class="approval-status-state-onapproval-arrow">',
+					'<svg height="10" width="10">',
+						'<polygon points="2.5,0 7.5,5 2.5,10" fill="#829cb8" stroke-width="0" />',
+					'</svg>',
+				'</div >',
+			'</div> ',
+			'<div id="onapproval-discription" class="approval-status-state-onapproval-boxDiscription" style="{[this.getOnApprovalDiscriptionBoxStyle(values.currentWidthRatio, values.currentHeightRatio)]}"><b>Customer Marketing Manager</b></div>',
+		'</div>',
+
+		/* DP */
+		'<div class="approval-status-state-onapproval-box" style="{[this.getOnApprovalBoxStyle("DemandPlanningGA", values.currentWidthRatio, values.currentHeightRatio, true)]}">',
+			'<div class="approval-status-state-boxDate">{[this.getOnApprovalDate(values.statusHistory, values.status, "DemandPlanningGA")]}</div>',
 			'<div class="approval-status-state-onapproval-boxLine" style="{[this.getStatusColor(values.statusColors, "OnApproval")]}">',
 				'<b style="overflow:hidden;">On Approval</b>',
 				'<div class="approval-status-state-onapproval-arrow">',
@@ -165,23 +210,34 @@
 				'</div >',
 			'</div > ',
 			'<div id="onapproval-discription" class="approval-status-state-onapproval-boxDiscription" style="{[this.getOnApprovalDiscriptionBoxStyle(values.currentWidthRatio, values.currentHeightRatio)]}"><b>Demand Planning</b></div>',
-			
 		'</div>',
 
-		'<div class="approval-status-state-onapproval-box" style="{[this.getOnApprovalBoxStyle("DemandFinance", values.currentWidthRatio, values.currentHeightRatio)]}">',
-			'<div class="approval-status-state-boxDate">{[this.getOnApprovalDate(values.statusHistory, values.status, "DemandFinance")]}</div>',
-			'<div class="approval-status-state-onapproval-boxLine" style="{[this.getStatusColor(values.statusColors, "OnApproval")]}"><b style="overflow:hidden;">On Approval</b></div> ',
+		/* DF */
+		'<div class="approval-status-state-onapproval-box" style="{[this.getOnApprovalBoxStyle("DemandFinanceGA", values.currentWidthRatio, values.currentHeightRatio, true)]}">',
+			'<div class="approval-status-state-boxDate">{[this.getOnApprovalDate(values.statusHistory, values.status, "DemandFinanceGA")]}</div>',
+			'<div class="approval-status-state-onapproval-boxLine" style="{[this.getStatusColor(values.statusColors, "OnApproval")]}">',
+				'<b style="overflow:hidden;">On Approval</b>',
+				'<div class="approval-status-state-onapproval-arrow">',
+					'<svg height="10" width="10">',
+						'<polygon points="2.5,0 7.5,5 2.5,10" fill="#829cb8" stroke-width="0" />',
+					'</svg>',
+				'</div >',
+			'</div> ',
 			'<div id="onapproval-discription" class="approval-status-state-onapproval-boxDiscription" style="{[this.getOnApprovalDiscriptionBoxStyle(values.currentWidthRatio, values.currentHeightRatio)]}"><b>Demand Finance</b></div>',
 		'</div>',
 
-		'<div class="approval-status-state-onapproval-box" style="{[this.getOnApprovalBoxStyle("DemandPlanningNonego", values.currentWidthRatio, values.currentHeightRatio)]}">',
-			'<div class="approval-status-state-boxDate">{[this.getOnApprovalDate(values.statusHistory, values.status, "DemandPlanningNonego")]}</div>',
-			'<div class="approval-status-state-onapproval-boxLine" style="{[this.getStatusColor(values.statusColors, "OnApproval")]}"><b style="overflow:hidden;">On Approval</b></div> ',
-			'<div id="onapproval-discription" class="approval-status-state-onapproval-boxDiscription" style="{[this.getOnApprovalDiscriptionBoxStyle(values.currentWidthRatio, values.currentHeightRatio)]}"><b>Demand Planning</b></div>',
+		/* CMM */
+		'<div class="approval-status-state-onapproval-box" style="{[this.getOnApprovalBoxStyle("CMManagerGASecond", values.currentWidthRatio, values.currentHeightRatio, true)]}">',
+			'<div class="approval-status-state-boxDate">{[this.getOnApprovalDate(values.statusHistory, values.status, "CMManagerGASecond")]}</div>',
+			'<div class="approval-status-state-onapproval-boxLine" style="{[this.getStatusColor(values.statusColors, "OnApproval")]}">',
+				'<b style="overflow:hidden;">On Approval</b>',
+			'</div> ',
+			'<div id="onapproval-discription" class="approval-status-state-onapproval-boxDiscription" style="{[this.getOnApprovalDiscriptionBoxStyle(values.currentWidthRatio, values.currentHeightRatio)]}"><b>Customer Marketing Manager</b></div>',
 		'</div>',
 
-		'<br>',
+		//'<br>',
 
+		/* Deleted */
 		'<div class="approval-status-state-boxContainer">',
 			'<div class="approval-status-state-box {[this.getStatusBoxClass(values.status, "Deleted")]}" style="margin-left: 25px; {[this.getStatusBoxStyle(values.currentWidthRatio, values.currentHeightRatio, values.currentHeight, "Deleted")]}">',
 				'<div class="approval-status-state-boxDate">{[this.getDate(values.status, values.statusHistory, "Deleted")]}</div>',
@@ -190,7 +246,8 @@
 			'</div>',
 		'</div>',
 
-		'<div class="approval-status-state-boxContainer">',
+		/* Canceled */
+		'<div class="approval-status-state-boxContainer" style="{[this.getCancelledBoxStyle(values.currentHeightRatio)]}">',
 			'<div class="approval-status-state-box {[this.getStatusBoxClass(values.status, "Canceled")]}" style="{[this.getStatusBoxStyle(values.currentWidthRatio, values.currentHeightRatio, values.currentHeight, "Canceled")]}">',
 				'<div class="approval-status-state-boxDate">{[this.getDate(values.status, values.statusHistory, "Cancelled")]}</div>',
 				'<div class="approval-status-state-boxLine canceled" style="{[this.getStatusColor(values.statusColors, "Cancelled")]}"><b>Cancelled</b></div> ',
@@ -238,7 +295,7 @@
 					default:
 						break;
 				}
-				return 'top:' + top + 'px; left:' + left + 'px; width:' + boxWidth + 'px; height:' + boxHeight + 'px;';
+				return 'top:' + (top + 2) + 'px; left:' + (left + 2) + 'px; width:' + (boxWidth - 4) + 'px; height:' + (boxHeight - 4) + 'px;';
 			},
 
 			getStateSelectorStyle: function (promoStatus, isNonego, onApprovalState, currentWidthRatio, currentHeightRatio) {
@@ -246,28 +303,50 @@
 					var boxWidth = 130 * currentWidthRatio;
 					var boxHeight = 130 * currentHeightRatio * 0.85;
 					var left = boxWidth * 2.5 + 25;
-					var top = 130 * currentHeightRatio + 60;
-
+					var top = 130 * currentHeightRatio + 40;
 					switch (onApprovalState) {
 						case 'CMManager':
+							top += 130 * currentHeightRatio - 7;
 							break;
 						case 'DemandPlanning':
+							top += 130 * currentHeightRatio - 7;
 							left += boxWidth + 10;
 							break;
 						case 'DemandFinance':
-							left += 2 * boxWidth + 20;
+							left += 2 * boxWidth;
 							break;
+
 						case 'DemandPlanningNonego':
-							top += 130 * currentHeightRatio;
+							break;
+
+						case 'CMManagerGAFirst':
+							top += 260 * currentHeightRatio - 14;
+							break;
+						case 'CMManagerGASecond':
+							top += 260 * currentHeightRatio - 14;
+							left += 3 * boxWidth + 10 * 3;
+							break;
+						case 'DemandPlanningGA':
+							top += 260 * currentHeightRatio - 14;
+							left += boxWidth + 10;
+							break;
+						case 'DemandFinanceGA':
+							top += 260 * currentHeightRatio - 14;
+							left += 2 * boxWidth + 10 * 2;
 							break;
 						default:
 							break;
 					}
 
-					return 'top:' + top + 'px; left:' + left + 'px;' + 'width:' + boxWidth + 'px; height:' + boxHeight + 'px;';
+					return 'top:' + (top + 2) + 'px; left:' + (left + 2) + 'px;' + 'width:' + (boxWidth - 4) + 'px; height:' + (boxHeight - 4) + 'px;';
 				} else {
 					return 'display: none;';
 				}
+			},
+
+			getCancelledBoxStyle: function (currentHeightRatio) {
+				var top = 130 * currentHeightRatio - 35;
+				return 'position: absolute; margin-top: ' + top + 'px'; 
 			},
 
 			getOnApprovalBoxStyle: function (boxRole, currentWidthRatio, currentHeightRatio) {
@@ -275,20 +354,38 @@
 				var boxWidth = 130 * currentWidthRatio;
 				var boxHeight = 130 * currentHeightRatio * 0.85;
 				var left = boxOffset * 2.5;
-				var top = 130 * currentHeightRatio + 60;
+				var top = 130 * currentHeightRatio + 40;
 				switch (boxRole) {
 					case 'CMManager':
+						top += 130 * currentHeightRatio - 7;
 						break;
 					case 'DemandPlanning':
+						top += 130 * currentHeightRatio - 7;
 						left += boxOffset;
 						//left += boxWidth - 130;
 						break;
-					case 'DemandPlanningNonego':
-						top += 130 * currentHeightRatio;
-						break;
 					case 'DemandFinance':
 						left += 2 * boxOffset;
-						
+						break;
+
+					case 'DemandPlanningNonego':
+						break;
+
+					case 'CMManagerGAFirst':
+						top += 260 * currentHeightRatio - 14;
+						break;
+					case 'CMManagerGASecond':
+						top += 260 * currentHeightRatio - 14;
+						left += 3 * boxOffset;
+						break;
+					case 'DemandPlanningGA':
+						top += 260 * currentHeightRatio - 14;
+						left += boxOffset;
+						//left += boxWidth - 130;
+						break;
+					case 'DemandFinanceGA':
+						top += 260 * currentHeightRatio - 14;
+						left += 2 * boxOffset;
 						break;
 				}
 				return 'left:' + left + 'px; top:' + top + 'px; width:' + boxWidth + 'px; height:' + boxHeight + 'px;';
@@ -416,45 +513,100 @@
 					}
 				}
 
-				//CMM
-				if (boxRole == 'CMManager' && promo.IsCMManagerApproved && statusesBeforeOnApproval.indexOf(currentStatus) == -1 && !(!promo.IsDemandPlanningApproved && promo.IsDemandFinanceApproved) && firstApprovedRoleName != 'Demand Planning') {
-					for (var i = 0; i < statusHistory.length; i++) {
-						if (statusHistory[i].StatusName == "On Approval" && statusHistory[i].RoleName == 'Customer Marketing Manager') {
-							date = Ext.util.Format.date(statusHistory[i].Date, 'd.m.Y H:i');
-							break;
+				if (promo.IsGrowthAcceleration === false) {
+					//CMM
+					if (boxRole === 'CMManager'
+						&& promo.IsCMManagerApproved
+						&& !promo.IsDemandFinanceApproved
+						&& statusesBeforeOnApproval.indexOf(currentStatus) == -1) {
+						for (var i = 0; i < statusHistory.length; i++) {
+							if (statusHistory[i].StatusName == "On Approval" && statusHistory[i].RoleName == 'Customer Marketing Manager') {
+								date = Ext.util.Format.date(statusHistory[i].Date, 'd.m.Y H:i');
+								break;
+							}
 						}
+						return date;
 					}
-					return date;
+					//DP не nonego
+					if (boxRole === 'DemandPlanning'
+						&& promo.IsDemandPlanningApproved 
+						&& !promo.IsDemandFinanceApproved
+						&& statusesBeforeOnApproval.indexOf(currentStatus) == -1
+						&& currentStatus != 'OnApproval') {
+						for (var i = 0; i < statusHistory.length; i++) {
+							if (statusHistory[i].StatusName == "Approved" && statusHistory[i].RoleName == 'Demand Planning') {
+								date = Ext.util.Format.date(statusHistory[i].Date, 'd.m.Y H:i');
+								break;
+							}
+						}
+						return date;
+					}
+					//DP Nonego
+					if (boxRole === 'DemandPlanningNonego'
+						&& promo.IsDemandPlanningApproved
+						&& promo.IsDemandFinanceApproved
+						&& statusesBeforeOnApproval.indexOf(currentStatus) == -1
+						&& currentStatus != 'OnApproval') {
+						for (var i = 0; i < statusHistory.length; i++) {
+							if (statusHistory[i].StatusName == "Approved" && statusHistory[i].RoleName == 'Demand Planning') {
+								date = Ext.util.Format.date(statusHistory[i].Date, 'd.m.Y H:i');
+								break;
+							}
+						}
+						return date;
+					}
 				}
-				//DP не nonego
-				if (boxRole == 'DemandPlanning' && promo.IsDemandPlanningApproved && statusesBeforeOnApproval.indexOf(currentStatus) == -1 && firstApprovedRoleName != 'Demand Planning') {
-					for (var i = 0; i < statusHistory.length; i++) {
-						if (statusHistory[i].StatusName == "On Approval" && statusHistory[i].RoleName == 'Demand Planning') {
-							date = Ext.util.Format.date(statusHistory[i].Date, 'd.m.Y H:i');
-							break;
+				else if(promo.IsGrowthAcceleration === true) {
+					//CMM First
+					if (boxRole === 'CMManagerGAFirst'
+						&& statusesBeforeOnApproval.indexOf(currentStatus) == -1
+						&& (promo.IsCMManagerApproved
+							|| (promo.IsDemandPlanningApproved && promo.IsDemandFinanceApproved && !promo.IsCMManagerApproved))) {
+						for (var i = statusHistory.length - 1; i >= 0; i--) {
+							if (statusHistory[i].StatusName == "On Approval" && statusHistory[i].RoleName == 'Customer Marketing Manager') {
+								date = Ext.util.Format.date(statusHistory[i].Date, 'd.m.Y H:i');
+								break;
+							}
 						}
+						return date;
 					}
-					return date;
-				}
-				//DP Nonego
-				if (boxRole == 'DemandPlanningNonego' && statusesBeforeOnApproval.indexOf(currentStatus) == -1 && currentStatus != 'OnApproval' && firstOnApprovalRoleName != 'Demand Finance') {
-					for (var i = 0; i < statusHistory.length; i++) {
-						if (statusHistory[i].StatusName == "Approved" && statusHistory[i].RoleName == 'Demand Planning') {
-							date = Ext.util.Format.date(statusHistory[i].Date, 'd.m.Y H:i');
-							break;
+					//CMM Second
+					if (boxRole === 'CMManagerGASecond'
+						&& promo.IsCMManagerApproved
+						&& statusesBeforeOnApproval.indexOf(currentStatus) == -1
+						&& (promo.IsDemandPlanningApproved && promo.IsDemandFinanceApproved)) {
+						for (var i = 0; i < statusHistory.length; i++) {
+							if (statusHistory[i].StatusName == "Approved" && statusHistory[i].RoleName == 'Customer Marketing Manager') {
+								date = Ext.util.Format.date(statusHistory[i].Date, 'd.m.Y H:i');
+								break;
+							}
 						}
+						return date;
 					}
-					return date;
-				}
-				//DF
-				if (boxRole = 'DemandFinance' && promo.IsDemandFinanceApproved && statusesBeforeOnApproval.indexOf(currentStatus) == -1 && firstApprovedRoleName != 'Demand Planning') {
-					for (var i = 0; i < statusHistory.length; i++) {
-						if (statusHistory[i].StatusName == "Approved" && statusHistory[i].RoleName == 'Demand Finance') {
-							date = Ext.util.Format.date(statusHistory[i].Date, 'd.m.Y H:i');
-							break;
+					//DP
+					if (boxRole === 'DemandPlanningGA'
+						&& promo.IsDemandPlanningApproved
+						&& statusesBeforeOnApproval.indexOf(currentStatus) == -1) {
+						for (var i = 0; i < statusHistory.length; i++) {
+							if (statusHistory[i].StatusName == "On Approval" && statusHistory[i].RoleName == 'Demand Planning') {
+								date = Ext.util.Format.date(statusHistory[i].Date, 'd.m.Y H:i');
+								break;
+							}
 						}
+						return date;
 					}
-					return date;
+					//DF
+					if (boxRole === 'DemandFinanceGA'
+						&& promo.IsDemandFinanceApproved
+						&& statusesBeforeOnApproval.indexOf(currentStatus) == -1) {
+						for (var i = 0; i < statusHistory.length; i++) {
+							if (statusHistory[i].StatusName == "On Approval" && statusHistory[i].RoleName == 'Demand Finance') {
+								date = Ext.util.Format.date(statusHistory[i].Date, 'd.m.Y H:i');
+								break;
+							}
+						}
+						return date;
+					}
 				}
 			},
 
@@ -464,18 +616,48 @@
 				var topOffset = currentHeight - boxHeight - 25;
 				switch (name) {
 					case 'FromOnApproval':
-						return (boxWidth * 2.5) + ',' + 25 + ' ' + (boxWidth * 2.5) + ',' + 12.5 + ' ' + (boxWidth * 1.5 + 25) + ',' + 12.5 + ' ' + (boxWidth * 1.5 + 25) + ',' + 25;
+						return (boxWidth * 2.5) + ',' + 25
+							+ ' ' + (boxWidth * 2.5) + ',' + 12.5
+							+ ' ' + (boxWidth * 1.5 + 25) + ',' + 12.5
+							+ ' ' + (boxWidth * 1.5 + 25) + ',' + 20;
 					case 'FromApproved':
-						return (boxWidth * 3.5 + 25) + ',' + 25 + ' ' + (boxWidth * 3.5 + 25) + ',' + 12.5 + ' ' + (boxWidth * 2.7 + 25) + ',' + 12.5 + ' ' + (boxWidth * 2.7 + 25) + ',' + 25;
+						return (boxWidth * 3.5 + 25) + ',' + 25
+							+ ' ' + (boxWidth * 3.5 + 25) + ',' + 12.5
+							+ ' ' + (boxWidth * 2.7 + 25) + ',' + 12.5
+							+ ' ' + (boxWidth * 2.7 + 25) + ',' + 20;
 					case 'FromPlanned':
-						return (boxWidth * 4.5 + 25) + ',' + 25 + ' ' + (boxWidth * 4.5 + 25) + ',' + 2.5 + ' ' + (boxWidth * 2.5 + 25) + ',' + 2.5 + ' ' + (boxWidth * 2.5 + 25) + ',' + 25;
+						return (boxWidth * 4.5 + 25) + ',' + 25
+							+ ' ' + (boxWidth * 4.5 + 25) + ',' + 2.5
+							+ ' ' + (boxWidth * 2.5 + 25) + ',' + 2.5
+							+ ' ' + (boxWidth * 2.5 + 25) + ',' + 20;
 					case 'ToDeleted':
-						var x = (boxWidth * 1.5 + 25) + ',' + (25 + boxHeight) + ' ' + (boxWidth * 1.5 + 25) + ',' + (25 + boxHeight + 20) + ' ' + (boxWidth * 0.5 + 25) + ',' + (25 + boxHeight + 20) + ' ' + (boxWidth * 0.5 + 25) + ',' + (25 + boxHeight) + ' ' + (boxWidth * 0.5 + 25) + ',' + topOffset;
+						var x = (boxWidth * 1.5 + 25) + ',' + (25 + boxHeight)
+							+ ' ' + (boxWidth * 1.5 + 25) + ',' + (25 + boxHeight + 20)
+							+ ' ' + (boxWidth * 0.5 + 25) + ',' + (25 + boxHeight + 20)
+							+ ' ' + (boxWidth * 0.5 + 25) + ',' + (25 + boxHeight)
+							+ ' ' + (boxWidth * 0.5 + 25) + ',' + (topOffset - 5);
 						return x;
 					case 'ToCanceled':
-						return (boxWidth * 3.5 + 25) + ',' + (25 + boxHeight) + ' ' + (boxWidth * 3.5 + 25) + ',' + (25 + boxHeight + 20) + ' ' + (boxWidth * 4.5 + 25) + ',' + (25 + boxHeight + 20) + ' ' + (boxWidth * 4.5 + 25) + ',' + (25 + boxHeight) + ' ' + (boxWidth * 4.5 + 25) + ',' + (25 + boxHeight + 20) + ' ' + (boxWidth * 5.5 + 25) + ',' + (25 + boxHeight + 20) + ' ' + (boxWidth * 5.5 + 25) + ',' + (25 + boxHeight) + ' ' + (boxWidth * 5.5 + 25) + ',' + topOffset;
+						return (boxWidth * 3.5 + 25) + ',' + (25 + boxHeight)
+							+ ' ' + (boxWidth * 3.5 + 25) + ',' + (25 + boxHeight + 20)
+							+ ' ' + (boxWidth * 4.5 + 25) + ',' + (25 + boxHeight + 20)
+							+ ' ' + (boxWidth * 4.5 + 25) + ',' + (25 + boxHeight)
+							+ ' ' + (boxWidth * 4.5 + 25) + ',' + (25 + boxHeight + 20)
+							+ ' ' + (boxWidth * 5.5 + 25) + ',' + (25 + boxHeight + 20)
+							+ ' ' + (boxWidth * 5.5 + 25) + ',' + (25 + boxHeight)
+							+ ' ' + (boxWidth * 5.5 + 25) + ',' + (20 + 2 * boxHeight - 10);
 					case 'ToApproval':
-						return (boxWidth * 2.2 + 25) + ',' + (25 + boxHeight) + ' ' + (boxWidth * 2.2 + 25) + ',' + (25 + boxHeight + 59) + ' ' + (boxWidth * 2.5 + 25) + ',' + (25 + boxHeight + 59) + ' ' + (boxWidth * 2.2 + 25) + ',' + (25 + boxHeight + 59) + ' ' + (boxWidth * 2.2 + 25) + ',' + (25 + 2 * boxHeight + 59) + ' ' + (boxWidth * 2.5 + 25) + ',' + (25 + 2 * boxHeight + 59);
+						return      (boxWidth * 2.2 + 25) + ',' + (25 + boxHeight)
+							+ ' ' + (boxWidth * 2.2 + 25) + ',' + (25 + boxHeight + 39)
+							+ ' ' + (boxWidth * 2.5 - 5) + ',' + (25 + boxHeight + 39)
+
+							+ ' ' + (boxWidth * 2.2 + 25) + ',' + (25 + boxHeight + 39)
+							+ ' ' + (boxWidth * 2.2 + 25) + ',' + (25 + 2 * boxHeight + 32)
+							+ ' ' + (boxWidth * 2.5 - 5) + ',' + (25 + 2 * boxHeight + 32)
+
+							+ ' ' + (boxWidth * 2.2 + 25) + ',' + (25 + 2 * boxHeight + 32)
+							+ ' ' + (boxWidth * 2.2 + 25) + ',' + (25 + 3 * boxHeight + 25)
+							+ ' ' + (boxWidth * 2.5 - 5) + ',' + (25 + 3 * boxHeight + 25);
 				}
 			},
 
@@ -486,25 +668,44 @@
 				var bottomOffset = currentHeight - boxHeight - 25;
 				switch (name) {
 					case 'FromOnApproval':
-						return (boxWidth * 1.5 + 20) + ',' + 20 + ' ' + (boxWidth * 1.5 + 25) + ',' + 25 + ' ' + (boxWidth * 1.5 + 30) + ',' + 20;
+						return (boxWidth * 1.5 + 20) + ',' + 18
+							+ ' ' + (boxWidth * 1.5 + 25) + ',' + 23
+							+ ' ' + (boxWidth * 1.5 + 30) + ',' + 18;
 						break;
 					case 'FromApproved':
-						return (boxWidth * 2.7 + 20) + ',' + 20 + ' ' + (boxWidth * 2.7 + 25) + ',' + 25 + ' ' + (boxWidth * 2.7 + 30) + ',' + 20;
+						return (boxWidth * 2.7 + 20) + ',' + 18
+							+ ' ' + (boxWidth * 2.7 + 25) + ',' + 23
+							+ ' ' + (boxWidth * 2.7 + 30) + ',' + 18;
 						break;
 					case 'FromPlanned':
-						return (boxWidth * 2.5 + 20) + ',' + 20 + ' ' + (boxWidth * 2.5 + 25) + ',' + 25 + ' ' + (boxWidth * 2.5 + 30) + ',' + 20;
+						return (boxWidth * 2.5 + 20) + ',' + 18
+							+ ' ' + (boxWidth * 2.5 + 25) + ',' + 23
+							+ ' ' + (boxWidth * 2.5 + 30) + ',' + 18;
 						break;
 					case 'ToDeleted':
-						return (boxWidth * 0.5 + 20) + ',' + (bottomOffset - 5) + ' ' + (boxWidth * 0.5 + 25) + ',' + bottomOffset + ' ' + (boxWidth * 0.5 + 30) + ',' + (bottomOffset - 5);
+						return (boxWidth * 0.5 + 20) + ',' + (bottomOffset - 9)
+							+ ' ' + (boxWidth * 0.5 + 25) + ',' + (bottomOffset - 4)
+							+ ' ' + (boxWidth * 0.5 + 30) + ',' + (bottomOffset - 9);
 						break;
 					case 'ToCanceled':
-						return (boxWidth * 5.5 + 20) + ',' + (bottomOffset - 5) + ' ' + (boxWidth * 5.5 + 25) + ',' + bottomOffset + ' ' + (boxWidth * 5.5 + 30) + ',' + (bottomOffset - 5);
+						return (boxWidth * 5.5 + 20) + ',' + (25 + 2 * boxHeight - 17)
+							+ ' ' + (boxWidth * 5.5 + 25) + ',' + (25 + 2 * boxHeight - 12)
+							+ ' ' + (boxWidth * 5.5 + 30) + ',' + (25 + 2 * boxHeight - 17);
 						break;
 					case 'ToApprovalFirst':
-						return (boxOffset - 5) + ',' + (25 + boxHeight + 54) + ' ' + (boxOffset) + ',' + (25 + boxHeight + 59) + ' ' + (boxOffset - 5) + ',' + (25 + boxHeight + 64);
+						return      (boxOffset - 7) + ',' + (25 + boxHeight + 34)
+							+ ' ' + (boxOffset - 2)     + ',' + (25 + boxHeight + 39)
+							+ ' ' + (boxOffset - 7) + ',' + (25 + boxHeight + 44);
 						break;
 					case 'ToApprovalSecond':
-						return (boxOffset - 5) + ',' + (25 + 2 * boxHeight + 54) + ' ' + (boxOffset) + ',' + (25 + 2 * boxHeight + 59) + ' ' + (boxOffset - 5) + ',' + (25 + 2 * boxHeight + 64);
+						return      (boxOffset - 7) + ',' + (25 + 2 * boxHeight + 27)
+							+ ' ' + (boxOffset - 2)     + ',' + (25 + 2 * boxHeight + 32)
+							+ ' ' + (boxOffset - 7) + ',' + (25 + 2 * boxHeight + 37);
+						break;
+					case 'ToApprovalThird':
+						return      (boxOffset - 7) + ',' + (25 + 3 * boxHeight + 20)
+							+ ' ' + (boxOffset - 2)     + ',' + (25 + 3 * boxHeight + 25)
+							+ ' ' + (boxOffset - 7) + ',' + (25 + 3 * boxHeight + 30);
 						break;
 				}
 			},

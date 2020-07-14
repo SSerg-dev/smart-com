@@ -34,7 +34,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 //promo.PlanPromoBaselineLSV = sumPlanProductBaseLineLSV;
                 //promo.PlanPromoIncrementalLSV = sumPlanProductBaseLineLSV * promo.PlanPromoUpliftPercent / 100;
                 //promo.PlanPromoLSV = promo.PlanPromoBaselineLSV + promo.PlanPromoIncrementalLSV;  
-                promo.PlanPromoTIShopper = promo.PlanPromoLSV * promo.MarsMechanicDiscount / 100;
+                promo.PlanPromoTIShopper = promo.PlanPromoLSV * (promo.MarsMechanicDiscount / 100) * (clientTree?.DistrMarkUp ?? 1);
                 // бюджеты пересчитывать не требуется (пусть пока будет закомментировано)
                 //promo.PlanPromoTIMarketing = promo.PlanPromoXSites + promo.PlanPromoCatalogue + promo.PlanPromoPOSMInClient;
                 //promo.PlanPromoCostProduction = promo.PlanPromoCostProdXSites + promo.PlanPromoCostProdCatalogue + promo.PlanPromoCostProdPOSMInClient;

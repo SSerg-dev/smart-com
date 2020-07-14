@@ -795,6 +795,15 @@
     onClientTreeEditorAfterRender: function (clientTreeEditor) {
         var clientTreeGrid = Ext.ComponentQuery.query('clienttreegrid')[0];
         var isBaseClientCombobox = clientTreeEditor.down('[name=IsBaseClient]');
+        var distrMarkUp = clientTreeEditor.down('[name=DistrMarkUp]');
+
+        var val = isBaseClientCombobox.getRawValue();
+
+        if (val == "Yes") {
+            distrMarkUp.setDisabled(false);
+        } else {
+            distrMarkUp.setDisabled(true);
+        }
 
         isBaseClientCombobox.addListener('select', function (combo) {
             if (combo.getRawValue() === 'Yes') {
@@ -816,6 +825,7 @@
                             myMask.hide();
                         } else {
                             isBaseClientCombobox.setValue(false);
+                            distrMarkUp.setDisabled(true);
                             App.Notify.pushInfo('The current branch already contains the base client.');
                             myMask.hide();
                         }
@@ -826,7 +836,12 @@
                             myMask.hide();
                         })
                 }
+                distrMarkUp.setDisabled(false);
+            } else {
+                distrMarkUp.setDisabled(true);
+                distrMarkUp.setValue(null);
             }
+
         });
     },
 

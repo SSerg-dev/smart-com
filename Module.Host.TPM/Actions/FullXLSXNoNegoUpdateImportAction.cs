@@ -1,4 +1,5 @@
-﻿using Core.Data;
+﻿using Castle.Core.Internal;
+using Core.Data;
 using Core.Extensions;
 using Core.Settings;
 using DocumentFormat.OpenXml;
@@ -201,7 +202,7 @@ namespace Module.Host.TPM.Actions {
                 IList<Tuple<String, Guid>> mechanicTuples = mechQuery.Select(y => new Tuple<String, Guid>(y.Name, y.Id)).ToList();
 
                 IList<MechanicType> mechTypeQuery = context.Set<MechanicType>().AsNoTracking().Where(y => !y.Disabled).ToList();
-                IList<Tuple<String, Guid, int?>> mechanicTypeTuples = mechTypeQuery.Select(y => new Tuple<String, Guid, int?>(y.Name, y.Id, y.Discount)).ToList();
+                IList<Tuple<String, Guid, double?>> mechanicTypeTuples = mechTypeQuery.Select(y => new Tuple<String, Guid, double?>(y.Name, y.Id, y.Discount)).ToList();
 
 
                 //Присваивание ID
@@ -229,7 +230,7 @@ namespace Module.Host.TPM.Actions {
                         typedItem.MechanicId = mech.Item2;
                     }
 
-                    Tuple<String, Guid, int?> mechType = mechanicTypeTuples.FirstOrDefault(y => y.Item1 == typedItem.MechanicTypeName);
+                    Tuple<String, Guid, double?> mechType = mechanicTypeTuples.FirstOrDefault(y => y.Item1 == typedItem.MechanicTypeName);
                     if (mechType != null) {
                         typedItem.MechanicTypeId = mechType.Item2;
                     }
@@ -271,7 +272,7 @@ namespace Module.Host.TPM.Actions {
                         if (warnings.Any()) {
                             warningRecords.Add(new Tuple<IEntity<Guid>, string>(item, String.Join(", ", warnings)));
                         }
-                    } else if (!IsFilterSuitable(rec, existedClientTreesIds, existedProductTreesIds, mechanicTypeTuples, badTimesIds, context, out validationErrors)) {
+                    } else if (!IsFilterSuitable(rec, existedClientTreesIds, existedProductTreesIds, mechanicTypeTuples, badTimesIds,mechTypeQuery, context, out validationErrors)) {
                         HasErrors = true;
                         errorRecords.Add(new Tuple<IEntity<Guid>, string>(item, String.Join(", ", validationErrors)));
                     } else {
@@ -353,11 +354,14 @@ namespace Module.Host.TPM.Actions {
         protected ScriptGenerator _generator { get; set; }
 
         //Кастомная проверка
-        protected virtual bool IsFilterSuitable(IEntity<Guid> rec, IList<int> existedClientObjIds, IList<int> existedProductObjIds, IList<Tuple<String, Guid, int?>> mechanicTypeTuples, IList<Tuple<int, int, Guid?>> badTimesIds, DatabaseContext context, out IList<string> errors) {
+        protected virtual bool IsFilterSuitable(IEntity<Guid> rec, IList<int> existedClientObjIds, IList<int> existedProductObjIds, IList<Tuple<String, Guid, double?>> mechanicTypeTuples, IList<Tuple<int, int, Guid?>> badTimesIds,IList<MechanicType> mechanicTypesList ,DatabaseContext context, out IList<string> errors) {
             errors = new List<string>();
             bool isError = false;
 
             ImportNoNego importObj = (ImportNoNego) rec;
+            if (!String.IsNullOrEmpty(importObj.MechanicTypeName))
+                SetMechanicTypeForObjectId(importObj,mechanicTypesList);
+
             //Проверка по существующим активным ClientTree для пользователя
             if (!existedClientObjIds.Contains(importObj.ClientObjectId)) {
                 isError = true;
@@ -394,7 +398,7 @@ namespace Module.Host.TPM.Actions {
                 isError = true;
                 errors.Add(" Mechanic Type or Mechanic Discount must be fullfilled");
             } else {
-                Tuple<String, Guid, int?> mechType = mechanicTypeTuples.FirstOrDefault(y => y.Item2 == importObj.MechanicTypeId);
+                Tuple<String, Guid, double?> mechType = mechanicTypeTuples.FirstOrDefault(y => y.Item2 == importObj.MechanicTypeId);
                 if (mechType !=null && importObj.MechanicDiscount != null && mechType.Item3 != importObj.MechanicDiscount) {
                     isError = true;
                     errors.Add(" Mechanic Discount is not corresponding with Mechanic Type");
@@ -493,6 +497,20 @@ namespace Module.Host.TPM.Actions {
             }
             return true;
         }
+        private void SetMechanicTypeForObjectId(ImportNoNego importNoNego, IList<MechanicType> mechanicTypes)
+        {
 
+            var mechanicType = mechanicTypes.Where(x => x.Name.Equals(importNoNego.MechanicTypeName));
+            MechanicType mechanicTypeForClient = null;
+            
+            mechanicTypeForClient = mechanicType.Where(x => x.ClientTree != null && x.ClientTree.ObjectId.Equals(importNoNego.ClientObjectId)).FirstOrDefault();
+            if (mechanicTypeForClient == null)
+            {
+                mechanicTypeForClient = mechanicType.FirstOrDefault();
+            }
+
+            importNoNego.MechanicTypeId = mechanicTypeForClient.Id;
+            importNoNego.MechanicType = mechanicTypeForClient;
+        }
     }
 }

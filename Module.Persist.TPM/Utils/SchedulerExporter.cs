@@ -222,7 +222,7 @@ namespace Module.Persist.TPM.Utils {
                 int dateDiff = (sortedPromoes[i].StartDate - promo.EndDate).Value.Days;
                 MarsDate endDate = new MarsDate(promo.EndDate.Value);
                 MarsDate startDate = new MarsDate(sortedPromoes[i].StartDate.Value);
-                bool isEqualMarsWeek = endDate.StartDate() == startDate.StartDate();
+                bool isEqualMarsWeek = endDate.StartDate().Date == startDate.StartDate().Date;
                 if (dateDiff >= 0 && dateDiff < compareDiff && !isEqualMarsWeek) {
                     if (dateDiff >= 0 || sortedPromoes[i].CalendarPriority <= promo.CalendarPriority) { // sort verticaly by Priority
                         closerPromo = sortedPromoes[i];

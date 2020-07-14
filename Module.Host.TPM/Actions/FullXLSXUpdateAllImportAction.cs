@@ -2,22 +2,20 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using Core.Data;
 using Persist;
-using Module.Persist.TPM.Model.Import;
+
 using Module.Persist.TPM.Model.TPM;
 using Core.Extensions;
-using Looper.Parameters;
+
 using System.Reflection;
 using Core.History;
 using Module.Persist.TPM.Utils;
-using Module.Persist.TPM.ElasticSearch;
+
 using Module.Frontend.TPM.Util;
 using System.Text.RegularExpressions;
-using Module.Frontend.TPM.Controllers;
-using Core.MarsCalendar;
+
 
 namespace Module.Host.TPM.Actions {
     class FullXLSXUpdateByPropertyImportAction : FullXLSXImportAction {
@@ -100,13 +98,6 @@ namespace Module.Host.TPM.Actions {
                     errors.Add("PromoTypesId must have a value"); isSuitable = false;
                 }
 
-            }
-
-            if (TypeTo == typeof(MechanicType))
-            {
-                MechanicType typedRec = (MechanicType)rec;
-                if (String.IsNullOrEmpty(typedRec.Name)) { errors.Add("Name must have a value"); isSuitable = false; }
-                if (typedRec.Discount < 0) { errors.Add("Discount can not be less than 0"); isSuitable = false; }
             }
 
             if (TypeTo == typeof(PromoStatus))
@@ -323,10 +314,6 @@ namespace Module.Host.TPM.Actions {
             else if (TypeTo == typeof(Mechanic))
             {
                 query = context.Set<Mechanic>().AsNoTracking();
-            }
-            else if (TypeTo == typeof(MechanicType))
-            {
-                query = context.Set<MechanicType>().AsNoTracking();
             }
             else if (TypeTo == typeof(PromoStatus))
             {

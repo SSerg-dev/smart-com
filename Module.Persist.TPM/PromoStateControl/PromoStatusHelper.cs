@@ -9,13 +9,14 @@ namespace Module.Persist.TPM.PromoStateControl
 {
     static class PromoStatusHelper
     {
-        public static bool IsParametersChanged(Promo curPromo, Promo prevPromo, Guid? stateIdVP, Guid? stateIdTPR)
+        public static bool IsParametersChanged(Promo curPromo, Promo prevPromo, IEnumerable<Guid> stateIdVP, IEnumerable<Guid> stateIdTPR)
         {
             return ((prevPromo.MarsMechanicDiscount < curPromo.MarsMechanicDiscount) ||
-                    (prevPromo.MarsMechanicId == stateIdVP && curPromo.MarsMechanicId == stateIdTPR) ||
+                    (stateIdVP.Any(id => id == prevPromo.MarsMechanicId) && stateIdTPR.Any(id => id == curPromo.MarsMechanicId)) ||
                     (prevPromo.ProductHierarchy != curPromo.ProductHierarchy) ||
                     (prevPromo.StartDate != curPromo.StartDate) ||
-                    (prevPromo.EndDate != curPromo.EndDate));
+                    (prevPromo.EndDate != curPromo.EndDate) ||
+                    (prevPromo.IsGrowthAcceleration != curPromo.IsGrowthAcceleration));
         }
 
         public static bool IsDispatchChanged(bool isCorrectDispatchDifference, Promo curPromo, Promo prevPromo)

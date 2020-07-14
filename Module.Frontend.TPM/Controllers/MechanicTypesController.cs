@@ -65,9 +65,27 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
-        public IQueryable<MechanicType> GetMechanicTypes()
+        public IQueryable<MechanicType> GetMechanicTypes([FromODataUri]bool byClient = false, [FromODataUri]int clientTreeId = 0)
         {
-            return GetConstraintedQuery();
+            return byClient
+                ? GetMechanicTypesByClient(clientTreeId)
+                : GetConstraintedQuery();
+        }
+
+        private IQueryable<MechanicType> GetMechanicTypesByClient(int clientTreeId = 0)
+        {
+            var query = GetConstraintedQuery();
+
+            if (clientTreeId != 0)
+            {
+                var queryByClient = query.Where(q => q.ClientTreeId == clientTreeId)
+                        .GroupBy(q => new { q.Name, q.ClientTreeId })
+                        .Select(g => g.Where(mt => mt.ClientTreeId == g.Max(i => i.ClientTreeId)).FirstOrDefault());
+
+                return queryByClient.Union(query.Where(q => !queryByClient.Any(qbc => qbc.Name == q.Name) && q.ClientTreeId == null));
+            }
+
+            return query;
         }
 
         [ClaimsAuthorize]
@@ -202,7 +220,8 @@ namespace Module.Frontend.TPM.Controllers
         {
             IEnumerable<Column> columns = new List<Column>() {
                 new Column() { Order = 0, Field = "Name", Header = "MechanicType", Quoting = false },
-                new Column() { Order = 1, Field = "Discount", Header = "Discount, %", Quoting = false },
+                new Column() { Order = 1, Field = "Discount", Header = "Discount, %", Quoting = false, Format = "0.00" },
+                new Column() { Order = 2, Field = "ClientTree.FullPathName", Header = "Client", Quoting = false }
             };
             return columns;
         }
@@ -238,7 +257,7 @@ namespace Module.Frontend.TPM.Controllers
                 string importDir = Core.Settings.AppSettingsManager.GetSetting("IMPORT_DIRECTORY", "ImportFiles");
                 string fileName = await FileUtility.UploadFile(Request, importDir);
 
-                CreateImportTask(fileName, "FullXLSXUpdateAllHandler");
+                CreateImportTask(fileName, "FullXLSXMechanicTypeUpdateImporHandler");
 
                 HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
                 result.Content = new StringContent("success = true");
@@ -272,8 +291,8 @@ namespace Module.Frontend.TPM.Controllers
                 HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportMechanicType), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportMechanicType).Name, data, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(MechanicType), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("UniqueFields", new List<String>() { "Name" }, data);
+                HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(ImportMechanicType), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("UniqueFields", new List<String>() { "Name", "ClientTreeId" }, data);
 
                 LoopHandler handler = new LoopHandler() {
                     Id = Guid.NewGuid(),
