@@ -499,14 +499,13 @@ namespace Module.Host.TPM.Actions {
         }
         private void SetMechanicTypeForObjectId(ImportNoNego importNoNego, IList<MechanicType> mechanicTypes)
         {
-
             var mechanicType = mechanicTypes.Where(x => x.Name.Equals(importNoNego.MechanicTypeName));
             MechanicType mechanicTypeForClient = null;
             
             mechanicTypeForClient = mechanicType.Where(x => x.ClientTree != null && x.ClientTree.ObjectId.Equals(importNoNego.ClientObjectId)).FirstOrDefault();
             if (mechanicTypeForClient == null)
             {
-                mechanicTypeForClient = mechanicType.FirstOrDefault();
+                mechanicTypeForClient = mechanicType.FirstOrDefault(mt => mt.ClientTreeId == null);
             }
 
             importNoNego.MechanicTypeId = mechanicTypeForClient.Id;
