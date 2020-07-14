@@ -2516,6 +2516,7 @@
     <Content Include="SQLInitialize\20200609_1636_Add_Ap_RollingVolume_SuperReader_Get.sql" />
     <Content Include="SQLInitialize\20200616_1255_Alter_PromoGridView.sql" />
     <Content Include="SQLInitialize\20200616_1632_Add_Computed_TechSubNAme.sql" />
+    <Content Include="SQLInitialize\20200714_2000_UpdateProcedureFillRollingVolumes.sql" />
     <Content Include="SQLInitialize\20200703_1900_UpdateProcedureFillRollingVolumes.sql" />
     <Content Include="SQLInitialize\20200618_1344_UpdateProcedureFillRollingVolumes.sql" />
     <Content Include="SQLInitialize\20200619_0944_ChangeTypeOnBrandsegTechsub_codeInProduct.sql" />

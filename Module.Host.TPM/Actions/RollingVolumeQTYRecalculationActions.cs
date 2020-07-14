@@ -66,13 +66,14 @@ namespace Module.Host.TPM.Actions
                     }
 
                     var startDate = new MarsDate(item.FirstOrDefault().Week).ToDateTime();
+                    var nextWeekStartDate = startDate.AddDays(7);
 
                     result.Add(new PromoProductDifference()
                     {
                         DemandUnit = "000000000000" + item.Key.Product.ZREP + "_0125",
                         DMDGROUP = "00" + item.Key.DMDGroup,
                         LOC = "RU",
-                        StartDate = GetFmtStringDate(startDate),
+                        StartDate = GetFmtStringDate(nextWeekStartDate),
                         DURInMinutes = 10080,
                         Type = "7",
                         ForecastID = string.Format("ROLLING_{0}", item.Key.DMDGroup),
