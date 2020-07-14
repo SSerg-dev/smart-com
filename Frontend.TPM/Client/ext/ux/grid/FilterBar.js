@@ -864,14 +864,20 @@ Ext.define('Ext.ux.grid.FilterBar', {
                     }));
                 } else if (column.filter.type == 'float') {
 
-                    var a = newVal.includes('.') ? '0.' + newVal.split('.')[1].replace(/[0-9]/g, '0') : 1;
 
-                    var b = a.toString().substring(0, a.length - 1) + '1';
-                    var updateVal = parseFloat(newVal) + parseFloat(b);
+                    //пустое значине с n колиеством знаков после запятой (0,000)
+                    var emptyVal = newVal.includes('.') ? '0.' + newVal.split('.')[1].replace(/[0-9]/g, '0') : 1;
+
+                    //минимальное значение входной строки (0,001)
+                    var minVal = emptyVal.toString().substring(0, emptyVal.length - 1) + '1';
+                    var updateVal = parseFloat(newVal) + parseFloat(minVal);
+                    //так как format округляет  числа до большего преобразуем минимальный порог(0.15 в 0.145)
+                    var roundingValue = emptyVal === 1 ? '0' : emptyVal.toString() + '5';
+                    var gteValue = newVal - parseFloat(roundingValue);
 
                     me.filterArray.push(Ext.create('Ext.util.Filter', {
                         property: column.dataIndex,
-                        value: newVal,
+                        value: gteValue,
                         type: column.filter.type,
                         operator: 'gte'
                     }));
@@ -882,7 +888,7 @@ Ext.define('Ext.ux.grid.FilterBar', {
                         type: column.filter.type,
                         operator: 'lt'
                     }));
-                } else {
+                }  else {
                     var operator = (field.operator || column.filter.operator);
 
                     if (column.extraOperator) {
