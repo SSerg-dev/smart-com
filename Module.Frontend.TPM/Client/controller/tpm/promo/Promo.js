@@ -3153,7 +3153,7 @@
             promoeditorcustom.deviationCoefficient = record.data.DeviationCoefficient === null ? 0 : record.data.DeviationCoefficient;
             var adjustmentSlider = promoeditorcustom.down('sliderfield[name = DeviationCoefficient]');
             var adjustmentNumber = promoeditorcustom.down('numberfield[name = Adjustment]');
-            adjustmentSlider.setValue(record.data.DeviationCoefficient);
+            adjustmentSlider.setValue(-record.data.DeviationCoefficient);
             adjustmentNumber.setValue(record.data.DeviationCoefficient);
 
         }
