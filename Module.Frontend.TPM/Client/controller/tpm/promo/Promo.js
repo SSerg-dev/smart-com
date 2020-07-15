@@ -1303,6 +1303,12 @@
                                 promoClientForm.fillForm(clientRecord, false);
                                 me.checkParametersAfterChangeClient(clientRecord, promoeditorcustom);
                                 me.afterInitClient(clientRecord, schedulerData.schedulerContext.resourceRecord, promoeditorcustom, schedulerData.isCopy);
+
+                                var promoActivityMechanic = promoeditorcustom.down('container[name=promoActivity_step1]');
+                                var actualMechanicId = promoActivityMechanic.down('[name=ActualInstoreMechanicId]');
+                                marsMechanicId.setDisabled(false);
+                                instoreMechanicId.setDisabled(false);
+                                actualMechanicId.setDisabled(false);
                             }
                         }
 
