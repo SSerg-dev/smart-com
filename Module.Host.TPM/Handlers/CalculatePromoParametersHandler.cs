@@ -180,7 +180,10 @@ namespace Module.Host.TPM.Handlers
                                 }
 
                                 string[] canBeReturnedToOnApproval = { "OnApproval", "Approved", "Planned" };
-                                bool needReturnToOnApprovalStatusByZeroUplift = promo.PromoStatus.SystemName.ToLower() == "approved" && (!promo.PlanPromoUpliftPercent.HasValue || promo.PlanPromoUpliftPercent.Value == 0);
+                                bool needReturnToOnApprovalStatusByZeroUplift = 
+                                    promo.PromoStatus.SystemName.ToLower() == "approved" 
+                                    && (!promo.PlanPromoUpliftPercent.HasValue || promo.PlanPromoUpliftPercent.Value == 0)
+                                    && (!promo.InOut.HasValue || !promo.InOut.Value);
 
                                 if (((needReturnToOnApprovalStatus && canBeReturnedToOnApproval.Contains(promo.PromoStatus.SystemName))
                                     || needReturnToOnApprovalStatusByZeroUplift)
