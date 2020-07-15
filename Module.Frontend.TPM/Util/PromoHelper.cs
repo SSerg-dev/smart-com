@@ -252,6 +252,22 @@ namespace Module.Frontend.TPM.Util
             context.SaveChanges();
         }
 
+        /// <summary>
+        /// Удаление записей старых IncrementalPromo, связанных с текущим промо
+        /// </summary>
+        public static void DisableOldIncrementalPromo(DatabaseContext context, Promo promo, List<string> newZreps)
+        {
+            var incrementalPromoes = context.Set<IncrementalPromo>()
+                .Where(x => x.PromoId == promo.Id && !newZreps.Contains(x.Product.ZREP) && !x.Disabled)
+                .ToList();
+            foreach (var incrementalPromo in incrementalPromoes)
+            {
+                incrementalPromo.Disabled = true;
+                incrementalPromo.DeletedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+            }
+            context.SaveChanges();
+        }
+
         //TODO: Оптимизировать и сделать вызовы синхроннымы
         public static async Task UpdateProductHierarchy(string ChangedType, string NewName, string OldName, Guid? Id = null)
         {

@@ -490,24 +490,15 @@ namespace Module.Frontend.TPM.Controllers
                         //если у промо есть признак InOut, то Uplift считать не нужно.
                         if ((changedProducts || needRecalculatePromo) && userRole != "SupportAdministrator")
                         {
-
                             //если промо инаут, необходимо убрать старые записи в IncrementalPromo перед пересчетом, если поменялись продукты
                             if (model.InOut.HasValue && model.InOut.Value)
                             {
-                                if (changedProducts)
+                                var resultProductList = PlanProductParametersCalculation.GetCheckedProducts(Context, model);
+                                if (CheckChangesInProductList(model, resultProductList))
                                 {
-                                    PromoHelper.DisableIncrementalPromo(Context, model);
-                                }
-                                else
-                                {
-                                    var resultProductList = PlanProductParametersCalculation.GetCheckedProducts(Context, model);
-                                    if (CheckChangesInProductList(model, resultProductList))
-                                    {
-                                        PromoHelper.DisableIncrementalPromo(Context, model);
-                                    }
+                                    PromoHelper.DisableOldIncrementalPromo(Context, model, resultProductList.Select(z => z.ZREP).ToList());
                                 }
                             }
-
                             // если меняем длительность промо, то пересчитываем Marketing TI
                             bool needCalculatePlanMarketingTI = promoCopy.StartDate != model.StartDate || promoCopy.EndDate != model.EndDate;
                             needToCreateDemandIncident = PromoHelper.CheckCreateIncidentCondition(promoCopy, model, patch, isSubrangeChanged);
