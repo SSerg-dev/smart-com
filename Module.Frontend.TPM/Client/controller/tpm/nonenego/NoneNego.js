@@ -483,6 +483,39 @@
         extendedFilter.activeModel.entries.items[4].data.value = Ext.create('App.extfilter.core.Range', dateFilter, null);
         extendedFilter.filter = this.getDefaultFilter(dateFilter);
 
+        extendedFilter.clear = function (suppressReload) {
+            var model = this.getFilterModel();
+
+            if (!model) {
+                return;
+            }
+
+            var currentTime = new Date();
+            var dateFilter = new Date(currentTime.getFullYear(), currentTime.getMonth(), currentTime.getDate(), 0, 0, 0, 0);
+            var f = function (dateFilter) {
+                var r = {
+                    operator: 'and',
+                    rules: [{
+                        operator: 'and',
+                        rules: [{
+                            property: 'ToDate',
+                            operation: 'GreaterOrEqual',
+                            value: dateFilter
+                        }]
+                    }]
+                }
+                return r;
+            };
+
+            model.clear();
+
+            this.activeModel.entries.items[4].data.value = Ext.create('App.extfilter.core.Range', dateFilter, null);
+            this.filter = f(dateFilter);
+
+            this.reloadStore(suppressReload);
+            this.fireEvent('extfilterchange', this);
+        }
+
         this.callParent(arguments);
     },
 

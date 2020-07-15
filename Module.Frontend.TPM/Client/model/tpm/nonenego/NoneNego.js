@@ -11,7 +11,14 @@
         { name: 'MechanicTypeName', type: 'string', mapping: 'MechanicType.Name', defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'MechanicType', hidden: false, isDefault: true },
         { name: 'Discount', type: 'float', hidden: false, isDefault: true },
         { name: 'FromDate', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
-        { name: 'ToDate', type: 'date', hidden: false, isDefault: true, useNull: true, timeZone: +3, convert: dateConvertTimeZone },
+        {
+            name: 'ToDate', type: 'date', hidden: false, isDefault: true, useNull: true, timeZone: +3, convert: dateConvertTimeZone,
+            defaultFilterConfig:
+            {
+                value: Ext.create('App.extfilter.core.Range', new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0, 0), null),
+                operation: 'Between'
+            }
+        },
         { name: 'CreateDate', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
         { name: 'ClientTreeId', hidden: true, isDefault: true },
         { name: 'ProductTreeId', hidden: true, isDefault: true },
