@@ -587,6 +587,7 @@
         'ChooseBtn': 'Choose',
         'Clients': 'Clients'
     },
+    'MechanicTypeForClient': ['.tpm.MechanicType'],
     'HistoricalMechanicType': ['.tpm.MechanicType', '.core.BaseHistoryEntity'],
     'DeletedMechanicType': ['.tpm.MechanicType', '.core.BaseDeletedEntity'],
 
