@@ -164,11 +164,21 @@
                     filter: {
                         type: 'search',
                         selectorWidget: 'product',
-                        valueField: 'ZREP',
+                        valueField: 'EAN_PC',
                         store: {
                             type: 'directorystore',
                             model: 'App.model.tpm.product.Product',
-
+                            extendedFilter: {
+                                xclass: 'App.ExtFilterContext',
+                                supportedModels: [{
+                                    xclass: 'App.ExtSelectionFilterModel',
+                                    model: 'App.model.tpm.product.Product',
+                                    modelId: 'efselectionmodel'
+                                }, {
+                                    xclass: 'App.ExtTextFilterModel',
+                                    modelId: 'eftextmodel'
+                                }]
+                            }
                         }
                     }
                 },
