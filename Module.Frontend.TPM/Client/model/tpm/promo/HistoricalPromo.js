@@ -51,8 +51,9 @@
         { name: 'CalendarPriority', useNull: true, type: 'int', hidden: false, isDefault: false, defaultValue: null },
         { name: 'NeedRecountUplift', type: 'bool', useNull: true, hidden: true, isDefault: false, defaultValue: null },
         { name: 'InvoiceNumber', type: 'string', useNull: true, hidden: false, isDefault: false, defaultValue: null },
+        { name: 'InvoiceTotal', type: 'float', useNull: true, hidden: false, isDefault: false, defaultValue: null },
         { name: 'DocumentNumber', type: 'string', useNull: true, hidden: false, isDefault: false, defaultValue: null },
-        { name: 'IsOnInvoice', type: 'boolean', hidden: false, isDefault: true },
+        { name: 'IsOnInvoice', type: 'boolean', useNull: true, hidden: false, isDefault: false, defaultValue: null },
 
         // Calculation
         { name: 'PlanPromoTIShopper', useNull: true, type: 'float', hidden: false, isDefault: false, defaultValue: null },
@@ -125,6 +126,7 @@
         { name: 'ActualPromoUpliftPercent', useNull: true, type: 'float', hidden: false, isDefault: false, defaultValue: null },
         { name: 'ActualPromoIncrementalLSV', useNull: true, type: 'float', hidden: false, isDefault: false, defaultValue: null },
         { name: 'ActualPromoLSV', useNull: true, type: 'float', hidden: false, isDefault: false, defaultValue: null },
+        { name: 'ActualPromoLSVSO', useNull: true, type: 'float', hidden: false, isDefault: false, defaultValue: null },
         { name: 'ActualPromoLSVByCompensation', useNull: true, type: 'float', hidden: false, isDefault: false, defaultValue: null },
         { name: 'ActualPromoPostPromoEffectLSV', useNull: true, type: 'float', hidden: false, isDefault: false, defaultValue: null },
         { name: 'ActualPromoPostPromoEffectLSVW1', useNull: true, type: 'float', hidden: false, isDefault: false, defaultValue: null },
@@ -174,14 +176,14 @@
         { name: 'IsGrowthAcceleration', useNull: true, type: 'boolean', hidden: false, isDefault: false, defaultValue: null },
 
         {
-            name: 'DeviationCoefficient', type: 'float', hidden: false, isDefault: true,
+            name: 'DeviationCoefficient', useNull: true, hidden: false, isDefault: false, defaultValue: null,
             convert: function (value) {
-                return value * 100;
+                return value == null ? null : value * 100;
             }
         },
 
         //Apollo Export
-        { name: 'IsApolloExport', type: 'boolean', hidden: false, isDefault: false }
+        { name: 'IsApolloExport', type: 'boolean', useNull: true, hidden: false, isDefault: false, defaultValue: null }
     ],
     proxy: {
         type: 'breeze',

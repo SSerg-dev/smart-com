@@ -179,6 +179,7 @@ namespace Module.Persist.TPM.Model.History {
         public double? ActualPromoUpliftPercent { get; set; }
         public double? ActualPromoIncrementalLSV { get; set; }
         public double? ActualPromoLSV { get; set; }
+        public double? ActualPromoLSVSO { get; set; }
 
         //необходимость полей в таком виде под вопросом
         public double? ActualPromoPostPromoEffectLSV { get; set; }
@@ -190,7 +191,7 @@ namespace Module.Persist.TPM.Model.History {
         public double? ActualPromoNetIncrementalNSV { get; set; }
         public double? ActualPromoIncrementalMAC { get; set; }
 
-        public bool IsOnInvoice { get; set; }
+        public bool? IsOnInvoice { get; set; }
         public string BrandName { get; set; }
         public string BrandTechName { get; set; }
         public string ProductZREP { get; set; }
@@ -215,7 +216,7 @@ namespace Module.Persist.TPM.Model.History {
         public int? Priority { get; set; }
         public string ColorDisplayName { get; set; }
         public string ColorSystemName { get; set; }
-        public double DeviationCoefficient { get; set; }
+        public double? DeviationCoefficient { get; set; }
 
         public bool? IsAutomaticallyApproved { get; set; }
         public bool? IsCMManagerApproved { get; set; }

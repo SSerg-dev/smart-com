@@ -1938,6 +1938,7 @@
         'ActualPromoUpliftPercent': 'Actual Promo Uplift %',
         'ActualPromoIncrementalLSV': 'Actual Promo Incremental LSV',
         'ActualPromoLSV': 'Actual Promo LSV',
+        'ActualPromoLSVSO': 'Actual Promo LSV SO',
         'ActualPromoLSVByCompensation': 'Actual Promo LSV by Compensation',
         'FactPostPromoEffect': 'Actual Post Promo Effect LSV',
         'FactPostPromoEffectTotal': 'Actual Post Promo Effect LSV',

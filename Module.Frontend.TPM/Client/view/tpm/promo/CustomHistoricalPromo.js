@@ -62,6 +62,7 @@
                 },
                 defaults: {
                     padding: '0 3 0 3',
+                    labelWidth: 200
                 },
                 items: [
                     { xtype: 'singlelinedisplayfield', name: 'PromoStatusName', fieldLabel: l10n.ns('tpm', 'Promo').value('PromoStatusName'), hidden: true },
@@ -108,6 +109,7 @@
                     { xtype: 'singlelinedisplayfield', name: 'ActualPromoUpliftPercent', fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoUpliftPercent'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'ActualPromoIncrementalLSV', fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoIncrementalLSV'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'ActualPromoLSV', fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoLSV'), hidden: true },
+                    { xtype: 'singlelinedisplayfield', name: 'ActualPromoLSVSO', fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoLSVSO'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'ActualPromoLSVByCompensation', fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoLSVByCompensation'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'ActualPromoROIPercent', fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoROIPercent'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'ActualPromoIncrementalNSV', fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoIncrementalNSV'), hidden: true },
@@ -126,6 +128,8 @@
                     //{ xtype: 'singlelinedisplayfield', name: 'ColorSystemName', fieldLabel: l10n.ns('tpm', 'Promo').value('ColorSystemName'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'ColorDisplayName', fieldLabel: l10n.ns('tpm', 'Promo').value('ColorDisplayName'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'InvoiceNumber', fieldLabel: l10n.ns('tpm', 'Promo').value('InvoiceNumber'), hidden: true },
+                    { xtype: 'singlelinedisplayfield', name: 'InvoiceTotal', fieldLabel: l10n.ns('tpm', 'Promo').value('InvoiceTotal'), hidden: true },
+                    { xtype: 'singlelinedisplayfield', name: 'IsOnInvoice', fieldLabel: l10n.ns('tpm', 'Promo').value('InvoiceType'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'DocumentNumber', fieldLabel: l10n.ns('tpm', 'Promo').value('DocumentNumber'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'NeedRecountUplift', fieldLabel: l10n.ns('tpm', 'Promo').value('NeedRecountUplift'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'PlanPromoXSites', fieldLabel: l10n.ns('tpm', 'Promo').value('PlanPromoXSites'), hidden: true },
