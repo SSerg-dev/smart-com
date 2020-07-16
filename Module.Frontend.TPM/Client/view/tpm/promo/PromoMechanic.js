@@ -422,8 +422,13 @@
                     customTip: l10n.ns('tpm', 'Promo').value('PlanInstoreMechanicDiscountTip'),
                     listeners: {
                         change: function (field, newVal, oldVal) {
-                            var discount = field.rawValue.replace(",", ".");
-                            this.up('promoeditorcustom').down('#PlanInstoreMechanicDiscountInActivity').setRawValue(parseFloat(discount).toFixed(2));
+                            var discount = field.rawValue.replace(",", ".");          
+                            var parsedDiscount = parseFloat(discount).toFixed(2);
+                            if (parsedDiscount != 'NaN') {
+                                this.up('promoeditorcustom').down('#PlanInstoreMechanicDiscountInActivity').setRawValue(parsedDiscount);
+                            } else {
+                                this.up('promoeditorcustom').down('#PlanInstoreMechanicDiscountInActivity').setRawValue(null);
+                            }
                         }
                     },
                 }]
