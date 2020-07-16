@@ -164,7 +164,7 @@
                     filter: {
                         type: 'search',
                         selectorWidget: 'product',
-                        valueField: 'EAN_PC',
+                        valueField: 'ZREP',
                         store: {
                             type: 'directorystore',
                             model: 'App.model.tpm.product.Product',
