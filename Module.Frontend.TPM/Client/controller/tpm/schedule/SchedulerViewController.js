@@ -164,11 +164,12 @@
                         //Начало
                         dispatchDateForCurrentClientAfterResize = Ext.Date.add(
                             dragContext.startDate, Ext.Date.DAY, daysForDispatchDateFromClientSettings);
+
+                        record.set('DispatchesStart', dispatchDateForCurrentClientAfterResize);
+                    }
+                    else {
                         dispatchDateForCurrentPromoAfterResize = Ext.Date.add(record.get('DispatchesStart'), Ext.Date.DAY, deltaDaysBeforeAndAfterResize);
-                        // Если dispatch дата, сформированная из настроек клиента, совпадает с текущей dispatch датой
-                        if (Ext.Date.isEqual(dispatchDateForCurrentPromoAfterResize, dispatchDateForCurrentClientAfterResize) === true) {
-                            record.set('DispatchesStart', dispatchDateForCurrentPromoAfterResize);
-                        }
+                        record.set('DispatchesStart', dispatchDateForCurrentPromoAfterResize);
                     }
 
                     daysForDispatchDateFromClientSettings = null;
@@ -182,12 +183,12 @@
                         //т.к в  dragContext.endDate в дате присутствует 23ч 59м 59с убираем их
                         dispatchDateForCurrentClientAfterResize = Ext.Date.add(dispatchDateForCurrentClientAfterResize, Ext.Date.SECOND, 1);
                         dispatchDateForCurrentClientAfterResize = Ext.Date.add(dispatchDateForCurrentClientAfterResize, Ext.Date.DAY, -1);
+                        
+                        record.set('DispatchesEnd', dispatchDateForCurrentClientAfterResize);
+                    }
+                    else {
                         dispatchDateForCurrentPromoAfterResize = Ext.Date.add(record.get('DispatchesEnd'), Ext.Date.DAY, deltaDaysBeforeAndAfterResize);
-
-                        // Если dispatch дата, сформированная из настроек клиента, совпадает с текущей dispatch датой
-                        if (Ext.Date.isEqual(dispatchDateForCurrentPromoAfterResize, dispatchDateForCurrentClientAfterResize) === true) {
-                            record.set('DispatchesEnd', dispatchDateForCurrentPromoAfterResize);
-                        }
+                        record.set('DispatchesEnd', dispatchDateForCurrentPromoAfterResize);
                     }
                     var dispStart = record.get('DispatchesStart'),
                         dispEnd = record.get('DispatchesEnd'),
