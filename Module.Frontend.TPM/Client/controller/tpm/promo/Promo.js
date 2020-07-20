@@ -3627,6 +3627,8 @@
     marsMechanicListener: function (field, newValue, oldValue) {
         var promoController = App.app.getController('tpm.promo.Promo'),
             promoMechanic = field.up('promomechanic');
+        var isEdit = true;
+        var readonly = false;
 
         if (promoMechanic) {
             var mechanicFields = promoController.getMechanicFields(promoMechanic),
@@ -3641,7 +3643,9 @@
                 mechanicFields.marsMechanicFields.marsMechanicId,
                 mechanicFields.marsMechanicFields.marsMechanicTypeId,
                 mechanicFields.marsMechanicFields.marsMechanicDiscount,
-                promoController.getMechanicListForUnlockDiscountField()
+                promoController.getMechanicListForUnlockDiscountField(),
+                readonly,
+                isEdit
             );
 
             promoController.getMechanicTypesByClient(mechanicFields.marsMechanicFields.marsMechanicId,
@@ -3711,6 +3715,8 @@
     instoreMechanicListener: function (field, newValue, oldValue) {
         var promoController = App.app.getController('tpm.promo.Promo'),
             promoMechanic = field.up('promomechanic');
+        var isEdit = true;
+        var readonly = false;
 
         if (promoMechanic) {
             var mechanicFields = promoController.getMechanicFields(promoMechanic),
@@ -3728,7 +3734,9 @@
                 mechanicFields.instoreMechanicFields.instoreMechanicId,
                 mechanicFields.instoreMechanicFields.instoreMechanicTypeId,
                 mechanicFields.instoreMechanicFields.instoreMechanicDiscount,
-                promoController.getMechanicListForUnlockDiscountField()
+                promoController.getMechanicListForUnlockDiscountField(),
+                readonly,
+                isEdit
             );
 
             promoController.getMechanicTypesByClient(mechanicFields.instoreMechanicFields.instoreMechanicId,
@@ -3795,6 +3803,8 @@
     actualMechanicListener: function (field, newValue, oldValue) {
         var promoController = App.app.getController('tpm.promo.Promo'),
             promoMechanic = field.up('#promoActivity_step1');
+        var isEdit = true;
+        var readonly = false;
 
         if (promoMechanic) {
             var mechanicFields = promoController.getMechanicFields(promoMechanic);
@@ -3808,7 +3818,9 @@
                 mechanicFields.actualInstoreMechanicFields.actualInstoreMechanicId,
                 mechanicFields.actualInstoreMechanicFields.actualInstoreMechanicTypeId,
                 mechanicFields.actualInstoreMechanicFields.actualInStoreDiscount,
-                promoController.getMechanicListForUnlockDiscountField()
+                promoController.getMechanicListForUnlockDiscountField(),
+                readonly,
+                isEdit
             );
 
             promoController.getMechanicTypesByClient(mechanicFields.actualInstoreMechanicFields.actualInstoreMechanicId,
