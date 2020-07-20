@@ -469,7 +469,6 @@
                     window.setLoading(false);
                 });
             }
-            myMask.hide();
         }
     },
 

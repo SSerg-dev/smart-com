@@ -130,6 +130,12 @@ namespace Module.Frontend.TPM.Controllers
             {
                 return BadRequest(ModelState);
             }
+            
+            var valid = ValidPeriod(model.FromDate, model.ToDate, model.Id, model.ClientTreeId, model.ProductTreeId, model.MechanicId, model.MechanicTypeId, model.Discount);
+            if (!valid)
+            {
+                return InternalServerError(new Exception("A record with such parameters already exists on the selected time period"));
+            }
 
             // делаем UTC +3
             model.CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
@@ -165,6 +171,13 @@ namespace Module.Frontend.TPM.Controllers
                 }
 
                 patch.Patch(model);
+
+                var valid = ValidPeriod(model.FromDate, model.ToDate, model.Id, model.ClientTreeId, model.ProductTreeId, model.MechanicId, model.MechanicTypeId, model.Discount);
+                if (!valid)
+                {
+                    return InternalServerError(new Exception("A record with such parameters already exists on the selected time period"));
+                }
+
                 // делаем UTC +3
                 model.CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
                 model.FromDate = ChangeTimeZoneUtil.ResetTimeZone(model.FromDate);
@@ -345,6 +358,11 @@ namespace Module.Frontend.TPM.Controllers
         [ClaimsAuthorize]
         public IHttpActionResult IsValidPeriod([FromODataUri] DateTimeOffset? fromDate, [FromODataUri] DateTimeOffset? toDate, Guid? noneNegoId, int clientTreeId, int productTreeId, Guid mechanicId, Guid? mechanicTypeId, double discount)
         {
+            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = ValidPeriod(fromDate, toDate, noneNegoId, clientTreeId, productTreeId, mechanicId, mechanicTypeId, discount) }));
+        }
+
+        private bool ValidPeriod(DateTimeOffset? fromDate, DateTimeOffset? toDate, Guid? noneNegoId, int clientTreeId, int productTreeId, Guid? mechanicId, Guid? mechanicTypeId, double? discount)
+        {
             List<NoneNego> neededNoneNegoes = null;
 
             fromDate = ChangeTimeZoneUtil.ChangeTimeZone(fromDate);
@@ -375,18 +393,18 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     if (fromDate == null)
                     {
-                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false }));
+                        return false;
                     }
                     foreach (var noneNego in neededNoneNegoes)
                     {
                         // [---] [===]
                         if (noneNego.ToDate > fromDate.Value.AddDays(-1))
                         {
-                            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false }));
+                            return false;
                         }
                     }
 
-                    return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
+                    return true;
                 }
 
                 foreach (var noneNego in neededNoneNegoes)
@@ -394,12 +412,12 @@ namespace Module.Frontend.TPM.Controllers
                     // ([---] [===]) || ([===] [---])
                     if (!(((noneNego.FromDate < fromDate) && (noneNego.ToDate < fromDate)) || ((noneNego.FromDate > toDate) && (noneNego.ToDate > toDate))))
                     {
-                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false }));
+                        return false;
                     }
                 }
             }
 
-            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
+            return true;
         }
 
         private ExceptionResult GetErorrRequest(Exception e)
