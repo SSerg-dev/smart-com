@@ -145,6 +145,26 @@
                 return this.makeNode('and', nodes);
             } else if (value instanceof App.extfilter.core.ValueSearchList) {
                 value = value.toString();
+            } else if (Number(value) === value && value % 1 !== 0 && operation == 'Equals') {
+
+                //пустое значине с n колиеством знаков после запятой (0,000)
+                var emptyVal = value.toString().includes('.') ? '0.' + value.toString().split('.')[1].replace(/[0-9]/g, '0') : 0;
+                //минимальное значение входной строки (0,001)
+                var minVal = emptyVal.toString().substring(0, emptyVal.length - 1) + '1';
+
+                //так как format округляет  числа до большего преобразуем минимальный порог(0.15 в 0.145)
+                var roundingValue = minVal.length > 3 ? emptyVal.toString() + '5' : '0';
+                var updateVal = parseFloat(value) + parseFloat(minVal) - parseFloat(roundingValue);
+                var gteValue = value - parseFloat(roundingValue);
+
+                var nodes = [
+                    this.makeRule(property, 'GreaterOrEqual', gteValue, allowEmpty, metadata),
+                    this.makeRule(property, 'LessThan', updateVal, allowEmpty, metadata),
+                ].filter(function (node) {
+                    return node;
+                });
+
+                return this.makeNode('and', nodes);
             }
 
             return {

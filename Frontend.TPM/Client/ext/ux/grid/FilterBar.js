@@ -863,16 +863,13 @@ Ext.define('Ext.ux.grid.FilterBar', {
                         operator: 'lte'
                     }));
                 } else if (column.filter.type == 'float') {
-
-
                     //пустое значине с n колиеством знаков после запятой (0,000)
-                    var emptyVal = newVal.includes('.') ? '0.' + newVal.split('.')[1].replace(/[0-9]/g, '0') : 1;
-
+                    var emptyVal = newVal.includes('.') ? '0.' + newVal.split('.')[1].replace(/[0-9]/g, '0') : 0;
                     //минимальное значение входной строки (0,001)
                     var minVal = emptyVal.toString().substring(0, emptyVal.length - 1) + '1';
-                    var updateVal = parseFloat(newVal) + parseFloat(minVal);
-                    //так как format округляет  числа до большего преобразуем минимальный порог(0.15 в 0.145)
-                    var roundingValue = emptyVal === 1 ? '0' : emptyVal.toString() + '5';
+                    //так как format округляет  числа до большего преобразуем минимальный порог(0.15 в 0.145) 
+                    var roundingValue = minVal.length > 3 ? emptyVal.toString() + '5' : '0';
+                    var updateVal = parseFloat(newVal) + parseFloat(minVal) - parseFloat(roundingValue);
                     var gteValue = newVal - parseFloat(roundingValue);
 
                     me.filterArray.push(Ext.create('Ext.util.Filter', {

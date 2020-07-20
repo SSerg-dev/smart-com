@@ -50,8 +50,10 @@
         } else {
             atomConfig['minValue'] = 0;
             atomConfig['allowDecimals'] = false;
+        } 
+        if (fieldType === 'int') {
+            atomConfig['allowDecimals'] = false;
         }
-
         if (Ext.isString(atomConfig)) {
             atomConfig = { xtype: atomConfig };
         }
