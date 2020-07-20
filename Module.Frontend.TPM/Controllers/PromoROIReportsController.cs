@@ -47,148 +47,12 @@ namespace Module.Frontend.TPM.Controllers
                 .ToList() : new List<Constraint>();
 			IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
 
-            var query = GetPromoROIReportsStatic(Context);			
-			IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
+            IQueryable<PromoROIReport> query = Context.Set<PromoROIReport>();
+            IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
 			query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
 
 			return query;
         }
-
-        public static IQueryable<PromoROIReport> GetPromoROIReportsStatic(DatabaseContext databaseContext)
-        {
-            var currentYear = DateTimeOffset.Now.Year;
-            var settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
-            var statusesSetting = settingsManager.GetSetting<string>("ACTUAL_COGSTI_CHECK_PROMO_STATUS_LIST", "Finished,Closed");
-            var checkPromoStatuses = statusesSetting.Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-
-            var previousYearsPromoIds = databaseContext.Set<Promo>()
-                .Where(x => !x.Disabled && x.StartDate.HasValue && x.StartDate.Value.Year != currentYear)
-                .Where(x => checkPromoStatuses.Contains(x.PromoStatus.Name))
-                .Select(x => x.Id).ToList();
-
-            var query = databaseContext.Set<Promo>().Where(x => !x.Disabled).Select(x => new PromoROIReport
-            {
-                Id = x.Id,
-                Number = x.Number,
-                Client1LevelName = x.ClientHierarchy,
-                Client2LevelName = x.ClientHierarchy,
-                ClientName = databaseContext.Set<ClientTree>().Where(c => c.ObjectId == x.ClientTreeId).Select(v => v.Name).FirstOrDefault(),
-                ClientTreeId = x.ClientTreeId,
-                BrandName = x.Brand.Name ?? (x.BrandTech != null ? (x.BrandTech.Brand != null ? x.BrandTech.Brand.Name : null) : null),
-                TechnologyName = x.Technology.Name ?? (x.BrandTech != null ? (x.BrandTech.Technology != null ? x.BrandTech.Technology.Name : null) : null),
-                SubName = x.Technology.SubBrand ?? (x.BrandTech != null ? (x.BrandTech.Technology != null ? (x.BrandTech.Technology.SubBrand_code != null ? x.BrandTech.Technology.SubBrand : null) : null) : null),
-                ProductSubrangesList = x.ProductSubrangesList,
-                MarsMechanicName = x.MarsMechanic.Name,
-                MarsMechanicTypeName = x.MarsMechanicType.Name,
-                MarsMechanicDiscount = x.MarsMechanicDiscount,
-                MechanicComment = x.MechanicComment,
-                StartDate = x.StartDate,
-                EndDate = x.EndDate,
-                PromoDuration = DbFunctions.DiffDays(x.StartDate, x.EndDate) + 1,
-                EventName = x.Event.Name,
-                PromoStatusName = x.PromoStatus.Name,
-                InOut = x.InOut,
-                IsGrowthAcceleration = x.IsGrowthAcceleration,
-                PlanInstoreMechanicName = x.PlanInstoreMechanic.Name,
-                PlanInstoreMechanicTypeName = x.PlanInstoreMechanicType.Name,
-                PlanInstoreMechanicDiscount = x.PlanInstoreMechanicDiscount,
-                PlanInStoreShelfPrice = x.PlanInStoreShelfPrice,
-                PCPrice = databaseContext.Set<PromoProduct>().Where(y => y.PromoId == x.Id && y.PlanProductPCPrice > 0 && !y.Disabled)
-                    .Average(z => z.PlanProductPCPrice),
-                PlanPromoBaselineLSV = x.PlanPromoBaselineLSV,
-                PlanPromoIncrementalLSV = x.PlanPromoIncrementalLSV,
-                PlanPromoLSV = x.PlanPromoLSV,
-                PlanPromoUpliftPercent = x.PlanPromoUpliftPercent,
-                PlanPromoTIShopper = x.PlanPromoTIShopper,
-                PlanPromoTIMarketing = x.PlanPromoTIMarketing,
-                PlanPromoXSites = x.PlanPromoXSites,
-                PlanPromoCatalogue = x.PlanPromoCatalogue,
-                PlanPromoPOSMInClient = x.PlanPromoPOSMInClient,
-                PlanPromoBranding = x.PlanPromoBranding,
-                PlanPromoBTL = x.PlanPromoBTL,
-                PlanPromoCostProduction = x.PlanPromoCostProduction,
-                PlanPromoCostProdXSites = x.PlanPromoCostProdXSites,
-                PlanPromoCostProdCatalogue = x.PlanPromoCostProdCatalogue,
-                PlanPromoCostProdPOSMInClient = x.PlanPromoCostProdPOSMInClient,
-                PlanPromoCost = x.PlanPromoCost,
-                TIBasePercent = previousYearsPromoIds.Contains(x.Id) ? x.ActualTIBasePercent : x.PlanTIBasePercent,
-                PlanPromoIncrementalBaseTI = x.PlanPromoIncrementalBaseTI,
-                PlanPromoNetIncrementalBaseTI = x.PlanPromoNetIncrementalBaseTI,
-                COGSPercent = previousYearsPromoIds.Contains(x.Id) ? x.ActualCOGSPercent : x.PlanCOGSPercent,
-                PlanPromoIncrementalCOGS = x.PlanPromoIncrementalCOGS,
-                PlanPromoNetIncrementalCOGS = x.PlanPromoNetIncrementalCOGS,
-                PlanPromoTotalCost = x.PlanPromoTotalCost,
-                PlanPromoPostPromoEffectLSV = x.PlanPromoPostPromoEffectLSV,
-                PlanPromoNetIncrementalLSV = x.PlanPromoNetIncrementalLSV,
-                PlanPromoNetLSV = x.PlanPromoNetLSV,
-                PlanPromoBaselineBaseTI = x.PlanPromoBaselineBaseTI,
-                PlanPromoBaseTI = x.PlanPromoBaseTI,
-                PlanPromoNetBaseTI = x.PlanPromoNetBaseTI,
-                PlanPromoNSV = x.PlanPromoNSV,
-                PlanPromoNetNSV = x.PlanPromoNetNSV,
-                PlanPromoIncrementalNSV = x.PlanPromoIncrementalNSV,
-                PlanPromoNetIncrementalNSV = x.PlanPromoNetIncrementalNSV,
-                PlanPromoIncrementalMAC = x.PlanPromoIncrementalMAC,
-                PlanPromoNetIncrementalMAC = x.PlanPromoNetIncrementalMAC,
-                PlanPromoIncrementalEarnings = x.PlanPromoIncrementalEarnings,
-                PlanPromoNetIncrementalEarnings = x.PlanPromoNetIncrementalEarnings,
-                PlanPromoROIPercent = x.PlanPromoROIPercent,
-                PlanPromoNetROIPercent = x.PlanPromoNetROIPercent,
-                PlanPromoNetUpliftPercent = x.PlanPromoNetUpliftPercent,
-                ActualInStoreMechanicName = x.ActualInStoreMechanic.Name,
-                ActualInStoreMechanicTypeName = x.ActualInStoreMechanicType.Name,
-                ActualInStoreDiscount = x.ActualInStoreDiscount,
-                ActualInStoreShelfPrice = x.ActualInStoreShelfPrice,
-                InvoiceNumber = x.InvoiceNumber,
-                ActualPromoBaselineLSV = x.ActualPromoBaselineLSV,
-                ActualPromoIncrementalLSV = x.ActualPromoIncrementalLSV,
-                ActualPromoLSVByCompensation = x.ActualPromoLSVByCompensation,
-                ActualPromoLSV = x.ActualPromoLSV,
-                ActualPromoUpliftPercent = x.ActualPromoUpliftPercent,
-                ActualPromoNetUpliftPercent = x.ActualPromoNetUpliftPercent,
-                ActualPromoTIShopper = x.ActualPromoTIShopper,
-                ActualPromoTIMarketing = x.ActualPromoTIMarketing,
-                ActualPromoXSites = x.ActualPromoXSites,
-                ActualPromoCatalogue = x.ActualPromoCatalogue,
-                ActualPromoPOSMInClient = x.ActualPromoPOSMInClient,
-                ActualPromoBranding = x.ActualPromoBranding,
-                ActualPromoBTL = x.ActualPromoBTL,
-                ActualPromoCostProduction = x.ActualPromoCostProduction,
-                ActualPromoCostProdXSites = x.ActualPromoCostProdXSites,
-                ActualPromoCostProdCatalogue = x.ActualPromoCostProdCatalogue,
-                ActualPromoCostProdPOSMInClient = x.ActualPromoCostProdPOSMInClient,
-                ActualPromoCost = x.ActualPromoCost,
-                ActualPromoIncrementalBaseTI = x.ActualPromoIncrementalBaseTI,
-                ActualPromoNetIncrementalBaseTI = x.ActualPromoNetIncrementalBaseTI,
-                ActualPromoIncrementalCOGS = x.ActualPromoIncrementalCOGS,
-                ActualPromoNetIncrementalCOGS = x.ActualPromoNetIncrementalCOGS,
-                ActualPromoTotalCost = x.ActualPromoTotalCost,
-                ActualPromoPostPromoEffectLSV = x.ActualPromoPostPromoEffectLSV,
-                ActualPromoNetIncrementalLSV = x.ActualPromoNetIncrementalLSV,
-                ActualPromoNetLSV = x.ActualPromoNetLSV,
-                ActualPromoIncrementalNSV = x.ActualPromoIncrementalNSV,
-                ActualPromoNetIncrementalNSV = x.ActualPromoNetIncrementalNSV,
-                ActualPromoBaselineBaseTI = x.ActualPromoBaselineBaseTI,
-                ActualPromoBaseTI = x.ActualPromoBaseTI,
-                ActualPromoNetBaseTI = x.ActualPromoNetBaseTI,
-                ActualPromoNSV = x.ActualPromoNSV,
-                ActualPromoNetNSV = x.ActualPromoNetNSV,
-                ActualPromoIncrementalMAC = x.ActualPromoIncrementalMAC,
-                ActualPromoNetIncrementalMAC = x.ActualPromoNetIncrementalMAC,
-                ActualPromoIncrementalEarnings = x.ActualPromoIncrementalEarnings,
-                ActualPromoNetIncrementalEarnings = x.ActualPromoNetIncrementalEarnings,
-                ActualPromoROIPercent = x.ActualPromoROIPercent,
-                ActualPromoNetROIPercent = x.ActualPromoNetROIPercent,
-                PromoTypesName = x.PromoTypes.Name,
-                InvoiceTotal = x.InvoiceTotal
-            }).ToList();
-            foreach (var item in query)
-            {
-                item.Client1LevelName = item.Client1LevelName.Split('>')[0];
-                item.Client2LevelName = item.Client2LevelName.Split('>')[1];
-            }
-            return query.AsQueryable();
-        } 
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue, MaxExpansionDepth = 3)]
@@ -249,7 +113,7 @@ namespace Module.Frontend.TPM.Controllers
             try
             {
                 var userName = user?.Name ?? "NOT.USER";
-                var results = GetPromoROIReportsStatic(databaseContext).Where(x => x.PromoStatusName != "Cancelled" &&  x.StartDate != null && x.StartDate.Value.Year == year);
+                var results = databaseContext.Set<PromoROIReport>().Where(x => x.PromoStatusName != "Cancelled" &&  x.StartDate != null && x.StartDate.Value.Year == year);
                 var hierarchy = databaseContext.Set<ClientTreeHierarchyView>().AsNoTracking();
 
                 var defaultRoleSystemName = defaultRole?.SystemName;

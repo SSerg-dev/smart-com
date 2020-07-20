@@ -102,6 +102,8 @@ namespace Module.Persist.TPM {
             modelBuilder.Entity<CoefficientSI2SO>();
             modelBuilder.Entity<PromoProductDifference>();
             modelBuilder.Entity<RollingVolume>();
+            modelBuilder.Entity<PlanPostPromoEffectReportWeekView>().ToTable("PlanPostPromoEffectReportWeekView");
+            modelBuilder.Entity<PromoROIReport>().ToTable("PromoROIReportView");
 
             modelBuilder.Entity<InputBaseline>();
 

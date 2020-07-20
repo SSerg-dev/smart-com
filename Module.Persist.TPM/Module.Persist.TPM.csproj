@@ -2645,6 +2645,10 @@
     <Content Include="SQLInitialize\20200709_1715_Alter_GetProductBrandsegtechByCode.sql" />
     <Content Include="SQLInitialize\20200713_1530_HistoricalClientTreeBrandTeches_AP.sql" />
     <Content Include="SQLInitialize\20200713_1930_Update_BrandTechNames_ClientTreeBrandTech.sql" />
+    <Content Include="SQLInitialize\20200717_1440_Add_GetDemandCode_Function.sql" />
+    <Content Include="SQLInitialize\20200717_1445_Add_PlanPostPromoEffectReportWeekView.sql" />
+    <Content Include="SQLInitialize\20200717_1915_Add_PromoROIReportView.sql" />
+    <Content Include="SQLInitialize\20200720_1050_Alter_PlanIncrementalReport.sql" />
     <Compile Include="Utils\ConfigManager.cs" />
     <Compile Include="Utils\ExportCSVBuilderFactory.cs" />
     <Compile Include="Utils\ExportCSVModelBuilders\IncrementalToApolloModelBuilder.cs" />

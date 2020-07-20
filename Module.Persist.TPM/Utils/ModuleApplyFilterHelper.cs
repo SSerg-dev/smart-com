@@ -529,6 +529,33 @@ namespace Module.Persist.TPM.Utils {
         }
 
         /// <summary>
+        /// Применить фильтр по клиентам к PlanPostPromoEffectReport
+        /// </summary>
+        /// <param name="query">Запрос</param>
+        /// <param name="context">Контекст БД</param>
+        /// <param name="hierarchy">Иерархия</param>
+        /// <param name="filter">Фильтр</param>
+        public static IQueryable<PlanPostPromoEffectReportWeekView> ApplyFilter(IQueryable<PlanPostPromoEffectReportWeekView> query, DatabaseContext context, IQueryable<ClientTreeHierarchyView> hierarchy, IDictionary<string, IEnumerable<string>> filter = null)
+        {
+            IEnumerable<string> clientFilter = FilterHelper.GetFilter(filter, ModuleFilterName.Client);
+
+            if (clientFilter.Any())
+            {
+                IQueryable<int> numbers = query.Select(q => q.PromoNumber);
+
+                hierarchy = getFilteredHierarchy(hierarchy, clientFilter);
+                IQueryable<string> queryIds = context.Set<Promo>()
+                    .Where(x
+                        => numbers.Contains(x.Number.Value)
+                            && hierarchy.Any(h => h.Id == x.ClientTreeId))
+                    .Select(x => x.Name + "#" + x.Number.ToString());
+
+                query = query.Where(x => queryIds.Contains(x.PromoNameId));
+            }
+            return query.ToList().AsQueryable();
+        }
+
+        /// <summary>
         /// Применить фильтр по клиентам к PlanIncrementalReport
         /// </summary>
         /// <param name="query">Запрос</param>
