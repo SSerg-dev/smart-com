@@ -17,11 +17,14 @@ using Module.Frontend.TPM.Util;
 using System.Text.RegularExpressions;
 
 
-namespace Module.Host.TPM.Actions {
-    class FullXLSXUpdateByPropertyImportAction : FullXLSXImportAction {
+namespace Module.Host.TPM.Actions
+{
+    class FullXLSXUpdateByPropertyImportAction : FullXLSXImportAction
+    {
         Type TypeTo;
         List<String> UniqueProperties;
-        public FullXLSXUpdateByPropertyImportAction(FullImportSettings settings, Type type, List<String> uniqueProperties) : base(settings) {
+        public FullXLSXUpdateByPropertyImportAction(FullImportSettings settings, Type type, List<String> uniqueProperties) : base(settings)
+        {
             TypeTo = type;
             UniqueProperties = uniqueProperties;
         }
@@ -49,7 +52,7 @@ namespace Module.Host.TPM.Actions {
                                                                 bt.Technology != null && bt.Brand != null
                                                                && bt.Technology.Tech_code == typedRec.Tech_code
                                                                && bt.Technology.SubBrand_code == typedRec.SubBrand_code
-                                                               && !bt.Technology.Disabled 
+                                                               && !bt.Technology.Disabled
                                                                && bt.Brand.Brand_code == typedRec.Brand_code
                                                                && bt.Brand.Segmen_code == typedRec.Segmen_code
                                                                && !bt.Disabled).FirstOrDefault();
@@ -139,20 +142,20 @@ namespace Module.Host.TPM.Actions {
                 if (String.IsNullOrEmpty(typedRec.Name)) { errors.Add("Name must have a value"); isSuitable = false; }
             }
 
-			if (TypeTo == typeof(NonPromoSupport))
-			{
-				NonPromoSupport typedRec = (NonPromoSupport)rec;
-				Guid emptyGuid = Guid.Empty;
-				if (typedRec.ClientTreeId != 0) { errors.Add("ClientTreeId must have a value"); isSuitable = false; }
-				if (typedRec.NonPromoEquipmentId != null && typedRec.NonPromoEquipmentId != emptyGuid) { errors.Add("NonPromoEquipmentId must have a value"); isSuitable = false; }
-				if (typedRec.StartDate == null || typedRec.EndDate == null) { errors.Add("StartDate and EndDate must have a value"); isSuitable = false; }
-			}
+            if (TypeTo == typeof(NonPromoSupport))
+            {
+                NonPromoSupport typedRec = (NonPromoSupport)rec;
+                Guid emptyGuid = Guid.Empty;
+                if (typedRec.ClientTreeId != 0) { errors.Add("ClientTreeId must have a value"); isSuitable = false; }
+                if (typedRec.NonPromoEquipmentId != null && typedRec.NonPromoEquipmentId != emptyGuid) { errors.Add("NonPromoEquipmentId must have a value"); isSuitable = false; }
+                if (typedRec.StartDate == null || typedRec.EndDate == null) { errors.Add("StartDate and EndDate must have a value"); isSuitable = false; }
+            }
 
-			if (TypeTo == typeof(NonPromoEquipment))
-			{
-				NonPromoEquipment typedRec = (NonPromoEquipment)rec;
-				if (String.IsNullOrEmpty(typedRec.EquipmentType)) { errors.Add("EquipmentType must have a value"); isSuitable = false; }
-			}
+            if (TypeTo == typeof(NonPromoEquipment))
+            {
+                NonPromoEquipment typedRec = (NonPromoEquipment)rec;
+                if (String.IsNullOrEmpty(typedRec.EquipmentType)) { errors.Add("EquipmentType must have a value"); isSuitable = false; }
+            }
 
             if (TypeTo == typeof(BTL))
             {
@@ -184,7 +187,6 @@ namespace Module.Host.TPM.Actions {
 
             List<Tuple<IEntity<Guid>, IEntity<Guid>>> toHisCreate = new List<Tuple<IEntity<Guid>, IEntity<Guid>>>();
             List<Tuple<IEntity<Guid>, IEntity<Guid>>> toHisUpdate = new List<Tuple<IEntity<Guid>, IEntity<Guid>>>();
-            IEntity<Guid> oldRecordCopy;
 
             foreach (IEntity<Guid> newRecord in sourceRecords)
             {
@@ -210,47 +212,52 @@ namespace Module.Host.TPM.Actions {
                 }
                 else
                 {
-                    oldRecordCopy = oldRecord;
+                    //oldRecordCopy = oldRecord;
                     foreach (PropertyInfo property in nonUnProperties)
                     {
                         // Проверка на необходимость создания ProductChangeIncident
-                        if (TypeTo == typeof(Product))
+                        var newValue = property.GetValue(newRecord);
+                        var oldValue = property.GetValue(oldRecord);
+                        if (!hasNewRecordChanges && !EqualityComparer<object>.Default.Equals(newValue, oldValue))
                         {
-                            var newValue = property.GetValue(newRecord);
-                            var oldValue = property.GetValue(oldRecord);
-                            if (!hasNewRecordChanges && !EqualityComparer<object>.Default.Equals(newValue, oldValue))
-                            {
-                                hasNewRecordChanges = true;
-                            }
+                            hasNewRecordChanges = true;
+                            break;
                         }
-
-                        property.SetValue(oldRecord, property.GetValue(newRecord));
                     }
 
-                    // добавление записи в Update и создание ProductChangeIncident только в случае изменения какого-либо поля в импортируемой записи
-                    if (TypeTo == typeof(Product) && hasNewRecordChanges)
+                    // добавление записи в Update только в случае изменения какого-либо поля в импортируемой записи
+                    if (hasNewRecordChanges)
                     {
-                        bool @continue = ValidateProductCodes(newRecord);
-                        if (@continue) { continue; }
-
-                        // Поулчаем вычисляемые поля
-                        var newProductChanged = GetComputedProps(newRecord, context);
-                        //Для нормальной записи в историю необходимо передавать Id в новой записи
-                        newProductChanged.Id = oldRecordCopy.Id;
-
-                        toHisUpdate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(oldRecordCopy, newProductChanged));
-                        toUpdate.Add(newProductChanged);
-                        ProductChangeIncident pci = new ProductChangeIncident
+                        //Cоздание ProductChangeIncident, если тип Product
+                        if (TypeTo == typeof(Product))
                         {
-                            CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                            ProductId = oldRecord.Id,
-                            IsCreate = false,
-                            IsDelete = false,
-							IsCreateInMatrix = false,
-							IsDeleteInMatrix = false,
-							IsChecked = false,
-						};
-                        context.Set<ProductChangeIncident>().Add(pci);
+                            if (ValidateProductCodes(newRecord)) { continue; }
+                            // Поулчаем вычисляемые поля
+                            var newProductChanged = GetComputedProps(newRecord, context);
+                            //Для нормальной записи в историю необходимо передавать Id в новой записи
+                            newProductChanged.Id = oldRecord.Id;
+
+                            toHisUpdate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(oldRecord, newProductChanged));
+                            toUpdate.Add(newProductChanged);
+
+                            ProductChangeIncident pci = new ProductChangeIncident
+                            {
+                                CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                                ProductId = oldRecord.Id,
+                                IsCreate = false,
+                                IsDelete = false,
+                                IsCreateInMatrix = false,
+                                IsDeleteInMatrix = false,
+                                IsChecked = false,
+                            };
+                            context.Set<ProductChangeIncident>().Add(pci);
+                        }
+                        else
+                        {
+                            newRecord.Id = oldRecord.Id;
+                            toHisUpdate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(oldRecord, newRecord));
+                            toUpdate.Add(newRecord);
+                        }                  
                     }
                 }
             }
@@ -283,15 +290,15 @@ namespace Module.Host.TPM.Actions {
             {
                 query = context.Set<Brand>().AsNoTracking();
             }
-			else if (TypeTo == typeof(NonPromoSupport))
-			{
-				query = context.Set<NonPromoSupport>().AsNoTracking();
-			}
-			else if (TypeTo == typeof(NonPromoEquipment))
-			{
-				query = context.Set<NonPromoEquipment>().AsNoTracking();
-			}
-			else if (TypeTo == typeof(Technology))
+            else if (TypeTo == typeof(NonPromoSupport))
+            {
+                query = context.Set<NonPromoSupport>().AsNoTracking();
+            }
+            else if (TypeTo == typeof(NonPromoEquipment))
+            {
+                query = context.Set<NonPromoEquipment>().AsNoTracking();
+            }
+            else if (TypeTo == typeof(Technology))
             {
                 query = context.Set<Technology>().AsNoTracking();
             }
