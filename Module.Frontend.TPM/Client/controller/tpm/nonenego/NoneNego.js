@@ -423,13 +423,18 @@
             var nonenegoeditor = Ext.ComponentQuery.query('nonenegoeditor')[0];
             var myMask = new Ext.LoadMask(nonenegoeditor, { msg: "Please wait..." });
 
+            var mechanicName = '';
+            if (mechanic.record != undefined && mechanic.record != null) {
+                mechanicName = mechanic.record.get("SystemName");
+            }
+
             var parameters = {
                 fromDate: breeze.DataType.DateTimeOffset.fmtOData(changeTimeZone(fromDate.getValue(), 3, -1)),
                 toDate: breeze.DataType.DateTimeOffset.fmtOData(changeTimeZone(toDate.getValue(), 3, -1)),
                 noneNegoId: noneNegoId,
                 clientTreeId: clientTreeId.getValue(),
                 productTreeId: productTreeId.getValue(),
-                mechanicName: mechanic.record.get("SystemName"),
+                mechanicName: mechanicName,
                 mechanicTypeId: mechanicType.getValue(),
                 discount: discount.getValue()
             };
