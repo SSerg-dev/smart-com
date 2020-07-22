@@ -422,7 +422,6 @@
         if (!fromDate.isDisabled()) {
             var nonenegoeditor = Ext.ComponentQuery.query('nonenegoeditor')[0];
             var myMask = new Ext.LoadMask(nonenegoeditor, { msg: "Please wait..." });
-            myMask.show();
 
             var parameters = {
                 fromDate: breeze.DataType.DateTimeOffset.fmtOData(changeTimeZone(fromDate.getValue(), 3, -1)),
@@ -430,13 +429,14 @@
                 noneNegoId: noneNegoId,
                 clientTreeId: clientTreeId.getValue(),
                 productTreeId: productTreeId.getValue(),
-                mechanicId: mechanic.getValue(),
+                mechanicName: mechanic.record.get("SystemName"),
                 mechanicTypeId: mechanicType.getValue(),
                 discount: discount.getValue()
             };
 
-            var correctMechanic = parameters.mechanicId != undefined && parameters.mechanicId != null && parameters.mechanicId != '';
+            var correctMechanic = parameters.mechanicName != undefined && parameters.mechanicName != null && parameters.mechanicName != '';
             if (parameters.productTreeId != undefined && parameters.clientTreeId != undefined && correctMechanic) {
+                myMask.show();
                 App.Util.makeRequestWithCallback('NoneNegoes', 'IsValidPeriod', parameters, function (data) {
                     if (data) {
                         var nonenegoeditor = Ext.ComponentQuery.query('nonenegoeditor')[0];

@@ -130,8 +130,9 @@ namespace Module.Frontend.TPM.Controllers
             {
                 return BadRequest(ModelState);
             }
-            
-            var valid = ValidPeriod(model.FromDate, model.ToDate, model.Id, model.ClientTreeId, model.ProductTreeId, model.MechanicId, model.MechanicTypeId, model.Discount);
+
+            string mechanicName = Context.Set<Mechanic>().FirstOrDefault(m => m.Id == model.MechanicId)?.SystemName;
+            var valid = ValidPeriod(model.FromDate, model.ToDate, model.Id, model.ClientTreeId, model.ProductTreeId, mechanicName, model.MechanicTypeId, model.Discount);
             if (!valid)
             {
                 return InternalServerError(new Exception("A record with such parameters already exists on the selected time period"));
@@ -172,7 +173,8 @@ namespace Module.Frontend.TPM.Controllers
 
                 patch.Patch(model);
 
-                var valid = ValidPeriod(model.FromDate, model.ToDate, model.Id, model.ClientTreeId, model.ProductTreeId, model.MechanicId, model.MechanicTypeId, model.Discount);
+                string mechanicName = model?.Mechanic?.SystemName ?? Context.Set<Mechanic>().FirstOrDefault(m => m.Id == model.MechanicId)?.SystemName;
+                var valid = ValidPeriod(model.FromDate, model.ToDate, model.Id, model.ClientTreeId, model.ProductTreeId, mechanicName, model.MechanicTypeId, model.Discount);
                 if (!valid)
                 {
                     return InternalServerError(new Exception("A record with such parameters already exists on the selected time period"));
@@ -356,12 +358,12 @@ namespace Module.Frontend.TPM.Controllers
 
         [HttpPost]
         [ClaimsAuthorize]
-        public IHttpActionResult IsValidPeriod([FromODataUri] DateTimeOffset? fromDate, [FromODataUri] DateTimeOffset? toDate, Guid? noneNegoId, int clientTreeId, int productTreeId, Guid mechanicId, Guid? mechanicTypeId, double discount)
+        public IHttpActionResult IsValidPeriod([FromODataUri] DateTimeOffset? fromDate, [FromODataUri] DateTimeOffset? toDate, Guid? noneNegoId, int clientTreeId, int productTreeId, string mechanicName, Guid? mechanicTypeId, double discount)
         {
-            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = ValidPeriod(fromDate, toDate, noneNegoId, clientTreeId, productTreeId, mechanicId, mechanicTypeId, discount) }));
+            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = ValidPeriod(fromDate, toDate, noneNegoId, clientTreeId, productTreeId, mechanicName, mechanicTypeId, discount) }));
         }
 
-        private bool ValidPeriod(DateTimeOffset? fromDate, DateTimeOffset? toDate, Guid? noneNegoId, int clientTreeId, int productTreeId, Guid? mechanicId, Guid? mechanicTypeId, double? discount)
+        private bool ValidPeriod(DateTimeOffset? fromDate, DateTimeOffset? toDate, Guid? noneNegoId, int clientTreeId, int productTreeId, string mechanicName, Guid? mechanicTypeId, double? discount)
         {
             List<NoneNego> neededNoneNegoes = null;
 
@@ -373,7 +375,7 @@ namespace Module.Frontend.TPM.Controllers
             {
                 neededNoneNegoes = GetNoneNegoes().Where(x =>
                     (x.ClientTreeId == clientTreeId) && (x.ProductTreeId == productTreeId)
-                        && (x.MechanicId.Value == mechanicId)
+                        && (x.Mechanic.SystemName == mechanicName)
                         && (x.MechanicTypeId == mechanicTypeId)
                         && (x.Discount.Value == discount)).ToList();
             }
@@ -382,7 +384,7 @@ namespace Module.Frontend.TPM.Controllers
             {
                 neededNoneNegoes = GetNoneNegoes().Where(x =>
                     (x.ClientTreeId == clientTreeId) && (x.ProductTreeId == productTreeId)
-                        && (x.MechanicId.Value == mechanicId) && (x.Id != noneNegoId.Value)
+                        && (x.Mechanic.SystemName == mechanicName) && (x.Id != noneNegoId.Value)
                         && (x.MechanicTypeId == mechanicTypeId)
                         && (x.Discount.Value == discount)).ToList();
             }
