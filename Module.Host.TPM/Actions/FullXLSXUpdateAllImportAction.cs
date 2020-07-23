@@ -212,18 +212,7 @@ namespace Module.Host.TPM.Actions
                 }
                 else
                 {
-                    //oldRecordCopy = oldRecord;
-                    foreach (PropertyInfo property in nonUnProperties)
-                    {
-                        // Проверка на необходимость создания ProductChangeIncident
-                        var newValue = property.GetValue(newRecord);
-                        var oldValue = property.GetValue(oldRecord);
-                        if (!hasNewRecordChanges && !EqualityComparer<object>.Default.Equals(newValue, oldValue))
-                        {
-                            hasNewRecordChanges = true;
-                            break;
-                        }
-                    }
+                    hasNewRecordChanges = checkChanges(oldRecord, newRecord, nonUnProperties);
 
                     // добавление записи в Update только в случае изменения какого-либо поля в импортируемой записи
                     if (hasNewRecordChanges)
@@ -348,6 +337,22 @@ namespace Module.Host.TPM.Actions
             }
 
             return query.ToList();
+        }
+
+        private bool checkChanges(IEntity<Guid> oldRecord, IEntity<Guid> newRecord, IEnumerable<PropertyInfo> nonUnProperties)
+        {
+            var isChange = false;
+            foreach (PropertyInfo property in nonUnProperties)
+            {
+                var newValue = property.GetValue(newRecord);
+                var oldValue = property.GetValue(oldRecord);
+                if (!isChange && !EqualityComparer<object>.Default.Equals(newValue, oldValue))
+                {
+                    isChange = true;
+                    break;
+                }
+            }
+            return isChange;
         }
 
         private bool CompariseByProperty(PropertyInfo pi, IEntity<Guid> nv, IEntity<Guid> ov)
