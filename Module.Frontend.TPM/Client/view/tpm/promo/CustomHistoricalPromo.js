@@ -285,6 +285,7 @@
                 var form = this.up().down('editorform');
                 var fields = form.getForm().getFields();
 
+                Ext.suspendLayouts();
                 fields.each(function (item, index) {
                     var changedValue = record.get(item.name);
                     if (changedValue != null) {
@@ -294,6 +295,7 @@
                         item.hide();
                     }
                 });
+                Ext.resumeLayouts(true);
             }
         }
     }]
