@@ -289,7 +289,7 @@
 						left += boxWidth + 10;
 						break;
 					case 'Cancelled':
-						top += marginTop;
+						top += marginTop - 85;
 						left += 5 * boxWidth + 50;
 						break;
 					default:

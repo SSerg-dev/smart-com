@@ -124,10 +124,18 @@
                                 }
 							}
 
-                            if (promo) {
+							var svgHeight = panel.body.getHeight() / panelHeightRatio;
+							if (isNaN(svgHeight) || svgHeight === undefined || svgHeight === null || svgHeight === 0) {
+								svgHeight = 2500;
+							}
+							var svgWidth = panel.body.getWidth() / panelWidthRatio;
+							if (isNaN(svgWidth) || svgWidth === undefined || svgWidth === null || svgWidth === 0) {
+								svgWidth = 4500;
+							}
+							if (promo) {
 								var settings = {
-									svgHeight: panel.body.getHeight() / panelHeightRatio,
-									svgWidth: panel.body.getWidth() / panelWidthRatio,
+									svgHeight: svgHeight,
+									svgWidth: svgWidth,
                                     currentWidthRatio: panelWidthRatio,
                                     currentHeightRatio: panelHeightRatio,
                                     currentHeight: panel.body.getHeight(),
