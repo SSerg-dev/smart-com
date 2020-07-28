@@ -411,12 +411,6 @@
             }
 
             proxy.extraParams.promoIdHistory = this.getRecordId(record);
-
-            store.setFixedFilter('HistoricalObjectId', {
-                property: '_ObjectId',
-                operation: 'Equals',
-                value: this.getRecordId(record)
-            });
         }
     },
 

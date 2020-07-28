@@ -55,11 +55,6 @@ Ext.define('App.controller.tpm.actualcogs.HistoricalActualCOGS', {
             var store = baseReviewWindow.down('grid').getStore();
             var proxy = store.getProxy();
             proxy.extraParams.Id = this.getRecordId(selModel.getSelection()[0]);
-            store.setFixedFilter('HistoricalObjectId', {
-                property: '_ObjectId',
-                operation: 'Equals',
-                value: this.getRecordId(selModel.getSelection()[0])
-            });
         }
     }
 });

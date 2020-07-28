@@ -351,12 +351,12 @@
             var proxy = store.getProxy();
             var record = selModel.getSelection()[0];
             var Id = record.data.HistoryId || null;
-                if (proxy.extraParams) {
-                    proxy.extraParams.Id = Id;
-                } else {
-                    proxy.extraParams = {
-                        Id: Id
-                    }
+            if (proxy.extraParams) {
+                proxy.extraParams.Id = Id;
+            } else {
+                proxy.extraParams = {
+                    Id: Id
+                }
             }
         }
     },
