@@ -3953,6 +3953,8 @@
                     byClient: breeze.DataType.Boolean.fmtOData('true'),
                     clientTreeId: breeze.DataType.Int32.fmtOData(client.Id),
                 };
+
+                mechanicTypeStore.load();
             }
         }
     },
