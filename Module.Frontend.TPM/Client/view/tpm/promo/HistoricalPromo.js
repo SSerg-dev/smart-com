@@ -97,7 +97,7 @@
             xtype: 'singlelinedisplayfield',
             name: 'CreatorLogin',
             fieldLabel: l10n.ns('tpm', 'Promo').value('CreatorLogin'),
-        },{
+        }, {
             xtype: 'singlelinedisplayfield',
             name: 'Number',
             fieldLabel: l10n.ns('tpm', 'Promo').value('Number'),
@@ -219,8 +219,20 @@
             fieldLabel: l10n.ns('tpm', 'Promo').value('AdjustmentP'),
         }, {
             xtype: 'singlelinedisplayfield',
-            name: 'InvoiceType',
+            name: 'IsOnInvoice',
             fieldLabel: l10n.ns('tpm', 'Promo').value('InvoiceType'),
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'InvoiceTotal',
+            fieldLabel: l10n.ns('tpm', 'Promo').value('InvoiceTotal'),
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'ActualPromoLSV',
+            fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoLSV'),
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'ActualPromoLSVSO',
+            fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoLSVSO'),
         }]
     }]
 });
