@@ -2457,8 +2457,9 @@
         var apolloExportCheckbox = promoeditorcustom.down('[name=ApolloExportCheckbox]');
         apolloExportCheckbox.setValue(record.data.IsApolloExport);
 
+        var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
         var gaReadOnlyStatuses = ['Approved', 'Planned', 'Started', 'Finished'];
-        if (gaReadOnlyStatuses.indexOf(record.data.PromoStatusSystemName) != -1) {
+        if (gaReadOnlyStatuses.indexOf(record.data.PromoStatusSystemName) != -1 && currentRole !== 'SupportAdministrator') {
             growthAccelerationCheckbox.setReadOnly(true);
         }
 
