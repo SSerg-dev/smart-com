@@ -4222,6 +4222,7 @@
 
         // Блокировка кнопок Add Promo Support для роли DemandPlanning. 
         // Блокировка редактирования Growth Acceleration
+        // Блокировка редактирования Calendar priority
         if (currentRole == 'DemandPlanning') {
             //var addSubItemButtons = Ext.ComponentQuery.query('#addSubItem');
             //if (addSubItemButtons.length > 0) {
@@ -4233,6 +4234,9 @@
 
             var growthAccelerationCheckbox = promoeditorcustom.down('[name=GrowthAccelerationCheckbox]');
             growthAccelerationCheckbox.setReadOnly(true);
+
+            var calendarPrioritySlider = promoeditorcustom.down('[name=priority]');
+            calendarPrioritySlider.setReadOnly(true);
 
             var client = promoeditorcustom.down('container[name=promo_step1]');
             client.down('[id=OffInvoice]').setDisabled(true);
