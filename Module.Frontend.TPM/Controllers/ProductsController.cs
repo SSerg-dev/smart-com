@@ -177,7 +177,12 @@ namespace Module.Frontend.TPM.Controllers
             }
             var proxy = Context.Set<Product>().Create<Product>();
             var result = (Product)Mapper.Map(model, proxy, typeof(Product), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
-
+            IList<string> errors = new List<string>();
+            var validBrandTech = BrandTechExist(Context, result.Brand_code, result.Segmen_code, result.SubBrand_code, result.Tech_code, ref errors);
+            if (!validBrandTech)
+            {
+                return InternalServerError(new Exception(string.Join(". ", errors)));
+            }
             try
             {
                 CheckNewBrandTech(result.BrandFlag, result.SupplySegment, model.SubBrand_code);
@@ -208,6 +213,12 @@ namespace Module.Frontend.TPM.Controllers
                 }
 
                 patch.Patch(model);
+                IList<string> errors = new List<string>();
+                var validBrandTech = BrandTechExist(Context, model.Brand_code, model.Segmen_code, model.SubBrand_code, model.Tech_code, ref errors);
+                if (!validBrandTech)
+                {
+                    return InternalServerError(new Exception(string.Join(". ", errors)));
+                }
                 CheckNewBrandTech(model.BrandFlag, model.SupplySegment, model.SubBrand_code);
                 Context.Set<ProductChangeIncident>().Add(CreateIncident(model, false, false));
                 Context.SaveChanges();
@@ -613,6 +624,45 @@ namespace Module.Frontend.TPM.Controllers
                 }
             }
             return expressionsList;
+        }
+
+        public static bool BrandTechExist(DatabaseContext context, string brandCode, string segmenCode, string subBrandCode, string techCode, ref IList<string> errors)
+        {
+            bool exist = true;
+
+            var technology = context.Set<Technology>().Where(t => 
+                                                            t.Tech_code == techCode
+                                                            && t.SubBrand_code == subBrandCode
+                                                            && !t.Disabled).FirstOrDefault();
+            var brand = context.Set<Brand>().Where(b => 
+                                                b.Segmen_code == segmenCode
+                                                && b.Brand_code == brandCode
+                                                && !b.Disabled).FirstOrDefault();
+            var brandTech = context.Set<BrandTech>().Where(bt =>
+                                                        bt.Technology != null && bt.Brand != null
+                                                       && bt.Technology.Tech_code == techCode
+                                                       && bt.Technology.SubBrand_code == subBrandCode
+                                                       && !bt.Technology.Disabled
+                                                       && bt.Brand.Brand_code == brandCode
+                                                       && bt.Brand.Segmen_code == segmenCode
+                                                       && !bt.Disabled).FirstOrDefault();
+            if (brand == null) 
+            { 
+                errors.Add("Brand was not found"); 
+                exist = false; 
+            }
+            if (technology == null) 
+            {
+                errors.Add("Technology was not found"); 
+                exist = false; 
+            }
+            if (brandTech == null) 
+            {
+                errors.Add("Brand Tech was not found"); 
+                exist = false; 
+            }
+
+            return exist;
         }
     }
 }

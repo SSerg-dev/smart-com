@@ -15,7 +15,7 @@ using Module.Persist.TPM.Utils;
 
 using Module.Frontend.TPM.Util;
 using System.Text.RegularExpressions;
-
+using Module.Frontend.TPM.Controllers;
 
 namespace Module.Host.TPM.Actions
 {
@@ -46,21 +46,8 @@ namespace Module.Host.TPM.Actions
 
                 using (DatabaseContext context = new DatabaseContext())
                 {
-                    typedRec.SubBrand_code = String.IsNullOrEmpty(typedRec.SubBrand_code) ? null : typedRec.SubBrand_code;
-                    var technology = context.Set<Technology>().Where(t => t.Tech_code == typedRec.Tech_code && t.SubBrand_code == typedRec.SubBrand_code).FirstOrDefault();
-                    var brandTech = context.Set<BrandTech>().Where(bt =>
-                                                                bt.Technology != null && bt.Brand != null
-                                                               && bt.Technology.Tech_code == typedRec.Tech_code
-                                                               && bt.Technology.SubBrand_code == typedRec.SubBrand_code
-                                                               && !bt.Technology.Disabled
-                                                               && bt.Brand.Brand_code == typedRec.Brand_code
-                                                               && bt.Brand.Segmen_code == typedRec.Segmen_code
-                                                               && !bt.Disabled).FirstOrDefault();
-                    var brand = context.Set<Brand>().Where(b => b.Segmen_code == typedRec.Segmen_code && b.Brand_code == typedRec.Brand_code && !b.Disabled).FirstOrDefault();
-
-                    if (brand == null) { errors.Add("Brand was not found"); isSuitable = false; }
-                    if (technology == null) { errors.Add("Technology was not found"); isSuitable = false; }
-                    if (brandTech == null) { errors.Add("Brand Tech was not found"); isSuitable = false; }
+                    typedRec.SubBrand_code = string.IsNullOrEmpty(typedRec.SubBrand_code) ? null : typedRec.SubBrand_code;
+                    isSuitable = ProductsController.BrandTechExist(context, typedRec.Brand_code, typedRec.Segmen_code, typedRec.SubBrand_code, typedRec.Tech_code, ref errors);
                 }
             }
 
