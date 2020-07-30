@@ -499,6 +499,16 @@ namespace Module.Frontend.TPM.Controllers
                                     PromoHelper.DisableOldIncrementalPromo(Context, model, resultProductList.Select(z => z.ZREP).ToList());
                                 }
                             }
+                            else
+                            {
+                                List<string> eanPCs = PlanProductParametersCalculation.GetProductListFromAssortmentMatrix(model, Context);
+                                filteredProducts = PlanProductParametersCalculation.GetCheckedProducts(Context, model);
+                                var resultProductList = PlanProductParametersCalculation.GetResultProducts(filteredProducts, eanPCs, model, Context);
+                                if (CheckChangesInProductList(model, resultProductList))
+                                {
+                                    PromoHelper.DisableOldProductCorrection(Context, model, resultProductList.Select(z => z.ZREP).ToList());
+                                }
+                            }
                             // если меняем длительность промо, то пересчитываем Marketing TI
                             bool needCalculatePlanMarketingTI = promoCopy.StartDate != model.StartDate || promoCopy.EndDate != model.EndDate;
                             needToCreateDemandIncident = PromoHelper.CheckCreateIncidentCondition(promoCopy, model, patch, isSubrangeChanged);

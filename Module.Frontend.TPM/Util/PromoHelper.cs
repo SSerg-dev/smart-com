@@ -268,6 +268,21 @@ namespace Module.Frontend.TPM.Util
             context.SaveChanges();
         }
 
+        /// <summary>
+        /// Удаление записей старых IncrementalPromo, связанных с текущим промо
+        /// </summary>
+        public static void DisableOldProductCorrection(DatabaseContext context, Promo promo, List<string> newZreps)
+        {
+            var promoProductCorrectionToDeleteList = context.Set<PromoProductsCorrection>()
+                .Where(x => !newZreps.Contains(x.PromoProduct.ZREP) && x.PromoProduct.PromoId == promo.Id && x.Disabled != true).ToList();
+            foreach (var productCorrection in promoProductCorrectionToDeleteList)
+            {
+                productCorrection.Disabled = true;
+                productCorrection.DeletedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+            }
+            context.SaveChanges();
+        }
+
         //TODO: Оптимизировать и сделать вызовы синхроннымы
         public static async Task UpdateProductHierarchy(string ChangedType, string NewName, string OldName, Guid? Id = null)
         {
@@ -278,12 +293,13 @@ namespace Module.Frontend.TPM.Util
                 case "Brand":
                     if (Id != null)
                     {
-                        Promoes = context.Set<Promo>().Where(x => x.BrandId == Id && 
+                        Promoes = context.Set<Promo>().Where(x => x.BrandId == Id &&
                                                                     x.PromoStatus.SystemName != "Closed" &&
                                                                     x.PromoStatus.SystemName != "Deleted" &&
-                                                                    x.PromoStatus.SystemName != "Cancelled" );
+                                                                    x.PromoStatus.SystemName != "Cancelled");
 
-                        Parallel.ForEach(Promoes, promo => {
+                        Parallel.ForEach(Promoes, promo =>
+                        {
                             if (promo.ProductHierarchy.StartsWith(OldName + " >"))
                             {
                                 promo.ProductHierarchy = promo.ProductHierarchy.Remove(0, OldName.Length);
@@ -299,7 +315,8 @@ namespace Module.Frontend.TPM.Util
                         Promoes = context.Set<Promo>().Where(x => x.TechnologyId == Id);
                         var s = Promoes.Count();
 
-                        Parallel.ForEach(Promoes, promo => {
+                        Parallel.ForEach(Promoes, promo =>
+                        {
                             if (promo.ProductHierarchy.StartsWith(OldName + " >"))
                             {
                                 promo.ProductHierarchy = promo.ProductHierarchy.Remove(0, OldName.Length);
@@ -334,7 +351,7 @@ namespace Module.Frontend.TPM.Util
             var promoProductsForCurrentPromo = context.Set<PromoProduct>()
                 .Where(x => x.PromoId == promo.Id);
 
-            double sumActualProductPCQty = 0; 
+            double sumActualProductPCQty = 0;
             // Доля от всего InvoiceTotal
             double invoiceTotalProductPart = 0;
 
@@ -351,10 +368,10 @@ namespace Module.Frontend.TPM.Util
                     if (promoProduct.ActualProductPCQty.Value != 0)
                     {
                         // Считаем долю ActualProductPCQty от InvoiceTotal.
-                        invoiceTotalProductPart = promoProduct.ActualProductPCQty.Value/sumActualProductPCQty;
+                        invoiceTotalProductPart = promoProduct.ActualProductPCQty.Value / sumActualProductPCQty;
                     }
                     // Устанавливаем InvoiceTotalProduct в запись таблицы PromoProduct.
-                    promoProduct.InvoiceTotalProduct = invoiceTotalProductPart*promo.InvoiceTotal;
+                    promoProduct.InvoiceTotalProduct = invoiceTotalProductPart * promo.InvoiceTotal;
 
                 }
                 else
