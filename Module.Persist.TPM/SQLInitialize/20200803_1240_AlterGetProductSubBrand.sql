@@ -27,5 +27,5 @@ END
 GO
 
 ALTER TABLE [dbo].[Product]
-    ADD [SubBrand] AS ([dbo].[GetProductBrandsegtechByCode]([Brand_code],[Segmen_code],[Tech_code],[SubBrand_code]));
+    ADD [SubBrand] AS ([dbo].[GetProductSubBrand]([Brand_code],[Segmen_code],[Tech_code],[SubBrand_code]));
 GO
