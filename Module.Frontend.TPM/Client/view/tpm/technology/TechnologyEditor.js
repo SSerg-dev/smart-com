@@ -29,6 +29,7 @@
             xtype: 'textfield',
             name: 'Tech_code',
             fieldLabel: l10n.ns('tpm', 'Technology').value('Tech_code'),
+            maxLength: 20,
             regex: /^\d+$/,
             regexText: l10n.ns('tpm', 'Technology').value('DigitRegex')
         }, {
@@ -51,6 +52,7 @@
             xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
             name: 'SubBrand_code',
             fieldLabel: l10n.ns('tpm', 'Technology').value('SubBrand_code'),
+            maxLength: 20,
             regex: /^\d+$/,
             regexText: l10n.ns('tpm', 'Technology').value('DigitRegex'),
             listeners: {

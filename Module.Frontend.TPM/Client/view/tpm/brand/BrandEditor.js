@@ -17,12 +17,14 @@
             xtype: 'textfield',
             name: 'Brand_code',
             fieldLabel: l10n.ns('tpm', 'Brand').value('Brand_code'),
+            maxLength: 20,
             regex: /^\d+$/,
             regexText: l10n.ns('tpm', 'Brand').value('DigitRegex')
         }, {
             xtype: 'textfield',
             name: 'Segmen_code',
             fieldLabel: l10n.ns('tpm', 'Brand').value('Segmen_code'),
+            maxLength: 20,
             regex: /^\d+$/,
             regexText: l10n.ns('tpm', 'Brand').value('DigitRegex')
         }]

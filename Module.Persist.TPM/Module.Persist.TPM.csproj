@@ -2540,6 +2540,15 @@
     <Content Include="SQLInitialize\20200710_1702_AddHandler_AutoResetNightProcess.sql" />
     <Content Include="SQLInitialize\20200710_1702_Setting_AutoResetMainNightProcces.sql" />
     <Content Include="SQLInitialize\20200720_1516_AddSettingCheckProcessingServices.sql" />
+    <Content Include="SQLInitialize\20200803_1240_AlterGetProductBrandByCode.sql" />
+    <Content Include="SQLInitialize\20200803_1240_AlterGetProductGetProductTechByCode.sql" />
+    <Content Include="SQLInitialize\20200803_1240_AlterGetProductSubBrand.sql" />
+    <Content Include="SQLInitialize\20200803_1241_AlterGetProductBrandTechByCode.sql" />
+    <Content Include="SQLInitialize\20200803_1241_AlterGetProductBrandTechCode.sql" />
+    <Content Include="SQLInitialize\20200803_1242_AlterGetProductBrandsegtechByCode.sql" />
+    <Content Include="SQLInitialize\20200803_1242_AlterGetProductBrandsegTechCode.sql" />
+    <Content Include="SQLInitialize\20200803_1243_AlterGetProductBrandsegTechSubByCode.sql" />
+    <Content Include="SQLInitialize\20200803_1243_AlterGetProductBrandsegTechSubCode.sql" />
     <Content Include="SQLInitialize\2020402_1557_Add_AP_CMManager_PriceList.sql" />
     <Content Include="SQLInitialize\20200420_1825_Alter_Proc_FillPromoProductDifference.sql" />
     <Content Include="SQLInitialize\20200421_1440_Alter_Proc_FillPromoProductDifference.sql" />
