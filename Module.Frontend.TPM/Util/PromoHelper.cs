@@ -252,37 +252,6 @@ namespace Module.Frontend.TPM.Util
             context.SaveChanges();
         }
 
-        /// <summary>
-        /// Удаление записей старых IncrementalPromo, связанных с текущим промо
-        /// </summary>
-        public static void DisableOldIncrementalPromo(DatabaseContext context, Promo promo, List<string> newZreps)
-        {
-            var incrementalPromoes = context.Set<IncrementalPromo>()
-                .Where(x => x.PromoId == promo.Id && !newZreps.Contains(x.Product.ZREP) && !x.Disabled)
-                .ToList();
-            foreach (var incrementalPromo in incrementalPromoes)
-            {
-                incrementalPromo.Disabled = true;
-                incrementalPromo.DeletedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
-            }
-            context.SaveChanges();
-        }
-
-        /// <summary>
-        /// Удаление записей старых IncrementalPromo, связанных с текущим промо
-        /// </summary>
-        public static void DisableOldProductCorrection(DatabaseContext context, Promo promo, List<string> newZreps)
-        {
-            var promoProductCorrectionToDeleteList = context.Set<PromoProductsCorrection>()
-                .Where(x => !newZreps.Contains(x.PromoProduct.ZREP) && x.PromoProduct.PromoId == promo.Id && x.Disabled != true).ToList();
-            foreach (var productCorrection in promoProductCorrectionToDeleteList)
-            {
-                productCorrection.Disabled = true;
-                productCorrection.DeletedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
-            }
-            context.SaveChanges();
-        }
-
         //TODO: Оптимизировать и сделать вызовы синхроннымы
         public static async Task UpdateProductHierarchy(string ChangedType, string NewName, string OldName, Guid? Id = null)
         {

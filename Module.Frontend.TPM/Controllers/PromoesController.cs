@@ -490,31 +490,11 @@ namespace Module.Frontend.TPM.Controllers
                         //если у промо есть признак InOut, то Uplift считать не нужно.
                         if ((changedProducts || needRecalculatePromo) && userRole != "SupportAdministrator")
                         {
-                            //если промо инаут, необходимо убрать старые записи в IncrementalPromo перед пересчетом, если поменялись продукты
-                            if (model.InOut.HasValue && model.InOut.Value)
-                            {
-                                var resultProductList = PlanProductParametersCalculation.GetCheckedProducts(Context, model);
-                                if (CheckChangesInProductList(model, resultProductList))
-                                {
-                                    PromoHelper.DisableOldIncrementalPromo(Context, model, resultProductList.Select(z => z.ZREP).ToList());
-                                }
-                            }
-                            else
-                            {
-                                List<string> eanPCs = PlanProductParametersCalculation.GetProductListFromAssortmentMatrix(model, Context);
-                                filteredProducts = PlanProductParametersCalculation.GetCheckedProducts(Context, model);
-                                var resultProductList = PlanProductParametersCalculation.GetResultProducts(filteredProducts, eanPCs, model, Context);
-                                if (CheckChangesInProductList(model, resultProductList))
-                                {
-                                    PromoHelper.DisableOldProductCorrection(Context, model, resultProductList.Select(z => z.ZREP).ToList());
-                                }
-                            }
                             // если меняем длительность промо, то пересчитываем Marketing TI
                             bool needCalculatePlanMarketingTI = promoCopy.StartDate != model.StartDate || promoCopy.EndDate != model.EndDate;
                             needToCreateDemandIncident = PromoHelper.CheckCreateIncidentCondition(promoCopy, model, patch, isSubrangeChanged);
 
                             CalculatePromo(model, needCalculatePlanMarketingTI, needResetUpliftCorrections, false, needToCreateDemandIncident, promoCopy.MarsMechanic.Name, promoCopy.MarsMechanicDiscount, promoCopy.DispatchesStart, promoCopy.PlanPromoUpliftPercent, promoCopy.PlanPromoIncrementalLSV); //TODO: Задача создаётся раньше чем сохраняются изменения промо.
-
                         }
                         //Сначала проверять заблокированно ли промо, если нет сохранять промо, затем сохранять задачу
                     }

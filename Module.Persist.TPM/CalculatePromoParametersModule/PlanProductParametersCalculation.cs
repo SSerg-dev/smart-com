@@ -159,6 +159,18 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         };
                         context.Set<ProductChangeIncident>().Add(pci);
                     }
+
+                    if (deletedZREPs.Any())
+                    {
+                        if(promo.InOut.HasValue && promo.InOut.Value)
+                        {
+                            DisableOldIncrementalPromo(context, promo, deletedZREPs);
+                        }
+                        else
+                        {
+                            DisablePromoProductCorrections(context, promo, deletedZREPs);
+                        }
+                    }
                 }
 
                 // если добавление записей происходит при сохранении промо (статус Draft), то контекст сохранится в контроллере промо,
@@ -175,6 +187,43 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 error = e.Message.ToString();
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Отключение старой коррекции продуктов
+        /// </summary>
+        /// <param name="Context"></param>
+        /// <param name="promo"></param>
+        /// <param name="deletedZreps"></param>
+        private static void DisablePromoProductCorrections(DatabaseContext Context, Promo promo, List<string> deletedZreps)
+        {
+            var promoProductCorrectionToDeleteList = Context.Set<PromoProductsCorrection>()
+                .Where(x => deletedZreps.Contains(x.PromoProduct.ZREP) && x.PromoProduct.PromoId == promo.Id && x.Disabled != true).ToList();
+            foreach (var productCorrection in promoProductCorrectionToDeleteList)
+            {
+                productCorrection.Disabled = true;
+                productCorrection.DeletedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+            }
+            Context.SaveChanges();
+        }
+
+        /// <summary>
+        /// Отключение старых инкременталов промо
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="promo"></param>
+        /// <param name="deletedZreps"></param>
+        public static void DisableOldIncrementalPromo(DatabaseContext context, Promo promo, List<string> deletedZreps)
+        {
+            var incrementalPromoes = context.Set<IncrementalPromo>()
+                .Where(x => x.PromoId == promo.Id && deletedZreps.Contains(x.Product.ZREP) && !x.Disabled)
+                .ToList();
+            foreach (var incrementalPromo in incrementalPromoes)
+            {
+                incrementalPromo.Disabled = true;
+                incrementalPromo.DeletedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+            }
+            context.SaveChanges();
         }
 
         /// <summary>
@@ -264,8 +313,8 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                             double? sumPlanProductBaseLineLSV = promoProducts.Sum(x => x.PlanProductBaselineLSV);
                             double? sumPlanProductIncrementalLSV = promoProducts.Sum(x => x.PlanProductIncrementalLSV);
-                            if(promo.NeedRecountUplift.Value)
-                               promo.PlanPromoUpliftPercent = sumPlanProductBaseLineLSV != 0 ? sumPlanProductIncrementalLSV / sumPlanProductBaseLineLSV * 100 : null;
+                            if (promo.NeedRecountUplift.Value)
+                                promo.PlanPromoUpliftPercent = sumPlanProductBaseLineLSV != 0 ? sumPlanProductIncrementalLSV / sumPlanProductBaseLineLSV * 100 : null;
 
                             promo.PlanPromoIncrementalLSV = sumPlanProductIncrementalLSV;
                             promo.PlanPromoBaselineLSV = sumPlanProductBaseLineLSV;
@@ -378,7 +427,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             }
             return message;
         }
-        
+
         /// <summary>
         /// Получить продукты, подходящие под фильтр
         /// </summary>
