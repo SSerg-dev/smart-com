@@ -261,7 +261,6 @@
 				var top = 25;
 				var boxWidth = 130 * currentWidthRatio;
 				var boxHeight = 130 * currentHeightRatio;
-				var marginTop = currentHeight - boxHeight - 50;
 
 				switch (promoStatus) {
 					case 'DraftPublished':
@@ -289,7 +288,7 @@
 						left += boxWidth + 10;
 						break;
 					case 'Cancelled':
-						top += marginTop - 85;
+						top += 130 * currentHeightRatio + (130 * currentHeightRatio - 7) - 2;
 						left += 5 * boxWidth + 50;
 						break;
 					default:
