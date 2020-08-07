@@ -424,6 +424,7 @@
 			'DataLakeSyncTypeDisplay': 'Directory',
 			'DataLakeSyncResult': 'Import Records',
             'ErrorCount': 'Errors count',
+            'ErrorsToNotify': 'Ошибки для оповещения',
             'WarningCount': 'Warnings count',
             'Materials': 'Materials',
             'Infinities': 'Infinities',

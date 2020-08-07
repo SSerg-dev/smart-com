@@ -379,6 +379,7 @@
 			'DataLakeSyncTypeDisplay': 'Справочник',
 			'DataLakeSyncResult': 'Загрузка',
             'ErrorCount': 'Количество ошибок',
+            'ErrorsToNotify': 'Ошибки для оповещения',
             'WarningCount': 'Количество предупреждений',
             'Materials': 'Материалы',
             'Infinities': 'Инфинити',
