@@ -47,10 +47,12 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 if (promo.InOut.HasValue && promo.InOut.Value)
                 {
                     resultProductList = GetCheckedProducts(context, promo);
+                    DisableOldIncrementalPromo(context, promo, resultProductList);
                 }
                 else
                 {
                     resultProductList = GetResultProducts(filteredProducts, eanPCs, promo, context);
+                    DisablePromoProductCorrections(context, promo, resultProductList);
                 }
 
                 var promoProducts = context.Set<PromoProduct>().Where(x => x.PromoId == promoId);
@@ -159,18 +161,6 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         };
                         context.Set<ProductChangeIncident>().Add(pci);
                     }
-
-                    if (deletedZREPs.Any())
-                    {
-                        if(promo.InOut.HasValue && promo.InOut.Value)
-                        {
-                            DisableOldIncrementalPromo(context, promo, deletedZREPs);
-                        }
-                        else
-                        {
-                            DisablePromoProductCorrections(context, promo, deletedZREPs);
-                        }
-                    }
                 }
 
                 // если добавление записей происходит при сохранении промо (статус Draft), то контекст сохранится в контроллере промо,
@@ -194,11 +184,13 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         /// </summary>
         /// <param name="Context"></param>
         /// <param name="promo"></param>
-        /// <param name="deletedZreps"></param>
-        private static void DisablePromoProductCorrections(DatabaseContext Context, Promo promo, List<string> deletedZreps)
+        /// <param name="resultProductList"></param>
+        private static void DisablePromoProductCorrections(DatabaseContext Context, Promo promo, List<Product> resultProductList)
         {
+            var newZreps = resultProductList.Select(p => p.ZREP).ToList();
             var promoProductCorrectionToDeleteList = Context.Set<PromoProductsCorrection>()
-                .Where(x => deletedZreps.Contains(x.PromoProduct.ZREP) && x.PromoProduct.PromoId == promo.Id && x.Disabled != true).ToList();
+                .Where(x => !newZreps.Contains(x.PromoProduct.ZREP) &&
+                x.PromoProduct.PromoId == promo.Id && x.Disabled != true).ToList();
             foreach (var productCorrection in promoProductCorrectionToDeleteList)
             {
                 productCorrection.Disabled = true;
@@ -212,13 +204,14 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         /// </summary>
         /// <param name="context"></param>
         /// <param name="promo"></param>
-        /// <param name="deletedZreps"></param>
-        public static void DisableOldIncrementalPromo(DatabaseContext context, Promo promo, List<string> deletedZreps)
+        /// <param name="resultProductList"></param>
+        public static void DisableOldIncrementalPromo(DatabaseContext context, Promo promo, List<Product> resultProductList)
         {
-            var incrementalPromoes = context.Set<IncrementalPromo>()
-                .Where(x => x.PromoId == promo.Id && deletedZreps.Contains(x.Product.ZREP) && !x.Disabled)
+            var newZreps = resultProductList.Select(p => p.ZREP).ToList();
+            var incrementalPromoesToDelete = context.Set<IncrementalPromo>()
+                .Where(x => x.PromoId == promo.Id && !newZreps.Contains(x.Product.ZREP) && !x.Disabled)
                 .ToList();
-            foreach (var incrementalPromo in incrementalPromoes)
+            foreach (var incrementalPromo in incrementalPromoesToDelete)
             {
                 incrementalPromo.Disabled = true;
                 incrementalPromo.DeletedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
