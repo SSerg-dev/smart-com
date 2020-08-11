@@ -25,7 +25,8 @@ Ext.override(App.controller.core.loophandler.LoopHandler, {
         var record = button.up('#taskform').getRecord();
 
         if (record) {
-            var calculatingInfoWindow = Ext.create('App.view.tpm.promocalculating.CalculatingInfoWindow', { handlerId: record.get('Id')});
+            var calculatingInfoWindow = Ext.create('App.view.tpm.promocalculating.CalculatingInfoWindow', { handlerId: record.get('Id') });
+            calculatingInfoWindow.down('calculatinginfolog').setLoading(true);
             calculatingInfoWindow.on({
                 beforeclose: function (window) {
                     if ($.connection.tasksLogHub)
@@ -36,7 +37,11 @@ Ext.override(App.controller.core.loophandler.LoopHandler, {
             window.setLoading(false);
             calculatingInfoWindow.show();
 
-            $.connection.tasksLogHub.server.subscribeLog(record.get('Id'));
+            $.connection.tasksLogHub.server.subscribeLog(record.get('Id')).done(function () {
+                calculatingInfoWindow.down('calculatinginfolog').setLoading(false);
+            }).fail(function (reason) {
+                console.log("SignalR connection failed: " + reason);
+            });
         }
     },
 });

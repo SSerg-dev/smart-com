@@ -9,9 +9,6 @@
     listeners: {
         resize: function (panel, w, h) {
             panel.down('customlogtoptoolbar').setWidth(w);
-        },
-        afterrender: function () {
-            this.setLoading(true);
         }
     },
 
@@ -41,11 +38,6 @@
                         displayItem.setText(msg);
                     }
                 }
-            }
-        },
-        listeners: {
-            viewready: function () {
-                this.up('calculatinginfolog').setLoading(false);
             }
         },
         columns: {
