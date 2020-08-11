@@ -204,16 +204,33 @@ namespace Module.Frontend.TPM.Util
                 promoProduct.Disabled = true;
             }
             model.NeedRecountUplift = true;
-            //необходимо удалить все коррекции
-            var promoProductToDeleteListIds = promoProductToDeleteList.Select(x => x.Id).ToList();
-            List<PromoProductsCorrection> promoProductCorrectionToDeleteList = Context.Set<PromoProductsCorrection>()
-                .Where(x => promoProductToDeleteListIds.Contains(x.PromoProductId) && x.Disabled != true).ToList();
-            foreach (PromoProductsCorrection promoProductsCorrection in promoProductCorrectionToDeleteList)
+            //необходимо удалить все коррекции/инкременталы
+            //var promoProductToDeleteListIds = promoProductToDeleteList.Select(x => x.Id).ToList();
+            if (model.InOut.HasValue && model.InOut.Value)
             {
-                promoProductsCorrection.DeletedDate = DateTimeOffset.UtcNow;
-                promoProductsCorrection.Disabled = true;
-                promoProductsCorrection.UserId = (Guid)user.Id;
-                promoProductsCorrection.UserName = user.Login;
+                var productIdsToDelete = promoProductToDeleteList.Select(pp => pp.ProductId).ToList();
+                List<IncrementalPromo> promoIncrementalPromoesToDeleteList = Context.Set<IncrementalPromo>()
+                    .Where(x => productIdsToDelete.Contains(x.ProductId) && x.Disabled != true).ToList();
+
+                foreach (IncrementalPromo incrementalPromoes in promoIncrementalPromoesToDeleteList)
+                {
+                    incrementalPromoes.DeletedDate = DateTimeOffset.UtcNow;
+                    incrementalPromoes.Disabled = true;
+                }
+            }
+            else
+            {
+                var productIdsToDelete = promoProductToDeleteList.Select(pp => pp.Id).ToList();
+                List<PromoProductsCorrection> promoProductCorrectionToDeleteList = Context.Set<PromoProductsCorrection>()
+                    .Where(x => productIdsToDelete.Contains(x.PromoProductId) && x.Disabled != true).ToList();
+
+                foreach (PromoProductsCorrection promoProductsCorrection in promoProductCorrectionToDeleteList)
+                {
+                    promoProductsCorrection.DeletedDate = DateTimeOffset.UtcNow;
+                    promoProductsCorrection.Disabled = true;
+                    promoProductsCorrection.UserId = (Guid)user.Id;
+                    promoProductsCorrection.UserName = user.Login;
+                }
             }
 
             model.ActualPromoLSV = null;
