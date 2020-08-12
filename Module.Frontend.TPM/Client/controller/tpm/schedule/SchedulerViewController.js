@@ -1082,10 +1082,12 @@
     onPromoDetailButtonClick: function (button) {
         var promoDetailPanel = button.up('promodetailtabpanel');
         var record = promoDetailPanel.event;
-        button.assignedRecord = record;
+        if (record) {
+            button.assignedRecord = record;
 
-        Ext.ComponentQuery.query('readonlydirectorytoolbar')[0].setDisabled(true);
-        this.mixins["App.controller.tpm.promo.Promo"].onDetailButtonClick.call(this, button);
+            Ext.ComponentQuery.query('readonlydirectorytoolbar')[0].setDisabled(true);
+            this.mixins["App.controller.tpm.promo.Promo"].onDetailButtonClick.call(this, button);
+        }
     },
 
     setButtonState: function (window, visible) {
