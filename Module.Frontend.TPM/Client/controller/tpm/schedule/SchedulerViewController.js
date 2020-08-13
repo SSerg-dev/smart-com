@@ -395,7 +395,7 @@
 
         if (record) {
             var model = Ext.ModelManager.getModel('App.model.tpm.promo.Promo'),
-                viewClassName = "App.view.tpm.promo.HistoricalPromo";
+                viewClassName = "App.view.tpm.promo.CustomHistoricalPromo";
 
             var baseReviewWindow = Ext.widget('basereviewwindow', { items: Ext.create(viewClassName, { baseModel: model }) });
             baseReviewWindow.show();
@@ -411,6 +411,7 @@
             }
 
             proxy.extraParams.promoIdHistory = this.getRecordId(record);
+            store.load();
         }
     },
 
