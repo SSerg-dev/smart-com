@@ -111,13 +111,6 @@
                         name: 'InvoiceNumber',
                         regex: /^[0-9]*[0-9]$/,
                         regexText: l10n.ns('tpm', 'PromoSupport').value('InvoiceNumberRegex'),
-                    }, {
-                        flex: 1,
-                        xtype: 'checkboxfield',
-                        margin: '0 0 0 5',
-                        name: 'OffAllocationCheckbox',
-                        readOnly: true,
-                        boxLabel: l10n.ns('tpm', 'PromoSupport').value('OffAllocation'),
                     }]
                 }]
             }, {

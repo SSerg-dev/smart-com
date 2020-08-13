@@ -522,16 +522,6 @@
         //InvoiceNumber
         promoSupportForm.down('textfield[name=InvoiceNumber]').setValue(model.data.InvoiceNumber);
 
-        //Off allocation
-        var promoSupportTypeText = model.data.BudgetSubItemBudgetItemName;
-        if (promoSupportTypeText === "Catalog") {
-            var offAllocationCheckbox = promoSupportForm.down('checkboxfield[name=OffAllocationCheckbox]');
-            offAllocationCheckbox.setVisible(true);
-            offAllocationCheckbox.setValue(model.data.OffAllocation);
-        } else {
-            promoSupportForm.down('checkboxfield[name=OffAllocationCheckbox]').setVisible(false);
-        }
-
         //Parameters
         promoSupportForm.down('numberfield[name=PlanQuantity]').setValue(model.data.PlanQuantity);
         promoSupportForm.down('numberfield[name=ActualQuantity]').setValue(model.data.ActualQuantity);
@@ -1772,9 +1762,6 @@
         // кнопки сохранить и отменить
         customPromoSupportEditor.down('#savePromoSupportForm').setVisible(true);
         customPromoSupportEditor.down('#cancelPromoSupportForm').setVisible(true);
-
-        // Off allocation можно изменить только при создании
-        customPromoSupportEditor.down('checkboxfield[name=OffAllocationCheckbox]').setReadOnly(true);
     },
 
     onBeforeClosePromoSupportEditor: function (window) {
