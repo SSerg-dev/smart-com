@@ -94,6 +94,7 @@ namespace Module.Host.TPM.Actions
                             bool isRealBaselineExist = false;
                             foreach (var p in productsWithRealBaseline)
                             {
+                                var newRecordClone = ClonePromoProduct(newRecord);
                                 p.ActualProductUOM = "PC";
                                 // проверка Baseline (исправляет ActualProductPCQty)
                                 if (p.PlanProductBaselineLSV != null && p.PlanProductBaselineLSV != 0)
@@ -105,10 +106,10 @@ namespace Module.Host.TPM.Actions
                                 else
                                 {
                                     p.ActualProductPCQty = null;
-                                    newRecord.ActualProductPCQty = null;
+                                    newRecordClone.ActualProductPCQty = null;
                                 }
 
-                                promoProductsToUpdateHis.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(p, newRecord));
+                                promoProductsToUpdateHis.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(p, newRecordClone));
                                 promoProductsToUpdate.Add(p);
                             }
 
@@ -156,6 +157,7 @@ namespace Module.Host.TPM.Actions
                             bool isRealPCPriceExist = false;
                             foreach (var p in productsWithRealPCPrice)
                             {
+                                var newRecordClone = ClonePromoProduct(newRecord);
                                 p.ActualProductUOM = "PC";
                                 // проверка Price (исправляет ActualProductPCQty)
                                 if (p.PlanProductPCPrice != null && p.PlanProductPCPrice != 0)
@@ -167,10 +169,10 @@ namespace Module.Host.TPM.Actions
                                 else
                                 {
                                     p.ActualProductPCQty = null;
-                                    newRecord.ActualProductPCQty = null;
+                                    newRecordClone.ActualProductPCQty = null;
                                 }
 
-                                promoProductsToUpdateHis.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(p, newRecord));
+                                promoProductsToUpdateHis.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(p, newRecordClone));
                                 promoProductsToUpdate.Add(p);
                             }
 
@@ -211,6 +213,19 @@ namespace Module.Host.TPM.Actions
             CreateTaskCalculateActual(promoId);
 
             return records.Count();
+        }
+
+        /// <summary>
+        /// Создание клона продукта
+        /// </summary>
+        /// <returns></returns>
+        private PromoProduct ClonePromoProduct(PromoProduct promoProduct)
+        {
+            var promoProductClone = new PromoProduct();
+            promoProductClone.ActualProductPCQty = promoProduct.ActualProductPCQty;
+            promoProductClone.EAN_PC = promoProduct.EAN_PC;
+            promoProductClone.ActualProductUOM = promoProduct.ActualProductUOM;
+            return promoProductClone;
         }
 
         /// <summary>
