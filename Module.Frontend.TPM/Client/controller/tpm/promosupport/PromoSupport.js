@@ -640,6 +640,7 @@
             });
         } else {
             App.Notify.pushInfo('No selection');
+            associatedcontainer.setLoading(false);
         }
     },
 
