@@ -3987,26 +3987,23 @@
 
         var marsText = this.getPartTextMarsMechanicButton(
             mechanicFields.marsMechanicFields.marsMechanicId,
-            mechanicFields.marsMechanicFields.marsMechanicTypeId,
-            mechanicFields.marsMechanicFields.marsMechanicDiscount,
-            promoController.getMechanicListForUnlockDiscountField()
+            mechanicFields.marsMechanicFields.marsMechanicDiscount
         );
 
         var instoreText = this.getPartTextMarsMechanicButton(
             mechanicFields.instoreMechanicFields.instoreMechanicId,
-            mechanicFields.instoreMechanicFields.instoreMechanicTypeId,
-            mechanicFields.instoreMechanicFields.instoreMechanicDiscount,
-            promoController.getMechanicListForUnlockDiscountField()
+            mechanicFields.instoreMechanicFields.instoreMechanicDiscount
         );
 
         return text = '<b>' + l10n.ns('tpm', 'promoStap').value('basicStep3') + '</b><br><p>Mars: ' + marsText + '<br>Instore Assumption: ' + instoreText + '</p>';
     },
 
-    getPartTextMarsMechanicButton: function (mechanicId, mechanicTypeId, mechanicDiscount, mechanicListForUnlockDiscountField) {
-        if (mechanicListForUnlockDiscountField.some(function (element) { return element === mechanicId.rawValue; })) {
+    getPartTextMarsMechanicButton: function (mechanicId, mechanicDiscount) {
+        if (mechanicId.rawValue !== '' && mechanicId.rawValue !== null && mechanicId.rawValue !== undefined &&
+            mechanicDiscount.rawValue !== '' && mechanicDiscount.rawValue !== null && mechanicDiscount.rawValue !== undefined) {
             return mechanicId.rawValue + ' ' + mechanicDiscount.rawValue + '%';
         } else {
-            return mechanicId.rawValue + ' ' + mechanicTypeId.rawValue;
+            return '';
         }
     },
 
