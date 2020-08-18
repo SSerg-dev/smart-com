@@ -335,13 +335,19 @@ namespace Module.Frontend.TPM.Util
         {
             // Получаем все записи из таблицы PromoProduct для текущего промо.
             var promoProductsForCurrentPromo = context.Set<PromoProduct>()
-                .Where(x => x.PromoId == promo.Id);
+                .Where(x => x.PromoId == promo.Id && x.Disabled != true);
 
             double sumActualProductPCQty = 0;
             // Доля от всего InvoiceTotal
             double invoiceTotalProductPart = 0;
 
-            sumActualProductPCQty = Convert.ToDouble(promoProductsForCurrentPromo.Select(p => p.ActualProductPCQty).Sum());
+            foreach (var promoProduct in promoProductsForCurrentPromo)
+            {
+                if (promoProduct.ActualProductPCQty.HasValue)
+                {
+                    sumActualProductPCQty += Convert.ToDouble(promoProduct.ActualProductPCQty);
+                }
+            }
 
             // Перебираем все найденные для текущего промо записи из таблицы PromoProduct.
             foreach (var promoProduct in promoProductsForCurrentPromo)
