@@ -211,8 +211,9 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     return NotFound();
                 }
-
+                
                 patch.Patch(model);
+                model.SubBrand_code = !String.IsNullOrEmpty(model.SubBrand_code) ? model.SubBrand_code : null;
                 IList<string> errors = new List<string>();
                 var validBrandTech = BrandTechExist(Context, model.Brand_code, model.Segmen_code, model.SubBrand_code, model.Tech_code, ref errors);
                 if (!validBrandTech)
@@ -640,11 +641,12 @@ namespace Module.Frontend.TPM.Controllers
                                                 && !b.Disabled).FirstOrDefault();
             var brandTech = context.Set<BrandTech>().Where(bt =>
                                                         bt.Technology != null && bt.Brand != null
-                                                       && bt.Technology.Tech_code == techCode
-                                                       && bt.Technology.SubBrand_code == subBrandCode
-                                                       && !bt.Technology.Disabled
                                                        && bt.Brand.Brand_code == brandCode
                                                        && bt.Brand.Segmen_code == segmenCode
+                                                       && bt.Technology.Tech_code == techCode
+                                                       && bt.Technology.SubBrand_code == subBrandCode                                                    
+                                                       && !bt.Brand.Disabled
+                                                       && !bt.Technology.Disabled
                                                        && !bt.Disabled).FirstOrDefault();
             if (brand == null) 
             { 
