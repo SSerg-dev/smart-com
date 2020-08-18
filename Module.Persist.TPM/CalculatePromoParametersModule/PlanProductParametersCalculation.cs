@@ -46,7 +46,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                 if (promo.InOut.HasValue && promo.InOut.Value)
                 {
-                    resultProductList = GetCheckedProducts(context, promo);
+                    resultProductList = GetResultProducts(filteredProducts, promo, context);
                     DisableOldIncrementalPromo(context, promo, resultProductList);
                 }
                 else
@@ -234,6 +234,27 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             if (filteredProducts != null)
             {
                 resultProductList = filteredProducts.Where(x => eanPCs.Any(y => y == x.EAN_PC)).ToList();
+                resultProductList = resultProductList.Intersect(GetCheckedProducts(context, promo)).ToList();
+            }
+
+            return resultProductList;
+        }
+
+        /// <summary>
+        /// Метод для формирования списка продуктов для промо.
+        /// Возвращает список продуктов для текущего промо с учетом фильтров, ассортиментной матрицы и baseline.
+        /// </summary>
+        /// <param name="filteredProducts">Список продуктов, подходящих по фильтрам</param>
+        /// <param name="promo">Промо, для которого подбираются продукты</param>
+        /// <param name="context">Текущий контекст</param>
+        public static List<Product> GetResultProducts(List<Product> filteredProducts, Promo promo, DatabaseContext context)
+        {
+            List<Product> resultProductList = new List<Product>();
+
+            if (filteredProducts != null)
+            {
+                var productIds = promo.InOutProductIds.Split(";".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(x => Guid.Parse(x)).ToList();
+                resultProductList = filteredProducts.Where(x => productIds.Any(y => y == x.Id)).ToList();
                 resultProductList = resultProductList.Intersect(GetCheckedProducts(context, promo)).ToList();
             }
 
