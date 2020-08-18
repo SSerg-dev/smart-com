@@ -99,7 +99,10 @@ namespace Module.Host.TPM.Actions
                                 // проверка Baseline (исправляет ActualProductPCQty)
                                 if (p.PlanProductBaselineLSV != null && p.PlanProductBaselineLSV != 0)
                                 {
-                                    p.ActualProductPCQty = (int?)(newRecord.ActualProductPCQty / sumBaseline * p.PlanProductBaselineLSV);
+                                    if (p.PlanProductIncrementalLSV != 0 && sumBaseline != 0)
+                                    {
+                                        p.ActualProductPCQty = (int?)(newRecord.ActualProductPCQty / sumBaseline * p.PlanProductBaselineLSV);
+                                    }
                                     newRecord.ActualProductPCQty = p.ActualProductPCQty;
                                     isRealBaselineExist = true;
                                 }
@@ -162,7 +165,10 @@ namespace Module.Host.TPM.Actions
                                 // проверка Price (исправляет ActualProductPCQty)
                                 if (p.PlanProductPCPrice != null && p.PlanProductPCPrice != 0)
                                 {
-                                    p.ActualProductPCQty = (int?)(newRecord.ActualProductPCQty / sumIncremental * p.PlanProductIncrementalLSV);
+                                    if(p.PlanProductIncrementalLSV != 0 && sumIncremental != 0)
+                                    {
+                                        p.ActualProductPCQty = (int?)(newRecord.ActualProductPCQty / sumIncremental * p.PlanProductIncrementalLSV);
+                                    }
                                     newRecord.ActualProductPCQty = p.ActualProductPCQty;
                                     isRealPCPriceExist = true;
                                 }
