@@ -103,6 +103,10 @@ namespace Module.Host.TPM.Actions
                                     {
                                         p.ActualProductPCQty = (int?)(newRecord.ActualProductPCQty / sumBaseline * p.PlanProductBaselineLSV);
                                     }
+                                    else
+                                    {
+                                        p.ActualProductPCQty = newRecord.ActualProductPCQty;
+                                    }
                                     newRecord.ActualProductPCQty = p.ActualProductPCQty;
                                     isRealBaselineExist = true;
                                 }
@@ -168,6 +172,10 @@ namespace Module.Host.TPM.Actions
                                     if(p.PlanProductIncrementalLSV != 0 && sumIncremental != 0)
                                     {
                                         p.ActualProductPCQty = (int?)(newRecord.ActualProductPCQty / sumIncremental * p.PlanProductIncrementalLSV);
+                                    }
+                                    else
+                                    {
+                                        p.ActualProductPCQty = newRecord.ActualProductPCQty;
                                     }
                                     newRecord.ActualProductPCQty = p.ActualProductPCQty;
                                     isRealPCPriceExist = true;

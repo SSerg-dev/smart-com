@@ -341,13 +341,7 @@ namespace Module.Frontend.TPM.Util
             // Доля от всего InvoiceTotal
             double invoiceTotalProductPart = 0;
 
-            foreach (var promoProduct in promoProductsForCurrentPromo)
-            {
-                if (promoProduct.ActualProductPCQty.HasValue)
-                {
-                    sumActualProductPCQty += Convert.ToDouble(promoProduct.ActualProductPCQty);
-                }
-            }
+            sumActualProductPCQty = Convert.ToDouble(promoProductsForCurrentPromo.Select(p => p.ActualProductPCQty).Sum());
 
             // Перебираем все найденные для текущего промо записи из таблицы PromoProduct.
             foreach (var promoProduct in promoProductsForCurrentPromo)
