@@ -41,6 +41,7 @@ Ext.override(App.controller.core.loophandler.LoopHandler, {
                 calculatingInfoWindow.down('calculatinginfolog').setLoading(false);
             }).fail(function (reason) {
                 console.log("SignalR connection failed: " + reason);
+                calculatingInfoWindow.down('calculatinginfolog').setLoading(false);
             });
         }
     },
