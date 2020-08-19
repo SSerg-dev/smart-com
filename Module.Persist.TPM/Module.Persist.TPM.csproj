@@ -2548,6 +2548,7 @@
     <Content Include="SQLInitialize\20200803_1242_AlterGetProductBrandsegtechByCode.sql" />
     <Content Include="SQLInitialize\20200803_1242_AlterGetProductBrandsegTechCode.sql" />
     <Content Include="SQLInitialize\20200803_1243_AlterGetProductBrandsegTechSubByCode.sql" />
+    <Content Include="SQLInitialize\20200819_1635_Alter_RestartMainNightProcessingHandler.sql" />
     <Content Include="SQLInitialize\20200803_1243_AlterGetProductBrandsegTechSubCode.sql" />
     <Content Include="SQLInitialize\2020402_1557_Add_AP_CMManager_PriceList.sql" />
     <Content Include="SQLInitialize\20200420_1825_Alter_Proc_FillPromoProductDifference.sql" />

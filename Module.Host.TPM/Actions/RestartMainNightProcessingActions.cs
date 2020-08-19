@@ -21,11 +21,12 @@ namespace Module.Host.TPM.Actions
             try
             {
                 var settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
-                int timetoRestart = settingsManager.GetSetting<int>("TIME_TO_RESTART_MAIN_NIGHT_PROCESS", 172800000); 
+                int timetoRestart = settingsManager.GetSetting<int>("TIME_TO_RESTART_MAIN_NIGHT_PROCESS", 75600000); //Default = 21 hours
                 using (DatabaseContext context = new DatabaseContext())
                 {
-                    var nightHandler = context.LoopHandlers.Where(e => e.Name.Equals("Module.Host.TPM.Handlers.NightProcessingMainHandler") && e.ExecutionPeriod == 86400000).FirstOrDefault();
-                    if(nightHandler == null)
+                    var nightHandler = context.LoopHandlers.Where(e => e.Name.Equals("Module.Host.TPM.Handlers.NightProcessingMainHandler")
+                        && e.ExecutionPeriod == 86400000).FirstOrDefault();
+                    if (nightHandler == null)
                     {
                         Errors.Add("Handler Module.Host.TPM.Handlers.NightProcessingMainHandler not found");
                         return;
@@ -34,15 +35,15 @@ namespace Module.Host.TPM.Actions
                     var processHandlerDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(nightHandler.NextExecutionDate);
 
                     var diffDate = (currentDate - processHandlerDate).TotalMilliseconds;
-                    if(diffDate > timetoRestart)
+                    if (diffDate > timetoRestart)
                     {
-                        RestartMainNightProcessing(nightHandler,currentDate);
-                        Warnings.Add(String.Format("Main night handler does not work, the process will be assigned to {0}",nightHandler.NextExecutionDate.ToString()));
+                        RestartMainNightProcessing(nightHandler, currentDate);
+                        Warnings.Add(String.Format("Main night handler does not work, the process will be assigned to {0}", nightHandler.NextExecutionDate.ToString()));
                         context.SaveChanges();
                     }
                 }
 
-                }
+            }
             catch (Exception e)
             {
                 string msg = String.Format("An error occurred while inserting: {0}", e.ToString());
