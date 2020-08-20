@@ -30,7 +30,7 @@ namespace Module.Persist.TPM.Model.TPM
         public double? RollingVolumesTotal { get; set; }
         public double? ManualRollingTotalVolumes { get; set; } 
         public bool Lock { get; set; }
-
+        public double? FullWeekDiff { get; set; }
         public Guid ProductId { get; set; }
         public virtual Product Product { get; set; }
     }

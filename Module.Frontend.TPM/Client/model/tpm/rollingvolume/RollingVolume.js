@@ -20,6 +20,7 @@
         { name: 'RollingVolumesCorrection', useNull: true, type: 'float', hidden: false, isDefault: true },
         { name: 'RollingVolumesTotal', useNull: true, type: 'float', hidden: false, isDefault: true },
         { name: 'ManualRollingTotalVolumes', useNull: true, type: 'float', hidden: false, isDefault: true },
+        { name: 'FullWeekDiff', useNull: true, type: 'float', hidden: false, isDefault: true },
         { name: 'ZREP', type: 'string',  mapping: 'Product.ZREP', isDefault: true, defaultFilterConfig: { valueField: 'ZREP' }, breezeEntityType: 'Product', hidden: false},
         { name: 'SKU', type: 'string', mapping: 'Product.ProductEN', isDefault: true, defaultFilterConfig: { valueField: 'ProductEN' }, breezeEntityType: 'Product', hidden: false},
         { name: 'BrandTech', type: 'string', mapping: 'Product.BrandsegTechsub', isDefault: true, defaultFilterConfig: { valueField: 'BrandsegTechsub' }, breezeEntityType: 'BrandTech', hidden: false},

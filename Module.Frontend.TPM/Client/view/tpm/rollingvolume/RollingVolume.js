@@ -218,6 +218,11 @@
                 format: '0.00',
                 text: l10n.ns('tpm', 'RollingVolume').value('ManualRollingTotalVolumes'),
                 dataIndex: 'ManualRollingTotalVolumes'
+            },{
+                xtype: 'numbercolumn',
+                format: '0.00',
+                text: l10n.ns('tpm', 'RollingVolume').value('FullWeekDiff'),
+                dataIndex: 'FullWeekDiff'
             },]
         }
     }, {

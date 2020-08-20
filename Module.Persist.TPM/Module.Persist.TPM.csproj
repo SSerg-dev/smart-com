@@ -2147,6 +2147,10 @@
     <Compile Include="Migrations\202007211033198_EmptyMigration12.Designer.cs">
       <DependentUpon>202007211033198_EmptyMigration12.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202008201047273_Add_FullWeekDiff_To_RollingVolume.cs" />
+    <Compile Include="Migrations\202008201047273_Add_FullWeekDiff_To_RollingVolume.Designer.cs">
+      <DependentUpon>202008201047273_Add_FullWeekDiff_To_RollingVolume.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -4224,6 +4228,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202007211033198_EmptyMigration12.resx">
       <DependentUpon>202007211033198_EmptyMigration12.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202008201047273_Add_FullWeekDiff_To_RollingVolume.resx">
+      <DependentUpon>202008201047273_Add_FullWeekDiff_To_RollingVolume.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

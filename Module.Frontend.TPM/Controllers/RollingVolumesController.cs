@@ -248,7 +248,8 @@ namespace Module.Frontend.TPM.Controllers
                 new Column() { Order = order++, Field = "PromoDifference", Header = "PromoDifference", Quoting = false,Format = "0.00" }, 
                 new Column() { Order = order++, Field = "RollingVolumesCorrection", Header = "RollingVolumesCorrection", Quoting = false ,Format = "0.00"},
                 new Column() { Order = order++, Field = "RollingVolumesTotal", Header = "RollingVolumesTotal", Quoting = false ,Format = "0.00"},
-                new Column() { Order = order++, Field = "ManualRollingTotalVolumes", Header = "ManualRollingTotalVolumes", Quoting = false ,Format = "0.00"}
+                new Column() { Order = order++, Field = "ManualRollingTotalVolumes", Header = "ManualRollingTotalVolumes", Quoting = false ,Format = "0.00"},
+                new Column() { Order = order++, Field = "FullWeekDiff", Header = "FullWeekDiff", Quoting = false ,Format = "0.00"}
             };
             return columns;
         }

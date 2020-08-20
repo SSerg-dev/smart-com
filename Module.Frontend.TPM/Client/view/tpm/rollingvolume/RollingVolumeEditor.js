@@ -89,10 +89,15 @@
             readOnly: true,
             readOnlyCls: 'field-for-read-only',
             renderer: Ext.util.Format.numberRenderer('0.00'),            name: 'RollingVolumesTotal',            fieldLabel: l10n.ns('tpm', 'RollingVolume').value('RollingVolumesTotal'),
-        }, {            name: 'ManualRollingTotalVolumes',            xtype: 'numberfield', 
+        },{            name: 'ManualRollingTotalVolumes',            xtype: 'numberfield', 
             fieldLabel: l10n.ns('tpm', 'RollingVolume').value('ManualRollingTotalVolumes'),
             minValue: 0,
-        }]
+        },{
+            xtype: 'singlelinedisplayfield',
+            readOnly: true,
+            readOnlyCls: 'field-for-read-only',
+            renderer: Ext.util.Format.numberRenderer('0.00'),            name: 'FullWeekDiff',            fieldLabel: l10n.ns('tpm', 'RollingVolume').value('FullWeekDiff'),
+        },]
     }
 });
 

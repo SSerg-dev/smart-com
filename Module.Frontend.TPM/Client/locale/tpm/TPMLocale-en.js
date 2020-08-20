@@ -1148,7 +1148,7 @@
         'Name': 'Name',
         'SKU': 'SKU',
         'BrandTech': 'BrandTech',
-      
+        'FullWeekDiff':'Full Week Diff'
     },
     'NoneNego': {
         'ClientHierarchy': 'Client',
