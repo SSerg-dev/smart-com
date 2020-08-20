@@ -3,7 +3,12 @@
     alias: 'widget.calculatinginfologeditor',
     width: 800,
     minWidth: 800,
-    maxHeight: 600,
+    minHeight: 280,
+    resizeHandles:'all',
+    layout: {
+        type: 'fit',
+        align: 'stretch'
+    },
 
     items: {
         xtype: 'editorform',
@@ -11,14 +16,18 @@
         items: [{
             xtype: 'singlelinedisplayfield',
             fieldLabel: l10n.ns('tpm', 'CalculatingInfoLog').value('Type'),
-            name: 'Type'
+            name: 'Type',
         }, {
             fieldLabel: '',
             xtype: 'textarea',
             name: 'Message',
-            height: 120,
             //fieldLabel: l10n.ns('tpm', 'CalculatingInfoLog').value('Message')
-        }]
+            }],
+        listeners: {
+            resize: function (panel) {
+                panel.down('textarea[name=Message]').setHeight(panel.getHeight() - panel.down('singlelinedisplayfield[name=Type]').getHeight() - 30);
+            }
+        }
     },
 
     buttons: [{
