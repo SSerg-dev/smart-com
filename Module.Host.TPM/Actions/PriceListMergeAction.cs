@@ -8,6 +8,7 @@ using Interfaces.Implementation.Action;
 using Looper.Core;
 using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.TPM;
+using Module.Persist.TPM.Utils;
 using Persist;
 using Utility.LogWriter;
 
@@ -230,6 +231,9 @@ namespace Module.Host.TPM.Actions
                             ClientTree = baseClientTree,
                             Product = product
                         };
+
+                        newPriceListRecord.StartDate = ChangeTimeZoneUtil.ResetTimeZone(newPriceListRecord.StartDate);
+                        newPriceListRecord.EndDate = ChangeTimeZoneUtil.ResetTimeZone(newPriceListRecord.EndDate);
 
                         newPriceListRecords.Add(newPriceListRecord);
                     }
