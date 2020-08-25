@@ -1,4 +1,5 @@
 using Core.Data;
+using Module.Persist.TPM.Utils;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -26,6 +27,10 @@ namespace Module.Persist.TPM.Model.TPM
         public int? NodePriority { get; set; }
 
         public string LogoFileName { get; set; }
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        [SpecialNotKeyProperty]
+        public string FilterQuery { get; set; }
         public object Clone()
         {
             return MemberwiseClone();
