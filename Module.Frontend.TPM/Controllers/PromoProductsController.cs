@@ -509,7 +509,7 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     Id = Guid.NewGuid(),
                     ConfigurationName = "PROCESSING",
-                    Description = "Загрузка импорта Actuals",
+                    Description = "Import Actuals For Promo " + promo.Number?.ToString(),
                     Name = "Module.Host.TPM.Handlers." + handlerName,
                     ExecutionPeriod = null,
                     CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
