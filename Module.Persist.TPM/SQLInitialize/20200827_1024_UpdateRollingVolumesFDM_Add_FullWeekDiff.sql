@@ -16,6 +16,6 @@ DROP TABLE [ROLLING_VOLUMES_FDM]
                    	[PreviousRollingVolumesQty] [float] NULL,			                                    
                    	[PromoDifferenceQty] [float] NULL,             		                                    
                    	[RollingVolumesQty] [float] NULL,	
-					[FullWeekDiff] [float] NULL
+					[FullWeekDiffQty] [float] NULL
                    ) ON [PRIMARY]                           
 

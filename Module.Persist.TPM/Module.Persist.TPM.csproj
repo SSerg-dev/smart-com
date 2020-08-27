@@ -2561,8 +2561,8 @@
     <Content Include="SQLInitialize\20200825_1720_Add_JsonToCondition.sql" />
     <Content Include="SQLInitialize\20200825_1725_Add_JsonToWhereExpression.sql" />
     <Content Include="SQLInitialize\20200825_1727_Add_JsonFilterToSql.sql" />
-    <Content Include="SQLInitialize\20200827_1021_UpdateProcedureFillRollingVolumesAddFullWeekDiff.sql" />
-    <Content Include="SQLInitialize\20200827_1022_UpdateRollingVolumesFDM_Add_FullWeekDiff.sql" />
+    <Content Include="SQLInitialize\20200827_1024_UpdateRollingVolumesFDM_Add_FullWeekDiff.sql" />
+    <Content Include="SQLInitialize\20200827_1025_UpdateProcedureFillRollingVolumesAddFullWeekDiff.sql" />
     <Content Include="SQLInitialize\2020402_1557_Add_AP_CMManager_PriceList.sql" />
     <Content Include="SQLInitialize\20200420_1825_Alter_Proc_FillPromoProductDifference.sql" />
     <Content Include="SQLInitialize\20200421_1440_Alter_Proc_FillPromoProductDifference.sql" />

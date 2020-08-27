@@ -39,7 +39,7 @@ CREATE OR ALTER PROCEDURE [dbo].[FillRollingVolumes] AS
 			rvf.PreliminaryRollingVolumesQty,
 			rvf.RollingVolumesQty,
 			rvf.RollingVolumesQty,
-			rvf.FullWeekDiff
+			rvf.FullWeekDiffQty
 
 		FROM [dbo].[ROLLING_VOLUMES_FDM] AS rvf
 		JOIN [dbo].[Product] AS p ON p.ZREP = rvf.ZREP
