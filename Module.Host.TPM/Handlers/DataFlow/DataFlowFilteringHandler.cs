@@ -32,7 +32,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
             var stopWatch = Stopwatch.StartNew();
             var handlerLogger = new FileLogWriter(info.HandlerId.ToString(), new Dictionary<string, string>() { ["Timing"] = "TIMING" });
 
-            handlerLogger.Write(true, String.Format("The filtering of promoes began at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+            handlerLogger.Write(true, String.Format("The filtering of promoes began at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.Now), "Message"));
 
             var context = new DatabaseContext();
             try
@@ -61,7 +61,8 @@ namespace Module.Host.TPM.Handlers.DataFlow
                 // --- ClientTree ---
 
                 handlerLogger.Write(true, $"{nameof(ClientTreeDataFlowFilter)}: Amount of promoes to check: { promoesForRecalculatingForFilters.Count() }. " +
-                    $"Amount of {nameof(ClientTree)} models: { dataFlowFilterCollection.ClientTreeDataFlowFilter.ChangedModels.Count() }", "Message");
+                    $"Amount of {nameof(ClientTree)} models: { dataFlowFilterCollection.ClientTreeDataFlowFilter.ChangedModels.Count() }" +
+                    $" start date: { ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.Now) }", "Message");
 
                 Parallel.ForEach(dataFlowFilterCollection.ClientTreeDataFlowFilter.ChangedModels.Where(x => !x.EndDate.HasValue),
                     new ParallelOptions { MaxDegreeOfParallelism = this.MaxDegreeOfParallelism }, clientTree =>
@@ -86,7 +87,8 @@ namespace Module.Host.TPM.Handlers.DataFlow
                 // --- ClientTreeBrandTech ---
 
                 handlerLogger.Write(true, $"{nameof(ClientTreeBrandTechDataFlowFilter)}: Amount of promoes to check: { promoesForRecalculatingForFilters.Count() }. " +
-                    $"Amount of {nameof(ClientTreeBrandTech)} models: { dataFlowFilterCollection.ClientTreeBrandTechDataFlowFilter.ChangedModels.Count() }", "Message");
+                    $"Amount of {nameof(ClientTreeBrandTech)} models: { dataFlowFilterCollection.ClientTreeBrandTechDataFlowFilter.ChangedModels.Count() }" +
+                    $" start date: { ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.Now) }", "Message");
 
                 Parallel.ForEach(dataFlowFilterCollection.ClientTreeBrandTechDataFlowFilter.ChangedModels,
                     new ParallelOptions { MaxDegreeOfParallelism = MaxDegreeOfParallelism }, clientTreeBrandTech =>
@@ -111,7 +113,8 @@ namespace Module.Host.TPM.Handlers.DataFlow
                 // --- ProductTree ---
 
                 handlerLogger.Write(true, $"{nameof(ProductTreeDataFlowFilter)}: Amount of promoes to check: { promoesForRecalculatingForFilters.Count() }. " +
-                    $"Amount of {nameof(ProductTree)} models: { dataFlowFilterCollection.ProductTreeDataFlowFilter.ChangedModels.Count() }", "Message");
+                    $"Amount of {nameof(ProductTree)} models: { dataFlowFilterCollection.ProductTreeDataFlowFilter.ChangedModels.Count() }" +
+                    $" start date: { ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.Now) }", "Message");
 
                 Parallel.ForEach(dataFlowFilterCollection.ProductTreeDataFlowFilter.ChangedModels.Where(x => !x.EndDate.HasValue),
                     new ParallelOptions { MaxDegreeOfParallelism = MaxDegreeOfParallelism }, productTree =>
@@ -136,7 +139,8 @@ namespace Module.Host.TPM.Handlers.DataFlow
                 // --- IncrementalPromo ---
 
                 handlerLogger.Write(true, $"{nameof(IncrementalPromoDataFlowFilter)}: Amount of promoes to check: { promoesForRecalculatingForFilters.Count() }. " +
-                    $"Amount of {nameof(IncrementalPromo)} models: { dataFlowFilterCollection.IncrementalPromoDataFlowFilter.ChangedModels.Count() }", "Message");
+                    $"Amount of {nameof(IncrementalPromo)} models: { dataFlowFilterCollection.IncrementalPromoDataFlowFilter.ChangedModels.Count() }" +
+                    $" start date: { ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.Now) }", "Message");
 
                 Parallel.ForEach(dataFlowFilterCollection.IncrementalPromoDataFlowFilter.ChangedModels.Where(x => !x.Disabled),
                     new ParallelOptions { MaxDegreeOfParallelism = MaxDegreeOfParallelism }, incrementalPromo =>
@@ -161,7 +165,8 @@ namespace Module.Host.TPM.Handlers.DataFlow
                 // --- AssortmentMatrix ---
 
                 handlerLogger.Write(true, $"{nameof(AssortmentMatrixDataFlowFilter)}: Amount of promoes to check: { promoesForRecalculatingForFilters.Count() }. " +
-                    $"Amount of {nameof(AssortmentMatrix)} models: { dataFlowFilterCollection.AssortmentMatrixDataFlowFilter.ChangedModels.Count() }", "Message");
+                    $"Amount of {nameof(AssortmentMatrix)} models: { dataFlowFilterCollection.AssortmentMatrixDataFlowFilter.ChangedModels.Count() }" +
+                    $" start date: { ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.Now) }", "Message");
 
                 Parallel.ForEach(dataFlowFilterCollection.AssortmentMatrixDataFlowFilter.ChangedModels,
                     new ParallelOptions { MaxDegreeOfParallelism = MaxDegreeOfParallelism }, assortmentMatrix =>
@@ -186,7 +191,8 @@ namespace Module.Host.TPM.Handlers.DataFlow
                 // --- COGS ---
 
                 handlerLogger.Write(true, $"{nameof(COGSDataFlowFilter)}: Amount of promoes to check: { promoesForRecalculatingForFilters.Count() }. " +
-                    $"Amount of {nameof(COGS)} models: { dataFlowFilterCollection.COGSDataFlowFilter.ChangedModels.Count() }", "Message");
+                    $"Amount of {nameof(COGS)} models: { dataFlowFilterCollection.COGSDataFlowFilter.ChangedModels.Count() }" +
+                    $" start date: { ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.Now) }", "Message");
 
                 Parallel.ForEach(dataFlowFilterCollection.COGSDataFlowFilter.ChangedModels,
                     new ParallelOptions { MaxDegreeOfParallelism = MaxDegreeOfParallelism }, cogs =>
@@ -211,7 +217,8 @@ namespace Module.Host.TPM.Handlers.DataFlow
                 // --- TradeInvestment ---
 
                 handlerLogger.Write(true, $"{nameof(TradeInvestmentDataFlowFilter)}: Amount of promoes to check: { promoesForRecalculatingForFilters.Count() }. " +
-                    $"Amount of {nameof(TradeInvestment)} models: { dataFlowFilterCollection.TradeInvestmentDataFlowFilter.ChangedModels.Count() }", "Message");
+                    $"Amount of {nameof(TradeInvestment)} models: { dataFlowFilterCollection.TradeInvestmentDataFlowFilter.ChangedModels.Count() }" +
+                    $" start date: { ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.Now) }", "Message");
 
                 Parallel.ForEach(dataFlowFilterCollection.TradeInvestmentDataFlowFilter.ChangedModels,
                     new ParallelOptions { MaxDegreeOfParallelism = MaxDegreeOfParallelism }, ti =>
@@ -236,7 +243,8 @@ namespace Module.Host.TPM.Handlers.DataFlow
                 // --- PromoProductsCorrection ---
 
                 handlerLogger.Write(true, $"{nameof(PromoProductsCorrectionDataFlowFilter)}: Amount of promoes to check: { promoesForRecalculatingForFilters.Count() }. " +
-                    $"Amount of {nameof(PromoProductsCorrection)} models: { dataFlowFilterCollection.PromoProductsCorrectionDataFlowFilter.ChangedModels.Count() }", "Message");
+                    $"Amount of {nameof(PromoProductsCorrection)} models: { dataFlowFilterCollection.PromoProductsCorrectionDataFlowFilter.ChangedModels.Count() }" +
+                    $" start date: { ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.Now) }", "Message");
 
                 Parallel.ForEach(dataFlowFilterCollection.PromoProductsCorrectionDataFlowFilter.ChangedModels,
                     new ParallelOptions { MaxDegreeOfParallelism = MaxDegreeOfParallelism }, promoProductsCorrection =>
@@ -261,7 +269,8 @@ namespace Module.Host.TPM.Handlers.DataFlow
                 // --- BaseLine ---
 
                 handlerLogger.Write(true, $"{nameof(BaseLineDataFlowFilter)}: Amount of promoes to check: { promoesForRecalculatingForFilters.Count() }. " +
-                    $"Amount of {nameof(BaseLine)} models: { dataFlowFilterCollection.BaseLineDataFlowFilter.ChangedModels.Count() }", "Message");
+                    $"Amount of {nameof(BaseLine)} models: { dataFlowFilterCollection.BaseLineDataFlowFilter.ChangedModels.Count() }" +
+                    $" start date: { ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.Now) }", "Message");
 
                 Parallel.ForEach(dataFlowFilterCollection.BaseLineDataFlowFilter.ChangedModels,
                     new ParallelOptions { MaxDegreeOfParallelism = MaxDegreeOfParallelism }, baseLine =>
@@ -286,7 +295,8 @@ namespace Module.Host.TPM.Handlers.DataFlow
                 // --- PriceList ---
 
                 handlerLogger.Write(true, $"{nameof(PriceListDataFlowFilter)}: Amount of promoes to check: { promoesForRecalculatingForFilters.Count() }. " +
-                    $"Amount of {nameof(PriceList)} models: { dataFlowFilterCollection.PriceListDataFlowFilter.ChangedModels.Count() }", "Message");
+                    $"Amount of {nameof(PriceList)} models: { dataFlowFilterCollection.PriceListDataFlowFilter.ChangedModels.Count() }" +
+                    $" start date: { ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.Now) }", "Message");
 
                 Parallel.ForEach(dataFlowFilterCollection.PriceListDataFlowFilter.ChangedModels,
                     new ParallelOptions { MaxDegreeOfParallelism = MaxDegreeOfParallelism }, priceList =>
