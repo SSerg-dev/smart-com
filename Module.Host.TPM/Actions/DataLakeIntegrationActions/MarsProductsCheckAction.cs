@@ -496,11 +496,12 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
                             try
                             {
                                 context.SaveChanges();
-                                Results.Add(String.Format("Added new Brand: {0}", checkBrand.Name), null);
+                                Results.Add(String.Format("Added new Brand: {0} with Brand Seg Code: {1}",
+                                    checkBrand.Name, checkBrand.Brand_code + "-" + checkBrand.Segmen_code), null);
                             }
                             catch (Exception e)
                             {
-                                errors.Add(String.Format("Error while adding new Brand with brand code {0}. Message: {1}", brandCode, e.Message));
+                                errors.Add(String.Format("Error while adding new Brand with brand code {0} and segment code {1}. Message: {2}", brandCode, segmenCode, e.Message));
                             }
                         }
 
