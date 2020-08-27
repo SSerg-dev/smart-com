@@ -4833,6 +4833,8 @@
         var infoWindow = Ext.ComponentQuery.query('calculatinginfowindow');
 
         if (infoWindow.length > 0) {
+            Ext.suspendLayouts();
+
             infoWindow = infoWindow[0];
             var infoGrid = infoWindow.down('grid'),
                 gridInfoToolbar = infoGrid.down('gridinfotoolbar'),
@@ -4900,6 +4902,8 @@
                     textareaOldLogWindow.setValue(infoWindow.logText);
                 }
             }
+
+            Ext.resumeLayouts(true);
         }
     },
 
