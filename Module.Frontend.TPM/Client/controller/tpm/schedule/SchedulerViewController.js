@@ -400,6 +400,7 @@
             var baseReviewWindow = Ext.widget('basereviewwindow', { items: Ext.create(viewClassName, { baseModel: model }) });
             baseReviewWindow.show();
 
+            var grid = baseReviewWindow.down('grid');
             var store = baseReviewWindow.down('grid').getStore();
             var proxy = store.getProxy();
             if (proxy.extraParams) {
@@ -411,6 +412,26 @@
             }
 
             proxy.extraParams.promoIdHistory = this.getRecordId(record);
+
+            store.on({
+                load: function (records, operation, success) {
+                    var selModel = grid.getSelectionModel();
+
+                    if (!selModel.hasSelection() && records.data.length > 0) {
+                        selModel.select(0);
+                        grid.fireEvent('itemclick', grid, grid.getSelectionModel().getLastSelected());
+                    } else if (selModel.hasSelection() && records.data.length > 0) {
+                        var selected = selModel.getSelection()[0];
+                        if (store.indexOfId(selected.getId()) === -1) {
+                            selModel.select(0);
+                            grid.fireEvent('itemclick', grid, grid.getSelectionModel().getLastSelected());
+                        }
+                    } else if (records.data.length === 0) {
+                        selModel.deselectAll();
+                    }
+                }
+            });
+
             store.load();
         }
     },
