@@ -2,13 +2,15 @@
     extend: 'App.view.core.common.CombinedDirectoryPanel',
     alias: 'widget.calculatinginfolog',
 
-    height: 325,
-    maxHeight: 325,
-    header: {},
-
+    resizeHandles: 'all',
+    maxHeight: 1980,
+    layout: {
+        type: 'fit',
+        align: 'stretch'
+    },
     listeners: {
         resize: function (panel, w, h) {
-            panel.down('customlogtoptoolbar').setWidth(w);
+            panel.down('customlogtoptoolbar').setWidth(w); 
         }
     },
 

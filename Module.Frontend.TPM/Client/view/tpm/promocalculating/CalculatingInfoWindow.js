@@ -8,8 +8,7 @@
     modal: true,
     width: 850,
     minWidth: 850,
-    minHeight: 220,
-    maxHeight: 580,
+    minHeight: 593,
     layout: 'fit',
 
     // id обработчика, лог которого читается
@@ -21,10 +20,18 @@
             type: 'vbox',
             align: 'stretch'
         },
+        listeners: {
+            resize: function (panel, w, h) {
+                panel.down('calculatinginfolog').setHeight(h - panel.down('custompromopanel').getHeight() - 30);
+
+                console.log(panel.down('calculatinginfolog').getHeight());
+            }
+        },
         items: [{
             xtype: 'custompromopanel',
             height: 130,
             minHeight: 130,
+            maxHeight: 130,
             flex: 1,
             padding: '10 10 10 10',
             items: [{
