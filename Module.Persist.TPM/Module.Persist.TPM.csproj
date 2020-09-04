@@ -2677,6 +2677,7 @@
     <Content Include="SQLInitialize\20200717_1445_Add_PlanPostPromoEffectReportWeekView.sql" />
     <Content Include="SQLInitialize\20200717_1915_Add_PromoROIReportView.sql" />
     <Content Include="SQLInitialize\20200720_1050_Alter_PlanIncrementalReport.sql" />
+    <Content Include="SQLInitialize\20200904_1625_Alter_JsonToCondition.sql" />
     <Compile Include="Utils\ConfigManager.cs" />
     <Compile Include="Utils\ExportCSVBuilderFactory.cs" />
     <Compile Include="Utils\ExportCSVModelBuilders\IncrementalToApolloModelBuilder.cs" />
