@@ -106,6 +106,25 @@ namespace Module.Frontend.TPM.Controllers
         [ClaimsAuthorize]
         public async Task<HttpResponseMessage> FullImportXLSX()
         {
+            var currentDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+            var availableDay = DayOfWeek();
+            if (currentDate.DayOfWeek != ((DayOfWeek)availableDay))
+            {
+                string msg;
+                if (availableDay == -1)
+                {
+                    msg = "Import is not available now";
+                }
+                else
+                {
+                    msg = String.Format("Import is only available on {0}", (DayOfWeek)availableDay);
+                }
+
+                HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.BadRequest);
+                result.Content = new StringContent(msg);
+                result.Content.Headers.ContentType = new MediaTypeHeaderValue("text/plain");
+                return result;
+            }
             try
             {
                 if (!Request.Content.IsMimeMultipartContent())
@@ -277,6 +296,16 @@ namespace Module.Frontend.TPM.Controllers
             {
                 return Content<string>(HttpStatusCode.InternalServerError, e.Message);
             }
+        }
+
+        private int DayOfWeek()
+        {
+            var settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
+            int dayOfWeek = settingsManager.GetSetting<int>("DAY_OF_WEEK_Rolling_Volume", 99);
+            dayOfWeek = dayOfWeek < 0 ? -2 : dayOfWeek;
+            dayOfWeek++;
+            dayOfWeek = dayOfWeek == 7 ? 0 : dayOfWeek;
+            return dayOfWeek;
         }
 
         private ExceptionResult GetErorrRequest(Exception e)
