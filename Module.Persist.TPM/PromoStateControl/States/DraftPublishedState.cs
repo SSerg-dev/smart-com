@@ -45,55 +45,6 @@ namespace Module.Persist.TPM.PromoStateControl
                 return RoleStateUtil.GetMapForStatus(Name);
             }
 
-            private bool CheckNoNego(Promo model)
-            {
-                List<NoneNego> noNegoList = _stateContext.dbContext.Set<NoneNego>().Where(x => !x.Disabled && x.FromDate <= model.StartDate && x.ToDate >= model.EndDate).ToList();
-
-                ClientTreeHierarchyView clientTreeHierarchy = _stateContext.dbContext.Set<ClientTreeHierarchyView>().FirstOrDefault(x => x.Id == model.ClientTreeId);
-
-                // может быть выбрано несколько продуктов (subrange) в промо
-                int[] productObjectIds = _stateContext.dbContext.Set<PromoProductTree>().Where(n => n.PromoId == model.Id && !n.Disabled).Select(n => n.ProductTreeObjectId).ToArray();
-                ProductTreeHierarchyView[] productTreeHierarchies = _stateContext.dbContext.Set<ProductTreeHierarchyView>().Where(x => productObjectIds.Contains(x.Id)).ToArray();
-
-                foreach (ProductTreeHierarchyView prodHierarchy in productTreeHierarchies)
-                {
-                    bool resultForProduct = false;
-                    string productHierarchy = prodHierarchy.Hierarchy + "." + prodHierarchy.Id.ToString();
-                    int[] productHierarchyArr = Array.ConvertAll(productHierarchy.Split('.'), int.Parse);
-
-                    for (int i = (productHierarchyArr.Length - 1); i > 0 && !resultForProduct; i--)
-                    {
-                        string clientHierarchy = clientTreeHierarchy.Hierarchy + "." + model.ClientTreeId.ToString();
-                        int[] clientHierarchyArr = Array.ConvertAll(clientHierarchy.Split('.'), int.Parse);
-
-                        for (int j = (clientHierarchyArr.Length - 1); j > 0 && !resultForProduct; j--)
-                        {
-                            List<NoneNego> noNegoForClientList = noNegoList.Where(x => x.ClientTree.ObjectId == clientHierarchyArr[j]).ToList();
-                            foreach (NoneNego noNego in noNegoForClientList)
-                            {
-                                if (noNego.ProductTree.ObjectId == productHierarchyArr[i])
-                                {
-                                    if (noNego.Mechanic != null && model.MarsMechanic != null && noNego.Mechanic.SystemName == model.MarsMechanic.SystemName)
-                                    {
-                                        if (noNego.Discount >= model.MarsMechanicDiscount)
-                                        {
-                                            resultForProduct = true;
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    // если хоть один subrange не прошел проверку, то отклоняем
-                    if (!resultForProduct)
-                        return false;
-                }
-
-                return true;
-            }
-
             public bool ChangeState(Promo promoModel, string userRole, out string message)
             {
                 message = string.Empty;
@@ -160,7 +111,7 @@ namespace Module.Persist.TPM.PromoStateControl
                         }
 
 						// Проверка на NoNego
-						bool isNoNego = CheckNoNego(promoModel);
+						bool isNoNego = PromoStatusHelper.CheckNoNego(promoModel, _stateContext.dbContext);
                         if (isNoNego)
                         {
                             ISettingsManager settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));

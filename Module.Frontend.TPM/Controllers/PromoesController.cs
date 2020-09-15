@@ -313,6 +313,11 @@ namespace Module.Frontend.TPM.Controllers
                 String prevStatusName = Context.Set<PromoStatus>().FirstOrDefault(s => s.Id == promoCopy.PromoStatusId && !s.Disabled).SystemName;
                 bool needDetachPromoSupport = statusName.ToLower() == "draft" && prevStatusName.ToLower() == "draftpublished";
 
+                if (statusName.ToLower() == "onapproval" && userRole == "SupportAdministrator")
+                {
+                    PromoStatusHelper.StableOnApprovalStatus(model, userRole, Context);
+                }
+
                 if (statusName.ToLower() == "started"
                         || statusName.ToLower() == "finished"
                         || statusName.ToLower() == "closed")
