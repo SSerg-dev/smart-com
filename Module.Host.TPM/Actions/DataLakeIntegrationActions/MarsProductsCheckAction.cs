@@ -49,12 +49,13 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
                 using (DatabaseContext context = new DatabaseContext())
                 {
                     var settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
+
                     var lastSuccessDate = settingsManager.GetSetting<string>("MATERIALS_LAST_SUCCESSFUL_EXECUTION_DATE", "2020-03-12 10:00:00.000");
                     var successMessages = new ConcurrentBag<string>();
                     int sourceRecordCount;
-
                     var notifyErrors = new Dictionary<string, string>(); // ZREP, Error message
 
+                    lastSuccessDate = ConvertDate(lastSuccessDate);
                     DateTimeOffset today = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).Value;
 
                     var newRecords = context.Database.SqlQuery<MARS_UNIVERSAL_PETCARE_MATERIALS>($@"
@@ -802,6 +803,21 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
                 IsCreate = isCreate,
                 IsDelete = isDelete
             };
+        }
+
+        private string ConvertDate(string date)
+        {
+            var syncDepth = -AppSettingsManager.GetSetting<int>("SYNC_DEPTH", 10080);
+            var convertedDate = "";
+
+            if (DateTimeOffset.TryParse(date, out DateTimeOffset dateToConvert))
+            {
+                convertedDate = dateToConvert
+                    .AddMinutes(syncDepth)
+                    .ToString("yyyy'-'MM'-'dd HH':'mm':'ss.fff");
+            }
+
+            return !String.IsNullOrEmpty(convertedDate) ? convertedDate : date;
         }
 
         private bool IsNumeric(string s, int length = -1)
