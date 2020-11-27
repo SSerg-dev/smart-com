@@ -810,7 +810,9 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
             var syncDepth = -AppSettingsManager.GetSetting<int>("SYNC_DEPTH", 10080);
             var convertedDate = "";
 
-            if (DateTimeOffset.TryParse(date, out DateTimeOffset dateToConvert))
+            DateTimeOffset dateToConvert;
+
+            if (DateTimeOffset.TryParse(date, out dateToConvert))
             {
                 convertedDate = dateToConvert
                     .AddMinutes(syncDepth)
