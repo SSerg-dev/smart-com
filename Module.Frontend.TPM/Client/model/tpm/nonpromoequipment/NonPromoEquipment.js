@@ -4,7 +4,8 @@
     breezeEntityType: 'NonPromoEquipment',
     fields: [
         { name: 'Id', hidden: true },
-		{ name: 'EquipmentType', type: 'string', hidden: false, isDefault: true }
+		{ name: 'EquipmentType', type: 'string', hidden: false, isDefault: true },
+		{ name: 'Description_ru', type: 'string', hidden: false, isDefault: true }
     ],
     proxy: {
         type: 'breeze',

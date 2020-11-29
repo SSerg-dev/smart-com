@@ -20,5 +20,7 @@ namespace Module.Persist.TPM.Model.TPM
         [Required]
         [Index("Unique_NonPromoEquipment", 1, IsUnique = true)]
         public string EquipmentType { get; set; }
+
+        public string Description_ru { get; set; }
     }
 }

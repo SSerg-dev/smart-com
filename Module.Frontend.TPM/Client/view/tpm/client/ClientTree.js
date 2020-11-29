@@ -170,16 +170,16 @@
             cls: 'scrollpanel scrollSettingsClientTree',
             height: '100%',
             flex: 1,
-            bodyStyle: { "background-color": "#ECEFF1"},
+            bodyStyle: { "background-color": "#ECEFF1" },
             layout: {
                 type: 'vbox',
                 align: 'stretch',
                 pack: 'start'
-            },           
+            },
             items: [{
                 xtype: 'editorform',
-                cls: 'hierarchydetailform',                
-                columnsCount: 1,      
+                cls: 'hierarchydetailform',
+                columnsCount: 1,
                 bodyPadding: '0 0 0 0',
                 items: [{
                     xtype: 'custompromopanel',
@@ -227,6 +227,11 @@
                             name: 'DemandCode',
                             width: 280,
                             fieldLabel: l10n.ns('tpm', 'ClientTree').value('DemandCode')
+                        }, {
+                            xtype: 'singlelinedisplayfield',
+                            name: 'SFAClientCode',
+                            width: 280,
+                            fieldLabel: l10n.ns('tpm', 'ClientTree').value('SFAClientCode')
                         }, {
                             xtype: 'singlelinedisplayfield',
                             name: 'IsBaseClient',
@@ -494,11 +499,11 @@
                                 width: '100%'
                             },
                             items: [{
-                                xtype: 'container',                                
+                                xtype: 'container',
                                 flex: 1,
                                 layout: {
                                     type: 'hbox',
-                                    align: 'stretch',                                    
+                                    align: 'stretch',
                                 },
                                 padding: '50 50 50 50',
                                 items: [{
@@ -520,7 +525,7 @@
                                     width: '100%',
                                     flex: 1,
                                     style: 'text-decoration: underline',
-                                    hierarchyOnly: true,              
+                                    hierarchyOnly: true,
                                     action: 'UploadLogoFile',
                                 }, {
                                     xtype: 'button',
@@ -552,7 +557,7 @@
                         }]
                     }]
                 }]
-            }]  
-        }] 
+            }]
+        }]
     }]
 });

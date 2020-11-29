@@ -8,5 +8,9 @@ namespace Module.Persist.TPM.Model.Import
         [ImportCSVColumn(ColumnNumber = 0)]
         [Display(Name = "EquipmentType")]
         public string EquipmentType { get; set; }
+
+        [ImportCSVColumn(ColumnNumber = 1)]
+        [Display(Name = "EquipmentType")]
+        public string Description_ru { get; set; }
     }
 }

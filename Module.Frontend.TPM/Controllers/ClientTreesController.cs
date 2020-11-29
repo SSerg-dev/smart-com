@@ -1134,9 +1134,8 @@ namespace Module.Frontend.TPM.Controllers
         public double? PostPromoEffectW1 { get; set; }
         public double? PostPromoEffectW2 { get; set; }
         public double? DistrMarkUp { get; set; }
-
+        public string SFAClientCode { get; set; }
         public double? DeviationCoefficient { get; set; }
-
         public string LogoFileName { get; set; }
 
         public ClientTreeNode(ClientTree treeNode, bool expanded, bool leaf, bool loaded, bool _checked = false)
@@ -1166,6 +1165,7 @@ namespace Module.Frontend.TPM.Controllers
             LogoFileName = treeNode.LogoFileName;
             DMDGroup = treeNode.DMDGroup;
             DistrMarkUp = treeNode.DistrMarkUp;
+            SFAClientCode = treeNode.SFAClientCode;
             DeviationCoefficient = treeNode.DeviationCoefficient;
 
             this.leaf = leaf;

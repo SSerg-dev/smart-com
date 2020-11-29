@@ -258,23 +258,36 @@ namespace Module.Host.TPM.Actions {
         }
 
         private int InsertDataToDatabase(IEnumerable<IEntity<Guid>> sourceRecords, DatabaseContext context) {
+            ScriptGenerator generatorUpdate = new ScriptGenerator(typeof(BudgetSubItem));
             IList<BudgetSubItem> toCreate = new List<BudgetSubItem>();
+            IList<BudgetSubItem> toUpdate = new List<BudgetSubItem>();
             foreach (ImportBudgetSubItem newRecord in sourceRecords) {
-                IEntity<Guid> oldRecord = context.Set<BudgetSubItem>()
+                BudgetSubItem oldRecord = context.Set<BudgetSubItem>()
                     .FirstOrDefault(bsi => bsi.BudgetItemId == newRecord.BudgetItemId && bsi.Name == newRecord.Name && !bsi.Disabled);
 
                 if (oldRecord == null && newRecord.BudgetItemId.HasValue) {
                     BudgetSubItem toSave = new BudgetSubItem() {
                         BudgetItemId = newRecord.BudgetItemId.Value,
-                        Name = newRecord.Name
+                        Name = newRecord.Name,
+                        Description_ru = newRecord.Description_ru
                     };
                     toCreate.Add(toSave);
                 }
 
+                if (oldRecord != null && newRecord.BudgetItemId.HasValue)
+                {
+                    oldRecord.Description_ru = newRecord.Description_ru;
+                    toUpdate.Add(oldRecord);
+                }
             }
 
             foreach (IEnumerable<BudgetSubItem> items in toCreate.Partition(100)) {
                 context.Set<BudgetSubItem>().AddRange(items);
+            }
+            foreach (IEnumerable<BudgetSubItem> items in toUpdate.Partition(100))
+            {
+                string insertScript = generatorUpdate.BuildUpdateScript(items);
+                context.Database.ExecuteSqlCommand(insertScript);
             }
             context.SaveChanges();
 

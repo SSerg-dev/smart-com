@@ -18,6 +18,10 @@
             xtype: 'singlelinedisplayfield',
             name: 'EquipmentType',
             fieldLabel: l10n.ns('tpm', 'NonPromoEquipment').value('EquipmentType'),
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'Description_ru',
+            fieldLabel: l10n.ns('tpm', 'NonPromoEquipment').value('Description_ru'),
         }]
     }
 })

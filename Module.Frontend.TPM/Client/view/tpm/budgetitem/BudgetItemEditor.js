@@ -3,8 +3,8 @@
     alias: 'widget.budgetitemeditor',
     width: 500,
     minWidth: 500,
-	maxHeight: 500,
-	cls: 'readOnlyFields',
+    maxHeight: 500,
+    cls: 'readOnlyFields',
 
     items: {
         xtype: 'editorform',
@@ -36,6 +36,12 @@
             xtype: 'textfield',
             name: 'Name',
             fieldLabel: l10n.ns('tpm', 'BudgetItem').value('Name'),
+        }, {
+            xtype: 'textfield',
+            name: 'Description_ru',
+            fieldLabel: l10n.ns('tpm', 'BudgetItem').value('Description_ru'),
+            allowBlank: true,
+            allowOnlyWhitespace: true
         }, {
             xtype: 'circlecolorfield',
             name: 'ButtonColor',

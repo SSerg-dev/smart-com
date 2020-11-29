@@ -9,6 +9,7 @@ namespace Module.Persist.TPM.Model.History
         public Guid BudgetId { get; set; }
         public string Name {get; set; }
         public string BudgetName { get; set; }
+        public string Description_ru { get; set; }
         public string ButtonColor { get; set; }
     }
 }

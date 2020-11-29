@@ -13,6 +13,7 @@
         { name: 'BudgetName', type: 'string' },
         { name: 'Name', type: 'string', hidden: false, isDefault: true },
         { name: 'ButtonColor', useNull: false, type: 'string', hidden: false, isDefault: true },
+        { name: 'Description_ru', useNull: true, type: 'string', hidden: false, isDefault: true }
     ],
     proxy: {
         type: 'breeze',

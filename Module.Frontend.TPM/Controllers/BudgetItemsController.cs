@@ -205,7 +205,8 @@ namespace Module.Frontend.TPM.Controllers
             IEnumerable<Column> columns = new List<Column>() {
                 new Column() { Order = 0, Field = "Budget.Name", Header = "Budget", Quoting = false },
                 new Column() { Order = 1, Field = "Name", Header = "Item", Quoting = false },
-                new Column() { Order = 2, Field = "ButtonColor", Header = "Button color", Quoting = false }
+                new Column() { Order = 2, Field = "Description_ru", Header = "Description RU", Quoting = false },
+                new Column() { Order = 3, Field = "ButtonColor", Header = "Button color", Quoting = false }
             };
 
             return columns;

@@ -2155,6 +2155,14 @@
     <Compile Include="Migrations\202008251415373_Add_FilterQuery_ProductTree.Designer.cs">
       <DependentUpon>202008251415373_Add_FilterQuery_ProductTree.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202011271200146_Add_SFAClientCode_to_ClientTree.cs" />
+    <Compile Include="Migrations\202011271200146_Add_SFAClientCode_to_ClientTree.Designer.cs">
+      <DependentUpon>202011271200146_Add_SFAClientCode_to_ClientTree.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202011271352105_Add_Description_ru.cs" />
+    <Compile Include="Migrations\202011271352105_Add_Description_ru.Designer.cs">
+      <DependentUpon>202011271352105_Add_Description_ru.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -4244,6 +4252,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202008251415373_Add_FilterQuery_ProductTree.resx">
       <DependentUpon>202008251415373_Add_FilterQuery_ProductTree.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202011271200146_Add_SFAClientCode_to_ClientTree.resx">
+      <DependentUpon>202011271200146_Add_SFAClientCode_to_ClientTree.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202011271352105_Add_Description_ru.resx">
+      <DependentUpon>202011271352105_Add_Description_ru.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

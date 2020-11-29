@@ -1,6 +1,6 @@
 ﻿Ext.define('App.view.tpm.nonpromoequipment.DeletedNonPromoEquipment', {
     extend: 'App.view.core.common.CombinedDirectoryPanel',
-	alias: 'widget.deletednonpromoequipment',
+    alias: 'widget.deletednonpromoequipment',
     title: l10n.ns('core', 'compositePanelTitles').value('deletedPanelTitle'),
 
     dockedItems: [{
@@ -11,16 +11,16 @@
     items: [{
         xtype: 'directorygrid',
         itemId: 'datatable',
-		editorModel: 'Core.form.EditorDetailWindowModel',
+        editorModel: 'Core.form.EditorDetailWindowModel',
         store: {
             type: 'directorystore',
-			model: 'App.model.tpm.nonpromoequipment.DeletedNonPromoEquipment',
-			storeId: 'deletednonpromoequipmentstore',
+            model: 'App.model.tpm.nonpromoequipment.DeletedNonPromoEquipment',
+            storeId: 'deletednonpromoequipmentstore',
             extendedFilter: {
                 xclass: 'App.ExtFilterContext',
                 supportedModels: [{
                     xclass: 'App.ExtSelectionFilterModel',
-					model: 'App.model.tpm.nonpromoequipment.DeletedNonPromoEquipment',
+                    model: 'App.model.tpm.nonpromoequipment.DeletedNonPromoEquipment',
                     modelId: 'efselectionmodel'
                 }, {
                     xclass: 'App.ExtTextFilterModel',
@@ -49,6 +49,9 @@
             }, {
                 text: l10n.ns('tpm', 'NonPromoEquipment').value('EquipmentType'),
                 dataIndex: 'EquipmentType'
+            }, {
+                text: l10n.ns('tpm', 'NonPromoEquipment').value('Description_ru'),
+                dataIndex: 'Description_ru'
             }]
         }
     }, {
@@ -64,6 +67,10 @@
             xtype: 'singlelinedisplayfield',
             name: 'EquipmentType',
             fieldLabel: l10n.ns('tpm', 'NonPromoEquipment').value('EquipmentType'),
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'Description_ru',
+            fieldLabel: l10n.ns('tpm', 'NonPromoEquipment').value('Description_ru'),
         }]
     }]
 });

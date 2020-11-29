@@ -46,6 +46,8 @@ namespace Module.Persist.TPM.Model.TPM {
 
         public double? DistrMarkUp { get; set; }
 
+        public string SFAClientCode { get; set; }
+
         public object Clone()
         {
             return this.MemberwiseClone();

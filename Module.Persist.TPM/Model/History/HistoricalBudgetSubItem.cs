@@ -13,6 +13,7 @@ namespace Module.Persist.TPM.Model.History
     {
         public Guid BudgetItemId { get; set; }
         public string Name { get; set; }
+        public string Description_ru { get; set; }
         public string BudgetItemName { get; set; }
         public string BudgetItemBudgetName { get; set; }
     }

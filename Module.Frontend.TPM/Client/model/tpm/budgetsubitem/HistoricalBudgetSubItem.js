@@ -12,7 +12,8 @@
         //{ name: 'BudgetItemId', hidden: false, isDefault: false },
         { name: 'BudgetItemBudgetName', type: 'string', isDefault: true },
         { name: 'BudgetItemName', type: 'string', isDefault: true },        
-        { name: 'Name', type: 'string', hidden: false, isDefault: true }
+        { name: 'Name', type: 'string', hidden: false, isDefault: true },
+        { name: 'Description_ru', type: 'string', hidden: false, isDefault: true }
     ],
     proxy: {
         type: 'breeze',

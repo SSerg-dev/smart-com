@@ -8,5 +8,6 @@ namespace Module.Persist.TPM.Model.History
     public class HistoricalNonPromoEquipment : BaseHistoricalEntity<System.Guid>
     {
 		public string EquipmentType { get; set; }
-	}
+        public string Description_ru { get; set; }
+    }
 }

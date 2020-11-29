@@ -11,7 +11,7 @@
     items: [{
         xtype: 'directorygrid',
         itemId: 'datatable',
-		editorModel: 'Core.form.EditorDetailWindowModel',
+        editorModel: 'Core.form.EditorDetailWindowModel',
         store: {
             type: 'directorystore',
             model: 'App.model.tpm.budgetitem.DeletedBudgetItem',
@@ -41,12 +41,11 @@
                 flex: 1,
                 minWidth: 100
             },
-            items: [
-            { 
+            items: [{
                 text: l10n.ns('core', 'BaseDeletedEntity').value('DeletedDate'),
-				dataIndex: 'DeletedDate',
-				xtype: 'datecolumn',
-				renderer: Ext.util.Format.dateRenderer('d.m.Y H:i:s')
+                dataIndex: 'DeletedDate',
+                xtype: 'datecolumn',
+                renderer: Ext.util.Format.dateRenderer('d.m.Y H:i:s')
             }, {
                 text: l10n.ns('tpm', 'BudgetItem').value('BudgetName'),
                 dataIndex: 'BudgetName',
@@ -74,6 +73,9 @@
                 text: l10n.ns('tpm', 'BudgetItem').value('Name'),
                 dataIndex: 'Name'
             }, {
+                text: l10n.ns('tpm', 'BudgetItem').value('Description_ru'),
+                dataIndex: 'Description_ru'
+            }, {
                 text: l10n.ns('tpm', 'BudgetItem').value('ButtonColor'),
                 dataIndex: 'ButtonColor',
                 renderer: function (value, metaData, record, rowIndex, colIndex, store, view) {
@@ -86,23 +88,23 @@
         itemId: 'detailform',
         model: 'App.model.tpm.budgetitem.DeletedBudgetItem',
         items: [
-        { 
-			xtype: 'singlelinedisplayfield',
-			name: 'DeletedDate',
-			renderer: Ext.util.Format.dateRenderer('d.m.Y H:i:s'),
-			fieldLabel: l10n.ns('core', 'BaseDeletedEntity').value('DeletedDate')		
-        }, {
-            xtype: 'singlelinedisplayfield',
-            name: 'BudgetName',
-            fieldLabel: l10n.ns('tpm', 'BudgetItem').value('BudgetName'),
-        }, {
-            xtype: 'singlelinedisplayfield',
-            name: 'Name',
-            fieldLabel: l10n.ns('tpm', 'BudgetItem').value('Name'),
-        }, {
-            xtype: 'singlelinedisplayfield',
-            name: 'ButtonColor',
-            fieldLabel: l10n.ns('tpm', 'BudgetItem').value('ButtonColor'),
-        }]
+            {
+                xtype: 'singlelinedisplayfield',
+                name: 'DeletedDate',
+                renderer: Ext.util.Format.dateRenderer('d.m.Y H:i:s'),
+                fieldLabel: l10n.ns('core', 'BaseDeletedEntity').value('DeletedDate')
+            }, {
+                xtype: 'singlelinedisplayfield',
+                name: 'BudgetName',
+                fieldLabel: l10n.ns('tpm', 'BudgetItem').value('BudgetName'),
+            }, {
+                xtype: 'singlelinedisplayfield',
+                name: 'Name',
+                fieldLabel: l10n.ns('tpm', 'BudgetItem').value('Name'),
+            }, {
+                xtype: 'singlelinedisplayfield',
+                name: 'ButtonColor',
+                fieldLabel: l10n.ns('tpm', 'BudgetItem').value('ButtonColor'),
+            }]
     }]
 });

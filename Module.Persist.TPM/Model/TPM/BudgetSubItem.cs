@@ -21,6 +21,8 @@ namespace Module.Persist.TPM.Model.TPM
         [Index("Unique_BudgetSubItem", 1, IsUnique = true)]
         public string Name { get; set; }
 
+        public string Description_ru { get; set; }
+
         [Index("Unique_BudgetSubItem", 2, IsUnique = true)]
         public Guid BudgetItemId { get; set; }
         public virtual BudgetItem BudgetItem { get; set; }

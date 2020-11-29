@@ -21,6 +21,10 @@ namespace Module.Persist.TPM.Model.Import
         public string Name { get; set; }
 
         [ImportCSVColumn(ColumnNumber = 2)]
+        [Display(Name = "Description RU")]
+        public string Description_ru { get; set; }
+
+        [ImportCSVColumn(ColumnNumber = 3)]
         [Display(Name = "ButtonColor")]
         public string ButtonColor { get; set; }
 

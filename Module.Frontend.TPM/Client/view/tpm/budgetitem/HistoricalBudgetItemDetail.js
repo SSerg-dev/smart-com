@@ -36,6 +36,10 @@
             fieldLabel: l10n.ns('tpm', 'BudgetItem').value('Name'),
         }, {
             xtype: 'singlelinedisplayfield',
+            name: 'Description_ru',
+            fieldLabel: l10n.ns('tpm', 'BudgetItem').value('Description_ru'),
+        }, {
+            xtype: 'singlelinedisplayfield',
             name: 'ButtonColor',
             fieldLabel: l10n.ns('tpm', 'BudgetItem').value('ButtonColor'),
         }]

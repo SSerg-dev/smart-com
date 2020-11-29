@@ -312,7 +312,8 @@
     'DeletedBrand': ['.tpm.Brand', '.core.BaseDeletedEntity'],
 
     'NonPromoEquipment': {
-        'EquipmentType': 'Equipment type'
+        'EquipmentType': 'Equipment type',
+        'Description_ru': 'Description RU'
     },
     'HistoricalNonPromoEquipment': ['.tpm.NonPromoEquipment', '.core.BaseHistoryEntity'],
     'DeletedNonPromoEquipment': ['.tpm.NonPromoEquipment', '.core.BaseDeletedEntity'],
@@ -615,7 +616,8 @@
     'BudgetItem': {
         'Name': 'Item',
         'BudgetName': 'Budget',
-        'ButtonColor': 'Button color'
+        'ButtonColor': 'Button color',       
+        'Description_ru': 'Description RU'
     },
     'HistoricalBudgetItem': ['.tpm.BudgetItem', '.core.BaseHistoryEntity'],
     'DeletedBudgetItem': ['.tpm.BudgetItem', '.core.BaseDeletedEntity'],
@@ -1055,7 +1057,8 @@
         'DMDGroupRegex': 'Only positive values greater than 0',
         'Adjustment': 'Adjustment',
         'AdjustmentP': 'Adjustment, %',
-        'DistrMarkUp' : 'Distr MarkUp'
+        'DistrMarkUp': 'Distr MarkUp',
+        'SFAClientCode': 'SFA Client Code'
     },
 
     'EventClientTree': {
@@ -1611,6 +1614,7 @@
         'Name': 'Sub-Item',
         'BudgetItemName': 'Item',
         'BudgetName': 'Budget',
+        'Description_ru': 'Description RU',
         'BudgetItemBudgetName': 'Budget'
     },
     'BudgetSubItemClientTree': {

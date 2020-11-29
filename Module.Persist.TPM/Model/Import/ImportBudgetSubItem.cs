@@ -26,6 +26,9 @@ namespace Module.Persist.TPM.Model.Import
         [Display(Name = "Name")]
         public string Name { get; set; }
 
+        [ImportCSVColumn(ColumnNumber = 3)]
+        public string Description_ru { get; set; }
+
         public Guid? BudgetItemId { get; set; }
         public Guid? BudgetId { get; set; }
         public virtual Budget Budget { get; set; }

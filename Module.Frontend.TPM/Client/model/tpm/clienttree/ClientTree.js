@@ -38,6 +38,7 @@
             }
         },
         { name: 'DistrMarkUp', type: 'float', hidden: false, useNull: true, defaultValue: null },
+        { name: 'SFAClientCode', type: 'string', hidden: false, useNull: true, defaultValue: null },
     ],
 
     proxy: {

@@ -56,6 +56,13 @@
             allowBlank: true,
             allowOnlyWhitespace: true,
         }, {
+            xtype: 'textfield',
+            fieldLabel: l10n.ns('tpm', 'ClientTree').value('SFAClientCode'),
+            name: 'SFAClientCode',
+            regex: /^\S*$/,
+            allowBlank: true,
+            allowOnlyWhitespace: true
+        }, {
             xtype: 'booleancombobox',
             fieldLabel: l10n.ns('tpm', 'ClientTree').value('IsBaseClient'),
             name: 'IsBaseClient',
@@ -156,7 +163,7 @@
             allowExponential: false,
             regex: /^\d+\,?\d*$/,
             regexText: l10n.ns('tpm', 'ClientTree').value('DMDGroupRegex'),
-            validator: function() {
+            validator: function () {
                 value = this.getValue();
                 if (value === 0) {
                     return 'The value "0" is not allowed';

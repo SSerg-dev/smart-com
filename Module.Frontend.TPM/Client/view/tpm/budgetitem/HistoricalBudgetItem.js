@@ -11,7 +11,7 @@
     items: [{
         xtype: 'directorygrid',
         itemId: 'datatable',
-		editorModel: 'Core.form.EditorDetailWindowModel',
+        editorModel: 'Core.form.EditorDetailWindowModel',
         store: {
             type: 'directorystore',
             model: 'App.model.tpm.budgetitem.HistoricalBudgetItem',
@@ -39,46 +39,45 @@
                 minWidth: 100
             },
             items: [
-            {
-                text: l10n.ns('tpm', 'HistoricalBudgetItem').value('_User'),
-                dataIndex: '_User',
-                filter: {
-                    type: 'string',
-                    operator: 'eq'
+                {
+                    text: l10n.ns('tpm', 'HistoricalBudgetItem').value('_User'),
+                    dataIndex: '_User',
+                    filter: {
+                        type: 'string',
+                        operator: 'eq'
+                    }
+                }, {
+                    text: l10n.ns('tpm', 'HistoricalBudgetItem').value('_Role'),
+                    dataIndex: '_Role',
+                    filter: {
+                        type: 'string',
+                        operator: 'eq'
+                    }
+                }, {
+                    text: l10n.ns('tpm', 'HistoricalBudgetItem').value('_EditDate'),
+                    dataIndex: '_EditDate',
+                    xtype: 'datecolumn',
+                    renderer: Ext.util.Format.dateRenderer('d.m.Y H:i:s')
+                }, {
+                    text: l10n.ns('tpm', 'HistoricalBudgetItem').value('_Operation'),
+                    dataIndex: '_Operation',
+                    renderer: App.RenderHelper.getLocalizedRenderer('tpm.HistoricalBudgetItem', 'OperationType'),
+                    filter: {
+                        type: 'combo',
+                        valueField: 'id',
+                        store: {
+                            type: 'operationtypestore'
+                        },
+                        operator: 'eq'
+                    }
                 }
-            }, {
-                text: l10n.ns('tpm', 'HistoricalBudgetItem').value('_Role'),
-                dataIndex: '_Role',
-                filter: {
-                    type: 'string',
-                    operator: 'eq'
-                }
-            }, {
-                text: l10n.ns('tpm', 'HistoricalBudgetItem').value('_EditDate'),
-                dataIndex: '_EditDate',
-                xtype: 'datecolumn',
-                renderer: Ext.util.Format.dateRenderer('d.m.Y H:i:s')
-            }, {
-                text: l10n.ns('tpm', 'HistoricalBudgetItem').value('_Operation'),
-                dataIndex: '_Operation',
-                renderer: App.RenderHelper.getLocalizedRenderer('tpm.HistoricalBudgetItem', 'OperationType'),
-                filter: {
-                    type: 'combo',
-                    valueField: 'id',
-                    store: {
-                        type: 'operationtypestore'
-                    },
-                    operator: 'eq'
-                }
-            }
             ]
         }
     }, {
         xtype: 'editabledetailform',
         itemId: 'detailform',
         model: 'App.model.tpm.budgetitem.HistoricalBudgetItem',
-        items: [
-        {
+        items: [{
             xtype: 'singlelinedisplayfield',
             name: '_User',
             fieldLabel: l10n.ns('tpm', 'HistoricalBudgetItem').value('_User')
@@ -104,6 +103,10 @@
             xtype: 'singlelinedisplayfield',
             name: 'Name',
             fieldLabel: l10n.ns('tpm', 'BudgetItem').value('Name'),
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'Description_ru',
+            fieldLabel: l10n.ns('tpm', 'BudgetItem').value('Description_ru'),
         }, {
             xtype: 'singlelinedisplayfield',
             name: 'ButtonColor',

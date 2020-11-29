@@ -27,6 +27,8 @@ namespace Module.Persist.TPM.Model.TPM
 
         public string ButtonColor { get; set; }
 
+        public string Description_ru { get; set; }
+
         [Index("Unique_BudgetItem", 2, IsUnique = true)]
         public Guid BudgetId {get; set;}
         public virtual Budget Budget { get; set; }

@@ -26,6 +26,10 @@
             xtype: 'singlelinedisplayfield',
             name: 'Name',
             fieldLabel: l10n.ns('tpm', 'BudgetSubItem').value('Name'),
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'Description_ru',
+            fieldLabel: l10n.ns('tpm', 'BudgetSubItem').value('Description_ru'),
         }]
     }
 })

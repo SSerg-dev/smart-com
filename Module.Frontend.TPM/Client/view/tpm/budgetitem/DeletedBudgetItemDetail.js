@@ -14,7 +14,7 @@
             name: 'DeletedDate',
             renderer: Ext.util.Format.dateRenderer('d.m.Y H:i:s'),
             fieldLabel: l10n.ns('core', 'BaseDeletedEntity').value('DeletedDate')
-        },  {
+        }, {
             xtype: 'singlelinedisplayfield',
             name: 'BudgetName',
             fieldLabel: l10n.ns('tpm', 'BudgetItem').value('BudgetName'),
@@ -22,6 +22,10 @@
             xtype: 'singlelinedisplayfield',
             name: 'Name',
             fieldLabel: l10n.ns('tpm', 'BudgetItem').value('Name'),
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'Description_ru',
+            fieldLabel: l10n.ns('tpm', 'BudgetItem').value('Description_ru'),
         }, {
             xtype: 'singlelinedisplayfield',
             name: 'ButtonColor',

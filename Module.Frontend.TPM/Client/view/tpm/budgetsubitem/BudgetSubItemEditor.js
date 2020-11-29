@@ -60,6 +60,13 @@
             name: 'Name',
             maxLength: 255,
             fieldLabel: l10n.ns('tpm', 'BudgetSubItem').value('Name'),
+        }, {
+            xtype: 'textfield',
+            name: 'Description_ru',
+            maxLength: 255,
+            fieldLabel: l10n.ns('tpm', 'BudgetSubItem').value('Description_ru'),
+            allowBlank: true,
+            allowOnlyWhitespace: true
         }]
     }
 });
