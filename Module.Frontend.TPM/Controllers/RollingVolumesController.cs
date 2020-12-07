@@ -108,7 +108,7 @@ namespace Module.Frontend.TPM.Controllers
         {
             var currentDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
             var availableDay = DayOfWeek();
-            if (currentDate.DayOfWeek != ((DayOfWeek)availableDay))
+            if (currentDate.DayOfWeek != ((DayOfWeek)availableDay) && availableDay < 8)
             {
                 string msg;
                 if (availableDay == -1)
@@ -302,8 +302,7 @@ namespace Module.Frontend.TPM.Controllers
         {
             var settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
             int dayOfWeek = settingsManager.GetSetting<int>("DAY_OF_WEEK_Rolling_Volume", 99);
-            dayOfWeek = dayOfWeek < 0 ? -2 : dayOfWeek;
-            dayOfWeek++;
+            dayOfWeek = dayOfWeek < 0 ? -1 : dayOfWeek;
             dayOfWeek = dayOfWeek == 7 ? 0 : dayOfWeek;
             return dayOfWeek;
         }

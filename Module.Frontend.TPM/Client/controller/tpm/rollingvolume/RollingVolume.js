@@ -118,9 +118,12 @@
                                 
                             if (!result.isDayOfWeek) {
                                 recalculatePreviousYearButton.down('#updatebutton').setDisabled(true);
+                                recalculatePreviousYearButton.down('#ImportXLSX').visible = false;
                                 recalculatePreviousYearButton.down('#ImportXLSX').setVisible(false);
                             } else {
                                 recalculatePreviousYearButton.down('#updatebutton').setDisabled(false);
+                                recalculatePreviousYearButton.down('#ImportXLSX').visible = true;
+                                recalculatePreviousYearButton.down('#ImportXLSX').setVisible(true);
                             }
 
                         } else {

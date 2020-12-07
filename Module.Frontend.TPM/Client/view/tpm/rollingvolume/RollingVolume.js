@@ -30,6 +30,7 @@
             menu: {
                 xtype: 'customheadermenu',
                 items: [{
+                    visible: false,
                     glyph: 0xf220,
                     itemgroup: 'loadimportbutton',
                     exactlyModelCompare: true,
@@ -37,7 +38,15 @@
                     resource: '{0}',
                     action: 'FullImportXLSX',
                     itemId: 'ImportXLSX',
-                    allowFormat: ['zip', 'xlsx']
+                    allowFormat: ['zip', 'xlsx'],
+                    listeners: {
+                        render: function (me, eOpts) {
+                            me.setVisible(this.visible);
+                        },
+                        afterRender: function (me, eOpts) {
+                            me.setVisible(this.visible);
+                        }
+                    }
                 }, {
                     glyph: 0xf21d,
                     itemId: 'loadimporttemplatexlsxbutton',
