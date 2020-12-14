@@ -16,7 +16,7 @@
         items: [{
             xtype: 'custompromopanel',
             minWidth: 245,
-            minHeight: 195,
+            minHeight: 240,
             flex: 1,
             items: [{
                 xtype: 'fieldset',
@@ -126,6 +126,7 @@
         }, {
             xtype: 'custompromopanel',
             minWidth: 245,
+            minHeight: 240,
             flex: 1,
             items: [{
                 xtype: 'fieldset',

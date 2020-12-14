@@ -30,9 +30,9 @@ namespace Module.Host.TPM.Handlers.DataFlow
         public override void Action(HandlerInfo info, ExecuteData data)
         {
             var stopWatch = Stopwatch.StartNew();
-            var handlerLogger = new FileLogWriter(info.HandlerId.ToString(), new Dictionary<string, string>() { ["Timing"] = "TIMING" });
+            var handlerLogger = new LogWriter(info.HandlerId.ToString(), new Dictionary<string, string>() { ["Timing"] = "TIMING" });
 
-            handlerLogger.Write(true, String.Format("The filtering of promoes began at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.Now), "Message"));
+            handlerLogger.Write(true, String.Format("The filtering of promoes began at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), "Message"));
 
             var context = new DatabaseContext();
             try
@@ -321,13 +321,13 @@ namespace Module.Host.TPM.Handlers.DataFlow
                 promoesForRecalculating = promoesForRecalculating.Distinct().ToList();
 
                 // Список промо, набор продуктов в которых будет изменен.
-                var changedProductsPromoes = Products.GetChangedProductsPromoes(context, promoesToCheck.Where(x => x.PromoStatusSystemName != "Started" && x.PromoStatusSystemName != "Finished").ToList(), handlerLogger);
+                var changedProductsPromoes = Products.GetChangedProductsPromoes(context, promoesToCheck.Where(x => x.PromoStatusSystemName != "Started" && x.PromoStatusSystemName != "Finished").ToList(), handlerLogger.CurrentLogWriter);
                 promoesForRecalculating = promoesForRecalculating.Union(changedProductsPromoes).Distinct().ToList();
 
                 //список Id промо для пересчета параметров до Plan Promo LSV
                 List<Guid> promoIdsForRecalculating = promoesForRecalculating.Select(x => x.Id).ToList();
 
-                handlerLogger.Write(true, String.Format("The budgets filtering of promoes began at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+                handlerLogger.Write(true, String.Format("The budgets filtering of promoes began at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)), "Message");
                 innerStopWatch.Restart();
                 //список Id промо, для пересчета бюджетов
                 List<Guid> promoIdsForBudgetRecalclating = new List<Guid>();
@@ -343,7 +343,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
                     }
                 }
                 handlerLogger.Write(true, $"The budgets filtering of promoes duration:{innerStopWatch.Elapsed.Hours} hours and {innerStopWatch.Elapsed.Minutes} minutes and {innerStopWatch.Elapsed.Seconds} seconds", "Timing");
-                handlerLogger.Write(true, String.Format("The budgets filtering of promoes ended at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+                handlerLogger.Write(true, String.Format("The budgets filtering of promoes ended at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)), "Message");
 
                 //список Id промо для полномасштабного пересчета(второй этап)
                 List<Guid> promoIdsForAllRecalculating = promoesToCheck.Select(x => x.Id).ToList();
@@ -375,7 +375,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
                 HandlerDataHelper.SaveIncomingArgument("PromoIdsForBlock", promoIdsForBlock, handlerData, visible: false, throwIfNotExists: false);
 
                 handlerLogger.Write(true, $"The selection of promoes duration:  {stopWatch.Elapsed.Hours} hours and {stopWatch.Elapsed.Minutes} minutes and {stopWatch.Elapsed.Seconds} seconds.", "Timing");
-                handlerLogger.Write(true, String.Format("The selection of promoes ended at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+                handlerLogger.Write(true, String.Format("The selection of promoes ended at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)), "Message");
                 handlerLogger.Write(true, "The task for recalculating of promoes will be created in a few seconds.", "Message");
 
                 context.SaveChanges();
@@ -395,7 +395,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
                 data.SetValue<bool>("HasErrors", true);
                 logger.Error(e);
 
-                handlerLogger.Write(true, String.Format("The selection of promoes ended with errors at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+                handlerLogger.Write(true, String.Format("The selection of promoes ended with errors at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)), "Message");
                 handlerLogger.Write(true, e.ToString(), "Error");
                 throw;
             }
@@ -408,7 +408,8 @@ namespace Module.Host.TPM.Handlers.DataFlow
                 }
 
                 stopWatch.Stop();
-                handlerLogger.Write(true, String.Format("The filtering of promoes ended at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+                handlerLogger.Write(true, String.Format("The filtering of promoes ended at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)), "Message");
+                handlerLogger.UploadToBlob();
             }
         }
 
@@ -436,7 +437,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
         public static List<PromoDataFlowModule.PromoDataFlowSimpleModel> GetChangedProductsPromoes(
             DatabaseContext context, List<PromoDataFlowModule.PromoDataFlowSimpleModel> promoes, ILogWriter handlerLogger)
         {
-            handlerLogger.Write(true, String.Format("The setting of actual products for promoes began at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+            handlerLogger.Write(true, String.Format("The setting of actual products for promoes began at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)), "Message");
             var stopWatch = Stopwatch.StartNew();
 
             var promoesForRecalculation = new List<PromoDataFlowModule.PromoDataFlowSimpleModel>();
@@ -567,7 +568,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
 
             stopWatch.Stop();
             handlerLogger.Write(true, $"The setting of actual products for promoes duration:{stopWatch.Elapsed.Hours} hours and {stopWatch.Elapsed.Minutes} minutes and {stopWatch.Elapsed.Seconds} seconds.", "Timing");
-            handlerLogger.Write(true, String.Format("The setting of actual products for promoes ended at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+            handlerLogger.Write(true, String.Format("The setting of actual products for promoes ended at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)), "Message");
             return promoesForRecalculation;
         }
 

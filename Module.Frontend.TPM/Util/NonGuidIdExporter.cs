@@ -1,5 +1,6 @@
 ﻿using Core.Data;
 using Core.Settings;
+using Module.Frontend.TPM.Util;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using System;
@@ -8,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Web.Http.OData.Query;
+using Utility.FileWorker;
 
 /// <summary>
 /// Экспортирует записи с id не в GUID
@@ -57,6 +59,9 @@ namespace Frontend.Core.Extensions.Export {
                 }
                 wb.Write(stream);
             }
+            FileDispatcher fileDispatcher = new FileDispatcher();
+            string exportDir = AppSettingsManager.GetSetting("EXPORT_DIRECTORY", "~/ExportFiles");
+            fileDispatcher.UploadToBlob(Path.GetFileName(filename), Path.GetFullPath(filename), exportDir.Split('\\').Last());
         }
 
         protected IDictionary<string, object> CustomGetDictionary(object record) {

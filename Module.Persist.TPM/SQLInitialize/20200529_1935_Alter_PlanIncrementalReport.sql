@@ -1,4 +1,4 @@
-﻿ALTER VIEW [dbo].[PlanIncrementalReport]
+﻿ALTER VIEW [PlanIncrementalReport]
 AS
 	SELECT 
 			NEWID()                                    AS Id,

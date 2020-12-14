@@ -1,4 +1,4 @@
-﻿INSERT INTO [dbo].[Setting]
+﻿INSERT INTO [Setting]
            ([Name]
            ,[Type]
            ,[Value]
@@ -10,7 +10,7 @@
            ,N'Promotional statuses for which it is necessary to check the compliance of a new product with a filter')
 GO
 
-INSERT INTO [dbo].[Setting]
+INSERT INTO [Setting]
            ([Name]
            ,[Type]
            ,[Value]

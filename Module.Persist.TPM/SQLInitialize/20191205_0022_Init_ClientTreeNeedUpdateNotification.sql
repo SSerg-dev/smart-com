@@ -1,7 +1,7 @@
-DELETE [dbo].[Setting] WHERE [Name] = 'CLIENTTREE_NEED_UPDATE_NOTIFICATION_TEMPLATE_FILE'
+DELETE [Setting] WHERE [Name] = 'CLIENTTREE_NEED_UPDATE_NOTIFICATION_TEMPLATE_FILE'
 GO
 
-INSERT INTO [dbo].[Setting]
+INSERT INTO [Setting]
            ([Id]
            ,[Name]
            ,[Type]
@@ -15,10 +15,10 @@ INSERT INTO [dbo].[Setting]
            ,'On ClientTreeNeedUpdate notifications template')
 GO
 
-DELETE [dbo].[MailNotificationSetting] WHERE [Name] = 'CLIENTTREE_NEED_UPDATE_NOTIFICATION'
+DELETE [MailNotificationSetting] WHERE [Name] = 'CLIENTTREE_NEED_UPDATE_NOTIFICATION'
 GO
 
-INSERT INTO [dbo].[MailNotificationSetting]
+INSERT INTO [MailNotificationSetting]
 		   ([Name]
            ,[Description]
            ,[Subject]

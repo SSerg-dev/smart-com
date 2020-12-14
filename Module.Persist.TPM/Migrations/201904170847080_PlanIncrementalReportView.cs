@@ -6,11 +6,11 @@ namespace Module.Persist.TPM.Migrations
     {
         public override void Up()
         {
-            Sql("CREATE VIEW [dbo].[DemandCodeView] AS Select ct.ObjectId, " +
+            Sql("CREATE VIEW [DemandCodeView] AS Select ct.ObjectId, " +
                     "iif((ct.DemandCode IS NULL OR ct.DemandCode = ''), (SELECT TOP 1 DemandCode FROM ClientTree pct where pct.ObjectId = ct.parentId and(pct.StartDate <= SYSDATETIME() and(pct.EndDate IS NULL OR pct.EndDate >= SYSDATETIME()))), ct.DemandCode) as DemandCode " +
                     "From ClientTree ct " +
                     "where ct.StartDate <= SYSDATETIME() and(ct.EndDate IS NULL OR ct.EndDate >= SYSDATETIME());");
-            Sql("CREATE VIEW [dbo].[PlanIncrementalReport] AS SELECT " +
+            Sql("CREATE VIEW [PlanIncrementalReport] AS SELECT " +
                     "NEWID() as Id, " +
                     "joined.ZREP as ZREP, " +
                     "joined.DemandCode as DemandCode, " +
@@ -49,8 +49,8 @@ namespace Module.Persist.TPM.Migrations
 
         public override void Down()
         {
-            Sql("DROP VIEW [dbo].[PlanIncrementalReport]");
-            Sql("DROP VIEW [dbo].[DemandCodeView]");
+            Sql("DROP VIEW [PlanIncrementalReport]");
+            Sql("DROP VIEW [DemandCodeView]");
         }
     }
 }

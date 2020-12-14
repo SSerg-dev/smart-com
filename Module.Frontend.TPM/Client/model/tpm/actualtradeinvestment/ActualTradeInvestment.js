@@ -16,7 +16,7 @@ Ext.define('App.model.tpm.actualtradeinvestment.ActualTradeInvestment', {
         },
         {
             name: 'ClientTreeObjectId', type: 'int', mapping: 'ClientTree.ObjectId',
-            defaultFilterConfig: { valueField: 'ObjectId' }, breezeEntityType: 'ClientTree', hidden: false, isDefault: true
+            defaultFilterConfig: { valueField: 'ObjectId' }, hidden: false, isDefault: true
         },
         { name: 'TIType', type: 'string', hidden: false, isDefault: true },
         { name: 'TISubType', type: 'string', hidden: false, isDefault: true },

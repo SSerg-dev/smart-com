@@ -3,7 +3,7 @@ namespace Module.Persist.TPM.Migrations {
 
     public partial class PromoView : DbMigration {
         public override void Up() {
-            Sql("CREATE VIEW [dbo].[PromoView] AS SELECT pr.[Id]" +
+            Sql("CREATE VIEW [PromoView] AS SELECT pr.[Id]" +
                     ", pr.[Name]" +
                     ", mmc.[Name] as MarsMechanicName" +
                     ", mmt.[Name] as MarsMechanicTypeName" +
@@ -17,7 +17,7 @@ namespace Module.Persist.TPM.Migrations {
                     ", pr.[StartDate]" +
                     ", pr.[EndDate]" +
                     ", pr.[CalendarPriority]" +
-                "FROM [dbo].[Promo] pr " +
+                "FROM [Promo] pr " +
                 "LEFT JOIN PromoStatus ps ON pr.PromoStatusId = ps.Id " +
                 "LEFT JOIN Color cl ON pr.ColorId = cl.Id " +
                 "LEFT JOIN Mechanic mmc ON pr.MarsMechanicId = mmc.Id " +
@@ -26,7 +26,7 @@ namespace Module.Persist.TPM.Migrations {
         }
 
         public override void Down() {
-            Sql("DROP VIEW [dbo].[PromoView]");
+            Sql("DROP VIEW [PromoView]");
         }
     }
 }

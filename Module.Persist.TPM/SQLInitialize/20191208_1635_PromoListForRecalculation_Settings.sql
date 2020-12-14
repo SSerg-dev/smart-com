@@ -1,7 +1,7 @@
-﻿DELETE [dbo].[Setting] WHERE [Name] = 'PROMO_LIST_FOR_RECALCULATION'
+﻿DELETE [Setting] WHERE [Name] = 'PROMO_LIST_FOR_RECALCULATION'
 GO
 
-INSERT INTO [dbo].[Setting]
+INSERT INTO [Setting]
            ([Name]
            ,[Type]
            ,[Value]

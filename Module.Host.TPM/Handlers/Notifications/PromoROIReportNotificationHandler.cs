@@ -1,7 +1,7 @@
 ﻿using Looper.Core;
 
 using Module.Host.TPM.Actions.Notifications;
-
+using Module.Persist.TPM.Utils;
 using ProcessingHost.Handlers;
 
 using System;
@@ -16,12 +16,13 @@ namespace Module.Host.TPM.Handlers.Notifications
     {
         public override void Action(HandlerInfo info, ExecuteData data)
         {
-            ILogWriter handlerLogger = null;
+            LogWriter handlerLogger = null;
             var stopWatch = new Stopwatch();
             try
             {
-                handlerLogger = new FileLogWriter(info.HandlerId.ToString());
-                handlerLogger.Write(true, String.Format("The formation of the message began at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+                handlerLogger = new LogWriter(info.HandlerId.ToString());
+                handlerLogger.Write(true, String.Format("The formation of the message began at {0:yyyy-MM-dd HH:mm:ss}", 
+                    ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)), "Message");
 
                 var action = new PromoROIReportNotificationAction();
                 action.Execute();
@@ -58,7 +59,8 @@ namespace Module.Host.TPM.Handlers.Notifications
                 stopWatch.Stop();
                 if (handlerLogger != null)
                 {
-                    handlerLogger.Write(true, String.Format("Newsletter notifications ended at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", DateTimeOffset.Now, stopWatch.Elapsed.TotalSeconds), "Message");
+                    handlerLogger.Write(true, String.Format("Newsletter notifications ended at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), stopWatch.Elapsed.TotalSeconds), "Message");
+                    handlerLogger.UploadToBlob();
                 }
             }
         }

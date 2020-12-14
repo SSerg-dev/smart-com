@@ -1,4 +1,4 @@
-﻿ALTER VIEW [dbo].[PlanIncrementalReport]
+﻿ALTER VIEW [PlanIncrementalReport]
 AS
   SELECT 
          NEWID()                                    AS Id,
@@ -13,7 +13,7 @@ AS
          CONVERT(DATETIMEOFFSET(7), IIF((SELECT COUNT(*) FROM Dates WHERE OriginalDate = joined.WeekStartDate AND MarsDay = 1) > 0, 
 										joined.WeekStartDate, (SELECT TOP(1) OriginalDate FROM Dates WHERE OriginalDate < joined.WeekStartDate AND OriginalDate > DATEADD(DAY, -7, joined.WeekStartDate) AND MarsDay = 1))) 
 													AS WeekStartDate,
-		 [dbo].[WeekIncrementalQTY](joined.PlanProductIncrementalCaseQty,
+		 [WeekIncrementalQTY](joined.PlanProductIncrementalCaseQty,
                                     p.DispatchesStart,
                                     p.DispatchesEnd,
                                     p.DispatchDuration,

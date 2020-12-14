@@ -41,7 +41,9 @@ namespace Module.Host.TPM.Actions.Notifications {
             RawFilters = rawFilters;
         }
         public override void Execute() {
+            PerformanceLogger performanceLogger = new PerformanceLogger();
             try {
+                performanceLogger.Start();
                 using (DatabaseContext context = new DatabaseContext()) {
 
                     IQueryable<PromoView> query = (GetConstraintedQuery(context));
@@ -85,6 +87,7 @@ namespace Module.Host.TPM.Actions.Notifications {
                 Errors.Add(msg);
             } finally {
                 logger.Trace("Finish");
+                performanceLogger.Stop();
             }
         }
 
@@ -93,6 +96,8 @@ namespace Module.Host.TPM.Actions.Notifications {
         /// </summary>
         /// <returns></returns>
         private IQueryable<PromoView> GetConstraintedQuery(DatabaseContext context) {
+            PerformanceLogger performanceLogger = new PerformanceLogger();
+            performanceLogger.Start();
             string role = context.Roles.FirstOrDefault(r => r.Id == RoleId).SystemName;
             IList<Constraint> constraints = context.Constraints
                 .Where(x => x.UserRole.UserId.Equals(UserId) && x.UserRole.Role.SystemName.Equals(role))
@@ -106,6 +111,7 @@ namespace Module.Host.TPM.Actions.Notifications {
             {
                 query = query.Where(e => e.PromoStatusSystemName != "Draft" || e.CreatorId == UserId);
             }
+            performanceLogger.Stop();
             return query;
         }
     }

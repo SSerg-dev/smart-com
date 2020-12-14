@@ -1,15 +1,15 @@
-DELETE FROM [dbo].[LoopHandler]
+DELETE FROM [LoopHandler]
       WHERE [Name] = 'Module.Host.TPM.Handlers.Notifications.RejectPromoNotificationHandler'
 GO
 
-DELETE FROM [dbo].[Recipient]
+DELETE FROM [Recipient]
       WHERE [MailNotificationSettingId] IN (SELECT Id FROM MailNotificationSetting WHERE [Name] = 'REJECT_PROMO_NOTIFICATION')
 GO
 
-DELETE FROM [dbo].[MailNotificationSetting] 
+DELETE FROM [MailNotificationSetting] 
 	  WHERE [Name] = 'REJECT_PROMO_NOTIFICATION'
 GO
 
-DELETE FROM [dbo].[Setting]
+DELETE FROM [Setting]
       WHERE [Name] = 'PROMO_REJECT_NOTIFICATION_TEMPLATE_FILE'
 GO

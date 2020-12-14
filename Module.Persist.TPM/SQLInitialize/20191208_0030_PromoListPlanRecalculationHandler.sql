@@ -1,7 +1,7 @@
-﻿DELETE [dbo].[LoopHandler] WHERE [Name] = 'Module.Host.TPM.Handlers.PromoListPlanRecalculationHandler'
+﻿DELETE [LoopHandler] WHERE [Name] = 'Module.Host.TPM.Handlers.PromoListPlanRecalculationHandler'
 GO
 
-INSERT INTO [dbo].[LoopHandler]
+INSERT INTO [LoopHandler]
            ([Id]
            ,[Description]
            ,[Name]

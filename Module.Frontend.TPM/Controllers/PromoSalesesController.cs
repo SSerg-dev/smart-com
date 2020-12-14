@@ -135,10 +135,10 @@ namespace Module.Frontend.TPM.Controllers
                 string dispatchesStart = (result.DispatchesStart == null) ? "NULL" : String.Format("'{0}'", result.DispatchesStart.Value);
                 string dispatchesEnd = (result.DispatchesEnd == null) ? "NULL" : String.Format("'{0}'", result.DispatchesEnd.Value);
 
-                string insertScript = String.Format("INSERT INTO [dbo].[PromoSales] ([Id],[Name],[ClientId],[BrandId],[BrandTechId],[PromoStatusId],[MechanicId],[StartDate],[EndDate],[DispatchesStart],[DispatchesEnd],[BudgetItemId],[Plan],[Fact]) VALUES (NEWID(), '{0}', '{1}', NULL, NULL, '{4}', NULL, {6}, {7}, {8}, {9}, '{10}', {11}, {12})",
+                string insertScript = String.Format("INSERT INTO [DefaultSchemaSetting].[PromoSales] ([Id],[Name],[ClientId],[BrandId],[BrandTechId],[PromoStatusId],[MechanicId],[StartDate],[EndDate],[DispatchesStart],[DispatchesEnd],[BudgetItemId],[Plan],[Fact]) VALUES (NEWID(), '{0}', '{1}', NULL, NULL, '{4}', NULL, {6}, {7}, {8}, {9}, '{10}', {11}, {12})",
                     result.Name, result.ClientId, result.BrandId, result.BrandTechId, result.PromoStatusId, result.MechanicId, startDate, endDate, dispatchesStart, dispatchesEnd, result.BudgetItemId, result.Plan, result.Fact);
 
-                Context.Database.ExecuteSqlCommand(insertScript);                
+                Context.ExecuteSqlCommand(insertScript);                
             }
             catch (Exception e)
             {
@@ -221,7 +221,7 @@ namespace Module.Frontend.TPM.Controllers
             return Context.Set<PromoSales>().Count(e => e.Id == key) > 0;
         }
 
-        private IEnumerable<Column> GetExportSettings()
+        public static IEnumerable<Column> GetExportSettings()
         {
             IEnumerable<Column> columns = new List<Column>() {
                 new Column() { Order = 0, Field = "Number", Header = "Promo ID", Quoting = false },
@@ -248,22 +248,44 @@ namespace Module.Frontend.TPM.Controllers
         [ClaimsAuthorize]
         public IHttpActionResult ExportXLSX(ODataQueryOptions<PromoSales> options)
         {
-            try
+            IQueryable results = options.ApplyTo(GetConstraintedQuery().Where(x => !x.Disabled));
+            UserInfo user = authorizationManager.GetCurrentUser();
+            Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
+            RoleInfo role = authorizationManager.GetCurrentRole();
+            Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
+            using (DatabaseContext context = new DatabaseContext())
             {
-                IQueryable results = options.ApplyTo(GetConstraintedQuery().Where(x => !x.Disabled));
-                IEnumerable<Column> columns = GetExportSettings();
-                XLSXExporter exporter = new XLSXExporter(columns);
-                UserInfo user = authorizationManager.GetCurrentUser();
-                string username = user == null ? "" : user.Login;
-                string filePath = exporter.GetExportFileName("PromoSales", username);
-                exporter.Export(results, filePath);
-                string filename = System.IO.Path.GetFileName(filePath);
-                return Content<string>(HttpStatusCode.OK, filename);
+                HandlerData data = new HandlerData();
+                string handlerName = "ExportHandler";
+
+                HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("TModel", typeof(PromoSales), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(PromoSalesesController), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PromoSalesesController.GetExportSettings), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
+
+                LoopHandler handler = new LoopHandler()
+                {
+                    Id = Guid.NewGuid(),
+                    ConfigurationName = "PROCESSING",
+                    Description = $"Export {nameof(PromoSales)} dictionary",
+                    Name = "Module.Host.TPM.Handlers." + handlerName,
+                    ExecutionPeriod = null,
+                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                    LastExecutionDate = null,
+                    NextExecutionDate = null,
+                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                    UserId = userId,
+                    RoleId = roleId
+                };
+                handler.SetParameterData(data);
+                context.LoopHandlers.Add(handler);
+                context.SaveChanges();
             }
-            catch (Exception e)
-            {
-                return Content<string>(HttpStatusCode.InternalServerError, e.Message);
-            }
+
+            return Content(HttpStatusCode.OK, "success");
         }
 
         [ClaimsAuthorize]
@@ -323,6 +345,7 @@ namespace Module.Frontend.TPM.Controllers
                     Name = "Module.Host.TPM.Handlers." + importHandler,
                     ExecutionPeriod = null,
                     CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                    RunGroup = typeof(ImportPromoSales).Name,
                     LastExecutionDate = null,
                     NextExecutionDate = null,
                     ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,

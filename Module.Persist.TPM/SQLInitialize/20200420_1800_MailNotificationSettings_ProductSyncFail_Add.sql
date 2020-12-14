@@ -1,8 +1,8 @@
-DELETE [dbo].[MailNotificationSetting] WHERE [Name] = 'PRODUCT_SYNC_FAIL_NOTIFICATION'
+DELETE [MailNotificationSetting] WHERE [Name] = 'PRODUCT_SYNC_FAIL_NOTIFICATION'
 
 GO
 
-INSERT INTO [dbo].[MailNotificationSetting]
+INSERT INTO [MailNotificationSetting]
            ([Id]
            ,[Name]
            ,[Description]

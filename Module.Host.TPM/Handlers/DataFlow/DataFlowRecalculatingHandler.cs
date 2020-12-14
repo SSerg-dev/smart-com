@@ -32,7 +32,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
         {
             using (DatabaseContext context = new DatabaseContext())
             {
-                ILogWriter handlerLogger = null;
+                LogWriter handlerLogger = null;
                 string logLine = null;
                 string message = null;
                 Stopwatch sw = new Stopwatch();
@@ -43,9 +43,9 @@ namespace Module.Host.TPM.Handlers.DataFlow
                 try
                 {
                     //добавляем новый тип тега
-                    handlerLogger = new FileLogWriter(info.HandlerId.ToString(), 
+                    handlerLogger = new LogWriter(info.HandlerId.ToString(), 
                                                       new Dictionary<string, string>(){ ["Timing"] = "TIMING" });
-                    handlerLogger.Write(true, String.Format("The recalculation of promo parameters began at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+                    handlerLogger.Write(true, String.Format("The recalculation of promo parameters began at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)), "Message");
 
                     //статусы, в которых не должен производиться пересчет плановых параметров промо
                     ISettingsManager settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
@@ -54,7 +54,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
 
                     //-------------DataFlow_Part01-----------------------------------
                     swDataFlow_Part01.Start();
-                    handlerLogger.Write(true, String.Format("The recalculation of promo parameters (DataFlow Part 1) began at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+                    handlerLogger.Write(true, String.Format("The recalculation of promo parameters (DataFlow Part 1) began at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)), "Message");
                     List<Guid> promoIdsForRecalculating = HandlerDataHelper.GetIncomingArgument<List<Guid>>("PromoIdsForRecalculating", info.Data, false);
                     Guid RoleId = HandlerDataHelper.GetIncomingArgument<Guid>("RoleId", info.Data, false);
                     var role = context.Set<Role>().FirstOrDefault(x => x.Id == RoleId);
@@ -219,7 +219,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
 						// пересчет плановых BTL бюджетов
 						if (btl != null && !btlNumbers.Contains(btl.Number))
 						{
-							BudgetsPromoCalculation.CalculateBTLBudgets(btl, true, false, handlerLogger, context);
+							BudgetsPromoCalculation.CalculateBTLBudgets(btl, true, false, handlerLogger.CurrentLogWriter, context);
 							btlNumbers.Add(btl.Number);
 
 							swBTLBudgetParameters_Part01.Stop();
@@ -302,12 +302,12 @@ namespace Module.Host.TPM.Handlers.DataFlow
                     handlerLogger.Write(true, String.Format("Total amount of BTL for recalculating: {0}", btlNumbers.Count), "Message");
                     handlerLogger.Write(true, String.Format("Total amount of promo support for recalculating: {0}", promoSupportIdsForRecalculating.Count), "Message");
                     swDataFlow_Part01.Stop();
-                    handlerLogger.Write(true, String.Format("The recalculation of promo parameters (DataFlow Part 1) ended at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", DateTimeOffset.Now, swDataFlow_Part01.Elapsed.TotalSeconds), "Message");
+                    handlerLogger.Write(true, String.Format("The recalculation of promo parameters (DataFlow Part 1) ended at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), swDataFlow_Part01.Elapsed.TotalSeconds), "Message");
 
                     //-------------DataFlow_Part02-----------------------------------
                     
                     swDataFlow_Part02.Start();
-                    handlerLogger.Write(true, String.Format("The recalculation of promo parameters (DataFlow Part 2) began at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+                    handlerLogger.Write(true, String.Format("The recalculation of promo parameters (DataFlow Part 2) began at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)), "Message");
                     List<Guid> promoIdsForAllRecalculating = HandlerDataHelper.GetIncomingArgument<List<Guid>>("PromoIdsForAllRecalculating", info.Data, false);
                     handlerLogger.Write(true, String.Format("Total amount of promo for recalculating in DataFLow Part 2: {0}", promoIdsForAllRecalculating.Count), "Message");
 
@@ -351,7 +351,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
                                 // записываем ошибки если они есть
                                 if (message != null)
                                 {
-                                    WriteErrorsInLog(handlerLogger, message);
+                                    WriteErrorsInLog(handlerLogger.CurrentLogWriter, message);
                                 }
                             }
 
@@ -397,7 +397,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
                         // пересчет плановых BTL бюджетов
                         if (btl != null)
                         {
-                            BudgetsPromoCalculation.CalculateBTLBudgets(btl, false, true, handlerLogger, context);
+                            BudgetsPromoCalculation.CalculateBTLBudgets(btl, false, true, handlerLogger.CurrentLogWriter, context);
                         }
 
                         swBTLBudgetParameters_Part02.Stop();
@@ -493,7 +493,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
                             // записываем ошибки если они есть
                             if (message != null)
                             {
-                                WriteErrorsInLog(handlerLogger, message);
+                                WriteErrorsInLog(handlerLogger.CurrentLogWriter, message);
                             }
 
                             totalSecondActualPromoCalculatingPart02 += swActualPromoParameters_Part02.Elapsed.TotalSeconds;
@@ -535,7 +535,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
                         // записываем ошибки если они есть
                         if (message != null)
                         {
-                            WriteErrorsInLog(handlerLogger, message);
+                            WriteErrorsInLog(handlerLogger.CurrentLogWriter, message);
                         }
 
                         totalSecondActualPromoCalculatingPart02 += swActualPromoParameters_Part02.Elapsed.TotalSeconds;
@@ -565,7 +565,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
                     }
 
                     swDataFlow_Part02.Stop();
-                    handlerLogger.Write(true, String.Format("The recalculation of promo parameters (DataFlow Part 2) ended at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", DateTimeOffset.Now, swDataFlow_Part02.Elapsed.TotalSeconds), "Message");
+                    handlerLogger.Write(true, String.Format("The recalculation of promo parameters (DataFlow Part 2) ended at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), swDataFlow_Part02.Elapsed.TotalSeconds), "Message");
                 }
                 catch (Exception e)
                 {
@@ -583,8 +583,9 @@ namespace Module.Host.TPM.Handlers.DataFlow
                     sw.Stop();
                     if (handlerLogger != null)
                     {
-                        handlerLogger.Write(true, String.Format("The recalculation of promo parameters ended at {0:yyyy-MM-dd HH:mm:ss}. Duration part 1: {1} seconds. Duration part 2: {2} seconds. Total duration: {3} seconds", 
-                            DateTimeOffset.Now, swDataFlow_Part01.Elapsed.TotalSeconds, swDataFlow_Part02.Elapsed.TotalSeconds, sw.Elapsed.TotalSeconds), "Message");
+                        handlerLogger.Write(true, String.Format("The recalculation of promo parameters ended at {0:yyyy-MM-dd HH:mm:ss}. Duration part 1: {1} seconds. Duration part 2: {2} seconds. Total duration: {3} seconds",
+                            ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), swDataFlow_Part01.Elapsed.TotalSeconds, swDataFlow_Part02.Elapsed.TotalSeconds, sw.Elapsed.TotalSeconds), "Message");
+                        handlerLogger.UploadToBlob();
                     }
                     CalculationTaskManager.UnLockPromoForHandler(info.HandlerId);
 

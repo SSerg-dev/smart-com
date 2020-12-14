@@ -147,7 +147,7 @@
     },
 
 
-    // блокировка/разблокировка кнопки Применить при изменении набора галочек в гриде привязки ClientTree к EventClientTree
+    //// блокировка/разблокировка кнопки Применить при изменении набора галочек в гриде привязки ClientTree к EventClientTree
     onChooseClientTreeGridCheckChange: function (item) {
         var checkedRows = item.checkedRows;
         var grid = item.view.up('grid');

@@ -19,6 +19,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Net.Mime;
+using Utility.FileWorker;
 
 namespace Module.Host.TPM.Actions.Notifications
 {
@@ -34,10 +35,10 @@ namespace Module.Host.TPM.Actions.Notifications
             {
                 using (var databaseContext = new DatabaseContext())
                 {
-                    var currentMarsWeekName = (databaseContext.Database.SqlQuery<string>(
-                        $"SELECT TOP(1) MarsWeekName FROM Dates WHERE OriginalDate = '{DateTime.Now}'")).FirstOrDefault();
-
-                    if (currentMarsWeekName ==  _settingsManager.GetSetting<string>("PROMO_ROI_REPORT_MARS_WEEK_NAME", "W4"))
+                    var currentMarsWeekName = (databaseContext.SqlQuery<string>(
+                        $"SELECT TOP(1) MarsWeekName FROM [DefaultSchemaSetting].Dates WHERE OriginalDate = '{DateTime.Now}'")).FirstOrDefault();
+                    currentMarsWeekName = "W4";
+                    if (currentMarsWeekName == _settingsManager.GetSetting<string>("PROMO_ROI_REPORT_MARS_WEEK_NAME", "W4"))
                     {
                         var currentNotification = databaseContext.Set<MailNotificationSetting>().FirstOrDefault(x => x.Name == _notificationName);
                         if (currentNotification == null)
@@ -178,7 +179,7 @@ namespace Module.Host.TPM.Actions.Notifications
                         {
                             string runtimeName = AppSettingsManager.GetSetting("RUNTIME_ENVIROMENT", "");
                             if (!String.IsNullOrEmpty(runtimeName))
-                            { 
+                            {
                                 subject = $"{runtimeName} {subject}";
                             }
                             Results.Add($"({nameof(PromoROIReportNotificationAction.Execute)} method. Timing: {stopWatch.Elapsed}): Subject: {subject}", new Object());
@@ -196,8 +197,8 @@ namespace Module.Host.TPM.Actions.Notifications
                         }
 
                         var marsDayFullNameWithoutYear = _settingsManager.GetSetting<string>("PROMO_ROI_REPORT_MARS_DAY_FULL_NAME_WITHOUT_YEAR", "P5 W1 D1");
-                        var originalDateForOnlyCurrentYear = (databaseContext.Database.SqlQuery<DateTime>(
-                            $"SELECT TOP(1) OriginalDate FROM Dates WHERE MarsYear = {DateTimeOffset.Now.Year} AND MarsDayFullName = '{DateTimeOffset.Now.Year + " " + marsDayFullNameWithoutYear}' ORDER BY OriginalDate")).FirstOrDefault();
+                        var originalDateForOnlyCurrentYear = (databaseContext.SqlQuery<DateTime>(
+                            $"SELECT TOP(1) OriginalDate FROM [DefaultSchemaSetting].Dates WHERE MarsYear = {DateTimeOffset.Now.Year} AND MarsDayFullName = '{DateTimeOffset.Now.Year + " " + marsDayFullNameWithoutYear}' ORDER BY OriginalDate")).FirstOrDefault();
 
                         var needSendOnlyCurrentYear = DateTime.Now >= originalDateForOnlyCurrentYear;
 
@@ -263,8 +264,19 @@ namespace Module.Host.TPM.Actions.Notifications
             {
                 var year = DateTimeOffset.Now.Year - 1;
                 subject += " " + year;
-                var promoROIReportFileName = PromoROIReportsController.ExportXLSXYearStatic(databaseContext, user, year, defaultRole);
-                SendEmail(mailTarget, recipientEmail, recipientCopy, recipientShadowCopy, subject, body, promoROIReportFileName, year);
+                var promoROIReportFileName = PromoROIReportsController.ExportXLSXYearStatic(databaseContext, user, year, defaultRole, yearInName: true);
+
+                var notificationService = AppSettingsManager.GetSetting<String>("NotificationService", "NLog");
+
+                if (notificationService.Equals("LogicApp"))
+                {
+                    SendEmail(recipientEmail, subject, body, promoROIReportFileName);
+                }
+                else if (notificationService.Equals("NLog"))
+                {
+                    SendEmail(mailTarget, recipientEmail, recipientCopy, recipientShadowCopy, subject, body, promoROIReportFileName);
+                }
+
                 logger.Info($"({nameof(PromoROIReportNotificationAction.SendEmailPreviousYearPromo)} method. Timing: {stopWatch.Elapsed}): Succeeded.");
             }
             catch (Exception exception)
@@ -286,8 +298,19 @@ namespace Module.Host.TPM.Actions.Notifications
             {
                 var year = DateTimeOffset.Now.Year;
                 subject += " " + year;
-                var promoROIReportFileName = PromoROIReportsController.ExportXLSXYearStatic(databaseContext, user, year, defaultRole);
-                SendEmail(mailTarget, recipientEmail, recipientCopy, recipientShadowCopy, subject, body, promoROIReportFileName, year);
+                var promoROIReportFileName = PromoROIReportsController.ExportXLSXYearStatic(databaseContext, user, year, defaultRole, yearInName: true);
+
+                var notificationService = AppSettingsManager.GetSetting<String>("NotificationService", "NLog");
+
+                if (notificationService.Equals("LogicApp"))
+                {
+                    SendEmail(recipientEmail, subject, body, promoROIReportFileName);
+                }
+                else if (notificationService.Equals("NLog"))
+                {
+                    SendEmail(mailTarget, recipientEmail, recipientCopy, recipientShadowCopy, subject, body, promoROIReportFileName);
+                }
+
                 logger.Info($"({nameof(PromoROIReportNotificationAction.SendEmailCurrentYearPromo)} method. Timing: {stopWatch.Elapsed}): Succeeded.");
             }
             catch (Exception exception)
@@ -302,14 +325,43 @@ namespace Module.Host.TPM.Actions.Notifications
             }
         }
 
-        public void SendEmail(MailTarget mailTarget, string recipient, string recipientCopy, string recipientShadowCopy, string subject, string body, string attachmentFileName, int year)
+        public void SendEmail(string email, string subject, string body, string attachmentFileName)
+        {
+            var stopWatch = Stopwatch.StartNew();
+            try
+            {
+                FileDispatcher fileDispatcher = new FileDispatcher();
+                string exportedFilesDirectory = fileDispatcher.GetFilePath(AppSettingsManager.GetSetting<string>("EXPORT_DIRECTORY", @"C:\Windows\Temp\TPM\ExportFiles"));
+
+                IDictionary<string, string> parameters = new Dictionary<string, string>();
+                parameters.Add("FileName", attachmentFileName);
+                parameters.Add("FilePath", exportedFilesDirectory);
+                parameters.Add("Subject", subject);
+
+                SendNotificationByEmails(body, _notificationName, new string[] { email }, parameters);
+
+                logger.Info($"({nameof(PromoROIReportNotificationAction.SendEmail)} method. Timing: {stopWatch.Elapsed}): Succeeded.");
+            }
+            catch (Exception exception)
+            {
+                logger.Error(exception, $"({nameof(PromoROIReportNotificationAction.SendEmail)} method. Timing: {stopWatch.Elapsed}): Failed.");
+                throw exception;
+            }
+            finally
+            {
+                stopWatch.Stop();
+                logger.Info($"({nameof(PromoROIReportNotificationAction.SendEmail)} method. Duration: {stopWatch.Elapsed}): Completed.");
+            }
+        }
+
+        public void SendEmail(MailTarget mailTarget, string recipient, string recipientCopy, string recipientShadowCopy, string subject, string body, string attachmentFileName)
         {
             var stopWatch = Stopwatch.StartNew();
             try
             {
                 var smtpClient = new SmtpClient();
                 var mailMessage = new MailMessage();
-                var from = ((SimpleLayout)mailTarget.From).OriginalText; 
+                var from = ((SimpleLayout)mailTarget.From).OriginalText;
                 var fromMailAddress = new MailAddress(from);
                 var host = ((SimpleLayout)mailTarget.SmtpServer).OriginalText;
 
@@ -320,7 +372,7 @@ namespace Module.Host.TPM.Actions.Notifications
                 var user = ((SimpleLayout)mailTarget.SmtpUserName).OriginalText;
                 var password = ((SimpleLayout)mailTarget.SmtpPassword).OriginalText;
 
-                if (!String.IsNullOrEmpty(user) && !String.IsNullOrEmpty(password)) 
+                if (!String.IsNullOrEmpty(user) && !String.IsNullOrEmpty(password))
                 {
                     smtpClient.UseDefaultCredentials = false;
                     smtpClient.Credentials = new NetworkCredential(user, password);
@@ -343,10 +395,14 @@ namespace Module.Host.TPM.Actions.Notifications
                     mailMessage.Bcc.Add(recipientShadowCopy);
                 }
 
-                mailMessage.Attachments.Add(CreateAttachmet(attachmentFileName, year));
+                mailMessage.Attachments.Add(CreateAttachmet(attachmentFileName));
                 mailMessage.To.Add(recipient);
-            
-                smtpClient.Send(mailMessage);
+
+                bool isAllowNotificationsSending = AppSettingsManager.GetSetting<bool>("AllowNotificationsSending", true);
+                if (isAllowNotificationsSending)
+                {
+                    smtpClient.Send(mailMessage);
+                }
                 logger.Info($"({nameof(PromoROIReportNotificationAction.SendEmail)} method. Timing: {stopWatch.Elapsed}): Succeeded.");
             }
             catch (Exception exception)
@@ -361,18 +417,14 @@ namespace Module.Host.TPM.Actions.Notifications
             }
         }
 
-        
-        private Attachment CreateAttachmet(string filePath, int year)
+
+        private Attachment CreateAttachmet(string filePath)
         {
             var stopWatch = Stopwatch.StartNew();
             try
             {
                 string exportedFilesDirectory = AppSettingsManager.GetSetting<string>("EXPORT_DIRECTORY", @"C:\Windows\Temp\TPM\ExportFiles");
                 filePath = Path.Combine(exportedFilesDirectory, filePath);
-
-                var newFilePath = filePath.Insert(filePath.LastIndexOf("."), "_" + year);
-                File.Move(filePath, newFilePath);
-                filePath = newFilePath;
 
                 logger.Info($"({nameof(PromoROIReportNotificationAction.CreateAttachmet)} method. Timing: {stopWatch.Elapsed}): File path: {filePath}.", new Object());
                 Results.Add($"({nameof(PromoROIReportNotificationAction.CreateAttachmet)} method. Timing: {stopWatch.Elapsed}): File path: {filePath}.", new Object());

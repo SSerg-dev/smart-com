@@ -88,7 +88,6 @@
         rollingvolumeeditor.down('#edit').setVisible(!disabled);
     },
 
-    
     onGridAfterrender: function (grid) {
         this.callParent(arguments);
     

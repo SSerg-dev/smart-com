@@ -8,7 +8,6 @@ namespace Module.Persist.TPM.Model.History
     [AssociatedWith(typeof(IncrementalPromo))]
     public class HistoricalIncrementalPromo : BaseHistoricalEntity<System.Guid>
     {
-        public Guid Id { get; set; }
         public Guid PromoId { get; set; }
         public Guid ProductId { get; set; }
 

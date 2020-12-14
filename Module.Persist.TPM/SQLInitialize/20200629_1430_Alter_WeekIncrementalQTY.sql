@@ -3,7 +3,7 @@ GO
 SET QUOTED_IDENTIFIER OFF
 GO
 
-CREATE OR ALTER FUNCTION [dbo].[WeekIncrementalQTY](@PromoProductIncrementalQty FLOAT,
+CREATE OR ALTER FUNCTION [WeekIncrementalQTY](@PromoProductIncrementalQty FLOAT,
 											@PromoDispatchesStart DATETIMEOFFSET(7),
 											@PromoDispatchesEnd DATETIMEOFFSET(7),
 											@PromoDuration INT,

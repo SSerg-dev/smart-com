@@ -99,7 +99,7 @@ Ext.define('App.util.core.UserInfo', function () {
             this.fireEvent('beforeload', this);
 
             Ext.Ajax.request({
-                method: 'PUT',
+                method: 'POST',
                 url: this.url,
                 scope: this,
                 urlParams: {

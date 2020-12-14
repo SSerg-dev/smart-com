@@ -314,7 +314,8 @@
 						case 'DemandFinance':
 							left += 2 * boxWidth;
 							break;
-
+						case 'ErrorApproval':
+							return 'display: none;';
 						case 'DemandPlanningNonego':
 							break;
 

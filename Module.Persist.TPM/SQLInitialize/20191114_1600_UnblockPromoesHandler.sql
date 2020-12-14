@@ -1,4 +1,4 @@
-﻿INSERT INTO [dbo].[LoopHandler]
+﻿INSERT INTO [LoopHandler]
            ([Id]
 		   ,[Description]
            ,[Name]
@@ -28,7 +28,7 @@
            ,NULL)
 GO
 
-INSERT INTO [dbo].[Setting]
+INSERT INTO [Setting]
            ([Name]
            ,[Type]
            ,[Value]

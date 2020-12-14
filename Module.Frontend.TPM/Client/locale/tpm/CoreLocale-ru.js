@@ -39,6 +39,7 @@
     'editingModeTitle': 'Режим редактирования',
     'cancelEditMsg': 'При выходе из режима редактирования все несохраненные изменения будут утеряны. Продолжить?',
     'passwordChangingWindowTitle': 'Изменение пароля',
+    'userInfoTitle': 'Информация о пользователе',
     'colorEmptyText': 'Цвет не выбран',
     'closeChartConfirmMessage': 'При закрытии окна текущие данные не сохранятся. Хотите продолжить?',
     'viewTextDataWindowTitle': 'Подробно',

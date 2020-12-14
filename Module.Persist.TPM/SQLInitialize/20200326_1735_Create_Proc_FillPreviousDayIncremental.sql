@@ -2,16 +2,16 @@
 AS
 BEGIN
 	IF EXISTS (SELECT * FROM SYS.INDEXES WHERE NAME = N'IX_PreviousDayIncremental_NONCLUSTERED')
-		DROP INDEX IX_PreviousDayIncremental_NONCLUSTERED ON [dbo].[PreviousDayIncremental];
+		DROP INDEX IX_PreviousDayIncremental_NONCLUSTERED ON [PreviousDayIncremental];
 							
-	TRUNCATE TABLE [dbo].[PreviousDayIncremental];
-	INSERT INTO [dbo].[PreviousDayIncremental]
+	TRUNCATE TABLE [PreviousDayIncremental];
+	INSERT INTO [PreviousDayIncremental]
 		(DemandCode, DMDGroup, Id, IncrementalQty, LastChangeDate, ProductId, PromoId, Week) 
-		SELECT DemandCode, DMDGroup, Id, IncrementalQty, LastChangeDate, ProductId, PromoId, Week FROM [dbo].[CurrentDayIncremental]; 
+		SELECT DemandCode, DMDGroup, Id, IncrementalQty, LastChangeDate, ProductId, PromoId, Week FROM [CurrentDayIncremental]; 
 								
 	IF NOT EXISTS (SELECT * FROM SYS.INDEXES WHERE NAME = N'IX_PreviousDayIncremental_NONCLUSTERED')
 		CREATE NONCLUSTERED INDEX IX_PreviousDayIncremental_NONCLUSTERED
-		ON [dbo].[PreviousDayIncremental] (Id ASC) 
+		ON [PreviousDayIncremental] (Id ASC) 
 		INCLUDE (
 			WEEK,
 			PromoId,

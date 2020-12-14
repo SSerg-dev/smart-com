@@ -19,6 +19,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Utility.FileWorker;
 using Utility.Import;
 using Utility.Import.Cache;
 using Utility.Import.ImportModelBuilder;
@@ -31,11 +32,13 @@ namespace Module.Host.TPM.Actions
     {
         private readonly Guid _userId;
         private readonly Guid _handlerId;
+        LogWriter handlerLogger = null;
 
         public FullXLSXUpdateImportPromoProductsCorrectionAction(FullImportSettings settings, Guid userId, Guid handlerId)
         {
             this._userId = userId;
             this._handlerId = handlerId;
+            handlerLogger = new LogWriter(handlerId.ToString());
 
             UserId = settings.UserId;
             RoleId = settings.RoleId;
@@ -126,9 +129,11 @@ namespace Module.Host.TPM.Actions
         /// </summary>
         /// <returns></returns>
         protected virtual IList<IEntity<Guid>> ParseImportFile() {
+            var fileDispatcher = new FileDispatcher();
             string importDir = AppSettingsManager.GetSetting<string>("IMPORT_DIRECTORY", "ImportFiles");
             string importFilePath = Path.Combine(importDir, ImportFile.Name);
-            if (!File.Exists(importFilePath)) {
+            if (!fileDispatcher.IsExists(importDir, ImportFile.Name))
+            {
                 throw new Exception("Import File not found");
             }
 
@@ -257,7 +262,7 @@ namespace Module.Host.TPM.Actions
                 if (hasSuccessList) {
                     // Закончить импорт
                     var items = BeforeInsert(records, context).ToList();
-                    resultRecordCount = InsertDataToDatabase(items, context);
+                    resultRecordCount = InsertDataToDatabase(items, context, ref warningRecords);
                 }
                 logger.Trace("Persist models inserted");
                 context.SaveChanges();
@@ -367,14 +372,29 @@ namespace Module.Host.TPM.Actions
             return records;
         }
 
-        protected int InsertDataToDatabase(IEnumerable<PromoProductsCorrection> importedPromoProductCorrections, DatabaseContext databaseContext)
+        protected int InsertDataToDatabase(IEnumerable<PromoProductsCorrection> importedPromoProductCorrections, DatabaseContext databaseContext, ref ConcurrentBag<Tuple<IEntity<Guid>, string>> warningRecords)
         {
             var currentUser = databaseContext.Set<User>().FirstOrDefault(x => x.Id == this._userId);
             var promoProductsCorrectionChangeIncidents = new List<PromoProductsCorrection>();
 
+            var promoProductIds = importedPromoProductCorrections.Select(ppc => ppc.PromoProductId);
+            var promoProducts = databaseContext.Set<PromoProduct>().Where(pp => promoProductIds.Contains(pp.Id)).ToList();
+            var promoIds = promoProducts.Select(pp => pp.PromoId);
+            var promoes = databaseContext.Set<Promo>().Where(p => promoIds.Contains(p.Id)).ToList();
+
             var promoProductCorrections = databaseContext.Set<PromoProductsCorrection>();
             foreach (var importedPromoProductCorrection in importedPromoProductCorrections)
             {
+                var promoProduct = promoProducts.FirstOrDefault(q => q.Id == importedPromoProductCorrection.PromoProductId);
+                var promo = promoes.FirstOrDefault(q => promoProduct != null && q.Id == promoProduct.PromoId);
+                
+                if (promo.InOut.HasValue && promo.InOut.Value)
+                {
+                    warningRecords.Add(new Tuple<IEntity<Guid>, string>(importedPromoProductCorrection, $"Promo Product Correction was not imported for In-Out promo №{promo.Number}"));
+                    handlerLogger.Write(true , $"Promo Product Correction was not imported for In-Out promo №{promo.Number}", "Warning");
+                    continue;
+                }
+
                 var currentPromoProductCorrections = promoProductCorrections.Where(x => x.PromoProductId == importedPromoProductCorrection.PromoProductId && !x.Disabled);
                 if (currentPromoProductCorrections.Count() > 0)
                 {

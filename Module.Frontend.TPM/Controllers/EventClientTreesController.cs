@@ -156,12 +156,12 @@ namespace Module.Frontend.TPM.Controllers
                 foreach (int clientId in removeExceptResult)
                 {
                     // добавление строк в скрипт
-                    deleteScript += String.Format("DELETE FROM [dbo].[EventClientTree] WHERE [EventId] = '{0}' and [ClientTreeId] = {1}", eventId, clientId);
+                    deleteScript += String.Format("DELETE FROM [DefaultSchemaSetting].[EventClientTree] WHERE [EventId] = '{0}' and [ClientTreeId] = {1}", eventId, clientId);
                 }
                 // выполнить скрипт, если он не пустой
                 if (!String.IsNullOrEmpty(deleteScript))
                 {
-                    Context.Database.ExecuteSqlCommand(deleteScript);
+                    Context.ExecuteSqlCommand(deleteScript);
                 }
 
                 // Добавление записей
@@ -229,8 +229,8 @@ namespace Module.Frontend.TPM.Controllers
                     return NotFound();
                 }
 
-                string deleteScript = String.Format("DELETE FROM [dbo].[EventClientTree] WHERE [Id] = '{0}'", model.Id.ToString());
-                Context.Database.ExecuteSqlCommand(deleteScript);
+                string deleteScript = String.Format("DELETE FROM [DefaultSchemaSetting].[EventClientTree] WHERE [Id] = '{0}'", model.Id.ToString());
+                Context.ExecuteSqlCommand(deleteScript);
 
                 return StatusCode(HttpStatusCode.NoContent);
             }

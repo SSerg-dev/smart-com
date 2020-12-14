@@ -3,8 +3,8 @@ namespace Module.Persist.TPM.Migrations {
 
     public partial class ClientShareDemandCode : DbMigration {
         public override void Up() {
-            Sql("DROP VIEW [dbo].[ClientTreeSharesView]");
-            Sql("CREATE VIEW [dbo].[ClientTreeSharesView] AS " +
+            Sql("DROP VIEW [ClientTreeSharesView]");
+            Sql("CREATE VIEW [ClientTreeSharesView] AS " +
                 "WITH CTE(Id, ObjectId, Name, parentId, IsBaseClient, LevelS, BOI, EndDate, StartDate, ResultNameStr, depth, LeafShare, DemandCode) AS " +
                 "(SELECT Id, ObjectId, [Name], parentId, IsBaseClient, 0 AS LevelS, ObjectId as BOI, EndDate, StartDate, [Name] as ResultNameStr, depth, Share as LeafShare, DemandCode " +
                 "FROM ClientTree WHERE(EndDate IS NULL OR EndDate > GETDATE()) UNION ALL " +
@@ -17,8 +17,8 @@ namespace Module.Persist.TPM.Migrations {
         }
 
         public override void Down() {
-            Sql("DROP VIEW [dbo].[ClientTreeSharesView]");
-            Sql("CREATE VIEW [dbo].[ClientTreeSharesView] AS " +
+            Sql("DROP VIEW [ClientTreeSharesView]");
+            Sql("CREATE VIEW [ClientTreeSharesView] AS " +
                 "WITH CTE(Id, ObjectId, Name, parentId, IsBaseClient, LevelS, BOI, EndDate, StartDate, ResultNameStr, depth, LeafShare) AS " +
                 "(SELECT Id, ObjectId, [Name], parentId, IsBaseClient, 0 AS LevelS, ObjectId as BOI, EndDate, StartDate, [Name] as ResultNameStr, depth, Share as LeafShare " +
                 "FROM ClientTree WHERE(EndDate IS NULL OR EndDate > GETDATE()) UNION ALL " +

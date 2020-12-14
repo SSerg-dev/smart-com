@@ -37,7 +37,10 @@ using System.Net.Http.Headers;
 using Module.Persist.TPM.CalculatePromoParametersModule;
 using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.SimpleModel;
+using Module.Persist.TPM.Utils;
 using System.Web;
+using NLog;
+using System.Diagnostics;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -55,6 +58,8 @@ namespace Module.Frontend.TPM.Controllers
 
         protected IQueryable<Promo> GetConstraintedQuery(bool canChangeStateOnly = false)
         {
+            PerformanceLogger logger = new PerformanceLogger();
+            logger.Start();
             UserInfo user = authorizationManager.GetCurrentUser();
             string role = authorizationManager.GetCurrentRoleName();
             IList<Constraint> constraints = user.Id.HasValue ? Context.Constraints
@@ -70,6 +75,7 @@ namespace Module.Frontend.TPM.Controllers
             {
                 query = query.Where(e => e.PromoStatus.SystemName != "Draft" || e.CreatorId == user.Id);
             }
+            logger.Stop();
             return query;
         }
 
@@ -945,6 +951,8 @@ namespace Module.Frontend.TPM.Controllers
                     patch.TrySetPropertyValue("PromoStatusId", draftPublishedStatus.Id);
                     patch.TrySetPropertyValue("RejectReasonId", rejectReasonId);
 
+                    // Для сохранения корректного значения после Patch
+                    promo.DeviationCoefficient *= 100;
                     // если возвращается Update, то всё прошло без ошибок
                     var result = Patch(promo.Id, patch);
                     if (result is System.Web.Http.OData.Results.UpdatedODataResult<Promo>)
@@ -1042,22 +1050,44 @@ namespace Module.Frontend.TPM.Controllers
         [ClaimsAuthorize]
         public IHttpActionResult ExportXLSX(ODataQueryOptions<Promo> options)
         {
-            try
+            UserInfo user = authorizationManager.GetCurrentUser();
+            Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
+            RoleInfo role = authorizationManager.GetCurrentRole();
+            Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
+            IQueryable results = options.ApplyTo(GetConstraintedQuery().Where(x => !x.Disabled));
+            using (DatabaseContext context = new DatabaseContext())
             {
-                IQueryable results = options.ApplyTo(GetConstraintedQuery().Where(x => !x.Disabled));
-                IEnumerable<Column> columns = PromoHelper.GetExportSettings();
-                XLSXExporter exporter = new XLSXExporter(columns);
-                UserInfo user = authorizationManager.GetCurrentUser();
-                string username = user == null ? "" : user.Login;
-                string filePath = exporter.GetExportFileName("Promo", username);
-                exporter.Export(results, filePath);
-                string filename = System.IO.Path.GetFileName(filePath);
-                return Content<string>(HttpStatusCode.OK, filename);
+                HandlerData data = new HandlerData();
+                string handlerName = "ExportHandler";
+
+                HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("TModel", typeof(Promo), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(PromoHelper), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PromoHelper.GetExportSettings), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
+
+                LoopHandler handler = new LoopHandler()
+                {
+                    Id = Guid.NewGuid(),
+                    ConfigurationName = "PROCESSING",
+                    Description = $"Export {nameof(Promo)} dictionary",
+                    Name = "Module.Host.TPM.Handlers." + handlerName,
+                    ExecutionPeriod = null,
+                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                    LastExecutionDate = null,
+                    NextExecutionDate = null,
+                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                    UserId = userId,
+                    RoleId = roleId
+                };
+                handler.SetParameterData(data);
+                context.LoopHandlers.Add(handler);
+                context.SaveChanges();
             }
-            catch (Exception e)
-            {
-                return Content<string>(HttpStatusCode.InternalServerError, e.Message);
-            }
+
+            return Content(HttpStatusCode.OK, "success");
         }
 
         /// <summary>
@@ -1394,6 +1424,7 @@ namespace Module.Frontend.TPM.Controllers
                     Description = "Загрузка импорта из файла " + typeof(ImportPromo).Name,
                     //Name = "ProcessingHost.Handlers.Import." + importHandler,
                     Name = "Module.Host.TPM.Handlers." + importHandler,
+                    RunGroup = typeof(ImportPromo).Name,
                     ExecutionPeriod = null,
                     CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
                     LastExecutionDate = null,
@@ -1753,6 +1784,7 @@ namespace Module.Frontend.TPM.Controllers
                     Description = "Update uplift value",
                     Name = "Module.Host.TPM.Handlers.UpdateUpliftHandler",
                     ExecutionPeriod = null,
+                    RunGroup = "UpdateUplift",
                     CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
                     LastExecutionDate = null,
                     NextExecutionDate = null,

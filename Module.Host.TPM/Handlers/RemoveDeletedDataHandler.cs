@@ -15,15 +15,15 @@ namespace Module.Host.TPM.Handlers
     {
         public override void Action(HandlerInfo info, ExecuteData data)
         {
-            ILogWriter handlerLogger = null;
+            LogWriter handlerLogger = null;
 
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
             try
             {
-                handlerLogger = new FileLogWriter(info.HandlerId.ToString());
-                handlerLogger.Write(true, String.Format("Remove deleted data from DB started at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+                handlerLogger = new LogWriter(info.HandlerId.ToString());
+                handlerLogger.Write(true, String.Format("Remove deleted data from DB started at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)), "Message");
 
                 using (DatabaseContext context = new DatabaseContext())
                 {
@@ -32,8 +32,8 @@ namespace Module.Host.TPM.Handlers
                     {
                         try
                         {
-                            string sqlCommand = "DELETE FROM [dbo].[BaseLine] WHERE [Disabled] = 1 and [DeletedDate] IS NOT NULL and DATEADD(DAY, -(43), SYSDATETIME()) >= [DeletedDate]";
-                            context.Database.ExecuteSqlCommand(sqlCommand);
+                            string sqlCommand = "DELETE FROM [DefaultSchemaSetting].[BaseLine] WHERE [Disabled] = 1 and [DeletedDate] IS NOT NULL and DATEADD(DAY, -(43), SYSDATETIME()) >= [DeletedDate]";
+                            context.ExecuteSqlCommand(sqlCommand);
 
                             transaction.Commit();
                         }
@@ -53,8 +53,8 @@ namespace Module.Host.TPM.Handlers
                     {
                         try
                         {
-                            string sqlCommand = "DELETE FROM [dbo].[ChangesIncident] WHERE [CreateDate] IS NOT NULL and DATEADD(DAY, -(14), SYSDATETIME()) >= [CreateDate]";
-                            context.Database.ExecuteSqlCommand(sqlCommand);
+                            string sqlCommand = "DELETE FROM [DefaultSchemaSetting].[ChangesIncident] WHERE [CreateDate] IS NOT NULL and DATEADD(DAY, -(14), SYSDATETIME()) >= [CreateDate]";
+                            context.ExecuteSqlCommand(sqlCommand);
 
                             transaction.Commit();
                         }
@@ -74,8 +74,8 @@ namespace Module.Host.TPM.Handlers
                     {
                         try
                         {
-                            string sqlCommand = "DELETE FROM [dbo].[PromoProductsCorrection] WHERE [TempId] IS NOT NULL and DATEADD(DAY, -(2), SYSDATETIME()) >= [ChangeDate]";
-                            context.Database.ExecuteSqlCommand(sqlCommand);
+                            string sqlCommand = "DELETE FROM [DefaultSchemaSetting].[PromoProductsCorrection] WHERE [TempId] IS NOT NULL and DATEADD(DAY, -(2), SYSDATETIME()) >= [ChangeDate]";
+                            context.ExecuteSqlCommand(sqlCommand);
 
                             transaction.Commit();
                         }
@@ -108,7 +108,8 @@ namespace Module.Host.TPM.Handlers
 
                 if (handlerLogger != null)
                 {
-                    handlerLogger.Write(true, String.Format("Remove deleted data from DB ended at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", DateTimeOffset.Now, sw.Elapsed.TotalSeconds), "Message");
+                    handlerLogger.Write(true, String.Format("Remove deleted data from DB ended at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), sw.Elapsed.TotalSeconds), "Message");
+                    handlerLogger.UploadToBlob();
                 }
             }
         }

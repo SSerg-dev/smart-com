@@ -1,9 +1,9 @@
 
-DELETE [dbo].[Setting] WHERE [Name] = 'TIME_TO_RESTART_MAIN_NIGHT_PROCESS'
+DELETE [Setting] WHERE [Name] = 'TIME_TO_RESTART_MAIN_NIGHT_PROCESS'
 
 GO
 
-INSERT INTO [dbo].[Setting]
+INSERT INTO [Setting]
            ([Id]
            ,[Name]
            ,[Type]

@@ -18,16 +18,16 @@ namespace Module.Host.TPM.Handlers
         public override void Action(HandlerInfo handlerInfo, ExecuteData executeData)
         {
             var databaseContext = new DatabaseContext();
-            var fileLogWriter = new FileLogWriter(handlerInfo.HandlerId.ToString());
+            var fileLogWriter = new LogWriter(handlerInfo.HandlerId.ToString());
 
             try
             {
-                fileLogWriter.Write(true, String.Format("Price List Merge began at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+                fileLogWriter.Write(true, String.Format("Price List Merge began at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)), "Message");
 
                 var needMerge = HandlerDataHelper.GetIncomingArgument<bool>("NeedMerge", handlerInfo.Data, false);
                 if (needMerge)
                 {
-                    var priceListMergeAction = new PriceListMergeAction(databaseContext, fileLogWriter, executeData);
+                    var priceListMergeAction = new PriceListMergeAction(databaseContext, fileLogWriter.CurrentLogWriter, executeData);
                     priceListMergeAction.Execute();
                 }
                 else
@@ -73,7 +73,8 @@ namespace Module.Host.TPM.Handlers
                     (databaseContext as IDisposable)?.Dispose();
                 }
 
-                fileLogWriter.Write(true, String.Format("Price List Merge ended at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+                fileLogWriter.Write(true, String.Format("Price List Merge ended at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)), "Message");
+                fileLogWriter.UploadToBlob();
             }
         }
     }

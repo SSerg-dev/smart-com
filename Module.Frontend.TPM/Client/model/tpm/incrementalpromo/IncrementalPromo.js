@@ -20,7 +20,7 @@
         },
         {
             name: 'PromoNumber', type: 'int', mapping: 'Promo.Number', defaultFilterConfig: { valueField: 'Number' },
-            breezeEntityType: 'Promo', hidden: false, isDefault: true, isKey: true
+            hidden: false, isDefault: true, isKey: true
         },
         {name: 'PromoName', type: 'string', hidden: false, isDefault: true, mapping: 'Promo.Name' },  
         { name: 'PlanPromoIncrementalCases', type: 'float', hidden: false, isDefault: true, useNull: true },

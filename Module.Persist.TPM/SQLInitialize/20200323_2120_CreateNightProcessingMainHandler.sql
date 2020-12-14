@@ -1,8 +1,8 @@
-DELETE [dbo].[LoopHandler] WHERE [Name] = 'Module.Host.TPM.Handlers.NightProcessingMainHandler'
+DELETE [LoopHandler] WHERE [Name] = 'Module.Host.TPM.Handlers.NightProcessingMainHandler'
 GO
 
 DECLARE @nextDay DATETIMEOFFSET(7) = DATEADD(DAY, 1, SYSDATETIME());
-INSERT INTO [dbo].[LoopHandler]
+INSERT INTO [LoopHandler]
            ([Id]
            ,[Description]
            ,[Name]

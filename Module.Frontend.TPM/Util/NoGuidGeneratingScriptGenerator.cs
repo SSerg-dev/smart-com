@@ -59,11 +59,11 @@ namespace Module.Frontend.TPM.Util
         private const string DatabaseDateTimeOffsetFormat = "yyyy-MM-ddTHH:mm:sszzz";
         private const string DatabaseDateTimeFormat = "yyyy-MM-ddTHH:mm:ss";
 
-        private const string InsertTemplate = "INSERT INTO {0} ({1}) VALUES ({2})";
+        private const string InsertTemplate = "INSERT INTO [DefaultSchemaSetting].{0} ({1}) VALUES ({2})";
 
-        private const string UpdateTemplate = "UPDATE {0} SET {1} WHERE {2}";
-        private const string DeleteTemplate = "UPDATE {0} SET {1} WHERE {2}";
-        private const string HardDeleteTemplate = "DELETE FROM {0} WHERE {1}";
+        private const string UpdateTemplate = "UPDATE [DefaultSchemaSetting].{0} SET {1} WHERE {2}";
+        private const string DeleteTemplate = "UPDATE [DefaultSchemaSetting].{0} SET {1} WHERE {2}";
+        private const string HardDeleteTemplate = "DELETE FROM [DefaultSchemaSetting].{0} WHERE {1}";
 
         private PropertyInfo DisabledProperty { get; set; }
         private PropertyInfo DeletedDateProperty { get; set; }

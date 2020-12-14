@@ -25,6 +25,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using Utility;
+using Utility.FileWorker;
 using Utility.Import;
 using Utility.Import.Cache;
 using Utility.Import.ImportModelBuilder;
@@ -122,9 +123,11 @@ namespace Module.Host.TPM.Actions {
         /// </summary>
         /// <returns></returns>
         private IList<IEntity<Guid>> ParseImportFile() {
+            var fileDispatcher = new FileDispatcher();
             string importDir = AppSettingsManager.GetSetting<string>("IMPORT_DIRECTORY", "ImportFiles");
             string importFilePath = Path.Combine(importDir, ImportFile.Name);
-            if (!File.Exists(importFilePath)) {
+            if (!fileDispatcher.IsExists(importDir, ImportFile.Name))
+            {
                 throw new Exception("Import File not found");
             }
 

@@ -2,6 +2,7 @@
 using Interfaces.Implementation.Action;
 using Looper.Core;
 using Looper.Parameters;
+using Module.Persist.TPM.Utils;
 using ProcessingHost.Handlers;
 using System;
 using System.Diagnostics;
@@ -16,11 +17,11 @@ namespace Module.Host.TPM.Handlers.Interface.Incoming
 
         public override void Action(HandlerInfo info, ExecuteData data)
         {
-            ILogWriter handlerLogger = null;
+            LogWriter handlerLogger = null;
             try
             {
-                handlerLogger = new FileLogWriter(info.HandlerId.ToString());
-                handlerLogger.Write(true, String.Format("Task started at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+                handlerLogger = new LogWriter(info.HandlerId.ToString());
+                handlerLogger.Write(true, String.Format("Task started at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)), "Message");
 
                 // передать HandlerId, InterfaceId и UserId
                 Guid interfaceId = HandlerDataHelper.GetIncomingArgument<Guid>("InterfaceId", info.Data);
@@ -60,7 +61,7 @@ namespace Module.Host.TPM.Handlers.Interface.Incoming
                 //HandlerDataHelper.SaveOutcomingArgument<InterfaceFileListModel>("FileList", viewFiles, info.Data, true, false);
                 HandlerDataHelper.SaveOutcomingArgument<int>("ErrorCount", action.Errors.Count, info.Data);
                 HandlerDataHelper.SaveOutcomingArgument<int>("WarningCount", action.Warnings.Count, info.Data);
-                handlerLogger.Write(true, String.Format("Task ended at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+                handlerLogger.Write(true, String.Format("Task ended at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)), "Message");
             }
             catch (Exception e)
             {
@@ -70,6 +71,10 @@ namespace Module.Host.TPM.Handlers.Interface.Incoming
                 {
                     handlerLogger.Write(true, e.ToString(), "Error");
                 }
+            }
+            finally
+            {
+                handlerLogger.UploadToBlob();
             }
         }
     }

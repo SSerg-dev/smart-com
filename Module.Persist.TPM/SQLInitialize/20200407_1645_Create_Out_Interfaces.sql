@@ -5,11 +5,11 @@ DELETE FROM Interface WHERE [Name] = N'INCREMENTAL_TO_APOLLO'
 DELETE FROM LoopHandler WHERE [Name] = 'Module.Host.TPM.Handlers.Interface.Outcoming.OutputIncrementalProcessHandler'
 OR [Name] = 'ProcessingHost.Handlers.Interface.Outcoming.FileSendHandler'
 
-INSERT [dbo].[Interface] ([Id], [Name], [Direction], [Description]) 
+INSERT [Interface] ([Id], [Name], [Direction], [Description]) 
 VALUES (N'4C373105-CD78-EA11-A608-7470FD19293C', N'INCREMENTAL_TO_APOLLO', N'OUTBOUND', N'Output Incremental To Apollo')
 GO
 
-INSERT [dbo].[CSVExtractInterfaceSetting] ([Id], [InterfaceId], [Delimiter], [UseQuoting], [QuoteChar], [FileNameMask], [ExtractHandler]) 
+INSERT [CSVExtractInterfaceSetting] ([Id], [InterfaceId], [Delimiter], [UseQuoting], [QuoteChar], [FileNameMask], [ExtractHandler]) 
 VALUES (N'4D373105-CD78-EA11-A608-7470FD19293C'
 	,N'4C373105-CD78-EA11-A608-7470FD19293C'
 	,N','
@@ -19,7 +19,7 @@ VALUES (N'4D373105-CD78-EA11-A608-7470FD19293C'
 	,N'Module.Host.TPM.Handlers.Interface.Outcoming.OutputIncrementalProcessHandler')
 GO
 
-INSERT [dbo].[FileSendInterfaceSetting] ([Id], [InterfaceId], [TargetPath], [TargetFileMask], [SendHandler])  
+INSERT [FileSendInterfaceSetting] ([Id], [InterfaceId], [TargetPath], [TargetFileMask], [SendHandler])  
 VALUES (N'4E373105-CD78-EA11-A608-7470FD19293C'
 	,N'4C373105-CD78-EA11-A608-7470FD19293C'
 	,N''
@@ -27,7 +27,7 @@ VALUES (N'4E373105-CD78-EA11-A608-7470FD19293C'
 	,N'ProcessingHost.Handlers.Interface.Outcoming.FileSendHandler')
 GO
 
-INSERT [dbo].[LoopHandler] ([Id], [Description], [Name], [ExecutionPeriod], [ExecutionMode], [CreateDate], [LastExecutionDate], [NextExecutionDate], [ConfigurationName], [Status], [RunGroup], [UserId], [RoleId]) 
+INSERT [LoopHandler] ([Id], [Description], [Name], [ExecutionPeriod], [ExecutionMode], [CreateDate], [LastExecutionDate], [NextExecutionDate], [ConfigurationName], [Status], [RunGroup], [UserId], [RoleId]) 
 VALUES (N'4D10125B-0785-4EC4-8802-524C1550CD1E'
 	,N'Outcoming incremental processing'
 	,N'Module.Host.TPM.Handlers.Interface.Outcoming.OutputIncrementalProcessHandler'
@@ -44,7 +44,7 @@ VALUES (N'4D10125B-0785-4EC4-8802-524C1550CD1E'
 GO
 
 DECLARE @nextTwoHours DATETIMEOFFSET(7) = DATEADD(HOUR, 2, GETDATE());
-INSERT [dbo].[LoopHandler] ([Id], [Description], [Name], [ExecutionPeriod], [ExecutionMode], [CreateDate], [LastExecutionDate], [NextExecutionDate], [ConfigurationName], [Status], [RunGroup], [UserId], [RoleId]) 
+INSERT [LoopHandler] ([Id], [Description], [Name], [ExecutionPeriod], [ExecutionMode], [CreateDate], [LastExecutionDate], [NextExecutionDate], [ConfigurationName], [Status], [RunGroup], [UserId], [RoleId]) 
 VALUES (N'81DB97ED-B9A8-421E-9690-2DD98E33BF36'
 	,N'Outcoming files sending'
 	,N'ProcessingHost.Handlers.Interface.Outcoming.FileSendHandler'

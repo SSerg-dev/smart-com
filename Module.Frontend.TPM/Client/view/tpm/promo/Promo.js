@@ -8,6 +8,38 @@
     getDefaultResource: function () {
         return 'PromoGridViews';
     },
+    customHeaderItems: [
+        ResourceMgr.getAdditionalMenu('core').base = {
+            glyph: 0xf068,
+            text: l10n.ns('core', 'additionalMenu').value('additionalBtn'),
+
+            menu: {
+                xtype: 'customheadermenu',
+                items: [{
+                    glyph: 0xf4eb,
+                    itemId: 'gridsettings',
+                    text: l10n.ns('core', 'additionalMenu').value('gridSettingsMenuItem'),
+                    action: 'SaveGridSettings',
+                    resource: 'Security'
+                }]
+            }
+        },
+        ResourceMgr.getAdditionalMenu('core').import = {
+            glyph: 0xf21b,
+            text: l10n.ns('core', 'additionalMenu').value('importExportBtn'),
+
+            menu: {
+                xtype: 'customheadermenu',
+                items: [{
+                    glyph: 0xf21d,
+                    itemId: 'exportxlsxbutton',
+                    exactlyModelCompare: true,
+                    text: l10n.ns('core', 'additionalMenu').value('exportXLSX'),
+                    action: 'ExportXLSX'
+                }]
+            }
+        }
+    ],
     dockedItems: [{
         xtype: 'custombigtoolbar',
         dock: 'right',
@@ -430,21 +462,7 @@
                 width: 125,
                 filter: {
                     xtype: 'marsdatefield',
-                    operator: 'like',
-                    valueToRaw: function (value) {
-                        // в cs между годом и остальной частью добавляется пробел
-                        // а в js нет, поэтому добавляем пробел
-                        var result = value;
-
-                        if (value) {
-                            var stringValue = value.toString();
-
-                            if (stringValue.indexOf('P') >= 0)
-                                result = stringValue.replace('P', ' P')
-                        }
-
-                        return result;
-                    },
+                    operator: 'like'
                 }
             }, {
                 xtype: 'datecolumn',
@@ -476,21 +494,7 @@
                 width: 155,
                 filter: {
                     xtype: 'marsdatefield',
-                    operator: 'like',
-                    valueToRaw: function (value) {
-                        // в cs между годом и остальной частью добавляется пробел
-                        // а в js нет, поэтому добавляем пробел
-                        var result = value;
-
-                        if (value) {
-                            var stringValue = value.toString();
-
-                            if (stringValue.indexOf('P') >= 0)
-                                result = stringValue.replace('P', ' P')
-                        }
-
-                        return result;
-                    },
+                    operator: 'like'
                 }
             }, {
                 text: l10n.ns('tpm', 'Promo').value('PromoStatusName'),

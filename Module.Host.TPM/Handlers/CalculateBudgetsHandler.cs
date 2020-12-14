@@ -15,6 +15,7 @@ using System.Data;
 using Module.Persist.TPM.CalculatePromoParametersModule;
 using System.Threading;
 using Module.Persist.TPM;
+using Module.Persist.TPM.Utils;
 
 namespace Module.Host.TPM.Handlers
 {
@@ -26,14 +27,14 @@ namespace Module.Host.TPM.Handlers
         public override void Action(HandlerInfo info, ExecuteData data)
         {
 
-            ILogWriter handlerLogger = null;
+            LogWriter handlerLogger = null;
             string logLine = "";
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
-            handlerLogger = new FileLogWriter(info.HandlerId.ToString());
+            handlerLogger = new LogWriter(info.HandlerId.ToString());
             handlerLogger.Write(true, "");
-            logLine = String.Format("The calculation of the budgets started at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now);
+            logLine = String.Format("The calculation of the budgets started at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow));
             handlerLogger.Write(true, logLine, "Message");
 
             // список ID подстатей
@@ -106,7 +107,7 @@ namespace Module.Host.TPM.Handlers
 
                             if (oldActualMarketingTI[i] != promo.ActualPromoTIMarketing || oldActualCostProd[i] != promo.ActualPromoCostProduction)
                             {
-                                CalulateActual(promo, context, handlerLogger);
+                                CalulateActual(promo, context, handlerLogger.CurrentLogWriter);
                             }
 
                             logLine = String.Format("Calculation of parameters for promo № {0} completed.", promo.Number);
@@ -131,8 +132,9 @@ namespace Module.Host.TPM.Handlers
 
             sw.Stop();
             handlerLogger.Write(true, "");
-            logLine = String.Format("The calculation of the budgets ended at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", DateTimeOffset.Now, sw.Elapsed.TotalSeconds);
+            logLine = String.Format("The calculation of the budgets ended at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), sw.Elapsed.TotalSeconds);
             handlerLogger.Write(true, logLine, "Message");
+            handlerLogger.UploadToBlob();
         }
 
         private void CalulateActual(Promo promo, DatabaseContext context, ILogWriter handlerLogger)

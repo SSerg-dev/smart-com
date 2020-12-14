@@ -1,8 +1,8 @@
 
-DELETE FROM [dbo].[PromoTypes]
+DELETE FROM [PromoTypes]
 GO
 
-INSERT INTO [dbo].[PromoTypes]
+INSERT INTO [PromoTypes]
            ([Disabled]
            ,[Name]
            ,[Glyph])

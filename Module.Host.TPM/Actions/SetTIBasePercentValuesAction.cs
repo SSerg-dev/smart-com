@@ -19,7 +19,7 @@ namespace Module.Host.TPM.Actions
     /// </summary>
     public class SetTIBasePercentValuesAction : BaseAction
     {
-        private readonly string updatePromoScriptTemplate = "UPDATE [Promo] SET [PlanTIBasePercent] = {0}, [ActualTIBasePercent] = {1} WHERE Id = '{2}' \n";
+        private readonly string updatePromoScriptTemplate = "UPDATE [DefaultSchemaSetting].[Promo] SET [PlanTIBasePercent] = {0}, [ActualTIBasePercent] = {1} WHERE Id = '{2}' \n";
 
         public override void Execute()
         {
@@ -82,7 +82,7 @@ namespace Module.Host.TPM.Actions
                     foreach (var s in updatePromoScript.Partition(10000))
                     {
                         string updateScript = String.Join("", s);
-                        context.Database.ExecuteSqlCommand(updateScript);
+                        context.ExecuteSqlCommand(updateScript);
                     }
                 }
             }

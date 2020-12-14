@@ -13,16 +13,16 @@ namespace Module.Persist.TPM.Migrations
             AddColumn("dbo.RollingVolume", "RollingVolumesTotal", c => c.Double());
             AddColumn("dbo.RollingVolume", "ManualRollingTotalVolumes", c => c.Double());
             DropColumn("dbo.RollingVolume", "RollingVolumes");
-            Sql("ALTER TABLE [dbo].[RollingVolume] DROP COLUMN [RollingVolumesCorrection];" +
+            Sql("ALTER TABLE [RollingVolume] DROP COLUMN [RollingVolumesCorrection];" +
 
-                "ALTER TABLE[dbo].[RollingVolume]  ADD RollingVolumesCorrection AS(ManualRollingTotalVolumes - RollingVolumesTotal)");
+                "ALTER TABLE[RollingVolume]  ADD RollingVolumesCorrection AS(ManualRollingTotalVolumes - RollingVolumesTotal)");
         }
         
         public override void Down()
         {
-            Sql("ALTER TABLE [dbo].[RollingVolume] DROP COLUMN [RollingVolumesCorrection];" +
+            Sql("ALTER TABLE [RollingVolume] DROP COLUMN [RollingVolumesCorrection];" +
 
-             "ALTER TABLE[dbo].[RollingVolume]  ADD [RollingVolumesCorrection ] [float] NULL");
+             "ALTER TABLE[RollingVolume]  ADD [RollingVolumesCorrection ] [float] NULL");
 
             AddColumn("dbo.RollingVolume", "RollingVolumes", c => c.Double());
             DropColumn("dbo.RollingVolume", "ManualRollingTotalVolumes");

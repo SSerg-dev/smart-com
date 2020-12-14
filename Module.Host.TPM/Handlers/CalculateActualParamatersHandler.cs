@@ -4,6 +4,7 @@ using Module.Frontend.TPM.Util;
 using Module.Persist.TPM;
 using Module.Persist.TPM.CalculatePromoParametersModule;
 using Module.Persist.TPM.Model.TPM;
+using Module.Persist.TPM.Utils;
 using Persist;
 using Persist.Model;
 using ProcessingHost.Handlers;
@@ -22,12 +23,12 @@ namespace Module.Host.TPM.Handlers
         public string logLine = "";
         public override void Action(HandlerInfo info, ExecuteData data)
         {
-            ILogWriter handlerLogger = null;
+            LogWriter handlerLogger = null;
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
-            handlerLogger = new FileLogWriter(info.HandlerId.ToString());
-            logLine = String.Format("The calculation of the actual parameters began at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now);
+            handlerLogger = new LogWriter(info.HandlerId.ToString());
+            logLine = String.Format("The calculation of the actual parameters began at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow));
             handlerLogger.Write(true, logLine, "Message");
             handlerLogger.Write(true, "");
 
@@ -65,16 +66,16 @@ namespace Module.Host.TPM.Handlers
                             errorString = ActualProductParametersCalculation.CalculatePromoProductParameters(promo, context, isSupportAdmin: isSupportAdmin, needToSaveChanges: needToSaveChanges);
                             // записываем ошибки если они есть
                             if (errorString != null)
-                                WriteErrorsInLog(handlerLogger, errorString);
+                                WriteErrorsInLog(handlerLogger.CurrentLogWriter, errorString);
                         }
 
                         // пересчет фактических бюджетов (из-за LSV)
-                        BudgetsPromoCalculation.CalculateBudgets(promo, false, true, handlerLogger, info.HandlerId, context);
+                        BudgetsPromoCalculation.CalculateBudgets(promo, false, true, handlerLogger.CurrentLogWriter, info.HandlerId, context);
 
                         BTL btl = context.Set<BTLPromo>().Where(x => x.PromoId == promo.Id && !x.Disabled && x.DeletedDate == null).FirstOrDefault()?.BTL;
                         if (btl != null)
                         {
-                            BudgetsPromoCalculation.CalculateBTLBudgets(btl, false, true, handlerLogger, context);
+                            BudgetsPromoCalculation.CalculateBTLBudgets(btl, false, true, handlerLogger.CurrentLogWriter, context);
                         }
 
                         // Параметры промо считаем только, если промо из TLC или если были загружены Actuals
@@ -85,7 +86,7 @@ namespace Module.Host.TPM.Handlers
 
                         // записываем ошибки если они есть
                         if (errorString != null)
-                            WriteErrorsInLog(handlerLogger, errorString);
+                            WriteErrorsInLog(handlerLogger.CurrentLogWriter, errorString);
                     }
 
                     //CalculationTaskManager.UnLockPromo(promo.Id);
@@ -101,8 +102,9 @@ namespace Module.Host.TPM.Handlers
 
             sw.Stop();
             handlerLogger.Write(true, "");
-            logLine = String.Format("The calculation of the actual parameters was completed at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", DateTimeOffset.Now, sw.Elapsed.TotalSeconds);
+            logLine = String.Format("The calculation of the actual parameters was completed at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), sw.Elapsed.TotalSeconds);
             handlerLogger.Write(true, logLine, "Message");
+            handlerLogger.UploadToBlob();
         }
 
         /// <summary>

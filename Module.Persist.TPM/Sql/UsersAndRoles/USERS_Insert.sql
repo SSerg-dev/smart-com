@@ -1,4 +1,4 @@
-UPDATE [dbo].[User] SET [Disabled] = 1 WHERE [Name]='smartcom\marina.kryuchkova'
+UPDATE [User] SET [Disabled] = 1 WHERE [Name]='smartcom\marina.kryuchkova'
 OR [Name]='smartcom\artem.morozov'
 OR [User].[Name]='smartcom\mikhail.volovich'
 OR [User].[Name]='smartcom\denis.moskvitin'
@@ -24,7 +24,7 @@ OR [User].[Name]='smartcom\alexander.spivak'
 OR [User].[Name]='smartcom\evgeny.bondarenko' 
 GO
 
-INSERT INTO [dbo].[User] ([Id], [DeletedDate], [Disabled], [Email], [Name], [Password], [PasswordSalt], [Sid])
+INSERT INTO [User] ([Id], [DeletedDate], [Disabled], [Email], [Name], [Password], [PasswordSalt], [Sid])
 VALUES 
 (NEWID(), NULL, 0, NULL, 'smartcom\marina.kryuchkova', NULL, NULL, 'S-1-5-21-3086326434-3727772798-3018203464-1002'),
 (NEWID(), NULL, 0, NULL, 'smartcom\artem.morozov', NULL, NULL, 'S-1-5-21-1833980595-3398159026-1082415255-1303'),

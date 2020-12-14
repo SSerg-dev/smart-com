@@ -43,7 +43,7 @@ namespace Module.Frontend.TPM.Controllers
             this.authorizationManager = authorizationManager;
         }
 
-        protected IQueryable<PromoProduct> GetConstraintedQuery(bool updateActualsMode = false, Guid? promoIdInUpdateActualsMode = null)
+        protected IQueryable<PromoProduct> GetConstraintedQuery(bool updateActualsMode = false, Guid? promoIdInUpdateActualsMode = null, bool isActualsExport = false)
         {
             UserInfo user = authorizationManager.GetCurrentUser();
             string role = authorizationManager.GetCurrentRoleName();
@@ -54,28 +54,36 @@ namespace Module.Frontend.TPM.Controllers
             IQueryable<PromoProduct> query = null;
             if (updateActualsMode && promoIdInUpdateActualsMode != null)
             {
-                var sumGroup = Context.Set<PromoProduct>().Where(e => e.PromoId == promoIdInUpdateActualsMode && !e.Disabled)
-                                                          .GroupBy(x => x.EAN_PC)
-                                                          .Select(s => new
-                                                          {
-                                                              sumActualProductPCQty = s.Sum(x => x.ActualProductPCQty),
-                                                              sumActualProductPCLSV = s.Sum(x => x.ActualProductPCLSV),
-                                                              promoProduct = s.Select(x => x)
-                                                          })
-                                                          .ToList();
-
-                List<PromoProduct> promoProductList = new List<PromoProduct>();
-                foreach(var item in sumGroup)
+                if (isActualsExport)
                 {
-                    PromoProduct pp = item.promoProduct.ToList()[0];
-                    pp.ActualProductPCQty = item.sumActualProductPCQty;
-                    pp.ActualProductPCLSV = item.sumActualProductPCLSV;
-
-                    promoProductList.Add(pp);
+                    var result = Context.Set<PromoProduct>().Where(e => e.PromoId == promoIdInUpdateActualsMode && !e.Disabled);
+                    return result;
                 }
+                else
+                {
+                    var sumGroup = Context.Set<PromoProduct>().Where(e => e.PromoId == promoIdInUpdateActualsMode && !e.Disabled)
+                                                              .GroupBy(x => x.EAN_PC)
+                                                              .Select(s => new
+                                                              {
+                                                                  sumActualProductPCQty = s.Sum(x => x.ActualProductPCQty),
+                                                                  sumActualProductPCLSV = s.Sum(x => x.ActualProductPCLSV),
+                                                                  promoProduct = s.Select(x => x)
+                                                              })
+                                                              .ToList();
 
-                //List<PromoProduct> promoProducts = Context.Set<PromoProduct>().Where(e => e.PromoId == promoIdInUpdateActualsMode && !e.Disabled).DistinctBy(x => x.EAN_PC).ToList();
-                return promoProductList.AsQueryable();
+                    List<PromoProduct> promoProductList = new List<PromoProduct>();
+                    foreach (var item in sumGroup)
+                    {
+                        PromoProduct pp = item.promoProduct.ToList()[0];
+                        pp.ActualProductPCQty = item.sumActualProductPCQty;
+                        pp.ActualProductPCLSV = item.sumActualProductPCLSV;
+
+                        promoProductList.Add(pp);
+                    }
+
+                    //List<PromoProduct> promoProducts = Context.Set<PromoProduct>().Where(e => e.PromoId == promoIdInUpdateActualsMode && !e.Disabled).DistinctBy(x => x.EAN_PC).ToList();
+                    return promoProductList.AsQueryable();
+                }
             }
             else
             {
@@ -334,7 +342,7 @@ namespace Module.Frontend.TPM.Controllers
             return Context.Set<PromoProduct>().Count(e => e.Id == key) > 0;
         }
 
-        private IEnumerable<Column> GetExportSettings(string additionalColumn)
+        public static IEnumerable<Column> GetExportSettings(string additionalColumn = null)
         {
             IEnumerable<Column> columns = new List<Column>();
 
@@ -414,22 +422,46 @@ namespace Module.Frontend.TPM.Controllers
         {
             // Во вкладке Promo -> Activity можно смотреть детализацию раличных параметров
             // Это один грид с разными столбцами, additionalColumn - набор столбцов
-            try
+            IQueryable results = options.ApplyTo(GetConstraintedQuery(updateActualsMode, promoId, true).Where(x => !x.Disabled && (!promoId.HasValue || x.PromoId == promoId.Value)));
+            UserInfo user = authorizationManager.GetCurrentUser();
+            Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
+            RoleInfo role = authorizationManager.GetCurrentRole();
+            Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
+            using (DatabaseContext context = new DatabaseContext())
             {
-                IQueryable results = options.ApplyTo(GetConstraintedQuery(updateActualsMode, promoId).Where(x => !x.Disabled && (!promoId.HasValue || x.PromoId == promoId.Value)));
-                IEnumerable<Column> columns = GetExportSettings(additionalColumn);
-                XLSXExporter exporter = new XLSXExporter(columns);
-                UserInfo user = authorizationManager.GetCurrentUser();
-                string username = user == null ? "" : user.Login;
-                string filePath = exporter.GetExportFileName("PromoProduct", username);
-                exporter.Export(results, filePath);
-                string filename = System.IO.Path.GetFileName(filePath);
-                return Content<string>(HttpStatusCode.OK, filename);
+                HandlerData data = new HandlerData();
+                string handlerName = "ExportHandler";
+
+                HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("TModel", typeof(PromoProduct), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(PromoProductsController), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PromoProductsController.GetExportSettings), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("GetColumnMethodParams", additionalColumn, data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("IsActuals", updateActualsMode, data, visible: false, throwIfNotExists: false);
+
+                LoopHandler handler = new LoopHandler()
+                {
+                    Id = Guid.NewGuid(),
+                    ConfigurationName = "PROCESSING",
+                    Description = $"Export {nameof(PromoProduct)} dictionary",
+                    Name = "Module.Host.TPM.Handlers." + handlerName,
+                    ExecutionPeriod = null,
+                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                    LastExecutionDate = null,
+                    NextExecutionDate = null,
+                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                    UserId = userId,
+                    RoleId = roleId
+                };
+                handler.SetParameterData(data);
+                context.LoopHandlers.Add(handler);
+                context.SaveChanges();
             }
-            catch (Exception e)
-            {
-                return Content<string>(HttpStatusCode.InternalServerError, e.Message);
-            }
+
+            return Content(HttpStatusCode.OK, "success");
         }
 
         [ClaimsAuthorize]
@@ -512,6 +544,7 @@ namespace Module.Frontend.TPM.Controllers
                     Description = "Import Actuals For Promo " + promo.Number?.ToString(),
                     Name = "Module.Host.TPM.Handlers." + handlerName,
                     ExecutionPeriod = null,
+                    RunGroup = $"ImportActualsPromo{promo.Number?.ToString()}",
                     CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
                     LastExecutionDate = null,
                     NextExecutionDate = null,

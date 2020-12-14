@@ -13,19 +13,19 @@ namespace Module.Host.TPM.Handlers.MainNightProcessing
         public static void SetProcessingFlagUp(DatabaseContext context, string processingPrefix)
         {
             string setProcessingFlagUpScript = string.Format(Consts.Templates.setProcessingFlagUpTemplate, processingPrefix);
-            context.Database.ExecuteSqlCommand(setProcessingFlagUpScript);
+            context.ExecuteSqlCommand(setProcessingFlagUpScript);
         }
 
         public static void SetProcessingFlagDown(DatabaseContext context, string processingPrefix)
         {
             string setProcessingFlagDownScript = string.Format(Consts.Templates.setProcessingFlagDownTemplate, processingPrefix);
-            context.Database.ExecuteSqlCommand(setProcessingFlagDownScript);
+            context.ExecuteSqlCommand(setProcessingFlagDownScript);
         }
 
         public static void SetAllFlagsDown(DatabaseContext context, string[] processingPrefixes)
         {
             string setAllFlagsDownScript = string.Format(Consts.Templates.setAllFlagsDownTemplate, string.Join(",", processingPrefixes));
-            context.Database.ExecuteSqlCommand(setAllFlagsDownScript);
+            context.ExecuteSqlCommand(setAllFlagsDownScript);
         }
     }
 }

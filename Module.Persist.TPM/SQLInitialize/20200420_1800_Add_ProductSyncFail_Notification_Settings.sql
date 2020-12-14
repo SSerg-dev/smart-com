@@ -1,8 +1,8 @@
-DELETE [dbo].[Setting] WHERE [Name] = 'PRODUCT_SYNC_FAIL_NOTIFICATION_TEMPLATE_FILE'
+DELETE [Setting] WHERE [Name] = 'PRODUCT_SYNC_FAIL_NOTIFICATION_TEMPLATE_FILE'
 
 GO
 
-INSERT INTO [dbo].[Setting]
+INSERT INTO [Setting]
            ([Id]
            ,[Name]
            ,[Type]

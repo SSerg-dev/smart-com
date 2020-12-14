@@ -114,8 +114,8 @@ namespace Module.Host.TPM.Actions
 
         private string GetSalesDistChannel(string ghierarhy, DatabaseContext context)
         {
-            var salesDistChannel = context.Database.SqlQuery<string>(
-                       String.Format("SELECT TOP 1 [0DISTR_CHAN] FROM dbo.MARS_UNIVERSAL_PETCARE_CUSTOMERS where ZCUSTHG04 = {0} ", ghierarhy)).FirstOrDefault();
+            var salesDistChannel = context.SqlQuery<string>(
+                       String.Format("SELECT TOP 1 [0DISTR_CHAN] FROM [DefaultSchemaSetting].MARS_UNIVERSAL_PETCARE_CUSTOMERS where ZCUSTHG04 = {0} ", ghierarhy)).FirstOrDefault();
            
             if (String.IsNullOrEmpty(salesDistChannel))
             {
@@ -128,8 +128,8 @@ namespace Module.Host.TPM.Actions
                 }
                 else
                 {
-                    salesDistChannel = context.Database.SqlQuery<string>(
-                       String.Format("SELECT TOP 1 [0DISTR_CHAN] FROM dbo.MARS_UNIVERSAL_PETCARE_CUSTOMERS where ZCUSTHG04 = {0} ", baseClient.GHierarchyCode)).FirstOrDefault();
+                    salesDistChannel = context.SqlQuery<string>(
+                       String.Format("SELECT TOP 1 [0DISTR_CHAN] FROM [DefaultSchemaSetting].MARS_UNIVERSAL_PETCARE_CUSTOMERS where ZCUSTHG04 = {0} ", baseClient.GHierarchyCode)).FirstOrDefault();
                 }
 
             }

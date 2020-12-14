@@ -23,14 +23,14 @@ using Module.Persist.TPM.Utils;
 namespace Module.Host.TPM.Actions {
     class XLSXImportActualLsvAction : FullXLSXImportAction
     {
-        private ILogWriter handlerLogger;
+        private LogWriter handlerLogger;
         private Guid userId;
         private Guid roleId;
         private Guid calculationIdHandler;
 
         public XLSXImportActualLsvAction(FullImportSettings settings, Guid handlerId, Guid userId, Guid roleId) : base(settings)
         {
-            handlerLogger = new FileLogWriter(handlerId.ToString());            
+            handlerLogger = new LogWriter(handlerId.ToString());            
             AllowPartialApply = true;
 
             this.userId = userId;
@@ -125,8 +125,8 @@ namespace Module.Host.TPM.Actions {
                 }
             }
 
-            String formatStrRegularPromo = "UPDATE [Promo] SET ActualPromoBaselineLSV={0}, ActualPromoLSV={1}, ActualPromoLSVSI={2}, ActualPromoLSVSO={3}, ActualPromoPostPromoEffectLSVW1={4}, ActualPromoPostPromoEffectLSVW2={5} WHERE Id='{6}' \n";
-            String formatStrInOutPromo = "UPDATE [Promo] SET ActualPromoLSV={0}, ActualPromoLSVSI={1}, ActualPromoLSVSO={2} WHERE Id='{3}' \n";
+            String formatStrRegularPromo = "UPDATE [DefaultSchemaSetting].[Promo] SET ActualPromoBaselineLSV={0}, ActualPromoLSV={1}, ActualPromoLSVSI={2}, ActualPromoLSVSO={3}, ActualPromoPostPromoEffectLSVW1={4}, ActualPromoPostPromoEffectLSVW2={5} WHERE Id='{6}' \n";
+            String formatStrInOutPromo = "UPDATE [DefaultSchemaSetting].[Promo] SET ActualPromoLSV={0}, ActualPromoLSVSI={1}, ActualPromoLSVSO={2} WHERE Id='{3}' \n";
 
             foreach (IEnumerable<Promo> items in toUpdate.Partition(10000))
             {                
@@ -155,7 +155,7 @@ namespace Module.Host.TPM.Actions {
                     }
                 }
 
-                context.Database.ExecuteSqlCommand(updateScript);
+                context.ExecuteSqlCommand(updateScript);
             }
 
             //Добавление изменений в историю

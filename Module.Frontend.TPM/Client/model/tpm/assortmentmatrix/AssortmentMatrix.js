@@ -20,7 +20,7 @@
         { name: 'CreateDate', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
         {
             name: 'ClientTreeObjectId', type: 'int', mapping: 'ClientTree.ObjectId',
-            defaultFilterConfig: { valueField: 'ObjectId' }, breezeEntityType: 'ClientTree', hidden: false, isDefault: true,            
+            defaultFilterConfig: { valueField: 'ObjectId' }, hidden: false, isDefault: true,            
         }
     ],
     proxy: {

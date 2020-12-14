@@ -25,6 +25,9 @@ using System.Threading.Tasks;
 using System.Data.Entity;
 using Module.Frontend.TPM.Util;
 using System.Web;
+using Looper.Parameters;
+using Looper.Core;
+using Persist;
 
 namespace Module.Frontend.TPM.Controllers {
 
@@ -78,7 +81,7 @@ namespace Module.Frontend.TPM.Controllers {
             return optionsPost.ApplyTo(query, querySettings) as IQueryable<PlanPostPromoEffectReportWeekView>;
         }
 
-        private IEnumerable<Column> GetExportSettings() {
+        public static IEnumerable<Column> GetExportSettings() {
 			int order = 0;
             IEnumerable<Column> columns = new List<Column>() {
                 new Column() { Order = order++, Field = "ZREP", Header = "ZREP", Quoting = false },
@@ -103,24 +106,48 @@ namespace Module.Frontend.TPM.Controllers {
             return columns;
         }
         [ClaimsAuthorize]
-        public IHttpActionResult ExportXLSX(ODataQueryOptions<PlanPostPromoEffectReportWeekView> options) {
-            try {
-                
-                IQueryable results = options.ApplyTo(GetConstraintedQuery());
-               
-                IEnumerable<Column> columns = GetExportSettings();
-                NonGuidIdExporter exporter = new NonGuidIdExporter(columns);
-                UserInfo user = authorizationManager.GetCurrentUser();
-                string username = user == null ? "" : user.Login;
-                string filePath = exporter.GetExportFileName("PlanPostPromoEffectReport", username);
-                exporter.Export(MapToReport(results), filePath);
-                string filename = System.IO.Path.GetFileName(filePath);
-                return Content<string>(HttpStatusCode.OK, filename);
-            } catch (Exception e) {
-                return Content<string>(HttpStatusCode.InternalServerError, e.Message);
+        public IHttpActionResult ExportXLSX(ODataQueryOptions<PlanPostPromoEffectReportWeekView> options)
+        {
+            IQueryable results = options.ApplyTo(GetConstraintedQuery());
+            UserInfo user = authorizationManager.GetCurrentUser();
+            Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
+            RoleInfo role = authorizationManager.GetCurrentRole();
+            Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                HandlerData data = new HandlerData();
+                string handlerName = "ExportHandler";
+
+                HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("TModel", typeof(PlanPostPromoEffectReportWeekView), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(PlanPostPromoEffectReportsController), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PlanPostPromoEffectReportsController.GetExportSettings), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
+
+                LoopHandler handler = new LoopHandler()
+                {
+                    Id = Guid.NewGuid(),
+                    ConfigurationName = "PROCESSING",
+                    Description = $"Export {nameof(PlanPostPromoEffectReportWeekView)} dictionary",
+                    Name = "Module.Host.TPM.Handlers." + handlerName,
+                    ExecutionPeriod = null,
+                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                    LastExecutionDate = null,
+                    NextExecutionDate = null,
+                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                    UserId = userId,
+                    RoleId = roleId
+                };
+                handler.SetParameterData(data);
+                context.LoopHandlers.Add(handler);
+                context.SaveChanges();
             }
+
+            return Content(HttpStatusCode.OK, "success");
         }
-        private IQueryable MapToReport(IQueryable data)
+        public static IQueryable MapToReport(IQueryable data)
         {
             List<PlanPostPromoEffectReport> result = new List<PlanPostPromoEffectReport>();
 
@@ -207,7 +234,7 @@ namespace Module.Frontend.TPM.Controllers {
 
             return rep;
         }
-        public string SetWeekByMarsDates(DateTime week)
+        public static string SetWeekByMarsDates(DateTime week)
 		{
 			string stringFormatYP2W = "{0}P{1:D2}W{2}";
 			string marsDate = (new MarsDate((DateTimeOffset)week).ToString(stringFormatYP2W));

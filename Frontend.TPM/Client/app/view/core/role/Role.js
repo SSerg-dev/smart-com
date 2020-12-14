@@ -11,6 +11,7 @@ Ext.define('App.view.core.role.Role', {
     items: [{
         xtype: 'directorygrid',
         itemId: 'datatable',
+        editorModel: 'Core.form.EditorDetailWindowModel',
 
         store: {
             type: 'directorystore',
@@ -18,16 +19,16 @@ Ext.define('App.view.core.role.Role', {
             storeId: 'rolestore',
             extendedFilter: {
                 xclass: 'App.ExtFilterContext',
-				supportedModels: [{
+                supportedModels: [{
                     xclass: 'App.ExtSelectionFilterModel',
                     model: 'App.model.core.role.Role',
                     modelId: 'efselectionmodel'
-				}, {
+                }, {
                     xclass: 'App.ExtTextFilterModel',
                     modelId: 'eftextmodel'
-				}]
-            }        
-		},
+                }]
+            }
+        },
 
         columns: {
             defaults: {
@@ -35,42 +36,42 @@ Ext.define('App.view.core.role.Role', {
                 menuDisabled: true,
                 filter: true,
                 flex: 1,
-				minWidth: 100
+                minWidth: 100
             },
-            items: [{ 
-				text: l10n.ns('core', 'Role').value('SystemName'),
-				dataIndex: 'SystemName'
-			}, { 
-				text: l10n.ns('core', 'Role').value('DisplayName'),
-				dataIndex: 'DisplayName'
-			}, { 
-				xtype: 'booleancolumn',
-				text: l10n.ns('core', 'Role').value('IsAllow'),
-				dataIndex: 'IsAllow',
-				trueText: l10n.ns('core', 'booleanValues').value('true'),
-				falseText: l10n.ns('core', 'booleanValues').value('false')
-			}]
+            items: [{
+                text: l10n.ns('core', 'Role').value('SystemName'),
+                dataIndex: 'SystemName'
+            }, {
+                text: l10n.ns('core', 'Role').value('DisplayName'),
+                dataIndex: 'DisplayName'
+            }, {
+                xtype: 'booleancolumn',
+                text: l10n.ns('core', 'Role').value('IsAllow'),
+                dataIndex: 'IsAllow',
+                trueText: l10n.ns('core', 'booleanValues').value('true'),
+                falseText: l10n.ns('core', 'booleanValues').value('false')
+            }]
         }
     }, {
         xtype: 'editabledetailform',
         itemId: 'detailform',
-		model: 'App.model.core.role.Role',
-        items: [{ 
-			xtype: 'textfield',
-			name: 'SystemName',
-			fieldLabel: l10n.ns('core', 'Role').value('SystemName')		
-		}, { 
-			xtype: 'textfield',
-			name: 'DisplayName',
-			fieldLabel: l10n.ns('core', 'Role').value('DisplayName')		
-		}, { 
-		    xtype: 'booleancombobox',
-		    store: {
-		        type: 'booleannonemptystore'
-		    },
-			name: 'IsAllow',
-			fieldLabel: l10n.ns('core', 'Role').value('IsAllow')		
-		}]
+        model: 'App.model.core.role.Role',
+        items: [{
+            xtype: 'textfield',
+            name: 'SystemName',
+            fieldLabel: l10n.ns('core', 'Role').value('SystemName')
+        }, {
+            xtype: 'textfield',
+            name: 'DisplayName',
+            fieldLabel: l10n.ns('core', 'Role').value('DisplayName')
+        }, {
+            xtype: 'booleancombobox',
+            store: {
+                type: 'booleannonemptystore'
+            },
+            name: 'IsAllow',
+            fieldLabel: l10n.ns('core', 'Role').value('IsAllow')
+        }]
     }]
 
 });

@@ -1,4 +1,4 @@
-CREATE OR ALTER FUNCTION [dbo].[CountAverage]
+CREATE OR ALTER FUNCTION [CountAverage]
 (
 	@startDate DATETIMEOFFSET(7),
 	@productid UNIQUEIDENTIFIER,

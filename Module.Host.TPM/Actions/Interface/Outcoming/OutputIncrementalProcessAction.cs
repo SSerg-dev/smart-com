@@ -86,6 +86,7 @@ namespace Module.Host.TPM.Actions.Interface.Outcoming
                 logger.Trace("Finish");
 
                 string mainNightProcessingStepPrefix = AppSettingsManager.GetSetting<string>("MAIN_NIGHT_PROCESSING_STEP_PREFIX", "MainNightProcessingStep");
+                fileLogger.UploadToBlob();
                 using (DatabaseContext context = new DatabaseContext())
                 {
                     MainNightProcessingHelper.SetProcessingFlagDown(context, mainNightProcessingStepPrefix);

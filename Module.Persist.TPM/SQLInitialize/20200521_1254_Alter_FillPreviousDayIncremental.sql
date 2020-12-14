@@ -6,11 +6,11 @@ CREATE OR ALTER PROCEDURE FillPreviousDayIncremental
 AS
 BEGIN		
 	EXEC DropIncrementalIndex 0;						
-	TRUNCATE TABLE [dbo].[PreviousDayIncremental];
+	TRUNCATE TABLE [PreviousDayIncremental];
 	
-	INSERT INTO [dbo].[PreviousDayIncremental]
+	INSERT INTO [PreviousDayIncremental]
 		(DemandCode, DMDGroup, Id, IncrementalQty, LastChangeDate, ProductId, PromoId, Week) 
-		SELECT DemandCode, DMDGroup, Id, IncrementalQty, LastChangeDate, ProductId, PromoId, Week FROM [dbo].[CurrentDayIncremental]; 
+		SELECT DemandCode, DMDGroup, Id, IncrementalQty, LastChangeDate, ProductId, PromoId, Week FROM [CurrentDayIncremental]; 
 								
 	EXEC CreateIncrementalIndex 0;
 END;

@@ -53,9 +53,9 @@ namespace Module.Host.TPM.Actions
 
             foreach (IEnumerable<RollingVolume> items in toUpdate.Partition(10000))
             {
-                string updateScript = String.Join("", items.Select(y => String.Format("UPDATE RollingVolume SET  ManualRollingTotalVolumes = {0} WHERE ProductId = '{1}' AND Week = '{2}' AND DemandGroup = '{3}';",
+                string updateScript = String.Join("", items.Select(y => String.Format("UPDATE [DefaultSchemaSetting].RollingVolume SET  ManualRollingTotalVolumes = {0} WHERE ProductId = '{1}' AND Week = '{2}' AND DemandGroup = '{3}';",
                                y.ManualRollingTotalVolumes, y.ProductId,y.Week,y.DemandGroup)));
-                context.Database.ExecuteSqlCommand(updateScript);
+                context.ExecuteSqlCommand(updateScript);
             }
             context.SaveChanges();
 

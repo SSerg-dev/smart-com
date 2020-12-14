@@ -1,11 +1,11 @@
 
 DECLARE @handlerName VARCHAR(255) = 'Module.Host.TPM.Handlers.RestartMainNightProcessingHandler';
 
-DELETE [dbo].[LoopHandler]  WHERE [Name] = @handlerName;
+DELETE [LoopHandler]  WHERE [Name] = @handlerName;
  
  
 DECLARE @nextDay DATETIMEOFFSET(7) = DATEADD(DAY, 1, SYSDATETIME());
-INSERT INTO [dbo].[LoopHandler] (
+INSERT INTO [LoopHandler] (
 	[Id],
 	[Description],
 	[Name],

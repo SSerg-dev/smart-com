@@ -9,7 +9,7 @@
         { name: 'ParentClientTreeDemandCode', type: 'string', hidden: false, isDefault: true },
         {
             name: 'ClientTreeObjectId', type: 'int', mapping: 'ClientTree.ObjectId',
-            defaultFilterConfig: { valueField: 'ObjectId' }, breezeEntityType: 'ClientTree', hidden: false, isDefault: true,            
+            defaultFilterConfig: { valueField: 'ObjectId' }, hidden: false, isDefault: true,            
         },
         {
             name: 'ClientTreeName', type: 'string', mapping: 'ClientTree.Name', tree: true,

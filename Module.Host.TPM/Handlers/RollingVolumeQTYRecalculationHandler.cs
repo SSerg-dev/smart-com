@@ -4,6 +4,8 @@ using Looper.Core;
 using Module.Host.TPM.Actions;
 using Module.Host.TPM.Actions.Notifications;
 using Module.Host.TPM.Handlers.MainNightProcessing;
+using Module.Persist.TPM;
+using Module.Persist.TPM.Utils;
 using Persist;
 using ProcessingHost.Handlers;
 using System;
@@ -20,13 +22,13 @@ namespace Module.Host.TPM.Handlers
     {
         public override void Action(HandlerInfo info, ExecuteData data)
         {
-            ILogWriter handlerLogger = null;
+            LogWriter handlerLogger = null;
             Stopwatch sw = new Stopwatch();
             sw.Start();
             try
             {
-                handlerLogger = new FileLogWriter(info.HandlerId.ToString());
-                handlerLogger.Write(true, String.Format("Rolling promo collecting started at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+                handlerLogger = new LogWriter(info.HandlerId.ToString());
+                handlerLogger.Write(true, String.Format("Rolling promo collecting started at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)), "Message");
                 IAction action = new RollingVolumeQTYRecalculationActions();
                 action.Execute();
                 // Если в процессе выполнения возникли ошибки, статус задачи устанавливаем ERROR
@@ -62,9 +64,9 @@ namespace Module.Host.TPM.Handlers
                 sw.Stop();
                 if (handlerLogger != null)
                 {
-                    handlerLogger.Write(true, String.Format("Rolling promo collecting ended at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", DateTimeOffset.Now, sw.Elapsed.TotalSeconds), "Message");
+                    handlerLogger.Write(true, String.Format("Rolling promo collecting ended at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), sw.Elapsed.TotalSeconds), "Message");
                 }
-
+                handlerLogger.UploadToBlob();
                 string mainNightProcessingStepPrefix = AppSettingsManager.GetSetting<string>("MAIN_NIGHT_PROCESSING_STEP_PREFIX", "MainNightProcessingStep");
                 using (DatabaseContext context = new DatabaseContext())
                 {

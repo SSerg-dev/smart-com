@@ -13,7 +13,7 @@ BEGIN
 		@Key NVARCHAR(MAX),
 		@Type INT,
 		
-		@Pref NVARCHAR(MAX) = '[dbo].[Product].[';
+		@Pref NVARCHAR(MAX) = '[Product].[';
 		
 		IF @PKey IN (
 			SELECT 

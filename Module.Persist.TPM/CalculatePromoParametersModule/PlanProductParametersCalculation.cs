@@ -77,8 +77,8 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 if (promo.PromoStatus.Id != draftStatus.Id)
                 {
                     // Делаем для ускорения вставки записей, через Mapping всё очень долго                    
-                    String formatStrPromoProduct = "INSERT INTO [PromoProduct] ([Id], [Disabled], [DeletedDate], [PromoId], [ProductId], [ZREP], [EAN_Case], [EAN_PC], [ProductEN]) VALUES ('{0}', 0, NULL, '{1}', '{2}', '{3}', '{4}', '{5}', '{6}')";
-                    String formatStrIncremental = "INSERT INTO [IncrementalPromo] ([Id], [Disabled], [DeletedDate], [PromoId], [ProductId]) VALUES ('{0}', 0, NULL, '{1}', '{2}')";
+                    String formatStrPromoProduct = "INSERT INTO [DefaultSchemaSetting].[PromoProduct] ([Id], [Disabled], [DeletedDate], [PromoId], [ProductId], [ZREP], [EAN_Case], [EAN_PC], [ProductEN]) VALUES ('{0}', 0, NULL, '{1}', '{2}', '{3}', '{4}', '{5}', '{6}')";
+                    String formatStrIncremental = "INSERT INTO [DefaultSchemaSetting].[IncrementalPromo] ([Id], [Disabled], [DeletedDate], [PromoId], [ProductId]) VALUES ('{0}', 0, NULL, '{1}', '{2}')";
                     foreach (IEnumerable<Product> items in resultProductList.Partition(100))
                     {
                         string insertScript = String.Empty;
@@ -137,7 +137,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                         if (!String.IsNullOrEmpty(insertScript))
                         {
-                            context.Database.ExecuteSqlCommand(insertScript);
+                            context.ExecuteSqlCommand(insertScript);
                         }
                     }
                 }

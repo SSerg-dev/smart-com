@@ -1,7 +1,7 @@
-ALTER TABLE [dbo].[BrandTech] DROP COLUMN [BrandsegTechsub_code];
+ALTER TABLE [BrandTech] DROP COLUMN [BrandsegTechsub_code];
 
 GO
-CREATE OR ALTER FUNCTION [dbo].[GetBrandsegTechsub_code]
+CREATE OR ALTER FUNCTION [GetBrandsegTechsub_code]
 (
 	@brandId uniqueidentifier,
 	@technologyId uniqueidentifier
@@ -28,6 +28,6 @@ BEGIN
 END
 
 GO
-ALTER TABLE [dbo].[BrandTech]
-    ADD [BrandsegTechsub_code] AS ([dbo].[GetBrandsegTechsub_code]([BrandId], [TechnologyId]));
+ALTER TABLE [BrandTech]
+    ADD [BrandsegTechsub_code] AS ([GetBrandsegTechsub_code]([BrandId], [TechnologyId]));
 GO

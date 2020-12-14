@@ -62,6 +62,7 @@ Ext.define('App.view.core.setting.Setting', {
     items: [{
         xtype: 'directorygrid',
         itemId: 'datatable',
+        editorModel: 'Core.form.EditorDetailWindowModel',
 
         store: {
             type: 'directorystore',
@@ -69,16 +70,16 @@ Ext.define('App.view.core.setting.Setting', {
             storeId: 'settingstore',
             extendedFilter: {
                 xclass: 'App.ExtFilterContext',
-				supportedModels: [{
+                supportedModels: [{
                     xclass: 'App.ExtSelectionFilterModel',
                     model: 'App.model.core.setting.Setting',
                     modelId: 'efselectionmodel'
-				}, {
+                }, {
                     xclass: 'App.ExtTextFilterModel',
                     modelId: 'eftextmodel'
-				}]
-            }        
-		},
+                }]
+            }
+        },
 
         columns: {
             defaults: {
@@ -86,51 +87,51 @@ Ext.define('App.view.core.setting.Setting', {
                 menuDisabled: true,
                 filter: true,
                 flex: 1,
-				minWidth: 100
+                minWidth: 100
             },
-            items: [{ 
-				text: l10n.ns('core', 'Setting').value('Name'),
-				dataIndex: 'Name'
-			}, { 
-				text: l10n.ns('core', 'Setting').value('Type'),
-				dataIndex: 'Type'
-			}, { 
-				text: l10n.ns('core', 'Setting').value('Value'),
-				dataIndex: 'Value',
-				renderer: function (value, metaData, record) {
-				    if (record.get('Type') == 'System.DateTime' && value) {
-				        return Ext.Date.format(new Date(value), 'd.m.Y');
-				    }
-				    return value;
-				}
-			}, { 
-				text: l10n.ns('core', 'Setting').value('Description'),
-				dataIndex: 'Description'
-			}]
+            items: [{
+                text: l10n.ns('core', 'Setting').value('Name'),
+                dataIndex: 'Name'
+            }, {
+                text: l10n.ns('core', 'Setting').value('Type'),
+                dataIndex: 'Type'
+            }, {
+                text: l10n.ns('core', 'Setting').value('Value'),
+                dataIndex: 'Value',
+                renderer: function (value, metaData, record) {
+                    if (record.get('Type') == 'System.DateTime' && value) {
+                        return Ext.Date.format(new Date(value), 'd.m.Y');
+                    }
+                    return value;
+                }
+            }, {
+                text: l10n.ns('core', 'Setting').value('Description'),
+                dataIndex: 'Description'
+            }]
         }
     }, {
         xtype: 'editabledetailform',
         itemId: 'detailform',
-		model: 'App.model.core.setting.Setting',
-        items: [{ 
-			xtype: 'singlelinedisplayfield',
-			name: 'Name',
-			fieldLabel: l10n.ns('core', 'Setting').value('Name')		
-		}, { 
-			xtype: 'singlelinedisplayfield',
-			name: 'Type',
-			fieldLabel: l10n.ns('core', 'Setting').value('Type')		
-		}, { 
-			xtype: 'textfield',
-			name: 'Value',
-			fieldLabel: l10n.ns('core', 'Setting').value('Value')		
-		}, { 
-			xtype: 'textfield',
-			name: 'Description',
-			fieldLabel: l10n.ns('core', 'Setting').value('Description'),
-			allowBlank: true,
-			allowOnlyWhitespace: true
-		}]
+        model: 'App.model.core.setting.Setting',
+        items: [{
+            xtype: 'singlelinedisplayfield',
+            name: 'Name',
+            fieldLabel: l10n.ns('core', 'Setting').value('Name')
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'Type',
+            fieldLabel: l10n.ns('core', 'Setting').value('Type')
+        }, {
+            xtype: 'textfield',
+            name: 'Value',
+            fieldLabel: l10n.ns('core', 'Setting').value('Value')
+        }, {
+            xtype: 'textfield',
+            name: 'Description',
+            fieldLabel: l10n.ns('core', 'Setting').value('Description'),
+            allowBlank: true,
+            allowOnlyWhitespace: true
+        }]
     }]
 
 });

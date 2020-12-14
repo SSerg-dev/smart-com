@@ -1,8 +1,8 @@
-DELETE [dbo].[Setting] WHERE [Name] = 'PROMO_ON_REJECT_NOTIFICATION_TEMPLATE_FILE'
+DELETE [Setting] WHERE [Name] = 'PROMO_ON_REJECT_NOTIFICATION_TEMPLATE_FILE'
 
 GO
 
-INSERT INTO [dbo].[Setting]
+INSERT INTO [Setting]
            ([Id]
            ,[Name]
            ,[Type]

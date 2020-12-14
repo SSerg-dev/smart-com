@@ -16,7 +16,7 @@ Ext.define('App.model.tpm.cogs.COGS', {
         },
         {
             name: 'ClientTreeObjectId', type: 'int', mapping: 'ClientTree.ObjectId',
-            defaultFilterConfig: { valueField: 'ObjectId' }, breezeEntityType: 'ClientTree', hidden: false, isDefault: true
+            defaultFilterConfig: { valueField: 'ObjectId' }, hidden: false, isDefault: true
         },
         { name: 'LSVpercent', type: 'float', hidden: false, isDefault: true }
     ],

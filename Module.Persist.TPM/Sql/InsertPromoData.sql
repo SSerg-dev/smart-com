@@ -53,11 +53,11 @@ GO
 
 ------------------------------ [RetailType] -------------------------------------------------
 BEGIN TRANSACTION
-	INSERT INTO [dbo].[RetailType] ([Id] ,[Disabled] ,[DeletedDate] ,[Name]) VALUES (NEWID(), 0, NULL ,N'Hypermarket')
-	INSERT INTO [dbo].[RetailType] ([Id] ,[Disabled] ,[DeletedDate] ,[Name]) VALUES (NEWID(), 0, NULL ,N'Convinience')
-	INSERT INTO [dbo].[RetailType] ([Id] ,[Disabled] ,[DeletedDate] ,[Name]) VALUES (NEWID(), 0, NULL ,N'Supermarket')
-	INSERT INTO [dbo].[RetailType] ([Id] ,[Disabled] ,[DeletedDate] ,[Name]) VALUES (NEWID(), 0, NULL ,N'Drogerie')
-	INSERT INTO [dbo].[RetailType] ([Id] ,[Disabled] ,[DeletedDate] ,[Name]) VALUES (NEWID(), 0, NULL ,N'Alkomarket ')
+	INSERT INTO [RetailType] ([Id] ,[Disabled] ,[DeletedDate] ,[Name]) VALUES (NEWID(), 0, NULL ,N'Hypermarket')
+	INSERT INTO [RetailType] ([Id] ,[Disabled] ,[DeletedDate] ,[Name]) VALUES (NEWID(), 0, NULL ,N'Convinience')
+	INSERT INTO [RetailType] ([Id] ,[Disabled] ,[DeletedDate] ,[Name]) VALUES (NEWID(), 0, NULL ,N'Supermarket')
+	INSERT INTO [RetailType] ([Id] ,[Disabled] ,[DeletedDate] ,[Name]) VALUES (NEWID(), 0, NULL ,N'Drogerie')
+	INSERT INTO [RetailType] ([Id] ,[Disabled] ,[DeletedDate] ,[Name]) VALUES (NEWID(), 0, NULL ,N'Alkomarket ')
 COMMIT TRANSACTION
 GO
 ----------------------------------------------------------------------------------------

@@ -6,5 +6,6 @@ namespace Module.Persist.TPM.Model.History {
     public class HistoricalNodeType : BaseHistoricalEntity<System.Guid> {
         public string Type { get; set; }
         public string Name { get; set; }
+        public int? Priority { get; set; }
     }
 }

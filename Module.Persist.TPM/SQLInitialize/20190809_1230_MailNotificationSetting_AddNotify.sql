@@ -1,8 +1,8 @@
-DELETE [dbo].[MailNotificationSetting] WHERE [Name] = 'Notification of promoes that have been rejected'
+DELETE [MailNotificationSetting] WHERE [Name] = 'Notification of promoes that have been rejected'
 
 GO
 
-INSERT INTO [dbo].[MailNotificationSetting]
+INSERT INTO [MailNotificationSetting]
            ([Id]
            ,[Name]
            ,[Description]

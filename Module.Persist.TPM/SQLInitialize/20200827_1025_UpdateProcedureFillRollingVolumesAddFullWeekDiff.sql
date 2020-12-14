@@ -1,8 +1,8 @@
-CREATE OR ALTER PROCEDURE [dbo].[FillRollingVolumes] AS
+CREATE OR ALTER PROCEDURE [FillRollingVolumes] AS
   BEGIN
-	TRUNCATE TABLE [dbo].[RollingVolume];
+	TRUNCATE TABLE [RollingVolume];
 
-    INSERT INTO [dbo].[RollingVolume]
+    INSERT INTO [RollingVolume]
            ([Id]
            ,[DemandGroup]
            ,[Week]
@@ -41,10 +41,10 @@ CREATE OR ALTER PROCEDURE [dbo].[FillRollingVolumes] AS
 			rvf.RollingVolumesQty,
 			rvf.FullWeekDiffQty
 
-		FROM [dbo].[ROLLING_VOLUMES_FDM] AS rvf
-		JOIN [dbo].[Product] AS p ON p.ZREP = rvf.ZREP
-		JOIN [dbo].[Dates] AS d ON d.OriginalDate = DATEADD(day, -7, rvf.WeekStartDate)
-		JOIN [dbo].[ClientTree] AS ct ON (ct.DemandCode = CONCAT(rvf.DMDGROUP, '_05_0125')
+		FROM [ROLLING_VOLUMES_FDM] AS rvf
+		JOIN [Product] AS p ON p.ZREP = rvf.ZREP
+		JOIN [Dates] AS d ON d.OriginalDate = DATEADD(day, -7, rvf.WeekStartDate)
+		JOIN [ClientTree] AS ct ON (ct.DemandCode = CONCAT(rvf.DMDGROUP, '_05_0125')
 											AND ct.EndDate IS NULL)
    END
 

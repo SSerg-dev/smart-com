@@ -18,6 +18,7 @@ using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Utility.FileWorker;
 using Utility.Import;
 using Utility.Import.Cache;
 using Utility.Import.ImportModelBuilder;
@@ -127,9 +128,10 @@ namespace Module.Host.TPM.Actions
         /// <returns></returns>
         private IList<IEntity<Guid>> ParseImportFile()
         {
+            var fileDispatcher = new FileDispatcher();
             string importDir = AppSettingsManager.GetSetting<string>("IMPORT_DIRECTORY", "ImportFiles");
             string importFilePath = Path.Combine(importDir, ImportFile.Name);
-            if (!File.Exists(importFilePath))
+            if (!fileDispatcher.IsExists(importDir, ImportFile.Name))
             {
                 throw new Exception("Import File not found");
             }
@@ -415,10 +417,10 @@ namespace Module.Host.TPM.Actions
 
             foreach (IEnumerable<MechanicType> items in toUpdate.Partition(10000))
             {
-                String formatStr = "UPDATE [MechanicType] SET [Discount] = {1} WHERE [Id] ='{0}'";
+                String formatStr = "UPDATE [DefaultSchemaSetting].[MechanicType] SET [Discount] = {1} WHERE [Id] ='{0}'";
                 string updateScript = String.Join("\n", items.Select(y => String.Format(formatStr, y.Id, y.Discount)).ToList());
 
-                context.Database.ExecuteSqlCommand(updateScript);
+                context.ExecuteSqlCommand(updateScript);
             }
 
             context.SaveChanges();

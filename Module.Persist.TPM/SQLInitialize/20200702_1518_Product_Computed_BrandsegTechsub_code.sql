@@ -1,7 +1,7 @@
-ALTER TABLE [dbo].[Product] DROP COLUMN [BrandsegTechSub];
+ALTER TABLE [Product] DROP COLUMN [BrandsegTechSub];
 
 GO
-CREATE OR ALTER  FUNCTION [dbo].[GetProductBrandsegTechSubByCode]
+CREATE OR ALTER  FUNCTION [GetProductBrandsegTechSubByCode]
 (
 	@brandCode NVARCHAR(3),
 	@segmenCode NVARCHAR(2),
@@ -34,14 +34,14 @@ Declare @result NVARCHAR(255)
 END
 
 GO
-ALTER TABLE [dbo].[Product]
-    ADD [BrandsegTechSub] AS ([dbo].[GetProductBrandsegTechSubByCode]([Brand_code], [Segmen_code], [Tech_code], [SubBrand_code]));
+ALTER TABLE [Product]
+    ADD [BrandsegTechSub] AS ([GetProductBrandsegTechSubByCode]([Brand_code], [Segmen_code], [Tech_code], [SubBrand_code]));
 GO
 
-ALTER TABLE [dbo].[BrandTech] DROP COLUMN [BrandsegTechsub];
+ALTER TABLE [BrandTech] DROP COLUMN [BrandsegTechsub];
 
 GO
-CREATE OR ALTER FUNCTION [dbo].[GetBrandsegTechsubName]
+CREATE OR ALTER FUNCTION [GetBrandsegTechsubName]
 (
 	@brandId uniqueidentifier,
 	@technologyId uniqueidentifier
@@ -56,6 +56,6 @@ BEGIN
 END
 
 GO
-ALTER TABLE [dbo].[BrandTech]
-    ADD [BrandsegTechsub] AS ([dbo].[GetBrandsegTechsubName]([BrandId], [TechnologyId]));
+ALTER TABLE [BrandTech]
+    ADD [BrandsegTechsub] AS ([GetBrandsegTechsubName]([BrandId], [TechnologyId]));
 GO

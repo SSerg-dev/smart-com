@@ -19,8 +19,8 @@ BEGIN CATCH
 END CATCH
 
 GO
-	CREATE TRIGGER [dbo].[BaseLine_ChangesIncident_Insert_Update_Trigger]
-	ON [dbo].[BaseLine]
+	CREATE TRIGGER [BaseLine_ChangesIncident_Insert_Update_Trigger]
+	ON [BaseLine]
 	AFTER INSERT, UPDATE
 	AS 
 		INSERT INTO ChangesIncident ([DirectoryName], [ItemId], [CreateDate], [ProcessDate], [DeletedDate], [Disabled])
@@ -28,7 +28,7 @@ GO
 
 GO
 	CREATE TRIGGER AssortmentMatrix_ChangesIncident_Insert_Update_Trigger
-	ON [dbo].[AssortmentMatrix]
+	ON [AssortmentMatrix]
 	AFTER INSERT, UPDATE
 	AS
 		INSERT INTO ChangesIncident ([DirectoryName], [ItemId], [CreateDate], [ProcessDate], [DeletedDate], [Disabled])
@@ -36,7 +36,7 @@ GO
 
 GO
 	CREATE TRIGGER IncrementalPromo_ChangesIncident_Insert_Update_Trigger
-	ON [dbo].[IncrementalPromo]
+	ON [IncrementalPromo]
 	AFTER INSERT, UPDATE
 	AS 
 		INSERT INTO ChangesIncident ([DirectoryName], [ItemId], [CreateDate], [ProcessDate], [DeletedDate], [Disabled])

@@ -49,9 +49,49 @@ Ext.define('App.view.core.filebuffer.FileBuffer', {
             items: [{
                 text: l10n.ns('core', 'FileBuffer').value('InterfaceName'),
                 dataIndex: 'InterfaceName',
+                filter: {
+                    type: 'search',
+                    selectorWidget: 'interface',
+                    valueField: 'Name',
+                    store: {
+                        type: 'directorystore',
+                        model: 'App.model.core.interface.Interface',
+                        extendedFilter: {
+                            xclass: 'App.ExtFilterContext',
+                            supportedModels: [{
+                                xclass: 'App.ExtSelectionFilterModel',
+                                model: 'App.model.core.interface.Interface',
+                                modelId: 'efselectionmodel'
+                            }, {
+                                xclass: 'App.ExtTextFilterModel',
+                                modelId: 'eftextmodel'
+                            }]
+                        }
+                    }
+                }
             }, {
                 text: l10n.ns('core', 'FileBuffer').value('InterfaceDirection'),
                 dataIndex: 'InterfaceDirection',
+                filter: {
+                    type: 'search',
+                    selectorWidget: 'interface',
+                    valueField: 'Direction',
+                    store: {
+                        type: 'directorystore',
+                        model: 'App.model.core.interface.Interface',
+                        extendedFilter: {
+                            xclass: 'App.ExtFilterContext',
+                            supportedModels: [{
+                                xclass: 'App.ExtSelectionFilterModel',
+                                model: 'App.model.core.interface.Interface',
+                                modelId: 'efselectionmodel'
+                            }, {
+                                xclass: 'App.ExtTextFilterModel',
+                                modelId: 'eftextmodel'
+                            }]
+                        }
+                    }
+                }
             }, {
                 text: l10n.ns('core', 'FileBuffer').value('CreateDate'),
                 dataIndex: 'CreateDate',

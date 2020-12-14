@@ -1,7 +1,7 @@
-DELETE [dbo].[Setting] WHERE [Name] = 'ACTUAL_COGSTI_CHECK_PROMO_STATUS_LIST'
+DELETE [Setting] WHERE [Name] = 'ACTUAL_COGSTI_CHECK_PROMO_STATUS_LIST'
 GO
 
-INSERT INTO [dbo].[Setting]
+INSERT INTO [Setting]
            ([Id]
            ,[Name]
            ,[Type]

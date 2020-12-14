@@ -79,12 +79,6 @@ Ext.define('App.controller.core.associateduser.aduser.DeletedAssociatedAdUser', 
                     Id: this.getRecordId(selModel.getSelection()[0])
                 }
             }
-
-            store.setFixedFilter('HistoricalObjectId', {
-                property: '_ObjectId',
-                operation: 'Equals',
-                value: this.getRecordId(selModel.getSelection()[0])
-            });
         }
     },
 });

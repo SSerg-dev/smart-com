@@ -11,7 +11,8 @@ using System.Web.Http.OData;
 using System.Web.Http.OData.Query;
 using Thinktecture.IdentityModel.Authorization.WebApi;
 
-namespace Module.Frontend.TPM.Controllers {
+namespace Module.Frontend.TPM.Controllers
+{
 
     public class HistoricalBrandsController : ODataController {
         [Inject]

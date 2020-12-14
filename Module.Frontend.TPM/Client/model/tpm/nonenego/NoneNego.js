@@ -32,11 +32,11 @@
         },
         {
             name: 'ClientTreeObjectId', type: 'int', mapping: 'ClientTree.ObjectId',
-            defaultFilterConfig: { valueField: 'ObjectId' }, breezeEntityType: 'ClientTree', hidden: false, isDefault: true
+            defaultFilterConfig: { valueField: 'ObjectId' }, hidden: false, isDefault: true
         },
         {
             name: 'ProductTreeObjectId', type: 'int', mapping: 'ProductTree.ObjectId',
-            defaultFilterConfig: { valueField: 'ObjectId' }, breezeEntityType: 'ProductTree', hidden: false, isDefault: true
+            defaultFilterConfig: { valueField: 'ObjectId' }, hidden: false, isDefault: true
         }
     ],
 

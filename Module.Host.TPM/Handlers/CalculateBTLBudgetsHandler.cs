@@ -17,6 +17,7 @@ using System.Threading;
 using Module.Persist.TPM;
 using Core.Settings;
 using Core.Dependency;
+using Module.Persist.TPM.Utils;
 
 namespace Module.Host.TPM.Handlers
 {
@@ -31,14 +32,14 @@ namespace Module.Host.TPM.Handlers
             var settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
             string notAllowedBTLStatusesList = settingsManager.GetSetting<string>("NOT_ALLOWED_BTL_STATUS_LIST", "Draft,Cancelled,Deleted");
 
-            ILogWriter handlerLogger = null;
+            LogWriter handlerLogger = null;
             string logLine = "";
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
-            handlerLogger = new FileLogWriter(info.HandlerId.ToString());
+            handlerLogger = new LogWriter(info.HandlerId.ToString());
             handlerLogger.Write(true, "");
-            logLine = String.Format("The calculation of the BTL budgets started at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now);
+            logLine = String.Format("The calculation of the BTL budgets started at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow));
             handlerLogger.Write(true, logLine, "Message");
 
             string btlId = HandlerDataHelper.GetIncomingArgument<string>("BTLId", info.Data, false);
@@ -168,8 +169,9 @@ namespace Module.Host.TPM.Handlers
 
             sw.Stop();
             handlerLogger.Write(true, "");
-            logLine = String.Format("The calculation of the BTL budgets ended at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", DateTimeOffset.Now, sw.Elapsed.TotalSeconds);
+            logLine = String.Format("The calculation of the BTL budgets ended at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), sw.Elapsed.TotalSeconds);
             handlerLogger.Write(true, logLine, "Message");
+            handlerLogger.UploadToBlob();
         }
     }
 }

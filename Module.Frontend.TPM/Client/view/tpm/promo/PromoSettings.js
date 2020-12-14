@@ -2,8 +2,6 @@
     extend: 'Ext.panel.Panel',
     alias: 'widget.promosettings',
     
-    bodyStyle: { "background-color": "#99A9B1" },
-
     items: [{
         xtype: 'container',
         cls: 'custom-promo-panel-container',

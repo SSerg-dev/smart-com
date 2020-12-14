@@ -1,8 +1,8 @@
-DELETE [dbo].[Setting] WHERE [Name] = 'WEEK_BEFORE_DISPATCH_PROMO_NOTIFICATION_TEMPLATE'
+DELETE [Setting] WHERE [Name] = 'WEEK_BEFORE_DISPATCH_PROMO_NOTIFICATION_TEMPLATE'
 
 GO
 
-INSERT INTO [dbo].[Setting]
+INSERT INTO [Setting]
            ([Id]
            ,[Name]
            ,[Type]

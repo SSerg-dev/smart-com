@@ -1,4 +1,4 @@
-﻿INSERT INTO [dbo].[LoopHandler]
+﻿INSERT INTO [LoopHandler]
            ([Description]
            ,[Name]
            ,[ExecutionPeriod]

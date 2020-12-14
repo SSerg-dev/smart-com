@@ -1,4 +1,4 @@
-﻿INSERT INTO [dbo].[Setting]
+﻿INSERT INTO [Setting]
            ([Name]
            ,[Type]
            ,[Value]
@@ -10,7 +10,7 @@
            ,N'File Uplift Fail Notifications template')
 GO
 
-INSERT INTO [dbo].[Setting]
+INSERT INTO [Setting]
            ([Name]
            ,[Type]
            ,[Value]
@@ -22,7 +22,7 @@ INSERT INTO [dbo].[Setting]
            ,N'If before the start of the promo there are fewer days than the specified number, you need to include it in the Uplift Fail notification.')
 GO
 
-INSERT INTO [dbo].[MailNotificationSetting]
+INSERT INTO [MailNotificationSetting]
            ([Name]
            ,[Description]
            ,[Subject]
@@ -46,7 +46,7 @@ INSERT INTO [dbo].[MailNotificationSetting]
            ,NULL)
 GO
 
-INSERT INTO [dbo].[LoopHandler]
+INSERT INTO [LoopHandler]
            ([Description]
            ,[Name]
            ,[ExecutionPeriod]

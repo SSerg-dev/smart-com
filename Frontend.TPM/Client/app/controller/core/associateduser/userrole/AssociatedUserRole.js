@@ -223,16 +223,17 @@ Ext.define('App.controller.core.associateduser.userrole.AssociatedUserRole', {
             var store = baseReviewWindow.down('grid').getStore();
             var proxy = store.getProxy();
             proxy.extraParams.Id = this.getRecordId(selModel.getSelection()[0]);
-            store.setFixedFilter('HistoricalObjectId', {
-                property: '_ObjectId',
-                operation: 'Equals',
-                value: this.getRecordId(selModel.getSelection()[0])
-            });
         }
     },
 
     onDeletedUserRoleButtonClick: function (button) {
-        var userGrid = button.up('combineddirectorypanel').up('associatedadusercontainer').down('associatedaduseruser').down('directorygrid');
+        var userGrid;
+        var isAdGrid = button.up('combineddirectorypanel').up('associatedadusercontainer') != undefined;
+        if (isAdGrid) {
+            userGrid = button.up('combineddirectorypanel').up('associatedadusercontainer').down('associatedaduseruser').down('directorygrid');
+        } else {
+            userGrid = button.up('combineddirectorypanel').up('associateddbusercontainer').down('associateddbuseruser').down('directorygrid');
+        }
         if (userGrid) {
             var selModel = userGrid.getSelectionModel();
             if (selModel.hasSelection()) {

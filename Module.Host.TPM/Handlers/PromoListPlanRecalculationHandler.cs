@@ -5,6 +5,7 @@ using Module.Frontend.TPM.Controllers;
 using Module.Persist.TPM.CalculatePromoParametersModule;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.PromoStateControl;
+using Module.Persist.TPM.Utils;
 using Persist;
 using ProcessingHost.Handlers;
 using System;
@@ -23,7 +24,7 @@ namespace Module.Host.TPM.Handlers
         public string logLine = "";
         public override void Action(HandlerInfo info, ExecuteData data)
         {
-            ILogWriter handlerLogger = null;
+            LogWriter handlerLogger = null;
 
             Stopwatch sw = new Stopwatch();
             sw.Start();
@@ -35,14 +36,14 @@ namespace Module.Host.TPM.Handlers
 
                 using (var prev_context = new DatabaseContext())
                 {
-                    handlerLogger = new FileLogWriter(info.HandlerId.ToString());
-                    handlerLogger.Write(true, String.Format("Plan parameters recalculation started at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+                    handlerLogger = new LogWriter(info.HandlerId.ToString());
+                    handlerLogger.Write(true, String.Format("Plan parameters recalculation started at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)), "Message");
 
                     var promoNumbersRecalculatingString = settingsManager.GetSetting<string>("PROMO_LIST_FOR_RECALCULATION");
                     var promoNumbers = promoNumbersRecalculatingString.Split(";".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
                     var activePromo = prev_context.Set<Promo>().Where(x => !x.Disabled);
 
-                    String formatStrPromo = "UPDATE [Promo] SET PromoStatusId = (SELECT Id FROM PromoStatus WHERE SystemName = 'DraftPublished' AND Disabled = 0) WHERE Number = {0} \n";
+                    String formatStrPromo = "UPDATE [DefaultSchemaSetting].[Promo] SET PromoStatusId = (SELECT Id FROM PromoStatus WHERE SystemName = 'DraftPublished' AND Disabled = 0) WHERE Number = {0} \n";
                     string updateScript = "";
 
                     foreach (var promoNumber in promoNumbers)
@@ -69,7 +70,7 @@ namespace Module.Host.TPM.Handlers
 
                     if (!String.IsNullOrEmpty(updateScript))
                     {
-                        prev_context.Database.ExecuteSqlCommand(updateScript);
+                        prev_context.ExecuteSqlCommand(updateScript);
                     }
                 }
 
@@ -119,7 +120,7 @@ namespace Module.Host.TPM.Handlers
                             {
                                 Stopwatch swUplift = new Stopwatch();
                                 swUplift.Start();
-                                logLine = String.Format("Pick plan promo uplift started at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now);
+                                logLine = String.Format("Pick plan promo uplift started at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow));
                                 handlerLogger.Write(true, logLine, "Message");
 
                                 string upliftMessage;
@@ -138,7 +139,7 @@ namespace Module.Host.TPM.Handlers
                                 }
 
                                 swUplift.Stop();
-                                logLine = String.Format("Pick plan promo uplift completed at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", DateTimeOffset.Now, swUplift.Elapsed.TotalSeconds);
+                                logLine = String.Format("Pick plan promo uplift completed at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), swUplift.Elapsed.TotalSeconds);
                                 handlerLogger.Write(true, logLine, "Message");
                                 handlerLogger.Write(true, "");
                             }
@@ -154,7 +155,7 @@ namespace Module.Host.TPM.Handlers
                                 //Pасчет плановых параметров Product и Promo
                                 Stopwatch swPromoProduct = new Stopwatch();
                                 swPromoProduct.Start();
-                                logLine = String.Format("Calculation of plan parameters began at {0:yyyy-MM-dd HH:mm:ss}. It may take some time.", DateTimeOffset.Now);
+                                logLine = String.Format("Calculation of plan parameters began at {0:yyyy-MM-dd HH:mm:ss}. It may take some time.", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow));
                                 handlerLogger.Write(true, logLine, "Message");
 
                                 string calculateError = null;
@@ -180,12 +181,12 @@ namespace Module.Host.TPM.Handlers
                                 }
 
                                 // пересчет плановых бюджетов (из-за LSV)
-                                BudgetsPromoCalculation.CalculateBudgets(promo, true, false, handlerLogger, info.HandlerId, context);
+                                BudgetsPromoCalculation.CalculateBudgets(promo, true, false, handlerLogger.CurrentLogWriter, info.HandlerId, context);
 
                                 BTL btl = context.Set<BTLPromo>().Where(x => x.PromoId == promo.Id && !x.Disabled && x.DeletedDate == null).FirstOrDefault()?.BTL;
                                 if (btl != null)
                                 {
-                                    BudgetsPromoCalculation.CalculateBTLBudgets(btl, true, false, handlerLogger, context);
+                                    BudgetsPromoCalculation.CalculateBTLBudgets(btl, true, false, handlerLogger.CurrentLogWriter, context);
                                 }
 
                                 calculateError = PlanPromoParametersCalculation.CalculatePromoParameters(promoId, context);
@@ -197,7 +198,7 @@ namespace Module.Host.TPM.Handlers
                                 }
 
                                 swPromoProduct.Stop();
-                                logLine = String.Format("Calculation of plan parameters was completed at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", DateTimeOffset.Now, swPromoProduct.Elapsed.TotalSeconds);
+                                logLine = String.Format("Calculation of plan parameters was completed at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), swPromoProduct.Elapsed.TotalSeconds);
                                 handlerLogger.Write(true, logLine, "Message");
                                 handlerLogger.Write(true, "");
                             }
@@ -234,7 +235,8 @@ namespace Module.Host.TPM.Handlers
 
                 if (handlerLogger != null)
                 {
-                    handlerLogger.Write(true, String.Format("Plan parameters recalculation ended at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", DateTimeOffset.Now, sw.Elapsed.TotalSeconds), "Message");
+                    handlerLogger.Write(true, String.Format("Plan parameters recalculation ended at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), sw.Elapsed.TotalSeconds), "Message");
+                    handlerLogger.UploadToBlob();
                 }
             }
         }

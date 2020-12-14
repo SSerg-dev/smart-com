@@ -1,9 +1,9 @@
 ﻿CREATE TRIGGER ClientTree_ChangesIncident_Update_Trigger
-ON [dbo].[ClientTree]
+ON [ClientTree]
 INSTEAD OF UPDATE
 AS BEGIN
 	IF (
-		(SELECT Share FROM INSERTED) <> (SELECT Share FROM [dbo].[ClientTree] WHERE Id = (SELECT Id FROM INSERTED))
+		(SELECT Share FROM INSERTED) <> (SELECT Share FROM [ClientTree] WHERE Id = (SELECT Id FROM INSERTED))
 	)
 	BEGIN
 		INSERT INTO ChangesIncident ([DirectoryName], [ItemId], [CreateDate], [ProcessDate], [DeletedDate], [Disabled]) 

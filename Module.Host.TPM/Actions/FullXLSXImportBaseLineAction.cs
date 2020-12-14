@@ -32,7 +32,7 @@ namespace Module.Host.TPM.Actions
         private readonly DateTimeOffset StartDate;
         private readonly DateTimeOffset FinishDate;
         private readonly IDictionary<string, IEnumerable<string>> Filters;
-        ILogWriter handlerLogger = null;
+        LogWriter handlerLogger = null;
         Stopwatch stopwatch = new Stopwatch();
         protected readonly static Logger traceLogger = LogManager.GetCurrentClassLogger();
 
@@ -48,7 +48,7 @@ namespace Module.Host.TPM.Actions
             FileParseErrorMessage = "An error occurred while parsing the import file";
 
             //добавляем новый тип тега
-            handlerLogger = new FileLogWriter(handlerId.ToString(),
+            handlerLogger = new LogWriter(handlerId.ToString(),
                                               new Dictionary<string, string>() { ["Timing"] = "TIMING" });
         }
 
@@ -353,7 +353,7 @@ namespace Module.Host.TPM.Actions
                 try
                 {
                     traceLogger.Trace("Start delete script executing");
-                    context.Database.ExecuteSqlCommand(deleteScript);
+                    context.ExecuteSqlCommand(deleteScript);
                     traceLogger.Trace("Delete script executing finished");
                 }
                 catch (Exception e)
@@ -419,9 +419,9 @@ namespace Module.Host.TPM.Actions
             traceLogger.Trace("Start records creating");
             foreach (IEnumerable<BaseLine> items in toCreate.Partition(10000))
             {
-                string insertScript = String.Join("", items.Select(y => String.Format("INSERT INTO BaseLine (Type,LastModifiedDate, ProductId ,StartDate, DemandCode, [Disabled], [Id]) VALUES ({0}, '{1:yyyy-MM-dd HH:mm:ss +03:00}', '{2}', '{3:yyyy-MM-dd HH:mm:ss +03:00}', '{4}', '{5}', '{6}');",
+                string insertScript = String.Join("", items.Select(y => String.Format("INSERT INTO [DefaultSchemaSetting].BaseLine (Type,LastModifiedDate, ProductId ,StartDate, DemandCode, [Disabled], [Id]) VALUES ({0}, '{1:yyyy-MM-dd HH:mm:ss +03:00}', '{2}', '{3:yyyy-MM-dd HH:mm:ss +03:00}', '{4}', '{5}', '{6}');",
                     y.Type, y.LastModifiedDate, y.ProductId.ToString(), y.StartDate, y.DemandCode, y.Disabled, y.Id)));
-                context.Database.ExecuteSqlCommand(insertScript);
+                context.ExecuteSqlCommand(insertScript);
             }
             traceLogger.Trace("Finish records creating");
             //stopwatch.Stop();
@@ -431,9 +431,9 @@ namespace Module.Host.TPM.Actions
             traceLogger.Trace("Start records updating");
             foreach (IEnumerable<BaseLine> items in toUpdate.Partition(1000))
             {
-                string updateScript = String.Join("", items.Select(y => String.Format("UPDATE BaseLine SET Type = {0},LastModifiedDate = '{1:yyyy-MM-dd HH:mm:ss +03:00}'  WHERE Id = '{2}';",
+                string updateScript = String.Join("", items.Select(y => String.Format("UPDATE [DefaultSchemaSetting].BaseLine SET Type = {0},LastModifiedDate = '{1:yyyy-MM-dd HH:mm:ss +03:00}'  WHERE Id = '{2}';",
                      y.Type, y.LastModifiedDate, y.Id)));
-                context.Database.ExecuteSqlCommand(updateScript);
+                context.ExecuteSqlCommand(updateScript);
             }
             traceLogger.Trace("Finish records updating");
             //stopwatch.Stop();

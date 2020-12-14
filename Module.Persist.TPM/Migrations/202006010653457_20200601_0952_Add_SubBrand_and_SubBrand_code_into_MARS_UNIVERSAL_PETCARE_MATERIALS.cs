@@ -7,14 +7,14 @@ namespace Module.Persist.TPM.Migrations
     {
         public override void Up()
         {
-            Sql("alter table [dbo].[MARS_UNIVERSAL_PETCARE_MATERIALS] add [SubBrand] [nvarchar](80) NULL " +
-                "alter table [dbo].[MARS_UNIVERSAL_PETCARE_MATERIALS] add [SubBrand_code] [nvarchar](80) NULL ");
+            Sql("alter table [MARS_UNIVERSAL_PETCARE_MATERIALS] add [SubBrand] [nvarchar](80) NULL " +
+                "alter table [MARS_UNIVERSAL_PETCARE_MATERIALS] add [SubBrand_code] [nvarchar](80) NULL ");
         }
         
         public override void Down()
         {
-            Sql("alter table [dbo].[MARS_UNIVERSAL_PETCARE_MATERIALS] drop column [SubBrand] " +
-                "alter table [dbo].[MARS_UNIVERSAL_PETCARE_MATERIALS] drop column [SubBrand_code] ");
+            Sql("alter table [MARS_UNIVERSAL_PETCARE_MATERIALS] drop column [SubBrand] " +
+                "alter table [MARS_UNIVERSAL_PETCARE_MATERIALS] drop column [SubBrand_code] ");
         }
     }
 }

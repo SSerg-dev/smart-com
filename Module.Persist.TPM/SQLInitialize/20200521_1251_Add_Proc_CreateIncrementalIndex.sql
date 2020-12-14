@@ -10,7 +10,7 @@ BEGIN
 	BEGIN
 		IF NOT EXISTS (SELECT * FROM SYS.INDEXES WHERE NAME = N'IX_CurrentDayIncremental_References_NONCLUSTERED')
 			CREATE NONCLUSTERED INDEX [IX_CurrentDayIncremental_References_NONCLUSTERED] 
-			ON [dbo].[CurrentDayIncremental]
+			ON [CurrentDayIncremental]
 			(
 				[PromoId] ASC,
 				[ProductId] ASC
@@ -29,7 +29,7 @@ BEGIN
 	
 		IF NOT EXISTS (SELECT * FROM SYS.INDEXES WHERE NAME = N'IX_CurrentDayIncremental_NONCLUSTERED')
 			CREATE NONCLUSTERED INDEX [IX_CurrentDayIncremental_NONCLUSTERED]
-			ON [dbo].[CurrentDayIncremental] ([Id] ASC) 
+			ON [CurrentDayIncremental] ([Id] ASC) 
 			INCLUDE (
 				[WEEK],
 				[PromoId],
@@ -44,7 +44,7 @@ BEGIN
 	BEGIN
 		IF NOT EXISTS (SELECT * FROM SYS.INDEXES WHERE NAME = N'IX_PreviousDayIncremental_References_NONCLUSTERED')
 			CREATE NONCLUSTERED INDEX [IX_PreviousDayIncremental_References_NONCLUSTERED] 
-			ON [dbo].[PreviousDayIncremental]
+			ON [PreviousDayIncremental]
 			(
 				[PromoId] ASC,
 				[ProductId] ASC
@@ -63,7 +63,7 @@ BEGIN
 
 		IF NOT EXISTS (SELECT * FROM SYS.INDEXES WHERE NAME = N'IX_PreviousDayIncremental_NONCLUSTERED')
 			CREATE NONCLUSTERED INDEX [IX_PreviousDayIncremental_NONCLUSTERED]
-			ON [dbo].[PreviousDayIncremental] ([Id] ASC) 
+			ON [PreviousDayIncremental] ([Id] ASC) 
 			INCLUDE (
 				[WEEK],
 				[PromoId],

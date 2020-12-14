@@ -11,6 +11,7 @@ Ext.define('App.view.core.associateduser.dbuser.HistoricalAssociatedDbUser', {
     items: [{
         xtype: 'directorygrid',
         itemId: 'datatable',
+        editorModel: 'Core.form.EditorDetailWindowModel',
 
         store: {
             type: 'directorystore',
@@ -18,17 +19,17 @@ Ext.define('App.view.core.associateduser.dbuser.HistoricalAssociatedDbUser', {
             storeId: 'historicalassociateduseruserstore',
             extendedFilter: {
                 xclass: 'App.ExtFilterContext',
-				supportedModels: [{
+                supportedModels: [{
                     xclass: 'App.ExtSelectionFilterModel',
                     model: 'App.model.core.associateduser.user.HistoricalAssociatedUser',
                     modelId: 'efselectionmodel'
-				}]
+                }]
             },
             sorters: [{
                 property: '_EditDate',
                 direction: 'DESC'
             }]
-		},
+        },
 
         columns: {
             defaults: {
@@ -36,7 +37,7 @@ Ext.define('App.view.core.associateduser.dbuser.HistoricalAssociatedDbUser', {
                 menuDisabled: true,
                 filter: true,
                 flex: 1,
-				minWidth: 100
+                minWidth: 100
             },
             items: [{
                 text: l10n.ns('core', 'HistoricalAssociatedUser').value('_User'),
@@ -74,34 +75,34 @@ Ext.define('App.view.core.associateduser.dbuser.HistoricalAssociatedDbUser', {
     }, {
         xtype: 'editabledetailform',
         itemId: 'detailform',
-		model: 'App.model.core.associateduser.user.HistoricalAssociatedUser',
-		items: [{
-		    xtype: 'singlelinedisplayfield',
-		    name: '_User',
-		    fieldLabel: l10n.ns('core', 'HistoricalAssociatedUser').value('_User')
-		}, {
-		    xtype: 'singlelinedisplayfield',
-		    name: '_Role',
-		    fieldLabel: l10n.ns('core', 'HistoricalAssociatedUser').value('_Role')
-		}, {
-		    xtype: 'singlelinedisplayfield',
-		    name: '_EditDate',
-		    renderer: Ext.util.Format.dateRenderer('d.m.Y H:i:s'),
-		    fieldLabel: l10n.ns('core', 'HistoricalAssociatedUser').value('_EditDate')
-		}, {
-		    xtype: 'singlelinedisplayfield',
-		    name: '_Operation',
-		    fieldLabel: l10n.ns('core', 'HistoricalAssociatedUser').value('_Operation'),
-		    renderer: App.RenderHelper.getLocalizedRenderer('core.HistoricalAssociatedUser', 'OperationType')
-		}, { 
-			xtype: 'singlelinedisplayfield',
-			name: 'Name',
-			fieldLabel: l10n.ns('core', 'HistoricalAssociatedUser').value('Name')
-		}, {
-		    xtype: 'singlelinedisplayfield',
-		    name: 'Email',
-		    fieldLabel: l10n.ns('core', 'HistoricalAssociatedUser').value('Email')
-		}]
+        model: 'App.model.core.associateduser.user.HistoricalAssociatedUser',
+        items: [{
+            xtype: 'singlelinedisplayfield',
+            name: '_User',
+            fieldLabel: l10n.ns('core', 'HistoricalAssociatedUser').value('_User')
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: '_Role',
+            fieldLabel: l10n.ns('core', 'HistoricalAssociatedUser').value('_Role')
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: '_EditDate',
+            renderer: Ext.util.Format.dateRenderer('d.m.Y H:i:s'),
+            fieldLabel: l10n.ns('core', 'HistoricalAssociatedUser').value('_EditDate')
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: '_Operation',
+            fieldLabel: l10n.ns('core', 'HistoricalAssociatedUser').value('_Operation'),
+            renderer: App.RenderHelper.getLocalizedRenderer('core.HistoricalAssociatedUser', 'OperationType')
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'Name',
+            fieldLabel: l10n.ns('core', 'HistoricalAssociatedUser').value('Name')
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'Email',
+            fieldLabel: l10n.ns('core', 'HistoricalAssociatedUser').value('Email')
+        }]
     }]
 
 });

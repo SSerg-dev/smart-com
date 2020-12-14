@@ -1,8 +1,8 @@
-DELETE [dbo].[MailNotificationSetting] WHERE [Name] = 'WEEK_BEFORE_DISPATCH_PROMO_NOTIFICATION'
+DELETE [MailNotificationSetting] WHERE [Name] = 'WEEK_BEFORE_DISPATCH_PROMO_NOTIFICATION'
 
 GO
 
-INSERT INTO [dbo].[MailNotificationSetting]
+INSERT INTO [MailNotificationSetting]
            ([Id]
            ,[Name]
            ,[Description]

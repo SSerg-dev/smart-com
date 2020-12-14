@@ -56,18 +56,18 @@ Ext.define('Ext.ux.grid.FilterBar', {
     extend: 'Ext.AbstractPlugin',
     alias: 'plugin.filterbar',
     uses: [
-		'Ext.window.MessageBox',
-		'Ext.ux.form.field.ClearButton',
-		'Ext.ux.form.field.OperatorButton',
-		'Ext.container.Container',
-		'Ext.util.DelayedTask',
-		'Ext.layout.container.HBox',
-		'Ext.data.ArrayStore',
-		'Ext.button.Button',
-		'Ext.form.field.Text',
-		'Ext.form.field.Number',
-		'Ext.form.field.Date',
-		'Ext.form.field.ComboBox'
+        'Ext.window.MessageBox',
+        'Ext.ux.form.field.ClearButton',
+        'Ext.ux.form.field.OperatorButton',
+        'Ext.container.Container',
+        'Ext.util.DelayedTask',
+        'Ext.layout.container.HBox',
+        'Ext.data.ArrayStore',
+        'Ext.button.Button',
+        'Ext.form.field.Text',
+        'Ext.form.field.Number',
+        'Ext.form.field.Date',
+        'Ext.form.field.ComboBox'
     ],
     mixins: {
         observable: 'Ext.util.Observable'
@@ -298,8 +298,8 @@ Ext.define('Ext.ux.grid.FilterBar', {
         Ext.apply(me.grid.store.proxy, {
             encodeFilters: function (filters) {
                 var min = [],
-					length = filters.length,
-					i = 0;
+                    length = filters.length,
+                    i = 0;
 
                 for (; i < length; i++) {
                     min[i] = {
@@ -726,9 +726,18 @@ Ext.define('Ext.ux.grid.FilterBar', {
     applyFilters: function (field) {
         if (!field.isValid()) return;
         var me = this,
-			grid = me.grid,
-			column = me.columns.get(field.dataIndex),
-			newVal = (grid.store.remoteFilter ? field.getSubmitValue() : field.getValue());
+            grid = me.grid,
+            column = me.columns.get(field.dataIndex),
+            newVal = (grid.store.remoteFilter ? field.getSubmitValue() : field.getValue());
+
+        if (Ext.isArray(newVal) && newVal.length != 0) {
+            if (newVal.indexOf('Interface') != -1) {
+                var index = newVal.indexOf('Interface');
+                newVal[index] = newVal[index].toLowerCase();
+            }
+        } else if (newVal === 'Interface') {
+            newVal = newVal.toLowerCase();
+        }
 
         if (Ext.isArray(newVal) && newVal.length == 0) {
             newVal = '';
@@ -872,6 +881,9 @@ Ext.define('Ext.ux.grid.FilterBar', {
                     var updateVal = parseFloat(newVal) + parseFloat(minVal) - parseFloat(roundingValue);
                     var gteValue = newVal - parseFloat(roundingValue);
 
+                    gteValue = gteValue.toFixed(minVal.length - 1);
+                    updateVal = updateVal.toFixed(minVal.length - 1);
+
                     me.filterArray.push(Ext.create('Ext.util.Filter', {
                         property: column.dataIndex,
                         value: gteValue,
@@ -885,7 +897,7 @@ Ext.define('Ext.ux.grid.FilterBar', {
                         type: column.filter.type,
                         operator: 'lt'
                     }));
-                }  else {
+                } else {
                     var operator = (field.operator || column.filter.operator);
 
                     if (column.extraOperator) {
@@ -978,7 +990,7 @@ Ext.define('Ext.ux.grid.FilterBar', {
     //private
     getFirstField: function () {
         var me = this,
-			field = undefined;
+            field = undefined;
 
         Ext.each(me.grid.query('gridcolumn'), function (col) {
             if (col.filter) {

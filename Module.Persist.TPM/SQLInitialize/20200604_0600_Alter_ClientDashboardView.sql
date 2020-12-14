@@ -14,7 +14,7 @@ AS BEGIN
 END
 GO
 
-CREATE OR ALTER VIEW [dbo].[ClientDashboardView] AS
+CREATE OR ALTER VIEW [ClientDashboardView] AS
 WITH
 	Years
 AS

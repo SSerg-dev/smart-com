@@ -58,7 +58,7 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
                     lastSuccessDate = ConvertDate(lastSuccessDate);
                     DateTimeOffset today = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).Value;
 
-                    var newRecords = context.Database.SqlQuery<MARS_UNIVERSAL_PETCARE_MATERIALS>($@"
+                    var newRecords = context.SqlQuery<MARS_UNIVERSAL_PETCARE_MATERIALS>($@"
 						SELECT  materials.[VKORG],
 								materials.[MATNR], 
 						        materials.[VMSTD], 
@@ -100,7 +100,7 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
 								materials.[SubBrand_code],
 						        materials.[SubBrand]
 		
-						FROM MARS_UNIVERSAL_PETCARE_MATERIALS materials
+						FROM [DefaultSchemaSetting].MARS_UNIVERSAL_PETCARE_MATERIALS materials
 	
                         WHERE materials.ZREP IS NOT NULL AND (DATEDIFF(MINUTE, '{lastSuccessDate}', materials.VMSTD) >= 0)
 					").AsEnumerable();
@@ -404,7 +404,7 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
             if (!notifyErrors.Any()) return;
 
             var handlerData = new HandlerData();
-            HandlerDataHelper.SaveIncomingArgument("ErrorsToNotify", notifyErrors, handlerData, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("ErrorsToNotify", notifyErrors, handlerData, visible:false, throwIfNotExists: false);
             var handler = new LoopHandler()
             {
                 Id = Guid.NewGuid(),
@@ -435,7 +435,7 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
             {
                 if (brandGroup.DistinctBy(x => new { x.Brand_code, x.Segmen_code }).Count() == 2)
                 {
-                    string updateTemplate = "UPDATE Brand SET Name = '{0}' WHERE Id = '{1}'";
+                    string updateTemplate = "UPDATE [DefaultSchemaSetting].Brand SET Name = '{0}' WHERE Id = '{1}'";
 
                     if (brandGroup.DistinctBy(x => x.Name).Count() != 1)
                     {
@@ -450,7 +450,7 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
                             {
                                 string catName = String.Format("{0} Cat", brand.Name);
                                 string catBrandUpdate = String.Format(updateTemplate, catName, brand.Id);
-                                context.Database.ExecuteSqlCommand(catBrandUpdate);
+                                context.ExecuteSqlCommand(catBrandUpdate);
 
                                 Results.Add(String.Format("Added segment to Brand name for brand with code {0} (segment code: {1})", brand.Brand_code, brand.Segmen_code), null);
                             }
@@ -458,7 +458,7 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
                             {
                                 string dogName = String.Format("{0} Dog", brand.Name);
                                 string dogBrandUpdate = String.Format(updateTemplate, dogName, brand.Id);
-                                context.Database.ExecuteSqlCommand(dogBrandUpdate);
+                                context.ExecuteSqlCommand(dogBrandUpdate);
 
                                 Results.Add(String.Format("Added segment to Brand name for brand with code {0} (segment code: {1})", brand.Brand_code, brand.Segmen_code), null);
                             }

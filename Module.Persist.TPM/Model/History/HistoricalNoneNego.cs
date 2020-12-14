@@ -15,7 +15,7 @@ namespace Module.Persist.TPM.Model.History
         public string MechanicTypeName { get; set; }
         public string ClientTreeFullPathName { get; set; }
         public string ProductTreeFullPathName { get; set; }
-        public int ClientTreeObjectId { get; set; }
-        public int ProductTreeObjectId { get; set; }
+        public int? ClientTreeObjectId { get; set; }
+        public int? ProductTreeObjectId { get; set; }
     }
 }

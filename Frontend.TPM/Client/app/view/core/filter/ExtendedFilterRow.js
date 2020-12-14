@@ -3,6 +3,7 @@
     alias: 'widget.extfilterrow',
     fieldLabel: '',
     labelWidth: 170,
+    maxHeight: 32,
     labelSeparator: '',
     labelClsExtra: 'singleline-lable',
 
@@ -134,6 +135,22 @@
             }
 
             return Ext.create('App.extfilter.core.Field', '');
+        }
+
+        if (value === 'Interface') {
+            value = value.toLowerCase();
+        } else if (Ext.getClassName(value) === 'App.extfilter.core.ValueSearchList') {
+            if (value.getValues().indexOf('Interface') != -1) {
+                var newList = [];
+                value.getValues().forEach(function (item, index, array) {
+                    if (item != 'Interface') {
+                        newList.push(item);
+                    } else {
+                        newList.push(item.toLowerCase());
+                    }
+                });
+                value.update(newList);
+            }
         }
 
         return value;

@@ -241,13 +241,13 @@ namespace Module.Host.TPM.Actions
             foreach (IEnumerable<IEntity<Guid>> items in toCreate.Partition(100))
             {
                 string insertScript = generatorCreate.BuildInsertScript(items);
-                context.Database.ExecuteSqlCommand(insertScript);
+                context.ExecuteSqlCommand(insertScript);
             }
 
             foreach (IEnumerable<IEntity<Guid>> items in toUpdate.Partition(10000))
             {
                 string updateScript = generatorUpdate.BuildUpdateScript(items);
-                context.Database.ExecuteSqlCommand(updateScript);
+                context.ExecuteSqlCommand(updateScript);
             }
 
             //Добавление в историю

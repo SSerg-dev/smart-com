@@ -1,6 +1,6 @@
 DELETE FROM Setting WHERE [Name] = N'PROMO_PRODUCT_CORRECTION_PROMO_STATUS_LIST'
 
-INSERT INTO [dbo].[Setting]
+INSERT INTO [Setting]
            ([Name]
            ,[Type]
            ,[Value]

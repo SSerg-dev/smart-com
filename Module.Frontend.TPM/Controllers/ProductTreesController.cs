@@ -20,6 +20,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.OData;
 using Thinktecture.IdentityModel.Authorization.WebApi;
+using Utility.FileWorker;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -642,6 +643,7 @@ namespace Module.Frontend.TPM.Controllers
             {
                 if (!Request.Content.IsMimeMultipartContent())
                     throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+                FileDispatcher fileDispatcher = new FileDispatcher();
 
                 string directory = Core.Settings.AppSettingsManager.GetSetting("PRODUCT_TREE_DIRECTORY", "ProductTreeLogoFiles");
                 string fullPathfile = await FileUtility.UploadFile(Request, directory);
@@ -659,9 +661,10 @@ namespace Module.Frontend.TPM.Controllers
                 // удаляем старую картинку если была
                 if (productTree.LogoFileName != null)
                 {
-                    FileInfo f = new FileInfo(directory + "/" + productTree.LogoFileName);
-                    if (f.Exists)
-                        f.Delete();
+                    if (fileDispatcher.IsExists(directory, productTree.LogoFileName))
+                    {
+                        fileDispatcher.DeleteFile(Path.Combine(directory, productTree.LogoFileName));
+                    }
                 }
 
                 productTree.LogoFileName = fileName;
@@ -683,6 +686,12 @@ namespace Module.Frontend.TPM.Controllers
             try
             {
                 string directory = Core.Settings.AppSettingsManager.GetSetting("PRODUCT_TREE_DIRECTORY", "ProductTreeLogoFiles");
+                string logDir = Core.Settings.AppSettingsManager.GetSetting<string>("HANDLER_LOG_TYPE", "File");
+
+                if (logDir == "Azure")
+                {
+                    return FileUtility.DownloadFileAzure(directory, fileName);
+                }
                 return FileUtility.DownloadFile(directory, fileName);
             }
             catch (Exception e)
@@ -701,11 +710,11 @@ namespace Module.Frontend.TPM.Controllers
             {
                 // удаляем старое лого
                 string directory = Core.Settings.AppSettingsManager.GetSetting("PRODUCT_TREE_DIRECTORY", "ProductTreeLogoFiles");
-                FileInfo f = new FileInfo(directory + "/" + currentProduct.LogoFileName);
-
-                if (f.Exists)
-                    f.Delete();
-
+                FileDispatcher fileDispatcher = new FileDispatcher();
+                if (fileDispatcher.IsExists(directory, currentProduct.LogoFileName))
+                {
+                    fileDispatcher.DeleteFile(Path.Combine(directory, currentProduct.LogoFileName));
+                }
                 currentProduct.LogoFileName = null;
                 await Context.SaveChangesAsync();
                 return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, message = "The file from selected client was removed successfully." }));

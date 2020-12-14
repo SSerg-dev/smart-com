@@ -20,7 +20,7 @@ namespace ProcessingService {
                 logger.Info(displayMessage);
                 Console.WriteLine(displayMessage);
                 Console.WriteLine("Press any key to exit");
-                Console.ReadKey();
+                Console.Read();
             } catch (Exception e) {
                 logger.Fatal(e, "Произошла фатальная ошибка в ProcessingHost");
                 throw;

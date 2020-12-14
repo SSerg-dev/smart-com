@@ -552,7 +552,7 @@ namespace Module.Persist.TPM.Utils {
 
                 query = query.Where(x => queryIds.Contains(x.PromoNameId));
             }
-            return query.ToList().AsQueryable();
+            return query;
         }
 
         /// <summary>

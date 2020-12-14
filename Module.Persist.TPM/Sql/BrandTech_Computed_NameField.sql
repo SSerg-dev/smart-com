@@ -2,7 +2,7 @@
 -------------------- SECTION: Функция вычисления Name Для BrandTech --------------------
 ----------------------------------------------------------------------------------------
 
-CREATE OR ALTER FUNCTION [dbo].[GetBrandTechName]
+CREATE OR ALTER FUNCTION [GetBrandTechName]
 (
 	@brandId uniqueidentifier,
 	@technologyId uniqueidentifier
@@ -21,8 +21,8 @@ END
 ----------------------------------------------------------------------------------------
 
 GO
-ALTER TABLE [dbo].[BrandTech] DROP COLUMN [Name];
+ALTER TABLE [BrandTech] DROP COLUMN [Name];
 
 GO
-ALTER TABLE [dbo].[BrandTech]
-    ADD [Name] AS ([dbo].[GetBrandTechName]([BrandId], [TechnologyId]));
+ALTER TABLE [BrandTech]
+    ADD [Name] AS ([GetBrandTechName]([BrandId], [TechnologyId]));

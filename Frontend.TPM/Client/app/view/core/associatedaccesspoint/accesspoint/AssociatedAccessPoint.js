@@ -11,6 +11,7 @@ Ext.define('App.view.core.associatedaccesspoint.accesspoint.AssociatedAccessPoin
     items: [{
         xtype: 'directorygrid',
         itemId: 'datatable',
+        editorModel: 'Core.form.EditorDetailWindowModel',
 
         store: {
             type: 'directorystore',
@@ -18,16 +19,16 @@ Ext.define('App.view.core.associatedaccesspoint.accesspoint.AssociatedAccessPoin
             storeId: 'associatedaccesspointaccesspointstore',
             extendedFilter: {
                 xclass: 'App.ExtFilterContext',
-				supportedModels: [{
+                supportedModels: [{
                     xclass: 'App.ExtSelectionFilterModel',
                     model: 'App.model.core.associatedaccesspoint.accesspoint.AssociatedAccessPoint',
                     modelId: 'efselectionmodel'
-				}, {
+                }, {
                     xclass: 'App.ExtTextFilterModel',
                     modelId: 'eftextmodel'
-				}]
-            }        
-		},
+                }]
+            }
+        },
 
         columns: {
             defaults: {
@@ -35,38 +36,38 @@ Ext.define('App.view.core.associatedaccesspoint.accesspoint.AssociatedAccessPoin
                 menuDisabled: true,
                 filter: true,
                 flex: 1,
-				minWidth: 100
+                minWidth: 100
             },
-            items: [{ 
-				text: l10n.ns('core', 'AssociatedAccessPoint').value('Resource'),
-				dataIndex: 'Resource'
-			}, { 
-				text: l10n.ns('core', 'AssociatedAccessPoint').value('Action'),
-				dataIndex: 'Action'
-			}, { 
-				text: l10n.ns('core', 'AssociatedAccessPoint').value('Description'),
-				dataIndex: 'Description'
-			}]
+            items: [{
+                text: l10n.ns('core', 'AssociatedAccessPoint').value('Resource'),
+                dataIndex: 'Resource'
+            }, {
+                text: l10n.ns('core', 'AssociatedAccessPoint').value('Action'),
+                dataIndex: 'Action'
+            }, {
+                text: l10n.ns('core', 'AssociatedAccessPoint').value('Description'),
+                dataIndex: 'Description'
+            }]
         }
     }, {
         xtype: 'editabledetailform',
         itemId: 'detailform',
-		model: 'App.model.core.associatedaccesspoint.accesspoint.AssociatedAccessPoint',
-        items: [{ 
-			xtype: 'textfield',
-			name: 'Resource',
-			fieldLabel: l10n.ns('core', 'AssociatedAccessPoint').value('Resource')		
-		}, { 
-			xtype: 'textfield',
-			name: 'Action',
-			fieldLabel: l10n.ns('core', 'AssociatedAccessPoint').value('Action')		
-		}, { 
-			xtype: 'textfield',
-			name: 'Description',
-			allowBlank: true,
-			allowOnlyWhitespace: true,
-			fieldLabel: l10n.ns('core', 'AssociatedAccessPoint').value('Description')		
-		}]
+        model: 'App.model.core.associatedaccesspoint.accesspoint.AssociatedAccessPoint',
+        items: [{
+            xtype: 'textfield',
+            name: 'Resource',
+            fieldLabel: l10n.ns('core', 'AssociatedAccessPoint').value('Resource')
+        }, {
+            xtype: 'textfield',
+            name: 'Action',
+            fieldLabel: l10n.ns('core', 'AssociatedAccessPoint').value('Action')
+        }, {
+            xtype: 'textfield',
+            name: 'Description',
+            allowBlank: true,
+            allowOnlyWhitespace: true,
+            fieldLabel: l10n.ns('core', 'AssociatedAccessPoint').value('Description')
+        }]
     }]
 
 });

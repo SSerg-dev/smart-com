@@ -1,4 +1,4 @@
-﻿INSERT INTO [dbo].[JobFlag]
+﻿INSERT INTO [JobFlag]
            ([Prefix]
            ,[Value]
            ,[Description])

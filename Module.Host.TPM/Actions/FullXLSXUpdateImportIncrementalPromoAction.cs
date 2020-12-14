@@ -261,13 +261,13 @@ namespace Module.Host.TPM.Actions {
 
             foreach (IEnumerable<IncrementalPromo> items in toUpdate.Partition(1000))
             {
-                string insertScript = String.Join("", items.Select(y => String.Format("UPDATE IncrementalPromo SET PlanPromoIncrementalCases = {0}, " +
+                string insertScript = String.Join("", items.Select(y => String.Format("UPDATE [DefaultSchemaSetting].IncrementalPromo SET PlanPromoIncrementalCases = {0}, " +
                                                                                     "CasePrice = {1}, " +
                                                                                     "PlanPromoIncrementalLSV = {2}, " +
                                                                                     "LastModifiedDate = '{3:yyyy-MM-dd HH:mm:ss +03:00}'  " +
                                                                                     "WHERE Id = '{4}';", 
                                                                                     y.PlanPromoIncrementalCases, y.CasePrice, y.PlanPromoIncrementalLSV, y.LastModifiedDate, y.Id)));
-                context.Database.ExecuteSqlCommand(insertScript);
+                context.ExecuteSqlCommand(insertScript);
             }
             //Добавление изменений в историю
             context.HistoryWriter.Write(toHisUpdate, context.AuthManager.GetCurrentUser(), context.AuthManager.GetCurrentRole(), OperationType.Updated);

@@ -46,18 +46,6 @@ Ext.define('App.view.core.associateduser.dbuser.AssociatedDbUser', {
             text: l10n.ns('core', 'crud').value('createButtonText'),
             tooltip: l10n.ns('core', 'crud').value('createButtonText')
         }, {
-            itemId: 'updatebutton',
-            action: 'Patch',
-            glyph: 0xf64f,
-            text: l10n.ns('core', 'crud').value('updateButtonText'),
-            tooltip: l10n.ns('core', 'crud').value('updateButtonText')
-        }, {
-            itemId: 'changepassbutton',
-            action: 'ChangePassword',
-            glyph: 0xf3ee,
-            text: l10n.ns('core', 'AssociatedUser', 'buttons').value('changePassButtonText'),
-            tooltip: l10n.ns('core', 'AssociatedUser', 'buttons').value('changePassButtonText')
-        }, {
             itemId: 'deletebutton',
             action: 'Delete',
             glyph: 0xf5e8,
@@ -87,6 +75,7 @@ Ext.define('App.view.core.associateduser.dbuser.AssociatedDbUser', {
     items: [{
         xtype: 'directorygrid',
         itemId: 'datatable',
+        editorModel: 'Core.form.EditorDetailWindowModel',
 
         store: {
             type: 'directorystore',
@@ -135,11 +124,6 @@ Ext.define('App.view.core.associateduser.dbuser.AssociatedDbUser', {
             fieldLabel: l10n.ns('core', 'AssociatedUser').value('Email'),
             allowOnlyWhitespace: false,
             allowBlank: false
-        }, {
-            xtype: 'passwordfield',
-            name: 'Password',
-            fieldLabel: l10n.ns('core', 'AssociatedUser').value('Password'),
-            editableModes: [Core.BaseEditableDetailForm.CREATING_MODE, Core.BaseEditableDetailForm.CREATED_MODE]
         }]
     }]
 

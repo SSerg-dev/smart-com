@@ -1,4 +1,4 @@
-﻿CREATE OR ALTER VIEW [dbo].[PlanPostPromoEffectReportWeekView] AS
+﻿CREATE OR ALTER VIEW [PlanPostPromoEffectReportWeekView] AS
 WITH
 	BaseDataView
 AS
@@ -27,7 +27,7 @@ AS
 		pp.[PlanProductPostPromoEffectLSVW2], 
 		pp.[PlanProductBaselineLSV],
 		
-		[dbo].[GetDemandCode](ct.[parentId], ct.[DemandCode]) AS DemandCode,
+		[GetDemandCode](ct.[parentId], ct.[DemandCode]) AS DemandCode,
 		ISNULL(ct.[PostPromoEffectW1], 0) AS PostPromoEffectW1,
 		ISNULL(ct.[PostPromoEffectW2], 0) AS PostPromoEffectW2,
 
@@ -37,20 +37,20 @@ AS
 		END AS WeekStart,
 
 		ISNULL(pl.[Price], 0) AS [Price]
-	FROM [dbo].[Promo] p
-	INNER JOIN [dbo].[PromoProduct] pp 
+	FROM [Promo] p
+	INNER JOIN [PromoProduct] pp 
 		ON pp.[PromoId] = p.[Id]
-	INNER JOIN [dbo].[PromoStatus] ps 
+	INNER JOIN [PromoStatus] ps 
 		ON ps.[Id] = p.[PromoStatusId]
-	INNER JOIN [dbo].[ClientTree] ct
+	INNER JOIN [ClientTree] ct
 		ON ct.[Id] = p.[ClientTreeKeyId]
-	INNER JOIN [dbo].[Dates] dispEndD
+	INNER JOIN [Dates] dispEndD
 		ON dispEndD.[OriginalDate] = CAST(p.[DispatchesEnd] AS DATE) 
-	LEFT JOIN [dbo].[PriceList] pl
+	LEFT JOIN [PriceList] pl
 		ON pl.Id = (
 			SELECT TOP(1)
 				Id
-			FROM [dbo].[PriceList]
+			FROM [PriceList]
 			WHERE [ClientTreeId] = p.[ClientTreeKeyId]
 				AND [ProductId] = pp.[ProductId]
 				AND [StartDate] <= p.[DispatchesStart]
@@ -70,8 +70,8 @@ AS
 		bl.[SellOutBaselineQTY],
 		CAST(bl.[StartDate] AS DATE) AS [StartDate],
 		bl.[DemandCode]
- 	FROM [dbo].[BaseLine] bl
-	INNER JOIN [dbo].[Product] p 
+ 	FROM [BaseLine] bl
+	INNER JOIN [Product] p 
 		ON p.[Id] = bl.[ProductId]
 	WHERE bl.[Disabled] = 0
 ),
@@ -100,17 +100,17 @@ AS
 		ON blW2.[DemandCode] = p.[DemandCode]
 			AND blW2.[ZREP] = p.[ZREP]
 			AND blW2.[StartDate] = DATEADD(DAY, 7, p.[WeekStart])
-	LEFT JOIN [dbo].[ClientTreeBrandTech] ctbt
+	LEFT JOIN [ClientTreeBrandTech] ctbt
 		ON ctbt.Id = (
 			SELECT TOP(1)
 				Id
-			FROM [dbo].[ClientTreeBrandTech]
+			FROM [ClientTreeBrandTech]
 			WHERE
 				[ClientTreeId] = p.[ClientTreeKeyId]
 				AND [BrandTechId] = p.[BrandTechId]
 				AND [Disabled] = 0
 		)
-	INNER JOIN [dbo].[Dates] d
+	INNER JOIN [Dates] d
 		ON d.[OriginalDate] = CAST(p.[WeekStart] AS DATE) 
 )
 

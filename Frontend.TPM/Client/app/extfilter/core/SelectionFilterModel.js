@@ -156,6 +156,8 @@
                 var roundingValue = minVal.length > 3 ? emptyVal.toString() + '5' : '0';
                 var updateVal = parseFloat(value) + parseFloat(minVal) - parseFloat(roundingValue);
                 var gteValue = value - parseFloat(roundingValue);
+                gteValue = gteValue.toFixed(minVal.length - 1);
+                updateVal = updateVal.toFixed(minVal.length - 1);
 
                 var nodes = [
                     this.makeRule(property, 'GreaterOrEqual', gteValue, allowEmpty, metadata),

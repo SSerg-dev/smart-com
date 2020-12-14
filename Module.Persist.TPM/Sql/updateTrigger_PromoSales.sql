@@ -1,6 +1,6 @@
-CREATE TRIGGER trig_Update ON [dbo].[PromoSales]
+CREATE TRIGGER trig_Update ON [PromoSales]
 INSTEAD OF UPDATE AS
-UPDATE [dbo].[Promo]
+UPDATE [Promo]
 SET [Number] = i.[Number],
 	[Name] = i.[Name],
 	[ClientId] = i.[ClientId],
@@ -12,11 +12,11 @@ SET [Number] = i.[Number],
 	[EndDate] = i.[EndDate],
 	[DispatchesStart] = i.[DispatchesStart],
 	[DispatchesEnd] = i.[DispatchesEnd]
-FROM [dbo].[Sale] s JOIN inserted i ON s.[Id] = i.[Id], [dbo].[Promo] p
+FROM [Sale] s JOIN inserted i ON s.[Id] = i.[Id], [Promo] p
 WHERE p.[Id] = s.[PromoId]
 
-UPDATE [dbo].[Sale]
+UPDATE [Sale]
 SET [BudgetItemId] = i.[BudgetItemId],
 	[Plan] = i.[Plan],
 	[Fact] = i.[Fact]
-FROM [dbo].[Sale] s JOIN inserted i ON s.[Id] = i.[Id]
+FROM [Sale] s JOIN inserted i ON s.[Id] = i.[Id]

@@ -2,7 +2,7 @@
 -------------- SECTION: Функция вычисления BaseClientName Для PromoDemand --------------
 ----------------------------------------------------------------------------------------
 
-CREATE FUNCTION [dbo].[GetBaseClientName]
+CREATE FUNCTION [GetBaseClientName]
 (
 	@baseClientId int
 )
@@ -22,8 +22,8 @@ END
 ----------------------------------------------------------------------------------------
 
 GO
-ALTER TABLE [dbo].[PromoDemand] DROP COLUMN [Account];
+ALTER TABLE [PromoDemand] DROP COLUMN [Account];
 
 GO
-ALTER TABLE [dbo].[PromoDemand]
-    ADD [Account] AS ([dbo].[GetBaseClientName]([BaseClientObjectId]));
+ALTER TABLE [PromoDemand]
+    ADD [Account] AS ([GetBaseClientName]([BaseClientObjectId]));

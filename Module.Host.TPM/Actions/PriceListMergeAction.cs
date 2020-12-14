@@ -17,10 +17,10 @@ namespace Module.Host.TPM.Actions
     public class PriceListMergeAction : BaseAction
     {
         private readonly DatabaseContext _databaseContext;
-        private readonly FileLogWriter _fileLogWriter;
+        private readonly ILogWriter _fileLogWriter;
         private readonly ExecuteData _executeData;
 
-        public PriceListMergeAction(DatabaseContext databaseContext, FileLogWriter fileLogWriter, ExecuteData executeData)
+        public PriceListMergeAction(DatabaseContext databaseContext, ILogWriter fileLogWriter, ExecuteData executeData)
         {
             _databaseContext = databaseContext;
             _fileLogWriter = fileLogWriter;
@@ -33,9 +33,9 @@ namespace Module.Host.TPM.Actions
             var dateSeparator = settingsManager.GetSetting<string>("PRICELIST_DATE_SEPARATOR", "2020-03-29 00:00:00.000");
 
             string dateSeparatorSqlString = $"CAST('{dateSeparator}' AS DATETIME)";
-            string sql = $"SELECT * FROM [{nameof(PRICELIST_FDM)}] WHERE ([START_DATE] <= {dateSeparatorSqlString} AND {dateSeparatorSqlString} < [FINISH_DATE]) OR ({dateSeparatorSqlString} < [START_DATE])";
+            string sql = $"SELECT * FROM [DefaultSchemaSetting].[{nameof(PRICELIST_FDM)}] WHERE ([START_DATE] <= {dateSeparatorSqlString} AND {dateSeparatorSqlString} < [FINISH_DATE]) OR ({dateSeparatorSqlString} < [START_DATE])";
 
-            var priceListFDMs = _databaseContext.Database.SqlQuery<PRICELIST_FDM>(sql);
+            var priceListFDMs = _databaseContext.SqlQuery<PRICELIST_FDM>(sql);
             var priceLists = _databaseContext.Set<PriceList>().Where(x => !x.Disabled);
             var clientTrees = _databaseContext.Set<ClientTree>().Where(x => !x.EndDate.HasValue);
             var products = _databaseContext.Set<Product>().Where(x => !x.Disabled).Select(x => new { x.Id, x.ZREP }).ToList().Select(x => new Product { Id = x.Id, ZREP = x.ZREP });
@@ -148,6 +148,14 @@ namespace Module.Host.TPM.Actions
             var currentPriceLists = _databaseContext.Set<PriceList>().ToList();
             var newPriceLists = GetNewPriceListRecords(priceListFDMs, clientTrees, products);
             var differentPriceLists = newPriceLists.Except(currentPriceLists, new PriceListEqualityComparer());
+            differentPriceLists = differentPriceLists.Where(dp => !currentPriceLists.Any(cp =>
+                                                                                    cp.Disabled == dp.Disabled &&
+                                                                                    cp.ClientTreeId == dp.ClientTreeId &&
+                                                                                    cp.ProductId == dp.ProductId &&
+                                                                                    ((cp.StartDate >= dp.StartDate && cp.StartDate <= dp.EndDate) ||
+                                                                                    (dp.StartDate >= cp.StartDate && dp.StartDate <= cp.EndDate) ||
+                                                                                    (cp.EndDate >= dp.StartDate && cp.EndDate <= dp.EndDate) ||
+                                                                                    (dp.EndDate >= cp.StartDate && dp.EndDate <= cp.EndDate))));
             return differentPriceLists;
         }
 

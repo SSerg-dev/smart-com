@@ -4,6 +4,8 @@ using Core.Security.Models;
 using Core.Settings;
 using Frontend.Core.Controllers.Base;
 using Frontend.Core.Extensions.Export;
+using Looper.Core;
+using Looper.Parameters;
 using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.TPM;
@@ -45,13 +47,13 @@ namespace Module.Frontend.TPM.Controllers
             IList<Constraint> constraints = user.Id.HasValue ? Context.Constraints
                 .Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
                 .ToList() : new List<Constraint>();
-			IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
+            IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
 
             IQueryable<PromoROIReport> query = Context.Set<PromoROIReport>();
             IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
-			query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
+            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
 
-			return query;
+            return query;
         }
 
         [ClaimsAuthorize]
@@ -67,7 +69,7 @@ namespace Module.Frontend.TPM.Controllers
         public IQueryable<PromoROIReport> GetPromoROIReports(ODataQueryOptions<PromoROIReport> queryOptions = null)
         {
             var query = GetConstraintedQuery();
-            
+
             return query;
         }
 
@@ -90,30 +92,52 @@ namespace Module.Frontend.TPM.Controllers
         [ClaimsAuthorize]
         public IHttpActionResult ExportXLSX(ODataQueryOptions<PromoROIReport> options)
         {
-            try
+            IQueryable results = options.ApplyTo(GetConstraintedQuery());
+            UserInfo user = authorizationManager.GetCurrentUser();
+            Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
+            RoleInfo role = authorizationManager.GetCurrentRole();
+            Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
+            using (DatabaseContext context = new DatabaseContext())
             {
-                IQueryable results = options.ApplyTo(GetConstraintedQuery());
-                IEnumerable<Column> columns = GetPromoROIExportSettings();
-                XLSXExporter exporter = new XLSXExporter(columns);
-                UserInfo user = authorizationManager.GetCurrentUser();
-                string username = user == null ? "" : user.Login;
-                string filePath = exporter.GetExportFileName("PromoROIReport", username);
-                exporter.Export(results, filePath);
-                string filename = System.IO.Path.GetFileName(filePath);
-                return Content<string>(HttpStatusCode.OK, filename);
+                HandlerData data = new HandlerData();
+                string handlerName = "ExportHandler";
+
+                HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("TModel", typeof(PromoROIReport), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(PromoROIReportsController), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PromoROIReportsController.GetPromoROIExportSettingsStatic), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
+
+                LoopHandler handler = new LoopHandler()
+                {
+                    Id = Guid.NewGuid(),
+                    ConfigurationName = "PROCESSING",
+                    Description = $"Export {nameof(PromoROIReport)} dictionary",
+                    Name = "Module.Host.TPM.Handlers." + handlerName,
+                    ExecutionPeriod = null,
+                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                    LastExecutionDate = null,
+                    NextExecutionDate = null,
+                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                    UserId = userId,
+                    RoleId = roleId
+                };
+                handler.SetParameterData(data);
+                context.LoopHandlers.Add(handler);
+                context.SaveChanges();
             }
-            catch (Exception e)
-            {
-                return Content<string>(HttpStatusCode.InternalServerError, e.Message);
-            }
+
+            return Content(HttpStatusCode.OK, "success");
         }
 
-        public static string ExportXLSXYearStatic(DatabaseContext databaseContext, User user, int year, Role defaultRole)
+        public static string ExportXLSXYearStatic(DatabaseContext databaseContext, User user, int year, Role defaultRole, bool yearInName = false)
         {
             try
             {
                 var userName = user?.Name ?? "NOT.USER";
-                var results = databaseContext.Set<PromoROIReport>().Where(x => x.PromoStatusName != "Cancelled" &&  x.StartDate != null && x.StartDate.Value.Year == year);
+                var results = databaseContext.Set<PromoROIReport>().Where(x => x.PromoStatusName != "Cancelled" && x.StartDate != null && x.StartDate.Value.Year == year);
                 var hierarchy = databaseContext.Set<ClientTreeHierarchyView>().AsNoTracking();
 
                 var defaultRoleSystemName = defaultRole?.SystemName;
@@ -129,6 +153,11 @@ namespace Module.Frontend.TPM.Controllers
                 var exporter = new XLSXExporter(columns);
                 var currentDate = DateTimeOffset.Now;
                 string filePath = exporter.GetExportFileName($"{nameof(PromoROIReport)}", userName);
+                if (yearInName)
+                {
+                    filePath = filePath.Insert(filePath.LastIndexOf("."), "_" + year);
+                }
+
                 exporter.Export(results, filePath);
                 string fileName = Path.GetFileName(filePath);
 
@@ -140,16 +169,10 @@ namespace Module.Frontend.TPM.Controllers
             }
         }
 
-        private IEnumerable<Column> GetPromoROIExportSettings()
-        {
-            var columns = GetPromoROIExportSettingsStatic();
-            return columns;
-        }
-
         public static IEnumerable<Column> GetPromoROIExportSettingsStatic()
         {
             int orderNumber = 1;
-            var columns = new List<Column>() 
+            var columns = new List<Column>()
             {
                 new Column { Order = orderNumber++, Field = "Number", Header = "Promo ID", Quoting = false },
                 new Column { Order = orderNumber++, Field = "Client1LevelName", Header = "NA/RKA", Quoting = false },

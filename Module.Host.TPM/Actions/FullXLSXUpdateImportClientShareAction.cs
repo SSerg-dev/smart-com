@@ -21,6 +21,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Utility;
+using Utility.FileWorker;
 using Utility.Import;
 using Utility.Import.Cache;
 using Utility.Import.ImportModelBuilder;
@@ -119,9 +120,11 @@ namespace Module.Host.TPM.Actions {
         /// </summary>
         /// <returns></returns>
         private IList<IEntity<Guid>> ParseImportFile() {
+            var fileDispatcher = new FileDispatcher();
             string importDir = AppSettingsManager.GetSetting<string>("IMPORT_DIRECTORY", "ImportFiles");
             string importFilePath = Path.Combine(importDir, ImportFile.Name);
-            if (!File.Exists(importFilePath)) {
+            if (!fileDispatcher.IsExists(importDir, ImportFile.Name))
+            {
                 throw new Exception("Import File not found");
             }
 
@@ -454,9 +457,9 @@ namespace Module.Host.TPM.Actions {
             }
 
             foreach (IEnumerable<ClientTreeBrandTech> items in toUpdate.Partition(10000)) {
-                string insertScript = String.Join("", items.Select(y => String.Format("UPDATE ClientTreeBrandTech SET Share = {0}, ParentClientTreeDemandCode = '{1}', ClientTreeId = {2}, BrandTechId = '{3}' WHERE Id = '{4}';", 
+                string insertScript = String.Join("", items.Select(y => String.Format("UPDATE [DefaultSchemaSetting].ClientTreeBrandTech SET Share = {0}, ParentClientTreeDemandCode = '{1}', ClientTreeId = {2}, BrandTechId = '{3}' WHERE Id = '{4}';", 
                     y.Share, y.ParentClientTreeDemandCode, y.ClientTreeId, y.BrandTechId, y.Id)));
-                context.Database.ExecuteSqlCommand(insertScript);
+                context.ExecuteSqlCommand(insertScript);
             }
             context.SaveChanges();
             return sourceRecords.Count();

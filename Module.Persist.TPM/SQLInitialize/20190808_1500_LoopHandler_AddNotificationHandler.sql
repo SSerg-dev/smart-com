@@ -1,8 +1,8 @@
-DELETE [dbo].[LoopHandler] WHERE [Name] = 'Module.Host.TPM.Handlers.Notifications.PromoOnApprovalNotificationHandler'
+DELETE [LoopHandler] WHERE [Name] = 'Module.Host.TPM.Handlers.Notifications.PromoOnApprovalNotificationHandler'
 
 GO
 
-INSERT INTO [dbo].[LoopHandler]
+INSERT INTO [LoopHandler]
            ([Id]
            ,[Description]
            ,[Name]

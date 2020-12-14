@@ -1,9 +1,9 @@
 ﻿DECLARE @handlerName VARCHAR(255) = 'Module.Host.TPM.Handlers.PriceListMergeHandler';
 DECLARE @nextDay DATETIMEOFFSET(7) = DATEADD(DAY, 1, SYSDATETIME());
 
-DELETE [dbo].[LoopHandler]  WHERE [Name] = @handlerName;
+DELETE [LoopHandler]  WHERE [Name] = @handlerName;
 
-INSERT INTO [dbo].[LoopHandler] ([Id] ,[Description] ,[Name] ,[ExecutionPeriod] ,[ExecutionMode] ,[CreateDate] ,[LastExecutionDate] ,[NextExecutionDate] ,[ConfigurationName] ,[Status] ,[RunGroup] ,[UserId] ,[RoleId])
+INSERT INTO [LoopHandler] ([Id] ,[Description] ,[Name] ,[ExecutionPeriod] ,[ExecutionMode] ,[CreateDate] ,[LastExecutionDate] ,[NextExecutionDate] ,[ConfigurationName] ,[Status] ,[RunGroup] ,[UserId] ,[RoleId])
     VALUES (NEWID() 
 	,N'Datalake Price List -> TPM Price List' 
 	,@handlerName 

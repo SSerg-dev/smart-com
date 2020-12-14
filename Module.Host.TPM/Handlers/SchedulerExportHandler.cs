@@ -14,6 +14,7 @@ using Module.Persist.TPM;
 using System.Web.Http.OData.Query;
 using Module.Persist.TPM.Model.TPM;
 using System.Linq.Expressions;
+using Module.Persist.TPM.Utils;
 
 namespace Module.Host.TPM.Handlers {
     /// <summary>
@@ -21,18 +22,18 @@ namespace Module.Host.TPM.Handlers {
     /// </summary>
     public class SchedulerExportHandler : BaseHandler {
         public override void Action(HandlerInfo info, ExecuteData data) {
-            ILogWriter handlerLogger = null;
+            LogWriter handlerLogger = null;
             Stopwatch sw = new Stopwatch();
             sw.Start();
             try {
-                handlerLogger = new FileLogWriter(info.HandlerId.ToString());
+                handlerLogger = new LogWriter(info.HandlerId.ToString());
                 int year = HandlerDataHelper.GetIncomingArgument<int>("year", info.Data, false);
                 IEnumerable<int> clients = HandlerDataHelper.GetIncomingArgument<IEnumerable<int>>("clients", info.Data, false);
                 Guid userId = HandlerDataHelper.GetIncomingArgument<Guid>("UserId", info.Data);
                 Guid roleId = HandlerDataHelper.GetIncomingArgument<Guid>("RoleId", info.Data);
                 var rawFilters = HandlerDataHelper.GetIncomingArgument<string>("rawFilters", info.Data);
                 
-                handlerLogger.Write(true, String.Format("Start of calendar export at 10 {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+                handlerLogger.Write(true, String.Format("Start of calendar export at 10 {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)), "Message");
                 Thread.Sleep(10000);
                 IAction action = new SchedulerExportAction(clients, year, userId, roleId, rawFilters);
                 action.Execute();
@@ -55,10 +56,11 @@ namespace Module.Host.TPM.Handlers {
                 logger.Debug("Finish '{0}'", info.HandlerId);
                 sw.Stop();
                 if (handlerLogger != null) {
-                    handlerLogger.Write(true, String.Format("Newsletter notifications ended at  {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", DateTimeOffset.Now, sw.Elapsed.TotalSeconds), "Message");
+                    handlerLogger.Write(true, String.Format("Newsletter notifications ended at  {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), sw.Elapsed.TotalSeconds), "Message");
 
                     if(!data.GetValue<bool>("HasErrors", false))
                         handlerLogger.Write(true, "You can download the file!", "Message");
+                    handlerLogger.UploadToBlob();
                 }
             }
         }

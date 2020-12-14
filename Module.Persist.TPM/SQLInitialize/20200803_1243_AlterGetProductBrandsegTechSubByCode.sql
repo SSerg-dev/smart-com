@@ -1,7 +1,7 @@
-ALTER TABLE [dbo].[Product] DROP COLUMN [BrandsegTechSub];
+ALTER TABLE [Product] DROP COLUMN [BrandsegTechSub];
 GO
 
-CREATE OR ALTER FUNCTION [dbo].[GetProductBrandsegTechSubByCode]
+CREATE OR ALTER FUNCTION [GetProductBrandsegTechSubByCode]
 (
 	@brandCode NVARCHAR(20),
 	@segmenCode NVARCHAR(20),
@@ -14,7 +14,7 @@ BEGIN
 
 	SELECT 
 		@result = CONCAT(b.[Name], ' ', t.[Name], ' ', ISNULL(t.[SubBrand], '')) 
-	FROM [dbo].[Brand] b, [dbo].[Technology] t
+	FROM [Brand] b, [Technology] t
 	WHERE 
 		b.[Brand_code] = @brandCode AND b.[Segmen_code] = @segmenCode 
 		AND b.[Disabled] = 0 AND t.[Disabled] = 0
@@ -25,6 +25,6 @@ BEGIN
 END
 GO
 
-ALTER TABLE [dbo].[Product]
-    ADD [BrandsegTechSub] AS ([dbo].[GetProductBrandsegTechSubByCode]([Brand_code],[Segmen_code],[Tech_code],[SubBrand_code]));
+ALTER TABLE [Product]
+    ADD [BrandsegTechSub] AS ([GetProductBrandsegTechSubByCode]([Brand_code],[Segmen_code],[Tech_code],[SubBrand_code]));
 GO

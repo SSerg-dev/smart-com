@@ -2,14 +2,14 @@
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-ALTER PROC [dbo].[FillPromoProductDifference]
+ALTER PROC [FillPromoProductDifference]
 AS
 BEGIN
 
-	INSERT INTO [dbo].[PromoProductDifference_Log] ([Id], [DemandUnit], [DMDGROUP], [LOC], [StartDate], [DURInMinutes], [Type], [ForecastID], [QTY], [MOE], [Source], [SALES_ORG],[SALES_DIST_CHANNEL], [SALES_DIVISON],[BUS_SEG], [MKT_SEG], [DELETION_FLAG], [DELETION_DATE], [INTEGRATION_STAMP], [Roll_FC_Flag], [Promotion_Start_Date], [Promotion_Duration], [Promotion_Status],[Promotion_Campaign], [Create_Date])
-	SELECT [Id], [DemandUnit], [DMDGROUP], [LOC], [StartDate], [DURInMinutes], [Type], [ForecastID], [QTY], [MOE], [Source], [SALES_ORG],[SALES_DIST_CHANNEL], [SALES_DIVISON],[BUS_SEG], [MKT_SEG], [DELETION_FLAG], [DELETION_DATE], [INTEGRATION_STAMP], [Roll_FC_Flag], [Promotion_Start_Date], [Promotion_Duration], [Promotion_Status],[Promotion_Campaign], GETDATE() FROM [dbo].[PromoProductDifference]
+	INSERT INTO [PromoProductDifference_Log] ([Id], [DemandUnit], [DMDGROUP], [LOC], [StartDate], [DURInMinutes], [Type], [ForecastID], [QTY], [MOE], [Source], [SALES_ORG],[SALES_DIST_CHANNEL], [SALES_DIVISON],[BUS_SEG], [MKT_SEG], [DELETION_FLAG], [DELETION_DATE], [INTEGRATION_STAMP], [Roll_FC_Flag], [Promotion_Start_Date], [Promotion_Duration], [Promotion_Status],[Promotion_Campaign], [Create_Date])
+	SELECT [Id], [DemandUnit], [DMDGROUP], [LOC], [StartDate], [DURInMinutes], [Type], [ForecastID], [QTY], [MOE], [Source], [SALES_ORG],[SALES_DIST_CHANNEL], [SALES_DIVISON],[BUS_SEG], [MKT_SEG], [DELETION_FLAG], [DELETION_DATE], [INTEGRATION_STAMP], [Roll_FC_Flag], [Promotion_Start_Date], [Promotion_Duration], [Promotion_Status],[Promotion_Campaign], GETDATE() FROM [PromoProductDifference]
 
-	TRUNCATE TABLE [dbo].[PromoProductDifference]
+	TRUNCATE TABLE [PromoProductDifference]
 
 	DECLARE PromoProductDifferenceCursor CURSOR FAST_FORWARD
 	FOR
@@ -34,28 +34,28 @@ BEGIN
 			p.Disabled AS PromoDisabled,
 			pp.Disabled AS PromoProductDisabled,
 			ps.SystemName AS PromoSysStatus
-		FROM [dbo].[CurrentDayIncremental] AS cdi (NOLOCK)
-			LEFT JOIN [dbo].[PreviousDayIncremental] pdi (NOLOCK) 
+		FROM [CurrentDayIncremental] AS cdi (NOLOCK)
+			LEFT JOIN [PreviousDayIncremental] pdi (NOLOCK) 
 				ON cdi.PromoId = pdi.PromoId 
 				AND cdi .ProductId = pdi.ProductId 
 				AND cdi.DemandCode = pdi.DemandCode
 				AND cdi.DMDGroup = pdi.DMDGroup
 				AND cdi.WEEK = pdi.Week
-			INNER JOIN [dbo].[Dates] d (NOLOCK)
+			INNER JOIN [Dates] d (NOLOCK)
 				ON cdi.WEEK = d.MarsWeekFullName 
 					AND d.MarsDay = 1
-			INNER JOIN [dbo].[Promo] p (NOLOCK)
+			INNER JOIN [Promo] p (NOLOCK)
 				ON cdi.PromoId = p.Id 
-			INNER JOIN [dbo].[PromoProduct] pp (NOLOCK)
+			INNER JOIN [PromoProduct] pp (NOLOCK)
 				ON (cdi.ProductId = pp.ProductId 
 					AND cdi.PromoId = pp.PromoId)
-			INNER JOIN [dbo].[Product] pr (NOLOCK)
+			INNER JOIN [Product] pr (NOLOCK)
 				ON pp.ProductId = pr.Id
-			INNER JOIN [dbo].[PromoTypes] pt (NOLOCK)
+			INNER JOIN [PromoTypes] pt (NOLOCK)
 				ON p.PromoTypesId = pt.Id
-			INNER JOIN [dbo].[ClientTree] AS ct (NOLOCK)
+			INNER JOIN [ClientTree] AS ct (NOLOCK)
 				ON p.ClientTreeKeyId = ct.Id
-			INNER JOIN [dbo].[PromoStatus] ps (NOLOCK)
+			INNER JOIN [PromoStatus] ps (NOLOCK)
 				ON p.PromoStatusId = ps.Id
 		UNION 
 		SELECT
@@ -79,14 +79,14 @@ BEGIN
 			p.Disabled AS PromoDisabled,
 			pp.Disabled AS PromoProductDisabled,
 			ps.SystemName AS PromoSysStatus
-		FROM [dbo].[PreviousDayIncremental] AS pdi (NOLOCK)
-			LEFT JOIN [dbo].[CurrentDayIncremental] cdi (NOLOCK) 
+		FROM [PreviousDayIncremental] AS pdi (NOLOCK)
+			LEFT JOIN [CurrentDayIncremental] cdi (NOLOCK) 
 				ON cdi.PromoId = pdi.PromoId 
 				AND cdi .ProductId = pdi.ProductId 
 				AND cdi.DemandCode = pdi.DemandCode
 				AND cdi.DMDGroup = pdi.DMDGroup
 				AND cdi.WEEK = pdi.Week
-			INNER JOIN [dbo].[Dates] d (NOLOCK)
+			INNER JOIN [Dates] d (NOLOCK)
 				ON pdi.Week = d.MarsWeekFullName
 					AND d.MarsDay = 1
 					AND d.OriginalDate >= 
@@ -99,18 +99,18 @@ BEGIN
 							AND MarsDay = 1
 						ORDER BY OriginalDate DESC
 					)
-			INNER JOIN [dbo].[Promo] p (NOLOCK)
+			INNER JOIN [Promo] p (NOLOCK)
 				ON pdi.PromoId = p.Id 
-			INNER JOIN [dbo].[PromoProduct] pp (NOLOCK)
+			INNER JOIN [PromoProduct] pp (NOLOCK)
 				ON (pdi.ProductId = pp.ProductId 
 					AND pdi.PromoId = pp.PromoId)
-			INNER JOIN [dbo].[Product] pr (NOLOCK)
+			INNER JOIN [Product] pr (NOLOCK)
 				ON pp.ProductId = pr.Id
-			INNER JOIN [dbo].[PromoTypes] pt (NOLOCK)
+			INNER JOIN [PromoTypes] pt (NOLOCK)
 				ON p.PromoTypesId = pt.Id
-			INNER JOIN [dbo].[ClientTree] AS ct (NOLOCK)
+			INNER JOIN [ClientTree] AS ct (NOLOCK)
 				ON p.ClientTreeKeyId = ct.Id
-			INNER JOIN [dbo].[PromoStatus] ps (NOLOCK)
+			INNER JOIN [PromoStatus] ps (NOLOCK)
 				ON p.PromoStatusId = ps.Id
 
 	DECLARE
@@ -229,7 +229,7 @@ BEGIN
 			SET @SALAES_DIST_CHANEL = (
 				SELECT TOP(1)
 					[0DISTR_CHAN] 
-				FROM [dbo].[MARS_UNIVERSAL_PETCARE_CUSTOMERS]
+				FROM [MARS_UNIVERSAL_PETCARE_CUSTOMERS]
 				WHERE 
 					ZCUSTHG04 = @GHierarchyCode
 			);
@@ -244,7 +244,7 @@ BEGIN
 				SET @SALAES_DIST_CHANEL = (
 					SELECT TOP(1)
 							[0DISTR_CHAN] 
-						FROM [dbo].[MARS_UNIVERSAL_PETCARE_CUSTOMERS]
+						FROM [MARS_UNIVERSAL_PETCARE_CUSTOMERS]
 						WHERE 
 							ZCUSTHG04 = @GHierarchyCode
 				);
@@ -260,7 +260,7 @@ BEGIN
 			ELSE
 				SET @QTY = @CDI_QTY;
 
-			INSERT INTO [dbo].[PromoProductDifference]
+			INSERT INTO [PromoProductDifference]
 			(
 				[Id],
 				[DemandUnit],

@@ -532,8 +532,8 @@
             .execute()
             .then(function (data) {
                 panel.setLoading(false);
-                var filename = data.httpResponse.data.value;
-                me.downloadFile('ExportDownload', 'filename', filename);
+                App.Notify.pushInfo('Export task created successfully');
+                App.System.openUserTasksPanel()
             })
             .fail(function (data) {
                 panel.setLoading(false);
@@ -613,12 +613,18 @@
     onEditNonPromoSupportEditorButton: function (button) {
         var customNonPromoSupportEditor = button.up('customnonpromosupporteditor');
 
-        Ext.ComponentQuery.query('nonpromosupportbrandtech')[0].down('#deletebutton').setDisabled(false, false);
 
         Ext.ComponentQuery.query('customnonpromosupporteditor field').forEach(function (field) {
             field.setReadOnly(false);
             field.removeCls('readOnlyField');
         });
+
+        var selModel = customNonPromoSupportEditor.down('grid').getSelectionModel();
+
+        if (selModel.hasSelection()) {
+            Ext.ComponentQuery.query('nonpromosupportbrandtech')[0].down('#deletebutton').setDisabled(false, false);
+            customNonPromoSupportEditor.down('nonpromosupportbrandtech').down('#deletebutton').setDisabled(false);
+        }
 
         // кнопки прикрепления файла
         customNonPromoSupportEditor.down('#attachFile').setDisabled(false);
@@ -626,7 +632,6 @@
 
         // BrandTech
         customNonPromoSupportEditor.down('nonpromosupportbrandtech').down('#addbutton').setDisabled(false);
-        customNonPromoSupportEditor.down('nonpromosupportbrandtech').down('#deletebutton').setDisabled(false);
         customNonPromoSupportEditor.down('nonpromosupportbrandtech directorygrid').setDisabled(false);
 
         customNonPromoSupportEditor.down('#editNonPromoSupportEditorButton').setVisible(false);
@@ -728,18 +733,25 @@
     },
 
     brandTechUpdateButtonsState: function (container, isEnabled) {
-        container.query('#updatebutton, #historybutton, #deletebutton, #detail')
-            .forEach(function (button) {
-                button.setDisabled(!isEnabled);
-            });
+        var pointsAccess = App.UserInfo.getCurrentRole().AccessPoints;
+        var access = pointsAccess.find(function (element) {
+            return element.Resource == 'NonPromoSupports' && element.Action == 'Patch';
+        });
 
-        var deleteButton = container.query('#deletebutton')[0];
-        var editButton = Ext.ComponentQuery.query('#editNonPromoSupportEditorButton')[0]; 
-        
-        if (deleteButton && editButton && editButton.hidden) {
-            deleteButton.setDisabled(false, false);
-        } else {
-            deleteButton.setDisabled(true, true);
+        if (access) {
+            container.query('#updatebutton, #historybutton, #deletebutton, #detail')
+                .forEach(function (button) {
+                    button.setDisabled(!isEnabled);
+                });
+
+            var deleteButton = container.query('#deletebutton')[0];
+            var editButton = Ext.ComponentQuery.query('#editNonPromoSupportEditorButton')[0];
+
+            if (deleteButton && editButton && editButton.hidden) {
+                deleteButton.setDisabled(false, false);
+            } else {
+                deleteButton.setDisabled(true, true);
+            }
         }
     },
 });

@@ -10,14 +10,15 @@ using System;
 [assembly: OwinStartup(typeof(Frontend.Startup))]
 namespace Frontend
 {
-    public class Startup
+    public partial class Startup
     {
         public void Configuration(IAppBuilder app)
         {
+            ConfigureAuth(app);
+
             AppDomain.CurrentDomain.Load(typeof(Module.Persist.TPM.LogHub).Assembly.FullName);
             AppDomain.CurrentDomain.Load(typeof(Module.Persist.TPM.TasksLogHub).Assembly.FullName);
             AppDomain.CurrentDomain.Load(typeof(Module.Persist.TPM.Session.SessionHub).Assembly.FullName);
-
             GlobalHost.Configuration.DisconnectTimeout = TimeSpan.FromSeconds(AppSettingsManager.GetSetting<int>("SIGNALR_DISCONNECT_TIMEOUT_SECONDS", 30));
             app.Use(typeof(SessionSignalRMiddleware));
             app.MapSignalR();

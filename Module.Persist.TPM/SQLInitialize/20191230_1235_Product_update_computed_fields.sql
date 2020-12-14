@@ -1,11 +1,11 @@
-﻿ALTER TABLE [dbo].[Product] DROP COLUMN [Technology];
+﻿ALTER TABLE [Product] DROP COLUMN [Technology];
 GO
-ALTER TABLE [dbo].[Product] DROP COLUMN [BrandTech];
+ALTER TABLE [Product] DROP COLUMN [BrandTech];
 GO
 ----------------------------------------------------------------------------------------
 
 -------------------------------- Product.Technology ------------------------------------
-CREATE OR ALTER FUNCTION [dbo].[GetProductTechByCode]
+CREATE OR ALTER FUNCTION [GetProductTechByCode]
 (
 	@technologyCode NVARCHAR(3),
 	@brandsegtech NVARCHAR(255)
@@ -29,7 +29,7 @@ END
 GO
 
 --------------------------------- Product.BrandTech -----------------------------------
-CREATE OR ALTER FUNCTION [dbo].[GetProductBrandTechByCode]
+CREATE OR ALTER FUNCTION [GetProductBrandTechByCode]
 (
 	@brandCode NVARCHAR(3),
 	@segmenCode NVARCHAR(2),
@@ -59,9 +59,9 @@ GO
 -------------------- SECTION: Преобразование столбцов в вычисляемые --------------------
 ----------------------------------------------------------------------------------------
 -------------------------------------- Product -----------------------------------------
-ALTER TABLE [dbo].[Product]
-    ADD [Technology] AS ([dbo].[GetProductTechByCode]([Tech_code], [Brandsegtech]));
+ALTER TABLE [Product]
+    ADD [Technology] AS ([GetProductTechByCode]([Tech_code], [Brandsegtech]));
 GO
-ALTER TABLE [dbo].[Product]
-    ADD [BrandTech] AS ([dbo].[GetProductBrandTechByCode]([Brand_code], [Segmen_code], [Tech_code], [Brandsegtech]));
+ALTER TABLE [Product]
+    ADD [BrandTech] AS ([GetProductBrandTechByCode]([Brand_code], [Segmen_code], [Tech_code], [Brandsegtech]));
 GO

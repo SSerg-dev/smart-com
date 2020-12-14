@@ -128,15 +128,15 @@ namespace Module.Host.TPM.Actions.Interface.Incoming
 
                 bool hasHeader = AppSettingsManager.GetSetting<bool>("InputBaselineHeader", false);
 
-                fileLogger = new FileLogWriter(fileBuffer.Id.ToString());
+                fileLogger = new LogWriter(fileBuffer.Id.ToString());
                 // Построить список DTO
                 int sourceRecordCount;
                 stopwatch.Stop();
-                fileLogger.Write(true, String.Format("GetDTOList ended at {0:yyyy-MM-dd HH:mm:ss}; Duration: {1} seconds", DateTimeOffset.Now, stopwatch.Elapsed.TotalSeconds), "Message");
+                fileLogger.Write(true, String.Format("GetDTOList ended at {0:yyyy-MM-dd HH:mm:ss}; Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), stopwatch.Elapsed.TotalSeconds), "Message");
                 stopwatch.Restart();
                 IList<IEntity<Guid>> dtoList = GetDTOList(fileBuffer, out dtoErrorList, out buildErrorList, out sourceRecordCount, hasHeader);
                 stopwatch.Stop();
-                fileLogger.Write(true, String.Format("GetDTOList ended at {0:yyyy-MM-dd HH:mm:ss}; Duration: {1} seconds", DateTimeOffset.Now, stopwatch.Elapsed.TotalSeconds), "Message");
+                fileLogger.Write(true, String.Format("GetDTOList ended at {0:yyyy-MM-dd HH:mm:ss}; Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), stopwatch.Elapsed.TotalSeconds), "Message");
                 stopwatch.Restart();
                 // fileLogger.Write(true, "Количество исходных записей: " + sourceRecordCount + Environment.NewLine, "Message");
                 Results["ImportSourceRecordCount"] = sourceRecordCount;
@@ -144,7 +144,7 @@ namespace Module.Host.TPM.Actions.Interface.Incoming
                 using (DatabaseContext context = new DatabaseContext())
                 {
                     stopwatch.Stop();
-                    fileLogger.Write(true, String.Format("BeforeModelBuild ended at {0:yyyy-MM-dd HH:mm:ss}; Duration: {1} seconds", DateTimeOffset.Now, stopwatch.Elapsed.TotalSeconds), "Message");
+                    fileLogger.Write(true, String.Format("BeforeModelBuild ended at {0:yyyy-MM-dd HH:mm:ss}; Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), stopwatch.Elapsed.TotalSeconds), "Message");
                     stopwatch.Restart();
                     modelList = GetModelList(context, dtoList, out successList, out warningList, out errorList);
                     fileLogger.Write(true, "Количество построенных записей: " + modelList.Count + Environment.NewLine, "Message");
@@ -158,7 +158,7 @@ namespace Module.Host.TPM.Actions.Interface.Incoming
                         item.STARTDATE = ChangeTimeZoneUtil.ResetTimeZone(item.STARTDATE.Date);
                     }
                     stopwatch.Stop();
-                    fileLogger.Write(true, String.Format("GetModelList ended at {0:yyyy-MM-dd HH:mm:ss}; Duration: {1} seconds", DateTimeOffset.Now, stopwatch.Elapsed.TotalSeconds), "Message");
+                    fileLogger.Write(true, String.Format("GetModelList ended at {0:yyyy-MM-dd HH:mm:ss}; Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), stopwatch.Elapsed.TotalSeconds), "Message");
                     stopwatch.Restart();
                     var promoesStatuses = new string[3] { "Started", "Planned", "Approved" };
                     var products = context.Set<Product>().Where(x => !x.Disabled).Distinct().Select(x => new { x.Id, x.ZREP }).ToList();
@@ -243,7 +243,7 @@ namespace Module.Host.TPM.Actions.Interface.Incoming
                     //throw new Exception();
 
                     stopwatch.Stop();
-                    fileLogger.Write(true, String.Format("Filtering ended at {0:yyyy-MM-dd HH:mm:ss}; Duration: {1} seconds", DateTimeOffset.Now, stopwatch.Elapsed.TotalSeconds), "Message");
+                    fileLogger.Write(true, String.Format("Filtering ended at {0:yyyy-MM-dd HH:mm:ss}; Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), stopwatch.Elapsed.TotalSeconds), "Message");
                     stopwatch.Restart();
                     Parallel.ForEach(typedModelList, new ParallelOptions { MaxDegreeOfParallelism = 4 }, item =>
                     {
@@ -289,7 +289,7 @@ namespace Module.Host.TPM.Actions.Interface.Incoming
                         }
                     });
                     stopwatch.Stop();
-                    fileLogger.Write(true, String.Format("Parallel processing ended at {0:yyyy-MM-dd HH:mm:ss}; Duration: {1} seconds", DateTimeOffset.Now, stopwatch.Elapsed.TotalSeconds), "Message");
+                    fileLogger.Write(true, String.Format("Parallel processing ended at {0:yyyy-MM-dd HH:mm:ss}; Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), stopwatch.Elapsed.TotalSeconds), "Message");
 
                     fileLogger.Write(true, String.Format("Validation duration: {0} seconds", validateDur), "Message");
                     fileLogger.Write(true, String.Format("Convert duration: {0} seconds", convertDur), "Message");
@@ -358,41 +358,41 @@ namespace Module.Host.TPM.Actions.Interface.Incoming
                     try
                     {
                         stopwatch.Stop();
-                        fileLogger.Write(true, String.Format("Dublicate deletion ended at {0:yyyy-MM-dd HH:mm:ss}; Duration: {1} seconds", DateTimeOffset.Now, stopwatch.Elapsed.TotalSeconds), "Message");
+                        fileLogger.Write(true, String.Format("Dublicate deletion ended at {0:yyyy-MM-dd HH:mm:ss}; Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), stopwatch.Elapsed.TotalSeconds), "Message");
                         stopwatch.Restart();
                         // чтобы не создавать лишних инцидентов, отключаем триггер
-                        string disableBaselineTriggerScript = "DISABLE TRIGGER [dbo].[BaseLine_ChangesIncident_Insert_Update_Trigger] ON [dbo].[BaseLine];";
-                        context.Database.ExecuteSqlCommand(disableBaselineTriggerScript);
+                        string disableBaselineTriggerScript = "DISABLE TRIGGER [BaseLine_ChangesIncident_Insert_Update_Trigger] ON [DefaultSchemaSetting].[BaseLine];";
+                        context.ExecuteSqlCommand(disableBaselineTriggerScript);
 
                         // отключем индекс
-                        string disableBaselineIndexScript = "ALTER INDEX IX_BaseLine_NonClustered ON [dbo].[BaseLine] DISABLE;";
-                        context.Database.ExecuteSqlCommand(disableBaselineIndexScript);
+                        string disableBaselineIndexScript = "ALTER INDEX IX_BaseLine_NonClustered ON [DefaultSchemaSetting].[BaseLine] DISABLE;";
+                        context.ExecuteSqlCommand(disableBaselineIndexScript);
 
                         stopwatch.Stop();
-                        fileLogger.Write(true, String.Format("Disable trigger ended at {0:yyyy-MM-dd HH:mm:ss}; Duration: {1} seconds", DateTimeOffset.Now, stopwatch.Elapsed.TotalSeconds), "Message");
+                        fileLogger.Write(true, String.Format("Disable trigger ended at {0:yyyy-MM-dd HH:mm:ss}; Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), stopwatch.Elapsed.TotalSeconds), "Message");
                         stopwatch.Restart();
                         foreach (IEnumerable<BaseLine> items in createBaselineList.Partition(1000))
                         {
-                            string insertScript = String.Join("", items.Select(y => String.Format("INSERT INTO BaseLine ([InputBaselineQTY], [LastModifiedDate], [ProductId], [StartDate], [DemandCode], [Type], [Disabled], [NeedProcessing], [Id]) VALUES ({0}, '{1:yyyy-MM-dd HH:mm:ss +03:00}', '{2}', '{3:yyyy-MM-dd HH:mm:ss +03:00}', '{4}', 1, '{5}', 1, '{6}');",
+                            string insertScript = String.Join("", items.Select(y => String.Format("INSERT INTO [DefaultSchemaSetting].BaseLine ([InputBaselineQTY], [LastModifiedDate], [ProductId], [StartDate], [DemandCode], [Type], [Disabled], [NeedProcessing], [Id]) VALUES ({0}, '{1:yyyy-MM-dd HH:mm:ss +03:00}', '{2}', '{3:yyyy-MM-dd HH:mm:ss +03:00}', '{4}', 1, '{5}', 1, '{6}');",
                                 y.InputBaselineQTY, nowTime, y.ProductId.ToString(), y.StartDate, y.DemandCode, false, y.Id)));
-                            context.Database.ExecuteSqlCommand(insertScript);
+                            context.ExecuteSqlCommand(insertScript);
                         }
                         stopwatch.Stop();
-                        fileLogger.Write(true, String.Format("Create baselines ended at {0:yyyy-MM-dd HH:mm:ss}; Duration: {1} seconds", DateTimeOffset.Now, stopwatch.Elapsed.TotalSeconds), "Message");
+                        fileLogger.Write(true, String.Format("Create baselines ended at {0:yyyy-MM-dd HH:mm:ss}; Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), stopwatch.Elapsed.TotalSeconds), "Message");
                         stopwatch.Restart();
 
                         foreach (IEnumerable<BaseLine> items in updateBaselineList.Partition(10000))
                         {
-                            string updateScript = String.Join("", items.Select(y => String.Format("UPDATE BaseLine SET [NeedProcessing] = 1, InputBaselineQTY = {0}, LastModifiedDate = '{1:yyyy-MM-dd HH:mm:ss +03:00}'  WHERE Id = '{2}';",
+                            string updateScript = String.Join("", items.Select(y => String.Format("UPDATE [DefaultSchemaSetting].BaseLine SET [NeedProcessing] = 1, InputBaselineQTY = {0}, LastModifiedDate = '{1:yyyy-MM-dd HH:mm:ss +03:00}'  WHERE Id = '{2}';",
                                 y.InputBaselineQTY, nowTime, y.Id)));
-                            context.Database.ExecuteSqlCommand(updateScript);
+                            context.ExecuteSqlCommand(updateScript);
                         }
                         stopwatch.Stop();
-                        fileLogger.Write(true, String.Format("Update baselines ended at {0:yyyy-MM-dd HH:mm:ss}; Duration: {1} seconds", DateTimeOffset.Now, stopwatch.Elapsed.TotalSeconds), "Message");
+                        fileLogger.Write(true, String.Format("Update baselines ended at {0:yyyy-MM-dd HH:mm:ss}; Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), stopwatch.Elapsed.TotalSeconds), "Message");
                         stopwatch.Restart();
 
-                        string rebuildBaselineIndexScript = "ALTER INDEX IX_BaseLine_NonClustered ON [dbo].[BaseLine] REBUILD;";
-                        context.Database.ExecuteSqlCommand(rebuildBaselineIndexScript);
+                        string rebuildBaselineIndexScript = "ALTER INDEX IX_BaseLine_NonClustered ON [DefaultSchemaSetting].[BaseLine] REBUILD;";
+                        context.ExecuteSqlCommand(rebuildBaselineIndexScript);
                         baseLines = context.Set<BaseLine>().Where(x => !x.Disabled).ToList();
                         var newBaselines = createBaselineList.Union(updateBaselineList);
                         //long i = 0;
@@ -421,31 +421,31 @@ namespace Module.Host.TPM.Actions.Interface.Incoming
                             }
                         }
                         // отключем индекс
-                        disableBaselineIndexScript = "ALTER INDEX IX_BaseLine_NonClustered ON [dbo].[BaseLine] DISABLE;";
-                        context.Database.ExecuteSqlCommand(disableBaselineIndexScript);
+                        disableBaselineIndexScript = "ALTER INDEX IX_BaseLine_NonClustered ON [DefaultSchemaSetting].[BaseLine] DISABLE;";
+                        context.ExecuteSqlCommand(disableBaselineIndexScript);
                         baselineIdsToRecalculateList = baselineIdsToRecalculateList.Distinct().ToList();
 
 
                         foreach (IEnumerable<Guid> ids in baselineIdsToRecalculateList.Partition(10000))
                         {
-                            string updateFlagScript = String.Join("", ids.Select(y => String.Format("UPDATE BaseLine SET [NeedProcessing] = 1  WHERE Id = '{0}';",
+                            string updateFlagScript = String.Join("", ids.Select(y => String.Format("UPDATE [DefaultSchemaSetting].BaseLine SET [NeedProcessing] = 1  WHERE Id = '{0}';",
                                 y.ToString())));
-                            context.Database.ExecuteSqlCommand(updateFlagScript);
+                            context.ExecuteSqlCommand(updateFlagScript);
                         }
                         stopwatch.Stop();
-                        fileLogger.Write(true, String.Format("Update baselines recalculation ended at {0:yyyy-MM-dd HH:mm:ss}; Duration: {1} seconds", DateTimeOffset.Now, stopwatch.Elapsed.TotalSeconds), "Message");
+                        fileLogger.Write(true, String.Format("Update baselines recalculation ended at {0:yyyy-MM-dd HH:mm:ss}; Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), stopwatch.Elapsed.TotalSeconds), "Message");
                         stopwatch.Restart();
 
                         stopwatch.Stop();
-                        fileLogger.Write(true, String.Format("Created history started at {0:yyyy-MM-dd HH:mm:ss}; Duration: {1} seconds", DateTimeOffset.Now, stopwatch.Elapsed.TotalSeconds), "Message");
+                        fileLogger.Write(true, String.Format("Created history started at {0:yyyy-MM-dd HH:mm:ss}; Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), stopwatch.Elapsed.TotalSeconds), "Message");
                         stopwatch.Restart();
                         context.HistoryWriter.Write(toHisCreate, context.AuthManager.GetCurrentUser(), context.AuthManager.GetCurrentRole(), OperationType.Created);
                         stopwatch.Stop();
-                        fileLogger.Write(true, String.Format("Created history ended at {0:yyyy-MM-dd HH:mm:ss}; Duration: {1} seconds", DateTimeOffset.Now, stopwatch.Elapsed.TotalSeconds), "Message");
+                        fileLogger.Write(true, String.Format("Created history ended at {0:yyyy-MM-dd HH:mm:ss}; Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), stopwatch.Elapsed.TotalSeconds), "Message");
                         stopwatch.Restart();
                         context.HistoryWriter.Write(toHisUpdate, context.AuthManager.GetCurrentUser(), context.AuthManager.GetCurrentRole(), OperationType.Updated);
                         stopwatch.Stop();
-                        fileLogger.Write(true, String.Format("Updated history ended at {0:yyyy-MM-dd HH:mm:ss}; Duration: {1} seconds", DateTimeOffset.Now, stopwatch.Elapsed.TotalSeconds), "Message");
+                        fileLogger.Write(true, String.Format("Updated history ended at {0:yyyy-MM-dd HH:mm:ss}; Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), stopwatch.Elapsed.TotalSeconds), "Message");
                         stopwatch.Restart();
                     }
                     catch (Exception e)
@@ -457,16 +457,16 @@ namespace Module.Host.TPM.Actions.Interface.Incoming
                     finally
                     {
                         // включаем триггер
-                        string enableBaselineTriggerScript = "ENABLE TRIGGER [dbo].[BaseLine_ChangesIncident_Insert_Update_Trigger] ON [dbo].[BaseLine];";
-                        context.Database.ExecuteSqlCommand(enableBaselineTriggerScript);
+                        string enableBaselineTriggerScript = "ENABLE TRIGGER [BaseLine_ChangesIncident_Insert_Update_Trigger] ON [DefaultSchemaSetting].[BaseLine];";
+                        context.ExecuteSqlCommand(enableBaselineTriggerScript);
 
                         // включаем индекс
-                        string rebuildBaselineIndexScript = "ALTER INDEX IX_BaseLine_NonClustered ON [dbo].[BaseLine] REBUILD;";
-                        context.Database.ExecuteSqlCommand(rebuildBaselineIndexScript);
+                        string rebuildBaselineIndexScript = "ALTER INDEX IX_BaseLine_NonClustered ON [DefaultSchemaSetting].[BaseLine] REBUILD;";
+                        context.ExecuteSqlCommand(rebuildBaselineIndexScript);
                     }
 
                     stopwatch.Stop();
-                    fileLogger.Write(true, String.Format("Enable triggers ended at {0:yyyy-MM-dd HH:mm:ss}; Duration: {1} seconds", DateTimeOffset.Now, stopwatch.Elapsed.TotalSeconds), "Message");
+                    fileLogger.Write(true, String.Format("Enable triggers ended at {0:yyyy-MM-dd HH:mm:ss}; Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), stopwatch.Elapsed.TotalSeconds), "Message");
                     stopwatch.Restart();
 
                     int processedCount = createBaselineList.Count + updateBaselineList.Count;
@@ -490,7 +490,7 @@ namespace Module.Host.TPM.Actions.Interface.Incoming
                         Errors.Add(item);
                     } 
                     stopwatch.Stop();
-                    fileLogger.Write(true, String.Format("Save arguments ended at {0:yyyy-MM-dd HH:mm:ss}; Duration: {1} seconds", DateTimeOffset.Now, stopwatch.Elapsed.TotalSeconds), "Message");
+                    fileLogger.Write(true, String.Format("Save arguments ended at {0:yyyy-MM-dd HH:mm:ss}; Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), stopwatch.Elapsed.TotalSeconds), "Message");
                     stopwatch.Restart();
                 }
 
@@ -537,6 +537,7 @@ namespace Module.Host.TPM.Actions.Interface.Incoming
             finally
             {
                 logger.Trace("Finish processing FileBuffer '{0}'", fileBuffer.Id);
+                fileLogger.UploadToBlob();
                 fileLogger = null;
             }
         }

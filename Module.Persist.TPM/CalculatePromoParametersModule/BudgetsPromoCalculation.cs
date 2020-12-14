@@ -2,6 +2,7 @@
 using Core.Settings;
 using Looper.Core;
 using Module.Persist.TPM.Model.TPM;
+using Module.Persist.TPM.Utils;
 using Persist;
 using System;
 using System.Collections.Generic;
@@ -51,7 +52,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         {
             string logLine = "";
             handlerLogger.Write(true, "");
-            logLine = String.Format("The calculation of the budgets started at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now);
+            logLine = String.Format("The calculation of the budgets started at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow));
             handlerLogger.Write(true, logLine, "Message");
 
             // находим все подстатьи к которым привязано промо
@@ -403,7 +404,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                 if (handlerLogger != null)
                 {
-                    logLine = String.Format("The calculation of the BTL budgets started at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now);
+                    logLine = String.Format("The calculation of the BTL budgets started at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow));
                     handlerLogger.Write(true, logLine, "Message");
                 }
 
@@ -451,7 +452,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                 if (handlerLogger != null)
                 {
-                    logLine = String.Format("The calculation of the BTL budgets completed at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now);
+                    logLine = String.Format("The calculation of the BTL budgets completed at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow));
                     handlerLogger.Write(true, logLine, "Message");
                 }
             }

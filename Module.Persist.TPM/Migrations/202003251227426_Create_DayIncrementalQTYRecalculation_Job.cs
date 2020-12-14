@@ -60,10 +60,10 @@ namespace Module.Persist.TPM.Migrations
 						    @os_run_priority=0, @subsystem=N'TSQL', 
 						    @command=N'
 							    BEGIN TRY
-								    EXEC [{database}].[dbo].[FillCurrentDayIncremental] 
+								    EXEC [{database}].[FillCurrentDayIncremental] 
 							    END TRY 
                                 BEGIN CATCH 
-                                    INSERT INTO [{database}].[dbo].[JobErrorLog] ( [StepName] ,[ErrorMessage] ,[AdditionalInfo] ) 
+                                    INSERT INTO [{database}].[JobErrorLog] ( [StepName] ,[ErrorMessage] ,[AdditionalInfo] ) 
 	                                VALUES ( ERROR_PROCEDURE(), ERROR_MESSAGE(), null )
                                     ;THROW
                                 END CATCH',
@@ -82,10 +82,10 @@ namespace Module.Persist.TPM.Migrations
 						    @os_run_priority=0, @subsystem=N'TSQL', 
 						    @command=N'
 							    BEGIN TRY
-								    EXEC [{database}].[dbo].[FillPromoProductDifference]
+								    EXEC [{database}].[FillPromoProductDifference]
 							    END TRY 
                                 BEGIN CATCH 
-                                    INSERT INTO [{database}].[dbo].[JobErrorLog] ( [StepName] ,[ErrorMessage] ,[AdditionalInfo] ) 
+                                    INSERT INTO [{database}].[JobErrorLog] ( [StepName] ,[ErrorMessage] ,[AdditionalInfo] ) 
 	                                VALUES ( ERROR_PROCEDURE(), ERROR_MESSAGE(), null )
                                     ;THROW
                                 END CATCH', 
@@ -104,10 +104,10 @@ namespace Module.Persist.TPM.Migrations
 						    @os_run_priority=0, @subsystem=N'TSQL', 
 						    @command=N'
 							    BEGIN TRY
-								    EXEC [{database}].[dbo].[FillPreviousDayIncremental];
+								    EXEC [{database}].[FillPreviousDayIncremental];
 							    END TRY 
                                 BEGIN CATCH 
-                                    INSERT INTO [{database}].[dbo].[JobErrorLog] ( [StepName] ,[ErrorMessage] ,[AdditionalInfo] ) 
+                                    INSERT INTO [{database}].[JobErrorLog] ( [StepName] ,[ErrorMessage] ,[AdditionalInfo] ) 
 	                                VALUES ( ERROR_PROCEDURE(), ERROR_MESSAGE(), null )
                                     ;THROW
                                 END CATCH', 
@@ -126,10 +126,10 @@ namespace Module.Persist.TPM.Migrations
 		                    @os_run_priority=0, @subsystem=N'TSQL', 
 		                    @command=N'
                                 BEGIN TRY 
-                                    UPDATE [{database}].[dbo].[JobFlag] SET [Value] = 0 WHERE [Prefix] = N''DayIncrementalQTYRecalculation''; 
+                                    UPDATE [{database}].[JobFlag] SET [Value] = 0 WHERE [Prefix] = N''DayIncrementalQTYRecalculation''; 
                                 END TRY 
                                 BEGIN CATCH 
-                                    INSERT INTO [{database}].[dbo].[JobErrorLog] ( [StepName] ,[ErrorMessage] ,[AdditionalInfo] ) 
+                                    INSERT INTO [{database}].[JobErrorLog] ( [StepName] ,[ErrorMessage] ,[AdditionalInfo] ) 
 	                                VALUES ( ERROR_PROCEDURE(), ERROR_MESSAGE(), null )
                                     ;THROW
                                 END CATCH', 

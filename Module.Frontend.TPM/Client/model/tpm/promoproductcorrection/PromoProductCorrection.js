@@ -14,7 +14,7 @@
             name: 'ZREP', type: 'string', mapping: 'PromoProduct.Product.ZREP', breezeEntityType: 'Product', hidden: false, isDefault: true
         },
         {
-            name: 'Number', type: 'int', mapping: 'PromoProduct.Promo.Number', breezeEntityType: 'Promo', hidden: false, isDefault: true, defaultFilterConfig: { valueField: 'Number' }, isKey: true,
+            name: 'Number', type: 'int', mapping: 'PromoProduct.Promo.Number', hidden: false, isDefault: true, defaultFilterConfig: { valueField: 'Number' }, isKey: true,
         },
         { name: 'TempId', type: 'string', hidden: true, isDefault: true, defaultValue: null },
     ],

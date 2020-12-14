@@ -1,4 +1,4 @@
-﻿ALTER VIEW [dbo].[ClientDashboardView] AS
+﻿ALTER VIEW [ClientDashboardView] AS
 WITH 
 	PromoParams
 AS 

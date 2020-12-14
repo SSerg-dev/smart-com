@@ -47,6 +47,30 @@
         });
     },
 
+    onHistoryButtonClick: function (button) {
+        var grid = this.getGridByButton(button),
+            selModel = grid.getSelectionModel();
+
+        if (selModel.hasSelection()) {
+            var panel = grid.up('combineddirectorypanel'),
+                model = panel.getBaseModel(),
+                viewClassName = App.Util.buildViewClassName(panel, model, 'Historical');
+
+            var baseReviewWindow = Ext.widget('basereviewwindow', { items: Ext.create(viewClassName, { baseModel: model }) });
+            baseReviewWindow.show();
+
+            var store = baseReviewWindow.down('grid').getStore();
+            var proxy = store.getProxy();
+            if (proxy.extraParams) {
+                proxy.extraParams.promoIdHistory = this.getRecordId(selModel.getSelection()[0]);
+            } else {
+                proxy.extraParams = {
+                    promoIdHistory: this.getRecordId(selModel.getSelection()[0])
+                }
+            }
+        }
+    },
+
     switchToDetailForm: function (button) {
         var grid = this.getGridByButton(button),
             selModel = grid.getSelectionModel();

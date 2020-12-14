@@ -27,10 +27,10 @@ namespace Module.Host.TPM.Actions
             {
                 using (DatabaseContext context = new DatabaseContext())
                 {
-                    var marsCustomers = context.Database.SqlQuery<MarsUniversalPetcareCustomers>
+                    var marsCustomers = context.SqlQuery<MarsUniversalPetcareCustomers>
                        (@"
                         SELECT ZCUSTHG02, ZCUSTHG02___T, ZCUSTHG03, ZCUSTHG03___T, ZCUSTHG04, ZCUSTHG04___T
-                        FROM MARS_UNIVERSAL_PETCARE_CUSTOMERS
+                        FROM [DefaultSchemaSetting].MARS_UNIVERSAL_PETCARE_CUSTOMERS
                         WHERE Active_Till IS NULL
                         ").ToList();
 

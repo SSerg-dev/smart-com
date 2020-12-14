@@ -14,6 +14,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Utility.FileWorker;
 using Utility.Import;
 
 
@@ -105,10 +106,10 @@ namespace Module.Host.TPM.Actions
 
         private IList<IEntity<Guid>> ParseImportFile()
         {
-            var importDir = AppSettingsManager.GetSetting<string>("IMPORT_DIRECTORY", "ImportFiles");
-            var importFilePath = Path.Combine(importDir, ImportFile.Name);
-
-            if (!File.Exists(importFilePath))
+            var fileDispatcher = new FileDispatcher();
+            string importDir = AppSettingsManager.GetSetting<string>("IMPORT_DIRECTORY", "ImportFiles");
+            string importFilePath = Path.Combine(importDir, ImportFile.Name);
+            if (!fileDispatcher.IsExists(importDir, ImportFile.Name))
             {
                 throw new Exception("Import File not found");
             }
@@ -336,13 +337,13 @@ namespace Module.Host.TPM.Actions
             foreach (IEnumerable<IEntity<Guid>> items in toCreate.Partition(100))
             {
                 string insertScript = generatorCreate.BuildInsertScript(items);
-                context.Database.ExecuteSqlCommand(insertScript);
+                context.ExecuteSqlCommand(insertScript);
             }
 
             foreach (IEnumerable<IEntity<Guid>> items in toUpdate.Partition(10000))
             {
                 string updateScript = generatorUpdate.BuildUpdateScript(items);
-                context.Database.ExecuteSqlCommand(updateScript);
+                context.ExecuteSqlCommand(updateScript);
             }
 
             context.HistoryWriter.Write(toHisCreate, context.AuthManager.GetCurrentUser(), context.AuthManager.GetCurrentRole(), OperationType.Created);

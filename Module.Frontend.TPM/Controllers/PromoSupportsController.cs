@@ -13,6 +13,7 @@ using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
 using Newtonsoft.Json;
+using Persist;
 using Persist.Model;
 using System;
 using System.Collections.Generic;
@@ -50,14 +51,14 @@ namespace Module.Frontend.TPM.Controllers
                 .Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
                 .ToList() : new List<Constraint>();
 
-			IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
-			IQueryable<PromoSupport> query = Context.Set<PromoSupport>().Where(e => !e.Disabled);
-			IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
+            IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
+            IQueryable<PromoSupport> query = Context.Set<PromoSupport>().Where(e => !e.Disabled);
+            IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
 
-			query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
+            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
 
-			return query;
-		}
+            return query;
+        }
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
@@ -261,7 +262,7 @@ namespace Module.Frontend.TPM.Controllers
             return result;
         }
 
-        private IEnumerable<Column> GetExportSettingsTiCosts()
+        public static IEnumerable<Column> GetExportSettingsTiCosts()
         {
             IEnumerable<Column> columns = new List<Column>() {
                 new Column() { Order = 0, Field = "Number", Header = "ID", Quoting = false },
@@ -278,7 +279,7 @@ namespace Module.Frontend.TPM.Controllers
             return columns;
         }
 
-        private IEnumerable<Column> GetExportSettingsCostProduction()
+        public static IEnumerable<Column> GetExportSettingsCostProduction()
         {
             IEnumerable<Column> columns = new List<Column>() {
                 new Column() { Order = 0, Field = "Number", Header = "ID", Quoting = false },
@@ -300,22 +301,47 @@ namespace Module.Frontend.TPM.Controllers
         [ClaimsAuthorize]
         public IHttpActionResult ExportXLSX(ODataQueryOptions<PromoSupport> options, string section)
         {
-            try
+            IQueryable results = options.ApplyTo(GetConstraintedQuery().Where(x => !x.Disabled));
+            string getColumnMethod = section == "ticosts"
+                                        ? nameof(PromoSupportsController.GetExportSettingsTiCosts)
+                                        : nameof(PromoSupportsController.GetExportSettingsCostProduction);
+            UserInfo user = authorizationManager.GetCurrentUser();
+            Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
+            RoleInfo role = authorizationManager.GetCurrentRole();
+            Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
+            using (DatabaseContext context = new DatabaseContext())
             {
-                IQueryable results = options.ApplyTo(GetConstraintedQuery().Where(x => !x.Disabled));
-                IEnumerable<Column> columns = section == "ticosts" ? GetExportSettingsTiCosts() : GetExportSettingsCostProduction();
-                XLSXExporter exporter = new XLSXExporter(columns);
-                UserInfo user = authorizationManager.GetCurrentUser();
-                string username = user == null ? "" : user.Login;
-                string filePath = exporter.GetExportFileName("PromoSupport", username);
-                exporter.Export(results, filePath);
-                string filename = System.IO.Path.GetFileName(filePath);
-                return Content<string>(HttpStatusCode.OK, filename);
+                HandlerData data = new HandlerData();
+                string handlerName = "ExportHandler";
+
+                HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("TModel", typeof(PromoSupport), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(PromoSupportsController), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", getColumnMethod, data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
+
+                LoopHandler handler = new LoopHandler()
+                {
+                    Id = Guid.NewGuid(),
+                    ConfigurationName = "PROCESSING",
+                    Description = $"Export {nameof(PromoSupport)} dictionary",
+                    Name = "Module.Host.TPM.Handlers." + handlerName,
+                    ExecutionPeriod = null,
+                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                    LastExecutionDate = null,
+                    NextExecutionDate = null,
+                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                    UserId = userId,
+                    RoleId = roleId
+                };
+                handler.SetParameterData(data);
+                context.LoopHandlers.Add(handler);
+                context.SaveChanges();
             }
-            catch (Exception e)
-            {
-                return Content<string>(HttpStatusCode.InternalServerError, e.Message);
-            }
+
+            return Content(HttpStatusCode.OK, "success");
         }
 
         private ExceptionResult GetErorrRequest(Exception e)
@@ -380,7 +406,7 @@ namespace Module.Frontend.TPM.Controllers
         {
             try
             {
-                int maxFileByteLength = 25000000; 
+                int maxFileByteLength = 25000000;
 
                 if (!Request.Content.IsMimeMultipartContent())
                 {
@@ -407,11 +433,31 @@ namespace Module.Frontend.TPM.Controllers
         [HttpGet]
         [Route("odata/PromoSupports/DownloadFile")]
         public HttpResponseMessage DownloadFile(string fileName)
-        { 
+        {
             try
             {
                 string directory = Core.Settings.AppSettingsManager.GetSetting("PROMO_SUPPORT_DIRECTORY", "PromoSupportFiles");
-                return FileUtility.DownloadFile(directory, fileName);
+                string type = Core.Settings.AppSettingsManager.GetSetting("HANDLER_LOG_TYPE", "File");
+                HttpResponseMessage result;
+                switch (type)
+                {
+                    case "File":
+                        {
+                            result = FileUtility.DownloadFile(directory, fileName);
+                            break;
+                        }
+                    case "Azure":
+                        {
+                            result = FileUtility.DownloadFileAzure(directory, fileName);
+                            break;
+                        }
+                    default:
+                        {
+                            result = FileUtility.DownloadFile(directory, fileName);
+                            break;
+                        }
+                }
+                return result;
             }
             catch (Exception e)
             {

@@ -24,6 +24,7 @@ using Utility.Import.Structure;
 using System.Reflection;
 using Persist.Extensions;
 using Core.Import;
+using Utility.FileWorker;
 
 namespace Module.Host.TPM.Actions {
     class FullXLSXUpdateImportBudgetSubItemAction : BaseAction {
@@ -101,10 +102,11 @@ namespace Module.Host.TPM.Actions {
         }
 
         private IList<IEntity<Guid>> ParseImportFile() {
-            var importDir = AppSettingsManager.GetSetting<string>("IMPORT_DIRECTORY", "ImportFiles");
-            var importFilePath = Path.Combine(importDir, ImportFile.Name);
-
-            if (!File.Exists(importFilePath)) {
+            var fileDispatcher = new FileDispatcher();
+            string importDir = AppSettingsManager.GetSetting<string>("IMPORT_DIRECTORY", "ImportFiles");
+            string importFilePath = Path.Combine(importDir, ImportFile.Name);
+            if (!fileDispatcher.IsExists(importDir, ImportFile.Name))
+            {
                 throw new Exception("Import File not found");
             }
 

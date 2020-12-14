@@ -1,4 +1,4 @@
-﻿ALTER VIEW [dbo].[PromoView] AS SELECT 
+﻿ALTER VIEW [PromoView] AS SELECT 
 pr.[Id],
 pr.[Name],
 mmc.[Name] as MarsMechanicName,

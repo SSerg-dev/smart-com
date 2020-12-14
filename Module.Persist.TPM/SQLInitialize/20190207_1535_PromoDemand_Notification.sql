@@ -1,4 +1,4 @@
-﻿INSERT INTO [dbo].[Setting]
+﻿INSERT INTO [Setting]
            ([Name]
            ,[Type]
            ,[Value]
@@ -10,7 +10,7 @@
            ,N'Promo Demand Change notification template file')
 GO
 
-INSERT INTO [dbo].[LoopHandler]
+INSERT INTO [LoopHandler]
            ([Description]
            ,[Name]
            ,[ExecutionPeriod]

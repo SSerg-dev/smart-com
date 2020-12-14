@@ -12,7 +12,7 @@ AS BEGIN
 	RETURN SUBSTRING(@GHierarchy, PATINDEX('%[^0]%', @GHierarchy), LEN(@GHierarchy));
 END
 GO
-CREATE OR ALTER VIEW [dbo].[ClientDashboardView] AS
+CREATE OR ALTER VIEW [ClientDashboardView] AS
 WITH
 	Years
 AS

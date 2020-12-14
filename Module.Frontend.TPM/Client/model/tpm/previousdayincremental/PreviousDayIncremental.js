@@ -16,7 +16,7 @@
             name: 'ZREP', type: 'string', mapping: 'Product.ZREP', breezeEntityType: 'Product', hidden: false, isDefault: true, defaultFilterConfig: { valueField: 'ZREP' }
         },
         {
-            name: 'Number', type: 'int', mapping: 'Promo.Number', breezeEntityType: 'Promo', hidden: false, isDefault: true, defaultFilterConfig: { valueField: 'Number' },
+            name: 'Number', type: 'int', mapping: 'Promo.Number',  hidden: false, isDefault: true, defaultFilterConfig: { valueField: 'Number' },
         },
     ],
     proxy: {

@@ -1,7 +1,7 @@
-ALTER TABLE [dbo].[Product] DROP COLUMN [BrandsegTechsub_code];
+ALTER TABLE [Product] DROP COLUMN [BrandsegTechsub_code];
 
 GO
-CREATE OR ALTER FUNCTION [dbo].[GetProductBrandsegTechsubCode]
+CREATE OR ALTER FUNCTION [GetProductBrandsegTechsubCode]
 (
 	@brandCode NVARCHAR(3),
 	@segmenCode NVARCHAR(2),
@@ -30,6 +30,6 @@ BEGIN
 END
 
 GO
-ALTER TABLE [dbo].[Product]
-    ADD [BrandsegTechsub_code] AS ([dbo].[GetProductBrandsegTechsubCode]([Brand_code], [Segmen_code], [Tech_code], [SubBrand_code]));
+ALTER TABLE [Product]
+    ADD [BrandsegTechsub_code] AS ([GetProductBrandsegTechsubCode]([Brand_code], [Segmen_code], [Tech_code], [SubBrand_code]));
 GO

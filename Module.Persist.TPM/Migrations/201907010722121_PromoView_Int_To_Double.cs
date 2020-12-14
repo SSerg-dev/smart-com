@@ -7,8 +7,8 @@ namespace Module.Persist.TPM.Migrations
     {
         public override void Up()
         {
-            Sql("DROP VIEW [dbo].[PromoView]");
-            Sql("CREATE VIEW [dbo].[PromoView] AS SELECT " +
+            Sql("DROP VIEW [PromoView]");
+            Sql("CREATE VIEW [PromoView] AS SELECT " +
                 "pr.[Id], " +
                 "pr.[Name], " +
                 "mmc.[Name] as MarsMechanicName, " +
@@ -26,7 +26,7 @@ namespace Module.Persist.TPM.Migrations
                 "pr.[Number], " +
                 "bt.[Name] as BrandTechName, " +
                 "ev.[Name] as EventName " +
-                "FROM [dbo].[Promo] pr LEFT JOIN PromoStatus ps ON pr.PromoStatusId = ps.Id " +
+                "FROM [Promo] pr LEFT JOIN PromoStatus ps ON pr.PromoStatusId = ps.Id " +
                 "LEFT JOIN Color cl ON pr.ColorId = cl.Id " +
                 "LEFT JOIN Mechanic mmc ON pr.MarsMechanicId = mmc.Id " +
                 "LEFT JOIN MechanicType mmt ON pr.MarsMechanicTypeId = mmt.Id " +
@@ -36,8 +36,8 @@ namespace Module.Persist.TPM.Migrations
         
         public override void Down()
         {
-            Sql("DROP VIEW [dbo].[PromoView]");
-            Sql("CREATE VIEW [dbo].[PromoView] AS SELECT " +
+            Sql("DROP VIEW [PromoView]");
+            Sql("CREATE VIEW [PromoView] AS SELECT " +
                 "pr.[Id], " +
                 "pr.[Name], " +
                 "mmc.[Name] as MarsMechanicName, " +
@@ -55,7 +55,7 @@ namespace Module.Persist.TPM.Migrations
                 "pr.[Number], " +
                 "bt.[Name] as BrandTechName, " +
                 "ev.[Name] as EventName " +
-                "FROM [dbo].[Promo] pr LEFT JOIN PromoStatus ps ON pr.PromoStatusId = ps.Id " +
+                "FROM [Promo] pr LEFT JOIN PromoStatus ps ON pr.PromoStatusId = ps.Id " +
                 "LEFT JOIN Color cl ON pr.ColorId = cl.Id " +
                 "LEFT JOIN Mechanic mmc ON pr.MarsMechanicId = mmc.Id " +
                 "LEFT JOIN MechanicType mmt ON pr.MarsMechanicTypeId = mmt.Id " +

@@ -1,4 +1,4 @@
-﻿UPDATE [dbo].[Promo]
+﻿UPDATE [Promo]
    SET ActualInStoreDiscount = PlanInstoreMechanicDiscount,
         PlanInstoreMechanicDiscount = NULL
 where PlanInstoreMechanicDiscount IS NOT NULL

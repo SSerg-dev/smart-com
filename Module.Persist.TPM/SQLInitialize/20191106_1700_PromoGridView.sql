@@ -1,4 +1,4 @@
-﻿ALTER VIEW [dbo].[PromoGridView] AS  SELECT 
+﻿ALTER VIEW [PromoGridView] AS  SELECT 
 				  pr.Id, 
 				  pr.Name, 
 				  pr.Number, 

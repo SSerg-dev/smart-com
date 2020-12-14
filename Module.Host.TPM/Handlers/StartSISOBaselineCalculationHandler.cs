@@ -27,11 +27,11 @@ namespace Module.Host.TPM.Handlers
 
         public override void Action(HandlerInfo info, ExecuteData data)
         {
-            ILogWriter handlerLogger = new FileLogWriter(info.HandlerId.ToString());
+            LogWriter handlerLogger = new LogWriter(info.HandlerId.ToString());
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
-            logLine = String.Format("The calculation sell-in and sell-out baseline began at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now);
+            logLine = String.Format("The calculation sell-in and sell-out baseline began at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow));
             handlerLogger.Write(true, logLine, "Message");
             handlerLogger.Write(true, "");
 
@@ -93,7 +93,7 @@ namespace Module.Host.TPM.Handlers
                 data.SetValue<bool>("HasErrors", true);
                 logger.Error(e);
 
-                handlerLogger.Write(true, String.Format("The calculation sell-in and sell-out baseline was ended with errors at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+                handlerLogger.Write(true, String.Format("The calculation sell-in and sell-out baseline was ended with errors at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)), "Message");
                 handlerLogger.Write(true, e.ToString(), "Error");
             }
             finally
@@ -108,8 +108,9 @@ namespace Module.Host.TPM.Handlers
 
                 sw.Stop();
                 handlerLogger.Write(true, "");
-                logLine = String.Format("The calculation sell-in and sell-out baseline was completed at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", DateTimeOffset.Now, sw.Elapsed.TotalSeconds);
+                logLine = String.Format("The calculation sell-in and sell-out baseline was completed at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), sw.Elapsed.TotalSeconds);
                 handlerLogger.Write(true, logLine, "Message");
+                handlerLogger.UploadToBlob();
             }
         }
 
@@ -135,7 +136,7 @@ namespace Module.Host.TPM.Handlers
             {
                 string baselineCalculatingPrefix = AppSettingsManager.GetSetting<string>("CALCULATE_BASELINE_PREFIX", "SISOBaselineCalculating");
                 var checkJobStatusScript = String.Format(Consts.Templates.checkProcessingFlagTemplate, baselineCalculatingPrefix);
-                var status = context.Database.SqlQuery<Byte>(checkJobStatusScript).FirstOrDefault();
+                var status = context.SqlQuery<Byte>(checkJobStatusScript).FirstOrDefault();
                 return Int32.Parse(status.ToString()) == 1 ? true : false;
             }
             catch(Exception e)
@@ -165,7 +166,7 @@ namespace Module.Host.TPM.Handlers
                 }
 
                 string startJobScript = String.Format(Consts.Templates.startJobTemplate, calculateBaselineJobName, calculateBaselineSecondStepName);
-                context.Database.ExecuteSqlCommand(startJobScript);
+                context.ExecuteSqlCommand(startJobScript);
 
                 return string.Empty;
             }

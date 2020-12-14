@@ -431,14 +431,14 @@ namespace Moule.Host.TPM.Actions
                 foreach (IEnumerable<ClientDashboard> items in clientDashboardViews.Partition(1000))
                 {
                     string updateScript = String.Join("", items.Select(y =>
-                    String.Format("INSERT INTO ClientDashboard (ShopperTiPlanPercent, MarketingTiPlanPercent, ProductionPlan, BrandingPlan, BTLPlan, " +
+                    String.Format("INSERT INTO [DefaultSchemaSetting].ClientDashboard (ShopperTiPlanPercent, MarketingTiPlanPercent, ProductionPlan, BrandingPlan, BTLPlan, " +
                     "ROIPlanPercent ,IncrementalNSVPlan, PromoNSVPlan, ClientTreeId, BrandsegTechsubName, Year, ClientHierarchy, BrandTechId, " +
                     "PromoTiCostPlanPercent, NonPromoTiCostPlanPercent, PlanLSV, [Id])" +
                     " VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}', '{13}', '{14}', '{15}', '{16}');",
                     y.ShopperTiPlanPercent, y.MarketingTiPlanPercent, y.ProductionPlan.ToString(), y.BrandingPlan, y.BTLPlan,
                     y.ROIPlanPercent, y.IncrementalNSVPlan, y.PromoNSVPlan, y.ClientTreeId, y.BrandsegTechsubName,
                     y.Year, y.ClientHierarchy, y.BrandTechId, y.PromoTiCostPlanPercent, y.NonPromoTiCostPlanPercent, y.PlanLSV, y.Id)));
-                    context.Database.ExecuteSqlCommand(updateScript);
+                    context.ExecuteSqlCommand(updateScript);
                 }
             }
             else if (operation == OperationType.Updated)
@@ -446,14 +446,14 @@ namespace Moule.Host.TPM.Actions
                 foreach (IEnumerable<ClientDashboard> items in clientDashboardViews.Partition(1000))
                 {
                     string updateScript = String.Join("", items.Select(y =>
-                    String.Format("UPDATE ClientDashboard SET ShopperTiPlanPercent = '{0}', MarketingTiPlanPercent = '{1}', ProductionPlan = '{2}', BrandingPlan = '{3}'," +
+                    String.Format("UPDATE [DefaultSchemaSetting].ClientDashboard SET ShopperTiPlanPercent = '{0}', MarketingTiPlanPercent = '{1}', ProductionPlan = '{2}', BrandingPlan = '{3}'," +
                             "BTLPlan = '{4}', ROIPlanPercent = '{5}', IncrementalNSVPlan = '{6}', PromoNSVPlan = '{7}', " +
                             "PromoTiCostPlanPercent = {8}, NonPromoTiCostPlanPercent = {9}, PlanLSV = {10}" +
                             "WHERE [Id] = '{11}';",
                             y.ShopperTiPlanPercent, y.MarketingTiPlanPercent, y.ProductionPlan, y.BrandingPlan, y.BTLPlan,
                             y.ROIPlanPercent, y.IncrementalNSVPlan, y.PromoNSVPlan, 
                             y.PromoTiCostPlanPercent, y.NonPromoTiCostPlanPercent, y.PlanLSV, y.Id)));
-                    context.Database.ExecuteSqlCommand(updateScript);
+                    context.ExecuteSqlCommand(updateScript);
                 }
             }
         }

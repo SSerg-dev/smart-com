@@ -46,12 +46,12 @@ namespace Module.Host.TPM.Actions {
 
             foreach (IEnumerable<Promo> items in toCreate.Partition(10000)) {
                 string insertScript = generator.BuildInsertScript(items);
-                context.Database.ExecuteSqlCommand(insertScript);
+                context.ExecuteSqlCommand(insertScript);
             }
 
             foreach (IEnumerable<Promo> items in toUpdate.Partition(10000)) {
                 string insertScript = generator.BuildUpdateScript(items);
-                context.Database.ExecuteSqlCommand(insertScript);
+                context.ExecuteSqlCommand(insertScript);
             }
 
             return sourceRecords.Count();

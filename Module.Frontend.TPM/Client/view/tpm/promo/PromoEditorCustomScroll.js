@@ -288,7 +288,7 @@
                             xtype: 'promoevent',
                             name: 'promo_step5',
                             itemId: 'promo_step5',
-                            height: 164 + 36,
+                            height: 156 + 36,
                             header: {
                                 title: l10n.ns('tpm', 'promoStap').value('basicStep5'),
                                 cls: 'promo-header-item'
@@ -297,7 +297,7 @@
                             xtype: 'promosettings',
                             name: 'promo_step6',
                             itemId: 'promo_step6',
-                            height: 123 + 36,
+                            height: 142 + 36,
                             header: {
                                 title: l10n.ns('tpm', 'promoStap').value('basicStep6'),
                                 cls: 'promo-header-item'

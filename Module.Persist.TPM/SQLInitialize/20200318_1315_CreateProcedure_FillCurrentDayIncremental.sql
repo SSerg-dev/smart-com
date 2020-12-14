@@ -21,12 +21,12 @@ BEGIN
 				ct.DemandCode AS DemandCode,
 				ct.DMDGroup AS DMDGroup,
 				ct.ObjectId
-			FROM [dbo].[Promo] p
-			INNER JOIN [dbo].[PromoProduct] AS pp
+			FROM [Promo] p
+			INNER JOIN [PromoProduct] AS pp
 				ON p.Id = pp.PromoId
-			INNER JOIN [dbo].[ClientTree] AS ct
+			INNER JOIN [ClientTree] AS ct
 				ON p.ClientTreeKeyId = ct.Id
-			INNER JOIN [dbo].[ClientTree] AS ctBase
+			INNER JOIN [ClientTree] AS ctBase
 				ON ct.parentId = ctBase.ObjectId
 			WHERE
 				p.PromoStatusId IN ('D6F20200-4654-E911-8BC8-08606E18DF3F', 'DA5DA702-4754-E911-8BC8-08606E18DF3F', '2305DC07-4654-E911-8BC8-08606E18DF3F', 'AB0BB74A-4754-E911-8BC8-08606E18DF3F')
@@ -40,12 +40,12 @@ BEGIN
 	(
 		SELECT
 			MIN(CAST(p.DispatchesStart AS DATE)) 
-		FROM [dbo].[Promo] p
-		INNER JOIN [dbo].[PromoProduct] AS pp
+		FROM [Promo] p
+		INNER JOIN [PromoProduct] AS pp
 			ON p.Id = pp.PromoId
-		INNER JOIN [dbo].[ClientTree] AS ct
+		INNER JOIN [ClientTree] AS ct
 			ON p.ClientTreeKeyId = ct.Id
-		INNER JOIN [dbo].[ClientTree] AS ctBase
+		INNER JOIN [ClientTree] AS ctBase
 			ON ct.parentId = ctBase.ObjectId
 		WHERE
 			p.PromoStatusId IN ('D6F20200-4654-E911-8BC8-08606E18DF3F', 'DA5DA702-4754-E911-8BC8-08606E18DF3F', '2305DC07-4654-E911-8BC8-08606E18DF3F', 'AB0BB74A-4754-E911-8BC8-08606E18DF3F')
@@ -54,12 +54,12 @@ BEGIN
 	SET @GlobalDispatchesEnd = (
 		SELECT
 			MAX(CAST(p.DispatchesEnd AS DATE))
-		FROM [dbo].[Promo] p
-		INNER JOIN [dbo].[PromoProduct] AS pp
+		FROM [Promo] p
+		INNER JOIN [PromoProduct] AS pp
 			ON p.Id = pp.PromoId
-		INNER JOIN [dbo].[ClientTree] AS ct
+		INNER JOIN [ClientTree] AS ct
 			ON p.ClientTreeKeyId = ct.Id
-		INNER JOIN [dbo].[ClientTree] AS ctBase
+		INNER JOIN [ClientTree] AS ctBase
 			ON ct.parentId = ctBase.ObjectId
 		WHERE
 			p.PromoStatusId IN ('D6F20200-4654-E911-8BC8-08606E18DF3F', 'DA5DA702-4754-E911-8BC8-08606E18DF3F', '2305DC07-4654-E911-8BC8-08606E18DF3F', 'AB0BB74A-4754-E911-8BC8-08606E18DF3F')

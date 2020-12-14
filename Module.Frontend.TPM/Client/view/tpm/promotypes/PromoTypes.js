@@ -5,7 +5,34 @@
 
     dockedItems: [{
         xtype: 'custombigtoolbar',
-        dock: 'right'
+        dock: 'right',
+
+        items: [{
+            xtype: 'widthexpandbutton',
+            ui: 'fill-gray-button-toolbar',
+            text: l10n.ns('core', 'selectablePanelButtons').value('toolbarCollapse'),
+            glyph: 0xf13d,
+            glyph1: 0xf13e,
+            target: function () {
+                return this.up('toolbar');
+            },
+        }, {
+            itemId: 'extfilterbutton',
+            glyph: 0xf349,
+            text: l10n.ns('core', 'toptoolbar').value('filterButtonText'),
+            tooltip: l10n.ns('core', 'toptoolbar').value('filterButtonText')
+        }, '-', '->', '-', {
+            itemId: 'extfilterclearbutton',
+            ui: 'blue-button-toolbar',
+            disabled: true,
+            glyph: 0xf232,
+            text: l10n.ns('core', 'filter').value('filterEmptyStatus'),
+            tooltip: l10n.ns('core', 'filter').value('filterEmptyStatus'),
+            overCls: '',
+            style: {
+                'cursor': 'default'
+            }
+        }]
     }],
 
     items: [{
@@ -45,7 +72,7 @@
     }, {
         xtype: 'editabledetailform',
         itemId: 'detailform',
-            model: 'App.model.tpm.promotypes.PromoTypes',
+        model: 'App.model.tpm.promotypes.PromoTypes',
         items: [{
             xtype: 'textfield',
             name: 'Name',

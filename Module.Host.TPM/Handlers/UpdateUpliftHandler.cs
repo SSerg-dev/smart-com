@@ -19,12 +19,12 @@ namespace Module.Host.TPM.Handlers {
     /// </summary>
     public class UpdateUpliftHandler : BaseHandler {
         public override void Action(HandlerInfo info, ExecuteData data) {
-            ILogWriter handlerLogger = null;
+            LogWriter handlerLogger = null;
             Stopwatch sw = new Stopwatch();
             sw.Start();
             try {
-                handlerLogger = new FileLogWriter(info.HandlerId.ToString());
-                handlerLogger.Write(true, String.Format("The uplift calculation started at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+                handlerLogger = new LogWriter(info.HandlerId.ToString());
+                handlerLogger.Write(true, String.Format("The uplift calculation started at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)), "Message");
                 var promoId = HandlerDataHelper.GetIncomingArgument<Guid>("PromoId", info.Data, false);
 
                 using (DatabaseContext context = new DatabaseContext()) {
@@ -169,7 +169,8 @@ namespace Module.Host.TPM.Handlers {
             } finally {
                 sw.Stop();
                 if (handlerLogger != null) {
-                    handlerLogger.Write(true, String.Format("The uplift calculation ended at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} second", DateTimeOffset.Now, 1/*, sw.Elapsed.TotalSeconds*/), "Message");
+                    handlerLogger.Write(true, String.Format("The uplift calculation ended at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} second", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), 1/*, sw.Elapsed.TotalSeconds*/), "Message");
+                    handlerLogger.UploadToBlob();
                 }
             }
         }

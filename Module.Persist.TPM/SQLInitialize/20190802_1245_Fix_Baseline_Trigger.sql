@@ -1,5 +1,5 @@
-﻿ALTER TRIGGER [dbo].[BaseLine_ChangesIncident_Insert_Update_Trigger]
-ON [dbo].[BaseLine]
+﻿ALTER TRIGGER [BaseLine_ChangesIncident_Insert_Update_Trigger]
+ON [BaseLine]
 AFTER INSERT, UPDATE
 AS 
 DECLARE @count INT = 1

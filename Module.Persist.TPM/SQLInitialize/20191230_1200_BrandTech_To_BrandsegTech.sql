@@ -1,11 +1,11 @@
-ALTER TABLE [dbo].[BrandTech] DROP COLUMN [BrandTech_code];
+ALTER TABLE [BrandTech] DROP COLUMN [BrandTech_code];
 GO
 ----------------------------------------------------------------------------------------
 -------------------- SECTION: Функция вычисления BrandTech_code ------------------------
 ----------------------------------------------------------------------------------------
 
 ------------------------------------- BrandTech ----------------------------------------
-CREATE OR ALTER FUNCTION [dbo].[GetBrandTechCode]
+CREATE OR ALTER FUNCTION [GetBrandTechCode]
 (
 	@brandId uniqueidentifier,
 	@technologyId uniqueidentifier
@@ -32,6 +32,6 @@ GO
 ----------------------------------------------------------------------------------------
 	
 ------------------------------------- BrandTech ----------------------------------------
-ALTER TABLE [dbo].[BrandTech]
-    ADD [BrandTech_code] AS ([dbo].[GetBrandTechCode]([BrandId], [TechnologyId]));
+ALTER TABLE [BrandTech]
+    ADD [BrandTech_code] AS ([GetBrandTechCode]([BrandId], [TechnologyId]));
 GO

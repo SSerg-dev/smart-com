@@ -34,6 +34,8 @@ namespace Module.Frontend.TPM.Controllers {
         }
 
         protected IQueryable<PromoView> GetConstraintedQuery() {
+            PerformanceLogger logger = new PerformanceLogger();
+            logger.Start();
             UserInfo user = authorizationManager.GetCurrentUser();
             string role = authorizationManager.GetCurrentRoleName();
             IList<Constraint> constraints = user.Id.HasValue ? Context.Constraints
@@ -51,7 +53,8 @@ namespace Module.Frontend.TPM.Controllers {
 
             var statusesForExcluding = new List<string>() { "Deleted" };
             query = query.Where(x => !statusesForExcluding.Contains(x.PromoStatusSystemName));
-
+           
+            logger.Stop();
             return query;
         }
 

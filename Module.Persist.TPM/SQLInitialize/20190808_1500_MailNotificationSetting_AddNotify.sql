@@ -1,8 +1,8 @@
-DELETE [dbo].[MailNotificationSetting] WHERE [Name] = 'PROMO_ON_APPROVAL_NOTIFICATION'
+DELETE [MailNotificationSetting] WHERE [Name] = 'PROMO_ON_APPROVAL_NOTIFICATION'
 
 GO
 
-INSERT INTO [dbo].[MailNotificationSetting]
+INSERT INTO [MailNotificationSetting]
            ([Id]
            ,[Name]
            ,[Description]

@@ -5,18 +5,14 @@ Ext.define('App.controller.core.associateduser.dbuser.AssociatedDbUser', {
         this.listen({
             component: {
                 'associateddbuseruser[isSearch!=true] directorygrid': {
-                    load: this.onGridStoreLoad
+                    load: this.onGridStoreLoad,
+                    itemdblclick: this.onDetailButtonClick
                 },
                 'associateddbuseruser directorygrid': {
-                    // TODO: относиться к переключению состояний грида, можно убрать в будущем
-                    itemdblclick: this.switchToDetailForm,
-
                     selectionchange: this.onGridSelectionChange,
                     afterrender: this.onGridAfterrender,
                     extfilterchange: this.onExtFilterChange
                 },
-
-                // TODO: относиться к переключению состояний грида, можно убрать в будущем
                 'associateddbuseruser #datatable': {
                     activate: this.onActivateCard
                 },
@@ -29,10 +25,8 @@ Ext.define('App.controller.core.associateduser.dbuser.AssociatedDbUser', {
                 'associateddbuseruser #detailform #next': {
                     click: this.onNextButtonClick
                 },
-                //
-
                 'associateddbuseruser #detail': {
-                    click: this.switchToDetailForm
+                    click: this.onDetailButtonClick
                 },
                 'associateddbuseruser #table': {
                     click: this.onTableButtonClick
@@ -55,37 +49,29 @@ Ext.define('App.controller.core.associateduser.dbuser.AssociatedDbUser', {
                 'associateddbuseruser #historybutton': {
                     click: this.onHistoryButtonClick
                 },
-
                 'associateddbuseruser #refresh': {
                     click: this.onRefreshButtonClick
                 },
                 'associateddbuseruser #close': {
                     click: this.onCloseButtonClick
-                },
-
-                'associateddbuseruser #changepassbutton': {
-                    click: this.onChangePassButtonClick
-                },
-                '#changeuserpasswindow #ok': {
-                    click: this.onOkChangeUserPassClick
                 }
             }
         });
     },
 
 
-    onChangePassButtonClick: function (button) {
-        var grid = this.getGridByButton(button),
-            selModel = grid.getSelectionModel();
+    //onChangePassButtonClick: function (button) {
+    //    var grid = this.getGridByButton(button),
+    //        selModel = grid.getSelectionModel();
 
-        if (selModel.hasSelection()) {
-            var window = Ext.widget('passwordchangingwindow', {
-                id: 'changeuserpasswindow'
-            });
-            window.down('editorform').loadRecord(selModel.getSelection()[0]);
-            window.show();
-        }
-    },
+    //    if (selModel.hasSelection()) {
+    //        var window = Ext.widget('passwordchangingwindow', {
+    //            id: 'changeuserpasswindow'
+    //        });
+    //        window.down('editorform').loadRecord(selModel.getSelection()[0]);
+    //        window.show();
+    //    }
+    //},
 
     onOkChangeUserPassClick: function (button) {
         var grid = this.getSelectedGrid(),
@@ -159,12 +145,6 @@ Ext.define('App.controller.core.associateduser.dbuser.AssociatedDbUser', {
                     Id: this.getRecordId(selModel.getSelection()[0])
                 }
             }
-
-            store.setFixedFilter('HistoricalObjectId', {
-                property: '_ObjectId',
-                operation: 'Equals',
-                value: this.getRecordId(selModel.getSelection()[0])
-            });
         }
     },
 
@@ -179,6 +159,6 @@ Ext.define('App.controller.core.associateduser.dbuser.AssociatedDbUser', {
                 baseModel: model
             }
         })
-        .show();
+            .show();
     }
 });

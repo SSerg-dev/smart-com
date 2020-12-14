@@ -82,13 +82,13 @@ namespace Module.Host.TPM.Actions
             foreach (IEnumerable<Product> items in toCreate.Partition(10000))
             {
                 string insertScript = generatorCreate.BuildInsertScript(items);
-                context.Database.ExecuteSqlCommand(insertScript);
+                context.ExecuteSqlCommand(insertScript);
             }
 
             foreach (IEnumerable<Product> items in toUpdate.Partition(10000))
             {
                 string insertScript = generatorUpdate.BuildUpdateScript(items);
-                context.Database.ExecuteSqlCommand(insertScript);
+                context.ExecuteSqlCommand(insertScript);
             }
             //Добавление записей в историю
             context.HistoryWriter.Write(toHisCreate, context.AuthManager.GetCurrentUser(), context.AuthManager.GetCurrentRole(), OperationType.Created);

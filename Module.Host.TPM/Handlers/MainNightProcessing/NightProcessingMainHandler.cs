@@ -29,11 +29,11 @@ namespace Module.Host.TPM.Handlers
 
         public override void Action(HandlerInfo info, ExecuteData data)
         {
-            ILogWriter handlerLogger = new FileLogWriter(info.HandlerId.ToString());
+            LogWriter handlerLogger = new LogWriter(info.HandlerId.ToString());
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
-            logLine = String.Format("Main night processing began at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now);
+            logLine = String.Format("Main night processing began at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow));
             handlerLogger.Write(true, logLine, "Message");
             handlerLogger.Write(true, "");
 
@@ -76,7 +76,7 @@ namespace Module.Host.TPM.Handlers
                     context.SaveChanges();
                    
                     MainNightProcessingHelper.SetProcessingFlagUp(context, mainNightProcessingStepPrefix);
-                    HandlerWaiting(context, handler, inputBaseLineProcessHandlerTimeout, handlerLogger);
+                    HandlerWaiting(context, handler, inputBaseLineProcessHandlerTimeout, handlerLogger.CurrentLogWriter);
                    
                     // расчет sell-in и sell-out Baseline
                     HandlerData handlerData = handler.GetParameterData();
@@ -88,7 +88,7 @@ namespace Module.Host.TPM.Handlers
                         context.SaveChanges();
                     
                         MainNightProcessingHelper.SetProcessingFlagUp(context, mainNightProcessingStepPrefix);
-                        HandlerWaiting(context, handler, startSISOBaselineCalculationHandlerTimeout, handlerLogger);
+                        HandlerWaiting(context, handler, startSISOBaselineCalculationHandlerTimeout, handlerLogger.CurrentLogWriter);
                     }
                     
                     // пересчет промо
@@ -100,7 +100,7 @@ namespace Module.Host.TPM.Handlers
                     context.SaveChanges();
                     
                     MainNightProcessingHelper.SetProcessingFlagUp(context, mainNightProcessingStepPrefix);
-                    HandlerWaiting(context, handler, recalculateAllPromoesHandlerTimeout, handlerLogger);
+                    HandlerWaiting(context, handler, recalculateAllPromoesHandlerTimeout, handlerLogger.CurrentLogWriter);
                     
                     // хендлер для формирования CurrentDayIncremental, Difference и PreviousDayIncremental
                     handler = CreateSingleLoopHandler(
@@ -111,7 +111,7 @@ namespace Module.Host.TPM.Handlers
                     context.SaveChanges();
                     
                     MainNightProcessingHelper.SetProcessingFlagUp(context, mainNightProcessingStepPrefix);
-                    HandlerWaiting(context, handler, dayIncrementalQTYRecalculationHandlerTimeout, handlerLogger);
+                    HandlerWaiting(context, handler, dayIncrementalQTYRecalculationHandlerTimeout, handlerLogger.CurrentLogWriter);
                     
                     // хендлер для формирования Difference из rolling volume
                     var currentDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
@@ -125,7 +125,7 @@ namespace Module.Host.TPM.Handlers
                         context.SaveChanges();
 
                         MainNightProcessingHelper.SetProcessingFlagUp(context, mainNightProcessingStepPrefix);
-                        HandlerWaiting(context, handler, rollingVolumeQTYRecalculationHandlerTimeout, handlerLogger);
+                        HandlerWaiting(context, handler, rollingVolumeQTYRecalculationHandlerTimeout, handlerLogger.CurrentLogWriter);
                     }
 
                     // формирование исходящего файла
@@ -139,7 +139,7 @@ namespace Module.Host.TPM.Handlers
                     context.SaveChanges();
 
                     MainNightProcessingHelper.SetProcessingFlagUp(context, mainNightProcessingStepPrefix);
-                    HandlerWaiting(context, handler, outputIncrementalProcessHandlerTimeout, handlerLogger);
+                    HandlerWaiting(context, handler, outputIncrementalProcessHandlerTimeout, handlerLogger.CurrentLogWriter);
                 }
             }
             catch (Exception e)
@@ -147,15 +147,16 @@ namespace Module.Host.TPM.Handlers
                 data.SetValue<bool>("HasErrors", true);
                 logger.Error(e);
 
-                handlerLogger.Write(true, String.Format("Main night processing was ended with errors at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+                handlerLogger.Write(true, String.Format("Main night processing was ended with errors at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)), "Message");
                 handlerLogger.Write(true, e.ToString(), "Error");
             }
             finally
             {
                 sw.Stop();
                 handlerLogger.Write(true, "");
-                logLine = String.Format("Main night processing was completed at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", DateTimeOffset.Now, sw.Elapsed.TotalSeconds);
+                logLine = String.Format("Main night processing was completed at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), sw.Elapsed.TotalSeconds);
                 handlerLogger.Write(true, logLine, "Message");
+                handlerLogger.UploadToBlob();
             }
         }
 
@@ -273,7 +274,7 @@ namespace Module.Host.TPM.Handlers
             {
                 string mainNightProcessingPrefix = AppSettingsManager.GetSetting<string>("MAIN_NIGHT_PROCESSING_PREFIX", "MainNightProcessingStep");
                 var checkJobStatusScript = String.Format(Consts.Templates.checkProcessingFlagTemplate, mainNightProcessingPrefix);
-                var status = context.Database.SqlQuery<Byte>(checkJobStatusScript).FirstOrDefault();
+                var status = context.SqlQuery<Byte>(checkJobStatusScript).FirstOrDefault();
                 return Int32.Parse(status.ToString()) == 1 ? true : false;
             }
             catch (Exception e)

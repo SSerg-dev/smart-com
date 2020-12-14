@@ -100,8 +100,13 @@
 											&& (promo.IsDemandFinanceApproved == false || promo.IsDemandFinanceApproved == null))
 											onApprovalState = 'DemandPlanning';
 										else if (promo.IsCMManagerApproved == true && promo.IsDemandPlanningApproved == true
-											&& (promo.IsDemandFinanceApproved == false || promo.IsDemandFinanceApproved == null))
-											onApprovalState = 'DemandFinance';
+											&& (promo.IsDemandFinanceApproved == false || promo.IsDemandFinanceApproved == null)) {
+											if (promoStatusName.toLowerCase() == "onapproval") {
+												onApprovalState = "ErrorApproval";
+											} else {
+												onApprovalState = 'DemandFinance';
+											}
+										}
 									}
 									else if (promo.IsGrowthAcceleration === true) {
 										if ((promo.IsCMManagerApproved === false || promo.IsCMManagerApproved === null)

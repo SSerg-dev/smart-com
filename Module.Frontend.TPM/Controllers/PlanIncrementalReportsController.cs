@@ -1,24 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.OData;
 using System.Web.Http.OData.Query;
-
+using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using Core.MarsCalendar;
 using Core.Security;
 using Core.Security.Models;
 
 using Frontend.Core.Controllers.Base;
 using Frontend.Core.Extensions.Export;
-
+using Looper.Core;
+using Looper.Parameters;
 using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
-
+using Persist;
 using Persist.Model;
 
 using Thinktecture.IdentityModel.Authorization.WebApi;
@@ -39,6 +41,8 @@ namespace Module.Frontend.TPM.Controllers
 
 		public IQueryable<PlanIncrementalReport> GetConstraintedQuery(bool forExport = false)
 		{
+			PerformanceLogger performanceLogger = new PerformanceLogger();
+			performanceLogger.Start();
 			UserInfo user = authorizationManager.GetCurrentUser();
 			string role = authorizationManager.GetCurrentRoleName();
 			IList<Constraint> constraints = user.Id.HasValue ? Context.Constraints
@@ -46,16 +50,20 @@ namespace Module.Frontend.TPM.Controllers
 				.ToList() : new List<Constraint>();
 
 			IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
+			PerformanceLogger logger = new PerformanceLogger();
+			logger.Start();
 			IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
 
 			IQueryable<PlanIncrementalReport> query = Context.Set<PlanIncrementalReport>();
 
 			query = ModuleApplyFilterHelper.ApplyFilter(query, Context, hierarchy, filters);
-			
+			logger.Stop("Context");
+
 			if (!forExport)
 				query = JoinWeeklyDivision(query);
-						
-            return query;
+
+			performanceLogger.Stop("Full");
+			return query;
 		}
 
 
@@ -84,7 +92,7 @@ namespace Module.Frontend.TPM.Controllers
 			return RoundingHelper.ModifyQuery(optionsPost.ApplyTo(query, querySettings) as IQueryable<PlanIncrementalReport>); 
 		}
 
-		private IEnumerable<Column> GetExportSettings()
+		public static IEnumerable<Column> GetExportSettings()
 		{
 			IEnumerable<Column> columns = new List<Column>() {
 				new Column() { Order = 1, Field = "ZREP", Header = "ZREP", Quoting = false },
@@ -111,22 +119,47 @@ namespace Module.Frontend.TPM.Controllers
 		[ClaimsAuthorize]
 		public IHttpActionResult ExportXLSX(ODataQueryOptions<PlanIncrementalReport> options)
 		{
-			try
+			UserInfo user = authorizationManager.GetCurrentUser();
+			Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
+			RoleInfo role = authorizationManager.GetCurrentRole();
+			Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
+			var ids = options.ApplyTo(GetConstraintedQuery()).Cast<PlanIncrementalReport>().Select(q => q.PromoNameId).ToList();
+			IQueryable results = Context.Set<PlanIncrementalReport>().Where(q => ids.Contains(q.PromoNameId));
+			using (DatabaseContext context = new DatabaseContext())
 			{
-				IQueryable results = options.ApplyTo(GetConstraintedQuery(true));
-				IEnumerable<Column> columns = GetExportSettings();
-				NonGuidIdExporter exporter = new NonGuidIdExporter(columns);
-				UserInfo user = authorizationManager.GetCurrentUser();
-				string username = user == null ? "" : user.Login;
-				string filePath = exporter.GetExportFileName("PlanIncrementalReport", username);
-				exporter.Export(results, filePath);
-				string filename = System.IO.Path.GetFileName(filePath);
-				return Content<string>(HttpStatusCode.OK, filename);
+				HandlerData data = new HandlerData();
+				string handlerName = "ExportHandler";
+
+				HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+				HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+				HandlerDataHelper.SaveIncomingArgument("TModel", typeof(PlanIncrementalReport), data, visible: false, throwIfNotExists: false);
+				HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
+				HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(PlanIncrementalReportsController), data, visible: false, throwIfNotExists: false);
+				HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PlanIncrementalReportsController.GetExportSettings), data, visible: false, throwIfNotExists: false);
+				HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
+
+				LoopHandler handler = new LoopHandler()
+				{
+					Id = Guid.NewGuid(),
+					ConfigurationName = "PROCESSING",
+					Description = $"Export {nameof(PlanIncrementalReport)} dictionary",
+					Name = "Module.Host.TPM.Handlers." + handlerName,
+					ExecutionPeriod = null,
+					CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+					LastExecutionDate = null,
+					NextExecutionDate = null,
+					ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+					UserId = userId,
+					RoleId = roleId
+				};
+				handler.SetParameterData(data);
+				context.LoopHandlers.Add(handler);
+				context.SaveChanges();
 			}
-			catch (Exception e)
-			{
-				return Content<string>(HttpStatusCode.InternalServerError, e.Message);
-			}
+
+			return Content(HttpStatusCode.OK, "success");
+
+			return Content(HttpStatusCode.OK, "success");
 		}
 
 		private bool EntityExists(Guid key)

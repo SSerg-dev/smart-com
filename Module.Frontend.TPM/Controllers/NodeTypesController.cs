@@ -192,7 +192,7 @@ namespace Module.Frontend.TPM.Controllers
             }
         }
 
-        private IEnumerable<Column> GetExportSettings() {
+        public static IEnumerable<Column> GetExportSettings() {
             IEnumerable<Column> columns = new List<Column>() {
                 new Column() { Order = 0, Field = "Type", Header = "Node type", Quoting = false },
                 new Column() { Order = 1, Field = "Name", Header = "Node name" },
@@ -201,20 +201,46 @@ namespace Module.Frontend.TPM.Controllers
             return columns;
         }
 
-        public IHttpActionResult ExportXLSX(ODataQueryOptions<NodeType> options) {
-            try {
-                IQueryable results = options.ApplyTo(GetConstraintedQuery());
-                IEnumerable<Column> columns = GetExportSettings();
-                XLSXExporter exporter = new XLSXExporter(columns);
-                UserInfo user = authorizationManager.GetCurrentUser();
-                string username = user == null ? "" : user.Login;
-                string filePath = exporter.GetExportFileName("NodeType", username);
-                exporter.Export(results, filePath);
-                string filename = System.IO.Path.GetFileName(filePath);
-                return Content<string>(HttpStatusCode.OK, filename);
-            } catch (Exception e) {
-                return Content<string>(HttpStatusCode.InternalServerError, e.Message);
+        public IHttpActionResult ExportXLSX(ODataQueryOptions<NodeType> options) 
+        {
+            IQueryable results = options.ApplyTo(GetConstraintedQuery());
+            UserInfo user = authorizationManager.GetCurrentUser();
+            Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
+            RoleInfo role = authorizationManager.GetCurrentRole();
+            Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                HandlerData data = new HandlerData();
+                string handlerName = "ExportHandler";
+
+                HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("TModel", typeof(NodeType), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(NodeTypesController), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(NodeTypesController.GetExportSettings), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
+
+                LoopHandler handler = new LoopHandler()
+                {
+                    Id = Guid.NewGuid(),
+                    ConfigurationName = "PROCESSING",
+                    Description = $"Export {nameof(NodeType)} dictionary",
+                    Name = "Module.Host.TPM.Handlers." + handlerName,
+                    ExecutionPeriod = null,
+                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                    LastExecutionDate = null,
+                    NextExecutionDate = null,
+                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                    UserId = userId,
+                    RoleId = roleId
+                };
+                handler.SetParameterData(data);
+                context.LoopHandlers.Add(handler);
+                context.SaveChanges();
             }
+
+            return Content(HttpStatusCode.OK, "success");
         }
 
         [ClaimsAuthorize]
@@ -271,6 +297,7 @@ namespace Module.Frontend.TPM.Controllers
                     Name = "Module.Host.TPM.Handlers." + importHandler,
                     ExecutionPeriod = null,
                     CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                    RunGroup = typeof(ImportNodeType).Name,
                     LastExecutionDate = null,
                     NextExecutionDate = null,
                     ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,

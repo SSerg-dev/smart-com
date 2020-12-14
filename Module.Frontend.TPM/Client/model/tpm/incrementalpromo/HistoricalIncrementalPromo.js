@@ -9,7 +9,6 @@
         { name: '_Role', type: 'string', isDefault: true },
         { name: '_EditDate', type: 'date', isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
         { name: '_Operation', type: 'string', isDefault: true },
-        { name: 'Id', hidden: true },
         { name: 'PromoId', hidden: true, isDefault: false },
         { name: 'ProductId', hidden: true, isDefault: false },
         { name: 'ProductZREP', type: 'string', hidden: false, isDefault: true },

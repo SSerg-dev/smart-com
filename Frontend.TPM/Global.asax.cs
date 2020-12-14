@@ -1,5 +1,6 @@
 ﻿using Core.Dependency;
 using Core.Notification;
+using Core.Settings;
 using Frontend.Core;
 using Frontend.Core.Security;
 using Ninject;
@@ -52,7 +53,12 @@ namespace Frontend {
                     };
                     EmailGetterArgument eventArgument = new EmailGetterArgument();
                     eventArgument.Set("Filter", null);
-                    notifier.Notify("APP_FRONTEND_START", parameters, eventArgument);
+
+                    bool isAllowNotificationsSending = AppSettingsManager.GetSetting<bool>("AllowNotificationsSending", false);
+                    if (isAllowNotificationsSending)
+                    {
+                        notifier.Notify("APP_FRONTEND_START", parameters, eventArgument);
+                    }
                 }
             } catch (Exception e) {
                 logger.Error(e, "Error during sending notification about starting the system");

@@ -9,7 +9,7 @@ namespace Module.Persist.TPM.Migrations
         {
             Sql
             (@"
-                ALTER VIEW [dbo].[PlanIncrementalReport] AS 
+                ALTER VIEW [PlanIncrementalReport] AS 
                 SELECT NEWID() as Id, 
                 CONCAT(joined.ZREP, '_0125') as ZREP, 
                 joined.DemandCode as DemandCode, 

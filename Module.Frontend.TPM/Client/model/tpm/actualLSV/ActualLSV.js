@@ -43,7 +43,7 @@
         { name: 'ActualPromoLSV', type: 'float', hidden: false, isDefault: true, useNull: true, useNull: true },
         { name: 'ActualPromoLSVSI', type: 'float', hidden: false, isDefault: true, useNull: true, useNull: true },
         { name: 'ActualPromoLSVSO', type: 'float', hidden: false, isDefault: true, useNull: true, useNull: true },
-        { name: 'PlanPromoPostPromoEffectLSVW1', type: 'float', hidden: false, isDefault: true },
+        { name: 'PlanPromoPostPromoEffectLSVW1', type: 'float', hidden: false, isDefault: true, useNull: true },
         { name: 'ActualPromoPostPromoEffectLSVW1', type: 'float', hidden: false, isDefault: true, useNull: true },
         { name: 'PlanPromoPostPromoEffectLSVW2', type: 'float', hidden: false, isDefault: true, useNull: true },
         { name: 'ActualPromoPostPromoEffectLSVW2', type: 'float', hidden: false, isDefault: true, useNull: true },

@@ -7,8 +7,8 @@ namespace Module.Persist.TPM.Migrations
     {
         public override void Up()
         {
-			Sql("DROP VIEW [dbo].[PlanIncrementalReport]");
-			Sql(@"CREATE VIEW [dbo].[PlanIncrementalReport] AS 
+			Sql("DROP VIEW [PlanIncrementalReport]");
+			Sql(@"CREATE VIEW [PlanIncrementalReport] AS 
 SELECT NEWID() as Id, 
 CONCAT(joined.ZREP, '_0125') as ZREP, 
 joined.DemandCode as DemandCode, 
@@ -45,8 +45,8 @@ LEFT JOIN Promo p on PromoId = p.Id LEFT JOIN PromoStatus ps on p.PromoStatusId 
         
         public override void Down()
         {
-			Sql("DROP VIEW [dbo].[PlanIncrementalReport]");
-			Sql(@"CREATE VIEW [dbo].[PlanIncrementalReport] AS 
+			Sql("DROP VIEW [PlanIncrementalReport]");
+			Sql(@"CREATE VIEW [PlanIncrementalReport] AS 
 SELECT NEWID() as Id, 
 CONCAT(joined.ZREP, '_125') as ZREP, 
 joined.DemandCode as DemandCode, 

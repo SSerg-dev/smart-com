@@ -1,4 +1,4 @@
-﻿DISABLE TRIGGER [dbo].[IncrementalPromo_ChangesIncident_Insert_Update_Trigger] ON [dbo].[IncrementalPromo]
+﻿DISABLE TRIGGER [IncrementalPromo_ChangesIncident_Insert_Update_Trigger] ON [IncrementalPromo]
 
 UPDATE IncrementalPromo SET
 	Disabled = 1,
@@ -13,4 +13,4 @@ FROM
 	AS t
 WHERE Id = t.iprId AND promoDisabled = 1 AND iprDisabled <> 1;
 
-ENABLE TRIGGER [dbo].[IncrementalPromo_ChangesIncident_Insert_Update_Trigger] ON [dbo].[IncrementalPromo]
+ENABLE TRIGGER [IncrementalPromo_ChangesIncident_Insert_Update_Trigger] ON [IncrementalPromo]

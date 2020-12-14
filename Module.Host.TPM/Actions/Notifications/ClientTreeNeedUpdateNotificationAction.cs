@@ -98,10 +98,10 @@ namespace Module.Host.TPM.Actions.Notifications
             {
                 var selectScript = String.Format(@"
                         SELECT ZCUSTHG02, ZCUSTHG02___T, ZCUSTHG03, ZCUSTHG03___T, ZCUSTHG04, ZCUSTHG04___T
-                        FROM MARS_UNIVERSAL_PETCARE_CUSTOMERS
+                        FROM [DefaultSchemaSetting].MARS_UNIVERSAL_PETCARE_CUSTOMERS
                         WHERE ZCUSTHG04 = '{0}' AND Active_Till IS NULL
                         ", incident.PropertyValue);
-                var marsCustomersItem = context.Database.SqlQuery<MarsUniversalPetcareCustomers>(selectScript).DistinctBy(x => x.ZCUSTHG04).AsEnumerable();
+                var marsCustomersItem = context.SqlQuery<MarsUniversalPetcareCustomers>(selectScript).DistinctBy(x => x.ZCUSTHG04).AsEnumerable();
 
                 foreach (var item in marsCustomersItem)
                 {
@@ -138,10 +138,10 @@ namespace Module.Host.TPM.Actions.Notifications
             {
                 var selectScript = String.Format(@"
                         SELECT ZCUSTHG02, ZCUSTHG02___T, ZCUSTHG03, ZCUSTHG03___T, ZCUSTHG04, ZCUSTHG04___T
-                        FROM MARS_UNIVERSAL_PETCARE_CUSTOMERS
+                        FROM [DefaultSchemaSetting].MARS_UNIVERSAL_PETCARE_CUSTOMERS
                         WHERE ZCUSTHG03 = '{0}' AND Active_Till IS NULL
                         ", incident.PropertyValue);
-                var marsCustomersItem = context.Database.SqlQuery<MarsUniversalPetcareCustomers>(selectScript).DistinctBy(x => x.ZCUSTHG03).AsEnumerable();
+                var marsCustomersItem = context.SqlQuery<MarsUniversalPetcareCustomers>(selectScript).DistinctBy(x => x.ZCUSTHG03).AsEnumerable();
 
                 foreach (var item in marsCustomersItem)
                 {
@@ -169,10 +169,10 @@ namespace Module.Host.TPM.Actions.Notifications
             {
                 var selectScript = String.Format(@"
                         SELECT ZCUSTHG02, ZCUSTHG02___T, ZCUSTHG03, ZCUSTHG03___T, ZCUSTHG04, ZCUSTHG04___T
-                        FROM MARS_UNIVERSAL_PETCARE_CUSTOMERS
+                        FROM [DefaultSchemaSetting].MARS_UNIVERSAL_PETCARE_CUSTOMERS
                         WHERE ZCUSTHG02 = '{0}' AND Active_Till IS NULL
                         ", incident.PropertyValue);
-                var marsCustomersItem = context.Database.SqlQuery<MarsUniversalPetcareCustomers>(selectScript).DistinctBy(x => x.ZCUSTHG02).AsEnumerable();
+                var marsCustomersItem = context.SqlQuery<MarsUniversalPetcareCustomers>(selectScript).DistinctBy(x => x.ZCUSTHG02).AsEnumerable();
 
                 foreach (var item in marsCustomersItem)
                 {

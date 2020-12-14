@@ -1,8 +1,8 @@
 ﻿DECLARE @handlerName VARCHAR(255) = 'Module.Host.TPM.Handlers.UpdatePreviousDayIncrementalHandler';
 
-DELETE [dbo].[LoopHandler]  WHERE [Name] = @handlerName;
+DELETE [LoopHandler]  WHERE [Name] = @handlerName;
 
-INSERT INTO [dbo].[LoopHandler] (
+INSERT INTO [LoopHandler] (
 	[Id],
 	[Description],
 	[Name],

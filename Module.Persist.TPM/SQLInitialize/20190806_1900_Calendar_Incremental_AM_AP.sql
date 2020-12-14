@@ -115,48 +115,48 @@ SELECT NEWID(), (SELECT ID FROM [Role] Where SystemName = 'SuperReader' AND [Dis
 -- точки доступа
 -- избавляемся от дуближа
 -- SchedulerClientTreeDTOs
-DELETE FROM [dbo].[AccessPointRole] WHERE [AccessPointId] in (SELECT [Id] FROM [dbo].[AccessPoint] WHERE [Resource] = 'SchedulerClientTreeDTOs' and [Action] = 'GetSchedulerClientTreeDTOs');
-DELETE FROM [dbo].[AccessPoint] WHERE [Resource] = 'SchedulerClientTreeDTOs' and [Action] = 'GetSchedulerClientTreeDTOs';
+DELETE FROM [AccessPointRole] WHERE [AccessPointId] in (SELECT [Id] FROM [AccessPoint] WHERE [Resource] = 'SchedulerClientTreeDTOs' and [Action] = 'GetSchedulerClientTreeDTOs');
+DELETE FROM [AccessPoint] WHERE [Resource] = 'SchedulerClientTreeDTOs' and [Action] = 'GetSchedulerClientTreeDTOs';
 
 
-INSERT INTO [dbo].[AccessPoint] (Resource, Action, Disabled, DeletedDate) VALUES ('SchedulerClientTreeDTOs', 'GetSchedulerClientTreeDTOs', 0, NULL);
+INSERT INTO [AccessPoint] (Resource, Action, Disabled, DeletedDate) VALUES ('SchedulerClientTreeDTOs', 'GetSchedulerClientTreeDTOs', 0, NULL);
 
 -- Administrator
-INSERT INTO [dbo].[AccessPointRole]
+INSERT INTO [AccessPointRole]
 (Id, RoleId, AccessPointId)
-SELECT NEWID(), (SELECT ID FROM [Role] WHERE [SystemName] = 'Administrator' and [Disabled] = 0), [Id] FROM [dbo].[AccessPoint] WHERE [Resource]='SchedulerClientTreeDTOs' and [Action] = 'GetSchedulerClientTreeDTOs';
+SELECT NEWID(), (SELECT ID FROM [Role] WHERE [SystemName] = 'Administrator' and [Disabled] = 0), [Id] FROM [AccessPoint] WHERE [Resource]='SchedulerClientTreeDTOs' and [Action] = 'GetSchedulerClientTreeDTOs';
 
 -- FunctionalExpert
-INSERT INTO [dbo].[AccessPointRole]
+INSERT INTO [AccessPointRole]
 (Id, RoleId, AccessPointId)
-SELECT NEWID(), (SELECT ID FROM [Role] WHERE [SystemName] = 'FunctionalExpert' and [Disabled] = 0), [Id] FROM [dbo].[AccessPoint] WHERE [Resource]='SchedulerClientTreeDTOs' and [Action] = 'GetSchedulerClientTreeDTOs';
+SELECT NEWID(), (SELECT ID FROM [Role] WHERE [SystemName] = 'FunctionalExpert' and [Disabled] = 0), [Id] FROM [AccessPoint] WHERE [Resource]='SchedulerClientTreeDTOs' and [Action] = 'GetSchedulerClientTreeDTOs';
 
 -- CustomerMarketing
-INSERT INTO [dbo].[AccessPointRole]
+INSERT INTO [AccessPointRole]
 (Id, RoleId, AccessPointId)
-SELECT NEWID(), (SELECT ID FROM [Role] WHERE [SystemName] = 'CustomerMarketing' and [Disabled] = 0), [Id] FROM [dbo].[AccessPoint] WHERE [Resource]='SchedulerClientTreeDTOs' and [Action] = 'GetSchedulerClientTreeDTOs';
+SELECT NEWID(), (SELECT ID FROM [Role] WHERE [SystemName] = 'CustomerMarketing' and [Disabled] = 0), [Id] FROM [AccessPoint] WHERE [Resource]='SchedulerClientTreeDTOs' and [Action] = 'GetSchedulerClientTreeDTOs';
 
 -- CMManager
-INSERT INTO [dbo].[AccessPointRole]
+INSERT INTO [AccessPointRole]
 (Id, RoleId, AccessPointId)
-SELECT NEWID(), (SELECT ID FROM [Role] WHERE [SystemName] = 'CMManager' and [Disabled] = 0), [Id] FROM [dbo].[AccessPoint] WHERE [Resource]='SchedulerClientTreeDTOs' and [Action] = 'GetSchedulerClientTreeDTOs';
+SELECT NEWID(), (SELECT ID FROM [Role] WHERE [SystemName] = 'CMManager' and [Disabled] = 0), [Id] FROM [AccessPoint] WHERE [Resource]='SchedulerClientTreeDTOs' and [Action] = 'GetSchedulerClientTreeDTOs';
 
 -- KeyAccountManager
-INSERT INTO [dbo].[AccessPointRole]
+INSERT INTO [AccessPointRole]
 (Id, RoleId, AccessPointId)
-SELECT NEWID(), (SELECT ID FROM [Role] WHERE [SystemName] = 'KeyAccountManager' and [Disabled] = 0), [Id] FROM [dbo].[AccessPoint] WHERE [Resource]='SchedulerClientTreeDTOs' and [Action] = 'GetSchedulerClientTreeDTOs';
+SELECT NEWID(), (SELECT ID FROM [Role] WHERE [SystemName] = 'KeyAccountManager' and [Disabled] = 0), [Id] FROM [AccessPoint] WHERE [Resource]='SchedulerClientTreeDTOs' and [Action] = 'GetSchedulerClientTreeDTOs';
 
 -- DemandPlanning
-INSERT INTO [dbo].[AccessPointRole]
+INSERT INTO [AccessPointRole]
 (Id, RoleId, AccessPointId)
-SELECT NEWID(), (SELECT ID FROM [Role] WHERE [SystemName] = 'DemandPlanning' and [Disabled] = 0), [Id] FROM [dbo].[AccessPoint] WHERE [Resource]='SchedulerClientTreeDTOs' and [Action] = 'GetSchedulerClientTreeDTOs';
+SELECT NEWID(), (SELECT ID FROM [Role] WHERE [SystemName] = 'DemandPlanning' and [Disabled] = 0), [Id] FROM [AccessPoint] WHERE [Resource]='SchedulerClientTreeDTOs' and [Action] = 'GetSchedulerClientTreeDTOs';
 
 -- DemandFinance
-INSERT INTO [dbo].[AccessPointRole]
+INSERT INTO [AccessPointRole]
 (Id, RoleId, AccessPointId)
-SELECT NEWID(), (SELECT ID FROM [Role] WHERE [SystemName] = 'DemandFinance' and [Disabled] = 0), [Id] FROM [dbo].[AccessPoint] WHERE [Resource]='SchedulerClientTreeDTOs' and [Action] = 'GetSchedulerClientTreeDTOs';
+SELECT NEWID(), (SELECT ID FROM [Role] WHERE [SystemName] = 'DemandFinance' and [Disabled] = 0), [Id] FROM [AccessPoint] WHERE [Resource]='SchedulerClientTreeDTOs' and [Action] = 'GetSchedulerClientTreeDTOs';
 
 -- SuperReader
-INSERT INTO [dbo].[AccessPointRole]
+INSERT INTO [AccessPointRole]
 (Id, RoleId, AccessPointId)
-SELECT NEWID(), (SELECT ID FROM [Role] WHERE [SystemName] = 'SuperReader' and [Disabled] = 0), [Id] FROM [dbo].[AccessPoint] WHERE [Resource]='SchedulerClientTreeDTOs' and [Action] = 'GetSchedulerClientTreeDTOs';
+SELECT NEWID(), (SELECT ID FROM [Role] WHERE [SystemName] = 'SuperReader' and [Disabled] = 0), [Id] FROM [AccessPoint] WHERE [Resource]='SchedulerClientTreeDTOs' and [Action] = 'GetSchedulerClientTreeDTOs';

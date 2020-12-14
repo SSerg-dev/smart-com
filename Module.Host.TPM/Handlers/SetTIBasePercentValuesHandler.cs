@@ -2,6 +2,7 @@
 using Looper.Core;
 using Looper.Parameters;
 using Module.Host.TPM.Actions;
+using Module.Persist.TPM.Utils;
 using ProcessingHost.Handlers;
 using System;
 using System.Diagnostics;
@@ -17,13 +18,13 @@ namespace Module.Host.TPM.Handlers
     {
         public override void Action(HandlerInfo info, ExecuteData data)
         {
-            ILogWriter handlerLogger = null;
+            LogWriter handlerLogger = null;
             Stopwatch sw = new Stopwatch();
             sw.Start();
             try
             {
-                handlerLogger = new FileLogWriter(info.HandlerId.ToString());
-                handlerLogger.Write(true, String.Format("TIBasePersent calculation began at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+                handlerLogger = new LogWriter(info.HandlerId.ToString());
+                handlerLogger.Write(true, String.Format("TIBasePersent calculation began at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)), "Message");
 
                 IAction action = GetAction(info);
                 action.Execute();
@@ -67,7 +68,8 @@ namespace Module.Host.TPM.Handlers
                 sw.Stop();
                 if (handlerLogger != null)
                 {
-                    handlerLogger.Write(true, String.Format("TIBasePersent calculation ended at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", DateTimeOffset.Now, sw.Elapsed.TotalSeconds), "Message");
+                    handlerLogger.Write(true, String.Format("TIBasePersent calculation ended at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), sw.Elapsed.TotalSeconds), "Message");
+                    handlerLogger.UploadToBlob();
                 }
             }
         }

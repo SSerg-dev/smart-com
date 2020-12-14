@@ -42,65 +42,54 @@
                       
                         var ZREP = promoproductcorrectioneditor.down('[name=ZREP]');
                           
-                            if (!field.isCreate) {
-                                field.setReadOnly(true);
-                                field.addCls('field-for-read-only');
-                                ZREP.setReadOnly(true);
-                                ZREP.addCls('field-for-read-only');
+                        if (!field.isCreate) {
+                            field.setReadOnly(true);
+                            field.addCls('field-for-read-only');
+                            ZREP.setReadOnly(true);
+                            ZREP.addCls('field-for-read-only');
                              
-                            }
-                      
-                      
-                        
+                        }
                         if (ZREP.readOnly  ) {
                             ZREP.addCls('field-for-read-only');
-                        }
-
-
-                             
+                        }  
                     }
                 },
                
                 onTrigger1Click: function () {
-                 
+                    
                     //Код из за переопределения клика на лупу
                     var picker = this.createPicker(),
                         grid, columns;
 
                     if (picker) {
                         picker.show();
-                        if (this.multiSelect) {
-                            grid = this.getGrid();
-                            columns = grid.headerCt.getGridColumns();
-                            if (columns.length > 0 && columns[0].hasOwnProperty('isCheckerHd')) {
-                                columns[0].show();
-                            }
-                        }
+                        var choosepromo = Ext.ComponentQuery.query('choosepromo')[0];
+                        choosepromo.down('#datatable').multiSelect = false;
+
+                        var ids = [],
+                            nodes = [];
+
                         var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
                         if (currentRole !== 'SupportAdministrator') {
 
                             var status = ['DraftPublished', 'OnApproval', 'Approved', 'Planned'];
-                            this.getStore().setFixedFilter('PromoStatusNameFilter', {
+                            ids.push('PromoStatusNameFilter');
+                            nodes.push({
                                 property: 'PromoStatus.SystemName',
                                 operation: 'In',
                                 value: status
                             });
                         }
+                        ids.push('PromoInOutFilter');
+                        nodes.push({
+                            property: 'InOut',
+                            operation: 'Equals',
+                            value: false
+                        });
+                        this.getStore().setSeveralFixedFilters(ids, nodes, false);
+
                         this.getStore().load();
-
                     }
-                    var choosepromo = Ext.ComponentQuery.query('choosepromo')[0];
-
-                    choosepromo.down('#datatable').multiSelect = false;
-
-                    //var store = grid.getStore();
-                    //
-                    //store.setFixedFilter('PromoId', {
-                    //    property: 'PromoId',
-                    //    operation: 'Equals',
-                    //    value: promogrid.promoId
-                    //});PromoStatusName
-
                 },
                 fieldLabel: l10n.ns('tpm', 'PromoProductCorrection').value('Number'), 
                 isCreate: false,

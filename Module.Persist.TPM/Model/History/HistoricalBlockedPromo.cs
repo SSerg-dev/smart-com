@@ -7,7 +7,6 @@ namespace Module.Persist.TPM.Model.History
     [AssociatedWith(typeof(BlockedPromo))]
     public class HistoricalBlockedPromo : BaseHistoricalEntity<System.Guid>
     {
-        public Guid Id { get; set; }
         public bool Disabled { get; set; }
         public DateTimeOffset? DeletedDate { get; set; }
 

@@ -1,4 +1,4 @@
-﻿INSERT INTO [dbo].[Setting]
+﻿INSERT INTO [Setting]
            ([Name]
            ,[Type]
            ,[Value]
@@ -10,7 +10,7 @@
            ,N'File Reject Notifications template')
 GO
 
-INSERT INTO [dbo].[MailNotificationSetting]
+INSERT INTO [MailNotificationSetting]
 		   ([Name]
            ,[Description]
            ,[Subject]
@@ -34,7 +34,7 @@ INSERT INTO [dbo].[MailNotificationSetting]
            ,NULL)
 GO
 
-INSERT INTO [dbo].[LoopHandler]
+INSERT INTO [LoopHandler]
            ([Id]
 		   ,[Description]
            ,[Name]

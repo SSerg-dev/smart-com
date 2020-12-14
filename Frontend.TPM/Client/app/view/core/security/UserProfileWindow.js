@@ -1,10 +1,10 @@
 ﻿Ext.define('App.view.core.security.UserProfileWindow', {
     extend: 'App.view.core.base.BaseReviewWindow',
     alias: 'widget.userprofilewindow',
-    title: l10n.ns('core').value('passwordChangingWindowTitle'),
-    width: 250,
+    title: l10n.ns('core').value('userInfoTitle'),
+    width: 400,
     height: 300,
-    minWidth: 250,
+    minWidth: 400,
     minHeight: 300,
     listeners: {
         afterrender: function (window) {
@@ -37,13 +37,14 @@
                 xtype: 'label',
                 name: 'login',
                 cls: 'user-window-text',
-            }, {
-                xtype: 'button',
-                text: l10n.ns('core', 'userwindow').value('passwordButton'),
-                ui: 'white-button-footer-toolbar',
-                itemId: 'changepassword',
-                width: 135,
-                margin: 10
             }]
+            //}, {
+            //    xtype: 'button',
+            //    text: l10n.ns('core', 'userwindow').value('passwordButton'),
+            //    ui: 'white-button-footer-toolbar',
+            //    itemId: 'changepassword',
+            //    width: 135,
+            //    margin: 10
+            //}]
     }]
 });

@@ -1,4 +1,4 @@
-UPDATE [dbo].[User] SET [Disabled] = 1 WHERE [Name]='MSNBH-POLYAART\artem polyanin'
+UPDATE [User] SET [Disabled] = 1 WHERE [Name]='MSNBH-POLYAART\artem polyanin'
 OR [User].[Name]='msnbh-filyuand\andrey filyushkin'
 OR [User].[Name]='msnbh-zinkeale\alexander zinkevich'
 OR [User].[Name]='msnbh-kondrale\alexey kondratiev'
@@ -7,7 +7,7 @@ OR [User].[Name]='msnbh-belyamar\maria belyakova'
 OR [User].[Name]='msnbh-spivaale\alexander spivak'
 GO
 
-INSERT INTO [dbo].[User] ([Id], [DeletedDate], [Disabled], [Email], [Name], [Password], [PasswordSalt], [Sid])
+INSERT INTO [User] ([Id], [DeletedDate], [Disabled], [Email], [Name], [Password], [PasswordSalt], [Sid])
 VALUES 
 (NEWID(), NULL, 0, NULL, 'MSNBH-POLYAART\artem polyanin', NULL, NULL, 'S-1-5-21-1833980595-3398159026-1082415255-3122'),
 (NEWID(), NULL, 0, NULL, 'msnbh-filyuand\andrey filyushkin', NULL, NULL, 'S-1-5-21-1711696212-265188269-1646879335-1002'),

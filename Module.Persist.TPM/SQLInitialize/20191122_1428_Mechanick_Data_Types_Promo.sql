@@ -1,9 +1,9 @@
  
-UPDATE [dbo].[Mechanic]
+UPDATE [Mechanic]
    SET  [PromoTypesId] = (select Id from PromoTypes where SystemName = 'Regular') 
 GO
 
-INSERT INTO [dbo].[Mechanic]
+INSERT INTO [Mechanic]
            ([Id]
            ,[Disabled]
            ,[DeletedDate]
@@ -16,7 +16,7 @@ INSERT INTO [dbo].[Mechanic]
 				     ( NEWID(), 0, null, 'VP','VP',(select Id from PromoTypes where SystemName = 'InOut') )
 					 
 GO
-INSERT INTO [dbo].[Mechanic]
+INSERT INTO [Mechanic]
            ([Id]
            ,[Disabled]
            ,[DeletedDate]
@@ -29,7 +29,7 @@ INSERT INTO [dbo].[Mechanic]
 				     ( NEWID(), 0, null, 'Programs ','Programs',(select Id from PromoTypes where SystemName = 'Loyalty') )
 					 
 GO
-UPDATE [dbo].[Promo]
+UPDATE [Promo]
    SET [MarsMechanicId] = (select id from Mechanic where  SystemName = (select SystemName from Mechanic where Id = MarsMechanicId) and PromoTypesId = (select Id from PromoTypes where SystemName = 'InOut'))
        
      
@@ -37,7 +37,7 @@ UPDATE [dbo].[Promo]
  WHERE InOut = 1
 GO
 
- UPDATE [dbo].[Promo]
+ UPDATE [Promo]
    SET [PlanInstoreMechanicId] = (select id from Mechanic where  SystemName = (select SystemName from Mechanic where Id = PlanInstoreMechanicId) and PromoTypesId = (select Id from PromoTypes where SystemName = 'InOut'))
        
      
@@ -45,7 +45,7 @@ GO
  WHERE InOut = 1
 GO
  
- UPDATE [dbo].[Promo]
+ UPDATE [Promo]
    SET [ActualInStoreMechanicId] = (select id from Mechanic where  SystemName = (select SystemName from Mechanic where Id = ActualInStoreMechanicId) and PromoTypesId = (select Id from PromoTypes where SystemName = 'InOut'))
        
      

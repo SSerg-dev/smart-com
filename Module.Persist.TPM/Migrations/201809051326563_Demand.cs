@@ -7,12 +7,12 @@ namespace Module.Persist.TPM.Migrations
     {
         public override void Up()
         {
-            //Sql("CREATE VIEW [dbo].[Demand] AS SELECT [Id], [Disabled], [DeletedDate], [ClientId], [BrandId], [BrandTechId], [Number], [Name], [StartDate], [EndDate], [DispatchesStart], [DispatchesEnd], [PlanBaseline], [PlanDuration], [PlanUplift], [PlanIncremental], [PlanActivity], [PlanSteal], [FactBaseline], [FactDuration], [FactUplift], [FactIncremental], [FactActivity], [FactSteal] FROM [dbo].[Promo]");
+            //Sql("CREATE VIEW [Demand] AS SELECT [Id], [Disabled], [DeletedDate], [ClientId], [BrandId], [BrandTechId], [Number], [Name], [StartDate], [EndDate], [DispatchesStart], [DispatchesEnd], [PlanBaseline], [PlanDuration], [PlanUplift], [PlanIncremental], [PlanActivity], [PlanSteal], [FactBaseline], [FactDuration], [FactUplift], [FactIncremental], [FactActivity], [FactSteal] FROM [Promo]");
         }
         
         public override void Down()
         {
-            //Sql("DROP VIEW [dbo].[Demand]");
+            //Sql("DROP VIEW [Demand]");
         }
     }
 }

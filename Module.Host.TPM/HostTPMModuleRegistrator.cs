@@ -76,7 +76,11 @@ namespace Module.Host.TPM
                 new Handlers.FullXLSXUpdateImportRollingVolumesHandler(),
                 new Handlers.RollingVolumeQTYRecalculationHandler(),
                 new Handlers.FullXLSXUpdateTechnologyHandler(),
-                new Handlers.RestartMainNightProcessingHandler()
+                new Handlers.RestartMainNightProcessingHandler(),
+                new Handlers.NightProcessingWaitHandler(),
+                new Handlers.ReapprovingHandler(),
+                new Handlers.ExportHandler(),
+                new Handlers.SendingFilesToBlobHandler()
             };
         }
     }

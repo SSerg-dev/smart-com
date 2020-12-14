@@ -20,7 +20,7 @@ namespace Module.Host.TPM.Actions
         private readonly string BrandTechCode;
         private readonly string DemandCode;
         private readonly double CValue;
-        private readonly string updateTemplate = "UPDATE BaseLine SET SellOutBaselineQTY = '{0}' WHERE Id = '{1}';";
+        private readonly string updateTemplate = "UPDATE [DefaultSchemaSetting].BaseLine SET SellOutBaselineQTY = '{0}' WHERE Id = '{1}';";
 
         public SellOutBaselineQtyCalculationAction(string oldBrandTechCode, string oldDemandCode, string brandTechCode, string demandCode, double cValue)
         {
@@ -43,7 +43,7 @@ namespace Module.Host.TPM.Actions
                     foreach (IEnumerable<BaseLine> items in baseLines.Partition(10000))
                     {
                         string updateScript = String.Join("", items.Select(y => String.Format(updateTemplate, y.SellInBaselineQTY * CValue, y.Id)));
-                        context.Database.ExecuteSqlCommand(updateScript);
+                        context.ExecuteSqlCommand(updateScript);
                     }
 
                     if (OldBrandTechCode != null && OldDemandCode != null)
@@ -54,7 +54,7 @@ namespace Module.Host.TPM.Actions
                         foreach (IEnumerable<BaseLine> items in baseLines.Partition(10000))
                         {
                             string updateScript = String.Join("", items.Select(y => String.Format(updateTemplate, 0, y.Id)));
-                            context.Database.ExecuteSqlCommand(updateScript);
+                            context.ExecuteSqlCommand(updateScript);
                         }
                     }
                 }

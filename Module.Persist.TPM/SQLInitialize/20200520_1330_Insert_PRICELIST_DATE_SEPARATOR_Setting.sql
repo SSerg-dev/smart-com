@@ -1,4 +1,4 @@
-﻿INSERT INTO [dbo].[Setting]
+﻿INSERT INTO [Setting]
 	([Name]
 	,[Description]
 	,[Type]

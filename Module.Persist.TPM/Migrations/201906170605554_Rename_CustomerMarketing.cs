@@ -9,7 +9,7 @@ namespace Module.Persist.TPM.Migrations
         {
             RenameColumn("dbo.Promo", "IsCustomerMarketingApproved", "IsCMManagerApproved");
             Sql("UPDATE [Role] SET[SystemName] = 'CMManager', [DisplayName] = 'Customer Marketing Manager' WHERE[SystemName] = 'CustomerMarketing' AND[Disabled] = 'false'");
-            Sql("ALTER VIEW [dbo].[PromoGridView]" +
+            Sql("ALTER VIEW [PromoGridView]" +
                 "AS SELECT " +
                 "pr.[Id], " +
                 "pr.[Name]," +
@@ -62,7 +62,7 @@ namespace Module.Persist.TPM.Migrations
                 "pr.[ProductHierarchy], " +
                 "pr.[PlanPromoNetIncrementalNSV], " +
                 "pr.[PlanPromoIncrementalNSV] " +
-                "FROM [dbo].[Promo] pr " +
+                "FROM [Promo] pr " +
                 "LEFT JOIN [Event] ev ON pr.EventId = ev.Id " +
                 "LEFT JOIN [Brand] bnd ON pr.BrandId = bnd.Id " +
                 "LEFT JOIN [BrandTech] bt ON pr.BrandTechId = bt.Id " +
@@ -77,7 +77,7 @@ namespace Module.Persist.TPM.Migrations
         {
             RenameColumn("dbo.Promo", "IsCustomerMarketingApproved", "IsCMManagerApproved");
             Sql("UPDATE [Role] SET[SystemName] = 'CustomerMarketing', [DisplayName] = 'Customer Marketing' WHERE[SystemName] = 'CMManager' AND[Disabled] = 'false'");
-            Sql("ALTER VIEW [dbo].[PromoGridView]" +
+            Sql("ALTER VIEW [PromoGridView]" +
                 "AS SELECT " +
                 "pr.[Id], " +
                 "pr.[Name]," +
@@ -130,7 +130,7 @@ namespace Module.Persist.TPM.Migrations
                 "pr.[ProductHierarchy], " +
                 "pr.[PlanPromoNetIncrementalNSV], " +
                 "pr.[PlanPromoIncrementalNSV] " +
-                "FROM [dbo].[Promo] pr " +
+                "FROM [Promo] pr " +
                 "LEFT JOIN [Event] ev ON pr.EventId = ev.Id " +
                 "LEFT JOIN [Brand] bnd ON pr.BrandId = bnd.Id " +
                 "LEFT JOIN [BrandTech] bt ON pr.BrandTechId = bt.Id " +

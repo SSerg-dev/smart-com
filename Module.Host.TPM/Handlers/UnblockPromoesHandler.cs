@@ -39,7 +39,7 @@ namespace Module.Host.TPM.Handlers
         public override void Action(HandlerInfo info, ExecuteData data)
         {
             var stopWatch = Stopwatch.StartNew();
-            var handlerLogger = new FileLogWriter(info.HandlerId.ToString());
+            var handlerLogger = new LogWriter(info.HandlerId.ToString());
             var databaseContext = new DatabaseContext();
 
             handlerLogger.Write(true, $"The {nameof(UnblockPromoesHandler)} task start at {DateTimeOffset.Now}.", "Message");
@@ -82,6 +82,7 @@ namespace Module.Host.TPM.Handlers
 
                 stopWatch.Stop();
                 handlerLogger.Write(true, $"The {nameof(UnblockPromoesHandler)} task complete at {DateTimeOffset.Now}. " + $"Duration: {stopWatch.Elapsed.ToString()}", "Message");
+                handlerLogger.UploadToBlob();
             }
         }
 
@@ -104,10 +105,10 @@ namespace Module.Host.TPM.Handlers
                 var concurentBag = new ConcurrentBag<string>();
                 Parallel.ForEach(blockedPromoes, blockedPromo =>
                 {
-                    concurentBag.Add($"UPDATE [dbo].[{nameof(BlockedPromo)}] SET [{nameof(BlockedPromo.Disabled)}] = 1, [{nameof(BlockedPromo.DeletedDate)}] = '{DateTimeOffset.Now}' WHERE [Id] = '{blockedPromo.Id}';");
+                    concurentBag.Add($"UPDATE [DefaultSchemaSetting].[{nameof(BlockedPromo)}] SET [{nameof(BlockedPromo.Disabled)}] = 1, [{nameof(BlockedPromo.DeletedDate)}] = '{DateTimeOffset.Now}' WHERE [Id] = '{blockedPromo.Id}';");
                 });
                 var updateScript = String.Join("\n", concurentBag);
-                databaseContext.Database.ExecuteSqlCommand(updateScript);
+                databaseContext.ExecuteSqlCommand(updateScript);
             }
         }
     }

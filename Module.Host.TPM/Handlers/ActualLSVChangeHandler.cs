@@ -3,6 +3,7 @@ using Looper.Parameters;
 using Module.Persist.TPM;
 using Module.Persist.TPM.CalculatePromoParametersModule;
 using Module.Persist.TPM.Model.TPM;
+using Module.Persist.TPM.Utils;
 using Persist;
 using ProcessingHost.Handlers;
 using System;
@@ -20,11 +21,11 @@ namespace Module.Host.TPM.Handlers
         public string logLine = "";
         public override void Action(HandlerInfo info, ExecuteData data)
         {
-            ILogWriter handlerLogger = new FileLogWriter(info.HandlerId.ToString());
+            LogWriter handlerLogger = new LogWriter(info.HandlerId.ToString());
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
-            logLine = String.Format("The calculation of the actual parameters began at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now);
+            logLine = String.Format("The calculation of the actual parameters began at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow));
             handlerLogger.Write(true, logLine, "Message");
             handlerLogger.Write(true, "");
 
@@ -58,7 +59,7 @@ namespace Module.Host.TPM.Handlers
                                 errorString = ActualProductParametersCalculation.CalculatePromoProductParameters(promo, context, true);
                                 // записываем ошибки если они есть
                                 if (errorString != null)
-                                    WriteErrorsInLog(handlerLogger, errorString);
+                                    WriteErrorsInLog(handlerLogger.CurrentLogWriter, errorString);
                             }
 
                             // Параметры промо считаем только, если промо из TLC или если были загружены Actuals
@@ -69,7 +70,7 @@ namespace Module.Host.TPM.Handlers
 
                             // записываем ошибки если они есть
                             if (errorString != null)
-                                WriteErrorsInLog(handlerLogger, errorString);
+                                WriteErrorsInLog(handlerLogger.CurrentLogWriter, errorString);
 
                             logLine = String.Format("The calculation of the actual parameters for Promo № {0} parameters was completed at {1:yyyy-MM-dd HH:mm:ss}", promo.Number, DateTimeOffset.Now);
                             handlerLogger.Write(true, logLine, "Message");
@@ -89,8 +90,9 @@ namespace Module.Host.TPM.Handlers
 
             sw.Stop();
             handlerLogger.Write(true, "");
-            logLine = String.Format("The calculation of the actual parameters was completed at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", DateTimeOffset.Now, sw.Elapsed.TotalSeconds);
+            logLine = String.Format("The calculation of the actual parameters was completed at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), sw.Elapsed.TotalSeconds);
             handlerLogger.Write(true, logLine, "Message");
+            handlerLogger.UploadToBlob();
         }
 
         /// <summary>

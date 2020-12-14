@@ -488,73 +488,80 @@
         var selModel = tree.getSelectionModel();
         if (selModel.hasSelection()) {
             var record = selModel.getSelection()[0];
-            // заполняем модель 
-            model.set('parentId', record.get('ObjectId')); // id родительского элемента
-            model.set('StartDate', new Date()); // дата, перепишется на сервер, но нужна т.к. иначе модель будет невалидна
-            model.set('EndDate', null); // дата нужна, иначе модель будет невалидна !!!
-            model.set('depth', record.get('depth') + 1); // глубина вложенности 
-            //tree.editorModel.startCreateRecord(model);
-            this.createNode(tree, model);
+            if (record.get('Type') != 'Subrange') {
+                // заполняем модель 
+                model.set('parentId', record.get('ObjectId')); // id родительского элемента
+                model.set('StartDate', new Date()); // дата, перепишется на сервер, но нужна т.к. иначе модель будет невалидна
+                model.set('EndDate', null); // дата нужна, иначе модель будет невалидна !!!
+                model.set('depth', record.get('depth') + 1); // глубина вложенности 
+                //tree.editorModel.startCreateRecord(model);
+                var editor = this.createNode(tree, model);
+                editor.setLoading(true);
 
-            var typesFilter = this.getTypesFilter(record, []);
-            var productTreeEditorWindow = Ext.ComponentQuery.query('producttreeeditor')[0]
-            var srch = productTreeEditorWindow.down('searchcombobox'),
-                store = srch.getStore(),
-                baseFilter = store.fixedFilters['typefilter'], // Сохраняем фильтр по типу
-                ids = ['typefilter'],
-                nodes = [{
-                    property: baseFilter.property,
-                    operation: baseFilter.operation,
-                    value: baseFilter.value,
-                }];
-            // Фильтр по родительским узлам, для исключения вложенности узлов одного типа
-            Ext.Array.each(typesFilter, function (item, index) {
-                ids.push('treefilter' + index);
-                nodes.push({
-                    property: 'Name',
-                    operation: 'NotEqual',
-                    value: item
+                var typesFilter = this.getTypesFilter(record, []);
+                var productTreeEditorWindow = Ext.ComponentQuery.query('producttreeeditor')[0]
+                var srch = productTreeEditorWindow.down('searchcombobox'),
+                    store = srch.getStore(),
+                    baseFilter = store.fixedFilters['typefilter'], // Сохраняем фильтр по типу
+                    ids = ['typefilter'],
+                    nodes = [{
+                        property: baseFilter.property,
+                        operation: baseFilter.operation,
+                        value: baseFilter.value,
+                    }];
+                // Фильтр по родительским узлам, для исключения вложенности узлов одного типа
+                Ext.Array.each(typesFilter, function (item, index) {
+                    ids.push('treefilter' + index);
+                    nodes.push({
+                        property: 'Name',
+                        operation: 'NotEqual',
+                        value: item
+                    });
                 });
-            });
-            //При создании корневого узла предлагать только с приорететом 1 и 0
-            if (record.get('Type') == 'root') {
-                ids.push('priorityrootfilter');
-                nodes.push({
-                    property: 'Priority',
-                    operation: 'In',
-                    value: [0, 1]
-                });
-                store.clearFixedFilters(true);
-                store.setSeveralFixedFilters(ids, nodes, true);
-            } else {
-                //Или меньше, чем у места вставки
-                $.ajax({
-                    dataType: 'json',
-                    url: '/odata/NodeTypes',
-                    data: { $filter: "Name eq '" + record.get('Type') + "'" },
-                    success: function (jsondata) {
-                        if (jsondata.value[0]) {
-                            var nt = jsondata.value[0];
+                //При создании корневого узла предлагать только с приорететом 1 и 0
+                if (record.get('Type') == 'root') {
+                    ids.push('priorityrootfilter');
+                    nodes.push({
+                        property: 'Priority',
+                        operation: 'In',
+                        value: [0, 1]
+                    });
+                    store.clearFixedFilters(true);
+                    store.setSeveralFixedFilters(ids, nodes, false);
+                    editor.setLoading(false);
+                } else {
+                    //Или меньше, чем у места вставки
+                    $.ajax({
+                        dataType: 'json',
+                        url: '/odata/NodeTypes',
+                        data: { $filter: "Name eq '" + record.get('Type') + "'" },
+                        success: function (jsondata) {
+                            if (jsondata.value[0]) {
+                                var nt = jsondata.value[0];
 
-                            ids.push('priorityfilter');
-                            nodes.push({
-                                property: 'Priority',
-                                operation: 'GreaterThan',
-                                value: nt['Priority']
-                            });
+                                ids.push('priorityfilter');
+                                nodes.push({
+                                    property: 'Priority',
+                                    operation: 'GreaterThan',
+                                    value: nt['Priority']
+                                });
 
-                            store.clearFixedFilters(true);
-                            store.setSeveralFixedFilters(ids, nodes, true);
-                        } else {
-                            App.Notify.pushError('Node Type with name ' + record.get('Type') + ' was not found');
+                                store.clearFixedFilters(true);
+                                store.setSeveralFixedFilters(ids, nodes, false);
+                            } else {
+                                App.Notify.pushError('Node Type with name ' + record.get('Type') + ' was not found');
+                            }
+                            editor.setLoading(false);
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            App.Notify.pushError(l10n.ns('tpm', 'text').value('failedStatusLoad'));
+                            editor.setLoading(false);
                         }
-
-                    },
-                    error: function (XMLHttpRequest, textStatus, errorThrown) {
-                        App.Notify.pushError(l10n.ns('tpm', 'text').value('failedStatusLoad'));
-                    }
-                });
-            }
+                    });
+                }
+            } else {
+                App.Notify.pushInfo('Cannot add node for ' + record.get('Type') + ' node type ');
+            }            
         } else {
             App.Notify.pushInfo('No records selected');
         }
@@ -694,6 +701,7 @@
 
         this.editorModel = editorModel;
         this.onlyFilterUpdate = false;
+        return editorModel.editor;
     },
 
     updateNode: function (tree, record, onlyFilterUpdate) {

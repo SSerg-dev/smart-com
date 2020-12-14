@@ -482,7 +482,7 @@
                     var mousedownEvent = document.createEvent('MouseEvents');
                     mousedownEvent.initEvent('mousedown', true, true)
                     panel.el.dom.dispatchEvent(mousedownEvent);
-                // Step 6 - settings
+                    // Step 6 - settings
                 } else if (_deltaY > h1_2_3_4_5_6 && _deltaY <= h1_2_3_4_5_6_7) {
                     btnStep1.removeCls('selected');
                     btnStep2.removeCls('selected');
@@ -1226,7 +1226,7 @@
                         //disable On/Off invoice group
                         client.down('[id=OffInvoice]').setDisabled(true);
                         client.down('[id=OnInvoice]').setDisabled(true);
-                        
+
                         // Кнопки для изменения состояний промо
                         var promoActions = Ext.ComponentQuery.query('button[isPromoAction=true]');
 
@@ -1855,7 +1855,7 @@
             promoeditorcustom.down('[name=ApolloExportCheckbox]').setReadOnly(true);
         }
         if (record.data.PromoStatusSystemName === 'Started'
-                && promoeditorcustom.down('[name=ApolloExportCheckbox]').crudAccess.indexOf(App.UserInfo.getCurrentRole()['SystemName']) >= 0) {
+            && promoeditorcustom.down('[name=ApolloExportCheckbox]').crudAccess.indexOf(App.UserInfo.getCurrentRole()['SystemName']) >= 0) {
             promoeditorcustom.down('[name=ApolloExportCheckbox]').setDisabled(false);
             promoeditorcustom.down('[name=ApolloExportCheckbox]').setReadOnly(false);
         }
@@ -1981,12 +1981,6 @@
         var store = grid.getStore(),
             proxy = store.getProxy();
         proxy.extraParams.promoIdHistory = window.promoId;
-
-        store.setFixedFilter('HistoricalObjectId', {
-            property: '_ObjectId',
-            operation: 'Equals',
-            value: window.promoId
-        });
 
         store.on({
             load: function (records, operation, success) {
@@ -2962,7 +2956,7 @@
         // settings
         priorityValue = isCopy ? 3 : record.data.CalendarPriority;
         priority.setValue(priorityValue);
-        
+
         var promoEventButton = Ext.ComponentQuery.query('button[itemId=btn_promo_step6]')[0];
         promoEventButton.setText('<b>' + l10n.ns('tpm', 'promoStap').value('basicStep6') + '</b><br><p>' + l10n.ns('tpm', 'Promo').value('CalendarPriority') + ': ' + priorityValue + '</p>');
         promoEventButton.removeCls('notcompleted');
@@ -3233,6 +3227,7 @@
         this.checkLogForErrors(record.getId());
 
         this.checkLoadingComponents();
+        promoeditorcustom.setLoading(false);
     },
 
     saveModel: function (model, window, close, reloadPromo) {
@@ -4032,10 +4027,10 @@
         }
         if ((window.promotype.split(' ')[0] == 'Regular' || (record && record.data.PromoTypesName.split(' ')[0] == 'Regular')) && mechanicIdRawValuesNamesForUnblockZeroDiscountRegular.some(function (x) { return x == mechanicIdField.getRawValue() })) {
             return true;
-        } 
+        }
         if ((window.promotype.split(' ')[0] == 'Loyalty' || (record && record.data.PromoTypesName.split(' ')[0] == 'Loyalty')) && mechanicIdRawValuesNamesForUnblockZeroDiscountLoyalty.some(function (x) { return x == mechanicIdField.getRawValue() })) {
             return true;
-        } 
+        }
         return false;
     },
 
@@ -4046,7 +4041,7 @@
         return ['Other'];
     },
     getMechanicIdRawValuesNamesForUnblockZeroDiscountLoyalty: function () {
-        return ['Coupons', 'Points','Programs'];
+        return ['Coupons', 'Points', 'Programs'];
     },
 
     // =============== MECHANIC END =============== 
@@ -4216,7 +4211,10 @@
                 field.setReadOnly(false);
             }
         });
-
+        var isInOut = promoeditorcustom.isInOutPromo;
+        if (isInOut) {
+            promoeditorcustom.down('checkbox[name=NeedRecountUplift]').setDisabled(true);
+        }
         // Блокировка кнопок Add Promo Support для роли DemandPlanning. 
         // Блокировка редактирования Growth Acceleration
         // Блокировка редактирования Calendar priority
@@ -4578,7 +4576,9 @@
 
             if (window.length > 0) {
                 this.hideEditButtonForSomeRole();
-                window[0].setLoading(false);
+                if (window[0].GetIfAllProductsInSubrange === false) {
+                    window[0].setLoading(false);
+                }
 
                 this.initSignalR(window[0]);
             }
@@ -6173,5 +6173,37 @@
         } else {
             promoEditorCustom.isApolloExport = false;
         }
+    },
+
+    onExportButtonClick: function (button) {
+        var me = this;
+        var grid = me.getGridByButton(button);
+        var panel = grid.up('combineddirectorypanel');
+        var store = grid.getStore();
+        var proxy = store.getProxy();
+        var actionName = button.action || 'ExportXLSX';
+        var resource = button.resource || proxy.resourceName;
+
+        panel.setLoading(true);
+
+        var query = breeze.EntityQuery
+            .from(resource)
+            .withParameters({
+                $actionName: actionName,
+                $method: 'POST'
+            });
+
+        query = me.buildQuery(query, store)
+            .using(Ext.ux.data.BreezeEntityManager.getEntityManager())
+            .execute()
+            .then(function (data) {
+                panel.setLoading(false);
+                App.Notify.pushInfo('Задача экспорта справочника промо успешно создана');
+                App.System.openUserTasksPanel()
+            })
+            .fail(function (data) {
+                panel.setLoading(false);
+                App.Notify.pushError(me.getErrorMessage(data));
+            });
     }
 });

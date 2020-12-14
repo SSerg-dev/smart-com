@@ -1,4 +1,4 @@
-﻿DISABLE TRIGGER [dbo].[IncrementalPromo_ChangesIncident_Insert_Update_Trigger] ON [dbo].[IncrementalPromo]
+﻿DISABLE TRIGGER [IncrementalPromo_ChangesIncident_Insert_Update_Trigger] ON [IncrementalPromo]
 
 UPDATE IncrementalPromo SET
 	CasePrice = t.FoundPrice
@@ -20,4 +20,4 @@ UPDATE IncrementalPromo SET
 WHERE PlanPromoIncrementalCases IS NOT NULL AND PlanPromoIncrementalCases <> 0 AND
 	  CasePrice IS NOT NULL AND CasePrice <> 0;
 
-ENABLE TRIGGER [dbo].[IncrementalPromo_ChangesIncident_Insert_Update_Trigger] ON [dbo].[IncrementalPromo]
+ENABLE TRIGGER [IncrementalPromo_ChangesIncident_Insert_Update_Trigger] ON [IncrementalPromo]

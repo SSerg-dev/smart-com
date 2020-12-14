@@ -47,18 +47,26 @@ namespace Module.Host.TPM.Actions
             {
                 var techCode_index = 2;
                 var subCode_index = 3;
-                var splitedBrandsegTechsub_code = item.BrandsegTechsub_code.Split('-');
+                var splitedBrandsegTechsub_code = item.BrandsegTechsub_code.Split(new char[] { '-' }, StringSplitOptions.RemoveEmptyEntries);
+                var codesCount = splitedBrandsegTechsub_code.Length;
 
-                if (splitedBrandsegTechsub_code.Length == 4)
+                if (codesCount == 4 || (!String.IsNullOrEmpty(item.Technology.SubBrand_code) && codesCount == 3))
                 {
-                    var sub = splitedBrandsegTechsub_code.GetValue(subCode_index).ToString();
+                    string subCode = null;
+                    if (codesCount == 4)
+                    {
+                        subCode = splitedBrandsegTechsub_code.GetValue(subCode_index).ToString();
+                    }
                     var technology = splitedBrandsegTechsub_code.GetValue(techCode_index).ToString();
-                    if (!sub.Equals(item.Technology.SubBrand_code))
+                    if (subCode != item.Technology.SubBrand_code)
                     {
                         var changedTech = context.Set<Technology>().FirstOrDefault(tech => tech.Tech_code.Equals(technology) &&
-                                                                                  tech.SubBrand_code.Equals(sub));
-                        item.Technology = changedTech;
-                        item.TechnologyId = changedTech.Id;
+                                                                                  tech.SubBrand_code.Equals(subCode));
+                        if(changedTech != null)
+                        {
+                            item.Technology = changedTech;
+                            item.TechnologyId = changedTech.Id;
+                        }
                     }
                 }
             }
@@ -97,10 +105,10 @@ namespace Module.Host.TPM.Actions
 
             foreach (IEnumerable<BrandTech> items in toCreate.Partition(10000))
             {
-                String formatStr = "INSERT INTO [BrandTech] ([Id], [Disabled], [DeletedDate], [BrandId], [TechnologyId]) VALUES ('{0}', 0, NULL, '{1}', '{2}')";
+                String formatStr = "INSERT INTO [DefaultSchemaSetting].[BrandTech] ([Id], [Disabled], [DeletedDate], [BrandId], [TechnologyId]) VALUES ('{0}', 0, NULL, '{1}', '{2}')";
                 string insertScript = String.Join("\n", items.Select(y => String.Format(formatStr, y.Id, y.BrandId, y.TechnologyId)).ToList());
 
-                context.Database.ExecuteSqlCommand(insertScript);
+                context.ExecuteSqlCommand(insertScript);
             }
 
             ClientTreeBrandTechesController.FillClientTreeBrandTechTable(context);
@@ -108,7 +116,7 @@ namespace Module.Host.TPM.Actions
             foreach (IEnumerable<BrandTech> items in toUpdate.Partition(10000))
             {
                 string insertScript = generator.BuildUpdateScript(items);
-                context.Database.ExecuteSqlCommand(insertScript);
+                context.ExecuteSqlCommand(insertScript);
             }
 
             //Добавление в историю
@@ -143,6 +151,7 @@ namespace Module.Host.TPM.Actions
                     Name = "Module.Host.TPM.Handlers.CreateCoefficientSI2SOHandler",
                     ExecutionPeriod = null,
                     CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                    RunGroup = "CreateCoefficientSI2SO",
                     LastExecutionDate = null,
                     NextExecutionDate = null,
                     ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,

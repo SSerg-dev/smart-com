@@ -25,6 +25,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Utility;
+using Utility.Azure;
+using Utility.FileWorker;
 using Utility.Import;
 using Utility.Import.Cache;
 using Utility.Import.ImportModelBuilder;
@@ -141,9 +143,10 @@ namespace Module.Host.TPM.Actions {
         /// <returns></returns>
         private IList<IEntity<Guid>> ParseImportFile()
         {
+            var fileDispatcher = new FileDispatcher();
             string importDir = AppSettingsManager.GetSetting<string>("IMPORT_DIRECTORY", "ImportFiles");
             string importFilePath = Path.Combine(importDir, ImportFile.Name);
-            if (!File.Exists(importFilePath))
+            if (!fileDispatcher.IsExists(importDir, ImportFile.Name))
             {
                 throw new Exception("Import File not found");
             }
@@ -189,7 +192,18 @@ namespace Module.Host.TPM.Actions {
             notBuildedRecords = new List<Tuple<string, string>>();
             notValidRecords = new List<Tuple<IEntity<Guid>, string>>();
             errors = new List<string>();
-            SpreadsheetDocument book = SpreadsheetDocument.Open(filePath, false);
+            SpreadsheetDocument book;
+            var stringPath = Path.GetDirectoryName(filePath);
+            var stringName = Path.GetFileName(filePath);
+            byte[] resAzure = AzureBlobHelper.ReadExcelFromBlob(stringPath.Split('\\').Last(), stringName);
+            if (resAzure.Length == 0)
+            {
+                book = SpreadsheetDocument.Open(filePath, false);
+            }
+            else
+            {
+                book = SpreadsheetDocument.Open(new MemoryStream(resAzure), false);
+            }
             //Брать только первый лист
             WorksheetPart wSheet = book.WorkbookPart.WorksheetParts.FirstOrDefault(y => y.Uri.OriginalString.Contains("sheet1"));
             using (OpenXmlReader reader = OpenXmlReader.Create(wSheet))

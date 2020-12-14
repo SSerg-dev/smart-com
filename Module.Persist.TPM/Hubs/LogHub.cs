@@ -11,6 +11,7 @@ using Persist;
 using System.Threading;
 using Newtonsoft.Json;
 using Persist.Model;
+using Utility.Azure;
 
 namespace Module.Persist.TPM
 {
@@ -25,6 +26,12 @@ namespace Module.Persist.TPM
         /// Объект блокировки для синхронизации потоков
         /// </summary>
         private static object locker = new object();
+
+        /// <summary>
+        /// Хранение логов из Azure (для исключения лишних запросов в Azure)
+        /// </summary>
+
+        private static AzureLogData azureLog = new AzureLogData();
 
         /// <summary>
         /// Токен для отмены задачи
@@ -229,17 +236,17 @@ namespace Module.Persist.TPM
         private void GetContentOfLog(Guid handlerID, out string contentLog, out DateTime? lastWriteDate, out string statusHandler)
         {
             contentLog = null;
-            statusHandler = "";
-
             string contentOfFileLog;
-            GetContentOfFileLog(handlerID, out lastWriteDate, out contentOfFileLog);            
+
+            DatabaseContext context = new DatabaseContext();
+            LoopHandler handler = context.Set<LoopHandler>().FirstOrDefault(x => x.Id == handlerID);
+
+            statusHandler = handler.Status;
+
+            GetContentOfFileLog(handlerID, statusHandler, out lastWriteDate, out contentOfFileLog);            
 
             if (contentOfFileLog != null)
             {
-                DatabaseContext context = new DatabaseContext();
-                LoopHandler handler = context.Set<LoopHandler>().FirstOrDefault(x => x.Id == handlerID);
-
-                statusHandler = handler.Status;
                 contentLog = JsonConvert.SerializeObject(new
                 {
                     success = true,
@@ -247,9 +254,9 @@ namespace Module.Persist.TPM
                     description = handler.Description,
                     status = statusHandler,
                 });
-
-                context.Dispose();
             }
+
+            context.Dispose();
         }
 
         /// <summary>
@@ -258,7 +265,7 @@ namespace Module.Persist.TPM
         /// <param name="handlerID">ID обработчика</param>
         /// <param name="lastWriteDate">Выходной параметр: дата последней записи в лог</param>
         /// <param name="contentOfLog">Выходной параметр: содержание лога</param>
-        private void GetContentOfFileLog(Guid handlerID, out DateTime? lastWriteDate, out string contentOfLog)
+        private void GetContentOfFileLog(Guid handlerID, string handlerStatus, out DateTime? lastWriteDate, out string contentOfLog)
         {
             string logDir = AppSettingsManager.GetSetting("HANDLER_LOG_DIRECTORY", "HandlerLogs");
             string logFileName = String.Format("{0}.txt", handlerID);
@@ -279,8 +286,13 @@ namespace Module.Persist.TPM
                 }
                 else
                 {
-                    lastWriteDate = null;
-                    contentOfLog = null;
+                    lastWriteDate = SetAzureLogData(logFileName, handlerStatus);
+                    if (lastWriteDate == null)
+                    {
+                        azureLog.Data = "";
+                        azureLog.LogFileName = logFileName;
+                    }
+                    contentOfLog = azureLog.Data;
                 }
             }
             catch (Exception e)
@@ -290,6 +302,27 @@ namespace Module.Persist.TPM
             }
         }
 
+        /// <summary>
+        /// Устанавливает данные из Azure
+        /// </summary>
+        /// <param name="logFileName">Имя файла логов</param>
+        private DateTime? SetAzureLogData(string logFileName, string handlerStatus)
+        {
+            if (azureLog.LogFileName != logFileName || azureLog.LastHandlerStatus != handlerStatus)
+            {
+                var result = AzureBlobHelper.ReadTextFromBlob("HandlerLogs", logFileName);
+                if (string.IsNullOrEmpty(result))
+                {
+                    return null;
+                }
+                azureLog = new AzureLogData()
+                {
+                    Data = result,
+                    LogFileName = logFileName
+                };
+            }
+            return DateTime.Today;
+        }
         private void RemoveFromSubscribers()
         {
             lock (locker)
@@ -302,6 +335,20 @@ namespace Module.Persist.TPM
                 if (subscribers.Count == 0 && tokenCancelSource != null)
                     tokenCancelSource.Cancel();
             }
+        }
+        /// <summary>
+        /// Структура данных логов из Azure
+        /// </summary>
+        private struct AzureLogData
+        {
+            // Строка с логами
+            public string Data { get; set; }
+
+            // Наименование файла лога
+            public string LogFileName { get; set; }
+
+            // Наименование файла лога
+            public string LastHandlerStatus { get; set; }
         }
     }
 

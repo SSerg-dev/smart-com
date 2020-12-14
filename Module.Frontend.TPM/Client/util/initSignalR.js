@@ -33,7 +33,7 @@ Ext.override(App.controller.core.loophandler.LoopHandler, {
                         $.connection.tasksLogHub.server.unsubscribeLog(window.handlerId);
                 }
             });
-
+            console.log(calculatingInfoWindow);
             window.setLoading(false);
             calculatingInfoWindow.show();
 

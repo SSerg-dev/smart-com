@@ -1,7 +1,7 @@
-﻿DELETE [dbo].[LoopHandler] WHERE [Name] = 'Module.Host.TPM.Handlers.SetTIBasePercentValuesHandler'
+﻿DELETE [LoopHandler] WHERE [Name] = 'Module.Host.TPM.Handlers.SetTIBasePercentValuesHandler'
 GO
 
-INSERT INTO [dbo].[LoopHandler]
+INSERT INTO [LoopHandler]
            ([Id]
            ,[Description]
            ,[Name]

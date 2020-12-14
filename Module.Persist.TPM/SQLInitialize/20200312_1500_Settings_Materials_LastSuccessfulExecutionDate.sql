@@ -1,8 +1,8 @@
-DELETE [dbo].[Setting] WHERE [Name] = 'MATERIALS_LAST_SUCCESSFUL_EXECUTION_DATE'
+DELETE [Setting] WHERE [Name] = 'MATERIALS_LAST_SUCCESSFUL_EXECUTION_DATE'
 
 GO
 
-INSERT INTO [dbo].[Setting]
+INSERT INTO [Setting]
            ([Id]
            ,[Name]
            ,[Type]

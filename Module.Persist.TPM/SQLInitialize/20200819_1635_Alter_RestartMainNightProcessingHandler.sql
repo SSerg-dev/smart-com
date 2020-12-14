@@ -1,6 +1,6 @@
 DECLARE @nextDay DATETIMEOFFSET(7) = DATEADD(DAY, 1, SYSDATETIME());
 
-UPDATE [dbo].[LoopHandler]
+UPDATE [LoopHandler]
    SET NextExecutionDate = DATETIMEOFFSETFROMPARTS ( 
 				YEAR(@nextDay), 
 				MONTH(@nextDay),

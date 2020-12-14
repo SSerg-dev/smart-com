@@ -2,7 +2,7 @@
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-ALTER PROC [dbo].[FillCurrentDayIncremental]
+ALTER PROC [FillCurrentDayIncremental]
 AS   
 BEGIN
 	IF EXISTS (SELECT * FROM SYS.INDEXES WHERE NAME = N'IX_CurrentDayIncremental_NONCLUSTERED')
@@ -25,12 +25,12 @@ BEGIN
 				ct.DemandCode AS DemandCode,
 				ct.DMDGroup AS DMDGroup,
 				ct.ObjectId
-			FROM [dbo].[Promo] p (NOLOCK)
-			INNER JOIN [dbo].[PromoProduct] AS pp (NOLOCK)
+			FROM [Promo] p (NOLOCK)
+			INNER JOIN [PromoProduct] AS pp (NOLOCK)
 				ON p.Id = pp.PromoId
-			INNER JOIN [dbo].[ClientTree] AS ct (NOLOCK)
+			INNER JOIN [ClientTree] AS ct (NOLOCK)
 				ON p.ClientTreeKeyId = ct.Id
-			INNER JOIN [dbo].[ClientTree] AS ctBase (NOLOCK)
+			INNER JOIN [ClientTree] AS ctBase (NOLOCK)
 				ON ct.parentId = ctBase.ObjectId
 			WHERE
 				p.PromoStatusId IN ('D6F20200-4654-E911-8BC8-08606E18DF3F', 'DA5DA702-4754-E911-8BC8-08606E18DF3F', '2305DC07-4654-E911-8BC8-08606E18DF3F', 'AB0BB74A-4754-E911-8BC8-08606E18DF3F')
@@ -44,12 +44,12 @@ BEGIN
 	SET @GlobalDispatchesEnd = (
 		SELECT
 			MAX(CAST(p.DispatchesEnd AS DATE))
-		FROM [dbo].[Promo] p (NOLOCK)
-		INNER JOIN [dbo].[PromoProduct] AS pp (NOLOCK)
+		FROM [Promo] p (NOLOCK)
+		INNER JOIN [PromoProduct] AS pp (NOLOCK)
 			ON p.Id = pp.PromoId
-		INNER JOIN [dbo].[ClientTree] AS ct (NOLOCK)
+		INNER JOIN [ClientTree] AS ct (NOLOCK)
 			ON p.ClientTreeKeyId = ct.Id
-		INNER JOIN [dbo].[ClientTree] AS ctBase (NOLOCK)
+		INNER JOIN [ClientTree] AS ctBase (NOLOCK)
 			ON ct.parentId = ctBase.ObjectId
 		WHERE
 			p.PromoStatusId IN ('D6F20200-4654-E911-8BC8-08606E18DF3F', 'DA5DA702-4754-E911-8BC8-08606E18DF3F', '2305DC07-4654-E911-8BC8-08606E18DF3F', 'AB0BB74A-4754-E911-8BC8-08606E18DF3F')

@@ -282,7 +282,8 @@
 
         listeners: {
             select: function (cell, record) {
-                var form = this.up().down('editorform');
+
+                form = this.up().down('editorform');
                 var fields = form.getForm().getFields();
 
                 Ext.suspendLayouts();

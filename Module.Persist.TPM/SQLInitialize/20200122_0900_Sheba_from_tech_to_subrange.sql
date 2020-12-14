@@ -4,15 +4,15 @@ UPDATE ProductTree
 SET EndDate = GETDATE() 
 WHERE Name = 'Mini pouch' AND Type = 'Technology' AND EndDate IS NULL
 
-IF (SELECT COUNT([ObjectId]) FROM [dbo].[ProductTree] WHERE [Name]='Mini pouch' AND [EndDate] IS NULL AND [Type] = 'Subrange') > 0
+IF (SELECT COUNT([ObjectId]) FROM [ProductTree] WHERE [Name]='Mini pouch' AND [EndDate] IS NULL AND [Type] = 'Subrange') > 0
 	BEGIN
-		UPDATE [dbo].[PromoProductTree]
-		SET [ProductTreeObjectId] = (SELECT [ObjectId] FROM [dbo].[ProductTree] WHERE [Name]='Mini pouch' AND [EndDate] IS NULL AND [Type] = 'Subrange')
+		UPDATE [PromoProductTree]
+		SET [ProductTreeObjectId] = (SELECT [ObjectId] FROM [ProductTree] WHERE [Name]='Mini pouch' AND [EndDate] IS NULL AND [Type] = 'Subrange')
 		WHERE ProductTreeObjectId = @oldObjectId
 	END
 ELSE
 	BEGIN
-		INSERT INTO [dbo].[ProductTree]
+		INSERT INTO [ProductTree]
 		           ([depth]
 		           ,[Name]
 		           ,[StartDate]
@@ -46,8 +46,8 @@ ELSE
 		           ,1000068
 		           ,'Sheba > Pouch > Mini pouch')
 
-		UPDATE [dbo].[PromoProductTree]
-		SET [ProductTreeObjectId] = (SELECT [ObjectId] FROM [dbo].[ProductTree] WHERE [Name]='Mini pouch' AND [EndDate] IS NULL AND [Type] = 'Subrange')
+		UPDATE [PromoProductTree]
+		SET [ProductTreeObjectId] = (SELECT [ObjectId] FROM [ProductTree] WHERE [Name]='Mini pouch' AND [EndDate] IS NULL AND [Type] = 'Subrange')
 		WHERE ProductTreeObjectId = @oldObjectId
 	END
 GO

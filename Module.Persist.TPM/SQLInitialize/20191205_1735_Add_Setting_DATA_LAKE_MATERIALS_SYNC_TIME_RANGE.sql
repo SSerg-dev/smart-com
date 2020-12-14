@@ -3,7 +3,7 @@ GO
 DELETE FROM [Setting] WHERE [Name] = 'APP_MIX_EXCEPTED_ZREPS'
 GO
 
-INSERT INTO [dbo].[Setting]
+INSERT INTO [Setting]
            ([Id]
            ,[Name]
            ,[Type]
@@ -17,7 +17,7 @@ INSERT INTO [dbo].[Setting]
            ,'Time range from now in hours to check material table.')
 GO
 
-INSERT INTO [dbo].[Setting]
+INSERT INTO [Setting]
            ([Id]
            ,[Name]
            ,[Type]

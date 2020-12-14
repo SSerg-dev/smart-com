@@ -49,6 +49,9 @@ namespace Module.Host.TPM.Actions
                                 foreach (Guid id in brandTechIds)
                                 {
                                     CoefficientSI2SO newRecord = new CoefficientSI2SO { Id = Guid.NewGuid(), DemandCode = demCode, BrandTechId = id, CoefficientValue = CValue, Disabled = false };
+                                    if (Exist(context, newRecord))
+                                        continue;
+
                                     var proxy = context.Set<CoefficientSI2SO>().Create<CoefficientSI2SO>();
                                     var result = (CoefficientSI2SO)Mapper.Map(newRecord, proxy, typeof(CoefficientSI2SO), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
                                     context.Set<CoefficientSI2SO>().Add(result);
@@ -71,6 +74,9 @@ namespace Module.Host.TPM.Actions
                             foreach (Guid brTechCode in brandTechCodes)
                             {
                                 CoefficientSI2SO newRecord = new CoefficientSI2SO { Id = Guid.NewGuid(), DemandCode = clientDemandCode, BrandTechId = brTechCode, CoefficientValue = CValue, Disabled = false };
+                                if (Exist(context, newRecord))
+                                    continue;
+
                                 var proxy = context.Set<CoefficientSI2SO>().Create<CoefficientSI2SO>();
                                 var result = (CoefficientSI2SO)Mapper.Map(newRecord, proxy, typeof(CoefficientSI2SO), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
                                 context.Set<CoefficientSI2SO>().Add(result);
@@ -96,6 +102,11 @@ namespace Module.Host.TPM.Actions
         private void proxy(IMappingOperationOptions obj)
         {
             throw new NotImplementedException();
+        }
+
+        private bool Exist(DatabaseContext context, CoefficientSI2SO coefficient)
+        {
+            return context.Set<CoefficientSI2SO>().Any(c => c.DemandCode == coefficient.DemandCode && c.BrandTechId == coefficient.BrandTechId);
         }
     }
 

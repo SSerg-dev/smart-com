@@ -1,4 +1,5 @@
 ﻿using Core.Dependency;
+using Core.KeyVault;
 using Core.Settings;
 using Frontend.Core.Extensions.Export;
 using Looper.Core;
@@ -15,6 +16,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Http.OData;
+using CoreUtil = Frontend.Core.Util;
 
 namespace Module.Frontend.TPM.Util
 {
@@ -52,38 +54,24 @@ namespace Module.Frontend.TPM.Util
 
         public static T GetValueIfExists<T>(string jsonText, string propertyName)
         {
-            try
-            {
-                if (string.IsNullOrEmpty(jsonText) || string.IsNullOrEmpty(propertyName)) return default(T);
-                JObject jObject = JObject.Parse(jsonText);
-                dynamic dynamicObject = jObject;
-                JToken jToken;
-                if (jObject.TryGetValue(propertyName, out jToken))
-                {
-                    return (T)dynamicObject[propertyName];
-                }
-
-                return default(T);
-            }
-            catch (Exception ex)
-            {
-                return default(T);
-            }
+            return CoreUtil.Helper.GetValueIfExists<T>(jsonText, propertyName);
         }
 
         public static bool IsValueExists(string jsonText, string propertyName)
         {
-            if (string.IsNullOrEmpty(jsonText) || string.IsNullOrEmpty(propertyName)) return false;
-            JObject jObject = JObject.Parse(jsonText);
-            JToken jToken;
-            return jObject.TryGetValue(propertyName, out jToken);
+            return CoreUtil.Helper.IsValueExists(jsonText, propertyName);
         }
 
         public static string GetRequestBody(HttpRequest request)
         {
-            var bodyStream = new StreamReader(request.InputStream);
-            bodyStream.BaseStream.Seek(0, SeekOrigin.Begin);
-            return bodyStream.ReadToEnd();
+            return CoreUtil.Helper.GetRequestBody(request);
+        }
+
+        public static string GetSecretSetting(string settingName, string defaultValue)
+        {
+            var keyVault = KeyStorageManager.GetKeyVault();
+            var secretName = AppSettingsManager.GetSetting(settingName, defaultValue);
+            return keyVault.GetSecret(secretName, "");
         }
     }
 }

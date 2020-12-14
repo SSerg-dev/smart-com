@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Utility.FileWorker;
 
 namespace Module.Persist.TPM.Utils {
     /// <summary>
@@ -145,6 +146,9 @@ namespace Module.Persist.TPM.Utils {
                 }
                 wb.Write(stream);
             }
+            FileDispatcher fileDispatcher = new FileDispatcher();
+            string exportDir = AppSettingsManager.GetSetting("EXPORT_DIRECTORY", "~/ExportFiles");
+            fileDispatcher.UploadToBlob(Path.GetFileName(filePath), Path.GetFullPath(filePath), exportDir.Split('\\').Last());
         }
 
         /// <summary>

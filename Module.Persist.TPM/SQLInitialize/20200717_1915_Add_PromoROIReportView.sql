@@ -9,7 +9,7 @@ AS
 	(
 		SELECT
 			s.[Value]
-		FROM [dbo].[Setting] s
+		FROM [Setting] s
 		WHERE s.[Name] = 'ACTUAL_COGSTI_CHECK_PROMO_STATUS_LIST'
 	), 'Finished,Closed'), ',')  
 ),
@@ -18,8 +18,8 @@ AS
 (
 	SELECT
 		p.[Id]
-	FROM [dbo].[Promo] p
-	INNER JOIN [dbo].[PromoStatus] ps 
+	FROM [Promo] p
+	INNER JOIN [PromoStatus] ps 
 		ON ps.[Id] = p.[PromoStatusId]
 	WHERE
 		p.[Disabled] = 0
@@ -30,7 +30,39 @@ AS
 AS
 (
 	SELECT 
-		p.[ClientTreeKeyId],		p.[BaseClientTreeId],		p.[BaseClientTreeIds],		p.[NeedRecountUplift],		p.[LastApprovedDate],		p.[Name],		p.[ClientHierarchy],		p.[ProductHierarchy],		p.[LastChangedDate],		p.[LastChangedDateDemand],		p.[LastChangedDateFinance],		p.[DispatchesStart],		p.[DispatchesEnd],		p.[DispatchDuration],		p.[Mechanic],		p.[MechanicIA],		p.[MarsStartDate],		p.[MarsEndDate],		p.[MarsDispatchesStart],		p.[MarsDispatchesEnd],		p.[OtherEventName],		p.[CalendarPriority],		p.[PlanPromoPostPromoEffectLSVW1],		p.[PlanPromoPostPromoEffectLSVW2],		p.[ActualPromoPostPromoEffectLSVW1],		p.[ActualPromoPostPromoEffectLSVW2],		p.[IsAutomaticallyApproved],		p.[IsCMManagerApproved],		p.[IsDemandPlanningApproved],		p.[IsDemandFinanceApproved],		'' AS [ProductTreeObjectIds],		p.[Calculating],		p.[BlockInformation],
+		p.[ClientTreeKeyId],
+		p.[BaseClientTreeId],
+		p.[BaseClientTreeIds],
+		p.[NeedRecountUplift],
+		p.[LastApprovedDate],
+		p.[Name],
+		p.[ClientHierarchy],
+		p.[ProductHierarchy],
+		p.[LastChangedDate],
+		p.[LastChangedDateDemand],
+		p.[LastChangedDateFinance],
+		p.[DispatchesStart],
+		p.[DispatchesEnd],
+		p.[DispatchDuration],
+		p.[Mechanic],
+		p.[MechanicIA],
+		p.[MarsStartDate],
+		p.[MarsEndDate],
+		p.[MarsDispatchesStart],
+		p.[MarsDispatchesEnd],
+		p.[OtherEventName],
+		p.[CalendarPriority],
+		p.[PlanPromoPostPromoEffectLSVW1],
+		p.[PlanPromoPostPromoEffectLSVW2],
+		p.[ActualPromoPostPromoEffectLSVW1],
+		p.[ActualPromoPostPromoEffectLSVW2],
+		p.[IsAutomaticallyApproved],
+		p.[IsCMManagerApproved],
+		p.[IsDemandPlanningApproved],
+		p.[IsDemandFinanceApproved],
+		'' AS [ProductTreeObjectIds],
+		p.[Calculating],
+		p.[BlockInformation],
 		p.[Id],
 		p.[Number],
 		p.[ClientTreeId],
@@ -173,49 +205,49 @@ AS
 			THEN p.[ActualCOGSPercent]
 			ELSE p.[PlanCOGSPercent]
 		END									AS [COGSPercent]
-	FROM [dbo].[Promo] p
-	INNER JOIN [dbo].[ClientTree] ct 
+	FROM [Promo] p
+	INNER JOIN [ClientTree] ct 
 		ON ct.[Id] = p.[ClientTreeKeyId]
-	INNER JOIN [dbo].[PromoStatus] ps
+	INNER JOIN [PromoStatus] ps
 		ON ps.[Id] = p.[PromoStatusId]
-	INNER JOIN [dbo].[PromoTypes] pt
+	INNER JOIN [PromoTypes] pt
 		ON pt.[Id] = p.[PromoTypesId]
 
-	LEFT JOIN [dbo].[Brand] b
+	LEFT JOIN [Brand] b
 		ON b.[Id] = p.[BrandId]
-	LEFT JOIN [dbo].[Technology] t
+	LEFT JOIN [Technology] t
 		ON t.[Id] = p.[TechnologyId]
 
-	LEFT JOIN [dbo].[BrandTech] bt
+	LEFT JOIN [BrandTech] bt
 		ON bt.[Id] = p.[BrandTechId]
-	LEFT JOIN [dbo].[Brand] btB
+	LEFT JOIN [Brand] btB
 		ON btB.[Id] = bt.[BrandId]
-	LEFT JOIN [dbo].[Technology] btT
+	LEFT JOIN [Technology] btT
 		ON btT.[Id] = bt.[TechnologyId]
 
-	LEFT JOIN [dbo].[Event] e
+	LEFT JOIN [Event] e
 		ON e.[Id] = p.[EventId]
 		
-	LEFT JOIN [dbo].[Mechanic] inM
+	LEFT JOIN [Mechanic] inM
 		ON inM.[Id] = p.[PlanInstoreMechanicId]
-	LEFT JOIN [dbo].[MechanicType] inMT
+	LEFT JOIN [MechanicType] inMT
 		ON inMT.[Id] = p.[PlanInstoreMechanicTypeId]
 		
-	LEFT JOIN [dbo].[Mechanic] m
+	LEFT JOIN [Mechanic] m
 		ON m.[Id] = p.[MarsMechanicId]
-	LEFT JOIN [dbo].[MechanicType] mt
+	LEFT JOIN [MechanicType] mt
 		ON mt.[Id] = p.[MarsMechanicTypeId]
 		
-	LEFT JOIN [dbo].[Mechanic] aM
+	LEFT JOIN [Mechanic] aM
 		ON aM.[Id] = p.[ActualInStoreMechanicId]
-	LEFT JOIN [dbo].[MechanicType] aMT
+	LEFT JOIN [MechanicType] aMT
 		ON aMT.[Id] = p.[ActualInStoreMechanicTypeId]
 
 	LEFT JOIN (
 		SELECT 
 			[PromoId],
 			AVG([PlanProductPCPrice]) AS PlanProductPCPriceAVG
-		FROM [dbo].[PromoProduct]
+		FROM [PromoProduct]
 		WHERE [Disabled] = 0 AND [PlanProductPCPrice] > 0
 		GROUP BY [PromoId]
 	) AS ppPCP

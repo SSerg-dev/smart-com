@@ -16,12 +16,12 @@ BEGIN
 			@ObjectId = ct.[ObjectId],
 			@ParentId = ct.[parentId],
 			@Type = ct.[Type]
-		FROM [dbo].[ClientTree] ct
+		FROM [ClientTree] ct
 		WHERE ct.[ObjectId] = @ParentId AND ct.[EndDate] IS NULL;
 		
 		SELECT TOP(1)
 			@DemandCode = ct.[DemandCode]
-		FROM [dbo].[ClientTree] ct
+		FROM [ClientTree] ct
 		WHERE ct.[ObjectId] = @ObjectId AND ct.[EndDate] IS NULL;
 	END;
 

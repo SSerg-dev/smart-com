@@ -118,8 +118,8 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                         if (promoAvaible)
                         {
-                            contextOutOfTransaction.SaveChanges();
                             CreateHandler(handlerId, description, nameHandler, data, context);
+                            contextOutOfTransaction.SaveChanges();
                         }
                     }
                 }

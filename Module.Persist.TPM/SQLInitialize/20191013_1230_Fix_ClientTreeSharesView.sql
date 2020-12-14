@@ -1,4 +1,4 @@
-﻿ALTER VIEW [dbo].[ClientTreeSharesView] AS
+﻿ALTER VIEW [ClientTreeSharesView] AS
 WITH CTE(Id, ObjectId, Name, parentId, IsBaseClient, LevelS, BOI, EndDate, StartDate, ResultNameStr, depth, DemandCode) 
 AS (SELECT Id, ObjectId, Name, parentId, IsBaseClient, 0 AS LevelS, ObjectId AS BOI, EndDate, StartDate, Name AS ResultNameStr, depth, DemandCode
 FROM dbo.ClientTree

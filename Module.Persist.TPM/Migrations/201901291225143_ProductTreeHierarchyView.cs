@@ -7,10 +7,10 @@ namespace Module.Persist.TPM.Migrations
     {
         public override void Up()
         {
-            Sql("CREATE VIEW [dbo].[ProductTreeHierarchyView] AS " +
+            Sql("CREATE VIEW [ProductTreeHierarchyView] AS " +
         "With RecursiveSearch (ObjectId, parentId, Hierarchy) AS ( " +
         "Select ObjectId, parentId, CONVERT(varchar(255), '') " +
-        "FROM [dbo].[ProductTree] AS FirtGeneration " +
+        "FROM [ProductTree] AS FirtGeneration " +
         "WHERE [Type] = 'root' and ((SYSDATETIME() between StartDate and EndDate) or EndDate is NULL)  " +
         "union all " +
         "select NextStep.ObjectId, NextStep.parentId, " +
@@ -18,7 +18,7 @@ namespace Module.Persist.TPM.Migrations
         "    THEN(CAST(NextStep.parentId AS VARCHAR(255))) " +
         "    ELSE(Hierarchy + '.' + CAST(NextStep.parentId AS VARCHAR(255))) " +
         "END AS VARCHAR(255)) " +
-        "FROM [dbo].[ProductTree] AS NextStep " +
+        "FROM [ProductTree] AS NextStep " +
         "INNER JOIN RecursiveSearch as bag on " +
         "bag.ObjectId = NextStep.parentId " +
         "where ( (SYSDATETIME() between NextStep.StartDate and NextStep.EndDate) or NextStep.EndDate is NULL) and [Type] <> 'root' " +

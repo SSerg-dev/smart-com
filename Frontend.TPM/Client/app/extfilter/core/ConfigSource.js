@@ -269,6 +269,7 @@
                                 store: {
                                     type: 'directorystore',
                                     model: modelClassName,
+                                    autoLoad: false,
                                     extendedFilter: {
                                         xclass: 'App.ExtFilterContext',
                                         supportedModels: [{

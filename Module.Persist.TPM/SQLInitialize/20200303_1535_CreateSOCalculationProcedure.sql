@@ -1,10 +1,10 @@
-CREATE OR ALTER PROCEDURE [dbo].[SO_Calculation] AS
+CREATE OR ALTER PROCEDURE [SO_Calculation] AS
    BEGIN
 		UPDATE BaseLine SET 
 			SellOutBaselineQTY = SellInBaselineQTY * cValue
 		FROM
 			(SELECT b.Id AS baseLineId, c.CoefficientValue AS cValue
-			FROM [dbo].[BaseLine] AS b
+			FROM [BaseLine] AS b
 			JOIN Product AS p ON p.Id = b.ProductId 
 			JOIN BrandTech AS bt ON bt.BrandTech_code = p.BrandsegTech_code 
 			JOIN ClientTree AS ct ON ct.DemandCode = b.DemandCode 
@@ -19,10 +19,10 @@ CREATE OR ALTER PROCEDURE [dbo].[SO_Calculation] AS
 		WHERE Id = baseLineId;
 
 		--чтобы не создавать лишние инциденты на Baseline
-		DISABLE TRIGGER [dbo].[BaseLine_ChangesIncident_Insert_Update_Trigger] ON [dbo].[BaseLine]
+		DISABLE TRIGGER [BaseLine_ChangesIncident_Insert_Update_Trigger] ON [BaseLine]
 
 		UPDATE BaseLine SET NeedProcessing = 0 WHERE NeedProcessing = 1;
 		UPDATE CoefficientSI2SO SET NeedProcessing = 0 WHERE NeedProcessing = 1;
 
-		ENABLE TRIGGER [dbo].[BaseLine_ChangesIncident_Insert_Update_Trigger] ON [dbo].[BaseLine]
+		ENABLE TRIGGER [BaseLine_ChangesIncident_Insert_Update_Trigger] ON [BaseLine]
    END

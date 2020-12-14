@@ -63,9 +63,9 @@ Ext.define('App.controller.core.security.Security', {
                 '#exitbutton': {
                     click: this.onLogOutButtonClick
                 },
-                'userprofilewindow #changepassword': {
-                    click: this.onChangePasswordButtonClick
-                },
+                //'userprofilewindow #changepassword': {
+                //    click: this.onChangePasswordButtonClick
+                //},
                 '#securityuserpasswindow #ok': {
                     click: this.onOkChangeUserPassClick
                 }
@@ -214,11 +214,11 @@ Ext.define('App.controller.core.security.Security', {
         window.show();
     },
 
-    onChangePasswordButtonClick: function (button) {
-        Ext.widget('passwordchangingwindow', {
-            id: 'securityuserpasswindow'
-        }).show();
-    },
+    //onChangePasswordButtonClick: function (button) {
+    //    Ext.widget('passwordchangingwindow', {
+    //        id: 'securityuserpasswindow'
+    //    }).show();
+    //},
 
     onOkChangeUserPassClick: function (button) {
         var window = button.up('window'),

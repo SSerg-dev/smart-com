@@ -2,10 +2,10 @@
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-ALTER PROC [dbo].[FillPromoProductDifference]
+ALTER PROC [FillPromoProductDifference]
 AS
 BEGIN
-	TRUNCATE TABLE [dbo].[PromoProductDifference]
+	TRUNCATE TABLE [PromoProductDifference]
 
 	DECLARE PromoProductDifferenceCursor CURSOR FAST_FORWARD
 	FOR
@@ -26,27 +26,27 @@ BEGIN
 			p.DeletedDate,
 			ct.GHierarchyCode,
 			ct.parentId
-		FROM [dbo].[CurrentDayIncremental] AS cdi (NOLOCK)
-			LEFT JOIN [dbo].[PreviousDayIncremental] pdi (NOLOCK) 
+		FROM [CurrentDayIncremental] AS cdi (NOLOCK)
+			LEFT JOIN [PreviousDayIncremental] pdi (NOLOCK) 
 				ON cdi.PromoId = pdi.PromoId 
 				AND cdi .ProductId = pdi.ProductId 
 				AND cdi.DemandCode = pdi.DemandCode
 				AND cdi.DMDGroup = pdi.DMDGroup
 				AND cdi.WEEK = pdi.Week
 				AND cdi.LastChangeDate = pdi.LastChangeDate
-			INNER JOIN [dbo].[Dates] d (NOLOCK)
+			INNER JOIN [Dates] d (NOLOCK)
 				ON cdi.WEEK = d.MarsWeekFullName 
 					AND d.MarsDay = 1
-			INNER JOIN [dbo].[Promo] p (NOLOCK)
+			INNER JOIN [Promo] p (NOLOCK)
 				ON cdi.PromoId = p.Id
-			INNER JOIN [dbo].[PromoProduct] pp (NOLOCK)
+			INNER JOIN [PromoProduct] pp (NOLOCK)
 				ON cdi.ProductId = pp.ProductId 
 					AND cdi.PromoId = pp.PromoId
-			INNER JOIN [dbo].[Product] pr (NOLOCK)
+			INNER JOIN [Product] pr (NOLOCK)
 				ON pp.ProductId = pr.Id
-			INNER JOIN [dbo].[PromoTypes] pt (NOLOCK)
+			INNER JOIN [PromoTypes] pt (NOLOCK)
 				ON p.PromoTypesId = pt.Id
-			INNER JOIN [dbo].[ClientTree] AS ct (NOLOCK)
+			INNER JOIN [ClientTree] AS ct (NOLOCK)
 				ON p.ClientTreeKeyId = ct.Id
 	DECLARE
 		@WeekStartDate DATETIMEOFFSET(7),
@@ -142,7 +142,7 @@ BEGIN
 			SET @SALAES_DIST_CHANEL = (
 				SELECT TOP(1)
 					[0DISTR_CHAN] 
-				FROM [dbo].[MARS_UNIVERSAL_PETCARE_CUSTOMERS]
+				FROM [MARS_UNIVERSAL_PETCARE_CUSTOMERS]
 				WHERE 
 					ZCUSTHG04 = @GHierarchyCode
 			);
@@ -157,13 +157,13 @@ BEGIN
 				SET @SALAES_DIST_CHANEL = (
 					SELECT TOP(1)
 							[0DISTR_CHAN] 
-						FROM [dbo].[MARS_UNIVERSAL_PETCARE_CUSTOMERS]
+						FROM [MARS_UNIVERSAL_PETCARE_CUSTOMERS]
 						WHERE 
 							ZCUSTHG04 = @GHierarchyCode
 				);
 			END;
 
-			INSERT INTO [dbo].[PromoProductDifference] VALUES(
+			INSERT INTO [PromoProductDifference] VALUES(
 				NEWID(),
 				@DemandUnit,
 				CONVERT(INT, @DMDGroup),

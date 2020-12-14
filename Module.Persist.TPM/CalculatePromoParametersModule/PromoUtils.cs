@@ -18,7 +18,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 {
     public static class PromoUtils
     {
-        private static ISettingsManager SettingsManager
+        private static ISettingsManager ConfigSettingsManager
         {
             get
             {
@@ -28,7 +28,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
         public static bool NeedBackToOnApproval(Promo promo)
         {
-            var backToOnApprovalDispatchDays = SettingsManager.GetSetting<int>("BACK_TO_ON_APPROVAL_DISPATCH_DAYS_COUNT", 7 * 8);
+            var backToOnApprovalDispatchDays = ConfigSettingsManager.GetSetting<int>("BACK_TO_ON_APPROVAL_DISPATCH_DAYS_COUNT", 7 * 8);
 
             bool isCorrectDispatchDifference = promo.DispatchesStart < promo.StartDate ?
                                                (promo.DispatchesStart - ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)).Value.Days >= backToOnApprovalDispatchDays :

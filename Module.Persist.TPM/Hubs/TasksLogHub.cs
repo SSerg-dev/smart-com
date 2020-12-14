@@ -11,6 +11,7 @@ using Persist;
 using System.Threading;
 using Newtonsoft.Json;
 using Persist.Model;
+using Utility.Azure;
 
 namespace Module.Persist.TPM
 {
@@ -48,6 +49,12 @@ namespace Module.Persist.TPM
         /// </summary>
 
         private static List<SubcriberLog> subscribersLog = new List<SubcriberLog>();
+
+        /// <summary>
+        /// Хранение логов из Azure (для исключения лишних запросов в Azure)
+        /// </summary>
+
+        private static AzureLogData azureLog = new AzureLogData();
 
         /// <summary>
         /// Подписаться на обновления лога
@@ -296,7 +303,7 @@ namespace Module.Persist.TPM
                     using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                     {
                         byte[] buffer = new byte[fs.Length];
-
+                
                         lastWriteDate = File.GetLastWriteTime(filePath);
                         fs.Read(buffer, 0, buffer.Length);
                         contentOfLog = System.Text.Encoding.UTF8.GetString(buffer);
@@ -304,15 +311,43 @@ namespace Module.Persist.TPM
                 }
                 else
                 {
-                    lastWriteDate = null;
-                    contentOfLog = null;
+                    lastWriteDate = SetAzureLogData(logFileName);
+                    if(lastWriteDate == null)
+                    {
+                        azureLog.Data = "";
+                        azureLog.LogFileName = logFileName;
+                    }
+                    contentOfLog = azureLog.Data;
                 }
+                
             }
             catch (Exception e)
             {
                 lastWriteDate = null;
                 contentOfLog = null;
             }
+        }
+
+        /// <summary>
+        /// Устанавливает данные из Azure
+        /// </summary>
+        /// <param name="logFileName">Имя файла логов</param>
+        private DateTime? SetAzureLogData(string logFileName) 
+        {
+            if (azureLog.LogFileName != logFileName)
+            {
+                var result = AzureBlobHelper.ReadTextFromBlob("HandlerLogs", logFileName);
+                if (string.IsNullOrEmpty(result))
+                {
+                    return null;
+                }
+                azureLog = new AzureLogData()
+                {
+                    Data = result,
+                    LogFileName = logFileName
+                };
+            }
+            return DateTime.Today;
         }
 
         /// <summary>
@@ -346,6 +381,22 @@ namespace Module.Persist.TPM
 
                 Thread.Sleep(1000);
             }
+        }
+
+        /// <summary>
+        /// Структура данных логов из Azure
+        /// </summary>
+        private struct AzureLogData
+        {
+            /// <summary>
+            /// Строка с логами
+            /// </summary>
+            public string Data { get; set; }
+            
+            /// <summary>
+            /// Наименование файла лога
+            /// </summary>
+            public string LogFileName { get; set; }
         }
     }
 

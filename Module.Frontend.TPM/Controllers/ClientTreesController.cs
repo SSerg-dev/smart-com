@@ -23,6 +23,7 @@ using System.Web.Http;
 using System.Web.Http.OData;
 using Thinktecture.IdentityModel.Authorization.WebApi;
 using Utility;
+using Utility.FileWorker;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -58,10 +59,10 @@ namespace Module.Frontend.TPM.Controllers
             }
 
             //IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
-            IQueryable<ClientTreeHierarchyView> hierarchy = Context.Database.SqlQuery<ClientTreeHierarchyView>(
+            IQueryable<ClientTreeHierarchyView> hierarchy = Context.SqlQuery<ClientTreeHierarchyView>(
                 @"With RecursiveSearch (ObjectId, parentId, Hierarchy) AS (
 		            Select ObjectId, parentId, CONVERT(varchar(255), '') 
-		            FROM [dbo].[ClientTree] AS FirtGeneration 
+		            FROM [DefaultSchemaSetting].[ClientTree] AS FirtGeneration 
 		            WHERE [Type] = 'root' and ((Cast({0} AS Datetime) between StartDate and EndDate) or EndDate is NULL)  
 		            union all 
 		            select NextStep.ObjectId, NextStep.parentId, CAST(CASE WHEN Hierarchy = '' 
@@ -70,7 +71,7 @@ namespace Module.Frontend.TPM.Controllers
 			            ELSE
             				(Hierarchy + '.' + CAST(NextStep.parentId AS VARCHAR(255))) 
 			            END AS VARCHAR(255)) 
-		            FROM [dbo].[ClientTree] AS NextStep INNER JOIN RecursiveSearch as bag on bag.ObjectId = NextStep.parentId 
+		            FROM [DefaultSchemaSetting].[ClientTree] AS NextStep INNER JOIN RecursiveSearch as bag on bag.ObjectId = NextStep.parentId 
 		            where ( (Cast({0} AS Datetime) between NextStep.StartDate and NextStep.EndDate) or NextStep.EndDate is NULL) and [Type] <> 'root' 
 	            ) 
                 Select ObjectId as Id, Hierarchy from RecursiveSearch", dt.ToString("MM/dd/yyyy HH:mm:ss")).AsQueryable();
@@ -985,7 +986,7 @@ namespace Module.Frontend.TPM.Controllers
             {
                 if (!Request.Content.IsMimeMultipartContent())
                     throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
-
+                FileDispatcher fileDispatcher = new FileDispatcher();
                 string directory = Core.Settings.AppSettingsManager.GetSetting("CLIENT_TREE_DIRECTORY", "ClientTreeLogoFiles");
                 string fullPathfile = await FileUtility.UploadFile(Request, directory);
                 string fileName = fullPathfile.Split('\\').Last();
@@ -1002,9 +1003,10 @@ namespace Module.Frontend.TPM.Controllers
                 // удаляем старую картинку если была
                 if (clientTree.LogoFileName != null)
                 {
-                    FileInfo f = new FileInfo(directory + "/" + clientTree.LogoFileName);
-                    if (f.Exists)
-                        f.Delete();
+                    if(fileDispatcher.IsExists(directory, clientTree.LogoFileName))
+                    {
+                        fileDispatcher.DeleteFile(Path.Combine(directory, clientTree.LogoFileName));
+                    }
                 }
 
                 clientTree.LogoFileName = fileName;
@@ -1026,7 +1028,14 @@ namespace Module.Frontend.TPM.Controllers
             try
             {
                 string directory = Core.Settings.AppSettingsManager.GetSetting("CLIENT_TREE_DIRECTORY", "ClientTreeLogoFiles");
+                string logDir = Core.Settings.AppSettingsManager.GetSetting<string>("HANDLER_LOG_TYPE", "File");
+               
+                if (logDir == "Azure")
+                {
+                    return FileUtility.DownloadFileAzure(directory, fileName);
+                }
                 return FileUtility.DownloadFile(directory, fileName);
+
             }
             catch (Exception e)
             {
@@ -1044,11 +1053,12 @@ namespace Module.Frontend.TPM.Controllers
             {
                 // удаляем старое лого
                 string directory = Core.Settings.AppSettingsManager.GetSetting("CLIENT_TREE_DIRECTORY", "ClientTreeLogoFiles");
-                FileInfo f = new FileInfo(directory + "/" + currentClient.LogoFileName);
-
-                if (f.Exists)
-                    f.Delete();
-
+                FileDispatcher fileDispatcher = new FileDispatcher();
+                if (fileDispatcher.IsExists(directory, currentClient.LogoFileName))
+                {
+                    fileDispatcher.DeleteFile(Path.Combine(directory, currentClient.LogoFileName));
+                }
+              
                 currentClient.LogoFileName = null;
                 await Context.SaveChangesAsync();
                 return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, message = "The file from selected client was removed successfully." }));
@@ -1086,6 +1096,7 @@ namespace Module.Frontend.TPM.Controllers
                     Description = "Adding new records for coefficients SI/SO",
                     Name = "Module.Host.TPM.Handlers.CreateCoefficientSI2SOHandler",
                     ExecutionPeriod = null,
+                    RunGroup = "CreateCoefficientSI2SO",
                     CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
                     LastExecutionDate = null,
                     NextExecutionDate = null,

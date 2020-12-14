@@ -1,4 +1,4 @@
-﻿UPDATE [dbo].[LoopHandler] 
+﻿UPDATE [LoopHandler] 
 SET 
 	[ExecutionPeriod] = 0, 
 	[ExecutionMode] = 'MANUAL', 

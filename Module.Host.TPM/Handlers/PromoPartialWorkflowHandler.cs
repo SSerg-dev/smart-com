@@ -5,6 +5,7 @@ using Module.Frontend.TPM.Controllers;
 using Module.Persist.TPM.CalculatePromoParametersModule;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.PromoStateControl;
+using Module.Persist.TPM.Utils;
 using Persist;
 using ProcessingHost.Handlers;
 using System;
@@ -22,7 +23,7 @@ namespace Module.Host.TPM.Handlers
     {
         public override void Action(HandlerInfo info, ExecuteData data)
         {
-            ILogWriter handlerLogger = null;
+            LogWriter handlerLogger = null;
 
             Stopwatch sw = new Stopwatch();
             sw.Start();
@@ -31,8 +32,8 @@ namespace Module.Host.TPM.Handlers
             {
                 using (var context = new DatabaseContext())
                 {
-                    handlerLogger = new FileLogWriter(info.HandlerId.ToString());
-                    handlerLogger.Write(true, String.Format("Partial workflow processing started at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+                    handlerLogger = new LogWriter(info.HandlerId.ToString());
+                    handlerLogger.Write(true, String.Format("Partial workflow processing started at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)), "Message");
 
                     var settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
                     var promoNumbersRecalculatingString = settingsManager.GetSetting<string>("PROMO_PARTIAL_WORKFLOW_LIST");
@@ -137,8 +138,8 @@ namespace Module.Host.TPM.Handlers
 
                                 swPlanParameters.Restart();
 
-                                handlerLogger.Write(true, String.Format("Calculation of planned parameters began at {0:yyyy-MM-dd HH:mm:ss}. It may take some time.", 
-                                    DateTimeOffset.Now), "Message");
+                                handlerLogger.Write(true, String.Format("Calculation of planned parameters began at {0:yyyy-MM-dd HH:mm:ss}. It may take some time.",
+                                    ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)), "Message");
 
                                 string setPromoProductError;
                                 PlanProductParametersCalculation.SetPromoProduct(promo.Id, context, out setPromoProductError);
@@ -171,8 +172,8 @@ namespace Module.Host.TPM.Handlers
                                 }
 
                                 swPlanParameters.Stop();
-                                handlerLogger.Write(true, String.Format("Calculation of planned parameters was completed at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", 
-                                    DateTimeOffset.Now, swPlanParameters.Elapsed.TotalSeconds), "Message");
+                                handlerLogger.Write(true, String.Format("Calculation of planned parameters was completed at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds",
+                                    ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), swPlanParameters.Elapsed.TotalSeconds), "Message");
                             }
                         }
                     }
@@ -199,7 +200,8 @@ namespace Module.Host.TPM.Handlers
 
                 if (handlerLogger != null)
                 {
-                    handlerLogger.Write(true, String.Format("Partial workflow processing ended at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", DateTimeOffset.Now, sw.Elapsed.TotalSeconds), "Message");
+                    handlerLogger.Write(true, String.Format("Partial workflow processing ended at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), sw.Elapsed.TotalSeconds), "Message");
+                    handlerLogger.UploadToBlob();
                 }
             }
         }

@@ -1,6 +1,6 @@
 ﻿IF NOT EXISTS (SELECT * FROM SYS.INDEXES WHERE NAME = N'IX_CurrentDayIncremental_References_NONCLUSTERED')
 	CREATE NONCLUSTERED INDEX [IX_CurrentDayIncremental_References_NONCLUSTERED] 
-	ON [dbo].[CurrentDayIncremental]
+	ON [CurrentDayIncremental]
 	(
 		[PromoId] ASC,
 		[ProductId] ASC
@@ -20,7 +20,7 @@ GO
 
 IF NOT EXISTS (SELECT * FROM SYS.INDEXES WHERE NAME = N'IX_PreviousDayIncremental_References_NONCLUSTERED')
 	CREATE NONCLUSTERED INDEX [IX_PreviousDayIncremental_References_NONCLUSTERED] 
-	ON [dbo].[PreviousDayIncremental]
+	ON [PreviousDayIncremental]
 	(
 		[PromoId] ASC,
 		[ProductId] ASC

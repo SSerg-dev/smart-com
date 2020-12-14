@@ -24,7 +24,7 @@ AS BEGIN
 END
 GO
 
-ALTER VIEW [dbo].[ClientDashboardView] AS
+ALTER VIEW [ClientDashboardView] AS
 WITH Statuses
 AS
 	(SELECT SystemName, Id FROM dbo.PromoStatus),

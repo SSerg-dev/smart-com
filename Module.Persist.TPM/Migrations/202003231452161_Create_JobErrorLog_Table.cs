@@ -8,7 +8,7 @@ namespace Module.Persist.TPM.Migrations
         public override void Up()
         {
             Sql(@"IF NOT EXISTS (SELECT * FROM SYSOBJECTS WHERE NAME = 'JobErrorLog' AND XTYPE = 'U')
-                    CREATE TABLE [dbo].[JobErrorLog](
+                    CREATE TABLE [JobErrorLog](
 	                    [Id] [uniqueidentifier] NOT NULL,
 	                    [LogDate] [datetime] NOT NULL,
 	                    [StepName] [nvarchar](400) NULL,
@@ -22,10 +22,10 @@ namespace Module.Persist.TPM.Migrations
                     ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
                     GO
 
-                    ALTER TABLE [dbo].[JobErrorLog] ADD  DEFAULT (newsequentialid()) FOR [Id]
+                    ALTER TABLE [JobErrorLog] ADD  DEFAULT (newsequentialid()) FOR [Id]
                     GO
 
-                    ALTER TABLE [dbo].[JobErrorLog] ADD  DEFAULT (sysdatetime()) FOR [LogDate]
+                    ALTER TABLE [JobErrorLog] ADD  DEFAULT (sysdatetime()) FOR [LogDate]
                     GO"
             );
         }
@@ -33,7 +33,7 @@ namespace Module.Persist.TPM.Migrations
         public override void Down()
         {
             Sql(@"IF EXISTS (SELECT * FROM SYSOBJECTS WHERE NAME = 'JobErrorLog' AND XTYPE = 'U')
-                  DROP TABLE [dbo].[JobErrorLog]
+                  DROP TABLE [JobErrorLog]
                   GO"
             );
         }

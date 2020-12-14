@@ -41,6 +41,7 @@
     'editingModeTitle': 'Editing mode',
     'cancelEditMsg': 'All unsaved changes will be lost. Continue?',
     'passwordChangingWindowTitle': 'Password changing',
+    'userInfoTitle': 'User Info',
     'viewTextDataWindowTitle': 'Detail',
     'Filter': 'Filter',
     'defaultResponseError': 'Operation failed',
@@ -433,7 +434,8 @@
             'CrossParam.ClientFilter': 'Client Filter',
             'CrossParam.StartDate': ' Start Date',
             'CrossParam.FinishDate': 'Finish Date',
-            'CrossParam.Year': 'Year'
+            'CrossParam.Year': 'Year',
+            'UniqueFields': 'Unique Fields'
         },
         'DownloadLogTitle': 'Results'
     },

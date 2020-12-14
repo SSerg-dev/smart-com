@@ -1,7 +1,7 @@
  
 DECLARE @handlerName VARCHAR(255) = 'Module.Host.TPM.Handlers.RollingVolumeQTYRecalculationHandler'; 
 
-INSERT INTO [dbo].[LoopHandler] (
+INSERT INTO [LoopHandler] (
 	[Id],
 	[Description],
 	[Name],

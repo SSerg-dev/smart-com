@@ -30,9 +30,9 @@ namespace Module.Host.TPM.Handlers.DataFlow
     {
         public override void Action(HandlerInfo info, ExecuteData data)
         {
-            ILogWriter handlerLogger = new FileLogWriter(info.HandlerId.ToString(), new Dictionary<string, string>() { ["Timing"] = "TIMING" });
+            LogWriter handlerLogger = new LogWriter(info.HandlerId.ToString(), new Dictionary<string, string>() { ["Timing"] = "TIMING" });
             var stopWatch = Stopwatch.StartNew();
-            handlerLogger.Write(true, String.Format("The Data Flow initialization began at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+            handlerLogger.Write(true, String.Format("The Data Flow initialization began at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)), "Message");
             handlerLogger.Write(true, "The task for filtering of promoes will be created in a few seconds.", "Message");
 
             var databaseContext = new DatabaseContext();
@@ -116,7 +116,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
                 data.SetValue<bool>("HasErrors", true);
                 logger.Error(e);
 
-                handlerLogger.Write(true, String.Format("The Data Flow initialization ended with errors at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+                handlerLogger.Write(true, String.Format("The Data Flow initialization ended with errors at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)), "Message");
                 handlerLogger.Write(true, e.ToString(), "Error");
             }
             finally
@@ -128,7 +128,8 @@ namespace Module.Host.TPM.Handlers.DataFlow
                 }
 
                 stopWatch.Stop();
-                handlerLogger.Write(true, String.Format("The Data Flow initialization ended at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+                handlerLogger.Write(true, String.Format("The Data Flow initialization ended at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)), "Message");
+                handlerLogger.UploadToBlob();
             }
         }
     }

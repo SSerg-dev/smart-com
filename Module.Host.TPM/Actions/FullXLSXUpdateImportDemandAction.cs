@@ -64,13 +64,13 @@ namespace Module.Host.TPM.Actions
             foreach (IEnumerable<Demand> items in toCreate.Partition(10000))
             {
                 string insertScript = generator.BuildInsertScript(items);
-                context.Database.ExecuteSqlCommand(insertScript);
+                context.ExecuteSqlCommand(insertScript);
             }
 
             foreach (IEnumerable<Demand> items in toUpdate.Partition(10000))
             {
                 string insertScript = generator.BuildUpdateScript(items);
-                context.Database.ExecuteSqlCommand(insertScript);
+                context.ExecuteSqlCommand(insertScript);
             }
 
             return sourceRecords.Count();

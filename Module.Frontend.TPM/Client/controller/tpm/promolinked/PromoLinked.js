@@ -333,9 +333,11 @@
     onChoosePromoGridCheckChange: function (model) {
         var grid = model.view.up('grid'),
             checkedRows = grid.getSelectionModel().getCheckedRows(),
-            applyButton = grid.up('basewindow[name=choosepromowindow]').down('#apply');
-
-        applyButton.setDisabled(!checkedRows.length);
+            choosePromoWindow = grid.up('basewindow[name=choosepromowindow]');
+        if (choosePromoWindow) {
+            var applyButton = choosePromoWindow.down('#apply');
+            applyButton.setDisabled(!checkedRows.length);
+        }
     },
 
     onPromoLinkedViewerDeleteButtonClick: function (button) {
@@ -436,8 +438,8 @@
             .execute()
             .then(function (data) {
                 panel.setLoading(false);
-                var filename = data.httpResponse.data.value;
-                me.downloadFile('ExportDownload', 'filename', filename);
+                App.Notify.pushInfo('Export task created successfully');
+                App.System.openUserTasksPanel()
             })
             .fail(function (data) {
                 panel.setLoading(false);

@@ -1,22 +1,22 @@
-﻿ALTER TABLE [dbo].[BrandTech] DROP COLUMN [BrandTech_code];
+﻿ALTER TABLE [BrandTech] DROP COLUMN [BrandTech_code];
 GO
 
-ALTER TABLE [dbo].[Product] DROP COLUMN [Brand];
+ALTER TABLE [Product] DROP COLUMN [Brand];
 GO
-ALTER TABLE [dbo].[Product] DROP COLUMN [Technology];
+ALTER TABLE [Product] DROP COLUMN [Technology];
 GO
-ALTER TABLE [dbo].[Product] DROP COLUMN [BrandTech];
+ALTER TABLE [Product] DROP COLUMN [BrandTech];
 GO
-ALTER TABLE [dbo].[Product] DROP COLUMN [BrandTech_code];
+ALTER TABLE [Product] DROP COLUMN [BrandTech_code];
 GO
-ALTER TABLE [dbo].[Product] DROP COLUMN [BrandsegTech_code];
+ALTER TABLE [Product] DROP COLUMN [BrandsegTech_code];
 GO
 ----------------------------------------------------------------------------------------
 -------------------- SECTION: Функция вычисления BrandTech_code ------------------------
 ----------------------------------------------------------------------------------------
 
 ------------------------------------- BrandTech ----------------------------------------
-CREATE OR ALTER FUNCTION [dbo].[GetBrandTechCode]
+CREATE OR ALTER FUNCTION [GetBrandTechCode]
 (
 	@brandId uniqueidentifier,
 	@technologyId uniqueidentifier
@@ -39,7 +39,7 @@ END
 GO
 
 ----------------------------------- Product.Brand -------------------------------------
-CREATE OR ALTER FUNCTION [dbo].[GetProductBrandByCode]
+CREATE OR ALTER FUNCTION [GetProductBrandByCode]
 (
 	@brandCode NVARCHAR(3),
 	@segmenCode NVARCHAR(2)
@@ -55,7 +55,7 @@ END
 GO
 
 -------------------------------- Product.Technology ------------------------------------
-CREATE OR ALTER FUNCTION [dbo].[GetProductTechByCode]
+CREATE OR ALTER FUNCTION [GetProductTechByCode]
 (
 	@technologyCode NVARCHAR(3),
 	@brandsegtech NVARCHAR(255)
@@ -79,7 +79,7 @@ END
 GO
 
 --------------------------------- Product.BrandTech -----------------------------------
-CREATE OR ALTER FUNCTION [dbo].[GetProductBrandTechByCode]
+CREATE OR ALTER FUNCTION [GetProductBrandTechByCode]
 (
 	@brandCode NVARCHAR(3),
 	@segmenCode NVARCHAR(2),
@@ -105,7 +105,7 @@ END
 GO
 
 --------------------------------- Product.BrandTech_code -----------------------------------
-CREATE OR ALTER FUNCTION [dbo].[GetProductBrandTechCode]
+CREATE OR ALTER FUNCTION [GetProductBrandTechCode]
 (
 	@brandCode NVARCHAR(3),
 	@segmenCode NVARCHAR(2),
@@ -129,7 +129,7 @@ END
 GO
 
 --------------------------------- Product.BrandsegTech_code -----------------------------------
-CREATE OR ALTER FUNCTION [dbo].[GetProductBrandsegTechCode]
+CREATE OR ALTER FUNCTION [GetProductBrandsegTechCode]
 (
 	@brandCode NVARCHAR(3),
 	@segmenCode NVARCHAR(2),
@@ -157,23 +157,23 @@ GO
 ----------------------------------------------------------------------------------------
 	
 ------------------------------------- BrandTech ----------------------------------------
-ALTER TABLE [dbo].[BrandTech]
-    ADD [BrandTech_code] AS ([dbo].[GetBrandTechCode]([BrandId], [TechnologyId]));
+ALTER TABLE [BrandTech]
+    ADD [BrandTech_code] AS ([GetBrandTechCode]([BrandId], [TechnologyId]));
 GO
 
 -------------------------------------- Product -----------------------------------------
-ALTER TABLE [dbo].[Product]
-    ADD [Brand] AS ([dbo].[GetProductBrandByCode]([Brand_code], [Segmen_code]));
+ALTER TABLE [Product]
+    ADD [Brand] AS ([GetProductBrandByCode]([Brand_code], [Segmen_code]));
 GO
-ALTER TABLE [dbo].[Product]
-    ADD [Technology] AS ([dbo].[GetProductTechByCode]([Tech_code], [Brandsegtech]));
+ALTER TABLE [Product]
+    ADD [Technology] AS ([GetProductTechByCode]([Tech_code], [Brandsegtech]));
 GO
-ALTER TABLE [dbo].[Product]
-    ADD [BrandTech] AS ([dbo].[GetProductBrandTechByCode]([Brand_code], [Segmen_code], [Tech_code], [Brandsegtech]));
+ALTER TABLE [Product]
+    ADD [BrandTech] AS ([GetProductBrandTechByCode]([Brand_code], [Segmen_code], [Tech_code], [Brandsegtech]));
 GO
-ALTER TABLE [dbo].[Product]
-    ADD [BrandTech_code] AS ([dbo].[GetProductBrandTechCode]([Brand_code], [Segmen_code], [Tech_code]));
+ALTER TABLE [Product]
+    ADD [BrandTech_code] AS ([GetProductBrandTechCode]([Brand_code], [Segmen_code], [Tech_code]));
 GO
-ALTER TABLE [dbo].[Product]
-    ADD [BrandsegTech_code] AS ([dbo].[GetProductBrandsegTechCode]([Brand_code], [Segmen_code], [Tech_code]));
+ALTER TABLE [Product]
+    ADD [BrandsegTech_code] AS ([GetProductBrandsegTechCode]([Brand_code], [Segmen_code], [Tech_code]));
 GO

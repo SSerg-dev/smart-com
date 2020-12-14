@@ -2,6 +2,7 @@
 using Looper.Core;
 using Module.Host.TPM.Actions;
 using Module.Host.TPM.Actions.Notifications;
+using Module.Persist.TPM.Utils;
 using ProcessingHost.Handlers;
 using System;
 using System.Collections.Generic;
@@ -20,13 +21,13 @@ namespace Module.Host.TPM.Handlers.DataLakeIntegrationHandlers
     {
         public override void Action(HandlerInfo info, ExecuteData data)
         {
-            ILogWriter handlerLogger = null;
+            LogWriter handlerLogger = null;
             Stopwatch sw = new Stopwatch();
             sw.Start();
             try
             {
-                handlerLogger = new FileLogWriter(info.HandlerId.ToString());
-                handlerLogger.Write(true, String.Format("The checking of the Mars customers began at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+                handlerLogger = new LogWriter(info.HandlerId.ToString());
+                handlerLogger.Write(true, String.Format("The checking of the Mars customers began at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)), "Message");
                 //string param = HandlerDataHelper.GetIncomingArgument<paramType>("paramName", info.Data).Value;
 
                 IAction action = new MarsCustomersCheckAction();
@@ -56,7 +57,8 @@ namespace Module.Host.TPM.Handlers.DataLakeIntegrationHandlers
                 sw.Stop();
                 if (handlerLogger != null)
                 {
-                    handlerLogger.Write(true, String.Format("The checking of the Mars customers ended at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", DateTimeOffset.Now, sw.Elapsed.TotalSeconds), "Message");
+                    handlerLogger.Write(true, String.Format("The checking of the Mars customers ended at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), sw.Elapsed.TotalSeconds), "Message");
+                    handlerLogger.UploadToBlob();
                 }
             }
         }

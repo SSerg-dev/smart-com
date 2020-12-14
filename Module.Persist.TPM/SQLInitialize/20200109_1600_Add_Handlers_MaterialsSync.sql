@@ -1,13 +1,13 @@
-﻿DELETE [dbo].[LoopHandler] WHERE [Name] = 'Module.Host.TPM.Handlers.DataLakeIntegrationHandlers.MarsProductsCheckHandler'
+﻿DELETE [LoopHandler] WHERE [Name] = 'Module.Host.TPM.Handlers.DataLakeIntegrationHandlers.MarsProductsCheckHandler'
 GO
-DELETE [dbo].[LoopHandler] WHERE [Name] = 'Module.Host.TPM.Handlers.MarsProductsCheckHandler'
+DELETE [LoopHandler] WHERE [Name] = 'Module.Host.TPM.Handlers.MarsProductsCheckHandler'
 GO
-DELETE [dbo].[LoopHandler] WHERE [Name] = 'Module.Host.TPM.Handlers.DataLakeIntegrationHandlers.MarsProductsCheckStarterHandler'
+DELETE [LoopHandler] WHERE [Name] = 'Module.Host.TPM.Handlers.DataLakeIntegrationHandlers.MarsProductsCheckStarterHandler'
 GO
-DELETE [dbo].[LoopHandler] WHERE [Name] = 'Module.Host.TPM.Handlers.MarsProductsCheckStarterHandler'
+DELETE [LoopHandler] WHERE [Name] = 'Module.Host.TPM.Handlers.MarsProductsCheckStarterHandler'
 GO
 
-INSERT INTO [dbo].[LoopHandler]
+INSERT INTO [LoopHandler]
            ([Id]
            ,[Description]
            ,[Name]

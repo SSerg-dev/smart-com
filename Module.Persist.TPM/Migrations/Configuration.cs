@@ -94,7 +94,7 @@ namespace Module.Persist.TPM.Migrations
         protected override void ApplyAccessPoints(DatabaseContext context)
         {
             string apFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Sql\\TPM_AccessPoints.sql");
-            context.Database.ExecuteSqlCommand(File.ReadAllText(apFile));
+            context.ExecuteSqlCommand(File.ReadAllText(apFile));
             context.SaveChanges();
             base.ApplyAccessPoints(context);
         }
@@ -104,9 +104,9 @@ namespace Module.Persist.TPM.Migrations
             base.AddInterfaceSettings(context, updateHandlers, updateInterfaces);
             if (updateHandlers || updateInterfaces)
             {
-                // ConfigManager.AddInputBaselineInterfaceSettings(updateInterfaces, context);
-               
-                // ConfigManager.AddOutputIncrementalInterfaceSettings(updateInterfaces, context);
+                ConfigManager.AddInputBaselineInterfaceSettings(updateInterfaces, context);
+
+                ConfigManager.AddOutputIncrementalInterfaceSettings(updateInterfaces, context);
             }
         }
 

@@ -1,4 +1,4 @@
-﻿INSERT INTO [dbo].[Setting]
+﻿INSERT INTO [Setting]
            ([Name]
            ,[Type]
            ,[Value]
@@ -10,7 +10,7 @@
            ,N'If the difference between promo dispatch start and current date equals this value, promo will automatically reset to Draft from Draft(published).')
 GO
 
-INSERT INTO [dbo].[Setting]
+INSERT INTO [Setting]
            ([Name]
            ,[Type]
            ,[Value]

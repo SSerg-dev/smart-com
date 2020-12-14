@@ -2,6 +2,7 @@
 using Looper.Core;
 using Looper.Parameters;
 using Module.Host.TPM.Handlers.MainNightProcessing;
+using Module.Persist.TPM.Utils;
 using Persist;
 using ProcessingHost.Handlers;
 using System;
@@ -20,16 +21,16 @@ namespace Module.Host.TPM.Handlers
     {
         public string logLine = "";
         string startJobTemplate = "msdb.dbo.sp_start_job @job_name = N'{0}', @step_name = N'{1}'";
-        string setProcessingFlagTemplate = "UPDATE [dbo].[JobFlag] SET [Value] = 1 WHERE [Prefix] = N'{0}'";
-        string checkJobStatusTemplate = "SELECT [Value] FROM [dbo].[JobFlag] WHERE [Prefix] = N'{0}'";
+        string setProcessingFlagTemplate = "UPDATE [DefaultSchemaSetting].[JobFlag] SET [Value] = 1 WHERE [Prefix] = N'{0}'";
+        string checkJobStatusTemplate = "SELECT [Value] FROM [DefaultSchemaSetting].[JobFlag] WHERE [Prefix] = N'{0}'";
 
         public override void Action(HandlerInfo info, ExecuteData data)
         {
-            ILogWriter handlerLogger = new FileLogWriter(info.HandlerId.ToString());
+            LogWriter handlerLogger = new LogWriter(info.HandlerId.ToString());
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
-            logLine = String.Format("The calculation day incremental QTY began at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now);
+            logLine = String.Format("The calculation day incremental QTY began at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow));
             handlerLogger.Write(true, logLine, "Message");
             handlerLogger.Write(true, "");
             try
@@ -76,16 +77,16 @@ namespace Module.Host.TPM.Handlers
                 data.SetValue<bool>("HasErrors", true);
                 logger.Error(e);
 
-                handlerLogger.Write(true, String.Format("The calculation day incremental QTY was ended with errors at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+                handlerLogger.Write(true, String.Format("The calculation day incremental QTY was ended with errors at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)), "Message");
                 handlerLogger.Write(true, e.ToString(), "Error");
             }
             finally
             {
                 sw.Stop();
                 handlerLogger.Write(true, "");
-                logLine = String.Format("The calculation day incremental QTY was completed at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", DateTimeOffset.Now, sw.Elapsed.TotalSeconds);
+                logLine = String.Format("The calculation day incremental QTY was completed at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), sw.Elapsed.TotalSeconds);
                 handlerLogger.Write(true, logLine, "Message");
-
+                handlerLogger.UploadToBlob();
                 string mainNightProcessingStepPrefix = AppSettingsManager.GetSetting<string>("MAIN_NIGHT_PROCESSING_STEP_PREFIX", "MainNightProcessingStep");
                 using (DatabaseContext context = new DatabaseContext())
                 {
@@ -116,7 +117,7 @@ namespace Module.Host.TPM.Handlers
             {
                 string prefix = AppSettingsManager.GetSetting<string>("CALCULATE_DAY_INCREMENTAL_QTY_PREFIX", "DayIncrementalQTYRecalculation");
                 var checkJobStatusScript = String.Format(checkJobStatusTemplate, prefix);
-                var status = context.Database.SqlQuery<Byte>(checkJobStatusScript).FirstOrDefault();
+                var status = context.SqlQuery<Byte>(checkJobStatusScript).FirstOrDefault();
                 return Int32.Parse(status.ToString()) == 1 ? true : false;
             }
             catch (Exception e)
@@ -142,7 +143,7 @@ namespace Module.Host.TPM.Handlers
                 string startStep = AppSettingsManager.GetSetting<string>("CALCULATE_DAY_INCREMENTAL_QTY_START_STEP", "");
                 startJobScript = String.Format(startJobTemplate, jobName, startStep);
 
-                context.Database.ExecuteSqlCommand(startJobScript);
+                context.ExecuteSqlCommand(startJobScript);
 
                 return string.Empty;
             }
@@ -156,7 +157,7 @@ namespace Module.Host.TPM.Handlers
         {
             string prefix = AppSettingsManager.GetSetting<string>("CALCULATE_DAY_INCREMENTAL_QTY_PREFIX", "DayIncrementalQTYRecalculation");
             string setProcessingFlagScript = String.Format(setProcessingFlagTemplate, prefix);
-            context.Database.ExecuteSqlCommand(setProcessingFlagScript);
+            context.ExecuteSqlCommand(setProcessingFlagScript);
         }
     }
 }

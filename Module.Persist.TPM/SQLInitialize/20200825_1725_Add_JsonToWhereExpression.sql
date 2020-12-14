@@ -28,7 +28,7 @@ BEGIN
 		BEGIN
 			IF @ParentCond = '' OR @ParentCond IS NULL
 				SET @ParentCond = @Key;
-			SET @Expression = CONCAT(@Expression, [dbo].[JsonToWhereExpression](@Value, @Key, @ParentCond))
+			SET @Expression = CONCAT(@Expression, [JsonToWhereExpression](@Value, @Key, @ParentCond))
 		END;
 		ELSE 
 		BEGIN
@@ -50,12 +50,12 @@ BEGIN
 				BEGIN
 					IF @ParentCond = '' OR @ParentCond IS NULL
 						SET @ParentCond = @Key;
-					SET @Expression = CONCAT(@Expression, ' (', [dbo].[JsonToWhereExpression](@Value, @Key, @ParentCond), ') ', @ParentCond, ' ')
+					SET @Expression = CONCAT(@Expression, ' (', [JsonToWhereExpression](@Value, @Key, @ParentCond), ') ', @ParentCond, ' ')
 				END;
 				ELSE 
 				BEGIN
 					IF @Key IS NOT NULL
-						SET @Expression = CONCAT(@Expression, [dbo].[JsonToCondition](@Key, @Value), ' ', @Cond, ' ');
+						SET @Expression = CONCAT(@Expression, [JsonToCondition](@Key, @Value), ' ', @Cond, ' ');
 				END;
 				SET @Skip = @Skip + 1;
 			END;

@@ -351,6 +351,16 @@
                 if (inOutProductIdsString) {
                     inOutProductIdsString = inOutProductIdsString.slice(0, -1);
 
+                    if (!promoEditorCustom.isVisible()) {
+                        promoEditorCustom.on('show', function () {
+                            this.setLoading(true);
+                            promoEditorCustom.setLoading(true);
+                        });
+                    }
+                    else {
+                        promoEditorCustom.setLoading(true);
+                    }
+                    promoEditorCustom.GetIfAllProductsInSubrange = true;
                     var query = breeze.EntityQuery
                     .from('Products')
                     .withParameters({
@@ -470,8 +480,12 @@
                             var promoProductsForm = promoEditorCustom.down('promobasicproducts');
                             App.app.getController('tpm.promo.Promo').setInfoPromoBasicStep2(promoProductsForm);
                         }
+                        promoEditorCustom.setLoading(false);
+                        promoEditorCustom.GetIfAllProductsInSubrange = false;
                     })
                     .fail(function (data) {
+                        promoEditorCustom.setLoading(false);
+                        promoEditorCustom.GetIfAllProductsInSubrange = false;
                         App.Notify.pushError(data.message);
                     })
                 }

@@ -509,8 +509,8 @@
             .execute()
             .then(function (data) {
                 panel.setLoading(false);
-                var filename = data.httpResponse.data.value;
-                me.downloadFile('ExportDownload', 'filename', filename);
+                App.Notify.pushInfo('Export task created successfully');
+                App.System.openUserTasksPanel();
             })
             .fail(function (data) {
                 panel.setLoading(false);

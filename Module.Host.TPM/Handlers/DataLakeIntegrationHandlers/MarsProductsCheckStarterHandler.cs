@@ -29,9 +29,9 @@ namespace Module.Host.TPM.Handlers.DataLakeIntegrationHandlers
     {
         public override void Action(HandlerInfo info, ExecuteData data)
         {
-            ILogWriter handlerLogger = new FileLogWriter(info.HandlerId.ToString(), new Dictionary<string, string>() { ["Timing"] = "TIMING" });
+            LogWriter handlerLogger = new LogWriter(info.HandlerId.ToString(), new Dictionary<string, string>() { ["Timing"] = "TIMING" });
             var stopWatch = Stopwatch.StartNew();
-            handlerLogger.Write(true, String.Format("Synchronization materials with products initialization began at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+            handlerLogger.Write(true, String.Format("Synchronization materials with products initialization began at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)), "Message");
             handlerLogger.Write(true, "The task for synchronization materials with products will be created in a few seconds.", "Message");
 
             try
@@ -75,13 +75,14 @@ namespace Module.Host.TPM.Handlers.DataLakeIntegrationHandlers
                 data.SetValue<bool>("HasErrors", true);
                 logger.Error(e);
 
-                handlerLogger.Write(true, String.Format("Synchronization materials with products initialization ended with errors at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+                handlerLogger.Write(true, String.Format("Synchronization materials with products initialization ended with errors at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)), "Message");
                 handlerLogger.Write(true, e.ToString(), "Error");
             }
             finally
             {
                 stopWatch.Stop();
-                handlerLogger.Write(true, String.Format("Synchronization materials with products initialization ended at {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+                handlerLogger.Write(true, String.Format("Synchronization materials with products initialization ended at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)), "Message");
+                handlerLogger.UploadToBlob();
             }
         }
     }

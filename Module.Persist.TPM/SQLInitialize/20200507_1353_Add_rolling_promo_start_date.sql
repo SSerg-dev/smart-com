@@ -1,5 +1,5 @@
  
-INSERT INTO [dbo].[ServiceInfo]
+INSERT INTO [ServiceInfo]
            ([Id]
            ,[Name]
            ,[Value]

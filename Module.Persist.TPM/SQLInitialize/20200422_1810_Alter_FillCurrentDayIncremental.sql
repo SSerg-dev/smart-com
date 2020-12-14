@@ -2,7 +2,7 @@
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE OR ALTER PROC [dbo].[FillCurrentDayIncremental]
+CREATE OR ALTER PROC [FillCurrentDayIncremental]
 AS   
 BEGIN
 	IF EXISTS (SELECT * FROM SYS.INDEXES WHERE NAME = N'IX_CurrentDayIncremental_NONCLUSTERED')
@@ -25,12 +25,12 @@ BEGIN
 				ct.ObjectId,
 				ct.parentId AS ParentId,
 				ct.DeviationCoefficient
-			FROM [dbo].[Promo] p (NOLOCK)
-			INNER JOIN [dbo].[PromoProduct] AS pp (NOLOCK)
+			FROM [Promo] p (NOLOCK)
+			INNER JOIN [PromoProduct] AS pp (NOLOCK)
 				ON p.Id = pp.PromoId
-			INNER JOIN [dbo].[ClientTree] AS ct (NOLOCK)
+			INNER JOIN [ClientTree] AS ct (NOLOCK)
 				ON p.ClientTreeKeyId = ct.Id
-			INNER JOIN [dbo].[PromoStatus] AS ps (NOLOCK)
+			INNER JOIN [PromoStatus] AS ps (NOLOCK)
 				ON p.PromoStatusId = ps.Id
 			WHERE
 				ps.SystemName IN ('OnApproval', 'Planned', 'Started', 'Approved')
@@ -45,12 +45,12 @@ BEGIN
 	SET @GlobalDispatchesEnd = (
 		SELECT
 			MAX(CAST(p.DispatchesEnd AS DATE))
-		FROM [dbo].[Promo] p (NOLOCK)
-		INNER JOIN [dbo].[PromoProduct] AS pp (NOLOCK)
+		FROM [Promo] p (NOLOCK)
+		INNER JOIN [PromoProduct] AS pp (NOLOCK)
 			ON p.Id = pp.PromoId
-		INNER JOIN [dbo].[ClientTree] AS ct (NOLOCK)
+		INNER JOIN [ClientTree] AS ct (NOLOCK)
 			ON p.ClientTreeKeyId = ct.Id
-		INNER JOIN [dbo].[PromoStatus] ps (NOLOCK)
+		INNER JOIN [PromoStatus] ps (NOLOCK)
 			ON p.PromoStatusId = ps.Id
 		WHERE
 			ps.SystemName IN ('OnApproval', 'Planned', 'Started', 'Approved')
