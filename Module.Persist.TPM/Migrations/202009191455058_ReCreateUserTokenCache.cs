@@ -19,6 +19,15 @@ namespace Module.Persist.TPM.Migrations
                     DROP TABLE Jupiter.UserTokenCaches;
             ");
 
+            Sql(@"
+                IF OBJECT_ID('dbo.UserTokenCache', 'U') IS NOT NULL 
+                    DROP TABLE dbo.UserTokenCache;
+            ");
+            Sql(@"
+                IF OBJECT_ID('Jupiter.UserTokenCache', 'U') IS NOT NULL 
+                    DROP TABLE Jupiter.UserTokenCache;
+            ");
+
             CreateTable(
                 tableName,
                 c => new
@@ -39,7 +48,7 @@ namespace Module.Persist.TPM.Migrations
             DropTable(tableName);
             
             CreateTable(
-                "dbo.UserTokenCaches",
+                "dbo.UserTokenCache",
                 c => new
                 {
                     UserTokenCacheId = c.Int(nullable: false, identity: true),
