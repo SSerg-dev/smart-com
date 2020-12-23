@@ -18,6 +18,7 @@ OR [User].[Name]='denis.moskvitin@smartcom.software'
 OR [User].[Name]='anatoliy.soldatov@smartcom.software'
 OR [User].[Name]='dmitry.puzikov@smartcom.software'
 OR [User].[Name]='ivan.obraztsov@smartcom.software'
+OR [User].[Name]='ilya.chernoskutov@smartcom.software'
 GO
 
 INSERT INTO [User] ([Id], [DeletedDate], [Disabled], [Email], [Name], [Password], [PasswordSalt], [Sid])
@@ -40,5 +41,6 @@ VALUES
 (NEWID(), NULL, 0, NULL, 'denis.moskvitin@smartcom.software', NULL, NULL, ''),
 (NEWID(), NULL, 0, NULL, 'anatoliy.soldatov@smartcom.software', NULL, NULL, ''),
 (NEWID(), NULL, 0, NULL, 'dmitry.puzikov@smartcom.software', NULL, NULL, ''),
+(NEWID(), NULL, 0, NULL, 'ilya.chernoskutov@smartcom.software', NULL, NULL, ''),
 (NEWID(), NULL, 0, NULL, 'ivan.obraztsov@smartcom.software', NULL, NULL, '')
 GO
