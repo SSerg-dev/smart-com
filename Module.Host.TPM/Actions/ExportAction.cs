@@ -41,12 +41,13 @@ namespace Module.Host.TPM.Actions.Notifications
         private Type DBModel;
         private bool SimpleModel;
         private bool IsActuals;
+        private string CustomFileName;
 
         private readonly object locker = new object();
 
         protected readonly static Logger logger = LogManager.GetCurrentClassLogger();
         
-        public ExportAction(Guid userId, Guid roleId, IEnumerable<Column> columns, string sqlString, Type dbModel, bool simpleModel, bool isActuals = false)
+        public ExportAction(Guid userId, Guid roleId, IEnumerable<Column> columns, string sqlString, Type dbModel, bool simpleModel, bool isActuals = false, string customFileName = null)
         {
             UserId = userId;
             RoleId = roleId;
@@ -55,6 +56,7 @@ namespace Module.Host.TPM.Actions.Notifications
             DBModel = dbModel;
             SimpleModel = simpleModel;
             IsActuals = isActuals;
+            CustomFileName = customFileName;
         }
         public override void Execute() 
         {
@@ -105,7 +107,7 @@ namespace Module.Host.TPM.Actions.Notifications
                         XLSXExporter exporter = new XLSXExporter(Columns);
                         var user = context.Set<User>().FirstOrDefault(u => u.Id == UserId);
                         string username = user == null ? "" : user.Name;
-                        string filePath = exporter.GetExportFileName(typeof(TModel).Name, username);
+                        string filePath = exporter.GetExportFileName(string.IsNullOrEmpty(CustomFileName) ? typeof(TModel).Name : CustomFileName, username);
                         exporter.Export(records, filePath);
                         string fileName = System.IO.Path.GetFileName(filePath);
 

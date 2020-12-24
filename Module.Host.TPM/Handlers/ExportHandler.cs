@@ -46,6 +46,7 @@ namespace Module.Host.TPM.Handlers
                 Type exportModel = HandlerDataHelper.GetIncomingArgument<Type>("ExportModel", info.Data, throwIfNotExists: false);
                 bool simpleModel = HandlerDataHelper.GetIncomingArgument<bool>("SimpleModel", info.Data, throwIfNotExists: false);
                 bool IsActuals = HandlerDataHelper.GetIncomingArgument<bool>("IsActuals", info.Data, throwIfNotExists: false);
+                string customFileName = HandlerDataHelper.GetIncomingArgument<string>("CustomFileName", info.Data, throwIfNotExists: false);
 
                 var getColumnMethod = columnInstance.GetMethod(getColumnMethodName);
                 object[] columnsParam;
@@ -59,7 +60,7 @@ namespace Module.Host.TPM.Handlers
                 var columns = getColumnMethod.Invoke(null, columnsParam);
 
                 Type type = typeof(ExportAction<,>).MakeGenericType(tModel, tKey);
-                IAction action = Activator.CreateInstance(type, userId, roleId, columns, sqlString, exportModel, simpleModel, IsActuals) as IAction;
+                IAction action = Activator.CreateInstance(type, userId, roleId, columns, sqlString, exportModel, simpleModel, IsActuals, customFileName) as IAction;
                 MethodInfo execute = type.GetMethod(nameof(action.Execute));
 
                 handlerLogger.Write(true, String.Format("Start of {0} export at {1:yyyy-MM-dd HH:mm:ss}", tModel.Name, ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)), "Message");

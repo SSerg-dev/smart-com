@@ -427,6 +427,8 @@ namespace Module.Frontend.TPM.Controllers
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
             RoleInfo role = authorizationManager.GetCurrentRole();
             Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
+            int? promoNumber = Context.Set<Promo>().FirstOrDefault(p => p.Id == promoId)?.Number;
+            string customFileName = promoNumber.HasValue && promoNumber.Value != 0 ? $"№{promoNumber}_PromoProduct" : string.Empty;
             using (DatabaseContext context = new DatabaseContext())
             {
                 HandlerData data = new HandlerData();
@@ -441,12 +443,13 @@ namespace Module.Frontend.TPM.Controllers
                 HandlerDataHelper.SaveIncomingArgument("GetColumnMethodParams", additionalColumn, data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("IsActuals", updateActualsMode, data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("CustomFileName", customFileName, data, visible: false, throwIfNotExists: false);
 
                 LoopHandler handler = new LoopHandler()
                 {
                     Id = Guid.NewGuid(),
                     ConfigurationName = "PROCESSING",
-                    Description = $"Export {nameof(PromoProduct)} dictionary",
+                    Description = string.IsNullOrEmpty(customFileName) ? $"Export {nameof(PromoProduct)} dictionary" : $"Export {customFileName.Replace('_', ' ')} dictionary",
                     Name = "Module.Host.TPM.Handlers." + handlerName,
                     ExecutionPeriod = null,
                     CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
@@ -648,31 +651,56 @@ namespace Module.Frontend.TPM.Controllers
         [ClaimsAuthorize]
         public IHttpActionResult SupportAdminExportXLSX(ODataQueryOptions<PromoProduct> options, Guid? promoId = null)
         {
-            try
+            var products = GetConstraintedQuery(false, promoId).Where(x => !x.Disabled && (!promoId.HasValue || x.PromoId == promoId.Value));
+            var corrections = Context.Set<PromoProductsCorrection>().Where(x => products.Select(y => y.Id).Contains(x.PromoProductId) && x.TempId == null && x.Disabled != true);
+            foreach (var singleCorrection in corrections)
             {
-                var products = GetConstraintedQuery(false, promoId).Where(x => !x.Disabled && (!promoId.HasValue || x.PromoId == promoId.Value));
-                var corrections = Context.Set<PromoProductsCorrection>().Where(x => products.Select(y => y.Id).Contains(x.PromoProductId) && x.TempId == null && x.Disabled != true);
-                foreach(var singleCorrection in corrections)
+                products.Where(x => x.Id == singleCorrection.PromoProductId).FirstOrDefault().PlanProductUpliftPercent = singleCorrection.PlanProductUpliftPercentCorrected;
+            };
+            IQueryable results = options.ApplyTo(products);
+            UserInfo user = authorizationManager.GetCurrentUser();
+            Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
+            RoleInfo role = authorizationManager.GetCurrentRole();
+            Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
+            int? promoNumber = Context.Set<Promo>().FirstOrDefault(p => p.Id == promoId)?.Number;
+            string customFileName = promoNumber.HasValue && promoNumber.Value != 0 ? $"№{promoNumber}_PromoProduct" : string.Empty;
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                HandlerData data = new HandlerData();
+                string handlerName = "ExportHandler";
+
+                HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("TModel", typeof(PromoProduct), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(PromoProductsController), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PromoProductsController.GetSupportAdminExportSettings), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("CustomFileName", customFileName, data, visible: false, throwIfNotExists: false);
+
+                LoopHandler handler = new LoopHandler()
                 {
-                    products.Where(x => x.Id == singleCorrection.PromoProductId).FirstOrDefault().PlanProductUpliftPercent = singleCorrection.PlanProductUpliftPercentCorrected;
+                    Id = Guid.NewGuid(),
+                    ConfigurationName = "PROCESSING",
+                    Description = string.IsNullOrEmpty(customFileName) ? $"Export {nameof(PromoProduct)} dictionary" : $"Export {customFileName.Replace('_', ' ')} dictionary",
+                    Name = "Module.Host.TPM.Handlers." + handlerName,
+                    ExecutionPeriod = null,
+                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                    LastExecutionDate = null,
+                    NextExecutionDate = null,
+                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                    UserId = userId,
+                    RoleId = roleId
                 };
-                IQueryable results = options.ApplyTo(products);
-                IEnumerable<Column> columns = GetSupportAdminExportSettings();
-                XLSXExporter exporter = new XLSXExporter(columns);
-                UserInfo user = authorizationManager.GetCurrentUser();
-                string username = user == null ? "" : user.Login;
-                string filePath = exporter.GetExportFileName("PromoProduct", username);
-                exporter.Export(results, filePath);
-                string filename = System.IO.Path.GetFileName(filePath);
-                return Content<string>(HttpStatusCode.OK, filename);
+                handler.SetParameterData(data);
+                context.LoopHandlers.Add(handler);
+                context.SaveChanges();
             }
-            catch (Exception e)
-            {
-                return Content<string>(HttpStatusCode.InternalServerError, e.Message);
-            }
+
+            return Content(HttpStatusCode.OK, "success");
         }
 
-        private IEnumerable<Column> GetSupportAdminExportSettings()
+        public static IEnumerable<Column> GetSupportAdminExportSettings()
         {
             int orderNum = 0;
             IEnumerable<Column> columns = new List<Column>() {
