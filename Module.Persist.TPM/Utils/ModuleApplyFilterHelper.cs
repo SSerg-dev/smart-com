@@ -562,7 +562,7 @@ namespace Module.Persist.TPM.Utils {
         /// <param name="context">Контекст БД</param>
         /// <param name="hierarchy">Иерархия</param>
         /// <param name="filter">Фильтр</param>
-        public static IQueryable<PlanIncrementalReport> ApplyFilter(IQueryable<PlanIncrementalReport> query, DatabaseContext context, IQueryable<ClientTreeHierarchyView> hierarchy, IDictionary<string, IEnumerable<string>> filter = null)
+        public static IQueryable<PlanIncrementalReport> ApplyFilter(IQueryable<PlanIncrementalReport> query, DatabaseContext context, IQueryable<ClientTreeHierarchyView> hierarchy, IDictionary<string, IEnumerable<string>> filter = null, bool forExport = false)
         {
             IEnumerable<string> clientFilter = FilterHelper.GetFilter(filter, ModuleFilterName.Client);
 
@@ -579,7 +579,15 @@ namespace Module.Persist.TPM.Utils {
 
                 query = query.Where(x => queryIds.Contains(x.PromoNameId));
             }
-            return query.ToList().AsQueryable();
+            //ToList().AsQueryable() необходим для ускорения группировки позже
+            if (!forExport)
+            {
+                return query;
+            }
+            else
+            {
+                return query.ToList().AsQueryable();
+            }
         }
 
         /// <summary>

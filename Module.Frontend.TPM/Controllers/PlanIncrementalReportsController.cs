@@ -56,7 +56,7 @@ namespace Module.Frontend.TPM.Controllers
 
 			IQueryable<PlanIncrementalReport> query = Context.Set<PlanIncrementalReport>();
 
-			query = ModuleApplyFilterHelper.ApplyFilter(query, Context, hierarchy, filters);
+			query = ModuleApplyFilterHelper.ApplyFilter(query, Context, hierarchy, filters, forExport);
 			logger.Stop("Context");
 
 			if (!forExport)
@@ -123,7 +123,7 @@ namespace Module.Frontend.TPM.Controllers
 			Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
 			RoleInfo role = authorizationManager.GetCurrentRole();
 			Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
-			var ids = options.ApplyTo(GetConstraintedQuery()).Cast<PlanIncrementalReport>().Select(q => q.PromoNameId).ToList();
+			var ids = options.ApplyTo(GetConstraintedQuery(true)).Cast<PlanIncrementalReport>().Select(q => q.PromoNameId).ToList();
 			IQueryable results = Context.Set<PlanIncrementalReport>().Where(q => ids.Contains(q.PromoNameId));
 			using (DatabaseContext context = new DatabaseContext())
 			{
