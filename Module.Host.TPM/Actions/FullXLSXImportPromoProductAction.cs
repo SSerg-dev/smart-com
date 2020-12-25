@@ -101,7 +101,7 @@ namespace Module.Host.TPM.Actions
                                 {
                                     if (p.PlanProductIncrementalLSV != 0 && sumBaseline != 0)
                                     {
-                                        p.ActualProductPCQty = (int?)(newRecord.ActualProductPCQty / sumBaseline * p.PlanProductBaselineLSV);
+                                        p.ActualProductPCQty = (int?)(newRecord.ActualProductPCQty * ((decimal?)sumBaseline / (decimal?)p.PlanProductBaselineLSV));
                                     }
                                     else
                                     {
@@ -171,7 +171,7 @@ namespace Module.Host.TPM.Actions
                                 {
                                     if(p.PlanProductIncrementalLSV != 0 && sumIncremental != 0)
                                     {
-                                        p.ActualProductPCQty = (int?)(newRecord.ActualProductPCQty / sumIncremental * p.PlanProductIncrementalLSV);
+                                        p.ActualProductPCQty = (int?)(newRecord.ActualProductPCQty * ((decimal?)sumIncremental / (decimal?)p.PlanProductIncrementalLSV));
                                     }
                                     else
                                     {
