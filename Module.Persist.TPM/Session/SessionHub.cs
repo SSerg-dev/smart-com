@@ -1,13 +1,12 @@
-﻿using Microsoft.AspNet.SignalR;
+﻿using Looper.Core;
+using Looper.Parameters;
+using Microsoft.AspNet.SignalR;
+using Persist;
+using Persist.Model;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Module.Persist.TPM.Session;
-using Session = Module.Persist.TPM.Session;
-using System.Collections.Concurrent;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Module.Persist.TPM.Session
 {
@@ -29,6 +28,30 @@ namespace Module.Persist.TPM.Session
         {
             Session.RemoveClient(Context.ConnectionId);
             return base.OnDisconnected(stopCalled);
+        }
+
+        public void StartMoniringHandler(Guid handlerId)
+        {
+            DatabaseContext context = new DatabaseContext();
+            lock (context)
+            {
+                string status = string.Empty;
+                while (status != "ERROR" && status != "COMPLETE")
+                {
+                    Thread.Sleep(2000);
+                    status = context.SqlQuery<string>($"select [Status] from [DefaultSchemaSetting].LoopHandler where id = '{handlerId}'").FirstOrDefault();
+                }
+
+                if (status.Equals("ERROR"))
+                    return;
+
+                LoopHandler handler = context.Set<LoopHandler>().FirstOrDefault(h => h.Id == handlerId);
+                HandlerData data = handler.GetParameterData();
+                var property = data.OutcomingParameters["File"].Value.GetType().GetProperty("Name");
+                var fileName = property.GetValue(data.OutcomingParameters["File"].Value);
+
+                Clients.Caller.downloadFile(fileName);
+            }
         }
     }
 }

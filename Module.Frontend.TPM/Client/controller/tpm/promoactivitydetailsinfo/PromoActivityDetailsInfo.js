@@ -107,9 +107,14 @@
             .using(Ext.ux.data.BreezeEntityManager.getEntityManager())
             .execute()
             .then(function (data) {
-                panel.setLoading(false);
-                App.Notify.pushInfo('Export task created successfully');
-                App.System.openUserTasksPanel()
+                $.connection.sessionHub.server.startMoniringHandler(data.httpResponse.data.value)
+                    .done(function () {
+                        panel.setLoading(false);
+                    })
+                    .fail(function (reason) {
+                        console.log("SignalR connection failed: " + reason);
+                        panel.setLoading(false);
+                    });
             })
             .fail(function (data) {
                 panel.setLoading(false);

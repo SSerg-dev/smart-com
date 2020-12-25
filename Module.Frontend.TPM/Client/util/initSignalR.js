@@ -129,6 +129,16 @@ function initSignalRPromoSession() {
             closable: false
         });
     };
+
+    session.client.downloadFile = function (filename) {
+        var href = document.location.href + Ext.String.format('api/File/ExportDownload?filename={0}', filename);
+        var aLink = document.createElement('a');
+        aLink.download = "FileData";
+        aLink.href = href;
+        document.body.appendChild(aLink);
+        aLink.click();
+        document.body.removeChild(aLink)
+    }
 };
 
 // скачиваем файл для signalR сразу при загрузке страницы

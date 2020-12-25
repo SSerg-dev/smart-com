@@ -130,6 +130,7 @@ namespace Module.Frontend.TPM.Controllers {
             Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
             int? promoNumber = Context.Set<Promo>().FirstOrDefault(p => p.Id == promoId)?.Number;
             string customFileName = promoNumber.HasValue && promoNumber.Value != 0 ? $"№{promoNumber}_PromoProduct" : string.Empty;
+            Guid handlerId = Guid.NewGuid();
             using (DatabaseContext context = new DatabaseContext())
             {
                 HandlerData data = new HandlerData();
@@ -146,7 +147,7 @@ namespace Module.Frontend.TPM.Controllers {
 
                 LoopHandler handler = new LoopHandler()
                 {
-                    Id = Guid.NewGuid(),
+                    Id = handlerId,
                     ConfigurationName = "PROCESSING",
                     Description = string.IsNullOrEmpty(customFileName) ? $"Export {nameof(PromoProduct)} dictionary" : $"Export {customFileName.Replace('_', ' ')} dictionary",
                     Name = "Module.Host.TPM.Handlers." + handlerName,
@@ -163,7 +164,7 @@ namespace Module.Frontend.TPM.Controllers {
                 context.SaveChanges();
             }
 
-            return Content(HttpStatusCode.OK, "success");
+            return Content(HttpStatusCode.OK, handlerId);
         }
 
         [ClaimsAuthorize]
