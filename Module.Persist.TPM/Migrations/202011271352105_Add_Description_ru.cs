@@ -1,22 +1,25 @@
 namespace Module.Persist.TPM.Migrations
 {
+    using Core.Settings;
     using System;
     using System.Data.Entity.Migrations;
-    
+
     public partial class Add_Description_ru : DbMigration
     {
         public override void Up()
         {
-            AddColumn("dbo.NonPromoEquipment", "Description_ru", c => c.String());
-            AddColumn("dbo.BudgetItem", "Description_ru", c => c.String());
-            AddColumn("dbo.BudgetSubItem", "Description_ru", c => c.String());
+            var defaultSchema = AppSettingsManager.GetSetting<string>("DefaultSchema", "dbo");
+            AddColumn($"{defaultSchema}.NonPromoEquipment", "Description_ru", c => c.String());
+            AddColumn($"{defaultSchema}.BudgetItem", "Description_ru", c => c.String());
+            AddColumn($"{defaultSchema}.BudgetSubItem", "Description_ru", c => c.String());
         }
-        
+
         public override void Down()
         {
-            DropColumn("dbo.BudgetSubItem", "Description_ru");
-            DropColumn("dbo.BudgetItem", "Description_ru");
-            DropColumn("dbo.NonPromoEquipment", "Description_ru");
+            var defaultSchema = AppSettingsManager.GetSetting<string>("DefaultSchema", "dbo");
+            DropColumn($"{defaultSchema}.BudgetSubItem", "Description_ru");
+            DropColumn($"{defaultSchema}.BudgetItem", "Description_ru");
+            DropColumn($"{defaultSchema}.NonPromoEquipment", "Description_ru");
         }
     }
 }
