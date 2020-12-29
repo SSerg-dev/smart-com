@@ -580,7 +580,7 @@ namespace Module.Persist.TPM.Utils {
                 query = query.Where(x => queryIds.Contains(x.PromoNameId));
             }
             //ToList().AsQueryable() необходим для ускорения группировки позже
-            if (!forExport)
+            if (forExport)
             {
                 return query;
             }
