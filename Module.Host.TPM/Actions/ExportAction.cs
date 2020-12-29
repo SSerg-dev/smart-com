@@ -28,6 +28,9 @@ using Module.Host.TPM.Util;
 using System.Collections;
 using Module.Frontend.TPM.Controllers;
 using Core.Extensions;
+using System.Net.Http;
+using System.Web.Http.OData.Builder;
+using System.Web.Http.OData;
 
 namespace Module.Host.TPM.Actions.Notifications
 {
@@ -35,19 +38,22 @@ namespace Module.Host.TPM.Actions.Notifications
     {
 
         private Guid UserId;
+        private UserInfo User;
         private Guid RoleId;
+        private string Role;
         private IEnumerable<Column> Columns;
         private string SqlString;
         private Type DBModel;
         private bool SimpleModel;
         private bool IsActuals;
         private string CustomFileName;
+        private string url;
 
         private readonly object locker = new object();
 
         protected readonly static Logger logger = LogManager.GetCurrentClassLogger();
         
-        public ExportAction(Guid userId, Guid roleId, IEnumerable<Column> columns, string sqlString, Type dbModel, bool simpleModel, bool isActuals = false, string customFileName = null)
+        public ExportAction(Guid userId, Guid roleId, IEnumerable<Column> columns, string sqlString, Type dbModel, bool simpleModel, string URL, bool isActuals = false, string customFileName = null)
         {
             UserId = userId;
             RoleId = roleId;
@@ -55,8 +61,12 @@ namespace Module.Host.TPM.Actions.Notifications
             SqlString = sqlString;
             DBModel = dbModel;
             SimpleModel = simpleModel;
+            url = URL;
             IsActuals = isActuals;
             CustomFileName = customFileName;
+
+            User = getUserInfo(userId);
+            Role = GetRole(roleId);
         }
         public override void Execute() 
         {
@@ -68,40 +78,31 @@ namespace Module.Host.TPM.Actions.Notifications
                 {
                     using (DatabaseContext context = new DatabaseContext())
                     {
-                        IQueryable records = null;
+                        IList records = null;
 
                         if (DBModel != null)
                         {
                             List<object> ids = context.Database.SqlQuery<TModel>(SqlString).Select(q => q.Id as object).ToList();
-                            records = ConvertHelper.Convert(ids, DBModel, typeof(TModel), context);
+                            records = ConvertHelper.Convert<TModel>(ids, DBModel, typeof(TModel), context);
                         }
                         else if (typeof(TModel).Name.Equals(typeof(PlanIncrementalReport).Name))
                         {
-                            IEnumerable<string> ids = context.Database.SqlQuery<PlanIncrementalReport>(SqlString).Select(q => q.PromoNameId).AsEnumerable();
-                            records = context.Set<PlanIncrementalReport>().Where(q => ids.Contains(q.PromoNameId)).AsQueryable();
+                            var options = getODataQueryOptions<TModel>();
+                            records = options.ApplyTo(new PlanIncrementalReportsController(User, Role, RoleId).GetConstraintedQuery(true, context)).Cast<PlanIncrementalReport>().ToList();
                         }
                         else if (typeof(TModel).Name.Equals(typeof(PromoProduct).Name) && IsActuals == true)
                         {
-                            records = getActuals(context, SqlString);
+                            records = getActuals(context, SqlString).ToList();
                         }
                         else if (typeof(TModel).Name.Equals(typeof(PlanPostPromoEffectReportWeekView).Name))
                         {
+                            //TODO: починить
                             var dbRecords = context.Database.SqlQuery<TModel>(SqlString).AsQueryable();
-                            records = PlanPostPromoEffectReportsController.MapToReport(dbRecords);
-                        }
-                        else if (SimpleModel)
-                        {
-                            records = context.Database.SqlQuery<TModel>(SqlString).AsQueryable();
+                            records = PlanPostPromoEffectReportsController.MapToReport<PlanPostPromoEffectReport>(dbRecords).ToList();
                         }
                         else
                         {
-                            List<TModel> tmp = new List<TModel>();
-                            IEnumerable<TKey> ids = context.Database.SqlQuery<TModel>(SqlString).Select(q => q.Id).AsEnumerable();
-                            foreach (IEnumerable<TKey> idsPart in ids.Partition(1000))
-                            {
-                                tmp.AddRange(context.Set<TModel>().Where(q => idsPart.Contains(q.Id)));
-                            }
-                            records = tmp.AsQueryable();
+                            records = context.Database.SqlQuery<TModel>(SqlString).ToList();
                         }
 
                         XLSXExporter exporter = new XLSXExporter(Columns);
@@ -119,11 +120,11 @@ namespace Module.Host.TPM.Actions.Notifications
                         };
                         Results.Add("ExportFile", file);
                     }
-                }                
+                }
             }
             catch (Exception e)
             {
-                string msg = String.Format("Error exporting calendar: {0}", e.ToString());
+                string msg = String.Format("Error exporting: {0}", e.ToString());
                 logger.Error(msg);
                 Errors.Add(msg);
             }
@@ -156,6 +157,37 @@ namespace Module.Host.TPM.Actions.Notifications
             }
 
             return promoProductList.AsQueryable();
+        }
+
+        private ODataQueryOptions<T> getODataQueryOptions<T>()
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, url);
+            var modelBuilder = new ODataConventionModelBuilder();
+            modelBuilder.AddEntity(typeof(T));
+            var edmModel = modelBuilder.GetEdmModel();
+            var oDataQueryContext = new ODataQueryContext(edmModel, typeof(T));
+            return new ODataQueryOptions<T>(oDataQueryContext, request);
+        }
+
+        private UserInfo getUserInfo(Guid userId)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                var user = context.Users.FirstOrDefault(u => u.Id == userId && !u.Disabled);
+                return new UserInfo(null)
+                {
+                    Id = user != null ? user.Id : (Guid?)null,
+                    Login = user.Name
+                };
+            }
+        }
+
+        private string GetRole(Guid roleId)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                return context.Roles.FirstOrDefault(u => u.Id == roleId && !u.Disabled).SystemName;
+            }
         }
     }
 }

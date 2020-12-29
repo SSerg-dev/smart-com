@@ -1,4 +1,5 @@
 ﻿using Castle.Components.DictionaryAdapter;
+using Core.Data;
 using Module.Persist.TPM.Model.TPM;
 using Persist;
 using System;
@@ -12,13 +13,13 @@ namespace Module.Host.TPM.Util
 {
     public static class ConvertHelper
     {
-        public static IQueryable Convert(List<object> ids, Type from, Type to, DatabaseContext context) 
+        public static List<T> Convert<T>(List<object> ids, Type from, Type to, DatabaseContext context) where T : class
         {
-            IQueryable query = null;
+            List<T> query = null;
             if (from.Name.Equals(typeof(Promo).Name) && to.Name.Equals(typeof(ActualLSV).Name))
             {
                 List<Guid> tmp = ids.Select(q => (Guid)q).ToList();
-                query = context.Set<Promo>().Where(q => tmp.Contains(q.Id))
+                query = (List<T>)context.Set<Promo>().Where(q => tmp.Contains(q.Id)).ToList()
                     .Select(n => new ActualLSV
                     {
                         Id = n.Id,

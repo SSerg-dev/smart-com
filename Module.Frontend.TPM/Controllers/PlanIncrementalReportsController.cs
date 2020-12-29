@@ -32,31 +32,45 @@ namespace Module.Frontend.TPM.Controllers
 
 	public class PlanIncrementalReportsController : EFContextController
 	{
-		private readonly IAuthorizationManager authorizationManager;
+		private readonly UserInfo user;
+		private readonly string role;
+		private readonly Guid? roleId;
 
 		public PlanIncrementalReportsController(IAuthorizationManager authorizationManager)
 		{
-			this.authorizationManager = authorizationManager;
+			user = authorizationManager.GetCurrentUser();
+			var roleInfo = authorizationManager.GetCurrentRole();
+			role = roleInfo.SystemName;
+			roleId = roleInfo.Id;
 		}
 
-		public IQueryable<PlanIncrementalReport> GetConstraintedQuery(bool forExport = false)
+		public PlanIncrementalReportsController(UserInfo User, string Role, Guid RoleId)
+		{
+			user = User;
+			role = Role;
+			roleId = RoleId;
+		}
+
+		public IQueryable<PlanIncrementalReport> GetConstraintedQuery(bool forExport = false, DatabaseContext context = null)
 		{
 			PerformanceLogger performanceLogger = new PerformanceLogger();
 			performanceLogger.Start();
-			UserInfo user = authorizationManager.GetCurrentUser();
-			string role = authorizationManager.GetCurrentRoleName();
-			IList<Constraint> constraints = user.Id.HasValue ? Context.Constraints
+			if (context == null)
+            {
+				context = Context;
+			}
+			IList<Constraint> constraints = user.Id.HasValue ? context.Constraints
 				.Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
 				.ToList() : new List<Constraint>();
 
 			IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
 			PerformanceLogger logger = new PerformanceLogger();
 			logger.Start();
-			IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
+			IQueryable<ClientTreeHierarchyView> hierarchy = context.Set<ClientTreeHierarchyView>().AsNoTracking();
 
-			IQueryable<PlanIncrementalReport> query = Context.Set<PlanIncrementalReport>();
+			IQueryable<PlanIncrementalReport> query = context.Set<PlanIncrementalReport>();
 
-			query = ModuleApplyFilterHelper.ApplyFilter(query, Context, hierarchy, filters, forExport);
+			query = ModuleApplyFilterHelper.ApplyFilter(query, context, hierarchy, filters, forExport);
 			logger.Stop("Context");
 
 			if (!forExport)
@@ -119,12 +133,8 @@ namespace Module.Frontend.TPM.Controllers
 		[ClaimsAuthorize]
 		public IHttpActionResult ExportXLSX(ODataQueryOptions<PlanIncrementalReport> options)
 		{
-			UserInfo user = authorizationManager.GetCurrentUser();
 			Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
-			RoleInfo role = authorizationManager.GetCurrentRole();
-			Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
-			var ids = options.ApplyTo(GetConstraintedQuery(true)).Cast<PlanIncrementalReport>().Select(q => q.PromoNameId).ToList();
-			IQueryable results = Context.Set<PlanIncrementalReport>().Where(q => ids.Contains(q.PromoNameId));
+			var url = HttpContext.Current.Request.Url.AbsoluteUri;
 			using (DatabaseContext context = new DatabaseContext())
 			{
 				HandlerData data = new HandlerData();
@@ -136,8 +146,8 @@ namespace Module.Frontend.TPM.Controllers
 				HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
 				HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(PlanIncrementalReportsController), data, visible: false, throwIfNotExists: false);
 				HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PlanIncrementalReportsController.GetExportSettings), data, visible: false, throwIfNotExists: false);
-				HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
-
+				HandlerDataHelper.SaveIncomingArgument("URL", url, data, visible: false, throwIfNotExists: false);
+				
 				LoopHandler handler = new LoopHandler()
 				{
 					Id = Guid.NewGuid(),

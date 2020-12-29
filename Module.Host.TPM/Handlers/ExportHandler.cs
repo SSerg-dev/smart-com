@@ -21,6 +21,7 @@ using System.Reflection;
 using Persist;
 using System.Text.RegularExpressions;
 using LinqToQuerystring;
+using Core.Security;
 
 namespace Module.Host.TPM.Handlers
 {
@@ -42,11 +43,12 @@ namespace Module.Host.TPM.Handlers
                 Type columnInstance = HandlerDataHelper.GetIncomingArgument<Type>("GetColumnInstance", info.Data);
                 string getColumnMethodName = HandlerDataHelper.GetIncomingArgument<string>("GetColumnMethod", info.Data);
                 string additionalColumn = HandlerDataHelper.GetIncomingArgument<string>("GetColumnMethodParams", info.Data, throwIfNotExists: false);
-                string sqlString = HandlerDataHelper.GetIncomingArgument<string>("SqlString", info.Data);
+                string sqlString = HandlerDataHelper.GetIncomingArgument<string>("SqlString", info.Data, throwIfNotExists: false);
                 Type exportModel = HandlerDataHelper.GetIncomingArgument<Type>("ExportModel", info.Data, throwIfNotExists: false);
                 bool simpleModel = HandlerDataHelper.GetIncomingArgument<bool>("SimpleModel", info.Data, throwIfNotExists: false);
                 bool IsActuals = HandlerDataHelper.GetIncomingArgument<bool>("IsActuals", info.Data, throwIfNotExists: false);
                 string customFileName = HandlerDataHelper.GetIncomingArgument<string>("CustomFileName", info.Data, throwIfNotExists: false);
+                string url = HandlerDataHelper.GetIncomingArgument<string>("URL", info.Data, throwIfNotExists: false);
 
                 var getColumnMethod = columnInstance.GetMethod(getColumnMethodName);
                 object[] columnsParam;
@@ -60,7 +62,7 @@ namespace Module.Host.TPM.Handlers
                 var columns = getColumnMethod.Invoke(null, columnsParam);
 
                 Type type = typeof(ExportAction<,>).MakeGenericType(tModel, tKey);
-                IAction action = Activator.CreateInstance(type, userId, roleId, columns, sqlString, exportModel, simpleModel, IsActuals, customFileName) as IAction;
+                IAction action = Activator.CreateInstance(type, userId, roleId, columns, sqlString, exportModel, simpleModel, url, IsActuals, customFileName) as IAction;
                 MethodInfo execute = type.GetMethod(nameof(action.Execute));
 
                 handlerLogger.Write(true, String.Format("Start of {0} export at {1:yyyy-MM-dd HH:mm:ss}", tModel.Name, ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)), "Message");

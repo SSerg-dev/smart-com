@@ -147,7 +147,7 @@ namespace Module.Frontend.TPM.Controllers {
 
             return Content(HttpStatusCode.OK, "success");
         }
-        public static IQueryable MapToReport(IQueryable data)
+        public static IQueryable<T> MapToReport<T>(IQueryable data) where T : class
         {
             List<PlanPostPromoEffectReport> result = new List<PlanPostPromoEffectReport>();
 
@@ -200,7 +200,7 @@ namespace Module.Frontend.TPM.Controllers {
                     IsOnInvoice = plan.IsOnInvoice
                 });
             }
-            return result.AsQueryable();
+            return result.AsQueryable().Cast<T>();
         }
         
         private PlanPostPromoEffectReportWeekView ReportCreateWeek(SimplePromoPromoProduct simplePromoPromoProduct, String demandCode, String promoStatus, DateTime weekStart, double? qtyW1, double? qtyW2, double? planProductBaselineCaseQtyW1, double? planProductBaselineCaseQtyW2, double? planProductPostPromoEffectLSVW1, double? planProductPostPromoEffectLSVW2, double? planProductBaselineLSVW1, double? planProductBaselineLSVW2)
