@@ -19,7 +19,7 @@ namespace Module.Persist.TPM.Migrations
 
         private string SqlString =
         @"
-            IF NOT EXISTS (SELECT Prefix FROM [DefaultSchemaSetting].[JobFlag] WHERE Prefix = 'MainNightProcessingStep') 
+            IF NOT EXISTS (SELECT Prefix FROM [DefaultSchemaSetting].[JobFlag] WHERE Prefix = 'NightProcessingProgress') 
                 BEGIN
                     INSERT INTO [DefaultSchemaSetting].[JobFlag]
                     (
