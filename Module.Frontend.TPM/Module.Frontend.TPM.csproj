@@ -899,6 +899,11 @@
       <SubType>Designer</SubType>
     </None>
     <Content Include="Client\view\tpm\clientkpidata\ClientKPIDataEditor.js" />
+    <None Include="Content\Templates\ActualCOGSPreTemplate.xlsx" />
+    <None Include="Content\Templates\ActualTIPreTemplate.xlsx" />
+    <None Include="Content\Templates\BaseLineTemplate.xlsx" />
+    <None Include="Content\Templates\COGSPreTemplate.xlsx" />
+    <None Include="Content\Templates\TIPreTemplate.xlsx" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
