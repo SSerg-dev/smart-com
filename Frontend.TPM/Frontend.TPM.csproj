@@ -1565,6 +1565,21 @@
       <!-- <Content Include="Properties\webjobs-list.json" /> -->
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="..\Module.Frontend.TPM\Templates\ActualCOGSPreTemplate.xlsx">
+      <Link>ApplicationData\Templates\ActualCOGSPreTemplate.xlsx</Link>
+    </Content>
+    <Content Include="..\Module.Frontend.TPM\Templates\ActualTIPreTemplate.xlsx">
+      <Link>ApplicationData\Templates\ActualTIPreTemplate.xlsx</Link>
+    </Content>
+    <Content Include="..\Module.Frontend.TPM\Templates\BaseLineTemplate.xlsx">
+      <Link>ApplicationData\Templates\BaseLineTemplate.xlsx</Link>
+    </Content>
+    <Content Include="..\Module.Frontend.TPM\Templates\COGSPreTemplate.xlsx">
+      <Link>ApplicationData\Templates\COGSPreTemplate.xlsx</Link>
+    </Content>
+    <Content Include="..\Module.Frontend.TPM\Templates\TIPreTemplate.xlsx">
+      <Link>ApplicationData\Templates\TIPreTemplate.xlsx</Link>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Global.asax.cs">
