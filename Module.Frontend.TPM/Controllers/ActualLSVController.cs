@@ -39,23 +39,40 @@ namespace Module.Frontend.TPM.Controllers
     public class ActualLSVsController : EFContextController
     {
         private readonly IAuthorizationManager authorizationManager;
+        private readonly UserInfo user;
+        private readonly RoleInfo roleInfo;
+        private readonly string role;
+        private readonly Guid? roleId;
 
         public ActualLSVsController(IAuthorizationManager authorizationManager)
         {
             this.authorizationManager = authorizationManager;
+            user = authorizationManager.GetCurrentUser();
+            roleInfo = authorizationManager.GetCurrentRole();
+            role = roleInfo.SystemName;
+            roleId = roleInfo.Id;
         }
 
-        protected IQueryable<ActualLSV> GetConstraintedQuery()
+        public ActualLSVsController(UserInfo User, string Role, Guid RoleId)
         {
-            UserInfo user = authorizationManager.GetCurrentUser();
-            string role = authorizationManager.GetCurrentRoleName();
-            IList<Constraint> constraints = user.Id.HasValue ? Context.Constraints
+            user = User;
+            role = Role;
+            roleId = RoleId;
+        }
+
+        public IQueryable<ActualLSV> GetConstraintedQuery(DatabaseContext context = null)
+        {
+            if (context == null)
+            {
+                context = Context;
+            }
+            IList<Constraint> constraints = user.Id.HasValue ? context.Constraints
                 .Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
                 .ToList() : new List<Constraint>();
 
             IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
-            IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
-            IQueryable<Promo> promoes = Context.Set<Promo>().Where(e => e.PromoStatus.SystemName.ToLower().IndexOf("finished") >= 0 && !e.Disabled);
+            IQueryable<ClientTreeHierarchyView> hierarchy = context.Set<ClientTreeHierarchyView>().AsNoTracking();
+            IQueryable<Promo> promoes = context.Set<Promo>().Where(e => e.PromoStatus.SystemName.ToLower().IndexOf("finished") >= 0 && !e.Disabled);
 
             promoes = ModuleApplyFilterHelper.ApplyFilter(promoes, hierarchy, filters);
             IQueryable<ActualLSV> query = promoes
@@ -246,11 +263,9 @@ namespace Module.Frontend.TPM.Controllers
         [ClaimsAuthorize]
         public IHttpActionResult ExportXLSX(ODataQueryOptions<ActualLSV> options)
         {
-            IQueryable results = options.ApplyTo(GetConstraintedQuery());
-            UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
-            RoleInfo role = authorizationManager.GetCurrentRole();
-            Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
+            Guid roleId = roleInfo == null ? Guid.Empty : (roleInfo.Id.HasValue ? roleInfo.Id.Value : Guid.Empty);
+            var url = HttpContext.Current.Request.Url.AbsoluteUri;
             using (DatabaseContext context = new DatabaseContext())
             {
                 HandlerData data = new HandlerData();
@@ -262,8 +277,7 @@ namespace Module.Frontend.TPM.Controllers
                 HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(ActualLSVsController), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(ActualLSVsController.GetExportSettings), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ExportModel", typeof(Promo), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("URL", url, data, visible: false, throwIfNotExists: false);
 
                 LoopHandler handler = new LoopHandler()
                 {
@@ -316,10 +330,8 @@ namespace Module.Frontend.TPM.Controllers
 
         private void CreateImportTask(string fileName, string importHandler)
         {
-            UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
-            RoleInfo role = authorizationManager.GetCurrentRole();
-            Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
+            Guid roleId = roleInfo == null ? Guid.Empty : (roleInfo.Id.HasValue ? roleInfo.Id.Value : Guid.Empty);
 
             using (DatabaseContext context = new DatabaseContext())
             {
@@ -369,10 +381,8 @@ namespace Module.Frontend.TPM.Controllers
         /// <param name="promoId">ID промо</param>
         private void CreateTaskCalculation(Guid handlerId, Guid promoId)
         {        
-            UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
-            RoleInfo role = authorizationManager.GetCurrentRole();
-            Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
+            Guid roleId = roleInfo == null ? Guid.Empty : (roleInfo.Id.HasValue ? roleInfo.Id.Value : Guid.Empty);
 
             HandlerData data = new HandlerData();
             HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);

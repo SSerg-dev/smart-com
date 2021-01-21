@@ -90,6 +90,11 @@ namespace Module.Host.TPM.Actions.Notifications
                             var options = getODataQueryOptions<TModel>();
                             records = options.ApplyTo(new PlanIncrementalReportsController(User, Role, RoleId).GetConstraintedQuery(true, context)).Cast<PlanIncrementalReport>().ToList();
                         }
+                        else if (typeof(TModel).Name.Equals(typeof(ActualLSV).Name))
+                        {
+                            var options = getODataQueryOptions<TModel>();
+                            records = ((IQueryable<ActualLSV>)options.ApplyTo(new ActualLSVsController(User, Role, RoleId).GetConstraintedQuery(context))).ToList();
+                        }
                         else if (typeof(TModel).Name.Equals(typeof(PromoProduct).Name) && IsActuals == true)
                         {
                             records = getActuals(context, SqlString).ToList();
