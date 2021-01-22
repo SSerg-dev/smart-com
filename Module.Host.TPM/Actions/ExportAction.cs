@@ -110,7 +110,7 @@ namespace Module.Host.TPM.Actions.Notifications
                             records = context.Database.SqlQuery<TModel>(SqlString).ToList();
                         }
 
-                        if (url == null)
+                        if (url == null && records.Count > 0)
                         {
                             AddChildrenModel(records, context);
                         }
@@ -220,8 +220,6 @@ namespace Module.Host.TPM.Actions.Notifications
                     valuesToInsert.Add(tempValuesToInsert);
                 }
             }
-
-            //AddChildrenToRecord(valuesToInsert, records, type);
         }
 
         private void GetDBList<TEntity>(DatabaseContext context, IList records, Type type) where TEntity : class, IEntity
@@ -232,43 +230,20 @@ namespace Module.Host.TPM.Actions.Notifications
             foreach (var rec in records)
             {
                 var modelId = type.GetProperty(tableName + "Id").GetValue(rec);
-                var sss = modelId.GetType().Name;
-                if (modelId.GetType().Name == "Guid")
+                if (modelId != null)
                 {
-                    singleValue = toInsert.Where(x => (Guid)x.GetType().GetProperty("Id").GetValue(x) == (Guid)modelId).FirstOrDefault();
-                    type.GetProperty(tableName).SetValue(rec, singleValue);
-                }
-                else if (modelId.GetType().Name == "Int32")
-                {
-                    var sds = (int)modelId;
-                    singleValue = toInsert.Where(x => (int)x.GetType().GetProperty("Id").GetValue(x) == (int)modelId).FirstOrDefault();
-                    type.GetProperty(tableName).SetValue(rec, singleValue);
-                }
-            }
-        }
-
-        private void AddChildrenToRecord(List<KeyValuePair<string, List<IEntity>>> valuesToInsert, IList records, Type type)
-        {
-            List<IEntity> values;
-            string key;
-            IEntity singleValue;
-            foreach (var keyValue in valuesToInsert)
-            {
-                values = keyValue.Value;
-                key = keyValue.Key;
-                foreach (var rec in records)
-                {
-                    var modelId = type.GetProperty(keyValue.Key + "Id").GetValue(rec);
                     if (modelId.GetType().Name == "Guid")
                     {
-                        singleValue = values.Where(x => (Guid)x.GetType().GetProperty("Id").GetValue(rec) == (Guid)modelId).FirstOrDefault();
-                        type.GetProperty(keyValue.Key).SetValue(rec, singleValue);
+                        singleValue = toInsert.Where(x => (Guid)x.GetType().GetProperty("Id").GetValue(x) == (Guid)modelId).FirstOrDefault();
+                        type.GetProperty(tableName).SetValue(rec, singleValue);
                     }
-                    else if (modelId.GetType().Name == "int")
+                    else if (modelId.GetType().Name == "Int32")
                     {
-                        singleValue = values.Where(x => (int)x.GetType().GetProperty("Id").GetValue(rec) == (int)modelId).FirstOrDefault();
-                        type.GetProperty(keyValue.Key).SetValue(rec, singleValue);
+                        var sds = (int)modelId;
+                        singleValue = toInsert.Where(x => (int)x.GetType().GetProperty("Id").GetValue(x) == (int)modelId).FirstOrDefault();
+                        type.GetProperty(tableName).SetValue(rec, singleValue);
                     }
+
                 }
             }
         }
