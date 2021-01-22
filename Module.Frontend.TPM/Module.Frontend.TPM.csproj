@@ -1460,7 +1460,9 @@
     <Content Include="Content\images\elbow-line-material.png" />
     <Content Include="Content\images\elbow-material.png" />
     <Content Include="Content\images\fader.png" />
-    <Content Include="Content\images\favicon.ico" />
+    <Content Include="Content\images\favicon.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\images\finance.png" />
     <Content Include="Content\images\history.svg" />
     <Content Include="Content\images\historySelected.svg" />
