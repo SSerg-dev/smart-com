@@ -52,7 +52,7 @@ namespace Module.Host.TPM.Actions.Notifications
         private readonly object locker = new object();
 
         protected readonly static Logger logger = LogManager.GetCurrentClassLogger();
-        
+
         public ExportAction(Guid userId, Guid roleId, IEnumerable<Column> columns, string sqlString, Type dbModel, bool simpleModel, string URL, bool isActuals = false, string customFileName = null)
         {
             UserId = userId;
@@ -68,7 +68,7 @@ namespace Module.Host.TPM.Actions.Notifications
             User = getUserInfo(userId);
             Role = GetRole(roleId);
         }
-        public override void Execute() 
+        public override void Execute()
         {
             try
             {
@@ -108,6 +108,11 @@ namespace Module.Host.TPM.Actions.Notifications
                         else
                         {
                             records = context.Database.SqlQuery<TModel>(SqlString).ToList();
+                        }
+
+                        if (url == null)
+                        {
+                            AddChildrenModel(records, context);
                         }
 
                         XLSXExporter exporter = new XLSXExporter(Columns);
@@ -192,6 +197,79 @@ namespace Module.Host.TPM.Actions.Notifications
             using (DatabaseContext context = new DatabaseContext())
             {
                 return context.Roles.FirstOrDefault(u => u.Id == roleId && !u.Disabled).SystemName;
+            }
+        }
+
+        private void AddChildrenModel(IList records, DatabaseContext context)
+        {
+            Type type = typeof(TModel);
+            Type propType;
+            var properties = type.GetProperties();
+            List<string> modelTypes = new List<string>();
+            List<KeyValuePair<string, List<IEntity>>> valuesToInsert = new List<KeyValuePair<string, List<IEntity>>>();
+            foreach (var prop in properties)
+            {
+                propType = prop.Type();
+                if (propType.GetInterfaces().Contains(typeof(IEntity)))
+                {
+                    KeyValuePair<string, List<IEntity>> tempValuesToInsert = new KeyValuePair<string, List<IEntity>>();
+                    modelTypes.Add(propType.ToString());
+
+                    GetType()
+                        .GetMethod("GetDBList", BindingFlags.NonPublic | BindingFlags.Instance).MakeGenericMethod(propType).Invoke(this, new object[] { context, records, type });
+                    valuesToInsert.Add(tempValuesToInsert);
+                }
+            }
+
+            //AddChildrenToRecord(valuesToInsert, records, type);
+        }
+
+        private void GetDBList<TEntity>(DatabaseContext context, IList records, Type type) where TEntity : class, IEntity
+        {
+            TEntity singleValue;
+            var toInsert = context.Set<TEntity>().ToList();
+            string tableName = typeof(TEntity).Name;
+            foreach (var rec in records)
+            {
+                var modelId = type.GetProperty(tableName + "Id").GetValue(rec);
+                var sss = modelId.GetType().Name;
+                if (modelId.GetType().Name == "Guid")
+                {
+                    singleValue = toInsert.Where(x => (Guid)x.GetType().GetProperty("Id").GetValue(x) == (Guid)modelId).FirstOrDefault();
+                    type.GetProperty(tableName).SetValue(rec, singleValue);
+                }
+                else if (modelId.GetType().Name == "Int32")
+                {
+                    var sds = (int)modelId;
+                    singleValue = toInsert.Where(x => (int)x.GetType().GetProperty("Id").GetValue(x) == (int)modelId).FirstOrDefault();
+                    type.GetProperty(tableName).SetValue(rec, singleValue);
+                }
+            }
+        }
+
+        private void AddChildrenToRecord(List<KeyValuePair<string, List<IEntity>>> valuesToInsert, IList records, Type type)
+        {
+            List<IEntity> values;
+            string key;
+            IEntity singleValue;
+            foreach (var keyValue in valuesToInsert)
+            {
+                values = keyValue.Value;
+                key = keyValue.Key;
+                foreach (var rec in records)
+                {
+                    var modelId = type.GetProperty(keyValue.Key + "Id").GetValue(rec);
+                    if (modelId.GetType().Name == "Guid")
+                    {
+                        singleValue = values.Where(x => (Guid)x.GetType().GetProperty("Id").GetValue(rec) == (Guid)modelId).FirstOrDefault();
+                        type.GetProperty(keyValue.Key).SetValue(rec, singleValue);
+                    }
+                    else if (modelId.GetType().Name == "int")
+                    {
+                        singleValue = values.Where(x => (int)x.GetType().GetProperty("Id").GetValue(rec) == (int)modelId).FirstOrDefault();
+                        type.GetProperty(keyValue.Key).SetValue(rec, singleValue);
+                    }
+                }
             }
         }
     }
