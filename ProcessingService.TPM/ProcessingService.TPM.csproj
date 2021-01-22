@@ -361,7 +361,9 @@
     <Content Include="PromoApprovedTemplate.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="PromoCancelledTemplate.txt" />
+    <Content Include="PromoCancelledTemplate.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="PromoOnApprovalTemplate.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
