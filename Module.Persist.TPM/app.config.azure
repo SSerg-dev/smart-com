@@ -49,7 +49,7 @@
     <add key="ida:PostLogoutRedirectUriKey" value="ADidaPostLogoutRedirectUri" />
     <!--AzureAD authentication-->
     <add key="ADidaClientId" value="9ab57531-5607-4912-8298-4dafe829ac19" />
-    <add key="ADidaClientSecret" value="z-5ST5eQ~j_2d836gAmApE85X-_1IB~UG~" />
+    <add key="ADidaClientSecret" value="EBaSP-2F._CC~0YhNIW_5Y1KyF9e3H3-.O" />
     <add key="KVnameOfDatabaseContext" value="russiapetcarejupitersqldbcs" />
     <!--Other settings-->
 	  <add key="DefaultSchema" value="Jupiter" />
