@@ -19,13 +19,13 @@ namespace Module.Persist.TPM.Migrations
 
 		private string SqlString =
         @"
-            DELETE [LoopHandler] WHERE [Name] = 'Module.Host.TPM.Handlers.SendingFilesToBlobHandler'
+            DELETE [DefaultSchemaSetting].[LoopHandler] WHERE [Name] = 'Module.Host.TPM.Handlers.SendingFilesToBlobHandler'
             GO
 
             SET DATEFIRST 1;
             DECLARE @today INT = DATEPART(dw, GETDATE());
             DECLARE @nextSaturday DATETIMEOFFSET(7) = DATEADD(DAY, (7 % @today - 1), SYSDATETIME());
-            INSERT INTO [LoopHandler]
+            INSERT INTO [DefaultSchemaSetting].[LoopHandler]
                        ([Id]
                        ,[Description]
                        ,[Name]
