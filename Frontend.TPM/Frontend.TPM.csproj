@@ -1515,6 +1515,9 @@
     <Content Include="Content\core\resources\ODataTemplateThemeApp-all_02.css" />
     <Content Include="Content\core\resources\ODataTemplateThemeApp-all_03.css" />
     <Content Include="Content\core\style.css" />
+    <Content Include="favicon.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Global.asax" />
     <Content Include="Connected Services\AzureAD\ConnectedService.json" />
     <Content Include="Global.asax.template" />
