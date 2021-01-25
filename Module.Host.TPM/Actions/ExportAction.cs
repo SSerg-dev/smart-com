@@ -210,40 +210,44 @@ namespace Module.Host.TPM.Actions.Notifications
             foreach (var prop in properties)
             {
                 propType = prop.Type();
-                if (propType.GetInterfaces().Contains(typeof(IEntity)))
+                var name = propType.Name;
+                if (propType.GetInterfaces().Contains(typeof(IEntity<Guid>)))
                 {
                     KeyValuePair<string, List<IEntity>> tempValuesToInsert = new KeyValuePair<string, List<IEntity>>();
                     modelTypes.Add(propType.ToString());
 
                     GetType()
-                        .GetMethod("GetDBList", BindingFlags.NonPublic | BindingFlags.Instance).MakeGenericMethod(propType).Invoke(this, new object[] { context, records, type });
+                        .GetMethod("GetDBList", BindingFlags.NonPublic | BindingFlags.Instance).MakeGenericMethod(propType, typeof(Guid)).Invoke(this, new object[] { context, records, type });
+                    valuesToInsert.Add(tempValuesToInsert);
+                }
+                else if (propType.GetInterfaces().Contains(typeof(IEntity<int>)))
+                {
+                    KeyValuePair<string, List<IEntity>> tempValuesToInsert = new KeyValuePair<string, List<IEntity>>();
+                    modelTypes.Add(propType.ToString());
+
+                    GetType()
+                        .GetMethod("GetDBList", BindingFlags.NonPublic | BindingFlags.Instance).MakeGenericMethod(propType, typeof(int)).Invoke(this, new object[] { context, records, type });
                     valuesToInsert.Add(tempValuesToInsert);
                 }
             }
         }
-
-        private void GetDBList<TEntity>(DatabaseContext context, IList records, Type type) where TEntity : class, IEntity
+        
+        private void GetDBList<TEntity, TId>(DatabaseContext context, IList records, Type type) where TEntity : class, IEntity<TId>
         {
             TEntity singleValue;
-            var toInsert = context.Set<TEntity>().ToList();
+            var toInsert = context.Set<TEntity>();
             string tableName = typeof(TEntity).Name;
-            foreach (var rec in records)
+            var idProp = type.GetProperty(tableName + "Id");
+            if (idProp != null)
             {
-                var modelId = type.GetProperty(tableName + "Id").GetValue(rec);
-                if (modelId != null)
+                foreach (var rec in records)
                 {
-                    if (modelId.GetType().Name == "Guid")
+                    var modelId = idProp.GetValue(rec);
+                    if (modelId != null)
                     {
-                        singleValue = toInsert.Where(x => (Guid)x.GetType().GetProperty("Id").GetValue(x) == (Guid)modelId).FirstOrDefault();
+                        singleValue = toInsert.Where(x => x.Id.ToString().Equals(modelId.ToString())).FirstOrDefault();
                         type.GetProperty(tableName).SetValue(rec, singleValue);
                     }
-                    else if (modelId.GetType().Name == "Int32")
-                    {
-                        var sds = (int)modelId;
-                        singleValue = toInsert.Where(x => (int)x.GetType().GetProperty("Id").GetValue(x) == (int)modelId).FirstOrDefault();
-                        type.GetProperty(tableName).SetValue(rec, singleValue);
-                    }
-
                 }
             }
         }
