@@ -107,7 +107,6 @@ namespace Module.Host.TPM.Actions
                                     {
                                         p.ActualProductPCQty = newRecord.ActualProductPCQty;
                                     }
-                                    newRecord.ActualProductPCQty = p.ActualProductPCQty;
                                     isRealBaselineExist = true;
                                 }
                                 else
@@ -177,7 +176,6 @@ namespace Module.Host.TPM.Actions
                                     {
                                         p.ActualProductPCQty = newRecord.ActualProductPCQty;
                                     }
-                                    newRecord.ActualProductPCQty = p.ActualProductPCQty;
                                     isRealPCPriceExist = true;
                                 }
                                 else
