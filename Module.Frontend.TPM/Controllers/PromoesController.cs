@@ -2086,6 +2086,7 @@ namespace Module.Frontend.TPM.Controllers
             if (oldPromo.ClientTreeId != newPromo.ClientTreeId
                     || oldPromo.MarsMechanicId != newPromo.MarsMechanicId
                     || oldPromo.MarsMechanicTypeId != newPromo.MarsMechanicTypeId
+                    || oldPromo.InvoiceTotal != newPromo.InvoiceTotal
                     || oldPromo.MarsMechanicDiscount != newPromo.MarsMechanicDiscount
                     || oldPromo.StartDate != newPromo.StartDate
                     || oldPromo.EndDate != newPromo.EndDate
