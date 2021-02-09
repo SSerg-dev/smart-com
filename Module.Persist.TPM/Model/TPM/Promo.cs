@@ -176,6 +176,7 @@ namespace Module.Persist.TPM.Model.TPM
         public double? ActualPromoNetNSV { get; set; }
         public double? InvoiceTotal { get; set; }
 
+        public bool UseActualCOGSTI { get; set; }
 
         // Promo Closure
         public double? ActualPromoTIShopper { get; set; }

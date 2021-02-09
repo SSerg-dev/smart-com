@@ -2317,6 +2317,10 @@
     <Compile Include="Migrations\202101141531171_EmptyRC1.Designer.cs">
       <DependentUpon>202101141531171_EmptyRC1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202102091047192_Add_UseActualCOGSTI.cs" />
+    <Compile Include="Migrations\202102091047192_Add_UseActualCOGSTI.Designer.cs">
+      <DependentUpon>202102091047192_Add_UseActualCOGSTI.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -4490,6 +4494,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202101141531171_EmptyRC1.resx">
       <DependentUpon>202101141531171_EmptyRC1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202102091047192_Add_UseActualCOGSTI.resx">
+      <DependentUpon>202102091047192_Add_UseActualCOGSTI.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
