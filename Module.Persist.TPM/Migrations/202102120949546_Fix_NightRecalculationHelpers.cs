@@ -53,15 +53,15 @@ namespace Module.Persist.TPM.Migrations
             if not exists (
                 select * from INFORMATION_SCHEMA.COLUMNS where TABLE_NAME = 'TEMP_PROMO' and COLUMN_NAME = 'UseActualTI'
             )
-            alter table Jupiter.TEMP_PROMO add UseActualTI bit not null
+            alter table Jupiter.TEMP_PROMO add UseActualTI bit not null default 0
         ";
 
         private string AddColumnUseActualCOGS =
-        @"
+		@"
             if not exists (
                 select * from INFORMATION_SCHEMA.COLUMNS where TABLE_NAME = 'TEMP_PROMO' and COLUMN_NAME = 'UseActualCOGS'
             )
-            alter table Jupiter.TEMP_PROMO add UseActualCOGS bit not null
+            alter table Jupiter.TEMP_PROMO add UseActualCOGS bit not null default 0
         ";
 
 		private string DropColumnUseActualTI =
