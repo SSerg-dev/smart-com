@@ -17,7 +17,5 @@ namespace Module.Persist.TPM.Migrations
             var defaultSchema = AppSettingsManager.GetSetting<string>("DefaultSchema", "dbo");
             DropColumn($"{defaultSchema}.Promo", "UseActualCOGSTI");
         }
-
-
     }
 }
