@@ -2325,6 +2325,10 @@
     <Compile Include="Migrations\202102120932210_Add_UseActualCOGS_UseActualTI.Designer.cs">
       <DependentUpon>202102120932210_Add_UseActualCOGS_UseActualTI.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202102120949546_Fix_NightRecalculationHelpers.cs" />
+    <Compile Include="Migrations\202102120949546_Fix_NightRecalculationHelpers.Designer.cs">
+      <DependentUpon>202102120949546_Fix_NightRecalculationHelpers.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -4504,6 +4508,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202102120932210_Add_UseActualCOGS_UseActualTI.resx">
       <DependentUpon>202102120932210_Add_UseActualCOGS_UseActualTI.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202102120949546_Fix_NightRecalculationHelpers.resx">
+      <DependentUpon>202102120949546_Fix_NightRecalculationHelpers.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
