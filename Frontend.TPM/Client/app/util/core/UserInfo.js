@@ -26,7 +26,8 @@ Ext.define('App.util.core.UserInfo', function () {
             }]
         },
         GridInfo: {}, //TODO: дописать формат
-        AuthInfo: {} //TODO: дописать формат
+        AuthInfo: {}, //TODO: дописать формат
+        Constrains: {}
     };
 
     return {
@@ -112,7 +113,7 @@ Ext.define('App.util.core.UserInfo', function () {
                         this.isAuthenticated = true;
                     }
                     var recentMenuItems = Ext.ComponentQuery.query('recentmenuitems');
-                    if (recentMenuItems && recentMenuItems.length > 0) {                       
+                    if (recentMenuItems && recentMenuItems.length > 0) {
                         recentMenuItems[0].removeAll();
                     }
                     this.fireEvent('load', this);
@@ -149,7 +150,7 @@ Ext.define('App.util.core.UserInfo', function () {
 
             return false;
         },
-        
+
         getAuthSourceType: function () {
             if (!Ext.isEmpty(userInfo) && !Ext.isEmpty(userInfo.AuthInfo)) {
                 return userInfo.AuthInfo.Source;
@@ -162,13 +163,19 @@ Ext.define('App.util.core.UserInfo', function () {
             }
         },
 
+        getConstrains: function (xtype, mode) {
+            if (!Ext.isEmpty(userInfo) && !Ext.isEmpty(userInfo.Constrains)) {
+                return userInfo.Constrains;
+            }
+        },
+
         setGridSettings: function (xtype, mode, gridSettings) {
             var key = getKeyForGridSettings(xtype, mode),
                 deferred = Q.defer();
 
             Ext.Ajax.request({
                 method: 'POST',
-                url: this.url +'/SaveGridSettings',
+                url: this.url + '/SaveGridSettings',
                 scope: this,
                 params: {
                     Key: key,
