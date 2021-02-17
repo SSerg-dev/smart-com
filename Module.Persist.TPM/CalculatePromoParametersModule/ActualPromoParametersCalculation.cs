@@ -59,7 +59,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 double? COGSPercent;
                 SimplePromoTradeInvestment simplePromoTradeInvestment = new SimplePromoTradeInvestment(promo);
 
-               // useActualTI = promo.UseActualTI == true ? promo.UseActualTI : useActualTI;
+                useActualTI = promo.UseActualTI == true ? promo.UseActualTI : useActualTI;
 
                 if (useActualTI)
                 {
@@ -85,7 +85,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                 // ищем COGS
                 SimplePromoCOGS simplePromoCOGS = new SimplePromoCOGS(promo);
-               // useActualCOGS = promo.UseActualCOGS == true ? promo.UseActualCOGS : useActualCOGS;
+                useActualCOGS = promo.UseActualCOGS == true ? promo.UseActualCOGS : useActualCOGS;
 
                 if (useActualCOGS)
                 {
