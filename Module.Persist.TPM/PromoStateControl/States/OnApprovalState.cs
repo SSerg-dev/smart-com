@@ -285,7 +285,7 @@ namespace Module.Persist.TPM.PromoStateControl
 									incident.ProcessDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
 								}
 							}
-							// Если промо уже перешло в Approved, то все инцеденты по onApproval закрываем.
+							// Если промо уже перешло в Approved, то все инциденты по onApproval закрываем.
 							foreach (var incident in oldIncidents)
 							{
 								incident.ProcessDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);

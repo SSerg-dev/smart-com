@@ -5,13 +5,17 @@
     init: function () {
         this.listen({
             component: {
-   				// promo activity
+                //promo mass approval
+                'promo #massapprovalbutton': {
+                    click: this.onMassApprovalButtonClick
+                },
+                // promo activity
                 'promoactivity #promoActivity_step2 #exportAllPromoProducts': {
                     click: this.onActivityExportPromoProductsClick
                 },
                 'promoeditorcustom #btn_resetPromo': {
                     click: this.resetPromo
-                }, 
+                },
                 'promo #canchangeresponsible': {
                     afterrender: this.onChangeResposibleButtonAfterRender,
                     click: this.onChangeResponsible
@@ -24,6 +28,75 @@
         });
     },
 
+    onMassApprovalButtonClick: function (button) {
+        var me = this;
+        var panel = button.up('panel');
+        Ext.Msg.show({
+            title: l10n.ns('tpm', 'text').value('Confirmation'),
+            msg: l10n.ns('tpm', 'Promo').value('Confirm Approval'),
+            fn: function (btn) {
+                if (btn === 'yes') {
+                    me.onOkMassApprovalClick(btn, me, panel);
+                } 
+            },
+            icon: Ext.Msg.QUESTION,
+            buttons: Ext.Msg.YESNO,
+            buttonText: {
+                yes: l10n.ns('tpm', 'button').value('confirm'),
+                no: l10n.ns('tpm', 'button').value('cancel')
+            }
+        });
+    },
+
+    onOkMassApprovalClick: function (button, me, window) {
+        window.setLoading(true);
+        var records = me.getFilteredPromoRecords();
+
+        if (records != null) {
+            $.ajax({
+                dataType: 'json',
+                url: '/odata/Promoes/MassApprove',
+                type: 'POST',
+                data: records,
+                success: function (response) {
+                    var data = Ext.JSON.decode(response.value);
+                    if (data.success) {
+                        window.setLoading(false);
+                        App.Notify.pushInfo('Mass approve task created successfully');
+                        App.System.openUserTasksPanel();
+                    }
+                    else {
+                        window.setLoading(false);
+                        App.Notify.pushError(l10n.ns('tpm', 'text').value('failedStatusLoad'));
+                    }
+                },
+                error: function (data) {
+                    window.setLoading(false);
+                    App.Notify.pushError(data.responseJSON["odata.error"].innererror.message);
+                }
+            });
+        } else {
+            window.setLoading(false);
+            App.Notify.pushError("There is no promo to approve!");
+        }              
+    },
+
+    getFilteredPromoRecords: function () {
+        var grid = Ext.ComponentQuery.query('#promoGrid')[0].down('grid');
+        var store = grid.getStore();
+
+        var promoNumbers = "";
+
+        if (store.getCount() > 0) {
+            var records = store.getRange(0, store.getCount() - 1);
+            records.forEach(function (el) {
+                promoNumbers += el.data.Number + ",";
+            })
+        }
+
+        return promoNumbers != "" ? promoNumbers.slice(0, -1) : null;
+    },
+
     onChangeResposibleButtonAfterRender: function (button) {
 
         button.setDisabled(true);
@@ -33,8 +106,8 @@
         var grid = this.getGridByButton(button),
             panel = grid.up('combineddirectorypanel'),
             selModel = grid.getSelectionModel();
-        var record = selModel.getSelection()[0]; 
-        if (record) { 
+        var record = selModel.getSelection()[0];
+        if (record) {
             var grid = Ext.widget('userrolepromo').down('directorygrid'),
                 panel = grid.up('combineddirectorypanel'),
                 model = panel.getBaseModel(),
@@ -44,7 +117,7 @@
                 items: Ext.create(viewClassName, {
                     baseModel: model
                 })
-            });   
+            });
             window.down('#select').promoId = record.data.Id;
             window.down('#select').on('click', this.onSelectButtonClick, this);
             //window.down('#select').setDisabled(false);
@@ -52,22 +125,22 @@
         } else {
             App.Notify.pushError(l10n.ns('tpm', 'text').value('failedLoadData'));
         }
-    }, 
+    },
 
-    onSelectButtonClick: function (button) { 
+    onSelectButtonClick: function (button) {
         promoId = button.promoId;
         var window = button.up('selectorwindow');
-        selModel = window.down('directorygrid').getSelectionModel().getSelection()[0]; 
+        selModel = window.down('directorygrid').getSelectionModel().getSelection()[0];
         if (selModel) {
             var userName = selModel.data.Name;
-            window.setLoading(l10n.ns('core').value('savingText')); 
+            window.setLoading(l10n.ns('core').value('savingText'));
             $.ajax({
                 dataType: 'json',
                 url: '/odata/Promoes/ChangeResponsible?promoId=' + promoId + '&userName=' + userName,
                 type: 'POST',
                 success: function (response) {
                     var data = Ext.JSON.decode(response.value);
-                    if (data.success) { 
+                    if (data.success) {
                         window.setLoading(false);
                         window.close();
                     }
@@ -86,7 +159,7 @@
             App.Notify.pushError(l10n.ns('tpm', 'text').value('failedLoadData'));
         }
     },
-    
+
     resetPromo: function (btn) {
         var window = btn.up('promoeditorcustom');
         var record = this.getRecord(window);
@@ -110,11 +183,11 @@
                             var grid = Ext.ComponentQuery.query('#promoGrid')[0];
                             var directorygrid = grid ? grid.down('directorygrid') : null;
                             window.promoId = data.Id;
-                            window.model = newModel; 
+                            window.model = newModel;
                             var panel = Ext.ComponentQuery.query('promoeditorcustom')[0].down('#promoBudgets_step1');
-                           
-                           
-                            
+
+
+
                             var shopperTi = panel.down('numberfield[name=PlanPromoTIShopper]').setValue(null);
                             var marketingTi = panel.down('numberfield[name=PlanPromoTIMarketing]').setValue(null);
                             var branding = panel.down('numberfield[name=PlanPromoBranding]').setValue(null);
@@ -144,12 +217,12 @@
                             factCostProduction.originValue = 0;
 
                             factTotalCost.originValue = 0;
-                            totalCost.originValue = 0; 
-                            me.reFillPromoForm(window, newModel, directorygrid);  
+                            totalCost.originValue = 0;
+                            me.reFillPromoForm(window, newModel, directorygrid);
 
-                            me.updateStatusHistoryState(); 
-                      
-                             
+                            me.updateStatusHistoryState();
+
+
                         }
                     });
                 }
@@ -290,6 +363,20 @@
                     statusColors: result.statusColors
                 }
             }
+            else {
+                var settings = {
+                    svgHeight: svgHeight,
+                    svgWidth: svgWidth,
+                    currentWidthRatio: panelWidthRatio,
+                    currentHeightRatio: panelHeightRatio,
+                    currentHeight: panel.body.getHeight(),
+                    status: 'draft',
+                    onApprovalState: onApprovalState,
+                    isNonego: result.isNoNegoPassed == undefined ? false : result.isNoNegoPassed,
+                    statusHistory: result.data == undefined ? [] : result.data,
+                    statusColors: result.statusColors
+                }
+            }
 
             itemsArray.push({
                 html: tpl.apply(settings),
@@ -328,9 +415,100 @@
             approvalhistory.historyArray = result.data == undefined ? null : result.data;
             approvalhistory.isNonego = result.isNoNegoPassed == undefined ? false : result.isNoNegoPassed;
             approvalhistory.promoStatus = promoStatusName;
-            approvalhistory.statusColors = result.statusColors; 
+            approvalhistory.statusColors = result.statusColors;
             if (promoeditorcustom.down('#btn_changes').hasCls('selected'))
                 promoeditorcustom.setLoading(false);
         }
-    }
+    },
+
+    getOnApprovalFilterDP: function () {
+        var date = new Date();
+        date.setHours(date.getHours() + (date.getTimezoneOffset() / 60) + 3);
+
+        date = Ext.Date.add(date, Ext.Date.DAY, 8 * 7);
+
+        var filter = {
+            operator: "and",
+            rules: [{
+                property: "PromoStatusName", operation: "Equals", value: 'On Approval'
+            },
+            {
+                property: "DispatchesStart", operation: "LessThan", value: date
+            }, {
+                property: "IsCMManagerApproved", operation: "Equals", value: true
+            }, {
+                operator: "or",
+                rules: [{
+                    property: "IsDemandPlanningApproved", operation: "Equals", value: null
+                },
+                {
+                    property: "IsDemandPlanningApproved", operation: "Equals", value: false
+                }]
+            },
+            ]
+        };
+
+        return filter;
+    },
+
+    getOnApprovalFilterDF: function () {
+        var date = new Date();
+        date.setHours(date.getHours() + (date.getTimezoneOffset() / 60) + 3);
+
+        date = Ext.Date.add(date, Ext.Date.DAY, 8 * 7);
+
+        var filter = {
+            operator: "and",
+            rules: [{
+                property: "PromoStatusName", operation: "Equals", value: 'On Approval'
+            },
+            {
+                property: "DispatchesStart", operation: "LessThan", value: date
+            }, {
+                property: "IsCMManagerApproved", operation: "Equals", value: true
+            }, {
+                property: "IsDemandPlanningApproved", operation: "Equals", value: true
+            },
+            {
+                operator: "or",
+                rules: [{
+                    property: "IsDemandFinanceApproved", operation: "Equals", value: null
+                },
+                {
+                    property: "IsDemandFinanceApproved", operation: "Equals", value: false
+                }]
+            },
+            ]
+        };
+
+        return filter;
+    },
+
+    getOnApprovalFilterCMM: function () {
+        var date = new Date();
+        date.setHours(date.getHours() + (date.getTimezoneOffset() / 60) + 3);
+
+        date = Ext.Date.add(date, Ext.Date.DAY, 8 * 7);
+
+        var filter = {
+            operator: "and",
+            rules: [{
+                property: "PromoStatusName", operation: "Equals", value: 'On Approval'
+            },
+            {
+                property: "DispatchesStart", operation: "LessThan", value: date
+            }, {
+                operator: "or",
+                rules: [{
+                    property: "IsCMManagerApproved", operation: "Equals", value: null
+                },
+                {
+                    property: "IsCMManagerApproved", operation: "Equals", value: false
+                }]
+            }
+            ]
+        };
+
+        return filter;
+    },
 });

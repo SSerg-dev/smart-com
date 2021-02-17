@@ -2309,6 +2309,10 @@
     <Compile Include="Migrations\202012141607411_EmptyMigrationRC11.Designer.cs">
       <DependentUpon>202012141607411_EmptyMigrationRC11.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202012171656240_Add_AccessPoint_MassApproval.cs" />
+    <Compile Include="Migrations\202012171656240_Add_AccessPoint_MassApproval.Designer.cs">
+      <DependentUpon>202012171656240_Add_AccessPoint_MassApproval.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\202101141012352_EmptyRC.cs" />
     <Compile Include="Migrations\202101141012352_EmptyRC.Designer.cs">
       <DependentUpon>202101141012352_EmptyRC.cs</DependentUpon>
@@ -2316,6 +2320,10 @@
     <Compile Include="Migrations\202101141531171_EmptyRC1.cs" />
     <Compile Include="Migrations\202101141531171_EmptyRC1.Designer.cs">
       <DependentUpon>202101141531171_EmptyRC1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202102090034048_Add_AccessPoint_GetClientTreeByObjectId.cs" />
+    <Compile Include="Migrations\202102090034048_Add_AccessPoint_GetClientTreeByObjectId.Designer.cs">
+      <DependentUpon>202102090034048_Add_AccessPoint_GetClientTreeByObjectId.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\202102091047192_Add_UseActualCOGSTI.cs" />
     <Compile Include="Migrations\202102091047192_Add_UseActualCOGSTI.Designer.cs">
@@ -2328,6 +2336,10 @@
     <Compile Include="Migrations\202102120949546_Fix_NightRecalculationHelpers.cs" />
     <Compile Include="Migrations\202102120949546_Fix_NightRecalculationHelpers.Designer.cs">
       <DependentUpon>202102120949546_Fix_NightRecalculationHelpers.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202102171721252_EmptyRC2.cs" />
+    <Compile Include="Migrations\202102171721252_EmptyRC2.Designer.cs">
+      <DependentUpon>202102171721252_EmptyRC2.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
@@ -4503,6 +4515,9 @@
     <EmbeddedResource Include="Migrations\202101141531171_EmptyRC1.resx">
       <DependentUpon>202101141531171_EmptyRC1.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202012171656240_Add_AccessPoint_MassApproval.resx">
+      <DependentUpon>202012171656240_Add_AccessPoint_MassApproval.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202102091047192_Add_UseActualCOGSTI.resx">
       <DependentUpon>202102091047192_Add_UseActualCOGSTI.cs</DependentUpon>
     </EmbeddedResource>
@@ -4511,6 +4526,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202102120949546_Fix_NightRecalculationHelpers.resx">
       <DependentUpon>202102120949546_Fix_NightRecalculationHelpers.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202102090034048_Add_AccessPoint_GetClientTreeByObjectId.resx">
+      <DependentUpon>202102090034048_Add_AccessPoint_GetClientTreeByObjectId.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202102171721252_EmptyRC2.resx">
+      <DependentUpon>202102171721252_EmptyRC2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

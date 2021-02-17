@@ -88,6 +88,14 @@ namespace Module.Frontend.TPM.Controllers
             return SingleResult.Create(GetConstraintedQuery());
         }
 
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IHttpActionResult GetClientTreeByObjectId(int? objectId)
+        {
+            var clientTree = Context.Set<ClientTree>().FirstOrDefault(x => x.ObjectId == objectId && x.EndDate == null);
+            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, data = clientTree }));
+        }
+
         /// <summary>
         /// Получение иерархии для заданного узла
         /// </summary>

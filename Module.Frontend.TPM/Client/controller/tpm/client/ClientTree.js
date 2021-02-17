@@ -248,11 +248,13 @@
             proxy = store.getProxy();
 
         proxy.extraParams.filterParameter = null;
-        proxy.extraParams.needBaseClients = false;
+        proxy.extraParams.needBaseClients = true;
         me.disableButtons([updateButton, deleteButton, moveButton]);
+
 
         //так как автозагрузка стора отключена, необходимо загрузить стор, если иерархия открыта не в окне промо или в окне промо в режиме создания
         if (tree.needLoadTree && (!promocontainer || (promoeditorcustom && promoeditorcustom.isCreating) && !promoeditorcustom.isFromSchedule)) {
+            proxy.extraParams.needBaseClients = false;
             store.load();
         }
 

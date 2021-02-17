@@ -392,6 +392,7 @@ namespace Module.Persist.TPM {
             builder.Entity<Promo>().Collection.Action("RecalculatePromo");
             builder.Entity<Promo>().Collection.Action("ResetPromo");
             builder.Entity<Promo>().Collection.Action("ChangeResponsible");
+            builder.Entity<Promo>().Collection.Action("MassApprove");
             builder.Entity<Promo>().Collection.Action("CheckIfLogHasErrors");
 			builder.Entity<Promo>().Collection.Action("CheckPromoCreator");
 			builder.Entity<Promo>().Collection.Action("GetProducts").CollectionParameter<string>("InOutProductIds");
@@ -476,6 +477,7 @@ namespace Module.Persist.TPM {
             builder.Entity<ClientTree>().Collection.Action("Move");
             ActionConfiguration updateClientNodeAction = builder.Entity<ClientTree>().Collection.Action("UpdateNode");
             updateClientNodeAction.ReturnsFromEntitySet<ClientTree>("ClientTrees"); //какого типа параметр принимает экшн.
+            builder.Entity<ClientTree>().Collection.Action("GetClientTreeByObjectId");
             builder.Entity<ClientTree>().Collection.Action("CanCreateBaseClient");
             builder.Entity<ClientTree>().Collection.Action("UploadLogoFile");
             builder.Entity<ClientTree>().Collection.Action("DownloadLogoFile");

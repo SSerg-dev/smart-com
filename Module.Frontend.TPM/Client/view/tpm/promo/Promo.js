@@ -70,30 +70,30 @@
             },
         },
 
-            {
-                itemId: 'createbutton',
-                action: 'Post',
-                glyph: 0xf0f3,
-                text: l10n.ns('tpm', 'Promo').value('CreateCollapsed'),
-                tooltip: l10n.ns('tpm', 'Promo').value('CreateCollapsed'),
-                ui: 'create-promo-btn'
-            },
-       //     {
-       //     itemId: 'createbutton',
-       //     action: 'Post',
-       //     glyph: 0xf0f3,
-       //     text: l10n.ns('tpm', 'Promo').value('CreateCollapsed'),
-       //     tooltip: l10n.ns('tpm', 'Promo').value('CreateCollapsed'),
-       //     ui: 'create-promo-btn'
-       // }, {
-       //     itemId: 'createinoutbutton',
-       //     action: 'Post',
-       //     glyph: 0xf0f3,
-       //     text: l10n.ns('tpm', 'Promo').value('CreateInOutCollapsed'),
-       //     tooltip: l10n.ns('tpm', 'Promo').value('CreateInOutCollapsed'),
-       //     ui: 'create-promo-btn'
-            // },
-            {
+        {
+            itemId: 'createbutton',
+            action: 'Post',
+            glyph: 0xf0f3,
+            text: l10n.ns('tpm', 'Promo').value('CreateCollapsed'),
+            tooltip: l10n.ns('tpm', 'Promo').value('CreateCollapsed'),
+            ui: 'create-promo-btn'
+        },
+        //     {
+        //     itemId: 'createbutton',
+        //     action: 'Post',
+        //     glyph: 0xf0f3,
+        //     text: l10n.ns('tpm', 'Promo').value('CreateCollapsed'),
+        //     tooltip: l10n.ns('tpm', 'Promo').value('CreateCollapsed'),
+        //     ui: 'create-promo-btn'
+        // }, {
+        //     itemId: 'createinoutbutton',
+        //     action: 'Post',
+        //     glyph: 0xf0f3,
+        //     text: l10n.ns('tpm', 'Promo').value('CreateInOutCollapsed'),
+        //     tooltip: l10n.ns('tpm', 'Promo').value('CreateInOutCollapsed'),
+        //     ui: 'create-promo-btn'
+        // },
+        {
             itemId: 'updatebutton',
             action: 'Patch',
             glyph: 0xf64f,
@@ -137,6 +137,14 @@
             glyph: 0xf00f,
             text: l10n.ns('tpm', 'Promo').value('ChangeResponsible'),
             tooltip: l10n.ns('tpm', 'Promo').value('ChangeResponsible'),
+        }, {
+            glyph: 0xf0d7,
+            action: 'MassApprove',
+            resource: 'Promoes',
+            itemId: 'massapprovalbutton',
+            disabled: true,
+            text: l10n.ns('tpm', 'Promo').value('MassApprovalButtonText'),
+            tooltip: l10n.ns('tpm', 'Promo').value('MassApprovalButtonText')
         },
             '-', '->', '-', {
             itemId: 'extfilterclearbutton',
@@ -151,7 +159,7 @@
             }
         }]
     }],
-    
+
     items: [{
         xtype: 'directorygrid',
         itemId: 'datatable',
@@ -610,32 +618,32 @@
                     }
                 },
                 hidden: true,
-                }, {
-                    text: l10n.ns('tpm', 'Promo').value('PromoTypesName'),
-                    dataIndex: 'PromoTypesName',
-                    width: 130,
-                    filter: {
-                        type: 'search',
-                        selectorWidget: 'promotypes',
-                        valueField: 'Name',
-                        store: {
-                            type: 'directorystore',
-                            model: 'App.model.tpm.promotypes.PromoTypes',
-                            extendedFilter: {
-                                xclass: 'App.ExtFilterContext',
-                                supportedModels: [{
-                                    xclass: 'App.ExtSelectionFilterModel',
-                                    model: 'App.model.tpm.promotypes.PromoTypes',
-                                    modelId: 'efselectionmodel'
-                                }, {
-                                    xclass: 'App.ExtTextFilterModel',
-                                    modelId: 'eftextmodel'
-                                }]
-                            }
+            }, {
+                text: l10n.ns('tpm', 'Promo').value('PromoTypesName'),
+                dataIndex: 'PromoTypesName',
+                width: 130,
+                filter: {
+                    type: 'search',
+                    selectorWidget: 'promotypes',
+                    valueField: 'Name',
+                    store: {
+                        type: 'directorystore',
+                        model: 'App.model.tpm.promotypes.PromoTypes',
+                        extendedFilter: {
+                            xclass: 'App.ExtFilterContext',
+                            supportedModels: [{
+                                xclass: 'App.ExtSelectionFilterModel',
+                                model: 'App.model.tpm.promotypes.PromoTypes',
+                                modelId: 'efselectionmodel'
+                            }, {
+                                xclass: 'App.ExtTextFilterModel',
+                                modelId: 'eftextmodel'
+                            }]
                         }
-                    },
-                    hidden: false
-                }, ]
+                    }
+                },
+                hidden: false
+            },]
         }
     }]
 });

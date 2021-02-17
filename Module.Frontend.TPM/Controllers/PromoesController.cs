@@ -709,6 +709,46 @@ namespace Module.Frontend.TPM.Controllers
 
             return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
         }
+
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IHttpActionResult MassApprove()
+        {
+            var promoNumbers = Request.Content.ReadAsStringAsync().Result;
+            UserInfo user = authorizationManager.GetCurrentUser();
+            Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
+            RoleInfo role = authorizationManager.GetCurrentRole();
+            Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                HandlerData data = new HandlerData();
+                string handlerName = "MassApproveHandler";
+
+                HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("promoNumbers", promoNumbers, data, visible: false, throwIfNotExists: false);
+
+                LoopHandler handler = new LoopHandler()
+                {
+                    Id = Guid.NewGuid(),
+                    ConfigurationName = "PROCESSING",
+                    Description = $"Mass promo approving",
+                    Name = "Module.Host.TPM.Handlers." + handlerName,
+                    ExecutionPeriod = null,
+                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                    LastExecutionDate = null,
+                    NextExecutionDate = null,
+                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                    UserId = userId,
+                    RoleId = roleId
+                };
+                handler.SetParameterData(data);
+                context.LoopHandlers.Add(handler);
+                context.SaveChanges();
+            }
+            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
+        }
+
         [ClaimsAuthorize]
         [HttpPost]
         public IHttpActionResult ResetPromo(Guid promoId)

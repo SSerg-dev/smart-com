@@ -305,6 +305,7 @@
     <Compile Include="Actions\Notifications\WeekBeforeDispatchPromoNotificationAction.cs" />
     <Compile Include="Actions\Notifications\CancelledPromoNotificationAction.cs" />
     <Compile Include="Actions\ExportAction.cs" />
+    <Compile Include="Actions\MassApproveAction.cs" />
     <Compile Include="Actions\ReapprovingAction.cs" />
     <Compile Include="Actions\RestartMainNightProcessingActions.cs" />
     <Compile Include="Actions\SendingFilesToBlobAction.cs" />
@@ -332,6 +333,7 @@
     <Compile Include="Actions\Notifications\PromoUpliftFailNotificationAction.cs" />
     <Compile Include="Actions\Notifications\PromoDemandChangeNotificationAction.cs" />
     <Compile Include="Actions\Notifications\PromoProductChangeNotificationAction.cs" />
+    <Compile Include="Handlers\MassApproveHandler.cs" />
     <Compile Include="Handlers\CalculateBTLBudgetsHandler.cs" />
     <Compile Include="Handlers\CreateCoefficientSI2SOHandler.cs" />
     <Compile Include="Handlers\MainNightProcessing\MainNightProcessingHelper.cs" />

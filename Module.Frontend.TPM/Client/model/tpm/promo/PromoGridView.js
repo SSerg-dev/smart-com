@@ -11,6 +11,14 @@
         { name: 'PromoEventName', type: 'string', mapping: 'PromoEventName', defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'Event', hidden: false, isDefault: true },
         { name: 'Mechanic', type: 'string', useNull: true, hidden: false, isDefault: true },
         { name: 'MechanicIA', type: 'string', useNull: true, hidden: false, isDefault: true },
+
+        { name: 'StartDate', useNull: true, type: 'date', hidden: true, timeZone: +3, convert: dateConvertTimeZone },
+        { name: 'DateStart', useNull: true, type: 'date', hidden: false, isDefault: true, mapping: 'StartDate', timeZone: +3, convert: dateConvertTimeZone },
+        { name: 'EndDate', useNull: true, type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
+
+        { name: 'DispatchesStart', useNull: true, type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
+        { name: 'DispatchesEnd', useNull: true, type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
+
         { name: 'MarsStartDate', type: 'string', useNull: true, hidden: false, isDefault: true },
         { name: 'MarsDispatchesStart', type: 'string', useNull: true, hidden: false, isDefault: true },
         { name: 'PromoStatusName', type: 'string', mapping: 'PromoStatusName', defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'PromoStatus', hidden: false, isDefault: true },
@@ -20,13 +28,6 @@
         { name: 'IsDemandPlanningApproved', type: "boolean", useNull: true, hidden: true, isDefault: false },
         { name: 'IsDemandFinanceApproved', type: "boolean", useNull: true, hidden: true, isDefault: false },
         { name: 'PlanInstoreMechanicDiscount', type: 'float', hidden: false, isDefault: false },
-
-        { name: 'StartDate', useNull: true, type: 'date', hidden: true, timeZone: +3, convert: dateConvertTimeZone },
-        { name: 'DateStart', useNull: true, type: 'date', hidden: false, isDefault: false, mapping: 'StartDate', timeZone: +3, convert: dateConvertTimeZone },
-        { name: 'EndDate', useNull: true, type: 'date', hidden: false, isDefault: false, timeZone: +3, convert: dateConvertTimeZone },
-
-        { name: 'DispatchesStart', useNull: true, type: 'date', hidden: false, isDefault: false, timeZone: +3, convert: dateConvertTimeZone },
-        { name: 'DispatchesEnd', useNull: true, type: 'date', hidden: false, isDefault: false, timeZone: +3, convert: dateConvertTimeZone },
 
         { name: 'LastChangedDate', useNull: true, type: 'date', hidden: true, isDefault: false, timeZone: +3, convert: dateConvertTimeZone },
         { name: 'LastChangedDateDemand', useNull: true, type: 'date', hidden: true, isDefault: false, timeZone: +3, convert: dateConvertTimeZone},

@@ -77,7 +77,7 @@
     onDestroy: function () {
         var proxy = this.getStore().getProxy();
         proxy.extraParams.filterParameter = null; // TODO: переделать механизм фильтрации?
-        proxy.extraParams.needBaseClients = false;
+        proxy.extraParams.needBaseClients = true;
         this.callParent(arguments);
     },
 });

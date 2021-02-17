@@ -54,7 +54,7 @@
             filterParameter: null,
             clientObjectId: null,
             budgetSubItemId: null,
-            needBaseClients: false,
+            needBaseClients: true,
             dateFilter: null,
             view: false,
         }

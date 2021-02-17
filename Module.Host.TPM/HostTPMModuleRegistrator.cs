@@ -80,6 +80,7 @@ namespace Module.Host.TPM
                 new Handlers.NightProcessingWaitHandler(),
                 new Handlers.ReapprovingHandler(),
                 new Handlers.ExportHandler(),
+                new Handlers.MassApproveHandler(),
                 new Handlers.SendingFilesToBlobHandler()
             };
         }

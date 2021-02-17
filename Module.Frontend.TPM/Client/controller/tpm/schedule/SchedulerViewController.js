@@ -104,7 +104,7 @@
         if (App.UserInfo.getCurrentRole()['SystemName'] == 'SupportAdministrator') {
             res = true;
         } else {
-            res = rec.get('PromoStatusSystemName') && (rec.get('PromoStatusSystemName') == 'Draft' || rec.get('PromoStatusSystemName') == 'DraftPublished') && (rec.get('StartDate') > Date.now())
+            res = rec.get('PromoStatusSystemName') && (['Draft', 'DraftPublished', 'OnApproval', 'Approved', 'Planned'].includes(rec.get('PromoStatusSystemName')));
         }
         return res;
     },
@@ -120,8 +120,8 @@
         if (dragContext.timeDiff == 0) {
             dragContext.finalize(false);
             return false;
-        } else if (dragContext.startDate < Date.now() && App.UserInfo.getCurrentRole()['SystemName'] != 'SupportAdministrator') {
-            App.Notify.pushInfo('New start date must be after current date.');
+        } else if (dragContext.startDate < new Date(new Date().toDateString()) && App.UserInfo.getCurrentRole()['SystemName'] != 'SupportAdministrator') {
+            App.Notify.pushInfo(l10n.ns('tpm', 'text').value('wrongStartDate'));
             dragContext.finalize(false);
             return false;
         } else {
@@ -535,8 +535,16 @@
         var status = rec.get('PromoStatusSystemName').toLowerCase();
         var promoStore = me.getPromoStore();
         var isDeletable = status == 'draft' || status == 'draftpublished';
+        var isEditable = false;
+        var isPlannable = false;
         if (App.UserInfo.getCurrentRole()['SystemName'] == 'SupportAdministrator') {
             isDeletable = true;
+        }
+        if (['Administrator', 'CMManager', 'CustomerMarketing', 'FunctionalExpert', 'KeyAccountManager', 'DemandPlanning'].includes(App.UserInfo.getCurrentRole()['SystemName'])) {
+            isEditable = true;
+        }
+        if (['Administrator', 'KeyAccountManager', 'FunctionalExpert'].includes(App.UserInfo.getCurrentRole()['SystemName']) && status == 'approved') {
+            isPlannable = true;
         }
         var postAccess = me.getAllowedActionsForCurrentRoleAndResource('Promoes').some(function (action) { return action === 'Post' });
         if (!panel.ctx) {
@@ -611,30 +619,101 @@
                         }
                     }
                 }, {
-                    text: l10n.ns('tpm', 'Schedule').value('View'),
-                    glyph: 0xfba8,
-                        handler: function (button) {
-                            panel.up('schedulecontainer').setLoading(true);
-                            promoStore.load({
-                                id: panel.ctx.recId,
-                                scope: this,
-                                callback: function (records, operation, success) {
-                                    if (success && records[0]) {
-                                        button.assignedRecord = records[0];
-                                        me.mixins["App.controller.tpm.promo.Promo"].onDetailButtonClick.call(me, button);
-                                    } else {
-                                        panel.up('schedulecontainer').setLoading(false);
-                                        App.Notify.pushError(l10n.ns('tpm', 'text').value('failedView'));
+                    itemId: 'promoeditbutton',
+                    text: l10n.ns('tpm', 'Schedule').value('Edit'),
+                    glyph: 0xf64f,
+                    hidden: !postAccess,
+                    handler: function (button) {
+                        panel.up('schedulecontainer').setLoading(true);
+                        promoStore.load({
+                            id: panel.ctx.recId,
+                            scope: this,
+                            callback: function (records, operation, success) {
+                                if (success && records[0]) {
+                                    var promoeditorcustom = Ext.widget('promoeditorcustom');
+                                    promoeditorcustom.isCreating = false;
+                                    promoeditorcustom.assignedRecord = records[0];
+
+                                    me.mixins["App.controller.tpm.promo.Promo"].bindAllLoadEvents.call(me, promoeditorcustom, records[0], false);
+                                    me.mixins["App.controller.tpm.promo.Promo"].fillPromoForm.call(me, promoeditorcustom, records[0], false, false);
+
+                                    promoStatusName = records[0].get('PromoStatusName');
+
+                                    //Для блокирования кнопки продуктов
+                                    promoeditorcustom.productsSetted = true;
+
+
+                                    //Установка readOnly полям, для которых текущая роль не входит в crudAccess
+                                    me.setFieldsReadOnlyForSomeRole(promoeditorcustom);
+
+                                    var isPromoWasStarted = (['Started', 'Finished', 'Closed'].indexOf(promoStatusName) >= 0);
+                                    var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
+                                    if (isPromoWasStarted && currentRole !== 'SupportAdministrator') {
+                                        me.blockStartedPromoDateChange(promoeditorcustom, me);
+                                    }
+
+                                    me.setFieldsReadOnlyForSomeRole(promoeditorcustom);
+                                } else {
+                                    panel.up('schedulecontainer').setLoading(false);
+                                    App.Notify.pushError(l10n.ns('tpm', 'text').value('failedView'));
+                                }
+                            }
+                        });
+
+                    },
+                },
+                {
+                    itemId: 'promoplanbutton',
+                    text: l10n.ns('tpm', 'Schedule').value('Plan'),
+                    glyph: 0xf12c,
+                    hidden: !postAccess,
+                    handler: function (button) {
+                        panel.up('schedulecontainer').setLoading(true);
+                        var statusId;
+                        $.ajax({
+                            dataType: 'json',
+                            url: '/odata/PromoStatuss',
+                            success: function (promoStatusData) {
+                                for (var i = 0; i < promoStatusData.value.length; i++){
+                                    if (promoStatusData.value[i].SystemName == "Planned") {
+                                        statusId = promoStatusData.value[i].Id;
+                                        break;
                                     }
                                 }
-                            });
-                    }
-                }]
+                                var params = 'id=' + panel.ctx.recId + '&promoNewStatusId=' + statusId;
+                                $.ajax({
+                                    dataType: 'json',
+                                    url: '/odata/Promoes/ChangeStatus?' + params,
+                                    type: 'POST',
+                                    success: function (data) {
+                                        panel.up('schedulecontainer').setLoading(false);
+                                        var scheduler = Ext.ComponentQuery.query('#nascheduler')[0];
+                                        if (scheduler) {
+                                            scheduler.resourceStore.reload();
+                                            scheduler.eventStore.reload();
+                                        }
+                                    },
+                                    error: function (data) {
+                                        panel.up('schedulecontainer').setLoading(false);
+                                        App.Notify.pushError(data.statusText);
+                                    }
+                                });
+                            },
+                            error: function () {
+                                panel.up('schedulecontainer').setLoading(false);
+                                App.Notify.pushError(l10n.ns('tpm', 'text').value('failedStatusLoad'));
+                            }
+                        });
+                    },
+                }
+                ]
             });
         }
-        if (panel.ctx) {
+        if (panel.ctx && postAccess) {
             panel.ctx.recId = rec.getId();
-            panel.ctx.down('#promodeletebutton').setVisible(postAccess && isDeletable);
+            panel.ctx.down('#promodeletebutton').setVisible(isDeletable);
+            panel.ctx.down('#promoeditbutton').setVisible(isEditable);
+            panel.ctx.down('#promoplanbutton').setVisible(isPlannable);
             panel.ctx.showAt(e.getXY());
         }
     },
@@ -643,7 +722,7 @@
         var me = this;
         var scheduler = Ext.ComponentQuery.query('#nascheduler')[0];
         var typeToCreate = null;
-        if (createContext.start > Date.now() || App.UserInfo.getCurrentRole()['SystemName'] == 'SupportAdministrator') {
+        if (createContext.start > new Date(new Date().toDateString()) || App.UserInfo.getCurrentRole()['SystemName'] == 'SupportAdministrator') {
             var schedulerData,
                 ClientTypeName = createContext.resourceRecord.get('TypeName') + ' Promo',
                 isInOutClient = false,
@@ -908,7 +987,7 @@
         var me = this;
         var calendarGrid = Ext.ComponentQuery.query('scheduler');
         //Проверка по дате начала
-        if ((resizeContext.eventRecord.start < Date.now() || resizeContext.start < Date.now()) && App.UserInfo.getCurrentRole()['SystemName'] != 'SupportAdministrator') {
+        if ((resizeContext.eventRecord.start < new Date(new Date().toDateString()) || resizeContext.start < new Date(new Date().toDateString())) && App.UserInfo.getCurrentRole()['SystemName'] != 'SupportAdministrator') {
             App.Notify.pushError(l10n.ns('tpm', 'text').value('wrongStartDate'));
             resizeContext.finalize(false);
             //Открытый календарь - обновить его
@@ -1386,14 +1465,28 @@
     },
 
     delayOnEventClick: function (scheduler, eventRecord) {
-        this.fillTabPanel(eventRecord, scheduler, false);
+        this.fillTabPanel(eventRecord, scheduler, true);
     },
     // При даблклике срабатывает onEventdbClick и 2 раза onEventClick
     singleClickTask: new Ext.util.DelayedTask(this.delayOnEventClick),
 
-    onEventdbClick: function (scheduler, eventRecord, e, eOpts) {
+    onEventdbClick: function (panel, eventRecord, button) {
         this.singleClickTask.cancel();
-        this.fillTabPanel(eventRecord, scheduler, true)
+        var promoStore = this.getPromoStore();
+        panel.up('schedulecontainer').setLoading(true);
+        promoStore.load({
+            id: eventRecord.data.Id,
+            scope: this,
+            callback: function (records, operation, success) {
+                if (success && records[0]) {
+                    button.assignedRecord = records[0];
+                    this.mixins["App.controller.tpm.promo.Promo"].onDetailButtonClick.call(this, button);
+                } else {
+                    panel.up('schedulecontainer').setLoading(false);
+                    App.Notify.pushError(l10n.ns('tpm', 'text').value('failedView'));
+                }
+            }
+        });
     },
 
     onEventClick: function (scheduler, eventRecord, e, eOpts) {

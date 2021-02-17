@@ -141,15 +141,29 @@
 								var settings = {
 									svgHeight: svgHeight,
 									svgWidth: svgWidth,
-                                    currentWidthRatio: panelWidthRatio,
-                                    currentHeightRatio: panelHeightRatio,
-                                    currentHeight: panel.body.getHeight(),
-                                    status: promoStatusName,
-                                    onApprovalState: onApprovalState,
-                                    isNonego: container.isNonego == null ? false : container.isNonego,
-                                    statusHistory: container.historyArray == null ? [] : container.historyArray,
-                                    statusColors: container.statusColors
-                                }
+									currentWidthRatio: panelWidthRatio,
+									currentHeightRatio: panelHeightRatio,
+									currentHeight: panel.body.getHeight(),
+									status: promoStatusName,
+									onApprovalState: onApprovalState,
+									isNonego: container.isNonego == null ? false : container.isNonego,
+									statusHistory: container.historyArray == null ? [] : container.historyArray,
+									statusColors: container.statusColors
+								}
+							}
+							else {
+								var settings = {
+									svgHeight: svgHeight,
+									svgWidth: svgWidth,
+									currentWidthRatio: panelWidthRatio,
+									currentHeightRatio: panelHeightRatio,
+									currentHeight: panel.body.getHeight(),
+									status: 'draft',
+									onApprovalState: onApprovalState,
+									isNonego: container.isNonego == null ? false : container.isNonego,
+									statusHistory: container.historyArray == null ? [] : container.historyArray,
+									statusColors: container.statusColors
+								}
                             }
 
 							itemsArray.push({
@@ -299,15 +313,13 @@
 				var parentHeight = container.up().getHeight();
 				fieldset.setHeight(parentHeight - 13);
 				//Update tpl
-				if (container.historyArray.length > 0) {
-					var historyBtn = fieldset.down('button[id=historyBtn]');
-					var workflowBtn = fieldset.down('button[id=workflowBtn]');
+				var historyBtn = fieldset.down('button[id=historyBtn]');
+				var workflowBtn = fieldset.down('button[id=workflowBtn]');
 
-					if (historyBtn.active) {
-						historyBtn.fireEvent('click', historyBtn);
-					} else if (workflowBtn.active) {
-						workflowBtn.fireEvent('click', workflowBtn);
-					}
+				if (historyBtn.active) {
+					historyBtn.fireEvent('click', historyBtn);
+				} else if (workflowBtn.active) {
+					workflowBtn.fireEvent('click', workflowBtn);
 				}
 
 				if (width < 1000) {

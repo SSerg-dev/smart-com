@@ -294,6 +294,7 @@
             }
         });
     },
+
     onGridPromoAfterrender: function (grid) {
         var store = grid.getStore();
 
@@ -309,9 +310,94 @@
                     view.positionY = 0;
                 }
             }
+            var promoController = App.app.getController('tpm.promo.Promo');
+            promoController.massApprovalButtonDisable(grid, store);
+        });
+
+        store.on('beforeload', function (store) {
+            var maButton = grid.up().down('custombigtoolbar').down('#massapprovalbutton');
+            maButton.setDisabled(true);
         });
 
         this.onGridAfterrender(grid);
+    },
+
+    massApprovalButtonDisable: function (grid, store) {
+        var promoHelperController = App.app.getController('tpm.promo.PromoHelper');
+        var filter = store.fixedFilters ? store.fixedFilters['hiddenExtendedFilter'] : null;
+
+        var onApprovalFilterDP = promoHelperController.getOnApprovalFilterDP();
+        var onApprovalFilterDF = promoHelperController.getOnApprovalFilterDF();
+        var onApprovalFilterCMM = promoHelperController.getOnApprovalFilterCMM();
+        var maButton = grid.up().down('custombigtoolbar').down('#massapprovalbutton');
+
+        var isDisabled = !this.compareFilters(filter, onApprovalFilterDP) &&
+            !this.compareFilters(filter, onApprovalFilterDF) &&
+            !this.compareFilters(filter, onApprovalFilterCMM);
+
+        maButton.setDisabled(isDisabled);
+    },   
+
+    compareFilters: function (filter1, filter2) {
+        var isSame = true;
+        if (filter1 && filter2) {
+            isSame = filter1.rules.length == filter2.rules.length;
+            if (isSame) {
+
+                var filterProperties1 = this.getFilterProperties(filter1);
+                var filterProperties2 = this.getFilterProperties(filter2);
+
+                var isSame =
+                    (filterProperties1.operators.length == filterProperties2.operators.length) &&
+                    (filterProperties1.properties.length == filterProperties2.properties.length) &&
+                    (filterProperties1.values.length == filterProperties2.values.length) &&
+                    filterProperties1.operators.every(function (element, index) {
+                        return element === filterProperties2.operators[index];
+                    }) &&
+                    filterProperties1.properties.every(function (element, index) {
+                        return element === filterProperties2.properties[index];
+                    }) &&
+                    filterProperties1.values.every(function (element, index) {
+                        return element === filterProperties2.values[index];
+                    });
+            }
+        } else {
+            isSame = false;
+        }
+        return isSame;
+    },
+
+    getFilterProperties: function (filter) {
+        var filterProperties = {
+            operators: [],
+            properties: [],
+            values: []
+        };
+        filterProperties.operators.push(filter.operator);
+
+        filter.rules.forEach(function (item) {
+            if (!item.rules) {
+                var date = new Date(Date.parse(item.value));
+
+                if (!isNaN(date)) {
+                    date.setMinutes(0, 0, 0);
+
+                    filterProperties.values.push(date.getTime());
+                    filterProperties.properties.push(item.property);
+                } else {
+                    filterProperties.values.push(item.value);
+                    filterProperties.properties.push(item.property);
+                }
+            } else {
+                var promoController = App.app.getController('tpm.promo.Promo');
+                var nestedFilter = promoController.getFilterProperties(item);
+                Array.prototype.push.apply(filterProperties.operators, nestedFilter.operators);
+                Array.prototype.push.apply(filterProperties.properties, nestedFilter.properties);
+                Array.prototype.push.apply(filterProperties.values, nestedFilter.values);
+            }
+        });
+
+        return filterProperties;
     },
 
     onBasicPanelAfterrender: function (component, eOpts) {
@@ -1189,6 +1275,27 @@
         this.getController('tpm.promo.Promo').detailButton = null;
         promoeditorcustom.isFromSchedule = schedulerData;
 
+        //Если одно ограничение - сразу выбираем клиента
+        var userRoleConstrains = App.UserInfo.getConstrains();
+        me.defaultClientTree = null;
+        if (Object.keys(userRoleConstrains).length == 1) {
+            $.ajax({
+                dataType: 'json',
+                type: 'POST',
+                url: '/odata/ClientTrees/GetClientTreeByObjectId?objectId=' + Object.keys(userRoleConstrains)[0],
+                async: false,
+                success: function (data) {
+                    var result = Ext.JSON.decode(data.value);
+                    if (result.data.IsBaseClient) {
+                        me.defaultClientTree = result.data;
+                    }
+                },
+                error: function () {
+                    App.Notify.pushError(l10n.ns('tpm', 'text').value('failedLoadData'));
+                }
+            });
+        }
+
         // установка флага Apollo Export
         var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
         var apolloExportCheckbox = promoeditorcustom.down('[name=ApolloExportCheckbox]');
@@ -1284,32 +1391,36 @@
 
                         // если создание из календаря
                         if (schedulerData) {
-                            var promoClientForm = promoeditorcustom.down('container[name=promo_step1]');
                             var durationDateStart = period.down('datefield[name=DurationStartDate]');
                             var durationDateEnd = period.down('datefield[name=DurationEndDate]');
                             var startDate = schedulerData.schedulerContext.start;
                             var endDate = schedulerData.schedulerContext.end;
-                            var clientRecord;
-
-                            if (schedulerData.isCopy) { }
-                            else {
-                                clientRecord = schedulerData.schedulerContext.resourceRecord.raw;
-                            }
 
                             durationDateStart.setValue(startDate);
                             durationDateEnd.setValue(endDate);
+                        }
 
-                            if (clientRecord) {
-                                promoClientForm.fillForm(clientRecord, false);
-                                me.checkParametersAfterChangeClient(clientRecord, promoeditorcustom);
+                        var clientRecord;
+                        if (schedulerData && !schedulerData.isCopy) {
+                            clientRecord = schedulerData.schedulerContext.resourceRecord.raw;
+                        }
+                        else if (me.defaultClientTree != null) {
+                            clientRecord = me.defaultClientTree;
+                        }
+
+                        if (clientRecord) {
+                            var promoClientForm = promoeditorcustom.down('container[name=promo_step1]');
+                            promoClientForm.fillForm(clientRecord, false);
+                            me.checkParametersAfterChangeClient(clientRecord, promoeditorcustom);
+                            if (schedulerData) {
                                 me.afterInitClient(clientRecord, schedulerData.schedulerContext.resourceRecord, promoeditorcustom, schedulerData.isCopy);
-
-                                var promoActivityMechanic = promoeditorcustom.down('container[name=promoActivity_step1]');
-                                var actualMechanicId = promoActivityMechanic.down('[name=ActualInstoreMechanicId]');
-                                marsMechanicId.setDisabled(false);
-                                instoreMechanicId.setDisabled(false);
-                                actualMechanicId.setDisabled(false);
                             }
+
+                            var promoActivityMechanic = promoeditorcustom.down('container[name=promoActivity_step1]');
+                            var actualMechanicId = promoActivityMechanic.down('[name=ActualInstoreMechanicId]');
+                            marsMechanicId.setDisabled(false);
+                            instoreMechanicId.setDisabled(false);
+                            actualMechanicId.setDisabled(false);
                         }
 
                         for (var i = 0; i < promoStatusData.value.length; i++) {
@@ -4117,7 +4228,7 @@
         /*var needRecountUplift = Ext.ComponentQuery.query('[name=NeedRecountUplift]')[0];
         var model = this.getRecord(panel.up('window'));
         var planUplift = Ext.ComponentQuery.query('[name=PlanPromoUpliftPercent]')[0];
-
+    
         if (model) {
             if (model.data.NeedRecountUplift === true) {
                 needRecountUplift.setValue(false);
@@ -4125,15 +4236,15 @@
                 needRecountUplift.setValue(true);
             }
         }
-
+    
         if (needRecountUplift.disabled === true) {
             planUplift.setReadOnly(true);
             planUplift.addCls('readOnlyField');
         }
-
+    
         if (Ext.ComponentQuery.query('#changePromo')[0].isVisible() === false) {
             needRecountUplift.setDisabled(false);
-
+    
             if (needRecountUplift.value === true) {
                 planUplift.setReadOnly(false);
                 planUplift.removeCls('readOnlyField');
@@ -4380,7 +4491,7 @@
         var marsMechanicDiscount = promomechanic.down('numberfield[name=MarsMechanicDiscount]').getValue();
         var totalPromoLSV = window.down('#calculations_step2').down('numberfield[name=PlanPromoIncrementalLSV]').getValue();
         var shopperTIField = window.down('#calculations_step1').down('numberfield[name=PlanPromoTIShopper]');
-
+    
         // если нет значения в одном из полей, то сбрасываем
         if (totalPromoLSV != null && marsMechanicDiscount != null)
             shopperTIField.setValue(totalPromoLSV * marsMechanicDiscount / 100.0);
@@ -5421,6 +5532,11 @@
             var chooseButton = promoClientChooseWindow.down('#choose');
             chooseButton.setDisabled(true);
         }
+
+        var baseClientChBox = promoClientChooseWindow.down('#baseClientsCheckbox');
+        baseClientChBox.suspendEvents();
+        baseClientChBox.setValue(true);
+        baseClientChBox.resumeEvents();
     },
 
     //onClientChooseWindowAfterrender: function (window) {

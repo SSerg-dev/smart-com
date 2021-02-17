@@ -862,6 +862,8 @@
         'Copy': 'Copy',
         'Delete': 'Delete',
         'View': 'View',
+        'Edit': 'Edit',
+        'Plan': 'Plan',
         'DeleteError': 'Unable to delete record. Please try again later',
         'ExportTaskCreated': 'Export task was successfully created. Results file will be available in the task details. Tasks -> Additionally (top right corner of tasks) -> Task details',
         'ExportYearSchedule': 'Export',

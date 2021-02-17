@@ -213,7 +213,9 @@
         'completeStep6Validate': 'Step 6',
         'completeBasicValidate': 'Basic',
         'completeActivityValidate': 'Activity',
-        'selectpromostatuswindow': 'Select promo status'
+        'selectpromostatuswindow': 'Select promo status',
+
+        'confirmmassapproval': "Are you sure you want to approve all?"
     },
 
     'DeleteText': {
@@ -805,6 +807,7 @@
         'ActualInStoreMechanicTypeNameTip': 'Actual mechanic type instore with co investment from client',
         'ActualInStoreMechanicDiscountTip': 'Actual discount instore with co investment from client',
         'ChangeStateOnlyButtonText': 'Dependent on me',
+        'MassApprovalButtonText': 'Mass Approve',
         'ChangeResponsible': 'Change Responsible',
         'CreateCollapsed': 'Create<br>Promo',
         'CreateInOutCollapsed': 'Create<br>Promo<br>InOut',
@@ -966,6 +969,8 @@
         'Copy': 'Copy',
         'Delete': 'Delete',
         'View': 'View',
+        'Edit': 'Edit',
+        'Plan': 'Plan',
         'DeleteError': 'Unable to delete record. Please try again later',
         'ExportTaskCreated': 'Export task was successfully created. Results file will be available in the task details. Tasks -> Additionally (top right corner of tasks) -> Task details',
         'ExportYearSchedule': 'Export',
