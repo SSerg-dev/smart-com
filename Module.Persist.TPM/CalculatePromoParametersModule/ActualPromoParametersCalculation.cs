@@ -58,6 +58,9 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 double? TIBasePercent;
                 double? COGSPercent;
                 SimplePromoTradeInvestment simplePromoTradeInvestment = new SimplePromoTradeInvestment(promo);
+
+               // useActualTI = promo.UseActualTI == true ? promo.UseActualTI : useActualTI;
+
                 if (useActualTI)
                 {
                     IQueryable<ActualTradeInvestment> actualTIQuery = context.Set<ActualTradeInvestment>().Where(x => !x.Disabled);
@@ -82,6 +85,8 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                 // ищем COGS
                 SimplePromoCOGS simplePromoCOGS = new SimplePromoCOGS(promo);
+               // useActualCOGS = promo.UseActualCOGS == true ? promo.UseActualCOGS : useActualCOGS;
+
                 if (useActualCOGS)
                 {
                     IQueryable<ActualCOGS> actualcogsQuery = context.Set<ActualCOGS>().Where(x => !x.Disabled);
