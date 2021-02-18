@@ -2341,6 +2341,10 @@
     <Compile Include="Migrations\202102171721252_EmptyRC2.Designer.cs">
       <DependentUpon>202102171721252_EmptyRC2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202102181746275_Change_DropCreate_IncrementalIndex.cs" />
+    <Compile Include="Migrations\202102181746275_Change_DropCreate_IncrementalIndex.Designer.cs">
+      <DependentUpon>202102181746275_Change_DropCreate_IncrementalIndex.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -4532,6 +4536,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202102171721252_EmptyRC2.resx">
       <DependentUpon>202102171721252_EmptyRC2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202102181746275_Change_DropCreate_IncrementalIndex.resx">
+      <DependentUpon>202102181746275_Change_DropCreate_IncrementalIndex.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
