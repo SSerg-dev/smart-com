@@ -50,14 +50,37 @@
 
     onOkMassApprovalClick: function (button, me, window) {
         window.setLoading(true);
-        var records = me.getFilteredPromoRecords();
+        var params = this.getParamsForMassApprove();
+        if (params.end >= 0) {
+            if (!params.store.data.hasRange(params.start, params.end)) {
+                params.store.on('guaranteedrange', this.onFullLoadedStore, this);
+                //Заставляем догрузить недостающие записи
+                params.store.getRange(params.start, params.end);
+            } else {
+                this.onFullLoadedStore();
+            }
+        } else {
+            window.setLoading(false);
+            App.Notify.pushError("There is no promo to approve!");
+        }
+    },
 
-        if (records != null) {
+    onFullLoadedStore: function () {
+        var params = this.getParamsForMassApprove();
+        params.store.removeListener('guaranteedrange', this.onFullLoadedStore, this);
+        var records = params.store.getRange(params.start, params.end);
+        var promoNumbers = "";
+        records.forEach(function (el) {
+            promoNumbers += el.data.Number + ",";
+        })
+
+        var window = Ext.ComponentQuery.query('#massapprovalbutton')[0].up('panel');
+        if (promoNumbers != "") {
             $.ajax({
                 dataType: 'json',
                 url: '/odata/Promoes/MassApprove',
                 type: 'POST',
-                data: records,
+                data: promoNumbers,
                 success: function (response) {
                     var data = Ext.JSON.decode(response.value);
                     if (data.success) {
@@ -78,23 +101,16 @@
         } else {
             window.setLoading(false);
             App.Notify.pushError("There is no promo to approve!");
-        }              
+        }
     },
 
-    getFilteredPromoRecords: function () {
+    getParamsForMassApprove: function () {
+        var result = new Object();
         var grid = Ext.ComponentQuery.query('#promoGrid')[0].down('grid');
-        var store = grid.getStore();
-
-        var promoNumbers = "";
-
-        if (store.getCount() > 0) {
-            var records = store.getRange(0, store.getCount() - 1);
-            records.forEach(function (el) {
-                promoNumbers += el.data.Number + ",";
-            })
-        }
-
-        return promoNumbers != "" ? promoNumbers.slice(0, -1) : null;
+        result.store = grid.getStore();
+        result.start = 0;
+        result.end = result.store.getTotalCount() - 1;
+        return result;
     },
 
     onChangeResposibleButtonAfterRender: function (button) {
