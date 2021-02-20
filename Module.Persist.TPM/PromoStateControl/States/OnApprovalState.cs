@@ -274,6 +274,8 @@ namespace Module.Persist.TPM.PromoStateControl
 
                         if (next)
                         {
+                            promoModel.LastApprovedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+
                             _stateContext.State = _stateContext._approvedState;
 
 							var promoApprovedIncedents = _stateContext.dbContext.Set<PromoApprovedIncident>().Where(x => x.PromoId == promoModel.Id && x.ProcessDate == null);
