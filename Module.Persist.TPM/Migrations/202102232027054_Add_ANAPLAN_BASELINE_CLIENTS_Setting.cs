@@ -44,7 +44,7 @@ namespace Module.Persist.TPM.Migrations
                            ,'ANAPLAN_BASELINE_CLIENTS'
                            ,'String'
                            ,''
-                           ,'Anaplan g-hierarchy codes')
+                           ,'Anaplan DMDGroup codes')
         ";
 
         private string DeleteSetting =
