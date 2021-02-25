@@ -2345,6 +2345,10 @@
     <Compile Include="Migrations\202102181746275_Change_DropCreate_IncrementalIndex.Designer.cs">
       <DependentUpon>202102181746275_Change_DropCreate_IncrementalIndex.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202102232027054_Add_ANAPLAN_BASELINE_CLIENTS_Setting.cs" />
+    <Compile Include="Migrations\202102232027054_Add_ANAPLAN_BASELINE_CLIENTS_Setting.Designer.cs">
+      <DependentUpon>202102232027054_Add_ANAPLAN_BASELINE_CLIENTS_Setting.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -4539,6 +4543,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202102181746275_Change_DropCreate_IncrementalIndex.resx">
       <DependentUpon>202102181746275_Change_DropCreate_IncrementalIndex.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202102232027054_Add_ANAPLAN_BASELINE_CLIENTS_Setting.resx">
+      <DependentUpon>202102232027054_Add_ANAPLAN_BASELINE_CLIENTS_Setting.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
