@@ -30,7 +30,7 @@ namespace Module.Host.TPM.Actions.Notifications
                         string template = File.ReadAllText(templateFileName);
                         if (!String.IsNullOrEmpty(template))
                         {
-                            var incidentsForNotify = context.Set<ClientTreeNeedUpdateIncident>().Where(x => x.ProcessDate == null).GroupBy(x => x.PropertyName);
+                            var incidentsForNotify = context.Set<ClientTreeNeedUpdateIncident>().Where(x => x.ProcessDate == null && x.PropertyName == "ZCUSTHG04").GroupBy(x => x.PropertyName);
 							if (incidentsForNotify.Any())
 							{
 								CreateNotification(incidentsForNotify, "CLIENTTREE_NEED_UPDATE_NOTIFICATION", template, context);
@@ -72,14 +72,12 @@ namespace Module.Host.TPM.Actions.Notifications
         private void CreateNotification(IQueryable<IGrouping<string, ClientTreeNeedUpdateIncident>> incidentsForNotify, string notificationName, string template, DatabaseContext context)
         {
             List<string> allRows = new List<string>();
-            Int32 branchNumber = 1;
             foreach (IGrouping<string, ClientTreeNeedUpdateIncident> incidentGroup in incidentsForNotify)
             {
                 foreach (ClientTreeNeedUpdateIncident incident in incidentGroup)
                 {
-                    allRows.AddRange(GetRowsWithNewClientTree(incident, context, branchNumber));
+                    allRows.AddRange(GetRowsWithNewClientTree(incident, context));
                     incident.ProcessDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
-                    branchNumber++;
                 }
             }
             string notifyBody = String.Format(template, string.Join("", allRows));
@@ -89,7 +87,7 @@ namespace Module.Host.TPM.Actions.Notifications
             context.SaveChanges();
         }
 
-        private List<string> GetRowsWithNewClientTree(ClientTreeNeedUpdateIncident incident, DatabaseContext context, Int32 branchNumber)
+        private List<string> GetRowsWithNewClientTree(ClientTreeNeedUpdateIncident incident, DatabaseContext context)
         {
             List<string> rowsForIncident = new List<string>();
             
@@ -101,92 +99,20 @@ namespace Module.Host.TPM.Actions.Notifications
                         FROM [DefaultSchemaSetting].MARS_UNIVERSAL_PETCARE_CUSTOMERS
                         WHERE ZCUSTHG04 = '{0}' AND Active_Till IS NULL
                         ", incident.PropertyValue);
-                var marsCustomersItem = context.SqlQuery<MarsUniversalPetcareCustomers>(selectScript).DistinctBy(x => x.ZCUSTHG04).AsEnumerable();
+                var marsCustomersItem = context.SqlQuery<MarsUniversalPetcareCustomers>(selectScript).DistinctBy(x => x.ZCUSTHG04).ToList();//.AsEnumerable();
 
                 foreach (var item in marsCustomersItem)
                 {
-                    List<string> allRowCells = new List<string>();
-                    allRowCells.Add(String.Format(cellTemplate, item.ZCUSTHG02___T));
-                    allRowCells.Add(String.Format(cellTemplate, item.ZCUSTHG02));
-                    allRowCells.Add(String.Format(cellTemplate, "Group"));
-                    allRowCells.Add(String.Format(cellTemplate, branchNumber));
-                    allRowCells.Add(String.Format(cellTemplate, incident.CreateDate.ToString("dd.MM.yyyy HH:mm:ss")));
-
-                    rowsForIncident.Add(String.Format(rowTemplate, string.Join("", allRowCells)));
-
-                    allRowCells = new List<string>();
-                    allRowCells.Add(String.Format(cellTemplate, item.ZCUSTHG03___T));
-                    allRowCells.Add(String.Format(cellTemplate, item.ZCUSTHG03));
-                    allRowCells.Add(String.Format(cellTemplate, "Client"));
-                    allRowCells.Add(String.Format(cellTemplate, branchNumber));
-                    allRowCells.Add(String.Format(cellTemplate, incident.CreateDate.ToString("dd.MM.yyyy HH:mm:ss")));
-
-                    rowsForIncident.Add(String.Format(rowTemplate, string.Join("", allRowCells)));
-
-                    allRowCells = new List<string>();
-                    allRowCells.Add(String.Format(cellTemplate, item.ZCUSTHG04___T));
+                    List<string>  allRowCells = new List<string>();
+                    string fullName = $"{item.ZCUSTHG02___T} > {item.ZCUSTHG03___T} > {item.ZCUSTHG04___T}";
+                    allRowCells.Add(String.Format(cellTemplate, fullName));
                     allRowCells.Add(String.Format(cellTemplate, item.ZCUSTHG04));
                     allRowCells.Add(String.Format(cellTemplate, "Chain"));
-                    allRowCells.Add(String.Format(cellTemplate, branchNumber));
                     allRowCells.Add(String.Format(cellTemplate, incident.CreateDate.ToString("dd.MM.yyyy HH:mm:ss")));
 
                     rowsForIncident.Add(String.Format(rowTemplate, string.Join("", allRowCells)));
                 }
             }
-            // добавляется два узла
-            else if (incident.PropertyName == propertyNames[1])
-            {
-                var selectScript = String.Format(@"
-                        SELECT ZCUSTHG02, ZCUSTHG02___T, ZCUSTHG03, ZCUSTHG03___T, ZCUSTHG04, ZCUSTHG04___T
-                        FROM [DefaultSchemaSetting].MARS_UNIVERSAL_PETCARE_CUSTOMERS
-                        WHERE ZCUSTHG03 = '{0}' AND Active_Till IS NULL
-                        ", incident.PropertyValue);
-                var marsCustomersItem = context.SqlQuery<MarsUniversalPetcareCustomers>(selectScript).DistinctBy(x => x.ZCUSTHG03).AsEnumerable();
-
-                foreach (var item in marsCustomersItem)
-                {
-                    List<string> allRowCells = new List<string>();
-                    allRowCells.Add(String.Format(cellTemplate, item.ZCUSTHG02___T));
-                    allRowCells.Add(String.Format(cellTemplate, item.ZCUSTHG02));
-                    allRowCells.Add(String.Format(cellTemplate, "Group"));
-                    allRowCells.Add(String.Format(cellTemplate, branchNumber));
-                    allRowCells.Add(String.Format(cellTemplate, incident.CreateDate.ToString("dd.MM.yyyy HH:mm:ss")));
-
-                    rowsForIncident.Add(String.Format(rowTemplate, string.Join("", allRowCells)));
-
-                    allRowCells = new List<string>();
-                    allRowCells.Add(String.Format(cellTemplate, item.ZCUSTHG03___T));
-                    allRowCells.Add(String.Format(cellTemplate, item.ZCUSTHG03));
-                    allRowCells.Add(String.Format(cellTemplate, "Client"));
-                    allRowCells.Add(String.Format(cellTemplate, branchNumber));
-                    allRowCells.Add(String.Format(cellTemplate, incident.CreateDate.ToString("dd.MM.yyyy HH:mm:ss")));
-
-                    rowsForIncident.Add(String.Format(rowTemplate, string.Join("", allRowCells)));
-                }
-            }
-            // добавляется один узел
-            else if (incident.PropertyName == propertyNames[0])
-            {
-                var selectScript = String.Format(@"
-                        SELECT ZCUSTHG02, ZCUSTHG02___T, ZCUSTHG03, ZCUSTHG03___T, ZCUSTHG04, ZCUSTHG04___T
-                        FROM [DefaultSchemaSetting].MARS_UNIVERSAL_PETCARE_CUSTOMERS
-                        WHERE ZCUSTHG02 = '{0}' AND Active_Till IS NULL
-                        ", incident.PropertyValue);
-                var marsCustomersItem = context.SqlQuery<MarsUniversalPetcareCustomers>(selectScript).DistinctBy(x => x.ZCUSTHG02).AsEnumerable();
-
-                foreach (var item in marsCustomersItem)
-                {
-                    List<string> allRowCells =  new List<string>();
-                    allRowCells.Add(String.Format(cellTemplate, item.ZCUSTHG02___T));
-                    allRowCells.Add(String.Format(cellTemplate, item.ZCUSTHG02));
-                    allRowCells.Add(String.Format(cellTemplate, "Group"));
-                    allRowCells.Add(String.Format(cellTemplate, branchNumber));
-                    allRowCells.Add(String.Format(cellTemplate, incident.CreateDate.ToString("dd.MM.yyyy HH:mm:ss")));
-
-                    rowsForIncident.Add(String.Format(rowTemplate, string.Join("", allRowCells)));
-                }
-            }
-
             return rowsForIncident;
         }
 
