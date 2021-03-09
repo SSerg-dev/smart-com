@@ -1734,7 +1734,6 @@
         });
         var scheduler = Ext.ComponentQuery.query('#nascheduler')[0];
         var ng = scheduler.normalGrid;
-
         this.setLoadingText(store.uniqueObjectIds, ng);
         if (store.isLoading()) {
             store.resetLoading = true;
@@ -1747,6 +1746,7 @@
     loadingRecursion: function (store, clientId) {
         if (store.resetLoading) {
             clientId = 0;
+            store.data.clear();
             store.resetLoading = false;
         }
         if (!clientId) clientId = 0;
@@ -1755,11 +1755,10 @@
             operation: 'Equals',
             value: store.uniqueObjectIds[clientId].objectId
         };
-
         var filter = store.fixedFilters || {};
         filter['clientfilter'] = newFilter;
         store.fixedFilters = filter;
-
+        
         store.suspendEvent("refresh");
         store.load({
             scope: this,
@@ -1769,7 +1768,6 @@
                 var nascheduler = Ext.ComponentQuery.query('#nascheduler')[0];
                 if (nascheduler) {
                     if (!store.resetLoading) {
-                        var me = this;
                         this.renderEvents(store.uniqueObjectIds[clientId].regPromoId, store.uniqueObjectIds[clientId].inoutPromoId, store.uniqueObjectIds[clientId].otherPromoId);
                         store.uniqueObjectIds[clientId].loaded = true;
                         clientId = 0;
