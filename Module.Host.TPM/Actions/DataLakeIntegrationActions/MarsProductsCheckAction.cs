@@ -98,7 +98,9 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
 						        materials.[BrandSegTechSub_code],
 						        materials.[BrandSegTechSub],
 								materials.[SubBrand_code],
-						        materials.[SubBrand]
+						        materials.[SubBrand],
+                                materials.[START_DATE],
+                                materials.[END_DATE]
 		
 						FROM [DefaultSchemaSetting].MARS_UNIVERSAL_PETCARE_MATERIALS materials
 	
@@ -125,7 +127,7 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
                                     IsLetterOrDigit(r.MATNR) &&
                                     IsValidDate(r.VMSTD.ToString("yyyy'-'MM'-'dd")) &&
                                     IsValidDate(r.CREATEDON) &&
-                                    //IsValidDatePeriod(r.StartDate.ToString("yyyy'-'MM'-'dd"), r.EndDate.ToString("yyyy'-'MM'-'dd")) &&
+                                    IsValidDatePeriod(r.START_DATE.ToString("yyyy'-'MM'-'dd"), r.END_DATE.ToString("yyyy'-'MM'-'dd")) &&
                                     IsNumeric(r.ZREP.TrimStart('0'), 6) &&
                                     r.EAN_PC.HasValue && DecimalToString(r.EAN_PC).Length == 13 &&
                                     IsNumeric(r.UOM_PC2Case));
@@ -138,7 +140,7 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
                                     IsLetterOrDigit(r.MATNR) &&
                                     IsValidDate(r.VMSTD.ToString("yyyy'-'MM'-'dd")) &&
                                     IsValidDate(r.CREATEDON) &&
-                                    //IsValidDatePeriod(r.StartDate.ToString("yyyy'-'MM'-'dd"), r.EndDate.ToString("yyyy'-'MM'-'dd")) &&
+                                    IsValidDatePeriod(r.START_DATE.ToString("yyyy'-'MM'-'dd"), r.END_DATE.ToString("yyyy'-'MM'-'dd")) &&
                                     IsNumeric(r.ZREP.TrimStart('0'), 6) &&
                                     r.EAN_PC.HasValue && DecimalToString(r.EAN_PC).Length == 13 &&
                                     IsNumeric(r.UOM_PC2Case))).GroupBy(x => x.ZREP);
@@ -214,7 +216,8 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
                     //DistinctBy VMSTD, т.к. без этого берется случайная запись с любой датой последнего обновления
                     var groupedRecords = step3Records.DistinctBy(y => new { y.ZREP, y.VMSTD, y.Segmen_code, y.Tech_code, y.Brand_Flag_abbr, y.Brand_Flag, y.Size, y.BrandsegTech_code, y.Brand_code, y.BrandSegTechSub_code, y.SubBrand_code }).GroupBy(x => x.ZREP);
 
-                    // Если остаётся более 2 подходящих записей по одному ZREP, то берем с последней датой
+
+                    // Если остаётся более 2 подходящих записей по одному ZREP, то берем с последней датой(VMSTD), с самой поздней датой начала и отсутствующей датой конца(null or 9999-01-01)
                     var materialsToCheck = new List<MARS_UNIVERSAL_PETCARE_MATERIALS>();
                     foreach (var group in groupedRecords)
                     {
@@ -235,7 +238,9 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
                             }
                             else
                             {
-                                materialsToCheck.Add(orderedByDescDateRecords.First());
+                                var maxdate = DateTimeOffset.ParseExact("9999-01-01", "yyyy'-'MM'-'dd", null, DateTimeStyles.None);
+                                var orderedByStartEndRecords = orderedByDescDateRecords.Where(x => x.END_DATE == null || x.END_DATE == maxdate).OrderByDescending(x => x.START_DATE);
+                                materialsToCheck.Add(orderedByStartEndRecords.First());
                             }
                         }
                     }
@@ -889,26 +894,26 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
             return result;
         }
 
-        //private bool IsValidDatePeriod(string startDate, string endDate)
-        //{
-        //    bool result = false;
+        private bool IsValidDatePeriod(string startDate, string endDate)
+        {
+            bool result = false;
 
-        //    if (!String.IsNullOrEmpty(startDate) && !String.IsNullOrEmpty(endDate))
-        //    {
-        //        if (IsValidDate(startDate) && IsValidDate(endDate))
-        //        {
-        //            DateTimeOffset start = DateTimeOffset.Parse(startDate);
-        //            DateTimeOffset end = DateTimeOffset.Parse(endDate);
+            if (!String.IsNullOrEmpty(startDate) && !String.IsNullOrEmpty(endDate))
+            {
+                if (IsValidDate(startDate) && IsValidDate(endDate))
+                {
+                    DateTimeOffset start = DateTimeOffset.Parse(startDate);
+                    DateTimeOffset end = DateTimeOffset.Parse(endDate);
 
-        //            if (start < DateTimeOffset.Now && end > DateTimeOffset.Now)
-        //            {
-        //                result = true;
-        //            }
-        //        }
-        //    }
+                    if (start < DateTimeOffset.Now && end > DateTimeOffset.Now)
+                    {
+                        result = true;
+                    }
+                }
+            }
 
-        //    return result;
-        //}
+            return result;
+        }
 
         private bool IsNotEmptyOrNotApplicable(string s)
         {

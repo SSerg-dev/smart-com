@@ -2349,6 +2349,10 @@
     <Compile Include="Migrations\202102232027054_Add_ANAPLAN_BASELINE_CLIENTS_Setting.Designer.cs">
       <DependentUpon>202102232027054_Add_ANAPLAN_BASELINE_CLIENTS_Setting.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202103041317461_Add_Date_Fields_To_MARS_UNIVERSAL_PETCARE_MATERIALS.cs" />
+    <Compile Include="Migrations\202103041317461_Add_Date_Fields_To_MARS_UNIVERSAL_PETCARE_MATERIALS.Designer.cs">
+      <DependentUpon>202103041317461_Add_Date_Fields_To_MARS_UNIVERSAL_PETCARE_MATERIALS.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -4546,6 +4550,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202102232027054_Add_ANAPLAN_BASELINE_CLIENTS_Setting.resx">
       <DependentUpon>202102232027054_Add_ANAPLAN_BASELINE_CLIENTS_Setting.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202103041317461_Add_Date_Fields_To_MARS_UNIVERSAL_PETCARE_MATERIALS.resx">
+      <DependentUpon>202103041317461_Add_Date_Fields_To_MARS_UNIVERSAL_PETCARE_MATERIALS.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
