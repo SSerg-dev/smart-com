@@ -239,8 +239,16 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
                             else
                             {
                                 var maxdate = DateTimeOffset.ParseExact("9999-01-01", "yyyy'-'MM'-'dd", null, DateTimeStyles.None);
-                                var orderedByStartEndRecords = orderedByDescDateRecords.Where(x => x.END_DATE == null || x.END_DATE == maxdate).OrderByDescending(x => x.START_DATE);
-                                materialsToCheck.Add(orderedByStartEndRecords.First());
+                                var orderedByStartEndRecords = orderedByDescDateRecords.Where(x => x.END_DATE == maxdate).OrderByDescending(x => x.START_DATE);
+                                if (orderedByStartEndRecords.Count() > 0)
+                                {
+                                    materialsToCheck.Add(orderedByStartEndRecords.First());
+                                }
+                                else
+                                {
+                                    Errors.Add(String.Format("ZREP {0} has GRDs with invavid END_DATE.", group.Key.TrimStart('0')));
+                                    notifyErrors[group.Key.TrimStart('0')] = "ZREP has GRDs with invavid END_DATE.";
+                                }
                             }
                         }
                     }
@@ -902,13 +910,7 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
             {
                 if (IsValidDate(startDate) && IsValidDate(endDate))
                 {
-                    DateTimeOffset start = DateTimeOffset.Parse(startDate);
-                    DateTimeOffset end = DateTimeOffset.Parse(endDate);
-
-                    if (start < DateTimeOffset.Now && end > DateTimeOffset.Now)
-                    {
-                        result = true;
-                    }
+                    result = true;
                 }
             }
 
