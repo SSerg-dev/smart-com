@@ -49,8 +49,8 @@
     <add key="InputBaselineHeader" value="false" />
     <add key="NIGHT_PROCESSING_WAIT_HANDLER_TIMEOUT" value="28800000" />
     <add key="UsePerformanceLogger" value="true" />
-	  <!--Keys-->
-	  <add key="AllowNotificationsSending" value="false" />
+    <!--Keys-->
+    <add key="AllowNotificationsSending" value="false" />
     <add key="ida:ClientIdKey" value="ADidaClientId" />
     <add key="ida:AADInstanceKey" value="ADidaAADInstance" />
     <add key="ida:ClientSecretKey" value="ADidaClientSecret" />
@@ -166,6 +166,10 @@
       <dependentAssembly>
         <assemblyIdentity name="Microsoft.IdentityModel.Clients.ActiveDirectory.Platform" publicKeyToken="31bf3856ad364e35" culture="neutral" />
         <bindingRedirect oldVersion="0.0.0.0-3.19.4.11002" newVersion="3.19.4.11002" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System.Runtime.CompilerServices.Unsafe" publicKeyToken="b03f5f7f11d50a3a" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-5.0.0.0" newVersion="5.0.0.0" />
       </dependentAssembly>
     </assemblyBinding>
   </runtime>

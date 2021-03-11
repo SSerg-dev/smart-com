@@ -10,7 +10,7 @@
     <add key="webpages:Version" value="3.0.0.0" />
     <add key="webpages:Enabled" value="false" />
     <add key="SESSION_TIME" value="15" />
-	<add key="DefaultSchema" value="Jupiter" />
+    <add key="DefaultSchema" value="Jupiter" />
     <!--Directories-->
     <add key="HANDLER_LOG_DIRECTORY" value="D:\home\site\wwwroot\ApplicationData\HandlerLogs" />
     <add key="IMPORT_DIRECTORY" value="D:\home\site\wwwroot\ApplicationData\ImportFiles" />
@@ -31,7 +31,7 @@
     <add key="CLIENT_TREE_DIRECTORY" value="D:\home\site\wwwroot\ApplicationData\ClientTreeLogoFiles" />
     <add key="PRODUCT_TREE_DIRECTORY" value="D:\home\site\wwwroot\ApplicationData\ProductTreeLogoFiles" />
     <add key="SESSION_TIME" value="15" />
-    
+
     <!--Modules-->
     <add key="UseKeyVault" value="true" />
     <add key="KeyVaultUseAD" value="Pass" />
@@ -52,7 +52,7 @@
     <add key="ADidaClientSecret" value="EBaSP-2F._CC~0YhNIW_5Y1KyF9e3H3-.O" />
     <add key="KVnameOfDatabaseContext" value="russiapetcarejupitersqldbcs" />
     <!--Other settings-->
-	  <add key="DefaultSchema" value="Jupiter" />
+    <add key="DefaultSchema" value="Jupiter" />
   </appSettings>
   <runtime>
     <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
@@ -127,6 +127,10 @@
       <dependentAssembly>
         <assemblyIdentity name="Microsoft.Azure.Services.AppAuthentication" publicKeyToken="31bf3856ad364e35" culture="neutral" />
         <bindingRedirect oldVersion="0.0.0.0-1.0.1.0" newVersion="1.0.1.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System.Runtime.CompilerServices.Unsafe" publicKeyToken="b03f5f7f11d50a3a" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-5.0.0.0" newVersion="5.0.0.0" />
       </dependentAssembly>
     </assemblyBinding>
   </runtime>
