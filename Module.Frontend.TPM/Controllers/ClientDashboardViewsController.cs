@@ -89,53 +89,56 @@ namespace Module.Frontend.TPM.Controllers
         [HttpPost]
         public IHttpActionResult GetAllYEEF(int? clientTreeId, string year)
         {
-            string GHierarchyCode = null;
-            var clientTrees = Context.Set<ClientTree>().Where(x => x.EndDate == null);
-            ClientTree clientTree = clientTrees.Where(x => x.ObjectId == clientTreeId).FirstOrDefault(); ;
-            int? clientTreeKeyId = null;
-            clientTreeKeyId = clientTree.Id;
-            do
-            {
-                clientTree = clientTrees.Where(x => x.ObjectId == clientTreeId).FirstOrDefault();
-                if (clientTree != null)
-                {
-                    GHierarchyCode = clientTree.GHierarchyCode;
-                    clientTreeId = clientTree.parentId;
-                }
-            } while (String.IsNullOrWhiteSpace(GHierarchyCode) && clientTreeId != null && clientTreeId != 5000000);
-
             double YEE = 0;
             double YTD = 0;
-            if (!String.IsNullOrWhiteSpace(GHierarchyCode) && year != null && clientTreeKeyId!= null)
+            string GHierarchyCode = null;
+            var clientTrees = Context.Set<ClientTree>().Where(x => x.EndDate == null);
+            ClientTree clientTree = clientTrees.Where(x => x.ObjectId == clientTreeId).FirstOrDefault();
+            if (clientTree != null)
             {
-                var shares = Context.Set<ClientTreeBrandTech>().Where(x => x.ClientTreeId == clientTreeKeyId && !x.Disabled);
-                var brandTechs = Context.Set<BrandTech>().Where(x => !x.Disabled);
-                ClientTreeBrandTech share;
-
-                GHierarchyCode = GHierarchyCode.TrimStart('0');
-
-                var YEEFscript = String.Format(
-                    "SELECT * FROM [DefaultSchemaSetting].[YEAR_END_ESTIMATE_FDM] WHERE [G_HIERARCHY_ID] = '{0}' AND [YEAR] = '{1}'", GHierarchyCode, year);
-                var YEEFlist = Context.SqlQuery<YEAR_END_ESTIMATE_FDM>(YEEFscript).ToList();
-
-                foreach (var YEEF in YEEFlist)
+                int? clientTreeKeyId = null;
+                clientTreeKeyId = clientTree.Id;
+                do
                 {
-                    var brandTech = brandTechs.Where(y => y.BrandsegTechsub_code == YEEF.BRAND_SEG_TECH_CODE && !y.Disabled).Select(y => y.Id).FirstOrDefault();
-                    share = shares.Where(x => brandTech == x.BrandTechId).FirstOrDefault();
-                    if (share != null)
+                    clientTree = clientTrees.Where(x => x.ObjectId == clientTreeId).FirstOrDefault();
+                    if (clientTree != null)
                     {
-                        YEEF.YTD_LSV = YEEF.YTD_LSV * share.Share / 100;
-                        YEEF.YEE_LSV = YEEF.YEE_LSV * share.Share / 100;
+                        GHierarchyCode = clientTree.GHierarchyCode;
+                        clientTreeId = clientTree.parentId;
                     }
-                    else
-                    {
-                        YEEF.YTD_LSV = 0;
-                        YEEF.YEE_LSV = 0;
-                    }
-                }
+                } while (String.IsNullOrWhiteSpace(GHierarchyCode) && clientTreeId != null && clientTreeId != 5000000);
 
-                 YTD = YEEFlist.Sum(x => x.YTD_LSV);
-                 YEE = YEEFlist.Sum(x => x.YEE_LSV);
+                if (!String.IsNullOrWhiteSpace(GHierarchyCode) && year != null && clientTreeKeyId != null)
+                {
+                    var shares = Context.Set<ClientTreeBrandTech>().Where(x => x.ClientTreeId == clientTreeKeyId && !x.Disabled);
+                    var brandTechs = Context.Set<BrandTech>().Where(x => !x.Disabled);
+                    ClientTreeBrandTech share;
+
+                    GHierarchyCode = GHierarchyCode.TrimStart('0');
+
+                    var YEEFscript = String.Format(
+                        "SELECT * FROM [DefaultSchemaSetting].[YEAR_END_ESTIMATE_FDM] WHERE [G_HIERARCHY_ID] = '{0}' AND [YEAR] = '{1}'", GHierarchyCode, year);
+                    var YEEFlist = Context.SqlQuery<YEAR_END_ESTIMATE_FDM>(YEEFscript).ToList();
+
+                    foreach (var YEEF in YEEFlist)
+                    {
+                        var brandTech = brandTechs.Where(y => y.BrandsegTechsub_code == YEEF.BRAND_SEG_TECH_CODE && !y.Disabled).Select(y => y.Id).FirstOrDefault();
+                        share = shares.Where(x => brandTech == x.BrandTechId).FirstOrDefault();
+                        if (share != null)
+                        {
+                            YEEF.YTD_LSV = YEEF.YTD_LSV * share.Share / 100;
+                            YEEF.YEE_LSV = YEEF.YEE_LSV * share.Share / 100;
+                        }
+                        else
+                        {
+                            YEEF.YTD_LSV = 0;
+                            YEEF.YEE_LSV = 0;
+                        }
+                    }
+
+                    YTD = YEEFlist.Sum(x => x.YTD_LSV);
+                    YEE = YEEFlist.Sum(x => x.YEE_LSV);
+                }
             }
             return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { YTD, YEE }));
         }
