@@ -717,27 +717,31 @@
                             year: clientDashboard['choosenYear'],
                             clientTreeId: clientDashboard['choosenClientTreeRecord'].data.ObjectId
                         }
-                        App.Util.makeRequestWithCallback('ClientDashboardViews', 'GetAllYEEF', params, function (data) {
-                            var result = Ext.JSON.decode(data.httpResponse.data.value);
-                            if (!refresh) {
-                                if (fillAccountInformationCallback) {
-                                    fillAccountInformationCallback(records, clientDashboard, result);
-                                }
-                                if (fillPromoWeeksCallback) {
-                                    fillPromoWeeksCallback(records, clientDashboard);
-                                }
-                                clientDashboard.setLoading(false);
-                            } else {
-                                if (fillAccountInformationCallback && clientDashboard.down('#accountInformationButton').active) {
-                                    fillAccountInformationCallback(records, clientDashboard,result);
-                                }
-                                if (fillPromoWeeksCallback && clientDashboard.down('#promoWeeksButton').active) {
-                                    fillPromoWeeksCallback(records, clientDashboard, result);
+                        if (params.clientTreeId) {
+                            App.Util.makeRequestWithCallback('ClientDashboardViews', 'GetAllYEEF', params, function (data) {
+                                var result = Ext.JSON.decode(data.httpResponse.data.value);
+                                if (!refresh) {
+                                    if (fillAccountInformationCallback) {
+                                        fillAccountInformationCallback(records, clientDashboard, result);
+                                    }
+                                    if (fillPromoWeeksCallback) {
+                                        fillPromoWeeksCallback(records, clientDashboard);
+                                    }
+                                    clientDashboard.setLoading(false);
+                                } else {
+                                    if (fillAccountInformationCallback && clientDashboard.down('#accountInformationButton').active) {
+                                        fillAccountInformationCallback(records, clientDashboard, result);
+                                    }
+                                    if (fillPromoWeeksCallback && clientDashboard.down('#promoWeeksButton').active) {
+                                        fillPromoWeeksCallback(records, clientDashboard, result);
 
+                                    }
+                                    clientDashboard.setLoading(false);
                                 }
-                                clientDashboard.setLoading(false);
-                            }
-                        });
+                            });
+                        } else {
+                            clientDashboard.setLoading(false);
+                        }
                     },
                     single: true
                 }
