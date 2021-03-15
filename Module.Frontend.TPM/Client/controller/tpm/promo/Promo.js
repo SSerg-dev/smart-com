@@ -2063,11 +2063,6 @@
     onClosePromoButtonClick: function (button) {
         var window = button.up('promoeditorcustom');
 
-        // Если есть открытый календарь - обновить его
-        var calendarGrid = Ext.ComponentQuery.query('scheduler');
-        if (calendarGrid.length > 0) {
-            calendarGrid[0].resourceStore.load();
-        }
         if (window) {
             window.close();
         }
@@ -3355,6 +3350,7 @@
         // останавливаем подписку на статус до загрузки окна
         //if (reloadPromo)
         requestHub($.connection.logHub.server.unsubscribeStatus);
+        promoeditorcustom.isChanged = true;
 
         //Если были правки Product Uplift, сначала фиксируем их
         if (promoeditorcustom.productUpliftChanged) {
@@ -5428,6 +5424,7 @@
         var promoId = record.get('Id');
         var me = this;
 
+        window.isChanged = true;
         window.setLoading(l10n.ns('core').value('savingText'));
 
         $.ajax({

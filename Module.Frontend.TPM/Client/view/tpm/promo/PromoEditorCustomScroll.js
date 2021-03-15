@@ -97,12 +97,20 @@
         this.down('#btn_promoActivity_step1').setGlyph(0xf133);
         this.down('#btn_promoActivity_step2').addCls('notcompleted');
 
-        // при создании из календаря, promoGrid не существует
+        var promoStore;
         var grid = Ext.getCmp('promoGrid');
+        var calendarGrid = Ext.ComponentQuery.query('scheduler');
         if (grid) {
-            var promoStore = grid.down('directorygrid').getStore();
+            promoStore = grid.down('directorygrid').getStore();
+        }
+        else if (calendarGrid.length > 0) {
+            promoStore = calendarGrid[0].resourceStore;
+        }
+        if (promoStore) {
             this.on('close', function () {
-                if (promoStore) {
+                var promoeditorcustom = Ext.ComponentQuery.query('promoeditorcustom')[0];
+                var isChanged = promoeditorcustom ? promoeditorcustom.isChanged : false;
+                if (promoStore && isChanged == true) {
                     promoStore.load();
                 }
             });
