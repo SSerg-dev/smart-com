@@ -2356,6 +2356,10 @@
     <Compile Include="Migrations\202103041317461_Add_Date_Fields_To_MARS_UNIVERSAL_PETCARE_MATERIALS.Designer.cs">
       <DependentUpon>202103041317461_Add_Date_Fields_To_MARS_UNIVERSAL_PETCARE_MATERIALS.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202103160911561_EmptyAddTI.cs" />
+    <Compile Include="Migrations\202103160911561_EmptyAddTI.Designer.cs">
+      <DependentUpon>202103160911561_EmptyAddTI.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -4556,6 +4560,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202103041317461_Add_Date_Fields_To_MARS_UNIVERSAL_PETCARE_MATERIALS.resx">
       <DependentUpon>202103041317461_Add_Date_Fields_To_MARS_UNIVERSAL_PETCARE_MATERIALS.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202103160911561_EmptyAddTI.resx">
+      <DependentUpon>202103160911561_EmptyAddTI.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
