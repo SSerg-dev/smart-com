@@ -227,6 +227,20 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     promo.ActualPromoROIPercent = promo.ActualPromoCost == 0 ? 0 : (promo.ActualPromoIncrementalEarnings / promo.ActualPromoCost + 1) * 100;
                     promo.ActualPromoNetROIPercent = promo.ActualPromoCost == 0 ? 0 : (promo.ActualPromoNetIncrementalEarnings / promo.ActualPromoCost + 1) * 100;
 
+                    // ищем RATIShopper
+                    double? RATIShopperPercent;
+                    SimplePromoRATIShopper simplePromoRATIShopper = new SimplePromoRATIShopper(promo);
+
+                    IQueryable<RATIShopper> ratishopperQuery = context.Set<RATIShopper>().Where(x => !x.Disabled);
+                    RATIShopperPercent = PromoUtils.GetRATIShopperPercent(simplePromoRATIShopper, context, ratishopperQuery, out message);
+
+                    promo.ActualAddTIShopper = promo.ActualPromoTIShopper - promo.ActualPromoNetIncrementalLSV * (RATIShopperPercent ?? 0) / 100;
+                    promo.ActualAddTIMarketing = promo.ActualPromoTIMarketing - (promo.PlanPromoTIMarketing - promo.PlanAddTIMarketingApproved) > 0 ?
+                        promo.ActualPromoTIMarketing - (promo.PlanPromoTIMarketing - promo.PlanAddTIMarketingApproved) : 0;
+
+                    if (message != null)
+                        errors += message + ";";
+
                     //if (!promo.InOut.HasValue || !promo.InOut.Value)
                     //{
                     //    // +1 / -1 ?

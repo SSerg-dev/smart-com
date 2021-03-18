@@ -2324,6 +2324,102 @@
     <Compile Include="Migrations\202101141531171_EmptyRC1.Designer.cs">
       <DependentUpon>202101141531171_EmptyRC1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202101260913190_Add_BudgetYear.cs" />
+    <Compile Include="Migrations\202101260913190_Add_BudgetYear.Designer.cs">
+      <DependentUpon>202101260913190_Add_BudgetYear.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202101291225043_Alter_ClientDashboardView_BudgetYear.cs" />
+    <Compile Include="Migrations\202101291225043_Alter_ClientDashboardView_BudgetYear.Designer.cs">
+      <DependentUpon>202101291225043_Alter_ClientDashboardView_BudgetYear.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202101291315082_Fill_BudgetYear.cs" />
+    <Compile Include="Migrations\202101291315082_Fill_BudgetYear.Designer.cs">
+      <DependentUpon>202101291315082_Fill_BudgetYear.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202101291525061_Alter_PromoGridView_BudgetYear.cs" />
+    <Compile Include="Migrations\202101291525061_Alter_PromoGridView_BudgetYear.Designer.cs">
+      <DependentUpon>202101291525061_Alter_PromoGridView_BudgetYear.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202101291541226_Alter_PromoROIReportView_BudgetYear.cs" />
+    <Compile Include="Migrations\202101291541226_Alter_PromoROIReportView_BudgetYear.Designer.cs">
+      <DependentUpon>202101291541226_Alter_PromoROIReportView_BudgetYear.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202102040618349_Add_AccessPoint_For_DemandFinance.cs" />
+    <Compile Include="Migrations\202102040618349_Add_AccessPoint_For_DemandFinance.Designer.cs">
+      <DependentUpon>202102040618349_Add_AccessPoint_For_DemandFinance.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202102041537147_Add_AccessPoint_For_DF_PromoGrid.cs" />
+    <Compile Include="Migrations\202102041537147_Add_AccessPoint_For_DF_PromoGrid.Designer.cs">
+      <DependentUpon>202102041537147_Add_AccessPoint_For_DF_PromoGrid.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202102101110117_Add_AddTIShopperFields_To_Promo.cs" />
+    <Compile Include="Migrations\202102101110117_Add_AddTIShopperFields_To_Promo.Designer.cs">
+      <DependentUpon>202102101110117_Add_AddTIShopperFields_To_Promo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202102141103067_Add_RATIShopper.cs" />
+    <Compile Include="Migrations\202102141103067_Add_RATIShopper.Designer.cs">
+      <DependentUpon>202102141103067_Add_RATIShopper.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202102160812304_Add_AddTIFields_To_ROIReportView.cs" />
+    <Compile Include="Migrations\202102160812304_Add_AddTIFields_To_ROIReportView.Designer.cs">
+      <DependentUpon>202102160812304_Add_AddTIFields_To_ROIReportView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202102170014066_Add_AccessPoints_For_RATIShopper.cs" />
+    <Compile Include="Migrations\202102170014066_Add_AccessPoints_For_RATIShopper.Designer.cs">
+      <DependentUpon>202102170014066_Add_AccessPoints_For_RATIShopper.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202102170017494_Add_AccessPointRole_Admin_For_RATIShopper.cs" />
+    <Compile Include="Migrations\202102170017494_Add_AccessPointRole_Admin_For_RATIShopper.Designer.cs">
+      <DependentUpon>202102170017494_Add_AccessPointRole_Admin_For_RATIShopper.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202102170034536_Add_AccessPointRole_SupAdmin_For_RATIShopper.cs" />
+    <Compile Include="Migrations\202102170034536_Add_AccessPointRole_SupAdmin_For_RATIShopper.Designer.cs">
+      <DependentUpon>202102170034536_Add_AccessPointRole_SupAdmin_For_RATIShopper.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202102170038473_Add_AccessPointRole_DF_For_RATIShopper.cs" />
+    <Compile Include="Migrations\202102170038473_Add_AccessPointRole_DF_For_RATIShopper.Designer.cs">
+      <DependentUpon>202102170038473_Add_AccessPointRole_DF_For_RATIShopper.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202102170045551_Add_AccessPointRole_FE_For_RATIShopper.cs" />
+    <Compile Include="Migrations\202102170045551_Add_AccessPointRole_FE_For_RATIShopper.Designer.cs">
+      <DependentUpon>202102170045551_Add_AccessPointRole_FE_For_RATIShopper.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202102170050224_Add_AccessPointRole_SupReader_For_RATIShopper.cs" />
+    <Compile Include="Migrations\202102170050224_Add_AccessPointRole_SupReader_For_RATIShopper.Designer.cs">
+      <DependentUpon>202102170050224_Add_AccessPointRole_SupReader_For_RATIShopper.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202102170057163_Add_AccessPointRole_CM_For_RATIShopper.cs" />
+    <Compile Include="Migrations\202102170057163_Add_AccessPointRole_CM_For_RATIShopper.Designer.cs">
+      <DependentUpon>202102170057163_Add_AccessPointRole_CM_For_RATIShopper.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202102170058154_Add_AccessPointRole_CMM_For_RATIShopper.cs" />
+    <Compile Include="Migrations\202102170058154_Add_AccessPointRole_CMM_For_RATIShopper.Designer.cs">
+      <DependentUpon>202102170058154_Add_AccessPointRole_CMM_For_RATIShopper.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202103011437021_Renaming_AddTI_Fields.cs" />
+    <Compile Include="Migrations\202103011437021_Renaming_AddTI_Fields.Designer.cs">
+      <DependentUpon>202103011437021_Renaming_AddTI_Fields.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202103011440592_Renaming_AddTI_Fields_ROI.cs" />
+    <Compile Include="Migrations\202103011440592_Renaming_AddTI_Fields_ROI.Designer.cs">
+      <DependentUpon>202103011440592_Renaming_AddTI_Fields_ROI.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202103031301078_EmptyAddTI.cs" />
+    <Compile Include="Migrations\202103031301078_EmptyAddTI.Designer.cs">
+      <DependentUpon>202103031301078_EmptyAddTI.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202103031305201_EmptyAddTI1.cs" />
+    <Compile Include="Migrations\202103031305201_EmptyAddTI1.Designer.cs">
+      <DependentUpon>202103031305201_EmptyAddTI1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202103031633397_UpdateTempPromoTable.cs" />
+    <Compile Include="Migrations\202103031633397_UpdateTempPromoTable.Designer.cs">
+      <DependentUpon>202103031633397_UpdateTempPromoTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202103150749509_EmptyAddTI2.cs" />
+    <Compile Include="Migrations\202103150749509_EmptyAddTI2.Designer.cs">
+      <DependentUpon>202103150749509_EmptyAddTI2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\202102090034048_Add_AccessPoint_GetClientTreeByObjectId.cs" />
     <Compile Include="Migrations\202102090034048_Add_AccessPoint_GetClientTreeByObjectId.Designer.cs">
       <DependentUpon>202102090034048_Add_AccessPoint_GetClientTreeByObjectId.cs</DependentUpon>
@@ -2359,6 +2455,10 @@
     <Compile Include="Migrations\202103160911561_EmptyAddTI.cs" />
     <Compile Include="Migrations\202103160911561_EmptyAddTI.Designer.cs">
       <DependentUpon>202103160911561_EmptyAddTI.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202103160940225_EmptyAddTI3.cs" />
+    <Compile Include="Migrations\202103160940225_EmptyAddTI3.Designer.cs">
+      <DependentUpon>202103160940225_EmptyAddTI3.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
@@ -2415,6 +2515,7 @@
     <Compile Include="Model\History\HistoricalPromoSupport.cs" />
     <Compile Include="Model\History\HistoricalPromoSupportPromo.cs" />
     <Compile Include="Model\History\HistoricalPromoTypes.cs" />
+    <Compile Include="Model\History\HistoricalRATIShopper.cs" />
     <Compile Include="Model\History\HistoricalRejectReason.cs" />
     <Compile Include="Model\History\HistoricalPromoStatus.cs" />
     <Compile Include="Model\History\HistoricalRegion.cs" />
@@ -2445,6 +2546,7 @@
     <Compile Include="Model\Import\ImportPromoProductFromTLC.cs" />
     <Compile Include="Model\Import\ImportPromoProductsUplift.cs" />
     <Compile Include="Model\Import\ImportPromoProductsCorrection.cs" />
+    <Compile Include="Model\Import\ImportRATIShopper.cs" />
     <Compile Include="Model\Import\ImportRetailType.cs" />
     <Compile Include="Model\Import\ImportRejectReason.cs" />
     <Compile Include="Model\Import\ImportPromoStatus.cs" />
@@ -2470,6 +2572,7 @@
     <Compile Include="Model\Import\ImportTradeInvestment.cs" />
     <Compile Include="Model\SimpleModel\MARS_UNIVERSAL_PETCARE_MATERIALS.cs" />
     <Compile Include="Model\SimpleModel\MarsUniversalPetcareCustomers.cs" />
+    <Compile Include="Model\SimpleModel\SimplePromoRATIShopper.cs" />
     <Compile Include="Model\SimpleModel\SimplePromoCOGSTI.cs" />
     <Compile Include="Model\SimpleModel\YEAR_END_ESTIMATE_FDM.cs" />
     <Compile Include="Model\TPM\ActualLsvModel.cs" />
@@ -2538,6 +2641,7 @@
     <Compile Include="Model\TPM\PromoSupport.cs" />
     <Compile Include="Model\TPM\PromoSupportPromo.cs" />
     <Compile Include="Model\DTO\PromoView.cs" />
+    <Compile Include="Model\TPM\RATIShopper.cs" />
     <Compile Include="Model\TPM\RejectReason.cs" />
     <Compile Include="Model\TPM\PromoStatus.cs" />
     <Compile Include="Model\TPM\Region.cs" />
@@ -4560,6 +4664,81 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202103041317461_Add_Date_Fields_To_MARS_UNIVERSAL_PETCARE_MATERIALS.resx">
       <DependentUpon>202103041317461_Add_Date_Fields_To_MARS_UNIVERSAL_PETCARE_MATERIALS.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202101260913190_Add_BudgetYear.resx">
+      <DependentUpon>202101260913190_Add_BudgetYear.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202101291225043_Alter_ClientDashboardView_BudgetYear.resx">
+      <DependentUpon>202101291225043_Alter_ClientDashboardView_BudgetYear.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202101291315082_Fill_BudgetYear.resx">
+      <DependentUpon>202101291315082_Fill_BudgetYear.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202101291525061_Alter_PromoGridView_BudgetYear.resx">
+      <DependentUpon>202101291525061_Alter_PromoGridView_BudgetYear.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202101291541226_Alter_PromoROIReportView_BudgetYear.resx">
+      <DependentUpon>202101291541226_Alter_PromoROIReportView_BudgetYear.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202102040618349_Add_AccessPoint_For_DemandFinance.resx">
+      <DependentUpon>202102040618349_Add_AccessPoint_For_DemandFinance.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202102041537147_Add_AccessPoint_For_DF_PromoGrid.resx">
+      <DependentUpon>202102041537147_Add_AccessPoint_For_DF_PromoGrid.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202102101110117_Add_AddTIShopperFields_To_Promo.resx">
+      <DependentUpon>202102101110117_Add_AddTIShopperFields_To_Promo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202102141103067_Add_RATIShopper.resx">
+      <DependentUpon>202102141103067_Add_RATIShopper.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202102160812304_Add_AddTIFields_To_ROIReportView.resx">
+      <DependentUpon>202102160812304_Add_AddTIFields_To_ROIReportView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202102170014066_Add_AccessPoints_For_RATIShopper.resx">
+      <DependentUpon>202102170014066_Add_AccessPoints_For_RATIShopper.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202102170017494_Add_AccessPointRole_Admin_For_RATIShopper.resx">
+      <DependentUpon>202102170017494_Add_AccessPointRole_Admin_For_RATIShopper.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202102170034536_Add_AccessPointRole_SupAdmin_For_RATIShopper.resx">
+      <DependentUpon>202102170034536_Add_AccessPointRole_SupAdmin_For_RATIShopper.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202102170038473_Add_AccessPointRole_DF_For_RATIShopper.resx">
+      <DependentUpon>202102170038473_Add_AccessPointRole_DF_For_RATIShopper.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202102170045551_Add_AccessPointRole_FE_For_RATIShopper.resx">
+      <DependentUpon>202102170045551_Add_AccessPointRole_FE_For_RATIShopper.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202102170050224_Add_AccessPointRole_SupReader_For_RATIShopper.resx">
+      <DependentUpon>202102170050224_Add_AccessPointRole_SupReader_For_RATIShopper.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202102170057163_Add_AccessPointRole_CM_For_RATIShopper.resx">
+      <DependentUpon>202102170057163_Add_AccessPointRole_CM_For_RATIShopper.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202102170058154_Add_AccessPointRole_CMM_For_RATIShopper.resx">
+      <DependentUpon>202102170058154_Add_AccessPointRole_CMM_For_RATIShopper.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202103011437021_Renaming_AddTI_Fields.resx">
+      <DependentUpon>202103011437021_Renaming_AddTI_Fields.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202103011440592_Renaming_AddTI_Fields_ROI.resx">
+      <DependentUpon>202103011440592_Renaming_AddTI_Fields_ROI.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202103031301078_EmptyAddTI.resx">
+      <DependentUpon>202103031301078_EmptyAddTI.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202103031305201_EmptyAddTI1.resx">
+      <DependentUpon>202103031305201_EmptyAddTI1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202103031633397_UpdateTempPromoTable.resx">
+      <DependentUpon>202103031633397_UpdateTempPromoTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202103150749509_EmptyAddTI2.resx">
+      <DependentUpon>202103150749509_EmptyAddTI2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202103160940225_EmptyAddTI3.resx">
+      <DependentUpon>202103160940225_EmptyAddTI3.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202103160911561_EmptyAddTI.resx">
       <DependentUpon>202103160911561_EmptyAddTI.cs</DependentUpon>

@@ -116,6 +116,7 @@
                 { text: l10n.ns('tpm', 'PromoROIReport').value('MechanicComment'), dataIndex: 'MechanicComment' },
                 { xtype: 'datecolumn', text: l10n.ns('tpm', 'PromoROIReport').value('StartDate'), dataIndex: 'StartDate', renderer: Ext.util.Format.dateRenderer('d.m.Y') },
                 { xtype: 'datecolumn', text: l10n.ns('tpm', 'PromoROIReport').value('EndDate'), dataIndex: 'EndDate', renderer: Ext.util.Format.dateRenderer('d.m.Y') },
+                { text: l10n.ns('tpm', 'PromoROIReport').value('BudgetYear'), dataIndex: 'BudgetYear' },
                 { text: l10n.ns('tpm', 'PromoROIReport').value('PromoDuration'), dataIndex: 'PromoDuration', format: '0' },
                 { text: l10n.ns('tpm', 'PromoROIReport').value('EventName'), dataIndex: 'EventName' },
                 { text: l10n.ns('tpm', 'PromoROIReport').value('PromoStatusName'), dataIndex: 'PromoStatusName' },
@@ -178,6 +179,9 @@
                 { xtype: 'numbercolumn', text: l10n.ns('tpm', 'PromoROIReport').value('PlanPromoROIPercent'), dataIndex: 'PlanPromoROIPercent', format: '0.00' },
                 { xtype: 'numbercolumn', text: l10n.ns('tpm', 'PromoROIReport').value('PlanPromoNetROIPercent'), dataIndex: 'PlanPromoNetROIPercent', format: '0.00' },
                 { xtype: 'numbercolumn', text: l10n.ns('tpm', 'PromoROIReport').value('PlanPromoNetUpliftPercent'), dataIndex: 'PlanPromoNetUpliftPercent', format: '0.00' },
+                { xtype: 'numbercolumn', text: l10n.ns('tpm', 'PromoROIReport').value('PlanAddTIMarketingApproved'), dataIndex: 'PlanAddTIMarketingApproved', format: '0.00' },
+                { xtype: 'numbercolumn', text: l10n.ns('tpm', 'PromoROIReport').value('PlanAddTIShopperCalculated'), dataIndex: 'PlanAddTIShopperCalculated', format: '0.00' },
+                { xtype: 'numbercolumn', text: l10n.ns('tpm', 'PromoROIReport').value('PlanAddTIShopperApproved'), dataIndex: 'PlanAddTIShopperApproved', format: '0.00' },
                 { text: l10n.ns('tpm', 'PromoROIReport').value('ActualInStoreMechanicName'), dataIndex: 'ActualInStoreMechanicName' },
                 { text: l10n.ns('tpm', 'PromoROIReport').value('ActualInStoreMechanicTypeName'), dataIndex: 'ActualInStoreMechanicTypeName' },
                 { xtype: 'numbercolumn', text: l10n.ns('tpm', 'PromoROIReport').value('ActualInStoreDiscount'), dataIndex: 'ActualInStoreDiscount', format: '0' },
@@ -222,9 +226,11 @@
                 { xtype: 'numbercolumn', text: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoNetIncrementalEarnings'), dataIndex: 'ActualPromoNetIncrementalEarnings', format: '0.00' },
                 { xtype: 'numbercolumn', text: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoROIPercent'), dataIndex: 'ActualPromoROIPercent', format: '0.00' },
                 { xtype: 'numbercolumn', text: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoNetROIPercent'), dataIndex: 'ActualPromoNetROIPercent', format: '0.00' },
+                //Add TI
+                { xtype: 'numbercolumn', text: l10n.ns('tpm', 'PromoROIReport').value('ActualAddTIMarketing'), dataIndex: 'ActualAddTIMarketing', format: '0.00' },
+                { xtype: 'numbercolumn', text: l10n.ns('tpm', 'PromoROIReport').value('ActualAddTIShopper'), dataIndex: 'ActualAddTIShopper', format: '0.00' },
                 { text: l10n.ns('tpm', 'PromoROIReport').value('PromoTypesName'), dataIndex: 'PromoTypesName' },
                 { xtype: 'numbercolumn', text: l10n.ns('tpm', 'PromoROIReport').value('InvoiceTotal'), dataIndex: 'InvoiceTotal', format: '0.00' },
-
             ]
         }
     }, {

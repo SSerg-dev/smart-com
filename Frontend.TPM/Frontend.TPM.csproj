@@ -1550,7 +1550,9 @@
     </Content>
     <Content Include="Global.asax" />
     <Content Include="Connected Services\AzureAD\ConnectedService.json" />
-    <Content Include="ApplicationInsights.config" />
+    <Content Include="ApplicationInsights.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Global.asax.template" />
     <Content Include="FrontendModule.cs.template" />
     <Content Include="Content\core\resources\fonts\materialdesignicons-webfont.woff2" />

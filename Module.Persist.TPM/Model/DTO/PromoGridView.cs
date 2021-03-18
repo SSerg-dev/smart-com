@@ -34,6 +34,8 @@ namespace Module.Persist.TPM.Model.DTO {
         public string MarsDispatchesEnd { get; set; }
         public string MarsDispatchesStart { get; set; }
 
+        public int? BudgetYear { get; set; }
+
         public string BrandName { get; set; }
         public string BrandTechName { get; set; }
         public string PromoEventName { get; set; }

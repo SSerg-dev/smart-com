@@ -212,6 +212,45 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             }
         }
 
+        public static double? GetRATIShopperPercent(SimplePromoRATIShopper promo, DatabaseContext context, IQueryable<RATIShopper> query, out string message)
+        {
+            try
+            {
+                List<RATIShopper> ratishopperList = new List<RATIShopper>();
+                ClientTree clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == promo.ClientTreeObjectId && !x.EndDate.HasValue).FirstOrDefault();
+
+                while ((ratishopperList == null || ratishopperList.Count() == 0) && clientNode != null && clientNode.Type != "root")
+                {
+                    ratishopperList = query
+                        .Where(x => x.ClientTreeId == clientNode.Id && !x.Disabled)
+                        .Where(x => x.Year == promo.Year).ToList();
+
+                    clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == clientNode.parentId && !x.EndDate.HasValue).FirstOrDefault();
+                }
+
+                if (ratishopperList.Count > 1)
+                {
+                    message = GetMessageRaTiShopper("RA TI Shopper duplicate record error", promo, context);
+                    return null;
+                }
+                else if (ratishopperList.Count == 1)
+                {
+                    message = null;
+                    return ratishopperList[0].RATIShopperPercent;
+                }
+                else
+                {
+                    message = null;
+                    return 0;
+                }
+            }
+            catch (Exception e)
+            {
+                message = e.ToString();
+                return null;
+            }
+        }
+
         /// <summary>
         /// Сформировать сообщения об ошибке подбора для TI или COGS
         /// </summary>
@@ -233,6 +272,20 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             else
                 result += " for the period from " + promo.DispatchesStart.Value.ToString("dd.MM.yyyy") + " to " + promo.DispatchesEnd.Value.ToString("dd.MM.yyyy") + ".";
 
+            return result;
+        }
+
+        /// <summary>
+        /// Сформировать сообщения об ошибке подбора для RA TI Shopper
+        /// </summary>
+        /// <param name="baseMessage">Базовое сообщение</param>
+        /// <param name="promo">Промо</param>
+        /// <param name="context">Контекст БД</param>
+        /// <returns></returns>
+        private static string GetMessageRaTiShopper(string baseMessage, SimplePromoRATIShopper promo, DatabaseContext context)
+        {
+            string result = baseMessage + " for client " + promo.ClientHierarchy;
+            result += " for the year " + promo.Year + ".";
             return result;
         }
     }

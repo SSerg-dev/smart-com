@@ -74,16 +74,16 @@
                                 adjustment.setValue(-newValue);
                             this.onSliderChange = false;
 
-                            var promoAdjustmentButton = Ext.ComponentQuery.query('button[itemId=btn_promo_step7]')[0];
-                            promoAdjustmentButton.setText('<b>' + l10n.ns('tpm', 'promoStap').value('basicStep7') + '</b><br><p>' + l10n.ns('tpm', 'Promo').value('Adjustment') + ': ' + -newValue + '%' +'</p>');
+                            var promoAdjustmentButton = Ext.ComponentQuery.query('button[itemId=btn_promo_step8]')[0];
+                            promoAdjustmentButton.setText('<b>' + l10n.ns('tpm', 'promoStap').value('basicStep8') + '</b><br><p>' + l10n.ns('tpm', 'Promo').value('Adjustment') + ': ' + -newValue + '%' +'</p>');
                         },
                         render: function (slider) {
                             var value = slider.getValue();
                             value = Number.isInteger(value) ? value : 0;
                             this.setValue(value);
 
-                            var promoAdjustmentButton = Ext.ComponentQuery.query('button[itemId=btn_promo_step7]')[0];
-                            promoAdjustmentButton.setText('<b>' + l10n.ns('tpm', 'promoStap').value('basicStep7') + '</b><br><p>' + l10n.ns('tpm', 'Promo').value('Adjustment') + ': ' + -value + '%' + '</p>');
+                            var promoAdjustmentButton = Ext.ComponentQuery.query('button[itemId=btn_promo_step8]')[0];
+                            promoAdjustmentButton.setText('<b>' + l10n.ns('tpm', 'promoStap').value('basicStep8') + '</b><br><p>' + l10n.ns('tpm', 'Promo').value('Adjustment') + ': ' + -value + '%' + '</p>');
                         },
                         beforechange: function (slider, newValue, oldValue) {
                             setHighlightMargins(slider, newValue);

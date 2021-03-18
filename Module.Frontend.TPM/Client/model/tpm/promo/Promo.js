@@ -73,6 +73,7 @@
         { name: 'EndDate', useNull: true, type: 'date', hidden: false, isDefault: false, timeZone: +3, convert: dateConvertTimeZone },
         { name: 'DispatchesStart', useNull: true, type: 'date', hidden: false, isDefault: false, timeZone: +3, convert: dateConvertTimeZone },
         { name: 'DispatchesEnd', useNull: true, type: 'date', hidden: false, isDefault: false, timeZone: +3, convert: dateConvertTimeZone },
+        { name: 'BudgetYear', useNull: true, type: 'int', hidden: false, isDefault: false},
         { name: 'OtherEventName', type: 'string', hidden: true, isDefault: false },
         { name: 'CalendarPriority', useNull: true, type: 'int', hidden: false, isDefault: false },
         { name: 'NeedRecountUplift', type: 'bool', hidden: true, isDefault: false, defaultValue: true },
@@ -143,6 +144,13 @@
         { name: 'ActualPromoBaseTI', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'ActualPromoNetNSV', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'InvoiceTotal', useNull: true, type: 'float', hidden: false, isDefault: false },
+
+        //Add TI
+        { name: 'ActualAddTIMarketing', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'ActualAddTIShopper', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'PlanAddTIMarketingApproved', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'PlanAddTIShopperCalculated', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'PlanAddTIShopperApproved', useNull: true, type: 'float', hidden: false, isDefault: false },
 
         // Promo Closure
         { name: 'ActualPromoTIShopper', useNull: true, type: 'float', hidden: false, isDefault: false },

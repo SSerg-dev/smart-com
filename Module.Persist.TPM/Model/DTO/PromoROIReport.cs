@@ -40,6 +40,7 @@ namespace Module.Persist.TPM.Model.DTO
         public DateTimeOffset? EndDate { get; set; }
         public DateTimeOffset? DispatchesStart { get; set; }
         public DateTimeOffset? DispatchesEnd { get; set; }
+        public int? BudgetYear { get; set; }
         public int? PromoDuration { get; set; }
         public int? DispatchDuration { get; set; }
         public string InvoiceNumber { get; set; }
@@ -173,5 +174,11 @@ namespace Module.Persist.TPM.Model.DTO
         public bool IsGrowthAcceleration { get; set; }
         public string PromoTypesName { get; set; }
         public double? InvoiceTotal { get; set; }
+
+        public double? PlanAddTIShopperApproved { get; set; }
+        public double? PlanAddTIShopperCalculated { get; set; }
+        public double? PlanAddTIMarketingApproved { get; set; }
+        public double? ActualAddTIShopper { get; set; }
+        public double? ActualAddTIMarketing { get; set; }
     }
 }

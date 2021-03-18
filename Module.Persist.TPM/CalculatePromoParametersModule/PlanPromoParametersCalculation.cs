@@ -117,27 +117,49 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                         promo.PlanPromoROIPercent = promo.PlanPromoCost != 0 ? (promo.PlanPromoIncrementalEarnings / promo.PlanPromoCost + 1) * 100 : 0;
                         promo.PlanPromoNetROIPercent = promo.PlanPromoCost != 0 ? (promo.PlanPromoNetIncrementalEarnings / promo.PlanPromoCost + 1) * 100 : 0;
-                        
-                        // +1 / -1 ?
-                        //if (!promo.InOut.HasValue || !promo.InOut.Value)
-                        //{
-                        //    promo.PlanPromoROIPercent = promo.PlanPromoCost != 0 ? (promo.PlanPromoIncrementalEarnings / promo.PlanPromoCost + 1) * 100 : 0;
-                        //    promo.PlanPromoNetROIPercent = promo.PlanPromoCost != 0 ? (promo.PlanPromoNetIncrementalEarnings / promo.PlanPromoCost + 1) * 100 : 0;
-                        //}
-                        //else
-                        //{
-                        //    promo.PlanPromoROIPercent = promo.PlanPromoTotalCost != 0 ? promo.PlanPromoIncrementalEarnings / promo.PlanPromoTotalCost * 100 : 0;
-                        //    promo.PlanPromoNetROIPercent = promo.PlanPromoTotalCost != 0 ? promo.PlanPromoNetIncrementalEarnings / promo.PlanPromoTotalCost * 100 : 0;
-                        //}
 
-                        promo.PlanPromoNetUpliftPercent = promo.PlanPromoBaselineLSV != 0 ? promo.PlanPromoNetIncrementalLSV / promo.PlanPromoBaselineLSV * 100 : 0;
 
-                        if (PromoUtils.HasChanges(context.ChangeTracker, promo.Id))
+                        double? RATIShopperPercent;
+                        SimplePromoRATIShopper simplePromoRATIShopper = new SimplePromoRATIShopper(promo);
+
+                        IQueryable<RATIShopper> ratishopperQuery = context.Set<RATIShopper>().Where(x => !x.Disabled);
+                        RATIShopperPercent = PromoUtils.GetRATIShopperPercent(simplePromoRATIShopper, context, ratishopperQuery, out message);
+
+                        if (message == null)
                         {
-                            promo.LastChangedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
-                        }
+                            promo.PlanAddTIShopperCalculated = promo.PlanPromoTIShopper - promo.PlanPromoNetIncrementalLSV * (RATIShopperPercent ?? 0) / 100;
 
-                        context.SaveChanges();
+                            var isApproved = promo.LastApprovedDate != null;
+                            if (!isApproved)
+                            {
+                                promo.PlanAddTIShopperApproved = promo.PlanPromoTIShopper - promo.PlanPromoNetIncrementalLSV * (RATIShopperPercent ?? 0) / 100;
+                            }
+
+                            // +1 / -1 ?
+                            //if (!promo.InOut.HasValue || !promo.InOut.Value)
+                            //{
+                            //    promo.PlanPromoROIPercent = promo.PlanPromoCost != 0 ? (promo.PlanPromoIncrementalEarnings / promo.PlanPromoCost + 1) * 100 : 0;
+                            //    promo.PlanPromoNetROIPercent = promo.PlanPromoCost != 0 ? (promo.PlanPromoNetIncrementalEarnings / promo.PlanPromoCost + 1) * 100 : 0;
+                            //}
+                            //else
+                            //{
+                            //    promo.PlanPromoROIPercent = promo.PlanPromoTotalCost != 0 ? promo.PlanPromoIncrementalEarnings / promo.PlanPromoTotalCost * 100 : 0;
+                            //    promo.PlanPromoNetROIPercent = promo.PlanPromoTotalCost != 0 ? promo.PlanPromoNetIncrementalEarnings / promo.PlanPromoTotalCost * 100 : 0;
+                            //}
+
+                            promo.PlanPromoNetUpliftPercent = promo.PlanPromoBaselineLSV != 0 ? promo.PlanPromoNetIncrementalLSV / promo.PlanPromoBaselineLSV * 100 : 0;
+
+                            if (PromoUtils.HasChanges(context.ChangeTracker, promo.Id))
+                            {
+                                promo.LastChangedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                            }
+
+                            context.SaveChanges();
+                        }
+                        else
+                        {
+                            return message;
+                        }
                     }
                     else
                     {

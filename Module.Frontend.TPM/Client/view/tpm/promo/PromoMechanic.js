@@ -485,6 +485,23 @@
                         margin: '5 0 0 5',
                         name: 'GrowthAccelerationCheckbox',
                         boxLabel: '<b>' + l10n.ns('tpm', 'Promo').value('GrowthAcceleration') + '</b>',
+                        listeners: {
+                            change: function (val) {
+                                var planPanel = Ext.ComponentQuery.query('#promoBudgets_step4_planpanel')[0];
+                                var actualPanel = Ext.ComponentQuery.query('#promoBudgets_step4_actualpanel')[0];
+                                var button = Ext.ComponentQuery.query('#btn_promoBudgets_step4')[0];
+                                planPanel.setDisabled(!val.getValue());
+                                actualPanel.setDisabled(!val.getValue());
+                                button.setDisabled(!val.getValue());
+                                if (val.getValue()) {
+
+                                    button.removeCls('disabled');
+                                }
+                                else {
+                                    button.addCls('disabled');
+                                }
+                            }
+                        }
                     }]
                 }, {
                     xtype: 'container',

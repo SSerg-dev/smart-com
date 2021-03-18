@@ -287,6 +287,7 @@
     <Compile Include="Actions\DataLakeIntegrationActions\MarsProductsCheckAction.cs" />
     <Compile Include="Actions\DataLakeIntegrationActions\MarsCustomersCheckAction.cs" />
     <Compile Include="Actions\FullXLSXAssortmentMatrixImportAction.cs" />
+    <Compile Include="Actions\FullXLSXRATIShopperUpdateImportAction.cs" />
     <Compile Include="Actions\FullXLSXImportPromoProductFromTLCAction.cs" />
     <Compile Include="Actions\FullXLSXMechanicTypeUpdateImportAction.cs" />
     <Compile Include="Actions\FullXLSXUpdateImportClientDashboardAction.cs" />

@@ -17,7 +17,7 @@ namespace Module.Persist.TPM.PromoStateControl
 
             private readonly string Name = "OnApproval";
 
-            private readonly List<string> Roles = new List<string> { "Administrator", "CMManager", "CustomerMarketing", "FunctionalExpert", "KeyAccountManager", "DemandPlanning" };
+            private readonly List<string> Roles = new List<string> { "Administrator", "CMManager", "CustomerMarketing", "FunctionalExpert", "KeyAccountManager", "DemandPlanning", "DemandFinance" };
 
             public OnApprovalState(PromoStateContext stateContext)
             {

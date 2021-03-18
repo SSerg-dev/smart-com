@@ -36,8 +36,8 @@
                         change: function (slider, newValue, thumb, eOpts) {
                             if (newValue) {
                                 slider.el.dom.querySelector('.x-slider-thumb').setAttribute('data-priority', newValue);
-                                var promoEventButton = Ext.ComponentQuery.query('button[itemId=btn_promo_step6]')[0];
-                                promoEventButton.setText('<b>' + l10n.ns('tpm', 'promoStap').value('basicStep6') + '</b><br><p> Calendar priority: ' + newValue + '</p>');
+                                var promoEventButton = Ext.ComponentQuery.query('button[itemId=btn_promo_step7]')[0];
+                                promoEventButton.setText('<b>' + l10n.ns('tpm', 'promoStap').value('basicStep7') + '</b><br><p> Calendar priority: ' + newValue + '</p>');
                                 promoEventButton.removeCls('notcompleted');
                                 promoEventButton.setGlyph(0xf133);
                                 promoEventButton.isComplete = true;

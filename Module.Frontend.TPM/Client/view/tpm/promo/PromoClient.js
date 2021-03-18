@@ -104,7 +104,13 @@
                                 },
                                 destroy: function (me) {
                                     Ext.QuickTips.unregister(me.id);
-                                }   
+                                },   
+                                change: function (val) {
+                                    if (val.getValue()) {
+                                        var field = Ext.ComponentQuery.query('datefield[name=DispatchStartDate]')[0];
+                                        field.fireEvent('change', field, field.getValue());
+                                    }
+                                }
                             }
                         }, {
                             readOnly: true,
@@ -123,6 +129,12 @@
                                 },
                                 destroy: function (me) {
                                     Ext.QuickTips.unregister(me.id);
+                                },
+                                change: function (val) {
+                                    if (val.getValue()) {
+                                        var field = Ext.ComponentQuery.query('datefield[name=DurationStartDate]')[0];
+                                        field.fireEvent('change', field, field.getValue());
+                                    }
                                 }
                             }
                         }

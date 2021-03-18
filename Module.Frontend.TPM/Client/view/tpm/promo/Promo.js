@@ -505,6 +505,11 @@
                     operator: 'like'
                 }
             }, {
+                text: l10n.ns('tpm', 'PromoROIReport').value('BudgetYear'),
+                dataIndex: 'BudgetYear',
+                width: 110,
+                hidden: true,
+            }, {
                 text: l10n.ns('tpm', 'Promo').value('PromoStatusName'),
                 dataIndex: 'PromoStatusName',
                 width: 120,

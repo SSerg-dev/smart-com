@@ -29,6 +29,15 @@
         { name: 'IsDemandFinanceApproved', type: "boolean", useNull: true, hidden: true, isDefault: false },
         { name: 'PlanInstoreMechanicDiscount', type: 'float', hidden: false, isDefault: false },
 
+        { name: 'StartDate', useNull: true, type: 'date', hidden: true, timeZone: +3, convert: dateConvertTimeZone },
+        { name: 'DateStart', useNull: true, type: 'date', hidden: false, isDefault: false, mapping: 'StartDate', timeZone: +3, convert: dateConvertTimeZone },
+        { name: 'EndDate', useNull: true, type: 'date', hidden: false, isDefault: false, timeZone: +3, convert: dateConvertTimeZone },
+
+        { name: 'DispatchesStart', useNull: true, type: 'date', hidden: false, isDefault: false, timeZone: +3, convert: dateConvertTimeZone },
+        { name: 'DispatchesEnd', useNull: true, type: 'date', hidden: false, isDefault: false, timeZone: +3, convert: dateConvertTimeZone },
+
+        { name: 'BudgetYear', type: 'int', hidden: false, isDefault: false },
+
         { name: 'LastChangedDate', useNull: true, type: 'date', hidden: true, isDefault: false, timeZone: +3, convert: dateConvertTimeZone },
         { name: 'LastChangedDateDemand', useNull: true, type: 'date', hidden: true, isDefault: false, timeZone: +3, convert: dateConvertTimeZone},
         { name: 'LastChangedDateFinance', useNull: true, type: 'date', hidden: true, isDefault: false, timeZone: +3, convert: dateConvertTimeZone},

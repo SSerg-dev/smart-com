@@ -2132,6 +2132,7 @@ namespace Module.Frontend.TPM.Controllers
                     || oldPromo.EndDate != newPromo.EndDate
                     || oldPromo.DispatchesStart != newPromo.DispatchesStart
                     || oldPromo.DispatchesEnd != newPromo.DispatchesEnd
+                    || oldPromo.BudgetYear != newPromo.BudgetYear
                     || (oldPromo.ActualPromoBTL != null && newPromo.ActualPromoBTL != null
                         && Math.Round(oldPromo.ActualPromoBTL.Value, 2, MidpointRounding.AwayFromZero) != Math.Round(newPromo.ActualPromoBTL.Value, 2, MidpointRounding.AwayFromZero))
                     || (oldPromo.PlanPromoBTL != null && newPromo.PlanPromoBTL != null
@@ -2144,6 +2145,7 @@ namespace Module.Frontend.TPM.Controllers
                         && Math.Round(oldPromo.PlanPromoUpliftPercent.Value, 2, MidpointRounding.AwayFromZero) != Math.Round(newPromo.PlanPromoUpliftPercent.Value, 2, MidpointRounding.AwayFromZero))
                     || (oldPromo.NeedRecountUplift != null && newPromo.NeedRecountUplift != null && oldPromo.NeedRecountUplift != newPromo.NeedRecountUplift)
                     || oldPromo.IsOnInvoice != newPromo.IsOnInvoice
+                    || oldPromo.PlanAddTIMarketingApproved != newPromo.PlanAddTIMarketingApproved
                     || oldPromo.PromoStatus.Name.ToLower() == "draft"
                 || !String.IsNullOrEmpty(newPromo.AdditionalUserTimestamp))
             {

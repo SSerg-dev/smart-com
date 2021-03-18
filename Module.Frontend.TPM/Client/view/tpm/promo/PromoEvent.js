@@ -78,8 +78,8 @@
                             listeners: {
                                 change: function (field, newValue, oldValue) {
                                     if (newValue) {
-                                        var promoEventButton = Ext.ComponentQuery.query('button[itemId=btn_promo_step5]')[0];
-                                        promoEventButton.setText('<b>' + l10n.ns('tpm', 'promoStap').value('basicStep5') + '</b><br><p> ' + newValue + '</p>');
+                                        var promoEventButton = Ext.ComponentQuery.query('button[itemId=btn_promo_step6]')[0];
+                                        promoEventButton.setText('<b>' + l10n.ns('tpm', 'promoStap').value('basicStep6') + '</b><br><p> ' + newValue + '</p>');
                                         promoEventButton.removeCls('notcompleted');
                                         promoEventButton.setGlyph(0xf133);
                                         promoEventButton.isComplete = true;

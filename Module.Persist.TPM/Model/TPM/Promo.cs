@@ -73,6 +73,7 @@ namespace Module.Persist.TPM.Model.TPM
         public DateTimeOffset? EndDate { get; set; }
         public DateTimeOffset? DispatchesStart { get; set; }
         public DateTimeOffset? DispatchesEnd { get; set; }
+        public int? BudgetYear { get; set; }
         public int? PromoDuration { get; set; }
         public int? DispatchDuration { get; set; }
         public string InvoiceNumber { get; set; }
@@ -175,6 +176,14 @@ namespace Module.Persist.TPM.Model.TPM
         public double? ActualPromoBaseTI { get; set; }
         public double? ActualPromoNetNSV { get; set; }
         public double? InvoiceTotal { get; set; }
+
+        // Add TI 
+        public double? PlanAddTIShopperApproved { get; set; }
+        public double? PlanAddTIShopperCalculated { get; set; }
+        public double? PlanAddTIMarketingApproved { get; set; }
+        public double? ActualAddTIShopper { get; set; }
+        public double? ActualAddTIMarketing { get; set; }
+
 
         public bool UseActualTI { get; set; }
         public bool UseActualCOGS { get; set; }
@@ -297,6 +306,7 @@ namespace Module.Persist.TPM.Model.TPM
             EndDate = promoToCopy.EndDate;
             DispatchesStart = promoToCopy.DispatchesStart;
             DispatchesEnd = promoToCopy.DispatchesEnd;
+            BudgetYear = promoToCopy.BudgetYear;
             PlanPromoUpliftPercent = promoToCopy.PlanPromoUpliftPercent;
             PlanPromoIncrementalLSV = promoToCopy.PlanPromoIncrementalLSV;
             ProductHierarchy = promoToCopy.ProductHierarchy;
@@ -326,6 +336,11 @@ namespace Module.Persist.TPM.Model.TPM
             PlanPromoIncrementalLSV = promoToCopy.PlanPromoIncrementalLSV;
             PlanPromoIncrementalMAC = promoToCopy.PlanPromoIncrementalMAC;
             PlanPromoIncrementalNSV = promoToCopy.PlanPromoIncrementalNSV;
+            ActualAddTIMarketing = promoToCopy.ActualAddTIMarketing;
+            PlanAddTIMarketingApproved = promoToCopy.PlanAddTIMarketingApproved;
+            ActualAddTIShopper = promoToCopy.ActualAddTIShopper;
+            PlanAddTIShopperApproved = promoToCopy.PlanAddTIShopperApproved;
+            PlanAddTIShopperCalculated = promoToCopy.PlanAddTIShopperCalculated;
             PlanPromoLSV = promoToCopy.PlanPromoLSV;
             EventId = promoToCopy.EventId;
             CalendarPriority = promoToCopy.CalendarPriority;

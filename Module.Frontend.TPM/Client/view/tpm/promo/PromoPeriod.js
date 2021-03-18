@@ -55,6 +55,48 @@
                             var panel = field.up('promoperiod');
 
                             if (newValue /*&& field.isValid()*/) {
+                            var budgetYearCombo = field.up('promoeditorcustom').down('promobudgetyear').down('combobox');
+                            var budgetYearComboStore = budgetYearCombo.getStore();
+                            var userRole = App.UserInfo.getCurrentRole()['SystemName'];
+                            var isOffInvoice = Ext.getCmp('OffInvoice').getValue();
+
+                            var newStore = new Ext.data.Store({
+                                fields: ['year']
+                            });
+
+                            if (isOffInvoice) {
+                                var month = newValue.getMonth() + 1;
+                                var year = newValue.getFullYear();
+
+                                if (['SupportAdministrator', 'DemandFinance'].includes(userRole)) {
+                                    newStore.add({ year: year - 2 });
+                                    newStore.add({ year: year - 1 });
+                                    newStore.add({ year: year });
+                                    newStore.add({ year: year + 1 });
+                                }
+                                else {
+                                    if (month == 1) {
+                                        year--;
+                                    }
+                                    if (month == 12 || month == 1) {
+                                        newStore.add({ year: year });
+                                        newStore.add({ year: year + 1 });
+                                    }
+                                    else {
+                                        newStore.add({ year: year });
+                                    }
+                                }
+
+                                budgetYearComboStore.loadData(newStore.getRange(), false);
+
+                                if (month == 12 || month == 1) {
+                                    budgetYearCombo.setValue();
+                                }
+                                else {
+                                    budgetYearCombo.setValue(year);
+                                }
+                            }
+
                                 var endDateField = field.up().down('datefield[name=DurationEndDate]');
                                 var endDateValue = endDateField.getValue();
                                 var promoClientForm = field.up('promoeditorcustom').down('promoclient');
@@ -353,6 +395,45 @@
                             var panel = field.up('promoperiod');
 
                             if (newValue /*&& field.isValid()*/) {
+                            var budgetYearCombo = field.up('promoeditorcustom').down('promobudgetyear').down('combobox');
+                            var budgetYearComboStore = budgetYearCombo.getStore();
+                            var userRole = App.UserInfo.getCurrentRole()['SystemName'];
+                            var isOnInvoice = Ext.getCmp('OnInvoice').getValue();
+                            var newStore = new Ext.data.Store({
+                                fields: ['year']
+                            });
+                            if (isOnInvoice) {
+                                var month = newValue.getMonth() + 1;
+                                var year = newValue.getFullYear();
+                                if (['SupportAdministrator', 'DemandFinance'].includes(userRole)) {
+                                    newStore.add({ year: year - 2 });
+                                    newStore.add({ year: year - 1 });
+                                    newStore.add({ year: year });
+                                    newStore.add({ year: year + 1 });
+                                }
+                                else {
+                                    if (month == 1) {
+                                        year--;
+                                    }
+                                    if (month == 12 || month == 1) {
+                                        newStore.add({ year: year });
+                                        newStore.add({ year: year + 1 });
+                                    }
+                                    else {
+                                        newStore.add({ year: year });
+                                    }
+                                }
+
+                                budgetYearComboStore.loadData(newStore.getRange(), false);
+
+                                if (month == 12 || month == 1) {
+                                    //budgetYearCombo.setValue();
+                                }
+                                else {
+                                    budgetYearCombo.setValue(year);
+                                }
+                            }
+
                                 var endDateField = field.up().down('datefield[name=DispatchEndDate]');
                                 var endDateValue = endDateField.getValue();
 

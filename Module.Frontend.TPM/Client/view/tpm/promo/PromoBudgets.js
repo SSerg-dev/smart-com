@@ -631,7 +631,6 @@
             itemId: 'promoBudgets_step3',
             bodyStyle: { "background-color": "#99a9b1" },
             cls: 'promoform-item-wrap',
-            needToSetHeight: true,
             header: {
                 title: l10n.ns('tpm', 'promoStap').value('promoBudgetsStep3'),
                 cls: 'promo-header-item',
@@ -683,6 +682,280 @@
                     budgetItemsName: ['X-sites', 'Catalog', 'POSM'],
                 }]
             }]
-        }]
+            }, {
+                xtype: 'panel',
+                name: 'promoBudgets_step4',
+                itemId: 'promoBudgets_step4',
+                bodyStyle: { "background-color": "#eceff1" },
+                cls: 'promoform-item-wrap',
+                needToSetHeight: true,
+                header: {
+                    title: l10n.ns('tpm', 'promoStap').value('promoBudgetsStep4'),
+                    cls: 'promo-header-item',
+                },
+                layout: {
+                    type: 'hbox',
+                    align: 'stretchmax'
+                },
+                items: [{
+                    xtype: 'custompromopanel',
+                    itemId: 'promoBudgets_step4_planpanel',
+                    minWidth: 245,
+                    flex: 1,
+                    items: [{
+                        xtype: 'fieldset',
+                        name: 'planFieldAddTI',
+                        title: 'Plan',
+                        layout: {
+                            type: 'vbox',
+                            align: 'stretch',
+                            pack: 'center',
+                        },
+                        padding: '0 10 10 10',
+                        defaults: {
+                            margin: '5 0 0 0',
+                        },
+                        items: [{
+                            xtype: 'numberfield',
+                            name: 'PlanAddTIShopperApproved',
+                            readOnlyCls: 'readOnlyField',
+                            hideTrigger: true,
+                            readOnly: true,
+                            labelWidth: 190,
+                            fieldLabel: l10n.ns('tpm', 'Promo').value('PlanAddTIShopperApproved'),
+                            cls: 'borderedField-with-lable',
+                            labelCls: 'borderedField-label',
+                            blockMillion: false, // если true - то преобразовывать в миллионы
+                            originValue: null, // настоящее значение
+                            valueToRaw: function (value) {
+                                var valueToDisplay = null;
+
+                                if (value !== null && value !== undefined) {
+                                    if (this.blockMillion) {
+                                        valueToDisplay = value;
+                                    }
+                                    else {
+                                        this.originValue = value;
+                                        valueToDisplay = value / 1000000.0;
+                                    }
+                                }
+
+                                return Ext.util.Format.number(valueToDisplay, '0.00');
+                            },
+                            rawToValue: function () {
+                                var parsedValue = parseFloat(String(this.originValue).replace(Ext.util.Format.decimalSeparator, "."))
+                                return isNaN(parsedValue) ? null : parsedValue;
+                            },
+                            listeners: {
+                                focus: function (field) {
+                                    this.blockMillion = true;
+                                    field.setValue(this.originValue);
+                                    this.blockMillion = false;
+                                },
+                            }
+                        }, {
+                            xtype: 'numberfield',
+                            name: 'PlanAddTIShopperCalculated',
+                            readOnlyCls: 'readOnlyField',
+                            hideTrigger: true,
+                            readOnly: true,
+                            labelWidth: 190,
+                            fieldLabel: l10n.ns('tpm', 'Promo').value('PlanAddTIShopperCalculated'),
+                            cls: 'borderedField-with-lable',
+                            labelCls: 'borderedField-label',
+                            blockMillion: false, // если true - то преобразовывать в миллионы
+                            originValue: null, // настоящее значение
+                            valueToRaw: function (value) {
+                                var valueToDisplay = null;
+
+                                if (value !== null && value !== undefined) {
+                                    if (this.blockMillion) {
+                                        valueToDisplay = value;
+                                    }
+                                    else {
+                                        this.originValue = value;
+                                        valueToDisplay = value / 1000000.0;
+                                    }
+                                }
+
+                                return Ext.util.Format.number(valueToDisplay, '0.00');
+                            },
+                            rawToValue: function () {
+                                var parsedValue = parseFloat(String(this.originValue).replace(Ext.util.Format.decimalSeparator, "."))
+                                return isNaN(parsedValue) ? null : parsedValue;
+                            },
+                            listeners: {
+                                focus: function (field) {
+                                    this.blockMillion = true;
+                                    field.setValue(this.originValue);
+                                    this.blockMillion = false;
+                                },
+                            }
+                        }, {
+                            xtype: 'numberfield',
+                            name: 'PlanAddTIMarketingApproved',
+                            readOnlyCls: 'readOnlyField',
+                            hideTrigger: true,
+                            readOnly: false,
+                            labelWidth: 190,
+                            fieldLabel: l10n.ns('tpm', 'Promo').value('PlanAddTIMarketingApproved'),
+                            //cls: 'borderedField-with-lable',
+                            //labelCls: 'borderedField-label',
+                            blockMillion: false, // если true - то преобразовывать в миллионы
+                            originValue: null, // настоящее значение
+                            valueToRaw: function (value) {
+                                var valueToDisplay = null;
+
+                                if (value !== null && value !== undefined) {
+                                    if (this.blockMillion) {
+                                        valueToDisplay = value;
+                                    }
+                                    else {
+                                        this.originValue = value;
+                                        valueToDisplay = value / 1000000.0;
+                                    }
+                                }
+
+                                return Ext.util.Format.number(valueToDisplay, '0.00');
+                            },
+                            rawToValue: function () {
+                                var parsedValue = parseFloat(String(this.originValue).replace(Ext.util.Format.decimalSeparator, "."))
+                                return isNaN(parsedValue) ? null : parsedValue;
+                                },
+                            validator: function () {
+                                var newValue = this.getValue();
+                                var planMarketingTI = Ext.ComponentQuery.query('numberfield[name=PlanPromoTIMarketing]')[0].getValue();
+                                if (newValue == 0 || newValue == null) return true;
+                                if (newValue > planMarketingTI || planMarketingTI == null)
+                                    return l10n.ns('tpm', 'text').value('AddTIValidationError');
+                                else return true;
+                            },
+                            listeners: {
+                                focus: function (field) {
+                                    this.blockMillion = true;
+                                    field.setValue(this.originValue);
+                                    this.blockMillion = false;
+                                },
+                            }
+                        }]
+                    }]
+                }, {
+                    xtype: 'splitter',
+                    itemId: 'splitter_budgets4',
+                    cls: 'custom-promo-panel-splitter',
+                    collapseOnDblClick: false,
+                    listeners: {
+                        dblclick: {
+                            fn: function (event, el) {
+                                var cmp = Ext.ComponentQuery.query('splitter[itemId=splitter_budgets4]')[0];
+                                cmp.tracker.getPrevCmp().flex = 1;
+                                cmp.tracker.getNextCmp().flex = 1;
+                                cmp.ownerCt.updateLayout();
+                            },
+                            element: 'el'
+                        }
+                    }
+                }, {
+                    xtype: 'custompromopanel',
+                    itemId: 'promoBudgets_step4_actualpanel',
+                    minWidth: 245,
+                    flex: 1,
+                    layout: {
+                        type: 'vbox',
+                        align: 'stretch',
+                        pack: 'start'
+                    },
+                    items: [{
+                        xtype: 'fieldset',
+                        title: 'Actuals',
+                        layout: {
+                            type: 'vbox',
+                            align: 'stretch',
+                            pack: 'center',
+                        },
+                        padding: '0 10 10 10',
+                        defaults: {
+                            margin: '5 0 0 0',
+                        },
+                        items: [{
+                            xtype: 'numberfield',
+                            name: 'ActualAddTIShopper',
+                            readOnlyCls: 'readOnlyField',
+                            hideTrigger: true,
+                            readOnly: true,
+                            labelWidth: 190,
+                            fieldLabel: l10n.ns('tpm', 'Promo').value('ActualAddTIShopper'),
+                            cls: 'borderedField-with-lable',
+                            labelCls: 'borderedField-label',
+                            blockMillion: false, // если true - то преобразовывать в миллионы
+                            originValue: null, // настоящее значение
+                            valueToRaw: function (value) {
+                                var valueToDisplay = null;
+
+                                if (value !== null && value !== undefined) {
+                                    if (this.blockMillion) {
+                                        valueToDisplay = value;
+                                    }
+                                    else {
+                                        this.originValue = value;
+                                        valueToDisplay = value / 1000000.0;
+                                    }
+                                }
+
+                                return Ext.util.Format.number(valueToDisplay, '0.00');
+                            },
+                            rawToValue: function () {
+                                var parsedValue = parseFloat(String(this.originValue).replace(Ext.util.Format.decimalSeparator, "."))
+                                return isNaN(parsedValue) ? null : parsedValue;
+                            },
+                            listeners: {
+                                focus: function (field) {
+                                    this.blockMillion = true;
+                                    field.setValue(this.originValue);
+                                    this.blockMillion = false;
+                                },
+                            }
+                        }, {
+                            xtype: 'numberfield',
+                            name: 'ActualAddTIMarketing',
+                            readOnlyCls: 'readOnlyField',
+                            hideTrigger: true,
+                            readOnly: true,
+                            labelWidth: 190,
+                            fieldLabel: l10n.ns('tpm', 'Promo').value('ActualAddTIMarketing'),
+                            cls: 'borderedField-with-lable',
+                            labelCls: 'borderedField-label',
+                            blockMillion: false, // если true - то преобразовывать в миллионы
+                            originValue: null, // настоящее значение
+                            valueToRaw: function (value) {
+                                var valueToDisplay = null;
+
+                                if (value !== null && value !== undefined) {
+                                    if (this.blockMillion) {
+                                        valueToDisplay = value;
+                                    }
+                                    else {
+                                        this.originValue = value;
+                                        valueToDisplay = value / 1000000.0;
+                                    }
+                                }
+
+                                return Ext.util.Format.number(valueToDisplay, '0.00');
+                            },
+                            rawToValue: function () {
+                                var parsedValue = parseFloat(String(this.originValue).replace(Ext.util.Format.decimalSeparator, "."))
+                                return isNaN(parsedValue) ? null : parsedValue;
+                            },
+                            listeners: {
+                                focus: function (field) {
+                                    this.blockMillion = true;
+                                    field.setValue(this.originValue);
+                                    this.blockMillion = false;
+                                },
+                            }
+                        }]
+                    }]
+                }]
+            }]
     }]
 })

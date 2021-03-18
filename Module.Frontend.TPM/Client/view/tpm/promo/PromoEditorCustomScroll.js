@@ -29,6 +29,7 @@
                 container.down('#btn_promo_step5').removeCls('selected');
                 container.down('#btn_promo_step6').removeCls('selected');
                 container.down('#btn_promo_step7').removeCls('selected');
+                container.down('#btn_promo_step8').removeCls('selected');
 
                 var jspData = $(wind.down('panel[name=basicPromo]').getTargetEl().dom).data('jsp');
                 var el = $(container.down('#promo_step2').getTargetEl().dom);
@@ -83,12 +84,14 @@
         this.down('#btn_promo_step5').addCls('notcompleted');
         this.down('#btn_promo_step6').addCls('notcompleted');
         this.down('#btn_promo_step7').addCls('notcompleted');
+        this.down('#btn_promo_step8').addCls('notcompleted');
 
         // promo budgets
         this.down('#btn_promoBudgets_step1').addCls('selected');
         this.down('#btn_promoBudgets_step1').addCls('notcompleted');
         this.down('#btn_promoBudgets_step2').addCls('notaccountable');
         this.down('#btn_promoBudgets_step3').addCls('notaccountable');
+        this.down('#btn_promoBudgets_step4').addCls('notaccountable');
 
         // promo activity
         this.down('#btn_promoActivity_step1').addCls('selected');
@@ -233,6 +236,17 @@
                         width: 300,
                         margin: '5 5 0 5',
                         isComplete: true
+                    }, {
+                        xtype: 'button',
+                        glyph: 0xf130,
+                        cls: 'custom-promo-toolbar-button',
+                        itemId: 'btn_promo_step8',
+                        text: '<b>' + l10n.ns('tpm', 'promoStap').value('basicStep8') + '</b>',
+                        tooltip: l10n.ns('tpm', 'promoStap').value('basicStep8'),
+                        height: 80,
+                        width: 300,
+                        margin: '5 5 0 5',
+                        isComplete: true
                     }],
                 }, {
                     xtype: 'custombottomtoolbar',
@@ -293,30 +307,39 @@
                                 cls: 'promo-header-item'
                             }
                         }, {
-                            xtype: 'promoevent',
+                            xtype: 'promobudgetyear',
                             name: 'promo_step5',
                             itemId: 'promo_step5',
-                            height: 156 + 36,
+                            height: 106 + 36,
                             header: {
                                 title: l10n.ns('tpm', 'promoStap').value('basicStep5'),
                                 cls: 'promo-header-item'
                             }
                         }, {
-                            xtype: 'promosettings',
+                            xtype: 'promoevent',
                             name: 'promo_step6',
                             itemId: 'promo_step6',
-                            height: 142 + 36,
+                            height: 156 + 36,
                             header: {
                                 title: l10n.ns('tpm', 'promoStap').value('basicStep6'),
                                 cls: 'promo-header-item'
                             }
                         }, {
-                            xtype: 'promoadjustment',
+                            xtype: 'promosettings',
                             name: 'promo_step7',
                             itemId: 'promo_step7',
-                            height: 293 + 36,
+                            height: 142 + 36,
                             header: {
                                 title: l10n.ns('tpm', 'promoStap').value('basicStep7'),
+                                cls: 'promo-header-item'
+                            }
+                        }, {
+                            xtype: 'promoadjustment',
+                            name: 'promo_step8',
+                            itemId: 'promo_step8',
+                            height: 293 + 36,
+                            header: {
+                                title: l10n.ns('tpm', 'promoStap').value('basicStep8'),
                                 cls: 'promo-header-item'
                             }
                         }]
@@ -367,6 +390,17 @@
                         width: 300,
                         margin: '5 5 0 5',
                         isComplete: true
+                    }, {
+                        xtype: 'button',
+                        glyph: 0xf130,
+                        cls: 'custom-promo-toolbar-button',
+                        itemId: 'btn_promoBudgets_step4',
+                        text: '<b>' + l10n.ns('tpm', 'promoStap').value('promoBudgetsStep4') + '</b>',
+                        tooltip: l10n.ns('tpm', 'promoStap').value('promoBudgetsStep4'),
+                        height: 80,
+                        width: 300,
+                        margin: '5 5 0 5',
+                        isComplete: true
                     }],
                 }, {
                     xtype: 'custombottomtoolbar',
@@ -401,14 +435,16 @@
                                 var btnStep1 = panel.down('#btn_promoBudgets_step1');
                                 var btnStep2 = panel.down('#btn_promoBudgets_step2');
                                 var btnStep3 = panel.down('#btn_promoBudgets_step3');
+                                var btnStep4 = panel.down('#btn_promoBudgets_step4');
 
                                 var formStep1 = panel.down('#promoBudgets_step1');
                                 var formStep2 = panel.down('#promoBudgets_step2');
                                 var formStep3 = panel.down('#promoBudgets_step3');
+                                var formStep4 = panel.down('#promoBudgets_step4');
 
-                                if (formStep3.needToSetHeight && isAtTop) {
-                                    formStep3.setHeight(panel.getHeight() - 20);
-                                    formStep3.needToSetHeight = false;
+                                if (formStep4.needToSetHeight && isAtTop) {
+                                    formStep4.setHeight(panel.getHeight() - 20);
+                                    formStep4.needToSetHeight = false;
                                 } else {
                                     component._refreshScroll(component);
                                 }
@@ -416,6 +452,7 @@
                                 var h1 = formStep1.getHeight();
                                 var h1_2 = h1 + formStep2.getHeight();
                                 var h1_2_3 = h1_2 + formStep3.getHeight();
+                                var h1_2_3_4 = h1_2_3 + formStep4.getHeight();
 
                                 var _deltaY = scrollPositionY + 100;
 
@@ -424,30 +461,47 @@
                                     btnStep1.addClass('selected');
                                     btnStep2.removeCls('selected');
                                     btnStep3.removeCls('selected');
+                                    btnStep4.removeCls('selected');
 
                                     formStep1.header.addClass('promo-header-item-active');
                                     formStep2.header.removeCls('promo-header-item-active');
                                     formStep3.header.removeCls('promo-header-item-active');
+                                    formStep4.header.removeCls('promo-header-item-active');
 
                                     // Step 2 - Marketing TI Budgets
                                 } else if (_deltaY > h1 && _deltaY <= h1_2) {
                                     btnStep1.removeCls('selected');
                                     btnStep2.addClass('selected');
                                     btnStep3.removeCls('selected');
+                                    btnStep4.removeCls('selected');
 
                                     formStep1.header.removeCls('promo-header-item-active');
                                     formStep2.header.addClass('promo-header-item-active');
                                     formStep3.header.removeCls('promo-header-item-active');
+                                    formStep4.header.removeCls('promo-header-item-active');
 
                                     // Step 3 - Cost Production Budgets
                                 } else if (_deltaY > h1_2 && _deltaY <= h1_2_3) {
                                     btnStep1.removeCls('selected');
                                     btnStep2.removeCls('selected');
                                     btnStep3.addClass('selected');
+                                    btnStep4.removeCls('selected');
 
                                     formStep1.header.removeCls('promo-header-item-active');
                                     formStep2.header.removeCls('promo-header-item-active');
                                     formStep3.header.addClass('promo-header-item-active');
+                                    formStep4.header.removeCls('promo-header-item-active');
+
+                                } else if (_deltaY > h1_2_3 && _deltaY <= h1_2_3_4) {
+                                    btnStep1.removeCls('selected');
+                                    btnStep2.removeCls('selected');
+                                    btnStep3.removeCls('selected');
+                                    btnStep4.addClass('selected');
+
+                                    formStep1.header.removeCls('promo-header-item-active');
+                                    formStep2.header.removeCls('promo-header-item-active');
+                                    formStep3.header.removeCls('promo-header-item-active');
+                                    formStep4.header.addClass('promo-header-item-active');
 
                                 } else {
                                     console.log('undefined step');
@@ -774,7 +828,7 @@
         text: l10n.ns('tpm', 'buttons').value('edit'),
         itemId: 'changePromo',
         style: { "background-color": "#26A69A" },
-        roles: ['Administrator', 'CMManager', 'CustomerMarketing', 'FunctionalExpert', 'KeyAccountManager', 'DemandPlanning'],
+        roles: ['Administrator', 'CMManager', 'CustomerMarketing', 'FunctionalExpert', 'KeyAccountManager', 'DemandPlanning', 'DemandFinance'],
         hidden: true
     }, {
         text: l10n.ns('tpm', 'promoButtons').value('ok'),

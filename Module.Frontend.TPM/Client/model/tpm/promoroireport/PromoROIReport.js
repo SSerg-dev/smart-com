@@ -18,6 +18,7 @@
         { name: 'MechanicComment', type: 'string', hidden: false, isDefault: false },
         { name: 'StartDate', useNull: true, type: 'date', hidden: false, isDefault: false, timeZone: +3, convert: dateConvertTimeZone },
         { name: 'EndDate', useNull: true, type: 'date', hidden: false, isDefault: false, timeZone: +3, convert: dateConvertTimeZone },
+        { name: 'BudgetYear', useNull: true, type: 'int', hidden: false, isDefault: false },
         { name: 'PromoDuration', useNull: true, type: 'int', hidden: false, isDefault: false },
         { name: 'EventName', type: 'string', hidden: false, isDefault: true },
         { name: 'PromoStatusName', type: 'string', hidden: false, isDefault: true },
@@ -71,6 +72,14 @@
         { name: 'PlanPromoROIPercent', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'PlanPromoNetROIPercent', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'PlanPromoNetUpliftPercent', useNull: true, type: 'float', hidden: false, isDefault: false },
+
+        //Add TI
+        { name: 'ActualAddTIMarketing', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'ActualAddTIShopper', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'PlanAddTIMarketingApproved', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'PlanAddTIShopperCalculated', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'PlanAddTIShopperApproved', useNull: true, type: 'float', hidden: false, isDefault: false },
+
         { name: 'ActualInStoreMechanicName', type: 'string', hidden: true, isDefault: false },
         { name: 'ActualInStoreMechanicTypeName', type: 'string', hidden: true, isDefault: false },
         { name: 'ActualInStoreDiscount', type: 'float', hidden: false, isDefault: false },

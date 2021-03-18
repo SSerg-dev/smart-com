@@ -86,3 +86,7 @@
     height: 20px;
     color: #ee7f2f;
 }
+
+.always-on-top {
+    z-index: 10000000 !important;
+}

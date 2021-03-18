@@ -103,6 +103,9 @@
                 'promoeditorcustom #btn_promo_step7': {
                     click: this.onPromoButtonStep7Click
                 },
+                'promoeditorcustom #btn_promo_step8': {
+                    click: this.onPromoButtonStep8Click
+                },
 
                 // support steps
                 'promoeditorcustom #btn_support_step1': {
@@ -124,6 +127,9 @@
                 },
                 'promoeditorcustom #btn_promoBudgets_step3': {
                     click: this.onPromoBudgetsButtonStep3Click
+                },
+                'promoeditorcustom #btn_promoBudgets_step4': {
+                    click: this.onPromoBudgetsButtonStep4Click
                 },
 
                 // promo activity steps
@@ -412,6 +418,7 @@
                 var btnStep5 = panel.down('#btn_promo_step5');
                 var btnStep6 = panel.down('#btn_promo_step6');
                 var btnStep7 = panel.down('#btn_promo_step7');
+                var btnStep8 = panel.down('#btn_promo_step8');
 
                 var formStep1 = panel.down('#promo_step1');
                 var formStep2 = panel.down('#promo_step2');
@@ -420,10 +427,11 @@
                 var formStep5 = panel.down('#promo_step5');
                 var formStep6 = panel.down('#promo_step6');
                 var formStep7 = panel.down('#promo_step7');
+                var formStep8 = panel.down('#promo_step8');
 
-                if (formStep7.needToSetHeight && isAtTop) {
-                    formStep7.setHeight(panel.getHeight() - 20);
-                    formStep7.needToSetHeight = false;
+                if (formStep8.needToSetHeight && isAtTop) {
+                    formStep8.setHeight(panel.getHeight() - 20);
+                    formStep8.needToSetHeight = false;
                 } else {
                     component._refreshScroll(component);
                 }
@@ -435,6 +443,7 @@
                 var h1_2_3_4_5 = h1_2_3_4 + formStep5.height;
                 var h1_2_3_4_5_6 = h1_2_3_4_5 + formStep6.height;
                 var h1_2_3_4_5_6_7 = h1_2_3_4_5_6 + formStep7.height;
+                var h1_2_3_4_5_6_7_8 = h1_2_3_4_5_6_7 + formStep8.height;
 
                 var _deltaY = scrollPositionY + 100;
 
@@ -447,6 +456,7 @@
                     btnStep5.removeCls('selected');
                     btnStep6.removeCls('selected');
                     btnStep7.removeCls('selected');
+                    btnStep8.removeCls('selected');
 
                     formStep1.header.addClass('promo-header-item-active');
                     formStep2.header.removeCls('promo-header-item-active');
@@ -455,6 +465,7 @@
                     formStep5.header.removeCls('promo-header-item-active');
                     formStep6.header.removeCls('promo-header-item-active');
                     formStep7.header.removeCls('promo-header-item-active');
+                    formStep8.header.removeCls('promo-header-item-active');
 
                     // Step 2 - product
                 } else if (_deltaY > h1 && _deltaY <= h1_2) {
@@ -465,6 +476,7 @@
                     btnStep5.removeCls('selected');
                     btnStep6.removeCls('selected');
                     btnStep7.removeCls('selected');
+                    btnStep8.removeCls('selected');
 
                     formStep1.header.removeCls('promo-header-item-active');
                     formStep2.header.addClass('promo-header-item-active');
@@ -473,6 +485,7 @@
                     formStep5.header.removeCls('promo-header-item-active');
                     formStep6.header.removeCls('promo-header-item-active');
                     formStep7.header.removeCls('promo-header-item-active');
+                    formStep8.header.removeCls('promo-header-item-active');
 
                     var mousedownEvent = document.createEvent('MouseEvents');
                     mousedownEvent.initEvent('mousedown', true, true)
@@ -489,6 +502,7 @@
                     btnStep5.removeCls('selected');
                     btnStep6.removeCls('selected');
                     btnStep7.removeCls('selected');
+                    btnStep8.removeCls('selected');
 
                     formStep1.header.removeCls('promo-header-item-active');
                     formStep2.header.removeCls('promo-header-item-active');
@@ -497,6 +511,7 @@
                     formStep5.header.removeCls('promo-header-item-active');
                     formStep6.header.removeCls('promo-header-item-active');
                     formStep7.header.removeCls('promo-header-item-active');
+                    formStep8.header.removeCls('promo-header-item-active');
 
                     var mousedownEvent = document.createEvent('MouseEvents');
                     mousedownEvent.initEvent('mousedown', true, true)
@@ -511,6 +526,7 @@
                     btnStep5.removeCls('selected');
                     btnStep6.removeCls('selected');
                     btnStep7.removeCls('selected');
+                    btnStep8.removeCls('selected');
 
                     formStep1.header.removeCls('promo-header-item-active');
                     formStep2.header.removeCls('promo-header-item-active');
@@ -519,13 +535,14 @@
                     formStep5.header.removeCls('promo-header-item-active');
                     formStep6.header.removeCls('promo-header-item-active');
                     formStep7.header.removeCls('promo-header-item-active');
+                    formStep8.header.removeCls('promo-header-item-active');
 
 
                     var mousedownEvent = document.createEvent('MouseEvents');
                     mousedownEvent.initEvent('mousedown', true, true)
                     panel.el.dom.dispatchEvent(mousedownEvent);
 
-                    // Step 5 - event
+                    // Step 5 - budget year
                 } else if (_deltaY > h1_2_3_4 && _deltaY <= h1_2_3_4_5) {
                     btnStep1.removeCls('selected');
                     btnStep2.removeCls('selected');
@@ -534,6 +551,7 @@
                     btnStep5.addClass('selected');
                     btnStep6.removeCls('selected');
                     btnStep7.removeCls('selected');
+                    btnStep8.removeCls('selected');
 
                     formStep1.header.removeCls('promo-header-item-active');
                     formStep2.header.removeCls('promo-header-item-active');
@@ -542,6 +560,7 @@
                     formStep5.header.addClass('promo-header-item-active');
                     formStep6.header.removeCls('promo-header-item-active');
                     formStep7.header.removeCls('promo-header-item-active');
+                    formStep8.header.removeCls('promo-header-item-active');
 
                     var mousedownEvent = document.createEvent('MouseEvents');
                     mousedownEvent.initEvent('mousedown', true, true)
@@ -556,6 +575,7 @@
                     btnStep5.removeCls('selected');
                     btnStep6.addClass('selected');
                     btnStep7.removeCls('selected');
+                    btnStep8.removeCls('selected');
 
                     formStep1.header.removeCls('promo-header-item-active');
                     formStep2.header.removeCls('promo-header-item-active');
@@ -564,6 +584,7 @@
                     formStep5.header.removeCls('promo-header-item-active');
                     formStep6.header.addClass('promo-header-item-active');
                     formStep7.header.removeCls('promo-header-item-active');
+                    formStep8.header.removeCls('promo-header-item-active');
 
                     var mousedownEvent = document.createEvent('MouseEvents');
                     mousedownEvent.initEvent('mousedown', true, true)
@@ -577,6 +598,7 @@
                     btnStep5.removeCls('selected');
                     btnStep6.removeCls('selected');
                     btnStep7.addClass('selected');
+                    btnStep8.removeCls('selected');
 
                     formStep1.header.removeCls('promo-header-item-active');
                     formStep2.header.removeCls('promo-header-item-active');
@@ -585,6 +607,29 @@
                     formStep5.header.removeCls('promo-header-item-active');
                     formStep6.header.removeCls('promo-header-item-active');
                     formStep7.header.addClass('promo-header-item-active');
+                    formStep8.header.removeCls('promo-header-item-active');
+
+                    var mousedownEvent = document.createEvent('MouseEvents');
+                    mousedownEvent.initEvent('mousedown', true, true)
+                    panel.el.dom.dispatchEvent(mousedownEvent);
+                } else if (_deltaY > h1_2_3_4_5_6_7 && _deltaY <= h1_2_3_4_5_6_7_8) {
+                    btnStep1.removeCls('selected');
+                    btnStep2.removeCls('selected');
+                    btnStep3.removeCls('selected');
+                    btnStep4.removeCls('selected');
+                    btnStep5.removeCls('selected');
+                    btnStep6.removeCls('selected');
+                    btnStep7.removeCls('selected');
+                    btnStep8.addClass('selected');
+
+                    formStep1.header.removeCls('promo-header-item-active');
+                    formStep2.header.removeCls('promo-header-item-active');
+                    formStep3.header.removeCls('promo-header-item-active');
+                    formStep4.header.removeCls('promo-header-item-active');
+                    formStep5.header.removeCls('promo-header-item-active');
+                    formStep6.header.removeCls('promo-header-item-active');
+                    formStep7.header.removeCls('promo-header-item-active');
+                    formStep8.header.addClass('promo-header-item-active');
 
                     var mousedownEvent = document.createEvent('MouseEvents');
                     mousedownEvent.initEvent('mousedown', true, true)
@@ -1048,6 +1093,7 @@
         container.down('#btn_promo_step5').removeCls('selected');
         container.down('#btn_promo_step6').removeCls('selected');
         container.down('#btn_promo_step7').removeCls('selected');
+        container.down('#btn_promo_step8').removeCls('selected');
 
         var jspData = $(container.down('panel[name=basicPromo]').getTargetEl().dom).data('jsp');
         jspData.scrollToY(0, true);
@@ -1063,6 +1109,7 @@
         container.down('#btn_promo_step5').removeCls('selected');
         container.down('#btn_promo_step6').removeCls('selected');
         container.down('#btn_promo_step7').removeCls('selected');
+        container.down('#btn_promo_step8').removeCls('selected');
 
         var jspData = $(container.down('panel[name=basicPromo]').getTargetEl().dom).data('jsp');
         var el = $(container.down('promobasicproducts#promo_step2').getTargetEl().dom);
@@ -1080,6 +1127,7 @@
         container.down('#btn_promo_step5').removeCls('selected');
         container.down('#btn_promo_step6').removeCls('selected');
         container.down('#btn_promo_step7').removeCls('selected');
+        container.down('#btn_promo_step8').removeCls('selected');
 
         var jspData = $(container.down('panel[name=basicPromo]').getTargetEl().dom).data('jsp');
         var el = $(container.down('promomechanic[itemId=promo_step3]').getTargetEl().dom);
@@ -1097,6 +1145,7 @@
         container.down('#btn_promo_step5').removeCls('selected');
         container.down('#btn_promo_step6').removeCls('selected');
         container.down('#btn_promo_step7').removeCls('selected');
+        container.down('#btn_promo_step8').removeCls('selected');
 
         var jspData = $(container.down('panel[name=basicPromo]').getTargetEl().dom).data('jsp');
         var el = $(container.down('promoperiod[itemId=promo_step4]').getTargetEl().dom);
@@ -1114,9 +1163,10 @@
         container.down('#btn_promo_step4').removeCls('selected');
         container.down('#btn_promo_step6').removeCls('selected');
         container.down('#btn_promo_step7').removeCls('selected');
+        container.down('#btn_promo_step8').removeCls('selected');
 
         var jspData = $(container.down('panel[name=basicPromo]').getTargetEl().dom).data('jsp');
-        var el = $(container.down('promoevent[itemId=promo_step5]').getTargetEl().dom);
+        var el = $(container.down('promobudgetyear[itemId=promo_step5]').getTargetEl().dom);
         jspData.scrollToElement(el, true, true);
         jspData.scrollToElement(el, true, true);
         button.addClass('selected');
@@ -1131,9 +1181,10 @@
         container.down('#btn_promo_step4').removeCls('selected');
         container.down('#btn_promo_step5').removeCls('selected');
         container.down('#btn_promo_step7').removeCls('selected');
+        container.down('#btn_promo_step8').removeCls('selected');
 
         var jspData = $(container.down('panel[name=basicPromo]').getTargetEl().dom).data('jsp');
-        var el = $(container.down('promosettings[itemId=promo_step6]').getTargetEl().dom);
+        var el = $(container.down('promoevent[itemId=promo_step6]').getTargetEl().dom);
         jspData.scrollToElement(el, true, true);
         jspData.scrollToElement(el, true, true);
         button.addClass('selected');
@@ -1148,9 +1199,28 @@
         container.down('#btn_promo_step4').removeCls('selected');
         container.down('#btn_promo_step5').removeCls('selected');
         container.down('#btn_promo_step6').removeCls('selected');
+        container.down('#btn_promo_step8').removeCls('selected');
 
         var jspData = $(container.down('panel[name=basicPromo]').getTargetEl().dom).data('jsp');
-        var el = $(container.down('promoadjustment[itemId=promo_step7]').getTargetEl().dom);
+        var el = $(container.down('promosettings[itemId=promo_step7]').getTargetEl().dom);
+        jspData.scrollToElement(el, true, true);
+        jspData.scrollToElement(el, true, true);
+        button.addClass('selected');
+    },
+
+    onPromoButtonStep8Click: function (button) {
+        var container = button.up('window').down('container[name=promo]');
+        //   container._refreshScroll(container);
+        container.down('#btn_promo_step1').removeCls('selected');
+        container.down('#btn_promo_step2').removeCls('selected');
+        container.down('#btn_promo_step3').removeCls('selected');
+        container.down('#btn_promo_step4').removeCls('selected');
+        container.down('#btn_promo_step5').removeCls('selected');
+        container.down('#btn_promo_step6').removeCls('selected');
+        container.down('#btn_promo_step7').removeCls('selected');
+
+        var jspData = $(container.down('panel[name=basicPromo]').getTargetEl().dom).data('jsp');
+        var el = $(container.down('promoadjustment[itemId=promo_step8]').getTargetEl().dom);
         jspData.scrollToElement(el, true, true);
         jspData.scrollToElement(el, true, true);
         button.addClass('selected');
@@ -1162,6 +1232,7 @@
 
         container.down('#btn_promoBudgets_step2').removeCls('selected');
         container.down('#btn_promoBudgets_step3').removeCls('selected');
+        container.down('#btn_promoBudgets_step4').removeCls('selected');
 
         var jspData = $(container.down('panel[name=promoBudgetsContainer]').getTargetEl().dom).data('jsp');
         jspData.scrollToY(0, true);
@@ -1173,6 +1244,7 @@
 
         container.down('#btn_promoBudgets_step1').removeCls('selected');
         container.down('#btn_promoBudgets_step3').removeCls('selected');
+        container.down('#btn_promoBudgets_step4').removeCls('selected');
 
         var jspData = $(container.down('panel[name=promoBudgetsContainer]').getTargetEl().dom).data('jsp');
         var el = $(container.down('panel[itemId=promoBudgets_step2]').getTargetEl().dom);
@@ -1186,9 +1258,24 @@
 
         container.down('#btn_promoBudgets_step1').removeCls('selected');
         container.down('#btn_promoBudgets_step2').removeCls('selected');
+        container.down('#btn_promoBudgets_step4').removeCls('selected');
 
         var jspData = $(container.down('panel[name=promoBudgetsContainer]').getTargetEl().dom).data('jsp');
         var el = $(container.down('panel[itemId=promoBudgets_step3]').getTargetEl().dom);
+        jspData.scrollToElement(el, true, true);
+        jspData.scrollToElement(el, true, true);
+        button.addClass('selected');
+    },
+
+    onPromoBudgetsButtonStep4Click: function (button) {
+        var container = button.up('window').down('container[name=promoBudgets]')
+
+        container.down('#btn_promoBudgets_step1').removeCls('selected');
+        container.down('#btn_promoBudgets_step2').removeCls('selected');
+        container.down('#btn_promoBudgets_step3').removeCls('selected');
+
+        var jspData = $(container.down('panel[name=promoBudgetsContainer]').getTargetEl().dom).data('jsp');
+        var el = $(container.down('panel[itemId=promoBudgets_step4]').getTargetEl().dom);
         jspData.scrollToElement(el, true, true);
         jspData.scrollToElement(el, true, true);
         button.addClass('selected');
@@ -1326,9 +1413,10 @@
                         var product = promoeditorcustom.down('container[name=promo_step2]');
                         var mechanic = promoeditorcustom.down('container[name=promo_step3]');
                         var period = promoeditorcustom.down('container[name=promo_step4]');
-                        var event = promoeditorcustom.down('container[name=promo_step5]');
-                        var settings = promoeditorcustom.down('container[name=promo_step6]');
-                        var adjustment = promoeditorcustom.down('container[name=promo_step7]');
+                        var budgetYear = promoeditorcustom.down('container[name=promo_step5]');
+                        var event = promoeditorcustom.down('container[name=promo_step6]');
+                        var settings = promoeditorcustom.down('container[name=promo_step7]');
+                        var adjustment = promoeditorcustom.down('container[name=promo_step8]');
 
                         //disable On/Off invoice group
                         client.down('[id=OffInvoice]').setDisabled(true);
@@ -1372,8 +1460,8 @@
 
                         // settings
                         settings.down('sliderfield[name=priority]').setValue(3);
-                        var promoEventButton = Ext.ComponentQuery.query('button[itemId=btn_promo_step6]')[0];
-                        promoEventButton.setText('<b>' + l10n.ns('tpm', 'promoStap').value('basicStep6') + '</b><br><p> Calendar priority: ' + 3 + '</p>');
+                        var promoEventButton = Ext.ComponentQuery.query('button[itemId=btn_promo_step7]')[0];
+                        promoEventButton.setText('<b>' + l10n.ns('tpm', 'promoStap').value('basicStep7') + '</b><br><p> Calendar priority: ' + 3 + '</p>');
                         promoEventButton.removeCls('notcompleted');
                         promoEventButton.setGlyph(0xf133);
 
@@ -1384,8 +1472,8 @@
 
                         adjustment.down('sliderfield[name=DeviationCoefficient]').setValue(0);
                         adjustment.down('numberfield[name=Adjustment]').setValue(0);
-                        var promoAdjustmentButton = Ext.ComponentQuery.query('button[itemId=btn_promo_step7]')[0];
-                        promoAdjustmentButton.setText('<b>' + l10n.ns('tpm', 'promoStap').value('basicStep7') + '</b><br><p>' + l10n.ns('tpm', 'Promo').value('Adjustment') + ': ' + 0 + '%' + '</p>');
+                        var promoAdjustmentButton = Ext.ComponentQuery.query('button[itemId=btn_promo_step8]')[0];
+                        promoAdjustmentButton.setText('<b>' + l10n.ns('tpm', 'promoStap').value('basicStep8') + '</b><br><p>' + l10n.ns('tpm', 'Promo').value('Adjustment') + ': ' + 0 + '%' + '</p>');
                         promoAdjustmentButton.removeCls('notcompleted');
                         promoAdjustmentButton.setGlyph(0xf133);
 
@@ -1924,10 +2012,13 @@
         //	me.blockStartedPromoUplift();
         //}
 
+        if (promoeditorcustom.promoStatusName === 'Closed') {
+            promoeditorcustom.down('promobudgetyear').down('combobox').setReadOnly(true);
+        }
         // Если Промо в статусе от Started, то заблокировать редактирование PromoBasic
         if (isPromoWasStarted && currentRole !== 'SupportAdministrator') {
-            var promoEvent = promoeditorcustom.down('container[name=promo_step5]').down('chooseEventButton');
-            var priority = promoeditorcustom.down('container[name=promo_step6]').down('sliderfield[name=priority]');
+            var promoEvent = promoeditorcustom.down('container[name=promo_step6]').down('chooseEventButton');
+            var priority = promoeditorcustom.down('container[name=promo_step7]').down('sliderfield[name=priority]');
 
 
             // --------------- basic promo ---------------
@@ -1996,6 +2087,12 @@
             growthAccelerationCheckbox.setReadOnly(true);
         }
 
+        // редактирование Add TI Approved для не approved
+        //var isApproved = ['Approved', 'Planned', 'Started', 'Finished'].includes(promoeditorcustom.promoStatusSystemName);
+        var isApproved = record.data.LastApprovedDate != null;
+        if (!isApproved) {
+            promoeditorcustom.down('panel[name=promoBudgets_step4]').down('numberfield[name=PlanAddTIMarketingApproved]').setReadOnly(false);
+        }
 
         me.checkLoadingComponents();
         promoeditorcustom.setLoading(false);
@@ -2208,15 +2305,30 @@
 
             //Step 6
             if (window.down('#btn_promo_step6').hasCls('notcompleted')) {
-                errorSecondLayer += l10n.ns('tpm', 'text').value('completeStep5Validate') + "; ";
+                errorSecondLayer += l10n.ns('tpm', 'text').value('completeStep6Validate') + "; ";
+            }
+
+            //Step 7
+            if (window.down('#btn_promo_step7').hasCls('notcompleted')) {
+                errorSecondLayer += l10n.ns('tpm', 'text').value('completeStep7Validate') + "; ";
+            }
+
+            //Step 8
+            if (window.down('#btn_promo_step8').hasCls('notcompleted')) {
+                errorSecondLayer += l10n.ns('tpm', 'text').value('completeStep8Validate') + "; ";
             }
         }
+
 
         //End basic validation
         if (errorSecondLayer != '') {
             if (errorSecondLayer.endsWith('; ')) errorSecondLayer = errorSecondLayer.replace(/..$/, '. ');
             errorMessage += l10n.ns('tpm', 'text').value('completeBasicValidate') + ': ' + errorSecondLayer;
             errorSecondLayer = ''
+        }
+
+        if (!window.down('numberfield[name=PlanAddTIMarketingApproved]').validate()) {
+            errorMessage += l10n.ns('tpm', 'text').value('completeBudgetsStep4Validate');
         }
 
         //В статусе Draft Activity заблокировано, нет смысла валидировать
@@ -2277,6 +2389,7 @@
         // basic promo
         var promomechanic = window.down('promomechanic');
         var promoperiod = window.down('promoperiod');
+        var promobudgetyear = window.down('promobudgetyear');
         var promoevent = window.down('promoevent');
         var promosettings = window.down('promosettings');
         var promoadjustment = window.down('promoadjustment');
@@ -2359,6 +2472,9 @@
         record.data.DispatchesStart = promoperiod.down('datefield[name=DispatchStartDate]').getValue();
         record.data.DispatchesEnd = promoperiod.down('datefield[name=DispatchEndDate]').getValue();
 
+        //promo budget year
+        record.data.BudgetYear = promobudgetyear.down('combobox').getValue();
+
         // promoevent
         record.data.EventId = promoevent.down('chooseEventButton').getValue();
 
@@ -2370,6 +2486,7 @@
 
         // --------------- promo budgets ---------------
         var totalCostBudgets = promoBudgets.down('container[name=promoBudgets_step1]');
+        var raTIShopper = promoBudgets.down('container[name=promoBudgets_step4]');
 
         // cost and budget
         record.data.PlanPromoTIShopper = totalCostBudgets.down('numberfield[name=PlanPromoTIShopper]').getValue();
@@ -2386,6 +2503,7 @@
         record.data.ActualPromoBTL = totalCostBudgets.down('numberfield[name=ActualPromoBTL]').getValue();
         record.data.ActualPromoCostProduction = totalCostBudgets.down('numberfield[name=ActualPromoCostProduction]').getValue();
 
+        record.data.PlanAddTIMarketingApproved = raTIShopper.down('numberfield[name=PlanAddTIMarketingApproved]').getValue();
         // --------------- calculation ---------------
 
         //var activity = promocalculation.down('container[name=activity]');
@@ -2664,9 +2782,10 @@
 
         var mechanic = promoeditorcustom.down('container[name=promo_step3]');
         var period = promoeditorcustom.down('container[name=promo_step4]');
-        var event = promoeditorcustom.down('container[name=promo_step5]');
-        var settings = promoeditorcustom.down('container[name=promo_step6]');
-        var adjustment = promoeditorcustom.down('container[name=promo_step7]');
+        var budgetYear = promoeditorcustom.down('container[name=promo_step5]');
+        var event = promoeditorcustom.down('container[name=promo_step6]');
+        var settings = promoeditorcustom.down('container[name=promo_step7]');
+        var adjustment = promoeditorcustom.down('container[name=promo_step8]');
 
         // InOut Products
         promoeditorcustom.InOutProductIds = record.data.InOutProductIds;
@@ -2687,6 +2806,9 @@
         var durationEndDate = period.down('datefield[name=DurationEndDate]');
         var dispatchStartDate = period.down('datefield[name=DispatchStartDate]');
         var dispatchEndDate = period.down('datefield[name=DispatchEndDate]');
+
+        //budget year
+        var budgetYearCombo = budgetYear.down('combobox');
 
         // event
         var promoEvent = event.down('chooseEventButton');
@@ -2737,6 +2859,15 @@
         var actualPromoCostProdCatalogue = costProductionStep.down('triggerfield[name=budgetDet-ActualCostProdCatalog]');
         var actualPromoCostProdPOSMInClient = costProductionStep.down('triggerfield[name=budgetDet-ActualCostProdPOSM]');
 
+        // add ti
+        var addTIStep = promoBudgets.down('container[name=promoBudgets_step4]');
+
+        var planAddTIShopperApproved = addTIStep.down('[name=PlanAddTIShopperApproved]');
+        var planAddTIShopperCalculated = addTIStep.down('[name=PlanAddTIShopperCalculated]');
+        var planAddTIMarketingApproved = addTIStep.down('[name=PlanAddTIMarketingApproved]');
+        var actualAddTIShopper = addTIStep.down('[name=ActualAddTIShopper]');
+        var actualAddTIMarketing = addTIStep.down('[name=ActualAddTIMarketing]');
+
         // --------------- promo activity ---------------
 
         var promoActivity = promoeditorcustom.down('promoactivity');
@@ -2778,6 +2909,7 @@
         me.setReadOnlyForChildrens(promoActivity, record.data.PromoStatusSystemName, !readOnly, promoeditorcustom.isInOutPromo);
         me.setReadOnlyForChildrens(promoBudgets, record.data.PromoStatusSystemName, !readOnly, promoeditorcustom.isInOutPromo);
 
+
         // Блокировка изменения значений
         if (readOnly) {
             // --------------- basic promo ---------------
@@ -2789,6 +2921,10 @@
 
             // event
             promoEvent.setDisabled(true); // button
+            budgetYearCombo.addCls('readOnlyField');
+
+            //budget year
+            budgetYearCombo.setReadOnly(true);
 
             // settings
             priority.setReadOnly(true);
@@ -2816,6 +2952,12 @@
             } else {
                 promoeditorcustom.down('button[itemId=changePromo]').show();
             }
+        }
+
+        if (record.data.PromoStatusSystemName === 'Closed') {
+            //budgetYear.setDisabled(true);
+            budgetYearCombo.setReadOnly(true);
+            budgetYearCombo.addCls('readOnlyField');
         }
 
         if (isCopy) {
@@ -3021,6 +3163,8 @@
         durationStartDate.setValue(startDate);
         durationEndDate.setValue(endDate);
 
+        budgetYearCombo.setValue(record.data.BudgetYear);
+
         if (durationStartDate.crudAccess.indexOf(currentRole) === -1) {
             durationStartDate.setReadOnly(true);
         }
@@ -3063,8 +3207,8 @@
         priorityValue = isCopy ? 3 : record.data.CalendarPriority;
         priority.setValue(priorityValue);
 
-        var promoEventButton = Ext.ComponentQuery.query('button[itemId=btn_promo_step6]')[0];
-        promoEventButton.setText('<b>' + l10n.ns('tpm', 'promoStap').value('basicStep6') + '</b><br><p>' + l10n.ns('tpm', 'Promo').value('CalendarPriority') + ': ' + priorityValue + '</p>');
+        var promoEventButton = Ext.ComponentQuery.query('button[itemId=btn_promo_step7]')[0];
+        promoEventButton.setText('<b>' + l10n.ns('tpm', 'promoStap').value('basicStep7') + '</b><br><p>' + l10n.ns('tpm', 'Promo').value('CalendarPriority') + ': ' + priorityValue + '</p>');
         promoEventButton.removeCls('notcompleted');
         promoEventButton.setGlyph(0xf133);
 
@@ -3135,7 +3279,24 @@
             promoeditorcustom.down('numberfield[name=Adjustment]').removeCls('readOnlyField');
         }
 
+        // Заблокировать Add TI не для GA
+        if (!record.data.IsGrowthAcceleration) {
+            var planPanel = Ext.ComponentQuery.query('#promoBudgets_step4_planpanel')[0];
+            var actualPanel = Ext.ComponentQuery.query('#promoBudgets_step4_actualpanel')[0];
+            var button = Ext.ComponentQuery.query('#btn_promoBudgets_step4')[0];
+            planPanel.setDisabled(true);
+            actualPanel.setDisabled(true);
+            button.setDisabled(true);
+            button.addCls('disabled');
+        }
 
+        //редактирование только если не approved
+        //var isApproved = ['Approved', 'Planned', 'Started', 'Finished'].includes(promoeditorcustom.promoStatusSystemName);
+        var isApproved = record.data.LastApprovedDate != null;
+        if (!isApproved) {
+            promoeditorcustom.down('panel[name=promoBudgets_step4]').down('numberfield[name=PlanAddTIMarketingApproved]').setReadOnly(readOnly);
+        }
+        
         if (!isCopy) {
             // --------------- promo budgets ---------------                
 
@@ -3172,6 +3333,13 @@
             actualPromoCostProdCatalogue.setValue(record.data.ActualPromoCostProdCatalogue);
             actualPromoCostProdPOSMInClient.setValue(record.data.ActualPromoCostProdPOSMInClient);
 
+            // add ti
+
+            planAddTIShopperApproved.setValue(record.data.PlanAddTIShopperApproved);
+            planAddTIShopperCalculated.setValue(record.data.PlanAddTIShopperCalculated);
+            planAddTIMarketingApproved.setValue(record.data.PlanAddTIMarketingApproved);
+            actualAddTIShopper.setValue(record.data.ActualAddTIShopper);
+            actualAddTIMarketing.setValue(record.data.ActualAddTIMarketing);
             // --------------- promo activity ---------------
 
             actualInstoreMechanicId.setValue(new App.model.tpm.mechanic.Mechanic({
@@ -3265,7 +3433,7 @@
 
         }
 
-        var promoAdjustmentButton = Ext.ComponentQuery.query('button[itemId=btn_promo_step7]')[0];
+        var promoAdjustmentButton = Ext.ComponentQuery.query('button[itemId=btn_promo_step8]')[0];
         promoAdjustmentButton.removeCls('notcompleted');
         promoAdjustmentButton.setGlyph(0xf133);
 
@@ -5969,7 +6137,7 @@
         var me = this;
         var promoEditorCustom = promoeditorcustom;
         var record = me.getRecord(promoEditorCustom);
-        var promoEvent = promoEditorCustom.down('container[name=promo_step5]');
+        var promoEvent = promoEditorCustom.down('container[name=promo_step6]');
         var chooseEventButton = promoEvent.down('chooseEventButton');
         var clientTreeKeyId = promoEditorCustom.clientTreeKeyId;
 

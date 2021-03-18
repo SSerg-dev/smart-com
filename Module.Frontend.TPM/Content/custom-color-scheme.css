@@ -2654,6 +2654,10 @@ x-slider-inner:before {
     background-color: #fdfdfd;
 }
 
+.custom-promo-toolbar-button.disabled {
+    background-color: #cfd8dc !important;
+}
+
 .custom-promo-toolbar-button.notaccountable:before {
     content: '';
     position: absolute;

@@ -125,20 +125,88 @@
             dragContext.finalize(false);
             return false;
         } else {
-            //// Save reference to context to be able to finalize drop operation after user clicks yes/no button.
-            Ext.Msg.confirm('Please confirm',
-                'Do you want to update the Promo: ' + record.get('Name'),
-                me.onDragAndDropConfirm,  // The button callback
-                me);                 // scope
+            //Ext.WindowMgr.zseed = 10000000;
+            var confWindow = Ext.Msg.show({
+                title: 'Please confirm',
+                msg: 'Do you want to update the Promo: ' + record.get('Name'),
+                buttons: Ext.Msg.YESNO,
+                icon: Ext.Msg.QUESTION,
+                fn: function (btn) {
+                    me.onDragAndDropConfirm(btn)
+                },
+            });
+            confWindow.addCls('always-on-top');
             return false;
+        }
+    },
+    //
+    onDragAndDropConfirm: function (btn) {
+        var me = this;
+        if (btn === 'yes') {
+        var newMonth = me.__dragContext.startDate.getMonth() + 1;
+            if (newMonth == 1 || newMonth == 12) {
+                var selectbudgetyearwindow = Ext.widget('selectbudgetyearwindow');
+                selectbudgetyearwindow.context = me.__dragContext;
+                selectbudgetyearwindow.down('#okBudgetYearButton').on('click', this.onOkBudgetYearWindowDragClick, this);
+                selectbudgetyearwindow.on('afterrender', this.afterBudgetYearWindowDragRender, this);
+                selectbudgetyearwindow.on('close', this.onBudgetYearWindowClose, this);
+                selectbudgetyearwindow.addCls('always-on-top');
+                selectbudgetyearwindow.show();
+            }
+            else {
+                me.onBudgetYearDropChoose();
+            }
+        }
+        else {
+            me.__dragContext.finalize(false);
+        }
+    },
+
+    onOkBudgetYearWindowDragClick: function (button) {
+        var combo = Ext.ComponentQuery.query('#budgetYearCombo')[0];
+        var budgetYear = combo.getValue();
+        if (budgetYear !== null) {
+            var win = Ext.WindowManager.getActive();
+            if (win) {
+                win.isConfirmed = true;
+                win.close();
+            }
+            this.onBudgetYearDropChoose(button, budgetYear);
+        }
+    },
+
+    afterBudgetYearWindowDragRender: function (window) {
+        var me = this;
+        var comboStore = window.down('combobox').getStore();
+        comboStore.removeAll();
+        var month = me.__dragContext.startDate.getMonth() + 1;
+        var year = me.__dragContext.startDate.getFullYear();
+        var userRole = App.UserInfo.getCurrentRole()['SystemName'];
+        if (['SupportAdministrator', 'DemandFinance'].includes(userRole)) {
+            comboStore.add({ year: year - 2 });
+            comboStore.add({ year: year - 1 });
+            comboStore.add({ year: year });
+            comboStore.add({ year: year + 1 });
+        }
+        else {
+            if (month == 1) {
+                year--;
+            }
+            comboStore.add({ year: year });
+            comboStore.add({ year: year + 1 });
+        }
+    },
+
+    onBudgetYearWindowClose: function (window) {
+        if (!window.isConfirmed) {
+            window.context.finalize(false);
         }
     },
 
     // Подтверждение изменения времени promo и установка DispatchesDate аналогично переносу 2 концов
-    onDragAndDropConfirm: function (btn) {
+    onBudgetYearDropChoose: function (btn, budgetYear) {
         var me = this;
         var dragContext = me.__dragContext;
-        if (btn === 'yes') {
             me.calendarSheduler.setLoading(true);
             var eventRecord = dragContext.eventRecords[0],
                 resourceRecord = dragContext.resourceRecord,
@@ -206,13 +274,16 @@
                         me.calendarSheduler.down('gridview').on('refresh', (function () { me.highlightRow(null, new Array(resourceRecord)); }));
                         // выравниваем время с учётом часового пояса
                         var offset = dragContext.startDate.getTimezoneOffset() / 60.0;
-                        record.set('StartDate', Sch.util.Date.add(dragContext.startDate, Sch.util.Date.HOUR, -(offset + 3)));
-                        //record.set('StartDate', dragContext.startDate);
-                        //record.data.EndDate = dragContext.endDate;
-                        // в dragContext endDate с временем 23.59...
+                        record.set('StartDate', Sch.util.Date.add(dragContext.startDate, Sch.util.Date.HOUR, -(offset + 3))); 
                         var fixedEndDate = new Date(dragContext.endDate.getFullYear(), dragContext.endDate.getMonth(), dragContext.endDate.getDate(), 0, 0, 0);
                         fixedEndDate = Sch.util.Date.add(fixedEndDate, Sch.util.Date.HOUR, -(offset + 3));
                         record.set('EndDate', fixedEndDate);
+                        if (budgetYear != null)
+                            record.set('BudgetYear', budgetYear);
+                        else {
+                            budgetYear = dragContext.startDate.getFullYear();
+                            record.set('BudgetYear', budgetYear);
+                        }
                         record.save({
                             callback: function (record, operation, success) {
                                 if (success) {
@@ -229,9 +300,6 @@
 
                 }
             })
-        } else {
-            dragContext.finalize(false);
-        }
     },
 
     onExportSchedulerButtonClick: function (button) {
@@ -1018,33 +1086,110 @@
         return false;
     },
 
-    // Подтверждение изменения продолжительности промо
     onResizeConfirm: function (btn) {
         var me = this;
         if (btn === 'yes') {
+            var newMonth = me.__resizeContext.start.getMonth() + 1;
+            if (newMonth == 1 || newMonth == 12) {
+                var selectbudgetyearwindow = Ext.widget('selectbudgetyearwindow');
+                selectbudgetyearwindow.context = me.__resizeContext;
+                selectbudgetyearwindow.down('#okBudgetYearButton').on('click', this.onOkBudgetYearWindowDropClick, this);
+                selectbudgetyearwindow.on('afterrender', this.afterBudgetYearWindowDropRender, this);
+                selectbudgetyearwindow.on('close', this.onBudgetYearWindowClose, this);
+                selectbudgetyearwindow.show();
+            }
+            else {
+                me.onBudgetYearResizeChoose();
+            }
+        }
+        else {
+            me.__resizeContext.finalize(false);
+        }
+    },
+
+    afterBudgetYearWindowDropRender: function (window) {
+        var me = this;
+        var comboStore = window.down('combobox').getStore();
+        comboStore.removeAll();
+        var month = me.__resizeContext.start.getMonth() + 1;
+        var year = me.__resizeContext.start.getFullYear();
+        var userRole = App.UserInfo.getCurrentRole()['SystemName'];
+        if (['SupportAdministrator', 'DemandFinance'].includes(userRole)) {
+            comboStore.add({ year: year - 2 });
+            comboStore.add({ year: year - 1 });
+            comboStore.add({ year: year });
+            comboStore.add({ year: year + 1 });
+        }
+        else {
+            if (month == 1) {
+                year--;
+            }
+            comboStore.add({ year: year });
+            comboStore.add({ year: year + 1 });
+        }
+    },
+
+    onOkBudgetYearWindowDropClick: function (button) {
+        var combo = Ext.ComponentQuery.query('#budgetYearCombo')[0];
+        var budgetYear = combo.getValue();
+        if (budgetYear !== null) {
+            var win = Ext.WindowManager.getActive();
+            if (win) {
+                win.isConfirmed = true;
+                win.close();
+            }
+            this.onBudgetYearResizeChoose(button, budgetYear);
+        }
+    },
+
+    // Подтверждение изменения продолжительности промо
+    onBudgetYearResizeChoose: function (btn, budgetYear) {
+        var me = this;
             me.calendarSheduler.setLoading(true);
             var resizeContext = me.__resizeContext,
                 eventRecord = resizeContext.eventRecord,
                 resourceRecord = resizeContext.resourceRecord,
                 promoStore = this.getPromoStore();
 
-            promoStore.load({
-                id: eventRecord.getId(),
-                scope: this,
-                callback: function (records, operation, success) {
-                    if (success) {
-                        var record = records[0];
+        promoStore.load({
+            id: eventRecord.getId(),
+            scope: this,
+            callback: function (records, operation, success) {
+                if (success) {
+                    var record = records[0];
 
-                        // Локальные копии dispatch date до всех изменений
-                        var localDispatchesStart = record.get('DispatchesStart');
-                        var localDispatchesEnd = record.get('DispatchesEnd');
+                    // Локальные копии dispatch date до всех изменений
+                    var localDispatchesStart = record.get('DispatchesStart');
+                    var localDispatchesEnd = record.get('DispatchesEnd');
 
-                        // Сдвиг левой границы
-                        var curStartDate = record.get('StartDate');
-                        var curEndDate = record.get('EndDate');
-                        if (Ext.Date.isEqual(resizeContext.start, curStartDate) === false) {
+                    // Сдвиг левой границы
+                    var curStartDate = record.get('StartDate');
+                    var curEndDate = record.get('EndDate');
+                    if (Ext.Date.isEqual(resizeContext.start, curStartDate) === false) {
+                        var daysForDispatchDateFromClientSettings = me.getDaysForDispatchDateFromClientSettings(
+                            resourceRecord.data.IsBeforeStart, resourceRecord.data.DaysStart, resourceRecord.data.IsDaysStart);
+
+                        var dispatchDateForCurrentClientAfterResize = null;
+                        var deltaDaysBeforeAndAfterResize = null;
+                        var dispatchDateForCurrentPromoAfterResize = null;
+
+                        // Если настройки dispatch клиента корректны
+                        if (daysForDispatchDateFromClientSettings !== null) {
+                            dispatchDateForCurrentClientAfterResize = Ext.Date.add(
+                                resizeContext.start, Ext.Date.DAY, daysForDispatchDateFromClientSettings);
+
+                            deltaDaysBeforeAndAfterResize = (resizeContext.start - curStartDate) / 3600 / 24 / 1000;
+                            dispatchDateForCurrentPromoAfterResize = Ext.Date.add(localDispatchesStart, Ext.Date.DAY, deltaDaysBeforeAndAfterResize);
+
+                            // Если dispatch дата, сформированная из настроек клиента, совпадает с текущей dispatch датой
+                            if (Ext.Date.isEqual(dispatchDateForCurrentPromoAfterResize, dispatchDateForCurrentClientAfterResize) === true) {
+                                record.set('DispatchesStart', dispatchDateForCurrentPromoAfterResize);
+                            }
+                        }
+                    } else // Сдвиг правой границы
+                        if (Ext.Date.isEqual(resizeContext.end, curEndDate) === false) {
                             var daysForDispatchDateFromClientSettings = me.getDaysForDispatchDateFromClientSettings(
-                                resourceRecord.data.IsBeforeStart, resourceRecord.data.DaysStart, resourceRecord.data.IsDaysStart);
+                                resourceRecord.data.IsBeforeEnd, resourceRecord.data.DaysEnd, resourceRecord.data.IsDaysEnd);
 
                             var dispatchDateForCurrentClientAfterResize = null;
                             var deltaDaysBeforeAndAfterResize = null;
@@ -1053,80 +1198,62 @@
                             // Если настройки dispatch клиента корректны
                             if (daysForDispatchDateFromClientSettings !== null) {
                                 dispatchDateForCurrentClientAfterResize = Ext.Date.add(
-                                    resizeContext.start, Ext.Date.DAY, daysForDispatchDateFromClientSettings);
+                                    resizeContext.end, Ext.Date.DAY, daysForDispatchDateFromClientSettings);
 
-                                deltaDaysBeforeAndAfterResize = (resizeContext.start - curStartDate) / 3600 / 24 / 1000;
-                                dispatchDateForCurrentPromoAfterResize = Ext.Date.add(localDispatchesStart, Ext.Date.DAY, deltaDaysBeforeAndAfterResize);
+                                deltaDaysBeforeAndAfterResize = (resizeContext.end - curEndDate) / 3600 / 24 / 1000;
+                                dispatchDateForCurrentPromoAfterResize = Ext.Date.add(localDispatchesEnd, Ext.Date.DAY, deltaDaysBeforeAndAfterResize);
 
                                 // Если dispatch дата, сформированная из настроек клиента, совпадает с текущей dispatch датой
                                 if (Ext.Date.isEqual(dispatchDateForCurrentPromoAfterResize, dispatchDateForCurrentClientAfterResize) === true) {
-                                    record.set('DispatchesStart', dispatchDateForCurrentPromoAfterResize);
+                                    record.set('DispatchesEnd', dispatchDateForCurrentPromoAfterResize);
                                 }
                             }
-                        } else // Сдвиг правой границы
-                            if (Ext.Date.isEqual(resizeContext.end, curEndDate) === false) {
-                                var daysForDispatchDateFromClientSettings = me.getDaysForDispatchDateFromClientSettings(
-                                    resourceRecord.data.IsBeforeEnd, resourceRecord.data.DaysEnd, resourceRecord.data.IsDaysEnd);
-
-                                var dispatchDateForCurrentClientAfterResize = null;
-                                var deltaDaysBeforeAndAfterResize = null;
-                                var dispatchDateForCurrentPromoAfterResize = null;
-
-                                // Если настройки dispatch клиента корректны
-                                if (daysForDispatchDateFromClientSettings !== null) {
-                                    dispatchDateForCurrentClientAfterResize = Ext.Date.add(
-                                        resizeContext.end, Ext.Date.DAY, daysForDispatchDateFromClientSettings);
-
-                                    deltaDaysBeforeAndAfterResize = (resizeContext.end - curEndDate) / 3600 / 24 / 1000;
-                                    dispatchDateForCurrentPromoAfterResize = Ext.Date.add(localDispatchesEnd, Ext.Date.DAY, deltaDaysBeforeAndAfterResize);
-
-                                    // Если dispatch дата, сформированная из настроек клиента, совпадает с текущей dispatch датой
-                                    if (Ext.Date.isEqual(dispatchDateForCurrentPromoAfterResize, dispatchDateForCurrentClientAfterResize) === true) {
-                                        record.set('DispatchesEnd', dispatchDateForCurrentPromoAfterResize);
-                                    }
-                                }
-                            }
-                        var dispStart = record.get('DispatchesStart');
-                        var dispEnd = record.get('DispatchesEnd');
-                        var startDispatchDateBiggerThanEnd = dispStart > dispEnd;
-                        var endDispatchDateLessThanStart = dispEnd < dispStart;
-                        // Если dispatch start и dispatch end наехали друг на друга, то показываем ошибку и возвращаем исходные параметры dispatch
-                        if (startDispatchDateBiggerThanEnd === true || endDispatchDateLessThanStart === true) {
-                            record.reject();
-                            this.__resizeContext.finalize(false);
-                            me.calendarSheduler.setLoading(false);
-                            App.Notify.pushInfo('Dispatch start date must be less than dispatch end date.');
-                        } else {
-                            //Возврат выделения
-                            me.calendarSheduler.down('gridview').on('refresh', (function () { me.highlightRow(null, new Array(resourceRecord)); }));
-                            //record.set('StartDate', resizeContext.start);
-                            // выравниваем время с учётом часового пояса
-                            var offset = resizeContext.start.getTimezoneOffset() / 60.0;
-                            record.set('StartDate', Sch.util.Date.add(resizeContext.start, Sch.util.Date.HOUR, -(offset + 3)));
-                            var fixedEndDate = new Date(resizeContext.end.getFullYear(), resizeContext.end.getMonth(), resizeContext.end.getDate(), 0, 0, 0);
-                            fixedEndDate = Sch.util.Date.add(fixedEndDate, Sch.util.Date.HOUR, -(offset + 3));
-                            record.set('EndDate', fixedEndDate);
-                            //record.data.EndDate = resizeContext.end;
-                            //record.set('EndDate', resizeContext.end);
-                            record.save({
-                                callback: function (record, operation, success) {
-                                    if (success) {
-                                        me.__resizeContext.finalize(true);
-                                        me.eventStoreLoading(me.calendarSheduler.getEventStore());
-                                        me.calendarSheduler.setLoading(false);
-                                    } else {
-                                        me.calendarSheduler.setLoading(false);
-                                        me.__resizeContext.finalize(false);
-                                    }
-                                }
-                            });
                         }
+                    var dispStart = record.get('DispatchesStart');
+                    var dispEnd = record.get('DispatchesEnd');
+                    var startDispatchDateBiggerThanEnd = dispStart > dispEnd;
+                    var endDispatchDateLessThanStart = dispEnd < dispStart;
+                    // Если dispatch start и dispatch end наехали друг на друга, то показываем ошибку и возвращаем исходные параметры dispatch
+                    if (startDispatchDateBiggerThanEnd === true || endDispatchDateLessThanStart === true) {
+                        record.reject();
+                        this.__resizeContext.finalize(false);
+                        me.calendarSheduler.setLoading(false);
+                        App.Notify.pushInfo('Dispatch start date must be less than dispatch end date.');
+                    } else {
+                        //Возврат выделения
+                        me.calendarSheduler.down('gridview').on('refresh', (function () { me.highlightRow(null, new Array(resourceRecord)); }));
+                        //record.set('StartDate', resizeContext.start);
+                        // выравниваем время с учётом часового пояса
+                        var offset = resizeContext.start.getTimezoneOffset() / 60.0;
+                        record.set('StartDate', Sch.util.Date.add(resizeContext.start, Sch.util.Date.HOUR, -(offset + 3)));
+                        var fixedEndDate = new Date(resizeContext.end.getFullYear(), resizeContext.end.getMonth(), resizeContext.end.getDate(), 0, 0, 0);
+                        fixedEndDate = Sch.util.Date.add(fixedEndDate, Sch.util.Date.HOUR, -(offset + 3));
+                        record.set('EndDate', fixedEndDate);
+                        //record.data.EndDate = resizeContext.end;
+                        //record.set('EndDate', resizeContext.end);
+                        if (budgetYear != null)
+                            record.set('BudgetYear', budgetYear);
+                        else {
+                            var isOnInvoice = record.get('IsOnInvoice');
+                            budgetYear = resizeContext.start.getFullYear();
+                            record.set('BudgetYear', budgetYear);
+                        }
+                        record.save({
+                            callback: function (record, operation, success) {
+                                if (success) {
+                                    me.__resizeContext.finalize(true);
+                                    me.eventStoreLoading(me.calendarSheduler.getEventStore());
+                                    me.calendarSheduler.setLoading(false);
+                                } else {
+                                    me.calendarSheduler.setLoading(false);
+                                    me.__resizeContext.finalize(false);
+                                }
+                            }
+                        });
                     }
                 }
-            });
-        } else {
-            me.__resizeContext.finalize(false);
-        }
+            }
+        });
     },
 
     getDaysForDispatchDateFromClientSettings: function (isBefore, days, isDays) {

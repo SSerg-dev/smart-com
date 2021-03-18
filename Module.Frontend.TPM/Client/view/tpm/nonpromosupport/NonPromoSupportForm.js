@@ -196,6 +196,7 @@
 
                                     endDateField.clearInvalid();
                                     endDateField.setMinValue(Ext.Date.add(newValue, Ext.Date.DAY, 1));
+                                    endDateField.setMaxValue(new Date(newValue.getFullYear(), 11, 31, 23, 59, 59));
                                     endDateField.getPicker().setMinDate();
 
                                     if (endDateField.getValue())

@@ -25,6 +25,7 @@ namespace Module.Host.TPM
                 new Handlers.FullXLSXUpdateImportClientShareHandler(),
                 new Handlers.FullXLSXCOGSUpdateImportHandler(),
                 new Handlers.FullXLSXTradeInvestmentUpdateImportHandler(),
+                new Handlers.FullXLSXRATIShopperUpdateImportHandler(),
                 new Handlers.FullXLSXImportBaseLineHandler(),
                 new Handlers.FullXLSXUpdateImportIncrementalPromoHandler(),
                 new Handlers.UpdateUpliftHandler(),

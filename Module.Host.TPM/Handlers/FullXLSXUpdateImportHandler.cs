@@ -50,6 +50,21 @@ namespace Module.Host.TPM.Handlers
         }
     }
 
+    class FullXLSXRATIShopperUpdateImportHandler : FullXLSXImportHandler
+    {
+        protected override void InitializeParameters(HandlerData handlerData, ExecuteData data)
+        {
+            var importDestination = HandlerDataHelper.GetIncomingArgument<string>("ImportDestination", handlerData);
+            data.SetValue("ImportDestination", importDestination);
+        }
+
+        protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
+        {
+            var importDestination = data.GetValue<string>("ImportDestination");
+            return new FullXLSXRATIShopperUpdateImportAction(settings, importDestination);
+        }
+    }
+
     class FullXLSXTradeInvestmentUpdateImportHandler : FullXLSXImportHandler
     {
         protected override void InitializeParameters(HandlerData handlerData, ExecuteData data)

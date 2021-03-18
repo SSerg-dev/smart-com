@@ -92,6 +92,7 @@ namespace Module.Persist.TPM {
             modelBuilder.Entity<PromoProductsView>().ToTable("PromoProductsView"); ;
 			modelBuilder.Entity<PromoTypes>();
             modelBuilder.Entity<ActualCOGS>();
+            modelBuilder.Entity<RATIShopper>();
             modelBuilder.Entity<ActualTradeInvestment>();
             modelBuilder.Entity<BTL>().HasMany(p => p.BTLPromo)
                 .WithRequired(p => p.BTL);
@@ -752,6 +753,17 @@ namespace Module.Persist.TPM {
             builder.Entity<ActualCOGS>().Collection.Action("CreateActualCOGSChangeIncidents");
             builder.Entity<ActualCOGS>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<ActualCOGS>("ActualCOGSs");
             builder.Entity<HistoricalActualCOGS>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalActualCOGS>("HistoricalActualCOGSs");
+
+            builder.EntitySet<RATIShopper>("RATIShoppers");
+            builder.EntitySet<RATIShopper>("DeletedRATIShoppers");
+            builder.EntitySet<HistoricalRATIShopper>("HistoricalRATIShoppers");
+            builder.Entity<RATIShopper>().Collection.Action("ExportXLSX");
+            builder.EntitySet<RATIShopper>("RATIShoppers").HasRequiredBinding(e => e.ClientTree, "ClientTrees");
+            builder.EntitySet<RATIShopper>("DeletedRATIShoppers").HasRequiredBinding(e => e.ClientTree, "ClientTrees");
+            builder.Entity<RATIShopper>().Collection.Action("FullImportXLSX");
+            builder.Entity<RATIShopper>().Collection.Action("DownloadTemplateXLSX");
+            builder.Entity<RATIShopper>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<RATIShopper>("RATIShoppers");
+            builder.Entity<HistoricalRATIShopper>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalRATIShopper>("HistoricalRATIShoppers");
 
             builder.EntitySet<ActualTradeInvestment>("ActualTradeInvestments");
             builder.EntitySet<ActualTradeInvestment>("DeletedActualTradeInvestments");

@@ -402,13 +402,31 @@ namespace Module.Persist.TPM.Utils {
 			return query;
 		}
 
-		/// <summary>
-		/// Применить фильтр по клиентам к TradeInvestment
-		/// </summary>
-		/// <param name="query">Запрос</param>
-		/// <param name="hierarchy">Иерархия</param>
-		/// <param name="filter">Фильтр</param>
-		public static IQueryable<TradeInvestment> ApplyFilter(IQueryable<TradeInvestment> query, IQueryable<ClientTreeHierarchyView> hierarchy, IDictionary<string, IEnumerable<string>> filter = null)
+        /// <summary>
+        /// Применить фильтр по клиентам к RATIShopper
+        /// </summary>
+        /// <param name="query">Запрос</param>
+        /// <param name="hierarchy">Иерархия</param>
+        /// <param name="filter">Фильтр</param>
+        public static IQueryable<RATIShopper> ApplyFilter(IQueryable<RATIShopper> query, IQueryable<ClientTreeHierarchyView> hierarchy, IDictionary<string, IEnumerable<string>> filter = null)
+        {
+            IEnumerable<string> clientFilter = FilterHelper.GetFilter(filter, ModuleFilterName.Client);
+            if (clientFilter.Any())
+            {
+                hierarchy = getFilteredHierarchy(hierarchy, clientFilter);
+                query = query.Where(x =>
+                    hierarchy.Any(h => h.Id == x.ClientTree.ObjectId));
+            }
+            return query;
+        }
+
+        /// <summary>
+        /// Применить фильтр по клиентам к TradeInvestment
+        /// </summary>
+        /// <param name="query">Запрос</param>
+        /// <param name="hierarchy">Иерархия</param>
+        /// <param name="filter">Фильтр</param>
+        public static IQueryable<TradeInvestment> ApplyFilter(IQueryable<TradeInvestment> query, IQueryable<ClientTreeHierarchyView> hierarchy, IDictionary<string, IEnumerable<string>> filter = null)
 		{
 			IEnumerable<string> clientFilter = FilterHelper.GetFilter(filter, ModuleFilterName.Client);
 			if (clientFilter.Any())

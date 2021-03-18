@@ -307,6 +307,12 @@
             glyph: 0xf215,
             //roles: ['Administrator', 'FunctionalExpert', 'DemandFinance', 'SuperReader'],
             widget: 'promoroireport'
+        }, {
+            text: l10n.ns('tpm', 'mainmenu').value('RATIShopper'),
+            tooltip: l10n.ns('tpm', 'mainmenu').value('RATIShopper'),
+            glyph: 0xfcce,
+            roles: ['Administrator', 'DemandFinance', 'SupportAdministrator', 'SuperReader', 'CustomerMarketing', 'CMManager', 'FunctionalExpert'],
+            widget: 'ratishopper'
         }]
     },
     {

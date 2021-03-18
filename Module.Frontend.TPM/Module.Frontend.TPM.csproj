@@ -255,8 +255,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Client\controller\tpm\ratishopper\RATIShopper.js" />
+    <Content Include="Client\controller\tpm\ratishopper\DeletedRATIShopper.js" />
+    <Content Include="Client\controller\tpm\ratishopper\HistoricalRATIShopper.js" />
     <Content Include="Client\controller\tpm\clienttreebrandtech\HistoricalClientTreeBrandTech.js" />
     <Content Include="Client\controller\tpm\rollingvolume\RollingVolume.js" />
+    <Content Include="Client\model\tpm\ratishopper\RATIShopper.js" />
+    <Content Include="Client\model\tpm\ratishopper\DeletedRATIshopper.js" />
+    <Content Include="Client\model\tpm\ratishopper\HistoricalRATIShopper.js" />
     <Content Include="Client\model\tpm\btl\BTLPromo.js" />
     <Content Include="Client\model\tpm\btl\DeletedBTL.js" />
     <Content Include="Client\model\tpm\btl\HistoricalBTL.js" />
@@ -264,6 +270,12 @@
     <Content Include="Client\model\tpm\mechanictype\MechanicTypeForClient.js" />
     <Content Include="Client\model\tpm\rollingvolume\RollingVolume.js" />
     <Content Include="Client\util\MinHeightColumn.js" />
+    <Content Include="Client\view\tpm\ratishopper\RATIShopper.js" />
+    <Content Include="Client\view\tpm\ratishopper\RATIShopperEditor.js" />
+    <Content Include="Client\view\tpm\ratishopper\DeletedRATIShopper.js" />
+    <Content Include="Client\view\tpm\ratishopper\DeletedRATIShopperDetail.js" />
+    <Content Include="Client\view\tpm\ratishopper\HistoricalRATIShopper.js" />
+    <Content Include="Client\view\tpm\ratishopper\HistoricalRATIShopperDetail.js" />
     <Content Include="Client\view\tpm\btl\BTLPromoEditor.js" />
     <Content Include="Client\view\tpm\btl\BTLEditor.js" />
     <Content Include="Client\controller\tpm\previousdayincremental\PreviousDayIncremental.js" />
@@ -279,14 +291,17 @@
     <Compile Include="Controllers\DeletedActualTradeInvestmentsController.cs" />
     <Compile Include="Controllers\DeletedBTLsController.cs" />
     <Compile Include="Controllers\DeletedCoefficientSI2SOsController.cs" />
+    <Compile Include="Controllers\DeletedRATIShoppersController.cs" />
     <Compile Include="Controllers\HistoricalActualTradeInvestmentsController.cs" />
     <Compile Include="Controllers\HistoricalActualCOGSsController.cs" />
     <Compile Include="Controllers\HistoricalBTLsController.cs" />
     <Compile Include="Controllers\HistoricalClientDashboardsController.cs" />
     <Compile Include="Controllers\HistoricalClientTreeBrandTechesController.cs" />
     <Compile Include="Controllers\HistoricalCoefficientSI2SOsController.cs" />
+    <Compile Include="Controllers\HistoricalRATIShoppersController.cs" />
     <Compile Include="Controllers\PreviousDayIncrementalsController.cs" />
     <Compile Include="Controllers\PriceListsController.cs" />
+    <Compile Include="Controllers\RATIShoppersController.cs" />
     <Compile Include="Controllers\RollingVolumesController.cs" />
     <Compile Include="Util\AzureBlobHelperLocal.cs" />
     <Compile Include="Util\IQueryableExtensions.cs" />
@@ -846,6 +861,7 @@
     <Content Include="Client\view\tpm\promo\HistoricalUserRolePromo.js" />
     <Content Include="Client\view\tpm\promo\PromoAdjustment.js" />
     <Content Include="Client\view\tpm\promo\PromoBasicProducts.js" />
+    <Content Include="Client\view\tpm\promo\PromoBudgetYear.js" />
     <Content Include="Client\view\tpm\promo\PromoChangeStatusWindow.js" />
     <Content Include="Client\view\tpm\promo\PromoClient.js" />
     <Content Include="Client\view\tpm\promo\PromoProductChooseWindow.js" />
@@ -865,6 +881,7 @@
     <Content Include="Client\view\tpm\rollingvolume\RollingVolumeEditor.js" />
     <Content Include="Client\view\tpm\schedule\ClientPromoTypeFilter.js" />
     <Content Include="Client\view\tpm\schedule\ScheduleType.js" />
+    <Content Include="Client\view\tpm\schedule\SelectBudgetYearWindow.js" />
     <Content Include="Client\view\tpm\toolbar\calculatinglog\CustomLogTopToolbar.js" />
     <Content Include="Client\view\tpm\tradeinvestment\ImportTradeInvestmentParamForm.js" />
     <Content Include="Client\view\tpm\userdashboard\UserDashboard.js" />

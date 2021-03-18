@@ -59,6 +59,7 @@
         'PostPromoEffectItem': 'Post Promo Effect',
         'COGS': 'Plan COGS',
         'ActualCOGS': 'Actual COGS',
+        'RATIShopper': 'RA TI Shopper',
         'Finance': 'Finance',
         'TradeInvestment': 'Plan TradeInvestment',
         'ActualTradeInvestment': 'Actual TradeInvestment',
@@ -66,6 +67,7 @@
         'PlanPostPromoEffectReport': 'Plan Post Promo Effect Report',
         'PlanPostPromoEffectReportWeek': 'Plan Post Promo Effect Report',
         'PromoROIReport': 'Promo ROI Report',
+        'RATIShopper': 'RA TI Shopper',
         'AssortmentMatrix': 'Assortment matrix',
         'PromoROIReport': 'Promo ROI Report',
         'IncrementalPromo': 'Incremental Promo',
@@ -144,6 +146,7 @@
         'PostPromoEffect': 'Post Promo Effect',
         'COGS': 'COGS',
         'ActualCOGS': 'Actual COGS',
+        'RATIShopper': 'RA TI Shopper',
         'AddPromoSupportType': 'Add Promo support type',
         'AddPromoType': 'Create Promo',
         'TradeInvestment': 'TradeInvestment',
@@ -211,9 +214,14 @@
         'completeStep4Validate': 'Step 4',
         'completeStep5Validate': 'Step 5',
         'completeStep6Validate': 'Step 6',
+        'completeStep7Validate': 'Step 7',
+        'completeStep8Validate': 'Step 8',
         'completeBasicValidate': 'Basic',
         'completeActivityValidate': 'Activity',
         'selectpromostatuswindow': 'Select promo status',
+
+        'completeBudgetsStep4Validate': 'Budgets Step 4: Add TI Shopper',
+        'AddTIValidationError': 'You have not yet assigned Promo Support for this Promo ID or your Promo Marketing TI is lower than Add TI Marketing​',
 
         'confirmmassapproval': "Are you sure you want to approve all?"
     },
@@ -240,13 +248,15 @@
         'basicStep2': 'Step 2: Product',
         'basicStep3': 'Step 3: Mechanic',
         'basicStep4': 'Step 4: Period',
-        'basicStep5': 'Step 5: Event',
-        'basicStep6': 'Step 6: Settings',
-        'basicStep7': 'Step 7: Promo dispatch adjustment',
+        'basicStep5': 'Step 5: Budget Year (Shopper TE)',
+        'basicStep6': 'Step 6: Event',
+        'basicStep7': 'Step 7: Settings',
+        'basicStep8': 'Step 8: Promo dispatch adjustment',
 
         'promoBudgetsStep1': 'Step 1: Total Cost Budgets',
         'promoBudgetsStep2': 'Step 2: Marketing TI Budgets',
         'promoBudgetsStep3': 'Step 3: Cost Production Budgets',
+        'promoBudgetsStep4': 'Step 4: Add TI (relevant for GA only)',
 
         'calculationStep1': 'Step 1: Costs and budget',
         'calculationStep2': 'Step 2: Activity',
@@ -628,6 +638,7 @@
     'Promo': {
         'StartDate': 'Start date',
         'DateStart': 'Start date',
+        'BudgetYear': 'Year',
         'LastChangedDate': 'Last Changed Date',
         'LastChangedDateDemand': 'Last Changed Date Demand',
         'LastChangedDateFinance': 'Last Changed Date Finance',
@@ -764,6 +775,12 @@
         'ConfirmPromoStatusChange': 'Are you sure you want to do this action? It may not join in standart workflow process.',
         'FailToSelectStatus': 'You can not select current status.',
         'Reason': 'Reason',
+
+        'PlanAddTIShopperApproved': 'Add TI Shopper Approved',
+        'PlanAddTIShopperCalculated': 'Add TI Shopper Calculated',
+        'PlanAddTIMarketingApproved': 'Add TI Marketing Approved',
+        'ActualAddTIShopper': 'Add TI Shopper',
+        'ActualAddTIMarketing': 'Add TI Marketing',
 
         'PromoEventName': 'Promo Event Name',
         'PromoEventDescription': 'Promo Event Description',
@@ -1573,6 +1590,16 @@
     'HistoricalActualCOGS': ['.tpm.ActualCOGS', '.core.BaseHistoryEntity'],
     'DeletedActualCOGS': ['.tpm.ActualCOGS', '.core.BaseDeletedEntity'],
 
+    'RATIShopper': {
+        'ClientTreeFullPathName': 'ClientHierarchy',
+        'ClientTreeObjectId': 'ClientId',
+        'Year': 'Year',
+        'RATIShopperPercent': 'RA TI Shopper percent',
+        'recalculatePreviousYearButtonYearText': 'Recalculate previous year'
+    },
+    'HistoricalRATIShopper': ['.tpm.RATIShopper', '.core.BaseHistoryEntity'],
+    'DeletedRATIShopper': ['.tpm.RATIShopper', '.core.BaseDeletedEntity'],
+
     'TradeInvestment': {
         'StartDate': 'StartDate',
         'EndDate': 'EndDate',
@@ -1876,6 +1903,7 @@
     'PromoROIReport': {
         'StartDate': 'Start date',
         'EndDate': 'End date',
+        'BudgetYear': 'Budget year',
         'ActualPromoPostPromoEffectLSV': 'Actual Post Promo Effect LSV',
         'DispatchesStart': 'Dispatch start',
         'DispatchesEnd': 'Dispatch end',
@@ -2059,7 +2087,13 @@
         'COGSPercent': 'COGS',
         'PromoTypesName': 'Promo Types Name',
         'IsGrowthAcceleration': 'Growth acceleration',
-        'InvoiceTotal': 'Invoice Total'
+        'InvoiceTotal': 'Invoice Total',
+
+        'PlanAddTIShopperApproved': 'Plan Add TI Shopper Approved',
+        'PlanAddTIShopperCalculated': 'Plan Add TI Shopper Calculated',
+        'PlanAddTIMarketingApproved': 'Plan Add TI Promo Marketing Approved',
+        'ActualAddTIShopper': 'Actual Add TI Shopper',
+        'ActualAddTIMarketing': 'Actual Add TI Promo Marketing',
     },
 
     'PromoActivity': {

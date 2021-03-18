@@ -234,6 +234,10 @@
     'tpm.actualtradeinvestment.DeletedActualTradeInvestment',
     'tpm.actualtradeinvestment.HistoricalActualTradeInvestment',
 
+    'tpm.ratishopper.RATIShopper',
+    'tpm.ratishopper.DeletedRATIShopper',
+    'tpm.ratishopper.HistoricalRATIShopper',
+
     'tpm.actualproductsview.ActualProductsView',
     'tpm.planincrementalreport.PlanIncrementalReport',
 
