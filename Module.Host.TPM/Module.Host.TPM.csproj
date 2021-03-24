@@ -35,232 +35,232 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Antlr3.Runtime, Version=3.4.1.9004, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.21.03242108\lib\net451\Antlr3.Runtime.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.21.03250120\lib\net451\Antlr3.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="AutoMapper, Version=4.0.4.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\AutoMapper.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\AutoMapper.dll</HintPath>
     </Reference>
     <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\Castle.Core.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\Castle.Core.dll</HintPath>
     </Reference>
     <Reference Include="Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\Core.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\Core.dll</HintPath>
     </Reference>
     <Reference Include="DnsClient, Version=1.0.7.0, Culture=neutral, PublicKeyToken=4574bb5573c51424, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\DnsClient.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\DnsClient.dll</HintPath>
     </Reference>
     <Reference Include="DocumentFormat.OpenXml, Version=2.8.1.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\DocumentFormat.OpenXml.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\DocumentFormat.OpenXml.dll</HintPath>
     </Reference>
     <Reference Include="ElasticLinq, Version=1.4.3.0, Culture=neutral, PublicKeyToken=fad43a6f87827247, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\ElasticLinq.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\ElasticLinq.dll</HintPath>
     </Reference>
     <Reference Include="Elasticsearch.Net, Version=5.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\Elasticsearch.Net.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\Elasticsearch.Net.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\EntityFramework.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\EntityFramework.SqlServer.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework6.Npgsql, Version=3.1.1.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\EntityFramework6.Npgsql.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\EntityFramework6.Npgsql.dll</HintPath>
     </Reference>
     <Reference Include="ExcelFramework, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\ExcelFramework.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\ExcelFramework.dll</HintPath>
     </Reference>
     <Reference Include="ExtJsScaffolding, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\ExtJsScaffolding.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\ExtJsScaffolding.dll</HintPath>
     </Reference>
     <Reference Include="Frontend.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\Frontend.Core.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\Frontend.Core.dll</HintPath>
     </Reference>
     <Reference Include="History.ElasticSearch, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\History.ElasticSearch.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\History.ElasticSearch.dll</HintPath>
     </Reference>
     <Reference Include="History.Mongo, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\History.Mongo.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\History.Mongo.dll</HintPath>
     </Reference>
     <Reference Include="History.RavenDB, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\History.RavenDB.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\History.RavenDB.dll</HintPath>
     </Reference>
     <Reference Include="Interfaces.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\Interfaces.Core.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\Interfaces.Core.dll</HintPath>
     </Reference>
     <Reference Include="Interfaces.Implementation, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\Interfaces.Implementation.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\Interfaces.Implementation.dll</HintPath>
     </Reference>
     <Reference Include="LinqToQuerystring, Version=0.6.5.24695, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\LinqToQuerystring.0.6.5\lib\net35\LinqToQuerystring.dll</HintPath>
     </Reference>
     <Reference Include="LiteDB, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.21.03242108\lib\net451\LiteDB.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.21.03250120\lib\net451\LiteDB.dll</HintPath>
     </Reference>
     <Reference Include="Looper, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\Looper.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\Looper.dll</HintPath>
     </Reference>
     <Reference Include="Looper.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\Looper.Core.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\Looper.Core.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.ApplicationInsights, Version=2.17.0.146, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\Microsoft.ApplicationInsights.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\Microsoft.ApplicationInsights.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Azure.KeyVault, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\Microsoft.Azure.KeyVault.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\Microsoft.Azure.KeyVault.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Azure.KeyVault.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\Microsoft.Azure.KeyVault.Core.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\Microsoft.Azure.KeyVault.Core.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Azure.KeyVault.WebKey, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\Microsoft.Azure.KeyVault.WebKey.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\Microsoft.Azure.KeyVault.WebKey.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Azure.Services.AppAuthentication, Version=1.0.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\Microsoft.Azure.Services.AppAuthentication.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\Microsoft.Azure.Services.AppAuthentication.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Azure.Storage.Blob, Version=11.1.6.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\Microsoft.Azure.Storage.Blob.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\Microsoft.Azure.Storage.Blob.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Azure.Storage.Common, Version=11.1.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\Microsoft.Azure.Storage.Common.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\Microsoft.Azure.Storage.Common.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Data.Edm, Version=5.6.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\Microsoft.Data.Edm.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\Microsoft.Data.Edm.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Data.OData, Version=5.6.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\Microsoft.Data.OData.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\Microsoft.Data.OData.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.IdentityModel.Clients.ActiveDirectory, Version=3.14.2.11, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\Microsoft.IdentityModel.Clients.ActiveDirectory.dll</HintPath>
+    <Reference Include="Microsoft.IdentityModel.Clients.ActiveDirectory, Version=3.19.4.11002, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\Microsoft.IdentityModel.Clients.ActiveDirectory.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.IdentityModel.Clients.ActiveDirectory.Platform, Version=3.14.2.11, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.dll</HintPath>
+    <Reference Include="Microsoft.IdentityModel.Clients.ActiveDirectory.Platform, Version=3.19.4.11002, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.21.03250120\lib\net451\Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Rest.ClientRuntime, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\Microsoft.Rest.ClientRuntime.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\Microsoft.Rest.ClientRuntime.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Rest.ClientRuntime.Azure, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\Microsoft.Rest.ClientRuntime.Azure.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\Microsoft.Rest.ClientRuntime.Azure.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\Microsoft.Web.Infrastructure.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\Microsoft.Web.Infrastructure.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.WindowsAzure.Storage, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\Microsoft.WindowsAzure.Storage.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\Microsoft.WindowsAzure.Storage.dll</HintPath>
     </Reference>
     <Reference Include="MongoDB.Bson, Version=2.7.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\MongoDB.Bson.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\MongoDB.Bson.dll</HintPath>
     </Reference>
     <Reference Include="MongoDB.Driver, Version=2.7.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\MongoDB.Driver.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\MongoDB.Driver.dll</HintPath>
     </Reference>
     <Reference Include="MongoDB.Driver.Core, Version=2.7.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\MongoDB.Driver.Core.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\MongoDB.Driver.Core.dll</HintPath>
     </Reference>
     <Reference Include="Nest, Version=5.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\Nest.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\Nest.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Ninject, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\Ninject.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\Ninject.dll</HintPath>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\NLog.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\NLog.dll</HintPath>
     </Reference>
     <Reference Include="Npgsql, Version=3.2.3.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\Npgsql.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\Npgsql.dll</HintPath>
     </Reference>
     <Reference Include="NPOI, Version=2.4.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\NPOI.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\NPOI.dll</HintPath>
     </Reference>
     <Reference Include="NPOI.OOXML, Version=2.4.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\NPOI.OOXML.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\NPOI.OOXML.dll</HintPath>
     </Reference>
     <Reference Include="NPOI.OpenXml4Net, Version=2.4.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\NPOI.OpenXml4Net.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\NPOI.OpenXml4Net.dll</HintPath>
     </Reference>
     <Reference Include="NPOI.OpenXmlFormats, Version=2.4.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\NPOI.OpenXmlFormats.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\NPOI.OpenXmlFormats.dll</HintPath>
     </Reference>
     <Reference Include="NSubstitute, Version=4.2.0.0, Culture=neutral, PublicKeyToken=92dd2e9066daa5ca, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\NSubstitute.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\NSubstitute.dll</HintPath>
     </Reference>
     <Reference Include="Persist, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\Persist.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\Persist.dll</HintPath>
     </Reference>
     <Reference Include="ProcessingHost, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\ProcessingHost.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\ProcessingHost.dll</HintPath>
     </Reference>
     <Reference Include="Raven.Abstractions, Version=3.0.0.0, Culture=neutral, PublicKeyToken=37f41c7f99471593, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\Raven.Abstractions.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\Raven.Abstractions.dll</HintPath>
     </Reference>
     <Reference Include="Raven.Client.Lightweight, Version=3.0.0.0, Culture=neutral, PublicKeyToken=37f41c7f99471593, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\Raven.Client.Lightweight.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\Raven.Client.Lightweight.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\System.Buffers.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\System.Buffers.dll</HintPath>
     </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Diagnostics.DiagnosticSource, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\System.Diagnostics.DiagnosticSource.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\System.Diagnostics.DiagnosticSource.dll</HintPath>
     </Reference>
     <Reference Include="System.Management.Automation, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\System.Management.Automation.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\System.Management.Automation.dll</HintPath>
     </Reference>
     <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\System.Memory.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\System.Memory.dll</HintPath>
     </Reference>
     <Reference Include="System.Net" />
     <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\System.Net.Http.Formatting.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http.WebRequest" />
     <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\System.Numerics.Vectors.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\System.Numerics.Vectors.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime" />
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Spatial, Version=5.6.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\System.Spatial.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\System.Spatial.dll</HintPath>
     </Reference>
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.1.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\System.Threading.Tasks.Extensions.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.Http, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\System.Web.Http.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\System.Web.Http.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.Http.OData, Version=5.5.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\System.Web.Http.OData.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\System.Web.Http.OData.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.Http.WebHost, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\System.Web.Http.WebHost.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\System.Web.Http.WebHost.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\System.Web.Mvc.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\System.Web.Mvc.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.Optimization, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\System.Web.Optimization.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\System.Web.Optimization.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\System.Web.Razor.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\System.Web.Razor.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\System.Web.WebPages.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\System.Web.WebPages.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\System.Web.WebPages.Deployment.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\System.Web.WebPages.Deployment.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\System.Web.WebPages.Razor.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -269,16 +269,16 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="Thinktecture.IdentityModel, Version=3.6.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\Thinktecture.IdentityModel.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\Thinktecture.IdentityModel.dll</HintPath>
     </Reference>
     <Reference Include="Utility, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\Utility.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\Utility.dll</HintPath>
     </Reference>
     <Reference Include="WebGrease, Version=1.5.2.14234, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.21.03242108\lib\net451\WebGrease.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.21.03250120\lib\net451\WebGrease.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03242108\lib\net451\WindowsBase.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.21.03250120\lib\net451\WindowsBase.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
