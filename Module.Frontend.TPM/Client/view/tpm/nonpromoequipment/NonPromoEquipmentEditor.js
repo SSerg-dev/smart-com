@@ -8,6 +8,7 @@
 
     items: {
         xtype: 'editorform',
+        id: 'nonpromoequipmenteditorform',
         columnsCount: 1,
         items: [{
             xtype: 'textfield',
@@ -19,6 +20,56 @@
             fieldLabel: l10n.ns('tpm', 'NonPromoEquipment').value('Description_ru'),
             allowBlank: true,
             allowOnlyWhitespace: true
-        }]
+        }, {
+            //xtype: 'combobox',
+            //name: 'BudgetItemId',
+            //fieldLabel: l10n.ns('tpm', 'NonPromoEquipment').value('BudgetItemName'),
+            //valueField: 'Id',
+            //displayField: 'Name',
+            //entityType: 'BudgetItem',
+            //store: {
+            //    type: 'simplestore',
+            //    autoLoad: true,
+            //    model: 'App.model.tpm.budgetitem.BudgetItem',
+            //},
+            //listeners: {
+            //    change: function (field, newValue, oldValue) {
+            //        if (newValue != oldValue) {
+            //            var editor = field.up();
+            //            if (editor) {
+            //                editor.nonPromoEquipmentId = newValue;
+            //            }
+            //        }
+            //    }
+            //},
+            //mapping: [{
+            //    from: 'Name',
+            //    to: 'BudgetItemName'
+            //}]
+                xtype: 'searchfield',
+                fieldLabel: l10n.ns('tpm', 'NonPromoEquipment').value('BudgetItemName'),
+                name: 'BudgetItemId',
+                selectorWidget: 'budgetitemshort',
+                valueField: 'Id',
+                editable: false,
+                displayField: 'Name',
+                store: {
+                    type: 'directorystore',
+                    model: 'App.model.tpm.budgetitem.BudgetItem',
+                    extendedFilter: {
+                        xclass: 'App.ExtFilterContext',
+                        supportedModels: [{
+                            xclass: 'App.ExtSelectionFilterModel',
+                            model: 'App.model.tpm.budget.Budget',
+                            modelId: 'efselectionmodel'
+                        }]
+                    }
+                },
+                mapping: [{
+                    from: 'Name',
+                    to: 'BudgetItemName'
+                }]
+        },
+        ]
     }
 });     

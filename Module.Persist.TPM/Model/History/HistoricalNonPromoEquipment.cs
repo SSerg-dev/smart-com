@@ -9,5 +9,6 @@ namespace Module.Persist.TPM.Model.History
     {
 		public string EquipmentType { get; set; }
         public string Description_ru { get; set; }
+        public Guid? BudgetItemId { get; set; }
     }
 }

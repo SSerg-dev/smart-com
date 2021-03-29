@@ -2444,6 +2444,18 @@
     <Compile Include="Migrations\202102181746275_Change_DropCreate_IncrementalIndex.Designer.cs">
       <DependentUpon>202102181746275_Change_DropCreate_IncrementalIndex.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202102241620232_Add_DMP.cs" />
+    <Compile Include="Migrations\202102241620232_Add_DMP.Designer.cs">
+      <DependentUpon>202102241620232_Add_DMP.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202102260838554_Add_AddPromoSupportDMP.cs" />
+    <Compile Include="Migrations\202102260838554_Add_AddPromoSupportDMP.Designer.cs">
+      <DependentUpon>202102260838554_Add_AddPromoSupportDMP.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202102261417272_Add_BudgetItem_Field_To_NonPromoEquipment.cs" />
+    <Compile Include="Migrations\202102261417272_Add_BudgetItem_Field_To_NonPromoEquipment.Designer.cs">
+      <DependentUpon>202102261417272_Add_BudgetItem_Field_To_NonPromoEquipment.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\202102232027054_Add_ANAPLAN_BASELINE_CLIENTS_Setting.cs" />
     <Compile Include="Migrations\202102232027054_Add_ANAPLAN_BASELINE_CLIENTS_Setting.Designer.cs">
       <DependentUpon>202102232027054_Add_ANAPLAN_BASELINE_CLIENTS_Setting.cs</DependentUpon>
@@ -2452,9 +2464,29 @@
     <Compile Include="Migrations\202103041317461_Add_Date_Fields_To_MARS_UNIVERSAL_PETCARE_MATERIALS.Designer.cs">
       <DependentUpon>202103041317461_Add_Date_Fields_To_MARS_UNIVERSAL_PETCARE_MATERIALS.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202103040843576_EmptyDMP.cs" />
+    <Compile Include="Migrations\202103040843576_EmptyDMP.Designer.cs">
+      <DependentUpon>202103040843576_EmptyDMP.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202103161440328_EmptyDMP1.cs" />
+    <Compile Include="Migrations\202103161440328_EmptyDMP1.Designer.cs">
+      <DependentUpon>202103161440328_EmptyDMP1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\202103160940225_EmptyAddTI3.cs" />
     <Compile Include="Migrations\202103160940225_EmptyAddTI3.Designer.cs">
       <DependentUpon>202103160940225_EmptyAddTI3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202103181000224_EmptyDMP2.cs" />
+    <Compile Include="Migrations\202103181000224_EmptyDMP2.Designer.cs">
+      <DependentUpon>202103181000224_EmptyDMP2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202103250923147_Change_Type_DMP_TT.cs" />
+    <Compile Include="Migrations\202103250923147_Change_Type_DMP_TT.Designer.cs">
+      <DependentUpon>202103250923147_Change_Type_DMP_TT.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202103291040327_RenameTTtoExternalCode.cs" />
+    <Compile Include="Migrations\202103291040327_RenameTTtoExternalCode.Designer.cs">
+      <DependentUpon>202103291040327_RenameTTtoExternalCode.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\202103220114365_EmptyRC3.cs" />
     <Compile Include="Migrations\202103220114365_EmptyRC3.Designer.cs">
@@ -2535,6 +2567,8 @@
     <Compile Include="Model\Import\ImportBTL.cs" />
     <Compile Include="Model\Import\ImportClientDashboard.cs" />
     <Compile Include="Model\Import\ImportCoefficientSI2SO.cs" />
+    <Compile Include="Model\Import\ImportPromoDMP.cs" />
+    <Compile Include="Model\Import\ImportNonPromoDMP.cs" />
     <Compile Include="Model\Import\ImportNonPromoEquipment.cs" />
     <Compile Include="Model\Import\ImportIncrementalPromo.cs" />
     <Compile Include="Model\Import\ImportNoNego.cs" />
@@ -2576,6 +2610,8 @@
     <Compile Include="Model\SimpleModel\SimplePromoCOGSTI.cs" />
     <Compile Include="Model\SimpleModel\YEAR_END_ESTIMATE_FDM.cs" />
     <Compile Include="Model\TPM\ActualLsvModel.cs" />
+    <Compile Include="Model\TPM\PromoSupportDMP.cs" />
+    <Compile Include="Model\TPM\NonPromoSupportDMP.cs" />
     <Compile Include="Model\TPM\PreviousDayIncremental.cs" />
     <Compile Include="Model\TPM\InputBaseline.cs" />
     <Compile Include="Model\TPM\BlockedPromo.cs" />
@@ -4662,6 +4698,18 @@
     <EmbeddedResource Include="Migrations\202102232027054_Add_ANAPLAN_BASELINE_CLIENTS_Setting.resx">
       <DependentUpon>202102232027054_Add_ANAPLAN_BASELINE_CLIENTS_Setting.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202102241620232_Add_DMP.resx">
+      <DependentUpon>202102241620232_Add_DMP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202102260838554_Add_AddPromoSupportDMP.resx">
+      <DependentUpon>202102260838554_Add_AddPromoSupportDMP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202102261417272_Add_BudgetItem_Field_To_NonPromoEquipment.resx">
+      <DependentUpon>202102261417272_Add_BudgetItem_Field_To_NonPromoEquipment.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202103040843576_EmptyDMP.resx">
+      <DependentUpon>202103040843576_EmptyDMP.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202103041317461_Add_Date_Fields_To_MARS_UNIVERSAL_PETCARE_MATERIALS.resx">
       <DependentUpon>202103041317461_Add_Date_Fields_To_MARS_UNIVERSAL_PETCARE_MATERIALS.cs</DependentUpon>
     </EmbeddedResource>
@@ -4739,6 +4787,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202103160940225_EmptyAddTI3.resx">
       <DependentUpon>202103160940225_EmptyAddTI3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202103161440328_EmptyDMP1.resx">
+      <DependentUpon>202103161440328_EmptyDMP1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202103181000224_EmptyDMP2.resx">
+      <DependentUpon>202103181000224_EmptyDMP2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202103250923147_Change_Type_DMP_TT.resx">
+      <DependentUpon>202103250923147_Change_Type_DMP_TT.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202103291040327_RenameTTtoExternalCode.resx">
+      <DependentUpon>202103291040327_RenameTTtoExternalCode.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202103220114365_EmptyRC3.resx">
       <DependentUpon>202103220114365_EmptyRC3.cs</DependentUpon>

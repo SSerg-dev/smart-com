@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Core.Extensions;
 using Core.Security;
 using Core.Security.Models;
 using Core.Settings;
@@ -10,6 +11,7 @@ using Looper.Parameters;
 using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.CalculatePromoParametersModule;
 using Module.Persist.TPM.Model.DTO;
+using Module.Persist.TPM.Model.Import;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
 using Newtonsoft.Json;
@@ -32,6 +34,7 @@ using System.Web.Http.OData.Query;
 using System.Web.Http.Results;
 using Thinktecture.IdentityModel.Authorization.WebApi;
 using Utility;
+using Utility.FileWorker;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -133,10 +136,13 @@ namespace Module.Frontend.TPM.Controllers
             var proxy = Context.Set<NonPromoSupport>().Create<NonPromoSupport>();
             var result = (NonPromoSupport)Mapper.Map(model, proxy, typeof(NonPromoSupport), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
             Context.Set<NonPromoSupport>().Add(result);
-
             try
             {
                 Context.SaveChanges();
+                if (!String.IsNullOrEmpty(result.AttachFileName))
+                {
+                    CreateImportDMPTask(result);
+                }
             }
             catch (Exception e)
             {
@@ -165,6 +171,18 @@ namespace Module.Frontend.TPM.Controllers
 
                 Context.SaveChanges();
 
+                if (patch.GetChangedPropertyNames().Contains("AttachFileName"))
+                {
+                    if (!String.IsNullOrEmpty(model.AttachFileName))
+                    {
+                        CreateImportDMPTask(model);
+                    }
+                    else 
+                    {
+                        RemoveOldDMPRecords(model.Id);
+                    }
+                }
+
                 return Updated(model);
             }
             catch (DbUpdateConcurrencyException)
@@ -182,6 +200,16 @@ namespace Module.Frontend.TPM.Controllers
             {
                 return GetErorrRequest(e);
             }
+        }
+
+        private void RemoveOldDMPRecords(Guid nonPromoSupportId) 
+        {
+            var toRemove = Context.Set<NonPromoSupportDMP>().Where(x => x.NonPromoSupportId == nonPromoSupportId);
+            foreach (IEnumerable<NonPromoSupportDMP> items in toRemove.Partition(100))
+            {
+                Context.Set<NonPromoSupportDMP>().RemoveRange(items);
+            }
+            Context.SaveChanges();
         }
 
         [ClaimsAuthorize]
@@ -348,6 +376,60 @@ namespace Module.Frontend.TPM.Controllers
             }
         }
 
+        private void CreateImportDMPTask(NonPromoSupport model)
+        { 
+            var importHandler = "FullXLSXImportNonPromoDMPHandler";
+            UserInfo user = authorizationManager.GetCurrentUser();
+            Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
+            RoleInfo role = authorizationManager.GetCurrentRole();
+            Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
+
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                ImportResultFilesModel resiltfile = new ImportResultFilesModel();
+                ImportResultModel resultmodel = new ImportResultModel();
+
+                HandlerData data = new HandlerData();
+                FileModel file = new FileModel()
+                {
+                    LogicType = "Import",
+                    Name = System.IO.Path.GetFileName(model.AttachFileName),
+                    DisplayName = System.IO.Path.GetFileName(model.AttachFileName)
+                };
+
+                // параметры импорта
+                HandlerDataHelper.SaveIncomingArgument("PlanQuantity", model.PlanQuantity.ToString(), data, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("NonPromoSupportId", model.Id.ToString(), data, throwIfNotExists: false);
+
+                HandlerDataHelper.SaveIncomingArgument("File", file, data, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportNonPromoDMP), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportNonPromoDMP).Name, data, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(ImportNonPromoDMP), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("UniqueFields", new List<String>() { "Name" }, data);
+
+                LoopHandler handler = new LoopHandler()
+                {
+                    Id = Guid.NewGuid(),
+                    ConfigurationName = "PROCESSING",
+                    Description = "Загрузка импорта из файла " + typeof(NonPromoSupport).Name,
+                    Name = "Module.Host.TPM.Handlers." + importHandler,
+                    ExecutionPeriod = null,
+                    RunGroup = typeof(NonPromoSupport).Name,
+                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                    LastExecutionDate = null,
+                    NextExecutionDate = null,
+                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                    UserId = userId,
+                    RoleId = roleId
+                };
+                handler.SetParameterData(data);
+                context.LoopHandlers.Add(handler);
+                context.SaveChanges();
+            }
+        }
+
         private ExceptionResult GetErorrRequest(Exception e)
         {
             // обработка при создании дублирующей записи
@@ -383,7 +465,6 @@ namespace Module.Frontend.TPM.Controllers
 
                 string directory = Core.Settings.AppSettingsManager.GetSetting("PROMO_SUPPORT_DIRECTORY", "NonPromoSupportFiles");
                 string fileName = await FileUtility.UploadFile(Request, directory);
-
                 return Json(new { success = true, fileName = fileName.Split('\\').Last() });
             }
             catch (Exception e)

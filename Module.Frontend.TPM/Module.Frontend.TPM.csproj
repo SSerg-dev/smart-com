@@ -280,6 +280,7 @@
     <Content Include="Client\view\tpm\btl\BTLEditor.js" />
     <Content Include="Client\controller\tpm\previousdayincremental\PreviousDayIncremental.js" />
     <Content Include="Client\model\tpm\previousdayincremental\PreviousDayIncremental.js" />
+    <Content Include="Client\view\tpm\budgetitem\BudgetItemShort.js" />
     <Content Include="Client\view\tpm\clienttreebrandtech\HistoricalClientTreeBrandTech.js" />
     <Content Include="Client\view\tpm\clienttreebrandtech\HistoricalClientTreeBrandTechDetail.js" />
     <Content Include="Client\view\tpm\coefficientsi2so\CustomMarsPeriodField.js" />

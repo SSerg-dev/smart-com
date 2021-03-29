@@ -205,7 +205,8 @@ namespace Module.Frontend.TPM.Controllers
         {
         IEnumerable<Column> columns = new List<Column>() {
                 new Column() { Order = 0, Field = "EquipmentType", Header = "Equipment type", Quoting = false },
-                new Column() { Order = 1, Field = "Description_ru", Header = "Description RU", Quoting = false }
+                new Column() { Order = 1, Field = "Description_ru", Header = "Description RU", Quoting = false },
+                new Column() { Order = 2, Field = "BudgetItem.Name", Header = "Budget Item", Quoting = false }
             };
             return columns;
         }
@@ -262,7 +263,7 @@ namespace Module.Frontend.TPM.Controllers
                 string importDir = Core.Settings.AppSettingsManager.GetSetting("IMPORT_DIRECTORY", "ImportFiles");
                 string fileName = await FileUtility.UploadFile(Request, importDir);
 
-                CreateImportTask(fileName, "FullXLSXUpdateAllHandler");
+                CreateImportTask(fileName, "FullXLSXUpdateNonPromoEquipmentHandler");
 
                 HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
                 result.Content = new StringContent("success = true");
@@ -296,7 +297,7 @@ namespace Module.Frontend.TPM.Controllers
                 HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportNonPromoEquipment), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportNonPromoEquipment).Name, data, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(NonPromoEquipment), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(ImportNonPromoEquipment), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("UniqueFields", new List<String>() { "EquipmentType" }, data);
 
                 LoopHandler handler = new LoopHandler() {

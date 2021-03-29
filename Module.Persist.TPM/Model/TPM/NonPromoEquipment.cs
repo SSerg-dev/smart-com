@@ -22,5 +22,8 @@ namespace Module.Persist.TPM.Model.TPM
         public string EquipmentType { get; set; }
 
         public string Description_ru { get; set; }
+
+        public Guid? BudgetItemId { get; set; }
+        public virtual BudgetItem BudgetItem { get; set; }
     }
 }

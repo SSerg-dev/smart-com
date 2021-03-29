@@ -102,6 +102,10 @@
             xtype: 'singlelinedisplayfield',
             name: 'Description_ru',
             fieldLabel: l10n.ns('tpm', 'NonPromoEquipment').value('Description_ru'),
+        }, {
+            xtype: 'textfield',
+            fieldLabel: l10n.ns('tpm', 'NonPromoEquipment').value('BudgetItemName'),
+            name: 'BudgetItemName'
         }]
     }]
 });

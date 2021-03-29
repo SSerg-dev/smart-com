@@ -158,6 +158,7 @@
                 }, {
                     xtype: 'numberfield',
                     name: 'ActualQuantity',
+                    id: 'actualQuantityField',
                     fieldLabel: 'Actual Quantity',
                     needReadOnlyFromCostProduction: true,
                     listeners: {

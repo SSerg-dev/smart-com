@@ -105,6 +105,7 @@
                 }, {
                     xtype: 'numberfield',
                     name: 'ActualQuantity',
+                    id: 'actualQuantityField',
                     fieldLabel: 'Actual Quantity',
                 }, {
                     xtype: 'numberfield',

@@ -276,7 +276,8 @@
     'DeletedBrand': ['.tpm.Brand', '.core.BaseDeletedEntity'],
 
 	'NonPromoEquipment': {
-		'EquipmentType': 'Equipment type'
+        'EquipmentType': 'Equipment type',
+        'BudgetItemName': 'Support type',
 	},
 	'HistoricalNonPromoEquipment': ['.tpm.NonPromoEquipment', '.core.BaseHistoryEntity'],
 	'DeletedNonPromoEquipment': ['.tpm.NonPromoEquipment', '.core.BaseDeletedEntity'],

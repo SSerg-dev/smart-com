@@ -124,6 +124,9 @@
                 'custompromosupporteditor #attachFile': {
                     click: this.onAttachFileButtonClick
                 },
+                'custompromosupporteditor #attachFileName': {
+                    change: this.onAttachFileNameChange
+                },
                 'custompromosupporteditor #deleteAttachFile': {
                     click: this.onDeleteAttachFileButtonClick
                 },
@@ -1432,12 +1435,26 @@
         uploadFileWindow.show();
     },
 
+    onAttachFileNameChange: function (newValue, oldValue, eOpts) {
+        var field = Ext.ComponentQuery.query('#actualQuantityField')[0];
+        if (newValue.value == "") {
+            field.setReadOnly(false);
+            field.removeCls('readOnlyField');
+        } else {
+            field.setReadOnly(true);
+            field.addCls('readOnlyField');
+        }
+    },
+
     onDeleteAttachFileButtonClick: function (button) {
         var attachFileName = button.up('custompromosupporteditor').down('#attachFileName'); 
         var editor = button.up('custompromosupporteditor');
+        var actualQuantityField = Ext.ComponentQuery.query('#actualQuantityField')[0];
 
         attachFileName.setValue('');
         attachFileName.attachFileName = '';
+
+        actualQuantityField.setValue(0);
     },
 
     onUploadFileOkButtonClick: function (button) {
@@ -1751,6 +1768,12 @@
         }
         if (promoLinkedViewer.down('directorygrid').getStore().totalCount === 0) {
             toolbarpromoLinked.down('#deletebutton').setDisabled(true);
+        }
+
+
+        if (customPromoSupportEditor.down('#attachFileName').value != "") {
+            customPromoSupportEditor.down('#actualQuantityField').setReadOnly(true);
+            customPromoSupportEditor.down('#actualQuantityField').addCls('readOnlyField');
         }
 
         //toolbarpromoLinked.down('#updatebutton').setDisabled(false);

@@ -105,6 +105,49 @@ namespace Module.Host.TPM.Handlers
         }
     }
 
+    class FullXLSXUpdateNonPromoEquipmentHandler : FullXLSXImportHandler
+    {
+        protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
+        {
+            return new FullXLSXUpdateImportNonPromoEquipmentAction(settings);
+        }
+    }
+
+    class FullXLSXImportNonPromoDMPHandler : FullXLSXImportHandler
+    {
+        protected override void InitializeParameters(HandlerData handlerData, ExecuteData data)
+        {
+            var planQuantity = Int32.Parse(HandlerDataHelper.GetIncomingArgument<string>("PlanQuantity", handlerData));
+            var nonPromoSupportId = Guid.Parse(HandlerDataHelper.GetIncomingArgument<string>("NonPromoSupportId", handlerData));
+            data.SetValue("PlanQuantity", planQuantity);
+            data.SetValue("NonPromoSupportId", nonPromoSupportId);
+        }
+        protected override IAction GetAction(FullImportSettings settings, ExecuteData data) {
+
+            var planQuantity = data.GetValue<int>("PlanQuantity");
+            var nonPromoSupportId = data.GetValue<Guid>("NonPromoSupportId");
+            return new FullXLSXImportNonPromoDMPAction(settings, planQuantity, nonPromoSupportId);
+        }
+    }
+
+    class FullXLSXImportPromoDMPHandler : FullXLSXImportHandler
+    {
+        protected override void InitializeParameters(HandlerData handlerData, ExecuteData data)
+        {
+            var planQuantity = Int32.Parse(HandlerDataHelper.GetIncomingArgument<string>("PlanQuantity", handlerData));
+            var promoSupportId = Guid.Parse(HandlerDataHelper.GetIncomingArgument<string>("PromoSupportId", handlerData));
+            data.SetValue("PlanQuantity", planQuantity);
+            data.SetValue("PromoSupportId", promoSupportId);
+        }
+        protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
+        {
+
+            var planQuantity = data.GetValue<int>("PlanQuantity");
+            var promoSupportId = data.GetValue<Guid>("PromoSupportId");
+            return new FullXLSXImportPromoDMPAction(settings, planQuantity, promoSupportId);
+        }
+    }
+
     class FullXLSXUpdateAllHandler : FullXLSXImportHandler {
         protected override void InitializeParameters(HandlerData handlerData, ExecuteData data) {
             List<String> ufs = HandlerDataHelper.GetIncomingArgument<List<String>>("UniqueFields", handlerData);

@@ -89,6 +89,29 @@
             }, {
                 text: l10n.ns('tpm', 'NonPromoEquipment').value('Description_ru'),
                 dataIndex: 'Description_ru'
+            }, {
+                text: l10n.ns('tpm', 'NonPromoEquipment').value('BudgetItemName'),
+                dataIndex: 'BudgetItemName',
+                filter: {
+                    type: 'search',
+                    selectorWidget: 'budgetitemshort',
+                    valueField: 'Name',
+                    store: {
+                        type: 'directorystore',
+                        model: 'App.model.tpm.budgetitem.BudgetItem',
+                        extendedFilter: {
+                            xclass: 'App.ExtFilterContext',
+                            supportedModels: [{
+                                xclass: 'App.ExtSelectionFilterModel',
+                                model: 'App.model.tpm.budgetitem.BudgetItem',
+                                modelId: 'efselectionmodel'
+                            }, {
+                                xclass: 'App.ExtTextFilterModel',
+                                modelId: 'eftextmodel'
+                            }]
+                        }
+                    }
+                }
             }]
         }
     }, {
@@ -103,6 +126,29 @@
             xtype: 'textfield',
             name: 'Description_ru',
             fieldLabel: l10n.ns('tpm', 'NonPromoEquipment').value('Description_ru'),
+        }, {
+            text: l10n.ns('tpm', 'NonPromoEquipment').value('BudgetItemName'),
+            dataIndex: 'BudgetItemName',
+            filter: {
+                type: 'search',
+                selectorWidget: 'budgetitemshort',
+                valueField: 'Name',
+                store: {
+                    type: 'directorystore',
+                    model: 'App.model.tpm.budgetitem.BudgetItem',
+                    extendedFilter: {
+                        xclass: 'App.ExtFilterContext',
+                        supportedModels: [{
+                            xclass: 'App.ExtSelectionFilterModel',
+                            model: 'App.model.tpm.budgetitem.BudgetItem',
+                            modelId: 'efselectionmodel'
+                        }, {
+                            xclass: 'App.ExtTextFilterModel',
+                            modelId: 'eftextmodel'
+                        }]
+                    }
+                }
+            }
         }]
     }]
 });

@@ -52,6 +52,9 @@
             }, {
                 text: l10n.ns('tpm', 'NonPromoEquipment').value('Description_ru'),
                 dataIndex: 'Description_ru'
+            }, {
+                text: l10n.ns('tpm', 'NonPromoEquipment').value('BudgetItemName'),
+                dataIndex: 'BudgetItemName'
             }]
         }
     }, {
@@ -71,6 +74,10 @@
             xtype: 'singlelinedisplayfield',
             name: 'Description_ru',
             fieldLabel: l10n.ns('tpm', 'NonPromoEquipment').value('Description_ru'),
+        }, {
+            xtype: 'textfield',
+            fieldLabel: l10n.ns('tpm', 'NonPromoEquipment').value('BudgetItemName'),
+            name: 'BudgetItemName'
         }]
     }]
 });

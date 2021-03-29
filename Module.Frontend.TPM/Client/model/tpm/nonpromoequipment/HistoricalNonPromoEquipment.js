@@ -10,7 +10,12 @@
         { name: '_EditDate', type: 'date', isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
         { name: '_Operation', type: 'string', isDefault: true },
 		{ name: 'EquipmentType', type: 'string', hidden: false, isDefault: true },
-		{ name: 'Description_ru', type: 'string', hidden: false, isDefault: true }
+        { name: 'Description_ru', type: 'string', hidden: false, isDefault: true },
+        {
+            name: 'BudgetItemName', type: 'string', mapping: 'BudgetItem.Name', defaultFilterConfig: { valueField: 'Name' },
+            breezeEntityType: 'BudgetItem', hidden: false, isDefault: true
+        },
+        { name: 'BudgetItemId', hidden: true, isDefault: true },
     ],
     proxy: {
         type: 'breeze',

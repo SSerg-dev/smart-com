@@ -287,9 +287,12 @@
     <Compile Include="Actions\DataLakeIntegrationActions\MarsProductsCheckAction.cs" />
     <Compile Include="Actions\DataLakeIntegrationActions\MarsCustomersCheckAction.cs" />
     <Compile Include="Actions\FullXLSXAssortmentMatrixImportAction.cs" />
+    <Compile Include="Actions\FullXLSXImportPromoDMPAction.cs" />
     <Compile Include="Actions\FullXLSXRATIShopperUpdateImportAction.cs" />
     <Compile Include="Actions\FullXLSXImportPromoProductFromTLCAction.cs" />
     <Compile Include="Actions\FullXLSXMechanicTypeUpdateImportAction.cs" />
+    <Compile Include="Actions\FullXLSXImportNonPromoDMPAction.cs" />
+    <Compile Include="Actions\FullXLSXUpdateImportNonPromoEquipmentAction.cs" />
     <Compile Include="Actions\FullXLSXUpdateImportClientDashboardAction.cs" />
     <Compile Include="Actions\FullXLSXUpdateImportCoefficientSI2SOAction.cs" />
     <Compile Include="Actions\FullXLSXUpdateImportIncrementalPromoAction.cs" />
@@ -436,6 +439,9 @@
     <Compile Include="Util\Model\WarningLogInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Actions\Interface\packages.config">
+      <SubType>Designer</SubType>
+    </Content>
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>

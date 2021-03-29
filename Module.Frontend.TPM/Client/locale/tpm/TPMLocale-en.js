@@ -325,7 +325,8 @@
 
     'NonPromoEquipment': {
         'EquipmentType': 'Equipment type',
-        'Description_ru': 'Description RU'
+        'Description_ru': 'Description RU',
+        'BudgetItemName': 'Support type',
     },
     'HistoricalNonPromoEquipment': ['.tpm.NonPromoEquipment', '.core.BaseHistoryEntity'],
     'DeletedNonPromoEquipment': ['.tpm.NonPromoEquipment', '.core.BaseDeletedEntity'],

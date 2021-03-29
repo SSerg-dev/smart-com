@@ -105,6 +105,8 @@ namespace Module.Persist.TPM {
             modelBuilder.Entity<RollingVolume>();
             modelBuilder.Entity<PlanPostPromoEffectReportWeekView>().ToTable("PlanPostPromoEffectReportWeekView");
             modelBuilder.Entity<PromoROIReport>().ToTable("PromoROIReportView");
+            modelBuilder.Entity<NonPromoSupportDMP>();
+            modelBuilder.Entity<PromoSupportDMP>();
 
             modelBuilder.Entity<InputBaseline>();
 
@@ -132,8 +134,10 @@ namespace Module.Persist.TPM {
             builder.Entity<HistoricalBrand>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalBrand>("HistoricalBrands");
 
             builder.EntitySet<NonPromoEquipment>("NonPromoEquipments");
-			builder.EntitySet<NonPromoEquipment>("DeletedNonPromoEquipments");
-			builder.EntitySet<HistoricalNonPromoEquipment>("HistoricalNonPromoEquipments");
+            builder.EntitySet<NonPromoEquipment>("NonPromoEquipments").HasRequiredBinding(e => e.BudgetItem, "BudgetItems");
+            builder.EntitySet<NonPromoEquipment>("DeletedNonPromoEquipments");
+            builder.EntitySet<NonPromoEquipment>("DeletedNonPromoEquipments").HasRequiredBinding(e => e.BudgetItem, "BudgetItems");
+            builder.EntitySet<HistoricalNonPromoEquipment>("HistoricalNonPromoEquipments");
 			builder.Entity<NonPromoEquipment>().Collection.Action("ExportXLSX");
 			builder.Entity<NonPromoEquipment>().Collection.Action("FullImportXLSX");
             builder.Entity<NonPromoEquipment>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<NonPromoEquipment>("NonPromoEquipments");

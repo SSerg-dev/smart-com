@@ -109,6 +109,9 @@
                 'customnonpromosupporteditor #attachFile': {
                     click: this.onAttachFileButtonClick
                 },
+                'customnonpromosupporteditor #attachFileName': {
+                    change: this.onAttachFileNameChange
+                },
                 'customnonpromosupporteditor #deleteAttachFile': {
                     click: this.onDeleteAttachFileButtonClick
                 },
@@ -447,12 +450,26 @@
         uploadFileWindow.show();
     },
 
+    onAttachFileNameChange: function (newValue, oldValue, eOpts) {
+        var field = Ext.ComponentQuery.query('#actualQuantityField')[0];
+        if (newValue.value == "") {
+            field.setReadOnly(false);
+            field.removeCls('readOnlyField');
+        } else {
+            field.setReadOnly(true);
+            field.addCls('readOnlyField');
+        }
+    },
+
     onDeleteAttachFileButtonClick: function (button) {
         var attachFileName = button.up('customnonpromosupporteditor').down('#attachFileName');
         var editor = button.up('customnonpromosupporteditor');
+        var actualQuantityField = Ext.ComponentQuery.query('#actualQuantityField')[0];
 
         attachFileName.setValue('');
         attachFileName.attachFileName = '';
+
+        actualQuantityField.setValue(0);
     },
 
     onUploadFileOkButtonClick: function (button) {
@@ -624,6 +641,11 @@
         if (selModel.hasSelection()) {
             Ext.ComponentQuery.query('nonpromosupportbrandtech')[0].down('#deletebutton').setDisabled(false, false);
             customNonPromoSupportEditor.down('nonpromosupportbrandtech').down('#deletebutton').setDisabled(false);
+        }
+
+        if (customNonPromoSupportEditor.down('#attachFileName').value != "") {
+            customNonPromoSupportEditor.down('#actualQuantityField').setReadOnly(true);
+            customNonPromoSupportEditor.down('#actualQuantityField').addCls('readOnlyField');
         }
 
         // кнопки прикрепления файла
