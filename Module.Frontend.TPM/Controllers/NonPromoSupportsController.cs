@@ -463,7 +463,7 @@ namespace Module.Frontend.TPM.Controllers
                     throw new FileLoadException("The file size must be less than 25mb.");
                 }
 
-                string directory = Core.Settings.AppSettingsManager.GetSetting("PROMO_SUPPORT_DIRECTORY", "NonPromoSupportFiles");
+                string directory = Core.Settings.AppSettingsManager.GetSetting("PROMO_SUPPORT_DIRECTORY", "PromoSupportFiles");
                 string fileName = await FileUtility.UploadFile(Request, directory);
                 return Json(new { success = true, fileName = fileName.Split('\\').Last() });
             }
@@ -480,7 +480,7 @@ namespace Module.Frontend.TPM.Controllers
         {
             try
             {
-                string directory = Core.Settings.AppSettingsManager.GetSetting("PROMO_SUPPORT_DIRECTORY", "NonPromoSupportFiles");
+                string directory = Core.Settings.AppSettingsManager.GetSetting("PROMO_SUPPORT_DIRECTORY", "PromoSupportFiles");
                 string type = Core.Settings.AppSettingsManager.GetSetting("HANDLER_LOG_TYPE", "File");
                 HttpResponseMessage result;
                 switch (type)

@@ -32,6 +32,8 @@
     <add key="LOOPHANDLER_PARAMETER_DIRECTORY" value="D:\home\site\wwwroot\ApplicationData\HandlerParameters" />
     <add key="INTEGRITY_CHECK_RESULT_DIRECTORY" value="D:\home\site\wwwroot\ApplicationData\IntegrityCheckResults" />
     <add key="USER_SETTINGS_FILE_PATH" value="D:\home\site\wwwroot\ApplicationData\EmailNotificationSettings.xml" />
+    <add key="PROMO_SUPPORT_DIRECTORY" value="D:\home\site\wwwroot\ApplicationData\PromoSupportFiles" />
+
     <!--Modules-->
     <add key="UseKeyVault" value="true" />
     <add key="KeyVaultUseAD" value="Pass" />

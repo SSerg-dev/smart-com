@@ -117,7 +117,7 @@ namespace Module.Host.TPM.Actions {
 
         private IList<IEntity<Guid>> ParseImportFile() {
             var fileDispatcher = new FileDispatcher();
-            string importDir = Core.Settings.AppSettingsManager.GetSetting("PROMO_SUPPORT_DIRECTORY", "NonPromoSupportFiles");
+            string importDir = Core.Settings.AppSettingsManager.GetSetting("PROMO_SUPPORT_DIRECTORY", "PromoSupportFiles");
 
             string importFilePath = Path.Combine(importDir, ImportFile.Name);
             if (!fileDispatcher.IsExists(importDir, ImportFile.Name))
