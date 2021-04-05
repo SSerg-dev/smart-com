@@ -257,25 +257,25 @@ if($continueRelease -and $deploy) {
 	
 	If(Test-Path "D:\TestPlanGeneratorGit_without_features\") {		#05.04.021
 
-		Logging "INFO: Used TestPlanGeneratorGit_without_features"
+		Write-Host "INFO: Used TestPlanGeneratorGit_without_features"
 
 		# BuildSourcesDirectory передаём через файл (другого решения пока не нашёл) и скармливаем Тестплану
 		if (Test-Path "$CurrentPath\BuildSourcesDirectory.dat") {
 			$buildSourcesDirectory = Get-Content "$CurrentPath\BuildSourcesDirectory.dat"
 		}
 		else {
-			Logging "BuildSourcesDirectory.dat does not exist!"
+			Write-Host "BuildSourcesDirectory.dat does not exist!"
 		}
 		D:\TestPlanGeneratorGit_without_features\TestPlanGenerator.exe  $SourceBranch $key4 $DateStart $key7 $key5 $key2 $key8 $buildSourcesDirectory 
 	}
 	else {
 
-		Logging "INFO: Used TestPlanGeneratorGit"
+		Write-Host "INFO: Used TestPlanGeneratorGit"
 
 		C:\temp\TestPlanGeneratorGit\TestPlanGenerator.exe  $SourceBranch $key4 $DateStart $key7 $key5 $key2 $key8 $key6
 	}
 	If($LASTEXITCODE -ne 0) { 
-		Logging "TestPlanGenerator failed!"
+		Write-Host "TestPlanGenerator failed!"
 		exit 1
 	}
 	
