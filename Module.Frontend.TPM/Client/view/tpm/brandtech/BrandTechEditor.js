@@ -122,6 +122,7 @@
 
                 if (this.up('editorform').down('[name=BrandId]').rawValue != null && this.up('editorform').down('[name=BrandId]').rawValue != '') {
                     var brand = this.up('editorform').down('[name=BrandId]');
+                    var desc = this.up('editorform').down('[name=Technology_Description_ru]');
                     var sub = this.up('editorform').down('[name=SubBrandName]');
                     var brandtech_code = this.up('editorform').down('[name=BrandTech_code]');
                     var brandsegtechsub_code = this.up('editorform').down('[name=BrandsegTechsub_code]');
@@ -139,10 +140,12 @@
                                 : brand_code + '-' + seg_code + '-' + record.get('Tech_code') + '-' + record.get('SubBrand_code'))
                             : brandsegtechsub_code.rawValue;
 
+                        var description = record != undefined ? record.get('Description_ru') : desc.rawValue;
                         var subValue = record != undefined ? record.get('SubBrand') : sub.rawValue;
                         var brandtechCodeValue = brandtech_codeValue;
                         var brandsegtechsubCodeValue = brandsegtechsub_codeValue;
 
+                        desc.setValue(description);
                         sub.setValue(subValue);
                         brandtech_code.setValue(brandtechCodeValue);
                         brandsegtechsub_code.setValue(brandsegtechsubCodeValue);
@@ -155,6 +158,22 @@
                 from: 'Name',
                 to: 'TechnologyName'
             }]
+        }, {
+            xtype: 'textfield',
+            name: 'Technology_Description_ru',
+            fieldLabel: l10n.ns('tpm', 'Product').value('Technology_Description_ru'),
+            readOnly: true,
+            listeners: {
+                afterrender: function (field) {
+                    field.addCls('readOnlyField');
+                },
+                writeablechange: function (field) {
+                    if (field.readOnly == false) {
+                        field.setReadOnly(true);
+                        field.addCls('readOnlyField');
+                    }
+                }
+            }
         }, {
             xtype: 'textfield',
             fieldLabel: l10n.ns('tpm', 'Product').value('SubBrandName'),

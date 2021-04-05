@@ -16,14 +16,18 @@ namespace Module.Persist.TPM.Model.Import
         public string Name { get; set; }
 
         [ImportCSVColumn(ColumnNumber = 1)]
+        [Display(Name = "Technology RU")]
+        public string Description_ru { get; set; }
+
+        [ImportCSVColumn(ColumnNumber = 2)]
         [Display(Name = "Tech Code")]
         public string Tech_code { get; set; }
 
-        [ImportCSVColumn(ColumnNumber = 2)]
+        [ImportCSVColumn(ColumnNumber = 3)]
         [Display(Name = "Sub Brand Code")]
         public string SubBrand { get; set; }
 
-        [ImportCSVColumn(ColumnNumber = 3)]
+        [ImportCSVColumn(ColumnNumber = 4)]
         [Display(Name = "Sub Brand Code")]
         public string SubBrand_code { get; set; }
     }

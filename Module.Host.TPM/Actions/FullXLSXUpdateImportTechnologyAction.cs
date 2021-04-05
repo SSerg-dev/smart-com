@@ -333,25 +333,34 @@ namespace Module.Host.TPM.Actions
                     toCreate.Add(newRecord);
                     toHisCreate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(null, newRecord));
                 }
-                else if (oldRecord.Name != newRecord.Name || oldRecord.SubBrand != newRecord.SubBrand)
+                else
                 {
-                    toHisUpdate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(oldRecord, newRecord));
+                    if (oldRecord.Name != newRecord.Name || oldRecord.SubBrand != newRecord.SubBrand)
+                    {
+                        toHisUpdate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(oldRecord, newRecord));
 
-                    var oldTC = oldRecord.Tech_code;
-                    var oldTN = oldRecord.Name;
-                    var oldSC = oldRecord.SubBrand_code;
-                    var oldName = oldRecord.Name;
+                        var oldTC = oldRecord.Tech_code;
+                        var oldTN = oldRecord.Name;
+                        var oldSC = oldRecord.SubBrand_code;
+                        var oldName = oldRecord.Name;
 
-                    oldRecord.Name = newRecord.Name;
-                    oldRecord.SubBrand = newRecord.SubBrand;
+                        oldRecord.Name = newRecord.Name;
+                        oldRecord.Description_ru = newRecord.Description_ru;
+                        oldRecord.SubBrand = newRecord.SubBrand;
 
-                    var newName = String.Format("{0} {1}", oldRecord.Name, oldRecord.SubBrand);
+                        var newName = String.Format("{0} {1}", oldRecord.Name, oldRecord.SubBrand);
 
-                    Task.Run(() => PromoHelper.UpdateProductHierarchy("Technology", newName, oldName, oldRecord.Id));
-                    TechnologiesController.UpdateProductTrees(oldRecord.Id, newName);
-                    TechnologiesController.UpdateProducts(oldRecord, oldTC, oldTN, oldSC);
+                        Task.Run(() => PromoHelper.UpdateProductHierarchy("Technology", newName, oldName, oldRecord.Id));
+                        TechnologiesController.UpdateProductTrees(oldRecord.Id, newName);
+                        TechnologiesController.UpdateProducts(oldRecord, oldTC, oldTN, oldSC);
 
-                    toUpdate.Add(oldRecord);
+                        toUpdate.Add(oldRecord);
+                    } else if (oldRecord.Description_ru != newRecord.Description_ru)
+                    {
+                        toHisUpdate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(oldRecord, newRecord));
+                        oldRecord.Description_ru = newRecord.Description_ru;
+                        toUpdate.Add(oldRecord);
+                    }
                 }
             }
 

@@ -207,6 +207,11 @@
                             name: 'Name',
                             width: 280,
                             fieldLabel: l10n.ns('tpm', 'ProductTree').value('Name'),
+                        },{
+                            xtype: 'singlelinedisplayfield',
+                            name: 'Description_ru',
+                            width: 280,
+                            fieldLabel: l10n.ns('tpm', 'ProductTree').value('Description_ru'),
                         }, {
                             xtype: 'singlelinedisplayfield',
                             name: 'Abbreviation',

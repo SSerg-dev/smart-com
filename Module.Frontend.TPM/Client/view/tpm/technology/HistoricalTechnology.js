@@ -99,6 +99,10 @@
             fieldLabel: l10n.ns('tpm', 'Technology').value('Name'),
         }, {
             xtype: 'singlelinedisplayfield',
+            name: 'Description_ru',
+            fieldLabel: l10n.ns('tpm', 'Technology').value('Description_ru'),
+        }, {
+            xtype: 'singlelinedisplayfield',
             name: 'Tech_code',
             fieldLabel: l10n.ns('tpm', 'Technology').value('Tech_code'),
         }, {

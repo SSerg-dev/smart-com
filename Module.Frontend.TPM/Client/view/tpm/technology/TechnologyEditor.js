@@ -27,6 +27,12 @@
             fieldLabel: l10n.ns('tpm', 'Technology').value('Name'),
         }, {
             xtype: 'textfield',
+            name: 'Description_ru',
+            allowOnlyWhitespace: true,
+            allowBlank: true,
+            fieldLabel: l10n.ns('tpm', 'Technology').value('Description_ru'),
+        }, {
+            xtype: 'textfield',
             name: 'Tech_code',
             fieldLabel: l10n.ns('tpm', 'Technology').value('Tech_code'),
             maxLength: 20,

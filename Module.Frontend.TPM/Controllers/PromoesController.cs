@@ -1538,6 +1538,7 @@ namespace Module.Frontend.TPM.Controllers
                 IEnumerable<int> promoProductsPTOIds = promoProducts.Select(z => z.ProductTreeObjectId);
                 IQueryable<ProductTree> pts = ptQuery.Where(y => promoProductsPTOIds.Contains(y.ObjectId));
                 promo.ProductSubrangesList = String.Join(";", pts.Where(x => x.Type == "Subrange").Select(z => z.Name));
+                promo.ProductSubrangesListRU = String.Join(";", pts.Where(x => x.Type == "Subrange").Select(z => z.Description_ru));
 
                 int objectId = product.ProductTreeObjectId;
                 ProductTree pt = context.Set<ProductTree>().FirstOrDefault(x => (x.StartDate < dt && (x.EndDate > dt || !x.EndDate.HasValue)) && x.ObjectId == objectId);

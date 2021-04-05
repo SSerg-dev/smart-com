@@ -237,6 +237,25 @@
                 filterProductContainer.removeAll();
             }
         }
+        if (record.get('Type') == 'root') {
+            Ext.ComponentQuery.query('singlelinedisplayfield[name=Description_ru]')[0].hide();
+            Ext.ComponentQuery.query('singlelinedisplayfield[name=NodePriority]')[0].hide();
+            Ext.ComponentQuery.query('singlelinedisplayfield[name=Abbreviation]')[0].hide();
+        }
+        else if (record.get('Type') == 'Brand') {
+            Ext.ComponentQuery.query('singlelinedisplayfield[name=Description_ru]')[0].hide();
+            Ext.ComponentQuery.query('singlelinedisplayfield[name=NodePriority]')[0].show();
+            Ext.ComponentQuery.query('singlelinedisplayfield[name=Abbreviation]')[0].show();
+        } else if (record.get('Type') == 'Technology') {
+            Ext.ComponentQuery.query('singlelinedisplayfield[name=NodePriority]')[0].hide();
+            Ext.ComponentQuery.query('singlelinedisplayfield[name=Description_ru]')[0].show();
+            Ext.ComponentQuery.query('singlelinedisplayfield[name=Abbreviation]')[0].show();
+        }
+        else {
+            Ext.ComponentQuery.query('singlelinedisplayfield[name=NodePriority]')[0].hide();
+            Ext.ComponentQuery.query('singlelinedisplayfield[name=Abbreviation]')[0].hide();
+            Ext.ComponentQuery.query('singlelinedisplayfield[name=Description_ru]')[0].show();
+        }
     },
 
     disableButtons: function (buttonsToDisable) {
@@ -257,6 +276,10 @@
 
     updateTreeDetail: function (editorform, record) {
         editorform.loadRecord(record);
+        if (record.get('Type') == 'Technology') {
+            var technologyDescription = record.raw.Technology.Description_ru;
+            editorform.down('[name=Description_ru]').setValue(technologyDescription);
+        }
         this.setLogoImage(editorform.up('producttree').down('[name=treeLogoPanel]'), record.data.LogoFileName);
     },
 
@@ -918,12 +941,6 @@
 
         record.set('Filter', stringFilter);
         form.updateRecord();
-
-        //TODO: временно (убрать запятую из Name)
-        if (record.getData().Name.lastIndexOf(',') !== -1) {
-            var name = record.getData().Name.substr(0, record.getData().Name.lastIndexOf(','));
-            record.set('Name', name);
-        }
 
         var errors = record.validate();
         if (!errors.isValid()) {

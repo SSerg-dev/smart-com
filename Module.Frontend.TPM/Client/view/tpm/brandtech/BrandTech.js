@@ -130,6 +130,9 @@
                     }
                 }
             }, {
+                text: l10n.ns('tpm', 'Product').value('Technology_Description_ru'),
+                dataIndex: 'Technology_Description_ru',
+            }, {
                 text: l10n.ns('tpm', 'Product').value('SubBrandName'),
                 dataIndex: 'SubBrandName',
                 filter: {

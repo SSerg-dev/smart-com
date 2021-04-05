@@ -240,6 +240,8 @@ namespace Module.Persist.TPM.Model.TPM
         public virtual MechanicType ActualInStoreMechanicType { get; set; } 
         [StringLength(500)]
         public string ProductSubrangesList { get; set; }
+        [StringLength(500)]
+        public string ProductSubrangesListRU { get; set; }
 
         // Not Mapped
         //[NotMapped]

@@ -9,6 +9,7 @@
         { name: 'depth', type: 'int', defaultValue: 0, persist: true, convert: null },
         { name: 'Type', type: 'string', hidden: false, isDefault: true },
         { name: 'Name', type: 'string', hidden: false, isDefault: true },
+        { name: 'Description_ru', type: 'string', hidden: false, isDefault: true },
         { name: 'FullPathName', type: 'string', hidden: false, isDefault: true },
         { name: 'Abbreviation', type: 'string', hidden: false, isDefault: true },
         { name: 'StartDate', type: 'date', hidden: true, timeZone: +3, convert: dateConvertTimeZone},

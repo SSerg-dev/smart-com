@@ -21,6 +21,10 @@ namespace Module.Persist.TPM.Model.TPM
         [Required]
         public string Name { get; set; }
 
+
+        [StringLength(255)]
+        public string Description_ru { get; set; }
+
         [Index("Unique_Tech", 1, IsUnique = true)]
         [Column(TypeName = "VARCHAR")]
         [StringLength(255)]

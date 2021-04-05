@@ -5,6 +5,7 @@
     fields: [
         { name: 'Id', hidden: true },
         { name: 'Name', type: 'string', hidden: false, isDefault: true },
+        { name: 'Description_ru', type: 'string', hidden: false, isDefault: true },
         { name: 'Tech_code', type: 'string', hidden: false, isDefault: true },
         { name: 'SubBrand', type: 'string', hidden: false, isDefault: true },
         { name: 'SubBrand_code', type: 'string', hidden: false, isDefault: true }

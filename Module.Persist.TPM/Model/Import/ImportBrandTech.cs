@@ -21,6 +21,9 @@ namespace Module.Persist.TPM.Model.Import
         [Display(Name = "Technology")]
         public String TechnologyName { get; set; }
 
+        [Display(Name = "Technology RU")]
+        public string Description_ru { get; set; }
+
         [ImportCSVColumn(ColumnNumber = 2)]
         [Display(Name = "Sub")]
         public String SubBrandName { get; set; }

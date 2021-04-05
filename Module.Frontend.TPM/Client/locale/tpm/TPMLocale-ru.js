@@ -303,6 +303,7 @@
 
     'Technology': {
         'Name': 'Technology',
+        'Description_ru': 'Technology RU',
         'Tech_code': 'Tech Code',
         'DigitRegex': 'Only numbers allowed'
     },
@@ -332,6 +333,7 @@
         'BrandName': 'Brand',
         'BrandTech_code': 'Brand Tech Code',
         'TechnologyName': 'Technology',
+        'Technology_Description_ru': 'Technology RU',
     },
     'HistoricalBrandTech': ['.tpm.BrandTech', '.core.BaseHistoryEntity'],
     'DeletedBrandTech': ['.tpm.BrandTech', '.core.BaseDeletedEntity'],
@@ -385,6 +387,7 @@
         'BrandName': 'Brand',
         'SegmentName': 'Segment',
         'TechnologyName': 'Technology',
+        'Technology_Description_ru': 'Technology RU',
         'TechHighLevelName': 'Tech high level',
         'ProgramName': 'Type',
         'FormatName': 'Format',
@@ -468,7 +471,8 @@
 	'ProductTree': {
 		'ProductHierarchyCode': 'Product hierarchy code',
 		'depth': 'Depth',
-		'Name': 'Name',
+        'Name': 'Name',
+        'Description_ru': 'Name RU',
 		'Abbreviation': 'Abbreviation',
 		'NodePriority': 'Node priority',
 		'StartDate': 'Start Date',

@@ -754,8 +754,10 @@ namespace Module.Frontend.TPM.Controllers
         public int ObjectId { get; set; }
         public Guid? BrandId { get; set; }
         public Guid? TechnologyId { get; set; }
+        public Technology Technology { get; set; }
         public string Type { get; set; }
         public string Name { get; set; }
+        public string Description_ru { get; set; }
         public string Filter { get; set; }
         public string Abbreviation { get; set; }
         public string FullPathName { get; set; }
@@ -778,8 +780,10 @@ namespace Module.Frontend.TPM.Controllers
             ObjectId = treeNode.ObjectId;
             BrandId = treeNode.BrandId;
             TechnologyId = treeNode.TechnologyId;
+            Technology = treeNode.Technology;
             Type = treeNode.Type;
             Name = treeNode.Name;
+            Description_ru = treeNode.Description_ru;
             FullPathName = treeNode.FullPathName;
             Abbreviation = treeNode.Abbreviation;
             parentId = treeNode.parentId;

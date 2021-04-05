@@ -226,6 +226,7 @@ namespace Module.Persist.TPM.Model.History {
         public bool? NeedRecountUplift { get; set; }
 
         public string ProductSubrangesList { get; set; }
+        public string ProductSubrangesListRU { get; set; }
 
         //
         public double? PlanPromoNetIncrementalBaseTI { get; set; }

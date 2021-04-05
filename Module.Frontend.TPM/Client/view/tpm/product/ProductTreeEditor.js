@@ -15,10 +15,16 @@
             var currentNode = Ext.ComponentQuery.query('producttreegrid')[0].getSelectionModel().getSelection()[0];
             var brandId = currentNode.data.BrandId;
 
+            if (currentNode.data.Type == 'Technology') {
+                window.down('textfield[name=Description_ru]').addCls('readOnlyField');
+                window.down('textfield[name=Description_ru]').setReadOnly(true);
+            }
+
             if (window.down('searchcombobox[name = Type]').value) {
                 if (currentNode.parentNode) {
                     if (currentNode.parentNode.data.root) {
                         window.down('numberfield[name = NodePriority]').setDisabled(false);
+                        window.down('textfield[name = Description_ru]').hide();
                     } else {
                         window.down('numberfield[name = NodePriority]').hide();
                     }
@@ -26,6 +32,7 @@
             } else {
                 if (currentNode.data.root) {
                     window.down('numberfield[name = NodePriority]').setDisabled(false);
+                    window.down('textfield[name = Description_ru]').hide();
                 } else {
                     window.down('numberfield[name = NodePriority]').hide();
                 }
@@ -34,6 +41,7 @@
                 brandId = currentNode.data.BrandId;
                 currentNode = currentNode.parentNode;
             }
+
 
             if (brandId) {
                 brandTechStore.setFixedFilter('BrandId', {
@@ -82,16 +90,23 @@
                         field.up('editorform').down('searchcombobox[name=BrandId]').show();
                         field.up('editorform').down('searchcombobox[name=TechnologyId]').hide();
                         field.up('editorform').down('textfield[name=Name]').hide();
+                        field.up('editorform').down('textfield[name=Description_ru]').hide();
                         field.up('editorform').down('textfield[name=Abbreviation]').setDisabled(false);
                     } else if (newValue === 'Technology') {
                         field.up('editorform').down('searchcombobox[name=BrandId]').hide();
                         field.up('editorform').down('searchcombobox[name=TechnologyId]').show();
                         field.up('editorform').down('textfield[name=Name]').hide();
+                        field.up('editorform').down('textfield[name=Description_ru]').show();
+                        field.up('editorform').down('textfield[name=Description_ru]').addCls('readOnlyField');
+                        field.up('editorform').down('textfield[name=Description_ru]').setReadOnly(true);
                         field.up('editorform').down('textfield[name=Abbreviation]').setDisabled(false);
                     } else {
                         field.up('editorform').down('searchcombobox[name=BrandId]').hide();
                         field.up('editorform').down('searchcombobox[name=TechnologyId]').hide();
                         field.up('editorform').down('textfield[name=Name]').show();
+                        field.up('editorform').down('textfield[name=Description_ru]').show();
+                        field.up('editorform').down('textfield[name=Description_ru]').removeCls('readOnlyField');
+                        field.up('editorform').down('textfield[name=Description_ru]').setReadOnly(false);
                         field.up('editorform').down('textfield[name=Abbreviation]').setDisabled(true);
                         field.up('editorform').down('textfield[name=NodePriority]').setDisabled(true);
                     }
@@ -238,13 +253,27 @@
                         });
                     }
                 }
-            }
+            },
+            listeners: {
+                change: function (field, newValue, oldValue) {
+                    if (newValue != null) {
+                        var record = field.getStore().findRecord('TechnologyId', newValue);
+                        field.up('editorform').down('textfield[name=Description_ru]').setValue(record.get('Technology_Description_ru'));
+                    }
+                }
+            },
         }, {
             xtype: 'textfield',
             name: 'Name',
             allowBlank: true,
             allowOnlyWhitespace: true,
             fieldLabel: l10n.ns('tpm', 'ProductTree').value('Name')
+        }, {
+            xtype: 'textfield',
+            name: 'Description_ru',
+            allowBlank: true,
+            allowOnlyWhitespace: true,
+            fieldLabel: l10n.ns('tpm', 'ProductTree').value('Description_ru')
         }, {
             xtype: 'textfield',
             name: 'Abbreviation',

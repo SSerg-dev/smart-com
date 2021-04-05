@@ -491,6 +491,7 @@ namespace Module.Persist.TPM {
             builder.Entity<ClientTree>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<ClientTree>("ClientTrees");
 
             builder.EntitySet<ProductTree>("ProductTrees");
+            builder.EntitySet<ProductTree>("ProductTrees").HasRequiredBinding(e => e.Technology, "Technologies");
             builder.Entity<ProductTree>().Collection.Action("Delete");
             builder.Entity<ProductTree>().Collection.Action("Move");
             builder.Entity<ProductTree>().Collection.Action("UploadLogoFile");

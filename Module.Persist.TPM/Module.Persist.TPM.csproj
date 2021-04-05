@@ -2492,6 +2492,26 @@
     <Compile Include="Migrations\202103220114365_EmptyRC3.Designer.cs">
       <DependentUpon>202103220114365_EmptyRC3.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202103251057531_Add_DescRu_To_Technology.cs" />
+    <Compile Include="Migrations\202103251057531_Add_DescRu_To_Technology.Designer.cs">
+      <DependentUpon>202103251057531_Add_DescRu_To_Technology.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202103251236126_Add_DescRu_To_ProductTree.cs" />
+    <Compile Include="Migrations\202103251236126_Add_DescRu_To_ProductTree.Designer.cs">
+      <DependentUpon>202103251236126_Add_DescRu_To_ProductTree.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202103261358036_Add_ProductSubrangesListRU_To_Promo.cs" />
+    <Compile Include="Migrations\202103261358036_Add_ProductSubrangesListRU_To_Promo.Designer.cs">
+      <DependentUpon>202103261358036_Add_ProductSubrangesListRU_To_Promo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202103290642592_Add_TechSubNameRU_To_BrandTech.cs" />
+    <Compile Include="Migrations\202103290642592_Add_TechSubNameRU_To_BrandTech.Designer.cs">
+      <DependentUpon>202103290642592_Add_TechSubNameRU_To_BrandTech.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202103290834599_Add_BrandsegTechsubRU_To_BrandTech.cs" />
+    <Compile Include="Migrations\202103290834599_Add_BrandsegTechsubRU_To_BrandTech.Designer.cs">
+      <DependentUpon>202103290834599_Add_BrandsegTechsubRU_To_BrandTech.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\202103291414420_EmptyRC4.cs" />
     <Compile Include="Migrations\202103291414420_EmptyRC4.Designer.cs">
       <DependentUpon>202103291414420_EmptyRC4.cs</DependentUpon>
@@ -3792,6 +3812,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201906170841186_Empty_Migration1.resx">
       <DependentUpon>201906170841186_Empty_Migration1.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201906171002552_PromoProduct_ActualProductLSVByCompensation.resx">
       <DependentUpon>201906171002552_PromoProduct_ActualProductLSVByCompensation.cs</DependentUpon>
@@ -4806,6 +4827,21 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202103220114365_EmptyRC3.resx">
       <DependentUpon>202103220114365_EmptyRC3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202103251057531_Add_DescRu_To_Technology.resx">
+      <DependentUpon>202103251057531_Add_DescRu_To_Technology.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202103251236126_Add_DescRu_To_ProductTree.resx">
+      <DependentUpon>202103251236126_Add_DescRu_To_ProductTree.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202103261358036_Add_ProductSubrangesListRU_To_Promo.resx">
+      <DependentUpon>202103261358036_Add_ProductSubrangesListRU_To_Promo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202103290642592_Add_TechSubNameRU_To_BrandTech.resx">
+      <DependentUpon>202103290642592_Add_TechSubNameRU_To_BrandTech.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202103290834599_Add_BrandsegTechsubRU_To_BrandTech.resx">
+      <DependentUpon>202103290834599_Add_BrandsegTechsubRU_To_BrandTech.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202103291414420_EmptyRC4.resx">
       <DependentUpon>202103291414420_EmptyRC4.cs</DependentUpon>

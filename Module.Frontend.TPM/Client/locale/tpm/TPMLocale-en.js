@@ -348,6 +348,7 @@
 
     'Technology': {
         'Name': 'Technology',
+        'Description_ru': 'Technology RU',
         'Tech_code': 'Tech Code',
         'ValidateSubBrandRequired': 'Sub Name is required',
         'ValidateSubBrandNotRequired': 'Sub Name is not required',
@@ -384,6 +385,7 @@
         'SubBrandName': 'Sub',
         'TechnologySubBrand': 'Sub',
         'TechnologyName': 'Technology',
+        'Technology_Description_ru': 'Technology RU',
     },
     'HistoricalBrandTech': ['.tpm.BrandTech', '.core.BaseHistoryEntity'],
     'DeletedBrandTech': ['.tpm.BrandTech', '.core.BaseDeletedEntity'],
@@ -440,6 +442,7 @@
         'SubBrandName': 'Sub',
         'SegmentName': 'Segment',
         'TechnologyName': 'Technology',
+        'Technology_Description_ru': 'Technology RU',
         'TechHighLevelName': 'Tech high level',
         'ProgramName': 'Type',
         'FormatName': 'Format',
@@ -528,6 +531,7 @@
         'ProductHierarchyCode': 'Product hierarchy code',
         'depth': 'Depth',
         'Name': 'Name',
+        'Description_ru': 'Name RU',
         'Abbreviation': 'Abbreviation',
         'NodePriority': 'Node priority',
         'StartDate': 'Start Date',

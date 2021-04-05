@@ -88,6 +88,9 @@
                 text: l10n.ns('tpm', 'Technology').value('Name'),
                 dataIndex: 'Name'
             }, {
+                text: l10n.ns('tpm', 'Technology').value('Description_ru'),
+                dataIndex: 'Description_ru'
+            }, {
                 text: l10n.ns('tpm', 'Technology').value('Tech_code'),
                 dataIndex: 'Tech_code'
             }, {

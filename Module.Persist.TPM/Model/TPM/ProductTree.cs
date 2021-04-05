@@ -15,9 +15,11 @@ namespace Module.Persist.TPM.Model.TPM
         public int parentId { get; set; }
         public Guid? BrandId { get; set; }
         public Guid? TechnologyId { get; set; }
+        public virtual Technology Technology { get; set; }
         public string Type { get; set; }
         public int depth { get; set; }
         public string Name { get; set; }
+        public string Description_ru { get; set; }
         public string FullPathName { get; set; }
         public string Abbreviation { get; set; }
         public DateTime StartDate { get; set; }
@@ -33,7 +35,27 @@ namespace Module.Persist.TPM.Model.TPM
         public string FilterQuery { get; set; }
         public object Clone()
         {
-            return MemberwiseClone();
+            var clonedProductTree = new ProductTree {
+                Id = this.Id,
+                ObjectId = this.ObjectId,
+                parentId = this.parentId,
+                BrandId = this.BrandId,
+                TechnologyId = this.TechnologyId,
+                Technology = this.Technology,
+                Type = this.Type,
+                depth = this.depth,
+                Name = this.Name,
+                Description_ru = this.Description_ru,
+                FullPathName = this.FullPathName,
+                Abbreviation = this.Abbreviation,
+                StartDate = this.StartDate,
+                EndDate = this.EndDate,
+                Filter = this.Filter,
+                NodePriority = this.NodePriority,
+                LogoFileName = this.LogoFileName,
+                FilterQuery = this.FilterQuery
+            };
+            return clonedProductTree;
         }
     }
 }
