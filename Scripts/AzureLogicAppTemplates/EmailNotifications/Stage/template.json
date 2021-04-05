@@ -1,0 +1,264 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workflows_russiapetcarejupdevmailnotificationsla_name": {
+            "defaultValue": "russiapetcarejupdevmailnotificationsla",
+            "type": "String"
+        },
+        "connections_office365_externalid": {
+            "defaultValue": "/subscriptions/066fc627-241c-4166-b66f-70f51b9b4b95/resourceGroups/RUSSIA-PETCARE-JUPITER-DEV-RG/providers/Microsoft.Web/connections/office365",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Logic/workflows",
+            "apiVersion": "2017-07-01",
+            "name": "[parameters('workflows_russiapetcarejupdevmailnotificationsla_name')]",
+            "location": "eastus2",
+            "tags": {
+                "createdDate": "2020-09-03",
+                "department": "AOH",
+                "environment": "DEV",
+                "expiryDate": "2021-09-03",
+                "market": "Europe",
+                "owner": "dmitry.bulavenkov@effem.com",
+                "segment": "Pet Nutrition",
+                "solution": "russiapetcarejupiter"
+            },
+            "properties": {
+                "state": "Enabled",
+                "definition": {
+                    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {
+                        "$connections": {
+                            "defaultValue": {},
+                            "type": "Object"
+                        }
+                    },
+                    "triggers": {
+                        "manual": {
+                            "type": "Request",
+                            "kind": "Http",
+                            "inputs": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "actions": {
+                        "Condition": {
+                            "actions": {
+                                "Send_an_email_(V2)": {
+                                    "runAfter": {},
+                                    "type": "ApiConnection",
+                                    "inputs": {
+                                        "body": {
+                                            "Bcc": "@variables('BCC')",
+                                            "Body": "<p>@{variables('Content')}</p>",
+                                            "Cc": "@{variables('CC')}",
+                                            "Subject": "@variables('Subject')",
+                                            "To": "@variables('To')"
+                                        },
+                                        "host": {
+                                            "connection": {
+                                                "name": "@parameters('$connections')['office365']['connectionId']"
+                                            }
+                                        },
+                                        "method": "post",
+                                        "path": "/v2/Mail"
+                                    }
+                                }
+                            },
+                            "runAfter": {
+                                "Initialize_CC": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "else": {
+                                "actions": {
+                                    "Send_an_email_(V2)_2": {
+                                        "runAfter": {},
+                                        "type": "ApiConnection",
+                                        "inputs": {
+                                            "body": {
+                                                "Attachments": [
+                                                    {
+                                                        "ContentBytes": "@{triggerOutputs().body['$multipart'][7]['body']['$content']}",
+                                                        "Name": "@{variables('FileName')}"
+                                                    }
+                                                ],
+                                                "Bcc": "@{variables('BCC')}",
+                                                "Body": "<p>@{variables('Content')}</p>",
+                                                "Cc": "@{variables('CC')}",
+                                                "Subject": "@{variables('Subject')}",
+                                                "To": "@{variables('To')}"
+                                            },
+                                            "host": {
+                                                "connection": {
+                                                    "name": "@parameters('$connections')['office365']['connectionId']"
+                                                }
+                                            },
+                                            "method": "post",
+                                            "path": "/v2/Mail"
+                                        }
+                                    }
+                                }
+                            },
+                            "expression": {
+                                "and": [
+                                    {
+                                        "equals": [
+                                            "@if(empty(variables('FileName')), true, false)",
+                                            true
+                                        ]
+                                    }
+                                ]
+                            },
+                            "type": "If"
+                        },
+                        "Initialize_BCC": {
+                            "runAfter": {
+                                "Initialize_To": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "InitializeVariable",
+                            "inputs": {
+                                "variables": [
+                                    {
+                                        "name": "BCC",
+                                        "type": "string",
+                                        "value": "@{base64ToString(triggerOutputs().body['$multipart'][2]['body']['$content'])}"
+                                    }
+                                ]
+                            }
+                        },
+                        "Initialize_CC": {
+                            "runAfter": {
+                                "Initialize_BCC": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "InitializeVariable",
+                            "inputs": {
+                                "variables": [
+                                    {
+                                        "name": "CC",
+                                        "type": "string",
+                                        "value": "@{base64ToString(triggerOutputs().body['$multipart'][1]['body']['$content'])}"
+                                    }
+                                ]
+                            }
+                        },
+                        "Initialize_Content": {
+                            "runAfter": {
+                                "Initialize_FileName": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "InitializeVariable",
+                            "inputs": {
+                                "variables": [
+                                    {
+                                        "name": "Content",
+                                        "type": "string",
+                                        "value": "@{base64ToString(triggerOutputs().body['$multipart'][3]['body']['$content'])}"
+                                    }
+                                ]
+                            }
+                        },
+                        "Initialize_FileName": {
+                            "runAfter": {},
+                            "type": "InitializeVariable",
+                            "inputs": {
+                                "variables": [
+                                    {
+                                        "name": "FileName",
+                                        "type": "string",
+                                        "value": "@{base64ToString(triggerOutputs().body['$multipart'][5]['body']['$content'])}"
+                                    }
+                                ]
+                            }
+                        },
+                        "Initialize_Subject": {
+                            "runAfter": {
+                                "Initialize_Content": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "InitializeVariable",
+                            "inputs": {
+                                "variables": [
+                                    {
+                                        "name": "Subject",
+                                        "type": "string",
+                                        "value": "@{base64ToString(triggerOutputs().body['$multipart'][4]['body']['$content'])}"
+                                    }
+                                ]
+                            }
+                        },
+                        "Initialize_To": {
+                            "runAfter": {
+                                "Initialize_Subject": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "InitializeVariable",
+                            "inputs": {
+                                "variables": [
+                                    {
+                                        "name": "To",
+                                        "type": "string",
+                                        "value": "@{base64ToString(triggerOutputs().body['$multipart'][0]['body']['$content'])}"
+                                    }
+                                ]
+                            }
+                        },
+                        "Response": {
+                            "runAfter": {
+                                "Condition": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Response",
+                            "kind": "Http",
+                            "inputs": {
+                                "statusCode": 200
+                            }
+                        },
+                        "Response_2": {
+                            "runAfter": {
+                                "Condition": [
+                                    "Failed",
+                                    "Skipped",
+                                    "TimedOut"
+                                ]
+                            },
+                            "type": "Response",
+                            "kind": "Http",
+                            "inputs": {
+                                "body": "Something went wrong. Mail wasn't delivered. Contact administrator",
+                                "statusCode": 400
+                            }
+                        }
+                    },
+                    "outputs": {}
+                },
+                "parameters": {
+                    "$connections": {
+                        "value": {
+                            "office365": {
+                                "connectionId": "[parameters('connections_office365_externalid')]",
+                                "connectionName": "office365",
+                                "id": "/subscriptions/066fc627-241c-4166-b66f-70f51b9b4b95/providers/Microsoft.Web/locations/eastus2/managedApis/office365"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

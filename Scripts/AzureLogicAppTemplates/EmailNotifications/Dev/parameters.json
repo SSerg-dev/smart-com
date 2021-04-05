@@ -1,0 +1,15 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workflows_jupiterdevlogicappmail_name": {
+            "value": "jupiterdevlogicappmail"
+        },
+        "connections_azureblob_externalid": {
+            "value": "/subscriptions/8a31e8f3-fa88-4ecc-95cc-98ab3a0bb510/resourceGroups/JUPITER-RG/providers/Microsoft.Web/connections/azureblob"
+        },
+        "connections_office365_externalid": {
+            "value": "/subscriptions/8a31e8f3-fa88-4ecc-95cc-98ab3a0bb510/resourceGroups/JUPITER-RG/providers/Microsoft.Web/connections/office365"
+        }
+    }
+}

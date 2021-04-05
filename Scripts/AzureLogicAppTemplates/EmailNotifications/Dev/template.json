@@ -1,0 +1,208 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workflows_jupiterdevlogicappmail_name": {
+            "defaultValue": "jupiterdevlogicappmail",
+            "type": "String"
+        },
+        "connections_azureblob_externalid": {
+            "defaultValue": "/subscriptions/8a31e8f3-fa88-4ecc-95cc-98ab3a0bb510/resourceGroups/JUPITER-RG/providers/Microsoft.Web/connections/azureblob",
+            "type": "String"
+        },
+        "connections_office365_externalid": {
+            "defaultValue": "/subscriptions/8a31e8f3-fa88-4ecc-95cc-98ab3a0bb510/resourceGroups/JUPITER-RG/providers/Microsoft.Web/connections/office365",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Logic/workflows",
+            "apiVersion": "2017-07-01",
+            "name": "[parameters('workflows_jupiterdevlogicappmail_name')]",
+            "location": "eastus2",
+            "properties": {
+                "state": "Enabled",
+                "definition": {
+                    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {
+                        "$connections": {
+                            "defaultValue": {},
+                            "type": "Object"
+                        }
+                    },
+                    "triggers": {
+                        "manual": {
+                            "type": "Request",
+                            "kind": "Http",
+                            "inputs": {
+                                "schema": {
+                                    "properties": {
+                                        "BCC": {
+                                            "type": "string"
+                                        },
+                                        "CC": {
+                                            "type": "string"
+                                        },
+                                        "Content": {
+                                            "type": "string"
+                                        },
+                                        "FileName": {
+                                            "type": "string"
+                                        },
+                                        "FilePath": {
+                                            "type": "string"
+                                        },
+                                        "Subject": {
+                                            "type": "string"
+                                        },
+                                        "To": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "actions": {
+                        "Condition": {
+                            "actions": {
+                                "Send_an_email_(V2)": {
+                                    "runAfter": {},
+                                    "type": "ApiConnection",
+                                    "inputs": {
+                                        "body": {
+                                            "Bcc": "@triggerBody()?['BCC']",
+                                            "Body": "<p>@{triggerBody()?['Content']}</p>",
+                                            "Cc": "@triggerBody()?['CC']",
+                                            "Subject": "@triggerBody()?['Subject']",
+                                            "To": "@triggerBody()?['To']"
+                                        },
+                                        "host": {
+                                            "connection": {
+                                                "name": "@parameters('$connections')['office365']['connectionId']"
+                                            }
+                                        },
+                                        "method": "post",
+                                        "path": "/v2/Mail"
+                                    }
+                                }
+                            },
+                            "runAfter": {},
+                            "else": {
+                                "actions": {
+                                    "Get_blob_content_using_path": {
+                                        "runAfter": {},
+                                        "type": "ApiConnection",
+                                        "inputs": {
+                                            "host": {
+                                                "connection": {
+                                                    "name": "@parameters('$connections')['azureblob']['connectionId']"
+                                                }
+                                            },
+                                            "method": "get",
+                                            "path": "/datasets/default/GetFileContentByPath",
+                                            "queries": {
+                                                "inferContentType": true,
+                                                "path": "@{concat('/jupitercontainer/',triggerBody()?['FilePath'], '/', triggerBody()?['FileName'])}",
+                                                "queryParametersSingleEncoded": true
+                                            }
+                                        }
+                                    },
+                                    "Send_an_email_(V2)_2": {
+                                        "runAfter": {
+                                            "Get_blob_content_using_path": [
+                                                "Succeeded"
+                                            ]
+                                        },
+                                        "type": "ApiConnection",
+                                        "inputs": {
+                                            "body": {
+                                                "Attachments": [
+                                                    {
+                                                        "ContentBytes": "@{base64(body('Get_blob_content_using_path'))}",
+                                                        "Name": "@triggerBody()?['FileName']"
+                                                    }
+                                                ],
+                                                "Bcc": "@triggerBody()?['BCC']",
+                                                "Body": "<p>@{triggerBody()?['Content']}</p>",
+                                                "Cc": "@triggerBody()?['CC']",
+                                                "Subject": "@triggerBody()?['Subject']",
+                                                "To": "@triggerBody()?['To']"
+                                            },
+                                            "host": {
+                                                "connection": {
+                                                    "name": "@parameters('$connections')['office365']['connectionId']"
+                                                }
+                                            },
+                                            "method": "post",
+                                            "path": "/v2/Mail"
+                                        }
+                                    }
+                                }
+                            },
+                            "expression": {
+                                "and": [
+                                    {
+                                        "equals": [
+                                            "@if(empty(triggerBody()?['FileName']), true, false)",
+                                            true
+                                        ]
+                                    }
+                                ]
+                            },
+                            "type": "If"
+                        },
+                        "Response": {
+                            "runAfter": {
+                                "Condition": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Response",
+                            "kind": "Http",
+                            "inputs": {
+                                "statusCode": 200
+                            }
+                        },
+                        "Response_2": {
+                            "runAfter": {
+                                "Condition": [
+                                    "Failed",
+                                    "Skipped",
+                                    "TimedOut"
+                                ]
+                            },
+                            "type": "Response",
+                            "kind": "Http",
+                            "inputs": {
+                                "body": "Something went wrong. Mail wasn't delivered. Contact administrator",
+                                "statusCode": 400
+                            }
+                        }
+                    },
+                    "outputs": {}
+                },
+                "parameters": {
+                    "$connections": {
+                        "value": {
+                            "azureblob": {
+                                "connectionId": "[parameters('connections_azureblob_externalid')]",
+                                "connectionName": "azureblob",
+                                "id": "/subscriptions/8a31e8f3-fa88-4ecc-95cc-98ab3a0bb510/providers/Microsoft.Web/locations/eastus2/managedApis/azureblob"
+                            },
+                            "office365": {
+                                "connectionId": "[parameters('connections_office365_externalid')]",
+                                "connectionName": "office365",
+                                "id": "/subscriptions/8a31e8f3-fa88-4ecc-95cc-98ab3a0bb510/providers/Microsoft.Web/locations/eastus2/managedApis/office365"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

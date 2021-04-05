@@ -1,0 +1,12 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workflows_russiapetcarejupprodmailnotificationsla_name": {
+            "value": "russiapetcarejupprodmailnotificationsla"
+        },
+        "connections_office365_2_externalid": {
+            "value": "/subscriptions/fd43d2cb-5798-4c9b-bf5e-05006585d0cd/resourceGroups/RUSSIA-PETCARE-JUPITER-PROD-RG/providers/Microsoft.Web/connections/office365-2"
+        }
+    }
+}
