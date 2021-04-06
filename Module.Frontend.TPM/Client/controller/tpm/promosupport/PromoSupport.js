@@ -1185,66 +1185,73 @@
 
             model.save({
                 scope: me,
-                success: function () {
-                    model.set('ClientTreeFullPathName', editor.clientFullPathName);
+                success: function (record, operation) {
+                    var result = Ext.JSON.decode(operation.response[0].value);
+                    if (result.success) {
+                        model.set('ClientTreeFullPathName', editor.clientFullPathName);
 
-                    currentPromoSupport.modelId = model.data.Id;
-                    currentPromoSupport.model = model;
-                    currentPromoSupport.saved = true;
-                    editor.promoSupportModel = model;
+                        currentPromoSupport.modelId = model.data.Id;
+                        currentPromoSupport.model = model;
+                        currentPromoSupport.saved = true;
+                        editor.promoSupportModel = model;
 
-                    editor.down('#createPromoSupport').setDisabled(false);
-                    editor.down('#createPromoSupportOnTheBasis').setDisabled(false);
-                    editor.down('#deletePromoSupport').setDisabled(false);
+                        editor.down('#createPromoSupport').setDisabled(false);
+                        editor.down('#createPromoSupportOnTheBasis').setDisabled(false);
+                        editor.down('#deletePromoSupport').setDisabled(false);
 
-                    var pspMin = []
+                        var pspMin = []
 
-                    if (promoLinkedRecords.length > 0 && promoLinkedStore.getCount() !== 0) {
-                        promoLinkedRecords.forEach(function (record) {
-                            pspMin.push({
-                                Id: record.data.Id ? record.data.Id : '00000000-0000-0000-0000-000000000000',
-                                PromoId: record.data.PromoId,
-                                PromoSupportId: model.data.Id,
-                                FactCalculation: record.data.FactCalculation,
-                                FactCostProd: record.data.FactCostProd,
-                                PlanCalculation: record.data.PlanCalculation,
-                                PlanCostProd: record.data.PlanCostProd
+                        if (promoLinkedRecords.length > 0 && promoLinkedStore.getCount() !== 0) {
+                            promoLinkedRecords.forEach(function (record) {
+                                pspMin.push({
+                                    Id: record.data.Id ? record.data.Id : '00000000-0000-0000-0000-000000000000',
+                                    PromoId: record.data.PromoId,
+                                    PromoSupportId: model.data.Id,
+                                    FactCalculation: record.data.FactCalculation,
+                                    FactCostProd: record.data.FactCostProd,
+                                    PlanCalculation: record.data.PlanCalculation,
+                                    PlanCostProd: record.data.PlanCostProd
+                                });
                             });
-                        });
-                    }
-
-                    $.ajax({
-                        type: "POST",
-                        cache: false,
-                        url: "/odata/PromoSupportPromoes/ChangeListPSP?promoSupportId=" + model.data.Id,
-                        data: JSON.stringify(pspMin),
-                        dataType: "json",
-                        contentType: false,
-                        processData: false,
-                        success: function (response) {
-                            var result = Ext.JSON.decode(response.value);
-                            if (result.success) {
-                                var promoLinkedProxy = promoLinkedStore.getProxy();
-
-                                // только если вкладка та же
-                                if (currentPromoSupport.hasCls('selected')) {
-                                    var promoSupportPromoes = promoLinkedProxy.getReader().readRecords(result.list).records;
-                                    promoLinkedProxy.data = promoSupportPromoes;
-                                    promoLinkedStore.load();
-                                }
-
-                                currentPromoSupport.PromoSupportPromoes = result.list;
-                                editor.setLoading(false);
-                            }
-                            else {
-                                App.Notify.pushError(result.message);
-                                editor.setLoading(false);
-                            }
                         }
-                    });                    
 
-                    if (callback) {
-                        callback();
+                        $.ajax({
+                            type: "POST",
+                            cache: false,
+                            url: "/odata/PromoSupportPromoes/ChangeListPSP?promoSupportId=" + model.data.Id,
+                            data: JSON.stringify(pspMin),
+                            dataType: "json",
+                            contentType: false,
+                            processData: false,
+                            success: function (response) {
+                                var result = Ext.JSON.decode(response.value);
+                                if (result.success) {
+                                    var promoLinkedProxy = promoLinkedStore.getProxy();
+
+                                    // только если вкладка та же
+                                    if (currentPromoSupport.hasCls('selected')) {
+                                        var promoSupportPromoes = promoLinkedProxy.getReader().readRecords(result.list).records;
+                                        promoLinkedProxy.data = promoSupportPromoes;
+                                        promoLinkedStore.load();
+                                    }
+
+                                    currentPromoSupport.PromoSupportPromoes = result.list;
+                                    editor.setLoading(false);
+                                }
+                                else {
+                                    App.Notify.pushError(result.message);
+                                    editor.setLoading(false);
+                                }
+                            }
+                        });
+
+                        if (callback) {
+                            callback();
+                        }
+                    }
+                    else {
+                        App.Notify.pushError(result.message);
+                        editor.setLoading(false);
                     }
                 },
                 failure: function () {
@@ -1275,52 +1282,58 @@
 
             model.save({
                 scope: me,
-                success: function () {
+                success: function (record, operation) {
+                    var result = Ext.JSON.decode(operation.response[0].value);
+                    if (result.success) {
+                        var pspMin = []
 
-                    var pspMin = []
-
-                    if (promoLinkedRecords.length > 0) {
-                        promoLinkedRecords.forEach(function (record) {
-                            pspMin.push({
-                                Id: record.data.Id ? record.data.Id : '00000000-0000-0000-0000-000000000000',
-                                PromoId: record.data.PromoId,
-                                PromoSupportId: model.data.Id,
-                                FactCalculation: record.data.FactCalculation,
-                                FactCostProd: record.data.FactCostProd,
-                                PlanCalculation: record.data.PlanCalculation,
-                                PlanCostProd: record.data.PlanCostProd
+                        if (promoLinkedRecords.length > 0) {
+                            promoLinkedRecords.forEach(function (record) {
+                                pspMin.push({
+                                    Id: record.data.Id ? record.data.Id : '00000000-0000-0000-0000-000000000000',
+                                    PromoId: record.data.PromoId,
+                                    PromoSupportId: model.data.Id,
+                                    FactCalculation: record.data.FactCalculation,
+                                    FactCostProd: record.data.FactCostProd,
+                                    PlanCalculation: record.data.PlanCalculation,
+                                    PlanCostProd: record.data.PlanCostProd
+                                });
                             });
-                        });
-                    }
-
-                    $.ajax({
-                        type: "POST",
-                        cache: false,
-                        url: "/odata/PromoSupportPromoes/ChangeListPSP?promoSupportId=" + model.data.Id,
-                        data: JSON.stringify(pspMin),
-                        dataType: "json",
-                        contentType: false,
-                        processData: false,
-                        success: function (response) {
-                            var result = Ext.JSON.decode(response.value);
-                            if (result.success) {
-                                var promoLinkedProxy = promoLinkedStore.getProxy();
-                                var promoSupportPromoes = promoLinkedProxy.getReader().readRecords(result.list).records;
-
-                                promoLinkedProxy.data = promoSupportPromoes;
-                                promoLinkedStore.load();
-                                editor.PromoSupportPromoes = result.list;
-                                editor.setLoading(false);
-                            }
-                            else {
-                                App.Notify.pushError(result.message);
-                                editor.setLoading(false);
-                            }
                         }
-                    });
 
-                    if (callback) {
-                        callback();
+                        $.ajax({
+                            type: "POST",
+                            cache: false,
+                            url: "/odata/PromoSupportPromoes/ChangeListPSP?promoSupportId=" + model.data.Id,
+                            data: JSON.stringify(pspMin),
+                            dataType: "json",
+                            contentType: false,
+                            processData: false,
+                            success: function (response) {
+                                var result = Ext.JSON.decode(response.value);
+                                if (result.success) {
+                                    var promoLinkedProxy = promoLinkedStore.getProxy();
+                                    var promoSupportPromoes = promoLinkedProxy.getReader().readRecords(result.list).records;
+
+                                    promoLinkedProxy.data = promoSupportPromoes;
+                                    promoLinkedStore.load();
+                                    editor.PromoSupportPromoes = result.list;
+                                    editor.setLoading(false);
+                                }
+                                else {
+                                    App.Notify.pushError(result.message);
+                                    editor.setLoading(false);
+                                }
+                            }
+                        });
+
+                        if (callback) {
+                            callback();
+                        }
+                    }
+                    else {
+                        App.Notify.pushError(result.message);
+                        editor.setLoading(false);
                     }
                 },
                 failure: function () {
@@ -1397,8 +1410,8 @@
             mainContainer.remove(selectedItem);
             //выбор предыдущей записи в контейнере
             var length = mainContainer.items.items.length,
-                prevPanel = mainContainer.items.items[length - 1];            
-            
+                prevPanel = mainContainer.items.items[length - 1];
+
             this.clearPromoSupportForm(editor);
 
             if (prevPanel) {
@@ -1409,7 +1422,7 @@
     },
 
     onClosePromoSupportEditorButtonClick: function (button) {
-        var editor = button.up('custompromosupporteditor');       
+        var editor = button.up('custompromosupporteditor');
 
         editor.close();
     },
@@ -1447,7 +1460,7 @@
     },
 
     onDeleteAttachFileButtonClick: function (button) {
-        var attachFileName = button.up('custompromosupporteditor').down('#attachFileName'); 
+        var attachFileName = button.up('custompromosupporteditor').down('#attachFileName');
         var editor = button.up('custompromosupporteditor');
         var actualQuantityField = Ext.ComponentQuery.query('#actualQuantityField')[0];
 
@@ -1545,7 +1558,7 @@
 
     // функция выбора редактируемой записи (касается визуальной части)
     selectPromoSupportPanel: function (panel) {
-        var mainContainer = panel.up('#mainPromoSupportLeftToolbarContainer');        
+        var mainContainer = panel.up('#mainPromoSupportLeftToolbarContainer');
         var btnPanel = mainContainer.up('promosupportlefttoolbar'); // Панель с кнопками создания/удаления
 
         panel.addCls('selected');
@@ -1556,7 +1569,7 @@
         var promoLinkedStore = panel.up('custompromosupporteditor').down('promolinkedviewer grid').getStore();
         var promoLinkedProxy = promoLinkedStore.getProxy();
 
-        if (panel.PromoSupportPromoes) {            
+        if (panel.PromoSupportPromoes) {
             var promoSupportPromoes = promoLinkedProxy.getReader().readRecords(panel.PromoSupportPromoes).records;
 
             promoLinkedProxy.data = promoSupportPromoes;
@@ -1574,7 +1587,7 @@
         var editor = promoSupportPanel.up('custompromosupporteditor');
         var promoSupportForm = editor.down('promosupportform');
         var promoLinkedViewer = editor.down('promolinkedviewer');
-        var promoLinkedStore = promoLinkedViewer.down('grid').getStore();            
+        var promoLinkedStore = promoLinkedViewer.down('grid').getStore();
 
         //поля на форме PromoSupportForm
         //Parameters
@@ -1597,14 +1610,14 @@
         var budgetSubItemField = promoSupportForm.down('searchcombobox[name=BudgetSubItemId]');
         var budgetSubItemId = budgetSubItemField.getValue(),
 
-        result = result && promoSupportPanel.model.data.ActualCostTE == actualCostTEValue;
+            result = result && promoSupportPanel.model.data.ActualCostTE == actualCostTEValue;
         result = result && promoSupportPanel.model.data.PlanCostTE == planCostTEValue;
         result = result && promoSupportPanel.model.data.ActualQuantity == actualQuantityValue;
         result = result && promoSupportPanel.model.data.PlanQuantity == planQuantityValue;
-        result = result && promoSupportPanel.model.data.AttachFileName == attachFileName;        
+        result = result && promoSupportPanel.model.data.AttachFileName == attachFileName;
         result = result && promoSupportPanel.model.data.BudgetSubItemId == budgetSubItemId;
         result = result && promoSupportPanel.model.data.StartDate.toString() == startDateValue.toString();
-        result = result && promoSupportPanel.model.data.EndDate.toString() == endDateValue.toString(); 
+        result = result && promoSupportPanel.model.data.EndDate.toString() == endDateValue.toString();
         result = result && promoSupportPanel.model.data.ActualProdCostPer1Item == actualProdCostPer1Item;
         result = result && promoSupportPanel.model.data.PlanProdCostPer1Item == planProdCostPer1Item;
         result = result && promoSupportPanel.model.data.ActualProdCost == actualProdCostValue;
@@ -1612,7 +1625,7 @@
 
         // проверка изменений прикрепленных промо
         var newLinkedPromoCount = promoLinkedStore.getCount();
-        var promoLinkedRecords = newLinkedPromoCount > 0 ? promoLinkedStore.getRange(0, newLinkedPromoCount) : [];            
+        var promoLinkedRecords = newLinkedPromoCount > 0 ? promoLinkedStore.getRange(0, newLinkedPromoCount) : [];
         var checkedRowsIds = [];
 
         if (promoLinkedRecords.length > 0) {
@@ -1637,8 +1650,7 @@
                 if (pspInStore.get('PlanCostProd') != currentPsp.PlanCostProd ||
                     pspInStore.get('FactCostProd') != currentPsp.FactCostProd ||
                     pspInStore.get('PlanCalculation') != currentPsp.PlanCalculation ||
-                    pspInStore.get('FactCalculation') != currentPsp.FactCalculation)
-                {
+                    pspInStore.get('FactCalculation') != currentPsp.FactCalculation) {
                     result = false;
                 }
             });
@@ -1692,7 +1704,7 @@
                 return element.Resource == 'PromoSupports' && element.Action == 'Patch';
             });
 
-            customPromoSupportEditor.down('#editPromoSupportEditorButton').setVisible(access); 
+            customPromoSupportEditor.down('#editPromoSupportEditorButton').setVisible(access);
             customPromoSupportEditor.down('#savePromoSupportForm').setVisible(false);
             customPromoSupportEditor.down('#cancelPromoSupportForm').setVisible(false);
         }
@@ -1800,7 +1812,7 @@
 
         if (masterStore) {
             masterStore.load();
-        }        
+        }
     },
 
     // проверка того, чтобы суммы распределенные по промо не превышали общие на подстатью
@@ -1812,7 +1824,7 @@
         var budgetItemName = editor.down('#promoSupportTypeField').getValue().toLowerCase();
 
         var promoLinkedViewer = editor.down('promolinkedviewer');
-        var promoLinkedStore = promoLinkedViewer.down('grid').getStore(); 
+        var promoLinkedStore = promoLinkedViewer.down('grid').getStore();
         var data = promoLinkedStore.getProxy().data;
 
         var actualCostTESum = 0;
@@ -1921,7 +1933,7 @@
             }
         })
 
-        return isValid;    
+        return isValid;
     },
 
     // расширенный расширенный фильтр
@@ -1935,7 +1947,7 @@
             console.error('Extended filter does not implemented for this store');
         }
     },
-    
+
     onHistoryButtonClick: function (button) {
         var grid = this.getGridByButton(button),
             selModel = grid.getSelectionModel();
