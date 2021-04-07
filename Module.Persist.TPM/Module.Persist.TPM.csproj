@@ -2520,6 +2520,18 @@
     <Compile Include="Migrations\202104050435155_EmptyRC5.Designer.cs">
       <DependentUpon>202104050435155_EmptyRC5.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202104061026543_Add_CreateDate_To_PromoProduct.cs" />
+    <Compile Include="Migrations\202104061026543_Add_CreateDate_To_PromoProduct.Designer.cs">
+      <DependentUpon>202104061026543_Add_CreateDate_To_PromoProduct.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202104070827569_Add_Unique_PromoProduct_Index.cs" />
+    <Compile Include="Migrations\202104070827569_Add_Unique_PromoProduct_Index.Designer.cs">
+      <DependentUpon>202104070827569_Add_Unique_PromoProduct_Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202104071011058_Add_InsertTrigger_To_PromoProduct.cs" />
+    <Compile Include="Migrations\202104071011058_Add_InsertTrigger_To_PromoProduct.Designer.cs">
+      <DependentUpon>202104071011058_Add_InsertTrigger_To_PromoProduct.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -4852,6 +4864,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202104050435155_EmptyRC5.resx">
       <DependentUpon>202104050435155_EmptyRC5.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202104061026543_Add_CreateDate_To_PromoProduct.resx">
+      <DependentUpon>202104061026543_Add_CreateDate_To_PromoProduct.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202104070827569_Add_Unique_PromoProduct_Index.resx">
+      <DependentUpon>202104070827569_Add_Unique_PromoProduct_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202104071011058_Add_InsertTrigger_To_PromoProduct.resx">
+      <DependentUpon>202104071011058_Add_InsertTrigger_To_PromoProduct.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
