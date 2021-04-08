@@ -1187,7 +1187,7 @@
                 scope: me,
                 success: function (record, operation) {
                     var result = Ext.JSON.decode(operation.response[0].value);
-                    if (result.success) {
+                    if (result == null) {
                         model.set('ClientTreeFullPathName', editor.clientFullPathName);
 
                         currentPromoSupport.modelId = model.data.Id;
@@ -1284,7 +1284,7 @@
                 scope: me,
                 success: function (record, operation) {
                     var result = Ext.JSON.decode(operation.response[0].value);
-                    if (result.success) {
+                    if (result == null) {
                         var pspMin = []
 
                         if (promoLinkedRecords.length > 0) {
