@@ -101,6 +101,7 @@ Ext.define('App.util.core.UserInfo', function () {
 
             Ext.Ajax.request({
                 method: 'POST',
+                async: false,
                 url: this.url,
                 scope: this,
                 urlParams: {
