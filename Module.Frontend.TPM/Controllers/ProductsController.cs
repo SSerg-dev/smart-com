@@ -650,6 +650,11 @@ namespace Module.Frontend.TPM.Controllers
             return expressionsList;
         }
 
+        private static bool StringsNullOrEmpty(string str1, string str2) 
+        {
+            return String.IsNullOrEmpty(str1) && String.IsNullOrEmpty(str2);
+        }
+
         public static bool BrandTechExist(DatabaseContext context, string brandCode, string segmenCode, string subBrandCode, string techCode, ref IList<string> errors)
         {
             bool exist = true;
@@ -662,15 +667,24 @@ namespace Module.Frontend.TPM.Controllers
                                                 b.Segmen_code == segmenCode
                                                 && b.Brand_code == brandCode
                                                 && !b.Disabled).FirstOrDefault();
-            var brandTech = context.Set<BrandTech>().Where(bt =>
-                                                        bt.Technology != null && bt.Brand != null
-                                                       && bt.Brand.Brand_code == brandCode
-                                                       && bt.Brand.Segmen_code == segmenCode
-                                                       && bt.Technology.Tech_code == techCode
-                                                       && bt.Technology.SubBrand_code == subBrandCode                                                    
-                                                       && !bt.Brand.Disabled
-                                                       && !bt.Technology.Disabled
-                                                       && !bt.Disabled).FirstOrDefault();
+
+
+
+            var brandTechs = context.Set<BrandTech>().Where(bt =>
+                                                      bt.Technology != null && bt.Brand != null
+                                                     && !bt.Brand.Disabled
+                                                     && !bt.Technology.Disabled
+                                                     && !bt.Disabled).ToList();
+
+            var brandTech = brandTechs.Where(bt =>
+                                        (bt.Brand.Brand_code == brandCode || StringsNullOrEmpty(bt.Brand.Brand_code, brandCode))
+                                        && (bt.Brand.Segmen_code == segmenCode || StringsNullOrEmpty(bt.Brand.Segmen_code, segmenCode))
+                                        && (bt.Technology.Tech_code == techCode || StringsNullOrEmpty(bt.Technology.Tech_code, techCode))
+                                        && (bt.Technology.SubBrand_code == subBrandCode || StringsNullOrEmpty(bt.Technology.SubBrand_code, subBrandCode))
+            ).FirstOrDefault();
+
+
+
             if (brand == null) 
             { 
                 errors.Add("Brand was not found"); 
