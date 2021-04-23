@@ -49,7 +49,7 @@ namespace Module.Host.TPM.Actions
             var validAfterClientsCheckPriceListFDMs = CheckClients(priceListFDMsMaterialized, clientTreesMaterialized);
             var validAfterProductsCheckPriceListFDMs =  CheckProducts(priceListFDMsMaterialized, products);
             var validAfterDublicatesCheckPriceListFDMs = CheckDublicates(priceListFDMsMaterialized);
-            var validAfterIntersectionsCheckPriceListFDMs = CheckIntersections(priceListFDMsMaterialized);
+            //var validAfterIntersectionsCheckPriceListFDMs = CheckIntersections(priceListFDMsMaterialized);
 
             var validPriceListFDMs = validAfterClientsCheckPriceListFDMs
                                         .Intersect(validAfterProductsCheckPriceListFDMs)
@@ -148,14 +148,6 @@ namespace Module.Host.TPM.Actions
             var currentPriceLists = _databaseContext.Set<PriceList>().ToList();
             var newPriceLists = GetNewPriceListRecords(priceListFDMs, clientTrees, products);
             var differentPriceLists = newPriceLists.Except(currentPriceLists, new PriceListEqualityComparer());
-            differentPriceLists = differentPriceLists.Where(dp => !currentPriceLists.Any(cp =>
-                                                                                    cp.Disabled == dp.Disabled &&
-                                                                                    cp.ClientTreeId == dp.ClientTreeId &&
-                                                                                    cp.ProductId == dp.ProductId &&
-                                                                                    ((cp.StartDate >= dp.StartDate && cp.StartDate <= dp.EndDate) ||
-                                                                                    (dp.StartDate >= cp.StartDate && dp.StartDate <= cp.EndDate) ||
-                                                                                    (cp.EndDate >= dp.StartDate && cp.EndDate <= dp.EndDate) ||
-                                                                                    (dp.EndDate >= cp.StartDate && dp.EndDate <= cp.EndDate))));
             return differentPriceLists;
         }
 
@@ -168,7 +160,6 @@ namespace Module.Host.TPM.Actions
                 var currentPriceLists = priceListMaterialized.Where(x => 
                     x.DeletedDate == differentPriceList.DeletedDate &&
                     x.StartDate == differentPriceList.StartDate &&
-                    x.EndDate == differentPriceList.EndDate &&
                     x.ClientTreeId == differentPriceList.ClientTreeId &&
                     x.ProductId == differentPriceList.ProductId);
 
