@@ -153,38 +153,40 @@ namespace Module.Host.TPM.Actions
 
         private void FillPriceListTable(IEnumerable<PriceList> differentPriceLists, IEnumerable<PriceList> priceListMaterialized, IEnumerable<ClientTree> clientTrees, IEnumerable<Product> products)
         {
-            var priceLists = _databaseContext.Set<PriceList>();
-
-            foreach (var differentPriceList in differentPriceLists)
+            using (var context = new DatabaseContext())
             {
-                var currentPriceLists = priceListMaterialized.Where(x => 
-                    x.DeletedDate == differentPriceList.DeletedDate &&
-                    x.StartDate == differentPriceList.StartDate &&
-                    x.ClientTreeId == differentPriceList.ClientTreeId &&
-                    x.ProductId == differentPriceList.ProductId);
+                var priceLists = context.Set<PriceList>();
 
-                foreach (var currentPriceList in currentPriceLists)
+                foreach (var differentPriceList in differentPriceLists)
                 {
-                    var currentPriceListFromDatabase = priceLists.FirstOrDefault(x => x.Id == currentPriceList.Id);
-                    if (currentPriceListFromDatabase != null)
+                    var currentPriceLists = priceListMaterialized.Where(x =>
+                        x.DeletedDate == differentPriceList.DeletedDate &&
+                        x.StartDate == differentPriceList.StartDate &&
+                        x.ClientTreeId == differentPriceList.ClientTreeId &&
+                        x.ProductId == differentPriceList.ProductId);
+
+                    foreach (var currentPriceList in currentPriceLists)
                     {
-                        currentPriceListFromDatabase.Disabled = true;
-                        currentPriceListFromDatabase.DeletedDate = DateTimeOffset.Now;
-                        CreateIncident(currentPriceList);
+                        var currentPriceListFromDatabase = priceLists.FirstOrDefault(x => x.Id == currentPriceList.Id);
+                        if (currentPriceListFromDatabase != null)
+                        {
+                            currentPriceListFromDatabase.Disabled = true;
+                            currentPriceListFromDatabase.DeletedDate = DateTimeOffset.Now;
+                            CreateIncident(currentPriceList);
+                        }
                     }
+
+                    var logLine = $"New {nameof(PriceList)}: {differentPriceList.ToString()}";
+                    _fileLogWriter.Write(true, logLine, "Message");
+                    differentPriceList.Product = null;
+                    differentPriceList.ClientTree = null;
                 }
-                
-                var logLine = $"New {nameof(PriceList)}: {differentPriceList.ToString()}";
-                _fileLogWriter.Write(true, logLine, "Message");
-                differentPriceList.Product = null;
-                differentPriceList.ClientTree = null;
+
+                priceLists.AddRange(differentPriceLists);
+                // Необходимо для дальнейшего сохранения ItemId в ChangesIncident
+                context.SaveChanges();
             }
 
-            priceLists.AddRange(differentPriceLists);
-            // Необходимо для дальнейшего сохранения ItemId в ChangesIncident
-            _databaseContext.SaveChanges();
-
-            
             var incidents = differentPriceLists.Select(d => new ChangesIncident() 
             {
                 DirectoryName = nameof(PriceList),
