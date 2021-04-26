@@ -43,7 +43,7 @@ namespace Module.Host.TPM.Handlers
                     var promoNumbers = promoNumbersRecalculatingString.Split(";".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
                     var activePromo = prev_context.Set<Promo>().Where(x => !x.Disabled);
 
-                    String formatStrPromo = "UPDATE [DefaultSchemaSetting].[Promo] SET PromoStatusId = (SELECT Id FROM PromoStatus WHERE SystemName = 'DraftPublished' AND Disabled = 0) WHERE Number = {0} \n";
+                    String formatStrPromo = "UPDATE [DefaultSchemaSetting].[Promo] SET PromoStatusId = (SELECT Id FROM [DefaultSchemaSetting].PromoStatus WHERE SystemName = 'DraftPublished' AND Disabled = 0) WHERE Number = {0} \n";
                     string updateScript = "";
 
                     foreach (var promoNumber in promoNumbers)
@@ -59,7 +59,7 @@ namespace Module.Host.TPM.Handlers
                             }
                             else
                             {
-                                handlerLogger.Write(true, $"The promo with { promo.Number } number not found.", "Error");
+                                handlerLogger.Write(true, $"The promo with { number } number not found.", "Error");
                             }
                         }
                         else
