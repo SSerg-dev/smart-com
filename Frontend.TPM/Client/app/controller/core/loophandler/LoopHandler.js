@@ -556,6 +556,8 @@
 				}]
 			});
 			form.up('simplecombineddirectorypanel').minHeight = 50;
+
+			Ext.ComponentQuery.query('#loophandlerlog')[0].enable();
 		}
 
 		if (models && models.length) {
@@ -637,13 +639,13 @@
 		return result;
 	},
 
-    /**
-     * Открыть грид импорта с загуженными данными
-     * @param {string} widgetalias Name of window that must be shown
-     * @param {string} importId Id of import record
-     * @param {object} handlerData Parameters Data from server
-     * @param {object} parentGrid Grid that must be reloaded after import apply
-     */
+	/**
+	 * Открыть грид импорта с загуженными данными
+	 * @param {string} widgetalias Name of window that must be shown
+	 * @param {string} importId Id of import record
+	 * @param {object} handlerData Parameters Data from server
+	 * @param {object} parentGrid Grid that must be reloaded after import apply
+	 */
 	openActualImportWindow: function (widgetalias, importId, handlerData, parentWindow) {
 		var widget = Ext.widget('basereviewwindow', {
 			title: l10n.ns('core').value('actualImportWindowTitle'),
@@ -1093,12 +1095,12 @@
 		return backetResult[backetResult.length - 1];
 	},
 
-    /** 
-     * Преобразовать объект HandlerData в список моделей, пригодных для отображения
-     * @param {object} parametersObject Parameters Data from server
-     * @param {object} handlerData Parameters Data from server
-     * @returns {array} List of model for displey on the form
-     */
+	/** 
+	 * Преобразовать объект HandlerData в список моделей, пригодных для отображения
+	 * @param {object} parametersObject Parameters Data from server
+	 * @param {object} handlerData Parameters Data from server
+	 * @returns {array} List of model for displey on the form
+	 */
 	buildParametersFieldList: function (form, parametersObject, handlerData, record) {
 		var result = [];
 		if (parametersObject) {
