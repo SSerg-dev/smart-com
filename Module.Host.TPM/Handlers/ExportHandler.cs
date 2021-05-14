@@ -55,7 +55,8 @@ namespace Module.Host.TPM.Handlers
                 if (IsActuals || additionalColumn != null)
                 {
                     columnsParam = new object[] { additionalColumn };
-                } else
+                }
+                else
                 {
                     columnsParam = null;
                 }
@@ -66,10 +67,9 @@ namespace Module.Host.TPM.Handlers
                 MethodInfo execute = type.GetMethod(nameof(action.Execute));
 
                 handlerLogger.Write(true, String.Format("Start of {0} export at {1:yyyy-MM-dd HH:mm:ss}", tModel.Name, ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)), "Message");
-                Thread.Sleep(10000);
 
                 execute.Invoke(action, null);
-                
+
                 if (action.Errors.Any())
                 {
                     data.SetValue<bool>("HasErrors", true);
