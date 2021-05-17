@@ -105,12 +105,17 @@ namespace Module.Host.TPM.Actions.Notifications
                             var dbRecords = context.Database.SqlQuery<TModel>(SqlString).AsQueryable();
                             records = PlanPostPromoEffectReportsController.MapToReport<PlanPostPromoEffectReport>(dbRecords).ToList();
                         }
+                        else if (typeof(TModel).Name.Equals(typeof(PromoGridView).Name))
+                        {
+                            var options = getODataQueryOptions<TModel>();
+                            records = options.ApplyTo(new PromoGridViewsController(User, Role, RoleId).GetConstraintedQuery(localContext: context)).Cast<PromoGridView>().ToList();
+                        }
                         else
                         {
                             records = context.Database.SqlQuery<TModel>(SqlString).ToList();
                         }
 
-                        if (url == null && records.Count > 0)
+                        if ( records.Count > 0)
                         {
                             AddChildrenModel(records, context);
                         }
@@ -231,7 +236,7 @@ namespace Module.Host.TPM.Actions.Notifications
                 }
             }
         }
-        
+
         private void GetDBList<TEntity, TId>(DatabaseContext context, IList records, Type type) where TEntity : class, IEntity<TId>
         {
             TEntity singleValue;

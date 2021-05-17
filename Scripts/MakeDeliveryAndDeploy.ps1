@@ -8,7 +8,7 @@ $logfile = "$CurrentPath\log_deploy.txt"
 Write-Host "Script starting at $CurrentDate" 
 "Script starting at $CurrentDate" | Out-File $logfile -Append
 
-If($args) {
+if($args) {
 	$key1 = $($args[0].ToString())
 	$key2 = $($args[1].ToString())
 	$key3 = $($args[2].ToString())
@@ -19,10 +19,10 @@ If($args) {
 	$key8 = $($args[7].ToString())
 }
 
-If($key1 -eq "true") { $deploy = $true }
+if($key1 -eq "true") { $deploy = $true }
 Else { $deploy = $false }
 
-If($key2 -eq "Development") { 
+if($key2 -eq "Development") { 
 	$destFolderMap = "\\192.168.10.92\D$\TPM_dev\DeployScript\Source"
 	$deployScript = "D:\TPM_dev\DeployScript\DevDeploy.ps1"
 	$Server = "192.168.10.92"
@@ -36,7 +36,7 @@ If($key2 -eq "Development") {
 	$SourceBranch = "$/TPM/Development/DMP/Source" # 14.01.021
 }
 
-If($key2 -eq "Development2") { 
+if($key2 -eq "Development2") { 
 	$destFolderMap = "\\192.168.10.92\D$\TPM_dev2\DeployScript\Source"
 	$deployScript = "D:\TPM_dev2\DeployScript\DevDeploy.ps1"
 	$Server = "192.168.10.92"
@@ -50,7 +50,7 @@ If($key2 -eq "Development2") {
 	$SourceBranch = "$/TPM/Development/AddTI/Source"
 }
 
-If($key2 -eq "Test") { 
+if($key2 -eq "Test") { 
 	$destFolderMap = "\\192.168.10.92\D$\TPM\DeployScript\Source"
 	$deployScript = "D:\TPM\DeployScript\StageDeploy.ps1"
 	$Server = "192.168.10.92"
@@ -64,7 +64,7 @@ If($key2 -eq "Test") {
 	$SourceBranch = "$/TPM/ReleaseCandidate/Source"	# 3.07.019
 }
 
-If($key2 -eq "Demo") { 
+if($key2 -eq "Demo") { 
 	$destFolderMap = "\\192.168.10.92\D$\TPM_demo\DeployScript\Source"
 	$deployScript = "D:\TPM_demo\DeployScript\DemoDeploy.ps1"
 	$Server = "192.168.10.92"
@@ -79,7 +79,7 @@ If($key2 -eq "Demo") {
 }
 
 <#13.05.019
-If($key2 -eq "Stage") { 
+if($key2 -eq "Stage") { 
 	$destFolderMap = "\\192.168.10.92\C$\TPM\DeployScript\Source"
 	$deployScript = "C:\TPM\DeployScript\StageDeploy.ps1"
 	$Server = "192.168.10.92"
@@ -122,7 +122,7 @@ Function CopyThroughFtp($FTPCredential, $Item) {
 			Write-Host "Connecting successful"
 			"Connecting successful" | Out-File $logfile -Append
 			$PrevArchives = Get-FTPChildItem -Session $ftpServer -Path Source -Filter "*.zip"
-			If($PrevArchives) {
+			if($PrevArchives) {
 				Foreach($PrevArchive in $PrevArchives){
 					Write-Host "Moving previous archive"
 					$oldPath = "Source\" + $PrevArchive.name
@@ -139,7 +139,7 @@ Function CopyThroughFtp($FTPCredential, $Item) {
 			$count++
 		}
 	}
-	If($count -ge 10) {
+	if($count -ge 10) {
 		throw "Couldn't connect to FTP!!!"
 	}
 }
@@ -157,7 +157,7 @@ if ($notFTP) {
 			$connected = $true
 		}
 		catch {
-			If (Test-Path "W:") { 
+			if (Test-Path "W:") { 
 				net use W: /delete > $null
 				Write-Host "Drive unmapped!" 
 			}
@@ -168,8 +168,8 @@ if ($notFTP) {
 			$count++
 		}
 	}
-	If ($connected) {
-		If (!(Test-Path W:\old)) {
+	if ($connected) {
+		if (!(Test-Path W:\old)) {
 			New-Item W:\old -ItemType Directory
 		}
 		Get-Item W:\*.zip | Move-Item -Destination W:\old -Force
@@ -201,7 +201,7 @@ if ($isFTP) {
 #remove archives from temp folder on JavaBuildServer
 #Remove-Item "$CurrentPath\..\..\..\..\..\TPM\*.zip" -Recurse -Force
 
-If($deploy) {
+if($deploy) {
 	try {
 		Write-Host "Deploy" 
 		"Deploy" | Out-File $logfile -Append 
@@ -217,22 +217,24 @@ If($deploy) {
 	}
 }
 
-If($continueRelease -and $deploy) {
+if($continueRelease -and $deploy) {
 	Write-Host "Generating Test Plan"
 	Write-Host "$DateStart"
+	
+	<#05.04.021
 	if ($osaka) {
 		D:\TestPlanGenerator\TestPlanGenerator.exe  $SourceBranch $key4 $DateStart $key7 $key5 $key2
-		If($LASTEXITCODE -ne 0) { 
+		if($LASTEXITCODE -ne 0) { 
 			$continueRelease = $false
 			Write-Host "TestPlanGenerator failed!"
 			exit 1
 		}
 	}
 	else { 
-		If(Test-Path "D:\TestPlanGenerator\") {
+		if(Test-Path "D:\TestPlanGenerator\") {
 
-			# BuildSourcesDirectory ÔÂÂ‰‡∏Ï ˜ÂÂÁ Ù‡ÈÎ (‰Û„Ó„Ó Â¯ÂÌËˇ ÔÓÍ‡ ÌÂ Ì‡¯∏Î) Ë ÒÍ‡ÏÎË‚‡ÂÏ “ÂÒÚÔÎ‡ÌÛ
-			if (Test-Path "$CurrentPath\BuildSourcesDirectory.dat") {	# ÌÛÊÌÓ ‰Îˇ ÔÓÂÍÚÓ‚ ËÁ Git-ÂÔÓÁËÚÓËˇ
+			# BuildSourcesDirectory –ø–µ—Ä–µ–¥–∞—ë–º —á–µ—Ä–µ–∑ —Ñ–∞–π–ª (–¥—Ä—É–≥–æ–≥–æ —Ä–µ—à–µ–Ω–∏—è –ø–æ–∫–∞ –Ω–µ –Ω–∞—à—ë–ª) –∏ —Å–∫–∞—Ä–º–ª–∏–≤–∞–µ–º –¢–µ—Å—Ç–ø–ª–∞–Ω—É
+			if (Test-Path "$CurrentPath\BuildSourcesDirectory.dat") {	# –Ω—É–∂–Ω–æ –¥–ª—è –ø—Ä–æ–µ–∫—Ç–æ–≤ –∏–∑ Git-—Ä–µ–ø–æ–∑–∏—Ç–æ—Ä–∏—è
 				$buildSourcesDirectory = Get-Content "$CurrentPath\BuildSourcesDirectory.dat"
 			}
 			else {
@@ -245,12 +247,38 @@ If($continueRelease -and $deploy) {
 		else {
 			C:\temp\TestPlanGenerator\TestPlanGenerator.exe  $SourceBranch $key4 $DateStart $key7 $key5 $key2 $key8
 		}
-		If($LASTEXITCODE -ne 0) { 
+		if($LASTEXITCODE -ne 0) { 
 			$continueRelease = $false
 			Write-Host "TestPlanGenerator failed!"
 			exit 1
 		}
 	}
+	05.04.021#>
+	
+	If(Test-Path "D:\TestPlanGeneratorGit_without_features\") {		#05.04.021
+
+		Write-Host "INFO: Used TestPlanGeneratorGit_without_features"
+
+		# BuildSourcesDirectory –ø–µ—Ä–µ–¥–∞—ë–º —á–µ—Ä–µ–∑ —Ñ–∞–π–ª (–¥—Ä—É–≥–æ–≥–æ —Ä–µ—à–µ–Ω–∏—è –ø–æ–∫–∞ –Ω–µ –Ω–∞—à—ë–ª) –∏ —Å–∫–∞—Ä–º–ª–∏–≤–∞–µ–º –¢–µ—Å—Ç–ø–ª–∞–Ω—É
+		if (Test-Path "$CurrentPath\BuildSourcesDirectory.dat") {
+			$buildSourcesDirectory = Get-Content "$CurrentPath\BuildSourcesDirectory.dat"
+		}
+		else {
+			Write-Host "BuildSourcesDirectory.dat does not exist!"
+		}
+		D:\TestPlanGeneratorGit_without_features\TestPlanGenerator.exe  $SourceBranch $key4 $DateStart $key7 $key5 $key2 $key8 $buildSourcesDirectory 
+	}
+	else {
+
+		Write-Host "INFO: Used TestPlanGeneratorGit"
+
+		C:\temp\TestPlanGeneratorGit\TestPlanGenerator.exe  $SourceBranch $key4 $DateStart $key7 $key5 $key2 $key8 $key6
+	}
+	If($LASTEXITCODE -ne 0) { 
+		Write-Host "TestPlanGenerator failed!"
+		exit 1
+	}
+	
 } 
 
 $FinishDate = Get-Date

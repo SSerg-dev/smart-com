@@ -29,25 +29,40 @@ using Persist;
 using Looper.Parameters;
 
 namespace Module.Frontend.TPM.Controllers {
-    public class PromoGridViewsController : EFContextController {
-        private readonly IAuthorizationManager authorizationManager;
+    public class PromoGridViewsController : EFContextController
+    {
+        private readonly UserInfo user;
+        private readonly string role;
+        private readonly Guid? roleId;
 
         public PromoGridViewsController(IAuthorizationManager authorizationManager) {
-            this.authorizationManager = authorizationManager;
+            user = authorizationManager.GetCurrentUser();
+            var roleInfo = authorizationManager.GetCurrentRole();
+            role = roleInfo.SystemName;
+            roleId = roleInfo.Id;
         }
 
-        protected IQueryable<PromoGridView> GetConstraintedQuery(bool canChangeStateOnly = false)
+        public PromoGridViewsController(UserInfo User, string Role, Guid RoleId)
+        {
+            user = User;
+            role = Role;
+            roleId = RoleId;
+        }
+
+        public IQueryable<PromoGridView> GetConstraintedQuery(bool canChangeStateOnly = false, DatabaseContext localContext = null)
         {
             PerformanceLogger logger = new PerformanceLogger();
             logger.Start();
-            UserInfo user = authorizationManager.GetCurrentUser();
-            string role = authorizationManager.GetCurrentRoleName();
-            IList<Constraint> constraints = user.Id.HasValue ? Context.Constraints
+            if (localContext == null)
+            {
+                localContext = Context;
+            }
+            IList<Constraint> constraints = user.Id.HasValue ? localContext.Constraints
                 .Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
                 .ToList() : new List<Constraint>();
             IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
-            IQueryable<PromoGridView> query = Context.Set<PromoGridView>().AsNoTracking();
-            IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
+            IQueryable<PromoGridView> query = localContext.Set<PromoGridView>().AsNoTracking();
+            IQueryable<ClientTreeHierarchyView> hierarchy = localContext.Set<ClientTreeHierarchyView>().AsNoTracking();
             query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters, FilterQueryModes.Active, canChangeStateOnly ? role : String.Empty);
 
             // Не администраторы не смотрят чужие черновики
@@ -60,8 +75,6 @@ namespace Module.Frontend.TPM.Controllers {
 
         protected IQueryable<Promo> GetFullConstraintedQuery()
         {
-            UserInfo user = authorizationManager.GetCurrentUser();
-            string role = authorizationManager.GetCurrentRoleName();
             IList<Constraint> constraints = user.Id.HasValue ? Context.Constraints
                 .Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
                 .ToList() : new List<Constraint>();
@@ -121,7 +134,6 @@ namespace Module.Frontend.TPM.Controllers {
                 model.Disabled = true;
                 model.PromoStatusId = Context.Set<PromoStatus>().FirstOrDefault(e => e.SystemName == "Deleted").Id;
 
-                UserInfo user = authorizationManager.GetCurrentUser();
                 string userRole = user.GetCurrentRole().SystemName;
 
                 string message;
@@ -171,10 +183,8 @@ namespace Module.Frontend.TPM.Controllers {
         [ClaimsAuthorize]
         public IHttpActionResult ExportXLSX(ODataQueryOptions<PromoGridView> options) 
         {
-            UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
-            RoleInfo role = authorizationManager.GetCurrentRole();
-            Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
+            var url = HttpContext.Current.Request.Url.AbsoluteUri;
             var results = options.ApplyTo(GetConstraintedQuery()).Cast<PromoGridView>()
                                                 .Where(x => !x.Disabled)
                                                 .Select(p => p.Id)
@@ -190,11 +200,12 @@ namespace Module.Frontend.TPM.Controllers {
 
                 HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("TModel", typeof(Promo), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("TModel", typeof(PromoGridView), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(PromoHelper), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PromoHelper.GetExportSettings), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PromoHelper.GetViewExportSettings), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("SqlString", fullResults.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("URL", url, data, visible: false, throwIfNotExists: false);
 
                 LoopHandler handler = new LoopHandler()
                 {

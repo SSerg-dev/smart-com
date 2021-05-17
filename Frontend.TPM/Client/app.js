@@ -12,10 +12,10 @@ Ext.application({
         Ext.FocusManager.enable({ focusFrame: false });
         this.setGlobalHandlers();
         //Ext.widget('loginwindow').show();
-        App.UserInfo.setCurrentRole();
         //Ext.Date.defaultFormat = 'd.m.Y';
         Ext.create('App.view.core.Viewport');
         KeysMngr.bindKeys();
+        App.UserInfo.setCurrentRole();
     },       
 
     setGlobalHandlers: function () {

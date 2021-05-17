@@ -49,7 +49,7 @@ namespace Module.Host.TPM.Actions
             var validAfterClientsCheckPriceListFDMs = CheckClients(priceListFDMsMaterialized, clientTreesMaterialized);
             var validAfterProductsCheckPriceListFDMs =  CheckProducts(priceListFDMsMaterialized, products);
             var validAfterDublicatesCheckPriceListFDMs = CheckDublicates(priceListFDMsMaterialized);
-            var validAfterIntersectionsCheckPriceListFDMs = CheckIntersections(priceListFDMsMaterialized);
+            //var validAfterIntersectionsCheckPriceListFDMs = CheckIntersections(priceListFDMsMaterialized);
 
             var validPriceListFDMs = validAfterClientsCheckPriceListFDMs
                                         .Intersect(validAfterProductsCheckPriceListFDMs)
@@ -148,52 +148,45 @@ namespace Module.Host.TPM.Actions
             var currentPriceLists = _databaseContext.Set<PriceList>().ToList();
             var newPriceLists = GetNewPriceListRecords(priceListFDMs, clientTrees, products);
             var differentPriceLists = newPriceLists.Except(currentPriceLists, new PriceListEqualityComparer());
-            differentPriceLists = differentPriceLists.Where(dp => !currentPriceLists.Any(cp =>
-                                                                                    cp.Disabled == dp.Disabled &&
-                                                                                    cp.ClientTreeId == dp.ClientTreeId &&
-                                                                                    cp.ProductId == dp.ProductId &&
-                                                                                    ((cp.StartDate >= dp.StartDate && cp.StartDate <= dp.EndDate) ||
-                                                                                    (dp.StartDate >= cp.StartDate && dp.StartDate <= cp.EndDate) ||
-                                                                                    (cp.EndDate >= dp.StartDate && cp.EndDate <= dp.EndDate) ||
-                                                                                    (dp.EndDate >= cp.StartDate && dp.EndDate <= cp.EndDate))));
             return differentPriceLists;
         }
 
         private void FillPriceListTable(IEnumerable<PriceList> differentPriceLists, IEnumerable<PriceList> priceListMaterialized, IEnumerable<ClientTree> clientTrees, IEnumerable<Product> products)
         {
-            var priceLists = _databaseContext.Set<PriceList>();
-
-            foreach (var differentPriceList in differentPriceLists)
+            using (var context = new DatabaseContext())
             {
-                var currentPriceLists = priceListMaterialized.Where(x => 
-                    x.DeletedDate == differentPriceList.DeletedDate &&
-                    x.StartDate == differentPriceList.StartDate &&
-                    x.EndDate == differentPriceList.EndDate &&
-                    x.ClientTreeId == differentPriceList.ClientTreeId &&
-                    x.ProductId == differentPriceList.ProductId);
+                var priceLists = context.Set<PriceList>();
 
-                foreach (var currentPriceList in currentPriceLists)
+                foreach (var differentPriceList in differentPriceLists)
                 {
-                    var currentPriceListFromDatabase = priceLists.FirstOrDefault(x => x.Id == currentPriceList.Id);
-                    if (currentPriceListFromDatabase != null)
+                    var currentPriceLists = priceListMaterialized.Where(x =>
+                        x.DeletedDate == differentPriceList.DeletedDate &&
+                        x.StartDate == differentPriceList.StartDate &&
+                        x.ClientTreeId == differentPriceList.ClientTreeId &&
+                        x.ProductId == differentPriceList.ProductId);
+
+                    foreach (var currentPriceList in currentPriceLists)
                     {
-                        currentPriceListFromDatabase.Disabled = true;
-                        currentPriceListFromDatabase.DeletedDate = DateTimeOffset.Now;
-                        CreateIncident(currentPriceList);
+                        var currentPriceListFromDatabase = priceLists.FirstOrDefault(x => x.Id == currentPriceList.Id);
+                        if (currentPriceListFromDatabase != null)
+                        {
+                            currentPriceListFromDatabase.Disabled = true;
+                            currentPriceListFromDatabase.DeletedDate = DateTimeOffset.Now;
+                            CreateIncident(currentPriceList);
+                        }
                     }
+
+                    var logLine = $"New {nameof(PriceList)}: {differentPriceList.ToString()}";
+                    _fileLogWriter.Write(true, logLine, "Message");
+                    differentPriceList.Product = null;
+                    differentPriceList.ClientTree = null;
                 }
-                
-                var logLine = $"New {nameof(PriceList)}: {differentPriceList.ToString()}";
-                _fileLogWriter.Write(true, logLine, "Message");
-                differentPriceList.Product = null;
-                differentPriceList.ClientTree = null;
+
+                priceLists.AddRange(differentPriceLists);
+                // Необходимо для дальнейшего сохранения ItemId в ChangesIncident
+                context.SaveChanges();
             }
 
-            priceLists.AddRange(differentPriceLists);
-            // Необходимо для дальнейшего сохранения ItemId в ChangesIncident
-            _databaseContext.SaveChanges();
-
-            
             var incidents = differentPriceLists.Select(d => new ChangesIncident() 
             {
                 DirectoryName = nameof(PriceList),

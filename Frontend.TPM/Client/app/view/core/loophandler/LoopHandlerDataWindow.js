@@ -43,7 +43,8 @@ Ext.define('App.view.core.loophandler.LoopHandlerDataWindow', {
                 items: [{
                     xtype: 'button',
                     itemId: 'loophandlerlog',
-                    text: l10n.ns('core', 'buttons').value('open')
+                    text: l10n.ns('core', 'buttons').value('open'),
+                    disabled: true
                 }]
             }]
         }]

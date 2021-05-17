@@ -168,20 +168,30 @@ namespace Module.Frontend.TPM.Controllers
                 model.StartDate = ChangeTimeZoneUtil.ResetTimeZone(model.StartDate);
                 model.EndDate = ChangeTimeZoneUtil.ResetTimeZone(model.EndDate);
 
-                Context.SaveChanges();
+                var promoSupportPromoes = Context.Set<PromoSupportPromo>().Where(x => !x.Disabled && x.PromoSupportId == model.Id).Select(x => x.PromoId).ToList();
+                var blockedPromoSupportPromoes = Context.Set<BlockedPromo>().Where(x => !x.Disabled && promoSupportPromoes.Contains(x.PromoId));
 
-                if (patch.GetChangedPropertyNames().Contains("AttachFileName"))
+                if (blockedPromoSupportPromoes.Count() == 0)
                 {
-                    if (!String.IsNullOrEmpty(model.AttachFileName))
+                    Context.SaveChanges();
+
+                    if (patch.GetChangedPropertyNames().Contains("AttachFileName"))
                     {
-                        CreateImportDMPTask(model);
+                        if (!String.IsNullOrEmpty(model.AttachFileName))
+                        {
+                            CreateImportDMPTask(model);
+                        }
+                        else
+                        {
+                            RemoveOldDMPRecords(model.Id);
+                        }
                     }
-                    else
-                    {
-                        RemoveOldDMPRecords(model.Id);
-                    }
+                    return Updated(model);
                 }
-                return Updated(model);
+                else
+                {
+                    return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "Unable to save PromoSupport. Some of PromoSupport Promoes are blocked." }));
+                }
             }
             catch (DbUpdateConcurrencyException)
             {

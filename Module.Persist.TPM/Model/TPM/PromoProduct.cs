@@ -9,13 +9,20 @@ namespace Module.Persist.TPM.Model.TPM
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public System.Guid Id { get; set; }
+
+        [Index("Unique_PromoProduct", 1, IsUnique = true)]
         public bool Disabled { get; set; }
+        [Index("Unique_PromoProduct", 2, IsUnique = true)]
         public DateTimeOffset? DeletedDate { get; set; }
 
+        public DateTimeOffset? CreateDate { get; set; }
+
+        [Index("Unique_PromoProduct", 3, IsUnique = true)]
         public Guid PromoId { get; set; }
         public Guid ProductId { get; set; }
 
         [StringLength(255)]
+        [Index("Unique_PromoProduct", 4, IsUnique = true)]
         public string ZREP { get; set; }
 
         /// <summary>
