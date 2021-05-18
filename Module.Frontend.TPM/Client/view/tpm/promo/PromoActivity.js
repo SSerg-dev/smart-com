@@ -1039,7 +1039,7 @@ Ext.define('App.view.tpm.promo.PromoActivity', {
                             flex: 1,
                             layout: 'anchor',
                             readOnlyCls: 'readOnlyField',
-                            regex: /^([0-9a-zA-ZА-Яа-я]{4,}[,])*[0-9a-zA-ZА-Яа-я]{4,}$/,
+                            regex: /^([0-9a-zA-ZА-Яа-я]{4,}([,][ ]?))*[0-9a-zA-ZА-Яа-я]{4,}$/,
                             regexText: l10n.ns('tpm', 'Promo').value('InvoiceNumberRegex'),
                             labelAlign: 'left',
                             //Для одного уровня с остальными полями

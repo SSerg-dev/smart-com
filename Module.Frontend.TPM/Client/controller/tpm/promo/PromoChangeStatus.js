@@ -242,11 +242,13 @@
         var actAISPIsValid = !(actAISP.value === null);
         var invTot = promoactivity.down('triggerfielddetails[name=SumInvoice]');
         var invTotIsValid = !(invTot.rawValue === "" || invTot.originValue <= 0);
+        var invNum = promoactivity.down('textfield[name=InvoiceNumber]');
+        var invNumIsValid = !(invNum.rawValue === "");
 
-        var isActivityPromoValid = actMIsValid && actAISPIsValid && invTotIsValid;
+        var isActivityPromoValid = actMIsValid && actAISPIsValid && invTotIsValid && invNumIsValid;
 
         if (CheckValid === '' && !isActivityPromoValid) {
-            CheckValid = 'In order to close promo Actual In Store and Invoice Total in Activity must be filled.';
+            CheckValid = 'In order to close promo Actual In Store, Invoice Number and Invoice Total in Activity must be filled.';
         }
 
         if ((CheckValid === '') && (isStep7Complete && isStep8Complete && isStep9Complete) && (isPromoValid && isActivityPromoValid)) {
