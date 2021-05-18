@@ -241,7 +241,7 @@
         var actAISP = promoactivity.down('numberfield[name=ActualInStoreShelfPrice]');
         var actAISPIsValid = !(actAISP.value === null);
         var invTot = promoactivity.down('triggerfielddetails[name=SumInvoice]');
-        var invTotIsValid = !(invTot.rawValue === "");
+        var invTotIsValid = !(invTot.rawValue === "" || invTot.originValue <= 0);
 
         var isActivityPromoValid = actMIsValid && actAISPIsValid && invTotIsValid;
 
