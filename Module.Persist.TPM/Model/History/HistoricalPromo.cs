@@ -243,6 +243,6 @@ namespace Module.Persist.TPM.Model.History {
         public Guid? OperationId { get; set; }
         public bool? IsGrowthAcceleration { get; set; }
         public bool? IsApolloExport { get; set; }
-        public double? InvoiceTotal { get; set; }
+        public double? SumInvoice { get; set; }
     }
 }

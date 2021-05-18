@@ -143,7 +143,7 @@
         { name: 'ActualPromoBaselineBaseTI', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'ActualPromoBaseTI', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'ActualPromoNetNSV', useNull: true, type: 'float', hidden: false, isDefault: false },
-        { name: 'InvoiceTotal', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'SumInvoice', useNull: true, type: 'float', hidden: false, isDefault: false },
 
         //Add TI
         { name: 'ActualAddTIMarketing', useNull: true, type: 'float', hidden: false, isDefault: false },

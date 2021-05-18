@@ -2532,6 +2532,22 @@
     <Compile Include="Migrations\202104071011058_Add_InsertTrigger_To_PromoProduct.Designer.cs">
       <DependentUpon>202104071011058_Add_InsertTrigger_To_PromoProduct.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202105172130229_Rename_InvoiceTotal_To_SumInvoice.cs" />
+    <Compile Include="Migrations\202105172130229_Rename_InvoiceTotal_To_SumInvoice.Designer.cs">
+      <DependentUpon>202105172130229_Rename_InvoiceTotal_To_SumInvoice.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202105172206424_Rename_InROIReport_InvoiceTotal_To_SumInvoice.cs" />
+    <Compile Include="Migrations\202105172206424_Rename_InROIReport_InvoiceTotal_To_SumInvoice.Designer.cs">
+      <DependentUpon>202105172206424_Rename_InROIReport_InvoiceTotal_To_SumInvoice.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202105181208516_Rename_PromoGridView_InvoiceTotal_To_SumInvoice.cs" />
+    <Compile Include="Migrations\202105181208516_Rename_PromoGridView_InvoiceTotal_To_SumInvoice.Designer.cs">
+      <DependentUpon>202105181208516_Rename_PromoGridView_InvoiceTotal_To_SumInvoice.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202105181224589_Rename_Procedures_InvoiceTotal_To_SumInvoice.cs" />
+    <Compile Include="Migrations\202105181224589_Rename_Procedures_InvoiceTotal_To_SumInvoice.Designer.cs">
+      <DependentUpon>202105181224589_Rename_Procedures_InvoiceTotal_To_SumInvoice.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -4873,6 +4889,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202104071011058_Add_InsertTrigger_To_PromoProduct.resx">
       <DependentUpon>202104071011058_Add_InsertTrigger_To_PromoProduct.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202105172130229_Rename_InvoiceTotal_To_SumInvoice.resx">
+      <DependentUpon>202105172130229_Rename_InvoiceTotal_To_SumInvoice.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202105172206424_Rename_InROIReport_InvoiceTotal_To_SumInvoice.resx">
+      <DependentUpon>202105172206424_Rename_InROIReport_InvoiceTotal_To_SumInvoice.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202105181208516_Rename_PromoGridView_InvoiceTotal_To_SumInvoice.resx">
+      <DependentUpon>202105181208516_Rename_PromoGridView_InvoiceTotal_To_SumInvoice.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202105181224589_Rename_Procedures_InvoiceTotal_To_SumInvoice.resx">
+      <DependentUpon>202105181224589_Rename_Procedures_InvoiceTotal_To_SumInvoice.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

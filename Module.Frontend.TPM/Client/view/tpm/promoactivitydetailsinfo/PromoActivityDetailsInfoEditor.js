@@ -61,8 +61,8 @@
         }, {
                 xtype: 'numberfield',
                 format: '0.00',
-                fieldLabel: l10n.ns('tpm', 'PromoProduct').value('InvoiceTotalProduct'),
-                name: 'InvoiceTotalProduct',
+                fieldLabel: l10n.ns('tpm', 'PromoProduct').value('SumInvoiceProduct'),
+                name: 'SumInvoiceProduct',
            }
         ] 
     },

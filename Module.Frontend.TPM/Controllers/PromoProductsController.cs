@@ -363,7 +363,7 @@ namespace Module.Frontend.TPM.Controllers
                     { "actualproductpostpromoeffectlsv", new Column() { Order = 2, Field = "ActualProductPostPromoEffectLSV", Header = "Actual Product Post Promo Effect LSV", Quoting = false }},
                     { "actualproductlsvbycompensation", new Column() { Order = 2, Field = "ActualProductLSVByCompensation", Header = "Actual Product LSV By Compensation", Quoting = false }},
 					{ "actualproductupliftpercent", new Column() { Order = 2, Field = "ActualProductUpliftPercent", Header = "Actual Product Uplift %", Quoting = false }},
-                    { "invoicetotalproduct", new Column() { Order = 2, Field = "InvoiceTotalProduct", Header = "Invoice Total Product", Quoting = false }},
+                    { "suminvoiceproduct", new Column() { Order = 2, Field = "SumInvoiceProduct", Header = "Invoice Total Product", Quoting = false }},
                 };
 
                 additionalColumn = additionalColumn.ToLower();

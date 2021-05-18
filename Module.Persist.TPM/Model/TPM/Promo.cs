@@ -175,7 +175,7 @@ namespace Module.Persist.TPM.Model.TPM
         public double? ActualPromoNSV { get; set; }
         public double? ActualPromoBaseTI { get; set; }
         public double? ActualPromoNetNSV { get; set; }
-        public double? InvoiceTotal { get; set; }
+        public double? SumInvoice { get; set; }
 
         // Add TI 
         public double? PlanAddTIShopperApproved { get; set; }

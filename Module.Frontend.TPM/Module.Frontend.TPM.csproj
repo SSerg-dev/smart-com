@@ -70,8 +70,7 @@
     <Reference Include="ExtJsScaffolding, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.21.05140346\lib\net451\ExtJsScaffolding.dll</HintPath>
     </Reference>
-    <Reference Include="Frontend.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Frontend.Core">
       <HintPath>..\packages\RodMApp.Core.TPM.Frontend.0.1.21.05140346\lib\net451\Frontend.Core.dll</HintPath>
     </Reference>
     <Reference Include="History.ElasticSearch, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -243,8 +242,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="Thinktecture.IdentityModel, Version=3.6.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Thinktecture.IdentityModel">
       <HintPath>..\packages\RodMApp.Core.TPM.Frontend.0.1.21.05140346\lib\net451\Thinktecture.IdentityModel.dll</HintPath>
     </Reference>
     <Reference Include="Utility, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">

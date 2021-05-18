@@ -204,7 +204,7 @@
         'ActualInstoreAssumptionValidate': 'Actual Instore',
         'PlanInstoreAssumptionValidate': 'Plan Instore Assumption',
         'ActualInstoreValidate': 'Instore Assumption Mechanic',
-        'InvoiceTotalValidate': 'Invoice Total',
+        'SumInvoiceValidate': 'Sum Invoice',
         'PlanPromoUpliftPercentError': 'Plan Promo Uplift %',
         'InvoiceNumberValidate': 'Invoice Number',
         'DocumentNumberValidate': 'Document Number',
@@ -755,9 +755,9 @@
 
         'ActualInStoreShelfPrice': 'Actual In Store Shelf Price',
         'PlanInStoreShelfPrice': 'Plan In Store Shelf Price',
-        'InvoiceTotal': 'Invoice total',
+        'SumInvoice': 'Sum Invoice',
         'InvoiceNumber': 'Invoice number',
-        'InvoiceTotalRegex': 'Only numbers and \',\' allowed',
+        'SumInvoiceRegex': 'Only numbers and \',\' allowed',
         'InvoiceNumberRegex': 'Only letters, numbers and \',\' allowed. Each code must be at least 4 symbols long.',
         'DocumentNumber': 'Document number',
         'DocumentNumberRegex': 'Only letters, numbers and \',\' allowed. Each code must be at least 4 symbols long.',
@@ -1499,7 +1499,7 @@
         'BrandsegTechsub_code': 'Brand Seg Tech Sub Code',
         'BrandsegTechsub': 'Brand Seg Tech Sub',
         'ActualProductLSVByCompensation': 'Actual Product LSV By Compensation',
-        'InvoiceTotalProduct': 'Invoice Total Product',
+        'SumInvoiceProduct': 'Sum Invoice Product',
         'TemplateTLC': 'Import TLC template XLSX',
         'AverageMarker': 'Average Marker',
         'PlanProductUpliftPercent': 'Plan Product Uplift Percent',
@@ -1527,7 +1527,7 @@
         'AverageMarker': 'Average Marker',
         'IsCorrection': 'Is Correction',
         'SavePromoMessage': 'Save promo to create new corrections',
-        'InvoiceTotalProduct': 'Invoice Total Product'
+        'SumInvoiceProduct': 'Sum Invoice Product'
     },
 
     'BaseLine': {
@@ -2092,7 +2092,7 @@
         'COGSPercent': 'COGS',
         'PromoTypesName': 'Promo Types Name',
         'IsGrowthAcceleration': 'Growth acceleration',
-        'InvoiceTotal': 'Invoice Total',
+        'SumInvoice': 'Sum Invoice',
 
         'PlanAddTIShopperApproved': 'Plan Add TI Shopper Approved',
         'PlanAddTIShopperCalculated': 'Plan Add TI Shopper Calculated',
@@ -2280,7 +2280,7 @@
         'ActualProductPostPromoEffectLSV': 'Actual Product Post Promo Effect LSV',
         'PlanProductUpliftPercent': 'Plan Product Uplift Percent',
         'ActualProductLSVByCompensation': 'Actual Product LSV By Compensation',
-        'InvoiceTotalProduct': 'Invoice Total Product'
+        'SumInvoiceProduct': 'Sum Invoice Product'
     },
 
     'Logo': {

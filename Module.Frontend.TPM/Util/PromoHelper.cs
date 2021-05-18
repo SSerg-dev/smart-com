@@ -331,15 +331,15 @@ namespace Module.Frontend.TPM.Util
             await context.SaveChangesAsync();
         }
 
-        public static void CalculateInvoiceTotalProduct(DatabaseContext context, Promo promo)
+        public static void CalculateSumInvoiceProduct(DatabaseContext context, Promo promo)
         {
             // Получаем все записи из таблицы PromoProduct для текущего промо.
             var promoProductsForCurrentPromo = context.Set<PromoProduct>()
                 .Where(x => x.PromoId == promo.Id && x.Disabled != true);
 
             double sumActualProductPCQty = 0;
-            // Доля от всего InvoiceTotal
-            double invoiceTotalProductPart = 0;
+            // Доля от всего SumInvoice
+            double SumInvoiceProductPart = 0;
 
             sumActualProductPCQty = Convert.ToDouble(promoProductsForCurrentPromo.Select(p => p.ActualProductPCQty).Sum());
 
@@ -349,20 +349,20 @@ namespace Module.Frontend.TPM.Util
                 // Если ActualProductPCQty нет, то мы не сможем посчитать долю
                 if (promoProduct.ActualProductPCQty.HasValue)
                 {
-                    invoiceTotalProductPart = 0;
+                    SumInvoiceProductPart = 0;
                     // Если показатель ActualProductPCQty == 0, то он составляет 0 процентов от показателя PlanPromoBaselineLSV.
                     if (promoProduct.ActualProductPCQty.Value != 0)
                     {
-                        // Считаем долю ActualProductPCQty от InvoiceTotal.
-                        invoiceTotalProductPart = promoProduct.ActualProductPCQty.Value / sumActualProductPCQty;
+                        // Считаем долю ActualProductPCQty от SumInvoice.
+                        SumInvoiceProductPart = promoProduct.ActualProductPCQty.Value / sumActualProductPCQty;
                     }
-                    // Устанавливаем InvoiceTotalProduct в запись таблицы PromoProduct.
-                    promoProduct.InvoiceTotalProduct = invoiceTotalProductPart * promo.InvoiceTotal;
+                    // Устанавливаем SumInvoiceProduct в запись таблицы PromoProduct.
+                    promoProduct.SumInvoiceProduct = SumInvoiceProductPart * promo.SumInvoice;
 
                 }
                 else
                 {
-                    promoProduct.InvoiceTotalProduct = 0;
+                    promoProduct.SumInvoiceProduct = 0;
                 }
             }
             context.SaveChanges();

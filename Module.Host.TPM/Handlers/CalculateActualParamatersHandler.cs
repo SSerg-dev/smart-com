@@ -60,7 +60,7 @@ namespace Module.Host.TPM.Handlers
                                 //Хак, что бы пересчет не переписывать
                                 ActualProductParametersCalculation.CalculatePromoProductParameters(promo, context, isSupportAdmin: isSupportAdmin, needToSaveChanges: needToSaveChanges);
                                 ActualLSVChangeHandler.CalculateAllActualLSV(promo, context);
-                                PromoHelper.CalculateInvoiceTotalProduct(context, promo);
+                                PromoHelper.CalculateSumInvoiceProduct(context, promo);
                             }
                             // если есть ошибки, они перечисленны через ;
                             errorString = ActualProductParametersCalculation.CalculatePromoProductParameters(promo, context, isSupportAdmin: isSupportAdmin, needToSaveChanges: needToSaveChanges);

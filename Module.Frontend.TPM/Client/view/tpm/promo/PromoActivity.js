@@ -971,11 +971,11 @@ Ext.define('App.view.tpm.promo.PromoActivity', {
                             }
                         }, {
                             xtype: 'triggerfielddetails',
-                            name: 'InvoiceTotal',
-                            fieldLabel: l10n.ns('tpm', 'Promo').value('InvoiceTotal'),
-                            dataIndexes: ['ActualProductPCQty', 'InvoiceTotalProduct'],
+                            name: 'SumInvoice',
+                            fieldLabel: l10n.ns('tpm', 'Promo').value('SumInvoice'),
+                            dataIndexes: ['ActualProductPCQty', 'SumInvoiceProduct'],
                             regex: /^-?\d*\,?\d*$/,
-                            regexText: l10n.ns('tpm', 'Promo').value('InvoiceTotalRegex'),
+                            regexText: l10n.ns('tpm', 'Promo').value('SumInvoiceRegex'),
                             readOnlyCls: 'readOnlyField',
                             flex: 1,
                             layout: 'anchor',

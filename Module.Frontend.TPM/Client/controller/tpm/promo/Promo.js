@@ -2354,8 +2354,8 @@
                 errorTrirdLayer += l10n.ns('tpm', 'text').value('PlanPromoUpliftPercentError') + ", ";
             }
 
-            if (!promoactivity.down('triggerfielddetails[name=InvoiceTotal]').validate()) {
-                errorTrirdLayer += l10n.ns('tpm', 'text').value('InvoiceTotalValidate') + ", ";
+            if (!promoactivity.down('triggerfielddetails[name=SumInvoice]').validate()) {
+                errorTrirdLayer += l10n.ns('tpm', 'text').value('SumInvoiceValidate') + ", ";
             }
 
             if (!promoactivity.down('textfield[name=InvoiceNumber]').validate()) {
@@ -2544,7 +2544,7 @@
         record.data.PlanInStoreShelfPrice = promoActivityStep1.down('numberfield[name=PlanInStoreShelfPrice]').getValue();
 
         record.data.InvoiceNumber = promoActivityStep2.down('textfield[name=InvoiceNumber]').getValue();
-        record.data.InvoiceTotal = promoActivityStep2.down('triggerfielddetails[name=InvoiceTotal]').originValue;
+        record.data.SumInvoice = promoActivityStep2.down('triggerfielddetails[name=SumInvoice]').originValue;
 
         record.data.DocumentNumber = promoActivityStep2.down('textfield[name=DocumentNumber]').getValue();
         record.data.PlanPromoUpliftPercent = promoActivityStep2.down('triggerfielddetails[name=PlanPromoUpliftPercent]').getValue();
@@ -2880,7 +2880,7 @@
 
         var actualInStoreShelfPrice = promoActivityStep1.down('numberfield[name=ActualInStoreShelfPrice]');
         var planInStoreShelfPrice = promoActivityStep1.down('numberfield[name=PlanInStoreShelfPrice]');
-        var invoiceTotal = promoActivityStep2.down('triggerfielddetails[name=InvoiceTotal]');
+        var SumInvoice = promoActivityStep2.down('triggerfielddetails[name=SumInvoice]');
         var invoiceNumber = promoActivityStep2.down('textfield[name=InvoiceNumber]');
         var documentNumber = promoActivityStep2.down('textfield[name=DocumentNumber]');
         var planPromoUpliftPercent = promoActivityStep2.down('[name=PlanPromoUpliftPercent]');
@@ -3377,7 +3377,7 @@
 
             actualInStoreShelfPrice.setValue(record.data.ActualInStoreShelfPrice);
             planInStoreShelfPrice.setValue(record.data.PlanInStoreShelfPrice);
-            invoiceTotal.setValue(record.data.InvoiceTotal);
+            SumInvoice.setValue(record.data.SumInvoice);
             invoiceNumber.setValue(record.data.InvoiceNumber);
             documentNumber.setValue(record.data.DocumentNumber);
 
@@ -5500,7 +5500,7 @@
         window.down('[name=PlanInStoreShelfPrice]').setValue(record.data.PlanInStoreShelfPrice);
 
         // Actual - Activityasa
-        window.down('[name=InvoiceTotal]').setValue(record.data.InvoiceTotal);
+        window.down('[name=SumInvoice]').setValue(record.data.SumInvoice);
         window.down('[name=InvoiceNumber]').setValue(record.data.InvoiceNumber);
         window.down('[name=DocumentNumber]').setValue(record.data.DocumentNumber);
         window.down('[name=ActualPromoUpliftPercent]').setValue(record.data.ActualPromoUpliftPercent);
