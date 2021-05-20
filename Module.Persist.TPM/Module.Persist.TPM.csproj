@@ -2548,6 +2548,10 @@
     <Compile Include="Migrations\202105181224589_Rename_Procedures_InvoiceTotal_To_SumInvoice.Designer.cs">
       <DependentUpon>202105181224589_Rename_Procedures_InvoiceTotal_To_SumInvoice.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202105201331074_Add_ManualInputSumInvoice.cs" />
+    <Compile Include="Migrations\202105201331074_Add_ManualInputSumInvoice.Designer.cs">
+      <DependentUpon>202105201331074_Add_ManualInputSumInvoice.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -4901,6 +4905,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202105181224589_Rename_Procedures_InvoiceTotal_To_SumInvoice.resx">
       <DependentUpon>202105181224589_Rename_Procedures_InvoiceTotal_To_SumInvoice.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202105201331074_Add_ManualInputSumInvoice.resx">
+      <DependentUpon>202105201331074_Add_ManualInputSumInvoice.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

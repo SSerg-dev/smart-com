@@ -60,7 +60,6 @@ namespace Module.Host.TPM.Handlers
                                 //Хак, что бы пересчет не переписывать
                                 ActualProductParametersCalculation.CalculatePromoProductParameters(promo, context, isSupportAdmin: isSupportAdmin, needToSaveChanges: needToSaveChanges);
                                 ActualLSVChangeHandler.CalculateAllActualLSV(promo, context);
-                                PromoHelper.CalculateSumInvoiceProduct(context, promo);
                             }
                             // если есть ошибки, они перечисленны через ;
                             errorString = ActualProductParametersCalculation.CalculatePromoProductParameters(promo, context, isSupportAdmin: isSupportAdmin, needToSaveChanges: needToSaveChanges);
@@ -82,6 +81,7 @@ namespace Module.Host.TPM.Handlers
                         if (promo.LoadFromTLC || promoProductList.Any(x => x.ActualProductPCQty.HasValue))
                         {
                             errorString = ActualPromoParametersCalculation.CalculatePromoParameters(promo, context, needToSaveChanges: needToSaveChanges);
+                            PromoHelper.CalculateSumInvoiceProduct(context, promo);
                         }
 
                         // записываем ошибки если они есть
