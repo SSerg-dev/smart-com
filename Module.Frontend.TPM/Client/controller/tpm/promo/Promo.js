@@ -2544,7 +2544,8 @@
         record.data.PlanInStoreShelfPrice = promoActivityStep1.down('numberfield[name=PlanInStoreShelfPrice]').getValue();
 
         record.data.InvoiceNumber = promoActivityStep2.down('textfield[name=InvoiceNumber]').getValue();
-        record.data.SumInvoice = promoActivityStep2.down('triggerfielddetails[name=SumInvoice]').originValue;
+        record.data.SumInvoice = promoActivityStep2.down('triggerfielddetails[name=SumInvoice]').getValue();
+        record.data.ManualInputSumInvoice = promoActivityStep2.down('#ManualInputSumInvoiceCheckbox').getValue();
 
         record.data.DocumentNumber = promoActivityStep2.down('textfield[name=DocumentNumber]').getValue();
         record.data.PlanPromoUpliftPercent = promoActivityStep2.down('triggerfielddetails[name=PlanPromoUpliftPercent]').getValue();
@@ -2881,6 +2882,7 @@
         var actualInStoreShelfPrice = promoActivityStep1.down('numberfield[name=ActualInStoreShelfPrice]');
         var planInStoreShelfPrice = promoActivityStep1.down('numberfield[name=PlanInStoreShelfPrice]');
         var SumInvoice = promoActivityStep2.down('triggerfielddetails[name=SumInvoice]');
+        var manualInputSumInvoiceCheckbox = promoActivityStep2.down('checkbox[itemId=ManualInputSumInvoiceCheckbox]');
         var invoiceNumber = promoActivityStep2.down('textfield[name=InvoiceNumber]');
         var documentNumber = promoActivityStep2.down('textfield[name=DocumentNumber]');
         var planPromoUpliftPercent = promoActivityStep2.down('[name=PlanPromoUpliftPercent]');
@@ -3378,6 +3380,7 @@
             actualInStoreShelfPrice.setValue(record.data.ActualInStoreShelfPrice);
             planInStoreShelfPrice.setValue(record.data.PlanInStoreShelfPrice);
             SumInvoice.setValue(record.data.SumInvoice);
+            manualInputSumInvoiceCheckbox.setValue(record.data.ManualInputSumInvoice);
             invoiceNumber.setValue(record.data.InvoiceNumber);
             documentNumber.setValue(record.data.DocumentNumber);
 

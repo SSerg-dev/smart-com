@@ -356,6 +356,7 @@ namespace Module.Persist.TPM.Model.TPM
             ActualCOGSPercent = promoToCopy.ActualCOGSPercent;
             IsOnInvoice = promoToCopy.IsOnInvoice;
             IsApolloExport = promoToCopy.IsApolloExport;
+            ManualInputSumInvoice = promoToCopy.ManualInputSumInvoice;
         }
 
         public Promo() {}

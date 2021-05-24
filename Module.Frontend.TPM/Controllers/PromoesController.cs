@@ -649,6 +649,11 @@ namespace Module.Frontend.TPM.Controllers
 
                 if (model.PromoStatus.SystemName.ToLower() == "finished")
                 {
+                    //Сбрасываем значение SumInvoice при снятии галочки
+                    if (promoCopy.ManualInputSumInvoice == true && model.ManualInputSumInvoice == false)
+                    {
+                        model.SumInvoice = null;
+                    }
                     PromoHelper.CalculateSumInvoiceProduct(Context, model);
                     CreateTaskCalculateActual(model.Id);
                 }
@@ -2128,6 +2133,7 @@ namespace Module.Frontend.TPM.Controllers
                     || oldPromo.MarsMechanicId != newPromo.MarsMechanicId
                     || oldPromo.MarsMechanicTypeId != newPromo.MarsMechanicTypeId
                     || oldPromo.SumInvoice != newPromo.SumInvoice
+                    || oldPromo.ManualInputSumInvoice != newPromo.ManualInputSumInvoice
                     || oldPromo.MarsMechanicDiscount != newPromo.MarsMechanicDiscount
                     || oldPromo.StartDate != newPromo.StartDate
                     || oldPromo.EndDate != newPromo.EndDate

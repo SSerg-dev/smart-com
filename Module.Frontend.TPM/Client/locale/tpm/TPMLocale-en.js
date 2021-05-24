@@ -756,7 +756,8 @@
         'ActualInStoreShelfPrice': 'Actual In Store Shelf Price',
         'PlanInStoreShelfPrice': 'Plan In Store Shelf Price',
         'SumInvoice': 'Sum Invoice',
-        'InvoiceNumber': 'Invoice number',
+        'ManualInputSumInvoice': 'Manual Input Sum Invoice',
+        'InvoiceNumber': 'Invoice number', 
         'SumInvoiceRegex': 'Only numbers and \',\' allowed',
         'InvoiceNumberRegex': 'Only letters, numbers and \',\' allowed. Each code must be at least 4 symbols long.',
         'DocumentNumber': 'Document number',
@@ -849,7 +850,7 @@
         'PlanPromoIncrementalNetLSV': 'Plan Promo Incremental Net LSV',
         'BaseClientTreeIds': 'Base ClientTree Ids',
         'PromoStatusSystemName': 'Promo Status System Name',
-        'NeedRecountUplift': 'Need Recount Uplift',
+        'NeedRecountUplift': 'Need Recount Uplift', 
         'LastApprovedDate': 'Last Approved Date',
 
         'IsAutomaticallyApproved': 'Is Automatically Approved',

@@ -970,69 +970,126 @@ Ext.define('App.view.tpm.promo.PromoActivity', {
                                 },
                             }
                         }, {
-                            xtype: 'triggerfielddetails',
-                            name: 'SumInvoice',
-                            fieldLabel: l10n.ns('tpm', 'Promo').value('SumInvoice'),
-                            dataIndexes: ['ActualProductPCQty', 'SumInvoiceProduct'],
-                            regex: /^-?\d*\,?\d*$/,
-                            regexText: l10n.ns('tpm', 'Promo').value('SumInvoiceRegex'),
-                            readOnlyCls: 'readOnlyField',
-                            flex: 1,
-                            layout: 'anchor',
-                            labelAlign: 'left',
-                            //Для одного уровня с остальными полями
-                            labelWidth: 190,
-                            padding: '0 0 0 0',
-                            margin: '5 0 0 0',
-                            isChecked: true,
-                            allowBlank: true,
-                            allowOnlyWhitespace: true,
-                            availableRoleStatusActions: {
-                                SupportAdministrator: App.global.Statuses.AllStatuses,
-                                Administrator: App.global.Statuses.Finished,
-                                FunctionalExpert: App.global.Statuses.Finished,
-                                CMManager: App.global.Statuses.Finished,
-                                CustomerMarketing: App.global.Statuses.Finished,
-                                KeyAccountManager: App.global.Statuses.Finished
-                            },
-                            blockMillion: true, // если true - то преобразовывать в миллионы
-                            originValue: null, // настоящее значение
-                            valueToRaw: function (value) {
-                                var valueToDisplay = null;
-
-                                if (value !== null && value !== undefined) {
-                                    if (!this.blockMillion) {
-                                        this.originValue = value;
-                                        valueToDisplay = value;
-                                    }
-                                    else {
-                                        this.originValue = value;
-                                        valueToDisplay = value / 1000000.0;
-                                    }
-                                }
-
-                                return Ext.util.Format.number(valueToDisplay, '0.00');
-                            },
-                            rawToValue: function () {
-                                var parsedValue = parseFloat(String(this.rawValue).replace(Ext.util.Format.decimalSeparator, "."))
-                                return isNaN(parsedValue) ? null : parsedValue;
-                            },
-                            listenersToAdd: {
-                                change: function (field, newValue, oldValue) {
-                                    if (!this.blockMillion) {
-                                        this.originValue = newValue;
-                                    }
+                                xtype: 'container',
+                                itemId: 'ContainerSumInvoice',
+                                layout: {
+                                    type: 'hbox',
+                                    align: 'top',
+                                    pack: 'center'
                                 },
-                                focus: function (field) {
-                                    this.blockMillion = false;
-                                    field.setValue(this.originValue);
-                                },
-                                blur: function (field) {
-                                    this.blockMillion = true;
-                                    field.setValue(this.originValue);
-                                }
-                            }
-                        }, {
+                                items: [{
+                                    xtype: 'triggerfielddetails',
+                                    name: 'SumInvoice',
+                                    fieldLabel: l10n.ns('tpm', 'Promo').value('SumInvoice'),
+                                    dataIndexes: ['ActualProductPCQty', 'SumInvoiceProduct'],
+                                    regex: /^-?\d*\,?\d*$/,
+                                    regexText: l10n.ns('tpm', 'Promo').value('SumInvoiceRegex'),
+                                    readOnlyCls: 'readOnlyField',
+                                    flex: 1,
+                                    //Для одного уровня с остальными полями
+                                    labelWidth: 190,
+                                    allowBlank: true,
+                                    allowOnlyWhitespace: true,
+                                    availableRoleStatusActions: {
+                                        SupportAdministrator: App.global.Statuses.AllStatuses,
+                                        Administrator: App.global.Statuses.Finished,
+                                        FunctionalExpert: App.global.Statuses.Finished,
+                                        CMManager: App.global.Statuses.Finished,
+                                        CustomerMarketing: App.global.Statuses.Finished,
+                                        KeyAccountManager: App.global.Statuses.Finished
+                                    }
+                                }, {
+                                    xtype: 'checkbox',
+                                    labelSeparator: '',
+                                    itemId: 'ManualInputSumInvoiceCheckbox',
+                                    name: 'ManualInputSumInvoice',
+                                    labelAlign: 'right',
+                                    crudAccess: ['Administrator', 'SupportAdministrator', 'FunctionalExpert', 'DemandPlanning'],
+                                    style: 'margin-left: 10px',
+                                    availableRoleStatusActions: {
+                                        SupportAdministrator: App.global.Statuses.AllStatuses,
+                                        Administrator: App.global.Statuses.Finished,
+                                        FunctionalExpert: App.global.Statuses.Finished,
+                                        CMManager: App.global.Statuses.Finished,
+                                        CustomerMarketing: App.global.Statuses.Finished,
+                                        KeyAccountManager: App.global.Statuses.Finished
+                                    },
+                                    listeners: {
+                                        afterRender: function (me) {
+                                            var readonly = me.up('promoeditorcustom').readOnly;
+                                            var sumInvoiceField = this.up('container').down('triggerfielddetails[name=SumInvoice]');
+                                            var GlyphLock = this.up('container').down('#GlyphLock');
+                                            var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
+                                            var lockAccessCrud = false;
+
+                                            if (sumInvoiceField.crudAccess.indexOf(currentRole) === -1) {
+                                                lockAccessCrud = true;
+                                            }
+                                            if ((!this.value || readonly) || lockAccessCrud) {
+                                                sumInvoiceField.setEditable(false);
+                                                GlyphLock.setGlyph(0xf33e);
+                                                sumInvoiceField.isReadable = false;
+                                                //sumInvoiceField.removeCls('readOnlyField');
+                                            } else {
+                                                sumInvoiceField.setEditable(true);
+                                                GlyphLock.setGlyph(0xf33f);
+                                                sumInvoiceField.isReadable = true;
+                                                //sumInvoiceField.addCls('readOnlyField');
+                                            }
+                                        },
+                                        change: function (checkbox, newValue, oldValue) {
+                                            var sumInvoiceField = this.up('container').down('triggerfielddetails[name=SumInvoice]');
+                                            var GlyphLock = this.up('container').down('#GlyphLock');
+                                            if (newValue) {
+                                                sumInvoiceField.setEditable(true);
+                                                GlyphLock.setGlyph(0xf33f);
+                                                sumInvoiceField.isReadable = true;
+                                                //sumInvoiceField.removeCls('readOnlyField');
+                                            } else {
+                                                sumInvoiceField.setEditable(false);
+                                                GlyphLock.setGlyph(0xf33e);
+                                                sumInvoiceField.isReadable = false;
+                                                //sumInvoiceField.addCls('readOnlyField');
+                                            }
+                                        },
+                                        enable: function (me) {
+                                            var readonly = me.up('promoeditorcustom').readOnly;
+                                            var sumInvoiceField = this.up('container').down('triggerfielddetails[name=SumInvoice]');
+                                            var GlyphLock = this.up('container').down('#GlyphLock');
+                                            if (!this.value || readonly) {
+                                                sumInvoiceField.setEditable(false);
+                                                sumInvoiceField.isReadable = false;
+                                                //sumInvoiceField.removeCls('readOnlyField');
+                                            } else {
+                                                sumInvoiceField.setEditable(true);
+                                                sumInvoiceField.isReadable = true;
+                                                //sumInvoiceField.addCls('readOnlyField');
+                                            }
+                                            GlyphLock.setDisabled(false);
+                                        },
+                                        disable: function (me) {
+                                            var GlyphLock = this.up('container').down('#GlyphLock');
+                                            GlyphLock.setDisabled(true);
+                                        },
+                                    }
+                                }, {
+                                    xtype: 'button',
+                                    itemId: 'GlyphLock',
+                                    cls: 'promo-calculation-activity-uplift-btnglyph',
+                                    glyph: 0xf33e,
+                                    width: 30,
+                                    height: 30,
+                                    availableRoleStatusActions: {
+                                        SupportAdministrator: App.global.Statuses.AllStatuses,
+                                        Administrator: App.global.Statuses.AllStatusesBeforeStartedWithoutDraft,
+                                        FunctionalExpert: App.global.Statuses.AllStatusesBeforeStartedWithoutDraft,
+                                        DemandPlanning: App.global.Statuses.AllStatusesBeforeStartedWithoutDraft,
+                                    },
+                                    availableRoleStatusActionsInOut: {
+
+                                    },
+                                }]
+                            }, {
                             xtype: 'textfield',
                             name: 'InvoiceNumber',
                             fieldLabel: l10n.ns('tpm', 'Promo').value('InvoiceNumber'),
