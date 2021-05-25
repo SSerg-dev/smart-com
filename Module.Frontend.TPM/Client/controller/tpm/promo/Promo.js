@@ -2087,6 +2087,13 @@
             growthAccelerationCheckbox.setReadOnly(true);
         }
 
+        var promoComment = mechanic.down('textarea[name=PromoComment]');
+        var pcReadOnlyStatuses = ['Closed', 'Deleted', 'Cancelled'];
+        if ((pcReadOnlyStatuses.indexOf(promoeditorcustom.promoStatusSystemName) == -1 && promoComment.crudAccess.indexOf(currentRole) != -1)
+            || currentRole == 'SupportAdministrator') {
+            promoComment.setReadOnly(false);
+        }
+
         // редактирование Add TI Approved для не approved
         //var isApproved = ['Approved', 'Planned', 'Started', 'Finished'].includes(promoeditorcustom.promoStatusSystemName);
         var isApproved = record.data.LastApprovedDate != null;
@@ -2650,6 +2657,7 @@
             calculating = isCopy ? false : record.get('Calculating');
         // Кнопки для изменения состояний промо
         var promoActions = Ext.ComponentQuery.query('button[isPromoAction=true]');
+        var mechanic = promoeditorcustom.down('container[name=promo_step3]');
 
         // Для InOut Promo
         promoeditorcustom.isInOutPromo = record.data.InOut;
@@ -2781,7 +2789,6 @@
         var promoClientForm = promoeditorcustom.down('container[name=promo_step1]');
         var promoProductForm = promoeditorcustom.down('container[name=promo_step2]');
 
-        var mechanic = promoeditorcustom.down('container[name=promo_step3]');
         var period = promoeditorcustom.down('container[name=promo_step4]');
         var budgetYear = promoeditorcustom.down('container[name=promo_step5]');
         var event = promoeditorcustom.down('container[name=promo_step6]');
@@ -3155,9 +3162,6 @@
 
         promoComment.setValue(record.data.MechanicComment);
 
-        if (promoComment.crudAccess.indexOf(currentRole) === -1) {
-            promoComment.setReadOnly(true);
-        }
         // period
         // Если запись создаётся копированием, даты берутся из календаря, а не из копируемой записи
         var startDate = isCopy ? record.schedulerContext.start : record.data.StartDate;
@@ -3434,6 +3438,14 @@
             adjustmentSlider.setValue(-record.data.DeviationCoefficient);
             adjustmentNumber.setValue(record.data.DeviationCoefficient);
 
+        }
+
+        var promoComment = mechanic.down('textarea[name=PromoComment]');
+        var pcReadOnlyStatuses = ['Closed', 'Deleted', 'Cancelled'];
+        if (((pcReadOnlyStatuses.indexOf(record.data.PromoStatusSystemName) == -1 && promoComment.crudAccess.indexOf(currentRole) != -1)
+            || currentRole == 'SupportAdministrator')
+            && promoeditorcustom.readOnly == false) {
+            promoComment.setReadOnly(false);
         }
 
         var promoAdjustmentButton = Ext.ComponentQuery.query('button[itemId=btn_promo_step8]')[0];
