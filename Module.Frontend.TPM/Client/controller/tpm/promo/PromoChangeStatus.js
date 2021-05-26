@@ -49,6 +49,9 @@
                 },
                 'promochangestatuswindow #select': {
                     click: this.onApplySelectedPromoStatusClick
+                },
+                'approveclosepromowindow #approveClosePromoButton': {
+                    click: this.onapproveClosePromoButtonClick
                 }
             }
         });
@@ -252,28 +255,56 @@
         }
 
         if ((CheckValid === '') && (isStep7Complete && isStep8Complete && isStep9Complete) && (isPromoValid && isActivityPromoValid)) {
-            var record = promoController.getRecord(window);
+            var ApproveClosePromoWindow = Ext.create('App.view.tpm.promo.ApproveClosePromoWindow');
+            var promoStartDate = window.down('datefield[name=DurationStartDate]').rawValue;
+            var promoEndDate = window.down('datefield[name=DurationEndDate]').rawValue;
 
-            window.previousStatusId = window.statusId;
-            window.statusId = button.statusId;
-            window.promoName = promoController.getPromoName(window);
-
-            var model = promoController.buildPromoModel(window, record);
-
-            // если есть доступ, то через сохранение (нужно протестировать механизмы)
-            var pointsAccess = App.UserInfo.getCurrentRole().AccessPoints;
-            var access = pointsAccess.find(function (element) {
-                return element.Resource == 'Promoes' && element.Action == 'Patch';
-            });
-
-            if (access) {
-                promoController.saveModel(model, window, false, true);
+            var promoDur = promoStartDate + ' - ' + promoEndDate;
+            var shopperTI = window.down('numberfield[name=ActualPromoTIShopper]').value;
+            if (shopperTI != '') {
+                shopperTI = shopperTI.toFixed(2);
+                ApproveClosePromoWindow.down('textfield[name=ShopperTI]').setValue(shopperTI);
             }
-            else {
-                promoController.changeStatusPromo(record.data.Id, button.statusId, window);
-            }
+
+            ApproveClosePromoWindow.down('textfield[name=PromoID]').setValue(window.promoNumber);
+            ApproveClosePromoWindow.down('textfield[name=PromoDuration]').setValue(promoDur);
+
+            ApproveClosePromoWindow.down('#ApproveClosePromoWindowGrid').PromoStartDate = this.StringToDate(promoStartDate);
+            ApproveClosePromoWindow.down('#ApproveClosePromoWindowGrid').PromoEndDate = this.StringToDate(promoEndDate);
+            
+            var store = Ext.getStore('approveclosepromowindowstore');
+            store.proxy.extraParams = { PromoId: window.promoNumber };
+            store.load();
+
+            ApproveClosePromoWindow.show();
         } else {
             App.Notify.pushInfo(CheckValid);
+        }
+    },
+
+    onapproveClosePromoButtonClick: function (button) {
+        var window = Ext.ComponentQuery.query('promoeditorcustom')[0];
+        var btnclose = window.down('#btn_close');
+        var promoController = App.app.getController('tpm.promo.Promo');
+        var record = promoController.getRecord(window);
+
+        window.previousStatusId = window.statusId;
+        window.statusId = btnclose.statusId;
+        window.promoName = promoController.getPromoName(window);
+
+        var model = promoController.buildPromoModel(window, record);
+
+        // если есть доступ, то через сохранение (нужно протестировать механизмы)
+        var pointsAccess = App.UserInfo.getCurrentRole().AccessPoints;
+        var access = pointsAccess.find(function (element) {
+            return element.Resource == 'Promoes' && element.Action == 'Patch';
+        });
+
+        if (access) {
+            promoController.saveModel(model, window, false, true);
+        }
+        else {
+            promoController.changeStatusPromo(record.data.Id, btnclose.statusId, window);
         }
     },
 
@@ -490,5 +521,10 @@
                 App.Notify.pushInfo(l10n.ns('tpm', 'Promo').value('FailToSelectStatus'));
             }
         }
+    },
+
+    StringToDate: function (date) {
+        var parts = date.split(".")
+        return new Date('20'+parts[2], parts[1] - 1, parts[0])
     }
 });

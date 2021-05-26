@@ -174,6 +174,7 @@
         'PreviousDayIncremental': 'Previous Day Incremental',
         'PriceList': 'Price list',
         'CoefficientSI2SO': 'Coefficient SI->SO',
+        'ApproveClosePromoWindow': 'Confirm closing'
     },
 
     'text': {
@@ -204,7 +205,7 @@
         'ActualInstoreAssumptionValidate': 'Actual Instore',
         'PlanInstoreAssumptionValidate': 'Plan Instore Assumption',
         'ActualInstoreValidate': 'Instore Assumption Mechanic',
-        'SumInvoiceValidate': 'Sum Invoice',
+        'SumInvoiceValidate': 'Sum In Invoice',
         'PlanPromoUpliftPercentError': 'Plan Promo Uplift %',
         'InvoiceNumberValidate': 'Invoice Number',
         'DocumentNumberValidate': 'Document Number',
@@ -755,8 +756,8 @@
 
         'ActualInStoreShelfPrice': 'Actual In Store Shelf Price',
         'PlanInStoreShelfPrice': 'Plan In Store Shelf Price',
-        'SumInvoice': 'Sum Invoice',
-        'ManualInputSumInvoice': 'Manual Input Sum Invoice',
+        'SumInvoice': 'Sum In Invoice',
+        'ManualInputSumInvoice': 'Manual Input Sum In Invoice',
         'InvoiceNumber': 'Invoice number', 
         'SumInvoiceRegex': 'Only numbers and \',\' allowed',
         'InvoiceNumberRegex': 'Only letters, numbers and \',\' allowed. Each code must be at least 4 symbols long.',
@@ -1500,7 +1501,7 @@
         'BrandsegTechsub_code': 'Brand Seg Tech Sub Code',
         'BrandsegTechsub': 'Brand Seg Tech Sub',
         'ActualProductLSVByCompensation': 'Actual Product LSV By Compensation',
-        'SumInvoiceProduct': 'Sum Invoice Product',
+        'SumInvoiceProduct': 'Sum In Invoice Product',
         'TemplateTLC': 'Import TLC template XLSX',
         'AverageMarker': 'Average Marker',
         'PlanProductUpliftPercent': 'Plan Product Uplift Percent',
@@ -1528,7 +1529,7 @@
         'AverageMarker': 'Average Marker',
         'IsCorrection': 'Is Correction',
         'SavePromoMessage': 'Save promo to create new corrections',
-        'SumInvoiceProduct': 'Sum Invoice Product'
+        'SumInvoiceProduct': 'Sum In Invoice Product'
     },
 
     'BaseLine': {
@@ -2093,7 +2094,7 @@
         'COGSPercent': 'COGS',
         'PromoTypesName': 'Promo Types Name',
         'IsGrowthAcceleration': 'Growth acceleration',
-        'SumInvoice': 'Sum Invoice',
+        'SumInvoice': 'Sum In Invoice',
 
         'PlanAddTIShopperApproved': 'Plan Add TI Shopper Approved',
         'PlanAddTIShopperCalculated': 'Plan Add TI Shopper Calculated',
@@ -2206,6 +2207,14 @@
         'Detail': 'Detail',
     },
 
+    'ApproveClosePromoWindow': {
+        'Parameters': 'Parameters',
+        'PromoID': 'Promo ID',
+        'PromoDuration': 'Promo Duration',
+        'ShopperTI': 'Shopper TI',
+    },
+    'PromoSupportPromoWithPromoId': { },
+
     'buttons': {
         'ok': 'Apply',
         'cancel': 'Cancel',
@@ -2281,7 +2290,7 @@
         'ActualProductPostPromoEffectLSV': 'Actual Product Post Promo Effect LSV',
         'PlanProductUpliftPercent': 'Plan Product Uplift Percent',
         'ActualProductLSVByCompensation': 'Actual Product LSV By Compensation',
-        'SumInvoiceProduct': 'Sum Invoice Product'
+        'SumInvoiceProduct': 'Sum In Invoice Product'
     },
 
     'Logo': {
