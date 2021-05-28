@@ -54,9 +54,9 @@
     'accessDeniedMessage': 'Access denied ({0}). If this error repeat, contact administrator.',
     'loginConfirmMessage': 'You will be redirected to the main page as user {0}.',
     'SessionExpiredWindowTitle': 'Session is expired',
-    'SessionExpiredMessage': 'Session timed out. Application will be reloaded',
-    'SignalRConnectionWasLost': 'Connection was lost.',
-    'SignalRConnectionWasLostMessage': 'Check your internet connection. Application will be reloaded.',
+    'SessionExpiredMessage': 'Due to inactivity your session has expired. Application will be reloaded.',
+    'SignalRConnectionWasLost': 'Session timed outt.',
+    'SignalRConnectionWasLostMessage': 'Session timed out. Application will be reloaded.',
 
     'customValidators': {
         'StartDateFinishDateOrder': 'Stary date must be less then end date',
