@@ -300,6 +300,7 @@
             return element.Resource == 'Promoes' && element.Action == 'Patch';
         });
 
+        button.up('window').close();
         if (access) {
             promoController.saveModel(model, window, false, true);
         }

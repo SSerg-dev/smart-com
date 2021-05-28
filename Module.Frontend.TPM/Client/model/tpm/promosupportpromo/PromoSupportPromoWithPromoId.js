@@ -11,8 +11,8 @@
         { name: 'Name', type: 'string', hidden: false, isDefault: true, mapping: 'Promo.Name'  },
         { name: 'BrandTechName', type: 'string', mapping: 'Promo.BrandTech.BrandsegTechsub', defaultFilterConfig: { valueField: 'BrandsegTechsub' }, breezeEntityType: 'BrandTech', hidden: false, isDefault: true },
         { name: 'EventName', type: 'string', hidden: false, isDefault: true, mapping: 'Promo.EventName' },
-        { name: 'StartDate', useNull: true, type: 'date', hidden: false, isDefault: true, mapping: 'Promo.StartDate', timeZone: +3, convert: dateConvertTimeZone },
-        { name: 'EndDate', useNull: true, type: 'date', hidden: false, isDefault: true, mapping: 'Promo.EndDate', timeZone: +3, convert: dateConvertTimeZone },
+        { name: 'StartDate', useNull: true, type: 'date', hidden: false, isDefault: true, mapping: 'PromoSupport.StartDate', timeZone: +3, convert: dateConvertTimeZone },
+        { name: 'EndDate', useNull: true, type: 'date', hidden: false, isDefault: true, mapping: 'PromoSupport.EndDate', timeZone: +3, convert: dateConvertTimeZone },
         { name: 'PromoStatusName', type: 'string', mapping: 'Promo.PromoStatus.Name', defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'PromoStatus', hidden: false, isDefault: true },
 
         { name: 'SupportNumber', isDefault: false, mapping: 'PromoSupport.Number', hidden: true },
