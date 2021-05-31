@@ -2213,7 +2213,15 @@
         'PromoDuration': 'Promo Duration',
         'ShopperTI': 'Shopper TI',
     },
-    'PromoSupportPromoWithPromoId': { },
+    'PromoSupportPromoWithPromoId': {
+        'Number': 'Number',
+        'PromoStatusName': 'PromoStatusName',
+        'EndDate': 'EndDate',
+        'StartDate': 'StartDate',
+        'EventName': 'EventName',
+        'BrandTechName': 'BrandTechName',
+        'Name': 'Name'
+    },
 
     'buttons': {
         'ok': 'Apply',
