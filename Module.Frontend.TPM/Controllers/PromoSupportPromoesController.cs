@@ -72,6 +72,17 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
+        [EnableQuery(MaxNodeCount = int.MaxValue, MaxExpansionDepth = 3)]
+        public IQueryable<PromoSupportPromo> GetPromoSupportPromoes([FromODataUri] string PromoId)
+        {
+            var promosupports = GetConstraintedQuery();
+            var promoNumber = int.Parse(PromoId);
+            var promo = Context.Set<Promo>().Where(x => x.Number == promoNumber).FirstOrDefault();
+            var result = promosupports.Where(x => x.PromoId == promo.Id);
+            return result;
+        }
+
+        [ClaimsAuthorize]
         [HttpPost]
         public IQueryable<PromoSupportPromo> GetFilteredData(ODataQueryOptions<PromoSupportPromo> options)
         {

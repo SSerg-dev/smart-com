@@ -260,6 +260,7 @@
     <Content Include="Client\controller\tpm\ratishopper\HistoricalRATIShopper.js" />
     <Content Include="Client\controller\tpm\clienttreebrandtech\HistoricalClientTreeBrandTech.js" />
     <Content Include="Client\controller\tpm\rollingvolume\RollingVolume.js" />
+    <Content Include="Client\model\tpm\promosupportpromo\PromoSupportPromoWithPromoId.js" />
     <Content Include="Client\model\tpm\ratishopper\RATIShopper.js" />
     <Content Include="Client\model\tpm\ratishopper\DeletedRATIshopper.js" />
     <Content Include="Client\model\tpm\ratishopper\HistoricalRATIShopper.js" />
@@ -270,6 +271,7 @@
     <Content Include="Client\model\tpm\mechanictype\MechanicTypeForClient.js" />
     <Content Include="Client\model\tpm\rollingvolume\RollingVolume.js" />
     <Content Include="Client\util\MinHeightColumn.js" />
+    <Content Include="Client\view\tpm\promo\ApproveClosePromoWindow.js" />
     <Content Include="Client\view\tpm\ratishopper\RATIShopper.js" />
     <Content Include="Client\view\tpm\ratishopper\RATIShopperEditor.js" />
     <Content Include="Client\view\tpm\ratishopper\DeletedRATIShopper.js" />

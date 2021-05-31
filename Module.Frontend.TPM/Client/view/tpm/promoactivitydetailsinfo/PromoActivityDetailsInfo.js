@@ -217,8 +217,8 @@
                     }
                 }
             }, {
-                text: l10n.ns('tpm', 'PromoProduct').value('InvoiceTotalProduct'),
-                dataIndex: 'InvoiceTotalProduct',
+                text: l10n.ns('tpm', 'PromoProduct').value('SumInvoiceProduct'),
+                dataIndex: 'SumInvoiceProduct',
                 hidden: true,
                 extraOperator: 'gte_lt',
                 additionalDivision: 1000000.0,

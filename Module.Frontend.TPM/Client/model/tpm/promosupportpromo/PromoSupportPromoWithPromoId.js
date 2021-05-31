@@ -1,0 +1,36 @@
+﻿Ext.define('App.model.tpm.promosupportpromo.PromoSupportPromoWithPromoId', {
+    extend: 'Ext.data.Model',
+    idProperty: 'Id',
+    breezeEntityType: 'PromoSupportPromo',
+    fields: [
+        { name: 'Id', hidden: true },
+        { name: 'PromoId', hidden: true },
+        { name: 'PromoSupportId', hidden: true },
+
+        { name: 'Number', type: 'int', hidden: false, isDefault: true, mapping: 'Promo.Number', isKey: true },
+        { name: 'Name', type: 'string', hidden: false, isDefault: true, mapping: 'Promo.Name'  },
+        { name: 'BrandTechName', type: 'string', mapping: 'Promo.BrandTech.BrandsegTechsub', defaultFilterConfig: { valueField: 'BrandsegTechsub' }, breezeEntityType: 'BrandTech', hidden: false, isDefault: true },
+        { name: 'EventName', type: 'string', hidden: false, isDefault: true, mapping: 'Promo.EventName' },
+        { name: 'StartDate', useNull: true, type: 'date', hidden: false, isDefault: true, mapping: 'PromoSupport.StartDate', timeZone: +3, convert: dateConvertTimeZone },
+        { name: 'EndDate', useNull: true, type: 'date', hidden: false, isDefault: true, mapping: 'PromoSupport.EndDate', timeZone: +3, convert: dateConvertTimeZone },
+        { name: 'PromoStatusName', type: 'string', mapping: 'Promo.PromoStatus.Name', defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'PromoStatus', hidden: false, isDefault: true },
+
+        { name: 'SupportNumber', isDefault: false, mapping: 'PromoSupport.Number', hidden: true },
+        { name: 'BudgetSubItemName', isDefault: false, mapping: 'PromoSupport.BudgetSubItem.Name', hidden: true },
+        { name: 'BudgetItemName', isDefault: false, mapping: 'PromoSupport.BudgetSubItem.BudgetItem.Name', hidden: true },
+
+        { name: 'PlanCalculation', type: 'float', isDefault: false, hidden: true },
+    ],
+    proxy: {
+        type: 'breeze',
+        resourceName: 'PromoSupportPromoes',
+        reader: {
+            type: 'json',
+            totalProperty: 'inlineCount',
+            root: 'results'
+        },
+        extraParams: {
+            PromoId: 0
+        }
+    }
+});

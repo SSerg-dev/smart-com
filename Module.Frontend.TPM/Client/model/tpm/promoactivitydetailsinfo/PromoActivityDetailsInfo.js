@@ -40,7 +40,7 @@
         { name: 'ActualProductPostPromoEffectQty', type: 'float', hidden: false, isDefault: false, useNull: true },
         { name: 'PlanProductPostPromoEffectQty', type: 'float', hidden: false, isDefault: false, useNull: true },
         { name: 'ActualProductLSVByCompensation', type: 'float', hidden: false, isDefault: false, useNull: true },
-        { name: 'InvoiceTotalProduct', type: 'float', hidden: false, isDefault: false, useNull: true },
+        { name: 'SumInvoiceProduct', type: 'float', hidden: false, isDefault: false, useNull: true },
 
         { name: 'UOM_PC2Case', type: 'int', hidden: true, mapping: 'Product.UOM_PC2Case' }
     ],
