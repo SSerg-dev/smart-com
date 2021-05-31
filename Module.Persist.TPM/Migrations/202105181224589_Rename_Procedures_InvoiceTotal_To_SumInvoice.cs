@@ -9,13 +9,17 @@ namespace Module.Persist.TPM.Migrations
         {
 			Sql(sqlstring);
         }
-        
-        public override void Down()
+
+		public override void Down()
         {
         }
 
         private string sqlstring =
 		@"
+		EXEC sp_rename 'Jupiter.TEMP_PROMO.InvoiceTotal', 'SumInvoice', 'COLUMN';
+		GO
+		EXEC sp_rename 'Jupiter.TEMP_PROMOPRODUCT.InvoiceTotalProduct', 'SumInvoiceProduct', 'COLUMN';
+		GO
 		CREATE OR ALTER PROCEDURE [Jupiter].[AddNewPromoProduct]
 				AS
 				BEGIN
