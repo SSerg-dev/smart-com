@@ -4805,11 +4805,11 @@ x-slider-inner:before {
     }
 
     .default-gridpanel .bad-support {
-        background-color: #ff1e1e;
+        background-color: #fd7e7e;
     }
 
         .default-gridpanel .bad-support .x-grid-cell {
-            background-color: #ff1e1e;
+            background-color: #fd7e7e;
             color: white;
         }
 
