@@ -982,13 +982,14 @@ Ext.define('App.view.tpm.promo.PromoActivity', {
                                     name: 'SumInvoice',
                                     fieldLabel: l10n.ns('tpm', 'Promo').value('SumInvoice'),
                                     dataIndexes: ['ActualProductPCQty', 'SumInvoiceProduct'],
-                                    regex: /^-?\d*\,?\d*$/,
+                                    regex: /^-?(\d|\s)*\,?(\d|\s)*$/,
                                     regexText: l10n.ns('tpm', 'Promo').value('SumInvoiceRegex'),
                                     readOnlyCls: 'readOnlyField',
                                     flex: 1,
                                     //Для одного уровня с остальными полями
                                     labelWidth: 190,
                                     allowBlank: true,
+                                    clicked: false,
                                     allowOnlyWhitespace: true,
                                     availableRoleStatusActions: {
                                         SupportAdministrator: App.global.Statuses.AllStatuses,
@@ -997,6 +998,35 @@ Ext.define('App.view.tpm.promo.PromoActivity', {
                                         CMManager: App.global.Statuses.Finished,
                                         CustomerMarketing: App.global.Statuses.Finished,
                                         KeyAccountManager: App.global.Statuses.Finished
+                                    },
+                                    valueToRaw: function (value) {
+                                        var result;
+                                        if (value == undefined || value == null) {
+                                            result = '';
+                                        }
+                                        else {
+                                            if (this.clicked) {
+                                                result = String(value).replace('.', ',');
+                                            } else {
+                                                String(value).replace(/\s/g, '');
+                                                result = value.toLocaleString('ru-RU');
+                                            }
+                                        }
+                                        return result;
+                                    },
+                                    rawToValue: function () {
+                                        var parsedValue = parseFloat(String(this.rawValue).replace(Ext.util.Format.decimalSeparator, ".").replace(/\s/g,''))
+                                        return isNaN(parsedValue) ? null : parsedValue;
+                                    },
+                                    listenersToAdd: {
+                                        focus: function (field) {
+                                            this.clicked = true;
+                                            field.setValue(this.value);
+                                        },
+                                        blur: function (field) {
+                                            this.clicked = false;
+                                            field.setValue(this.value);
+                                        },
                                     }
                                 }, {
                                     xtype: 'checkbox',
