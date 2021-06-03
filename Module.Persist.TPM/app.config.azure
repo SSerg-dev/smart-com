@@ -35,7 +35,7 @@
     <!--Modules-->
     <add key="UseKeyVault" value="true" />
     <add key="KeyVaultUseAD" value="Pass" />
-    <add key="KeyVaultUrl" value="jupiterdevkv" />
+    <add key="KeyVaultUrl" value="jupiterdevakv" />
     <add key="NotificationService" value="LogicApp" />
     <add key="HistoryModule" value="MongoDB" />
     <add key="HANDLER_LOG_TYPE" value="Azure" />
