@@ -1,31 +1,11 @@
-﻿
-Ext.create('Ext.data.Store', {
-    storeId: 'simpsonsStore',
-    fields: ['name', 'email', 'phone'],
-    data: {
-        'items': [
-            { 'name': 'Lisa', "email": "lisa@simpsons.com", "phone": "555-111-1224" },
-            { 'name': 'Bart', "email": "bart@simpsons.com", "phone": "555-222-1234" },
-            { 'name': 'Homer', "email": "home@simpsons.com", "phone": "555-222-1244" },
-            { 'name': 'Marge', "email": "marge@simpsons.com", "phone": "555-222-1254" }
-        ]
-    },
-    proxy: {
-        type: 'memory',
-        reader: {
-            type: 'json',
-            root: 'items'
-        }
-    }
-});
-Ext.define('App.view.tpm.promo.ApproveClosePromoWindow', {
+﻿Ext.define('App.view.tpm.promo.ApproveClosePromoWindow', {
     extend: 'App.view.core.base.BaseModalWindow',
     alias: 'widget.approveclosepromowindow',
     title: l10n.ns('tpm', 'compositePanelTitles').value('ApproveClosePromoWindow'),
-    //cls: 'promo-activity-details-window',
+    cls: 'promo-approve-close-window',
 
-    width: 600,
-    height: 450,
+    width: 675,
+    height: 455,
     resizable: false,
 
     items: [{
@@ -36,7 +16,7 @@ Ext.define('App.view.tpm.promo.ApproveClosePromoWindow', {
         padding: '5 5 5 5',
         items: [{
             xtype: 'container',
-            cls: 'custom-promo-panel-container',
+            cls: 'approve-close-promo-window-container',
             layout: 'auto',
             items: [{
                 xtype: 'fieldset',
@@ -78,13 +58,13 @@ Ext.define('App.view.tpm.promo.ApproveClosePromoWindow', {
             }]
         }, {
             xtype: 'container',
-            cls: 'custom-promo-panel-container',
+            cls: 'approve-close-promo-window-container',
             layout: 'auto',
             items: [{//7569
                 xtype: 'gridpanel',
                 cls: 'default-gridpanel',
                 id: 'ApproveClosePromoWindowGrid',
-                title: l10n.ns('tpm', 'ApproveClosePromoWindow').value('ShopperTI'),
+                title: l10n.ns('tpm', 'ApproveClosePromoWindow').value('MarketingLinked'),
                 store: {
                     type: 'directorystore',
                     model: 'App.model.tpm.promosupportpromo.PromoSupportPromoWithPromoId',
@@ -107,10 +87,10 @@ Ext.define('App.view.tpm.promo.ApproveClosePromoWindow', {
                     }],
                 },
                 columns: [
-                    { text: 'Number', dataIndex: 'SupportNumber', flex: 1 },
-                    { text: 'Support Type', dataIndex: 'BudgetItemName', flex: 1  },
-                    { text: 'Start Date', dataIndex: 'StartDate', xtype: 'datecolumn', flex: 1  },
-                    { text: 'End Date', dataIndex: 'EndDate', xtype: 'datecolumn', flex: 1  }
+                    { text: 'Number', dataIndex: 'SupportNumber', flex: 1, text: l10n.ns('tpm', 'PromoSupportPromoWithPromoId').value('Number') },
+                    { text: 'Support Type', dataIndex: 'BudgetItemName', flex: 1 },
+                    { text: 'Start Date', dataIndex: 'StartDate', xtype: 'datecolumn', flex: 1 },
+                    { text: 'End Date', dataIndex: 'EndDate', xtype: 'datecolumn', flex: 1 }
                 ],
 
                 viewConfig: {
@@ -132,17 +112,17 @@ Ext.define('App.view.tpm.promo.ApproveClosePromoWindow', {
                 }
             }]
         }]
-     }],
+    }],
 
     buttons: [{
-        text: l10n.ns('tpm', 'button').value('Close'),
+        xtype: 'tbspacer',
+        flex: 10
+    }, {
+        text: l10n.ns('tpm', 'customtoptoolbar').value('cancel'),
         action: 'cancel',
         handler: function () {
             this.up('window').close();
         }
-    }, {
-        xtype: 'tbspacer',
-        flex: 10
     }, {
         text: l10n.ns('tpm', 'customtoptoolbar').value('approve'),
         itemId: 'approveClosePromoButton',

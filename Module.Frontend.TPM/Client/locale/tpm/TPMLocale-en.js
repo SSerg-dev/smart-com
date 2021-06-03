@@ -2212,9 +2212,10 @@
         'PromoID': 'Promo ID',
         'PromoDuration': 'Promo Duration',
         'ShopperTI': 'Shopper TI',
+        'MarketingLinked': 'Marketing Linked'
     },
     'PromoSupportPromoWithPromoId': {
-        'Number': 'Number',
+        'Number': 'Support ID',
         'PromoStatusName': 'PromoStatusName',
         'EndDate': 'EndDate',
         'StartDate': 'StartDate',
