@@ -125,6 +125,7 @@
         }
     }, {
         text: l10n.ns('tpm', 'customtoptoolbar').value('approve'),
+        glyph: 0xf12c,
         itemId: 'approveClosePromoButton',
         style: { "background-color": "#66BB6A" },
     }]
