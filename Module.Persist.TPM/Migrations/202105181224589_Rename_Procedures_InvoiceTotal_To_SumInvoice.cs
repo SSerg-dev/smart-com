@@ -20,6 +20,9 @@ namespace Module.Persist.TPM.Migrations
 		GO
 		EXEC sp_rename 'Jupiter.TEMP_PROMOPRODUCT.InvoiceTotalProduct', 'SumInvoiceProduct', 'COLUMN';
 		GO
+		ALTER TABLE [Jupiter].[TEMP_PROMO]
+		ADD ManualInputSumInvoice bit;
+		GO
 		CREATE OR ALTER PROCEDURE [Jupiter].[AddNewPromoProduct]
 				AS
 				BEGIN
