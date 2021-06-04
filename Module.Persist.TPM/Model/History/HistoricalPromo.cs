@@ -244,6 +244,7 @@ namespace Module.Persist.TPM.Model.History {
         public bool? IsGrowthAcceleration { get; set; }
         public bool? IsApolloExport { get; set; }
         public double? SumInvoice { get; set; }
+        public double? InvoiceTotal { get; set; }
         public bool? ManualInputSumInvoice { get; set; }
     }
 }

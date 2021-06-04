@@ -262,7 +262,7 @@
             var promoDur = promoStartDate + ' - ' + promoEndDate;
             var shopperTI = window.down('numberfield[name=ActualPromoTIShopper]').value;
             if (shopperTI != '') {
-                shopperTI = shopperTI.toFixed(2);
+                shopperTI = Number(shopperTI.toFixed(2)).toLocaleString('ru-RU');
                 ApproveClosePromoWindow.down('textfield[name=ShopperTI]').setValue(shopperTI);
             }
 

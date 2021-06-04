@@ -129,6 +129,7 @@
                     { xtype: 'singlelinedisplayfield', name: 'ColorDisplayName', fieldLabel: l10n.ns('tpm', 'Promo').value('ColorDisplayName'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'InvoiceNumber', fieldLabel: l10n.ns('tpm', 'Promo').value('InvoiceNumber'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'SumInvoice', fieldLabel: l10n.ns('tpm', 'Promo').value('SumInvoice'), hidden: true },
+                    { xtype: 'singlelinedisplayfield', name: 'InvoiceTotal', fieldLabel: l10n.ns('tpm', 'Promo').value('SumInvoice'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'IsOnInvoice', fieldLabel: l10n.ns('tpm', 'Promo').value('InvoiceType'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'ManualInputSumInvoice', fieldLabel: l10n.ns('tpm', 'Promo').value('ManualInputSumInvoice'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'DocumentNumber', fieldLabel: l10n.ns('tpm', 'Promo').value('DocumentNumber'), hidden: true },

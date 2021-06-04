@@ -4801,13 +4801,76 @@ x-slider-inner:before {
 
     .default-gridpanel .x-grid-table {
         pointer-events: none;
+        border-right: 1px solid #ccc !important;
     }
 
     .default-gridpanel .bad-support {
-        background-color: #ff1e1e;
+        background-color: #fd7e7e;
     }
 
         .default-gridpanel .bad-support .x-grid-cell {
-            background-color: #ff1e1e;
+            background-color: #fd7e7e;
             color: white;
         }
+
+    .default-gridpanel .x-grid-header-ct {
+        margin: 5px 2px 0px 2px;
+        border-bottom: none !important;
+        border-left: 1px solid #ccc !important;
+        border-right: 1px solid #ccc !important;
+        border-top: 1px solid #ccc !important;
+    }
+
+    .default-gridpanel .x-grid-body {
+        margin: 0px 2px 5px 2px;
+        border-right: 1px solid #ccc !important;
+        border-bottom: 1px solid #ccc !important;
+    }
+
+.promo-approve-close-window {
+}
+
+    .promo-approve-close-window .x-field-label-cell,
+    .promo-approve-close-window .x-grid-cell {
+        border-left: 1px solid #ccc;
+        border-right: 0px solid #ccc;
+        border-top: 1px solid #ccc;
+    }
+
+    .promo-approve-close-window .x-field-label-cell {
+        border-bottom: 1px solid #ccc;
+    }
+
+    .promo-approve-close-window .x-grid-cell {
+        border-bottom: 0px solid #ccc;
+    }
+
+    .promo-approve-close-window .approve-close-promo-window-container {
+        background-color: white;
+        padding: 0px 5px 5px 5px;
+    }
+
+    .promo-approve-close-window .x-fieldset-header-text {
+        color: #697278;
+    }
+
+    .promo-approve-close-window .x-panel-default,
+    .promo-approve-close-window .x-form-item-body {
+        border: 1px solid #ccc;
+    } 
+
+    .promo-approve-close-window .x-form-text{
+        border: none
+    }
+
+    .promo-approve-close-window .x-form-item-label {
+        margin-left: 5px;
+    }
+
+    .promo-approve-close-window .x-fieldset {
+        margin: 5px 0px 0px 0px !important;
+    }
+
+    .promo-approve-close-window .x-btn-glyph {
+        color: #fff;
+    }
