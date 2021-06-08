@@ -164,7 +164,7 @@ var activityChangeListener = function (field, newValue, oldValue) {
 
     for (i = 0; i < fields1.length; i++) {
         if (!(promoIsInOut && (fields1[i].name === 'ActualPromoUpliftPercent' || fields1[i].name === 'ActualPromoBaselineLSV'))) {
-            if ((fields1[i].getValue() === null || !fields1[i].isValid()) && fields1[i].isChecked === true) {
+            if (((fields1[i].getValue === 'function' && fields1[i].getValue() === null) || (fields1[i].isValid === 'function' && !fields1[i].isValid())) && fields1[i].isChecked === true) {
                 status = false;
                 break;
             }
