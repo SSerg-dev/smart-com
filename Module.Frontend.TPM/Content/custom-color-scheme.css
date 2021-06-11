@@ -844,6 +844,11 @@ pre.code {
             background-color: #953333;
         }
 
+.custom-top-panel-calculating,
+.custom-top-panel-calculating .custom-top-panel-item {
+    background-color: #b53333;
+}
+
 .errorinside {
     background-color: #b53333 !important;
 }

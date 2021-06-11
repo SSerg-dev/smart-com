@@ -1877,6 +1877,7 @@
 
     // Перевод формы промо в режим редактирования
     setEditingAfterSetLoading: function (button) {
+        Ext.suspendLayouts();
         var me = this,
             promoeditorcustom = button.up('window');
         promoeditorcustom.readOnly = false;
@@ -2103,6 +2104,7 @@
 
         me.checkLoadingComponents();
         promoeditorcustom.setLoading(false);
+        Ext.resumeLayouts(true);
     },
 
     blockStartedPromoDateChange: function (promoeditorcustom, me) {
@@ -2653,6 +2655,7 @@
 
     //вызывается отложенно из fillPromoForm для корректной отрисовки лоадера
     fillPromoFormAfterSetLoading: function (promoeditorcustom, record, readOnly, isCopy, parentWidget) {
+        Ext.suspendLayouts();
         var me = this,
             calculating = isCopy ? false : record.get('Calculating');
         // Кнопки для изменения состояний промо
@@ -3456,8 +3459,6 @@
 
         // Определяем доступные действия
         me.defineAllowedActions(promoeditorcustom, promoActions, record.data.PromoStatusSystemName);
-        if (!promoeditorcustom.isVisible())
-            promoeditorcustom.show();
 
         //если производится расчет данного промо, то необходимо сделать соотвествующие визуальные изменения окна: 
         //цвет хедера меняется на красный, кнопка Редактировать - disable = true, появляется кнопка Show Log, заблокировать кнопки смены статусов
@@ -3467,20 +3468,13 @@
         if (calculating) {
             //planPromoUpliftPercent.up('container').setReadable(true);
             //planPromoUpliftPercent.changeEditable(false);
-            toolbar.items.items.forEach(function (item, i, arr) {
-                item.el.setStyle('backgroundColor', '#B53333');
-                //ненужный код, но и не проблеммный
-                if (item.xtype == 'button' && ['btn_publish', 'btn_undoPublish', 'btn_sendForApproval', 'btn_reject', 'btn_backToDraftPublished', 'btn_approve', 'btn_cancel', 'btn_plan', 'btn_close', 'btn_backToFinished'].indexOf(item.itemId) > -1) {
-                    item.setDisabled(true);
-                }
-            });
+            toolbar.addCls('custom-top-panel-calculating');
             toolbarbutton.items.items.forEach(function (item, i, arr) {
                 //  item.el.setStyle('backgroundColor', '#B53333');
                 if (item.xtype == 'button' && ['btn_publish', 'btn_undoPublish', 'btn_sendForApproval', 'btn_reject', 'btn_backToDraftPublished', 'btn_approve', 'btn_cancel', 'btn_plan', 'btn_close', 'btn_backToFinished'].indexOf(item.itemId) > -1) {
                     item.setDisabled(true);
                 }
             });
-            toolbar.el.setStyle('backgroundColor', '#B53333');
 
             var label = toolbar.down('label[name=promoName]');
             if (label) {
@@ -3513,9 +3507,12 @@
             promoeditorcustom.down('#btn_recalculatePromo').hide();
         }
 
+        Ext.resumeLayouts(true);
         this.checkLogForErrors(record.getId());
 
         this.checkLoadingComponents();
+        if (!promoeditorcustom.isVisible())
+            promoeditorcustom.show();
         promoeditorcustom.setLoading(false);
     },
 
@@ -5279,14 +5276,7 @@
 
         rec.set('Calculating', true);
 
-        toolbar.items.items.forEach(function (item, i, arr) {
-            item.el.setStyle('backgroundColor', '#B53333');
-            if (item.xtype == 'button' && ['btn_publish', 'btn_undoPublish', 'btn_sendForApproval', 'btn_reject', 'btn_backToDraftPublished', 'btn_approve', 'btn_cancel', 'btn_plan', 'btn_close', 'btn_backToFinished'].indexOf(item.itemId) > -1) {
-                item.setDisabled(true);
-            }
-        });
-
-        toolbar.el.setStyle('backgroundColor', '#B53333');
+        toolbar.addCls('custom-top-panel-calculating');
 
         var label = toolbar.down('label[name=promoName]');
         if (label) {
