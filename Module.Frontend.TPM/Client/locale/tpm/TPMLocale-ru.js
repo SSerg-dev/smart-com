@@ -183,7 +183,7 @@
         'dateOfChange': 'Дата изменения',
         'selectpromostatuswindow': 'Выбор статуса промо',
         'PlanPromoUpliftPercentError': 'Plan Promo Uplift %',
-        'InvoiceTotalValidate': 'Invoice Total'
+        'SumInvoiceValidate': 'Sum Invoice'
     },
 
 	'DeleteText': {
@@ -670,8 +670,8 @@
 
 		'PlanInStoreShelfPrice': 'In Store Shelf Price',
         'ActualInStoreShelfPrice': 'In Store Shelf Price',
-        'InvoiceTotal': 'Invoice total',
-        'InvoiceTotalRegex': 'Только цифры и \',\' разрешено вводить',
+        'SumInvoice': 'Sum Invoice',
+        'SumInvoiceRegex': 'Только цифры и \',\' разрешено вводить',
 		'InvoiceNumber': 'Invoice number',
 		'InvoiceNumberRegex': 'Only letters, numbers and \',\' allowed. Each code must be at least 4 symbols long.',
 		'DocumentNumber': 'Document number',
@@ -1206,7 +1206,7 @@
         'PlanProductPostPromoEffectQtyW2': 'Plan Product Post Promo Effect QTY W2',
         'ActualProductPostPromoEffectQtyW1': 'Actual Product Post Promo Effect QTY W1',
         'ActualProductPostPromoEffectQtyW2': 'Actual Product Post Promo Effect QTY W2',
-        'InvoiceTotalProduct': 'Invoice Total Product',
+        'SumInvoiceProduct': 'Sum Invoice Product',
     },
     'HistoricalPromoProduct': ['.tpm.PromoProduct', '.core.BaseHistoryEntity'],
     'DeletedPromoProduct': ['.tpm.PromoProduct', '.core.BaseDeletedEntity'],

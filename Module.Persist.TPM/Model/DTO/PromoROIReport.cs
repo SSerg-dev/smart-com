@@ -173,7 +173,7 @@ namespace Module.Persist.TPM.Model.DTO
         public string BlockInformation { get; set; }
         public bool IsGrowthAcceleration { get; set; }
         public string PromoTypesName { get; set; }
-        public double? InvoiceTotal { get; set; }
+        public double? SumInvoice { get; set; }
 
         public double? PlanAddTIShopperApproved { get; set; }
         public double? PlanAddTIShopperCalculated { get; set; }

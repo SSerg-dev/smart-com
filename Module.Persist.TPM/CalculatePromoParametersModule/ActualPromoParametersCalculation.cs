@@ -138,9 +138,11 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         promo.ActualPromoLSV = 0;
                     }
 
-                    promo.ActualPromoTIShopper = (promo.InvoiceTotal == null || promo.InvoiceTotal == 0) ?
-                                                (promo.ActualPromoLSVByCompensation ?? 0) * promo.MarsMechanicDiscount / 100 :
-                                                promo.InvoiceTotal * promo.MarsMechanicDiscount / 100;
+                    if (promo.ManualInputSumInvoice == false)
+                    {
+                        promo.SumInvoice = promo.ActualPromoLSVByCompensation * promo.MarsMechanicDiscount / 100;
+                    }
+                    promo.ActualPromoTIShopper = promo.SumInvoice;
 
                     promo.ActualPromoCost = (promo.ActualPromoTIShopper ?? 0) + (promo.ActualPromoTIMarketing ?? 0) + (promo.ActualPromoBranding ?? 0) + (promo.ActualPromoBTL ?? 0) + (promo.ActualPromoCostProduction ?? 0);
 

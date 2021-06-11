@@ -2087,6 +2087,13 @@
             growthAccelerationCheckbox.setReadOnly(true);
         }
 
+        var promoComment = mechanic.down('textarea[name=PromoComment]');
+        var pcReadOnlyStatuses = ['Closed', 'Deleted', 'Cancelled'];
+        if ((pcReadOnlyStatuses.indexOf(promoeditorcustom.promoStatusSystemName) == -1 && promoComment.crudAccess.indexOf(currentRole) != -1)
+            || currentRole == 'SupportAdministrator') {
+            promoComment.setReadOnly(false);
+        }
+
         // редактирование Add TI Approved для не approved
         //var isApproved = ['Approved', 'Planned', 'Started', 'Finished'].includes(promoeditorcustom.promoStatusSystemName);
         var isApproved = record.data.LastApprovedDate != null;
@@ -2354,8 +2361,8 @@
                 errorTrirdLayer += l10n.ns('tpm', 'text').value('PlanPromoUpliftPercentError') + ", ";
             }
 
-            if (!promoactivity.down('triggerfielddetails[name=InvoiceTotal]').validate()) {
-                errorTrirdLayer += l10n.ns('tpm', 'text').value('InvoiceTotalValidate') + ", ";
+            if (!promoactivity.down('triggerfielddetails[name=SumInvoice]').validate()) {
+                errorTrirdLayer += l10n.ns('tpm', 'text').value('SumInvoiceValidate') + ", ";
             }
 
             if (!promoactivity.down('textfield[name=InvoiceNumber]').validate()) {
@@ -2544,7 +2551,8 @@
         record.data.PlanInStoreShelfPrice = promoActivityStep1.down('numberfield[name=PlanInStoreShelfPrice]').getValue();
 
         record.data.InvoiceNumber = promoActivityStep2.down('textfield[name=InvoiceNumber]').getValue();
-        record.data.InvoiceTotal = promoActivityStep2.down('triggerfielddetails[name=InvoiceTotal]').originValue;
+        record.data.SumInvoice = promoActivityStep2.down('triggerfielddetails[name=SumInvoice]').getValue();
+        record.data.ManualInputSumInvoice = promoActivityStep2.down('#ManualInputSumInvoiceCheckbox').getValue();
 
         record.data.DocumentNumber = promoActivityStep2.down('textfield[name=DocumentNumber]').getValue();
         record.data.PlanPromoUpliftPercent = promoActivityStep2.down('triggerfielddetails[name=PlanPromoUpliftPercent]').getValue();
@@ -2649,6 +2657,7 @@
             calculating = isCopy ? false : record.get('Calculating');
         // Кнопки для изменения состояний промо
         var promoActions = Ext.ComponentQuery.query('button[isPromoAction=true]');
+        var mechanic = promoeditorcustom.down('container[name=promo_step3]');
 
         // Для InOut Promo
         promoeditorcustom.isInOutPromo = record.data.InOut;
@@ -2780,7 +2789,6 @@
         var promoClientForm = promoeditorcustom.down('container[name=promo_step1]');
         var promoProductForm = promoeditorcustom.down('container[name=promo_step2]');
 
-        var mechanic = promoeditorcustom.down('container[name=promo_step3]');
         var period = promoeditorcustom.down('container[name=promo_step4]');
         var budgetYear = promoeditorcustom.down('container[name=promo_step5]');
         var event = promoeditorcustom.down('container[name=promo_step6]');
@@ -2880,7 +2888,8 @@
 
         var actualInStoreShelfPrice = promoActivityStep1.down('numberfield[name=ActualInStoreShelfPrice]');
         var planInStoreShelfPrice = promoActivityStep1.down('numberfield[name=PlanInStoreShelfPrice]');
-        var invoiceTotal = promoActivityStep2.down('triggerfielddetails[name=InvoiceTotal]');
+        var SumInvoice = promoActivityStep2.down('triggerfielddetails[name=SumInvoice]');
+        var manualInputSumInvoiceCheckbox = promoActivityStep2.down('checkbox[itemId=ManualInputSumInvoiceCheckbox]');
         var invoiceNumber = promoActivityStep2.down('textfield[name=InvoiceNumber]');
         var documentNumber = promoActivityStep2.down('textfield[name=DocumentNumber]');
         var planPromoUpliftPercent = promoActivityStep2.down('[name=PlanPromoUpliftPercent]');
@@ -3153,9 +3162,6 @@
 
         promoComment.setValue(record.data.MechanicComment);
 
-        if (promoComment.crudAccess.indexOf(currentRole) === -1) {
-            promoComment.setReadOnly(true);
-        }
         // period
         // Если запись создаётся копированием, даты берутся из календаря, а не из копируемой записи
         var startDate = isCopy ? record.schedulerContext.start : record.data.StartDate;
@@ -3377,7 +3383,8 @@
 
             actualInStoreShelfPrice.setValue(record.data.ActualInStoreShelfPrice);
             planInStoreShelfPrice.setValue(record.data.PlanInStoreShelfPrice);
-            invoiceTotal.setValue(record.data.InvoiceTotal);
+            SumInvoice.setValue(record.data.SumInvoice);
+            manualInputSumInvoiceCheckbox.setValue(record.data.ManualInputSumInvoice);
             invoiceNumber.setValue(record.data.InvoiceNumber);
             documentNumber.setValue(record.data.DocumentNumber);
 
@@ -3431,6 +3438,14 @@
             adjustmentSlider.setValue(-record.data.DeviationCoefficient);
             adjustmentNumber.setValue(record.data.DeviationCoefficient);
 
+        }
+
+        var promoComment = mechanic.down('textarea[name=PromoComment]');
+        var pcReadOnlyStatuses = ['Closed', 'Deleted', 'Cancelled'];
+        if (((pcReadOnlyStatuses.indexOf(record.data.PromoStatusSystemName) == -1 && promoComment.crudAccess.indexOf(currentRole) != -1)
+            || currentRole == 'SupportAdministrator')
+            && promoeditorcustom.readOnly == false) {
+            promoComment.setReadOnly(false);
         }
 
         var promoAdjustmentButton = Ext.ComponentQuery.query('button[itemId=btn_promo_step8]')[0];
@@ -5500,7 +5515,7 @@
         window.down('[name=PlanInStoreShelfPrice]').setValue(record.data.PlanInStoreShelfPrice);
 
         // Actual - Activityasa
-        window.down('[name=InvoiceTotal]').setValue(record.data.InvoiceTotal);
+        window.down('[name=SumInvoice]').setValue(record.data.SumInvoice);
         window.down('[name=InvoiceNumber]').setValue(record.data.InvoiceNumber);
         window.down('[name=DocumentNumber]').setValue(record.data.DocumentNumber);
         window.down('[name=ActualPromoUpliftPercent]').setValue(record.data.ActualPromoUpliftPercent);

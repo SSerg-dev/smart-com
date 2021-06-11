@@ -686,9 +686,9 @@
                         }
                     }, {
                             xtype: 'triggerfielddetails',
-                            name: 'InvoiceTotal',
-                            fieldLabel: l10n.ns('tpm', 'Promo').value('InvoiceTotal'),
-                            dataIndexes: ['InvoiceTotal', 'InvoiceTotalProduct', 'ActualProductPCQty'],
+                            name: 'SumInvoice',
+                            fieldLabel: l10n.ns('tpm', 'Promo').value('SumInvoice'),
+                            dataIndexes: ['SumInvoice', 'SumInvoiceProduct', 'ActualProductPCQty'],
                             labelAlign: 'left',
                             blockMillion: false, // если true - то преобразовывать в миллионы
                             originValue: null, // настоящее значение

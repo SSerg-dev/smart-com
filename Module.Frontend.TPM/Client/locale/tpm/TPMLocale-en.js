@@ -174,6 +174,7 @@
         'PreviousDayIncremental': 'Previous Day Incremental',
         'PriceList': 'Price list',
         'CoefficientSI2SO': 'Coefficient SI->SO',
+        'ApproveClosePromoWindow': 'Confirm closing'
     },
 
     'text': {
@@ -204,7 +205,7 @@
         'ActualInstoreAssumptionValidate': 'Actual Instore',
         'PlanInstoreAssumptionValidate': 'Plan Instore Assumption',
         'ActualInstoreValidate': 'Instore Assumption Mechanic',
-        'InvoiceTotalValidate': 'Invoice Total',
+        'SumInvoiceValidate': 'Sum In Invoice',
         'PlanPromoUpliftPercentError': 'Plan Promo Uplift %',
         'InvoiceNumberValidate': 'Invoice Number',
         'DocumentNumberValidate': 'Document Number',
@@ -755,9 +756,10 @@
 
         'ActualInStoreShelfPrice': 'Actual In Store Shelf Price',
         'PlanInStoreShelfPrice': 'Plan In Store Shelf Price',
-        'InvoiceTotal': 'Invoice total',
-        'InvoiceNumber': 'Invoice number',
-        'InvoiceTotalRegex': 'Only numbers and \',\' allowed',
+        'SumInvoice': 'Sum In Invoice',
+        'ManualInputSumInvoice': 'Manual Input Sum In Invoice',
+        'InvoiceNumber': 'Invoice number', 
+        'SumInvoiceRegex': 'Only numbers and \',\' allowed',
         'InvoiceNumberRegex': 'Only letters, numbers and \',\' allowed. Each code must be at least 4 symbols long.',
         'DocumentNumber': 'Document number',
         'DocumentNumberRegex': 'Only letters, numbers and \',\' allowed. Each code must be at least 4 symbols long.',
@@ -849,7 +851,7 @@
         'PlanPromoIncrementalNetLSV': 'Plan Promo Incremental Net LSV',
         'BaseClientTreeIds': 'Base ClientTree Ids',
         'PromoStatusSystemName': 'Promo Status System Name',
-        'NeedRecountUplift': 'Need Recount Uplift',
+        'NeedRecountUplift': 'Need Recount Uplift', 
         'LastApprovedDate': 'Last Approved Date',
 
         'IsAutomaticallyApproved': 'Is Automatically Approved',
@@ -1499,7 +1501,7 @@
         'BrandsegTechsub_code': 'Brand Seg Tech Sub Code',
         'BrandsegTechsub': 'Brand Seg Tech Sub',
         'ActualProductLSVByCompensation': 'Actual Product LSV By Compensation',
-        'InvoiceTotalProduct': 'Invoice Total Product',
+        'SumInvoiceProduct': 'Sum In Invoice Product',
         'TemplateTLC': 'Import TLC template XLSX',
         'AverageMarker': 'Average Marker',
         'PlanProductUpliftPercent': 'Plan Product Uplift Percent',
@@ -1527,7 +1529,7 @@
         'AverageMarker': 'Average Marker',
         'IsCorrection': 'Is Correction',
         'SavePromoMessage': 'Save promo to create new corrections',
-        'InvoiceTotalProduct': 'Invoice Total Product'
+        'SumInvoiceProduct': 'Sum In Invoice Product'
     },
 
     'BaseLine': {
@@ -2092,7 +2094,7 @@
         'COGSPercent': 'COGS',
         'PromoTypesName': 'Promo Types Name',
         'IsGrowthAcceleration': 'Growth acceleration',
-        'InvoiceTotal': 'Invoice Total',
+        'SumInvoice': 'Sum In Invoice',
 
         'PlanAddTIShopperApproved': 'Plan Add TI Shopper Approved',
         'PlanAddTIShopperCalculated': 'Plan Add TI Shopper Calculated',
@@ -2205,6 +2207,23 @@
         'Detail': 'Detail',
     },
 
+    'ApproveClosePromoWindow': {
+        'Parameters': 'Parameters',
+        'PromoID': 'Promo ID',
+        'PromoDuration': 'Promo Duration',
+        'ShopperTI': 'Shopper TI',
+        'MarketingLinked': 'Marketing Linked'
+    },
+    'PromoSupportPromoWithPromoId': {
+        'Number': 'Support ID',
+        'PromoStatusName': 'PromoStatusName',
+        'EndDate': 'EndDate',
+        'StartDate': 'StartDate',
+        'EventName': 'EventName',
+        'BrandTechName': 'BrandTechName',
+        'Name': 'Name'
+    },
+
     'buttons': {
         'ok': 'Apply',
         'cancel': 'Cancel',
@@ -2280,7 +2299,7 @@
         'ActualProductPostPromoEffectLSV': 'Actual Product Post Promo Effect LSV',
         'PlanProductUpliftPercent': 'Plan Product Uplift Percent',
         'ActualProductLSVByCompensation': 'Actual Product LSV By Compensation',
-        'InvoiceTotalProduct': 'Invoice Total Product'
+        'SumInvoiceProduct': 'Sum In Invoice Product'
     },
 
     'Logo': {

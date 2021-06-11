@@ -668,8 +668,6 @@ namespace Module.Frontend.TPM.Controllers
                                                 && b.Brand_code == brandCode
                                                 && !b.Disabled).FirstOrDefault();
 
-
-
             var brandTechs = context.Set<BrandTech>().Where(bt =>
                                                       bt.Technology != null && bt.Brand != null
                                                      && !bt.Brand.Disabled

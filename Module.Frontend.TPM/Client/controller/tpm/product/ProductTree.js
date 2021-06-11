@@ -942,6 +942,12 @@
         record.set('Filter', stringFilter);
         form.updateRecord();
 
+        //TODO: временно (убрать запятую из Name)
+        if (record.getData().Name.lastIndexOf(',') !== -1) {
+            var name = record.getData().Name.substr(0, record.getData().Name.lastIndexOf(','));
+            record.set('Name', name);
+        }
+
         var errors = record.validate();
         if (!errors.isValid()) {
             form.markInvalid(errors);

@@ -225,7 +225,7 @@ namespace Module.Persist.TPM.Model.TPM
 
         public double? ActualProductBaselineCaseQty { get; set; }
 
-        public double? InvoiceTotalProduct { get; set; }
+        public double? SumInvoiceProduct { get; set; }
 
         public virtual Promo Promo { get; set; }
         public virtual Product Product { get; set; }

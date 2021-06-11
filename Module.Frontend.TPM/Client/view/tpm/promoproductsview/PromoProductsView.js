@@ -286,8 +286,8 @@
             }
         }, {
             xtype: 'singlelinedisplayfield',
-            name: 'InvoiceTotalProduct',
-            fieldLabel: l10n.ns('tpm', 'PromoProductsView').value('InvoiceTotalProduct')
+            name: 'SumInvoiceProduct',
+            fieldLabel: l10n.ns('tpm', 'PromoProductsView').value('SumInvoiceProduct')
         }, {
             xtype: 'singlelinedisplayfield',
             name: 'AverageMarker',

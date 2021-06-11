@@ -51,7 +51,9 @@
         { name: 'CalendarPriority', useNull: true, type: 'int', hidden: false, isDefault: false, defaultValue: null },
         { name: 'NeedRecountUplift', type: 'bool', useNull: true, hidden: true, isDefault: false, defaultValue: null },
         { name: 'InvoiceNumber', type: 'string', useNull: true, hidden: false, isDefault: false, defaultValue: null },
+        { name: 'SumInvoice', type: 'float', useNull: true, hidden: false, isDefault: false, defaultValue: null },
         { name: 'InvoiceTotal', type: 'float', useNull: true, hidden: false, isDefault: false, defaultValue: null },
+        { name: 'ManualInputSumInvoice', type: 'bool', useNull: true, hidden: true, isDefault: false, defaultValue: null },
         { name: 'DocumentNumber', type: 'string', useNull: true, hidden: false, isDefault: false, defaultValue: null },
         { name: 'IsOnInvoice', type: 'boolean', useNull: true, hidden: false, isDefault: false, defaultValue: null },
 

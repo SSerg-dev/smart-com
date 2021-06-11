@@ -223,8 +223,12 @@
             fieldLabel: l10n.ns('tpm', 'Promo').value('InvoiceType'),
         }, {
             xtype: 'singlelinedisplayfield',
+            name: 'SumInvoice',
+            fieldLabel: l10n.ns('tpm', 'Promo').value('SumInvoice'),
+        }, {
+            xtype: 'singlelinedisplayfield',
             name: 'InvoiceTotal',
-            fieldLabel: l10n.ns('tpm', 'Promo').value('InvoiceTotal'),
+            fieldLabel: l10n.ns('tpm', 'Promo').value('SumInvoice'),
         }, {
             xtype: 'singlelinedisplayfield',
             name: 'ActualPromoLSV',

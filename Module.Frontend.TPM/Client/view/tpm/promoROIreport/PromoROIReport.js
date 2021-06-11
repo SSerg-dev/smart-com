@@ -230,7 +230,7 @@
                 { xtype: 'numbercolumn', text: l10n.ns('tpm', 'PromoROIReport').value('ActualAddTIMarketing'), dataIndex: 'ActualAddTIMarketing', format: '0.00' },
                 { xtype: 'numbercolumn', text: l10n.ns('tpm', 'PromoROIReport').value('ActualAddTIShopper'), dataIndex: 'ActualAddTIShopper', format: '0.00' },
                 { text: l10n.ns('tpm', 'PromoROIReport').value('PromoTypesName'), dataIndex: 'PromoTypesName' },
-                { xtype: 'numbercolumn', text: l10n.ns('tpm', 'PromoROIReport').value('InvoiceTotal'), dataIndex: 'InvoiceTotal', format: '0.00' },
+                { xtype: 'numbercolumn', text: l10n.ns('tpm', 'PromoROIReport').value('SumInvoice'), dataIndex: 'SumInvoice', format: '0.00' },
             ]
         }
     }, {
@@ -347,7 +347,7 @@
             { xtype: 'numberfield', name: 'ActualPromoROIPercent', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoROIPercent') },
             { xtype: 'numberfield', name: 'ActualPromoNetROIPercent', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoNetROIPercent') },
             { xtype: 'textfield', name: 'PromoTypesName', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('PromoTypesName') },
-            { xtype: 'numberfield', name: 'InvoiceTotal', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('InvoiceTotal') },
+            { xtype: 'numberfield', name: 'SumInvoice', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('SumInvoice') },
         ]
     }]
 });

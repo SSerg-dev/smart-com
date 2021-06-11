@@ -644,12 +644,17 @@ namespace Module.Frontend.TPM.Controllers
 
                 if (model.PromoStatus.SystemName.ToLower() != "finished" && userRole == "SupportAdministrator")
                 {
-                    PromoHelper.CalculateInvoiceTotalProduct(Context, model);
+                    PromoHelper.CalculateSumInvoiceProduct(Context, model);
                 }
 
                 if (model.PromoStatus.SystemName.ToLower() == "finished")
                 {
-                    PromoHelper.CalculateInvoiceTotalProduct(Context, model);
+                    //Сбрасываем значение SumInvoice при снятии галочки
+                    if (promoCopy.ManualInputSumInvoice == true && model.ManualInputSumInvoice == false)
+                    {
+                        model.SumInvoice = null;
+                    }
+                    PromoHelper.CalculateSumInvoiceProduct(Context, model);
                     CreateTaskCalculateActual(model.Id);
                 }
                 Context.SaveChanges();
@@ -2093,7 +2098,7 @@ namespace Module.Frontend.TPM.Controllers
                 new Column { Order = orderNumber++, Field = "ActualPromoROIPercent", Header = "Actual Promo ROI, %", Quoting = false,  Format = "0"  },
                 new Column { Order = orderNumber++, Field = "ActualPromoNetROIPercent", Header = "Actual Promo Net ROI%", Quoting = false,  Format = "0"  },
                 new Column { Order = orderNumber++, Field = "ActualPromoNetUpliftPercent", Header = "Actual Promo Net Uplift Percent", Quoting = false,  Format = "0"  },
-                new Column { Order = orderNumber++, Field = "InvoiceTotal", Header = "Invoice Total", Quoting = false,  Format = "0.00"  } };
+                new Column { Order = orderNumber++, Field = "SumInvoice", Header = "Invoice Total", Quoting = false,  Format = "0.00"  } };
             return columns;
         }
 
@@ -2127,7 +2132,8 @@ namespace Module.Frontend.TPM.Controllers
             if (oldPromo.ClientTreeId != newPromo.ClientTreeId
                     || oldPromo.MarsMechanicId != newPromo.MarsMechanicId
                     || oldPromo.MarsMechanicTypeId != newPromo.MarsMechanicTypeId
-                    || oldPromo.InvoiceTotal != newPromo.InvoiceTotal
+                    || oldPromo.SumInvoice != newPromo.SumInvoice
+                    || oldPromo.ManualInputSumInvoice != newPromo.ManualInputSumInvoice
                     || oldPromo.MarsMechanicDiscount != newPromo.MarsMechanicDiscount
                     || oldPromo.StartDate != newPromo.StartDate
                     || oldPromo.EndDate != newPromo.EndDate
