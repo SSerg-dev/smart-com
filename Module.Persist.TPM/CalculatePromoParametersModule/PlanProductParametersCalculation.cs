@@ -11,6 +11,7 @@ using Core.Extensions;
 using System.Data.Entity.Validation;
 using Module.Persist.TPM.Utils;
 using Module.Persist.TPM.PromoStateControl;
+using System.Diagnostics;
 
 namespace Module.Persist.TPM.CalculatePromoParametersModule
 {
@@ -227,14 +228,14 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         /// <param name="eanPCs">Список EAN PC из ассортиментной матрицы</param>
         /// <param name="promo">Промо, для которого подбираются продукты</param>
         /// <param name="context">Текущий контекст</param>
-        public static List<Product> GetResultProducts(List<Product> filteredProducts, List<string> eanPCs, Promo promo, DatabaseContext context)
+        public static List<Product> GetResultProducts(List<Product> filteredProducts, List<string> eanPCs, Promo promo, DatabaseContext context, IQueryable<Product> productQuery = null)
         {
             List<Product> resultProductList = new List<Product>();
 
             if (filteredProducts != null)
             {
                 resultProductList = filteredProducts.Where(x => eanPCs.Any(y => y == x.EAN_PC)).ToList();
-                resultProductList = resultProductList.Intersect(GetCheckedProducts(context, promo)).ToList();
+                resultProductList = resultProductList.Intersect(GetCheckedProducts(context, promo, productQuery)).ToList();
             }
 
             return resultProductList;
@@ -247,7 +248,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         /// <param name="filteredProducts">Список продуктов, подходящих по фильтрам</param>
         /// <param name="promo">Промо, для которого подбираются продукты</param>
         /// <param name="context">Текущий контекст</param>
-        public static List<Product> GetResultProducts(List<Product> filteredProducts, Promo promo, DatabaseContext context)
+        public static List<Product> GetResultProducts(List<Product> filteredProducts, Promo promo, DatabaseContext context, IQueryable<Product> productQuery = null)
         {
             List<Product> resultProductList = new List<Product>();
 
@@ -255,7 +256,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             {
                 var productIds = promo.InOutProductIds.Split(";".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(x => Guid.Parse(x)).ToList();
                 resultProductList = filteredProducts.Where(x => productIds.Any(y => y == x.Id)).ToList();
-                resultProductList = resultProductList.Intersect(GetCheckedProducts(context, promo)).ToList();
+                resultProductList = resultProductList.Intersect(GetCheckedProducts(context, promo, productQuery)).ToList();
             }
 
             return resultProductList;
@@ -580,23 +581,20 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             }
         }
 
-        public static List<Product> GetCheckedProducts(DatabaseContext context, Promo promo)
+        public static List<Product> GetCheckedProducts(DatabaseContext context, Promo promo, IQueryable<Product> productQuery = null)
         {
             List<Product> products = new List<Product>();
+            if (productQuery == null)
+            {
+                productQuery = context.Set<Product>().Where(x => !x.Disabled);
+            }
 
+            string time, time2;
+            Stopwatch s = new Stopwatch();
             if (!String.IsNullOrEmpty(promo.InOutProductIds))
             {
                 var productIds = promo.InOutProductIds.Split(";".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(x => Guid.Parse(x)).ToList();
-
-                foreach (var productId in productIds)
-                {
-                    var product = context.Set<Product>().FirstOrDefault(x => x.Id == productId && !x.Disabled);
-
-                    if (product != null)
-                    {
-                        products.Add(product);
-                    }
-                }
+                products = productQuery.Where(x => productIds.Contains(x.Id)).ToList();
             }
 
             return products;
