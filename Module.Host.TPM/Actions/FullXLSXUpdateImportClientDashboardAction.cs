@@ -301,8 +301,7 @@ namespace Moule.Host.TPM.Actions
             List<ClientDashboardView> toHisUpdateTemp = new List<ClientDashboardView>();
             List<ClientDashboardView> toHisCreateTemp = new List<ClientDashboardView>();
 
-            var clientDashboardView = context.Set<ClientDashboardView>();
-           // var clientDashboardView = context.Set<ClientDashboardView>().ToList();
+            var clientDashboardView = context.Set<ClientDashboardView>().ToList();
             var clientDashboard = context.Set<ClientDashboard>();
             var clientTrees = context.Set<ClientTree>();
             var brandTechs = context.Set<BrandTech>();
