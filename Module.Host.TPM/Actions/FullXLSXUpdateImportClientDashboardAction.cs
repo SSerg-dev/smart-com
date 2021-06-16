@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -301,6 +302,7 @@ namespace Moule.Host.TPM.Actions
             List<ClientDashboardView> toHisCreateTemp = new List<ClientDashboardView>();
 
             var clientDashboardView = context.Set<ClientDashboardView>();
+           // var clientDashboardView = context.Set<ClientDashboardView>().ToList();
             var clientDashboard = context.Set<ClientDashboard>();
             var clientTrees = context.Set<ClientTree>();
             var brandTechs = context.Set<BrandTech>();
@@ -320,7 +322,7 @@ namespace Moule.Host.TPM.Actions
                     var notMaterializedClientDashboardRecord = clientDashboard
                         .FirstOrDefault(x => x.ClientTreeId == clientDashboardRecord.ClientTreeId && x.BrandsegTechsubName == clientDashboardRecord.BrandsegTechsubName && x.Year == clientDashboardRecord.Year);
                     oldHisModel = clientDashboardView.Where(x => x.ObjectId == clientDashboardRecord.ClientTreeId && x.BrandsegTechsubName == clientDashboardRecord.BrandsegTechsubName && x.Year.ToString() == clientDashboardRecord.Year).FirstOrDefault();
-
+                  
                     if (notMaterializedClientDashboardRecord != null)
                     {
                         SetValues(clientDashboardRecord, notMaterializedClientDashboardRecord, _modelProperties, currentRole, false);
