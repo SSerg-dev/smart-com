@@ -846,7 +846,7 @@ pre.code {
 
 .custom-top-panel-calculating,
 .custom-top-panel-calculating .custom-top-panel-item {
-    background-color: #b53333;
+    background-color: #b53333 !important;
 }
 
 .errorinside {
@@ -1500,7 +1500,6 @@ tr[data-recordindex="0"] .container-icon {
 }
 
     .customtoptoolbarheader:hover {
-        background-color: #3f6895;
         cursor: default;
     }
 
