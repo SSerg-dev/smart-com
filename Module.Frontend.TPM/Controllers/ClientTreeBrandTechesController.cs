@@ -112,6 +112,7 @@ namespace Module.Frontend.TPM.Controllers
                     int shareRecordCounnt = context.Set<ClientTreeBrandTech>()
                                 .Where(s => s.ClientTreeId == c.Id
                                             && s.BrandTechId == bt.Id
+                                            && s.ParentClientTreeDemandCode == demandCode
                                             && !s.Disabled).Count();
                     if (shareRecordCounnt == 0)
                     {
@@ -244,7 +245,7 @@ namespace Module.Frontend.TPM.Controllers
 
         public static void DisableNotActualClientTreeBrandTech(DatabaseContext databaseContext)
         {
-            var clientTreeBrandTeches = databaseContext.Set<ClientTreeBrandTech>().ToList();
+            var clientTreeBrandTeches = databaseContext.Set<ClientTreeBrandTech>().Where(x=>!x.Disabled).ToList();
             var actualClientTreeBrandTeches = GetActualQuery(databaseContext);
             var notActualClientTreeBrandTeches = clientTreeBrandTeches.Except(actualClientTreeBrandTeches);
 
@@ -275,36 +276,9 @@ namespace Module.Frontend.TPM.Controllers
         /// </summary>
         public static List<ClientTreeBrandTech> GetActualQuery(DatabaseContext databaseContext)
         {
-            var actualClientTreeBrandTeches = new List<ClientTreeBrandTech>();
+            var clientTreeBrandTeches = databaseContext.Set<ClientTreeBrandTech>().Include("ClientTree").Include("BrandTech").Where(x => !x.Disabled).ToList();
 
-            var clientTreeBrandTeches = databaseContext.Set<ClientTreeBrandTech>().Where(x => !x.Disabled).ToList();
-            var actualBrandTeches = databaseContext.Set<BrandTech>().Where(x => !x.Disabled).ToList();
-            var actualClientTrees = databaseContext.Set<ClientTree>().Where(x => x.EndDate == null && !x.IsBaseClient).ToList();
-
-            foreach (var clientTreeBrandTech in clientTreeBrandTeches)
-            {
-                if (clientTreeBrandTech.ClientTree.EndDate == null && clientTreeBrandTech.ClientTree.IsBaseClient)
-                {
-                    if (actualBrandTeches.Any(x => x.BrandsegTechsub == clientTreeBrandTech.BrandTech.BrandsegTechsub /*&& !x.Brand.Disabled && !x.Technology.Disabled*/))
-                    {
-                        var currentClientTree = clientTreeBrandTech.ClientTree;
-                        while (currentClientTree != null && currentClientTree.Type != "root" && String.IsNullOrEmpty(currentClientTree.DemandCode))
-                        {
-                            currentClientTree = actualClientTrees.FirstOrDefault(x => x.ObjectId == currentClientTree.parentId);
-                        }
-
-                        // Если родитель узла существует и его DemandCode равен DemandCode из ClientTreeBrandTech.
-                        if (currentClientTree != null &&
-                            !String.IsNullOrEmpty(currentClientTree.DemandCode)
-                            && currentClientTree.DemandCode == clientTreeBrandTech.ParentClientTreeDemandCode)
-                        {
-                            actualClientTreeBrandTeches.Add(clientTreeBrandTech);
-                        }
-                    }
-                }
-            }
-
-            return actualClientTreeBrandTeches;
+            return clientTreeBrandTeches;
         }
 
         public static IEnumerable<Column> GetExportSettings() 
