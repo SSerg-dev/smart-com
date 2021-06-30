@@ -2556,6 +2556,10 @@
     <Compile Include="Migrations\202106300726289_202106301025001_Drop_Client.Designer.cs">
       <DependentUpon>202106300726289_202106301025001_Drop_Client.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202106301329591_Add_Plu_Table.cs" />
+    <Compile Include="Migrations\202106301329591_Add_Plu_Table.Designer.cs">
+      <DependentUpon>202106301329591_Add_Plu_Table.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -2674,6 +2678,7 @@
     <Compile Include="Model\SimpleModel\SimplePromoCOGSTI.cs" />
     <Compile Include="Model\SimpleModel\YEAR_END_ESTIMATE_FDM.cs" />
     <Compile Include="Model\TPM\ActualLsvModel.cs" />
+    <Compile Include="Model\TPM\Client.cs" />
     <Compile Include="Model\TPM\Plu.cs" />
     <Compile Include="Model\TPM\PromoSupportDMP.cs" />
     <Compile Include="Model\TPM\NonPromoSupportDMP.cs" />
@@ -2728,7 +2733,6 @@
     <Compile Include="Model\TPM\NodeType.cs" />
     <Compile Include="Model\TPM\ProductTree.cs" />
     <Compile Include="Model\TPM\ClientTree.cs" />
-    <Compile Include="Model\TPM\Client.cs" />
     <Compile Include="Model\TPM\CommercialNet.cs" />
     <Compile Include="Model\TPM\CommercialSubnet.cs" />
     <Compile Include="Model\TPM\Demand.cs" />
@@ -4916,6 +4920,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202106300726289_202106301025001_Drop_Client.resx">
       <DependentUpon>202106300726289_202106301025001_Drop_Client.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202106301329591_Add_Plu_Table.resx">
+      <DependentUpon>202106301329591_Add_Plu_Table.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

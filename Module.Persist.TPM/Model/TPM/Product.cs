@@ -135,7 +135,5 @@ namespace Module.Persist.TPM.Model.TPM
         public int? UOM_PC2Case { get; set; }
 
 		public int? Division { get; set; }
-
-        public Plu Plu { get; set; }
 	}
 }

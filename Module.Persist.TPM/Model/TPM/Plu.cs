@@ -25,6 +25,11 @@ namespace Module.Persist.TPM.Model.TPM
 		/// <summary>
 		/// Код PLU
 		/// </summary>
+		[StringLength(20)]
 		public string PluCode { get; set; }
+
+		public virtual ClientTree ClientTree { get; set; }
+
+		public virtual Product Product { get; set; }
 	}
 }
