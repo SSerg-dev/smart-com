@@ -2674,6 +2674,7 @@
     <Compile Include="Model\SimpleModel\SimplePromoCOGSTI.cs" />
     <Compile Include="Model\SimpleModel\YEAR_END_ESTIMATE_FDM.cs" />
     <Compile Include="Model\TPM\ActualLsvModel.cs" />
+    <Compile Include="Model\TPM\Plu.cs" />
     <Compile Include="Model\TPM\PromoSupportDMP.cs" />
     <Compile Include="Model\TPM\NonPromoSupportDMP.cs" />
     <Compile Include="Model\TPM\PreviousDayIncremental.cs" />

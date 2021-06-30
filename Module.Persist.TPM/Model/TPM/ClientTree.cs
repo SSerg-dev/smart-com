@@ -48,6 +48,8 @@ namespace Module.Persist.TPM.Model.TPM {
 
         public string SFAClientCode { get; set; }
 
+        public virtual Plu Plu { get; set; }
+
         public object Clone()
         {
             return this.MemberwiseClone();

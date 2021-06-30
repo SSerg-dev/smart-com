@@ -114,7 +114,8 @@ namespace Module.Persist.TPM {
 
             modelBuilder.Entity<Promo>().Ignore(n => n.ProductTreeObjectIds);
             modelBuilder.Entity<Promo>().Ignore(n => n.Calculating);
-            modelBuilder.Entity<Promo>().Ignore(n => n.PromoBasicProducts);            
+            modelBuilder.Entity<Promo>().Ignore(n => n.PromoBasicProducts);
+            modelBuilder.Entity<Plu>();
         }
 
         public void BuildEdm(ODataConventionModelBuilder builder) {
