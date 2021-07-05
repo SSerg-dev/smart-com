@@ -10,6 +10,10 @@
             name: 'ClientTreeName', type: 'string', mapping: 'ClientTree.Name',
             defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'ClientTree', tree: true, hidden: false, isDefault: true
         },
+        {
+            name: 'PluCode', type: 'string', mapping: 'Plu.PluCode',
+            defaultFilterConfig: { valueField: 'PluCode' }, breezeEntityType: 'Plu', hidden: false, isDefault: true
+        },
         { name: 'ProductId', hidden: true, isDefault: true },
         {
             name: 'ProductEAN_PC', type: 'string', mapping: 'Product.EAN_PC', 

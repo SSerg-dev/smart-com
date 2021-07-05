@@ -27,9 +27,18 @@ namespace Module.Persist.TPM.Model.TPM
 		/// </summary>
 		[StringLength(20)]
 		public string PluCode { get; set; }
-
+		
 		public virtual ClientTree ClientTree { get; set; }
 
 		public virtual Product Product { get; set; }
 	}
+
+	public class AssortmentMatrix2Plu :IEntity
+	{
+		[Key]
+		public Guid Id { get; set; }
+
+		public string PluCode { get; set; }
+	}
+
 }

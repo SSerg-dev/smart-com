@@ -176,7 +176,10 @@
             }, {
                 text: l10n.ns('tpm', 'NoneNego').value('ClientTreeObjectId'),
                 dataIndex: 'ClientTreeObjectId'
-            }, {
+            },{
+                text: l10n.ns('tpm', 'AssortmentMatrix').value('PluCode'),
+                dataIndex: 'PluCode',
+            },{
                 text: l10n.ns('tpm', 'AssortmentMatrix').value('EAN_PC'),
                 dataIndex: 'ProductEAN_PC',
                 filter: {

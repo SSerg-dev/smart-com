@@ -16,8 +16,8 @@ namespace Module.Persist.TPM {
         public void ConfigurateDBModel(DbModelBuilder modelBuilder) {
             modelBuilder.Entity<Category>();
             modelBuilder.Entity<Brand>();
-			modelBuilder.Entity<NonPromoEquipment>();
-			modelBuilder.Entity<Segment>();
+            modelBuilder.Entity<NonPromoEquipment>();
+            modelBuilder.Entity<Segment>();
             modelBuilder.Entity<Technology>();
             modelBuilder.Entity<TechHighLevel>();
             modelBuilder.Entity<Program>();
@@ -63,8 +63,8 @@ namespace Module.Persist.TPM {
             modelBuilder.Entity<BudgetSubItem>();
             modelBuilder.Entity<PromoSupport>().HasMany(p => p.PromoSupportPromo)
                 .WithRequired(p => p.PromoSupport);
-			modelBuilder.Entity<NonPromoSupport>();
-			modelBuilder.Entity<ServiceInfo>();
+            modelBuilder.Entity<NonPromoSupport>();
+            modelBuilder.Entity<ServiceInfo>();
             modelBuilder.Entity<NonPromoSupportBrandTech>();
             modelBuilder.Entity<PostPromoEffect>();
             modelBuilder.Entity<PromoSupportPromo>();
@@ -73,8 +73,13 @@ namespace Module.Persist.TPM {
             modelBuilder.Entity<TradeInvestment>();
             modelBuilder.Entity<PromoUpliftFailIncident>();
             modelBuilder.Entity<BlockedPromo>();
+
+            modelBuilder.Entity<Plu>();
+            modelBuilder.Entity<AssortmentMatrix2Plu>();
             modelBuilder.Entity<AssortmentMatrix>();
-            modelBuilder.Entity<IncrementalPromo>();
+            modelBuilder.Entity<AssortmentMatrix>().HasOptional(x => x.Plu).WithRequired();
+
+			modelBuilder.Entity<IncrementalPromo>();
             modelBuilder.Entity<PromoView>();
             modelBuilder.Entity<PromoGridView>();
             modelBuilder.Entity<PlanIncrementalReport>();
@@ -115,10 +120,13 @@ namespace Module.Persist.TPM {
             modelBuilder.Entity<Promo>().Ignore(n => n.ProductTreeObjectIds);
             modelBuilder.Entity<Promo>().Ignore(n => n.Calculating);
             modelBuilder.Entity<Promo>().Ignore(n => n.PromoBasicProducts);
-            modelBuilder.Entity<Plu>();
+
         }
 
+        
+
         public void BuildEdm(ODataConventionModelBuilder builder) {
+            
             builder.EntitySet<Category>("Categories");
             builder.EntitySet<Category>("DeletedCategories");
             builder.EntitySet<HistoricalCategory>("HistoricalCategories");
@@ -787,7 +795,15 @@ namespace Module.Persist.TPM {
             builder.Entity<ActualTradeInvestment>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<ActualTradeInvestment>("ActualTradeInvestments");
             builder.Entity<HistoricalActualTradeInvestment>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalActualTradeInvestment>("HistoricalActualTradeInvestments");
 
-            builder.EntitySet<AssortmentMatrix>("AssortmentMatrices");
+            builder.EntitySet<Plu>("Plus");
+			builder.EntitySet<Plu>("Plus").HasRequiredBinding(e => e.ClientTree, "ClientTrees");
+			builder.EntitySet<Plu>("Plus").HasRequiredBinding(e => e.Product, "Products");
+			builder.Entity<Plu>().HasRequired(n => n.ClientTree, (n, p) => n.ClientTreeId == p.Id);
+			builder.Entity<Plu>().HasRequired(n => n.Product, (n, p) => n.ProductId == p.Id);
+
+
+
+			builder.EntitySet<AssortmentMatrix>("AssortmentMatrices");
             builder.EntitySet<AssortmentMatrix>("DeletedAssortmentMatrices");
             builder.EntitySet<HistoricalAssortmentMatrix>("HistoricalAssortmentMatrices");
             builder.Entity<AssortmentMatrix>().Collection.Action("ExportXLSX");
@@ -801,6 +817,11 @@ namespace Module.Persist.TPM {
             builder.Entity<AssortmentMatrix>().Collection.Action("DownloadTemplateXLSX");
             builder.Entity<AssortmentMatrix>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<AssortmentMatrix>("AssortmentMatrices");
             builder.Entity<HistoricalAssortmentMatrix>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalAssortmentMatrix>("HistoricalAssortmentMatrices");
+
+            //builder.Entity<AssortmentMatrix>().HasOptional(n => n.Plu);
+            builder.EntitySet<AssortmentMatrix2Plu>("AssortmentMatrix2Plu");
+
+            builder.Entity<AssortmentMatrix>().HasOptional(n => n.Plu, (n, p) => n.Id == p.Id);
 
             builder.Entity<PromoProductTree>().HasRequired(n => n.Promo, (n, p) => n.PromoId == p.Id);
 
@@ -919,6 +940,8 @@ namespace Module.Persist.TPM {
             builder.EntitySet<HistoricalClientDashboardView>("HistoricalClientDashboards");
             builder.Entity<HistoricalClientDashboardView>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalClientDashboardView>("HistoricalClientDashboards");
         }
+
+        
 
         public IEnumerable<Type> GetHistoricalEntities() {
             return Assembly.GetExecutingAssembly().GetTypes()

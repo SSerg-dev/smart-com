@@ -12,7 +12,6 @@ using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.Import;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
-using Newtonsoft.Json;
 using Persist;
 using Persist.Model;
 using System;
@@ -43,6 +42,7 @@ namespace Module.Frontend.TPM.Controllers
         public AssortmentMatricesController(IAuthorizationManager authorizationManager)
         {
             this.authorizationManager = authorizationManager;
+
         }
 
 
@@ -56,9 +56,11 @@ namespace Module.Frontend.TPM.Controllers
 
             IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);         
             IQueryable<AssortmentMatrix> query = Context.Set<AssortmentMatrix>().Where(e => !e.Disabled);
+
             IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
 
             query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
+            
 
             if (needActualAssortmentMatrix)
             {
@@ -66,7 +68,6 @@ namespace Module.Frontend.TPM.Controllers
                 List<AssortmentMatrix> actualAssortmentMatrix = GetActualAssortmentMatrix();
                 query = materializedQuery.Intersect(actualAssortmentMatrix).AsQueryable();
             }
-
             return query;
         }
 

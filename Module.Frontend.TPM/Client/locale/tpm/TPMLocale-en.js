@@ -2342,6 +2342,7 @@
     'AssortmentMatrix': {
         'Id': 'Id',
         'Number': 'ID',
+        'PluCode': "PLU",
         'EAN_PC': 'EAN PC',
         'ProductEANPC': 'EAN PC',
         'ProductEAN_PC': 'EAN PC',
