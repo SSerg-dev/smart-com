@@ -87,7 +87,10 @@ try {
 	CopyFrontend
 	CopyHost
 	Logging -message "		Archiving" 
-	Write-Zip -Path "$dest\*" -OutputPath "$dest\$RelName.zip" -Quiet > $null	
+	
+	# Write-Zip -Path "$dest\*" -OutputPath "$dest\$RelName.zip" -Quiet > $null
+	& "C:\Program Files\7-Zip\7z.exe" a "$dest\$RelName.zip" "$dest\*" > $null
+	
 } catch {
 	Logging -message "Can't continue Release. Release creating failed!" 
 	Logging -message "$_.Exception.Message"
@@ -109,7 +112,8 @@ try {
 			Copy-Item $path\bin\Release\*.* -Exclude "*.config" -Destination $dest\$MigrationFolderName
 			Copy-Item $source\packages\EntityFramework.6.1.3\tools\migrate.exe -Destination $dest\$MigrationFolderName
 
-			Write-Zip -Path "$dest\$MigrationFolderName\*" -OutputPath "$dest\$MigrationFolderName.zip" -Quiet > $null
+			# Write-Zip -Path "$dest\$MigrationFolderName\*" -OutputPath "$dest\$MigrationFolderName.zip" -Quiet > $null
+			& "C:\Program Files\7-Zip\7z.exe" a "$dest\$MigrationFolderName.zip" "$dest\$MigrationFolderName\*" > $null
 			Logging -message "        $MigrationFolderName.zip created successfully"
 		}
 	}
@@ -143,7 +147,10 @@ try {
 		
 	$NameFolder = (Get-Item "$dest\SQLInitialize_Release*").Name
     if ($(Get-Item "$dest\$NameFolder\*").Count -gt 0) {
-		Write-Zip -Path "$dest\$NameFolder\*" -OutputPath "$dest\$NameFolder.zip" -Quiet > $null
+	
+		# Write-Zip -Path "$dest\$NameFolder\*" -OutputPath "$dest\$NameFolder.zip" -Quiet > $null
+		& "C:\Program Files\7-Zip\7z.exe" a "$dest\$NameFolder.zip" "$dest\$NameFolder\*" > $null
+		
 		Logging -message "        Archive with SQLInitialize scripts created successfully"
     } else {
         Logging -message "        No new scripts to archive"
