@@ -53,7 +53,16 @@ namespace Module.Persist.TPM {
             modelBuilder.Entity<BaseClientTreeView>().ToTable("BaseClientTreeView");
             modelBuilder.Entity<RetailType>();
             modelBuilder.Entity<NoneNego>();
+
+
+            modelBuilder.Entity<Plu>();
+            modelBuilder.Entity<AssortmentMatrix2Plu>();
+            modelBuilder.Entity<PromoProduct2Plu>();
+
             modelBuilder.Entity<PromoProduct>();
+            modelBuilder.Entity<PromoProduct>().HasOptional(x => x.Plu).WithRequired();
+
+
             modelBuilder.Entity<BaseLine>();
             modelBuilder.Entity<ClientTreeSharesView>().ToTable("ClientTreeSharesView");
             modelBuilder.Entity<ProductChangeIncident>();
@@ -74,8 +83,6 @@ namespace Module.Persist.TPM {
             modelBuilder.Entity<PromoUpliftFailIncident>();
             modelBuilder.Entity<BlockedPromo>();
 
-            modelBuilder.Entity<Plu>();
-            modelBuilder.Entity<AssortmentMatrix2Plu>();
             modelBuilder.Entity<AssortmentMatrix>();
             modelBuilder.Entity<AssortmentMatrix>().HasOptional(x => x.Plu).WithRequired();
 
@@ -579,6 +586,8 @@ namespace Module.Persist.TPM {
             builder.Entity<HistoricalNoneNego>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalNoneNego>("HistoricalNoneNegoes");
             builder.Entity<NoneNego>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<NoneNego>("NoneNegoes");
 
+            builder.EntitySet<PromoProduct2Plu>("PromoProduct2Plu");
+
             builder.EntitySet<PromoProduct>("PromoProducts");
             builder.EntitySet<PromoProduct>("DeletedPromoProducts");
             builder.EntitySet<HistoricalPromoProduct>("HistoricalPromoProducts");
@@ -598,6 +607,9 @@ namespace Module.Persist.TPM {
             builder.Entity<PromoProduct>().Collection.Action("GetPromoProductByPromoAndProduct");
             builder.Entity<PromoProduct>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PromoProduct>("PromoProducts");
             builder.Entity<HistoricalPromoProduct>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalPromoProduct>("HistoricalPromoProducts");
+
+            builder.Entity<PromoProduct>().HasOptional(x => x.Plu, (n, p) => n.Id == p.Id);
+
 
             builder.EntitySet<PromoProductsView>("PromoProductsViews");
             builder.Entity<PromoProductsView>().Collection.Action("ExportXLSX");

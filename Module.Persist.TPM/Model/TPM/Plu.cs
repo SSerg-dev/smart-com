@@ -33,6 +33,15 @@ namespace Module.Persist.TPM.Model.TPM
 		public virtual Product Product { get; set; }
 	}
 
+	public class PromoProduct2Plu : IEntity
+	{
+		[Key]
+		public Guid Id { get; set; }
+
+		public string PluCode { get; set; }
+
+	}
+
 	public class AssortmentMatrix2Plu :IEntity
 	{
 		[Key]

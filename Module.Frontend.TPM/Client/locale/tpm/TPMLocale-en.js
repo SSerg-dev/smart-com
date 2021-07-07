@@ -1463,6 +1463,7 @@
 
     'PromoProduct': {
         'ZREP': 'ZREP',
+        'PluCode': 'PLU',
         'EAN_Case': 'EAN Case',
         'EAN_PC': 'EAN PC',
         'PlanProductCaseQty': 'Plan Product Qty',

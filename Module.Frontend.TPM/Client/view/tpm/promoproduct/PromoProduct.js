@@ -139,6 +139,9 @@
             items: [{
                 text: l10n.ns('tpm', 'PromoProduct').value('EAN_PC'),
                 dataIndex: 'EAN_PC'
+            },{
+                text: l10n.ns('tpm', 'PromoProduct').value('PluCode'),
+                dataIndex: 'PluCode',
             }, {
                 xtype: 'numbercolumn',
                 format: '0',
