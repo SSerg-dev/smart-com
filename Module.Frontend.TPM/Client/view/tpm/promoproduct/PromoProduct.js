@@ -37,9 +37,15 @@
                     glyph: 0xf21d,
                     itemId: 'loadimporttemplatexlsxbutton',
                     exactlyModelCompare: true,
-                    text: l10n.ns('core', 'additionalMenu').value('importTemplateXLSX'),
+                    text: l10n.ns('core', 'additionalMenu').value('importTemplateEANPCXLSX'),
                     action: 'DownloadTemplateXLSX',
-                }, {
+                },{
+                    glyph: 0xf21d,  
+                    itemId: 'loadimporttemplatepluxlsxbutton',
+                    exactlyModelCompare: true,
+                    text: l10n.ns('core', 'additionalMenu').value('importTemplatePLUXLSX'),
+                    action: 'DownloadTemplatePluXLSX',
+                },{
                     glyph: 0xf21d,
                     itemId: 'loadimporttemplatexlsxbuttonTLC',
                     exactlyModelCompare: true,

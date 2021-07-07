@@ -603,6 +603,7 @@ namespace Module.Persist.TPM {
             builder.Entity<PromoProduct>().Collection.Action("FullImportXLSX");
             builder.Entity<PromoProduct>().Collection.Action("DownloadTemplateXLSXTLC");
             builder.Entity<PromoProduct>().Collection.Action("DownloadTemplateXLSX");
+            builder.Entity<PromoProduct>().Collection.Action("DownloadTemplatePluXLSX");
             builder.Entity<PromoProduct>().Collection.Action("SupportAdminExportXLSX");
             builder.Entity<PromoProduct>().Collection.Action("GetPromoProductByPromoAndProduct");
             builder.Entity<PromoProduct>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PromoProduct>("PromoProducts");

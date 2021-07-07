@@ -69,6 +69,9 @@
                 'promoproduct #loadimporttemplatexlsxbuttonTLC': {
                     click: this.onLoadImportTemplateXLSXTLCButtonClick
                 },
+                'promoproduct #loadimporttemplatepluxlsxbutton': {
+                    click: this.onLoadImportTemplateXLSXTLCButtonClick
+                },
                 'promoproduct #applyimportbutton': {
                     click: this.onApplyImportButtonClick
                 },
@@ -80,6 +83,7 @@
     },
 
     onLoadImportTemplateXLSXTLCButtonClick: function (button) {
+        alert(button.action);
         var me = this;
         var promoId = button.promoId;
         var grid = me.getGridByButton(button);

@@ -387,8 +387,9 @@ namespace Module.Frontend.TPM.Controllers
                 columns = new List<Column>()
                 {
                     new Column() { Order = 0, Field = "EAN_PC", Header = "EAN PC", Quoting = false },
-                    new Column() { Order = 1, Field = "ActualProductPCQty", Header = "Actual Product PC Qty", Quoting = false },
-                    new Column() { Order = 2, Field = "ActualProductPCLSV", Header = "Actual Product PC LSV", Quoting = false },
+                    new Column() { Order = 1, Field = "PluCode", Header = "PLU", Quoting = false },
+                    new Column() { Order = 2, Field = "ActualProductPCQty", Header = "Actual Product PC Qty", Quoting = false },
+                    new Column() { Order = 3, Field = "ActualProductPCLSV", Header = "Actual Product PC LSV", Quoting = false },
                 };
             }            
 
@@ -411,6 +412,17 @@ namespace Module.Frontend.TPM.Controllers
             IEnumerable<Column> columns = new List<Column>()
             {
                 new Column() { Order = 0, Field = "EAN_PC", Header = "EAN PC", Quoting = false },
+                new Column() { Order = 1, Field = "ActualProductPCQty", Header = "Actual Product PC Qty", Quoting = false },
+            };
+
+            return columns;
+        }
+
+        private IEnumerable<Column> GetImportTemplatePluSettings()
+        {
+            IEnumerable<Column> columns = new List<Column>()
+            {
+                new Column() { Order = 0, Field = "Plu.PluCode", Header = "PLU", Quoting = false },
                 new Column() { Order = 1, Field = "ActualProductPCQty", Header = "Actual Product PC Qty", Quoting = false },
             };
 
@@ -586,6 +598,32 @@ namespace Module.Frontend.TPM.Controllers
             }
 
         }
+
+        [ClaimsAuthorize]
+        public IHttpActionResult DownloadTemplatePluXLSX()
+        {
+            try
+            {
+                IEnumerable<Column> columns = GetImportTemplatePluSettings();
+                XLSXExporter exporter = new XLSXExporter(columns);
+                string exportDir = AppSettingsManager.GetSetting("EXPORT_DIRECTORY", "~/ExportFiles");
+                string filename = string.Format("{0}Template.xlsx", "PromoProductPlu");
+                if (!Directory.Exists(exportDir))
+                {
+                    Directory.CreateDirectory(exportDir);
+                }
+                string filePath = Path.Combine(exportDir, filename);
+                exporter.Export(Enumerable.Empty<PromoProduct>(), filePath);
+                string file = Path.GetFileName(filePath);
+                return Content(HttpStatusCode.OK, file);
+            }
+            catch (Exception e)
+            {
+                return Content(HttpStatusCode.InternalServerError, e.Message);
+            }
+
+        }
+
         [ClaimsAuthorize]
         public IHttpActionResult DownloadTemplateXLSXTLC()
         {

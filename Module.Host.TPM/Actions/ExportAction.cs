@@ -149,9 +149,15 @@ namespace Module.Host.TPM.Actions.Notifications
             }
         }
 
-        private IQueryable<PromoProduct> getActuals(DatabaseContext context, string sqlQuery)
+        private class ExportPromoProduct : PromoProduct
+		{
+            public string PluCode { get; set; }
+        }
+
+        private IQueryable<ExportPromoProduct> getActuals(DatabaseContext context, string sqlQuery)
         {
-            var sumGroup = context.Database.SqlQuery<PromoProduct>(sqlQuery)
+            
+            var sumGroup = context.Database.SqlQuery<ExportPromoProduct>(sqlQuery)
                                                       .GroupBy(x => x.EAN_PC)
                                                       .Select(s => new
                                                       {
@@ -161,13 +167,13 @@ namespace Module.Host.TPM.Actions.Notifications
                                                       })
                                                       .ToList();
 
-            List<PromoProduct> promoProductList = new List<PromoProduct>();
+            List<ExportPromoProduct> promoProductList = new List<ExportPromoProduct>();
             foreach (var item in sumGroup)
             {
-                PromoProduct pp = item.promoProduct.ToList()[0];
+                ExportPromoProduct pp = item.promoProduct.ToList()[0];
                 pp.ActualProductPCQty = item.sumActualProductPCQty;
                 pp.ActualProductPCLSV = item.sumActualProductPCLSV;
-
+                pp.Plu = new PromoProduct2Plu() { PluCode = pp.PluCode };
                 promoProductList.Add(pp);
             }
 
