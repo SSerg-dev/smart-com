@@ -1128,3 +1128,8 @@ a.x-monthpicker-item-inner:hover,
 .over_all {
     z-index: 99999 !important;
 }
+
+.x-column-header-inner {
+    padding: 5px 4px !important;
+    text-overflow: ellipsis
+}
