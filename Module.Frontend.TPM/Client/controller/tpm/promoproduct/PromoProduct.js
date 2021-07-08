@@ -60,7 +60,10 @@
                 'promoproduct #exportbutton': {
                     click: this.onExportButtonClick
                 },
-                'promoproduct #loadimportbutton': {
+                'promoproduct #loadimporteanbutton': {
+                    click: this.onShowImportFormButtonClick
+                },
+                'promoproduct #loadimportplubutton': {
                     click: this.onShowImportFormButtonClick
                 },
                 'promoproduct #loadimporttemplatebutton': {
@@ -83,7 +86,6 @@
     },
 
     onLoadImportTemplateXLSXTLCButtonClick: function (button) {
-        alert(button.action);
         var me = this;
         var promoId = button.promoId;
         var grid = me.getGridByButton(button);

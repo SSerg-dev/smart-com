@@ -4979,9 +4979,11 @@
             promoProductWidget.addListener('afterrender', function () {
                 var toolbar = promoProductWidget.down('custombigtoolbar');
                 var importBtn = promoProductWidget.down('[action=FullImportXLSX]');
+                var importPluBtn = promoProductWidget.down('[action=FullImportPluXLSX]');
 
                 toolbar.down('#createbutton').hide();
                 importBtn.action += '?promoId=' + record.get('Id');
+                importPluBtn.action += '?promoId=' + record.get('Id');
 
                 var tmplTLC = promoProductWidget.down('#loadimporttemplatexlsxbuttonTLC');
                 var tmplNotTLC = promoProductWidget.down('#loadimporttemplatexlsxbutton');

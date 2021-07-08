@@ -35,6 +35,7 @@ namespace Module.Host.TPM
                 new Handlers.CalculateActualParamatersHandler(),
                 new Handlers.PromoWorkflowHandler(),
                 new Handlers.FullXLSXImportPromoProductHandler(),
+                new Handlers.FullXLSXImportPromoProductPluHandler(),
                 new Handlers.FullXLSXImportPromoProductFromTLCHandler(),
                 new Handlers.BaseLineUpgradeHandler(),
                 new Handlers.SchedulerExportHandler(),

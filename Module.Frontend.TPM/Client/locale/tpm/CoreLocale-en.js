@@ -150,6 +150,8 @@
         'importXLSX': 'Import XLSX',
         'fullImportCSV': 'Full import CSV',
         'fullImportXLSX': 'Full import XLSX',
+        'fullImportEANXLSX': 'Full import EAN PC XLSX',
+        'fullImportPLUXLSX': 'Full import PLU XLSX',
         'importTemplateCSV': 'Import template CSV',
         'importTemplateXLSX': 'Import template XLSX',
         'importTemplateEANPCXLSX': 'Import template EAN PC XLSX',

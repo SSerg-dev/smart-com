@@ -601,6 +601,7 @@ namespace Module.Persist.TPM {
             builder.Entity<PromoProduct>().HasRequired(n => n.Product, (n, p) => n.ProductId == p.Id);
             builder.Entity<PromoProduct>().Collection.Action("ExportXLSX");
             builder.Entity<PromoProduct>().Collection.Action("FullImportXLSX");
+            builder.Entity<PromoProduct>().Collection.Action("FullImportPluXLSX");
             builder.Entity<PromoProduct>().Collection.Action("DownloadTemplateXLSXTLC");
             builder.Entity<PromoProduct>().Collection.Action("DownloadTemplateXLSX");
             builder.Entity<PromoProduct>().Collection.Action("DownloadTemplatePluXLSX");

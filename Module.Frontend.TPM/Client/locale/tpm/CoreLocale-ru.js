@@ -135,6 +135,8 @@
         'importXLSX': 'Импорт XLSX',
         'fullImportCSV': 'Полный импорт CSV',
         'fullImportXLSX': 'Полный импорт XLSX',
+        'fullImportEANXLSX': 'Полный импорт EAN PC XLSX',
+        'fullImportPLUXLSX': 'Полный импорт PLU XLSX',
         'importTemplateCSV': 'Шаблон импорта CSV',
         'importTemplateXLSX': 'Шаблон импорта XLSX',
         'importTemplateEANPCXLSX': 'Шаблон импорта EAN PC XLSX',

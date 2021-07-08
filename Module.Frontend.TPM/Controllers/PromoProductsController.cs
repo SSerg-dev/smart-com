@@ -512,7 +512,39 @@ namespace Module.Frontend.TPM.Controllers
             }
         }
 
-        private void CreateImportTask(string fileName, Guid promoId)
+        [ClaimsAuthorize]
+        public async Task<IHttpActionResult> FullImportPluXLSX(Guid promoId)
+		{
+            try
+            {
+                bool promoAvaible = CalculationTaskManager.BlockPromo(promoId, Guid.Empty);
+
+                if (promoAvaible)
+                {
+                    if (!Request.Content.IsMimeMultipartContent())
+                    {
+                        throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+                    }
+
+                    string importDir = Core.Settings.AppSettingsManager.GetSetting("IMPORT_DIRECTORY", "ImportFiles");
+                    string fileName = await FileUtility.UploadFile(Request, importDir);
+
+                    CreateImportTask(fileName, promoId, true);
+                    return Json(new { success = true });
+                }
+                else
+                {
+                    return GetErorrRequest(new Exception("Promo was blocked for calculation"));
+                }
+
+            }
+            catch (Exception e)
+            {
+                return Json(new { success = false, message = e.Message });
+            }
+        }
+
+        private void CreateImportTask(string fileName, Guid promoId, bool isPlu = false)
         {
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
@@ -542,8 +574,16 @@ namespace Module.Frontend.TPM.Controllers
                 }
                 else
                 {
-                    handlerName = "FullXLSXImportPromoProductHandler";
-                    importModel = typeof(ImportPromoProduct);
+                    if(isPlu)
+					{
+                        handlerName = "FullXLSXImportPromoProductPluHandler";
+                        importModel = typeof(ImportPromoProductPlu);
+                    }
+                    else
+					{
+                        handlerName = "FullXLSXImportPromoProductHandler";
+                        importModel = typeof(ImportPromoProduct);
+                    }
                 }
                 HandlerDataHelper.SaveIncomingArgument("File", file, data, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);

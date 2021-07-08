@@ -27,11 +27,19 @@
                 xtype: 'customheadermenu',
                 items: [{
                     glyph: 0xf220,
-                    itemgroup: 'loadimportbutton',
+                    itemId: 'loadimporteanbutton',
                     exactlyModelCompare: true,
-                    text: l10n.ns('core', 'additionalMenu').value('fullImportXLSX'),
+                    text: l10n.ns('core', 'additionalMenu').value('fullImportEANXLSX'),
                     resource: '{0}',
                     action: 'FullImportXLSX',
+                    allowFormat: ['zip', 'xlsx']
+                },{
+                    glyph: 0xf220,
+                    itemId: 'loadimportplubutton',
+                    exactlyModelCompare: true,
+                    text: l10n.ns('core', 'additionalMenu').value('fullImportPLUXLSX'),
+                    resource: '{0}',
+                    action: 'FullImportPluXLSX',
                     allowFormat: ['zip', 'xlsx']
                 }, {
                     glyph: 0xf21d,
