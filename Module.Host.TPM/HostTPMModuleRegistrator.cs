@@ -48,6 +48,7 @@ namespace Module.Host.TPM
                 new Handlers.FullXLSXNoNegoUpdateImporHandler(),
                 new Handlers.FullXLSXMechanicTypeUpdateImporHandler(),
                 new Handlers.FullXLSXAssortmentMatrixImportHandler(),
+                new Handlers.FullXLSXPLUDictionaryImportHandler(),
                 new Handlers.AutoResetPromoHandler(),
                 new Handlers.XLSXImportActualLsvHandler(),
                 new Handlers.ActualLSVChangeHandler(),

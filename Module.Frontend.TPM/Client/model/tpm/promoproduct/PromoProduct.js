@@ -10,7 +10,7 @@
         { name: 'EAN_PC', type: 'string', hidden: false, isDefault: true },
         {
             name: 'PluCode', type: 'string', mapping: 'Plu.PluCode',
-            defaultFilterConfig: { valueField: 'PluCode' }, breezeEntityType: 'Plu', hidden: false, isDefault: true
+            defaultFilterConfig: { valueField: 'PluCode' }, breezeEntityType: 'PromoProduct2Plu', hidden: false, isDefault: true
         },
         { name: 'PlanProductCaseQty', type: 'float', hidden: true, isDefault: false, useNull: true },        
         { name: 'PlanProductPCQty', type: 'int', hidden: true, isDefault: false, useNull: true },        

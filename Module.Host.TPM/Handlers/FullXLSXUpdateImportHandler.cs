@@ -215,6 +215,14 @@ namespace Module.Host.TPM.Handlers
         }
     }
 
+    class FullXLSXPLUDictionaryImportHandler : FullXLSXImportHandler
+    {
+        protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
+        {
+            return new FullXLSXPLUDictionaryImportAction(settings);
+        }
+    }
+
     class FullXLSXImportPromoProductHandler : FullXLSXImportHandler
     {
         /// <summary>

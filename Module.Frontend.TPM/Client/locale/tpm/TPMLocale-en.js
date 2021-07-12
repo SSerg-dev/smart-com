@@ -69,11 +69,12 @@
         'PromoROIReport': 'Promo ROI Report',
         'RATIShopper': 'RA TI Shopper',
         'AssortmentMatrix': 'Assortment matrix',
+        'PLUDictionary': 'PLU dictionary',
         'PromoROIReport': 'Promo ROI Report',
         'IncrementalPromo': 'Incremental Promo',
         'BTL': 'BTL',
-		'ActualLSV': 'Actual LSV',
-		'NonPromoEquipment': 'Non-Promo Equipment',
+        'ActualLSV': 'Actual LSV',
+        'NonPromoEquipment': 'Non-Promo Equipment',
         'PromoTypes': 'Promo Types',
         'ClientDashboard': 'Client Dashboard',
         'Dashboard': 'Dashboard',
@@ -86,6 +87,7 @@
     },
 
     'compositePanelTitles': {
+        'PLUDictionary':'PLU Dictionary',
         'Category': 'Category',
         'NonPromoEquipment': 'Non-Promo Equipment',
         'Brand': 'Brand',
@@ -2356,6 +2358,24 @@
     },
     'HistoricalAssortmentMatrix': ['.tpm.AssortmentMatrix', '.core.BaseHistoryEntity'],
     'DeletedAssortmentMatrix': ['.tpm.AssortmentMatrix', '.core.BaseDeletedEntity'],
+
+    'AssortmentMatrix2Plu': {
+        'Id': 'Assortment matrix Id',
+        'PluCode' : "PLU",
+    },
+
+    'PromoProduct2Plu': {
+        'Id': 'Promo  product Id',
+        'PluCode': "PLU",
+    },
+
+    'PLUDictionary': {
+        'ClientTreeName': 'Client',
+        'ClientTreeObjectId': 'Client hierarchy code',
+        'PluCode': "PLU",
+        'EAN_PC': 'EAN PC',
+        "ProductEN":"Profuct name",
+	},
 
     'IncrementalPromo': {
         'ProductZREP': 'ZREP',

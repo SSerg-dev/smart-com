@@ -2568,6 +2568,10 @@
     <Compile Include="Migrations\202107071143596_AddPluRole.Designer.cs">
       <DependentUpon>202107071143596_AddPluRole.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202107120544409_PLUDictionary.cs" />
+    <Compile Include="Migrations\202107120544409_PLUDictionary.Designer.cs">
+      <DependentUpon>202107120544409_PLUDictionary.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -2643,6 +2647,7 @@
     <Compile Include="Model\Import\ImportBTL.cs" />
     <Compile Include="Model\Import\ImportClientDashboard.cs" />
     <Compile Include="Model\Import\ImportCoefficientSI2SO.cs" />
+    <Compile Include="Model\Import\ImportPLUDictionary.cs" />
     <Compile Include="Model\Import\ImportPromoDMP.cs" />
     <Compile Include="Model\Import\ImportNonPromoDMP.cs" />
     <Compile Include="Model\Import\ImportNonPromoEquipment.cs" />
@@ -2688,6 +2693,7 @@
     <Compile Include="Model\TPM\ActualLsvModel.cs" />
     <Compile Include="Model\TPM\Client.cs" />
     <Compile Include="Model\TPM\Plu.cs" />
+    <Compile Include="Model\TPM\PLUDictionary.cs" />
     <Compile Include="Model\TPM\PromoSupportDMP.cs" />
     <Compile Include="Model\TPM\NonPromoSupportDMP.cs" />
     <Compile Include="Model\TPM\PreviousDayIncremental.cs" />
@@ -4937,6 +4943,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202107071143596_AddPluRole.resx">
       <DependentUpon>202107071143596_AddPluRole.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202107120544409_PLUDictionary.resx">
+      <DependentUpon>202107120544409_PLUDictionary.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -58,6 +58,7 @@ namespace Module.Persist.TPM {
             modelBuilder.Entity<Plu>();
             modelBuilder.Entity<AssortmentMatrix2Plu>();
             modelBuilder.Entity<PromoProduct2Plu>();
+            modelBuilder.Entity<PLUDictionary>();
 
             modelBuilder.Entity<PromoProduct>();
             modelBuilder.Entity<PromoProduct>().HasOptional(x => x.Plu).WithRequired();
@@ -586,7 +587,12 @@ namespace Module.Persist.TPM {
             builder.Entity<HistoricalNoneNego>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalNoneNego>("HistoricalNoneNegoes");
             builder.Entity<NoneNego>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<NoneNego>("NoneNegoes");
 
-            builder.EntitySet<PromoProduct2Plu>("PromoProduct2Plu");
+            builder.EntitySet<PLUDictionary>("PLUDictionaries");
+            builder.Entity<PLUDictionary>().Collection.Action("ExportXLSX");
+            builder.Entity<PLUDictionary>().Collection.Action("FullImportXLSX");
+            builder.Entity<PLUDictionary>().Collection.Action("DownloadTemplateXLSX");
+            
+            builder.EntitySet<PromoProduct2Plu>("PromoProduct2Plus");
 
             builder.EntitySet<PromoProduct>("PromoProducts");
             builder.EntitySet<PromoProduct>("DeletedPromoProducts");
@@ -833,7 +839,7 @@ namespace Module.Persist.TPM {
             builder.Entity<HistoricalAssortmentMatrix>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalAssortmentMatrix>("HistoricalAssortmentMatrices");
 
             //builder.Entity<AssortmentMatrix>().HasOptional(n => n.Plu);
-            builder.EntitySet<AssortmentMatrix2Plu>("AssortmentMatrix2Plu");
+            builder.EntitySet<AssortmentMatrix2Plu>("AssortmentMatrix2Plus");
 
             builder.Entity<AssortmentMatrix>().HasOptional(n => n.Plu, (n, p) => n.Id == p.Id);
 

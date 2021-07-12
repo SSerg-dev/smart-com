@@ -1,4 +1,5 @@
 ﻿using Core.Data;
+using Module.Persist.TPM.Utils;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -28,8 +29,10 @@ namespace Module.Persist.TPM.Model.TPM
 		[StringLength(20)]
 		public string PluCode { get; set; }
 		
+		[SpecialNotKeyProperty]
 		public virtual ClientTree ClientTree { get; set; }
 
+		[SpecialNotKeyProperty]
 		public virtual Product Product { get; set; }
 	}
 
@@ -42,9 +45,9 @@ namespace Module.Persist.TPM.Model.TPM
 
 	}
 
-	public class AssortmentMatrix2Plu :IEntity
+	public class AssortmentMatrix2Plu :IEntity<Guid>
 	{
-		[Key]
+		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public Guid Id { get; set; }
 
 		public string PluCode { get; set; }

@@ -289,6 +289,7 @@
     <Compile Include="Actions\FullXLSXAssortmentMatrixImportAction.cs" />
     <Compile Include="Actions\FullXLSXImportPromoDMPAction.cs" />
     <Compile Include="Actions\FullXLSXImportPromoProductPluAction.cs" />
+    <Compile Include="Actions\FullXLSXPLUDictionaryImportAction.cs" />
     <Compile Include="Actions\FullXLSXRATIShopperUpdateImportAction.cs" />
     <Compile Include="Actions\FullXLSXImportPromoProductFromTLCAction.cs" />
     <Compile Include="Actions\FullXLSXMechanicTypeUpdateImportAction.cs" />

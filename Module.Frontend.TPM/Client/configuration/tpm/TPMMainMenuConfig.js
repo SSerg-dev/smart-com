@@ -81,6 +81,11 @@
             tooltip: l10n.ns('tpm', 'mainmenu').value('AssortmentMatrix'),
             glyph: 0xf007,
             widget: 'assortmentmatrix'
+        }, {
+            text: l10n.ns('tpm', 'mainmenu').value('PLUDictionary'),
+            tooltip: l10n.ns('tpm', 'mainmenu').value('PLUDictionary'),
+            glyph: 0xf007,
+            widget: 'pludictionary'
         }]
     }, {
         text: l10n.ns('tpm', 'mainmenu').value('ProductItem'),

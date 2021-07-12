@@ -12,7 +12,7 @@
         },
         {
             name: 'PluCode', type: 'string', mapping: 'Plu.PluCode',
-            defaultFilterConfig: { valueField: 'PluCode' }, breezeEntityType: 'Plu', hidden: false, isDefault: true
+            defaultFilterConfig: { valueField: 'PluCode' }, breezeEntityType: 'AssortmentMatrix2Plu', hidden: false, isDefault: true
         },
         { name: 'ProductId', hidden: true, isDefault: true },
         {

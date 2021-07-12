@@ -258,6 +258,8 @@
     'tpm.assortmentmatrix.DeletedAssortmentMatrix',
     'App.controller.tpm.assortmentmatrix.HistoricalAssortmentMatrix',
 
+    'tpm.pludictionary.PLUDictionary',
+
     'tpm.incrementalpromo.IncrementalPromo',
     'tpm.incrementalpromo.DeletedIncrementalPromo',
     'tpm.incrementalpromo.HistoricalIncrementalPromo',
