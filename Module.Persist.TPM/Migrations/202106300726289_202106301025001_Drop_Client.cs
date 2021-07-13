@@ -1,13 +1,15 @@
 namespace Module.Persist.TPM.Migrations
 {
-    using System;
+	using Core.Settings;
+	using System;
     using System.Data.Entity.Migrations;
     
     public partial class _202106301025001_Drop_Client : DbMigration
     {
         public override void Up()
         {
-            Sql("DROP TABLE Jupiter.Client");
+            var defaultSchema = AppSettingsManager.GetSetting<string>("DefaultSchema", "dbo");
+            Sql($"DROP TABLE {defaultSchema}.Client");
         }
         
         public override void Down()

@@ -1,14 +1,16 @@
 namespace Module.Persist.TPM.Migrations
 {
-    using System;
+	using Core.Settings;
+	using System;
     using System.Data.Entity.Migrations;
     
     public partial class Add_Plu_Table : DbMigration
     {
         public override void Up()
         {
+            var defaultSchema = AppSettingsManager.GetSetting<string>("DefaultSchema", "dbo");
             CreateTable(
-                "Jupiter.Plu",
+                $"{defaultSchema}.Plu",
                 c => new
                 {
                     ClientTreeId = c.Int(nullable: false),
@@ -16,16 +18,17 @@ namespace Module.Persist.TPM.Migrations
                     PluCode = c.String(maxLength: 20),
                 })
                 .PrimaryKey(t => new { t.ClientTreeId, t.ProductId })
-                .ForeignKey("Jupiter.ClientTree", t => t.ClientTreeId)
-                .ForeignKey("Jupiter.Product", t => t.ProductId);
+                .ForeignKey($"{defaultSchema}.ClientTree", t => t.ClientTreeId)
+                .ForeignKey($"{defaultSchema}.Product", t => t.ProductId);
             
         }
         
         public override void Down()
         {
-            DropForeignKey("Jupiter.Plu", "ProductId", "Jupiter.Product");
-            DropForeignKey("Jupiter.Plu", "ClientTreeId", "Jupiter.ClientTree");
-            DropTable("Jupiter.Plu");
+            var defaultSchema = AppSettingsManager.GetSetting<string>("DefaultSchema", "dbo");
+            DropForeignKey($"{defaultSchema}.Plu", "ProductId", "Jupiter.Product");
+            DropForeignKey($"{defaultSchema}.Plu", "ClientTreeId", "Jupiter.ClientTree");
+            DropTable($"{defaultSchema}.Plu");
         }
     }
 }

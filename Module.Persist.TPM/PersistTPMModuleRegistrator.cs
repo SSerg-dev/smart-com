@@ -591,7 +591,9 @@ namespace Module.Persist.TPM {
             builder.Entity<PLUDictionary>().Collection.Action("ExportXLSX");
             builder.Entity<PLUDictionary>().Collection.Action("FullImportXLSX");
             builder.Entity<PLUDictionary>().Collection.Action("DownloadTemplateXLSX");
-            
+            builder.Entity<PLUDictionary>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PLUDictionary>("PLUDictionaries");
+
+
             builder.EntitySet<PromoProduct2Plu>("PromoProduct2Plus");
 
             builder.EntitySet<PromoProduct>("PromoProducts");

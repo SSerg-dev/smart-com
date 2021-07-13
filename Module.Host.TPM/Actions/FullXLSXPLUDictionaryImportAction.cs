@@ -217,9 +217,21 @@ namespace Module.Host.TPM.Actions
 							{
                                 createCount++;
                                 var plu = new Plu() { ClientTreeId = item.ClientTreeId, ProductId = clientProduct.ProductId, PluCode = item.PLU };
-                                context.Set<Plu>().Add(plu);
-                                successList.Add(importItem.Original);
-                                pluCreateListHistory.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(null, importItem.Original));
+
+                                var exists = context.Set<Plu>().Local.FirstOrDefault(x => x.ClientTreeId == plu.ClientTreeId && x.ProductId == plu.ProductId);
+                                if (exists != null && exists.PluCode != plu.PluCode)
+                                {
+                                    Warnings.Add($"Double PluCode for one EAN_PC. PluCode -  {exists.PluCode},{plu.PluCode}");
+                                    Warnings.Add($"Was created only  {clientProduct.EAN_PC}, {exists.PluCode}");
+                                    warningRecords.Add(new Tuple<IEntity<Guid>, string>(importItem.Original, $"Double PluCode for one EAN_PC. PluCode -  {exists.PluCode},{plu.PluCode}"));
+                                    warningRecords.Add(new Tuple<IEntity<Guid>, string>(importItem.Original, $"Was created only  {clientProduct.EAN_PC}, {exists.PluCode}"));
+                                }
+                                else
+                                {
+                                    context.Set<Plu>().Local.Add(plu);
+                                    successList.Add(importItem.Original);
+                                    pluCreateListHistory.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(null, importItem.Original));
+                                }
                             }
                             else if(item.PLU != clientProduct.PluCode)
 							{

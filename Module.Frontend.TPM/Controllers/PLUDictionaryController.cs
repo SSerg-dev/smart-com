@@ -50,8 +50,8 @@ namespace Module.Frontend.TPM.Controllers
 		{
 			Context.Database.Log = x => Debug.WriteLine(x);
 			UserInfo user = authorizationManager.GetCurrentUser();
-			user.Id = new Guid("7A0BE6A0-F19B-E911-A842-000D3A46085B");
-			string role = "KeyAccountManager";// authorizationManager.GetCurrentRoleName();
+			//user.Id = new Guid("7A0BE6A0-F19B-E911-A842-000D3A46085B");
+			string role =  authorizationManager.GetCurrentRoleName(); //"KeyAccountManager"
 			IList<Constraint> constraints = user.Id.HasValue ? Context.Constraints
 				.Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
 				.ToList() : new List<Constraint>();
@@ -68,7 +68,8 @@ namespace Module.Frontend.TPM.Controllers
 		[EnableQuery(MaxNodeCount = int.MaxValue)]
 		public IQueryable<PLUDictionary> GetPLUDictionaries()
 		{
-			var sss = HistoryReader.GetAll<HistoryPLUDictionary>();
+
+			//var sss = HistoryReader.GetAll<HistoryPLUDictionary>();
 
 			var query = GetQuery();
 			return query;
