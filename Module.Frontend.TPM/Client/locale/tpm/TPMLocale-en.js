@@ -1085,7 +1085,7 @@
         'IsOnInvoice': 'On Invoice',
         'InvoiceType': 'Invoice Type',
         'DMDGroup': 'DMD Group',
-        'DMDGroupRegex': 'Only positive values greater than 0',
+        'DMDGroupRegex': 'Only numbers, «_»,  «/», «\», «-» allowed',
         'Adjustment': 'Adjustment',
         'AdjustmentP': 'Adjustment, %',
         'DistrMarkUp': 'Distr MarkUp',
