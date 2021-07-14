@@ -2572,6 +2572,10 @@
     <Compile Include="Migrations\202107120544409_PLUDictionary.Designer.cs">
       <DependentUpon>202107120544409_PLUDictionary.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202107141026265_Empty1.cs" />
+    <Compile Include="Migrations\202107141026265_Empty1.Designer.cs">
+      <DependentUpon>202107141026265_Empty1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -4946,6 +4950,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202107120544409_PLUDictionary.resx">
       <DependentUpon>202107120544409_PLUDictionary.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202107141026265_Empty1.resx">
+      <DependentUpon>202107141026265_Empty1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
