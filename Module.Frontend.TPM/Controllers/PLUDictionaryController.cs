@@ -83,7 +83,7 @@ namespace Module.Frontend.TPM.Controllers
 				var columns = GetExportSettings();
 				XLSXExporter exporter = new XLSXExporter(columns);
 				string exportDir = AppSettingsManager.GetSetting("EXPORT_DIRECTORY", "~/ExportFiles");
-				string filename = string.Format("{0}Template.xlsx", "AssortmentMatrix");
+				string filename = string.Format("{0}Template.xlsx", "PLUDictionary");
 				if (!Directory.Exists(exportDir))
 				{
 					Directory.CreateDirectory(exportDir);
