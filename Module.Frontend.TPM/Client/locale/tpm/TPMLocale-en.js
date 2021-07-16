@@ -2379,7 +2379,7 @@
 
     'IncrementalPromo': {
         'ProductZREP': 'ZREP',
-        'ProductName': 'Product Name',
+        'ProductName': 'Product EN',
         'PromoClient': 'Client',
         'PromoNumber': 'Promo ID',
         'PromoName': 'Promo Name',
