@@ -2374,7 +2374,7 @@
         'ClientTreeObjectId': 'Client hierarchy code',
         'PluCode': "PLU",
         'EAN_PC': 'EAN PC',
-        "ProductEN":"Product name",
+        "ProductEN":"Product EN",
 	},
 
     'IncrementalPromo': {
