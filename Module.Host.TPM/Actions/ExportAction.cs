@@ -110,6 +110,10 @@ namespace Module.Host.TPM.Actions.Notifications
                             var options = getODataQueryOptions<TModel>();
                             records = options.ApplyTo(new PromoGridViewsController(User, Role, RoleId).GetConstraintedQuery(localContext: context)).Cast<PromoGridView>().ToList();
                         }
+                        else if(typeof(TModel).Name.Equals(typeof(AssortmentMatrix).Name))
+						{
+                            records = getAssortmentMatrices(context, SqlString);
+                        }                            
                         else
                         {
                             records = context.Database.SqlQuery<TModel>(SqlString).ToList();
@@ -148,6 +152,24 @@ namespace Module.Host.TPM.Actions.Notifications
                 logger.Trace("Finish");
             }
         }
+
+        private IList getAssortmentMatrices(DatabaseContext context, string sqlQuery)
+		{
+            var records = context.Database.SqlQuery<AssortmentMatrix>(SqlString).ToList();
+            var clientIds = records.GroupBy(x => x.ClientTreeId).Select(x => x.Key).ToList();
+            var plu = context.Set<Plu>().Where(x => clientIds.Contains(x.ClientTreeId)).ToList();
+
+            foreach(var item in records)
+			{
+                var found = plu.SingleOrDefault(x => x.ProductId == item.ProductId);
+                if(found != null)
+				{
+                    item.Plu = new AssortmentMatrix2Plu() { PluCode = found.PluCode };
+				}
+			}
+            return records;
+        }
+
 
         private class ExportPromoProduct : PromoProduct
 		{

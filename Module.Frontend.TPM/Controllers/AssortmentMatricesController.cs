@@ -292,6 +292,7 @@ namespace Module.Frontend.TPM.Controllers
                 new Column() { Order = 0, Field = "Number", Header = "ID", Quoting = false },
                 new Column() { Order = 1, Field = "ClientTree.FullPathName", Header = "Client", Quoting = false },
                 new Column() { Order = 2, Field = "ClientTree.ObjectId", Header = "Client hierarchy code", Quoting = false },
+                new Column() { Order = 3, Field = "Plu.PluCode", Header = "PLU", Quoting = false },
                 new Column() { Order = 3, Field = "Product.EAN_PC", Header = "EAN PC", Quoting = false },
                 new Column() { Order = 5, Field = "StartDate", Header = "Start Date", Quoting = false, Format = "dd.MM.yyyy" },
                 new Column() { Order = 6, Field = "EndDate", Header = "End Date", Quoting = false, Format = "dd.MM.yyyy" },
