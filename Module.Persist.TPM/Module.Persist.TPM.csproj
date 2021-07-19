@@ -2552,6 +2552,10 @@
     <Compile Include="Migrations\202105201331074_Add_ManualInputSumInvoice.Designer.cs">
       <DependentUpon>202105201331074_Add_ManualInputSumInvoice.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202107192037591_Anaplan_ClientDashboard_Modification.cs" />
+    <Compile Include="Migrations\202107192037591_Anaplan_ClientDashboard_Modification.Designer.cs">
+      <DependentUpon>202107192037591_Anaplan_ClientDashboard_Modification.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -4908,6 +4912,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202105201331074_Add_ManualInputSumInvoice.resx">
       <DependentUpon>202105201331074_Add_ManualInputSumInvoice.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202107192037591_Anaplan_ClientDashboard_Modification.resx">
+      <DependentUpon>202107192037591_Anaplan_ClientDashboard_Modification.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
