@@ -406,8 +406,8 @@
 			LEFT JOIN PromoParams AS pp (NOLOCK) ON BTCT.BTId = pp.BrandTechId AND BTCT.ObjectId = pp.ClientTreeId AND BTCT.YEAR = pp.YEAR
 			LEFT JOIN [Jupiter].[ClientDashboard] AS CD (NOLOCK) ON CD.ClientTreeId = BTCT.ObjectId AND CD.BrandTechId = BTCT.BTId AND CD.Year = BTCT.[Year]
 			LEFT JOIN NonPromo AS np (NOLOCK) ON BTCT.CTId = np.ClientTreeKeyId AND BTCT.[Year] = np.Year
-			LEFT JOIN [Jupiter].[ClientTreeBrandTech] AS SHARES (NOLOCK) ON BTCT.CTId = SHARES.ClientTreeId AND 
-				SHARES.[BrandTechId] = BTCT.BTId AND SHARES.[Disabled] = 0
+			LEFT JOIN Shares AS SHARES (NOLOCK) ON BTCT.CTId = SHARES.ClientTreeId AND 
+				SHARES.[BrandTechId] = BTCT.BTId
 			GROUP BY BTCT.ObjectId, BTCT.BTId, BTCT.[Year]
 			GO
 		";
