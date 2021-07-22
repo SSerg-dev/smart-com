@@ -18,7 +18,7 @@ namespace Module.Persist.TPM.Migrations
 		@"
 		CREATE OR ALTER VIEW [Jupiter].[PlanPostPromoEffectReportWeekView] AS
             WITH
-				BaseDataView
+		BaseDataView
 			AS
 			(
 				SELECT  
@@ -125,6 +125,7 @@ namespace Module.Persist.TPM.Migrations
 						FROM [ClientTreeBrandTech]
 						WHERE
 							[ParentClientTreeDemandCode] = p.[DemandCode]
+							AND [ClientTreeId] = p.[ClientTreeKeyId]
 							AND [BrandTechId] = p.[BrandTechId]
 							AND [Disabled] = 0
 					)
