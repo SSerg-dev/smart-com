@@ -107,7 +107,6 @@ namespace Module.Frontend.TPM.Controllers
 				new Column() { Order = 1, Field = "PluCode", Header = "PLU", Quoting = false },
 				new Column() { Order = 2, Field = "EAN_PC", Header = "EAN PC", Quoting = false },
 				new Column() { Order = 3, Field = "ClientTreeName", Header = "Client", Quoting = false },
-				new Column() { Order = 4, Field = "ProductEN", Header = "ProductEN", Quoting = false },
 				};
 			return columns;
 		}

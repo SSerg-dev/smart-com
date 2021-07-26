@@ -95,9 +95,6 @@
                     xclass: 'App.ExtSelectionFilterModel',
                     model: 'App.model.tpm.pludictionary.PLUDictionary',
                     modelId: 'efselectionmodel'
-                }, {
-                    xclass: 'App.ExtTextFilterModel',
-                    modelId: 'eftextmodel'
                 }]
             },
             sorters: [{
@@ -136,9 +133,6 @@
             }, {
                 text: l10n.ns('tpm', 'NoneNego').value('ClientTreeObjectId'),
                 dataIndex: 'ClientTreeObjectId'
-            }, {
-                text: l10n.ns('tpm', 'PLUDictionary').value('ProductEN'),
-                dataIndex: 'ProductEN',
             }, {
                 text: l10n.ns('tpm', 'PLUDictionary').value('PluCode'),
                 dataIndex: 'PluCode',

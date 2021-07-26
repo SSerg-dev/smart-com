@@ -2576,6 +2576,10 @@
     <Compile Include="Migrations\202107141026265_Empty1.Designer.cs">
       <DependentUpon>202107141026265_Empty1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202107260050598_ChangePLUTable.cs" />
+    <Compile Include="Migrations\202107260050598_ChangePLUTable.Designer.cs">
+      <DependentUpon>202107260050598_ChangePLUTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -4953,6 +4957,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202107141026265_Empty1.resx">
       <DependentUpon>202107141026265_Empty1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202107260050598_ChangePLUTable.resx">
+      <DependentUpon>202107260050598_ChangePLUTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

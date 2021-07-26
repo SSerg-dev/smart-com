@@ -10,9 +10,9 @@
             name: 'ClientTreeObjectId', type: 'int', mapping: 'ObjectId',
             defaultFilterConfig: { valueField: 'ObjectId' }, hidden: false, isDefault: true,
         }, 
-        { name: 'ProductEN', type: 'string', hidden: false, isDefault: true, mapping: 'ProductEN' },
         { name: 'PluCode', type: 'string', hidden: false, isDefault: true, mapping: 'PluCode' },
         { name: 'EAN_PC', type: 'string', hidden: false, isDefault: true, mapping: 'EAN_PC' },
+        { name: 'id', type: 'string', hidden: true},
     ],
     proxy: {
         type: 'breeze',

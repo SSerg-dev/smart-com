@@ -17,15 +17,13 @@ namespace Module.Persist.TPM.Model.TPM
 
 		[Key, Column(Order = 0)]
 		public int ClientTreeId { get; set; }
-
 		[Key, Column(Order = 1)]
-		public Guid ProductId { get; set; }
+		public string EAN_PC { get; set; }
+
 		public int ObjectId { get; set; }
 
 		public string PluCode { get; set; }
-		public string EAN_PC { get; set; }
 		public string ClientTreeName { get; set; }
-		public string ProductEN { get; set; }
 
 	}
 

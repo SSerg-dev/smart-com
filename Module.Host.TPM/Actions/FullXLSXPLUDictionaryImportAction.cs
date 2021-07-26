@@ -215,24 +215,24 @@ namespace Module.Host.TPM.Actions
                             successCount++;
                             if(clientProduct.PluCode == null)
 							{
-                                createCount++;
-                                var plu = new Plu() { ClientTreeId = item.ClientTreeId, ProductId = clientProduct.ProductId, PluCode = item.PLU };
+								createCount++;
+								var plu = new Plu() { ClientTreeId = item.ClientTreeId,  PluCode = item.PLU, EAN_PC = item.EAN_PC };
 
-                                var exists = context.Set<Plu>().Local.FirstOrDefault(x => x.ClientTreeId == plu.ClientTreeId && x.ProductId == plu.ProductId);
-                                if (exists != null && exists.PluCode != plu.PluCode)
-                                {
-                                    Warnings.Add($"Double PluCode for one EAN_PC. PluCode -  {exists.PluCode},{plu.PluCode}");
-                                    Warnings.Add($"Was created only  {clientProduct.EAN_PC}, {exists.PluCode}");
-                                    warningRecords.Add(new Tuple<IEntity<Guid>, string>(importItem.Original, $"Double PluCode for one EAN_PC. PluCode -  {exists.PluCode},{plu.PluCode}"));
-                                    warningRecords.Add(new Tuple<IEntity<Guid>, string>(importItem.Original, $"Was created only  {clientProduct.EAN_PC}, {exists.PluCode}"));
-                                }
-                                else
-                                {
-                                    context.Set<Plu>().Local.Add(plu);
-                                    successList.Add(importItem.Original);
-                                    pluCreateListHistory.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(null, importItem.Original));
-                                }
-                            }
+								var exists = context.Set<Plu>().Local.FirstOrDefault(x => x.ClientTreeId == plu.ClientTreeId && x.EAN_PC == item.EAN_PC);
+								if (exists != null && exists.PluCode != plu.PluCode)
+								{
+									Warnings.Add($"Double PluCode for one EAN_PC. PluCode -  {exists.PluCode},{plu.PluCode}");
+									Warnings.Add($"Was created only  {clientProduct.EAN_PC}, {exists.PluCode}");
+									warningRecords.Add(new Tuple<IEntity<Guid>, string>(importItem.Original, $"Double PluCode for one EAN_PC. PluCode -  {exists.PluCode},{plu.PluCode}"));
+									warningRecords.Add(new Tuple<IEntity<Guid>, string>(importItem.Original, $"Was created only  {clientProduct.EAN_PC}, {exists.PluCode}"));
+								}
+								else
+								{
+									context.Set<Plu>().Local.Add(plu);
+									successList.Add(importItem.Original);
+									pluCreateListHistory.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(null, importItem.Original));
+								}
+							}
                             else if(item.PLU != clientProduct.PluCode)
 							{
                                 updateCount++;
@@ -243,12 +243,10 @@ namespace Module.Host.TPM.Actions
                                     EAN_PC = clientProduct.EAN_PC,
                                     ObjectId = clientProduct.ObjectId,
                                     PluCode = item.PLU,
-                                    ProductEN = clientProduct.ProductEN,
-                                    ProductId = clientProduct.ProductId,
                                 };
                                 pluUpdateListHistory.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(clientProduct, newPlu));
                                 successList.Add(importItem.Original);
-                                pluUpdateList.Add(new Plu() { ClientTreeId = item.ClientTreeId, ProductId = clientProduct.ProductId, PluCode = item.PLU });
+                                pluUpdateList.Add(new Plu() { ClientTreeId = item.ClientTreeId, PluCode = item.PLU, EAN_PC = item.EAN_PC });
                             }
                         }
                     }

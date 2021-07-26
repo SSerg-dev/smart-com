@@ -21,7 +21,8 @@ namespace Module.Persist.TPM.Model.TPM
 		/// Ссылка на продукт
 		/// </summary>
 		[Key, Column(Order = 2)]
-		public Guid ProductId { get; set; }
+		[StringLength(255)]
+		public string EAN_PC { get; set; }
 
 		/// <summary>
 		/// Код PLU
@@ -32,8 +33,6 @@ namespace Module.Persist.TPM.Model.TPM
 		[SpecialNotKeyProperty]
 		public virtual ClientTree ClientTree { get; set; }
 
-		[SpecialNotKeyProperty]
-		public virtual Product Product { get; set; }
 	}
 
 	public class PromoProduct2Plu : IEntity
@@ -49,7 +48,7 @@ namespace Module.Persist.TPM.Model.TPM
 	{
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public Guid Id { get; set; }
-
+		public int ClientTreeId { get; set; }
 		public string PluCode { get; set; }
 	}
 

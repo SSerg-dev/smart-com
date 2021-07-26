@@ -618,7 +618,7 @@ namespace Module.Persist.TPM {
             builder.Entity<PromoProduct>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PromoProduct>("PromoProducts");
             builder.Entity<HistoricalPromoProduct>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalPromoProduct>("HistoricalPromoProducts");
 
-            builder.Entity<PromoProduct>().HasOptional(x => x.Plu, (n, p) => n.Id == p.Id);
+            //builder.Entity<PromoProduct>().HasOptional(x => x.Plu, (n, p) => n.Id == p.Id);
 
 
             builder.EntitySet<PromoProductsView>("PromoProductsViews");
@@ -819,9 +819,7 @@ namespace Module.Persist.TPM {
 
             builder.EntitySet<Plu>("Plus");
 			builder.EntitySet<Plu>("Plus").HasRequiredBinding(e => e.ClientTree, "ClientTrees");
-			builder.EntitySet<Plu>("Plus").HasRequiredBinding(e => e.Product, "Products");
 			builder.Entity<Plu>().HasRequired(n => n.ClientTree, (n, p) => n.ClientTreeId == p.Id);
-			builder.Entity<Plu>().HasRequired(n => n.Product, (n, p) => n.ProductId == p.Id);
 
 
 
@@ -842,8 +840,8 @@ namespace Module.Persist.TPM {
 
             //builder.Entity<AssortmentMatrix>().HasOptional(n => n.Plu);
             builder.EntitySet<AssortmentMatrix2Plu>("AssortmentMatrix2Plus");
-
             builder.Entity<AssortmentMatrix>().HasOptional(n => n.Plu, (n, p) => n.Id == p.Id);
+            //builder.Entity<AssortmentMatrix>().HasOptional(n => n.Plu, (n, p) => n.Id == p.);
 
             builder.Entity<PromoProductTree>().HasRequired(n => n.Promo, (n, p) => n.PromoId == p.Id);
 

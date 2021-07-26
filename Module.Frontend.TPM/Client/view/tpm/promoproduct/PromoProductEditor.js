@@ -49,6 +49,10 @@ Ext.define('App.view.tpm.promoproduct.PromoProductEditor', {
             //allowBlank: true,
             //allowOnlyWhitespace: true,
             fieldLabel: l10n.ns('tpm', 'PromoProduct').value('ActualProductPCLSV'),
-        }]
+            }, {
+                xtype: 'singlelinedisplayfield',
+                name: 'PluCode',
+                fieldLabel: l10n.ns('tpm', 'PromoProduct').value('PluCode'),
+            }]
     }
 });

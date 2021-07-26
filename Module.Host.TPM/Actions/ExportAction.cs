@@ -158,13 +158,13 @@ namespace Module.Host.TPM.Actions.Notifications
             var records = context.Database.SqlQuery<AssortmentMatrix>(SqlString).ToList();
             var clientIds = records.GroupBy(x => x.ClientTreeId).Select(x => x.Key).ToList();
             var plu = context.Set<Plu>().Where(x => clientIds.Contains(x.ClientTreeId)).ToList();
-
+            var assortmentMatrix2Plus = context.Set<AssortmentMatrix2Plu>().Where(x => clientIds.Contains(x.ClientTreeId)).ToList();
             foreach(var item in records)
 			{
-                var found = plu.SingleOrDefault(x => x.ProductId == item.ProductId);
-                if(found != null)
+				var found = assortmentMatrix2Plus.SingleOrDefault(x => x.Id == item.Id);
+				if (found != null)
 				{
-                    item.Plu = new AssortmentMatrix2Plu() { PluCode = found.PluCode };
+					item.Plu = new AssortmentMatrix2Plu() { PluCode = found.PluCode };
 				}
 			}
             return records;
