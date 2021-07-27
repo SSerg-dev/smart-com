@@ -10,6 +10,7 @@ using System.Linq;
 using System.Reflection;
 using System.Web.Http.OData.Builder;
 using Persist.Model;
+using Module.Persist.TPM.Model;
 
 namespace Module.Persist.TPM {
     public class PersistTPMModuleRegistrator : IPersistModuleRegistrator {
@@ -821,9 +822,11 @@ namespace Module.Persist.TPM {
 			builder.EntitySet<Plu>("Plus").HasRequiredBinding(e => e.ClientTree, "ClientTrees");
 			builder.Entity<Plu>().HasRequired(n => n.ClientTree, (n, p) => n.ClientTreeId == p.Id);
 
+            builder.EntitySet<HistoricalPLUDictionary>("HistoricalPLUDictionaries");
+            builder.Entity<HistoricalPLUDictionary>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalPLUDictionary>("HistoricalPLUDictionaries");
 
 
-			builder.EntitySet<AssortmentMatrix>("AssortmentMatrices");
+            builder.EntitySet<AssortmentMatrix>("AssortmentMatrices");
             builder.EntitySet<AssortmentMatrix>("DeletedAssortmentMatrices");
             builder.EntitySet<HistoricalAssortmentMatrix>("HistoricalAssortmentMatrices");
             builder.Entity<AssortmentMatrix>().Collection.Action("ExportXLSX");
@@ -837,11 +840,8 @@ namespace Module.Persist.TPM {
             builder.Entity<AssortmentMatrix>().Collection.Action("DownloadTemplateXLSX");
             builder.Entity<AssortmentMatrix>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<AssortmentMatrix>("AssortmentMatrices");
             builder.Entity<HistoricalAssortmentMatrix>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalAssortmentMatrix>("HistoricalAssortmentMatrices");
-
-            //builder.Entity<AssortmentMatrix>().HasOptional(n => n.Plu);
             builder.EntitySet<AssortmentMatrix2Plu>("AssortmentMatrix2Plus");
             builder.Entity<AssortmentMatrix>().HasOptional(n => n.Plu, (n, p) => n.Id == p.Id);
-            //builder.Entity<AssortmentMatrix>().HasOptional(n => n.Plu, (n, p) => n.Id == p.);
 
             builder.Entity<PromoProductTree>().HasRequired(n => n.Promo, (n, p) => n.PromoId == p.Id);
 

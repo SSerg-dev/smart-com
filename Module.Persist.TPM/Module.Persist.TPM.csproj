@@ -2607,6 +2607,7 @@
     <Compile Include="Model\History\HistoricalNonPromoEquipment.cs" />
     <Compile Include="Model\History\HistoricalCostProduction.cs" />
     <Compile Include="Model\History\HistoricalIncrementalPromo.cs" />
+    <Compile Include="Model\History\HistoricalPLUDictionary.cs" />
     <Compile Include="Model\History\HistoricalPromoProduct.cs" />
     <Compile Include="Model\History\HistoricalAgeGroup.cs" />
     <Compile Include="Model\History\HistoricalBaseLine.cs" />

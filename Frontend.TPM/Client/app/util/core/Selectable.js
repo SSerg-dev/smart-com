@@ -84,6 +84,7 @@
     },
 
     onElementFocus: function () {
+        debugger;
         App.util.core.Selectable.setActiveView(this);
         console.log('Element focused', Ext.getClassName(this), arguments);
     }

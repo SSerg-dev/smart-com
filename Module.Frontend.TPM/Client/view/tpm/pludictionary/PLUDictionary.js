@@ -67,6 +67,19 @@
             glyph: 0xf349,
             text: l10n.ns('core', 'toptoolbar').value('filterButtonText'),
             tooltip: l10n.ns('core', 'toptoolbar').value('filterButtonText')
+        }, {
+            itemId: 'updatebutton',
+            action: 'Patch',
+            glyph: 0xf64f,
+            text: l10n.ns('core', 'crud').value('updateButtonText'),
+            tooltip: l10n.ns('core', 'crud').value('updateButtonText')
+        },{
+            itemId: 'historybutton',
+            resource: 'Historical{0}',
+            action: 'Get{0}',
+            glyph: 0xf2da,
+            text: l10n.ns('core', 'crud').value('historyButtonText'),
+            tooltip: l10n.ns('core', 'crud').value('historyButtonText')
         }, '-', '->', '-', {
             itemId: 'extfilterclearbutton',
             ui: 'blue-button-toolbar',
@@ -131,6 +144,9 @@
                     },
                 }
             }, {
+                text: l10n.ns('tpm', 'PLUDictionary').value('Id'),
+                dataIndex: 'Id'
+            },{
                 text: l10n.ns('tpm', 'NoneNego').value('ClientTreeObjectId'),
                 dataIndex: 'ClientTreeObjectId'
             }, {

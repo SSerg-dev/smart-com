@@ -76,6 +76,13 @@ namespace Module.Frontend.TPM.Controllers
 		}
 
 		[ClaimsAuthorize]
+		[AcceptVerbs("PATCH", "MERGE")]
+		public IHttpActionResult Patch([FromODataUri] System.Guid key, Delta<PLUDictionary> patch)
+		{
+			return null;
+		}
+
+		[ClaimsAuthorize]
 		public IHttpActionResult DownloadTemplateXLSX()
 		{
 			try
