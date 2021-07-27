@@ -35,10 +35,10 @@
                 'pludictionary #exportbutton': {
                     click: this.onExportButtonClick
                 },
-                'assortmentmatrix #detail': {
+                'pludictionary #detail': {
                     click: this.onDetailButtonClick
                 },
-                'assortmentmatrix #updatebutton': {
+                'pludictionary #updatebutton': {
                     click: this.onUpdateButtonClick
                 },
                 'pludictionary #historybutton': {
