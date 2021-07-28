@@ -2560,6 +2560,10 @@
     <Compile Include="Migrations\202107220853341_Anaplan_PostPromoEffectReport_Modification.Designer.cs">
       <DependentUpon>202107220853341_Anaplan_PostPromoEffectReport_Modification.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202107280831559_Promo_Add_DemainPlanig_Role_For_Recalculate.cs" />
+    <Compile Include="Migrations\202107280831559_Promo_Add_DemainPlanig_Role_For_Recalculate.Designer.cs">
+      <DependentUpon>202107280831559_Promo_Add_DemainPlanig_Role_For_Recalculate.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -4922,6 +4926,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202107220853341_Anaplan_PostPromoEffectReport_Modification.resx">
       <DependentUpon>202107220853341_Anaplan_PostPromoEffectReport_Modification.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202107280831559_Promo_Add_DemainPlanig_Role_For_Recalculate.resx">
+      <DependentUpon>202107280831559_Promo_Add_DemainPlanig_Role_For_Recalculate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
