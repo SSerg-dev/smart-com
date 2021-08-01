@@ -9,7 +9,7 @@ namespace Module.Persist.TPM.Model.TPM
 	/// <summary>
 	/// Справочник кодов PLU
 	/// </summary>
-	public class Plu : IEntity
+	public class Plu : IEntity<Guid>
 	{
 		/// <summary>
 		/// Ссылка на клиента
@@ -17,9 +17,6 @@ namespace Module.Persist.TPM.Model.TPM
 		[Key, Column(Order = 1)] 
 		public int ClientTreeId { get; set; }
 
-		/// <summary>
-		/// Ссылка на продукт
-		/// </summary>
 		[Key, Column(Order = 2)]
 		[StringLength(255)]
 		public string EAN_PC { get; set; }
@@ -32,6 +29,8 @@ namespace Module.Persist.TPM.Model.TPM
 		
 		[SpecialNotKeyProperty]
 		public virtual ClientTree ClientTree { get; set; }
+
+		public Guid Id { get; set; }
 
 	}
 

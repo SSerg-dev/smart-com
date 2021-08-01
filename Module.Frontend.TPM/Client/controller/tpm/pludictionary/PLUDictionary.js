@@ -7,12 +7,12 @@
             component: {
                 'pludictionary[isSearch!=true] directorygrid': {
                     load: this.onGridStoreLoad,
-                    itemdblclick: this.onDetailButtonClick
                 },
                 'pludictionary': {
                     beforedestroy: this.onPLUDictionaryBeforeDestroy,
                 },
                 'pludictionary directorygrid': {
+                    selectionchange: this.onGridSelectionChange,
                     afterrender: this.onGridAfterrender,
                     extfilterchange: this.onExtFilterChange
                 },
@@ -31,15 +31,18 @@
                 'pludictionary #close': {
                     click: this.onCloseButtonClick
                 },
-                // import/export
-                'pludictionary #exportbutton': {
-                    click: this.onExportButtonClick
+                'pludictionary #deletedbutton': {
+                    click: this.onDeletedButtonClick
                 },
-                'pludictionary #detail': {
-                    click: this.onDetailButtonClick
+                'pludictionary #createbutton': {
+                    click: this.onCreateButtonClick
                 },
                 'pludictionary #updatebutton': {
                     click: this.onUpdateButtonClick
+                },
+                // import/export
+                'pludictionary #exportbutton': {
+                    click: this.onExportButtonClick
                 },
                 'pludictionary #historybutton': {
                     click: this.onHistoryButtonClick
@@ -50,10 +53,22 @@
                 'pludictionary #loadimporttemplatebutton': {
                     click: this.onLoadImportTemplateButtonClick
                 },
+                'pludictionary #detailform': {
+                    activate: this.onActivateCard
+                },
+                'pludictionaryeditor': {
+                    afterrender: this.afterrenderWindowEditor,
+                },
+                'pludictionaryeditor [name=ClientTreeId]': {
+                    change: this.onClientTreeIdChange
+                }
             }
         });
     },
 
+    afterrenderWindowEditor: function (window, eOpts) {
+        debugger;
+    },
 
     onClientTreeIdChange: function () {
         this.elements.clientTreeObjectId.setValue(this.elements.clientTreeId.getModelData().ClientTreeObjectId);

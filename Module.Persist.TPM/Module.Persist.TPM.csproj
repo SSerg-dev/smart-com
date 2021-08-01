@@ -2556,33 +2556,37 @@
     <Compile Include="Migrations\202106300726289_202106301025001_Drop_Client.Designer.cs">
       <DependentUpon>202106300726289_202106301025001_Drop_Client.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202106301329591_Add_Plu_Table.cs" />
-    <Compile Include="Migrations\202106301329591_Add_Plu_Table.Designer.cs">
+    <Compile Include="Migrations\2021\202106301329591_Add_Plu_Table.cs" />
+    <Compile Include="Migrations\2021\202106301329591_Add_Plu_Table.Designer.cs">
       <DependentUpon>202106301329591_Add_Plu_Table.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202107070930222_Plu_Views.cs" />
-    <Compile Include="Migrations\202107070930222_Plu_Views.Designer.cs">
+    <Compile Include="Migrations\2021\202107070930222_Plu_Views.cs" />
+    <Compile Include="Migrations\2021\202107070930222_Plu_Views.Designer.cs">
       <DependentUpon>202107070930222_Plu_Views.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202107071143596_AddPluRole.cs" />
-    <Compile Include="Migrations\202107071143596_AddPluRole.Designer.cs">
+    <Compile Include="Migrations\2021\202107071143596_AddPluRole.cs" />
+    <Compile Include="Migrations\2021\202107071143596_AddPluRole.Designer.cs">
       <DependentUpon>202107071143596_AddPluRole.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202107120544409_PLUDictionary.cs" />
-    <Compile Include="Migrations\202107120544409_PLUDictionary.Designer.cs">
+    <Compile Include="Migrations\2021\202107120544409_PLUDictionary.cs" />
+    <Compile Include="Migrations\2021\202107120544409_PLUDictionary.Designer.cs">
       <DependentUpon>202107120544409_PLUDictionary.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202107141026265_Empty1.cs" />
-    <Compile Include="Migrations\202107141026265_Empty1.Designer.cs">
+    <Compile Include="Migrations\2021\202107141026265_Empty1.cs" />
+    <Compile Include="Migrations\2021\202107141026265_Empty1.Designer.cs">
       <DependentUpon>202107141026265_Empty1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202107260050598_ChangePLUTable.cs" />
-    <Compile Include="Migrations\202107260050598_ChangePLUTable.Designer.cs">
+    <Compile Include="Migrations\2021\202107260050598_ChangePLUTable.cs" />
+    <Compile Include="Migrations\2021\202107260050598_ChangePLUTable.Designer.cs">
       <DependentUpon>202107260050598_ChangePLUTable.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202107260501006_Empty2.cs" />
-    <Compile Include="Migrations\202107260501006_Empty2.Designer.cs">
+    <Compile Include="Migrations\2021\202107260501006_Empty2.cs" />
+    <Compile Include="Migrations\2021\202107260501006_Empty2.Designer.cs">
       <DependentUpon>202107260501006_Empty2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\2021\202108010712478_PLUHistory.cs" />
+    <Compile Include="Migrations\2021\202108010712478_PLUHistory.Designer.cs">
+      <DependentUpon>202108010712478_PLUHistory.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
@@ -4948,26 +4952,29 @@
     <EmbeddedResource Include="Migrations\202106300726289_202106301025001_Drop_Client.resx">
       <DependentUpon>202106300726289_202106301025001_Drop_Client.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202106301329591_Add_Plu_Table.resx">
+    <EmbeddedResource Include="Migrations\2021\202106301329591_Add_Plu_Table.resx">
       <DependentUpon>202106301329591_Add_Plu_Table.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202107070930222_Plu_Views.resx">
+    <EmbeddedResource Include="Migrations\2021\202107070930222_Plu_Views.resx">
       <DependentUpon>202107070930222_Plu_Views.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202107071143596_AddPluRole.resx">
+    <EmbeddedResource Include="Migrations\2021\202107071143596_AddPluRole.resx">
       <DependentUpon>202107071143596_AddPluRole.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202107120544409_PLUDictionary.resx">
+    <EmbeddedResource Include="Migrations\2021\202107120544409_PLUDictionary.resx">
       <DependentUpon>202107120544409_PLUDictionary.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202107141026265_Empty1.resx">
+    <EmbeddedResource Include="Migrations\2021\202107141026265_Empty1.resx">
       <DependentUpon>202107141026265_Empty1.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202107260050598_ChangePLUTable.resx">
+    <EmbeddedResource Include="Migrations\2021\202107260050598_ChangePLUTable.resx">
       <DependentUpon>202107260050598_ChangePLUTable.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202107260501006_Empty2.resx">
+    <EmbeddedResource Include="Migrations\2021\202107260501006_Empty2.resx">
       <DependentUpon>202107260501006_Empty2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\2021\202108010712478_PLUHistory.resx">
+      <DependentUpon>202108010712478_PLUHistory.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

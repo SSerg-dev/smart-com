@@ -1,14 +1,8 @@
 ﻿using Core.History;
-using Module.Persist.TPM.Migrations;
-using Module.Persist.TPM.Model;
 using Module.Persist.TPM.Model.History;
-using Module.Persist.TPM.Model.TPM;
 using Ninject;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.OData;
 using System.Web.Http.OData.Query;
@@ -29,15 +23,14 @@ namespace Module.Frontend.TPM.Controllers
            AllowedQueryOptions = AllowedQueryOptions.All,
            EnableConstantParameterization = false,
            MaxTop = 1024)]
-        public IQueryable<AssortmentMatrix> GetHistoricalPLUDictionaries(Guid? Id)
+        public IQueryable<HistoricalPLUDictionary> GetHistoricalPLUDictionaries(Guid? Id)
         {
-            //return HistoryReader.GetAllById<PLUDictionary>(Id.ToString());
-            return null;
+            return HistoryReader.GetAllById<HistoricalPLUDictionary>(Id.ToString());
         }
 
         [ClaimsAuthorize]
         [HttpPost]
-        public IQueryable<AssortmentMatrix> GetFilteredData(ODataQueryOptions<HistoricalAssortmentMatrix> options)
+        public IQueryable<HistoricalPLUDictionary> GetFilteredData(ODataQueryOptions<HistoricalPLUDictionary> options)
         {
             //var query = Enumerable.Empty<HistoricalAssortmentMatrix>().AsQueryable();
             //string bodyText = Helper.GetRequestBody(HttpContext.Current.Request);

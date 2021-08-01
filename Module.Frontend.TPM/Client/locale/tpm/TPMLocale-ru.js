@@ -320,6 +320,8 @@
         "ProductEN": "Product EN",
     },
 
+    'HistoricalPLUDictionary': ['.tpm.PLUDictionary', '.core.BaseHistoryEntity'],
+
     'Technology': {
         'Name': 'Technology',
         'Description_ru': 'Technology RU',

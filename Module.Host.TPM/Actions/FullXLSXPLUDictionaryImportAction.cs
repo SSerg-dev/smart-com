@@ -216,8 +216,8 @@ namespace Module.Host.TPM.Actions
                             if(clientProduct.PluCode == null)
 							{
 								createCount++;
-								var plu = new Plu() { ClientTreeId = item.ClientTreeId,  PluCode = item.PLU, EAN_PC = item.EAN_PC };
-
+								var plu = new Plu() { ClientTreeId = item.ClientTreeId,  PluCode = item.PLU, EAN_PC = item.EAN_PC, Id = Guid.NewGuid() };
+                                importItem.Original.Id = plu.Id;
 								var exists = context.Set<Plu>().Local.FirstOrDefault(x => x.ClientTreeId == plu.ClientTreeId && x.EAN_PC == item.EAN_PC);
 								if (exists != null && exists.PluCode != plu.PluCode)
 								{
@@ -243,10 +243,11 @@ namespace Module.Host.TPM.Actions
                                     EAN_PC = clientProduct.EAN_PC,
                                     ObjectId = clientProduct.ObjectId,
                                     PluCode = item.PLU,
+                                    Id = clientProduct.Id
                                 };
                                 pluUpdateListHistory.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(clientProduct, newPlu));
                                 successList.Add(importItem.Original);
-                                pluUpdateList.Add(new Plu() { ClientTreeId = item.ClientTreeId, PluCode = item.PLU, EAN_PC = item.EAN_PC });
+                                pluUpdateList.Add(new Plu() { ClientTreeId = item.ClientTreeId, PluCode = item.PLU, EAN_PC = item.EAN_PC, Id=newPlu.Id });
                             }
                         }
                     }
