@@ -2556,6 +2556,10 @@
     <Compile Include="Migrations\202106300726289_202106301025001_Drop_Client.Designer.cs">
       <DependentUpon>202106300726289_202106301025001_Drop_Client.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\2021\202108010843032_PLUHistoryId.cs" />
+    <Compile Include="Migrations\2021\202108010843032_PLUHistoryId.Designer.cs">
+      <DependentUpon>202108010843032_PLUHistoryId.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\2021\202106301329591_Add_Plu_Table.cs" />
     <Compile Include="Migrations\2021\202106301329591_Add_Plu_Table.Designer.cs">
       <DependentUpon>202106301329591_Add_Plu_Table.cs</DependentUpon>
@@ -4951,6 +4955,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202106300726289_202106301025001_Drop_Client.resx">
       <DependentUpon>202106300726289_202106301025001_Drop_Client.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\2021\202108010843032_PLUHistoryId.resx">
+      <DependentUpon>202108010843032_PLUHistoryId.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\2021\202106301329591_Add_Plu_Table.resx">
       <DependentUpon>202106301329591_Add_Plu_Table.cs</DependentUpon>
