@@ -28,17 +28,17 @@
                 fieldLabel: l10n.ns('tpm', 'HistoricalPLUDictionary').value('_Operation')
         }, {
             xtype: 'singlelinedisplayfield',
-                fieldLabel: l10n.ns('tpm', 'HistoricalPLUDictionary').value('ClientTreeName'),
+                fieldLabel: l10n.ns('tpm', 'PLUDictionary').value('ClientTreeName'),
             name: 'ClientTreeName'
         }, {
             xtype: 'singlelinedisplayfield',
             name: 'ProductEANPC',
-                fieldLabel: l10n.ns('tpm', 'HistoricalPLUDictionary').value('EAN_PC')
+                fieldLabel: l10n.ns('tpm', 'PLUDictionary').value('EAN_PC')
         }, {
             xtype: 'singlelinedisplayfield',
             name: 'StartDate',
             renderer: Ext.util.Format.dateRenderer('d.m.Y H:i:s'),
-                fieldLabel: l10n.ns('tpm', 'HistoricalPLUDictionary').value('PluCode')
+                fieldLabel: l10n.ns('tpm', 'PLUDictionary').value('PluCode')
         }]
     }
 });
