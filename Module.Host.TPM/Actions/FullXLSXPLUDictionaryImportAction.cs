@@ -240,7 +240,7 @@ namespace Module.Host.TPM.Actions
                                 {
                                     ClientTreeId = clientProduct.ClientTreeId,
                                     ClientTreeName = clientProduct.ClientTreeName,
-                                    EAN_PC = clientProduct.EAN_PC + DateTime.Now.ToString(),
+                                    EAN_PC = clientProduct.EAN_PC,
                                     ObjectId = clientProduct.ObjectId,
                                     PluCode = item.PLU,
                                     Id = clientProduct.Id

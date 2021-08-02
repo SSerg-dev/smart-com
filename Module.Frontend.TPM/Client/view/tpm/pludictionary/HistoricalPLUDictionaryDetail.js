@@ -28,14 +28,6 @@
                 fieldLabel: l10n.ns('tpm', 'HistoricalPLUDictionary').value('_Operation')
         }, {
             xtype: 'singlelinedisplayfield',
-                fieldLabel: l10n.ns('tpm', 'HistoricalPLUDictionary').value('ClientTreeName'),
-            name: 'ClientTreeName'
-        }, {
-            xtype: 'singlelinedisplayfield',
-                name: 'EAN_PC',
-                fieldLabel: l10n.ns('tpm', 'HistoricalPLUDictionary').value('EAN_PC')
-        }, {
-            xtype: 'singlelinedisplayfield',
             name: 'PluCode',            
                 fieldLabel: l10n.ns('tpm', 'HistoricalPLUDictionary').value('PluCode')
         }]
