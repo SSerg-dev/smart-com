@@ -11,6 +11,8 @@
         { name: '_Operation', type: 'string', isDefault: true },
         { name: 'ClientTreeId', hidden: true, isDefault: true },
         { name: 'ClientTreeName', type: 'string', hidden: false, isDefault: true },
+        { name: 'EAN_PC', type: 'string', hidden: false, isDefault: true },
+        { name: 'PluCode', type: 'string', hidden: false, isDefault: true },
     ],
     proxy: {
         type: 'breeze',

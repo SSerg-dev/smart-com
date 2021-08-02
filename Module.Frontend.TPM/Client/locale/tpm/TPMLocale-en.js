@@ -2375,7 +2375,6 @@
         'ClientTreeObjectId': 'Client hierarchy code',
         'PluCode': "PLU",
         'EAN_PC': 'EAN PC',
-        "ProductEN":"Product EN",
     },
 
     'HistoricalPLUDictionary': ['.tpm.PLUDictionary', '.core.BaseHistoryEntity'],
