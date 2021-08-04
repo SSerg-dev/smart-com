@@ -50,7 +50,7 @@ namespace Module.Persist.TPM.PromoStateControl
 
             public bool ChangeState(Promo promoModel, string userRole, out string message)
             {
-                logger.Trace($"ChangeState{Name} check began with user: {userRole}, promo status: {promoModel.PromoStatus}");
+                logger.Trace($"ChangeState{Name} check began with user: {userRole}, promo status: {promoModel.PromoStatus.SystemName}");
                 message = string.Empty;
 
                 PromoStatus promoStatus = _stateContext.dbContext.Set<PromoStatus>().Find(promoModel.PromoStatusId);
@@ -244,14 +244,14 @@ namespace Module.Persist.TPM.PromoStateControl
                 // Current state
                 else if (isAvailableCurrent && statusName == Name)
                 {
-                    logger.Trace($"Status change check returned true. Change is available in current state. StatusName: {Name}, userRole: {userRole}");
+                    logger.Trace($"Status change check returned true. Change is available in current state. StatusName: {statusName}, userRole: {userRole}");
                     _stateContext.Model = promoModel;
 
                     return true;
                 }
                 else
                 {
-                    logger.Trace($"Status change check returned false. StatusName: {Name}, userRole: {userRole}");
+                    logger.Trace($"Status change check returned false. StatusName: {statusName}, userRole: {userRole}");
                     message = "Action is not available";
 
                     return false;
