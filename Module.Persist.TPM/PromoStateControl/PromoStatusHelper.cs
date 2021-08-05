@@ -3,6 +3,7 @@ using Core.Settings;
 using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
+using NLog;
 using Persist;
 using System;
 using System.Collections.Generic;
@@ -14,14 +15,35 @@ namespace Module.Persist.TPM.PromoStateControl
 {
     public static class PromoStatusHelper
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         public static bool IsParametersChanged(Promo curPromo, Promo prevPromo, IEnumerable<Guid> stateIdVP, IEnumerable<Guid> stateIdTPR)
         {
-            return ((prevPromo.MarsMechanicDiscount < curPromo.MarsMechanicDiscount) ||
-                    (stateIdVP.Any(id => id == prevPromo.MarsMechanicId) && stateIdTPR.Any(id => id == curPromo.MarsMechanicId)) ||
-                    (prevPromo.ProductHierarchy != curPromo.ProductHierarchy) ||
-                    (prevPromo.StartDate != curPromo.StartDate) ||
-                    (prevPromo.EndDate != curPromo.EndDate) ||
-                    (prevPromo.IsGrowthAcceleration != curPromo.IsGrowthAcceleration));
+            var mechanicDiscountCheck = prevPromo.MarsMechanicDiscount < curPromo.MarsMechanicDiscount;
+            var prevMechanicIsVP = stateIdVP.Any(id => id == prevPromo.MarsMechanicId);
+            var curMechanicIsTPR = stateIdTPR.Any(id => id == curPromo.MarsMechanicId);
+            var productHierarchyCheck = prevPromo.ProductHierarchy != curPromo.ProductHierarchy;
+            var startDateCheck = prevPromo.StartDate != curPromo.StartDate;
+            var endDateCheck = prevPromo.EndDate != curPromo.EndDate;
+            var isGaCheck = prevPromo.IsGrowthAcceleration != curPromo.IsGrowthAcceleration;
+
+            var mechanicFromVPtoTPR = prevMechanicIsVP && curMechanicIsTPR;
+
+            logger.Trace("Checking parameters change");
+            logger.Trace($"MechanicDiscountCheck: {mechanicDiscountCheck} | prev discount: {prevPromo.MarsMechanicDiscount}, cur discount: {curPromo.MarsMechanicDiscount}");
+            logger.Trace($"PrevMechanicIsVP: {prevMechanicIsVP} | prev mechanidId: {prevPromo.MarsMechanicId}");
+            logger.Trace($"CurMechanicIsTPR: {curMechanicIsTPR} | prev mechanidId: {curPromo.MarsMechanicId}");
+            logger.Trace($"MechanicFromVPtoTPR: {mechanicFromVPtoTPR}");
+            logger.Trace($"StartDateCheck: {startDateCheck} | prev start date: {prevPromo.StartDate}, cur start date: {curPromo.StartDate}");
+            logger.Trace($"EndDateCheck: {endDateCheck} | prev end date: {prevPromo.EndDate}, cur end date: {curPromo.EndDate}");
+            logger.Trace($"IsGaCheck: {isGaCheck} | prev GA: {prevPromo.IsGrowthAcceleration}, cur GA: {curPromo.IsGrowthAcceleration}");
+
+            return  mechanicDiscountCheck ||
+                    mechanicFromVPtoTPR ||
+                    productHierarchyCheck ||
+                    startDateCheck ||
+                    endDateCheck ||
+                    isGaCheck;
         }
 
         public static bool IsDispatchChanged(bool isCorrectDispatchDifference, Promo curPromo, Promo prevPromo)
