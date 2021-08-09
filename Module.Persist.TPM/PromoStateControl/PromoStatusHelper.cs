@@ -22,7 +22,7 @@ namespace Module.Persist.TPM.PromoStateControl
             var mechanicDiscountCheck = prevPromo.MarsMechanicDiscount < curPromo.MarsMechanicDiscount;
             var prevMechanicIsVP = stateIdVP.Any(id => id == prevPromo.MarsMechanicId);
             var curMechanicIsTPR = stateIdTPR.Any(id => id == curPromo.MarsMechanicId);
-            var productHierarchyCheck = prevPromo.ProductHierarchy != curPromo.ProductHierarchy;
+            var productHierarchyCheck = prevPromo.ProductHierarchy.Trim() != curPromo.ProductHierarchy.Trim();
             var startDateCheck = prevPromo.StartDate != curPromo.StartDate;
             var endDateCheck = prevPromo.EndDate != curPromo.EndDate;
             var isGaCheck = prevPromo.IsGrowthAcceleration != curPromo.IsGrowthAcceleration;
