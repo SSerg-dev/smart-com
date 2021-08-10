@@ -89,7 +89,6 @@
         var grid = this.getGridByButton(button),
             store = grid.getStore(),
             model = Ext.create(Ext.ModelManager.getModel(store.model));
-
         grid.editorModel.startCreateRecord(model);
     },
 

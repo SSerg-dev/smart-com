@@ -204,6 +204,8 @@
         'ConstraintItem': 'Constraints',
         'SettingItem': 'Settings',
         'MailNotificationSettingItem': 'Mail notification settings',
+        'RPASettingItem': 'RPA settings',
+        'RPAItem': 'RPA',
         'SystemDirectories': 'Administration',
         'SubscriptionMenu': 'Subscription',
         'EventTypeItem': 'Event types',
@@ -237,6 +239,8 @@
         'UserRoleMainTitle': 'Users and Roles',
         'SettingTitle': 'Settings',
         'MailNotificationSettingTitle': 'Mail notification settings',
+        'RPASettingTitle': 'RPA settings',
+        'RPATitle': 'RPA',
         'AssociatedMailNotificationSettingTitle': 'Mail notification settings',
         'RecipientTitle': 'Recipients',
         'AssociatedRecipientTitle': 'Recipients',
@@ -698,6 +702,20 @@
     'AssociatedMailNotificationSetting': ['MailNotificationSetting'],
     'DeletedAssociatedMailNotificationSetting': ['AssociatedMailNotificationSetting', 'BaseDeletedEntity'],
     'HistoricalAssociatedMailNotificationSetting': ['AssociatedMailNotificationSetting', 'BaseHistoryEntity'],
+
+    'RPASetting': {
+        'Json': 'Json',
+        'Name': 'Name'
+    },
+
+    'RPA': {
+        'HandlerName': 'Handler name',
+        'Constraint': 'Constraint',
+        'Parametr': 'Parametr',
+        'Status': 'Status',
+        'FileURL': 'File URL',
+        'LogURL': 'Log URL'
+    },
 
     'Recipient': {
         'Id' : '',
