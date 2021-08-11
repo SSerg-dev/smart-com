@@ -7,6 +7,7 @@ using Module.Persist.TPM.PromoStateControl.RoleStateMap;
 using Module.Persist.TPM.Utils;
 using Core.Settings;
 using Core.Dependency;
+using NLog;
 
 namespace Module.Persist.TPM.PromoStateControl
 {
@@ -15,6 +16,8 @@ namespace Module.Persist.TPM.PromoStateControl
         public class DraftPublishedState : IPromoState
         {
             private readonly PromoStateContext _stateContext;
+
+            private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
             private readonly string Name = "DraftPublished";
 
@@ -47,6 +50,7 @@ namespace Module.Persist.TPM.PromoStateControl
 
             public bool ChangeState(Promo promoModel, string userRole, out string message)
             {
+                logger.Trace($"ChangeState{Name} check began with user: {userRole}, promo status: {promoModel.PromoStatus.SystemName}");
                 message = string.Empty;
 
                 PromoStatus promoStatus = _stateContext.dbContext.Set<PromoStatus>().Find(promoModel.PromoStatusId);
@@ -55,18 +59,22 @@ namespace Module.Persist.TPM.PromoStateControl
                 bool isAvailable = PromoStateUtil.CheckAccess(GetAvailableStates(), statusName, userRole);
                 bool isAvailableCurrent = PromoStateUtil.CheckAccess(Roles, userRole);
 
+                logger.Trace($"isAvailable: {isAvailable}");
+                logger.Trace($"isAvailableCurrent: {isAvailableCurrent}");
                 if (isAvailable)
                 {
                     // Go to: DraftState
                     if (statusName == "Draft")
                     {
+                        logger.Trace($"Status change check returned true as status is Draft");
                         _stateContext.Model = promoModel;
                         _stateContext.State = _stateContext._draftState;
 
 						if (userRole != "System")
-						{
-							// Если в Draft переводит не система, то удаляем reject incident, если есть
-							var rejectIncidents = _stateContext.dbContext.Set<PromoOnRejectIncident>().Where(x => x.PromoId == promoModel.Id && !x.ProcessDate.HasValue);
+                        {
+                            logger.Trace($"Deleting reject incidents (user: {userRole})");
+                            // Если в Draft переводит не система, то удаляем reject incident, если есть
+                            var rejectIncidents = _stateContext.dbContext.Set<PromoOnRejectIncident>().Where(x => x.PromoId == promoModel.Id && !x.ProcessDate.HasValue);
 							foreach (var incident in rejectIncidents)
 							{
 								incident.ProcessDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
@@ -78,10 +86,12 @@ namespace Module.Persist.TPM.PromoStateControl
                     // Go to: OnApprovalState
                     else
                     {
-						if (userRole != "System")
-						{
-							// Если в Draft переводит не система, то удаляем reject incident, если есть
-							var rejectIncidents = _stateContext.dbContext.Set<PromoOnRejectIncident>().Where(x => x.PromoId == promoModel.Id && !x.ProcessDate.HasValue);
+                        logger.Trace($"Go to OnApprovalState");
+                        if (userRole != "System")
+                        {
+                            logger.Trace($"Deleting reject incidents (user: {userRole})");
+                            // Если в Draft переводит не система, то удаляем reject incident, если есть
+                            var rejectIncidents = _stateContext.dbContext.Set<PromoOnRejectIncident>().Where(x => x.PromoId == promoModel.Id && !x.ProcessDate.HasValue);
 							foreach (var incident in rejectIncidents)
 							{
 								incident.ProcessDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
@@ -92,6 +102,8 @@ namespace Module.Persist.TPM.PromoStateControl
                         // Проверка на GA
                         if (promoModel.IsGrowthAcceleration)
                         {
+                            logger.Trace($"Status change check returned true as promo is GA");
+
                             _stateContext.Model = promoModel;
                             _stateContext.State = _stateContext._onApprovalState;
 
@@ -114,6 +126,7 @@ namespace Module.Persist.TPM.PromoStateControl
 						bool isNoNego = PromoStatusHelper.CheckNoNego(promoModel, _stateContext.dbContext);
                         if (isNoNego)
                         {
+                            logger.Trace($"isNoNego: {isNoNego}");
                             ISettingsManager settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
                             var toApprovedDispatchDays = settingsManager.GetSetting<int>("TO_APPROVED_DISPATCH_DAYS_COUNT", 7 * 8);
                             bool isCorrectDispatchDifference = (promoModel.DispatchesStart - ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)).Value.Days >= toApprovedDispatchDays;
@@ -124,6 +137,8 @@ namespace Module.Persist.TPM.PromoStateControl
                                     && promoModel.PlanPromoBaselineLSV.HasValue && promoModel.PlanPromoBaselineLSV > 0
                                     && promoModel.PlanPromoUpliftPercent.HasValue && promoModel.PlanPromoUpliftPercent > 0)
                                 {
+                                    logger.Trace($"Status change check returned true. Promo status changed to OnApproval.");
+                                    logger.Trace($"PlanPromoBaselineLSV is null:{promoModel.PlanPromoBaselineLSV.HasValue}, PlanPromoUpliftPercent is null:{promoModel.PlanPromoUpliftPercent.HasValue}. User : {userRole}. isCorrectDispatchDifference : {isCorrectDispatchDifference}");
                                     PromoStatus approvedStatus = _stateContext.dbContext.Set<PromoStatus>().FirstOrDefault(e => e.SystemName == "Approved");
                                     promoModel.PromoStatusId = approvedStatus.Id;
                                     promoModel.IsAutomaticallyApproved = true;
@@ -135,13 +150,14 @@ namespace Module.Persist.TPM.PromoStateControl
                                 }
                                 else
                                 {
-									promoModel.IsCMManagerApproved = true;
+                                    promoModel.IsCMManagerApproved = true;
                                     promoModel.IsDemandFinanceApproved = true;
                                     _stateContext.Model = promoModel;
                                     _stateContext.State = _stateContext._onApprovalState;
 
-									// Закрываем все неактуальные инциденты
-									foreach (var incident in oldIncidents)
+                                    logger.Trace($"Deleting reject incidents.");
+                                    // Закрываем все неактуальные инциденты
+                                    foreach (var incident in oldIncidents)
 									{
 										incident.ProcessDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
 									}
@@ -160,6 +176,8 @@ namespace Module.Persist.TPM.PromoStateControl
                                 if ((isCorrectDispatchDifference || userRole == UserRoles.FunctionalExpert.ToString())
                                     && promoModel.PlanPromoIncrementalLSV.HasValue && promoModel.PlanPromoIncrementalLSV.Value > 0)
                                 {
+                                    logger.Trace($"Status change check returned true. Promo status changed to Approved.");
+                                    logger.Trace($"PlanPromoIncrementalLSV not null, PlanPromoIncrementalLSV > 0. User : {userRole}. isCorrectDispatchDifference : {isCorrectDispatchDifference}");
                                     PromoStatus approvedStatus = _stateContext.dbContext.Set<PromoStatus>().FirstOrDefault(e => e.SystemName == "Approved");
                                     promoModel.PromoStatusId = approvedStatus.Id;
                                     promoModel.IsAutomaticallyApproved = true;
@@ -171,6 +189,8 @@ namespace Module.Persist.TPM.PromoStateControl
                                 }
                                 else
                                 {
+                                    logger.Trace($"Status change check returned true. Promo status changed to OnApproval.");
+                                    logger.Trace($"PlanPromoIncrementalLSV is null:{promoModel.PlanPromoIncrementalLSV.HasValue}. User : {userRole}. isCorrectDispatchDifference : {isCorrectDispatchDifference}");
                                     promoModel.IsCMManagerApproved = true;
                                     promoModel.IsDemandFinanceApproved = true;
                                     _stateContext.Model = promoModel;
@@ -193,7 +213,9 @@ namespace Module.Persist.TPM.PromoStateControl
                         }
                         else
                         {
-							foreach (var incident in oldIncidents)
+                            logger.Trace($"Deleting reject incidents.");
+                            logger.Trace($"Status change check returned true (isNonego false)");
+                            foreach (var incident in oldIncidents)
 							{
 								incident.ProcessDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
 							}
@@ -213,6 +235,7 @@ namespace Module.Persist.TPM.PromoStateControl
                 }
                 else if (userRole == "SupportAdministrator")
                 {
+                    logger.Trace($"Status change check returned true as userRole is SupportAdmin");
                     _stateContext.Model = promoModel;
                     _stateContext.State = _stateContext.GetPromoState(statusName);
 
@@ -221,12 +244,14 @@ namespace Module.Persist.TPM.PromoStateControl
                 // Current state
                 else if (isAvailableCurrent && statusName == Name)
                 {
+                    logger.Trace($"Status change check returned true. Change is available in current state. StatusName: {statusName}, userRole: {userRole}");
                     _stateContext.Model = promoModel;
 
                     return true;
                 }
                 else
                 {
+                    logger.Trace($"Status change check returned false. StatusName: {statusName}, userRole: {userRole}");
                     message = "Action is not available";
 
                     return false;
