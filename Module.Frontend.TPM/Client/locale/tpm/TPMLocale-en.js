@@ -2372,12 +2372,22 @@
     'PromoProductCorrection': {
         'ZREP': 'ZREP',
         'Number': 'Promo ID',
+        'BrandTech': 'BrandTech',
+        'ClientHierarchy': 'Client',
+        'Event': 'Event',
+        'Mechanic': 'Mechanic',
+        'MarsStartDate': 'Mars Start date',
+        'MarsEndDate': 'Mars End date',
+        'Status': 'Status',
+        'ProductSubrangesList': 'Subranges',
+        'PlanProductBaselineLSV': 'Plan Product Baseline LSV',
+        'PlanProductIncrementalLSV': 'Plan Product Incremental LSV',
+        'PlanProductLSV': 'Plan Product LSV',
         'PlanProductUpliftPercentCorrected': 'Plan Product Uplift Percent Corrected',
         'CreateDate': 'Create Date',
         'ChangeDate': 'Last Change Date',
         'UserName': 'User Name',
         'GreaterThanZero': 'Uplift must be greater than zero',
-
     },
     'PreviousDayIncremental': {
         'ZREP': 'ZREP',

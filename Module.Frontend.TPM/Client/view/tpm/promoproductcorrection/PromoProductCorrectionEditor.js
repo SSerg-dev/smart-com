@@ -180,7 +180,78 @@
                 hidden: true
 
             },
-           
+            {
+                xtype: 'singlelinedisplayfield',
+                fieldLabel: l10n.ns('tpm', 'PromoProductCorrection').value('ClientHierarchy'),
+                name: 'ClientHierarchy',
+                width: 250,
+                renderer: function (value) {
+                    return renderWithDelimiter(value, ' > ', '  ');
+                }
+            },
+            {
+                xtype: 'singlelinedisplayfield',
+                fieldLabel: l10n.ns('tpm', 'PromoProductCorrection').value('BrandTech'),
+                name: 'BrandTech',
+                width: 120,
+            },
+            {
+                xtype: 'singlelinedisplayfield',
+                fieldLabel: l10n.ns('tpm', 'PromoProductCorrection').value('ProductSubrangesList'),
+                name: 'ProductSubrangesList',
+                width: 110,
+            },
+            {
+                xtype: 'singlelinedisplayfield',
+                fieldLabel: l10n.ns('tpm', 'PromoProductCorrection').value('Event'),
+                name: 'Event',
+                width: 110,
+            },
+            {
+                xtype: 'singlelinedisplayfield',
+                fieldLabel: l10n.ns('tpm', 'PromoProductCorrection').value('Mechanic'),
+                name: 'Mechanic',
+                width: 130,
+            },
+            {
+                xtype: 'singlelinedisplayfield',
+                fieldLabel: l10n.ns('tpm', 'PromoProductCorrection').value('Status'),
+                name: 'Status',
+                width: 120,
+            },
+            {
+                xtype: 'singlelinedisplayfield',
+                fieldLabel: l10n.ns('tpm', 'PromoProductCorrection').value('MarsStartDate'),
+                name: 'MarsStartDate',
+                width: 120,
+            },
+            {
+                xtype: 'singlelinedisplayfield',
+                fieldLabel: l10n.ns('tpm', 'PromoProductCorrection').value('MarsEndDate'),
+                name: 'MarsEndDate',
+                width: 120,
+            },
+            {
+                xtype: 'singlelinedisplayfield',
+                readOnly: true,
+                editable: false,
+                fieldLabel: l10n.ns('tpm', 'PromoProductCorrection').value('PlanProductBaselineLSV'),
+                name: 'PlanProductBaselineLSV'
+            },
+            {
+                xtype: 'singlelinedisplayfield',
+                readOnly: true,
+                editable: false,
+                fieldLabel: l10n.ns('tpm', 'PromoProductCorrection').value('PlanProductIncrementalLSV'),
+                name: 'PlanProductIncrementalLSV',
+            },
+            {
+                xtype: 'singlelinedisplayfield',
+                readOnly: true,
+                editable: false,
+                fieldLabel: l10n.ns('tpm', 'PromoProductCorrection').value('PlanProductLSV'),
+                name: 'PlanProductLSV'
+            },
             {
                 xtype: 'numberfield',
                 name: 'PlanProductUpliftPercentCorrected',

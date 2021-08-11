@@ -58,18 +58,18 @@ namespace Module.Frontend.TPM.Controllers
             IQueryable<PromoProductsCorrection> query = Context.Set<PromoProductsCorrection>().Where(e => !e.Disabled && e.TempId == null);
 
             query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
-
+            
             return query;
         }
         [ClaimsAuthorize]
-        [EnableQuery(MaxNodeCount = int.MaxValue)]
+        [EnableQuery(MaxNodeCount = int.MaxValue, MaxExpansionDepth = 3)]
         public SingleResult<PromoProductsCorrection> GetPromoProductCorrection([FromODataUri] System.Guid key)
         {
             return SingleResult.Create(GetConstraintedQuery());
         }
 
         [ClaimsAuthorize]
-        [EnableQuery(MaxNodeCount = int.MaxValue)]
+        [EnableQuery(MaxNodeCount = int.MaxValue, MaxExpansionDepth = 3)]
         public IQueryable<PromoProductsCorrection> GetPromoProductsCorrections()
         {
             return GetConstraintedQuery();

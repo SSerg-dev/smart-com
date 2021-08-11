@@ -111,8 +111,31 @@
                     if (result.models.length !== 0) {
                         var promoproductcorrectioneditor = Ext.ComponentQuery.query('promoproductcorrectioneditor')[0];
                         var promoProductId = promoproductcorrectioneditor.down('[name=PromoProductId]');
-                         
+
+                        var clientHierarchy = promoproductcorrectioneditor.down('[name=ClientHierarchy]');
+                        var brandTech = promoproductcorrectioneditor.down('[name=BrandTech]');
+                        var productSubrangesList = promoproductcorrectioneditor.down('[name=ProductSubrangesList]');
+                        var event = promoproductcorrectioneditor.down('[name=Event]');
+                        var status = promoproductcorrectioneditor.down('[name=Status]');
+                        var marsStartDate = promoproductcorrectioneditor.down('[name=MarsStartDate]');
+                        var marsEndDate = promoproductcorrectioneditor.down('[name=MarsEndDate]');
+                        var planProductBaselineLSV = promoproductcorrectioneditor.down('[name=PlanProductBaselineLSV]');
+                        var planProductIncrementalLSV = promoproductcorrectioneditor.down('[name=PlanProductIncrementalLSV]');
+                        var planProductLSV = promoproductcorrectioneditor.down('[name=PlanProductLSV]');
+                        var mechanic = promoproductcorrectioneditor.down('[name=Mechanic]');
+
                         promoProductId.setValue(result.models.Id);
+                        clientHierarchy.setValue(result.models.Promo.ClientHierarchy);
+                        brandTech.setValue(result.models.Promo.BrandTech.Name);
+                        productSubrangesList.setValue(result.models.Promo.ProductSubrangesList);
+                        mechanic.setValue(result.models.Promo.Mechanic);
+                        event.setValue(result.models.Promo.Event.Name);
+                        status.setValue(result.models.Promo.PromoStatus.SystemName);
+                        marsStartDate.setValue(result.models.Promo.MarsStartDate);
+                        marsEndDate.setValue(result.models.Promo.MarsEndDate);
+                        planProductBaselineLSV.setValue(result.models.PlanProductBaselineLSV);
+                        planProductIncrementalLSV.setValue(result.models.PlanProductIncrementalLSV);
+                        planProductLSV.setValue(result.models.PlanProductLSV);
                     } else {
                         App.Notify.pushError('Group is empty');
 

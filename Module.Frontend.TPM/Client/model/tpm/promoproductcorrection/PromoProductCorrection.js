@@ -16,7 +16,29 @@
         {
             name: 'Number', type: 'int', mapping: 'PromoProduct.Promo.Number', hidden: false, isDefault: true, defaultFilterConfig: { valueField: 'Number' }, isKey: true,
         },
-        { name: 'TempId', type: 'string', hidden: true, isDefault: true, defaultValue: null },
+        { name: 'ClientHierarchy', type: 'string', mapping: 'PromoProduct.Promo.ClientHierarchy', hidden: false, isDefault: true },
+        {
+            name: 'BrandTech',
+            type: 'string',
+            mapping: 'PromoProduct.Promo.BrandTech.Name',
+            hidden: false,
+            isDefault: true,
+            useNull: true,
+            convert: function (value) {
+                if (value === "")
+                    return null;
+                return value;
+            }
+        },
+        { name: 'Event', type: 'string', mapping: 'PromoProduct.Promo.Event.Name', hidden: false, isDefault: true },
+        { name: 'Mechanic', type: 'string', mapping: 'PromoProduct.Promo.Mechanic', hidden: false, isDefault: true },
+        { name: 'MarsStartDate', type: 'string', mapping: 'PromoProduct.Promo.MarsStartDate', hidden: false, isDefault: true },
+        { name: 'MarsEndDate', type: 'string', mapping: 'PromoProduct.Promo.MarsEndDate', hidden: false, isDefault: true },
+        { name: 'Status', type: 'string', mapping: 'PromoProduct.Promo.PromoStatus.SystemName', hidden: false, isDefault: true },
+        { name: 'PlanProductBaselineLSV', type: 'float', mapping: 'PromoProduct.PlanProductBaselineLSV', hidden: false, isDefault: true, useNull: true },
+        { name: 'PlanProductIncrementalLSV', type: 'float', mapping: 'PromoProduct.PlanProductIncrementalLSV', hidden: false, isDefault: true, useNull: true },
+        { name: 'PlanProductLSV', type: 'float', mapping: 'PromoProduct.PlanProductLSV', hidden: false, isDefault: true, useNull: true },
+        { name: 'ProductSubrangesList', type: 'string', mapping: 'PromoProduct.Promo.ProductSubrangesList', hidden: false, isDefault: true },
     ],
     proxy: {
         type: 'breeze',

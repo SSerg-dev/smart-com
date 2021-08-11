@@ -46,13 +46,76 @@
                 dataIndex: 'DeletedDate',
                 xtype: 'datecolumn',
                 renderer: Ext.util.Format.dateRenderer('d.m.Y H:i:s')
-            }, {
+            },
+                {
                     text: l10n.ns('tpm', 'PromoProductCorrection').value('Number'),
                     dataIndex: 'Number'
-            }, {
+                },
+                {
+                    text: l10n.ns('tpm', 'PromoProductCorrection').value('ClientHierarchy'),
+                    dataIndex: 'ClientHierarchy',
+                    width: 250,
+                    renderer: function (value) {
+                        return renderWithDelimiter(value, ' > ', '  ');
+                    }
+                },
+                {
+                    text: l10n.ns('tpm', 'PromoProductCorrection').value('BrandTech'),
+                    dataIndex: 'BrandTech',
+                    width: 120,
+                },
+                {
+                    text: l10n.ns('tpm', 'PromoProductCorrection').value('ProductSubrangesList'),
+                    dataIndex: 'ProductSubrangesList',
+                    width: 110,
+                },
+                {
+                    text: l10n.ns('tpm', 'PromoProductCorrection').value('Event'),
+                    dataIndex: 'Event',
+                    width: 110,
+                },
+                {
+                    text: l10n.ns('tpm', 'PromoProductCorrection').value('Mechanic'),
+                    dataIndex: 'Mechanic',
+                    width: 130,
+                },
+                {
+                    text: l10n.ns('tpm', 'PromoProductCorrection').value('Status'),
+                    dataIndex: 'Status',
+                    width: 120,
+                },
+                {
+                    text: l10n.ns('tpm', 'PromoProductCorrection').value('MarsStartDate'),
+                    dataIndex: 'MarsStartDate',
+                    width: 120,
+                },
+                {
+                    text: l10n.ns('tpm', 'PromoProductCorrection').value('MarsEndDate'),
+                    dataIndex: 'MarsEndDate',
+                    width: 120,
+                },
+                {
                     text: l10n.ns('tpm', 'PromoProductCorrection').value('ZREP'),
-                    dataIndex: 'ZREP'
-            },
+                    dataIndex: 'ZREP',
+                },
+                {
+                    xtype: 'numbercolumn',
+                    format: '0.00',
+                    text: l10n.ns('tpm', 'PromoProductCorrection').value('PlanProductBaselineLSV'),
+                    dataIndex: 'PlanProductBaselineLSV'
+                },
+                {
+                    xtype: 'numbercolumn',
+                    format: '0.00',
+                    text: l10n.ns('tpm', 'PromoProductCorrection').value('PlanProductIncrementalLSV'),
+                    dataIndex: 'PlanProductIncrementalLSV'
+                },
+                {
+                    xtype: 'numbercolumn',
+                    format: '0.00',
+                    text: l10n.ns('tpm', 'PromoProductCorrection').value('PlanProductLSV'),
+                    dataIndex: 'PlanProductLSV'
+                },
             {
                 xtype: 'numbercolumn',
                 format: '0.00',
