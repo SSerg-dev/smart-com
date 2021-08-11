@@ -6,6 +6,7 @@ using Module.Persist.TPM.PromoStateControl.RoleStateMap;
 using Core.Settings;
 using Core.Dependency;
 using Module.Persist.TPM.Utils;
+using NLog;
 
 namespace Module.Persist.TPM.PromoStateControl
 {
@@ -14,6 +15,8 @@ namespace Module.Persist.TPM.PromoStateControl
         public class PlannedState : IPromoState
         {
             private readonly PromoStateContext _stateContext;
+
+            private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
             private readonly string Name = "Planned";
 
@@ -46,6 +49,7 @@ namespace Module.Persist.TPM.PromoStateControl
 
             public bool ChangeState(Promo promoModel, string userRole, out string message)
             {
+                logger.Trace($"ChangeState{Name} check began with user: {userRole}, promo status: {promoModel.PromoStatus.SystemName}");
                 message = string.Empty;
 
                 bool sendForApproval = false;
@@ -61,11 +65,14 @@ namespace Module.Persist.TPM.PromoStateControl
                 var backToOnApprovalDispatchDays = settingsManager.GetSetting<int>("BACK_TO_ON_APPROVAL_DISPATCH_DAYS_COUNT", 7 * 8);
                 bool isCorrectDispatchDifference = (promoModel.DispatchesStart - ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)).Value.Days >= backToOnApprovalDispatchDays;
 
+                logger.Trace($"IsParametersChanged: {PromoStatusHelper.IsParametersChanged(promoModel, _stateContext.Model, stateIdVP, stateIdTPR)}");
+                logger.Trace($"IsDispatchChanged: {PromoStatusHelper.IsDispatchChanged(isCorrectDispatchDifference, promoModel, _stateContext.Model)}");
                 // Условия для возврата
                 if ((PromoStatusHelper.IsParametersChanged(promoModel, _stateContext.Model, stateIdVP, stateIdTPR) ||
                     PromoStatusHelper.IsDispatchChanged(isCorrectDispatchDifference, promoModel, _stateContext.Model)
                     && userRole != "SupportAdministrator"))
                 {
+                    logger.Trace($"Promo status changed to DraftPublished. Marked SendForApproval");
                     promoStatus = _stateContext.dbContext.Set<PromoStatus>().First(n => n.SystemName == "DraftPublished");
                     promoModel.PromoStatusId = promoStatus.Id;
                     sendForApproval = true;
@@ -79,12 +86,14 @@ namespace Module.Persist.TPM.PromoStateControl
 
                 string statusName = promoStatus.SystemName;
 
+                logger.Trace($"isAvailable: {isAvailable}");
                 if (isAvailable)
                 {
                     // Go to: StartedState (by Support Animistrator)
                     // для этой роли не производится никаких проверок на даты
                     if (statusName == "Started")
                     {
+                        logger.Trace($"Status change check returned true as status is Started");
                         _stateContext.Model = promoModel;
                         _stateContext.State = _stateContext._startedState;
 
@@ -92,6 +101,7 @@ namespace Module.Persist.TPM.PromoStateControl
                     }
                     else if (statusName == PromoStates.OnApproval.ToString())
                     {
+                        logger.Trace($"Status change check returned true as status is OnApproval");
                         var onApprovalPromoStatusId = _stateContext.dbContext.Set<PromoStatus>().Where(x => x.SystemName == PromoStates.OnApproval.ToString() && !x.Disabled).FirstOrDefault().Id;
 
                         promoModel.PromoStatusId = onApprovalPromoStatusId;
@@ -100,14 +110,15 @@ namespace Module.Persist.TPM.PromoStateControl
                         promoModel.IsDemandFinanceApproved = false;
                         promoModel.IsAutomaticallyApproved = false;
 
-						_stateContext.State = _stateContext._onApprovalState;
+                        _stateContext.State = _stateContext._onApprovalState;
                         _stateContext.Model = promoModel;
 
-                        return true; 
+                        return true;
                     }
                     // Go to: DraftPublishedState
                     else
                     {
+                        logger.Trace($"Status change check returned true. State context changed to draftpublished");
                         promoModel.IsCMManagerApproved = false;
                         promoModel.IsDemandPlanningApproved = false;
                         promoModel.IsDemandFinanceApproved = false;
@@ -118,6 +129,7 @@ namespace Module.Persist.TPM.PromoStateControl
                         // Если были условия для возврата, то пытаемся перевести в approval
                         if (sendForApproval)
                         {
+                            logger.Trace($"Trying to send for approval");
                             PromoStatus onApprovalStatus = _stateContext.dbContext.Set<PromoStatus>().First(n => n.SystemName == "OnApproval");
                             Promo promoDraftPublished = new Promo(promoModel);
 
@@ -131,6 +143,7 @@ namespace Module.Persist.TPM.PromoStateControl
                 }
                 else if (userRole == "SupportAdministrator")
                 {
+                    logger.Trace($"Status change check returned true as userRole is SupportAdmin");
                     _stateContext.Model = promoModel;
                     _stateContext.State = _stateContext.GetPromoState(statusName);
 
@@ -139,12 +152,14 @@ namespace Module.Persist.TPM.PromoStateControl
                 // Current state
                 else if (isAvailableCurrent && statusName == Name)
                 {
+                    logger.Trace($"Status change check returned true. Change is available in current state. StatusName: {statusName}, userRole: {userRole}");
                     _stateContext.Model = promoModel;
 
                     return true;
                 }
                 else
                 {
+                    logger.Trace($"Status change check returned false. StatusName: {statusName}, userRole: {userRole}");
                     message = "Action is not available";
 
                     return false;
@@ -185,9 +200,9 @@ namespace Module.Persist.TPM.PromoStateControl
                         _stateContext.Model.IsDemandPlanningApproved = false;
                         _stateContext.Model.IsDemandFinanceApproved = false;
                         _stateContext.Model.IsAutomaticallyApproved = false;
-						_stateContext.State = _stateContext._onApprovalState;
+                        _stateContext.State = _stateContext._onApprovalState;
 
-                        return true; 
+                        return true;
                     }
                     // Go to: DraftPublishedState
                     else
