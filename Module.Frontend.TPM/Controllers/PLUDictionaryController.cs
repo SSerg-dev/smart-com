@@ -31,6 +31,7 @@ using Module.Persist.TPM.Model.Import;
 using Module.Persist.TPM.Model.History;
 using Ninject;
 using Core.History;
+using Core.Data;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -61,6 +62,7 @@ namespace Module.Frontend.TPM.Controllers
 
 			IQueryable<PLUDictionary> query = Context.Set<PLUDictionary>();
 			query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
+			query = query.OrderBy(x => x.ClientTreeName).ThenBy(x => x.EAN_PC);
 			return query;
 		}
 
@@ -73,13 +75,6 @@ namespace Module.Frontend.TPM.Controllers
 
 			var query = GetQuery();
 			return query;
-		}
-
-		[ClaimsAuthorize]
-		[AcceptVerbs("PATCH", "MERGE")]
-		public IHttpActionResult Patch([FromODataUri] System.Guid key, Delta<PLUDictionary> patch)
-		{
-			return null;
 		}
 
 		[ClaimsAuthorize]
@@ -110,14 +105,54 @@ namespace Module.Frontend.TPM.Controllers
 		public static IEnumerable<Column> GetExportSettings()
 		{
 			IEnumerable<Column> columns = new List<Column>() {
-				new Column() { Order = 0, Field = "ClientTreeId", Header = "Client id", Quoting = false },
-				new Column() { Order = 1, Field = "PluCode", Header = "PLU", Quoting = false },
+				new Column() { Order = 0, Field = "ClientTreeName", Header = "Client", Quoting = false },
+				new Column() { Order = 1, Field = "ObjectId", Header = "Client hierarchy code", Quoting = false },
 				new Column() { Order = 2, Field = "EAN_PC", Header = "EAN PC", Quoting = false },
-				new Column() { Order = 3, Field = "ClientTreeName", Header = "Client", Quoting = false },
-				};
+				new Column() { Order = 3, Field = "PluCode", Header = "PLU", Quoting = false },
+			};
 			return columns;
+
 		}
 
+
+
+		[ClaimsAuthorize]
+		[AcceptVerbs("PATCH", "MERGE")]
+		public IHttpActionResult Patch([FromODataUri] System.Guid key, Delta<PLUDictionary> patch)
+		{
+			var model = patch.GetEntity();
+			model.ObjectId--;
+			var client = Context.Set<ClientTree>().Where(x => x.ObjectId == model.ObjectId).FirstOrDefault();
+			if (client != null)
+			{
+				var pluCreateListHistory = new List<Tuple<IEntity<Guid>, IEntity<Guid>>>();
+				var pluUpdateListHistory = new List<Tuple<IEntity<Guid>, IEntity<Guid>>>();
+				var plu = Context.Set<Plu>().Where(x => x.ClientTreeId == client.Id && x.EAN_PC == model.EAN_PC).SingleOrDefault();
+				if (plu != null)
+				{
+					var oldPlu = new PLUDictionary() { Id = plu.Id, ObjectId = model.ObjectId, PluCode = plu.PluCode, EAN_PC = plu.EAN_PC };
+					plu.PluCode = model.PluCode;
+					model.Id = plu.Id;
+					pluUpdateListHistory.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(oldPlu, model )) ;
+				}
+				else
+				{
+					plu = new Plu() {Id = Guid.NewGuid(),  ClientTreeId = client.Id, PluCode = model.PluCode, EAN_PC = model.EAN_PC };
+					model.Id = plu.Id;
+					pluCreateListHistory.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(null, model));
+					Context.Set<Plu>().Add(plu);
+				}
+
+				Context.HistoryWriter.Write(pluCreateListHistory, Context.AuthManager.GetCurrentUser(), Context.AuthManager.GetCurrentRole(), OperationType.Created);
+				Context.HistoryWriter.Write(pluUpdateListHistory, Context.AuthManager.GetCurrentUser(), Context.AuthManager.GetCurrentRole(), OperationType.Updated);
+				Context.SaveChanges();
+				return Updated(model);
+			}
+			else
+			{
+				return NotFound();
+			}
+		}
 		public IHttpActionResult ExportXLSX(ODataQueryOptions<PLUDictionary> options)
 		{
 			IQueryable results = options.ApplyTo(GetPLUDictionaries());

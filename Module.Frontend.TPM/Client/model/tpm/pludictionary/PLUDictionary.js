@@ -9,7 +9,7 @@
             defaultFilterConfig: { valueField: 'Name' },  tree: true, hidden: false, isDefault: true
         },
         {
-            name: 'ClientTreeObjectId', type: 'int', mapping: 'ObjectId',
+            name: 'ObjectId', type: 'int', mapping: 'ObjectId',
             defaultFilterConfig: { valueField: 'ObjectId' }, hidden: false, isDefault: true,
         }, 
         { name: 'PluCode', type: 'string', hidden: false, isDefault: true, mapping: 'PluCode' },

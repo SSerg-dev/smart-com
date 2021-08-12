@@ -184,6 +184,12 @@
     },
 
     saveModel: function (model, callback) {
+        if (model.id.indexOf("App.model.tpm.pludictionary.PLUDictionary") != -1) {
+            model.modified.EAN_PC = "";
+            model.modified.ObjectId = "";
+            model.data.EAN_PC += " ";
+            model.data.ObjectId++;
+		}
         var isCreate = model.phantom,
             grid = this.getGrid(),
             tree = this.getTree();

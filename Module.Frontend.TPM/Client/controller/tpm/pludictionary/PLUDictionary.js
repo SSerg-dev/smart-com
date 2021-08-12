@@ -7,6 +7,7 @@
             component: {
                 'pludictionary[isSearch!=true] directorygrid': {
                     load: this.onGridStoreLoad,
+                    itemdblclick: this.onDetailButtonClick
                 },
                 'pludictionary': {
                     beforedestroy: this.onPLUDictionaryBeforeDestroy,
@@ -18,6 +19,18 @@
                 },
                 'pludictionary #datatable': {
                     activate: this.onActivateCard
+                },
+                'pludictionary #detailform': {
+                    activate: this.onActivateCard
+                },
+                'pludictionary #detailform #prev': {
+                    click: this.onPrevButtonClick
+                },
+                'pludictionary #detailform #next': {
+                    click: this.onNextButtonClick
+                },
+                'pludictionary #detail': {
+                    click: this.onDetailButtonClick
                 },
                 'pludictionary #table': {
                     click: this.onTableButtonClick
@@ -67,7 +80,15 @@
     },
 
     afterrenderWindowEditor: function (window, eOpts) {
-        debugger;
+        var me = this;
+        var pludictionaryeditor = Ext.ComponentQuery.query('pludictionaryeditor')[0];
+
+        me.elements = {
+            clientTreeId: pludictionaryeditor.down('[name=ClientTreeId]'),
+            clientTreeObjectId: pludictionaryeditor.down('[name=ClientTreeObjectId]'),
+            pluCode: pludictionaryeditor.down('[name=PluCode]'),
+            ean_PC: pludictionaryeditor.down('[name=EAN_PC]'),
+        };
     },
 
     onClientTreeIdChange: function () {

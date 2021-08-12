@@ -80,6 +80,10 @@ Ext.define('App.view.tpm.promoproduct.HistoricalPromoProduct', {
             xtype: 'singlelinedisplayfield',
             name: 'EAN_PC',
             fieldLabel: l10n.ns('tpm', 'PromoProduct').value('EAN_PC'),
+        },{
+            xtype: 'singlelinedisplayfield',
+            name: 'PluCode',
+            fieldLabel: l10n.ns('tpm', 'PromoProduct').value('PluCode'),
         }, {
             xtype: 'singlelinedisplayfield',
             name: 'ActualProductPCQty',

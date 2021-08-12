@@ -1,0 +1,136 @@
+﻿{
+    "_comment":  "",
+	
+    "systemName":  "Jupiter Mars Stage 2 (Dev II)",
+	
+    "vaultName":  "russiapetcarejupdev2akv",
+    "resourceGroupName":  "RUSSIA-PETCARE-JUPITER-DEV-RG",
+	
+	
+	"secretKeys":  [
+	
+		{
+			"name":  "ADidaAADInstance",
+			"value":  "https://login.microsoftonline.com/",
+			"contentType":  "",
+			"action":  "add",
+			
+			"comment":  "Добавление переменной или обновление значений переменной и типа переменной",
+			"enabled": true
+		}
+		,{
+			"name":  "ADidaClientId",
+			"value":  "a5dcf1fb-bea3-4776-9262-90ed5a457704",
+			"contentType":  "",
+			"action":  "add",
+			"enabled": true
+		}
+		,{
+			"name":  "ADidaClientSecret",
+			"value":  "O1-uhCJ~QH0e62sG1L_W4ZeMGdA~ePNGs~",
+			"contentType":  "",
+			"action":  "add",
+			"enabled": true
+		}
+		,{
+			"name":  "ADidaPostLogoutRedirectUri",
+			"value":  "https://russiapetcarejupiterdev2wa.azurewebsites.net/",
+			"contentType":  "",
+			"action":  "add",
+			"enabled": true
+		}
+		,{
+			"name":  "ADidaTenantId",
+			"value":  "2fc13e34-f03f-498b-982a-7cb446e25bc6",
+			"contentType":  "",
+			"action":  "add",
+			"enabled": true
+		}
+		,{
+			"name":  "BlobStorageContainer",
+			"value":  "russiapetcarejupiter",
+			"contentType":  "",
+			"action":  "add",
+			"enabled": true
+		}
+		,{
+			"name":  "BlobStorageKey",
+			"value":  "TafSNai/QbHqFsSwuIoVbJiV/SL3aGyHBPaNvQTXoaMJ4iMTmrPHwD1n7foT98b7agj9H8G8dGR/S1oIlxiYoQ==",
+			"contentType":  "",
+			"action":  "add",
+			"comment":  "не нужен",
+			"enabled": true
+		}
+		,{
+			"name":  "BlobStorageName",
+			"value":  "marsanalyticsshareddevsa",
+			"contentType":  "",
+			"action":  "add",
+			"enabled": true
+		}
+		,{
+			"name":  "BlobStorageSAS",
+			"value":  "sv=2019-02-02&sr=c&si=external-write&sig=VgV4eflo5VOOthsfbjiuu33cH20EFbLsPwZFk7c9fG8%3D",
+			"contentType":  "",
+			"action":  "add",
+			"enabled": true
+		}
+		,{
+			"name":  "LogicAppNotificationURL",
+			"value":  "https://prod-27.eastus2.logic.azure.com:443/workflows/d6b5b9f3be414e139dbd1206e36bab07/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=KW_D9cTrDz8s2p-SWqQCL9qu0cQQbGcOMyHVhCouILI",
+			"contentType":  "",
+			"action":  "add",
+			"enabled": true
+		}
+		,{
+			"name":  "MongoDBName",
+			"value":  "JupiterDevMongo",
+			"contentType":  "",
+			"action":  "add",
+			"enabled": true
+		}
+		,{
+			"name":  "MongoUrl",
+			"value":  "mongodb://russiapetcarejupiterdevacdb:ryUE0H8d8VZ7LYZvap4UUo0CWHmosZ3Dyp1qpc9Eh6dxOqTE5am6h4kZsHH9SIln4gSHHkV2oWANXeXCzH605w==@russiapetcarejupiterdevacdb.mongo.cosmos.azure.com:10255/JupiterDevMongo?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@russiapetcarejupiterdevacdb@",
+			"contentType":  "",
+			"action":  "add",
+			"enabled": true
+		}
+		,{
+			"name":  "MongoUrlAzure",
+			"value":  "",
+			"contentType":  "",
+			"action":  "add",
+			"enabled": false
+		}
+		,{
+			"name":  "russiapetcarejupitersqldbcs",
+			"value":  "Data Source=marsanalyticsdevsqlsrv.database.windows.net;Initial Catalog=russiapetcarejupiterdevsqldb;User Id=deploy_user;Password=NhLaNb72sZ60;MultipleActiveResultSets=True;",
+			"contentType":  "",
+			"action":  "add",
+			"enabled": true
+		}
+
+
+		,{
+			"name":  "TestKeyYu4",
+			"action":  "delete",
+			
+			"comment":  "Удаление переменной",
+			"enabled": false
+		}
+		
+	]
+
+
+
+
+
+
+
+
+
+
+
+	
+}
