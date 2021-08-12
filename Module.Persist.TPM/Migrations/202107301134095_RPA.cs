@@ -7,8 +7,9 @@ namespace Module.Persist.TPM.Migrations
     {
         public override void Up()
         {
+            var defaultSchema = AppSettingsManager.GetSetting<string>("DefaultSchema", "dbo");
             CreateTable(
-                "Jupiter.RPA",
+                $"{defaultSchema}.RPA",
                 c => new
                     {
                         Id = c.Guid(nullable: false, identity: true),
@@ -25,7 +26,8 @@ namespace Module.Persist.TPM.Migrations
         
         public override void Down()
         {
-            DropTable("Jupiter.RPA");
+            var defaultSchema = AppSettingsManager.GetSetting<string>("DefaultSchema", "dbo");
+            DropTable($"{defaultSchema}.RPA");
         }
     }
 }

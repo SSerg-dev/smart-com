@@ -6,16 +6,18 @@ namespace Module.Persist.TPM.Migrations
     public partial class RPASetting_Update_Column_Type : DbMigration
     {
         public override void Up()
-        {   
-            AddColumn("Jupiter.RPASetting", "Name", c => c.String(nullable: false));
-            DropColumn("Jupiter.RPASetting", "Type");
+        {
+            var defaultSchema = AppSettingsManager.GetSetting<string>("DefaultSchema", "dbo");
+            AddColumn($"{defaultSchema}.RPASetting", "Name", c => c.String(nullable: false));
+            DropColumn($"{defaultSchema}.RPASetting", "Type");
         }
         
         public override void Down()
         {
-            AddColumn("Jupiter.RPASetting", "Type", c => c.Int(nullable: false));
-            DropColumn("Jupiter.RPASetting", "Name");
-            DropTable("Jupiter.RPA");
+            var defaultSchema = AppSettingsManager.GetSetting<string>("DefaultSchema", "dbo");
+            AddColumn($"{defaultSchema}.RPASetting", "Type", c => c.Int(nullable: false));
+            DropColumn($"{defaultSchema}.RPASetting", "Name");
+            DropTable($"{defaultSchema}.RPA");
         }
     }
 }
