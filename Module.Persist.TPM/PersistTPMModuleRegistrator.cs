@@ -63,6 +63,7 @@ namespace Module.Persist.TPM {
 
             modelBuilder.Entity<PromoProduct>();
             modelBuilder.Entity<PromoProduct>().HasOptional(x => x.Plu).WithRequired();
+            modelBuilder.Entity<PromoProduct>().Ignore(x => x.PluCode);
 
 
             modelBuilder.Entity<BaseLine>();
