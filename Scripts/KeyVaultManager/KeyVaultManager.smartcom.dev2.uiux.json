@@ -1,0 +1,135 @@
+﻿{
+    "_comment":  "",
+	
+    "systemName":  "Jupiter Smartcom Dev2 (UIUX)",
+	
+    "vaultName":  "tpmuiuxakv",
+    "resourceGroupName":  "TPM-UIUX-TEST",
+	
+	
+	"secretKeys":  [
+	
+		{
+			"name":  "ADidaAADInstance",
+			"value":  "https://login.microsoftonline.com/",
+			"contentType":  "",
+			"action":  "add",
+			
+			"comment":  "Добавление переменной или обновление значений переменной и типа переменной",
+			"enabled": true
+		}
+		,{
+			"name":  "ADidaClientId",
+			"value":  "c54ee1e2-688a-463a-9112-53e7669e868e",
+			"contentType":  "",
+			"action":  "add",
+			"enabled": true
+		}
+		,{
+			"name":  "ADidaClientSecret",
+			"value":  "_G~iwkz~~n~tc2DO858VOUiH_vQ-8nsucL",
+			"contentType":  "",
+			"action":  "add",
+			"enabled": true
+		}
+		,{
+			"name":  "ADidaPostLogoutRedirectUri",
+			"value":  "https://localhost:44323/",
+			"contentType":  "",
+			"action":  "add",
+			"enabled": true
+		}
+		,{
+			"name":  "ADidaTenantId",
+			"value":  "d43cf2af-b6de-47fe-afe3-9bbaff83dcee",
+			"contentType":  "",
+			"action":  "add",
+			"enabled": true
+		}
+		,{
+			"name":  "BlobStorageContainer",
+			"value":  "jupiteruiuxcontainer",
+			"contentType":  "",
+			"action":  "add",
+			"enabled": true
+		}
+		,{
+			"name":  "BlobStorageKey",
+			"value":  "Fwk6E927GzWgQ9AOyoGy3r5PVkHGOpNDqImLsSgLopNRtf8+on1LZOkjRUA5oCsFdbBg599XiLYvOhbNbljHRA==",
+			"contentType":  "",
+			"action":  "add",
+			"enabled": true
+		}
+		,{
+			"name":  "BlobStorageName",
+			"value":  "tpmuiuxsa",
+			"contentType":  "",
+			"action":  "add",
+			"enabled": true
+		}
+		,{
+			"name":  "BlobStorageSAS",
+			"value":  "sv=2020-02-10&ss=bfqt&srt=sco&sp=rwdlacuptfx&se=2025-07-08T19:15:09Z&st=2021-07-08T11:15:09Z&spr=https&sig=8J5%2FxOz2shqhbZBDiT%2Bp%2FMXEAyfiLcyAwxR5TUJ5bwY%3D",
+			"contentType":  "",
+			"action":  "add",
+			"enabled": true
+		}
+		,{
+			"name":  "LogicAppNotificationURL",
+			"value":  "https://prod-58.eastus2.logic.azure.com:443/workflows/a7fad71fc1994b3fbc3ba413264fed33/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=RwH-C9yENYNdDaoY5zvTBHQiIj35uF_POdDHIh1XjH0",
+			"contentType":  "",
+			"action":  "add",
+			"enabled": true
+		}
+		,{
+			"name":  "MongoDBName",
+			"value":  "Test",
+			"contentType":  "",
+			"action":  "add",
+			"enabled": true
+		}
+		,{
+			"name":  "MongoUrl",
+			"value":  "mongodb://tpmuiuxtestacdb:fp1lFAQQvsmuLEkmMH5w1X6116RSEbRU8cAfX9tO7LcyaDw5ajSpQsllXrBB3sxE7Qho7iu36Qj1j8eQdPm7gg==@tpmuiuxtestacdb.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@tpmuiuxtestacdb@",
+			"contentType":  "",
+			"action":  "add",
+			"enabled": true
+		}
+		,{
+			"name":  "MongoUrlAzure",
+			"value":  "mongodb://tpmuiuxtestacdb:fp1lFAQQvsmuLEkmMH5w1X6116RSEbRU8cAfX9tO7LcyaDw5ajSpQsllXrBB3sxE7Qho7iu36Qj1j8eQdPm7gg==@tpmuiuxtestacdb.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@tpmuiuxtestacdb@",
+			"contentType":  "",
+			"action":  "add",
+			"enabled": true
+		}
+		,{
+			"name":  "russiapetcarejupitersqldbcs",
+			"value":  "Server=smartcomdevsqlsrv.database.windows.net,1433;Initial Catalog=tpmdevnosensitivedatasqldb2;Persist Security Info=False;User ID=jupiter_user;Password=eBBpLz5qZh;MultipleActiveResultSets=True;Encrypt=True;TrustServerCertificate=False;",
+			"contentType":  "",
+			"action":  "add",
+			"enabled": true
+		}
+
+
+		,{
+			"name":  "TestKeyYu4",
+			"action":  "delete",
+			
+			"comment":  "Удаление переменной",
+			"enabled": false
+		}
+		
+	]
+
+
+
+
+
+
+
+
+
+
+
+	
+}

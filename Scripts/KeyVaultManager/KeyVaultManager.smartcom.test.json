@@ -1,0 +1,121 @@
+﻿{
+    "_comment":  "",
+	
+    "systemName":  "Jupiter Smartcom Test",
+	
+    "vaultName":  "jupitertestakv",
+    "resourceGroupName":  "JUPITER-TEST-RG",
+	
+	
+	"secretKeys":  [
+	
+		{
+			"name":  "ADidaAADInstance",
+			"value":  "https://login.microsoftonline.com/",
+			"contentType":  "",
+			"action":  "add",
+			
+			"comment":  "Добавление переменной или обновление значений переменной и типа переменной",
+			"enabled": true
+		}
+		,{
+			"name":  "ADidaClientId",
+			"value":  "6143a5e4-4eed-4597-a86b-107c13e4527e",
+			"contentType":  "",
+			"action":  "add",
+			"enabled": true
+		}
+		,{
+			"name":  "ADidaClientSecret",
+			"value":  "i2hrp5-HjD0EZ25EP_~W8v2uOG9P-5OPr8",
+			"contentType":  "",
+			"action":  "add",
+			"enabled": true
+		}
+		,{
+			"name":  "ADidaPostLogoutRedirectUri",
+			"value":  "https://jupitertestawa.azurewebsites.net/",
+			"contentType":  "",
+			"action":  "add",
+			"enabled": true
+		}
+		,{
+			"name":  "ADidaTenantId",
+			"value":  "d43cf2af-b6de-47fe-afe3-9bbaff83dcee",
+			"contentType":  "",
+			"action":  "add",
+			"enabled": true
+		}
+		,{
+			"name":  "BlobStorageContainer",
+			"value":  "jupitertestcontainer",
+			"contentType":  "",
+			"action":  "add",
+			"enabled": true
+		}
+		,{
+			"name":  "BlobStorageName",
+			"value":  "jupitertestasa",
+			"contentType":  "",
+			"action":  "add",
+			"enabled": true
+		}
+		,{
+			"name":  "BlobStorageSAS",
+			"value":  "sv=2020-08-04&ss=bfqt&srt=sco&sp=rwdlacuptfx&se=2025-07-22T17:53:27Z&st=2021-07-22T09:53:27Z&spr=https&sig=jkM%2F1YdI%2FU30AOSVvPu8M%2F9LKO1f%2FdL6jL5fYWOEjhc%3D",
+			"contentType":  "",
+			"action":  "add",
+			"enabled": true
+		}
+		,{
+			"name":  "LogicAppNotificationURL",
+			"value":  "https://jupitertestawa.azurewebsites.net/",
+			"contentType":  "",
+			"action":  "add",
+			"enabled": true
+		}
+		,{
+			"name":  "MongoDBName",
+			"value":  "Test",
+			"contentType":  "",
+			"action":  "add",
+			"enabled": true
+		}
+		,{
+			"name":  "MongoUrl",
+			"value":  "mongodb://jupiterdevacdb:A4KaSNYo1rdFTmWFRi6LhdC3DJSY2MYhdDdZtIO8ragsIa8vTwbaJWByhmYEhxSO602DeQ9Lp7FymcDGwrHpnA==@jupiterdevacdb.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@jupiterdevacdb@",
+			"contentType":  "",
+			"action":  "add",
+			"enabled": true
+		}
+		,{
+			"name":  "russiapetcarejupitersqldbcs",
+			"value":  "Server=tcp:smartcom-dev-sqlsrv.database.windows.net,1433;Initial Catalog=tpmdevsqldb;Persist Security Info=False;User ID=jupiter_user;Password=Kz3CL7XGXbCD;MultipleActiveResultSets=True;Encrypt=True;TrustServerCertificate=False;",
+			"contentType":  "",
+			"action":  "add",
+			"enabled": true
+		}
+
+
+		,{
+			"name":  "TestKeyYu4",
+			"action":  "delete",
+			
+			"comment":  "Удаление переменной",
+			"enabled": false
+		}
+		
+	]
+
+
+
+
+
+
+
+
+
+
+
+	
+}
