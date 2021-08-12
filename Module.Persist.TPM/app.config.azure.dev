@@ -39,7 +39,7 @@
     <add key="HANDLER_LOG_TYPE" value="Azure" />
     <!--AzureAD authentication-->
     <add key="ADidaClientId" value="6f231dc9-7560-4d58-8655-a9fec42cac17" />
-    <add key="ADidaClientSecret" value="UXAXGctLt35kwXRoGjn8-~V~jj9RAqJ.~9" />
+    <add key="ADidaClientSecret" value="kKOHIvUL0nKvtQ4e2Fn53RvYLba5Ne7/pKphScyEg8c=" />
     <add key="KVnameOfDatabaseContext" value="russiapetcarejupitersqldbcs" />
     <!--Other settings-->
     <add key="DefaultSchema" value="Jupiter" />

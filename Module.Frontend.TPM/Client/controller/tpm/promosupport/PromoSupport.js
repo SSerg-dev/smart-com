@@ -1186,7 +1186,10 @@
             model.save({
                 scope: me,
                 success: function (record, operation) {
-                    var result = Ext.JSON.decode(operation.response[0].value);
+                    if (operation.response.length == 0)
+                        var result = null;
+                    else
+                        var result = Ext.JSON.decode(operation.response[0].value);
                     if (result == null) {
                         model.set('ClientTreeFullPathName', editor.clientFullPathName);
 
@@ -1283,7 +1286,10 @@
             model.save({
                 scope: me,
                 success: function (record, operation) {
-                    var result = Ext.JSON.decode(operation.response[0].value);
+                    if (operation.response.length == 0)
+                        var result = null;
+                    else
+                        var result = Ext.JSON.decode(operation.response[0].value);
                     if (result == null) {
                         var pspMin = []
 
