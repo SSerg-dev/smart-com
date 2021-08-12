@@ -62,12 +62,16 @@ try {
 	$appPersWinPath = "$CurrentPath\..\Module.Persist.TPM/app.config"
 	$appPersAzurePath = "$appPersWinPath$postfix"
 
+	$logoImageWinPath = "$CurrentPath\..\Module.Frontend.TPM/Content/images/logo.svg"
+	$logoImageAzurePath = "$logoImageWinPath$postfix"
+
 
 	ReplaceConfig -oldCongig $webConfWinPath -newConfig $webConfAzurePath
 	ReplaceConfig -oldCongig $appInsightConfWinPath -newConfig $appInsightConfAzurePath
 	ReplaceConfig -oldCongig $appConfWinPath -newConfig $appConfAzurePath
 	ReplaceConfig -oldCongig $appProjWinPath -newConfig $appProjAzurePath
 	ReplaceConfig -oldCongig $appPersWinPath -newConfig $appPersAzurePath
+	ReplaceConfig -oldCongig $logoImageWinPath -newConfig $logoImageAzurePath
 
 	<#
 	if (Test-Path "$CurrentPath\..\Module.Frontend.TPM\Templates") {
