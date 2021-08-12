@@ -130,7 +130,7 @@ namespace Module.Frontend.TPM.Controllers
 				var plu = Context.Set<Plu>().Where(x => x.ClientTreeId == client.Id && x.EAN_PC == model.EAN_PC).SingleOrDefault();
 				if (plu != null)
 				{
-					pluCreateListHistory.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(plu, new Plu() { Id = plu.Id, ClientTreeId = plu.ClientTreeId, PluCode = model.PluCode, EAN_PC = plu.EAN_PC })) ;
+					pluUpdateListHistory.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(plu, new Plu() { Id = plu.Id, ClientTreeId = plu.ClientTreeId, PluCode = model.PluCode, EAN_PC = plu.EAN_PC })) ;
 					plu.PluCode = model.PluCode;
 				}
 				else
