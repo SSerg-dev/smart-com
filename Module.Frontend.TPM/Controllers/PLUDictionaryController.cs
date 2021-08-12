@@ -130,14 +130,16 @@ namespace Module.Frontend.TPM.Controllers
 				var plu = Context.Set<Plu>().Where(x => x.ClientTreeId == client.Id && x.EAN_PC == model.EAN_PC).SingleOrDefault();
 				if (plu != null)
 				{
-					var oldPlu = new Plu() { Id = plu.Id, ClientTreeId = plu.ClientTreeId, PluCode = plu.PluCode, EAN_PC = plu.EAN_PC };
+					var oldPlu = new PLUDictionary() { Id = plu.Id, ObjectId = model.ObjectId, PluCode = plu.PluCode, EAN_PC = plu.EAN_PC };
 					plu.PluCode = model.PluCode;
-					pluUpdateListHistory.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(oldPlu, plu )) ;
+					model.Id = plu.Id;
+					pluUpdateListHistory.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(oldPlu, model )) ;
 				}
 				else
 				{
 					plu = new Plu() {Id = Guid.NewGuid(),  ClientTreeId = client.Id, PluCode = model.PluCode, EAN_PC = model.EAN_PC };
-					pluCreateListHistory.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(null, plu));
+					model.Id = plu.Id;
+					pluCreateListHistory.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(null, model));
 					Context.Set<Plu>().Add(plu);
 				}
 
