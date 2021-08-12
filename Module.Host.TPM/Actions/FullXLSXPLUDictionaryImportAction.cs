@@ -188,12 +188,12 @@ namespace Module.Host.TPM.Actions
 
 
             var imports = sourceRecords.Select(x => new { Import = x as ImportPLUDictionary, Original = x }).Where(x => string.IsNullOrEmpty( x.Import.PLU) != true) .ToList();
-            var clientIds = imports.GroupBy(x => x.Import.ClientTreeId).ToList().Select(x=>x.Key).ToList();
+            var objectIds = imports.GroupBy(x => x.Import.ObjectId).ToList().Select(x=>x.Key).ToList();
             
             using (DatabaseContext context = new DatabaseContext())
             {
                 context.Database.Log = x => Debug.WriteLine(x);
-               var clientProducts = context.Set<PLUDictionary>().AsNoTracking().Where(x => clientIds.Contains(x.ClientTreeId)).ToList();
+               var clientProducts = context.Set<PLUDictionary>().AsNoTracking().Where(x => objectIds.Contains(x.ObjectId)).ToList();
                 foreach (var importItem in imports)
                 {
                     var item = importItem.Import;
@@ -204,7 +204,7 @@ namespace Module.Host.TPM.Actions
                     }
                     else
                     {
-                        var clientProduct = clientProducts.FirstOrDefault(x => x.EAN_PC == item.EAN_PC);
+                        var clientProduct = clientProducts.FirstOrDefault(x => x.EAN_PC == item.EAN_PC && x.ObjectId == item.ObjectId);
                         if (clientProduct == null)
                         {
                             Errors.Add($"EAN_PC '{item.EAN_PC}' not found");
@@ -216,7 +216,7 @@ namespace Module.Host.TPM.Actions
                             if(clientProduct.PluCode == null)
 							{
 								createCount++;
-								var plu = new Plu() { ClientTreeId = item.ClientTreeId,  PluCode = item.PLU, EAN_PC = item.EAN_PC, Id = Guid.NewGuid() };
+								var plu = new Plu() { ClientTreeId = clientProduct.ClientTreeId,  PluCode = item.PLU, EAN_PC = item.EAN_PC, Id = Guid.NewGuid() };
                                 importItem.Original.Id = plu.Id;
 								var exists = context.Set<Plu>().Local.FirstOrDefault(x => x.ClientTreeId == plu.ClientTreeId && x.EAN_PC == item.EAN_PC);
 								if (exists != null && exists.PluCode != plu.PluCode)
@@ -247,7 +247,7 @@ namespace Module.Host.TPM.Actions
                                 };
                                 pluUpdateListHistory.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(clientProduct, newPlu));
                                 successList.Add(importItem.Original);
-                                pluUpdateList.Add(new Plu() { ClientTreeId = item.ClientTreeId, PluCode = item.PLU, EAN_PC = item.EAN_PC, Id=newPlu.Id });
+                                pluUpdateList.Add(new Plu() { ClientTreeId = clientProduct.ClientTreeId, PluCode = item.PLU, EAN_PC = item.EAN_PC, Id=newPlu.Id });
                             }
                         }
                     }

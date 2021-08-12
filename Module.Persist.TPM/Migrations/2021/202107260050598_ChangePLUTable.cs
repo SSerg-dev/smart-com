@@ -10,68 +10,68 @@ namespace Module.Persist.TPM.Migrations
         {
             var defaultSchema = AppSettingsManager.GetSetting<string>("DefaultSchema", "dbo");
 
-            Sql("DROP VIEW Jupiter.AssortmentMatrix2Plu");
-            Sql("DROP VIEW Jupiter.PLUDictionary");
-            Sql("DROP VIEW Jupiter.PromoProduct2Plu");
-            Sql("TRUNCATE TABLE Jupiter.Plu");
-            DropForeignKey("Jupiter.Plu", "ProductId", "Jupiter.Product");
-            DropIndex("Jupiter.Plu", new[] { "ProductId" });
-            DropPrimaryKey("Jupiter.Plu");
-            AddColumn("Jupiter.Plu", "EAN_PC", c => c.String(nullable: false, maxLength: 255));
-            AddPrimaryKey("Jupiter.Plu", new[] { "ClientTreeId", "EAN_PC" });
-            DropColumn("Jupiter.Plu", "ProductId");
+            Sql($"DROP VIEW {defaultSchema}.AssortmentMatrix2Plu");
+            Sql($"DROP VIEW {defaultSchema}.PLUDictionary");
+            Sql($"DROP VIEW {defaultSchema}.PromoProduct2Plu");
+            Sql($"TRUNCATE TABLE {defaultSchema}.Plu");
+            DropForeignKey($"{defaultSchema}.Plu", "ProductId", "Jupiter.Product");
+            DropIndex($"{defaultSchema}.Plu", new[] { "ProductId" });
+            DropPrimaryKey($"{defaultSchema}.Plu");
+            AddColumn($"{defaultSchema}.Plu", "EAN_PC", c => c.String(nullable: false, maxLength: 255));
+            AddPrimaryKey($"{defaultSchema}.Plu", new[] { "ClientTreeId", "EAN_PC" });
+            DropColumn($"{defaultSchema}.Plu", "ProductId");
 
-            Sql($@"CREATE VIEW jupiter.[AssortmentMatrix2Plu]
+            Sql($@"CREATE VIEW {defaultSchema}.[AssortmentMatrix2Plu]
                    WITH SCHEMABINDING
                    AS
                         SELECT  am.Id , p.EAN_PC, plu.PluCode, am.ClientTreeId
 	                        FROM
-		                        Jupiter.AssortmentMatrix am
-		                        INNER JOIN Jupiter.Product p ON p.Id=am.ProductId
-		                        INNER JOIN Jupiter.Plu plu ON plu.ClientTreeId= am.ClientTreeId
+		                        {defaultSchema}.AssortmentMatrix am
+		                        INNER JOIN {defaultSchema}.Product p ON p.Id=am.ProductId
+		                        INNER JOIN {defaultSchema}.Plu plu ON plu.ClientTreeId= am.ClientTreeId
 			                        AND plu.EAN_PC = p.EAN_PC
                     GO
-                    CREATE UNIQUE CLUSTERED INDEX [AssortmentMatrix2Plu_IDX] ON jupiter.[AssortmentMatrix2Plu]
+                    CREATE UNIQUE CLUSTERED INDEX [AssortmentMatrix2Plu_IDX] ON {defaultSchema}.[AssortmentMatrix2Plu]
                     (
 	                     Id ASC
                     )
                     GO");
 
             Sql($@"
-                    CREATE VIEW Jupiter.[PLUDictionary]
+                    CREATE VIEW {defaultSchema}.[PLUDictionary]
                     AS
 					WITH cte(ClientTreeId, EAN_PC) AS
 					(
 						SELECT DISTINCT ct.Id AS ClientTreeId,   p.EAN_PC
 	                    FROM
-		                    Jupiter.ClientTree ct
-		                    INNER JOIN Jupiter.AssortmentMatrix am ON  am.ClientTreeId = ct.Id
+		                    {defaultSchema}.ClientTree ct
+		                    INNER JOIN {defaultSchema}.AssortmentMatrix am ON  am.ClientTreeId = ct.Id
 			                    AND am.Disabled = 0
-		                    INNER JOIN  Jupiter.Product p ON p.Id = am.ProductId
-		                    LEFT JOIN Jupiter.Plu plu ON plu.ClientTreeId =ct.Id
+		                    INNER JOIN  {defaultSchema}.Product p ON p.Id = am.ProductId
+		                    LEFT JOIN {defaultSchema}.Plu plu ON plu.ClientTreeId =ct.Id
 			                    AND plu.EAN_PC = p.EAN_PC
 					)
                     SELECT NEWID() AS Id, ct.Name AS ClientTreeName , ct.Id AS ClientTreeId, ct.ObjectId,  cte.EAN_PC, plu.PluCode
 	                    FROM
 							cte 
-		                    INNER JOIN Jupiter.ClientTree ct ON ct.id=cte.ClientTreeId
-		                    LEFT JOIN Jupiter.Plu plu ON plu.ClientTreeId =ct.Id
+		                    INNER JOIN {defaultSchema}.ClientTree ct ON ct.id=cte.ClientTreeId
+		                    LEFT JOIN {defaultSchema}.Plu plu ON plu.ClientTreeId =ct.Id
 			                    AND plu.EAN_PC = cte.EAN_PC
 	                    WHERE 
 		                    ct.IsBaseClient = 1
                     GO");
 
-            Sql($@"CREATE VIEW Jupiter.[PromoProduct2Plu]
+            Sql($@"CREATE VIEW {defaultSchema}.[PromoProduct2Plu]
                WITH SCHEMABINDING
                AS 
                 SELECT pp.Id, p1.PluCode
                     FROM
-                        Jupiter.Promo p
-                        INNER JOIN Jupiter.PromoProduct pp ON pp.PromoId = p.Id
-                        INNER JOIN Jupiter.Plu p1 ON p1.ClientTreeId = p.ClientTreeKeyId
+                        {defaultSchema}.Promo p
+                        INNER JOIN {defaultSchema}.PromoProduct pp ON pp.PromoId = p.Id
+                        INNER JOIN {defaultSchema}.Plu p1 ON p1.ClientTreeId = p.ClientTreeKeyId
                             AND p1.EAN_PC = pp.EAN_PC
                 GO
-                CREATE UNIQUE CLUSTERED INDEX[PromoProduct2Plu_IDX] ON Jupiter.[PromoProduct2Plu]
+                CREATE UNIQUE CLUSTERED INDEX[PromoProduct2Plu_IDX] ON {defaultSchema}.[PromoProduct2Plu]
                 (
                     [Id] ASC
                 );
@@ -80,12 +80,13 @@ namespace Module.Persist.TPM.Migrations
 
         public override void Down()
         {
-            AddColumn("Jupiter.Plu", "ProductId", c => c.Guid(nullable: false));
-            DropPrimaryKey("Jupiter.Plu");
-            DropColumn("Jupiter.Plu", "EAN_PC");
-            AddPrimaryKey("Jupiter.Plu", new[] { "ClientTreeId", "ProductId" });
-            CreateIndex("Jupiter.Plu", "ProductId");
-            AddForeignKey("Jupiter.Plu", "ProductId", "Jupiter.Product", "Id");
+            var defaultSchema = AppSettingsManager.GetSetting<string>("DefaultSchema", "dbo");
+            AddColumn($"{defaultSchema}.Plu", "ProductId", c => c.Guid(nullable: false));
+            DropPrimaryKey($"{defaultSchema}.Plu");
+            DropColumn($"{defaultSchema}.Plu", "EAN_PC");
+            AddPrimaryKey($"{defaultSchema}.Plu", new[] { "ClientTreeId", "ProductId" });
+            CreateIndex($"{defaultSchema}.Plu", "ProductId");
+            AddForeignKey($"{defaultSchema}.Plu", "ProductId", $"{defaultSchema}.Product", "Id");
         }
     }
 }

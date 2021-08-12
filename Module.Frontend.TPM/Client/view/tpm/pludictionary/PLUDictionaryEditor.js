@@ -9,6 +9,27 @@
     items: {
         xtype: 'editorform',
         columnsCount: 2,
-        items: []
+        items: [{
+            xtype: 'singlelinedisplayfield',
+            name: 'ClientTreeName',
+            fieldLabel: l10n.ns('tpm', 'PLUDictionary').value('ClientTreeName'),
+            selectText:false,
+            focus: function () {
+			}
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'ObjectId',
+            fieldLabel: l10n.ns('tpm', 'NoneNego').value('ClientTreeObjectId'),
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'EAN_PC',
+            fieldLabel: l10n.ns('tpm', 'PLUDictionary').value('EAN_PC'),
+        }, {
+            xtype: 'textfield',
+            name: 'PluCode',
+            fieldLabel: l10n.ns('tpm', 'PLUDictionary').value('PluCode'),
+            allowBlank: true,
+            allowOnlyWhitespace: true,
+        }]
     }
-});
+})

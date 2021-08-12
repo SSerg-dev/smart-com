@@ -67,6 +67,12 @@
             glyph: 0xf349,
             text: l10n.ns('core', 'toptoolbar').value('filterButtonText'),
             tooltip: l10n.ns('core', 'toptoolbar').value('filterButtonText')
+        }, {
+            itemId: 'updatebutton',
+            action: 'Patch',
+            glyph: 0xf64f,
+            text: l10n.ns('core', 'crud').value('updateButtonText'),
+            tooltip: l10n.ns('core', 'crud').value('updateButtonText')
         },{
             itemId: 'historybutton',
             resource: 'Historical{0}',
@@ -139,10 +145,7 @@
                 }
             },{
                 text: l10n.ns('tpm', 'NoneNego').value('ClientTreeObjectId'),
-                dataIndex: 'ClientTreeObjectId'
-            }, {
-                text: l10n.ns('tpm', 'PLUDictionary').value('PluCode'),
-                dataIndex: 'PluCode',
+                dataIndex: 'ObjectId'
             }, {
                 text: l10n.ns('tpm', 'PLUDictionary').value('EAN_PC'),
                 dataIndex: 'EAN_PC',
@@ -166,6 +169,9 @@
                         }
                     }
                 }
+            }, {
+                text: l10n.ns('tpm', 'PLUDictionary').value('PluCode'),
+                dataIndex: 'PluCode',
             }]
         }
     }, {

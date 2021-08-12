@@ -12,7 +12,7 @@ namespace Module.Persist.TPM.Migrations
 
 			Sql($@"DELETE {defaultSchema}.Plu");
 
-			AddColumn("Jupiter.Plu", "Id", c => c.Guid(nullable: false));
+			AddColumn($"{defaultSchema}.Plu", "Id", c => c.Guid(nullable: false));
             Sql($@"
             		DECLARE @ItemId UNIQUEIDENTIFIER
 			        INSERT INTO {defaultSchema}.AccessPoint(Disabled, Resource, Action) VALUES(0, 'HistoricalPLUDictionaries', 'GetHistoricalPLUDictionaries')
@@ -27,6 +27,7 @@ namespace Module.Persist.TPM.Migrations
 			        INSERT INTO {defaultSchema}.AccessPointRole(AccessPointId, RoleId) SELECT @ItemId, Id from Jupiter.Role WHERE SystemName = 'Administrator'
 			        INSERT INTO {defaultSchema}.AccessPointRole(AccessPointId, RoleId) SELECT @ItemId, Id FROM Jupiter.Role WHERE SystemName = 'KeyAccountManager'
 			        INSERT INTO {defaultSchema}.AccessPointRole(AccessPointId, RoleId) SELECT @ItemId, Id FROM Jupiter.Role WHERE SystemName = 'DemandPlanning'
+			        INSERT INTO {defaultSchema}.AccessPointRole(AccessPointId, RoleId) SELECT @ItemId, Id FROM Jupiter.Role WHERE SystemName = 'SupportAdministrator'
                 ");
 
 			Sql($@"
@@ -56,7 +57,8 @@ namespace Module.Persist.TPM.Migrations
         
         public override void Down()
         {
-            DropColumn("Jupiter.Plu", "Id");
+			var defaultSchema = AppSettingsManager.GetSetting<string>("DefaultSchema", "dbo");
+			DropColumn($"{defaultSchema}.Plu", "Id");
         }
     }
 }

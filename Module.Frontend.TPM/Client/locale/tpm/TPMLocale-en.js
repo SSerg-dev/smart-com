@@ -2373,6 +2373,7 @@
         'Id':'Id',
         'ClientTreeName': 'Client',
         'ClientTreeObjectId': 'Client hierarchy code',
+        'ObjectId': 'Client hierarchy code',
         'PluCode': "PLU",
         'EAN_PC': 'EAN PC',
     },

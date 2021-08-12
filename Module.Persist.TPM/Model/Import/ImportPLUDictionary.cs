@@ -10,16 +10,16 @@ namespace Module.Persist.TPM.Model.Import
 {
 	public class ImportPLUDictionary : BaseImportEntity
 	{
-		[ImportCSVColumn(ColumnNumber = 0 )]
-		[Display(Name = "Client id")]
-		public int ClientTreeId { get; set; }
-
-		[ImportCSVColumn(ColumnNumber = 1)]
-		[Display(Name = "PLU")]
-		public string PLU { get; set; }
+		[ImportCSVColumn(ColumnNumber = 1 )]
+		[Display(Name = "Client hierarchy code")]
+		public int ObjectId { get; set; }
 
 		[ImportCSVColumn(ColumnNumber = 2)]
 		[Display(Name = "EAN PC")]
 		public string EAN_PC { get; set; }
+
+		[ImportCSVColumn(ColumnNumber = 3)]
+		[Display(Name = "PLU")]
+		public string PLU { get; set; }
 	}
 }
