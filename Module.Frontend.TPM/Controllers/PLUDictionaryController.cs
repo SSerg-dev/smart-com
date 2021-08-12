@@ -140,9 +140,10 @@ namespace Module.Frontend.TPM.Controllers
 					pluCreateListHistory.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(null, plu));
 					Context.Set<Plu>().Add(plu);
 				}
-				Context.SaveChanges();
+
 				Context.HistoryWriter.Write(pluCreateListHistory, Context.AuthManager.GetCurrentUser(), Context.AuthManager.GetCurrentRole(), OperationType.Created);
 				Context.HistoryWriter.Write(pluUpdateListHistory, Context.AuthManager.GetCurrentUser(), Context.AuthManager.GetCurrentRole(), OperationType.Updated);
+				Context.SaveChanges();
 				return Updated(model);
 			}
 			else
