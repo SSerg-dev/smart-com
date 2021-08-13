@@ -72,8 +72,8 @@
         'PromoROIReport': 'Promo ROI Report',
         'IncrementalPromo': 'Incremental Promo',
         'BTL': 'BTL',
-		'ActualLSV': 'Actual LSV',
-		'NonPromoEquipment': 'Non-Promo Equipment',
+        'ActualLSV': 'Actual LSV',
+        'NonPromoEquipment': 'Non-Promo Equipment',
         'PromoTypes': 'Promo Types',
         'ClientDashboard': 'Client Dashboard',
         'Dashboard': 'Dashboard',
@@ -635,7 +635,7 @@
     'BudgetItem': {
         'Name': 'Item',
         'BudgetName': 'Budget',
-        'ButtonColor': 'Button color',       
+        'ButtonColor': 'Button color',
         'Description_ru': 'Description RU'
     },
     'HistoricalBudgetItem': ['.tpm.BudgetItem', '.core.BaseHistoryEntity'],
@@ -758,7 +758,7 @@
         'PlanInStoreShelfPrice': 'Plan In Store Shelf Price',
         'SumInvoice': 'Sum In Invoice',
         'ManualInputSumInvoice': 'Manual Input Sum In Invoice',
-        'InvoiceNumber': 'Invoice number', 
+        'InvoiceNumber': 'Invoice number',
         'SumInvoiceRegex': 'Only numbers and \',\' allowed',
         'InvoiceNumberRegex': 'Only letters, numbers and \',\' allowed. Each code must be at least 4 symbols long.',
         'DocumentNumber': 'Document number',
@@ -851,7 +851,7 @@
         'PlanPromoIncrementalNetLSV': 'Plan Promo Incremental Net LSV',
         'BaseClientTreeIds': 'Base ClientTree Ids',
         'PromoStatusSystemName': 'Promo Status System Name',
-        'NeedRecountUplift': 'Need Recount Uplift', 
+        'NeedRecountUplift': 'Need Recount Uplift',
         'LastApprovedDate': 'Last Approved Date',
 
         'IsAutomaticallyApproved': 'Is Automatically Approved',
@@ -1077,7 +1077,7 @@
         'GHierarchyCode': 'G-Hierarchy code',
         'DemandCode': 'Demand Code',
         'IsBaseClient': 'Base client',
-        'WarningChangeIsBase':'Change in customer basicity may welcome problems with settlements',
+        'WarningChangeIsBase': 'Change in customer basicity may welcome problems with settlements',
         'PostPromoEffectW1': 'Post Promo Effect W1',
         'PostPromoEffectW2': 'Post Promo Effect W2',
         'RetailTypeName': 'Retail Type Name',
@@ -1163,7 +1163,7 @@
 
     'RollingVolume': {
         'DemandGroup': 'Demand group',
-        'DMDGroup':'DMD Group',
+        'DMDGroup': 'DMD Group',
         'Week': 'Week',
         'PlanProductIncrementalQTY': 'Plan Product Inсremental QTY',
         'PromoDifference': 'Promo Difference',
@@ -1182,7 +1182,7 @@
         'Name': 'Name',
         'SKU': 'SKU',
         'BrandTech': 'BrandTech',
-        'FullWeekDiff':'Full Week Diff'
+        'FullWeekDiff': 'Full Week Diff'
     },
     'NoneNego': {
         'ClientHierarchy': 'Client',
@@ -1537,9 +1537,9 @@
         'ClientTreeDemandCode': 'Client Demand code',
         'DemandCode': 'Demand code',
         'StartDate': 'Start date',
-        'InputBaselineQTY':'Input Baseline QTY',
-        'SellInBaselineQTY':'Sell In Baseline QTY',
-        'SellOutBaselineQTY':'Sell Out Baseline QTY',
+        'InputBaselineQTY': 'Input Baseline QTY',
+        'SellInBaselineQTY': 'Sell In Baseline QTY',
+        'SellOutBaselineQTY': 'Sell Out Baseline QTY',
         'QTY': 'QTY',
         'Price': 'Price',
         'BaselineLSV': 'Baseline, LSV',
@@ -2126,12 +2126,12 @@
         'ActualMarketingTi': 'Actual - Marketing TI',
         'ActualCostProduction': 'Actual - Cost Production',
     },
-    'ClientDashboardDetailsWindow': { 
+    'ClientDashboardDetailsWindow': {
 
         'MarketingYTD': 'Marketing YTD',
-        'MarketingYEE': 'Marketing YEE', 
+        'MarketingYEE': 'Marketing YEE',
         'ProdYTD': 'Production YTD',
-        'ProdYEE': 'Production YEE', 
+        'ProdYEE': 'Production YEE',
 
         'PromoTiCostPlanPercent': 'PromoTiCostPlanPercent',
         'PromoTiCostPlan': 'PromoTiCostPlan',
@@ -2375,10 +2375,10 @@
         'BrandTech': 'BrandTech',
         'ClientHierarchy': 'Client',
         'Event': 'Event',
-        'Mechanic': 'Mechanic',
+        'Mechanic': 'Mars Mechanic',
         'MarsStartDate': 'Mars Start date',
         'MarsEndDate': 'Mars End date',
-        'Status': 'Status',
+        'Status': 'Promo Status',
         'ProductSubrangesList': 'Subranges',
         'PlanProductBaselineLSV': 'Plan Product Baseline LSV',
         'PlanProductIncrementalLSV': 'Plan Product Incremental LSV',
@@ -2627,7 +2627,7 @@
     'DeletedBTL': ['.tpm.BTL', '.core.BaseDeletedEntity'],
 
     'ClientDashboard': {
-        'SelectClient': 'Select client', 
+        'SelectClient': 'Select client',
         'SelectYear': 'Select year',
         'Details': 'Details'
     },

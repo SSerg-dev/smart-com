@@ -211,14 +211,14 @@
                     width: 110,
                 },
                 {
-                    text: l10n.ns('tpm', 'PromoProductCorrection').value('Event'),
-                    dataIndex: 'Event',
-                    width: 110,
-                },
-                {
                     text: l10n.ns('tpm', 'PromoProductCorrection').value('Mechanic'),
                     dataIndex: 'Mechanic',
                     width: 130,
+                },
+                {
+                    text: l10n.ns('tpm', 'PromoProductCorrection').value('Event'),
+                    dataIndex: 'Event',
+                    width: 110,
                 },
                 {
                     text: l10n.ns('tpm', 'PromoProductCorrection').value('Status'),
@@ -246,6 +246,34 @@
                     }
                 },
                 {
+                    text: l10n.ns('tpm', 'PromoProductCorrection').value('MarsStartDate'),
+                    dataIndex: 'MarsStartDate',
+                    width: 120,
+                },
+                {
+                    text: l10n.ns('tpm', 'PromoProductCorrection').value('MarsEndDate'),
+                    dataIndex: 'MarsEndDate',
+                    width: 120,
+                },
+                {
+                    xtype: 'numbercolumn',
+                    format: '0.00',
+                    text: l10n.ns('tpm', 'PromoProductCorrection').value('PlanProductBaselineLSV'),
+                    dataIndex: 'PlanProductBaselineLSV'
+                },
+                {
+                    xtype: 'numbercolumn',
+                    format: '0.00',
+                    text: l10n.ns('tpm', 'PromoProductCorrection').value('PlanProductIncrementalLSV'),
+                    dataIndex: 'PlanProductIncrementalLSV'
+                },
+                {
+                    xtype: 'numbercolumn',
+                    format: '0.00',
+                    text: l10n.ns('tpm', 'PromoProductCorrection').value('PlanProductLSV'),
+                    dataIndex: 'PlanProductLSV'
+                },
+                {
                     text: l10n.ns('tpm', 'PromoProductCorrection').value('ZREP'),
                     dataIndex: 'ZREP',
                     filter: {
@@ -268,24 +296,6 @@
                             }
                         }
                     }
-                },
-                {
-                    xtype: 'numbercolumn',
-                    format: '0.00',
-                    text: l10n.ns('tpm', 'PromoProductCorrection').value('PlanProductBaselineLSV'),
-                    dataIndex: 'PlanProductBaselineLSV'
-                },
-                {
-                    xtype: 'numbercolumn',
-                    format: '0.00',
-                    text: l10n.ns('tpm', 'PromoProductCorrection').value('PlanProductIncrementalLSV'),
-                    dataIndex: 'PlanProductIncrementalLSV'
-                },
-                {
-                    xtype: 'numbercolumn',
-                    format: '0.00',
-                    text: l10n.ns('tpm', 'PromoProductCorrection').value('PlanProductLSV'),
-                    dataIndex: 'PlanProductLSV'
                 },
                 {
                     text: l10n.ns('tpm', 'PromoProductCorrection').value('PlanProductUpliftPercentCorrected'),
