@@ -2,7 +2,8 @@ namespace Module.Persist.TPM.Migrations
 {
     using System;
     using System.Data.Entity.Migrations;
-    
+    using Core.Settings;
+
     public partial class Update_RPA_Columns : DbMigration
     {
         public override void Up()
