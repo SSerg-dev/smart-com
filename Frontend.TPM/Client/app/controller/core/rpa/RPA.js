@@ -110,7 +110,7 @@ Ext.define('App.controller.core.rpa.RPA', {
                 success: function (fp, o) {                    
                     // Проверить ответ от сервера на наличие ошибки и отобразить ее, в случае необходимости
                     if (o.result) {
-                        var pattern = '/odata/RPas/DownloadFile?fileName={0}';
+                        var pattern = '/odata/RPAs/DownloadFile?fileName={0}';
                         var downloadFileUrl = document.location.href + Ext.String.format(pattern, o.result.fileName);
                         var URL = '<a href=' + downloadFileUrl + '>' + o.result.fileName + '</a>'
                         var infoText = 'Задача обработки импортируемого файла успешно создана';
