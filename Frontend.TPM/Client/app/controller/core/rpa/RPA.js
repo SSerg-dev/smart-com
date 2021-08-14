@@ -115,9 +115,7 @@ Ext.define('App.controller.core.rpa.RPA', {
                         var URL = '<a href=' + downloadFileUrl + '>' + o.result.fileName + '</a>'
                         var infoText = 'Задача обработки импортируемого файла успешно создана';
                         App.Notify.pushInfo(infoText);
-                        // Открыть панель задач
-                        App.System.openUserTasksPanel();
-                        
+                                                
                         var model = editor.rpaModel ? editor.rpaModel : Ext.create('App.model.core.rpa.RPA');
                         model.editing = true;
                         var handlerName = rpaForm.down('combobox[name=HandlerName]').getValue();
@@ -129,7 +127,7 @@ Ext.define('App.controller.core.rpa.RPA', {
                         model.set('HandlerName', handlerName);
                         model.set("Constraint", constrains);
                         model.set('Parametr', parametr);
-                        model.set('Status', 'In Progress');
+                        model.set('Status', 'Waiting');
                         model.set('FileURL', URL);
                         model.set('LogURL','<a href=' + document.location.href +'>Test log URL</a>');
                         model.save({
