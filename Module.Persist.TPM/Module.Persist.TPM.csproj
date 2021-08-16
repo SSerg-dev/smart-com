@@ -4965,6 +4965,45 @@
     <EmbeddedResource Include="Migrations\202105201331074_Add_ManualInputSumInvoice.resx">
       <DependentUpon>202105201331074_Add_ManualInputSumInvoice.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202107192037591_Anaplan_ClientDashboard_Modification.resx">
+      <DependentUpon>202107192037591_Anaplan_ClientDashboard_Modification.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202107220853341_Anaplan_PostPromoEffectReport_Modification.resx">
+      <DependentUpon>202107220853341_Anaplan_PostPromoEffectReport_Modification.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\2021\202106300726289_202106301025001_Drop_Client.resx">
+      <DependentUpon>202106300726289_202106301025001_Drop_Client.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\2021\202106301329591_Add_Plu_Table.resx">
+      <DependentUpon>202106301329591_Add_Plu_Table.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\2021\202107070930222_Plu_Views.resx">
+      <DependentUpon>202107070930222_Plu_Views.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\2021\202107071143596_AddPluRole.resx">
+      <DependentUpon>202107071143596_AddPluRole.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\2021\202107120544409_PLUDictionary.resx">
+      <DependentUpon>202107120544409_PLUDictionary.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\2021\202107141026265_Empty1.resx">
+      <DependentUpon>202107141026265_Empty1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\2021\202107260050598_ChangePLUTable.resx">
+      <DependentUpon>202107260050598_ChangePLUTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\2021\202107260501006_Empty2.resx">
+      <DependentUpon>202107260501006_Empty2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\2021\202108010712478_PLUHistory.resx">
+      <DependentUpon>202108010712478_PLUHistory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\2021\202108010843032_PLUHistoryId.resx">
+      <DependentUpon>202108010843032_PLUHistoryId.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\2021\202108120633106_Add_Patch_To_PLU.resx">
+      <DependentUpon>202108120633106_Add_Patch_To_PLU.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Content Include="bin\Debug\Sql\AccessPoints.sql" />
