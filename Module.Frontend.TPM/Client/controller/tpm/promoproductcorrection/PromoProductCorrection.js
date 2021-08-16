@@ -130,7 +130,7 @@
                         productSubrangesList.setValue(result.models.Promo.ProductSubrangesList);
                         mechanic.setValue(result.models.Promo.Mechanic);
                         event.setValue(result.models.Promo.Event.Name);
-                        status.setValue(result.models.Promo.PromoStatus.SystemName);
+                        status.setValue(result.models.Promo.PromoStatus.Name);
                         marsStartDate.setValue(result.models.Promo.MarsStartDate);
                         marsEndDate.setValue(result.models.Promo.MarsEndDate);
                         planProductBaselineLSV.setValue(result.models.PlanProductBaselineLSV);
