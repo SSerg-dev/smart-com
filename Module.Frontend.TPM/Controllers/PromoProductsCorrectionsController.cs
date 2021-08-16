@@ -364,6 +364,8 @@ namespace Module.Frontend.TPM.Controllers
             IEnumerable<Column> columns = new List<Column>
             {
                  new Column { Order = orderNumber++, Field = "PromoProduct.Promo.Number", Header = "Promo ID", Quoting = false,  Format = "0" },
+                 new Column { Order = orderNumber++, Field = "PromoProduct.ZREP", Header = "ZREP", Quoting = false,  Format = "0" },
+                 new Column { Order = orderNumber++, Field = "PlanProductUpliftPercentCorrected", Header = "Plan Product Uplift Percent Corrected", Quoting = false,  Format = "0.00"  },
                  new Column { Order = orderNumber++, Field = "PromoProduct.Promo.ClientHierarchy", Header = "Client", Quoting = false },
                  new Column { Order = orderNumber++, Field = "PromoProduct.Promo.BrandTech.Name", Header = "BrandTech", Quoting = false },
                  new Column { Order = orderNumber++, Field = "PromoProduct.Promo.ProductSubrangesList", Header = "Subranges", Quoting = false },
@@ -375,8 +377,6 @@ namespace Module.Frontend.TPM.Controllers
                  new Column { Order = orderNumber++, Field = "PromoProduct.PlanProductBaselineLSV", Header = "Plan Product Baseline LSV", Quoting = false,  Format = "0.00" },
                  new Column { Order = orderNumber++, Field = "PromoProduct.PlanProductIncrementalLSV", Header = "Plan Product Incremental LSV", Quoting = false,  Format = "0.00" },
                  new Column { Order = orderNumber++, Field = "PromoProduct.PlanProductLSV", Header = "Plan Product LSV", Quoting = false,  Format = "0.00" },
-                 new Column { Order = orderNumber++, Field = "PromoProduct.ZREP", Header = "ZREP", Quoting = false,  Format = "0" },
-                 new Column { Order = orderNumber++, Field = "PlanProductUpliftPercentCorrected", Header = "Plan Product Uplift Percent Corrected", Quoting = false,  Format = "0.00"  },
                  new Column { Order = orderNumber++, Field = "CreateDate", Header = "CreateDate", Quoting = false,Format = "dd.MM.yyyy"},
                  new Column { Order = orderNumber++, Field = "ChangeDate", Header = "ChangeDate", Quoting = false,Format = "dd.MM.yyyy"},
                  new Column { Order = orderNumber++, Field = "UserName", Header = "UserName", Quoting = false }
