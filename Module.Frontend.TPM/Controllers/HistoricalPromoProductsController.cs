@@ -47,6 +47,7 @@ namespace Module.Frontend.TPM.Controllers
             var product = Context.Set<PromoProduct>().Find(Id);
             var promoProducts = HistoryReader.GetAllById<HistoricalPromoProduct>(Id.ToString());
             promoProducts.Each(pp => pp.EAN_PC = product.EAN_PC);
+            promoProducts.Each(pp => pp.PluCode = product.Plu?.PluCode);
             return promoProducts;
         }
 

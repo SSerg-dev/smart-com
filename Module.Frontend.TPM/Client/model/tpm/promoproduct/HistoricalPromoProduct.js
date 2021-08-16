@@ -13,6 +13,7 @@
         { name: 'ZREP', type: 'string', hidden: false, isDefault: false },
         { name: 'EAN_Case', type: 'string', hidden: false, isDefault: true },
         { name: 'EAN_PC', type: 'string', hidden: false, isDefault: true },
+        { name: 'PluCode', type: 'string', hidden: false, isDefault: true },
         { name: 'PlanProductCaseQty', type: 'float', hidden: false, isDefault: false, useNull: true },
         { name: 'PlanProductPCQty', type: 'int', hidden: false, isDefault: false, useNull: true },
         { name: 'PlanProductCaseLSV', type: 'float', hidden: false, isDefault: false, useNull: true },

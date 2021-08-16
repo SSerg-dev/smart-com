@@ -242,8 +242,8 @@ try {
 			}
 		}
 		catch {
-			Logging -message "$_.Exception.Message"
-			throw "$_.Exception.Message"
+			Logging -message "$($_.Exception.Message)"
+			throw "$($_.Exception.Message)"
 		}
 	}
 
@@ -289,8 +289,8 @@ try {
 			}
 		}
 		catch {
-			Logging -message "$_.Exception.Message"
-			throw "$_.Exception.Message"
+			Logging -message "$($_.Exception.Message)"
+			throw "$($_.Exception.Message)"
 		}
 	}
 	

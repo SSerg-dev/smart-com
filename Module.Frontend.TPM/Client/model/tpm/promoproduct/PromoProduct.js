@@ -7,7 +7,11 @@
         { name: 'PromoId', hidden: true },
         { name: 'ZREP', type: 'string', hidden: true, isDefault: false },
         { name: 'EAN_Case', type: 'string', hidden: true, isDefault: false },        
-        { name: 'EAN_PC', type: 'string', hidden: false, isDefault: true },        
+        { name: 'EAN_PC', type: 'string', hidden: false, isDefault: true },
+        {
+            name: 'PluCode', type: 'string', mapping: 'Plu.PluCode',
+            defaultFilterConfig: { valueField: 'PluCode' }, breezeEntityType: 'PromoProduct2Plu', hidden: false, isDefault: true
+        },
         { name: 'PlanProductCaseQty', type: 'float', hidden: true, isDefault: false, useNull: true },        
         { name: 'PlanProductPCQty', type: 'int', hidden: true, isDefault: false, useNull: true },        
         { name: 'PlanProductCaseLSV', type: 'float', hidden: true, isDefault: false, useNull: true },        
@@ -46,7 +50,6 @@
         { name: 'ActualProductPostPromoEffectQtyW2', type: 'float', hidden: true, isDefault: false, useNull: true },
         { name: 'ActualProductLSVByCompensation', type: 'float', hidden: true, isDefault: false, useNull: true },
         { name: 'SumInvoiceProduct', useNull: true, type: 'float', hidden: true, isDefault: false }
-
     ],
     proxy: {
         type: 'breeze',

@@ -408,7 +408,8 @@ namespace Module.Frontend.TPM.Controllers
                         promoProductTrees = AddProductTrees(model.ProductTreeObjectIds, model, out isSubrangeChanged);
                     }
 
-                    bool needRecalculatePromo = NeedRecalculatePromo(model, promoCopy);
+                    var productQuery = Context.Set<Product>().Where(x => !x.Disabled);
+                    bool needRecalculatePromo = NeedRecalculatePromo(model, promoCopy, productQuery);
                     bool needResetUpliftCorrections = false;
                     if (model.NeedRecountUplift != null && promoCopy.NeedRecountUplift != null && model.NeedRecountUplift != promoCopy.NeedRecountUplift)
                     {
@@ -486,12 +487,12 @@ namespace Module.Frontend.TPM.Controllers
                             if (!model.InOut.HasValue || !model.InOut.Value)
                             {
                                 List<string> eanPCs = PlanProductParametersCalculation.GetProductListFromAssortmentMatrix(model, Context);
-                                filteredProducts = PlanProductParametersCalculation.GetCheckedProducts(Context, model);
-                                resultProductList = PlanProductParametersCalculation.GetResultProducts(filteredProducts, eanPCs, model, Context);
+                                filteredProducts = PlanProductParametersCalculation.GetCheckedProducts(Context, model, productQuery);
+                                resultProductList = PlanProductParametersCalculation.GetResultProducts(filteredProducts, eanPCs, model, Context, productQuery);
                             }
                             else
                             {
-                                resultProductList = PlanProductParametersCalculation.GetCheckedProducts(Context, model);
+                                resultProductList = PlanProductParametersCalculation.GetCheckedProducts(Context, model, productQuery);
                             }
 
                             changedProducts = CheckChangesInProductList(model, resultProductList);
@@ -1927,7 +1928,7 @@ namespace Module.Frontend.TPM.Controllers
         /// <param name="promo">Проверяемое промо</param>
         /// <param name="promoProductTrees">Список узлов продуктового дерева</param>
         /// <exception cref="Exception">Исключение генерируется при отсутсвии одного из проверяемых параметров</exception>
-        public void CheckSupportInfo(Promo promo, List<PromoProductTree> promoProductTrees, out List<Product> products, DatabaseContext databaseContext = null)
+        public void CheckSupportInfo(Promo promo, List<PromoProductTree> promoProductTrees, out List<Product> products, DatabaseContext databaseContext = null, IQueryable<Product> productQuery = null)
         {
             DatabaseContext context = databaseContext ?? Context;
 
@@ -1966,7 +1967,7 @@ namespace Module.Frontend.TPM.Controllers
             {
                 if (promo.InOut.HasValue && promo.InOut.Value)
                 {
-                    products = PlanProductParametersCalculation.GetCheckedProducts(context, promo);
+                    products = PlanProductParametersCalculation.GetCheckedProducts(context, promo, productQuery);
                 }
                 else
                 {
@@ -2124,7 +2125,7 @@ namespace Module.Frontend.TPM.Controllers
             }
         }
 
-        private bool NeedRecalculatePromo(Promo newPromo, Promo oldPromo)
+        private bool NeedRecalculatePromo(Promo newPromo, Promo oldPromo, IQueryable<Product> products)
         {
             bool needReacalculate = false;
 
@@ -2161,8 +2162,8 @@ namespace Module.Frontend.TPM.Controllers
 
             //if (newPromo.InOut.HasValue && newPromo.InOut.Value)
             //{
-            List<Product> oldInOutProducts = PlanProductParametersCalculation.GetCheckedProducts(Context, oldPromo);
-            List<Product> newInOutProducts = PlanProductParametersCalculation.GetCheckedProducts(Context, newPromo);
+            List<Product> oldInOutProducts = PlanProductParametersCalculation.GetCheckedProducts(Context, oldPromo, products);
+            List<Product> newInOutProducts = PlanProductParametersCalculation.GetCheckedProducts(Context, newPromo, products);
 
             needReacalculate = needReacalculate || oldInOutProducts.Count != newInOutProducts.Count || !oldInOutProducts.All(x => newInOutProducts.Any(y => y.Id == x.Id));
             //} 

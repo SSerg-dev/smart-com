@@ -39,7 +39,7 @@
     "Scripts/q.js",
     "Scripts/datajs-1.1.3.js",
     "Scripts/breeze.min.js",
-    "../Frontend.TPM/Client/ext/ext-all.js",
+    "../Frontend.TPM/Client/ext/ext-all-debug.js",
     "../Module.Frontend.TPM/Sch/sch-all-debug.js",
     "../Module.Frontend.TPM/Sch/Notification.js",
     "Scripts/jquery.signalR-2.4.1.min.js"

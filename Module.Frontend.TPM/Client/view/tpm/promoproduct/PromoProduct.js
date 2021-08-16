@@ -27,19 +27,33 @@
                 xtype: 'customheadermenu',
                 items: [{
                     glyph: 0xf220,
-                    itemgroup: 'loadimportbutton',
+                    itemId: 'loadimporteanbutton',
                     exactlyModelCompare: true,
-                    text: l10n.ns('core', 'additionalMenu').value('fullImportXLSX'),
+                    text: l10n.ns('core', 'additionalMenu').value('fullImportEANXLSX'),
                     resource: '{0}',
                     action: 'FullImportXLSX',
+                    allowFormat: ['zip', 'xlsx']
+                },{
+                    glyph: 0xf220,
+                    itemId: 'loadimportplubutton',
+                    exactlyModelCompare: true,
+                    text: l10n.ns('core', 'additionalMenu').value('fullImportPLUXLSX'),
+                    resource: '{0}',
+                    action: 'FullImportPluXLSX',
                     allowFormat: ['zip', 'xlsx']
                 }, {
                     glyph: 0xf21d,
                     itemId: 'loadimporttemplatexlsxbutton',
                     exactlyModelCompare: true,
-                    text: l10n.ns('core', 'additionalMenu').value('importTemplateXLSX'),
+                    text: l10n.ns('core', 'additionalMenu').value('importTemplateEANPCXLSX'),
                     action: 'DownloadTemplateXLSX',
-                }, {
+                },{
+                    glyph: 0xf21d,  
+                    itemId: 'loadimporttemplatepluxlsxbutton',
+                    exactlyModelCompare: true,
+                    text: l10n.ns('core', 'additionalMenu').value('importTemplatePLUXLSX'),
+                    action: 'DownloadTemplatePluXLSX',
+                },{
                     glyph: 0xf21d,
                     itemId: 'loadimporttemplatexlsxbuttonTLC',
                     exactlyModelCompare: true,
@@ -139,6 +153,9 @@
             items: [{
                 text: l10n.ns('tpm', 'PromoProduct').value('EAN_PC'),
                 dataIndex: 'EAN_PC'
+            },{
+                text: l10n.ns('tpm', 'PromoProduct').value('PluCode'),
+                dataIndex: 'PluCode',
             }, {
                 xtype: 'numbercolumn',
                 format: '0',

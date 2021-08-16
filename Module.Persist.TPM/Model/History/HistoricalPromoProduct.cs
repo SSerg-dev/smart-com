@@ -12,6 +12,7 @@ namespace Module.Persist.TPM.Model.History
         public string ZREP { get; set; }
         public string EAN_Case { get; set; }
         public string EAN_PC { get; set; }
+        public string PluCode { get; set; }
         public double? PlanProductCaseQty { get; set; }
         public int? PlanProductPCQty { get; set; }
         public double? PlanProductCaseLSV { get; set; }

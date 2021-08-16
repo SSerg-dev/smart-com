@@ -4,6 +4,7 @@ using Persist.ScriptGenerator;
 using Persist.ScriptGenerator.Filter;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
 using System.Linq;
@@ -33,6 +34,17 @@ namespace Module.Frontend.TPM.Util
             }
             return script.ToString();
         }
+
+        public string BuildUpdateScript(IEnumerable<object> items)
+        {
+            StringBuilder script = new StringBuilder();
+            foreach (IEntity item in items)
+            {
+                script.AppendLine(UpdateBuilderSimple(item));
+            }
+            return script.ToString();
+        }
+
 
         public virtual string BuildSelectScript(PersistFilter filter)
         {
@@ -92,12 +104,19 @@ namespace Module.Frontend.TPM.Util
             IEnumerable<PropertyInfo> updateableProperties = properties.Where(pi => !IsKeyProperty(pi) && !IsSpecialNotKeyProperty(pi));
             IEnumerable<PropertyInfo> keyProperties = properties.Where(pi => IsKeyProperty(pi));
 
+
             InsertBuilder = (x) => {
                 string values = String.Join(", ", properties.Select(p => GetDbPropertyValue(p, x)));
                 return String.Format(InsertTemplate, GetTableName(type), fieldNames, values);
             };
 
             UpdateBuilder = (x) => {
+                string values = String.Join(", ", updateableProperties.Select(p => String.Format("{0} = {1}", GetColumnName(p), GetDbPropertyValue(p, x))));
+                string where = String.Join(" AND ", keyProperties.Select(p => String.Format("{0} = {1}", GetColumnName(p), GetDbPropertyValue(p, x, false))));
+                return String.Format(UpdateTemplate, GetTableName(type), values, where);
+            };
+
+            UpdateBuilderSimple = (x) => {
                 string values = String.Join(", ", updateableProperties.Select(p => String.Format("{0} = {1}", GetColumnName(p), GetDbPropertyValue(p, x))));
                 string where = String.Join(" AND ", keyProperties.Select(p => String.Format("{0} = {1}", GetColumnName(p), GetDbPropertyValue(p, x, false))));
                 return String.Format(UpdateTemplate, GetTableName(type), values, where);
@@ -133,6 +152,8 @@ namespace Module.Frontend.TPM.Util
         private Func<object, string> InsertBuilder { get; set; }
 
         private Func<IEntity<Guid>, string> UpdateBuilder { get; set; }
+
+        private Func<IEntity, string> UpdateBuilderSimple { get; set; }
 
         private Func<IEntity<Guid>, string> DeleteBuilder { get; set; }
 
@@ -413,7 +434,7 @@ namespace Module.Frontend.TPM.Util
 
         private bool IsKeyProperty(PropertyInfo pi)
         {
-            bool isKey = (pi.GetCustomAttribute<DatabaseGeneratedAttribute>() != null
+            bool isKey = ( (pi.GetCustomAttribute<DatabaseGeneratedAttribute>() != null || pi.GetCustomAttribute<KeyAttribute>() != null)
                 || pi.GetCustomAttribute<AssemblySignatureKeyAttribute>() != null)
                 && pi.GetCustomAttribute<SpecialNotKeyPropertyAttribute>() == null;
             return isKey;
