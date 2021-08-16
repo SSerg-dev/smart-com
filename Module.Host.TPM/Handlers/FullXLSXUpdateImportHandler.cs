@@ -215,14 +215,22 @@ namespace Module.Host.TPM.Handlers
         }
     }
 
+    class FullXLSXPLUDictionaryImportHandler : FullXLSXImportHandler
+    {
+        protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
+        {
+            return new FullXLSXPLUDictionaryImportAction(settings);
+        }
+    }
+
     class FullXLSXImportPromoProductHandler : FullXLSXImportHandler
     {
         /// <summary>
         /// Id промо для которого загружается PromoProducts
         /// </summary>
-        private Guid promoId;
-        private Guid userId;
-        private Guid roleId;
+        protected Guid promoId;
+        protected Guid userId;
+        protected Guid roleId;
 
         public override void Action(HandlerInfo info, ExecuteData data)
         {
@@ -237,6 +245,15 @@ namespace Module.Host.TPM.Handlers
             return new FullXLSXImportPromoProductAction(settings, promoId, userId, roleId);
         }
     }
+
+    class FullXLSXImportPromoProductPluHandler : FullXLSXImportPromoProductHandler
+	{
+		protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
+		{
+            return new FullXLSXImportPromoProductPluAction(settings, promoId, userId, roleId);
+
+        }
+	}
 
     class FullXLSXImportPromoProductFromTLCHandler : FullXLSXImportHandler
     {

@@ -69,11 +69,12 @@
         'PromoROIReport': 'Promo ROI Report',
         'RATIShopper': 'RA TI Shopper',
         'AssortmentMatrix': 'Assortment matrix',
+        'PLUDictionary': 'PLU dictionary',
         'PromoROIReport': 'Promo ROI Report',
         'IncrementalPromo': 'Incremental Promo',
         'BTL': 'BTL',
-		'ActualLSV': 'Actual LSV',
-		'NonPromoEquipment': 'Non-Promo Equipment',
+        'ActualLSV': 'Actual LSV',
+        'NonPromoEquipment': 'Non-Promo Equipment',
         'PromoTypes': 'Promo Types',
         'ClientDashboard': 'Client Dashboard',
         'Dashboard': 'Dashboard',
@@ -86,6 +87,7 @@
     },
 
     'compositePanelTitles': {
+        'PLUDictionary':'PLU Dictionary',
         'Category': 'Category',
         'NonPromoEquipment': 'Non-Promo Equipment',
         'Brand': 'Brand',
@@ -1463,6 +1465,7 @@
 
     'PromoProduct': {
         'ZREP': 'ZREP',
+        'PluCode': 'PLU',
         'EAN_Case': 'EAN Case',
         'EAN_PC': 'EAN PC',
         'PlanProductCaseQty': 'Plan Product Qty',
@@ -2342,6 +2345,7 @@
     'AssortmentMatrix': {
         'Id': 'Id',
         'Number': 'ID',
+        'PluCode': "PLU",
         'EAN_PC': 'EAN PC',
         'ProductEANPC': 'EAN PC',
         'ProductEAN_PC': 'EAN PC',
@@ -2355,9 +2359,30 @@
     'HistoricalAssortmentMatrix': ['.tpm.AssortmentMatrix', '.core.BaseHistoryEntity'],
     'DeletedAssortmentMatrix': ['.tpm.AssortmentMatrix', '.core.BaseDeletedEntity'],
 
+    'AssortmentMatrix2Plu': {
+        'Id': 'Assortment matrix Id',
+        'PluCode' : "PLU",
+    },
+
+    'PromoProduct2Plu': {
+        'Id': 'Promo  product Id',
+        'PluCode': "PLU",
+    },
+
+    'PLUDictionary': {
+        'Id':'Id',
+        'ClientTreeName': 'Client',
+        'ClientTreeObjectId': 'Client hierarchy code',
+        'ObjectId': 'Client hierarchy code',
+        'PluCode': "PLU",
+        'EAN_PC': 'EAN PC',
+    },
+
+    'HistoricalPLUDictionary': ['.tpm.PLUDictionary', '.core.BaseHistoryEntity'],
+
     'IncrementalPromo': {
         'ProductZREP': 'ZREP',
-        'ProductName': 'Product Name',
+        'ProductName': 'Product EN',
         'PromoClient': 'Client',
         'PromoNumber': 'Promo ID',
         'PromoName': 'Promo Name',

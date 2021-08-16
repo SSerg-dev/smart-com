@@ -2560,6 +2560,50 @@
     <Compile Include="Migrations\202107220853341_Anaplan_PostPromoEffectReport_Modification.Designer.cs">
       <DependentUpon>202107220853341_Anaplan_PostPromoEffectReport_Modification.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\2021\202106300726289_202106301025001_Drop_Client.cs" />
+    <Compile Include="Migrations\2021\202106300726289_202106301025001_Drop_Client.Designer.cs">
+      <DependentUpon>202106300726289_202106301025001_Drop_Client.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\2021\202108120633106_Add_Patch_To_PLU.cs" />
+    <Compile Include="Migrations\2021\202108120633106_Add_Patch_To_PLU.Designer.cs">
+      <DependentUpon>202108120633106_Add_Patch_To_PLU.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\2021\202108010843032_PLUHistoryId.cs" />
+    <Compile Include="Migrations\2021\202108010843032_PLUHistoryId.Designer.cs">
+      <DependentUpon>202108010843032_PLUHistoryId.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\2021\202106301329591_Add_Plu_Table.cs" />
+    <Compile Include="Migrations\2021\202106301329591_Add_Plu_Table.Designer.cs">
+      <DependentUpon>202106301329591_Add_Plu_Table.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\2021\202107070930222_Plu_Views.cs" />
+    <Compile Include="Migrations\2021\202107070930222_Plu_Views.Designer.cs">
+      <DependentUpon>202107070930222_Plu_Views.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\2021\202107071143596_AddPluRole.cs" />
+    <Compile Include="Migrations\2021\202107071143596_AddPluRole.Designer.cs">
+      <DependentUpon>202107071143596_AddPluRole.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\2021\202107120544409_PLUDictionary.cs" />
+    <Compile Include="Migrations\2021\202107120544409_PLUDictionary.Designer.cs">
+      <DependentUpon>202107120544409_PLUDictionary.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\2021\202107141026265_Empty1.cs" />
+    <Compile Include="Migrations\2021\202107141026265_Empty1.Designer.cs">
+      <DependentUpon>202107141026265_Empty1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\2021\202107260050598_ChangePLUTable.cs" />
+    <Compile Include="Migrations\2021\202107260050598_ChangePLUTable.Designer.cs">
+      <DependentUpon>202107260050598_ChangePLUTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\2021\202107260501006_Empty2.cs" />
+    <Compile Include="Migrations\2021\202107260501006_Empty2.Designer.cs">
+      <DependentUpon>202107260501006_Empty2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\2021\202108010712478_PLUHistory.cs" />
+    <Compile Include="Migrations\2021\202108010712478_PLUHistory.Designer.cs">
+      <DependentUpon>202108010712478_PLUHistory.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -2583,6 +2627,7 @@
     <Compile Include="Model\History\HistoricalNonPromoEquipment.cs" />
     <Compile Include="Model\History\HistoricalCostProduction.cs" />
     <Compile Include="Model\History\HistoricalIncrementalPromo.cs" />
+    <Compile Include="Model\History\HistoricalPLUDictionary.cs" />
     <Compile Include="Model\History\HistoricalPromoProduct.cs" />
     <Compile Include="Model\History\HistoricalAgeGroup.cs" />
     <Compile Include="Model\History\HistoricalBaseLine.cs" />
@@ -2635,6 +2680,7 @@
     <Compile Include="Model\Import\ImportBTL.cs" />
     <Compile Include="Model\Import\ImportClientDashboard.cs" />
     <Compile Include="Model\Import\ImportCoefficientSI2SO.cs" />
+    <Compile Include="Model\Import\ImportPLUDictionary.cs" />
     <Compile Include="Model\Import\ImportPromoDMP.cs" />
     <Compile Include="Model\Import\ImportNonPromoDMP.cs" />
     <Compile Include="Model\Import\ImportNonPromoEquipment.cs" />
@@ -2678,6 +2724,9 @@
     <Compile Include="Model\SimpleModel\SimplePromoCOGSTI.cs" />
     <Compile Include="Model\SimpleModel\YEAR_END_ESTIMATE_FDM.cs" />
     <Compile Include="Model\TPM\ActualLsvModel.cs" />
+    <Compile Include="Model\TPM\Client.cs" />
+    <Compile Include="Model\TPM\Plu.cs" />
+    <Compile Include="Model\TPM\PLUDictionary.cs" />
     <Compile Include="Model\TPM\PromoSupportDMP.cs" />
     <Compile Include="Model\TPM\NonPromoSupportDMP.cs" />
     <Compile Include="Model\TPM\PreviousDayIncremental.cs" />
@@ -2731,7 +2780,6 @@
     <Compile Include="Model\TPM\NodeType.cs" />
     <Compile Include="Model\TPM\ProductTree.cs" />
     <Compile Include="Model\TPM\ClientTree.cs" />
-    <Compile Include="Model\TPM\Client.cs" />
     <Compile Include="Model\TPM\CommercialNet.cs" />
     <Compile Include="Model\TPM\CommercialSubnet.cs" />
     <Compile Include="Model\TPM\Demand.cs" />
@@ -4916,12 +4964,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202105201331074_Add_ManualInputSumInvoice.resx">
       <DependentUpon>202105201331074_Add_ManualInputSumInvoice.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202107192037591_Anaplan_ClientDashboard_Modification.resx">
-      <DependentUpon>202107192037591_Anaplan_ClientDashboard_Modification.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202107220853341_Anaplan_PostPromoEffectReport_Modification.resx">
-      <DependentUpon>202107220853341_Anaplan_PostPromoEffectReport_Modification.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

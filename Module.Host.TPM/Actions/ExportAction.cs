@@ -110,6 +110,10 @@ namespace Module.Host.TPM.Actions.Notifications
                             var options = getODataQueryOptions<TModel>();
                             records = options.ApplyTo(new PromoGridViewsController(User, Role, RoleId).GetConstraintedQuery(localContext: context)).Cast<PromoGridView>().ToList();
                         }
+                        else if(typeof(TModel).Name.Equals(typeof(AssortmentMatrix).Name))
+						{
+                            records = getAssortmentMatrices(context, SqlString);
+                        }                            
                         else
                         {
                             records = context.Database.SqlQuery<TModel>(SqlString).ToList();
@@ -149,9 +153,33 @@ namespace Module.Host.TPM.Actions.Notifications
             }
         }
 
-        private IQueryable<PromoProduct> getActuals(DatabaseContext context, string sqlQuery)
+        private IList getAssortmentMatrices(DatabaseContext context, string sqlQuery)
+		{
+            var records = context.Database.SqlQuery<AssortmentMatrix>(SqlString).ToList();
+            var clientIds = records.GroupBy(x => x.ClientTreeId).Select(x => x.Key).ToList();
+            var plu = context.Set<Plu>().Where(x => clientIds.Contains(x.ClientTreeId)).ToList();
+            var assortmentMatrix2Plus = context.Set<AssortmentMatrix2Plu>().Where(x => clientIds.Contains(x.ClientTreeId)).ToList();
+            foreach(var item in records)
+			{
+				var found = assortmentMatrix2Plus.SingleOrDefault(x => x.Id == item.Id);
+				if (found != null)
+				{
+					item.Plu = new AssortmentMatrix2Plu() { PluCode = found.PluCode };
+				}
+			}
+            return records;
+        }
+
+
+        private class ExportPromoProduct : PromoProduct
+		{
+            public string PluCode { get; set; }
+        }
+
+        private IQueryable<ExportPromoProduct> getActuals(DatabaseContext context, string sqlQuery)
         {
-            var sumGroup = context.Database.SqlQuery<PromoProduct>(sqlQuery)
+            
+            var sumGroup = context.Database.SqlQuery<ExportPromoProduct>(sqlQuery)
                                                       .GroupBy(x => x.EAN_PC)
                                                       .Select(s => new
                                                       {
@@ -161,13 +189,13 @@ namespace Module.Host.TPM.Actions.Notifications
                                                       })
                                                       .ToList();
 
-            List<PromoProduct> promoProductList = new List<PromoProduct>();
+            List<ExportPromoProduct> promoProductList = new List<ExportPromoProduct>();
             foreach (var item in sumGroup)
             {
-                PromoProduct pp = item.promoProduct.ToList()[0];
+                ExportPromoProduct pp = item.promoProduct.ToList()[0];
                 pp.ActualProductPCQty = item.sumActualProductPCQty;
                 pp.ActualProductPCLSV = item.sumActualProductPCLSV;
-
+                pp.Plu = new PromoProduct2Plu() { PluCode = pp.PluCode };
                 promoProductList.Add(pp);
             }
 

@@ -150,15 +150,19 @@
         'importXLSX': 'Import XLSX',
         'fullImportCSV': 'Full import CSV',
         'fullImportXLSX': 'Full import XLSX',
+        'fullImportEANXLSX': 'Full import EAN PC XLSX',
+        'fullImportPLUXLSX': 'Full import PLU XLSX',
         'importTemplateCSV': 'Import template CSV',
         'importTemplateXLSX': 'Import template XLSX',
+        'importTemplateEANPCXLSX': 'Import template EAN PC XLSX',
+        'importTemplatePLUXLSX': 'Import template PLU XLSX',
         'exportCSV': 'Export to CSV',
         'exportXLSX': 'Export to XLSX',
         'manualProcess': 'Parse',
         'manualSend': 'Send',
         'manualDownload': 'Download',
         'readLog': 'Log',
-        'importResults': 'Import results'
+        'importResults': 'Import results',
     },
 
     'importExport': {

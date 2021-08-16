@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Core.Data;
 using Persist;
 using Persist.ScriptGenerator;
@@ -22,9 +20,9 @@ namespace Module.Host.TPM.Actions
         /// <summary>
         /// Id промо для которого загружается Actuals
         /// </summary>
-        private Guid promoId;
-        private Guid userId;
-        private Guid roleId;
+        protected Guid promoId;
+        protected Guid userId;
+        protected Guid roleId;
 
         public FullXLSXImportPromoProductAction(FullImportSettings settings, Guid promoId, Guid userId, Guid roleId) : base(settings)
         {
@@ -33,7 +31,7 @@ namespace Module.Host.TPM.Actions
             this.roleId = roleId;
         }
 
-        protected override bool IsFilterSuitable(IEntity<Guid> rec, out IList<string> errors)
+		protected override bool IsFilterSuitable(IEntity<Guid> rec, out IList<string> errors)
         {
             errors = new List<string>();
             bool success = true;

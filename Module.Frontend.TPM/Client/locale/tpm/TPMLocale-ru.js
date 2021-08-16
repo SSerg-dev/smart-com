@@ -63,6 +63,7 @@
         'PromoROIReport': 'Promo ROI Report',
         'RATIShopper': 'RA TI Shopper',
         'AssortmentMatrix': 'Assortment matrix',
+        'PLUDictionary': 'PLU dictionary',
         'ActualLSV': 'Actual LSV',
         'IncrementalPromo': 'Incremental Promo',
         'BTL': 'BTL',
@@ -294,12 +295,32 @@
 	'HistoricalSegment': ['.tpm.Segment', '.core.BaseHistoryEntity'],
 	'DeletedSegment': ['.tpm.Segment', '.core.BaseDeletedEntity'],
 
+    'AssortmentMatrix2Plu': {
+        'Id': 'Assortment matrix Id',
+        'PluCode': "PLU",
+    },
+
+    'PromoProduct2Plu': {
+        'Id': 'Promo  product Id',
+        'PluCode': "PLU",
+    },
+
 	'Event': {
 		'Name': 'Event',
 		'Description': 'Description'
 	},
 	'HistoricalEvent': ['.tpm.Event', '.core.BaseHistoryEntity'],
 	'DeletedEvent': ['.tpm.Event', '.core.BaseDeletedEntity'],
+
+    'PLUDictionary': {
+        'ClientTreeName': 'Client',
+        'ClientTreeObjectId': 'Client hierarchy code',
+        'ObjectId': 'Client hierarchy code',
+        'PluCode': "PLU",
+        'EAN_PC': 'EAN PC',
+    },
+
+    'HistoricalPLUDictionary': ['.tpm.PLUDictionary', '.core.BaseHistoryEntity'],
 
     'Technology': {
         'Name': 'Technology',
@@ -1165,6 +1186,7 @@
 
     'PromoProduct': {
         'ZREP': 'ZREP',
+        'PluCode': 'PLU',
         'EAN_Case': 'EAN Case',
         'EAN_PC': 'EAN PC',
         'PlanProductCaseQty': 'Plan Product Qty',
@@ -1878,6 +1900,7 @@
     'AssortmentMatrix': {
         'Id': 'Id',
         'Number': 'ID',
+        'PluCode': "PLU",
         'EAN_PC': 'EAN PC',
         'ProductEANPC': 'EAN PC',
         'ClientTreeName': 'Client',

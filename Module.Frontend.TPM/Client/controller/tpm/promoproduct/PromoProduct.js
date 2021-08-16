@@ -60,13 +60,19 @@
                 'promoproduct #exportbutton': {
                     click: this.onExportButtonClick
                 },
-                'promoproduct #loadimportbutton': {
+                'promoproduct #loadimporteanbutton': {
+                    click: this.onShowImportFormButtonClick
+                },
+                'promoproduct #loadimportplubutton': {
                     click: this.onShowImportFormButtonClick
                 },
                 'promoproduct #loadimporttemplatebutton': {
                     click: this.onLoadImportTemplateButtonClick
                 },
                 'promoproduct #loadimporttemplatexlsxbuttonTLC': {
+                    click: this.onLoadImportTemplateXLSXTLCButtonClick
+                },
+                'promoproduct #loadimporttemplatepluxlsxbutton': {
                     click: this.onLoadImportTemplateXLSXTLCButtonClick
                 },
                 'promoproduct #applyimportbutton': {

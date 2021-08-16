@@ -230,6 +230,8 @@ namespace Module.Persist.TPM.Model.TPM
         public virtual Promo Promo { get; set; }
         public virtual Product Product { get; set; }
 
+        public virtual PromoProduct2Plu Plu { get; set; }
+
         public object Clone()
         {
             return this.MemberwiseClone();

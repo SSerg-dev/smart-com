@@ -32,6 +32,10 @@
             fieldLabel: l10n.ns('tpm', 'PromoProduct').value('EAN_PC'),
         }, {
             xtype: 'singlelinedisplayfield',
+            name: 'PluCode',
+            fieldLabel: l10n.ns('tpm', 'PromoProduct').value('PluCode'),
+        }, {
+            xtype: 'singlelinedisplayfield',
             name: 'ActualProductPCQty',
             fieldLabel: l10n.ns('tpm', 'PromoProduct').value('ActualProductPCQty'),
         }, {
