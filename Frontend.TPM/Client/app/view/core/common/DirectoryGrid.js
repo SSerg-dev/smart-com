@@ -112,10 +112,9 @@
 
             var column = columns[0];
             if (column.isCheckerHd && column.el != null) {
-                var buttonEl = column.el.first().first();
-                Ext.core.DomHelper.append(buttonEl, {
+                Ext.core.DomHelper.append(column.el, {
                     tag: 'div',
-                    style: 'position: absolute; width: 16px; height: 16px; top: 30px; left: 3px; font-size: medium; color: #8a98a7;',
+                    style: 'position: absolute; width: 16px; height: 16px; top: 30px; left: 6px; font-size: medium; color: #8a98a7;',
                     cls: 'mdi mdi-check-all',
                     'data-qtip': l10n.ns('core', 'DirectoryGrid').value('SelectAllToolTip'),
                 });
