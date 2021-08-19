@@ -3305,7 +3305,7 @@
         if (!isApproved) {
             promoeditorcustom.down('panel[name=promoBudgets_step4]').down('numberfield[name=PlanAddTIMarketingApproved]').setReadOnly(readOnly);
         }
-        
+
         if (!isCopy) {
             // --------------- promo budgets ---------------                
 
@@ -3493,7 +3493,8 @@
         else if (record.data.PromoStatusSystemName == 'Draft' && App.UserInfo.getCurrentRole().SystemName.toLowerCase() == 'supportadministrator') {
             promoeditorcustom.down('#btn_recalculatePromo').hide();
             promoeditorcustom.down('#btn_resetPromo').show();
-        } else if ((App.UserInfo.getCurrentRole().SystemName.toLowerCase() == 'administrator' || App.UserInfo.getCurrentRole().SystemName.toLowerCase() == 'supportadministrator')
+        } else if ((App.UserInfo.getCurrentRole().SystemName.toLowerCase() == 'administrator'
+            || App.UserInfo.getCurrentRole().SystemName.toLowerCase() == 'demandplanning' || App.UserInfo.getCurrentRole().SystemName.toLowerCase() == 'supportadministrator')
             && record.data.PromoStatusSystemName != 'Draft' && record.data.PromoStatusSystemName != 'Cancelled') {
             promoeditorcustom.down('#btn_recalculatePromo').show();
             promoeditorcustom.down('#btn_resetPromo').hide();

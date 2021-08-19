@@ -130,7 +130,7 @@ namespace Module.Frontend.TPM.Util
             //timecritical
             var timeCritical = promo.Where(p => (p.PromoStatusName.Equals("On Approval") && p.IsCMManagerApproved == true && (p.IsDemandPlanningApproved == false || p.IsDemandPlanningApproved == null) && p.DispatchesStart < calculateDate)).Count();
             //OnApporval
-            calculateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault().AddDays(7 * 8);
+            calculateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault().AddDays(7 * 9);
 
             var onApporval = promo.Where(p => (p.PromoStatusName.Equals("On Approval") && p.IsCMManagerApproved == true && (p.IsDemandPlanningApproved == false || p.IsDemandPlanningApproved == null) && p.DispatchesStart < calculateDate)).Count();
             //AdjustData
@@ -158,7 +158,7 @@ namespace Module.Frontend.TPM.Util
             //TimeCritical
             var timeCritical = promo.Where(p => (p.PromoStatusName.Equals("On Approval") && p.IsCMManagerApproved == true && p.IsDemandPlanningApproved == true && (p.IsDemandFinanceApproved == false || p.IsDemandFinanceApproved == null) && p.DispatchesStart < calculateDate)).Count();
             //NeedsMyApproval
-            calculateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault().AddDays(7 * 8); 
+            calculateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault().AddDays(7 * 9); 
             var needsMyApproval = promo.Where(p => (p.PromoStatusName.Equals("On Approval") && p.IsCMManagerApproved == true && p.IsDemandPlanningApproved == true && (p.IsDemandFinanceApproved ==false || p.IsDemandFinanceApproved == null) && p.DispatchesStart < calculateDate)).Count();
             //ActualShopperTI
             var actualShopperTI = promo.Where(p => (p.PromoStatusName.Equals("Finished") &&(p.ActualPromoTIShopper == 0 || p.ActualPromoTIShopper == null))).Count();
@@ -187,7 +187,7 @@ namespace Module.Frontend.TPM.Util
             //TimeCritical
             var timeCritical = promo.Where(p => (p.PromoStatusName.Equals("On Approval") && (p.IsCMManagerApproved == false || p.IsCMManagerApproved == null) && p.DispatchesStart < calculateDate)).Count();
             //NeedsMyApproval
-            calculateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault().AddDays(7 * 8);
+            calculateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault().AddDays(7 * 9);
             var needsMyApproval = promo.Where(p => p.PromoStatusName.Equals("On Approval") && (p.IsCMManagerApproved == false || p.IsCMManagerApproved == null) && p.DispatchesStart < calculateDate).Count(); 
             return JsonConvert.SerializeObject(new { TimeCritical = timeCritical, NeedsMyApproval = needsMyApproval });
         }

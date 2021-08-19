@@ -28,7 +28,8 @@ namespace Module.Frontend.TPM.Controllers
             HandleNullPropagation = HandleNullPropagationOption.False,
             AllowedQueryOptions = AllowedQueryOptions.All,
             EnableConstantParameterization = false,
-            MaxTop = 1024)]
+            MaxTop = 1024,
+            MaxExpansionDepth = 3)]
         public IQueryable<HistoricalPromoProductsCorrection> GetHistoricalPromoProductsCorrections()
         {
             return HistoryReader.GetAll<HistoricalPromoProductsCorrection>();
@@ -41,7 +42,8 @@ namespace Module.Frontend.TPM.Controllers
             HandleNullPropagation = HandleNullPropagationOption.False,
             AllowedQueryOptions = AllowedQueryOptions.All,
             EnableConstantParameterization = false,
-            MaxTop = 1024)]
+            MaxTop = 1024,
+            MaxExpansionDepth = 3)]
         public IQueryable<HistoricalPromoProductsCorrection> GetHistoricalPromoProductsCorrections(Guid? Id)
         {
             return HistoryReader.GetAllById<HistoricalPromoProductsCorrection>(Id.ToString());

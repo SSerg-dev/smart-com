@@ -2560,6 +2560,10 @@
     <Compile Include="Migrations\202107220853341_Anaplan_PostPromoEffectReport_Modification.Designer.cs">
       <DependentUpon>202107220853341_Anaplan_PostPromoEffectReport_Modification.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202107280831559_Promo_Add_DemainPlanig_Role_For_Recalculate.cs" />
+    <Compile Include="Migrations\202107280831559_Promo_Add_DemainPlanig_Role_For_Recalculate.Designer.cs">
+      <DependentUpon>202107280831559_Promo_Add_DemainPlanig_Role_For_Recalculate.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\202108190810182_Empty3.cs" />
     <Compile Include="Migrations\202108190810182_Empty3.Designer.cs">
       <DependentUpon>202108190810182_Empty3.cs</DependentUpon>
@@ -4974,6 +4978,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202107220853341_Anaplan_PostPromoEffectReport_Modification.resx">
       <DependentUpon>202107220853341_Anaplan_PostPromoEffectReport_Modification.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202107280831559_Promo_Add_DemainPlanig_Role_For_Recalculate.resx">
+      <DependentUpon>202107280831559_Promo_Add_DemainPlanig_Role_For_Recalculate.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202108190810182_Empty3.resx">
       <DependentUpon>202108190810182_Empty3.cs</DependentUpon>

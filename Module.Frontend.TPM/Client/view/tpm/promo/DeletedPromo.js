@@ -250,6 +250,7 @@
                     type: 'search',
                     selectorWidget: 'promostatus',
                     valueField: 'Name',
+                    operator: 'eq',
                     store: {
                         type: 'directorystore',
                         model: 'App.model.tpm.promostatus.PromoStatus',
