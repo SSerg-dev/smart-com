@@ -374,7 +374,7 @@ namespace Module.Host.TPM.Actions {
                 var testRecord = actualClientTreeBrandTeches.FirstOrDefault();
 
                 var isActualRecord = actualClientTreeBrandTeches.Any(x => x.ClientTree != null && x.BrandTech != null && x.ClientTree.ObjectId == importObj.ClientTreeId &&
-                    x.ParentClientTreeDemandCode == importObj.DemandCode && x.CurrentBrandTechName == importObj.BrandTech);
+                    x.ParentClientTreeDemandCode == importObj.DemandCode && x.BrandTech.BrandsegTechsub == importObj.BrandTech);
 
                 if (!isActualRecord)
                 {

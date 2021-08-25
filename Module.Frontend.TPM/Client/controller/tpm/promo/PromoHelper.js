@@ -441,7 +441,7 @@
         var date = new Date();
         date.setHours(date.getHours() + (date.getTimezoneOffset() / 60) + 3);
 
-        date = Ext.Date.add(date, Ext.Date.DAY, 8 * 7);
+        date = Ext.Date.add(date, Ext.Date.DAY, 9 * 7);
 
         var filter = {
             operator: "and",
@@ -471,7 +471,7 @@
         var date = new Date();
         date.setHours(date.getHours() + (date.getTimezoneOffset() / 60) + 3);
 
-        date = Ext.Date.add(date, Ext.Date.DAY, 8 * 7);
+        date = Ext.Date.add(date, Ext.Date.DAY, 9 * 7);
 
         var filter = {
             operator: "and",
@@ -504,7 +504,7 @@
         var date = new Date();
         date.setHours(date.getHours() + (date.getTimezoneOffset() / 60) + 3);
 
-        date = Ext.Date.add(date, Ext.Date.DAY, 8 * 7);
+        date = Ext.Date.add(date, Ext.Date.DAY, 9 * 7);
 
         var filter = {
             operator: "and",

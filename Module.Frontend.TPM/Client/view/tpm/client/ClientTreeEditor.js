@@ -123,7 +123,7 @@
             name: 'DMDGroup',
             allowBlank: true,
             allowOnlyWhitespace: true,
-            regex: /^[0-9]*[0-9]$/,
+            regex: /^[0-9\\/\-_]*[0-9\\/\-_]$/,
             fieldLabel: l10n.ns('tpm', 'ClientTree').value('DMDGroup'),
             regexText: l10n.ns('tpm', 'ClientTree').value('DMDGroupRegex'),
 

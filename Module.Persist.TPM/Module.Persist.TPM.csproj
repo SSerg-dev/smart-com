@@ -2552,6 +2552,26 @@
     <Compile Include="Migrations\202105201331074_Add_ManualInputSumInvoice.Designer.cs">
       <DependentUpon>202105201331074_Add_ManualInputSumInvoice.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202107192037591_Anaplan_ClientDashboard_Modification.cs" />
+    <Compile Include="Migrations\202107192037591_Anaplan_ClientDashboard_Modification.Designer.cs">
+      <DependentUpon>202107192037591_Anaplan_ClientDashboard_Modification.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202107220853341_Anaplan_PostPromoEffectReport_Modification.cs" />
+    <Compile Include="Migrations\202107220853341_Anaplan_PostPromoEffectReport_Modification.Designer.cs">
+      <DependentUpon>202107220853341_Anaplan_PostPromoEffectReport_Modification.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202107280831559_Promo_Add_DemainPlanig_Role_For_Recalculate.cs" />
+    <Compile Include="Migrations\202107280831559_Promo_Add_DemainPlanig_Role_For_Recalculate.Designer.cs">
+      <DependentUpon>202107280831559_Promo_Add_DemainPlanig_Role_For_Recalculate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202108190810182_Empty3.cs" />
+    <Compile Include="Migrations\202108190810182_Empty3.Designer.cs">
+      <DependentUpon>202108190810182_Empty3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202108200756196_Empty_PLU.cs" />
+    <Compile Include="Migrations\202108200756196_Empty_PLU.Designer.cs">
+      <DependentUpon>202108200756196_Empty_PLU.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\2021\202106300726289_202106301025001_Drop_Client.cs" />
     <Compile Include="Migrations\2021\202106300726289_202106301025001_Drop_Client.Designer.cs">
       <DependentUpon>202106300726289_202106301025001_Drop_Client.cs</DependentUpon>
@@ -4957,14 +4977,23 @@
     <EmbeddedResource Include="Migrations\202105201331074_Add_ManualInputSumInvoice.resx">
       <DependentUpon>202105201331074_Add_ManualInputSumInvoice.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202107192037591_Anaplan_ClientDashboard_Modification.resx">
+      <DependentUpon>202107192037591_Anaplan_ClientDashboard_Modification.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202107220853341_Anaplan_PostPromoEffectReport_Modification.resx">
+      <DependentUpon>202107220853341_Anaplan_PostPromoEffectReport_Modification.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202107280831559_Promo_Add_DemainPlanig_Role_For_Recalculate.resx">
+      <DependentUpon>202107280831559_Promo_Add_DemainPlanig_Role_For_Recalculate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202108190810182_Empty3.resx">
+      <DependentUpon>202108190810182_Empty3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202108200756196_Empty_PLU.resx">
+      <DependentUpon>202108200756196_Empty_PLU.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Migrations\2021\202106300726289_202106301025001_Drop_Client.resx">
       <DependentUpon>202106300726289_202106301025001_Drop_Client.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\2021\202108120633106_Add_Patch_To_PLU.resx">
-      <DependentUpon>202108120633106_Add_Patch_To_PLU.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\2021\202108010843032_PLUHistoryId.resx">
-      <DependentUpon>202108010843032_PLUHistoryId.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\2021\202106301329591_Add_Plu_Table.resx">
       <DependentUpon>202106301329591_Add_Plu_Table.cs</DependentUpon>
@@ -4989,6 +5018,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\2021\202108010712478_PLUHistory.resx">
       <DependentUpon>202108010712478_PLUHistory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\2021\202108010843032_PLUHistoryId.resx">
+      <DependentUpon>202108010843032_PLUHistoryId.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\2021\202108120633106_Add_Patch_To_PLU.resx">
+      <DependentUpon>202108120633106_Add_Patch_To_PLU.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

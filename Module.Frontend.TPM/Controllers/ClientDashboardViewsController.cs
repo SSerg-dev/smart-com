@@ -92,6 +92,7 @@ namespace Module.Frontend.TPM.Controllers
             double YEE = 0;
             double YTD = 0;
             string GHierarchyCode = null;
+            string DemandCode = "";
             var clientTrees = Context.Set<ClientTree>().Where(x => x.EndDate == null);
             ClientTree clientTree = clientTrees.Where(x => x.ObjectId == clientTreeId).FirstOrDefault();
             if (clientTree != null)
@@ -105,12 +106,13 @@ namespace Module.Frontend.TPM.Controllers
                     {
                         GHierarchyCode = clientTree.GHierarchyCode;
                         clientTreeId = clientTree.parentId;
+                        DemandCode = clientTree.DemandCode;
                     }
                 } while (String.IsNullOrWhiteSpace(GHierarchyCode) && clientTreeId != null && clientTreeId != 5000000);
 
                 if (!String.IsNullOrWhiteSpace(GHierarchyCode) && year != null && clientTreeKeyId != null)
                 {
-                    var shares = Context.Set<ClientTreeBrandTech>().Where(x => x.ClientTreeId == clientTreeKeyId && !x.Disabled);
+                    var shares = Context.Set<ClientTreeBrandTech>().Where(x => x.ClientTreeId == clientTreeKeyId && x.ParentClientTreeDemandCode == DemandCode && !x.Disabled);
                     var brandTechs = Context.Set<BrandTech>().Where(x => !x.Disabled);
                     ClientTreeBrandTech share;
 

@@ -45,9 +45,9 @@ Function CopyHost {
 
 function cleaningOldArtifacts ($source, $count) {
 
-	# очистка артефактов по заданному пути $source, кроме последних $count
-	# в $source нужно указать маску
-	#  -WhatIf опция имитации удаления
+	# Г®Г·ГЁГ±ГІГЄГ  Г Г°ГІГҐГґГ ГЄГІГ®Гў ГЇГ® Г§Г Г¤Г Г­Г­Г®Г¬Гі ГЇГіГІГЁ $source, ГЄГ°Г®Г¬ГҐ ГЇГ®Г±Г«ГҐГ¤Г­ГЁГµ $count
+	# Гў $source Г­ГіГ¦Г­Г® ГіГЄГ Г§Г ГІГј Г¬Г Г±ГЄГі
+	#  -WhatIf Г®ГЇГ¶ГЁГї ГЁГ¬ГЁГІГ Г¶ГЁГЁ ГіГ¤Г Г«ГҐГ­ГЁГї
 
 	if (!($source -and (Test-Path "$source"))) {
 		Logging "Error: No files at the specified path $source"
@@ -57,10 +57,10 @@ function cleaningOldArtifacts ($source, $count) {
 	echo ""
 	Logging "Deleting old artifacts in folder $source except the last $count"
 	
-    # достанем все и отсортируем по-убыванию даты создания:
+    # Г¤Г®Г±ГІГ Г­ГҐГ¬ ГўГ±ГҐ ГЁ Г®ГІГ±Г®Г°ГІГЁГ°ГіГҐГ¬ ГЇГ®-ГіГЎГ»ГўГ Г­ГЁГѕ Г¤Г ГІГ» Г±Г®Г§Г¤Г Г­ГЁГї:
     $filesForDel = Get-Childitem $source -Directory | Select Fullname, LastWriteTime | Sort-Object -Property LastWriteTime -Descending 
 
-	# удаляем, кроме нескольких последних:
+	# ГіГ¤Г Г«ГїГҐГ¬, ГЄГ°Г®Г¬ГҐ Г­ГҐГ±ГЄГ®Г«ГјГЄГЁГµ ГЇГ®Г±Г«ГҐГ¤Г­ГЁГµ:
 	if ( $filesForDel.Count -gt $count ) { # >
 		#$filesForDel | select -Last ($filesForDel.Count - $count) | %{Remove-Item $_.Fullname -Force -Recurse -WhatIf}
 		$filesForDel | select -Last ($filesForDel.Count - $count) | %{Remove-Item $_.Fullname -Force -Recurse}
@@ -162,7 +162,7 @@ catch {
 }
 
 
-if (!(Test-Path "$dest\..\a")) {	# какого-то хера не всегда по-умолчанию создаётся
+if (!(Test-Path "$dest\..\a")) {	# ГЄГ ГЄГ®ГЈГ®-ГІГ® ГµГҐГ°Г  Г­ГҐ ГўГ±ГҐГЈГ¤Г  ГЇГ®-ГіГ¬Г®Г«Г·Г Г­ГЁГѕ Г±Г®Г§Г¤Г ВёГІГ±Гї
     New-Item "$dest\..\a" -ItemType Directory    
 }
 
@@ -173,21 +173,21 @@ Copy-Item "$CurrentPath\MakeDeliveryAndDeploy.ps1" -Destination "$dest\..\a" -Fo
 
 if ($args[1]) {
 
-	# запишем Build.SourcesDirectory в файл для передачи релизу:
+	# Г§Г ГЇГЁГёГҐГ¬ Build.SourcesDirectory Гў ГґГ Г©Г« Г¤Г«Гї ГЇГҐГ°ГҐГ¤Г Г·ГЁ Г°ГҐГ«ГЁГ§Гі:
 	$args[1] | Set-Content -Path "$dest\..\a\BuildSourcesDirectory.dat"
 }
 
 
-if ($args[2]) {	# есть путь до артефактов
-	if ($args[3]) {	# количество передаётся параметром
+if ($args[2]) {	# ГҐГ±ГІГј ГЇГіГІГј Г¤Г® Г Г°ГІГҐГґГ ГЄГІГ®Гў
+	if ($args[3]) {	# ГЄГ®Г«ГЁГ·ГҐГ±ГІГўГ® ГЇГҐГ°ГҐГ¤Г ВёГІГ±Гї ГЇГ Г°Г Г¬ГҐГІГ°Г®Г¬
 		$countRetain = $args[3]
 	} 
 	else {
 		$countRetain = 2
 	}
 	
-	# очистка старых артефактов:
-	cleaningOldArtifacts -source "D:\TFS_share\$($args[2])\*" -count $countRetain
+	# Г®Г·ГЁГ±ГІГЄГ  Г±ГІГ Г°Г»Гµ Г Г°ГІГҐГґГ ГЄГІГ®Гў:
+	cleaningOldArtifacts -source "$($args[2])\*" -count $countRetain
 }
 
 

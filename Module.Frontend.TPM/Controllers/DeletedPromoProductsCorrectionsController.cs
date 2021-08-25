@@ -43,14 +43,14 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        [EnableQuery(MaxNodeCount = int.MaxValue)]
+        [EnableQuery(MaxNodeCount = int.MaxValue, MaxExpansionDepth = 3)]
         public IQueryable<PromoProductsCorrection> GetDeletedPromoProductsCorrections()
         {
             return GetConstraintedQuery().Where(e => e.Disabled && e.TempId == null);
         }
 
         [ClaimsAuthorize]
-        [EnableQuery(MaxNodeCount = int.MaxValue)]
+        [EnableQuery(MaxNodeCount = int.MaxValue, MaxExpansionDepth = 3)]
         public SingleResult<PromoProductsCorrection> GetDeletedPromoProductsCorrection([FromODataUri] System.Guid key)
         {
             return SingleResult.Create(GetConstraintedQuery()

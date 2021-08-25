@@ -58,18 +58,18 @@ namespace Module.Frontend.TPM.Controllers
             IQueryable<PromoProductsCorrection> query = Context.Set<PromoProductsCorrection>().Where(e => !e.Disabled && e.TempId == null);
 
             query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
-
+            
             return query;
         }
         [ClaimsAuthorize]
-        [EnableQuery(MaxNodeCount = int.MaxValue)]
+        [EnableQuery(MaxNodeCount = int.MaxValue, MaxExpansionDepth = 3)]
         public SingleResult<PromoProductsCorrection> GetPromoProductCorrection([FromODataUri] System.Guid key)
         {
             return SingleResult.Create(GetConstraintedQuery());
         }
 
         [ClaimsAuthorize]
-        [EnableQuery(MaxNodeCount = int.MaxValue)]
+        [EnableQuery(MaxNodeCount = int.MaxValue, MaxExpansionDepth = 3)]
         public IQueryable<PromoProductsCorrection> GetPromoProductsCorrections()
         {
             return GetConstraintedQuery();
@@ -363,9 +363,20 @@ namespace Module.Frontend.TPM.Controllers
             int orderNumber = 1;
             IEnumerable<Column> columns = new List<Column>
             {
-                 new Column { Order = orderNumber++, Field = "PromoProduct.Promo.Number", Header = "Number", Quoting = false,  Format = "0" },
+                 new Column { Order = orderNumber++, Field = "PromoProduct.Promo.Number", Header = "Promo ID", Quoting = false,  Format = "0" },
                  new Column { Order = orderNumber++, Field = "PromoProduct.ZREP", Header = "ZREP", Quoting = false,  Format = "0" },
-                 new Column { Order = orderNumber++, Field = "PlanProductUpliftPercentCorrected", Header = "Plan Product Uplift, %", Quoting = false,  Format = "0.00"  },
+                 new Column { Order = orderNumber++, Field = "PlanProductUpliftPercentCorrected", Header = "Plan Product Uplift Percent Corrected", Quoting = false,  Format = "0.00"  },
+                 new Column { Order = orderNumber++, Field = "PromoProduct.Promo.ClientHierarchy", Header = "Client", Quoting = false },
+                 new Column { Order = orderNumber++, Field = "PromoProduct.Promo.BrandTech.Name", Header = "BrandTech", Quoting = false },
+                 new Column { Order = orderNumber++, Field = "PromoProduct.Promo.ProductSubrangesList", Header = "Subranges", Quoting = false },
+                 new Column { Order = orderNumber++, Field = "PromoProduct.Promo.Mechanic", Header = "Mars Mechanic", Quoting = false },
+                 new Column { Order = orderNumber++, Field = "PromoProduct.Promo.Event.Name", Header = "Event", Quoting = false },
+                 new Column { Order = orderNumber++, Field = "PromoProduct.Promo.PromoStatus.SystemName", Header = "Promo Status", Quoting = false },
+                 new Column { Order = orderNumber++, Field = "PromoProduct.Promo.MarsStartDate", Header = "Mars Start Date", Quoting = false },
+                 new Column { Order = orderNumber++, Field = "PromoProduct.Promo.MarsEndDate", Header = "Mars End Date", Quoting = false },
+                 new Column { Order = orderNumber++, Field = "PromoProduct.PlanProductBaselineLSV", Header = "Plan Product Baseline LSV", Quoting = false,  Format = "0.00" },
+                 new Column { Order = orderNumber++, Field = "PromoProduct.PlanProductIncrementalLSV", Header = "Plan Product Incremental LSV", Quoting = false,  Format = "0.00" },
+                 new Column { Order = orderNumber++, Field = "PromoProduct.PlanProductLSV", Header = "Plan Product LSV", Quoting = false,  Format = "0.00" },
                  new Column { Order = orderNumber++, Field = "CreateDate", Header = "CreateDate", Quoting = false,Format = "dd.MM.yyyy"},
                  new Column { Order = orderNumber++, Field = "ChangeDate", Header = "ChangeDate", Quoting = false,Format = "dd.MM.yyyy"},
                  new Column { Order = orderNumber++, Field = "UserName", Header = "UserName", Quoting = false }

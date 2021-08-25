@@ -13,7 +13,7 @@ namespace Module.Persist.TPM.Model.Import
     {
         [ImportCSVColumn(ColumnNumber = 0)]
         [NavigationPropertyMap(LookupEntityType = typeof(PromoProduct), TerminalEntityType = typeof(Promo), LookupPropertyName = nameof(Promo.Number))]
-        [Display(Name = nameof(Promo.Number))]
+        [Display(Name = "Promo ID")]
         public int PromoNumber { get; set; }
 
         [ImportCSVColumn(ColumnNumber = 1)]
@@ -22,7 +22,7 @@ namespace Module.Persist.TPM.Model.Import
         public string ProductZREP { get; set; }
 
         [ImportCSVColumn(ColumnNumber = 2)]
-        [Display(Name = "Plan Product Uplift, %")]
+        [Display(Name = "Plan Product Uplift Percent Corrected")]
         public double PlanProductUpliftPercentCorrected { get; set; }
     }
 }

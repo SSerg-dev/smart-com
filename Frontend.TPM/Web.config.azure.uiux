@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
+
 <!--
   For more information on how to configure your ASP.NET application, please visit
   http://go.microsoft.com/fwlink/?LinkId=169433
@@ -8,6 +9,7 @@
     <section name="entityFramework" type="System.Data.Entity.Internal.ConfigFile.EntityFrameworkSection, EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" requirePermission="false" />
     <section name="system.identityModel" type="System.IdentityModel.Configuration.SystemIdentityModelSection, System.IdentityModel, Version=4.0.0.0, Culture=neutral, PublicKeyToken=B77A5C561934E089" />
     <section name="system.identityModel.services" type="System.IdentityModel.Services.Configuration.SystemIdentityModelServicesSection, System.IdentityModel.Services, Version=4.0.0.0, Culture=neutral, PublicKeyToken=B77A5C561934E089" />
+
     <!-- For more information on Entity Framework configuration, visit http://go.microsoft.com/fwlink/?LinkID=237468 -->
   </configSections>
   <appSettings>
@@ -23,7 +25,7 @@
     <!--Modules-->
     <add key="UseKeyVault" value="true" />
     <add key="KeyVaultUseAD" value="Pass" />
-    <add key="KeyVaultUrl" value="russiapetcarejupdev2akv" />
+    <add key="KeyVaultUrl" value="tpmuiuxakv" />
     <add key="NotificationService" value="LogicApp" />
     <add key="HistoryModule" value="MongoDB" />
     <add key="HANDLER_LOG_TYPE" value="Azure" />
@@ -49,13 +51,13 @@
     <add key="INTERFACE_DIRECTORY_INBOUND_OUTCOME" value="InterfaceFiles" />
     <add key="INTERFACE_DIRECTORY_OUTBOUND_INCOME" value="InterfaceFiles" />
     <!--AzureAD authentication-->
-    <add key="ADidaClientId" value="a5dcf1fb-bea3-4776-9262-90ed5a457704" />
-    <add key="ADidaClientSecret" value="O1-uhCJ~QH0e62sG1L_W4ZeMGdA~ePNGs~" />
+    <add key="ADidaClientId" value="c54ee1e2-688a-463a-9112-53e7669e868e" />
+    <add key="ADidaClientSecret" value="_G~iwkz~~n~tc2DO858VOUiH_vQ-8nsucL" />
     <add key="KVnameOfDatabaseContext" value="russiapetcarejupitersqldbcs" />
     <!-- BlobStorage -->
     <add key="BlobConnectionType" value="SAS" />
     <!--Keys-->
-    <add key="AllowNotificationsSending" value="true" />
+    <add key="AllowNotificationsSending" value="false" />
     <add key="ida:ClientIdKey" value="ADidaClientId" />
     <add key="ida:AADInstanceKey" value="ADidaAADInstance" />
     <add key="ida:ClientSecretKey" value="ADidaClientSecret" />
@@ -65,7 +67,7 @@
   </appSettings>
   <system.identityModel>
     <identityConfiguration>
-      <claimsAuthorizationManager type="Frontend.Core.Security.ClaimsAuthorizeManager, Frontend.Core" />
+      <claimsAuthorizationManager type="Frontend.Core.Security.ClaimsAuthorizeManager, Frontend.Core"/>
       <securityTokenHandlers>
         <add type="System.IdentityModel.Services.Tokens.MachineKeySessionSecurityTokenHandler, System.IdentityModel.Services, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
         <remove type="System.IdentityModel.Tokens.SessionSecurityTokenHandler, System.IdentityModel, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
