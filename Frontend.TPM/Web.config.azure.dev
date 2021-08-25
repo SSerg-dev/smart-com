@@ -18,7 +18,7 @@
     <add key="UseXssFilter" value="false" />
     <add key="DefaultSchema" value="Jupiter" />
     <add key="AUTH_SOURCE" value="ActiveDirectory" />
-    <add key="ADsource" value="Azure" />
+    <add key="ADsource" value="None" />
     <add key="UsePerformanceLogger" value="true" />
     <!--Modules-->
     <add key="UseKeyVault" value="true" />
