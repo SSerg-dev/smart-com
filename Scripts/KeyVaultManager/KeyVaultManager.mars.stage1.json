@@ -48,7 +48,7 @@
 		}
 		,{
 			"name":  "BlobStorageContainer",
-			"value":  "russiapetcarejupiterscenario",
+			"value":  "russiapetcarejupiter",
 			"contentType":  "",
 			"action":  "add",
 			"enabled": true
