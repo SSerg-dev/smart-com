@@ -15,7 +15,7 @@ $ErrorActionPreference = "Stop"
 $currentDate = Get-Date
 
 
-function ReplaceConfig ($oldCongig, $newConfig) {	# ф-ция заменит конфиг
+function ReplaceConfig ($oldCongig, $newConfig, [switch]$newConfigRequired) {	# ф-ция заменит конфиг
 
 
 	if ( (Test-Path $oldCongig) -and (Test-Path $newConfig) ) {
@@ -30,8 +30,15 @@ function ReplaceConfig ($oldCongig, $newConfig) {	# ф-ция заменит к�
 		Copy-Item $newConfig -Destination $oldCongig -Force #-WhatIf
 	}
 	else {
-	
-		throw "Config '$newConfig' not found!"
+		
+		if ( $newConfigRequired ) {		# требовать наличие конфига для конкретной среды
+		
+			throw "Config '$newConfig' not found!"
+		}
+		else {
+		
+			Write-Host "	Config '$newConfig' not found. It is allowed to use the default config."
+		}
 	}
 }
 
@@ -66,12 +73,12 @@ try {
 	$logoImageAzurePath = "$logoImageWinPath$postfix"
 
 
-	ReplaceConfig -oldCongig $webConfWinPath -newConfig $webConfAzurePath
-	ReplaceConfig -oldCongig $appInsightConfWinPath -newConfig $appInsightConfAzurePath
-	ReplaceConfig -oldCongig $appConfWinPath -newConfig $appConfAzurePath
-	ReplaceConfig -oldCongig $appProjWinPath -newConfig $appProjAzurePath
-	ReplaceConfig -oldCongig $appPersWinPath -newConfig $appPersAzurePath
-	ReplaceConfig -oldCongig $logoImageWinPath -newConfig $logoImageAzurePath
+	ReplaceConfig -oldCongig $webConfWinPath -newConfig $webConfAzurePath -newConfigRequired
+	ReplaceConfig -oldCongig $appInsightConfWinPath -newConfig $appInsightConfAzurePath -newConfigRequired
+	ReplaceConfig -oldCongig $appConfWinPath -newConfig $appConfAzurePath -newConfigRequired
+	ReplaceConfig -oldCongig $appProjWinPath -newConfig $appProjAzurePath -newConfigRequired
+	ReplaceConfig -oldCongig $appPersWinPath -newConfig $appPersAzurePath -newConfigRequired
+	ReplaceConfig -oldCongig $logoImageWinPath -newConfig $logoImageAzurePath	# наличие лого для каждой среды не обязательно
 
 	<#
 	if (Test-Path "$CurrentPath\..\Module.Frontend.TPM\Templates") {
