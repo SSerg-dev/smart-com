@@ -61,12 +61,6 @@
         roles: ['Administrator', 'SupportAdministrator'],
         widget: 'associatedmailnotificationsettingcontainer'
     }, {
-        text: l10n.ns('core', 'mainmenu').value('RPASettingItem'),
-        tooltip: l10n.ns('core','mainmenu').value('RPASettingItem'),
-        glyph: 0xf494,
-        roles: ['Administrator', 'SupportAdministrator'],
-        widget: 'rpasetting'
-    }, {
         text: l10n.ns('core', 'mainmenu').value('RPAItem'),
         tooltip: l10n.ns('core','mainmenu').value('RPAItem'),
         glyph: 0xf494,
