@@ -318,6 +318,8 @@
     <Compile Include="Controllers\PriceListsController.cs" />
     <Compile Include="Controllers\RATIShoppersController.cs" />
     <Compile Include="Controllers\RollingVolumesController.cs" />
+    <Compile Include="Controllers\RPAsController.cs" />
+    <Compile Include="Controllers\RPASettingsController.cs" />
     <Compile Include="Util\AzureBlobHelperLocal.cs" />
     <Compile Include="Util\IQueryableExtensions.cs" />
     <Compile Include="Util\NoGuidGeneratingScriptGenerator.cs" />

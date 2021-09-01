@@ -2616,6 +2616,22 @@
     <Compile Include="Migrations\2021\202108010712478_PLUHistory.Designer.cs">
       <DependentUpon>202108010712478_PLUHistory.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202107281215237_RPASetting.cs" />
+    <Compile Include="Migrations\202107281215237_RPASetting.Designer.cs">
+      <DependentUpon>202107281215237_RPASetting.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202107301134095_RPA.cs" />
+    <Compile Include="Migrations\202107301134095_RPA.Designer.cs">
+      <DependentUpon>202107301134095_RPA.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202108021438374_RPASetting_Update_Column_Type.cs" />
+    <Compile Include="Migrations\202108021438374_RPASetting_Update_Column_Type.Designer.cs">
+      <DependentUpon>202108021438374_RPASetting_Update_Column_Type.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202108031235046_Update_RPA_Columns.cs" />
+    <Compile Include="Migrations\202108031235046_Update_RPA_Columns.Designer.cs">
+      <DependentUpon>202108031235046_Update_RPA_Columns.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -2811,6 +2827,8 @@
     <Compile Include="Model\TPM\Region.cs" />
     <Compile Include="Model\TPM\COGS.cs" />
     <Compile Include="Model\TPM\RollingVolume.cs" />
+    <Compile Include="Model\TPM\RPA.cs" />
+    <Compile Include="Model\TPM\RPASetting.cs" />
     <Compile Include="Model\TPM\ServiceInfo.cs" />
     <Compile Include="Model\TPM\TradeInvestment.cs" />
     <Compile Include="Model\TPM\RetailType.cs" />
@@ -5024,6 +5042,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\2021\202108120633106_Add_Patch_To_PLU.resx">
       <DependentUpon>202108120633106_Add_Patch_To_PLU.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202107281215237_RPASetting.resx">
+      <DependentUpon>202107281215237_RPASetting.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202107301134095_RPA.resx">
+      <DependentUpon>202107301134095_RPA.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202108021438374_RPASetting_Update_Column_Type.resx">
+      <DependentUpon>202108021438374_RPASetting_Update_Column_Type.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202108031235046_Update_RPA_Columns.resx">
+      <DependentUpon>202108031235046_Update_RPA_Columns.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

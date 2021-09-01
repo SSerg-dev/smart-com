@@ -39,6 +39,15 @@ namespace Frontend {
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             //BundleConfig.RegisterBundles(BundleTable.Bundles);
 
+            AppDomain.CurrentDomain.FirstChanceException += (sender, eventArgs) =>
+            {
+                Exception exception = eventArgs.Exception;
+                if (exception != null)
+                {
+                    logger.Error(exception);
+                }
+            };
+
             // Инициализация функций получения списка получателей оповещений
             NotificationEmailGetterLocator.Instance.RegisterGetter(HardcodeInterestedUserEmailGetter.FunctionName, HardcodeInterestedUserEmailGetter.Function);
 
