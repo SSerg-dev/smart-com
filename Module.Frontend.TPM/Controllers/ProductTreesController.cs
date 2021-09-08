@@ -479,8 +479,8 @@ namespace Module.Frontend.TPM.Controllers
 
                 if (currentRecord.Type == "Subrange")
                 {
-                    var oldName = currentRecord.FullPathName;
-                    var newName = model.FullPathName;
+                    var oldName = currentRecord.FullPathName.Trim();
+                    var newName = model.FullPathName.Trim();
                     //Асинхронно, т.к. долго выполняется и иначе фронт не дождется ответа
                     Task.Run(() => PromoHelper.UpdateProductHierarchy(currentRecord.Type, newName, oldName));
                 }

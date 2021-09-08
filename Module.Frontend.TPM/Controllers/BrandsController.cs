@@ -155,9 +155,9 @@ namespace Module.Frontend.TPM.Controllers
                     return NotFound();
                 }
 
-                var oldName = model.Name;
+                var oldName = model.Name.Trim();
                 patch.Patch(model);
-                var newName = model.Name;
+                var newName = model.Name.Trim();
                 //Асинхронно, т.к. долго выполняется и иначе фронт не дождется ответа
                 Task.Run(() => PromoHelper.UpdateProductHierarchy("Brand", newName, oldName, key));
                 UpdateProductTrees(model.Id, model.Name);

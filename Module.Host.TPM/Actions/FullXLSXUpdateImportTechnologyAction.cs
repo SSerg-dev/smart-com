@@ -347,8 +347,10 @@ namespace Module.Host.TPM.Actions
                         oldRecord.Name = newRecord.Name;
                         oldRecord.Description_ru = newRecord.Description_ru;
                         oldRecord.SubBrand = newRecord.SubBrand;
-
-                        var newName = String.Format("{0} {1}", oldRecord.Name, oldRecord.SubBrand);
+                        
+                        var newName = oldRecord.Name;
+                        if (!String.IsNullOrEmpty(oldRecord.SubBrand))
+                            newName = String.Format("{0} {1}", oldRecord.Name, oldRecord.SubBrand);
 
                         Task.Run(() => PromoHelper.UpdateProductHierarchy("Technology", newName, oldName, oldRecord.Id));
                         TechnologiesController.UpdateProductTrees(oldRecord.Id, newName);

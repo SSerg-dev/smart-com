@@ -171,14 +171,18 @@ namespace Module.Frontend.TPM.Controllers
                     return NotFound();
                 }
 
-                var oldTC = model.Tech_code;
-                var oldTN = model.Name;
-                var oldSC = model.SubBrand_code;
+                var oldTC = model.Tech_code.Trim();
+                var oldTN = model.Name.Trim();
+                var oldSC = model.SubBrand_code.Trim();
                 var oldName = model.Name;
                 patch.Patch(model);
-                var newName = String.Format("{0} {1}", model.Name, model.SubBrand);
+
+                var newName = model.Name;
+                if (!String.IsNullOrEmpty(model.SubBrand))
+                    newName = String.Format("{0} {1}", model.Name, model.SubBrand);
+
                 //Асинхронно, т.к. долго выполняется и иначе фронт не дождется ответа
-                Task.Run(() => PromoHelper.UpdateProductHierarchy("Technology", newName, oldName, key));
+                Task.Run(() => PromoHelper.UpdateProductHierarchy("Technology", newName.Trim(), oldName.Trim(), key));
                 UpdateProductTrees(model.Id, newName);
                 //Асинхронно, т.к. долго выполняется и иначе фронт не дождется ответа
                 Task.Run(() => UpdateProducts(model, oldTC, oldTN, oldSC));
