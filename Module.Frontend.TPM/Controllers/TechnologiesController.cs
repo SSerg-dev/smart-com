@@ -122,6 +122,12 @@ namespace Module.Frontend.TPM.Controllers
             {
                 return BadRequest(ModelState);
             }
+
+            model.Name = model.Name.Trim();
+            model.Tech_code = model.Tech_code?.Trim();
+            model.SubBrand = model.SubBrand?.Trim();
+            model.SubBrand_code = model.SubBrand_code?.Trim();
+
             model.SubBrand_code = String.IsNullOrWhiteSpace(model.SubBrand_code) ? null : model.SubBrand_code;
             model.SubBrand = String.IsNullOrWhiteSpace(model.SubBrand) ? null : model.SubBrand;
             if (Context.Set<Technology>().Any(t=>t.Tech_code == model.Tech_code && t.SubBrand_code == model.SubBrand_code && !t.Disabled))
@@ -171,9 +177,15 @@ namespace Module.Frontend.TPM.Controllers
                     return NotFound();
                 }
 
-                var oldTC = model.Tech_code.Trim();
-                var oldTN = model.Name.Trim();
-                var oldSC = model.SubBrand_code.Trim();
+                var patchModel = patch.GetEntity();
+                patchModel.Name = patchModel.Name.Trim();
+                patchModel.Tech_code = patchModel.Tech_code?.Trim();
+                patchModel.SubBrand = patchModel.SubBrand?.Trim();
+                patchModel.SubBrand_code = patchModel.SubBrand_code?.Trim();
+
+                var oldTC = model.Tech_code;
+                var oldTN = model.Name;
+                var oldSC = model.SubBrand_code;
                 var oldName = model.Name;
                 patch.Patch(model);
 
@@ -182,7 +194,7 @@ namespace Module.Frontend.TPM.Controllers
                     newName = String.Format("{0} {1}", model.Name, model.SubBrand);
 
                 //Асинхронно, т.к. долго выполняется и иначе фронт не дождется ответа
-                Task.Run(() => PromoHelper.UpdateProductHierarchy("Technology", newName.Trim(), oldName.Trim(), key));
+                Task.Run(() => PromoHelper.UpdateProductHierarchy("Technology", newName, oldName, key));
                 UpdateProductTrees(model.Id, newName);
                 //Асинхронно, т.к. долго выполняется и иначе фронт не дождется ответа
                 Task.Run(() => UpdateProducts(model, oldTC, oldTN, oldSC));
