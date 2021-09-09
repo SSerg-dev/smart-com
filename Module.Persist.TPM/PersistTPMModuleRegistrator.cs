@@ -965,6 +965,7 @@ namespace Module.Persist.TPM {
             builder.EntitySet<RPASetting>("RPASettings");
             builder.EntitySet<RPA>("RPAs");
             builder.Entity<RPA>().Collection.Action("UploadFile");
+            builder.Entity<RPA>().Collection.Action("SaveRPA");
         }
 
         

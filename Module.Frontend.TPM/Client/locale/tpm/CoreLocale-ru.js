@@ -181,6 +181,7 @@
         'ConstraintItem': 'Ограничения',
         'SettingItem': 'Настройки',
         'MailNotificationSettingItem': 'Настройки почтовых уведомлений',
+        'RPASettingItem': 'Настройки RPA',
         'RPAItem': 'RPA',
         'SystemDirectories': 'Системные справочники'
     },
@@ -208,6 +209,7 @@
         'UserRoleMainTitle': 'Пользователи и роли',
         'SettingTitle': 'Настройки',
         'MailNotificationSettingTitle': 'Настройки почтовых уведомлений',
+        'RPASettingTitle': 'Настройки RPA',
         'RPATitle': 'RPA',
         'AssociatedMailNotificationSettingTitle': 'Настройки почтовых уведомлений',
         'RecipientTitle': 'Получатели',
@@ -619,6 +621,10 @@
         'LogURL': 'Log URL'
     },
 
+    'RPASetting': {
+        'Json': 'Json',
+        'Name': 'Наименование обработчика'
+    },
 
     'Recipient': {
         'Id': '',

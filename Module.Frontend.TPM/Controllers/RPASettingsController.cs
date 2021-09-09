@@ -67,7 +67,7 @@ namespace Module.Frontend.TPM.Controllers
 
             var optionsPost = new ODataQueryOptionsPost<RPASetting>(options.Context, Request, HttpContext.Current.Request);
             return optionsPost.ApplyTo(query, querySettings) as IQueryable<RPASetting>;
-        }        
+        }
 
         [ClaimsAuthorize]
         public IHttpActionResult Post(RPASetting model)

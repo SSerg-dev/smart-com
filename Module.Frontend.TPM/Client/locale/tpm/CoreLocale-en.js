@@ -208,6 +208,7 @@
         'ConstraintItem': 'Constraints',
         'SettingItem': 'Settings',
         'MailNotificationSettingItem': 'Mail notification settings',
+        'RPASettingItem': 'RPA settings',
         'RPAItem': 'RPA',
         'SystemDirectories': 'Administration',
         'SubscriptionMenu': 'Subscription',
@@ -242,6 +243,7 @@
         'UserRoleMainTitle': 'Users and Roles',
         'SettingTitle': 'Settings',
         'MailNotificationSettingTitle': 'Mail notification settings',
+        'RPASettingTitle': 'RPA settings',
         'RPATitle': 'RPA',
         'AssociatedMailNotificationSettingTitle': 'Mail notification settings',
         'RecipientTitle': 'Recipients',
@@ -712,6 +714,11 @@
         'Status': 'Status',
         'FileURL': 'File URL',
         'LogURL': 'Log URL'
+    },
+
+    'RPASetting': {
+        'Json': 'Json',
+        'Name': 'Name'
     },
 
     'Recipient': {

@@ -499,6 +499,8 @@
     <Content Include="Client\app\controller\core\role\DeletedRole.js" />
     <Content Include="Client\app\controller\core\role\HistoricalRole.js" />
     <Content Include="Client\app\controller\core\role\Role.js" />
+    <Content Include="Client\app\controller\core\rpasetting\RPASetting.js" />
+    <Content Include="Client\app\controller\core\rpa\RPA.js" />
     <Content Include="Client\app\controller\core\security\Security.js" />
     <Content Include="Client\app\controller\core\setting\HistoricalSetting.js" />
     <Content Include="Client\app\controller\core\setting\Setting.js" />
