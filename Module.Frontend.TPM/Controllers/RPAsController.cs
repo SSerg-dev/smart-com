@@ -109,7 +109,7 @@ namespace Module.Frontend.TPM.Controllers
                     
                     
                     //Save file
-                    string directory = Core.Settings.AppSettingsManager.GetSetting("RPA_DIRECTORY", "RPAFiles");
+                    string directory = Core.Settings.AppSettingsManager.GetSetting("RPA_DIRECTORY", "ExportFiles");
                 
                     string fileName = Task<string>.Run(async () => await FileUtility.UploadFile(Request, directory)).Result;
                     
