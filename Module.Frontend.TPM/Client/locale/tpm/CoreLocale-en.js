@@ -709,6 +709,8 @@
 
     'RPA': {
         'HandlerName': 'Handler name',
+        'CreateDate': 'Create date',
+        'UserName': 'User name',
         'Constraint': 'Constraint',
         'Parametr': 'Parametr',
         'Status': 'Status',

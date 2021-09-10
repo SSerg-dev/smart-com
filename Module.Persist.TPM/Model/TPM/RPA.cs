@@ -10,9 +10,16 @@ namespace Module.Persist.TPM.Model.TPM
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
 
+
+
         [Column(TypeName = "NVARCHAR(MAX)")]
         [Required]
         public string HandlerName { get; set; }
+
+        public DateTimeOffset? CreateDate { get; set; }
+
+        [Column(TypeName = "NVARCHAR(MAX)")]
+        public string UserName { get; set; }
 
         [Column(TypeName = "NVARCHAR(MAX)")]        
         public string Constraint { get; set; }

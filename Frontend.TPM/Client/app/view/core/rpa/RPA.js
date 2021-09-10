@@ -106,6 +106,12 @@ Ext.define('App.view.core.rpa.RPA', {
                 text: l10n.ns('core', 'RPA').value('HandlerName'),
                 dataIndex: 'HandlerName'
             }, {
+                text: l10n.ns('core', 'RPA').value('CreateDate'),
+                dataIndex: 'CreateDate'
+            }, {
+                text: l10n.ns('core', 'RPA').value('UserName'),
+                dataIndex: 'UserName'
+            }, {
                 text: l10n.ns('core', 'RPA').value('Constraint'),
                 dataIndex: 'Constraint'
             }, {
@@ -130,6 +136,14 @@ Ext.define('App.view.core.rpa.RPA', {
             xtype: 'textfield',
             name: 'HandlerName',
             fieldLabel: l10n.ns('core', 'RPA').value('HandlerName')
+        }, {
+            xtype: 'textfield',
+            name: 'CreateDate',
+            fieldLabel: l10n.ns('core', 'RPA').value('CreateDate')
+        }, {
+            xtype: 'textfield',
+            name: 'UserName',
+            fieldLabel: l10n.ns('core', 'RPA').value('UserName')
         }, {
             xtype: 'textfield',
             name: 'Constraint',

@@ -64,7 +64,7 @@ Ext.define('App.view.core.rpa.RPAEditor', {
                             else{
                                 Ext.MessageBox.show({
                                     title: 'Error',
-                                    msg: 'Wrong Json format. Please check RPA setting or parameters is empty.',
+                                    msg: 'Wrong Json format. Please check RPA setting or leave parameters empty.',
                                     buttons: Ext.MessageBox.OK,
                                     icon: Ext.MessageBox.ERROR,
                                 });

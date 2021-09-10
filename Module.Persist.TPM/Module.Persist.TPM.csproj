@@ -2580,6 +2580,10 @@
     <Compile Include="Migrations\202109100726197_Alter_Insert_Triggers.Designer.cs">
       <DependentUpon>202109100726197_Alter_Insert_Triggers.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202109102015027_AddCreateDateAndUserNameToRPA.cs" />
+    <Compile Include="Migrations\202109102015027_AddCreateDateAndUserNameToRPA.Designer.cs">
+      <DependentUpon>202109102015027_AddCreateDateAndUserNameToRPA.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\2021\202106300726289_202106301025001_Drop_Client.cs" />
     <Compile Include="Migrations\2021\202106300726289_202106301025001_Drop_Client.Designer.cs">
       <DependentUpon>202106300726289_202106301025001_Drop_Client.cs</DependentUpon>
@@ -5023,6 +5027,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202109100726197_Alter_Insert_Triggers.resx">
       <DependentUpon>202109100726197_Alter_Insert_Triggers.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202109102015027_AddCreateDateAndUserNameToRPA.resx">
+      <DependentUpon>202109102015027_AddCreateDateAndUserNameToRPA.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\2021\202106300726289_202106301025001_Drop_Client.resx">
       <DependentUpon>202106300726289_202106301025001_Drop_Client.cs</DependentUpon>

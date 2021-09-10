@@ -109,7 +109,7 @@ namespace Module.Frontend.TPM.Controllers
                     
                     
                     //Save file
-                    string directory = Core.Settings.AppSettingsManager.GetSetting("RPA_DIRECTORY", "ExportFiles");
+                    string directory = Core.Settings.AppSettingsManager.GetSetting("RPA_DIRECTORY", "RPAFiles");
                 
                     string fileName = Task<string>.Run(async () => await FileUtility.UploadFile(Request, directory)).Result;
                     
@@ -117,7 +117,7 @@ namespace Module.Frontend.TPM.Controllers
                     // Save RPA
                     var resultSaveChanges = Context.SaveChanges();
 
-                    
+
                     //Call Pipe
                     string tenantID = AppSettingsManager.GetSetting("RPA_UPLOAD_TENANT_ID", "");
                     string applicationId = AppSettingsManager.GetSetting("RPA_UPLOAD_APPLICATION_ID", "");
@@ -138,21 +138,21 @@ namespace Module.Frontend.TPM.Controllers
                             SubscriptionId = subscriptionId
                         };
                         Dictionary<string, object> parameters = new Dictionary<string, object>
-                        {
-                            { "FileName", Path.GetFileName(fileName) },
-                            { "RPAId", result.Id }
-                        };
+                            {
+                                { "FileName", Path.GetFileName(fileName) },
+                                { "RPAId", result.Id }
+                            };
                         CreateRunResponse runResponse = client.Pipelines.CreateRunWithHttpMessagesAsync(
                             resourceGroup, dataFactoryName, pipelineName, parameters: parameters
                         ).Result.Body;
-                        
+
                     }
                     catch (Exception ex)
                     {
                         result.Status = "Pipe not availabale";
-                        Context.SaveChanges();   
+                        Context.SaveChanges();
                         return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "RPA save and upload failure " + ex.Message }));
-                        
+
                     }
 
             }

@@ -614,6 +614,8 @@
 
     'RPA': {
         'HandlerName': 'Название обработчика',
+        'CreateDate': 'Дата создания',
+        'UserName': 'Имя пользователя',
         'Constraint': 'Ограничение',
         'Parametr': 'Параметр',
         'Status': 'Статус',
