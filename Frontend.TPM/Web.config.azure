@@ -48,6 +48,7 @@
     <add key="PROMO_SUPPORT_DIRECTORY" value="D:\home\site\wwwroot\ApplicationData\PromoSupportFiles" />
     <add key="CLIENT_TREE_DIRECTORY" value="D:\home\site\wwwroot\ApplicationData\ClientTreeLogoFiles" />
     <add key="PRODUCT_TREE_DIRECTORY" value="D:\home\site\wwwroot\ApplicationData\ProductTreeLogoFiles" />
+	<add key="RPA_DIRECTORY" value="D:\home\site\wwwroot\ApplicationData\RPAFiles" />
     <add key="INTERFACE_DIRECTORY_INBOUND_OUTCOME" value="InterfaceFiles" />
     <add key="INTERFACE_DIRECTORY_OUTBOUND_INCOME" value="InterfaceFiles" />
     <!--AzureAD authentication-->
@@ -64,6 +65,15 @@
     <add key="ida:DomainKey" value="ADidaDomain" />
     <add key="ida:TenantIdKey" value="ADidaTenantId" />
     <add key="ida:PostLogoutRedirectUriKey" value="ADidaPostLogoutRedirectUri" />
+	<!--RPA-->
+	<add key="RPA_UPLOAD_TENANT_ID" value="d43cf2af-b6de-47fe-afe3-9bbaff83dcee" />
+	<add key="RPA_UPLOAD_APPLICATION_ID" value="6143a5e4-4eed-4597-a86b-107c13e4527e" />
+	<add key="RPA_UPLOAD_AUTHENTICATION_KEY" value="3w27pxlQ.NLuTf6.a9lN~sHf8ie3G8~259" />
+	<add key="RPA_UPLOAD_SUBSCRIPTION_ID" value="5cbffbd5-d4be-4795-a426-320a58179f34" />
+	<add key="RPA_UPLOAD_RESOURCE_GROUP" value="JUPITER-TEST-SC-RG" />
+	<add key="RPA_UPLOAD_REGION" value="East US 2" />
+	<add key="RPA_UPLOAD_DATA_FACTORY_NAME" value="jupitertestadf" />
+	<add key="RPA_UPLOAD_PIPELINE_NAME" value="RPA_UPLOAD_PIPE" />
   </appSettings>
   <system.identityModel>
     <identityConfiguration>
