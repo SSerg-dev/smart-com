@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
 using Core.Security;
-using Core.Security.Models;
 using Frontend.Core.Controllers.Base;
 using Frontend.Core.Extensions;
 using Module.Persist.TPM.Model.TPM;
 using Persist.Model;
+using Microsoft.Azure.Management.DataFactory;
+using Microsoft.Azure.Management.DataFactory.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -19,6 +20,10 @@ using System.Web.Http.OData;
 using System.Web.Http.OData.Query;
 using System.Web.Http.Results;
 using Thinktecture.IdentityModel.Authorization.WebApi;
+using Core.Settings;
+using Microsoft.IdentityModel.Clients.ActiveDirectory;
+using Microsoft.Rest;
+using Newtonsoft.Json;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -34,7 +39,7 @@ namespace Module.Frontend.TPM.Controllers
         protected IQueryable<RPA> GetConstraintedQuery()
         {
 
-            UserInfo user = authorizationManager.GetCurrentUser();
+            Core.Security.Models.UserInfo user = authorizationManager.GetCurrentUser();
             string role = authorizationManager.GetCurrentRoleName();
             IList<Constraint> constraints = user.Id.HasValue ? Context.Constraints
                 .Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
@@ -76,56 +81,91 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [HttpPost]
-        public async Task<IHttpActionResult> UploadFile()
-        {
-            try
-            {
-                int maxFileByteLength = 25000000;
-
-                if (!Request.Content.IsMimeMultipartContent())
-                {
-                    throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
-                }
-
-                if (Request.Content.Headers.ContentLength > maxFileByteLength)
-                {
-                    throw new FileLoadException("The file size must be less than 25mb.");
-                }
-
-                string directory = Core.Settings.AppSettingsManager.GetSetting("RPA_DIRECTORY", "RPAFiles");
-                string fileName = await FileUtility.UploadFile(Request, directory);
-
-                return Json(new { success = true, directory = directory, fileName = fileName.Split('\\').Last() });
-            }
-            catch (Exception e)
-            {
-                return Json(new { success = false, message = e.Message });
-            }
-        }
-
-        [ClaimsAuthorize]
-        public IHttpActionResult Post(RPA model)
+        public IHttpActionResult SaveRPA()
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+            var currentRequest = HttpContext.Current.Request;
+            var rpaModel = JsonConvert.DeserializeObject<RPA>(currentRequest.Params.Get("Model"));            
             var proxy = Context.Set<RPA>().Create<RPA>();
-            var result = (RPA)Mapper.Map(model, proxy, typeof(RPA), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+            var result = (RPA)Mapper.Map(rpaModel, proxy, typeof(RPA), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
             Context.Set<RPA>().Add(result);
-
             try
             {
-                var resultSaveChanges = Context.SaveChanges();
+               
+                    int maxFileByteLength = 25000000;
+
+                    if (!Request.Content.IsMimeMultipartContent())
+                    {
+                        throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+                    }
+
+                    if (Request.Content.Headers.ContentLength > maxFileByteLength)
+                    {
+                        throw new FileLoadException("The file size must be less than 25mb.");
+                    }
+                    
+                    
+                    //Save file
+                    string directory = Core.Settings.AppSettingsManager.GetSetting("RPA_DIRECTORY", "ExportFiles");
+                
+                    string fileName = Task<string>.Run(async () => await FileUtility.UploadFile(Request, directory)).Result;
+                    
+                    
+                    // Save RPA
+                    var resultSaveChanges = Context.SaveChanges();
+
+                    
+                    //Call Pipe
+                    string tenantID = AppSettingsManager.GetSetting("RPA_UPLOAD_TENANT_ID", "");
+                    string applicationId = AppSettingsManager.GetSetting("RPA_UPLOAD_APPLICATION_ID", "");
+                    string authenticationKey = AppSettingsManager.GetSetting("RPA_UPLOAD_AUTHENTICATION_KEY", "");
+                    string subscriptionId = AppSettingsManager.GetSetting("RPA_UPLOAD_SUBSCRIPTION_ID", "");
+                    string resourceGroup = AppSettingsManager.GetSetting("RPA_UPLOAD_RESOURCE_GROUP", "");
+                    string dataFactoryName = AppSettingsManager.GetSetting("RPA_UPLOAD_DATA_FACTORY_NAME", "");
+                    string pipelineName = AppSettingsManager.GetSetting("RPA_UPLOAD_PIPELINE_NAME", "");
+                    try
+                    {
+                        var context = new AuthenticationContext("https://login.microsoftonline.com/" + tenantID);
+                        ClientCredential cc = new ClientCredential(applicationId, authenticationKey);
+                        AuthenticationResult authenticationResult = context.AcquireTokenAsync(
+                            "https://management.azure.com/", cc).Result;
+                        ServiceClientCredentials cred = new TokenCredentials(authenticationResult.AccessToken);
+                        var client = new DataFactoryManagementClient(cred)
+                        {
+                            SubscriptionId = subscriptionId
+                        };
+                        Dictionary<string, object> parameters = new Dictionary<string, object>
+                        {
+                            { "FileName", Path.GetFileName(fileName) },
+                            { "RPAId", result.Id }
+                        };
+                        CreateRunResponse runResponse = client.Pipelines.CreateRunWithHttpMessagesAsync(
+                            resourceGroup, dataFactoryName, pipelineName, parameters: parameters
+                        ).Result.Body;
+                        
+                    }
+                    catch (Exception ex)
+                    {
+                        result.Status = "Pipe not availabale";
+                        Context.SaveChanges();   
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "RPA save and upload failure " + ex.Message }));
+                        
+                    }
+
             }
             catch (Exception e)
             {
                 return GetErorrRequest(e);
+                
             }
 
-            return Created(result);
+            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, message = "RPA save and upload done." }));
         }
-        
+
+
         [ClaimsAuthorize]
         [HttpGet]
         [Route("odata/RPAs/DownloadFile")]

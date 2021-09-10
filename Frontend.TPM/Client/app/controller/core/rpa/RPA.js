@@ -70,7 +70,8 @@ Ext.define('App.controller.core.rpa.RPA', {
             }
         });
     },
-    onCreateButtonClick: function(button) {
+
+    onCreateButtonClick: function (button) {
        var editor = Ext.widget('customrpaeditor');
        editor.down('#params').setVisible(false);
        editor.show();
@@ -100,58 +101,42 @@ Ext.define('App.controller.core.rpa.RPA', {
     generateAndSendModel: function(editor, callback, scope, grid) {
         var me = scope,
             rpaForm = editor.down('rpaform');
-        var url = Ext.String.format("/odata/{0}/{1}", 'RPAs', 'UploadFile');
-        
         if(rpaForm.isValid()){
             editor.setLoading(l10n.ns('core').value('savingText'));
-            rpaForm.getForm().submit({
+            var rpaModel = editor.rpaModel ? editor.rpaModel : Ext.create('App.model.core.rpa.RPA');
+            var handlerName = rpaForm.down('combobox[name=HandlerName]').getValue();
+            var params = rpaForm.down('#params');
+            var parametr = params.items.items.map(function (el) {
+                return el.value;
+            }).join(';');
+            var constrains = Object.keys(App.UserInfo.getConstrains()).join(';');
+            rpaModel.set('HandlerName', handlerName);
+            rpaModel.set("Constraint", constrains);
+            rpaModel.set('Parametr', parametr);
+            rpaModel.set('Status', 'Waiting');      
+            var uploadFile = rpaForm.up().down('filefield').el.down('input[type=file]').dom.files[0];
+            var formData = new FormData();
+            formData.append('file', uploadFile);            
+            var url = Ext.String.format("/odata/{0}/{1}", 'RPAs', 'SaveRPA');
+            Ext.Ajax.request({   
+                method: 'POST',   
                 url: url,
-                waitMsg: l10n.ns('core').value('uploadingFileWaitMessageText'),
-                success: function (fp, o) {                    
-                    // Проверить ответ от сервера на наличие ошибки и отобразить ее, в случае необходимости
-                    if (o.result) {
-                        var pattern = '/odata/RPAs/DownloadFile?fileName={0}';
-                        var downloadFileUrl = document.location.href + Ext.String.format(pattern, o.result.fileName);
-                        var URL = '<a href=' + downloadFileUrl + '>' + o.result.fileName + '</a>'
-                        var infoText = 'Задача обработки импортируемого файла успешно создана';
-                        App.Notify.pushInfo(infoText);
-                                                
-                        var model = editor.rpaModel ? editor.rpaModel : Ext.create('App.model.core.rpa.RPA');
-                        model.editing = true;
-                        var handlerName = rpaForm.down('combobox[name=HandlerName]').getValue();
-                        var params = rpaForm.down('#params');
-                        var parametr = params.items.items.map(function (el) {
-                            return el.value;
-                        }).join(';');
-                        var constrains = Object.keys(App.UserInfo.getConstrains()).join(';');                        
-                        model.set('HandlerName', handlerName);
-                        model.set("Constraint", constrains);
-                        model.set('Parametr', parametr);
-                        model.set('Status', 'Waiting');
-                        model.set('FileURL', URL);
-                        model.set('LogURL','<a href=' + document.location.href +'>Test log URL</a>');
-                        model.save({
-                            scope: me,
-                            success: function (record, operation) {
-                                if (callback) {
-                                    callback(true);
-                                }
-                                editor.setLoading(false);
-                                editor.close();
-                                grid.getStore().load();
-                            },
-                            failure: function () {
-                                editor.setLoading(false);
-                            }
-                        });
-                    } else {
-                        App.Notify.pushError(o.result.message);
-                    }
+                rawData: formData,   
+                params: {'Model': Ext.JSON.encode(rpaModel.data)},
+                headers: {'Content-Type': null},
+                success: function (data) {
+                    App.Notify.pushInfo(Ext.JSON.decode(Ext.JSON.decode(data.responseText).value).message);
+                    editor.setLoading(false);
+                    editor.close();
+                    grid.getStore().load();
                 },
-                failure: function (fp, o) {
-                    App.Notify.pushError(o.result.message || 'Ошибка при обработке запроса');
+                fail: function (data) {
+                    App.Notify.pushInfo(Ext.JSON.decode(Ext.JSON.decode(data.responseText).value).message);
+                    editor.setLoading(false);
+                    editor.close();
+                    grid.getStore().load();
                 }
-            });
+            })
         }
     }
 });
