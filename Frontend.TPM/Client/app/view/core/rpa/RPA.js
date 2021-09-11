@@ -107,7 +107,9 @@ Ext.define('App.view.core.rpa.RPA', {
                 dataIndex: 'HandlerName'
             }, {
                 text: l10n.ns('core', 'RPA').value('CreateDate'),
-                dataIndex: 'CreateDate'
+                dataIndex: 'CreateDate',
+                xtype: 'datecolumn',
+                renderer: Ext.util.Format.dateRenderer('d.m.Y H:i:s')
             }, {
                 text: l10n.ns('core', 'RPA').value('UserName'),
                 dataIndex: 'UserName'
@@ -137,8 +139,9 @@ Ext.define('App.view.core.rpa.RPA', {
             name: 'HandlerName',
             fieldLabel: l10n.ns('core', 'RPA').value('HandlerName')
         }, {
-            xtype: 'textfield',
+            xtype: 'singlelinedisplayfield',
             name: 'CreateDate',
+            renderer: Ext.util.Format.dateRenderer('d.m.Y H:i:s'),
             fieldLabel: l10n.ns('core', 'RPA').value('CreateDate')
         }, {
             xtype: 'textfield',

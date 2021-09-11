@@ -108,12 +108,8 @@ Ext.define('App.controller.core.rpa.RPA', {
             var createDate = new Date();
             var userName = App.UserInfo.getUserName();
             var params = rpaForm.down('#params');
-            var parametr = '';
-            if (params.items.length > 0) {
-                parametr = params.items.items.map(function (el) {
-                    return el.value;
-                }).join(';');
-            }
+            var parametr = params.items.items.filter(el => el.value !== "").map((el) => el.value).join(';');
+            console.log(parametr);
             var constrains = Object.keys(App.UserInfo.getConstrains()).join(';');
             rpaModel.set('HandlerName', handlerName);
             rpaModel.set('CreateDate', createDate);
