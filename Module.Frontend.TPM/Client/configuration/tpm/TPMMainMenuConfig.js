@@ -36,6 +36,30 @@
         glyph: 0xf392,
         widget: 'promo'
     }, {
+        text: l10n.ns('tpm', 'mainmenu').value('PromoCompetitor'),
+        tooltip: l10n.ns('tpm', 'mainmenu').value('PromoCompetitor'),
+        scale: 'medium',
+        glyph: 0xf392,
+        children: [{
+            text: l10n.ns('tpm', 'mainmenu').value('PromoCompetitorPromo'),
+            tooltip: l10n.ns('tpm', 'mainmenu').value('PromoCompetitorPromo'),
+            glyph: 0xf1b3,
+            roles: ['Administrator', 'SupportAdministrator'],
+            widget: null,
+        }, {
+            text: l10n.ns('tpm', 'mainmenu').value('PromoCompetitorCompany'),
+            tooltip: l10n.ns('tpm', 'mainmenu').value('PromoCompetitorCompany'),
+            glyph: 0xf1b3,
+            roles: ['Administrator', 'SupportAdministrator'],
+            widget: null,
+        }, {
+            text: l10n.ns('tpm', 'mainmenu').value('PromoCompetitorCompanyColors'),
+            tooltip: l10n.ns('tpm', 'mainmenu').value('PromoCompetitorCompanyColors'),
+            glyph: 0xf1b3,
+            roles: ['Administrator', 'SupportAdministrator'],
+            widget: null,
+        }],
+    }, {
         text: l10n.ns('tpm', 'mainmenu').value('PromoSupport'),
         tooltip: l10n.ns('tpm', 'mainmenu').value('PromoSupport'),
         scale: 'medium',
