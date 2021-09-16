@@ -115,7 +115,7 @@ Ext.define('App.controller.core.rpa.RPA', {
             rpaModel.set('CreateDate', createDate);
             rpaModel.set('UserName', userName);
             rpaModel.set("Constraint", constrains);
-            rpaModel.set('Parametr', parametr);
+            rpaModel.set('Parametrs', parametr);
             rpaModel.set('Status', 'Waiting');      
             var uploadFile = rpaForm.up().down('filefield').el.down('input[type=file]').dom.files[0];
             var formData = new FormData();

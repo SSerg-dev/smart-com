@@ -25,7 +25,7 @@ namespace Module.Persist.TPM.Model.TPM
         public string Constraint { get; set; }
 
         [Column(TypeName = "NVARCHAR(MAX)")]        
-        public string Parametr { get; set; }
+        public string Parametrs { get; set; }
 
         [Column(TypeName = "NVARCHAR(MAX)")]        
         public string Status { get; set; }

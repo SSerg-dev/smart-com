@@ -112,8 +112,8 @@ namespace Module.Frontend.TPM.Controllers
                     string directory = Core.Settings.AppSettingsManager.GetSetting("RPA_DIRECTORY", "RPAFiles");
                 
                     string fileName = Task<string>.Run(async () => await FileUtility.UploadFile(Request, directory)).Result;
-                    
-                    
+
+                    result.FileURL = $"<a href=https://tpmuiuxsa.blob.core.windows.net/jupiteruiuxcontainer/RPAFiles/{Path.GetFileName(fileName)} download>Download file</a>";
                     // Save RPA
                     var resultSaveChanges = Context.SaveChanges();
 

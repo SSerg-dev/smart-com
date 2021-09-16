@@ -712,7 +712,7 @@
         'CreateDate': 'Create date',
         'UserName': 'User name',
         'Constraint': 'Constraint',
-        'Parametr': 'Parametr',
+        'Parametrs': 'Parametrs',
         'Status': 'Status',
         'FileURL': 'File URL',
         'LogURL': 'Log URL'

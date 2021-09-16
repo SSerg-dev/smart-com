@@ -15,7 +15,7 @@ namespace Module.Persist.TPM.Migrations
                         Id = c.Guid(nullable: false, identity: true),
                         HandlerName = c.String(nullable: false),
                         Constraint = c.String(nullable: false),
-                        Parametr = c.String(nullable: false),
+                        Parametrs = c.String(nullable: false),
                         Status = c.String(nullable: false),
                         FileURL = c.String(nullable: false),
                         LogURL = c.String(nullable: false),

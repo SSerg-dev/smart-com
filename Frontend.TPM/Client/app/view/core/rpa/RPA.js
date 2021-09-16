@@ -117,8 +117,8 @@ Ext.define('App.view.core.rpa.RPA', {
                 text: l10n.ns('core', 'RPA').value('Constraint'),
                 dataIndex: 'Constraint'
             }, {
-                text: l10n.ns('core', 'RPA').value('Parametr'),
-                dataIndex: 'Parametr'
+                text: l10n.ns('core', 'RPA').value('Parametrs'),
+                dataIndex: 'Parametrs'
             }, {
                 text: l10n.ns('core', 'RPA').value('Status'),
                 dataIndex: 'Status'
@@ -153,8 +153,8 @@ Ext.define('App.view.core.rpa.RPA', {
             fieldLabel: l10n.ns('core', 'RPA').value('Constraint')
         }, {
             xtype: 'textfield',
-            name: 'Parametr',
-            fieldLabel: l10n.ns('core', 'RPA').value('Parametr')
+            name: 'Parametrs',
+            fieldLabel: l10n.ns('core', 'RPA').value('Parametrs')
         }, {
             xtype: 'textfield',
             name: 'Status',

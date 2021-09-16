@@ -601,7 +601,7 @@
         'CreateDate': 'Дата создания',
         'UserName': 'Имя пользователя',
         'Constraint': 'Ограничение',
-        'Parametr': 'Параметр',
+        'Parametrs': 'Параметры',
         'Status': 'Статус',
         'FileURL': 'File URL',
         'LogURL': 'Log URL'
