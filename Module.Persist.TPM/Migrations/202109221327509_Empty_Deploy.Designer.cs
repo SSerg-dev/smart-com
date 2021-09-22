@@ -7,13 +7,13 @@ namespace Module.Persist.TPM.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class empty : IMigrationMetadata
+    public sealed partial class Empty_Deploy : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(empty));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(Empty_Deploy));
         
         string IMigrationMetadata.Id
         {
-            get { return "202109221324218_empty"; }
+            get { return "202109221327509_Empty_Deploy"; }
         }
         
         string IMigrationMetadata.Source
