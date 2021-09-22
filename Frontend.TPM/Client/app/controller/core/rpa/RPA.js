@@ -105,14 +105,11 @@ Ext.define('App.controller.core.rpa.RPA', {
             editor.setLoading(l10n.ns('core').value('savingText'));
             var rpaModel = editor.rpaModel ? editor.rpaModel : Ext.create('App.model.core.rpa.RPA');
             var handlerName = rpaForm.down('combobox[name=HandlerName]').getValue();
-            var createDate = new Date();
             var userName = App.UserInfo.getUserName();
             var params = rpaForm.down('#params');
             var parametr = params.items.items.filter(el => el.value !== "").map((el) => el.value).join(';');
-            console.log(parametr);
             var constrains = Object.keys(App.UserInfo.getConstrains()).join(';');
-            rpaModel.set('HandlerName', handlerName);
-            rpaModel.set('CreateDate', createDate);
+            rpaModel.set('HandlerName', handlerName);            
             rpaModel.set('UserName', userName);
             rpaModel.set("Constraint", constrains);
             rpaModel.set('Parametrs', parametr);

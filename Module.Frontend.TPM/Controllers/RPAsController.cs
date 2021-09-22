@@ -113,8 +113,9 @@ namespace Module.Frontend.TPM.Controllers
                 
                     string fileName = Task<string>.Run(async () => await FileUtility.UploadFile(Request, directory)).Result;
 
-                    result.FileURL = $"<a href=https://tpmuiuxsa.blob.core.windows.net/jupiteruiuxcontainer/RPAFiles/{Path.GetFileName(fileName)} download>Download file</a>";
                     // Save RPA
+                    result.CreateDate = DateTime.UtcNow;
+                    result.FileURL = $"<a href=https://tpmuiuxsa.blob.core.windows.net/jupiteruiuxcontainer/RPAFiles/{Path.GetFileName(fileName)} download>Download file</a>";                    
                     var resultSaveChanges = Context.SaveChanges();
 
 
