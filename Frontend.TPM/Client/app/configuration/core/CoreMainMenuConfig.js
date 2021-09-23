@@ -64,7 +64,14 @@
         text: l10n.ns('core', 'mainmenu').value('RPAItem'),
         tooltip: l10n.ns('core','mainmenu').value('RPAItem'),
         glyph: 0xf494,
-        roles: ['Administrator', 'SupportAdministrator'],
+        roles: ['Administrator', 
+                'SupportAdministrator',
+                'KeyAccountManager',
+                'DemandPlanning',
+                'CustomerMarketing',
+                'DemandFinance',
+                'FunctionalExpert',
+                'CMManager'],
         widget: 'rpa'
     }]
 }, {
