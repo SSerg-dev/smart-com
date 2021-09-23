@@ -1,5 +1,6 @@
 namespace Module.Persist.TPM.Migrations
 {
+    using Core.Settings;
     using System;
     using System.Data.Entity.Migrations;
     
@@ -7,8 +8,9 @@ namespace Module.Persist.TPM.Migrations
     {
         public override void Up()
         {
+            var defaultSchema = AppSettingsManager.GetSetting<string>("DefaultSchema", "dbo");
             CreateTable(
-                "Jupiter.CalendarСompetitor",
+                $"{defaultSchema}.CalendarСompetitor",
                 c => new
                     {
                         Id = c.Guid(nullable: false, identity: true),
@@ -20,7 +22,7 @@ namespace Module.Persist.TPM.Migrations
                 .Index(t => new { t.Disabled, t.Name, t.DeletedDate }, unique: true, name: "Unique_Name");
             
             CreateTable(
-                "Jupiter.CalendarСompetitorCompany",
+                $"{defaultSchema}.CalendarСompetitorCompany",
                 c => new
                     {
                         Id = c.Guid(nullable: false, identity: true),
@@ -31,7 +33,7 @@ namespace Module.Persist.TPM.Migrations
                         CalendarСompetitor_Id = c.Guid(),
                     })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("Jupiter.CalendarСompetitor", t => t.CalendarСompetitor_Id)
+                .ForeignKey($"{defaultSchema}.CalendarСompetitor", t => t.CalendarСompetitor_Id)
                 .Index(t => new { t.CompanyName, t.Disabled, t.DeletedDate }, unique: true, name: "Unique_CompanyName")
                 .Index(t => t.CalendarCompetitorId, unique: true, name: "Unique_CalndarId")
                 .Index(t => t.CalendarСompetitor_Id);
@@ -40,13 +42,14 @@ namespace Module.Persist.TPM.Migrations
         
         public override void Down()
         {
-            DropForeignKey("Jupiter.CalendarСompetitorCompany", "CalendarСompetitor_Id", "Jupiter.CalendarСompetitor");
-            DropIndex("Jupiter.CalendarСompetitorCompany", new[] { "CalendarСompetitor_Id" });
-            DropIndex("Jupiter.CalendarСompetitorCompany", "Unique_CalndarId");
-            DropIndex("Jupiter.CalendarСompetitorCompany", "Unique_CompanyName");
-            DropIndex("Jupiter.CalendarСompetitor", "Unique_Name");
-            DropTable("Jupiter.CalendarСompetitorCompany");
-            DropTable("Jupiter.CalendarСompetitor");
+            var defaultSchema = AppSettingsManager.GetSetting<string>("DefaultSchema", "dbo");
+            DropForeignKey($"{defaultSchema}.CalendarСompetitorCompany", "CalendarСompetitor_Id", $"{defaultSchema}.CalendarСompetitor");
+            DropIndex($"{defaultSchema}.CalendarСompetitorCompany", new[] { "CalendarСompetitor_Id" });
+            DropIndex($"{defaultSchema}.CalendarСompetitorCompany", "Unique_CalndarId");
+            DropIndex($"{defaultSchema}.CalendarСompetitorCompany", "Unique_CompanyName");
+            DropIndex($"{defaultSchema}.CalendarСompetitor", "Unique_Name");
+            DropTable($"{defaultSchema}.CalendarСompetitorCompany");
+            DropTable($"{defaultSchema}.CalendarСompetitor");
         }
     }
 }
