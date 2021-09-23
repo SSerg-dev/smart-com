@@ -263,6 +263,7 @@
     <Content Include="Client\controller\tpm\clienttreebrandtech\HistoricalClientTreeBrandTech.js" />
     <Content Include="Client\controller\tpm\rollingvolume\RollingVolume.js" />
     <Content Include="Client\model\tpm\assortmentmatrix2plu\AssortmentMatrix2Plu.js" />
+    <Content Include="Client\model\tpm\calendarcompetitorcompany\CalendarCompetitorCompany.js" />
     <Content Include="Client\model\tpm\pludictionary\HistoricalPLUDictionary.js" />
     <Content Include="Client\model\tpm\pludictionary\PLUDictionary.js" />
     <Content Include="Client\model\tpm\promoproduct2plu\PromoProduct2Plu.js" />
@@ -299,6 +300,7 @@
     <Compile Include="Controllers\ActualCOGSsController.cs" />
     <Compile Include="Controllers\BTLPromoesController.cs" />
     <Compile Include="Controllers\BTLsController.cs" />
+    <Compile Include="Controllers\CalendarCompetitorCompanyController.cs" />
     <Compile Include="Controllers\CoefficientSI2SOsController.cs" />
     <Compile Include="Controllers\DeletedActualCOGSsController.cs" />
     <Compile Include="Controllers\DeletedActualTradeInvestmentsController.cs" />
@@ -308,6 +310,7 @@
     <Compile Include="Controllers\HistoricalActualTradeInvestmentsController.cs" />
     <Compile Include="Controllers\HistoricalActualCOGSsController.cs" />
     <Compile Include="Controllers\HistoricalBTLsController.cs" />
+    <Compile Include="Controllers\HistoricalCalendarCompetitorCompanyController.cs" />
     <Compile Include="Controllers\HistoricalClientDashboardsController.cs" />
     <Compile Include="Controllers\HistoricalClientTreeBrandTechesController.cs" />
     <Compile Include="Controllers\HistoricalCoefficientSI2SOsController.cs" />

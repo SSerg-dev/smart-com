@@ -130,6 +130,9 @@ namespace Module.Persist.TPM {
             modelBuilder.Entity<Promo>().Ignore(n => n.Calculating);
             modelBuilder.Entity<Promo>().Ignore(n => n.PromoBasicProducts);
 
+            // Calendar Competitor Entities
+            modelBuilder.Entity<CalendarСompetitor>();
+            modelBuilder.Entity<CalendarСompetitorCompany>();
         }
 
         
@@ -959,6 +962,9 @@ namespace Module.Persist.TPM {
             builder.Entity<ClientDashboardView>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<ClientDashboardView>("ClientDashboardViews");
             builder.EntitySet<HistoricalClientDashboardView>("HistoricalClientDashboards");
             builder.Entity<HistoricalClientDashboardView>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalClientDashboardView>("HistoricalClientDashboards");
+
+            // Calendar Competitors Entities
+            builder.EntitySet<CalendarСompetitorCompany>("CalendarСompetitorCompany");
         }
 
         

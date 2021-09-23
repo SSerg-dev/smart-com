@@ -2572,6 +2572,10 @@
     <Compile Include="Migrations\202108200756196_Empty_PLU.Designer.cs">
       <DependentUpon>202108200756196_Empty_PLU.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202109171241305_Add_CalendarCompetitor_Tables.cs" />
+    <Compile Include="Migrations\202109171241305_Add_CalendarCompetitor_Tables.Designer.cs">
+      <DependentUpon>202109171241305_Add_CalendarCompetitor_Tables.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\2021\202106300726289_202106301025001_Drop_Client.cs" />
     <Compile Include="Migrations\2021\202106300726289_202106301025001_Drop_Client.Designer.cs">
       <DependentUpon>202106300726289_202106301025001_Drop_Client.cs</DependentUpon>
@@ -2633,6 +2637,7 @@
     <Compile Include="Model\History\HistoricalActualCOGS.cs" />
     <Compile Include="Model\History\HistoricalBTL.cs" />
     <Compile Include="Model\History\HistoricalBTLPromo.cs" />
+    <Compile Include="Model\History\HistoricalCalendarCompetitorCompany.cs" />
     <Compile Include="Model\History\HistoricalClientDashboardView.cs" />
     <Compile Include="Model\History\HistoricalClientTreeBrandTech.cs" />
     <Compile Include="Model\History\HistoricalCoefficientSI2SO.cs" />
@@ -2736,6 +2741,8 @@
     <Compile Include="Model\SimpleModel\SimplePromoCOGSTI.cs" />
     <Compile Include="Model\SimpleModel\YEAR_END_ESTIMATE_FDM.cs" />
     <Compile Include="Model\TPM\ActualLsvModel.cs" />
+    <Compile Include="Model\TPM\CalendarСompetitor.cs" />
+    <Compile Include="Model\TPM\CalendarСompetitorCompany.cs" />
     <Compile Include="Model\TPM\Client.cs" />
     <Compile Include="Model\TPM\Plu.cs" />
     <Compile Include="Model\TPM\PLUDictionary.cs" />
@@ -4991,6 +4998,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202108200756196_Empty_PLU.resx">
       <DependentUpon>202108200756196_Empty_PLU.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202109171241305_Add_CalendarCompetitor_Tables.resx">
+      <DependentUpon>202109171241305_Add_CalendarCompetitor_Tables.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\2021\202106300726289_202106301025001_Drop_Client.resx">
       <DependentUpon>202106300726289_202106301025001_Drop_Client.cs</DependentUpon>
