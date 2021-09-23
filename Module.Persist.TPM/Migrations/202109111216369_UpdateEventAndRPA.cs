@@ -76,9 +76,6 @@ namespace Module.Persist.TPM.Migrations
 
 					INSERT @PromoForbidClient(Id) SELECT CAST(Value AS INT) FROM ['+@Shema+'].[Constraint] 
 					WHERE UserRoleId = @UserRoleId AND Prefix = ''CLIENT_ID''
-
-					SELECT @UserRoleId
-					SELECT * FROM @PromoForbidClient
 					
 	                UPDATE p 
 	                SET p.EventName = temp.EventName, p.EventId = e.Id
