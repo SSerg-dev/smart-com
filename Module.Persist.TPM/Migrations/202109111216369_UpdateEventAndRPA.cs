@@ -47,66 +47,64 @@ namespace Module.Persist.TPM.Migrations
         private string UpdateEventByPromo =
 			@"
                 CREATE OR ALTER PROCEDURE [Jupiter].[RpaPipeEvent_UpdateEventByPromo]
-                (
+                 (
                    @RunPipeId nvarchar(max),
-				   @Shema nvarchar(max)
+				   @Shema nvarchar(max),
+				   @UserRoleName nvarchar(max),
+				   @UserId uniqueidentifier
                 )
                 AS
                 BEGIN
-					DECLARE @insertQuery nvarchar(max)
-	                DECLARE @updateQuery nvarchar(max)
-	                DECLARE @selectQuery nvarchar(max)
-					DECLARE @PromoStatus TABLE (Id uniqueidentifier)
-
-                    SET NOCOUNT ON
+					SET NOCOUNT ON
+	                
+					DECLARE @query nvarchar(max)
 					
-					SET @insertQuery = N'
-						INSERT @PromoStatus (Id) 
-							SELECT Id FROM ['+@Shema+'].PromoStatus 
-							WHERE SystemName = ''Draft''
+					SET @query = N'					
+					DECLARE @PromoStatus TABLE (Id uniqueidentifier)
+					DECLARE @PromoForbidClient TABLE (Id int)
+					DECLARE @UserRoleId uniqueidentifier
 
-						INSERT @PromoStatus (Id) 
-							SELECT Id FROM ['+@Shema+'].PromoStatus 
-							WHERE SystemName = ''OnApproval''	
-							
-						INSERT @PromoStatus (Id) 
-							SELECT Id FROM ['+@Shema+'].PromoStatus 
-							WHERE SystemName = ''Planned''
+					SELECT @UserRoleId = us.Id FROM ['+@Shema+'].[UserRole] us 
+					INNER JOIN ['+@Shema+'].[Role] r ON r.SystemName = ''' + @UserRoleName +'''
+					WHERE us.UserId = ''' + CAST(@UserId AS CHAR(36)) +''' AND us.RoleId = r.Id
 
-						INSERT @PromoStatus (Id) 
-							SELECT Id FROM ['+@Shema+'].PromoStatus 
-							WHERE SystemName = ''Approved''
-							
-						INSERT @PromoStatus (Id) 
-							SELECT Id FROM ['+@Shema+'].PromoStatus 
-							WHERE SystemName = ''DraftPpublished'''
+					INSERT @PromoStatus (Id) VALUES (''EFCA0CEC-4554-E911-8BC8-08606E18DF3F'')
+					INSERT @PromoStatus (Id) VALUES (''D6F20200-4654-E911-8BC8-08606E18DF3F'')
+					INSERT @PromoStatus (Id) VALUES (''2305DC07-4654-E911-8BC8-08606E18DF3F'')
+					INSERT @PromoStatus (Id) VALUES (''DA5DA702-4754-E911-8BC8-08606E18DF3F'')
+					INSERT @PromoStatus (Id) VALUES (''FE7FFE19-4754-E911-8BC8-08606E18DF3F'')
 
-					EXEC sp_executesql @insertQuery
+					INSERT @PromoForbidClient(Id) SELECT CAST(Value AS INT) FROM ['+@Shema+'].[Constraint] 
+					WHERE UserRoleId = @UserRoleId AND Prefix = ''CLIENT_ID''
 
-	                SET @updateQuery = N'  
+					SELECT @UserRoleId
+					SELECT * FROM @PromoForbidClient
+					
 	                UPDATE p 
 	                SET p.EventName = temp.EventName, p.EventId = e.Id
 	                FROM ['+@Shema+'].' + QUOTENAME('TempEventTestStage'+@RunPipeId) + ' temp
 	                INNER JOIN ['+@Shema+'].Promo p ON p.Number = temp.PromoNumber
-					INNER JOIN @PromoStatus ps ON ps.Id = p.StatusId
-	                INNER JOIN ['+@Shema+'].[Event] e ON e.Name = temp.EventName'
-	
-	                EXEC sp_executesql @updateQuery
-  
+					INNER JOIN @PromoStatus ps ON ps.Id = p.PromoStatusId
+	                INNER JOIN ['+@Shema+'].[Event] e ON e.Name = temp.EventName
+	                LEFT JOIN @PromoForbidClient pfc ON pfc.Id = p.ClientTreeId
+					WHERE 
+						pfc.Id IS NULL
 
-                  SET @selectQuery = N'
 	                SELECT temp.PromoNumber, 
 						temp.EventName,
-		                CASE WHEN e.Name IS NULL OR p.Id IS NULL OR ps.Id IS NULL THEN ''Error'' ELSE ''Success'' END AS [Status],
-		                CASE WHEN p.Id IS NULL  THEN ''Promo not found'' 
+		                CASE WHEN e.Name IS NULL OR p.Id IS NULL OR ps.Id IS NULL OR pfc.Id IS NOT NULL THEN ''Error'' ELSE ''Success'' END AS [Status],
+		                CASE WHEN p.Id IS NULL  THEN ''Promo not found''						
 		                WHEN e.Id IS NULL THEN ''Event not found''
 						WHEN ps.Id IS NULL THEN ''Promo status is not valid''
+						WHEN pfc.Id IS NOT NULL THEN ''You do not have access to this client''
 		                ELSE '''' END AS [Description]
   		                FROM ['+@Shema+'].' + QUOTENAME('TempEventTestStage'+@RunPipeId) + ' temp
 	                LEFT JOIN ['+@Shema+'].Promo p ON p.Number = temp.PromoNumber
-					LEFT JOIN @PromoStatus ps ON ps.Id = p.StatusId
-	                LEFT JOIN ['+@Shema+'].[Event] e ON e.Name = temp.EventName'
-	                EXEC sp_executesql @selectQuery
+					LEFT JOIN @PromoStatus ps ON ps.Id = p.PromoStatusId
+	                LEFT JOIN ['+@Shema+'].[Event] e ON e.Name = temp.EventName
+					LEFT JOIN @PromoForbidClient pfc ON pfc.Id = p.ClientTreeId'
+	                
+					EXEC sp_executesql @query
                 END
             ";
 

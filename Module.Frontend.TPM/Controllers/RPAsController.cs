@@ -30,7 +30,7 @@ namespace Module.Frontend.TPM.Controllers
     public class RPAsController : EFContextController
     {
         private readonly IAuthorizationManager authorizationManager;
-
+        private Core.Security.Models.UserInfo user;
         public RPAsController(IAuthorizationManager authorizationManager)
         {
             this.authorizationManager = authorizationManager;
@@ -39,7 +39,7 @@ namespace Module.Frontend.TPM.Controllers
         protected IQueryable<RPA> GetConstraintedQuery()
         {
 
-            Core.Security.Models.UserInfo user = authorizationManager.GetCurrentUser();
+            user = authorizationManager.GetCurrentUser();
             string role = authorizationManager.GetCurrentRoleName();
             IList<Constraint> constraints = user.Id.HasValue ? Context.Constraints
                 .Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
@@ -87,6 +87,7 @@ namespace Module.Frontend.TPM.Controllers
             {
                 return BadRequest(ModelState);
             }
+            user = authorizationManager.GetCurrentUser();
             var currentRequest = HttpContext.Current.Request;
             var rpaModel = JsonConvert.DeserializeObject<RPA>(currentRequest.Params.Get("Model"));            
             var proxy = Context.Set<RPA>().Create<RPA>();
@@ -141,7 +142,9 @@ namespace Module.Frontend.TPM.Controllers
                         Dictionary<string, object> parameters = new Dictionary<string, object>
                             {
                                 { "FileName", Path.GetFileName(fileName) },
-                                { "RPAId", result.Id }
+                                { "RPAId", result.Id },
+                                { "UserRoleName", user.GetCurrentRole().SystemName },
+                                { "UserId", user.Id },
                             };
                         CreateRunResponse runResponse = client.Pipelines.CreateRunWithHttpMessagesAsync(
                             resourceGroup, dataFactoryName, pipelineName, parameters: parameters
