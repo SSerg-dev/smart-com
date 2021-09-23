@@ -2576,6 +2576,10 @@
     <Compile Include="Migrations\202109171241305_Add_CalendarCompetitor_Tables.Designer.cs">
       <DependentUpon>202109171241305_Add_CalendarCompetitor_Tables.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202109221327509_Empty_Deploy.cs" />
+    <Compile Include="Migrations\202109221327509_Empty_Deploy.Designer.cs">
+      <DependentUpon>202109221327509_Empty_Deploy.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\2021\202106300726289_202106301025001_Drop_Client.cs" />
     <Compile Include="Migrations\2021\202106300726289_202106301025001_Drop_Client.Designer.cs">
       <DependentUpon>202106300726289_202106301025001_Drop_Client.cs</DependentUpon>
@@ -5001,6 +5005,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202109171241305_Add_CalendarCompetitor_Tables.resx">
       <DependentUpon>202109171241305_Add_CalendarCompetitor_Tables.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202109221327509_Empty_Deploy.resx">
+      <DependentUpon>202109221327509_Empty_Deploy.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\2021\202106300726289_202106301025001_Drop_Client.resx">
       <DependentUpon>202106300726289_202106301025001_Drop_Client.cs</DependentUpon>
