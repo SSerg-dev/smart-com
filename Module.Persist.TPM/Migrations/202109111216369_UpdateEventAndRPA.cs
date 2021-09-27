@@ -61,7 +61,7 @@ namespace Module.Persist.TPM.Migrations
 					
 					SET @query = N'					
 					DECLARE @PromoStatus TABLE (Id uniqueidentifier)
-					DECLARE @PromoForbidClient TABLE (Id int)
+					DECLARE @PromoAllowClient TABLE (Id int)
 					DECLARE @UserRoleId uniqueidentifier
 
 					SELECT @UserRoleId = us.Id FROM ['+@Shema+'].[UserRole] us 
@@ -74,32 +74,30 @@ namespace Module.Persist.TPM.Migrations
 					INSERT @PromoStatus (Id) VALUES (''DA5DA702-4754-E911-8BC8-08606E18DF3F'')
 					INSERT @PromoStatus (Id) VALUES (''FE7FFE19-4754-E911-8BC8-08606E18DF3F'')
 
-					INSERT @PromoForbidClient(Id) SELECT CAST(Value AS INT) FROM ['+@Shema+'].[Constraint] 
+					INSERT @PromoAllowClient(Id) SELECT CAST(Value AS INT) FROM ['+@Shema+'].[Constraint] 
 					WHERE UserRoleId = @UserRoleId AND Prefix = ''CLIENT_ID''
-					
+				
 	                UPDATE p 
 	                SET p.EventName = temp.EventName, p.EventId = e.Id
 	                FROM ['+@Shema+'].' + QUOTENAME('TempEventTestStage'+@RunPipeId) + ' temp
 	                INNER JOIN ['+@Shema+'].Promo p ON p.Number = temp.PromoNumber
 					INNER JOIN @PromoStatus ps ON ps.Id = p.PromoStatusId
 	                INNER JOIN ['+@Shema+'].[Event] e ON e.Name = temp.EventName
-	                LEFT JOIN @PromoForbidClient pfc ON pfc.Id = p.ClientTreeId
-					WHERE 
-						pfc.Id IS NULL
-
+	                INNER JOIN @PromoAllowClient pfc ON pfc.Id = p.ClientTreeId
+					
 	                SELECT temp.PromoNumber, 
 						temp.EventName,
-		                CASE WHEN e.Name IS NULL OR p.Id IS NULL OR ps.Id IS NULL OR pfc.Id IS NOT NULL THEN ''Error'' ELSE ''Success'' END AS [Status],
+		                CASE WHEN e.Name IS NULL OR p.Id IS NULL OR ps.Id IS NULL OR pfc.Id IS NULL THEN ''Error'' ELSE ''Success'' END AS [Status],
 		                CASE WHEN p.Id IS NULL  THEN ''Promo not found''						
 		                WHEN e.Id IS NULL THEN ''Event not found''
 						WHEN ps.Id IS NULL THEN ''Promo status is not valid''
-						WHEN pfc.Id IS NOT NULL THEN ''You do not have access to this client''
+						WHEN pfc.Id IS NULL THEN ''You have constarint for this client''
 		                ELSE '''' END AS [Description]
   		                FROM ['+@Shema+'].' + QUOTENAME('TempEventTestStage'+@RunPipeId) + ' temp
 	                LEFT JOIN ['+@Shema+'].Promo p ON p.Number = temp.PromoNumber
 					LEFT JOIN @PromoStatus ps ON ps.Id = p.PromoStatusId
 	                LEFT JOIN ['+@Shema+'].[Event] e ON e.Name = temp.EventName
-					LEFT JOIN @PromoForbidClient pfc ON pfc.Id = p.ClientTreeId'
+					LEFT JOIN @PromoAllowClient pfc ON pfc.Id = p.ClientTreeId'
 	                
 					EXEC sp_executesql @query
                 END
