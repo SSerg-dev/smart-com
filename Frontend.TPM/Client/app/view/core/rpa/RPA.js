@@ -81,6 +81,10 @@ Ext.define('App.view.core.rpa.RPA', {
             type: 'directorystore',
             model: 'App.model.core.rpa.RPA',
             storeId: 'rpastore',
+            sorters: [{
+                property: 'CreateDate',
+                direction: 'DESC'
+            }],
             extendedFilter: {
                 xclass: 'App.ExtFilterContext',
                 supportedModels: [{

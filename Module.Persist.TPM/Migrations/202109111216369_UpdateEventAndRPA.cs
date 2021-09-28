@@ -76,22 +76,26 @@ namespace Module.Persist.TPM.Migrations
 
 					INSERT @PromoAllowClient(Id) SELECT CAST(Value AS INT) FROM ['+@Shema+'].[Constraint] 
 					WHERE UserRoleId = @UserRoleId AND Prefix = ''CLIENT_ID''
-				
+					
+					DECLARE @ExistConstraint int
+
+					SELECT @ExistConstraint = COUNT(*) FROM @PromoAllowClient
+
 	                UPDATE p 
 	                SET p.EventName = temp.EventName, p.EventId = e.Id
 	                FROM ['+@Shema+'].' + QUOTENAME('TempEventTestStage'+@RunPipeId) + ' temp
 	                INNER JOIN ['+@Shema+'].Promo p ON p.Number = temp.PromoNumber
 					INNER JOIN @PromoStatus ps ON ps.Id = p.PromoStatusId
 	                INNER JOIN ['+@Shema+'].[Event] e ON e.Name = temp.EventName
-	                INNER JOIN @PromoAllowClient pfc ON pfc.Id = p.ClientTreeId
+	                INNER JOIN @PromoAllowClient pfc ON ((pfc.Id = p.ClientTreeId AND @ExistConstraint > 0) OR (@ExistConstraint = 0))
 					
 	                SELECT temp.PromoNumber, 
 						temp.EventName,
-		                CASE WHEN e.Name IS NULL OR p.Id IS NULL OR ps.Id IS NULL OR pfc.Id IS NULL THEN ''Error'' ELSE ''Success'' END AS [Status],
+		                CASE WHEN e.Name IS NULL OR p.Id IS NULL OR ps.Id IS NULL OR (pfc.Id IS NULL AND @ExistConstraint > 0) THEN ''Error'' ELSE ''Success'' END AS [Status],
 		                CASE WHEN p.Id IS NULL  THEN ''Promo not found''						
 		                WHEN e.Id IS NULL THEN ''Event not found''
 						WHEN ps.Id IS NULL THEN ''Promo status is not valid''
-						WHEN pfc.Id IS NULL THEN ''You have constarint for this client''
+						WHEN pfc.Id IS NULL AND @ExistConstraint > 0 THEN ''You have constarint for this client''
 		                ELSE '''' END AS [Description]
   		                FROM ['+@Shema+'].' + QUOTENAME('TempEventTestStage'+@RunPipeId) + ' temp
 	                LEFT JOIN ['+@Shema+'].Promo p ON p.Number = temp.PromoNumber
