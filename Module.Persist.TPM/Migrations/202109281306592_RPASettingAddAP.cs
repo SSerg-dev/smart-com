@@ -10,7 +10,9 @@ namespace Module.Persist.TPM.Migrations
         {
             var defaultSchema = AppSettingsManager.GetSetting<string>("DefaultSchema", "dbo");
             Sql($@"
-            
+
+            DECLARE @ItemId UNIQUEIDENTIFIER
+
             INSERT INTO { defaultSchema}.AccessPoint(Disabled, Resource, Action) VALUES(0, 'RPASettings', 'GetRPASettings')
             SELECT @ItemId = Id FROM[{ defaultSchema}].[AccessPoint] where Resource = 'RPASettings' AND Action = 'GetRPASettings'
             INSERT INTO { defaultSchema}.AccessPointRole(AccessPointId, RoleId) SELECT @ItemId, Id from Jupiter.Role WHERE SystemName = 'Administrator'
