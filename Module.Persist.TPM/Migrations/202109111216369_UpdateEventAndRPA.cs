@@ -87,7 +87,8 @@ namespace Module.Persist.TPM.Migrations
 	                INNER JOIN ['+@Shema+'].Promo p ON p.Number = temp.PromoNumber
 					INNER JOIN @PromoStatus ps ON ps.Id = p.PromoStatusId
 	                INNER JOIN ['+@Shema+'].[Event] e ON e.Name = temp.EventName
-	                INNER JOIN @PromoAllowClient pfc ON ((pfc.Id = p.ClientTreeId AND @ExistConstraint > 0) OR (@ExistConstraint = 0))
+	                LEFT JOIN @PromoAllowClient pfc ON pfc.Id = p.ClientTreeId
+					WHERE (pfc.Id IS NOT NULL AND @ExistConstraint > 0) OR (pfc.Id IS NULL AND @ExistConstraint = 0)
 					
 	                SELECT temp.PromoNumber, 
 						temp.EventName,

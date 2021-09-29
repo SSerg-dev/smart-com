@@ -108,10 +108,8 @@ Ext.define('App.controller.core.rpa.RPA', {
             var userName = App.UserInfo.getUserName();
             var params = rpaForm.down('#params');
             var parametr = params.items.items.filter(el => el.value !== "").map((el) => el.value).join(';');
-            var constrains = Object.keys(App.UserInfo.getConstrains()).join(';');
             rpaModel.set('HandlerName', handlerName);            
             rpaModel.set('UserName', userName);
-            rpaModel.set("Constraint", constrains);
             rpaModel.set('Parametrs', parametr);
             rpaModel.set('Status', 'Waiting');      
             var uploadFile = rpaForm.up().down('filefield').el.down('input[type=file]').dom.files[0];
