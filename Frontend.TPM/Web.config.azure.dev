@@ -65,13 +65,13 @@
     <add key="ida:PostLogoutRedirectUriKey" value="ADidaPostLogoutRedirectUri" />
 	<!--RPA-->
 	<add key="RPA_UPLOAD_TENANT_ID" value="2fc13e34-f03f-498b-982a-7cb446e25bc6" />
-	<add key="RPA_UPLOAD_APPLICATION_ID" value="a5dcf1fb-bea3-4776-9262-90ed5a457704" />
+	<add key="RPA_UPLOAD_APPLICATION_ID" value="6f231dc9-7560-4d58-8655-a9fec42cac17" />
 	<add key="RPA_UPLOAD_AUTHENTICATION_KEY" value="kKOHIvUL0nKvtQ4e2Fn53RvYLba5Ne7/pKphScyEg8c=" />
 	<add key="RPA_UPLOAD_SUBSCRIPTION_ID" value="066fc627-241c-4166-b66f-70f51b9b4b95" />
 	<add key="RPA_UPLOAD_RESOURCE_GROUP" value="RUSSIA-PETCARE-JUPITER-DEV-RG" />
 	<add key="RPA_UPLOAD_REGION" value="East US 2" />
 	<add key="RPA_UPLOAD_DATA_FACTORY_NAME" value="russiapetcarejupiterdevadf" />
-	<add key="RPA_UPLOAD_PIPELINE_NAME" value="RPA_UPLOAD_PIPE" />
+	<add key="RPA_UPLOAD_PIPELINE_NAME" value="JUPITER_RPA_UPLOAD_PIPE" />
   </appSettings>
   <system.identityModel>
     <identityConfiguration>
