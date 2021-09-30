@@ -25,10 +25,11 @@ namespace Module.Persist.TPM.Migrations
         }
 
         private string UpdateRPAStatus =
-            @"
+			@"
                 CREATE OR ALTER PROCEDURE [Jupiter].[RpaPipeEvent_UpdateRPAStatus]
                 (   
-	                @RPAId nvarchar(max)
+	                @RPAId nvarchar(max),
+					@Status nvarchar(max)
                 )
                 AS
                 BEGIN
@@ -38,10 +39,10 @@ namespace Module.Persist.TPM.Migrations
                     UPDATE 
 		                [Jupiter].[RPA]
 	                SET 
-		                Status = 'In progress' 
+		                Status = @Status
 	                WHERE 
 		                Id = @RPAId
-                END  
+                END
             ";
 
         private string UpdateEventByPromo =
@@ -109,30 +110,28 @@ namespace Module.Persist.TPM.Migrations
             ";
 
         private string UpdateRPA =
-            @"
+			@"
                 CREATE OR ALTER PROCEDURE [Jupiter].[RpaPipeEvent_UpdateRPA]
-                (
-                    @Status nvarchar(max),
+                (   
 	                @RPAId nvarchar(max),
-	                @RunPipeId nvarchar(max),
-	                @UploadFileName nvarchar(max)
+	                @RunPipeId nvarchar(max)
                 )
                 AS
                 BEGIN
 	                DECLARE @dropTableQuery nvarchar(max)
-
+                    -- SET NOCOUNT ON added to prevent extra result sets from
+                    -- interfering with SELECT statements.
                     SET NOCOUNT ON
 
                     UPDATE 
 		                [Jupiter].[RPA]
-	                SET 
-		                Status = @Status,
+	                SET 		                
 		                LogURL = '<a href=https://tpmuiuxsa.blob.core.windows.net/jupiteruiuxcontainer/RPAFiles/OutputLogFile_'+@RPAId+'.xlsx download>Log file</a>'
 	                WHERE 
 		                Id = @RPAId
-
-	                SET @dropTableQuery = N'DROP TABLE [Jupiter].' + QUOTENAME('TempEventTestStage'+@RunPipeId)
-	                EXEC sp_executesql @dropTableQuery
+				
+					SET @dropTableQuery = N'DROP TABLE [Jupiter].' + QUOTENAME('TempEventTestStage'+@RunPipeId)
+					EXEC sp_executesql @dropTableQuery
 
                 END
             ";
