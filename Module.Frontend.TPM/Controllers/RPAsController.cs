@@ -124,7 +124,7 @@ namespace Module.Frontend.TPM.Controllers
 
 					result.Constraint = String.Join(";", this.constraints.Select(x => x.Value).ToArray());
 					result.CreateDate = DateTime.UtcNow;
-					result.FileURL = $"<a href=https://marsanalyticsshareddevsa.blob.core.windows.net/russiapetcarejupiter/RPAFiles/{Path.GetFileName(fileName)} download>Download file</a>";                    
+					result.FileURL = $"<a href=https://russiapetcarejupiterdev2wa.azurewebsites.net//odata/RPA/DownloadFile?fileName={Path.GetFileName(fileName)} download>Download file</a>";                    
 					var resultSaveChanges = Context.SaveChanges();
 
 
