@@ -57,7 +57,7 @@
     items: [{
         xtype: 'directorygrid',
         itemId: 'datatable',
-        // editorModel: 'Core.form.EditorDetailWindowModel',
+        editorModel: 'Core.form.EditorDetailWindowModel',
         store: {
             type: 'directorystore',
             model: 'App.model.tpm.calendarcompetitorcompany.CalendarCompetitorCompany',

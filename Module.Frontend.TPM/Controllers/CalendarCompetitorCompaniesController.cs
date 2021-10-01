@@ -42,7 +42,7 @@ namespace Module.Frontend.TPM.Controllers
         protected IQueryable<CalendarСompetitorCompany> GetConstraintedQuery()
         {
             var user = authorizationManager.GetCurrentUser();
-            var role = authorizationManager.GetCurrentRole();
+            var role = authorizationManager.GetCurrentRoleName();
             IList<Constraint> constraints = user.Id.HasValue ? Context.Constraints
                 .Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
                 .ToList() : new List<Constraint>();
@@ -53,13 +53,16 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
-        public SingleResult<CalendarСompetitorCompany> GetCalendarСompetitorCompany([FromODataUri] Guid key) => 
-            SingleResult.Create(GetConstraintedQuery());
+        public SingleResult<CalendarСompetitorCompany> GetCalendarСompetitorCompany([FromODataUri] Guid key) {
+            return SingleResult.Create(GetConstraintedQuery());
+        }
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
-        public IQueryable<CalendarСompetitorCompany> GetCalendarСompetitorCompanies() =>
-            GetConstraintedQuery();
+        public IQueryable<CalendarСompetitorCompany> GetCalendarCompetitorCompanies() {
+            return GetConstraintedQuery();
+        }
+
 
         [ClaimsAuthorize]
         [HttpPost]

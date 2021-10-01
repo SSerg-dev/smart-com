@@ -18,7 +18,7 @@
     ],
     proxy: {
         type: 'breeze',
-        resourceName: 'CalendarCompetitorCompany',
+        resourceName: 'CalendarCompetitorCompanies',
         reader: {
             type: 'json',
             totalProperty: 'inlineCount',

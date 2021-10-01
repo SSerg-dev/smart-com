@@ -964,7 +964,8 @@ namespace Module.Persist.TPM {
             builder.Entity<HistoricalClientDashboardView>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalClientDashboardView>("HistoricalClientDashboards");
 
             // Calendar Competitors Entities
-            builder.EntitySet<CalendarСompetitorCompany>("CalendarСompetitorCompany");
+            builder.EntitySet<CalendarСompetitorCompany>("CalendarCompetitorCompanies");
+            builder.Entity<CalendarСompetitorCompany>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<CalendarСompetitorCompany>("CalendarCompetitorCompanies");
         }
 
         
