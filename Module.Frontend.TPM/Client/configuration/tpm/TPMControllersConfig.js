@@ -11,6 +11,8 @@
     'tpm.brandtech.DeletedBrandTech',
     'tpm.brandtech.HistoricalBrandTech',
 
+    'tpm.calendarcompetitorcompany.CalendarCompetitorCompany',
+
     'tpm.category.Category',
     'tpm.category.DeletedCategory',
     'tpm.category.HistoricalCategory',

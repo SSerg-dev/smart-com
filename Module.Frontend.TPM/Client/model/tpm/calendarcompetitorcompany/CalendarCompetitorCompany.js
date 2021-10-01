@@ -3,17 +3,18 @@
     idProperty: 'Id',
     breezeEntityType: 'CalendarCompetitorCompany',
     fields: [
-        { name: 'Id', type: 'string', hidden: true, isDefault: true, isKey: true, mapping: 'Id' },
+        { name: 'Id', hidden: true },
+        { name: 'CompanyName', type: 'string', defaultFilterConfig: { valueField: 'CompanyName' }, hidden: false, isDefault: true },
+        { name: 'CalendarCompetitorId', hidden: true, isDefault: true },
         {
-            name: 'ClientTreeName', type: 'string', mapping: 'ClientTreeName',
-            defaultFilterConfig: { valueField: 'Name' }, tree: true, hidden: false, isDefault: true
-        },
-        {
-            name: 'ObjectId', type: 'int', mapping: 'ObjectId',
-            defaultFilterConfig: { valueField: 'ObjectId' }, hidden: false, isDefault: true,
-        },
-        { name: 'PluCode', type: 'string', hidden: false, isDefault: true, mapping: 'PluCode' },
-        { name: 'EAN_PC', type: 'string', hidden: false, isDefault: true, mapping: 'EAN_PC' },
+            name: 'CompetitorName',
+            type: 'string',
+            mapping: 'CalendarСompetitor.Name',
+            defaultFilterConfig: { valueField: 'Name' },
+            breezeEntityType: 'CalendarСompetitor',
+            hidden: false,
+            isDefault: true
+        }
     ],
     proxy: {
         type: 'breeze',

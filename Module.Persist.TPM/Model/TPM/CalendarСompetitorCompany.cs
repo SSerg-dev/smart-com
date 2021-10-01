@@ -9,14 +9,16 @@ namespace Module.Persist.TPM.Model.TPM
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
-        [Index("Unique_CompanyName", 2, IsUnique = true)]
+        [Index("Unique_CalendarСompetitorCompany", 2, IsUnique = true)]
         public bool Disabled { get; set; }
-        [Index("Unique_CompanyName", 3, IsUnique = true)]
+        [Index("Unique_CalendarСompetitorCompany", 3, IsUnique = true)]
         public DateTimeOffset? DeletedDate { get; set; }
         [StringLength(124)]
-        [Index("Unique_CompanyName", 1, IsUnique = true)]
+        [Index("Unique_CalendarСompetitorCompany", 1, IsUnique = true)]
+        [Required]
         public string CompanyName { get; set; }
-        [Index("Unique_CalndarId", IsUnique = true)]
+        [Index("Unique_CalendarСompetitorCompany", 0, IsUnique = true)]
+        [Required]
         public Guid CalendarCompetitorId { get; set; }
 
         public virtual CalendarСompetitor CalendarСompetitor { get; set; }

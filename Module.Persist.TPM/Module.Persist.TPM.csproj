@@ -2699,6 +2699,7 @@
     <Compile Include="Model\Import\BaseLineComparer.cs" />
     <Compile Include="Model\Import\ImportAssortmentMatrix.cs" />
     <Compile Include="Model\Import\ImportBTL.cs" />
+    <Compile Include="Model\Import\ImportCalendarCompetitorCompany.cs" />
     <Compile Include="Model\Import\ImportClientDashboard.cs" />
     <Compile Include="Model\Import\ImportCoefficientSI2SO.cs" />
     <Compile Include="Model\Import\ImportPLUDictionary.cs" />

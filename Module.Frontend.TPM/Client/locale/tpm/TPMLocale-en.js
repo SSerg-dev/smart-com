@@ -180,7 +180,8 @@
         'PreviousDayIncremental': 'Previous Day Incremental',
         'PriceList': 'Price list',
         'CoefficientSI2SO': 'Coefficient SI->SO',
-        'ApproveClosePromoWindow': 'Confirm closing'
+        'ApproveClosePromoWindow': 'Confirm closing',
+        'CalendarCompetitorCompany': 'Calendar Competitor Company'
     },
 
     'text': {
@@ -2695,5 +2696,10 @@
     'InvoiceTypes': {
         'OnInvoice': 'On-invoice',
         'OffInvoice': 'Off-invoice'
+    },
+
+    'CalendarCompetitorCompany': {
+        'CompanyName': 'Company',
+        'CompetitorName': 'Competitor'
     }
 });
