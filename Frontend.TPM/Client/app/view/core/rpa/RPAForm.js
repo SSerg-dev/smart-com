@@ -34,7 +34,7 @@ Ext.define('App.view.core.rpa.RPAForm', {
                          }
                     },
                     listeners: {
-                        select: function(combo, record){
+                        select: function(combo, record){                            
                             let paramFieldSet = Ext.getCmp('params');
                             if(paramFieldSet['items']['items'].length>0)
                             {
@@ -64,6 +64,16 @@ Ext.define('App.view.core.rpa.RPAForm', {
                                     icon: Ext.MessageBox.ERROR,
                                 });
                             }
+                        },
+                        afterrender: function(combo) {
+                            store = combo.store;
+                            store.on('load', function(res){                                
+                                if(res.data.items.length===0){                                    
+                                    combo.setValue("This role does not have a configured handler");
+                                    Ext.getCmp('eventfile').setDisabled(true);
+                                    Ext.ComponentQuery.query('#saveRPAForm')[0].setDisabled(true);
+                                }                                
+                            })
                         }
                     },
                     mapping: [{
@@ -78,6 +88,7 @@ Ext.define('App.view.core.rpa.RPAForm', {
                 }, {
                     xtype: 'filefield',
                     name: 'File',
+                    id: 'eventfile',
                     msgTarget: 'side',
                     buttonText: l10n.ns('core', 'buttons').value('browse'),
                     forceValidation: true,

@@ -2,7 +2,9 @@
 using Core.Security;
 using Core.Security.Models;
 using Frontend.Core.Controllers.Base;
+using Module.Frontend.TPM.Model;
 using Module.Persist.TPM.Model.TPM;
+using Newtonsoft.Json;
 using Persist.Model;
 using System;
 using System.Collections.Generic;
@@ -34,9 +36,13 @@ namespace Module.Frontend.TPM.Controllers
             IList<Constraint> constraints = user.Id.HasValue ? Context.Constraints
                 .Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
                 .ToList() : new List<Constraint>();
-            IQueryable<RPASetting> query = Context.Set<RPASetting>();
 
-            return query;
+            IQueryable<RPASetting> query = Context.Set<RPASetting>();
+            IQueryable<RPASetting> resultQuery = query.ToList()
+                 .Where(x => JsonConvert.DeserializeObject<RPAEventJsonField>(x.Json).roles.Contains(role))
+                 .AsQueryable();
+            
+            return resultQuery;
         }
 
         [ClaimsAuthorize]
