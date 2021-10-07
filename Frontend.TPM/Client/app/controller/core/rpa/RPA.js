@@ -50,22 +50,6 @@ Ext.define('App.controller.core.rpa.RPA', {
                 },
                 'rpaformtoolbar #cancelRPAForm': {
                     click: this.onCancelRPAFormClick
-                },
-                // import/export
-                'rpa #exportbutton': {
-                    click: this.onExportButtonClick
-                },
-                'rpa #loadimportbutton': {
-                    click: this.onShowImportFormButtonClick
-                },
-                'rpa #loadimporttemplatecsvbutton': {
-                    click: this.onLoadImportTemplateCSVButtonClick
-                },
-                'rpa #loadimporttemplatexlsxbutton': {
-                    click: this.onLoadImportTemplateXLSXButtonClick
-                },
-                'rpa #applyimportbutton': {
-                    click: this.onApplyImportButtonClick
                 }
             }
         });

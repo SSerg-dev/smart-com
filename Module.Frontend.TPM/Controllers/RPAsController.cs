@@ -25,6 +25,8 @@ using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using Microsoft.Rest;
 using Newtonsoft.Json;
 using Module.Persist.TPM.Utils;
+using Frontend.Core.Extensions.Export;
+using Module.Frontend.TPM.Model;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -124,7 +126,8 @@ namespace Module.Frontend.TPM.Controllers
 
 					result.Constraint = String.Join(";", this.constraints.Select(x => x.Value).ToArray());
 					result.CreateDate = DateTime.UtcNow;
-					result.FileURL = $"<a href=https://russiapetcarejupiterdev2wa.azurewebsites.net//odata/RPAs/DownloadFile?fileName={Path.GetFileName(fileName)} download>Download file</a>";                    
+					string fileURL = AppSettingsManager.GetSetting("RPA_UPLOAD_DOWNLOAD_FILE_URL", "");
+					result.FileURL = $"<a href='{fileURL}{Path.GetFileName(fileName)}' download>Download file</a>";                    
 					var resultSaveChanges = Context.SaveChanges();
 
 
@@ -177,8 +180,41 @@ namespace Module.Frontend.TPM.Controllers
 			return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, message = "RPA save and upload done." }));
 		}
 
+        [ClaimsAuthorize]
+        public IHttpActionResult DownloadTemplateXLSX()
+        {
+            try
+            {
+                var currentRequest = HttpContext.Current.Request;
+                var handlerId = JsonConvert.DeserializeObject<string>(currentRequest.Params.Get("handlerId"));
+                Guid testId = Guid.Parse(handlerId);
+                RPASetting setting = Context.Set<RPASetting>()
+                    .First(s => s.Id == testId);
+                var columnHeaders = JsonConvert.DeserializeObject<RPAEventJsonField>(setting.Json).templateColumns;
+                var columns = columnHeaders.Select(c => JsonConvert.DeserializeObject<Column>(c.ToString()));
+                XLSXExporter exporter = new XLSXExporter(columns);
+                string exportDir = AppSettingsManager.GetSetting("EXPORT_DIRECTORY", "~/ExportFiles");
+                string filename = string.Format("{0}Template.xlsx", "RPA");
+                if (!Directory.Exists(exportDir))
+                {
+                    Directory.CreateDirectory(exportDir);
+                }
+                string filePath = Path.Combine(exportDir, filename);
+                exporter.Export(Enumerable.Empty<RPA>(), filePath);
+                string file = Path.GetFileName(filePath);
+                return Content(HttpStatusCode.OK, file);
+            }
+            catch (Exception e)
+            {
+                return Content(HttpStatusCode.InternalServerError, e.Message);
+            }
 
-		[ClaimsAuthorize]
+        }
+
+
+
+
+        [ClaimsAuthorize]
 		[HttpGet]
 		[Route("odata/RPAs/DownloadFile")]
 		public HttpResponseMessage DownloadFile(string fileName)

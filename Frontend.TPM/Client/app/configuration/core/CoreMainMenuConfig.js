@@ -60,19 +60,6 @@
         glyph: 0xf1ee,
         roles: ['Administrator', 'SupportAdministrator'],
         widget: 'associatedmailnotificationsettingcontainer'
-    }, {
-        text: l10n.ns('core', 'mainmenu').value('RPAItem'),
-        tooltip: l10n.ns('core','mainmenu').value('RPAItem'),
-        glyph: 0xf494,
-        roles: ['Administrator', 
-                'SupportAdministrator',
-                'KeyAccountManager',
-                'DemandPlanning',
-                'CustomerMarketing',
-                'DemandFinance',
-                'FunctionalExpert',
-                'CMManager'],
-        widget: 'rpa'
     }]
 }, {
     text: l10n.ns('core', 'mainmenu').value('InterfaceItem'),

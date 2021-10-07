@@ -2,16 +2,16 @@ Ext.define('App.view.core.rpa.CustomRPAEditor', {
     extend: 'Ext.window.Window',
     alias: 'widget.customrpaeditor',
     title: l10n.ns('core', 'compositePanelTitles').value('RPATitle'),
-    width: 500,
-    height: 300,
-    minWidth: 300,
-    minHeight: 220,
+    width: 350,
+    height: 350,
+    minWidth: 350,
+    minHeight: 350,
     layout: 'fit',
     plain: true,
     modal: true,
     ghost: false,
     closable: false,
-    
+
     items: [{
         xtype: 'panel',
         layout: 'fit',

@@ -76,6 +76,11 @@ Ext.define('App.view.core.rpa.RPAEditor', {
                         to: 'HandlerName'
                     }]
                 }, {
+                    xtype: 'label',
+                    fullscreen: true,
+                    html: '<a>Test</a>',
+                    id: "templateLink"
+                }, {
                     xtype: 'fieldset',
                     title: 'Parametrs',
                     fullscreen: true,
