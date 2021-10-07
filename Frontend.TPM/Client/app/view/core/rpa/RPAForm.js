@@ -1,5 +1,5 @@
 Ext.define('App.view.core.rpa.RPAForm', {
-	extend: 'Ext.panel.Panel',
+	extend: 'Ext.form.Panel',
 	alias: 'widget.rpaform',	
 	
 	items: [{
