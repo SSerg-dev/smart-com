@@ -68,6 +68,7 @@
 	}, {
 		text: l10n.ns('core', 'mainmenu').value('RPAItem'),
 		tooltip: l10n.ns('core','mainmenu').value('RPAItem'),
+		scale: 'medium',
 		glyph: 0xf494,
 		roles: ['Administrator', 
 			'SupportAdministrator',
