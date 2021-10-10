@@ -39,34 +39,34 @@ namespace Module.Frontend.TPM.Controllers
             this.authorizationManager = authorizationManager;
         }
 
-        protected IQueryable<CalendarСompetitorCompany> GetConstraintedQuery()
+        protected IQueryable<CalendarCompetitorCompany> GetConstraintedQuery()
         {
             var user = authorizationManager.GetCurrentUser();
             var role = authorizationManager.GetCurrentRoleName();
             IList<Constraint> constraints = user.Id.HasValue ? Context.Constraints
                 .Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
                 .ToList() : new List<Constraint>();
-            var query = Context.Set<CalendarСompetitorCompany>().Where(c => !c.Disabled);
+            var query = Context.Set<CalendarCompetitorCompany>().Where(c => !c.Disabled);
 
             return query;
         }
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
-        public SingleResult<CalendarСompetitorCompany> GetCalendarСompetitorCompany([FromODataUri] Guid key) {
+        public SingleResult<CalendarCompetitorCompany> GetCalendarCompetitorCompany([FromODataUri] Guid key) {
             return SingleResult.Create(GetConstraintedQuery());
         }
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
-        public IQueryable<CalendarСompetitorCompany> GetCalendarCompetitorCompanies() {
+        public IQueryable<CalendarCompetitorCompany> GetCalendarCompetitorCompanies() {
             return GetConstraintedQuery();
         }
 
 
         [ClaimsAuthorize]
         [HttpPost]
-        public IQueryable<CalendarСompetitorCompany> GetFilteredData(ODataQueryOptions<CalendarСompetitorCompany> options)
+        public IQueryable<CalendarCompetitorCompany> GetFilteredData(ODataQueryOptions<CalendarCompetitorCompany> options)
         {
             var query = GetConstraintedQuery();
 
@@ -76,23 +76,23 @@ namespace Module.Frontend.TPM.Controllers
                 HandleNullPropagation = HandleNullPropagationOption.False
             };
 
-            var optionsPost = new ODataQueryOptionsPost<CalendarСompetitorCompany>(options.Context, Request, HttpContext.Current.Request);
-            return optionsPost.ApplyTo(query, querySettings) as IQueryable<CalendarСompetitorCompany>;
+            var optionsPost = new ODataQueryOptionsPost<CalendarCompetitorCompany>(options.Context, Request, HttpContext.Current.Request);
+            return optionsPost.ApplyTo(query, querySettings) as IQueryable<CalendarCompetitorCompany>;
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Put([FromODataUri] Guid key, Delta<CalendarСompetitorCompany> patch) =>
+        public IHttpActionResult Put([FromODataUri] Guid key, Delta<CalendarCompetitorCompany> patch) =>
             UpdateEntity(key, patch);
 
         [ClaimsAuthorize]
         [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] Guid key, Delta<CalendarСompetitorCompany> patch) =>
+        public IHttpActionResult Patch([FromODataUri] Guid key, Delta<CalendarCompetitorCompany> patch) =>
             UpdateEntity(key, patch);
 
         [ClaimsAuthorize]
         public IHttpActionResult Delete([FromODataUri] Guid key)
         {
-            var model = Context.Set<CalendarСompetitorCompany>().Find(key);
+            var model = Context.Set<CalendarCompetitorCompany>().Find(key);
             if (model == null)
             {
                 return NotFound();
@@ -121,7 +121,7 @@ namespace Module.Frontend.TPM.Controllers
             };
 
         [ClaimsAuthorize]
-        public IHttpActionResult ExportXLSX(ODataQueryOptions<CalendarСompetitorCompany> options)
+        public IHttpActionResult ExportXLSX(ODataQueryOptions<CalendarCompetitorCompany> options)
         {
             IQueryable results = options.ApplyTo(GetConstraintedQuery().Where(x => !x.Disabled));
             UserInfo user = authorizationManager.GetCurrentUser();
@@ -135,7 +135,7 @@ namespace Module.Frontend.TPM.Controllers
 
                 HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("TModel", typeof(CalendarСompetitorCompany), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("TModel", typeof(CalendarCompetitorCompany), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(CalendarCompetitorCompaniesController), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(CalendarCompetitorCompaniesController.GetExportSettings), data, visible: false, throwIfNotExists: false);
@@ -145,7 +145,7 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     Id = Guid.NewGuid(),
                     ConfigurationName = "PROCESSING",
-                    Description = $"Export {nameof(CalendarСompetitorCompany)} dictionary",
+                    Description = $"Export {nameof(CalendarCompetitorCompany)} dictionary",
                     Name = "Module.Host.TPM.Handlers." + handlerName,
                     ExecutionPeriod = null,
                     CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
@@ -198,13 +198,13 @@ namespace Module.Frontend.TPM.Controllers
                 IEnumerable<Column> columns = GetExportSettings();
                 XLSXExporter exporter = new XLSXExporter(columns);
                 string exportDir = AppSettingsManager.GetSetting("EXPORT_DIRECTORY", "~/ExportFiles");
-                string filename = string.Format("{0}Template.xlsx", "CalendarСompetitorCompany");
+                string filename = string.Format("{0}Template.xlsx", "CalendarCompetitorCompany");
                 if (!Directory.Exists(exportDir))
                 {
                     Directory.CreateDirectory(exportDir);
                 }
                 string filePath = Path.Combine(exportDir, filename);
-                exporter.Export(Enumerable.Empty<CalendarСompetitorCompany>(), filePath);
+                exporter.Export(Enumerable.Empty<CalendarCompetitorCompany>(), filePath);
                 string file = Path.GetFileName(filePath);
                 return Content(HttpStatusCode.OK, file);
             }
@@ -239,7 +239,7 @@ namespace Module.Frontend.TPM.Controllers
                 HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportCalendarCompetitorCompany), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportCalendarCompetitorCompany).Name, data, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(CalendarСompetitorCompany), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(CalendarCompetitorCompany), data, visible: false, throwIfNotExists: false);
 
                 LoopHandler handler = new LoopHandler()
                 {
@@ -263,9 +263,9 @@ namespace Module.Frontend.TPM.Controllers
             }
         }
 
-        private IHttpActionResult UpdateEntity(Guid key, Delta<CalendarСompetitorCompany> patch)
+        private IHttpActionResult UpdateEntity(Guid key, Delta<CalendarCompetitorCompany> patch)
         {
-            var model = Context.Set<CalendarСompetitorCompany>().Find(key);
+            var model = Context.Set<CalendarCompetitorCompany>().Find(key);
             if (model == null)
             {
                 return NotFound();
@@ -297,6 +297,6 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         private bool EntityExist(Guid key) =>
-            Context.Set<CalendarСompetitorCompany>().Count(e => e.Id == key) > 0;
+            Context.Set<CalendarCompetitorCompany>().Count(e => e.Id == key) > 0;
     }
 }

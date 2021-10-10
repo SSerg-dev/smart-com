@@ -7,7 +7,7 @@ namespace Module.Persist.TPM.Model.Import
     public class ImportCalendarCompetitorCompany : BaseImportEntity
     {
         [ImportCSVColumn(ColumnNumber = 0)]
-        [NavigationPropertyMap(LookupEntityType = typeof(CalendarСompetitor), LookupPropertyName = "Name")]
+        [NavigationPropertyMap(LookupEntityType = typeof(CalendarCompetitor), LookupPropertyName = "Name")]
         [Display(Name = "Competitor Name")]
         public string CompetitorName { get; set; }
         [ImportCSVColumn(ColumnNumber = 1)]

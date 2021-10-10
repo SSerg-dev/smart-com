@@ -10,7 +10,7 @@ namespace Module.Persist.TPM.Migrations
         {
             var defaultSchema = AppSettingsManager.GetSetting<string>("DefaultSchema", "dbo");
             CreateTable(
-                $"{defaultSchema}.CalendarСompetitor",
+                $"{defaultSchema}.CalendarCompetitor",
                 c => new
                     {
                         Id = c.Guid(nullable: false, identity: true),
@@ -22,34 +22,29 @@ namespace Module.Persist.TPM.Migrations
                 .Index(t => new { t.Disabled, t.Name, t.DeletedDate }, unique: true, name: "Unique_Name");
             
             CreateTable(
-                $"{defaultSchema}.CalendarСompetitorCompany",
+                $"{defaultSchema}.CalendarCompetitorCompany",
                 c => new
                     {
                         Id = c.Guid(nullable: false, identity: true),
                         Disabled = c.Boolean(nullable: false),
                         DeletedDate = c.DateTimeOffset(precision: 7),
-                        CompanyName = c.String(maxLength: 124),
-                        CalendarCompetitorId = c.Guid(nullable: false),
-                        CalendarСompetitor_Id = c.Guid(),
+                        CompanyName = c.String(nullable: false, maxLength: 124),
+                        CalendarCompetitorId = c.Guid(nullable: true),
                     })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey($"{defaultSchema}.CalendarСompetitor", t => t.CalendarСompetitor_Id)
-                .Index(t => new { t.CompanyName, t.Disabled, t.DeletedDate }, unique: true, name: "Unique_CompanyName")
-                .Index(t => t.CalendarCompetitorId, unique: true, name: "Unique_CalndarId")
-                .Index(t => t.CalendarСompetitor_Id);
+                .ForeignKey($"{defaultSchema}.CalendarCompetitor", t => t.CalendarCompetitorId)
+                .Index(t => new { t.CalendarCompetitorId, t.CompanyName, t.Disabled, t.DeletedDate }, unique: true, name: "Unique_CalendarCompetitorCompany");
             
         }
         
         public override void Down()
         {
             var defaultSchema = AppSettingsManager.GetSetting<string>("DefaultSchema", "dbo");
-            DropForeignKey($"{defaultSchema}.CalendarСompetitorCompany", "CalendarСompetitor_Id", $"{defaultSchema}.CalendarСompetitor");
-            DropIndex($"{defaultSchema}.CalendarСompetitorCompany", new[] { "CalendarСompetitor_Id" });
-            DropIndex($"{defaultSchema}.CalendarСompetitorCompany", "Unique_CalndarId");
-            DropIndex($"{defaultSchema}.CalendarСompetitorCompany", "Unique_CompanyName");
-            DropIndex($"{defaultSchema}.CalendarСompetitor", "Unique_Name");
-            DropTable($"{defaultSchema}.CalendarСompetitorCompany");
-            DropTable($"{defaultSchema}.CalendarСompetitor");
+            DropForeignKey($"{defaultSchema}.CalendarCompetitorCompany", "CalendarCompetitorId", $"{defaultSchema}.CalendarCompetitor");
+            DropIndex($"{defaultSchema}.CalendarCompetitorCompany", "Unique_CalendarCompetitorCompany");
+            DropIndex($"{defaultSchema}.CalendarCompetitor", "Unique_Name");
+            DropTable($"{defaultSchema}.CalendarCompetitorCompany");
+            DropTable($"{defaultSchema}.CalendarCompetitor");
         }
     }
 }

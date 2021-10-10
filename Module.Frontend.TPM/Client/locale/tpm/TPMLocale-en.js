@@ -1172,7 +1172,7 @@
         'DemandGroup': 'Demand group',
         'DMDGroup': 'DMD Group',
         'Week': 'Week',
-        'PlanProductIncrementalQTY': 'Plan Product Inсremental QTY',
+        'PlanProductIncrementalQTY': 'Plan Product Incremental QTY',
         'PromoDifference': 'Promo Difference',
         'Actuals': 'Actuals',
         'OpenOrders': 'Open Orders',
@@ -2701,5 +2701,7 @@
     'CalendarCompetitorCompany': {
         'CompanyName': 'Company',
         'CompetitorName': 'Competitor'
-    }
+    },
+    'HistoricalCalendarCompetitorCompany': ['.tpm.CalendarCompetitorCompany', '.core.BaseHistoryEntity'],
+    'DeletedCalendarCompetitorCompany': ['.tpm.CalendarCompetitorCompany', '.core.BaseDeletedEntity'],
 });

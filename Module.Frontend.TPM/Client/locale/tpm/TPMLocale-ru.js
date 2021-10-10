@@ -155,6 +155,7 @@
         'NonPromoLinked': "Non-Promo Linked",
         'PriceList': 'Price list',
         'CoefficientSI2SO': 'Coefficient SI->SO',
+        'CalendarCompetitorCompany': 'Calendar Competitor Company'
     },
 
     'text': {
@@ -2103,4 +2104,9 @@
     },
     'HistoricalCoefficientSI2SO': ['.tpm.CoefficientSI2SO', '.core.BaseHistoryEntity'],
     'DeletedCoefficientSI2SO': ['.tpm.CoefficientSI2SO', '.core.BaseDeletedEntity'],
+
+    'CalendarCompetitorCompany': {
+        'CompanyName': 'Company',
+        'CompetitorName': 'Competitor'
+    }
 });

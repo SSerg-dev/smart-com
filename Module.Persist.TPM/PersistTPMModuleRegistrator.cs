@@ -131,8 +131,8 @@ namespace Module.Persist.TPM {
             modelBuilder.Entity<Promo>().Ignore(n => n.PromoBasicProducts);
 
             // Calendar Competitor Entities
-            modelBuilder.Entity<CalendarСompetitor>();
-            modelBuilder.Entity<CalendarСompetitorCompany>();
+            modelBuilder.Entity<CalendarCompetitor>();
+            modelBuilder.Entity<CalendarCompetitorCompany>();
         }
 
         
@@ -964,8 +964,16 @@ namespace Module.Persist.TPM {
             builder.Entity<HistoricalClientDashboardView>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalClientDashboardView>("HistoricalClientDashboards");
 
             // Calendar Competitors Entities
-            builder.EntitySet<CalendarСompetitorCompany>("CalendarCompetitorCompanies");
-            builder.Entity<CalendarСompetitorCompany>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<CalendarСompetitorCompany>("CalendarCompetitorCompanies");
+            builder.EntitySet<CalendarCompetitorCompany>("CalendarCompetitorCompanies");
+            builder.EntitySet<CalendarCompetitorCompany>("DeletedCalendarCompetitorCompanies");
+            builder.EntitySet<HistoricalCalendarCompetitorCompany>("HistoricalCalendarCompetitorCompanies");
+            builder.Entity<CalendarCompetitorCompany>().Collection.Action("ExportXLSX");
+            builder.EntitySet<CalendarCompetitorCompany>("CalendarCompetitorCompanies").HasRequiredBinding(e => e.CalendarCompetitor, "CalendarCompetitors");
+            builder.EntitySet<CalendarCompetitorCompany>("DeletedCalendarCompetitorCompanies").HasRequiredBinding(e => e.CalendarCompetitor, "CalendarCompetitors");
+            builder.Entity<CalendarCompetitorCompany>().Collection.Action("FullImportXLSX");
+            builder.Entity<CalendarCompetitorCompany>().Collection.Action("DownloadTemplateXLSX");
+            builder.Entity<CalendarCompetitorCompany>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<CalendarCompetitorCompany>("CalendarCompetitorCompanies");
+            builder.Entity<HistoricalCalendarCompetitorCompany>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalCalendarCompetitorCompany>("HistoricalCalendarCompetitorCompanies");
         }
 
         

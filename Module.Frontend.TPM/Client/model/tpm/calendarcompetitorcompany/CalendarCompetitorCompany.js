@@ -4,17 +4,7 @@
     breezeEntityType: 'CalendarCompetitorCompany',
     fields: [
         { name: 'Id', hidden: true },
-        { name: 'CompanyName', type: 'string', defaultFilterConfig: { valueField: 'CompanyName' }, hidden: false, isDefault: true },
-        { name: 'CalendarCompetitorId', hidden: true, isDefault: true },
-        {
-            name: 'CompetitorName',
-            type: 'string',
-            mapping: 'CalendarСompetitor.Name',
-            defaultFilterConfig: { valueField: 'Name' },
-            breezeEntityType: 'CalendarСompetitor',
-            hidden: false,
-            isDefault: true
-        }
+        { name: 'CompanyName', type: 'string', hidden: false, isDefault: true }
     ],
     proxy: {
         type: 'breeze',

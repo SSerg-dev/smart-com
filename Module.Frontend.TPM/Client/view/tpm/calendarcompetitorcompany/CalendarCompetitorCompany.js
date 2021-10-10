@@ -3,10 +3,6 @@
     alias: 'widget.calendarcompetitorcompany',
     title: l10n.ns('tpm', 'compositePanelTitles').value('CalendarCompetitorCompany'),
 
-    dockedItems: [{
-        xtype: 'custombigtoolbar',
-        dock: 'right'
-    }],
     customHeaderItems: [
         ResourceMgr.getAdditionalMenu('core').base = {
             glyph: 0xf068,
@@ -54,6 +50,70 @@
         }
     ],
 
+    dockedItems: [{
+        xtype: 'custombigtoolbar',
+        dock: 'right',
+
+        items: [{
+            xtype: 'widthexpandbutton',
+            ui: 'fill-gray-button-toolbar',
+            text: l10n.ns('core', 'selectablePanelButtons').value('toolbarCollapse'),
+            glyph: 0xf13d,
+            glyph1: 0xf13e,
+            target: function () {
+                return this.up('toolbar');
+            },
+        }, {
+            itemId: 'createbutton',
+            action: 'Post',
+            glyph: 0xf415,
+            text: l10n.ns('core', 'crud').value('createButtonText'),
+            tooltip: l10n.ns('core', 'crud').value('createButtonText')
+        }, {
+            itemId: 'updatebutton',
+            action: 'Patch',
+            glyph: 0xf64f,
+            text: l10n.ns('core', 'crud').value('updateButtonText'),
+            tooltip: l10n.ns('core', 'crud').value('updateButtonText')
+        }, {
+            itemId: 'deletebutton',
+            action: 'Delete',
+            glyph: 0xf5e8,
+            text: l10n.ns('core', 'crud').value('deleteButtonText'),
+            tooltip: l10n.ns('core', 'crud').value('deleteButtonText')
+        }, {
+            itemId: 'historybutton',
+            resource: 'Historical{0}',
+            action: 'Get{0}',
+            glyph: 0xf2da,
+            text: l10n.ns('core', 'crud').value('historyButtonText'),
+            tooltip: l10n.ns('core', 'crud').value('historyButtonText')
+        }, '-', {
+            itemId: 'extfilterbutton',
+            glyph: 0xf349,
+            text: l10n.ns('core', 'toptoolbar').value('filterButtonText'),
+            tooltip: l10n.ns('core', 'toptoolbar').value('filterButtonText')
+        }, {
+            itemId: 'deletedbutton',
+            resource: 'Deleted{0}',
+            action: 'Get{0}',
+            glyph: 0xf258,
+            text: l10n.ns('core', 'toptoolbar').value('deletedButtonText'),
+            tooltip: l10n.ns('core', 'toptoolbar').value('deletedButtonText')
+        }, '-', '->', '-', {
+            itemId: 'extfilterclearbutton',
+            ui: 'blue-button-toolbar',
+            disabled: true,
+            glyph: 0xf232,
+            text: l10n.ns('core', 'filter').value('filterEmptyStatus'),
+            tooltip: l10n.ns('core', 'filter').value('filterEmptyStatus'),
+            overCls: '',
+            style: {
+                'cursor': 'default'
+            }
+        }]
+    }],
+
     items: [{
         xtype: 'directorygrid',
         itemId: 'datatable',
@@ -83,13 +143,29 @@
                 flex: 1,
                 minWidth: 100
             },
-            items: [{
-                text: l10n.ns('tpm', 'CalendarCompetitorCompany').value('CompanyName'),
-                dataIndex: 'CompanyName'
-            }, {
-                text: l10n.ns('tpm', 'CalendarCompetitorCompany').value('CompetitorName'),
-                dataIndex: 'CompetitorName'
-            }]
+            items: [
+                {
+                    text: l10n.ns('tpm', 'CalendarCompetitorCompany').value('CompanyName'),
+                    dataIndex: 'CompanyName'
+                }]
         }
+    }, {
+        xtype: 'editabledetailform',
+        itemId: 'detailform',
+        model: 'App.model.tpm.calendarcompetitorcompany.CalendarCompetitorCompany',
+        items: [{
+            xtype: 'singlelinedisplayfield',
+            name: 'CompanyName',
+            fieldLabel: l10n.ns('tpm', 'CalendarCompetitorCompany').value('CompanyName'),
+            minValue: 0,
+            maxValue: 100,
+            readOnly: true,
+            allowBlank: false,
+            listeners: {
+                change: function (newValue, oldValue) {
+                }
+            }
+        }]
+
     }]
 });
