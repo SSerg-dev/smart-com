@@ -985,6 +985,7 @@ namespace Module.Persist.TPM {
             builder.EntitySet<CalendarCompetitorBrandTechColor>("DeletedCalendarCompetitorBrandTechColors").HasOptionalBinding(e => e.CalendarCompetitorCompany, "CalendarCompetitorCompanies");
             builder.Entity<CalendarCompetitorBrandTechColor>().Collection.Action("GetSuitable");
             builder.Entity<CalendarCompetitorBrandTechColor>().Collection.Action("FullImportXLSX");
+            builder.Entity<CalendarCompetitorBrandTechColor>().Collection.Action("DownloadTemplateXLSX");
             builder.Entity<CalendarCompetitorBrandTechColor>().Collection.Action("ExportXLSX");
             builder.Entity<CalendarCompetitorBrandTechColor>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<CalendarCompetitorBrandTechColor>("CalendarCompetitorBrandTechColors");
             builder.Entity<HistoricalCalendarCompetitorBrandTechColor>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalCalendarCompetitorBrandTechColor>("HistoricalCalendarCompetitorBrandTechColors");

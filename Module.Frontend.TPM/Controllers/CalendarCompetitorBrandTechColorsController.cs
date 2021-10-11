@@ -311,18 +311,18 @@ namespace Module.Frontend.TPM.Controllers
                 HandlerDataHelper.SaveIncomingArgument("File", file, data, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportRATIShopper), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportRATIShopper).Name, data, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(ImportRATIShopper), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportCalendarCompetitorBrandTechColor), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportCalendarCompetitorBrandTechColor).Name, data, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(ImportCalendarCompetitorBrandTechColor), data, visible: false, throwIfNotExists: false);
 
                 LoopHandler handler = new LoopHandler()
                 {
                     Id = Guid.NewGuid(),
                     ConfigurationName = "PROCESSING",
-                    Description = "Загрузка импорта из файла " + typeof(ImportRATIShopper).Name,
+                    Description = "Загрузка импорта из файла " + typeof(ImportCalendarCompetitorBrandTechColor).Name,
                     Name = "Module.Host.TPM.Handlers." + importHandler,
                     ExecutionPeriod = null,
-                    RunGroup = typeof(ImportRATIShopper).Name,
+                    RunGroup = typeof(ImportCalendarCompetitorBrandTechColor).Name,
                     CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
                     LastExecutionDate = null,
                     NextExecutionDate = null,

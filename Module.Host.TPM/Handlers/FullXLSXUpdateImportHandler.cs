@@ -65,6 +65,48 @@ namespace Module.Host.TPM.Handlers
         }
     }
 
+    class FullXLSXCalendarCompetitorBrandTechColorUpdateImportHandler : FullXLSXImportHandler
+    {
+        protected override void InitializeParameters(HandlerData handlerData, ExecuteData data)
+        {
+            var importDestination = HandlerDataHelper.GetIncomingArgument<string>("ImportDestination", handlerData);
+            data.SetValue("ImportDestination", importDestination);
+        }
+
+        protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
+        {
+            return new FullXLSXCalendarCompetitorBrandTechColorUpdateImportAction(settings);
+        }
+    }
+
+    class FullXLSXCalendarCompetitorCompanyUpdateImportHandler : FullXLSXImportHandler
+    {
+        protected override void InitializeParameters(HandlerData handlerData, ExecuteData data)
+        {
+            var importDestination = HandlerDataHelper.GetIncomingArgument<string>("ImportDestination", handlerData);
+            data.SetValue("ImportDestination", importDestination);
+        }
+
+        protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
+        {
+            return new FullXLSXCalendarCompetitorCompanyUpdateImportAction(settings);
+        }
+    }
+
+    class FullXLSXCalendarCompetitorPromoUpdateImportHandler : FullXLSXImportHandler
+    {
+        protected override void InitializeParameters(HandlerData handlerData, ExecuteData data)
+        {
+            var importDestination = HandlerDataHelper.GetIncomingArgument<string>("ImportDestination", handlerData);
+            data.SetValue("ImportDestination", importDestination);
+        }
+
+        protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
+        {
+            return new FullXLSXCalendarCompetitorPromoUpdateImportAction(settings);
+        }
+    }
+
     class FullXLSXTradeInvestmentUpdateImportHandler : FullXLSXImportHandler
     {
         protected override void InitializeParameters(HandlerData handlerData, ExecuteData data)

@@ -2703,6 +2703,7 @@
     <Compile Include="Model\Import\ImportCalendarCompetitorCompany.cs" />
     <Compile Include="Model\Import\ImportClientDashboard.cs" />
     <Compile Include="Model\Import\ImportCoefficientSI2SO.cs" />
+    <Compile Include="Model\Import\ImportCalendarCompetitorBrandTechColor.cs" />
     <Compile Include="Model\Import\ImportPLUDictionary.cs" />
     <Compile Include="Model\Import\ImportPromoDMP.cs" />
     <Compile Include="Model\Import\ImportNonPromoDMP.cs" />

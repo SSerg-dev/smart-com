@@ -15,7 +15,7 @@ namespace Module.Persist.TPM.Model.TPM
         public DateTimeOffset? DeletedDate { get; set; }
 
         [Index("Unique_CalendarCompetitorBrandTechColor", 0, IsUnique = true)]
-        public Guid CalendarCompetitorId { get; set; }
+        public Guid? CalendarCompetitorId { get; set; }
         [Index("Unique_CalendarCompetitorBrandTechColor", 1, IsUnique = true)]
         [Required]
         public Guid CalendarCompetitorCompanyId { get; set; }

@@ -14,8 +14,8 @@
         xtype: 'editorform',
         items: [{
             xtype: 'circlecolorfield',
-            name: 'SystemName',
-            fieldLabel: l10n.ns('tpm', 'Color').value('Color'),
+            name: 'Color',
+            fieldLabel: l10n.ns('tpm', 'CalendarCompetitorBrandTechColor').value('Color'),
         }, {
             xtype: 'searchfield',
             fieldLabel: l10n.ns('tpm', 'CalendarCompetitorBrandTechColor').value('CompanyName'),
