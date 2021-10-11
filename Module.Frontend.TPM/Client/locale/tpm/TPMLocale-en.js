@@ -181,7 +181,8 @@
         'PriceList': 'Price list',
         'CoefficientSI2SO': 'Coefficient SI->SO',
         'ApproveClosePromoWindow': 'Confirm closing',
-        'CalendarCompetitorCompany': 'Calendar Competitor Company'
+        'CalendarCompetitorCompany': 'Calendar Competitor Company',
+        'CalendarCompetitorBrandTechColor': 'Calendar Competitor Brand Tech Color'
     },
 
     'text': {
@@ -2704,4 +2705,12 @@
     },
     'HistoricalCalendarCompetitorCompany': ['.tpm.CalendarCompetitorCompany', '.core.BaseHistoryEntity'],
     'DeletedCalendarCompetitorCompany': ['.tpm.CalendarCompetitorCompany', '.core.BaseDeletedEntity'],
+
+    'CalendarCompetitorBrandTechColor': {
+        'BrandTech': 'BrandTech',
+        'Color': 'Color',
+        'CompanyName': 'Company'
+    },
+    'HistoricalCalendarCompetitorBrandTechColor': ['.tpm.CalendarCompetitorBrandTechColor', '.core.BaseHistoryEntity'],
+    'DeletedCalendarCompetitorBrandTechColor': ['.tpm.CalendarCompetitorBrandTechColor', '.core.BaseDeletedEntity'],
 });

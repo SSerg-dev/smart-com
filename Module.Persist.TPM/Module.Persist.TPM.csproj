@@ -2576,6 +2576,10 @@
     <Compile Include="Migrations\202109171241305_Add_CalendarCompetitor_Tables.Designer.cs">
       <DependentUpon>202109171241305_Add_CalendarCompetitor_Tables.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202110110019334_Add_Calendar_BrandTech_Color_Table.cs" />
+    <Compile Include="Migrations\202110110019334_Add_Calendar_BrandTech_Color_Table.Designer.cs">
+      <DependentUpon>202110110019334_Add_Calendar_BrandTech_Color_Table.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\2021\202106300726289_202106301025001_Drop_Client.cs" />
     <Compile Include="Migrations\2021\202106300726289_202106301025001_Drop_Client.Designer.cs">
       <DependentUpon>202106300726289_202106301025001_Drop_Client.cs</DependentUpon>
@@ -2637,6 +2641,7 @@
     <Compile Include="Model\History\HistoricalActualCOGS.cs" />
     <Compile Include="Model\History\HistoricalBTL.cs" />
     <Compile Include="Model\History\HistoricalBTLPromo.cs" />
+    <Compile Include="Model\History\HistoricalCalendarCompetitorBrandTechColor.cs" />
     <Compile Include="Model\History\HistoricalClientDashboardView.cs" />
     <Compile Include="Model\History\HistoricalClientTreeBrandTech.cs" />
     <Compile Include="Model\History\HistoricalCoefficientSI2SO.cs" />
@@ -2813,6 +2818,7 @@
     <Compile Include="Model\TPM\PromoSupport.cs" />
     <Compile Include="Model\TPM\PromoSupportPromo.cs" />
     <Compile Include="Model\DTO\PromoView.cs" />
+    <Compile Include="Model\TPM\CalendarСompetitorBrandTechColor.cs" />
     <Compile Include="Model\TPM\RATIShopper.cs" />
     <Compile Include="Model\TPM\RejectReason.cs" />
     <Compile Include="Model\TPM\PromoStatus.cs" />
@@ -5002,6 +5008,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202109171241305_Add_CalendarCompetitor_Tables.resx">
       <DependentUpon>202109171241305_Add_CalendarCompetitor_Tables.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202110110019334_Add_Calendar_BrandTech_Color_Table.resx">
+      <DependentUpon>202110110019334_Add_Calendar_BrandTech_Color_Table.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\2021\202106300726289_202106301025001_Drop_Client.resx">
       <DependentUpon>202106300726289_202106301025001_Drop_Client.cs</DependentUpon>

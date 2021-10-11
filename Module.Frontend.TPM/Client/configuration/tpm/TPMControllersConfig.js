@@ -15,6 +15,10 @@
     'tpm.calendarcompetitorcompany.DeletedCalendarCompetitorCompany',
     'tpm.calendarcompetitorcompany.HistoricalCalendarCompetitorCompany',
 
+    'tpm.calendarcompetitorbrandtechcolor.CalendarCompetitorBrandTechColor',
+    'tpm.calendarcompetitorbrandtechcolor.DeletedCalendarCompetitorBrandTechColor',
+    'tpm.calendarcompetitorbrandtechcolor.HistoricalCalendarCompetitorBrandTechColor',
+
     'tpm.category.Category',
     'tpm.category.DeletedCategory',
     'tpm.category.HistoricalCategory',

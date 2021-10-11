@@ -57,7 +57,7 @@
             tooltip: l10n.ns('tpm', 'mainmenu').value('PromoCompetitorCompanyColors'),
             glyph: 0xf1b3,
             roles: ['Administrator', 'SupportAdministrator'],
-            widget: null,
+            widget: 'calendarcompetitorbrandtechcolor',
         }],
     }, {
         text: l10n.ns('tpm', 'mainmenu').value('PromoSupport'),

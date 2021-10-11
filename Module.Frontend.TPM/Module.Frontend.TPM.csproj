@@ -258,6 +258,9 @@
     <Content Include="Client\controller\tpm\calendarcompetitorcompany\CalendarCompetitorCompany.js" />
     <Content Include="Client\controller\tpm\calendarcompetitorcompany\DeletedCalendarCompetitorCompany.js" />
     <Content Include="Client\controller\tpm\calendarcompetitorcompany\HistoricalCalendarCompetitorCompany.js" />
+    <Content Include="Client\controller\tpm\calendarcompetitorbrandtechcolor\CalendarCompetitorBrandTechColor.js" />
+    <Content Include="Client\controller\tpm\calendarcompetitorbrandtechcolor\DeletedCalendarCompetitorBrandTechColor.js" />
+    <Content Include="Client\controller\tpm\calendarcompetitorbrandtechcolor\HistoricalCalendarCompetitorBrandTechColor.js" />
     <Content Include="Client\controller\tpm\pludictionary\HistoricalPLUDictionary.js" />
     <Content Include="Client\controller\tpm\pludictionary\PLUDictionary.js" />
     <Content Include="Client\controller\tpm\ratishopper\RATIShopper.js" />
@@ -266,9 +269,12 @@
     <Content Include="Client\controller\tpm\clienttreebrandtech\HistoricalClientTreeBrandTech.js" />
     <Content Include="Client\controller\tpm\rollingvolume\RollingVolume.js" />
     <Content Include="Client\model\tpm\assortmentmatrix2plu\AssortmentMatrix2Plu.js" />
+    <Content Include="Client\model\tpm\calendarcompetitorbrandtechcolor\CalendarCompetitorBrandTechColor.js" />
+    <Content Include="Client\model\tpm\calendarcompetitorbrandtechcolor\DeletedCalendarCompetitorBrandTechColor.js" />
+    <Content Include="Client\model\tpm\calendarcompetitorbrandtechcolor\HistoricalCalendarCompetitorBrandTechColor.js" />
     <Content Include="Client\model\tpm\calendarcompetitorcompany\CalendarCompetitorCompany.js" />
-    <Content Include="Client\model\tpm\calendarcompetitorcompany\DeletedTechnology.js" />
-    <Content Include="Client\model\tpm\calendarcompetitorcompany\HistoricalTechnology.js" />
+    <Content Include="Client\model\tpm\calendarcompetitorcompany\DeletedCalendarCompetitorCompany.js" />
+    <Content Include="Client\model\tpm\calendarcompetitorcompany\HistoricalCalendarCompetitorCompany.js" />
     <Content Include="Client\model\tpm\pludictionary\HistoricalPLUDictionary.js" />
     <Content Include="Client\model\tpm\pludictionary\PLUDictionary.js" />
     <Content Include="Client\model\tpm\promoproduct2plu\PromoProduct2Plu.js" />
@@ -289,6 +295,12 @@
     <Content Include="Client\view\tpm\calendarcompetitorcompany\HistoricalCalendarCompetitorCompany.js" />
     <Content Include="Client\view\tpm\calendarcompetitorcompany\HistoricalCalendarCompetitorCompanyDetail.js" />
     <Content Include="Client\view\tpm\calendarcompetitorcompany\CalendarСompetitorCompanyEditor.js" />
+    <Content Include="Client\view\tpm\calendarcompetitorbrandtechcolor\CalendarCompetitorBrandTechColor.js" />
+    <Content Include="Client\view\tpm\calendarcompetitorbrandtechcolor\CalendarCompetitorBrandTechColorEditor.js" />
+    <Content Include="Client\view\tpm\calendarcompetitorbrandtechcolor\DeletedCalendarCompetitorBrandTechColor.js" />
+    <Content Include="Client\view\tpm\calendarcompetitorbrandtechcolor\DeletedCalendarCompetitorBrandTechColorDetail.js" />
+    <Content Include="Client\view\tpm\calendarcompetitorbrandtechcolor\HistoricalCalendarCompetitorBrandTechColor.js" />
+    <Content Include="Client\view\tpm\calendarcompetitorbrandtechcolor\HistoricalCalendarCompetitorBrandTechColorDetail.js" />
     <Content Include="Client\view\tpm\pludictionary\HistoricalPLUDictionary.js" />
     <Content Include="Client\view\tpm\pludictionary\HistoricalPLUDictionaryDetail.js" />
     <Content Include="Client\view\tpm\pludictionary\PLUDictionary.js" />
@@ -331,6 +343,7 @@
     <Compile Include="Controllers\PLUDictionaryController.cs" />
     <Compile Include="Controllers\PreviousDayIncrementalsController.cs" />
     <Compile Include="Controllers\PriceListsController.cs" />
+    <Compile Include="Controllers\CalendarCompetitorBrandTechColorsController.cs" />
     <Compile Include="Controllers\RATIShoppersController.cs" />
     <Compile Include="Controllers\RollingVolumesController.cs" />
     <Compile Include="Util\AzureBlobHelperLocal.cs" />

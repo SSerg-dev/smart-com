@@ -133,6 +133,7 @@ namespace Module.Persist.TPM {
             // Calendar Competitor Entities
             modelBuilder.Entity<CalendarCompetitor>();
             modelBuilder.Entity<CalendarCompetitorCompany>();
+            modelBuilder.Entity<CalendarCompetitorBrandTechColor>();
         }
 
         
@@ -974,6 +975,19 @@ namespace Module.Persist.TPM {
             builder.Entity<CalendarCompetitorCompany>().Collection.Action("DownloadTemplateXLSX");
             builder.Entity<CalendarCompetitorCompany>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<CalendarCompetitorCompany>("CalendarCompetitorCompanies");
             builder.Entity<HistoricalCalendarCompetitorCompany>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalCalendarCompetitorCompany>("HistoricalCalendarCompetitorCompanies");
+
+            builder.EntitySet<CalendarCompetitorBrandTechColor>("CalendarCompetitorBrandTechColors");
+            builder.EntitySet<CalendarCompetitorBrandTechColor>("DeletedCalendarCompetitorBrandTechColors");
+            builder.EntitySet<HistoricalCalendarCompetitorBrandTechColor>("HistoricalCalendarCompetitorBrandTechColors");
+            builder.EntitySet<CalendarCompetitorBrandTechColor>("CalendarCompetitorBrandTechColors").HasOptionalBinding(e => e.CalendarCompetitor, "CalendarCompetitors");
+            builder.EntitySet<CalendarCompetitorBrandTechColor>("DeletedCalendarCompetitorBrandTechColors").HasOptionalBinding(e => e.CalendarCompetitor, "CalendarCompetitors");
+            builder.EntitySet<CalendarCompetitorBrandTechColor>("CalendarCompetitorBrandTechColors").HasOptionalBinding(e => e.CalendarCompetitorCompany, "CalendarCompetitorCompanies");
+            builder.EntitySet<CalendarCompetitorBrandTechColor>("DeletedCalendarCompetitorBrandTechColors").HasOptionalBinding(e => e.CalendarCompetitorCompany, "CalendarCompetitorCompanies");
+            builder.Entity<CalendarCompetitorBrandTechColor>().Collection.Action("GetSuitable");
+            builder.Entity<CalendarCompetitorBrandTechColor>().Collection.Action("FullImportXLSX");
+            builder.Entity<CalendarCompetitorBrandTechColor>().Collection.Action("ExportXLSX");
+            builder.Entity<CalendarCompetitorBrandTechColor>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<CalendarCompetitorBrandTechColor>("CalendarCompetitorBrandTechColors");
+            builder.Entity<HistoricalCalendarCompetitorBrandTechColor>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalCalendarCompetitorBrandTechColor>("HistoricalCalendarCompetitorBrandTechColors");
         }
 
         
