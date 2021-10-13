@@ -57,36 +57,16 @@ Ext.define('App.view.core.rpa.RPAForm', {
 						listeners: {
 							select: function(combo, record){								                            
 								let paramFieldSet = Ext.getCmp('params');
+								let templateLink = Ext.getCmp('templateLink');
+								templateLink.getEl().un('click', testFn);
 								if(paramFieldSet['items']['items'].length>0)
 								{
 									paramFieldSet.removeAll();
 									paramFieldSet.setVisible(false);
 								}
 								if(isJsonValid(record[0].data['Json'])){
-									let templateLink = Ext.getCmp('templateLink');
 									templateLink.setVisible(true);
-									templateLink.getEl().on('click', function(e){
-										e.preventDefault(true);
-										var url = Ext.String.format("odata/{0}/{1}", 'RPAs', 'DownloadTemplateXLSX');
-										Ext.Ajax.request({   
-											method: 'POST',   
-											url: url,
-											params: {handlerId: Ext.JSON.encode(record[0].data['Id'])},
-											success: function (data) {		
-												var filename = JSON.parse(data.responseText).value;																							
-												var href = Ext.String.format('api/File/{0}?{1}={2}', 'ExportDownload', 'filename', filename);
-        										var aLink = document.createElement('a');
-        										aLink.download = filename;
-												aLink.href = href;
-												document.body.appendChild(aLink);
-												aLink.click();
-												document.body.removeChild(aLink)
-											},
-											fail: function (data) {
-												
-											}
-										})
-									});
+									templateLink.getEl().on('click', testFn);
 									const parametrs = JSON.parse(record[0].data['Json'])["parametrs"];
 									if(parametrs && parametrs.length>0) {                           
 											Ext.Array.each(parametrs,function(element,index){
@@ -130,7 +110,7 @@ Ext.define('App.view.core.rpa.RPAForm', {
 					}, {
 						xtype: 'label',
 						glyph: 0xf21d,
-						html: '<a href="#">Import template XLSX</a>',
+						html: '<a>Import template XLSX</a>',
 						id: "templateLink",
 						hidden: true,
 						style: {
@@ -172,4 +152,8 @@ function isJsonValid(str){
 		return false;
 	}
 	return true;
+}
+
+var testFn = function (e) {
+	console.log('TEST');
 }
