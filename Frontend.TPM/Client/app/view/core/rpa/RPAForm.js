@@ -58,7 +58,7 @@ Ext.define('App.view.core.rpa.RPAForm', {
 							select: function(combo, record){								                            
 								let paramFieldSet = Ext.getCmp('params');
 								let templateLink = Ext.getCmp('templateLink');
-								templateLink.getEl().un('click', downloadFn);
+								templateLink.getEl().un('click', downloadFn(record));
 								if(paramFieldSet['items']['items'].length>0)
 								{
 									paramFieldSet.removeAll();
@@ -66,7 +66,7 @@ Ext.define('App.view.core.rpa.RPAForm', {
 								}
 								if(isJsonValid(record[0].data['Json'])){
 									templateLink.setVisible(true);
-									templateLink.getEl().on('click', downloadFn);
+									templateLink.getEl().on('click', downloadFn(record));
 									const parametrs = JSON.parse(record[0].data['Json'])["parametrs"];
 									if(parametrs && parametrs.length>0) {                           
 											Ext.Array.each(parametrs,function(element,index){
@@ -154,7 +154,7 @@ function isJsonValid(str){
 	return true;
 }
 
-var downloadFn = function (e) {
+var downloadFn = function (record) {
 	var url = Ext.String.format("odata/{0}/{1}", 'RPAs', 'DownloadTemplateXLSX');
 		Ext.Ajax.request({   
 			method: 'POST',   
