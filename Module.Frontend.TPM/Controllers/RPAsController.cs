@@ -194,7 +194,7 @@ namespace Module.Frontend.TPM.Controllers
                 var columns = columnHeaders.Select(c => JsonConvert.DeserializeObject<Column>(c.ToString()));
                 XLSXExporter exporter = new XLSXExporter(columns);
                 string exportDir = AppSettingsManager.GetSetting("EXPORT_DIRECTORY", "~/ExportFiles");
-                string filename = string.Format("{0}Template_{1}.xlsx", "RPA",DateTime.UtcNow);
+                string filename = string.Format("{0}Template_{1}.xlsx", "RPA",DateTime.UtcNow.ToString("yyyyddMMHHmmss"));
                 if (!Directory.Exists(exportDir))
                 {
                     Directory.CreateDirectory(exportDir);
