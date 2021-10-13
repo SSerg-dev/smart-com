@@ -60,6 +60,7 @@ Ext.define('App.view.core.rpa.RPAForm', {
 								if(paramFieldSet['items']['items'].length>0)
 								{
 									paramFieldSet.removeAll();
+									paramFieldSet.setVisible(false);
 								}
 								if(isJsonValid(record[0].data['Json'])){
 									let templateLink = Ext.getCmp('templateLink');
@@ -87,7 +88,7 @@ Ext.define('App.view.core.rpa.RPAForm', {
 										})
 									});
 									const parametrs = JSON.parse(record[0].data['Json'])["parametrs"];
-									if(parametrs) {                           
+									if(parametrs && parametrs.length>0) {                           
 											Ext.Array.each(parametrs,function(element,index){
 												let paramField ={
 													xtype: 'textfield',
@@ -144,7 +145,8 @@ Ext.define('App.view.core.rpa.RPAForm', {
 						type: 'vbox',
 						align: 'stretch',
 					},
-					id: "params"
+					id: "params",
+					hidden: true,
 				}, {
 					xtype: 'filefield',
 					name: 'File',

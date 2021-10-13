@@ -10,8 +10,7 @@ Ext.define('App.view.core.toolbar.rpa.RPADirectoryToolbar', {
     layout: {
         type: 'vbox',
         align: 'stretch',
-        pack: 'start',
-        overflowHandler: 'Scroller'
+        pack: 'start'
     },
 
     defaults: {

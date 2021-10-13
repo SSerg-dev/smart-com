@@ -6,8 +6,7 @@ Ext.define('App.controller.core.rpa.RPA', {
         this.listen({
             component: {
                 'rpa[isSearch!=true] directorygrid': {
-                    load: this.onGridStoreLoad,
-                    itemdblclick: this.switchToDetailForm,
+                    load: this.onGridStoreLoad
                 },
                 'rpa directorygrid': {
                     selectionchange: this.onGridSelectionChange,
@@ -17,21 +16,9 @@ Ext.define('App.controller.core.rpa.RPA', {
                 'rpa #datatable': {
                     activate: this.onActivateCard
                 },
-                'rpa #detailform': {
-                    activate: this.onActivateCard
-                },
-                'rpa #detailform #prev': {
-                    click: this.onPrevButtonClick
-                },
-                'rpa #detailform #next': {
-                    click: this.onNextButtonClick
-                },
-                'rpa #detail': {
-                    click: this.onDetailButtonClick
-                },
-                'rpa #table': {
+                /* 'rpa #table': {
                     click: this.onTableButtonClick
-                },
+                }, */
                 'rpa #extfilterbutton': {
                     click: this.onFilterButtonClick
                 },

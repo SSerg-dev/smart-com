@@ -4,9 +4,10 @@ Ext.define('App.view.core.rpa.RPA', {
     title: l10n.ns('core', 'compositePanelTitles').value('RPATitle'),
 
     dockedItems: [{
-        xtype: 'rpadirectorytoolbar',
+        xtype: 'readonlydirectorytoolbar',
         dock: 'right',
-        items:[{
+
+        items: [{
             xtype: 'widthexpandbutton',
             ui: 'fill-gray-button-toolbar',
             text: l10n.ns('core', 'selectablePanelButtons').value('toolbarCollapse'),
@@ -14,7 +15,7 @@ Ext.define('App.view.core.rpa.RPA', {
             glyph1: 0xf13e,
             target: function () {
                 return this.up('toolbar');
-            },
+            }
         }, {
             itemId: 'createbutton',
             action: 'Post',
@@ -72,11 +73,15 @@ Ext.define('App.view.core.rpa.RPA', {
         }]
     }],
 
+    customHeaderItems: [
+        ResourceMgr.getAdditionalMenu('core').base
+    ],
+
     items: [{
         xtype: 'directorygrid',
         itemId: 'datatable',
         editorModel: 'Core.form.EditorDetailWindowModel',
-
+        
         store: {
             type: 'directorystore',
             model: 'App.model.core.rpa.RPA',
@@ -139,7 +144,7 @@ Ext.define('App.view.core.rpa.RPA', {
         itemId: 'detailform',
         model: 'App.model.core.rpa.RPA',
         items: [{
-            xtype: 'textfield',
+            xtype: 'singlelinedisplayfield',
             name: 'HandlerName',
             fieldLabel: l10n.ns('core', 'RPA').value('HandlerName')
         }, {
