@@ -55,18 +55,45 @@ Ext.define('App.view.core.rpa.RPAForm', {
 							 }
 						},
 						listeners: {
-							select: function(combo, record){								                            
+							select: function(combo, record){								                   
 								let paramFieldSet = Ext.getCmp('params');
 								let templateLink = Ext.getCmp('templateLink');
-								templateLink.getEl().un('click', downloadFn(record));
+								templateLink.getEl().clearListeners();
 								if(paramFieldSet['items']['items'].length>0)
 								{
 									paramFieldSet.removeAll();
 									paramFieldSet.setVisible(false);
 								}
 								if(isJsonValid(record[0].data['Json'])){
+									var panel = this.up('customrpaeditor');
+									var myMask = new Ext.LoadMask({
+										msg    : 'Downloading...',
+										target : panel
+									});
 									templateLink.setVisible(true);
-									templateLink.getEl().on('click', downloadFn(record));
+									templateLink.getEl().addListener('click', function() {
+									myMask.show();
+									var url = Ext.String.format("odata/{0}/{1}", 'RPAs', 'DownloadTemplateXLSX');
+									Ext.Ajax.request({   
+											method: 'POST',   
+											url: url,
+											params: {handlerId: Ext.JSON.encode(record[0].data['Id'])},
+											success: function (data) {		
+												var filename = JSON.parse(data.responseText).value;																							
+												var href = Ext.String.format('api/File/{0}?{1}={2}', 'ExportDownload', 'filename', filename);
+												var aLink = document.createElement('a');
+												aLink.download = filename;
+												aLink.href = href;
+												document.body.appendChild(aLink);
+												aLink.click();
+												document.body.removeChild(aLink);
+												myMask.hide();
+											},
+											fail: function (data) {
+												
+											}
+										});
+									});
 									const parametrs = JSON.parse(record[0].data['Json'])["parametrs"];
 									if(parametrs && parametrs.length>0) {                           
 											Ext.Array.each(parametrs,function(element,index){
@@ -110,7 +137,7 @@ Ext.define('App.view.core.rpa.RPAForm', {
 					}, {
 						xtype: 'label',
 						glyph: 0xf21d,
-						html: '<a>Import template XLSX</a>',
+						html: '<span style="cursor:pointer; color:blue; text-decoration:underline;">Import template XLSX</span>',
 						id: "templateLink",
 						hidden: true,
 						style: {
@@ -152,26 +179,4 @@ function isJsonValid(str){
 		return false;
 	}
 	return true;
-}
-
-var downloadFn = function (record) {
-	var url = Ext.String.format("odata/{0}/{1}", 'RPAs', 'DownloadTemplateXLSX');
-		Ext.Ajax.request({   
-			method: 'POST',   
-			url: url,
-			params: {handlerId: Ext.JSON.encode(record[0].data['Id'])},
-			success: function (data) {		
-				var filename = JSON.parse(data.responseText).value;																							
-				var href = Ext.String.format('api/File/{0}?{1}={2}', 'ExportDownload', 'filename', filename);
-				var aLink = document.createElement('a');
-				aLink.download = filename;
-				aLink.href = href;
-				document.body.appendChild(aLink);
-				aLink.click();
-				document.body.removeChild(aLink)
-			},
-			fail: function (data) {
-				
-			}
-		})							
 }
