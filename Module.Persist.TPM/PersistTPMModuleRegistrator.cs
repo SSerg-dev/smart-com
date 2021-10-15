@@ -131,9 +131,9 @@ namespace Module.Persist.TPM {
             modelBuilder.Entity<Promo>().Ignore(n => n.PromoBasicProducts);
 
             // Calendar Competitor Entities
-            modelBuilder.Entity<CalendarCompetitor>();
-            modelBuilder.Entity<CalendarCompetitorCompany>();
-            modelBuilder.Entity<CalendarCompetitorBrandTechColor>();
+            modelBuilder.Entity<Competitor>();
+            modelBuilder.Entity<CompetitorPromo>();
+            modelBuilder.Entity<CompetitorBrandTech>();
         }
 
         
@@ -965,30 +965,42 @@ namespace Module.Persist.TPM {
             builder.Entity<HistoricalClientDashboardView>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalClientDashboardView>("HistoricalClientDashboards");
 
             // Calendar Competitors Entities
-            builder.EntitySet<CalendarCompetitorCompany>("CalendarCompetitorCompanies");
-            builder.EntitySet<CalendarCompetitorCompany>("DeletedCalendarCompetitorCompanies");
-            builder.EntitySet<HistoricalCalendarCompetitorCompany>("HistoricalCalendarCompetitorCompanies");
-            builder.Entity<CalendarCompetitorCompany>().Collection.Action("ExportXLSX");
-            builder.EntitySet<CalendarCompetitorCompany>("CalendarCompetitorCompanies").HasRequiredBinding(e => e.CalendarCompetitor, "CalendarCompetitors");
-            builder.EntitySet<CalendarCompetitorCompany>("DeletedCalendarCompetitorCompanies").HasRequiredBinding(e => e.CalendarCompetitor, "CalendarCompetitors");
-            builder.Entity<CalendarCompetitorCompany>().Collection.Action("FullImportXLSX");
-            builder.Entity<CalendarCompetitorCompany>().Collection.Action("DownloadTemplateXLSX");
-            builder.Entity<CalendarCompetitorCompany>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<CalendarCompetitorCompany>("CalendarCompetitorCompanies");
-            builder.Entity<HistoricalCalendarCompetitorCompany>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalCalendarCompetitorCompany>("HistoricalCalendarCompetitorCompanies");
+            builder.EntitySet<Competitor>("Competitors");
+            builder.EntitySet<Competitor>("DeletedCompetitors");
+            builder.EntitySet<HistoricalCompetitor>("HistoricalCompetitors");
+            builder.Entity<Competitor>().Collection.Action("ExportXLSX");
+            builder.Entity<Competitor>().Collection.Action("FullImportXLSX");
+            builder.Entity<Competitor>().Collection.Action("DownloadTemplateXLSX");
+            builder.Entity<Competitor>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<Competitor>("Competitors");
+            builder.Entity<HistoricalCompetitor>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalCompetitor>("HistoricalCompetitors");
 
-            builder.EntitySet<CalendarCompetitorBrandTechColor>("CalendarCompetitorBrandTechColors");
-            builder.EntitySet<CalendarCompetitorBrandTechColor>("DeletedCalendarCompetitorBrandTechColors");
-            builder.EntitySet<HistoricalCalendarCompetitorBrandTechColor>("HistoricalCalendarCompetitorBrandTechColors");
-            builder.EntitySet<CalendarCompetitorBrandTechColor>("CalendarCompetitorBrandTechColors").HasOptionalBinding(e => e.CalendarCompetitor, "CalendarCompetitors");
-            builder.EntitySet<CalendarCompetitorBrandTechColor>("DeletedCalendarCompetitorBrandTechColors").HasOptionalBinding(e => e.CalendarCompetitor, "CalendarCompetitors");
-            builder.EntitySet<CalendarCompetitorBrandTechColor>("CalendarCompetitorBrandTechColors").HasOptionalBinding(e => e.CalendarCompetitorCompany, "CalendarCompetitorCompanies");
-            builder.EntitySet<CalendarCompetitorBrandTechColor>("DeletedCalendarCompetitorBrandTechColors").HasOptionalBinding(e => e.CalendarCompetitorCompany, "CalendarCompetitorCompanies");
-            builder.Entity<CalendarCompetitorBrandTechColor>().Collection.Action("GetSuitable");
-            builder.Entity<CalendarCompetitorBrandTechColor>().Collection.Action("FullImportXLSX");
-            builder.Entity<CalendarCompetitorBrandTechColor>().Collection.Action("DownloadTemplateXLSX");
-            builder.Entity<CalendarCompetitorBrandTechColor>().Collection.Action("ExportXLSX");
-            builder.Entity<CalendarCompetitorBrandTechColor>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<CalendarCompetitorBrandTechColor>("CalendarCompetitorBrandTechColors");
-            builder.Entity<HistoricalCalendarCompetitorBrandTechColor>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalCalendarCompetitorBrandTechColor>("HistoricalCalendarCompetitorBrandTechColors");
+            builder.EntitySet<CompetitorBrandTech>("CompetitorBrandTechs");
+            builder.EntitySet<CompetitorBrandTech>("DeletedCompetitorBrandTechs");
+            builder.EntitySet<HistoricalCompetitorBrandTech>("HistoricalCompetitorBrandTechs");
+            builder.EntitySet<CompetitorBrandTech>("CompetitorBrandTechs").HasOptionalBinding(e => e.Competitor, "Competitors");
+            builder.EntitySet<CompetitorBrandTech>("DeletedCompetitorBrandTechs").HasOptionalBinding(e => e.Competitor, "Competitors");
+            builder.Entity<CompetitorBrandTech>().Collection.Action("FullImportXLSX");
+            builder.Entity<CompetitorBrandTech>().Collection.Action("DownloadTemplateXLSX");
+            builder.Entity<CompetitorBrandTech>().Collection.Action("ExportXLSX");
+            builder.Entity<CompetitorBrandTech>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<CompetitorBrandTech>("CompetitorBrandTechs");
+            builder.Entity<HistoricalCompetitorBrandTech>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalCompetitorBrandTech>("HistoricalCompetitorBrandTechs");
+
+            builder.EntitySet<CompetitorPromo>("CompetitorPromoes");
+            builder.EntitySet<CompetitorPromo>("DeletedCompetitorPromoes");
+            builder.EntitySet<HistoricalCompetitorPromo>("HistoricalCompetitorPromoes");
+            builder.EntitySet<CompetitorPromo>("CompetitorPromoes").HasOptionalBinding(e => e.Competitor, "Competitors");
+            builder.EntitySet<CompetitorPromo>("DeletedCompetitorPromoes").HasOptionalBinding(e => e.Competitor, "Competitors");
+            builder.EntitySet<CompetitorPromo>("CompetitorPromoes").HasOptionalBinding(e => e.ClientTree, "ClientTrees");
+            builder.EntitySet<CompetitorPromo>("DeletedCompetitorPromoes").HasOptionalBinding(e => e.ClientTree, "ClientTrees");
+            builder.EntitySet<CompetitorPromo>("CompetitorPromoes").HasOptionalBinding(e => e.BrandTech, "CalendarCompetitorBrandTechColors");
+            builder.EntitySet<CompetitorPromo>("DeletedCompetitorPromoes").HasOptionalBinding(e => e.BrandTech, "CalendarCompetitorBrandTechColors");
+            builder.EntitySet<CompetitorPromo>("CompetitorPromoes").HasOptionalBinding(e => e.PromoStatus, "PromoStatuses");
+            builder.EntitySet<CompetitorPromo>("DeletedCompetitorPromoes").HasOptionalBinding(e => e.PromoStatus, "PromoStatuses");
+            builder.Entity<CompetitorPromo>().Collection.Action("FullImportXLSX");
+            builder.Entity<CompetitorPromo>().Collection.Action("DownloadTemplateXLSX");
+            builder.Entity<CompetitorPromo>().Collection.Action("ExportXLSX");
+            builder.Entity<CompetitorPromo>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<CompetitorPromo>("CompetitorPromoes");
+            builder.Entity<HistoricalCompetitorPromo>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalCompetitorPromo>("HistoricalCompetitorPromoes");
         }
 
         

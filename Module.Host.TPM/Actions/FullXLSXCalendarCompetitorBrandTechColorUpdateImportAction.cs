@@ -28,7 +28,7 @@ using Utility.FileWorker;
 
 namespace Module.Host.TPM.Actions
 {
-    class FullXLSXCalendarCompetitorBrandTechColorUpdateImportAction : BaseAction
+    class FullXLSXCompetitorBrandTechUpdateImportAction : BaseAction
     {
         private readonly Guid UserId;
         private readonly Guid RoleId;
@@ -47,7 +47,7 @@ namespace Module.Host.TPM.Actions
 
         private ScriptGenerator Generator { get; set; }
 
-        public FullXLSXCalendarCompetitorBrandTechColorUpdateImportAction(FullImportSettings settings)
+        public FullXLSXCompetitorBrandTechUpdateImportAction(FullImportSettings settings)
         {
             UserId = settings.UserId;
             RoleId = settings.RoleId;
@@ -271,7 +271,7 @@ namespace Module.Host.TPM.Actions
             if (rec == null)
             {
                 isSuitable = false;
-                errors.Add("There is no such CalendarCompetitorBrandTechColor on base");
+                errors.Add("There is no such CompetitorBrandTech on base");
             }
 
             return isSuitable;
@@ -279,24 +279,24 @@ namespace Module.Host.TPM.Actions
 
         private int InsertDataToDatabase(IEnumerable<IEntity<Guid>> sourceRecords, DatabaseContext context)
         {
-            NoGuidGeneratingScriptGenerator generatorCreate = new NoGuidGeneratingScriptGenerator(typeof(CalendarCompetitorBrandTechColor), false);
+            NoGuidGeneratingScriptGenerator generatorCreate = new NoGuidGeneratingScriptGenerator(typeof(CompetitorBrandTech), false);
             ScriptGenerator generatorUpdate = GetScriptGenerator();
-            var toCreate = new List<CalendarCompetitorBrandTechColor>();
+            var toCreate = new List<CompetitorBrandTech>();
 
             List<Tuple<IEntity<Guid>, IEntity<Guid>>> toHisCreate = new List<Tuple<IEntity<Guid>, IEntity<Guid>>>();
             List<Tuple<IEntity<Guid>, IEntity<Guid>>> toHisUpdate = new List<Tuple<IEntity<Guid>, IEntity<Guid>>>();
 
-            foreach (ImportCalendarCompetitorBrandTechColor newRecord in sourceRecords)
+            foreach (ImportCompetitorBrandTech newRecord in sourceRecords)
             {
-                var oldRecord = context.Set<CalendarCompetitorBrandTechColor>().SingleOrDefault(t => 
-                                                                (t.CalendarCompetitorCompanyId == newRecord.CalendarCompetitorCompanyId && t.BrandTech == newRecord.BrandTech && !t.Disabled));
+                var oldRecord = context.Set<CompetitorBrandTech>().SingleOrDefault(t => 
+                                                                (t.CompetitorId == newRecord.CompetitorId && t.BrandTech == newRecord.BrandTech && !t.Disabled));
 
                 if (oldRecord == null)
                 {
                     newRecord.Id = Guid.NewGuid();
-                    toCreate.Add(new CalendarCompetitorBrandTechColor
+                    toCreate.Add(new CompetitorBrandTech
                     {
-                        CalendarCompetitorCompanyId = newRecord.CalendarCompetitorCompanyId,
+                        CompetitorId = newRecord.CompetitorId,
                         BrandTech = newRecord.BrandTech,
                         Color = newRecord.Color
                     }) ;
@@ -308,16 +308,16 @@ namespace Module.Host.TPM.Actions
                     {
                         toHisUpdate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(oldRecord, newRecord));
 
-                        oldRecord.CalendarCompetitorCompanyId = newRecord.CalendarCompetitorCompanyId;
+                        oldRecord.CompetitorId = newRecord.CompetitorId;
                         oldRecord.BrandTech = newRecord.BrandTech;
                         oldRecord.Color = newRecord.Color;
                     }
                 }
             }
 
-            foreach (IEnumerable<CalendarCompetitorBrandTechColor> items in toCreate.Partition(100))
+            foreach (IEnumerable<CompetitorBrandTech> items in toCreate.Partition(100))
             {
-                context.Set<CalendarCompetitorBrandTechColor>().AddRange(items);
+                context.Set<CompetitorBrandTech>().AddRange(items);
             }
 
 

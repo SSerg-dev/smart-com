@@ -11,13 +11,17 @@
     'tpm.brandtech.DeletedBrandTech',
     'tpm.brandtech.HistoricalBrandTech',
 
-    'tpm.calendarcompetitorcompany.CalendarCompetitorCompany',
-    'tpm.calendarcompetitorcompany.DeletedCalendarCompetitorCompany',
-    'tpm.calendarcompetitorcompany.HistoricalCalendarCompetitorCompany',
+    'tpm.competitor.Competitor',
+    'tpm.competitor.DeletedCompetitor',
+    'tpm.competitor.HistoricalCompetitor',
 
-    'tpm.calendarcompetitorbrandtechcolor.CalendarCompetitorBrandTechColor',
-    'tpm.calendarcompetitorbrandtechcolor.DeletedCalendarCompetitorBrandTechColor',
-    'tpm.calendarcompetitorbrandtechcolor.HistoricalCalendarCompetitorBrandTechColor',
+    'tpm.competitorbrandtech.CompetitorBrandTech',
+    'tpm.competitorbrandtech.DeletedCompetitorBrandTech',
+    'tpm.competitorbrandtech.HistoricalCompetitorBrandTech',
+
+    'tpm.competitorpromo.CompetitorPromo',
+    'tpm.competitorpromo.DeletedCompetitorPromo',
+    'tpm.competitorpromo.HistoricalCompetitorPromo',
 
     'tpm.category.Category',
     'tpm.category.DeletedCategory',

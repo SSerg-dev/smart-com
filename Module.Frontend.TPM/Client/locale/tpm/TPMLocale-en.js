@@ -181,8 +181,8 @@
         'PriceList': 'Price list',
         'CoefficientSI2SO': 'Coefficient SI->SO',
         'ApproveClosePromoWindow': 'Confirm closing',
-        'CalendarCompetitorCompany': 'Calendar Competitor Company',
-        'CalendarCompetitorBrandTechColor': 'Calendar Competitor Brand Tech Color'
+        'Competitor': 'Competitor',
+        'CompetitorBrandTech': 'Competitor BrandTech'
     },
 
     'text': {
@@ -2699,18 +2699,17 @@
         'OffInvoice': 'Off-invoice'
     },
 
-    'CalendarCompetitorCompany': {
-        'CompanyName': 'Company',
-        'CompetitorName': 'Competitor'
+    'Competitor': {
+        'Name': 'Name'
     },
-    'HistoricalCalendarCompetitorCompany': ['.tpm.CalendarCompetitorCompany', '.core.BaseHistoryEntity'],
-    'DeletedCalendarCompetitorCompany': ['.tpm.CalendarCompetitorCompany', '.core.BaseDeletedEntity'],
+    'HistoricalCompetitor': ['.tpm.Competitor', '.core.BaseHistoryEntity'],
+    'DeletedCompetitor': ['.tpm.Competitor', '.core.BaseDeletedEntity'],
 
-    'CalendarCompetitorBrandTechColor': {
+    'CompetitorBrandTech': {
         'BrandTech': 'BrandTech',
         'Color': 'Color',
-        'CompanyName': 'Company'
+        'CompetitorName': 'Competitor'
     },
-    'HistoricalCalendarCompetitorBrandTechColor': ['.tpm.CalendarCompetitorBrandTechColor', '.core.BaseHistoryEntity'],
-    'DeletedCalendarCompetitorBrandTechColor': ['.tpm.CalendarCompetitorBrandTechColor', '.core.BaseDeletedEntity'],
+    'HistoricalCompetitorBrandTech': ['.tpm.CompetitorBrandTech', '.core.BaseHistoryEntity'],
+    'DeletedCompetitorBrandTech': ['.tpm.CompetitorBrandTech', '.core.BaseDeletedEntity'],
 });

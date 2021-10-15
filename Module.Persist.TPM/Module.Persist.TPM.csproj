@@ -2572,13 +2572,21 @@
     <Compile Include="Migrations\202108200756196_Empty_PLU.Designer.cs">
       <DependentUpon>202108200756196_Empty_PLU.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202109171241305_Add_CalendarCompetitor_Tables.cs" />
-    <Compile Include="Migrations\202109171241305_Add_CalendarCompetitor_Tables.Designer.cs">
-      <DependentUpon>202109171241305_Add_CalendarCompetitor_Tables.cs</DependentUpon>
+    <Compile Include="Migrations\202110141244113_Add_Competitor_Tables.cs" />
+    <Compile Include="Migrations\202110141244113_Add_Competitor_Tables.Designer.cs">
+      <DependentUpon>202110141244113_Add_Competitor_Tables.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202110110019334_Add_Calendar_BrandTech_Color_Table.cs" />
-    <Compile Include="Migrations\202110110019334_Add_Calendar_BrandTech_Color_Table.Designer.cs">
-      <DependentUpon>202110110019334_Add_Calendar_BrandTech_Color_Table.cs</DependentUpon>
+    <Compile Include="Migrations\202110151017107_Add_Competitors_AP.cs" />
+    <Compile Include="Migrations\202110151017107_Add_Competitors_AP.Designer.cs">
+      <DependentUpon>202110151017107_Add_Competitors_AP.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202110151027412_Add_CompetitorBrandTechs_AP.cs" />
+    <Compile Include="Migrations\202110151027412_Add_CompetitorBrandTechs_AP.Designer.cs">
+      <DependentUpon>202110151027412_Add_CompetitorBrandTechs_AP.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202110151029582_Add_CompetitorPromoes_AP.cs" />
+    <Compile Include="Migrations\202110151029582_Add_CompetitorPromoes_AP.Designer.cs">
+      <DependentUpon>202110151029582_Add_CompetitorPromoes_AP.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\2021\202106300726289_202106301025001_Drop_Client.cs" />
     <Compile Include="Migrations\2021\202106300726289_202106301025001_Drop_Client.Designer.cs">
@@ -2641,7 +2649,8 @@
     <Compile Include="Model\History\HistoricalActualCOGS.cs" />
     <Compile Include="Model\History\HistoricalBTL.cs" />
     <Compile Include="Model\History\HistoricalBTLPromo.cs" />
-    <Compile Include="Model\History\HistoricalCalendarCompetitorBrandTechColor.cs" />
+    <Compile Include="Model\History\HistoricalCompetitorPromo.cs" />
+    <Compile Include="Model\History\HistoricalCompetitorBrandTech.cs" />
     <Compile Include="Model\History\HistoricalClientDashboardView.cs" />
     <Compile Include="Model\History\HistoricalClientTreeBrandTech.cs" />
     <Compile Include="Model\History\HistoricalCoefficientSI2SO.cs" />
@@ -2681,7 +2690,7 @@
     <Compile Include="Model\History\HistoricalPromoSupport.cs" />
     <Compile Include="Model\History\HistoricalPromoSupportPromo.cs" />
     <Compile Include="Model\History\HistoricalPromoTypes.cs" />
-    <Compile Include="Model\History\HistoricalCalendarCompetitorCompany.cs" />
+    <Compile Include="Model\History\HistoricalCompetitor.cs" />
     <Compile Include="Model\History\HistoricalRATIShopper.cs" />
     <Compile Include="Model\History\HistoricalRejectReason.cs" />
     <Compile Include="Model\History\HistoricalPromoStatus.cs" />
@@ -2700,10 +2709,10 @@
     <Compile Include="Model\Import\BaseLineComparer.cs" />
     <Compile Include="Model\Import\ImportAssortmentMatrix.cs" />
     <Compile Include="Model\Import\ImportBTL.cs" />
-    <Compile Include="Model\Import\ImportCalendarCompetitorCompany.cs" />
+    <Compile Include="Model\Import\ImportCompetitor.cs" />
     <Compile Include="Model\Import\ImportClientDashboard.cs" />
     <Compile Include="Model\Import\ImportCoefficientSI2SO.cs" />
-    <Compile Include="Model\Import\ImportCalendarCompetitorBrandTechColor.cs" />
+    <Compile Include="Model\Import\ImportCompetitorBrandTech.cs" />
     <Compile Include="Model\Import\ImportPLUDictionary.cs" />
     <Compile Include="Model\Import\ImportPromoDMP.cs" />
     <Compile Include="Model\Import\ImportNonPromoDMP.cs" />
@@ -2748,8 +2757,8 @@
     <Compile Include="Model\SimpleModel\SimplePromoCOGSTI.cs" />
     <Compile Include="Model\SimpleModel\YEAR_END_ESTIMATE_FDM.cs" />
     <Compile Include="Model\TPM\ActualLsvModel.cs" />
-    <Compile Include="Model\TPM\CalendarСompetitor.cs" />
-    <Compile Include="Model\TPM\CalendarСompetitorCompany.cs" />
+    <Compile Include="Model\TPM\Сompetitor.cs" />
+    <Compile Include="Model\TPM\СompetitorPromo.cs" />
     <Compile Include="Model\TPM\Client.cs" />
     <Compile Include="Model\TPM\Plu.cs" />
     <Compile Include="Model\TPM\PLUDictionary.cs" />
@@ -2819,7 +2828,7 @@
     <Compile Include="Model\TPM\PromoSupport.cs" />
     <Compile Include="Model\TPM\PromoSupportPromo.cs" />
     <Compile Include="Model\DTO\PromoView.cs" />
-    <Compile Include="Model\TPM\CalendarСompetitorBrandTechColor.cs" />
+    <Compile Include="Model\TPM\СompetitorBrandTech.cs" />
     <Compile Include="Model\TPM\RATIShopper.cs" />
     <Compile Include="Model\TPM\RejectReason.cs" />
     <Compile Include="Model\TPM\PromoStatus.cs" />
@@ -5007,11 +5016,17 @@
     <EmbeddedResource Include="Migrations\202108200756196_Empty_PLU.resx">
       <DependentUpon>202108200756196_Empty_PLU.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202109171241305_Add_CalendarCompetitor_Tables.resx">
-      <DependentUpon>202109171241305_Add_CalendarCompetitor_Tables.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202110141244113_Add_Competitor_Tables.resx">
+      <DependentUpon>202110141244113_Add_Competitor_Tables.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202110110019334_Add_Calendar_BrandTech_Color_Table.resx">
-      <DependentUpon>202110110019334_Add_Calendar_BrandTech_Color_Table.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202110151017107_Add_Competitors_AP.resx">
+      <DependentUpon>202110151017107_Add_Competitors_AP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202110151027412_Add_CompetitorBrandTechs_AP.resx">
+      <DependentUpon>202110151027412_Add_CompetitorBrandTechs_AP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202110151029582_Add_CompetitorPromoes_AP.resx">
+      <DependentUpon>202110151029582_Add_CompetitorPromoes_AP.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\2021\202106300726289_202106301025001_Drop_Client.resx">
       <DependentUpon>202106300726289_202106301025001_Drop_Client.cs</DependentUpon>
