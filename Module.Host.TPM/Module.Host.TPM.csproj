@@ -299,9 +299,9 @@
     <Compile Include="Actions\FullXLSXUpdateImportCoefficientSI2SOAction.cs" />
     <Compile Include="Actions\FullXLSXUpdateImportIncrementalPromoAction.cs" />
     <Compile Include="Actions\FullXLSXUpdateImportRollingVolumesAction.cs" />
-    <Compile Include="Actions\FullXLSXCalendarCompetitorCompanyUpdateImportAction.cs" />
-    <Compile Include="Actions\FullXLSXCalendarCompetitorPromoUpdateImportAction.cs" />
-    <Compile Include="Actions\FullXLSXCalendarCompetitorBrandTechColorUpdateImportAction.cs" />
+    <Compile Include="Actions\FullXLSXCompetitorUpdateImportAction.cs" />
+    <Compile Include="Actions\FullXLSXCompetitorPromoUpdateImportAction.cs" />
+    <Compile Include="Actions\FullXLSXCompetitorBrandTechUpdateImportAction.cs" />
     <Compile Include="Actions\FullXLSXUpdateImportTechnologyAction.cs" />
     <Compile Include="Actions\Interface\Incoming\InputBaseLineCSVProcessorAction.cs" />
     <Compile Include="Actions\Interface\Outcoming\OutputIncrementalProcessAction.cs" />

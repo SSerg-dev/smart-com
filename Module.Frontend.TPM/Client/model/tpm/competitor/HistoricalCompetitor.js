@@ -13,7 +13,7 @@
     ],
     proxy: {
         type: 'breeze',
-        resourceName: 'HistoricaдCompetitors',
+        resourceName: 'HistoricalCompetitors',
         reader: {
             type: 'json',
             totalProperty: 'inlineCount',

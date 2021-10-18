@@ -2712,6 +2712,7 @@
     <Compile Include="Model\Import\ImportCompetitor.cs" />
     <Compile Include="Model\Import\ImportClientDashboard.cs" />
     <Compile Include="Model\Import\ImportCoefficientSI2SO.cs" />
+    <Compile Include="Model\Import\ImportCompetitorPromo.cs" />
     <Compile Include="Model\Import\ImportCompetitorBrandTech.cs" />
     <Compile Include="Model\Import\ImportPLUDictionary.cs" />
     <Compile Include="Model\Import\ImportPromoDMP.cs" />

@@ -23,7 +23,7 @@ namespace Module.Persist.TPM.Model.TPM
         public int? ClientTreeId { get; set; }
 
         [Required]
-        public Guid BrandTechId { get; set; }
+        public Guid CompetitorBrandTechId { get; set; }
 
         [StringLength(124)]
         [Required]
@@ -54,7 +54,7 @@ namespace Module.Persist.TPM.Model.TPM
         public virtual Competitor Competitor { get; set; }
         [ForeignKey("ClientTreeId")]
         public virtual ClientTree ClientTree { get; set; }
-        [ForeignKey("BrandTechId")]
+        [ForeignKey("CompetitorBrandTechId")]
         public virtual CompetitorBrandTech BrandTech { get; set; }
         [ForeignKey("PromoStatusId")]
         public virtual PromoStatus PromoStatus { get; set; }

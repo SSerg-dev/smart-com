@@ -30,7 +30,7 @@ namespace Module.Persist.TPM.Migrations
                         DeletedDate = c.DateTimeOffset(precision: 7),
                         CompetitorId = c.Guid(nullable: false),
                         ClientTreeId = c.Int(nullable: false),
-                        BrandTechId = c.Guid(nullable: false),
+                        CompetitorBrandTechId = c.Guid(nullable: false),
                         Name = c.String(nullable: false, maxLength: 124),
                         Number = c.Int(nullable: false),
                         PromoStatusId = c.Guid(nullable: false),
@@ -42,14 +42,14 @@ namespace Module.Persist.TPM.Migrations
                         Subrange = c.String(maxLength: 256),
                     })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey($"{defaultSchema}.CompetitorBrandTech", t => t.BrandTechId)
+                .ForeignKey($"{defaultSchema}.CompetitorBrandTech", t => t.CompetitorBrandTechId)
                 .ForeignKey($"{defaultSchema}.ClientTree", t => t.ClientTreeId)
                 .ForeignKey($"{defaultSchema}.Competitor", t => t.CompetitorId)
                 .ForeignKey($"{defaultSchema}.PromoStatus", t => t.PromoStatusId)
                 .Index(t => new { t.Number, t.Disabled, t.DeletedDate }, unique: true, name: "Unique_CompetitorPromo")
                 .Index(t => t.CompetitorId)
                 .Index(t => t.ClientTreeId)
-                .Index(t => t.BrandTechId)
+                .Index(t => t.CompetitorBrandTechId)
                 .Index(t => t.PromoStatusId);
             
             CreateTable(
@@ -75,11 +75,11 @@ namespace Module.Persist.TPM.Migrations
             DropForeignKey($"{defaultSchema}.CompetitorPromo", "PromoStatusId", $"{defaultSchema}.PromoStatus");
             DropForeignKey($"{defaultSchema}.CompetitorPromo", "CompetitorId", $"{defaultSchema}.Competitor");
             DropForeignKey($"{defaultSchema}.CompetitorPromo", "ClientTreeId", $"{defaultSchema}.ClientTree");
-            DropForeignKey($"{defaultSchema}.CompetitorPromo", "BrandTechId", $"{defaultSchema}.CompetitorBrandTech");
+            DropForeignKey($"{defaultSchema}.CompetitorPromo", "CompetitorBrandTechId", $"{defaultSchema}.CompetitorBrandTech");
             DropForeignKey($"{defaultSchema}.CompetitorBrandTech", "CompetitorId", $"{defaultSchema}.Competitor");
             DropIndex($"{defaultSchema}.CompetitorBrandTech", "Unique_CompetitorBrandTech");
             DropIndex($"{defaultSchema}.CompetitorPromo", new[] { "PromoStatusId" });
-            DropIndex($"{defaultSchema}.CompetitorPromo", new[] { "BrandTechId" });
+            DropIndex($"{defaultSchema}.CompetitorPromo", new[] { "CompetitorBrandTechId" });
             DropIndex($"{defaultSchema}.CompetitorPromo", new[] { "ClientTreeId" });
             DropIndex($"{defaultSchema}.CompetitorPromo", new[] { "CompetitorId" });
             DropIndex($"{defaultSchema}.CompetitorPromo", "Unique_CompetitorPromo");

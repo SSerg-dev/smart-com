@@ -73,6 +73,9 @@
         'ClientKPIdata': 'Client KPI Data',
         'PriceList': 'Price list',
         'CoefficientSI2SO': 'Coefficient SI->SO',
+        'Competitor': 'Competitor',
+        'CompetitorPromo': 'Competitor Promo',
+        'CompetitorBrandTech': 'Competitor BrandTech',
     },
 
     'compositePanelTitles': {
@@ -156,7 +159,8 @@
         'PriceList': 'Price list',
         'CoefficientSI2SO': 'Coefficient SI->SO',
         'Competitor': 'Competitor',
-        'CompetitorBrandTech': 'Competitor BrandTech'
+        'CompetitorPromo': 'Competitor Promo',
+        'CompetitorBradnTech': 'Competitor BrandTech',
     },
 
     'text': {

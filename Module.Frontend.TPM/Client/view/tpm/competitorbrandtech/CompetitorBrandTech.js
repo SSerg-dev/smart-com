@@ -89,12 +89,12 @@
                     return Ext.String.format('<div style="background-color:{0};width:50px;height:10px;display:inline-block;margin:0 5px 0 5px;border:solid;border-color:gray;border-width:1px;"></div><div style="display:inline-block">{1}</div>', record.get('Color'), record.get('Color'));
                 }
             }, {
-                text: l10n.ns('tpm', 'CompetitorBrandTech').value('Competitor'),
+                text: l10n.ns('tpm', 'CompetitorBrandTech').value('CompetitorName'),
                 dataIndex: 'CompetitorName',
                 filter: {
                     type: 'search',
-                    selectorWidget: 'competitorname',
-                    valueField: 'CompetitorName',
+                    selectorWidget: 'competitor',
+                    valueField: 'Name',
                     store: {
                         type: 'directorystore',
                         model: 'App.model.tpm.competitor.Competitor',
@@ -111,7 +111,7 @@
                         }
                     }
                 }
-            }, {
+                }, {
                 text: l10n.ns('tpm', 'CompetitorBrandTech').value('BrandTech'),
                 dataIndex: 'BrandTech',
             }]
@@ -130,12 +130,10 @@
         }, {
             xtype: 'searchfield',
             fieldLabel: l10n.ns('tpm', 'CompetitorBrandTech').value('CompetitorName'),
-            name: 'CompetitorName',
-            selectorWidget: 'competitorname',
+            name: 'CompetitorId',
+            selectorWidget: 'competitor',
             valueField: 'Id',
-            displayField: 'CompetitorName',
-            allowBlank: true,
-            allowOnlyWhitespace: true,
+            displayField: 'Name',
             store: {
                 type: 'directorystore',
                 model: 'App.model.tpm.competitor.Competitor',
@@ -153,7 +151,7 @@
                 to: 'CompetitorName'
             }]
         }, {
-            xtype: 'singlelinedisplayfield',
+            xtype: 'textfield',
             fieldLabel: l10n.ns('tpm', 'CompetitorBrandTech').value('BrandTech'),
             name: 'BrandTech',
         }]

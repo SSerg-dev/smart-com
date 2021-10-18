@@ -28,7 +28,7 @@ using Utility.FileWorker;
 
 namespace Module.Host.TPM.Actions
 {
-    class FullXLSXCalendarCompetitorPromoUpdateImportAction : BaseAction
+    class FullXLSXCompetitorUpdateImportAction : BaseAction
     {
         private readonly Guid UserId;
         private readonly Guid RoleId;
@@ -47,7 +47,7 @@ namespace Module.Host.TPM.Actions
 
         private ScriptGenerator Generator { get; set; }
 
-        public FullXLSXCalendarCompetitorPromoUpdateImportAction(FullImportSettings settings)
+        public FullXLSXCompetitorUpdateImportAction(FullImportSettings settings)
         {
             UserId = settings.UserId;
             RoleId = settings.RoleId;

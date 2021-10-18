@@ -36,8 +36,8 @@
         glyph: 0xf392,
         widget: 'promo'
     }, {
-        text: l10n.ns('tpm', 'mainmenu').value('PromoCompetitor'),
-        tooltip: l10n.ns('tpm', 'mainmenu').value('PromoCompetitor'),
+        text: l10n.ns('tpm', 'mainmenu').value('CompetitorPromo'),
+        tooltip: l10n.ns('tpm', 'mainmenu').value('CompetitorPromo'),
         scale: 'medium',
         glyph: 0xf392,
         children: [{

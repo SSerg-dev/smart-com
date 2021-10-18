@@ -207,8 +207,18 @@ namespace Module.Frontend.TPM.Controllers
         public static IEnumerable<Column> GetExportSettings()
         {
             IEnumerable<Column> columns = new List<Column>() {
-                new Column() { Order = 1, Field = "CompetitorCompany.Name", Header = "Competitor", Quoting = false },
-                new Column() { Order = 2, Field = "BrandTech.Name", Header = "BrandTech", Quoting = false }
+                new Column() { Order = 1, Field = "Number", Header = "Number", Quoting = false },
+                new Column() { Order = 2, Field = "Competitor.Name", Header = "Competitor", Quoting = false },
+                new Column() { Order = 3, Field = "IsGrowthAcceleration", Header = "Growth Acceleration", Quoting = false },
+                new Column() { Order = 4, Field = "Name", Header = "Promo Name", Quoting = false },
+                new Column() { Order = 5, Field = "BrandTech.Name", Header = "BrandTech", Quoting = false },
+                new Column() { Order = 6, Field = "StartDate", Header = "Start Date", Quoting = false },
+                new Column() { Order = 7, Field = "EndDate", Header = "End Date", Quoting = false },
+                new Column() { Order = 8, Field = "StartDate", Header = "Start Date", Quoting = false },
+                new Column() { Order = 9, Field = "Discount", Header = "Discount", Quoting = false },
+                new Column() { Order = 10, Field = "ShelfPrice", Header = "Shelf Price", Quoting = false },
+                new Column() { Order = 11, Field = "Subrange", Header = "Subranges", Quoting = false },
+                new Column() { Order = 12, Field = "PromoStatus", Header = "Promo Status", Quoting = false }
             };
             return columns;
         }

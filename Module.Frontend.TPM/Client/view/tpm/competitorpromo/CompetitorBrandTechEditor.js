@@ -19,8 +19,10 @@
         }, {
             xtype: 'searchfield',
             fieldLabel: l10n.ns('tpm', 'CompetitorBrandTech').value('CompetitorName'),
-            name: 'CompetitorId',
-            selectorWidget: 'competitor',
+            allowBlank: true,
+            allowOnlyWhitespace: true,
+            name: 'CompetitorName',
+            selectorWidget: 'competitorname',
             valueField: 'Id',
             displayField: 'Name',
             store: {
@@ -40,7 +42,7 @@
                 to: 'CompetitorName'
             }]
         }, {
-            xtype: 'textfield',
+            xtype: 'singlelinedisplayfield',
             fieldLabel: l10n.ns('tpm', 'CompetitorBrandTech').value('BrandTech'),
             name: 'BrandTech',
         }]

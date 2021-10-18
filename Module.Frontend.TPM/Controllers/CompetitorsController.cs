@@ -1,4 +1,5 @@
-﻿using Core.Security;
+﻿using AutoMapper;
+using Core.Security;
 using Core.Security.Models;
 using Core.Settings;
 using Frontend.Core.Controllers.Base;
@@ -15,6 +16,7 @@ using Persist.Model;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -26,6 +28,7 @@ using System.Web;
 using System.Web.Http;
 using System.Web.Http.OData;
 using System.Web.Http.OData.Query;
+using System.Web.Http.Results;
 using Thinktecture.IdentityModel.Authorization.WebApi;
 
 namespace Module.Frontend.TPM.Controllers
@@ -78,6 +81,39 @@ namespace Module.Frontend.TPM.Controllers
 
             var optionsPost = new ODataQueryOptionsPost<Competitor>(options.Context, Request, HttpContext.Current.Request);
             return optionsPost.ApplyTo(query, querySettings) as IQueryable<Competitor>;
+        }
+
+        [ClaimsAuthorize]
+        public IHttpActionResult Post(Competitor model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            model.Name = model.Name.Trim();
+
+            if (Context.Set<Technology>().Any(t => t.Name == model.Name && !t.Disabled))
+            {
+                var errorText =
+                    $"Competitor with name {model.Name} and sub_code already exists";
+                ModelState.AddModelError("Error", errorText);
+                return BadRequest(ModelState);
+            }
+            var proxy = Context.Set<Competitor>().Create<Competitor>();
+            var result = (Competitor)Mapper.Map(model, proxy, typeof(Competitor), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+            Context.Set<Competitor>().Add(result);
+
+            try
+            {
+                var resultSaveChanges = Context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                return GetErorrRequest(e);
+            }
+
+            return Created(result);
         }
 
         [ClaimsAuthorize]
@@ -270,7 +306,7 @@ namespace Module.Frontend.TPM.Controllers
                 return NotFound();
             }
 
-            patch.Put(model);
+            patch.Patch(model);
 
             try
             {
@@ -297,5 +333,20 @@ namespace Module.Frontend.TPM.Controllers
 
         private bool EntityExist(Guid key) =>
             Context.Set<Competitor>().Count(e => e.Id == key) > 0;
+
+        private ExceptionResult GetErorrRequest(Exception e)
+        {
+            SqlException exc = e.GetBaseException() as SqlException;
+
+            if (exc != null && (exc.Number == 2627 || exc.Number == 2601))
+            {
+                return InternalServerError(new Exception("This Competitor has already existed"));
+            }
+            else
+            {
+                return InternalServerError(e.InnerException);
+            }
+        }
+
     }
 }

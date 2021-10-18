@@ -1,6 +1,6 @@
-﻿Ext.define('App.view.tpm.competiitor.HistoricalCompetiitorDetail', {
+﻿Ext.define('App.view.tpm.competiitor.HistoricalCompetitorDetail', {
     extend: 'App.view.core.common.EditorDetailWindow',
-    alias: 'widget.historicalcompetiitordetail',
+    alias: 'widget.HistoricalCompetitordetail',
     width: 800,
     minWidth: 800,
     maxHeight: 600,
@@ -11,25 +11,25 @@
         items: [{
             xtype: 'singlelinedisplayfield',
             name: '_User',
-            fieldLabel: l10n.ns('tpm', 'HistoricalCompetiitor').value('_User')
+            fieldLabel: l10n.ns('tpm', 'HistoricalCompetitor').value('_User')
         }, {
             xtype: 'singlelinedisplayfield',
             name: '_Role',
-            fieldLabel: l10n.ns('tpm', 'HistoricalCompetiitor').value('_Role')
+            fieldLabel: l10n.ns('tpm', 'HistoricalCompetitor').value('_Role')
         }, {
             xtype: 'singlelinedisplayfield',
             name: '_EditDate',
             renderer: Ext.util.Format.dateRenderer('d.m.Y H:i:s'),
-            fieldLabel: l10n.ns('tpm', 'HistoricalCompetiitor').value('_EditDate')
+            fieldLabel: l10n.ns('tpm', 'HistoricalCompetitor').value('_EditDate')
         }, {
             xtype: 'singlelinedisplayfield',
             name: '_Operation',
-            renderer: App.RenderHelper.getLocalizedRenderer('tpm.HistoricalCompetiitor', 'OperationType'),
-            fieldLabel: l10n.ns('tpm', 'HistoricalCompetiitor').value('_Operation')
+            renderer: App.RenderHelper.getLocalizedRenderer('tpm.HistoricalCompetitor', 'OperationType'),
+            fieldLabel: l10n.ns('tpm', 'HistoricalCompetitor').value('_Operation')
         }, {
             xtype: 'singlelinedisplayfield',
             name: 'Name',
-            fieldLabel: l10n.ns('tpm', 'HistoricalCompetiitor').value('Name'),
+            fieldLabel: l10n.ns('tpm', 'HistoricalCompetitor').value('Name'),
         }]
     }
 });

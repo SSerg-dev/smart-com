@@ -65,7 +65,7 @@ namespace Module.Host.TPM.Handlers
         }
     }
 
-    class FullXLSXCalendarCompetitorBrandTechColorUpdateImportHandler : FullXLSXImportHandler
+    class FullXLSXCompetitorBrandTechUpdateImportHandler : FullXLSXImportHandler
     {
         protected override void InitializeParameters(HandlerData handlerData, ExecuteData data)
         {
@@ -75,11 +75,11 @@ namespace Module.Host.TPM.Handlers
 
         protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
         {
-            return new FullXLSXCalendarCompetitorBrandTechColorUpdateImportAction(settings);
+            return new FullXLSXCompetitorBrandTechUpdateImportAction(settings);
         }
     }
 
-    class FullXLSXCalendarCompetitorCompanyUpdateImportHandler : FullXLSXImportHandler
+    class FullXLSXCompetitorUpdateImportHandler : FullXLSXImportHandler
     {
         protected override void InitializeParameters(HandlerData handlerData, ExecuteData data)
         {
@@ -89,11 +89,11 @@ namespace Module.Host.TPM.Handlers
 
         protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
         {
-            return new FullXLSXCalendarCompetitorCompanyUpdateImportAction(settings);
+            return new FullXLSXCompetitorUpdateImportAction(settings);
         }
     }
 
-    class FullXLSXCalendarCompetitorPromoUpdateImportHandler : FullXLSXImportHandler
+    class FullXLSXCompetitorPromoUpdateImportHandler : FullXLSXImportHandler
     {
         protected override void InitializeParameters(HandlerData handlerData, ExecuteData data)
         {
@@ -103,7 +103,7 @@ namespace Module.Host.TPM.Handlers
 
         protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
         {
-            return new FullXLSXCalendarCompetitorPromoUpdateImportAction(settings);
+            return new FullXLSXCompetitorPromoUpdateImportAction(settings);
         }
     }
 

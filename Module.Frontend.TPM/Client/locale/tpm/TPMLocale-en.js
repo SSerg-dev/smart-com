@@ -84,10 +84,9 @@
         'PromoTypes': 'Promo Types',
         'PriceList': 'Price list',
         'CoefficientSI2SO': 'Coefficient SI->SO',
-        'PromoCompetitor': 'Promo competitior',
-        'PromoCompetitorPromo': 'Promo',
-        'PromoCompetitorCompany': 'Promo company',
-        'PromoCompetitorCompanyColors': 'Promo company colors',
+        'Competitor': 'Competitor',
+        'CompetitorPromo': 'Competitor Promo',
+        'CompetitorBrandTech': 'Competitor BrandTech',
     },
 
     'compositePanelTitles': {
