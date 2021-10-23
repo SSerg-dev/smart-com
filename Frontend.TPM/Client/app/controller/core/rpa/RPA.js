@@ -71,7 +71,7 @@ Ext.define('App.controller.core.rpa.RPA', {
     },
     generateAndSendModel: function(editor, callback, scope, grid) {
         var me = scope,
-            rpaForm = editor.down('rpaform');
+        rpaForm = editor.down('rpaform');        
         if(rpaForm.isValid()){
             editor.setLoading(l10n.ns('core').value('savingText'));
             var rpaModel = editor.rpaModel ? editor.rpaModel : Ext.create('App.model.core.rpa.RPA');
@@ -79,6 +79,7 @@ Ext.define('App.controller.core.rpa.RPA', {
             var userName = App.UserInfo.getUserName();
             var params = rpaForm.down('#params');
             var parametr = params.items.items.filter(el => el.value !== "").map((el) => el.value).join(';');
+            var rpaType = rpaForm.getForm().findField('rpaType').getValue();
             rpaModel.set('HandlerName', handlerName);            
             rpaModel.set('UserName', userName);
             rpaModel.set('Parametrs', parametr);
@@ -91,7 +92,7 @@ Ext.define('App.controller.core.rpa.RPA', {
                 method: 'POST',   
                 url: url,
                 rawData: formData,   
-                params: {'Model': Ext.JSON.encode(rpaModel.data)},
+                params: {'Model': Ext.JSON.encode(rpaModel.data), 'RPAType': rpaType},
                 headers: {'Content-Type': null},
                 success: function (data) {
                     App.Notify.pushInfo(Ext.JSON.decode(Ext.JSON.decode(data.responseText).value).message);

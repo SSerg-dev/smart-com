@@ -97,7 +97,8 @@ namespace Module.Frontend.TPM.Controllers
 				.Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
 				.ToList() : new List<Constraint>();
 			var currentRequest = HttpContext.Current.Request;
-			var rpaModel = JsonConvert.DeserializeObject<RPA>(currentRequest.Params.Get("Model"));            
+			var rpaModel = JsonConvert.DeserializeObject<RPA>(currentRequest.Params.Get("Model"));
+			var rpaType = currentRequest.Params.Get("RPAType");
 			var proxy = Context.Set<RPA>().Create<RPA>();
 			var result = (RPA)Mapper.Map(rpaModel, proxy, typeof(RPA), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
 			Context.Set<RPA>().Add(result);
@@ -130,7 +131,6 @@ namespace Module.Frontend.TPM.Controllers
 					result.FileURL = $"<a href='{fileURL}{Path.GetFileName(fileName)}' download>Download file</a>";                    
 					var resultSaveChanges = Context.SaveChanges();
 
-
 					//Call Pipe
 					string tenantID = AppSettingsManager.GetSetting("RPA_UPLOAD_TENANT_ID", "");
 					string applicationId = AppSettingsManager.GetSetting("RPA_UPLOAD_APPLICATION_ID", "");
@@ -138,39 +138,56 @@ namespace Module.Frontend.TPM.Controllers
 					string subscriptionId = AppSettingsManager.GetSetting("RPA_UPLOAD_SUBSCRIPTION_ID", "");
 					string resourceGroup = AppSettingsManager.GetSetting("RPA_UPLOAD_RESOURCE_GROUP", "");
 					string dataFactoryName = AppSettingsManager.GetSetting("RPA_UPLOAD_DATA_FACTORY_NAME", "");
-					string pipelineName = AppSettingsManager.GetSetting("RPA_UPLOAD_PIPELINE_NAME", "");
+					string pipelineName = "";
+					Dictionary<string, object> parameters = null;
+					switch (rpaType)
+					{
+						case "Actuals":
+							pipelineName = "JUPITER_RPA_UPLOAD_ACTUALS_PIPE";
+							parameters = new Dictionary<string, object>
+										{
+											{ "FileName", Path.GetFileName(fileName) },
+											{ "UserRoleName", this.user.GetCurrentRole().SystemName },
+											{ "UserId", this.user.Id },
+										};
+							break;
+						case "Events":
+							pipelineName = "JUPITER_RPA_UPLOAD_PIPE";
+							parameters = new Dictionary<string, object>
+									{
+										{ "FileName", Path.GetFileName(fileName) },
+										{ "RPAId", result.Id },
+										{ "UserRoleName", this.user.GetCurrentRole().SystemName },
+										{ "UserId", this.user.Id },
+									};
+							break;
+					}
 					try
-					{
-						var context = new AuthenticationContext("https://login.microsoftonline.com/" + tenantID);
-						ClientCredential cc = new ClientCredential(applicationId, authenticationKey);
-						AuthenticationResult authenticationResult = context.AcquireTokenAsync(
-							"https://management.azure.com/", cc).Result;
-						ServiceClientCredentials cred = new TokenCredentials(authenticationResult.AccessToken);
-						var client = new DataFactoryManagementClient(cred)
 						{
-							SubscriptionId = subscriptionId
-						};
-						Dictionary<string, object> parameters = new Dictionary<string, object>
+							var context = new AuthenticationContext("https://login.microsoftonline.com/" + tenantID);
+							ClientCredential cc = new ClientCredential(applicationId, authenticationKey);
+							AuthenticationResult authenticationResult = context.AcquireTokenAsync(
+								"https://management.azure.com/", cc).Result;
+							ServiceClientCredentials cred = new TokenCredentials(authenticationResult.AccessToken);
+							var client = new DataFactoryManagementClient(cred)
 							{
-								{ "FileName", Path.GetFileName(fileName) },
-								{ "RPAId", result.Id },
-								{ "UserRoleName", this.user.GetCurrentRole().SystemName },
-								{ "UserId", this.user.Id },
+								SubscriptionId = subscriptionId
 							};
-						CreateRunResponse runResponse = client.Pipelines.CreateRunWithHttpMessagesAsync(
-							resourceGroup, dataFactoryName, pipelineName, parameters: parameters
-						).Result.Body;
+							
+							CreateRunResponse runResponse = client.Pipelines.CreateRunWithHttpMessagesAsync(
+								resourceGroup, dataFactoryName, pipelineName, parameters: parameters
+							).Result.Body;
 
-					}
-					catch (Exception ex)
-					{
-						result.Status = "Pipe not availabale";
-						Context.SaveChanges();
-						return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "RPA save and upload failure " + ex.Message }));
+						}
+						catch (Exception ex)
+						{
+							result.Status = "Pipe not availabale";
+							Context.SaveChanges();
+							return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "RPA save and upload failure " + ex.Message }));
 
-					}
+						}
 
-			}
+            }
 			catch (Exception e)
 			{
 				return GetErorrRequest(e);

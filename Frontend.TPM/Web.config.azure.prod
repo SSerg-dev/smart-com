@@ -71,7 +71,6 @@
 	<add key="RPA_UPLOAD_RESOURCE_GROUP" value="RUSSIA-PETCARE-JUPITER-DEV-RG" />
 	<add key="RPA_UPLOAD_REGION" value="East US 2" />
 	<add key="RPA_UPLOAD_DATA_FACTORY_NAME" value="russiapetcarejupiterdevadf" />
-	<add key="RPA_UPLOAD_PIPELINE_NAME" value="JUPITER_RPA_UPLOAD_PIPE" />
   </appSettings>
   <system.identityModel>
     <identityConfiguration>

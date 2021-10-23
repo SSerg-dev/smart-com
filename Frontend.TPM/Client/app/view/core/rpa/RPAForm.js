@@ -55,7 +55,7 @@ Ext.define('App.view.core.rpa.RPAForm', {
 							 }
 						},
 						listeners: {
-							select: function(combo, record){								                   
+							select: function(combo, record){					                   
 								let paramFieldSet = Ext.getCmp('params');
 								let templateLink = Ext.getCmp('templateLink');
 								templateLink.getEl().clearListeners();
@@ -94,6 +94,7 @@ Ext.define('App.view.core.rpa.RPAForm', {
 											}
 										});
 									});
+									Ext.getCmp('rpaType').setValue(JSON.parse(record[0].data['Json'])["type"]);
 									const parametrs = JSON.parse(record[0].data['Json'])["parametrs"];
 									if(parametrs && parametrs.length>0) {                           
 											Ext.Array.each(parametrs,function(element,index){
@@ -167,6 +168,11 @@ Ext.define('App.view.core.rpa.RPAForm', {
 					vtype: 'filePass',
 					ui: 'default',
 					labelWidth: '10%'
+				}, {
+					xtype: 'hiddenfield',
+					name: 'rpaType',
+					id: 'rpaType',
+					value: ''
 				}]
 		}]
 	}]
