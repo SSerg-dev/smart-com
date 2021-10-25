@@ -2572,6 +2572,10 @@
     <Compile Include="Migrations\202108200756196_Empty_PLU.Designer.cs">
       <DependentUpon>202108200756196_Empty_PLU.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202110251839422_Add_CopyScenario_Tables.cs" />
+    <Compile Include="Migrations\202110251839422_Add_CopyScenario_Tables.Designer.cs">
+      <DependentUpon>202110251839422_Add_CopyScenario_Tables.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\2021\202106300726289_202106301025001_Drop_Client.cs" />
     <Compile Include="Migrations\2021\202106300726289_202106301025001_Drop_Client.Designer.cs">
       <DependentUpon>202106300726289_202106301025001_Drop_Client.cs</DependentUpon>
@@ -4991,6 +4995,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202108200756196_Empty_PLU.resx">
       <DependentUpon>202108200756196_Empty_PLU.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202110251839422_Add_CopyScenario_Tables.resx">
+      <DependentUpon>202110251839422_Add_CopyScenario_Tables.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\2021\202106300726289_202106301025001_Drop_Client.resx">
       <DependentUpon>202106300726289_202106301025001_Drop_Client.cs</DependentUpon>
