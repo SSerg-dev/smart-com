@@ -27,6 +27,15 @@ using Newtonsoft.Json;
 using Module.Persist.TPM.Utils;
 using Frontend.Core.Extensions.Export;
 using Module.Frontend.TPM.Model;
+using Persist;
+using Looper.Core;
+using Looper.Parameters;
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Spreadsheet;
+using Utility.Azure;
+using Column = Frontend.Core.Extensions.Export.Column;
+using Module.Persist.TPM.CalculatePromoParametersModule;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -35,13 +44,14 @@ namespace Module.Frontend.TPM.Controllers
 		private readonly IAuthorizationManager authorizationManager;
 		private Core.Security.Models.UserInfo user;
 		private string role;
+		private Guid roleId;
 		private IList<Constraint> constraints;
 		public RPAsController(IAuthorizationManager authorizationManager)
 		{
 			this.authorizationManager = authorizationManager;
 			this.user = authorizationManager.GetCurrentUser();
 			this.role = authorizationManager.GetCurrentRoleName();
-			
+			this.roleId = this.user.Roles.ToList().Find(role => role.SystemName == this.role).Id.Value;
 		}
 
 		protected IQueryable<RPA> GetConstraintedQuery()
@@ -104,100 +114,220 @@ namespace Module.Frontend.TPM.Controllers
 			Context.Set<RPA>().Add(result);
 			try
 			{
-			   
-					int maxFileByteLength = 25000000;
 
-					if (!Request.Content.IsMimeMultipartContent())
-					{
-						throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
-					}
+				int maxFileByteLength = 25000000;
 
-					if (Request.Content.Headers.ContentLength > maxFileByteLength)
-					{
-						throw new FileLoadException("The file size must be less than 25mb.");
-					}
-					
-					
-					//Save file
-					string directory = Core.Settings.AppSettingsManager.GetSetting("RPA_DIRECTORY", "RPAFiles");
-				
-					string fileName = Task<string>.Run(async () => await FileUtility.UploadFile(Request, directory)).Result;
+				if (!Request.Content.IsMimeMultipartContent())
+				{
+					throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+				}
 
-					// Save RPA
+				if (Request.Content.Headers.ContentLength > maxFileByteLength)
+				{
+					throw new FileLoadException("The file size must be less than 25mb.");
+				}
 
-					result.Constraint = String.Join(";", this.constraints.Select(x => x.Value).ToArray());
-					result.CreateDate = DateTime.UtcNow;
-					string fileURL = AppSettingsManager.GetSetting("RPA_UPLOAD_DOWNLOAD_FILE_URL", "");
-					result.FileURL = $"<a href='{fileURL}{Path.GetFileName(fileName)}' download>Download file</a>";                    
-					var resultSaveChanges = Context.SaveChanges();
 
-					//Call Pipe
-					string tenantID = AppSettingsManager.GetSetting("RPA_UPLOAD_TENANT_ID", "");
-					string applicationId = AppSettingsManager.GetSetting("RPA_UPLOAD_APPLICATION_ID", "");
-					string authenticationKey = AppSettingsManager.GetSetting("RPA_UPLOAD_AUTHENTICATION_KEY", "");
-					string subscriptionId = AppSettingsManager.GetSetting("RPA_UPLOAD_SUBSCRIPTION_ID", "");
-					string resourceGroup = AppSettingsManager.GetSetting("RPA_UPLOAD_RESOURCE_GROUP", "");
-					string dataFactoryName = AppSettingsManager.GetSetting("RPA_UPLOAD_DATA_FACTORY_NAME", "");
-					string pipelineName = "";
-					Dictionary<string, object> parameters = null;
-					switch (rpaType)
-					{
-						case "Actuals":
-							pipelineName = "JUPITER_RPA_UPLOAD_ACTUALS_PIPE";
-							parameters = new Dictionary<string, object>
+				//Save file
+				string directory = Core.Settings.AppSettingsManager.GetSetting("RPA_DIRECTORY", "RPAFiles");
+
+				string fileName = Task<string>.Run(async () => await FileUtility.UploadFile(Request, directory)).Result;
+
+				// Save RPA
+
+				result.Constraint = String.Join(";", this.constraints.Select(x => x.Value).ToArray());
+				result.CreateDate = DateTime.UtcNow;
+				string fileURL = AppSettingsManager.GetSetting("RPA_UPLOAD_DOWNLOAD_FILE_URL", "");
+				result.FileURL = $"<a href='{fileURL}{Path.GetFileName(fileName)}' download>Download file</a>";
+				var resultSaveChanges = Context.SaveChanges();
+
+				//Call Pipe
+				string tenantID = AppSettingsManager.GetSetting("RPA_UPLOAD_TENANT_ID", "");
+				string applicationId = AppSettingsManager.GetSetting("RPA_UPLOAD_APPLICATION_ID", "");
+				string authenticationKey = AppSettingsManager.GetSetting("RPA_UPLOAD_AUTHENTICATION_KEY", "");
+				string subscriptionId = AppSettingsManager.GetSetting("RPA_UPLOAD_SUBSCRIPTION_ID", "");
+				string resourceGroup = AppSettingsManager.GetSetting("RPA_UPLOAD_RESOURCE_GROUP", "");
+				string dataFactoryName = AppSettingsManager.GetSetting("RPA_UPLOAD_DATA_FACTORY_NAME", "");
+				string pipelineName = "";
+				Dictionary<string, object> parameters = null;
+				switch (rpaType)
+				{
+					case "Actuals":
+						pipelineName = "JUPITER_RPA_UPLOAD_ACTUALS_PIPE";
+						parameters = new Dictionary<string, object>
 										{
 											{ "FileName", Path.GetFileName(fileName) },
 											{ "UserRoleName", this.user.GetCurrentRole().SystemName },
 											{ "UserId", this.user.Id },
 										};
-							break;
-						case "Events":
-							pipelineName = "JUPITER_RPA_UPLOAD_PIPE";
-							parameters = new Dictionary<string, object>
+						break;
+					case "Events":
+						pipelineName = "JUPITER_RPA_UPLOAD_PIPE";
+						parameters = new Dictionary<string, object>
 									{
 										{ "FileName", Path.GetFileName(fileName) },
 										{ "RPAId", result.Id },
 										{ "UserRoleName", this.user.GetCurrentRole().SystemName },
 										{ "UserId", this.user.Id },
 									};
-							break;
+						break;
+				}
+				//Распарсить ексельку и вытащить id промо
+				var listPromoId = ParseExcelTemplate(fileName);
+				//Вызвать блокировку promo и затем вызвать создание Task
+				Guid handlerId = Guid.NewGuid();
+
+				foreach (Guid promoId in listPromoId)
+				{
+					if (BlockPromo(promoId, handlerId, Context))
+					{
+						CreateTaskCalculateActual(promoId, handlerId, Context);
 					}
-					try
-						{
-							var context = new AuthenticationContext("https://login.microsoftonline.com/" + tenantID);
-							ClientCredential cc = new ClientCredential(applicationId, authenticationKey);
-							AuthenticationResult authenticationResult = context.AcquireTokenAsync(
-								"https://management.azure.com/", cc).Result;
-							ServiceClientCredentials cred = new TokenCredentials(authenticationResult.AccessToken);
-							var client = new DataFactoryManagementClient(cred)
-							{
-								SubscriptionId = subscriptionId
-							};
-							
-							CreateRunResponse runResponse = client.Pipelines.CreateRunWithHttpMessagesAsync(
-								resourceGroup, dataFactoryName, pipelineName, parameters: parameters
-							).Result.Body;
+				}
+			//try
+			//		{
+			//				var context = new AuthenticationContext("https://login.microsoftonline.com/" + tenantID);
+			//				ClientCredential cc = new ClientCredential(applicationId, authenticationKey);
+			//				AuthenticationResult authenticationResult = context.AcquireTokenAsync(
+			//					"https://management.azure.com/", cc).Result;
+			//				ServiceClientCredentials cred = new TokenCredentials(authenticationResult.AccessToken);
+			//				var client = new DataFactoryManagementClient(cred)
+			//				{
+			//					SubscriptionId = subscriptionId
+			//				};
 
-						}
-						catch (Exception ex)
-						{
-							result.Status = "Pipe not availabale";
-							Context.SaveChanges();
-							return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "RPA save and upload failure " + ex.Message }));
+			//				CreateRunResponse runResponse = client.Pipelines.CreateRunWithHttpMessagesAsync(
+			//					resourceGroup, dataFactoryName, pipelineName, parameters: parameters
+			//				).Result.Body;
 
-						}
+			//			}
+			//	catch (Exception ex)
+			//	{
+			//				result.Status = "Pipe not availabale";
+			//				Context.SaveChanges();
+			//				return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "RPA save and upload failure " + ex.Message }));
 
-            }
+			//	}
+
+			}
 			catch (Exception e)
 			{
 				return GetErorrRequest(e);
-				
+
 			}
 
-			return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, message = "RPA save and upload done." }));
+            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, message = "RPA save and upload done." }));
 		}
 
-        [ClaimsAuthorize]
+
+		private IEnumerable<Guid> ParseExcelTemplate(string template) 
+		{
+			List<Guid> resultList = new List<Guid>();
+			SpreadsheetDocument book;
+			var stringPath = Path.GetDirectoryName(template);
+			var stringName = Path.GetFileName(template);
+			book = SpreadsheetDocument.Open(template, false);
+			//byte[] resAzure = AzureBlobHelper.ReadExcelFromBlob(stringPath.Split('\\').Last(), stringName);
+			//if (resAzure.Length == 0)
+			//{
+			//	book = SpreadsheetDocument.Open(template, false);
+			//}
+			//else
+			//{
+			//	book = SpreadsheetDocument.Open(new MemoryStream(resAzure), false);
+			//}
+			WorkbookPart workbookPart = book.WorkbookPart;
+			WorksheetPart worksheetPart = workbookPart.WorksheetParts.First();
+
+			OpenXmlReader reader = OpenXmlReader.Create(worksheetPart);
+			SheetData sheetData = worksheetPart.Worksheet.Elements<SheetData>().First();
+			int promoNumber;
+			foreach (Row r in sheetData.Elements<Row>())
+			{
+                if (r.RowIndex != 1) { 
+					Cell c = r.Elements<Cell>().ElementAt(0);
+					if (Int32.TryParse(c.CellValue.Text, out promoNumber)) { 
+						var promo = Context.Set<Promo>().FirstOrDefault(p => p.Number == promoNumber && !p.Disabled);
+                        if (promo != null) {
+							resultList.Add(promo.Id);
+						}
+					}
+				}
+			}
+			return resultList;
+		}
+
+		private bool BlockPromo(Guid promoId, Guid handlerId, DatabaseContext context, bool safe = false)
+		{
+			bool promoAvaible = false;
+
+			try
+			{
+				promoAvaible = !context.Set<BlockedPromo>().Any(n => n.PromoId == promoId && !n.Disabled);
+
+				if (promoAvaible)
+				{
+					BlockedPromo bp = new BlockedPromo
+					{
+						Id = Guid.NewGuid(),
+						PromoId = promoId,
+						HandlerId = handlerId,
+						CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+						Disabled = false,
+					};
+
+					context.Set<BlockedPromo>().Add(bp);
+					context.SaveChanges();
+				}
+			}
+			catch
+			{
+				promoAvaible = false;
+			}
+
+			return safe ? safe : promoAvaible;
+		}
+
+		/// <summary>
+		/// Создание отложенной задачи, выполняющей расчет фактических параметров продуктов и промо
+		/// </summary>
+		/// <param name="promoId">ID промо</param>
+		private void CreateTaskCalculateActual(Guid promoId, Guid handlerId, DatabaseContext context)
+		{
+			// к этому моменту промо уже заблокировано
+
+			HandlerData data = new HandlerData();
+			HandlerDataHelper.SaveIncomingArgument("PromoId", promoId, data, visible: false, throwIfNotExists: false);
+			HandlerDataHelper.SaveIncomingArgument("UserId", user.Id, data, visible: false, throwIfNotExists: false);
+			HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+			HandlerDataHelper.SaveIncomingArgument("needRedistributeLSV", true, data, visible: false, throwIfNotExists: false);
+
+			LoopHandler handler = new LoopHandler()
+			{
+				Id = Guid.NewGuid(),
+				ConfigurationName = "PROCESSING",
+				Status= "INPROGRESS",
+				Description = "Calculate actual parameters",
+				Name = "Module.Host.TPM.Handlers.CalculateActualParamatersHandler",
+				ExecutionPeriod = null,
+				CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+				LastExecutionDate = null,
+				NextExecutionDate = null,
+				ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+				UserId = user.Id,
+				RoleId = roleId
+			};
+
+			BlockedPromo bp = context.Set<BlockedPromo>().First(n => n.PromoId == promoId && !n.Disabled);
+			bp.HandlerId = handler.Id;
+
+			handler.SetParameterData(data);
+			context.LoopHandlers.Add(handler);
+			context.SaveChanges();
+			
+		}
+
+		[ClaimsAuthorize]
         public IHttpActionResult DownloadTemplateXLSX()
         {
             try

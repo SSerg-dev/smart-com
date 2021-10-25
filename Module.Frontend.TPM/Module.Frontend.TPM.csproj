@@ -256,6 +256,7 @@
     <Reference Include="WebGrease, Version=1.5.2.14234, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.21.05140346\lib\net451\WebGrease.dll</HintPath>
     </Reference>
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Client\controller\tpm\pludictionary\HistoricalPLUDictionary.js" />
