@@ -58,7 +58,7 @@ Ext.define('App.view.core.rpa.RPAForm', {
 							select: function(combo, record){					                   
 								let paramFieldSet = Ext.getCmp('params');
 								let templateLink = Ext.getCmp('templateLink');
-								templateLink.getEl().clearListeners();
+								Ext.get('importLink').clearListeners();
 								if(paramFieldSet['items']['items'].length>0)
 								{
 									paramFieldSet.removeAll();
@@ -71,7 +71,7 @@ Ext.define('App.view.core.rpa.RPAForm', {
 										target : panel
 									});
 									templateLink.setVisible(true);
-									templateLink.getEl().addListener('click', function() {
+									Ext.get('importLink').addListener('click', function() {
 									myMask.show();
 									var url = Ext.String.format("odata/{0}/{1}", 'RPAs', 'DownloadTemplateXLSX');
 									Ext.Ajax.request({   
@@ -138,7 +138,7 @@ Ext.define('App.view.core.rpa.RPAForm', {
 					}, {
 						xtype: 'label',
 						glyph: 0xf21d,
-						html: '<span style="cursor:pointer; color:blue; text-decoration:underline;">Import template XLSX</span>',
+						html: '<span id="importLink" style="cursor:pointer; color:blue; text-decoration:underline;">Import template XLSX</span>',
 						id: "templateLink",
 						hidden: true,
 						style: {
