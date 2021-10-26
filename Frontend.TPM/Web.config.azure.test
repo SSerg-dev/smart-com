@@ -59,7 +59,16 @@
     <add key="SCENARIO_REGION" value="East US 2" />
     <add key="SCENARIO_DATA_FACTORY_NAME" value="russiapetcarejupiterdevadf" />
     <add key="SCENARIO_PIPELINE_NAME" value="JUPITER_CLIENT_PROMO_COPY_PIPE" />
-    <!--AzureAD authentication-->
+	<!--RPA-->
+	<add key="RPA_UPLOAD_TENANT_ID" value="2fc13e34-f03f-498b-982a-7cb446e25bc6" />
+	<add key="RPA_UPLOAD_APPLICATION_ID" value="6f231dc9-7560-4d58-8655-a9fec42cac17" />
+	<add key="RPA_UPLOAD_AUTHENTICATION_KEY" value="kKOHIvUL0nKvtQ4e2Fn53RvYLba5Ne7/pKphScyEg8c=" />
+	<add key="RPA_UPLOAD_SUBSCRIPTION_ID" value="066fc627-241c-4166-b66f-70f51b9b4b95" />
+	<add key="RPA_UPLOAD_RESOURCE_GROUP" value="RUSSIA-PETCARE-JUPITER-DEV-RG" />
+	<add key="RPA_UPLOAD_REGION" value="East US 2" />
+	<add key="RPA_UPLOAD_DATA_FACTORY_NAME" value="russiapetcarejupiterdevadf" />
+	<add key="RPA_UPLOAD_DOWNLOAD_FILE_URL" value="https://jupitertestawa.azurewebsites.net/odata/RPAs/DownloadFile?fileName=" />
+	  <!--AzureAD authentication-->
     <add key="ADidaClientId" value="6143a5e4-4eed-4597-a86b-107c13e4527e" />
     <add key="ADidaClientSecret" value="i2hrp5-HjD0EZ25EP_~W8v2uOG9P-5OPr8" />
     <add key="KVnameOfDatabaseContext" value="russiapetcarejupitersqldbcs" />

@@ -160,6 +160,7 @@ namespace Module.Frontend.TPM.Controllers
 											{ "UserRoleName", this.user.GetCurrentRole().SystemName },
 											{ "UserId", this.user.Id },
 										};
+						var res = Task<IHttpActionResult>.Run(async () => await CreatePipeForActualsAsync(fileName, tenantID, applicationId, authenticationKey, subscriptionId, resourceGroup, dataFactoryName, result.Id, pipelineName, parameters)).Result;
 						break;
 					case "Events":
 						pipelineName = "JUPITER_RPA_UPLOAD_PIPE";
@@ -170,44 +171,9 @@ namespace Module.Frontend.TPM.Controllers
 										{ "UserRoleName", this.user.GetCurrentRole().SystemName },
 										{ "UserId", this.user.Id },
 									};
+						CreatePipeForEvents(tenantID, applicationId, authenticationKey, subscriptionId, resourceGroup, dataFactoryName, pipelineName, parameters);
 						break;
 				}
-				//Распарсить ексельку и вытащить id промо
-				var listPromoId = ParseExcelTemplate(fileName);
-				//Вызвать блокировку promo и затем вызвать создание Task
-				Guid handlerId = Guid.NewGuid();
-
-				foreach (Guid promoId in listPromoId)
-				{
-					if (BlockPromo(promoId, handlerId, Context))
-					{
-						CreateTaskCalculateActual(promoId, handlerId, Context);
-					}
-				}
-			//try
-			//		{
-			//				var context = new AuthenticationContext("https://login.microsoftonline.com/" + tenantID);
-			//				ClientCredential cc = new ClientCredential(applicationId, authenticationKey);
-			//				AuthenticationResult authenticationResult = context.AcquireTokenAsync(
-			//					"https://management.azure.com/", cc).Result;
-			//				ServiceClientCredentials cred = new TokenCredentials(authenticationResult.AccessToken);
-			//				var client = new DataFactoryManagementClient(cred)
-			//				{
-			//					SubscriptionId = subscriptionId
-			//				};
-
-			//				CreateRunResponse runResponse = client.Pipelines.CreateRunWithHttpMessagesAsync(
-			//					resourceGroup, dataFactoryName, pipelineName, parameters: parameters
-			//				).Result.Body;
-
-			//			}
-			//	catch (Exception ex)
-			//	{
-			//				result.Status = "Pipe not availabale";
-			//				Context.SaveChanges();
-			//				return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "RPA save and upload failure " + ex.Message }));
-
-			//	}
 
 			}
 			catch (Exception e)
@@ -219,6 +185,74 @@ namespace Module.Frontend.TPM.Controllers
             return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, message = "RPA save and upload done." }));
 		}
 
+
+		private IHttpActionResult CreatePipeForEvents(string tenantID, string applicationId, string authenticationKey,	string subscriptionId, string resourceGroup, string dataFactoryName, string pipelineName, Dictionary<string, object> parameters)
+        {
+            try
+            {
+                var context = new AuthenticationContext("https://login.microsoftonline.com/" + tenantID);
+                ClientCredential cc = new ClientCredential(applicationId, authenticationKey);
+                AuthenticationResult authenticationResult = context.AcquireTokenAsync(
+                    "https://management.azure.com/", cc).Result;
+                ServiceClientCredentials cred = new TokenCredentials(authenticationResult.AccessToken);
+                var client = new DataFactoryManagementClient(cred)
+                {
+                    SubscriptionId = subscriptionId
+                };
+
+                CreateRunResponse runResponse = client.Pipelines.CreateRunWithHttpMessagesAsync(
+                    resourceGroup, dataFactoryName, pipelineName, parameters: parameters
+                ).Result.Body;
+
+            }
+            catch (Exception ex)
+            {   
+                
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "Pipe start failure " + ex.Message }));
+
+            }
+			return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, message = "Pipe started successfull" }));
+		}
+
+		private async Task<IHttpActionResult> CreatePipeForActualsAsync(string fileName, string tenantID, string applicationId, string authenticationKey, string subscriptionId, string resourceGroup, string dataFactoryName, Guid rpaId, string pipelineName, Dictionary<string, object> parameters)
+		{
+			//Распарсить ексельку и вытащить id промо
+			var listPromoId = ParseExcelTemplate(fileName);
+			//Вызвать блокировку promo и затем вызвать создание Task
+			Guid handlerId = Guid.NewGuid();
+
+			foreach (Guid promoId in listPromoId)
+			{
+				if (BlockPromoAsync(promoId, handlerId, Context))
+				{
+					CreateTaskCalculateActual(promoId, handlerId, Context, rpaId);
+				}
+			}
+			try
+			{
+				var context = new AuthenticationContext("https://login.microsoftonline.com/" + tenantID);
+				ClientCredential cc = new ClientCredential(applicationId, authenticationKey);
+				AuthenticationResult authenticationResult = context.AcquireTokenAsync(
+					"https://management.azure.com/", cc).Result;
+				ServiceClientCredentials cred = new TokenCredentials(authenticationResult.AccessToken);
+				var client = new DataFactoryManagementClient(cred)
+				{
+					SubscriptionId = subscriptionId
+				};
+
+				var runResponse = client.Pipelines.CreateRunWithHttpMessagesAsync(
+					resourceGroup, dataFactoryName, pipelineName, parameters: parameters).Result;
+
+			}
+			catch (Exception ex)
+			{
+				
+				return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "Pipe start failure " + ex.Message }));
+
+			}
+			return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, message = "Pipe started successfull" }));
+
+		}
 
 		private IEnumerable<Guid> ParseExcelTemplate(string template) 
 		{
@@ -257,7 +291,7 @@ namespace Module.Frontend.TPM.Controllers
 			return resultList;
 		}
 
-		private bool BlockPromo(Guid promoId, Guid handlerId, DatabaseContext context, bool safe = false)
+		private bool BlockPromoAsync(Guid promoId, Guid handlerId, DatabaseContext context, bool safe = false)
 		{
 			bool promoAvaible = false;
 
@@ -292,7 +326,7 @@ namespace Module.Frontend.TPM.Controllers
 		/// Создание отложенной задачи, выполняющей расчет фактических параметров продуктов и промо
 		/// </summary>
 		/// <param name="promoId">ID промо</param>
-		private void CreateTaskCalculateActual(Guid promoId, Guid handlerId, DatabaseContext context)
+		private void CreateTaskCalculateActual(Guid promoId, Guid handlerId, DatabaseContext context, Guid rpaId)
 		{
 			// к этому моменту промо уже заблокировано
 
@@ -321,8 +355,14 @@ namespace Module.Frontend.TPM.Controllers
 			BlockedPromo bp = context.Set<BlockedPromo>().First(n => n.PromoId == promoId && !n.Disabled);
 			bp.HandlerId = handler.Id;
 
+
 			handler.SetParameterData(data);
 			context.LoopHandlers.Add(handler);
+
+			string insertScript = String.Format("INSERT INTO [RPA_Setting].[PARAMETERS] ([PipeRunId],[TasksToComplete],) VALUES ('{0}', '{1}')", rpaId, handler.Name);
+
+			context.ExecuteSqlCommand(insertScript);
+
 			context.SaveChanges();
 			
 		}
@@ -357,9 +397,6 @@ namespace Module.Frontend.TPM.Controllers
             }
 
         }
-
-
-
 
         [ClaimsAuthorize]
 		[HttpGet]
