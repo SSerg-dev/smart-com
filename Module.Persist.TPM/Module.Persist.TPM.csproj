@@ -2592,6 +2592,10 @@
     <Compile Include="Migrations\202109281306592_RPASettingAddAP.Designer.cs">
       <DependentUpon>202109281306592_RPASettingAddAP.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202110260851236_RPA_AddProcedure.cs" />
+    <Compile Include="Migrations\202110260851236_RPA_AddProcedure.Designer.cs">
+      <DependentUpon>202110260851236_RPA_AddProcedure.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\2021\202106300726289_202106301025001_Drop_Client.cs" />
     <Compile Include="Migrations\2021\202106300726289_202106301025001_Drop_Client.Designer.cs">
       <DependentUpon>202106300726289_202106301025001_Drop_Client.cs</DependentUpon>
@@ -5044,6 +5048,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202109281306592_RPASettingAddAP.resx">
       <DependentUpon>202109281306592_RPASettingAddAP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202110260851236_RPA_AddProcedure.resx">
+      <DependentUpon>202110260851236_RPA_AddProcedure.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\2021\202106300726289_202106301025001_Drop_Client.resx">
       <DependentUpon>202106300726289_202106301025001_Drop_Client.cs</DependentUpon>
