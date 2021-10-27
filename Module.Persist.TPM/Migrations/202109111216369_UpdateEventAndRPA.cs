@@ -8,8 +8,12 @@ namespace Module.Persist.TPM.Migrations
     {
         public override void Up()
         {
-            var defaultSchema = AppSettingsManager.GetSetting<string>("DefaultSchema", "dbo");
-            Sql($@"
+			var defaultSchema = AppSettingsManager.GetSetting<string>("DefaultSchema", "dbo");
+			UpdateRPAStatus = UpdateRPAStatus.Replace("DefaultSchemaSetting", defaultSchema);
+			UpdateEventByPromo = UpdateEventByPromo.Replace("DefaultSchemaSetting", defaultSchema);
+			UpdateRPA = UpdateRPA.Replace("DefaultSchemaSetting", defaultSchema);
+
+			Sql($@"
                     {UpdateRPAStatus}
                     go
 					{UpdateEventByPromo}
@@ -25,8 +29,8 @@ namespace Module.Persist.TPM.Migrations
         }
 
         private string UpdateRPAStatus =
-			@"
-                CREATE OR ALTER PROCEDURE [Jupiter].[RpaPipeEvent_UpdateRPAStatus]
+			$@"
+                CREATE OR ALTER PROCEDURE [DefaultSchemaSetting].[RpaPipeEvent_UpdateRPAStatus]
                 (   
 	                @RPAId nvarchar(max),
 					@Status nvarchar(max)
@@ -47,7 +51,7 @@ namespace Module.Persist.TPM.Migrations
 
         private string UpdateEventByPromo =
 			@"
-                CREATE OR ALTER PROCEDURE [Jupiter].[RpaPipeEvent_UpdateEventByPromo]
+                CREATE OR ALTER PROCEDURE [DefaultSchemaSetting].[RpaPipeEvent_UpdateEventByPromo]
                  (
                    @RunPipeId nvarchar(max),
 				   @Shema nvarchar(max),
@@ -111,7 +115,7 @@ namespace Module.Persist.TPM.Migrations
 
         private string UpdateRPA =
 			@"
-                CREATE OR ALTER PROCEDURE [Jupiter].[RpaPipeEvent_UpdateRPA]
+                CREATE OR ALTER PROCEDURE [DefaultSchemaSetting].[RpaPipeEvent_UpdateRPA]
                 (   
 	                @RPAId nvarchar(max),
 	                @RunPipeId nvarchar(max)
