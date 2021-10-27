@@ -46,6 +46,7 @@ namespace Module.Frontend.TPM.Controllers
 		private string role;
 		private Guid roleId;
 		private IList<Constraint> constraints;
+		private static object locker = new object();
 		public RPAsController(IAuthorizationManager authorizationManager)
 		{
 			this.authorizationManager = authorizationManager;
@@ -97,7 +98,7 @@ namespace Module.Frontend.TPM.Controllers
 
 		[ClaimsAuthorize]
 		[HttpPost]
-		public IHttpActionResult SaveRPA()
+		public async Task<IHttpActionResult> SaveRPA()
 		{
 			if (!ModelState.IsValid)
 			{
@@ -160,7 +161,8 @@ namespace Module.Frontend.TPM.Controllers
 											{ "UserRoleName", this.user.GetCurrentRole().SystemName },
 											{ "UserId", this.user.Id },
 										};
-						var res = Task<IHttpActionResult>.Run(async () => await CreatePipeForActualsAsync(fileName, tenantID, applicationId, authenticationKey, subscriptionId, resourceGroup, dataFactoryName, result.Id, pipelineName, parameters)).Result;
+						await CreateCalculationTaskAsync(fileName, result.Id);
+						CreatePipeForActuals(tenantID, applicationId, authenticationKey, subscriptionId, resourceGroup, dataFactoryName, pipelineName, parameters);
 						break;
 					case "Events":
 						pipelineName = "JUPITER_RPA_UPLOAD_PIPE";
@@ -182,52 +184,12 @@ namespace Module.Frontend.TPM.Controllers
 
 			}
 
-            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, message = "RPA save and upload done." }));
+			return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, message = "RPA save and upload done." }));
 		}
 
 
-		private IHttpActionResult CreatePipeForEvents(string tenantID, string applicationId, string authenticationKey,	string subscriptionId, string resourceGroup, string dataFactoryName, string pipelineName, Dictionary<string, object> parameters)
-        {
-            try
-            {
-                var context = new AuthenticationContext("https://login.microsoftonline.com/" + tenantID);
-                ClientCredential cc = new ClientCredential(applicationId, authenticationKey);
-                AuthenticationResult authenticationResult = context.AcquireTokenAsync(
-                    "https://management.azure.com/", cc).Result;
-                ServiceClientCredentials cred = new TokenCredentials(authenticationResult.AccessToken);
-                var client = new DataFactoryManagementClient(cred)
-                {
-                    SubscriptionId = subscriptionId
-                };
-
-                CreateRunResponse runResponse = client.Pipelines.CreateRunWithHttpMessagesAsync(
-                    resourceGroup, dataFactoryName, pipelineName, parameters: parameters
-                ).Result.Body;
-
-            }
-            catch (Exception ex)
-            {   
-                
-                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "Pipe start failure " + ex.Message }));
-
-            }
-			return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, message = "Pipe started successfull" }));
-		}
-
-		private async Task<IHttpActionResult> CreatePipeForActualsAsync(string fileName, string tenantID, string applicationId, string authenticationKey, string subscriptionId, string resourceGroup, string dataFactoryName, Guid rpaId, string pipelineName, Dictionary<string, object> parameters)
+		private IHttpActionResult CreatePipeForEvents(string tenantID, string applicationId, string authenticationKey, string subscriptionId, string resourceGroup, string dataFactoryName, string pipelineName, Dictionary<string, object> parameters)
 		{
-			//Распарсить ексельку и вытащить id промо
-			var listPromoId = ParseExcelTemplate(fileName);
-			//Вызвать блокировку promo и затем вызвать создание Task
-			Guid handlerId = Guid.NewGuid();
-
-			foreach (Guid promoId in listPromoId)
-			{
-				if (BlockPromoAsync(promoId, handlerId, Context))
-				{
-					CreateTaskCalculateActual(promoId, handlerId, Context, rpaId);
-				}
-			}
 			try
 			{
 				var context = new AuthenticationContext("https://login.microsoftonline.com/" + tenantID);
@@ -240,21 +202,47 @@ namespace Module.Frontend.TPM.Controllers
 					SubscriptionId = subscriptionId
 				};
 
-				var runResponse = client.Pipelines.CreateRunWithHttpMessagesAsync(
-					resourceGroup, dataFactoryName, pipelineName, parameters: parameters).Result;
+				CreateRunResponse runResponse = client.Pipelines.CreateRunWithHttpMessagesAsync(
+					resourceGroup, dataFactoryName, pipelineName, parameters: parameters
+				).Result.Body;
 
 			}
 			catch (Exception ex)
 			{
-				
+
 				return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "Pipe start failure " + ex.Message }));
 
 			}
 			return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, message = "Pipe started successfull" }));
-
 		}
 
-		private IEnumerable<Guid> ParseExcelTemplate(string template) 
+		private IHttpActionResult CreatePipeForActuals(string tenantID, string applicationId, string authenticationKey, string subscriptionId, string resourceGroup, string dataFactoryName, string pipelineName, Dictionary<string, object> parameters)
+		{
+			try
+			{
+				var context = new AuthenticationContext("https://login.microsoftonline.com/" + tenantID);
+				ClientCredential cc = new ClientCredential(applicationId, authenticationKey);
+				AuthenticationResult authenticationResult = context.AcquireTokenAsync(
+					"https://management.azure.com/", cc).Result;
+				ServiceClientCredentials cred = new TokenCredentials(authenticationResult.AccessToken);
+				var client = new DataFactoryManagementClient(cred)
+				{
+					SubscriptionId = subscriptionId
+				};
+
+				CreateRunResponse runResponse = client.Pipelines.CreateRunWithHttpMessagesAsync(
+					resourceGroup, dataFactoryName, pipelineName, parameters: parameters
+				).Result.Body;
+
+			}
+			catch (Exception ex)
+			{
+				return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "Pipe start failure " + ex.Message }));
+			}
+			return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, message = "Pipe started successfull" }));
+		}
+
+		private IEnumerable<Guid> ParseExcelTemplate(string template)
 		{
 			List<Guid> resultList = new List<Guid>();
 			SpreadsheetDocument book;
@@ -278,11 +266,14 @@ namespace Module.Frontend.TPM.Controllers
 			int promoNumber;
 			foreach (Row r in sheetData.Elements<Row>())
 			{
-                if (r.RowIndex != 1) { 
+				if (r.RowIndex != 1)
+				{
 					Cell c = r.Elements<Cell>().ElementAt(0);
-					if (Int32.TryParse(c.CellValue.Text, out promoNumber)) { 
+					if (Int32.TryParse(c.CellValue.Text, out promoNumber))
+					{
 						var promo = Context.Set<Promo>().FirstOrDefault(p => p.Number == promoNumber && !p.Disabled);
-                        if (promo != null) {
+						if (promo != null)
+						{
 							resultList.Add(promo.Id);
 						}
 					}
@@ -291,27 +282,33 @@ namespace Module.Frontend.TPM.Controllers
 			return resultList;
 		}
 
-		private bool BlockPromoAsync(Guid promoId, Guid handlerId, DatabaseContext context, bool safe = false)
+		private bool BlockPromo(Guid promoId, Guid handlerId, bool safe = false)
 		{
 			bool promoAvaible = false;
 
 			try
 			{
-				promoAvaible = !context.Set<BlockedPromo>().Any(n => n.PromoId == promoId && !n.Disabled);
-
-				if (promoAvaible)
+				lock (locker)
 				{
-					BlockedPromo bp = new BlockedPromo
+					using (DatabaseContext context = new DatabaseContext())
 					{
-						Id = Guid.NewGuid(),
-						PromoId = promoId,
-						HandlerId = handlerId,
-						CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-						Disabled = false,
-					};
+						promoAvaible = !context.Set<BlockedPromo>().Any(n => n.PromoId == promoId && !n.Disabled);
 
-					context.Set<BlockedPromo>().Add(bp);
-					context.SaveChanges();
+						if (promoAvaible)
+						{
+							BlockedPromo bp = new BlockedPromo
+							{
+								Id = Guid.NewGuid(),
+								PromoId = promoId,
+								HandlerId = handlerId,
+								CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+								Disabled = false,
+							};
+
+							context.Set<BlockedPromo>().Add(bp);
+							context.SaveChanges();
+						}
+					}
 				}
 			}
 			catch
@@ -319,86 +316,102 @@ namespace Module.Frontend.TPM.Controllers
 				promoAvaible = false;
 			}
 
-			return safe ? safe : promoAvaible;
+			return promoAvaible;
 		}
 
 		/// <summary>
 		/// Создание отложенной задачи, выполняющей расчет фактических параметров продуктов и промо
 		/// </summary>
 		/// <param name="promoId">ID промо</param>
-		private void CreateTaskCalculateActual(Guid promoId, Guid handlerId, DatabaseContext context, Guid rpaId)
+		private async Task CreateHandlerAsync(Guid promoId, Guid rpaId)
 		{
 			// к этому моменту промо уже заблокировано
-
-			HandlerData data = new HandlerData();
-			HandlerDataHelper.SaveIncomingArgument("PromoId", promoId, data, visible: false, throwIfNotExists: false);
-			HandlerDataHelper.SaveIncomingArgument("UserId", user.Id, data, visible: false, throwIfNotExists: false);
-			HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
-			HandlerDataHelper.SaveIncomingArgument("needRedistributeLSV", true, data, visible: false, throwIfNotExists: false);
-
-			LoopHandler handler = new LoopHandler()
+			using (DatabaseContext context = new DatabaseContext())
 			{
-				Id = Guid.NewGuid(),
-				ConfigurationName = "PROCESSING",
-				Status= "INPROGRESS",
-				Description = "Calculate actual parameters",
-				Name = "Module.Host.TPM.Handlers.CalculateActualParamatersHandler",
-				ExecutionPeriod = null,
-				CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-				LastExecutionDate = null,
-				NextExecutionDate = null,
-				ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
-				UserId = user.Id,
-				RoleId = roleId
-			};
+				HandlerData data = new HandlerData();
+				HandlerDataHelper.SaveIncomingArgument("PromoId", promoId, data, visible: false, throwIfNotExists: false);
+				HandlerDataHelper.SaveIncomingArgument("UserId", user.Id, data, visible: false, throwIfNotExists: false);
+				HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+				HandlerDataHelper.SaveIncomingArgument("needRedistributeLSV", true, data, visible: false, throwIfNotExists: false);
 
-			BlockedPromo bp = context.Set<BlockedPromo>().First(n => n.PromoId == promoId && !n.Disabled);
-			bp.HandlerId = handler.Id;
+				LoopHandler handler = new LoopHandler()
+				{
+					Id = Guid.NewGuid(),
+					ConfigurationName = "PROCESSING",
+					Status = "INPROGRESS",
+					Description = "Calculate actual parameters",
+					Name = "Module.Host.TPM.Handlers.CalculateActualParamatersHandler",
+					ExecutionPeriod = null,
+					CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+					LastExecutionDate = null,
+					NextExecutionDate = null,
+					ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+					UserId = user.Id,
+					RoleId = roleId
+				};
+
+				handler.SetParameterData(data);
+				context.LoopHandlers.Add(handler);
+				await context.SaveChangesAsync();
+
+				string insertScript = String.Format("INSERT INTO RPA_Setting.[PARAMETERS] ([PipeRunId],[TasksToComplete]) VALUES ('{0}', '{1}')", rpaId, handler.Name);
+
+				await context.Database.ExecuteSqlCommandAsync(insertScript);
+			}
 
 
-			handler.SetParameterData(data);
-			context.LoopHandlers.Add(handler);
+		}
 
-			string insertScript = String.Format("INSERT INTO [RPA_Setting].[PARAMETERS] ([PipeRunId],[TasksToComplete],) VALUES ('{0}', '{1}')", rpaId, handler.Name);
+		private async Task CreateCalculationTaskAsync(string fileName, Guid rpaId)
+		{
+			//Распарсить ексельку и вытащить id промо
+			var listPromoId = ParseExcelTemplate(fileName);
 
-			context.ExecuteSqlCommand(insertScript);
 
-			context.SaveChanges();
-			
+			//Вызвать блокировку promo и затем вызвать создание Task
+			Guid handlerId = Guid.NewGuid();
+			foreach (Guid promoId in listPromoId)
+			{
+				if (BlockPromo(promoId, handlerId))
+				{
+					await CreateHandlerAsync(promoId, rpaId);
+
+				}
+			}
 		}
 
 		[ClaimsAuthorize]
-        public IHttpActionResult DownloadTemplateXLSX()
-        {
-            try
-            {
-                var currentRequest = HttpContext.Current.Request;
-                var handlerId = JsonConvert.DeserializeObject<string>(currentRequest.Params.Get("handlerId"));
-                Guid testId = Guid.Parse(handlerId);
-                RPASetting setting = Context.Set<RPASetting>()
-                    .First(s => s.Id == testId);
-                var columnHeaders = JsonConvert.DeserializeObject<RPAEventJsonField>(setting.Json).templateColumns;
-                var columns = columnHeaders.Select(c => JsonConvert.DeserializeObject<Column>(c.ToString()));
-                XLSXExporter exporter = new XLSXExporter(columns);
-                string exportDir = AppSettingsManager.GetSetting("EXPORT_DIRECTORY", "~/ExportFiles");
-                string filename = string.Format("{0}Template_{1}.xlsx", "RPA",DateTime.UtcNow.ToString("yyyyddMMHHmmss"));
-                if (!Directory.Exists(exportDir))
-                {
-                    Directory.CreateDirectory(exportDir);
-                }
-                string filePath = Path.Combine(exportDir, filename);
-                exporter.Export(Enumerable.Empty<RPA>(), filePath);
-                string file = Path.GetFileName(filePath);
-                return Content(HttpStatusCode.OK, file);
-            }
-            catch (Exception e)
-            {
-                return Content(HttpStatusCode.InternalServerError, e.Message);
-            }
+		public IHttpActionResult DownloadTemplateXLSX()
+		{
+			try
+			{
+				var currentRequest = HttpContext.Current.Request;
+				var handlerId = JsonConvert.DeserializeObject<string>(currentRequest.Params.Get("handlerId"));
+				Guid testId = Guid.Parse(handlerId);
+				RPASetting setting = Context.Set<RPASetting>()
+					.First(s => s.Id == testId);
+				var columnHeaders = JsonConvert.DeserializeObject<RPAEventJsonField>(setting.Json).templateColumns;
+				var columns = columnHeaders.Select(c => JsonConvert.DeserializeObject<Column>(c.ToString()));
+				XLSXExporter exporter = new XLSXExporter(columns);
+				string exportDir = AppSettingsManager.GetSetting("EXPORT_DIRECTORY", "~/ExportFiles");
+				string filename = string.Format("{0}Template_{1}.xlsx", "RPA", DateTime.UtcNow.ToString("yyyyddMMHHmmss"));
+				if (!Directory.Exists(exportDir))
+				{
+					Directory.CreateDirectory(exportDir);
+				}
+				string filePath = Path.Combine(exportDir, filename);
+				exporter.Export(Enumerable.Empty<RPA>(), filePath);
+				string file = Path.GetFileName(filePath);
+				return Content(HttpStatusCode.OK, file);
+			}
+			catch (Exception e)
+			{
+				return Content(HttpStatusCode.InternalServerError, e.Message);
+			}
 
-        }
+		}
 
-        [ClaimsAuthorize]
+		[ClaimsAuthorize]
 		[HttpGet]
 		[Route("odata/RPAs/DownloadFile")]
 		public HttpResponseMessage DownloadFile(string fileName)
