@@ -91,7 +91,7 @@
 		}
 		,{
 			"name":  "MongoUrl",
-			"value":  "mongodb://russiapetcarejupiterdevacdb:ryUE0H8d8VZ7LYZvap4UUo0CWHmosZ3Dyp1qpc9Eh6dxOqTE5am6h4kZsHH9SIln4gSHHkV2oWANXeXCzH605w==@russiapetcarejupiterdevacdb.mongo.cosmos.azure.com:10255/JupiterDevMongo?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@russiapetcarejupiterdevacdb@",
+			"value":  "mongodb://russiapetcarejupiterdev2acdb:DJtU4oVRev9IWZVDjuATJp2ez6Sr05ZvvRpbGcDhhll0kZIzTnT80Q7WQat6VYtVIM3ZFwccHYYoR9huSmP9EQ==@russiapetcarejupiterdev2acdb.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@russiapetcarejupiterdev2acdb@",
 			"contentType":  "",
 			"action":  "add",
 			"enabled": true
