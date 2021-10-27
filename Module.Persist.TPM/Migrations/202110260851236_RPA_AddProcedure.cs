@@ -13,6 +13,11 @@ namespace Module.Persist.TPM.Migrations
             Sql($@"
                 CREATE SCHEMA RPA_Setting
                 GO               
+                CREATE TABLE [RPA_Setting].[PARAMETERS](
+	            [RPAId] [uniqueidentifier] NOT NULL,
+	            [TasksToComplete] [nvarchar](max) NOT NULL
+                ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+                GO
                 CREATE PROCEDURE {defaultSchema}.[UpdatePromoProduct]
                 AS
                 BEGIN

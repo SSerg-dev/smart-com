@@ -282,7 +282,7 @@ namespace Module.Frontend.TPM.Controllers
 			return resultList;
 		}
 
-		private bool BlockPromo(Guid promoId, Guid handlerId, bool safe = false)
+		private bool BlockPromo(Guid promoId, bool safe = false)
 		{
 			bool promoAvaible = false;
 
@@ -300,7 +300,7 @@ namespace Module.Frontend.TPM.Controllers
 							{
 								Id = Guid.NewGuid(),
 								PromoId = promoId,
-								HandlerId = handlerId,
+								HandlerId = Guid.Empty,
 								CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
 								Disabled = false,
 							};
@@ -323,7 +323,7 @@ namespace Module.Frontend.TPM.Controllers
 		/// Создание отложенной задачи, выполняющей расчет фактических параметров продуктов и промо
 		/// </summary>
 		/// <param name="promoId">ID промо</param>
-		private async Task CreateHandlerAsync(Guid promoId, Guid rpaId)
+		private async Task<Guid> CreateHandlerAsync(Guid promoId, Guid rpaId)
 		{
 			// к этому моменту промо уже заблокировано
 			using (DatabaseContext context = new DatabaseContext())
@@ -350,34 +350,39 @@ namespace Module.Frontend.TPM.Controllers
 					RoleId = roleId
 				};
 
+				BlockedPromo bp = context.Set<BlockedPromo>().First(n => n.PromoId == promoId && !n.Disabled);
+				bp.HandlerId = handler.Id;
+				
 				handler.SetParameterData(data);
 				context.LoopHandlers.Add(handler);
+
 				await context.SaveChangesAsync();
-
-				string insertScript = String.Format("INSERT INTO RPA_Setting.[PARAMETERS] ([PipeRunId],[TasksToComplete]) VALUES ('{0}', '{1}')", rpaId, handler.Name);
-
-				await context.Database.ExecuteSqlCommandAsync(insertScript);
+				
+				return handler.Id;
 			}
-
-
 		}
 
 		private async Task CreateCalculationTaskAsync(string fileName, Guid rpaId)
 		{
+
+			List<Guid> handlerIds = new List<Guid>();
 			//Распарсить ексельку и вытащить id промо
 			var listPromoId = ParseExcelTemplate(fileName);
 
 
-			//Вызвать блокировку promo и затем вызвать создание Task
-			Guid handlerId = Guid.NewGuid();
+			//Вызвать блокировку promo и затем вызвать создание Task			
 			foreach (Guid promoId in listPromoId)
 			{
-				if (BlockPromo(promoId, handlerId))
+				if (BlockPromo(promoId))
 				{
-					await CreateHandlerAsync(promoId, rpaId);
-
+					var handlerId = await CreateHandlerAsync(promoId, rpaId);
+					handlerIds.Add(handlerId);
 				}
 			}
+			string insertScript = String.Format("INSERT INTO RPA_Setting.[PARAMETERS] ([RPAId],[TasksToComplete]) VALUES ('{0}', '{1}')", rpaId,
+				String.Join(",",handlerIds.Select(el=> $"'{el}'")));
+
+			await Context.Database.ExecuteSqlCommandAsync(insertScript);
 		}
 
 		[ClaimsAuthorize]
