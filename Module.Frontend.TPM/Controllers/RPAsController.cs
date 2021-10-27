@@ -248,7 +248,6 @@ namespace Module.Frontend.TPM.Controllers
 			SpreadsheetDocument book;
 			var stringPath = Path.GetDirectoryName(template);
 			var stringName = Path.GetFileName(template);
-			book = SpreadsheetDocument.Open(template, false);
             byte[] resAzure = AzureBlobHelper.ReadExcelFromBlob(stringPath.Split('\\').Last(), stringName);
             if (resAzure.Length == 0)
             {
