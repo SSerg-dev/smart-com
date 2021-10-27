@@ -158,6 +158,7 @@ namespace Module.Frontend.TPM.Controllers
 						parameters = new Dictionary<string, object>
 										{
 											{ "FileName", Path.GetFileName(fileName) },
+											{ "RPAId", result.Id },
 											{ "UserRoleName", this.user.GetCurrentRole().SystemName },
 											{ "UserId", this.user.Id },
 										};
