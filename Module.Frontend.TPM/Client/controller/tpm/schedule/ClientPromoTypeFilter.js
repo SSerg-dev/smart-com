@@ -271,7 +271,7 @@
         var name;
         checkedArray.forEach(function (el) {
             name = el.name.substr(0, el.name.indexOf(' '));
-            if (name != 'Regular' && name != 'InOut') {
+            if (name != 'Regular' && name != 'InOut' && name != 'Competitor') {
                 value.push('Other');
             } else {
                 value.push(name);

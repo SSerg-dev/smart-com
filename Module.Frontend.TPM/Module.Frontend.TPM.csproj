@@ -257,7 +257,7 @@
   <ItemGroup>
     <Content Include="Client\controller\tpm\competitorpromo\CompetitorPromo.js" />
     <Content Include="Client\controller\tpm\competitorpromo\DeletedCompetitorPromo.js" />
-    <Content Include="Client\controller\tpm\competitorpromo\HistoricalCompetitorBrandTech.js" />
+    <Content Include="Client\controller\tpm\competitorpromo\HistoricalCompetitorPromo.js" />
     <Content Include="Client\controller\tpm\competitor\Competitor.js" />
     <Content Include="Client\controller\tpm\competitor\DeletedCompetitor.js" />
     <Content Include="Client\controller\tpm\competitor\HistoricalCompetitor.js" />
@@ -296,11 +296,11 @@
     <Content Include="Client\model\tpm\rollingvolume\RollingVolume.js" />
     <Content Include="Client\util\MinHeightColumn.js" />
     <Content Include="Client\view\tpm\competitorpromo\CompetitorPromo.js" />
-    <Content Include="Client\view\tpm\competitorpromo\CompetitorBrandTechEditor.js" />
-    <Content Include="Client\view\tpm\competitorpromo\DeletedCompetitorBrandTech.js" />
-    <Content Include="Client\view\tpm\competitorpromo\DeletedCompetitorBrandTechDetail.js" />
-    <Content Include="Client\view\tpm\competitorpromo\HistoricalCompetitorBrandTech.js" />
-    <Content Include="Client\view\tpm\competitorpromo\HistoricalCompetitorBrandTechDetail.js" />
+    <Content Include="Client\view\tpm\competitorpromo\CompetitorPromoEditor.js" />
+    <Content Include="Client\view\tpm\competitorpromo\DeletedCompetitorPromo.js" />
+    <Content Include="Client\view\tpm\competitorpromo\DeletedCompetitorPromoDetail.js" />
+    <Content Include="Client\view\tpm\competitorpromo\HistoricalCompetitorPromo.js" />
+    <Content Include="Client\view\tpm\competitorpromo\HistoricalCompetitorPromoDetail.js" />
     <Content Include="Client\view\tpm\competitor\Competitor.js" />
     <Content Include="Client\view\tpm\competitor\DeletedCompetitor.js" />
     <Content Include="Client\view\tpm\competitor\DeletedCompetitorDetail.js" />

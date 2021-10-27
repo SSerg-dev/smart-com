@@ -47,7 +47,7 @@ namespace Module.Persist.TPM.Model.Import
 
         [ImportCSVColumn(ColumnNumber = 8)]
         [Display(Name = "Shelf price")]
-        public int ShelfPrice { get; set; }
+        public int Price { get; set; }
 
         [ImportCSVColumn(ColumnNumber = 9)]
         [Display(Name = "Subranges")]

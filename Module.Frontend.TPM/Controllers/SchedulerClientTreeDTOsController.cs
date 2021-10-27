@@ -68,9 +68,14 @@ namespace Module.Frontend.TPM.Controllers {
                 clientOtherType.TypeName = "Other";
                 clientOtherType.Id = clientOtherType.Id + 10003;
                 clientOtherType.InOutId = String.Format("{0}-3", stringId);
+                SchedulerClientTreeDTO clientCompetitor = (SchedulerClientTreeDTO)clientOtherType.Clone();
+                clientCompetitor.TypeName = "Competitor";
+                clientCompetitor.Id = clientCompetitor.Id + 10004;
+                clientCompetitor.InOutId = String.Format("{0}-4", stringId);
                 result.Add(clientDef);
                 result.Add(clientInOut);
                 result.Add(clientOtherType);
+                result.Add(clientCompetitor);
             }
             return result.AsQueryable();
         }
@@ -95,9 +100,14 @@ namespace Module.Frontend.TPM.Controllers {
                 clientOtherType.TypeName = "Other";
                 clientOtherType.Id = clientOtherType.Id + 10003;
                 clientOtherType.InOutId = String.Format("{0}-3", stringId);
+                SchedulerClientTreeDTO clientCompetitor = (SchedulerClientTreeDTO)clientOtherType.Clone();
+                clientCompetitor.TypeName = "Competitor";
+                clientCompetitor.Id = clientCompetitor.Id + 10004;
+                clientCompetitor.InOutId = String.Format("{0}-4", stringId);
                 result.Add(clientDef);
                 result.Add(clientInOut);
                 result.Add(clientOtherType);
+                result.Add(clientCompetitor);
             }
 
             var query = result.AsQueryable();

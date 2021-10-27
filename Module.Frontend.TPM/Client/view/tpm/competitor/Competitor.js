@@ -157,14 +157,8 @@
             xtype: 'singlelinedisplayfield',
             name: 'Name',
             fieldLabel: l10n.ns('tpm', 'Competitor').value('Name'),
-            minValue: 0,
-            maxValue: 100,
             readOnly: true,
-            allowBlank: false,
-            listeners: {
-                change: function (newValue, oldValue) {
-                }
-            }
+            allowBlank: false
         }]
 
     }]

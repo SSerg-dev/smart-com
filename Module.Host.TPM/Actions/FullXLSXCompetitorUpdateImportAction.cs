@@ -58,7 +58,7 @@ namespace Module.Host.TPM.Actions
             Quote = settings.Quote;
             HasHeader = settings.HasHeader;
 
-            AllowPartialApply = false;
+            AllowPartialApply = true;
             logger = LogManager.GetCurrentClassLogger();
         }
 
@@ -267,42 +267,20 @@ namespace Module.Host.TPM.Actions
         {
             errors = new List<string>();
             bool isSuitable = true;
-            int subBrandCode, techCode;
 
 
             if (rec == null)
             {
                 isSuitable = false;
-                errors.Add("There is no such CoefficientSI2SO on base");
+                errors.Add("There is no such Competitor on base");
             }
             else
             {
-                Technology typedRec = (Technology)rec;
+                var typedRec = (Competitor)rec;
                 if (String.IsNullOrEmpty(typedRec.Name)) 
                 {
                     errors.Add("Name must have a value"); 
                     isSuitable = false; 
-                }
-                if ((String.IsNullOrEmpty(typedRec.SubBrand) && !String.IsNullOrEmpty(typedRec.SubBrand_code))
-                    || !String.IsNullOrEmpty(typedRec.SubBrand) && String.IsNullOrEmpty(typedRec.SubBrand_code))
-                {
-                    errors.Add("Sub Brand and Sub Brand Code must have a value");
-                    isSuitable = false;
-                }
-                else if (!String.IsNullOrEmpty(typedRec.SubBrand) && !int.TryParse(typedRec.SubBrand_code, out subBrandCode))
-                {
-                    errors.Add("Only numbers are allowed for Sub Brand Code");
-                    isSuitable = false;
-                }
-                if (!String.IsNullOrEmpty(typedRec.Tech_code) && !int.TryParse(typedRec.Tech_code, out techCode))
-                {
-                    errors.Add("Only numbers are allowed for Tech Code");
-                    isSuitable = false;
-                }
-                else if (String.IsNullOrEmpty(typedRec.Tech_code))
-                {
-                    errors.Add("Tech Code must have a value");
-                    isSuitable = false;
                 }
             }
 
@@ -311,58 +289,25 @@ namespace Module.Host.TPM.Actions
 
         private int InsertDataToDatabase(IEnumerable<IEntity<Guid>> sourceRecords, DatabaseContext context)
         {
-            NoGuidGeneratingScriptGenerator generatorCreate = new NoGuidGeneratingScriptGenerator(typeof(Technology), false);
+            NoGuidGeneratingScriptGenerator generatorCreate = new NoGuidGeneratingScriptGenerator(typeof(Competitor), false);
             ScriptGenerator generatorUpdate = GetScriptGenerator();
-            IList<Technology> toCreate = new List<Technology>();
-            IList<Technology> toUpdate = new List<Technology>();
-            IList<Technology> technologies = context.Set<Technology>().ToList();
+            IList<Competitor> toCreate = new List<Competitor>();
+            IList<Competitor> competitors = context.Set<Competitor>().ToList();
 
             List<Tuple<IEntity<Guid>, IEntity<Guid>>> toHisCreate = new List<Tuple<IEntity<Guid>, IEntity<Guid>>>();
             List<Tuple<IEntity<Guid>, IEntity<Guid>>> toHisUpdate = new List<Tuple<IEntity<Guid>, IEntity<Guid>>>();
 
-            foreach (Technology newRecord in sourceRecords)
+            foreach (Competitor newRecord in sourceRecords)
             {
-                newRecord.SubBrand_code = String.IsNullOrEmpty(newRecord.SubBrand_code) ? null : newRecord.SubBrand_code;
-                Technology oldRecord = technologies
-                    .FirstOrDefault(t
-                        => (t.Tech_code == newRecord.Tech_code && t.SubBrand_code == newRecord.SubBrand_code && !t.Disabled));
+                var oldRecord = competitors
+                    .FirstOrDefault(x
+                        => (x.Name == newRecord.Name && !x.Disabled));
 
                 if (oldRecord == null)
                 {
                     newRecord.Id = Guid.NewGuid();
                     toCreate.Add(newRecord);
                     toHisCreate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(null, newRecord));
-                }
-                else
-                {
-                    if (oldRecord.Name != newRecord.Name || oldRecord.SubBrand != newRecord.SubBrand)
-                    {
-                        toHisUpdate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(oldRecord, newRecord));
-
-                        var oldTC = oldRecord.Tech_code;
-                        var oldTN = oldRecord.Name;
-                        var oldSC = oldRecord.SubBrand_code;
-                        var oldName = oldRecord.Name;
-
-                        oldRecord.Name = newRecord.Name;
-                        oldRecord.Description_ru = newRecord.Description_ru;
-                        oldRecord.SubBrand = newRecord.SubBrand;
-                        
-                        var newName = oldRecord.Name;
-                        if (!String.IsNullOrEmpty(oldRecord.SubBrand))
-                            newName = String.Format("{0} {1}", oldRecord.Name, oldRecord.SubBrand);
-
-                        Task.Run(() => PromoHelper.UpdateProductHierarchy("Technology", newName, oldName, oldRecord.Id));
-                        TechnologiesController.UpdateProductTrees(oldRecord.Id, newName);
-                        TechnologiesController.UpdateProducts(oldRecord, oldTC, oldTN, oldSC);
-
-                        toUpdate.Add(oldRecord);
-                    } else if (oldRecord.Description_ru != newRecord.Description_ru)
-                    {
-                        toHisUpdate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(oldRecord, newRecord));
-                        oldRecord.Description_ru = newRecord.Description_ru;
-                        toUpdate.Add(oldRecord);
-                    }
                 }
             }
 
@@ -372,14 +317,7 @@ namespace Module.Host.TPM.Actions
                 context.ExecuteSqlCommand(insertScript);
             }
 
-            foreach (IEnumerable<IEntity<Guid>> items in toUpdate.Partition(10000))
-            {
-                string updateScript = generatorUpdate.BuildUpdateScript(items);
-                context.ExecuteSqlCommand(updateScript);
-            }
-
             context.HistoryWriter.Write(toHisCreate, context.AuthManager.GetCurrentUser(), context.AuthManager.GetCurrentRole(), OperationType.Created);
-            context.HistoryWriter.Write(toHisUpdate, context.AuthManager.GetCurrentUser(), context.AuthManager.GetCurrentRole(), OperationType.Updated);
 
             context.SaveChanges();
 

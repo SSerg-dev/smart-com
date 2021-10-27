@@ -20,7 +20,7 @@
         }, {
             xtype: 'singlelinedisplayfield',
             fieldLabel: l10n.ns('tpm', 'CompetitorBrandTech').value('CompetitorName'),
-            name: 'CompanyName',
+            name: 'CompetitorName',
         }, {
             xtype: 'singlelinedisplayfield',
             fieldLabel: l10n.ns('tpm', 'CompetitorBrandTech').value('BrandTech'),

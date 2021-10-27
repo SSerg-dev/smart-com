@@ -128,32 +128,32 @@
             name: 'Color',
             fieldLabel: l10n.ns('tpm', 'CompetitorBrandTech').value('Color'),
         }, {
-            xtype: 'searchfield',
-            fieldLabel: l10n.ns('tpm', 'CompetitorBrandTech').value('CompetitorName'),
-            name: 'CompetitorId',
-            selectorWidget: 'competitor',
-            valueField: 'Id',
-            displayField: 'Name',
-            store: {
-                type: 'directorystore',
-                model: 'App.model.tpm.competitor.Competitor',
-                extendedFilter: {
-                    xclass: 'App.ExtFilterContext',
-                    supportedModels: [{
-                        xclass: 'App.ExtSelectionFilterModel',
-                        model: 'App.model.tpm.competitor.Competitor',
-                        modelId: 'efselectionmodel'
-                    }]
+            text: l10n.ns('tpm', 'CompetitorBrandTech').value('CompetitorName'),
+            dataIndex: 'CompetitorName',
+            filter: {
+                type: 'search',
+                selectorWidget: 'competitor',
+                valueField: 'Name',
+                store: {
+                    type: 'directorystore',
+                    model: 'App.model.tpm.competitor.Competitor',
+                    extendedFilter: {
+                        xclass: 'App.ExtFilterContext',
+                        supportedModels: [{
+                            xclass: 'App.ExtSelectionFilterModel',
+                            model: 'App.model.tpm.competitor.Competitor',
+                            modelId: 'efselectionmodel'
+                        }, {
+                            xclass: 'App.ExtTextFilterModel',
+                            modelId: 'eftextmodel'
+                        }]
+                    }
                 }
-            },
-            mapping: [{
-                from: 'Name',
-                to: 'CompetitorName'
-            }]
+            }
         }, {
             xtype: 'textfield',
             fieldLabel: l10n.ns('tpm', 'CompetitorBrandTech').value('BrandTech'),
-            name: 'BrandTech',
+            name: 'BrandTech'
         }]
     }]
 });

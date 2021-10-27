@@ -216,7 +216,7 @@ namespace Module.Frontend.TPM.Controllers
                 new Column() { Order = 7, Field = "EndDate", Header = "End Date", Quoting = false },
                 new Column() { Order = 8, Field = "StartDate", Header = "Start Date", Quoting = false },
                 new Column() { Order = 9, Field = "Discount", Header = "Discount", Quoting = false },
-                new Column() { Order = 10, Field = "ShelfPrice", Header = "Shelf Price", Quoting = false },
+                new Column() { Order = 10, Field = "Price", Header = "Shelf Price", Quoting = false },
                 new Column() { Order = 11, Field = "Subrange", Header = "Subranges", Quoting = false },
                 new Column() { Order = 12, Field = "PromoStatus", Header = "Promo Status", Quoting = false }
             };

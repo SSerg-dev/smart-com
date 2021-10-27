@@ -76,6 +76,7 @@
         'Competitor': 'Competitor',
         'CompetitorPromo': 'Competitor Promo',
         'CompetitorBrandTech': 'Competitor BrandTech',
+        'CompetitorPromo': 'Competitor Promo'
     },
 
     'compositePanelTitles': {
@@ -590,6 +591,17 @@
     },
     'HistoricalBudgetItem': ['.tpm.BudgetItem', '.core.BaseHistoryEntity'],
     'DeletedBudgetItem': ['.tpm.BudgetItem', '.core.BaseDeletedEntity'],
+
+    'CompetitorPromo': {
+        'Price': 'Shelf price',
+        'Discount': 'Discount',
+        'CompetitorName': 'Competitor',
+        'Subranges': 'Subranges',
+        'ClientTreeFullPathName': 'ClientHierarchy',
+        'ClientTreeObjectId': 'ClientId',
+    },
+    'HistoricalCompetitorPromo': ['.tpm.CompetitorPromo', '.core.BaseHistoryEntity'],
+    'DeletedCompetitorPromo': ['.tpm.CompetitorPromo', '.core.BaseDeletedEntity'],
 
     'Promo': {
         'StartDate': 'Start date',

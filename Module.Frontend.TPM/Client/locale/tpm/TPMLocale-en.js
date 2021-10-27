@@ -90,7 +90,7 @@
     },
 
     'compositePanelTitles': {
-        'PLUDictionary':'PLU Dictionary',
+        'PLUDictionary': 'PLU Dictionary',
         'Category': 'Category',
         'NonPromoEquipment': 'Non-Promo Equipment',
         'Brand': 'Brand',
@@ -181,7 +181,8 @@
         'CoefficientSI2SO': 'Coefficient SI->SO',
         'ApproveClosePromoWindow': 'Confirm closing',
         'Competitor': 'Competitor',
-        'CompetitorBrandTech': 'Competitor BrandTech'
+        'CompetitorBrandTech': 'Competitor BrandTech',
+        'CompetitorPromo': 'Competitor Promo'
     },
 
     'text': {
@@ -647,6 +648,26 @@
     },
     'HistoricalBudgetItem': ['.tpm.BudgetItem', '.core.BaseHistoryEntity'],
     'DeletedBudgetItem': ['.tpm.BudgetItem', '.core.BaseDeletedEntity'],
+
+    'CompetitorPromo': {
+        'Number': 'Number',
+        'Name': 'Name',
+        'ClientTreeFullPathName': 'ClientHierarchy',
+        'ClientTreeObjectId': 'ClientId',
+        'CompetitorName': 'Competitor',
+        'Client': 'Client',
+        'StartDate': 'Start date',
+        'EndDate': 'End date',
+        'IsGrowthAcceleration': 'GrowthAcceleration',
+        'Status': 'Status',
+        'CompetitorBrandTechName' :'BrandTech',
+        'Price': 'Shelf price',
+        'Discount': 'Discount',
+        'CompetitorName': 'Competitor',
+        'Subrange': 'Subranges'
+    },
+    'HistoricalCompetitorPromo': ['.tpm.CompetitorPromo', '.core.BaseHistoryEntity'],
+    'DeletedCompetitorPromo': ['.tpm.CompetitorPromo', '.core.BaseDeletedEntity'],
 
     'Promo': {
         'StartDate': 'Start date',

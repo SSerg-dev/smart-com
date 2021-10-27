@@ -9,7 +9,7 @@
         { name: 'CompetitorId', useNull: true, hidden: true, isDefault: true, defaultValue: null },
         {
             name: 'CompetitorName', type: 'string', mapping: 'Competitor.Name', defaultFilterConfig: { valueField: 'Name' },
-            breezeEntityType: 'Brand', hidden: false, isDefault: true
+            breezeEntityType: 'Competitor', hidden: false, isDefault: true
         },
         { name: 'BrandTech', useNull: false, type: 'string', hidden: false, isDefault: true }
     ],

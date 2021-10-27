@@ -211,7 +211,7 @@ namespace Module.Frontend.TPM.Controllers
                 string importDir = AppSettingsManager.GetSetting("IMPORT_DIRECTORY", "ImportFiles");
                 string fileName = await FileUtility.UploadFile(Request, importDir);
 
-                CreateImportTask(fileName, "FullXLSXUpdateAllHandler");
+                CreateImportTask(fileName, "FullXLSXCompetitorUpdateImportHandler");
 
                 var result = new HttpResponseMessage(HttpStatusCode.OK);
                 result.Content = new StringContent("success = true");
@@ -275,6 +275,7 @@ namespace Module.Frontend.TPM.Controllers
                 HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportCompetitor), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportCompetitor).Name, data, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(Competitor), data, visible: false, throwIfNotExists: false);
+                //HandlerDataHelper.SaveIncomingArgument("UniqueFields", new List<String>() { "Name" }, data);
 
                 LoopHandler handler = new LoopHandler()
                 {

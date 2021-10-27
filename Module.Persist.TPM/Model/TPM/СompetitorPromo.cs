@@ -55,7 +55,7 @@ namespace Module.Persist.TPM.Model.TPM
         [ForeignKey("ClientTreeId")]
         public virtual ClientTree ClientTree { get; set; }
         [ForeignKey("CompetitorBrandTechId")]
-        public virtual CompetitorBrandTech BrandTech { get; set; }
+        public virtual CompetitorBrandTech CompetitorBrandTech { get; set; }
         [ForeignKey("PromoStatusId")]
         public virtual PromoStatus PromoStatus { get; set; }
 

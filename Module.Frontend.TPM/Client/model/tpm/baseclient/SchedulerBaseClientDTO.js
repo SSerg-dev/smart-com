@@ -37,7 +37,7 @@
         var key = (this.get('ObjectId') || this.internalId).toString(),
             ClientType = (this.get('TypeName')).toLowerCase(),
             results = [],
-            notOtherTypes = ["regular", "inout"];
+            notOtherTypes = ["regular", "inout", "competitor"];
         if (store) {
             if (notOtherTypes.includes(ClientType)) {
                 for (var index = 0, count = store.getCount(); index < count; index++) {

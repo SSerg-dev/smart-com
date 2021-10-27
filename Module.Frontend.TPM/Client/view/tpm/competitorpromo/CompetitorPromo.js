@@ -59,13 +59,13 @@
         editorModel: 'Core.form.EditorDetailWindowModel',
         store: {
             type: 'directorystore',
-            model: 'App.model.tpm.competitorbrandtech.CompetitorPromo',
+            model: 'App.model.tpm.competitorpromo.CompetitorPromo',
             storeId: 'competitorpromostore',
             extendedFilter: {
                 xclass: 'App.ExtFilterContext',
                 supportedModels: [{
                     xclass: 'App.ExtSelectionFilterModel',
-                    model: 'App.model.tpm.competitorpromo.CompetitorPRomo',
+                    model: 'App.model.tpm.competitorpromo.CompetitorPromo',
                     modelId: 'efselectionmodel'
                 }, {
                     xclass: 'App.ExtTextFilterModel',
@@ -84,7 +84,7 @@
             },
             items: [
                 {
-                    text: l10n.ns('tpm', 'CompetitorPromo').value('Number'),
+                    text: l10n.ns('tpm', 'Promo').value('Number'),
                     dataIndex: 'Number',
                     width: 110
                 }, {
@@ -92,8 +92,8 @@
                     dataIndex: 'CompetitorName',
                     filter: {
                         type: 'search',
-                        selectorWidget: 'competitorname',
-                        valueField: 'CompetitorName',
+                        selectorWidget: 'competitor',
+                        valueField: 'Name',
                         store: {
                             type: 'directorystore',
                             model: 'App.model.tpm.competitor.Competitor',
@@ -111,9 +111,9 @@
                         }
                     }
                 }, {
-                    text: l10n.ns('tpm', 'CompetitorPromo').value('ClientTree'),
-                    dataIndex: 'ClientTree',
-                    width: 250,
+                    text: l10n.ns('tpm', 'CompetitorPromo').value('ClientTreeFullPathName'),
+                    dataIndex: 'ClientTreeFullPathName',
+                    minWidth: 200,
                     filter: {
                         xtype: 'treefsearchfield',
                         trigger2Cls: '',
@@ -132,17 +132,20 @@
                         return renderWithDelimiter(value, ' > ', '  ');
                     }
                 }, {
-                    text: l10n.ns('tpm', 'CompetitorPromo').value('Name'),
+                    text: l10n.ns('tpm', 'CompetitorPromo').value('ClientTreeObjectId'),
+                    dataIndex: 'ClientTreeObjectId'
+                }, {
+                    text: l10n.ns('tpm', 'Promo').value('Name'),
                     dataIndex: 'Name',
                     width: 150,
                 }, {
-                    text: l10n.ns('tpm', 'CompetitorPromo').value('BrandTechName'),
+                    text: l10n.ns('tpm', 'Promo').value('BrandTechName'),
                     dataIndex: 'CompetitorBrandTechName',
                     width: 120,
                     filter: {
                         type: 'search',
-                        selectorWidget: 'brandtech',
-                        valueField: 'BrandsegTechsub',
+                        selectorWidget: 'competitorbrandtech',
+                        valueField: 'BrandTech',
                         store: {
                             type: 'directorystore',
                             model: 'App.model.tpm.competitorbrandtech.CompetitorBrandTech',
@@ -150,7 +153,7 @@
                                 xclass: 'App.ExtFilterContext',
                                 supportedModels: [{
                                     xclass: 'App.ExtSelectionFilterModel',
-                                    model: 'App.model.tpm.brandtech.BrandTech',
+                                    model: 'App.model.tpm.competitorbrandtech.CompetitorBrandTech',
                                     modelId: 'efselectionmodel'
                                 }, {
                                     xclass: 'App.ExtTextFilterModel',
@@ -161,13 +164,13 @@
                     }
                 }, {
                     xtype: 'datecolumn',
-                    text: l10n.ns('tpm', 'CompetitorPromo').value('StartDate'),
+                    text: l10n.ns('tpm', 'Promo').value('StartDate'),
                     dataIndex: 'StartDate',
                     width: 105,
                     renderer: Ext.util.Format.dateRenderer('d.m.Y'),
                 }, {
                     xtype: 'datecolumn',
-                    text: l10n.ns('tpm', 'CompetitorPromo').value('EndDate'),
+                    text: l10n.ns('tpm', 'Promo').value('EndDate'),
                     dataIndex: 'EndDate',
                     width: 100,
                     renderer: Ext.util.Format.dateRenderer('d.m.Y'),
@@ -181,8 +184,8 @@
                 }, {
                     xtype: 'numbercolumn',
                     format: '0.00',
-                    text: l10n.ns('tpm', 'CompetitorPromo').value('ShelfPrice'),
-                    dataIndex: 'ShelfPrice',
+                    text: l10n.ns('tpm', 'CompetitorPromo').value('Price'),
+                    dataIndex: 'Price',
                     width: 110,
                     hidden: true,
                 }, {
@@ -190,14 +193,14 @@
                     dataIndex: 'Subrange',
                     width: 150,
                 }, {
-                    text: l10n.ns('tpm', 'CompetitorPromo').value('GrowthAcceleration'),
+                    text: l10n.ns('tpm', 'Promo').value('GrowthAcceleration'),
                     dataIndex: 'IsGrowthAcceleration',
                     renderer: function (value) {
                         return value ? l10n.ns('core', 'booleanValues').value('true') : l10n.ns('core', 'booleanValues').value('false');
                     }
                 }, {
-                    text: l10n.ns('tpm', 'CompetitorPromo').value('PromoStatusName'),
-                    dataIndex: 'PromoStatusName',
+                    text: l10n.ns('tpm', 'Promo').value('PromoStatusName'),
+                    dataIndex: 'Status',
                     width: 120,
                     filter: {
                         type: 'search',
@@ -220,82 +223,50 @@
                             }
                         }
                     }
-                },
+                }
             ]
         }
     }, {
-        xtype: 'editabledetailform',
-        itemId: 'detailform',
-        model: 'App.model.tpm.competitorpromo.CompetitorPromo',
-        afterFormShow: function () {
-            this.down('circlecolorfield').fireEvent("afterrender");
-        },
-        items: [{
+            xtype: 'editabledetailform',
+            itemId: 'detailform',
+            model: 'App.model.tpm.competitorpromo.CompetitorPromo',
+            items: [{
                 text: l10n.ns('tpm', 'Promo').value('Number'),
                 dataIndex: 'Number',
                 width: 110
             }, {
-                xtype: 'searchfield',
-                fieldLabel: l10n.ns('tpm', 'CompetitorPromo ').value('CompetitorName'),
-                name: 'CompetitorName',
-                selectorWidget: 'competitorname',
+                xtype: 'treesearchfield',
+                name: 'ClientTreeId',
+                fieldLabel: l10n.ns('tpm', 'CompetitorPromo').value('ClientTreeFullPathName'),
+                selectorWidget: 'clienttree',
                 valueField: 'Id',
-                displayField: 'CompetitorName',
-                allowBlank: true,
-                allowOnlyWhitespace: true,
+                displayField: 'FullPathName',
                 store: {
-                    type: 'directorystore',
-                    model: 'App.model.tpm.competitor.Competitor',
-                    extendedFilter: {
-                        xclass: 'App.ExtFilterContext',
-                        supportedModels: [{
-                            xclass: 'App.ExtSelectionFilterModel',
-                            model: 'App.model.tpm.competitor.Competitor',
-                            modelId: 'efselectionmodel'
-                        }]
-                    }
+                    storeId: 'clienttreestore',
+                    model: 'App.model.tpm.clienttree.ClientTree',
+                    autoLoad: false,
+                    root: {}
                 },
                 mapping: [{
-                    from: 'Name',
-                    to: 'CompetitorName'
+                    from: 'FullPathName',
+                    to: 'ClientTreeFullPathName'
                 }]
             }, {
-                text: l10n.ns('tpm', 'CompetitorPromo').value('ClientHierarchy'),
-                dataIndex: 'ClientHierarchy',
-                width: 250,
-                filter: {
-                    xtype: 'treefsearchfield',
-                    trigger2Cls: '',
-                    selectorWidget: 'clienttree',
-                    valueField: 'FullPathName',
-                    displayField: 'FullPathName',
-                    multiSelect: true,
-                    operator: 'conts',
-                    store: {
-                        model: 'App.model.tpm.clienttree.ClientTree',
-                        autoLoad: false,
-                        root: {}
-                    },
-                },
-                renderer: function (value) {
-                    return renderWithDelimiter(value, ' > ', '  ');
-                }
-            }, {
                 text: l10n.ns('tpm', 'Promo').value('BrandTechName'),
-                dataIndex: 'BrandTechName',
+                dataIndex: 'CompetitorBrandTechName',
                 width: 120,
                 filter: {
                     type: 'search',
-                    selectorWidget: 'brandtech',
-                    valueField: 'BrandsegTechsub',
+                    selectorWidget: 'competitorbrandtech',
+                    valueField: 'BrandTech',
                     store: {
                         type: 'directorystore',
-                        model: 'App.model.tpm.brandtech.BrandTech',
+                        model: 'App.model.tpm.competitorbrandtech.CompetitorBrandTech',
                         extendedFilter: {
                             xclass: 'App.ExtFilterContext',
                             supportedModels: [{
                                 xclass: 'App.ExtSelectionFilterModel',
-                                model: 'App.model.tpm.brandtech.BrandTech',
+                                model: 'App.model.tpm.competitorbrandtech.CompetitorBrandTech',
                                 modelId: 'efselectionmodel'
                             }, {
                                 xclass: 'App.ExtTextFilterModel',
@@ -316,22 +287,22 @@
                 renderer: Ext.util.Format.dateRenderer('d.m.Y'),
             }, {
                 xtype: 'datecolumn',
-                text: l10n.ns('tpm', 'Promo').value('StartDate'),
-                dataIndex: 'StartDate',
+                text: l10n.ns('tpm', 'Promo').value('EndDate'),
+                dataIndex: 'EndDate',
                 width: 105,
                 renderer: Ext.util.Format.dateRenderer('d.m.Y'),
             }, {
                 xtype: 'numbercolumn',
-                text: l10n.ns('tpm', 'Promo').value('ShelfPrice'),
-                dataIndex: 'ShelfPrice',
+                text: l10n.ns('tpm', 'CompetitorPromo').value('Price'),
+                dataIndex: 'Price',
                 width: 110,
             }, {
                 xtype: 'numbercolumn',
-                text: l10n.ns('tpm', 'Promo').value('Discount'),
+                text: l10n.ns('tpm', 'CompetitorPromo').value('Discount'),
                 dataIndex: 'Discount',
                 width: 110,
             }, {
-                text: l10n.ns('tpm', 'Promo').value('Subranges'),
+                text: l10n.ns('tpm', 'CompetitorPromo').value('Subrange'),
                 dataIndex: 'Name',
                 width: 150,
             }, {
@@ -342,7 +313,7 @@
                 }
             }, {
                 text: l10n.ns('tpm', 'Promo').value('PromoStatusName'),
-                dataIndex: 'PromoStatusName',
+                dataIndex: 'Status',
                 width: 120,
                 filter: {
                     type: 'search',
@@ -365,6 +336,7 @@
                         }
                     }
                 }
-            }]
-    }]
+            }
+            ]
+        }]
 });

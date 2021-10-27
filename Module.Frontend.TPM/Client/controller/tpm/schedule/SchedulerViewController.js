@@ -1474,6 +1474,8 @@
                         scheduler.regPromoType = el;
                     } else if (el.Name === 'InOut Promo') {
                         scheduler.inOutPromoType = el;
+                    } else if (el.Name === 'Competitor Promo') {
+                        scheduler.competitorPromoType = el;
                     } else {
                         scheduler.otherPromoTypes.push(el);
                     }
@@ -1537,6 +1539,7 @@
                         regPromoId = oldArray[j].regPromoId;
                         inoutPromoId = oldArray[j].inoutPromoId;
                         otherPromoId = oldArray[j].otherPromoId;
+                        competitorPromoId = oldArray[j].competitorPromoId;
                         break;
                     }
                 };
@@ -1547,6 +1550,7 @@
                     regPromoId: regPromoId,
                     inoutPromoId: inoutPromoId,
                     otherPromoId: otherPromoId,
+                    competitorPromoId: competitorPromoId,
                 });
             };
 
@@ -1641,6 +1645,7 @@
                 regPromoId: resourceStore.data.items[i * this.rowCount],
                 inoutPromoId: resourceStore.data.items[i * this.rowCount + 1],
                 otherPromoId: resourceStore.data.items[i * this.rowCount + 2],
+                competitorPromoId: resourceStore.data.items[i * this.rowCount + 3],
             })
         };
 
@@ -1895,7 +1900,7 @@
                 var nascheduler = Ext.ComponentQuery.query('#nascheduler')[0];
                 if (nascheduler) {
                     if (!store.resetLoading) {
-                        this.renderEvents(store.uniqueObjectIds[clientId].regPromoId, store.uniqueObjectIds[clientId].inoutPromoId, store.uniqueObjectIds[clientId].otherPromoId);
+                        this.renderEvents(store.uniqueObjectIds[clientId].regPromoId, store.uniqueObjectIds[clientId].inoutPromoId, store.uniqueObjectIds[clientId].otherPromoId, store.uniqueObjectIds[clientId].competitorPromoId);
                         store.uniqueObjectIds[clientId].loaded = true;
                         clientId = 0;
                         while (store.uniqueObjectIds[clientId] && store.uniqueObjectIds[clientId].loaded) {
@@ -1910,7 +1915,7 @@
         });
     },
 
-    renderEvents: function (regId, inoutId, otherPromoId) {
+    renderEvents: function (regId, inoutId, otherPromoId, competitorPromoId) {
         var ng = Ext.ComponentQuery.query('#nascheduler')[0].normalGrid;
         var lg = Ext.ComponentQuery.query('#nascheduler')[0].lockedGrid;
         var renderId = regId;
@@ -1930,7 +1935,9 @@
                 renderId = inoutId;
             } else if (i == 1) {
                 renderId = otherPromoId;
-            }
+            } else if (i == 2) {
+                renderId = competitorPromoId;
+            } 
 
             records = [];
         };
@@ -1951,6 +1958,11 @@
                 }
 
                 node = ng.view.getNode(uniqueObjectIds[j].otherPromoId, false);
+                if (node && !(node.childNodes[1] && node.childNodes[1].textContent === 'Loading...')) {
+                    Ext.DomHelper.append(node, '<td class="overlay">Loading...</td>');
+                }
+
+                node = ng.view.getNode(uniqueObjectIds[j].competitorPromoId, false);
                 if (node && !(node.childNodes[1] && node.childNodes[1].textContent === 'Loading...')) {
                     Ext.DomHelper.append(node, '<td class="overlay">Loading...</td>');
                 }

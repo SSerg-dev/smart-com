@@ -69,8 +69,6 @@ namespace Module.Host.TPM.Handlers
     {
         protected override void InitializeParameters(HandlerData handlerData, ExecuteData data)
         {
-            var importDestination = HandlerDataHelper.GetIncomingArgument<string>("ImportDestination", handlerData);
-            data.SetValue("ImportDestination", importDestination);
         }
 
         protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
@@ -83,8 +81,6 @@ namespace Module.Host.TPM.Handlers
     {
         protected override void InitializeParameters(HandlerData handlerData, ExecuteData data)
         {
-            var importDestination = HandlerDataHelper.GetIncomingArgument<string>("ImportDestination", handlerData);
-            data.SetValue("ImportDestination", importDestination);
         }
 
         protected override IAction GetAction(FullImportSettings settings, ExecuteData data)

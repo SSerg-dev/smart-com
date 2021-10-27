@@ -992,8 +992,8 @@ namespace Module.Persist.TPM {
             builder.EntitySet<CompetitorPromo>("DeletedCompetitorPromoes").HasOptionalBinding(e => e.Competitor, "Competitors");
             builder.EntitySet<CompetitorPromo>("CompetitorPromoes").HasOptionalBinding(e => e.ClientTree, "ClientTrees");
             builder.EntitySet<CompetitorPromo>("DeletedCompetitorPromoes").HasOptionalBinding(e => e.ClientTree, "ClientTrees");
-            builder.EntitySet<CompetitorPromo>("CompetitorPromoes").HasOptionalBinding(e => e.BrandTech, "CompetitorBrandTechs");
-            builder.EntitySet<CompetitorPromo>("DeletedCompetitorPromoes").HasOptionalBinding(e => e.BrandTech, "CompetitorBrandTechs");
+            builder.EntitySet<CompetitorPromo>("CompetitorPromoes").HasOptionalBinding(e => e.CompetitorBrandTech, "CompetitorBrandTechs");
+            builder.EntitySet<CompetitorPromo>("DeletedCompetitorPromoes").HasOptionalBinding(e => e.CompetitorBrandTech, "CompetitorBrandTechs");
             builder.EntitySet<CompetitorPromo>("CompetitorPromoes").HasOptionalBinding(e => e.PromoStatus, "PromoStatuses");
             builder.EntitySet<CompetitorPromo>("DeletedCompetitorPromoes").HasOptionalBinding(e => e.PromoStatus, "PromoStatuses");
             builder.Entity<CompetitorPromo>().Collection.Action("FullImportXLSX");

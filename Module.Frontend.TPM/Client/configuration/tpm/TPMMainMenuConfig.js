@@ -41,12 +41,6 @@
         scale: 'medium',
         glyph: 0xf392,
         children: [{
-            text: l10n.ns('tpm', 'mainmenu').value('CompetitorPromo'),
-            tooltip: l10n.ns('tpm', 'mainmenu').value('CompetitorPromo'),
-            glyph: 0xf1b3,
-            roles: ['Administrator', 'SupportAdministrator'],
-            widget: 'competitorpromo',
-        }, {
             text: l10n.ns('tpm', 'mainmenu').value('Competitor'),
             tooltip: l10n.ns('tpm', 'mainmenu').value('Competitor'),
             glyph: 0xf1b3,
@@ -58,6 +52,12 @@
             glyph: 0xf1b3,
             roles: ['Administrator', 'SupportAdministrator'],
             widget: 'competitorbrandtech',
+        }, {
+            text: l10n.ns('tpm', 'mainmenu').value('CompetitorPromo'),
+            tooltip: l10n.ns('tpm', 'mainmenu').value('CompetitorPromo'),
+            glyph: 0xf1b3,
+            roles: ['Administrator', 'SupportAdministrator'],
+            widget: 'competitorpromo',
         }],
     }, {
         text: l10n.ns('tpm', 'mainmenu').value('PromoSupport'),
