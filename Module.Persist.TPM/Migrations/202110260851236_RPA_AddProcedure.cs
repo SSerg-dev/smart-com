@@ -12,7 +12,7 @@ namespace Module.Persist.TPM.Migrations
 
             Sql($@"
                 CREATE SCHEMA RPA_Setting
-                               
+                GO               
                 CREATE PROCEDURE {defaultSchema}.[UpdatePromoProduct]
                 AS
                 BEGIN
@@ -67,7 +67,7 @@ namespace Module.Persist.TPM.Migrations
                     FROM
                     (SELECT * FROM {defaultSchema}.[TEMP_PROMOPRODUCT]) AS tpp WHERE {defaultSchema}.[PromoProduct].[Id] = tpp.Id
                     END
-                        
+                    GO
                     CREATE PROCEDURE {defaultSchema}.[LaunchRecalculationTasks]
                     AS
                     BEGIN
