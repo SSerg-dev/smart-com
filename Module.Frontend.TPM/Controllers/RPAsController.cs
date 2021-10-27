@@ -249,16 +249,16 @@ namespace Module.Frontend.TPM.Controllers
 			var stringPath = Path.GetDirectoryName(template);
 			var stringName = Path.GetFileName(template);
 			book = SpreadsheetDocument.Open(template, false);
-			//byte[] resAzure = AzureBlobHelper.ReadExcelFromBlob(stringPath.Split('\\').Last(), stringName);
-			//if (resAzure.Length == 0)
-			//{
-			//	book = SpreadsheetDocument.Open(template, false);
-			//}
-			//else
-			//{
-			//	book = SpreadsheetDocument.Open(new MemoryStream(resAzure), false);
-			//}
-			WorkbookPart workbookPart = book.WorkbookPart;
+            byte[] resAzure = AzureBlobHelper.ReadExcelFromBlob(stringPath.Split('\\').Last(), stringName);
+            if (resAzure.Length == 0)
+            {
+                book = SpreadsheetDocument.Open(template, false);
+            }
+            else
+            {
+                book = SpreadsheetDocument.Open(new MemoryStream(resAzure), false);
+            }
+            WorkbookPart workbookPart = book.WorkbookPart;
 			WorksheetPart worksheetPart = workbookPart.WorksheetParts.First();
 
 			OpenXmlReader reader = OpenXmlReader.Create(worksheetPart);
