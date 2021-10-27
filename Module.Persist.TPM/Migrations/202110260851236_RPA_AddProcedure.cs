@@ -65,7 +65,7 @@ namespace Module.Persist.TPM.Migrations
                     [SumInvoiceProduct] = tpp.[SumInvoiceProduct],
                     [ActualProductBaselineCaseQty] = tpp.[ActualProductBaselineCaseQty]
                     FROM
-                    (SELECT * FROM {defaultSchema}.[TEMP_PROMOPRODUCT]) AS tpp WHERE {defaultSchema}.[PromoProduct].[Id] = tpp.Id
+                    (SELECT * FROM {defaultSchema}.[TEMP_RPA_PROMOPRODUCT]) AS tpp WHERE {defaultSchema}.[PromoProduct].[Id] = tpp.Id
                     END
                     GO
                     CREATE PROCEDURE {defaultSchema}.[LaunchRecalculationTasks]
