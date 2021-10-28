@@ -454,17 +454,7 @@ namespace Module.Frontend.TPM.Controllers
 
 		private ExceptionResult GetErorrRequest(Exception e)
 		{
-			// обработка при создании дублирующей записи
-			SqlException exc = e.GetBaseException() as SqlException;
-
-			if (exc != null && (exc.Number == 2627 || exc.Number == 2601))
-			{
-				return InternalServerError(new Exception("This RPA has already existed"));
-			}
-			else
-			{
-				return InternalServerError(e.InnerException);
-			}
+			return InternalServerError(e);
 		}
 
 	}
