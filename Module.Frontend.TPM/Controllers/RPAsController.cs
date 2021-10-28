@@ -381,7 +381,7 @@ namespace Module.Frontend.TPM.Controllers
 			}
 			var tasks = "";
 			if (handlerIds.Count() > 0)
-				tasks = $"'{String.Join(",", handlerIds.Select(el => $"'{el}'"))}'";
+				tasks = $"{String.Join(",", handlerIds.Select(el => $"''{el}''"))}";
 			string insertScript = String.Format("INSERT INTO RPA_Setting.[PARAMETERS] ([RPAId],[TasksToComplete]) VALUES ('{0}', '{1}')", rpaId, tasks);
 
 			await Context.Database.ExecuteSqlCommandAsync(insertScript);
