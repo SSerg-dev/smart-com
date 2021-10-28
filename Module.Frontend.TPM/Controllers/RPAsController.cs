@@ -285,6 +285,7 @@ namespace Module.Frontend.TPM.Controllers
 		private bool BlockPromo(Guid promoId, bool safe = false)
 		{
 			bool promoAvaible = false;
+			bool promoFinished = false;
 
 			try
 			{
@@ -293,8 +294,9 @@ namespace Module.Frontend.TPM.Controllers
 					using (DatabaseContext context = new DatabaseContext())
 					{
 						promoAvaible = !context.Set<BlockedPromo>().Any(n => n.PromoId == promoId && !n.Disabled);
+						promoFinished = context.Set<Promo>().Any(n => n.Id == promoId && n.PromoStatus.SystemName == "Finished");
 
-						if (promoAvaible)
+						if (promoAvaible && promoFinished)
 						{
 							BlockedPromo bp = new BlockedPromo
 							{
