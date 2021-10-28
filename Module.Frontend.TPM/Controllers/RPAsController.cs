@@ -318,7 +318,7 @@ namespace Module.Frontend.TPM.Controllers
 				promoAvaible = false;
 			}
 
-			return promoAvaible;
+			return promoAvaible && promoFinished;
 		}
 
 		/// <summary>
