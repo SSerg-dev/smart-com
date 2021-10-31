@@ -16,6 +16,10 @@
                     afterrender: this.clientsCheckboxesAfterrender,
                     change: this.clientFilterChange
                 },
+                'clientPromoTypeFilter #competitorsCheckboxes': {
+                    afterrender: this.competitorsCheckboxesAfterrender,
+                    change: this.competitorsFilterChange
+                },
                 'clientPromoTypeFilter #apply': {
                     click: this.onApplyButtonClick
                 },
@@ -30,6 +34,9 @@
                 },
                 'clientPromoTypeFilter #selectAllTypes': {
                     change: this.onSelectAllTypesChange
+                },
+                'clientPromoTypeFilter #selectAllCompetitors': {
+                    change: this.onSelectAllCompetitorsChange
                 },
             }
         });
@@ -271,7 +278,7 @@
         var name;
         checkedArray.forEach(function (el) {
             name = el.name.substr(0, el.name.indexOf(' '));
-            if (name != 'Regular' && name != 'InOut' && name != 'Competitor') {
+            if (name == 'Loyalty' || name == 'Dynamic') {
                 value.push('Other');
             } else {
                 value.push(name);
@@ -293,6 +300,69 @@
     clearFilter: function (store) {
         store = store ? store : Ext.StoreMgr.lookup('MyResources');
         store.clearFilter();
+    },
+
+    //COMPETITORS FILTER
+
+    competitorsCheckboxesAfterrender: function (me) {
+        var config = Ext.ComponentQuery.query('#nascheduler')[0].competitorsCheckboxesConfig;
+        me.add(config);
+
+        var selectAllCompetitors = me.up('clientPromoTypeFilter').down('#selectAllCompetitors');
+        if (me.getChecked().length === config.length) {
+            selectAllCompetitors.setValue(true);
+        } else {
+            selectAllCompetitors.setValue(false);
+        };
+    },
+
+    filterCompetitors: function (competitorsCheckboxes) {
+        var me = this;
+        var value = me.getFixedValue(competitorsCheckboxes);
+        if (Ext.isArray(value)) {
+            for (i = 0; i < value.length; i++) {
+                value[i] = value[i].substr(0, value[i].indexOf(' '));
+            }
+        } else if (value) {
+            value = value.substr(0, value.indexOf(' '));
+        }
+        var store = Ext.StoreMgr.lookup('eventStore');
+
+    },
+
+    onSelectAllCompetitorsChange: function (me, newValue) {
+        var check = false;
+        if (newValue) {
+            check = true
+        };
+        var competitorsCheckboxes = me.up('clientPromoTypeFilter').down('#competitorsCheckboxes');
+        if (this.isPartialyChecked(competitorsCheckboxes) != 0 || check === true) {
+            me.up('clientPromoTypeFilter').selectAllCompetitorsClicked = true;
+            for (i = 0; i < competitorsCheckboxes.items.items.length; i++) {
+                if (!competitorsCheckboxes.items.items[i].isHidden()) {
+                    competitorsCheckboxes.items.items[i].setValue(check);
+                } else {
+                    //Если была фильтрация по клиенту - убираем галочку
+                    competitorsCheckboxes.items.items[i].setValue(false);
+                };
+            };
+            me.up('clientPromoTypeFilter').selectAllCompetitorsClicked = false;
+        }
+    },
+
+    competitorsFilterChange: function (me) {
+        if (!me.up('clientPromoTypeFilter').selectAllCompetitorsClicked) {
+            var selectAllCompetitors = me.up('clientPromoTypeFilter').down('#selectAllCompetitors');
+            if (this.isPartialyChecked(me) === 1) {
+                if (selectAllCompetitors.value != true) {
+                    selectAllCompetitors.setValue(true);
+                }
+            } else {
+                if (selectAllCompetitors.value != false) {
+                    selectAllCompetitors.setValue(false);
+                }
+            }
+        }
     },
 
     //TYPE FILTER

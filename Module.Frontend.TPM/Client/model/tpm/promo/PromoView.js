@@ -15,6 +15,7 @@
         { name: 'ColorSystemName', type: 'string', useNull: true, hidden: true, isDefault: false },
         { name: 'PromoStatusColor', type: 'string', hidden: true, isDefault: false },
         { name: 'IsOnInvoice', type: 'boolean', hidden: false, isDefault: true },
+        { name: 'CompetitorName', type: 'string', useNull: true, hidden: false, isDefault: true },
 
         { name: 'CreatorId', useNull: true, hidden: true, isDefault: false, defaultValue: null },
         { name: 'ClientTreeId', useNull: true, hidden: true, isDefault: false, defaultValue: null },

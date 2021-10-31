@@ -151,11 +151,12 @@
             '<tpl elseif="TypeName == \'Regular\'">',
             '<div class="inout-mark-text">Regular promo</div>',
             '<tpl elseif="TypeName == \'Competitor\'">',
-            '<div class="inout-mark-text">Competitor promo</div>',
+            '<div class="inout-mark-text">{CompetitorName}</div>',
             '<tpl else>',
             '<div class="inout-mark-text"><span class="mdi mdi-tag-multiple-2 inout-mark-icon"></span>Other promo</div>',
             '</tpl>'
         ),
+
 
         // prevent sortchange on Enter
         onEnterKey: function () {

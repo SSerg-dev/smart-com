@@ -1296,6 +1296,7 @@
 
     'ClientPromoTypeFilter': {
         'ClientsAndPromoType': 'Clients And Promo Type',
+        'Competitors': 'Competitors',
         'Clients': 'Clients',
         'PromoTypes': 'Promo Types',
         'Error': 'Error',

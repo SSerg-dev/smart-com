@@ -1495,6 +1495,29 @@
                 App.Notify.pushError('Ошибка при выполнении операции');
             });
 
+        breeze.EntityQuery
+            .from('Competitors')
+            .withParameters({
+                $method: 'GET'
+            })
+            .using(Ext.ux.data.BreezeEntityManager.getEntityManager())
+            .execute()
+            .then(function (data) {
+                scheduler.competitorsCheckboxesConfig = [];
+                data.results.forEach(function (el) {
+                    scheduler.competitorsCheckboxesConfig.push({
+                        name: el.Name,
+                        inputValue: el.Name,
+                        checked: true,
+                        boxLabel: '<span style="vertical-align: text-top;">' + el.Name + '</span>',
+                        xtype: 'checkbox',
+                    })
+                });
+            })
+            .fail(function (data) {
+                App.Notify.pushError('Ошибка при выполнении операции');
+            });
+
         scheduler.baseClientsStore.on('load', function (store, records) {
             scheduler.clientsFilterConfig = [];
             records.forEach(function (el) {

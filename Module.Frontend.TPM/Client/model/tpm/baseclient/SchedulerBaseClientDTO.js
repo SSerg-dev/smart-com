@@ -9,6 +9,7 @@
         { name: 'Name', type: 'string', hidden: false, isDefault: true },
         { name: 'GHierarchyCode', type: 'string', hidden: false, isDefault: true },
         { name: 'DemandCode', type: 'string', hidden: false, isDefault: true },
+        { name: 'CompetitorName', type: 'string', hidden: false, isDefault: true },
         { name: 'Share', type: 'int' },
 
         { name: 'IsBeforeStart', type: 'bool', hidden: false, useNull: true },
@@ -36,8 +37,10 @@
     getEvents: function (store) {
         var key = (this.get('ObjectId') || this.internalId).toString(),
             ClientType = (this.get('TypeName')).toLowerCase(),
+            CompetitorName = (this.get('CompetitorName')).toLowerCase(),
             results = [],
-            notOtherTypes = ["regular", "inout", "competitor"];
+            notOtherTypes = ["regular", "inout"];
+            otherTypes = ["loyalty", "dynamic"];
         if (store) {
             if (notOtherTypes.includes(ClientType)) {
                 for (var index = 0, count = store.getCount(); index < count; index++) {
@@ -52,14 +55,31 @@
                     }
                 }
             } else {
-                for (var index = 0, count = store.getCount(); index < count; index++) {
-                    var record = store.getAt(index);
-                    var bcids = record.get('BaseClientTreeIds');
-                    var PromoType = record.get('TypeName').toLowerCase();
-                    if (bcids) {
-                        var bIDs = bcids.split('|');
-                        if (bIDs.indexOf(key) >= 0 && !notOtherTypes.includes(PromoType)) {
-                            results.push(record);
+                if (ClientType == 'competitor') {
+                    for (var index = 0, count = store.getCount(); index < count; index++) {
+                        var record = store.getAt(index);
+                        var bcids = record.get('BaseClientTreeIds');
+                        var PromoType = record.get('TypeName').toLowerCase();
+                        if (PromoType == ClientType) {
+                            var PromoCompetitor = record.get('CompetitorName').toLowerCase();
+                            if (bcids) {
+                                var bIDs = bcids.split('|');
+                                if (bIDs.indexOf(key) >= 0 && CompetitorName == PromoCompetitor) {
+                                    results.push(record);
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    for (var index = 0, count = store.getCount(); index < count; index++) {
+                        var record = store.getAt(index);
+                        var bcids = record.get('BaseClientTreeIds');
+                        var PromoType = record.get('TypeName').toLowerCase();
+                        if (bcids) {
+                            var bIDs = bcids.split('|');
+                            if (bIDs.indexOf(key) >= 0 && otherTypes.includes(PromoType)) {
+                                results.push(record);
+                            }
                         }
                     }
                 }
