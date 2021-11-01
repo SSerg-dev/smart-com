@@ -89,8 +89,11 @@ Ext.define('App.view.core.rpa.RPAForm', {
 												document.body.removeChild(aLink);
 												myMask.hide();
 											},
-											fail: function (data) {
-												
+											failure: function (data) {
+												App.Notify.pushError(Ext.JSON.decode(data.responseText)['odata.error']['innererror']['message']);												
+												var editor = combo.up('customrpaeditor');
+												editor.setLoading(false);
+                    							editor.close();
 											}
 										});
 									});

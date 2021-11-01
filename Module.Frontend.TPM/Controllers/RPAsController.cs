@@ -128,11 +128,16 @@ namespace Module.Frontend.TPM.Controllers
 					throw new FileLoadException("The file size must be less than 25mb.");
 				}
 
-
 				//Save file
 				string directory = Core.Settings.AppSettingsManager.GetSetting("RPA_DIRECTORY", "RPAFiles");
 
 				string fileName = Task<string>.Run(async () => await FileUtility.UploadFile(Request, directory)).Result;
+
+				if (!CheckFileCorrect(fileName))
+				{
+					throw new FileLoadException("The import file is corrupted.");
+					
+				}
 
 				// Save RPA
 
@@ -153,7 +158,7 @@ namespace Module.Frontend.TPM.Controllers
 				Dictionary<string, object> parameters = null;
 				switch (rpaType)
 				{
-					case "Actuals":
+					case "Actuals_EAN_PC":
 						pipelineName = "JUPITER_RPA_UPLOAD_ACTUALS_PIPE";
 						parameters = new Dictionary<string, object>
 										{
@@ -161,6 +166,20 @@ namespace Module.Frontend.TPM.Controllers
 											{ "RPAId", result.Id },
 											{ "UserRoleName", this.user.GetCurrentRole().SystemName },
 											{ "UserId", this.user.Id },
+											{ "ProductReference", "EAN_PC" }											
+										};
+						await CreateCalculationTaskAsync(fileName, result.Id);
+						//CreatePipeForActuals(tenantID, applicationId, authenticationKey, subscriptionId, resourceGroup, dataFactoryName, pipelineName, parameters);
+						break;
+					case "Actuals_PLU":
+						pipelineName = "JUPITER_RPA_UPLOAD_ACTUALS_PIPE";
+						parameters = new Dictionary<string, object>
+										{
+											{ "FileName", Path.GetFileName(fileName) },
+											{ "RPAId", result.Id },
+											{ "UserRoleName", this.user.GetCurrentRole().SystemName },
+											{ "UserId", this.user.Id },
+											{ "ProductReference", "PLU" }
 										};
 						await CreateCalculationTaskAsync(fileName, result.Id);
 						CreatePipeForActuals(tenantID, applicationId, authenticationKey, subscriptionId, resourceGroup, dataFactoryName, pipelineName, parameters);
@@ -242,6 +261,33 @@ namespace Module.Frontend.TPM.Controllers
 			}
 			return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, message = "Pipe started successfull" }));
 		}
+
+		private bool CheckFileCorrect(string templateFileName)
+        {
+			bool res = true;
+			SpreadsheetDocument book;
+			var stringPath = Path.GetDirectoryName(templateFileName);
+			var stringName = Path.GetFileName(templateFileName);
+			byte[] resAzure = AzureBlobHelper.ReadExcelFromBlob(stringPath.Split('\\').Last(), stringName);
+            try {
+				if (resAzure.Length == 0)
+				{
+					book = SpreadsheetDocument.Open(templateFileName, false);
+				}
+				else
+				{
+					book = SpreadsheetDocument.Open(new MemoryStream(resAzure), false);
+				}
+				book.Close();
+			}
+			catch(Exception ex)
+            {
+				res = false;
+				
+            }
+			
+			return res;
+        }
 
 		private IEnumerable<Guid> ParseExcelTemplate(string template)
 		{
@@ -368,6 +414,7 @@ namespace Module.Frontend.TPM.Controllers
 		{
 
 			List<Guid> handlerIds = new List<Guid>();
+			List<Guid> blockedPromoesIds = new List<Guid>();
 			//Распарсить ексельку и вытащить id промо
 			var listPromoId = ParseExcelTemplate(fileName);
 
@@ -379,12 +426,17 @@ namespace Module.Frontend.TPM.Controllers
 				{
 					var handlerId = await CreateHandlerAsync(promoId, rpaId);
 					handlerIds.Add(handlerId);
+					blockedPromoesIds.Add(promoId);
 				}
 			}
 			var tasks = "";
 			if (handlerIds.Count() > 0)
 				tasks = $"{String.Join(",", handlerIds.Select(el => $"''{el}''"))}";
-			string insertScript = String.Format("INSERT INTO RPA_Setting.[PARAMETERS] ([RPAId],[TasksToComplete]) VALUES ('{0}', '{1}')", rpaId, tasks);
+			var blokedPromoes = "";
+			if (blockedPromoesIds.Count() > 0)
+				blokedPromoes = $"{String.Join(",", blockedPromoesIds.Select(el => $"''{el}''"))}";
+
+			string insertScript = String.Format("INSERT INTO RPA_Setting.[PARAMETERS] ([RPAId],[TasksToComplete],[BlockedPromoesId]) VALUES ('{0}', '{1}', '{2}')", rpaId, tasks);
 
 			await Context.Database.ExecuteSqlCommandAsync(insertScript);
 		}

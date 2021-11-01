@@ -100,8 +100,8 @@ Ext.define('App.controller.core.rpa.RPA', {
                     editor.close();
                     grid.getStore().load();
                 },
-                fail: function (data) {
-                    App.Notify.pushInfo(Ext.JSON.decode(Ext.JSON.decode(data.responseText).value).message);
+                failure: function (data) {       
+                    App.Notify.pushError(Ext.JSON.decode(data.responseText)['odata.error']['innererror']['message']);
                     editor.setLoading(false);
                     editor.close();
                     grid.getStore().load();
