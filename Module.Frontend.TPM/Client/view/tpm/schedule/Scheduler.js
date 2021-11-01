@@ -232,6 +232,12 @@
         autoLoad: false,
     }),
 
+    competitorPromoStore: Ext.create('App.store.core.SimpleStore', {
+        model: 'App.model.tpm.competitorpromo.CompetitorPromo',
+        storeId: 'schedulercompetitorpromostore',
+        autoLoad: false,
+    }),
+
     initComponent: function () {
         var me = this;
         Ext.apply(this, {

@@ -686,6 +686,7 @@
         'MarsDispatchesEnd': 'Mars Dispatch end',
         'Number': 'Promo ID',
         'Name': 'Promo name',
+        'CompetitorName': 'Competitor',
         'BrandName': 'Brand',
         'BrandTechName': 'Brandtech',
         'ProductZREP': 'Product',

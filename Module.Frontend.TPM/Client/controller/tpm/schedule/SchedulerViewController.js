@@ -85,6 +85,9 @@
                 'promodetailtabpanel #historybutton': {
                     click: this.onHistoryButtonClick
                 },
+                'competitorpromodetailtabpanel #historybutton': {
+                    click: this.onCompetitorHistoryButtonClick
+                },
                 'schedulecontainer #deletedbutton': {
                     click: this.onDeletedButtonClick
                 },
@@ -104,7 +107,7 @@
         if (App.UserInfo.getCurrentRole()['SystemName'] == 'SupportAdministrator') {
             res = true;
         } else {
-            res = rec.get('PromoStatusSystemName') && (['Draft', 'DraftPublished', 'OnApproval', 'Approved', 'Planned'].includes(rec.get('PromoStatusSystemName')));
+            res = rec.get('PromoStatusSystemName') && (['Draft', 'DraftPublished', 'OnApproval', 'Approved', 'Planned'].includes(rec.get('PromoStatusSystemName')) && rec.get('TypeName') == 'Competitor');
         }
         return res;
     },
@@ -599,6 +602,7 @@
     },
     promoRightButtonClick: function (panel, rec, e) {
         var me = this;
+        if (rec.get('TypeName') == 'Competitor') return;
         e.stopEvent();
         var status = rec.get('PromoStatusSystemName').toLowerCase();
         var promoStore = me.getPromoStore();
@@ -790,6 +794,10 @@
         var me = this;
         var scheduler = Ext.ComponentQuery.query('#nascheduler')[0];
         var typeToCreate = null;
+        if (createContext.resourceRecord.get('TypeName') == 'Competitor') {
+            createContext.finalize(false);
+            return false;
+        }
         if (createContext.start > new Date(new Date().toDateString()) || App.UserInfo.getCurrentRole()['SystemName'] == 'SupportAdministrator') {
             var schedulerData,
                 ClientTypeName = createContext.resourceRecord.get('TypeName') + ' Promo',
@@ -1053,6 +1061,10 @@
 
     onEventResize: function (s, resizeContext) {
         var me = this;
+        if (resizeContext.eventRecord.get('TypeName') == 'Competitor') {
+            me.__resizeContext.finalize(false);
+            return false;
+        }
         var calendarGrid = Ext.ComponentQuery.query('scheduler');
         //Проверка по дате начала
         if ((resizeContext.eventRecord.start < new Date(new Date().toDateString()) || resizeContext.start < new Date(new Date().toDateString())) && App.UserInfo.getCurrentRole()['SystemName'] != 'SupportAdministrator') {
@@ -1593,10 +1605,14 @@
         var promoTab = {
             title: l10n.ns('tpm', 'compositePanelTitles').value('PromoDetail'),
             itemId: 'promoDetailTab',
-            items: {
+            items: [{
                 xtype: 'promodetailtabpanel',
                 selectedUI: 'blue-selectable-panel'
-            },
+            }, {
+                xtype: 'competitorpromodetailtabpanel',
+                selectedUI: 'blue-selectable-panel'
+            }
+            ],
 
             tabConfig: {
                 ui: 'system-panel-tab-button',
@@ -1625,6 +1641,7 @@
     singleClickTask: new Ext.util.DelayedTask(this.delayOnEventClick),
 
     onEventdbClick: function (panel, eventRecord, button) {
+        if (eventRecord.get('TypeName') == 'Competitor') return;
         this.singleClickTask.cancel();
         var promoStore = this.getPromoStore();
         panel.up('schedulecontainer').setLoading(true);
@@ -1720,32 +1737,61 @@
         return Ext.ComponentQuery.query('#nascheduler')[0].promoStore;
     },
 
+    getCompetitorPromoStore: function () {
+        return Ext.ComponentQuery.query('#nascheduler')[0].competitorPromoStore;
+    },
+
     // заполнение дашборда
     // events - запись(массив записей) промо. resourceRecord - клиент(для суммы по клиенту), showTab - необходимость открыть нижнюю панель
     fillTabPanel: function (events, scheduler, showTab) {
         var system = Ext.ComponentQuery.query('system')[0],
             promoPanel = system.down('promodetailtabpanel'),
-            promoStore = this.getPromoStore();
-        promoStore.load({
-            id: events.getId(), //set the id here
-            scope: this,
-            callback: function (records, operation, success) {
-                if (success) {
-                    var rec = records[0];
-                    promoPanel.event = rec;
-                    // Заголовок 1-й панели дашборда - название промо
-                    var promoDetailPanel = promoPanel.down('#promodetailpanel');
+            competitorPromoPanel = system.down('competitorpromodetailtabpanel'),
+            promoStore = this.getPromoStore(),
+            competitorPromoStore = this.getCompetitorPromoStore();
+        if (events.get('TypeName') == 'Competitor') {
+            competitorPromoStore.load({
+                id: events.getId(), //set the id here
+                scope: this,
+                callback: function (records, operation, success) {
+                    if (success) {
+                        var rec = records[0];
+                        competitorPromoPanel.event = rec;
+                        // Заголовок 1-й панели дашборда - название промо
+                        var promoDetailPanel = competitorPromoPanel.down('#promodetailpanel');
 
-                    // Полный вид механики с параметрами
-                    if (rec && rec.data) {
-                        promoDetailPanel.update(rec.data);
-                        if (showTab) {
-                            system.setActiveTab('promoDetailTab');
+                        // Полный вид механики с параметрами
+                        if (rec && rec.data) {
+                            promoDetailPanel.update(rec.data);
+                            if (showTab) {
+                                system.setActiveTab('competitorPromoDetailTab');
+                            }
                         }
                     }
                 }
-            }
-        });
+            }); 
+        } else {
+            promoStore.load({
+                id: events.getId(), //set the id here
+                scope: this,
+                callback: function (records, operation, success) {
+                    if (success) {
+                        var rec = records[0];
+                        promoPanel.event = rec;
+                        // Заголовок 1-й панели дашборда - название промо
+                        var promoDetailPanel = promoPanel.down('#promodetailpanel');
+
+                        // Полный вид механики с параметрами
+                        if (rec && rec.data) {
+                            promoDetailPanel.update(rec.data);
+                            if (showTab) {
+                                system.setActiveTab('promoDetailTab');
+                            }
+                        }
+                    }
+                }
+            });
+        }
     },
 
     onResizeGrid: function (grid, width, height, oldWidth, oldHeight, eOpts) {

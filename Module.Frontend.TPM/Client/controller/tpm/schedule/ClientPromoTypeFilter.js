@@ -45,16 +45,21 @@
     onApplyButtonClick: function (button) {
         var clientsCheckboxes = button.up('clientPromoTypeFilter').down('#clientsCheckboxes');
         var typesCheckboxes = button.up('clientPromoTypeFilter').down('#typesCheckboxes');
+        var competitorsCheckboxes = button.up('clientPromoTypeFilter').down('#competitorsCheckboxes');
         $('#scrollScheduler').data('jsp').scrollToY(0);
         if (clientsCheckboxes.getChecked().length == 0 || typesCheckboxes.getChecked().length == 0) {
             Ext.MessageBox.alert(l10n.ns('tpm', 'ClientPromoTypeFilter').value('Error'), l10n.ns('tpm', 'ClientPromoTypeFilter').value('SelectOneFilter'));
         } else {
             var clientsFilterConfig = Ext.ComponentQuery.query('#nascheduler')[0].clientsFilterConfig;
             var typesCheckboxesConfig = Ext.ComponentQuery.query('#nascheduler')[0].typesCheckboxesConfig;
+            var competitorsCheckboxesConfig = Ext.ComponentQuery.query('#nascheduler')[0].competitorsCheckboxesConfig;
             var needReloadStore = false;
-            this.filterClients(clientsCheckboxes, typesCheckboxes);
+            this.filterClients(clientsCheckboxes, typesCheckboxes, competitorsCheckboxes);
             for (i = 0; i < clientsCheckboxes.items.items.length; i++) {
                 clientsFilterConfig[i].checked = clientsCheckboxes.items.items[i].value;
+            };
+            for (i = 0; i < competitorsCheckboxes.items.items.length; i++) {
+                competitorsCheckboxesConfig[i].checked = competitorsCheckboxes.items.items[i].value;
             };
             for (i = 0; i < typesCheckboxes.items.items.length; i++) {
                 if (typesCheckboxesConfig[i].checked != typesCheckboxes.items.items[i].value) {
@@ -68,6 +73,7 @@
             var text = l10n.ns('tpm', 'Schedule').value('Filtered');
             if (button.up('clientPromoTypeFilter').down('#selectAllClients').checked
                 && button.up('clientPromoTypeFilter').down('#selectAllTypes').checked
+                && button.up('clientPromoTypeFilter').down('#selectAllCompetitors').checked
                 && button.up('clientPromoTypeFilter').down('#textFilterByClients').hasCls('fillerText')) {
                 text = l10n.ns('tpm', 'Schedule').value('AllSelected');
             };
@@ -206,11 +212,12 @@
     },
 
     //private
-    filterClients: function (clientsCheckboxes, typesCheckboxes) {
+    filterClients: function (clientsCheckboxes, typesCheckboxes, competitorsCheckboxes) {
         var me = this;
         var value = me.getFixedValue(clientsCheckboxes);
         var store = Ext.StoreMgr.lookup('MyResources');
         var typevalue = me.getTypeValuesForFilter(typesCheckboxes);
+        var competitorvalue = me.getCompetitorValuesForFilter(competitorsCheckboxes);
 
         me.clearFilter(store);
         if (!Ext.isEmpty(value)) {
@@ -220,6 +227,11 @@
 
         if (!Ext.isEmpty(typevalue)) {
             var filter = me.createFilter(typevalue, 'TypeName');
+            store.filter(filter);
+        }
+
+        if (!Ext.isEmpty(competitorvalue)) {
+            var filter = me.createFilter(competitorvalue, 'CompetitorName');
             store.filter(filter);
         }
     },
@@ -284,6 +296,27 @@
                 value.push(name);
             }
         });
+
+        if (Ext.isArray(value)) {
+            if (value.length == 0) {
+                value = '';
+            } else if (value.length == 1) {
+                value = value[0].toLowerCase();
+            }
+        } else {
+            value = value.toLowerCase();
+        }
+        return value;
+    },
+
+    getCompetitorValuesForFilter: function (competitorsCheckboxes) {
+        var checkedArray = competitorsCheckboxes.getChecked();
+        var value = [];
+        checkedArray.forEach(function (el) {
+            value.push(el.name);
+        });
+
+        value.push('mars');
 
         if (Ext.isArray(value)) {
             if (value.length == 0) {

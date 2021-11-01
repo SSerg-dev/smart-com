@@ -295,6 +295,7 @@
     <Content Include="Client\model\tpm\mechanictype\MechanicTypeForClient.js" />
     <Content Include="Client\model\tpm\rollingvolume\RollingVolume.js" />
     <Content Include="Client\util\MinHeightColumn.js" />
+    <Content Include="Client\view\tpm\common\competitorPromoDashboardTpl.js" />
     <Content Include="Client\view\tpm\competitorpromo\CompetitorPromo.js" />
     <Content Include="Client\view\tpm\competitorpromo\CompetitorPromoEditor.js" />
     <Content Include="Client\view\tpm\competitorpromo\DeletedCompetitorPromo.js" />
@@ -940,6 +941,7 @@
     <Content Include="Client\view\tpm\rollingvolume\RollingVolume.js" />
     <Content Include="Client\view\tpm\rollingvolume\RollingVolumeEditor.js" />
     <Content Include="Client\view\tpm\schedule\ClientPromoTypeFilter.js" />
+    <Content Include="Client\view\tpm\schedule\CompetitorPromoDetailTabPanel.js" />
     <Content Include="Client\view\tpm\schedule\ScheduleType.js" />
     <Content Include="Client\view\tpm\schedule\SelectBudgetYearWindow.js" />
     <Content Include="Client\view\tpm\toolbar\calculatinglog\CustomLogTopToolbar.js" />

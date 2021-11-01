@@ -88,8 +88,11 @@ namespace Module.Frontend.TPM.Controllers {
                 foreach (var rowName in rowNames)
                 {
                     var row = (SchedulerClientTreeDTO)prevRow.Clone();
-                    if(baseTypes.Contains(rowName))
+                    if (baseTypes.Contains(rowName))
+                    {
                         row.TypeName = rowName;
+                        row.CompetitorName = "mars";
+                    }
                     else
                     {
                         row.TypeName = "Competitor";

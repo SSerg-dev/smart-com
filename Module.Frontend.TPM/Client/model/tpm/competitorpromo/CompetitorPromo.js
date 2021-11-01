@@ -30,6 +30,7 @@
             name: 'Status', type: 'string', mapping: 'PromoStatus.Name', defaultFilterConfig: { valueField: 'Name' },
             breezeEntityType: 'PromoStatus', hidden: false, isDefault: true
         },
+        { name: 'PromoStatusColor', type: 'string', mapping: 'PromoStatus.Color', defaultFilterConfig: { valueField: 'Color' }, breezeEntityType: 'PromoStatus', hidden: true, isDefault: false },
         { name: 'IsGrowthAcceleration', useNull: false, type: 'boolean', hidden: false, isDefault: true },
 
         { name: 'StartDate', useNull: true, type: 'date', hidden: true, timeZone: +3, convert: dateConvertTimeZone },
