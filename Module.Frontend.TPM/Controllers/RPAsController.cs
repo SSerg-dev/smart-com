@@ -169,7 +169,7 @@ namespace Module.Frontend.TPM.Controllers
 											{ "ProductReference", "EAN_PC" }											
 										};
 						await CreateCalculationTaskAsync(fileName, result.Id);
-						//CreatePipeForActuals(tenantID, applicationId, authenticationKey, subscriptionId, resourceGroup, dataFactoryName, pipelineName, parameters);
+						CreatePipeForActuals(tenantID, applicationId, authenticationKey, subscriptionId, resourceGroup, dataFactoryName, pipelineName, parameters);
 						break;
 					case "Actuals_PLU":
 						pipelineName = "JUPITER_RPA_UPLOAD_ACTUALS_PIPE";
