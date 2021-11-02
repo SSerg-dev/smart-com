@@ -120,13 +120,6 @@
             fieldLabel: l10n.ns('tpm', 'CompetitorPromo').value('Subrange'),
             name: 'Subrange',
         }, {
-            xtype: 'textfield',
-            fieldLabel: l10n.ns('tpm', 'Promo').value('IsGrowthAcceleration'),
-            name: 'IsGrowthAcceleration',
-            renderer: function (value) {
-                return value ? l10n.ns('core', 'booleanValues').value('true') : l10n.ns('core', 'booleanValues').value('false');
-            }
-        }, {
             xtype: 'searchfield',
             fieldLabel: l10n.ns('tpm', 'Promo').value('PromoStatusName'),
             name: 'PromoStatusId',

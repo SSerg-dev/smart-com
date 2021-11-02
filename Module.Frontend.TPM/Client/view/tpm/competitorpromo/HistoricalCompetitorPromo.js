@@ -125,10 +125,6 @@
             fieldLabel: l10n.ns('tpm', 'CompetitorPromo').value('Subrange'),
         }, {
             xtype: 'singlelinedisplayfield',
-            name: 'GrowthAcceleration',
-            fieldLabel: l10n.ns('tpm', 'Promo').value('GrowthAcceleration'),
-        }, {
-            xtype: 'singlelinedisplayfield',
             name: 'Status',
             fieldLabel: l10n.ns('tpm', 'Promo').value('PromoStatusName'),
         }]
