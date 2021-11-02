@@ -436,7 +436,7 @@ namespace Module.Frontend.TPM.Controllers
 				tasks = $"{String.Join(",", handlerIds.Select(el => $"''{el}''"))}";
 			
 
-			string insertScript = String.Format("INSERT INTO RPA_Setting.[PARAMETERS] ([RPAId],[TasksToComplete],[BlockedPromoesId]) VALUES ('{0}', '{1}')", rpaId, tasks);
+			string insertScript = String.Format("INSERT INTO RPA_Setting.[PARAMETERS] ([RPAId],[TasksToComplete]) VALUES ('{0}', '{1}')", rpaId, tasks);
 
 			await Context.Database.ExecuteSqlCommandAsync(insertScript);
 		}
