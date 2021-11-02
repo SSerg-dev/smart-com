@@ -71,7 +71,8 @@
 	<add key="RPA_UPLOAD_RESOURCE_GROUP" value="RUSSIA-PETCARE-JUPITER-DEV-RG" />
 	<add key="RPA_UPLOAD_REGION" value="East US 2" />
 	<add key="RPA_UPLOAD_DATA_FACTORY_NAME" value="russiapetcarejupiterdevadf" />
-	<add key="RPA_UPLOAD_DOWNLOAD_FILE_URL" value="https://russiapetcarejupiterdevwa.azurewebsites.net/odata/RPAs/DownloadFile?fileName="/>
+	<add key="RPA_UPLOAD_DOWNLOAD_FILE_URL" value="https://russiapetcarejupiterdevwa.azurewebsites.net/odata/RPAs/DownloadFile?fileName=" />
+	<add key="RPA_UPLOAD_LOG_FILE_URL" value="https://jupitertestawa.azurewebsites.net/odata/RPAs/DownloadFile?fileName=" />
   </appSettings>
   <system.identityModel>
     <identityConfiguration>

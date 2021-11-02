@@ -145,6 +145,7 @@ namespace Module.Frontend.TPM.Controllers
 				result.CreateDate = DateTime.UtcNow;
 				string fileURL = AppSettingsManager.GetSetting("RPA_UPLOAD_DOWNLOAD_FILE_URL", "");
 				result.FileURL = $"<a href='{fileURL}{Path.GetFileName(fileName)}' download>Download file</a>";
+				string LogURL = $"<a href='{AppSettingsManager.GetSetting("RPA_UPLOAD_LOG_FILE_URL", "")}OutputLogFile_{result.Id}.xlsx' download>Log file</a>";
 				var resultSaveChanges = Context.SaveChanges();
 
 				//Call Pipe
@@ -166,7 +167,8 @@ namespace Module.Frontend.TPM.Controllers
 											{ "RPAId", result.Id },
 											{ "UserRoleName", this.user.GetCurrentRole().SystemName },
 											{ "UserId", this.user.Id },
-											{ "ProductReference", "EAN_PC" }											
+											{ "ProductReference", "EAN_PC" },
+											{ "LogFileURL", LogURL}
 										};
 						await CreateCalculationTaskAsync(fileName, result.Id);
 						CreatePipeForActuals(tenantID, applicationId, authenticationKey, subscriptionId, resourceGroup, dataFactoryName, pipelineName, parameters);
@@ -179,7 +181,8 @@ namespace Module.Frontend.TPM.Controllers
 											{ "RPAId", result.Id },
 											{ "UserRoleName", this.user.GetCurrentRole().SystemName },
 											{ "UserId", this.user.Id },
-											{ "ProductReference", "PLU" }
+											{ "ProductReference", "PLU" },
+											{ "LogFileURL", LogURL}
 										};
 						await CreateCalculationTaskAsync(fileName, result.Id);
 						CreatePipeForActuals(tenantID, applicationId, authenticationKey, subscriptionId, resourceGroup, dataFactoryName, pipelineName, parameters);
@@ -192,6 +195,7 @@ namespace Module.Frontend.TPM.Controllers
 										{ "RPAId", result.Id },
 										{ "UserRoleName", this.user.GetCurrentRole().SystemName },
 										{ "UserId", this.user.Id },
+										{ "LogFileURL", LogURL}
 									};
 						CreatePipeForEvents(tenantID, applicationId, authenticationKey, subscriptionId, resourceGroup, dataFactoryName, pipelineName, parameters);
 						break;
@@ -414,7 +418,6 @@ namespace Module.Frontend.TPM.Controllers
 		{
 
 			List<Guid> handlerIds = new List<Guid>();
-			List<Guid> blockedPromoesIds = new List<Guid>();
 			//Распарсить ексельку и вытащить id промо
 			var listPromoId = ParseExcelTemplate(fileName);
 
@@ -426,17 +429,14 @@ namespace Module.Frontend.TPM.Controllers
 				{
 					var handlerId = await CreateHandlerAsync(promoId, rpaId);
 					handlerIds.Add(handlerId);
-					blockedPromoesIds.Add(promoId);
 				}
 			}
 			var tasks = "";
 			if (handlerIds.Count() > 0)
 				tasks = $"{String.Join(",", handlerIds.Select(el => $"''{el}''"))}";
-			var blokedPromoes = "";
-			if (blockedPromoesIds.Count() > 0)
-				blokedPromoes = $"{String.Join(",", blockedPromoesIds.Select(el => $"''{el}''"))}";
+			
 
-			string insertScript = String.Format("INSERT INTO RPA_Setting.[PARAMETERS] ([RPAId],[TasksToComplete],[BlockedPromoesId]) VALUES ('{0}', '{1}', '{2}')", rpaId, tasks, blokedPromoes);
+			string insertScript = String.Format("INSERT INTO RPA_Setting.[PARAMETERS] ([RPAId],[TasksToComplete],[BlockedPromoesId]) VALUES ('{0}', '{1}')", rpaId, tasks);
 
 			await Context.Database.ExecuteSqlCommandAsync(insertScript);
 		}
