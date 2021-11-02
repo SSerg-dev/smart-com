@@ -140,13 +140,14 @@ namespace Module.Frontend.TPM.Controllers
 				}
 
 				// Save RPA
+				var resultSaveChanges = Context.SaveChanges();
 
 				result.Constraint = String.Join(";", this.constraints.Select(x => x.Value).ToArray());
 				result.CreateDate = DateTime.UtcNow;
 				string fileURL = AppSettingsManager.GetSetting("RPA_UPLOAD_DOWNLOAD_FILE_URL", "");
 				result.FileURL = $"<a href='{fileURL}{Path.GetFileName(fileName)}' download>Download file</a>";
-				string LogURL = $"<a href='{AppSettingsManager.GetSetting("RPA_UPLOAD_LOG_FILE_URL", "")}OutputLogFile_{result.Id}.xlsx' download>Log file</a>";
-				var resultSaveChanges = Context.SaveChanges();
+				string LogURL = $"<a href='{fileURL}OutputLogFile_{result.Id}.xlsx' download>Log file</a>";
+				
 
 				//Call Pipe
 				string tenantID = AppSettingsManager.GetSetting("RPA_UPLOAD_TENANT_ID", "");
