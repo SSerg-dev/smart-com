@@ -436,7 +436,7 @@ namespace Module.Frontend.TPM.Controllers
 			if (blockedPromoesIds.Count() > 0)
 				blokedPromoes = $"{String.Join(",", blockedPromoesIds.Select(el => $"''{el}''"))}";
 
-			string insertScript = String.Format("INSERT INTO RPA_Setting.[PARAMETERS] ([RPAId],[TasksToComplete],[BlockedPromoesId]) VALUES ('{0}', '{1}', '{2}')", rpaId, tasks);
+			string insertScript = String.Format("INSERT INTO RPA_Setting.[PARAMETERS] ([RPAId],[TasksToComplete],[BlockedPromoesId]) VALUES ('{0}', '{1}', '{2}')", rpaId, tasks, blokedPromoes);
 
 			await Context.Database.ExecuteSqlCommandAsync(insertScript);
 		}
