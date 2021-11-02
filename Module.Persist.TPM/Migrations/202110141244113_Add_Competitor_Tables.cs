@@ -34,7 +34,6 @@ namespace Module.Persist.TPM.Migrations
                         Name = c.String(nullable: false, maxLength: 124),
                         Number = c.Int(nullable: false),
                         PromoStatusId = c.Guid(nullable: false),
-                        IsGrowthAcceleration = c.Boolean(),
                         StartDate = c.DateTimeOffset(nullable: false, precision: 7),
                         EndDate = c.DateTimeOffset(nullable: false, precision: 7),
                         Discount = c.Double(),

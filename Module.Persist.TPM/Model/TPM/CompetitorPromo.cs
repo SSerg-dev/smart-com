@@ -35,8 +35,6 @@ namespace Module.Persist.TPM.Model.TPM
         [Required]
         public Guid PromoStatusId { get; set; }
 
-        public bool? IsGrowthAcceleration { get; set; }
-
         [Required]
         public DateTimeOffset? StartDate { get; set; }
 
