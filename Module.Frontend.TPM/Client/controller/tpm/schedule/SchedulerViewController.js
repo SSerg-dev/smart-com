@@ -35,6 +35,7 @@
                     eventclick: this.onEventClick,
                     eventdblclick: this.onEventdbClick,
                     extfilterchange: this.onExtFilterChange,
+                    beforeeventresize: this.onpromoBeforeEventResize,
                     beforeeventresizefinalize: this.onEventResize,
                     beforedragcreatefinalize: this.onPromoDragCreation,
                     eventcontextmenu: this.promoRightButtonClick,
@@ -98,16 +99,25 @@
         })
     },
 
+    onpromoBeforeEventResize: function (scheduler, record, e, eOpts) {
+        return this.isResizable(record);
+    },
+
+    isResizable: function (rec) {
+        return rec.get('TypeName') != 'Competitor';
+    },
+
     onpromoBeforeEventDrag: function (scheduler, record, e, eOpts) {
         return this.isDraggable(record);
     },
+
 
     isDraggable: function (rec) {
         var res = false;
         if (App.UserInfo.getCurrentRole()['SystemName'] == 'SupportAdministrator') {
             res = true;
         } else {
-            res = rec.get('PromoStatusSystemName') && (['Draft', 'DraftPublished', 'OnApproval', 'Approved', 'Planned'].includes(rec.get('PromoStatusSystemName')) && rec.get('TypeName') == 'Competitor');
+            res = rec.get('PromoStatusSystemName') && (['Draft', 'DraftPublished', 'OnApproval', 'Approved', 'Planned'].includes(rec.get('PromoStatusSystemName')) && rec.get('TypeName') != 'Competitor');
         }
         return res;
     },
