@@ -18,7 +18,7 @@ namespace Module.Persist.TPM.Migrations
 	            [TasksToComplete] [nvarchar](max) NOT NULL
                 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
                 GO
-                CREATE PROCEDURE {defaultSchema}.[UpdatePromoProduct]
+                CREATE OR ALTER PROCEDURE {defaultSchema}.[UpdatePromoProduct]
                 (@RPAId nvarchar(max))
                     AS
                     BEGIN
@@ -78,7 +78,7 @@ namespace Module.Persist.TPM.Migrations
                         END
                     GO
                     
-                    CREATE PROCEDURE {defaultSchema}.[LaunchRecalculationTasks]
+                    CREATE OR ALTER PROCEDURE {defaultSchema}.[LaunchRecalculationTasks]
                     (@RPAId nvarchar(max))
                         AS
                         BEGIN
@@ -96,7 +96,7 @@ namespace Module.Persist.TPM.Migrations
 					    END
                     GO
                     
-                    CREATE PROCEDURE {defaultSchema}.[RemoveTasksAndBlockedPromo]
+                    CREATE OR ALTER PROCEDURE {defaultSchema}.[RemoveTasksAndBlockedPromo]
                     (@RPAId nvarchar(max))
                         AS
                         BEGIN
@@ -117,7 +117,7 @@ namespace Module.Persist.TPM.Migrations
                         [Disabled] = 1 , [DeletedDate] = GETDATE()
                     GO
 
-                    CREATE PROCEDURE {defaultSchema}.[RpaPipeActual_UpdateRPAStatus]
+                    CREATE OR ALTER PROCEDURE {defaultSchema}.[RpaPipeActual_UpdateRPAStatus]
                     (       
 	                    @RPAId nvarchar(max),
 					    @Status nvarchar(max)
@@ -136,7 +136,7 @@ namespace Module.Persist.TPM.Migrations
                         END
                     GO
 
-                    CREATE PROCEDURE {defaultSchema}.[RpaPipeActual_UpdateRPA]
+                    CREATE OR ALTER PROCEDURE {defaultSchema}.[RpaPipeActual_UpdateRPA]
                     (   
 	                    @RPAId nvarchar(max),
 	                    @LogFileURL nvarchar(max)
@@ -158,7 +158,7 @@ namespace Module.Persist.TPM.Migrations
                         END
                     GO
 
-                    CREATE PROCEDURE {defaultSchema}.[RpaPipeEvent_UpdateRPA]
+                    CREATE OR ALTER PROCEDURE {defaultSchema}.[RpaPipeEvent_UpdateRPA]
                     (   
 	                    @RPAId nvarchar(max),
 	                    @RunPipeId nvarchar(max),

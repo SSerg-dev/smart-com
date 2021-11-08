@@ -149,7 +149,9 @@ namespace Module.Frontend.TPM.Controllers
 				var resultSaveChanges = Context.SaveChanges();
 
 				string LogURL = $"<a href='{fileURL}OutputLogFile_{result.Id}.xlsx' download>Log file</a>";
-				
+
+				string SchemaBD = AppSettingsManager.GetSetting("RPA_UPLOAD_SCHEMA_BD", "");
+
 				//Call Pipe
 				string tenantID = AppSettingsManager.GetSetting("RPA_UPLOAD_TENANT_ID", "");
 				string applicationId = AppSettingsManager.GetSetting("RPA_UPLOAD_APPLICATION_ID", "");
@@ -170,7 +172,8 @@ namespace Module.Frontend.TPM.Controllers
 											{ "UserRoleName", this.user.GetCurrentRole().SystemName },
 											{ "UserId", this.user.Id },
 											{ "ProductReference", "EAN_PC" },
-											{ "LogFileURL", LogURL}
+											{ "LogFileURL", LogURL},
+											{ "Schema", SchemaBD}
 										};
 						await CreateCalculationTaskAsync(fileName, result.Id);
 						CreatePipeForActuals(tenantID, applicationId, authenticationKey, subscriptionId, resourceGroup, dataFactoryName, pipelineName, parameters);
@@ -184,7 +187,8 @@ namespace Module.Frontend.TPM.Controllers
 											{ "UserRoleName", this.user.GetCurrentRole().SystemName },
 											{ "UserId", this.user.Id },
 											{ "ProductReference", "PLU" },
-											{ "LogFileURL", LogURL}
+											{ "LogFileURL", LogURL},
+											{ "Schema", SchemaBD}
 										};
 						await CreateCalculationTaskAsync(fileName, result.Id);
 						CreatePipeForActuals(tenantID, applicationId, authenticationKey, subscriptionId, resourceGroup, dataFactoryName, pipelineName, parameters);
