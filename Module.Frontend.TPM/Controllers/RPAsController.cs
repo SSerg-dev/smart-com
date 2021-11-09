@@ -150,7 +150,7 @@ namespace Module.Frontend.TPM.Controllers
 
 				string LogURL = $"<a href='{fileURL}OutputLogFile_{result.Id}.xlsx' download>Log file</a>";
 
-				string SchemaBD = AppSettingsManager.GetSetting("RPA_UPLOAD_SCHEMA_BD", "");
+				string SchemaBD = AppSettingsManager.GetSetting("DefaultSchema", "");
 
 				//Call Pipe
 				string tenantID = AppSettingsManager.GetSetting("RPA_UPLOAD_TENANT_ID", "");
