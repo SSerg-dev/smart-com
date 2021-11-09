@@ -164,7 +164,7 @@ namespace Module.Frontend.TPM.Controllers
 				switch (rpaType)
 				{
 					case "Actuals_EAN_PC":
-						pipelineName = "JUPITER_RPA_UPLOAD_ACTUALS_PIPE";
+						pipelineName = AppSettingsManager.GetSetting("RPA_UPLOAD_PIPELINE_ACTUALS_NAME", "");
 						parameters = new Dictionary<string, object>
 										{
 											{ "FileName", Path.GetFileName(fileName) },
@@ -179,7 +179,7 @@ namespace Module.Frontend.TPM.Controllers
 						CreatePipeForActuals(tenantID, applicationId, authenticationKey, subscriptionId, resourceGroup, dataFactoryName, pipelineName, parameters);
 						break;
 					case "Actuals_PLU":
-						pipelineName = "JUPITER_RPA_UPLOAD_ACTUALS_PIPE";
+						pipelineName = AppSettingsManager.GetSetting("RPA_UPLOAD_PIPELINE_ACTUALS_NAME", "");
 						parameters = new Dictionary<string, object>
 										{
 											{ "FileName", Path.GetFileName(fileName) },
@@ -194,7 +194,7 @@ namespace Module.Frontend.TPM.Controllers
 						CreatePipeForActuals(tenantID, applicationId, authenticationKey, subscriptionId, resourceGroup, dataFactoryName, pipelineName, parameters);
 						break;
 					case "Events":
-						pipelineName = "JUPITER_RPA_UPLOAD_PIPE";
+						pipelineName = AppSettingsManager.GetSetting("RPA_UPLOAD_PIPELINE_EVENT_NAME", "");
 						parameters = new Dictionary<string, object>
 									{
 										{ "FileName", Path.GetFileName(fileName) },
