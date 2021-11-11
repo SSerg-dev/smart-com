@@ -687,6 +687,7 @@
         'Number': 'Promo ID',
         'Name': 'Promo name',
         'CompetitorName': 'Competitor',
+        'CompetitorBrandTechName': 'Competitor BrandTech',
         'BrandName': 'Brand',
         'BrandTechName': 'Brandtech',
         'ProductZREP': 'Product',

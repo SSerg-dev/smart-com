@@ -22,44 +22,42 @@ namespace Module.Persist.TPM.Model.Import
 
         [ImportCSVColumn(ColumnNumber = 2)]
         [Display(Name = "Client hierarchy code")]
-        public int ObjectId { get; set; }
+        public int ClientTreeObjectId { get; set; }
 
         [ImportCSVColumn(ColumnNumber = 3)]
-        [NavigationPropertyMap(LookupEntityType = typeof(BrandTech), LookupPropertyName = "Name")]
+        [NavigationPropertyMap(LookupEntityType = typeof(CompetitorBrandTech), LookupPropertyName = "BrandTech")]
         [Display(Name = "BrandTech")]
-        public String BrandTechName { get; set; }
+        public String CompetitorBrandTechName { get; set; }
 
         [ImportCSVColumn(ColumnNumber = 4)]
-        [Display(Name = "Growth acceleration")]
-        public bool IsGrowthAcceleration { get; set; }
-
-        [ImportCSVColumn(ColumnNumber = 5)]
         [Display(Name = "StartDate")]
         public DateTimeOffset? StartDate { get; set; }
 
-        [ImportCSVColumn(ColumnNumber = 6)]
+        [ImportCSVColumn(ColumnNumber = 5)]
         [Display(Name = "EndDate")]
         public DateTimeOffset? EndDate { get; set; }
 
-        [ImportCSVColumn(ColumnNumber = 7)]
+        [ImportCSVColumn(ColumnNumber = 6)]
         [Display(Name = "Discount")]
         public float Discount { get; set; }
 
-        [ImportCSVColumn(ColumnNumber = 8)]
+        [ImportCSVColumn(ColumnNumber = 7)]
         [Display(Name = "Shelf price")]
         public int Price { get; set; }
 
-        [ImportCSVColumn(ColumnNumber = 9)]
+        [ImportCSVColumn(ColumnNumber = 8)]
         [Display(Name = "Subranges")]
         public String Subrange { get; set; }
 
-        [ImportCSVColumn(ColumnNumber = 10)]
+        [ImportCSVColumn(ColumnNumber = 9)]
         [NavigationPropertyMap(LookupEntityType = typeof(PromoStatus), LookupPropertyName = "Name")]
         [Display(Name = "PromoStatus")]
         public String PromoStatusName { get; set; }
 
         public Guid CompetitorId { get; set; }
         public virtual Competitor Competitor { get; set; }
+        public Guid CompetitorBrandTechId { get; set; }
+        public virtual CompetitorBrandTech CompetitorBrandTech { get; set; }
         public Guid PromoStatusId { get; set; }
         public virtual PromoStatus PromoStatus { get; set; }
     }

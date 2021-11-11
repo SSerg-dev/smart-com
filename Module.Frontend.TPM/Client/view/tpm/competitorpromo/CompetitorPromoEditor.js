@@ -8,11 +8,6 @@
     items: {
         xtype: 'editorform',
         items: [{
-            xtype: 'textfield',
-            fieldLabel: l10n.ns('tpm', 'Promo').value('Number'),
-            name: 'Number',
-            readonly: true
-        }, {
             xtype: 'searchfield',
             fieldLabel: l10n.ns('tpm', 'CompetitorPromo').value('CompetitorName'),
             name: 'CompetitorId',
@@ -111,14 +106,20 @@
             xtype: 'textfield',
             fieldLabel: l10n.ns('tpm', 'CompetitorPromo').value('Price'),
             name: 'Price',
+            allowBlank: true,
+            allowOnlyWhitespace: true,
         }, {
             xtype: 'textfield',
             fieldLabel: l10n.ns('tpm', 'CompetitorPromo').value('Discount'),
             name: 'Discount',
+            allowBlank: true,
+            allowOnlyWhitespace: true,
         }, {
             xtype: 'textfield',
             fieldLabel: l10n.ns('tpm', 'CompetitorPromo').value('Subrange'),
             name: 'Subrange',
+            allowBlank: true,
+            allowOnlyWhitespace: true,
         }, {
             xtype: 'searchfield',
             fieldLabel: l10n.ns('tpm', 'Promo').value('PromoStatusName'),

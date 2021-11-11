@@ -1,4 +1,5 @@
 ﻿using Core.Data;
+using Module.Persist.TPM.Utils;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -20,7 +21,7 @@ namespace Module.Persist.TPM.Model.TPM
         public Guid? CompetitorId { get; set; }
 
         [Required]
-        public int? ClientTreeId { get; set; }
+        public int? ClientTreeObjectId { get; set; }
 
         [Required]
         public Guid CompetitorBrandTechId { get; set; }
@@ -50,7 +51,8 @@ namespace Module.Persist.TPM.Model.TPM
 
         [ForeignKey("CompetitorId")]
         public virtual Competitor Competitor { get; set; }
-        [ForeignKey("ClientTreeId")]
+        [ForeignKey("ClientTreeObjectId")]
+        [SpecialNotKeyProperty]
         public virtual ClientTree ClientTree { get; set; }
         [ForeignKey("CompetitorBrandTechId")]
         public virtual CompetitorBrandTech CompetitorBrandTech { get; set; }

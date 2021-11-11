@@ -622,6 +622,7 @@
         'Name': 'Promo name',
         'BrandName': 'Brand',
         'CompetitorName': 'Competitor',
+        'CompetitorBrandTechName': 'Competitor BrandTech',
         'BrandTechName': 'Brandtech',
         'ProductZREP': 'Product',
         'MechanicComment': 'Mechanic comment',

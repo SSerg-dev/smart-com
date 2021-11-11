@@ -29,6 +29,45 @@ Ext.define('App.store.core.SchedulePromoStore', {
             }
             options.extendedFilters = this.prepareExtendedFilter();
         }
+        var competitorOption = {
+            "operator": "and",
+            "rules": []
+        };
+        var competitorPromoRules = [{
+                    "property": "TypeName",
+                    "operation": "Equals",
+                    "value": "Competitor"
+                }];
+        var competitorPromoFields = ['PromoStatusName', 'Name', 'CompetitorBrandTechName']
+        var excludeFromPromoFields = ['CompetitorBrandTechName'];
+        var unionOption = {
+            "operator": "or",
+            "rules": []
+        };
+        options.extendedFilters.forEach(function (item) {
+            if (item.rules != null) {
+                //var compRules = item.rules.filter(function (el){
+                //    return competitorPromoFields.includes(el.property);
+                //});
+                item.rules.forEach(function(el){
+                    if(competitorPromoFields.includes(el.property))
+                        competitorPromoRules.push(el);
+                });
+                //compRules.push(competitorPromoRules);
+                //competitorPromoRules = compRules;
+                item.rules = item.rules.filter(function (el){
+                    return !excludeFromPromoFields.includes(el.property);
+                });
+                unionOption.rules.push(item);
+            }
+        });
+        competitorOption.rules = competitorPromoRules;
+        unionOption.rules.push(competitorOption);
+        options.extendedFilters = options.extendedFilters.filter(function (item){
+            return item.rules == null;
+        });
+        options.extendedFilters.push(unionOption);
+
         return this.callParent([options]);
     }
 });

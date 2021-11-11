@@ -209,16 +209,32 @@ namespace Module.Frontend.TPM.Controllers
             IEnumerable<Column> columns = new List<Column>() {
                 new Column() { Order = 1, Field = "Number", Header = "Number", Quoting = false },
                 new Column() { Order = 2, Field = "Competitor.Name", Header = "Competitor", Quoting = false },
-                new Column() { Order = 3, Field = "IsGrowthAcceleration", Header = "Growth Acceleration", Quoting = false },
-                new Column() { Order = 4, Field = "Name", Header = "Promo Name", Quoting = false },
-                new Column() { Order = 5, Field = "BrandTech.Name", Header = "BrandTech", Quoting = false },
+                new Column() { Order = 3, Field = "Name", Header = "Promo Name", Quoting = false },
+                new Column() { Order = 4, Field = "ClientTree.ObjectId", Header = "Client hierarchy code", Quoting = false },
+                new Column() { Order = 5, Field = "CompetitorBrandTech.BrandTech", Header = "BrandTech", Quoting = false },
                 new Column() { Order = 6, Field = "StartDate", Header = "Start Date", Quoting = false },
                 new Column() { Order = 7, Field = "EndDate", Header = "End Date", Quoting = false },
-                new Column() { Order = 8, Field = "StartDate", Header = "Start Date", Quoting = false },
-                new Column() { Order = 9, Field = "Discount", Header = "Discount", Quoting = false },
-                new Column() { Order = 10, Field = "Price", Header = "Shelf Price", Quoting = false },
-                new Column() { Order = 11, Field = "Subrange", Header = "Subranges", Quoting = false },
-                new Column() { Order = 12, Field = "PromoStatus", Header = "Promo Status", Quoting = false }
+                new Column() { Order = 8, Field = "Discount", Header = "Discount", Quoting = false },
+                new Column() { Order = 9, Field = "Price", Header = "Shelf Price", Quoting = false },
+                new Column() { Order = 10, Field = "Subrange", Header = "Subranges", Quoting = false },
+                new Column() { Order = 11, Field = "PromoStatus.Name", Header = "Promo Status", Quoting = false }
+            };
+            return columns;
+        }
+
+        public static IEnumerable<Column> GetImportSettings()
+        {
+            IEnumerable<Column> columns = new List<Column>() {
+                new Column() { Order = 1, Field = "Competitor.Name", Header = "Competitor", Quoting = false },
+                new Column() { Order = 2, Field = "Name", Header = "Promo Name", Quoting = false },
+                new Column() { Order = 3, Field = "ClientTree.ObjectId", Header = "Client hierarchy code", Quoting = false },
+                new Column() { Order = 4, Field = "CompetitorBrandTech.BrandTech", Header = "BrandTech", Quoting = false },
+                new Column() { Order = 5, Field = "StartDate", Header = "Start Date", Quoting = false },
+                new Column() { Order = 6, Field = "EndDate", Header = "End Date", Quoting = false },
+                new Column() { Order = 7, Field = "Discount", Header = "Discount", Quoting = false },
+                new Column() { Order = 8, Field = "Price", Header = "Shelf Price", Quoting = false },
+                new Column() { Order = 9, Field = "Subrange", Header = "Subranges", Quoting = false },
+                new Column() { Order = 10, Field = "PromoStatus.Name", Header = "Promo Status", Quoting = false }
             };
             return columns;
         }
@@ -320,8 +336,8 @@ namespace Module.Frontend.TPM.Controllers
                 HandlerDataHelper.SaveIncomingArgument("File", file, data, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(CompetitorPromo), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(CompetitorPromo).Name, data, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportCompetitorPromo), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportCompetitorPromo).Name, data, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(CompetitorPromo), data, visible: false, throwIfNotExists: false);
 
                 LoopHandler handler = new LoopHandler()
@@ -350,7 +366,7 @@ namespace Module.Frontend.TPM.Controllers
         {
             try
             {
-                IEnumerable<Column> columns = GetExportSettings();
+                IEnumerable<Column> columns = GetImportSettings();
                 XLSXExporter exporter = new XLSXExporter(columns);
                 string exportDir = AppSettingsManager.GetSetting("EXPORT_DIRECTORY", "~/ExportFiles");
                 string filename = string.Format("{0}Template.xlsx", "CompetitorPromo");

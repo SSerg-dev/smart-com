@@ -86,9 +86,6 @@
                 'promodetailtabpanel #historybutton': {
                     click: this.onHistoryButtonClick
                 },
-                'competitorpromodetailtabpanel #historybutton': {
-                    click: this.onCompetitorHistoryButtonClick
-                },
                 'schedulecontainer #deletedbutton': {
                     click: this.onDeletedButtonClick
                 },
@@ -1491,6 +1488,12 @@
             .then(function (data) {
                 scheduler.typesCheckboxesConfig = [];
                 scheduler.otherPromoTypes = [];
+                var competitorType = {
+                    Name: 'Competitor promo',
+                    SystemName: 'Competitor',
+                    Glyph: 'E902'
+                };
+                data.results.push(competitorType);
                 data.results.forEach(function (el) {
                     if (el.Name === 'Regular Promo') {
                         scheduler.regPromoType = el;
@@ -1618,9 +1621,6 @@
             items: [{
                 xtype: 'promodetailtabpanel',
                 selectedUI: 'blue-selectable-panel'
-            }, {
-                xtype: 'competitorpromodetailtabpanel',
-                selectedUI: 'blue-selectable-panel'
             }
             ],
 
@@ -1630,6 +1630,7 @@
             },
         }
         system.add(promoTab);
+
         /*Ext.create('Ext.ux.window.Notification', {
             position: 'br',
             cls: 'ux-notification-light',
@@ -1756,7 +1757,7 @@
     fillTabPanel: function (events, scheduler, showTab) {
         var system = Ext.ComponentQuery.query('system')[0],
             promoPanel = system.down('promodetailtabpanel'),
-            competitorPromoPanel = system.down('competitorpromodetailtabpanel'),
+            competitorPromoPanel = system.down('promodetailtabpanel'),
             promoStore = this.getPromoStore(),
             competitorPromoStore = this.getCompetitorPromoStore();
         if (events.get('TypeName') == 'Competitor') {
@@ -1770,11 +1771,13 @@
                         // Заголовок 1-й панели дашборда - название промо
                         var promoDetailPanel = competitorPromoPanel.down('#promodetailpanel');
 
+                        var promoDetailButton = competitorPromoPanel.down('#promoDetail');
+                        promoDetailButton.hide();
                         // Полный вид механики с параметрами
                         if (rec && rec.data) {
                             promoDetailPanel.update(rec.data);
                             if (showTab) {
-                                system.setActiveTab('competitorPromoDetailTab');
+                                system.setActiveTab('promoDetailTab');
                             }
                         }
                     }
@@ -1791,6 +1794,8 @@
                         // Заголовок 1-й панели дашборда - название промо
                         var promoDetailPanel = promoPanel.down('#promodetailpanel');
 
+                        var promoDetailButton = competitorPromoPanel.down('#promoDetail');
+                        promoDetailButton.show(true);
                         // Полный вид механики с параметрами
                         if (rec && rec.data) {
                             promoDetailPanel.update(rec.data);

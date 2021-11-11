@@ -402,6 +402,7 @@
 
     typesCheckboxesAfterrender: function (me) {
         var config = Ext.ComponentQuery.query('#nascheduler')[0].typesCheckboxesConfig;
+        //add type
         me.add(config);
 
         var selectAllTypes = me.up('clientPromoTypeFilter').down('#selectAllTypes');
