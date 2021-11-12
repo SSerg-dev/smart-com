@@ -1,4 +1,4 @@
-﻿Ext.define('App.view.tpm.historicalcompetitorpromo.HistoricalCompetitorPromo', {
+﻿Ext.define('App.view.tpm.competitorpromo.HistoricalCompetitorPromo', {
     extend: 'App.view.core.common.CombinedDirectoryPanel',
     alias: 'widget.historicalcompetitorpromo',
     title: l10n.ns('core', 'compositePanelTitles').value('historyPanelTitle'),
@@ -14,13 +14,13 @@
         editorModel: 'Core.form.EditorDetailWindowModel',
         store: {
             type: 'directorystore',
-            model: 'App.model.tpm.historicalcompetitorpromo.HistoricalCompetitorPromo',
+            model: 'App.model.tpm.competitorpromo.HistoricalCompetitorPromo',
             storeId: 'historicalcompetitorpromostore',
             extendedFilter: {
                 xclass: 'App.ExtFilterContext',
                 supportedModels: [{
                     xclass: 'App.ExtSelectionFilterModel',
-                    model: 'App.model.tpm.historicalcompetitorpromo.HistoricalCompetitorPromo',
+                    model: 'App.model.tpm.competitorpromo.HistoricalCompetitorPromo',
                     modelId: 'efselectionmodel'
                 }]
             },
@@ -101,15 +101,25 @@
             fieldLabel: l10n.ns('tpm', 'Promo').value('Number'),
         }, {
             xtype: 'singlelinedisplayfield',
+            name: 'ClientTreeFullPathName',
+            fieldLabel: l10n.ns('tpm', 'CompetitorPromo').value('ClientTreeFullPathName'),
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'CompetitorName',
+            fieldLabel: l10n.ns('tpm', 'CompetitorPromo').value('CompetitorName'),
+        }, {
+            xtype: 'singlelinedisplayfield',
             name: 'CompetitorBrandTechName',
             fieldLabel: l10n.ns('tpm', 'Promo').value('BrandTechName'),
         }, {
-            xtype: 'datecolumn',
+            xtype: 'singlelinedisplayfield',
             name: 'StartDate',
+            renderer: Ext.util.Format.dateRenderer('d.m.Y'),
             fieldLabel: l10n.ns('tpm', 'Promo').value('StartDate'),
         }, {
-            xtype: 'datecolumn',
+            xtype: 'singlelinedisplayfield',
             name: 'EndDate',
+            renderer: Ext.util.Format.dateRenderer('d.m.Y'),
             fieldLabel: l10n.ns('tpm', 'Promo').value('EndDate'),
         }, {
             xtype: 'singlelinedisplayfield',

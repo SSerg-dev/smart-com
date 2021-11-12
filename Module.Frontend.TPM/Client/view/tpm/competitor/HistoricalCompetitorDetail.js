@@ -1,6 +1,6 @@
-﻿Ext.define('App.view.tpm.competiitor.HistoricalCompetitorDetail', {
+﻿Ext.define('App.view.tpm.competitor.HistoricalCompetitorDetail', {
     extend: 'App.view.core.common.EditorDetailWindow',
-    alias: 'widget.HistoricalCompetitordetail',
+    alias: 'widget.historicalcompetitordetail',
     width: 800,
     minWidth: 800,
     maxHeight: 600,

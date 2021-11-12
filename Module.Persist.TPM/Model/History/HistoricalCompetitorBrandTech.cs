@@ -9,6 +9,6 @@ namespace Module.Persist.TPM.Model.History
     {
         public string BrandTech { get; set; }
         public string Color { get; set; }
-        public Guid? CompetitorId { get; set; }
+        public string CompetitorName { get; set; }
     }
 }

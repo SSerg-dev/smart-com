@@ -18,6 +18,10 @@
             type: 'json',
             totalProperty: 'inlineCount',
             root: 'results'
+        },
+        extraParams: {
+            //Id промо для метода GetById в истории
+            Id: null
         }
     }
 });
