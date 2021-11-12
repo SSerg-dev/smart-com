@@ -29,7 +29,7 @@ namespace Module.Persist.TPM.Migrations
                         Disabled = c.Boolean(nullable: false),
                         DeletedDate = c.DateTimeOffset(precision: 7),
                         CompetitorId = c.Guid(nullable: false),
-                        ClientTreeId = c.Int(nullable: false),
+                        ClientTreeObjectId = c.Int(nullable: false),
                         CompetitorBrandTechId = c.Guid(nullable: false),
                         Name = c.String(nullable: false, maxLength: 124),
                         Number = c.Int(nullable: false),
@@ -42,12 +42,12 @@ namespace Module.Persist.TPM.Migrations
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey($"{defaultSchema}.CompetitorBrandTech", t => t.CompetitorBrandTechId)
-                .ForeignKey($"{defaultSchema}.ClientTree", t => t.ClientTreeId)
+                .ForeignKey($"{defaultSchema}.ClientTree", t => t.ClientTreeObjectId)
                 .ForeignKey($"{defaultSchema}.Competitor", t => t.CompetitorId)
                 .ForeignKey($"{defaultSchema}.PromoStatus", t => t.PromoStatusId)
                 .Index(t => new { t.Number, t.Disabled, t.DeletedDate }, unique: true, name: "Unique_CompetitorPromo")
                 .Index(t => t.CompetitorId)
-                .Index(t => t.ClientTreeId)
+                .Index(t => t.ClientTreeObjectId)
                 .Index(t => t.CompetitorBrandTechId)
                 .Index(t => t.PromoStatusId);
             
