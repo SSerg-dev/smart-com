@@ -153,12 +153,6 @@
                 dataIndex: 'Subrange',
                 width: 150,
             }, {
-                text: l10n.ns('tpm', 'Promo').value('GrowthAcceleration'),
-                dataIndex: 'IsGrowthAcceleration',
-                renderer: function (value) {
-                    return value ? l10n.ns('core', 'booleanValues').value('true') : l10n.ns('core', 'booleanValues').value('false');
-                }
-            }, {
                 text: l10n.ns('tpm', 'Promo').value('PromoStatusName'),
                 dataIndex: 'Status',
                 width: 120,
@@ -222,10 +216,6 @@
             xtype: 'singlelinedisplayfield',
             name: 'Subrange',
             fieldLabel: l10n.ns('tpm', 'CompetitorPromo').value('Subrange'),
-        }, {
-            xtype: 'singlelinedisplayfield',
-            name: 'GrowthAcceleration',
-            fieldLabel: l10n.ns('tpm', 'Promo').value('GrowthAcceleration'),
         }, {
             xtype: 'singlelinedisplayfield',
             name: 'Status',

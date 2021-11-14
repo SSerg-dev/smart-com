@@ -15,6 +15,7 @@
         { name: 'ColorSystemName', type: 'string', useNull: true, hidden: true, isDefault: false },
         { name: 'PromoStatusColor', type: 'string', hidden: true, isDefault: false },
         { name: 'IsOnInvoice', type: 'boolean', hidden: false, isDefault: true },
+        { name: 'CompetitorName', type: 'string', mapping: 'CompetitorName', defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'Competitor', hidden: true, isDefault: true },
 
         { name: 'CreatorId', useNull: true, hidden: true, isDefault: false, defaultValue: null },
         { name: 'ClientTreeId', useNull: true, hidden: true, isDefault: false, defaultValue: null },
@@ -43,7 +44,9 @@
         {name: 'DeviationCoefficient', type: 'float', hidden: false, isDefault: true},
 
         //Apollo Export
-        { name: 'IsApolloExport', type: 'boolean', hidden: false, isDefault: false }
+        { name: 'IsApolloExport', type: 'boolean', hidden: false, isDefault: false },
+
+        { name: 'CompetitorBrandTechName', type: 'string', mapping: 'CompetitorBrandTechName', defaultFilterConfig: { valueField: 'BrandTech' }, breezeEntityType: 'CompetitorBrandTech', hidden: false, isDefault: true }
     ],
     proxy: {
         type: 'breeze',

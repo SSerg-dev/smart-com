@@ -2758,8 +2758,8 @@
     <Compile Include="Model\SimpleModel\SimplePromoCOGSTI.cs" />
     <Compile Include="Model\SimpleModel\YEAR_END_ESTIMATE_FDM.cs" />
     <Compile Include="Model\TPM\ActualLsvModel.cs" />
-    <Compile Include="Model\TPM\Сompetitor.cs" />
-    <Compile Include="Model\TPM\СompetitorPromo.cs" />
+    <Compile Include="Model\TPM\Competitor.cs" />
+    <Compile Include="Model\TPM\CompetitorPromo.cs" />
     <Compile Include="Model\TPM\Client.cs" />
     <Compile Include="Model\TPM\Plu.cs" />
     <Compile Include="Model\TPM\PLUDictionary.cs" />
@@ -2829,7 +2829,7 @@
     <Compile Include="Model\TPM\PromoSupport.cs" />
     <Compile Include="Model\TPM\PromoSupportPromo.cs" />
     <Compile Include="Model\DTO\PromoView.cs" />
-    <Compile Include="Model\TPM\СompetitorBrandTech.cs" />
+    <Compile Include="Model\TPM\CompetitorBrandTech.cs" />
     <Compile Include="Model\TPM\RATIShopper.cs" />
     <Compile Include="Model\TPM\RejectReason.cs" />
     <Compile Include="Model\TPM\PromoStatus.cs" />

@@ -151,11 +151,12 @@
             '<tpl elseif="TypeName == \'Regular\'">',
             '<div class="inout-mark-text">Regular promo</div>',
             '<tpl elseif="TypeName == \'Competitor\'">',
-            '<div class="inout-mark-text">Competitor promo</div>',
+            '<div class="inout-mark-text">{CompetitorName}</div>',
             '<tpl else>',
             '<div class="inout-mark-text"><span class="mdi mdi-tag-multiple-2 inout-mark-icon"></span>Other promo</div>',
             '</tpl>'
         ),
+
 
         // prevent sortchange on Enter
         onEnterKey: function () {
@@ -228,6 +229,12 @@
     promoStore: Ext.create('App.store.core.SimpleStore', {
         model: 'App.model.tpm.promo.Promo',
         storeId: 'schedulerpromostore',
+        autoLoad: false,
+    }),
+
+    competitorPromoStore: Ext.create('App.store.core.SimpleStore', {
+        model: 'App.model.tpm.competitorpromo.CompetitorPromo',
+        storeId: 'schedulercompetitorpromostore',
         autoLoad: false,
     }),
 

@@ -135,10 +135,6 @@
                     text: l10n.ns('tpm', 'CompetitorPromo').value('ClientTreeObjectId'),
                     dataIndex: 'ClientTreeObjectId'
                 }, {
-                    text: l10n.ns('tpm', 'Promo').value('Name'),
-                    dataIndex: 'Name',
-                    width: 150,
-                }, {
                     text: l10n.ns('tpm', 'Promo').value('BrandTechName'),
                     dataIndex: 'CompetitorBrandTechName',
                     width: 120,
@@ -163,6 +159,10 @@
                         }
                     }
                 }, {
+                    text: l10n.ns('tpm', 'Promo').value('Name'),
+                    dataIndex: 'Name',
+                    width: 150,
+                }, {
                     xtype: 'datecolumn',
                     text: l10n.ns('tpm', 'Promo').value('StartDate'),
                     dataIndex: 'StartDate',
@@ -180,24 +180,18 @@
                     text: l10n.ns('tpm', 'CompetitorPromo').value('Discount'),
                     dataIndex: 'Discount',
                     width: 110,
-                    hidden: true,
+                    hidden: false,
                 }, {
                     xtype: 'numbercolumn',
                     format: '0.00',
                     text: l10n.ns('tpm', 'CompetitorPromo').value('Price'),
                     dataIndex: 'Price',
                     width: 110,
-                    hidden: true,
+                    hidden: false,
                 }, {
                     text: l10n.ns('tpm', 'CompetitorPromo').value('Subrange'),
                     dataIndex: 'Subrange',
                     width: 150,
-                }, {
-                    text: l10n.ns('tpm', 'Promo').value('GrowthAcceleration'),
-                    dataIndex: 'IsGrowthAcceleration',
-                    renderer: function (value) {
-                        return value ? l10n.ns('core', 'booleanValues').value('true') : l10n.ns('core', 'booleanValues').value('false');
-                    }
                 }, {
                     text: l10n.ns('tpm', 'Promo').value('PromoStatusName'),
                     dataIndex: 'Status',
@@ -305,12 +299,6 @@
                 text: l10n.ns('tpm', 'CompetitorPromo').value('Subrange'),
                 dataIndex: 'Name',
                 width: 150,
-            }, {
-                text: l10n.ns('tpm', 'Promo').value('IsGrowthAcceleration'),
-                dataIndex: 'IsGrowthAcceleration',
-                renderer: function (value) {
-                    return value ? l10n.ns('core', 'booleanValues').value('true') : l10n.ns('core', 'booleanValues').value('false');
-                }
             }, {
                 text: l10n.ns('tpm', 'Promo').value('PromoStatusName'),
                 dataIndex: 'Status',

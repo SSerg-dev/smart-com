@@ -26,21 +26,27 @@
             name: '_Operation',
             renderer: App.RenderHelper.getLocalizedRenderer('tpm.HistoricalCompetitorPromo', 'OperationType'),
             fieldLabel: l10n.ns('tpm', 'HistoricalCompetitorPromo').value('_Operation')
-        },  {
+        }, {
             xtype: 'singlelinedisplayfield',
-            name: 'Number',
-            fieldLabel: l10n.ns('tpm', 'Promo').value('Number'),
+            name: 'ClientTreeFullPathName',
+            fieldLabel: l10n.ns('tpm', 'CompetitorPromo').value('ClientTreeFullPathName'),
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'CompetitorName',
+            fieldLabel: l10n.ns('tpm', 'CompetitorPromo').value('CompetitorName'),
         }, {
             xtype: 'singlelinedisplayfield',
             name: 'CompetitorBrandTechName',
             fieldLabel: l10n.ns('tpm', 'Promo').value('BrandTechName'),
         }, {
-            xtype: 'datecolumn',
+            xtype: 'singlelinedisplayfield',
             name: 'StartDate',
+            renderer: Ext.util.Format.dateRenderer('d.m.Y'),
             fieldLabel: l10n.ns('tpm', 'Promo').value('StartDate'),
         }, {
-            xtype: 'datecolumn',
+            xtype: 'singlelinedisplayfield',
             name: 'EndDate',
+            renderer: Ext.util.Format.dateRenderer('d.m.Y'),
             fieldLabel: l10n.ns('tpm', 'Promo').value('EndDate'),
         }, {
             xtype: 'singlelinedisplayfield',
@@ -54,10 +60,6 @@
             xtype: 'singlelinedisplayfield',
             name: 'Subrange',
             fieldLabel: l10n.ns('tpm', 'CompetitorPromo').value('Subrange'),
-        }, {
-            xtype: 'singlelinedisplayfield',
-            name: 'GrowthAcceleration',
-            fieldLabel: l10n.ns('tpm', 'Promo').value('GrowthAcceleration'),
         }, {
             xtype: 'singlelinedisplayfield',
             name: 'Status',

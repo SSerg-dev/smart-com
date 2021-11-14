@@ -55,27 +55,54 @@ namespace Module.Frontend.TPM.Controllers {
         public IQueryable<SchedulerClientTreeDTO> GetSchedulerClientTreeDTOs() {
             List<SchedulerClientTreeDTO> result = new List<SchedulerClientTreeDTO>();
             foreach (ClientTree client in GetConstraintedQuery()) {
-                SchedulerClientTreeDTO clientDef = Mapper.Map<SchedulerClientTreeDTO>(client);
-                string stringId = clientDef.Id.ToString();
-                clientDef.TypeName = "Regular";
-                clientDef.Id = clientDef.Id + 10001; // если Id одинаковый в стор календаря попадает только одна, даже есть idProperty - другое поле (баг?)
-                clientDef.InOutId = String.Format("{0}-1", stringId);
-                SchedulerClientTreeDTO clientInOut = (SchedulerClientTreeDTO)clientDef.Clone();
-                clientInOut.TypeName = "InOut";
-                clientInOut.Id = clientInOut.Id + 10002;
-                clientInOut.InOutId = String.Format("{0}-2", stringId);
-                SchedulerClientTreeDTO clientOtherType = (SchedulerClientTreeDTO)clientInOut.Clone();
-                clientOtherType.TypeName = "Other";
-                clientOtherType.Id = clientOtherType.Id + 10003;
-                clientOtherType.InOutId = String.Format("{0}-3", stringId);
-                SchedulerClientTreeDTO clientCompetitor = (SchedulerClientTreeDTO)clientOtherType.Clone();
-                clientCompetitor.TypeName = "Competitor";
-                clientCompetitor.Id = clientCompetitor.Id + 10004;
-                clientCompetitor.InOutId = String.Format("{0}-4", stringId);
-                result.Add(clientDef);
-                result.Add(clientInOut);
-                result.Add(clientOtherType);
-                result.Add(clientCompetitor);
+                //SchedulerClientTreeDTO clientDef = Mapper.Map<SchedulerClientTreeDTO>(client);
+                //string stringId = clientDef.Id.ToString();
+                //clientDef.TypeName = "Regular";
+                //clientDef.Id = clientDef.Id + 10001; // если Id одинаковый в стор календаря попадает только одна, даже есть idProperty - другое поле (баг?)
+                //clientDef.InOutId = String.Format("{0}-1", stringId);
+                //SchedulerClientTreeDTO clientInOut = (SchedulerClientTreeDTO)clientDef.Clone();
+                //clientInOut.TypeName = "InOut";
+                //clientInOut.Id = clientInOut.Id + 10002;
+                //clientInOut.InOutId = String.Format("{0}-2", stringId);
+                //SchedulerClientTreeDTO clientOtherType = (SchedulerClientTreeDTO)clientInOut.Clone();
+                //clientOtherType.TypeName = "Other";
+                //clientOtherType.Id = clientOtherType.Id + 10003;
+                //clientOtherType.InOutId = String.Format("{0}-3", stringId);
+                //SchedulerClientTreeDTO clientCompetitor = (SchedulerClientTreeDTO)clientOtherType.Clone();
+                //clientCompetitor.TypeName = "Competitor";
+                //clientCompetitor.Id = clientCompetitor.Id + 10004;
+                //clientCompetitor.InOutId = String.Format("{0}-4", stringId);
+                //result.Add(clientDef);
+                //result.Add(clientInOut);
+                //result.Add(clientOtherType);
+                //result.Add(clientCompetitor);
+
+                SchedulerClientTreeDTO prevRow = Mapper.Map<SchedulerClientTreeDTO>(client);
+                string stringId = prevRow.Id.ToString();
+
+                var competitors = Context.Set<Competitor>().Where(x => !x.Disabled).Select(x => x.Name);
+                var baseTypes = new List<string> { "Regular", "InOut", "Other" };
+                var rowNames = new List<string>(baseTypes);
+                rowNames.AddRange(competitors);
+                int i = 1;
+                foreach (var rowName in rowNames)
+                {
+                    var row = (SchedulerClientTreeDTO)prevRow.Clone();
+                    if (baseTypes.Contains(rowName))
+                    {
+                        row.TypeName = rowName;
+                        row.CompetitorName = "mars";
+                    }
+                    else
+                    {
+                        row.TypeName = "Competitor";
+                        row.CompetitorName = rowName;
+                    }
+                    row.Id = row.Id + 10000 + i;
+                    row.InOutId = $"{stringId}-{i++}";
+                    result.Add(row);
+                    prevRow = row;
+                }
             }
             return result.AsQueryable();
         }
@@ -87,27 +114,23 @@ namespace Module.Frontend.TPM.Controllers {
             List<SchedulerClientTreeDTO> result = new List<SchedulerClientTreeDTO>();
             foreach (ClientTree client in GetConstraintedQuery())
             {
-                SchedulerClientTreeDTO clientDef = Mapper.Map<SchedulerClientTreeDTO>(client);
-                string stringId = clientDef.Id.ToString();
-                clientDef.TypeName = "Regular";
-                clientDef.Id = clientDef.Id + 10001; // если Id одинаковый в стор календаря попадает только одна, даже есть idProperty - другое поле (баг?)
-                clientDef.InOutId = String.Format("{0}-1", stringId);
-                SchedulerClientTreeDTO clientInOut = (SchedulerClientTreeDTO)clientDef.Clone();
-                clientInOut.TypeName = "InOut";
-                clientInOut.Id = clientInOut.Id + 10002;
-                clientInOut.InOutId = String.Format("{0}-2", stringId);
-                SchedulerClientTreeDTO clientOtherType = (SchedulerClientTreeDTO)clientInOut.Clone();
-                clientOtherType.TypeName = "Other";
-                clientOtherType.Id = clientOtherType.Id + 10003;
-                clientOtherType.InOutId = String.Format("{0}-3", stringId);
-                SchedulerClientTreeDTO clientCompetitor = (SchedulerClientTreeDTO)clientOtherType.Clone();
-                clientCompetitor.TypeName = "Competitor";
-                clientCompetitor.Id = clientCompetitor.Id + 10004;
-                clientCompetitor.InOutId = String.Format("{0}-4", stringId);
-                result.Add(clientDef);
-                result.Add(clientInOut);
-                result.Add(clientOtherType);
-                result.Add(clientCompetitor);
+                SchedulerClientTreeDTO prevRow = Mapper.Map<SchedulerClientTreeDTO>(client);
+                string stringId = prevRow.Id.ToString();
+
+                var competitors = Context.Set<Competitor>().Where(x => !x.Disabled).Select(x => x.Name);
+                var rowNames = new List<string> { "Regular", "InOut", "Other" };
+                rowNames.AddRange(competitors);
+
+                int i = 1;
+                foreach (var rowName in rowNames)
+                {
+                    var row = (SchedulerClientTreeDTO)prevRow.Clone();
+                    row.TypeName = rowName;
+                    row.Id = row.Id + 10000 + i;
+                    row.InOutId = $"{stringId}-{i++}";
+                    result.Add(row);
+                    prevRow = row;
+                }
             }
 
             var query = result.AsQueryable();

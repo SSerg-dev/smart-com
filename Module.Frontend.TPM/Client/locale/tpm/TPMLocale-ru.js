@@ -621,6 +621,8 @@
         'Number': 'Promo ID',
         'Name': 'Promo name',
         'BrandName': 'Brand',
+        'CompetitorName': 'Competitor',
+        'CompetitorBrandTechName': 'Competitor BrandTech',
         'BrandTechName': 'Brandtech',
         'ProductZREP': 'Product',
         'MechanicComment': 'Mechanic comment',
@@ -1296,6 +1298,7 @@
 
     'ClientPromoTypeFilter': {
         'ClientsAndPromoType': 'Clients And Promo Type',
+        'Competitors': 'Competitors',
         'Clients': 'Clients',
         'PromoTypes': 'Promo Types',
         'Error': 'Error',

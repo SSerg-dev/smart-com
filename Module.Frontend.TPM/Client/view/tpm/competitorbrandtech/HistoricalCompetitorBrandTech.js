@@ -1,4 +1,4 @@
-﻿Ext.define('App.view.tpm.historicalcompetitorbrandtech.HistoricalCompetitorBrandTech', {
+﻿Ext.define('App.view.tpm.competitorbrandtech.HistoricalCompetitorBrandTech', {
     extend: 'App.view.core.common.CombinedDirectoryPanel',
     alias: 'widget.historicalcompetitorbrandtech',
     title: l10n.ns('core', 'compositePanelTitles').value('historyPanelTitle'),
@@ -14,13 +14,13 @@
         editorModel: 'Core.form.EditorDetailWindowModel',
         store: {
             type: 'directorystore',
-            model: 'App.model.tpm.historicalcompetitorbrandtech.HistoricalCompetitorBrandTech',
+            model: 'App.model.tpm.competitorbrandtech.HistoricalCompetitorBrandTech',
             storeId: 'historicalcompetitorbrandtechstore',
             extendedFilter: {
                 xclass: 'App.ExtFilterContext',
                 supportedModels: [{
                     xclass: 'App.ExtSelectionFilterModel',
-                    model: 'App.model.tpm.historicalcompetitorbrandtech.HistoricalCompetitorBrandTech',
+                    model: 'App.model.tpm.competitorbrandtech.HistoricalCompetitorBrandTech',
                     modelId: 'efselectionmodel'
                 }]
             },
@@ -76,7 +76,7 @@
     }, {
         xtype: 'editabledetailform',
         itemId: 'detailform',
-        model: 'App.model.tpm.historicalcompetitorbrandtech.HistoricalCompetitorBrandTech',
+        model: 'App.model.tpm.competitorbrandtech.HistoricalCompetitorBrandTech',
         items: [{
             xtype: 'singlelinedisplayfield',
             name: '_User',
@@ -97,7 +97,7 @@
             fieldLabel: l10n.ns('tpm', 'HistoricalCompetitorBrandTech').value('_Operation')
         }, {
             xtype: 'singlelinedisplayfield',
-            name: 'SystemName',
+            name: 'Color',
             fieldLabel: l10n.ns('tpm', 'HistoricalCompetitorBrandTech').value('Color'),
         }, {
             xtype: 'singlelinedisplayfield',

@@ -28,6 +28,10 @@
             fieldLabel: l10n.ns('tpm', 'HistoricalCompetitorBrandTech').value('_Operation')
         }, {
             xtype: 'singlelinedisplayfield',
+            name: 'Color',
+            fieldLabel: l10n.ns('tpm', 'CompetitorBrandTech').value('Color'),
+        }, {
+            xtype: 'singlelinedisplayfield',
             name: 'CompetitorName',
             fieldLabel: l10n.ns('tpm', 'CompetitorBrandTech').value('CompetitorName'),
         }, {

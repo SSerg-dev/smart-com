@@ -15,11 +15,15 @@
     ],
     proxy: {
         type: 'breeze',
-        resourceName: 'HistoricalCompetitorBrandTech',
+        resourceName: 'HistoricalCompetitorBrandTechs',
         reader: {
             type: 'json',
             totalProperty: 'inlineCount',
             root: 'results'
+        },
+        extraParams: {
+            //Id промо для метода GetById в истории
+            Id: null
         }
     }
 });

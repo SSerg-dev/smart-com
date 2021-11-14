@@ -686,6 +686,8 @@
         'MarsDispatchesEnd': 'Mars Dispatch end',
         'Number': 'Promo ID',
         'Name': 'Promo name',
+        'CompetitorName': 'Competitor',
+        'CompetitorBrandTechName': 'Competitor BrandTech',
         'BrandName': 'Brand',
         'BrandTechName': 'Brandtech',
         'ProductZREP': 'Product',
@@ -1594,6 +1596,7 @@
 
     'ClientPromoTypeFilter': {
         'ClientsAndPromoType': 'Clients And Promo Type',
+        'Competitors': 'Competitors',
         'Clients': 'Clients',
         'PromoTypes': 'Promo Types',
         'SelectAll': 'Select All',
