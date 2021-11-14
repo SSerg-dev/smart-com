@@ -2592,6 +2592,14 @@
     <Compile Include="Migrations\202110251839422_Add_CopyScenario_Tables.Designer.cs">
       <DependentUpon>202110251839422_Add_CopyScenario_Tables.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202111142255311_Add_Competitor_AP_For_Demands.cs" />
+    <Compile Include="Migrations\202111142255311_Add_Competitor_AP_For_Demands.Designer.cs">
+      <DependentUpon>202111142255311_Add_Competitor_AP_For_Demands.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202111142312480_test.cs" />
+    <Compile Include="Migrations\202111142312480_test.Designer.cs">
+      <DependentUpon>202111142312480_test.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\2021\202106300726289_202106301025001_Drop_Client.cs" />
     <Compile Include="Migrations\2021\202106300726289_202106301025001_Drop_Client.Designer.cs">
       <DependentUpon>202106300726289_202106301025001_Drop_Client.cs</DependentUpon>
@@ -5035,6 +5043,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202110251839422_Add_CopyScenario_Tables.resx">
       <DependentUpon>202110251839422_Add_CopyScenario_Tables.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202111142255311_Add_Competitor_AP_For_Demands.resx">
+      <DependentUpon>202111142255311_Add_Competitor_AP_For_Demands.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202111142312480_test.resx">
+      <DependentUpon>202111142312480_test.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\2021\202106300726289_202106301025001_Drop_Client.resx">
       <DependentUpon>202106300726289_202106301025001_Drop_Client.cs</DependentUpon>
