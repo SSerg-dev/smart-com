@@ -1770,7 +1770,7 @@
                         competitorPromoPanel.event = rec;
                         // Заголовок 1-й панели дашборда - название промо
                         var promoDetailPanel = competitorPromoPanel.down('#promodetailpanel');
-
+                        promoDetailPanel.setBodyStyle("margin-top:4px");
                         var promoDetailButton = competitorPromoPanel.down('#promoDetail');
                         promoDetailButton.hide();
                         // Полный вид механики с параметрами
@@ -1794,6 +1794,7 @@
                         // Заголовок 1-й панели дашборда - название промо
                         var promoDetailPanel = promoPanel.down('#promodetailpanel');
 
+                        promoDetailPanel.setBodyStyle("margin-top:17px");
                         var promoDetailButton = competitorPromoPanel.down('#promoDetail');
                         promoDetailButton.show(true);
                         // Полный вид механики с параметрами
