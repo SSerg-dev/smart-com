@@ -34,9 +34,6 @@ namespace Module.Persist.TPM.Model.TPM
         public int Number { get; set; }
 
         [Required]
-        public Guid PromoStatusId { get; set; }
-
-        [Required]
         public DateTimeOffset? StartDate { get; set; }
 
         [Required]
@@ -56,8 +53,6 @@ namespace Module.Persist.TPM.Model.TPM
         public virtual ClientTree ClientTree { get; set; }
         [ForeignKey("CompetitorBrandTechId")]
         public virtual CompetitorBrandTech CompetitorBrandTech { get; set; }
-        [ForeignKey("PromoStatusId")]
-        public virtual PromoStatus PromoStatus { get; set; }
 
     }
 }

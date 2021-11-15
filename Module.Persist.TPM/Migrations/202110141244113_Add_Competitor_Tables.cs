@@ -20,36 +20,33 @@ namespace Module.Persist.TPM.Migrations
                     })
                 .PrimaryKey(t => t.Id)
                 .Index(t => new { t.Name, t.Disabled, t.DeletedDate }, unique: true, name: "Unique_Competitor");
-            
+
             CreateTable(
                 $"{defaultSchema}.CompetitorPromo",
                 c => new
-                    {
-                        Id = c.Guid(nullable: false, identity: true),
-                        Disabled = c.Boolean(nullable: false),
-                        DeletedDate = c.DateTimeOffset(precision: 7),
-                        CompetitorId = c.Guid(nullable: false),
-                        ClientTreeObjectId = c.Int(nullable: false),
-                        CompetitorBrandTechId = c.Guid(nullable: false),
-                        Name = c.String(nullable: false, maxLength: 124),
-                        Number = c.Int(nullable: false),
-                        PromoStatusId = c.Guid(nullable: false),
-                        StartDate = c.DateTimeOffset(nullable: false, precision: 7),
-                        EndDate = c.DateTimeOffset(nullable: false, precision: 7),
-                        Discount = c.Double(),
-                        Price = c.Double(),
-                        Subrange = c.String(maxLength: 256),
-                    })
+                {
+                    Id = c.Guid(nullable: false, identity: true),
+                    Disabled = c.Boolean(nullable: false),
+                    DeletedDate = c.DateTimeOffset(precision: 7),
+                    CompetitorId = c.Guid(nullable: false),
+                    ClientTreeObjectId = c.Int(nullable: false),
+                    CompetitorBrandTechId = c.Guid(nullable: false),
+                    Name = c.String(nullable: false, maxLength: 124),
+                    Number = c.Int(nullable: false),
+                    StartDate = c.DateTimeOffset(nullable: false, precision: 7),
+                    EndDate = c.DateTimeOffset(nullable: false, precision: 7),
+                    Discount = c.Double(),
+                    Price = c.Double(),
+                    Subrange = c.String(maxLength: 256),
+                })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey($"{defaultSchema}.CompetitorBrandTech", t => t.CompetitorBrandTechId)
                 .ForeignKey($"{defaultSchema}.ClientTree", t => t.ClientTreeObjectId)
                 .ForeignKey($"{defaultSchema}.Competitor", t => t.CompetitorId)
-                .ForeignKey($"{defaultSchema}.PromoStatus", t => t.PromoStatusId)
                 .Index(t => new { t.Number, t.Disabled, t.DeletedDate }, unique: true, name: "Unique_CompetitorPromo")
                 .Index(t => t.CompetitorId)
                 .Index(t => t.ClientTreeObjectId)
-                .Index(t => t.CompetitorBrandTechId)
-                .Index(t => t.PromoStatusId);
+                .Index(t => t.CompetitorBrandTechId);
             
             CreateTable(
                 $"{defaultSchema}.CompetitorBrandTech",

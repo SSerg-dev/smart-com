@@ -49,16 +49,9 @@ namespace Module.Persist.TPM.Model.Import
         [Display(Name = "Subranges")]
         public String Subrange { get; set; }
 
-        [ImportCSVColumn(ColumnNumber = 9)]
-        [NavigationPropertyMap(LookupEntityType = typeof(PromoStatus), LookupPropertyName = "Name")]
-        [Display(Name = "PromoStatus")]
-        public String PromoStatusName { get; set; }
-
         public Guid CompetitorId { get; set; }
         public virtual Competitor Competitor { get; set; }
         public Guid CompetitorBrandTechId { get; set; }
         public virtual CompetitorBrandTech CompetitorBrandTech { get; set; }
-        public Guid PromoStatusId { get; set; }
-        public virtual PromoStatus PromoStatus { get; set; }
     }
 }

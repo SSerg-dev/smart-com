@@ -120,32 +120,6 @@
             name: 'Subrange',
             allowBlank: true,
             allowOnlyWhitespace: true,
-        }, {
-            xtype: 'searchfield',
-            fieldLabel: l10n.ns('tpm', 'Promo').value('PromoStatusName'),
-            name: 'PromoStatusId',
-            selectorWidget: 'promostatus',
-            valueField: 'Id',
-            displayField: 'Name',
-            store: {
-                type: 'directorystore',
-                model: 'App.model.tpm.promostatus.PromoStatus',
-                extendedFilter: {
-                    xclass: 'App.ExtFilterContext',
-                    supportedModels: [{
-                        xclass: 'App.ExtSelectionFilterModel',
-                        model: 'App.model.tpm.promostatus.PromoStatus',
-                        modelId: 'efselectionmodel'
-                    }, {
-                        xclass: 'App.ExtTextFilterModel',
-                        modelId: 'eftextmodel'
-                    }]
-                }
-            },
-            mapping: [{
-                from: 'Name',
-                to: 'Status'
-            }]
         }
         ]
     }

@@ -192,31 +192,6 @@
                     text: l10n.ns('tpm', 'CompetitorPromo').value('Subrange'),
                     dataIndex: 'Subrange',
                     width: 150,
-                }, {
-                    text: l10n.ns('tpm', 'Promo').value('PromoStatusName'),
-                    dataIndex: 'Status',
-                    width: 120,
-                    filter: {
-                        type: 'search',
-                        selectorWidget: 'promostatus',
-                        valueField: 'Name',
-                        operator: 'eq',
-                        store: {
-                            type: 'directorystore',
-                            model: 'App.model.tpm.promostatus.PromoStatus',
-                            extendedFilter: {
-                                xclass: 'App.ExtFilterContext',
-                                supportedModels: [{
-                                    xclass: 'App.ExtSelectionFilterModel',
-                                    model: 'App.model.tpm.promostatus.PromoStatus',
-                                    modelId: 'efselectionmodel'
-                                }, {
-                                    xclass: 'App.ExtTextFilterModel',
-                                    modelId: 'eftextmodel'
-                                }]
-                            }
-                        }
-                    }
                 }
             ]
         }
@@ -299,31 +274,6 @@
                 text: l10n.ns('tpm', 'CompetitorPromo').value('Subrange'),
                 dataIndex: 'Name',
                 width: 150,
-            }, {
-                text: l10n.ns('tpm', 'Promo').value('PromoStatusName'),
-                dataIndex: 'Status',
-                width: 120,
-                filter: {
-                    type: 'search',
-                    selectorWidget: 'promostatus',
-                    valueField: 'Name',
-                    operator: 'eq',
-                    store: {
-                        type: 'directorystore',
-                        model: 'App.model.tpm.promostatus.PromoStatus',
-                        extendedFilter: {
-                            xclass: 'App.ExtFilterContext',
-                            supportedModels: [{
-                                xclass: 'App.ExtSelectionFilterModel',
-                                model: 'App.model.tpm.promostatus.PromoStatus',
-                                modelId: 'efselectionmodel'
-                            }, {
-                                xclass: 'App.ExtTextFilterModel',
-                                modelId: 'eftextmodel'
-                            }]
-                        }
-                    }
-                }
             }
             ]
         }]

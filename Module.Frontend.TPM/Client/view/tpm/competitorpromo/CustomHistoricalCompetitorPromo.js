@@ -65,7 +65,6 @@
                     labelWidth: 200
                 },
                 items: [
-                    { xtype: 'singlelinedisplayfield', name: 'PromoStatusName', fieldLabel: l10n.ns('tpm', 'Promo').value('PromoStatusName'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'ClientHierarchy', fieldLabel: l10n.ns('tpm', 'Promo').value('ClientHierarchy'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'MarsMechanicName', fieldLabel: l10n.ns('tpm', 'Promo').value('MarsMechanicName'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'MarsMechanicTypeName', fieldLabel: l10n.ns('tpm', 'Promo').value('MarsMechanicTypeName'), hidden: true },

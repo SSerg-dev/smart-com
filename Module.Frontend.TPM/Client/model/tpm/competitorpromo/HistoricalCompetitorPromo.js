@@ -14,7 +14,6 @@
         { name: 'CompetitorBrandTechName', type: 'string', isDefault: true},
         { name: 'Name', type: 'string', isDefault: true },
         { name: 'Number', type: 'int', isDefault: true },
-        { name: 'Status', type: 'string', isDefault: true},
         { name: 'StartDate', type: 'date', timeZone: +3, convert: dateConvertTimeZone },
         { name: 'EndDate', type: 'date', isDefault: false, timeZone: +3, convert: dateConvertTimeZone },
         { name: 'Discount', type: 'float', isDefault: true },

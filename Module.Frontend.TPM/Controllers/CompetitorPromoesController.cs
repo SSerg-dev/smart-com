@@ -217,7 +217,6 @@ namespace Module.Frontend.TPM.Controllers
                 new Column() { Order = 8, Field = "Discount", Header = "Discount", Quoting = false },
                 new Column() { Order = 9, Field = "Price", Header = "Shelf Price", Quoting = false },
                 new Column() { Order = 10, Field = "Subrange", Header = "Subranges", Quoting = false },
-                new Column() { Order = 11, Field = "PromoStatus.Name", Header = "Promo Status", Quoting = false }
             };
             return columns;
         }
@@ -233,8 +232,7 @@ namespace Module.Frontend.TPM.Controllers
                 new Column() { Order = 6, Field = "EndDate", Header = "End Date", Quoting = false },
                 new Column() { Order = 7, Field = "Discount", Header = "Discount", Quoting = false },
                 new Column() { Order = 8, Field = "Price", Header = "Shelf Price", Quoting = false },
-                new Column() { Order = 9, Field = "Subrange", Header = "Subranges", Quoting = false },
-                new Column() { Order = 10, Field = "PromoStatus.Name", Header = "Promo Status", Quoting = false }
+                new Column() { Order = 9, Field = "Subrange", Header = "Subranges", Quoting = false }
             };
             return columns;
         }
