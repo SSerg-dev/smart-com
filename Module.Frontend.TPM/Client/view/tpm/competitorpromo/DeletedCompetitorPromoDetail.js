@@ -22,12 +22,14 @@
             name: 'CompetitorBrandTechName',
             fieldLabel: l10n.ns('tpm', 'Promo').value('BrandTechName'),
         }, {
-            xtype: 'datecolumn',
+            xtype: 'singlelinedisplayfield',
             name: 'StartDate',
+            renderer: Ext.util.Format.dateRenderer('d.m.Y'),
             fieldLabel: l10n.ns('tpm', 'Promo').value('StartDate'),
         }, {
-            xtype: 'datecolumn',
+            xtype: 'singlelinedisplayfield',
             name: 'EndDate',
+            renderer: Ext.util.Format.dateRenderer('d.m.Y'),
             fieldLabel: l10n.ns('tpm', 'Promo').value('EndDate'),
         }, {
             xtype: 'singlelinedisplayfield',

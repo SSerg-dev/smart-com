@@ -74,9 +74,9 @@
                     }
                 }
             }, {
-                text: l10n.ns('tpm', 'Promo').value('ClientHierarchy'),
-                dataIndex: 'Client',
-                width: 250,
+                text: l10n.ns('tpm', 'CompetitorPromo').value('ClientTreeFullPathName'),
+                dataIndex: 'ClientTreeFullPathName',
+                minWidth: 200,
                 filter: {
                     xtype: 'treefsearchfield',
                     trigger2Cls: '',
@@ -94,6 +94,9 @@
                 renderer: function (value) {
                     return renderWithDelimiter(value, ' > ', '  ');
                 }
+            }, {
+                text: l10n.ns('tpm', 'CompetitorPromo').value('ClientTreeObjectId'),
+                dataIndex: 'ClientTreeObjectId'
             }, {
                 text: l10n.ns('tpm', 'Promo').value('Name'),
                 dataIndex: 'Name',
