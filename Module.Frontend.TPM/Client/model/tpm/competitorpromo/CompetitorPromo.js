@@ -9,13 +9,13 @@
             name: 'CompetitorName', type: 'string', mapping: 'Competitor.Name', defaultFilterConfig: { valueField: 'Name' },
             breezeEntityType: 'Competitor', hidden: false, isDefault: true
         },
-        { name: 'ClientTreeId', useNull: true, hidden: true, isDefault: true, defaultValue: null },
+        { name: 'ClientTreeObjectId', useNull: true, hidden: true, isDefault: true, defaultValue: null },
         {
             name: 'ClientTreeFullPathName', type: 'string', mapping: 'ClientTree.FullPathName', tree: true,
             defaultFilterConfig: { valueField: 'FullPathName' }, breezeEntityType: 'ClientTree', hidden: false, isDefault: true
         },
         {
-            name: 'ClientTreeObjectId', type: 'int', mapping: 'ClientTree.ObjectId',
+            name: 'ClientTreeId', type: 'int', mapping: 'ClientTree.ObjectId',
             defaultFilterConfig: { valueField: 'ObjectId' }, hidden: false, isDefault: true
         },
         { name: 'CompetitorBrandTechId', useNull: true, hidden: true, isDefault: true, defaultValue: null },

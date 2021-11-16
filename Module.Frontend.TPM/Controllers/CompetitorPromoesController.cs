@@ -52,7 +52,17 @@ namespace Module.Frontend.TPM.Controllers
 
         protected IQueryable<CompetitorPromo> GetConstraintedQuery()
         {
+            var user = authorizationManager.GetCurrentUser();
+            var role = authorizationManager.GetCurrentRoleName();
+            IList<Constraint> constraints = user.Id.HasValue ? Context.Constraints
+                .Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
+                .ToList() : new List<Constraint>();
             IQueryable<CompetitorPromo> query = Context.Set<CompetitorPromo>().Where(e => !e.Disabled);
+
+            IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
+            IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
+            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
+
             return query;
         }
 

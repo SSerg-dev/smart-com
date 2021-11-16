@@ -32,7 +32,7 @@
             }]
         }, {
             xtype: 'treesearchfield',
-            name: 'ClientTreeId',
+            name: 'ClientTreeObjectId',
             fieldLabel: l10n.ns('tpm', 'CompetitorPromo').value('ClientTreeFullPathName'),
             selectorWidget: 'clienttree',
             valueField: 'Id',
@@ -98,22 +98,46 @@
             xtype: 'datefield',
             fieldLabel: l10n.ns('tpm', 'Promo').value('StartDate'),
             name: 'StartDate',
+            listeners:
+            {
+                change: function (field, newValue, oldValue) {
+                    this.up('form').down('[name=EndDate]').setMinValue(newValue);
+                }
+            },
+            validator: function () {
+                return true;
+            },
         }, {
             xtype: 'datefield',
             fieldLabel: l10n.ns('tpm', 'Promo').value('EndDate'),
             name: 'EndDate',
+            listeners:
+            {
+                change: function (field, newValue, oldValue) {
+                    this.up('form').down('[name=StartDate]').setMaxValue(newValue);
+                }
+            },
+            validator: function () {
+                return true;
+            },
         }, {
             xtype: 'textfield',
             fieldLabel: l10n.ns('tpm', 'CompetitorPromo').value('Price'),
             name: 'Price',
             allowBlank: true,
             allowOnlyWhitespace: true,
+            validator: function (value) {
+                return new Number(value) > 0;
+            },
         }, {
             xtype: 'textfield',
             fieldLabel: l10n.ns('tpm', 'CompetitorPromo').value('Discount'),
             name: 'Discount',
             allowBlank: true,
             allowOnlyWhitespace: true,
+            validator: function (value) {
+                return new Number(value) > 0;
+            },
         }, {
             xtype: 'textfield',
             fieldLabel: l10n.ns('tpm', 'CompetitorPromo').value('Subrange'),

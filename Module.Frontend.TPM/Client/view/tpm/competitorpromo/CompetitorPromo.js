@@ -133,7 +133,7 @@
                     }
                 }, {
                     text: l10n.ns('tpm', 'CompetitorPromo').value('ClientTreeObjectId'),
-                    dataIndex: 'ClientTreeObjectId'
+                    dataIndex: 'ClientTreeId'
                 }, {
                     text: l10n.ns('tpm', 'Promo').value('BrandTechName'),
                     dataIndex: 'CompetitorBrandTechName',
