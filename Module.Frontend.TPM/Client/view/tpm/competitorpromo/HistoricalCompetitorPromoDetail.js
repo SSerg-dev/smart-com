@@ -56,10 +56,6 @@
             xtype: 'singlelinedisplayfield',
             name: 'Price',
             fieldLabel: l10n.ns('tpm', 'CompetitorPromo').value('Price'),
-        }, {
-            xtype: 'singlelinedisplayfield',
-            name: 'Subrange',
-            fieldLabel: l10n.ns('tpm', 'CompetitorPromo').value('Subrange'),
         }]
     }
 });

@@ -192,10 +192,6 @@
                     dataIndex: 'Price',
                     width: 110,
                     hidden: false,
-                }, {
-                    text: l10n.ns('tpm', 'CompetitorPromo').value('Subrange'),
-                    dataIndex: 'Subrange',
-                    width: 150,
                 }
             ]
         }
@@ -274,10 +270,6 @@
                 text: l10n.ns('tpm', 'CompetitorPromo').value('Discount'),
                 dataIndex: 'Discount',
                 width: 110,
-            }, {
-                text: l10n.ns('tpm', 'CompetitorPromo').value('Subrange'),
-                dataIndex: 'Name',
-                width: 150,
             }
             ]
         }]

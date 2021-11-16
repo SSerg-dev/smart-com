@@ -45,10 +45,6 @@ namespace Module.Persist.TPM.Model.Import
         [Display(Name = "Shelf price")]
         public int Price { get; set; }
 
-        [ImportCSVColumn(ColumnNumber = 8)]
-        [Display(Name = "Subranges")]
-        public String Subrange { get; set; }
-
         public Guid CompetitorId { get; set; }
         public virtual Competitor Competitor { get; set; }
         public Guid CompetitorBrandTechId { get; set; }

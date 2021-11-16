@@ -138,12 +138,6 @@
             validator: function (value) {
                 return new Number(value) > 0;
             },
-        }, {
-            xtype: 'textfield',
-            fieldLabel: l10n.ns('tpm', 'CompetitorPromo').value('Subrange'),
-            name: 'Subrange',
-            allowBlank: true,
-            allowOnlyWhitespace: true,
         }
         ]
     }

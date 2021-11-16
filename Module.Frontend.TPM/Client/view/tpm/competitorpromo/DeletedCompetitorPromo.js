@@ -151,10 +151,6 @@
                 dataIndex: 'Price',
                 width: 110,
                 hidden: true,
-            }, {
-                text: l10n.ns('tpm', 'CompetitorPromo').value('Subrange'),
-                dataIndex: 'Subrange',
-                width: 150,
             }
             ]
         }
@@ -190,10 +186,6 @@
             xtype: 'singlelinedisplayfield',
             name: 'Price',
             fieldLabel: l10n.ns('tpm', 'CompetitorPromo').value('Price'),
-        }, {
-            xtype: 'singlelinedisplayfield',
-            name: 'Subrange',
-            fieldLabel: l10n.ns('tpm', 'CompetitorPromo').value('Subrange'),
         }
         ]
     }]
