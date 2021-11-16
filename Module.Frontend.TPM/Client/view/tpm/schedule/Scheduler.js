@@ -81,18 +81,27 @@
     },
 
     // настройки тултипа при наведении на промо
-    tooltipTpl: new Ext.XTemplate('<dl class="eventTip">' +
-        '<dt>Name</dt><dd>{Name}</dd>' +
-        '<dt>Mechanic</dt><dd style="border-bottom: 1px solid rgba(197, 197, 197, 0.25); padding-bottom: 5px;">{MarsMechanicName} <tpl if="MarsMechanicName === \'TPR\' || MarsMechanicName === \'Other\'">{MarsMechanicDiscount}%</tpl><tpl if="MarsMechanicName === \'VP\'">{MarsMechanicTypeName}</tpl></dd>' +
-        '<dl style="border-left: 5px solid {PromoStatusColor}; margin: 0px;"><dt style="margin: 0 0 3px 2px;">Status</dt><dd style="margin: 0 0 3px 2px;">{PromoStatusSystemName}</dd></dl>' +
-        '<tpl if="TypeName == \'InOut\'"><dd style="border-bottom: 1px solid rgba(197, 197, 197, 0.25); padding-bottom: 5px;"></dd>' +
-        '<dt><span class="mdi mdi-hexagon-slice-2 inout-mark-icon"></span>InOut promo</dt></tpl>' +
-        '<tpl if="TypeName != \'InOut\' && TypeName != \'Regular\'"><dd style="border-bottom: 1px solid rgba(197, 197, 197, 0.25); padding-bottom: 5px;"></dd>' +
-        '<dt><span class="mdi inout-mark-icon">&#x{TypeGlyph}</span>{TypeName} promo</dt></tpl>' +
-        '<tpl if="IsGrowthAcceleration"><dd style="border-bottom: 1px solid rgba(197, 197, 197, 0.25); padding-bottom: 5px;"></dd>' +
-        '<dt><span class="mdi alpha-g-box-outline inout-mark-icon"></span>Growth Acceleration</dt></tpl>' + 
-        '<dt style="border-top: 1px solid rgba(197, 197, 197, 0.25); padding-top: 5px;">Invoice Type</dt><dd>{IsOnInvoice}</dd>' +
-        '</dl>'
+    tooltipTpl: new Ext.XTemplate(
+        '<tpl if="TypeName == \'Competitor\'">' +
+            '<dl class="eventTip">' +
+            '<dt>Name</dt><dd>{Name}</dd>' +
+            '<dt>BrandTech</dt><dd style="border-bottom: 1px solid rgba(197, 197, 197, 0.25); padding-bottom: 5px;">{CompetitorBrandTechName}</dd>' +
+            '<dt><span class="mdi inout-mark-icon">&#x{TypeGlyph}</span>{TypeName} promo</dt>' +
+            '</dl>' +
+        '<tpl else>' +
+            '<dl class="eventTip">' +
+            '<dt>Name</dt><dd>{Name}</dd>' +
+            '<dt>Mechanic</dt><dd style="border-bottom: 1px solid rgba(197, 197, 197, 0.25); padding-bottom: 5px;">{MarsMechanicName} <tpl if="MarsMechanicName === \'TPR\' || MarsMechanicName === \'Other\'">{MarsMechanicDiscount}%</tpl><tpl if="MarsMechanicName === \'VP\'">{MarsMechanicTypeName}</tpl></dd>' +
+            '<dl style="border-left: 5px solid {PromoStatusColor}; margin: 0px;"><dt style="margin: 0 0 3px 2px;">Status</dt><dd style="margin: 0 0 3px 2px;">{PromoStatusSystemName}</dd></dl>' +
+            '<tpl if="TypeName == \'InOut\'"><dd style="border-bottom: 1px solid rgba(197, 197, 197, 0.25); padding-bottom: 5px;"></dd>' +
+            '<dt><span class="mdi mdi-hexagon-slice-2 inout-mark-icon"></span>InOut promo</dt></tpl>' +
+            '<tpl if="TypeName != \'InOut\' && TypeName != \'Regular\'"><dd style="border-bottom: 1px solid rgba(197, 197, 197, 0.25); padding-bottom: 5px;"></dd>' +
+            '<dt><span class="mdi inout-mark-icon">&#x{TypeGlyph}</span>{TypeName} promo</dt></tpl>' +
+            '<tpl if="IsGrowthAcceleration"><dd style="border-bottom: 1px solid rgba(197, 197, 197, 0.25); padding-bottom: 5px;"></dd>' +
+            '<dt><span class="mdi alpha-g-box-outline inout-mark-icon"></span>Growth Acceleration</dt></tpl>' + 
+            '<dt style="border-top: 1px solid rgba(197, 197, 197, 0.25); padding-top: 5px;">Invoice Type</dt><dd>{IsOnInvoice}</dd>' +
+            '</dl>' +
+        '</tpl>' 
     ),
     tipCfg: {
         cls: 'sch-tip',

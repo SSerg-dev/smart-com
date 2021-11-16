@@ -71,7 +71,11 @@
                     xclass: 'App.ExtTextFilterModel',
                     modelId: 'eftextmodel'
                 }]
-            }
+            },
+            sorters: [{
+                property: 'Number',
+                direction: 'DESC'
+            }],
         },
 
         columns: {
