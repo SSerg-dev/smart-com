@@ -318,7 +318,6 @@
     <Content Include="Client\view\tpm\pludictionary\PLUDictionary.js" />
     <Content Include="Client\view\tpm\pludictionary\PLUDictionaryEditor.js" />
     <Content Include="Client\view\tpm\promo\ApproveClosePromoWindow.js" />
-    <Content Include="Client\view\tpm\competitorpromo\CustomHistoricalCompetitorPromo.js" />
     <Content Include="Client\view\tpm\ratishopper\RATIShopper.js" />
     <Content Include="Client\view\tpm\ratishopper\RATIShopperEditor.js" />
     <Content Include="Client\view\tpm\ratishopper\DeletedRATIShopper.js" />

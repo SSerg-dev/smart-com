@@ -472,45 +472,88 @@
         var record = promoDetailPanel.event;
 
         if (record) {
-            var model = Ext.ModelManager.getModel('App.model.tpm.promo.Promo'),
-                viewClassName = "App.view.tpm.promo.CustomHistoricalPromo";
+            if (record.get('CompetitorName') != null) {
+                var model = Ext.ModelManager.getModel('App.model.tpm.competitorpromo.CompetitorPromo'),
+                    viewClassName = "App.view.tpm.competitorpromo.HistoricalCompetitorPromo";
 
-            var baseReviewWindow = Ext.widget('basereviewwindow', { items: Ext.create(viewClassName, { baseModel: model }) });
-            baseReviewWindow.show();
+                var baseReviewWindow = Ext.widget('basereviewwindow', { items: Ext.create(viewClassName, { baseModel: model }) });
+                baseReviewWindow.show();
 
-            var grid = baseReviewWindow.down('grid');
-            var store = baseReviewWindow.down('grid').getStore();
-            var proxy = store.getProxy();
-            if (proxy.extraParams) {
-                proxy.extraParams.Id = this.getRecordId(record);
-            } else {
-                proxy.extraParams = {
-                    Id: this.getRecordId(record)
-                }
-            }
-
-            proxy.extraParams.promoIdHistory = this.getRecordId(record);
-
-            store.on({
-                load: function (records, operation, success) {
-                    var selModel = grid.getSelectionModel();
-
-                    if (!selModel.hasSelection() && records.data.length > 0) {
-                        selModel.select(0);
-                        grid.fireEvent('itemclick', grid, grid.getSelectionModel().getLastSelected());
-                    } else if (selModel.hasSelection() && records.data.length > 0) {
-                        var selected = selModel.getSelection()[0];
-                        if (store.indexOfId(selected.getId()) === -1) {
-                            selModel.select(0);
-                            grid.fireEvent('itemclick', grid, grid.getSelectionModel().getLastSelected());
-                        }
-                    } else if (records.data.length === 0) {
-                        selModel.deselectAll();
+                var grid = baseReviewWindow.down('grid');
+                var store = baseReviewWindow.down('grid').getStore();
+                var proxy = store.getProxy();
+                if (proxy.extraParams) {
+                    proxy.extraParams.Id = this.getRecordId(record);
+                } else {
+                    proxy.extraParams = {
+                        Id: this.getRecordId(record)
                     }
                 }
-            });
 
-            store.load();
+                proxy.extraParams.promoIdHistory = this.getRecordId(record);
+
+                store.on({
+                    load: function (records, operation, success) {
+                        var selModel = grid.getSelectionModel();
+
+                        if (!selModel.hasSelection() && records.data.length > 0) {
+                            selModel.select(0);
+                            grid.fireEvent('itemclick', grid, grid.getSelectionModel().getLastSelected());
+                        } else if (selModel.hasSelection() && records.data.length > 0) {
+                            var selected = selModel.getSelection()[0];
+                            if (store.indexOfId(selected.getId()) === -1) {
+                                selModel.select(0);
+                                grid.fireEvent('itemclick', grid, grid.getSelectionModel().getLastSelected());
+                            }
+                        } else if (records.data.length === 0) {
+                            selModel.deselectAll();
+                        }
+                    }
+                });
+
+                store.load();
+            }
+            else {
+                var model = Ext.ModelManager.getModel('App.model.tpm.promo.Promo'),
+                    viewClassName = "App.view.tpm.promo.CustomHistoricalPromo";
+
+                var baseReviewWindow = Ext.widget('basereviewwindow', { items: Ext.create(viewClassName, { baseModel: model }) });
+                baseReviewWindow.show();
+
+                var grid = baseReviewWindow.down('grid');
+                var store = baseReviewWindow.down('grid').getStore();
+                var proxy = store.getProxy();
+                if (proxy.extraParams) {
+                    proxy.extraParams.Id = this.getRecordId(record);
+                } else {
+                    proxy.extraParams = {
+                        Id: this.getRecordId(record)
+                    }
+                }
+
+                proxy.extraParams.promoIdHistory = this.getRecordId(record);
+
+                store.on({
+                    load: function (records, operation, success) {
+                        var selModel = grid.getSelectionModel();
+
+                        if (!selModel.hasSelection() && records.data.length > 0) {
+                            selModel.select(0);
+                            grid.fireEvent('itemclick', grid, grid.getSelectionModel().getLastSelected());
+                        } else if (selModel.hasSelection() && records.data.length > 0) {
+                            var selected = selModel.getSelection()[0];
+                            if (store.indexOfId(selected.getId()) === -1) {
+                                selModel.select(0);
+                                grid.fireEvent('itemclick', grid, grid.getSelectionModel().getLastSelected());
+                            }
+                        } else if (records.data.length === 0) {
+                            selModel.deselectAll();
+                        }
+                    }
+                });
+
+                store.load();
+            }
         }
     },
 
