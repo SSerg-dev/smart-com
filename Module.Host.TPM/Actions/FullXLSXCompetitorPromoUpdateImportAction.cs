@@ -268,19 +268,60 @@ namespace Module.Host.TPM.Actions
             errors = new List<string>();
             bool isSuitable = true;
 
+            var datetime = new DateTimeOffset();
 
             if (rec == null)
             {
                 isSuitable = false;
-                errors.Add("There is no such Competitor 1promo on base");
+                errors.Add("There is no such Competitor promo on base");
             }
             else
             {
                 CompetitorPromo typedRec = (CompetitorPromo)rec;
-                if (String.IsNullOrEmpty(typedRec.Name)) 
+                if (String.IsNullOrEmpty(typedRec.Name))
                 {
-                    errors.Add("Name must have a value"); 
-                    isSuitable = false; 
+                    errors.Add("Name must have a value");
+                    isSuitable = false;
+                }
+                if (typedRec.CompetitorBrandTech == null)
+                {
+                    errors.Add("Competitor BrandTech not found");
+                    isSuitable = false;
+                }
+                if (typedRec.ClientTreeObjectId == null)
+                {
+                    errors.Add("Client must have a value");
+                    isSuitable = false;
+                }
+                if (typedRec.StartDate == null)
+                {
+                    errors.Add("StartDate must have a value");
+                    isSuitable = false;
+                }
+                if (typedRec.EndDate == null)
+                {
+                    errors.Add("EndDate must have a value");
+                    isSuitable = false;
+                }
+                if (typedRec.StartDate > typedRec.EndDate)
+                {
+                    errors.Add("Invalid period");
+                    isSuitable = false;
+                }
+                if (typedRec.Competitor == null)
+                {
+                    errors.Add("Competitor not found");
+                    isSuitable = false;
+                }
+                if (typedRec.Price == null || (typedRec.Price != null && typedRec.Price < 0))
+                {
+                    errors.Add("Invalid price");
+                    isSuitable = false;
+                }
+                if (typedRec.Discount == null || (typedRec.Price != null && typedRec.Price < 0))
+                {
+                    errors.Add("Invalid discount");
+                    isSuitable = false;
                 }
             }
 
@@ -306,7 +347,7 @@ namespace Module.Host.TPM.Actions
 
                 if (oldRecord == null)
                 {
-                    newRecord.ClientTreeObjectId = context.Set<ClientTree>().First(x => x.ObjectId == newRecord.ClientTreeObjectId && x.EndDate == null).Id; 
+                    newRecord.ClientTreeObjectId = context.Set<ClientTree>().First(x => x.ObjectId == newRecord.ClientTreeObjectId && x.EndDate == null).Id;
                     newRecord.Id = Guid.NewGuid();
                     toCreate.Add(newRecord);
                     toHisCreate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(null, newRecord));

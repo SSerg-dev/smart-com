@@ -30,11 +30,11 @@ namespace Module.Persist.TPM.Model.Import
         public String CompetitorBrandTechName { get; set; }
 
         [ImportCSVColumn(ColumnNumber = 4)]
-        [Display(Name = "StartDate")]
+        [Display(Name = "Start Date")]
         public DateTimeOffset? StartDate { get; set; }
 
         [ImportCSVColumn(ColumnNumber = 5)]
-        [Display(Name = "EndDate")]
+        [Display(Name = "End Date")]
         public DateTimeOffset? EndDate { get; set; }
 
         [ImportCSVColumn(ColumnNumber = 6)]
