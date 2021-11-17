@@ -16,6 +16,5 @@ namespace Module.Persist.TPM.Model.History
         public double? Price { get; set; }
         public double? Discount { get; set; }
         public string CompetitorBrandTechName { get; set; }
-        public string Subrange { get; set; }
     }
 }

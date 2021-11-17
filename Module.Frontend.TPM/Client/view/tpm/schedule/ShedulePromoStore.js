@@ -39,11 +39,9 @@ Ext.define('App.store.core.SchedulePromoStore', {
             "rules": []
         };
 
-        
-
-        var competitorPromoRules = [{
+        var promoRules = [{
                     "property": "TypeName",
-                    "operation": "Equals",
+                    "operation": "NotEqual",
                     "value": "Competitor"
                 }];
         var competitorPromoFields = ['Name', 'CompetitorBrandTechName', 'StartDate', 'EndDate', 'Price', 'Discount']
@@ -52,19 +50,19 @@ Ext.define('App.store.core.SchedulePromoStore', {
         var calendarFilters = Ext.ComponentQuery.query('#nascheduler')[0].filter;
         if (calendarFilters) {
             var calendarCompetitorFilters = calendarFilters.rules.filter(function (el) {
-                return competitorPromoFields.includes(el.property);
+                return competitorPromoFields.includes(el.property) || el.rules != null;
             });
 
-            competitorPromoRules = competitorPromoRules.concat(calendarCompetitorFilters);
+            var competitorPromoRules = calendarCompetitorFilters;
 
             var unionOption = {
                 "operator": "or",
                 "rules": []
             };
 
-            var promoRules = calendarFilters.rules.filter(function (el) {
+            promoRules = promoRules.concat(calendarFilters.rules.filter(function (el) {
                 return !excludeFromPromoFields.includes(el.property);
-            });
+            }));
 
             competitorOption.rules = competitorPromoRules;//competitorPromoRules;
             unionOption.rules.push(competitorOption);
