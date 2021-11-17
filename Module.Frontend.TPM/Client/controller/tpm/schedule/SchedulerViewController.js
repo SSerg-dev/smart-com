@@ -111,7 +111,7 @@
 
     isDraggable: function (rec) {
         var res = false;
-        if (App.UserInfo.getCurrentRole()['SystemName'] == 'SupportAdministrator') {
+        if (App.UserInfo.getCurrentRole()['SystemName'] == 'SupportAdministrator' && rec.get('TypeName') != 'Competitor') {
             res = true;
         } else {
             res = rec.get('PromoStatusSystemName') && (['Draft', 'DraftPublished', 'OnApproval', 'Approved', 'Planned'].includes(rec.get('PromoStatusSystemName')) && rec.get('TypeName') != 'Competitor');
