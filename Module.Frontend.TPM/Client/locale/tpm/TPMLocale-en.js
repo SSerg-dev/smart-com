@@ -84,7 +84,7 @@
         'PromoTypes': 'Promo Types',
         'PriceList': 'Price list',
         'CoefficientSI2SO': 'Coefficient SI->SO',
-        'Competitor': 'Competitor',
+        'Competitor': 'Competitors list',
         'CompetitorPromo': 'Competitor Promo',
         'CompetitorBrandTech': 'Competitor BrandTech',
     },

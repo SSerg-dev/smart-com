@@ -86,7 +86,7 @@
             '<dl class="eventTip">' +
             '<dt>Name</dt><dd>{Name}</dd>' +
             '<dt>BrandTech</dt><dd style="border-bottom: 1px solid rgba(197, 197, 197, 0.25); padding-bottom: 5px;">{CompetitorBrandTechName}</dd>' +
-            '<dt><span class="mdi inout-mark-icon">&#x{TypeGlyph}</span>{TypeName} promo</dt>' +
+            '<dt><span class="mdi inout-mark-icon">&#xFD01</span>{TypeName} promo</dt>' +
             '</dl>' +
         '<tpl else>' +
             '<dl class="eventTip">' +

@@ -1534,7 +1534,7 @@
                 var competitorType = {
                     Name: 'Competitor promo',
                     SystemName: 'Competitor',
-                    Glyph: 'E902'
+                    Glyph: 'FD01'
                 };
                 data.results.push(competitorType);
                 data.results.forEach(function (el) {
