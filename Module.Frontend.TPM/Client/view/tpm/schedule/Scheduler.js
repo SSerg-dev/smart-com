@@ -199,6 +199,9 @@
                 model.commit();
                 this.filter = model.getFilter();
                 //this.reloadStore(suppressReload);
+
+                var scheduler = Ext.ComponentQuery.query('#nascheduler')[0];
+                scheduler.filter = JSON.parse(JSON.stringify(this.filter));
                 this.fireEvent('extfilterchange', this);
             },
             clear: function (suppressReload) {

@@ -28,6 +28,11 @@
         { name: 'PromoStatusSystemName', type: 'string', hidden: true, isDefault: true },
         { name: 'PromoStatusName', type: 'string', mapping: 'PromoStatusName', defaultFilterConfig: schedulerStatusFilter(), breezeEntityType: 'PromoStatus', hidden: false, isDefault: true },
 
+
+        { name: 'CompetitorBrandTechName', type: 'string', persist: false, mapping: 'CompetitorBrandTechName', defaultFilterConfig: { valueField: 'BrandTech' }, breezeEntityType: 'CompetitorBrandTech', hidden: false, isDefault: true },
+        { name: 'Price', type: 'float', hidden: false, persist: false, isDefault: true },
+        { name: 'Discount', type: 'float', hidden: false, persist: false, isDefault: true },
+
         { name: "InOut", type: "boolean", persist: false, hidden: true, defaultValue: true },
         { name: "TypeName", type: "string", persist: false, hidden: true, defaultValue: true },
         { name: "TypeGlyph", type: "string", persist: false, hidden: true, defaultValue: true },
@@ -44,9 +49,8 @@
         {name: 'DeviationCoefficient', type: 'float', hidden: false, isDefault: true},
 
         //Apollo Export
-        { name: 'IsApolloExport', type: 'boolean', hidden: false, isDefault: false },
+        { name: 'IsApolloExport', type: 'boolean', hidden: false, isDefault: false }
 
-        { name: 'CompetitorBrandTechName', type: 'string', mapping: 'CompetitorBrandTechName', defaultFilterConfig: { valueField: 'BrandTech' }, breezeEntityType: 'CompetitorBrandTech', hidden: false, isDefault: true }
     ],
     proxy: {
         type: 'breeze',

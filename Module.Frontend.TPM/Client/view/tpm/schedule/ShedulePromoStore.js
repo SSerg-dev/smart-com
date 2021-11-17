@@ -29,45 +29,52 @@ Ext.define('App.store.core.SchedulePromoStore', {
             }
             options.extendedFilters = this.prepareExtendedFilter();
         }
+
+        var promoOption = {
+            "operator": "and",
+            "rules": []
+        };
         var competitorOption = {
             "operator": "and",
             "rules": []
         };
+
+        
+
         var competitorPromoRules = [{
                     "property": "TypeName",
                     "operation": "Equals",
                     "value": "Competitor"
                 }];
-        var competitorPromoFields = ['PromoStatusName', 'Name', 'CompetitorBrandTechName']
-        var excludeFromPromoFields = ['CompetitorBrandTechName'];
-        var unionOption = {
-            "operator": "or",
-            "rules": []
-        };
-        options.extendedFilters.forEach(function (item) {
-            if (item.rules != null) {
-                //var compRules = item.rules.filter(function (el){
-                //    return competitorPromoFields.includes(el.property);
-                //});
-                item.rules.forEach(function(el){
-                    if(competitorPromoFields.includes(el.property))
-                        competitorPromoRules.push(el);
-                });
-                //compRules.push(competitorPromoRules);
-                //competitorPromoRules = compRules;
-                item.rules = item.rules.filter(function (el){
-                    return !excludeFromPromoFields.includes(el.property);
-                });
-                unionOption.rules.push(item);
-            }
-        });
-        competitorOption.rules = competitorPromoRules;
-        unionOption.rules.push(competitorOption);
-        options.extendedFilters = options.extendedFilters.filter(function (item){
-            return item.rules == null;
-        });
-        options.extendedFilters.push(unionOption);
+        var competitorPromoFields = ['Name', 'CompetitorBrandTechName', 'StartDate', 'EndDate', 'Price', 'Discount']
+        var excludeFromPromoFields = ['CompetitorBrandTechName', 'Price', 'Discount'];
 
+        var calendarFilters = Ext.ComponentQuery.query('#nascheduler')[0].filter;
+        if (calendarFilters) {
+            var calendarCompetitorFilters = calendarFilters.rules.filter(function (el) {
+                return competitorPromoFields.includes(el.property);
+            });
+
+            competitorPromoRules = competitorPromoRules.concat(calendarCompetitorFilters);
+
+            var unionOption = {
+                "operator": "or",
+                "rules": []
+            };
+
+            var promoRules = calendarFilters.rules.filter(function (el) {
+                return !excludeFromPromoFields.includes(el.property);
+            });
+
+            competitorOption.rules = competitorPromoRules;//competitorPromoRules;
+            unionOption.rules.push(competitorOption);
+            promoOption.rules = promoRules;
+            unionOption.rules.push(promoOption);
+            options.extendedFilters = options.extendedFilters.filter(function (item) {
+                return item.rules == null;
+            });
+            options.extendedFilters.push(unionOption);
+        }
         return this.callParent([options]);
     }
 });
