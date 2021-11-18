@@ -2596,6 +2596,10 @@
     <Compile Include="Migrations\202111142255311_Add_Competitor_AP_For_Demands.Designer.cs">
       <DependentUpon>202111142255311_Add_Competitor_AP_For_Demands.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202111182302142_Add_Competitor_AP_For_SuperReader.cs" />
+    <Compile Include="Migrations\202111182302142_Add_Competitor_AP_For_SuperReader.Designer.cs">
+      <DependentUpon>202111182302142_Add_Competitor_AP_For_SuperReader.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\2021\202106300726289_202106301025001_Drop_Client.cs" />
     <Compile Include="Migrations\2021\202106300726289_202106301025001_Drop_Client.Designer.cs">
       <DependentUpon>202106300726289_202106301025001_Drop_Client.cs</DependentUpon>
@@ -5042,6 +5046,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202111142255311_Add_Competitor_AP_For_Demands.resx">
       <DependentUpon>202111142255311_Add_Competitor_AP_For_Demands.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202111182302142_Add_Competitor_AP_For_SuperReader.resx">
+      <DependentUpon>202111182302142_Add_Competitor_AP_For_SuperReader.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\2021\202106300726289_202106301025001_Drop_Client.resx">
       <DependentUpon>202106300726289_202106301025001_Drop_Client.cs</DependentUpon>
