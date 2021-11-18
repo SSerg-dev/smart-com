@@ -26,6 +26,29 @@
                     }]
                 }
             },
+            listeners: {
+                change: function (field, newValue, oldValue) {
+                    var brandTechCombo = Ext.ComponentQuery.query('[name=CompetitorBrandTechId]')[0];
+                    brandTechCombo.setValue('');
+                    if (field.record != null) {
+                        var value = field.record.get('Name');
+                        if (brandTechCombo) {
+                            var brandTechStore = brandTechCombo.getStore();
+                            var filter = new Ext.util.Filter({
+                                property: 'CompetitorId',
+                                anyMatch: true,
+                                operator: 'eq',
+                                value: newValue,
+                                disableOnEmpty: true
+                            });
+                            brandTechStore.clearFilter();
+                            if (value != '') {
+                                brandTechStore.addFilter(filter);
+                            }
+                        }
+                    }
+                },
+            },
             mapping: [{
                 from: 'Name',
                 to: 'CompetitorName'
@@ -84,6 +107,30 @@
                         xclass: 'App.ExtTextFilterModel',
                         modelId: 'eftextmodel'
                     }]
+                },
+                listeners: {
+                    load: function (store, operation, eOpts) {
+                        var brandTechCombo = Ext.ComponentQuery.query('[name=CompetitorBrandTechId]')[0];
+                        var competitorField = Ext.ComponentQuery.query('[name=CompetitorId]')[0];
+                        if (brandTechCombo.filtered == true) return;
+                        if (competitorField.rawValue != null) {
+                            var value = competitorField.rawValue;
+                            if (brandTechCombo) {
+                                var filter = new Ext.util.Filter({
+                                    property: 'CompetitorName',
+                                    anyMatch: true,
+                                    operator: 'like',
+                                    value: value,
+                                    disableOnEmpty: true
+                                });
+                                store.clearFilter();
+                                if (value != '') {
+                                    brandTechCombo.filtered = true;
+                                    store.addFilter(filter);
+                                }
+                            }
+                        }
+                    }
                 }
             },
             mapping: [{
