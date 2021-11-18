@@ -25,6 +25,9 @@ using System.Threading.Tasks;
 using Utility.Import;
 using Utility.LogWriter;
 using Utility.FileWorker;
+using Persist.Model;
+using Module.Persist.TPM.Model.DTO;
+using Utility;
 
 namespace Module.Host.TPM.Actions
 {
@@ -170,6 +173,18 @@ namespace Module.Host.TPM.Actions
                 var cacheBuilder = ImportModelFactory.GetImportCacheBuilder(ImportType);
                 var cache = cacheBuilder.Build(sourceRecords, context);
 
+                //Ограничение пользователя  
+                IList<Constraint> constraints = context.Constraints
+                    .Where(x => x.UserRole.UserId.Equals(UserId) && x.UserRole.Role.Id.Equals(RoleId))
+                    .ToList();
+                IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
+                //здесь должны быть все записи, а не только неудаленные!
+                IQueryable<ClientTree> query = context.Set<ClientTree>().AsNoTracking();
+                IQueryable<ClientTreeHierarchyView> hierarchy = context.Set<ClientTreeHierarchyView>().AsNoTracking();
+                query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
+
+                List<ClientTree> existingClientTreeIds = query.ToList();
+
                 foreach (var item in sourceRecords)
                 {
                     IEntity<Guid> rec;
@@ -190,7 +205,7 @@ namespace Module.Host.TPM.Actions
                             warningRecords.Add(new Tuple<IEntity<Guid>, string>(item, String.Join(", ", warnings)));
                         }
                     }
-                    else if (!IsFilterSuitable(ref rec, context, out validationErrors))
+                    else if (!IsFilterSuitable(ref rec, context, out validationErrors, existingClientTreeIds))
                     {
                         HasErrors = true;
                         errorRecords.Add(new Tuple<IEntity<Guid>, string>(item, string.Join(", ", validationErrors)));
@@ -263,12 +278,10 @@ namespace Module.Host.TPM.Actions
             }
         }
 
-        private bool IsFilterSuitable(ref IEntity<Guid> rec, DatabaseContext context, out IList<string> errors)
+        private bool IsFilterSuitable(ref IEntity<Guid> rec, DatabaseContext context, out IList<string> errors, List<ClientTree> existingClientTreeIds)
         {
             errors = new List<string>();
             bool isSuitable = true;
-
-            var datetime = new DateTimeOffset();
 
             if (rec == null)
             {
@@ -293,6 +306,11 @@ namespace Module.Host.TPM.Actions
                     errors.Add("Client must have a value");
                     isSuitable = false;
                 }
+                if (existingClientTreeIds.Where(x => x.EndDate != null).Any(x => x.ObjectId == typedRec.ClientTreeObjectId))
+                {
+                    errors.Add($"No access to import data for {typedRec.ClientTreeObjectId}");
+                    isSuitable = false;
+                }
                 if (typedRec.StartDate == null)
                 {
                     errors.Add("StartDate must have a value");
@@ -308,17 +326,22 @@ namespace Module.Host.TPM.Actions
                     errors.Add("Invalid period");
                     isSuitable = false;
                 }
-                if (typedRec.Competitor == null)
+                if (typedRec.CompetitorId == null)
+                {
+                    isSuitable = false;
+                    errors.Add("Competitor must have value");
+                }
+                else if (typedRec.Competitor == null)
                 {
                     errors.Add("Competitor not found");
                     isSuitable = false;
                 }
-                if (typedRec.Price == null || (typedRec.Price != null && typedRec.Price < 0))
+                if (typedRec.Price != null && typedRec.Price < 0)
                 {
                     errors.Add("Invalid price");
                     isSuitable = false;
                 }
-                if (typedRec.Discount == null || (typedRec.Price != null && typedRec.Price < 0))
+                if (typedRec.Discount != null || typedRec.Discount < 0 || typedRec.Discount > 100)
                 {
                     errors.Add("Invalid discount");
                     isSuitable = false;

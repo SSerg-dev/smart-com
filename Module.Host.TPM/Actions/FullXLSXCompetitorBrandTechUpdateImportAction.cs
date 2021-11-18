@@ -273,7 +273,31 @@ namespace Module.Host.TPM.Actions
                 isSuitable = false;
                 errors.Add("There is no such CompetitorBrandTech on base");
             }
-
+            else {
+                var typedRec = rec as ImportCompetitorBrandTech;
+                if (typedRec.CompetitorId == null)
+                {
+                    isSuitable = false;
+                    errors.Add("Competitor must have value");
+                }
+                else if (typedRec.Competitor == null)
+                {
+                    isSuitable = false;
+                    errors.Add("There is no such Competitor");
+                }
+                if (String.IsNullOrEmpty(typedRec.BrandTech))
+                {
+                    isSuitable = false;
+                    errors.Add("BrandTech must have value");
+                }
+                var colorPatern = @"^#(?:[0-9a-fA-F]{3}){1,2}$";
+                Match colorCheck = Regex.Match(typedRec.Color, colorPatern, RegexOptions.IgnoreCase);
+                if (!colorCheck.Success)
+                {
+                    isSuitable = false;
+                    errors.Add("Invalid color");
+                }
+            }
             return isSuitable;
         }
 
