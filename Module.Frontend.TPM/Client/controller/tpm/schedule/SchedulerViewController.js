@@ -108,7 +108,6 @@
         return this.isDraggable(record);
     },
 
-
     isDraggable: function (rec) {
         var res = false;
         if (App.UserInfo.getCurrentRole()['SystemName'] == 'SupportAdministrator' && rec.get('TypeName') != 'Competitor') {
@@ -1532,7 +1531,7 @@
                 scheduler.typesCheckboxesConfig = [];
                 scheduler.otherPromoTypes = [];
                 var competitorType = {
-                    Name: 'Competitor promo',
+                    Name: 'Competitor Promo',
                     SystemName: 'Competitor',
                     Glyph: 'FD01'
                 };
