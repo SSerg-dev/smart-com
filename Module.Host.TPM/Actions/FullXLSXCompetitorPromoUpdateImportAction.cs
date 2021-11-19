@@ -301,12 +301,17 @@ namespace Module.Host.TPM.Actions
                     errors.Add("Competitor BrandTech not found");
                     isSuitable = false;
                 }
+                if (!context.Set<CompetitorBrandTech>().Any(x => !x.Disabled && x.CompetitorId == typedRec.CompetitorId && x.BrandTech == typedRec.CompetitorBrandTech.BrandTech))
+                {
+                    errors.Add("Competitor BrandTech not found");
+                    isSuitable = false;
+                }
                 if (typedRec.ClientTreeObjectId == null)
                 {
                     errors.Add("Client must have a value");
                     isSuitable = false;
                 }
-                if (existingClientTreeIds.Where(x => x.EndDate != null).Any(x => x.ObjectId == typedRec.ClientTreeObjectId))
+                if (!existingClientTreeIds.Where(x => x.EndDate == null).Any(x => x.ObjectId == typedRec.ClientTreeObjectId))
                 {
                     errors.Add($"No access to import data for {typedRec.ClientTreeObjectId}");
                     isSuitable = false;
@@ -341,7 +346,7 @@ namespace Module.Host.TPM.Actions
                     errors.Add("Invalid price");
                     isSuitable = false;
                 }
-                if (typedRec.Discount != null || typedRec.Discount < 0 || typedRec.Discount > 100)
+                if (typedRec.Discount != null && ( typedRec.Discount < 0 || typedRec.Discount > 100))
                 {
                     errors.Add("Invalid discount");
                     isSuitable = false;
