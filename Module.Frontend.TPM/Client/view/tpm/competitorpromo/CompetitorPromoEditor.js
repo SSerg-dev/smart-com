@@ -183,7 +183,7 @@
             allowBlank: true,
             allowOnlyWhitespace: true,
             validator: function (value) {
-                return new Number(value) > 0;
+                return new Number(value) > 0 && Number(value) < 100;
             },
         }
         ]
