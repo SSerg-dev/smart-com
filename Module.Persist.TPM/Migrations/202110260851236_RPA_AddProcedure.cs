@@ -113,8 +113,11 @@ namespace Module.Persist.TPM.Migrations
                         [Status] = ''ERROR'' WHERE {defaultSchema}.[LoopHandler].[Id] IN ('+@tasks+')'
 					    exec sp_executesql @query
 					    select @query = N'UPDATE {defaultSchema}.[BlockedPromo]
-                        SET
-                        [Disabled] = 1 , [DeletedDate] = GETDATE()
+                            SET
+                                [Disabled] = 1 , [DeletedDate] = GETDATE()
+                            WHERE {defaultSchema}.[BlockedPromo].[HandlerId] IN ('+@tasks+')'
+					    exec sp_executesql @query
+					    END
                     GO
 
                     CREATE OR ALTER PROCEDURE {defaultSchema}.[RpaPipeActual_UpdateRPAStatus]
@@ -181,7 +184,8 @@ namespace Module.Persist.TPM.Migrations
                     END
                     GO
                     "
-                    );}
+                );
+        }
         
         public override void Down()
         {

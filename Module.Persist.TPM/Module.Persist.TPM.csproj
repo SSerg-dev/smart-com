@@ -275,6 +275,7 @@
     <Compile Include="CalculatePromoParametersModule\PlanPromoParametersCalculation.cs" />
     <Compile Include="CalculatePromoParametersModule\PlanPromoUpliftCalculation.cs" />
     <Compile Include="CalculatePromoParametersModule\PromoUtils.cs" />
+    <Compile Include="CalculatePromoParametersModule\RAPUploadCalculationTaskManager.cs" />
     <Compile Include="ElasticSearch\NotCompositeHistoricalModelAttribute.cs" />
     <Compile Include="ElasticSearch\LocalElasticHistoryReader.cs" />
     <Compile Include="ElasticSearch\LocalElasticHistoryWriter.cs" />
@@ -2595,6 +2596,10 @@
     <Compile Include="Migrations\202110260851236_RPA_AddProcedure.cs" />
     <Compile Include="Migrations\202110260851236_RPA_AddProcedure.Designer.cs">
       <DependentUpon>202110260851236_RPA_AddProcedure.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202111221942490_PromoSupportProcedure.cs" />
+    <Compile Include="Migrations\202111221942490_PromoSupportProcedure.Designer.cs">
+      <DependentUpon>202111221942490_PromoSupportProcedure.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\2021\202106300726289_202106301025001_Drop_Client.cs" />
     <Compile Include="Migrations\2021\202106300726289_202106301025001_Drop_Client.Designer.cs">
@@ -5051,6 +5056,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202110260851236_RPA_AddProcedure.resx">
       <DependentUpon>202110260851236_RPA_AddProcedure.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202111221942490_PromoSupportProcedure.resx">
+      <DependentUpon>202111221942490_PromoSupportProcedure.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\2021\202106300726289_202106301025001_Drop_Client.resx">
       <DependentUpon>202106300726289_202106301025001_Drop_Client.cs</DependentUpon>
