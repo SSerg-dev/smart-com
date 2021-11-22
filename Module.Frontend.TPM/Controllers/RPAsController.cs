@@ -205,6 +205,33 @@ namespace Module.Frontend.TPM.Controllers
 									};
 						CreatePipeForEvents(tenantID, applicationId, authenticationKey, subscriptionId, resourceGroup, dataFactoryName, pipelineName, parameters);
 						break;
+					case "NonPromoSupport":
+						pipelineName = AppSettingsManager.GetSetting("RPA_UPLOAD_PIPELINE_SUPPORT_NAME", "");
+						parameters = new Dictionary<string, object>
+									{
+										{ "FileName", Path.GetFileName(fileName) },
+										{ "RPAId", result.Id },
+										{ "UserRoleName", this.user.GetCurrentRole().SystemName },
+										{ "UserId", this.user.Id },
+										{ "LogFileURL", LogURL},
+										{ "SupportType", "NonPromoSupport"}
+									};
+						CreatePipeForEvents(tenantID, applicationId, authenticationKey, subscriptionId, resourceGroup, dataFactoryName, pipelineName, parameters);
+						break;
+					case "PromoSupport":
+						pipelineName = AppSettingsManager.GetSetting("RPA_UPLOAD_PIPELINE_SUPPORT_NAME", "");
+						parameters = new Dictionary<string, object>
+									{
+										{ "FileName", Path.GetFileName(fileName) },
+										{ "RPAId", result.Id },
+										{ "UserRoleName", this.user.GetCurrentRole().SystemName },
+										{ "UserId", this.user.Id },
+										{ "LogFileURL", LogURL},
+										{ "SupportType", "PromoSupport"}
+									};
+						await CreateCalculationPromoSupportTaskAsync(fileName, result.Id);
+						CreatePipeForEvents(tenantID, applicationId, authenticationKey, subscriptionId, resourceGroup, dataFactoryName, pipelineName, parameters);
+						break;
 				}
 
 			}
@@ -299,7 +326,7 @@ namespace Module.Frontend.TPM.Controllers
 			return res;
         }
 
-		private IEnumerable<Guid> ParseExcelTemplate(string template)
+		private IEnumerable<Guid> ParseExcelTemplate(string template, string typePromo)
 		{
 			List<Guid> resultList = new List<Guid>();
 			SpreadsheetDocument book;
@@ -327,11 +354,23 @@ namespace Module.Frontend.TPM.Controllers
 					Cell c = r.Elements<Cell>().ElementAt(0);
 					if (Int32.TryParse(c.CellValue.Text, out promoNumber))
 					{
-						var promo = Context.Set<Promo>().FirstOrDefault(p => p.Number == promoNumber && !p.Disabled);
-						if (promo != null)
-						{
-							resultList.Add(promo.Id);
+						
+						if (typePromo == "Actuals") { 
+							var promo = Context.Set<Promo>().FirstOrDefault(p => p.Number == promoNumber && !p.Disabled);
+							if (promo != null)
+							{
+								resultList.Add(promo.Id);
+							}
 						}
+						else
+                        {
+							var promo = Context.Set<PromoSupport>().FirstOrDefault(p => p.Number == promoNumber && !p.Disabled);
+							if (promo != null)
+							{
+								resultList.Add(promo.Id);
+							}
+						}
+						
 					}
 				}
 			}
@@ -420,12 +459,14 @@ namespace Module.Frontend.TPM.Controllers
 			}
 		}
 
+		
+
 		private async Task CreateCalculationTaskAsync(string fileName, Guid rpaId)
 		{
 
 			List<Guid> handlerIds = new List<Guid>();
 			//Распарсить ексельку и вытащить id промо
-			var listPromoId = ParseExcelTemplate(fileName);
+			var listPromoId = ParseExcelTemplate(fileName,"Actuals");
 
 
 			//Вызвать блокировку promo и затем вызвать создание Task			
@@ -441,6 +482,30 @@ namespace Module.Frontend.TPM.Controllers
 			if (handlerIds.Count() > 0)
 				tasks = $"{String.Join(",", handlerIds.Select(el => $"''{el}''"))}";
 			
+
+			string insertScript = String.Format("INSERT INTO RPA_Setting.[PARAMETERS] ([RPAId],[TasksToComplete]) VALUES ('{0}', '{1}')", rpaId, tasks);
+
+			await Context.Database.ExecuteSqlCommandAsync(insertScript);
+		}
+
+		private async Task CreateCalculationPromoSupportTaskAsync(string fileName, Guid rpaId)
+        {
+			List<Guid> handlerIds = new List<Guid>();
+			//Распарсить ексельку и вытащить id промо
+			var listPromoIds = ParseExcelTemplate(fileName,"PromoSupport");
+
+			//Вызвать блокировку promo и затем вызвать создание Task
+			HandlerData data = new HandlerData();
+			HandlerDataHelper.SaveIncomingArgument("PromoSupportIds", listPromoIds, data, visible: false, throwIfNotExists: false);
+			HandlerDataHelper.SaveIncomingArgument("UserId", user.Id, data, visible: false, throwIfNotExists: false);
+			HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+			var handlerId = RPAUploadCalculationTaskManager.CreateCalculationTask(data, Context);
+			handlerIds.Add(handlerId);
+			
+			var tasks = "";
+			if (handlerIds.Count() > 0)
+				tasks = $"{String.Join(",", handlerIds.Select(el => $"''{el}''"))}";
+
 
 			string insertScript = String.Format("INSERT INTO RPA_Setting.[PARAMETERS] ([RPAId],[TasksToComplete]) VALUES ('{0}', '{1}')", rpaId, tasks);
 
