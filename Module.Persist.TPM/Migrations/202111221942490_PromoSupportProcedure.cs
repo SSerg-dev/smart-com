@@ -11,7 +11,7 @@ namespace Module.Persist.TPM.Migrations
             var defaultSchema = AppSettingsManager.GetSetting<string>("DefaultSchema", "dbo");
 
             Sql($@"
-                CREATE   PROCEDURE {defaultSchema}.[RpaPipeSupport_UpdateRPAStatus]
+                CREATE OR ALTER   PROCEDURE {defaultSchema}.[RpaPipeSupport_UpdateRPAStatus]
                     (       
 	                    @RPAId nvarchar(max),
 					    @Status nvarchar(max)
@@ -28,8 +28,8 @@ namespace Module.Persist.TPM.Migrations
 	                        WHERE 
 		                        Id = @RPAId
                         END
-
-                CREATE   PROCEDURE {defaultSchema}.[RpaPipeSupport_UpdateRPA]
+                GO
+                CREATE OR ALTER   PROCEDURE {defaultSchema}.[RpaPipeSupport_UpdateRPA]
                     (   
 	                    @RPAId nvarchar(max),
 	                    @LogFileURL nvarchar(max)
@@ -51,8 +51,8 @@ namespace Module.Persist.TPM.Migrations
 					        EXEC sp_executesql @dropTableQuery
 
                         END
-
-                ALTER PROCEDURE {defaultSchema}.[UpdateSupport]
+                GO
+                CREATE OR ALTER PROCEDURE {defaultSchema}.[UpdateSupport]
                 (@RPAId nvarchar(max),@SupportType nvarchar(max))
                 AS
                 BEGIN
