@@ -220,7 +220,7 @@ namespace Module.Frontend.TPM.Controllers
                 new Column() { Order = 1, Field = "Number", Header = "Number", Quoting = false },
                 new Column() { Order = 2, Field = "Competitor.Name", Header = "Competitor", Quoting = false },
                 new Column() { Order = 3, Field = "Name", Header = "Promo Name", Quoting = false },
-                new Column() { Order = 4, Field = "ClientTree.FullPathName", Header = "Client hierarchy", Quoting = false },
+                new Column() { Order = 4, Field = "ClientTree.FullPathName", Header = "Client", Quoting = false },
                 new Column() { Order = 5, Field = "CompetitorBrandTech.BrandTech", Header = "BrandTech", Quoting = false },
                 new Column() { Order = 6, Field = "StartDate", Header = "Start Date", Quoting = false },
                 new Column() { Order = 7, Field = "EndDate", Header = "End Date", Quoting = false },
@@ -235,7 +235,7 @@ namespace Module.Frontend.TPM.Controllers
             IEnumerable<Column> columns = new List<Column>() {
                 new Column() { Order = 1, Field = "Competitor.Name", Header = "Competitor", Quoting = false },
                 new Column() { Order = 2, Field = "Name", Header = "Promo Name", Quoting = false },
-                new Column() { Order = 3, Field = "ClientTree.ObjectId", Header = "Client hierarchy code", Quoting = false },
+                new Column() { Order = 3, Field = "ClientTree.ObjectId", Header = "ClientId", Quoting = false },
                 new Column() { Order = 4, Field = "CompetitorBrandTech.BrandTech", Header = "BrandTech", Quoting = false },
                 new Column() { Order = 5, Field = "StartDate", Header = "Start Date", Quoting = false },
                 new Column() { Order = 6, Field = "EndDate", Header = "End Date", Quoting = false },

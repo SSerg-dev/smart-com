@@ -70,7 +70,7 @@
             listeners:
             {
                 change: function (field, newValue, oldValue) {
-                    if (field && field.record && field.record.data.ObjectId === 5000000) {
+                    if (field && field.record && field.record.data.IsBaseClient == false) {
                         this.clientTreeIdValid = false;
                     } else {
                         this.clientTreeIdValid = true;

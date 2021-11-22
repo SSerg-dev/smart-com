@@ -654,6 +654,7 @@
         'Name': 'Name',
         'ClientTreeFullPathName': 'ClientHierarchy',
         'ClientTreeObjectId': 'ClientId',
+        'ClientTreeId': 'ClientId',
         'CompetitorName': 'Competitor',
         'Client': 'Client',
         'StartDate': 'Start date',

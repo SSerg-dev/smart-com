@@ -291,6 +291,7 @@ namespace Module.Host.TPM.Actions
             else
             {
                 CompetitorPromo typedRec = (CompetitorPromo)rec;
+                typedRec.ClientTree = context.Set<ClientTree>().First(x => x.ObjectId == typedRec.ClientTreeObjectId && x.EndDate == null);
                 if (String.IsNullOrEmpty(typedRec.Name))
                 {
                     errors.Add("Name must have a value");
@@ -309,6 +310,11 @@ namespace Module.Host.TPM.Actions
                 if (typedRec.ClientTreeObjectId == null)
                 {
                     errors.Add("Client must have a value");
+                    isSuitable = false;
+                }
+                if (!typedRec.ClientTree.IsBaseClient)
+                {
+                    errors.Add($"{typedRec.ClientTreeObjectId} is not a base client");
                     isSuitable = false;
                 }
                 if (!existingClientTreeIds.Where(x => x.EndDate == null).Any(x => x.ObjectId == typedRec.ClientTreeObjectId))
