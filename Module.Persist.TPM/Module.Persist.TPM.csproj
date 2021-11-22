@@ -2601,9 +2601,9 @@
     <Compile Include="Migrations\202111221942490_PromoSupportProcedure.Designer.cs">
       <DependentUpon>202111221942490_PromoSupportProcedure.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202111222227240_empty.cs" />
-    <Compile Include="Migrations\202111222227240_empty.Designer.cs">
-      <DependentUpon>202111222227240_empty.cs</DependentUpon>
+    <Compile Include="Migrations\202111222227240_Empty_Migration.cs" />
+    <Compile Include="Migrations\202111222227240_Empty_Migration.Designer.cs">
+      <DependentUpon>202111222227240_Empty_Migration.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\2021\202106300726289_202106301025001_Drop_Client.cs" />
     <Compile Include="Migrations\2021\202106300726289_202106301025001_Drop_Client.Designer.cs">
@@ -5064,8 +5064,8 @@
     <EmbeddedResource Include="Migrations\202111221942490_PromoSupportProcedure.resx">
       <DependentUpon>202111221942490_PromoSupportProcedure.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202111222227240_empty.resx">
-      <DependentUpon>202111222227240_empty.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202111222227240_Empty_Migration.resx">
+      <DependentUpon>202111222227240_Empty_Migration.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\2021\202106300726289_202106301025001_Drop_Client.resx">
       <DependentUpon>202106300726289_202106301025001_Drop_Client.cs</DependentUpon>
