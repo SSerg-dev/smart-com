@@ -36,6 +36,8 @@ using DocumentFormat.OpenXml.Spreadsheet;
 using Utility.Azure;
 using Column = Frontend.Core.Extensions.Export.Column;
 using Module.Persist.TPM.CalculatePromoParametersModule;
+using Utility;
+using Module.Persist.TPM.Model.DTO;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -140,7 +142,19 @@ namespace Module.Frontend.TPM.Controllers
 				}
 
 
-				result.Constraint = String.Join(";", this.constraints.Select(x => x.Value).ToArray());
+
+				IList<Constraint> constraints = Context.Constraints
+														.Where(x => x.UserRole.UserId.Equals(user.Id) && x.UserRole.Role.Id.Equals(roleId))
+														.ToList();
+				IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
+				//здесь должны быть все записи, а не только неудаленные!
+				IQueryable<ClientTree> query = Context.Set<ClientTree>().AsNoTracking();
+				IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
+				query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
+				List<ClientTree> existingClientTreeIds = query.ToList();
+				var constraintIds = existingClientTreeIds.Select(x => x.Id);
+
+				result.Constraint = String.Join(";", constraintIds.Select(x => x).ToArray());
 				result.CreateDate = DateTime.UtcNow;
 				string fileURL = AppSettingsManager.GetSetting("RPA_UPLOAD_DOWNLOAD_FILE_URL", "");
 				result.FileURL = $"<a href='{fileURL}{Path.GetFileName(fileName)}' download>Download file</a>";
@@ -227,7 +241,8 @@ namespace Module.Frontend.TPM.Controllers
 										{ "UserRoleName", this.user.GetCurrentRole().SystemName },
 										{ "UserId", this.user.Id },
 										{ "LogFileURL", LogURL},
-										{ "SupportType", "PromoSupport"}
+										{ "SupportType", "PromoSupport"},
+										{ "Constraints", constraintIds}
 									};
 						await CreateCalculationPromoSupportTaskAsync(fileName, result.Id);
 						CreatePipeForEvents(tenantID, applicationId, authenticationKey, subscriptionId, resourceGroup, dataFactoryName, pipelineName, parameters);
