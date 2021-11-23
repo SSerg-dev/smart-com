@@ -58,8 +58,8 @@ namespace Module.Persist.TPM.Migrations
                 BEGIN
 				DECLARE @query nvarchar(max)
                 SET @query = N'
-				DELETE FROM {defaultSchema}.[' + @SupportType + 'DMP] WHERE Id IN (SELECT Id FROM Scenario.[TEMP_RPA_SUPPORTDMP' + @RPAId + '])
-				INSERT INTO {defaultSchema}.[' + @SupportType + 'DMP] SELECT * FROM Scenario.[TEMP_RPA_SUPPORTDMP' + @RPAId + ']
+				DELETE FROM {defaultSchema}.[' + @SupportType + 'DMP] WHERE ' + @SupportType + 'Id IN (SELECT Id FROM {defaultSchema}.[TEMP_RPA_SUPPORTDMP' + @RPAId + '])
+				INSERT INTO {defaultSchema}.[' + @SupportType + 'DMP](' + @SupportType + 'Id,ExternalCode,Quantity) SELECT * FROM {defaultSchema}.[TEMP_RPA_SUPPORTDMP' + @RPAId + ']
 				
 				UPDATE {defaultSchema}.[' + @SupportType + ']
                 SET
