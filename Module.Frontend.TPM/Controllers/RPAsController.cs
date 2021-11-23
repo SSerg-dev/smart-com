@@ -144,7 +144,7 @@ namespace Module.Frontend.TPM.Controllers
 
 
 				IList<Constraint> constraints = Context.Constraints
-														.Where(x => x.UserRole.UserId.Equals(user.Id) && x.UserRole.Role.Id.Equals(roleId))
+														.Where(x => x.UserRole.UserId == user.Id && x.UserRole.Role.Id == roleId)
 														.ToList();
 				IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
 				//здесь должны быть все записи, а не только неудаленные!
@@ -228,7 +228,8 @@ namespace Module.Frontend.TPM.Controllers
 										{ "UserRoleName", this.user.GetCurrentRole().SystemName },
 										{ "UserId", this.user.Id },
 										{ "LogFileURL", LogURL},
-										{ "SupportType", "NonPromoSupport"}
+										{ "SupportType", "NonPromoSupport"},
+										{ "Schema", SchemaBD}
 									};
 						CreatePipeForEvents(tenantID, applicationId, authenticationKey, subscriptionId, resourceGroup, dataFactoryName, pipelineName, parameters);
 						break;
@@ -242,7 +243,8 @@ namespace Module.Frontend.TPM.Controllers
 										{ "UserId", this.user.Id },
 										{ "LogFileURL", LogURL},
 										{ "SupportType", "PromoSupport"},
-										{ "Constraints", constraintIds}
+										{ "Constraints", constraintIds},
+										{ "Schema", SchemaBD}
 									};
 						await CreateCalculationPromoSupportTaskAsync(fileName, result.Id);
 						CreatePipeForEvents(tenantID, applicationId, authenticationKey, subscriptionId, resourceGroup, dataFactoryName, pipelineName, parameters);
