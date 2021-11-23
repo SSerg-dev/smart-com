@@ -66,7 +66,7 @@ namespace Module.Persist.TPM.Migrations
                     [ActualQuantity] = trp.[ActualQuantity],
                     [AttachFileName] = trp.[AttachFileName]
                 FROM
-					(SELECT * FROM {defaultSchema}..[TEMP_RPA_SUPPORT' + @RPAId + ']) AS trp WHERE {defaultSchema}.[' + @SupportType + '].[Id] = trp.Id'
+					(SELECT * FROM {defaultSchema}.[TEMP_RPA_SUPPORT' + @RPAId + ']) AS trp WHERE {defaultSchema}.[' + @SupportType + '].[Id] = trp.Id'
 				EXEC sp_executesql @query
                 END
                     "

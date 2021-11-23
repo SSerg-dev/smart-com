@@ -365,6 +365,7 @@ namespace Module.Frontend.TPM.Controllers
 			OpenXmlReader reader = OpenXmlReader.Create(worksheetPart);
 			SheetData sheetData = worksheetPart.Worksheet.Elements<SheetData>().First();
 			int promoNumber;
+			List<int> processedPromoes = new List<int>(); 
 			foreach (Row r in sheetData.Elements<Row>())
 			{
 				if (r.RowIndex != 1)
@@ -382,10 +383,13 @@ namespace Module.Frontend.TPM.Controllers
 						}
 						else 
                         {
-							var promo = Context.Set<PromoSupport>().FirstOrDefault(p => p.Number == promoNumber && !p.Disabled);
-							if (promo != null)
-							{
-								resultList.Add(promo.Id);
+							if (!processedPromoes.Contains(promoNumber)) { 
+								var promo = Context.Set<PromoSupport>().FirstOrDefault(p => p.Number == promoNumber && !p.Disabled);
+								if (promo != null)
+								{
+									resultList.Add(promo.Id);
+									processedPromoes.Add(promo.Number);
+								}
 							}
 						}
 						
