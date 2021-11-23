@@ -151,10 +151,10 @@ namespace Module.Frontend.TPM.Controllers
 				IQueryable<ClientTree> query = Context.Set<ClientTree>().AsNoTracking();
 				IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
 				query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
-				List<ClientTree> existingClientTreeIds = query.ToList();
-				var constraintIds = existingClientTreeIds.Select(x => x.Id);
+				List<ClientTree> existingClientTreeIds = query.Where(x => x.EndDate == null && x.IsBaseClient == true).ToList();
+				var constraintIds = String.Join(",", existingClientTreeIds.Select(x => x.Id.ToString()));
 
-				result.Constraint = String.Join(";", constraintIds.Select(x => x).ToArray());
+				result.Constraint = String.Join(";", constraints.Select(x => x.Value).ToArray());
 				result.CreateDate = DateTime.UtcNow;
 				string fileURL = AppSettingsManager.GetSetting("RPA_UPLOAD_DOWNLOAD_FILE_URL", "");
 				result.FileURL = $"<a href='{fileURL}{Path.GetFileName(fileName)}' download>Download file</a>";
@@ -229,6 +229,7 @@ namespace Module.Frontend.TPM.Controllers
 										{ "UserId", this.user.Id },
 										{ "LogFileURL", LogURL},
 										{ "SupportType", "NonPromoSupport"},
+										{ "Constraints", constraintIds},
 										{ "Schema", SchemaBD}
 									};
 						CreatePipeForEvents(tenantID, applicationId, authenticationKey, subscriptionId, resourceGroup, dataFactoryName, pipelineName, parameters);
@@ -379,7 +380,7 @@ namespace Module.Frontend.TPM.Controllers
 								resultList.Add(promo.Id);
 							}
 						}
-						else
+						else 
                         {
 							var promo = Context.Set<PromoSupport>().FirstOrDefault(p => p.Number == promoNumber && !p.Disabled);
 							if (promo != null)
@@ -505,15 +506,26 @@ namespace Module.Frontend.TPM.Controllers
 			await Context.Database.ExecuteSqlCommandAsync(insertScript);
 		}
 
+		private string FromListToString(List<Guid> list)
+		{
+			string result = "";
+
+			if (list != null)
+				foreach (Guid el in list.Distinct())
+					result += el + ";";
+
+			return result;
+		}
+
 		private async Task CreateCalculationPromoSupportTaskAsync(string fileName, Guid rpaId)
         {
 			List<Guid> handlerIds = new List<Guid>();
 			//Распарсить ексельку и вытащить id промо
-			var listPromoIds = ParseExcelTemplate(fileName,"PromoSupport");
+			var listPromoIds = ParseExcelTemplate(fileName,"PromoSupport").ToList();
 
 			//Вызвать блокировку promo и затем вызвать создание Task
 			HandlerData data = new HandlerData();
-			HandlerDataHelper.SaveIncomingArgument("PromoSupportIds", listPromoIds, data, visible: false, throwIfNotExists: false);
+			HandlerDataHelper.SaveIncomingArgument("PromoSupportIds", FromListToString(listPromoIds), data, visible: false, throwIfNotExists: false);
 			HandlerDataHelper.SaveIncomingArgument("UserId", user.Id, data, visible: false, throwIfNotExists: false);
 			HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
 			var handlerId = RPAUploadCalculationTaskManager.CreateCalculationTask(data, Context);
