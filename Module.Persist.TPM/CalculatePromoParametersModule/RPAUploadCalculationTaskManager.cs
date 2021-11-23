@@ -62,6 +62,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         CreateHandler(handlerId, description, nameHandler, data, context, "INPROGRESS");
                         contextOutOfTransaction.SaveChanges();
                     }
+                    returnHandlerId = handlerId;
                 }
             }
 

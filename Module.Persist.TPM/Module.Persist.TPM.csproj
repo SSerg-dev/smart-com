@@ -275,7 +275,7 @@
     <Compile Include="CalculatePromoParametersModule\PlanPromoParametersCalculation.cs" />
     <Compile Include="CalculatePromoParametersModule\PlanPromoUpliftCalculation.cs" />
     <Compile Include="CalculatePromoParametersModule\PromoUtils.cs" />
-    <Compile Include="CalculatePromoParametersModule\RAPUploadCalculationTaskManager.cs" />
+    <Compile Include="CalculatePromoParametersModule\RPAUploadCalculationTaskManager.cs" />
     <Compile Include="ElasticSearch\NotCompositeHistoricalModelAttribute.cs" />
     <Compile Include="ElasticSearch\LocalElasticHistoryReader.cs" />
     <Compile Include="ElasticSearch\LocalElasticHistoryWriter.cs" />

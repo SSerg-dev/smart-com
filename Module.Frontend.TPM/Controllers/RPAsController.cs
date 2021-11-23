@@ -530,6 +530,7 @@ namespace Module.Frontend.TPM.Controllers
 			//Вызвать блокировку promo и затем вызвать создание Task
 			HandlerData data = new HandlerData();
 			HandlerDataHelper.SaveIncomingArgument("PromoSupportIds", FromListToString(listPromoIds), data, visible: false, throwIfNotExists: false);
+			HandlerDataHelper.SaveIncomingArgument("UnlinkedPromoIds", "", data, visible: false, throwIfNotExists: false);
 			HandlerDataHelper.SaveIncomingArgument("UserId", user.Id, data, visible: false, throwIfNotExists: false);
 			HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
 			var handlerId = RPAUploadCalculationTaskManager.CreateCalculationTask(data, Context);
