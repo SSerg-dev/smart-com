@@ -3,8 +3,8 @@
 	
     "systemName":  "Jupiter Smartcom Dev1",
 	
-    "vaultName":  "jupiterdevkv",
-    "resourceGroupName":  "JUPITER-RG",
+    "vaultName":  "jupiter-app-dev-kv",
+    "resourceGroupName":  "jupiter-app-dev-rg",
 	
 	
 	"secretKeys":  [
@@ -20,14 +20,14 @@
 		}
 		,{
 			"name":  "ADidaClientId",
-			"value":  "9ab57531-5607-4912-8298-4dafe829ac19",
+			"value":  "923c9dc0-a2a8-4a19-a766-77d64ad699bf",
 			"contentType":  "",
 			"action":  "add",
 			"enabled": true
 		}
 		,{
 			"name":  "ADidaClientSecret",
-			"value":  "EBaSP-2F._CC~0YhNIW_5Y1KyF9e3H3-.O",
+			"value":  "viL7Q~OGC4HaaGgaphi2kJBgj5tcOUCqz~T0t",
 			"contentType":  "",
 			"action":  "add",
 			"enabled": true
@@ -62,14 +62,14 @@
 		}
 		,{
 			"name":  "BlobStorageName",
-			"value":  "jupiterdevsa",
+			"value":  "jupiterappdevct1",
 			"contentType":  "",
 			"action":  "add",
 			"enabled": true
 		}
 		,{
 			"name":  "BlobStorageSAS",
-			"value":  "sv=2020-02-10&ss=bfqt&srt=sco&sp=rwdlacupx&se=2021-12-31T21:06:12Z&st=2021-04-23T13:06:12Z&spr=https&sig=MMAphXwsq7FmdA0Y%2BVeBLlIGb0qiQubf2UNfGpetLjI%3D",
+			"value":  "sp=racwdl&st=2021-11-25T13:14:01Z&se=2025-11-25T21:14:01Z&sv=2020-08-04&sr=c&sig=wK%2FG2V8K8%2BQHXJn4sYlNENNBbjICcGQrsbch7S5KNhE%3D",
 			"contentType":  "",
 			"action":  "add",
 			"enabled": true
@@ -90,14 +90,14 @@
 		}
 		,{
 			"name":  "MongoUrl",
-			"value":  "mongodb://jupiterdevacdb:A4KaSNYo1rdFTmWFRi6LhdC3DJSY2MYhdDdZtIO8ragsIa8vTwbaJWByhmYEhxSO602DeQ9Lp7FymcDGwrHpnA==@jupiterdevacdb.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@jupiterdevacdb@",
+			"value":  "mongodb://jupiter-app-dev-cdba:odgiYAdnqAk0PalfIj1FlA7OoWjIeaRATyA5EPkgFakAlTcqGmTXEZaAGVLWMYZZJIsXap0T3wkktY7YwRIOtQ==@jupiter-app-dev-cdba.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&replicaSet=globaldb&maxIdleTimeMS=120000&appName=@jupiter-app-dev-cdba@",
 			"contentType":  "",
 			"action":  "add",
 			"enabled": true
 		}
 		,{
 			"name":  "MongoUrlAzure",
-			"value":  "mongodb://jupiterdevacdb:A4KaSNYo1rdFTmWFRi6LhdC3DJSY2MYhdDdZtIO8ragsIa8vTwbaJWByhmYEhxSO602DeQ9Lp7FymcDGwrHpnA==@jupiterdevacdb.mongo.cosmos.azure.com:10255/Test?ssl=true&amp;replicaSet=globaldb&amp;retrywrites=false&amp;maxIdleTimeMS=120000&amp;appName=@jupiterdevacdb@",
+			"value":  "mongodb://jupiter-app-dev-cdba:odgiYAdnqAk0PalfIj1FlA7OoWjIeaRATyA5EPkgFakAlTcqGmTXEZaAGVLWMYZZJIsXap0T3wkktY7YwRIOtQ==@jupiter-app-dev-cdba.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&replicaSet=globaldb&maxIdleTimeMS=120000&appName=@jupiter-app-dev-cdba@",
 			"contentType":  "",
 			"action":  "add",
 			"enabled": true
