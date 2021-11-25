@@ -104,7 +104,7 @@
 		}
 		,{
 			"name":  "russiapetcarejupitersqldbcs",
-			"value":  "Server=tcp:smartcom-dev-sqlsrv.database.windows.net,1433;Initial Catalog=tpmdevsqldb;Persist Security Info=False;User ID=jupiter_user;Password=Kz3CL7XGXbCD;MultipleActiveResultSets=True;Encrypt=True;TrustServerCertificate=False;",
+			"value":  "Server=tcp:smartcom-sql-shrd-sqlsrv.database.windows.net,1433;Initial Catalog=smartcom-sql-shrd-sql;Persist Security Info=False;User ID=jupiter_dev_user;Password=P@ssw0rd;MultipleActiveResultSets=True;Encrypt=True;TrustServerCertificate=False;",
 			"contentType":  "",
 			"action":  "add",
 			"enabled": true
