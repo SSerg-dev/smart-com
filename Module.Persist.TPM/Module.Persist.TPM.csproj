@@ -2576,6 +2576,10 @@
     <Compile Include="Migrations\202110251839422_Add_CopyScenario_Tables.Designer.cs">
       <DependentUpon>202110251839422_Add_CopyScenario_Tables.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202111260857011_RemoveAnaplanSetting.cs" />
+    <Compile Include="Migrations\202111260857011_RemoveAnaplanSetting.Designer.cs">
+      <DependentUpon>202111260857011_RemoveAnaplanSetting.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\2021\202106300726289_202106301025001_Drop_Client.cs" />
     <Compile Include="Migrations\2021\202106300726289_202106301025001_Drop_Client.Designer.cs">
       <DependentUpon>202106300726289_202106301025001_Drop_Client.cs</DependentUpon>
@@ -4998,6 +5002,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202110251839422_Add_CopyScenario_Tables.resx">
       <DependentUpon>202110251839422_Add_CopyScenario_Tables.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202111260857011_RemoveAnaplanSetting.resx">
+      <DependentUpon>202111260857011_RemoveAnaplanSetting.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\2021\202106300726289_202106301025001_Drop_Client.resx">
       <DependentUpon>202106300726289_202106301025001_Drop_Client.cs</DependentUpon>
