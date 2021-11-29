@@ -133,10 +133,22 @@ Ext.define('App.view.core.rpa.RPA', {
                 dataIndex: 'Status'
             }, {
                 text: l10n.ns('core', 'RPA').value('FileURL'),
-                dataIndex: 'FileURL'
+                dataIndex: 'FileURL',
+                renderer: function(value) {
+                    var pattern = '/odata/RPAs/DownloadFile?fileName={0}';
+                    var downloadFileUrl = document.location.href + Ext.String.format(pattern, value || '');                    
+                    value = value ? '<a href=' + downloadFileUrl + '>' + value + '</a>' : "";
+                    return value;
+                }
             }, {
                 text: l10n.ns('core', 'RPA').value('LogURL'),
-                dataIndex: 'LogURL'
+                dataIndex: 'LogURL',
+                renderer: function(value) {
+                    var pattern = '/odata/RPAs/DownloadFile?fileName={0}';
+                    var downloadFileUrl = document.location.href + Ext.String.format(pattern, value || '');                    
+                    value = value ? '<a href=' + downloadFileUrl + '>' + value + '</a>' : "";
+                    return value;
+                }
             }]
         }
     }, {

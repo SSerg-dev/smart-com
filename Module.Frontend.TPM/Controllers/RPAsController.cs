@@ -154,15 +154,14 @@ namespace Module.Frontend.TPM.Controllers
 				List<ClientTree> existingClientTreeIds = query.Where(x => x.EndDate == null && x.IsBaseClient == true).ToList();
 				var constraintIds = String.Join(",", existingClientTreeIds.Select(x => x.Id.ToString()));
 
-				result.Constraint = String.Join(";", constraints.Select(x => x.Value).ToArray());
+				result.Constraint = String.Join(";", existingClientTreeIds.Select(x => x.ObjectId.ToString()));
 				result.CreateDate = DateTime.UtcNow;
-				string fileURL = AppSettingsManager.GetSetting("RPA_UPLOAD_DOWNLOAD_FILE_URL", "");
-				result.FileURL = $"<a href='{fileURL}{Path.GetFileName(fileName)}' download>Download file</a>";
+				result.FileURL = Path.GetFileName(fileName);
 
 				// Save RPA
 				var resultSaveChanges = Context.SaveChanges();
 
-				string LogURL = $"<a href='{fileURL}OutputLogFile_{result.Id}.xlsx' download>Log file</a>";
+				string LogURL = $"OutputLogFile_{ result.Id}.xlsx";
 
 				string SchemaBD = AppSettingsManager.GetSetting("DefaultSchema", "");
 
@@ -215,7 +214,9 @@ namespace Module.Frontend.TPM.Controllers
 										{ "RPAId", result.Id },
 										{ "UserRoleName", this.user.GetCurrentRole().SystemName },
 										{ "UserId", this.user.Id },
-										{ "LogFileURL", LogURL}
+										{ "LogFileURL", LogURL},
+										{ "Scheme", SchemaBD},
+										{ "Constraints", String.Join(";", existingClientTreeIds.Select(x => x.ObjectId.ToString()))},
 									};
 						CreatePipeForEvents(tenantID, applicationId, authenticationKey, subscriptionId, resourceGroup, dataFactoryName, pipelineName, parameters);
 						break;
