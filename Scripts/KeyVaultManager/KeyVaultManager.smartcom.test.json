@@ -3,8 +3,8 @@
 	
     "systemName":  "Jupiter Smartcom Test",
 	
-    "vaultName":  "jupiter-app-test-kv",
-    "resourceGroupName":  "jupiter-app-test-rg",
+    "vaultName":  "jupitertestakv",
+    "resourceGroupName":  "JUPITER-TEST-RG",
 	
 	
 	"secretKeys":  [
@@ -20,21 +20,21 @@
 		}
 		,{
 			"name":  "ADidaClientId",
-			"value":  "89dd94c7-2c8b-4c13-a8ca-57084082e963",
+			"value":  "6143a5e4-4eed-4597-a86b-107c13e4527e",
 			"contentType":  "",
 			"action":  "add",
 			"enabled": true
 		}
 		,{
 			"name":  "ADidaClientSecret",
-			"value":  "Df07Q~i1TTgBYHbNQOiwivunNhwqD6VWnpxVU",
+			"value":  "i2hrp5-HjD0EZ25EP_~W8v2uOG9P-5OPr8",
 			"contentType":  "",
 			"action":  "add",
 			"enabled": true
 		}
 		,{
 			"name":  "ADidaPostLogoutRedirectUri",
-			"value":  "https://jupiter-app-test-webapp.azurewebsites.net/",
+			"value":  "https://jupitertestawa.azurewebsites.net/",
 			"contentType":  "",
 			"action":  "add",
 			"enabled": true
@@ -48,28 +48,28 @@
 		}
 		,{
 			"name":  "BlobStorageContainer",
-			"value":  "jupiterapptestct1",
+			"value":  "jupitertestcontainer",
 			"contentType":  "",
 			"action":  "add",
 			"enabled": true
 		}
 		,{
 			"name":  "BlobStorageName",
-			"value":  "smartcomsashrdsa1",
+			"value":  "jupitertestasa",
 			"contentType":  "",
 			"action":  "add",
 			"enabled": true
 		}
 		,{
 			"name":  "BlobStorageSAS",
-			"value":  "sp=racwdl&st=2021-11-25T13:24:36Z&se=2025-11-25T21:24:36Z&spr=https&sv=2020-08-04&sr=c&sig=hPRK2juL5m3GcGzXyQNsHHJOYkCfC3Cy4DWFhRbHQ9A%3D",
+			"value":  "sv=2020-08-04&ss=bfqt&srt=sco&sp=rwdlacuptfx&se=2025-07-22T17:53:27Z&st=2021-07-22T09:53:27Z&spr=https&sig=jkM%2F1YdI%2FU30AOSVvPu8M%2F9LKO1f%2FdL6jL5fYWOEjhc%3D",
 			"contentType":  "",
 			"action":  "add",
 			"enabled": true
 		}
 		,{
 			"name":  "LogicAppNotificationURL",
-			"value":  "https://jupiter-app-test-webapp.azurewebsites.net/",
+			"value":  "https://jupitertestawa.azurewebsites.net/",
 			"contentType":  "",
 			"action":  "add",
 			"enabled": true
@@ -83,14 +83,14 @@
 		}
 		,{
 			"name":  "MongoUrl",
-			"value":  "mongodb://jupiter-app-test-cdba:ajxW1bDMoZTJEkluzTal5oBKkZqn3L9VaIBQ6zkyK9ggi71KkAJpawmF2Gpy8gEoqTHnt4rTHpwrdApeHDAnWA==@jupiter-app-test-cdba.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&replicaSet=globaldb&maxIdleTimeMS=120000&appName=@jupiter-app-test-cdba@",
+			"value":  "mongodb://jupiterdevacdb:A4KaSNYo1rdFTmWFRi6LhdC3DJSY2MYhdDdZtIO8ragsIa8vTwbaJWByhmYEhxSO602DeQ9Lp7FymcDGwrHpnA==@jupiterdevacdb.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@jupiterdevacdb@",
 			"contentType":  "",
 			"action":  "add",
 			"enabled": true
 		}
 		,{
 			"name":  "russiapetcarejupitersqldbcs",
-			"value":  "Server=tcp:smartcom-sql-shrd-sqlsrv.database.windows.net,1433;Initial Catalog=smartcom-sql-shrd-sql;Persist Security Info=False;User ID=jupiter_test_user;Password=P@ssw0rd;MultipleActiveResultSets=True;Encrypt=True;TrustServerCertificate=False;",
+			"value":  "Server=tcp:smartcom-dev-sqlsrv.database.windows.net,1433;Initial Catalog=tpmdevsqldb;Persist Security Info=False;User ID=jupiter_user;Password=Kz3CL7XGXbCD;MultipleActiveResultSets=True;Encrypt=True;TrustServerCertificate=False;",
 			"contentType":  "",
 			"action":  "add",
 			"enabled": true
