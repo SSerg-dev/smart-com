@@ -64,6 +64,7 @@ namespace Module.Persist.TPM.Migrations
 				UPDATE {defaultSchema}.[' + @SupportType + ']
                 SET
                     [ActualQuantity] = trp.[ActualQuantity],
+                    [ActualProdCost] = trp.[ActualProdCost],
                     [AttachFileName] = trp.[AttachFileName]
                 FROM
 					(SELECT * FROM {defaultSchema}.[TEMP_RPA_SUPPORT' + @RPAId + ']) AS trp WHERE {defaultSchema}.[' + @SupportType + '].[Id] = trp.Id'
