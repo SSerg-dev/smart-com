@@ -186,6 +186,7 @@ namespace Module.Frontend.TPM.Controllers
 											{ "UserId", this.user.Id },
 											{ "ProductReference", "EAN_PC" },
 											{ "LogFileURL", LogURL},
+											{ "Constraints", constraintIds},
 											{ "Schema", SchemaBD}
 										};
 						await CreateCalculationTaskAsync(fileName, result.Id);
@@ -201,6 +202,7 @@ namespace Module.Frontend.TPM.Controllers
 											{ "UserId", this.user.Id },
 											{ "ProductReference", "PLU" },
 											{ "LogFileURL", LogURL},
+											{ "Constraints", constraintIds},
 											{ "Schema", SchemaBD}
 										};
 						await CreateCalculationTaskAsync(fileName, result.Id);
