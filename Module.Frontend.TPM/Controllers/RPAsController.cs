@@ -152,9 +152,9 @@ namespace Module.Frontend.TPM.Controllers
 				IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
 				query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
 				List<ClientTree> existingClientTreeIds = query.Where(x => x.EndDate == null && x.IsBaseClient == true).ToList();
-				var constraintIds = String.Join(",", existingClientTreeIds.Select(x => x.Id.ToString()));
+				var constraintIds = String.Join(",", existingClientTreeIds.Select(x => x.ObjectId.ToString()));
 
-				result.Constraint = String.Join(";", existingClientTreeIds.Select(x => x.ObjectId.ToString()));
+				result.Constraint = constraintIds;
 				result.CreateDate = DateTime.UtcNow;
 				result.FileURL = Path.GetFileName(fileName);
 
