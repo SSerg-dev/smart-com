@@ -217,7 +217,7 @@ namespace Module.Frontend.TPM.Controllers
 										{ "UserRoleName", this.user.GetCurrentRole().SystemName },
 										{ "UserId", this.user.Id },
 										{ "LogFileURL", LogURL},
-										{ "Schema", SchemaBD},
+										{ "Scheme", SchemaBD},
 										{ "Constraints", constraintIds},
 									};
 						CreatePipeForEvents(tenantID, applicationId, authenticationKey, subscriptionId, resourceGroup, dataFactoryName, pipelineName, parameters);
