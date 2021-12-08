@@ -153,7 +153,7 @@ namespace Module.Frontend.TPM.Controllers
 				query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
 				List<ClientTree> existingClientTreeIds = query.Where(x => x.EndDate == null && x.IsBaseClient == true).ToList();
 				var constraintIds = String.Join(",", existingClientTreeIds.Select(x => x.ObjectId.ToString()));
-
+				var constraintTreeIds = String.Join(",", existingClientTreeIds.Select(x => x.Id.ToString()));
 				result.Constraint = String.Join(",", constraints.Where(c => c.Prefix == "CLIENT_ID").Select(x => x.Value));
 				result.CreateDate = DateTime.UtcNow;
 				result.FileURL = Path.GetFileName(fileName);
@@ -217,7 +217,7 @@ namespace Module.Frontend.TPM.Controllers
 										{ "UserRoleName", this.user.GetCurrentRole().SystemName },
 										{ "UserId", this.user.Id },
 										{ "LogFileURL", LogURL},
-										{ "Scheme", SchemaBD},
+										{ "Schema", SchemaBD},
 										{ "Constraints", constraintIds},
 									};
 						CreatePipeForEvents(tenantID, applicationId, authenticationKey, subscriptionId, resourceGroup, dataFactoryName, pipelineName, parameters);
@@ -232,7 +232,7 @@ namespace Module.Frontend.TPM.Controllers
 										{ "UserId", this.user.Id },
 										{ "LogFileURL", LogURL},
 										{ "SupportType", "NonPromoSupport"},
-										{ "Constraints", constraintIds},
+										{ "Constraints", constraintTreeIds},
 										{ "Schema", SchemaBD}
 									};
 						CreatePipeForEvents(tenantID, applicationId, authenticationKey, subscriptionId, resourceGroup, dataFactoryName, pipelineName, parameters);
@@ -247,7 +247,7 @@ namespace Module.Frontend.TPM.Controllers
 										{ "UserId", this.user.Id },
 										{ "LogFileURL", LogURL},
 										{ "SupportType", "PromoSupport"},
-										{ "Constraints", constraintIds},
+										{ "Constraints", constraintTreeIds},
 										{ "Schema", SchemaBD}
 									};
 						await CreateCalculationPromoSupportTaskAsync(fileName, result.Id);
