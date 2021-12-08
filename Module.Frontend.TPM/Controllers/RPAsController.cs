@@ -154,7 +154,7 @@ namespace Module.Frontend.TPM.Controllers
 				List<ClientTree> existingClientTreeIds = query.Where(x => x.EndDate == null && x.IsBaseClient == true).ToList();
 				var constraintIds = String.Join(",", existingClientTreeIds.Select(x => x.ObjectId.ToString()));
 
-				result.Constraint = constraintIds;
+				result.Constraint = String.Join(",", constraints.Where(c => c.Prefix == "CLIENT_ID").Select(x => x.Value));
 				result.CreateDate = DateTime.UtcNow;
 				result.FileURL = Path.GetFileName(fileName);
 
@@ -218,7 +218,7 @@ namespace Module.Frontend.TPM.Controllers
 										{ "UserId", this.user.Id },
 										{ "LogFileURL", LogURL},
 										{ "Scheme", SchemaBD},
-										{ "Constraints", String.Join(";", existingClientTreeIds.Select(x => x.ObjectId.ToString()))},
+										{ "Constraints", constraintIds},
 									};
 						CreatePipeForEvents(tenantID, applicationId, authenticationKey, subscriptionId, resourceGroup, dataFactoryName, pipelineName, parameters);
 						break;
