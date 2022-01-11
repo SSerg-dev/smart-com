@@ -10,10 +10,8 @@ namespace Module.Persist.TPM.Migrations
         {
             var defaultSchema = AppSettingsManager.GetSetting<string>("DefaultSchema", "dbo");
 
-            Sql($@"
-                CREATE SCHEMA RPA_Setting
-                GO               
-                CREATE TABLE [RPA_Setting].[PARAMETERS](
+            Sql($@"            
+                CREATE TABLE {defaultSchema}.[RPAParameters](
 	            [RPAId] [uniqueidentifier] NOT NULL,
 	            [TasksToComplete] [nvarchar](max) NOT NULL
                 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
@@ -84,7 +82,7 @@ namespace Module.Persist.TPM.Migrations
                         BEGIN
                         DECLARE @buff nvarchar(max)
 					    DECLARE @query nvarchar(max)
-					    SELECT @buff = TasksToComplete FROM [RPA_Setting].[PARAMETERS] WHERE RPAId = @RPAId
+					    SELECT @buff = TasksToComplete FROM {defaultSchema}.[RPAParameters] WHERE RPAId = @RPAId
 					    IF @buff = '' OR @buff = ''''
 						    BEGIN
 						    return;
@@ -103,7 +101,7 @@ namespace Module.Persist.TPM.Migrations
                         DECLARE @tasks nvarchar(max)
 					    DECLARE @promoes nvarchar(max)
 					    DECLARE @query nvarchar(max)
-					    SELECT @tasks = TasksToComplete FROM [RPA_Setting].[PARAMETERS] WHERE RPAId = @RPAId
+					    SELECT @tasks = TasksToComplete FROM {defaultSchema}.[RPAParameters] WHERE RPAId = @RPAId
 					    IF @tasks = '' OR @tasks = ''''
 						    BEGIN
 						    return;
