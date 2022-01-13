@@ -488,11 +488,10 @@ namespace Module.Frontend.TPM.Controllers
 
 		private async Task CreateCalculationTaskAsync(string fileName, Guid rpaId)
 		{
-
+			string defaultSchema = AppSettingsManager.GetSetting("DefaultSchema", "");
 			List<Guid> handlerIds = new List<Guid>();
 			//Распарсить ексельку и вытащить id промо
-			var listPromoId = ParseExcelTemplate(fileName,"Actuals");
-
+			var listPromoId = ParseExcelTemplate(fileName,"Actuals");			
 
 			//Вызвать блокировку promo и затем вызвать создание Task			
 			foreach (Guid promoId in listPromoId)
@@ -508,7 +507,7 @@ namespace Module.Frontend.TPM.Controllers
 				tasks = $"{String.Join(",", handlerIds.Select(el => $"''{el}''"))}";
 			
 
-			string insertScript = String.Format("INSERT INTO RPA_Setting.[PARAMETERS] ([RPAId],[TasksToComplete]) VALUES ('{0}', '{1}')", rpaId, tasks);
+			string insertScript = String.Format("INSERT INTO {0}.[RPAParameters] ([RPAId],[TasksToComplete]) VALUES ('{1}', '{2}')", defaultSchema, rpaId, tasks);
 
 			await Context.Database.ExecuteSqlCommandAsync(insertScript);
 		}
@@ -526,6 +525,7 @@ namespace Module.Frontend.TPM.Controllers
 
 		private async Task CreateCalculationPromoSupportTaskAsync(string fileName, Guid rpaId)
         {
+			string defaultSchema = AppSettingsManager.GetSetting("DefaultSchema", "");
 			List<Guid> handlerIds = new List<Guid>();
 			//Распарсить ексельку и вытащить id промо
 			var listPromoIds = ParseExcelTemplate(fileName,"PromoSupport").ToList();
@@ -544,7 +544,7 @@ namespace Module.Frontend.TPM.Controllers
 				tasks = $"{String.Join(",", handlerIds.Select(el => $"''{el}''"))}";
 
 
-			string insertScript = String.Format("INSERT INTO RPA_Setting.[PARAMETERS] ([RPAId],[TasksToComplete]) VALUES ('{0}', '{1}')", rpaId, tasks);
+			string insertScript = String.Format("INSERT INTO {0}.[RPAParameters] ([RPAId],[TasksToComplete]) VALUES ('{1}', '{2}')", defaultSchema, rpaId, tasks);
 
 			await Context.Database.ExecuteSqlCommandAsync(insertScript);
 		}
