@@ -2652,6 +2652,10 @@
     <Compile Include="Migrations\2021\202108010712478_PLUHistory.Designer.cs">
       <DependentUpon>202108010712478_PLUHistory.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202201140902485_Add_MarsDate_To_CompetitorPromo.cs" />
+    <Compile Include="Migrations\202201140902485_Add_MarsDate_To_CompetitorPromo.Designer.cs">
+      <DependentUpon>202201140902485_Add_MarsDate_To_CompetitorPromo.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -5096,6 +5100,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\2021\202108120633106_Add_Patch_To_PLU.resx">
       <DependentUpon>202108120633106_Add_Patch_To_PLU.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202201140902485_Add_MarsDate_To_CompetitorPromo.resx">
+      <DependentUpon>202201140902485_Add_MarsDate_To_CompetitorPromo.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

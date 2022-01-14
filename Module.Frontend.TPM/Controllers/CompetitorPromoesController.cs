@@ -38,6 +38,7 @@ using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.SimpleModel;
 using System.Web;
 using Utility.FileWorker;
+using Core.MarsCalendar;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -128,26 +129,36 @@ namespace Module.Frontend.TPM.Controllers
         [ClaimsAuthorize]
         public IHttpActionResult Post(CompetitorPromo model)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var proxy = Context.Set<CompetitorPromo>().Create<CompetitorPromo>();
-            var result = (CompetitorPromo)Mapper.Map(model, proxy, typeof(CompetitorPromo), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
-
-            Context.Set<CompetitorPromo>().Add(result);
-
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                // делаем UTC +3
+                model.StartDate = ChangeTimeZoneUtil.ResetTimeZone(model.StartDate);
+                model.EndDate = ChangeTimeZoneUtil.ResetTimeZone(model.EndDate);
+                model.DispatchesStart = ChangeTimeZoneUtil.ResetTimeZone(model.DispatchesStart);
+                model.DispatchesEnd = ChangeTimeZoneUtil.ResetTimeZone(model.DispatchesEnd);
+
+                var proxy = Context.Set<CompetitorPromo>().Create<CompetitorPromo>();
+                var result = (CompetitorPromo)Mapper.Map(model, proxy, typeof(CompetitorPromo), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+                
+                //Установка дат в Mars формате
+                SetPromoMarsDates(result);
+                
+                Context.Set<CompetitorPromo>().Add(result);
                 Context.SaveChanges();
+                
+               
+
+                return Created(model);
             }
             catch (Exception e)
             {
                 return GetErorrRequest(e);
             }
-
-            return Created(model);
         }
 
         [ClaimsAuthorize]
@@ -163,6 +174,15 @@ namespace Module.Frontend.TPM.Controllers
                 }
 
                 patch.Patch(model);
+
+                // делаем UTC +3
+                model.StartDate = ChangeTimeZoneUtil.ResetTimeZone(model.StartDate);
+                model.EndDate = ChangeTimeZoneUtil.ResetTimeZone(model.EndDate);
+                model.DispatchesStart = ChangeTimeZoneUtil.ResetTimeZone(model.DispatchesStart);
+                model.DispatchesEnd = ChangeTimeZoneUtil.ResetTimeZone(model.DispatchesEnd);
+
+                //Установка дат в Mars формате
+                SetPromoMarsDates(model);
 
                 Context.SaveChanges();
 
@@ -392,6 +412,45 @@ namespace Module.Frontend.TPM.Controllers
 
         }
 
+        //Простановка дат в формате Mars
+        public void SetPromoMarsDates(CompetitorPromo promo)
+        {
+            string stringFormatYP2WD = "{0}P{1:D2}W{2}D{3}";
+
+            if (promo.StartDate != null)
+            {
+                promo.MarsStartDate = (new MarsDate((DateTimeOffset)promo.StartDate)).ToString(stringFormatYP2WD);
+            }
+            if (promo.EndDate != null)
+            {
+                promo.MarsEndDate = (new MarsDate((DateTimeOffset)promo.EndDate)).ToString(stringFormatYP2WD);
+            }
+            if (promo.EndDate != null && promo.StartDate != null)
+            {
+                promo.PromoDuration = (promo.EndDate - promo.StartDate).Value.Days + 1;
+            }
+            else
+            {
+                promo.PromoDuration = null;
+            }
+
+            if (promo.DispatchesStart != null)
+            {
+                promo.MarsDispatchesStart = (new MarsDate((DateTimeOffset)promo.DispatchesStart)).ToString(stringFormatYP2WD);
+            }
+            if (promo.DispatchesEnd != null)
+            {
+                promo.MarsDispatchesEnd = (new MarsDate((DateTimeOffset)promo.DispatchesEnd)).ToString(stringFormatYP2WD);
+            }
+            if (promo.DispatchesStart != null && promo.DispatchesEnd != null)
+            {
+                promo.DispatchDuration = (promo.DispatchesEnd - promo.DispatchesStart).Value.Days + 1;
+            }
+            else
+            {
+                promo.DispatchDuration = null;
+            }
+        }
 
         private ExceptionResult GetErorrRequest(Exception e)
         {
@@ -407,5 +466,7 @@ namespace Module.Frontend.TPM.Controllers
                 return InternalServerError(e.InnerException);
             }
         }
+
+
     }
 }

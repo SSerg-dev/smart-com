@@ -39,6 +39,22 @@ namespace Module.Persist.TPM.Model.TPM
         [Required]
         public DateTimeOffset? EndDate { get; set; }
 
+        public DateTimeOffset? DispatchesStart { get; set; }
+        public DateTimeOffset? DispatchesEnd { get; set; }
+
+        public int? PromoDuration { get; set; }
+        public int? DispatchDuration { get; set; }
+
+        //MarsDates
+        [StringLength(15)]
+        public string MarsStartDate { get; set; }
+        [StringLength(15)]
+        public string MarsEndDate { get; set; }
+        [StringLength(15)]
+        public string MarsDispatchesStart { get; set; }
+        [StringLength(15)]
+        public string MarsDispatchesEnd { get; set; }
+
         public double? Discount { get; set; }
 
         public double? Price { get; set; }
