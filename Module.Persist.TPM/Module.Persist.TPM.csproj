@@ -2613,6 +2613,10 @@
     <Compile Include="Migrations\202112130732380_RewriteProcedures.Designer.cs">
       <DependentUpon>202112130732380_RewriteProcedures.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202111260857011_RemoveAnaplanSetting.cs" />
+    <Compile Include="Migrations\202111260857011_RemoveAnaplanSetting.Designer.cs">
+      <DependentUpon>202111260857011_RemoveAnaplanSetting.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\2021\202106300726289_202106301025001_Drop_Client.cs" />
     <Compile Include="Migrations\2021\202106300726289_202106301025001_Drop_Client.Designer.cs">
       <DependentUpon>202106300726289_202106301025001_Drop_Client.cs</DependentUpon>
@@ -5080,6 +5084,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202112130732380_RewriteProcedures.resx">
       <DependentUpon>202112130732380_RewriteProcedures.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202111260857011_RemoveAnaplanSetting.resx">
+      <DependentUpon>202111260857011_RemoveAnaplanSetting.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\2021\202106300726289_202106301025001_Drop_Client.resx">
       <DependentUpon>202106300726289_202106301025001_Drop_Client.cs</DependentUpon>
