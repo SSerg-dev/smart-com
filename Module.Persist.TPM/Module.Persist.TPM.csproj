@@ -2656,6 +2656,10 @@
     <Compile Include="Migrations\202201140902485_Add_MarsDate_To_CompetitorPromo.Designer.cs">
       <DependentUpon>202201140902485_Add_MarsDate_To_CompetitorPromo.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202201141245064_Update_PromoView.cs" />
+    <Compile Include="Migrations\202201141245064_Update_PromoView.Designer.cs">
+      <DependentUpon>202201141245064_Update_PromoView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -5103,6 +5107,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202201140902485_Add_MarsDate_To_CompetitorPromo.resx">
       <DependentUpon>202201140902485_Add_MarsDate_To_CompetitorPromo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202201141245064_Update_PromoView.resx">
+      <DependentUpon>202201141245064_Update_PromoView.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
