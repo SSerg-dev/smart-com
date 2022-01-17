@@ -2677,6 +2677,10 @@
     <Compile Include="Migrations\202108031235046_Update_RPA_Columns.Designer.cs">
       <DependentUpon>202108031235046_Update_RPA_Columns.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202201170711073_empty_merge.cs" />
+    <Compile Include="Migrations\202201170711073_empty_merge.Designer.cs">
+      <DependentUpon>202201170711073_empty_merge.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -5132,6 +5136,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202108031235046_Update_RPA_Columns.resx">
       <DependentUpon>202108031235046_Update_RPA_Columns.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202201170711073_empty_merge.resx">
+      <DependentUpon>202201170711073_empty_merge.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
