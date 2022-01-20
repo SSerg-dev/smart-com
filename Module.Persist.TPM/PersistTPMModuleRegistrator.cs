@@ -54,6 +54,7 @@ namespace Module.Persist.TPM {
             modelBuilder.Entity<BaseClientTreeView>().ToTable("BaseClientTreeView");
             modelBuilder.Entity<RetailType>();
             modelBuilder.Entity<NoneNego>();
+            modelBuilder.Entity<ExportQuery>();
 
 
             modelBuilder.Entity<Plu>();
@@ -600,6 +601,8 @@ namespace Module.Persist.TPM {
 
 
             builder.EntitySet<PromoProduct2Plu>("PromoProduct2Plus");
+
+            builder.EntitySet<ExportQuery>("ExportQueries");
 
             builder.EntitySet<PromoProduct>("PromoProducts");
             builder.EntitySet<PromoProduct>("DeletedPromoProducts");

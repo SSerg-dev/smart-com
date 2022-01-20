@@ -2660,6 +2660,10 @@
     <Compile Include="Migrations\202201141245064_Update_PromoView.Designer.cs">
       <DependentUpon>202201141245064_Update_PromoView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202201191046248_AddExportQueryTable.cs" />
+    <Compile Include="Migrations\202201191046248_AddExportQueryTable.Designer.cs">
+      <DependentUpon>202201191046248_AddExportQueryTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -2789,6 +2793,7 @@
     <Compile Include="Model\TPM\Competitor.cs" />
     <Compile Include="Model\TPM\CompetitorPromo.cs" />
     <Compile Include="Model\TPM\Client.cs" />
+    <Compile Include="Model\TPM\ExportQuery.cs" />
     <Compile Include="Model\TPM\Plu.cs" />
     <Compile Include="Model\TPM\PLUDictionary.cs" />
     <Compile Include="Model\TPM\PromoSupportDMP.cs" />
@@ -5110,6 +5115,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202201141245064_Update_PromoView.resx">
       <DependentUpon>202201141245064_Update_PromoView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202201191046248_AddExportQueryTable.resx">
+      <DependentUpon>202201191046248_AddExportQueryTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

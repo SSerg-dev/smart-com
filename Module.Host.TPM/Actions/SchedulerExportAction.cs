@@ -15,6 +15,47 @@ using System.Web.Http.OData.Query;
 using System.Linq.Expressions;
 using LinqToQuerystring;
 using System.Text.RegularExpressions;
+using System.Data.Entity.Core.Objects;
+using AutoMapper;
+using Core.Security;
+using Frontend.Core.Controllers.Base;
+using Frontend.Core.Extensions;
+using Module.Persist.TPM.Model.TPM;
+using Persist.Model;
+using Microsoft.Azure.Management.DataFactory;
+using Microsoft.Azure.Management.DataFactory.Models;
+using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
+using System.Web;
+using System.Web.Http;
+using System.Web.Http.OData;
+using System.Web.Http.OData.Query;
+using System.Web.Http.Results;
+using Thinktecture.IdentityModel.Authorization.WebApi;
+using Core.Settings;
+using Microsoft.IdentityModel.Clients.ActiveDirectory;
+using Microsoft.Rest;
+using Newtonsoft.Json;
+using Module.Persist.TPM.Utils;
+using Frontend.Core.Extensions.Export;
+using Module.Frontend.TPM.Model;
+using Persist;
+using Looper.Core;
+using Looper.Parameters;
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Spreadsheet;
+using Utility.Azure;
+using Column = Frontend.Core.Extensions.Export.Column;
+using Module.Persist.TPM.CalculatePromoParametersModule;
+using Utility;
+using Module.Persist.TPM.Model.DTO;
 
 namespace Module.Host.TPM.Actions.Notifications {
     /// <summary>
@@ -47,12 +88,17 @@ namespace Module.Host.TPM.Actions.Notifications {
                 using (DatabaseContext context = new DatabaseContext()) {
 
                     IQueryable<PromoView> query = (GetConstraintedQuery(context));
+
+                    
                     IQueryable<PromoView> promoes = query.Cast<PromoView>();
+                    var objQuery = (ObjectQuery<PromoView>)promoes;
                     //из библиотеки LinqToQuerystring нашей версии убрали datetimeoffset заменяем
                     var row = RawFilters.Replace("datetimeoffset", "datetime").Replace(".000Z", "").Replace(".00Z", "");
                     //из библиотеки LinqToQuerystring нашей версии нет данных в вииде 12d что есть в нашей версии odata заменяем
                     row = Regex.Replace(row, @"(\d+)[d]", @"$1");
                     promoes = promoes.LinqToQuerystring(row);
+
+                    objQuery = (ObjectQuery<PromoView>)promoes;
 
                     DateTime startDate = DateTime.Now;
                     DateTime endDate = DateTime.Now;
@@ -67,17 +113,34 @@ namespace Module.Host.TPM.Actions.Notifications {
                         Errors.Add("No promoes to export");
                     } else {
                         string userName = context.Users.FirstOrDefault(u => u.Id == UserId).Name;
-                        SchedulerExporter exporter = yearExport ? new SchedulerExporter(startDate, endDate) : new SchedulerExporter();
-                        string filePath = exporter.GetExportFileName(userName);
-                        exporter.Export(promoes.ToList(), Clients, filePath, context);
-                        string fileName = System.IO.Path.GetFileName(filePath);
 
+                        ExportQuery exportQuery = new ExportQuery();
+
+                        objQuery = (ObjectQuery<PromoView>)promoes;
+                        var sql = objQuery.ToTraceString();
+
+                        exportQuery.Parameters = "";
+                        exportQuery.Text = promoes.ToString();
+                        exportQuery.Type = "";
+                        exportQuery.Disabled = false;
+
+                        context.Set<ExportQuery>().Add(exportQuery);
+
+                        context.SaveChanges();
+                        //SchedulerExporter exporter = yearExport ? new SchedulerExporter(startDate, endDate) : new SchedulerExporter();
+                        //string filePath = exporter.GetExportFileName(userName);
+                        //exporter.Export(promoes.ToList(), Clients, filePath, context);
+                        //string fileName = System.IO.Path.GetFileName(filePath);
+
+                        /*
                         FileModel file = new FileModel() {
                             LogicType = "Export",
                             Name = System.IO.Path.GetFileName(fileName),
                             DisplayName = System.IO.Path.GetFileName(fileName)
                         };
                         Results.Add("ExportFile", file);
+                        */
+
 
                     }
                 }
@@ -90,6 +153,36 @@ namespace Module.Host.TPM.Actions.Notifications {
                 performanceLogger.Stop();
             }
         }
+
+        /*
+        private IHttpActionResult CreatePipeForEvents(string tenantID, string applicationId, string authenticationKey, string subscriptionId, string resourceGroup, string dataFactoryName, string pipelineName, Dictionary<string, object> parameters)
+        {
+            try
+            {
+                var context = new AuthenticationContext("https://login.microsoftonline.com/" + tenantID);
+                ClientCredential cc = new ClientCredential(applicationId, authenticationKey);
+                AuthenticationResult authenticationResult = context.AcquireTokenAsync(
+                    "https://management.azure.com/", cc).Result;
+                ServiceClientCredentials cred = new TokenCredentials(authenticationResult.AccessToken);
+                var client = new DataFactoryManagementClient(cred)
+                {
+                    SubscriptionId = subscriptionId
+                };
+
+                CreateRunResponse runResponse = client.Pipelines.CreateRunWithHttpMessagesAsync(
+                    resourceGroup, dataFactoryName, pipelineName, parameters: parameters
+                ).Result.Body;
+
+            }
+            catch (Exception ex)
+            {
+
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "Pipe start failure " + ex.Message }));
+
+            }
+            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, message = "Pipe started successfull" }));
+        }
+        */
 
         /// <summary>
         /// Получение списка промо с учётом ограничений
