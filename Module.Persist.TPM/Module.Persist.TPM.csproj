@@ -2660,6 +2660,14 @@
     <Compile Include="Migrations\202201141245064_Update_PromoView.Designer.cs">
       <DependentUpon>202201141245064_Update_PromoView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202201240902589_Update_PromoView1.cs" />
+    <Compile Include="Migrations\202201240902589_Update_PromoView1.Designer.cs">
+      <DependentUpon>202201240902589_Update_PromoView1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202201240911585_Create_GetPromoSubrangesById_AP.cs" />
+    <Compile Include="Migrations\202201240911585_Create_GetPromoSubrangesById_AP.Designer.cs">
+      <DependentUpon>202201240911585_Create_GetPromoSubrangesById_AP.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -5110,6 +5118,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202201141245064_Update_PromoView.resx">
       <DependentUpon>202201141245064_Update_PromoView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202201240902589_Update_PromoView1.resx">
+      <DependentUpon>202201240902589_Update_PromoView1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202201240911585_Create_GetPromoSubrangesById_AP.resx">
+      <DependentUpon>202201240911585_Create_GetPromoSubrangesById_AP.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

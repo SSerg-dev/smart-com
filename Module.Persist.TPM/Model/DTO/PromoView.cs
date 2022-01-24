@@ -43,5 +43,7 @@ namespace Module.Persist.TPM.Model.DTO {
 
         public double Price { get; set; }
         public double Discount { get; set; }
+
+        public string Subranges { get; set; }
     }
 }
