@@ -74,6 +74,11 @@
 	<add key="RPA_UPLOAD_PIPELINE_ACTUALS_NAME" value="JUPITER_RPA_UPLOAD_ACTUALS_STAGE_PIPE" />
 	<add key="RPA_UPLOAD_PIPELINE_EVENT_NAME" value="JUPITER_RPA_UPLOAD_EVENTS_STAGE_PIPE" />
 	<add key="RPA_UPLOAD_PIPELINE_SUPPORT_NAME" value="JUPITER_RPA_UPLOAD_SUPPORT_STAGE_PIPE" />
+	<add key="ServerName" value="marsanalyticsdevsqlsrv" />
+	<add key="DatabaseName" value="russiapetcarejupiterdevsqldb" />
+	<add key="DBUserId" value="deploy_user" />
+	<add key="PasswordKV" value="russiapetcarejupiterdevsqldbpassword" />
+	<add key="AKVScope" value="russiapetcarejupdev2akvscope" />
 		  
   </appSettings>
   <system.identityModel>

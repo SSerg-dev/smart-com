@@ -173,6 +173,11 @@ namespace Module.Frontend.TPM.Controllers
 				string resourceGroup = AppSettingsManager.GetSetting("RPA_UPLOAD_RESOURCE_GROUP", "");
 				string dataFactoryName = AppSettingsManager.GetSetting("RPA_UPLOAD_DATA_FACTORY_NAME", "");
 				string pipelineName = "";
+				string ServerName = AppSettingsManager.GetSetting("ServerName", ""); ;
+				string DatabaseName = AppSettingsManager.GetSetting("DatabaseName", ""); ;
+				string DBUserId = AppSettingsManager.GetSetting("DBUserId", ""); ;
+				string PasswordKV = AppSettingsManager.GetSetting("PasswordKV", ""); ;
+				string AKVScope = AppSettingsManager.GetSetting("AKVScope", ""); ;
 				Dictionary<string, object> parameters = null;
 				switch (rpaType)
 				{
@@ -187,7 +192,12 @@ namespace Module.Frontend.TPM.Controllers
 											{ "ProductReference", "EAN_PC" },
 											{ "LogFileURL", LogURL},
 											{ "Constraints", constraintIds},
-											{ "Schema", SchemaBD}
+											{ "Schema", SchemaBD},
+											{ "ServerName", ServerName},
+											{ "DatabaseName", DatabaseName},
+											{ "DBUserId", DBUserId},
+											{ "PasswordKV", PasswordKV}
+											
 										};
 						await CreateCalculationTaskAsync(fileName, result.Id);
 						CreatePipeForActuals(tenantID, applicationId, authenticationKey, subscriptionId, resourceGroup, dataFactoryName, pipelineName, parameters);
@@ -203,7 +213,11 @@ namespace Module.Frontend.TPM.Controllers
 											{ "ProductReference", "PLU" },
 											{ "LogFileURL", LogURL},
 											{ "Constraints", constraintIds},
-											{ "Schema", SchemaBD}
+											{ "Schema", SchemaBD},
+											{ "ServerName", ServerName},
+											{ "DatabaseName", DatabaseName},
+											{ "DBUserId", DBUserId},
+											{ "PasswordKV", PasswordKV}
 										};
 						await CreateCalculationTaskAsync(fileName, result.Id);
 						CreatePipeForActuals(tenantID, applicationId, authenticationKey, subscriptionId, resourceGroup, dataFactoryName, pipelineName, parameters);
@@ -219,6 +233,11 @@ namespace Module.Frontend.TPM.Controllers
 										{ "LogFileURL", LogURL},
 										{ "Scheme", SchemaBD},
 										{ "Constraints", constraintIds},
+										{ "ServerName", ServerName},
+										{ "DatabaseName", DatabaseName},
+										{ "DBUserId", DBUserId},
+										{ "PasswordKV", PasswordKV},
+										{ "AKVScope", AKVScope}
 									};
 						CreatePipeForEvents(tenantID, applicationId, authenticationKey, subscriptionId, resourceGroup, dataFactoryName, pipelineName, parameters);
 						break;
@@ -233,7 +252,12 @@ namespace Module.Frontend.TPM.Controllers
 										{ "LogFileURL", LogURL},
 										{ "SupportType", "NonPromoSupport"},
 										{ "Constraints", constraintTreeIds},
-										{ "Schema", SchemaBD}
+										{ "Schema", SchemaBD},
+										{ "ServerName", ServerName},
+										{ "DatabaseName", DatabaseName},
+										{ "DBUserId", DBUserId},
+										{ "PasswordKV", PasswordKV},
+										{ "AKVScope", AKVScope}
 									};
 						CreatePipeForEvents(tenantID, applicationId, authenticationKey, subscriptionId, resourceGroup, dataFactoryName, pipelineName, parameters);
 						break;
@@ -248,7 +272,12 @@ namespace Module.Frontend.TPM.Controllers
 										{ "LogFileURL", LogURL},
 										{ "SupportType", "PromoSupport"},
 										{ "Constraints", constraintTreeIds},
-										{ "Schema", SchemaBD}
+										{ "Schema", SchemaBD},
+										{ "ServerName", ServerName},
+										{ "DatabaseName", DatabaseName},
+										{ "DBUserId", DBUserId},
+										{ "PasswordKV", PasswordKV},
+										{ "AKVScope", AKVScope}
 									};
 						await CreateCalculationPromoSupportTaskAsync(fileName, result.Id);
 						CreatePipeForEvents(tenantID, applicationId, authenticationKey, subscriptionId, resourceGroup, dataFactoryName, pipelineName, parameters);
