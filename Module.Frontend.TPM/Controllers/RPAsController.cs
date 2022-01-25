@@ -173,11 +173,12 @@ namespace Module.Frontend.TPM.Controllers
 				string resourceGroup = AppSettingsManager.GetSetting("RPA_UPLOAD_RESOURCE_GROUP", "");
 				string dataFactoryName = AppSettingsManager.GetSetting("RPA_UPLOAD_DATA_FACTORY_NAME", "");
 				string pipelineName = "";
-				string ServerName = AppSettingsManager.GetSetting("ServerName", ""); ;
-				string DatabaseName = AppSettingsManager.GetSetting("DatabaseName", ""); ;
-				string DBUserId = AppSettingsManager.GetSetting("DBUserId", ""); ;
-				string PasswordKV = AppSettingsManager.GetSetting("PasswordKV", ""); ;
-				string AKVScope = AppSettingsManager.GetSetting("AKVScope", ""); ;
+				string ServerName = AppSettingsManager.GetSetting("ServerName", ""); 
+				string DatabaseName = AppSettingsManager.GetSetting("DatabaseName", ""); 
+				string DBUserId = AppSettingsManager.GetSetting("DBUserId", ""); 
+				string PasswordKV = AppSettingsManager.GetSetting("PasswordKV", ""); 
+				string AKVScope = AppSettingsManager.GetSetting("AKVScope", "");
+				string BlobStorageName = AppSettingsManager.GetSetting("BlobStorageName", "");
 				Dictionary<string, object> parameters = null;
 				switch (rpaType)
 				{
@@ -196,6 +197,9 @@ namespace Module.Frontend.TPM.Controllers
 											{ "ServerName", ServerName},
 											{ "DatabaseName", DatabaseName},
 											{ "DBUserId", DBUserId},
+											{ "TenantId", tenantID},
+											{ "ClientId", applicationId},
+											{ "BlobStorageName", BlobStorageName},
 											{ "PasswordKV", PasswordKV}
 											
 										};
@@ -217,6 +221,9 @@ namespace Module.Frontend.TPM.Controllers
 											{ "ServerName", ServerName},
 											{ "DatabaseName", DatabaseName},
 											{ "DBUserId", DBUserId},
+											{ "TenantId", tenantID},
+											{ "ClientId", applicationId},
+											{ "BlobStorageName", BlobStorageName},
 											{ "PasswordKV", PasswordKV}
 										};
 						await CreateCalculationTaskAsync(fileName, result.Id);
@@ -236,6 +243,9 @@ namespace Module.Frontend.TPM.Controllers
 										{ "ServerName", ServerName},
 										{ "DatabaseName", DatabaseName},
 										{ "DBUserId", DBUserId},
+										{ "TenantId", tenantID},
+										{ "ClientId", applicationId},
+										{ "BlobStorageName", BlobStorageName},
 										{ "PasswordKV", PasswordKV},
 										{ "AKVScope", AKVScope}
 									};
@@ -256,6 +266,9 @@ namespace Module.Frontend.TPM.Controllers
 										{ "ServerName", ServerName},
 										{ "DatabaseName", DatabaseName},
 										{ "DBUserId", DBUserId},
+										{ "TenantId", tenantID},
+										{ "ClientId", applicationId},
+										{ "BlobStorageName", BlobStorageName},
 										{ "PasswordKV", PasswordKV},
 										{ "AKVScope", AKVScope}
 									};
@@ -276,6 +289,9 @@ namespace Module.Frontend.TPM.Controllers
 										{ "ServerName", ServerName},
 										{ "DatabaseName", DatabaseName},
 										{ "DBUserId", DBUserId},
+										{ "TenantId", tenantID},
+										{ "ClientId", applicationId},
+										{ "BlobStorageName", BlobStorageName},
 										{ "PasswordKV", PasswordKV},
 										{ "AKVScope", AKVScope}
 									};

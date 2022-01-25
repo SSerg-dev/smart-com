@@ -79,6 +79,7 @@
 	<add key="DBUserId" value="deploy_user" />
 	<add key="PasswordKV" value="russiapetcarejupiterdevsqldbpassword" />
 	<add key="AKVScope" value="russiapetcarejupdev2akvscope" />
+  <add key="BlobStorageName" value="marsanalyticsshareddevsa" />
 		  
   </appSettings>
   <system.identityModel>
