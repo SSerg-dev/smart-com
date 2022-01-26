@@ -51,8 +51,8 @@ namespace Module.Persist.TPM.Migrations
                 pr.IsGrowthAcceleration,
                 'mars' AS CompetitorName,
                 'mars' AS CompetitorBrandTechName,
-                pr.ActualInStoreShelfPrice AS Price, 
-                pr.ActualInStoreDiscount AS Discount,
+                ISNULL(pr.ActualInStoreShelfPrice, 0) AS Price, 
+                ISNULL(pr.ActualInStoreDiscount, 0) AS Discount,
                 [DefaultSchemaSetting].[GetPromoSubrangesById](pr.Id) as Subranges
 
             FROM

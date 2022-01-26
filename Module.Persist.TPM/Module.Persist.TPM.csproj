@@ -2675,6 +2675,10 @@
     <Compile Include="Migrations\202201191046248_AddExportQueryTable.Designer.cs">
       <DependentUpon>202201191046248_AddExportQueryTable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202201261747552_Update_PromoView_Add_ShelfPrice_Discount.cs" />
+    <Compile Include="Migrations\202201261747552_Update_PromoView_Add_ShelfPrice_Discount.Designer.cs">
+      <DependentUpon>202201261747552_Update_PromoView_Add_ShelfPrice_Discount.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -5136,6 +5140,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202201191046248_AddExportQueryTable.resx">
       <DependentUpon>202201191046248_AddExportQueryTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202201261747552_Update_PromoView_Add_ShelfPrice_Discount.resx">
+      <DependentUpon>202201261747552_Update_PromoView_Add_ShelfPrice_Discount.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
