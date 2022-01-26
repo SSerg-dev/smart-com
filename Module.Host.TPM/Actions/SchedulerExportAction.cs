@@ -1,63 +1,26 @@
-﻿using System;
-using Persist;
-using Module.Persist.TPM.Model.TPM;
-using System.Linq;
-using System.Collections.Generic;
-using Persist.Model;
-using Utility;
-using Module.Persist.TPM.Model.DTO;
-using Persist.ScriptGenerator.Filter;
-using Module.Persist.TPM.Utils;
-using Looper.Parameters;
+﻿using Core.Settings;
 using Interfaces.Implementation.Action;
-using NLog;
-using System.Web.Http.OData.Query;
-using System.Linq.Expressions;
 using LinqToQuerystring;
-using System.Text.RegularExpressions;
-using System.Data.Entity.Core.Objects;
-using AutoMapper;
-using Core.Security;
-using Frontend.Core.Controllers.Base;
-using Frontend.Core.Extensions;
-using Module.Persist.TPM.Model.TPM;
-using Persist.Model;
 using Microsoft.Azure.Management.DataFactory;
 using Microsoft.Azure.Management.DataFactory.Models;
-using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
-using System.Web;
-using System.Web.Http;
-using System.Web.Http.OData;
-using System.Web.Http.OData.Query;
-using System.Web.Http.Results;
-using Thinktecture.IdentityModel.Authorization.WebApi;
-using Core.Settings;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using Microsoft.Rest;
-using Newtonsoft.Json;
-using Module.Persist.TPM.Utils;
-using Frontend.Core.Extensions.Export;
-using Module.Frontend.TPM.Model;
-using Persist;
-using Looper.Core;
-using Looper.Parameters;
-using DocumentFormat.OpenXml;
-using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml.Spreadsheet;
-using Utility.Azure;
-using Column = Frontend.Core.Extensions.Export.Column;
-using Module.Persist.TPM.CalculatePromoParametersModule;
-using Utility;
 using Module.Persist.TPM.Model.DTO;
+using Module.Persist.TPM.Model.TPM;
+using Module.Persist.TPM.Utils;
+using NLog;
+using Persist;
+using Persist.Model;
+using Persist.ScriptGenerator.Filter;
+using System;
+using System.Collections.Generic;
+using System.Data.Entity.Core.Objects;
+using System.Linq;
+using System.Text.RegularExpressions;
+using Utility;
 
-namespace Module.Host.TPM.Actions.Notifications {
+namespace Module.Host.TPM.Actions.Notifications
+{
     /// <summary>
     /// Класс для экспорта календаря в EXCEL
     /// </summary>
@@ -91,58 +54,80 @@ namespace Module.Host.TPM.Actions.Notifications {
 
                     
                     IQueryable<PromoView> promoes = query.Cast<PromoView>();
-                    var objQuery = (ObjectQuery<PromoView>)promoes;
                     //из библиотеки LinqToQuerystring нашей версии убрали datetimeoffset заменяем
-                    var row = RawFilters.Replace("datetimeoffset", "datetime").Replace(".000Z", "").Replace(".00Z", "");
+                    var row = RawFilters.Replace("$orderby=Id", "").Replace("datetimeoffset", "datetime").Replace(".000Z", "").Replace(".00Z", "");
                     //из библиотеки LinqToQuerystring нашей версии нет данных в вииде 12d что есть в нашей версии odata заменяем
                     row = Regex.Replace(row, @"(\d+)[d]", @"$1");
                     promoes = promoes.LinqToQuerystring(row);
-
-                    objQuery = (ObjectQuery<PromoView>)promoes;
 
                     DateTime startDate = DateTime.Now;
                     DateTime endDate = DateTime.Now;
                     bool yearExport = Year != 0;
 
+                    var sql = promoes.ToString();
+
                     if (yearExport) {
                         startDate = new DateTime(Year, 1, 1);
                         endDate = new DateTime(Year, 12, 31);
                         promoes = promoes.Where(p => (p.EndDate > startDate && p.EndDate < endDate) || (p.StartDate > startDate && p.StartDate < endDate));
+
+                        sql = promoes.ToString().Replace("@p__linq__0", GetDateParam(startDate)).Replace("@p__linq__1", GetDateParam(endDate)).Replace("@p__linq__2", GetDateParam(startDate)).Replace("@p__linq__3", GetDateParam(endDate));
                     }
-                    if (promoes.Count() == 0) {
-                        Errors.Add("No promoes to export");
-                    } else {
-                        string userName = context.Users.FirstOrDefault(u => u.Id == UserId).Name;
 
-                        ExportQuery exportQuery = new ExportQuery();
+                    string userName = context.Users.FirstOrDefault(u => u.Id == UserId).Name;
 
-                        objQuery = (ObjectQuery<PromoView>)promoes;
-                        var sql = objQuery.ToTraceString();
+                    ExportQuery exportQuery = new ExportQuery();
 
-                        exportQuery.Parameters = "";
-                        exportQuery.Text = promoes.ToString();
-                        exportQuery.Type = "";
-                        exportQuery.Disabled = false;
+                    exportQuery.Parameters = "";
+                    exportQuery.Text = sql;
+                    exportQuery.Type = "";
+                    exportQuery.Disabled = false;
 
-                        context.Set<ExportQuery>().Add(exportQuery);
+                    context.Set<ExportQuery>().Add(exportQuery);
 
-                        context.SaveChanges();
-                        //SchedulerExporter exporter = yearExport ? new SchedulerExporter(startDate, endDate) : new SchedulerExporter();
-                        //string filePath = exporter.GetExportFileName(userName);
-                        //exporter.Export(promoes.ToList(), Clients, filePath, context);
-                        //string fileName = System.IO.Path.GetFileName(filePath);
+                    context.SaveChanges();
 
-                        /*
-                        FileModel file = new FileModel() {
-                            LogicType = "Export",
-                            Name = System.IO.Path.GetFileName(fileName),
-                            DisplayName = System.IO.Path.GetFileName(fileName)
-                        };
-                        Results.Add("ExportFile", file);
-                        */
+                    string schemaDB = AppSettingsManager.GetSetting("DefaultSchema", "");
 
+                    //Call Pipe
+                    string tenantID = AppSettingsManager.GetSetting("EXPORT_TENANT_ID", "");
+                    string applicationId = AppSettingsManager.GetSetting("EXPORT_APPLICATION_ID", "");
+                    string authenticationKey = AppSettingsManager.GetSetting("EXPORT_AUTHENTICATION_KEY", "");
+                    string subscriptionId = AppSettingsManager.GetSetting("EXPORT_SUBSCRIPTION_ID", "");
+                    string resourceGroup = AppSettingsManager.GetSetting("EXPORT_RESOURCE_GROUP", "");
+                    string dataFactoryName = AppSettingsManager.GetSetting("EXPORT_DATA_FACTORY_NAME", "");
+                    string pipelineName = AppSettingsManager.GetSetting("EXPORT_PIPELINE_NAME", "");
 
-                    }
+                    //tenantID = "2fc13e34-f03f-498b-982a-7cb446e25bc6";
+                    //applicationId = "6f231dc9-7560-4d58-8655-a9fec42cac17";
+                    //authenticationKey = "kKOHIvUL0nKvtQ4e2Fn53RvYLba5Ne7/pKphScyEg8c=";
+                    //subscriptionId = "066fc627-241c-4166-b66f-70f51b9b4b95";
+                    //resourceGroup = "RUSSIA-PETCARE-JUPITER-DEV-RG";
+                    //dataFactoryName = "russiapetcarejupiterdevadf";
+                    //pipelineName = "JUPITER_EXPORT_SCHEDULER_DISPATCHER_PIPE";
+
+                    Dictionary<string, object> parameters = null;
+
+                        
+                    parameters = new Dictionary<string, object>
+                                    {
+                                        { "QueryId", exportQuery.Id.ToString() },
+                                        { "Schema", schemaDB}
+                                    };
+
+                    var aucontext = new AuthenticationContext("https://login.microsoftonline.com/" + tenantID);
+                    ClientCredential cc = new ClientCredential(applicationId, authenticationKey);
+                    AuthenticationResult authenticationResult = aucontext.AcquireTokenAsync(
+                        "https://management.azure.com/", cc).Result;
+                    ServiceClientCredentials cred = new TokenCredentials(authenticationResult.AccessToken);
+                    var client = new DataFactoryManagementClient(cred)
+                    {
+                        SubscriptionId = subscriptionId
+                    };
+
+                    CreateRunResponse runResponse = client.Pipelines.CreateRunWithHttpMessagesAsync(
+                        resourceGroup, dataFactoryName, pipelineName, parameters: parameters
+                    ).Result.Body;
                 }
             } catch (Exception e) {
                 string msg = String.Format("Error exporting calendar: {0}", e.ToString());
@@ -154,35 +139,10 @@ namespace Module.Host.TPM.Actions.Notifications {
             }
         }
 
-        /*
-        private IHttpActionResult CreatePipeForEvents(string tenantID, string applicationId, string authenticationKey, string subscriptionId, string resourceGroup, string dataFactoryName, string pipelineName, Dictionary<string, object> parameters)
+        private String GetDateParam(DateTime dt)
         {
-            try
-            {
-                var context = new AuthenticationContext("https://login.microsoftonline.com/" + tenantID);
-                ClientCredential cc = new ClientCredential(applicationId, authenticationKey);
-                AuthenticationResult authenticationResult = context.AcquireTokenAsync(
-                    "https://management.azure.com/", cc).Result;
-                ServiceClientCredentials cred = new TokenCredentials(authenticationResult.AccessToken);
-                var client = new DataFactoryManagementClient(cred)
-                {
-                    SubscriptionId = subscriptionId
-                };
-
-                CreateRunResponse runResponse = client.Pipelines.CreateRunWithHttpMessagesAsync(
-                    resourceGroup, dataFactoryName, pipelineName, parameters: parameters
-                ).Result.Body;
-
-            }
-            catch (Exception ex)
-            {
-
-                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "Pipe start failure " + ex.Message }));
-
-            }
-            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, message = "Pipe started successfull" }));
+            return String.Concat("'", dt.ToString("yyyy-MM-dd"), "'");
         }
-        */
 
         /// <summary>
         /// Получение списка промо с учётом ограничений
