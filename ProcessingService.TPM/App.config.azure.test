@@ -34,6 +34,16 @@
     <add key="USER_SETTINGS_FILE_PATH" value="D:\home\site\wwwroot\ApplicationData\EmailNotificationSettings.xml" />
     <add key="PROMO_SUPPORT_DIRECTORY" value="D:\home\site\wwwroot\ApplicationData\PromoSupportFiles" />
 
+
+    <!--Export settings-->
+    <add key="EXPORT_TENANT_ID" value="2fc13e34-f03f-498b-982a-7cb446e25bc6" />
+    <add key="EXPORT_APPLICATION_ID" value="6f231dc9-7560-4d58-8655-a9fec42cac17" />
+    <add key="EXPORT_AUTHENTICATION_KEY" value="kKOHIvUL0nKvtQ4e2Fn53RvYLba5Ne7/pKphScyEg8c=" />
+    <add key="EXPORT_SUBSCRIPTION_ID" value="066fc627-241c-4166-b66f-70f51b9b4b95" />
+    <add key="EXPORT_RESOURCE_GROUP" value="RUSSIA-PETCARE-JUPITER-DEV-RG" />
+    <add key="EXPORT_REGION" value="East US 2" />
+    <add key="EXPORT_DATA_FACTORY_NAME" value="russiapetcarejupiterdevadf" />
+    <add key="EXPORT_PIPELINE_NAME" value="JUPITER_EXPORT_SCHEDULER_DISPATCHER_PIPE" />\
     <!--Scenario-->
     <add key="SCENARIO_CLIENT_UPLOADING_TIMEOUT" value="3600000" />
     <add key="SCENARIO_CLIENT_UPLOADING_TIMEOUT_DELTA" value="900000" />
