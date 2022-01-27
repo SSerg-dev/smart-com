@@ -2679,6 +2679,10 @@
     <Compile Include="Migrations\202201261747552_Update_PromoView_Add_ShelfPrice_Discount.Designer.cs">
       <DependentUpon>202201261747552_Update_PromoView_Add_ShelfPrice_Discount.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202201271528379_Create_SetTaskStatus_AP.cs" />
+    <Compile Include="Migrations\202201271528379_Create_SetTaskStatus_AP.Designer.cs">
+      <DependentUpon>202201271528379_Create_SetTaskStatus_AP.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -5143,6 +5147,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202201261747552_Update_PromoView_Add_ShelfPrice_Discount.resx">
       <DependentUpon>202201261747552_Update_PromoView_Add_ShelfPrice_Discount.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202201271528379_Create_SetTaskStatus_AP.resx">
+      <DependentUpon>202201271528379_Create_SetTaskStatus_AP.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
