@@ -56,14 +56,14 @@ namespace Module.Persist.TPM.Migrations
                 0 AS Price,
                 0 AS Discount
             FROM
-                Jupiter.Promo AS pr LEFT OUTER JOIN
-                Jupiter.PromoStatus AS ps ON pr.PromoStatusId = ps.Id LEFT OUTER JOIN
-                Jupiter.PromoTypes AS pt ON pr.PromoTypesId = pt.Id LEFT OUTER JOIN
-                Jupiter.Color AS cl ON pr.ColorId = cl.Id LEFT OUTER JOIN
-                Jupiter.Mechanic AS mmc ON pr.MarsMechanicId = mmc.Id LEFT OUTER JOIN
-                Jupiter.MechanicType AS mmt ON pr.MarsMechanicTypeId = mmt.Id LEFT OUTER JOIN
-                Jupiter.Event AS ev ON pr.EventId = ev.Id LEFT OUTER JOIN
-                Jupiter.BrandTech AS bt ON pr.BrandTechId = bt.Id
+                DefaultSchemaSetting.Promo AS pr LEFT OUTER JOIN
+                DefaultSchemaSetting.PromoStatus AS ps ON pr.PromoStatusId = ps.Id LEFT OUTER JOIN
+                DefaultSchemaSetting.PromoTypes AS pt ON pr.PromoTypesId = pt.Id LEFT OUTER JOIN
+                DefaultSchemaSetting.Color AS cl ON pr.ColorId = cl.Id LEFT OUTER JOIN
+                DefaultSchemaSetting.Mechanic AS mmc ON pr.MarsMechanicId = mmc.Id LEFT OUTER JOIN
+                DefaultSchemaSetting.MechanicType AS mmt ON pr.MarsMechanicTypeId = mmt.Id LEFT OUTER JOIN
+                DefaultSchemaSetting.Event AS ev ON pr.EventId = ev.Id LEFT OUTER JOIN
+                DefaultSchemaSetting.BrandTech AS bt ON pr.BrandTechId = bt.Id
             WHERE        (pr.Disabled = 0)
             UNION
             SELECT
@@ -91,10 +91,10 @@ namespace Module.Persist.TPM.Migrations
                 0, 
                 0, 
                 cp.Number, cbt.BrandTech, '', CAST(0 AS bit), 'Competitor', 'FD01', CAST(0 AS bit), c.[Name], cbt.BrandTech, cp.Price, cp.Discount
-FROM            Jupiter.CompetitorPromo AS cp LEFT OUTER JOIN
-                Jupiter.ClientTree AS ct ON cp.ClientTreeObjectId = ct.Id LEFT OUTER JOIN
-                Jupiter.CompetitorBrandTech AS cbt ON cp.CompetitorBrandTechId = cbt.Id LEFT OUTER JOIN
-                         Jupiter.Competitor AS c ON cp.CompetitorId = c.Id
+FROM            DefaultSchemaSetting.CompetitorPromo AS cp LEFT OUTER JOIN
+                DefaultSchemaSetting.ClientTree AS ct ON cp.ClientTreeObjectId = ct.Id LEFT OUTER JOIN
+                DefaultSchemaSetting.CompetitorBrandTech AS cbt ON cp.CompetitorBrandTechId = cbt.Id LEFT OUTER JOIN
+                         DefaultSchemaSetting.Competitor AS c ON cp.CompetitorId = c.Id
 WHERE        (cp.Disabled = 0)
         ";
     }
