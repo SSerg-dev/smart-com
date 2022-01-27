@@ -20,6 +20,8 @@ namespace Module.Persist.TPM.Migrations
 
 
         private string SqlString = @"
+        ALTER VIEW [DefaultSchemaSetting].[PromoView]
+        AS
             SELECT
                 pr.Id,
                 pr.Name,
