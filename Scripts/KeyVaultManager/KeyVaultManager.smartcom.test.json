@@ -3,7 +3,7 @@
 
 	"systemName": "Jupiter Smartcom Test",
 
-	"vaultName": "jupiter-app-dev-kv",
+	"vaultName": "jupiter-app-test-kv",
 	"resourceGroupName": "jupiter-app-test-rg",
 
 
