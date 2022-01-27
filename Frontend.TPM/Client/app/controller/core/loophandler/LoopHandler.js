@@ -522,7 +522,7 @@
 				.then(function (data) {
 					var resultData = data.httpResponse.data.value;
 					var result = JSON.parse(resultData);
-
+					
 					me.fillTaskResultForm(window.down('#resultform'), result['OutcomingParameters'], result, record);
 					me.fillTaskDetailsForm(window.down('#parametersform'), result['IncomingParameters'], result, record);
 					window.setLoading(false);
@@ -936,7 +936,11 @@
 				break;
 			case 'Looper.Parameters.FileModel':
 				model.xtype = 'singlelinedisplayfield';
-				model.value = this.getFileDownloadLink(param.Value);
+				if (record.data.Status == 'COMPLETE' || record.data.Name != 'Module.Host.TPM.Handlers.SchedulerExportHandler') {
+					model.value = this.getFileDownloadLink(param.Value);
+				}
+				else
+					model.value = '';
 				break;
 			case 'Looper.Parameters.ImportResultModel':
 				model.xtype = 'fieldcontainer';
