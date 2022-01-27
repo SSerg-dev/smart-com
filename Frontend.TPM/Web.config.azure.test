@@ -1,5 +1,4 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-
 <!--
   For more information on how to configure your ASP.NET application, please visit
   http://go.microsoft.com/fwlink/?LinkId=169433
@@ -9,7 +8,6 @@
     <section name="entityFramework" type="System.Data.Entity.Internal.ConfigFile.EntityFrameworkSection, EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" requirePermission="false" />
     <section name="system.identityModel" type="System.IdentityModel.Configuration.SystemIdentityModelSection, System.IdentityModel, Version=4.0.0.0, Culture=neutral, PublicKeyToken=B77A5C561934E089" />
     <section name="system.identityModel.services" type="System.IdentityModel.Services.Configuration.SystemIdentityModelServicesSection, System.IdentityModel.Services, Version=4.0.0.0, Culture=neutral, PublicKeyToken=B77A5C561934E089" />
-
     <!-- For more information on Entity Framework configuration, visit http://go.microsoft.com/fwlink/?LinkID=237468 -->
   </configSections>
   <appSettings>
@@ -18,14 +16,14 @@
     <add key="webpages:Enabled" value="false" />
     <add key="SESSION_TIME" value="15" />
     <add key="UseXssFilter" value="false" />
-    <add key="DefaultSchema" value="Scenario" />
+    <add key="DefaultSchema" value="jupiter_test" />
     <add key="AUTH_SOURCE" value="ActiveDirectory" />
     <add key="ADsource" value="None" />
     <add key="UsePerformanceLogger" value="true" />
     <!--Modules-->
     <add key="UseKeyVault" value="true" />
     <add key="KeyVaultUseAD" value="Pass" />
-    <add key="KeyVaultUrl" value="jupitertestakv" />
+    <add key="KeyVaultUrl" value="jupiter-app-test-kv" />
     <add key="NotificationService" value="LogicApp" />
     <add key="HistoryModule" value="MongoDB" />
     <add key="HANDLER_LOG_TYPE" value="Azure" />
@@ -59,25 +57,24 @@
     <add key="SCENARIO_REGION" value="East US 2" />
     <add key="SCENARIO_DATA_FACTORY_NAME" value="russiapetcarejupiterdevadf" />
     <add key="SCENARIO_PIPELINE_NAME" value="JUPITER_CLIENT_PROMO_COPY_PIPE" />
-	<!--RPA-->
-	<add key="RPA_UPLOAD_TENANT_ID" value="2fc13e34-f03f-498b-982a-7cb446e25bc6" />
-	<add key="RPA_UPLOAD_APPLICATION_ID" value="6f231dc9-7560-4d58-8655-a9fec42cac17" />
-	<add key="RPA_UPLOAD_AUTHENTICATION_KEY" value="kKOHIvUL0nKvtQ4e2Fn53RvYLba5Ne7/pKphScyEg8c=" />
-	<add key="RPA_UPLOAD_SUBSCRIPTION_ID" value="066fc627-241c-4166-b66f-70f51b9b4b95" />
-	<add key="RPA_UPLOAD_RESOURCE_GROUP" value="RUSSIA-PETCARE-JUPITER-DEV-RG" />
-	<add key="RPA_UPLOAD_REGION" value="East US 2" />
-	<add key="RPA_UPLOAD_DATA_FACTORY_NAME" value="russiapetcarejupiterdevadf" />
+    <!--RPA-->
+    <add key="RPA_UPLOAD_TENANT_ID" value="2fc13e34-f03f-498b-982a-7cb446e25bc6" />
+    <add key="RPA_UPLOAD_APPLICATION_ID" value="6f231dc9-7560-4d58-8655-a9fec42cac17" />
+    <add key="RPA_UPLOAD_AUTHENTICATION_KEY" value="kKOHIvUL0nKvtQ4e2Fn53RvYLba5Ne7/pKphScyEg8c=" />
+    <add key="RPA_UPLOAD_SUBSCRIPTION_ID" value="066fc627-241c-4166-b66f-70f51b9b4b95" />
+    <add key="RPA_UPLOAD_RESOURCE_GROUP" value="RUSSIA-PETCARE-JUPITER-DEV-RG" />
+    <add key="RPA_UPLOAD_REGION" value="East US 2" />
+    <add key="RPA_UPLOAD_DATA_FACTORY_NAME" value="russiapetcarejupiterdevadf" />
     <add key="RPA_DIRECTORY" value="D:\home\site\wwwroot\ApplicationData\RPAFiles" />
-	<add key="RPA_UPLOAD_DOWNLOAD_FILE_URL" value="https://jupitertestawa.azurewebsites.net/odata/RPAs/DownloadFile?fileName=" />
-	<add key="RPA_UPLOAD_PIPELINE_ACTUALS_NAME" value="JUPITER_RPA_UPLOAD_ACTUALS_PIPE" />
-	<add key="RPA_UPLOAD_PIPELINE_EVENT_NAME" value="JUPITER_RPA_UPLOAD_PIPE" />
-	
-	  <!--AzureAD authentication-->
-    <add key="ADidaClientId" value="6143a5e4-4eed-4597-a86b-107c13e4527e" />
-    <add key="ADidaClientSecret" value="i2hrp5-HjD0EZ25EP_~W8v2uOG9P-5OPr8" />
+    <add key="RPA_UPLOAD_PIPELINE_ACTUALS_NAME" value="JUPITER_RPA_UPLOAD_ACTUALS_PIPE" />
+    <add key="RPA_UPLOAD_PIPELINE_EVENT_NAME" value="JUPITER_RPA_UPLOAD_TEST_PIPE" />
+    <add key="RPA_UPLOAD_PIPELINE_SUPPORT_NAME" value="JUPITER_RPA_UPLOAD_SUPPORT_PIPE" />
+    <!--AzureAD authentication-->
+    <add key="ADidaClientId" value="6a48410d-6099-485d-a4ba-050d33c2be57" />
+    <add key="ADidaClientSecret" value="Ua~7Q~Llb-Tea7HrpBQXzw_KzQb6V4CYRCyDW" />
     <add key="KVnameOfDatabaseContext" value="russiapetcarejupitersqldbcs" />
     <!-- BlobStorage -->
-    <add key="BlobConnectionType" value="MSI" />
+    <add key="BlobConnectionType" value="SAS" />
     <!--Keys-->
     <add key="AllowNotificationsSending" value="false" />
     <add key="ida:ClientIdKey" value="ADidaClientId" />

@@ -40,17 +40,17 @@
     <!--Modules-->
     <add key="UseKeyVault" value="true" />
     <add key="KeyVaultUseAD" value="Pass" />
-    <add key="KeyVaultUrl" value="jupitertestakv" />
+    <add key="KeyVaultUrl" value="jupiter-app-test-kv" />
     <add key="NotificationService" value="LogicApp" />
     <add key="HistoryModule" value="MongoDB" />
     <add key="HANDLER_LOG_TYPE" value="Azure" />
     <!--AzureAD authentication-->
-    <add key="ADidaClientId" value="6143a5e4-4eed-4597-a86b-107c13e4527e" />
-    <add key="ADidaClientSecret" value="i2hrp5-HjD0EZ25EP_~W8v2uOG9P-5OPr8" />
+    <add key="ADidaClientId" value="6a48410d-6099-485d-a4ba-050d33c2be57" />
+    <add key="ADidaClientSecret" value="Ua~7Q~Llb-Tea7HrpBQXzw_KzQb6V4CYRCyDW" />
     <add key="KVnameOfDatabaseContext" value="russiapetcarejupitersqldbcs" />
     <!--Other settings-->
     <add key="RUNTIME_ENVIROMENT" value="Smartcom Azure Scenario" />
-    <add key="DefaultSchema" value="Scenario" />
+    <add key="DefaultSchema" value="jupiter_test" />
     <add key="InputBaselineHeader" value="false" />
     <add key="NIGHT_PROCESSING_WAIT_HANDLER_TIMEOUT" value="28800000" />
     <add key="UsePerformanceLogger" value="true" />
@@ -63,7 +63,7 @@
     <add key="ida:TenantIdKey" value="ADidaTenantId" />
     <add key="ida:PostLogoutRedirectUriKey" value="ADidaPostLogoutRedirectUri" />
     <!-- BlobStorage -->
-    <add key="BlobConnectionType" value="MSI" />
+    <add key="BlobConnectionType" value="SAS" />
 
   </appSettings>
   <entityFramework>
