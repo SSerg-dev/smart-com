@@ -1,110 +1,108 @@
 ﻿{
-    "_comment":  "",
-	
-    "systemName":  "Jupiter Smartcom Test",
-	
-    "vaultName":  "jupitertestakv",
-    "resourceGroupName":  "JUPITER-TEST-RG",
-	
-	
-	"secretKeys":  [
-	
+	"_comment": "",
+
+	"systemName": "Jupiter Smartcom Test",
+
+	"vaultName": "jupiter-app-dev-kv",
+	"resourceGroupName": "jupiter-app-test-rg",
+
+
+	"secretKeys": [
+
 		{
-			"name":  "ADidaAADInstance",
-			"value":  "https://login.microsoftonline.com/",
-			"contentType":  "",
-			"action":  "add",
-			
-			"comment":  "Добавление переменной или обновление значений переменной и типа переменной",
-			"enabled": true
-		}
-		,{
-			"name":  "ADidaClientId",
-			"value":  "6143a5e4-4eed-4597-a86b-107c13e4527e",
-			"contentType":  "",
-			"action":  "add",
-			"enabled": true
-		}
-		,{
-			"name":  "ADidaClientSecret",
-			"value":  "i2hrp5-HjD0EZ25EP_~W8v2uOG9P-5OPr8",
-			"contentType":  "",
-			"action":  "add",
-			"enabled": true
-		}
-		,{
-			"name":  "ADidaPostLogoutRedirectUri",
-			"value":  "https://jupitertestawa.azurewebsites.net/",
-			"contentType":  "",
-			"action":  "add",
-			"enabled": true
-		}
-		,{
-			"name":  "ADidaTenantId",
-			"value":  "d43cf2af-b6de-47fe-afe3-9bbaff83dcee",
-			"contentType":  "",
-			"action":  "add",
-			"enabled": true
-		}
-		,{
-			"name":  "BlobStorageContainer",
-			"value":  "jupitertestcontainer",
-			"contentType":  "",
-			"action":  "add",
-			"enabled": true
-		}
-		,{
-			"name":  "BlobStorageName",
-			"value":  "jupitertestasa",
-			"contentType":  "",
-			"action":  "add",
-			"enabled": true
-		}
-		,{
-			"name":  "BlobStorageSAS",
-			"value":  "sv=2020-08-04&ss=bfqt&srt=sco&sp=rwdlacuptfx&se=2025-07-22T17:53:27Z&st=2021-07-22T09:53:27Z&spr=https&sig=jkM%2F1YdI%2FU30AOSVvPu8M%2F9LKO1f%2FdL6jL5fYWOEjhc%3D",
-			"contentType":  "",
-			"action":  "add",
-			"enabled": true
-		}
-		,{
-			"name":  "LogicAppNotificationURL",
-			"value":  "https://jupitertestawa.azurewebsites.net/",
-			"contentType":  "",
-			"action":  "add",
-			"enabled": true
-		}
-		,{
-			"name":  "MongoDBName",
-			"value":  "Test",
-			"contentType":  "",
-			"action":  "add",
-			"enabled": true
-		}
-		,{
-			"name":  "MongoUrl",
-			"value":  "mongodb://jupiterdevacdb:A4KaSNYo1rdFTmWFRi6LhdC3DJSY2MYhdDdZtIO8ragsIa8vTwbaJWByhmYEhxSO602DeQ9Lp7FymcDGwrHpnA==@jupiterdevacdb.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@jupiterdevacdb@",
-			"contentType":  "",
-			"action":  "add",
-			"enabled": true
-		}
-		,{
-			"name":  "russiapetcarejupitersqldbcs",
-			"value":  "Server=tcp:smartcom-dev-sqlsrv.database.windows.net,1433;Initial Catalog=tpmdevsqldb;Persist Security Info=False;User ID=jupiter_user;Password=Kz3CL7XGXbCD;MultipleActiveResultSets=True;Encrypt=True;TrustServerCertificate=False;",
-			"contentType":  "",
-			"action":  "add",
-			"enabled": true
-		}
+			"name": "ADidaAADInstance",
+			"value": "https://login.microsoftonline.com/",
+			"contentType": "",
+			"action": "add",
 
+			"comment": "Добавление переменной или обновление значений переменной и типа переменной",
+			"enabled": true
+		},
+		{
+			"name": "ADidaClientId",
+			"value": "6a48410d-6099-485d-a4ba-050d33c2be57",
+			"contentType": "",
+			"action": "add",
+			"enabled": true
+		},
+		{
+			"name": "ADidaClientSecret",
+			"value": "Ua~7Q~Llb-Tea7HrpBQXzw_KzQb6V4CYRCyDW",
+			"contentType": "",
+			"action": "add",
+			"enabled": true
+		},
+		{
+			"name": "ADidaPostLogoutRedirectUri",
+			"value": "https://jupitertestawa.azurewebsites.net/",
+			"contentType": "",
+			"action": "add",
+			"enabled": true
+		},
+		{
+			"name": "ADidaTenantId",
+			"value": "d43cf2af-b6de-47fe-afe3-9bbaff83dcee",
+			"contentType": "",
+			"action": "add",
+			"enabled": true
+		},
+		{
+			"name": "BlobStorageContainer",
+			"value": "jupiterapptestct1",
+			"contentType": "",
+			"action": "add",
+			"enabled": true
+		},
+		{
+			"name": "BlobStorageName",
+			"value": "smartcomsashrdsa1",
+			"contentType": "",
+			"action": "add",
+			"enabled": true
+		},
+		{
+			"name": "BlobStorageSAS",
+			"value": "sp=racwdl&st=2021-11-25T13:24:36Z&se=2025-11-25T21:24:36Z&spr=https&sv=2020-08-04&sr=c&sig=hPRK2juL5m3GcGzXyQNsHHJOYkCfC3Cy4DWFhRbHQ9A%3D",
+			"contentType": "",
+			"action": "add",
+			"enabled": true
+		},
+		{
+			"name": "LogicAppNotificationURL",
+			"value": "https://jupiter-app-test-webapp.azurewebsites.net/",
+			"contentType": "",
+			"action": "add",
+			"enabled": true
+		},
+		{
+			"name": "MongoDBName",
+			"value": "jupiter-app-test-cdb",
+			"contentType": "",
+			"action": "add",
+			"enabled": true
+		},
+		{
+			"name": "MongoUrl",
+			"value": "mongodb://jupiter-app-test-cdba:ajxW1bDMoZTJEkluzTal5oBKkZqn3L9VaIBQ6zkyK9ggi71KkAJpawmF2Gpy8gEoqTHnt4rTHpwrdApeHDAnWA==@jupiter-app-test-cdba.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@jupiter-app-test-cdba@",
+			"contentType": "",
+			"action": "add",
+			"enabled": true
+		},
+		{
+			"name": "russiapetcarejupitersqldbcs",
+			"value": "Server=tcp:smartcom-sql-shrd-sqlsrv.database.windows.net,1433;Initial Catalog=smartcom-sql-shrd-sql;Persist Security Info=False;User ID=jupiter_test_user;Password=P@ssw0rd;MultipleActiveResultSets=True;Encrypt=True;TrustServerCertificate=False;",
+			"contentType": "",
+			"action": "add",
+			"enabled": true
+		},
+		{
+			"name": "TestKeyYu4",
+			"action": "delete",
 
-		,{
-			"name":  "TestKeyYu4",
-			"action":  "delete",
-			
-			"comment":  "Удаление переменной",
+			"comment": "Удаление переменной",
 			"enabled": false
 		}
-		
+
 	]
 
 
@@ -117,5 +115,5 @@
 
 
 
-	
+
 }
