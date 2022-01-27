@@ -19,30 +19,17 @@ namespace Module.Persist.TPM.Migrations
         }
 
         private string SqlString = @"
-           CREATE OR ALTER FUNCTION [DefaultSchemaSetting].[SetTaskStatusCompleted]
-           (
-	            @TaskId nvarchar(max)
-           )
-            RETURNS NVARCHAR(255) AS 
-                BEGIN
-	                DECLARE @query nvarchar(max)
-                	SELECT @query = N'UPDATE [DefaultSchemaSetting].[LoopHandler]
-                    SET [Status] = ''COMPLETE'' WHERE Scenario.[LoopHandler].[Id] ='+@TaskId+''
-	                EXEC sp_executesql @query
-                END
-
-          CREATE OR ALTER FUNCTION [DefaultSchemaSetting].[SetTaskStatusError]
-            (
-	            @TaskId nvarchar(max)
-            )
-            RETURNS NVARCHAR(255) AS 
-            BEGIN
-	            DECLARE @query nvarchar(max)
-                SELECT @query = N'UPDATE [DefaultSchemaSetting].[LoopHandler]
-                SET [Status] = ''ERROR'' WHERE Scenario.[LoopHandler].[Id] ='+@TaskId+''
-	            EXEC sp_executesql @query
+           CREATE OR ALTER PROCEDURE [DefaultSchemaSetting].[SetTaskStatus]
+            (@TaskId nvarchar(max), @Status nvarchar(max))
+             AS
+             BEGIN
+	            UPDATE
+		            DefaultSchemaSetting.LoopHandler
+	            SET
+		            [Status] = @Status
+	            WHERE 
+		            [Id] = @TaskId
             END
-
         ";
     }
 }
