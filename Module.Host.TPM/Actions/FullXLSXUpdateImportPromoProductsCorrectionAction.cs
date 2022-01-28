@@ -232,7 +232,7 @@ namespace Module.Host.TPM.Actions
                         else
                         {
                             var importPromoProductCorrection = item;
-                            var promoProduct = context.Set<PromoProduct>().FirstOrDefault(x => x.Promo.Number == importPromoProductCorrection.PromoNumber && x.Product.ZREP == importPromoProductCorrection.ProductZREP);
+                            var promoProduct = context.Set<PromoProduct>().FirstOrDefault(x => x.Promo.Number == importPromoProductCorrection.PromoNumber && x.Product.ZREP == importPromoProductCorrection.ProductZREP && !x.Disabled);
 
                             records.Add(new PromoProductsCorrection
                             {
