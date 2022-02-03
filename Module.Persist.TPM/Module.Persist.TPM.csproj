@@ -275,6 +275,7 @@
     <Compile Include="CalculatePromoParametersModule\PlanPromoParametersCalculation.cs" />
     <Compile Include="CalculatePromoParametersModule\PlanPromoUpliftCalculation.cs" />
     <Compile Include="CalculatePromoParametersModule\PromoUtils.cs" />
+    <Compile Include="CalculatePromoParametersModule\RPAUploadCalculationTaskManager.cs" />
     <Compile Include="ElasticSearch\NotCompositeHistoricalModelAttribute.cs" />
     <Compile Include="ElasticSearch\LocalElasticHistoryReader.cs" />
     <Compile Include="ElasticSearch\LocalElasticHistoryWriter.cs" />
@@ -2572,9 +2573,45 @@
     <Compile Include="Migrations\202108200756196_Empty_PLU.Designer.cs">
       <DependentUpon>202108200756196_Empty_PLU.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202110251839422_Add_CopyScenario_Tables.cs" />
-    <Compile Include="Migrations\202110251839422_Add_CopyScenario_Tables.Designer.cs">
-      <DependentUpon>202110251839422_Add_CopyScenario_Tables.cs</DependentUpon>
+    <Compile Include="Migrations\202109011225302_RPAAddRole.cs" />
+    <Compile Include="Migrations\202109011225302_RPAAddRole.Designer.cs">
+      <DependentUpon>202109011225302_RPAAddRole.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202109100726197_Alter_Insert_Triggers.cs" />
+    <Compile Include="Migrations\202109100726197_Alter_Insert_Triggers.Designer.cs">
+      <DependentUpon>202109100726197_Alter_Insert_Triggers.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202109102015027_AddCreateDateAndUserNameToRPA.cs" />
+    <Compile Include="Migrations\202109102015027_AddCreateDateAndUserNameToRPA.Designer.cs">
+      <DependentUpon>202109102015027_AddCreateDateAndUserNameToRPA.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202109111216369_UpdateEventAndRPA.cs" />
+    <Compile Include="Migrations\202109111216369_UpdateEventAndRPA.Designer.cs">
+      <DependentUpon>202109111216369_UpdateEventAndRPA.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202109281306592_RPASettingAddAP.cs" />
+    <Compile Include="Migrations\202109281306592_RPASettingAddAP.Designer.cs">
+      <DependentUpon>202109281306592_RPASettingAddAP.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202110260851236_RPA_AddProcedure.cs" />
+    <Compile Include="Migrations\202110260851236_RPA_AddProcedure.Designer.cs">
+      <DependentUpon>202110260851236_RPA_AddProcedure.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202111221942490_PromoSupportProcedure.cs" />
+    <Compile Include="Migrations\202111221942490_PromoSupportProcedure.Designer.cs">
+      <DependentUpon>202111221942490_PromoSupportProcedure.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202111230412469_EmptyMigration13.cs" />
+    <Compile Include="Migrations\202111230412469_EmptyMigration13.Designer.cs">
+      <DependentUpon>202111230412469_EmptyMigration13.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202111232205058_EmptyMigration14.cs" />
+    <Compile Include="Migrations\202111232205058_EmptyMigration14.Designer.cs">
+      <DependentUpon>202111232205058_EmptyMigration14.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202112130732380_RewriteProcedures.cs" />
+    <Compile Include="Migrations\202112130732380_RewriteProcedures.Designer.cs">
+      <DependentUpon>202112130732380_RewriteProcedures.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\202111260857011_RemoveAnaplanSetting.cs" />
     <Compile Include="Migrations\202111260857011_RemoveAnaplanSetting.Designer.cs">
@@ -2623,6 +2660,26 @@
     <Compile Include="Migrations\2021\202108010712478_PLUHistory.cs" />
     <Compile Include="Migrations\2021\202108010712478_PLUHistory.Designer.cs">
       <DependentUpon>202108010712478_PLUHistory.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202107281215237_RPASetting.cs" />
+    <Compile Include="Migrations\202107281215237_RPASetting.Designer.cs">
+      <DependentUpon>202107281215237_RPASetting.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202107301134095_RPA.cs" />
+    <Compile Include="Migrations\202107301134095_RPA.Designer.cs">
+      <DependentUpon>202107301134095_RPA.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202108021438374_RPASetting_Update_Column_Type.cs" />
+    <Compile Include="Migrations\202108021438374_RPASetting_Update_Column_Type.Designer.cs">
+      <DependentUpon>202108021438374_RPASetting_Update_Column_Type.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202108031235046_Update_RPA_Columns.cs" />
+    <Compile Include="Migrations\202108031235046_Update_RPA_Columns.Designer.cs">
+      <DependentUpon>202108031235046_Update_RPA_Columns.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202201170711073_empty_merge.cs" />
+    <Compile Include="Migrations\202201170711073_empty_merge.Designer.cs">
+      <DependentUpon>202201170711073_empty_merge.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
@@ -2819,6 +2876,8 @@
     <Compile Include="Model\TPM\Region.cs" />
     <Compile Include="Model\TPM\COGS.cs" />
     <Compile Include="Model\TPM\RollingVolume.cs" />
+    <Compile Include="Model\TPM\RPA.cs" />
+    <Compile Include="Model\TPM\RPASetting.cs" />
     <Compile Include="Model\TPM\ServiceInfo.cs" />
     <Compile Include="Model\TPM\TradeInvestment.cs" />
     <Compile Include="Model\TPM\RetailType.cs" />
@@ -5000,8 +5059,35 @@
     <EmbeddedResource Include="Migrations\202108200756196_Empty_PLU.resx">
       <DependentUpon>202108200756196_Empty_PLU.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202110251839422_Add_CopyScenario_Tables.resx">
-      <DependentUpon>202110251839422_Add_CopyScenario_Tables.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202109011225302_RPAAddRole.resx">
+      <DependentUpon>202109011225302_RPAAddRole.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202109100726197_Alter_Insert_Triggers.resx">
+      <DependentUpon>202109100726197_Alter_Insert_Triggers.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202109102015027_AddCreateDateAndUserNameToRPA.resx">
+      <DependentUpon>202109102015027_AddCreateDateAndUserNameToRPA.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202109111216369_UpdateEventAndRPA.resx">
+      <DependentUpon>202109111216369_UpdateEventAndRPA.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202109281306592_RPASettingAddAP.resx">
+      <DependentUpon>202109281306592_RPASettingAddAP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202110260851236_RPA_AddProcedure.resx">
+      <DependentUpon>202110260851236_RPA_AddProcedure.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202111221942490_PromoSupportProcedure.resx">
+      <DependentUpon>202111221942490_PromoSupportProcedure.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202111230412469_EmptyMigration13.resx">
+      <DependentUpon>202111230412469_EmptyMigration13.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202111232205058_EmptyMigration14.resx">
+      <DependentUpon>202111232205058_EmptyMigration14.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202112130732380_RewriteProcedures.resx">
+      <DependentUpon>202112130732380_RewriteProcedures.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202111260857011_RemoveAnaplanSetting.resx">
       <DependentUpon>202111260857011_RemoveAnaplanSetting.cs</DependentUpon>
@@ -5038,6 +5124,21 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\2021\202108120633106_Add_Patch_To_PLU.resx">
       <DependentUpon>202108120633106_Add_Patch_To_PLU.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202107281215237_RPASetting.resx">
+      <DependentUpon>202107281215237_RPASetting.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202107301134095_RPA.resx">
+      <DependentUpon>202107301134095_RPA.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202108021438374_RPASetting_Update_Column_Type.resx">
+      <DependentUpon>202108021438374_RPASetting_Update_Column_Type.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202108031235046_Update_RPA_Columns.resx">
+      <DependentUpon>202108031235046_Update_RPA_Columns.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202201170711073_empty_merge.resx">
+      <DependentUpon>202201170711073_empty_merge.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

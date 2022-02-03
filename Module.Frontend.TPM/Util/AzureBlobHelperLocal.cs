@@ -1,4 +1,5 @@
 ﻿using Core.KeyVault;
+using Core.Settings;
 using DocumentFormat.OpenXml.Packaging;
 using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.Azure.Storage.Auth;
@@ -14,54 +15,124 @@ using System.Threading.Tasks;
 
 namespace Module.Frontend.TPM.Util
 {
-    class AzureBlobHelperLocal
+    public static class AzureBlobHelperLocal
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
         private static string accountname = KeyStorageManager.GetKeyVault().GetSecret("BlobStorageName", "");
-        private static string accesskey = KeyStorageManager.GetKeyVault().GetSecret("BlobStorageKey", "");
 
-        private static string GetAccessTokenAsync2()
+        private static StorageCredentials GetCredentialsByMSI()
         {
+            logger.Trace("getting AzureServiceTokenProvider");
             var tokenProvider = new AzureServiceTokenProvider();
-            return tokenProvider.GetAccessTokenAsync("https://storage.azure.com/").Result;
+            logger.Trace("getting AccessToken");
+            var accessToken = tokenProvider.GetAccessTokenAsync("https://storage.azure.com/").Result;
+            logger.Trace($"AccessToken : {accessToken}");
+            logger.Trace("getting TokenCredential");
+            var tokenCredential = new TokenCredential(accessToken);
+            logger.Trace("getting StorageCredentials");
+            var storageCredentials = new StorageCredentials(tokenCredential);
+            return storageCredentials;
+        }
+
+        private static StorageCredentials GetCredentialsBySAS()
+        {
+            logger.Trace("getting BlobStorageSAS from secret/config");
+            string sasToken = KeyStorageManager.GetKeyVault().GetSecret("BlobStorageSAS", "");
+            logger.Trace($"sas token: {sasToken}");
+            logger.Trace("getting StorageCredentials using token");
+            var storageCredentials = new StorageCredentials(sasToken);
+            logger.Trace("Update token");
+            storageCredentials.UpdateSASToken(sasToken);
+            return storageCredentials;
+        }
+
+        private static StorageCredentials GetCredentialsByKey()
+        {
+            string accesskey = KeyStorageManager.GetKeyVault().GetSecret("BlobStorageKey", "");
+            StorageCredentials storageCredentials = new StorageCredentials(accountname, accesskey);
+            return storageCredentials;
         }
 
         public static CloudBlobContainer GetContainer()
         {
-            var accessToken = GetAccessTokenAsync2();
+            logger.Trace("Trying to GetContainer");
             string containerName = KeyStorageManager.GetKeyVault().GetSecret("BlobStorageContainer", "");
+            string connectionType = AppSettingsManager.GetSetting("BlobConnectionType", "Key");
+            logger.Trace($"Container name: {containerName}");
+            logger.Trace($"Connection type: {connectionType}");
+            StorageCredentials credentials;
+            switch (connectionType)
+            {
+                case "Key":
+                    credentials = GetCredentialsByKey();
+                    break;
+                case "SAS":
+                    credentials = GetCredentialsBySAS();
+                    break;
+                case "MSI":
+                    credentials = GetCredentialsByMSI();
+                    break;
+                default:
+                    credentials = GetCredentialsBySAS();
+                    break;
+            }
+            logger.Trace("getting container");
+            logger.Trace($"account name: {accountname}");
+            CloudBlobContainer container = new CloudBlobContainer(new Uri($"https://{accountname}.blob.core.windows.net/{containerName}"), credentials);
 
-            var tokenCredential = new TokenCredential(accessToken);
-            var storageCredentials = new StorageCredentials(tokenCredential);
-            CloudBlobContainer container = new CloudBlobContainer(new Uri($"https://{accountname}.blob.core.windows.net/{containerName}"), storageCredentials);
             return container;
         }
 
         public static void UploadToBlob(string fileName, string filePath, string folderName)
         {
+            logger.Trace("Trying UploadToBlob");
+            logger.Trace("getting CloudBlobContainer");
             CloudBlobContainer cont = GetContainer();
-            cont.CreateIfNotExists();
-
+            //cont.CreateIfNotExists();
+            //cont.SetPermissions(new BlobContainerPermissions
+            //{
+            //    PublicAccess = BlobContainerPublicAccessType.Blob
+            //});
+            logger.Trace("getting CloudBlockBlob");
             CloudBlockBlob cblob = cont.GetBlockBlobReference(Path.Combine(folderName, fileName));
             using (Stream file = System.IO.File.OpenRead(filePath))
             {
+                logger.Trace("Uploading file");
                 cblob.UploadFromStream(file);
+                logger.Trace("File Uploaded");
             }
             File.Delete(filePath);
         }
         public static void DuplicateToBlob(string fileName, string filePath, string folderName)
         {
+            logger.Trace("Trying DuplicateToBlob");
+            logger.Trace("getting CloudBlobContainer");
             CloudBlobContainer cont = GetContainer();
-            cont.CreateIfNotExists();
-            cont.SetPermissions(new BlobContainerPermissions
-            {
-                PublicAccess = BlobContainerPublicAccessType.Blob
-            });
+            //cont.CreateIfNotExists();
+            //cont.SetPermissions(new BlobContainerPermissions
+            //{
+            //    PublicAccess = BlobContainerPublicAccessType.Blob
+            //});
+            logger.Trace("getting CloudBlockBlob");
             CloudBlockBlob cblob = cont.GetBlockBlobReference(Path.Combine(folderName, fileName));
             using (Stream file = System.IO.File.OpenRead(filePath))
             {
+                logger.Trace("Uploading file");
                 cblob.UploadFromStream(file);
+                logger.Trace("File Uploaded");
             }
+        }
+
+        public static void WriteToBlob(string fileName, string folderName, string fileContent)
+        {
+            logger.Trace("Trying WriteToBlob");
+            logger.Trace("getting CloudBlobContainer");
+            CloudBlobContainer cont = GetContainer();
+            logger.Trace("getting CloudBlockBlob");
+            CloudBlockBlob cblob = cont.GetBlockBlobReference(Path.Combine(folderName, fileName));
+            logger.Trace("Uploading text");
+            cblob.UploadText(fileContent);
+            logger.Trace("Text uploaded");
         }
 
         public static string ReadTextFromBlob(string folderName, string fileName)
@@ -100,7 +171,6 @@ namespace Module.Frontend.TPM.Util
             logger.Debug($"Start read from blob file: {fileName}, from folder: {folderName}");
             CloudBlobContainer cont = GetContainer();
             CloudBlockBlob cblob = cont.GetBlockBlobReference(Path.Combine(folderName, fileName));
-
             cblob.DeleteIfExists();
         }
         public static string ReadDatFromBlob(string folderName, string fileName)

@@ -25,6 +25,8 @@ using System.Reflection;
 using Persist.Extensions;
 using Core.Import;
 using Utility.FileWorker;
+using Looper.Core;
+using Module.Persist.TPM.CalculatePromoParametersModule;
 
 namespace Module.Host.TPM.Actions {
     class FullXLSXImportPromoDMPAction : BaseAction {
@@ -204,7 +206,12 @@ namespace Module.Host.TPM.Actions {
                     resultRecordCount = InsertDataToDatabase(records, context);
                     var promoSupport = context.Set<PromoSupport>().First(x => x.Id == promoSupportId);
                     promoSupport.ActualQuantity = records.Select(x => (ImportPromoDMP)x).Sum(x => x.Quantity);
+                    if(promoSupport.ActualProdCostPer1Item.HasValue)
+                    {
+                        promoSupport.ActualProdCost = promoSupport.ActualQuantity * promoSupport.ActualProdCostPer1Item;
+                    }
                     context.SaveChanges();
+                    CalculateBudgetsCreateTask(context,new List<Guid>() { promoSupportId });
                 }
                 logger.Trace("Persist models inserted");
                 context.SaveChanges();
@@ -275,6 +282,31 @@ namespace Module.Host.TPM.Actions {
                 Generator = new ScriptGenerator(ModelType);
             }
             return Generator;
+        }
+
+        private void CalculateBudgetsCreateTask(DatabaseContext context, List<Guid> promoSupportIds, List<Guid> unlinkedPromoIds = null)
+        {
+            string promoSupportIdsString = FromListToString(promoSupportIds);
+            string unlinkedPromoIdsString = FromListToString(unlinkedPromoIds);
+
+            HandlerData data = new HandlerData();
+            HandlerDataHelper.SaveIncomingArgument("PromoSupportIds", promoSupportIdsString, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("UnlinkedPromoIds", unlinkedPromoIdsString, data, visible: false, throwIfNotExists: false);
+
+            bool success = CalculationTaskManager.CreateCalculationTask(CalculationTaskManager.CalculationAction.Budgets, data, context);
+
+            if (!success)
+                throw new Exception("Promo was blocked for calculation");
+        }
+
+        private string FromListToString(List<Guid> list){
+            string result = "";
+
+            if (list != null)
+                foreach (Guid el in list.Distinct())
+                    result += el + ";";
+
+            return result;
         }
 
         private string GetImportStatus() {

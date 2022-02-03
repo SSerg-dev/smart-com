@@ -447,8 +447,7 @@ namespace Module.Frontend.TPM.Controllers {
                         twb.Write(stream);
                         stream.Close();
                     }
-                    FileDispatcher fileDispatcher = new FileDispatcher();
-                    fileDispatcher.UploadToBlob(Path.GetFileName(filePath), Path.GetFullPath(filePath), exportDir.Split('\\').Last());
+                    AzureBlobHelperLocal.UploadToBlob(Path.GetFileName(filePath), Path.GetFullPath(filePath), exportDir.Split('\\').Last());
                     return Content(HttpStatusCode.OK, file);
                 }
             } catch (Exception e) {

@@ -130,12 +130,14 @@ namespace Module.Persist.TPM {
             modelBuilder.Entity<Promo>().Ignore(n => n.Calculating);
             modelBuilder.Entity<Promo>().Ignore(n => n.PromoBasicProducts);
 
+            modelBuilder.Entity<RPASetting>();
+            modelBuilder.Entity<RPA>();
         }
 
         
 
         public void BuildEdm(ODataConventionModelBuilder builder) {
-            
+
             builder.EntitySet<Category>("Categories");
             builder.EntitySet<Category>("DeletedCategories");
             builder.EntitySet<HistoricalCategory>("HistoricalCategories");
@@ -959,6 +961,12 @@ namespace Module.Persist.TPM {
             builder.Entity<ClientDashboardView>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<ClientDashboardView>("ClientDashboardViews");
             builder.EntitySet<HistoricalClientDashboardView>("HistoricalClientDashboards");
             builder.Entity<HistoricalClientDashboardView>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalClientDashboardView>("HistoricalClientDashboards");
+
+            builder.EntitySet<RPASetting>("RPASettings");
+            builder.EntitySet<RPA>("RPAs");
+            builder.Entity<RPA>().Collection.Action("UploadFile");
+            builder.Entity<RPA>().Collection.Action("SaveRPA");
+            builder.Entity<RPA>().Collection.Action("DownloadTemplateXLSX");
         }
 
         

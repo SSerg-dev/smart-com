@@ -107,6 +107,9 @@
     <Reference Include="Microsoft.Azure.KeyVault.WebKey, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.21.10201540\lib\net451\Microsoft.Azure.KeyVault.WebKey.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Azure.Management.DataFactory, Version=4.24.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Azure.Management.DataFactory.4.24.0\lib\net461\Microsoft.Azure.Management.DataFactory.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Azure.Services.AppAuthentication, Version=1.0.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.21.10201540\lib\net451\Microsoft.Azure.Services.AppAuthentication.dll</HintPath>
     </Reference>
@@ -253,6 +256,7 @@
     <Reference Include="WebGrease, Version=1.5.2.14234, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.21.10201540\lib\net451\WebGrease.dll</HintPath>
     </Reference>
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Client\controller\tpm\pludictionary\HistoricalPLUDictionary.js" />
@@ -318,6 +322,9 @@
     <Compile Include="Controllers\PriceListsController.cs" />
     <Compile Include="Controllers\RATIShoppersController.cs" />
     <Compile Include="Controllers\RollingVolumesController.cs" />
+    <Compile Include="Controllers\RPAsController.cs" />
+    <Compile Include="Controllers\RPASettingsController.cs" />
+    <Compile Include="Model\RPAEventJsonField.cs" />
     <Compile Include="Util\AzureBlobHelperLocal.cs" />
     <Compile Include="Util\IQueryableExtensions.cs" />
     <Compile Include="Util\NoGuidGeneratingScriptGenerator.cs" />

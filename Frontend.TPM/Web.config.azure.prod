@@ -46,6 +46,7 @@
     <add key="PROMO_SUPPORT_DIRECTORY" value="D:\home\site\wwwroot\ApplicationData\PromoSupportFiles" />
     <add key="CLIENT_TREE_DIRECTORY" value="D:\home\site\wwwroot\ApplicationData\ClientTreeLogoFiles" />
     <add key="PRODUCT_TREE_DIRECTORY" value="D:\home\site\wwwroot\ApplicationData\ProductTreeLogoFiles" />
+	<add key="RPA_DIRECTORY" value="D:\home\site\wwwroot\ApplicationData\RPAFiles" />
     <add key="INTERFACE_DIRECTORY_INBOUND_OUTCOME" value="InterfaceFiles" />
     <add key="INTERFACE_DIRECTORY_OUTBOUND_INCOME" value="InterfaceFiles" />
     <!--AzureAD authentication-->
@@ -62,6 +63,23 @@
     <add key="ida:DomainKey" value="ADidaDomain" />
     <add key="ida:TenantIdKey" value="ADidaTenantId" />
     <add key="ida:PostLogoutRedirectUriKey" value="ADidaPostLogoutRedirectUri" />
+    <!--RPA-->
+    <add key="RPA_UPLOAD_TENANT_ID" value="2fc13e34-f03f-498b-982a-7cb446e25bc6" />
+    <add key="RPA_UPLOAD_APPLICATION_ID" value="0ddd2ac8-b12f-42a1-b413-3c781f52f10a" />
+    <add key="RPA_UPLOAD_AUTHENTICATION_KEY" value="n4Cp0~-wXcmuo~1LAi_zo.YQ9ADc2nc.5f" />
+    <add key="RPA_UPLOAD_SUBSCRIPTION_ID" value="fd43d2cb-5798-4c9b-bf5e-05006585d0cd" />
+    <add key="RPA_UPLOAD_RESOURCE_GROUP" value="RUSSIA-PETCARE-JUPITER-PROD-RG" />
+    <add key="RPA_UPLOAD_REGION" value="East US 2" />
+    <add key="RPA_UPLOAD_DATA_FACTORY_NAME" value="russiapetcarejupiterprodadf" />
+    <add key="RPA_UPLOAD_PIPELINE_ACTUALS_NAME" value="JUPITER_RPA_UPLOAD_ACTUALS_STAGE_PIPE" />
+    <add key="RPA_UPLOAD_PIPELINE_EVENT_NAME" value="JUPITER_RPA_UPLOAD_EVENTS_STAGE_PIPE" />
+    <add key="RPA_UPLOAD_PIPELINE_SUPPORT_NAME" value="JUPITER_RPA_UPLOAD_SUPPORT_STAGE_PIPE" />
+    <add key="ServerName" value="marsanalyticsprodsqlsrv.database.windows.net" />
+    <add key="DatabaseName" value="russiapetcarejupiterprodsqldb" />
+    <add key="DBUserId" value="deploy_user" />
+    <add key="PasswordKV" value="russiapetcarejupiterprodsqldbpassword" />
+    <add key="AKVScope" value="russiapetcarejupiterprodsecretscope" />
+    <add key="BlobStorageName" value="marsanalyticssharedprdsa" />
   </appSettings>
   <system.identityModel>
     <identityConfiguration>
@@ -271,6 +289,10 @@
       <dependentAssembly>
         <assemblyIdentity name="System.Diagnostics.DiagnosticSource" publicKeyToken="cc7b13ffcd2ddd51" culture="neutral" />
         <bindingRedirect oldVersion="0.0.0.0-5.0.0.0" newVersion="5.0.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System.Threading.Tasks.Extensions" publicKeyToken="cc7b13ffcd2ddd51" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-4.2.0.0" newVersion="4.1.0.0" />
       </dependentAssembly>
     </assemblyBinding>
   </runtime>

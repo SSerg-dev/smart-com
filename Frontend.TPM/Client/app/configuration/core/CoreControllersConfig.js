@@ -86,6 +86,11 @@
 
     // Constraint
     'core.associatedconstraint.constraint.AssociatedConstraint',
-    'core.associatedconstraint.userrole.AssociatedUserRoleMain'
+    'core.associatedconstraint.userrole.AssociatedUserRoleMain',
 
+    //RPASetting
+    'core.rpasetting.RPASetting',
+
+    //RPA
+    'core.rpa.RPA'
 ]);

@@ -46,6 +46,7 @@
     <add key="PROMO_SUPPORT_DIRECTORY" value="D:\home\site\wwwroot\ApplicationData\PromoSupportFiles" />
     <add key="CLIENT_TREE_DIRECTORY" value="D:\home\site\wwwroot\ApplicationData\ClientTreeLogoFiles" />
     <add key="PRODUCT_TREE_DIRECTORY" value="D:\home\site\wwwroot\ApplicationData\ProductTreeLogoFiles" />
+	<add key="RPA_DIRECTORY" value="D:\home\site\wwwroot\ApplicationData\RPAFiles" />
     <add key="INTERFACE_DIRECTORY_INBOUND_OUTCOME" value="InterfaceFiles" />
     <add key="INTERFACE_DIRECTORY_OUTBOUND_INCOME" value="InterfaceFiles" />
     <!--AzureAD authentication-->
@@ -62,6 +63,24 @@
     <add key="ida:DomainKey" value="ADidaDomain" />
     <add key="ida:TenantIdKey" value="ADidaTenantId" />
     <add key="ida:PostLogoutRedirectUriKey" value="ADidaPostLogoutRedirectUri" />
+	<!--RPA-->
+	<add key="RPA_UPLOAD_TENANT_ID" value="2fc13e34-f03f-498b-982a-7cb446e25bc6" />
+	<add key="RPA_UPLOAD_APPLICATION_ID" value="6f231dc9-7560-4d58-8655-a9fec42cac17" />
+	<add key="RPA_UPLOAD_AUTHENTICATION_KEY" value="kKOHIvUL0nKvtQ4e2Fn53RvYLba5Ne7/pKphScyEg8c=" />
+	<add key="RPA_UPLOAD_SUBSCRIPTION_ID" value="066fc627-241c-4166-b66f-70f51b9b4b95" />
+	<add key="RPA_UPLOAD_RESOURCE_GROUP" value="RUSSIA-PETCARE-JUPITER-DEV-RG" />
+	<add key="RPA_UPLOAD_REGION" value="East US 2" />
+	<add key="RPA_UPLOAD_DATA_FACTORY_NAME" value="russiapetcarejupiterdevadf" />
+	<add key="RPA_UPLOAD_PIPELINE_ACTUALS_NAME" value="JUPITER_RPA_UPLOAD_ACTUALS_STAGE_PIPE" />
+	<add key="RPA_UPLOAD_PIPELINE_EVENT_NAME" value="JUPITER_RPA_UPLOAD_EVENTS_STAGE_PIPE" />
+	<add key="RPA_UPLOAD_PIPELINE_SUPPORT_NAME" value="JUPITER_RPA_UPLOAD_SUPPORT_STAGE_PIPE" />
+	<add key="ServerName" value="marsanalyticsdevsqlsrv.database.windows.net" />
+	<add key="DatabaseName" value="russiapetcarejupiterdevsqldb" />
+	<add key="DBUserId" value="deploy_user" />
+	<add key="PasswordKV" value="russiapetcarejupiterdevsqldbpassword" />
+	<add key="AKVScope" value="russiapetcarejupdev2akvscope" />
+  <add key="BlobStorageName" value="marsanalyticsshareddevsa" />
+		  
   </appSettings>
   <system.identityModel>
     <identityConfiguration>
@@ -271,6 +290,10 @@
       <dependentAssembly>
         <assemblyIdentity name="System.Diagnostics.DiagnosticSource" publicKeyToken="cc7b13ffcd2ddd51" culture="neutral" />
         <bindingRedirect oldVersion="0.0.0.0-5.0.0.0" newVersion="5.0.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System.Threading.Tasks.Extensions" publicKeyToken="cc7b13ffcd2ddd51" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-4.1.0.0" newVersion="4.1.0.0" />
       </dependentAssembly>
     </assemblyBinding>
   </runtime>

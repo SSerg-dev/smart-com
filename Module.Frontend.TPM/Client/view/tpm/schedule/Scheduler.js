@@ -12,7 +12,7 @@
     enableDragCreation: true,
     controller: 'schedulerviewcontroller',
     viewPreset: 'marsweekMonth',
-    loadMask: true,
+    loadMask: false,
     rowHeight: 21,
     clientsFilterConfig: [],
     
