@@ -5,9 +5,9 @@
 	
     "vaultName":  "russiapetcarejupdev2akv",
     "resourceGroupName":  "RUSSIA-PETCARE-JUPITER-DEV-RG",
-	
-	
-	"secretKeys":  [
+
+
+	"secretKeys": [
 
 		{
 			"name": "ADidaAADInstance",
@@ -95,30 +95,36 @@
 			"contentType": "",
 			"action": "add",
 			"enabled": true
-		},{
-			"name":  "MongoUrlAzure",
-			"value":  "",
-			"contentType":  "",
-			"action":  "add",
+		},
+		{
+			"name": "MongoUrlAzure",
+			"value": "",
+			"contentType": "",
+			"action": "add",
 			"enabled": false
-		}
-		,{
-			"name":  "russiapetcarejupitersqldbcs",
-			"value":  "Data Source=marsanalyticsdevsqlsrv.database.windows.net;Initial Catalog=russiapetcarejupiterdevsqldb;User Id=deploy_user;Password=NhLaNb72sZ60;MultipleActiveResultSets=True;",
-			"contentType":  "",
-			"action":  "add",
+		},
+		{
+			"name": "russiapetcarejupitersqldbcs",
+			"value": "Data Source=marsanalyticsdevsqlsrv.database.windows.net;Initial Catalog=russiapetcarejupiterdevsqldb;User Id=deploy_user;Password=NhLaNb72sZ60;MultipleActiveResultSets=True;",
+			"contentType": "",
+			"action": "add",
 			"enabled": true
-		}
+		},
+		{
+			"name": "russiapetcarejupiterdevsqldbpassword",
+			"value": "NhLaNb72sZ60",
+			"contentType": "",
+			"action": "add",
+			"enabled": true
+		},
+		{
+			"name": "TestKeyYu4",
+			"action": "delete",
 
-
-		,{
-			"name":  "TestKeyYu4",
-			"action":  "delete",
-			
-			"comment":  "Удаление переменной",
+			"comment": "Удаление переменной",
 			"enabled": false
 		}
-		
+
 	]
 
 
