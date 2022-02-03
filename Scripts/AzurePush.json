@@ -1,0 +1,72 @@
+{
+  "_comment": "",
+  "logLevel": 2,
+  "systemName": "TPM",
+
+
+  "excludedFolders": [
+
+  ],
+
+
+  "excludedFiles": [
+
+    "*.log",
+    ".tfignore",
+    "*.vssscc",
+    "LastConfigurationName.txt",
+    ".git",
+    "GitPushScriptTPM_Promo.ps1",
+    "GitPushScriptTPM_PromoProd.ps1",
+    "GitPushToAzureTPM.ps1",
+    "MakeDeliveryAndDeploy.ps1",
+    "MakePackage.ps1",
+    "npm_install.ps1",
+    "ReplaceConfigsWin2Azure.ps1",
+    "ReplaceConfigsWin2AzureDev.ps1",
+    "ReplaceConfigsWin2AzureSmartcomDev2_UIUX.ps1",
+    "Web.config.azure",
+    "ApplicationInsights.config.azure",
+    "App.config.azure",
+    "ProcessingService.TPM.csproj.azure",
+    "app.config.azure",
+    "Web.config.azure.uiux",
+    "ApplicationInsights.config.azure.uiux",
+    "App.config.azure.uiux",
+    "ProcessingService.TPM.csproj.azure.uiux",
+    "app.config.azure.uiux",
+    "Web.config.azure.test",
+    "ApplicationInsights.config.azure.test",
+    "App.config.azure.test",
+    "ProcessingService.TPM.csproj.azure.test",
+    "app.config.azure.test",
+    "KeyVaultManager.smartcom.dev1.json",
+    "KeyVaultManager.smartcom.dev2.uiux.json",
+    "KeyVaultManager.smartcom.test.json",
+    "AzurePush.ps1",
+    "AzurePush.json"
+  ],
+
+
+  "savedFolders": [
+
+  ],
+
+
+  "savedFiles": [
+
+    ".git"
+  ]
+
+}
+
+
+
+
+
+
+
+
+
+
+

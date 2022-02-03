@@ -1,0 +1,1 @@
+select 'truncate table ' + schema_name(t.schema_id) + '.[' +  t.name + ']', schema_name(t.schema_id) as schema_name, t.name as table_name from sys.tables t where schema_name(t.schema_id) = 'Scenario' order by table_name;
