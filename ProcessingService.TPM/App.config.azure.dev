@@ -72,6 +72,12 @@
     <add key="EXPORT_REGION" value="East US 2" />
     <add key="EXPORT_DATA_FACTORY_NAME" value="russiapetcarejupiterdevadf" />
     <add key="EXPORT_PIPELINE_NAME" value="JUPITER_EXPORT_SCHEDULER_DISPATCHER_PIPE" />
+    <add key="ServerName" value="marsanalyticsdevsqlsrv.database.windows.net" />
+    <add key="DatabaseName" value="russiapetcarejupiterdevsqldb" />
+    <add key="DBUserId" value="deploy_user" />
+    <add key="PasswordKV" value="russiapetcarejupiterdevsqldbpassword" />
+    <add key="AKVScope" value="russiapetcarejupdev2akvscope" />
+    <add key="BlobStorageName" value="marsanalyticsshareddevsa" />
   </appSettings>
   <entityFramework>
     <defaultConnectionFactory type="System.Data.Entity.Infrastructure.SqlConnectionFactory, EntityFramework" />

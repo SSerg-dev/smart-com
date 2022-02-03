@@ -108,13 +108,13 @@ namespace Module.Host.TPM.Actions.Notifications
                         string dataFactoryName = AppSettingsManager.GetSetting("EXPORT_DATA_FACTORY_NAME", "");
                         string pipelineName = AppSettingsManager.GetSetting("EXPORT_PIPELINE_NAME", "");
 
-                        //tenantID = "2fc13e34-f03f-498b-982a-7cb446e25bc6";
-                        //applicationId = "6f231dc9-7560-4d58-8655-a9fec42cac17";
-                        //authenticationKey = "kKOHIvUL0nKvtQ4e2Fn53RvYLba5Ne7/pKphScyEg8c=";
-                        //subscriptionId = "066fc627-241c-4166-b66f-70f51b9b4b95";
-                        //resourceGroup = "RUSSIA-PETCARE-JUPITER-DEV-RG";
-                        //dataFactoryName = "russiapetcarejupiterdevadf";
-                        //pipelineName = "JUPITER_EXPORT_SCHEDULER_DISPATCHER_PIPE";
+
+                        string ServerName = AppSettingsManager.GetSetting("ServerName", "");
+                        string DatabaseName = AppSettingsManager.GetSetting("DatabaseName", "");
+                        string DBUserId = AppSettingsManager.GetSetting("DBUserId", "");
+                        string PasswordKV = AppSettingsManager.GetSetting("PasswordKV", "");
+                        string AKVScope = AppSettingsManager.GetSetting("AKVScope", "");
+                        string BlobStorageName = AppSettingsManager.GetSetting("BlobStorageName", "");
 
                         string fileName = GetExportFileName(userName);
 
@@ -134,7 +134,13 @@ namespace Module.Host.TPM.Actions.Notifications
                                         { "QueryId", exportQuery.Id.ToString() },
                                         { "Schema", schemaDB},
                                         { "TaskId", HandlerId.ToString() },
-                                        { "FileName", fileName }
+                                        { "FileName", fileName },
+                                        { "ServerName", ServerName },
+                                        { "DatabaseName", DatabaseName },
+                                        { "DBUserId", DBUserId },
+                                        { "PasswordKV", PasswordKV },
+                                        { "AKVScope", AKVScope },
+                                        { "BlobStorageName", BlobStorageName }
                                     };
 
                         var aucontext = new AuthenticationContext("https://login.microsoftonline.com/" + tenantID);

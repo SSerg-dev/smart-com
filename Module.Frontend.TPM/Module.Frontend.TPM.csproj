@@ -1611,15 +1611,14 @@
     <Content Include="Sch\sch-all-debug.js" />
   </ItemGroup>
   <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Module.Persist.TPM\Module.Persist.TPM.csproj">
-      <Project>{A4E76DF0-0B6A-4848-A99C-B6BF261623F2}</Project>
+      <Project>{a4e76df0-0b6a-4848-a99c-b6bf261623f2}</Project>
       <Name>Module.Persist.TPM</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
-  </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
