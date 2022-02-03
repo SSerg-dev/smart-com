@@ -20,6 +20,24 @@ namespace Module.Persist.TPM.Migrations
 
 
         private string SqlString = @"
+        CREATE OR ALTER FUNCTION [DefaultSchemaSetting].[GetPromoSubrangesById]
+            (
+	            @promoId uniqueidentifier
+            )
+            RETURNS NVARCHAR(255) AS 
+            BEGIN
+	            DECLARE @result NVARCHAR(255)
+	            SELECT @result = STRING_AGG([Name], ',') 
+                FROM [DefaultSchemaSetting].ProductTree 
+                WHERE [Type] = 'Subrange' AND EndDate IS NULL AND ObjectId IN (
+	                SELECT ProductTreeObjectId 
+                    FROM [DefaultSchemaSetting].PromoProductTree 
+                    WHERE PromoId = @promoId 
+                )
+	            RETURN @result
+            END
+        GO
+
         ALTER VIEW [DefaultSchemaSetting].[PromoView]
         AS
             SELECT

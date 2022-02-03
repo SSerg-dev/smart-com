@@ -2748,6 +2748,10 @@
     <Compile Include="Migrations\202201271528379_Create_SetTaskStatus_AP.Designer.cs">
       <DependentUpon>202201271528379_Create_SetTaskStatus_AP.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202202031044424_empty_after_merge.cs" />
+    <Compile Include="Migrations\202202031044424_empty_after_merge.Designer.cs">
+      <DependentUpon>202202031044424_empty_after_merge.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -5265,6 +5269,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202201170711073_empty_merge.resx">
       <DependentUpon>202201170711073_empty_merge.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202202031044424_empty_after_merge.resx">
+      <DependentUpon>202202031044424_empty_after_merge.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
