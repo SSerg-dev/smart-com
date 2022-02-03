@@ -112,26 +112,26 @@ namespace Module.Persist.TPM.Migrations
             INSERT INTO {defaultSchema}.AccessPointRole(AccessPointId, RoleId) SELECT @ItemId, Id FROM {defaultSchema}.Role WHERE SystemName = 'DemandFinance'
             INSERT INTO {defaultSchema}.AccessPointRole(AccessPointId, RoleId) SELECT @ItemId, Id FROM {defaultSchema}.Role WHERE SystemName = 'CustomerMarketing'
 
+            ");
+            //INSERT INTO {defaultSchema}.RPASetting(Json, Name) VALUES('{{'name': 'First test handler ', 'type':'Actuals_PLU','parametrs':[], 'roles': ['CMManager','Administrator','FunctionalExpert','KeyAccountManager','CustomerMarketing','SupportAdministrator'], " +
+            //"'templateColumns': [{'Order':0,'Field':'PromoID', 'Header':'PromoID', 'Quoting':false}, {'Order': 1,'Field': 'PLU', 'Header': 'PLU', 'Quoting': false},{'Order': 2,'Field': 'ActualProductPCQty', 'Header': 'ActualProductPCQty', 'Quoting': false}]}',"+
+            //"'Actual PLU Handler') "+
+
+            //$"INSERT INTO {defaultSchema}.RPASetting(Json, Name) VALUES('{{'name': 'Second test handler', 'type':'Actuals_EAN_PC','parametrs':[], 'roles': ['CMManager','Administrator','FunctionalExpert','KeyAccountManager','CustomerMarketing','SupportAdministrator'], " +
+            //"'templateColumns': [{'Order':0,'Field':'PromoID', 'Header':'PromoID', 'Quoting':false}, {'Order': 1,'Field': 'EAN_PC', 'Header': 'PLU', 'Quoting': false},{'Order': 2,'Field': 'ActualProductPCQty', 'Header': 'ActualProductPCQty', 'Quoting': false}]}'," +
+            //"'Actual EAN PC Handler') " +
             
-            INSERT INTO {defaultSchema}.RPASetting(Json, Name) VALUES('{{'name': 'First test handler ', 'type':'Actuals_PLU','parametrs':[], 'roles': ['CMManager','Administrator','FunctionalExpert','KeyAccountManager','CustomerMarketing','SupportAdministrator'], " +
-            "'templateColumns': [{'Order':0,'Field':'PromoID', 'Header':'PromoID', 'Quoting':false}, {'Order': 1,'Field': 'PLU', 'Header': 'PLU', 'Quoting': false},{'Order': 2,'Field': 'ActualProductPCQty', 'Header': 'ActualProductPCQty', 'Quoting': false}]}',"+
-            "'Actual PLU Handler') "+
+            //$"INSERT INTO {defaultSchema}.RPASetting(Json, Name) VALUES('{{'name': 'Third test handler', 'type':'Events','parametrs':[], 'roles': ['CMManager','Administrator','FunctionalExpert','KeyAccountManager','CustomerMarketing','SupportAdministrator'], " +
+            //"'templateColumns': [{'Order':0,'Field':'PromoID', 'Header':'PromoID', 'Quoting':false}, {'Order': 1,'Field': 'EventName', 'Header': 'EventName', 'Quoting': false}]}'," +
+            //"'Event Handler') " +
 
-            $"INSERT INTO {defaultSchema}.RPASetting(Json, Name) VALUES('{{'name': 'Second test handler', 'type':'Actuals_EAN_PC','parametrs':[], 'roles': ['CMManager','Administrator','FunctionalExpert','KeyAccountManager','CustomerMarketing','SupportAdministrator'], " +
-            "'templateColumns': [{'Order':0,'Field':'PromoID', 'Header':'PromoID', 'Quoting':false}, {'Order': 1,'Field': 'EAN_PC', 'Header': 'PLU', 'Quoting': false},{'Order': 2,'Field': 'ActualProductPCQty', 'Header': 'ActualProductPCQty', 'Quoting': false}]}'," +
-            "'Actual EAN PC Handler') " +
-            
-            $"INSERT INTO {defaultSchema}.RPASetting(Json, Name) VALUES('{{'name': 'Third test handler', 'type':'Events','parametrs':[], 'roles': ['CMManager','Administrator','FunctionalExpert','KeyAccountManager','CustomerMarketing','SupportAdministrator'], " +
-            "'templateColumns': [{'Order':0,'Field':'PromoID', 'Header':'PromoID', 'Quoting':false}, {'Order': 1,'Field': 'EventName', 'Header': 'EventName', 'Quoting': false}]}'," +
-            "'Event Handler') " +
+            //$"INSERT INTO {defaultSchema}.RPASetting(Json, Name) VALUES('{{'name': 'Fourth test handler', 'type':'NonPromoSupport','parametrs':[], 'roles': ['CMManager','Administrator','FunctionalExpert','KeyAccountManager','CustomerMarketing','SupportAdministrator'], " +
+            //"'templateColumns': [{'Order':0,'Field':'NonPromoSupportId', 'Header':'NonPromoSupportId', 'Quoting':false}, {'Order': 1,'Field': 'ExternalCode', 'Header': 'ExternalCode', 'Quoting': false}, ,{'Order': 2,'Field': 'Quantity', 'Header': 'Quantity', 'Quoting': false}]}'," +
+            //"'NonPromoSupport Handler') " +
 
-            $"INSERT INTO {defaultSchema}.RPASetting(Json, Name) VALUES('{{'name': 'Fourth test handler', 'type':'NonPromoSupport','parametrs':[], 'roles': ['CMManager','Administrator','FunctionalExpert','KeyAccountManager','CustomerMarketing','SupportAdministrator'], " +
-            "'templateColumns': [{'Order':0,'Field':'NonPromoSupportId', 'Header':'NonPromoSupportId', 'Quoting':false}, {'Order': 1,'Field': 'ExternalCode', 'Header': 'ExternalCode', 'Quoting': false}, ,{'Order': 2,'Field': 'Quantity', 'Header': 'Quantity', 'Quoting': false}]}'," +
-            "'NonPromoSupport Handler') " +
-
-            $"INSERT INTO {defaultSchema}.RPASetting(Json, Name) VALUES('{{'name': 'Àifth test handler', 'type':'PromoSupport','parametrs':[], 'roles': ['CMManager','Administrator','FunctionalExpert','KeyAccountManager','CustomerMarketing','SupportAdministrator'], " +
-            "'templateColumns': [{'Order':0,'Field':'PromoSupportId', 'Header':'PromoSupportId', 'Quoting':false}, {'Order': 1,'Field': 'ExternalCode', 'Header': 'ExternalCode', 'Quoting': false}, ,{'Order': 2,'Field': 'Quantity', 'Header': 'Quantity', 'Quoting': false}]}'," +
-            "'NonPromoSupport Handler') " );
+            //$"INSERT INTO {defaultSchema}.RPASetting(Json, Name) VALUES('{{'name': 'Àifth test handler', 'type':'PromoSupport','parametrs':[], 'roles': ['CMManager','Administrator','FunctionalExpert','KeyAccountManager','CustomerMarketing','SupportAdministrator'], " +
+            //"'templateColumns': [{'Order':0,'Field':'PromoSupportId', 'Header':'PromoSupportId', 'Quoting':false}, {'Order': 1,'Field': 'ExternalCode', 'Header': 'ExternalCode', 'Quoting': false}, ,{'Order': 2,'Field': 'Quantity', 'Header': 'Quantity', 'Quoting': false}]}'," +
+            //"'NonPromoSupport Handler') " );
         }
         
 
