@@ -15,6 +15,7 @@
         { name: 'ColorSystemName', type: 'string', useNull: true, hidden: true, isDefault: false },
         { name: 'PromoStatusColor', type: 'string', hidden: true, isDefault: false },
         { name: 'IsOnInvoice', type: 'boolean', hidden: false, isDefault: true },
+        { name: 'CompetitorName', type: 'string', mapping: 'CompetitorName', defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'Competitor', hidden: true, isDefault: true },
 
         { name: 'CreatorId', useNull: true, hidden: true, isDefault: false, defaultValue: null },
         { name: 'ClientTreeId', useNull: true, hidden: true, isDefault: false, defaultValue: null },
@@ -26,6 +27,11 @@
         { name: 'DispatchesStart', useNull: true, type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
         { name: 'PromoStatusSystemName', type: 'string', hidden: true, isDefault: true },
         { name: 'PromoStatusName', type: 'string', mapping: 'PromoStatusName', defaultFilterConfig: schedulerStatusFilter(), breezeEntityType: 'PromoStatus', hidden: false, isDefault: true },
+
+
+        { name: 'CompetitorBrandTechName', type: 'string', persist: false, mapping: 'CompetitorBrandTechName', defaultFilterConfig: { valueField: 'BrandTech' }, breezeEntityType: 'CompetitorBrandTech', hidden: false, isDefault: true },
+        { name: 'Price', type: 'float', hidden: false, persist: false, isDefault: true },
+        { name: 'Discount', type: 'float', hidden: false, persist: false, isDefault: true },
 
         { name: "InOut", type: "boolean", persist: false, hidden: true, defaultValue: true },
         { name: "TypeName", type: "string", persist: false, hidden: true, defaultValue: true },
@@ -44,6 +50,7 @@
 
         //Apollo Export
         { name: 'IsApolloExport', type: 'boolean', hidden: false, isDefault: false }
+
     ],
     proxy: {
         type: 'breeze',

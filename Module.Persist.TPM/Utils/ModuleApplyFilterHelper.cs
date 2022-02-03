@@ -44,6 +44,39 @@ namespace Module.Persist.TPM.Utils {
         }
 
         /// <summary>
+        /// Применение фильтра по ограничениям к Промо конкурентов
+        /// </summary>
+        /// <param name="query"></param>
+        /// <param name="hierarchy"></param>
+        /// <param name="filter"></param>
+        /// <param name="filterMode"></param>
+        /// <returns></returns>
+        public static IQueryable<CompetitorPromo> ApplyFilter(IQueryable<CompetitorPromo> query, IQueryable<ClientTreeHierarchyView> hierarchy, IDictionary<string, IEnumerable<string>> filter = null, FilterQueryModes filterMode = FilterQueryModes.Active, string role = "")
+        {
+            if (filterMode == FilterQueryModes.Active)
+            {
+                query = query.Where(x => !x.Disabled);
+            }
+            if (filterMode == FilterQueryModes.Deleted)
+            {
+                query = query.Where(x => x.Disabled);
+            }
+            IEnumerable<string> clientFilter = FilterHelper.GetFilter(filter, ModuleFilterName.Client);
+            if (clientFilter.Any())
+            {
+                hierarchy = getFilteredHierarchy(hierarchy, clientFilter);
+                query = query.Where(x =>
+                    hierarchy.Any(h => h.Id == x.ClientTree.ObjectId || h.Hierarchy.Contains(x.ClientTree.ObjectId.ToString())));
+            }
+            if (!String.IsNullOrEmpty(role))
+            {
+                IEnumerable<CompetitorPromo> promoToFilter = query.AsEnumerable();
+                query = promoToFilter.AsQueryable();
+            }
+            return query;
+        }
+
+        /// <summary>
         /// Применение фильтра по ограничениям к Промо
         /// </summary>
         /// <param name="query"></param>

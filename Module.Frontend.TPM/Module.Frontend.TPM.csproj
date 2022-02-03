@@ -135,7 +135,7 @@
       <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.21.10201540\lib\net451\Microsoft.Rest.ClientRuntime.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Rest.ClientRuntime.Azure, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.21.10201540\lib\net451\Microsoft.Rest.ClientRuntime.Azure.dll</HintPath>
+      <HintPath>..\packages\Microsoft.Rest.ClientRuntime.Azure.3.3.19\lib\net461\Microsoft.Rest.ClientRuntime.Azure.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.21.10201540\lib\net451\Microsoft.Web.Infrastructure.dll</HintPath>
@@ -217,8 +217,8 @@
       <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.21.10201540\lib\net451\System.Numerics.Vectors.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime" />
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.21.10201540\lib\net451\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.21.10201540\lib\net451\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
@@ -227,8 +227,8 @@
     <Reference Include="System.Spatial, Version=5.6.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.21.10201540\lib\net451\System.Spatial.dll</HintPath>
     </Reference>
-    <Reference Include="System.Threading.Tasks.Extensions, Version=4.1.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.21.10201540\lib\net451\System.Threading.Tasks.Extensions.dll</HintPath>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Http, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -259,6 +259,15 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Client\controller\tpm\competitorpromo\CompetitorPromo.js" />
+    <Content Include="Client\controller\tpm\competitorpromo\DeletedCompetitorPromo.js" />
+    <Content Include="Client\controller\tpm\competitorpromo\HistoricalCompetitorPromo.js" />
+    <Content Include="Client\controller\tpm\competitor\Competitor.js" />
+    <Content Include="Client\controller\tpm\competitor\DeletedCompetitor.js" />
+    <Content Include="Client\controller\tpm\competitor\HistoricalCompetitor.js" />
+    <Content Include="Client\controller\tpm\competitorbrandtech\CompetitorBrandTech.js" />
+    <Content Include="Client\controller\tpm\competitorbrandtech\DeletedCompetitorBrandTech.js" />
+    <Content Include="Client\controller\tpm\competitorbrandtech\HistoricalCompetitorBrandTech.js" />
     <Content Include="Client\controller\tpm\pludictionary\HistoricalPLUDictionary.js" />
     <Content Include="Client\controller\tpm\pludictionary\PLUDictionary.js" />
     <Content Include="Client\controller\tpm\ratishopper\RATIShopper.js" />
@@ -267,6 +276,15 @@
     <Content Include="Client\controller\tpm\clienttreebrandtech\HistoricalClientTreeBrandTech.js" />
     <Content Include="Client\controller\tpm\rollingvolume\RollingVolume.js" />
     <Content Include="Client\model\tpm\assortmentmatrix2plu\AssortmentMatrix2Plu.js" />
+    <Content Include="Client\model\tpm\competitorpromo\CompetitorPromo.js" />
+    <Content Include="Client\model\tpm\competitorpromo\DeletedCompetitorPromo.js" />
+    <Content Include="Client\model\tpm\competitorpromo\HistoricalCompetitorPromo.js" />
+    <Content Include="Client\model\tpm\competitorbrandtech\CompetitorBrandTech.js" />
+    <Content Include="Client\model\tpm\competitorbrandtech\DeletedCompetitorBrandTech.js" />
+    <Content Include="Client\model\tpm\competitorbrandtech\HistoricalCompetitorBrandTech.js" />
+    <Content Include="Client\model\tpm\competitor\Competitor.js" />
+    <Content Include="Client\model\tpm\competitor\DeletedCompetitor.js" />
+    <Content Include="Client\model\tpm\competitor\HistoricalCompetitor.js" />
     <Content Include="Client\model\tpm\pludictionary\HistoricalPLUDictionary.js" />
     <Content Include="Client\model\tpm\pludictionary\PLUDictionary.js" />
     <Content Include="Client\model\tpm\promoproduct2plu\PromoProduct2Plu.js" />
@@ -281,6 +299,24 @@
     <Content Include="Client\model\tpm\mechanictype\MechanicTypeForClient.js" />
     <Content Include="Client\model\tpm\rollingvolume\RollingVolume.js" />
     <Content Include="Client\util\MinHeightColumn.js" />
+    <Content Include="Client\view\tpm\competitorpromo\CompetitorPromo.js" />
+    <Content Include="Client\view\tpm\competitorpromo\CompetitorPromoEditor.js" />
+    <Content Include="Client\view\tpm\competitorpromo\DeletedCompetitorPromo.js" />
+    <Content Include="Client\view\tpm\competitorpromo\DeletedCompetitorPromoDetail.js" />
+    <Content Include="Client\view\tpm\competitorpromo\HistoricalCompetitorPromo.js" />
+    <Content Include="Client\view\tpm\competitorpromo\HistoricalCompetitorPromoDetail.js" />
+    <Content Include="Client\view\tpm\competitor\Competitor.js" />
+    <Content Include="Client\view\tpm\competitor\DeletedCompetitor.js" />
+    <Content Include="Client\view\tpm\competitor\DeletedCompetitorDetail.js" />
+    <Content Include="Client\view\tpm\competitor\HistoricalCompetitor.js" />
+    <Content Include="Client\view\tpm\competitor\HistoricalCompetitorDetail.js" />
+    <Content Include="Client\view\tpm\competitor\СompetitorEditor.js" />
+    <Content Include="Client\view\tpm\competitorbrandtech\CompetitorBrandTech.js" />
+    <Content Include="Client\view\tpm\competitorbrandtech\CompetitorBrandTechEditor.js" />
+    <Content Include="Client\view\tpm\competitorbrandtech\DeletedCompetitorBrandTech.js" />
+    <Content Include="Client\view\tpm\competitorbrandtech\DeletedCompetitorBrandTechDetail.js" />
+    <Content Include="Client\view\tpm\competitorbrandtech\HistoricalCompetitorBrandTech.js" />
+    <Content Include="Client\view\tpm\competitorbrandtech\HistoricalCompetitorBrandTechDetail.js" />
     <Content Include="Client\view\tpm\pludictionary\HistoricalPLUDictionary.js" />
     <Content Include="Client\view\tpm\pludictionary\HistoricalPLUDictionaryDetail.js" />
     <Content Include="Client\view\tpm\pludictionary\PLUDictionary.js" />
@@ -303,15 +339,23 @@
     <Compile Include="Controllers\ActualCOGSsController.cs" />
     <Compile Include="Controllers\BTLPromoesController.cs" />
     <Compile Include="Controllers\BTLsController.cs" />
+    <Compile Include="Controllers\CompetitorPromoesController.cs" />
+    <Compile Include="Controllers\CompetitorsController.cs" />
     <Compile Include="Controllers\CoefficientSI2SOsController.cs" />
     <Compile Include="Controllers\DeletedActualCOGSsController.cs" />
     <Compile Include="Controllers\DeletedActualTradeInvestmentsController.cs" />
     <Compile Include="Controllers\DeletedBTLsController.cs" />
     <Compile Include="Controllers\DeletedCoefficientSI2SOsController.cs" />
+    <Compile Include="Controllers\DeletedCompetitorPromoesController.cs" />
+    <Compile Include="Controllers\DeletedCompetitorBrandTechsController.cs" />
     <Compile Include="Controllers\DeletedRATIShoppersController.cs" />
+    <Compile Include="Controllers\DeletedCompetitorsController.cs" />
     <Compile Include="Controllers\HistoricalActualTradeInvestmentsController.cs" />
     <Compile Include="Controllers\HistoricalActualCOGSsController.cs" />
     <Compile Include="Controllers\HistoricalBTLsController.cs" />
+    <Compile Include="Controllers\HistoricalCompetitorPromoesController.cs" />
+    <Compile Include="Controllers\HistoricalCompetitorBrandTechsController.cs" />
+    <Compile Include="Controllers\HistoricalCompetitorsController.cs" />
     <Compile Include="Controllers\HistoricalClientDashboardsController.cs" />
     <Compile Include="Controllers\HistoricalClientTreeBrandTechesController.cs" />
     <Compile Include="Controllers\HistoricalCoefficientSI2SOsController.cs" />
@@ -320,6 +364,7 @@
     <Compile Include="Controllers\PLUDictionaryController.cs" />
     <Compile Include="Controllers\PreviousDayIncrementalsController.cs" />
     <Compile Include="Controllers\PriceListsController.cs" />
+    <Compile Include="Controllers\CompetitorBrandTechsController.cs" />
     <Compile Include="Controllers\RATIShoppersController.cs" />
     <Compile Include="Controllers\RollingVolumesController.cs" />
     <Compile Include="Controllers\RPAsController.cs" />

@@ -93,22 +93,36 @@ namespace Module.Frontend.TPM.Controllers
             double YTD = 0;
             string GHierarchyCode = null;
             string DemandCode = "";
+            int? clientTreeIdforWhile = clientTreeId;
             var clientTrees = Context.Set<ClientTree>().Where(x => x.EndDate == null);
-            ClientTree clientTree = clientTrees.Where(x => x.ObjectId == clientTreeId).FirstOrDefault();
+            ClientTree clientTree = clientTrees.Where(x => x.ObjectId == clientTreeIdforWhile).FirstOrDefault();
             if (clientTree != null)
             {
                 int? clientTreeKeyId = null;
                 clientTreeKeyId = clientTree.Id;
+
+                //Подбор GHierarchyCode
                 do
                 {
-                    clientTree = clientTrees.Where(x => x.ObjectId == clientTreeId).FirstOrDefault();
+                    clientTree = clientTrees.Where(x => x.ObjectId == clientTreeIdforWhile).FirstOrDefault();
                     if (clientTree != null)
                     {
                         GHierarchyCode = clientTree.GHierarchyCode;
-                        clientTreeId = clientTree.parentId;
+                        clientTreeIdforWhile = clientTree.parentId;
+                    }
+                } while (String.IsNullOrWhiteSpace(GHierarchyCode) && clientTreeIdforWhile != null && clientTreeIdforWhile != 5000000);
+
+                clientTreeIdforWhile = clientTreeId;
+                //Подбор DemandCode
+                do
+                {
+                    clientTree = clientTrees.Where(x => x.ObjectId == clientTreeIdforWhile).FirstOrDefault();
+                    if (clientTree != null)
+                    {
+                        clientTreeIdforWhile = clientTree.parentId;
                         DemandCode = clientTree.DemandCode;
                     }
-                } while (String.IsNullOrWhiteSpace(GHierarchyCode) && clientTreeId != null && clientTreeId != 5000000);
+                } while (String.IsNullOrWhiteSpace(DemandCode) && clientTreeIdforWhile != null && clientTreeIdforWhile != 5000000);
 
                 if (!String.IsNullOrWhiteSpace(GHierarchyCode) && year != null && clientTreeKeyId != null)
                 {

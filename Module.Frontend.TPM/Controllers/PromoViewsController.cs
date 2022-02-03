@@ -122,6 +122,9 @@ namespace Module.Frontend.TPM.Controllers {
                 HandlerDataHelper.SaveIncomingArgument("rawFilters", rawFilters, handlerData, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("clients", clients.ToList(), handlerData, visible: false, throwIfNotExists: false);
 
+                var handlerId = Guid.NewGuid();
+                HandlerDataHelper.SaveIncomingArgument("HandlerId", handlerId, handlerData, visible: false, throwIfNotExists: false);
+
                 //IQueryable results = options.ApplyTo(GetConstraintedQuery().Where(x => !x.Disabled));
                 //List<Promo> promoes = CastQueryToPromo(results);
                 if (data.Count() > 1)
@@ -132,7 +135,8 @@ namespace Module.Frontend.TPM.Controllers {
                 {
                     LoopHandler handler = new LoopHandler()
                     {
-                        Id = Guid.NewGuid(),
+                        //Status = Looper.Consts.StatusName.IN_PROGRESS,
+                        Id = handlerId,
                         ConfigurationName = "PROCESSING",
                         Description = "Scheduler Export",
                         Name = "Module.Host.TPM.Handlers.SchedulerExportHandler",
@@ -144,6 +148,7 @@ namespace Module.Frontend.TPM.Controllers {
                         UserId = userId,
                         RoleId = roleId
                     };
+                    
                     handler.SetParameterData(handlerData);
                     context.LoopHandlers.Add(handler);
                     context.SaveChanges();

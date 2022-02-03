@@ -73,7 +73,11 @@
         'ClientKPIdata': 'Client KPI Data',
         'PriceList': 'Price list',
         'CoefficientSI2SO': 'Coefficient SI->SO',
-	},
+        'Competitor': 'Competitor',
+        'CompetitorPromo': 'Competitor Promo',
+        'CompetitorBrandTech': 'Competitor BrandTech',
+        'CompetitorPromo': 'Competitor Promo'
+    },
 
     'compositePanelTitles': {
         'Category': 'Category',
@@ -155,6 +159,9 @@
         'NonPromoLinked': "Non-Promo Linked",
         'PriceList': 'Price list',
         'CoefficientSI2SO': 'Coefficient SI->SO',
+        'Competitor': 'Competitor',
+        'CompetitorPromo': 'Competitor Promo',
+        'CompetitorBradnTech': 'Competitor BrandTech',
     },
 
     'text': {
@@ -187,66 +194,66 @@
         'SumInvoiceValidate': 'Sum Invoice'
     },
 
-	'DeleteText': {
-		'deleteWindowTitle': 'Удаление записи',
-		'deleteConfirmMessage': 'Вы действительно хотите удалить запись?',
-		'cascadeDeleteConfirmMessage': 'Вы действительно хотите удалить узел? Все дочерние элементы также будут удалены',
-		'deleteNodeWarning': 'Предупреждение! Если вы удалите узел, все связанные промо будут повреждены!'
-	},
+    'DeleteText': {
+        'deleteWindowTitle': 'Удаление записи',
+        'deleteConfirmMessage': 'Вы действительно хотите удалить запись?',
+        'cascadeDeleteConfirmMessage': 'Вы действительно хотите удалить узел? Все дочерние элементы также будут удалены',
+        'deleteNodeWarning': 'Предупреждение! Если вы удалите узел, все связанные промо будут повреждены!'
+    },
 
-	'promoMainTab': {
-		'promoBasic': 'Basic',
-		'promoBudgets': 'Budgets',
-		'calculations': 'Calculations',
-		'support': 'Support',
-		'promoActivity': 'Activity',
-		'changeStatusHistory': 'Promo Workflow',
-		'summary': 'Summary'
-	},
+    'promoMainTab': {
+        'promoBasic': 'Basic',
+        'promoBudgets': 'Budgets',
+        'calculations': 'Calculations',
+        'support': 'Support',
+        'promoActivity': 'Activity',
+        'changeStatusHistory': 'Promo Workflow',
+        'summary': 'Summary'
+    },
 
-	'promoStap': {
-		'basicStep1': 'Step 1: Client',
-		'basicStep2': 'Step 2: Product',
-		'basicStep3': 'Step 3: Mechanic',
+    'promoStap': {
+        'basicStep1': 'Step 1: Client',
+        'basicStep2': 'Step 2: Product',
+        'basicStep3': 'Step 3: Mechanic',
         'basicStep4': 'Step 4: Period',
         'basicStep5': 'Step 5: Budget Year (Shopper TE)',
         'basicStep6': 'Step 6: Event',
         'basicStep7': 'Step 7: Settings',
         'basicStep8': 'Step 8: Promo dispatch adjustment',
 
-		'promoBudgetsStep1': 'Step 1: Total Cost Budgets',
-		'promoBudgetsStep2': 'Step 2: Marketing TI Budgets',
+        'promoBudgetsStep1': 'Step 1: Total Cost Budgets',
+        'promoBudgetsStep2': 'Step 2: Marketing TI Budgets',
         'promoBudgetsStep3': 'Step 3: Cost Production Budgets',
         'promoBudgetsStep4': 'Step 4: Add TI (relevant for GA only)',
 
-		'calculationStep1': 'Step 1: Costs and budget',
-		'calculationStep2': 'Step 2: Activity',
-		'calculationStep3': 'Step 3: Financial indicators',
+        'calculationStep1': 'Step 1: Costs and budget',
+        'calculationStep2': 'Step 2: Activity',
+        'calculationStep3': 'Step 3: Financial indicators',
 
-		'promoActivityStep1': 'Step 1: Instore Mechanic & Prices',
-		'promoActivityStep2': 'Step 2: Activity',
+        'promoActivityStep1': 'Step 1: Instore Mechanic & Prices',
+        'promoActivityStep2': 'Step 2: Activity',
 
 
-		'supportStep1': 'Step 1: X-sites',
-		'supportStep2': 'Step 2: Catalog',
-		'supportStep3': 'Step 3: POSM',
-	},
+        'supportStep1': 'Step 1: X-sites',
+        'supportStep2': 'Step 2: Catalog',
+        'supportStep3': 'Step 3: POSM',
+    },
 
-	'button': {
-		'confirm': 'Yes',
-		'cancel': 'No',
-		'ProductList': 'Product List',
-		'FilteredProductList': 'Filtered Products',
-		'Close': 'Close',
-		'updateGroupButtonText': 'Изменить группу'
-	},
+    'button': {
+        'confirm': 'Yes',
+        'cancel': 'No',
+        'ProductList': 'Product List',
+        'FilteredProductList': 'Filtered Products',
+        'Close': 'Close',
+        'updateGroupButtonText': 'Изменить группу'
+    },
 
-	'customtoptoolbar': {
-		'customHistory': 'Changes',
-		'publish': 'Publish',
-		'sendForApproval': 'Send for approval',
-		'reject': 'Reject',
-		'backToDraftPublished': 'Back to Draft (published)',
+    'customtoptoolbar': {
+        'customHistory': 'Changes',
+        'publish': 'Publish',
+        'sendForApproval': 'Send for approval',
+        'reject': 'Reject',
+        'backToDraftPublished': 'Back to Draft (published)',
         'close': 'Close promo',
         'approve': 'Approve',
         'undoPublish': 'Undo publish',
@@ -261,11 +268,11 @@
         'noSelectionError': 'Select task',
     },
 
-	'Category': {
-		'Name': 'Category'
-	},
-	'HistoricalCategory': ['.tpm.Category', '.core.BaseHistoryEntity'],
-	'DeletedCategory': ['.tpm.Category', '.core.BaseDeletedEntity'],
+    'Category': {
+        'Name': 'Category'
+    },
+    'HistoricalCategory': ['.tpm.Category', '.core.BaseHistoryEntity'],
+    'DeletedCategory': ['.tpm.Category', '.core.BaseDeletedEntity'],
 
     'Brand': {
         'Name': 'Brand',
@@ -276,12 +283,12 @@
     'HistoricalBrand': ['.tpm.Brand', '.core.BaseHistoryEntity'],
     'DeletedBrand': ['.tpm.Brand', '.core.BaseDeletedEntity'],
 
-	'NonPromoEquipment': {
+    'NonPromoEquipment': {
         'EquipmentType': 'Equipment type',
         'BudgetItemName': 'Support type',
-	},
-	'HistoricalNonPromoEquipment': ['.tpm.NonPromoEquipment', '.core.BaseHistoryEntity'],
-	'DeletedNonPromoEquipment': ['.tpm.NonPromoEquipment', '.core.BaseDeletedEntity'],
+    },
+    'HistoricalNonPromoEquipment': ['.tpm.NonPromoEquipment', '.core.BaseHistoryEntity'],
+    'DeletedNonPromoEquipment': ['.tpm.NonPromoEquipment', '.core.BaseDeletedEntity'],
 
     'Event': {
         'Name': 'Event',
@@ -289,11 +296,11 @@
     },
     'HistoricalEvent': ['.tpm.Event', '.core.BaseHistoryEntity'],
     'DeletedEvent': ['.tpm.Event', '.core.BaseDeletedEntity'],
-	'Segment': {
-		'Name': 'Segment'
-	},
-	'HistoricalSegment': ['.tpm.Segment', '.core.BaseHistoryEntity'],
-	'DeletedSegment': ['.tpm.Segment', '.core.BaseDeletedEntity'],
+    'Segment': {
+        'Name': 'Segment'
+    },
+    'HistoricalSegment': ['.tpm.Segment', '.core.BaseHistoryEntity'],
+    'DeletedSegment': ['.tpm.Segment', '.core.BaseDeletedEntity'],
 
     'AssortmentMatrix2Plu': {
         'Id': 'Assortment matrix Id',
@@ -305,12 +312,12 @@
         'PluCode': "PLU",
     },
 
-	'Event': {
-		'Name': 'Event',
-		'Description': 'Description'
-	},
-	'HistoricalEvent': ['.tpm.Event', '.core.BaseHistoryEntity'],
-	'DeletedEvent': ['.tpm.Event', '.core.BaseDeletedEntity'],
+    'Event': {
+        'Name': 'Event',
+        'Description': 'Description'
+    },
+    'HistoricalEvent': ['.tpm.Event', '.core.BaseHistoryEntity'],
+    'DeletedEvent': ['.tpm.Event', '.core.BaseDeletedEntity'],
 
     'PLUDictionary': {
         'ClientTreeName': 'Client',
@@ -331,23 +338,23 @@
     'HistoricalTechnology': ['.tpm.Technology', '.core.BaseHistoryEntity'],
     'DeletedTechnology': ['.tpm.Technology', '.core.BaseDeletedEntity'],
 
-	'TechHighLevel': {
-		'Name': 'Tech high level'
-	},
-	'HistoricalTechHighLevel': ['.tpm.TechHighLevel', '.core.BaseHistoryEntity'],
-	'DeletedTechHighLevel': ['.tpm.TechHighLevel', '.core.BaseDeletedEntity'],
+    'TechHighLevel': {
+        'Name': 'Tech high level'
+    },
+    'HistoricalTechHighLevel': ['.tpm.TechHighLevel', '.core.BaseHistoryEntity'],
+    'DeletedTechHighLevel': ['.tpm.TechHighLevel', '.core.BaseDeletedEntity'],
 
-	'Program': {
-		'Name': 'Type'
-	},
-	'HistoricalProgram': ['.tpm.Program', '.core.BaseHistoryEntity'],
-	'DeletedProgram': ['.tpm.Program', '.core.BaseDeletedEntity'],
+    'Program': {
+        'Name': 'Type'
+    },
+    'HistoricalProgram': ['.tpm.Program', '.core.BaseHistoryEntity'],
+    'DeletedProgram': ['.tpm.Program', '.core.BaseDeletedEntity'],
 
-	'Format': {
-		'Name': 'Format'
-	},
-	'HistoricalFormat': ['.tpm.Format', '.core.BaseHistoryEntity'],
-	'DeletedFormat': ['.tpm.Format', '.core.BaseDeletedEntity'],
+    'Format': {
+        'Name': 'Format'
+    },
+    'HistoricalFormat': ['.tpm.Format', '.core.BaseHistoryEntity'],
+    'DeletedFormat': ['.tpm.Format', '.core.BaseDeletedEntity'],
 
     'BrandTech': {
         'Name': 'Brand tech',
@@ -359,23 +366,23 @@
     'HistoricalBrandTech': ['.tpm.BrandTech', '.core.BaseHistoryEntity'],
     'DeletedBrandTech': ['.tpm.BrandTech', '.core.BaseDeletedEntity'],
 
-	'Subrange': {
-		'Name': 'Subrange'
-	},
-	'HistoricalSubrange': ['.tpm.Subrange', '.core.BaseHistoryEntity'],
-	'DeletedSubrange': ['.tpm.Subrange', '.core.BaseDeletedEntity'],
+    'Subrange': {
+        'Name': 'Subrange'
+    },
+    'HistoricalSubrange': ['.tpm.Subrange', '.core.BaseHistoryEntity'],
+    'DeletedSubrange': ['.tpm.Subrange', '.core.BaseDeletedEntity'],
 
-	'AgeGroup': {
-		'Name': 'Age group'
-	},
-	'HistoricalAgeGroup': ['.tpm.AgeGroup', '.core.BaseHistoryEntity'],
-	'DeletedAgeGroup': ['.tpm.AgeGroup', '.core.BaseDeletedEntity'],
+    'AgeGroup': {
+        'Name': 'Age group'
+    },
+    'HistoricalAgeGroup': ['.tpm.AgeGroup', '.core.BaseHistoryEntity'],
+    'DeletedAgeGroup': ['.tpm.AgeGroup', '.core.BaseDeletedEntity'],
 
-	'Variety': {
-		'Name': 'Variety'
-	},
-	'HistoricalVariety': ['.tpm.Variety', '.core.BaseHistoryEntity'],
-	'DeletedVariety': ['.tpm.Variety', '.core.BaseDeletedEntity'],
+    'Variety': {
+        'Name': 'Variety'
+    },
+    'HistoricalVariety': ['.tpm.Variety', '.core.BaseHistoryEntity'],
+    'DeletedVariety': ['.tpm.Variety', '.core.BaseDeletedEntity'],
 
     'Product': {
         'ZREP': 'ZREP',
@@ -415,17 +422,17 @@
         'BrandTechName': 'Brand tech',
         'SubrangeName': 'Subrange',
         'AgeGroupName': 'Age group',
-		'VarietyName': 'Variety',
-		'Brand': 'Brand',
-		'Brand_code': 'Brand code',
-		'Technology': 'Technology',
-		'Tech_code': 'Tech code',
-		'BrandTech': 'Brand Tech',
-		'BrandTech_code': 'Brand Tech code',
-		'Segmen_code': 'Segment code',
+        'VarietyName': 'Variety',
+        'Brand': 'Brand',
+        'Brand_code': 'Brand code',
+        'Technology': 'Technology',
+        'Tech_code': 'Tech code',
+        'BrandTech': 'Brand Tech',
+        'BrandTech_code': 'Brand Tech code',
+        'Segmen_code': 'Segment code',
 
-		'UOM_PC2Case': 'UOM_PC2Case',
-		'Division': 'Division'
+        'UOM_PC2Case': 'UOM_PC2Case',
+        'Division': 'Division'
     },
     'HistoricalProduct': ['.tpm.Product', '.core.BaseHistoryEntity'],
     'DeletedProduct': ['.tpm.Product', '.core.BaseDeletedEntity'],
@@ -453,21 +460,21 @@
         'TradedUnitFormat': 'Traded unit format',
         'ConsumerPackFormat': 'Consumer pack format',
 
-		'EAN_Case': 'EAN Case',
-		'EAN_PC': 'EAN PC',
-		'CategoryName': 'Category',
-		'BrandName': 'Brand',
-		'SegmentName': 'Segment',
-		'TechnologyName': 'Technology',
-		'TechHighLevelName': 'Tech high level',
-		'ProgramName': 'Type',
-		'FormatName': 'Format',
-		'BrandTechName': 'Brand tech',
-		'SubrangeName': 'Subrange',
-		'AgeGroupName': 'Age group',
-		'VarietyName': 'Variety',
+        'EAN_Case': 'EAN Case',
+        'EAN_PC': 'EAN PC',
+        'CategoryName': 'Category',
+        'BrandName': 'Brand',
+        'SegmentName': 'Segment',
+        'TechnologyName': 'Technology',
+        'TechHighLevelName': 'Tech high level',
+        'ProgramName': 'Type',
+        'FormatName': 'Format',
+        'BrandTechName': 'Brand tech',
+        'SubrangeName': 'Subrange',
+        'AgeGroupName': 'Age group',
+        'VarietyName': 'Variety',
 
-		'UOM_PC2Case': 'UOM_PC2Case',
+        'UOM_PC2Case': 'UOM_PC2Case',
 
         'PlanProductCaseQty': 'Plan Product Qty',
         'PlanProductPCQty': 'Plan Product PC Qty',
@@ -489,221 +496,234 @@
     'HistoricalActualProductsView': ['.tpm.ActualProductsView', '.core.BaseHistoryEntity'],
     'DeletedActualProductsView': ['.tpm.ActualProductsView', '.core.BaseDeletedEntity'],
 
-	'ProductTree': {
-		'ProductHierarchyCode': 'Product hierarchy code',
-		'depth': 'Depth',
+    'ProductTree': {
+        'ProductHierarchyCode': 'Product hierarchy code',
+        'depth': 'Depth',
         'Name': 'Name',
         'Description_ru': 'Name RU',
-		'Abbreviation': 'Abbreviation',
-		'NodePriority': 'Node priority',
-		'StartDate': 'Start Date',
-		'EndDate': 'End Date',
-		'NodeTypeName': 'NodeType Name',
-		'Type': 'Type',
-		'ProductCount': 'Product count',
-		'ErrorNoBrandTech': 'No technology connected with this brand'
-	},
+        'Abbreviation': 'Abbreviation',
+        'NodePriority': 'Node priority',
+        'StartDate': 'Start Date',
+        'EndDate': 'End Date',
+        'NodeTypeName': 'NodeType Name',
+        'Type': 'Type',
+        'ProductCount': 'Product count',
+        'ErrorNoBrandTech': 'No technology connected with this brand'
+    },
 
-	'Region': {
-		'Name': 'Регион'
-	},
-	'HistoricalRegion': ['.tpm.Region', '.core.BaseHistoryEntity'],
-	'DeletedRegion': ['.tpm.Region', '.core.BaseDeletedEntity'],
+    'Region': {
+        'Name': 'Регион'
+    },
+    'HistoricalRegion': ['.tpm.Region', '.core.BaseHistoryEntity'],
+    'DeletedRegion': ['.tpm.Region', '.core.BaseDeletedEntity'],
 
-	'CommercialNet': {
-		'Name': 'Торговая сеть'
-	},
-	'HistoricalCommercialNet': ['.tpm.CommercialNet', '.core.BaseHistoryEntity'],
-	'DeletedCommercialNet': ['.tpm.CommercialNet', '.core.BaseDeletedEntity'],
+    'CommercialNet': {
+        'Name': 'Торговая сеть'
+    },
+    'HistoricalCommercialNet': ['.tpm.CommercialNet', '.core.BaseHistoryEntity'],
+    'DeletedCommercialNet': ['.tpm.CommercialNet', '.core.BaseDeletedEntity'],
 
-	'CommercialSubnet': {
-		'Name': 'Торговая подсеть',
-		'CommercialNetName': 'Торговая сеть'
-	},
-	'HistoricalCommercialSubnet': ['.tpm.CommercialSubnet', '.core.BaseHistoryEntity'],
-	'DeletedCommercialSubnet': ['.tpm.CommercialSubnet', '.core.BaseDeletedEntity'],
+    'CommercialSubnet': {
+        'Name': 'Торговая подсеть',
+        'CommercialNetName': 'Торговая сеть'
+    },
+    'HistoricalCommercialSubnet': ['.tpm.CommercialSubnet', '.core.BaseHistoryEntity'],
+    'DeletedCommercialSubnet': ['.tpm.CommercialSubnet', '.core.BaseDeletedEntity'],
 
-	'Distributor': {
-		'Name': 'Дистрибьютор'
-	},
-	'HistoricalDistributor': ['.tpm.Distributor', '.core.BaseHistoryEntity'],
-	'DeletedDistributor': ['.tpm.Distributor', '.core.BaseDeletedEntity'],
+    'Distributor': {
+        'Name': 'Дистрибьютор'
+    },
+    'HistoricalDistributor': ['.tpm.Distributor', '.core.BaseHistoryEntity'],
+    'DeletedDistributor': ['.tpm.Distributor', '.core.BaseDeletedEntity'],
 
-	'StoreType': {
-		'Name': 'Тип магазина'
-	},
-	'HistoricalStoreType': ['.tpm.StoreType', '.core.BaseHistoryEntity'],
-	'DeletedStoreType': ['.tpm.StoreType', '.core.BaseDeletedEntity'],
+    'StoreType': {
+        'Name': 'Тип магазина'
+    },
+    'HistoricalStoreType': ['.tpm.StoreType', '.core.BaseHistoryEntity'],
+    'DeletedStoreType': ['.tpm.StoreType', '.core.BaseDeletedEntity'],
 
-	'Client': {
-		'CommercialSubnetCommercialNetName': 'Торговая сеть',
-		'CommercialSubnetName': 'Торговая подсеть',
-	},
-	'HistoricalClient': ['.tpm.Client', '.core.BaseHistoryEntity'],
-	'DeletedClient': ['.tpm.Client', '.core.BaseDeletedEntity'],
+    'Client': {
+        'CommercialSubnetCommercialNetName': 'Торговая сеть',
+        'CommercialSubnetName': 'Торговая подсеть',
+    },
+    'HistoricalClient': ['.tpm.Client', '.core.BaseHistoryEntity'],
+    'DeletedClient': ['.tpm.Client', '.core.BaseDeletedEntity'],
 
-	'Mechanic': {
-		'Name': 'Name',
-		'SystemName': 'System name'
-	},
-	'HistoricalMechanic': ['.tpm.Mechanic', '.core.BaseHistoryEntity'],
-	'DeletedMechanic': ['.tpm.Mechanic', '.core.BaseDeletedEntity'],
+    'Mechanic': {
+        'Name': 'Name',
+        'SystemName': 'System name'
+    },
+    'HistoricalMechanic': ['.tpm.Mechanic', '.core.BaseHistoryEntity'],
+    'DeletedMechanic': ['.tpm.Mechanic', '.core.BaseDeletedEntity'],
 
-	'MechanicType': {
-		'Name': 'Name',
-		'Discount': 'Discount, %'
-	},
-	'HistoricalMechanicType': ['.tpm.MechanicType', '.core.BaseHistoryEntity'],
-	'DeletedMechanicType': ['.tpm.MechanicType', '.core.BaseDeletedEntity'],
+    'MechanicType': {
+        'Name': 'Name',
+        'Discount': 'Discount, %'
+    },
+    'HistoricalMechanicType': ['.tpm.MechanicType', '.core.BaseHistoryEntity'],
+    'DeletedMechanicType': ['.tpm.MechanicType', '.core.BaseDeletedEntity'],
 
-	'PromoStatus': {
-		'Name': 'Name',
-		'SystemName': 'System name',
-		'Color': 'Color'
-	},
-	'HistoricalPromoStatus': ['.tpm.PromoStatus', '.core.BaseHistoryEntity'],
-	'DeletedPromoStatus': ['.tpm.PromoStatus', '.core.BaseDeletedEntity'],
+    'PromoStatus': {
+        'Name': 'Name',
+        'SystemName': 'System name',
+        'Color': 'Color'
+    },
+    'HistoricalPromoStatus': ['.tpm.PromoStatus', '.core.BaseHistoryEntity'],
+    'DeletedPromoStatus': ['.tpm.PromoStatus', '.core.BaseDeletedEntity'],
 
-	'RejectReason': {
-		'Name': 'Name',
-		'SystemName': 'System name'
-	},
-	'HistoricalRejectReason': ['.tpm.RejectReason', '.core.BaseHistoryEntity'],
-	'DeletedRejectReason': ['.tpm.RejectReason', '.core.BaseDeletedEntity'],
+    'RejectReason': {
+        'Name': 'Name',
+        'SystemName': 'System name'
+    },
+    'HistoricalRejectReason': ['.tpm.RejectReason', '.core.BaseHistoryEntity'],
+    'DeletedRejectReason': ['.tpm.RejectReason', '.core.BaseDeletedEntity'],
 
-	'Budget': {
-		'Name': 'Name'
-	},
-	'HistoricalBudget': ['.tpm.Budget', '.core.BaseHistoryEntity'],
-	'DeletedBudget': ['.tpm.Budget', '.core.BaseDeletedEntity'],
+    'Budget': {
+        'Name': 'Name'
+    },
+    'HistoricalBudget': ['.tpm.Budget', '.core.BaseHistoryEntity'],
+    'DeletedBudget': ['.tpm.Budget', '.core.BaseDeletedEntity'],
 
-	'BudgetItem': {
-		'Name': 'Item',
-		'BudgetName': 'Budget',
-		'ButtonColor': 'Button color'
-	},
-	'HistoricalBudgetItem': ['.tpm.BudgetItem', '.core.BaseHistoryEntity'],
-	'DeletedBudgetItem': ['.tpm.BudgetItem', '.core.BaseDeletedEntity'],
+    'BudgetItem': {
+        'Name': 'Item',
+        'BudgetName': 'Budget',
+        'ButtonColor': 'Button color'
+    },
+    'HistoricalBudgetItem': ['.tpm.BudgetItem', '.core.BaseHistoryEntity'],
+    'DeletedBudgetItem': ['.tpm.BudgetItem', '.core.BaseDeletedEntity'],
 
-	'Promo': {
-		'StartDate': 'Start date',
+    'CompetitorPromo': {
+        'Price': 'Shelf price',
+        'Discount': 'Discount',
+        'CompetitorName': 'Competitor',
+        'Subranges': 'Subranges',
+        'ClientTreeFullPathName': 'ClientHierarchy',
+        'ClientTreeObjectId': 'ClientId',
+    },
+    'HistoricalCompetitorPromo': ['.tpm.CompetitorPromo', '.core.BaseHistoryEntity'],
+    'DeletedCompetitorPromo': ['.tpm.CompetitorPromo', '.core.BaseDeletedEntity'],
+
+    'Promo': {
+        'StartDate': 'Start date',
         'DateStart': 'Start date',
         'BudgetYear': 'Year',
-		'LastChangedDate': 'Last Changed Date',
-		'LastChangedDateDemand': 'Last Changed Date Demand',
-		'LastChangedDateFinance': 'Last Changed Date Finance',
-		'EndDate': 'End date',
-		'DateEnd': 'End date',
-		'DispatchesStart': 'Dispatch start',
-		'DispatchesEnd': 'Dispatch end',
-		'MarsStartDate': 'Mars Start date',
-		'MarsEndDate': 'Mars End date',
-		'MarsDispatchesStart': 'Mars Dispatch start',
-		'MarsDispatchesEnd': 'Mars Dispatch end',
-		'Number': 'Promo ID',
-		'Name': 'Promo name',
-		'BrandName': 'Brand',
-		'BrandTechName': 'Brandtech',
-		'ProductZREP': 'Product',
-		'MechanicComment': 'Mechanic comment',
-		'PromoStatusName': 'Status',
-		'Mechanic': 'Mars mechanic',
-		'MarsMechanicName': 'Mars mechanic',
-		'MarsMechanicTypeName': 'Mars mechanic type',
-		'MarsMechanicDiscount': 'Mars mechanic discount, %',
-		'MechanicIA': 'IA mechanic',
-		'PlanInstoreMechanicName': 'Plan Instore Mechanic Name',
-		'PlanInstoreMechanicNameTip': 'Forecasted mechanic in store',
-		'PlanInstoreMechanicTypeName': 'Plan Instore Mechanic Type Name',
-		'PlanInstoreMechanicTypeNameTip': 'Forecasted mechanic type instore with co investment from client',
-		'PlanInstoreMechanicDiscount': 'Plan Instore Mechanic Discount',
-		'PlanInstoreMechanicDiscountTip': 'Forecasted discount instore with co investment from client',
-		'CalendarPriority': 'Calendar view priority',
-		'ProductFilter': 'Product filter',
-		'ProductFilterDisplay': 'Product filter',
-		'ColorSystemName': 'Color',
-		'ColorDisplayName': 'Color',
-		'BudgetHeader': 'Budget',
-		'ToolbarDetail': 'View',
-		'MechanicName': 'Mechanic',
-		'MechanicDiscount': 'Mechanic discount, %',
-		'MechanicTypeName': 'Mechanic type',
-		'ClientHierarchy': 'Client',
-		'ProductHierarchy': 'Product hierarchy',
+        'LastChangedDate': 'Last Changed Date',
+        'LastChangedDateDemand': 'Last Changed Date Demand',
+        'LastChangedDateFinance': 'Last Changed Date Finance',
+        'EndDate': 'End date',
+        'DateEnd': 'End date',
+        'DispatchesStart': 'Dispatch start',
+        'DispatchesEnd': 'Dispatch end',
+        'MarsStartDate': 'Mars Start date',
+        'MarsEndDate': 'Mars End date',
+        'MarsDispatchesStart': 'Mars Dispatch start',
+        'MarsDispatchesEnd': 'Mars Dispatch end',
+        'Number': 'Promo ID',
+        'Name': 'Promo name',
+        'BrandName': 'Brand',
+        'CompetitorName': 'Competitor',
+        'CompetitorBrandTechName': 'Competitor BrandTech',
+        'BrandTechName': 'Brandtech',
+        'ProductZREP': 'Product',
+        'MechanicComment': 'Mechanic comment',
+        'PromoStatusName': 'Status',
+        'Mechanic': 'Mars mechanic',
+        'MarsMechanicName': 'Mars mechanic',
+        'MarsMechanicTypeName': 'Mars mechanic type',
+        'MarsMechanicDiscount': 'Mars mechanic discount, %',
+        'MechanicIA': 'IA mechanic',
+        'PlanInstoreMechanicName': 'Plan Instore Mechanic Name',
+        'PlanInstoreMechanicNameTip': 'Forecasted mechanic in store',
+        'PlanInstoreMechanicTypeName': 'Plan Instore Mechanic Type Name',
+        'PlanInstoreMechanicTypeNameTip': 'Forecasted mechanic type instore with co investment from client',
+        'PlanInstoreMechanicDiscount': 'Plan Instore Mechanic Discount',
+        'PlanInstoreMechanicDiscountTip': 'Forecasted discount instore with co investment from client',
+        'CalendarPriority': 'Calendar view priority',
+        'ProductFilter': 'Product filter',
+        'ProductFilterDisplay': 'Product filter',
+        'ColorSystemName': 'Color',
+        'ColorDisplayName': 'Color',
+        'BudgetHeader': 'Budget',
+        'ToolbarDetail': 'View',
+        'MechanicName': 'Mechanic',
+        'MechanicDiscount': 'Mechanic discount, %',
+        'MechanicTypeName': 'Mechanic type',
+        'ClientHierarchy': 'Client',
+        'ProductHierarchy': 'Product hierarchy',
 
-		'InstoreAssumption': 'Instore assumption',
+        'InstoreAssumption': 'Instore assumption',
 
-		'EventName': 'Event',
-		'EventDescription': 'Description',
+        'EventName': 'Event',
+        'EventDescription': 'Description',
 
-		'PlanPromoCost': 'Total Cost, MRUR',
-		'PlanPromoTIMarketing': 'Marketing TI',
-		'PlanPromoCostProduction': 'Cost Production',
-		'PlanPromoTIShopper': 'Shopper TI',
-		'PlanPromoBranding': 'Branding',
-		'PlanPromoBTL': 'BTL',
+        'PlanPromoCost': 'Total Cost, MRUR',
+        'PlanPromoTIMarketing': 'Marketing TI',
+        'PlanPromoCostProduction': 'Cost Production',
+        'PlanPromoTIShopper': 'Shopper TI',
+        'PlanPromoBranding': 'Branding',
+        'PlanPromoBTL': 'BTL',
 
-		'PlanPromoUpliftPercent': 'Plan Promo Uplift, %',
-		'PlanPromoIncrementalLSV': 'Plan Promo Incremental LSV',
-		'PlanPromoLSV': 'Plan Promo LSV',
-		'PlanPromoBaselineLSV': 'Plan Promo Baseline LSV',
-		'PlanPromoPostPromoEffectLSV': 'Plan Post Promo Effect LSV',
-		'PlanPostPromoEffectTotal': 'Plan Post Promo Effect LSV',
-		'PlanPromoPostPromoEffectLSVW1': 'Plan Post Promo Effect LSV W1',
-		'PlanPromoPostPromoEffectLSVW2': 'Plan Post Promo Effect LSV W2',
+        'PlanPromoUpliftPercent': 'Plan Promo Uplift, %',
+        'PlanPromoIncrementalLSV': 'Plan Promo Incremental LSV',
+        'PlanPromoLSV': 'Plan Promo LSV',
+        'PlanPromoBaselineLSV': 'Plan Promo Baseline LSV',
+        'PlanPromoPostPromoEffectLSV': 'Plan Post Promo Effect LSV',
+        'PlanPostPromoEffectTotal': 'Plan Post Promo Effect LSV',
+        'PlanPromoPostPromoEffectLSVW1': 'Plan Post Promo Effect LSV W1',
+        'PlanPromoPostPromoEffectLSVW2': 'Plan Post Promo Effect LSV W2',
 
-		'PromoUpliftPercent': 'Promo Uplift %',
-		'PromoIncrementalLSV': 'Promo Incremental LSV',
-		'PromoLSV': 'Promo LSV',
-		'PromoBaselineLSV': 'Promo Baseline LSV',
-		'PromoPostPromoEffectLSV': 'Post Promo Effect LSV total',
-		'PostPromoEffectTotal': 'Post promo effect, Total %',
-		'PromoPostPromoEffectLSVW1': 'Post Promo Effect W1, %',
-		'PromoPostPromoEffectLSVW2': 'Post Promo Effect W2, %',
+        'PromoUpliftPercent': 'Promo Uplift %',
+        'PromoIncrementalLSV': 'Promo Incremental LSV',
+        'PromoLSV': 'Promo LSV',
+        'PromoBaselineLSV': 'Promo Baseline LSV',
+        'PromoPostPromoEffectLSV': 'Post Promo Effect LSV total',
+        'PostPromoEffectTotal': 'Post promo effect, Total %',
+        'PromoPostPromoEffectLSVW1': 'Post Promo Effect W1, %',
+        'PromoPostPromoEffectLSVW2': 'Post Promo Effect W2, %',
 
-		'PlanPromoROIPercent': 'Plan Promo ROI, %',
-		'PlanPromoIncrementalNSV': 'Plan Promo Incremental NSV, RUR',
-		'PlanPromoNetIncrementalNSV': 'Plan Promo Net Incremental NSV, RUR',
-		'PlanPromoIncrementalMAC': 'Plan Promo Incremental Mac, RUR',
+        'PlanPromoROIPercent': 'Plan Promo ROI, %',
+        'PlanPromoIncrementalNSV': 'Plan Promo Incremental NSV, RUR',
+        'PlanPromoNetIncrementalNSV': 'Plan Promo Net Incremental NSV, RUR',
+        'PlanPromoIncrementalMAC': 'Plan Promo Incremental Mac, RUR',
 
-		'ActualPromoCost': 'Total Cost, MRUR',
-		'ActualPromoTIMarketing': 'Marketing TI',
-		'ActualPromoCostProduction': 'Cost Production',
-		'ActualPromoTIShopper': 'Shopper TI',
-		'ActualPromoBranding': 'Branding',
-		'ActualPromoBTL': 'BTL',
-		'ActualPostPromoEffect': 'Actual Post Promo Effect',
+        'ActualPromoCost': 'Total Cost, MRUR',
+        'ActualPromoTIMarketing': 'Marketing TI',
+        'ActualPromoCostProduction': 'Cost Production',
+        'ActualPromoTIShopper': 'Shopper TI',
+        'ActualPromoBranding': 'Branding',
+        'ActualPromoBTL': 'BTL',
+        'ActualPostPromoEffect': 'Actual Post Promo Effect',
 
-		'ActualPromoUpliftPercent': 'Promo Uplift %',
-		'ActualPromoIncrementalLSV': 'Promo Incremental LSV',
-		'ActualPromoLSV': 'Actual Promo LSV, RUR',
-		'ActualPromoLSVByCompensation': 'Promo LSV by Compensation',
-		'ActualPromoPostPromoEffectLSV': 'Post Promo Effect LSV total',
-		'FactPostPromoEffectTotal': 'Post Promo Effect LSV total',
-		'ActualPromoPostPromoEffectLSVW1': 'Post Promo Effect W1, %',
-		'ActualPromoPostPromoEffectLSVW2': 'Post Promo Effect W2, %',
+        'ActualPromoUpliftPercent': 'Promo Uplift %',
+        'ActualPromoIncrementalLSV': 'Promo Incremental LSV',
+        'ActualPromoLSV': 'Actual Promo LSV, RUR',
+        'ActualPromoLSVByCompensation': 'Promo LSV by Compensation',
+        'ActualPromoPostPromoEffectLSV': 'Post Promo Effect LSV total',
+        'FactPostPromoEffectTotal': 'Post Promo Effect LSV total',
+        'ActualPromoPostPromoEffectLSVW1': 'Post Promo Effect W1, %',
+        'ActualPromoPostPromoEffectLSVW2': 'Post Promo Effect W2, %',
 
-		'ActualPromoROIPercent': 'Actual Promo ROI, %',
-		'ActualPromoBaselineLSV': 'Promo Baseline LSV',
-		'ActualPromoIncrementalNSV': 'Actual Promo Incremental NSV, RUR',
-		'ActualPromoNetIncrementalNSV': 'Actual Promo Net Incremental NSV, RUR',
-		'ActualPromoIncrementalMAC': 'Actual Promo Incremental MAC, RUR',
+        'ActualPromoROIPercent': 'Actual Promo ROI, %',
+        'ActualPromoBaselineLSV': 'Promo Baseline LSV',
+        'ActualPromoIncrementalNSV': 'Actual Promo Incremental NSV, RUR',
+        'ActualPromoNetIncrementalNSV': 'Actual Promo Net Incremental NSV, RUR',
+        'ActualPromoIncrementalMAC': 'Actual Promo Incremental MAC, RUR',
 
-		'PlanInStoreShelfPrice': 'In Store Shelf Price',
+        'PlanInStoreShelfPrice': 'In Store Shelf Price',
         'ActualInStoreShelfPrice': 'In Store Shelf Price',
         'SumInvoice': 'Sum Invoice',
         'SumInvoiceRegex': 'Только цифры и \',\' разрешено вводить',
-		'InvoiceNumber': 'Invoice number',
-		'InvoiceNumberRegex': 'Only letters, numbers and \',\' allowed. Each code must be at least 4 symbols long.',
-		'DocumentNumber': 'Document number',
-		'DocumentNumberRegex': 'Only letters, numbers and \',\' allowed. Each code must be at least 4 symbols long.',
+        'InvoiceNumber': 'Invoice number',
+        'InvoiceNumberRegex': 'Only letters, numbers and \',\' allowed. Each code must be at least 4 symbols long.',
+        'DocumentNumber': 'Document number',
+        'DocumentNumberRegex': 'Only letters, numbers and \',\' allowed. Each code must be at least 4 symbols long.',
 
 
-		'Quantity': 'Quantity',
-		'ProdCostPer1': 'Prod cost per 1 item',
-		'CostTE': 'Cost TE',
-		'ProdCostTotal': 'Prod cost total',
-		'Event': 'Event',
+        'Quantity': 'Quantity',
+        'ProdCostPer1': 'Prod cost per 1 item',
+        'CostTE': 'Cost TE',
+        'ProdCostTotal': 'Prod cost total',
+        'Event': 'Event',
 
         'Plan': 'Plan',
         'Fact': 'Fact',
@@ -724,73 +744,73 @@
         'ActualAddTIShopper': 'Add TI Shopper',
         'ActualAddTIMarketing': 'Add TI Marketing',
 
-		'PromoEventName': 'Promo Event Name',
-		'PromoEventDescription': 'Promo Event Description',
-		'PromoDuration': 'Promo duration',
-		'DispatchDuration': 'Dispatch Duration',
-		'PlanPromoXSites': 'Plan Promo XSites',
-		'PlanPromoCatalogue': 'Plan Promo Catalogue',
-		'PlanPromoPOSMInClient': 'Plan PromoPOSMInClient',
-		'PlanPromoCostProdXSites': 'Plan PromoCostProdXSites',
-		'PlanPromoCostProdCatalogue': 'Plan PromoCostProdCatalogue',
-		'PlanPromoCostProdPOSMInClient': 'Plan PromoCostProdPOSMInClient',
-		'ActualPromoXSites': 'Actual Promo XSites',
-		'ActualPromoCatalogue': 'Actual Promo Catalogue',
-		'ActualPromoPOSMInClient': 'Actual Promo POSM In Client',
-		'ActualPromoCostProdXSites': 'Actual Promo CostProdXSites',
-		'ActualPromoCostProdCatalogue': 'Actual Promo Cost ProdCatalogue',
-		'ActualPromoCostProdPOSMInClient': 'Actual Promo Cost ProdPOSMInClient',
-		'PlanPromoIncrementalBaseTI': 'Plan Promo Incremental BaseTI',
-		'PlanPromoIncrementalCOGS': 'Plan Promo Incremental COGS',
-		'PlanPromoTotalCost': 'Plan Promo Total Cost',
-		'PlanPromoNetIncrementalLSV': 'Plan Promo Net Incremental LSV',
-		'PlanPromoNetLSV': 'PlanPromo Net LSV',
-		'PlanPromoNetIncrementalMAC': 'Plan Promo Net Incremental MAC',
-		'PlanPromoIncrementalEarnings': 'Plan Promo Incremental Earnings',
-		'PlanPromoNetIncrementalEarnings': 'Plan Promo Net Incremental Earnings',
-		'PlanPromoNetUpliftPercent': 'Plan Promo Net Uplift Percent',
-		'ActualInStoreDiscount': 'Actual InStore Discount',
-		'ActualPromoIncrementalBaseTI': 'Actual Promo Incremental BaseTI',
-		'ActualPromoIncrementalCOGS': 'Actual Promo Incremental COGS',
-		'ActualPromoTotalCost': 'Actual Promo Total Cost',
-		'ActualPromoNetIncrementalLSV': 'Actual Promo Net Incremental LSV',
-		'ActualPromoNetLSV': 'Actual Promo Net LSV',
-		'ActualPromoNetIncrementalMAC': 'Actual Promo Net Incremental MAC',
-		'ActualPromoIncrementalEarnings': 'Actual Promo Incremental Earnings',
-		'ActualPromoNetIncrementalEarnings': 'Actual Promo Net Incremental Earnings',
-		'ActualPromoNetROIPercent': 'Actual Promo Net ROI Percent',
-		'ActualPromoNetUpliftPercent': 'Actual Promo Net Uplift Percent',
-		'ActualInStoreMechanicName': 'Actual InStore Mechanic Name',
-		'ActualInStoreMechanicTypeName': 'Actual InStore Mechanic Type Name',
-		'ChangeStateOnlyButtonText': 'Зависящие от меня',
-		'CreateCollapsed': 'Create<br>Promo',
-		'CreateInOutCollapsed': 'Create<br>Promo<br>InOut',
-		'CreateExpanded': 'Create Promo',
-		'CreateInOutExpanded': 'Create Promo InOut',
+        'PromoEventName': 'Promo Event Name',
+        'PromoEventDescription': 'Promo Event Description',
+        'PromoDuration': 'Promo duration',
+        'DispatchDuration': 'Dispatch Duration',
+        'PlanPromoXSites': 'Plan Promo XSites',
+        'PlanPromoCatalogue': 'Plan Promo Catalogue',
+        'PlanPromoPOSMInClient': 'Plan PromoPOSMInClient',
+        'PlanPromoCostProdXSites': 'Plan PromoCostProdXSites',
+        'PlanPromoCostProdCatalogue': 'Plan PromoCostProdCatalogue',
+        'PlanPromoCostProdPOSMInClient': 'Plan PromoCostProdPOSMInClient',
+        'ActualPromoXSites': 'Actual Promo XSites',
+        'ActualPromoCatalogue': 'Actual Promo Catalogue',
+        'ActualPromoPOSMInClient': 'Actual Promo POSM In Client',
+        'ActualPromoCostProdXSites': 'Actual Promo CostProdXSites',
+        'ActualPromoCostProdCatalogue': 'Actual Promo Cost ProdCatalogue',
+        'ActualPromoCostProdPOSMInClient': 'Actual Promo Cost ProdPOSMInClient',
+        'PlanPromoIncrementalBaseTI': 'Plan Promo Incremental BaseTI',
+        'PlanPromoIncrementalCOGS': 'Plan Promo Incremental COGS',
+        'PlanPromoTotalCost': 'Plan Promo Total Cost',
+        'PlanPromoNetIncrementalLSV': 'Plan Promo Net Incremental LSV',
+        'PlanPromoNetLSV': 'PlanPromo Net LSV',
+        'PlanPromoNetIncrementalMAC': 'Plan Promo Net Incremental MAC',
+        'PlanPromoIncrementalEarnings': 'Plan Promo Incremental Earnings',
+        'PlanPromoNetIncrementalEarnings': 'Plan Promo Net Incremental Earnings',
+        'PlanPromoNetUpliftPercent': 'Plan Promo Net Uplift Percent',
+        'ActualInStoreDiscount': 'Actual InStore Discount',
+        'ActualPromoIncrementalBaseTI': 'Actual Promo Incremental BaseTI',
+        'ActualPromoIncrementalCOGS': 'Actual Promo Incremental COGS',
+        'ActualPromoTotalCost': 'Actual Promo Total Cost',
+        'ActualPromoNetIncrementalLSV': 'Actual Promo Net Incremental LSV',
+        'ActualPromoNetLSV': 'Actual Promo Net LSV',
+        'ActualPromoNetIncrementalMAC': 'Actual Promo Net Incremental MAC',
+        'ActualPromoIncrementalEarnings': 'Actual Promo Incremental Earnings',
+        'ActualPromoNetIncrementalEarnings': 'Actual Promo Net Incremental Earnings',
+        'ActualPromoNetROIPercent': 'Actual Promo Net ROI Percent',
+        'ActualPromoNetUpliftPercent': 'Actual Promo Net Uplift Percent',
+        'ActualInStoreMechanicName': 'Actual InStore Mechanic Name',
+        'ActualInStoreMechanicTypeName': 'Actual InStore Mechanic Type Name',
+        'ChangeStateOnlyButtonText': 'Зависящие от меня',
+        'CreateCollapsed': 'Create<br>Promo',
+        'CreateInOutCollapsed': 'Create<br>Promo<br>InOut',
+        'CreateExpanded': 'Create Promo',
+        'CreateInOutExpanded': 'Create Promo InOut',
 
-		'PlanPromoBaselineBaseTI': 'Plan Promo Baseline Base TI',
-		'PlanPromoBaseTI': 'Plan Promo Base TI',
-		'PlanPromoNetNSV': 'Plan Promo Net NSV',
-		'ActualPromoBaselineBaseTI': 'Actual Promo Baseline Base TI',
-		'ActualPromoBaseTI': 'Actual Promo Base TI',
-		'ActualPromoNetNSV': 'Actual Promo Net NSV',
+        'PlanPromoBaselineBaseTI': 'Plan Promo Baseline Base TI',
+        'PlanPromoBaseTI': 'Plan Promo Base TI',
+        'PlanPromoNetNSV': 'Plan Promo Net NSV',
+        'ActualPromoBaselineBaseTI': 'Actual Promo Baseline Base TI',
+        'ActualPromoBaseTI': 'Actual Promo Base TI',
+        'ActualPromoNetNSV': 'Actual Promo Net NSV',
 
-		'failMinDate': 'The date in this field must be equal to or after {0}',
-		'failMaxDate': 'The date in this field must be equal to or before {0}',
-		'PlanPromoIncrementalNetLSV': 'Plan Promo Incremental Net LSV',
-		'BaseClientTreeIds': 'Base ClientTree Ids',
-		'PromoStatusSystemName': 'Promo Status System Name',
-		'NeedRecountUplift': 'Need Recount Uplift',
-		'LastApprovedDate': 'Last Approved Date',
+        'failMinDate': 'The date in this field must be equal to or after {0}',
+        'failMaxDate': 'The date in this field must be equal to or before {0}',
+        'PlanPromoIncrementalNetLSV': 'Plan Promo Incremental Net LSV',
+        'BaseClientTreeIds': 'Base ClientTree Ids',
+        'PromoStatusSystemName': 'Promo Status System Name',
+        'NeedRecountUplift': 'Need Recount Uplift',
+        'LastApprovedDate': 'Last Approved Date',
 
-		'IsAutomaticallyApproved': 'Is Automatically Approved',
-		'IsCMManagerApproved': 'Is CM Manager Approved',
-		'IsDemandPlanningApproved': 'Is DemandPlanning Approved',
-		'IsDemandFinanceApproved': 'Is DemandFinance Approved',
-		'OtherEventName': 'Other Event Name',
-		'PromoStatusColor': 'Promo Status Color',
-		'RejectReasonName': 'Reject Reason Name',
-		'ProductTreeObjectIds': 'Product Tree ObjectIds',
+        'IsAutomaticallyApproved': 'Is Automatically Approved',
+        'IsCMManagerApproved': 'Is CM Manager Approved',
+        'IsDemandPlanningApproved': 'Is DemandPlanning Approved',
+        'IsDemandFinanceApproved': 'Is DemandFinance Approved',
+        'OtherEventName': 'Other Event Name',
+        'PromoStatusColor': 'Promo Status Color',
+        'RejectReasonName': 'Reject Reason Name',
+        'ProductTreeObjectIds': 'Product Tree ObjectIds',
 
         //Для исторической модели
         'PlanPromoNetROIPercent': 'Plan Promo Net ROI Percent',
@@ -823,63 +843,63 @@
     'DeletedPromo': ['.tpm.Promo', '.core.BaseDeletedEntity'],
     'PromoView': ['.tpm.Promo'],
 
-	'Demand': {
-		'StartDate': 'StartDate',
-		'EndDate': 'EndDate',
-		'DispatchesStart': 'DispatchesStart',
-		'DispatchesEnd': 'DispatchesEnd',
-		'Number': 'Promo ID',
-		'Name': 'Promo name',
-		'PlanBaseline': 'PlanBaseline',
-		'PlanDuration': 'PlanDuration',
-		'PlanUplift': 'PlanUplift',
-		'PlanIncremental': 'PlanIncremental',
-		'PlanActivity': 'PlanActivity',
-		'PlanSteal': 'PlanSteal',
-		'FactBaseline': 'FactBaseline',
-		'FactDuration': 'FactDuration',
-		'FactUplift': 'FactUplift',
-		'FactIncremental': 'FactIncremental',
-		'FactActivity': 'FactActivity',
-		'FactSteal': 'FactSteal',
-		'ClientCommercialSubnetCommercialNetName': 'Customer',
-		'BrandName': 'Brand',
-		'BrandTechName': 'BrandTech'
-	},
-	'HistoricalDemand': ['.tpm.Demand', '.core.BaseHistoryEntity'],
-	'DeletedDemand': ['.tpm.Demand', '.core.BaseDeletedEntity'],
+    'Demand': {
+        'StartDate': 'StartDate',
+        'EndDate': 'EndDate',
+        'DispatchesStart': 'DispatchesStart',
+        'DispatchesEnd': 'DispatchesEnd',
+        'Number': 'Promo ID',
+        'Name': 'Promo name',
+        'PlanBaseline': 'PlanBaseline',
+        'PlanDuration': 'PlanDuration',
+        'PlanUplift': 'PlanUplift',
+        'PlanIncremental': 'PlanIncremental',
+        'PlanActivity': 'PlanActivity',
+        'PlanSteal': 'PlanSteal',
+        'FactBaseline': 'FactBaseline',
+        'FactDuration': 'FactDuration',
+        'FactUplift': 'FactUplift',
+        'FactIncremental': 'FactIncremental',
+        'FactActivity': 'FactActivity',
+        'FactSteal': 'FactSteal',
+        'ClientCommercialSubnetCommercialNetName': 'Customer',
+        'BrandName': 'Brand',
+        'BrandTechName': 'BrandTech'
+    },
+    'HistoricalDemand': ['.tpm.Demand', '.core.BaseHistoryEntity'],
+    'DeletedDemand': ['.tpm.Demand', '.core.BaseDeletedEntity'],
 
-	'PromoSales': {
-		'StartDate': 'StartDate',
-		'EndDate': 'EndDate',
-		'DispatchesStart': 'DispatchesStart',
-		'DispatchesEnd': 'DispatchesEnd',
-		'Number': 'Promo ID',
-		'Name': 'Promo name',
-		'ClientCommercialSubnetCommercialNetName': 'Customer',
-		'BrandName': 'Brand',
-		'BrandTechName': 'BrandTech',
-		'ProductZREP': 'Product',
-		'PromoStatusName': 'PromoStatus',
-		'MechanicName': 'Mechanic',
-		'MechanicDiscount': 'Mechanic discount, %',
-		'MechanicTypeName': 'Mechanic type',
-		'Plan': 'План',
-		'Fact': 'Факт',
-		'BudgetItemBudgetName': 'Бюджет',
-		'BudgetItemName': 'Бюджетная статья'
-	},
-	'HistoricalPromoSales': ['.tpm.PromoSales', '.core.BaseHistoryEntity'],
-	'DeletedPromoSales': ['.tpm.PromoSales', '.core.BaseDeletedEntity'],
+    'PromoSales': {
+        'StartDate': 'StartDate',
+        'EndDate': 'EndDate',
+        'DispatchesStart': 'DispatchesStart',
+        'DispatchesEnd': 'DispatchesEnd',
+        'Number': 'Promo ID',
+        'Name': 'Promo name',
+        'ClientCommercialSubnetCommercialNetName': 'Customer',
+        'BrandName': 'Brand',
+        'BrandTechName': 'BrandTech',
+        'ProductZREP': 'Product',
+        'PromoStatusName': 'PromoStatus',
+        'MechanicName': 'Mechanic',
+        'MechanicDiscount': 'Mechanic discount, %',
+        'MechanicTypeName': 'Mechanic type',
+        'Plan': 'План',
+        'Fact': 'Факт',
+        'BudgetItemBudgetName': 'Бюджет',
+        'BudgetItemName': 'Бюджетная статья'
+    },
+    'HistoricalPromoSales': ['.tpm.PromoSales', '.core.BaseHistoryEntity'],
+    'DeletedPromoSales': ['.tpm.PromoSales', '.core.BaseDeletedEntity'],
 
-	'Sale': {
-		'Plan': 'План',
-		'Fact': 'Факт',
-		'BudgetItemBudgetName': 'Бюджет',
-		'BudgetItemName': 'Бюджетная статья'
-	},
-	'HistoricalSale': ['.tpm.Sale', '.core.BaseHistoryEntity'],
-	'DeletedSale': ['.tpm.Sale', '.core.BaseDeletedEntity'],
+    'Sale': {
+        'Plan': 'План',
+        'Fact': 'Факт',
+        'BudgetItemBudgetName': 'Бюджет',
+        'BudgetItemName': 'Бюджетная статья'
+    },
+    'HistoricalSale': ['.tpm.Sale', '.core.BaseHistoryEntity'],
+    'DeletedSale': ['.tpm.Sale', '.core.BaseDeletedEntity'],
 
     'Schedule': {
         'NA': 'Clients',
@@ -920,207 +940,207 @@
         'Filtered': 'Filtered'
     },
 
-	'Color': {
-		'ProductZREP': 'ZREP',
-		'SystemName': 'Color',
-		'DisplayName': 'Color name',
-		'CategoryId': 'CategoryId',
-		'BrandId': 'BrandId',
-		'SegmentId': 'SegmentId',
-		'TechnologyId': 'TechnologyId',
-		'TechHighLevelId': 'TechHighLevelId',
-		'ProgramId': 'ProgramId',
-		'FormatId': 'FormatId',
-		'BrandTechId': 'BrandTechId',
-		'SubrangeId': 'SubrangeId',
-		'AgeGroupId': 'AgeGroupId',
-		'VarietyId': 'VarietyId',
-		'ProductId': 'ProductId',
-		'CategoryName': 'Category',
-		'BrandName': 'Brand',
-		'SegmentName': 'Segment',
-		'TechnologyName': 'Technology',
-		'TechHighLevelName': 'Tech high level',
-		'ProgramName': 'Type',
-		'FormatName': 'Format',
-		'BrandTechName': 'Brand tech',
-		'SubrangeName': 'Subrange',
-		'AgeGroupName': 'Age group',
-		'VarietyName': 'Variety',
+    'Color': {
+        'ProductZREP': 'ZREP',
+        'SystemName': 'Color',
+        'DisplayName': 'Color name',
+        'CategoryId': 'CategoryId',
+        'BrandId': 'BrandId',
+        'SegmentId': 'SegmentId',
+        'TechnologyId': 'TechnologyId',
+        'TechHighLevelId': 'TechHighLevelId',
+        'ProgramId': 'ProgramId',
+        'FormatId': 'FormatId',
+        'BrandTechId': 'BrandTechId',
+        'SubrangeId': 'SubrangeId',
+        'AgeGroupId': 'AgeGroupId',
+        'VarietyId': 'VarietyId',
+        'ProductId': 'ProductId',
+        'CategoryName': 'Category',
+        'BrandName': 'Brand',
+        'SegmentName': 'Segment',
+        'TechnologyName': 'Technology',
+        'TechHighLevelName': 'Tech high level',
+        'ProgramName': 'Type',
+        'FormatName': 'Format',
+        'BrandTechName': 'Brand tech',
+        'SubrangeName': 'Subrange',
+        'AgeGroupName': 'Age group',
+        'VarietyName': 'Variety',
         'BrandTechBrandName': 'Brand',
         'BrandTechTechnologyName': 'Technology',
-	},
-	'HistoricalColor': ['.tpm.Color', '.core.BaseHistoryEntity'],
-	'DeletedColor': ['.tpm.Color', '.core.BaseDeletedEntity'],
+    },
+    'HistoricalColor': ['.tpm.Color', '.core.BaseHistoryEntity'],
+    'DeletedColor': ['.tpm.Color', '.core.BaseDeletedEntity'],
 
-	'message': {
-		'ColorChoose': 'Необходимо выбрать цвет для данного Промо.'
-	},
+    'message': {
+        'ColorChoose': 'Необходимо выбрать цвет для данного Промо.'
+    },
 
-	'Constraint': {
-		'CLIENT_ID': 'Клиент',
-	},
+    'Constraint': {
+        'CLIENT_ID': 'Клиент',
+    },
 
-	'NodeType': {
-		'Id': '',
-		'Type': 'Node type',
-		'Name': 'Node name',
-		'TypeEnum': {
-			'CLIENT': 'Client',
-			'PRODUCT': 'Product'
-		},
-		'Priority': 'Priority',
-	},
-	'HistoricalNodeType': ['.tpm.NodeType', '.core.BaseHistoryEntity'],
-	'DeletedNodeType': ['.tpm.NodeType', '.core.BaseDeletedEntity'],
+    'NodeType': {
+        'Id': '',
+        'Type': 'Node type',
+        'Name': 'Node name',
+        'TypeEnum': {
+            'CLIENT': 'Client',
+            'PRODUCT': 'Product'
+        },
+        'Priority': 'Priority',
+    },
+    'HistoricalNodeType': ['.tpm.NodeType', '.core.BaseHistoryEntity'],
+    'DeletedNodeType': ['.tpm.NodeType', '.core.BaseDeletedEntity'],
 
-	'ClientTree': {
-		'ClientHierarchyCode': 'Client hierarchy code',
-		'Name': 'Name',
-		'Type': 'Type',
-		'OutletCount': 'Outlet count',
-		'GHierarchyCode': 'G-Hierarchy code',
-		'DemandCode': 'Demand Code',
-		'IsBaseClient': 'Base client',
-		'PostPromoEffectW1': 'Post Promo Effect W1',
-		'PostPromoEffectW2': 'Post Promo Effect W2',
-		'RetailTypeName': 'Retail Type Name',
-		'FullPathName': 'Full PathName'
-	},
+    'ClientTree': {
+        'ClientHierarchyCode': 'Client hierarchy code',
+        'Name': 'Name',
+        'Type': 'Type',
+        'OutletCount': 'Outlet count',
+        'GHierarchyCode': 'G-Hierarchy code',
+        'DemandCode': 'Demand Code',
+        'IsBaseClient': 'Base client',
+        'PostPromoEffectW1': 'Post Promo Effect W1',
+        'PostPromoEffectW2': 'Post Promo Effect W2',
+        'RetailTypeName': 'Retail Type Name',
+        'FullPathName': 'Full PathName'
+    },
 
-	'EventClientTree': {
-		'EventClientTree': 'Clients',
-		'ClientTreeFullPathName': 'Client hierarchy',
-		'ClientTreeObjectId': 'Client hierarchy code'
-	},
+    'EventClientTree': {
+        'EventClientTree': 'Clients',
+        'ClientTreeFullPathName': 'Client hierarchy',
+        'ClientTreeObjectId': 'Client hierarchy code'
+    },
 
-	'BaseClientTreeView': {
-		'ResultNameStr': 'Client hierarchy',
-		'BOI': 'Client hierarchy code',
-	},
+    'BaseClientTreeView': {
+        'ResultNameStr': 'Client hierarchy',
+        'BOI': 'Client hierarchy code',
+    },
 
-	'ClientTreeSharesView': {
-		'ResultNameStr': 'Client hierarchy',
-		'BOI': 'Client hierarchy code',
-		'DemandCode': 'Demand Code'
-	},
+    'ClientTreeSharesView': {
+        'ResultNameStr': 'Client hierarchy',
+        'BOI': 'Client hierarchy code',
+        'DemandCode': 'Demand Code'
+    },
 
-	'ClientTreeBrandTech': {
-		'ResultNameStr': 'Client hierarchy',
-		'BOI': 'Client hierarchy code',
-		'LeafShare': 'Client hierarchy Share',
-		'DemandCode': 'Деманд-код'
-	},
+    'ClientTreeBrandTech': {
+        'ResultNameStr': 'Client hierarchy',
+        'BOI': 'Client hierarchy code',
+        'LeafShare': 'Client hierarchy Share',
+        'DemandCode': 'Деманд-код'
+    },
 
-	'PromoDemand': {
-		'BrandTechId': 'BrandTechId',
-		'MechanicId': 'MechanicId',
-		'BrandName': 'Brand',
-		'BrandTechBrandName': 'Brand',
-		'BrandTechName': 'Brand Tech',
-		'Account': 'Account',
-		'MechanicName': 'Mechanic',
-		'MechanicTypeName': 'Mechanic Type',
-		'Account': 'Account',
-		'Discount': 'Discount',
-		'Week': 'Week',
-		'Baseline': 'Baseline',
-		'Uplift': 'Uplift',
-		'Incremental': 'Incremental',
-		'Activity': 'Activity',
-		'MarsStartDate': 'Start date',
-		'MarsEndDate': 'End date',
-		'BaseClientObjectId': 'Base Client code',
-	},
-	'HistoricalPromoDemand': ['.tpm.PromoDemand', '.core.BaseHistoryEntity'],
-	'DeletedPromoDemand': ['.tpm.PromoDemand', '.core.BaseDeletedEntity'],
+    'PromoDemand': {
+        'BrandTechId': 'BrandTechId',
+        'MechanicId': 'MechanicId',
+        'BrandName': 'Brand',
+        'BrandTechBrandName': 'Brand',
+        'BrandTechName': 'Brand Tech',
+        'Account': 'Account',
+        'MechanicName': 'Mechanic',
+        'MechanicTypeName': 'Mechanic Type',
+        'Account': 'Account',
+        'Discount': 'Discount',
+        'Week': 'Week',
+        'Baseline': 'Baseline',
+        'Uplift': 'Uplift',
+        'Incremental': 'Incremental',
+        'Activity': 'Activity',
+        'MarsStartDate': 'Start date',
+        'MarsEndDate': 'End date',
+        'BaseClientObjectId': 'Base Client code',
+    },
+    'HistoricalPromoDemand': ['.tpm.PromoDemand', '.core.BaseHistoryEntity'],
+    'DeletedPromoDemand': ['.tpm.PromoDemand', '.core.BaseDeletedEntity'],
 
-	'booleanValues': {
-		'true': 'Yes',
-		'false': 'No'
-	},
+    'booleanValues': {
+        'true': 'Yes',
+        'false': 'No'
+    },
 
-	'Dispatch': {
-		'DispatchTitle': 'Dispatch settings',
-		'DispatchStart': 'Start',
-		'DispatchEnd': 'End',
-		'Period': 'Period',
-		'CountDaysOrWeeks': 'Count days or weeks',
-		'DaysOrWeeks': 'Days or weeks',
-		'Before': 'Before',
-		'After': 'After',
-		'Days': 'Days',
-		'Weeks': 'Weeks'
-	},
+    'Dispatch': {
+        'DispatchTitle': 'Dispatch settings',
+        'DispatchStart': 'Start',
+        'DispatchEnd': 'End',
+        'Period': 'Period',
+        'CountDaysOrWeeks': 'Count days or weeks',
+        'DaysOrWeeks': 'Days or weeks',
+        'Before': 'Before',
+        'After': 'After',
+        'Days': 'Days',
+        'Weeks': 'Weeks'
+    },
 
-	'NoneNego': {
-		'ClientHierarchy': 'Client',
-		'ProductHierarchy': 'Product',
-		'ClientTreeFullPathName': 'Client',
-		'ProductTreeFullPathName': 'Product',
-		'ClientTreeObjectId': 'Client hierarchy code',
-		'ProductTreeObjectId': 'Product hierarchy code',
-		'MechanicName': 'Mechanic',
-		'MechanicTypeName': 'Mechanic type',
-		'Discount': 'Discount',
-		'FromDate': 'From date',
-		'ToDate': 'To date',
-		'CreateDate': 'Create date',
-		'ValidatePeriodError': 'A record with such parameters already exists on the selected time period'
-	},
-	'HistoricalNoneNego': ['.tpm.NoneNego', '.core.BaseHistoryEntity'],
-	'DeletedNoneNego': ['.tpm.NoneNego', '.core.BaseDeletedEntity'],
+    'NoneNego': {
+        'ClientHierarchy': 'Client',
+        'ProductHierarchy': 'Product',
+        'ClientTreeFullPathName': 'Client',
+        'ProductTreeFullPathName': 'Product',
+        'ClientTreeObjectId': 'Client hierarchy code',
+        'ProductTreeObjectId': 'Product hierarchy code',
+        'MechanicName': 'Mechanic',
+        'MechanicTypeName': 'Mechanic type',
+        'Discount': 'Discount',
+        'FromDate': 'From date',
+        'ToDate': 'To date',
+        'CreateDate': 'Create date',
+        'ValidatePeriodError': 'A record with such parameters already exists on the selected time period'
+    },
+    'HistoricalNoneNego': ['.tpm.NoneNego', '.core.BaseHistoryEntity'],
+    'DeletedNoneNego': ['.tpm.NoneNego', '.core.BaseDeletedEntity'],
 
-	'PromoSupport': {
-		'Number': 'ID',
-		'ClientTreeFullPathName': 'Client',
-		'BudgetSubItemBudgetItemName': 'Support',
-		'BudgetSubItemName': 'Equipment Type',
-		'PlanQuantity': 'Plan Quantity',
-		'ActualQuantity': 'Actual Quantity',
-		'PlanCostTE': 'Plan Cost TE Total',
-		'ActualCostTE': 'Actual Cost TE Total',
-		'StartDate': 'Start Date',
-		'EndDate': 'End Date',
-		'RemoveIntactWindowTitle': 'Открепление записи',
-		'RemoveIntactConfirmMessage': 'Вы действительно хотите открепить запись?',
-		'CreatePromoSupportButton': 'Создать Promo Support',
-		'CreateOnTheBasisButton': 'Создать на основе',
-		'PlanProdCostPer1Item': 'Plan Prod Cost Per 1 Item',
-		'ActualProdCostPer1Item': 'Actual Prod Cost Per 1 Item',
-		'PONumber': 'PO Number',
-		'PONumberRegex': 'Only numbers',
-		'InvoiceNumber': 'Invoice Number',
-		'InvoiceNumberRegex': 'Only numbers',
+    'PromoSupport': {
+        'Number': 'ID',
+        'ClientTreeFullPathName': 'Client',
+        'BudgetSubItemBudgetItemName': 'Support',
+        'BudgetSubItemName': 'Equipment Type',
+        'PlanQuantity': 'Plan Quantity',
+        'ActualQuantity': 'Actual Quantity',
+        'PlanCostTE': 'Plan Cost TE Total',
+        'ActualCostTE': 'Actual Cost TE Total',
+        'StartDate': 'Start Date',
+        'EndDate': 'End Date',
+        'RemoveIntactWindowTitle': 'Открепление записи',
+        'RemoveIntactConfirmMessage': 'Вы действительно хотите открепить запись?',
+        'CreatePromoSupportButton': 'Создать Promo Support',
+        'CreateOnTheBasisButton': 'Создать на основе',
+        'PlanProdCostPer1Item': 'Plan Prod Cost Per 1 Item',
+        'ActualProdCostPer1Item': 'Actual Prod Cost Per 1 Item',
+        'PONumber': 'PO Number',
+        'PONumberRegex': 'Only numbers',
+        'InvoiceNumber': 'Invoice Number',
+        'InvoiceNumberRegex': 'Only numbers',
         'OffAllocation': 'Off allocation by LSV',
-	},
-	'HistoricalPromoSupport': ['.tpm.PromoSupport', '.core.BaseHistoryEntity'],
-	'DeletedPromoSupport': ['.tpm.PromoSupport', '.core.BaseDeletedEntity'],
+    },
+    'HistoricalPromoSupport': ['.tpm.PromoSupport', '.core.BaseHistoryEntity'],
+    'DeletedPromoSupport': ['.tpm.PromoSupport', '.core.BaseDeletedEntity'],
 
-	'NonPromoSupport': {
-		'Number': 'ID',
-		'ClientTreeFullPathName': 'Client',
-		'BudgetSubItemBudgetItemName': 'Support',
-		'BudgetSubItemName': 'Equipment Type',
-		'PlanQuantity': 'Plan Quantity',
-		'ActualQuantity': 'Actual Quantity',
-		'PlanCostTE': 'Plan Cost TE Total',
-		'ActualCostTE': 'Actual Cost TE Total',
-		'StartDate': 'Start Date',
-		'NonPromoEquipmentEquipmentType': 'Equipment Type',
-		'brandTechOk': 'Apply',
-		'BrandTech': 'Brand tech',
-		'EndDate': 'End Date',
-		'RemoveIntactWindowTitle': 'Открепление записи',
-		'RemoveIntactConfirmMessage': 'Вы действительно хотите открепить запись?',
-		'CreatePromoSupportButton': 'Создать Promo Support',
-		'CreateOnTheBasisButton': 'Создать на основе',
-		'PlanProdCostPer1Item': 'Plan Prod Cost Per 1 Item',
-		'ActualProdCostPer1Item': 'Actual Prod Cost Per 1 Item',
-		'InvoiceNumber': 'Invoice Number',
-		'InvoiceNumberRegex': 'Only numbers'
-	},
-	'HistoricalNonPromoSupport': ['.tpm.NonPromoSupport', '.core.BaseHistoryEntity'],
+    'NonPromoSupport': {
+        'Number': 'ID',
+        'ClientTreeFullPathName': 'Client',
+        'BudgetSubItemBudgetItemName': 'Support',
+        'BudgetSubItemName': 'Equipment Type',
+        'PlanQuantity': 'Plan Quantity',
+        'ActualQuantity': 'Actual Quantity',
+        'PlanCostTE': 'Plan Cost TE Total',
+        'ActualCostTE': 'Actual Cost TE Total',
+        'StartDate': 'Start Date',
+        'NonPromoEquipmentEquipmentType': 'Equipment Type',
+        'brandTechOk': 'Apply',
+        'BrandTech': 'Brand tech',
+        'EndDate': 'End Date',
+        'RemoveIntactWindowTitle': 'Открепление записи',
+        'RemoveIntactConfirmMessage': 'Вы действительно хотите открепить запись?',
+        'CreatePromoSupportButton': 'Создать Promo Support',
+        'CreateOnTheBasisButton': 'Создать на основе',
+        'PlanProdCostPer1Item': 'Plan Prod Cost Per 1 Item',
+        'ActualProdCostPer1Item': 'Actual Prod Cost Per 1 Item',
+        'InvoiceNumber': 'Invoice Number',
+        'InvoiceNumberRegex': 'Only numbers'
+    },
+    'HistoricalNonPromoSupport': ['.tpm.NonPromoSupport', '.core.BaseHistoryEntity'],
     'DeletedNonPromoSupport': ['.tpm.NonPromoSupport', '.core.BaseDeletedEntity'],
 
     'NonPromoSupportBrandTech': {
@@ -1144,39 +1164,39 @@
         'EmptyBrandTechErrorMsg': 'Список бренд-технологий не может быть пустым.'
     },
 
-	'CostProduction': {
-		'Number': 'ID',
-		'ClientTreeFullPathName': 'Client',
-		'BudgetSubItemBudgetItemName': 'Support',
-		'BudgetSubItemName': 'Equipment Type',
-		'PlanQuantity': 'Plan Quantity',
-		'ActualQuantity': 'Actual Quantity',
-		'PlanCostTE': 'Plan Cost TE Total',
-		'ActualCostTE': 'Actual Cost TE Total',
-		'StartDate': 'Start Date',
-		'EndDate': 'End Date',
-		'PlanProdCostPer1Item': 'Plan Prod Cost Per 1 Item',
-		'ActualProdCostPer1Item': 'Actual Prod Cost Per 1 Item',
-		'PlanProdCost': 'Plan Prod Cost',
-		'ActualProdCost': 'Actual Prod Cost',
-		'PONumber': 'PO Number'
-	},
-	'HistoricalCostProduction': ['.tpm.CostProduction', '.core.BaseHistoryEntity'],
-	'DeletedCostProduction': ['.tpm.CostProduction', '.core.BaseDeletedEntity'],
+    'CostProduction': {
+        'Number': 'ID',
+        'ClientTreeFullPathName': 'Client',
+        'BudgetSubItemBudgetItemName': 'Support',
+        'BudgetSubItemName': 'Equipment Type',
+        'PlanQuantity': 'Plan Quantity',
+        'ActualQuantity': 'Actual Quantity',
+        'PlanCostTE': 'Plan Cost TE Total',
+        'ActualCostTE': 'Actual Cost TE Total',
+        'StartDate': 'Start Date',
+        'EndDate': 'End Date',
+        'PlanProdCostPer1Item': 'Plan Prod Cost Per 1 Item',
+        'ActualProdCostPer1Item': 'Actual Prod Cost Per 1 Item',
+        'PlanProdCost': 'Plan Prod Cost',
+        'ActualProdCost': 'Actual Prod Cost',
+        'PONumber': 'PO Number'
+    },
+    'HistoricalCostProduction': ['.tpm.CostProduction', '.core.BaseHistoryEntity'],
+    'DeletedCostProduction': ['.tpm.CostProduction', '.core.BaseDeletedEntity'],
 
-	'PromoSupportType': {
-		'ModalWindowCloseButton': 'Закрыть',
-		'ModalWindowOkButton': 'Создать',
-		'NotSelected': 'Клиент и тип должны быть выбраны.',
-		'CreateButtonText': 'Create support type'
-	},
+    'PromoSupportType': {
+        'ModalWindowCloseButton': 'Закрыть',
+        'ModalWindowOkButton': 'Создать',
+        'NotSelected': 'Клиент и тип должны быть выбраны.',
+        'CreateButtonText': 'Create support type'
+    },
 
-	'NonPromoSupportClient': {
-		'ModalWindowCloseButton': 'Закрыть',
-		'ModalWindowOkButton': 'Создать',
-		'NotSelected': 'Должн быть выбран клиент.',
-		'CreateButtonText': 'Create support client'
-	},
+    'NonPromoSupportClient': {
+        'ModalWindowCloseButton': 'Закрыть',
+        'ModalWindowOkButton': 'Создать',
+        'NotSelected': 'Должн быть выбран клиент.',
+        'CreateButtonText': 'Create support client'
+    },
 
     'RetailType': {
         'Name': 'Retail type'
@@ -1201,7 +1221,7 @@
         'ActualProductSellInPrice': 'Actual Product Sell In Price',
         'ActualProductShelfDiscount': 'Actual Product Shelf Discount',
         'ActualProductPCLSV': 'Actual Product PC LSV',
-		'ActualProductUpliftPercent': 'Actual Product Uplift Percent',
+        'ActualProductUpliftPercent': 'Actual Product Uplift Percent',
         'ActualProductIncrementalPCQty': 'Actual Product Incremental PC Qty',
         'ActualProductIncrementalPCLSV': 'Actual Product Incremental PC LSV',
         'ActualProductIncrementalLSV': 'Actual Product Incremental LSV',
@@ -1278,6 +1298,7 @@
 
     'ClientPromoTypeFilter': {
         'ClientsAndPromoType': 'Clients And Promo Type',
+        'Competitors': 'Competitors',
         'Clients': 'Clients',
         'PromoTypes': 'Promo Types',
         'Error': 'Error',
@@ -1492,13 +1513,13 @@
         'WeekStartDate': 'Week Start Date',
         'PlanProductCaseQty': 'Qty',
         'PlanUplift': 'Uplift Plan',
-		'DispatchesStart': 'Dispatch Start',
-		'DispatchesEnd': 'Dispatch End',
-		'Status': 'Status',
-		'Week': 'Week',
-		'PlanProductBaselineCaseQty': 'Plan Product Baseline Case Qty',
-		'PlanProductIncrementalLSV': 'Plan Product Incremental LSV',
-		'PlanProductBaselineLSV': 'Plan Product Baseline LSV',
+        'DispatchesStart': 'Dispatch Start',
+        'DispatchesEnd': 'Dispatch End',
+        'Status': 'Status',
+        'Week': 'Week',
+        'PlanProductBaselineCaseQty': 'Plan Product Baseline Case Qty',
+        'PlanProductIncrementalLSV': 'Plan Product Incremental LSV',
+        'PlanProductBaselineLSV': 'Plan Product Baseline LSV',
         'InOut': 'In-Out',
         'GrowthAcceleration': 'Growth acceleration',
         'IsGrowthAcceleration': 'Growth acceleration',
@@ -1563,14 +1584,14 @@
         'TypeApollo': 'Type',
         'ModelApollo': 'Model',
         'WeekStartDate': 'Week Start Date',
-		'PlanPostPromoEffectQty': 'Qty',
-		'PlanUplift': 'Uplift Plan',
-		'StartDate': 'Start Date',
-		'EndDate': 'End Date',
-		'Status': 'Status',
-		'Week': 'Week',
-		'PlanProductBaselineCaseQty': 'Plan Product Baseline Case Qty',
-		'PlanProductPostPromoEffectLSV': 'Plan Product Post Promo Effect LSV',
+        'PlanPostPromoEffectQty': 'Qty',
+        'PlanUplift': 'Uplift Plan',
+        'StartDate': 'Start Date',
+        'EndDate': 'End Date',
+        'Status': 'Status',
+        'Week': 'Week',
+        'PlanProductBaselineCaseQty': 'Plan Product Baseline Case Qty',
+        'PlanProductPostPromoEffectLSV': 'Plan Product Post Promo Effect LSV',
         'PlanProductBaselineLSV': 'Plan Product Baseline LSV',
         'PlanPostPromoEffectQtyW1': 'Qty W1',
         'PlanProductBaselineCaseQtyW1': 'Plan Product Baseline Case Qty W1',
@@ -1581,7 +1602,7 @@
         'PlanProductPostPromoEffectLSVW2': 'Plan Product Post Promo Effect LSV W2',
         'PlanProductBaselineLSVW2': 'Plan Product Baseline LSV W2',
 
-		'InOut': 'In-Out'
+        'InOut': 'In-Out'
     },
     'PlanPostPromoEffectReportWeek': {
         'ZREP': 'ZREP',
@@ -1791,7 +1812,7 @@
         'PlanAddTIMarketingApproved': 'Plan Add TI Promo Marketing Approved',
         'ActualAddTIShopper': 'Actual Add TI Shopper',
         'ActualAddTIMarketing': 'Actual Add TI Promo Marketing',
-     },
+    },
 
     'PromoActivity': {
         'UpdateActuals': 'Upload Actuals',
@@ -1803,7 +1824,7 @@
         'Plan': 'Plan',
         'Actuals': 'Actuals',
         'ExportAllPromoProducts': 'Export All Promo Products',
-        'triggerfieldOnlyNumbers' : 'Only number allowed'
+        'triggerfieldOnlyNumbers': 'Only number allowed'
     },
 
     'PromoBudgetsDetailsWindow': {
@@ -2103,4 +2124,18 @@
     },
     'HistoricalCoefficientSI2SO': ['.tpm.CoefficientSI2SO', '.core.BaseHistoryEntity'],
     'DeletedCoefficientSI2SO': ['.tpm.CoefficientSI2SO', '.core.BaseDeletedEntity'],
+
+    'Competitor': {
+        'Name': 'Name'
+    },
+    'HistoricalCompetitor': ['.tpm.Competitor', '.core.BaseHistoryEntity'],
+    'DeletedCompetitor': ['.tpm.Competitor', '.core.BaseDeletedEntity'],
+
+    'CompetitorBrandTech': {
+        'BrandTech': 'BrandTech',
+        'Color': 'Color',
+        'CompetitorName': 'Competitor'
+    },
+    'HistoricalCompetitorBrandTech': ['.tpm.CompetitorBrandTech', '.core.BaseHistoryEntity'],
+    'DeletedCompetitorBrandTech': ['.tpm.CompetitorBrandTech', '.core.BaseDeletedEntity'],
 });

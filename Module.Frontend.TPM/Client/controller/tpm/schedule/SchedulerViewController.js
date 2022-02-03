@@ -35,6 +35,7 @@
                     eventclick: this.onEventClick,
                     eventdblclick: this.onEventdbClick,
                     extfilterchange: this.onExtFilterChange,
+                    beforeeventresize: this.onpromoBeforeEventResize,
                     beforeeventresizefinalize: this.onEventResize,
                     beforedragcreatefinalize: this.onPromoDragCreation,
                     eventcontextmenu: this.promoRightButtonClick,
@@ -95,16 +96,24 @@
         })
     },
 
+    onpromoBeforeEventResize: function (scheduler, record, e, eOpts) {
+        return this.isResizable(record);
+    },
+
+    isResizable: function (rec) {
+        return rec.get('TypeName') != 'Competitor';
+    },
+
     onpromoBeforeEventDrag: function (scheduler, record, e, eOpts) {
         return this.isDraggable(record);
     },
 
     isDraggable: function (rec) {
         var res = false;
-        if (App.UserInfo.getCurrentRole()['SystemName'] == 'SupportAdministrator') {
+        if (App.UserInfo.getCurrentRole()['SystemName'] == 'SupportAdministrator' && rec.get('TypeName') != 'Competitor') {
             res = true;
         } else {
-            res = rec.get('PromoStatusSystemName') && (['Draft', 'DraftPublished', 'OnApproval', 'Approved', 'Planned'].includes(rec.get('PromoStatusSystemName')));
+            res = rec.get('PromoStatusSystemName') && (['Draft', 'DraftPublished', 'OnApproval', 'Approved', 'Planned'].includes(rec.get('PromoStatusSystemName')) && rec.get('TypeName') != 'Competitor');
         }
         return res;
     },
@@ -462,45 +471,88 @@
         var record = promoDetailPanel.event;
 
         if (record) {
-            var model = Ext.ModelManager.getModel('App.model.tpm.promo.Promo'),
-                viewClassName = "App.view.tpm.promo.CustomHistoricalPromo";
+            if (record.get('CompetitorName') != null) {
+                var model = Ext.ModelManager.getModel('App.model.tpm.competitorpromo.CompetitorPromo'),
+                    viewClassName = "App.view.tpm.competitorpromo.HistoricalCompetitorPromo";
 
-            var baseReviewWindow = Ext.widget('basereviewwindow', { items: Ext.create(viewClassName, { baseModel: model }) });
-            baseReviewWindow.show();
+                var baseReviewWindow = Ext.widget('basereviewwindow', { items: Ext.create(viewClassName, { baseModel: model }) });
+                baseReviewWindow.show();
 
-            var grid = baseReviewWindow.down('grid');
-            var store = baseReviewWindow.down('grid').getStore();
-            var proxy = store.getProxy();
-            if (proxy.extraParams) {
-                proxy.extraParams.Id = this.getRecordId(record);
-            } else {
-                proxy.extraParams = {
-                    Id: this.getRecordId(record)
-                }
-            }
-
-            proxy.extraParams.promoIdHistory = this.getRecordId(record);
-
-            store.on({
-                load: function (records, operation, success) {
-                    var selModel = grid.getSelectionModel();
-
-                    if (!selModel.hasSelection() && records.data.length > 0) {
-                        selModel.select(0);
-                        grid.fireEvent('itemclick', grid, grid.getSelectionModel().getLastSelected());
-                    } else if (selModel.hasSelection() && records.data.length > 0) {
-                        var selected = selModel.getSelection()[0];
-                        if (store.indexOfId(selected.getId()) === -1) {
-                            selModel.select(0);
-                            grid.fireEvent('itemclick', grid, grid.getSelectionModel().getLastSelected());
-                        }
-                    } else if (records.data.length === 0) {
-                        selModel.deselectAll();
+                var grid = baseReviewWindow.down('grid');
+                var store = baseReviewWindow.down('grid').getStore();
+                var proxy = store.getProxy();
+                if (proxy.extraParams) {
+                    proxy.extraParams.Id = this.getRecordId(record);
+                } else {
+                    proxy.extraParams = {
+                        Id: this.getRecordId(record)
                     }
                 }
-            });
 
-            store.load();
+                proxy.extraParams.promoIdHistory = this.getRecordId(record);
+
+                store.on({
+                    load: function (records, operation, success) {
+                        var selModel = grid.getSelectionModel();
+
+                        if (!selModel.hasSelection() && records.data.length > 0) {
+                            selModel.select(0);
+                            grid.fireEvent('itemclick', grid, grid.getSelectionModel().getLastSelected());
+                        } else if (selModel.hasSelection() && records.data.length > 0) {
+                            var selected = selModel.getSelection()[0];
+                            if (store.indexOfId(selected.getId()) === -1) {
+                                selModel.select(0);
+                                grid.fireEvent('itemclick', grid, grid.getSelectionModel().getLastSelected());
+                            }
+                        } else if (records.data.length === 0) {
+                            selModel.deselectAll();
+                        }
+                    }
+                });
+
+                store.load();
+            }
+            else {
+                var model = Ext.ModelManager.getModel('App.model.tpm.promo.Promo'),
+                    viewClassName = "App.view.tpm.promo.CustomHistoricalPromo";
+
+                var baseReviewWindow = Ext.widget('basereviewwindow', { items: Ext.create(viewClassName, { baseModel: model }) });
+                baseReviewWindow.show();
+
+                var grid = baseReviewWindow.down('grid');
+                var store = baseReviewWindow.down('grid').getStore();
+                var proxy = store.getProxy();
+                if (proxy.extraParams) {
+                    proxy.extraParams.Id = this.getRecordId(record);
+                } else {
+                    proxy.extraParams = {
+                        Id: this.getRecordId(record)
+                    }
+                }
+
+                proxy.extraParams.promoIdHistory = this.getRecordId(record);
+
+                store.on({
+                    load: function (records, operation, success) {
+                        var selModel = grid.getSelectionModel();
+
+                        if (!selModel.hasSelection() && records.data.length > 0) {
+                            selModel.select(0);
+                            grid.fireEvent('itemclick', grid, grid.getSelectionModel().getLastSelected());
+                        } else if (selModel.hasSelection() && records.data.length > 0) {
+                            var selected = selModel.getSelection()[0];
+                            if (store.indexOfId(selected.getId()) === -1) {
+                                selModel.select(0);
+                                grid.fireEvent('itemclick', grid, grid.getSelectionModel().getLastSelected());
+                            }
+                        } else if (records.data.length === 0) {
+                            selModel.deselectAll();
+                        }
+                    }
+                });
+
+                store.load();
+            }
         }
     },
 
@@ -599,6 +651,7 @@
     },
     promoRightButtonClick: function (panel, rec, e) {
         var me = this;
+        if (rec.get('TypeName') == 'Competitor') return;
         e.stopEvent();
         var status = rec.get('PromoStatusSystemName').toLowerCase();
         var promoStore = me.getPromoStore();
@@ -790,6 +843,10 @@
         var me = this;
         var scheduler = Ext.ComponentQuery.query('#nascheduler')[0];
         var typeToCreate = null;
+        if (createContext.resourceRecord.get('TypeName') == 'Competitor') {
+            createContext.finalize(false);
+            return false;
+        }
         if (createContext.start > new Date(new Date().toDateString()) || App.UserInfo.getCurrentRole()['SystemName'] == 'SupportAdministrator') {
             var schedulerData,
                 ClientTypeName = createContext.resourceRecord.get('TypeName') + ' Promo',
@@ -1053,6 +1110,10 @@
 
     onEventResize: function (s, resizeContext) {
         var me = this;
+        if (resizeContext.eventRecord.get('TypeName') == 'Competitor') {
+            me.__resizeContext.finalize(false);
+            return false;
+        }
         var calendarGrid = Ext.ComponentQuery.query('scheduler');
         //Проверка по дате начала
         if ((resizeContext.eventRecord.start < new Date(new Date().toDateString()) || resizeContext.start < new Date(new Date().toDateString())) && App.UserInfo.getCurrentRole()['SystemName'] != 'SupportAdministrator') {
@@ -1469,11 +1530,19 @@
             .then(function (data) {
                 scheduler.typesCheckboxesConfig = [];
                 scheduler.otherPromoTypes = [];
+                var competitorType = {
+                    Name: 'Competitor Promo',
+                    SystemName: 'Competitor',
+                    Glyph: 'FD01'
+                };
+                data.results.push(competitorType);
                 data.results.forEach(function (el) {
                     if (el.Name === 'Regular Promo') {
                         scheduler.regPromoType = el;
                     } else if (el.Name === 'InOut Promo') {
                         scheduler.inOutPromoType = el;
+                    } else if (el.Name === 'Competitor Promo') {
+                        scheduler.competitorPromoType = el;
                     } else {
                         scheduler.otherPromoTypes.push(el);
                     }
@@ -1486,6 +1555,29 @@
                         boxLabel: '<span style="vertical-align: text-top;">' + el.Name +'</span>',
                         xtype: 'checkbox',
                         beforeBoxLabelTextTpl: beforeBoxLabelTextTpl.apply({ glyph: el.Glyph }),
+                    })
+                });
+            })
+            .fail(function (data) {
+                App.Notify.pushError('Ошибка при выполнении операции');
+            });
+
+        breeze.EntityQuery
+            .from('Competitors')
+            .withParameters({
+                $method: 'GET'
+            })
+            .using(Ext.ux.data.BreezeEntityManager.getEntityManager())
+            .execute()
+            .then(function (data) {
+                scheduler.competitorsCheckboxesConfig = [];
+                data.results.forEach(function (el) {
+                    scheduler.competitorsCheckboxesConfig.push({
+                        name: el.Name,
+                        inputValue: el.Name,
+                        checked: true,
+                        boxLabel: '<span style="vertical-align: text-top;">' + el.Name + '</span>',
+                        xtype: 'checkbox',
                     })
                 });
             })
@@ -1537,6 +1629,7 @@
                         regPromoId = oldArray[j].regPromoId;
                         inoutPromoId = oldArray[j].inoutPromoId;
                         otherPromoId = oldArray[j].otherPromoId;
+                        competitorPromoId = oldArray[j].competitorPromoId;
                         break;
                     }
                 };
@@ -1547,6 +1640,7 @@
                     regPromoId: regPromoId,
                     inoutPromoId: inoutPromoId,
                     otherPromoId: otherPromoId,
+                    competitorPromoId: competitorPromoId,
                 });
             };
 
@@ -1566,10 +1660,11 @@
         var promoTab = {
             title: l10n.ns('tpm', 'compositePanelTitles').value('PromoDetail'),
             itemId: 'promoDetailTab',
-            items: {
+            items: [{
                 xtype: 'promodetailtabpanel',
                 selectedUI: 'blue-selectable-panel'
-            },
+            }
+            ],
 
             tabConfig: {
                 ui: 'system-panel-tab-button',
@@ -1577,6 +1672,7 @@
             },
         }
         system.add(promoTab);
+
         /*Ext.create('Ext.ux.window.Notification', {
             position: 'br',
             cls: 'ux-notification-light',
@@ -1598,6 +1694,7 @@
     singleClickTask: new Ext.util.DelayedTask(this.delayOnEventClick),
 
     onEventdbClick: function (panel, eventRecord, button) {
+        if (eventRecord.get('TypeName') == 'Competitor') return;
         this.singleClickTask.cancel();
         var promoStore = this.getPromoStore();
         panel.up('schedulecontainer').setLoading(true);
@@ -1641,6 +1738,7 @@
                 regPromoId: resourceStore.data.items[i * this.rowCount],
                 inoutPromoId: resourceStore.data.items[i * this.rowCount + 1],
                 otherPromoId: resourceStore.data.items[i * this.rowCount + 2],
+                competitorPromoId: resourceStore.data.items[i * this.rowCount + 3],
             })
         };
 
@@ -1692,32 +1790,66 @@
         return Ext.ComponentQuery.query('#nascheduler')[0].promoStore;
     },
 
+    getCompetitorPromoStore: function () {
+        return Ext.ComponentQuery.query('#nascheduler')[0].competitorPromoStore;
+    },
+
     // заполнение дашборда
     // events - запись(массив записей) промо. resourceRecord - клиент(для суммы по клиенту), showTab - необходимость открыть нижнюю панель
     fillTabPanel: function (events, scheduler, showTab) {
         var system = Ext.ComponentQuery.query('system')[0],
             promoPanel = system.down('promodetailtabpanel'),
-            promoStore = this.getPromoStore();
-        promoStore.load({
-            id: events.getId(), //set the id here
-            scope: this,
-            callback: function (records, operation, success) {
-                if (success) {
-                    var rec = records[0];
-                    promoPanel.event = rec;
-                    // Заголовок 1-й панели дашборда - название промо
-                    var promoDetailPanel = promoPanel.down('#promodetailpanel');
-
-                    // Полный вид механики с параметрами
-                    if (rec && rec.data) {
-                        promoDetailPanel.update(rec.data);
-                        if (showTab) {
-                            system.setActiveTab('promoDetailTab');
+            competitorPromoPanel = system.down('promodetailtabpanel'),
+            promoStore = this.getPromoStore(),
+            competitorPromoStore = this.getCompetitorPromoStore();
+        if (events.get('TypeName') == 'Competitor') {
+            competitorPromoStore.load({
+                id: events.getId(), //set the id here
+                scope: this,
+                callback: function (records, operation, success) {
+                    if (success) {
+                        var rec = records[0];
+                        competitorPromoPanel.event = rec;
+                        // Заголовок 1-й панели дашборда - название промо
+                        var promoDetailPanel = competitorPromoPanel.down('#promodetailpanel');
+                        promoDetailPanel.setBodyStyle("margin-top:4px");
+                        var promoDetailButton = competitorPromoPanel.down('#promoDetail');
+                        promoDetailButton.hide();
+                        // Полный вид механики с параметрами
+                        if (rec && rec.data) {
+                            promoDetailPanel.update(rec.data);
+                            if (showTab) {
+                                system.setActiveTab('promoDetailTab');
+                            }
                         }
                     }
                 }
-            }
-        });
+            }); 
+        } else {
+            promoStore.load({
+                id: events.getId(), //set the id here
+                scope: this,
+                callback: function (records, operation, success) {
+                    if (success) {
+                        var rec = records[0];
+                        promoPanel.event = rec;
+                        // Заголовок 1-й панели дашборда - название промо
+                        var promoDetailPanel = promoPanel.down('#promodetailpanel');
+
+                        promoDetailPanel.setBodyStyle("margin-top:17px");
+                        var promoDetailButton = competitorPromoPanel.down('#promoDetail');
+                        promoDetailButton.show(true);
+                        // Полный вид механики с параметрами
+                        if (rec && rec.data) {
+                            promoDetailPanel.update(rec.data);
+                            if (showTab) {
+                                system.setActiveTab('promoDetailTab');
+                            }
+                        }
+                    }
+                }
+            });
+        }
     },
 
     onResizeGrid: function (grid, width, height, oldWidth, oldHeight, eOpts) {
@@ -1895,7 +2027,7 @@
                 var nascheduler = Ext.ComponentQuery.query('#nascheduler')[0];
                 if (nascheduler) {
                     if (!store.resetLoading) {
-                        this.renderEvents(store.uniqueObjectIds[clientId].regPromoId, store.uniqueObjectIds[clientId].inoutPromoId, store.uniqueObjectIds[clientId].otherPromoId);
+                        this.renderEvents(store.uniqueObjectIds[clientId].regPromoId, store.uniqueObjectIds[clientId].inoutPromoId, store.uniqueObjectIds[clientId].otherPromoId, store.uniqueObjectIds[clientId].competitorPromoId);
                         store.uniqueObjectIds[clientId].loaded = true;
                         clientId = 0;
                         while (store.uniqueObjectIds[clientId] && store.uniqueObjectIds[clientId].loaded) {
@@ -1910,7 +2042,7 @@
         });
     },
 
-    renderEvents: function (regId, inoutId, otherPromoId) {
+    renderEvents: function (regId, inoutId, otherPromoId, competitorPromoId) {
         var ng = Ext.ComponentQuery.query('#nascheduler')[0].normalGrid;
         var lg = Ext.ComponentQuery.query('#nascheduler')[0].lockedGrid;
         var renderId = regId;
@@ -1930,7 +2062,9 @@
                 renderId = inoutId;
             } else if (i == 1) {
                 renderId = otherPromoId;
-            }
+            } else if (i == 2) {
+                renderId = competitorPromoId;
+            } 
 
             records = [];
         };
@@ -1951,6 +2085,11 @@
                 }
 
                 node = ng.view.getNode(uniqueObjectIds[j].otherPromoId, false);
+                if (node && !(node.childNodes[1] && node.childNodes[1].textContent === 'Loading...')) {
+                    Ext.DomHelper.append(node, '<td class="overlay">Loading...</td>');
+                }
+
+                node = ng.view.getNode(uniqueObjectIds[j].competitorPromoId, false);
                 if (node && !(node.childNodes[1] && node.childNodes[1].textContent === 'Loading...')) {
                     Ext.DomHelper.append(node, '<td class="overlay">Loading...</td>');
                 }

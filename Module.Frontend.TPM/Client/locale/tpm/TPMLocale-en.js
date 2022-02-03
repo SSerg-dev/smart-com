@@ -84,10 +84,13 @@
         'PromoTypes': 'Promo Types',
         'PriceList': 'Price list',
         'CoefficientSI2SO': 'Coefficient SI->SO',
+        'Competitor': 'Competitors list',
+        'CompetitorPromo': 'Competitor Promo',
+        'CompetitorBrandTech': 'Competitor BrandTech',
     },
 
     'compositePanelTitles': {
-        'PLUDictionary':'PLU Dictionary',
+        'PLUDictionary': 'PLU Dictionary',
         'Category': 'Category',
         'NonPromoEquipment': 'Non-Promo Equipment',
         'Brand': 'Brand',
@@ -176,7 +179,10 @@
         'PreviousDayIncremental': 'Previous Day Incremental',
         'PriceList': 'Price list',
         'CoefficientSI2SO': 'Coefficient SI->SO',
-        'ApproveClosePromoWindow': 'Confirm closing'
+        'ApproveClosePromoWindow': 'Confirm closing',
+        'Competitor': 'Competitor',
+        'CompetitorBrandTech': 'Competitor BrandTech',
+        'CompetitorPromo': 'Competitor Promo'
     },
 
     'text': {
@@ -643,6 +649,27 @@
     'HistoricalBudgetItem': ['.tpm.BudgetItem', '.core.BaseHistoryEntity'],
     'DeletedBudgetItem': ['.tpm.BudgetItem', '.core.BaseDeletedEntity'],
 
+    'CompetitorPromo': {
+        'Number': 'Number',
+        'Name': 'Name',
+        'ClientTreeFullPathName': 'ClientHierarchy',
+        'ClientTreeObjectId': 'ClientId',
+        'ClientTreeId': 'ClientId',
+        'CompetitorName': 'Competitor',
+        'Client': 'Client',
+        'StartDate': 'Start date',
+        'EndDate': 'End date',
+        'IsGrowthAcceleration': 'GrowthAcceleration',
+        'Status': 'Status',
+        'CompetitorBrandTechName' :'BrandTech',
+        'Price': 'Shelf price',
+        'Discount': 'Discount',
+        'CompetitorName': 'Competitor',
+        'Subrange': 'Subranges'
+    },
+    'HistoricalCompetitorPromo': ['.tpm.CompetitorPromo', '.core.BaseHistoryEntity'],
+    'DeletedCompetitorPromo': ['.tpm.CompetitorPromo', '.core.BaseDeletedEntity'],
+
     'Promo': {
         'StartDate': 'Start date',
         'DateStart': 'Start date',
@@ -660,6 +687,8 @@
         'MarsDispatchesEnd': 'Mars Dispatch end',
         'Number': 'Promo ID',
         'Name': 'Promo name',
+        'CompetitorName': 'Competitor',
+        'CompetitorBrandTechName': 'Competitor BrandTech',
         'BrandName': 'Brand',
         'BrandTechName': 'Brandtech',
         'ProductZREP': 'Product',
@@ -907,7 +936,11 @@
         'PromoClientPPEW1': 'Promo Client PPE W1',
         'PromoClientPPEW2': 'Promo Client PPE W2',
         'PromoBasicProducts': 'Promo Basic Products',
-        'PromoTypesGlyph': 'Promo Types Glyph'
+        'PromoTypesGlyph': 'Promo Types Glyph',
+
+        'Price': 'Price',
+        'Discount': 'Discount',
+        'Subrange': 'Subrange'
     },
     'HistoricalPromo': ['.tpm.Promo', '.core.BaseHistoryEntity'],
     'DeletedPromo': ['.tpm.Promo', '.core.BaseDeletedEntity'],
@@ -1167,7 +1200,7 @@
         'DemandGroup': 'Demand group',
         'DMDGroup': 'DMD Group',
         'Week': 'Week',
-        'PlanProductIncrementalQTY': 'Plan Product Inсremental QTY',
+        'PlanProductIncrementalQTY': 'Plan Product Incremental QTY',
         'PromoDifference': 'Promo Difference',
         'Actuals': 'Actuals',
         'OpenOrders': 'Open Orders',
@@ -1568,6 +1601,7 @@
 
     'ClientPromoTypeFilter': {
         'ClientsAndPromoType': 'Clients And Promo Type',
+        'Competitors': 'Competitors',
         'Clients': 'Clients',
         'PromoTypes': 'Promo Types',
         'SelectAll': 'Select All',
@@ -2691,5 +2725,19 @@
     'InvoiceTypes': {
         'OnInvoice': 'On-invoice',
         'OffInvoice': 'Off-invoice'
-    }
+    },
+
+    'Competitor': {
+        'Name': 'Name'
+    },
+    'HistoricalCompetitor': ['.tpm.Competitor', '.core.BaseHistoryEntity'],
+    'DeletedCompetitor': ['.tpm.Competitor', '.core.BaseDeletedEntity'],
+
+    'CompetitorBrandTech': {
+        'BrandTech': 'BrandTech',
+        'Color': 'Color',
+        'CompetitorName': 'Competitor'
+    },
+    'HistoricalCompetitorBrandTech': ['.tpm.CompetitorBrandTech', '.core.BaseHistoryEntity'],
+    'DeletedCompetitorBrandTech': ['.tpm.CompetitorBrandTech', '.core.BaseDeletedEntity'],
 });

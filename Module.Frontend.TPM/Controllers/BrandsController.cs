@@ -128,6 +128,7 @@ namespace Module.Frontend.TPM.Controllers
             }
             var proxy = Context.Set<Brand>().Create<Brand>();
             var result = (Brand)Mapper.Map(model, proxy, typeof(Brand), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+            result.Name = result.Name.Trim();
             Context.Set<Brand>().Add(result);
 
             try
@@ -155,9 +156,13 @@ namespace Module.Frontend.TPM.Controllers
                     return NotFound();
                 }
 
+                var patchModel = patch.GetEntity();
+                patchModel.Name = patchModel.Name.Trim();
+
                 var oldName = model.Name;
                 patch.Patch(model);
                 var newName = model.Name;
+
                 //Асинхронно, т.к. долго выполняется и иначе фронт не дождется ответа
                 Task.Run(() => PromoHelper.UpdateProductHierarchy("Brand", newName, oldName, key));
                 UpdateProductTrees(model.Id, model.Name);
