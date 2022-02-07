@@ -59,7 +59,10 @@
                 clientsFilterConfig[i].checked = clientsCheckboxes.items.items[i].value;
             };
             for (i = 0; i < competitorsCheckboxes.items.items.length; i++) {
-                competitorsCheckboxesConfig[i].checked = competitorsCheckboxes.items.items[i].value;
+                if (competitorsCheckboxesConfig[i].checked != competitorsCheckboxes.items.items[i].value) {
+                    competitorsCheckboxesConfig[i].checked = competitorsCheckboxes.items.items[i].value;
+                    needReloadStore = true;
+                }
             };
             for (i = 0; i < typesCheckboxes.items.items.length; i++) {
                 if (typesCheckboxesConfig[i].checked != typesCheckboxes.items.items[i].value) {
@@ -69,6 +72,7 @@
             };
             if (needReloadStore) {
                 this.filterTypes(typesCheckboxes);
+                this.filterCompetitors(competitorsCheckboxes);
             };
             var text = l10n.ns('tpm', 'Schedule').value('Filtered');
             if (button.up('clientPromoTypeFilter').down('#selectAllClients').checked
@@ -349,19 +353,19 @@
         };
     },
 
-    filterCompetitors: function (competitorsCheckboxes) {
-        var me = this;
-        var value = me.getFixedValue(competitorsCheckboxes);
-        if (Ext.isArray(value)) {
-            for (i = 0; i < value.length; i++) {
-                value[i] = value[i].substr(0, value[i].indexOf(' '));
-            }
-        } else if (value) {
-            value = value.substr(0, value.indexOf(' '));
-        }
-        var store = Ext.StoreMgr.lookup('eventStore');
+    //filterCompetitors: function (competitorsCheckboxes) {
+    //    var me = this;
+    //    var value = me.getFixedValue(competitorsCheckboxes);
+    //    if (Ext.isArray(value)) {
+    //        for (i = 0; i < value.length; i++) {
+    //            value[i] = value[i].substr(0, value[i].indexOf(' '));
+    //        }
+    //    } else if (value) {
+    //        value = value.substr(0, value.indexOf(' '));
+    //    }
+    //    var store = Ext.StoreMgr.lookup('eventStore');
 
-    },
+    //},
 
     onSelectAllCompetitorsChange: function (me, newValue) {
         var check = false;
@@ -458,6 +462,50 @@
             this.getController('tpm.schedule.SchedulerViewController').eventStoreLoading(store);
         } else {
             store.removeFilter('TypeFilter');
+            this.getController('tpm.schedule.SchedulerViewController').eventStoreLoading(store);
+        }
+    },
+
+    filterCompetitors: function (competitorsCheckboxes) {
+        var me = this;
+        var checked = me.getFixedValue(competitorsCheckboxes);
+        var value = ['mars'];
+        value.push(checked);
+        var store = Ext.StoreMgr.lookup('eventStore');
+
+        if (!Ext.isEmpty(value)) {
+            var filterFn = function (item) {
+                var re = new RegExp(value, 'i');
+                return re.test(item.get('CompetitorName'));
+            };
+            var operator = 'like';
+            if (Ext.isArray(value)) {
+                if (value.length > 1) {
+                    operator = 'in';
+                    filterFn = function (item) {
+                        var re = new RegExp('^' + value.join('|') + '$', 'i');
+                        return re.test((Ext.isEmpty('CompetitorName') ? me.autoStoresNullValue : item.get('CompetitorName')));
+                    }
+                } else if (value.length == 1) {
+                    value = value[0];
+                }
+            }
+
+            var filter = Ext.create('Ext.util.Filter', {
+                id: 'CompetitorFilter',
+                property: 'CompetitorName',
+                value: value,
+                type: 'string',
+                operator: operator,
+                filterFn: filterFn
+            })
+            store.removeFilter('CompetitorFilter');
+            // store.remoteFilter = true;
+            store.addFilter(filter, false);
+            // store.remoteFilter = false;
+            this.getController('tpm.schedule.SchedulerViewController').eventStoreLoading(store);
+        } else {
+            store.removeFilter('CompetitorFilter');
             this.getController('tpm.schedule.SchedulerViewController').eventStoreLoading(store);
         }
     },
