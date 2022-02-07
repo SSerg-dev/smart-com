@@ -70,12 +70,9 @@ namespace Module.Host.TPM.Actions.Notifications
 
                     var sql = promoes.ToString();
 
-                    if (yearExport) {
-                        startDate = new DateTime(Year, 1, 1);
-                        endDate = new DateTime(Year, 12, 31);
-                        promoes = promoes.Where(p => (p.EndDate > startDate && p.EndDate < endDate) || (p.StartDate > startDate && p.StartDate < endDate));
-
-                        sql = promoes.ToString().Replace("@p__linq__0", GetDateParam(startDate)).Replace("@p__linq__1", GetDateParam(endDate)).Replace("@p__linq__2", GetDateParam(startDate)).Replace("@p__linq__3", GetDateParam(endDate));
+                    if (sql.Contains("p__linq"))
+                    {
+                        sql.Replace("@p__linq__0", RoleId.ToString());
                     }
 
                     if (promoes.Count() == 0)
@@ -118,6 +115,8 @@ namespace Module.Host.TPM.Actions.Notifications
 
                         string fileName = GetExportFileName(userName);
 
+                        string clients = String.Join(",", Clients);
+
                         FileModel file = new FileModel()
                         {
                             LogicType = "Export",
@@ -140,7 +139,10 @@ namespace Module.Host.TPM.Actions.Notifications
                                         { "DBUserId", DBUserId },
                                         { "PasswordKV", PasswordKV },
                                         { "AKVScope", AKVScope },
-                                        { "BlobStorageName", BlobStorageName }
+                                        { "BlobStorageName", BlobStorageName },
+                                        { "Clients", clients},
+                                        { "Year", Year},
+                                        { "YearExport", yearExport}
                                     };
 
                         var aucontext = new AuthenticationContext("https://login.microsoftonline.com/" + tenantID);
