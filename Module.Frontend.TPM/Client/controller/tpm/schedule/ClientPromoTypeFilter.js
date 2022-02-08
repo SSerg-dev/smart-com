@@ -470,7 +470,12 @@
         var me = this;
         var checked = me.getFixedValue(competitorsCheckboxes);
         var value = ['mars'];
-        value.push(checked);
+
+        if (Ext.isArray(checked))
+            value = value.concat(checked);
+        else
+            value.push(checked);
+
         var store = Ext.StoreMgr.lookup('eventStore');
 
         if (!Ext.isEmpty(value)) {
