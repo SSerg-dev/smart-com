@@ -62,7 +62,7 @@ namespace Module.Host.TPM.Actions.Notifications
                     var row = RawFilters.Replace("$orderby=Id", "").Replace("datetimeoffset", "datetime").Replace(".000Z", "").Replace(".00Z", "");
                     //из библиотеки LinqToQuerystring нашей версии нет данных в вииде 12d что есть в нашей версии odata заменяем
                     row = Regex.Replace(row, @"(\d+)[d]", @"$1");
-                    row = Regex.Escape(row);
+                    //row = Regex.Escape(row);
                     promoes = promoes.LinqToQuerystring(row);
 
                     DateTime startDate = DateTime.Now;

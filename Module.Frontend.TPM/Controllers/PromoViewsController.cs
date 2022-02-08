@@ -47,7 +47,7 @@ namespace Module.Frontend.TPM.Controllers {
             query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
 
             // Не администраторы не смотрят чужие черновики
-            if (role != "Administrator") {
+            if (role != "Administrator" || role != "SupportAdministrator") {
                 query = query.Where(e => e.PromoStatusSystemName != "Draft" || e.CreatorId == user.Id);
             }
 
