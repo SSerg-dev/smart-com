@@ -62,6 +62,7 @@ namespace Module.Host.TPM.Actions.Notifications
                     var row = RawFilters.Replace("$orderby=Id", "").Replace("datetimeoffset", "datetime").Replace(".000Z", "").Replace(".00Z", "");
                     //из библиотеки LinqToQuerystring нашей версии нет данных в вииде 12d что есть в нашей версии odata заменяем
                     row = Regex.Replace(row, @"(\d+)[d]", @"$1");
+                    row = Regex.Escape(row);
                     promoes = promoes.LinqToQuerystring(row);
 
                     DateTime startDate = DateTime.Now;
@@ -72,9 +73,15 @@ namespace Module.Host.TPM.Actions.Notifications
 
                     if (sql.Contains("p__linq"))
                     {
-                        sql.Replace("@p__linq__0", RoleId.ToString());
+                        sql = sql.Replace("@p__linq__0", $"'{RoleId.ToString()}'");
                     }
-
+                    promoes = promoes.Where(x => Clients.Contains(x.ClientTreeId.Value));
+                    if (yearExport)
+                    {
+                        startDate = new DateTime(Year, 1, 1);
+                        endDate = new DateTime(Year, 12, 31);
+                        promoes = promoes.Where(p => (p.EndDate > startDate && p.EndDate < endDate) || (p.StartDate > startDate && p.StartDate < endDate));
+                    }
                     if (promoes.Count() == 0)
                     {
                         Errors.Add("No promoes to export");
