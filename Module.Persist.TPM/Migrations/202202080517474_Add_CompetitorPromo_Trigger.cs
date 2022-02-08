@@ -38,7 +38,6 @@ namespace Module.Persist.TPM.Migrations
 			        DefaultSchemaSetting.CompetitorPromo cp
 			        INNER JOIN Inserted i ON i.Id = cp.Id
         END;
-        CREATE TRIGGER DefaultSchemaSetting.[CompetitorPromo_increment_number] ON DefaultSchemaSetting.[CompetitorPromo] AFTER INSERT AS
         ";
     }
 }
