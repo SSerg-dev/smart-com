@@ -332,12 +332,20 @@
             scheduler = Ext.ComponentQuery.query('schedulecontainer')[0].down('scheduler'),
             store = scheduler.getEventStore(),
             clientStore = scheduler.getResourceStore(),
+            competitorNames = [],
+            competitorCheckBoxes = scheduler.competitorsCheckboxesConfig,
             ids = clientStore.getRange(0, clientStore.getCount() - 1).map(
                 function (client) {
                     return client.get('ObjectId')
                 }),
             actionName = 'ExportSchedule',
             resource = 'PromoViews';
+
+        competitorCheckBoxes.map(
+            function (checkbox) {
+                if (checkbox.checked == true)
+                    competitorNames.push(checkbox.inputValue);
+            });
 
         var query = breeze.EntityQuery
             .from(resource)
@@ -346,6 +354,7 @@
                 $method: 'POST',
                 $data: {
                     clients: ids,
+                    competitors: competitorNames,
                     year: year
                 }
             });

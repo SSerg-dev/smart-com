@@ -70,10 +70,10 @@
                     needReloadStore = true;
                 }
             };
-            if (needReloadStore) {
-                this.filterTypes(typesCheckboxes);
-                this.filterCompetitors(competitorsCheckboxes);
-            };
+            //if (needReloadStore) {
+            //    this.filterTypes(typesCheckboxes);
+            //    this.filterCompetitors(competitorsCheckboxes);
+            //};
             var text = l10n.ns('tpm', 'Schedule').value('Filtered');
             if (button.up('clientPromoTypeFilter').down('#selectAllClients').checked
                 && button.up('clientPromoTypeFilter').down('#selectAllTypes').checked
@@ -466,54 +466,54 @@
         }
     },
 
-    filterCompetitors: function (competitorsCheckboxes) {
-        var me = this;
-        var checked = me.getFixedValue(competitorsCheckboxes);
-        var value = ['mars'];
+    //filterCompetitors: function (competitorsCheckboxes) {
+    //    var me = this;
+    //    var checked = me.getFixedValue(competitorsCheckboxes);
+    //    var value = ['mars'];
 
-        if (Ext.isArray(checked))
-            value = value.concat(checked);
-        else
-            value.push(checked);
+    //    if (Ext.isArray(checked))
+    //        value = value.concat(checked);
+    //    else
+    //        value.push(checked);
 
-        var store = Ext.StoreMgr.lookup('eventStore');
+    //    var store = Ext.StoreMgr.lookup('eventStore');
 
-        if (!Ext.isEmpty(value)) {
-            var filterFn = function (item) {
-                var re = new RegExp(value, 'i');
-                return re.test(item.get('CompetitorName'));
-            };
-            var operator = 'like';
-            if (Ext.isArray(value)) {
-                if (value.length > 1) {
-                    operator = 'in';
-                    filterFn = function (item) {
-                        var re = new RegExp('^' + value.join('|') + '$', 'i');
-                        return re.test((Ext.isEmpty('CompetitorName') ? me.autoStoresNullValue : item.get('CompetitorName')));
-                    }
-                } else if (value.length == 1) {
-                    value = value[0];
-                }
-            }
+    //    if (!Ext.isEmpty(value)) {
+    //        var filterFn = function (item) {
+    //            var re = new RegExp(value, 'i');
+    //            return re.test(item.get('CompetitorName'));
+    //        };
+    //        var operator = 'like';
+    //        if (Ext.isArray(value)) {
+    //            if (value.length > 1) {
+    //                operator = 'in';
+    //                filterFn = function (item) {
+    //                    var re = new RegExp('^' + value.join('|') + '$', 'i');
+    //                    return re.test((Ext.isEmpty('CompetitorName') ? me.autoStoresNullValue : item.get('CompetitorName')));
+    //                }
+    //            } else if (value.length == 1) {
+    //                value = value[0];
+    //            }
+    //        }
 
-            var filter = Ext.create('Ext.util.Filter', {
-                id: 'CompetitorFilter',
-                property: 'CompetitorName',
-                value: value,
-                type: 'string',
-                operator: operator,
-                filterFn: filterFn
-            })
-            store.removeFilter('CompetitorFilter');
-            // store.remoteFilter = true;
-            store.addFilter(filter, false);
-            // store.remoteFilter = false;
-            this.getController('tpm.schedule.SchedulerViewController').eventStoreLoading(store);
-        } else {
-            store.removeFilter('CompetitorFilter');
-            this.getController('tpm.schedule.SchedulerViewController').eventStoreLoading(store);
-        }
-    },
+    //        var filter = Ext.create('Ext.util.Filter', {
+    //            id: 'CompetitorFilter',
+    //            property: 'CompetitorName',
+    //            value: value,
+    //            type: 'string',
+    //            operator: operator,
+    //            filterFn: filterFn
+    //        })
+    //        store.removeFilter('CompetitorFilter');
+    //        // store.remoteFilter = true;
+    //        store.addFilter(filter, false);
+    //        // store.remoteFilter = false;
+    //        this.getController('tpm.schedule.SchedulerViewController').eventStoreLoading(store);
+    //    } else {
+    //        store.removeFilter('CompetitorFilter');
+    //        this.getController('tpm.schedule.SchedulerViewController').eventStoreLoading(store);
+    //    }
+    //},
 
     onSelectAllTypesChange: function (me, newValue) {
         var check = false;

@@ -28,6 +28,8 @@ namespace Module.Host.TPM.Actions.Notifications
     public class SchedulerExportAction : BaseAction {
         private readonly IEnumerable<int> Clients;
 
+        private readonly IEnumerable<string> Competitors;
+
         private readonly int Year;
 
         private readonly Guid UserId;
@@ -40,8 +42,9 @@ namespace Module.Host.TPM.Actions.Notifications
 
         protected readonly static Logger logger = LogManager.GetCurrentClassLogger();
 
-        public SchedulerExportAction(IEnumerable<int> clients, int year, Guid userId, Guid roleId, string rawFilters, Guid handlerId) {
+        public SchedulerExportAction(IEnumerable<int> clients, IEnumerable<string> competitors, int year, Guid userId, Guid roleId, string rawFilters, Guid handlerId) {
             Clients = clients;
+            Competitors = competitors;
             Year = year;
             UserId = userId;
             RoleId = roleId;
@@ -124,6 +127,8 @@ namespace Module.Host.TPM.Actions.Notifications
 
                         string clients = String.Join(",", Clients);
 
+                        string competitors = String.Join(",", Competitors);
+
                         FileModel file = new FileModel()
                         {
                             LogicType = "Export",
@@ -148,6 +153,7 @@ namespace Module.Host.TPM.Actions.Notifications
                                         { "AKVScope", AKVScope },
                                         { "BlobStorageName", BlobStorageName },
                                         { "Clients", clients},
+                                        { "Competitors", competitors},
                                         { "Year", Year},
                                         { "YearExport", yearExport}
                                     };

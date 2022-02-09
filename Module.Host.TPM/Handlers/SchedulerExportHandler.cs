@@ -29,6 +29,7 @@ namespace Module.Host.TPM.Handlers {
                 handlerLogger = new LogWriter(info.HandlerId.ToString());
                 int year = HandlerDataHelper.GetIncomingArgument<int>("year", info.Data, false);
                 IEnumerable<int> clients = HandlerDataHelper.GetIncomingArgument<IEnumerable<int>>("clients", info.Data, false);
+                IEnumerable<string> competitors = HandlerDataHelper.GetIncomingArgument<IEnumerable<string>>("competitors", info.Data, false);
                 Guid userId = HandlerDataHelper.GetIncomingArgument<Guid>("UserId", info.Data);
                 Guid roleId = HandlerDataHelper.GetIncomingArgument<Guid>("RoleId", info.Data);
                 Guid handlerId = HandlerDataHelper.GetIncomingArgument<Guid>("HandlerId", info.Data);
@@ -36,7 +37,7 @@ namespace Module.Host.TPM.Handlers {
                 
                 handlerLogger.Write(true, String.Format("Start of calendar export at 10 {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)), "Message");
                 Thread.Sleep(10000);
-                IAction action = new SchedulerExportAction(clients, year, userId, roleId, rawFilters, handlerId);
+                IAction action = new SchedulerExportAction(clients, competitors, year, userId, roleId, rawFilters, handlerId);
                 action.Execute();
 
                 if (action.Errors.Any()) {
