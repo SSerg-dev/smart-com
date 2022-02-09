@@ -434,6 +434,7 @@ namespace Module.Persist.TPM {
             ActionConfiguration schedExp = builder.Entity<PromoView>().Collection.Action("ExportSchedule");
             schedExp.CollectionParameter<int>("clients");
             schedExp.CollectionParameter<string>("competitors");
+            schedExp.CollectionParameter<string>("types");
             schedExp.Parameter<int?>("year");
 
             builder.EntitySet<Sale>("Sales");

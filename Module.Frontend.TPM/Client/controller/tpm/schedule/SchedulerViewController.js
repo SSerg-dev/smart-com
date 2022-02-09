@@ -333,7 +333,9 @@
             store = scheduler.getEventStore(),
             clientStore = scheduler.getResourceStore(),
             competitorNames = [],
+            typeNames = [],
             competitorCheckBoxes = scheduler.competitorsCheckboxesConfig,
+            typeCheckBoxes = scheduler.typesCheckboxesConfig,
             ids = clientStore.getRange(0, clientStore.getCount() - 1).map(
                 function (client) {
                     return client.get('ObjectId')
@@ -345,6 +347,11 @@
             function (checkbox) {
                 if (checkbox.checked == true)
                     competitorNames.push(checkbox.inputValue);
+        });
+        typeCheckBoxes.map(
+            function (checkbox) {
+                if (checkbox.checked == true)
+                    typeNames.push(checkbox.inputValue);
             });
 
         var query = breeze.EntityQuery
@@ -355,6 +362,7 @@
                 $data: {
                     clients: ids,
                     competitors: competitorNames,
+                    types: typeNames,
                     year: year
                 }
             });

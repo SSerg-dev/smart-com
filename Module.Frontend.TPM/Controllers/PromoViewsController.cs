@@ -112,6 +112,7 @@ namespace Module.Frontend.TPM.Controllers {
                 Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
                 IEnumerable<int> clients = (IEnumerable<int>)data["clients"];
                 IEnumerable<string> competitors = (IEnumerable<string>)data["competitors"];
+                IEnumerable<string> types = (IEnumerable<string>)data["types"];
 
                 IQueryable<Promo> queryable = Enumerable.Empty<Promo>().AsQueryable();
                 var rawFilter2s = options.RawValues;
@@ -123,6 +124,7 @@ namespace Module.Frontend.TPM.Controllers {
                 HandlerDataHelper.SaveIncomingArgument("rawFilters", rawFilters, handlerData, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("clients", clients.ToList(), handlerData, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("competitors", competitors.ToList(), handlerData, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("types", types.ToList(), handlerData, visible: false, throwIfNotExists: false);
 
                 var handlerId = Guid.NewGuid();
                 HandlerDataHelper.SaveIncomingArgument("HandlerId", handlerId, handlerData, visible: false, throwIfNotExists: false);
