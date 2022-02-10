@@ -1756,6 +1756,7 @@
                 inoutPromoId: resourceStore.data.items[i * this.rowCount + 1],
                 otherPromoId: resourceStore.data.items[i * this.rowCount + 2],
                 competitorPromoId: resourceStore.data.items[i * this.rowCount + 3],
+                competitorPromoIds: resourceStore.data.items.slice(i * this.rowCount + 3, resourceStore.data.items.length),
             })
         };
 
@@ -2044,7 +2045,7 @@
                 var nascheduler = Ext.ComponentQuery.query('#nascheduler')[0];
                 if (nascheduler) {
                     if (!store.resetLoading) {
-                        this.renderEvents(store.uniqueObjectIds[clientId].regPromoId, store.uniqueObjectIds[clientId].inoutPromoId, store.uniqueObjectIds[clientId].otherPromoId, store.uniqueObjectIds[clientId].competitorPromoId);
+                        this.renderEvents(store.uniqueObjectIds[clientId].regPromoId, store.uniqueObjectIds[clientId].inoutPromoId, store.uniqueObjectIds[clientId].otherPromoId, store.uniqueObjectIds[clientId].competitorPromoIds);
                         store.uniqueObjectIds[clientId].loaded = true;
                         clientId = 0;
                         while (store.uniqueObjectIds[clientId] && store.uniqueObjectIds[clientId].loaded) {
@@ -2059,12 +2060,13 @@
         });
     },
 
-    renderEvents: function (regId, inoutId, otherPromoId, competitorPromoId) {
+    renderEvents: function (regId, inoutId, otherPromoId, competitorPromoIds) {
         var ng = Ext.ComponentQuery.query('#nascheduler')[0].normalGrid;
         var lg = Ext.ComponentQuery.query('#nascheduler')[0].lockedGrid;
         var renderId = regId;
         var records = []//ng.view.getViewRange();
-        for (var i = 0; i <= this.rowCount; i++) {
+        var rowsCount = 3 + competitorPromoIds.length;
+        for (var i = 0; i <= rowsCount; i++) {
             records.push(renderId);
             var eventNode = ng.view.getNode(renderId, false);
             var resourceNode = lg.view.getNode(renderId, false);
@@ -2079,8 +2081,8 @@
                 renderId = inoutId;
             } else if (i == 1) {
                 renderId = otherPromoId;
-            } else if (i == 2) {
-                renderId = competitorPromoId;
+            } else if (i > 1) {
+                renderId = competitorPromoIds[i-2];
             } 
 
             records = [];
@@ -2105,10 +2107,11 @@
                 if (node && !(node.childNodes[1] && node.childNodes[1].textContent === 'Loading...')) {
                     Ext.DomHelper.append(node, '<td class="overlay">Loading...</td>');
                 }
-
-                node = ng.view.getNode(uniqueObjectIds[j].competitorPromoId, false);
-                if (node && !(node.childNodes[1] && node.childNodes[1].textContent === 'Loading...')) {
-                    Ext.DomHelper.append(node, '<td class="overlay">Loading...</td>');
+                for (i = 0; i < uniqueObjectIds[j].competitorPromoIds.length; i++) {
+                    node = ng.view.getNode(uniqueObjectIds[j].competitorPromoIds[i], false);
+                    if (node && !(node.childNodes[1] && node.childNodes[1].textContent === 'Loading...')) {
+                        Ext.DomHelper.append(node, '<td class="overlay">Loading...</td>');
+                    }
                 }
             }
         };
