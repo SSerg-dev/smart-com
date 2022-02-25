@@ -29,6 +29,7 @@
         { name: 'StartDate', useNull: true, type: 'date', hidden: true, timeZone: +3, convert: dateConvertTimeZone },
         { name: 'DateStart', useNull: true, type: 'date', hidden: false, isDefault: false, mapping: 'StartDate', timeZone: +3, convert: dateConvertTimeZone },
         { name: 'EndDate', useNull: true, type: 'date', hidden: false, isDefault: false, timeZone: +3, convert: dateConvertTimeZone },
+        { name: 'MechanicType', useNull: false, type: 'string', hidden: false, isDefault: true },
         { name: 'Discount', useNull: false, type: 'float', hidden: false, isDefault: true },
         { name: 'Price', useNull: false, type: 'float', hidden: false, isDefault: true },
         { name: 'Subrange', useNull: false, type: 'string', hidden: false, isDefault: true },

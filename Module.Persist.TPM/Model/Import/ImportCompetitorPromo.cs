@@ -38,12 +38,16 @@ namespace Module.Persist.TPM.Model.Import
         public DateTimeOffset? EndDate { get; set; }
 
         [ImportCSVColumn(ColumnNumber = 6)]
-        [Display(Name = "Discount")]
-        public float Discount { get; set; }
+        [Display(Name = "MechanicType")]
+        public string MechanicType { get; set; }
 
         [ImportCSVColumn(ColumnNumber = 7)]
+        [Display(Name = "Discount")]
+        public double? Discount { get; set; }
+
+        [ImportCSVColumn(ColumnNumber = 8)]
         [Display(Name = "Shelf price")]
-        public int Price { get; set; }
+        public double? Price { get; set; }
 
         public Guid CompetitorId { get; set; }
         public virtual Competitor Competitor { get; set; }

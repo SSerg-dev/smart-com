@@ -138,6 +138,10 @@
                 width: 100,
                 renderer: Ext.util.Format.dateRenderer('d.m.Y'),
             }, {
+                text: l10n.ns('tpm', 'CompetitorPromo').value('MechanicType'),
+                dataIndex: 'MechanicType',
+                width: 150,
+            }, {
                 xtype: 'numbercolumn',
                 format: '0.00',
                 text: l10n.ns('tpm', 'CompetitorPromo').value('Discount'),

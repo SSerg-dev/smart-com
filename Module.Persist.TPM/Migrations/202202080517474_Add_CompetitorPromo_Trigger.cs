@@ -11,7 +11,7 @@ namespace Module.Persist.TPM.Migrations
             SqlString = SqlString.Replace("DefaultSchemaSetting", defaultSchema);
             Sql(SqlString);
         }
-        
+
         public override void Down()
         {
         }

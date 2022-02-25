@@ -16,6 +16,7 @@
         { name: 'Number', type: 'int', isDefault: true },
         { name: 'StartDate', type: 'date', timeZone: +3, convert: dateConvertTimeZone },
         { name: 'EndDate', type: 'date', isDefault: false, timeZone: +3, convert: dateConvertTimeZone },
+        { name: 'MechanicType', type: 'string', isDefault: true },
         { name: 'Discount', type: 'float', isDefault: true },
         { name: 'Price', type: 'float', isDefault: true },
         { name: 'Subrange', type: 'string', isDefault: true },

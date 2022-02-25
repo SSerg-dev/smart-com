@@ -2756,6 +2756,10 @@
     <Compile Include="Migrations\202202080517474_Add_CompetitorPromo_Trigger.Designer.cs">
       <DependentUpon>202202080517474_Add_CompetitorPromo_Trigger.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202202241457236_Change_Discount_Type_CompetitorPromo.cs" />
+    <Compile Include="Migrations\202202241457236_Change_Discount_Type_CompetitorPromo.Designer.cs">
+      <DependentUpon>202202241457236_Change_Discount_Type_CompetitorPromo.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -5279,6 +5283,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202202080517474_Add_CompetitorPromo_Trigger.resx">
       <DependentUpon>202202080517474_Add_CompetitorPromo_Trigger.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202202241457236_Change_Discount_Type_CompetitorPromo.resx">
+      <DependentUpon>202202241457236_Change_Discount_Type_CompetitorPromo.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

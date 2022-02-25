@@ -178,6 +178,10 @@
             },
         }, {
             xtype: 'textfield',
+            fieldLabel: l10n.ns('tpm', 'CompetitorPromo').value('MechanicType'),
+            name: 'MechanicType',
+        }, {
+            xtype: 'textfield',
             fieldLabel: l10n.ns('tpm', 'CompetitorPromo').value('Discount'),
             name: 'Discount',
             allowBlank: true,

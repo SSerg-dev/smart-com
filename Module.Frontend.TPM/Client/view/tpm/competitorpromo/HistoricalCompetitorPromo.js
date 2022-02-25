@@ -123,6 +123,10 @@
             fieldLabel: l10n.ns('tpm', 'Promo').value('EndDate'),
         }, {
             xtype: 'singlelinedisplayfield',
+            name: 'MechanicType',
+            fieldLabel: l10n.ns('tpm', 'CompetitorPromo').value('MechanicType'),
+        }, {
+            xtype: 'singlelinedisplayfield',
             name: 'Discount',
             fieldLabel: l10n.ns('tpm', 'CompetitorPromo').value('Discount'),
         }, {

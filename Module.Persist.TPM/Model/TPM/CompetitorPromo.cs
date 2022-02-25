@@ -55,6 +55,8 @@ namespace Module.Persist.TPM.Model.TPM
         [StringLength(15)]
         public string MarsDispatchesEnd { get; set; }
 
+        public string MechanicType { get; set; }
+
         public double? Discount { get; set; }
 
         public double? Price { get; set; }

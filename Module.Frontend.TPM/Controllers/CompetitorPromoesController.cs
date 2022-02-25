@@ -244,8 +244,9 @@ namespace Module.Frontend.TPM.Controllers
                 new Column() { Order = 5, Field = "CompetitorBrandTech.BrandTech", Header = "BrandTech", Quoting = false },
                 new Column() { Order = 6, Field = "StartDate", Header = "Start Date", Quoting = false },
                 new Column() { Order = 7, Field = "EndDate", Header = "End Date", Quoting = false },
-                new Column() { Order = 8, Field = "Discount", Header = "Discount", Quoting = false },
-                new Column() { Order = 9, Field = "Price", Header = "Shelf Price", Quoting = false }
+                new Column() { Order = 8, Field = "MechanicType", Header = "Mechanic Type", Quoting = false },
+                new Column() { Order = 9, Field = "Discount", Header = "Discount", Quoting = false },
+                new Column() { Order = 10, Field = "Price", Header = "Shelf Price", Quoting = false }
             };
             return columns;
         }
@@ -259,8 +260,9 @@ namespace Module.Frontend.TPM.Controllers
                 new Column() { Order = 4, Field = "CompetitorBrandTech.BrandTech", Header = "BrandTech", Quoting = false },
                 new Column() { Order = 5, Field = "StartDate", Header = "Start Date", Quoting = false },
                 new Column() { Order = 6, Field = "EndDate", Header = "End Date", Quoting = false },
-                new Column() { Order = 7, Field = "Discount", Header = "Discount", Quoting = false },
-                new Column() { Order = 8, Field = "Price", Header = "Shelf Price", Quoting = false }
+                new Column() { Order = 7, Field = "MechanicType", Header = "Mechanic Type", Quoting = false },
+                new Column() { Order = 8, Field = "Discount", Header = "Discount", Quoting = false },
+                new Column() { Order = 9, Field = "Price", Header = "Shelf Price", Quoting = false }
             };
             return columns;
         }

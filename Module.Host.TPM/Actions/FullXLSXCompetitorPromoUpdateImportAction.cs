@@ -352,6 +352,11 @@ namespace Module.Host.TPM.Actions
                     errors.Add("Invalid price");
                     isSuitable = false;
                 }
+                if (String.IsNullOrEmpty(typedRec.MechanicType))
+                {
+                    errors.Add("Mechanic Type must have a value");
+                    isSuitable = false;
+                }
                 if (typedRec.Discount != null && ( typedRec.Discount < 0 || typedRec.Discount > 100))
                 {
                     errors.Add("Invalid discount");
