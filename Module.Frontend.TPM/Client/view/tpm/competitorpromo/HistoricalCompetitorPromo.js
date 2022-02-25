@@ -109,7 +109,7 @@
             fieldLabel: l10n.ns('tpm', 'CompetitorPromo').value('CompetitorName'),
         }, {
             xtype: 'singlelinedisplayfield',
-            name: 'CompetitorBrandTechName',
+            name: 'CompetitorBrandTechBrandTech',
             fieldLabel: l10n.ns('tpm', 'Promo').value('BrandTechName'),
         }, {
             xtype: 'singlelinedisplayfield',

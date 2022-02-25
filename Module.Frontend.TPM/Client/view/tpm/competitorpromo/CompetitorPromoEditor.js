@@ -168,12 +168,13 @@
                 return true;
             },
         }, {
-            xtype: 'textfield',
+            xtype: 'numberfield',
             fieldLabel: l10n.ns('tpm', 'CompetitorPromo').value('Price'),
             name: 'Price',
             allowBlank: true,
             allowOnlyWhitespace: true,
             validator: function (value) {
+                value = value.split(",").join(".");
                 return new Number(value) > 0;
             },
         }, {
@@ -181,12 +182,13 @@
             fieldLabel: l10n.ns('tpm', 'CompetitorPromo').value('MechanicType'),
             name: 'MechanicType',
         }, {
-            xtype: 'textfield',
+            xtype: 'numberfield',
             fieldLabel: l10n.ns('tpm', 'CompetitorPromo').value('Discount'),
             name: 'Discount',
             allowBlank: true,
             allowOnlyWhitespace: true,
             validator: function (value) {
+                value = value.split(",").join(".");
                 return new Number(value) > 0 && Number(value) < 100;
             },
         }
