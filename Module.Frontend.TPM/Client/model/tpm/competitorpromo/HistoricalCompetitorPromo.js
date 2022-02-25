@@ -11,7 +11,7 @@
         { name: '_Operation', type: 'string', isDefault: true },
         { name: 'CompetitorName', type: 'string', isDefault: true},
         { name: 'ClientTreeFullPathName', type: 'string', isDefault: true },
-        { name: 'CompetitorBrandTechName', type: 'string', isDefault: true},
+        { name: 'CompetitorBrandTechBrandTech', type: 'string', isDefault: true},
         { name: 'Name', type: 'string', isDefault: true },
         { name: 'Number', type: 'int', isDefault: true },
         { name: 'StartDate', type: 'date', timeZone: +3, convert: dateConvertTimeZone },

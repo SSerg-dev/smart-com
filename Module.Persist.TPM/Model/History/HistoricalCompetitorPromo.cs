@@ -16,6 +16,6 @@ namespace Module.Persist.TPM.Model.History
         public string MechanicType { get; set; }
         public double? Price { get; set; }
         public double? Discount { get; set; }
-        public string CompetitorBrandTechName { get; set; }
+        public string CompetitorBrandTechBrandTech { get; set; }
     }
 }
