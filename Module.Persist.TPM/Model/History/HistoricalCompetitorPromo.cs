@@ -13,6 +13,7 @@ namespace Module.Persist.TPM.Model.History
         public DateTimeOffset? EndDate { get; set; }
         public string Name { get; set; }
         public int Number { get; set; }
+        public string MechanicType { get; set; }
         public double? Price { get; set; }
         public double? Discount { get; set; }
         public string CompetitorBrandTechName { get; set; }
