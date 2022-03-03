@@ -12,17 +12,17 @@ namespace Module.Persist.TPM.Model.Import
     public class ImportCompetitorPromo : BaseImportEntity
     {
         [ImportCSVColumn(ColumnNumber = 0)]
+        [Display(Name = "Client hierarchy code")]
+        public int ClientTreeObjectId { get; set; }
+
+        [ImportCSVColumn(ColumnNumber = 1)]
         [NavigationPropertyMap(LookupEntityType = typeof(Competitor), LookupPropertyName = "Name")]
         [Display(Name = "Competitor")]
         public string CompetitorName { get; set; }
 
-        [ImportCSVColumn(ColumnNumber = 1)]
+        [ImportCSVColumn(ColumnNumber = 2)]
         [Display(Name = "Promo name")]
         public String Name { get; set; }
-
-        [ImportCSVColumn(ColumnNumber = 2)]
-        [Display(Name = "Client hierarchy code")]
-        public int ClientTreeObjectId { get; set; }
 
         [ImportCSVColumn(ColumnNumber = 3)]
         [NavigationPropertyMap(LookupEntityType = typeof(CompetitorBrandTech), LookupPropertyName = "BrandTech")]

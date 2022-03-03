@@ -254,9 +254,9 @@ namespace Module.Frontend.TPM.Controllers
         public static IEnumerable<Column> GetImportSettings()
         {
             IEnumerable<Column> columns = new List<Column>() {
-                new Column() { Order = 1, Field = "Competitor.Name", Header = "Competitor", Quoting = false },
-                new Column() { Order = 2, Field = "Name", Header = "Promo Name", Quoting = false },
-                new Column() { Order = 3, Field = "ClientTree.ObjectId", Header = "ClientId", Quoting = false },
+                new Column() { Order = 1, Field = "ClientTree.ObjectId", Header = "ClientId", Quoting = false },
+                new Column() { Order = 2, Field = "Competitor.Name", Header = "Competitor", Quoting = false },
+                new Column() { Order = 3, Field = "Name", Header = "Promo Name", Quoting = false },
                 new Column() { Order = 4, Field = "CompetitorBrandTech.BrandTech", Header = "BrandTech", Quoting = false },
                 new Column() { Order = 5, Field = "StartDate", Header = "Start Date", Quoting = false },
                 new Column() { Order = 6, Field = "EndDate", Header = "End Date", Quoting = false },
