@@ -3076,6 +3076,7 @@
         var clientRecord = isCopy ? record.schedulerContext.resourceRecord.raw : record.raw.ClientTree;
 
         if (clientRecord) {
+            promoeditorcustom.model = isCopy ? promoeditorcustom.model : record;
             promoClientForm.fillForm(clientRecord, treesChangingBlockDate);
         }
 
