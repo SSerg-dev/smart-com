@@ -54,6 +54,25 @@ namespace Module.Persist.TPM.Migrations
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='HistoricalCompetitorBrandTechs' and [Action]='GetHistoricalCompetitorBrandTechs')),
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='HistoricalCompetitorBrandTechs' and [Action]='GetFilteredData'))
                 GO
+                DECLARE @RoleId uniqueidentifier = (SELECT[Id] FROM [DefaultSchemaSetting].[Role] where SystemName = 'FunctionalExpert');
+                INSERT INTO[DefaultSchemaSetting].[AccessPointRole]
+                (RoleId, AccessPointId) values
+                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='CompetitorBrandTechs' and [Action]='DownloadTemplateXLSX')),
+                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='CompetitorBrandTechs' and [Action]='GetFilteredData')),
+                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='CompetitorBrandTechs' and [Action]='GetCompetitorBrandTechs')),
+                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='CompetitorBrandTechs' and [Action]='GetCompetitorBrandTech')),
+                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='CompetitorBrandTechs' and [Action]='Put')),
+                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='CompetitorBrandTechs' and [Action]='Post')),
+                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='CompetitorBrandTechs' and [Action]='Patch')),
+                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='CompetitorBrandTechs' and [Action]='Delete')),
+                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='CompetitorBrandTechs' and [Action]='ExportXLSX')),
+                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='CompetitorBrandTechs' and [Action]='FullImportXLSX')),
+                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='DeletedCompetitorBrandTechs' and [Action]='GetFilteredData')),
+                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='DeletedCompetitorBrandTechs' and [Action]='GetDeletedCompetitorBrandTechs')),
+                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='DeletedCompetitorBrandTechs' and [Action]='GetDeletedCompetitorBrandTech')),
+                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='HistoricalCompetitorBrandTechs' and [Action]='GetHistoricalCompetitorBrandTechs')),
+                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='HistoricalCompetitorBrandTechs' and [Action]='GetFilteredData'))
+                GO
                 DECLARE @RoleId uniqueidentifier = (SELECT[Id] FROM [DefaultSchemaSetting].[Role] where SystemName = 'SupportAdministrator');
                 INSERT INTO[DefaultSchemaSetting].[AccessPointRole]
                 (RoleId, AccessPointId) values
