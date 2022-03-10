@@ -30,7 +30,7 @@ namespace Module.Persist.TPM.Migrations
                 WHERE [Type] = 'Subrange' AND EndDate IS NULL AND ObjectId IN (
 	                SELECT ProductTreeObjectId 
                     FROM [DefaultSchemaSetting].PromoProductTree 
-                    WHERE PromoId = @promoId 
+                    WHERE PromoId = @promoId AND [Disabled] = 0
                 )
 	            RETURN @result
             END
