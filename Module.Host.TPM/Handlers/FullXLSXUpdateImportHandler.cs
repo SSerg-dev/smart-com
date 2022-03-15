@@ -65,6 +65,44 @@ namespace Module.Host.TPM.Handlers
         }
     }
 
+    class FullXLSXCompetitorBrandTechUpdateImportHandler : FullXLSXImportHandler
+    {
+        protected override void InitializeParameters(HandlerData handlerData, ExecuteData data)
+        {
+        }
+
+        protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
+        {
+            return new FullXLSXCompetitorBrandTechUpdateImportAction(settings);
+        }
+    }
+
+    class FullXLSXCompetitorUpdateImportHandler : FullXLSXImportHandler
+    {
+        protected override void InitializeParameters(HandlerData handlerData, ExecuteData data)
+        {
+        }
+
+        protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
+        {
+            return new FullXLSXCompetitorUpdateImportAction(settings);
+        }
+    }
+
+    class FullXLSXCompetitorPromoUpdateImportHandler : FullXLSXImportHandler
+    {
+        protected override void InitializeParameters(HandlerData handlerData, ExecuteData data)
+        {
+            var importDestination = HandlerDataHelper.GetIncomingArgument<string>("ImportDestination", handlerData);
+            data.SetValue("ImportDestination", importDestination);
+        }
+
+        protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
+        {
+            return new FullXLSXCompetitorPromoUpdateImportAction(settings);
+        }
+    }
+
     class FullXLSXTradeInvestmentUpdateImportHandler : FullXLSXImportHandler
     {
         protected override void InitializeParameters(HandlerData handlerData, ExecuteData data)

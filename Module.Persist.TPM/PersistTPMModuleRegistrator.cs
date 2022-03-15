@@ -54,6 +54,7 @@ namespace Module.Persist.TPM {
             modelBuilder.Entity<BaseClientTreeView>().ToTable("BaseClientTreeView");
             modelBuilder.Entity<RetailType>();
             modelBuilder.Entity<NoneNego>();
+            modelBuilder.Entity<ExportQuery>();
 
 
             modelBuilder.Entity<Plu>();
@@ -130,6 +131,10 @@ namespace Module.Persist.TPM {
             modelBuilder.Entity<Promo>().Ignore(n => n.Calculating);
             modelBuilder.Entity<Promo>().Ignore(n => n.PromoBasicProducts);
 
+            // Calendar Competitor Entities
+            modelBuilder.Entity<Competitor>();
+            modelBuilder.Entity<CompetitorPromo>();
+            modelBuilder.Entity<CompetitorBrandTech>();
             modelBuilder.Entity<RPASetting>();
             modelBuilder.Entity<RPA>();
         }
@@ -428,6 +433,8 @@ namespace Module.Persist.TPM {
 
             ActionConfiguration schedExp = builder.Entity<PromoView>().Collection.Action("ExportSchedule");
             schedExp.CollectionParameter<int>("clients");
+            schedExp.CollectionParameter<string>("competitors");
+            schedExp.CollectionParameter<string>("types");
             schedExp.Parameter<int?>("year");
 
             builder.EntitySet<Sale>("Sales");
@@ -598,6 +605,8 @@ namespace Module.Persist.TPM {
 
 
             builder.EntitySet<PromoProduct2Plu>("PromoProduct2Plus");
+
+            builder.EntitySet<ExportQuery>("ExportQueries");
 
             builder.EntitySet<PromoProduct>("PromoProducts");
             builder.EntitySet<PromoProduct>("DeletedPromoProducts");
@@ -961,6 +970,42 @@ namespace Module.Persist.TPM {
             builder.Entity<ClientDashboardView>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<ClientDashboardView>("ClientDashboardViews");
             builder.EntitySet<HistoricalClientDashboardView>("HistoricalClientDashboards");
             builder.Entity<HistoricalClientDashboardView>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalClientDashboardView>("HistoricalClientDashboards");
+
+            // Calendar Competitors Entities
+            builder.EntitySet<Competitor>("Competitors");
+            builder.EntitySet<Competitor>("DeletedCompetitors");
+            builder.EntitySet<HistoricalCompetitor>("HistoricalCompetitors");
+            builder.Entity<Competitor>().Collection.Action("ExportXLSX");
+            builder.Entity<Competitor>().Collection.Action("FullImportXLSX");
+            builder.Entity<Competitor>().Collection.Action("DownloadTemplateXLSX");
+            builder.Entity<Competitor>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<Competitor>("Competitors");
+            builder.Entity<HistoricalCompetitor>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalCompetitor>("HistoricalCompetitors");
+
+            builder.EntitySet<CompetitorBrandTech>("CompetitorBrandTechs");
+            builder.EntitySet<CompetitorBrandTech>("DeletedCompetitorBrandTechs");
+            builder.EntitySet<HistoricalCompetitorBrandTech>("HistoricalCompetitorBrandTechs");
+            builder.EntitySet<CompetitorBrandTech>("CompetitorBrandTechs").HasOptionalBinding(e => e.Competitor, "Competitors");
+            builder.EntitySet<CompetitorBrandTech>("DeletedCompetitorBrandTechs").HasOptionalBinding(e => e.Competitor, "Competitors");
+            builder.Entity<CompetitorBrandTech>().Collection.Action("FullImportXLSX");
+            builder.Entity<CompetitorBrandTech>().Collection.Action("DownloadTemplateXLSX");
+            builder.Entity<CompetitorBrandTech>().Collection.Action("ExportXLSX");
+            builder.Entity<CompetitorBrandTech>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<CompetitorBrandTech>("CompetitorBrandTechs");
+            builder.Entity<HistoricalCompetitorBrandTech>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalCompetitorBrandTech>("HistoricalCompetitorBrandTechs");
+
+            builder.EntitySet<CompetitorPromo>("CompetitorPromoes");
+            builder.EntitySet<CompetitorPromo>("DeletedCompetitorPromoes");
+            builder.EntitySet<HistoricalCompetitorPromo>("HistoricalCompetitorPromoes");
+            builder.EntitySet<CompetitorPromo>("CompetitorPromoes").HasOptionalBinding(e => e.Competitor, "Competitors");
+            builder.EntitySet<CompetitorPromo>("DeletedCompetitorPromoes").HasOptionalBinding(e => e.Competitor, "Competitors");
+            builder.EntitySet<CompetitorPromo>("CompetitorPromoes").HasOptionalBinding(e => e.ClientTree, "ClientTrees");
+            builder.EntitySet<CompetitorPromo>("DeletedCompetitorPromoes").HasOptionalBinding(e => e.ClientTree, "ClientTrees");
+            builder.EntitySet<CompetitorPromo>("CompetitorPromoes").HasOptionalBinding(e => e.CompetitorBrandTech, "CompetitorBrandTechs");
+            builder.EntitySet<CompetitorPromo>("DeletedCompetitorPromoes").HasOptionalBinding(e => e.CompetitorBrandTech, "CompetitorBrandTechs");
+            builder.Entity<CompetitorPromo>().Collection.Action("FullImportXLSX");
+            builder.Entity<CompetitorPromo>().Collection.Action("DownloadTemplateXLSX");
+            builder.Entity<CompetitorPromo>().Collection.Action("ExportXLSX");
+            builder.Entity<CompetitorPromo>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<CompetitorPromo>("CompetitorPromoes");
+            builder.Entity<HistoricalCompetitorPromo>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalCompetitorPromo>("HistoricalCompetitorPromoes");
 
             builder.EntitySet<RPASetting>("RPASettings");
             builder.EntitySet<RPA>("RPAs");

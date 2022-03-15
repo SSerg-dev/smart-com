@@ -113,7 +113,11 @@ namespace Module.Host.TPM.Actions.Notifications
                         else if(typeof(TModel).Name.Equals(typeof(AssortmentMatrix).Name))
 						{
                             records = getAssortmentMatrices(context, SqlString);
-                        }                            
+                        }
+                        else if (typeof(TModel).Name.Equals(typeof(CompetitorPromo).Name))
+                        {
+                            records = GetCompetitorPromoes(context, SqlString);
+                        }
                         else
                         {
                             records = context.Database.SqlQuery<TModel>(SqlString).ToList();
@@ -167,6 +171,21 @@ namespace Module.Host.TPM.Actions.Notifications
 					item.Plu = new AssortmentMatrix2Plu() { PluCode = found.PluCode };
 				}
 			}
+            return records;
+        }
+
+        private IList GetCompetitorPromoes(DatabaseContext context, string sqlQuery)
+        {
+            var records = context.Database.SqlQuery<CompetitorPromo>(SqlString).ToList();
+            var clientIds = context.Set<ClientTree>().ToList();
+            foreach (var item in records)
+            {
+                var found = clientIds.SingleOrDefault(x => x.Id == item.ClientTreeObjectId.Value);
+                if (found != null)
+                {
+                    item.ClientTree = found;
+                }
+            }
             return records;
         }
 

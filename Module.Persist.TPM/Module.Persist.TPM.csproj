@@ -111,6 +111,9 @@
     <Reference Include="Microsoft.Azure.KeyVault.WebKey, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.21.10201540\lib\net451\Microsoft.Azure.KeyVault.WebKey.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Azure.Management.DataFactory, Version=4.24.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Azure.Management.DataFactory.4.24.0\lib\net461\Microsoft.Azure.Management.DataFactory.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Azure.Services.AppAuthentication, Version=1.0.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.21.10201540\lib\net451\Microsoft.Azure.Services.AppAuthentication.dll</HintPath>
     </Reference>
@@ -145,7 +148,7 @@
       <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.21.10201540\lib\net451\Microsoft.Rest.ClientRuntime.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Rest.ClientRuntime.Azure, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.21.10201540\lib\net451\Microsoft.Rest.ClientRuntime.Azure.dll</HintPath>
+      <HintPath>..\packages\Microsoft.Rest.ClientRuntime.Azure.3.3.19\lib\net461\Microsoft.Rest.ClientRuntime.Azure.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.21.10201540\lib\net451\Microsoft.Web.Infrastructure.dll</HintPath>
@@ -229,8 +232,8 @@
       <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.21.10201540\lib\net451\System.Numerics.Vectors.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime" />
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.21.10201540\lib\net451\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.21.10201540\lib\net451\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
@@ -240,8 +243,8 @@
     <Reference Include="System.Spatial, Version=5.6.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.21.10201540\lib\net451\System.Spatial.dll</HintPath>
     </Reference>
-    <Reference Include="System.Threading.Tasks.Extensions, Version=4.1.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.21.10201540\lib\net451\System.Threading.Tasks.Extensions.dll</HintPath>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Http, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -2617,6 +2620,42 @@
     <Compile Include="Migrations\202111260857011_RemoveAnaplanSetting.Designer.cs">
       <DependentUpon>202111260857011_RemoveAnaplanSetting.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202110141244113_Add_Competitor_Tables.cs" />
+    <Compile Include="Migrations\202110141244113_Add_Competitor_Tables.Designer.cs">
+      <DependentUpon>202110141244113_Add_Competitor_Tables.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202110151017107_Add_Competitors_AP.cs" />
+    <Compile Include="Migrations\202110151017107_Add_Competitors_AP.Designer.cs">
+      <DependentUpon>202110151017107_Add_Competitors_AP.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202110151027412_Add_CompetitorBrandTechs_AP.cs" />
+    <Compile Include="Migrations\202110151027412_Add_CompetitorBrandTechs_AP.Designer.cs">
+      <DependentUpon>202110151027412_Add_CompetitorBrandTechs_AP.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202110151029582_Add_CompetitorPromoes_AP.cs" />
+    <Compile Include="Migrations\202110151029582_Add_CompetitorPromoes_AP.Designer.cs">
+      <DependentUpon>202110151029582_Add_CompetitorPromoes_AP.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202110251839422_Add_CopyScenario_Tables.cs" />
+    <Compile Include="Migrations\202110251839422_Add_CopyScenario_Tables.Designer.cs">
+      <DependentUpon>202110251839422_Add_CopyScenario_Tables.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202111142255311_Add_Competitor_AP_For_Demands.cs" />
+    <Compile Include="Migrations\202111142255311_Add_Competitor_AP_For_Demands.Designer.cs">
+      <DependentUpon>202111142255311_Add_Competitor_AP_For_Demands.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202111182302142_Add_Competitor_AP_For_SuperReader.cs" />
+    <Compile Include="Migrations\202111182302142_Add_Competitor_AP_For_SuperReader.Designer.cs">
+      <DependentUpon>202111182302142_Add_Competitor_AP_For_SuperReader.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202111182350359_Empty4.cs" />
+    <Compile Include="Migrations\202111182350359_Empty4.Designer.cs">
+      <DependentUpon>202111182350359_Empty4.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202111190117553_Empty5.cs" />
+    <Compile Include="Migrations\202111190117553_Empty5.Designer.cs">
+      <DependentUpon>202111190117553_Empty5.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\2021\202106300726289_202106301025001_Drop_Client.cs" />
     <Compile Include="Migrations\2021\202106300726289_202106301025001_Drop_Client.Designer.cs">
       <DependentUpon>202106300726289_202106301025001_Drop_Client.cs</DependentUpon>
@@ -2681,6 +2720,46 @@
     <Compile Include="Migrations\202201170711073_empty_merge.Designer.cs">
       <DependentUpon>202201170711073_empty_merge.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202201140902485_Add_MarsDate_To_CompetitorPromo.cs" />
+    <Compile Include="Migrations\202201140902485_Add_MarsDate_To_CompetitorPromo.Designer.cs">
+      <DependentUpon>202201140902485_Add_MarsDate_To_CompetitorPromo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202201141245064_Update_PromoView.cs" />
+    <Compile Include="Migrations\202201141245064_Update_PromoView.Designer.cs">
+      <DependentUpon>202201141245064_Update_PromoView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202201240902589_Update_PromoView1.cs" />
+    <Compile Include="Migrations\202201240902589_Update_PromoView1.Designer.cs">
+      <DependentUpon>202201240902589_Update_PromoView1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202201240911585_Create_GetPromoSubrangesById_AP.cs" />
+    <Compile Include="Migrations\202201240911585_Create_GetPromoSubrangesById_AP.Designer.cs">
+      <DependentUpon>202201240911585_Create_GetPromoSubrangesById_AP.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202201191046248_AddExportQueryTable.cs" />
+    <Compile Include="Migrations\202201191046248_AddExportQueryTable.Designer.cs">
+      <DependentUpon>202201191046248_AddExportQueryTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202201261747552_Update_PromoView_Add_ShelfPrice_Discount.cs" />
+    <Compile Include="Migrations\202201261747552_Update_PromoView_Add_ShelfPrice_Discount.Designer.cs">
+      <DependentUpon>202201261747552_Update_PromoView_Add_ShelfPrice_Discount.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202201271528379_Create_SetTaskStatus_AP.cs" />
+    <Compile Include="Migrations\202201271528379_Create_SetTaskStatus_AP.Designer.cs">
+      <DependentUpon>202201271528379_Create_SetTaskStatus_AP.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202202031044424_empty_after_merge.cs" />
+    <Compile Include="Migrations\202202031044424_empty_after_merge.Designer.cs">
+      <DependentUpon>202202031044424_empty_after_merge.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202202080517474_Add_CompetitorPromo_Trigger.cs" />
+    <Compile Include="Migrations\202202080517474_Add_CompetitorPromo_Trigger.Designer.cs">
+      <DependentUpon>202202080517474_Add_CompetitorPromo_Trigger.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202202241457236_Change_Discount_Type_CompetitorPromo.cs" />
+    <Compile Include="Migrations\202202241457236_Change_Discount_Type_CompetitorPromo.Designer.cs">
+      <DependentUpon>202202241457236_Change_Discount_Type_CompetitorPromo.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -2698,6 +2777,8 @@
     <Compile Include="Model\History\HistoricalActualCOGS.cs" />
     <Compile Include="Model\History\HistoricalBTL.cs" />
     <Compile Include="Model\History\HistoricalBTLPromo.cs" />
+    <Compile Include="Model\History\HistoricalCompetitorPromo.cs" />
+    <Compile Include="Model\History\HistoricalCompetitorBrandTech.cs" />
     <Compile Include="Model\History\HistoricalClientDashboardView.cs" />
     <Compile Include="Model\History\HistoricalClientTreeBrandTech.cs" />
     <Compile Include="Model\History\HistoricalCoefficientSI2SO.cs" />
@@ -2737,6 +2818,7 @@
     <Compile Include="Model\History\HistoricalPromoSupport.cs" />
     <Compile Include="Model\History\HistoricalPromoSupportPromo.cs" />
     <Compile Include="Model\History\HistoricalPromoTypes.cs" />
+    <Compile Include="Model\History\HistoricalCompetitor.cs" />
     <Compile Include="Model\History\HistoricalRATIShopper.cs" />
     <Compile Include="Model\History\HistoricalRejectReason.cs" />
     <Compile Include="Model\History\HistoricalPromoStatus.cs" />
@@ -2755,8 +2837,11 @@
     <Compile Include="Model\Import\BaseLineComparer.cs" />
     <Compile Include="Model\Import\ImportAssortmentMatrix.cs" />
     <Compile Include="Model\Import\ImportBTL.cs" />
+    <Compile Include="Model\Import\ImportCompetitor.cs" />
     <Compile Include="Model\Import\ImportClientDashboard.cs" />
     <Compile Include="Model\Import\ImportCoefficientSI2SO.cs" />
+    <Compile Include="Model\Import\ImportCompetitorPromo.cs" />
+    <Compile Include="Model\Import\ImportCompetitorBrandTech.cs" />
     <Compile Include="Model\Import\ImportPLUDictionary.cs" />
     <Compile Include="Model\Import\ImportPromoDMP.cs" />
     <Compile Include="Model\Import\ImportNonPromoDMP.cs" />
@@ -2801,7 +2886,10 @@
     <Compile Include="Model\SimpleModel\SimplePromoCOGSTI.cs" />
     <Compile Include="Model\SimpleModel\YEAR_END_ESTIMATE_FDM.cs" />
     <Compile Include="Model\TPM\ActualLsvModel.cs" />
+    <Compile Include="Model\TPM\Competitor.cs" />
+    <Compile Include="Model\TPM\CompetitorPromo.cs" />
     <Compile Include="Model\TPM\Client.cs" />
+    <Compile Include="Model\TPM\ExportQuery.cs" />
     <Compile Include="Model\TPM\Plu.cs" />
     <Compile Include="Model\TPM\PLUDictionary.cs" />
     <Compile Include="Model\TPM\PromoSupportDMP.cs" />
@@ -2870,6 +2958,7 @@
     <Compile Include="Model\TPM\PromoSupport.cs" />
     <Compile Include="Model\TPM\PromoSupportPromo.cs" />
     <Compile Include="Model\DTO\PromoView.cs" />
+    <Compile Include="Model\TPM\CompetitorBrandTech.cs" />
     <Compile Include="Model\TPM\RATIShopper.cs" />
     <Compile Include="Model\TPM\RejectReason.cs" />
     <Compile Include="Model\TPM\PromoStatus.cs" />
@@ -4233,6 +4322,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201911061222273_Promo_IsGrowthAcceleration.resx">
       <DependentUpon>201911061222273_Promo_IsGrowthAcceleration.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201910111121592_AddPromoProductsCorrection.resx">
       <DependentUpon>201910111121592_AddPromoProductsCorrection.cs</DependentUpon>
@@ -5059,6 +5149,21 @@
     <EmbeddedResource Include="Migrations\202108200756196_Empty_PLU.resx">
       <DependentUpon>202108200756196_Empty_PLU.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202110141244113_Add_Competitor_Tables.resx">
+      <DependentUpon>202110141244113_Add_Competitor_Tables.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202110151017107_Add_Competitors_AP.resx">
+      <DependentUpon>202110151017107_Add_Competitors_AP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202110151027412_Add_CompetitorBrandTechs_AP.resx">
+      <DependentUpon>202110151027412_Add_CompetitorBrandTechs_AP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202110151029582_Add_CompetitorPromoes_AP.resx">
+      <DependentUpon>202110151029582_Add_CompetitorPromoes_AP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202110251839422_Add_CopyScenario_Tables.resx">
+      <DependentUpon>202110251839422_Add_CopyScenario_Tables.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202109011225302_RPAAddRole.resx">
       <DependentUpon>202109011225302_RPAAddRole.cs</DependentUpon>
     </EmbeddedResource>
@@ -5079,6 +5184,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202111221942490_PromoSupportProcedure.resx">
       <DependentUpon>202111221942490_PromoSupportProcedure.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202111142255311_Add_Competitor_AP_For_Demands.resx">
+      <DependentUpon>202111142255311_Add_Competitor_AP_For_Demands.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202111182302142_Add_Competitor_AP_For_SuperReader.resx">
+      <DependentUpon>202111182302142_Add_Competitor_AP_For_SuperReader.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202111182350359_Empty4.resx">
+      <DependentUpon>202111182350359_Empty4.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202111190117553_Empty5.resx">
+      <DependentUpon>202111190117553_Empty5.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202111230412469_EmptyMigration13.resx">
       <DependentUpon>202111230412469_EmptyMigration13.cs</DependentUpon>
@@ -5125,6 +5242,27 @@
     <EmbeddedResource Include="Migrations\2021\202108120633106_Add_Patch_To_PLU.resx">
       <DependentUpon>202108120633106_Add_Patch_To_PLU.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202201140902485_Add_MarsDate_To_CompetitorPromo.resx">
+      <DependentUpon>202201140902485_Add_MarsDate_To_CompetitorPromo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202201141245064_Update_PromoView.resx">
+      <DependentUpon>202201141245064_Update_PromoView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202201240902589_Update_PromoView1.resx">
+      <DependentUpon>202201240902589_Update_PromoView1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202201240911585_Create_GetPromoSubrangesById_AP.resx">
+      <DependentUpon>202201240911585_Create_GetPromoSubrangesById_AP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202201191046248_AddExportQueryTable.resx">
+      <DependentUpon>202201191046248_AddExportQueryTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202201261747552_Update_PromoView_Add_ShelfPrice_Discount.resx">
+      <DependentUpon>202201261747552_Update_PromoView_Add_ShelfPrice_Discount.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202201271528379_Create_SetTaskStatus_AP.resx">
+      <DependentUpon>202201271528379_Create_SetTaskStatus_AP.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202107281215237_RPASetting.resx">
       <DependentUpon>202107281215237_RPASetting.cs</DependentUpon>
     </EmbeddedResource>
@@ -5140,10 +5278,17 @@
     <EmbeddedResource Include="Migrations\202201170711073_empty_merge.resx">
       <DependentUpon>202201170711073_empty_merge.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202202031044424_empty_after_merge.resx">
+      <DependentUpon>202202031044424_empty_after_merge.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202202080517474_Add_CompetitorPromo_Trigger.resx">
+      <DependentUpon>202202080517474_Add_CompetitorPromo_Trigger.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202202241457236_Change_Discount_Type_CompetitorPromo.resx">
+      <DependentUpon>202202241457236_Change_Discount_Type_CompetitorPromo.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="bin\Debug\Sql\AccessPoints.sql" />
-    <Content Include="bin\Debug\Sql\TPM_AccessPoints.sql" />
     <Content Include="Scripts\jquery-1.6.4-vsdoc.js" />
     <Content Include="Scripts\jquery-1.6.4.js" />
     <Content Include="Scripts\jquery-1.6.4.min.js" />
@@ -5281,7 +5426,6 @@
     <Content Include="Sql\insertTrigger_PromoSales.sql" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="obj\Debug\" />
     <Folder Include="SQLInitialize\Done\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

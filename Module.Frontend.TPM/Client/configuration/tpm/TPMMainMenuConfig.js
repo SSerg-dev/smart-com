@@ -66,6 +66,30 @@
 			widget: 'associatedbtlpromo'
 		}]
 	}, {
+		text: l10n.ns('tpm', 'mainmenu').value('CompetitorPromo'),
+		tooltip: l10n.ns('tpm', 'mainmenu').value('CompetitorPromo'),
+		scale: 'medium',
+		glyph: 0xfd01,
+		children: [{
+			text: l10n.ns('tpm', 'mainmenu').value('Competitor'),
+			tooltip: l10n.ns('tpm', 'mainmenu').value('Competitor'),
+			glyph: 0xf14c,
+			//roles: ['Administrator', 'SupportAdministrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager', 'DemandFinance', 'DemandPlanning'],
+			widget: 'competitor',
+		}, {
+			text: l10n.ns('tpm', 'mainmenu').value('CompetitorBrandTech'),
+			tooltip: l10n.ns('tpm', 'mainmenu').value('CompetitorBrandTech'),
+			glyph: 0xf619,
+			//roles: ['Administrator', 'SupportAdministrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager', 'DemandFinance', 'DemandPlanning'],
+			widget: 'competitorbrandtech',
+		}, {
+			text: l10n.ns('tpm', 'mainmenu').value('CompetitorPromo'),
+			tooltip: l10n.ns('tpm', 'mainmenu').value('CompetitorPromo'),
+			glyph: 0xfd01,
+			//roles: ['Administrator', 'SupportAdministrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager', 'DemandFinance', 'DemandPlanning'],
+			widget: 'competitorpromo',
+		}],
+	}, {
 		text: l10n.ns('core', 'mainmenu').value('RPAItem'),
 		tooltip: l10n.ns('core','mainmenu').value('RPAItem'),
 		scale: 'medium',

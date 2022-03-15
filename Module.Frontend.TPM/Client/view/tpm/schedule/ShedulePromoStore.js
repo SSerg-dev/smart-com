@@ -29,6 +29,50 @@ Ext.define('App.store.core.SchedulePromoStore', {
             }
             options.extendedFilters = this.prepareExtendedFilter();
         }
+
+        var promoOption = {
+            "operator": "and",
+            "rules": []
+        };
+        var competitorOption = {
+            "operator": "and",
+            "rules": []
+        };
+
+        var promoRules = [{
+                    "property": "TypeName",
+                    "operation": "NotEqual",
+                    "value": "Competitor"
+                }];
+        var competitorPromoFields = ['Name', 'CompetitorBrandTechName', 'StartDate', 'EndDate', 'Price', 'Discount']
+        var excludeFromPromoFields = ['CompetitorBrandTechName', 'Price', 'Discount'];
+
+        var calendarFilters = Ext.ComponentQuery.query('#nascheduler')[0].filter;
+        if (calendarFilters) {
+            var calendarCompetitorFilters = calendarFilters.rules.filter(function (el) {
+                return competitorPromoFields.includes(el.property) || el.rules != null;
+            });
+
+            var competitorPromoRules = calendarCompetitorFilters;
+
+            var unionOption = {
+                "operator": "or",
+                "rules": []
+            };
+
+            promoRules = promoRules.concat(calendarFilters.rules.filter(function (el) {
+                return !excludeFromPromoFields.includes(el.property);
+            }));
+
+            competitorOption.rules = competitorPromoRules;//competitorPromoRules;
+            unionOption.rules.push(competitorOption);
+            promoOption.rules = promoRules;
+            unionOption.rules.push(promoOption);
+            options.extendedFilters = options.extendedFilters.filter(function (item) {
+                return item.rules == null;
+            });
+            options.extendedFilters.push(unionOption);
+        }
         return this.callParent([options]);
     }
 });

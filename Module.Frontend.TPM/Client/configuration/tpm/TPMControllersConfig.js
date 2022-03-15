@@ -11,6 +11,18 @@
     'tpm.brandtech.DeletedBrandTech',
     'tpm.brandtech.HistoricalBrandTech',
 
+    'tpm.competitor.Competitor',
+    'tpm.competitor.DeletedCompetitor',
+    'tpm.competitor.HistoricalCompetitor',
+
+    'tpm.competitorbrandtech.CompetitorBrandTech',
+    'tpm.competitorbrandtech.DeletedCompetitorBrandTech',
+    'tpm.competitorbrandtech.HistoricalCompetitorBrandTech',
+
+    'tpm.competitorpromo.CompetitorPromo',
+    'tpm.competitorpromo.DeletedCompetitorPromo',
+    'tpm.competitorpromo.HistoricalCompetitorPromo',
+
     'tpm.category.Category',
     'tpm.category.DeletedCategory',
     'tpm.category.HistoricalCategory',

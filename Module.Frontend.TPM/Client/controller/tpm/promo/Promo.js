@@ -1664,6 +1664,8 @@
         var closeButton = window.down('#close');
         var okButton = window.down('#ok');
 
+        //remove type
+
         closeButton.setText(l10n.ns('tpm', 'PromoType').value('ModalWindowCloseButton'));
         okButton.setText(l10n.ns('tpm', 'PromoType').value('ModalWindowOkButton'));
         window.selectedButton = null;
@@ -1679,7 +1681,7 @@
         mask.show();
 
         supportType.createPromoSupportButton = button;
-
+        //remove type
         var query = breeze.EntityQuery
             .from('PromoTypes')
             .using(Ext.ux.data.BreezeEntityManager.getEntityManager())
@@ -3074,6 +3076,7 @@
         var clientRecord = isCopy ? record.schedulerContext.resourceRecord.raw : record.raw.ClientTree;
 
         if (clientRecord) {
+            promoeditorcustom.model = isCopy ? promoeditorcustom.model : record;
             promoClientForm.fillForm(clientRecord, treesChangingBlockDate);
         }
 

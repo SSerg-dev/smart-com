@@ -37,7 +37,7 @@
         cls: 'promo-detail-panel-default',
         bodyCls: 'promo-detail-panel-default',
         flex: 1,
-        margin: '27 0 0 0',
+        margin: '10 0 0 0',
     },
     items: [{
         xtype: 'panel',

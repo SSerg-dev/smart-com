@@ -47,7 +47,7 @@ namespace Module.Frontend.TPM.Controllers {
             query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
 
             // Не администраторы не смотрят чужие черновики
-            if (role != "Administrator") {
+            if (role != "Administrator" && role != "SupportAdministrator") {
                 query = query.Where(e => e.PromoStatusSystemName != "Draft" || e.CreatorId == user.Id);
             }
 
@@ -111,6 +111,8 @@ namespace Module.Frontend.TPM.Controllers {
                 RoleInfo role = authorizationManager.GetCurrentRole();
                 Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
                 IEnumerable<int> clients = (IEnumerable<int>)data["clients"];
+                IEnumerable<string> competitors = (IEnumerable<string>)data["competitors"];
+                IEnumerable<string> types = (IEnumerable<string>)data["types"];
 
                 IQueryable<Promo> queryable = Enumerable.Empty<Promo>().AsQueryable();
                 var rawFilter2s = options.RawValues;
@@ -121,6 +123,11 @@ namespace Module.Frontend.TPM.Controllers {
                 HandlerDataHelper.SaveIncomingArgument("UserId", userId, handlerData, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("rawFilters", rawFilters, handlerData, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("clients", clients.ToList(), handlerData, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("competitors", competitors.ToList(), handlerData, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("types", types.ToList(), handlerData, visible: false, throwIfNotExists: false);
+
+                var handlerId = Guid.NewGuid();
+                HandlerDataHelper.SaveIncomingArgument("HandlerId", handlerId, handlerData, visible: false, throwIfNotExists: false);
 
                 //IQueryable results = options.ApplyTo(GetConstraintedQuery().Where(x => !x.Disabled));
                 //List<Promo> promoes = CastQueryToPromo(results);
@@ -132,7 +139,8 @@ namespace Module.Frontend.TPM.Controllers {
                 {
                     LoopHandler handler = new LoopHandler()
                     {
-                        Id = Guid.NewGuid(),
+                        //Status = Looper.Consts.StatusName.IN_PROGRESS,
+                        Id = handlerId,
                         ConfigurationName = "PROCESSING",
                         Description = "Scheduler Export",
                         Name = "Module.Host.TPM.Handlers.SchedulerExportHandler",
@@ -144,6 +152,7 @@ namespace Module.Frontend.TPM.Controllers {
                         UserId = userId,
                         RoleId = roleId
                     };
+                    
                     handler.SetParameterData(handlerData);
                     context.LoopHandlers.Add(handler);
                     context.SaveChanges();

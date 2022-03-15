@@ -62,6 +62,22 @@
     <!-- BlobStorage -->
     <add key="BlobConnectionType" value="SAS" />
 
+    <!--Export settings-->
+    <add key="EXPORT_TENANT_ID" value="2fc13e34-f03f-498b-982a-7cb446e25bc6" />
+    <add key="EXPORT_APPLICATION_ID" value="0ddd2ac8-b12f-42a1-b413-3c781f52f10a" />
+    <add key="EXPORT_AUTHENTICATION_KEY" value="n4Cp0~-wXcmuo~1LAi_zo.YQ9ADc2nc.5f" />
+    <add key="EXPORT_SUBSCRIPTION_ID" value="fd43d2cb-5798-4c9b-bf5e-05006585d0cd" />
+    <add key="EXPORT_RESOURCE_GROUP" value="RUSSIA-PETCARE-JUPITER-PROD-RG" />
+    <add key="EXPORT_REGION" value="East US 2" />
+    <add key="EXPORT_DATA_FACTORY_NAME" value="russiapetcarejupiterprodadf" />
+    <add key="EXPORT_PIPELINE_NAME" value="JUPITER_EXPORT_SCHEDULER_DISPATCHER_PIPE" />
+    <add key="ServerName" value="marsanalyticsprodsqlsrv.database.windows.net" />
+    <add key="DatabaseName" value="russiapetcarejupiterprodsqldb" />
+    <add key="DBUserId" value="deploy_user" />
+    <add key="PasswordKV" value="russiapetcarejupiterprodsqldbpassword" />
+    <add key="AKVScope" value="russiapetcarejupiterprodsecretscope" />
+    <add key="BlobStorageName" value="marsanalyticssharedprdsa" />
+
   </appSettings>
   <entityFramework>
     <defaultConnectionFactory type="System.Data.Entity.Infrastructure.SqlConnectionFactory, EntityFramework" />

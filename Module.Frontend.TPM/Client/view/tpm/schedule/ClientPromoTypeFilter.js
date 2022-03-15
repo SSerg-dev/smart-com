@@ -89,7 +89,40 @@
                     vertical: true,
                 }]
             }]
-        }],
+            }, {
+                xtype: 'panel',
+                cls: 'scheduleFilterFieldset',
+                layout: 'fit',
+                flex: 1,
+                items: [{
+                    //Фильтр по Конкурентам
+                    xtype: 'fieldset',
+                    title: l10n.ns('tpm', 'ClientPromoTypeFilter').value('Competitors'),
+                    layout: {
+                        type: 'vbox',
+                        align: 'stretch'
+                    },
+                    flex: 1,
+                    items: [{
+                        xtype: 'checkboxfield',
+                        itemId: 'selectAllCompetitors',
+                        cls: 'selectAllFilters selectAllTypes',
+                        boxLabel: l10n.ns('tpm', 'ClientPromoTypeFilter').value('SelectAll'),
+                        height: 30,
+                    }, {
+                        // Место  для скролла
+                        padding: '5 0 5 10',
+                        autoScroll: true,
+                        overflowY: 'scroll',
+                        cls: 'scrollpanel type-checkboxgroup checkboxgroup',
+
+                        xtype: 'checkboxgroup',
+                        itemId: 'competitorsCheckboxes',
+                        columns: 1,
+                        vertical: true,
+                    }]
+                }]
+            }],
     }],
 
     buttons: [{

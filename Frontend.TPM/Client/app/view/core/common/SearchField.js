@@ -138,7 +138,7 @@
 
         var grid = picker.down(this.selectorWidget).down('grid');
 
-        if (!this.defaultStoreState) {
+        if (!this.defaultStoreState || this.name == 'CompetitorBrandTechId') {
             var sorters = grid.getStore().sorters;
             if ((!store.sorters || store.sorters.length == 0) && sorters && sorters.length > 0) {
                 store.sorters.clear();

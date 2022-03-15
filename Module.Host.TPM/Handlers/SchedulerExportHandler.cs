@@ -29,13 +29,16 @@ namespace Module.Host.TPM.Handlers {
                 handlerLogger = new LogWriter(info.HandlerId.ToString());
                 int year = HandlerDataHelper.GetIncomingArgument<int>("year", info.Data, false);
                 IEnumerable<int> clients = HandlerDataHelper.GetIncomingArgument<IEnumerable<int>>("clients", info.Data, false);
+                IEnumerable<string> competitors = HandlerDataHelper.GetIncomingArgument<IEnumerable<string>>("competitors", info.Data, false);
+                IEnumerable<string> types = HandlerDataHelper.GetIncomingArgument<IEnumerable<string>>("types", info.Data, false);
                 Guid userId = HandlerDataHelper.GetIncomingArgument<Guid>("UserId", info.Data);
                 Guid roleId = HandlerDataHelper.GetIncomingArgument<Guid>("RoleId", info.Data);
+                Guid handlerId = HandlerDataHelper.GetIncomingArgument<Guid>("HandlerId", info.Data);
                 var rawFilters = HandlerDataHelper.GetIncomingArgument<string>("rawFilters", info.Data);
                 
                 handlerLogger.Write(true, String.Format("Start of calendar export at 10 {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)), "Message");
                 Thread.Sleep(10000);
-                IAction action = new SchedulerExportAction(clients, year, userId, roleId, rawFilters);
+                IAction action = new SchedulerExportAction(clients, competitors, types, year, userId, roleId, rawFilters, handlerId);
                 action.Execute();
 
                 if (action.Errors.Any()) {
@@ -59,10 +62,18 @@ namespace Module.Host.TPM.Handlers {
                     handlerLogger.Write(true, String.Format("Newsletter notifications ended at  {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), sw.Elapsed.TotalSeconds), "Message");
 
                     if(!data.GetValue<bool>("HasErrors", false))
-                        handlerLogger.Write(true, "You can download the file!", "Message");
+                        handlerLogger.Write(true, "ADF Pipeline will process export file!", "Message");
                     handlerLogger.UploadToBlob();
                 }
             }
+        }
+
+        public override string GetStatus(string executionMode, ExecuteData data)
+        {
+            if (!data.GetValue<bool>("HasErrors", false))
+                return "INPROGRESS";
+            else
+                return "ERROR";
         }
     }
 }
