@@ -49,7 +49,7 @@ namespace Module.Frontend.TPM.Controllers
                 .ToList() : new List<Constraint>();
             IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
 
-            IQueryable<PromoROIReport> query = Context.Set<PromoROIReport>();
+            IQueryable<PromoROIReport> query = Context.Set<PromoROIReport>();           
             IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
             query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
 
@@ -60,17 +60,26 @@ namespace Module.Frontend.TPM.Controllers
         [EnableQuery(MaxNodeCount = int.MaxValue, MaxExpansionDepth = 3)]
         public SingleResult<PromoROIReport> GetPromoROIReport([FromODataUri] System.Guid key)
         {
-            return SingleResult.Create(GetPromoROIReports());
+            return SingleResult.Create(GetPromoROIReports2());
         }
 
+        public IQueryable<PromoROIReport> GetPromoROIReports2(ODataQueryOptions<PromoROIReport> queryOptions = null)
+        {
+            IQueryable<PromoROIReport> query = GetConstraintedQuery();
+            return query;
+        }
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
-        public IQueryable<PromoROIReport> GetPromoROIReports(ODataQueryOptions<PromoROIReport> queryOptions = null)
+        public List<PromoROIReport> GetPromoROIReports(ODataQueryOptions<PromoROIReport> queryOptions = null)
         {
-            var query = GetConstraintedQuery();
-
-            return query;
+            IQueryable<PromoROIReport> query = GetConstraintedQuery();
+            var listPromoROIReport = query.ToList();
+            foreach (PromoROIReport promoROIReport in listPromoROIReport)
+            {
+                promoROIReport.ActualPromoNetROIPercent = (promoROIReport.ActualPromoNetIncrementalEarnings / promoROIReport.ActualPromoCost + 1) * 100;
+            }
+            return listPromoROIReport;
         }
 
         [ClaimsAuthorize]
