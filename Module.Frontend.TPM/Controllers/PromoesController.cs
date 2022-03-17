@@ -37,10 +37,7 @@ using System.Net.Http.Headers;
 using Module.Persist.TPM.CalculatePromoParametersModule;
 using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.SimpleModel;
-using Module.Persist.TPM.Utils;
 using System.Web;
-using NLog;
-using System.Diagnostics;
 
 namespace Module.Frontend.TPM.Controllers
 {

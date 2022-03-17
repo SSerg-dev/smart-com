@@ -1,22 +1,16 @@
-﻿using Core.Dependency;
-using Core.Security;
+﻿using Core.Security;
 using Core.Security.Models;
-using Core.Settings;
 using Frontend.Core.Controllers.Base;
 using Frontend.Core.Extensions.Export;
 using Looper.Core;
 using Looper.Parameters;
 using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.DTO;
-using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
-
 using Persist;
 using Persist.Model;
-
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -49,7 +43,7 @@ namespace Module.Frontend.TPM.Controllers
                 .ToList() : new List<Constraint>();
             IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
 
-            IQueryable<PromoROIReport> query = Context.Set<PromoROIReport>();           
+            IQueryable<PromoROIReport> query = Context.Set<PromoROIReport>();
             IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
             query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
 
@@ -71,15 +65,14 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
-        public List<PromoROIReport> GetPromoROIReports(ODataQueryOptions<PromoROIReport> queryOptions = null)
+        public IQueryable<PromoROIReport> GetPromoROIReports(ODataQueryOptions<PromoROIReport> queryOptions = null)
         {
             IQueryable<PromoROIReport> query = GetConstraintedQuery();
-            var listPromoROIReport = query.ToList();
-            foreach (PromoROIReport promoROIReport in listPromoROIReport)
+            foreach (PromoROIReport promoROIReport in query)
             {
                 promoROIReport.ActualPromoNetROIPercent = (promoROIReport.ActualPromoNetIncrementalEarnings / promoROIReport.ActualPromoCost + 1) * 100;
             }
-            return listPromoROIReport;
+            return query;
         }
 
         [ClaimsAuthorize]
