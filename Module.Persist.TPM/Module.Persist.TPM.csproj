@@ -2760,6 +2760,10 @@
     <Compile Include="Migrations\202202241457236_Change_Discount_Type_CompetitorPromo.Designer.cs">
       <DependentUpon>202202241457236_Change_Discount_Type_CompetitorPromo.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202203180923071_AddIsSplittableInTechnology.cs" />
+    <Compile Include="Migrations\202203180923071_AddIsSplittableInTechnology.Designer.cs">
+      <DependentUpon>202203180923071_AddIsSplittableInTechnology.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -5286,6 +5290,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202202241457236_Change_Discount_Type_CompetitorPromo.resx">
       <DependentUpon>202202241457236_Change_Discount_Type_CompetitorPromo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202203180923071_AddIsSplittableInTechnology.resx">
+      <DependentUpon>202203180923071_AddIsSplittableInTechnology.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

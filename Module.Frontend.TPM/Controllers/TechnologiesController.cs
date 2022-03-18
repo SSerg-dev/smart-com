@@ -42,7 +42,6 @@ namespace Module.Frontend.TPM.Controllers
             this.authorizationManager = authorizationManager;
         }
 
-
         protected IQueryable<Technology> GetConstraintedQuery()
         {
 
@@ -56,14 +55,12 @@ namespace Module.Frontend.TPM.Controllers
             return query;
         }
 
-
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
         public SingleResult<Technology> GetTechnology([FromODataUri] System.Guid key)
         {
             return SingleResult.Create(GetConstraintedQuery());
         }
-
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
