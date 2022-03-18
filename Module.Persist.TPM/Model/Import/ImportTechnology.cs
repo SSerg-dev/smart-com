@@ -30,5 +30,9 @@ namespace Module.Persist.TPM.Model.Import
         [ImportCSVColumn(ColumnNumber = 4)]
         [Display(Name = "Sub Brand Code")]
         public string SubBrand_code { get; set; }
+
+        [ImportCSVColumn(ColumnNumber = 5)]
+        [Display(Name = "Splittable")]
+        public bool IsSplittable { get; set; }
     }
 }
