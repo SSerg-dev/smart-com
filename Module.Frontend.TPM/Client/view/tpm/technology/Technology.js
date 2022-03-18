@@ -100,8 +100,10 @@
                 text: l10n.ns('tpm', 'Technology').value('SubBrand_code'),
                 dataIndex: 'SubBrand_code'
             }, {
+                xtype: 'checkcolumn',
                 text: l10n.ns('tpm', 'Technology').value('IsSplittable'),
-                dataIndex: 'IsSplittable'
+                dataIndex: 'IsSplittable',
+                disabled: true
             }]
         }
     }, {
