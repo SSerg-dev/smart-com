@@ -103,6 +103,7 @@
                 xtype: 'checkcolumn',
                 text: l10n.ns('tpm', 'Technology').value('IsSplittable'),
                 dataIndex: 'IsSplittable',
+                align: 'center;',
                 disabled: true
             }]
         }
