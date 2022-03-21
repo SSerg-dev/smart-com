@@ -66,6 +66,10 @@
                     me.up('editorform').down('[name = SubBrand]').validate();
                 }
             }
+        }, {
+            xtype: 'checkboxfield', allowBlank: true, allowOnlyWhitespace: true,
+            name: 'IsSplittable',
+            fieldLabel: l10n.ns('tpm', 'Technology').value('IsSplittable')
         }]
     }
 });  

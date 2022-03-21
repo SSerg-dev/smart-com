@@ -36,6 +36,6 @@ namespace Module.Persist.TPM.Model.TPM
         [Index("Unique_Tech", 2, IsUnique = true)]
         [StringLength(255)]
         public string SubBrand_code { get; set; }
-        public bool IsSplittable { get; set; }
+        public bool? IsSplittable { get; set; }
     }
 }

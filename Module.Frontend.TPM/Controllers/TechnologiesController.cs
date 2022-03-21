@@ -175,15 +175,17 @@ namespace Module.Frontend.TPM.Controllers
                 }
 
                 var patchModel = patch.GetEntity();
-                patchModel.Name = patchModel.Name.Trim();
-                patchModel.Tech_code = patchModel.Tech_code?.Trim();
-                patchModel.SubBrand = patchModel.SubBrand?.Trim();
-                patchModel.SubBrand_code = patchModel.SubBrand_code?.Trim();
+                patchModel.Name = patchModel.Name ?? patchModel.Name?.Trim();
+                patchModel.Tech_code = patchModel.Tech_code ?? patchModel.Tech_code?.Trim();
+                patchModel.SubBrand = patchModel.SubBrand ?? patchModel.SubBrand?.Trim();
+                patchModel.SubBrand_code = patchModel.SubBrand_code ?? patchModel.SubBrand_code?.Trim();
+                patchModel.IsSplittable = patchModel.IsSplittable;
 
                 var oldTC = model.Tech_code;
                 var oldTN = model.Name;
                 var oldSC = model.SubBrand_code;
                 var oldName = model.Name;
+                var oldIsSplittable = model.IsSplittable;
                 patch.Patch(model);
 
                 var newName = model.Name;
