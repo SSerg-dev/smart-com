@@ -253,7 +253,7 @@ namespace Module.Frontend.TPM.Controllers
                 new Column() { Order = 2, Field = "Tech_code", Header = "Tech Code", Quoting = false },
                 new Column() { Order = 3, Field = "SubBrand", Header = "Sub Brand", Quoting = false },
                 new Column() { Order = 4, Field = "SubBrand_code", Header = "Sub Brand Code", Quoting = false },
-                new Column() { Order = 5, Field = "IsSplittable", Header = "Splittable", Quoting = false }
+                new Column() { Order = 5, Field = "Splittable", Header = "Splittable", Quoting = false }
             };
             return columns;
         }
@@ -272,11 +272,12 @@ namespace Module.Frontend.TPM.Controllers
 
                 HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("TModel", typeof(Technology), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("TModel", typeof(TechnologyExport), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(TechnologiesController), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(TechnologiesController.GetExportSettings), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
+                string query = results.ToTraceQuery().Replace("[Extent1].[IsSplittable] AS [IsSplittable]", "IIF ([Extent1].[IsSplittable] = 1, '+', '-') AS [Splittable]");
+                HandlerDataHelper.SaveIncomingArgument("SqlString", query, data, visible: false, throwIfNotExists: false);
 
                 LoopHandler handler = new LoopHandler()
                 {

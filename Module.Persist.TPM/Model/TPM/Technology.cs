@@ -8,7 +8,7 @@ namespace Module.Persist.TPM.Model.TPM
     public class Technology : IEntity<Guid>, IDeactivatable
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public System.Guid Id { get; set; }
+        public Guid Id { get; set; }
 
         [Index("Unique_Tech", 3, IsUnique = true)]
         public bool Disabled { get; set; }
@@ -36,6 +36,6 @@ namespace Module.Persist.TPM.Model.TPM
         [Index("Unique_Tech", 2, IsUnique = true)]
         [StringLength(255)]
         public string SubBrand_code { get; set; }
-        public bool? IsSplittable { get; set; }
+        public bool IsSplittable { get; set; }
     }
 }
