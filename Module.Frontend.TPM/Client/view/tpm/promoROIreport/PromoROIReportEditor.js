@@ -137,7 +137,7 @@
             { xtype: 'numberfield', name: 'ActualPromoIncrementalEarnings', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoIncrementalEarnings') },
             { xtype: 'numberfield', name: 'ActualPromoNetIncrementalEarnings', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoNetIncrementalEarnings') },
             { xtype: 'numberfield', name: 'ActualPromoROIPercent', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoROIPercent') },
-            { xtype: 'numberfield', name: 'ActualPromoNetROIPercent', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value(('ActualPromoNetIncrementalEarnings' / 'ActualPromoCost' + 1) * 100) },
+            { xtype: 'numberfield', name: 'ActualPromoNetROIPercent', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoNetROIPercent') },
             { xtype: 'textfield', name: 'PromoTypesName', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('PromoTypesName') },
             { xtype: 'numberfield', name: 'SumInvoice', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('SumInvoice') },
         ]

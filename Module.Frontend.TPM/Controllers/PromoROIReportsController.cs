@@ -54,13 +54,7 @@ namespace Module.Frontend.TPM.Controllers
         [EnableQuery(MaxNodeCount = int.MaxValue, MaxExpansionDepth = 3)]
         public SingleResult<PromoROIReport> GetPromoROIReport([FromODataUri] System.Guid key)
         {
-            return SingleResult.Create(GetPromoROIReports2());
-        }
-
-        public IQueryable<PromoROIReport> GetPromoROIReports2(ODataQueryOptions<PromoROIReport> queryOptions = null)
-        {
-            IQueryable<PromoROIReport> query = GetConstraintedQuery();
-            return query;
+            return SingleResult.Create(GetPromoROIReports());
         }
 
         [ClaimsAuthorize]
@@ -68,10 +62,6 @@ namespace Module.Frontend.TPM.Controllers
         public IQueryable<PromoROIReport> GetPromoROIReports(ODataQueryOptions<PromoROIReport> queryOptions = null)
         {
             IQueryable<PromoROIReport> query = GetConstraintedQuery();
-            foreach (PromoROIReport promoROIReport in query)
-            {
-                promoROIReport.ActualPromoNetROIPercent = (promoROIReport.ActualPromoNetIncrementalEarnings / promoROIReport.ActualPromoCost + 1) * 100;
-            }
             return query;
         }
 
@@ -110,8 +100,7 @@ namespace Module.Frontend.TPM.Controllers
                 HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(PromoROIReportsController), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PromoROIReportsController.GetPromoROIExportSettingsStatic), data, visible: false, throwIfNotExists: false);
-                string query = results.ToTraceQuery().Replace("[Extent1].[ActualPromoNetROIPercent]", "IIF ([Extent1].[ActualPromoCost] = 0, 0, ([Extent1].[ActualPromoNetIncrementalEarnings] / [Extent1].[ActualPromoCost] + 1) * 100)");//Использование формулы и проверка, что не делится на 0
-                HandlerDataHelper.SaveIncomingArgument("SqlString", query, data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
 
                 LoopHandler handler = new LoopHandler()
                 {
