@@ -796,7 +796,7 @@
         }
         // ROI Data
         var planROI = record.get('PlanPromoNetROIPercent') || 0,
-            factROI = (record.get('ActualPromoNetIncrementalEarnings') / record.get('ActualPromoCost') + 1) * 100 || 0;
+            factROI = record.get('ActualPromoNetROIPercent') || 0;
         planROI = Ext.util.Format.round(planROI, 2);
         factROI = Ext.util.Format.round(factROI, 2);
         var maximum = planROI > factROI ? planROI : factROI;
@@ -5472,7 +5472,7 @@
         window.down('[name=ActualProductPostPromoEffectLSV]').setValue(record.data.ActualPromoPostPromoEffectLSV);
         window.down('[name=ActualPromoNetNSV]').setValue(record.data.ActualPromoNetNSV);
         window.down('[name=ActualPromoNetIncrementalEarnings]').setValue(record.data.ActualPromoNetIncrementalEarnings);
-        window.down('[name=ActualPromoNetROIPercent]').setValue((record.data.ActualPromoNetIncrementalEarnings / record.data.ActualPromoCost +1) * 100);
+        window.down('[name=ActualPromoNetROIPercent]').setValue(record.data.ActualPromoNetROIPercent);
     },
 
     onPromoActivityDetailsWindowAfterRender: function (window) {
