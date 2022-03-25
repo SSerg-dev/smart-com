@@ -3661,7 +3661,7 @@
         var window = button.up('promoeditorcustom');
 
         var isModelComplete = this.validatePromoModel(window);
-
+        
         if (isModelComplete === '') {
             var record = this.getRecord(window);
 
@@ -3671,8 +3671,23 @@
                 window.promoName = this.getPromoName(window);
                 this.setPromoTitle(window, window.promoName, window.promoStatusName);
             }
-            var model = this.buildPromoModel(window, record);
-            this.saveModel(model, window, close, reloadForm);
+            let globalVar = [];//global variable contains splittable subranges
+            let productHierarchy = "";
+            let inOutProductIds = "";
+            debugger
+            if (globalVar.length == 0) {//if splittable subrange is none
+                var model = this.buildPromoModel(window, record);
+            }
+            else {//if subrange is multiple
+                //globalVar.forEach(function (gv) { //переделать в .Select().join(',')
+                //    productHierarchy = productHierarchy + "," + gv.ProductHierarchy;
+                //    inOutProductIds = inOutProductIds + ";" + gv.InOutProductIds;
+                //});
+
+                //model.data.ProductHierarchy = productHierarchy;
+                //model.data.InOutProductIds = inOutProductIds;
+            }
+           this.saveModel(model, window, close, reloadForm);
         } else {
             App.Notify.pushInfo(isModelComplete);
         }
