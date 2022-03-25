@@ -139,6 +139,9 @@
                 'promoeditorcustom #btn_promoActivity_step2': {
                     click: this.onPromoActivityButtonStep2Click
                 },
+                'promoeditorcustom #splitAndPublishPromo': {
+                    click: this.onSplitAndPublishButtonClick
+                },
                 'promoeditorcustom #savePromo': {
                     click: this.onSavePromoButtonClick
                 },
@@ -1863,6 +1866,10 @@
 
     onSavePromoButtonClick: function (button) {
         this.savePromo(button, false, true);
+    },
+
+    onSplitAndPublishButtonClick: function (button) {
+        this.splitAndPublishPromo(button, false, true);
     },
 
     onSaveAndClosePromoButtonClick: function (button) {
@@ -3661,7 +3668,7 @@
         var window = button.up('promoeditorcustom');
 
         var isModelComplete = this.validatePromoModel(window);
-        
+
         if (isModelComplete === '') {
             var record = this.getRecord(window);
 
@@ -3671,25 +3678,30 @@
                 window.promoName = this.getPromoName(window);
                 this.setPromoTitle(window, window.promoName, window.promoStatusName);
             }
-            let globalVar = [];//global variable contains splittable subranges
-            let productHierarchy = "";
-            let inOutProductIds = "";
-            debugger
-            if (globalVar.length == 0) {//if splittable subrange is none
-                var model = this.buildPromoModel(window, record);
-            }
-            else {//if subrange is multiple
-                //globalVar.forEach(function (gv) { //переделать в .Select().join(',')
-                //    productHierarchy = productHierarchy + "," + gv.ProductHierarchy;
-                //    inOutProductIds = inOutProductIds + ";" + gv.InOutProductIds;
-                //});
-
-                //model.data.ProductHierarchy = productHierarchy;
-                //model.data.InOutProductIds = inOutProductIds;
-            }
-           this.saveModel(model, window, close, reloadForm);
+            var model = this.buildPromoModel(window, record);
+            this.saveModel(model, window, close, reloadForm);
         } else {
             App.Notify.pushInfo(isModelComplete);
+        }
+    },
+
+    splitAndPublishPromo: function (button, close, reloadForm) {
+        let globalVar = [];//global variable contains splittable subranges
+        let productHierarchy = "";
+        let inOutProductIds = "";
+
+        //publish multiple promoes and close Promo window. Need any message?
+        if (globalVar.length == 0) {//if splittable subrange is none
+            //error. Not found subranges for splitting;
+        }
+        else {//if subrange is multiple
+            //globalVar.forEach(function (gv) { //переделать в .Select().join(',')
+            //    productHierarchy = productHierarchy + "," + gv.ProductHierarchy;
+            //    inOutProductIds = inOutProductIds + ";" + gv.InOutProductIds;
+            //});
+
+            //model.data.ProductHierarchy = productHierarchy;
+            //model.data.InOutProductIds = inOutProductIds;
         }
     },
 

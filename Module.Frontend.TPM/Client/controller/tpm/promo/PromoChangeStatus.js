@@ -69,19 +69,8 @@
             window.promoName = promoController.getPromoName(window);
 
             var model = promoController.buildPromoModel(window, record);
-            let globalVar = [];//global variable contains splittable subranges
-            if (globalVar.length == 0) {//if splittable subrange is none
-                promoController.saveModel(model, window, false, true);
-                promoController.updateStatusHistoryState();
-            }
-            else {//if subrange is multiple
-                //globalVar.forEach(function (gv) { //переделать в .Select().join(',')
-                //    model.ProductHierarchy = gv.ProductHierarchy;
-                //    model.InOutProductIds = gv.InOutProductIds;
-                //promoController.saveModel(model, window, false, true);
-                //promoController.updateStatusHistoryState();
-                //});
-            }
+            promoController.saveModel(model, window, false, true);
+            promoController.updateStatusHistoryState();
 
         } else {
             App.Notify.pushInfo(checkValid);
