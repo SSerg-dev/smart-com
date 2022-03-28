@@ -315,6 +315,7 @@
         'downloadError': 'File for this task doesn\'t exist',
         'noSelectionError': 'Select task',
         'resetPromo': 'Reset Promo',
+        'splitpublish': 'Split and publish'
     },
 
     'Category': {

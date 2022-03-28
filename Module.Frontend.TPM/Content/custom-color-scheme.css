@@ -898,6 +898,13 @@ pre.code {
 }
 /*----------------------------*/
 
+/*------------promo-split-button----------------*/
+.promo-split-button .x-btn-inner, .promo-split-button .x-btn-glyph {
+    color: black;
+    text-align: center;
+}
+/*----------------------------*/
+
 /*------------custom-date-button----------------*/
 .custom-date-button {
     margin: 0 5px 0 5px !important;
