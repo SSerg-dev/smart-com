@@ -318,6 +318,8 @@
     fillSubrangePanel: function (record) {
         var me = this;
         var subrangeBtns = [];
+        var splitPublishBtn = window.down('#btn_splitpublish');
+        console.log(splitPublishBtn);
         var subrangePanel = me.down('#choosenSubrangesPanel');
         var excludedMessage = me.down('#excludedMessage');
         var promoEditorCustom = me.up('promoeditorcustom');
@@ -415,6 +417,7 @@
                                     }
                                     // фильтруем только с типом subrange (можно же выбрать просто технологию например)
                                     if (item.Type.toLowerCase().indexOf('subrange') >= 0) {
+                                        //проверить 
                                         var iconSrc = item.LogoFileName ? '/odata/ProductTrees/DownloadLogoFile?fileName=' + encodeURIComponent(item.LogoFileName) : '/bundles/style/images/swith-glyph-gray.png';
                                         var butt = {
                                             xtype: 'container',

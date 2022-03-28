@@ -319,6 +319,8 @@ namespace Module.Frontend.TPM.Controllers
 
                     var ResultList = productIdsString.Split(new string[] { ";!;" }, StringSplitOptions.None).ToList();
                     var productIds = ResultList[0].Split(';').Select(Guid.Parse).ToList();
+                    // получить продукт и по нему получить технологию и вернуть для нее флаг IsSplitable 
+                    //var technolyForProduct = Context.Set<Technology>().Where(t => t.Tech_code == )
                     var productTreeObjectIds = ResultList[1].Split(';').Select(Int32.Parse).ToList();
                     List<int> idL;
                     foreach (var productTreeObjectId in productTreeObjectIds)

@@ -647,6 +647,20 @@
         statusSystemName: null,
         style: { "background-color": "#66BB6A" }
     },
+    {
+        xtype: 'button',
+        itemId: 'btn_splitpublish',
+        text: l10n.ns('tpm', 'customtoptoolbar').value('splitpublish'),
+        cls: 'promo-split-button',
+        hidden: true,
+        isPromoAction: true,
+        roles: ['Administrator', 'FunctionalExpert', 'CustomerMarketing', 'KeyAccountManager'],
+        statuses: ['Draft'],
+        statusId: null,
+        statusName: null,
+        statusSystemName: null,
+        style: { "background-color": "#f7e401" }
+    },
     // Вернуть из Draft Publish в Publish
     {
         xtype: 'button',
