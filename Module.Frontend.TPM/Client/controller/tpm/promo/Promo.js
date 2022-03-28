@@ -139,7 +139,7 @@
                 'promoeditorcustom #btn_promoActivity_step2': {
                     click: this.onPromoActivityButtonStep2Click
                 },
-                'promoeditorcustom #splitAndPublishPromo': {
+                'promoeditorcustom #btn_splitpublish': {
                     click: this.onSplitAndPublishButtonClick
                 },
                 'promoeditorcustom #savePromo': {
@@ -1869,7 +1869,7 @@
     },
 
     onSplitAndPublishButtonClick: function (button) {
-        this.splitAndPublishPromo(button, false, true);
+        this.splitAndPublishPromo(button, true, true);
     },
 
     onSaveAndClosePromoButtonClick: function (button) {
@@ -2178,7 +2178,7 @@
     onClosePromoButtonClick: function (button) {
         var window = button.up('promoeditorcustom');
 
-        if (window) {
+        if (window) {         
             window.close();
         }
     },
@@ -3686,23 +3686,51 @@
     },
 
     splitAndPublishPromo: function (button, close, reloadForm) {
-        let globalVar = [];//global variable contains splittable subranges
-        let productHierarchy = "";
-        let inOutProductIds = "";
+        //var window = button.up('promoeditorcustom');
 
-        //publish multiple promoes and close Promo window. Need any message?
-        if (globalVar.length == 0) {//if splittable subrange is none
-            //error. Not found subranges for splitting;
-        }
-        else {//if subrange is multiple
-            //globalVar.forEach(function (gv) { //переделать в .Select().join(',')
-            //    productHierarchy = productHierarchy + "," + gv.ProductHierarchy;
-            //    inOutProductIds = inOutProductIds + ";" + gv.InOutProductIds;
-            //});
+        //setTimeout(function () {
+        //    if (window) {
+        //            window.close();
+        //    }
+        //}, 5);
+        //promoeditorcustom.setLoading(false, undefined, false);
+        //this.onClosePromoButtonClick();
 
-            //model.data.ProductHierarchy = productHierarchy;
-            //model.data.InOutProductIds = inOutProductIds;
-        }
+
+        let window = button.up('promoeditorcustom');
+        let record = this.getRecord(window);
+        let model = this.buildPromoModel(window, record);
+        let productTreeObjectIds = model.data.ProductTreeObjectIds.split(';');
+        let inOutProductIds = model.data.InOutProductIds.split(';');
+        productTreeObjectIds.forEach(function (ptoi) {
+            model.data.ProductHierarchy = ptoi;
+            //get all InOutProductIds by ptoi
+            let products = [];
+            $.ajax({
+                dataType: 'json',
+                type: 'GET',
+                url: '/odata/Products?$orderby=ZREP&$top=50&$inlinecount=allpages&needInOutFilteredProducts=true&needInOutExcludeAssortmentMatrixProducts=false&needInOutSelectedProducts=false&inOutProductIdsForGetting=',
+                data: {
+                    inOutProductTreeObjectIds: ptoi
+                },
+                async: false,
+                success: function (response) {
+                    products = response.value;
+                }
+            });
+            debugger
+            //find InOutProductIds in products
+            let inOutProductIdsForProductTree = "";
+            inOutProductIds.forEach(function (iopi) {
+                if (products.some(e => e.Id === iopi)) {
+                    inOutProductIdsForProductTree = inOutProductIdsForProductTree + ';' + iopi;
+                }
+            });
+            model.data.InOutProductIds = inOutProductIdsForProductTree;
+                debugger
+            this.saveModel(model, window, close, reloadForm);
+        });
+        App.Notify.pushInfo('Split of subranges completed successfully');
     },
 
     defineAllowedActions: function (promoeditorcustom, promoActions, status) {
@@ -6437,6 +6465,7 @@
         };
         App.Util.makeRequestWithCallback('Promoes', 'CheckIfLogHasErrors', parameters, function (data) {
             var result = Ext.JSON.decode(data.httpResponse.data.value);
+            
             var but = Ext.ComponentQuery.query('promoeditorcustom #btn_showlog')[0];
             if (but && !but.isDestroyed) {
                 if (result.LogHasErrors) {
