@@ -318,8 +318,7 @@
     fillSubrangePanel: function (record) {
         var me = this;
         var subrangeBtns = [];
-        var splitPublishBtn = window.down('#btn_splitpublish');
-        console.log(splitPublishBtn);
+        var splitPublishBtn = Ext.ComponentQuery.query("#btn_splitpublish")[0];
         var subrangePanel = me.down('#choosenSubrangesPanel');
         var excludedMessage = me.down('#excludedMessage');
         var promoEditorCustom = me.up('promoeditorcustom');
@@ -381,10 +380,11 @@
                     .then(function (data) {
                         if (!promoEditorCustom.isDestroyed) {
                             var result = Ext.JSON.decode(data.httpResponse.data.value);
-
+                            var isTechologySplitable = false;
                             var allIncluded = true;
                             if (result.success) {
                                 result.answer.forEach(function (item) {
+                                    isTechologySplitable = item.Item3;
                                     choosenNodes.forEach(function (node) {
                                         if (node.ObjectId == item.Item1) {
                                             node.isAllChecked = item.Item2;
@@ -477,7 +477,12 @@
                                         subrangeBtns.push(butt);
                                     }
                                 });
-                                subrangePanel.add(subrangeBtns)
+                                subrangePanel.add(subrangeBtns);
+                                if (subrangeBtns.length === 0 && isTechologySplitable!=true) {
+                                    splitPublishBtn.setDisabled(true);
+                                } else {
+                                    splitPublishBtn.setDisabled(false);
+                                }
                             }
 
                             var promoProductsForm = promoEditorCustom.down('promobasicproducts');

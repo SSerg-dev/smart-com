@@ -659,7 +659,8 @@
         statusId: null,
         statusName: null,
         statusSystemName: null,
-        style: { "background-color": "#f7e401" }
+        style: { "background-color": "#f7e401" },
+        disabled: true
     },
     // Вернуть из Draft Publish в Publish
     {
