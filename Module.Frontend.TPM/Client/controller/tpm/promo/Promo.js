@@ -1869,7 +1869,7 @@
     },
 
     onSplitAndPublishButtonClick: function (button) {
-        this.splitAndPublishPromo(button, true, true);
+        this.splitAndPublishPromo(button, true, true, this);
     },
 
     onSaveAndClosePromoButtonClick: function (button) {
@@ -3685,7 +3685,7 @@
         }
     },
 
-    splitAndPublishPromo: function (button, close, reloadForm) {
+    splitAndPublishPromo: function (button, close, reloadForm, controller) {
         //var window = button.up('promoeditorcustom');
 
         //setTimeout(function () {
@@ -3713,12 +3713,10 @@
                 data: {
                     inOutProductTreeObjectIds: ptoi
                 },
-                async: false,
                 success: function (response) {
                     products = response.value;
                 }
             });
-            debugger
             //find InOutProductIds in products
             let inOutProductIdsForProductTree = "";
             inOutProductIds.forEach(function (iopi) {
@@ -3727,8 +3725,11 @@
                 }
             });
             model.data.InOutProductIds = inOutProductIdsForProductTree;
-                debugger
-            this.saveModel(model, window, close, reloadForm);
+            let window = button.up('promoeditorcustom');
+            controller.saveModel(model, window, close, reloadForm);
+
+
+            debugger
         });
         App.Notify.pushInfo('Split of subranges completed successfully');
     },
