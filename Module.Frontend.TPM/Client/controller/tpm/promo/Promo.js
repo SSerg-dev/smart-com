@@ -3698,7 +3698,7 @@
             var model = controller.buildPromoModel(window, record);
             model.data.PromoStatusId = 'FE7FFE19-4754-E911-8BC8-08606E18DF3F';
             model.data.IsSplittable = true;
-            controller.saveModel(model, window, false, true);
+            controller.saveModel(model, window, true, true);
             controller.updateStatusHistoryState();
 
         } else {
