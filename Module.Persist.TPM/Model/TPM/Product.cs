@@ -9,7 +9,7 @@ namespace Module.Persist.TPM.Model.TPM
     public class Product : IEntity<Guid>, IDeactivatable
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public System.Guid Id { get; set; }
+        public Guid Id { get; set; }
 
         [Index("Unique_ZREP", 2, IsUnique = true)]
         public bool Disabled { get; set; }

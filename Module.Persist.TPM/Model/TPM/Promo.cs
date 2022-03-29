@@ -285,6 +285,7 @@ namespace Module.Persist.TPM.Model.TPM
         public bool IsGrowthAcceleration { get; set; }
 
         public bool IsApolloExport { get; set; }
+        public bool IsSplittable { get; set; }
 
         /// <summary>
         /// Copy Constructor

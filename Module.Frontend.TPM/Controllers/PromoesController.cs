@@ -158,119 +158,149 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     return BadRequest(ModelState);
                 }
-
-                model.DeviationCoefficient /= 100;
-                // делаем UTC +3
-                model.StartDate = ChangeTimeZoneUtil.ResetTimeZone(model.StartDate);
-                model.EndDate = ChangeTimeZoneUtil.ResetTimeZone(model.EndDate);
-                model.DispatchesStart = ChangeTimeZoneUtil.ResetTimeZone(model.DispatchesStart);
-                model.DispatchesEnd = ChangeTimeZoneUtil.ResetTimeZone(model.DispatchesEnd);
-
-                DateTimeOffset? ChangedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.Now);
-
-                if (model.EventId == null)
+                //Split subranges
+                if (model.IsSplittable)
                 {
-                    Event promoEvent = Context.Set<Event>().FirstOrDefault(x => !x.Disabled && x.Name == "Standard promo");
-                    if (promoEvent == null)
+                    string[] productTreeObjectIds = model.ProductTreeObjectIds.Split(';');
+                    string[] inOutProductIds = model.InOutProductIds.Split(';');
+                    foreach (string ptoi in productTreeObjectIds)
                     {
-                        return InternalServerError(new Exception("Event 'Standard promo' not found"));
+                        //ProductsController productsController = new ProductsController(authorizationManager);
+                        //List<Product> listProducts = productsController.GetConstraintedQuery(ptoi, true, false).ToList();
+                        //string inOutProductIdsForProductTree = "";
+                        //foreach (string iopi in inOutProductIds)
+                        //{
+                        //    if (listProducts.Any(a => a.Id == new Guid(iopi)))
+                        //    {
+                        //        inOutProductIdsForProductTree = inOutProductIdsForProductTree + ';' + iopi;
+                        //    }
+                        //}
+                        model.ProductHierarchy = ptoi;
+                        model.ProductTreeObjectIds = ptoi;
+                        //model.InOutProductIds = inOutProductIdsForProductTree;
+
+                        SavePromo(model);
                     }
 
-                    model.EventId = promoEvent.Id;
-                    model.EventName = promoEvent.Name;
+
+                    return null;
                 }
-                else
-                {
-                    Event promoEvent = Context.Set<Event>().FirstOrDefault(x => !x.Disabled && x.Id == model.EventId);
-                    if (promoEvent == null)
-                    {
-                        return InternalServerError(new Exception("Event not found"));
-                    }
-                    model.EventName = promoEvent.Name;
-                }
-
-                UserInfo user = authorizationManager.GetCurrentUser();
-                string userRole = user.GetCurrentRole().SystemName;
-
-                string message;
-
-                PromoStateContext promoStateContext = new PromoStateContext(Context, null);
-                bool status = promoStateContext.ChangeState(model, userRole, out message);
-
-                if (!status)
-                {
-                    return InternalServerError(new Exception(message));
-                }
-
-                Promo proxy = Context.Set<Promo>().Create<Promo>();
-                Promo result = (Promo)Mapper.Map(model, proxy, typeof(Promo), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
-
-                if (result.CreatorId == null)
-                {
-                    result.CreatorId = user.Id;
-                    result.CreatorLogin = user.Login;
-                }
-
-                Context.Set<Promo>().Add(result);
-                Context.SaveChanges();
-                // Добавление продуктов
-                bool isSubrangeChanged = false;
-                List<PromoProductTree> promoProductTrees = AddProductTrees(model.ProductTreeObjectIds, result, out isSubrangeChanged);
-
-                //Установка полей по дереву ProductTree
-                SetPromoByProductTree(result, promoProductTrees);
-                //Установка дат в Mars формате
-                SetPromoMarsDates(result);
-                //Установка полей по дереву ClientTree
-                SetPromoByClientTree(result);
-                //Установка механик
-                SetMechanic(result);
-                SetMechanicIA(result);
-
-                //Установка начального статуса
-                PromoStatusChange psc = Context.Set<PromoStatusChange>().Create<PromoStatusChange>();
-                psc.PromoId = result.Id;
-                psc.StatusId = result.PromoStatusId;
-                psc.UserId = (Guid)user.Id;
-                psc.RoleId = (Guid)user.GetCurrentRole().Id;
-                psc.Date = DateTimeOffset.UtcNow;
-                Context.Set<PromoStatusChange>().Add(psc);
-
-                //Установка времени последнгего присвоения статуса Approved
-                if (result.PromoStatus != null && result.PromoStatus.SystemName == "Approved")
-                {
-                    result.LastApprovedDate = ChangeTimeZoneUtil.ResetTimeZone(DateTimeOffset.UtcNow);
-                }
-
-
-                // Для draft не проверяем и не считаем && если у промо есть признак InOut, то Uplift считать не нужно.
-                if (result.PromoStatus.SystemName.ToLower() != "draft")
-                {
-                    // если нет TI, COGS или продукты не подобраны по фильтрам, запретить сохранение (будет исключение)
-                    List<Product> filteredProducts; // продукты, подобранные по фильтрам
-                    CheckSupportInfo(result, promoProductTrees, out filteredProducts);
-                    //создание отложенной задачи, выполняющей подбор аплифта и расчет параметров
-                    CalculatePromo(result, false, false, true);
-                }
-                else
-                {
-                    // Добавить запись в таблицу PromoProduct при сохранении.
-                    string error;
-                    PlanProductParametersCalculation.SetPromoProduct(Context.Set<Promo>().First(x => x.Number == result.Number).Id, Context, out error, true, promoProductTrees);
-                    // Создаём инцидент для draft сразу
-                    PromoHelper.WritePromoDemandChangeIncident(Context, result);
-                }
-
-                result.LastChangedDate = ChangedDate;
-                Context.SaveChanges();
-
+                Promo result = SavePromo(model);
                 return Created(result);
             }
             catch (Exception e)
             {
                 return InternalServerError(e);
             }
+        }
 
+        private Promo SavePromo(Promo model)
+        {
+            model.DeviationCoefficient /= 100;
+            // делаем UTC +3
+            model.StartDate = ChangeTimeZoneUtil.ResetTimeZone(model.StartDate);
+            model.EndDate = ChangeTimeZoneUtil.ResetTimeZone(model.EndDate);
+            model.DispatchesStart = ChangeTimeZoneUtil.ResetTimeZone(model.DispatchesStart);
+            model.DispatchesEnd = ChangeTimeZoneUtil.ResetTimeZone(model.DispatchesEnd);
+
+            DateTimeOffset? ChangedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.Now);
+
+            if (model.EventId == null)
+            {
+                Event promoEvent = Context.Set<Event>().FirstOrDefault(x => !x.Disabled && x.Name == "Standard promo");
+                if (promoEvent == null)
+                {
+                    throw new Exception("Event 'Standard promo' not found");
+                }
+
+                model.EventId = promoEvent.Id;
+                model.EventName = promoEvent.Name;
+            }
+            else
+            {
+                Event promoEvent = Context.Set<Event>().FirstOrDefault(x => !x.Disabled && x.Id == model.EventId);
+                if (promoEvent == null)
+                {
+                    throw new Exception("Event not found");
+                }
+                model.EventName = promoEvent.Name;
+            }
+
+            UserInfo user = authorizationManager.GetCurrentUser();
+            string userRole = user.GetCurrentRole().SystemName;
+
+            string message;
+
+            PromoStateContext promoStateContext = new PromoStateContext(Context, null);
+            bool status = promoStateContext.ChangeState(model, userRole, out message);
+
+            if (!status)
+            {
+                throw new Exception(message);
+            }
+
+            Promo proxy = Context.Set<Promo>().Create<Promo>();
+            Promo result = (Promo)Mapper.Map(model, proxy, typeof(Promo), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+
+            if (result.CreatorId == null)
+            {
+                result.CreatorId = user.Id;
+                result.CreatorLogin = user.Login;
+            }
+
+            Context.Set<Promo>().Add(result);
+            Context.SaveChanges();
+            // Добавление продуктов
+            bool isSubrangeChanged = false;
+            List<PromoProductTree> promoProductTrees = AddProductTrees(model.ProductTreeObjectIds, result, out isSubrangeChanged);
+
+            //Установка полей по дереву ProductTree
+            SetPromoByProductTree(result, promoProductTrees);
+            //Установка дат в Mars формате
+            SetPromoMarsDates(result);
+            //Установка полей по дереву ClientTree
+            SetPromoByClientTree(result);
+            //Установка механик
+            SetMechanic(result);
+            SetMechanicIA(result);
+
+            //Установка начального статуса
+            PromoStatusChange psc = Context.Set<PromoStatusChange>().Create<PromoStatusChange>();
+            psc.PromoId = result.Id;
+            psc.StatusId = result.PromoStatusId;
+            psc.UserId = (Guid)user.Id;
+            psc.RoleId = (Guid)user.GetCurrentRole().Id;
+            psc.Date = DateTimeOffset.UtcNow;
+            Context.Set<PromoStatusChange>().Add(psc);
+
+            //Установка времени последнгего присвоения статуса Approved
+            if (result.PromoStatus != null && result.PromoStatus.SystemName == "Approved")
+            {
+                result.LastApprovedDate = ChangeTimeZoneUtil.ResetTimeZone(DateTimeOffset.UtcNow);
+            }
+
+            // Для draft не проверяем и не считаем && если у промо есть признак InOut, то Uplift считать не нужно.
+            if (result.PromoStatus.SystemName.ToLower() != "draft")
+            {
+                // если нет TI, COGS или продукты не подобраны по фильтрам, запретить сохранение (будет исключение)
+                List<Product> filteredProducts; // продукты, подобранные по фильтрам
+                CheckSupportInfo(result, promoProductTrees, out filteredProducts);
+                //создание отложенной задачи, выполняющей подбор аплифта и расчет параметров
+                CalculatePromo(result, false, false, true);
+            }
+            else
+            {
+                // Добавить запись в таблицу PromoProduct при сохранении.
+                string error;
+                PlanProductParametersCalculation.SetPromoProduct(Context.Set<Promo>().First(x => x.Number == result.Number).Id, Context, out error, true, promoProductTrees);
+                // Создаём инцидент для draft сразу
+                PromoHelper.WritePromoDemandChangeIncident(Context, result);
+            }
+
+            result.LastChangedDate = ChangedDate;
+            Context.SaveChanges();
+
+            return result;
         }
 
         [ClaimsAuthorize]

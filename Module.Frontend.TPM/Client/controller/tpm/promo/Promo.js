@@ -1869,7 +1869,7 @@
     },
 
     onSplitAndPublishButtonClick: function (button) {
-        this.splitAndPublishPromo(button, true, true, this);
+        this.splitAndPublishPromo(button, this);
     },
 
     onSaveAndClosePromoButtonClick: function (button) {
@@ -3562,7 +3562,7 @@
             success: function (response, req) {
                 if (req.response.length > 0 && req.response[0].value && req.response[0].value.length > 0)
                     App.Notify.pushInfo(req.response[0].value);
-
+                
                 var wasCreating = window.isCreating;
                 if (store) {
                     store.on({
@@ -3685,52 +3685,25 @@
         }
     },
 
-    splitAndPublishPromo: function (button, close, reloadForm, controller) {
-        //var window = button.up('promoeditorcustom');
+    splitAndPublishPromo: function (button, controller) {
+        var window = button.up('promoeditorcustom');
+        var checkValid = controller.validatePromoModel(window);
+        if (checkValid === '') {
+            var record = controller.getRecord(window);
 
-        //setTimeout(function () {
-        //    if (window) {
-        //            window.close();
-        //    }
-        //}, 5);
-        //promoeditorcustom.setLoading(false, undefined, false);
-        //this.onClosePromoButtonClick();
+            window.previousStatusId = window.statusId;
+            window.statusId = button.statusId;
+            window.promoName = controller.getPromoName(window);
 
+            var model = controller.buildPromoModel(window, record);
+            model.data.PromoStatusId = 'FE7FFE19-4754-E911-8BC8-08606E18DF3F';
+            model.data.IsSplittable = true;
+            controller.saveModel(model, window, false, true);
+            controller.updateStatusHistoryState();
 
-        let window = button.up('promoeditorcustom');
-        let record = this.getRecord(window);
-        let model = this.buildPromoModel(window, record);
-        let productTreeObjectIds = model.data.ProductTreeObjectIds.split(';');
-        let inOutProductIds = model.data.InOutProductIds.split(';');
-        productTreeObjectIds.forEach(function (ptoi) {
-            model.data.ProductHierarchy = ptoi;
-            //get all InOutProductIds by ptoi
-            let products = [];
-            $.ajax({
-                dataType: 'json',
-                type: 'GET',
-                url: '/odata/Products?$orderby=ZREP&$top=50&$inlinecount=allpages&needInOutFilteredProducts=true&needInOutExcludeAssortmentMatrixProducts=false&needInOutSelectedProducts=false&inOutProductIdsForGetting=',
-                data: {
-                    inOutProductTreeObjectIds: ptoi
-                },
-                success: function (response) {
-                    products = response.value;
-                }
-            });
-            //find InOutProductIds in products
-            let inOutProductIdsForProductTree = "";
-            inOutProductIds.forEach(function (iopi) {
-                if (products.some(e => e.Id === iopi)) {
-                    inOutProductIdsForProductTree = inOutProductIdsForProductTree + ';' + iopi;
-                }
-            });
-            model.data.InOutProductIds = inOutProductIdsForProductTree;
-            let window = button.up('promoeditorcustom');
-            controller.saveModel(model, window, close, reloadForm);
-
-
-            debugger
-        });
+        } else {
+            App.Notify.pushInfo(checkValid);
+        }
         App.Notify.pushInfo('Split of subranges completed successfully');
     },
 
