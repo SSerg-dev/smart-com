@@ -161,6 +161,7 @@ namespace Module.Frontend.TPM.Controllers
                 //Split subranges
                 if (model.IsSplittable)
                 {
+                    Promo promo = new Promo();
                     string[] productTreeObjectIds = model.ProductTreeObjectIds.Split(';');
                     string[] inOutProductIds = model.InOutProductIds.Split(';');
                     foreach (string ptoi in productTreeObjectIds)
@@ -179,11 +180,10 @@ namespace Module.Frontend.TPM.Controllers
                         model.ProductTreeObjectIds = ptoi;
                         //model.InOutProductIds = inOutProductIdsForProductTree;
 
-                        SavePromo(model);
+                        promo = SavePromo(model);
                     }
 
-
-                    return null;
+                    return Created(promo);
                 }
                 Promo result = SavePromo(model);
                 return Created(result);
