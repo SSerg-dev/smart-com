@@ -321,7 +321,7 @@ namespace Module.Frontend.TPM.Controllers
                     var productIds = ResultList[0].Split(';').Select(Guid.Parse).ToList();
                     // получить продукт и по нему получить технологию и вернуть для нее флаг IsSplitable 
                     var product = Context.Set<Product>().Find(productIds.ElementAt(0));                   
-                    var isTechnolySplitable = Context.Set<Technology>().Where(t => t.Tech_code == product.Tech_code).Select(t => t.IsSplittable).FirstOrDefault();
+                    var isTechnolySplittable = Context.Set<Technology>().Where(t => t.Tech_code == product.Tech_code).Select(t => t.IsSplittable).FirstOrDefault();
                     var productTreeObjectIds = ResultList[1].Split(';').Select(Int32.Parse).ToList();
                     List<int> idL;
                     foreach (var productTreeObjectId in productTreeObjectIds)
@@ -332,11 +332,11 @@ namespace Module.Frontend.TPM.Controllers
                         var resultProductList = productsFromAssortmentMatrixForCurrentPromo != null ? filteredProducts.Intersect(productsFromAssortmentMatrixForCurrentPromo) : filteredProducts;
                         if (resultProductList.All(x => productIds.Contains(x.Id)))
                         {
-                            answer.Add(new Tuple<int, bool, bool>(productTreeObjectId, true, isTechnolySplitable));
+                            answer.Add(new Tuple<int, bool, bool>(productTreeObjectId, true, isTechnolySplittable));
                         }
                         else
                         {
-                            answer.Add(new Tuple<int, bool, bool>(productTreeObjectId, false, isTechnolySplitable));
+                            answer.Add(new Tuple<int, bool, bool>(productTreeObjectId, false, isTechnolySplittable));
                         }
                     }
                 }

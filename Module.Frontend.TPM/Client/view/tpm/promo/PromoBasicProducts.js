@@ -380,11 +380,11 @@
                     .then(function (data) {
                         if (!promoEditorCustom.isDestroyed) {
                             var result = Ext.JSON.decode(data.httpResponse.data.value);
-                            var isTechologySplitable = false;
+                            var isTechologySplittable = false;
                             var allIncluded = true;
                             if (result.success) {
                                 result.answer.forEach(function (item) {
-                                    isTechologySplitable = item.Item3;
+                                    isTechologySplittable = item.Item3;
                                     choosenNodes.forEach(function (node) {
                                         if (node.ObjectId == item.Item1) {
                                             node.isAllChecked = item.Item2;
@@ -478,10 +478,14 @@
                                     }
                                 });
                                 subrangePanel.add(subrangeBtns);
-                                if (subrangeBtns.length === 0 && isTechologySplitable!=true) {
+                                if (subrangeBtns.length === 0) {
                                     splitPublishBtn.setDisabled(true);
                                 } else {
-                                    splitPublishBtn.setDisabled(false);
+                                    if (isTechologySplittable === false) {
+                                        splitPublishBtn.setDisabled(true);
+                                    } else {
+                                        splitPublishBtn.setDisabled(false);
+                                    }                                    
                                 }
                             }
 
