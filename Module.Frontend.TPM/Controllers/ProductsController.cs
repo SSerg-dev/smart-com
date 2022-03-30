@@ -632,7 +632,7 @@ namespace Module.Frontend.TPM.Controllers
             return Context.Set<AssortmentMatrix>().Where(x => !x.Disabled).Select(x => x.Product);
         }
 
-        private static List<Func<Product, bool>> GetExpressionList(IEnumerable<ProductTree> productTreeNodes)
+        public static List<Func<Product, bool>> GetExpressionList(IEnumerable<ProductTree> productTreeNodes)
         {
             var expressionsList = new List<Func<Product, bool>>();
             foreach (ProductTree node in productTreeNodes)
