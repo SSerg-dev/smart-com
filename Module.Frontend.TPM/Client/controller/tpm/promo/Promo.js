@@ -1428,6 +1428,7 @@
                         // Кнопки для изменения состояний промо
                         var promoActions = Ext.ComponentQuery.query('button[isPromoAction=true]');
 
+
                         promoeditorcustom.down('button[itemId=btn_promoBudgets]').setDisabled(true);
                         promoeditorcustom.down('button[itemId=btn_promoBudgets]').addCls('disabled');
 
@@ -1528,6 +1529,7 @@
                                 undoBtn.statusId = promoStatusData.value[i].Id;
                                 undoBtn.statusName = promoStatusData.value[i].Name;
                                 undoBtn.statusSystemName = promoStatusData.value[i].SystemName;
+                                
                             }
 
                             if (promoStatusData.value[i].SystemName == 'DraftPublished') {

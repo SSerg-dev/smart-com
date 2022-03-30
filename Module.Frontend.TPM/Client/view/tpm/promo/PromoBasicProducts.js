@@ -318,6 +318,7 @@
     fillSubrangePanel: function (record) {
         var me = this;
         var subrangeBtns = [];
+        var splitPublishBtn = Ext.ComponentQuery.query("#btn_splitpublish")[0];
         var subrangePanel = me.down('#choosenSubrangesPanel');
         var excludedMessage = me.down('#excludedMessage');
         var promoEditorCustom = me.up('promoeditorcustom');
@@ -379,10 +380,11 @@
                     .then(function (data) {
                         if (!promoEditorCustom.isDestroyed) {
                             var result = Ext.JSON.decode(data.httpResponse.data.value);
-
+                            var isTechologySplittable = false;
                             var allIncluded = true;
                             if (result.success) {
                                 result.answer.forEach(function (item) {
+                                    isTechologySplittable = item.Item3;
                                     choosenNodes.forEach(function (node) {
                                         if (node.ObjectId == item.Item1) {
                                             node.isAllChecked = item.Item2;
@@ -415,6 +417,7 @@
                                     }
                                     // фильтруем только с типом subrange (можно же выбрать просто технологию например)
                                     if (item.Type.toLowerCase().indexOf('subrange') >= 0) {
+                                        //проверить 
                                         var iconSrc = item.LogoFileName ? '/odata/ProductTrees/DownloadLogoFile?fileName=' + encodeURIComponent(item.LogoFileName) : '/bundles/style/images/swith-glyph-gray.png';
                                         var butt = {
                                             xtype: 'container',
@@ -474,7 +477,16 @@
                                         subrangeBtns.push(butt);
                                     }
                                 });
-                                subrangePanel.add(subrangeBtns)
+                                subrangePanel.add(subrangeBtns);
+                                if (subrangeBtns.length === 0) {
+                                    splitPublishBtn.setDisabled(true);
+                                } else {
+                                    if (isTechologySplittable === false) {
+                                        splitPublishBtn.setDisabled(true);
+                                    } else {
+                                        splitPublishBtn.setDisabled(false);
+                                    }                                    
+                                }
                             }
 
                             var promoProductsForm = promoEditorCustom.down('promobasicproducts');
