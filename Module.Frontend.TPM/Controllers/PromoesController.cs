@@ -163,47 +163,38 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     Promo promo = new Promo();
                     string[] productTreeObjectIds = model.ProductTreeObjectIds.Split(';');
-                    string[] inOutProductIds = model.InOutProductIds.Split(';');
+                    List<string> inOutProductIds = model.InOutProductIds.Split(';').ToList();
+                    inOutProductIds.RemoveAt(inOutProductIds.Count - 1);//remove last element, because it contains empty
                     foreach (string ptoi in productTreeObjectIds)
                     {
-                        //ProductsController productsController = new ProductsController(authorizationManager);
-                        //List<Product> listProducts = productsController.GetConstraintedQuery(ptoi, true, false).ToList();
-                        //string inOutProductIdsForProductTree = "";
-                        //foreach (string iopi in inOutProductIds)
-                        //{
-                        //    if (listProducts.Any(a => a.Id == new Guid(iopi)))
-                        //    {
-                        //        inOutProductIdsForProductTree = inOutProductIdsForProductTree + ';' + iopi;
-                        //    }
-                        //}
-                        //ProductsController productsController = new ProductsController(authorizationManager);
-
-                        IEnumerable<int> productTreeObjectIds2 = new int[] { 1000044 };
-                        var temp10 = Context.Set<ProductTree>().Where(x => productTreeObjectIds2.Any(y => x.ObjectId == y) && !x.EndDate.HasValue);
-
-                        var temp = Context.Set<ProductTree>()/*.Where(x => productTreeObjectIds2.Any(y => x.ObjectId == y) && !x.EndDate.HasValue)*/;
-                        var temp2 = temp.Where(w => !w.EndDate.HasValue);
-                        var productTreeNodes = temp2.Where(w => w.ObjectId == Convert.ToInt32(ptoi));
-                        var expressionList = new List<Func<Product, bool>>();
+                        IEnumerable<int> productTreeObjectIds2 = new int[] { Convert.ToInt32(ptoi) };
+                        IQueryable<ProductTree> productTreeNodes = Context.Set<ProductTree>().Where(x => productTreeObjectIds2.Any(y => x.ObjectId == y) && !x.EndDate.HasValue);
+                        List<Func<Product, bool>> expressionList = new List<Func<Product, bool>>();
                         try
                         {
                             expressionList = ProductsController.GetExpressionList(productTreeNodes);
                         }
                         catch { }
-                        var filteredProducts = Context.Set<Product>().Where(x => !x.Disabled).ToList();
-                        var temp5 = filteredProducts.Where(x => expressionList.Any(y => y.Invoke(x)));
-
-
+                        List<Product> filteredProducts = Context.Set<Product>().Where(x => !x.Disabled).ToList();
+                        List<Product> listProducts = filteredProducts.Where(x => expressionList.Any(y => y.Invoke(x))).ToList();
+                        string inOutProductIdsForProductTree = "";
+                        foreach (string iopi in inOutProductIds)
+                        {
+                            if (listProducts.Any(a => a.Id == new Guid(iopi)))
+                            {
+                                inOutProductIdsForProductTree = inOutProductIdsForProductTree + iopi + ';';
+                            }
+                        }
                         model.ProductHierarchy = ptoi;
                         model.ProductTreeObjectIds = ptoi;
-                        //model.InOutProductIds = inOutProductIdsForProductTree;
-
+                        model.InOutProductIds = inOutProductIdsForProductTree;
                         promo = SavePromo(model);
                     }
 
                     return Created(promo);
                 }
                 Promo result = SavePromo(model);
+
                 return Created(result);
             }
             catch (Exception e)
