@@ -179,8 +179,8 @@ namespace Module.Frontend.TPM.Controllers
             Promo promo = new Promo();
             List<string> productTreeObjectIds = model.ProductTreeObjectIds.Split(';').ToList();
             List<string> inOutProductIds = model.InOutProductIds.Split(';').ToList();
-            List<string> productSubranges = model.ProductSubrangesList.Split(';').ToList();
-            List<string> productSubrangesRU = model.ProductSubrangesListRU.Split(';').ToList();
+            List<string> productSubranges = model.ProductSubrangesList == null ? null : model.ProductSubrangesList.Split(';').ToList();
+            List<string> productSubrangesRU = model.ProductSubrangesListRU == null ? null : model.ProductSubrangesListRU.Split(';').ToList();
 
             inOutProductIds.RemoveAt(inOutProductIds.Count - 1);//remove last element, because it contains empty
             for (int i = 0; i < productTreeObjectIds.Count(); i++)
@@ -205,8 +205,8 @@ namespace Module.Frontend.TPM.Controllers
                 }
                 model.ProductTreeObjectIds = productTreeObjectIds[i];
                 model.InOutProductIds = inOutProductIdsForProductTree;
-                model.ProductSubrangesList = productSubranges[i];
-                model.ProductSubrangesListRU = productSubrangesRU[i];
+                model.ProductSubrangesList = productSubranges == null ? "" : productSubranges[i];
+                model.ProductSubrangesListRU = productSubrangesRU == null ? "" : productSubrangesRU[i];
                 promo = SavePromo(model);
             }
 
