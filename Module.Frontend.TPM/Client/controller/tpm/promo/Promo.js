@@ -3702,11 +3702,11 @@
             model.data.IsSplittable = true;
             controller.saveModel(model, window, true, true);
             controller.updateStatusHistoryState();
+            App.Notify.pushInfo('Split of subranges completed successfully');
 
         } else {
             App.Notify.pushInfo(checkValid);
         }
-        App.Notify.pushInfo('Split of subranges completed successfully');
     },
 
     defineAllowedActions: function (promoeditorcustom, promoActions, status) {
