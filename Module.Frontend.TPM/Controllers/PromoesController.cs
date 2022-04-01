@@ -158,38 +158,9 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     return BadRequest(ModelState);
                 }
-                //Split subranges
-                if (model.IsSplittable)
+                if (model.IsSplittable)//Split subranges
                 {
-                    Promo promo = new Promo();
-                    string[] productTreeObjectIds = model.ProductTreeObjectIds.Split(';');
-                    List<string> inOutProductIds = model.InOutProductIds.Split(';').ToList();
-                    inOutProductIds.RemoveAt(inOutProductIds.Count - 1);//remove last element, because it contains empty
-                    foreach (string ptoi in productTreeObjectIds)
-                    {
-                        IEnumerable<int> productTreeObjectIds2 = new int[] { Convert.ToInt32(ptoi) };
-                        IQueryable<ProductTree> productTreeNodes = Context.Set<ProductTree>().Where(x => productTreeObjectIds2.Any(y => x.ObjectId == y) && !x.EndDate.HasValue);
-                        List<Func<Product, bool>> expressionList = new List<Func<Product, bool>>();
-                        try
-                        {
-                            expressionList = ProductsController.GetExpressionList(productTreeNodes);
-                        }
-                        catch { }
-                        List<Product> filteredProducts = Context.Set<Product>().Where(x => !x.Disabled).ToList();
-                        List<Product> listProducts = filteredProducts.Where(x => expressionList.Any(y => y.Invoke(x))).ToList();
-                        string inOutProductIdsForProductTree = "";
-                        foreach (string iopi in inOutProductIds)
-                        {
-                            if (listProducts.Any(a => a.Id == new Guid(iopi)))
-                            {
-                                inOutProductIdsForProductTree = inOutProductIdsForProductTree + iopi + ';';
-                            }
-                        }
-                        model.ProductHierarchy = ptoi;
-                        model.ProductTreeObjectIds = ptoi;
-                        model.InOutProductIds = inOutProductIdsForProductTree;
-                        promo = SavePromo(model);
-                    }
+                    Promo promo = SplitSubranges(model);
 
                     return Created(promo);
                 }
@@ -201,6 +172,45 @@ namespace Module.Frontend.TPM.Controllers
             {
                 return InternalServerError(e);
             }
+        }
+
+        private Promo SplitSubranges(Promo model)
+        {
+            Promo promo = new Promo();
+            List<string> productTreeObjectIds = model.ProductTreeObjectIds.Split(';').ToList();
+            List<string> inOutProductIds = model.InOutProductIds.Split(';').ToList();
+            List<string> productSubranges = model.ProductSubrangesList.Split(';').ToList();
+            List<string> productSubrangesRU = model.ProductSubrangesListRU.Split(';').ToList();
+
+            inOutProductIds.RemoveAt(inOutProductIds.Count - 1);//remove last element, because it contains empty
+            for (int i = 0; i < productTreeObjectIds.Count(); i++)
+            {
+                IEnumerable<int> productTreeObjectIdsArray = new int[] { Convert.ToInt32(productTreeObjectIds[i]) };
+                IQueryable<ProductTree> productTreeNodes = Context.Set<ProductTree>().Where(x => productTreeObjectIdsArray.Any(y => x.ObjectId == y) && !x.EndDate.HasValue);
+                List<Func<Product, bool>> expressionList = new List<Func<Product, bool>>();
+                try
+                {
+                    expressionList = ProductsController.GetExpressionList(productTreeNodes);
+                }
+                catch { }
+                List<Product> filteredProducts = Context.Set<Product>().Where(x => !x.Disabled).ToList();
+                List<Product> listProducts = filteredProducts.Where(x => expressionList.Any(y => y.Invoke(x))).ToList();
+                string inOutProductIdsForProductTree = "";
+                foreach (string iopi in inOutProductIds)
+                {
+                    if (listProducts.Any(a => a.Id == new Guid(iopi)))
+                    {
+                        inOutProductIdsForProductTree = inOutProductIdsForProductTree + iopi + ';';
+                    }
+                }
+                model.ProductTreeObjectIds = productTreeObjectIds[i];
+                model.InOutProductIds = inOutProductIdsForProductTree;
+                model.ProductSubrangesList = productSubranges[i];
+                model.ProductSubrangesListRU = productSubrangesRU[i];
+                promo = SavePromo(model);
+            }
+
+            return promo;
         }
 
         private Promo SavePromo(Promo model)
@@ -318,13 +328,21 @@ namespace Module.Frontend.TPM.Controllers
         {
             try
             {
-                var model = Context.Set<Promo>().Find(key);
-                var isSubrangeChanged = false;
-
+                Promo model = Context.Set<Promo>().Find(key);
                 if (model == null)
                 {
                     return NotFound();
                 }
+                Promo promo = patch.GetEntity();
+                if (promo.IsSplittable == true)
+                {
+                    model.PromoStatusId = new Guid("FE7FFE19-4754-E911-8BC8-08606E18DF3F");//set status "Draft(Published)" by Promo
+                    model.ProductTreeObjectIds = promo.ProductTreeObjectIds;
+                    SplitSubranges(model);
+                    DeletePromo(key);
+                    return Updated(model);
+                }
+                var isSubrangeChanged = false;
                 DateTimeOffset? ChangedDate = DateTimeOffset.UtcNow;
 
                 Promo promoCopy = new Promo(model);
@@ -955,6 +973,71 @@ namespace Module.Frontend.TPM.Controllers
             catch (Exception e)
             {
                 return InternalServerError(e);
+            }
+        }
+
+        private void DeletePromo(Guid key) {
+            try
+            {
+                var model = Context.Set<Promo>().Find(key);
+                if (model == null)
+                {
+                    throw new Exception("NotFound");
+                }
+
+                Promo promoCopy = new Promo(model);
+
+                model.DeletedDate = DateTime.Now;
+                model.Disabled = true;
+                model.PromoStatusId = Context.Set<PromoStatus>().FirstOrDefault(e => e.SystemName == "Deleted").Id;
+
+                UserInfo user = authorizationManager.GetCurrentUser();
+                string userRole = user.GetCurrentRole().SystemName;
+
+                string message;
+
+                PromoStateContext promoStateContext = new PromoStateContext(Context, promoCopy);
+                bool status = promoStateContext.ChangeState(model, userRole, out message);
+
+                if (!status)
+                {
+                    throw new Exception(message);
+                }
+
+                List<PromoProduct> promoProductToDeleteList = Context.Set<PromoProduct>().Where(x => x.PromoId == model.Id && !x.Disabled).ToList();
+                foreach (PromoProduct promoProduct in promoProductToDeleteList)
+                {
+                    promoProduct.DeletedDate = System.DateTime.Now;
+                    promoProduct.Disabled = true;
+                }
+                model.NeedRecountUplift = true;
+                //необходимо удалить все коррекции
+                var promoProductToDeleteListIds = promoProductToDeleteList.Select(x => x.Id).ToList();
+                List<PromoProductsCorrection> promoProductCorrectionToDeleteList = Context.Set<PromoProductsCorrection>()
+                    .Where(x => promoProductToDeleteListIds.Contains(x.PromoProductId) && x.Disabled != true).ToList();
+                foreach (PromoProductsCorrection promoProductsCorrection in promoProductCorrectionToDeleteList)
+                {
+                    promoProductsCorrection.DeletedDate = DateTimeOffset.UtcNow;
+                    promoProductsCorrection.Disabled = true;
+                    promoProductsCorrection.UserId = (Guid)user.Id;
+                    promoProductsCorrection.UserName = user.Login;
+                }
+                Context.SaveChanges();
+
+                PromoHelper.WritePromoDemandChangeIncident(Context, model, true);
+                PromoCalculateHelper.RecalculateBudgets(model, user, Context);
+                PromoCalculateHelper.RecalculateBTLBudgets(model, user, Context, safe: true);
+
+                //если промо инаут, необходимо убрать записи в IncrementalPromo при отмене промо
+                if (model.InOut.HasValue && model.InOut.Value)
+                {
+                    PromoHelper.DisableIncrementalPromo(Context, model);
+                }
+                //throw new Exception("NoContent");
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
             }
         }
 

@@ -1,5 +1,6 @@
 namespace Module.Persist.TPM.Migrations
 {
+    using Core.Settings;
     using System;
     using System.Data.Entity.Migrations;
     
@@ -7,12 +8,14 @@ namespace Module.Persist.TPM.Migrations
     {
         public override void Up()
         {
-            AddColumn("jupiter_test.Promo", "IsSplittable", c => c.Boolean(nullable: false));
+            var defaultSchema = AppSettingsManager.GetSetting<string>("DefaultSchema", "dbo");
+            AddColumn($"{defaultSchema}.Promo", "IsSplittable", c => c.Boolean(nullable: false));
         }
         
         public override void Down()
         {
-            DropColumn("jupiter_test.Promo", "IsSplittable");
+            var defaultSchema = AppSettingsManager.GetSetting<string>("DefaultSchema", "dbo");
+            DropColumn($"{defaultSchema}.Promo", "IsSplittable");
         }
     }
 }
