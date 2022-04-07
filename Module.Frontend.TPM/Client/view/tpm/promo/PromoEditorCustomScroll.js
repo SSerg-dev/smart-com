@@ -654,7 +654,7 @@
         cls: 'promo-split-button',
         hidden: true,
         isPromoAction: true,
-        roles: ['Administrator', 'FunctionalExpert', 'CustomerMarketing', 'KeyAccountManager'],
+        roles: ['Administrator', 'FunctionalExpert', 'CustomerMarketing', 'KeyAccountManager', 'SupportAdministrator'],
         statuses: ['Draft'],
         statusId: null,
         statusName: null,
