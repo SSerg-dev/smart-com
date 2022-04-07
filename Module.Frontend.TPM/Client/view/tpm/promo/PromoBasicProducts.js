@@ -478,7 +478,7 @@
                                     }
                                 });
                                 subrangePanel.add(subrangeBtns);
-                                if (subrangeBtns.length === 0) {
+                                if (subrangeBtns.length < 2) {//should be more than one subrange
                                     splitPublishBtn.setDisabled(true);
                                 } else {
                                     if (isTechologySplittable === false) {
