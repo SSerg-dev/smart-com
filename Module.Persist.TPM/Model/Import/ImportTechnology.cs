@@ -1,4 +1,5 @@
 ﻿using Core.Import;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Module.Persist.TPM.Model.Import
@@ -35,9 +36,13 @@ namespace Module.Persist.TPM.Model.Import
                 {
                     IsSplittable = true;
                 }
-                else
+                else if(value == "-")
                 {
                     IsSplittable = false;
+                }
+                else
+                {
+                    throw new Exception("Splittable value is not correct");
                 }
             }
             get { return null; }
