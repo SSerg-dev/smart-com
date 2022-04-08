@@ -1,10 +1,6 @@
 ﻿using Core.Data;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Module.Persist.TPM.Model.DTO
 {
@@ -19,7 +15,7 @@ namespace Module.Persist.TPM.Model.DTO
         public Guid? BrandTechId { get; set; }
         public string BrandsegTechsubName { get; set; }
         public string LogoFileName { get; set; }
-        public int Year { get; set; }
+        public int? Year { get; set; }
 
         public double? ShopperTiPlanPercent { get; set; }
         public double? ShopperTiPlan { get; set; }

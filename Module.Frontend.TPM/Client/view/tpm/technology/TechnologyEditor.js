@@ -48,10 +48,6 @@
                     return l10n.ns('tpm', 'Technology').value('ValidateSubBrandRequired');
                 }
 
-                if ((SubCode.getValue() == "" || SubCode.getValue() == null) && (value != "" && value != null)) {
-                    return l10n.ns('tpm', 'Technology').value('ValidateSubBrandNotRequired');
-                }
-
                 return true;
             }
         }, {

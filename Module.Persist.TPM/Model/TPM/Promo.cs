@@ -60,6 +60,7 @@ namespace Module.Persist.TPM.Model.TPM
 
         // Basic
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        [Index(IsUnique = true)]
         public int? Number { get; set; }
         [StringLength(255)]
         public string Name { get; set; }
