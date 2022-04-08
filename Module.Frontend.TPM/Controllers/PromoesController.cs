@@ -2099,7 +2099,7 @@ namespace Module.Frontend.TPM.Controllers
 
                 if (isProductListEmpty)
                 {
-                    messagesError.Add("Product list is empty. Please, check assortment matrix");
+                    messagesError.Add("Product list is empty. Please, check assortment matrix or/and Dispath period");
                 }
             }
 
