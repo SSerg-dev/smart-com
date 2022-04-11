@@ -233,7 +233,7 @@
             };
 
 			nodesProductTree.forEach(function (node) {
-				if (node) {
+                if (node) {
                     me.promoProductRecord.ProductsChoosen.push({
 						ObjectId: node.get('ObjectId'),
 						Name: node.get('Name'),
@@ -487,6 +487,9 @@
                                         splitPublishBtn.setDisabled(false);
                                     }                                    
                                 }
+                                //Activate button "Send for approval"
+                                var sendForApproval = Ext.ComponentQuery.query("#btn_sendForApproval")[0];
+                                sendForApproval.setDisabled(false);
                             }
 
                             var promoProductsForm = promoEditorCustom.down('promobasicproducts');
