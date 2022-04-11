@@ -293,6 +293,7 @@ namespace Module.Frontend.TPM.Controllers
                 HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(TechnologiesController), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(TechnologiesController.GetExportSettings), data, visible: false, throwIfNotExists: false);
                 string query = results.ToTraceQuery().Replace("[Extent1].[IsSplittable] AS [IsSplittable]", "IIF ([Extent1].[IsSplittable] = 1, '+', '-') AS [Splittable]");
+                query = query.Replace("[Project1].[IsSplittable] AS [IsSplittable]", "[Project1].[Splittable] AS [Splittable]");
                 HandlerDataHelper.SaveIncomingArgument("SqlString", query, data, visible: false, throwIfNotExists: false);
 
                 LoopHandler handler = new LoopHandler()

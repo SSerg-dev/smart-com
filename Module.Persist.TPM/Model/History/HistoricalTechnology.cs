@@ -10,5 +10,6 @@ namespace Module.Persist.TPM.Model.History
         public string Tech_code { get; set; }
         public string SubBrand { get; set; }
         public string SubBrand_code { get; set; }
+        public bool IsSplittable { get; set; }
     }
 }
