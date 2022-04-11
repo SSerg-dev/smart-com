@@ -142,7 +142,7 @@ namespace Module.Frontend.TPM.Controllers
                 return BadRequest(ModelState);
             }else if (String.IsNullOrEmpty(model.SubBrand_code) && !String.IsNullOrEmpty(model.SubBrand))
             {
-                var errorText = $"Sub Brand not required";
+                var errorText = $"Please, insert Sub Brand Code or delete Sub Brand";
                 ModelState.AddModelError("Error", errorText);
                 return BadRequest(ModelState);
             }
