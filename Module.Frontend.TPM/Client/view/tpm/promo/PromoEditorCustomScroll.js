@@ -691,8 +691,9 @@
         statusId: null,
         statusName: null,
         statusSystemName: null,
-        style: { "background-color": "#66BB6A" }
-		},
+        style: { "background-color": "#66BB6A" },
+        disabled: true
+	},
 	// Вернуть промо в DraftPublished
     {
         xtype: 'button',

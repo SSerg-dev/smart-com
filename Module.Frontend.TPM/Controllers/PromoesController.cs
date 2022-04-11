@@ -334,7 +334,7 @@ namespace Module.Frontend.TPM.Controllers
                     return NotFound();
                 }
                 Promo promo = patch.GetEntity();
-                if (promo.IsSplittable == true)
+                if (promo.IsSplittable)
                 {
                     model.Name = promo.Name;
                     model.PromoStatusId = new Guid("FE7FFE19-4754-E911-8BC8-08606E18DF3F");//set status "Draft(Published)" by Promo
@@ -459,7 +459,7 @@ namespace Module.Frontend.TPM.Controllers
                     List<PromoProductTree> promoProductTrees = new List<PromoProductTree>();
                     if (!model.LoadFromTLC)
                     {
-                        // Добавление продуктов                
+                        // Добавление продуктов
                         promoProductTrees = AddProductTrees(model.ProductTreeObjectIds, model, out isSubrangeChanged);
                     }
 
@@ -2117,7 +2117,6 @@ namespace Module.Frontend.TPM.Controllers
                 throw new Exception(messageError);
             }
         }
-
 
         private IEnumerable<Column> GetPromoROIExportSettings()
         {
