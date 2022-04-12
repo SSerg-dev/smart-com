@@ -334,8 +334,9 @@ namespace Module.Frontend.TPM.Controllers
                     return NotFound();
                 }
                 Promo promo = patch.GetEntity();
-                if (promo.IsSplittable == true)
+                if (promo.IsSplittable)
                 {
+                    model.Name = promo.Name;
                     model.PromoStatusId = new Guid("FE7FFE19-4754-E911-8BC8-08606E18DF3F");//set status "Draft(Published)" by Promo
                     model.ProductTreeObjectIds = promo.ProductTreeObjectIds;
                     SplitSubranges(model);
@@ -458,7 +459,7 @@ namespace Module.Frontend.TPM.Controllers
                     List<PromoProductTree> promoProductTrees = new List<PromoProductTree>();
                     if (!model.LoadFromTLC)
                     {
-                        // Добавление продуктов                
+                        // Добавление продуктов
                         promoProductTrees = AddProductTrees(model.ProductTreeObjectIds, model, out isSubrangeChanged);
                     }
 
@@ -2099,7 +2100,7 @@ namespace Module.Frontend.TPM.Controllers
 
                 if (isProductListEmpty)
                 {
-                    messagesError.Add("Product list is empty. Please, check assortment matrix");
+                    messagesError.Add("Product list is empty. Please, check assortment matrix or/and Dispath period");
                 }
             }
 
@@ -2116,7 +2117,6 @@ namespace Module.Frontend.TPM.Controllers
                 throw new Exception(messageError);
             }
         }
-
 
         private IEnumerable<Column> GetPromoROIExportSettings()
         {
