@@ -478,6 +478,7 @@
                                     }
                                 });
                                 subrangePanel.add(subrangeBtns);
+                                //Activate button "Split and publish"
                                 if (subrangeBtns.length < 2) {//should be more than one subrange
                                     splitPublishBtn.setDisabled(true);
                                 } else {
@@ -490,6 +491,9 @@
                                 //Activate button "Send for approval"
                                 var sendForApproval = Ext.ComponentQuery.query("#btn_sendForApproval")[0];
                                 sendForApproval.setDisabled(false);
+                                //Activate button "Approve"
+                                var approve = Ext.ComponentQuery.query("#btn_approve")[0];
+                                approve.setDisabled(false);
                             }
 
                             var promoProductsForm = promoEditorCustom.down('promobasicproducts');
