@@ -85,6 +85,12 @@
         });
     },
 
+    onGridAfterrender: function (grid) {
+        //Click button "Get actual assortment matrix"
+        var button = Ext.ComponentQuery.query('assortmentmatrix')[0].down('#actualassortmentmatrix');
+        button.fireEvent('click', button);
+    },
+
     afterrenderWindowEditor: function (window, eOpts) {
         var me = this;
         var assortmentmatrixeditor = Ext.ComponentQuery.query('assortmentmatrixeditor')[0];
