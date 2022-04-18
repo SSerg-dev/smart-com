@@ -63,7 +63,7 @@
                     click: this.onActualAssortmentMatrixButtonClick
                 },
                 // import/export
-                'assortmentmatrix #exportbutton': {
+                'assortmentmatrix #exportxlsxbutton': {
                     click: this.onExportButtonClick
                 },
                 'assortmentmatrix #loadimportbutton': {
@@ -207,4 +207,37 @@
             }
         }
     },
+
+    onExportButtonClick: function (button) {
+        debugger
+        var me = this;
+        var grid = me.getGridByButton(button);
+        var panel = grid.up('combineddirectorypanel');
+        var store = grid.getStore();
+        var proxy = store.getProxy();
+        var actionName = button.action || 'ExportXLSX';
+        var resource = button.resource || proxy.resourceName;
+        panel.setLoading(true);
+        debugger
+        var query = breeze.EntityQuery
+            .from(resource)
+            .withParameters({
+                $actionName: actionName,
+                $method: 'POST',
+                needActualAssortmentMatrix: true//если кнопка нажата - передавать true
+            });
+
+        query = me.buildQuery(query, store)
+            .using(Ext.ux.data.BreezeEntityManager.getEntityManager())
+            .execute()
+            .then(function (data) {
+                panel.setLoading(false);
+                App.Notify.pushInfo('Export task created successfully');
+                App.System.openUserTasksPanel()
+            })
+            .fail(function (data) {
+                panel.setLoading(false);
+                App.Notify.pushError(me.getErrorMessage(data));
+            });
+    }
 });

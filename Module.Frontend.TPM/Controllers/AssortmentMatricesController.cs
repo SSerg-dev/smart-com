@@ -45,7 +45,6 @@ namespace Module.Frontend.TPM.Controllers
 
         }
 
-
         protected IQueryable<AssortmentMatrix> GetConstraintedQuery(bool needActualAssortmentMatrix = false)
         {
             UserInfo user = authorizationManager.GetCurrentUser();
@@ -314,7 +313,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult ExportXLSX(ODataQueryOptions<AssortmentMatrix> options)
+        public IHttpActionResult ExportXLSX(ODataQueryOptions<AssortmentMatrix> options, bool needActualAssortmentMatrix = false)
         {
             IQueryable results = options.ApplyTo(GetConstraintedQuery().Where(x => !x.Disabled));
             UserInfo user = authorizationManager.GetCurrentUser();
@@ -332,7 +331,12 @@ namespace Module.Frontend.TPM.Controllers
                 HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(AssortmentMatricesController), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(AssortmentMatricesController.GetExportSettings), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
+                string query = results.ToTraceQuery();
+                if (needActualAssortmentMatrix)//use actual assortment matrix
+                {
+                    query = query.Replace(")  AS [Project1]", " AND [Filter1].[EndDate1] >= GETDATE()) AS[Project1]"); ;
+                }
+                HandlerDataHelper.SaveIncomingArgument("SqlString", query, data, visible: false, throwIfNotExists: false);
 
                 LoopHandler handler = new LoopHandler()
                 {
