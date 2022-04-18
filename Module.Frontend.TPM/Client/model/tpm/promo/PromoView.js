@@ -12,6 +12,7 @@
         { name: 'MarsMechanicName', type: 'string', useNull: true, hidden: false, isDefault: true },
         { name: 'MarsMechanicDiscount', type: 'float', hidden: false, isDefault: false },
         { name: 'MarsMechanicTypeName', type: 'string', useNull: true, hidden: false, isDefault: false },
+        { name: 'MechanicComment', type: 'string', useNull: true, hidden: false, isDefault: true },
         { name: 'ColorSystemName', type: 'string', useNull: true, hidden: true, isDefault: false },
         { name: 'PromoStatusColor', type: 'string', hidden: true, isDefault: false },
         { name: 'IsOnInvoice', type: 'boolean', hidden: false, isDefault: true },
