@@ -25,27 +25,38 @@
 
             menu: {
                 xtype: 'customheadermenu',
-                items: [{
-                    glyph: 0xf220,
-                    itemgroup: 'loadimportbutton',
-                    exactlyModelCompare: true,
-                    text: l10n.ns('core', 'additionalMenu').value('fullImportXLSX'),
-                    resource: '{0}',
-                    action: 'FullImportXLSX',
-                    allowFormat: ['zip', 'xlsx']
-                }, {
-                    glyph: 0xf21d,
-                    itemId: 'loadimporttemplatexlsxbutton',
-                    exactlyModelCompare: true,
-                    text: l10n.ns('core', 'additionalMenu').value('importTemplateXLSX'),
-                    action: 'DownloadTemplateXLSX',
-                }, {
-                    glyph: 0xf21d,
-                    itemId: 'exportxlsxbutton',
-                    exactlyModelCompare: true,
-                    text: l10n.ns('core', 'additionalMenu').value('exportXLSX'),
-                    action: 'ExportXLSX'
-                }]
+                items: [
+                    {
+                        glyph: 0xf220,
+                        itemgroup: 'loadimportbutton',
+                        exactlyModelCompare: true,
+                        text: l10n.ns('core', 'additionalMenu').value('fullImportXLSX'),
+                        resource: '{0}',
+                        action: 'FullImportXLSX',
+                        allowFormat: ['zip', 'xlsx']
+                    },
+                    {
+                        glyph: 0xf21d,
+                        itemId: 'loadimporttemplatexlsxbutton',
+                        exactlyModelCompare: true,
+                        text: l10n.ns('core', 'additionalMenu').value('importTemplateXLSX'),
+                        action: 'DownloadTemplateXLSX',
+                    },
+                    {
+                        glyph: 0xf21d,
+                        itemId: 'exportxlsxbutton',
+                        exactlyModelCompare: true,
+                        text: l10n.ns('core', 'additionalMenu').value('exportXLSX'),
+                        action: 'ExportXLSX'
+                    },
+                    {
+                        glyph: 0xf21d,
+                        itemId: 'exportcorrectionxlsxbutton',
+                        exactlyModelCompare: true,
+                        text: l10n.ns('tpm', 'PromoProductCorrection').value('ExportCorrections'),
+                        action: 'ExportCorrectionXLSX'
+                    }
+                ]
             }
         }
     ],
@@ -244,7 +255,7 @@
                                 }]
                             }
                         }
-                    } 
+                    }
                 },
                 {
                     text: l10n.ns('tpm', 'PromoProductCorrection').value('MarsStartDate'),
