@@ -242,6 +242,14 @@
     'tpm.actualcogs.DeletedActualCOGS',
     'tpm.actualcogs.HistoricalActualCOGS',
 
+    'tpm.plancogsTn.PlanCOGSTn',
+    'tpm.plancogsTn.DeletedPlanCOGSTn',
+    'tpm.plancogsTn.HistoricalPlanCOGSTn',
+
+    'tpm.actualcogsTn.ActualCOGSTn',
+    'tpm.actualcogsTn.DeletedActualCOGSTn',
+    'tpm.actualcogsTn.HistoricalActualCOGSTn',
+
     'tpm.actualtradeinvestment.ActualTradeInvestment',
     'tpm.actualtradeinvestment.DeletedActualTradeInvestment',
     'tpm.actualtradeinvestment.HistoricalActualTradeInvestment',

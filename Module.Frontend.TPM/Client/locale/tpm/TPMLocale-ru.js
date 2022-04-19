@@ -1341,10 +1341,9 @@
         'ClientTreeObjectId': 'ClientId',
         'BrandTechName': 'BrandTech',
         'LSVpercent': 'LSV percent'
-
     },
-    'HistoricalPlanCOGSTn': ['.tpm.COGS', '.core.BaseHistoryEntity'],
-    'DeletedPlanCOGSTn': ['.tpm.COGS', '.core.BaseDeletedEntity'],
+    'HistoricalPlanCOGSTn': ['.tpm.PlanCOGSTn', '.core.BaseHistoryEntity'],
+    'DeletedPlanCOGSTn': ['.tpm.PlanCOGSTn', '.core.BaseDeletedEntity'],
 
     'ActualCOGSTn': {
         'StartDate': 'StartDate',

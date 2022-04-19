@@ -1,6 +1,6 @@
 ﻿Ext.define('App.view.tpm.actualcogsTn.ActualCOGSTn', {
     extend: 'App.view.core.common.CombinedDirectoryPanel',
-    alias: 'widget.actualcogs',
+    alias: 'widget.actualcogsTn',
     title: l10n.ns('tpm', 'compositePanelTitles').value('ActualCOGSTn'),
 
     customHeaderItems: [
