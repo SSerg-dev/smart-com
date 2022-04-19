@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Persist;
 using System.Linq;
 using Newtonsoft.Json;
-
+using System.Collections.Generic;
 
 namespace Module.Persist.TPM.Model.TPM
 {
@@ -238,7 +238,7 @@ namespace Module.Persist.TPM.Model.TPM
         [ForeignKey("ActualInStoreMechanicId")]
         public virtual Mechanic ActualInStoreMechanic { get; set; }
         [ForeignKey("ActualInStoreMechanicTypeId")]
-        public virtual MechanicType ActualInStoreMechanicType { get; set; } 
+        public virtual MechanicType ActualInStoreMechanicType { get; set; }
         [StringLength(500)]
         public string ProductSubrangesList { get; set; }
         [StringLength(500)]
@@ -286,11 +286,17 @@ namespace Module.Persist.TPM.Model.TPM
 
         public bool IsApolloExport { get; set; }
 
+        [ForeignKey("MasterPromo")]
+        public Guid? MasterPromoId { get; set; }
+        public Promo MasterPromo { get; set; }
+
+        public virtual ICollection<Promo> Promoes { get; set; }
         /// <summary>
         /// Copy Constructor
         /// </summary>
         /// <param name="promoToCopy"></param>
-        public Promo(Promo promoToCopy) {
+        public Promo(Promo promoToCopy)
+        {
             Name = promoToCopy.Name;
             Number = promoToCopy.Number;
             ClientHierarchy = promoToCopy.ClientHierarchy;
@@ -300,7 +306,7 @@ namespace Module.Persist.TPM.Model.TPM
             MarsMechanic = promoToCopy.MarsMechanic;
             MarsMechanicId = promoToCopy.MarsMechanicId;
             MarsMechanicTypeId = promoToCopy.MarsMechanicTypeId;
-            MarsMechanicDiscount = promoToCopy.MarsMechanicDiscount;            
+            MarsMechanicDiscount = promoToCopy.MarsMechanicDiscount;
             PlanInstoreMechanic = promoToCopy.PlanInstoreMechanic;
             PlanInstoreMechanicId = promoToCopy.PlanInstoreMechanicId;
             PlanInstoreMechanicTypeId = promoToCopy.PlanInstoreMechanicTypeId;
@@ -359,7 +365,7 @@ namespace Module.Persist.TPM.Model.TPM
             ManualInputSumInvoice = promoToCopy.ManualInputSumInvoice;
         }
 
-        public Promo() {}
+        public Promo() { }
 
         private void GetCalculationStatus()
         {
@@ -372,7 +378,7 @@ namespace Module.Persist.TPM.Model.TPM
             }
             catch { }
         }
-        
+
         /// <summary>
         /// Поиск сведений о выбранных узлах в дереве продуктов
         /// </summary>
@@ -391,7 +397,7 @@ namespace Module.Persist.TPM.Model.TPM
                         PromoBasicProduct promoBasicProducts = new PromoBasicProduct();
 
                         // выбранные узлы
-                        promoBasicProducts.ProductsChoosen = products.Select(n => new 
+                        promoBasicProducts.ProductsChoosen = products.Select(n => new
                         {
                             ObjectId = n.ObjectId,
                             Name = n.Name,
@@ -426,7 +432,7 @@ namespace Module.Persist.TPM.Model.TPM
                         }
 
                         PromoBasicProducts = JsonConvert.SerializeObject(promoBasicProducts);
-                    }                    
+                    }
                 }
             }
             catch { }
