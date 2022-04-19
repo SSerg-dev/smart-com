@@ -271,6 +271,9 @@
     <Content Include="Client\controller\tpm\competitorbrandtech\CompetitorBrandTech.js" />
     <Content Include="Client\controller\tpm\competitorbrandtech\DeletedCompetitorBrandTech.js" />
     <Content Include="Client\controller\tpm\competitorbrandtech\HistoricalCompetitorBrandTech.js" />
+    <Content Include="Client\controller\tpm\plancogsTn\DeletedPlanCOGSTn.js" />
+    <Content Include="Client\controller\tpm\plancogsTn\HistoricalPlanCOGSTn.js" />
+    <Content Include="Client\controller\tpm\plancogsTn\PlanCOGSTn.js" />
     <Content Include="Client\controller\tpm\pludictionary\HistoricalPLUDictionary.js" />
     <Content Include="Client\controller\tpm\pludictionary\PLUDictionary.js" />
     <Content Include="Client\controller\tpm\ratishopper\RATIShopper.js" />

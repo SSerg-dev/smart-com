@@ -350,6 +350,18 @@
 			roles: ['Administrator', 'FunctionalExpert', 'DemandFinance', 'SuperReader', 'CustomerMarketing', 'CMManager', 'SupportAdministrator'],
 			widget: 'actualcogs'
 		}, {
+			text: l10n.ns('tpm', 'mainmenu').value('PlanCOGS/Tn'),
+			tooltip: l10n.ns('tpm', 'mainmenu').value('PlanCOGS/Tn'),
+			glyph: 0xf152,
+			roles: ['Administrator', 'FunctionalExpert', 'DemandFinance', 'SuperReader', 'CustomerMarketing', 'CMManager', 'SupportAdministrator'],
+			widget: 'plancogsTn'
+		}, {
+			text: l10n.ns('tpm', 'mainmenu').value('ActualCOGS/Tn'),
+			tooltip: l10n.ns('tpm', 'mainmenu').value('ActualCOGS/Tn'),
+			glyph: 0xf152,
+			roles: ['Administrator', 'FunctionalExpert', 'DemandFinance', 'SuperReader', 'CustomerMarketing', 'CMManager', 'SupportAdministrator'],
+			widget: 'actualcogsTn'
+		}, {
 			text: l10n.ns('tpm', 'mainmenu').value('TradeInvestment'),
 			tooltip: l10n.ns('tpm', 'mainmenu').value('TradeInvestment'),
 			glyph: 0xfb2d,
