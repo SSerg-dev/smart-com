@@ -259,6 +259,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Client\controller\tpm\actualcogsTn\ActualCOGSTn.js" />
+    <Content Include="Client\controller\tpm\actualcogsTn\DeletedActualCOGSTn.js" />
+    <Content Include="Client\controller\tpm\actualcogsTn\HistoricalActualCOGSTn.js" />
     <Content Include="Client\controller\tpm\competitorpromo\CompetitorPromo.js" />
     <Content Include="Client\controller\tpm\competitorpromo\DeletedCompetitorPromo.js" />
     <Content Include="Client\controller\tpm\competitorpromo\HistoricalCompetitorPromo.js" />
