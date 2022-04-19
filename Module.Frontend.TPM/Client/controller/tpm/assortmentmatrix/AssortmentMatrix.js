@@ -63,7 +63,7 @@
                     click: this.onActualAssortmentMatrixButtonClick
                 },
                 // import/export
-                'assortmentmatrix #exportxlsxbutton': {
+                'assortmentmatrix #exportXlsxAssortmentMatrixButton': {
                     click: this.onExportButtonClick
                 },
                 'assortmentmatrix #loadimportbutton': {
@@ -136,7 +136,7 @@
         } else {
             button.removeCls('showEditablePromo-btn-active');
         }
-
+        
         assortmentMatrixGridStore.removeAll();
         assortmentMatrixGridStore.load();
     },
@@ -218,13 +218,12 @@
         var actionName = button.action || 'ExportXLSX';
         var resource = button.resource || proxy.resourceName;
         panel.setLoading(true);
-        debugger
         var query = breeze.EntityQuery
             .from(resource)
             .withParameters({
                 $actionName: actionName,
                 $method: 'POST',
-                needActualAssortmentMatrix: true//если кнопка нажата - передавать true
+                needActualAssortmentMatrix: proxy.extraParams.needActualAssortmentMatrix//if button "Get actual assortment matrix" is pressed or not
             });
 
         query = me.buildQuery(query, store)

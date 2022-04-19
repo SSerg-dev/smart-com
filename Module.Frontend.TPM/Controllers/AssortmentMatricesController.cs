@@ -334,7 +334,7 @@ namespace Module.Frontend.TPM.Controllers
                 string query = results.ToTraceQuery();
                 if (needActualAssortmentMatrix)//use actual assortment matrix
                 {
-                    query = query.Replace(")  AS [Project1]", " AND [Filter1].[EndDate1] >= GETDATE()) AS[Project1]"); ;
+                    query = query.Replace(")  AS [Project1]", " AND [Filter1].[EndDate1] >= GETDATE()) AS[Project1]");
                 }
                 HandlerDataHelper.SaveIncomingArgument("SqlString", query, data, visible: false, throwIfNotExists: false);
 
