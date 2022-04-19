@@ -1334,6 +1334,31 @@
     'HistoricalActualCOGS': ['.tpm.ActualCOGS', '.core.BaseHistoryEntity'],
     'DeletedActualCOGS': ['.tpm.ActualCOGS', '.core.BaseDeletedEntity'],
 
+    'PlanCOGSTn': {
+        'StartDate': 'StartDate',
+        'EndDate': 'EndDate',
+        'ClientTreeFullPathName': 'ClientHierarchy',
+        'ClientTreeObjectId': 'ClientId',
+        'BrandTechName': 'BrandTech',
+        'LSVpercent': 'LSV percent'
+
+    },
+    'HistoricalPlanCOGSTn': ['.tpm.COGS', '.core.BaseHistoryEntity'],
+    'DeletedPlanCOGSTn': ['.tpm.COGS', '.core.BaseDeletedEntity'],
+
+    'ActualCOGSTn': {
+        'StartDate': 'StartDate',
+        'EndDate': 'EndDate',
+        'ClientTreeFullPathName': 'ClientHierarchy',
+        'ClientTreeObjectId': 'ClientId',
+        'BrandTechName': 'BrandTech',
+        'LSVpercent': 'LSV percent',
+        'Year': 'Year',
+        'recalculatePreviousYearButtonYearText': 'Пересчитать промо за предыдущий год'
+    },
+    'HistoricalActualCOGSTn': ['.tpm.ActualCOGSTn', '.core.BaseHistoryEntity'],
+    'DeletedActualCOGSTn': ['.tpm.ActualCOGSTn', '.core.BaseDeletedEntity'],
+
     'RATIShopper': {
         'ClientTreeFullPathName': 'ClientHierarchy',
         'ClientTreeObjectId': 'ClientId',
