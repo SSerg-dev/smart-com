@@ -209,7 +209,6 @@
     },
 
     onExportButtonClick: function (button) {
-        debugger
         var me = this;
         var grid = me.getGridByButton(button);
         var panel = grid.up('combineddirectorypanel');
