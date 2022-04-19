@@ -25,6 +25,7 @@
         //{ name: 'ProductTreeId', useNull: true, hidden: true, isDefault: false, defaultValue: null },
         { name: 'BaseClientTreeIds', useNull: true, hidden: true, isDefault: false, defaultValue: null },
         { name: 'PromoTypesId', useNull: true, hidden: true, isDefault: false, defaultValue: null },
+        { name: 'MasterPromoId', useNull: true, hidden: true, isDefault: false, defaultValue: null },
 
         { name: 'PromoEventName', type: 'string', mapping: 'Event.Name', defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'Event' },
         { name: 'PromoEventDescription', type: 'string', mapping: 'Event.Description', defaultFilterConfig: { valueField: 'Description' }, breezeEntityType: 'Event' },
@@ -73,7 +74,7 @@
         { name: 'EndDate', useNull: true, type: 'date', hidden: false, isDefault: false, timeZone: +3, convert: dateConvertTimeZone },
         { name: 'DispatchesStart', useNull: true, type: 'date', hidden: false, isDefault: false, timeZone: +3, convert: dateConvertTimeZone },
         { name: 'DispatchesEnd', useNull: true, type: 'date', hidden: false, isDefault: false, timeZone: +3, convert: dateConvertTimeZone },
-        { name: 'BudgetYear', useNull: true, type: 'int', hidden: false, isDefault: false},
+        { name: 'BudgetYear', useNull: true, type: 'int', hidden: false, isDefault: false },
         { name: 'OtherEventName', type: 'string', hidden: true, isDefault: false },
         { name: 'CalendarPriority', useNull: true, type: 'int', hidden: false, isDefault: false },
         { name: 'NeedRecountUplift', type: 'bool', hidden: true, isDefault: false, defaultValue: true },
@@ -86,7 +87,7 @@
         // Calculation
         { name: 'PlanPromoTIShopper', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'PlanPromoTIMarketing', useNull: true, type: 'float', hidden: false, isDefault: false },
-        { name: 'PlanPromoBranding', useNull: false, type: 'float', hidden: false, isDefault: false, defaultValue: 0  },
+        { name: 'PlanPromoBranding', useNull: false, type: 'float', hidden: false, isDefault: false, defaultValue: 0 },
         { name: 'PlanPromoCost', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'PlanPromoBTL', useNull: false, type: 'float', hidden: false, isDefault: false, defaultValue: 0 },
         { name: 'PlanPromoCostProduction', useNull: true, type: 'float', hidden: false, isDefault: false },
@@ -234,7 +235,7 @@
         { name: 'RegularExcludedProductIds', type: 'string', hidden: true, isDefault: false },
         // Growth Acceleration
         { name: 'IsGrowthAcceleration', type: 'boolean', hidden: false, isDefault: false },
-        { name: 'AdditionalUserTimestamp', type: 'string', hidden: true, isDefault: false   },
+        { name: 'AdditionalUserTimestamp', type: 'string', hidden: true, isDefault: false },
 
         { name: 'PromoTypesName', type: 'string', mapping: 'PromoTypes.Name', defaultFilterConfig: { valueField: 'PromoTypesName' }, /*breezeEntityType: 'ClientTree',*/ hidden: false, isDefault: false },
         { name: 'PromoTypesGlyph', type: 'string', mapping: 'PromoTypes.Glyph', defaultFilterConfig: { valueField: 'PromoTypesGlyph' }, /*breezeEntityType: 'ClientTree',*/ hidden: false, isDefault: false },
@@ -248,6 +249,12 @@
             }
         }
     ],
+    hasMany: [{
+        name: 'Promoes',
+        model: 'App.model.tpm.promo.Promo',
+        foreignKey: 'MasterPromoId',
+        associationKey: 'Promoes'
+    }],
     proxy: {
         type: 'breeze',
         resourceName: 'Promoes',

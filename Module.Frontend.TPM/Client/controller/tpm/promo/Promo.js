@@ -2663,7 +2663,8 @@
         // Кнопки для изменения состояний промо
         var promoActions = Ext.ComponentQuery.query('button[isPromoAction=true]');
         var mechanic = promoeditorcustom.down('container[name=promo_step3]');
-
+        debugger;
+        var ddd = record.Promoes();
         // Для InOut Promo
         promoeditorcustom.isInOutPromo = record.data.InOut;
 
