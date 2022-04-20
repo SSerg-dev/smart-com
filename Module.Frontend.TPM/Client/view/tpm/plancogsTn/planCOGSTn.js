@@ -1,7 +1,7 @@
-﻿Ext.define('App.view.tpm.plancogsTn.planCOGSTn', {
+﻿Ext.define('App.view.tpm.plancogsTn.PlanCOGSTn', {
     extend: 'App.view.core.common.CombinedDirectoryPanel',
-    alias: 'widget.cogs',
-    title: l10n.ns('tpm', 'compositePanelTitles').value('planCOGSTn'),
+    alias: 'widget.plancogsTn',
+    title: l10n.ns('tpm', 'compositePanelTitles').value('PlanCOGSTn'),
 
     customHeaderItems: [
         ResourceMgr.getAdditionalMenu('core').base = {
@@ -61,13 +61,13 @@
         editorModel: 'Core.form.EditorDetailWindowModel',
         store: {
             type: 'directorystore',
-            model: 'App.model.tpm.plancogsTn.planCOGSTn',
+            model: 'App.model.tpm.plancogsTn.PlanCOGSTn',
             storeId: 'cogsstore',
             extendedFilter: {
                 xclass: 'App.ExtFilterContext',
                 supportedModels: [{
                     xclass: 'App.ExtSelectionFilterModel',
-                    model: 'App.model.tpm.plancogsTn.planCOGSTn',
+                    model: 'App.model.tpm.plancogsTn.PlanCOGSTn',
                     modelId: 'efselectionmodel'
                 }, {
                     xclass: 'App.ExtTextFilterModel',
@@ -85,18 +85,18 @@
                 minWidth: 100
             },
             items: [{
-                text: l10n.ns('tpm', 'planCOGSTn').value('StartDate'),
+                text: l10n.ns('tpm', 'PlanCOGSTn').value('StartDate'),
                 dataIndex: 'StartDate',
                 renderer: Ext.util.Format.dateRenderer('d.m.Y')
             }, {
-                text: l10n.ns('tpm', 'planCOGSTn').value('EndDate'),
+                text: l10n.ns('tpm', 'PlanCOGSTn').value('EndDate'),
                 dataIndex: 'EndDate',
                 renderer: Ext.util.Format.dateRenderer('d.m.Y')
             }, {
-                text: l10n.ns('tpm', 'planCOGSTn').value('Year'),
+                text: l10n.ns('tpm', 'PlanCOGSTn').value('Year'),
                 dataIndex: 'Year'
             }, {
-                text: l10n.ns('tpm', 'planCOGSTn').value('ClientTreeFullPathName'),
+                text: l10n.ns('tpm', 'PlanCOGSTn').value('ClientTreeFullPathName'),
                 dataIndex: 'ClientTreeFullPathName',
                 minWidth: 200,
                 filter: {
@@ -117,10 +117,10 @@
                     return renderWithDelimiter(value, ' > ', '  ');
                 }
             }, {
-                text: l10n.ns('tpm', 'planCOGSTn').value('ClientTreeObjectId'),
+                text: l10n.ns('tpm', 'PlanCOGSTn').value('ClientTreeObjectId'),
                 dataIndex: 'ClientTreeObjectId'
             }, {
-                text: l10n.ns('tpm', 'planCOGSTn').value('BrandTechName'),
+                text: l10n.ns('tpm', 'PlanCOGSTn').value('BrandTechName'),
                 dataIndex: 'BrandTechName',
                 width: 120,
                 filter: {
@@ -145,18 +145,18 @@
                 }
             },
             {
-                text: l10n.ns('tpm', 'planCOGSTn').value('LSVpercent'),
+                text: l10n.ns('tpm', 'PlanCOGSTn').value('LSVpercent'),
                 dataIndex: 'LSVpercent'
             }]
         }
     }, {
         xtype: 'editabledetailform',
         itemId: 'detailform',
-        model: 'App.model.tpm.plancogsTn.planCOGSTn',
+        model: 'App.model.tpm.plancogsTn.PlanCOGSTn',
         items: [{
             xtype: 'datefield',
             name: 'StartDate',
-            fieldLabel: l10n.ns('tpm', 'planCOGSTn').value('StartDate'),
+            fieldLabel: l10n.ns('tpm', 'PlanCOGSTn').value('StartDate'),
             readOnly: false,
             editable: true,
             format: 'd.m.Y',
@@ -172,7 +172,7 @@
         }, {
             xtype: 'datefield',
             name: 'EndDate',
-            fieldLabel: l10n.ns('tpm', 'planCOGSTn').value('EndDate'),
+            fieldLabel: l10n.ns('tpm', 'PlanCOGSTn').value('EndDate'),
             readOnly: false,
             editable: true,
             format: 'd.m.Y',
@@ -188,7 +188,7 @@
         }, {
             xtype: 'treesearchfield',
             name: 'ClientTreeId',
-            fieldLabel: l10n.ns('tpm', 'planCOGSTn').value('ClientTreeFullPathName'),
+            fieldLabel: l10n.ns('tpm', 'PlanCOGSTn').value('ClientTreeFullPathName'),
             selectorWidget: 'clienttree',
             valueField: 'Id',
             displayField: 'FullPathName',
@@ -204,7 +204,7 @@
             }]
         }, {
             xtype: 'searchfield',
-            fieldLabel: l10n.ns('tpm', 'planCOGSTn').value('BrandTechName'),
+            fieldLabel: l10n.ns('tpm', 'PlanCOGSTn').value('BrandTechName'),
             name: 'BrandTechName',
             selectorWidget: 'brandtech',
             valueField: 'Id',
@@ -250,7 +250,7 @@
             , {
             xtype: 'numberfield',
             name: 'LSVpercent',
-                fieldLabel: l10n.ns('tpm', 'planCOGSTn').value('LSVpercent'),
+                fieldLabel: l10n.ns('tpm', 'PlanCOGSTn').value('LSVpercent'),
             minValue: 0,
             maxValue: 100,
             readOnly: true,
