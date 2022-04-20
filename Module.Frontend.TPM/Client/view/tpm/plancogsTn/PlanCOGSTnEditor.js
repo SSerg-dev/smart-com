@@ -1,4 +1,4 @@
-﻿Ext.define('App.view.tpm.plancogsTn.PlanCOGSEditor', {
+﻿Ext.define('App.view.tpm.plancogsTn.PlanCOGSTnEditor', {
     extend: 'App.view.core.common.EditorDetailWindow',
     alias: 'widget.cogseditor',
     width: 500,
@@ -12,7 +12,7 @@
         items: [{
             xtype: 'datefield',
             name: 'StartDate',
-            fieldLabel: l10n.ns('tpm', 'planCOGSTn').value('StartDate'),
+            fieldLabel: l10n.ns('tpm', 'PlanCOGSTn').value('StartDate'),
             readOnly: false,
             editable: false,
             format: 'd.m.Y',
@@ -25,7 +25,7 @@
         }, {
             xtype: 'datefield',
             name: 'EndDate',
-            fieldLabel: l10n.ns('tpm', 'planCOGSTn').value('EndDate'),
+            fieldLabel: l10n.ns('tpm', 'PlanCOGSTn').value('EndDate'),
             readOnly: false,
             editable: false,
             format: 'd.m.Y',
@@ -38,7 +38,7 @@
         }, {
             xtype: 'treesearchfield',
             name: 'ClientTreeId',
-            fieldLabel: l10n.ns('tpm', 'planCOGSTn').value('ClientTreeFullPathName'),
+            fieldLabel: l10n.ns('tpm', 'PlanCOGSTn').value('ClientTreeFullPathName'),
             selectorWidget: 'clienttree',
             valueField: 'Id',
             displayField: 'FullPathName',
@@ -72,7 +72,7 @@
         },
         {
             xtype: 'searchfield',
-            fieldLabel: l10n.ns('tpm', 'planCOGSTn').value('BrandTechName'),
+            fieldLabel: l10n.ns('tpm', 'PlanCOGSTn').value('BrandTechName'),
             name: 'BrandTechId',
             selectorWidget: 'brandtech',
             allowBlank: true,
@@ -117,7 +117,7 @@
         }, {
             xtype: 'numberfield',
             name: 'LSVpercent',
-            fieldLabel: l10n.ns('tpm', 'planCOGSTn').value('LSVpercent'),
+            fieldLabel: l10n.ns('tpm', 'PlanCOGSTn').value('LSVpercent'),
             minValue: 0,
             maxValue: 100,
             readOnly: false,

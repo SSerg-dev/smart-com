@@ -1647,7 +1647,8 @@
         'ClientTreeFullPathName': 'ClientHierarchy',
         'ClientTreeObjectId': 'ClientId',
         'BrandTechName': 'BrandTech',
-        'LSVpercent': 'LSV percent'
+        'LSVpercent': 'LSV percent',
+        'Year': 'Year',
     },
     'HistoricalPlanCOGSTn': ['.tpm.PlanCOGSTn', '.core.BaseHistoryEntity'],
     'DeletedPlanCOGSTn': ['.tpm.PlanCOGSTn', '.core.BaseDeletedEntity'],

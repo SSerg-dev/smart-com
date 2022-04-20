@@ -296,7 +296,7 @@
     <Content Include="Client\model\tpm\competitor\HistoricalCompetitor.js" />
     <Content Include="Client\model\tpm\plancogsTn\DeletedPlanCOGSTn.js" />
     <Content Include="Client\model\tpm\plancogsTn\HistoricalPlanCOGSTn.js" />
-    <Content Include="Client\model\tpm\plancogsTn\planCOGSTn.js" />
+    <Content Include="Client\model\tpm\plancogsTn\PlanCOGSTn.js" />
     <Content Include="Client\model\tpm\pludictionary\HistoricalPLUDictionary.js" />
     <Content Include="Client\model\tpm\pludictionary\PLUDictionary.js" />
     <Content Include="Client\model\tpm\promoproduct2plu\PromoProduct2Plu.js" />
@@ -341,8 +341,8 @@
     <Content Include="Client\view\tpm\plancogsTn\HistoricalPlanCOGSTn.js" />
     <Content Include="Client\view\tpm\plancogsTn\HistoricalPlanCOGSTnDetail.js" />
     <Content Include="Client\view\tpm\plancogsTn\ImportPlanCOGSTnParamForm.js" />
-    <Content Include="Client\view\tpm\plancogsTn\planCOGSTn.js" />
-    <Content Include="Client\view\tpm\plancogsTn\planCOGSEditorTn.js" />
+    <Content Include="Client\view\tpm\plancogsTn\PlanCOGSTn.js" />
+    <Content Include="Client\view\tpm\plancogsTn\PlanCOGSTnEditor.js" />
     <Content Include="Client\view\tpm\pludictionary\HistoricalPLUDictionary.js" />
     <Content Include="Client\view\tpm\pludictionary\HistoricalPLUDictionaryDetail.js" />
     <Content Include="Client\view\tpm\pludictionary\PLUDictionary.js" />
