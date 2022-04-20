@@ -1340,7 +1340,7 @@
         'ClientTreeFullPathName': 'ClientHierarchy',
         'ClientTreeObjectId': 'ClientId',
         'BrandTechName': 'BrandTech',
-        'LSVpercent': 'LSV percent',
+        'Volume': 'Volume',
         'Year': 'Year',
     },
     'HistoricalPlanCOGSTn': ['.tpm.PlanCOGSTn', '.core.BaseHistoryEntity'],
@@ -1352,7 +1352,7 @@
         'ClientTreeFullPathName': 'ClientHierarchy',
         'ClientTreeObjectId': 'ClientId',
         'BrandTechName': 'BrandTech',
-        'LSVpercent': 'LSV percent',
+        'Volume': 'Volume',
         'Year': 'Year'
     },
     'HistoricalActualCOGSTn': ['.tpm.ActualCOGSTn', '.core.BaseHistoryEntity'],

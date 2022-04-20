@@ -104,8 +104,8 @@
                         }
                     }
                 }, {
-                    text: l10n.ns('tpm', 'ActualCOGSTn').value('LSVpercent'),
-                    dataIndex: 'LSVpercent'
+                    text: l10n.ns('tpm', 'ActualCOGSTn').value('Volume'),
+                    dataIndex: 'Volume'
                 }]
         }
     }, {
@@ -141,8 +141,8 @@
             fieldLabel: l10n.ns('tpm', 'ActualCOGSTn').value('BrandTechName')
         }, {
             xtype: 'singlelinedisplayfield',
-            name: 'LSVpercent',
-            fieldLabel: l10n.ns('tpm', 'ActualCOGSTn').value('LSVpercent')
+            name: 'Volume',
+            fieldLabel: l10n.ns('tpm', 'ActualCOGSTn').value('Volume')
         }]
     }]
 });

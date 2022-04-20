@@ -203,7 +203,7 @@
                     }
                 }
             }, {
-                text: l10n.ns('tpm', 'ActualCOGSTn').value('LSVpercent'),
+                text: l10n.ns('tpm', 'ActualCOGSTn').value('Volume'),
                 dataIndex: 'LSVpercent'
             }]
         }

@@ -50,8 +50,8 @@
             fieldLabel: l10n.ns('tpm', 'HistoricalActualCOGSTn').value('BrandTechName')
         }, {
             xtype: 'singlelinedisplayfield',
-            name: 'LSVpercent',
-            fieldLabel: l10n.ns('tpm', 'HistoricalActualCOGSTn').value('LSVpercent')
+            name: 'Volume',
+            fieldLabel: l10n.ns('tpm', 'HistoricalActualCOGSTn').value('Volume')
         }]
     }
 });
