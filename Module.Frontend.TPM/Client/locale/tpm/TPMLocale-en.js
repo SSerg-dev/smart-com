@@ -1659,8 +1659,7 @@
         'ClientTreeObjectId': 'ClientId',
         'BrandTechName': 'BrandTech',
         'LSVpercent': 'LSV percent',
-        'Year': 'Year',
-        'recalculatePreviousYearButtonYearText': 'Пересчитать промо за предыдущий год'
+        'Year': 'Year'
     },
     'HistoricalActualCOGSTn': ['.tpm.ActualCOGSTn', '.core.BaseHistoryEntity'],
     'DeletedActualCOGSTn': ['.tpm.ActualCOGSTn', '.core.BaseDeletedEntity'],

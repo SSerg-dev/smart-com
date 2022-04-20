@@ -70,10 +70,6 @@
                     click: this.onApplyImportButtonClick
                 },
 
-                'actualcogsTn #recalculateactualcogspreviousyearbutton': {
-                    click: this.onRecalculatePreviousYearButtonClick
-                },
-
                 '#confirmPromoRecalculationCOGSWindow #confirm': {
                     click: this.onConfirmPromoRecalculationButtonClick
                 }

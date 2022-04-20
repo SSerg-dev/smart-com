@@ -48,15 +48,15 @@
                     xtype: 'datecolumn',
                     renderer: Ext.util.Format.dateRenderer('d.m.Y H:i:s')
                 }, {
-                    text: l10n.ns('tpm', 'planCOGSTn').value('StartDate'),
+                    text: l10n.ns('tpm', 'PlanCOGSTn').value('StartDate'),
                     dataIndex: 'StartDate',
                     renderer: Ext.util.Format.dateRenderer('d.m.Y')
                 }, {
-                    text: l10n.ns('tpm', 'planCOGSTn').value('EndDate'),
+                    text: l10n.ns('tpm', 'PlanCOGSTn').value('EndDate'),
                     dataIndex: 'EndDate',
                     renderer: Ext.util.Format.dateRenderer('d.m.Y')
                 }, {
-                    text: l10n.ns('tpm', 'planCOGSTn').value('ClientTreeFullPathName'),
+                    text: l10n.ns('tpm', 'PlanCOGSTn').value('ClientTreeFullPathName'),
                     dataIndex: 'ClientTreeFullPathName',
                     minWidth: 200,
                     filter: {
@@ -77,10 +77,10 @@
                         return renderWithDelimiter(value, ' > ', '  ');
                     }
                 }, {
-                    text: l10n.ns('tpm', 'planCOGSTn').value('ClientTreeObjectId'),
+                    text: l10n.ns('tpm', 'PlanCOGSTn').value('ClientTreeObjectId'),
                     dataIndex: 'ClientTreeObjectId'
                 }, {
-                    text: l10n.ns('tpm', 'planCOGSTn').value('BrandTechName'),
+                    text: l10n.ns('tpm', 'PlanCOGSTn').value('BrandTechName'),
                     dataIndex: 'BrandTechName',
                     width: 120,
                     filter: {
@@ -104,7 +104,7 @@
                         }
                     }
                 }, {
-                    text: l10n.ns('tpm', 'planCOGSTn').value('LSVpercent'),
+                    text: l10n.ns('tpm', 'PlanCOGSTn').value('LSVpercent'),
                     dataIndex: 'LSVpercent'
                 }]
         }
@@ -121,28 +121,28 @@
             xtype: 'singlelinedisplayfield',
             name: 'StartDate',
             renderer: Ext.util.Format.dateRenderer('d.m.Y'),
-            fieldLabel: l10n.ns('tpm', 'planCOGSTn').value('StartDate')
+            fieldLabel: l10n.ns('tpm', 'PlanCOGSTn').value('StartDate')
         }, {
             xtype: 'singlelinedisplayfield',
             name: 'EndDate',
             renderer: Ext.util.Format.dateRenderer('d.m.Y'),
-            fieldLabel: l10n.ns('tpm', 'planCOGSTn').value('EndDate')
+            fieldLabel: l10n.ns('tpm', 'PlanCOGSTn').value('EndDate')
         }, {
             xtype: 'singlelinedisplayfield',
             name: 'ClientTreeFullPathName',
-            fieldLabel: l10n.ns('tpm', 'planCOGSTn').value('ClientTreeFullPathName')
+            fieldLabel: l10n.ns('tpm', 'PlanCOGSTn').value('ClientTreeFullPathName')
         }, {
             xtype: 'singlelinedisplayfield',
             name: 'ClientTreeObjectId',
-            fieldLabel: l10n.ns('tpm', 'planCOGSTn').value('ClientTreeObjectId')
+            fieldLabel: l10n.ns('tpm', 'PlanCOGSTn').value('ClientTreeObjectId')
         }, {
             xtype: 'singlelinedisplayfield',
             name: 'BrandTechName',
-            fieldLabel: l10n.ns('tpm', 'planCOGSTn').value('BrandTechName')
+            fieldLabel: l10n.ns('tpm', 'PlanCOGSTn').value('BrandTechName')
         }, {
             xtype: 'singlelinedisplayfield',
             name: 'LSVpercent',
-            fieldLabel: l10n.ns('tpm', 'planCOGSTn').value('LSVpercent')
+            fieldLabel: l10n.ns('tpm', 'PlanCOGSTn').value('LSVpercent')
         }]
     }]
 });
