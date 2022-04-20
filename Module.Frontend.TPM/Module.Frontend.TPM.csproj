@@ -311,13 +311,13 @@
     <Content Include="Client\model\tpm\mechanictype\MechanicTypeForClient.js" />
     <Content Include="Client\model\tpm\rollingvolume\RollingVolume.js" />
     <Content Include="Client\util\MinHeightColumn.js" />
-    <Content Include="Client\view\tpm\actualcogsTn\ActualCOGSEditorTn.js" />
+    <Content Include="Client\view\tpm\actualcogsTn\ActualCOGSTnEditor.js" />
     <Content Include="Client\view\tpm\actualcogsTn\ActualCOGSTn.js" />
-    <Content Include="Client\view\tpm\actualcogsTn\DeletedActualCOGSDetailTn.js" />
+    <Content Include="Client\view\tpm\actualcogsTn\DeletedActualCOGSTnDetail.js" />
     <Content Include="Client\view\tpm\actualcogsTn\DeletedActualCOGSTn.js" />
-    <Content Include="Client\view\tpm\actualcogsTn\HistoricalActualCOGSDetailTn.js" />
+    <Content Include="Client\view\tpm\actualcogsTn\HistoricalActualCOGSTnDetail.js" />
     <Content Include="Client\view\tpm\actualcogsTn\HistoricalActualCOGSTn.js" />
-    <Content Include="Client\view\tpm\actualcogsTn\ImportActualCOGSParamFormTn.js" />
+    <Content Include="Client\view\tpm\actualcogsTn\ImportActualCOGSTnParamForm.js" />
     <Content Include="Client\view\tpm\competitorpromo\CompetitorPromo.js" />
     <Content Include="Client\view\tpm\competitorpromo\CompetitorPromoEditor.js" />
     <Content Include="Client\view\tpm\competitorpromo\DeletedCompetitorPromo.js" />
