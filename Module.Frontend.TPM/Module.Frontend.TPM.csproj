@@ -363,6 +363,7 @@
     <Content Include="Client\view\tpm\clienttreebrandtech\HistoricalClientTreeBrandTechDetail.js" />
     <Content Include="Client\view\tpm\coefficientsi2so\CustomMarsPeriodField.js" />
     <Compile Include="Controllers\ActualCOGSsController.cs" />
+    <Compile Include="Controllers\ActualCOGSsTnController.cs" />
     <Compile Include="Controllers\BTLPromoesController.cs" />
     <Compile Include="Controllers\BTLsController.cs" />
     <Compile Include="Controllers\CompetitorPromoesController.cs" />
