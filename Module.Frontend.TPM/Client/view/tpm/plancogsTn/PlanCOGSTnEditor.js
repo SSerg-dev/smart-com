@@ -116,8 +116,8 @@
             }]
         }, {
             xtype: 'numberfield',
-            name: 'LSVpercent',
-            fieldLabel: l10n.ns('tpm', 'PlanCOGSTn').value('LSVpercent'),
+            name: 'Volume',
+            fieldLabel: l10n.ns('tpm', 'PlanCOGSTn').value('Volume'),
             minValue: 0,
             maxValue: 100,
             readOnly: false,

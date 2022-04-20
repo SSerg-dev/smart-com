@@ -117,8 +117,8 @@
             fieldLabel: l10n.ns('tpm', 'HistoricalPlanCOGSTn').value('BrandTechName')
         }, {
             xtype: 'singlelinedisplayfield',
-            name: 'LSVpercent',
-            fieldLabel: l10n.ns('tpm', 'HistoricalPlanCOGSTn').value('LSVpercent')
+            name: 'Volume',
+            fieldLabel: l10n.ns('tpm', 'HistoricalPlanCOGSTn').value('Volume')
         }]
     }]
 });

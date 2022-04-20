@@ -104,8 +104,8 @@
                         }
                     }
                 }, {
-                    text: l10n.ns('tpm', 'PlanCOGSTn').value('LSVpercent'),
-                    dataIndex: 'LSVpercent'
+                    text: l10n.ns('tpm', 'PlanCOGSTn').value('Volume'),
+                    dataIndex: 'Volume'
                 }]
         }
     }, {
@@ -141,8 +141,8 @@
             fieldLabel: l10n.ns('tpm', 'PlanCOGSTn').value('BrandTechName')
         }, {
             xtype: 'singlelinedisplayfield',
-            name: 'LSVpercent',
-            fieldLabel: l10n.ns('tpm', 'PlanCOGSTn').value('LSVpercent')
+            name: 'Volume',
+            fieldLabel: l10n.ns('tpm', 'PlanCOGSTn').value('Volume')
         }]
     }]
 });

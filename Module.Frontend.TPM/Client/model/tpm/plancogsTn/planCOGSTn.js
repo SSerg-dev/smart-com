@@ -18,7 +18,7 @@
             name: 'ClientTreeObjectId', type: 'int', mapping: 'ClientTree.ObjectId',
             defaultFilterConfig: { valueField: 'ObjectId' }, hidden: false, isDefault: true
         },
-        { name: 'LSVpercent', type: 'float', hidden: false, isDefault: true }
+        { name: 'Volume', type: 'int', hidden: false, isDefault: true }
     ],
     proxy: {
         type: 'breeze',
