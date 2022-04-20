@@ -93,32 +93,6 @@
                 allowedActions.push(point.Action);
             }
         });
-
-        if (Ext.Array.contains(allowedActions, action)) {
-            var store = grid.getStore();
-            store.on('load', function (store) {
-                parameters = {};
-
-                App.Util.makeRequestWithCallback(resource, action, parameters, function (data) {
-                    if (data) {
-                        var result = Ext.JSON.decode(data.httpResponse.data.value);
-                        if (result.success) {
-                            var recalculatePreviousYearButton = grid.up('panel').down('#recalculateactualcogspreviousyearbutton');
-                            this.recalculatePreviousYearButton = recalculatePreviousYearButton;
-                            if (result.isRecalculatePreviousYearButtonAvailable) {
-                                recalculatePreviousYearButton.setDisabled(false);
-                            } else {
-                                recalculatePreviousYearButton.setDisabled(true);
-                            }
-                        } else {
-                            App.Notify.pushError(data.message);
-                        }
-                    }
-                }, function (data) {
-                    App.Notify.pushError(data.message);
-                });
-            });
-        }
     },
 
     onRecalculatePreviousYearButtonClick: function (button) {
