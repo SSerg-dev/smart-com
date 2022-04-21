@@ -44,6 +44,7 @@ namespace Module.Persist.TPM
             modelBuilder.Entity<BudgetItem>();
             modelBuilder.Entity<Promo>().HasMany(p => p.Promoes);
             modelBuilder.Entity<Promo>().HasOptional(p => p.MasterPromo);
+            modelBuilder.Entity<Promo>().HasMany(p => p.PromoProducts).WithRequired(g => g.Promo);
             modelBuilder.Entity<Sale>();
             modelBuilder.Entity<Color>();
             modelBuilder.Entity<PromoSales>();
@@ -420,6 +421,8 @@ namespace Module.Persist.TPM
             builder.EntitySet<Promo>("DeletedPromoes").HasOptionalBinding(e => e.MasterPromo, "DeletedPromoes");
             builder.EntitySet<Promo>("Promoes").HasManyBinding(e => e.Promoes, "Promoes");
             builder.EntitySet<Promo>("DeletedPromoes").HasManyBinding(e => e.Promoes, "DeletedPromoes");
+            builder.EntitySet<Promo>("Promoes").HasManyBinding(e => e.PromoProducts, "PromoProducts");
+            builder.EntitySet<Promo>("DeletedPromoes").HasManyBinding(e => e.PromoProducts, "DeletedPromoProducts");
             builder.Entity<Promo>().Collection.Action("ExportXLSX");
             builder.Entity<Promo>().Collection.Action("FullImportXLSX");
             builder.Entity<Promo>().Collection.Action("DeclinePromo");

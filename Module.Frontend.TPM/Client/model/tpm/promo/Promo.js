@@ -247,14 +247,24 @@
             convert: function (value) {
                 return value * 100;
             }
-        }
+        },
     ],
-    hasMany: [{
-        name: 'Promoes',
-        model: 'App.model.tpm.promo.Promo',
-        foreignKey: 'MasterPromoId',
-        associationKey: 'Promoes'
-    }],
+    //hasMany: [
+    //    //{
+    //    //    name: 'promoes',
+    //    //    model: 'App.model.tpm.promo.Promo',
+    //    //    //foreignKey: 'PromoId',
+    //    //    //primaryKey: 'Id',
+    //    //    associationKey: 'promoes'
+    //    //},
+    //    {
+    //        name: 'promoproducts',
+    //        model: 'App.model.tpm.promoproduct.PromoProduct',
+    //        foreignKey: 'PromoId',
+    //        //primaryKey: 'Id',
+    //        //associationKey: 'promoproducts'
+    //    },
+    //],
     proxy: {
         type: 'breeze',
         resourceName: 'Promoes',

@@ -291,6 +291,7 @@ namespace Module.Persist.TPM.Model.TPM
         public Promo MasterPromo { get; set; }
 
         public virtual ICollection<Promo> Promoes { get; set; }
+        public virtual ICollection<PromoProduct> PromoProducts { get; set; }
         /// <summary>
         /// Copy Constructor
         /// </summary>
