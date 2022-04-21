@@ -50,7 +50,6 @@ namespace Module.Frontend.TPM.Controllers
 
         protected IQueryable<PlanCOGSTn> GetConstraintedQuery()
         {
-
             UserInfo user = authorizationManager.GetCurrentUser();
             string role = authorizationManager.GetCurrentRoleName();
             IList<Constraint> constraints = user.Id.HasValue ? Context.Constraints
@@ -68,14 +67,14 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
-        public SingleResult<PlanCOGSTn> GetCOGSTn([FromODataUri] System.Guid key)
+        public SingleResult<PlanCOGSTn> GetPlanCOGSTn([FromODataUri] Guid key)
         {
             return SingleResult.Create(GetConstraintedQuery());
         }
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
-        public IQueryable<PlanCOGSTn> GetCOGSsTn()
+        public IQueryable<PlanCOGSTn> GetPlanCOGSsTn()
         {
             return GetConstraintedQuery();
         }
@@ -517,8 +516,8 @@ namespace Module.Frontend.TPM.Controllers
 
         public bool DateCheck(PlanCOGSTn toCheck)
         {
-            List<PlanCOGSTn> clientCOGSs = GetConstraintedQuery().Where(y => y.ClientTreeId == toCheck.ClientTreeId && y.BrandTechId == toCheck.BrandTechId && y.Id != toCheck.Id && !y.Disabled).ToList();
-            foreach (PlanCOGSTn item in clientCOGSs)
+            List<PlanCOGSTn> clientCOGSsTn = GetConstraintedQuery().Where(y => y.ClientTreeId == toCheck.ClientTreeId && y.BrandTechId == toCheck.BrandTechId && y.Id != toCheck.Id && !y.Disabled).ToList();
+            foreach (PlanCOGSTn item in clientCOGSsTn)
             {
                 if ((item.StartDate <= toCheck.StartDate && item.EndDate >= toCheck.StartDate) ||
                     (item.StartDate <= toCheck.EndDate && item.EndDate >= toCheck.EndDate) ||

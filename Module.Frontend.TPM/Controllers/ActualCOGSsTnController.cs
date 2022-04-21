@@ -39,11 +39,11 @@ using Utility;
 
 namespace Module.Frontend.TPM.Controllers
 {
-    public class COGSsTnController : EFContextController
+    public class ActualCOGSsTnController : EFContextController
     {
         private readonly IAuthorizationManager authorizationManager;
 
-        public COGSsTnController(IAuthorizationManager authorizationManager)
+        public ActualCOGSsTnController(IAuthorizationManager authorizationManager)
         {
             this.authorizationManager = authorizationManager;
         }
@@ -67,14 +67,14 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
-        public SingleResult<ActualCOGSTn> GetCOGSTn([FromODataUri] Guid key)
+        public SingleResult<ActualCOGSTn> GetActualCOGSTn([FromODataUri] Guid key)
         {
             return SingleResult.Create(GetConstraintedQuery());
         }
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
-        public IQueryable<ActualCOGSTn> GetCOGSsTn()
+        public IQueryable<ActualCOGSTn> GetActualCOGSsTn()
         {
             return GetConstraintedQuery();
         }
@@ -324,8 +324,8 @@ namespace Module.Frontend.TPM.Controllers
                 HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("TModel", typeof(ActualCOGSTn), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(COGSsTnController), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(COGSsTnController.GetExportSettings), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(ActualCOGSsTnController), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(ActualCOGSsTnController.GetExportSettings), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
 
                 LoopHandler handler = new LoopHandler()
@@ -516,8 +516,8 @@ namespace Module.Frontend.TPM.Controllers
 
         public bool DateCheck(ActualCOGSTn toCheck)
         {
-            List<ActualCOGSTn> clientCOGSs = GetConstraintedQuery().Where(y => y.ClientTreeId == toCheck.ClientTreeId && y.BrandTechId == toCheck.BrandTechId && y.Id != toCheck.Id && !y.Disabled).ToList();
-            foreach (ActualCOGSTn item in clientCOGSs)
+            List<ActualCOGSTn> clientCOGSsTn = GetConstraintedQuery().Where(y => y.ClientTreeId == toCheck.ClientTreeId && y.BrandTechId == toCheck.BrandTechId && y.Id != toCheck.Id && !y.Disabled).ToList();
+            foreach (ActualCOGSTn item in clientCOGSsTn)
             {
                 if ((item.StartDate <= toCheck.StartDate && item.EndDate >= toCheck.StartDate) ||
                     (item.StartDate <= toCheck.EndDate && item.EndDate >= toCheck.EndDate) ||

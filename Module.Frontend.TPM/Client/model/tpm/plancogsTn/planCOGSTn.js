@@ -1,7 +1,7 @@
 ﻿Ext.define('App.model.tpm.plancogsTn.PlanCOGSTn', {
     extend: 'Ext.data.Model',
     idProperty: 'Id',
-    breezeEntityType: 'COGS',
+    breezeEntityType: 'PlanCOGSsTn',
     fields: [
         { name: 'Id', hidden: true },
         { name: 'StartDate', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
@@ -22,7 +22,7 @@
     ],
     proxy: {
         type: 'breeze',
-        resourceName: 'COGSs',
+        resourceName: 'PlanCOGSsTn',
         reader: {
             type: 'json',
             totalProperty: 'inlineCount',

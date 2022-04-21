@@ -22,7 +22,7 @@
     ],
     proxy: {
         type: 'breeze',
-        resourceName: 'ActualCOGSs',
+        resourceName: 'ActualCOGSsTn',
         reader: {
             type: 'json',
             totalProperty: 'inlineCount',

@@ -80,7 +80,7 @@
     onGridAfterrender: function (grid) {
         this.callParent(arguments);
 
-        var resource = 'ActualCOGSs',
+        var resource = 'ActualCOGSsTn',
             action = 'IsCOGSRecalculatePreviousYearButtonAvailable',
             allowedActions = [];
 
@@ -101,7 +101,7 @@
 
         actualCogsTnPanel.setLoading(true);
 
-        App.Util.makeRequestWithCallback('ActualCOGSs', 'PreviousYearPromoList', parameters, function (data) {
+        App.Util.makeRequestWithCallback('ActualCOGSsTn', 'PreviousYearPromoList', parameters, function (data) {
             if (data) {
                 var result = Ext.JSON.decode(data.httpResponse.data.value);
                 if (result.success) {
@@ -161,7 +161,7 @@
 
         window.setLoading(true);
 
-        App.Util.makeRequestWithCallback('ActualCOGSs', 'CreateActualCOGSTnChangeIncidents', parameters, function (data) {
+        App.Util.makeRequestWithCallback('ActualCOGSsTn', 'CreateActualCOGSTnChangeIncidents', parameters, function (data) {
             window.setLoading(false);
             this.recalculatePreviousYearButton.setDisabled(true);
             window.close();
