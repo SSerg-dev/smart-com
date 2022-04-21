@@ -9,7 +9,6 @@ using Persist.ScriptGenerator.Filter;
 using System;
 using System.Collections.Generic; 
 using System.Linq;
-using System.Text.RegularExpressions;
 using Utility;
 
 namespace Module.Persist.TPM.Utils {
@@ -430,6 +429,7 @@ namespace Module.Persist.TPM.Utils {
 
             return query;
         }
+
         /// <summary>
         /// Применить фильтр по клиентам к COGS
         /// </summary>
@@ -447,6 +447,21 @@ namespace Module.Persist.TPM.Utils {
 			}
 			return query;
 		}
+
+        /// <summary>
+        /// Применить фильтр по клиентам к COGS/Tn
+        /// </summary>
+        public static IQueryable<PlanCOGSTn> ApplyFilter(IQueryable<PlanCOGSTn> query, IQueryable<ClientTreeHierarchyView> hierarchy, IDictionary<string, IEnumerable<string>> filter = null)
+        {
+            IEnumerable<string> clientFilter = FilterHelper.GetFilter(filter, ModuleFilterName.Client);
+            if (clientFilter.Any())
+            {
+                hierarchy = getFilteredHierarchy(hierarchy, clientFilter);
+                query = query.Where(x =>
+                    hierarchy.Any(h => h.Id == x.ClientTree.ObjectId));
+            }
+            return query;
+        }
 
         /// <summary>
         /// Применить фильтр по клиентам к RATIShopper

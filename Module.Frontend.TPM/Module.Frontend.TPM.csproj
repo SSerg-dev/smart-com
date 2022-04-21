@@ -388,6 +388,7 @@
     <Compile Include="Controllers\HistoricalCoefficientSI2SOsController.cs" />
     <Compile Include="Controllers\HistoricalPLUDictionariesController.cs" />
     <Compile Include="Controllers\HistoricalRATIShoppersController.cs" />
+    <Compile Include="Controllers\PlanCOGSsTnController.cs" />
     <Compile Include="Controllers\PLUDictionaryController.cs" />
     <Compile Include="Controllers\PreviousDayIncrementalsController.cs" />
     <Compile Include="Controllers\PriceListsController.cs" />

@@ -275,6 +275,7 @@ namespace Module.Frontend.TPM.Controllers {
             };
             return columns;
         }
+
         [ClaimsAuthorize]
         public IHttpActionResult ExportXLSX(ODataQueryOptions<COGS> options) 
         {
@@ -450,7 +451,6 @@ namespace Module.Frontend.TPM.Controllers {
             }
 
         }
-
 
         private ExceptionResult GetErorrRequest(Exception e) {
             // обработка при создании дублирующей записи
