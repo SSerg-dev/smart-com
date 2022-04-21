@@ -161,7 +161,7 @@
 
         window.setLoading(true);
 
-        App.Util.makeRequestWithCallback('ActualCOGSs', 'CreateActualCOGSChangeIncidents', parameters, function (data) {
+        App.Util.makeRequestWithCallback('ActualCOGSs', 'CreateActualCOGSTnChangeIncidents', parameters, function (data) {
             window.setLoading(false);
             this.recalculatePreviousYearButton.setDisabled(true);
             window.close();

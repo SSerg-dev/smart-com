@@ -365,7 +365,7 @@ namespace Module.Frontend.TPM.Controllers
                 string fileName = await FileUtility.UploadFile(Request, importDir);
 
                 NameValueCollection form = HttpContext.Current.Request.Form;
-                CreateImportTask(fileName, "FullXLSXCOGSUpdateImportHandler", form);
+                CreateImportTask(fileName, "FullXLSXCOGSTnUpdateImportHandler", form);
 
                 HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
                 result.Content = new StringContent("success = true");
@@ -407,7 +407,7 @@ namespace Module.Frontend.TPM.Controllers
                 HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportCOGSTn), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportCOGS).Name, data, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportCOGSTn).Name, data, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(ImportCOGSTn), data, visible: false, throwIfNotExists: false);
 
                 LoopHandler handler = new LoopHandler()

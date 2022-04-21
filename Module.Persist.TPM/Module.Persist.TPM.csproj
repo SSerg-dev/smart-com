@@ -2788,6 +2788,7 @@
     <Compile Include="Model\DTO\DemandDTO.cs" />
     <Compile Include="Model\DTO\PromoGridView.cs" />
     <Compile Include="Model\DTO\SchedulerClientTreeDTO.cs" />
+    <Compile Include="Model\History\HistoricalActualCOGSTn.cs" />
     <Compile Include="Model\History\HistoricalAssortmentMatrix.cs" />
     <Compile Include="Model\History\HistoricalBrand.cs" />
     <Compile Include="Model\History\HistoricalActualCOGS.cs" />
@@ -2801,6 +2802,7 @@
     <Compile Include="Model\History\HistoricalNonPromoEquipment.cs" />
     <Compile Include="Model\History\HistoricalCostProduction.cs" />
     <Compile Include="Model\History\HistoricalIncrementalPromo.cs" />
+    <Compile Include="Model\History\HistoricalPlanCOGSTn.cs" />
     <Compile Include="Model\History\HistoricalPLUDictionary.cs" />
     <Compile Include="Model\History\HistoricalPromoProduct.cs" />
     <Compile Include="Model\History\HistoricalAgeGroup.cs" />
@@ -2858,6 +2860,7 @@
     <Compile Include="Model\Import\ImportCoefficientSI2SO.cs" />
     <Compile Include="Model\Import\ImportCompetitorPromo.cs" />
     <Compile Include="Model\Import\ImportCompetitorBrandTech.cs" />
+    <Compile Include="Model\Import\ImportCOGSTn.cs" />
     <Compile Include="Model\Import\ImportPLUDictionary.cs" />
     <Compile Include="Model\Import\ImportPromoDMP.cs" />
     <Compile Include="Model\Import\ImportNonPromoDMP.cs" />
