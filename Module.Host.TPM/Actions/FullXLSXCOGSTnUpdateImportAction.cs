@@ -659,8 +659,8 @@ namespace Module.Host.TPM.Actions
                 errors.Add(importObj.BrandsegTechsub + " is not active BrandTech's Name");
             }
 
-            // Volume больше нуля
-            if (importObj.Volume > 0)
+            // Volume должно быть больше нуля
+            if (importObj.Volume < 0)
             {
                 isError = true;
                 errors.Add("Volume must be more than 0");
@@ -895,8 +895,7 @@ namespace Module.Host.TPM.Actions
                         Volume = newRecord.Volume,
                         ClientTreeId = newRecord.ClientTreeId,
                         BrandTechId = bt != null ? (Guid?)bt.Id : null,
-                        Year = newRecord.StartDate.Value.Year,
-                        IsCOGSIncidentCreated = false
+                        Year = newRecord.StartDate.Value.Year
                     };
                     toCreate.Add(toSave);
                 }

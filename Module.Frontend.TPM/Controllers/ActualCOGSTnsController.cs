@@ -400,14 +400,14 @@ namespace Module.Frontend.TPM.Controllers
 
                 // параметры импорта
                 HandlerDataHelper.SaveIncomingArgument("CrossParam.Year", paramForm.GetStringValue("year"), data, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ImportDestination", "COGS/Tn", data, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("ImportDestination", "ActualCOGS/Tn", data, throwIfNotExists: false);
 
                 HandlerDataHelper.SaveIncomingArgument("File", file, data, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportCOGSTn), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportCOGSTn).Name, data, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(ImportCOGS), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(ImportCOGSTn), data, visible: false, throwIfNotExists: false);
 
                 LoopHandler handler = new LoopHandler()
                 {

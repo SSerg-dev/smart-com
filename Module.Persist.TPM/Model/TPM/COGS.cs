@@ -31,14 +31,39 @@ namespace Module.Persist.TPM.Model.TPM
         public bool IsCOGSIncidentCreated { get; set; }
     }
 
-    public class PlanCOGSTn : BaseCOGS
+    public class PlanCOGSTn
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Index]
+        public Guid Id { get; set; } = Guid.NewGuid();
+        public DateTimeOffset? StartDate { get; set; }
+        public DateTimeOffset? EndDate { get; set; }
+        public int Year { get; set; }
+        public int ClientTreeId { get; set; }
+        public Guid? BrandTechId { get; set; }
         public int Volume { get; set; }
+        public bool Disabled { get; set; }
+        public DateTimeOffset? DeletedDate { get; set; }
+
+        public virtual BrandTech BrandTech { get; set; }
+        public virtual ClientTree ClientTree { get; set; }
     }
 
-    public class ActualCOGSTn : BaseCOGS 
+    public class ActualCOGSTn 
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Index]
+        public Guid Id { get; set; } = Guid.NewGuid();
+        public DateTimeOffset? StartDate { get; set; }
+        public DateTimeOffset? EndDate { get; set; }
+        public int Year { get; set; }
+        public int ClientTreeId { get; set; }
+        public Guid? BrandTechId { get; set; }
         public int Volume { get; set; }
-        public bool IsCOGSIncidentCreated { get; set; }
+        public bool Disabled { get; set; }
+        public DateTimeOffset? DeletedDate { get; set; }
+
+        public virtual BrandTech BrandTech { get; set; }
+        public virtual ClientTree ClientTree { get; set; }
     }
 }
