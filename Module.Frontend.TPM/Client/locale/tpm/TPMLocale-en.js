@@ -2450,6 +2450,7 @@
         'ChangeDate': 'Last Change Date',
         'UserName': 'User Name',
         'GreaterThanZero': 'Uplift must be greater than zero',
+        'ExportCorrections': 'Export correction to XLSX',
     },
     'PreviousDayIncremental': {
         'ZREP': 'ZREP',
