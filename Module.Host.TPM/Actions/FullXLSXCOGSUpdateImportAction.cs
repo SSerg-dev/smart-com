@@ -37,8 +37,8 @@ namespace Module.Host.TPM.Actions {
     /// <summary>
     /// Переопределение Action из ядра приложения
     /// </summary>
-    public class FullXLSXCOGSUpdateImportAction : BaseAction {
-
+    public class FullXLSXCOGSUpdateImportAction : BaseAction
+    {
         public FullXLSXCOGSUpdateImportAction(FullImportSettings settings, int year, string importDestination) {
             UserId = settings.UserId;
             RoleId = settings.RoleId;
@@ -71,8 +71,6 @@ namespace Module.Host.TPM.Actions {
         protected bool HasErrors { get; set; }
 
         protected readonly static Logger logger = LogManager.GetCurrentClassLogger();
-
-
 
         /// <summary>
         /// Выполнить разбор source-данных в импорт-модели и сохранить в БД

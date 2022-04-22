@@ -39,5 +39,6 @@ namespace Module.Persist.TPM.Model.TPM
     public class ActualCOGSTn : BaseCOGS 
     {
         public int Volume { get; set; }
+        public bool IsCOGSIncidentCreated { get; set; }
     }
 }
