@@ -184,7 +184,10 @@
                     change: this.onPromoBudgetsStep1Change
                 },
 
-                // promo calculation                
+                // promo calculation
+                'promomechanic #promoMechanicAddPromoBtn': {
+                    click: this.onPromoMechanicAddPromoBtn
+                },
                 'promomechanic numberfield[name=MarsMechanicDiscount]': {
                     change: this.onMarsMechanicDiscountChange
                 },
@@ -4694,6 +4697,24 @@
         }
 
         totalCostField.setValue(total);
+    },
+
+    onPromoMechanicAddPromoBtn: function (button) {
+        var promomechanic = button.up('promomechanic');
+        var promomechanicaddpromoes = Ext.widget('promomechanicaddpromoes');
+        var record = this.getRecord(promomechanic);
+        var promoEditorCustom = button.up('promoeditorcustom');
+        promomechanicaddpromoes.setLoading(true);
+        
+        promomechanicaddpromoes.PromoId = record.get('Id');
+        promomechanicaddpromoes.IsGrowthAcceleration = record.get('IsGrowthAcceleration');
+        promomechanicaddpromoes.ClientTreeId = record.get('ClientTreeId');
+        setTimeout(function () {
+            Ext.widget(promomechanicaddpromoes).show(false, function () {
+                promomechanicaddpromoes.setLoading(false);
+            });
+        });
+
     },
 
     onMarsMechanicDiscountChange: function (field) {

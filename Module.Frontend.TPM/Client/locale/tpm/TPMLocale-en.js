@@ -941,7 +941,9 @@
 
         'Price': 'Price',
         'Discount': 'Discount',
-        'Subrange': 'Subrange'
+        'Subrange': 'Subrange',
+
+        'AddPromo': 'Add Promo',
     },
     'HistoricalPromo': ['.tpm.Promo', '.core.BaseHistoryEntity'],
     'DeletedPromo': ['.tpm.Promo', '.core.BaseDeletedEntity'],

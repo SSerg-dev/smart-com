@@ -260,6 +260,8 @@
     'tpm.promosupportpromo.PSPshortPlanCostProd',
     'tpm.promosupport.PromoSupportChoose',
 
+    'tpm.promo.PromoMechanicAddPromoes',
+
     'tpm.planpostpromoeffectreport.PlanPostPromoEffectReport',
     'tpm.promoroireport.PromoROIReport',
 
