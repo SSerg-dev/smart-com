@@ -7,13 +7,13 @@ namespace Module.Persist.TPM.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class Add_Data_For_COGSTn : IMigrationMetadata
+    public sealed partial class Add_Data_For_PlanCOGSTn_and_ActualCOGSTn : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(Add_Data_For_COGSTn));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(Add_Data_For_PlanCOGSTn_and_ActualCOGSTn));
         
         string IMigrationMetadata.Id
         {
-            get { return "202204211459232_Add_Data_For_COGSTn"; }
+            get { return "202204220956254_Add_Data_For_PlanCOGSTn_and_ActualCOGSTn"; }
         }
         
         string IMigrationMetadata.Source
