@@ -659,12 +659,12 @@ namespace Module.Host.TPM.Actions
                 errors.Add(importObj.BrandsegTechsub + " is not active BrandTech's Name");
             }
 
-            //// LSV percent не больше 100 процентов
-            //if (importObj.Volume > 100 || importObj.Volume < 0)
-            //{
-            //    isError = true;
-            //    errors.Add("LSV percent must be in percentage 0 up to 100");
-            //}
+            // Volume больше нуля
+            if (importObj.Volume > 0)
+            {
+                isError = true;
+                errors.Add("Volume must be more than 0");
+            }
 
             return !isError;
         }
@@ -778,7 +778,7 @@ namespace Module.Host.TPM.Actions
                     {
                         StartDate = newRecord.StartDate,
                         EndDate = newRecord.EndDate,
-                        LSVpercent = (float)Math.Round((decimal)newRecord.Volume, 2, MidpointRounding.AwayFromZero),
+                        Volume = newRecord.Volume,
                         ClientTreeId = newRecord.ClientTreeId,
                         BrandTechId = bt != null ? (Guid?)bt.Id : null,
                         Year = newRecord.StartDate.Value.Year
@@ -892,7 +892,7 @@ namespace Module.Host.TPM.Actions
                     {
                         StartDate = newRecord.StartDate,
                         EndDate = newRecord.EndDate,
-                        LSVpercent = (float)Math.Round((decimal)newRecord.Volume, 2, MidpointRounding.AwayFromZero),
+                        Volume = newRecord.Volume,
                         ClientTreeId = newRecord.ClientTreeId,
                         BrandTechId = bt != null ? (Guid?)bt.Id : null,
                         Year = newRecord.StartDate.Value.Year,
