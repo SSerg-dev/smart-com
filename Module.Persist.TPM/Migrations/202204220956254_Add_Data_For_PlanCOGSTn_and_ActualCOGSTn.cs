@@ -29,7 +29,12 @@ namespace Module.Persist.TPM.Migrations
             ('PlanCOGSTns', 'Delete', 0, NULL),
             ('PlanCOGSTns', 'ExportXLSX', 0, NULL),
             ('PlanCOGSTns', 'FullImportXLSX', 0, NULL),
-            ('PlanCOGSTns', 'DownloadTemplateXLSX', 0, NULL)
+            ('PlanCOGSTns', 'DownloadTemplateXLSX', 0, NULL),
+			('DeletedPlanCOGSTns', 'GetFilteredData', 0, NULL),
+			('DeletedPlanCOGSTns', 'GetDeletedPlanCOGSTns', 0, NULL),
+			('DeletedPlanCOGSTns', 'GetDeletedPlanCOGSTn', 0, NULL),
+			('HistoricalPlanCOGSTns', 'GetFilteredData', 0, NULL),
+			('HistoricalPlanCOGSTns', 'GetHistoricalPlanCOGSTns', 0, NULL)
             GO
             DECLARE @RoleIdPSA uniqueidentifier = (SELECT[Id] FROM [DefaultSchemaSetting].[Role] where SystemName = 'SupportAdministrator');
             INSERT INTO[DefaultSchemaSetting].[AccessPointRole]
@@ -168,7 +173,12 @@ namespace Module.Persist.TPM.Migrations
             ('ActualCOGSTns', 'Delete', 0, NULL),
             ('ActualCOGSTns', 'ExportXLSX', 0, NULL),
             ('ActualCOGSTns', 'FullImportXLSX', 0, NULL),
-            ('ActualCOGSTns', 'DownloadTemplateXLSX', 0, NULL)
+            ('ActualCOGSTns', 'DownloadTemplateXLSX', 0, NULL),
+			('DeletedActualCOGSTns', 'GetFilteredData', 0, NULL),
+			('DeletedActualCOGSTns', 'GetDeletedActualCOGSTns', 0, NULL),
+			('DeletedActualCOGSTns', 'GetDeletedActualCOGSTn', 0, NULL),
+			('HistoricalActualCOGSTns', 'GetFilteredData', 0, NULL),
+			('HistoricalActualCOGSTns', 'GetHistoricalActualCOGSTns', 0, NULL)
             GO
             DECLARE @RoleIdASA uniqueidentifier = (SELECT[Id] FROM [DefaultSchemaSetting].[Role] where SystemName = 'SupportAdministrator');
             INSERT INTO[DefaultSchemaSetting].[AccessPointRole]
