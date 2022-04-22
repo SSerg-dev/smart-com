@@ -163,6 +163,7 @@
         'manualDownload': 'Download',
         'readLog': 'Log',
         'importResults': 'Import results',
+        'newFullImportXLSX': 'Full import correction XLSX'
     },
 
     'importExport': {

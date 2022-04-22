@@ -414,6 +414,85 @@ namespace Module.Frontend.TPM.Controllers
 
         }
 
+        [ClaimsAuthorize]
+        public async Task<HttpResponseMessage> NewFullImportXLSX()
+        {
+            try
+            {
+                if (!Request.Content.IsMimeMultipartContent())
+                {
+                    throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+                }
+
+                string importDir = Core.Settings.AppSettingsManager.GetSetting("IMPORT_DIRECTORY", "ImportFiles");
+                string fileName = await FileUtility.UploadFile(Request, importDir);
+
+                NameValueCollection form = System.Web.HttpContext.Current.Request.Form;
+                CreateNewImportTask(fileName, "FullXLSXCompetitorPromoUpdateNewImportHandler", form);
+
+                HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
+                result.Content = new StringContent("success = true");
+                result.Content.Headers.ContentType = new MediaTypeHeaderValue("text/plain");
+
+                return result;
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e.Message);
+            }
+        }
+
+        private void CreateNewImportTask(string fileName, string importHandler, NameValueCollection paramForm)
+        {
+            UserInfo user = authorizationManager.GetCurrentUser();
+            Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
+            RoleInfo role = authorizationManager.GetCurrentRole();
+            Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
+
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                ImportResultFilesModel resiltfile = new ImportResultFilesModel();
+                ImportResultModel resultmodel = new ImportResultModel();
+
+                HandlerData data = new HandlerData();
+                FileModel file = new FileModel()
+                {
+                    LogicType = "Import",
+                    Name = System.IO.Path.GetFileName(fileName),
+                    DisplayName = System.IO.Path.GetFileName(fileName)
+                };
+
+                // параметры импорта
+                HandlerDataHelper.SaveIncomingArgument("ImportDestination", "CompetitorPromo", data, throwIfNotExists: false);
+
+                HandlerDataHelper.SaveIncomingArgument("File", file, data, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportCompetitorPromo), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportCompetitorPromo).Name, data, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(CompetitorPromo), data, visible: false, throwIfNotExists: false);
+
+                LoopHandler handler = new LoopHandler()
+                {
+                    Id = Guid.NewGuid(),
+                    ConfigurationName = "PROCESSING",
+                    Description = "Загрузка импорта из файла " + typeof(CompetitorPromo).Name,
+                    Name = "Module.Host.TPM.Handlers." + importHandler,
+                    ExecutionPeriod = null,
+                    RunGroup = typeof(CompetitorPromo).Name,
+                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                    LastExecutionDate = null,
+                    NextExecutionDate = null,
+                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                    UserId = userId,
+                    RoleId = roleId
+                };
+                handler.SetParameterData(data);
+                context.LoopHandlers.Add(handler);
+                context.SaveChanges();
+            }
+        }
+
         //Простановка дат в формате Mars
         public void SetPromoMarsDates(CompetitorPromo promo)
         {

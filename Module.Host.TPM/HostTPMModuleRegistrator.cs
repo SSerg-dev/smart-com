@@ -50,6 +50,7 @@ namespace Module.Host.TPM
                 new Handlers.FullXLSXAssortmentMatrixImportHandler(),
                 new Handlers.FullXLSXCompetitorBrandTechUpdateImportHandler(),
                 new Handlers.FullXLSXCompetitorPromoUpdateImportHandler(),
+                new Handlers.FullXLSXCompetitorPromoUpdateNewImportHandler(),
                 new Handlers.FullXLSXCompetitorUpdateImportHandler(),
                 new Handlers.FullXLSXPLUDictionaryImportHandler(),
                 new Handlers.AutoResetPromoHandler(),
