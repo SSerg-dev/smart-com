@@ -39,11 +39,11 @@ using Utility;
 
 namespace Module.Frontend.TPM.Controllers
 {
-    public class ActualCOGSsTnController : EFContextController
+    public class ActualCOGSTnsController : EFContextController
     {
         private readonly IAuthorizationManager authorizationManager;
 
-        public ActualCOGSsTnController(IAuthorizationManager authorizationManager)
+        public ActualCOGSTnsController(IAuthorizationManager authorizationManager)
         {
             this.authorizationManager = authorizationManager;
         }
@@ -74,7 +74,7 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
-        public IQueryable<ActualCOGSTn> GetActualCOGSsTn()
+        public IQueryable<ActualCOGSTn> GetActualCOGSTns()
         {
             return GetConstraintedQuery();
         }
@@ -324,8 +324,8 @@ namespace Module.Frontend.TPM.Controllers
                 HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("TModel", typeof(ActualCOGSTn), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(ActualCOGSsTnController), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(ActualCOGSsTnController.GetExportSettings), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(ActualCOGSTnsController), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(ActualCOGSTnsController.GetExportSettings), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
 
                 LoopHandler handler = new LoopHandler()

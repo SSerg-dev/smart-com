@@ -20,7 +20,7 @@
     ],
     proxy: {
         type: 'breeze',
-        resourceName: 'HistoricalPlanCOGSsTn',
+        resourceName: 'HistoricalPlanCOGSTns',
         reader: {
             type: 'json',
             totalProperty: 'inlineCount',

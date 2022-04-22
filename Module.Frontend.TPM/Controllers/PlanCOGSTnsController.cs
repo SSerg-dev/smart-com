@@ -39,11 +39,11 @@ using Utility;
 
 namespace Module.Frontend.TPM.Controllers
 {
-    public class PlanCOGSsTnController : EFContextController
+    public class PlanCOGSTnsController : EFContextController
     {
         private readonly IAuthorizationManager authorizationManager;
 
-        public PlanCOGSsTnController(IAuthorizationManager authorizationManager)
+        public PlanCOGSTnsController(IAuthorizationManager authorizationManager)
         {
             this.authorizationManager = authorizationManager;
         }
@@ -74,7 +74,7 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
-        public IQueryable<PlanCOGSTn> GetPlanCOGSsTn()
+        public IQueryable<PlanCOGSTn> GetPlanCOGSTns()
         {
             return GetConstraintedQuery();
         }
@@ -324,8 +324,8 @@ namespace Module.Frontend.TPM.Controllers
                 HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("TModel", typeof(PlanCOGSTn), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(PlanCOGSsTnController), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PlanCOGSsTnController.GetExportSettings), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(PlanCOGSTnsController), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PlanCOGSTnsController.GetExportSettings), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
 
                 LoopHandler handler = new LoopHandler()

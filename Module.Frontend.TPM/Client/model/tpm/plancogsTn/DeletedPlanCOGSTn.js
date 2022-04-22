@@ -22,7 +22,7 @@
     ],
     proxy: {
         type: 'breeze',
-        resourceName: 'DeletedPlanCOGSsTn',
+        resourceName: 'DeletedPlanCOGSTns',
         reader: {
             type: 'json',
             totalProperty: 'inlineCount',
