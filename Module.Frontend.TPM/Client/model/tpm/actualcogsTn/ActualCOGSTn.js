@@ -1,7 +1,7 @@
 ﻿Ext.define('App.model.tpm.actualcogsTn.ActualCOGSTn', {
     extend: 'Ext.data.Model',
     idProperty: 'Id',
-    breezeEntityType: 'ActualCOGS',
+    breezeEntityType: 'ActualCOGSTn',
     fields: [
         { name: 'Id', hidden: true },
         { name: 'StartDate', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },

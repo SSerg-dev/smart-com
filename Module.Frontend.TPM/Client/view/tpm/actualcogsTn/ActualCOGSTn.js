@@ -204,7 +204,7 @@
                 }
             }, {
                 text: l10n.ns('tpm', 'ActualCOGSTn').value('Volume'),
-                dataIndex: 'LSVpercent'
+                dataIndex: 'Volume'
             }]
         }
     }, {
@@ -306,8 +306,8 @@
             }]
         }, {
             xtype: 'numberfield',
-            name: 'LSVpercent',
-            fieldLabel: l10n.ns('tpm', 'ActualCOGSTn').value('LSVpercent'),
+            name: 'Volume',
+            fieldLabel: l10n.ns('tpm', 'ActualCOGSTn').value('Volume'),
             minValue: 0,
             maxValue: 100,
             readOnly: true,
