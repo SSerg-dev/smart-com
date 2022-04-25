@@ -436,13 +436,13 @@ namespace Module.Frontend.TPM.Controllers
             try
             {
                 string templateDir = AppSettingsManager.GetSetting("TEMPLATE_DIRECTORY", "Templates");
-                string templateFilePath = Path.Combine(templateDir, "COGSTnPreTemplate.xlsx");
+                string templateFilePath = Path.Combine(templateDir, "ActualCOGSTnPreTemplate.xlsx");
                 using (FileStream templateStream = new FileStream(templateFilePath, FileMode.Open, FileAccess.Read))
                 {
                     IWorkbook twb = new XSSFWorkbook(templateStream);
 
                     string exportDir = AppSettingsManager.GetSetting("EXPORT_DIRECTORY", "~/ExportFiles");
-                    string filename = string.Format("{0}Template.xlsx", "COGSTn");
+                    string filename = string.Format("{0}Template.xlsx", "ActualCOGSTn");
                     if (!Directory.Exists(exportDir))
                     {
                         Directory.CreateDirectory(exportDir);

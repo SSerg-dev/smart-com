@@ -1018,6 +1018,8 @@
       <SubType>Designer</SubType>
     </None>
     <Content Include="Client\view\tpm\clientkpidata\ClientKPIDataEditor.js" />
+    <None Include="Content\Templates\PlanCOGSTnPreTemplate.xlsx" />
+    <None Include="Content\Templates\ActualCOGSTnPreTemplate.xlsx" />
     <None Include="Content\Templates\ActualCOGSPreTemplate.xlsx" />
     <None Include="Content\Templates\ActualTIPreTemplate.xlsx" />
     <None Include="Content\Templates\BaseLineTemplate.xlsx" />
@@ -1027,9 +1029,11 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Templates\ActualCOGSPreTemplate.xlsx" />
+    <None Include="Templates\ActualCOGSTnPreTemplate.xlsx" />
     <None Include="Templates\ActualTIPreTemplate.xlsx" />
     <None Include="Templates\BaseLineTemplate.xlsx" />
     <None Include="Templates\COGSPreTemplate.xlsx" />
+    <None Include="Templates\PlanCOGSTnPreTemplate.xlsx" />
     <None Include="Templates\TIPreTemplate.xlsx" />
   </ItemGroup>
   <ItemGroup>
