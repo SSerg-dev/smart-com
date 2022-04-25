@@ -70,23 +70,24 @@
 		tooltip: l10n.ns('tpm', 'mainmenu').value('CompetitorPromo'),
 		scale: 'medium',
 		glyph: 0xfd01,
+		roles: ['Administrator', 'SupportAdministrator', 'CMManager'],
 		children: [{
 			text: l10n.ns('tpm', 'mainmenu').value('Competitor'),
 			tooltip: l10n.ns('tpm', 'mainmenu').value('Competitor'),
 			glyph: 0xf14c,
-			//roles: ['Administrator', 'SupportAdministrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager', 'DemandFinance', 'DemandPlanning'],
+			roles: ['Administrator', 'SupportAdministrator', 'CMManager'],
 			widget: 'competitor',
 		}, {
 			text: l10n.ns('tpm', 'mainmenu').value('CompetitorBrandTech'),
 			tooltip: l10n.ns('tpm', 'mainmenu').value('CompetitorBrandTech'),
 			glyph: 0xf619,
-			//roles: ['Administrator', 'SupportAdministrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager', 'DemandFinance', 'DemandPlanning'],
+			roles: ['Administrator', 'SupportAdministrator', 'CMManager'],
 			widget: 'competitorbrandtech',
 		}, {
 			text: l10n.ns('tpm', 'mainmenu').value('CompetitorPromo'),
 			tooltip: l10n.ns('tpm', 'mainmenu').value('CompetitorPromo'),
 			glyph: 0xfd01,
-			//roles: ['Administrator', 'SupportAdministrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager', 'DemandFinance', 'DemandPlanning'],
+			roles: ['Administrator', 'SupportAdministrator', 'CMManager'],
 			widget: 'competitorpromo',
 		}],
 	}, {
