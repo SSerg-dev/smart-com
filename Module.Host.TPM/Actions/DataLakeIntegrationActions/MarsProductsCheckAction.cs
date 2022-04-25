@@ -68,6 +68,8 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
 						        materials.[MATERIAL],
 						        materials.[SKU],
 						        materials.[0MATL_TYPE___T] AS MATL_TYPE___T,
+                                materials.[0UNIT_OF_WT] as UNIT_OF_WT,
+                                materials.[GNET_WT] as GNET_WT,
 						        materials.[Brand],
 						        materials.[Segmen],
 						        materials.[Technology],
@@ -130,7 +132,8 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
                                     IsValidDatePeriod(r.START_DATE.ToString("yyyy'-'MM'-'dd"), r.END_DATE.ToString("yyyy'-'MM'-'dd")) &&
                                     IsNumeric(r.ZREP.TrimStart('0'), 6) &&
                                     r.EAN_PC.HasValue && DecimalToString(r.EAN_PC).Length == 13 &&
-                                    IsNumeric(r.UOM_PC2Case));
+                                    IsNumeric(r.UOM_PC2Case) &&
+                                    IsDouble(r.GNET_WT));
 
                     var step1Log = newRecords.Where(r =>
                                     !(IsExactNumeric(r.VKORG, 261) &&
@@ -143,11 +146,12 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
                                     IsValidDatePeriod(r.START_DATE.ToString("yyyy'-'MM'-'dd"), r.END_DATE.ToString("yyyy'-'MM'-'dd")) &&
                                     IsNumeric(r.ZREP.TrimStart('0'), 6) &&
                                     r.EAN_PC.HasValue && DecimalToString(r.EAN_PC).Length == 13 &&
-                                    IsNumeric(r.UOM_PC2Case))).GroupBy(x => x.ZREP);
+                                    IsNumeric(r.UOM_PC2Case) &&
+                                    IsDouble(r.GNET_WT))).GroupBy(x => x.ZREP);
                     foreach (var group in step1Log)
                     {
-                        Errors.Add(String.Format("{0} GRD with ZREP {1} has inappropriate value for one or more of VKORG, 0DIVISION, 0DIVISION___T, 0MATL_TYPE___T, MATNR, VMSTD, 0CREATEDON, ZREP, EAN_PC, UOM_PC2Case fields.", group.Count(), group.Key.TrimStart('0')));
-                        notifyErrors[group.Key.TrimStart('0')] = "ZREP has inappropriate value for one or more of VKORG, 0DIVISION, 0DIVISION___T, 0MATL_TYPE___T, MATNR, VMSTD, 0CREATEDON, ZREP, EAN_PC, UOM_PC2Case fields.";
+                        Errors.Add(String.Format("{0} GRD with ZREP {1} has inappropriate value for one or more of VKORG, 0DIVISION, 0DIVISION___T, 0MATL_TYPE___T, MATNR, VMSTD, 0CREATEDON, ZREP, EAN_PC, UOM_PC2Case, GNET_WT  fields.", group.Count(), group.Key.TrimStart('0')));
+                        notifyErrors[group.Key.TrimStart('0')] = "ZREP has inappropriate value for one or more of VKORG, 0DIVISION, 0DIVISION___T, 0MATL_TYPE___T, MATNR, VMSTD, 0CREATEDON, ZREP, EAN_PC, UOM_PC2Case, GNET_WT fields.";
                     }
 
                     // Проверка заполненности полей MATERIAL, SKU, UOM_PC2Case, Segmen_code, Tech_code, Brand_Flag_abbr, Brand_Flag, Size, BrandsegTech_code, BrandSegTechSub_code, Brand_code 
@@ -155,6 +159,7 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
                                     IsNotEmptyOrNotApplicable(r.MATERIAL) &&
                                     IsNotEmptyOrNotApplicable(r.SKU) &&
                                     IsNotEmptyOrNotApplicable(r.UOM_PC2Case) &&
+                                    IsNotEmptyOrNotApplicable(r.UNIT_OF_WT) &&
                                     IsNotEmptyOrNotApplicable(r.Segmen_code) &&
                                     IsNotEmptyOrNotApplicable(r.Tech_code) &&
                                     IsNotEmptyOrNotApplicable(r.Brand_Flag_abbr) &&
@@ -168,6 +173,7 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
                                     !(IsNotEmptyOrNotApplicable(r.MATERIAL) &&
                                     IsNotEmptyOrNotApplicable(r.SKU) &&
                                     IsNotEmptyOrNotApplicable(r.UOM_PC2Case) &&
+                                    IsNotEmptyOrNotApplicable(r.UNIT_OF_WT) &&
                                     IsNotEmptyOrNotApplicable(r.Segmen_code) &&
                                     IsNotEmptyOrNotApplicable(r.Tech_code) &&
                                     IsNotEmptyOrNotApplicable(r.Brand_Flag_abbr) &&
@@ -178,8 +184,8 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
                                     IsNotEmptyOrNotApplicable(r.Brand_code))).GroupBy(x => x.ZREP);
                     foreach (var group in step2Log)
                     {
-                        Errors.Add(String.Format("{0} GRD with ZREP {1} has one of MATERIAL, SKU, UOM_PC2Case, Segmen_code, Tech_code, Brand_Flag_abbr, Brand_Flag, Size, BrandsegTech_code, BrandSegTechSub_code, Brand_code fields not applicable or empty.", group.Count(), group.Key.TrimStart('0')));
-                        notifyErrors[group.Key.TrimStart('0')] = "ZREP has one of MATERIAL, SKU, UOM_PC2Case, Segmen_code, Tech_code, Brand_Flag_abbr, Brand_Flag, Size, BrandsegTech_code, BrandSegTechSub_code, Brand_code fields not applicable or empty.";
+                        Errors.Add(String.Format("{0} GRD with ZREP {1} has one of MATERIAL, SKU, UOM_PC2Case, UNIT_OF_WT, Segmen_code, Tech_code, Brand_Flag_abbr, Brand_Flag, Size, BrandsegTech_code, BrandSegTechSub_code, Brand_code fields not applicable or empty.", group.Count(), group.Key.TrimStart('0')));
+                        notifyErrors[group.Key.TrimStart('0')] = "ZREP has one of MATERIAL, SKU, UOM_PC2Case, UNIT_OF_WT, Segmen_code, Tech_code, Brand_Flag_abbr, Brand_Flag, Size, BrandsegTech_code, BrandSegTechSub_code, Brand_code fields not applicable or empty.";
                     }
 
                     // Проверка на заполненность хотя бы одного поля из Submark_Flag, Ingredient_variety, Product_Category, Product_Type, Supply_Segment, Functional_variety, Size, Brand_essence, Pack_Type, Traded_unit_format, Consumer_pack_format 
@@ -733,7 +739,9 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
                 Tech_code = material.Tech_code,
                 TradedUnitFormat = material.Traded_unit_format,
                 UOM_PC2Case = !String.IsNullOrEmpty(material.UOM_PC2Case) ? (int?)int.Parse(material.UOM_PC2Case) : null,
-                ZREP = material.ZREP.TrimStart('0')
+                ZREP = material.ZREP.TrimStart('0'),
+                NetWeight = !String.IsNullOrEmpty(material.GNET_WT) ? (double?)double.Parse(material.GNET_WT) : null,
+                UOM = material.UNIT_OF_WT
             };
         }
 
@@ -763,6 +771,7 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
             var updatedFields = new List<string>();
             int? division = !String.IsNullOrEmpty(material.DIVISION) ? (int?)int.Parse(material.DIVISION) : null;
             int? UOM_PC2Case = !String.IsNullOrEmpty(material.UOM_PC2Case) ? (int?)int.Parse(material.UOM_PC2Case) : null;
+            double? NetWeight = !String.IsNullOrEmpty(material.GNET_WT) ? (double?)double.Parse(material.GNET_WT) : null;
             string EAN_Case = material.EAN_Case.HasValue ? DecimalToString(material.EAN_Case) : null;
             string EAN_PC = material.EAN_PC.HasValue ? DecimalToString(material.EAN_PC) : null;
 
@@ -792,6 +801,8 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
             product.TradedUnitFormat = product.TradedUnitFormat != material.Traded_unit_format ? material.Traded_unit_format : product.TradedUnitFormat;
             product.UOM_PC2Case = product.UOM_PC2Case != UOM_PC2Case ? UOM_PC2Case : product.UOM_PC2Case;
             product.ZREP = product.ZREP != material.ZREP.TrimStart('0') ? material.ZREP.TrimStart('0') : product.ZREP;
+            product.NetWeight = product.NetWeight != NetWeight ? NetWeight : product.NetWeight;
+            product.UOM = product.UOM != material.UNIT_OF_WT ? material.UNIT_OF_WT : product.UOM;
 
             var productState = context.Entry<Product>(product);
             foreach (var value in productState.OriginalValues.PropertyNames)
@@ -847,6 +858,22 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
                 return result;
             else if (result)
                 return numResult.ToString().Length == length;
+            else
+                return false;
+        }
+
+        private bool IsDouble(string s, int length = -1)
+        {
+            if (String.IsNullOrEmpty(s))
+                return false;
+
+            double dResult;
+            bool result = double.TryParse(s, out dResult);
+
+            if (length == -1)
+                return result;
+            else if (result)
+                return dResult.ToString().Length == length;
             else
                 return false;
         }
