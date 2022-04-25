@@ -3170,6 +3170,10 @@
 
         promoComment.setValue(record.data.MechanicComment);
 
+        var isInExchange = mechanic.down('checkboxfield[name=IsInExchange]');
+        isInExchange.setValue(record.data.IsInExchange);
+        mechanic.fillSelectedPromoes(record);
+
         // period
         // Если запись создаётся копированием, даты берутся из календаря, а не из копируемой записи
         var startDate = isCopy ? record.schedulerContext.start : record.data.StartDate;
@@ -4705,7 +4709,7 @@
         var record = this.getRecord(promomechanic);
         var promoEditorCustom = button.up('promoeditorcustom');
         promomechanicaddpromoes.setLoading(true);
-        
+
         promomechanicaddpromoes.PromoId = record.get('Id');
         promomechanicaddpromoes.IsGrowthAcceleration = record.get('IsGrowthAcceleration');
         promomechanicaddpromoes.ClientTreeId = record.get('ClientTreeId');

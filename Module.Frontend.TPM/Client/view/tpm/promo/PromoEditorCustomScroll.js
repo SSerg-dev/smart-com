@@ -292,7 +292,7 @@
                             xtype: 'promomechanic',
                             name: 'promo_step3',
                             itemId: 'promo_step3',
-                            height: 207 + 35,
+                            height: 287 + 35,
                             header: {
                                 title: l10n.ns('tpm', 'promoStap').value('basicStep3'),
                                 cls: 'promo-header-item'

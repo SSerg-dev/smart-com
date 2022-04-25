@@ -240,6 +240,8 @@
         { name: 'PromoTypesName', type: 'string', mapping: 'PromoTypes.Name', defaultFilterConfig: { valueField: 'PromoTypesName' }, /*breezeEntityType: 'ClientTree',*/ hidden: false, isDefault: false },
         { name: 'PromoTypesGlyph', type: 'string', mapping: 'PromoTypes.Glyph', defaultFilterConfig: { valueField: 'PromoTypesGlyph' }, /*breezeEntityType: 'ClientTree',*/ hidden: false, isDefault: false },
 
+        { name: 'IsInExchange', type: 'boolean', hidden: false, isDefault: false },
+
         //Apollo Export
         { name: 'IsApolloExport', type: 'boolean', hidden: false, isDefault: false },
         {

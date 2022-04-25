@@ -283,8 +283,8 @@ namespace Module.Persist.TPM.Model.TPM
         public string AdditionalUserTimestamp { get; set; }
 
         public bool IsGrowthAcceleration { get; set; }
-
         public bool IsApolloExport { get; set; }
+        public bool IsInExchange { get; set; }
 
         [ForeignKey("MasterPromo")]
         public Guid? MasterPromoId { get; set; }

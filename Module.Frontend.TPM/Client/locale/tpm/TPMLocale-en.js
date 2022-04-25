@@ -902,6 +902,7 @@
         'IsGrowthAcceleration': 'Growth acceleration',
         'ApolloExport': 'Apollo export',
         'IsApolloExport': 'Apollo export',
+        'GAInExcnange': 'GA InExchange',
 
         //Для исторической модели
         'PlanPromoNetROIPercent': 'Plan Promo Net ROI Percent',
@@ -943,7 +944,7 @@
         'Discount': 'Discount',
         'Subrange': 'Subrange',
 
-        'AddPromo': 'Add Promo',
+        'SelectPromo': 'Select Promo',
     },
     'HistoricalPromo': ['.tpm.Promo', '.core.BaseHistoryEntity'],
     'DeletedPromo': ['.tpm.Promo', '.core.BaseDeletedEntity'],

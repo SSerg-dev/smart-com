@@ -38,7 +38,7 @@
             multiSelect: true,
             editorModel: 'Core.form.EditorDetailWindowModel',
             store: {
-                type: 'directorystore',
+                type: 'simplestore',
                 model: 'App.model.tpm.promo.Promo',
                 storeId: 'customizemechanicactualstore',
                 autoLoad: false,

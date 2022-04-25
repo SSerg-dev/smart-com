@@ -168,7 +168,6 @@
                 storeproduct.set('MasterPromoId', null)
             }            
         });
-        debugger;
         var promoRecords = promoStore.getRange(0, promoStore.getTotalCount());
         widget.setLoading(l10n.ns('core').value('savingText'));
         promoStore.save({
