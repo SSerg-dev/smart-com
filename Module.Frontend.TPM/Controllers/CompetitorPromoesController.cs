@@ -241,12 +241,13 @@ namespace Module.Frontend.TPM.Controllers
                 new Column() { Order = 2, Field = "Competitor.Name", Header = "Competitor", Quoting = false },
                 new Column() { Order = 3, Field = "Name", Header = "Promo Name", Quoting = false },
                 new Column() { Order = 4, Field = "ClientTree.FullPathName", Header = "Client", Quoting = false },
-                new Column() { Order = 5, Field = "CompetitorBrandTech.BrandTech", Header = "BrandTech", Quoting = false },
-                new Column() { Order = 6, Field = "StartDate", Header = "Start Date", Quoting = false },
-                new Column() { Order = 7, Field = "EndDate", Header = "End Date", Quoting = false },
-                new Column() { Order = 8, Field = "MechanicType", Header = "Mechanic Type", Quoting = false },
-                new Column() { Order = 9, Field = "Discount", Header = "Discount", Quoting = false },
-                new Column() { Order = 10, Field = "Price", Header = "Shelf Price", Quoting = false }
+                new Column() { Order = 5, Field = "ClientTree.ObjectId", Header = "ClientId", Quoting = false },
+                new Column() { Order = 6, Field = "CompetitorBrandTech.BrandTech", Header = "BrandTech", Quoting = false },
+                new Column() { Order = 7, Field = "StartDate", Header = "Start Date", Quoting = false,  Format = "dd.MM.yyyy" },
+                new Column() { Order = 8, Field = "EndDate", Header = "End Date", Quoting = false, Format = "dd.MM.yyyy" },
+                new Column() { Order = 9, Field = "MechanicType", Header = "Mechanic Type", Quoting = false },
+                new Column() { Order = 10, Field = "Discount", Header = "Discount", Quoting = false },
+                new Column() { Order = 11, Field = "Price", Header = "Shelf Price", Quoting = false }
             };
             return columns;
         }
@@ -258,8 +259,8 @@ namespace Module.Frontend.TPM.Controllers
                 new Column() { Order = 2, Field = "Competitor.Name", Header = "Competitor", Quoting = false },
                 new Column() { Order = 3, Field = "Name", Header = "Promo Name", Quoting = false },
                 new Column() { Order = 4, Field = "CompetitorBrandTech.BrandTech", Header = "BrandTech", Quoting = false },
-                new Column() { Order = 5, Field = "StartDate", Header = "Start Date", Quoting = false },
-                new Column() { Order = 6, Field = "EndDate", Header = "End Date", Quoting = false },
+                new Column() { Order = 5, Field = "StartDate", Header = "Start Date", Quoting = false, Format = "dd.MM.yyyy" },
+                new Column() { Order = 6, Field = "EndDate", Header = "End Date", Quoting = false, Format = "dd.MM.yyyy" },
                 new Column() { Order = 7, Field = "MechanicType", Header = "Mechanic Type", Quoting = false },
                 new Column() { Order = 8, Field = "Discount", Header = "Discount", Quoting = false },
                 new Column() { Order = 9, Field = "Price", Header = "Shelf Price", Quoting = false }
