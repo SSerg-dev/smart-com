@@ -903,6 +903,7 @@
         'ApolloExport': 'Apollo export',
         'IsApolloExport': 'Apollo export',
         'GAInExcnange': 'GA InExchange',
+        'IsInExchange': 'InExchange',
 
         //Для исторической модели
         'PlanPromoNetROIPercent': 'Plan Promo Net ROI Percent',
