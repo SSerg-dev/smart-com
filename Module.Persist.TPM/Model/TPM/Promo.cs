@@ -285,6 +285,7 @@ namespace Module.Persist.TPM.Model.TPM
         public bool IsGrowthAcceleration { get; set; }
         public bool IsApolloExport { get; set; }
         public bool IsInExchange { get; set; }
+        public string LinkedPromoes { get; set; }
 
         [ForeignKey("MasterPromo")]
         public Guid? MasterPromoId { get; set; }

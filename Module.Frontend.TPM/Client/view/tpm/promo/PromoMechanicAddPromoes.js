@@ -9,7 +9,7 @@
 
     PromoId: null,
     IsGrowthAcceleration: null,
-    ClientTreeId: null,
+    ClientTreeId: null,    
 
     customHeaderItems: [
         ResourceMgr.getAdditionalMenu('core').base = {

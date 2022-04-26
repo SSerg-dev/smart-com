@@ -2772,6 +2772,10 @@
     <Compile Include="Migrations\202204260736219_Add_IsInExchange_PromoGridView.Designer.cs">
       <DependentUpon>202204260736219_Add_IsInExchange_PromoGridView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202204261037349_Add_LinkedPromoes_Promo.cs" />
+    <Compile Include="Migrations\202204261037349_Add_LinkedPromoes_Promo.Designer.cs">
+      <DependentUpon>202204261037349_Add_LinkedPromoes_Promo.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -5307,6 +5311,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202204260736219_Add_IsInExchange_PromoGridView.resx">
       <DependentUpon>202204260736219_Add_IsInExchange_PromoGridView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202204261037349_Add_LinkedPromoes_Promo.resx">
+      <DependentUpon>202204261037349_Add_LinkedPromoes_Promo.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

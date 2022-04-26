@@ -115,7 +115,7 @@
             });
         }
         var promoesGridSelectionModel = grid.getSelectionModel();
-        
+
         store.on('load', function (store, records, successful) {
             if (records.length != 0) {
                 var checkedRows = new Array();
@@ -137,12 +137,17 @@
     },
     onOkButtonClick: function (button) {
         var widget = button.up('promomechanicaddpromoes');
+        var promomechanic = Ext.ComponentQuery.query('promomechanic')[0];
         var grid = widget.down('grid');
         var promoStore = grid.getStore();
         var promoesGridSelectionModel = grid.getSelectionModel();
         // Все promo из стора
         var promoRecords = promoStore.getRange(0, promoStore.getTotalCount());
         var checkedRecords = promoesGridSelectionModel.getCheckedRows();
+
+        promomechanic.LinkedPromoes = checkedRecords.map(function (item) {
+            return item.data.Number;
+        });
         // Только те выбранные, что видит пользователь.
         var checkedPromoesInGrid = promoRecords.filter(function (record) {
             return checkedRecords.some(function (checkedRecord) { return record.data.Id == checkedRecord.data.Id })
@@ -155,21 +160,26 @@
             App.Notify.pushError('Promoes more than 10 selected');
             return;
         }
+
         checkedPromoesInGrid.forEach(function (promo) {
             var storeproduct = promoStore.findRecord('Id', promo.data.Id);
             if (storeproduct.data.MasterPromoId != widget.PromoId) {
-                storeproduct.set('MasterPromoId', widget.PromoId)
+                storeproduct.set('MasterPromoId', widget.PromoId);
             }
-
         });
         uncheckedPromoessInGrid.forEach(function (promo) {
             var storeproduct = promoStore.findRecord('Id', promo.data.Id);
             if (storeproduct.data.MasterPromoId == widget.PromoId) {
                 storeproduct.set('MasterPromoId', null)
-            }            
+            }
         });
         var promoRecords = promoStore.getRange(0, promoStore.getTotalCount());
         widget.setLoading(l10n.ns('core').value('savingText'));
+        debugger;
+        if (promoStore.getUpdatedRecords().length == 0) {
+            widget.setLoading(false);
+            widget.close();
+        }
         promoStore.save({
             scope: this,
             success: function (rec, resp, opts) {

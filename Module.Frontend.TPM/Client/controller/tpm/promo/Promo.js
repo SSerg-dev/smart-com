@@ -2480,6 +2480,8 @@
         record.data.PlanInstoreMechanicTypeId = instoreMechanicTypeId ? instoreMechanicTypeId : null;
         record.data.PlanInstoreMechanicDiscount = instoreMechanicDiscount != null ? instoreMechanicDiscount : null;
 
+        record.data.LinkedPromoes = promomechanic.LinkedPromoes;
+
         // promoperiod
         record.data.StartDate = promoperiod.down('datefield[name=DurationStartDate]').getValue();
         record.data.EndDate = promoperiod.down('datefield[name=DurationEndDate]').getValue();

@@ -2,6 +2,8 @@
     extend: 'Ext.panel.Panel',
     alias: 'widget.promomechanic',
 
+    LinkedPromoes: null,
+
     items: [{
         xtype: 'container',
         cls: 'custom-promo-panel-container',
