@@ -115,7 +115,29 @@
                 { text: l10n.ns('tpm', 'PromoROIReport').value('MarsMechanicDiscount'), dataIndex: 'MarsMechanicDiscount', format: '0' },
                 { text: l10n.ns('tpm', 'PromoROIReport').value('MechanicComment'), dataIndex: 'MechanicComment' },
                 { xtype: 'datecolumn', text: l10n.ns('tpm', 'PromoROIReport').value('StartDate'), dataIndex: 'StartDate', renderer: Ext.util.Format.dateRenderer('d.m.Y') },
+                {
+                    text: l10n.ns('tpm', 'PromoROIReport').value('MarsStartDate'),
+                    dataIndex: 'MarsStartDate',
+                    width: 150,
+                    filter: {
+                        xtype: 'marsdatefield',
+                        operator: 'like',
+                        validator: function (value) {
+                            // дает возможность фильтровать только по году
+                            return true;
+                        },
+                    }
+                },
                 { xtype: 'datecolumn', text: l10n.ns('tpm', 'PromoROIReport').value('EndDate'), dataIndex: 'EndDate', renderer: Ext.util.Format.dateRenderer('d.m.Y') },
+                {
+                    text: l10n.ns('tpm', 'PromoROIReport').value('MarsEndDate'),
+                    dataIndex: 'MarsEndDate',
+                    width: 125,
+                    filter: {
+                        xtype: 'marsdatefield',
+                        operator: 'like'
+                    }
+                },
                 { text: l10n.ns('tpm', 'PromoROIReport').value('BudgetYear'), dataIndex: 'BudgetYear' },
                 { text: l10n.ns('tpm', 'PromoROIReport').value('PromoDuration'), dataIndex: 'PromoDuration', format: '0' },
                 { text: l10n.ns('tpm', 'PromoROIReport').value('EventName'), dataIndex: 'EventName' },
