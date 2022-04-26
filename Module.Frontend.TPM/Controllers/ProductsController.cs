@@ -393,7 +393,9 @@ namespace Module.Frontend.TPM.Controllers
                 new Column() { Order = orderNum++, Field = "TradedUnitFormat", Header = "Traded unit format", Quoting = false },
                 new Column() { Order = orderNum++, Field = "ConsumerPackFormat", Header = "Consumer pack format", Quoting = false },
                 new Column() { Order = orderNum++, Field = "UOM_PC2Case", Header = "UOM_PC2Case", Quoting = false },
-                new Column() { Order = orderNum++, Field = "Division", Header = "Division", Quoting = false }
+                new Column() { Order = orderNum++, Field = "Division", Header = "Division", Quoting = false },
+                new Column() { Order = orderNum++, Field = "UOM", Header = "UOM", Quoting = false },
+                new Column() { Order = orderNum++, Field = "NetWeight", Header = "Net Weight", Quoting = false }
             };
             return columns;
         }

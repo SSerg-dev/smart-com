@@ -520,6 +520,19 @@
             maxLength: 9,
             allowBlank: true,
             allowOnlyWhitespace: true
+        },{
+            xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
+            name: 'UOM',
+            fieldLabel: l10n.ns('tpm', 'Product').value('UOM'),
+            maxLength: 255,
+        }, {
+            xtype: 'numberfield',
+            name: 'NetWeight',
+            fieldLabel: l10n.ns('tpm', 'Product').value('NetWeight'),
+            minValue: 0,
+            maxValue: 999999999,
+            allowBlank: true,
+            allowOnlyWhitespace: true
         }]
     },
     listeners: {

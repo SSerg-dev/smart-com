@@ -2784,6 +2784,10 @@
     <Compile Include="Migrations\202204181154375_Add_PromoProductsCorrection_AP_ExportCorrectionXLSX.Designer.cs">
       <DependentUpon>202204181154375_Add_PromoProductsCorrection_AP_ExportCorrectionXLSX.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202204251819383_Product_Weight_Fields.cs" />
+    <Compile Include="Migrations\202204251819383_Product_Weight_Fields.Designer.cs">
+      <DependentUpon>202204251819383_Product_Weight_Fields.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -5329,6 +5333,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202204181154375_Add_PromoProductsCorrection_AP_ExportCorrectionXLSX.resx">
       <DependentUpon>202204181154375_Add_PromoProductsCorrection_AP_ExportCorrectionXLSX.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202204251819383_Product_Weight_Fields.resx">
+      <DependentUpon>202204251819383_Product_Weight_Fields.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
