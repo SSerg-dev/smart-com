@@ -7,13 +7,13 @@ namespace Module.Persist.TPM.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class Update_Number_by_Promo : IMigrationMetadata
+    public sealed partial class Empty_After_Merge : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(Update_Number_by_Promo));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(Empty_After_Merge));
         
         string IMigrationMetadata.Id
         {
-            get { return "202204071035149_Update_Number_by_Promo"; }
+            get { return "202204271333352_Empty_After_Merge"; }
         }
         
         string IMigrationMetadata.Source
