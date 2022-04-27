@@ -2772,10 +2772,6 @@
     <Compile Include="Migrations\202204150724306_Initial.Designer.cs">
       <DependentUpon>202204150724306_Initial.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202204271333352_Empty_After_Merge.cs" />
-    <Compile Include="Migrations\202204271333352_Empty_After_Merge.Designer.cs">
-      <DependentUpon>202204271333352_Empty_After_Merge.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -5312,9 +5308,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202204150724306_Initial.resx">
       <DependentUpon>202204150724306_Initial.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202204271333352_Empty_After_Merge.resx">
-      <DependentUpon>202204271333352_Empty_After_Merge.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
