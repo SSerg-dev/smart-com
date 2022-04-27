@@ -36,6 +36,7 @@ using System.Web.Http.OData.Query;
 using System.Web.Http.Results;
 using Thinktecture.IdentityModel.Authorization.WebApi;
 using Utility;
+using Utility.FileWorker;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -489,7 +490,8 @@ namespace Module.Frontend.TPM.Controllers
                         twb.Write(stream);
                         stream.Close();
                     }
-                    AzureBlobHelperLocal.UploadToBlob(Path.GetFileName(filePath), Path.GetFullPath(filePath), exportDir.Split('\\').Last());
+                    FileDispatcher fileDispatcher = new FileDispatcher();
+                    fileDispatcher.UploadToBlob(Path.GetFileName(filePath), Path.GetFullPath(filePath), exportDir.Split('\\').Last());
                     return Content(HttpStatusCode.OK, file);
                 }
             }
