@@ -175,7 +175,6 @@
         });
         var promoRecords = promoStore.getRange(0, promoStore.getTotalCount());
         widget.setLoading(l10n.ns('core').value('savingText'));
-        debugger;
         if (promoStore.getUpdatedRecords().length == 0) {
             widget.setLoading(false);
             widget.close();

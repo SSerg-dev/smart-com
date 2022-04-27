@@ -2073,6 +2073,9 @@
         }
         // InExchanche
         mechanic.down('checkboxfield[name=IsInExchangeCheckbox]').setReadOnly(true);
+        if (promoeditorcustom.isInExchange) {
+            this.disableActualPanels(true);
+        }
         // Заблокировать Adjusment для редактирования в указанных ниже статусах
         var isPromoEnd = (['Finished', 'Closed', 'Cancelled', 'Deleted'].indexOf(record.data.PromoStatusSystemName) >= 0);
         if (isPromoEnd
@@ -3290,7 +3293,9 @@
             promoeditorcustom.down('[name=ApolloExportCheckbox]').setDisabled(false);
             promoeditorcustom.down('[name=ApolloExportCheckbox]').setReadOnly(false);
         }
-
+        if (promoeditorcustom.isInExchange) {
+            this.disableActualPanels(true);
+        }
         // Заблокировать Adjustment для редактирования в указанных ниже статусах
         var isPromoEnd = (['Finished', 'Closed', 'Cancelled', 'Deleted'].indexOf(record.data.PromoStatusSystemName) >= 0);
         if (isPromoEnd
@@ -6535,5 +6540,19 @@
                 panel.setLoading(false);
                 App.Notify.pushError(me.getErrorMessage(data));
             });
+    },
+    disableActualPanels: function (disable) {
+        var promobudgets = Ext.ComponentQuery.query('promobudgets')[0];
+        var promoactivity = Ext.ComponentQuery.query('promoactivity')[0];
+        var totalCostBudgetsActuals = promobudgets.down('[name=totalCostBudgetsActuals]');
+        var marketingBudgteTIActual = promobudgets.down('[name=marketingBudgteTIActual]');
+        var costProductionBudgetActual = promobudgets.down('[name=costProductionBudgetActual]');
+        var actualInStoreFieldset = promoactivity.down('[name=actualInStoreFieldset]');
+        var activityActuals = promoactivity.down('[name=activityActuals]');
+        totalCostBudgetsActuals.setDisabled(disable);
+        marketingBudgteTIActual.setDisabled(disable);
+        costProductionBudgetActual.setDisabled(disable);
+        actualInStoreFieldset.setDisabled(disable);
+        activityActuals.setDisabled(disable);
     }
 });
