@@ -21,7 +21,6 @@ namespace Module.Persist.TPM.Migrations
                         BrandTechId = c.Guid(),
                         StartDate = c.DateTimeOffset(precision: 7),
                         EndDate = c.DateTimeOffset(precision: 7),
-                        LSVpercent = c.Single(nullable: false),
                         Year = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
@@ -43,7 +42,6 @@ namespace Module.Persist.TPM.Migrations
                         BrandTechId = c.Guid(),
                         StartDate = c.DateTimeOffset(precision: 7),
                         EndDate = c.DateTimeOffset(precision: 7),
-                        LSVpercent = c.Single(nullable: false),
                         Year = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)

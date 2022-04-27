@@ -141,7 +141,7 @@ namespace Module.Frontend.TPM.Controllers
             //Проверка пересечения по времени на клиенте
             if (!DateCheck(result))
             {
-                string msg = "There can not be two COGS of client and Brand Tech  in some Time";
+                string msg = "There can not be two Plan COGS/Tn of client and Brand Tech  in some Time";
                 return InternalServerError(new Exception(msg)); //Json(new { success = false, message = msg });
             }
             if (result.StartDate.Value.Year != result.EndDate.Value.Year)
