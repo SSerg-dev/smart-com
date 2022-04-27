@@ -18,7 +18,7 @@
             name: 'ClientTreeObjectId', type: 'int', mapping: 'ClientTree.ObjectId',
             defaultFilterConfig: { valueField: 'ObjectId' }, hidden: false, isDefault: true
         },
-        { name: 'Volume', type: 'int', hidden: false, isDefault: true }
+        { name: 'Volume', type: 'double', hidden: false, isDefault: true }
     ],
     proxy: {
         type: 'breeze',
