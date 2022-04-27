@@ -102,7 +102,7 @@ onNewImportButtonClick: function (button) {
                 action = Ext.String.format(button.action, resource);;
     Ext.Msg.show({
         title: 'Information!',
-        msg: 'All Competitorpromo data will be replaced. Confirm?',
+        msg: 'All Competitor promo data will be replaced. Confirm?',
         buttons: Ext.Msg.YESNO,
         closable: false,
         buttonText: {

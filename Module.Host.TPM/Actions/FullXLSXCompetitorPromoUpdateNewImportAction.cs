@@ -356,13 +356,17 @@ namespace Module.Host.TPM.Actions
                     errors.Add("Invalid discount");
                     isSuitable = false;
                 }
-                CompetitorPromo recordFromDB = context.Set<CompetitorPromo>()
-                .FirstOrDefault(t
-                    => (t.Number == typedRec.Number && !t.Disabled));
-                if(recordFromDB == null)
-                {
-                    errors.Add($"Promo {typedRec.Number} not found");
-                    isSuitable = false;
+
+                if(typedRec.Number!=0) 
+                { 
+                    CompetitorPromo recordFromDB = context.Set<CompetitorPromo>()
+                    .FirstOrDefault(t
+                        => (t.Number == typedRec.Number && !t.Disabled));
+                    if(recordFromDB == null)
+                    {
+                        errors.Add($"Promo {typedRec.Number} not found");
+                        isSuitable = false;
+                    }
                 }
             }
 
