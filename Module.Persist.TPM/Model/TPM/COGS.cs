@@ -31,7 +31,7 @@ namespace Module.Persist.TPM.Model.TPM
         public bool IsCOGSIncidentCreated { get; set; }
     }
 
-    public class PlanCOGSTn
+    public class PlanCOGSTn : IEntity<Guid>, IDeactivatable
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Index]
@@ -49,7 +49,7 @@ namespace Module.Persist.TPM.Model.TPM
         public virtual ClientTree ClientTree { get; set; }
     }
 
-    public class ActualCOGSTn 
+    public class ActualCOGSTn : IEntity<Guid>, IDeactivatable
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Index]
