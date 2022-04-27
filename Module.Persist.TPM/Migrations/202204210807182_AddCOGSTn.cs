@@ -14,7 +14,7 @@ namespace Module.Persist.TPM.Migrations
                 c => new
                     {
                         Id = c.Guid(nullable: false, identity: true),
-                        Volume = c.Int(nullable: false),
+                        Volume = c.Double(nullable: false),
                         Disabled = c.Boolean(nullable: false),
                         DeletedDate = c.DateTimeOffset(precision: 7),
                         ClientTreeId = c.Int(nullable: false),
@@ -35,7 +35,7 @@ namespace Module.Persist.TPM.Migrations
                 c => new
                     {
                         Id = c.Guid(nullable: false, identity: true),
-                        Volume = c.Int(nullable: false),
+                        Volume = c.Double(nullable: false),
                         Disabled = c.Boolean(nullable: false),
                         DeletedDate = c.DateTimeOffset(precision: 7),
                         ClientTreeId = c.Int(nullable: false),
