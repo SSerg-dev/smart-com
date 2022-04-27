@@ -61,6 +61,12 @@
     clientTreeKeyId: null, // Ключ в таблице
     productHierarchy: null,
 
+    isGrowthAcceleration: null,
+    isApolloExport: null,
+    isInExchange: null,
+
+    readOnly: null,
+
     initComponent: function () {
         this.callParent(arguments);
 

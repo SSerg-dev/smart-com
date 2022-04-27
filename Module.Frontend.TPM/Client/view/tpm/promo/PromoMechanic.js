@@ -530,8 +530,9 @@
                                                 actualPanel.setDisabled(!val.getValue());
                                                 button.setDisabled(!val.getValue());
                                                 if (val.getValue()) {
-
                                                     button.removeCls('disabled');
+                                                    var isInExchangeCheckbox = Ext.ComponentQuery.query('[name=IsInExchangeCheckbox]')[0];
+                                                    isInExchangeCheckbox.setValue(false);
                                                 }
                                                 else {
                                                     button.addCls('disabled');
@@ -542,7 +543,7 @@
                                     {
                                         xtype: 'checkboxfield',
                                         name: 'IsInExchangeCheckbox',
-                                        //crudAccess: ['Administrator', 'SupportAdministrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
+                                        crudAccess: ['Administrator', 'SupportAdministrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
                                         boxLabel: '<b>' + l10n.ns('tpm', 'Promo').value('GAInExcnange') + '</b>',
                                         margin: '5 0 0 5',
                                         flex: 1,
@@ -550,12 +551,18 @@
                                         listeners: {
                                             change: function (val) {
                                                 var addPromoBtn = Ext.ComponentQuery.query('#promoMechanicAddPromoBtn')[0];
+                                                var apolloExportCheckbox = Ext.ComponentQuery.query('[name=ApolloExportCheckbox]')[0];
                                                 if (val.getValue()) {
-
                                                     addPromoBtn.setDisabled(false);
+                                                    var growthAccelerationCheckbox = Ext.ComponentQuery.query('[name=GrowthAccelerationCheckbox]')[0];
+                                                    growthAccelerationCheckbox.setValue(false);
+                                                    apolloExportCheckbox.setReadOnly(true);
+                                                    apolloExportCheckbox.setValue(false);
                                                 }
                                                 else {
                                                     addPromoBtn.setDisabled(true);
+                                                    apolloExportCheckbox.setReadOnly(false);
+                                                    apolloExportCheckbox.setValue(true);
                                                 }
                                             }
                                         }

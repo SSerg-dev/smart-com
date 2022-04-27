@@ -2067,8 +2067,12 @@
             promoeditorcustom.down('[name=ApolloExportCheckbox]').setDisabled(false);
             promoeditorcustom.down('[name=ApolloExportCheckbox]').setReadOnly(false);
         }
+        if (promoeditorcustom.isInExchange && record.data.PromoStatusSystemName === 'Approved') {
+            promoeditorcustom.down('[name=ApolloExportCheckbox]').setDisabled(false);
+            promoeditorcustom.down('[name=ApolloExportCheckbox]').setReadOnly(false);
+        }
         // InExchanche
-        mechanic.down('checkboxfield[name=IsInExchangeCheckbox]').setReadOnly(false);
+        mechanic.down('checkboxfield[name=IsInExchangeCheckbox]').setReadOnly(true);
         // Заблокировать Adjusment для редактирования в указанных ниже статусах
         var isPromoEnd = (['Finished', 'Closed', 'Cancelled', 'Deleted'].indexOf(record.data.PromoStatusSystemName) >= 0);
         if (isPromoEnd
@@ -2694,6 +2698,11 @@
         var apolloExportCheckbox = promoeditorcustom.down('[name=ApolloExportCheckbox]');
         apolloExportCheckbox.setValue(record.data.IsApolloExport);
 
+        // GA inExchange
+        promoeditorcustom.isInExchange = record.data.IsInExchange;
+        var isInExchange = mechanic.down('checkboxfield[name=IsInExchangeCheckbox]');
+        isInExchange.setValue(record.data.IsInExchange);
+
         var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
         var gaReadOnlyStatuses = ['Approved', 'Planned', 'Started', 'Finished'];
         if (gaReadOnlyStatuses.indexOf(record.data.PromoStatusSystemName) != -1 && currentRole !== 'SupportAdministrator') {
@@ -3173,8 +3182,6 @@
 
         promoComment.setValue(record.data.MechanicComment);
 
-        var isInExchange = mechanic.down('checkboxfield[name=IsInExchangeCheckbox]');
-        isInExchange.setValue(record.data.IsInExchange);
         mechanic.fillSelectedPromoes(record);
 
         mechanic.LinkedPromoes = record.data.LinkedPromoes;
@@ -3279,7 +3286,10 @@
             promoeditorcustom.down('[name=ApolloExportCheckbox]').setDisabled(false);
             promoeditorcustom.down('[name=ApolloExportCheckbox]').setReadOnly(false);
         }
-
+        if (promoeditorcustom.isInExchange && record.data.PromoStatusSystemName === 'Approved' && !readOnly) {
+            promoeditorcustom.down('[name=ApolloExportCheckbox]').setDisabled(false);
+            promoeditorcustom.down('[name=ApolloExportCheckbox]').setReadOnly(false);
+        }
 
         // Заблокировать Adjustment для редактирования в указанных ниже статусах
         var isPromoEnd = (['Finished', 'Closed', 'Cancelled', 'Deleted'].indexOf(record.data.PromoStatusSystemName) >= 0);
