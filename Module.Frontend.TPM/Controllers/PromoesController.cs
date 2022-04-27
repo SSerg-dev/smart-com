@@ -336,7 +336,7 @@ namespace Module.Frontend.TPM.Controllers
                 Promo promo = patch.GetEntity();
                 if (promo.IsSplittable)
                 {
-                    model.Name = promo.Name;
+                    model.Name = promo.Name ?? model.Name;
                     model.PromoStatusId = new Guid("FE7FFE19-4754-E911-8BC8-08606E18DF3F");//set status "Draft(Published)" by Promo
                     model.ProductTreeObjectIds = promo.ProductTreeObjectIds;
                     SplitSubranges(model);
