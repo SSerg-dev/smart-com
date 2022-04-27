@@ -39,7 +39,7 @@ namespace Module.Persist.TPM.Model.Import
 
         [ImportCSVColumn(ColumnNumber = 5)]
         [Display(Name = "Volume")]
-        public int Volume { get; set; }
+        public double Volume { get; set; }
 
         public int ClientTreeId { get; set; }
         public Guid? BrandTechId { get; set; }
