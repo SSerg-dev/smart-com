@@ -541,12 +541,24 @@
                                     },
                                     {
                                         xtype: 'checkboxfield',
-                                        name: 'IsInExchange',
+                                        name: 'IsInExchangeCheckbox',
                                         //crudAccess: ['Administrator', 'SupportAdministrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager'],
                                         boxLabel: '<b>' + l10n.ns('tpm', 'Promo').value('GAInExcnange') + '</b>',
                                         margin: '5 0 0 5',
                                         flex: 1,
-                                        //needReadOnly: true,
+                                        needReadOnly: true,
+                                        listeners: {
+                                            change: function (val) {
+                                                var addPromoBtn = Ext.ComponentQuery.query('#promoMechanicAddPromoBtn')[0];
+                                                if (val.getValue()) {
+
+                                                    addPromoBtn.setDisabled(false);
+                                                }
+                                                else {
+                                                    addPromoBtn.setDisabled(true);
+                                                }
+                                            }
+                                        }
                                     }
                                 ]
                             },
@@ -616,6 +628,7 @@
                                         text: l10n.ns('tpm', 'Promo').value('SelectPromo'),
                                         tooltip: l10n.ns('tpm', 'Promo').value('SelectPromo'),
                                         glyph: 0xf208,
+                                        disabled: true,
                                     }
                                 ]
                             }

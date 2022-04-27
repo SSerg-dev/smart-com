@@ -2067,7 +2067,8 @@
             promoeditorcustom.down('[name=ApolloExportCheckbox]').setDisabled(false);
             promoeditorcustom.down('[name=ApolloExportCheckbox]').setReadOnly(false);
         }
-
+        // InExchanche
+        mechanic.down('checkboxfield[name=IsInExchangeCheckbox]').setReadOnly(false);
         // Заблокировать Adjusment для редактирования в указанных ниже статусах
         var isPromoEnd = (['Finished', 'Closed', 'Cancelled', 'Deleted'].indexOf(record.data.PromoStatusSystemName) >= 0);
         if (isPromoEnd
@@ -3172,10 +3173,11 @@
 
         promoComment.setValue(record.data.MechanicComment);
 
-        var isInExchange = mechanic.down('checkboxfield[name=IsInExchange]');
+        var isInExchange = mechanic.down('checkboxfield[name=IsInExchangeCheckbox]');
         isInExchange.setValue(record.data.IsInExchange);
         mechanic.fillSelectedPromoes(record);
 
+        mechanic.LinkedPromoes = record.data.LinkedPromoes;
         // period
         // Если запись создаётся копированием, даты берутся из календаря, а не из копируемой записи
         var startDate = isCopy ? record.schedulerContext.start : record.data.StartDate;
