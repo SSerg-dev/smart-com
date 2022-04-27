@@ -335,9 +335,9 @@ namespace Module.Host.TPM.Actions
                 errors.Add($"Records must not be repeated (Promo number: {item.PromoNumber}, ZREP: {item.ProductZREP})");
                 return false;
             }
-            else if (item.PlanProductUpliftPercentCorrected < 0)
+            else if (item.PlanProductUpliftPercentCorrected <= 0)
             {
-                errors.Add($"Uplift must be greater than 0 (Promo number: {item.PromoNumber}, ZREP: {item.ProductZREP})");
+                errors.Add($"Uplift must be greater than 0 and must not be empty (Promo number: {item.PromoNumber}, ZREP: {item.ProductZREP})");
                 return false;
             }
             else if (promoProduct == null)
@@ -345,6 +345,7 @@ namespace Module.Host.TPM.Actions
                 errors.Add($"No product with ZREP: {item.ProductZREP} found in Promo: {item.PromoNumber}");
                 return false;
             }
+
             else
             {
                 return true;

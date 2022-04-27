@@ -390,7 +390,7 @@ namespace Module.Frontend.TPM.Controllers
         {
             List<string> stasuses = new List<string> { "DraftPublished", "OnApproval", "Approved", "Planned" };
             IQueryable<PromoProduct> results = Context.Set<PromoProduct>()
-                .Where(g => !g.Disabled && stasuses.Contains(g.Promo.PromoStatus.Name) && !(bool)g.Promo.InOut && (bool)g.Promo.NeedRecountUplift)
+                .Where(g => !g.Disabled && stasuses.Contains(g.Promo.PromoStatus.SystemName) && !(bool)g.Promo.InOut && (bool)g.Promo.NeedRecountUplift)
                 .OrderBy(g => g.Promo.Number).ThenBy(d => d.ZREP);
             //IQueryable results = options.ApplyTo(GetConstraintedQuery());
             UserInfo user = authorizationManager.GetCurrentUser();
