@@ -112,7 +112,7 @@ namespace Module.Host.TPM.Actions.Notifications
                         }
                         else if(typeof(TModel).Name.Equals(typeof(AssortmentMatrix).Name))
 						{
-                            records = getAssortmentMatrices(context, SqlString);
+                            records = getAssortmentMatrices(context, SqlString, IsActuals);
                         }
                         else if (typeof(TModel).Name.Equals(typeof(CompetitorPromo).Name))
                         {
@@ -157,9 +157,10 @@ namespace Module.Host.TPM.Actions.Notifications
             }
         }
 
-        private IList getAssortmentMatrices(DatabaseContext context, string sqlQuery)
+        private IList getAssortmentMatrices(DatabaseContext context, string sqlQuery, bool IsActuals)
 		{
             var records = context.Database.SqlQuery<AssortmentMatrix>(SqlString).ToList();
+            var resultAssortmentMatrix = new List<AssortmentMatrix>();
             var clientIds = records.GroupBy(x => x.ClientTreeId).Select(x => x.Key).ToList();
             var plu = context.Set<Plu>().Where(x => clientIds.Contains(x.ClientTreeId)).ToList();
             var assortmentMatrix2Plus = context.Set<AssortmentMatrix2Plu>().Where(x => clientIds.Contains(x.ClientTreeId)).ToList();
@@ -171,6 +172,23 @@ namespace Module.Host.TPM.Actions.Notifications
 					item.Plu = new AssortmentMatrix2Plu() { PluCode = found.PluCode };
 				}
 			}
+            if (IsActuals)
+            {
+                var clientProductAssortmentMatrixGroups = records.GroupBy(x => new { x.ClientTreeId, x.ProductId });
+
+                foreach (var clientProductAssortmentMatrixGroup in clientProductAssortmentMatrixGroups)
+                {
+                    var record = clientProductAssortmentMatrixGroup
+                        .Where(x => x.EndDate >= new DateTime(DateTimeOffset.Now.Year, DateTimeOffset.Now.Month, DateTimeOffset.Now.Day) && !x.Disabled)
+                        .OrderByDescending(x => x.CreateDate).FirstOrDefault();
+
+                    if (record != null)
+                    {
+                        resultAssortmentMatrix.Add(record);
+                    }
+                }
+                return resultAssortmentMatrix;
+            }
             return records;
         }
 

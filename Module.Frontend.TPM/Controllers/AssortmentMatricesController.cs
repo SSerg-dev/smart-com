@@ -285,7 +285,7 @@ namespace Module.Frontend.TPM.Controllers
             return Context.Set<AssortmentMatrix>().Count(e => e.Id == key) > 0;
         }
 
-        public static IEnumerable<Column> GetExportSettings()
+        public static IEnumerable<Column> GetExportSettings(string additionalColumn = null)
         {
             IEnumerable<Column> columns = new List<Column>() {
                 new Column() { Order = 0, Field = "Number", Header = "ID", Quoting = false },
@@ -331,12 +331,8 @@ namespace Module.Frontend.TPM.Controllers
                 HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(AssortmentMatricesController), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(AssortmentMatricesController.GetExportSettings), data, visible: false, throwIfNotExists: false);
-                string query = results.ToTraceQuery();
-                if (needActualAssortmentMatrix)//use actual assortment matrix
-                {
-                    query = query.Replace(")  AS [Project1]", " AND [Filter1].[EndDate1] >= GETDATE()) AS[Project1]");
-                }
-                HandlerDataHelper.SaveIncomingArgument("SqlString", query, data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("IsActuals", needActualAssortmentMatrix, data, visible: false, throwIfNotExists: false);
 
                 LoopHandler handler = new LoopHandler()
                 {
