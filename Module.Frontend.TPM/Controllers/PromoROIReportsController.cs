@@ -1,22 +1,16 @@
-﻿using Core.Dependency;
-using Core.Security;
+﻿using Core.Security;
 using Core.Security.Models;
-using Core.Settings;
 using Frontend.Core.Controllers.Base;
 using Frontend.Core.Extensions.Export;
 using Looper.Core;
 using Looper.Parameters;
 using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.DTO;
-using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
-
 using Persist;
 using Persist.Model;
-
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -63,13 +57,11 @@ namespace Module.Frontend.TPM.Controllers
             return SingleResult.Create(GetPromoROIReports());
         }
 
-
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
         public IQueryable<PromoROIReport> GetPromoROIReports(ODataQueryOptions<PromoROIReport> queryOptions = null)
         {
-            var query = GetConstraintedQuery();
-
+            IQueryable<PromoROIReport> query = GetConstraintedQuery();
             return query;
         }
 

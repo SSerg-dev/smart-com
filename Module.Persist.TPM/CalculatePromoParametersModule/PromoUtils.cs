@@ -1,9 +1,7 @@
-﻿using Core.Data;
-using Core.Dependency;
+﻿using Core.Dependency;
 using Core.Settings;
 using Module.Persist.TPM.Model.SimpleModel;
 using Module.Persist.TPM.Model.TPM;
-using Module.Persist.TPM.PromoStateControl;
 using Module.Persist.TPM.Utils;
 using Persist;
 using System;
@@ -11,8 +9,6 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Module.Persist.TPM.CalculatePromoParametersModule
 {

@@ -1,11 +1,6 @@
 ﻿using Core.Import;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Module.Persist.TPM.Model.TPM;
 
 namespace Module.Persist.TPM.Model.Import
 {
@@ -30,5 +25,29 @@ namespace Module.Persist.TPM.Model.Import
         [ImportCSVColumn(ColumnNumber = 4)]
         [Display(Name = "Sub Brand Code")]
         public string SubBrand_code { get; set; }
+
+        [ImportCSVColumn(ColumnNumber = 5)]
+        [Display(Name = "Splittable")]
+        public string Splittable
+        {
+            set 
+            {
+                if (value == "+")
+                {
+                    IsSplittable = true;
+                }
+                else if(value == "-")
+                {
+                    IsSplittable = false;
+                }
+                else
+                {
+                    throw new Exception("Splittable value is not correct");
+                }
+            }
+            get { return null; }
+        }
+
+        public bool IsSplittable;
     }
 }

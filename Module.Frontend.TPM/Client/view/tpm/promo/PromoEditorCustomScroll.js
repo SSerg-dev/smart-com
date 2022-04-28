@@ -647,6 +647,21 @@
         statusSystemName: null,
         style: { "background-color": "#66BB6A" }
     },
+    {
+        xtype: 'button',
+        itemId: 'btn_splitpublish',
+        text: l10n.ns('tpm', 'customtoptoolbar').value('splitpublish'),
+        cls: 'promo-split-button',
+        hidden: true,
+        isPromoAction: true,
+        roles: ['Administrator', 'FunctionalExpert', 'CustomerMarketing', 'KeyAccountManager', 'SupportAdministrator'],
+        statuses: ['Draft'],
+        statusId: null,
+        statusName: null,
+        statusSystemName: null,
+        style: { "background-color": "#26A69A" },
+        disabled: true
+    },
     // Вернуть из Draft Publish в Publish
     {
         xtype: 'button',
@@ -676,8 +691,9 @@
         statusId: null,
         statusName: null,
         statusSystemName: null,
-        style: { "background-color": "#66BB6A" }
-		},
+        style: { "background-color": "#66BB6A" },
+        disabled: true
+	},
 	// Вернуть промо в DraftPublished
     {
         xtype: 'button',
@@ -723,7 +739,8 @@
         statusId: null,
         statusName: null,
         statusSystemName: null,
-        style: { "background-color": "#66BB6A" }
+        style: { "background-color": "#66BB6A" },
+        disabled: true
     },
     // Отменить промо
     {

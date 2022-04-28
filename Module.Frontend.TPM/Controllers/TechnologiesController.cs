@@ -42,7 +42,6 @@ namespace Module.Frontend.TPM.Controllers
             this.authorizationManager = authorizationManager;
         }
 
-
         protected IQueryable<Technology> GetConstraintedQuery()
         {
 
@@ -56,14 +55,12 @@ namespace Module.Frontend.TPM.Controllers
             return query;
         }
 
-
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
         public SingleResult<Technology> GetTechnology([FromODataUri] System.Guid key)
         {
             return SingleResult.Create(GetConstraintedQuery());
         }
-
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
@@ -145,7 +142,7 @@ namespace Module.Frontend.TPM.Controllers
                 return BadRequest(ModelState);
             }else if (String.IsNullOrEmpty(model.SubBrand_code) && !String.IsNullOrEmpty(model.SubBrand))
             {
-                var errorText = $"Sub Brand not required";
+                var errorText = $"Please, insert Sub Brand Code or delete Sub Brand";
                 ModelState.AddModelError("Error", errorText);
                 return BadRequest(ModelState);
             }
@@ -178,15 +175,17 @@ namespace Module.Frontend.TPM.Controllers
                 }
 
                 var patchModel = patch.GetEntity();
-                patchModel.Name = patchModel.Name.Trim();
-                patchModel.Tech_code = patchModel.Tech_code?.Trim();
-                patchModel.SubBrand = patchModel.SubBrand?.Trim();
-                patchModel.SubBrand_code = patchModel.SubBrand_code?.Trim();
+                patchModel.Name = patchModel.Name ?? patchModel.Name?.Trim();
+                patchModel.Tech_code = patchModel.Tech_code ?? patchModel.Tech_code?.Trim();
+                patchModel.SubBrand = patchModel.SubBrand ?? patchModel.SubBrand?.Trim();
+                patchModel.SubBrand_code = patchModel.SubBrand_code ?? patchModel.SubBrand_code?.Trim();
+                patchModel.IsSplittable = patchModel.IsSplittable;
 
                 var oldTC = model.Tech_code;
                 var oldTN = model.Name;
                 var oldSC = model.SubBrand_code;
                 var oldName = model.Name;
+                var oldIsSplittable = model.IsSplittable;
                 patch.Patch(model);
 
                 var newName = model.Name;
@@ -253,10 +252,27 @@ namespace Module.Frontend.TPM.Controllers
                 new Column() { Order = 1, Field = "Description_ru", Header = "Technology RU", Quoting = false },
                 new Column() { Order = 2, Field = "Tech_code", Header = "Tech Code", Quoting = false },
                 new Column() { Order = 3, Field = "SubBrand", Header = "Sub Brand", Quoting = false },
-                new Column() { Order = 4, Field = "SubBrand_code", Header = "Sub Brand Code", Quoting = false }
+                new Column() { Order = 4, Field = "SubBrand_code", Header = "Sub Brand Code", Quoting = false },
+                new Column() { Order = 5, Field = "Splittable", Header = "Splittable", Quoting = false }
             };
             return columns;
         }
+
+        public static IEnumerable<Column> GetImportSettings()
+        {
+            IEnumerable<Column> columns = new List<Column>() {
+                new Column() { Order = 0, Field = "Name", Header = "Technology", Quoting = false },
+                new Column() { Order = 1, Field = "Description_ru", Header = "Technology RU", Quoting = false },
+                new Column() { Order = 2, Field = "Tech_code", Header = "Tech Code", Quoting = false },
+                new Column() { Order = 3, Field = "SubBrand", Header = "Sub Brand", Quoting = false },
+                new Column() { Order = 4, Field = "SubBrand_code", Header = "Sub Brand Code", Quoting = false },
+                new Column() { Order = 5, Field = "Splittable", Header = "Splittable", Quoting = false },
+                new Column() { Order = 6, Header = "", Quoting = false },
+                new Column() { Order = 7, Header = "*Column Splittable: '+' - splittable, '-' - not splittable", Quoting = false }
+            };
+            return columns;
+        }
+
         [ClaimsAuthorize]
         public IHttpActionResult ExportXLSX(ODataQueryOptions<Technology> options)
         {
@@ -272,11 +288,13 @@ namespace Module.Frontend.TPM.Controllers
 
                 HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("TModel", typeof(Technology), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("TModel", typeof(TechnologyExport), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(TechnologiesController), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(TechnologiesController.GetExportSettings), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
+                string query = results.ToTraceQuery().Replace("[Extent1].[IsSplittable] AS [IsSplittable]", "IIF ([Extent1].[IsSplittable] = 1, '+', '-') AS [Splittable]");
+                query = query.Replace("[Project1].[IsSplittable] AS [IsSplittable]", "[Project1].[Splittable] AS [Splittable]");
+                HandlerDataHelper.SaveIncomingArgument("SqlString", query, data, visible: false, throwIfNotExists: false);
 
                 LoopHandler handler = new LoopHandler()
                 {
@@ -381,7 +399,7 @@ namespace Module.Frontend.TPM.Controllers
         {
             try
             {
-                IEnumerable<Column> columns = GetExportSettings();
+                IEnumerable<Column> columns = GetImportSettings();
                 XLSXExporter exporter = new XLSXExporter(columns);
                 string exportDir = AppSettingsManager.GetSetting("EXPORT_DIRECTORY", "~/ExportFiles");
                 string filename = string.Format("{0}Template.xlsx", "Technology");

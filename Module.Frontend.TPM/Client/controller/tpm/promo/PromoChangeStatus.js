@@ -71,6 +71,7 @@
             var model = promoController.buildPromoModel(window, record);
             promoController.saveModel(model, window, false, true);
             promoController.updateStatusHistoryState();
+
         } else {
             App.Notify.pushInfo(checkValid);
         }

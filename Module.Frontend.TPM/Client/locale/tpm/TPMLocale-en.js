@@ -315,6 +315,7 @@
         'downloadError': 'File for this task doesn\'t exist',
         'noSelectionError': 'Select task',
         'resetPromo': 'Reset Promo',
+        'splitpublish': 'Split and publish'
     },
 
     'Category': {
@@ -363,6 +364,7 @@
         'ValidateSubBrandNotRequired': 'Sub Name is not required',
         'SubBrand': 'Sub Brand',
         'SubBrand_code': 'Sub Brand Code',
+        'IsSplittable': 'Splittable',
         'DigitRegex': 'Only numbers allowed'
     },
     'HistoricalTechnology': ['.tpm.Technology', '.core.BaseHistoryEntity'],

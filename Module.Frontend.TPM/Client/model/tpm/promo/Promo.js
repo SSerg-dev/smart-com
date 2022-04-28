@@ -246,7 +246,10 @@
             convert: function (value) {
                 return value * 100;
             }
-        }
+        },
+
+        { name: 'IsSplittable', type: 'boolean', hidden: false, isDefault: false },
+
     ],
     proxy: {
         type: 'breeze',

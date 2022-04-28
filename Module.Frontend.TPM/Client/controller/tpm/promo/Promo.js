@@ -139,6 +139,9 @@
                 'promoeditorcustom #btn_promoActivity_step2': {
                     click: this.onPromoActivityButtonStep2Click
                 },
+                'promoeditorcustom #btn_splitpublish': {
+                    click: this.onSplitAndPublishButtonClick
+                },
                 'promoeditorcustom #savePromo': {
                     click: this.onSavePromoButtonClick
                 },
@@ -1425,6 +1428,7 @@
                         // Кнопки для изменения состояний промо
                         var promoActions = Ext.ComponentQuery.query('button[isPromoAction=true]');
 
+
                         promoeditorcustom.down('button[itemId=btn_promoBudgets]').setDisabled(true);
                         promoeditorcustom.down('button[itemId=btn_promoBudgets]').addCls('disabled');
 
@@ -1525,6 +1529,7 @@
                                 undoBtn.statusId = promoStatusData.value[i].Id;
                                 undoBtn.statusName = promoStatusData.value[i].Name;
                                 undoBtn.statusSystemName = promoStatusData.value[i].SystemName;
+                                
                             }
 
                             if (promoStatusData.value[i].SystemName == 'DraftPublished') {
@@ -1865,6 +1870,10 @@
         this.savePromo(button, false, true);
     },
 
+    onSplitAndPublishButtonClick: function (button) {
+        this.splitAndPublishPromo(button, this);
+    },
+
     onSaveAndClosePromoButtonClick: function (button) {
         this.savePromo(button, true);
     },
@@ -2171,7 +2180,7 @@
     onClosePromoButtonClick: function (button) {
         var window = button.up('promoeditorcustom');
 
-        if (window) {
+        if (window) {         
             window.close();
         }
     },
@@ -3555,7 +3564,7 @@
             success: function (response, req) {
                 if (req.response.length > 0 && req.response[0].value && req.response[0].value.length > 0)
                     App.Notify.pushInfo(req.response[0].value);
-
+                
                 var wasCreating = window.isCreating;
                 if (store) {
                     store.on({
@@ -3675,6 +3684,29 @@
             this.saveModel(model, window, close, reloadForm);
         } else {
             App.Notify.pushInfo(isModelComplete);
+        }
+    },
+
+    splitAndPublishPromo: function (button, controller) {
+        var window = button.up('promoeditorcustom');
+        var checkValid = controller.validatePromoModel(window);
+        if (checkValid === '') {
+            var record = controller.getRecord(window);
+
+            window.previousStatusId = window.statusId;
+            window.statusId = button.statusId;
+            window.promoName = controller.getPromoName(window);
+
+            var model = controller.buildPromoModel(window, record);
+            model.data.Name = window.promoName;
+            model.data.PromoStatusId = 'FE7FFE19-4754-E911-8BC8-08606E18DF3F';
+            model.data.IsSplittable = true;
+            controller.saveModel(model, window, true, true);
+            controller.updateStatusHistoryState();
+            App.Notify.pushInfo('Split of subranges completed successfully');
+
+        } else {
+            App.Notify.pushInfo(checkValid);
         }
     },
 
@@ -6410,6 +6442,7 @@
         };
         App.Util.makeRequestWithCallback('Promoes', 'CheckIfLogHasErrors', parameters, function (data) {
             var result = Ext.JSON.decode(data.httpResponse.data.value);
+            
             var but = Ext.ComponentQuery.query('promoeditorcustom #btn_showlog')[0];
             if (but && !but.isDestroyed) {
                 if (result.LogHasErrors) {

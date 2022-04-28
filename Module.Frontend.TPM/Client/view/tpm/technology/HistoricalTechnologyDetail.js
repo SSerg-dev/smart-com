@@ -46,6 +46,10 @@
             xtype: 'singlelinedisplayfield',
             name: 'SubBrand_code',
             fieldLabel: l10n.ns('tpm', 'Technology').value('SubBrand_code'),
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'IsSplittable',
+            fieldLabel: l10n.ns('tpm', 'Technology').value('IsSplittable'),
         }]
     }
 });

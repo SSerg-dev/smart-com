@@ -323,10 +323,19 @@ namespace Module.Host.TPM.Actions
             foreach (Technology newRecord in sourceRecords)
             {
                 newRecord.SubBrand_code = String.IsNullOrEmpty(newRecord.SubBrand_code) ? null : newRecord.SubBrand_code;
-                Technology oldRecord = technologies
-                    .FirstOrDefault(t
+                Technology oldRecord = new Technology();
+                if (newRecord.SubBrand_code == null)//SubBrand_code can be null or "" (empty)
+                {
+                    oldRecord = technologies
+                        .FirstOrDefault(t
+                        => (t.Tech_code == newRecord.Tech_code && (t.SubBrand_code == null || t.SubBrand_code == "") && !t.Disabled));
+                }
+                else
+                {
+                    oldRecord = technologies
+                        .FirstOrDefault(t
                         => (t.Tech_code == newRecord.Tech_code && t.SubBrand_code == newRecord.SubBrand_code && !t.Disabled));
-
+                }
                 if (oldRecord == null)
                 {
                     newRecord.Id = Guid.NewGuid();
@@ -335,7 +344,7 @@ namespace Module.Host.TPM.Actions
                 }
                 else
                 {
-                    if (oldRecord.Name != newRecord.Name || oldRecord.SubBrand != newRecord.SubBrand)
+                    if (oldRecord.Name != newRecord.Name || oldRecord.SubBrand != newRecord.SubBrand || oldRecord.IsSplittable != newRecord.IsSplittable)
                     {
                         toHisUpdate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(oldRecord, newRecord));
 
@@ -347,7 +356,8 @@ namespace Module.Host.TPM.Actions
                         oldRecord.Name = newRecord.Name;
                         oldRecord.Description_ru = newRecord.Description_ru;
                         oldRecord.SubBrand = newRecord.SubBrand;
-                        
+                        oldRecord.IsSplittable = newRecord.IsSplittable;
+
                         var newName = oldRecord.Name;
                         if (!String.IsNullOrEmpty(oldRecord.SubBrand))
                             newName = String.Format("{0} {1}", oldRecord.Name, oldRecord.SubBrand);

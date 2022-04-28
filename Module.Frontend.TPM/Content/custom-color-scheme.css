@@ -896,6 +896,18 @@ pre.code {
     color: white;
     text-align: center;
 }
+/*------------promo-split-button----------------*/
+.promo-split-button .x-btn-inner, .promo-split-button .x-btn-glyph {
+    color: black;
+    text-align: center;
+}
+/*----------------------------*/
+
+/*------------promo-split-button----------------*/
+.promo-split-button .x-btn-inner, .promo-split-button .x-btn-glyph {
+    color: white;
+    text-align: center;
+}
 /*----------------------------*/
 
 /*------------custom-date-button----------------*/

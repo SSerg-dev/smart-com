@@ -48,10 +48,6 @@
                     return l10n.ns('tpm', 'Technology').value('ValidateSubBrandRequired');
                 }
 
-                if ((SubCode.getValue() == "" || SubCode.getValue() == null) && (value != "" && value != null)) {
-                    return l10n.ns('tpm', 'Technology').value('ValidateSubBrandNotRequired');
-                }
-
                 return true;
             }
         }, {
@@ -66,6 +62,10 @@
                     me.up('editorform').down('[name = SubBrand]').validate();
                 }
             }
+        }, {
+            xtype: 'checkboxfield', allowBlank: true, allowOnlyWhitespace: true,
+            name: 'IsSplittable',
+            fieldLabel: l10n.ns('tpm', 'Technology').value('IsSplittable')
         }]
     }
 });  

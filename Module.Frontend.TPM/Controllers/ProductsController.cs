@@ -285,10 +285,10 @@ namespace Module.Frontend.TPM.Controllers
 
         [HttpPost]
         public IHttpActionResult GetIfAllProductsInSubrange(ODataActionParameters data)
-        {
+        {   
             try
             {
-                var answer = new List<Tuple<int, bool>>();
+                var answer = new List<Tuple<int, bool,bool>>();
                 if (data.ContainsKey("ProductIds") && data["ProductIds"] != null)
                 {
                     var productIdsString = data["ProductIds"] as string;
@@ -319,6 +319,9 @@ namespace Module.Frontend.TPM.Controllers
 
                     var ResultList = productIdsString.Split(new string[] { ";!;" }, StringSplitOptions.None).ToList();
                     var productIds = ResultList[0].Split(';').Select(Guid.Parse).ToList();
+                    // получить продукт и по нему получить технологию и вернуть для нее флаг IsSplitable 
+                    var product = Context.Set<Product>().Find(productIds.ElementAt(0));                   
+                    var isTechnolySplittable = Context.Set<Technology>().Where(t => t.Tech_code == product.Tech_code).Select(t => t.IsSplittable).FirstOrDefault();
                     var productTreeObjectIds = ResultList[1].Split(';').Select(Int32.Parse).ToList();
                     List<int> idL;
                     foreach (var productTreeObjectId in productTreeObjectIds)
@@ -329,11 +332,11 @@ namespace Module.Frontend.TPM.Controllers
                         var resultProductList = productsFromAssortmentMatrixForCurrentPromo != null ? filteredProducts.Intersect(productsFromAssortmentMatrixForCurrentPromo) : filteredProducts;
                         if (resultProductList.All(x => productIds.Contains(x.Id)))
                         {
-                            answer.Add(new Tuple<int, bool>(productTreeObjectId, true));
+                            answer.Add(new Tuple<int, bool, bool>(productTreeObjectId, true, isTechnolySplittable));
                         }
                         else
                         {
-                            answer.Add(new Tuple<int, bool>(productTreeObjectId, false));
+                            answer.Add(new Tuple<int, bool, bool>(productTreeObjectId, false, isTechnolySplittable));
                         }
                     }
                 }
@@ -632,7 +635,7 @@ namespace Module.Frontend.TPM.Controllers
             return Context.Set<AssortmentMatrix>().Where(x => !x.Disabled).Select(x => x.Product);
         }
 
-        private static List<Func<Product, bool>> GetExpressionList(IEnumerable<ProductTree> productTreeNodes)
+        public static List<Func<Product, bool>> GetExpressionList(IEnumerable<ProductTree> productTreeNodes)
         {
             var expressionsList = new List<Func<Product, bool>>();
             foreach (ProductTree node in productTreeNodes)
