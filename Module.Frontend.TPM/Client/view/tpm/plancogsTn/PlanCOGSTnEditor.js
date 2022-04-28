@@ -1,6 +1,6 @@
 ﻿Ext.define('App.view.tpm.plancogsTn.PlanCOGSTnEditor', {
     extend: 'App.view.core.common.EditorDetailWindow',
-    alias: 'widget.cogseditor',
+    alias: 'widget.plancogstneditor',
     width: 500,
     minWidth: 500,
     maxHeight: 500,

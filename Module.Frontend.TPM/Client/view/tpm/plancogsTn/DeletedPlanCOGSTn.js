@@ -111,7 +111,7 @@
     }, {
         xtype: 'editabledetailform',
         itemId: 'detailform',
-        model: 'App.model.tpm.cogs.DeletedCOGS',
+        model: 'App.model.tpm.plancogsTn.DeletedPlanCOGSTn',
         items: [{
             xtype: 'singlelinedisplayfield',
             name: 'DeletedDate',

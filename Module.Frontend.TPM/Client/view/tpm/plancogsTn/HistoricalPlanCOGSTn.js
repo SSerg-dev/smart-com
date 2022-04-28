@@ -1,6 +1,6 @@
 ﻿Ext.define('App.view.tpm.plancogsTn.HistoricalPlanCOGSTn', {
     extend: 'App.view.core.common.CombinedDirectoryPanel',
-    alias: 'widget.historicalcogs',
+    alias: 'widget.historicalplancogstn',
     title: l10n.ns('core', 'compositePanelTitles').value('historyPanelTitle'),
 
     dockedItems: [{

@@ -1,6 +1,6 @@
 ﻿Ext.define('App.view.tpm.actualcogsTn.DeletedActualCOGSTn', {
     extend: 'App.view.core.common.CombinedDirectoryPanel',
-    alias: 'widget.deletedactualcogs',
+    alias: 'widget.deletedactualcogstn',
     title: l10n.ns('core', 'compositePanelTitles').value('deletedPanelTitle'),
 
     dockedItems: [{

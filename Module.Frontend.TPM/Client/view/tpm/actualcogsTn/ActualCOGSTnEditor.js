@@ -1,6 +1,6 @@
 ﻿Ext.define('App.view.tpm.actualcogsTn.ActualCOGSTnEditor', {
     extend: 'App.view.core.common.EditorDetailWindow',
-    alias: 'widget.actualcogseditor',
+    alias: 'widget.actualcogstneditor',
     width: 500,
     minWidth: 500,
     maxHeight: 500,
