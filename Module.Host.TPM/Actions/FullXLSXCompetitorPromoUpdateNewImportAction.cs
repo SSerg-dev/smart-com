@@ -402,6 +402,9 @@ namespace Module.Host.TPM.Actions
                 else
                 {
                     toHisUpdate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(oldRecord, newRecord));
+                    oldRecord.Competitor = newRecord.Competitor;
+                    oldRecord.ClientTreeObjectId = context.Set<ClientTree>().First(x => x.ObjectId == newRecord.ClientTreeObjectId && x.EndDate == null).Id;
+                    oldRecord.CompetitorBrandTechId = newRecord.CompetitorBrandTechId;
                     oldRecord.Name = newRecord.Name;
                     oldRecord.Discount = newRecord.Discount;
                     oldRecord.Price = newRecord.Price;
