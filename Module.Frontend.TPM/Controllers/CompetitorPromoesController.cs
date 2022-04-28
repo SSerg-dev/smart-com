@@ -469,8 +469,8 @@ namespace Module.Frontend.TPM.Controllers
                 HandlerDataHelper.SaveIncomingArgument("File", file, data, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportCompetitorPromo), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportCompetitorPromo).Name, data, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportCompetitorCorrectionPromo), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportCompetitorCorrectionPromo).Name, data, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(CompetitorPromo), data, visible: false, throwIfNotExists: false);
 
                 LoopHandler handler = new LoopHandler()
