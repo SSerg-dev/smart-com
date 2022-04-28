@@ -76,21 +76,6 @@
             store.setFixedFilter('IsGrowthAccelerationFilter', {
                 operator: 'and',
                 rules: [
-                    //{
-                    //    operator: 'or',
-                    //    rules: [
-                    //        {
-                    //            property: 'MasterPromoId',
-                    //            operation: 'Equal',
-                    //            value: widget.PromoId
-                    //        },
-                    //        {
-                    //            property: 'MasterPromoId',
-                    //            operation: 'Equal',
-                    //            value: null
-                    //        },
-                    //    ]
-                    //},
                     {
                         property: "IsGrowthAcceleration",
                         operation: 'Equals',
@@ -110,7 +95,22 @@
                         property: 'Id',
                         operation: 'NotEqual',
                         value: widget.PromoId
-                    }
+                    },
+                    //{
+                    //    operator: 'or',
+                    //    rules: [
+                    //        {
+                    //            property: 'MasterPromoId',
+                    //            operation: 'Equal',
+                    //            value: widget.PromoId
+                    //        },
+                    //        {
+                    //            property: 'MasterPromoId',
+                    //            operation: 'Equal',
+                    //            value: null
+                    //        },
+                    //    ]
+                    //},
                 ]
             });
         }

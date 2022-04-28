@@ -853,6 +853,42 @@
         var buttonColor = '#e6fcf9';
         return { filter: filter, widget: widget, text: text, panel: panel, image: image, color: color, buttonColor: buttonColor };
     },
+    getGaInExchangeApprovalDemandFinance: function () {
+        var promoHelperController = App.app.getController('tpm.promo.PromoHelper');
+
+        var filter = promoHelperController.getOnApprovalInExchangeFilterDF();
+        var widget = 'promo';
+        var text = "GA InExchange On approval";
+        var panel = 'panel1';
+        var image = 'workflow.png';
+        var color = '#00009b';
+        var buttonColor = '#eef2fc';
+        return { filter: filter, widget: widget, text: text, panel: panel, image: image, color: color, buttonColor: buttonColor };
+    },
+    getGaInExchangeApprovalDemandPlanning: function () {
+        var promoHelperController = App.app.getController('tpm.promo.PromoHelper');
+
+        var filter = promoHelperController.getOnApprovalInExchangeFilterDP();
+        var widget = 'promo';
+        var text = "GA InExchange On approval";
+        var panel = 'panel1';
+        var image = 'workflow.png';
+        var color = '#00009b';
+        var buttonColor = '#eef2fc';
+        return { filter: filter, widget: widget, text: text, panel: panel, image: image, color: color, buttonColor: buttonColor };
+    },
+    getGaInExchangeApprovalCMManager: function () {
+        var promoHelperController = App.app.getController('tpm.promo.PromoHelper');
+
+        var filter = promoHelperController.getOnApprovalInExchangeFilterCMM();
+        var widget = 'promo';
+        var text = "GA InExchange On approval";
+        var panel = 'panel1';
+        var image = 'workflow.png';
+        var color = '#0e0d9e';
+        var buttonColor = '#eef2fc';
+        return { filter: filter, widget: widget, text: text, panel: panel, image: image, color: color, buttonColor: buttonColor };
+    },
     getCard: function (window) {
         var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
         var view = window.up('userdashboard');
@@ -889,7 +925,7 @@
                         button.down('#glyphRight').style = 'background-color:' + buttons.color;
                         button.down('#glyphRight').setSrc('/Bundles/style/images/' + buttons.image);
                         if (buttons.style) {
-                            button.width = '50.5%';
+                            //button.width = '50.5%';
 
                             if (result[i] == 0) {
                                 button.down('#CountLabel').addCls('panel-time-critical-zero');
