@@ -1,6 +1,6 @@
 ﻿Ext.define('App.view.tpm.plancogsTn.DeletedPlanCOGSTnDetail', {
     extend: 'App.view.core.common.EditorDetailWindow',
-    alias: 'widget.deletedcogsdetail',
+    alias: 'widget.deletedplancogsdetailtn',
     width: 500,
     minWidth: 500,
     maxHeight: 600,

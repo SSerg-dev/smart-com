@@ -1,7 +1,7 @@
 ﻿Ext.define('App.model.tpm.actualcogsTn.DeletedActualCOGSTn', {
     extend: 'Ext.data.Model',
     idProperty: 'Id',
-    breezeEntityType: 'ActualCOGS',
+    breezeEntityType: 'ActualCOGSTn',
     fields: [
         { name: 'Id', hidden: true },
         { name: 'DeletedDate', type: 'date', isDefault: true },

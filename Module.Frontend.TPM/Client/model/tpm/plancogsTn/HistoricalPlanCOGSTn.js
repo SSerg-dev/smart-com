@@ -1,7 +1,7 @@
 ﻿Ext.define('App.model.tpm.plancogsTn.HistoricalPlanCOGSTn', {
     extend: 'Ext.data.Model',
     idProperty: '_Id',
-    breezeEntityType: 'COGS',
+    breezeEntityType: 'HistoricalPlanCOGSTn',
     fields: [
         { name: '_Id', type: 'string', hidden: true },
         { name: '_ObjectId', hidden: true },

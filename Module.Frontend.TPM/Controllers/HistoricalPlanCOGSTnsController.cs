@@ -26,7 +26,7 @@ namespace Module.Frontend.TPM.Controllers
             AllowedQueryOptions = AllowedQueryOptions.All,
             EnableConstantParameterization = false,
             MaxTop = 1024)]
-        public IQueryable<HistoricalPlanCOGSTn> GetHistoricalCOGSTns(Guid? id)
+        public IQueryable<HistoricalPlanCOGSTn> GetHistoricalPlanCOGSTns(Guid? id)
         {
             return HistoryReader.GetAllById<HistoricalPlanCOGSTn>(id.ToString());
         }

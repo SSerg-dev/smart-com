@@ -4,43 +4,43 @@
     init: function () {
         this.listen({
             component: {
-                'deletedcogsplanTn directorygrid': {
+                'deletedplancogsTn directorygrid': {
                     load: this.onGridStoreLoad
                 },
-                'deletedcogsplanTn directorygrid': {
+                'deletedplancogsTn directorygrid': {
                     itemdblclick: this.onDetailButtonClick,
                     selectionchange: this.onGridSelectionChange,
                     afterrender: this.onGridAfterrender,
                     extfilterchange: this.onExtFilterChange
                 },
-                'deletedcogsplanTn #datatable': {
+                'deletedplancogsTn #datatable': {
                     activate: this.onActivateCard
                 },
-                'deletedcogsplanTn #detailform': {
+                'deletedplancogsTn #detailform': {
                     activate: this.onActivateCard
                 },
-                'deletedcogsplanTn #detail': {
+                'deletedplancogsTn #detail': {
                     click: this.switchToDetailForm
                 },
-                'deletedcogsplanTn #table': {
+                'deletedplancogsTn #table': {
                     click: this.onTableButtonClick
                 },
-                'deletedcogsplanTn #prev': {
+                'deletedplancogsTn #prev': {
                     click: this.onPrevButtonClick
                 },
-                'deletedcogsplanTn #next': {
+                'deletedplancogsTn #next': {
                     click: this.onNextButtonClick
                 },
-                'deletedcogsplanTn #extfilterbutton': {
+                'deletedplancogsTn #extfilterbutton': {
                     click: this.onFilterButtonClick
                 },
-                'deletedcogsplanTn #historybutton': {
+                'deletedplancogsTn #historybutton': {
                     click: this.onHistoryButtonClick
                 },
-                'deletedcogsplanTn #refresh': {
+                'deletedplancogsTn #refresh': {
                     click: this.onRefreshButtonClick
                 },
-                'deletedcogsplanTn #close': {
+                'deletedplancogsTn #close': {
                     click: this.onCloseButtonClick
                 }
             }
