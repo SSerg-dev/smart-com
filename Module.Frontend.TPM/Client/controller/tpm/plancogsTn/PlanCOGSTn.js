@@ -1,72 +1,72 @@
-﻿Ext.define('App.controller.tpm.plancogsTn.PlanCOGSTn', {
+﻿Ext.define('App.controller.tpm.plancogstn.PlanCOGSTn', {
     extend: 'App.controller.core.AssociatedDirectory',
     mixins: ['App.controller.core.ImportExportLogic'],
 
     init: function () {
         this.listen({
             component: {
-                'plancogsTn[isSearch!=true] directorygrid': {
+                'plancogstn[isSearch!=true] directorygrid': {
                     load: this.onGridStoreLoad,
                     itemdblclick: this.onDetailButtonClick
                 },
-                'plancogsTn directorygrid': {
+                'plancogstn directorygrid': {
                     selectionchange: this.onGridSelectionChange,
                     afterrender: this.onGridAfterrender,
                     extfilterchange: this.onExtFilterChange
                 },
-                'plancogsTn #datatable': {
+                'plancogstn #datatable': {
                     activate: this.onActivateCard
                 },
-                'plancogsTn #detailform': {
+                'plancogstn #detailform': {
                     activate: this.onActivateCard
                 },
-                'plancogsTn #detailform #prev': {
+                'plancogstn #detailform #prev': {
                     click: this.onPrevButtonClick
                 },
-                'plancogsTn #detailform #next': {
+                'plancogstn #detailform #next': {
                     click: this.onNextButtonClick
                 },
-                'plancogsTn #detail': {
+                'plancogstn #detail': {
                     click: this.switchToDetailForm
                 },
-                'plancogsTn #table': {
+                'plancogstn #table': {
                     click: this.onTableButtonClick
                 },
-                'plancogsTn #extfilterbutton': {
+                'plancogstn #extfilterbutton': {
                     click: this.onFilterButtonClick
                 },
-                'plancogsTn #deletedbutton': {
+                'plancogstn #deletedbutton': {
                     click: this.onDeletedButtonClick
                 },
-                'plancogsTn #createbutton': {
+                'plancogstn #createbutton': {
                     click: this.onCreateButtonClick
                 },
-                'plancogsTn #updatebutton': {
+                'plancogstn #updatebutton': {
                     click: this.onUpdateButtonClick
                 },
-                'plancogsTn #deletebutton': {
+                'plancogstn #deletebutton': {
                     click: this.onDeleteButtonClick
                 },
-                'plancogsTn #historybutton': {
+                'plancogstn #historybutton': {
                     click: this.onHistoryButtonClick
                 },
-                'plancogsTn #refresh': {
+                'plancogstn #refresh': {
                     click: this.onRefreshButtonClick
                 },
-                'plancogsTn #close': {
+                'plancogstn #close': {
                     click: this.onCloseButtonClick
                 },
                 // import/export
-                'plancogsTn #exportbutton': {
+                'plancogstn #exportbutton': {
                     click: this.onExportButtonClick
                 },
-                'plancogsTn #loadimportbutton': {
+                'plancogstn #loadimportbutton': {
                     click: this.onShowImportFormButtonClick
                 },
-                'plancogsTn #loadimporttemplatebutton': {
+                'plancogstn #loadimporttemplatebutton': {
                     click: this.onLoadImportTemplateButtonClick
                 },
-                'plancogsTn #applyimportbutton': {
+                'plancogstn #applyimportbutton': {
                     click: this.onApplyImportButtonClick
                 }
             }

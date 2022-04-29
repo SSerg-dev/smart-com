@@ -1,4 +1,4 @@
-﻿Ext.define('App.view.tpm.plancogsTn.HistoricalPlanCOGSTnDetail', {
+﻿Ext.define('App.view.tpm.plancogstn.HistoricalPlanCOGSTnDetail', {
     extend: 'App.view.core.common.EditorDetailWindow',
     alias: 'widget.historicalplancogstndetail',
     width: 800,

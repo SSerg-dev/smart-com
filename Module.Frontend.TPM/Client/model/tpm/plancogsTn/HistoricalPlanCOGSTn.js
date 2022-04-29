@@ -1,4 +1,4 @@
-﻿Ext.define('App.model.tpm.plancogsTn.HistoricalPlanCOGSTn', {
+﻿Ext.define('App.model.tpm.plancogstn.HistoricalPlanCOGSTn', {
     extend: 'Ext.data.Model',
     idProperty: '_Id',
     breezeEntityType: 'HistoricalPlanCOGSTn',

@@ -1,4 +1,4 @@
-﻿Ext.define('App.view.tpm.plancogsTn.ImportPlanCOGSTnParamForm', {
+﻿Ext.define('App.view.tpm.plancogstn.ImportPlanCOGSTnParamForm', {
     extend: 'App.view.core.common.ImportParamForm',
     alias: 'widget.importforecastparamform',
 

@@ -1,4 +1,4 @@
-﻿Ext.define('App.view.tpm.plancogsTn.HistoricalPlanCOGSTn', {
+﻿Ext.define('App.view.tpm.plancogstn.HistoricalPlanCOGSTn', {
     extend: 'App.view.core.common.CombinedDirectoryPanel',
     alias: 'widget.historicalplancogstn',
     title: l10n.ns('core', 'compositePanelTitles').value('historyPanelTitle'),
@@ -14,13 +14,13 @@
         editorModel: 'Core.form.EditorDetailWindowModel',
         store: {
             type: 'directorystore',
-            model: 'App.model.tpm.plancogsTn.HistoricalPlanCOGSTn',
+            model: 'App.model.tpm.plancogstn.HistoricalPlanCOGSTn',
             storeId: 'historicalplancogstnstore',
             extendedFilter: {
                 xclass: 'App.ExtFilterContext',
                 supportedModels: [{
                     xclass: 'App.ExtSelectionFilterModel',
-                    model: 'App.model.tpm.plancogsTn.HistoricalPlanCOGSTn',
+                    model: 'App.model.tpm.plancogstn.HistoricalPlanCOGSTn',
                     modelId: 'efselectionmodel'
                 }]
             },
@@ -74,7 +74,7 @@
     }, {
         xtype: 'editabledetailform',
         itemId: 'detailform',
-        model: 'App.model.tpm.plancogsTn.HistoricalPlanCOGSTn',
+        model: 'App.model.tpm.plancogstn.HistoricalPlanCOGSTn',
         items: [{
             xtype: 'singlelinedisplayfield',
             name: '_User',

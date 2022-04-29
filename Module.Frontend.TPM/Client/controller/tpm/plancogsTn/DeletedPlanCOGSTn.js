@@ -1,46 +1,46 @@
-﻿Ext.define('App.controller.tpm.plancogsTn.DeletedPlanCOGSTn', {
+﻿Ext.define('App.controller.tpm.plancogstn.DeletedPlanCOGSTn', {
     extend: 'App.controller.core.CombinedDirectory',
 
     init: function () {
         this.listen({
             component: {
-                'deletedplancogsTn directorygrid': {
+                'deletedplancogstn directorygrid': {
                     load: this.onGridStoreLoad
                 },
-                'deletedplancogsTn directorygrid': {
+                'deletedplancogstn directorygrid': {
                     itemdblclick: this.onDetailButtonClick,
                     selectionchange: this.onGridSelectionChange,
                     afterrender: this.onGridAfterrender,
                     extfilterchange: this.onExtFilterChange
                 },
-                'deletedplancogsTn #datatable': {
+                'deletedplancogstn #datatable': {
                     activate: this.onActivateCard
                 },
-                'deletedplancogsTn #detailform': {
+                'deletedplancogstn #detailform': {
                     activate: this.onActivateCard
                 },
-                'deletedplancogsTn #detail': {
+                'deletedplancogstn #detail': {
                     click: this.switchToDetailForm
                 },
-                'deletedplancogsTn #table': {
+                'deletedplancogstn #table': {
                     click: this.onTableButtonClick
                 },
-                'deletedplancogsTn #prev': {
+                'deletedplancogstn #prev': {
                     click: this.onPrevButtonClick
                 },
-                'deletedplancogsTn #next': {
+                'deletedplancogstn #next': {
                     click: this.onNextButtonClick
                 },
-                'deletedplancogsTn #extfilterbutton': {
+                'deletedplancogstn #extfilterbutton': {
                     click: this.onFilterButtonClick
                 },
-                'deletedplancogsTn #historybutton': {
+                'deletedplancogstn #historybutton': {
                     click: this.onHistoryButtonClick
                 },
-                'deletedplancogsTn #refresh': {
+                'deletedplancogstn #refresh': {
                     click: this.onRefreshButtonClick
                 },
-                'deletedplancogsTn #close': {
+                'deletedplancogstn #close': {
                     click: this.onCloseButtonClick
                 }
             }

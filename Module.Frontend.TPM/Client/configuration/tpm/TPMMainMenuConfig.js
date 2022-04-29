@@ -354,13 +354,13 @@
 			tooltip: l10n.ns('tpm', 'mainmenu').value('PlanCOGSTn'),
 			glyph: 0xf152,
 			roles: ['Administrator', 'FunctionalExpert', 'DemandFinance', 'SuperReader', 'CustomerMarketing', 'CMManager', 'SupportAdministrator'],
-			widget: 'plancogsTn'
+			widget: 'plancogstn'
 		}, {
 			text: l10n.ns('tpm', 'mainmenu').value('ActualCOGSTn'),
 			tooltip: l10n.ns('tpm', 'mainmenu').value('ActualCOGSTn'),
 			glyph: 0xf152,
 			roles: ['Administrator', 'FunctionalExpert', 'DemandFinance', 'SuperReader', 'CustomerMarketing', 'CMManager', 'SupportAdministrator'],
-			widget: 'actualcogsTn'
+			widget: 'actualcogstn'
 		}, {
 			text: l10n.ns('tpm', 'mainmenu').value('TradeInvestment'),
 			tooltip: l10n.ns('tpm', 'mainmenu').value('TradeInvestment'),

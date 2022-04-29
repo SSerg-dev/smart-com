@@ -1,4 +1,4 @@
-﻿Ext.define('App.view.tpm.plancogsTn.DeletedPlanCOGSTn', {
+﻿Ext.define('App.view.tpm.plancogstn.DeletedPlanCOGSTn', {
     extend: 'App.view.core.common.CombinedDirectoryPanel',
     alias: 'widget.deletedplancogstn',
     title: l10n.ns('core', 'compositePanelTitles').value('deletedPanelTitle'),
@@ -14,13 +14,13 @@
         editorModel: 'Core.form.EditorDetailWindowModel',
         store: {
             type: 'directorystore',
-            model: 'App.model.tpm.plancogsTn.DeletedPlanCOGSTn',
+            model: 'App.model.tpm.plancogstn.DeletedPlanCOGSTn',
             storeId: 'deletedplancogstnstore',
             extendedFilter: {
                 xclass: 'App.ExtFilterContext',
                 supportedModels: [{
                     xclass: 'App.ExtSelectionFilterModel',
-                    model: 'App.model.tpm.plancogsTn.DeletedPlanCOGSTn',
+                    model: 'App.model.tpm.plancogstn.DeletedPlanCOGSTn',
                     modelId: 'efselectionmodel'
                 }, {
                     xclass: 'App.ExtTextFilterModel',
@@ -111,7 +111,7 @@
     }, {
         xtype: 'editabledetailform',
         itemId: 'detailform',
-        model: 'App.model.tpm.plancogsTn.DeletedPlanCOGSTn',
+        model: 'App.model.tpm.plancogstn.DeletedPlanCOGSTn',
         items: [{
             xtype: 'singlelinedisplayfield',
             name: 'DeletedDate',

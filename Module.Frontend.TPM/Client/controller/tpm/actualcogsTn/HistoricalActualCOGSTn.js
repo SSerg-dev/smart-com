@@ -1,43 +1,43 @@
-﻿Ext.define('App.controller.tpm.actualcogsTn.HistoricalActualCOGSTn', {
+﻿Ext.define('App.controller.tpm.actualcogstn.HistoricalActualCOGSTn', {
     extend: 'App.controller.core.CombinedDirectory',
 
     init: function () {
         this.listen({
             component: {
-                'historicalactualcogsTn directorygrid': {
+                'historicalactualcogstn directorygrid': {
                     load: this.onGridStoreLoad
                 },
-                'historicalactualcogsTn directorygrid': {
+                'historicalactualcogstn directorygrid': {
                     itemdblclick: this.onDetailButtonClick,
                     selectionchange: this.onGridSelectionChange,
                     afterrender: this.onGridAfterrender,
                     extfilterchange: this.onExtFilterChange
                 },
-                'historicalactualcogsTn #datatable': {
+                'historicalactualcogstn #datatable': {
                     activate: this.onActivateCard
                 },
-                'historicalactualcogsTn #detailform': {
+                'historicalactualcogstn #detailform': {
                     activate: this.onActivateCard
                 },
-                'historicalactualcogsTn #detail': {
+                'historicalactualcogstn #detail': {
                     click: this.switchToDetailForm
                 },
-                'historicalactualcogsTn #table': {
+                'historicalactualcogstn #table': {
                     click: this.onTableButtonClick
                 },
-                'historicalactualcogsTn #prev': {
+                'historicalactualcogstn #prev': {
                     click: this.onPrevButtonClick
                 },
-                'historicalactualcogsTn #next': {
+                'historicalactualcogstn #next': {
                     click: this.onNextButtonClick
                 },
-                'historicalactualcogsTn #extfilterbutton': {
+                'historicalactualcogstn #extfilterbutton': {
                     click: this.onFilterButtonClick
                 },
-                'historicalactualcogsTn #refresh': {
+                'historicalactualcogstn #refresh': {
                     click: this.onRefreshButtonClick
                 },
-                'historicalactualcogsTn #close': {
+                'historicalactualcogstn #close': {
                     click: this.onCloseButtonClick
                 }
             }

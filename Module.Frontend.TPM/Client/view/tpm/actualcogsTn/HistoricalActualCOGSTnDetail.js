@@ -1,4 +1,4 @@
-﻿Ext.define('App.view.tpm.actualcogsTn.HistoricalActualCOGSTnDetail', {
+﻿Ext.define('App.view.tpm.actualcogstn.HistoricalActualCOGSTnDetail', {
     extend: 'App.view.core.common.EditorDetailWindow',
     alias: 'widget.historicalactualcogstndetail',
     width: 800,

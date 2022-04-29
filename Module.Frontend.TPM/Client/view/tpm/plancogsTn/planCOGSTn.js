@@ -1,6 +1,6 @@
-﻿Ext.define('App.view.tpm.plancogsTn.PlanCOGSTn', {
+﻿Ext.define('App.view.tpm.plancogstn.PlanCOGSTn', {
     extend: 'App.view.core.common.CombinedDirectoryPanel',
-    alias: 'widget.plancogsTn',
+    alias: 'widget.plancogstn',
     title: l10n.ns('tpm', 'compositePanelTitles').value('PlanCOGSTn'),
 
     customHeaderItems: [
@@ -61,13 +61,13 @@
         editorModel: 'Core.form.EditorDetailWindowModel',
         store: {
             type: 'directorystore',
-            model: 'App.model.tpm.plancogsTn.PlanCOGSTn',
+            model: 'App.model.tpm.plancogstn.PlanCOGSTn',
             storeId: 'plancogstnstore',
             extendedFilter: {
                 xclass: 'App.ExtFilterContext',
                 supportedModels: [{
                     xclass: 'App.ExtSelectionFilterModel',
-                    model: 'App.model.tpm.plancogsTn.PlanCOGSTn',
+                    model: 'App.model.tpm.plancogstn.PlanCOGSTn',
                     modelId: 'efselectionmodel'
                 }, {
                     xclass: 'App.ExtTextFilterModel',
@@ -152,7 +152,7 @@
     }, {
         xtype: 'editabledetailform',
         itemId: 'detailform',
-        model: 'App.model.tpm.plancogsTn.PlanCOGSTn',
+        model: 'App.model.tpm.plancogstn.PlanCOGSTn',
         items: [{
             xtype: 'datefield',
             name: 'StartDate',

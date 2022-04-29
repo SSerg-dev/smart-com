@@ -1,4 +1,4 @@
-﻿Ext.define('App.view.tpm.actualcogsTn.HistoricalActualCOGSTn', {
+﻿Ext.define('App.view.tpm.actualcogstn.HistoricalActualCOGSTn', {
     extend: 'App.view.core.common.CombinedDirectoryPanel',
     alias: 'widget.historicalactualcogstn',
     title: l10n.ns('core', 'compositePanelTitles').value('historyPanelTitle'),
@@ -14,13 +14,13 @@
         editorModel: 'Core.form.EditorDetailWindowModel',
         store: {
             type: 'directorystore',
-            model: 'App.model.tpm.actualcogsTn.HistoricalActualCOGSTn',
+            model: 'App.model.tpm.actualcogstn.HistoricalActualCOGSTn',
             storeId: 'historicalactualcogstnstore',
             extendedFilter: {
                 xclass: 'App.ExtFilterContext',
                 supportedModels: [{
                     xclass: 'App.ExtSelectionFilterModel',
-                    model: 'App.model.tpm.actualcogsTn.HistoricalActualCOGSTn',
+                    model: 'App.model.tpm.actualcogstn.HistoricalActualCOGSTn',
                     modelId: 'efselectionmodel'
                 }]
             },
@@ -74,7 +74,7 @@
     }, {
         xtype: 'editabledetailform',
         itemId: 'detailform',
-        model: 'App.model.tpm.actualcogsTn.HistoricalActualCOGSTn',
+        model: 'App.model.tpm.actualcogstn.HistoricalActualCOGSTn',
         items: [{
             xtype: 'singlelinedisplayfield',
             name: '_User',

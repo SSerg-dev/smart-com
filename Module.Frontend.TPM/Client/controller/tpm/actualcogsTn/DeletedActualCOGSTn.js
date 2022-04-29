@@ -1,46 +1,46 @@
-﻿Ext.define('App.controller.tpm.actualcogsTn.DeletedActualCOGSTn', {
+﻿Ext.define('App.controller.tpm.actualcogstn.DeletedActualCOGSTn', {
     extend: 'App.controller.core.CombinedDirectory',
 
     init: function () {
         this.listen({
             component: {
-                'deletedactualcogsTn directorygrid': {
+                'deletedactualcogstn directorygrid': {
                     load: this.onGridStoreLoad
                 },
-                'deletedactualcogsTn directorygrid': {
+                'deletedactualcogstn directorygrid': {
                     itemdblclick: this.onDetailButtonClick,
                     selectionchange: this.onGridSelectionChange,
                     afterrender: this.onGridAfterrender,
                     extfilterchange: this.onExtFilterChange
                 },
-                'deletedactualcogsTn #datatable': {
+                'deletedactualcogstn #datatable': {
                     activate: this.onActivateCard
                 },
-                'deletedactualcogsTn #detailform': {
+                'deletedactualcogstn #detailform': {
                     activate: this.onActivateCard
                 },
-                'deletedactualcogsTn #detail': {
+                'deletedactualcogstn #detail': {
                     click: this.switchToDetailForm
                 },
-                'deletedactualcogsTn #table': {
+                'deletedactualcogstn #table': {
                     click: this.onTableButtonClick
                 },
-                'deletedactualcogsTn #prev': {
+                'deletedactualcogstn #prev': {
                     click: this.onPrevButtonClick
                 },
-                'deletedactualcogsTn #next': {
+                'deletedactualcogstn #next': {
                     click: this.onNextButtonClick
                 },
-                'deletedactualcogsTn #extfilterbutton': {
+                'deletedactualcogstn #extfilterbutton': {
                     click: this.onFilterButtonClick
                 },
-                'deletedactualcogsTn #historybutton': {
+                'deletedactualcogstn #historybutton': {
                     click: this.onHistoryButtonClick
                 },
-                'deletedactualcogsTn #refresh': {
+                'deletedactualcogstn #refresh': {
                     click: this.onRefreshButtonClick
                 },
-                'deletedactualcogsTn #close': {
+                'deletedactualcogstn #close': {
                     click: this.onCloseButtonClick
                 }
             }

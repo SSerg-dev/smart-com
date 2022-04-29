@@ -1,72 +1,72 @@
-﻿Ext.define('App.controller.tpm.actualcogsTn.ActualCOGSTn', {
+﻿Ext.define('App.controller.tpm.actualcogstn.ActualCOGSTn', {
     extend: 'App.controller.core.AssociatedDirectory',
     mixins: ['App.controller.core.ImportExportLogic'],
 
     init: function () {
         this.listen({
             component: {
-                'actualcogsTn[isSearch!=true] directorygrid': {
+                'actualcogstn[isSearch!=true] directorygrid': {
                     load: this.onGridStoreLoad,
                     itemdblclick: this.onDetailButtonClick
                 },
-                'actualcogsTn directorygrid': {
+                'actualcogstn directorygrid': {
                     selectionchange: this.onGridSelectionChange,
                     afterrender: this.onGridAfterrender,
                     extfilterchange: this.onExtFilterChange
                 },
-                'actualcogsTn #datatable': {
+                'actualcogstn #datatable': {
                     activate: this.onActivateCard
                 },
-                'actualcogsTn #detailform': {
+                'actualcogstn #detailform': {
                     activate: this.onActivateCard
                 },
-                'actualcogsTn #detailform #prev': {
+                'actualcogstn #detailform #prev': {
                     click: this.onPrevButtonClick
                 },
-                'actualcogsTn #detailform #next': {
+                'actualcogstn #detailform #next': {
                     click: this.onNextButtonClick
                 },
-                'actualcogsTn #detail': {
+                'actualcogstn #detail': {
                     click: this.switchToDetailForm
                 },
-                'actualcogsTn #table': {
+                'actualcogstn #table': {
                     click: this.onTableButtonClick
                 },
-                'actualcogsTn #extfilterbutton': {
+                'actualcogstn #extfilterbutton': {
                     click: this.onFilterButtonClick
                 },
-                'actualcogsTn #deletedbutton': {
+                'actualcogstn #deletedbutton': {
                     click: this.onDeletedButtonClick
                 },
-                'actualcogsTn #createbutton': {
+                'actualcogstn #createbutton': {
                     click: this.onCreateButtonClick
                 },
-                'actualcogsTn #updatebutton': {
+                'actualcogstn #updatebutton': {
                     click: this.onUpdateButtonClick
                 },
-                'actualcogsTn #deletebutton': {
+                'actualcogstn #deletebutton': {
                     click: this.onDeleteButtonClick
                 },
-                'actualcogsTn #historybutton': {
+                'actualcogstn #historybutton': {
                     click: this.onHistoryButtonClick
                 },
-                'actualcogsTn #refresh': {
+                'actualcogstn #refresh': {
                     click: this.onRefreshButtonClick
                 },
-                'actualcogsTn #close': {
+                'actualcogstn #close': {
                     click: this.onCloseButtonClick
                 },
                 // import/export
-                'actualcogsTn #exportbutton': {
+                'actualcogstn #exportbutton': {
                     click: this.onExportButtonClick
                 },
-                'actualcogsTn #loadimportbutton': {
+                'actualcogstn #loadimportbutton': {
                     click: this.onShowImportFormButtonClick
                 },
-                'actualcogsTn #loadimporttemplatebutton': {
+                'actualcogstn #loadimporttemplatebutton': {
                     click: this.onLoadImportTemplateButtonClick
                 },
-                'actualcogsTn #applyimportbutton': {
+                'actualcogstn #applyimportbutton': {
                     click: this.onApplyImportButtonClick
                 },
 
@@ -96,7 +96,7 @@
     },
 
     onRecalculatePreviousYearButtonClick: function (button) {
-        var actualCogsTnPanel = button.up('actualcogsTn'),
+        var actualCogsTnPanel = button.up('actualcogstn'),
             parameters = {};
 
         actualCogsTnPanel.setLoading(true);

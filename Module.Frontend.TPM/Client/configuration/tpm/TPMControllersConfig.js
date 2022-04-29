@@ -242,13 +242,13 @@
     'tpm.actualcogs.DeletedActualCOGS',
     'tpm.actualcogs.HistoricalActualCOGS',
 
-    'tpm.plancogsTn.PlanCOGSTn',
-    'tpm.plancogsTn.DeletedPlanCOGSTn',
-    'tpm.plancogsTn.HistoricalPlanCOGSTn',
+    'tpm.plancogstn.PlanCOGSTn',
+    'tpm.plancogstn.DeletedPlanCOGSTn',
+    'tpm.plancogstn.HistoricalPlanCOGSTn',
 
-    'tpm.actualcogsTn.ActualCOGSTn',
-    'tpm.actualcogsTn.DeletedActualCOGSTn',
-    'tpm.actualcogsTn.HistoricalActualCOGSTn',
+    'tpm.actualcogstn.ActualCOGSTn',
+    'tpm.actualcogstn.DeletedActualCOGSTn',
+    'tpm.actualcogstn.HistoricalActualCOGSTn',
 
     'tpm.actualtradeinvestment.ActualTradeInvestment',
     'tpm.actualtradeinvestment.DeletedActualTradeInvestment',

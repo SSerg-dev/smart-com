@@ -1,6 +1,6 @@
-﻿Ext.define('App.view.tpm.actualcogsTn.ActualCOGSTn', {
+﻿Ext.define('App.view.tpm.actualcogstn.ActualCOGSTn', {
     extend: 'App.view.core.common.CombinedDirectoryPanel',
-    alias: 'widget.actualcogsTn',
+    alias: 'widget.actualcogstn',
     title: l10n.ns('tpm', 'compositePanelTitles').value('ActualCOGSTn'),
 
     customHeaderItems: [
@@ -120,13 +120,13 @@
         editorModel: 'Core.form.EditorDetailWindowModel',
         store: {
             type: 'directorystore',
-            model: 'App.model.tpm.actualcogsTn.ActualCOGSTn',
+            model: 'App.model.tpm.actualcogstn.ActualCOGSTn',
             storeId: 'actualcogstnstore',
             extendedFilter: {
                 xclass: 'App.ExtFilterContext',
                 supportedModels: [{
                     xclass: 'App.ExtSelectionFilterModel',
-                    model: 'App.model.tpm.actualcogsTn.ActualCOGSTn',
+                    model: 'App.model.tpm.actualcogstn.ActualCOGSTn',
                     modelId: 'efselectionmodel'
                 }, {
                     xclass: 'App.ExtTextFilterModel',
@@ -210,7 +210,7 @@
     }, {
         xtype: 'editabledetailform',
         itemId: 'detailform',
-        model: 'App.model.tpm.actualcogsTn.ActualCOGSTn',
+        model: 'App.model.tpm.actualcogstn.ActualCOGSTn',
         items: [{
             xtype: 'datefield',
             name: 'StartDate',

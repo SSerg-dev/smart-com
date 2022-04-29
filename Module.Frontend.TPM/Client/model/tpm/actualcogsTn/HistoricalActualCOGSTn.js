@@ -1,4 +1,4 @@
-﻿Ext.define('App.model.tpm.actualcogsTn.HistoricalActualCOGSTn', {
+﻿Ext.define('App.model.tpm.actualcogstn.HistoricalActualCOGSTn', {
     extend: 'Ext.data.Model',
     idProperty: '_Id',
     breezeEntityType: 'HistoricalActualCOGSTn',

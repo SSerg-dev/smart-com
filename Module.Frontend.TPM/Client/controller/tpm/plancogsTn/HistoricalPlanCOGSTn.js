@@ -1,43 +1,43 @@
-﻿Ext.define('App.controller.tpm.plancogsTn.HistoricalPlanCOGSTn', {
+﻿Ext.define('App.controller.tpm.plancogstn.HistoricalPlanCOGSTn', {
     extend: 'App.controller.core.CombinedDirectory',
 
     init: function () {
         this.listen({
             component: {
-                'historicalplancogsTn directorygrid': {
+                'historicalplancogstn directorygrid': {
                     load: this.onGridStoreLoad
                 },
-                'historicalplancogsTn directorygrid': {
+                'historicalplancogstn directorygrid': {
                     itemdblclick: this.onDetailButtonClick,
                     selectionchange: this.onGridSelectionChange,
                     afterrender: this.onGridAfterrender,
                     extfilterchange: this.onExtFilterChange
                 },
-                'historicalplancogsTn #datatable': {
+                'historicalplancogstn #datatable': {
                     activate: this.onActivateCard
                 },
-                'historicalplancogsTn #detailform': {
+                'historicalplancogstn #detailform': {
                     activate: this.onActivateCard
                 },
-                'historicalplancogsTn #detail': {
+                'historicalplancogstn #detail': {
                     click: this.switchToDetailForm
                 },
-                'historicalplancogsTn #table': {
+                'historicalplancogstn #table': {
                     click: this.onTableButtonClick
                 },
-                'historicalplancogsTn #prev': {
+                'historicalplancogstn #prev': {
                     click: this.onPrevButtonClick
                 },
-                'historicalplancogsTn #next': {
+                'historicalplancogstn #next': {
                     click: this.onNextButtonClick
                 },
-                'historicalplancogsTn #extfilterbutton': {
+                'historicalplancogstn #extfilterbutton': {
                     click: this.onFilterButtonClick
                 },
-                'historicalplancogsTn #refresh': {
+                'historicalplancogstn #refresh': {
                     click: this.onRefreshButtonClick
                 },
-                'historicalplancogsTn #close': {
+                'historicalplancogstn #close': {
                     click: this.onCloseButtonClick
                 }
             }

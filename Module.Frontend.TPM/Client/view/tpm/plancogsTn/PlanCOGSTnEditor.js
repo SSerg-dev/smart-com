@@ -1,4 +1,4 @@
-﻿Ext.define('App.view.tpm.plancogsTn.PlanCOGSTnEditor', {
+﻿Ext.define('App.view.tpm.plancogstn.PlanCOGSTnEditor', {
     extend: 'App.view.core.common.EditorDetailWindow',
     alias: 'widget.plancogstneditor',
     width: 500,
