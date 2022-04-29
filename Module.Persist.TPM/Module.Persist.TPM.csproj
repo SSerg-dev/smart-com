@@ -2760,6 +2760,10 @@
     <Compile Include="Migrations\202202241457236_Change_Discount_Type_CompetitorPromo.Designer.cs">
       <DependentUpon>202202241457236_Change_Discount_Type_CompetitorPromo.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202204172008027_Alter_PromoGridView.cs" />
+    <Compile Include="Migrations\202204172008027_Alter_PromoGridView.Designer.cs">
+      <DependentUpon>202204172008027_Alter_PromoGridView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\202203180923071_AddIsSplittableInTechnology.cs" />
     <Compile Include="Migrations\202203180923071_AddIsSplittableInTechnology.Designer.cs">
       <DependentUpon>202203180923071_AddIsSplittableInTechnology.cs</DependentUpon>
@@ -5299,6 +5303,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202202241457236_Change_Discount_Type_CompetitorPromo.resx">
       <DependentUpon>202202241457236_Change_Discount_Type_CompetitorPromo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202204172008027_Alter_PromoGridView.resx">
+      <DependentUpon>202204172008027_Alter_PromoGridView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202203180923071_AddIsSplittableInTechnology.resx">
       <DependentUpon>202203180923071_AddIsSplittableInTechnology.cs</DependentUpon>
