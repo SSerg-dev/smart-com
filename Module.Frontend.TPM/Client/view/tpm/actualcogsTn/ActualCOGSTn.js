@@ -121,7 +121,7 @@
         store: {
             type: 'directorystore',
             model: 'App.model.tpm.actualcogsTn.ActualCOGSTn',
-            storeId: 'actualcogsstore',
+            storeId: 'actualcogstnstore',
             extendedFilter: {
                 xclass: 'App.ExtFilterContext',
                 supportedModels: [{

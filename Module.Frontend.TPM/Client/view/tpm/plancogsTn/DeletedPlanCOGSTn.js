@@ -15,7 +15,7 @@
         store: {
             type: 'directorystore',
             model: 'App.model.tpm.plancogsTn.DeletedPlanCOGSTn',
-            storeId: 'deletedcogsstore',
+            storeId: 'deletedplancogstnstore',
             extendedFilter: {
                 xclass: 'App.ExtFilterContext',
                 supportedModels: [{

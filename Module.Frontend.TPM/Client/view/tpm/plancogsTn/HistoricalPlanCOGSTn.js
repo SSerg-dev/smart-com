@@ -15,7 +15,7 @@
         store: {
             type: 'directorystore',
             model: 'App.model.tpm.plancogsTn.HistoricalPlanCOGSTn',
-            storeId: 'historicalcogsstore',
+            storeId: 'historicalplancogstnstore',
             extendedFilter: {
                 xclass: 'App.ExtFilterContext',
                 supportedModels: [{

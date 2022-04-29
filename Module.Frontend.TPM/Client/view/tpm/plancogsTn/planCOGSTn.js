@@ -62,7 +62,7 @@
         store: {
             type: 'directorystore',
             model: 'App.model.tpm.plancogsTn.PlanCOGSTn',
-            storeId: 'cogsstore',
+            storeId: 'plancogstnstore',
             extendedFilter: {
                 xclass: 'App.ExtFilterContext',
                 supportedModels: [{

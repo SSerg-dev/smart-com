@@ -15,7 +15,7 @@
         store: {
             type: 'directorystore',
             model: 'App.model.tpm.actualcogsTn.DeletedActualCOGSTn',
-            storeId: 'deletedactualcogsstore',
+            storeId: 'deletedactualcogstnstore',
             extendedFilter: {
                 xclass: 'App.ExtFilterContext',
                 supportedModels: [{
