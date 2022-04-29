@@ -444,7 +444,8 @@
             'CrossParam.StartDate': ' Start Date',
             'CrossParam.FinishDate': 'Finish Date',
             'CrossParam.Year': 'Year',
-            'UniqueFields': 'Unique Fields'
+            'UniqueFields': 'Unique Fields',
+            'ImportDestination': 'Import Destination'
         },
         'DownloadLogTitle': 'Results'
     },
