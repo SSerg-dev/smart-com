@@ -664,6 +664,7 @@
         'IsGrowthAcceleration': 'GrowthAcceleration',
         'Status': 'Status',
         'CompetitorBrandTechName': 'BrandTech',
+        'CompetitorBrandTechBrandTech': 'BrandTech',
         'MechanicType': 'Mechanic Type',
         'Price': 'Shelf price',
         'Discount': 'Discount',

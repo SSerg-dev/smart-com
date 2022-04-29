@@ -1005,6 +1005,7 @@ namespace Module.Persist.TPM {
             builder.Entity<CompetitorPromo>().Collection.Action("DownloadTemplateXLSX");
             builder.Entity<CompetitorPromo>().Collection.Action("ExportXLSX");
             builder.Entity<CompetitorPromo>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<CompetitorPromo>("CompetitorPromoes");
+            builder.Entity<CompetitorPromo>().Collection.Action("NewFullImportXLSX");
             builder.Entity<HistoricalCompetitorPromo>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalCompetitorPromo>("HistoricalCompetitorPromoes");
 
             builder.EntitySet<RPASetting>("RPASettings");

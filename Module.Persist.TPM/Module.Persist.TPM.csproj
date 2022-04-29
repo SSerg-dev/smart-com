@@ -2760,6 +2760,10 @@
     <Compile Include="Migrations\202202241457236_Change_Discount_Type_CompetitorPromo.Designer.cs">
       <DependentUpon>202202241457236_Change_Discount_Type_CompetitorPromo.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202204220637321_AddAccessPoint_For_NewImport.cs" />
+    <Compile Include="Migrations\202204220637321_AddAccessPoint_For_NewImport.Designer.cs">
+      <DependentUpon>202204220637321_AddAccessPoint_For_NewImport.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\202204172008027_Alter_PromoGridView.cs" />
     <Compile Include="Migrations\202204172008027_Alter_PromoGridView.Designer.cs">
       <DependentUpon>202204172008027_Alter_PromoGridView.cs</DependentUpon>
@@ -2850,13 +2854,14 @@
     <Compile Include="Model\History\HistoricalTechHighLevel.cs" />
     <Compile Include="Model\History\HistoricalTechnology.cs" />
     <Compile Include="Model\History\HistoricalVariety.cs" />
+    <Compile Include="Model\Import\ImportCompetitorPromo.cs" />
     <Compile Include="Model\Import\BaseLineComparer.cs" />
     <Compile Include="Model\Import\ImportAssortmentMatrix.cs" />
     <Compile Include="Model\Import\ImportBTL.cs" />
     <Compile Include="Model\Import\ImportCompetitor.cs" />
     <Compile Include="Model\Import\ImportClientDashboard.cs" />
     <Compile Include="Model\Import\ImportCoefficientSI2SO.cs" />
-    <Compile Include="Model\Import\ImportCompetitorPromo.cs" />
+    <Compile Include="Model\Import\ImportCompetitorCorrectionPromo.cs" />
     <Compile Include="Model\Import\ImportCompetitorBrandTech.cs" />
     <Compile Include="Model\Import\ImportPLUDictionary.cs" />
     <Compile Include="Model\Import\ImportPromoDMP.cs" />
@@ -5303,6 +5308,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202202241457236_Change_Discount_Type_CompetitorPromo.resx">
       <DependentUpon>202202241457236_Change_Discount_Type_CompetitorPromo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202204220637321_AddAccessPoint_For_NewImport.resx">
+      <DependentUpon>202204220637321_AddAccessPoint_For_NewImport.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202204172008027_Alter_PromoGridView.resx">
       <DependentUpon>202204172008027_Alter_PromoGridView.cs</DependentUpon>
