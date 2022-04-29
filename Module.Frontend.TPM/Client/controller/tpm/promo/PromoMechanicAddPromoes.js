@@ -28,106 +28,133 @@
     onPromoesGridBeforeRender: function (grid) {
         var widget = grid.up('promomechanicaddpromoes');
         var store = grid.getStore();
-        //widget.setLoading(true);
-        if (widget.IsGrowthAcceleration) {
-            store.setFixedFilter('IsGrowthAccelerationFilter', {
-                operator: 'and',
-                rules: [
-                    //{
-                    //    operator: 'or',
-                    //    rules: [
-                    //        {
-                    //            property: 'MasterPromoId',
-                    //            operation: 'Equal',
-                    //            value: widget.PromoId
-                    //        },
-                    //        {
-                    //            property: 'MasterPromoId',
-                    //            operation: 'Equal',
-                    //            value: null
-                    //        },
-                    //    ]
-                    //},
-                    {
-                        property: "IsGrowthAcceleration",
-                        operation: 'Equals',
-                        value: widget.IsGrowthAcceleration
-                    },
-                    {
-                        property: 'PromoStatus.Name',
-                        operation: 'Equals',
-                        value: 'Approved'
-                    },
-                    {
-                        property: 'ClientTreeId',
-                        operation: 'Equals',
-                        value: widget.ClientTreeId
-                    },
-                    {
-                        property: 'Id',
-                        operation: 'NotEqual',
-                        value: widget.PromoId
-                    }
-                ]
-            });
+        if (widget.PromoId) {
+            if (widget.IsGrowthAcceleration) {
+                store.setFixedFilter('IsGrowthAccelerationFilter', {
+                    operator: 'and',
+                    rules: [
+                        {
+                            property: "IsGrowthAcceleration", operation: 'Equals', value: widget.IsGrowthAcceleration
+                        },
+                        {
+                            property: 'PromoStatus.Name', operation: 'Equals', value: 'Approved'
+                        },
+                        {
+                            property: 'ClientTreeId', operation: 'Equals', value: widget.ClientTreeId
+                        },
+                        {
+                            operator: 'or',
+                            rules: [
+                                {
+                                    property: 'MasterPromoId', operation: 'Equals', value: widget.PromoId
+                                },
+                                {
+                                    property: 'MasterPromoId', operation: 'Equals', value: null
+                                },
+                            ]
+                        },
+                    ]
+                });
+            }
+            else {
+                var statuses = ['Approved', 'On Approval']
+                store.setFixedFilter('IsGrowthAccelerationFilter', {
+                    operator: 'and',
+                    rules: [
+                        {
+                            property: "IsGrowthAcceleration", operation: 'Equals', value: widget.IsGrowthAcceleration
+                        },
+                        {
+                            property: 'PromoStatus.Name', operation: 'In', value: statuses
+                        },
+                        {
+                            property: 'ClientTreeId', operation: 'Equals', value: widget.ClientTreeId
+                        },
+                        {
+                            property: 'Id', operation: 'NotEqual', value: widget.PromoId
+                        },
+                        {
+                            operator: 'or',
+                            rules: [
+                                {
+                                    property: 'MasterPromoId', operation: 'Equals', value: widget.PromoId
+                                },
+                                {
+                                    property: 'MasterPromoId', operation: 'Equals', value: null
+                                },
+                            ]
+                        },
+                    ]
+                });
+            }
         }
         else {
-            var statuses = ['Approved', 'On Approval']
-            store.setFixedFilter('IsGrowthAccelerationFilter', {
-                operator: 'and',
-                rules: [
-                    {
-                        property: "IsGrowthAcceleration",
-                        operation: 'Equals',
-                        value: widget.IsGrowthAcceleration
-                    },
-                    {
-                        property: 'PromoStatus.Name',
-                        operation: 'In',
-                        value: statuses
-                    },
-                    {
-                        property: 'ClientTreeId',
-                        operation: 'Equals',
-                        value: widget.ClientTreeId
-                    },
-                    {
-                        property: 'Id',
-                        operation: 'NotEqual',
-                        value: widget.PromoId
-                    },
-                    //{
-                    //    operator: 'or',
-                    //    rules: [
-                    //        {
-                    //            property: 'MasterPromoId',
-                    //            operation: 'Equal',
-                    //            value: widget.PromoId
-                    //        },
-                    //        {
-                    //            property: 'MasterPromoId',
-                    //            operation: 'Equal',
-                    //            value: null
-                    //        },
-                    //    ]
-                    //},
-                ]
-            });
+            if (widget.IsGrowthAcceleration) {
+                store.setFixedFilter('IsGrowthAccelerationFilter', {
+                    operator: 'and',
+                    rules: [
+                        {
+                            property: "IsGrowthAcceleration", operation: 'Equals', value: widget.IsGrowthAcceleration
+                        },
+                        {
+                            property: 'PromoStatus.Name', operation: 'Equals', value: 'Approved'
+                        },
+                        {
+                            property: 'ClientTreeId', operation: 'Equals', value: widget.ClientTreeId
+                        },
+                        {
+                            property: 'MasterPromoId', operation: 'Equals', value: null
+                        },
+                    ]
+                });
+            }
+            else {
+                var statuses = ['Approved', 'On Approval']
+                store.setFixedFilter('IsGrowthAccelerationFilter', {
+                    operator: 'and',
+                    rules: [
+                        {
+                            property: "IsGrowthAcceleration", operation: 'Equals', value: widget.IsGrowthAcceleration
+                        },
+                        {
+                            property: 'PromoStatus.Name', operation: 'In', value: statuses
+                        },
+                        {
+                            property: 'ClientTreeId', operation: 'Equals', value: widget.ClientTreeId
+                        },
+                        {
+                            property: 'MasterPromoId', operation: 'Equals', value: null
+                        },
+                    ]
+                });
+            }
         }
+
         var promoesGridSelectionModel = grid.getSelectionModel();
 
         store.on('load', function (store, records, successful) {
-            if (records.length != 0) {
+            if (records.length != 0 && widget.PromoId) {
                 var checkedRows = new Array();
                 records.forEach(function (item) {
                     if (item.data.MasterPromoId == widget.PromoId) {
                         checkedRows.push(item);
                     }
-
                 });
                 promoesGridSelectionModel.checkRows(checkedRows);
-                grid.setLoading(false);
             }
+            // если Promo еще не сохранен
+            var promomechanic = Ext.ComponentQuery.query('promomechanic')[0];
+            var linkedPromoes = promomechanic.LinkedPromoes;
+            if (records.length != 0 && !widget.PromoId && linkedPromoes != null) {      
+                var checkedRows = new Array();
+                records.forEach(function (item) {
+                    if (promomechanic.LinkedPromoes.includes(item.data.Number)) {
+                        checkedRows.push(item);
+                    }
+                });
+                promoesGridSelectionModel.checkRows(checkedRows);
+            }
+            grid.setLoading(false);
         });
 
         //grid.multiSelect = true; // настройка в view
@@ -148,46 +175,52 @@
         promomechanic.LinkedPromoes = checkedRecords.map(function (item) {
             return item.data.Number;
         });
-        // Только те выбранные, что видит пользователь.
-        var checkedPromoesInGrid = promoRecords.filter(function (record) {
-            return checkedRecords.some(function (checkedRecord) { return record.data.Id == checkedRecord.data.Id })
-        });
-        // не выбранные
-        var uncheckedPromoessInGrid = promoRecords.filter(function (record) {
-            return !checkedRecords.includes(record)
-        });
-        if (checkedPromoesInGrid.length > 10) {
-            App.Notify.pushError('Promoes more than 10 selected');
-            return;
-        }
+        
+        if (widget.PromoId != null) {
+            // Только те выбранные, что видит пользователь.
+            var checkedPromoesInGrid = promoRecords.filter(function (record) {
+                return checkedRecords.some(function (checkedRecord) { return record.data.Id == checkedRecord.data.Id })
+            });
+            // не выбранные
+            var uncheckedPromoessInGrid = promoRecords.filter(function (record) {
+                return !checkedRecords.includes(record)
+            });
+            if (checkedPromoesInGrid.length > 10) {
+                App.Notify.pushError('Promoes more than 10 selected');
+                return;
+            }
 
-        checkedPromoesInGrid.forEach(function (promo) {
-            var storeproduct = promoStore.findRecord('Id', promo.data.Id);
-            if (storeproduct.data.MasterPromoId != widget.PromoId) {
-                storeproduct.set('MasterPromoId', widget.PromoId);
-            }
-        });
-        uncheckedPromoessInGrid.forEach(function (promo) {
-            var storeproduct = promoStore.findRecord('Id', promo.data.Id);
-            if (storeproduct.data.MasterPromoId == widget.PromoId) {
-                storeproduct.set('MasterPromoId', null)
-            }
-        });
-        var promoRecords = promoStore.getRange(0, promoStore.getTotalCount());
-        widget.setLoading(l10n.ns('core').value('savingText'));
-        if (promoStore.getUpdatedRecords().length == 0) {
-            widget.setLoading(false);
-            widget.close();
-        }
-        promoStore.save({
-            scope: this,
-            success: function (rec, resp, opts) {
+            checkedPromoesInGrid.forEach(function (promo) {
+                var storeproduct = promoStore.findRecord('Id', promo.data.Id);
+                if (storeproduct.data.MasterPromoId != widget.PromoId) {
+                    storeproduct.set('MasterPromoId', widget.PromoId);
+                }
+            });
+            uncheckedPromoessInGrid.forEach(function (promo) {
+                var storeproduct = promoStore.findRecord('Id', promo.data.Id);
+                if (storeproduct.data.MasterPromoId == widget.PromoId) {
+                    storeproduct.set('MasterPromoId', null)
+                }
+            });
+            var promoRecords = promoStore.getRange(0, promoStore.getTotalCount());
+            widget.setLoading(l10n.ns('core').value('savingText'));
+            if (promoStore.getUpdatedRecords().length == 0) {
                 widget.setLoading(false);
                 widget.close();
-            },
-            failure: function () {
-                widget.setLoading(false);
             }
-        });
+            promoStore.save({
+                scope: this,
+                success: function (rec, resp, opts) {
+                    widget.setLoading(false);
+                    widget.close();
+                },
+                failure: function () {
+                    widget.setLoading(false);
+                }
+            });
+        }
+        else {
+            widget.close();
+        }
     },
 });

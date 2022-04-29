@@ -997,6 +997,13 @@ namespace Module.Frontend.TPM.Controllers
                     patch.TrySetPropertyValue("PromoStatusId", draftPublishedStatus.Id);
                     patch.TrySetPropertyValue("RejectReasonId", rejectReasonId);
 
+                    //Убираем Linked Promoes и убираем ссылки у дочерних промо
+                    patch.TrySetPropertyValue("LinkedPromoes", string.Empty);
+                    var PromoesUnlink = Context.Set<Promo>().Where(p => p.MasterPromoId == rejectReasonId).ToList();
+                    foreach (var childpromo in PromoesUnlink)
+                    {
+                        childpromo.MasterPromoId = null;
+                    }
                     // Для сохранения корректного значения после Patch
                     promo.DeviationCoefficient *= 100;
                     // если возвращается Update, то всё прошло без ошибок

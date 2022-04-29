@@ -918,7 +918,6 @@
                             button.down('#CountLabel').setText(result[i]);
 
                         }
-
                         button.down('button').style = 'background-color:' + buttons.buttonColor;
                         button.down('#buttonPanel').style = 'background-color:' + buttons.buttonColor;
                         button.down('#buttonArrow').style = 'background-color:' + buttons.buttonColor;
@@ -945,13 +944,13 @@
                         if (view.down('#' + buttons.panel))
                             view.down('#' + buttons.panel).add(button);
                         Ext.get(button.down('#buttonArrow').id + '-btnIconEl').setStyle('color', buttons.color);
-                        if (buttons.style) {
-                            if (result[i] == 0) {
-                                Ext.get(button.down('#buttonArrow').id + '-btnIconEl').setStyle('color', '#fafafa');
-                            } else {
-                                Ext.get(button.down('#buttonArrow').id + '-btnIconEl').setStyle('padding-left', (button.down('#buttonArrow').getWidth() * 0.5) + 'px');
-                            }
-                        }
+                        //if (buttons.style) {
+                        //    if (result[i] == 0) {
+                        //        Ext.get(button.down('#buttonArrow').id + '-btnIconEl').setStyle('color', '#fafafa');
+                        //    } else {
+                        //        Ext.get(button.down('#buttonArrow').id + '-btnIconEl').setStyle('padding-left', (button.down('#buttonArrow').getWidth() * 0.5) + 'px');
+                        //    }
+                        //}
                     }
                 }
                 mask.hide();

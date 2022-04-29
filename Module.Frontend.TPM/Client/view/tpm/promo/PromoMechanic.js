@@ -482,6 +482,7 @@
                 minWidth: 245,
                 flex: 1,
                 padding: '10 10 10 10',
+                name: 'panelGA',
                 layout: {
                     type: 'vbox',
                     align: 'stretch',

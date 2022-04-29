@@ -1442,6 +1442,7 @@
                         var instoreMechanicTypeId = mechanic.down('searchcombobox[name=PlanInstoreMechanicTypeId]');
                         var marsMechanicDiscount = mechanic.down('numberfield[name=MarsMechanicDiscount]');
                         var instoreMechanicDiscount = mechanic.down('numberfield[name=PlanInstoreMechanicDiscount]');
+                        var panelGA = mechanic.down('[name=panelGA]');
                         var promoComment = mechanic.down('textarea[name=PromoComment]');
                         var isEdit = false;
                         var isReadOnly = false;
@@ -1458,6 +1459,7 @@
                             isReadOnly, isEdit
                         );
 
+                        panelGA.setDisabled(true);
                         // event
                         me.refreshPromoEvent(promoeditorcustom, false);
 
@@ -4723,15 +4725,23 @@
     },
 
     onPromoMechanicAddPromoBtn: function (button) {
-        var promomechanic = button.up('promomechanic');
+        var promoeditorcustom = button.up('promoeditorcustom');
         var promomechanicaddpromoes = Ext.widget('promomechanicaddpromoes');
-        var record = this.getRecord(promomechanic);
-        var promoEditorCustom = button.up('promoeditorcustom');
+        var record = this.getRecord(promoeditorcustom);
         promomechanicaddpromoes.setLoading(true);
 
-        promomechanicaddpromoes.PromoId = record.get('Id');
+        if (record.raw) {
+            promomechanicaddpromoes.PromoId = record.get('Id');
+        }
+        else {
+            promomechanicaddpromoes.PromoId = null;
+        }
+
         promomechanicaddpromoes.IsGrowthAcceleration = record.get('IsGrowthAcceleration');
         promomechanicaddpromoes.ClientTreeId = record.get('ClientTreeId');
+        if (promomechanicaddpromoes.ClientTreeId == null) {
+            promomechanicaddpromoes.ClientTreeId = promoeditorcustom.clientTreeId;
+        }
         setTimeout(function () {
             Ext.widget(promomechanicaddpromoes).show(false, function () {
                 promomechanicaddpromoes.setLoading(false);
@@ -5730,6 +5740,9 @@
                 marsMechanicId.setDisabled(false);
                 instoreMechanicId.setDisabled(false);
                 actualMechanicId.setDisabled(false);
+
+                var panelGA = promoMechanics.down('[name=panelGA]');
+                panelGA.setDisabled(false);
             }
         });
 
