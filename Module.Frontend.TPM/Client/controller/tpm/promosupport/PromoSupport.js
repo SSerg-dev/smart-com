@@ -970,7 +970,9 @@
     SavePromoSupport: function (button, callback) {
         var me = this,
             editor = button.up('custompromosupporteditor');
-
+        if (editor.down('promolinkedviewer').down('grid').getStore().getProxy().data.length < 1) {//must be inserted at least one Promo
+            App.Notify.pushInfo('Please, insert at least one Promo');
+        }
         if (/*me.checkSummOfValues(editor) &&*/ me.validateFields(editor)) {
             editor.setLoading(l10n.ns('core').value('savingText'));
             setTimeout(function () {
@@ -1025,7 +1027,7 @@
 
         //InvoiceNumber
         var invoiceNumber = promoSupportForm.down('textfield[name=InvoiceNumber]').getValue();
-
+        
         if (!invoiceNumber) {
             invoiceNumber = '';
             promoSupportForm.down('textfield[name=InvoiceNumber]').setValue('');
@@ -1037,7 +1039,7 @@
             actualQuantityValue = promoSupportForm.down('numberfield[name=ActualQuantity]').getValue(),
             planCostTEValue = promoSupportForm.down('numberfield[name=PlanCostTE]').getValue(),
             actualCostTEValue = promoSupportForm.down('numberfield[name=ActualCostTE]').getValue();
-
+        
         // какие-то проблемы с 0 и Null, в БД Null не бывает поэтому: (можно и дефолт поставить, но не будем)
         if (!planQuantityValue) {
             planQuantityValue = 0;
@@ -1065,7 +1067,7 @@
 
         var startDateValue = startDateValueField.getValue(),
             endDateValue = endDateValueField.getValue();
-
+        
         //startDateValueField.validate();
         //endDateValueField.validate();
 
@@ -1103,7 +1105,7 @@
         var attachFileField = promoSupportForm.down('#attachFileName');
         var attachFileName = attachFileField.attachFileName !== undefined && attachFileField.attachFileName !== null
             ? attachFileField.attachFileName : "";
-
+        
         //поиск текущего PromoSupport в панели слева
         var currentPromoSupport;
         mainContainer.items.items.forEach(function (item) {
@@ -1120,7 +1122,7 @@
 
         model.editing = true;
         //budgetSubItemField.validate();
-
+        
         if (currentPromoSupport && budgetSubItemId) {
             var promoLinkedText = currentPromoSupport.down('#promoLinkedText');
             promoLinkedText.setText(countStore ? countStore : '0');
@@ -1166,7 +1168,7 @@
                 promoLinkedRecords = count > 0 ? promoLinkedStore.getRange(0, count) : [],
                 promoIdString = '',
                 checkedRowsIds = [];
-
+            
             //привязка параметров сохраняемого Promo Support к панельке в левой части экрана(чтобы при клике на нее заполнить форму)
             currentPromoSupport.promoSupportTypeData = editor.promoSupportTypeData;
             currentPromoSupport.clientId = editor.clientId;
@@ -1180,7 +1182,7 @@
             currentPromoSupport.actualProdCost = actualProdCostValue;
             currentPromoSupport.attachFileName = attachFileName;
             currentPromoSupport.borderColor = editor.borderColor;
-
+            
             editor.setLoading(l10n.ns('core').value('savingText'));
 
             model.save({
