@@ -13,6 +13,7 @@ namespace Module.Persist.TPM.Model.DTO {
         public string MarsMechanicName { get; set; }
         public double? MarsMechanicDiscount { get; set; }
         public string MarsMechanicTypeName { get; set; }
+        public string MechanicComment { get; set; }
 
         public string CompetitorName { get; set; }
         public string CompetitorBrandTechName { get; set; }

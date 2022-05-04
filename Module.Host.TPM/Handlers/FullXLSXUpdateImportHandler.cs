@@ -103,6 +103,20 @@ namespace Module.Host.TPM.Handlers
         }
     }
 
+    class FullXLSXCompetitorPromoUpdateNewImportHandler : FullXLSXImportHandler
+    {
+        protected override void InitializeParameters(HandlerData handlerData, ExecuteData data)
+        {
+            var importDestination = HandlerDataHelper.GetIncomingArgument<string>("ImportDestination", handlerData);
+            data.SetValue("ImportDestination", importDestination);
+        }
+
+        protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
+        {
+            return new FullXLSXCompetitorPromoUpdateNewImportAction(settings);
+        }
+    }
+
     class FullXLSXTradeInvestmentUpdateImportHandler : FullXLSXImportHandler
     {
         protected override void InitializeParameters(HandlerData handlerData, ExecuteData data)

@@ -664,6 +664,7 @@
         'IsGrowthAcceleration': 'GrowthAcceleration',
         'Status': 'Status',
         'CompetitorBrandTechName': 'BrandTech',
+        'CompetitorBrandTechBrandTech': 'BrandTech',
         'MechanicType': 'Mechanic Type',
         'Price': 'Shelf price',
         'Discount': 'Discount',
@@ -2391,7 +2392,7 @@
         'StartDate': 'Start Date',
         'EndDate': 'End Date',
         'CreateDate': 'Create Date',
-        'actualAssortmentMatrixButtonText': 'Get actual assortment matrix.'
+        'actualAssortmentMatrixButtonText': 'Get actual assortment matrix'
     },
     'HistoricalAssortmentMatrix': ['.tpm.AssortmentMatrix', '.core.BaseHistoryEntity'],
     'DeletedAssortmentMatrix': ['.tpm.AssortmentMatrix', '.core.BaseDeletedEntity'],
@@ -2450,6 +2451,7 @@
         'ChangeDate': 'Last Change Date',
         'UserName': 'User Name',
         'GreaterThanZero': 'Uplift must be greater than zero',
+        'ExportCorrections': 'Export correction to XLSX',
     },
     'PreviousDayIncremental': {
         'ZREP': 'ZREP',

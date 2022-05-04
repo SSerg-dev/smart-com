@@ -6193,7 +6193,7 @@
         var promoEvent = promoEditorCustom.down('container[name=promo_step6]');
         var chooseEventButton = promoEvent.down('chooseEventButton');
         var clientTreeKeyId = promoEditorCustom.clientTreeKeyId;
-
+        
         // при каждом вызове этой функции Event сбрасывается до стандартного (в дальнейшем желательно сделать проверку на возможность оставить предзаполненный Event)
         var _event = new App.model.tpm.event.Event({
             Id: null,
