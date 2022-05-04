@@ -972,6 +972,7 @@
             editor = button.up('custompromosupporteditor');
         if (editor.down('promolinkedviewer').down('grid').getStore().getProxy().data.length < 1) {//must be inserted at least one Promo
             App.Notify.pushInfo('Please, insert at least one Promo');
+            return;
         }
         if (/*me.checkSummOfValues(editor) &&*/ me.validateFields(editor)) {
             editor.setLoading(l10n.ns('core').value('savingText'));
