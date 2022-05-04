@@ -60,6 +60,8 @@
     clientTreeId: null, // ObjectId
     clientTreeKeyId: null, // Ключ в таблице
     productHierarchy: null,
+    promoStartDate: null,
+    promoEndDate: null,
 
     initComponent: function () {
         this.callParent(arguments);

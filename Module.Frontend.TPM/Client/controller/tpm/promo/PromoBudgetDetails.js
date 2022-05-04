@@ -319,7 +319,12 @@
     },
 
     // формирует фильтр для отбора подстатей только для текущего клиента и текущего бюджета
-    getFilterForGetPromoSupport: function (widget) {
+    getFilterForGetPromoSupport: function (widget) {        
+        //дата начала и дата окончания промо
+        startDate = widget.record.promoStartDate;
+        endDate = widget.record.promoEndDate;
+        startDate = changeTimeZone(startDate, 3, -1)
+        endDate = changeTimeZone(endDate, 3, -1)
         // идем по иерархии и родительских тоже подбираем
         var clientHierarchy = '';
         var clientRules = [];
@@ -348,7 +353,17 @@
                 value: widget.budgetName
             }]
         };
+        result.rules.push({
+            property: 'StartDate',
+            operation: 'GreaterOrEqual',
+            value: startDate
+        });
+        result.rules.push({
+            property: 'EndDate',
+            operation: 'LessOrEqual',
+            value: endDate
+        });      
 
         return result;
-    }
+    },
 });

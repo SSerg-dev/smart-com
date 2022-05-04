@@ -1490,6 +1490,8 @@
 
                             durationDateStart.setValue(startDate);
                             durationDateEnd.setValue(endDate);
+                            promoeditorcustom.promoStartDate = durationDateStart.getValue();
+                            promoeditorcustom.promoEndDate = durationDateEnd.getValue();
                         }
 
                         var clientRecord;
@@ -2130,6 +2132,8 @@
             dateFields[i].setReadOnly(true);
             dateFields[i].addCls('readOnlyField');
         }
+        promoeditorcustom.promoStartDate = durationStartDate.getValue();
+        promoeditorcustom.promoEndDate = durationEndDate.getValue();
     },
 
     //blockStartedPromoUplift: function () {
@@ -2828,6 +2832,8 @@
         var durationEndDate = period.down('datefield[name=DurationEndDate]');
         var dispatchStartDate = period.down('datefield[name=DispatchStartDate]');
         var dispatchEndDate = period.down('datefield[name=DispatchEndDate]');
+        promoeditorcustom.promoStartDate = durationStartDate.getValue();
+        promoeditorcustom.promoEndDate = durationEndDate.getValue();
 
         //budget year
         var budgetYearCombo = budgetYear.down('combobox');
@@ -5984,6 +5990,8 @@
             var dispatchEndDate = promoperiod.down('[name=DispatchEndDate]');
             var durationStartDate = promoperiod.down('[name=DurationStartDate]');
             var durationEndDate = promoperiod.down('[name=DurationEndDate]');
+            promoWindow.promoStartDate = durationStartDate.getValue();
+            promoWindow.promoEndDate = durationEndDate.getValue();
 
             dispatchStartDate.reset();
             dispatchEndDate.reset();
@@ -6015,6 +6023,8 @@
         var dispatchEndDate = promoperiod.down('[name=DispatchEndDate]');
         var durationStartDate = promoeditorcustom.down('[name=DurationStartDate]');
         var durationEndDate = promoeditorcustom.down('[name=DurationEndDate]');
+        promoeditorcustom.promoStartDate = durationStartDate.getValue();
+        promoeditorcustom.promoEndDate = durationEndDate.getValue();
         var calculation = Ext.ComponentQuery.query('promocalculation')[0];
         var activity = Ext.ComponentQuery.query('promoactivity')[0];
         if (calculation && activity) {
