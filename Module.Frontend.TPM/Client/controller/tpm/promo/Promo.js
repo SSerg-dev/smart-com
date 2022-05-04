@@ -2490,6 +2490,7 @@
         record.data.PlanInstoreMechanicTypeId = instoreMechanicTypeId ? instoreMechanicTypeId : null;
         record.data.PlanInstoreMechanicDiscount = instoreMechanicDiscount != null ? instoreMechanicDiscount : null;
 
+        record.data.IsInExchange = promomechanic.down('checkboxfield[name=IsInExchangeCheckbox]').getValue();
         record.data.LinkedPromoes = promomechanic.LinkedPromoes;
 
         // promoperiod

@@ -37,10 +37,7 @@ using System.Net.Http.Headers;
 using Module.Persist.TPM.CalculatePromoParametersModule;
 using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.SimpleModel;
-using Module.Persist.TPM.Utils;
 using System.Web;
-using NLog;
-using System.Diagnostics;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -264,8 +261,21 @@ namespace Module.Frontend.TPM.Controllers
                     PromoHelper.WritePromoDemandChangeIncident(Context, result);
                 }
 
+                // привязывает дочерние промо
+                if (!string.IsNullOrEmpty(result.LinkedPromoes) && result.IsInExchange)
+                {
+                    List<string> LinkedStringIds = model.LinkedPromoes.Split(',').ToList();
+                    List<int> LinkedIds = LinkedStringIds.Select(s => int.Parse(s)).ToList();
+                    List<Promo> ChildPromoes = Context.Set<Promo>().Where(g => LinkedIds.Contains((int)g.Number)).ToList();
+                    foreach (var ChildPromo in ChildPromoes)
+                    {
+                        ChildPromo.MasterPromoId = result.Id;
+                    }
+                }
+
                 result.LastChangedDate = ChangedDate;
                 Context.SaveChanges();
+
 
                 return Created(result);
             }
@@ -903,6 +913,12 @@ namespace Module.Frontend.TPM.Controllers
                     promoProductsCorrection.UserId = (Guid)user.Id;
                     promoProductsCorrection.UserName = user.Login;
                 }
+                // удалить дочерние промо
+                var PromoesUnlink = Context.Set<Promo>().Where(p => p.MasterPromoId == model.Id).ToList();
+                foreach (var childpromo in PromoesUnlink)
+                {
+                    childpromo.MasterPromoId = null;
+                }
                 Context.SaveChanges();
 
                 PromoHelper.WritePromoDemandChangeIncident(Context, model, true);
@@ -999,7 +1015,7 @@ namespace Module.Frontend.TPM.Controllers
 
                     //Убираем Linked Promoes и убираем ссылки у дочерних промо
                     patch.TrySetPropertyValue("LinkedPromoes", string.Empty);
-                    var PromoesUnlink = Context.Set<Promo>().Where(p => p.MasterPromoId == rejectReasonId).ToList();
+                    var PromoesUnlink = Context.Set<Promo>().Where(p => p.MasterPromoId == promo.Id).ToList();
                     foreach (var childpromo in PromoesUnlink)
                     {
                         childpromo.MasterPromoId = null;
