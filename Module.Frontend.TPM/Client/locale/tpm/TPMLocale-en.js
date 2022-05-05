@@ -1660,7 +1660,8 @@
         'ClientTreeObjectId': 'ClientId',
         'BrandTechName': 'BrandTech',
         'Volume': 'Volume',
-        'Year': 'Year'
+        'Year': 'Year',
+        'recalculatePreviousYearButtonYearText': 'Recalculate previous year'
     },
     'HistoricalActualCOGSTn': ['.tpm.ActualCOGSTn', '.core.BaseHistoryEntity'],
     'DeletedActualCOGSTn': ['.tpm.ActualCOGSTn', '.core.BaseDeletedEntity'],

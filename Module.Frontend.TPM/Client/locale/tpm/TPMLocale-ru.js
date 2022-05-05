@@ -1353,7 +1353,8 @@
         'ClientTreeObjectId': 'ClientId',
         'BrandTechName': 'BrandTech',
         'Volume': 'Volume',
-        'Year': 'Year'
+        'Year': 'Year',
+        'recalculatePreviousYearButtonYearText': 'Пересчитать промо за предыдущий год'
     },
     'HistoricalActualCOGSTn': ['.tpm.ActualCOGSTn', '.core.BaseHistoryEntity'],
     'DeletedActualCOGSTn': ['.tpm.ActualCOGSTn', '.core.BaseDeletedEntity'],

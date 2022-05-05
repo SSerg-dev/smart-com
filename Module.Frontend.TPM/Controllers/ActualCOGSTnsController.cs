@@ -14,6 +14,7 @@ using Module.Persist.TPM.Model.Import;
 using Module.Persist.TPM.Model.SimpleModel;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
+using Newtonsoft.Json;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using Persist;
@@ -293,6 +294,23 @@ namespace Module.Frontend.TPM.Controllers
         private bool EntityExists(Guid key)
         {
             return Context.Set<ActualCOGSTn>().Count(e => e.Id == key) > 0;
+        }
+
+        [ClaimsAuthorize]
+        public IHttpActionResult IsCOGSTnRecalculatePreviousYearButtonAvailable()
+        {
+            var previousYear = DateTimeOffset.Now.AddYears(-1).Year;
+            var previousYearActualCOGSs = Context.Set<ActualCOGS>()
+                .Where(x => !x.Disabled && x.StartDate.HasValue && x.StartDate.Value.Year == previousYear &&
+                x.EndDate.HasValue && x.EndDate.Value.Year == previousYear);
+
+            var isAvailable = (previousYearActualCOGSs.Count() != 0) && (!previousYearActualCOGSs.Any(x => x.IsCOGSIncidentCreated));
+
+            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new
+            {
+                success = true,
+                isRecalculatePreviousYearButtonAvailable = isAvailable
+            }));
         }
 
         public static IEnumerable<Column> GetExportSettings()
