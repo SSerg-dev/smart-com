@@ -62,6 +62,7 @@ namespace Module.Persist.TPM.Model.TPM
         public double Volume { get; set; }
         public bool Disabled { get; set; }
         public DateTimeOffset? DeletedDate { get; set; }
+        public bool IsCOGSIncidentCreated { get; set; }
 
         public virtual BrandTech BrandTech { get; set; }
         public virtual ClientTree ClientTree { get; set; }

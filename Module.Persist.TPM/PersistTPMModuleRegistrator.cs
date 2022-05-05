@@ -827,6 +827,7 @@ namespace Module.Persist.TPM {
             builder.EntitySet<ActualCOGSTn>("DeletedActualCOGSTns").HasOptionalBinding(e => e.BrandTech, "BrandTeches");
             builder.Entity<ActualCOGSTn>().Collection.Action("FullImportXLSX");
             builder.Entity<ActualCOGSTn>().Collection.Action("DownloadTemplateXLSX");
+            builder.Entity<ActualCOGSTn>().Collection.Action("IsCOGSTnRecalculatePreviousYearButtonAvailable");
             builder.Entity<ActualCOGSTn>().Collection.Action("PreviousYearPromoList");
             builder.Entity<ActualCOGSTn>().Collection.Action("CreateActualCOGSTnChangeIncidents");
             builder.Entity<ActualCOGSTn>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<ActualCOGSTn>("ActualCOGSTns");

@@ -300,7 +300,7 @@ namespace Module.Frontend.TPM.Controllers
         public IHttpActionResult IsCOGSTnRecalculatePreviousYearButtonAvailable()
         {
             var previousYear = DateTimeOffset.Now.AddYears(-1).Year;
-            var previousYearActualCOGSs = Context.Set<ActualCOGS>()
+            var previousYearActualCOGSs = Context.Set<ActualCOGSTn>()
                 .Where(x => !x.Disabled && x.StartDate.HasValue && x.StartDate.Value.Year == previousYear &&
                 x.EndDate.HasValue && x.EndDate.Value.Year == previousYear);
 

@@ -107,7 +107,7 @@
                     if (data) {
                         var result = Ext.JSON.decode(data.httpResponse.data.value);
                         if (result.success) {
-                            var recalculatePreviousYearButton = grid.up('panel').down('#recalculateactualcogspreviousyearbutton');
+                            var recalculatePreviousYearButton = grid.up('panel').down('#recalculateactualcogstnpreviousyearbutton');
                             this.recalculatePreviousYearButton = recalculatePreviousYearButton;
                             if (result.isRecalculatePreviousYearButtonAvailable) {
                                 recalculatePreviousYearButton.setDisabled(false);
