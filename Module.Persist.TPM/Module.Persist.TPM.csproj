@@ -2782,7 +2782,7 @@
     </Compile>
 	<Compile Include="Migrations\202204220956254_Add_Data_For_PlanCOGSTn_and_ActualCOGSTn.cs" />
 	<Compile Include="Migrations\202204220956254_Add_Data_For_PlanCOGSTn_and_ActualCOGSTn.Designer.cs">
-	  <DependentUpon>202204220956254_Add_Data_For_PlanCOGSTn_and_ActualCOGSTn.cs</DependentUpon>
+	   <DependentUpon>202204220956254_Add_Data_For_PlanCOGSTn_and_ActualCOGSTn.cs</DependentUpon>
 	</Compile>
     <Compile Include="Migrations\202205050643398_Add_Data_For_ActualCOGSTn.cs" />
     <Compile Include="Migrations\202205050643398_Add_Data_For_ActualCOGSTn.Designer.cs">
@@ -2792,9 +2792,9 @@
     <Compile Include="Migrations\202205050839550_UpdateActualCOGSTn.Designer.cs">
       <DependentUpon>202205050839550_UpdateActualCOGSTn.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202205051912077_Update_ActualCOGSTn_2.cs" />
-    <Compile Include="Migrations\202205051912077_Update_ActualCOGSTn_2.Designer.cs">
-      <DependentUpon>202205051912077_Update_ActualCOGSTn_2.cs</DependentUpon>
+    <Compile Include="Migrations\202205051938177_Update_ActualCOGSTn_2.cs" />
+    <Compile Include="Migrations\202205051938177_Update_ActualCOGSTn_2.Designer.cs">
+      <DependentUpon>202205051938177_Update_ActualCOGSTn_2.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
@@ -5342,8 +5342,8 @@
     <EmbeddedResource Include="Migrations\202204210807182_AddCOGSTn.resx">
       <DependentUpon>202204210807182_AddCOGSTn.cs</DependentUpon>
     </EmbeddedResource>
-	<EmbeddedResource Include="Migrations\202204220956254_Add_Data_For_PlanCOGSTn_and_ActualCOGSTn.resx">
-	  <DependentUpon>202204220956254_Add_Data_For_PlanCOGSTn_and_ActualCOGSTn.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202204220956254_Add_Data_For_PlanCOGSTn_and_ActualCOGSTn.resx">
+	   <DependentUpon>202204220956254_Add_Data_For_PlanCOGSTn_and_ActualCOGSTn.cs</DependentUpon>
 	</EmbeddedResource>
     <EmbeddedResource Include="Migrations\202205050643398_Add_Data_For_ActualCOGSTn.resx">
       <DependentUpon>202205050643398_Add_Data_For_ActualCOGSTn.cs</DependentUpon>
@@ -5351,8 +5351,8 @@
     <EmbeddedResource Include="Migrations\202205050839550_UpdateActualCOGSTn.resx">
       <DependentUpon>202205050839550_UpdateActualCOGSTn.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202205051912077_Update_ActualCOGSTn_2.resx">
-      <DependentUpon>202205051912077_Update_ActualCOGSTn_2.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202205051938177_Update_ActualCOGSTn_2.resx">
+      <DependentUpon>202205051938177_Update_ActualCOGSTn_2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

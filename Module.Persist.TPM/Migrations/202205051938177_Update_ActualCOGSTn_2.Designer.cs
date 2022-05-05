@@ -13,7 +13,7 @@ namespace Module.Persist.TPM.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "202205051912077_Update_ActualCOGSTn_2"; }
+            get { return "202205051938177_Update_ActualCOGSTn_2"; }
         }
         
         string IMigrationMetadata.Source

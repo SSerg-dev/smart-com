@@ -1,9 +1,8 @@
 namespace Module.Persist.TPM.Migrations
 {
     using Core.Settings;
-    using System;
     using System.Data.Entity.Migrations;
-    
+
     public partial class Update_ActualCOGSTn_2 : DbMigration
     {
         public override void Up()
@@ -12,7 +11,7 @@ namespace Module.Persist.TPM.Migrations
             SqlString = SqlString.Replace("DefaultSchemaSetting", defaultSchema);
             Sql(SqlString);
         }
-        
+
         public override void Down()
         {
         }
@@ -32,20 +31,20 @@ namespace Module.Persist.TPM.Migrations
             DECLARE @RoleIdAA uniqueidentifier = (SELECT[Id] FROM [DefaultSchemaSetting].[Role] where SystemName = 'Administrator');
             INSERT INTO[DefaultSchemaSetting].[AccessPointRole]
             (RoleId, AccessPointId) values
-            (@RoleIdASA, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='ActualCOGSTns' and [Action]='PreviousYearPromoList')),
-            (@RoleIdASA, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='ActualCOGSTns' and [Action]='CreateActualCOGSTnChangeIncidents'))
+            (@RoleIdAA, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='ActualCOGSTns' and [Action]='PreviousYearPromoList')),
+            (@RoleIdAA, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='ActualCOGSTns' and [Action]='CreateActualCOGSTnChangeIncidents'))
 
             DECLARE @RoleIdADF uniqueidentifier = (SELECT[Id] FROM [DefaultSchemaSetting].[Role] where SystemName = 'DemandFinance');
             INSERT INTO[DefaultSchemaSetting].[AccessPointRole]
             (RoleId, AccessPointId) values
-            (@RoleIdASA, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='ActualCOGSTns' and [Action]='PreviousYearPromoList')),
-            (@RoleIdASA, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='ActualCOGSTns' and [Action]='CreateActualCOGSTnChangeIncidents'))
+            (@RoleIdADF, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='ActualCOGSTns' and [Action]='PreviousYearPromoList')),
+            (@RoleIdADF, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='ActualCOGSTns' and [Action]='CreateActualCOGSTnChangeIncidents'))
 
             DECLARE @RoleIdAFE uniqueidentifier = (SELECT[Id] FROM [DefaultSchemaSetting].[Role] where SystemName = 'FunctionalExpert');
             INSERT INTO[DefaultSchemaSetting].[AccessPointRole]
             (RoleId, AccessPointId) values
-            (@RoleIdASA, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='ActualCOGSTns' and [Action]='PreviousYearPromoList')),
-            (@RoleIdASA, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='ActualCOGSTns' and [Action]='CreateActualCOGSTnChangeIncidents'))
+            (@RoleIdAFE, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='ActualCOGSTns' and [Action]='PreviousYearPromoList')),
+            (@RoleIdAFE, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='ActualCOGSTns' and [Action]='CreateActualCOGSTnChangeIncidents'))
             GO
         ";
     }
