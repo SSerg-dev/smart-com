@@ -2686,6 +2686,10 @@
         promoeditorcustom.promotypeName = record.data.PromoTypesName;
         promoeditorcustom.promotypeGlyph = record.data.PromoTypesGlyph;
         this.setPromoType(record.data.PromoTypesName, promoeditorcustom);
+        // если дочерний промо, присваиваем статус Cancelled, чтобы нельзя было менять
+        if (record.data.MasterPromoId != null) {
+            record.data.PromoStatusSystemName = 'Cancelled';
+        }
         //Промо в статусе Cancelled нельзя менять
         if (record.data.PromoStatusSystemName == 'Cancelled') {
             readOnly = true;
@@ -3687,7 +3691,7 @@
 
     savePromo: function (button, close, reloadForm) {
         var window = button.up('promoeditorcustom');
-
+         
         var isModelComplete = this.validatePromoModel(window);
 
         if (isModelComplete === '') {

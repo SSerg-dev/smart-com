@@ -365,6 +365,8 @@ namespace Module.Persist.TPM.Model.TPM
             IsOnInvoice = promoToCopy.IsOnInvoice;
             IsApolloExport = promoToCopy.IsApolloExport;
             ManualInputSumInvoice = promoToCopy.ManualInputSumInvoice;
+            IsInExchange = promoToCopy.IsInExchange;
+            MasterPromoId = promoToCopy.MasterPromoId;
         }
 
         public Promo() { }

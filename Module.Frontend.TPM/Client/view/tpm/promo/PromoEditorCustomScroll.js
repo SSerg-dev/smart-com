@@ -41,7 +41,7 @@
             Ext.each(radios, function (r) {
                 r.fieldLabelTip.setDisabled(true);
                 r.fieldValueTip.setDisabled(true);
-            });  
+            });
         }
     },
 
@@ -360,7 +360,7 @@
                 name: 'promoBudgets',
                 itemId: 'promoBudgets',
                 layout: 'fit',
-                 dockedItems: [{
+                dockedItems: [{
                     xtype: 'custompromotoolbar',
                     dock: 'left',
                     items: [{
@@ -628,7 +628,7 @@
                     }
                 }]
             }, {
-                    xtype: 'promosummary'
+                xtype: 'promosummary'
             }, {
                 // approvalhistory
                 items: [{
@@ -638,213 +638,214 @@
         }]
     }],
 
-    buttons: [{
-        xtype: 'button',
-        itemId: 'btn_publish',
-        glyph: 0xf12c,
-        text: l10n.ns('tpm', 'customtoptoolbar').value('publish'),
-        cls: 'promo-action-button',
-        hidden: true,
-        isPromoAction: true,
-		roles: ['Administrator', 'FunctionalExpert', 'CustomerMarketing', 'KeyAccountManager'],
-        statuses: ['Draft'],
-        statusId: null,
-        statusName: null,
-        statusSystemName: null,
-        style: { "background-color": "#66BB6A" }
-    },
-    // Вернуть из Draft Publish в Publish
-    {
-        xtype: 'button',
-        itemId: 'btn_undoPublish',
-        glyph: 0xf54d,
-        text: l10n.ns('tpm', 'customtoptoolbar').value('undoPublish'),
-        cls: 'promo-action-button',
-        hidden: true,
-        isPromoAction: true,
-		roles: ['Administrator', 'FunctionalExpert', 'CustomerMarketing', 'KeyAccountManager'],
-        statuses: ['DraftPublished'],
-        statusId: null,
-        statusName: null,
-        statusSystemName: null
-    },
-    // Отправить промо на согласование
-    {
-        xtype: 'button',
-        itemId: 'btn_sendForApproval',
-        glyph: 0xf12c,
-        text: l10n.ns('tpm', 'customtoptoolbar').value('sendForApproval'),
-        cls: 'promo-action-button',
-        hidden: true,
-        isPromoAction: true,
-		roles: ['Administrator', 'FunctionalExpert', 'CustomerMarketing', 'KeyAccountManager'],
-        statuses: ['DraftPublished'],
-        statusId: null,
-        statusName: null,
-        statusSystemName: null,
-        style: { "background-color": "#66BB6A" }
-		},
-	// Вернуть промо в DraftPublished
-    {
-        xtype: 'button',
-        itemId: 'btn_backToDraftPublished',
-		glyph: 0xf54d,
-		text: l10n.ns('tpm', 'customtoptoolbar').value('backToDraftPublished'),
-        cls: 'promo-action-button',
-        hidden: true,
-        isPromoAction: true,
-        roles: ['KeyAccountManager', 'FunctionalExpert', 'Administrator'],
-        statuses: ['OnApproval'],
-        statusId: null,
-        statusName: null,
-		statusSystemName: null,
-		style: { "background-color": "#66BB6A" }
-    },
-    // Отклонить промо
-    {
-        xtype: 'button',
-        itemId: 'btn_reject',
-        glyph: 0xf156,
-        text: l10n.ns('tpm', 'customtoptoolbar').value('reject'),
-        cls: 'promo-action-button',
-        hidden: true,
-        isPromoAction: true,
-        roles: ['CMManager', 'CustomerMarketing', 'DemandPlanning', 'DemandFinance'],
-        statuses: ['OnApproval'],
-        statusId: null,
-        statusName: null,
-        statusSystemName: null
-    },
-    // Согласовать промо
-    {
-        xtype: 'button',
-        itemId: 'btn_approve',
-        glyph: 0xf12c,
-        text: l10n.ns('tpm', 'customtoptoolbar').value('approve'),
-        cls: 'promo-action-button',
-        hidden: true,
-        isPromoAction: true,
-		roles: ['CMManager', 'DemandPlanning', 'DemandFinance'],
-        statuses: ['OnApproval'],
-        statusId: null,
-        statusName: null,
-        statusSystemName: null,
-        style: { "background-color": "#66BB6A" }
-    },
-    // Отменить промо
-    {
-        xtype: 'button',
-        itemId: 'btn_cancel',
-        glyph: 0xf739,
-        text: l10n.ns('tpm', 'customtoptoolbar').value('cancel'),
-        cls: 'promo-action-button',
-        hidden: true,
-        isPromoAction: true,
-		roles: ['Administrator', 'KeyAccountManager', 'FunctionalExpert'],
-        statuses: ['Approved', 'Planned', 'Started'],
-        statusId: null,
-        statusName: null,
-        statusSystemName: null,
-        style: { "background-color": "#ffb74d" }
-    },
-    // Спланировать промо
-    {
-        xtype: 'button',
-        itemId: 'btn_plan',
-        glyph: 0xf12c,
-        text: l10n.ns('tpm', 'customtoptoolbar').value('plan'),
-        cls: 'promo-action-button',
-        hidden: true,
-        isPromoAction: true,
-		roles: ['Administrator', 'KeyAccountManager', 'FunctionalExpert'],
-        statuses: ['Approved'],
-        statusId: null,
-        statusName: null,
-        statusSystemName: null,
-        style: { "background-color": "#66BB6A" }
-    },
-    // Закрыть промо
-    {
-        xtype: 'button',
-        itemId: 'btn_close',
-        glyph: 0xf12c,
-        text: l10n.ns('tpm', 'customtoptoolbar').value('close'),
-        cls: 'promo-action-button',
-        hidden: true,
-        isPromoAction: true,
-		roles: ['Administrator', 'KeyAccountManager', 'FunctionalExpert'],
-        statuses: ['Finished'],
-        statusId: null,
-        statusName: null,
-        statusSystemName: null,
-        style: { "background-color": "#66BB6A" }
-    }, {
-        xtype: 'button',
-        itemId: 'btn_backToFinished',
-        glyph: 0xf54d,
-        text: l10n.ns('tpm', 'customtoptoolbar').value('backtofinished'),
-        cls: 'promo-action-button',
-        hidden: true,
-        isPromoAction: true,
-		roles: ['Administrator', 'FunctionalExpert'],
-        statuses: ['Closed'],
-        statusId: null,
-        statusName: null,
-        statusSystemName: null,
-        style: { "background-color": "#66BB6A" }
-    }, {
-        xtype: 'button',
-        itemId: 'btn_changeStatus',
-        glyph: 0xf4e1,
-        text: l10n.ns('tpm', 'customtoptoolbar').value('changestatus'),
-        cls: 'promo-action-button',
-        hidden: true,
-        isPromoAction: true,
-        roles: ['SupportAdministrator'],
-        statuses: ['Draft', 'DraftPublished', 'OnApproval', 'Approved', 'Planned', 'Started', 'Finished', 'Closed', 'Cancelled'],
-        statusId: null,
-        statusName: null,
-        statusSystemName: null,
-        style: { "background-color": "#66BB6A" }
-    }, {
-        xtype: 'tbspacer',
-        flex: 10
+    buttons: [
+        {
+            xtype: 'button',
+            itemId: 'btn_publish',
+            glyph: 0xf12c,
+            text: l10n.ns('tpm', 'customtoptoolbar').value('publish'),
+            cls: 'promo-action-button',
+            hidden: true,
+            isPromoAction: true,
+            roles: ['Administrator', 'FunctionalExpert', 'CustomerMarketing', 'KeyAccountManager'],
+            statuses: ['Draft'],
+            statusId: null,
+            statusName: null,
+            statusSystemName: null,
+            style: { "background-color": "#66BB6A" }
+        },
+        // Вернуть из Draft Publish в Publish
+        {
+            xtype: 'button',
+            itemId: 'btn_undoPublish',
+            glyph: 0xf54d,
+            text: l10n.ns('tpm', 'customtoptoolbar').value('undoPublish'),
+            cls: 'promo-action-button',
+            hidden: true,
+            isPromoAction: true,
+            roles: ['Administrator', 'FunctionalExpert', 'CustomerMarketing', 'KeyAccountManager'],
+            statuses: ['DraftPublished'],
+            statusId: null,
+            statusName: null,
+            statusSystemName: null
+        },
+        // Отправить промо на согласование
+        {
+            xtype: 'button',
+            itemId: 'btn_sendForApproval',
+            glyph: 0xf12c,
+            text: l10n.ns('tpm', 'customtoptoolbar').value('sendForApproval'),
+            cls: 'promo-action-button',
+            hidden: true,
+            isPromoAction: true,
+            roles: ['Administrator', 'FunctionalExpert', 'CustomerMarketing', 'KeyAccountManager'],
+            statuses: ['DraftPublished'],
+            statusId: null,
+            statusName: null,
+            statusSystemName: null,
+            style: { "background-color": "#66BB6A" }
+        },
+        // Вернуть промо в DraftPublished
+        {
+            xtype: 'button',
+            itemId: 'btn_backToDraftPublished',
+            glyph: 0xf54d,
+            text: l10n.ns('tpm', 'customtoptoolbar').value('backToDraftPublished'),
+            cls: 'promo-action-button',
+            hidden: true,
+            isPromoAction: true,
+            roles: ['KeyAccountManager', 'FunctionalExpert', 'Administrator'],
+            statuses: ['OnApproval'],
+            statusId: null,
+            statusName: null,
+            statusSystemName: null,
+            style: { "background-color": "#66BB6A" }
+        },
+        // Отклонить промо
+        {
+            xtype: 'button',
+            itemId: 'btn_reject',
+            glyph: 0xf156,
+            text: l10n.ns('tpm', 'customtoptoolbar').value('reject'),
+            cls: 'promo-action-button',
+            hidden: true,
+            isPromoAction: true,
+            roles: ['CMManager', 'CustomerMarketing', 'DemandPlanning', 'DemandFinance'],
+            statuses: ['OnApproval'],
+            statusId: null,
+            statusName: null,
+            statusSystemName: null
+        },
+        // Согласовать промо
+        {
+            xtype: 'button',
+            itemId: 'btn_approve',
+            glyph: 0xf12c,
+            text: l10n.ns('tpm', 'customtoptoolbar').value('approve'),
+            cls: 'promo-action-button',
+            hidden: true,
+            isPromoAction: true,
+            roles: ['CMManager', 'DemandPlanning', 'DemandFinance'],
+            statuses: ['OnApproval'],
+            statusId: null,
+            statusName: null,
+            statusSystemName: null,
+            style: { "background-color": "#66BB6A" }
+        },
+        // Отменить промо
+        {
+            xtype: 'button',
+            itemId: 'btn_cancel',
+            glyph: 0xf739,
+            text: l10n.ns('tpm', 'customtoptoolbar').value('cancel'),
+            cls: 'promo-action-button',
+            hidden: true,
+            isPromoAction: true,
+            roles: ['Administrator', 'KeyAccountManager', 'FunctionalExpert'],
+            statuses: ['Approved', 'Planned', 'Started'],
+            statusId: null,
+            statusName: null,
+            statusSystemName: null,
+            style: { "background-color": "#ffb74d" }
+        },
+        // Спланировать промо
+        {
+            xtype: 'button',
+            itemId: 'btn_plan',
+            glyph: 0xf12c,
+            text: l10n.ns('tpm', 'customtoptoolbar').value('plan'),
+            cls: 'promo-action-button',
+            hidden: true,
+            isPromoAction: true,
+            roles: ['Administrator', 'KeyAccountManager', 'FunctionalExpert'],
+            statuses: ['Approved'],
+            statusId: null,
+            statusName: null,
+            statusSystemName: null,
+            style: { "background-color": "#66BB6A" }
+        },
+        // Закрыть промо
+        {
+            xtype: 'button',
+            itemId: 'btn_close',
+            glyph: 0xf12c,
+            text: l10n.ns('tpm', 'customtoptoolbar').value('close'),
+            cls: 'promo-action-button',
+            hidden: true,
+            isPromoAction: true,
+            roles: ['Administrator', 'KeyAccountManager', 'FunctionalExpert'],
+            statuses: ['Finished'],
+            statusId: null,
+            statusName: null,
+            statusSystemName: null,
+            style: { "background-color": "#66BB6A" }
+        }, {
+            xtype: 'button',
+            itemId: 'btn_backToFinished',
+            glyph: 0xf54d,
+            text: l10n.ns('tpm', 'customtoptoolbar').value('backtofinished'),
+            cls: 'promo-action-button',
+            hidden: true,
+            isPromoAction: true,
+            roles: ['Administrator', 'FunctionalExpert'],
+            statuses: ['Closed'],
+            statusId: null,
+            statusName: null,
+            statusSystemName: null,
+            style: { "background-color": "#66BB6A" }
+        }, {
+            xtype: 'button',
+            itemId: 'btn_changeStatus',
+            glyph: 0xf4e1,
+            text: l10n.ns('tpm', 'customtoptoolbar').value('changestatus'),
+            cls: 'promo-action-button',
+            hidden: true,
+            isPromoAction: true,
+            roles: ['SupportAdministrator'],
+            statuses: ['Draft', 'DraftPublished', 'OnApproval', 'Approved', 'Planned', 'Started', 'Finished', 'Closed', 'Cancelled'],
+            statusId: null,
+            statusName: null,
+            statusSystemName: null,
+            style: { "background-color": "#66BB6A" }
+        }, {
+            xtype: 'tbspacer',
+            flex: 10
         },
         {
-        text: l10n.ns('tpm', 'customtoptoolbar').value('recalculate'),
-        itemId: 'btn_recalculatePromo',
-        style: { "background-color": "#ffb74d" },
-        hidden: true
+            text: l10n.ns('tpm', 'customtoptoolbar').value('recalculate'),
+            itemId: 'btn_recalculatePromo',
+            style: { "background-color": "#ffb74d" },
+            hidden: true
         },
         {
             text: l10n.ns('tpm', 'customtoptoolbar').value('resetPromo'),
             itemId: 'btn_resetPromo',
             style: { "background-color": "#ffb74d" },
             hidden: true
-        },{
-        text: l10n.ns('tpm', 'buttons').value('close'),
-        itemId: 'closePromo',
-        style: { "background-color": "#3F6895" },
-        hidden: true
-    }, {
-        text: l10n.ns('tpm', 'buttons').value('cancel'),
-        itemId: 'cancelPromo',
-        style: { "background-color": "#3F6895" }
-    }, {
-        text: l10n.ns('tpm', 'buttons').value('edit'),
-        itemId: 'changePromo',
-        style: { "background-color": "#26A69A" },
-        roles: ['Administrator', 'CMManager', 'CustomerMarketing', 'FunctionalExpert', 'KeyAccountManager', 'DemandPlanning', 'DemandFinance'],
-        hidden: true
-    }, {
-        text: l10n.ns('tpm', 'promoButtons').value('ok'),
-        itemId: 'savePromo',
-        style: { "background-color": "#66BB6A" }
-    }, {
-        text: l10n.ns('tpm', 'promoButtons').value('saveAndClose'),
-        itemId: 'saveAndClosePromo',
-        style: { "background-color": "#26A69A" }
-    }],
+        }, {
+            text: l10n.ns('tpm', 'buttons').value('close'),
+            itemId: 'closePromo',
+            style: { "background-color": "#3F6895" },
+            hidden: true
+        }, {
+            text: l10n.ns('tpm', 'buttons').value('cancel'),
+            itemId: 'cancelPromo',
+            style: { "background-color": "#3F6895" }
+        }, {
+            text: l10n.ns('tpm', 'buttons').value('edit'),
+            itemId: 'changePromo',
+            style: { "background-color": "#26A69A" },
+            roles: ['Administrator', 'CMManager', 'CustomerMarketing', 'FunctionalExpert', 'KeyAccountManager', 'DemandPlanning', 'DemandFinance'],
+            hidden: true
+        }, {
+            text: l10n.ns('tpm', 'promoButtons').value('ok'),
+            itemId: 'savePromo',
+            style: { "background-color": "#66BB6A" }
+        }, {
+            text: l10n.ns('tpm', 'promoButtons').value('saveAndClose'),
+            itemId: 'saveAndClosePromo',
+            style: { "background-color": "#26A69A" }
+        }],
 
     blockedLoading: false,
     setLoading: function (load, targetEl, blockLoad) {
