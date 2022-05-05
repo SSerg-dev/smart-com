@@ -313,6 +313,75 @@ namespace Module.Frontend.TPM.Controllers
             }));
         }
 
+        [ClaimsAuthorize]
+        public IHttpActionResult PreviousYearPromoList()
+        {
+            var previousYear = DateTimeOffset.Now.AddYears(-1).Year;
+            var settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
+            var statusesSetting = settingsManager.GetSetting<string>("ACTUAL_COGSTI_CHECK_PROMO_STATUS_LIST", "Finished,Closed");
+            var checkPromoStatuses = statusesSetting.Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+
+            var promoes = Context.Set<Promo>()
+                .Where(x => !x.Disabled && x.StartDate.HasValue && x.StartDate.Value.Year == previousYear)
+                .Select(x => new
+                {
+                    Number = x.Number,
+                    Name = x.Name,
+                    BrandTechName = x.BrandTech.BrandsegTechsub,
+                    StartDate = x.StartDate,
+                    EndDate = x.EndDate,
+                    DispatchesStart = x.DispatchesStart,
+                    DispatchesEnd = x.DispatchesEnd,
+                    PromoStatusName = x.PromoStatus.Name,
+                })
+                .ToList()
+                .Where(x => checkPromoStatuses.Contains(x.PromoStatusName))
+                .OrderBy(x => x.Number);
+
+            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new
+            {
+                success = true,
+                promoes
+            }));
+        }
+
+        [ClaimsAuthorize]
+        public IHttpActionResult CreateActualCOGSTnChangeIncidents()
+        {
+            var previousYear = DateTimeOffset.Now.AddYears(-1).Year;
+            var settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
+            var statusesSetting = settingsManager.GetSetting<string>("ACTUAL_COGSTI_CHECK_PROMO_STATUS_LIST", "Finished,Closed");
+            var checkPromoStatuses = statusesSetting.Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+
+            var promoes = Context.Set<Promo>()
+                .Where(x => !x.Disabled && x.StartDate.HasValue && x.StartDate.Value.Year == previousYear)
+                .Where(x => checkPromoStatuses.Contains(x.PromoStatus.Name))
+                .Select(x => x.Id).ToList();
+            var actualCOGSForPrevYear = Context.Set<ActualCOGSTn>().Where(x => x.Year == previousYear && !x.Disabled).ToList();
+
+            foreach (var item in promoes)
+            {
+                var changesIncident = new ChangesIncident
+                {
+                    Id = Guid.NewGuid(),
+                    DirectoryName = nameof(Promo) + nameof(ActualCOGSTn),
+                    ItemId = item.ToString(),
+                    CreateDate = DateTimeOffset.Now,
+                    Disabled = false
+                };
+
+                Context.Set<ChangesIncident>().Add(changesIncident);
+            }
+
+            foreach (var cogs in actualCOGSForPrevYear)
+            {
+                cogs.IsCOGSIncidentCreated = true;
+            }
+
+            Context.SaveChanges();
+            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
+        }
+
         public static IEnumerable<Column> GetExportSettings()
         {
             IEnumerable<Column> columns = new List<Column>() {

@@ -2792,6 +2792,10 @@
     <Compile Include="Migrations\202205050839550_UpdateActualCOGSTn.Designer.cs">
       <DependentUpon>202205050839550_UpdateActualCOGSTn.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202205051912077_Update_ActualCOGSTn_2.cs" />
+    <Compile Include="Migrations\202205051912077_Update_ActualCOGSTn_2.Designer.cs">
+      <DependentUpon>202205051912077_Update_ActualCOGSTn_2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -5346,6 +5350,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202205050839550_UpdateActualCOGSTn.resx">
       <DependentUpon>202205050839550_UpdateActualCOGSTn.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202205051912077_Update_ActualCOGSTn_2.resx">
+      <DependentUpon>202205051912077_Update_ActualCOGSTn_2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
