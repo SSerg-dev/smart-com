@@ -2686,7 +2686,7 @@
         promoeditorcustom.promotypeName = record.data.PromoTypesName;
         promoeditorcustom.promotypeGlyph = record.data.PromoTypesGlyph;
         this.setPromoType(record.data.PromoTypesName, promoeditorcustom);
-        // если дочерний промо, присваиваем статус Cancelled, чтобы нельзя было менять
+        // если дочерний промо, присваиваем фиктивный статус Cancelled, чтобы нельзя было менять
         if (record.data.MasterPromoId != null) {
             record.data.PromoStatusSystemName = 'Cancelled';
         }
