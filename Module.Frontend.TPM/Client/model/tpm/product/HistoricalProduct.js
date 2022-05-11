@@ -42,8 +42,10 @@
 		{ name: 'BrandTech', useNull: true, type: 'string', hidden: false, isDefault: true },
 		{ name: 'BrandTech_code', useNull: true, type: 'string', hidden: false, isDefault: true },
 		{ name: 'Segmen_code', useNull: true, type: 'string', hidden: false, isDefault: true },
-		{ name: 'UOM_PC2Case', useNull: true, type: 'int', hidden: false, isDefault: true },
-		{ name: 'Division', useNull: true, type: 'int', hidden: false, isDefault: true }
+        { name: 'UOM_PC2Case', useNull: true, type: 'int', hidden: false, isDefault: true },
+        { name: 'Division', useNull: true, type: 'int', hidden: false, isDefault: true },
+        { name: 'UOM', useNull: true, type: 'string', hidden: false, isDefault: true },
+        { name: 'NetWeight', useNull: true, type: 'float', hidden: false, isDefault: true }
     ],
     proxy: {
         type: 'breeze',

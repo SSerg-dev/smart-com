@@ -164,6 +164,14 @@
             xtype: 'singlelinedisplayfield',
             name: 'Division',
             fieldLabel: l10n.ns('tpm', 'Product').value('Division'),
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'UOM',
+            fieldLabel: l10n.ns('tpm', 'Product').value('UOM'),
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'NetWeight',
+            fieldLabel: l10n.ns('tpm', 'Product').value('NetWeight'),
         }]
     }
 });

@@ -686,6 +686,7 @@ namespace Module.Persist.TPM {
             builder.EntitySet<PromoProductsCorrection>("DeletedPromoProductsCorrections").HasOptionalBinding(e => e.PromoProduct, "PromoProducts");
             builder.Entity<PromoProductsCorrection>().Collection.Action("ExportXLSX");
             builder.Entity<PromoProductsCorrection>().Collection.Action("FullImportXLSX");
+            builder.Entity<PromoProductsCorrection>().Collection.Action("ExportCorrectionXLSX");
             builder.Entity<PromoProductsCorrection>().Collection.Action("DownloadTemplateXLSX");
             builder.Entity<PromoProductsCorrection>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PromoProductsCorrection>("PromoProductsCorrections");
             builder.EntitySet<HistoricalPromoProductsCorrection>("HistoricalPromoProductsCorrections");

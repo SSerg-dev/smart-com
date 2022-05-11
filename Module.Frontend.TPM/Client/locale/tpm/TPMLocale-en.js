@@ -474,7 +474,10 @@
         'Segmen_code': 'Segment code',
 
         'UOM_PC2Case': 'UOM_PC2Case',
-        'Division': 'Division'
+        'Division': 'Division',
+
+        'UOM': 'Unit of Measure',
+        'NetWeight': 'Net Weight'
     },
     'HistoricalProduct': ['.tpm.Product', '.core.BaseHistoryEntity'],
     'DeletedProduct': ['.tpm.Product', '.core.BaseDeletedEntity'],
@@ -2420,7 +2423,7 @@
         'StartDate': 'Start Date',
         'EndDate': 'End Date',
         'CreateDate': 'Create Date',
-        'actualAssortmentMatrixButtonText': 'Get actual assortment matrix.'
+        'actualAssortmentMatrixButtonText': 'Get actual assortment matrix'
     },
     'HistoricalAssortmentMatrix': ['.tpm.AssortmentMatrix', '.core.BaseHistoryEntity'],
     'DeletedAssortmentMatrix': ['.tpm.AssortmentMatrix', '.core.BaseDeletedEntity'],
@@ -2479,6 +2482,7 @@
         'ChangeDate': 'Last Change Date',
         'UserName': 'User Name',
         'GreaterThanZero': 'Uplift must be greater than zero',
+        'ExportCorrections': 'Export correction to XLSX',
     },
     'PreviousDayIncremental': {
         'ZREP': 'ZREP',

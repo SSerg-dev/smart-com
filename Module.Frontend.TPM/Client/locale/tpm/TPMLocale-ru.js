@@ -1958,7 +1958,7 @@
         'StartDate': 'Start Date',
         'EndDate': 'End Date',
         'CreateDate': 'Create Date',
-        'actualAssortmentMatrixButtonText': 'Get actual assortment matrix.'
+        'actualAssortmentMatrixButtonText': 'Get actual assortment matrix'
     },
     'HistoricalAssortmentMatrix': ['.tpm.AssortmentMatrix', '.core.BaseHistoryEntity'],
     'DeletedAssortmentMatrix': ['.tpm.AssortmentMatrix', '.core.BaseDeletedEntity'],

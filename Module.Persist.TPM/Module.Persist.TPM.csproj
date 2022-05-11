@@ -2760,6 +2760,10 @@
     <Compile Include="Migrations\202202241457236_Change_Discount_Type_CompetitorPromo.Designer.cs">
       <DependentUpon>202202241457236_Change_Discount_Type_CompetitorPromo.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202204172008027_Alter_PromoGridView.cs" />
+    <Compile Include="Migrations\202204172008027_Alter_PromoGridView.Designer.cs">
+      <DependentUpon>202204172008027_Alter_PromoGridView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\202203180923071_AddIsSplittableInTechnology.cs" />
     <Compile Include="Migrations\202203180923071_AddIsSplittableInTechnology.Designer.cs">
       <DependentUpon>202203180923071_AddIsSplittableInTechnology.cs</DependentUpon>
@@ -2803,6 +2807,17 @@
     <Compile Include="Migrations\202205110914187_Add_IsLSVBased_in_Promo.cs" />
     <Compile Include="Migrations\202205110914187_Add_IsLSVBased_in_Promo.Designer.cs">
       <DependentUpon>202205110914187_Add_IsLSVBased_in_Promo.cs</DependentUpon>
+    <Compile Include="Migrations\202204181154375_Add_PromoProductsCorrection_AP_ExportCorrectionXLSX.cs" />
+    <Compile Include="Migrations\202204181154375_Add_PromoProductsCorrection_AP_ExportCorrectionXLSX.Designer.cs">
+      <DependentUpon>202204181154375_Add_PromoProductsCorrection_AP_ExportCorrectionXLSX.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202204251819383_Product_Weight_Fields.cs" />
+    <Compile Include="Migrations\202204251819383_Product_Weight_Fields.Designer.cs">
+      <DependentUpon>202204251819383_Product_Weight_Fields.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202205060635322_Product_Case_PC_Volume_Fields.cs" />
+    <Compile Include="Migrations\202205060635322_Product_Case_PC_Volume_Fields.Designer.cs">
+      <DependentUpon>202205060635322_Product_Case_PC_Volume_Fields.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
@@ -5335,6 +5350,9 @@
     <EmbeddedResource Include="Migrations\202202241457236_Change_Discount_Type_CompetitorPromo.resx">
       <DependentUpon>202202241457236_Change_Discount_Type_CompetitorPromo.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202204172008027_Alter_PromoGridView.resx">
+      <DependentUpon>202204172008027_Alter_PromoGridView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202203180923071_AddIsSplittableInTechnology.resx">
       <DependentUpon>202203180923071_AddIsSplittableInTechnology.cs</DependentUpon>
     </EmbeddedResource>
@@ -5367,6 +5385,14 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202205110914187_Add_IsLSVBased_in_Promo.resx">
       <DependentUpon>202205110914187_Add_IsLSVBased_in_Promo.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202204181154375_Add_PromoProductsCorrection_AP_ExportCorrectionXLSX.resx">
+      <DependentUpon>202204181154375_Add_PromoProductsCorrection_AP_ExportCorrectionXLSX.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202204251819383_Product_Weight_Fields.resx">
+      <DependentUpon>202204251819383_Product_Weight_Fields.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202205060635322_Product_Case_PC_Volume_Fields.resx">
+      <DependentUpon>202205060635322_Product_Case_PC_Volume_Fields.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -135,5 +135,15 @@ namespace Module.Persist.TPM.Model.TPM
         public int? UOM_PC2Case { get; set; }
 
 		public int? Division { get; set; }
-	}
+
+        public double? NetWeight { get; set; }
+
+        [StringLength(255)]
+        public string UOM { get; set; }
+
+        public double? CaseVolume { get; set; }
+
+        public double? PCVolume { get; set; }
+
+    }
 }

@@ -443,7 +443,6 @@
     <Compile Include="Models\AdalTokenCache.cs" />
     <Compile Include="Startup.cs" />
     <Content Include="BuildConfiguration.txt" />
-    <Content Include="Bundles\style\images\box\corners-blue.gif" />
     <Content Include="Client\app.js" />
     <Content Include="Client\app\AppComponent.js" />
     <Content Include="Client\app\AppDomain.js" />

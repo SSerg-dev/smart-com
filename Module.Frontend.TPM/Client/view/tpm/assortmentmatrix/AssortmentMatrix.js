@@ -41,7 +41,7 @@
                     action: 'DownloadTemplateXLSX'
                 }, {
                     glyph: 0xf21d,
-                    itemId: 'exportxlsxbutton',
+                    itemId: 'exportXlsxAssortmentMatrixButton',
                     exactlyModelCompare: true,
                     text: l10n.ns('core', 'additionalMenu').value('exportXLSX'),
                     action: 'ExportXLSX'

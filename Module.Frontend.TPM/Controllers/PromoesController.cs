@@ -346,6 +346,10 @@ namespace Module.Frontend.TPM.Controllers
                 var isSubrangeChanged = false;
                 DateTimeOffset? ChangedDate = DateTimeOffset.UtcNow;
 
+                Promo ChangePromo = new Promo();
+                patch.CopyChangedValues(ChangePromo);
+                IEnumerable<string> ChangedList = patch.GetChangedPropertyNames();
+
                 Promo promoCopy = new Promo(model);
                 patch.Patch(model);
                 model.DeviationCoefficient /= 100;
@@ -361,6 +365,26 @@ namespace Module.Frontend.TPM.Controllers
                 UserInfo user = authorizationManager.GetCurrentUser();
                 string userRole = user.GetCurrentRole().SystemName;
                 bool needToCreateDemandIncident = false;
+                // при изменении StartDate скидываем в Event в Standard promo
+                if (ChangePromo.StartDate != null && userRole != "SupportAdministrator")
+                {
+                    DateTimeOffset StartDateCopy = (DateTimeOffset)promoCopy.StartDate;
+                    DateTimeOffset StartDateChange = (DateTimeOffset)ChangePromo.StartDate;
+                    if (StartDateCopy.Date != StartDateChange.Date)
+                    {
+                        if (!ChangedList.Any(g=>g.Contains("EventId")))
+                        {
+                            Event promoEvent = Context.Set<Event>().FirstOrDefault(x => !x.Disabled && x.Name == "Standard promo");
+                            if (promoEvent == null)
+                            {
+                                return InternalServerError(new Exception("Event 'Standard promo' not found"));
+                            }
+
+                            model.EventId = promoEvent.Id;
+                            model.EventName = promoEvent.Name;
+                        }
+                    }
+                }
 
                 string message;
                 PromoStateContext promoStateContext = new PromoStateContext(Context, promoCopy);
