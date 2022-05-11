@@ -2800,6 +2800,10 @@
     <Compile Include="Migrations\202205110801089_Update_Promo.Designer.cs">
       <DependentUpon>202205110801089_Update_Promo.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202205110914187_Add_IsLSVBased_in_Promo.cs" />
+    <Compile Include="Migrations\202205110914187_Add_IsLSVBased_in_Promo.Designer.cs">
+      <DependentUpon>202205110914187_Add_IsLSVBased_in_Promo.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -5360,6 +5364,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202205110801089_Update_Promo.resx">
       <DependentUpon>202205110801089_Update_Promo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202205110914187_Add_IsLSVBased_in_Promo.resx">
+      <DependentUpon>202205110914187_Add_IsLSVBased_in_Promo.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

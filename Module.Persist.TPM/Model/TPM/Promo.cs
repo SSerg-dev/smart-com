@@ -282,9 +282,9 @@ namespace Module.Persist.TPM.Model.TPM
         public string AdditionalUserTimestamp { get; set; }
 
         public bool IsGrowthAcceleration { get; set; }
-
         public bool IsApolloExport { get; set; }
         public bool IsSplittable { get; set; }
+        public bool IsLSVBased { get; set; }
 
         public double? PlanPromoBaselineVolume { get; set; }
         public double? PlanPromoPostPromoEffectVolume { get; set; }
