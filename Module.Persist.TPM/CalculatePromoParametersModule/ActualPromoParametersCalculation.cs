@@ -105,7 +105,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     COGSPercent = PromoUtils.GetCOGSPercent(simplePromoCOGS, context, cogsQuery, out message);
                     promo.PlanCOGSPercent = COGSPercent;
                 }
-                
+
                 if (message != null)
                     errors += message + ";";
 
@@ -236,7 +236,15 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     IQueryable<RATIShopper> ratishopperQuery = context.Set<RATIShopper>().Where(x => !x.Disabled);
                     RATIShopperPercent = PromoUtils.GetRATIShopperPercent(simplePromoRATIShopper, context, ratishopperQuery, out message);
 
-                    promo.ActualAddTIShopper = promo.ActualPromoTIShopper - promo.ActualPromoNetIncrementalLSV * (RATIShopperPercent ?? 0) / 100;
+                    if (promo.IsInExchange)
+                    {
+                        promo.ActualAddTIShopper = promo.ActualPromoTIShopper - promo.Promoes.Sum(g=>g.ActualPromoTIShopper) - (promo.ActualPromoNetIncrementalLSV - promo.Promoes.Sum(g => g.ActualPromoNetIncrementalLSV)) * (RATIShopperPercent ?? 0) / 100;
+                    }
+                    else
+                    {
+                        promo.ActualAddTIShopper = promo.ActualPromoTIShopper - promo.ActualPromoNetIncrementalLSV * (RATIShopperPercent ?? 0) / 100;
+                    }
+
                     promo.ActualAddTIMarketing = promo.ActualPromoTIMarketing - (promo.PlanPromoTIMarketing - promo.PlanAddTIMarketingApproved) > 0 ?
                         promo.ActualPromoTIMarketing - (promo.PlanPromoTIMarketing - promo.PlanAddTIMarketingApproved) : 0;
 
