@@ -227,6 +227,12 @@ namespace Module.Persist.TPM.Model.TPM
 
         public double? SumInvoiceProduct { get; set; }
 
+        public double? PlanProductBaselineValue { get; set; }
+        public double? PlanProductPostPromoEffectVolumeW1 { get; set; }
+        public double? PlanProductPostPromoEffectVolumeW2 { get; set; }
+        public double? PlanProductPostPromoEffectVolume { get; set; }
+        public double? ActualProductQty { get; set; }
+
         public virtual Promo Promo { get; set; }
         public virtual Product Product { get; set; }
 

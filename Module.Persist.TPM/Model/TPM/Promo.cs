@@ -288,8 +288,8 @@ namespace Module.Persist.TPM.Model.TPM
 
         public double? PlanPromoBaselineVolume { get; set; }
         public double? PlanPromoPostPromoEffectVolume { get; set; }
-        public double? PlanPromoPostPromoEffectVolume1 { get; set; }
-        public double? PlanPromoPostPromoEffectVolume2 { get; set; }
+        public double? PlanPromoPostPromoEffectVolumeW1 { get; set; }
+        public double? PlanPromoPostPromoEffectVolumeW2 { get; set; }
         public double? PlanPromoIncrementalVolume { get; set; }
         public double? PlanPromoNetIncrementalVolume { get; set; }
         public double? ActualPromoBaselineVolume { get; set; }

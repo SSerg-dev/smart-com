@@ -10,8 +10,8 @@ namespace Module.Persist.TPM.Migrations
             var defaultSchema = AppSettingsManager.GetSetting<string>("DefaultSchema", "dbo");
             AddColumn($"{defaultSchema}.Promo", "PlanPromoBaselineVolume", c => c.Double());
             AddColumn($"{defaultSchema}.Promo", "PlanPromoPostPromoEffectVolume", c => c.Double());
-            AddColumn($"{defaultSchema}.Promo", "PlanPromoPostPromoEffectVolume1", c => c.Double());
-            AddColumn($"{defaultSchema}.Promo", "PlanPromoPostPromoEffectVolume2", c => c.Double());
+            AddColumn($"{defaultSchema}.Promo", "PlanPromoPostPromoEffectVolumeW1", c => c.Double());
+            AddColumn($"{defaultSchema}.Promo", "PlanPromoPostPromoEffectVolumeW2", c => c.Double());
             AddColumn($"{defaultSchema}.Promo", "PlanPromoIncrementalVolume", c => c.Double());
             AddColumn($"{defaultSchema}.Promo", "PlanPromoNetIncrementalVolume", c => c.Double());
             AddColumn($"{defaultSchema}.Promo", "ActualPromoBaselineVolume", c => c.Double());
@@ -43,8 +43,8 @@ namespace Module.Persist.TPM.Migrations
             DropColumn($"{defaultSchema}.Promo", "ActualPromoBaselineVolume");
             DropColumn($"{defaultSchema}.Promo", "PlanPromoNetIncrementalVolume");
             DropColumn($"{defaultSchema}.Promo", "PlanPromoIncrementalVolume");
-            DropColumn($"{defaultSchema}.Promo", "PlanPromoPostPromoEffectVolume2");
-            DropColumn($"{defaultSchema}.Promo", "PlanPromoPostPromoEffectVolume1");
+            DropColumn($"{defaultSchema}.Promo", "PlanPromoPostPromoEffectVolumeW2");
+            DropColumn($"{defaultSchema}.Promo", "PlanPromoPostPromoEffectVolumeW1");
             DropColumn($"{defaultSchema}.Promo", "PlanPromoPostPromoEffectVolume");
             DropColumn($"{defaultSchema}.Promo", "PlanPromoBaselineVolume");
         }
