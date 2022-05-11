@@ -358,6 +358,7 @@ namespace Module.Persist.TPM.Model.TPM
             ActualPromoIncrementalEarnings = promoToCopy.ActualPromoIncrementalEarnings;
             ActualPromoIncrementalLSV = promoToCopy.ActualPromoIncrementalLSV;
             ActualPromoIncrementalMAC = promoToCopy.ActualPromoIncrementalMAC;
+            ActualPromoIncrementalMACLSV = promoToCopy.ActualPromoIncrementalMACLSV;
             ActualPromoIncrementalNSV = promoToCopy.ActualPromoIncrementalNSV;
             ActualPromoLSV = promoToCopy.ActualPromoLSV;
             ActualPromoLSVSI = promoToCopy.ActualPromoLSVSI;
@@ -369,6 +370,7 @@ namespace Module.Persist.TPM.Model.TPM
             PlanPromoIncrementalEarnings = promoToCopy.PlanPromoIncrementalEarnings;
             PlanPromoIncrementalLSV = promoToCopy.PlanPromoIncrementalLSV;
             PlanPromoIncrementalMAC = promoToCopy.PlanPromoIncrementalMAC;
+            PlanPromoIncrementalMACLSV = promoToCopy.PlanPromoIncrementalMACLSV;
             PlanPromoIncrementalNSV = promoToCopy.PlanPromoIncrementalNSV;
             ActualAddTIMarketing = promoToCopy.ActualAddTIMarketing;
             PlanAddTIMarketingApproved = promoToCopy.PlanAddTIMarketingApproved;
