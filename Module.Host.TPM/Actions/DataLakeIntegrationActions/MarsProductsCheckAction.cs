@@ -294,10 +294,20 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
 
                         foreach (var error in errors)
                             Errors.Add(error);
-
+                        
                         if (!errors.Any())
                         {
-                            Product newProduct = CreateProduct(material);
+                            Product newProduct = CreateProduct(material);                            
+                            switch (newProduct.UOM.ToLower())
+                            {
+                                case "kg":
+                                    newProduct.CaseVolume = Math.Round(newProduct.NetWeight.Value / 1000, 7);
+                                    break;
+                                case "g":
+                                    newProduct.CaseVolume = Math.Round(newProduct.NetWeight.Value / 1000000, 7);
+                                    break;
+                            }
+                            newProduct.PCVolume = Math.Round(newProduct.CaseVolume.Value / newProduct.UOM_PC2Case.Value, 7);
                             context.Set<Product>().Add(newProduct);
                             context.Set<ProductChangeIncident>().Add(CreateIncident(newProduct, true, false));
 
@@ -341,13 +351,27 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
 
                                 errors = UpdateTech(material.Tech_code, material.Technology, material.SubBrand_code, material.SubBrand);
                                 errors.AddRange(CheckNewBrandTech(material.Brand_code, material.Brand, material.Segmen_code, material.Tech_code, material.Technology, material.SubBrand_code, material.SubBrand));
+                                switch (material.UNIT_OF_WT.ToLower())
+                                {
+                                    case "kg":
+                                        productToUpdate.CaseVolume = Math.Round(productToUpdate.NetWeight.Value / 1000 , 7);
+                                        productToUpdate.PCVolume = Math.Round(productToUpdate.CaseVolume.Value / productToUpdate.UOM_PC2Case.Value, 7);
+                                        break;
+                                    case "g":
+                                        productToUpdate.CaseVolume = Math.Round(productToUpdate.NetWeight.Value / 1000000 , 7);
+                                        productToUpdate.PCVolume = Math.Round(productToUpdate.CaseVolume.Value / productToUpdate.UOM_PC2Case.Value, 7);
+                                        break;
+                                    default:
+                                        Errors.Add("The product UOM should contain kg or g value");
+                                        break;
 
+                                }
                                 foreach (var error in errors)
                                     Errors.Add(error);
 
-                                if (!errors.Any())
-                                {
+                                if (!errors.Any())                                {
                                     Product product = context.Set<Product>().Find(productToUpdate.Id);
+                                    
                                     List<string> updatedFileds = ApplyChanges(material, product, context);
 
                                     context.Set<ProductChangeIncident>().Add(CreateIncident(product, false, false));
@@ -763,7 +787,9 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
                 product.SupplySegment != material.Supply_Segment ||
                 product.Tech_code != material.Tech_code ||
                 product.SubBrand_code != material.SubBrand_code ||
-                product.TradedUnitFormat != material.Traded_unit_format);
+                product.TradedUnitFormat != material.Traded_unit_format ||
+                product.NetWeight != double.Parse(material.GNET_WT) || 
+                product.UOM != material.UNIT_OF_WT);
         }
 
         private List<string> ApplyChanges(MARS_UNIVERSAL_PETCARE_MATERIALS material, Product product, DatabaseContext context)
@@ -803,6 +829,17 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
             product.ZREP = product.ZREP != material.ZREP.TrimStart('0') ? material.ZREP.TrimStart('0') : product.ZREP;
             product.NetWeight = product.NetWeight != NetWeight ? NetWeight : product.NetWeight;
             product.UOM = product.UOM != material.UNIT_OF_WT ? material.UNIT_OF_WT : product.UOM;
+            product.CaseVolume = product.NetWeight != NetWeight ? NetWeight : product.NetWeight;
+            switch (product.UOM.ToLower())
+            {
+                case "kg":
+                    product.CaseVolume = Math.Round(product.NetWeight.Value / 1000, 7);
+                    break;
+                case "g":
+                    product.CaseVolume = Math.Round(product.NetWeight.Value/ 1000000, 7);
+                    break; 
+            }
+            product.PCVolume = Math.Round(product.CaseVolume.Value / product.UOM_PC2Case.Value, 7);
 
             var productState = context.Entry<Product>(product);
             foreach (var value in productState.OriginalValues.PropertyNames)

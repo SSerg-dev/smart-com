@@ -175,5 +175,13 @@ namespace Module.Persist.TPM.Model.TPM
         [ImportCSVColumn(ColumnNumber = 35)]
         [Display(Name = "Net Weight")]
         public double? NetWeight { get; set; }
+
+        [ImportCSVColumn(ColumnNumber = 36)]
+        [Display(Name = "Case Volume")]
+        public double? CaseVolume { get; set; }
+
+        [ImportCSVColumn(ColumnNumber = 37)]
+        [Display(Name = "PC Volume")]
+        public double? PCVolume { get; set; }
     }
 }

@@ -140,5 +140,10 @@ namespace Module.Persist.TPM.Model.TPM
 
         [StringLength(255)]
         public string UOM { get; set; }
-	}
+
+        public double? CaseVolume { get; set; }
+
+        public double? PCVolume { get; set; }
+
+    }
 }
