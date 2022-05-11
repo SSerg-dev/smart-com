@@ -1,12 +1,10 @@
 ﻿using System;
 using Core.Data;
+using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-
-using Persist;
 using System.Linq;
-using Newtonsoft.Json;
-
+using Persist;
 
 namespace Module.Persist.TPM.Model.TPM
 {
@@ -287,6 +285,24 @@ namespace Module.Persist.TPM.Model.TPM
 
         public bool IsApolloExport { get; set; }
         public bool IsSplittable { get; set; }
+
+        public double? PlanPromoBaselineVolume { get; set; }
+        public double? PlanPromoPostPromoEffectVolume { get; set; }
+        public double? PlanPromoPostPromoEffectVolume1 { get; set; }
+        public double? PlanPromoPostPromoEffectVolume2 { get; set; }
+        public double? PlanPromoIncrementalVolume { get; set; }
+        public double? PlanPromoNetIncrementalVolume { get; set; }
+        public double? ActualPromoBaselineVolume { get; set; }
+        public double? ActualPromoPostPromoEffectVolume { get; set; }
+        public double? ActualPromoVolumeByCompensation { get; set; }
+        public double? ActualPromoVolumeSI { get; set; }
+        public double? ActualPromoVolume { get; set; }
+        public double? ActualPromoIncrementalVolume { get; set; }
+        public double? ActualPromoNetIncrementalVolume { get; set; }
+        public double? PlanPromoIncrementalCOGSTn { get; set; }
+        public double? PlanPromoNetIncrementalCOGSTn { get; set; }
+        public double? ActualPromoIncrementalCOGSTn { get; set; }
+        public double? ActualPromoNetIncrementalCOGSTn { get; set; }
 
         /// <summary>
         /// Copy Constructor
