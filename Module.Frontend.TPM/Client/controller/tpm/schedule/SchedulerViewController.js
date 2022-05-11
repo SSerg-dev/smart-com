@@ -101,7 +101,14 @@
     },
 
     isResizable: function (rec) {
-        return rec.get('TypeName') != 'Competitor';
+        var res = true;
+        if (rec.get('TypeName') == 'Competitor') {
+            res = false;
+        }
+        if (rec.get('MasterPromoId') != null) {
+            res = false;
+        }
+        return res;
     },
 
     onpromoBeforeEventDrag: function (scheduler, record, e, eOpts) {
@@ -114,6 +121,9 @@
             res = true;
         } else {
             res = rec.get('PromoStatusSystemName') && (['Draft', 'DraftPublished', 'OnApproval', 'Approved', 'Planned'].includes(rec.get('PromoStatusSystemName')) && rec.get('TypeName') != 'Competitor');
+        }
+        if (rec.get('TypeName') != 'Competitor' && rec.get('MasterPromoId') != null) {
+            res = false;
         }
         return res;
     },
@@ -669,6 +679,7 @@
     promoRightButtonClick: function (panel, rec, e) {
         var me = this;
         if (rec.get('TypeName') == 'Competitor') return;
+        if (rec.get('MasterPromoId') != null) return;
         e.stopEvent();
         var status = rec.get('PromoStatusSystemName').toLowerCase();
         var promoStore = me.getPromoStore();

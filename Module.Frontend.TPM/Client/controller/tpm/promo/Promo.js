@@ -2075,9 +2075,9 @@
         }
         // InExchanche
         mechanic.down('checkboxfield[name=IsInExchangeCheckbox]').setReadOnly(true);
-        if (promoeditorcustom.isInExchange) {
-            this.disableActualPanels(true);
-        }
+        //if (promoeditorcustom.isInExchange) {
+        //    this.disableActualPanels(true);
+        //}
         // Заблокировать Adjusment для редактирования в указанных ниже статусах
         var isPromoEnd = (['Finished', 'Closed', 'Cancelled', 'Deleted'].indexOf(record.data.PromoStatusSystemName) >= 0);
         if (isPromoEnd
@@ -2689,6 +2689,8 @@
         // если дочерний промо, присваиваем фиктивный статус Cancelled, чтобы нельзя было менять
         if (record.data.MasterPromoId != null) {
             record.data.PromoStatusSystemName = 'Cancelled';
+            var onHoldLabel = Ext.ComponentQuery.query('#btn_promoOnHold')[0];
+            onHoldLabel.show();
         }
         //Промо в статусе Cancelled нельзя менять
         if (record.data.PromoStatusSystemName == 'Cancelled') {
@@ -3300,9 +3302,9 @@
             promoeditorcustom.down('[name=ApolloExportCheckbox]').setDisabled(false);
             promoeditorcustom.down('[name=ApolloExportCheckbox]').setReadOnly(false);
         }
-        if (promoeditorcustom.isInExchange) {
-            this.disableActualPanels(true);
-        }
+        //if (promoeditorcustom.isInExchange) {
+        //    this.disableActualPanels(true);
+        //}
         // Заблокировать Adjustment для редактирования в указанных ниже статусах
         var isPromoEnd = (['Finished', 'Closed', 'Cancelled', 'Deleted'].indexOf(record.data.PromoStatusSystemName) >= 0);
         if (isPromoEnd

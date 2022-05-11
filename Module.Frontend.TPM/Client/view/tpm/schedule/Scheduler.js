@@ -115,18 +115,20 @@
         }
     },
     // Промо в две строки
-    eventBodyTemplate: '<span class="mdi alpha-g-box-outline inout-mark-icon growth-acceleration-icon" style="display: {display}; bacground-color: white; color: #426a97; float: left;"></span>' + 
-        '<div class="event-status-border {eventStatusBorderGrowthAcceleration}" style="margin-left: {marginLeft}; border-left: 5px solid {statusColor};"><span class="sch-event-text">{headerText}</span></div>',
+    eventBodyTemplate: '<span class="mdi alpha-g-box-outline inout-mark-icon growth-acceleration-icon" style="display: {display}; background-color: white; color: #426a97; float: left;"></span>' + 
+        '<div class="event-status-border {eventStatusBorderGrowthAcceleration}" style="margin-left: {marginLeft}; border-left: 5px solid {statusColor}; opacity: {opacity};"><span class="sch-event-text">{headerText}</span></div>',
 
     // возвращает объект заполняющий eventBodyTemplate
     eventRenderer: function (event, resource, tplData, row, col, ds) {
         var bgColor = event.get('ColorSystemName');
         tplData.style = Ext.String.format('background: {0} !important; border-color: white;', bgColor || '#DDDDDD');
+        //debugger;
         return {
             headerText: event.get('Name'),
             statusColor: event.get('PromoStatusColor') || '#DDDDDD',
             display: event.data.IsGrowthAcceleration ? 'inline' : 'none',
             marginLeft: event.data.IsGrowthAcceleration ? '13px' : '0px',
+            opacity: event.data.MasterPromoId ? 0.3 : 1,
             eventStatusBorderGrowthAcceleration:  event.data.IsGrowthAcceleration ? 'event-status-border-growth-acceleration' : ''
         };
     },

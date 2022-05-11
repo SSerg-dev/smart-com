@@ -49,8 +49,10 @@
         {name: 'DeviationCoefficient', type: 'float', hidden: false, isDefault: true},
 
         //Apollo Export
-        { name: 'IsApolloExport', type: 'boolean', hidden: false, isDefault: false }
-
+        { name: 'IsApolloExport', type: 'boolean', hidden: false, isDefault: false },
+        // Is in Exchange
+        { name: 'IsInExchange', type: 'boolean', hidden: false, isDefault: false },
+        { name: 'MasterPromoId', useNull: true, hidden: true, isDefault: false, defaultValue: null },
     ],
     proxy: {
         type: 'breeze',

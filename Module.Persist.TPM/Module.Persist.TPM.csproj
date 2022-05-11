@@ -2776,6 +2776,14 @@
     <Compile Include="Migrations\202204261037349_Add_LinkedPromoes_Promo.Designer.cs">
       <DependentUpon>202204261037349_Add_LinkedPromoes_Promo.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202205111031480_Update_PromoView2.cs" />
+    <Compile Include="Migrations\202205111031480_Update_PromoView2.Designer.cs">
+      <DependentUpon>202205111031480_Update_PromoView2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202205111055378_Update_PromoView4.cs" />
+    <Compile Include="Migrations\202205111055378_Update_PromoView4.Designer.cs">
+      <DependentUpon>202205111055378_Update_PromoView4.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -5314,6 +5322,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202204261037349_Add_LinkedPromoes_Promo.resx">
       <DependentUpon>202204261037349_Add_LinkedPromoes_Promo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202205111031480_Update_PromoView2.resx">
+      <DependentUpon>202205111031480_Update_PromoView2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202205111055378_Update_PromoView4.resx">
+      <DependentUpon>202205111055378_Update_PromoView4.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
