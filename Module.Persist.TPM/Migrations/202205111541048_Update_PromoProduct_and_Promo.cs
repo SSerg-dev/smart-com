@@ -8,7 +8,7 @@ namespace Module.Persist.TPM.Migrations
         public override void Up()
         {
             var defaultSchema = AppSettingsManager.GetSetting<string>("DefaultSchema", "dbo");
-            AddColumn($"{defaultSchema}.PromoProduct", "PlanProductBaselineValue", c => c.Double());
+            AddColumn($"{defaultSchema}.PromoProduct", "PlanProductBaselineVolume", c => c.Double());
             AddColumn($"{defaultSchema}.PromoProduct", "PlanProductPostPromoEffectVolumeW1", c => c.Double());
             AddColumn($"{defaultSchema}.PromoProduct", "PlanProductPostPromoEffectVolumeW2", c => c.Double());
             AddColumn($"{defaultSchema}.PromoProduct", "PlanProductPostPromoEffectVolume", c => c.Double());
@@ -22,7 +22,7 @@ namespace Module.Persist.TPM.Migrations
             DropColumn($"{defaultSchema}.PromoProduct", "PlanProductPostPromoEffectVolume");
             DropColumn($"{defaultSchema}.PromoProduct", "PlanProductPostPromoEffectVolumeW2");
             DropColumn($"{defaultSchema}.PromoProduct", "PlanProductPostPromoEffectVolumeW1");
-            DropColumn($"{defaultSchema}.PromoProduct", "PlanProductBaselineValue");
+            DropColumn($"{defaultSchema}.PromoProduct", "PlanProductBaselineVolume");
         }
     }
 }
