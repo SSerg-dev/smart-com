@@ -202,7 +202,8 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     {
                         promo.ActualPromoNetIncrementalMAC = (promo.ActualPromoNetIncrementalNSV ?? 0) - (promo.ActualPromoNetIncrementalCOGS ?? 0);
                         promo.ActualPromoIncrementalMAC = (promo.ActualPromoIncrementalNSV ?? 0) - (promo.ActualPromoIncrementalCOGS ?? 0);
-                        promo.ActualPromoIncrementalEarnings = (promo.ActualPromoIncrementalMAC ?? 0) - (promo.ActualPromoBranding ?? 0) - (promo.ActualPromoBTL ?? 0) - (promo.ActualPromoCostProduction ?? 0);
+                        promo.ActualPromoIncrementalEarnings = (promo.ActualPromoIncrementalMAC ?? 0) - (promo.ActualPromoBranding ?? 0) - (promo.ActualPromoBTL ?? 0) - (promo.ActualPromoCostProduction ?? 0);\
+                        promo.ActualPromoROIPercent = promo.ActualPromoCost == 0 ? 0 : (promo.ActualPromoIncrementalEarnings / promo.ActualPromoCost + 1) * 100;
                     }
                     else
                     {
@@ -212,6 +213,9 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         promo.ActualPromoIncrementalMACLSV = (promo.ActualPromoIncrementalNSV ?? 0) - (promo.ActualPromoIncrementalCOGSTn ?? 0);
                         promo.ActualPromoIncrementalEarnings = (promo.ActualPromoIncrementalMAC ?? 0) - (promo.ActualPromoBranding ?? 0) - (promo.ActualPromoBTL ?? 0) - (promo.ActualPromoCostProduction ?? 0);
                         promo.ActualPromoIncrementalEarningsLSV = (promo.ActualPromoIncrementalMACLSV ?? 0) - (promo.ActualPromoBranding ?? 0) - (promo.ActualPromoBTL ?? 0) - (promo.ActualPromoCostProduction ?? 0);
+                        promo.ActualPromoROIPercent = promo.ActualPromoCost == 0 ? 0 : (promo.ActualPromoIncrementalEarnings / promo.ActualPromoCost + 1) * 100;
+                        promo.ActualPromoNetROIPercentLSV = promo.ActualPromoCost == 0 ? 0 : (promo.ActualPromoNetIncrementalEarningsLSV / promo.ActualPromoCost + 1) * 100;
+
                     }
 
                     //if (!promo.InOut.HasValue || !promo.InOut.Value)
@@ -238,9 +242,6 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                     
                     promo.ActualPromoNetIncrementalEarnings = (promo.ActualPromoNetIncrementalMAC ?? 0) - (promo.ActualPromoBranding ?? 0) - (promo.ActualPromoBTL ?? 0) - (promo.ActualPromoCostProduction ?? 0);
-
-                    promo.ActualPromoROIPercent = promo.ActualPromoCost == 0 ? 0 : (promo.ActualPromoIncrementalEarnings / promo.ActualPromoCost + 1) * 100;
-                    promo.ActualPromoNetROIPercent = promo.ActualPromoCost == 0 ? 0 : (promo.ActualPromoNetIncrementalEarnings / promo.ActualPromoCost + 1) * 100;
 
                     // ищем RATIShopper
                     double? RATIShopperPercent;
