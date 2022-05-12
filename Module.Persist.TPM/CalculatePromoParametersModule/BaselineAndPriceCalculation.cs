@@ -176,6 +176,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                             double? planProductBaseLineCaseQty = result.Sum(x => x.Qty) * baseLineShareIndex;
                             promoProduct.PlanProductBaselineCaseQty = planProductBaseLineCaseQty;
                             promoProduct.PlanProductBaselineLSV = planProductBaseLineCaseQty * promoProduct.Price;
+                            promoProduct.PlanProductBaselineVolume = promoProduct.PlanProductBaselineCaseQty * caseVolume;
                         }
                     }
                 }
