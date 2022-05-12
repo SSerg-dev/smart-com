@@ -48,6 +48,8 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     IQueryable<COGS> cogsQuery = context.Set<COGS>().Where(x => !x.Disabled);
                     SimplePromoCOGS simplePromoCOGS = new SimplePromoCOGS(promo);
                     double? COGSPercent = PromoUtils.GetCOGSPercent(simplePromoCOGS, context, cogsQuery, out message);
+                    IQueryable<PlanCOGSTn> cogsTnQuery = context.Set<PlanCOGSTn>().Where(x => !x.Disabled);
+                    double? COGSTnVolume = PromoUtils.GetCOGSVolume(simplePromoCOGS, context, cogsTnQuery, out message);
                     promo.PlanCOGSPercent = COGSPercent;
                     if (message == null)
                     {
@@ -124,8 +126,8 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         promo.PlanPromoBaselineVolume = sumPlanProductBaseLineVolume;
                         promo.PlanPromoIncrementalVolume = sumPlanProductBaseLineVolume * promo.PlanPromoUpliftPercent / 100;
                         promo.PlanPromoNetIncrementalVolume = (promo.PlanPromoIncrementalVolume ?? 0) + (promo.PlanPromoPostPromoEffectVolume ?? 0);
-                        promo.PlanPromoIncrementalCOGSTn = promo.PlanPromoIncrementalVolume * COGSTnPercent / 100;
-                        promo.PlanPromoNetIncrementalCOGSTn = promo.PlanPromoNetIncrementalVolume * COGSTnPercent / 100;
+                        promo.PlanPromoIncrementalCOGSTn = promo.PlanPromoIncrementalVolume * COGSTnVolume / 100;
+                        promo.PlanPromoNetIncrementalCOGSTn = promo.PlanPromoNetIncrementalVolume * COGSTnVolume / 100;
 
                         double? RATIShopperPercent;
                         SimplePromoRATIShopper simplePromoRATIShopper = new SimplePromoRATIShopper(promo);
