@@ -219,19 +219,27 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         private static void ResetValues(Promo promo, DatabaseContext context)
         {
             //promo.PlanPromoBaselineLSV = null;
+            //promo.PlanPromoBaselineVolume = null;
             //promo.PlanPromoIncrementalLSV = null;
+            //promo.PlanPromoIncrementalVolume = null;
             //promo.PlanPromoLSV = null;
             promo.PlanPromoTIShopper = promo.PlanPromoTIShopper != 0 ? null : promo.PlanPromoTIShopper;
             promo.PlanPromoCost = promo.PlanPromoCost != 0 ? null : promo.PlanPromoCost;
             promo.PlanPromoIncrementalBaseTI = promo.PlanPromoIncrementalBaseTI != 0 ? null : promo.PlanPromoIncrementalBaseTI;
             promo.PlanPromoNetIncrementalBaseTI = promo.PlanPromoNetIncrementalBaseTI != 0 ? null : promo.PlanPromoNetIncrementalBaseTI;
             promo.PlanPromoIncrementalCOGS = promo.PlanPromoIncrementalCOGS != 0 ? null : promo.PlanPromoIncrementalCOGS;
+            promo.PlanPromoIncrementalCOGSTn = promo.PlanPromoIncrementalCOGSTn != 0 ? null : promo.PlanPromoIncrementalCOGSTn;
             promo.PlanPromoNetIncrementalCOGS = promo.PlanPromoNetIncrementalCOGS != 0 ? null : promo.PlanPromoNetIncrementalCOGS;
+            promo.PlanPromoNetIncrementalCOGSTn = promo.PlanPromoNetIncrementalCOGSTn != 0 ? null : promo.PlanPromoNetIncrementalCOGSTn;
             promo.PlanPromoTotalCost = promo.PlanPromoTotalCost != 0 ? null : promo.PlanPromoTotalCost;
             promo.PlanPromoPostPromoEffectLSVW1 = promo.PlanPromoPostPromoEffectLSVW1 != 0 ? null : promo.PlanPromoPostPromoEffectLSVW1;
             promo.PlanPromoPostPromoEffectLSVW2 = promo.PlanPromoPostPromoEffectLSVW2 != 0 ? null : promo.PlanPromoPostPromoEffectLSVW2;
             promo.PlanPromoPostPromoEffectLSV = promo.PlanPromoPostPromoEffectLSV != 0 ? null : promo.PlanPromoPostPromoEffectLSV;
+            promo.PlanPromoPostPromoEffectVolumeW1 = promo.PlanPromoPostPromoEffectVolumeW1 != 0 ? null : promo.PlanPromoPostPromoEffectVolumeW1;
+            promo.PlanPromoPostPromoEffectVolumeW2 = promo.PlanPromoPostPromoEffectVolumeW2 != 0 ? null : promo.PlanPromoPostPromoEffectVolumeW2;
+            promo.PlanPromoPostPromoEffectVolume = promo.PlanPromoPostPromoEffectVolume != 0 ? null : promo.PlanPromoPostPromoEffectVolume;
             promo.PlanPromoNetIncrementalLSV = promo.PlanPromoNetIncrementalLSV != 0 ? null : promo.PlanPromoNetIncrementalLSV;
+            promo.PlanPromoNetIncrementalVolume = promo.PlanPromoNetIncrementalVolume != 0 ? null : promo.PlanPromoNetIncrementalVolume;
             promo.PlanPromoNetLSV = promo.PlanPromoNetLSV != 0 ? null : promo.PlanPromoNetLSV;
             promo.PlanPromoBaselineBaseTI = promo.PlanPromoBaselineBaseTI != 0 ? null : promo.PlanPromoBaselineBaseTI;
             promo.PlanPromoBaseTI = promo.PlanPromoBaseTI != 0 ? null : promo.PlanPromoBaseTI;
