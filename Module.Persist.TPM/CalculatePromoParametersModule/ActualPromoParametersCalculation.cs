@@ -287,8 +287,12 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     }
                     promo.ActualPromoIncrementalVolume = promo.ActualPromoVolume - promo.ActualPromoBaselineVolume;
                     promo.ActualPromoNetIncrementalVolume = promo.ActualPromoIncrementalVolume + promo.ActualPromoPostPromoEffectVolume;
-                    //promo.ActualPromoIncrementalCOGSTn = promo.ActualPromoIncrementalVolume *
-                    //promo.ActualPromoNetIncrementalCOGSTn = promo.ActualPromoNetIncrementalVolume *
+
+                    SimplePromoCOGS simplePromoCOGStn = new SimplePromoCOGS(promo);
+                    IQueryable<PlanCOGSTn> cogsTnQuery = context.Set<PlanCOGSTn>().Where(x => !x.Disabled);
+                    double? COGSTnVolume = PromoUtils.GetCOGSVolume(simplePromoCOGS, context, cogsTnQuery, out message);
+                    promo.ActualPromoIncrementalCOGSTn = promo.ActualPromoIncrementalVolume * COGSTnVolume;
+                    promo.ActualPromoNetIncrementalCOGSTn = promo.ActualPromoNetIncrementalVolume * COGSTnVolume;
 
                     if (PromoUtils.HasChanges(context.ChangeTracker, promo.Id))
                     {
