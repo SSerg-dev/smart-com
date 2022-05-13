@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Net;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.OData;
 using System.Web.Http.OData.Query;
-using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
-using Core.MarsCalendar;
 using Core.Security;
 using Core.Security.Models;
-
 using Frontend.Core.Controllers.Base;
 using Frontend.Core.Extensions.Export;
 using Looper.Core;
@@ -22,14 +18,11 @@ using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
 using Persist;
 using Persist.Model;
-
 using Thinktecture.IdentityModel.Authorization.WebApi;
-
 using Utility;
 
 namespace Module.Frontend.TPM.Controllers
 {
-
 	public class PlanIncrementalReportsController : EFContextController
 	{
 		private readonly UserInfo user;
@@ -166,8 +159,6 @@ namespace Module.Frontend.TPM.Controllers
 				context.LoopHandlers.Add(handler);
 				context.SaveChanges();
 			}
-
-			return Content(HttpStatusCode.OK, "success");
 
 			return Content(HttpStatusCode.OK, "success");
 		}

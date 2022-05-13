@@ -582,6 +582,9 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 product.PlanProductPostPromoEffectLSVW1 = null;
                 product.PlanProductPostPromoEffectLSVW2 = null;
                 product.PlanProductPostPromoEffectLSV = null;
+                product.PlanProductPostPromoEffectVolumeW1 = null;
+                product.PlanProductPostPromoEffectVolumeW2 = null;
+                product.PlanProductPostPromoEffectVolume = null;
             }
         }
 
