@@ -180,5 +180,20 @@ namespace Module.Persist.TPM.Model.DTO
         public double? PlanAddTIMarketingApproved { get; set; }
         public double? ActualAddTIShopper { get; set; }
         public double? ActualAddTIMarketing { get; set; }
+
+        //New calculation parameters for ROI
+        public double? PlanPromoIncrementalMACLSV { get; set; }
+        public double? PlanPromoNetIncrementalMACLSV { get; set; }
+        public double? ActualPromoIncrementalMACLSV { get; set; }
+        public double? ActualPromoNetIncrementalMACLSV { get; set; }
+        public double? PlanPromoIncrementalEarningsLSV { get; set; }
+        public double? PlanPromoNetIncrementalEarningsLSV { get; set; }
+        public double? ActualPromoIncrementalEarningsLSV { get; set; }
+        public double? ActualPromoNetIncrementalEarningsLSV { get; set; }
+        public double? PlanPromoROIPercentLSV { get; set; }
+        public double? PlanPromoNetROIPercentLSV { get; set; }
+        public double? ActualPromoROIPercentLSV { get; set; }
+        public double? ActualPromoNetROIPercentLSV { get; set; }
+
     }
 }

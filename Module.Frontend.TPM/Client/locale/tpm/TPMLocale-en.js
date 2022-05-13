@@ -2173,6 +2173,19 @@
         'PlanAddTIMarketingApproved': 'Plan Add TI Promo Marketing Approved',
         'ActualAddTIShopper': 'Actual Add TI Shopper',
         'ActualAddTIMarketing': 'Actual Add TI Promo Marketing',
+
+        'PlanPromoIncrementalMACLSV': 'Plan Promo Incremental MAC LSV',
+        'PlanPromoNetIncrementalMACLSV': 'Plan Promo Net Incremental MAC LSV',
+        'ActualPromoIncrementalMACLSV': 'Actual Promo Incremental MAC LSV',
+        'ActualPromoNetIncrementalMACLSV': 'Actual Promo Net Incremental  MAC LSV',
+        'PlanPromoIncrementalEarningsLSV': 'Plan Promo Incremental  Earnings LSV',
+        'PlanPromoNetIncrementalEarningsLSV': 'Plan Promo Net Incremental  Earnings LSV',
+        'ActualPromoIncrementalEarningsLSV': 'Actual Promo Incremental  Earnings LSV',
+        'ActualPromoNetIncrementalEarningsLSV': 'Actual Promo Net Incremental  Earnings LSV',
+        'PlanPromoROIPercentLSV': 'Plan Promo ROI % LSV',
+        'PlanPromoNetROIPercentLSV': 'Plan Promo Net ROI % LSV',
+        'ActualPromoROIPercentLSV': 'Actual Promo ROI % LSV',
+        'ActualPromoNetROIPercentLSV': 'Actual Promo Net ROI % LSV',
     },
 
     'PromoActivity': {
