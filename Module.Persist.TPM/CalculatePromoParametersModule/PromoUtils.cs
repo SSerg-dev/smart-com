@@ -259,7 +259,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 else
                 {
                     message = null;
-                    return cogsList[0].Volume;
+                    return cogsList[0].TonCost;
                 }
             }
             catch (Exception e)

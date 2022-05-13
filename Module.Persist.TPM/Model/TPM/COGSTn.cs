@@ -14,7 +14,7 @@ namespace Module.Persist.TPM.Model.TPM
         public int Year { get; set; }
         public int ClientTreeId { get; set; }
         public Guid? BrandTechId { get; set; }
-        public double Volume { get; set; }
+        public double TonCost { get; set; }
         public bool Disabled { get; set; }
         public DateTimeOffset? DeletedDate { get; set; }
 

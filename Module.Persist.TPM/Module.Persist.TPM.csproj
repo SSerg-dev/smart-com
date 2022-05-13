@@ -2828,6 +2828,10 @@
     <Compile Include="Migrations\202205112100220_Add_New_Promo_Fields.Designer.cs">
       <DependentUpon>202205112100220_Add_New_Promo_Fields.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202205131809217_Rename_Volume_to_TonCost.cs" />
+    <Compile Include="Migrations\202205131809217_Rename_Volume_to_TonCost.Designer.cs">
+      <DependentUpon>202205131809217_Rename_Volume_to_TonCost.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -5410,6 +5414,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202205112100220_Add_New_Promo_Fields.resx">
       <DependentUpon>202205112100220_Add_New_Promo_Fields.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202205131809217_Rename_Volume_to_TonCost.resx">
+      <DependentUpon>202205131809217_Rename_Volume_to_TonCost.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
