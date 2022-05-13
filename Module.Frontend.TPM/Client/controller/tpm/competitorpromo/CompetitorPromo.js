@@ -75,7 +75,7 @@
             }
         });
     },
-onHistoryButtonClick: function (button) {
+    onHistoryButtonClick: function (button) {
         var grid = this.getGridByButton(button),
             selModel = grid.getSelectionModel();
 
@@ -91,67 +91,67 @@ onHistoryButtonClick: function (button) {
             var proxy = store.getProxy();
             proxy.extraParams.Id = this.getRecordId(selModel.getSelection()[0]);
         }
-},
+    },
 
-onNewImportButtonClick: function (button) {
-    var grid = this.getGridByButton(button),
-                panel = grid.up('combineddirectorypanel'),
-                viewClassName = App.Util.buildViewClassName(panel, panel.getBaseModel(), 'Import', 'ParamForm'),
-                defaultResource = this.getDefaultResource(button),
-                resource = Ext.String.format(button.resource || defaultResource, defaultResource),
-                action = Ext.String.format(button.action, resource);;
-    Ext.Msg.show({
-        title: 'Information!',
-        msg: 'All Competitor promo data will be replaced. Confirm?',
-        buttons: Ext.Msg.YESNO,
-        closable: false,
-        buttonText: {
-            yes: 'Yes',
-            no: 'No'
-        },
-        width : 300,
-        multiline: false,
-        fn: function(buttonValue, inputText, showConfig) {
-            if(buttonValue === 'yes') {
-                var editor = Ext.create('App.view.core.common.UploadFileWindow', {
-                    title: l10n.ns('core').value('uploadFileWindowTitle'),
-                    parentGrid: grid,
-                    resource: resource,
-                    action: action
-                });
+    onNewImportButtonClick: function (button) {
+        var grid = this.getGridByButton(button),
+            panel = grid.up('combineddirectorypanel'),
+            viewClassName = App.Util.buildViewClassName(panel, panel.getBaseModel(), 'Import', 'ParamForm'),
+            defaultResource = this.getDefaultResource(button),
+            resource = Ext.String.format(button.resource || defaultResource, defaultResource),
+            action = Ext.String.format(button.action, resource);;
+        Ext.Msg.show({
+            title: 'Information!',
+            msg: 'All Competitor promo data will be replaced. Confirm?',
+            buttons: Ext.Msg.YESNO,
+            closable: false,
+            buttonText: {
+                yes: 'Yes',
+                no: 'No'
+            },
+            width: 300,
+            multiline: false,
+            fn: function (buttonValue, inputText, showConfig) {
+                if (buttonValue === 'yes') {
+                    var editor = Ext.create('App.view.core.common.UploadFileWindow', {
+                        title: l10n.ns('core').value('uploadFileWindowTitle'),
+                        parentGrid: grid,
+                        resource: resource,
+                        action: action
+                    });
 
-                if (button.additionParameters) {
-                    var fields = [];
-                    for (var param in button.additionParameters) {
-                        if (button.hasOwnProperty(param)) {
-                            fields.push({
-                                xtype: 'hiddenfield',
-                                name: param,
-                                value: button.additionParameters[param]
-                            });
+                    if (button.additionParameters) {
+                        var fields = [];
+                        for (var param in button.additionParameters) {
+                            if (button.hasOwnProperty(param)) {
+                                fields.push({
+                                    xtype: 'hiddenfield',
+                                    name: param,
+                                    value: button.additionParameters[param]
+                                });
+                            }
                         }
+                        editor.down('editorform').add(fields);
                     }
-                    editor.down('editorform').add(fields);
-                }
-                var btnBrowse = editor.down('filefield');
-                if (btnBrowse) {
-                    var allowFormat = button.allowFormat || ['csv', 'zip'];
-                    btnBrowse.allowFormat = allowFormat;
-                    btnBrowse.vtypeText = 'Формат файла не поддерживается. Необходим файл формата: ' + allowFormat.join(',');
-                }
+                    var btnBrowse = editor.down('filefield');
+                    if (btnBrowse) {
+                        var allowFormat = button.allowFormat || ['csv', 'zip'];
+                        btnBrowse.allowFormat = allowFormat;
+                        btnBrowse.vtypeText = 'Формат файла не поддерживается. Необходим файл формата: ' + allowFormat.join(',');
+                    }
 
-                if (Ext.ClassManager.get(viewClassName)) {
-                    var paramForm = Ext.create(viewClassName);
-                    var fieldValues = button.fieldValues ? Ext.clone(button.fieldValues) : null;
-                    paramForm.initFields(fieldValues);
-                    editor.down('#importform').insert(0, paramForm);
+                    if (Ext.ClassManager.get(viewClassName)) {
+                        var paramForm = Ext.create(viewClassName);
+                        var fieldValues = button.fieldValues ? Ext.clone(button.fieldValues) : null;
+                        paramForm.initFields(fieldValues);
+                        editor.down('#importform').insert(0, paramForm);
+                    }
+                    editor.show();
                 }
-                editor.show();
-            }            
-        },
-        icon : Ext.Msg.INFO
-    })
-},
+            },
+            icon: Ext.Msg.INFO
+        })
+    },
 
 
 });
