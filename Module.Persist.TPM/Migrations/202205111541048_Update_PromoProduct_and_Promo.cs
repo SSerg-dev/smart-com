@@ -12,13 +12,13 @@ namespace Module.Persist.TPM.Migrations
             AddColumn($"{defaultSchema}.PromoProduct", "PlanProductPostPromoEffectVolumeW1", c => c.Double());
             AddColumn($"{defaultSchema}.PromoProduct", "PlanProductPostPromoEffectVolumeW2", c => c.Double());
             AddColumn($"{defaultSchema}.PromoProduct", "PlanProductPostPromoEffectVolume", c => c.Double());
-            AddColumn($"{defaultSchema}.PromoProduct", "ActualProductQty", c => c.Double());
+            AddColumn($"{defaultSchema}.PromoProduct", "ActualProductQtySO", c => c.Double());
         }
         
         public override void Down()
         {
             var defaultSchema = AppSettingsManager.GetSetting<string>("DefaultSchema", "dbo");
-            DropColumn($"{defaultSchema}.PromoProduct", "ActualProductQty");
+            DropColumn($"{defaultSchema}.PromoProduct", "ActualProductQtySO");
             DropColumn($"{defaultSchema}.PromoProduct", "PlanProductPostPromoEffectVolume");
             DropColumn($"{defaultSchema}.PromoProduct", "PlanProductPostPromoEffectVolumeW2");
             DropColumn($"{defaultSchema}.PromoProduct", "PlanProductPostPromoEffectVolumeW1");

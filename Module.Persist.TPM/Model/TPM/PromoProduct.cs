@@ -231,7 +231,7 @@ namespace Module.Persist.TPM.Model.TPM
         public double? PlanProductPostPromoEffectVolumeW1 { get; set; }
         public double? PlanProductPostPromoEffectVolumeW2 { get; set; }
         public double? PlanProductPostPromoEffectVolume { get; set; }
-        public double? ActualProductQty { get; set; }
+        public double? ActualProductQtySO { get; set; }
 
         public virtual Promo Promo { get; set; }
         public virtual Product Product { get; set; }

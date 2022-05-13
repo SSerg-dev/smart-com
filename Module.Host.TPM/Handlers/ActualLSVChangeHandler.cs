@@ -179,6 +179,7 @@ namespace Module.Host.TPM.Handlers
                                 }
                                 // Устанавливаем ActualProductLSV в запись таблицы PromoProduct.
                                 promoProduct.ActualProductLSV = promo.ActualPromoLSV.Value * currentActualProductLSVByCompensation;
+                                promoProduct.ActualProductQtySO = promoProduct.ActualProductLSV * promoProduct.Price / promoProduct.Product.UOM_PC2Case;
                             }
                         }
                     }
@@ -196,7 +197,13 @@ namespace Module.Host.TPM.Handlers
                 ClientTree clientTree = null;
                 clientTree = context.Set<ClientTree>().Where(x => x.ObjectId == promo.ClientTreeId && !x.EndDate.HasValue).FirstOrDefault();
 
+                // Получаем все записи из таблицы PromoProduct для текущего промо.
+                var promoProducts = context.Set<PromoProduct>().Where(x => x.PromoId == promo.Id && !x.Disabled);
+
                 promo.ActualPromoPostPromoEffectLSV = promo.IsOnInvoice ? (promo.ActualPromoLSVSO ?? 0) - (promo.ActualPromoLSVSI ?? 0) : promo.ActualPromoPostPromoEffectLSVW1 + promo.ActualPromoPostPromoEffectLSVW2;
+                //Volume
+                promo.ActualPromoPostPromoEffectVolume = promo.ActualPromoPostPromoEffectLSVW1 / promoProducts.Sum(g => g.Price / g.Product.UOM_PC2Case) * promoProducts.Sum(g => g.Product.PCVolume) +
+                    promo.ActualPromoPostPromoEffectLSVW2 / promoProducts.Sum(g => g.Price / g.Product.UOM_PC2Case) * promoProducts.Sum(g => g.Product.PCVolume);
 
                 if (promo.IsOnInvoice)
                 {
@@ -207,11 +214,8 @@ namespace Module.Host.TPM.Handlers
                 // Если есть от чего считать долю.
                 if (promo.PlanPromoBaselineLSV.HasValue && promo.PlanPromoBaselineLSV.Value != 0)
                 {
-                    // Получаем все записи из таблицы PromoProduct для текущего промо.
-                    var promoProductsForCurrentPromo = context.Set<PromoProduct>().Where(x => x.PromoId == promo.Id && !x.Disabled);
-
                     // Перебираем все найденные для текущего промо записи из таблицы PromoProduct.
-                    foreach (var promoProduct in promoProductsForCurrentPromo)
+                    foreach (var promoProduct in promoProducts)
                     {
                         // Если PlanProductPostPromoEffectLSV нет, то мы не сможем посчитать долю
                         if (promoProduct.PlanProductPostPromoEffectLSV.HasValue)

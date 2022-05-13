@@ -105,7 +105,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     COGSPercent = PromoUtils.GetCOGSPercent(simplePromoCOGS, context, cogsQuery, out message);
                     promo.PlanCOGSPercent = COGSPercent;
                 }
-                
+
                 if (message != null)
                     errors += message + ";";
 
@@ -124,7 +124,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 {
                     errors += e.Message + ";";
                 }
-
+                List<PromoProduct> promoProducts = context.Set<PromoProduct>().Where(p => !p.Disabled && p.PromoId == promo.Id).ToList();
                 // если ошибок нет - считаем
                 if (errors.Length == 0)
                 {
@@ -168,6 +168,9 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         promo.ActualPromoNetIncrementalLSV = (promo.ActualPromoIncrementalLSV ?? 0) + (promo.ActualPromoPostPromoEffectLSV ?? 0);
                         promo.ActualPromoUpliftPercent = promo.ActualPromoBaselineLSV == 0 ? 0 : promo.ActualPromoIncrementalLSV / promo.ActualPromoBaselineLSV * 100;
                         promo.ActualPromoNetUpliftPercent = promo.ActualPromoBaselineLSV == 0 ? 0 : promo.ActualPromoNetIncrementalLSV / promo.ActualPromoBaselineLSV * 100;
+                        //volume
+                        promo.ActualPromoPostPromoEffectVolume = promo.ActualPromoPostPromoEffectLSVW1 / promoProducts.Sum(g => g.Price / g.Product.UOM_PC2Case) * promoProducts.Sum(g => g.Product.PCVolume) +
+                    promo.ActualPromoPostPromoEffectLSVW2 / promoProducts.Sum(g => g.Price / g.Product.UOM_PC2Case) * promoProducts.Sum(g => g.Product.PCVolume);
                     }
                     else
                     {
@@ -183,6 +186,8 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                         promo.ActualPromoUpliftPercent = null;
                         promo.ActualPromoNetUpliftPercent = null;
+                        //volume
+                        promo.ActualPromoPostPromoEffectVolume = 0;
                     }
 
                     promo.ActualPromoIncrementalBaseTI = promo.ActualPromoIncrementalLSV * TIBasePercent / 100;
@@ -198,11 +203,11 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     promo.ActualPromoIncrementalNSV = (promo.ActualPromoIncrementalLSV ?? 0) - (promo.ActualPromoTIShopper ?? 0) - (promo.ActualPromoTIMarketing ?? 0) - (promo.ActualPromoIncrementalBaseTI ?? 0);
                     promo.ActualPromoNetIncrementalNSV = (promo.ActualPromoNetIncrementalLSV ?? 0) - (promo.ActualPromoTIShopper ?? 0) - (promo.ActualPromoTIMarketing ?? 0) - (promo.ActualPromoNetIncrementalBaseTI ?? 0);
                     promo.ActualPromoNetNSV = (promo.ActualPromoNetLSV ?? 0) - (promo.ActualPromoTIShopper ?? 0) - (promo.ActualPromoTIMarketing ?? 0) - (promo.ActualPromoNetBaseTI ?? 0);
-                    if(promo.IsLSVBased)
+                    if (promo.IsLSVBased)
                     {
                         promo.ActualPromoNetIncrementalMAC = (promo.ActualPromoNetIncrementalNSV ?? 0) - (promo.ActualPromoNetIncrementalCOGS ?? 0);
                         promo.ActualPromoIncrementalMAC = (promo.ActualPromoIncrementalNSV ?? 0) - (promo.ActualPromoIncrementalCOGS ?? 0);
-                        promo.ActualPromoIncrementalEarnings = (promo.ActualPromoIncrementalMAC ?? 0) - (promo.ActualPromoBranding ?? 0) - (promo.ActualPromoBTL ?? 0) - (promo.ActualPromoCostProduction ?? 0);\
+                        promo.ActualPromoIncrementalEarnings = (promo.ActualPromoIncrementalMAC ?? 0) - (promo.ActualPromoBranding ?? 0) - (promo.ActualPromoBTL ?? 0) - (promo.ActualPromoCostProduction ?? 0);
                         promo.ActualPromoROIPercent = promo.ActualPromoCost == 0 ? 0 : (promo.ActualPromoIncrementalEarnings / promo.ActualPromoCost + 1) * 100;
                     }
                     else
@@ -240,7 +245,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     promo.ActualPromoNSV = (promo.ActualPromoLSV ?? 0) - (promo.ActualPromoTIShopper ?? 0) - (promo.ActualPromoTIMarketing ?? 0) - (promo.ActualPromoBaseTI ?? 0);
 
 
-                    
+
                     promo.ActualPromoNetIncrementalEarnings = (promo.ActualPromoNetIncrementalMAC ?? 0) - (promo.ActualPromoBranding ?? 0) - (promo.ActualPromoBTL ?? 0) - (promo.ActualPromoCostProduction ?? 0);
 
                     // ищем RATIShopper
@@ -269,6 +274,21 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     //    promo.ActualPromoROIPercent = promo.ActualPromoTotalCost == 0 ? 0 : (promo.ActualPromoIncrementalEarnings / promo.ActualPromoTotalCost + 1) * 100;
                     //    promo.ActualPromoNetROIPercent = promo.ActualPromoTotalCost == 0 ? 0 : (promo.ActualPromoNetIncrementalEarnings / promo.ActualPromoTotalCost + 1) * 100;
                     //}
+
+                    //Volume
+                    promo.ActualPromoBaselineVolume = promoProducts.Sum(g => g.ActualProductBaselineLSV) / promoProducts.Sum(g => g.Price / g.Product.UOM_PC2Case) * promoProducts.Sum(g => g.Product.PCVolume);
+                    if (promo.IsOnInvoice)
+                    {
+                        promo.ActualPromoVolume = promoProducts.Sum(g => g.ActualProductQtySO) / promoProducts.Sum(g => g.Price / g.Product.UOM_PC2Case);
+                    }
+                    else
+                    {
+                        promo.ActualPromoVolume = promo.ActualPromoVolumeSI;
+                    }
+                    promo.ActualPromoIncrementalVolume = promo.ActualPromoVolume - promo.ActualPromoBaselineVolume;
+                    promo.ActualPromoNetIncrementalVolume = promo.ActualPromoIncrementalVolume + promo.ActualPromoPostPromoEffectVolume;
+                    //promo.ActualPromoIncrementalCOGSTn = promo.ActualPromoIncrementalVolume *
+                    //promo.ActualPromoNetIncrementalCOGSTn = promo.ActualPromoNetIncrementalVolume *
 
                     if (PromoUtils.HasChanges(context.ChangeTracker, promo.Id))
                     {
