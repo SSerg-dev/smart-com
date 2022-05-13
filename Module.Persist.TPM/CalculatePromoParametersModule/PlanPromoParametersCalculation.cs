@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Module.Persist.TPM.Model.TPM;
 using Persist;
-using Module.Persist.TPM.Utils.Filter;
-using System.Data.Entity;
-using System.Data.Entity.Validation;
 using Module.Persist.TPM.Utils;
 using Module.Persist.TPM.Model.SimpleModel;
 
@@ -54,6 +48,8 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     IQueryable<COGS> cogsQuery = context.Set<COGS>().Where(x => !x.Disabled);
                     SimplePromoCOGS simplePromoCOGS = new SimplePromoCOGS(promo);
                     double? COGSPercent = PromoUtils.GetCOGSPercent(simplePromoCOGS, context, cogsQuery, out message);
+                    IQueryable<PlanCOGSTn> cogsTnQuery = context.Set<PlanCOGSTn>().Where(x => !x.Disabled);
+                    double? COGSTnVolume = PromoUtils.GetCOGSVolume(simplePromoCOGS, context, cogsTnQuery, out message);
                     promo.PlanCOGSPercent = COGSPercent;
                     if (message == null)
                     {
@@ -72,6 +68,10 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                 promo.PlanPromoPostPromoEffectLSVW1 = promo.PlanPromoBaselineLSV * clientTree.PostPromoEffectW1 / 100;
                                 promo.PlanPromoPostPromoEffectLSVW2 = promo.PlanPromoBaselineLSV * clientTree.PostPromoEffectW2 / 100;
                                 promo.PlanPromoPostPromoEffectLSV = promo.PlanPromoPostPromoEffectLSVW1 + promo.PlanPromoPostPromoEffectLSVW2;
+
+                                promo.PlanPromoPostPromoEffectVolumeW1 = promo.PlanPromoBaselineVolume * clientTree.PostPromoEffectW1 / 100;
+                                promo.PlanPromoPostPromoEffectVolumeW2 = promo.PlanPromoBaselineVolume * clientTree.PostPromoEffectW2 / 100;
+                                promo.PlanPromoPostPromoEffectVolume = promo.PlanPromoPostPromoEffectVolumeW1 + promo.PlanPromoPostPromoEffectVolumeW2;
                             }
 
                             promo.PlanPromoNetIncrementalLSV = (promo.PlanPromoIncrementalLSV ?? 0) + (promo.PlanPromoPostPromoEffectLSV ?? 0);
@@ -85,6 +85,10 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                             promo.PlanPromoPostPromoEffectLSV = 0;
 
                             promo.PlanPromoNetIncrementalLSV = (promo.PlanPromoIncrementalLSV ?? 0) + (promo.PlanPromoPostPromoEffectLSV ?? 0);
+
+                            promo.PlanPromoPostPromoEffectVolumeW1 = 0;
+                            promo.PlanPromoPostPromoEffectVolumeW2 = 0;
+                            promo.PlanPromoPostPromoEffectVolume = 0;
                         }
 
                         promo.PlanPromoNetLSV = (promo.PlanPromoBaselineLSV ?? 0) + (promo.PlanPromoNetIncrementalLSV ?? 0);
@@ -140,6 +144,12 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
 
 
+                        double? sumPlanProductBaseLineVolume = context.Set<PromoProduct>().Where(x => x.PromoId == promoId && !x.Disabled).Sum(x => x.PlanProductBaselineVolume);
+                        promo.PlanPromoBaselineVolume = sumPlanProductBaseLineVolume;
+                        promo.PlanPromoIncrementalVolume = sumPlanProductBaseLineVolume * promo.PlanPromoUpliftPercent / 100;
+                        promo.PlanPromoNetIncrementalVolume = (promo.PlanPromoIncrementalVolume ?? 0) + (promo.PlanPromoPostPromoEffectVolume ?? 0);
+                        promo.PlanPromoIncrementalCOGSTn = promo.PlanPromoIncrementalVolume * COGSTnVolume / 100;
+                        promo.PlanPromoNetIncrementalCOGSTn = promo.PlanPromoNetIncrementalVolume * COGSTnVolume / 100;
 
                         double? RATIShopperPercent;
                         SimplePromoRATIShopper simplePromoRATIShopper = new SimplePromoRATIShopper(promo);
