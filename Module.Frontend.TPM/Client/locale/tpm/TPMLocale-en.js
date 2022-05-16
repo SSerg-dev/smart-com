@@ -1650,7 +1650,7 @@
         'ClientTreeFullPathName': 'ClientHierarchy',
         'ClientTreeObjectId': 'ClientId',
         'BrandTechName': 'BrandTech',
-        'Volume': 'Ton Cost',
+        'TonCost': 'Ton Cost',
         'Year': 'Year',
     },
     'HistoricalPlanCOGSTn': ['.tpm.PlanCOGSTn', '.core.BaseHistoryEntity'],
@@ -1662,7 +1662,7 @@
         'ClientTreeFullPathName': 'ClientHierarchy',
         'ClientTreeObjectId': 'ClientId',
         'BrandTechName': 'BrandTech',
-        'Volume': 'Ton Cost',
+        'TonCost': 'Ton Cost',
         'Year': 'Year',
         'recalculatePreviousYearButtonYearText': 'Recalculate previous year'
     },

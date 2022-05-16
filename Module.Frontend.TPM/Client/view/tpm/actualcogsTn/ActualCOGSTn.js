@@ -210,8 +210,8 @@
                     }
                 }
             }, {
-                text: l10n.ns('tpm', 'ActualCOGSTn').value('Volume'),
-                dataIndex: 'Volume'
+                text: l10n.ns('tpm', 'ActualCOGSTn').value('TonCost'),
+                dataIndex: 'TonCost'
             }]
         }
     }, {
@@ -313,8 +313,8 @@
             }]
         }, {
             xtype: 'numberfield',
-            name: 'Volume',
-            fieldLabel: l10n.ns('tpm', 'ActualCOGSTn').value('Volume'),
+            name: 'TonCost',
+            fieldLabel: l10n.ns('tpm', 'ActualCOGSTn').value('TonCost'),
             minValue: 0,
             maxValue: 100,
             readOnly: true,
