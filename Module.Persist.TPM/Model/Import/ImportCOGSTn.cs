@@ -38,8 +38,8 @@ namespace Module.Persist.TPM.Model.Import
         public String BrandsegTechsub { get; set; }
 
         [ImportCSVColumn(ColumnNumber = 5)]
-        [Display(Name = "Volume")]
-        public double Volume { get; set; }
+        [Display(Name = "TonCost")]
+        public double TonCost { get; set; }
 
         public int ClientTreeId { get; set; }
         public Guid? BrandTechId { get; set; }

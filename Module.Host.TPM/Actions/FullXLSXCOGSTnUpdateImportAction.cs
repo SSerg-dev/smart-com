@@ -660,10 +660,10 @@ namespace Module.Host.TPM.Actions
             }
 
             // Volume должно быть больше нуля
-            if (importObj.Volume < 0)
+            if (importObj.TonCost < 0)
             {
                 isError = true;
-                errors.Add("Volume must be more than 0");
+                errors.Add("Ton Cost must be more than 0");
             }
 
             return !isError;
@@ -778,7 +778,7 @@ namespace Module.Host.TPM.Actions
                     {
                         StartDate = newRecord.StartDate,
                         EndDate = newRecord.EndDate,
-                        Volume = newRecord.Volume,
+                        TonCost = newRecord.TonCost,
                         ClientTreeId = newRecord.ClientTreeId,
                         BrandTechId = bt != null ? (Guid?)bt.Id : null,
                         Year = newRecord.StartDate.Value.Year
@@ -892,7 +892,7 @@ namespace Module.Host.TPM.Actions
                     {
                         StartDate = newRecord.StartDate,
                         EndDate = newRecord.EndDate,
-                        Volume = newRecord.Volume,
+                        TonCost = newRecord.TonCost,
                         ClientTreeId = newRecord.ClientTreeId,
                         BrandTechId = bt != null ? (Guid?)bt.Id : null,
                         Year = newRecord.StartDate.Value.Year
