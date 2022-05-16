@@ -226,6 +226,7 @@ namespace Module.Frontend.TPM.Controllers
                     return NotFound();
                 }
 
+                patch.Patch(model);
                 switch (model.UOM.ToLower())
                 {
                     case "kg":
@@ -239,7 +240,6 @@ namespace Module.Frontend.TPM.Controllers
                     default:
                         return InternalServerError(new Exception("The product UOM should contain kg or g value"));
                 }
-                patch.Patch(model);
                 model.SubBrand_code = !String.IsNullOrEmpty(model.SubBrand_code) ? model.SubBrand_code : null;
                 IList<string> errors = new List<string>();
                 var validBrandTech = BrandTechExist(Context, model.Brand_code, model.Segmen_code, model.SubBrand_code, model.Tech_code, ref errors);
