@@ -18,7 +18,7 @@
             name: 'ClientTreeObjectId', type: 'int', mapping: 'ClientTree.ObjectId',
             defaultFilterConfig: { valueField: 'ObjectId' }, breezeEntityType: 'ClientTree', hidden: false, isDefault: true
         },
-        { name: 'Volume', type: 'float', hidden: false, isDefault: true }
+        { name: 'TonCost', type: 'float', hidden: false, isDefault: true }
     ],
     proxy: {
         type: 'breeze',

@@ -303,7 +303,7 @@ namespace Module.Frontend.TPM.Controllers
                 new Column() { Order = 2, Field = "ClientTree.FullPathName", Header = "Client", Quoting = false },
                 new Column() { Order = 3, Field = "ClientTree.ObjectId", Header = "ClientId", Quoting = false },
                 new Column() { Order = 4, Field = "BrandTech.BrandsegTechsub", Header = "BrandTech", Quoting = false },
-                new Column() { Order = 5, Field = "Volume", Header = "Volume", Quoting = false }
+                new Column() { Order = 5, Field = "TonCost", Header = "TonCost", Quoting = false }
             };
             return columns;
         }

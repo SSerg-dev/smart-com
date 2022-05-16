@@ -208,7 +208,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             }
         }
 
-        public static double? GetCOGSVolume(SimplePromoCOGS promo, DatabaseContext context, IQueryable<BaseCOGSTn> query, out string message)
+        public static double? GetCOGSTonCost(SimplePromoCOGS promo, DatabaseContext context, IQueryable<BaseCOGSTn> query, out string message)
         {
             try
             {

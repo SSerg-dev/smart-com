@@ -11,7 +11,7 @@ namespace Module.Persist.TPM.Model.History
         public Guid? BrandTechId { get; set; }
         public DateTimeOffset? StartDate { get; set; }
         public DateTimeOffset? EndDate { get; set; }
-        public double? Volume { get; set; }
+        public double? TonCost { get; set; }
 
         private string brandTechName;
         public string BrandTechName
