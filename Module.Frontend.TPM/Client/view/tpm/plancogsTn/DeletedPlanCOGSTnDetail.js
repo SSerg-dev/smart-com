@@ -38,8 +38,8 @@
             fieldLabel: l10n.ns('tpm', 'PlanCOGSTn').value('BrandTechName')
         }, {
             xtype: 'singlelinedisplayfield',
-            name: 'Volume',
-            fieldLabel: l10n.ns('tpm', 'PlanCOGSTn').value('Volume')
+            name: 'TonCost',
+            fieldLabel: l10n.ns('tpm', 'PlanCOGSTn').value('TonCost')
         }]
     }
 })
