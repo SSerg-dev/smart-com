@@ -533,6 +533,46 @@
             maxValue: 999999999,
             allowBlank: true,
             allowOnlyWhitespace: true
+        }, {
+            xtype: 'textfield',
+            name: 'CaseVolume',
+            fieldLabel: l10n.ns('tpm', 'Product').value('CaseVolume'),
+            minValue: 0,
+            maxValue: 999999999,
+            allowBlank: true,
+            allowOnlyWhitespace: true,
+            readOnly: true,
+            listeners: {
+                afterrender: function (field) {
+                    field.addCls('readOnlyField');
+                },
+                writeablechange: function (field) {
+                    if (field.readOnly == false) {
+                        field.setReadOnly(true);
+                        field.addCls('readOnlyField');
+                    }
+                }
+            }
+        }, {
+            xtype: 'textfield',
+            name: 'PCVolume',
+            fieldLabel: l10n.ns('tpm', 'Product').value('PCVolume'),
+            minValue: 0,
+            maxValue: 999999999,
+            allowBlank: true,
+            allowOnlyWhitespace: true,
+            readOnly: true,
+            listeners: {
+                afterrender: function (field) {
+                    field.addCls('readOnlyField');
+                },
+                writeablechange: function (field) {
+                    if (field.readOnly == false) {
+                        field.setReadOnly(true);
+                        field.addCls('readOnlyField');
+                    }
+                }
+            }
         }]
     },
     listeners: {

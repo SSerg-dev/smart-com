@@ -40,6 +40,8 @@
         { name: 'Division', useNull: true, type: 'int', hidden: false, isDefault: true },
         { name: 'UOM', useNull: true, type: 'string', hidden: false, isDefault: true },
         { name: 'NetWeight', useNull: true, type: 'float', hidden: false, isDefault: true },
+        { name: 'CaseVolume', useNull: true, type: 'float', hidden: false, isDefault: true },
+        { name: 'PCVolume', useNull: true, type: 'float', hidden: false, isDefault: true },
         { name: 'Checked', useNull: false, type: 'bool', hidden: true, isDefault: false, defaultValue: false }
     ],
     proxy: {

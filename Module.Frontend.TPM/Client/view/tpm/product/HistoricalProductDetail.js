@@ -172,6 +172,14 @@
             xtype: 'singlelinedisplayfield',
             name: 'NetWeight',
             fieldLabel: l10n.ns('tpm', 'Product').value('NetWeight'),
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'CaseVolume',
+            fieldLabel: l10n.ns('tpm', 'Product').value('CaseVolume'),
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'PCVolume',
+            fieldLabel: l10n.ns('tpm', 'Product').value('PCVolume'),
         }]
     }
 });

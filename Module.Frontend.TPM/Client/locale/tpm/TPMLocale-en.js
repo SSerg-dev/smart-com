@@ -477,7 +477,9 @@
         'Division': 'Division',
 
         'UOM': 'Unit of Measure',
-        'NetWeight': 'Net Weight'
+        'NetWeight': 'Net Weight',
+        'CaseVolume': 'Case Volume',
+        'PCVolume': 'PC Volume'
     },
     'HistoricalProduct': ['.tpm.Product', '.core.BaseHistoryEntity'],
     'DeletedProduct': ['.tpm.Product', '.core.BaseDeletedEntity'],

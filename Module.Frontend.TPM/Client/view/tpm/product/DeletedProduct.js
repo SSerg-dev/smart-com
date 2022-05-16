@@ -156,6 +156,12 @@
             }, {
                 text: l10n.ns('tpm', 'Product').value('NetWeight'),
                 dataIndex: 'NetWeight'
+            }, {
+                text: l10n.ns('tpm', 'Product').value('CaseVolume'),
+                dataIndex: 'CaseVolume'
+            }, {
+                text: l10n.ns('tpm', 'Product').value('PCVolume'),
+                dataIndex: 'PCVolume'
             }]
         }
     }, {
