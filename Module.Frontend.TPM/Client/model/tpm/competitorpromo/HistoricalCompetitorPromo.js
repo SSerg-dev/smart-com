@@ -11,6 +11,7 @@
         { name: '_Operation', type: 'string', isDefault: true },
         { name: 'CompetitorName', type: 'string', isDefault: true},
         { name: 'ClientTreeFullPathName', type: 'string', isDefault: true },
+        { name: 'ClientTreeObjectId', type: 'int', isDefault: true },
         { name: 'CompetitorBrandTechBrandTech', type: 'string', isDefault: true},
         { name: 'Name', type: 'string', isDefault: true },
         { name: 'Number', type: 'int', isDefault: true },

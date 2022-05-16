@@ -9,6 +9,7 @@ namespace Module.Persist.TPM.Model.History
     {
         public string CompetitorName { get; set; }
         public string ClientTreeFullPathName { get; set; }
+        public int ClientTreeObjectId { get; set; }
         public DateTimeOffset? StartDate { get; set; }
         public DateTimeOffset? EndDate { get; set; }
         public string Name { get; set; }
