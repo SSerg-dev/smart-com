@@ -49,7 +49,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     SimplePromoCOGS simplePromoCOGS = new SimplePromoCOGS(promo);
                     double? COGSPercent = PromoUtils.GetCOGSPercent(simplePromoCOGS, context, cogsQuery, out message);
                     IQueryable<PlanCOGSTn> cogsTnQuery = context.Set<PlanCOGSTn>().Where(x => !x.Disabled);
-                    double? COGSTnVolume = PromoUtils.GetCOGSVolume(simplePromoCOGS, context, cogsTnQuery, out message);
+                    double? COGSTnTonCost = PromoUtils.GetCOGSTonCost(simplePromoCOGS, context, cogsTnQuery, out message);
                     promo.PlanCOGSPercent = COGSPercent;
                     if (message == null)
                     {
@@ -140,16 +140,12 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                             promo.PlanPromoNetROIPercentLSV = promo.PlanPromoCost != 0 ? (promo.PlanPromoNetIncrementalEarningsLSV / promo.PlanPromoCost + 1) * 100 : 0;
 
                         }
-
-
-
-
                         double? sumPlanProductBaseLineVolume = context.Set<PromoProduct>().Where(x => x.PromoId == promoId && !x.Disabled).Sum(x => x.PlanProductBaselineVolume);
                         promo.PlanPromoBaselineVolume = sumPlanProductBaseLineVolume;
                         promo.PlanPromoIncrementalVolume = sumPlanProductBaseLineVolume * promo.PlanPromoUpliftPercent / 100;
                         promo.PlanPromoNetIncrementalVolume = (promo.PlanPromoIncrementalVolume ?? 0) + (promo.PlanPromoPostPromoEffectVolume ?? 0);
-                        promo.PlanPromoIncrementalCOGSTn = promo.PlanPromoIncrementalVolume * COGSTnVolume / 100;
-                        promo.PlanPromoNetIncrementalCOGSTn = promo.PlanPromoNetIncrementalVolume * COGSTnVolume / 100;
+                        promo.PlanPromoIncrementalCOGSTn = promo.PlanPromoIncrementalVolume * COGSTnTonCost / 100;
+                        promo.PlanPromoNetIncrementalCOGSTn = promo.PlanPromoNetIncrementalVolume * COGSTnTonCost / 100;
 
                         double? RATIShopperPercent;
                         SimplePromoRATIShopper simplePromoRATIShopper = new SimplePromoRATIShopper(promo);

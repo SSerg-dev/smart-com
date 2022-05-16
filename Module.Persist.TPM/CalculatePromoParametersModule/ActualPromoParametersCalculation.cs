@@ -290,7 +290,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                     SimplePromoCOGS simplePromoCOGStn = new SimplePromoCOGS(promo);
                     IQueryable<PlanCOGSTn> cogsTnQuery = context.Set<PlanCOGSTn>().Where(x => !x.Disabled);
-                    double? COGSTnVolume = PromoUtils.GetCOGSVolume(simplePromoCOGS, context, cogsTnQuery, out message);
+                    double? COGSTnVolume = PromoUtils.GetCOGSTonCost(simplePromoCOGS, context, cogsTnQuery, out message);
                     promo.ActualPromoIncrementalCOGSTn = promo.ActualPromoIncrementalVolume * COGSTnVolume;
                     promo.ActualPromoNetIncrementalCOGSTn = promo.ActualPromoNetIncrementalVolume * COGSTnVolume;
 
