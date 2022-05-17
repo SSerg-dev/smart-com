@@ -71,6 +71,15 @@
                 },
                 'competitorpromo #newImportXLSX': {
                     click: this.onNewImportButtonClick
+                },
+                'competitorpromoeditor [name=CompetitorBrandTechId]': {
+                    change: this.generateCompetitorPromoName
+                },
+                'competitorpromoeditor [name=MechanicTypeCombo]': {
+                    change: this.generateCompetitorPromoName
+                },
+                'competitorpromoeditor [name=DiscountCompetitorPromo]': {
+                    change: this.generateCompetitorPromoName
                 }
             }
         });
@@ -86,7 +95,6 @@
 
             var baseReviewWindow = Ext.widget('basereviewwindow', { items: Ext.create(viewClassName, { baseModel: model }) });
             baseReviewWindow.show();
-
             var store = baseReviewWindow.down('grid').getStore();
             var proxy = store.getProxy();
             proxy.extraParams.Id = this.getRecordId(selModel.getSelection()[0]);
@@ -152,6 +160,4 @@
             icon: Ext.Msg.INFO
         })
     },
-
-
 });

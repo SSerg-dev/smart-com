@@ -145,6 +145,8 @@
                 xtype: 'textfield',
                 fieldLabel: l10n.ns('tpm', 'Promo').value('Name'),
                 name: 'Name',
+                readOnly: true,
+                readOnlyCls: 'readOnlyField'
             },
             {
                 xtype: 'datefield',
@@ -229,6 +231,7 @@
                 xtype: 'numberfield',
                 fieldLabel: l10n.ns('tpm', 'CompetitorPromo').value('Discount'),
                 name: 'Discount',
+                id: 'DiscountCompetitorPromo',
                 allowBlank: true,
                 allowOnlyWhitespace: true,
                 validator: function (value) {
