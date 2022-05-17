@@ -245,13 +245,12 @@ namespace Module.Frontend.TPM.Controllers
             IEnumerable<Column> columns = new List<Column>() {
                 new Column() { Order = 1, Field = "ClientTree.ObjectId", Header = "ClientId", Quoting = false },
                 new Column() { Order = 2, Field = "Competitor.Name", Header = "Competitor", Quoting = false },
-                new Column() { Order = 3, Field = "Name", Header = "Promo Name", Quoting = false },
-                new Column() { Order = 4, Field = "CompetitorBrandTech.BrandTech", Header = "BrandTech", Quoting = false },
-                new Column() { Order = 5, Field = "StartDate", Header = "Start Date", Quoting = false, Format = "dd.MM.yyyy" },
-                new Column() { Order = 6, Field = "EndDate", Header = "End Date", Quoting = false, Format = "dd.MM.yyyy" },
-                new Column() { Order = 7, Field = "MechanicType", Header = "Mechanic Type", Quoting = false },
-                new Column() { Order = 8, Field = "Discount", Header = "Discount", Quoting = false },
-                new Column() { Order = 9, Field = "Price", Header = "Shelf Price", Quoting = false }
+                new Column() { Order = 3, Field = "CompetitorBrandTech.BrandTech", Header = "BrandTech", Quoting = false },
+                new Column() { Order = 4, Field = "StartDate", Header = "Start Date", Quoting = false, Format = "dd.MM.yyyy" },
+                new Column() { Order = 5, Field = "EndDate", Header = "End Date", Quoting = false, Format = "dd.MM.yyyy" },
+                new Column() { Order = 6, Field = "MechanicType", Header = "Mechanic Type", Quoting = false },
+                new Column() { Order = 7, Field = "Discount", Header = "Discount", Quoting = false },
+                new Column() { Order = 8, Field = "Price", Header = "Shelf Price", Quoting = false }
             };
             return columns;
         }
@@ -400,7 +399,6 @@ namespace Module.Frontend.TPM.Controllers
             {
                 return Content(HttpStatusCode.InternalServerError, e.Message);
             }
-
         }
 
         [ClaimsAuthorize]
@@ -413,10 +411,10 @@ namespace Module.Frontend.TPM.Controllers
                     throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
                 }
 
-                string importDir = Core.Settings.AppSettingsManager.GetSetting("IMPORT_DIRECTORY", "ImportFiles");
+                string importDir = AppSettingsManager.GetSetting("IMPORT_DIRECTORY", "ImportFiles");
                 string fileName = await FileUtility.UploadFile(Request, importDir);
 
-                NameValueCollection form = System.Web.HttpContext.Current.Request.Form;
+                NameValueCollection form = HttpContext.Current.Request.Form;
                 CreateNewImportTask(fileName, "FullXLSXCompetitorPromoUpdateNewImportHandler", form);
 
                 HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
@@ -447,8 +445,8 @@ namespace Module.Frontend.TPM.Controllers
                 FileModel file = new FileModel()
                 {
                     LogicType = "Import",
-                    Name = System.IO.Path.GetFileName(fileName),
-                    DisplayName = System.IO.Path.GetFileName(fileName)
+                    Name = Path.GetFileName(fileName),
+                    DisplayName = Path.GetFileName(fileName)
                 };
 
                 // параметры импорта
@@ -536,7 +534,5 @@ namespace Module.Frontend.TPM.Controllers
                 return InternalServerError(e.InnerException);
             }
         }
-
-
     }
 }
