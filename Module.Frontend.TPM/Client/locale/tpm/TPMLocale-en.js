@@ -2166,6 +2166,7 @@
         'PCPrice': 'PC Price',
         'TIBasePercent': 'TI Base',
         'COGSPercent': 'COGS',
+        'COGSTn': 'COGS/Tn',
         'PromoTypesName': 'Promo Types Name',
         'IsGrowthAcceleration': 'Growth acceleration',
         'SumInvoice': 'Sum In Invoice',

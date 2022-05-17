@@ -146,6 +146,7 @@ namespace Module.Persist.TPM.Model.TPM
         public double? PlanPromoNetUpliftPercent { get; set; }
         public double? PlanTIBasePercent { get; set; }
         public double? PlanCOGSPercent { get; set; }
+        public double? PlanCOGSTn { get; set; }
         public double? ActualPromoBaselineLSV { get; set; }
         public double? ActualInStoreDiscount { get; set; }
         public double? ActualInStoreShelfPrice { get; set; }
@@ -164,6 +165,7 @@ namespace Module.Persist.TPM.Model.TPM
         public double? ActualPromoNetUpliftPercent { get; set; }
         public double? ActualTIBasePercent { get; set; }
         public double? ActualCOGSPercent { get; set; }
+        public double? ActualCOGSTn { get; set; }
         public double? PlanPromoBaselineBaseTI { get; set; }
         public double? PlanPromoBaseTI { get; set; }
         public double? PlanPromoNetBaseTI { get; set; }
@@ -387,6 +389,8 @@ namespace Module.Persist.TPM.Model.TPM
             ActualTIBasePercent = promoToCopy.ActualTIBasePercent;
             PlanCOGSPercent = promoToCopy.PlanCOGSPercent;
             ActualCOGSPercent = promoToCopy.ActualCOGSPercent;
+            PlanCOGSTn = promoToCopy.PlanCOGSTn;
+            ActualCOGSTn = promoToCopy.ActualCOGSTn;
             IsOnInvoice = promoToCopy.IsOnInvoice;
             IsApolloExport = promoToCopy.IsApolloExport;
             ManualInputSumInvoice = promoToCopy.ManualInputSumInvoice;

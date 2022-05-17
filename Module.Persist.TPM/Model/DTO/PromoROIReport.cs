@@ -96,6 +96,7 @@ namespace Module.Persist.TPM.Model.DTO
         public double? PlanPromoIncrementalBaseTI { get; set; }
         public double? PlanPromoNetIncrementalBaseTI { get; set; }
         public double? COGSPercent { get; set; }
+        public double? COGSTn { get; set; }
         public double? PlanPromoIncrementalCOGS { get; set; }
         public double? PlanPromoNetIncrementalCOGS { get; set; }
         public double? PlanPromoTotalCost { get; set; }

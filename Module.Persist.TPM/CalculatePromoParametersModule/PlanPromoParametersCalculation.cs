@@ -51,6 +51,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     IQueryable<PlanCOGSTn> cogsTnQuery = context.Set<PlanCOGSTn>().Where(x => !x.Disabled);
                     double? COGSTnTonCost = PromoUtils.GetCOGSTonCost(simplePromoCOGS, context, cogsTnQuery, out message);
                     promo.PlanCOGSPercent = COGSPercent;
+                    promo.PlanCOGSTn = COGSTnTonCost;
                     if (message == null)
                     {
                         promo.PlanPromoIncrementalCOGS = promo.PlanPromoIncrementalLSV * COGSPercent / 100;

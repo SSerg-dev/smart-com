@@ -74,6 +74,7 @@
             { xtype: 'numberfield', name: 'PlanPromoIncrementalBaseTI', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('PlanPromoIncrementalBaseTI') },
             { xtype: 'numberfield', name: 'PlanPromoNetIncrementalBaseTI', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('PlanPromoNetIncrementalBaseTI') },
             { xtype: 'numberfield', name: 'COGSPercent', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('COGSPercent') },
+            { xtype: 'numberfield', name: 'COGSTn', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('COGSTn') },
             { xtype: 'numberfield', name: 'PlanPromoIncrementalCOGS', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('PlanPromoIncrementalCOGS') },
             { xtype: 'numberfield', name: 'PlanPromoNetIncrementalCOGS', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('PlanPromoNetIncrementalCOGS') },
             { xtype: 'numberfield', name: 'PlanPromoTotalCost', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('PlanPromoTotalCost') },

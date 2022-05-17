@@ -52,6 +52,7 @@
         { name: 'PlanPromoNetIncrementalBaseTI', useNull: true, type: 'float', hidden: false, isDefault: false },
         // [{ name: 'COGS' }] 39
         { name: 'COGSPercent', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'COGSTn', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'PlanPromoIncrementalCOGS', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'PlanPromoNetIncrementalCOGS', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'PlanPromoTotalCost', useNull: true, type: 'float', hidden: false, isDefault: false },

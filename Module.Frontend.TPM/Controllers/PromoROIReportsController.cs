@@ -211,6 +211,7 @@ namespace Module.Frontend.TPM.Controllers
                 new Column { Order = orderNumber++, Field = "PlanPromoIncrementalBaseTI", Header = "Plan Promo Incremental Base TI", Quoting = false,  Format = "0.00"  },
                 new Column { Order = orderNumber++, Field = "PlanPromoNetIncrementalBaseTI", Header = "Plan Promo Net Incremental Base TI", Quoting = false,  Format = "0.00"  },
                 new Column { Order = orderNumber++, Field = "COGSPercent", Header = "COGS", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "COGSTn", Header = "COGS/Tn", Quoting = false,  Format = "0.00"  },
                 new Column { Order = orderNumber++, Field = "PlanPromoIncrementalCOGS", Header = "Plan Promo Incremental COGS", Quoting = false,  Format = "0.00"  },
                 new Column { Order = orderNumber++, Field = "PlanPromoNetIncrementalCOGS", Header = "Plan Promo Net Incremental COGS", Quoting = false,  Format = "0.00"  },
                 new Column { Order = orderNumber++, Field = "PlanPromoTotalCost", Header = "Plan Promo Total Cost", Quoting = false,  Format = "0.00"  },
