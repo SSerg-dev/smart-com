@@ -75,10 +75,10 @@
                 'competitorpromoeditor [name=CompetitorBrandTechId]': {
                     change: this.generateCompetitorPromoName
                 },
-                'competitorpromoeditor [name=MechanicTypeCombo]': {
+                'competitorpromoeditor [name=MechanicType]': {
                     change: this.generateCompetitorPromoName
                 },
-                'competitorpromoeditor [name=DiscountCompetitorPromo]': {
+                'competitorpromoeditor [name=Discount]': {
                     change: this.generateCompetitorPromoName
                 }
             }
@@ -89,11 +89,11 @@
         var competitorBrandTechId = editor.down('[name=CompetitorBrandTechId]').rawValue;
         var mechanicTypeCombo = editor.down('[name=MechanicType]').value;
         var discount = editor.down('[name=Discount]').value;
-        var handledDiscount = '';
-        if (discount != 0) {//проверка дробных частей, если discount равен 0 (',00'), то убирать нули после запятой
-            var handledDiscount = discount.split('.');
+        var handledDiscount = '';//при первой загрузке editor'а - discount равен null
+        if (discount != 0 && discount != null) {//проверка дробных частей, если discount равен 0 (',00'), то убирать нули после запятой
+            var handledDiscount = discount.toString().includes(",") == true ? discount.split('.') : discount + '%';//к discont прибавляется знак процента
             if (handledDiscount.lenght == 1 || handledDiscount[1] == '00') {
-                discount = handledDiscount;
+                discount = handledDiscount + '%';
             }
         }
         editor.down('[name=Name]').setValue(competitorBrandTechId + ' ' + mechanicTypeCombo + ' ' + handledDiscount);
