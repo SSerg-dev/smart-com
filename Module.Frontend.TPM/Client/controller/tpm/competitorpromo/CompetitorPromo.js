@@ -84,6 +84,20 @@
             }
         });
     },
+    generateCompetitorPromoName: function (button) {
+        var editor = button.up('competitorpromoeditor');
+        var competitorBrandTechId = editor.down('[name=CompetitorBrandTechId]').rawValue;
+        var mechanicTypeCombo = editor.down('[name=MechanicType]').value;
+        var discount = editor.down('[name=Discount]').value;
+        var handledDiscount = '';
+        if (discount != 0) {//проверка дробных частей, если discount равен 0 (',00'), то убирать нули после запятой
+            var handledDiscount = discount.split('.');
+            if (handledDiscount.lenght == 1 || handledDiscount[1] == '00') {
+                discount = handledDiscount;
+            }
+        }
+        editor.down('[name=Name]').setValue(competitorBrandTechId + ' ' + mechanicTypeCombo + ' ' + handledDiscount);
+    },
     onHistoryButtonClick: function (button) {
         var grid = this.getGridByButton(button),
             selModel = grid.getSelectionModel();
