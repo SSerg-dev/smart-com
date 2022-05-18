@@ -525,6 +525,7 @@
             name: 'UOM',
             fieldLabel: l10n.ns('tpm', 'Product').value('UOM'),
             maxLength: 255,
+            roles:['Administrator', 'FunctionalExpert','Demand Planning', 'Customer Marketing Manager', 'Support Administrator']
         }, {
             xtype: 'numberfield',
             name: 'NetWeight',
@@ -532,7 +533,8 @@
             minValue: 0,
             maxValue: 999999999,
             allowBlank: true,
-            allowOnlyWhitespace: true
+            allowOnlyWhitespace: true,
+            roles:['Administrator', 'FunctionalExpert','Demand Planning', 'Customer Marketing Manager', 'Support Administrator']
         }, {
             xtype: 'textfield',
             name: 'CaseVolume',
