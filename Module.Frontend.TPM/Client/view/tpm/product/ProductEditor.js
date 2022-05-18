@@ -524,7 +524,7 @@
             xtype: 'textfield', allowBlank: true, allowOnlyWhitespace: true,
             name: 'UOM',
             fieldLabel: l10n.ns('tpm', 'Product').value('UOM'),
-            maxLength: 255,
+            maxLength: 255
         }, {
             xtype: 'numberfield',
             name: 'NetWeight',

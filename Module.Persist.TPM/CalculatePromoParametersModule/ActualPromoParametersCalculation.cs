@@ -232,7 +232,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     promo.ActualPromoBaselineVolume = promoProducts.Sum(g => g.ActualProductBaselineLSV) / promoProducts.Sum(g => g.Price / g.Product.UOM_PC2Case) * promoProducts.Sum(g => g.Product.PCVolume);
                     if (promo.IsOnInvoice)
                     {
-                        promo.ActualPromoVolume = promoProducts.Sum(g => g.ActualProductQtySO) / promoProducts.Sum(g => g.Price / g.Product.UOM_PC2Case);
+                        promo.ActualPromoVolume = promoProducts.Sum(g => g.ActualProductQtySO) * promoProducts.Sum(g => g.Price / g.Product.UOM_PC2Case);
                     }
                     else
                     {

@@ -179,7 +179,7 @@ namespace Module.Host.TPM.Handlers
                                 }
                                 // Устанавливаем ActualProductLSV в запись таблицы PromoProduct.
                                 promoProduct.ActualProductLSV = promo.ActualPromoLSV.Value * currentActualProductLSVByCompensation;
-                                promoProduct.ActualProductQtySO = promoProduct.ActualProductLSV * promoProduct.Price / promoProduct.Product.UOM_PC2Case;
+                                promoProduct.ActualProductQtySO = promoProduct.ActualProductLSV / (promoProduct.Price / promoProduct.Product.UOM_PC2Case);
                             }
                         }
                     }
@@ -202,8 +202,8 @@ namespace Module.Host.TPM.Handlers
 
                 promo.ActualPromoPostPromoEffectLSV = promo.IsOnInvoice ? (promo.ActualPromoLSVSO ?? 0) - (promo.ActualPromoLSVSI ?? 0) : promo.ActualPromoPostPromoEffectLSVW1 + promo.ActualPromoPostPromoEffectLSVW2;
                 //Volume
-                promo.ActualPromoPostPromoEffectVolume = promo.ActualPromoPostPromoEffectLSVW1 / promoProducts.Sum(g => g.Price / g.Product.UOM_PC2Case) * promoProducts.Sum(g => g.Product.PCVolume) +
-                    promo.ActualPromoPostPromoEffectLSVW2 / promoProducts.Sum(g => g.Price / g.Product.UOM_PC2Case) * promoProducts.Sum(g => g.Product.PCVolume);
+                promo.ActualPromoPostPromoEffectVolume = (promo.ActualPromoPostPromoEffectLSVW1 / 100) / promoProducts.Sum(g => g.Price / g.Product.UOM_PC2Case) * promoProducts.Sum(g => g.Product.PCVolume) +
+                    (promo.ActualPromoPostPromoEffectLSVW2 / 100) / promoProducts.Sum(g => g.Price / g.Product.UOM_PC2Case) * promoProducts.Sum(g => g.Product.PCVolume);
 
                 if (promo.IsOnInvoice)
                 {
