@@ -169,7 +169,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     //volume
                     if (!promo.InOut.HasValue || !promo.InOut.Value)
                     {
-                        promo.ActualPromoVolumeByCompensation = products.Sum(g => g.ActualProductPCQty) * products.Sum(g => g.Price / g.Product.UOM_PC2Case);
+                        promo.ActualPromoVolumeByCompensation = products.Sum(g => g.ActualProductPCQty) * products.Sum(g => g.Product.PCVolume);
                         promo.ActualPromoVolumeSI = promo.ActualPromoVolumeByCompensation;
                     }
                     else
