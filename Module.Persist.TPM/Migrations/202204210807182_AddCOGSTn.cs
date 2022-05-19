@@ -24,8 +24,6 @@ namespace Module.Persist.TPM.Migrations
                         Year = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey($"{defaultSchema}.BrandTech", t => t.BrandTechId)
-                .ForeignKey($"{defaultSchema}.ClientTree", t => t.ClientTreeId)
                 .Index(t => t.Id)
                 .Index(t => t.ClientTreeId)
                 .Index(t => t.BrandTechId);
@@ -48,8 +46,6 @@ namespace Module.Persist.TPM.Migrations
                         Year = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey($"{defaultSchema}.BrandTech", t => t.BrandTechId)
-                .ForeignKey($"{defaultSchema}.ClientTree", t => t.ClientTreeId)
                 .Index(t => t.Id)
                 .Index(t => t.ClientTreeId)
                 .Index(t => t.BrandTechId);
