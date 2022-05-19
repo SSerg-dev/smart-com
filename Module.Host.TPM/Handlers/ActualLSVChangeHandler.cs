@@ -202,8 +202,7 @@ namespace Module.Host.TPM.Handlers
 
                 promo.ActualPromoPostPromoEffectLSV = promo.IsOnInvoice ? (promo.ActualPromoLSVSO ?? 0) - (promo.ActualPromoLSVSI ?? 0) : promo.ActualPromoPostPromoEffectLSVW1 + promo.ActualPromoPostPromoEffectLSVW2;
                 //Volume
-                promo.ActualPromoPostPromoEffectVolume = (promo.ActualPromoPostPromoEffectLSVW1 / 100) / promoProducts.Sum(g => g.Price / g.Product.UOM_PC2Case) * promoProducts.Sum(g => g.Product.PCVolume) +
-                    (promo.ActualPromoPostPromoEffectLSVW2 / 100) / promoProducts.Sum(g => g.Price / g.Product.UOM_PC2Case) * promoProducts.Sum(g => g.Product.PCVolume);
+                promo.ActualPromoPostPromoEffectVolume = (promoProducts.Sum(g => g.ActualProductPostPromoEffectLSV)) / promoProducts.Sum(g => g.Price / g.Product.UOM_PC2Case) * promoProducts.Sum(g => g.Product.PCVolume);
 
                 if (promo.IsOnInvoice)
                 {
