@@ -83,7 +83,7 @@
 		},
 		{
 			"name": "MongoUrl",
-			"value": "mongodb://jupiter-app-test-cdba-2:undefined@jupiter-app-test-cdba-2.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@jupiter-app-test-cdba-2@",
+			"value": "mongodb://jupiter-app-test-cdba-2:wjbwGrxU6lmv7D15rICvlD8q1VjhyWKKEa01emYwSIXd4BikTWDliYpLBIltbRTwdwKRiWz7FGzlk60tDge5QQ==@jupiter-app-test-cdba-2.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@jupiter-app-test-cdba-2@",
 			"contentType": "",
 			"action": "add",
 			"enabled": true
