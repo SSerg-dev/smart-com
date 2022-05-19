@@ -29,7 +29,10 @@ namespace Module.Persist.TPM.Migrations
                 .Index(t => t.Id)
                 .Index(t => t.ClientTreeId)
                 .Index(t => t.BrandTechId);
-            
+
+            AddForeignKey($"{defaultSchema}.PlanCOGSTn", "BrandTechId", $"{defaultSchema}.BrandTech", "Id");
+            AddForeignKey($"{defaultSchema}.PlanCOGSTn", "ClientTreeId", $"{defaultSchema}.ClientTree", "Id");
+
             CreateTable(
                 $"{defaultSchema}.ActualCOGSTn",
                 c => new
@@ -50,7 +53,9 @@ namespace Module.Persist.TPM.Migrations
                 .Index(t => t.Id)
                 .Index(t => t.ClientTreeId)
                 .Index(t => t.BrandTechId);
-            
+
+            AddForeignKey($"{defaultSchema}.ActualCOGSTn", "BrandTechId", $"{defaultSchema}.BrandTech", "Id");
+            AddForeignKey($"{defaultSchema}.ActualCOGSTn", "ClientTreeId", $"{defaultSchema}.ClientTree", "Id");
         }
         
         public override void Down()
