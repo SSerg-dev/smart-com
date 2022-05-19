@@ -418,6 +418,18 @@ namespace Module.Host.TPM.Actions
             product.BrandTech_code = brandTech != null ? String.Format("{0}-{1}", brandCode, techCode) : String.Empty;
             product.BrandsegTech_code = brandTech != null ? String.Format("{0}-{1}-{2}", brandCode, segCode, techCode) : String.Empty;
 
+            //Calculate PC and Case Volume
+            switch (product.UOM.ToLower())
+            {
+                case "kg":
+                    product.CaseVolume = Math.Round(product.NetWeight.Value / 1000, 7);
+                    product.PCVolume = Math.Round(product.CaseVolume.Value / product.UOM_PC2Case.Value, 7);
+                    break;
+                case "g":
+                    product.CaseVolume = Math.Round(product.NetWeight.Value / 1000000, 7);
+                    product.PCVolume = Math.Round(product.CaseVolume.Value / product.UOM_PC2Case.Value, 7);
+                    break;              
+            }
             return (IEntity<Guid>)product;
         }
 
