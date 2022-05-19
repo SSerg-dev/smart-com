@@ -308,10 +308,10 @@ namespace Module.Frontend.TPM.Controllers
                     throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
                 }
 
-                string importDir = Core.Settings.AppSettingsManager.GetSetting("IMPORT_DIRECTORY", "ImportFiles");
+                string importDir = AppSettingsManager.GetSetting("IMPORT_DIRECTORY", "ImportFiles");
                 string fileName = await FileUtility.UploadFile(Request, importDir);
 
-                NameValueCollection form = System.Web.HttpContext.Current.Request.Form;
+                NameValueCollection form = HttpContext.Current.Request.Form;
                 CreateImportTask(fileName, "FullXLSXCompetitorPromoUpdateImportHandler", form);
 
                 HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
@@ -342,8 +342,8 @@ namespace Module.Frontend.TPM.Controllers
                 FileModel file = new FileModel()
                 {
                     LogicType = "Import",
-                    Name = System.IO.Path.GetFileName(fileName),
-                    DisplayName = System.IO.Path.GetFileName(fileName)
+                    Name = Path.GetFileName(fileName),
+                    DisplayName = Path.GetFileName(fileName)
                 };
 
                 // параметры импорта

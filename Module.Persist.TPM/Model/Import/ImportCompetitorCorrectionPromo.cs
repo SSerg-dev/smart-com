@@ -17,35 +17,31 @@ namespace Module.Persist.TPM.Model.Import
         public string CompetitorName { get; set; }
 
         [ImportCSVColumn(ColumnNumber = 2)]
-        [Display(Name = "Promo name")]
-        public String Name { get; set; }
-
-        [ImportCSVColumn(ColumnNumber = 4)]
         [Display(Name = "Client hierarchy code")]
         public int ClientTreeObjectId { get; set; }    
 
-        [ImportCSVColumn(ColumnNumber = 5)]
+        [ImportCSVColumn(ColumnNumber = 3)]
         [NavigationPropertyMap(LookupEntityType = typeof(CompetitorBrandTech), LookupPropertyName = "BrandTech")]
         [Display(Name = "BrandTech")]
         public String CompetitorBrandTechName { get; set; }
 
-        [ImportCSVColumn(ColumnNumber = 6)]
+        [ImportCSVColumn(ColumnNumber = 4)]
         [Display(Name = "Start Date")]
         public DateTimeOffset? StartDate { get; set; }
 
-        [ImportCSVColumn(ColumnNumber = 7)]
+        [ImportCSVColumn(ColumnNumber = 5)]
         [Display(Name = "End Date")]
         public DateTimeOffset? EndDate { get; set; }
 
-        [ImportCSVColumn(ColumnNumber = 8)]
+        [ImportCSVColumn(ColumnNumber = 6)]
         [Display(Name = "MechanicType")]
         public string MechanicType { get; set; }
 
-        [ImportCSVColumn(ColumnNumber = 9)]
+        [ImportCSVColumn(ColumnNumber = 7)]
         [Display(Name = "Discount")]
         public double? Discount { get; set; }
 
-        [ImportCSVColumn(ColumnNumber = 10)]
+        [ImportCSVColumn(ColumnNumber = 8)]
         [Display(Name = "Shelf price")]
         public double? Price { get; set; }
 

@@ -89,13 +89,7 @@
         var competitorBrandTechId = editor.down('[name=CompetitorBrandTechId]').rawValue;
         var mechanicTypeCombo = editor.down('[name=MechanicType]').value;
         var discount = editor.down('[name=Discount]').value;
-        var handledDiscount = '';//при первой загрузке editor'а - discount равен null
-        if (discount != 0 && discount != null) {//проверка дробных частей, если discount равен 0 (',00'), то убирать нули после запятой
-            var handledDiscount = discount.toString().includes(",") == true ? discount.split('.') : discount + '%';//к discont прибавляется знак процента
-            if (handledDiscount.lenght == 1 || handledDiscount[1] == '00') {
-                discount = handledDiscount + '%';
-            }
-        }
+        var handledDiscount = discount != 0 && discount != null ? discount + '%' : '';//к discount прибавляется знак процента
         editor.down('[name=Name]').setValue(competitorBrandTechId + ' ' + mechanicTypeCombo + ' ' + handledDiscount);
     },
     onHistoryButtonClick: function (button) {
