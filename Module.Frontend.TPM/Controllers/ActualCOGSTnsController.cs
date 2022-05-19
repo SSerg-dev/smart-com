@@ -234,7 +234,7 @@ namespace Module.Frontend.TPM.Controllers
                 Context.Set<ChangesIncident>().Add(new ChangesIncident
                 {
                     Id = Guid.NewGuid(),
-                    DirectoryName = nameof(COGS),
+                    DirectoryName = nameof(ActualCOGSTn),
                     ItemId = model.Id.ToString(),
                     CreateDate = DateTimeOffset.Now,
                     Disabled = false
