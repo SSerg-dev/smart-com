@@ -400,8 +400,7 @@ namespace Module.Host.TPM.Actions
                     toHisCreate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(null, newRecord));
                 }
                 else
-                {
-                    toHisUpdate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(oldRecord, newRecord));
+                {   
                     oldRecord.Competitor = newRecord.Competitor;
                     oldRecord.ClientTreeObjectId = context.Set<ClientTree>().First(x => x.ObjectId == newRecord.ClientTreeObjectId && x.EndDate == null).Id;
                     oldRecord.CompetitorBrandTechId = newRecord.CompetitorBrandTechId;
@@ -412,6 +411,7 @@ namespace Module.Host.TPM.Actions
                     oldRecord.EndDate = newRecord.EndDate;
                     oldRecord.MechanicType = newRecord.MechanicType;
                     toUpdate.Add(oldRecord);
+                    toHisUpdate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(oldRecord, newRecord));
                 }
                 importItems.Add(newRecord);
             }
@@ -442,7 +442,7 @@ namespace Module.Host.TPM.Actions
             }
             foreach (var item in toDeletes)
             {
-                toHisDelete.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(null, item));
+                toHisDelete.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(item, item));
             }
             context.HistoryWriter.Write(toHisCreate, context.AuthManager.GetCurrentUser(), context.AuthManager.GetCurrentRole(), OperationType.Created);
             context.HistoryWriter.Write(toHisUpdate, context.AuthManager.GetCurrentUser(), context.AuthManager.GetCurrentRole(), OperationType.Updated);
