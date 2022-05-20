@@ -230,14 +230,15 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                     //Volume
                     promo.ActualPromoBaselineVolume = promoProducts.Sum(g => g.ActualProductBaselineLSV) / promoProducts.Sum(g => g.Price / g.Product.UOM_PC2Case) * promoProducts.Sum(g => g.Product.PCVolume);
-                    if (promo.IsOnInvoice)
+                    if (!promo.IsOnInvoice || promo.InOut.HasValue || promo.InOut.Value)
                     {
-                        promo.ActualPromoVolume = promoProducts.Sum(g => g.ActualProductQtySO) * promoProducts.Sum(g => g.Price / g.Product.UOM_PC2Case);
+                        promo.ActualPromoVolume = promoProducts.Sum(g => g.ActualProductQtySO) * promoProducts.Sum(g => g.Product.PCVolume);
                     }
                     else
                     {
                         promo.ActualPromoVolume = promo.ActualPromoVolumeSI;
                     }
+                   
                     promo.ActualPromoIncrementalVolume = promo.ActualPromoVolume - promo.ActualPromoBaselineVolume;
                     promo.ActualPromoNetIncrementalVolume = promo.ActualPromoIncrementalVolume + promo.ActualPromoPostPromoEffectVolume;
 
