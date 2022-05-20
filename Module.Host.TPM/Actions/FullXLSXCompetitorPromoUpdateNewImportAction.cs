@@ -17,8 +17,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Utility;
 using Utility.FileWorker;
 using Utility.Import;
@@ -35,7 +33,6 @@ namespace Module.Host.TPM.Actions
         private readonly string Separator;
         private readonly string Quote;
         private readonly bool HasHeader;
-
 
         private bool AllowPartialApply { get; set; }
         private readonly Logger logger;
@@ -389,6 +386,11 @@ namespace Module.Host.TPM.Actions
 
                 if (oldRecord == null)
                 {
+                    string competitorBrandTech = newRecord.CompetitorBrandTech.BrandTech;
+                    string mechanicType = newRecord.MechanicType;
+                    double? discount = newRecord.Discount;
+                    dynamic handledDiscount = discount != 0 && discount != null ? discount + "%" : "";//к discount прибавляется знак процента
+                    newRecord.Name = competitorBrandTech + " " + mechanicType + " " + handledDiscount;
                     newRecord.ClientTreeObjectId = context.Set<ClientTree>().First(x => x.ObjectId == newRecord.ClientTreeObjectId && x.EndDate == null).Id;
                     newRecord.Id = Guid.NewGuid();
                     toCreate.Add(newRecord);
