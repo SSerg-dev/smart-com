@@ -169,13 +169,13 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     //volume
                     if (!promo.InOut.HasValue || !promo.InOut.Value)
                     {
-                        promo.ActualPromoVolumeByCompensation = products.Sum(g => g.ActualProductPCQty) * products.Sum(g => g.Product.PCVolume);
-                        promo.ActualPromoVolumeSI = promo.ActualPromoVolumeByCompensation;
+                        promo.ActualPromoVolumeByCompensation = products.Sum(g => g.ActualProductLSVByCompensation);
+                        promo.ActualPromoVolumeSI = 0;
                     }
                     else
                     {
-                        promo.ActualPromoVolumeByCompensation = products.Sum(g => g.ActualProductLSVByCompensation);
-                        promo.ActualPromoVolumeSI = 0;
+                        promo.ActualPromoVolumeByCompensation = products.Sum(g => g.ActualProductPCQty) * products.Sum(g => g.Product.PCVolume);
+                        promo.ActualPromoVolumeSI = promo.ActualPromoVolumeByCompensation;                        
                     }
                 }
 
