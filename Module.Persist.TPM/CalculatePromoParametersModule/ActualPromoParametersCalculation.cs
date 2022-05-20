@@ -94,17 +94,11 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     IQueryable<ActualCOGS> actualcogsQuery = context.Set<ActualCOGS>().Where(x => !x.Disabled);
                     COGSPercent = PromoUtils.GetCOGSPercent(simplePromoCOGS, context, actualcogsQuery, out message);
                     promo.ActualCOGSPercent = COGSPercent;
-                    IQueryable<ActualCOGSTn> actualcogsQueryTn = context.Set<ActualCOGSTn>().Where(x => !x.Disabled);
-                    COGSTn = PromoUtils.GetCOGSTonCost(simplePromoCOGStn, context, actualcogsQueryTn, out message);
-                    promo.ActualCOGSTn = COGSTn;
                     if (COGSPercent == null)
                     {
                         IQueryable<COGS> cogsQuery = context.Set<COGS>().Where(x => !x.Disabled);
                         COGSPercent = PromoUtils.GetCOGSPercent(simplePromoCOGS, context, cogsQuery, out message);
                         promo.ActualCOGSPercent = COGSPercent;
-                        IQueryable<PlanCOGSTn> cogsQueryTn = context.Set<PlanCOGSTn>().Where(x => !x.Disabled);
-                        COGSTn = PromoUtils.GetCOGSTonCost(simplePromoCOGStn, context, cogsQueryTn, out message);
-                        promo.ActualCOGSTn = COGSTn;
                     }
                 }
                 else
@@ -112,6 +106,22 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     IQueryable<COGS> cogsQuery = context.Set<COGS>().Where(x => !x.Disabled);
                     COGSPercent = PromoUtils.GetCOGSPercent(simplePromoCOGS, context, cogsQuery, out message);
                     promo.PlanCOGSPercent = COGSPercent;
+                }
+
+                if (useActualCOGS)
+                {
+                    IQueryable<ActualCOGSTn> actualcogsQueryTn = context.Set<ActualCOGSTn>().Where(x => !x.Disabled);
+                    COGSTn = PromoUtils.GetCOGSTonCost(simplePromoCOGStn, context, actualcogsQueryTn, out message);
+                    promo.ActualCOGSTn = COGSTn;
+                    if (COGSTn == null)
+                    {
+                        IQueryable<PlanCOGSTn> cogsQueryTn = context.Set<PlanCOGSTn>().Where(x => !x.Disabled);
+                        COGSTn = PromoUtils.GetCOGSTonCost(simplePromoCOGStn, context, cogsQueryTn, out message);
+                        promo.ActualCOGSTn = COGSTn;
+                    }
+                }
+                else
+                {
                     IQueryable<PlanCOGSTn> cogsQueryTn = context.Set<PlanCOGSTn>().Where(x => !x.Disabled);
                     COGSTn = PromoUtils.GetCOGSTonCost(simplePromoCOGStn, context, cogsQueryTn, out message);
                     promo.PlanCOGSTn = COGSTn;
@@ -241,11 +251,8 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     promo.ActualPromoIncrementalVolume = promo.ActualPromoVolume - promo.ActualPromoBaselineVolume;
                     promo.ActualPromoNetIncrementalVolume = promo.ActualPromoIncrementalVolume + promo.ActualPromoPostPromoEffectVolume;
 
-                    SimplePromoCOGS simplePromoCOGStn2 = new SimplePromoCOGS(promo);
-                    IQueryable<ActualCOGSTn> cogsTnQuery = context.Set<ActualCOGSTn>().Where(x => !x.Disabled);
-                    double? COGSTnVolume = PromoUtils.GetCOGSTonCost(simplePromoCOGStn2, context, cogsTnQuery, out message);
-                    promo.ActualPromoIncrementalCOGSTn = promo.ActualPromoIncrementalVolume * COGSTnVolume;
-                    promo.ActualPromoNetIncrementalCOGSTn = promo.ActualPromoNetIncrementalVolume * COGSTnVolume;
+                    promo.ActualPromoIncrementalCOGSTn = promo.ActualPromoIncrementalVolume * COGSTn;
+                    promo.ActualPromoNetIncrementalCOGSTn = promo.ActualPromoNetIncrementalVolume * COGSTn;
 
                     if (promo.IsLSVBased)
                     {
