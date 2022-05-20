@@ -286,11 +286,6 @@ namespace Module.Host.TPM.Actions
             {                
                 CompetitorPromo typedRec = (CompetitorPromo)rec;
                 typedRec.ClientTree = context.Set<ClientTree>().First(x => x.ObjectId == typedRec.ClientTreeObjectId && x.EndDate == null);
-                if (String.IsNullOrEmpty(typedRec.Name))
-                {
-                    errors.Add("Name must have a value");
-                    isSuitable = false;
-                }
                 if (typedRec.CompetitorBrandTech == null)
                 {
                     errors.Add("Competitor BrandTech not found");
