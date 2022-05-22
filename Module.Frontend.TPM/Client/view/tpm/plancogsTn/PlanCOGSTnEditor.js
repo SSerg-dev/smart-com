@@ -121,14 +121,7 @@
             minValue: 0,
             maxValue: 100,
             readOnly: false,
-            allowBlank: false,
-            listeners: {
-                change: function (newValue, oldValue) {
-                    if (newValue > 100) {
-                        this.setValue(oldValue);
-                    }
-                },
-            }
+            allowBlank: false
         }
         ]
     }
