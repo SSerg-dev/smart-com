@@ -190,8 +190,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         promo.ActualPromoUpliftPercent = promo.ActualPromoBaselineLSV == 0 ? 0 : promo.ActualPromoIncrementalLSV / promo.ActualPromoBaselineLSV * 100;
                         promo.ActualPromoNetUpliftPercent = promo.ActualPromoBaselineLSV == 0 ? 0 : promo.ActualPromoNetIncrementalLSV / promo.ActualPromoBaselineLSV * 100;
                         //volume
-                        promo.ActualPromoPostPromoEffectVolume = promo.ActualPromoPostPromoEffectLSVW1 / promoProducts.Sum(g => g.Price / g.Product.UOM_PC2Case) * promoProducts.Sum(g => g.Product.PCVolume) +
-                    promo.ActualPromoPostPromoEffectLSVW2 / promoProducts.Sum(g => g.Price / g.Product.UOM_PC2Case) * promoProducts.Sum(g => g.Product.PCVolume);
+                        promo.ActualPromoPostPromoEffectVolume = (promoProducts.Sum(g => g.ActualProductPostPromoEffectLSV / ((g.Price / g.Product.UOM_PC2Case) * g.Product.PCVolume)));
                     }
                     else
                     {
@@ -239,16 +238,16 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     //}
 
                     //Volume
-                    promo.ActualPromoBaselineVolume = promoProducts.Sum(g => g.ActualProductBaselineLSV) / promoProducts.Sum(g => g.Price / g.Product.UOM_PC2Case) * promoProducts.Sum(g => g.Product.PCVolume);
+                    promo.ActualPromoBaselineVolume = promoProducts.Sum(g => g.ActualProductBaselineLSV / ((g.Price / g.Product.UOM_PC2Case) *  g.Product.PCVolume));
                     if (!promo.IsOnInvoice || promo.InOut.HasValue || promo.InOut.Value)
                     {
-                        promo.ActualPromoVolume = promoProducts.Sum(g => g.ActualProductQtySO) * promoProducts.Sum(g => g.Product.PCVolume);
+                        promo.ActualPromoVolume = promoProducts.Sum(g => g.ActualProductQtySO * g.Product.PCVolume);
                     }
                     else
                     {
                         promo.ActualPromoVolume = promo.ActualPromoVolumeSI;
                     }
-                   
+
                     promo.ActualPromoIncrementalVolume = promo.ActualPromoVolume - promo.ActualPromoBaselineVolume;
                     promo.ActualPromoNetIncrementalVolume = promo.ActualPromoIncrementalVolume + promo.ActualPromoPostPromoEffectVolume;
 
@@ -316,7 +315,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                     if (message != null)
                         errors += message + ";";
-                    
+
 
                     if (PromoUtils.HasChanges(context.ChangeTracker, promo.Id))
                     {
