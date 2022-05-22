@@ -352,21 +352,12 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
 
                                 errors = UpdateTech(material.Tech_code, material.Technology, material.SubBrand_code, material.SubBrand);
                                 errors.AddRange(CheckNewBrandTech(material.Brand_code, material.Brand, material.Segmen_code, material.Tech_code, material.Technology, material.SubBrand_code, material.SubBrand));
-                                switch (material.UNIT_OF_WT.ToLower())
+                                
+                                if (material.UNIT_OF_WT.ToLower() != "kg" && material.UNIT_OF_WT.ToLower() != "g")
                                 {
-                                    case "kg":
-                                        productToUpdate.CaseVolume = Math.Round(productToUpdate.NetWeight.Value / 1000 , 7);
-                                        productToUpdate.PCVolume = Math.Round(productToUpdate.CaseVolume.Value / productToUpdate.UOM_PC2Case.Value, 7);
-                                        break;
-                                    case "g":
-                                        productToUpdate.CaseVolume = Math.Round(productToUpdate.NetWeight.Value / 1000000 , 7);
-                                        productToUpdate.PCVolume = Math.Round(productToUpdate.CaseVolume.Value / productToUpdate.UOM_PC2Case.Value, 7);
-                                        break;
-                                    default:
-                                        Errors.Add("The product UOM should contain kg or g value");
-                                        break;
-
+                                    Errors.Add("The product UOM should contain kg or g value");
                                 }
+
                                 foreach (var error in errors)
                                     Errors.Add(error);
 
@@ -374,6 +365,17 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
                                     Product product = context.Set<Product>().Find(productToUpdate.Id);
                                     
                                     List<string> updatedFileds = ApplyChanges(material, product, context);
+
+                                    switch (product.UOM.ToLower())
+                                    {
+                                        case "kg":
+                                            product.CaseVolume = Math.Round(product.NetWeight.Value / 1000, 7);
+                                            break;
+                                        case "g":
+                                            product.CaseVolume = Math.Round(product.NetWeight.Value / 1000000, 7);
+                                            break;
+                                    }
+                                    product.PCVolume = Math.Round(product.CaseVolume.Value / product.UOM_PC2Case.Value, 7);
 
                                     context.Set<ProductChangeIncident>().Add(CreateIncident(product, false, false));
 
@@ -436,7 +438,7 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
             }
             catch (Exception e)
             {
-                string msg = String.Format("An error occurred while cheking Mars products", e.ToString());
+                string msg = $"An error occurred while cheking Mars products. {e.Message}";
                 Errors.Add(msg);
             }
         }
