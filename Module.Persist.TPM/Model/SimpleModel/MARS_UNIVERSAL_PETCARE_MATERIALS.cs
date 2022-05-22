@@ -18,7 +18,7 @@ namespace Module.Persist.TPM.Model.SimpleModel
 		public string SKU { get; set; }
 		public string MATL_TYPE___T { get; set; }
 		public string UNIT_OF_WT {get;set; }
-		public string GNET_WT { get; set; }
+		public decimal? GNET_WT { get; set; }
 		public string Brand { get; set; }
 		public string Segmen { get; set; }
 		public string Technology { get; set; }

@@ -133,7 +133,7 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
                                     IsNumeric(r.ZREP.TrimStart('0'), 6) &&
                                     r.EAN_PC.HasValue && DecimalToString(r.EAN_PC).Length == 13 &&
                                     IsNumeric(r.UOM_PC2Case) &&
-                                    IsDouble(r.GNET_WT));
+                                    r.GNET_WT.HasValue);
 
                     var step1Log = newRecords.Where(r =>
                                     !(IsExactNumeric(r.VKORG, 261) &&
@@ -147,7 +147,8 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
                                     IsNumeric(r.ZREP.TrimStart('0'), 6) &&
                                     r.EAN_PC.HasValue && DecimalToString(r.EAN_PC).Length == 13 &&
                                     IsNumeric(r.UOM_PC2Case) &&
-                                    IsDouble(r.GNET_WT))).GroupBy(x => x.ZREP);
+                                    r.GNET_WT.HasValue
+                                    )).GroupBy(x => x.ZREP);
                     foreach (var group in step1Log)
                     {
                         Errors.Add(String.Format("{0} GRD with ZREP {1} has inappropriate value for one or more of VKORG, 0DIVISION, 0DIVISION___T, 0MATL_TYPE___T, MATNR, VMSTD, 0CREATEDON, ZREP, EAN_PC, UOM_PC2Case, GNET_WT  fields.", group.Count(), group.Key.TrimStart('0')));
@@ -764,7 +765,7 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
                 TradedUnitFormat = material.Traded_unit_format,
                 UOM_PC2Case = !String.IsNullOrEmpty(material.UOM_PC2Case) ? (int?)int.Parse(material.UOM_PC2Case) : null,
                 ZREP = material.ZREP.TrimStart('0'),
-                NetWeight = !String.IsNullOrEmpty(material.GNET_WT) ? (double?)double.Parse(material.GNET_WT) : null,
+                NetWeight = (double?)material.GNET_WT,
                 UOM = material.UNIT_OF_WT
             };
         }
@@ -788,7 +789,7 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
                 product.Tech_code != material.Tech_code ||
                 product.SubBrand_code != material.SubBrand_code ||
                 product.TradedUnitFormat != material.Traded_unit_format ||
-                product.NetWeight != double.Parse(material.GNET_WT) || 
+                product.NetWeight != (double?)material.GNET_WT || 
                 product.UOM != material.UNIT_OF_WT);
         }
 
@@ -797,7 +798,7 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
             var updatedFields = new List<string>();
             int? division = !String.IsNullOrEmpty(material.DIVISION) ? (int?)int.Parse(material.DIVISION) : null;
             int? UOM_PC2Case = !String.IsNullOrEmpty(material.UOM_PC2Case) ? (int?)int.Parse(material.UOM_PC2Case) : null;
-            double? NetWeight = !String.IsNullOrEmpty(material.GNET_WT) ? (double?)double.Parse(material.GNET_WT) : null;
+            double? NetWeight = (double?)material.GNET_WT;
             string EAN_Case = material.EAN_Case.HasValue ? DecimalToString(material.EAN_Case) : null;
             string EAN_PC = material.EAN_PC.HasValue ? DecimalToString(material.EAN_PC) : null;
 
@@ -1005,6 +1006,10 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
         private string DecimalToString(decimal? value)
         {
             return value.HasValue ? Decimal.Round(value.Value).ToString() : null;
+        }
+        private double? DecimalToDouble(decimal? value)
+        {
+            return value.HasValue ? (double?)value : null;
         }
 
         public static DataLakeSyncResultFilesModel SaveResultToFile(string taskId, IEnumerable<string> successRecords, IEnumerable<string> errorRecords, IEnumerable<string> warningsRecords)
