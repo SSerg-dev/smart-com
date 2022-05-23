@@ -234,7 +234,7 @@ namespace Module.Frontend.TPM.Controllers
                 new Column { Order = orderNumber++, Field = "PlanPromoIncrementalNSV", Header = "Plan Promo Incremental NSV", Quoting = false,  Format = "0.00"  },
                 new Column { Order = orderNumber++, Field = "PlanPromoNetIncrementalNSV", Header = "Plan Promo Net Incremental NSV", Quoting = false,  Format = "0.00"  },
                 new Column { Order = orderNumber++, Field = "PlanPromoIncrementalMAC", Header = "Plan Promo Incremental MAC", Quoting = false,  Format = "0.00"  },
-                new Column { Order = orderNumber++, Field = "PlanPromoIncrementalMACLCV", Header = "Plan Promo Incremental MAC LCV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoIncrementalMACLSV", Header = "Plan Promo Incremental MAC LSV", Quoting = false,  Format = "0.00"  },
                 new Column { Order = orderNumber++, Field = "PlanPromoNetIncrementalMAC", Header = "Plan Promo Net Incremental MAC", Quoting = false,  Format = "0.00"  },
                 new Column { Order = orderNumber++, Field = "PlanPromoNetIncrementalMACLSV", Header = "Plan Promo Net Incremental MAC LSV", Quoting = false,  Format = "0.00"  },
                 new Column { Order = orderNumber++, Field = "PlanPromoIncrementalEarnings", Header = "Plan Promo Incremental Earnings", Quoting = false,  Format = "0.00"  },
