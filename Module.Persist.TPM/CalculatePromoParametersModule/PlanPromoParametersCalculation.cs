@@ -120,6 +120,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                             promo.PlanPromoNetIncrementalNSV = (promo.PlanPromoNetIncrementalLSV ?? 0) - (promo.PlanPromoTIShopper ?? 0) - (promo.PlanPromoTIMarketing ?? 0) - (promo.PlanPromoNetIncrementalBaseTI ?? 0);
                             double? sumPlanPromoIncrementalCase = context.Set<PromoProduct>().Where(x => x.PromoId == promoId && !x.Disabled).Sum(x => x.PlanProductIncrementalCaseQty * x.Product.CaseVolume);
                             promo.PlanPromoIncrementalVolume = sumPlanPromoIncrementalCase;
+                            promo.PlanPromoNetIncrementalVolume = sumPlanPromoIncrementalCase;
                         }
 
                         promo.PlanPromoNetNSV = (promo.PlanPromoNetLSV ?? 0) - (promo.PlanPromoTIShopper ?? 0) - (promo.PlanPromoTIMarketing ?? 0) - (promo.PlanPromoNetBaseTI ?? 0);
