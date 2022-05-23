@@ -119,7 +119,6 @@
             name: 'TonCost',
             fieldLabel: l10n.ns('tpm', 'ActualCOGSTn').value('TonCost'),
             minValue: 0,
-            maxValue: 100,
             readOnly: false,
             allowBlank: false
         }
