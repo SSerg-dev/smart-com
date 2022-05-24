@@ -1624,9 +1624,9 @@
     <Content Include="..\Module.Frontend.TPM\Templates\PlanCOGSTnPreTemplate.xlsx">
       <Link>ApplicationData\Templates\PlanCOGSTnPreTemplate.xlsx</Link>
     </Content>
-	<Content Include="..\Module.Frontend.TPM\Templates\ActualCOGSTnPreTemplate.xlsx">
-	  <Link>ApplicationData\Templates\ActualCOGSTnPreTemplate.xlsx</Link>
-	</Content>
+    <Content Include="..\Module.Frontend.TPM\Templates\ActualCOGSTnPreTemplate.xlsx">
+      <Link>ApplicationData\Templates\ActualCOGSTnPreTemplate.xlsx</Link>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Global.asax.cs">
