@@ -2840,6 +2840,10 @@
     <Compile Include="Migrations\202205171130359_Change_PromoROIReportsView.Designer.cs">
       <DependentUpon>202205171130359_Change_PromoROIReportsView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202205240825278_Night_Recalculation_Temps_and_Procedures.cs" />
+    <Compile Include="Migrations\202205240825278_Night_Recalculation_Temps_and_Procedures.Designer.cs">
+      <DependentUpon>202205240825278_Night_Recalculation_Temps_and_Procedures.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -5431,6 +5435,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202205171130359_Change_PromoROIReportsView.resx">
       <DependentUpon>202205171130359_Change_PromoROIReportsView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202205240825278_Night_Recalculation_Temps_and_Procedures.resx">
+      <DependentUpon>202205240825278_Night_Recalculation_Temps_and_Procedures.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
