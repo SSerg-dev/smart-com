@@ -2860,6 +2860,10 @@
     <Compile Include="Migrations\202205240927142_empty_after_cogs_merge.Designer.cs">
       <DependentUpon>202205240927142_empty_after_cogs_merge.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202205241955107_Edit_Copy_Settings.cs" />
+    <Compile Include="Migrations\202205241955107_Edit_Copy_Settings.Designer.cs">
+      <DependentUpon>202205241955107_Edit_Copy_Settings.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -5467,6 +5471,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202205240927142_empty_after_cogs_merge.resx">
       <DependentUpon>202205240927142_empty_after_cogs_merge.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202205241955107_Edit_Copy_Settings.resx">
+      <DependentUpon>202205241955107_Edit_Copy_Settings.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
