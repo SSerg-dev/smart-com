@@ -550,7 +550,7 @@ namespace Module.Persist.TPM.Migrations
 						FROM [DefaultSchemaSetting].[TEMP_PRODUCTCHANGEINCIDENTS] AS tpci
 					END
 				END
-
+			GO
 			IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[DefaultSchemaSetting].[TEMP_PROMO]') AND type in (N'U'))
 			DROP TABLE [DefaultSchemaSetting].[TEMP_PROMO]
 			GO
