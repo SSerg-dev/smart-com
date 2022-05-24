@@ -150,6 +150,18 @@
             }, {
                 text: l10n.ns('tpm', 'Product').value('Division'),
                 dataIndex: 'Division'
+            }, {
+                text: l10n.ns('tpm', 'Product').value('UOM'),
+                dataIndex: 'UOM'
+            }, {
+                text: l10n.ns('tpm', 'Product').value('NetWeight'),
+                dataIndex: 'NetWeight'
+            }, {
+                text: l10n.ns('tpm', 'Product').value('CaseVolume'),
+                dataIndex: 'CaseVolume'
+            }, {
+                text: l10n.ns('tpm', 'Product').value('PCVolume'),
+                dataIndex: 'PCVolume'
             }]
         }
     }, {

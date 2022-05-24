@@ -40,7 +40,11 @@ namespace Module.Persist.TPM.Model.History
         public string TradedUnitFormat { get; set; }
         public string ConsumerPackFormat { get; set; }
 
+        public string UOM { get; set; }
+        public double? NetWeight { get; set; }
         public int? UOM_PC2Case { get; set; }
 		public int? Division { get; set; }
+        public double? CaseVolume { get; set; }
+        public double? PCVolume { get; set; }
 	}
 }

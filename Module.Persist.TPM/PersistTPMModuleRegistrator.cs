@@ -82,6 +82,7 @@ namespace Module.Persist.TPM {
             modelBuilder.Entity<PromoSupportPromo>();
             modelBuilder.Entity<PromoProductTree>();
             modelBuilder.Entity<COGS>();
+            modelBuilder.Entity<PlanCOGSTn>();
             modelBuilder.Entity<TradeInvestment>();
             modelBuilder.Entity<PromoUpliftFailIncident>();
             modelBuilder.Entity<BlockedPromo>();
@@ -107,6 +108,7 @@ namespace Module.Persist.TPM {
             modelBuilder.Entity<PromoProductsView>().ToTable("PromoProductsView"); ;
 			modelBuilder.Entity<PromoTypes>();
             modelBuilder.Entity<ActualCOGS>();
+            modelBuilder.Entity<ActualCOGSTn>();
             modelBuilder.Entity<RATIShopper>();
             modelBuilder.Entity<ActualTradeInvestment>();
             modelBuilder.Entity<BTL>().HasMany(p => p.BTLPromo)
@@ -774,6 +776,19 @@ namespace Module.Persist.TPM {
             builder.Entity<COGS>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<COGS>("COGSs");
             builder.Entity<HistoricalCOGS>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalCOGS>("HistoricalCOGSs");
 
+            builder.EntitySet<PlanCOGSTn>("PlanCOGSTns");
+            builder.EntitySet<PlanCOGSTn>("DeletedPlanCOGSTns");
+            builder.EntitySet<HistoricalPlanCOGSTn>("HistoricalPlanCOGSTns");
+            builder.Entity<PlanCOGSTn>().Collection.Action("ExportXLSX");
+            builder.EntitySet<PlanCOGSTn>("PlanCOGSTns").HasRequiredBinding(e => e.ClientTree, "ClientTrees");
+            builder.EntitySet<PlanCOGSTn>("DeletedPlanCOGSTns").HasRequiredBinding(e => e.ClientTree, "ClientTrees");
+            builder.EntitySet<PlanCOGSTn>("PlanCOGSTns").HasOptionalBinding(e => e.BrandTech, "BrandTeches");
+            builder.EntitySet<PlanCOGSTn>("DeletedPlanCOGSTns").HasOptionalBinding(e => e.BrandTech, "BrandTeches");
+            builder.Entity<PlanCOGSTn>().Collection.Action("FullImportXLSX");
+            builder.Entity<PlanCOGSTn>().Collection.Action("DownloadTemplateXLSX");
+            builder.Entity<PlanCOGSTn>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PlanCOGSTn>("PlanCOGSTns");
+            builder.Entity<HistoricalPlanCOGSTn>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalPlanCOGSTn>("HistoricalPlanCOGSTns");
+
             builder.EntitySet<TradeInvestment>("TradeInvestments");
             builder.EntitySet<TradeInvestment>("DeletedTradeInvestments");
             builder.EntitySet<HistoricalTradeInvestment>("HistoricalTradeInvestments");
@@ -802,6 +817,22 @@ namespace Module.Persist.TPM {
             builder.Entity<ActualCOGS>().Collection.Action("CreateActualCOGSChangeIncidents");
             builder.Entity<ActualCOGS>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<ActualCOGS>("ActualCOGSs");
             builder.Entity<HistoricalActualCOGS>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalActualCOGS>("HistoricalActualCOGSs");
+
+            builder.EntitySet<ActualCOGSTn>("ActualCOGSTns");
+            builder.EntitySet<ActualCOGSTn>("DeletedActualCOGSTns");
+            builder.EntitySet<HistoricalActualCOGSTn>("HistoricalActualCOGSTns");
+            builder.Entity<ActualCOGSTn>().Collection.Action("ExportXLSX");
+            builder.EntitySet<ActualCOGSTn>("ActualCOGSTns").HasRequiredBinding(e => e.ClientTree, "ClientTrees");
+            builder.EntitySet<ActualCOGSTn>("DeletedActualCOGSTns").HasRequiredBinding(e => e.ClientTree, "ClientTrees");
+            builder.EntitySet<ActualCOGSTn>("ActualCOGSTns").HasOptionalBinding(e => e.BrandTech, "BrandTeches");
+            builder.EntitySet<ActualCOGSTn>("DeletedActualCOGSTns").HasOptionalBinding(e => e.BrandTech, "BrandTeches");
+            builder.Entity<ActualCOGSTn>().Collection.Action("FullImportXLSX");
+            builder.Entity<ActualCOGSTn>().Collection.Action("DownloadTemplateXLSX");
+            builder.Entity<ActualCOGSTn>().Collection.Action("IsCOGSTnRecalculatePreviousYearButtonAvailable");
+            builder.Entity<ActualCOGSTn>().Collection.Action("PreviousYearPromoList");
+            builder.Entity<ActualCOGSTn>().Collection.Action("CreateActualCOGSTnChangeIncidents");
+            builder.Entity<ActualCOGSTn>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<ActualCOGSTn>("ActualCOGSTns");
+            builder.Entity<HistoricalActualCOGSTn>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalActualCOGSTn>("HistoricalActualCOGSTns");
 
             builder.EntitySet<RATIShopper>("RATIShoppers");
             builder.EntitySet<RATIShopper>("DeletedRATIShoppers");

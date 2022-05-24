@@ -54,6 +54,7 @@
         { name: 'PlanPromoNetIncrementalBaseTI', useNull: true, type: 'float', hidden: false, isDefault: false },
         // [{ name: 'COGS' }] 39
         { name: 'COGSPercent', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'COGSTn', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'PlanPromoIncrementalCOGS', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'PlanPromoNetIncrementalCOGS', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'PlanPromoTotalCost', useNull: true, type: 'float', hidden: false, isDefault: false },
@@ -126,6 +127,20 @@
         { name: 'ActualPromoNetIncrementalEarnings', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'ActualPromoROIPercent', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'ActualPromoNetROIPercent', useNull: true, type: 'float', hidden: false, isDefault: false },
+        //New calculation parameters for ROI
+        { name: 'PlanPromoIncrementalMACLSV', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'PlanPromoNetIncrementalMACLSV', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'ActualPromoIncrementalMACLSV', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'ActualPromoNetIncrementalMACLSV', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'PlanPromoIncrementalEarningsLSV', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'PlanPromoNetIncrementalEarningsLSV', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'ActualPromoIncrementalEarningsLSV', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'ActualPromoNetIncrementalEarningsLSV', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'PlanPromoROIPercentLSV', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'PlanPromoNetROIPercentLSV', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'ActualPromoROIPercentLSV', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'ActualPromoNetROIPercentLSV', useNull: true, type: 'float', hidden: false, isDefault: false },
+
         { name: 'PromoTypesName', useNull: true, type: 'string', hidden: false, isDefault: false },
         { name: 'SumInvoice', useNull: true, type: 'float', hidden: false, isDefault: false },
     ],

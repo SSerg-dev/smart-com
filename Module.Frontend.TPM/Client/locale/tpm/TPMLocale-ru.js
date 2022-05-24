@@ -54,6 +54,8 @@
         'PostPromoEffectItem': 'Post Promo Effect',
         'COGS': 'Plan COGS',
         'ActualCOGS': 'Actual COGS',
+        'PlanCOGSTn': 'Plan COGS/Tn',
+        'ActualCOGSTn': 'Actual COGS/Tn',
         'Finance': 'Finance',
         'TradeInvestment': 'Plan TradeInvestment',
         'ActualTradeInvestment': 'Actual TradeInvestment',
@@ -134,6 +136,8 @@
         'PostPromoEffect': 'Post Promo Effect',
         'COGS': 'COGS',
         'ActualCOGS': 'Actual COGS',
+        'PlanCOGSTn': 'Plan COGS/Tn',
+        'ActualCOGSTn': 'Actual COGS/Tn',
         'RATIShopper': 'RA TI Shopper',
         'AddPromoSupportType': 'Add Promo support type',
         'TradeInvestment': 'TradeInvestment',
@@ -1311,8 +1315,8 @@
         'ClientTreeFullPathName': 'ClientHierarchy',
         'ClientTreeObjectId': 'ClientId',
         'BrandTechName': 'BrandTech',
-        'LSVpercent': 'LSV percent'
-
+        'LSVpercent': 'LSV percent',
+        'Year': 'Year'
     },
     'HistoricalCOGS': ['.tpm.COGS', '.core.BaseHistoryEntity'],
     'DeletedCOGS': ['.tpm.COGS', '.core.BaseDeletedEntity'],
@@ -1329,6 +1333,31 @@
     },
     'HistoricalActualCOGS': ['.tpm.ActualCOGS', '.core.BaseHistoryEntity'],
     'DeletedActualCOGS': ['.tpm.ActualCOGS', '.core.BaseDeletedEntity'],
+
+    'PlanCOGSTn': {
+        'StartDate': 'StartDate',
+        'EndDate': 'EndDate',
+        'ClientTreeFullPathName': 'ClientHierarchy',
+        'ClientTreeObjectId': 'ClientId',
+        'BrandTechName': 'BrandTech',
+        'TonCost': 'Ton Cost',
+        'Year': 'Year',
+    },
+    'HistoricalPlanCOGSTn': ['.tpm.PlanCOGSTn', '.core.BaseHistoryEntity'],
+    'DeletedPlanCOGSTn': ['.tpm.PlanCOGSTn', '.core.BaseDeletedEntity'],
+
+    'ActualCOGSTn': {
+        'StartDate': 'StartDate',
+        'EndDate': 'EndDate',
+        'ClientTreeFullPathName': 'ClientHierarchy',
+        'ClientTreeObjectId': 'ClientId',
+        'BrandTechName': 'BrandTech',
+        'TonCost': 'Ton Cost',
+        'Year': 'Year',
+        'recalculatePreviousYearButtonYearText': 'Пересчитать промо за предыдущий год'
+    },
+    'HistoricalActualCOGSTn': ['.tpm.ActualCOGSTn', '.core.BaseHistoryEntity'],
+    'DeletedActualCOGSTn': ['.tpm.ActualCOGSTn', '.core.BaseDeletedEntity'],
 
     'RATIShopper': {
         'ClientTreeFullPathName': 'ClientHierarchy',
@@ -1812,6 +1841,19 @@
         'PlanAddTIMarketingApproved': 'Plan Add TI Promo Marketing Approved',
         'ActualAddTIShopper': 'Actual Add TI Shopper',
         'ActualAddTIMarketing': 'Actual Add TI Promo Marketing',
+
+        'PlanPromoIncrementalMACLSV': 'Plan Promo Incremental MAC LSV',
+        'PlanPromoNetIncrementalMACLSV': 'Plan Promo Net Incremental MAC LSV',
+        'ActualPromoIncrementalMACLSV': 'Actual Promo Incremental MAC LSV',
+        'ActualPromoNetIncrementalMACLSV': 'Actual Promo Net Incremental  MAC LSV',
+        'PlanPromoIncrementalEarningsLSV': 'Plan Promo Incremental  Earnings LSV',
+        'PlanPromoNetIncrementalEarningsLSV': 'Plan Promo Net Incremental  Earnings LSV',
+        'ActualPromoIncrementalEarningsLSV': 'Actual Promo Incremental  Earnings LSV',
+        'ActualPromoNetIncrementalEarningsLSV': 'Actual Promo Net Incremental  Earnings LSV',
+        'PlanPromoROIPercentLSV': 'Plan Promo ROI % LSV',
+        'PlanPromoNetROIPercentLSV': 'Plan Promo Net ROI % LSV',
+        'ActualPromoROIPercentLSV': 'Actual Promo ROI % LSV',
+        'ActualPromoNetROIPercentLSV': 'Actual Promo Net ROI % LSV',
     },
 
     'PromoActivity': {
