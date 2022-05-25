@@ -316,11 +316,28 @@ namespace Module.Frontend.TPM.Controllers
                 PromoHelper.WritePromoDemandChangeIncident(Context, result);
             }
 
-            result.LastChangedDate = ChangedDate;
-            Context.SaveChanges();
+                // привязывает дочерние промо
+                if (!string.IsNullOrEmpty(result.LinkedPromoes) && result.IsInExchange)
+                {
+                    List<string> LinkedStringIds = model.LinkedPromoes.Split(',').ToList();
+                    List<int> LinkedIds = LinkedStringIds.Select(s => int.Parse(s)).ToList();
+                    List<Promo> ChildPromoes = Context.Set<Promo>().Where(g => LinkedIds.Contains((int)g.Number)).ToList();
+                    foreach (var ChildPromo in ChildPromoes)
+                    {
+                        ChildPromo.MasterPromoId = result.Id;
+                    }
+                }
 
-            return result;
-        }
+                result.LastChangedDate = ChangedDate;
+                Context.SaveChanges();
+
+
+                return Created(result);
+            }
+            catch (Exception e)
+            {
+                return InternalServerError(e);
+            }
 
         [ClaimsAuthorize]
         [AcceptVerbs("PATCH", "MERGE")]
@@ -332,6 +349,11 @@ namespace Module.Frontend.TPM.Controllers
                 if (model == null)
                 {
                     return NotFound();
+                }
+                // если дочернее промо и пытаются поменять статус
+                if (model.MasterPromoId != null)
+                {
+                    return InternalServerError(new Exception("Changes are not available for linked promo"));
                 }
                 Promo promo = patch.GetEntity();
                 if (promo.IsSplittable)
@@ -386,9 +408,8 @@ namespace Module.Frontend.TPM.Controllers
                     }
                 }
 
-                string message;
                 PromoStateContext promoStateContext = new PromoStateContext(Context, promoCopy);
-                bool status = promoStateContext.ChangeState(model, userRole, out message);
+                bool status = promoStateContext.ChangeState(model, userRole, out string message);
                 if (!status)
                 {
                     return InternalServerError(new Exception(message));
@@ -473,6 +494,11 @@ namespace Module.Frontend.TPM.Controllers
                     if (statusName != null && statusName.ToLower() == "approved")
                     {
                         model.LastApprovedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                    }
+                    // если approved переводим в cancelled дочерние
+                    if (statusName.ToLower() == "approved" && userRole != "SupportAdministrator")
+                    {
+                        UnlinkChildPromoes(model.Id, userRole);
                     }
                 }
 
@@ -982,6 +1008,12 @@ namespace Module.Frontend.TPM.Controllers
                     promoProductsCorrection.UserId = (Guid)user.Id;
                     promoProductsCorrection.UserName = user.Login;
                 }
+                // удалить дочерние промо
+                var PromoesUnlink = Context.Set<Promo>().Where(p => p.MasterPromoId == model.Id).ToList();
+                foreach (var childpromo in PromoesUnlink)
+                {
+                    childpromo.MasterPromoId = null;
+                }
                 Context.SaveChanges();
 
                 PromoHelper.WritePromoDemandChangeIncident(Context, model, true);
@@ -1141,6 +1173,13 @@ namespace Module.Frontend.TPM.Controllers
                     patch.TrySetPropertyValue("PromoStatusId", draftPublishedStatus.Id);
                     patch.TrySetPropertyValue("RejectReasonId", rejectReasonId);
 
+                    //Убираем Linked Promoes и убираем ссылки у дочерних промо
+                    patch.TrySetPropertyValue("LinkedPromoes", string.Empty);
+                    var PromoesUnlink = Context.Set<Promo>().Where(p => p.MasterPromoId == promo.Id).ToList();
+                    foreach (var childpromo in PromoesUnlink)
+                    {
+                        childpromo.MasterPromoId = null;
+                    }
                     // Для сохранения корректного значения после Patch
                     promo.DeviationCoefficient *= 100;
                     // если возвращается Update, то всё прошло без ошибок
@@ -2441,6 +2480,87 @@ namespace Module.Frontend.TPM.Controllers
                 tempCorrection.Disabled = true;
             }
 
+        }
+        private void UnlinkChildPromoes(Guid modelId, string userRole)
+        {
+            var ChildPromoes = Context.Set<Promo>().Where(p => p.MasterPromoId == modelId);
+            var CancelledId = Context.Set<PromoStatus>().FirstOrDefault(s => s.SystemName == "Cancelled" && !s.Disabled).Id;
+            List<Guid> mainPromoSupportIds = new List<Guid>();
+            List<Guid> mainBTLIds = new List<Guid>();
+            foreach (var ChildPromo in ChildPromoes)
+            {
+                if (ChildPromo.PromoStatusId != CancelledId)
+                {
+                    using (PromoStateContext childStateContext = new PromoStateContext(Context, ChildPromo))
+                    {
+                        if (childStateContext.ChangeState(ChildPromo, PromoStates.Cancelled, "System", out string childmessage))
+                        {
+                            //Сохранение изменения статуса
+                            var promoStatusChange = Context.Set<PromoStatusChange>().Create<PromoStatusChange>();
+                            promoStatusChange.PromoId = ChildPromo.Id;
+                            promoStatusChange.StatusId = ChildPromo.PromoStatusId;
+                            promoStatusChange.Date = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).Value;
+
+                            Context.Set<PromoStatusChange>().Add(promoStatusChange);
+                            Context.Set<PromoCancelledIncident>().Add(new PromoCancelledIncident()
+                            {
+                                CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                                Promo = ChildPromo,
+                                PromoId = ChildPromo.Id
+                            });
+                            List<PromoProduct> promoProductToDeleteList = Context.Set<PromoProduct>().Where(x => x.PromoId == ChildPromo.Id && !x.Disabled).ToList();
+                            foreach (PromoProduct promoProduct in promoProductToDeleteList)
+                            {
+                                promoProduct.DeletedDate = System.DateTime.Now;
+                                promoProduct.Disabled = true;
+                            }
+                            //promo.NeedRecountUplift = true;
+                            //необходимо удалить все коррекции
+                            var promoProductToDeleteListIds = promoProductToDeleteList.Select(x => x.Id).ToList();
+                            List<PromoProductsCorrection> promoProductCorrectionToDeleteList = Context.Set<PromoProductsCorrection>()
+                                .Where(x => promoProductToDeleteListIds.Contains(x.PromoProductId) && x.Disabled != true).ToList();
+                            foreach (PromoProductsCorrection promoProductsCorrection in promoProductCorrectionToDeleteList)
+                            {
+                                promoProductsCorrection.DeletedDate = DateTimeOffset.UtcNow;
+                                promoProductsCorrection.Disabled = true;
+                                promoProductsCorrection.UserId = null;
+                                promoProductsCorrection.UserName = "System";
+                            }
+                        }
+                    }
+                    //при сбросе статуса в Cancelled необходимо отвязать бюджеты от промо и пересчитать эти бюджеты
+                    List<Guid> promoSupportIds = PromoCalculateHelper.DetachPromoSupport(ChildPromo, Context);
+                    foreach (var psId in promoSupportIds)
+                    {
+                        if (!mainPromoSupportIds.Contains(psId))
+                        {
+                            mainPromoSupportIds.Add(psId);
+                        }
+                    }
+                    BTLPromo btlPromo = Context.Set<BTLPromo>().Where(x => !x.Disabled && x.PromoId == ChildPromo.Id).FirstOrDefault();
+                    if (btlPromo != null)
+                    {
+                        btlPromo.DeletedDate = DateTimeOffset.UtcNow;
+                        btlPromo.Disabled = true;
+                        mainBTLIds.Add(btlPromo.BTLId);
+                    }
+
+                    //если промо инаут, необходимо убрать записи в IncrementalPromo при отмене промо
+                    if (ChildPromo.InOut.HasValue && ChildPromo.InOut.Value)
+                    {
+                        PromoHelper.DisableIncrementalPromo(Context, ChildPromo);
+                    }
+
+                }
+            }
+            if (mainPromoSupportIds.Count() > 0)
+            {
+                PromoCalculateHelper.CalculateBudgetsCreateTask(mainPromoSupportIds, null, null, Context);
+            }
+            foreach (Guid btlId in mainBTLIds)
+            {
+                PromoCalculateHelper.CalculateBTLBudgetsCreateTask(btlId.ToString(), null, null, Context, safe: true);
+            }
         }
     }
 }

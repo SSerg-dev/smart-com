@@ -1,5 +1,8 @@
-﻿using System.Data.Entity.Core.Objects;
+﻿using Core.Data;
+using System.Collections.Generic;
+using System.Data.Entity.Core.Objects;
 using System.Linq;
+using System.Web.Http.OData.Query;
 
 namespace Module.Frontend.TPM.Util
 {
@@ -44,6 +47,29 @@ namespace Module.Frontend.TPM.Util
             var objectQueryValue = objectQueryField.GetValue(internalQuery);
 
             return objectQueryValue as System.Data.Entity.Core.Objects.ObjectQuery<T>;
+        }
+        public static IQueryable<T> FixOdataExpand<T>(this IQueryable<T> query, ODataQueryOptions options) where T : IEntity
+        {
+            var result = options.ApplyTo(query);
+            if (result is IQueryable<T> resultEntity)
+            {
+                return resultEntity;
+            }
+            var resultList = new List<T>();
+
+            foreach (var item in result)
+            {
+                if (item is T item1)
+                {
+                    resultList.Add(item1);
+                }
+                else if (item.GetType().Name == "SelectAllAndExpand`1")
+                {
+                    var entityProperty = item.GetType().GetProperty("Instance");
+                    resultList.Add((T)entityProperty.GetValue(item));
+                }
+            }
+            return resultList.AsQueryable();
         }
     }
 }

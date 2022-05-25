@@ -37,7 +37,7 @@
             fn: function (btn) {
                 if (btn === 'yes') {
                     me.onOkMassApprovalClick(btn, me, panel);
-                } 
+                }
             },
             icon: Ext.Msg.QUESTION,
             buttons: Ext.Msg.YESNO,
@@ -522,6 +522,120 @@
                     property: "IsCMManagerApproved", operation: "Equals", value: false
                 }]
             }
+            ]
+        };
+
+        return filter;
+    },
+
+    getOnApprovalInExchangeFilterCMM: function () {
+        var date = new Date();
+        date.setHours(date.getHours() + (date.getTimezoneOffset() / 60) + 3);
+
+        date = Ext.Date.add(date, Ext.Date.DAY, 9 * 7);
+
+        var filter = {
+            operator: "and",
+            rules: [
+                {
+                    property: "PromoStatusName", operation: "Equals", value: 'On Approval'
+                },
+                {
+                    property: "DispatchesStart", operation: "LessThan", value: date
+                },
+                {
+                    property: "IsInExchange", operation: "Equals", value: true
+                },
+                {
+                    operator: "or",
+                    rules: [
+                        {
+                            property: "IsCMManagerApproved", operation: "Equals", value: null
+                        },
+                        {
+                            property: "IsCMManagerApproved", operation: "Equals", value: false
+                        }
+                    ]
+                }
+            ]
+        };
+
+        return filter;
+    },
+
+    getOnApprovalInExchangeFilterDP: function () {
+        var date = new Date();
+        date.setHours(date.getHours() + (date.getTimezoneOffset() / 60) + 3);
+
+        date = Ext.Date.add(date, Ext.Date.DAY, 9 * 7);
+
+        var filter = {
+            operator: "and",
+            rules: [
+                {
+                    property: "PromoStatusName", operation: "Equals", value: 'On Approval'
+                },
+                {
+                    property: "DispatchesStart", operation: "LessThan", value: date
+                },
+                {
+                    property: "IsCMManagerApproved", operation: "Equals", value: true
+                },
+                {
+                    property: "IsInExchange", operation: "Equals", value: true
+                },
+                {
+                    operator: "or",
+                    rules: [
+                        {
+                            property: "IsDemandPlanningApproved", operation: "Equals", value: null
+                        },
+                        {
+                            property: "IsDemandPlanningApproved", operation: "Equals", value: false
+                        }
+                    ]
+                },
+            ]
+        };
+
+        return filter;
+    },
+
+    getOnApprovalInExchangeFilterDF: function () {
+        var date = new Date();
+        date.setHours(date.getHours() + (date.getTimezoneOffset() / 60) + 3);
+
+        date = Ext.Date.add(date, Ext.Date.DAY, 9 * 7);
+
+        var filter = {
+            operator: "and",
+            rules: [
+                {
+                    property: "PromoStatusName", operation: "Equals", value: 'On Approval'
+                },
+                {
+                    property: "DispatchesStart", operation: "LessThan", value: date
+                },
+                {
+                    property: "IsCMManagerApproved", operation: "Equals", value: true
+                },
+                {
+                    property: "IsDemandPlanningApproved", operation: "Equals", value: true
+                },
+                {
+                    property: "IsInExchange", operation: "Equals", value: true
+                },
+                {
+                    operator: "or",
+                    rules: [
+                        {
+                            property: "IsDemandFinanceApproved", operation: "Equals", value: null
+                        },
+                        {
+                            property: "IsDemandFinanceApproved", operation: "Equals", value: false
+                        }
+                    ]
+                },
             ]
         };
 
