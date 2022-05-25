@@ -298,6 +298,7 @@ namespace Module.Frontend.TPM.Controllers
                 result.LastApprovedDate = ChangeTimeZoneUtil.ResetTimeZone(DateTimeOffset.UtcNow);
             }
 
+
             // Для draft не проверяем и не считаем && если у промо есть признак InOut, то Uplift считать не нужно.
             if (result.PromoStatus.SystemName.ToLower() != "draft")
             {
@@ -316,28 +317,23 @@ namespace Module.Frontend.TPM.Controllers
                 PromoHelper.WritePromoDemandChangeIncident(Context, result);
             }
 
-                // привязывает дочерние промо
-                if (!string.IsNullOrEmpty(result.LinkedPromoes) && result.IsInExchange)
-                {
-                    List<string> LinkedStringIds = model.LinkedPromoes.Split(',').ToList();
-                    List<int> LinkedIds = LinkedStringIds.Select(s => int.Parse(s)).ToList();
-                    List<Promo> ChildPromoes = Context.Set<Promo>().Where(g => LinkedIds.Contains((int)g.Number)).ToList();
-                    foreach (var ChildPromo in ChildPromoes)
-                    {
-                        ChildPromo.MasterPromoId = result.Id;
-                    }
-                }
-
-                result.LastChangedDate = ChangedDate;
-                Context.SaveChanges();
-
-
-                return Created(result);
-            }
-            catch (Exception e)
+            // привязывает дочерние промо
+            if (!string.IsNullOrEmpty(result.LinkedPromoes) && result.IsInExchange)
             {
-                return InternalServerError(e);
+                List<string> LinkedStringIds = model.LinkedPromoes.Split(',').ToList();
+                List<int> LinkedIds = LinkedStringIds.Select(s => int.Parse(s)).ToList();
+                List<Promo> ChildPromoes = Context.Set<Promo>().Where(g => LinkedIds.Contains((int)g.Number)).ToList();
+                foreach (var ChildPromo in ChildPromoes)
+                {
+                    ChildPromo.MasterPromoId = result.Id;
+                }
             }
+
+            result.LastChangedDate = ChangedDate;
+            Context.SaveChanges();
+
+            return result;
+        }
 
         [ClaimsAuthorize]
         [AcceptVerbs("PATCH", "MERGE")]

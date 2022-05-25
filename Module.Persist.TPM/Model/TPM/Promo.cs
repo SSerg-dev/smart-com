@@ -302,7 +302,6 @@ namespace Module.Persist.TPM.Model.TPM
         public bool IsApolloExport { get; set; }
         public bool IsInExchange { get; set; }
         public string LinkedPromoes { get; set; }
-        public bool IsApolloExport { get; set; }
         public bool IsSplittable { get; set; }
         public bool IsLSVBased { get; set; }
 
