@@ -35,7 +35,7 @@ namespace Module.Host.TPM.Actions
         {
             using (DatabaseContext context = new DatabaseContext())
             {
-                var promoList = context.Set<Promo>().Where(x => PromoesList.Contains(x.Number.ToString())).ToList();
+                var promoList = context.Set<Promo>().Where(x => !x.Disabled && PromoesList.Contains(x.Number.ToString())).ToList();
 
                 ValidatePromoes(ref promoList);
                 TryToApprove(promoList, context);
