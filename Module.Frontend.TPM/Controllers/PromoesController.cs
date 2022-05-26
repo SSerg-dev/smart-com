@@ -1137,7 +1137,7 @@ namespace Module.Frontend.TPM.Controllers
                     }
 
                     PromoStatus draftPublishedStatus = Context.Set<PromoStatus>().First(n => n.SystemName == "DraftPublished");
-                    Delta<Promo> patch = new Delta<Promo>(promo.GetType(), new string[] { "PromoStatusId", "RejectReasonId" });
+                    Delta<Promo> patch = new Delta<Promo>(typeof(Promo), new string[] { "PromoStatusId", "RejectReasonId" });
                     patch.TrySetPropertyValue("PromoStatusId", draftPublishedStatus.Id);
                     patch.TrySetPropertyValue("RejectReasonId", rejectReasonId);
 
