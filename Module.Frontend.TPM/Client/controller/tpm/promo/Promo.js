@@ -3320,9 +3320,11 @@
             promoeditorcustom.down('[name=ApolloExportCheckbox]').setDisabled(false);
             promoeditorcustom.down('[name=ApolloExportCheckbox]').setReadOnly(false);
         }
-        //if (promoeditorcustom.isInExchange) {
+        if (promoeditorcustom.isInExchange) {
         //    this.disableActualPanels(true);
-        //}
+            var splitPublishBtn = Ext.ComponentQuery.query("#btn_splitpublish")[0];
+            splitPublishBtn.setDisabled(true);
+        }
         // Заблокировать Adjustment для редактирования в указанных ниже статусах
         var isPromoEnd = (['Finished', 'Closed', 'Cancelled', 'Deleted'].indexOf(record.data.PromoStatusSystemName) >= 0);
         if (isPromoEnd
@@ -6578,8 +6580,8 @@
     },
 
     getInExchnageWindowLabel: function () {
-        var growAccelerationComponent = Ext.ComponentQuery.query('#btn_promoIsInExchange')[0];
-        return growAccelerationComponent;
+        var inExchangeComponent = Ext.ComponentQuery.query('#btn_promoIsInExchange')[0];
+        return inExchangeComponent;
     },
 
     showInExchangeWindowLabel: function (value) {
