@@ -856,9 +856,9 @@
     getGaInExchangeApprovalDemandFinance: function () {
         var promoHelperController = App.app.getController('tpm.promo.PromoHelper');
 
-        var filter = promoHelperController.getOnApprovalInExchangeFilterDF();
+        var filter = promoHelperController.getOnApprovalGAFilterDF();
         var widget = 'promo';
-        var text = "GA InExchange On approval";
+        var text = "GA On approval";
         var panel = 'panel1';
         var image = 'workflow.png';
         var color = '#00009b';
@@ -868,9 +868,9 @@
     getGaInExchangeApprovalDemandPlanning: function () {
         var promoHelperController = App.app.getController('tpm.promo.PromoHelper');
 
-        var filter = promoHelperController.getOnApprovalInExchangeFilterDP();
+        var filter = promoHelperController.getOnApprovalGAFilterDP();
         var widget = 'promo';
-        var text = "GA InExchange On approval";
+        var text = "GA On approval";
         var panel = 'panel1';
         var image = 'workflow.png';
         var color = '#00009b';
@@ -880,9 +880,9 @@
     getGaInExchangeApprovalCMManager: function () {
         var promoHelperController = App.app.getController('tpm.promo.PromoHelper');
 
-        var filter = promoHelperController.getOnApprovalInExchangeFilterCMM();
+        var filter = promoHelperController.getOnApprovalGAFilterCMM();
         var widget = 'promo';
-        var text = "GA InExchange On approval";
+        var text = "GA On approval";
         var panel = 'panel1';
         var image = 'workflow.png';
         var color = '#0e0d9e';

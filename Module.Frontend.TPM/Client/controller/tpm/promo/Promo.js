@@ -262,6 +262,9 @@
                 'promoeditorcustom [name=GrowthAccelerationCheckbox]': {
                     change: this.onGrowthAccelerationCheckboxChange
                 },
+                'promoeditorcustom [name=IsInExchangeCheckbox]': {
+                    change: this.onInExchangeCheckboxChange
+                },
                 'promoeditorcustom [name=ApolloExportCheckbox]': {
                     change: this.onApolloExportCheckboxChange
                 },
@@ -3341,7 +3344,8 @@
         }
 
         // Заблокировать Add TI не для GA
-        if (!record.data.IsGrowthAcceleration) {
+        var isGa = record.data.IsGrowthAcceleration || record.data.IsInExchange;
+        if (!isGa) {
             var planPanel = Ext.ComponentQuery.query('#promoBudgets_step4_planpanel')[0];
             var actualPanel = Ext.ComponentQuery.query('#promoBudgets_step4_actualpanel')[0];
             var button = Ext.ComponentQuery.query('#btn_promoBudgets_step4')[0];
@@ -3708,7 +3712,7 @@
 
     savePromo: function (button, close, reloadForm) {
         var window = button.up('promoeditorcustom');
-         
+
         var isModelComplete = this.validatePromoModel(window);
 
         if (isModelComplete === '') {
@@ -6570,6 +6574,37 @@
             promoEditorCustom.isApolloExport = true;
         } else {
             promoEditorCustom.isApolloExport = false;
+        }
+    },
+
+    getInExchnageWindowLabel: function () {
+        var growAccelerationComponent = Ext.ComponentQuery.query('#btn_promoIsInExchange')[0];
+        return growAccelerationComponent;
+    },
+
+    showInExchangeWindowLabel: function (value) {
+        var inExchangeWindowLabel = this.getInExchnageWindowLabel();
+        if (value) {
+            if (inExchangeWindowLabel) {
+                inExchangeWindowLabel.show();
+            }
+        } else {
+            if (inExchangeWindowLabel) {
+                inExchangeWindowLabel.hide();
+            }
+        }
+    },
+
+    onInExchangeCheckboxChange: function (component, newValue) {
+        var promoEditorCustom = Ext.ComponentQuery.query('promoeditorcustom')[0];
+        var promoController = App.app.getController('tpm.promo.Promo');
+
+        if (promoEditorCustom && newValue) {
+            promoController.showInExchangeWindowLabel(true);
+            promoEditorCustom.isInExchange = true;
+        } else {
+            promoController.showInExchangeWindowLabel(false);
+            promoEditorCustom.isInExchange = false;
         }
     },
 

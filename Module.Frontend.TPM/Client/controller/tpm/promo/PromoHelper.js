@@ -445,22 +445,33 @@
 
         var filter = {
             operator: "and",
-            rules: [{
-                property: "PromoStatusName", operation: "Equals", value: 'On Approval'
-            },
-            {
-                property: "DispatchesStart", operation: "LessThan", value: date
-            }, {
-                property: "IsCMManagerApproved", operation: "Equals", value: true
-            }, {
-                operator: "or",
-                rules: [{
-                    property: "IsDemandPlanningApproved", operation: "Equals", value: null
+            rules: [
+                {
+                    property: "PromoStatusName", operation: "Equals", value: 'On Approval'
                 },
                 {
-                    property: "IsDemandPlanningApproved", operation: "Equals", value: false
-                }]
-            },
+                    property: "DispatchesStart", operation: "LessThan", value: date
+                },
+                {
+                    property: "IsCMManagerApproved", operation: "Equals", value: true
+                },
+                {
+                    property: "IsGrowthAcceleration", operation: "Equals", value: false
+                },
+                {
+                    property: "IsInExchange", operation: "Equals", value: false
+                },
+                {
+                    operator: "or",
+                    rules: [
+                        {
+                            property: "IsDemandPlanningApproved", operation: "Equals", value: null
+                        },
+                        {
+                            property: "IsDemandPlanningApproved", operation: "Equals", value: false
+                        }
+                    ]
+                },
             ]
         };
 
@@ -475,25 +486,36 @@
 
         var filter = {
             operator: "and",
-            rules: [{
-                property: "PromoStatusName", operation: "Equals", value: 'On Approval'
-            },
-            {
-                property: "DispatchesStart", operation: "LessThan", value: date
-            }, {
-                property: "IsCMManagerApproved", operation: "Equals", value: true
-            }, {
-                property: "IsDemandPlanningApproved", operation: "Equals", value: true
-            },
-            {
-                operator: "or",
-                rules: [{
-                    property: "IsDemandFinanceApproved", operation: "Equals", value: null
+            rules: [
+                {
+                    property: "PromoStatusName", operation: "Equals", value: 'On Approval'
                 },
                 {
-                    property: "IsDemandFinanceApproved", operation: "Equals", value: false
-                }]
-            },
+                    property: "DispatchesStart", operation: "LessThan", value: date
+                },
+                {
+                    property: "IsCMManagerApproved", operation: "Equals", value: true
+                },
+                {
+                    property: "IsDemandPlanningApproved", operation: "Equals", value: true
+                },
+                {
+                    property: "IsGrowthAcceleration", operation: "Equals", value: false
+                },
+                {
+                    property: "IsInExchange", operation: "Equals", value: false
+                },
+                {
+                    operator: "or",
+                    rules: [
+                        {
+                            property: "IsDemandFinanceApproved", operation: "Equals", value: null
+                        },
+                        {
+                            property: "IsDemandFinanceApproved", operation: "Equals", value: false
+                        }
+                    ]
+                },
             ]
         };
 
@@ -508,27 +530,37 @@
 
         var filter = {
             operator: "and",
-            rules: [{
-                property: "PromoStatusName", operation: "Equals", value: 'On Approval'
-            },
-            {
-                property: "DispatchesStart", operation: "LessThan", value: date
-            }, {
-                operator: "or",
-                rules: [{
-                    property: "IsCMManagerApproved", operation: "Equals", value: null
+            rules: [
+                {
+                    property: "PromoStatusName", operation: "Equals", value: 'On Approval'
                 },
                 {
-                    property: "IsCMManagerApproved", operation: "Equals", value: false
-                }]
-            }
+                    property: "DispatchesStart", operation: "LessThan", value: date
+                },
+                {
+                    property: "IsGrowthAcceleration", operation: "Equals", value: false
+                },
+                {
+                    property: "IsInExchange", operation: "Equals", value: false
+                },
+                {
+                    operator: "or",
+                    rules: [
+                        {
+                            property: "IsCMManagerApproved", operation: "Equals", value: null
+                        },
+                        {
+                            property: "IsCMManagerApproved", operation: "Equals", value: false
+                        }]
+
+                }
             ]
         };
 
         return filter;
     },
 
-    getOnApprovalInExchangeFilterCMM: function () {
+    getOnApprovalGAFilterCMM: function () {
         var date = new Date();
         date.setHours(date.getHours() + (date.getTimezoneOffset() / 60) + 3);
 
@@ -542,6 +574,9 @@
                 },
                 {
                     property: "DispatchesStart", operation: "LessThan", value: date
+                },
+                {
+                    property: "IsGrowthAcceleration", operation: "Equals", value: true
                 },
                 {
                     property: "IsInExchange", operation: "Equals", value: true
@@ -563,7 +598,7 @@
         return filter;
     },
 
-    getOnApprovalInExchangeFilterDP: function () {
+    getOnApprovalGAFilterDP: function () {
         var date = new Date();
         date.setHours(date.getHours() + (date.getTimezoneOffset() / 60) + 3);
 
@@ -580,6 +615,9 @@
                 },
                 {
                     property: "IsCMManagerApproved", operation: "Equals", value: true
+                },
+                {
+                    property: "IsGrowthAcceleration", operation: "Equals", value: true
                 },
                 {
                     property: "IsInExchange", operation: "Equals", value: true
@@ -601,7 +639,7 @@
         return filter;
     },
 
-    getOnApprovalInExchangeFilterDF: function () {
+    getOnApprovalGAFilterDF: function () {
         var date = new Date();
         date.setHours(date.getHours() + (date.getTimezoneOffset() / 60) + 3);
 
@@ -621,6 +659,9 @@
                 },
                 {
                     property: "IsDemandPlanningApproved", operation: "Equals", value: true
+                },
+                {
+                    property: "IsGrowthAcceleration", operation: "Equals", value: true
                 },
                 {
                     property: "IsInExchange", operation: "Equals", value: true

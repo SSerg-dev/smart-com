@@ -478,6 +478,7 @@ namespace Module.Frontend.TPM.Controllers
                     || promoCopy.IsCMManagerApproved != model.IsCMManagerApproved
                     || promoCopy.IsDemandPlanningApproved != model.IsDemandPlanningApproved)
                 {
+
                     PromoStatusChange psc = Context.Set<PromoStatusChange>().Create<PromoStatusChange>();
                     psc.PromoId = model.Id;
                     psc.StatusId = model.PromoStatusId;
@@ -2546,7 +2547,7 @@ namespace Module.Frontend.TPM.Controllers
                     {
                         PromoHelper.DisableIncrementalPromo(Context, ChildPromo);
                     }
-
+                    ChildPromo.MasterPromoId = null;
                 }
             }
             if (mainPromoSupportIds.Count() > 0)
