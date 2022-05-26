@@ -71,11 +71,14 @@
                 },
                 'promoproductcorrection #applyimportbutton': {
                     click: this.onApplyImportButtonClick
+                },
+                'promoproductcorrection #exportcorrectionxlsxbutton': {
+                    click: this.onExportCorrectionButtonClick
                 }
             }
         });
     },
-     
+
     onCreateButtonClick: function () {
 
         this.callParent(arguments);
@@ -83,8 +86,8 @@
         var promoproductcorrectioneditor = Ext.ComponentQuery.query('promoproductcorrectioneditor')[0];
         var createDate = promoproductcorrectioneditor.down('[name=CreateDate]');
         var changeDate = promoproductcorrectioneditor.down('[name=ChangeDate]');
-        var userName = promoproductcorrectioneditor.down('[name=UserName]'); 
-        var number = promoproductcorrectioneditor.down('[name=Number]'); 
+        var userName = promoproductcorrectioneditor.down('[name=UserName]');
+        var number = promoproductcorrectioneditor.down('[name=Number]');
         userName.setValue(App.UserInfo.getUserName());
         number.isCreate = true;
 
@@ -95,10 +98,10 @@
         changeDate.setValue(date);
     },
 
-     //Получение промо продукта по промо и продукту
+    //Получение промо продукта по промо и продукту
     saveModel: function (promoId, productId) {
         if (promoId && productId) {
-           
+
             var parameters = {
                 promoId: breeze.DataType.Guid.fmtOData(promoId),
                 productId: breeze.DataType.Guid.fmtOData(productId)
@@ -143,10 +146,40 @@
 
                 }
                 else {
-                    App.Notify.pushError(result.message); 
+                    App.Notify.pushError(result.message);
                 }
             });
         }
+    },
+    onExportCorrectionButtonClick: function (button) {
+        var me = this;
+        var grid = me.getGridByButton(button);
+        var panel = grid.up('combineddirectorypanel');
+        var store = grid.getStore();
+        var proxy = store.getProxy();
+        var actionName = button.action || 'ExportCorrectionXLSX';
+        var resource = button.resource || proxy.resourceName;
+        panel.setLoading(true);
+
+        var query = breeze.EntityQuery
+            .from(resource)
+            .withParameters({
+                $actionName: actionName,
+                $method: 'POST',
+            });
+        // тут store фильтр не работает на бэке другой запрос
+        query = me.buildQuery(query, store)
+            .using(Ext.ux.data.BreezeEntityManager.getEntityManager())
+            .execute()
+            .then(function (data) {
+                panel.setLoading(false);
+                App.Notify.pushInfo('Export task created successfully');
+                App.System.openUserTasksPanel()
+            })
+            .fail(function (data) {
+                panel.setLoading(false);
+                App.Notify.pushError(me.getErrorMessage(data));
+            });
     }
 
 });

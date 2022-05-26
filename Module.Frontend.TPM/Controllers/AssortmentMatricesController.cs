@@ -45,7 +45,6 @@ namespace Module.Frontend.TPM.Controllers
 
         }
 
-
         protected IQueryable<AssortmentMatrix> GetConstraintedQuery(bool needActualAssortmentMatrix = false)
         {
             UserInfo user = authorizationManager.GetCurrentUser();
@@ -286,7 +285,7 @@ namespace Module.Frontend.TPM.Controllers
             return Context.Set<AssortmentMatrix>().Count(e => e.Id == key) > 0;
         }
 
-        public static IEnumerable<Column> GetExportSettings()
+        public static IEnumerable<Column> GetExportSettings(string additionalColumn = null)
         {
             IEnumerable<Column> columns = new List<Column>() {
                 new Column() { Order = 0, Field = "Number", Header = "ID", Quoting = false },
@@ -314,7 +313,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult ExportXLSX(ODataQueryOptions<AssortmentMatrix> options)
+        public IHttpActionResult ExportXLSX(ODataQueryOptions<AssortmentMatrix> options, bool needActualAssortmentMatrix = false)
         {
             IQueryable results = options.ApplyTo(GetConstraintedQuery().Where(x => !x.Disabled));
             UserInfo user = authorizationManager.GetCurrentUser();
@@ -333,6 +332,7 @@ namespace Module.Frontend.TPM.Controllers
                 HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(AssortmentMatricesController), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(AssortmentMatricesController.GetExportSettings), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("IsActuals", needActualAssortmentMatrix, data, visible: false, throwIfNotExists: false);
 
                 LoopHandler handler = new LoopHandler()
                 {

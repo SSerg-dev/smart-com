@@ -38,6 +38,14 @@
                     action: 'FullImportXLSX',
                     allowFormat: ['zip', 'xlsx']
                 }, {
+                    glyph: 0xf220,
+                    exactlyModelCompare: true,
+                    text: l10n.ns('core', 'additionalMenu').value('newFullImportXLSX'),
+                    resource: '{0}',
+                    action: 'NewFullImportXLSX',
+                    allowFormat: ['zip', 'xlsx'], 
+                    itemId: 'newImportXLSX'
+                }, {
                     glyph: 0xf21d,
                     itemId: 'loadimporttemplatexlsxbutton',
                     exactlyModelCompare: true,

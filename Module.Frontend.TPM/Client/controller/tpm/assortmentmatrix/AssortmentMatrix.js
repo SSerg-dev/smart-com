@@ -63,7 +63,7 @@
                     click: this.onActualAssortmentMatrixButtonClick
                 },
                 // import/export
-                'assortmentmatrix #exportbutton': {
+                'assortmentmatrix #exportXlsxAssortmentMatrixButton': {
                     click: this.onExportButtonClick
                 },
                 'assortmentmatrix #loadimportbutton': {
@@ -83,6 +83,12 @@
                 },
             }
         });
+    },
+
+    onGridAfterrender: function (grid) {
+        //Click button "Get actual assortment matrix"
+        var button = Ext.ComponentQuery.query('assortmentmatrix')[0].down('#actualassortmentmatrix');
+        button.fireEvent('click', button);
     },
 
     afterrenderWindowEditor: function (window, eOpts) {
@@ -130,7 +136,7 @@
         } else {
             button.removeCls('showEditablePromo-btn-active');
         }
-
+        
         assortmentMatrixGridStore.removeAll();
         assortmentMatrixGridStore.load();
     },
@@ -201,4 +207,35 @@
             }
         }
     },
+
+    onExportButtonClick: function (button) {
+        var me = this;
+        var grid = me.getGridByButton(button);
+        var panel = grid.up('combineddirectorypanel');
+        var store = grid.getStore();
+        var proxy = store.getProxy();
+        var actionName = button.action || 'ExportXLSX';
+        var resource = button.resource || proxy.resourceName;
+        panel.setLoading(true);
+        var query = breeze.EntityQuery
+            .from(resource)
+            .withParameters({
+                $actionName: actionName,
+                $method: 'POST',
+                needActualAssortmentMatrix: proxy.extraParams.needActualAssortmentMatrix//if button "Get actual assortment matrix" is pressed or not
+            });
+
+        query = me.buildQuery(query, store)
+            .using(Ext.ux.data.BreezeEntityManager.getEntityManager())
+            .execute()
+            .then(function (data) {
+                panel.setLoading(false);
+                App.Notify.pushInfo('Export task created successfully');
+                App.System.openUserTasksPanel()
+            })
+            .fail(function (data) {
+                panel.setLoading(false);
+                App.Notify.pushError(me.getErrorMessage(data));
+            });
+    }
 });
