@@ -179,11 +179,11 @@
     resourceStore: {
         type: 'resourcestore',
         storeId: 'MyResources',
-        idProperty: 'InOutId',
+        idProperty: 'Id',
         model: 'App.model.tpm.baseclient.SchedulerClientTreeDTO',
         autoLoad: true,
         pageSize: 100,
-        //sortInfo: { field: 'Id', direction: 'ASC' }
+        sortInfo: { field: 'Id', direction: 'ASC' }
     },
 
     eventStore: {
