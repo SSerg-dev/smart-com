@@ -1203,7 +1203,12 @@ namespace Module.Frontend.TPM.Controllers
                         Context.SaveChanges();
                         transaction.Commit();
 
-                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, data = promo }));
+                        var jsonPromo = JsonConvert.SerializeObject(new { success = true, data = promo }, Formatting.Indented, new JsonSerializerSettings
+                        {
+                            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                        });
+
+                        return Content(HttpStatusCode.OK, jsonPromo);
                     }
                     else
                     {
