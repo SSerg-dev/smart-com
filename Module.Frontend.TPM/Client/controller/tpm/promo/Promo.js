@@ -2076,8 +2076,7 @@
             promoeditorcustom.down('[name=ApolloExportCheckbox]').setDisabled(false);
             promoeditorcustom.down('[name=ApolloExportCheckbox]').setReadOnly(false);
         }
-        // InExchanche
-        mechanic.down('checkboxfield[name=IsInExchangeCheckbox]').setReadOnly(true);
+        
         //if (promoeditorcustom.isInExchange) {
         //    this.disableActualPanels(true);
         //}
@@ -2104,6 +2103,8 @@
         var gaReadOnlyStatuses = ['Approved', 'Planned', 'Started', 'Finished'];
         if (gaReadOnlyStatuses.indexOf(promoeditorcustom.promoStatusSystemName) != -1 && currentRole !== 'SupportAdministrator') {
             growthAccelerationCheckbox.setReadOnly(true);
+            // InExchanche
+            mechanic.down('checkboxfield[name=IsInExchangeCheckbox]').setReadOnly(true);
         }
 
         var promoComment = mechanic.down('textarea[name=PromoComment]');
