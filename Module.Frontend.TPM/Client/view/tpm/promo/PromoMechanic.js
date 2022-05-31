@@ -647,61 +647,78 @@
         ]
     }],
     fillSelectedPromoes: function (record) {
-        if (record.data.IsInExchange) {
-            var selectedBtns = [];
-            var selectedPanel = this.down('#choosenPromoPanel');
-            var promoEditorCustom = this.up('promoeditorcustom');
-            selectedPanel.removeAll();
-            promoEditorCustom.setLoading(true);
-
-            breeze.EntityQuery
-                .from('Promoes')
-                .where('MasterPromoId', '==', record.data.Id)
-                .withParameters({
-                    $actionName: 'GetFilteredData',
-                    $method: 'POST',
-                })
-                .using(Ext.ux.data.BreezeEntityManager.getEntityManager())
-                .execute()
-                .then(function (data) {
-                    data.results.forEach(function (item) {
-                        var butt = {
-                            xtype: 'container',
-                            style: 'border: 1px solid #ebebeb',
-                            margin: '10 0 10 10',
-                            height: 120,
-                            layout: {
-                                type: 'vbox',
-                                align: 'middle',
-                                pack: 'center'
-                            },
-                            items: [
-                                {
-                                    xtype: 'label',
-                                    text: 'ID: ' + item.Number,
-                                    padding: '5',
-                                    width: 98,
-                                    style: 'display:inline-block;text-align:center'
-                                },
-                                {
-                                    xtype: 'label',
-                                    text: item.Name,
-                                    padding: '5',
-                                    width: 98,
-                                    style: 'display:inline-block;text-align:center'
-                                },
-                            ]
-                        };
-                        selectedBtns.push(butt);
-                    });
-                    selectedPanel.add(selectedBtns)
-
-                    promoEditorCustom.setLoading(false);
-                })
-                .fail(function (data) {
-                    promoEditorCustom.setLoading(false);
-                    App.Notify.pushError(data.message);
-                })
+        var pred = null;
+        if (record) {
+            if (!record.data.IsInExchange) {
+                return;
+            }
+            pred = breeze.Predicate.create('MasterPromoId', breeze.FilterQueryOp.Equals, record.data.Id);
         }
+        else {
+            if (this.LinkedPromoes.length > 0) {
+                this.LinkedPromoes.forEach(function (number) {
+                    var pred1 = breeze.Predicate('Number', breeze.FilterQueryOp.Equals, number);
+                    if (pred == null) {
+                        pred = pred1;
+                    } else {
+                        pred = pred.or(pred1);
+                    }
+                });
+            }
+        }
+        var selectedBtns = [];
+        var selectedPanel = this.down('#choosenPromoPanel');
+        var promoEditorCustom = this.up('promoeditorcustom');
+        selectedPanel.removeAll();
+        promoEditorCustom.setLoading(true);
+
+        breeze.EntityQuery
+            .from('Promoes')
+            .where(pred)
+            .withParameters({
+                $actionName: 'GetFilteredData',
+                $method: 'POST',
+            })
+            .using(Ext.ux.data.BreezeEntityManager.getEntityManager())
+            .execute()
+            .then(function (data) {
+                data.results.forEach(function (item) {
+                    var butt = {
+                        xtype: 'container',
+                        style: 'border: 1px solid #ebebeb',
+                        margin: '10 0 10 10',
+                        height: 120,
+                        layout: {
+                            type: 'vbox',
+                            align: 'middle',
+                            pack: 'center'
+                        },
+                        items: [
+                            {
+                                xtype: 'label',
+                                text: 'ID: ' + item.Number,
+                                padding: '5',
+                                width: 98,
+                                style: 'display:inline-block;text-align:center'
+                            },
+                            {
+                                xtype: 'label',
+                                text: item.Name,
+                                padding: '5',
+                                width: 98,
+                                style: 'display:inline-block;text-align:center'
+                            },
+                        ]
+                    };
+                    selectedBtns.push(butt);
+                });
+                selectedPanel.add(selectedBtns)
+
+                promoEditorCustom.setLoading(false);
+            })
+            .fail(function (data) {
+                promoEditorCustom.setLoading(false);
+                App.Notify.pushError(data.message);
+            })
     }
 })

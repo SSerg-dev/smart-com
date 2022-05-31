@@ -513,7 +513,7 @@
 					}
 				}
 
-				if (promo.IsGrowthAcceleration === false) {
+				if (promo.IsGrowthAcceleration === false && promo.IsInExchange === false) {
 					//CMM
 					if (boxRole === 'CMManager'
 						&& promo.IsCMManagerApproved
@@ -556,7 +556,7 @@
 						return date;
 					}
 				}
-				else if(promo.IsGrowthAcceleration === true) {
+				else if (promo.IsGrowthAcceleration === true || promo.IsInExchange === true) {
 					//CMM First
 					if (boxRole === 'CMManagerGAFirst'
 						&& statusesBeforeOnApproval.indexOf(currentStatus) == -1
