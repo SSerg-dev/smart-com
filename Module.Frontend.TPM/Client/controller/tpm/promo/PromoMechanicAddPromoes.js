@@ -46,6 +46,9 @@
                                 property: 'ClientTreeId', operation: 'Equals', value: widget.ClientTreeId
                             },
                             {
+                                property: 'StartDate', operation: 'GreaterThan', value: widget.StartDateFilter
+                            },
+                            {
                                 operator: 'or',
                                 rules: [
                                     {
@@ -72,6 +75,9 @@
                             },
                             {
                                 property: 'Id', operation: 'NotEqual', value: widget.PromoId
+                            },
+                            {
+                                property: 'StartDate', operation: 'GreaterThan', value: widget.StartDateFilter
                             },
                             {
                                 operator: 'or',
@@ -110,6 +116,9 @@
                             {
                                 property: 'MasterPromoId', operation: 'Equals', value: null
                             },
+                            {
+                                property: 'StartDate', operation: 'GreaterThan', value: widget.StartDateFilter
+                            },
                         ]
                     },
                     {
@@ -126,6 +135,9 @@
                             },
                             {
                                 property: 'MasterPromoId', operation: 'Equals', value: null
+                            },
+                            {
+                                property: 'StartDate', operation: 'GreaterThan', value: widget.StartDateFilter
                             },
                         ]
                     }
