@@ -4749,7 +4749,6 @@
             promomechanicaddpromoes.PromoId = null;
         }
 
-        promomechanicaddpromoes.IsGrowthAcceleration = record.get('IsGrowthAcceleration');
         promomechanicaddpromoes.ClientTreeId = record.get('ClientTreeId');
         if (promomechanicaddpromoes.ClientTreeId == null) {
             promomechanicaddpromoes.ClientTreeId = promoeditorcustom.clientTreeId;
