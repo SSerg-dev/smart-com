@@ -229,6 +229,7 @@
             promoStore.save({
                 scope: this,
                 success: function (rec, resp, opts) {
+                    promomechanic.fillSelectedPromoes(null);
                     widget.setLoading(false);
                     widget.close();
                 },

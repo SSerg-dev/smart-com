@@ -299,11 +299,6 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     return NotFound();
                 }
-                // если дочернее промо и пытаются поменять статус
-                if (model.MasterPromoId != null)
-                {
-                    return InternalServerError(new Exception("Changes are not available for linked promo"));
-                }
                 DateTimeOffset? ChangedDate = DateTimeOffset.UtcNow;
 
                 Promo promoCopy = new Promo(model);
