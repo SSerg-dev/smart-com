@@ -96,7 +96,7 @@ namespace Module.Persist.TPM.PromoStateControl.RoleStateMap {
             bool IsDemandPlanningApproved = promo.IsDemandPlanningApproved ?? false;
             bool IsDemandFinanceApproved = promo.IsDemandFinanceApproved ?? false;
             if (promo.PromoStatus.SystemName == StateNames.ON_APPROVAL) {
-                if (!promo.IsGrowthAcceleration)
+                if (!promo.IsGrowthAcceleration && !promo.IsInExchange)
                     switch (roleName)
                     {
                         case "CustomerMarketing":
@@ -138,7 +138,7 @@ namespace Module.Persist.TPM.PromoStateControl.RoleStateMap {
             bool IsDemandPlanningApproved = promo.IsDemandPlanningApproved ?? false;
             bool IsDemandFinanceApproved = promo.IsDemandFinanceApproved ?? false;
             if (promo.PromoStatusSystemName == StateNames.ON_APPROVAL) {
-                if (!promo.IsGrowthAcceleration)
+                if (!promo.IsGrowthAcceleration && !promo.IsInExchange)
                     switch (roleName)
                     {
                         case "CustomerMarketing":

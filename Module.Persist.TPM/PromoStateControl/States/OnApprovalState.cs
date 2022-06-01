@@ -77,7 +77,7 @@ namespace Module.Persist.TPM.PromoStateControl
                     isAvailable = PromoStateUtil.CheckAccess(GetAvailableStates(), promoStatus.SystemName, userRole);
                 }
 
-                string statusName = promoStatus.SystemName;                
+                string statusName = promoStatus.SystemName;
 
                 if (isAvailable)
                 {
@@ -111,26 +111,26 @@ namespace Module.Persist.TPM.PromoStateControl
 
                         // Переход в следующий статус только после утверждения
                         bool next = false;
-						var oldIncidents = _stateContext.dbContext.Set<PromoOnApprovalIncident>().Where(x => x.PromoId == promoModel.Id && x.ProcessDate == null);
-						switch (userRole)
+                        var oldIncidents = _stateContext.dbContext.Set<PromoOnApprovalIncident>().Where(x => x.PromoId == promoModel.Id && x.ProcessDate == null);
+                        switch (userRole)
                         {
                             case "CMManager":
-                                if (!promoModel.IsGrowthAcceleration)
+                                if (!promoModel.IsGrowthAcceleration && !promoModel.IsInExchange)
                                 {
                                     promoModel.IsCMManagerApproved = true;
 
-								    // Закрываем все неактуальные инциденты
-								    foreach (var incident in oldIncidents)
-								    {
-									    incident.ProcessDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
-								    }
-								    _stateContext.dbContext.Set<PromoOnApprovalIncident>().Add(new PromoOnApprovalIncident()
-								    {
-									    CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-									    PromoId = promoModel.Id,
-									    Promo = promoModel,
-									    ApprovingRole = "DemandPlanning"
-								    });
+                                    // Закрываем все неактуальные инциденты
+                                    foreach (var incident in oldIncidents)
+                                    {
+                                        incident.ProcessDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                                    }
+                                    _stateContext.dbContext.Set<PromoOnApprovalIncident>().Add(new PromoOnApprovalIncident()
+                                    {
+                                        CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                                        PromoId = promoModel.Id,
+                                        Promo = promoModel,
+                                        ApprovingRole = "DemandPlanning"
+                                    });
                                 }
                                 else
                                 {
@@ -154,7 +154,7 @@ namespace Module.Persist.TPM.PromoStateControl
                                         });
                                     }
                                 }
-								break;
+                                break;
 
                             case "DemandPlanning":
                                 // Если не InOut
@@ -171,25 +171,25 @@ namespace Module.Persist.TPM.PromoStateControl
                                         // если промо прошло проверку на NoNego, но не прошло на 8 недель, то решает только DemandPlanning
                                         // и в этом случае IsCMManagerApproved и IsDemandFinanceApproved = true
                                         next = promoModel.IsDemandFinanceApproved.HasValue && promoModel.IsDemandFinanceApproved.Value;
-                                        if (!promoModel.IsGrowthAcceleration)
+                                        if (!promoModel.IsGrowthAcceleration && !promoModel.IsInExchange)
                                             next = promoModel.IsDemandPlanningApproved ?? false;
                                         // Если next = true, то финанса пропускаем
                                         if (!next)
-										{
-											foreach (var incident in oldIncidents)
-											{
-												incident.ProcessDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
-											}
+                                        {
+                                            foreach (var incident in oldIncidents)
+                                            {
+                                                incident.ProcessDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                                            }
 
-											_stateContext.dbContext.Set<PromoOnApprovalIncident>().Add(new PromoOnApprovalIncident()
-											{
-												CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-												PromoId = promoModel.Id,
-												Promo = promoModel,
-												ApprovingRole = "DemandFinance"
-											});
-										}
-									}
+                                            _stateContext.dbContext.Set<PromoOnApprovalIncident>().Add(new PromoOnApprovalIncident()
+                                            {
+                                                CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                                                PromoId = promoModel.Id,
+                                                Promo = promoModel,
+                                                ApprovingRole = "DemandFinance"
+                                            });
+                                        }
+                                    }
                                     else
                                     {
                                         message = "";
@@ -211,24 +211,24 @@ namespace Module.Persist.TPM.PromoStateControl
                                         // если промо прошло проверку на NoNego, но не прошло на 8 недель, то решает только DemandPlanning
                                         // и в этом случае IsCMManagerApproved и IsDemandFinanceApproved = true
                                         next = promoModel.IsDemandFinanceApproved.HasValue && promoModel.IsDemandFinanceApproved.Value;
-                                        if (!promoModel.IsGrowthAcceleration)
+                                        if (!promoModel.IsGrowthAcceleration && !promoModel.IsInExchange)
                                             next = promoModel.IsDemandPlanningApproved ?? false;
                                         // Если next = true, то финанса пропускаем
                                         if (!next)
-										{
-											foreach (var incident in oldIncidents)
-											{
-												incident.ProcessDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
-											}
-											_stateContext.dbContext.Set<PromoOnApprovalIncident>().Add(new PromoOnApprovalIncident()
-											{
-												CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-												PromoId = promoModel.Id,
-												Promo = promoModel,
-												ApprovingRole = "DemandFinance"
-											});
-										}
-									}
+                                        {
+                                            foreach (var incident in oldIncidents)
+                                            {
+                                                incident.ProcessDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                                            }
+                                            _stateContext.dbContext.Set<PromoOnApprovalIncident>().Add(new PromoOnApprovalIncident()
+                                            {
+                                                CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                                                PromoId = promoModel.Id,
+                                                Promo = promoModel,
+                                                ApprovingRole = "DemandFinance"
+                                            });
+                                        }
+                                    }
                                     else
                                     {
                                         message = "";
@@ -245,7 +245,7 @@ namespace Module.Persist.TPM.PromoStateControl
                                     promoModel.IsDemandFinanceApproved = promoModel.IsCMManagerApproved.Value && promoModel.IsDemandPlanningApproved.Value;
                                     next = promoModel.IsDemandFinanceApproved.Value;
 
-                                    if (promoModel.IsGrowthAcceleration)
+                                    if (promoModel.IsGrowthAcceleration || promoModel.IsInExchange)
                                     {
                                         promoModel.IsCMManagerApproved = false;
                                         next = false;
@@ -262,7 +262,7 @@ namespace Module.Persist.TPM.PromoStateControl
                                             ApprovingRole = "CMManager"
                                         });
                                     }
-								}
+                                }
                                 break;
 
                             case "SupportAdministrator":
@@ -278,27 +278,27 @@ namespace Module.Persist.TPM.PromoStateControl
 
                             _stateContext.State = _stateContext._approvedState;
 
-							var promoApprovedIncedents = _stateContext.dbContext.Set<PromoApprovedIncident>().Where(x => x.PromoId == promoModel.Id && x.ProcessDate == null);
+                            var promoApprovedIncedents = _stateContext.dbContext.Set<PromoApprovedIncident>().Where(x => x.PromoId == promoModel.Id && x.ProcessDate == null);
 
-							if (promoApprovedIncedents.Count() > 0)
-							{
-								foreach (var incident in promoApprovedIncedents)
-								{
-									incident.ProcessDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
-								}
-							}
-							// Если промо уже перешло в Approved, то все инциденты по onApproval закрываем.
-							foreach (var incident in oldIncidents)
-							{
-								incident.ProcessDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
-							}
-							_stateContext.dbContext.Set<PromoApprovedIncident>().Add(new PromoApprovedIncident()
-							{
-								CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-								Promo = promoModel,
-								PromoId = promoModel.Id
-							});
-						}
+                            if (promoApprovedIncedents.Count() > 0)
+                            {
+                                foreach (var incident in promoApprovedIncedents)
+                                {
+                                    incident.ProcessDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                                }
+                            }
+                            // Если промо уже перешло в Approved, то все инциденты по onApproval закрываем.
+                            foreach (var incident in oldIncidents)
+                            {
+                                incident.ProcessDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                            }
+                            _stateContext.dbContext.Set<PromoApprovedIncident>().Add(new PromoApprovedIncident()
+                            {
+                                CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                                Promo = promoModel,
+                                PromoId = promoModel.Id
+                            });
+                        }
                         else
                         {
                             // Если не все лица утвердили, то переход в новый статус не происходит
@@ -334,48 +334,48 @@ namespace Module.Persist.TPM.PromoStateControl
 
             public bool ChangeState(Promo promoModel, PromoStates promoState, string userRole, out string message)
             {
-				bool isAvailable = false;
-				message = string.Empty;
+                bool isAvailable = false;
+                message = string.Empty;
 
-				if (userRole == "System")
-				{
-					isAvailable = true;
-				}
-				else
-				{
-					isAvailable = PromoStateUtil.CheckAccess(GetAvailableStates(), promoState.ToString(), userRole);
-				}
+                if (userRole == "System")
+                {
+                    isAvailable = true;
+                }
+                else
+                {
+                    isAvailable = PromoStateUtil.CheckAccess(GetAvailableStates(), promoState.ToString(), userRole);
+                }
 
-				if (isAvailable)
-				{
-					// Go to: DraftPublishedState
-					if (promoState == PromoStates.DraftPublished)
-					{
-						Guid draftPublishedPromoStatusId = _stateContext.dbContext.Set<PromoStatus>().Where(x => x.SystemName == "DraftPublished" && !x.Disabled).FirstOrDefault().Id;
+                if (isAvailable)
+                {
+                    // Go to: DraftPublishedState
+                    if (promoState == PromoStates.DraftPublished)
+                    {
+                        Guid draftPublishedPromoStatusId = _stateContext.dbContext.Set<PromoStatus>().Where(x => x.SystemName == "DraftPublished" && !x.Disabled).FirstOrDefault().Id;
 
-						_stateContext.Model.PromoStatusId = draftPublishedPromoStatusId;
+                        _stateContext.Model.PromoStatusId = draftPublishedPromoStatusId;
                         _stateContext.Model.IsCMManagerApproved = false;
                         _stateContext.Model.IsDemandPlanningApproved = false;
                         _stateContext.Model.IsDemandFinanceApproved = false;
                         _stateContext.Model.IsAutomaticallyApproved = false;
-						_stateContext.State = _stateContext._draftPublishedState;
+                        _stateContext.State = _stateContext._draftPublishedState;
 
-						return true;
-					}
-					else
-					{
-						message = $"Action for status {promoState.ToString()} in not implemented";
+                        return true;
+                    }
+                    else
+                    {
+                        message = $"Action for status {promoState.ToString()} in not implemented";
 
-						return false;
-					}
-				}
-				else
-				{
-					message = "Action is not available";
+                        return false;
+                    }
+                }
+                else
+                {
+                    message = "Action is not available";
 
-					return false;
-				}
-			}
+                    return false;
+                }
+            }
         }
     }
 }

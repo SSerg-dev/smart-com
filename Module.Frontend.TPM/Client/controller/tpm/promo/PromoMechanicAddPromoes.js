@@ -220,6 +220,7 @@
             });
         }
         else {
+            promomechanic.fillSelectedPromoes(null);
             widget.close();
         }
     },
