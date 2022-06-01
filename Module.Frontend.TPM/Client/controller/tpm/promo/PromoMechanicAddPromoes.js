@@ -190,7 +190,10 @@
         promomechanic.LinkedPromoes = checkedRecords.map(function (item) {
             return item.data.Number;
         });
-
+        if (promomechanic.LinkedPromoes.length > 10) {
+            App.Notify.pushError('Promoes more than 10 selected');
+            return;
+        }
         if (widget.PromoId != null) {
             // Только те выбранные, что видит пользователь.
             var checkedPromoesInGrid = promoRecords.filter(function (record) {
