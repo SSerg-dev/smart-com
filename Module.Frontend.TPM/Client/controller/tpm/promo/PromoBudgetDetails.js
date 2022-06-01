@@ -354,15 +354,17 @@
             }]
         };
         result.rules.push({
-            property: 'StartDate',
-            operation: 'GreaterOrEqual',
-            value: startDate
-        });
-        result.rules.push({
-            property: 'EndDate',
-            operation: 'LessOrEqual',
-            value: endDate
-        });      
+            operator: 'and',
+            rules: [{
+                property: 'EndDate',
+                operation: 'GreaterOrEqual',
+                value: startDate
+            }, {
+                property: 'StartDate',
+                operation: 'LessOrEqual',
+                value: endDate
+            }]
+        });    
 
         return result;
     },
