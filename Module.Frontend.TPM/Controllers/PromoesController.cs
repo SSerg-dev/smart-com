@@ -346,11 +346,6 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     return NotFound();
                 }
-                // если дочернее промо и пытаются поменять статус
-                if (model.MasterPromoId != null)
-                {
-                    return InternalServerError(new Exception("Changes are not available for linked promo"));
-                }
                 Promo promo = patch.GetEntity();
                 if (promo.IsSplittable)
                 {
