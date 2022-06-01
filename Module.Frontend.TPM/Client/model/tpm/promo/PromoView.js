@@ -52,7 +52,7 @@
         //Apollo Export
         { name: 'IsApolloExport', type: 'boolean', hidden: false, isDefault: false },
         // Is in Exchange
-        { name: 'IsInExchange', type: 'boolean', hidden: false, isDefault: false },
+        { name: 'IsInExchange', type: 'boolean', hidden: false, isDefault: true },
         { name: 'MasterPromoId', useNull: true, hidden: true, isDefault: false, defaultValue: null },
     ],
     proxy: {

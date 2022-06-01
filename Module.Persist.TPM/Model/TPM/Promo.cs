@@ -325,7 +325,7 @@ namespace Module.Persist.TPM.Model.TPM
 
         [ForeignKey("MasterPromo")]
         public Guid? MasterPromoId { get; set; }
-        public Promo MasterPromo { get; set; }
+        public virtual Promo MasterPromo { get; set; }
 
         public virtual ICollection<Promo> Promoes { get; set; }
         public virtual ICollection<PromoProduct> PromoProducts { get; set; }

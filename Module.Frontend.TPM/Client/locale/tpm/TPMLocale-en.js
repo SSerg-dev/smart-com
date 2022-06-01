@@ -958,6 +958,8 @@
         'Subrange': 'Subrange',
 
         'SelectPromo': 'Select Promo',
+        'LinkedPromoes': 'Linked Promoes',
+        'MasterPromoNumber': 'Master Promo Number'
     },
     'HistoricalPromo': ['.tpm.Promo', '.core.BaseHistoryEntity'],
     'DeletedPromo': ['.tpm.Promo', '.core.BaseDeletedEntity'],

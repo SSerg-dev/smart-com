@@ -83,7 +83,7 @@
 								} else {
 									promo = container.historyArray[0].Promo;
 								}
-								debugger;
+								//debugger;
                                 if (promo) {
 									promoStatusName = promo.PromoStatus == undefined ? promo.PromoStatusSystemName : promo.PromoStatus.SystemName
 									if (promo.IsGrowthAcceleration === true || promo.IsInExchange === true) {

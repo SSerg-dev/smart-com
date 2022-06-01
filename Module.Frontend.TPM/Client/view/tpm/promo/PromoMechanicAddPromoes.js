@@ -8,7 +8,7 @@
     minHeight: 600,
 
     PromoId: null,
-    IsGrowthAcceleration: null,
+    StartDateFilter: null,
     ClientTreeId: null,    
 
     customHeaderItems: [

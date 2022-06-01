@@ -29,105 +29,120 @@
         var widget = grid.up('promomechanicaddpromoes');
         var store = grid.getStore();
         if (widget.PromoId) {
-            if (widget.IsGrowthAcceleration) {
-                store.setFixedFilter('IsGrowthAccelerationFilter', {
-                    operator: 'and',
-                    rules: [
-                        {
-                            property: "IsGrowthAcceleration", operation: 'Equals', value: widget.IsGrowthAcceleration
-                        },
-                        {
-                            property: 'PromoStatus.Name', operation: 'Equals', value: 'Approved'
-                        },
-                        {
-                            property: 'ClientTreeId', operation: 'Equals', value: widget.ClientTreeId
-                        },
-                        {
-                            operator: 'or',
-                            rules: [
-                                {
-                                    property: 'MasterPromoId', operation: 'Equals', value: widget.PromoId
-                                },
-                                {
-                                    property: 'MasterPromoId', operation: 'Equals', value: null
-                                },
-                            ]
-                        },
-                    ]
-                });
-            }
-            else {
-                var statuses = ['Approved', 'On Approval']
-                store.setFixedFilter('IsGrowthAccelerationFilter', {
-                    operator: 'and',
-                    rules: [
-                        {
-                            property: "IsGrowthAcceleration", operation: 'Equals', value: widget.IsGrowthAcceleration
-                        },
-                        {
-                            property: 'PromoStatus.Name', operation: 'In', value: statuses
-                        },
-                        {
-                            property: 'ClientTreeId', operation: 'Equals', value: widget.ClientTreeId
-                        },
-                        {
-                            property: 'Id', operation: 'NotEqual', value: widget.PromoId
-                        },
-                        {
-                            operator: 'or',
-                            rules: [
-                                {
-                                    property: 'MasterPromoId', operation: 'Equals', value: widget.PromoId
-                                },
-                                {
-                                    property: 'MasterPromoId', operation: 'Equals', value: null
-                                },
-                            ]
-                        },
-                    ]
-                });
-            }
+            var statuses = ['Approved', 'On Approval']
+            store.setFixedFilter('IsGrowthAccelerationFilter', {
+                operator: 'or',
+                rules: [
+                    {
+                        operator: 'and',
+                        rules: [
+                            {
+                                property: "IsGrowthAcceleration", operation: 'Equals', value: true
+                            },
+                            {
+                                property: 'PromoStatus.Name', operation: 'Equals', value: 'Approved'
+                            },
+                            {
+                                property: 'ClientTreeId', operation: 'Equals', value: widget.ClientTreeId
+                            },
+                            {
+                                property: 'StartDate', operation: 'GreaterThan', value: widget.StartDateFilter
+                            },
+                            {
+                                operator: 'or',
+                                rules: [
+                                    {
+                                        property: 'MasterPromoId', operation: 'Equals', value: widget.PromoId
+                                    },
+                                    {
+                                        property: 'MasterPromoId', operation: 'Equals', value: null
+                                    },
+                                ]
+                            },
+                        ]
+                    },
+                    {
+                        operator: 'and',
+                        rules: [
+                            {
+                                property: "IsGrowthAcceleration", operation: 'Equals', value: false
+                            },
+                            {
+                                property: 'PromoStatus.Name', operation: 'In', value: statuses
+                            },
+                            {
+                                property: 'ClientTreeId', operation: 'Equals', value: widget.ClientTreeId
+                            },
+                            {
+                                property: 'Id', operation: 'NotEqual', value: widget.PromoId
+                            },
+                            {
+                                property: 'StartDate', operation: 'GreaterThan', value: widget.StartDateFilter
+                            },
+                            {
+                                operator: 'or',
+                                rules: [
+                                    {
+                                        property: 'MasterPromoId', operation: 'Equals', value: widget.PromoId
+                                    },
+                                    {
+                                        property: 'MasterPromoId', operation: 'Equals', value: null
+                                    },
+                                ]
+                            },
+                        ]
+                    }
+
+                ]
+            });
         }
         else {
-            if (widget.IsGrowthAcceleration) {
-                store.setFixedFilter('IsGrowthAccelerationFilter', {
-                    operator: 'and',
-                    rules: [
-                        {
-                            property: "IsGrowthAcceleration", operation: 'Equals', value: widget.IsGrowthAcceleration
-                        },
-                        {
-                            property: 'PromoStatus.Name', operation: 'Equals', value: 'Approved'
-                        },
-                        {
-                            property: 'ClientTreeId', operation: 'Equals', value: widget.ClientTreeId
-                        },
-                        {
-                            property: 'MasterPromoId', operation: 'Equals', value: null
-                        },
-                    ]
-                });
-            }
-            else {
-                var statuses = ['Approved', 'On Approval']
-                store.setFixedFilter('IsGrowthAccelerationFilter', {
-                    operator: 'and',
-                    rules: [
-                        {
-                            property: "IsGrowthAcceleration", operation: 'Equals', value: widget.IsGrowthAcceleration
-                        },
-                        {
-                            property: 'PromoStatus.Name', operation: 'In', value: statuses
-                        },
-                        {
-                            property: 'ClientTreeId', operation: 'Equals', value: widget.ClientTreeId
-                        },
-                        {
-                            property: 'MasterPromoId', operation: 'Equals', value: null
-                        },
-                    ]
-                });
-            }
+            var statuses = ['Approved', 'On Approval']
+            store.setFixedFilter('IsGrowthAccelerationFilter', {
+                operator: 'or',
+                rules: [
+                    {
+                        operator: 'and',
+                        rules: [
+                            {
+                                property: "IsGrowthAcceleration", operation: 'Equals', value: true
+                            },
+                            {
+                                property: 'PromoStatus.Name', operation: 'Equals', value: 'Approved'
+                            },
+                            {
+                                property: 'ClientTreeId', operation: 'Equals', value: widget.ClientTreeId
+                            },
+                            {
+                                property: 'MasterPromoId', operation: 'Equals', value: null
+                            },
+                            {
+                                property: 'StartDate', operation: 'GreaterThan', value: widget.StartDateFilter
+                            },
+                        ]
+                    },
+                    {
+                        operator: 'and',
+                        rules: [
+                            {
+                                property: "IsGrowthAcceleration", operation: 'Equals', value: false
+                            },
+                            {
+                                property: 'PromoStatus.Name', operation: 'In', value: statuses
+                            },
+                            {
+                                property: 'ClientTreeId', operation: 'Equals', value: widget.ClientTreeId
+                            },
+                            {
+                                property: 'MasterPromoId', operation: 'Equals', value: null
+                            },
+                            {
+                                property: 'StartDate', operation: 'GreaterThan', value: widget.StartDateFilter
+                            },
+                        ]
+                    }
+                ]
+            });
         }
 
         var promoesGridSelectionModel = grid.getSelectionModel();
@@ -145,7 +160,7 @@
             // если Promo еще не сохранен
             var promomechanic = Ext.ComponentQuery.query('promomechanic')[0];
             var linkedPromoes = promomechanic.LinkedPromoes;
-            if (records.length != 0 && !widget.PromoId && linkedPromoes != null) {      
+            if (records.length != 0 && !widget.PromoId && linkedPromoes != null) {
                 var checkedRows = new Array();
                 records.forEach(function (item) {
                     if (promomechanic.LinkedPromoes.includes(item.data.Number)) {
@@ -175,7 +190,10 @@
         promomechanic.LinkedPromoes = checkedRecords.map(function (item) {
             return item.data.Number;
         });
-        
+        if (promomechanic.LinkedPromoes.length > 10) {
+            App.Notify.pushError('Promoes more than 10 selected');
+            return;
+        }
         if (widget.PromoId != null) {
             // Только те выбранные, что видит пользователь.
             var checkedPromoesInGrid = promoRecords.filter(function (record) {

@@ -4788,8 +4788,8 @@
         else {
             promomechanicaddpromoes.PromoId = null;
         }
-
-        promomechanicaddpromoes.IsGrowthAcceleration = record.get('IsGrowthAcceleration');
+        promomechanicaddpromoes.StartDateFilter = new Date(Date.now() + 1 * 24 * 60 * 60 * 1000);
+        promomechanicaddpromoes.StartDateFilter.setHours(0, 0, 0, 0);
         promomechanicaddpromoes.ClientTreeId = record.get('ClientTreeId');
         if (promomechanicaddpromoes.ClientTreeId == null) {
             promomechanicaddpromoes.ClientTreeId = promoeditorcustom.clientTreeId;
