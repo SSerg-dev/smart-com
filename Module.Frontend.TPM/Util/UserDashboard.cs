@@ -132,9 +132,9 @@ namespace Module.Frontend.TPM.Util
             //OnApporval
             calculateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault().AddDays(7 * 9);
 
-            var onApporval = promo.Where(p => (p.PromoStatusName.Equals("On Approval") && p.IsCMManagerApproved == true && (p.IsDemandPlanningApproved == false || p.IsDemandPlanningApproved == null) && p.DispatchesStart < calculateDate)).Count();
+            var onApporval = promo.Where(p => (p.PromoStatusName.Equals("On Approval") && p.IsCMManagerApproved == true && (p.IsDemandPlanningApproved == false || p.IsDemandPlanningApproved == null) && p.DispatchesStart < calculateDate) && (!p.IsGrowthAcceleration && !p.IsInExchange)).Count();
             //GaInExchangeApproval
-            var gaInExchangeApproval = promo.Where(p => (p.PromoStatusName.Equals("On Approval") && p.IsCMManagerApproved == true && (p.IsDemandPlanningApproved == false || p.IsDemandPlanningApproved == null) && p.DispatchesStart < calculateDate && p.IsInExchange)).Count();
+            var gaInExchangeApproval = promo.Where(p => (p.PromoStatusName.Equals("On Approval") && p.IsCMManagerApproved == true && (p.IsDemandPlanningApproved == false || p.IsDemandPlanningApproved == null) && p.DispatchesStart < calculateDate && (p.IsInExchange || p.IsGrowthAcceleration))).Count();
             //AdjustData
             var adjustData = promo.Where(p => (p.PromoStatusName.Equals("On Approval") && p.IsCMManagerApproved == true && (p.IsDemandPlanningApproved == false || p.IsDemandPlanningApproved == null) && (((p.InOut == false) && (p.PlanPromoLSV == 0 || p.PlanPromoLSV == null ||
                             p.PlanPromoBaselineLSV == 0 || p.PlanPromoBaselineLSV == null ||
@@ -161,9 +161,9 @@ namespace Module.Frontend.TPM.Util
             var timeCritical = promo.Where(p => (p.PromoStatusName.Equals("On Approval") && p.IsCMManagerApproved == true && p.IsDemandPlanningApproved == true && (p.IsDemandFinanceApproved == false || p.IsDemandFinanceApproved == null) && p.DispatchesStart < calculateDate)).Count();
             //NeedsMyApproval
             calculateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault().AddDays(7 * 9);
-            var needsMyApproval = promo.Where(p => (p.PromoStatusName.Equals("On Approval") && p.IsCMManagerApproved == true && p.IsDemandPlanningApproved == true && (p.IsDemandFinanceApproved == false || p.IsDemandFinanceApproved == null) && p.DispatchesStart < calculateDate)).Count();
+            var needsMyApproval = promo.Where(p => (p.PromoStatusName.Equals("On Approval") && p.IsCMManagerApproved == true && p.IsDemandPlanningApproved == true && (p.IsDemandFinanceApproved == false || p.IsDemandFinanceApproved == null) && p.DispatchesStart < calculateDate) && (!p.IsGrowthAcceleration && !p.IsInExchange)).Count();
             //GaInExchangeApproval
-            var gaInExchangeApproval = promo.Where(p => (p.PromoStatusName.Equals("On Approval") && p.IsCMManagerApproved == true && p.IsDemandPlanningApproved == true && (p.IsDemandFinanceApproved == false || p.IsDemandFinanceApproved == null) && p.DispatchesStart < calculateDate && p.IsInExchange)).Count();
+            var gaInExchangeApproval = promo.Where(p => (p.PromoStatusName.Equals("On Approval") && p.IsCMManagerApproved == true && p.IsDemandPlanningApproved == true && (p.IsDemandFinanceApproved == false || p.IsDemandFinanceApproved == null) && p.DispatchesStart < calculateDate && (p.IsInExchange || p.IsGrowthAcceleration))).Count();
             //ActualShopperTI
             var actualShopperTI = promo.Where(p => (p.PromoStatusName.Equals("Finished") && (p.ActualPromoTIShopper == 0 || p.ActualPromoTIShopper == null))).Count();
             //PromoTICost
@@ -192,8 +192,8 @@ namespace Module.Frontend.TPM.Util
             var timeCritical = promo.Where(p => (p.PromoStatusName.Equals("On Approval") && (p.IsCMManagerApproved == false || p.IsCMManagerApproved == null) && p.DispatchesStart < calculateDate)).Count();
             //NeedsMyApproval
             calculateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault().AddDays(7 * 9);
-            var needsMyApproval = promo.Where(p => p.PromoStatusName.Equals("On Approval") && (p.IsCMManagerApproved == false || p.IsCMManagerApproved == null) && p.DispatchesStart < calculateDate).Count();
-            var gaInExchangeApproval = promo.Where(p => p.PromoStatusName.Equals("On Approval") && (p.IsCMManagerApproved == false || p.IsCMManagerApproved == null) && p.DispatchesStart < calculateDate && p.IsInExchange).Count();
+            var needsMyApproval = promo.Where(p => p.PromoStatusName.Equals("On Approval") && (p.IsCMManagerApproved == false || p.IsCMManagerApproved == null) && p.DispatchesStart < calculateDate && (!p.IsGrowthAcceleration && !p.IsInExchange)).Count();
+            var gaInExchangeApproval = promo.Where(p => p.PromoStatusName.Equals("On Approval") && (p.IsCMManagerApproved == false || p.IsCMManagerApproved == null) && p.DispatchesStart < calculateDate && (p.IsInExchange || p.IsGrowthAcceleration)).Count();
             return JsonConvert.SerializeObject(new { TimeCritical = timeCritical, NeedsMyApproval = needsMyApproval, GaInExchangeApproval = gaInExchangeApproval });
         }
         public static string GetCustomerMarketingCount(IAuthorizationManager authorizationManager, DatabaseContext Context)

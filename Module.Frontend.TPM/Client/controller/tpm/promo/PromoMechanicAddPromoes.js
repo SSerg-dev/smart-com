@@ -191,9 +191,10 @@
             return item.data.Number;
         });
         if (promomechanic.LinkedPromoes.length > 10) {
-            App.Notify.pushError('Promoes more than 10 selected');
+            App.Notify.pushError('In Exchange promo can not be linked to more than 10 promoes');
             return;
         }
+
         if (widget.PromoId != null) {
             // Только те выбранные, что видит пользователь.
             var checkedPromoesInGrid = promoRecords.filter(function (record) {
@@ -204,7 +205,7 @@
                 return !checkedRecords.includes(record)
             });
             if (checkedPromoesInGrid.length > 10) {
-                App.Notify.pushError('Promoes more than 10 selected');
+                App.Notify.pushError('In Exchange promo can not be linked to more than 10 promoes');
                 return;
             }
 

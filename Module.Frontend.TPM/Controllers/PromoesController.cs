@@ -490,7 +490,7 @@ namespace Module.Frontend.TPM.Controllers
                     // если approved переводим в cancelled дочерние
                     if (statusName.ToLower() == "approved" && userRole != "SupportAdministrator")
                     {
-                        UnlinkChildPromoes(model.Id, userRole);
+                        CancelChildPromoes(model.Id, userRole);
                     }
                 }
 
@@ -2478,7 +2478,7 @@ namespace Module.Frontend.TPM.Controllers
             }
 
         }
-        private void UnlinkChildPromoes(Guid modelId, string userRole)
+        private void CancelChildPromoes(Guid modelId, string userRole)
         {
             var ChildPromoes = Context.Set<Promo>().Where(p => p.MasterPromoId == modelId);
             var CancelledId = Context.Set<PromoStatus>().FirstOrDefault(s => s.SystemName == "Cancelled" && !s.Disabled).Id;
@@ -2547,7 +2547,6 @@ namespace Module.Frontend.TPM.Controllers
                     {
                         PromoHelper.DisableIncrementalPromo(Context, ChildPromo);
                     }
-                    ChildPromo.MasterPromoId = null;
                 }
             }
             if (mainPromoSupportIds.Count() > 0)

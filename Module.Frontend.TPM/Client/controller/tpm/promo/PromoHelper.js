@@ -311,7 +311,7 @@
                 } else {
                     promo = result.data[0].Promo;
                 }
-                
+
                 if (promo) {
                     promoStatusName = promo.PromoStatus == undefined ? promo.PromoStatusSystemName : promo.PromoStatus.SystemName
                     if (promo.IsGrowthAcceleration === true || promo.IsInExchange === true) {
@@ -576,10 +576,15 @@
                     property: "DispatchesStart", operation: "LessThan", value: date
                 },
                 {
-                    property: "IsGrowthAcceleration", operation: "Equals", value: true
-                },
-                {
-                    property: "IsInExchange", operation: "Equals", value: true
+                    operator: "or",
+                    rules: [
+                        {
+                            property: "IsGrowthAcceleration", operation: "Equals", value: true
+                        },
+                        {
+                            property: "IsInExchange", operation: "Equals", value: true
+                        },
+                    ]
                 },
                 {
                     operator: "or",
@@ -617,10 +622,15 @@
                     property: "IsCMManagerApproved", operation: "Equals", value: true
                 },
                 {
-                    property: "IsGrowthAcceleration", operation: "Equals", value: true
-                },
-                {
-                    property: "IsInExchange", operation: "Equals", value: true
+                    operator: "or",
+                    rules: [
+                        {
+                            property: "IsGrowthAcceleration", operation: "Equals", value: true
+                        },
+                        {
+                            property: "IsInExchange", operation: "Equals", value: true
+                        },
+                    ]
                 },
                 {
                     operator: "or",
@@ -661,10 +671,15 @@
                     property: "IsDemandPlanningApproved", operation: "Equals", value: true
                 },
                 {
-                    property: "IsGrowthAcceleration", operation: "Equals", value: true
-                },
-                {
-                    property: "IsInExchange", operation: "Equals", value: true
+                    operator: "or",
+                    rules: [
+                        {
+                            property: "IsGrowthAcceleration", operation: "Equals", value: true
+                        },
+                        {
+                            property: "IsInExchange", operation: "Equals", value: true
+                        },
+                    ]
                 },
                 {
                     operator: "or",
