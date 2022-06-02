@@ -4748,8 +4748,9 @@
         else {
             promomechanicaddpromoes.PromoId = null;
         }
-        promomechanicaddpromoes.StartDateFilter = new Date(Date.now() + 1 * 24 * 60 * 60 * 1000);
-        promomechanicaddpromoes.StartDateFilter.setHours(0, 0, 0, 0);
+        var date = new Date();
+        date.setHours(date.getHours() + (date.getTimezoneOffset() / 60) + 3);   // приведение к московской timezone
+        promomechanicaddpromoes.StartDateFilter = date;
         promomechanicaddpromoes.ClientTreeId = record.get('ClientTreeId');
         if (promomechanicaddpromoes.ClientTreeId == null) {
             promomechanicaddpromoes.ClientTreeId = promoeditorcustom.clientTreeId;
