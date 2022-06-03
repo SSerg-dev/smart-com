@@ -344,11 +344,17 @@
         var onApprovalFilterDP = promoHelperController.getOnApprovalFilterDP();
         var onApprovalFilterDF = promoHelperController.getOnApprovalFilterDF();
         var onApprovalFilterCMM = promoHelperController.getOnApprovalFilterCMM();
+        var onApprovalGAFilterDP = promoHelperController.getOnApprovalGAFilterDP();
+        var onApprovalGAFilterDF = promoHelperController.getOnApprovalGAFilterDF();
+        var onApprovalGAFilterCMM = promoHelperController.getOnApprovalGAFilterCMM();
         var maButton = grid.up().down('custombigtoolbar').down('#massapprovalbutton');
 
         var isDisabled = !this.compareFilters(filter, onApprovalFilterDP) &&
             !this.compareFilters(filter, onApprovalFilterDF) &&
-            !this.compareFilters(filter, onApprovalFilterCMM);
+            !this.compareFilters(filter, onApprovalFilterCMM) &&
+            !this.compareFilters(filter, onApprovalGAFilterDP) &&
+            !this.compareFilters(filter, onApprovalGAFilterDF) &&
+            !this.compareFilters(filter, onApprovalGAFilterCMM);
 
         maButton.setDisabled(isDisabled);
     },
