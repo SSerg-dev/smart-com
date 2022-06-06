@@ -53,7 +53,7 @@ namespace Module.Frontend.TPM.Controllers
             this.authorizationManager = authorizationManager;
         }
 
-        protected IQueryable<Promo> GetConstraintedQuery(bool canChangeStateOnly = false)
+        protected IQueryable<Promo> GetConstraintedQuery(bool canChangeStateOnly = false, bool withDeleted = false)
         {
             PerformanceLogger logger = new PerformanceLogger();
             logger.Start();
@@ -63,7 +63,7 @@ namespace Module.Frontend.TPM.Controllers
                 .Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
                 .ToList() : new List<Constraint>();
             IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
-            IQueryable<Promo> query = Context.Set<Promo>().Where(e => !e.Disabled);
+            IQueryable<Promo> query = Context.Set<Promo>().Where(e => !e.Disabled || withDeleted);
             IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
             query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters, FilterQueryModes.Active, canChangeStateOnly ? role : String.Empty);
 
@@ -102,7 +102,9 @@ namespace Module.Frontend.TPM.Controllers
         public IQueryable<Promo> GetFilteredData(ODataQueryOptions<Promo> options)
         {
             string bodyText = Helper.GetRequestBody(HttpContext.Current.Request);
-            var query = GetConstraintedQuery(Helper.GetValueIfExists<bool>(bodyText, "canChangeStateOnly"));
+            string master2 = HttpContext.Current.Request.QueryString["$filter"];
+            bool master = master2.Contains("MasterPromoId");
+            var query = GetConstraintedQuery(Helper.GetValueIfExists<bool>(bodyText, "canChangeStateOnly"), master);
 
             var querySettings = new ODataQuerySettings
             {
