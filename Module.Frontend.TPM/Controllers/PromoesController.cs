@@ -385,7 +385,7 @@ namespace Module.Frontend.TPM.Controllers
                     DateTimeOffset StartDateChange = (DateTimeOffset)ChangePromo.StartDate;
                     if (StartDateCopy.Date != StartDateChange.Date)
                     {
-                        if (!ChangedList.Any(g=>g.Contains("EventId")))
+                        if (!ChangedList.Any(g => g.Contains("EventId")))
                         {
                             Event promoEvent = Context.Set<Event>().FirstOrDefault(x => !x.Disabled && x.Name == "Standard promo");
                             if (promoEvent == null)
@@ -490,7 +490,11 @@ namespace Module.Frontend.TPM.Controllers
                     // если approved переводим в cancelled дочерние
                     if (statusName.ToLower() == "approved" && userRole != "SupportAdministrator")
                     {
-                        CancelChildPromoes(model.Id, userRole);
+                        DeleteChildPromoes(model.Id, user, out string childmessage);
+                        if (!string.IsNullOrEmpty(childmessage))
+                        {
+                            return InternalServerError(new Exception(childmessage));
+                        }
                     }
                 }
 
@@ -1025,7 +1029,8 @@ namespace Module.Frontend.TPM.Controllers
             }
         }
 
-        private void DeletePromo(Guid key) {
+        private void DeletePromo(Guid key)
+        {
             try
             {
                 var model = Context.Set<Promo>().Find(key);
@@ -2478,40 +2483,36 @@ namespace Module.Frontend.TPM.Controllers
             }
 
         }
-        private void CancelChildPromoes(Guid modelId, string userRole)
+        private void DeleteChildPromoes(Guid modelId, UserInfo user, out string childmessage)
         {
-            var ChildPromoes = Context.Set<Promo>().Where(p => p.MasterPromoId == modelId);
-            var CancelledId = Context.Set<PromoStatus>().FirstOrDefault(s => s.SystemName == "Cancelled" && !s.Disabled).Id;
+            childmessage = string.Empty;
+            var ChildPromoes = Context.Set<Promo>().Where(p => p.MasterPromoId == modelId).ToList();
+            var statuses = Context.Set<PromoStatus>().ToList();
+            var DeletedId = statuses.FirstOrDefault(s => s.SystemName == "Deleted" && !s.Disabled).Id;
+            var DraftPublishedId = statuses.FirstOrDefault(s => s.SystemName == "DraftPublished" && !s.Disabled).Id;
+            var OnApprovalId = statuses.FirstOrDefault(s => s.SystemName == "OnApproval" && !s.Disabled).Id;
+            var ApprovedId = statuses.FirstOrDefault(s => s.SystemName == "Approved" && !s.Disabled).Id;
             List<Guid> mainPromoSupportIds = new List<Guid>();
             List<Guid> mainBTLIds = new List<Guid>();
             foreach (var ChildPromo in ChildPromoes)
             {
-                if (ChildPromo.PromoStatusId != CancelledId)
+                if (ChildPromo.PromoStatusId != DeletedId)
                 {
                     using (PromoStateContext childStateContext = new PromoStateContext(Context, ChildPromo))
                     {
-                        if (childStateContext.ChangeState(ChildPromo, PromoStates.Cancelled, "System", out string childmessage))
+                        if (childStateContext.ChangeState(ChildPromo, PromoStates.Deleted, "System", out childmessage))
                         {
-                            //Сохранение изменения статуса
-                            var promoStatusChange = Context.Set<PromoStatusChange>().Create<PromoStatusChange>();
-                            promoStatusChange.PromoId = ChildPromo.Id;
-                            promoStatusChange.StatusId = ChildPromo.PromoStatusId;
-                            promoStatusChange.Date = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).Value;
+                            ChildPromo.DeletedDate = DateTime.Now;
+                            ChildPromo.Disabled = true;
+                            ChildPromo.PromoStatusId = statuses.FirstOrDefault(e => e.SystemName == "Deleted").Id;
 
-                            Context.Set<PromoStatusChange>().Add(promoStatusChange);
-                            Context.Set<PromoCancelledIncident>().Add(new PromoCancelledIncident()
-                            {
-                                CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                                Promo = ChildPromo,
-                                PromoId = ChildPromo.Id
-                            });
                             List<PromoProduct> promoProductToDeleteList = Context.Set<PromoProduct>().Where(x => x.PromoId == ChildPromo.Id && !x.Disabled).ToList();
                             foreach (PromoProduct promoProduct in promoProductToDeleteList)
                             {
                                 promoProduct.DeletedDate = System.DateTime.Now;
                                 promoProduct.Disabled = true;
                             }
-                            //promo.NeedRecountUplift = true;
+                            ChildPromo.NeedRecountUplift = true;
                             //необходимо удалить все коррекции
                             var promoProductToDeleteListIds = promoProductToDeleteList.Select(x => x.Id).ToList();
                             List<PromoProductsCorrection> promoProductCorrectionToDeleteList = Context.Set<PromoProductsCorrection>()
@@ -2520,42 +2521,33 @@ namespace Module.Frontend.TPM.Controllers
                             {
                                 promoProductsCorrection.DeletedDate = DateTimeOffset.UtcNow;
                                 promoProductsCorrection.Disabled = true;
-                                promoProductsCorrection.UserId = null;
-                                promoProductsCorrection.UserName = "System";
+                                promoProductsCorrection.UserId = (Guid)user.Id;
+                                promoProductsCorrection.UserName = user.Login;
+                            }
+                            // удалить дочерние промо
+                            var PromoesUnlink = Context.Set<Promo>().Where(p => p.MasterPromoId == ChildPromo.Id).ToList();
+                            foreach (var childpromo in PromoesUnlink)
+                            {
+                                childpromo.MasterPromoId = null;
+                            }
+                            Context.SaveChanges();
+
+                            PromoHelper.WritePromoDemandChangeIncident(Context, ChildPromo, true);
+                            PromoCalculateHelper.RecalculateBudgets(ChildPromo, user, Context);
+                            PromoCalculateHelper.RecalculateBTLBudgets(ChildPromo, user, Context, safe: true);
+
+                            //если промо инаут, необходимо убрать записи в IncrementalPromo при отмене промо
+                            if (ChildPromo.InOut.HasValue && ChildPromo.InOut.Value)
+                            {
+                                PromoHelper.DisableIncrementalPromo(Context, ChildPromo);
                             }
                         }
-                    }
-                    //при сбросе статуса в Cancelled необходимо отвязать бюджеты от промо и пересчитать эти бюджеты
-                    List<Guid> promoSupportIds = PromoCalculateHelper.DetachPromoSupport(ChildPromo, Context);
-                    foreach (var psId in promoSupportIds)
-                    {
-                        if (!mainPromoSupportIds.Contains(psId))
+                        else
                         {
-                            mainPromoSupportIds.Add(psId);
+                            return;
                         }
                     }
-                    BTLPromo btlPromo = Context.Set<BTLPromo>().Where(x => !x.Disabled && x.PromoId == ChildPromo.Id).FirstOrDefault();
-                    if (btlPromo != null)
-                    {
-                        btlPromo.DeletedDate = DateTimeOffset.UtcNow;
-                        btlPromo.Disabled = true;
-                        mainBTLIds.Add(btlPromo.BTLId);
-                    }
-
-                    //если промо инаут, необходимо убрать записи в IncrementalPromo при отмене промо
-                    if (ChildPromo.InOut.HasValue && ChildPromo.InOut.Value)
-                    {
-                        PromoHelper.DisableIncrementalPromo(Context, ChildPromo);
-                    }
                 }
-            }
-            if (mainPromoSupportIds.Count() > 0)
-            {
-                PromoCalculateHelper.CalculateBudgetsCreateTask(mainPromoSupportIds, null, null, Context);
-            }
-            foreach (Guid btlId in mainBTLIds)
-            {
-                PromoCalculateHelper.CalculateBTLBudgetsCreateTask(btlId.ToString(), null, null, Context, safe: true);
             }
         }
     }

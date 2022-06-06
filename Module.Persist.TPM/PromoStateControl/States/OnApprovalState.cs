@@ -362,6 +362,11 @@ namespace Module.Persist.TPM.PromoStateControl
 
                         return true;
                     }
+                    // Go to: DeletedState
+                    else if (promoState == PromoStates.Deleted && promoModel.MasterPromoId != null)
+                    {                        
+                        return true;
+                    }
                     else
                     {
                         message = $"Action for status {promoState.ToString()} in not implemented";
