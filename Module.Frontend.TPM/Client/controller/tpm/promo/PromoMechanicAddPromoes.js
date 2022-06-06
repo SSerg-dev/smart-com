@@ -40,6 +40,9 @@
                                 property: "IsGrowthAcceleration", operation: 'Equals', value: true
                             },
                             {
+                                property: "Disabled", operation: 'Equals', value: false
+                            },
+                            {
                                 property: 'PromoStatus.Name', operation: 'Equals', value: 'Approved'
                             },
                             {
@@ -66,6 +69,9 @@
                         rules: [
                             {
                                 property: "IsGrowthAcceleration", operation: 'Equals', value: false
+                            },
+                            {
+                                property: "Disabled", operation: 'Equals', value: false
                             },
                             {
                                 property: 'PromoStatus.Name', operation: 'In', value: statuses
@@ -108,6 +114,9 @@
                                 property: "IsGrowthAcceleration", operation: 'Equals', value: true
                             },
                             {
+                                property: "Disabled", operation: 'Equals', value: false
+                            },
+                            {
                                 property: 'PromoStatus.Name', operation: 'Equals', value: 'Approved'
                             },
                             {
@@ -126,6 +135,9 @@
                         rules: [
                             {
                                 property: "IsGrowthAcceleration", operation: 'Equals', value: false
+                            },
+                            {
+                                property: "Disabled", operation: 'Equals', value: false
                             },
                             {
                                 property: 'PromoStatus.Name', operation: 'In', value: statuses

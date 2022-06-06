@@ -65,7 +65,7 @@ namespace Module.Frontend.TPM.Controllers
             IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
             IQueryable<Promo> query = Context.Set<Promo>().Where(e => !e.Disabled || withDeleted);
             IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
-            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters, FilterQueryModes.Active, canChangeStateOnly ? role : String.Empty);
+            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters, FilterQueryModes.None, canChangeStateOnly ? role : String.Empty);
 
             // Не администраторы не смотрят чужие черновики
             if (role != "Administrator" && role != "SupportAdministrator")
@@ -102,9 +102,9 @@ namespace Module.Frontend.TPM.Controllers
         public IQueryable<Promo> GetFilteredData(ODataQueryOptions<Promo> options)
         {
             string bodyText = Helper.GetRequestBody(HttpContext.Current.Request);
-            string master2 = HttpContext.Current.Request.QueryString["$filter"];
-            bool master = master2.Contains("MasterPromoId");
-            var query = GetConstraintedQuery(Helper.GetValueIfExists<bool>(bodyText, "canChangeStateOnly"), master);
+            string filter = HttpContext.Current.Request.QueryString["$filter"];
+            bool IsMasterFiltered = filter.Contains("MasterPromoId");
+            var query = GetConstraintedQuery(Helper.GetValueIfExists<bool>(bodyText, "canChangeStateOnly"), IsMasterFiltered);
 
             var querySettings = new ODataQuerySettings
             {
