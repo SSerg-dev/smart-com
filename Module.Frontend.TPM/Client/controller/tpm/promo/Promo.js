@@ -2702,6 +2702,7 @@
         // Кнопки для изменения состояний промо
         var promoActions = Ext.ComponentQuery.query('button[isPromoAction=true]');
         var mechanic = promoeditorcustom.down('container[name=promo_step3]');
+        var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
         // Для InOut Promo
         promoeditorcustom.isInOutPromo = record.data.InOut;
 
@@ -2709,8 +2710,9 @@
         promoeditorcustom.promotypeName = record.data.PromoTypesName;
         promoeditorcustom.promotypeGlyph = record.data.PromoTypesGlyph;
         this.setPromoType(record.data.PromoTypesName, promoeditorcustom);
+        debugger;
         // если дочерний промо, присваиваем фиктивный статус Cancelled, чтобы нельзя было менять
-        if (record.data.MasterPromoId != null) {
+        if (record.data.MasterPromoId != null && currentRole != 'SupportAdministrator') {
             record.data.PromoStatusSystemName = 'Cancelled';
             var onHoldLabel = Ext.ComponentQuery.query('#btn_promoOnHold')[0];
             onHoldLabel.show();
@@ -2737,8 +2739,7 @@
         promoeditorcustom.isInExchange = record.data.IsInExchange;
         var isInExchange = mechanic.down('checkboxfield[name=IsInExchangeCheckbox]');
         isInExchange.setValue(record.data.IsInExchange);
-
-        var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
+        
         var gaReadOnlyStatuses = ['Approved', 'Planned', 'Started', 'Finished'];
         if (gaReadOnlyStatuses.indexOf(record.data.PromoStatusSystemName) != -1 && currentRole !== 'SupportAdministrator') {
             growthAccelerationCheckbox.setReadOnly(true);
