@@ -43,7 +43,6 @@ namespace Module.Host.TPM.Actions
         private void TryToApprove(List<Promo> promoList, DatabaseContext context)
         {
             var role = context.Set<Role>().Where(x => x.Id == RoleId && !x.Disabled).Select(x => x.SystemName).FirstOrDefault();
-            var user = context.Set<User>().Where(x => x.Id == UserId && !x.Disabled).FirstOrDefault();
             string message, approvedPromo = "";
 
             for (var i = 0; i < promoList.Count(); i++)
@@ -144,11 +143,24 @@ namespace Module.Host.TPM.Actions
                             {
                                 childpromo.MasterPromoId = null;
                             }
-                            context.SaveChanges();
+                            
 
-                            PromoHelper.WritePromoDemandChangeIncident(context, ChildPromo, true);
-                            PromoCalculateHelper.RecalculateBudgets(ChildPromo, user, context);
-                            PromoCalculateHelper.RecalculateBTLBudgets(ChildPromo, user, context, safe: true);
+                            //при сбросе статуса в Draft необходимо отвязать бюджеты от промо и пересчитать эти бюджеты
+                            List<Guid> promoSupportIds = PromoCalculateHelper.DetachPromoSupport(ChildPromo, context);
+                            foreach (var psId in promoSupportIds)
+                            {
+                                if (!mainPromoSupportIds.Contains(psId))
+                                {
+                                    mainPromoSupportIds.Add(psId);
+                                }
+                            }
+                            BTLPromo btlPromo = context.Set<BTLPromo>().Where(x => !x.Disabled && x.PromoId == ChildPromo.Id).FirstOrDefault();
+                            if (btlPromo != null)
+                            {
+                                btlPromo.DeletedDate = DateTimeOffset.UtcNow;
+                                btlPromo.Disabled = true;
+                                mainBTLIds.Add(btlPromo.BTLId);
+                            }
 
                             //если промо инаут, необходимо убрать записи в IncrementalPromo при отмене промо
                             if (ChildPromo.InOut.HasValue && ChildPromo.InOut.Value)
@@ -163,6 +175,15 @@ namespace Module.Host.TPM.Actions
                     }
                 }
             }
+            if (mainPromoSupportIds.Count() > 0)
+            {
+                PromoCalculateHelper.CalculateBudgetsCreateTask(mainPromoSupportIds, null, null, context);
+            }
+            foreach (Guid btlId in mainBTLIds)
+            {
+                PromoCalculateHelper.CalculateBTLBudgetsCreateTask(btlId.ToString(), null, null, context, safe: true);
+            }
+            context.SaveChanges();
         }
         private UserInfo getUserInfo(Guid userId)
         {
