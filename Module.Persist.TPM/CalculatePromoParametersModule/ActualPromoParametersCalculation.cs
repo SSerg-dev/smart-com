@@ -312,7 +312,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                     if (promo.IsInExchange)
                     {
-                        promo.ActualAddTIShopper = promo.ActualPromoTIShopper - promo.Promoes.Sum(g=>g.ActualPromoTIShopper) - (promo.ActualPromoNetIncrementalLSV - promo.Promoes.Sum(g => g.ActualPromoNetIncrementalLSV)) * (RATIShopperPercent ?? 0) / 100;
+                        promo.ActualAddTIShopper = promo.ActualPromoTIShopper - promo.Promoes.Sum(g=>g.PlanPromoTIShopper) - (promo.ActualPromoNetIncrementalLSV - promo.Promoes.Sum(g => g.PlanPromoNetIncrementalLSV)) * (RATIShopperPercent ?? 0) / 100;
                     }
                     else
                     {
