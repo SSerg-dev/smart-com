@@ -104,7 +104,7 @@ namespace Module.Frontend.TPM.Controllers
         public IQueryable<PromoProduct> GetPromoProducts(ODataQueryOptions<PromoProduct> options)
         {
             bool updateActualsMode = Convert.ToBoolean(HttpContext.Current.Request.QueryString["updateActualsMode"]);
-            Guid.TryParse(HttpContext.Current.Request.QueryString["clientTreeId"], out Guid promoIdInUpdateActualsMode);
+            Guid.TryParse(HttpContext.Current.Request.QueryString["promoIdInUpdateActualsMode"], out Guid promoIdInUpdateActualsMode);
             return GetConstraintedQuery(options, updateActualsMode, promoIdInUpdateActualsMode);
         }
 
@@ -112,9 +112,8 @@ namespace Module.Frontend.TPM.Controllers
         [HttpPost]
         public IQueryable<PromoProduct> GetFilteredData(ODataQueryOptions<PromoProduct> options)
         {
-            string bodyText = Helper.GetRequestBody(HttpContext.Current.Request);
-            var updateActualsMode = Helper.GetValueIfExists<bool>(bodyText, "updateActualsMode");
-            var promoIdInUpdateActualsMode = Helper.GetValueIfExists<Guid?>(bodyText, "promoIdInUpdateActualsMode");
+            bool updateActualsMode = Convert.ToBoolean(HttpContext.Current.Request.QueryString["updateActualsMode"]);
+            Guid.TryParse(HttpContext.Current.Request.QueryString["promoIdInUpdateActualsMode"], out Guid promoIdInUpdateActualsMode);
             return GetConstraintedQuery(options, updateActualsMode, promoIdInUpdateActualsMode);
             //var query = GetConstraintedQuery(options, updateActualsMode, promoIdInUpdateActualsMode);
 
