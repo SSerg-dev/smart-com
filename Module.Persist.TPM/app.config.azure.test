@@ -38,7 +38,7 @@
     <add key="KeyVaultUrl" value="jupitertestakv" />
     <add key="NotificationService" value="LogicApp" />
     <add key="HistoryModule" value="MongoDB" />
-    <add key="HANDLER_LOG_TYPE" value="Azure" />
+    <add key="HANDLER_LOG_TYPE" value="File" />
     <!--Keys-->
     <add key="AllowNotificationsSending" value="false" />
     <add key="ida:ClientIdKey" value="ADidaClientId" />
