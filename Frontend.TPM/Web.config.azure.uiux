@@ -28,7 +28,7 @@
     <add key="KeyVaultUrl" value="tpmuiuxakv" />
     <add key="NotificationService" value="LogicApp" />
     <add key="HistoryModule" value="MongoDB" />
-    <add key="HANDLER_LOG_TYPE" value="Azure" />
+    <add key="HANDLER_LOG_TYPE" value="File" />
     <!--Directories-->
     <add key="HANDLER_LOG_DIRECTORY" value="D:\home\site\wwwroot\ApplicationData\HandlerLogs" />
     <add key="FULL_LOG_DIRECTORY" value="D:\home\site\wwwroot\Logs" />
