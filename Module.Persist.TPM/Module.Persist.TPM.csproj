@@ -2864,6 +2864,10 @@
     <Compile Include="Migrations\202205241955107_Edit_Copy_Settings.Designer.cs">
       <DependentUpon>202205241955107_Edit_Copy_Settings.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202206141321310_Add_GAM_Role_and_AP.cs" />
+    <Compile Include="Migrations\202206141321310_Add_GAM_Role_and_AP.Designer.cs">
+      <DependentUpon>202206141321310_Add_GAM_Role_and_AP.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -5474,6 +5478,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202205241955107_Edit_Copy_Settings.resx">
       <DependentUpon>202205241955107_Edit_Copy_Settings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202206141321310_Add_GAM_Role_and_AP.resx">
+      <DependentUpon>202206141321310_Add_GAM_Role_and_AP.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
