@@ -186,7 +186,8 @@
         'ApproveClosePromoWindow': 'Confirm closing',
         'Competitor': 'Competitor',
         'CompetitorBrandTech': 'Competitor BrandTech',
-        'CompetitorPromo': 'Competitor Promo'
+        'CompetitorPromo': 'Competitor Promo',
+        'EventType': 'Event Types'
     },
 
     'text': {
@@ -355,7 +356,14 @@
         'Name': 'Event',
         'Year': 'Year',
         'Period': 'Period',
-        'Description': 'Description'
+        'Description': 'Description',
+        'MarketSegment': 'MarketSegment',
+        'EventTypeName': 'Type',
+        'EventTypeNational': 'National',
+    },
+    'EventType': {
+        'Name': 'Name',
+        'National': 'National',
     },
     'HistoricalEvent': ['.tpm.Event', '.core.BaseHistoryEntity'],
     'DeletedEvent': ['.tpm.Event', '.core.BaseDeletedEntity'],

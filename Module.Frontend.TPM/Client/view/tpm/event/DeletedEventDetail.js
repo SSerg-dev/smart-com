@@ -9,19 +9,33 @@
         xtype: 'editorform',
         itemId: 'deleteddetailform',
         columnsCount: 1,
-        items: [{
-            xtype: 'singlelinedisplayfield',
-            name: 'DeletedDate',
-            renderer: Ext.util.Format.dateRenderer('d.m.Y H:i:s'),
-            fieldLabel: l10n.ns('core', 'BaseDeletedEntity').value('DeletedDate')
-        }, {
-            xtype: 'singlelinedisplayfield',
-            name: 'Name',
-            fieldLabel: l10n.ns('tpm', 'Event').value('Name'),
-        }, {
-            xtype: 'singlelinedisplayfield',
-            name: 'Description',
-            fieldLabel: l10n.ns('tpm', 'Event').value('Description'),
-        }, ]
+        items: [
+            {
+                xtype: 'singlelinedisplayfield',
+                name: 'DeletedDate',
+                renderer: Ext.util.Format.dateRenderer('d.m.Y H:i:s'),
+                fieldLabel: l10n.ns('core', 'BaseDeletedEntity').value('DeletedDate')
+            },
+            {
+                xtype: 'singlelinedisplayfield',
+                name: 'Name',
+                fieldLabel: l10n.ns('tpm', 'Event').value('Name'),
+            },
+            {
+                xtype: 'singlelinedisplayfield',
+                name: 'Description',
+                fieldLabel: l10n.ns('tpm', 'Event').value('Description'),
+            },
+            {
+                xtype: 'textfield',
+                name: 'Type',
+                fieldLabel: l10n.ns('tpm', 'Event').value('EventTypeName')
+            },
+            {
+                xtype: 'textfield',
+                name: 'MarketSegment',
+                fieldLabel: l10n.ns('tpm', 'Event').value('MarketSegment')
+            },
+        ]
     }
 })
