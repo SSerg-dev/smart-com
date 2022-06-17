@@ -94,20 +94,13 @@
     <add key="EXPORT_DATA_FACTORY_NAME" value="russiapetcarejupiterdevadf" />
     <add key="EXPORT_PIPELINE_NAME" value="JUPITER_EXPORT_SCHEDULER_DISPATCHER_PIPE" />
 
+	<!--AzureAD authentication-->
 	<add key="LocalADidaClientId" value="0a2ba024-30c1-4091-8767-1584f75ba1d9" />
 	<add key="LocalADidaAADInstance" value="https://login.microsoftonline.com/" />
 	<add key="LocalADidaClientSecret" value="83Uu0JRw.XX.78dIv3jrEIP_fpvc.~3h_K" />
 	<add key="LocalADidaDomain" value="smartcom.software" />
 	<add key="LocalADidaTenantId" value="d43cf2af-b6de-47fe-afe3-9bbaff83dcee" />
 	<add key="LocalADidaPostLogoutRedirectUri" value="https://tpm-rc.smartcom.local/" />
-
-	<!--AzureAD authentication-->
-	<add key="LocalADidaClientId" value="c76aabec-ab4d-4e07-83e5-be27281ce062" />
-	<add key="LocalADidaAADInstance" value="https://login.microsoftonline.com/" />
-	<add key="LocalADidaClientSecret" value="CjY3iV-~J-.29th0VTQEe6JE65gj8MQuWv" />
-	<add key="LocalADidaDomain" value="smartcom.software" />
-	<add key="LocalADidaTenantId" value="d43cf2af-b6de-47fe-afe3-9bbaff83dcee" />
-	<add key="LocalADidaPostLogoutRedirectUri" value="https://tpm-rc.smartcom.local:44323/" />
     <!--mongo-->
     <add key="MongoUser" value="jupiterdevacdb" />
     <add key="MongoPass" value="A4KaSNYo1rdFTmWFRi6LhdC3DJSY2MYhdDdZtIO8ragsIa8vTwbaJWByhmYEhxSO602DeQ9Lp7FymcDGwrHpnA==" />
