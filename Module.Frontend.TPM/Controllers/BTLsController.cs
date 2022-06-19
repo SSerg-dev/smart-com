@@ -12,6 +12,7 @@ using Module.Persist.TPM.CalculatePromoParametersModule;
 using Module.Persist.TPM.Model.Import;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
+using Newtonsoft.Json;
 using Persist;
 using Persist.Model;
 using System;
@@ -322,5 +323,24 @@ namespace Module.Frontend.TPM.Controllers
                 return InternalServerError(e);
             }
         }
+        [HttpPost]
+        [ClaimsAuthorize]
+        public IHttpActionResult GetEventBTL()
+        {
+            string resultData = Request.Content.ReadAsStringAsync().Result;
+            EventBTLModel eventBTL = new EventBTLModel();
+            if (resultData != null)
+            {
+                eventBTL = JsonConvert.DeserializeObject<EventBTLModel>(resultData);
+                List<Guid> productGuids = eventBTL.InOutProductIds.Split(';').Where(s => !string.IsNullOrWhiteSpace(s)).Select(s => Guid.Parse(s)).ToList();
+            }
+            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
+        }
+    }
+    public class EventBTLModel
+    {
+        public DateTimeOffset DurationDateStart { get; set; }
+        public DateTimeOffset DurationDateEnd { get; set; }
+        public string InOutProductIds { get; set; }
     }
 }

@@ -977,6 +977,7 @@ namespace Module.Persist.TPM
             builder.EntitySet<BTL>("BTLs").HasManyBinding<BTLPromo>(e => e.BTLPromo, "BTLPromoes");
             builder.Entity<BTL>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<BTL>("BTLs");
             builder.Entity<HistoricalBTL>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalBTL>("HistoricalBTLs");
+            builder.Entity<BTL>().Collection.Action("GetEventBTL");
 
             builder.EntitySet<PriceList>("PriceLists");
             builder.Entity<PriceList>().Collection.Action("ExportXLSX");

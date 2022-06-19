@@ -345,7 +345,7 @@
             !this.compareFilters(filter, onApprovalFilterCMM);
 
         maButton.setDisabled(isDisabled);
-    },   
+    },
 
     compareFilters: function (filter1, filter2) {
         var isSame = true;
@@ -1424,7 +1424,8 @@
                         //disable On/Off invoice group
                         client.down('[id=OffInvoice]').setDisabled(true);
                         client.down('[id=OnInvoice]').setDisabled(true);
-
+                        // period блокируем, для автоматической подстановки BTL
+                        period.setDisabled(true);
                         // Кнопки для изменения состояний промо
                         var promoActions = Ext.ComponentQuery.query('button[isPromoAction=true]');
 
@@ -1531,7 +1532,7 @@
                                 undoBtn.statusId = promoStatusData.value[i].Id;
                                 undoBtn.statusName = promoStatusData.value[i].Name;
                                 undoBtn.statusSystemName = promoStatusData.value[i].SystemName;
-                                
+
                             }
 
                             if (promoStatusData.value[i].SystemName == 'DraftPublished') {
@@ -2184,7 +2185,7 @@
     onClosePromoButtonClick: function (button) {
         var window = button.up('promoeditorcustom');
 
-        if (window) {         
+        if (window) {
             window.close();
         }
     },
@@ -3570,7 +3571,7 @@
             success: function (response, req) {
                 if (req.response.length > 0 && req.response[0].value && req.response[0].value.length > 0)
                     App.Notify.pushInfo(req.response[0].value);
-                
+
                 var wasCreating = window.isCreating;
                 if (store) {
                     store.on({
@@ -6193,7 +6194,7 @@
         var promoEvent = promoEditorCustom.down('container[name=promo_step6]');
         var chooseEventButton = promoEvent.down('chooseEventButton');
         var clientTreeKeyId = promoEditorCustom.clientTreeKeyId;
-        
+
         // при каждом вызове этой функции Event сбрасывается до стандартного (в дальнейшем желательно сделать проверку на возможность оставить предзаполненный Event)
         var _event = new App.model.tpm.event.Event({
             Id: null,
@@ -6220,6 +6221,40 @@
             promoEvent.setDisabled(true);
         }
         chooseEventButton.clientTreeKeyId = clientTreeKeyId;
+    },
+
+
+    setEventBTL: function () {
+        debugger;
+        var promoeditorcustom = Ext.ComponentQuery.query('promoeditorcustom')[0];
+        var period = promoeditorcustom.down('container[name=promo_step4]');
+        var durationDateStart = period.down('datefield[name=DurationStartDate]');
+        var durationDateEnd = period.down('datefield[name=DurationEndDate]');
+
+        if (durationDateStart.value && durationDateEnd.value) {
+            var eventBTLModel = new Object();
+            eventBTLModel.DurationDateStart = durationDateStart.value;
+            eventBTLModel.DurationDateEnd = durationDateEnd.value;
+            eventBTLModel.InOutProductIds = promoeditorcustom.InOutProductIds;
+            $.ajax({
+                dataType: 'json',
+                url: '/odata/BTLs/GetEventBTL',
+                type: 'POST',
+                data: JSON.stringify(eventBTLModel),
+                success: function (response) {
+                    var data = Ext.JSON.decode(response.value);
+                    if (data.success) {
+                        window.setLoading(false);
+                    }
+                    else {
+                        App.Notify.pushError('BTL Events load error');
+                    }
+                },
+                error: function (data) {
+                    App.Notify.pushError(data.responseJSON["odata.error"].innererror.message);
+                }
+            });
+        }
     },
 
     // --------------------- Выбор продуктов -----------------//
@@ -6452,7 +6487,7 @@
         };
         App.Util.makeRequestWithCallback('Promoes', 'CheckIfLogHasErrors', parameters, function (data) {
             var result = Ext.JSON.decode(data.httpResponse.data.value);
-            
+
             var but = Ext.ComponentQuery.query('promoeditorcustom #btn_showlog')[0];
             if (but && !but.isDestroyed) {
                 if (result.LogHasErrors) {
@@ -6540,5 +6575,6 @@
                 panel.setLoading(false);
                 App.Notify.pushError(me.getErrorMessage(data));
             });
-    }
+    },
+
 });
