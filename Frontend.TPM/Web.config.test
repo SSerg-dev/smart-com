@@ -79,11 +79,6 @@
 	<add key="AKVScope" value="" />
   <add key="BlobStorageName" value="" />
     
-	  <!--Elastic-->
-    <add key="ElasticHistoryIndexName" value="tpm_elastic_index_01" />
-    <add key="ElasticHistoryTypeName" value="entry" />
-    <add key="ElasticHost" value="http://elastic:changeme@localhost:9200" />
-
     <!--Export settings-->
     <add key="EXPORT_TENANT_ID" value="2fc13e34-f03f-498b-982a-7cb446e25bc6" />
     <add key="EXPORT_APPLICATION_ID" value="6f231dc9-7560-4d58-8655-a9fec42cac17" />
@@ -113,10 +108,6 @@
     <add key="MongoDBName" value="Test" />
     <!--KeyVault-->
     <add key="UseKeyVault" value="false" />
-    <add key="KeyVaultUseAD" value="Pass" />
-    <add key="KeyVaultId" value="0256ae60-7e33-454a-95d5-40990a7ba03f" />
-    <add key="KeyVaultPass" value="V-6REc-juI.7KMasJ1k0-7zv-3qJR7SXF." />
-    <add key="KeyVaultUrl" value="jupiterdevkv" />
     <!--Keys-->
     <add key="DatabaseContextKey" value="DatabaseContext" />
     <!--<add key="DefaultConnectionKey" value="DefaultConnection" />-->
@@ -128,13 +119,6 @@
     <add key="ida:DomainKey" value="LocalADidaDomain" />
     <add key="ida:TenantIdKey" value="LocalADidaTenantId" />
     <add key="ida:PostLogoutRedirectUriKey" value="LocalADidaPostLogoutRedirectUri" />
-    <!-- BlobStorage -->
-	<add key="BlobStorageSAS" value="sv=2020-02-10&amp;ss=bfqt&amp;srt=sco&amp;sp=rwdlacuptfx&amp;se=2025-07-08T19:15:09Z&amp;st=2021-07-08T11:15:09Z&amp;spr=https&amp;sig=8J5%2FxOz2shqhbZBDiT%2Bp%2FMXEAyfiLcyAwxR5TUJ5bwY%3D" />  
-    <add key="BlobStorageContainer" value="jupiteruiuxcontainer" />
-	<add key="BlobStorageName" value="tpmuiuxsa" />
-	<add key="BlobConnectionType" value="SAS" />
-	<!-- AppInsights -->
-    <add key="AppInsightKey" value="0a75b76f-d9b2-4a34-8145-5730c95e5664" />
   </appSettings>
   <system.identityModel>
     <identityConfiguration>
