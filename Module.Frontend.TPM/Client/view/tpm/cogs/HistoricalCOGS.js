@@ -122,4 +122,3 @@ Ext.define('App.view.tpm.cogs.HistoricalCOGS', {
         }]
     }]
 });
-             

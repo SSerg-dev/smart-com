@@ -57,6 +57,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 bool error;
                 double? TIBasePercent;
                 double? COGSPercent;
+                double? COGSTn;
                 SimplePromoTradeInvestment simplePromoTradeInvestment = new SimplePromoTradeInvestment(promo);
 
                 useActualTI = promo.UseActualTI == true ? promo.UseActualTI : useActualTI;
@@ -85,6 +86,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                 // ищем COGS
                 SimplePromoCOGS simplePromoCOGS = new SimplePromoCOGS(promo);
+                SimplePromoCOGS simplePromoCOGStn = new SimplePromoCOGS(promo);
                 useActualCOGS = promo.UseActualCOGS == true ? promo.UseActualCOGS : useActualCOGS;
 
                 if (useActualCOGS)
@@ -105,7 +107,26 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     COGSPercent = PromoUtils.GetCOGSPercent(simplePromoCOGS, context, cogsQuery, out message);
                     promo.PlanCOGSPercent = COGSPercent;
                 }
-                
+
+                if (useActualCOGS)
+                {
+                    IQueryable<ActualCOGSTn> actualcogsQueryTn = context.Set<ActualCOGSTn>().Where(x => !x.Disabled);
+                    COGSTn = PromoUtils.GetCOGSTonCost(simplePromoCOGStn, context, actualcogsQueryTn, out message);
+                    promo.ActualCOGSTn = COGSTn;
+                    if (COGSTn == null)
+                    {
+                        IQueryable<PlanCOGSTn> cogsQueryTn = context.Set<PlanCOGSTn>().Where(x => !x.Disabled);
+                        COGSTn = PromoUtils.GetCOGSTonCost(simplePromoCOGStn, context, cogsQueryTn, out message);
+                        promo.ActualCOGSTn = COGSTn;
+                    }
+                }
+                else
+                {
+                    IQueryable<PlanCOGSTn> cogsQueryTn = context.Set<PlanCOGSTn>().Where(x => !x.Disabled);
+                    COGSTn = PromoUtils.GetCOGSTonCost(simplePromoCOGStn, context, cogsQueryTn, out message);
+                    promo.PlanCOGSTn = COGSTn;
+                }
+
                 if (message != null)
                     errors += message + ";";
 
@@ -124,7 +145,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 {
                     errors += e.Message + ";";
                 }
-
+                List<PromoProduct> promoProducts = context.Set<PromoProduct>().Where(p => !p.Disabled && p.PromoId == promo.Id).ToList();
                 // если ошибок нет - считаем
                 if (errors.Length == 0)
                 {
@@ -168,6 +189,8 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         promo.ActualPromoNetIncrementalLSV = (promo.ActualPromoIncrementalLSV ?? 0) + (promo.ActualPromoPostPromoEffectLSV ?? 0);
                         promo.ActualPromoUpliftPercent = promo.ActualPromoBaselineLSV == 0 ? 0 : promo.ActualPromoIncrementalLSV / promo.ActualPromoBaselineLSV * 100;
                         promo.ActualPromoNetUpliftPercent = promo.ActualPromoBaselineLSV == 0 ? 0 : promo.ActualPromoNetIncrementalLSV / promo.ActualPromoBaselineLSV * 100;
+                        //volume
+                        promo.ActualPromoPostPromoEffectVolume = promoProducts.Sum(g => g.ActualProductPostPromoEffectLSV / (g.Price / g.Product.UOM_PC2Case) * g.Product.PCVolume);
                     }
                     else
                     {
@@ -183,6 +206,8 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                         promo.ActualPromoUpliftPercent = null;
                         promo.ActualPromoNetUpliftPercent = null;
+                        //volume
+                        promo.ActualPromoPostPromoEffectVolume = 0;
                     }
 
                     promo.ActualPromoIncrementalBaseTI = promo.ActualPromoIncrementalLSV * TIBasePercent / 100;
@@ -198,7 +223,62 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     promo.ActualPromoIncrementalNSV = (promo.ActualPromoIncrementalLSV ?? 0) - (promo.ActualPromoTIShopper ?? 0) - (promo.ActualPromoTIMarketing ?? 0) - (promo.ActualPromoIncrementalBaseTI ?? 0);
                     promo.ActualPromoNetIncrementalNSV = (promo.ActualPromoNetIncrementalLSV ?? 0) - (promo.ActualPromoTIShopper ?? 0) - (promo.ActualPromoTIMarketing ?? 0) - (promo.ActualPromoNetIncrementalBaseTI ?? 0);
                     promo.ActualPromoNetNSV = (promo.ActualPromoNetLSV ?? 0) - (promo.ActualPromoTIShopper ?? 0) - (promo.ActualPromoTIMarketing ?? 0) - (promo.ActualPromoNetBaseTI ?? 0);
-                    promo.ActualPromoNetIncrementalMAC = (promo.ActualPromoNetIncrementalNSV ?? 0) - (promo.ActualPromoNetIncrementalCOGS ?? 0);
+
+                    //if (!promo.InOut.HasValue || !promo.InOut.Value)
+                    //{
+                    //    // +1 / -1 ?
+                    //    promo.ActualPromoROIPercent = promo.ActualPromoCost == 0 ? 0 : (promo.ActualPromoIncrementalEarnings / promo.ActualPromoCost + 1) * 100;
+                    //    promo.ActualPromoNetROIPercent = promo.ActualPromoCost == 0 ? 0 : (promo.ActualPromoNetIncrementalEarnings / promo.ActualPromoCost + 1) * 100;
+                    //}
+                    //else
+                    //{
+                    //    // +1 / -1 ?
+                    //    promo.ActualPromoROIPercent = promo.ActualPromoTotalCost == 0 ? 0 : (promo.ActualPromoIncrementalEarnings / promo.ActualPromoTotalCost + 1) * 100;
+                    //    promo.ActualPromoNetROIPercent = promo.ActualPromoTotalCost == 0 ? 0 : (promo.ActualPromoNetIncrementalEarnings / promo.ActualPromoTotalCost + 1) * 100;
+                    //}
+
+                    //Volume
+                    promo.ActualPromoBaselineVolume = promoProducts.Sum(g => g.ActualProductBaselineLSV / (g.Price / g.Product.UOM_PC2Case) *  g.Product.PCVolume);
+                    if (!promo.IsOnInvoice || promo.InOut.HasValue || promo.InOut.Value)
+                    {
+                        promo.ActualPromoVolume = promoProducts.Sum(g => g.ActualProductQtySO * g.Product.PCVolume);
+                    }
+                    else
+                    {
+                        promo.ActualPromoVolume = promo.ActualPromoVolumeSI;
+                    }
+
+                    promo.ActualPromoIncrementalVolume = promo.ActualPromoVolume - promo.ActualPromoBaselineVolume;
+                    promo.ActualPromoNetIncrementalVolume = promo.ActualPromoIncrementalVolume + promo.ActualPromoPostPromoEffectVolume;
+
+                    promo.ActualPromoIncrementalCOGSTn = promo.ActualPromoIncrementalVolume * COGSTn;
+                    promo.ActualPromoNetIncrementalCOGSTn = promo.ActualPromoNetIncrementalVolume * COGSTn;
+
+                    if (promo.IsLSVBased)
+                    {
+                        promo.ActualPromoNetIncrementalMAC = (promo.ActualPromoNetIncrementalNSV ?? 0) - (promo.ActualPromoNetIncrementalCOGS ?? 0);
+                        promo.ActualPromoIncrementalMAC = (promo.ActualPromoIncrementalNSV ?? 0) - (promo.ActualPromoIncrementalCOGS ?? 0);
+                        promo.ActualPromoIncrementalEarnings = (promo.ActualPromoIncrementalMAC ?? 0) - (promo.ActualPromoBranding ?? 0) - (promo.ActualPromoBTL ?? 0) - (promo.ActualPromoCostProduction ?? 0);
+                        promo.ActualPromoNetIncrementalEarnings = (promo.ActualPromoNetIncrementalMAC ?? 0) - (promo.ActualPromoBranding ?? 0) - (promo.ActualPromoBTL ?? 0) - (promo.ActualPromoCostProduction ?? 0);
+                        promo.ActualPromoROIPercent = promo.ActualPromoCost == 0 ? 0 : (promo.ActualPromoIncrementalEarnings / promo.ActualPromoCost + 1) * 100;
+                        promo.ActualPromoNetROIPercent = promo.ActualPromoCost == 0 ? 0 : (promo.ActualPromoNetIncrementalEarnings / promo.ActualPromoCost + 1) * 100;
+                    }
+                    else
+                    {
+                        promo.ActualPromoNetIncrementalMACLSV = (promo.ActualPromoNetIncrementalNSV ?? 0) - (promo.ActualPromoNetIncrementalCOGS ?? 0);
+                        promo.ActualPromoNetIncrementalMAC = (promo.ActualPromoNetIncrementalNSV ?? 0) - (promo.ActualPromoNetIncrementalCOGSTn ?? 0);
+                        promo.ActualPromoIncrementalMACLSV = (promo.ActualPromoIncrementalNSV ?? 0) - (promo.ActualPromoIncrementalCOGS ?? 0);
+                        promo.ActualPromoIncrementalMAC = (promo.ActualPromoIncrementalNSV ?? 0) - (promo.ActualPromoIncrementalCOGSTn ?? 0);
+                        promo.ActualPromoIncrementalEarningsLSV = (promo.ActualPromoIncrementalMACLSV ?? 0) - (promo.ActualPromoBranding ?? 0) - (promo.ActualPromoBTL ?? 0) - (promo.ActualPromoCostProduction ?? 0);
+                        promo.ActualPromoIncrementalEarnings = (promo.ActualPromoIncrementalMAC ?? 0) - (promo.ActualPromoBranding ?? 0) - (promo.ActualPromoBTL ?? 0) - (promo.ActualPromoCostProduction ?? 0);
+                        promo.ActualPromoNetIncrementalEarningsLSV = (promo.ActualPromoNetIncrementalMACLSV ?? 0) - (promo.ActualPromoBranding ?? 0) - (promo.ActualPromoBTL ?? 0) - (promo.ActualPromoCostProduction ?? 0);
+                        promo.ActualPromoNetIncrementalEarnings = (promo.ActualPromoNetIncrementalMAC ?? 0) - (promo.ActualPromoBranding ?? 0) - (promo.ActualPromoBTL ?? 0) - (promo.ActualPromoCostProduction ?? 0);
+                        promo.ActualPromoROIPercentLSV = promo.ActualPromoCost == 0 ? 0 : (promo.ActualPromoIncrementalEarningsLSV / promo.ActualPromoCost + 1) * 100;
+                        promo.ActualPromoROIPercent = promo.ActualPromoCost == 0 ? 0 : (promo.ActualPromoIncrementalEarnings / promo.ActualPromoCost + 1) * 100;
+                        promo.ActualPromoNetROIPercentLSV = promo.ActualPromoCost == 0 ? 0 : (promo.ActualPromoNetIncrementalEarningsLSV / promo.ActualPromoCost + 1) * 100;
+                        promo.ActualPromoNetROIPercent = promo.ActualPromoCost == 0 ? 0 : (promo.ActualPromoNetIncrementalEarnings / promo.ActualPromoCost + 1) * 100;
+
+                    }
 
                     //if (!promo.InOut.HasValue || !promo.InOut.Value)
                     //{
@@ -221,13 +301,6 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                     promo.ActualPromoNSV = (promo.ActualPromoLSV ?? 0) - (promo.ActualPromoTIShopper ?? 0) - (promo.ActualPromoTIMarketing ?? 0) - (promo.ActualPromoBaseTI ?? 0);
 
-                    promo.ActualPromoIncrementalMAC = (promo.ActualPromoIncrementalNSV ?? 0) - (promo.ActualPromoIncrementalCOGS ?? 0);
-
-                    promo.ActualPromoIncrementalEarnings = (promo.ActualPromoIncrementalMAC ?? 0) - (promo.ActualPromoBranding ?? 0) - (promo.ActualPromoBTL ?? 0) - (promo.ActualPromoCostProduction ?? 0);
-                    promo.ActualPromoNetIncrementalEarnings = (promo.ActualPromoNetIncrementalMAC ?? 0) - (promo.ActualPromoBranding ?? 0) - (promo.ActualPromoBTL ?? 0) - (promo.ActualPromoCostProduction ?? 0);
-
-                    promo.ActualPromoROIPercent = promo.ActualPromoCost == 0 ? 0 : (promo.ActualPromoIncrementalEarnings / promo.ActualPromoCost + 1) * 100;
-                    promo.ActualPromoNetROIPercent = promo.ActualPromoCost == 0 ? 0 : (promo.ActualPromoNetIncrementalEarnings / promo.ActualPromoCost + 1) * 100;
 
                     // ищем RATIShopper
                     double? RATIShopperPercent;
@@ -243,18 +316,6 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     if (message != null)
                         errors += message + ";";
 
-                    //if (!promo.InOut.HasValue || !promo.InOut.Value)
-                    //{
-                    //    // +1 / -1 ?
-                    //    promo.ActualPromoROIPercent = promo.ActualPromoCost == 0 ? 0 : (promo.ActualPromoIncrementalEarnings / promo.ActualPromoCost + 1) * 100;
-                    //    promo.ActualPromoNetROIPercent = promo.ActualPromoCost == 0 ? 0 : (promo.ActualPromoNetIncrementalEarnings / promo.ActualPromoCost + 1) * 100;
-                    //}
-                    //else
-                    //{
-                    //    // +1 / -1 ?
-                    //    promo.ActualPromoROIPercent = promo.ActualPromoTotalCost == 0 ? 0 : (promo.ActualPromoIncrementalEarnings / promo.ActualPromoTotalCost + 1) * 100;
-                    //    promo.ActualPromoNetROIPercent = promo.ActualPromoTotalCost == 0 ? 0 : (promo.ActualPromoNetIncrementalEarnings / promo.ActualPromoTotalCost + 1) * 100;
-                    //}
 
                     if (PromoUtils.HasChanges(context.ChangeTracker, promo.Id))
                     {

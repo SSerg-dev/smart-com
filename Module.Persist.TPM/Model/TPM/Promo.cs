@@ -1,12 +1,10 @@
 ﻿using System;
 using Core.Data;
+using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-
-using Persist;
 using System.Linq;
-using Newtonsoft.Json;
-
+using Persist;
 
 namespace Module.Persist.TPM.Model.TPM
 {
@@ -148,6 +146,7 @@ namespace Module.Persist.TPM.Model.TPM
         public double? PlanPromoNetUpliftPercent { get; set; }
         public double? PlanTIBasePercent { get; set; }
         public double? PlanCOGSPercent { get; set; }
+        public double? PlanCOGSTn { get; set; }
         public double? ActualPromoBaselineLSV { get; set; }
         public double? ActualInStoreDiscount { get; set; }
         public double? ActualInStoreShelfPrice { get; set; }
@@ -166,6 +165,7 @@ namespace Module.Persist.TPM.Model.TPM
         public double? ActualPromoNetUpliftPercent { get; set; }
         public double? ActualTIBasePercent { get; set; }
         public double? ActualCOGSPercent { get; set; }
+        public double? ActualCOGSTn { get; set; }
         public double? PlanPromoBaselineBaseTI { get; set; }
         public double? PlanPromoBaseTI { get; set; }
         public double? PlanPromoNetBaseTI { get; set; }
@@ -178,6 +178,19 @@ namespace Module.Persist.TPM.Model.TPM
         public double? ActualPromoNetNSV { get; set; }
         public double? SumInvoice { get; set; }
         public bool? ManualInputSumInvoice { get; set; }
+        // New ROI Calculation parameters
+        public double? PlanPromoIncrementalMACLSV { get; set; }
+        public double? PlanPromoNetIncrementalMACLSV { get; set; }
+        public double? ActualPromoIncrementalMACLSV { get; set; }
+        public double? ActualPromoNetIncrementalMACLSV { get; set; }
+        public double? PlanPromoIncrementalEarningsLSV { get; set; }
+        public double? PlanPromoNetIncrementalEarningsLSV { get; set; }
+        public double? ActualPromoIncrementalEarningsLSV { get; set; }
+        public double? ActualPromoNetIncrementalEarningsLSV { get; set; }
+        public double? PlanPromoROIPercentLSV { get; set; }
+        public double? PlanPromoNetROIPercentLSV { get; set; }
+        public double? ActualPromoROIPercentLSV { get; set; }
+        public double? ActualPromoNetROIPercentLSV { get; set; }
 
         // Add TI 
         public double? PlanAddTIShopperApproved { get; set; }
@@ -284,9 +297,27 @@ namespace Module.Persist.TPM.Model.TPM
         public string AdditionalUserTimestamp { get; set; }
 
         public bool IsGrowthAcceleration { get; set; }
-
         public bool IsApolloExport { get; set; }
         public bool IsSplittable { get; set; }
+        public bool IsLSVBased { get; set; }
+
+        public double? PlanPromoBaselineVolume { get; set; }
+        public double? PlanPromoPostPromoEffectVolume { get; set; }
+        public double? PlanPromoPostPromoEffectVolumeW1 { get; set; }
+        public double? PlanPromoPostPromoEffectVolumeW2 { get; set; }
+        public double? PlanPromoIncrementalVolume { get; set; }
+        public double? PlanPromoNetIncrementalVolume { get; set; }
+        public double? ActualPromoBaselineVolume { get; set; }
+        public double? ActualPromoPostPromoEffectVolume { get; set; }
+        public double? ActualPromoVolumeByCompensation { get; set; }
+        public double? ActualPromoVolumeSI { get; set; }
+        public double? ActualPromoVolume { get; set; }
+        public double? ActualPromoIncrementalVolume { get; set; }
+        public double? ActualPromoNetIncrementalVolume { get; set; }
+        public double? PlanPromoIncrementalCOGSTn { get; set; }
+        public double? PlanPromoNetIncrementalCOGSTn { get; set; }
+        public double? ActualPromoIncrementalCOGSTn { get; set; }
+        public double? ActualPromoNetIncrementalCOGSTn { get; set; }
 
         /// <summary>
         /// Copy Constructor
@@ -329,6 +360,7 @@ namespace Module.Persist.TPM.Model.TPM
             ActualPromoIncrementalEarnings = promoToCopy.ActualPromoIncrementalEarnings;
             ActualPromoIncrementalLSV = promoToCopy.ActualPromoIncrementalLSV;
             ActualPromoIncrementalMAC = promoToCopy.ActualPromoIncrementalMAC;
+            ActualPromoIncrementalMACLSV = promoToCopy.ActualPromoIncrementalMACLSV;
             ActualPromoIncrementalNSV = promoToCopy.ActualPromoIncrementalNSV;
             ActualPromoLSV = promoToCopy.ActualPromoLSV;
             ActualPromoLSVSI = promoToCopy.ActualPromoLSVSI;
@@ -340,6 +372,7 @@ namespace Module.Persist.TPM.Model.TPM
             PlanPromoIncrementalEarnings = promoToCopy.PlanPromoIncrementalEarnings;
             PlanPromoIncrementalLSV = promoToCopy.PlanPromoIncrementalLSV;
             PlanPromoIncrementalMAC = promoToCopy.PlanPromoIncrementalMAC;
+            PlanPromoIncrementalMACLSV = promoToCopy.PlanPromoIncrementalMACLSV;
             PlanPromoIncrementalNSV = promoToCopy.PlanPromoIncrementalNSV;
             ActualAddTIMarketing = promoToCopy.ActualAddTIMarketing;
             PlanAddTIMarketingApproved = promoToCopy.PlanAddTIMarketingApproved;
@@ -356,6 +389,8 @@ namespace Module.Persist.TPM.Model.TPM
             ActualTIBasePercent = promoToCopy.ActualTIBasePercent;
             PlanCOGSPercent = promoToCopy.PlanCOGSPercent;
             ActualCOGSPercent = promoToCopy.ActualCOGSPercent;
+            PlanCOGSTn = promoToCopy.PlanCOGSTn;
+            ActualCOGSTn = promoToCopy.ActualCOGSTn;
             IsOnInvoice = promoToCopy.IsOnInvoice;
             IsApolloExport = promoToCopy.IsApolloExport;
             ManualInputSumInvoice = promoToCopy.ManualInputSumInvoice;

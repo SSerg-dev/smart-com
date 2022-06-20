@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Core.Dependency;
 using Core.Security;
 using Core.Security.Models;
 using Core.Settings;
@@ -7,40 +8,39 @@ using Frontend.Core.Extensions;
 using Frontend.Core.Extensions.Export;
 using Looper.Core;
 using Looper.Parameters;
+using Module.Frontend.TPM.Util;
+using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.Import;
+using Module.Persist.TPM.Model.SimpleModel;
 using Module.Persist.TPM.Model.TPM;
+using Module.Persist.TPM.Utils;
+using Newtonsoft.Json;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 using Persist;
 using Persist.Model;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Data.Entity.Infrastructure;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.OData;
 using System.Web.Http.OData.Query;
 using System.Web.Http.Results;
 using Thinktecture.IdentityModel.Authorization.WebApi;
 using Utility;
-using Module.Persist.TPM.Utils;
-using Newtonsoft.Json;
-using System.Net.Http.Headers;
-using NPOI.SS.UserModel;
-using NPOI.XSSF.UserModel;
-using Module.Persist.TPM.Model.DTO;
-using System.Collections.Specialized;
-using Core.Dependency;
-using Module.Frontend.TPM.Util;
-using Module.Persist.TPM.Model.SimpleModel;
-using System.Web;
 using Utility.FileWorker;
 
-namespace Module.Frontend.TPM.Controllers {
-
+namespace Module.Frontend.TPM.Controllers
+{
     public class ActualCOGSsController : EFContextController {
         private readonly IAuthorizationManager authorizationManager;
 
@@ -48,8 +48,8 @@ namespace Module.Frontend.TPM.Controllers {
             this.authorizationManager = authorizationManager;
         }
 
-        protected IQueryable<ActualCOGS> GetConstraintedQuery() {
-
+        protected IQueryable<ActualCOGS> GetConstraintedQuery()
+        {
             UserInfo user = authorizationManager.GetCurrentUser();
             string role = authorizationManager.GetCurrentRoleName();
             IList<Constraint> constraints = user.Id.HasValue ? Context.Constraints
@@ -543,7 +543,6 @@ namespace Module.Frontend.TPM.Controllers {
             } catch (Exception e) {
                 return Content(HttpStatusCode.InternalServerError, e.Message);
             }
-
         }
 
         private ExceptionResult GetErorrRequest(Exception e) {

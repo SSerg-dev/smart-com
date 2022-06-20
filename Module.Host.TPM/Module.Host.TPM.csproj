@@ -291,6 +291,7 @@
     <Compile Include="Actions\DataLakeIntegrationActions\MarsCustomersCheckAction.cs" />
     <Compile Include="Actions\FullXLSXAssortmentMatrixImportAction.cs" />
     <Compile Include="Actions\FullXLSXCompetitorPromoUpdateNewImportAction.cs" />
+    <Compile Include="Actions\FullXLSXCOGSTnUpdateImportAction.cs" />
     <Compile Include="Actions\FullXLSXImportPromoDMPAction.cs" />
     <Compile Include="Actions\FullXLSXImportPromoProductPluAction.cs" />
     <Compile Include="Actions\FullXLSXPLUDictionaryImportAction.cs" />

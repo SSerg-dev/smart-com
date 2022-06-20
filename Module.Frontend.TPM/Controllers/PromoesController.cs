@@ -2102,9 +2102,22 @@ namespace Module.Frontend.TPM.Controllers
             }
 
             // проверка на наличие COGS
+            //if (promo.IsLSVBased)
+            //{
             IQueryable<COGS> cogsQuery = context.Set<COGS>().Where(x => !x.Disabled);
             SimplePromoCOGS simplePromoCOGS = new SimplePromoCOGS(promo);
             PromoUtils.GetCOGSPercent(simplePromoCOGS, context, cogsQuery, out message);
+            //}
+            if (message != null)
+            {
+                messagesError.Add(message);
+                message = null;
+            }
+
+            IQueryable<PlanCOGSTn> cogsTnQuery = context.Set<PlanCOGSTn>().Where(x => !x.Disabled);
+            simplePromoCOGS = new SimplePromoCOGS(promo);
+            PromoUtils.GetCOGSTonCost(simplePromoCOGS, context, cogsTnQuery, out message);
+
             if (message != null)
             {
                 messagesError.Add(message);

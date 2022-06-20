@@ -1,16 +1,13 @@
-﻿using System;
+﻿using Core.Extensions;
+using Module.Persist.TPM.Model.TPM;
+using Module.Persist.TPM.PromoStateControl;
+using Module.Persist.TPM.Utils;
+using Module.Persist.TPM.Utils.Filter;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Module.Persist.TPM.Model.TPM;
 using Persist;
-using Module.Persist.TPM.Utils.Filter;
-using System.Data.Entity;
-using Core.Extensions;
 using System.Data.Entity.Validation;
-using Module.Persist.TPM.Utils;
-using Module.Persist.TPM.PromoStateControl;
 using System.Diagnostics;
 
 namespace Module.Persist.TPM.CalculatePromoParametersModule
@@ -323,6 +320,10 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                     promoProduct.PlanProductPostPromoEffectLSVW1 = promoProduct.PlanProductBaselineLSV * clientPostPromoEffectW1 / 100 ?? 0;
                                     promoProduct.PlanProductPostPromoEffectLSVW2 = promoProduct.PlanProductBaselineLSV * clientPostPromoEffectW2 / 100 ?? 0;
                                     promoProduct.PlanProductPostPromoEffectLSV = promoProduct.PlanProductPostPromoEffectLSVW1 + promoProduct.PlanProductPostPromoEffectLSVW2;
+
+                                    promoProduct.PlanProductPostPromoEffectVolumeW1 = promoProduct.PlanProductBaselineVolume * clientPostPromoEffectW1 / 100 ?? 0;
+                                    promoProduct.PlanProductPostPromoEffectVolumeW2 = promoProduct.PlanProductBaselineVolume * clientPostPromoEffectW2 / 100 ?? 0;
+                                    promoProduct.PlanProductPostPromoEffectVolume = promoProduct.PlanProductPostPromoEffectVolumeW1 + promoProduct.PlanProductPostPromoEffectVolumeW2;
                                 }
                             }
 
@@ -369,6 +370,9 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                 promoProduct.PlanProductPostPromoEffectLSVW1 = 0;
                                 promoProduct.PlanProductPostPromoEffectLSVW2 = 0;
                                 promoProduct.PlanProductPostPromoEffectLSV = 0;
+                                promoProduct.PlanProductPostPromoEffectVolumeW1 = 0;
+                                promoProduct.PlanProductPostPromoEffectVolumeW2 = 0;
+                                promoProduct.PlanProductPostPromoEffectVolume = 0;
                             }
 
                             promo.PlanPromoBaselineLSV = null;
@@ -578,6 +582,9 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 product.PlanProductPostPromoEffectLSVW1 = null;
                 product.PlanProductPostPromoEffectLSVW2 = null;
                 product.PlanProductPostPromoEffectLSV = null;
+                product.PlanProductPostPromoEffectVolumeW1 = null;
+                product.PlanProductPostPromoEffectVolumeW2 = null;
+                product.PlanProductPostPromoEffectVolume = null;
             }
         }
 

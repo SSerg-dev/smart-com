@@ -148,6 +148,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         ActualPromoLSVByCompensation += (product.ActualProductPCQty * actualProductPCPrice) ?? 0;
                         product.ActualProductIncrementalPCQty = product.ActualProductSellInPrice != 0 ? product.ActualProductIncrementalLSV / product.ActualProductSellInPrice : 0;
                         product.ActualProductIncrementalPCLSV = product.Product.UOM_PC2Case != 0 ? product.ActualProductIncrementalLSV / product.Product.UOM_PC2Case : 0;
+                        product.ActualProductQtySO = (product.ActualProductLSV  / actualProductPCPrice) ?? 0;
                     }
                     else
                     {
@@ -159,11 +160,24 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 {
                     promo.ActualPromoLSVByCompensation = null;
                     promo.ActualPromoLSVSI = null;
+                    promo.ActualPromoVolumeByCompensation = null;
                 }
                 else
                 {
                     promo.ActualPromoLSVByCompensation = ActualPromoLSVByCompensation;
                     promo.ActualPromoLSVSI = ActualPromoLSVByCompensation;
+                    //volume
+                    if (!promo.InOut.HasValue || !promo.InOut.Value)
+                    {
+                        promo.ActualPromoVolumeByCompensation = products.Sum(g => g.ActualProductPCQty * g.Product.PCVolume);
+                        promo.ActualPromoVolumeSI = promo.ActualPromoVolumeByCompensation;
+                    }
+                    else
+                    {
+                        promo.ActualPromoVolumeByCompensation = products.Sum(g => g.ActualProductLSVByCompensation);
+                        promo.ActualPromoVolumeSI = 0;
+                                               
+                    }
                 }
 
                 try

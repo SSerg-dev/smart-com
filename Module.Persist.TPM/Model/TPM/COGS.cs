@@ -8,12 +8,12 @@ namespace Module.Persist.TPM.Model.TPM
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Index]
-        public System.Guid Id { get; set; } = Guid.NewGuid();
+        public Guid Id { get; set; } = Guid.NewGuid();
         public bool Disabled { get; set; }
         public DateTimeOffset? DeletedDate { get; set; }
 
         public int ClientTreeId { get; set; }
-        public System.Guid? BrandTechId { get; set; }
+        public Guid? BrandTechId { get; set; }
 
         public DateTimeOffset? StartDate { get; set; }
         public DateTimeOffset? EndDate { get; set; }
