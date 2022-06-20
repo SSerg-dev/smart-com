@@ -1,5 +1,6 @@
 using Core.Data;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -24,5 +25,7 @@ namespace Module.Persist.TPM.Model.TPM
 
         public System.Guid EventTypeId { get; set; }
         public EventType EventType { get; set; }
+
+        public virtual ICollection<BTL> BTLs { get; set; }
     }
 }

@@ -50,7 +50,7 @@ namespace Module.Persist.TPM
             modelBuilder.Entity<RejectReason>();
             modelBuilder.Entity<ClientTree>();
             modelBuilder.Entity<ProductTree>();
-            modelBuilder.Entity<Event>();
+            modelBuilder.Entity<Event>().HasMany(e => e.BTLs).WithRequired(e => e.Event);
             modelBuilder.Entity<EventType>().HasMany(e => e.Events).WithRequired(e => e.EventType);
             modelBuilder.Entity<NodeType>();
             modelBuilder.Entity<PromoStatusChange>();
@@ -184,8 +184,10 @@ namespace Module.Persist.TPM
 
             builder.EntitySet<Event>("Events");
             builder.EntitySet<Event>("Events").HasRequiredBinding(e => e.EventType, "EventTypes");
+            builder.EntitySet<Event>("Events").HasManyBinding(e => e.BTLs, "BTLs");
             builder.EntitySet<Event>("DeletedEvents");
             builder.EntitySet<Event>("DeletedEvents").HasRequiredBinding(e => e.EventType, "EventTypes");
+            builder.EntitySet<Event>("DeletedEvents").HasManyBinding(e => e.BTLs, "BTLs");
             builder.EntitySet<HistoricalEvent>("HistoricalEvents");
             builder.Entity<Event>().Collection.Action("ExportXLSX");
             builder.Entity<Event>().Collection.Action("FullImportXLSX");

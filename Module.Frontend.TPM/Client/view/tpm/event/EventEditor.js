@@ -76,7 +76,6 @@
                             else {
                                 segmentSet.setDisabled(true);
                                 var marketSegmentCombobox = Ext.ComponentQuery.query('combobox[name=MarketSegment]')[0];
-                                debugger;
                                 marketSegmentCombobox.setValue('');
                             }
                         }

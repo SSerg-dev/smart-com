@@ -17,6 +17,7 @@ using Persist;
 using Persist.Model;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Data.SqlClient;
 using System.IO;
@@ -325,7 +326,7 @@ namespace Module.Frontend.TPM.Controllers
         }
         [HttpPost]
         [ClaimsAuthorize]
-        public IHttpActionResult GetEventBTL()
+        public async Task<IHttpActionResult> GetEventBTL()
         {
             string resultData = Request.Content.ReadAsStringAsync().Result;
             EventBTLModel eventBTL = new EventBTLModel();
@@ -333,6 +334,58 @@ namespace Module.Frontend.TPM.Controllers
             {
                 eventBTL = JsonConvert.DeserializeObject<EventBTLModel>(resultData);
                 List<Guid> productGuids = eventBTL.InOutProductIds.Split(';').Where(s => !string.IsNullOrWhiteSpace(s)).Select(s => Guid.Parse(s)).ToList();
+                List<string> products = await Context.Set<Product>().AsNoTracking().Where(g => productGuids.Contains(g.Id) && !g.Disabled).Select(f => f.MarketSegment).ToListAsync();
+                List<string> distinctList = products.Distinct().ToList();
+                string marketSegment;
+                if (distinctList.Count == 1)
+                {
+                    marketSegment = distinctList[0];
+                }
+                else
+                {
+                    int countRange = 0;
+                    int position = 0;
+                    for (int i = 0; i < distinctList.Count; i++)
+                    {
+                        string item = distinctList[i];
+                        int countItem = products.Where(g => g == item).ToList().Count;
+                        if (countItem > countRange)
+                        {
+                            countRange = countItem;
+                            position = i;
+                        }
+                    }
+                    marketSegment = distinctList[position];
+                }
+                List<Event> events = await Context.Set<Event>()
+                    .AsNoTracking()
+                    .Where(g => !g.Disabled && g.EventType.National && (g.MarketSegment == marketSegment || string.IsNullOrEmpty(g.MarketSegment)) && !g.EventType.Disabled)
+                    .ToListAsync();
+                //events = events.Where(g => g.BTLs.Any(f => (eventBTL.DurationDateStart <= f.StartDate && eventBTL.DurationDateEnd > f.StartDate) || (eventBTL.DurationDateStart >= f.StartDate && eventBTL.DurationDateStart > f.EndDate))).ToList();
+                //List<Event> filterEvents = new List<Event>();
+                foreach (Event item in events)
+                {
+                    item.BTLs = item.BTLs.Where(f => (eventBTL.DurationDateStart <= f.EndDate && eventBTL.DurationDateEnd >= f.StartDate)).ToList();
+                    if (item.BTLs.Count > 0)
+                    {
+                        var copyBtls = item.BTLs.ToList();
+                        foreach (BTL btl in item.BTLs)
+                        {
+                            double totalDays = (eventBTL.DurationDateEnd - eventBTL.DurationDateStart).TotalDays;
+                            double totalDaysBTL = ((DateTimeOffset)btl.EndDate - (DateTimeOffset)btl.StartDate).TotalDays;
+                            double countDays = 0;
+                            if (eventBTL.DurationDateStart > (DateTimeOffset)btl.StartDate)
+                            {
+                                countDays += (eventBTL.DurationDateStart - (DateTimeOffset)btl.StartDate).TotalDays;
+                            }
+                            if ((DateTimeOffset)btl.EndDate > eventBTL.DurationDateEnd)
+                            {
+                                countDays += ((DateTimeOffset)btl.EndDate - eventBTL.DurationDateEnd).TotalDays;
+                            }
+                            double diffPeriod = totalDaysBTL - countDays;
+                        }
+                    }
+                }
             }
             return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
         }
