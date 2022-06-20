@@ -103,7 +103,7 @@ namespace Frontend
                 return new SystemAuthorizationManager();
             }
 
-            var authSource = AppSettingsManager.GetSetting<String>(Consts.AUTH_SOURCE, Consts.DB_AUTH_SOURCE);
+            var authSource = AppSettingsManager.GetSetting<String>(Consts.AUTH_SOURCE, Consts.AD_AUTH_SOURCE);
 
             switch (authSource)
             {
@@ -120,7 +120,7 @@ namespace Frontend
 
         private static ISecurityManager SelectSecurityManager(IContext context)
         {
-            var authSource = AppSettingsManager.GetSetting<String>(Consts.AUTH_SOURCE, Consts.DB_AUTH_SOURCE);
+            var authSource = AppSettingsManager.GetSetting<String>(Consts.AUTH_SOURCE, Consts.AD_AUTH_SOURCE);
 
             switch (authSource)
             {
