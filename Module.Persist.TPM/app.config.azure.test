@@ -10,7 +10,7 @@
     <add key="webpages:Version" value="3.0.0.0" />
     <add key="webpages:Enabled" value="false" />
     <add key="SESSION_TIME" value="15" />
-    <add key="DefaultSchema" value="Scenario" />
+    <add key="DefaultSchema" value="jupiter_test" />
     <!--Directories-->
     <add key="HANDLER_LOG_DIRECTORY" value="D:\home\site\wwwroot\ApplicationData\HandlerLogs" />
     <add key="IMPORT_DIRECTORY" value="D:\home\site\wwwroot\ApplicationData\ImportFiles" />
@@ -38,7 +38,7 @@
     <add key="KeyVaultUrl" value="jupitertestakv" />
     <add key="NotificationService" value="LogicApp" />
     <add key="HistoryModule" value="MongoDB" />
-    <add key="HANDLER_LOG_TYPE" value="Azure" />
+    <add key="HANDLER_LOG_TYPE" value="File" />
     <!--Keys-->
     <add key="AllowNotificationsSending" value="false" />
     <add key="ida:ClientIdKey" value="ADidaClientId" />

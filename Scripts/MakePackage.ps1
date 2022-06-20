@@ -7,6 +7,7 @@ $source = "$CurrentPath\.."
 $dest = "$CurrentPath\..\..\b"
 
 $BuildConfiguration = $args[0].ToString()
+$IncludeConfigs = $args[1]
 
 if (!(Test-Path $dest)) {
     New-Item $dest -ItemType Directory    
@@ -32,6 +33,11 @@ Function CopyFrontend {
 	Copy-Item "$source\Frontend.TPM\Global.asax" -Destination "$webTPM" -Recurse
 	Copy-Item "$source\Frontend.TPM\Bundles" -Destination "$webTPM" -Recurse
 	Copy-Item "$source\Module.Frontend.TPM\Templates" -Destination "$webTPM\bin" -Recurse #12.04.019
+
+	if ($IncludeConfigs) {
+		Copy-Item "$source\Frontend.TPM\Web.config" -Destination "$webTPM\Web.config" -Recurse
+		Copy-Item "$source\Frontend.TPM\bin\*.config" -Destination "$webTPM\bin" -Recurse
+	}
 }
 
 Function CopyHost {
@@ -41,6 +47,10 @@ Function CopyHost {
 	md $serviceTPM > $null
 	Copy-Item "$source\ProcessingService.TPM\bin\$BuildConfiguration\*.pdb" -Destination "$serviceTPM"
 	Copy-Item "$source\ProcessingService.TPM\bin\$BuildConfiguration\*.dll" -Destination "$serviceTPM"
+
+	if ($IncludeConfigs) {
+		Copy-Item "$source\ProcessingService.TPM\bin\$BuildConfiguration\*.config" -Destination "$webTPM" -Recurse
+	}
 }
 
 function cleaningOldArtifacts ($source, $count) {
@@ -109,7 +119,11 @@ try {
 			md $dest\$MigrationFolderName > $null
 
 			Copy-Item $path\Migrations -Recurse -Destination $dest\$MigrationFolderName
-			Copy-Item $path\bin\Release\*.* -Exclude "*.config" -Destination $dest\$MigrationFolderName
+			if ($IncludeConfigs) {
+				Copy-Item $path\bin\Release\*.* -Destination $dest\$MigrationFolderName
+			} else {
+				Copy-Item $path\bin\Release\*.* -Exclude "*.config" -Destination $dest\$MigrationFolderName
+			}
 			Copy-Item $source\packages\EntityFramework.6.1.3\tools\migrate.exe -Destination $dest\$MigrationFolderName
 
 			# Write-Zip -Path "$dest\$MigrationFolderName\*" -OutputPath "$dest\$MigrationFolderName.zip" -Quiet > $null
