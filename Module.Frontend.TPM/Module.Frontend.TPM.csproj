@@ -276,6 +276,7 @@
     <Content Include="Client\controller\tpm\plancogstn\PlanCOGSTn.js" />
     <Content Include="Client\controller\tpm\pludictionary\HistoricalPLUDictionary.js" />
     <Content Include="Client\controller\tpm\pludictionary\PLUDictionary.js" />
+    <Content Include="Client\controller\tpm\promo\PromoMechanicAddPromoes.js" />
     <Content Include="Client\controller\tpm\ratishopper\RATIShopper.js" />
     <Content Include="Client\controller\tpm\ratishopper\DeletedRATIShopper.js" />
     <Content Include="Client\controller\tpm\ratishopper\HistoricalRATIShopper.js" />
@@ -348,6 +349,7 @@
     <Content Include="Client\view\tpm\pludictionary\PLUDictionary.js" />
     <Content Include="Client\view\tpm\pludictionary\PLUDictionaryEditor.js" />
     <Content Include="Client\view\tpm\promo\ApproveClosePromoWindow.js" />
+    <Content Include="Client\view\tpm\promo\PromoMechanicAddPromoes.js" />
     <Content Include="Client\view\tpm\ratishopper\RATIShopper.js" />
     <Content Include="Client\view\tpm\ratishopper\RATIShopperEditor.js" />
     <Content Include="Client\view\tpm\ratishopper\DeletedRATIShopper.js" />

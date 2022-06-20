@@ -775,7 +775,6 @@
     },
 
     onClientTreeEditorClose: function (window) {
-       // debugger;
         var gridView = Ext.ComponentQuery.query('clienttreegrid')[0].getView();
         this.checkForBase(gridView);
     },

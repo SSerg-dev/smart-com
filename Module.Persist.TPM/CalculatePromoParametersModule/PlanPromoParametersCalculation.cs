@@ -161,8 +161,14 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                         if (message == null)
                         {
-                            promo.PlanAddTIShopperCalculated = promo.PlanPromoTIShopper - promo.PlanPromoNetIncrementalLSV * (RATIShopperPercent ?? 0) / 100;
-
+                            if (promo.IsInExchange)
+                            {
+                                promo.PlanAddTIShopperCalculated = promo.PlanPromoTIShopper - promo.Promoes.Sum(g=>g.PlanPromoTIShopper) - (promo.PlanPromoNetIncrementalLSV - promo.Promoes.Sum(g=>g.PlanPromoNetIncrementalLSV)) * (RATIShopperPercent ?? 0) / 100;
+                            }
+                            else
+                            {
+                                promo.PlanAddTIShopperCalculated = promo.PlanPromoTIShopper - promo.PlanPromoNetIncrementalLSV * (RATIShopperPercent ?? 0) / 100;
+                            }
                             var isApproved = promo.LastApprovedDate != null;
                             if (!isApproved)
                             {
@@ -207,7 +213,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                 return null;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return e.ToString();
             }
@@ -247,9 +253,9 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             promo.PlanPromoBaseTI = promo.PlanPromoBaseTI != 0 ? null : promo.PlanPromoBaseTI;
             promo.PlanPromoNetBaseTI = promo.PlanPromoNetBaseTI != 0 ? null : promo.PlanPromoNetBaseTI;
             promo.PlanPromoNSV = promo.PlanPromoNSV != 0 ? null : promo.PlanPromoNSV;
-            promo.PlanPromoNetNSV = promo.PlanPromoNetNSV  != 0 ? null : promo.PlanPromoNetNSV;
+            promo.PlanPromoNetNSV = promo.PlanPromoNetNSV != 0 ? null : promo.PlanPromoNetNSV;
             promo.PlanPromoIncrementalNSV = promo.PlanPromoIncrementalNSV != 0 ? null : promo.PlanPromoIncrementalNSV;
-            promo.PlanPromoNetIncrementalNSV = promo.PlanPromoNetIncrementalNSV  != 0 ? null : promo.PlanPromoNetIncrementalNSV;
+            promo.PlanPromoNetIncrementalNSV = promo.PlanPromoNetIncrementalNSV != 0 ? null : promo.PlanPromoNetIncrementalNSV;
             promo.PlanPromoIncrementalMAC = promo.PlanPromoIncrementalMAC != 0 ? null : promo.PlanPromoIncrementalMAC;
             promo.PlanPromoNetIncrementalMAC = promo.PlanPromoNetIncrementalMAC != 0 ? null : promo.PlanPromoNetIncrementalMAC;
             promo.PlanPromoIncrementalEarnings = promo.PlanPromoIncrementalEarnings != 0 ? null : promo.PlanPromoIncrementalEarnings;

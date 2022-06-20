@@ -299,7 +299,15 @@
                         [false, l10n.ns('tpm', 'InvoiceTypes').value('OffInvoice')]
                     ]
                 }
-            }, {
+            },
+            {
+                text: l10n.ns('tpm', 'Promo').value('IsInExchange'),
+                dataIndex: 'IsInExchange',
+                renderer: function (value) {
+                    return value ? l10n.ns('core', 'booleanValues').value('true') : l10n.ns('core', 'booleanValues').value('false');
+                }
+            },
+            {
                 text: l10n.ns('tpm', 'Promo').value('GrowthAcceleration'),
                 dataIndex: 'IsGrowthAcceleration',
                 renderer: function (value) {

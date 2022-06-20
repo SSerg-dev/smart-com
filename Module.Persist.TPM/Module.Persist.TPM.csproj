@@ -2864,6 +2864,30 @@
     <Compile Include="Migrations\202205241955107_Edit_Copy_Settings.Designer.cs">
       <DependentUpon>202205241955107_Edit_Copy_Settings.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202204191212318_Add_Promo_MasterPromo_And_List.cs" />
+    <Compile Include="Migrations\202204191212318_Add_Promo_MasterPromo_And_List.Designer.cs">
+      <DependentUpon>202204191212318_Add_Promo_MasterPromo_And_List.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202204251206119_Add_Promo_IsInExchange.cs" />
+    <Compile Include="Migrations\202204251206119_Add_Promo_IsInExchange.Designer.cs">
+      <DependentUpon>202204251206119_Add_Promo_IsInExchange.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202204260736219_Add_IsInExchange_PromoGridView.cs" />
+    <Compile Include="Migrations\202204260736219_Add_IsInExchange_PromoGridView.Designer.cs">
+      <DependentUpon>202204260736219_Add_IsInExchange_PromoGridView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202204261037349_Add_LinkedPromoes_Promo.cs" />
+    <Compile Include="Migrations\202204261037349_Add_LinkedPromoes_Promo.Designer.cs">
+      <DependentUpon>202204261037349_Add_LinkedPromoes_Promo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202205111031480_Update_PromoView2.cs" />
+    <Compile Include="Migrations\202205111031480_Update_PromoView2.Designer.cs">
+      <DependentUpon>202205111031480_Update_PromoView2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202205111055378_Update_PromoView4.cs" />
+    <Compile Include="Migrations\202205111055378_Update_PromoView4.Designer.cs">
+      <DependentUpon>202205111055378_Update_PromoView4.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -5474,6 +5498,24 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202205241955107_Edit_Copy_Settings.resx">
       <DependentUpon>202205241955107_Edit_Copy_Settings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202204191212318_Add_Promo_MasterPromo_And_List.resx">
+      <DependentUpon>202204191212318_Add_Promo_MasterPromo_And_List.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202204251206119_Add_Promo_IsInExchange.resx">
+      <DependentUpon>202204251206119_Add_Promo_IsInExchange.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202204260736219_Add_IsInExchange_PromoGridView.resx">
+      <DependentUpon>202204260736219_Add_IsInExchange_PromoGridView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202204261037349_Add_LinkedPromoes_Promo.resx">
+      <DependentUpon>202204261037349_Add_LinkedPromoes_Promo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202205111031480_Update_PromoView2.resx">
+      <DependentUpon>202205111031480_Update_PromoView2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202205111055378_Update_PromoView4.resx">
+      <DependentUpon>202205111055378_Update_PromoView4.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

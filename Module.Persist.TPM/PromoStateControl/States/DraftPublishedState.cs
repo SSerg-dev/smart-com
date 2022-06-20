@@ -100,7 +100,7 @@ namespace Module.Persist.TPM.PromoStateControl
 
 						var oldIncidents = _stateContext.dbContext.Set<PromoOnApprovalIncident>().Where(x => x.PromoId == promoModel.Id && x.ProcessDate == null);
                         // Проверка на GA
-                        if (promoModel.IsGrowthAcceleration)
+                        if (promoModel.IsGrowthAcceleration || promoModel.IsInExchange)
                         {
                             logger.Trace($"Status change check returned true as promo is GA");
 

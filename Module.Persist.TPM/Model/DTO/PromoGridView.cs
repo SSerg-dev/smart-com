@@ -85,6 +85,7 @@ namespace Module.Persist.TPM.Model.DTO {
         public double? PlanPromoIncrementalLSV { get; set; }
         public double? PlanPromoBaselineLSV { get; set; }
         public bool IsGrowthAcceleration { get; set; }
+        public bool IsInExchange { get; set; }
         public string PromoTypesName { get; set; }
         public double? ActualPromoLSVByCompensation { get; set; }
         public double? PlanPromoLSV { get; set; }
