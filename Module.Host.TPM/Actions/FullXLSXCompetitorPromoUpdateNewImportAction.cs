@@ -17,8 +17,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Utility;
 using Utility.FileWorker;
 using Utility.Import;
@@ -35,7 +33,6 @@ namespace Module.Host.TPM.Actions
         private readonly string Separator;
         private readonly string Quote;
         private readonly bool HasHeader;
-
 
         private bool AllowPartialApply { get; set; }
         private readonly Logger logger;
@@ -286,11 +283,6 @@ namespace Module.Host.TPM.Actions
             {                
                 CompetitorPromo typedRec = (CompetitorPromo)rec;
                 typedRec.ClientTree = context.Set<ClientTree>().First(x => x.ObjectId == typedRec.ClientTreeObjectId && x.EndDate == null);
-                if (String.IsNullOrEmpty(typedRec.Name))
-                {
-                    errors.Add("Name must have a value");
-                    isSuitable = false;
-                }
                 if (typedRec.CompetitorBrandTech == null)
                 {
                     errors.Add("Competitor BrandTech not found");
@@ -394,14 +386,18 @@ namespace Module.Host.TPM.Actions
 
                 if (oldRecord == null)
                 {
+                    string competitorBrandTech = newRecord.CompetitorBrandTech.BrandTech;
+                    string mechanicType = newRecord.MechanicType;
+                    double? discount = newRecord.Discount;
+                    dynamic handledDiscount = discount != 0 && discount != null ? discount + "%" : "";//к discount прибавляется знак процента
+                    newRecord.Name = competitorBrandTech + " " + mechanicType + " " + handledDiscount;
                     newRecord.ClientTreeObjectId = context.Set<ClientTree>().First(x => x.ObjectId == newRecord.ClientTreeObjectId && x.EndDate == null).Id;
                     newRecord.Id = Guid.NewGuid();
                     toCreate.Add(newRecord);
                     toHisCreate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(null, newRecord));
                 }
                 else
-                {
-                    toHisUpdate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(oldRecord, newRecord));
+                {   
                     oldRecord.Competitor = newRecord.Competitor;
                     oldRecord.ClientTreeObjectId = context.Set<ClientTree>().First(x => x.ObjectId == newRecord.ClientTreeObjectId && x.EndDate == null).Id;
                     oldRecord.CompetitorBrandTechId = newRecord.CompetitorBrandTechId;
@@ -412,6 +408,7 @@ namespace Module.Host.TPM.Actions
                     oldRecord.EndDate = newRecord.EndDate;
                     oldRecord.MechanicType = newRecord.MechanicType;
                     toUpdate.Add(oldRecord);
+                    toHisUpdate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(oldRecord, newRecord));
                 }
                 importItems.Add(newRecord);
             }
@@ -442,7 +439,7 @@ namespace Module.Host.TPM.Actions
             }
             foreach (var item in toDeletes)
             {
-                toHisDelete.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(null, item));
+                toHisDelete.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(item, item));
             }
             context.HistoryWriter.Write(toHisCreate, context.AuthManager.GetCurrentUser(), context.AuthManager.GetCurrentRole(), OperationType.Created);
             context.HistoryWriter.Write(toHisUpdate, context.AuthManager.GetCurrentUser(), context.AuthManager.GetCurrentRole(), OperationType.Updated);

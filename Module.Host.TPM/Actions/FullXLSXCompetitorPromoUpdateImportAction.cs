@@ -292,11 +292,6 @@ namespace Module.Host.TPM.Actions
             {
                 CompetitorPromo typedRec = (CompetitorPromo)rec;
                 typedRec.ClientTree = context.Set<ClientTree>().First(x => x.ObjectId == typedRec.ClientTreeObjectId && x.EndDate == null);
-                if (String.IsNullOrEmpty(typedRec.Name))
-                {
-                    errors.Add("Name must have a value");
-                    isSuitable = false;
-                }
                 if (typedRec.CompetitorBrandTech == null)
                 {
                     errors.Add("Competitor BrandTech not found");
@@ -386,6 +381,11 @@ namespace Module.Host.TPM.Actions
 
                 if (oldRecord == null)
                 {
+                    string competitorBrandTech = newRecord.CompetitorBrandTech.BrandTech;
+                    string mechanicType = newRecord.MechanicType;
+                    double? discount = newRecord.Discount;
+                    dynamic handledDiscount = discount != 0 && discount != null ? discount + "%" : "";//к discount прибавляется знак процента
+                    newRecord.Name = competitorBrandTech + " " + mechanicType + " " + handledDiscount;
                     newRecord.ClientTreeObjectId = context.Set<ClientTree>().First(x => x.ObjectId == newRecord.ClientTreeObjectId && x.EndDate == null).Id;
                     newRecord.Id = Guid.NewGuid();
                     toCreate.Add(newRecord);
