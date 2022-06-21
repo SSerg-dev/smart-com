@@ -12,14 +12,7 @@
     @Styles.Render("~/Bundles/style/style.min.css")
 </head>
 <body>
-    @if (Request.IsAuthenticated)
-    {
-        @Scripts.Render("~/Bundles/vendor/vendor.min.js")
-        @Scripts.Render("~/Bundles/app/app.min.js")
-    }
-    else
-    {
-        @Html.Action("SignIn", "Account")
-    }
+    @Scripts.Render("~/Bundles/vendor/vendor.min.js")
+    @Scripts.Render("~/Bundles/app/app.min.js")
 </body>
 </html>

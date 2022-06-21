@@ -14,8 +14,6 @@ namespace Frontend
     {
         public void Configuration(IAppBuilder app)
         {
-            ConfigureAuth(app);
-
             AppDomain.CurrentDomain.Load(typeof(Module.Persist.TPM.LogHub).Assembly.FullName);
             AppDomain.CurrentDomain.Load(typeof(Module.Persist.TPM.TasksLogHub).Assembly.FullName);
             AppDomain.CurrentDomain.Load(typeof(Module.Persist.TPM.Session.SessionHub).Assembly.FullName);
