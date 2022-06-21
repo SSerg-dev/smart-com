@@ -330,9 +330,12 @@ namespace Module.Frontend.TPM.Controllers
         {
             string resultData = Request.Content.ReadAsStringAsync().Result;
             EventBTLModel eventBTL = new EventBTLModel();
+            Event standartPromo = await Context.Set<Event>().AsNoTracking().Where(g => g.Name == "Standard promo").FirstOrDefaultAsync();
             if (resultData != null)
             {
                 eventBTL = JsonConvert.DeserializeObject<EventBTLModel>(resultData);
+                eventBTL.DurationDateStart = eventBTL.DurationDateStart.LocalDateTime;
+                eventBTL.DurationDateEnd = eventBTL.DurationDateEnd.LocalDateTime;
                 List<Guid> productGuids = eventBTL.InOutProductIds.Split(';').Where(s => !string.IsNullOrWhiteSpace(s)).Select(s => Guid.Parse(s)).ToList();
                 List<string> products = await Context.Set<Product>().AsNoTracking().Where(g => productGuids.Contains(g.Id) && !g.Disabled).Select(f => f.MarketSegment).ToListAsync();
                 List<string> distinctList = products.Distinct().ToList();
@@ -373,21 +376,55 @@ namespace Module.Frontend.TPM.Controllers
                         {
                             double totalDays = (eventBTL.DurationDateEnd - eventBTL.DurationDateStart).TotalDays;
                             double totalDaysBTL = ((DateTimeOffset)btl.EndDate - (DateTimeOffset)btl.StartDate).TotalDays;
-                            double countDays = 0;
-                            if (eventBTL.DurationDateStart > (DateTimeOffset)btl.StartDate)
+                            DateTimeOffset startDateDiff;
+                            DateTimeOffset endDateDiff;
+                            if (eventBTL.DurationDateStart >= (DateTimeOffset)btl.StartDate)
                             {
-                                countDays += (eventBTL.DurationDateStart - (DateTimeOffset)btl.StartDate).TotalDays;
+                                startDateDiff = eventBTL.DurationDateStart;
+                                //countDays += (eventBTL.DurationDateStart - (DateTimeOffset)btl.StartDate).TotalDays;
                             }
-                            if ((DateTimeOffset)btl.EndDate > eventBTL.DurationDateEnd)
+                            else
                             {
-                                countDays += ((DateTimeOffset)btl.EndDate - eventBTL.DurationDateEnd).TotalDays;
+                                startDateDiff = (DateTimeOffset)btl.StartDate;
                             }
-                            double diffPeriod = totalDaysBTL - countDays;
+                            if (eventBTL.DurationDateEnd <= (DateTimeOffset)btl.EndDate)
+                            {
+                                endDateDiff = eventBTL.DurationDateEnd;
+                                //countDays += ((DateTimeOffset)btl.EndDate - eventBTL.DurationDateEnd).TotalDays;
+                            }
+                            else
+                            {
+                                endDateDiff = (DateTimeOffset)btl.EndDate;
+                            }
+                            double diffPeriod = (endDateDiff - startDateDiff).TotalDays;
+                            if (totalDaysBTL / 2 > diffPeriod)
+                            {
+                                copyBtls.Remove(btl);
+                            }
                         }
+                        item.BTLs = copyBtls;
                     }
                 }
+                events = events.Where(g => g.BTLs.Count != 0).ToList();
+                Event returnEvent = new Event();
+                if (events.Count != 0)
+                {
+                    returnEvent = events.FirstOrDefault();
+                }
+                else
+                {
+                    returnEvent = standartPromo;
+                }
+                returnEvent.BTLs = null;
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(returnEvent, new JsonSerializerSettings
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                }));
             }
-            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
+            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(standartPromo, new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            }));
         }
     }
     public class EventBTLModel

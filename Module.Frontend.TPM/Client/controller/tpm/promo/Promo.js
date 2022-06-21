@@ -6224,15 +6224,14 @@
     },
 
 
-    setEventBTL: function () {
-        debugger;
+    setEventBTL: function () {        
         var promoeditorcustom = Ext.ComponentQuery.query('promoeditorcustom')[0];
         var period = promoeditorcustom.down('container[name=promo_step4]');
         var durationDateStart = period.down('datefield[name=DurationStartDate]');
         var durationDateEnd = period.down('datefield[name=DurationEndDate]');
 
         if (durationDateStart.value && durationDateEnd.value) {
-            var eventBTLModel = new Object();
+            var eventBTLModel = new Object();            
             eventBTLModel.DurationDateStart = durationDateStart.value;
             eventBTLModel.DurationDateEnd = durationDateEnd.value;
             eventBTLModel.InOutProductIds = promoeditorcustom.InOutProductIds;
@@ -6243,8 +6242,15 @@
                 data: JSON.stringify(eventBTLModel),
                 success: function (response) {
                     var data = Ext.JSON.decode(response.value);
-                    if (data.success) {
-                        window.setLoading(false);
+                    if (data) {
+                        var _event = new App.model.tpm.event.Event({
+                            Id: data.Id,
+                            Name: data.Name,
+                            Description: data.Description
+                        });
+                        var chooseEventButton = Ext.ComponentQuery.query('chooseEventButton')[0];
+                        chooseEventButton.setValue(_event);
+                        chooseEventButton.updateMappingValues(_event);
                     }
                     else {
                         App.Notify.pushError('BTL Events load error');
