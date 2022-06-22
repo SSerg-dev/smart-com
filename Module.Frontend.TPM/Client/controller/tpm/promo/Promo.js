@@ -6230,7 +6230,7 @@
         var durationDateStart = period.down('datefield[name=DurationStartDate]');
         var durationDateEnd = period.down('datefield[name=DurationEndDate]');
 
-        if (durationDateStart.value && durationDateEnd.value) {
+        if (durationDateStart.value && durationDateEnd.value && promoeditorcustom.InOutProductIds) {
             var eventBTLModel = new Object();            
             eventBTLModel.DurationDateStart = durationDateStart.value;
             eventBTLModel.DurationDateEnd = durationDateEnd.value;
