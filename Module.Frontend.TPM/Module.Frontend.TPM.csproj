@@ -248,7 +248,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="Thinktecture.IdentityModel, Version=3.6.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\RodMApp.Core.TPM.Frontend.0.1.21.10201540\lib\net451\Thinktecture.IdentityModel.dll</HintPath>
+      <HintPath>..\packages\RodMApp.Core.TPM.Frontend.0.1.22.06201608\lib\net451\Thinktecture.IdentityModel.dll</HintPath>
     </Reference>
     <Reference Include="Utility, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.22.06201608\lib\net451\Utility.dll</HintPath>
