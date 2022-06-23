@@ -158,7 +158,7 @@ namespace Module.Frontend.TPM.Controllers
                 try
                 {
                     ISettingsManager settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
-                    int diffBetweenPromoInDays = settingsManager.GetSetting<int>("DIFF_BETWEEN_PROMO_IN_DAYS_BTL", 7 * 12);
+                    int diffBetweenPromoInDays = settingsManager.GetSetting<int>("DIFF_BETWEEN_PROMO_IN_DAYS", 7 * 12);
 
                     List<string> promoIdsList = new List<string>();
                     string promoIds = Request.Content.ReadAsStringAsync().Result;
