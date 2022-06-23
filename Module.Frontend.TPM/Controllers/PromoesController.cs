@@ -1244,6 +1244,8 @@ namespace Module.Frontend.TPM.Controllers
                     return Content(HttpStatusCode.OK, UserDashboard.GetCMManagerCount(authorizationManager, Context));
                 case "CustomerMarketing":
                     return Content(HttpStatusCode.OK, UserDashboard.GetCustomerMarketingCount(authorizationManager, Context));
+                case "GAManager":
+                    return Content(HttpStatusCode.OK, UserDashboard.GetGAManagerCount(authorizationManager, Context));
             }
             return Content(HttpStatusCode.InternalServerError, JsonConvert.SerializeObject(new { Error = "Fail to role" }));
         }

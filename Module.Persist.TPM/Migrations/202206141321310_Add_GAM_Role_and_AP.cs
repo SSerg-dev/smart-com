@@ -31,7 +31,7 @@ namespace Module.Persist.TPM.Migrations
                        (NEWID()
                        ,0
                        ,NULL
-                       ,'GAManager '
+                       ,'GAManager'
                        ,'Growth Acceleration Manager'
                        ,1)
             END
@@ -131,6 +131,7 @@ namespace Module.Persist.TPM.Migrations
                 (RoleId, AccessPointId) values
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='Promoes' and [Action]='GetPromoes' and [Disabled] = 0)),
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='Promoes' and [Action]='GetFilteredData' and [Disabled] = 0)),
+                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='Promoes' and [Action]='GetUserDashboardsCount' and [Disabled] = 0)),
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='Promoes' and [Action]='CheckIfLogHasErrors' and [Disabled] = 0))
             GO
                 DECLARE @RoleId uniqueidentifier = (SELECT[Id] FROM [DefaultSchemaSetting].[Role] where SystemName = 'GAManager');

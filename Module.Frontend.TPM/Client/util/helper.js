@@ -1477,7 +1477,7 @@ Ext.override(App.menu.core.MenuManager, {
         if (role) {
             this.callParent(arguments);
             var controller = App.app.getController('core.Main');
-            if (['DemandFinance', 'KeyAccountManager', 'DemandPlanning', 'CustomerMarketing', 'CMManager'].includes(role.SystemName)) {
+            if (['DemandFinance', 'KeyAccountManager', 'DemandPlanning', 'CustomerMarketing', 'CMManager', 'GAManager'].includes(role.SystemName)) {
                 controller.showUserDashboard(controller);
             }
         } else {

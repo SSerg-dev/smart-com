@@ -210,5 +210,18 @@ namespace Module.Frontend.TPM.Util
 
             return JsonConvert.SerializeObject(new { ProductionCost = productionCost, BTLCost = bTLCost });
         }
+        public static string GetGAManagerCount(IAuthorizationManager authorizationManager, DatabaseContext Context)
+        {
+            IQueryable<PromoGridView> promo = GetConstraintedQueryPromo(authorizationManager, Context);
+            var nonPromoSupport = GetConstraintedQueryNonPromoSupport(authorizationManager, Context);
+            var calculateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault().AddHours(48d);
+            var nowDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault();
+            //TimeCritical
+            var timeCritical = promo.Where(p => (p.PromoStatusName.Equals("On Approval") && (p.IsGAManagerApproved == false || p.IsGAManagerApproved == null) && p.DispatchesStart < calculateDate)).Count();
+            //NeedsMyApproval
+            calculateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault().AddDays(7 * 9);
+            int gaApproval = promo.Where(p => p.PromoStatusName.Equals("On Approval") && (p.IsGAManagerApproved == false || p.IsGAManagerApproved == null) && p.DispatchesStart < calculateDate && (p.IsInExchange || p.IsGrowthAcceleration)).Count();
+            return JsonConvert.SerializeObject(new { TimeCritical = timeCritical, GaApproval = gaApproval });
+        }
     }
 }

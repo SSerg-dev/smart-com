@@ -2892,6 +2892,14 @@
     <Compile Include="Migrations\202206141321310_Add_GAM_Role_and_AP.Designer.cs">
       <DependentUpon>202206141321310_Add_GAM_Role_and_AP.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202206231242583_Add_IsGAManagerApproved.cs" />
+    <Compile Include="Migrations\202206231242583_Add_IsGAManagerApproved.Designer.cs">
+      <DependentUpon>202206231242583_Add_IsGAManagerApproved.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202206231324053_Change_PromoGridView_PromoROIReportView.cs" />
+    <Compile Include="Migrations\202206231324053_Change_PromoGridView_PromoROIReportView.Designer.cs">
+      <DependentUpon>202206231324053_Change_PromoGridView_PromoROIReportView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -5523,6 +5531,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202206141321310_Add_GAM_Role_and_AP.resx">
       <DependentUpon>202206141321310_Add_GAM_Role_and_AP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202206231242583_Add_IsGAManagerApproved.resx">
+      <DependentUpon>202206231242583_Add_IsGAManagerApproved.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202206231324053_Change_PromoGridView_PromoROIReportView.resx">
+      <DependentUpon>202206231324053_Change_PromoGridView_PromoROIReportView.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
