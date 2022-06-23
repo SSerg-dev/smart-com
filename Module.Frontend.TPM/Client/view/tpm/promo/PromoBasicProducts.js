@@ -488,6 +488,9 @@
                                         splitPublishBtn.setDisabled(false);
                                     }                                    
                                 }
+                                if (promoEditorCustom.isInExchange) {
+                                    splitPublishBtn.setDisabled(true);
+                                }
                                 //Activate button "Send for approval"
                                 var sendForApproval = Ext.ComponentQuery.query("#btn_sendForApproval")[0];
                                 sendForApproval.setDisabled(false);

@@ -43,7 +43,7 @@ namespace Module.Frontend.TPM.Controllers
             this.authorizationManager = authorizationManager;
         }
 
-        protected IQueryable<PromoProduct> GetConstraintedQuery(bool updateActualsMode = false, Guid? promoIdInUpdateActualsMode = null, bool isActualsExport = false)
+        protected IQueryable<PromoProduct> GetConstraintedQuery(ODataQueryOptions<PromoProduct> options, bool updateActualsMode = false, Guid? promoIdInUpdateActualsMode = null, bool isActualsExport = false)
         {
             UserInfo user = authorizationManager.GetCurrentUser();
             string role = authorizationManager.GetCurrentRoleName();
@@ -52,7 +52,7 @@ namespace Module.Frontend.TPM.Controllers
                 .ToList() : new List<Constraint>();
 
             IQueryable<PromoProduct> query = null;
-            if (updateActualsMode && promoIdInUpdateActualsMode != null)
+            if (updateActualsMode && promoIdInUpdateActualsMode != null && promoIdInUpdateActualsMode != Guid.Empty)
             {
                 if (isActualsExport)
                 {
@@ -87,42 +87,44 @@ namespace Module.Frontend.TPM.Controllers
             }
             else
             {
-                query = Context.Set<PromoProduct>().Where(e => !e.Disabled);
+                query = Context.Set<PromoProduct>().Where(e => !e.Disabled).FixOdataExpand(options);
                 return query;
             }
         }
 
-        [ClaimsAuthorize]
-        [EnableQuery(MaxNodeCount = int.MaxValue)]
-        public SingleResult<PromoProduct> GetPromoProduct([FromODataUri] System.Guid key)
-        {
-            return SingleResult.Create(GetConstraintedQuery());
-        }
+        //[ClaimsAuthorize]
+        //[EnableQuery(MaxNodeCount = int.MaxValue)]
+        //public SingleResult<PromoProduct> GetPromoProduct([FromODataUri] System.Guid key)
+        //{
+        //    return SingleResult.Create(GetConstraintedQuery());
+        //}
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue, MaxExpansionDepth = 3)]
-        public IQueryable<PromoProduct> GetPromoProducts(bool updateActualsMode = false, Guid? promoIdInUpdateActualsMode = null)
+        public IQueryable<PromoProduct> GetPromoProducts(ODataQueryOptions<PromoProduct> options)
         {
-            return GetConstraintedQuery(updateActualsMode, promoIdInUpdateActualsMode);
+            bool updateActualsMode = Convert.ToBoolean(HttpContext.Current.Request.QueryString["updateActualsMode"]);
+            Guid.TryParse(HttpContext.Current.Request.QueryString["promoIdInUpdateActualsMode"], out Guid promoIdInUpdateActualsMode);
+            return GetConstraintedQuery(options, updateActualsMode, promoIdInUpdateActualsMode);
         }
 
         [ClaimsAuthorize]
         [HttpPost]
         public IQueryable<PromoProduct> GetFilteredData(ODataQueryOptions<PromoProduct> options)
         {
-            string bodyText = Helper.GetRequestBody(HttpContext.Current.Request);
-            var updateActualsMode = Helper.GetValueIfExists<bool>(bodyText, "updateActualsMode");
-            var promoIdInUpdateActualsMode = Helper.GetValueIfExists<Guid?>(bodyText, "promoIdInUpdateActualsMode");
-            var query = GetConstraintedQuery(updateActualsMode, promoIdInUpdateActualsMode);
+            bool updateActualsMode = Convert.ToBoolean(HttpContext.Current.Request.QueryString["updateActualsMode"]);
+            Guid.TryParse(HttpContext.Current.Request.QueryString["promoIdInUpdateActualsMode"], out Guid promoIdInUpdateActualsMode);
+            return GetConstraintedQuery(options, updateActualsMode, promoIdInUpdateActualsMode);
+            //var query = GetConstraintedQuery(options, updateActualsMode, promoIdInUpdateActualsMode);
 
-            var querySettings = new ODataQuerySettings
-            {
-                EnsureStableOrdering = false,
-                HandleNullPropagation = HandleNullPropagationOption.False
-            };
-            var optionsPost = new ODataQueryOptionsPost<PromoProduct>(options.Context, Request, HttpContext.Current.Request);
+            //var querySettings = new ODataQuerySettings
+            //{
+            //    EnsureStableOrdering = false,
+            //    HandleNullPropagation = HandleNullPropagationOption.False
+            //};
+            //var optionsPost = new ODataQueryOptionsPost<PromoProduct>(options.Context, Request, HttpContext.Current.Request);
 
-            return optionsPost.ApplyTo(query, querySettings) as IQueryable<PromoProduct>;
+            //return optionsPost.ApplyTo(query, querySettings) as IQueryable<PromoProduct>;
         }
 
         [ClaimsAuthorize]
@@ -434,7 +436,7 @@ namespace Module.Frontend.TPM.Controllers
         {
             // Во вкладке Promo -> Activity можно смотреть детализацию раличных параметров
             // Это один грид с разными столбцами, additionalColumn - набор столбцов
-            IQueryable results = options.ApplyTo(GetConstraintedQuery(updateActualsMode, promoId, true).Where(x => !x.Disabled && (!promoId.HasValue || x.PromoId == promoId.Value)));
+            IQueryable results = GetConstraintedQuery(options, updateActualsMode, promoId, true).Where(x => !x.Disabled && (!promoId.HasValue || x.PromoId == promoId.Value));
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
             RoleInfo role = authorizationManager.GetCurrentRole();
@@ -730,7 +732,7 @@ namespace Module.Frontend.TPM.Controllers
         [ClaimsAuthorize]
         public IHttpActionResult SupportAdminExportXLSX(ODataQueryOptions<PromoProduct> options, Guid? promoId = null)
         {
-            var products = GetConstraintedQuery(false, promoId).Where(x => !x.Disabled && (!promoId.HasValue || x.PromoId == promoId.Value));
+            var products = GetConstraintedQuery(options, false, promoId).Where(x => !x.Disabled && (!promoId.HasValue || x.PromoId == promoId.Value));
             var corrections = Context.Set<PromoProductsCorrection>().Where(x => products.Select(y => y.Id).Contains(x.PromoProductId) && x.TempId == null && x.Disabled != true);
             foreach (var singleCorrection in corrections)
             {

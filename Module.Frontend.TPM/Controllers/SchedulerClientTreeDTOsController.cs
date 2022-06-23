@@ -54,6 +54,7 @@ namespace Module.Frontend.TPM.Controllers {
         [EnableQuery(MaxNodeCount = int.MaxValue)]
         public IQueryable<SchedulerClientTreeDTO> GetSchedulerClientTreeDTOs() {
             List<SchedulerClientTreeDTO> result = new List<SchedulerClientTreeDTO>();
+            int sort = 1;
             foreach (ClientTree client in GetConstraintedQuery()) {
                 //SchedulerClientTreeDTO clientDef = Mapper.Map<SchedulerClientTreeDTO>(client);
                 //string stringId = clientDef.Id.ToString();
@@ -98,7 +99,7 @@ namespace Module.Frontend.TPM.Controllers {
                         row.TypeName = "Competitor";
                         row.CompetitorName = rowName;
                     }
-                    row.Id = row.Id + 10000 + i;
+                    row.Id = sort++;
                     row.InOutId = $"{stringId}-{i++}";
                     result.Add(row);
                     prevRow = row;
@@ -112,6 +113,7 @@ namespace Module.Frontend.TPM.Controllers {
         public IQueryable<SchedulerClientTreeDTO> GetFilteredData(ODataQueryOptions<SchedulerClientTreeDTO> options)
         {
             List<SchedulerClientTreeDTO> result = new List<SchedulerClientTreeDTO>();
+            int sort = 1;
             foreach (ClientTree client in GetConstraintedQuery())
             {
                 SchedulerClientTreeDTO prevRow = Mapper.Map<SchedulerClientTreeDTO>(client);
@@ -126,7 +128,7 @@ namespace Module.Frontend.TPM.Controllers {
                 {
                     var row = (SchedulerClientTreeDTO)prevRow.Clone();
                     row.TypeName = rowName;
-                    row.Id = row.Id + 10000 + i;
+                    row.Id = sort++;
                     row.InOutId = $"{stringId}-{i++}";
                     result.Add(row);
                     prevRow = row;

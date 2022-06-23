@@ -26,6 +26,7 @@ namespace Module.Persist.TPM.PromoStateControl
             var startDateCheck = prevPromo.StartDate != curPromo.StartDate;
             var endDateCheck = prevPromo.EndDate != curPromo.EndDate;
             var isGaCheck = prevPromo.IsGrowthAcceleration != curPromo.IsGrowthAcceleration;
+            var isInExchangeCheck = prevPromo.IsInExchange != curPromo.IsInExchange;
 
             var mechanicFromVPtoTPR = prevMechanicIsVP && curMechanicIsTPR;
 
@@ -37,13 +38,15 @@ namespace Module.Persist.TPM.PromoStateControl
             logger.Trace($"StartDateCheck: {startDateCheck} | prev start date: {prevPromo.StartDate}, cur start date: {curPromo.StartDate}");
             logger.Trace($"EndDateCheck: {endDateCheck} | prev end date: {prevPromo.EndDate}, cur end date: {curPromo.EndDate}");
             logger.Trace($"IsGaCheck: {isGaCheck} | prev GA: {prevPromo.IsGrowthAcceleration}, cur GA: {curPromo.IsGrowthAcceleration}");
+            logger.Trace($"isInExchangeCheck: {isInExchangeCheck} | prev GA: {prevPromo.IsInExchange}, cur GA: {curPromo.IsInExchange}");
 
-            return  mechanicDiscountCheck ||
+            return mechanicDiscountCheck ||
                     mechanicFromVPtoTPR ||
                     productHierarchyCheck ||
                     startDateCheck ||
                     endDateCheck ||
-                    isGaCheck;
+                    isGaCheck ||
+                    isInExchangeCheck;
         }
 
         public static bool IsDispatchChanged(bool isCorrectDispatchDifference, Promo curPromo, Promo prevPromo)
@@ -107,7 +110,7 @@ namespace Module.Persist.TPM.PromoStateControl
             promoModel.IsDemandFinanceApproved = false;
 
             var oldIncidents = context.Set<PromoOnApprovalIncident>().Where(x => x.PromoId == promoModel.Id && x.ProcessDate == null);
-            if (promoModel.IsGrowthAcceleration)
+            if (promoModel.IsGrowthAcceleration || promoModel.IsInExchange)
             {
                 // Закрываем все неактуальные инциденты
                 foreach (var incident in oldIncidents)

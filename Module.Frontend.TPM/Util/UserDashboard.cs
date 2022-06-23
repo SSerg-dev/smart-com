@@ -14,7 +14,7 @@ using Persist;
 using Persist.Model;
 using Persist.ScriptGenerator.Filter;
 using System;
-using System.Collections.Generic; 
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
 using System.Web.Http.OData;
@@ -43,9 +43,9 @@ namespace Module.Frontend.TPM.Util
             {
                 query = query.Where(e => e.PromoStatusSystemName != "Draft" || e.CreatorId == user.Id);
             }
-            return query; 
+            return query;
         }
-        private static IQueryable<BTL> GetBTLConstraintedQuery(IAuthorizationManager authorizationManager, DatabaseContext Context) 
+        private static IQueryable<BTL> GetBTLConstraintedQuery(IAuthorizationManager authorizationManager, DatabaseContext Context)
         {
             UserInfo user = authorizationManager.GetCurrentUser();
             string role = authorizationManager.GetCurrentRoleName();
@@ -56,7 +56,7 @@ namespace Module.Frontend.TPM.Util
 
             return query;
         }
-    private static IQueryable<PromoSupport> GetConstraintedQueryPromoSupport(IAuthorizationManager authorizationManager, DatabaseContext Context)
+        private static IQueryable<PromoSupport> GetConstraintedQueryPromoSupport(IAuthorizationManager authorizationManager, DatabaseContext Context)
         {
             UserInfo user = authorizationManager.GetCurrentUser();
             string role = authorizationManager.GetCurrentRoleName();
@@ -78,11 +78,11 @@ namespace Module.Frontend.TPM.Util
             string role = authorizationManager.GetCurrentRoleName();
             IList<Constraint> constraints = user.Id.HasValue ? Context.Constraints
                 .Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
-                .ToList() : new List<Constraint>(); 
+                .ToList() : new List<Constraint>();
             IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
             IQueryable<NonPromoSupport> query = Context.Set<NonPromoSupport>().Where(e => !e.Disabled);
-            IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking(); 
-            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters); 
+            IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
+            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
             return query;
         }
         public static string GetKeyAccountManagerCount(IAuthorizationManager authorizationManager, DatabaseContext Context)
@@ -102,7 +102,7 @@ namespace Module.Frontend.TPM.Util
             var toApporval = promo.Where(p => p.PromoStatusName.Equals("Draft(published)") && p.DispatchesStart < calculateDate).Count();
             //ToPlan 
             calculateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault().AddDays(7 * 4);
-            var toPlan = promo.Where(p => (p.PromoStatusName.Equals("Approved")  && p.StartDate <= calculateDate)).Count();
+            var toPlan = promo.Where(p => (p.PromoStatusName.Equals("Approved") && p.StartDate <= calculateDate)).Count();
             //UploadActuals
             var uploadActuals = promo.Where(p => p.PromoStatusName.Equals("Finished") && (p.ActualPromoLSVByCompensation == 0 || p.ActualPromoLSVByCompensation == null)).Count();
             // PromoToClose 
@@ -120,7 +120,7 @@ namespace Module.Frontend.TPM.Util
             //NonPromoTICost
             var nonPromoTICost = nonPromoSupport.Where(p => (p.ActualCostTE == 0 || p.ActualCostTE == null) && p.EndDate <= dayEnd).Count();
 
-            return JsonConvert.SerializeObject(new { TimeCritical = timeCritical, ToApporval = toApporval, ToPlan = toPlan, UploadActuals = uploadActuals, PromoToClose = promoToClose, PromoTICost = promoTICost, NonPromoTICost = nonPromoTICost});
+            return JsonConvert.SerializeObject(new { TimeCritical = timeCritical, ToApporval = toApporval, ToPlan = toPlan, UploadActuals = uploadActuals, PromoToClose = promoToClose, PromoTICost = promoTICost, NonPromoTICost = nonPromoTICost });
         }
         public static string GetDemandPlanningCount(IAuthorizationManager authorizationManager, DatabaseContext Context)
         {
@@ -132,11 +132,13 @@ namespace Module.Frontend.TPM.Util
             //OnApporval
             calculateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault().AddDays(7 * 9);
 
-            var onApporval = promo.Where(p => (p.PromoStatusName.Equals("On Approval") && p.IsCMManagerApproved == true && (p.IsDemandPlanningApproved == false || p.IsDemandPlanningApproved == null) && p.DispatchesStart < calculateDate)).Count();
+            var onApporval = promo.Where(p => (p.PromoStatusName.Equals("On Approval") && p.IsCMManagerApproved == true && (p.IsDemandPlanningApproved == false || p.IsDemandPlanningApproved == null) && p.DispatchesStart < calculateDate) && (!p.IsGrowthAcceleration && !p.IsInExchange)).Count();
+            //GaInExchangeApproval
+            var gaInExchangeApproval = promo.Where(p => (p.PromoStatusName.Equals("On Approval") && p.IsCMManagerApproved == true && (p.IsDemandPlanningApproved == false || p.IsDemandPlanningApproved == null) && p.DispatchesStart < calculateDate && (p.IsInExchange || p.IsGrowthAcceleration))).Count();
             //AdjustData
-            var adjustData = promo.Where(p => (p.PromoStatusName.Equals("On Approval") && p.IsCMManagerApproved == true && (p.IsDemandPlanningApproved == false || p.IsDemandPlanningApproved == null) && (((p.InOut == false)&& (p.PlanPromoLSV == 0 || p.PlanPromoLSV == null ||
+            var adjustData = promo.Where(p => (p.PromoStatusName.Equals("On Approval") && p.IsCMManagerApproved == true && (p.IsDemandPlanningApproved == false || p.IsDemandPlanningApproved == null) && (((p.InOut == false) && (p.PlanPromoLSV == 0 || p.PlanPromoLSV == null ||
                             p.PlanPromoBaselineLSV == 0 || p.PlanPromoBaselineLSV == null ||
-                            p.PlanPromoUpliftPercent == 0 || p.PlanPromoUpliftPercent == null)) ||((p.InOut == true) &&((p.PlanPromoLSV == 0 || p.PlanPromoLSV == null)))))).Count();
+                            p.PlanPromoUpliftPercent == 0 || p.PlanPromoUpliftPercent == null)) || ((p.InOut == true) && ((p.PlanPromoLSV == 0 || p.PlanPromoLSV == null)))))).Count();
             //UploadActuals
             calculateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault().AddDays(-50d);
 
@@ -145,7 +147,7 @@ namespace Module.Frontend.TPM.Util
                                 (p.EndDate < calculateDate)).Count();
 
 
-            return JsonConvert.SerializeObject(new { TimeCritical = timeCritical, OnApporval = onApporval, AdjustData = adjustData,UploadActuals = uploadActuals });
+            return JsonConvert.SerializeObject(new { TimeCritical = timeCritical, OnApporval = onApporval, GaInExchangeApproval = gaInExchangeApproval, AdjustData = adjustData, UploadActuals = uploadActuals });
         }
         public static string GetDemandFinanceCount(IAuthorizationManager authorizationManager, DatabaseContext Context)
         {
@@ -158,10 +160,12 @@ namespace Module.Frontend.TPM.Util
             //TimeCritical
             var timeCritical = promo.Where(p => (p.PromoStatusName.Equals("On Approval") && p.IsCMManagerApproved == true && p.IsDemandPlanningApproved == true && (p.IsDemandFinanceApproved == false || p.IsDemandFinanceApproved == null) && p.DispatchesStart < calculateDate)).Count();
             //NeedsMyApproval
-            calculateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault().AddDays(7 * 9); 
-            var needsMyApproval = promo.Where(p => (p.PromoStatusName.Equals("On Approval") && p.IsCMManagerApproved == true && p.IsDemandPlanningApproved == true && (p.IsDemandFinanceApproved ==false || p.IsDemandFinanceApproved == null) && p.DispatchesStart < calculateDate)).Count();
+            calculateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault().AddDays(7 * 9);
+            var needsMyApproval = promo.Where(p => (p.PromoStatusName.Equals("On Approval") && p.IsCMManagerApproved == true && p.IsDemandPlanningApproved == true && (p.IsDemandFinanceApproved == false || p.IsDemandFinanceApproved == null) && p.DispatchesStart < calculateDate) && (!p.IsGrowthAcceleration && !p.IsInExchange)).Count();
+            //GaInExchangeApproval
+            var gaInExchangeApproval = promo.Where(p => (p.PromoStatusName.Equals("On Approval") && p.IsCMManagerApproved == true && p.IsDemandPlanningApproved == true && (p.IsDemandFinanceApproved == false || p.IsDemandFinanceApproved == null) && p.DispatchesStart < calculateDate && (p.IsInExchange || p.IsGrowthAcceleration))).Count();
             //ActualShopperTI
-            var actualShopperTI = promo.Where(p => (p.PromoStatusName.Equals("Finished") &&(p.ActualPromoTIShopper == 0 || p.ActualPromoTIShopper == null))).Count();
+            var actualShopperTI = promo.Where(p => (p.PromoStatusName.Equals("Finished") && (p.ActualPromoTIShopper == 0 || p.ActualPromoTIShopper == null))).Count();
             //PromoTICost
             var dayEnd = new DateTime(nowDateMinusDay.Year, nowDateMinusDay.Month, nowDateMinusDay.Day, 23, 59, 59);
             var promoTICost = promoSupport.Where(p => (p.ActualCostTE == 0 || p.ActualCostTE == null) && p.EndDate <= dayEnd).Count();
@@ -175,8 +179,8 @@ namespace Module.Frontend.TPM.Util
             calculateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault().AddDays(-50d);
             var demandPlanningFact = promo.Where(p => p.PromoStatusName.Equals("Finished") &&
                                 (p.ActualPromoLSV == 0 || p.ActualPromoLSV == null) &&
-                                (p.EndDate < calculateDate)).Count(); 
-            return JsonConvert.SerializeObject(new { TimeCritical = timeCritical, NeedsMyApproval = needsMyApproval, ActualShopperTI = actualShopperTI,PromoTICost = promoTICost, NonPromoTICost = nonPromoTICost, DemandPlanningPlan = demandPlanningPlan, DemandPlanningFact = demandPlanningFact });
+                                (p.EndDate < calculateDate)).Count();
+            return JsonConvert.SerializeObject(new { TimeCritical = timeCritical, NeedsMyApproval = needsMyApproval, GaInExchangeApproval = gaInExchangeApproval, ActualShopperTI = actualShopperTI, PromoTICost = promoTICost, NonPromoTICost = nonPromoTICost, DemandPlanningPlan = demandPlanningPlan, DemandPlanningFact = demandPlanningFact });
         }
         public static string GetCMManagerCount(IAuthorizationManager authorizationManager, DatabaseContext Context)
         {
@@ -188,8 +192,9 @@ namespace Module.Frontend.TPM.Util
             var timeCritical = promo.Where(p => (p.PromoStatusName.Equals("On Approval") && (p.IsCMManagerApproved == false || p.IsCMManagerApproved == null) && p.DispatchesStart < calculateDate)).Count();
             //NeedsMyApproval
             calculateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault().AddDays(7 * 9);
-            var needsMyApproval = promo.Where(p => p.PromoStatusName.Equals("On Approval") && (p.IsCMManagerApproved == false || p.IsCMManagerApproved == null) && p.DispatchesStart < calculateDate).Count(); 
-            return JsonConvert.SerializeObject(new { TimeCritical = timeCritical, NeedsMyApproval = needsMyApproval });
+            var needsMyApproval = promo.Where(p => p.PromoStatusName.Equals("On Approval") && (p.IsCMManagerApproved == false || p.IsCMManagerApproved == null) && p.DispatchesStart < calculateDate && (!p.IsGrowthAcceleration && !p.IsInExchange)).Count();
+            var gaInExchangeApproval = promo.Where(p => p.PromoStatusName.Equals("On Approval") && (p.IsCMManagerApproved == false || p.IsCMManagerApproved == null) && p.DispatchesStart < calculateDate && (p.IsInExchange || p.IsGrowthAcceleration)).Count();
+            return JsonConvert.SerializeObject(new { TimeCritical = timeCritical, NeedsMyApproval = needsMyApproval, GaInExchangeApproval = gaInExchangeApproval });
         }
         public static string GetCustomerMarketingCount(IAuthorizationManager authorizationManager, DatabaseContext Context)
         {

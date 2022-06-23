@@ -41,7 +41,7 @@
             Ext.each(radios, function (r) {
                 r.fieldLabelTip.setDisabled(true);
                 r.fieldValueTip.setDisabled(true);
-            });  
+            });
         }
     },
 
@@ -62,6 +62,12 @@
     productHierarchy: null,
     promoStartDate: null,
     promoEndDate: null,
+
+    isGrowthAcceleration: null,
+    isApolloExport: null,
+    isInExchange: null,
+
+    readOnly: null,
 
     initComponent: function () {
         this.callParent(arguments);
@@ -294,7 +300,7 @@
                             xtype: 'promomechanic',
                             name: 'promo_step3',
                             itemId: 'promo_step3',
-                            height: 207 + 35,
+                            height: 287 + 35,
                             header: {
                                 title: l10n.ns('tpm', 'promoStap').value('basicStep3'),
                                 cls: 'promo-header-item'
@@ -356,7 +362,7 @@
                 name: 'promoBudgets',
                 itemId: 'promoBudgets',
                 layout: 'fit',
-                 dockedItems: [{
+                dockedItems: [{
                     xtype: 'custompromotoolbar',
                     dock: 'left',
                     items: [{
@@ -624,7 +630,7 @@
                     }
                 }]
             }, {
-                    xtype: 'promosummary'
+                xtype: 'promosummary'
             }, {
                 // approvalhistory
                 items: [{
@@ -824,40 +830,40 @@
         flex: 10
         },
         {
-        text: l10n.ns('tpm', 'customtoptoolbar').value('recalculate'),
-        itemId: 'btn_recalculatePromo',
-        style: { "background-color": "#ffb74d" },
-        hidden: true
+            text: l10n.ns('tpm', 'customtoptoolbar').value('recalculate'),
+            itemId: 'btn_recalculatePromo',
+            style: { "background-color": "#ffb74d" },
+            hidden: true
         },
         {
             text: l10n.ns('tpm', 'customtoptoolbar').value('resetPromo'),
             itemId: 'btn_resetPromo',
             style: { "background-color": "#ffb74d" },
             hidden: true
-        },{
-        text: l10n.ns('tpm', 'buttons').value('close'),
-        itemId: 'closePromo',
-        style: { "background-color": "#3F6895" },
-        hidden: true
-    }, {
-        text: l10n.ns('tpm', 'buttons').value('cancel'),
-        itemId: 'cancelPromo',
-        style: { "background-color": "#3F6895" }
-    }, {
-        text: l10n.ns('tpm', 'buttons').value('edit'),
-        itemId: 'changePromo',
-        style: { "background-color": "#26A69A" },
-        roles: ['Administrator', 'CMManager', 'CustomerMarketing', 'FunctionalExpert', 'KeyAccountManager', 'DemandPlanning', 'DemandFinance'],
-        hidden: true
-    }, {
-        text: l10n.ns('tpm', 'promoButtons').value('ok'),
-        itemId: 'savePromo',
-        style: { "background-color": "#66BB6A" }
-    }, {
-        text: l10n.ns('tpm', 'promoButtons').value('saveAndClose'),
-        itemId: 'saveAndClosePromo',
-        style: { "background-color": "#26A69A" }
-    }],
+        }, {
+            text: l10n.ns('tpm', 'buttons').value('close'),
+            itemId: 'closePromo',
+            style: { "background-color": "#3F6895" },
+            hidden: true
+        }, {
+            text: l10n.ns('tpm', 'buttons').value('cancel'),
+            itemId: 'cancelPromo',
+            style: { "background-color": "#3F6895" }
+        }, {
+            text: l10n.ns('tpm', 'buttons').value('edit'),
+            itemId: 'changePromo',
+            style: { "background-color": "#26A69A" },
+            roles: ['Administrator', 'CMManager', 'CustomerMarketing', 'FunctionalExpert', 'KeyAccountManager', 'DemandPlanning', 'DemandFinance'],
+            hidden: true
+        }, {
+            text: l10n.ns('tpm', 'promoButtons').value('ok'),
+            itemId: 'savePromo',
+            style: { "background-color": "#66BB6A" }
+        }, {
+            text: l10n.ns('tpm', 'promoButtons').value('saveAndClose'),
+            itemId: 'saveAndClosePromo',
+            style: { "background-color": "#26A69A" }
+        }],
 
     blockedLoading: false,
     setLoading: function (load, targetEl, blockLoad) {

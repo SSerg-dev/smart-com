@@ -260,5 +260,8 @@ namespace Module.Persist.TPM.Model.History {
         public double? SumInvoice { get; set; }
         public double? InvoiceTotal { get; set; }
         public bool? ManualInputSumInvoice { get; set; }
+        public bool? IsInExchange { get; set; }
+        public string LinkedPromoes { get; set; }
+        public string MasterPromoNumber { get; set; }
     }
 }

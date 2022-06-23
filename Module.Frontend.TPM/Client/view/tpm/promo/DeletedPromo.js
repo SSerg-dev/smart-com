@@ -108,6 +108,10 @@
                 dataIndex: 'PlanPromoIncrementalLSV',
                 width: 150,
             }, {
+                text: l10n.ns('tpm', 'Promo').value('PlanPromoNetIncrementalLSV'),
+                dataIndex: 'PlanPromoNetIncrementalLSV',
+                width: 150,
+            }, {
                 text: l10n.ns('tpm', 'Promo').value('PlanPromoBaselineLSV'),
                 dataIndex: 'PlanPromoBaselineLSV',
                 width: 150,
@@ -552,6 +556,10 @@
             xtype: 'singlelinedisplayfield',
             name: 'PlanPromoIncrementalLSV',
             fieldLabel: l10n.ns('tpm', 'Promo').value('PlanPromoIncrementalLSV'),
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'PlanPromoNetIncrementalLSV',
+            fieldLabel: l10n.ns('tpm', 'Promo').value('PlanPromoNetIncrementalLSV'),
         }, {
             xtype: 'singlelinedisplayfield',
             name: 'PlanPromoBaselineLSV',

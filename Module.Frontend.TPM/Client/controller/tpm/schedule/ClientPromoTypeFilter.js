@@ -56,7 +56,10 @@
             var needReloadStore = false;
             this.filterClients(clientsCheckboxes, typesCheckboxes, competitorsCheckboxes);
             for (i = 0; i < clientsCheckboxes.items.items.length; i++) {
-                clientsFilterConfig[i].checked = clientsCheckboxes.items.items[i].value;
+                if (clientsFilterConfig[i].checked != clientsCheckboxes.items.items[i].value) {
+                    clientsFilterConfig[i].checked = clientsCheckboxes.items.items[i].value;
+                    needReloadStore = true;
+                }
             };
             for (i = 0; i < competitorsCheckboxes.items.items.length; i++) {
                 if (competitorsCheckboxesConfig[i].checked != competitorsCheckboxes.items.items[i].value) {
@@ -70,10 +73,9 @@
                     needReloadStore = true;
                 }
             };
-            //if (needReloadStore) {
-            //    this.filterTypes(typesCheckboxes);
-            //    this.filterCompetitors(competitorsCheckboxes);
-            //};
+            if (needReloadStore) {
+                this.getController('tpm.schedule.SchedulerViewController').onResourceStoreLoad();
+            };
             var text = l10n.ns('tpm', 'Schedule').value('Filtered');
             if (button.up('clientPromoTypeFilter').down('#selectAllClients').checked
                 && button.up('clientPromoTypeFilter').down('#selectAllTypes').checked
