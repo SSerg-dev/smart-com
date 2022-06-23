@@ -334,7 +334,7 @@ namespace Module.Host.TPM.Actions
                     errors.Add("Competitor not found");
                     isSuitable = false;
                 }
-                if (typedRec.Price != null && typedRec.Price < 0)
+                if (typedRec.Price == null || typedRec.Price < 0)
                 {
                     errors.Add("Invalid price");
                     isSuitable = false;
@@ -349,7 +349,7 @@ namespace Module.Host.TPM.Actions
                     errors.Add("Mechanic Type must be - " + String.Join(", ", mechanics.ToArray()));
                     isSuitable = false;
                 }
-                if (typedRec.Discount != null && (typedRec.Discount < 0 || typedRec.Discount > 100))
+                if (typedRec.Discount == null || (typedRec.Discount < 0 || typedRec.Discount > 100))
                 {
                     errors.Add("Invalid discount");
                     isSuitable = false;
