@@ -473,7 +473,8 @@ namespace Module.Frontend.TPM.Controllers
                 if (promoCopy.PromoStatusId != model.PromoStatusId
                     || promoCopy.IsDemandFinanceApproved != model.IsDemandFinanceApproved
                     || promoCopy.IsCMManagerApproved != model.IsCMManagerApproved
-                    || promoCopy.IsDemandPlanningApproved != model.IsDemandPlanningApproved)
+                    || promoCopy.IsDemandPlanningApproved != model.IsDemandPlanningApproved
+                    || promoCopy.IsGAManagerApproved != model.IsGAManagerApproved)
                 {
 
                     PromoStatusChange psc = Context.Set<PromoStatusChange>().Create<PromoStatusChange>();

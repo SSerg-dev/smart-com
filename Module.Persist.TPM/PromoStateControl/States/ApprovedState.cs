@@ -88,6 +88,7 @@ namespace Module.Persist.TPM.PromoStateControl
                         promoModel.IsCMManagerApproved = false;
                         promoModel.IsDemandPlanningApproved = false;
                         promoModel.IsDemandFinanceApproved = false;
+                        promoModel.IsGAManagerApproved = false;
                         promoModel.IsAutomaticallyApproved = false;
                         _stateContext.Model = promoModel;
                         _stateContext.State = _stateContext._draftPublishedState;
@@ -122,6 +123,7 @@ namespace Module.Persist.TPM.PromoStateControl
                         promoModel.IsCMManagerApproved = false;
                         promoModel.IsDemandPlanningApproved = false;
                         promoModel.IsDemandFinanceApproved = false;
+                        promoModel.IsGAManagerApproved = false;
                         promoModel.IsAutomaticallyApproved = false;
 
 						_stateContext.State = _stateContext._onApprovalState;
@@ -195,6 +197,7 @@ namespace Module.Persist.TPM.PromoStateControl
                         _stateContext.Model.IsCMManagerApproved = false;
                         _stateContext.Model.IsDemandPlanningApproved = false;
                         _stateContext.Model.IsDemandFinanceApproved = false;
+                        _stateContext.Model.IsGAManagerApproved = false;
                         _stateContext.Model.IsAutomaticallyApproved = false;
 						_stateContext.State = _stateContext._onApprovalState;
 

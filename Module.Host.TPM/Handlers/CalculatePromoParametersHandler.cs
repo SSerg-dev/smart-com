@@ -196,7 +196,8 @@ namespace Module.Host.TPM.Handlers
 									promo.IsCMManagerApproved = false;
 									promo.IsDemandFinanceApproved = false;
 									promo.IsDemandPlanningApproved = false;
-									PromoStateContext promoStateContext = new PromoStateContext(context, promo);
+                                    promo.IsGAManagerApproved = false;
+                                    PromoStateContext promoStateContext = new PromoStateContext(context, promo);
 
 									PromoStatus onApproval = context.Set<PromoStatus>().First(x => x.SystemName.ToLower() == "onapproval" && !x.Disabled);
 									promo.PromoStatus = onApproval;

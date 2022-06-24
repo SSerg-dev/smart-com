@@ -115,7 +115,7 @@ namespace Module.Persist.TPM.PromoStateControl
                             _stateContext.dbContext.Set<PromoOnApprovalIncident>().Add(new PromoOnApprovalIncident()
                             {
                                 PromoId = promoModel.Id,
-                                ApprovingRole = "CMManager", // Или DemandPlanning? Артём должен уточнить
+                                ApprovingRole = "GAManager",
                                 CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
                                 Promo = promoModel
                             });

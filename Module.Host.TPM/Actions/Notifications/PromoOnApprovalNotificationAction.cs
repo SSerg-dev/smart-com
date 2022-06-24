@@ -59,12 +59,19 @@ namespace Module.Host.TPM.Actions.Notifications
 											actualNotifyIncidents.Add(incident);
 										}
 										break;
+									case "GAManager":
+										if (!incident.Promo.IsGAManagerApproved.HasValue || incident.Promo.IsGAManagerApproved == false)
+										{
+											actualNotifyIncidents.Add(incident);
+										}
+										break;
 								}
 							}
 
 							var notifyIncidentsForCMM = actualNotifyIncidents.Where(x => x.ApprovingRole == "CMManager");
 							var notifyIncidentsForDP = actualNotifyIncidents.Where(x => x.ApprovingRole == "DemandPlanning");
 							var notifyIncidentsForDF = actualNotifyIncidents.Where(x => x.ApprovingRole == "DemandFinance");
+							var notifyIncidentsForGAM = actualNotifyIncidents.Where(x => x.ApprovingRole == "GAManager");
 
 							if (notifyIncidentsForCMM.Any())
                             {
@@ -78,7 +85,11 @@ namespace Module.Host.TPM.Actions.Notifications
 							{
 								CreateNotification(notifyIncidentsForDF, "PROMO_ON_APPROVAL_NOTIFICATION", template, context, "DemandFinance");
 							}
-							else if (!actualNotifyIncidents.Where(x => x.ApprovingRole == "CMManager" || x.ApprovingRole == "DemandPlanning" || x.ApprovingRole == "DemandFinance").Any())
+							if (notifyIncidentsForGAM.Any())
+							{
+								CreateNotification(notifyIncidentsForGAM, "PROMO_ON_APPROVAL_NOTIFICATION", template, context, "GAManager");
+							}
+							else if (!actualNotifyIncidents.Where(x => x.ApprovingRole == "CMManager" || x.ApprovingRole == "DemandPlanning" || x.ApprovingRole == "DemandFinance" || x.ApprovingRole == "GAManager").Any())
 							{
 								Warnings.Add(String.Format("There are no incidents to send notifications."));
 							}
