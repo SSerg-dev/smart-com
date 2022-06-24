@@ -2888,6 +2888,10 @@
     <Compile Include="Migrations\202205111055378_Update_PromoView4.Designer.cs">
       <DependentUpon>202205111055378_Update_PromoView4.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202206240651346_Empty_After_Merge_AddTI.cs" />
+    <Compile Include="Migrations\202206240651346_Empty_After_Merge_AddTI.Designer.cs">
+      <DependentUpon>202206240651346_Empty_After_Merge_AddTI.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -5516,6 +5520,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202205111055378_Update_PromoView4.resx">
       <DependentUpon>202205111055378_Update_PromoView4.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202206240651346_Empty_After_Merge_AddTI.resx">
+      <DependentUpon>202206240651346_Empty_After_Merge_AddTI.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
