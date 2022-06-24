@@ -158,7 +158,7 @@ namespace Module.Frontend.TPM.Controllers
                 try
                 {
                     ISettingsManager settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
-                    int diffBetweenPromoInDays = settingsManager.GetSetting<int>("DIFF_BETWEEN_PROMO_IN_DAYS", 7 * 8);
+                    int diffBetweenPromoInDays = settingsManager.GetSetting<int>("DIFF_BETWEEN_PROMO_IN_DAYS", 7 * 12);
 
                     List<string> promoIdsList = new List<string>();
                     string promoIds = Request.Content.ReadAsStringAsync().Result;
@@ -181,7 +181,7 @@ namespace Module.Frontend.TPM.Controllers
                         Promo promo = Context.Set<Promo>().Find(promoId);
                         if (promo.PromoStatus.SystemName != "Closed")
                         {
-                            // Разница между промо в подстатье должно быть меньше 2 периодов (8 недель)
+                            // Разница между промо в подстатье должно быть меньше 2 периодов (8 недель) уже 3
                             // если end date добавляемого промо лежит в 8 неделях от самого раннего start date, то всё ок, если более, то добавить промо нельзя.
                             List<DateTimeOffset> endDateList = new List<DateTimeOffset>(bTLPromos.Select(x => x.Promo.EndDate.Value)) { promo.EndDate.Value }; 
                             List<DateTimeOffset> startDateList = new List<DateTimeOffset>(bTLPromos.Select(x => x.Promo.StartDate.Value)) { promo.StartDate.Value };
@@ -193,7 +193,7 @@ namespace Module.Frontend.TPM.Controllers
                                 bool bigDifference = Math.Abs(maxEnd.Subtract(minStart).TotalDays) > diffBetweenPromoInDays;
 
                                 if (bigDifference)
-                                    throw new Exception("The difference between the dates of the promo should be less than two periods");
+                                    throw new Exception("The difference between the dates of the promo should be less than 3 periods");
                             }
 
                             bool isLinked = Context.Set<BTLPromo>().Any(x => x.PromoId == promoId && !x.Disabled && x.DeletedDate == null);
