@@ -271,6 +271,7 @@
     <Content Include="Client\controller\tpm\competitorbrandtech\CompetitorBrandTech.js" />
     <Content Include="Client\controller\tpm\competitorbrandtech\DeletedCompetitorBrandTech.js" />
     <Content Include="Client\controller\tpm\competitorbrandtech\HistoricalCompetitorBrandTech.js" />
+    <Content Include="Client\controller\tpm\eventtype\EventType.js" />
     <Content Include="Client\controller\tpm\plancogstn\DeletedPlanCOGSTn.js" />
     <Content Include="Client\controller\tpm\plancogstn\HistoricalPlanCOGSTn.js" />
     <Content Include="Client\controller\tpm\plancogstn\PlanCOGSTn.js" />
@@ -295,6 +296,7 @@
     <Content Include="Client\model\tpm\competitor\Competitor.js" />
     <Content Include="Client\model\tpm\competitor\DeletedCompetitor.js" />
     <Content Include="Client\model\tpm\competitor\HistoricalCompetitor.js" />
+    <Content Include="Client\model\tpm\eventtype\EventType.js" />
     <Content Include="Client\model\tpm\plancogstn\DeletedPlanCOGSTn.js" />
     <Content Include="Client\model\tpm\plancogstn\HistoricalPlanCOGSTn.js" />
     <Content Include="Client\model\tpm\plancogstn\PlanCOGSTn.js" />
@@ -337,6 +339,7 @@
     <Content Include="Client\view\tpm\competitorbrandtech\DeletedCompetitorBrandTechDetail.js" />
     <Content Include="Client\view\tpm\competitorbrandtech\HistoricalCompetitorBrandTech.js" />
     <Content Include="Client\view\tpm\competitorbrandtech\HistoricalCompetitorBrandTechDetail.js" />
+    <Content Include="Client\view\tpm\eventtype\EventType.js" />
     <Content Include="Client\view\tpm\plancogstn\DeletedPlanCOGSTn.js" />
     <Content Include="Client\view\tpm\plancogstn\DeletedPlanCOGSTnDetail.js" />
     <Content Include="Client\view\tpm\plancogstn\HistoricalPlanCOGSTn.js" />
@@ -374,6 +377,7 @@
     <Compile Include="Controllers\DeletedActualCOGSsController.cs" />
     <Compile Include="Controllers\DeletedActualCOGSTnsController.cs" />
     <Compile Include="Controllers\DeletedPlanCOGSTnsController.cs" />
+    <Compile Include="Controllers\EventTypesController.cs" />
     <Compile Include="Controllers\HistoricalActualCOGSTnsController.cs" />
     <Compile Include="Controllers\DeletedActualTradeInvestmentsController.cs" />
     <Compile Include="Controllers\DeletedBTLsController.cs" />

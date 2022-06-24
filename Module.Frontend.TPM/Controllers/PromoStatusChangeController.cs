@@ -86,14 +86,14 @@ namespace Module.Frontend.TPM.Controllers {
 					if (promoModel.PromoStatus.SystemName == "OnApproval")
 					{
 						bool isNoNegoPassed = CheckNoNego(promoModel);
-						return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, isEmpty = false, data = pscsList, statusColors, isNoNegoPassed }, new JsonSerializerSettings()
+						return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, isEmpty = false, data = pscsList, statusColors, isNoNegoPassed }, new JsonSerializerSettings
 						{
 							ReferenceLoopHandling = ReferenceLoopHandling.Ignore
 						}));
 					}
 					else
 					{
-						return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, isEmpty = false, data = pscsList, statusColors }, new JsonSerializerSettings()
+						return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, isEmpty = false, data = pscsList, statusColors }, new JsonSerializerSettings
 						{
 							ReferenceLoopHandling = ReferenceLoopHandling.Ignore
 						}));
@@ -102,7 +102,7 @@ namespace Module.Frontend.TPM.Controllers {
 				else
 				{
 					List<PromoStatusChange> pscs = new List<PromoStatusChange>();
-					return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, isEmpty = true, statusColors }, new JsonSerializerSettings()
+					return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, isEmpty = true, statusColors }, new JsonSerializerSettings
 					{
 						ReferenceLoopHandling = ReferenceLoopHandling.Ignore
 					}));

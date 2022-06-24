@@ -2864,6 +2864,30 @@
     <Compile Include="Migrations\202205241955107_Edit_Copy_Settings.Designer.cs">
       <DependentUpon>202205241955107_Edit_Copy_Settings.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202206151137354_Add_EventType.cs" />
+    <Compile Include="Migrations\202206151137354_Add_EventType.Designer.cs">
+      <DependentUpon>202206151137354_Add_EventType.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202206151202068_Add_EventType2.cs" />
+    <Compile Include="Migrations\202206151202068_Add_EventType2.Designer.cs">
+      <DependentUpon>202206151202068_Add_EventType2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202206151207212_Connect_Old_Event.cs" />
+    <Compile Include="Migrations\202206151207212_Connect_Old_Event.Designer.cs">
+      <DependentUpon>202206151207212_Connect_Old_Event.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202206160731155_Change_EventType.cs" />
+    <Compile Include="Migrations\202206160731155_Change_EventType.Designer.cs">
+      <DependentUpon>202206160731155_Change_EventType.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202206160856252_EventType_AP.cs" />
+    <Compile Include="Migrations\202206160856252_EventType_AP.Designer.cs">
+      <DependentUpon>202206160856252_EventType_AP.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202206171236467_Add_BTL_GetEventBTL_AP.cs" />
+    <Compile Include="Migrations\202206171236467_Add_BTL_GetEventBTL_AP.Designer.cs">
+      <DependentUpon>202206171236467_Add_BTL_GetEventBTL_AP.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\202204191212318_Add_Promo_MasterPromo_And_List.cs" />
     <Compile Include="Migrations\202204191212318_Add_Promo_MasterPromo_And_List.Designer.cs">
       <DependentUpon>202204191212318_Add_Promo_MasterPromo_And_List.cs</DependentUpon>
@@ -3018,6 +3042,7 @@
     <Compile Include="Model\SimpleModel\SimplePromoCOGSTI.cs" />
     <Compile Include="Model\SimpleModel\YEAR_END_ESTIMATE_FDM.cs" />
     <Compile Include="Model\TPM\COGSTn.cs" />
+    <Compile Include="Model\TPM\EventType.cs" />
     <Compile Include="Model\TPM\TechnologyExport.cs" />
     <Compile Include="Model\TPM\ActualLsvModel.cs" />
     <Compile Include="Model\TPM\Competitor.cs" />
@@ -5498,6 +5523,24 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202205241955107_Edit_Copy_Settings.resx">
       <DependentUpon>202205241955107_Edit_Copy_Settings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202206151137354_Add_EventType.resx">
+      <DependentUpon>202206151137354_Add_EventType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202206151202068_Add_EventType2.resx">
+      <DependentUpon>202206151202068_Add_EventType2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202206151207212_Connect_Old_Event.resx">
+      <DependentUpon>202206151207212_Connect_Old_Event.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202206160731155_Change_EventType.resx">
+      <DependentUpon>202206160731155_Change_EventType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202206160856252_EventType_AP.resx">
+      <DependentUpon>202206160856252_EventType_AP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202206171236467_Add_BTL_GetEventBTL_AP.resx">
+      <DependentUpon>202206171236467_Add_BTL_GetEventBTL_AP.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202204191212318_Add_Promo_MasterPromo_And_List.resx">
       <DependentUpon>202204191212318_Add_Promo_MasterPromo_And_List.cs</DependentUpon>
