@@ -1,36 +1,29 @@
-﻿using Core.Settings;
-using Interfaces.Implementation.Action;
-using LinqToQuerystring;
-using Looper.Parameters;
-using Microsoft.Azure.Management.DataFactory;
-using Microsoft.Azure.Management.DataFactory.Models;
-using Microsoft.IdentityModel.Clients.ActiveDirectory;
-using Microsoft.Rest;
-using Module.Persist.TPM.Model.DTO;
-using Module.Persist.TPM.Model.TPM;
-using Module.Persist.TPM.Utils;
-using NLog;
+﻿using System;
 using Persist;
-using Persist.Model;
-using Persist.ScriptGenerator.Filter;
-using System;
-using System.Collections.Generic;
-using System.Data.Entity.Core.Objects;
+using Module.Persist.TPM.Model.TPM;
 using System.Linq;
-using System.Text.RegularExpressions;
+using System.Collections.Generic;
+using Persist.Model;
 using Utility;
+using Module.Persist.TPM.Model.DTO;
+using Persist.ScriptGenerator.Filter;
+using Module.Persist.TPM.Utils;
+using Looper.Parameters;
+using Interfaces.Implementation.Action;
+using NLog;
+using System.Web.Http.OData.Query;
+using System.Linq.Expressions;
+using LinqToQuerystring;
+using System.Text.RegularExpressions;
 
 namespace Module.Host.TPM.Actions.Notifications
 {
     /// <summary>
     /// Класс для экспорта календаря в EXCEL
     /// </summary>
-    public class SchedulerExportAction : BaseAction {
+    public class SchedulerExportAction : BaseAction
+    {
         private readonly IEnumerable<int> Clients;
-
-        private readonly IEnumerable<string> Competitors;
-
-        private readonly IEnumerable<string> Types;
 
         private readonly int Year;
 
@@ -38,50 +31,39 @@ namespace Module.Host.TPM.Actions.Notifications
 
         private readonly Guid RoleId;
 
-        private readonly Guid HandlerId;
-
         private readonly string RawFilters;
 
         protected readonly static Logger logger = LogManager.GetCurrentClassLogger();
 
-        public SchedulerExportAction(IEnumerable<int> clients, IEnumerable<string> competitors, IEnumerable<string> types, int year, Guid userId, Guid roleId, string rawFilters, Guid handlerId) {
+        public SchedulerExportAction(IEnumerable<int> clients, int year, Guid userId, Guid roleId, string rawFilters)
+        {
             Clients = clients;
-            Competitors = competitors;
-            Types = types;
             Year = year;
             UserId = userId;
             RoleId = roleId;
-            HandlerId = handlerId;
             RawFilters = rawFilters;
         }
-        public override void Execute() {
+        public override void Execute()
+        {
             PerformanceLogger performanceLogger = new PerformanceLogger();
-            try {
+            try
+            {
                 performanceLogger.Start();
-
-                using (DatabaseContext context = new DatabaseContext()) {
+                using (DatabaseContext context = new DatabaseContext())
+                {
 
                     IQueryable<PromoView> query = (GetConstraintedQuery(context));
-
                     IQueryable<PromoView> promoes = query.Cast<PromoView>();
                     //из библиотеки LinqToQuerystring нашей версии убрали datetimeoffset заменяем
-                    var row = RawFilters.Replace("$orderby=Id", "").Replace("datetimeoffset", "datetime").Replace(".000Z", "").Replace(".00Z", "");
+                    var row = RawFilters.Replace("datetimeoffset", "datetime").Replace(".000Z", "").Replace(".00Z", "");
                     //из библиотеки LinqToQuerystring нашей версии нет данных в вииде 12d что есть в нашей версии odata заменяем
                     row = Regex.Replace(row, @"(\d+)[d]", @"$1");
-                    //row = Regex.Escape(row);
                     promoes = promoes.LinqToQuerystring(row);
 
                     DateTime startDate = DateTime.Now;
                     DateTime endDate = DateTime.Now;
                     bool yearExport = Year != 0;
 
-                    var sql = promoes.ToString();
-
-                    if (sql.Contains("p__linq"))
-                    {
-                        sql = sql.Replace("@p__linq__0", $"'{RoleId.ToString()}'");
-                    }
-                    promoes = promoes.Where(x => Clients.Contains(x.ClientTreeId.Value));
                     if (yearExport)
                     {
                         startDate = new DateTime(Year, 1, 1);
@@ -95,44 +77,10 @@ namespace Module.Host.TPM.Actions.Notifications
                     else
                     {
                         string userName = context.Users.FirstOrDefault(u => u.Id == UserId).Name;
-
-                        ExportQuery exportQuery = new ExportQuery();
-
-                        exportQuery.Parameters = "";
-                        exportQuery.Text = sql;
-                        exportQuery.Type = "";
-                        exportQuery.Disabled = false;
-
-                        context.Set<ExportQuery>().Add(exportQuery);
-
-                        context.SaveChanges();
-
-                        string schemaDB = AppSettingsManager.GetSetting("DefaultSchema", "");
-
-                        //Call Pipe
-                        string tenantID = AppSettingsManager.GetSetting("EXPORT_TENANT_ID", "");
-                        string applicationId = AppSettingsManager.GetSetting("EXPORT_APPLICATION_ID", "");
-                        string authenticationKey = AppSettingsManager.GetSetting("EXPORT_AUTHENTICATION_KEY", "");
-                        string subscriptionId = AppSettingsManager.GetSetting("EXPORT_SUBSCRIPTION_ID", "");
-                        string resourceGroup = AppSettingsManager.GetSetting("EXPORT_RESOURCE_GROUP", "");
-                        string dataFactoryName = AppSettingsManager.GetSetting("EXPORT_DATA_FACTORY_NAME", "");
-                        string pipelineName = AppSettingsManager.GetSetting("EXPORT_PIPELINE_NAME", "");
-
-
-                        string ServerName = AppSettingsManager.GetSetting("ServerName", "");
-                        string DatabaseName = AppSettingsManager.GetSetting("DatabaseName", "");
-                        string DBUserId = AppSettingsManager.GetSetting("DBUserId", "");
-                        string PasswordKV = AppSettingsManager.GetSetting("PasswordKV", "");
-                        string AKVScope = AppSettingsManager.GetSetting("AKVScope", "");
-                        string BlobStorageName = AppSettingsManager.GetSetting("BlobStorageName", "");
-
-                        string fileName = GetExportFileName(userName);
-
-                        string clients = String.Join(",", Clients);
-
-                        string competitors = String.Join(",", Competitors);
-
-                        string types = String.Join(",", Types);
+                        SchedulerExporter exporter = yearExport ? new SchedulerExporter(startDate, endDate) : new SchedulerExporter();
+                        string filePath = exporter.GetExportFileName(userName);
+                        exporter.Export(promoes.ToList(), Clients, filePath, context);
+                        string fileName = System.IO.Path.GetFileName(filePath);
 
                         FileModel file = new FileModel()
                         {
@@ -142,85 +90,28 @@ namespace Module.Host.TPM.Actions.Notifications
                         };
                         Results.Add("ExportFile", file);
 
-                        Dictionary<string, object> parameters = null;
-
-
-                        parameters = new Dictionary<string, object>
-                                    {
-                                        { "QueryId", exportQuery.Id.ToString() },
-                                        { "Schema", schemaDB},
-                                        { "TaskId", HandlerId.ToString() },
-                                        { "FileName", fileName },
-                                        { "ServerName", ServerName },
-                                        { "DatabaseName", DatabaseName },
-                                        { "DBUserId", DBUserId },
-                                        { "PasswordKV", PasswordKV },
-                                        { "AKVScope", AKVScope },
-                                        { "BlobStorageName", BlobStorageName },
-                                        { "Clients", clients},
-                                        { "Competitors", competitors},
-                                        { "Types", types},
-                                        { "Year", Year},
-                                        { "YearExport", yearExport}
-                                    };
-
-                        var aucontext = new AuthenticationContext("https://login.microsoftonline.com/" + tenantID);
-                        ClientCredential cc = new ClientCredential(applicationId, authenticationKey);
-                        AuthenticationResult authenticationResult = aucontext.AcquireTokenAsync(
-                            "https://management.azure.com/", cc).Result;
-                        ServiceClientCredentials cred = new TokenCredentials(authenticationResult.AccessToken);
-                        var client = new DataFactoryManagementClient(cred)
-                        {
-                            SubscriptionId = subscriptionId
-                        };
-
-                        CreateRunResponse runResponse = client.Pipelines.CreateRunWithHttpMessagesAsync(
-                            resourceGroup, dataFactoryName, pipelineName, parameters: parameters
-                        ).Result.Body;
-
                     }
                 }
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 string msg = String.Format("Error exporting calendar: {0}", e.ToString());
                 logger.Error(msg);
                 Errors.Add(msg);
-            } finally {
+            }
+            finally
+            {
                 logger.Trace("Finish");
                 performanceLogger.Stop();
             }
-        }
-
-        private string GetExportFileName(string userName)
-        {
-            string exportDir = AppSettingsManager.GetSetting("EXPORT_DIRECTORY", "~/ExportFiles");
-            string userShortName = GetUserName(userName);
-            string filename = String.Format("{0}_{1}_{2:yyyyMMddHHmmss}.xlsx", "Schedule", userShortName, DateTime.Now);
-            /*
-            if (!Directory.Exists(exportDir))
-            {
-                Directory.CreateDirectory(exportDir);
-            }
-            return Path.Combine(exportDir, filename);
-            */
-            return filename;
-        }
-
-        private string GetUserName(string userName)
-        {
-            string[] userParts = userName.Split(new char[] { '/', '\\' });
-            return userParts[userParts.Length - 1];
-        }
-
-        private String GetDateParam(DateTime dt)
-        {
-            return String.Concat("'", dt.ToString("yyyy-MM-dd"), "'");
         }
 
         /// <summary>
         /// Получение списка промо с учётом ограничений
         /// </summary>
         /// <returns></returns>
-        private IQueryable<PromoView> GetConstraintedQuery(DatabaseContext context) {
+        private IQueryable<PromoView> GetConstraintedQuery(DatabaseContext context)
+        {
             PerformanceLogger performanceLogger = new PerformanceLogger();
             performanceLogger.Start();
             string role = context.Roles.FirstOrDefault(r => r.Id == RoleId).SystemName;

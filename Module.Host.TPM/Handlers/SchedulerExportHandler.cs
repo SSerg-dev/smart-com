@@ -38,7 +38,7 @@ namespace Module.Host.TPM.Handlers {
                 
                 handlerLogger.Write(true, String.Format("Start of calendar export at 10 {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)), "Message");
                 Thread.Sleep(10000);
-                IAction action = new SchedulerExportAction(clients, competitors, types, year, userId, roleId, rawFilters, handlerId);
+                IAction action = new SchedulerExportAction(clients, /*competitors, types,*/ year, userId, roleId, rawFilters/*, handlerId*/);
                 action.Execute();
 
                 if (action.Errors.Any()) {
