@@ -198,6 +198,13 @@ namespace Module.Persist.TPM.Utils {
                         colorStyle.SetFillForegroundColor(cellColor);
                     }
                     cell.CellStyle = colorStyle;
+                    // Добавляем аннотацию.
+                    IDrawing drawing = sheet.CreateDrawingPatriarch();
+                    IClientAnchor anchor = wb.GetCreationHelper().CreateClientAnchor();
+                    IComment comment = drawing.CreateCellComment(anchor);
+                    comment.String = new XSSFRichTextString("Тестовый комментарий");
+                    comment.Author = ("Test Auithor");
+                    cell.CellComment = (comment);
                     // Объединяем ячейки, добавляем рамку (при мерже ячеек не подтягивается стиль рамки первой)
                     if (startCol != endCol) {
                         CellRangeAddress range = new CellRangeAddress(curRow, curRow, startCol, endCol);

@@ -67,13 +67,5 @@ namespace Module.Host.TPM.Handlers {
                 }
             }
         }
-
-        public override string GetStatus(string executionMode, ExecuteData data)
-        {
-            if (!data.GetValue<bool>("HasErrors", false))
-                return "INPROGRESS";
-            else
-                return "ERROR";
-        }
     }
 }
