@@ -1,11 +1,5 @@
-﻿using Core.Dependency;
-using Core.Security;
+﻿using Core.Security;
 using Core.Security.Models;
-using Core.Settings;
-using Frontend.Core.Extensions.Export;
-using Looper.Core;
-using Looper.Parameters;
-using Module.Persist.TPM.CalculatePromoParametersModule;
 using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
@@ -16,8 +10,6 @@ using Persist.ScriptGenerator.Filter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web.Http;
-using System.Web.Http.OData;
 using Utility;
 
 namespace Module.Frontend.TPM.Util
@@ -212,15 +204,17 @@ namespace Module.Frontend.TPM.Util
         }
         public static string GetGAManagerCount(IAuthorizationManager authorizationManager, DatabaseContext Context)
         {
-            IQueryable<PromoGridView> promo = GetConstraintedQueryPromo(authorizationManager, Context);
-            var nonPromoSupport = GetConstraintedQueryNonPromoSupport(authorizationManager, Context);
+            IQueryable<PromoGridView> promoGridView = GetConstraintedQueryPromo(authorizationManager, Context);
+            IQueryable<Promo> promos = Context.Set<Promo>().Where(g => promoGridView.Select(f => f.Id).Contains(g.Id));
             var calculateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault().AddHours(48d);
             var nowDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault();
             //TimeCritical
-            var timeCritical = promo.Where(p => (p.PromoStatusName.Equals("On Approval") && (p.IsGAManagerApproved == false || p.IsGAManagerApproved == null) && p.DispatchesStart < calculateDate)).Count();
-            //NeedsMyApproval
+            var timeCritical = promos
+                .Where(p => (p.PromoStatus.Name.Equals("On Approval") && (p.IsGAManagerApproved == false || p.IsGAManagerApproved == null) && p.DispatchesStart < calculateDate) && (p.IsInExchange || p.IsGrowthAcceleration) || (p.Promoes.Any(f => f.DispatchesStart < calculateDate)))
+                .Count();
+            //GAapproval
             calculateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault().AddDays(7 * 9);
-            int gaApproval = promo.Where(p => p.PromoStatusName.Equals("On Approval") && (p.IsGAManagerApproved == false || p.IsGAManagerApproved == null) && p.DispatchesStart < calculateDate && (p.IsInExchange || p.IsGrowthAcceleration)).Count();
+            int gaApproval = promos.Where(p => p.PromoStatus.Name.Equals("On Approval") && (p.IsGAManagerApproved == false || p.IsGAManagerApproved == null) && p.DispatchesStart < calculateDate && (p.IsInExchange || p.IsGrowthAcceleration)).Count();
             return JsonConvert.SerializeObject(new { TimeCritical = timeCritical, GaApproval = gaApproval });
         }
     }

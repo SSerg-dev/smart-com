@@ -133,7 +133,8 @@ namespace Module.Persist.TPM.Migrations
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='Promoes' and [Action]='GetFilteredData' and [Disabled] = 0)),
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='Promoes' and [Action]='GetUserDashboardsCount' and [Disabled] = 0)),
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='Promoes' and [Action]='ChangeStatus' and [Disabled] = 0)),
-                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='Promoes' and [Action]='CheckIfLogHasErrors' and [Disabled] = 0))
+                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='Promoes' and [Action]='CheckIfLogHasErrors' and [Disabled] = 0)),
+                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='Promoes' and [Action]='DeclinePromo' and [Disabled] = 0)),
             GO
                 DECLARE @RoleId uniqueidentifier = (SELECT[Id] FROM [DefaultSchemaSetting].[Role] where SystemName = 'GAManager');
                 INSERT INTO[DefaultSchemaSetting].[AccessPointRole]
@@ -150,6 +151,11 @@ namespace Module.Persist.TPM.Migrations
                 INSERT INTO[DefaultSchemaSetting].[AccessPointRole]
                 (RoleId, AccessPointId) values
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoStatusChanges' and [Action]='PromoStatusChangesByPromo' and [Disabled] = 0))
+            GO
+                DECLARE @RoleId uniqueidentifier = (SELECT[Id] FROM [DefaultSchemaSetting].[Role] where SystemName = 'GAManager');
+                INSERT INTO[DefaultSchemaSetting].[AccessPointRole]
+                (RoleId, AccessPointId) values
+                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='RejectReasons' and [Action]='GetRejectReasons' and [Disabled] = 0))
             GO
             ";
     }

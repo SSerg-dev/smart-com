@@ -21,9 +21,9 @@ namespace Module.Persist.TPM.PromoStateControl.RoleStateMap {
                 { StateNames.DELETED, new List<string> { "Administrator", "SupportAdministrator", "CustomerMarketing", "FunctionalExpert", "KeyAccountManager" } }
             }),
             new RoleStateMap(StateNames.ON_APPROVAL, new Dictionary<string, List<string>>() {
-                { StateNames.DRAFT_PUBLISHED, new List<string> { "Administrator", "SupportAdministrator", "CMManager", "CustomerMarketing", "FunctionalExpert", "DemandFinance", "DemandPlanning", "KeyAccountManager"} },
+                { StateNames.DRAFT_PUBLISHED, new List<string> { "Administrator", "SupportAdministrator", "CMManager", "CustomerMarketing", "FunctionalExpert", "DemandFinance", "DemandPlanning", "KeyAccountManager", "GAManager" } },
                 { StateNames.ON_APPROVAL, new List<string> { "System" } },
-                { StateNames.APPROVED, new List<string> { "CMManager", "SupportAdministrator", "DemandFinance", "DemandPlanning" } }
+                { StateNames.APPROVED, new List<string> { "CMManager", "SupportAdministrator", "DemandFinance", "DemandPlanning", "GAManager" } }
             }),
             new RoleStateMap(StateNames.APPROVED, new Dictionary<string, List<string>>() {
                 { StateNames.DRAFT_PUBLISHED, new List<string> { "Administrator", "SupportAdministrator" } },

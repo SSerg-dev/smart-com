@@ -17,7 +17,7 @@ namespace Module.Persist.TPM.PromoStateControl
 
             private readonly string Name = "OnApproval";
 
-            private readonly List<string> Roles = new List<string> { "Administrator", "CMManager", "CustomerMarketing", "FunctionalExpert", "KeyAccountManager", "DemandPlanning", "DemandFinance" };
+            private readonly List<string> Roles = new List<string> { "Administrator", "CMManager", "CustomerMarketing", "FunctionalExpert", "KeyAccountManager", "DemandPlanning", "DemandFinance", "GAManager" };
 
             public OnApprovalState(PromoStateContext stateContext)
             {
@@ -246,7 +246,7 @@ namespace Module.Persist.TPM.PromoStateControl
 
                                     if (promoModel.IsGrowthAcceleration || promoModel.IsInExchange)
                                     {
-                                        next = false;
+                                        next = true;
 
                                         foreach (var incident in oldIncidents)
                                         {
