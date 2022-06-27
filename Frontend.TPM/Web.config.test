@@ -34,26 +34,26 @@
     <add key="ENABLE_LOCAL_ENVIRONMENT" value="true" />
     <add key="AD_CONNECTION_USERNAME" value="adread" />
     <add key="AD_CONNECTION_PASSWORD" value="Pe&quot;Xbp)Ljq" />
-    <add key="HANDLER_LOG_DIRECTORY" value="D:\Temp\TPM\HandlerLogs" />
-    <add key="IMPORT_DIRECTORY" value="D:\Temp\TPM\ImportFiles" />
-    <add key="EXPORT_DIRECTORY" value="D:\Temp\TPM\ExportFiles" />
-    <add key="INTERFACE_USER_DIRECTORY" value="D:\Temp\TPM\InterfaceUserFiles" />
-    <add key="INTERFACE_DIRECTORY" value="D:\Temp\TPM\InterfaceFiles" />
+    <add key="HANDLER_LOG_DIRECTORY" value="D:\TPM\HandlerLogs" />
+    <add key="IMPORT_DIRECTORY" value="D:\TPM\ImportFiles" />
+    <add key="EXPORT_DIRECTORY" value="D:\TPM\ExportFiles" />
+    <add key="INTERFACE_USER_DIRECTORY" value="D:\TPM\InterfaceUserFiles" />
+    <add key="INTERFACE_DIRECTORY" value="D:\TPM\InterfaceFiles" />
     <add key="INTERFACE_DIRECTORY_INBOUND_OUTCOME" value="InterfaceFilesInboundOutCome" />
     <add key="INTERFACE_DIRECTORY_OUTBOUND_INCOME" value="InterfaceFilesOutboundIncome" />
-    <add key="IMPORT_RESULT_DIRECTORY" value="D:\Temp\TPM\ImportResultFiles" />
-    <add key="DATALAKESYNC_RESULT_DIRECTORY" value="D:\Temp\TPM\DataLakeSyncResultFiles" />
-    <add key="HANDLER_CONFIG_DIRECTORY" value="D:\Temp\TPM\HandlerConfig" />
+    <add key="IMPORT_RESULT_DIRECTORY" value="D:\TPM\ImportResultFiles" />
+    <add key="DATALAKESYNC_RESULT_DIRECTORY" value="D:\TPM\DataLakeSyncResultFiles" />
+    <add key="HANDLER_CONFIG_DIRECTORY" value="D:\TPM\HandlerConfig" />
     <add key="MANUAL_DIRECTORY" value="D:\Temp\TPM\Manuals" />
-    <add key="LOOPHANDLER_PARAMETER_DIRECTORY" value="D:\Temp\TPM\HandlerParameters" />
-    <add key="INTEGRITY_CHECK_RESULT_DIRECTORY" value="D:\Temp\TPM\IntegrityCheckResults" />
-    <add key="USER_SETTINGS_FILE_PATH" value="D:\Temp\TPM\EmailNotificationSettings.xml" />
-    <add key="FILES_DIRECTORY" value="D:\Temp\TPM\Files" />
+    <add key="LOOPHANDLER_PARAMETER_DIRECTORY" value="D:\TPM\HandlerParameters" />
+    <add key="INTEGRITY_CHECK_RESULT_DIRECTORY" value="D:\TPM\IntegrityCheckResults" />
+    <add key="USER_SETTINGS_FILE_PATH" value="D:\TPM\EmailNotificationSettings.xml" />
+    <add key="FILES_DIRECTORY" value="D:\TPM\Files" />
     <add key="HANDLER_LOG_TYPE" value="File" />
-    <add key="PROMO_SUPPORT_DIRECTORY" value="D:\Temp\TPM\PromoSupportFiles" />
-	<add key="RPA_DIRECTORY" value="D:\Temp\TPM\RPAFiles" />
-    <add key="CLIENT_TREE_DIRECTORY" value="D:\Temp\TPM\ClientTreeLogoFiles" />
-    <add key="PRODUCT_TREE_DIRECTORY" value="D:\Temp\TPM\ProductTreeLogoFiles" />
+    <add key="PROMO_SUPPORT_DIRECTORY" value="D:\TPM\PromoSupportFiles" />
+	<add key="RPA_DIRECTORY" value="D:\TPM\RPAFiles" />
+    <add key="CLIENT_TREE_DIRECTORY" value="D:\TPM\ClientTreeLogoFiles" />
+    <add key="PRODUCT_TREE_DIRECTORY" value="D:\TPM\ProductTreeLogoFiles" />
     <add key="SESSION_TIME" value="15" />
     <add key="UseXssFilter" value="false" />
     <add key="DatabaseContextJupiterAzure" value="Server=STSVH-SQL01,1433; Database=TPM_Moving_Main_Test_Current; Persist Security Info=True;User ID=userdb;Password=qwerty1;MultipleActiveResultSets=True" />
