@@ -48,7 +48,7 @@ namespace Module.Host.TPM.Actions
                 Event oldRecord = events.FirstOrDefault(x => x.Name == newRecord.Name);
                 if (oldRecord == null)
                 {
-                    events.Add(newRecord);
+                    databaseContext.Set<Event>().Add(newRecord);
                 }
                 else
                 {

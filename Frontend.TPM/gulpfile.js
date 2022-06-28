@@ -12,7 +12,6 @@ var gulp = require('gulp'),
     del = require("del"),
     image = require("gulp-imagemin"),
     sourcemaps = require("gulp-sourcemaps"),
-    gulpsync = require("gulp-sync")(gulp),
     _if = require("gulp-if"),
     config = require("./gulpconfig.json"),
     fs = require('fs');
@@ -60,7 +59,7 @@ gulp.task("clean:font", function (cb) {
 
 // Задачи по объединению и минификации js-файлов приложения, стилей и js-файлов ресурсов/библиотек
 gulp.task("min:app", function () {
-    return gulp.src(config.appFiles)
+    return gulp.src(config.appFiles, { nounique: false, nosort: true })
         .pipe(concat(paths.concatJsDest))
         .pipe(_if(!isDebug, uglify().on('error', function (e) {
             console.error(e); // вывод ошибки минификации в лог
@@ -86,44 +85,44 @@ gulp.task("min:css", function () {
 // Копирование и сжатие изображений
 gulp.task("images:img", function () {
     return gulp.src(paths.imgBase + "**/*", { base: paths.imgBase }) // base - для сохранения структуры каталогов при копировании
-    .pipe(image())
-    .pipe(gulp.dest(paths.imagesPath));
+        .pipe(image())
+        .pipe(gulp.dest(paths.imagesPath));
 });
 
 // Копирование и сжатие изображений
 gulp.task("images:moduleimg", function () {
     return gulp.src(paths.modImgBase + "**/*", { base: paths.modImgBase }) // base - для сохранения структуры каталогов при копировании
-    .pipe(image())
-    .pipe(gulp.dest(paths.imagesPath));
+        .pipe(image())
+        .pipe(gulp.dest(paths.imagesPath));
 });
 
 //Копирование шрифтов 
 gulp.task("fonts", function () {
     return gulp.src(paths.fontsBase)
-    .pipe(gulp.dest(paths.fontsDestPath));
+        .pipe(gulp.dest(paths.fontsDestPath));
 });
 
 // Очистка всех папок
-gulp.task("clean", ["clean:app", "clean:res", "clean:css", "clean:img", "clean:font"], function (callback) {
+gulp.task("clean", gulp.series("clean:app", "clean:res", "clean:css", "clean:img", "clean:font"), function (callback) {
     callback();
 });
 
 // Сборка
-gulp.task("min", ["min:app", "min:resource", "min:css"], function (callback) {
+gulp.task("min", gulp.series("min:app", "min:resource", "min:css"), function (callback) {
     callback();
 });
 
 //Копирование/сжатие картинок и шрифтов
-gulp.task("img", ["images:img", "images:moduleimg", "fonts"]);
+gulp.task("img", gulp.series("images:img", "images:moduleimg", "fonts"));
 
 // Сначала выполняется очистка, затем сборка, затем копирование изображений и шрифтов
-gulp.task("build", gulpsync.sync(["clean", "min", "img"]));  //Синхронно, т.к. при асинхронном запуске min и img, иногда возникает ошибка
+gulp.task("build", gulp.series("clean", "min", "img"));  //Синхронно, т.к. при асинхронном запуске min и img, иногда возникает ошибка
 
 // отслеживание изменений
 gulp.task("watch", function () {
-    gulp.watch(config.appFiles, gulpsync.sync(["clean:app", "min:app"]));
-    gulp.watch(config.cssFiles, gulpsync.sync(["clean:css", "min:css"]));
-    gulp.watch(config.resourceFiles, gulpsync.sync(["clean:res", "min:resource"]));
+    gulp.watch(config.appFiles, gulp.parallel("clean:app", "min:app"));
+    gulp.watch(config.cssFiles, gulp.parallel("clean:css", "min:css"));
+    gulp.watch(config.resourceFiles, gulp.parallel("clean:res", "min:resource"));
 });
 // Запускается автоматически при открытии проекта
-gulp.task('default', ['watch']);
+gulp.task('default', gulp.series('watch'));
