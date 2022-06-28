@@ -31,7 +31,10 @@ namespace Module.Host.TPM.Actions
             if (!eventtypes.Contains(typedRec.EventType.Name)) { errors.Add("Event Type must have the following values - Customer or National"); isSuitable = false; }
             var segments = new List<string> { "Catcare", "Dogcare", "" };
             if (!segments.Contains(typedRec.MarketSegment)) { errors.Add("Event MarketSegment must have the following values - Catcare, Dogcare, or empty for All"); isSuitable = false; }
-
+            if (typedRec.EventType.Name == "Customer" && !string.IsNullOrEmpty(typedRec.MarketSegment))
+            {
+                errors.Add("Event MarketSegment must by empty if type Customer"); isSuitable = false;
+            }
 
 
             return isSuitable;
