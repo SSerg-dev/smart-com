@@ -236,6 +236,7 @@ namespace Module.Persist.TPM.Model.History {
         public bool? IsCMManagerApproved { get; set; }
         public bool? IsDemandPlanningApproved { get; set; }
         public bool? IsDemandFinanceApproved { get; set; }
+        public bool? IsGAManagerApproved { get; set; }
 
         public bool? NeedRecountUplift { get; set; }
 

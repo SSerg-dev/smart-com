@@ -3766,7 +3766,6 @@
 
     defineAllowedActions: function (promoeditorcustom, promoActions, status) {
         var currentRole = App.UserInfo.getCurrentRole();
-
         for (var i = 0; i < promoActions.length; i++) {
             var roles = promoActions[i].roles;
             var statuses = promoActions[i].statuses;
@@ -3781,10 +3780,6 @@
                     var record = this.getRecord(promoeditorcustom);
 
                     switch (_role) {
-                        case 'CMManager':
-                            visible = !record.get('IsCMManagerApproved');
-                            break;
-
                         case 'Administrator':
                             visible = true;
                             break;
@@ -3797,12 +3792,20 @@
                             visible = true;
                             break;
 
+                        case 'CMManager':
+                            visible = !record.get('IsCMManagerApproved');
+                            break;
+
                         case 'DemandPlanning':
                             visible = record.get('IsCMManagerApproved') && !record.get('IsDemandPlanningApproved');
                             break;
 
                         case 'DemandFinance':
                             visible = record.get('IsCMManagerApproved') && record.get('IsDemandPlanningApproved') && !record.get('IsDemandFinanceApproved');
+                            break;
+
+                        case 'GAManager':
+                            visible = record.get('IsCMManagerApproved') && record.get('IsDemandPlanningApproved') && record.get('IsDemandFinanceApproved') && !record.get('IsGAManagerApproved');
                             break;
 
                         case 'KeyAccountManager':

@@ -157,6 +157,7 @@ namespace Module.Persist.TPM.Model.DTO
         public bool? IsCMManagerApproved { get; set; }
         public bool? IsDemandPlanningApproved { get; set; }
         public bool? IsDemandFinanceApproved { get; set; }
+        public bool? IsGAManagerApproved { get; set; }
         [StringLength(255)]
         public string Client1LevelName { get; set; }
         [StringLength(255)]

@@ -771,6 +771,43 @@
         var buttonColor = '#feeded';
         return { filter: filter, widget: widget, text: text, panel: panel, style: style, image: image, color: color, buttonColor: buttonColor };
     },
+    //GAManager
+    getTimeCriticalGAManager: function () {
+        var date = new Date();
+        date.setHours(date.getHours() + (date.getTimezoneOffset() / 60) + 3);
+
+        date = Ext.Date.add(date, Ext.Date.HOUR, 48);
+        var filter = {
+            operator: "and",
+            rules: [{
+                property: "PromoStatusName", operation: "Equals", value: 'On Approval'
+            },
+            {
+                property: "DispatchesStart", operation: "LessThan", value: date
+            }, {
+                operator: "or",
+                rules: [{
+                    property: "IsGAManagerApproved", operation: "Equals", value: null
+                },
+                {
+                    property: "IsGAManagerApproved", operation: "Equals", value: false
+                }]
+            }
+            ]
+        };
+
+        var widget = 'promo';
+        var text = "Time Critical";
+        var panel = 'panel1';
+        var style = {
+            styleStandart: 'panel-time-critical-standart',
+            styleZero: 'panel-time-critical-zero'
+        }
+        var image = 'time_critical.png';
+        var color = '#e1312c';
+        var buttonColor = '#feeded';
+        return { filter: filter, widget: widget, text: text, panel: panel, style: style, image: image, color: color, buttonColor: buttonColor };
+    },
     //Needs my approval
     getNeedsMyApprovalCMManager: function () {
         var promoHelperController = App.app.getController('tpm.promo.PromoHelper');
@@ -881,6 +918,18 @@
         var promoHelperController = App.app.getController('tpm.promo.PromoHelper');
 
         var filter = promoHelperController.getOnApprovalGAFilterCMM();
+        var widget = 'promo';
+        var text = "GA On approval";
+        var panel = 'panel1';
+        var image = 'workflow.png';
+        var color = '#0e0d9e';
+        var buttonColor = '#eef2fc';
+        return { filter: filter, widget: widget, text: text, panel: panel, image: image, color: color, buttonColor: buttonColor };
+    },
+    getGaApprovalGAManager: function () {
+        var promoHelperController = App.app.getController('tpm.promo.PromoHelper');
+
+        var filter = promoHelperController.getOnApprovalGAFilterGAM();
         var widget = 'promo';
         var text = "GA On approval";
         var panel = 'panel1';

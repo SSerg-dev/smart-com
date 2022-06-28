@@ -484,7 +484,8 @@ namespace Module.Frontend.TPM.Controllers
                 if (promoCopy.PromoStatusId != model.PromoStatusId
                     || promoCopy.IsDemandFinanceApproved != model.IsDemandFinanceApproved
                     || promoCopy.IsCMManagerApproved != model.IsCMManagerApproved
-                    || promoCopy.IsDemandPlanningApproved != model.IsDemandPlanningApproved)
+                    || promoCopy.IsDemandPlanningApproved != model.IsDemandPlanningApproved
+                    || promoCopy.IsGAManagerApproved != model.IsGAManagerApproved)
                 {
 
                     PromoStatusChange psc = Context.Set<PromoStatusChange>().Create<PromoStatusChange>();
@@ -1255,6 +1256,8 @@ namespace Module.Frontend.TPM.Controllers
                     return Content(HttpStatusCode.OK, UserDashboard.GetCMManagerCount(authorizationManager, Context));
                 case "CustomerMarketing":
                     return Content(HttpStatusCode.OK, UserDashboard.GetCustomerMarketingCount(authorizationManager, Context));
+                case "GAManager":
+                    return Content(HttpStatusCode.OK, UserDashboard.GetGAManagerCount(authorizationManager, Context));
             }
             return Content(HttpStatusCode.InternalServerError, JsonConvert.SerializeObject(new { Error = "Fail to role" }));
         }

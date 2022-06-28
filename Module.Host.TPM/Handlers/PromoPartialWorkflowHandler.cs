@@ -98,6 +98,7 @@ namespace Module.Host.TPM.Handlers
                                 promo.IsCMManagerApproved = true;
                                 promo.IsDemandFinanceApproved = true;
                                 promo.IsDemandPlanningApproved = true;
+                                promo.IsGAManagerApproved = true;
 
                                 var promoProductTree = context.Set<PromoProductTree>().FirstOrDefault(x => x.PromoId == promo.Id);
                                 var promoNameProductTreeAbbreviations = "";
