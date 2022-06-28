@@ -401,6 +401,17 @@ namespace Module.Frontend.TPM.Controllers
                     }
                 }
 
+                if (ChangePromo.EventId != null)
+                {
+                    var btlPromo = Context.Set<BTLPromo>().FirstOrDefault(x => x.PromoId == key);
+                    if (btlPromo != null)
+                    {
+                        btlPromo.DeletedDate = System.DateTime.Now;
+                        btlPromo.Disabled = true;
+                        var btlController = new BTLPromoesController(authorizationManager);
+                        btlController.CalculateBTLBudgetsCreateTask(btlPromo.BTLId.ToString(), new List<Guid>() { key });
+                    }
+                }
                 PromoStateContext promoStateContext = new PromoStateContext(Context, promoCopy);
                 bool status = promoStateContext.ChangeState(model, userRole, out string message);
                 if (!status)
