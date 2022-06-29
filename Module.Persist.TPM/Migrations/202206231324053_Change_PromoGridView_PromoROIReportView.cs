@@ -36,16 +36,16 @@ namespace Module.Persist.TPM.Migrations
                               CAST(ROUND(CAST(pr.PlanPromoBaselineLSV / 1000000.0 AS DECIMAL(18, 3)), 2) AS FLOAT) AS PlanPromoBaselineLSV, pr.LastChangedDate, pr.LastChangedDateFinance, pr.LastChangedDateDemand, pts.Name AS PromoTypesName, 
                               pr.IsGrowthAcceleration, pr.IsApolloExport, CAST(CAST(pr.DeviationCoefficient * 100 AS DECIMAL) AS FLOAT) AS DeviationCoefficient, pr.ActualPromoLSVByCompensation, pr.PlanPromoLSV, pr.ActualPromoLSV, 
                               pr.ActualPromoBaselineLSV, pr.ActualPromoIncrementalLSV, pr.SumInvoice, pr.IsOnInvoice, pr.IsInExchange
-            FROM     Jupiter.Promo AS pr LEFT OUTER JOIN
-                              Jupiter.Event AS ev ON pr.EventId = ev.Id LEFT OUTER JOIN
-                              Jupiter.Brand AS bnd ON pr.BrandId = bnd.Id LEFT OUTER JOIN
-                              Jupiter.BrandTech AS bt ON pr.BrandTechId = bt.Id LEFT OUTER JOIN
-                              Jupiter.PromoStatus AS ps ON pr.PromoStatusId = ps.Id LEFT OUTER JOIN
-                              Jupiter.Mechanic AS mmc ON pr.MarsMechanicId = mmc.Id LEFT OUTER JOIN
-                              Jupiter.Mechanic AS pim ON pr.PlanInstoreMechanicId = pim.Id LEFT OUTER JOIN
-                              Jupiter.MechanicType AS mmt ON pr.MarsMechanicTypeId = mmt.Id LEFT OUTER JOIN
-                              Jupiter.MechanicType AS pimt ON pr.PlanInstoreMechanicTypeId = pimt.Id LEFT OUTER JOIN
-                              Jupiter.PromoTypes AS pts ON pr.PromoTypesId = pts.Id
+            FROM     [DefaultSchemaSetting].Promo AS pr LEFT OUTER JOIN
+                              [DefaultSchemaSetting].Event AS ev ON pr.EventId = ev.Id LEFT OUTER JOIN
+                              [DefaultSchemaSetting].Brand AS bnd ON pr.BrandId = bnd.Id LEFT OUTER JOIN
+                              [DefaultSchemaSetting].BrandTech AS bt ON pr.BrandTechId = bt.Id LEFT OUTER JOIN
+                              [DefaultSchemaSetting].PromoStatus AS ps ON pr.PromoStatusId = ps.Id LEFT OUTER JOIN
+                              [DefaultSchemaSetting].Mechanic AS mmc ON pr.MarsMechanicId = mmc.Id LEFT OUTER JOIN
+                              [DefaultSchemaSetting].Mechanic AS pim ON pr.PlanInstoreMechanicId = pim.Id LEFT OUTER JOIN
+                              [DefaultSchemaSetting].MechanicType AS mmt ON pr.MarsMechanicTypeId = mmt.Id LEFT OUTER JOIN
+                              [DefaultSchemaSetting].MechanicType AS pimt ON pr.PlanInstoreMechanicTypeId = pimt.Id LEFT OUTER JOIN
+                              [DefaultSchemaSetting].PromoTypes AS pts ON pr.PromoTypesId = pts.Id
         
             GO
 
