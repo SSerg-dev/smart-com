@@ -387,7 +387,7 @@ namespace Module.Frontend.TPM.Controllers
                     DateTimeOffset StartDateChange = (DateTimeOffset)ChangePromo.StartDate;
                     if (StartDateCopy.Date != StartDateChange.Date)
                     {
-                        if (!ChangedList.Any(g => g.Contains("EventId")))
+                        if (ChangePromo.EventId == null)
                         {
                             Event promoEvent = Context.Set<Event>().FirstOrDefault(x => !x.Disabled && x.Name == "Standard promo");
                             if (promoEvent == null)
@@ -398,13 +398,6 @@ namespace Module.Frontend.TPM.Controllers
                             ChangePromo.EventId = promoEvent.Id;
                             model.EventId = promoEvent.Id;
                             model.EventName = promoEvent.Name;
-                            var btlPromo = Context.Set<BTLPromo>().FirstOrDefault(x => x.PromoId == key);
-                            if (btlPromo != null)
-                            {
-                                btlPromo.DeletedDate = System.DateTime.Now;
-                                btlPromo.Disabled = true;
-                                CalculateBTLBudgetsCreateTask(btlPromo.BTLId.ToString(), new List<Guid>() { key });
-                            }
                         }
                     }
                 }
