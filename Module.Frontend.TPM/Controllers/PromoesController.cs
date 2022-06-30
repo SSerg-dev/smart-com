@@ -408,8 +408,7 @@ namespace Module.Frontend.TPM.Controllers
                     {
                         btlPromo.DeletedDate = System.DateTime.Now;
                         btlPromo.Disabled = true;
-                        var btlController = new BTLPromoesController(authorizationManager);
-                        btlController.CalculateBTLBudgetsCreateTask(btlPromo.BTLId.ToString(), new List<Guid>() { key });
+                        CalculateBTLBudgetsCreateTask(btlPromo.BTLId.ToString(), new List<Guid>() { key });
                     }
                 }
                 PromoStateContext promoStateContext = new PromoStateContext(Context, promoCopy);
@@ -484,7 +483,8 @@ namespace Module.Frontend.TPM.Controllers
                 if (promoCopy.PromoStatusId != model.PromoStatusId
                     || promoCopy.IsDemandFinanceApproved != model.IsDemandFinanceApproved
                     || promoCopy.IsCMManagerApproved != model.IsCMManagerApproved
-                    || promoCopy.IsDemandPlanningApproved != model.IsDemandPlanningApproved)
+                    || promoCopy.IsDemandPlanningApproved != model.IsDemandPlanningApproved
+                    || promoCopy.IsGAManagerApproved != model.IsGAManagerApproved)
                 {
 
                     PromoStatusChange psc = Context.Set<PromoStatusChange>().Create<PromoStatusChange>();
@@ -1255,6 +1255,8 @@ namespace Module.Frontend.TPM.Controllers
                     return Content(HttpStatusCode.OK, UserDashboard.GetCMManagerCount(authorizationManager, Context));
                 case "CustomerMarketing":
                     return Content(HttpStatusCode.OK, UserDashboard.GetCustomerMarketingCount(authorizationManager, Context));
+                case "GAManager":
+                    return Content(HttpStatusCode.OK, UserDashboard.GetGAManagerCount(authorizationManager, Context));
             }
             return Content(HttpStatusCode.InternalServerError, JsonConvert.SerializeObject(new { Error = "Fail to role" }));
         }
@@ -2562,6 +2564,36 @@ namespace Module.Frontend.TPM.Controllers
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Создание отложенной задачи, выполняющей перерасчет бюджетов
+        /// </summary>
+        /// <param name="promoSupportPromoIds">список ID подстатей</param>
+        /// <param name="calculatePlanCostTE">Необходимо ли пересчитывать значения плановые Cost TE</param>
+        /// <param name="calculateFactCostTE">Необходимо ли пересчитывать значения фактические Cost TE</param>
+        /// <param name="calculatePlanCostProd">Необходимо ли пересчитывать значения плановые Cost Production</param>
+        /// <param name="calculateFactCostProd">Необходимо ли пересчитывать значения фактические Cost Production</param>
+        public void CalculateBTLBudgetsCreateTask(string btlId, List<Guid> unlinkedPromoIds = null)
+        {
+            UserInfo user = authorizationManager.GetCurrentUser();
+            Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
+            RoleInfo role = authorizationManager.GetCurrentRole();
+            Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
+
+            HandlerData data = new HandlerData();
+            HandlerDataHelper.SaveIncomingArgument("BTLId", btlId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+            if (unlinkedPromoIds != null)
+            {
+                HandlerDataHelper.SaveIncomingArgument("UnlinkedPromoIds", unlinkedPromoIds, data, visible: false, throwIfNotExists: false);
+            }
+
+            bool success = CalculationTaskManager.CreateCalculationTask(CalculationTaskManager.CalculationAction.BTL, data, Context);
+
+            if (!success)
+                throw new Exception("Promo was blocked for calculation");
         }
     }
 }
