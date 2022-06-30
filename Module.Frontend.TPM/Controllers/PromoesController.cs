@@ -398,6 +398,13 @@ namespace Module.Frontend.TPM.Controllers
                             ChangePromo.EventId = promoEvent.Id;
                             model.EventId = promoEvent.Id;
                             model.EventName = promoEvent.Name;
+                            var btlPromo = Context.Set<BTLPromo>().FirstOrDefault(x => x.PromoId == key);
+                            if (btlPromo != null)
+                            {
+                                btlPromo.DeletedDate = System.DateTime.Now;
+                                btlPromo.Disabled = true;
+                                CalculateBTLBudgetsCreateTask(btlPromo.BTLId.ToString(), new List<Guid>() { key });
+                            }
                         }
                     }
                 }
