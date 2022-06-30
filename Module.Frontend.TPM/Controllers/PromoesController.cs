@@ -664,15 +664,14 @@ namespace Module.Frontend.TPM.Controllers
                 }
                 if (ChangePromo.EventId != null)
                 {
-                    PromoCalculateHelper.RecalculateBudgets(model, user, Context);
-                    PromoCalculateHelper.RecalculateBTLBudgets(model, user, Context, safe: true);
-                    //var btlPromo = Context.Set<BTLPromo>().FirstOrDefault(x => x.PromoId == key);
-                    //if (btlPromo != null)
-                    //{
-                    //    btlPromo.DeletedDate = System.DateTime.Now;
-                    //    btlPromo.Disabled = true;
-                    //    CalculateBTLBudgetsCreateTask(btlPromo.BTLId.ToString(), new List<Guid>() { key });
-                    //}
+                    var btlPromo = Context.Set<BTLPromo>().FirstOrDefault(x => x.PromoId == key);
+                    if (btlPromo != null)
+                    {
+                        btlPromo.DeletedDate = System.DateTime.Now;
+                        btlPromo.Disabled = true;
+                        PromoCalculateHelper.RecalculateBudgets(model, user, Context);
+                        PromoCalculateHelper.RecalculateBTLBudgets(model, user, Context, safe: true);
+                    }
                 }
 
                 if (promoCopy.PromoStatus.SystemName.ToLower() == "cancelled")
