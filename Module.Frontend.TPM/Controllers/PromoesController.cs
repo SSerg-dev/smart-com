@@ -402,18 +402,7 @@ namespace Module.Frontend.TPM.Controllers
                     }
                 }
 
-                if (ChangePromo.EventId != null)
-                {
-                    PromoCalculateHelper.RecalculateBudgets(model, user, Context);
-                    PromoCalculateHelper.RecalculateBTLBudgets(model, user, Context, safe: true);
-                    //var btlPromo = Context.Set<BTLPromo>().FirstOrDefault(x => x.PromoId == key);
-                    //if (btlPromo != null)
-                    //{
-                    //    btlPromo.DeletedDate = System.DateTime.Now;
-                    //    btlPromo.Disabled = true;
-                    //    CalculateBTLBudgetsCreateTask(btlPromo.BTLId.ToString(), new List<Guid>() { key });
-                    //}
-                }
+                
                 PromoStateContext promoStateContext = new PromoStateContext(Context, promoCopy);
                 bool status = promoStateContext.ChangeState(model, userRole, out string message);
                 if (!status)
@@ -672,6 +661,18 @@ namespace Module.Frontend.TPM.Controllers
                     {
                         PromoHelper.DisableIncrementalPromo(Context, model);
                     }
+                }
+                if (ChangePromo.EventId != null)
+                {
+                    PromoCalculateHelper.RecalculateBudgets(model, user, Context);
+                    PromoCalculateHelper.RecalculateBTLBudgets(model, user, Context, safe: true);
+                    //var btlPromo = Context.Set<BTLPromo>().FirstOrDefault(x => x.PromoId == key);
+                    //if (btlPromo != null)
+                    //{
+                    //    btlPromo.DeletedDate = System.DateTime.Now;
+                    //    btlPromo.Disabled = true;
+                    //    CalculateBTLBudgetsCreateTask(btlPromo.BTLId.ToString(), new List<Guid>() { key });
+                    //}
                 }
 
                 if (promoCopy.PromoStatus.SystemName.ToLower() == "cancelled")
