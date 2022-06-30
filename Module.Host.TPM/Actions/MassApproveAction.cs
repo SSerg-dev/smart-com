@@ -99,7 +99,7 @@ namespace Module.Host.TPM.Actions
         private void DeleteChildPromoes(Guid modelId, UserInfo user, out string childmessage, DatabaseContext context)
         {
             childmessage = string.Empty;
-            var ChildPromoes = context.Set<Promo>().Where(p => p.MasterPromoId == modelId).ToList();
+            var ChildPromoes = context.Set<Promo>().Where(p => p.MasterPromoId == modelId && !p.Disabled).ToList();
             var statuses = context.Set<PromoStatus>().ToList();
             var DeletedId = statuses.FirstOrDefault(s => s.SystemName == "Deleted" && !s.Disabled).Id;
             var DraftPublishedId = statuses.FirstOrDefault(s => s.SystemName == "DraftPublished" && !s.Disabled).Id;
@@ -138,7 +138,7 @@ namespace Module.Host.TPM.Actions
                                 promoProductsCorrection.UserName = user.Login;
                             }
                             // удалить дочерние промо
-                            var PromoesUnlink = context.Set<Promo>().Where(p => p.MasterPromoId == ChildPromo.Id).ToList();
+                            var PromoesUnlink = context.Set<Promo>().Where(p => p.MasterPromoId == ChildPromo.Id && !p.Disabled).ToList();
                             foreach (var childpromo in PromoesUnlink)
                             {
                                 childpromo.MasterPromoId = null;
