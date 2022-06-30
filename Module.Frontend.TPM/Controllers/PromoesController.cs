@@ -324,7 +324,7 @@ namespace Module.Frontend.TPM.Controllers
             {
                 List<string> LinkedStringIds = model.LinkedPromoes.Split(',').ToList();
                 List<int> LinkedIds = LinkedStringIds.Select(s => int.Parse(s)).ToList();
-                List<Promo> ChildPromoes = Context.Set<Promo>().Where(g => LinkedIds.Contains((int)g.Number)).ToList();
+                List<Promo> ChildPromoes = Context.Set<Promo>().Where(g => LinkedIds.Contains((int)g.Number) && !g.Disabled).ToList();
                 foreach (var ChildPromo in ChildPromoes)
                 {
                     ChildPromo.MasterPromoId = result.Id;
@@ -1018,7 +1018,7 @@ namespace Module.Frontend.TPM.Controllers
                     promoProductsCorrection.UserName = user.Login;
                 }
                 // удалить дочерние промо
-                var PromoesUnlink = Context.Set<Promo>().Where(p => p.MasterPromoId == model.Id).ToList();
+                var PromoesUnlink = Context.Set<Promo>().Where(p => p.MasterPromoId == model.Id && !p.Disabled).ToList();
                 foreach (var childpromo in PromoesUnlink)
                 {
                     childpromo.MasterPromoId = null;
@@ -1185,7 +1185,7 @@ namespace Module.Frontend.TPM.Controllers
 
                     //Убираем Linked Promoes и убираем ссылки у дочерних промо
                     patch.TrySetPropertyValue("LinkedPromoes", string.Empty);
-                    var PromoesUnlink = Context.Set<Promo>().Where(p => p.MasterPromoId == promo.Id).ToList();
+                    var PromoesUnlink = Context.Set<Promo>().Where(p => p.MasterPromoId == promo.Id && !p.Disabled).ToList();
                     foreach (var childpromo in PromoesUnlink)
                     {
                         childpromo.MasterPromoId = null;
@@ -2501,7 +2501,7 @@ namespace Module.Frontend.TPM.Controllers
         private void DeleteChildPromoes(Guid modelId, UserInfo user, out string childmessage)
         {
             childmessage = string.Empty;
-            var ChildPromoes = Context.Set<Promo>().Where(p => p.MasterPromoId == modelId).ToList();
+            var ChildPromoes = Context.Set<Promo>().Where(p => p.MasterPromoId == modelId && !p.Disabled).ToList();
             var statuses = Context.Set<PromoStatus>().ToList();
             var DeletedId = statuses.FirstOrDefault(s => s.SystemName == "Deleted" && !s.Disabled).Id;
             var DraftPublishedId = statuses.FirstOrDefault(s => s.SystemName == "DraftPublished" && !s.Disabled).Id;
@@ -2540,7 +2540,7 @@ namespace Module.Frontend.TPM.Controllers
                                 promoProductsCorrection.UserName = user.Login;
                             }
                             // удалить дочерние промо
-                            var PromoesUnlink = Context.Set<Promo>().Where(p => p.MasterPromoId == ChildPromo.Id).ToList();
+                            var PromoesUnlink = Context.Set<Promo>().Where(p => p.MasterPromoId == ChildPromo.Id && !p.Disabled).ToList();
                             foreach (var childpromo in PromoesUnlink)
                             {
                                 childpromo.MasterPromoId = null;
