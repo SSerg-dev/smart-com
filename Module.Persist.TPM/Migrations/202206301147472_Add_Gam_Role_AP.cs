@@ -1820,14 +1820,14 @@ namespace Module.Persist.TPM.Migrations
        (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='XMLProcessInterfaceSettings' and [Action]='GetXMLProcessInterfaceSettings' and [Disabled] = 0))
    GO
 
-        INSERT INTO [Jupiter].[AccessPointRole]
+        INSERT INTO [DefaultSchemaSetting].[AccessPointRole]
         (
             [Id]
             ,[RoleId]
             ,[AccessPointId]
         )
         VALUES
-        (NEWID(), (SELECT TOP(1) Id FROM [Jupiter].[Role] WHERE SystemName = 'GAManager'), (SELECT TOP(1) Id FROM [Jupiter].[AccessPoint] WHERE Action = 'MassApprove'))
+        (NEWID(), (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[Role] WHERE SystemName = 'GAManager'), (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'MassApprove'))
     GO
             ";
     }
