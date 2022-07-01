@@ -919,7 +919,7 @@ namespace Module.Frontend.TPM.Controllers
                     promoProductsCorrection.UserName = user.Login;
                 }
                 // удалить дочерние промо
-                var PromoesUnlink = Context.Set<Promo>().Where(p => p.MasterPromoId == model.Id).ToList();
+                var PromoesUnlink = Context.Set<Promo>().Where(p => p.MasterPromoId == model.Id && !p.Disabled).ToList();
                 foreach (var childpromo in PromoesUnlink)
                 {
                     childpromo.MasterPromoId = null;
@@ -1020,7 +1020,7 @@ namespace Module.Frontend.TPM.Controllers
 
                     //Убираем Linked Promoes и убираем ссылки у дочерних промо
                     patch.TrySetPropertyValue("LinkedPromoes", string.Empty);
-                    var PromoesUnlink = Context.Set<Promo>().Where(p => p.MasterPromoId == promo.Id).ToList();
+                    var PromoesUnlink = Context.Set<Promo>().Where(p => p.MasterPromoId == promo.Id && p.Disabled).ToList();
                     foreach (var childpromo in PromoesUnlink)
                     {
                         childpromo.MasterPromoId = null;
@@ -2316,7 +2316,7 @@ namespace Module.Frontend.TPM.Controllers
         }
         private void CancelChildPromoes(Guid modelId, string userRole)
         {
-            var ChildPromoes = Context.Set<Promo>().Where(p => p.MasterPromoId == modelId);
+            var ChildPromoes = Context.Set<Promo>().Where(p => p.MasterPromoId == modelId && p.Disabled);
             var CancelledId = Context.Set<PromoStatus>().FirstOrDefault(s => s.SystemName == "Cancelled" && !s.Disabled).Id;
             List<Guid> mainPromoSupportIds = new List<Guid>();
             List<Guid> mainBTLIds = new List<Guid>();
