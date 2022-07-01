@@ -405,4 +405,12 @@ namespace Module.Host.TPM.Handlers
             return new FullXLSXUpdateImportRollingVolumesAction(settings);
         }
     }
+
+    public class FullXLSXRPAPromoSupportImportHandler: FullXLSXImportHandler
+    {
+        protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
+        {
+            return new FullXLSXRPAPromoSupportImportAction(settings);
+        }
+    }
 }

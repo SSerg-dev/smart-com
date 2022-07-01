@@ -6,7 +6,7 @@ using Interfaces.Implementation.Action;
 using Interfaces.Implementation.Import.FullImport;
 using Looper.Parameters;
 using Module.Frontend.TPM.Util;
-using Module.Persist.TPM.Model.History;
+using Module.Host.TPM.Util;
 //using Module.Persist.TPM.Migrations;
 using Module.Persist.TPM.Model.Import;
 using Module.Persist.TPM.Model.TPM;
@@ -17,15 +17,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Utility.FileWorker;
 using Utility.Import;
 using Utility.Import.ImportModelBuilder;
 
 namespace Module.Host.TPM.Actions
 {
-	public class FullXLSXPLUDictionaryImportAction : BaseAction
+    public class FullXLSXPLUDictionaryImportAction : BaseAction
     {
         public FullXLSXPLUDictionaryImportAction(FullImportSettings settings)
         {
@@ -141,7 +139,7 @@ namespace Module.Host.TPM.Actions
             IList<Tuple<string, string>> buildErrors;
             IList<Tuple<IEntity<Guid>, string>> validateErrors;
             logger.Trace("before parse file");
-            IList<IEntity<Guid>> records = ImportUtility.ParseXLSXFile(importFilePath, null, builder, validator, Separator, Quote, HasHeader, out sourceRecordCount, out errors, out buildErrors, out validateErrors);
+            IList<IEntity<Guid>> records = ImportUtilityTPM.ParseXLSXFile(importFilePath, null, builder, validator, Separator, Quote, HasHeader, out sourceRecordCount, out errors, out buildErrors, out validateErrors);
             logger.Trace("after parse file");
 
             // Обработать ошибки

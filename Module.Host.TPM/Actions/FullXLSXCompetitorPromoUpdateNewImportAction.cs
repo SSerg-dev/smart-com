@@ -6,6 +6,7 @@ using Interfaces.Implementation.Action;
 using Interfaces.Implementation.Import.FullImport;
 using Looper.Parameters;
 using Module.Frontend.TPM.Util;
+using Module.Host.TPM.Util;
 using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
@@ -17,8 +18,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Utility;
 using Utility.FileWorker;
 using Utility.Import;
@@ -127,7 +126,7 @@ namespace Module.Host.TPM.Actions
             IList<Tuple<IEntity<Guid>, string>> validateErrors;
             logger.Trace("before parse file");
 
-            IList<IEntity<Guid>> records = ImportUtility.ParseXLSXFile(importFilePath, null, builder, validator, Separator, Quote, HasHeader, out sourceRecordCount, out errors, out buildErrors, out validateErrors);
+            IList<IEntity<Guid>> records = ImportUtilityTPM.ParseXLSXFile(importFilePath, null, builder, validator, Separator, Quote, HasHeader, out sourceRecordCount, out errors, out buildErrors, out validateErrors);
 
             logger.Trace("after parse file");
 

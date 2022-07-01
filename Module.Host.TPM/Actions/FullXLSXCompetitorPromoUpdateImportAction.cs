@@ -1,33 +1,26 @@
 ﻿using Core.Data;
 using Core.Extensions;
 using Core.History;
-using Core.MarsCalendar;
 using Core.Settings;
 using Interfaces.Implementation.Action;
 using Interfaces.Implementation.Import.FullImport;
 using Looper.Parameters;
 using Module.Frontend.TPM.Util;
-using Module.Frontend.TPM.Controllers;
-using Module.Persist.TPM.Model.Import;
+using Module.Host.TPM.Util;
+using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
 using NLog;
 using Persist;
+using Persist.Model;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Utility.Import;
-using Utility.LogWriter;
-using Utility.FileWorker;
-using Persist.Model;
-using Module.Persist.TPM.Model.DTO;
 using Utility;
+using Utility.FileWorker;
+using Utility.Import;
 
 namespace Module.Host.TPM.Actions
 {
@@ -133,7 +126,7 @@ namespace Module.Host.TPM.Actions
             IList<Tuple<IEntity<Guid>, string>> validateErrors;
             logger.Trace("before parse file");
 
-            IList<IEntity<Guid>> records = ImportUtility.ParseXLSXFile(importFilePath, null, builder, validator, Separator, Quote, HasHeader, out sourceRecordCount, out errors, out buildErrors, out validateErrors);
+            IList<IEntity<Guid>> records = ImportUtilityTPM.ParseXLSXFile(importFilePath, null, builder, validator, Separator, Quote, HasHeader, out sourceRecordCount, out errors, out buildErrors, out validateErrors);
 
             logger.Trace("after parse file");
 
