@@ -2964,6 +2964,7 @@
     <Compile Include="Model\History\HistoricalTechHighLevel.cs" />
     <Compile Include="Model\History\HistoricalTechnology.cs" />
     <Compile Include="Model\History\HistoricalVariety.cs" />
+    <Compile Include="Model\Import\ImportCompetitorPromo - Copy.cs" />
     <Compile Include="Model\Import\ImportCompetitorPromo.cs" />
     <Compile Include="Model\Import\BaseLineComparer.cs" />
     <Compile Include="Model\Import\ImportAssortmentMatrix.cs" />
@@ -2998,6 +2999,7 @@
     <Compile Include="Model\Import\ImportBudget.cs" />
     <Compile Include="Model\Import\ImportBrandTech.cs" />
     <Compile Include="Model\Import\ImportRollingVolume.cs" />
+    <Compile Include="Model\Import\ImportRPAEvent.cs" />
     <Compile Include="Model\Import\ImportTechnology.cs" />
     <Compile Include="Model\Import\ImportBrand.cs" />
     <Compile Include="Model\Import\ImportPromoProduct.cs" />
