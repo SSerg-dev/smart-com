@@ -77,6 +77,10 @@
                 promoController.setInfoPromoBasicStep2(promoProductsForm);
 
                 promoEditorCustom.excludeAssortmentMatrixProductsButtonPressed = excludeAssortmentMatrixProductsButton.pressed;
+
+                var period = promoEditorCustom.down('container[name=promo_step4]');
+                period.setDisabled(false);
+
                 button.up('window').close();
             } else {
                 App.Notify.pushInfo(l10n.ns('tpm', 'InOutProductSelectionWindow').value('productrequired'));

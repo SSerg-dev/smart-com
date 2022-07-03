@@ -423,6 +423,23 @@ namespace Module.Host.TPM.Handlers
             return new FullXLSXUpdateImportRollingVolumesAction(settings);
         }
     }
+    class FullXLSXUpdateImportEventHandler : FullXLSXImportHandler
+    {
+        private Guid RoleId;
+        private Guid userId;
+
+        public override void Action(HandlerInfo info, ExecuteData data)
+        {
+            RoleId = Looper.Parameters.HandlerDataHelper.GetIncomingArgument<Guid>("RoleId", info.Data, false);
+            userId = Looper.Parameters.HandlerDataHelper.GetIncomingArgument<Guid>("UserId", info.Data, false);
+            base.Action(info, data);
+        }
+
+        protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
+        {
+            return new FullXLSXUpdateImportEventAction(settings, RoleId, userId);
+        }
+    }
     public class FullXLSXRPAEventImportHandler : FullXLSXImportHandler
     {
         protected override IAction GetAction(FullImportSettings settings, ExecuteData data)

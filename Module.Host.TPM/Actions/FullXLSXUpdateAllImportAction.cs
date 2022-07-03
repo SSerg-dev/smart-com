@@ -110,12 +110,6 @@ namespace Module.Host.TPM.Actions
                 if (String.IsNullOrEmpty(typedRec.SystemName)) { errors.Add("Color RGB must have a value"); isSuitable = false; }
             }
 
-            if (TypeTo == typeof(Event))
-            {
-                Event typedRec = (Event)rec;
-                if (String.IsNullOrEmpty(typedRec.Name)) { errors.Add("Event must have a value"); isSuitable = false; }
-            }
-
             if (TypeTo == typeof(NodeType))
             {
                 NodeType typedRec = (NodeType)rec;
@@ -233,7 +227,7 @@ namespace Module.Host.TPM.Actions
                             newRecord.Id = oldRecord.Id;
                             toHisUpdate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(oldRecord, newRecord));
                             toUpdate.Add(newRecord);
-                        }                  
+                        }
                     }
                 }
             }
@@ -309,10 +303,6 @@ namespace Module.Host.TPM.Actions
             else if (TypeTo == typeof(Color))
             {
                 query = context.Set<Color>().AsNoTracking();
-            }
-            else if (TypeTo == typeof(Event))
-            {
-                query = context.Set<Event>().AsNoTracking();
             }
             else if (TypeTo == typeof(NodeType))
             {
@@ -428,7 +418,7 @@ namespace Module.Host.TPM.Actions
                 case "g":
                     product.CaseVolume = Math.Round(product.NetWeight.Value / 1000000, 7);
                     product.PCVolume = Math.Round(product.CaseVolume.Value / product.UOM_PC2Case.Value, 7);
-                    break;              
+                    break;
             }
             return (IEntity<Guid>)product;
         }

@@ -11,6 +11,8 @@
         { name: '_Operation', type: 'string', isDefault: true },
         { name: 'Name', type: 'string', hidden: false, isDefault: true },
         { name: 'Description', type: 'string', hidden: false, isDefault: true },
+        { name: 'Type', type: 'string', hidden: false, isDefault: true },
+        { name: 'MarketSegment', type: 'string', hidden: false, isDefault: true },
     ],
     proxy: {
         type: 'breeze',

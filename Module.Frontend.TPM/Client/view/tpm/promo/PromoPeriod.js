@@ -54,6 +54,7 @@
                             var validDates = false;
                             var panel = field.up('promoperiod');
                             if (newValue /*&& field.isValid()*/) {
+                                var promoController = App.app.getController('tpm.promo.Promo');
                                 var budgetYearCombo = field.up('promoeditorcustom').down('promobudgetyear').down('combobox');
                                 var budgetYearComboStore = budgetYearCombo.getStore();
                                 var userRole = App.UserInfo.getCurrentRole()['SystemName'];
@@ -169,13 +170,15 @@
                                 }
                                 
                                 // сбрасываем эвент на стандартный
-                                if (oldValue) {
-                                    if (!['SupportAdministrator'].includes(userRole) && newValue != oldValue) {
-                                        var promoController = App.app.getController('tpm.promo.Promo');
+                                var promoeditorcustom = field.up('promoeditorcustom');
+                                if (oldValue && !promoeditorcustom.isCreating) {                                    
+                                    if (!['SupportAdministrator'].includes(userRole) && newValue != oldValue) {                                        
                                         promoController.refreshPromoEvent(field.up('promoeditorcustom'), true);
                                     }
                                 }
-
+                                if (promoeditorcustom.isCreating) {
+                                    promoController.setEventBTL();
+                                }                                
                             }
 
                             if (!validDates) {
@@ -249,6 +252,7 @@
                             var panel = field.up('promoperiod');
 
                             if (newValue /*&& field.isValid()*/) {
+                                var promoController = App.app.getController('tpm.promo.Promo');
                                 var startDateField = field.up().down('datefield[name=DurationStartDate]');
                                 var startDateValue = startDateField.getValue();
                                 var promoClientForm = field.up('promoeditorcustom').down('promoclient');
@@ -322,6 +326,11 @@
                                     var stepButtons = panel.down('panel[itemId=promo]').down('custompromotoolbar');
 
                                     checkMainTab(stepButtons, mainTab);
+                                }
+
+                                var promoeditorcustom = field.up('promoeditorcustom');
+                                if (promoeditorcustom.isCreating) {
+                                    promoController.setEventBTL();
                                 }
                             }
 

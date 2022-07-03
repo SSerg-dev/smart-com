@@ -300,6 +300,7 @@
     <Compile Include="Actions\FullXLSXImportPromoProductFromTLCAction.cs" />
     <Compile Include="Actions\FullXLSXMechanicTypeUpdateImportAction.cs" />
     <Compile Include="Actions\FullXLSXImportNonPromoDMPAction.cs" />
+    <Compile Include="Actions\FullXLSXUpdateImportEventAction.cs" />
     <Compile Include="Actions\FullXLSXUpdateImportNonPromoEquipmentAction.cs" />
     <Compile Include="Actions\FullXLSXUpdateImportClientDashboardAction.cs" />
     <Compile Include="Actions\FullXLSXUpdateImportCoefficientSI2SOAction.cs" />

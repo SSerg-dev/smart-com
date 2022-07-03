@@ -12,10 +12,12 @@ using Module.Persist.TPM.CalculatePromoParametersModule;
 using Module.Persist.TPM.Model.Import;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
+using Newtonsoft.Json;
 using Persist;
 using Persist.Model;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Data.SqlClient;
 using System.IO;
@@ -322,5 +324,113 @@ namespace Module.Frontend.TPM.Controllers
                 return InternalServerError(e);
             }
         }
+        [HttpPost]
+        [ClaimsAuthorize]
+        public async Task<IHttpActionResult> GetEventBTL()
+        {
+            string resultData = Request.Content.ReadAsStringAsync().Result;
+            EventBTLModel eventBTL = new EventBTLModel();
+            Event standartPromo = await Context.Set<Event>().AsNoTracking().Where(g => g.Name == "Standard promo").FirstOrDefaultAsync();
+            if (resultData != null)
+            {
+                eventBTL = JsonConvert.DeserializeObject<EventBTLModel>(resultData);
+                eventBTL.DurationDateStart = eventBTL.DurationDateStart.LocalDateTime;
+                eventBTL.DurationDateEnd = eventBTL.DurationDateEnd.LocalDateTime;
+                List<Guid> productGuids = eventBTL.InOutProductIds.Split(';').Where(s => !string.IsNullOrWhiteSpace(s)).Select(s => Guid.Parse(s)).ToList();
+                List<string> products = await Context.Set<Product>().AsNoTracking().Where(g => productGuids.Contains(g.Id) && !g.Disabled).Select(f => f.MarketSegment).ToListAsync();
+                List<string> distinctList = products.Distinct().ToList();
+                string marketSegment;
+                if (distinctList.Count == 1)
+                {
+                    marketSegment = distinctList[0];
+                }
+                else
+                {
+                    int countRange = 0;
+                    int position = 0;
+                    for (int i = 0; i < distinctList.Count; i++)
+                    {
+                        string item = distinctList[i];
+                        int countItem = products.Where(g => g == item).ToList().Count;
+                        if (countItem > countRange)
+                        {
+                            countRange = countItem;
+                            position = i;
+                        }
+                    }
+                    marketSegment = distinctList[position];
+                }
+                List<Event> events = await Context.Set<Event>()
+                    .AsNoTracking()
+                    .Where(g => !g.Disabled && g.EventType.National && (g.MarketSegment == marketSegment || string.IsNullOrEmpty(g.MarketSegment)) && !g.EventType.Disabled)
+                    .ToListAsync();
+                //events = events.Where(g => g.BTLs.Any(f => (eventBTL.DurationDateStart <= f.StartDate && eventBTL.DurationDateEnd > f.StartDate) || (eventBTL.DurationDateStart >= f.StartDate && eventBTL.DurationDateStart > f.EndDate))).ToList();
+                //List<Event> filterEvents = new List<Event>();
+                foreach (Event item in events)
+                {
+                    item.BTLs = item.BTLs.Where(f => (eventBTL.DurationDateStart <= f.EndDate && eventBTL.DurationDateEnd >= f.StartDate)).ToList();
+                    if (item.BTLs.Count > 0)
+                    {
+                        var copyBtls = item.BTLs.ToList();
+                        foreach (BTL btl in item.BTLs)
+                        {
+                            double totalDays = (eventBTL.DurationDateEnd - eventBTL.DurationDateStart).TotalDays;
+                            double totalDaysBTL = ((DateTimeOffset)btl.EndDate - (DateTimeOffset)btl.StartDate).TotalDays;
+                            DateTimeOffset startDateDiff;
+                            DateTimeOffset endDateDiff;
+                            if (eventBTL.DurationDateStart >= (DateTimeOffset)btl.StartDate)
+                            {
+                                startDateDiff = eventBTL.DurationDateStart;
+                                //countDays += (eventBTL.DurationDateStart - (DateTimeOffset)btl.StartDate).TotalDays;
+                            }
+                            else
+                            {
+                                startDateDiff = (DateTimeOffset)btl.StartDate;
+                            }
+                            if (eventBTL.DurationDateEnd <= (DateTimeOffset)btl.EndDate)
+                            {
+                                endDateDiff = eventBTL.DurationDateEnd;
+                                //countDays += ((DateTimeOffset)btl.EndDate - eventBTL.DurationDateEnd).TotalDays;
+                            }
+                            else
+                            {
+                                endDateDiff = (DateTimeOffset)btl.EndDate;
+                            }
+                            double diffPeriod = (endDateDiff - startDateDiff).TotalDays;
+                            if (totalDaysBTL / 2 > diffPeriod)
+                            {
+                                copyBtls.Remove(btl);
+                            }
+                        }
+                        item.BTLs = copyBtls;
+                    }
+                }
+                events = events.Where(g => g.BTLs.Count != 0).ToList();
+                Event returnEvent = new Event();
+                if (events.Count != 0)
+                {
+                    returnEvent = events.FirstOrDefault();
+                }
+                else
+                {
+                    returnEvent = standartPromo;
+                }
+                returnEvent.BTLs = null;
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(returnEvent, new JsonSerializerSettings
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                }));
+            }
+            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(standartPromo, new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            }));
+        }
+    }
+    public class EventBTLModel
+    {
+        public DateTimeOffset DurationDateStart { get; set; }
+        public DateTimeOffset DurationDateEnd { get; set; }
+        public string InOutProductIds { get; set; }
     }
 }
