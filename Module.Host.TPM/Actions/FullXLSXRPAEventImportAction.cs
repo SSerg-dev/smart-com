@@ -279,7 +279,7 @@ namespace Module.Host.TPM.Actions
             bool isSuitable = true;
 
             ImportRPAEvent typedRec = (ImportRPAEvent)rec;
-            var promoEvent= context.Set<Event>().FirstOrDefault(x => x.Name == typedRec.EventName);
+            var promoEvent= context.Set<Event>().FirstOrDefault(x => !x.Disabled && x.Name == typedRec.EventName);
             if (promoEvent == null)
             {
                 errors.Add("Event not found");
@@ -287,7 +287,7 @@ namespace Module.Host.TPM.Actions
             }
             else
             {
-                var promo = context.Set<Promo>().FirstOrDefault(x => x.Number == typedRec.PromoNumber);
+                var promo = context.Set<Promo>().FirstOrDefault(x => !x.Disabled && x.Number == typedRec.PromoNumber);
                 if (promo == null)
                 {
                     errors.Add("Promo not found");
@@ -304,7 +304,7 @@ namespace Module.Host.TPM.Actions
                     errors.Add("Invalid Promo status");
                     isSuitable = false;
                 }
-                var isSegmentSuitable = context.Set<PromoProduct>().Where(x => x.PromoId == promo.Id).All(x => x.Product.MarketSegment == promoEvent.MarketSegment);
+                var isSegmentSuitable = context.Set<PromoProduct>().Where(x => !x.Disabled && x.PromoId == promo.Id).All(x => x.Product.MarketSegment == promoEvent.MarketSegment);
                 if (isSegmentSuitable)
                 {
                     errors.Add("Event is not suitable");
