@@ -402,7 +402,7 @@ namespace Module.Frontend.TPM.Controllers
                     }
                 }
 
-                
+
                 PromoStateContext promoStateContext = new PromoStateContext(Context, promoCopy);
                 bool status = promoStateContext.ChangeState(model, userRole, out string message);
                 if (!status)

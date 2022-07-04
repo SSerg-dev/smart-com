@@ -440,4 +440,11 @@ namespace Module.Host.TPM.Handlers
             return new FullXLSXUpdateImportEventAction(settings, RoleId, userId);
         }
     }
+    public class FullXLSXRPAEventImportHandler : FullXLSXImportHandler
+    {
+        protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
+        {
+            return new FullXLSXRPAEventImportAction(settings);
+        }
+    }
 }
