@@ -667,10 +667,9 @@ namespace Module.Frontend.TPM.Controllers
                     var btlPromo = Context.Set<BTLPromo>().FirstOrDefault(x => x.PromoId == key);
                     if (btlPromo != null)
                     {
-                        btlPromo.DeletedDate = System.DateTime.Now;
                         btlPromo.Disabled = true;
-                        PromoCalculateHelper.RecalculateBudgets(model, user, Context);
-                        PromoCalculateHelper.RecalculateBTLBudgets(model, user, Context, safe: true);
+                        btlPromo.DeletedDate = DateTimeOffset.UtcNow;
+                        PromoCalculateHelper.CalculateBTLBudgetsCreateTask(btlPromo.BTLId.ToString(), null, null, Context, new List<Guid> { key }, safe: true);
                     }
                 }
 
