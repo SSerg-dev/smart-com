@@ -143,6 +143,17 @@
 
         { name: 'PromoTypesName', useNull: true, type: 'string', hidden: false, isDefault: false },
         { name: 'SumInvoice', useNull: true, type: 'float', hidden: false, isDefault: false },
+        // add new prop
+        { name: 'PlanPromoIncrementalCOGSTn', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'PlanPromoNetIncrementalCOGSTn', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'ActualPromoIncrementalCOGSTn', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'ActualPromoNetIncrementalCOGSTn', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'PlanPromoBaselineVolume', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'PlanPromoIncrementalVolume', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'PlanPromoNetIncrementalVolume', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'ActualPromoVolume', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'ActualPromoIncrementalVolume', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'ActualPromoNetIncrementalVolume', useNull: true, type: 'float', hidden: false, isDefault: false },
     ],
     proxy: {
         type: 'breeze',
