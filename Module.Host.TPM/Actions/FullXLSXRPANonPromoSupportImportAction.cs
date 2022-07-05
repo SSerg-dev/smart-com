@@ -26,7 +26,7 @@ using Utility.Import;
 
 namespace Module.Host.TPM.Actions
 {
-    public class FullXLSXRPAPromoSupportImportAction : BaseAction
+    public class FullXLSXRPANonPromoSupportImportAction : BaseAction
     {
         private readonly Guid UserId;
         private readonly Guid RoleId;
@@ -48,7 +48,7 @@ namespace Module.Host.TPM.Actions
 
         private ScriptGenerator Generator { get; set; }
 
-        public FullXLSXRPAPromoSupportImportAction(FullImportSettings settings)
+        public FullXLSXRPANonPromoSupportImportAction(FullImportSettings settings)
         {
             UserId = settings.UserId;
             RoleId = settings.RoleId;
@@ -282,9 +282,9 @@ namespace Module.Host.TPM.Actions
             errors = new List<string>();
 
             var sourceTemplateRecords = templateRecordIds
-                .Select(sr=> (sr as ImportRPAPromoSupport));            
+                .Select(sr=> (sr as ImportRPANonPromoSupport));            
             
-            var shortSupports = context.Set<PromoSupport>()
+            var shortSupports = context.Set<NonPromoSupport>()
                 .Select(ps => new
                 {
                     ps.Id,
@@ -296,14 +296,14 @@ namespace Module.Host.TPM.Actions
 
             var joinPromoSupports = sourceTemplateRecords
                 .Join(shortSupports,
-                        str => str.PromoSupportNumber,
+                        str => str.NonPromoSupportNumber,
                         ssp => ssp.Number,
                         (str, ssp) => new
                         {
-                            PromoSupportNumber = str.PromoSupportNumber,
+                            NonPromoSupportNumber = str.NonPromoSupportNumber,
                             ExternalCode = str.ExternalCode,
                             Quantity = str.Quantity,
-                            PromoSupportId = ssp.Id,
+                            NonPromoSupportId = ssp.Id,
                             Disabled = ssp.Disabled,
                             ClietTreeId = ssp.ClientTreeId,
                             ActualQuantuty = ssp.ActualQuantity
@@ -311,7 +311,7 @@ namespace Module.Host.TPM.Actions
             bool isDuplicateRecords = joinPromoSupports
                 .GroupBy(jps => new
                 {
-                    jps.PromoSupportNumber,
+                    jps.NonPromoSupportNumber,
                     jps.ExternalCode
                 })
                 .Any(gr => gr.Count() > 1);
@@ -324,20 +324,20 @@ namespace Module.Host.TPM.Actions
             var promoSupportWithoutDuplicates = joinPromoSupports
                 .GroupBy(jps => new
                 {
-                    jps.PromoSupportNumber,
+                    jps.NonPromoSupportNumber,
                     jps.ExternalCode,
-                    jps.PromoSupportId
+                    jps.NonPromoSupportId
                 })
                 .Select(jps => jps.First())
                 .ToList();
 
             distinctRecordIds = promoSupportWithoutDuplicates
-                .Select(p => new ImportRPAPromoSupport
+                .Select(p => new ImportRPANonPromoSupport
                 {
-                    PromoSupportNumber = p.PromoSupportNumber,
+                    NonPromoSupportNumber = p.NonPromoSupportNumber,
                     ExternalCode = p.ExternalCode,
                     Quantity = p.Quantity,
-                    PromoSupportId = p.PromoSupportId
+                    NonPromoSupportId = p.NonPromoSupportId
                 } as IEntity<Guid>)
                 .ToList();
             
@@ -383,61 +383,57 @@ namespace Module.Host.TPM.Actions
 
 
             var sourcePromoSupport = sourceRecords
-                 .Select(sr => sr as ImportRPAPromoSupport)
+                 .Select(sr => sr as ImportRPANonPromoSupport)
                  .ToList();
 
             var sourcePromoSupportIds = sourcePromoSupport
                 .Distinct()
-                .Select(ps => ps.PromoSupportId)
+                .Select(ps => ps.NonPromoSupportId)
                 .ToList();
 
             promoesForBudgetCalculation = sourcePromoSupportIds;
 
-            var toRemove = context.Set<PromoSupportDMP>()
-                .Where(x => sourcePromoSupportIds.Contains(x.PromoSupportId.Value));
+            var toRemove = context.Set<NonPromoSupportDMP>()
+                .Where(x => sourcePromoSupportIds.Contains(x.NonPromoSupportId.Value));
 
-            IList<PromoSupportDMP> toCreate = new List<PromoSupportDMP>();
+            IList<NonPromoSupportDMP> toCreate = new List<NonPromoSupportDMP>();
                                    
-            foreach (ImportRPAPromoSupport newRecord in sourceRecords)
+            foreach (ImportRPANonPromoSupport newRecord in sourceRecords)
             {
-                PromoSupportDMP toSave = new PromoSupportDMP()
+                NonPromoSupportDMP toSave = new NonPromoSupportDMP()
                 {
-                    PromoSupportId = newRecord.PromoSupportId,
+                    NonPromoSupportId = newRecord.NonPromoSupportId,
                     ExternalCode = newRecord.ExternalCode,
                     Quantity = newRecord.Quantity
                 };
                 toCreate.Add(toSave);
             }
 
-            foreach (IEnumerable<PromoSupportDMP> items in toRemove.Partition(100))
+            foreach (IEnumerable<NonPromoSupportDMP> items in toRemove.Partition(100))
             {
-                context.Set<PromoSupportDMP>().RemoveRange(items);
+                context.Set<NonPromoSupportDMP>().RemoveRange(items);
             }           
             
-            foreach (IEnumerable<PromoSupportDMP> items in toCreate.Partition(100))
+            foreach (IEnumerable<NonPromoSupportDMP> items in toCreate.Partition(100))
             {
-                context.Set<PromoSupportDMP>().AddRange(items);
+                context.Set<NonPromoSupportDMP>().AddRange(items);
             }
 
             var aggQuantitySumRecords = sourcePromoSupport
-                .GroupBy(sr => sr.PromoSupportNumber)
-                .Select(pr => new ImportRPAPromoSupport
+                .GroupBy(sr => sr.NonPromoSupportNumber)
+                .Select(pr => new ImportRPANonPromoSupport
                 {
-                            PromoSupportNumber = pr.Key,
+                            NonPromoSupportNumber = pr.Key,
                             Quantity = pr.Sum(x => x.Quantity)
                             
                         } as IEntity<Guid>
                  );
 
-            foreach(ImportRPAPromoSupport newRecord in aggQuantitySumRecords)
+            foreach(ImportRPANonPromoSupport newRecord in aggQuantitySumRecords)
             {
-                var promoSupport = context.Set<PromoSupport>().FirstOrDefault(x =>x.Number == newRecord.PromoSupportNumber);
+                var promoSupport = context.Set<NonPromoSupport>().FirstOrDefault(x =>x.Number == newRecord.NonPromoSupportNumber);
 
-                promoSupport.ActualQuantity = newRecord.Quantity;
-                if (promoSupport.ActualProdCostPer1Item.HasValue)
-                {
-                    promoSupport.ActualProdCost = promoSupport.ActualQuantity * promoSupport.ActualProdCostPer1Item;
-                }
+                promoSupport.ActualQuantity = newRecord.Quantity;                
                 promoSupport.AttachFileName = ImportFile.Name;
 
             }            
@@ -455,13 +451,13 @@ namespace Module.Host.TPM.Actions
             return Generator;
         }
 
-        private void CalculateBudgetsCreateTask(DatabaseContext context, List<Guid> promoSupportIds, List<Guid> unlinkedPromoIds = null)
+        private void CalculateBudgetsCreateTask(DatabaseContext context, List<Guid> nonPromoSupportIds, List<Guid> unlinkedPromoIds = null)
         {
-            string promoSupportIdsString = FromListToString(promoSupportIds);
+            string nonPromoSupportIdsString = FromListToString(nonPromoSupportIds);
             string unlinkedPromoIdsString = FromListToString(unlinkedPromoIds);
 
             HandlerData data = new HandlerData();
-            HandlerDataHelper.SaveIncomingArgument("PromoSupportIds", promoSupportIdsString, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("PromoSupportIds", nonPromoSupportIdsString, data, visible: false, throwIfNotExists: false);
             HandlerDataHelper.SaveIncomingArgument("UnlinkedPromoIds", unlinkedPromoIdsString, data, visible: false, throwIfNotExists: false);
 
             bool success = CalculationTaskManager.CreateCalculationTask(CalculationTaskManager.CalculationAction.Budgets, data, context);

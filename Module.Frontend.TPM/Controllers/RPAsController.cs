@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Core.Security;
+using UserInfoCore = Core.Security.Models.UserInfo;
 using Frontend.Core.Controllers.Base;
 using Frontend.Core.Extensions;
 using Module.Persist.TPM.Model.TPM;
@@ -38,6 +39,8 @@ using Column = Frontend.Core.Extensions.Export.Column;
 using Module.Persist.TPM.CalculatePromoParametersModule;
 using Utility;
 using Module.Persist.TPM.Model.DTO;
+using Core.Security.Models;
+using Module.Persist.TPM.Model.Import;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -97,18 +100,20 @@ namespace Module.Frontend.TPM.Controllers
 			var optionsPost = new ODataQueryOptionsPost<RPA>(options.Context, Request, HttpContext.Current.Request);
 			return optionsPost.ApplyTo(query, querySettings) as IQueryable<RPA>;
 		}
-
+				
+		/// <summary>
+		/// Метод создания RPA (новый функционал)
+		/// </summary>
+		/// <returns></returns>
 		[ClaimsAuthorize]
 		[HttpPost]
-		public async Task<IHttpActionResult> SaveRPA()
-		{
+		public IHttpActionResult SaveRPA()
+        {
 			if (!ModelState.IsValid)
 			{
 				return BadRequest(ModelState);
 			}
-			this.constraints = this.user.Id.HasValue ? Context.Constraints
-				.Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
-				.ToList() : new List<Constraint>();
+
 			var currentRequest = HttpContext.Current.Request;
 			var rpaModel = JsonConvert.DeserializeObject<RPA>(currentRequest.Params.Get("Model"));
 			var rpaType = currentRequest.Params.Get("RPAType");
@@ -116,8 +121,7 @@ namespace Module.Frontend.TPM.Controllers
 			var result = (RPA)Mapper.Map(rpaModel, proxy, typeof(RPA), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
 			Context.Set<RPA>().Add(result);
 			try
-			{
-
+            {
 				int maxFileByteLength = 25000000;
 
 				if (!Request.Content.IsMimeMultipartContent())
@@ -134,14 +138,6 @@ namespace Module.Frontend.TPM.Controllers
 				string directory = Core.Settings.AppSettingsManager.GetSetting("RPA_DIRECTORY", "RPAFiles");
 
 				string fileName = Task<string>.Run(async () => await FileUtility.UploadFile(Request, directory)).Result;
-
-				if (!CheckFileCorrect(fileName))
-				{
-					throw new FileLoadException("The import file is corrupted.");
-					
-				}
-
-
 
 				IList<Constraint> constraints = Context.Constraints
 														.Where(x => x.UserRole.UserId == user.Id && x.UserRole.Role.Id == roleId)
@@ -161,437 +157,121 @@ namespace Module.Frontend.TPM.Controllers
 				// Save RPA
 				var resultSaveChanges = Context.SaveChanges();
 
-				string LogURL = $"OutputLogFile_{ result.Id}.xlsx";
-
-				string SchemaBD = AppSettingsManager.GetSetting("DefaultSchema", "");
-
-				//Call Pipe
-				string tenantID = AppSettingsManager.GetSetting("RPA_UPLOAD_TENANT_ID", "");
-				string applicationId = AppSettingsManager.GetSetting("RPA_UPLOAD_APPLICATION_ID", "");
-				string authenticationKey = AppSettingsManager.GetSetting("RPA_UPLOAD_AUTHENTICATION_KEY", "");
-				string subscriptionId = AppSettingsManager.GetSetting("RPA_UPLOAD_SUBSCRIPTION_ID", "");
-				string resourceGroup = AppSettingsManager.GetSetting("RPA_UPLOAD_RESOURCE_GROUP", "");
-				string dataFactoryName = AppSettingsManager.GetSetting("RPA_UPLOAD_DATA_FACTORY_NAME", "");
-				string pipelineName = "";
-				string ServerName = AppSettingsManager.GetSetting("ServerName", ""); 
-				string DatabaseName = AppSettingsManager.GetSetting("DatabaseName", ""); 
-				string DBUserId = AppSettingsManager.GetSetting("DBUserId", ""); 
-				string PasswordKV = AppSettingsManager.GetSetting("PasswordKV", ""); 
-				string AKVScope = AppSettingsManager.GetSetting("AKVScope", "");
-				string BlobStorageName = AppSettingsManager.GetSetting("BlobStorageName", "");
-				Dictionary<string, object> parameters = null;
-				switch (rpaType)
-				{
-					case "Actuals_EAN_PC":
-						pipelineName = AppSettingsManager.GetSetting("RPA_UPLOAD_PIPELINE_ACTUALS_NAME", "");
-						parameters = new Dictionary<string, object>
-										{
-											{ "FileName", Path.GetFileName(fileName) },
-											{ "RPAId", result.Id },
-											{ "UserRoleName", this.user.GetCurrentRole().SystemName },
-											{ "UserId", this.user.Login },
-											{ "ProductReference", "EAN_PC" },
-											{ "LogFileURL", LogURL},
-											{ "Constraints", constraintIds},
-											{ "Schema", SchemaBD},
-											{ "ServerName", ServerName},
-											{ "DatabaseName", DatabaseName},
-											{ "DBUserId", DBUserId},
-											{ "TenantId", tenantID},
-											{ "ClientId", applicationId},
-											{ "BlobStorageName", BlobStorageName},
-											{ "PasswordKV", PasswordKV}
-											
-										};
-						await CreateCalculationTaskAsync(fileName, result.Id);
-						CreatePipeForActuals(tenantID, applicationId, authenticationKey, subscriptionId, resourceGroup, dataFactoryName, pipelineName, parameters);
-						break;
-					case "Actuals_PLU":
-						pipelineName = AppSettingsManager.GetSetting("RPA_UPLOAD_PIPELINE_ACTUALS_NAME", "");
-						parameters = new Dictionary<string, object>
-										{
-											{ "FileName", Path.GetFileName(fileName) },
-											{ "RPAId", result.Id },
-											{ "UserRoleName", this.user.GetCurrentRole().SystemName },
-											{ "UserId", this.user.Login },
-											{ "ProductReference", "PLU" },
-											{ "LogFileURL", LogURL},
-											{ "Constraints", constraintIds},
-											{ "Schema", SchemaBD},
-											{ "ServerName", ServerName},
-											{ "DatabaseName", DatabaseName},
-											{ "DBUserId", DBUserId},
-											{ "TenantId", tenantID},
-											{ "ClientId", applicationId},
-											{ "BlobStorageName", BlobStorageName},
-											{ "PasswordKV", PasswordKV}
-										};
-						await CreateCalculationTaskAsync(fileName, result.Id);
-						CreatePipeForActuals(tenantID, applicationId, authenticationKey, subscriptionId, resourceGroup, dataFactoryName, pipelineName, parameters);
-						break;
-					case "Events":
-						pipelineName = AppSettingsManager.GetSetting("RPA_UPLOAD_PIPELINE_EVENT_NAME", "");
-						parameters = new Dictionary<string, object>
-									{
-										{ "FileName", Path.GetFileName(fileName) },
-										{ "RPAId", result.Id },
-										{ "UserRoleName", this.user.GetCurrentRole().SystemName },
-										{ "UserId", this.user.Login },
-										{ "LogFileURL", LogURL},
-										{ "Scheme", SchemaBD},
-										{ "Constraints", constraintIds},
-										{ "ServerName", ServerName},
-										{ "DatabaseName", DatabaseName},
-										{ "DBUserId", DBUserId},
-										{ "TenantId", tenantID},
-										{ "ClientId", applicationId},
-										{ "BlobStorageName", BlobStorageName},
-										{ "PasswordKV", PasswordKV},
-										{ "AKVScope", AKVScope}
-									};
-						CreatePipeForEvents(tenantID, applicationId, authenticationKey, subscriptionId, resourceGroup, dataFactoryName, pipelineName, parameters);
+				switch(rpaType)
+                {
+					case "PromoSupport":
+						CreateRPAPromoSupportTask(fileName);
 						break;
 					case "NonPromoSupport":
-						pipelineName = AppSettingsManager.GetSetting("RPA_UPLOAD_PIPELINE_SUPPORT_NAME", "");
-						parameters = new Dictionary<string, object>
-									{
-										{ "FileName", Path.GetFileName(fileName) },
-										{ "RPAId", result.Id },
-										{ "UserRoleName", this.user.GetCurrentRole().SystemName },
-										{ "UserId", this.user.Login },
-										{ "LogFileURL", LogURL},
-										{ "SupportType", "NonPromoSupport"},
-										{ "Constraints", constraintTreeIds},
-										{ "Schema", SchemaBD},
-										{ "ServerName", ServerName},
-										{ "DatabaseName", DatabaseName},
-										{ "DBUserId", DBUserId},
-										{ "TenantId", tenantID},
-										{ "ClientId", applicationId},
-										{ "BlobStorageName", BlobStorageName},
-										{ "PasswordKV", PasswordKV},
-										{ "AKVScope", AKVScope}
-									};
-						CreatePipeForEvents(tenantID, applicationId, authenticationKey, subscriptionId, resourceGroup, dataFactoryName, pipelineName, parameters);
+						CreateRPANonPromoSupportTask(fileName);
 						break;
-					case "PromoSupport":
-						pipelineName = AppSettingsManager.GetSetting("RPA_UPLOAD_PIPELINE_SUPPORT_NAME", "");
-						parameters = new Dictionary<string, object>
-									{
-										{ "FileName", Path.GetFileName(fileName) },
-										{ "RPAId", result.Id },
-										{ "UserRoleName", this.user.GetCurrentRole().SystemName },
-										{ "UserId", this.user.Login },
-										{ "LogFileURL", LogURL},
-										{ "SupportType", "PromoSupport"},
-										{ "Constraints", constraintTreeIds},
-										{ "Schema", SchemaBD},
-										{ "ServerName", ServerName},
-										{ "DatabaseName", DatabaseName},
-										{ "DBUserId", DBUserId},
-										{ "TenantId", tenantID},
-										{ "ClientId", applicationId},
-										{ "BlobStorageName", BlobStorageName},
-										{ "PasswordKV", PasswordKV},
-										{ "AKVScope", AKVScope}
-									};
-						await CreateCalculationPromoSupportTaskAsync(fileName, result.Id);
-						CreatePipeForEvents(tenantID, applicationId, authenticationKey, subscriptionId, resourceGroup, dataFactoryName, pipelineName, parameters);
-						break;
-				}
-
-			}
-			catch (Exception e)
-			{
-				return GetErorrRequest(e);
-
-			}
-
-			return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, message = "RPA save and upload done." }));
-		}
-
-
-		private IHttpActionResult CreatePipeForEvents(string tenantID, string applicationId, string authenticationKey, string subscriptionId, string resourceGroup, string dataFactoryName, string pipelineName, Dictionary<string, object> parameters)
-		{
-			try
-			{
-				var context = new AuthenticationContext("https://login.microsoftonline.com/" + tenantID);
-				ClientCredential cc = new ClientCredential(applicationId, authenticationKey);
-				AuthenticationResult authenticationResult = context.AcquireTokenAsync(
-					"https://management.azure.com/", cc).Result;
-				ServiceClientCredentials cred = new TokenCredentials(authenticationResult.AccessToken);
-				var client = new DataFactoryManagementClient(cred)
-				{
-					SubscriptionId = subscriptionId
-				};
-
-				CreateRunResponse runResponse = client.Pipelines.CreateRunWithHttpMessagesAsync(
-					resourceGroup, dataFactoryName, pipelineName, parameters: parameters
-				).Result.Body;
-
-			}
-			catch (Exception ex)
-			{
-
-				return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "Pipe start failure " + ex.Message }));
-
-			}
-			return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, message = "Pipe started successfull" }));
-		}
-
-		private IHttpActionResult CreatePipeForActuals(string tenantID, string applicationId, string authenticationKey, string subscriptionId, string resourceGroup, string dataFactoryName, string pipelineName, Dictionary<string, object> parameters)
-		{
-			try
-			{
-				var context = new AuthenticationContext("https://login.microsoftonline.com/" + tenantID);
-				ClientCredential cc = new ClientCredential(applicationId, authenticationKey);
-				AuthenticationResult authenticationResult = context.AcquireTokenAsync(
-					"https://management.azure.com/", cc).Result;
-				ServiceClientCredentials cred = new TokenCredentials(authenticationResult.AccessToken);
-				var client = new DataFactoryManagementClient(cred)
-				{
-					SubscriptionId = subscriptionId
-				};
-
-				CreateRunResponse runResponse = client.Pipelines.CreateRunWithHttpMessagesAsync(
-					resourceGroup, dataFactoryName, pipelineName, parameters: parameters
-				).Result.Body;
-
-			}
-			catch (Exception ex)
-			{
-				return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "Pipe start failure " + ex.Message }));
-			}
-			return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, message = "Pipe started successfull" }));
-		}
-
-		private bool CheckFileCorrect(string templateFileName)
-        {
-			bool res = true;
-			SpreadsheetDocument book;
-			var stringPath = Path.GetDirectoryName(templateFileName);
-			var stringName = Path.GetFileName(templateFileName);
-			byte[] resAzure = AzureBlobHelper.ReadExcelFromBlob(stringPath.Split('\\').Last(), stringName);
-            try {
-				if (resAzure.Length == 0)
-				{
-					book = SpreadsheetDocument.Open(templateFileName, false);
-				}
-				else
-				{
-					book = SpreadsheetDocument.Open(new MemoryStream(resAzure), false);
-				}
-				book.Close();
+                }
 			}
 			catch(Exception ex)
             {
-				res = false;
-				
-            }
-			
-			return res;
-        }
-
-		private IEnumerable<Guid> ParseExcelTemplate(string template, string typePromo)
-		{
-			List<Guid> resultList = new List<Guid>();
-			SpreadsheetDocument book;
-			var stringPath = Path.GetDirectoryName(template);
-			var stringName = Path.GetFileName(template);
-            byte[] resAzure = AzureBlobHelper.ReadExcelFromBlob(stringPath.Split('\\').Last(), stringName);
-            if (resAzure.Length == 0)
-            {
-                book = SpreadsheetDocument.Open(template, false);
-            }
-            else
-            {
-                book = SpreadsheetDocument.Open(new MemoryStream(resAzure), false);
-            }
-            WorkbookPart workbookPart = book.WorkbookPart;
-			WorksheetPart worksheetPart = workbookPart.WorksheetParts.First();
-
-			OpenXmlReader reader = OpenXmlReader.Create(worksheetPart);
-			SheetData sheetData = worksheetPart.Worksheet.Elements<SheetData>().First();
-			int promoNumber;
-			List<int> processedPromoes = new List<int>(); 
-			foreach (Row r in sheetData.Elements<Row>())
-			{
-				if (r.RowIndex != 1)
-				{
-					Cell c = r.Elements<Cell>().ElementAt(0);
-					if (Int32.TryParse(c.CellValue.Text, out promoNumber))
-					{
-						
-						if (typePromo == "Actuals") { 
-							var promo = Context.Set<Promo>().FirstOrDefault(p => p.Number == promoNumber && !p.Disabled);
-							if (promo != null)
-							{
-								resultList.Add(promo.Id);
-							}
-						}
-						else 
-                        {
-							if (!processedPromoes.Contains(promoNumber)) { 
-								var promo = Context.Set<PromoSupport>().FirstOrDefault(p => p.Number == promoNumber && !p.Disabled);
-								if (promo != null)
-								{
-									resultList.Add(promo.Id);
-									processedPromoes.Add(promo.Number);
-								}
-							}
-						}
-						
-					}
-				}
-			}
-			return resultList;
+				return GetErorrRequest(ex);
+            }			
+			return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, message = "RPA save and upload done." }));
 		}
 
-		private bool BlockPromo(Guid promoId, bool safe = false)
-		{
-			bool promoAvaible = false;
-			bool promoFinished = false;
+		private void CreateRPAPromoSupportTask(string fileName)
+        {
+			var handlerName = "FullXLSXRPAPromoSupportImportHandler";
+			UserInfoCore user = authorizationManager.GetCurrentUser();
+			Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
+			RoleInfo role = authorizationManager.GetCurrentRole();
+			Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
 
-			try
-			{
-				lock (locker)
-				{
-					using (DatabaseContext context = new DatabaseContext())
-					{
-						promoAvaible = !context.Set<BlockedPromo>().Any(n => n.PromoId == promoId && !n.Disabled);
-						promoFinished = context.Set<Promo>().Any(n => n.Id == promoId && n.PromoStatus.SystemName == "Finished");
-
-						if (promoAvaible && promoFinished)
-						{
-							BlockedPromo bp = new BlockedPromo
-							{
-								Id = Guid.NewGuid(),
-								PromoId = promoId,
-								HandlerId = Guid.Empty,
-								CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-								Disabled = false,
-							};
-
-							context.Set<BlockedPromo>().Add(bp);
-							context.SaveChanges();
-						}
-					}
-				}
-			}
-			catch
-			{
-				promoAvaible = false;
-			}
-
-			return promoAvaible && promoFinished;
-		}
-
-		/// <summary>
-		/// Создание отложенной задачи, выполняющей расчет фактических параметров продуктов и промо
-		/// </summary>
-		/// <param name="promoId">ID промо</param>
-		private async Task<Guid> CreateHandlerAsync(Guid promoId, Guid rpaId)
-		{
-			// к этому моменту промо уже заблокировано
 			using (DatabaseContext context = new DatabaseContext())
 			{
+				ImportResultFilesModel resiltfile = new ImportResultFilesModel();
+				ImportResultModel resultmodel = new ImportResultModel();
+
 				HandlerData data = new HandlerData();
-				HandlerDataHelper.SaveIncomingArgument("PromoId", promoId, data, visible: false, throwIfNotExists: false);
-				HandlerDataHelper.SaveIncomingArgument("UserId", user.Id, data, visible: false, throwIfNotExists: false);
+				FileModel file = new FileModel()
+				{
+					LogicType = "Import",
+					Name = System.IO.Path.GetFileName(fileName),
+					DisplayName = System.IO.Path.GetFileName(fileName)
+				};						
+
+				HandlerDataHelper.SaveIncomingArgument("File", file, data, throwIfNotExists: false);
+				HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
 				HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
-				HandlerDataHelper.SaveIncomingArgument("needRedistributeLSV", true, data, visible: false, throwIfNotExists: false);
+				HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportRPAPromoSupport), data, visible: false, throwIfNotExists: false);
+				HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportRPAPromoSupport).Name, data, throwIfNotExists: false);
+				HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(ImportRPAPromoSupport), data, visible: false, throwIfNotExists: false);
+				HandlerDataHelper.SaveIncomingArgument("UniqueFields", new List<String>() { "Name" }, data);
 
 				LoopHandler handler = new LoopHandler()
 				{
 					Id = Guid.NewGuid(),
 					ConfigurationName = "PROCESSING",
-					Status = "INPROGRESS",
-					Description = "Calculate actual parameters",
-					Name = "Module.Host.TPM.Handlers.CalculateActualParamatersHandler",
+					Description = "Загрузка шаблона из файла " + typeof(RPA).Name,
+					Name = "Module.Host.TPM.Handlers." + handlerName,
 					ExecutionPeriod = null,
+					RunGroup = typeof(PromoSupport).Name,
 					CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
 					LastExecutionDate = null,
 					NextExecutionDate = null,
 					ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
-					UserId = user.Id,
+					UserId = userId,
 					RoleId = roleId
 				};
-
-				BlockedPromo bp = context.Set<BlockedPromo>().First(n => n.PromoId == promoId && !n.Disabled);
-				bp.HandlerId = handler.Id;
-				
 				handler.SetParameterData(data);
 				context.LoopHandlers.Add(handler);
-
-				await context.SaveChangesAsync();
-				
-				return handler.Id;
+				context.SaveChanges();
 			}
 		}
 
-		
-
-		private async Task CreateCalculationTaskAsync(string fileName, Guid rpaId)
+		private void CreateRPANonPromoSupportTask(string fileName)
 		{
-			string defaultSchema = AppSettingsManager.GetSetting("DefaultSchema", "");
-			List<Guid> handlerIds = new List<Guid>();
-			//Распарсить ексельку и вытащить id промо
-			var listPromoId = ParseExcelTemplate(fileName,"Actuals");			
+			var handlerName = "FullXLSXRPANonPromoSupportImportHandler";
+			UserInfoCore user = authorizationManager.GetCurrentUser();
+			Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
+			RoleInfo role = authorizationManager.GetCurrentRole();
+			Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
 
-			//Вызвать блокировку promo и затем вызвать создание Task			
-			foreach (Guid promoId in listPromoId)
+			using (DatabaseContext context = new DatabaseContext())
 			{
-				if (BlockPromo(promoId))
+				ImportResultFilesModel resiltfile = new ImportResultFilesModel();
+				ImportResultModel resultmodel = new ImportResultModel();
+
+				HandlerData data = new HandlerData();
+				FileModel file = new FileModel()
 				{
-					var handlerId = await CreateHandlerAsync(promoId, rpaId);
-					handlerIds.Add(handlerId);
-				}
+					LogicType = "Import",
+					Name = System.IO.Path.GetFileName(fileName),
+					DisplayName = System.IO.Path.GetFileName(fileName)
+				};
+
+				HandlerDataHelper.SaveIncomingArgument("File", file, data, throwIfNotExists: false);
+				HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+				HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+				HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportRPAPromoSupport), data, visible: false, throwIfNotExists: false);
+				HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportRPAPromoSupport).Name, data, throwIfNotExists: false);
+				HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(ImportRPAPromoSupport), data, visible: false, throwIfNotExists: false);
+				HandlerDataHelper.SaveIncomingArgument("UniqueFields", new List<String>() { "Name" }, data);
+
+				LoopHandler handler = new LoopHandler()
+				{
+					Id = Guid.NewGuid(),
+					ConfigurationName = "PROCESSING",
+					Description = "Загрузка шаблона из файла " + typeof(RPA).Name,
+					Name = "Module.Host.TPM.Handlers." + handlerName,
+					ExecutionPeriod = null,
+					RunGroup = typeof(PromoSupport).Name,
+					CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+					LastExecutionDate = null,
+					NextExecutionDate = null,
+					ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+					UserId = userId,
+					RoleId = roleId
+				};
+				handler.SetParameterData(data);
+				context.LoopHandlers.Add(handler);
+				context.SaveChanges();
 			}
-			var tasks = "";
-			if (handlerIds.Count() > 0)
-				tasks = $"{String.Join(",", handlerIds.Select(el => $"''{el}''"))}";
-			
-
-			string insertScript = String.Format("INSERT INTO {0}.[RPAParameters] ([RPAId],[TasksToComplete]) VALUES ('{1}', '{2}')", defaultSchema, rpaId, tasks);
-
-			await Context.Database.ExecuteSqlCommandAsync(insertScript);
-		}
-
-		private string FromListToString(List<Guid> list)
-		{
-			string result = "";
-
-			if (list != null)
-				foreach (Guid el in list.Distinct())
-					result += el + ";";
-
-			return result;
-		}
-
-		private async Task CreateCalculationPromoSupportTaskAsync(string fileName, Guid rpaId)
-        {
-			string defaultSchema = AppSettingsManager.GetSetting("DefaultSchema", "");
-			List<Guid> handlerIds = new List<Guid>();
-			//Распарсить ексельку и вытащить id промо
-			var listPromoIds = ParseExcelTemplate(fileName,"PromoSupport").ToList();
-
-			//Вызвать блокировку promo и затем вызвать создание Task
-			HandlerData data = new HandlerData();
-			HandlerDataHelper.SaveIncomingArgument("PromoSupportIds", FromListToString(listPromoIds), data, visible: false, throwIfNotExists: false);
-			HandlerDataHelper.SaveIncomingArgument("UnlinkedPromoIds", "", data, visible: false, throwIfNotExists: false);
-			HandlerDataHelper.SaveIncomingArgument("UserId", user.Id, data, visible: false, throwIfNotExists: false);
-			HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
-			var handlerId = RPAUploadCalculationTaskManager.CreateCalculationTask(data, Context);
-			handlerIds.Add(handlerId);
-			
-			var tasks = "";
-			if (handlerIds.Count() > 0)
-				tasks = $"{String.Join(",", handlerIds.Select(el => $"''{el}''"))}";
-
-
-			string insertScript = String.Format("INSERT INTO {0}.[RPAParameters] ([RPAId],[TasksToComplete]) VALUES ('{1}', '{2}')", defaultSchema, rpaId, tasks);
-
-			await Context.Database.ExecuteSqlCommandAsync(insertScript);
 		}
 
 		[ClaimsAuthorize]

@@ -2917,6 +2917,8 @@
     <Compile Include="Model\Import\PromoSalesComparer.cs" />
     <Compile Include="Model\Import\PromoComparer.cs" />
     <Compile Include="Model\Import\ImportTradeInvestment.cs" />
+    <Compile Include="Model\Import\ImportRPAPromoSupport.cs" />
+    <Compile Include="Model\Import\ImportRPANonPromoSupport.cs" />
     <Compile Include="Model\SimpleModel\MARS_UNIVERSAL_PETCARE_MATERIALS.cs" />
     <Compile Include="Model\SimpleModel\MarsUniversalPetcareCustomers.cs" />
     <Compile Include="Model\SimpleModel\SimplePromoRATIShopper.cs" />

@@ -325,6 +325,7 @@
     <Compile Include="Actions\ReapprovingAction.cs" />
     <Compile Include="Actions\RestartMainNightProcessingActions.cs" />
     <Compile Include="Actions\FullXLSXRPAPromoSupportImportAction.cs" />
+    <Compile Include="Actions\FullXLSXRPANonPromoSupportImportAction.cs" />
     <Compile Include="Actions\SendingFilesToBlobAction.cs" />
     <Compile Include="Actions\SetCOGSPercentValuesAction.cs" />
     <Compile Include="Actions\SetTIBasePercentValuesAction.cs" />
