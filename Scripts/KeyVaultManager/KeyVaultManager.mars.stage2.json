@@ -84,7 +84,7 @@
 		},
 		{
 			"name": "MongoDBName",
-			"value": "JupiterDevMongo",
+			"value": "ScenarioHistory",
 			"contentType": "",
 			"action": "add",
 			"enabled": true
