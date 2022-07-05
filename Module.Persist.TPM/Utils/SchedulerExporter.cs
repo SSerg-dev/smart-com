@@ -150,6 +150,7 @@ namespace Module.Persist.TPM.Utils {
             string exportDir = AppSettingsManager.GetSetting("EXPORT_DIRECTORY", "~/ExportFiles");
             fileDispatcher.UploadToBlob(Path.GetFileName(filePath), Path.GetFullPath(filePath), exportDir.Split('\\').Last());
         }
+               
 
         /// <summary>
         /// Разбиение Промо по строкам с учётом приоритета и диапазона дат
@@ -205,7 +206,12 @@ namespace Module.Persist.TPM.Utils {
                     string gaTitle = promo.IsGrowthAcceleration == true? "Yes" : "No";
                     string subranges = String.IsNullOrEmpty(promo.Subranges) == true ? "" : promo.Subranges;
                     XSSFRichTextString commentDescription;
-                    if(promo.PromoStatusSystemName == "Closed")
+                    IDrawing drawing = sheet.CreateDrawingPatriarch();
+                    IClientAnchor anchor = wb.GetCreationHelper().CreateClientAnchor();
+                    anchor.Dx2 = anchor.Dx1 + 100;
+                    anchor.Dy2 = anchor.Dy1 + 80;
+                    IComment comment = drawing.CreateCellComment(anchor);
+                    if (promo.PromoStatusSystemName == "Closed")
                     {
                         discount = promo.Discount;
                         price = promo.Price;
@@ -216,11 +222,11 @@ namespace Module.Persist.TPM.Utils {
                         if (promo.PromoStatusSystemName == "Closed")
                         {
 
-                            commentDescription = new XSSFRichTextString(String.Format("Promo ID: {0}\r\nStatus: {1}\r\nSubranges: {2}\r\nGA: {3}\r\nShelf Price: {4}\r\nDiscount: {5}", promo.Id, promo.PromoStatusSystemName, subranges, gaTitle, price, discount));
+                            commentDescription = new XSSFRichTextString(String.Format("Promo ID: {0}\r\nStatus: {1}\r\nSubranges: {2}\r\nGA: {3}\r\nShelf Price: {4}\r\nDiscount: {5}", promo.Number, promo.PromoStatusSystemName, subranges, gaTitle, price, discount));
                         }
                         else
                         {
-                            commentDescription = new XSSFRichTextString(String.Format("Promo ID: {0}\r\nStatus: {1}\r\nSubranges: {2}\r\nGA: {3}", promo.Id, promo.PromoStatusSystemName, subranges, gaTitle));
+                            commentDescription = new XSSFRichTextString(String.Format("Promo ID: {0}\r\nStatus: {1}\r\nSubranges: {2}\r\nGA: {3}", promo.Number, promo.PromoStatusSystemName, subranges, gaTitle));
                         }
 
                     }
@@ -228,9 +234,9 @@ namespace Module.Persist.TPM.Utils {
                     {
                         commentDescription = new XSSFRichTextString(String.Format("Shelf Price: {0}", price));
                     }
-                    IDrawing drawing = sheet.CreateDrawingPatriarch();
-                    IClientAnchor anchor = wb.GetCreationHelper().CreateClientAnchor();
-                    IComment comment = drawing.CreateCellComment(anchor);
+                    
+                    comment.String = commentDescription;
+                    
                     comment.Author = ("SchedulerExporter");
                     cell.CellComment = (comment);
                     // Объединяем ячейки, добавляем рамку (при мерже ячеек не подтягивается стиль рамки первой)
