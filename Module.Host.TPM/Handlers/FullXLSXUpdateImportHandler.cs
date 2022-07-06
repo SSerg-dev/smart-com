@@ -424,6 +424,12 @@ namespace Module.Host.TPM.Handlers
 
     public class FullXLSXRPAPromoSupportImportHandler: FullXLSXImportHandler
     {
+        private Guid rpaId;
+        public override void Action(HandlerInfo info, ExecuteData data)
+        {
+            rpaId = Looper.Parameters.HandlerDataHelper.GetIncomingArgument<Guid>("RPAId", info.Data, false);
+            base.Action(info, data);
+        }
         protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
         {
             return new FullXLSXRPAPromoSupportImportAction(settings);
@@ -432,9 +438,15 @@ namespace Module.Host.TPM.Handlers
 
     public class FullXLSXRPANonPromoSupportImportHandler : FullXLSXImportHandler
     {
+        private Guid rpaId;
+        public override void Action(HandlerInfo info, ExecuteData data)
+        {
+            rpaId = Looper.Parameters.HandlerDataHelper.GetIncomingArgument<Guid>("RPAId", info.Data, false);
+            base.Action(info, data);
+        }
         protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
         {
-            return new FullXLSXRPANonPromoSupportImportAction(settings);
+            return new FullXLSXRPANonPromoSupportImportAction(settings, rpaId);
         }
     }
 }

@@ -136,8 +136,10 @@ namespace Module.Frontend.TPM.Controllers
 
 				//Save file
 				string directory = Core.Settings.AppSettingsManager.GetSetting("RPA_DIRECTORY", "RPAFiles");
-
+				string directorySupport = Core.Settings.AppSettingsManager.GetSetting("PROMO_SUPPORT_DIRECTORY", "PromoSupportFiles");
+				
 				string fileName = Task<string>.Run(async () => await FileUtility.UploadFile(Request, directory)).Result;
+				string fileNameSupport = Task<string>.Run(async () => await FileUtility.UploadFile(Request, directorySupport)).Result;
 
 				IList<Constraint> constraints = Context.Constraints
 														.Where(x => x.UserRole.UserId == user.Id && x.UserRole.Role.Id == roleId)
@@ -155,10 +157,10 @@ namespace Module.Frontend.TPM.Controllers
 						CreateRPAEventImportTask(fileName, rpaId);
 						break;
 					case "PromoSupport":
-						CreateRPAPromoSupportTask(fileName);
+						CreateRPAPromoSupportTask(fileName, rpaId);
 						break;
 					case "NonPromoSupport":
-						CreateRPANonPromoSupportTask(fileName);
+						CreateRPANonPromoSupportTask(fileName, rpaId);
 						break;
                 }
 			}
@@ -215,7 +217,7 @@ namespace Module.Frontend.TPM.Controllers
 			Context.SaveChanges();
 		}
 		
-		private void CreateRPAPromoSupportTask(string fileName)
+		private void CreateRPAPromoSupportTask(string fileName, Guid rpaId)
         {
 			var handlerName = "FullXLSXRPAPromoSupportImportHandler";
 			UserInfoCore user = authorizationManager.GetCurrentUser();
@@ -243,6 +245,7 @@ namespace Module.Frontend.TPM.Controllers
 				HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportRPAPromoSupport).Name, data, throwIfNotExists: false);
 				HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(ImportRPAPromoSupport), data, visible: false, throwIfNotExists: false);
 				HandlerDataHelper.SaveIncomingArgument("UniqueFields", new List<String>() { "Name" }, data);
+				HandlerDataHelper.SaveIncomingArgument("RPAId", rpaId, data, visible: false, throwIfNotExists: false);
 
 				LoopHandler handler = new LoopHandler()
 				{
@@ -265,7 +268,7 @@ namespace Module.Frontend.TPM.Controllers
 			}
 		}
 
-		private void CreateRPANonPromoSupportTask(string fileName)
+		private void CreateRPANonPromoSupportTask(string fileName, Guid rpaId)
 		{
 			var handlerName = "FullXLSXRPANonPromoSupportImportHandler";
 			UserInfoCore user = authorizationManager.GetCurrentUser();
@@ -293,6 +296,7 @@ namespace Module.Frontend.TPM.Controllers
 				HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportRPAPromoSupport).Name, data, throwIfNotExists: false);
 				HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(ImportRPAPromoSupport), data, visible: false, throwIfNotExists: false);
 				HandlerDataHelper.SaveIncomingArgument("UniqueFields", new List<String>() { "Name" }, data);
+				HandlerDataHelper.SaveIncomingArgument("RPAId", rpaId, data, visible: false, throwIfNotExists: false);
 
 				LoopHandler handler = new LoopHandler()
 				{
