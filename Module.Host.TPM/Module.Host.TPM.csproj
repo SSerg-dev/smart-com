@@ -299,6 +299,7 @@
     <Compile Include="Actions\FullXLSXMechanicTypeUpdateImportAction.cs" />
     <Compile Include="Actions\FullXLSXImportNonPromoDMPAction.cs" />
     <Compile Include="Actions\FullXLSXRPAActualEanPcImportAction.cs" />
+    <Compile Include="Actions\FullXLSXRpaActualPluImportAction.cs" />
     <Compile Include="Actions\FullXLSXUpdateImportNonPromoEquipmentAction.cs" />
     <Compile Include="Actions\FullXLSXUpdateImportClientDashboardAction.cs" />
     <Compile Include="Actions\FullXLSXUpdateImportCoefficientSI2SOAction.cs" />

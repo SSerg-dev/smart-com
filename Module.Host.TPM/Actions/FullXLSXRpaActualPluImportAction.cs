@@ -25,7 +25,7 @@ using Utility.Import;
 
 namespace Module.Host.TPM.Actions
 {
-    public class FullXLSXRPAActualEanPcImportAction : BaseAction
+    public class FullXLSXRpaActualPluImportAction : BaseAction
     {
         private readonly Guid UserId;
         private readonly Guid RoleId;
@@ -47,7 +47,7 @@ namespace Module.Host.TPM.Actions
 
         private ScriptGenerator Generator { get; set; }
 
-        public FullXLSXRPAActualEanPcImportAction(FullImportSettings settings)
+        public FullXLSXRpaActualPluImportAction(FullImportSettings settings)
         {
             UserId = settings.UserId;
             RoleId = settings.RoleId;
@@ -60,6 +60,7 @@ namespace Module.Host.TPM.Actions
 
             AllowPartialApply = true;
             logger = LogManager.GetCurrentClassLogger();
+
         }
 
         public override void Execute()
@@ -281,7 +282,7 @@ namespace Module.Host.TPM.Actions
 
 
             var sourceTemplateRecords = templateRecordIds
-                .Select(sr => (sr as ImportRpaActualEanPc));
+                .Select(sr => (sr as ImportRpaActualPlu));
 
             var shortPromoes = context.Set<Promo>()
                 .Select(ps => new
@@ -293,6 +294,20 @@ namespace Module.Host.TPM.Actions
                     ps.PromoStatus.SystemName
                 });
 
+            foreach(var promo in shortPromoes)
+            {
+                var products = context.Set<PromoProduct>().Include("Plu").Where(n => n.PromoId == promo.Id && !n.Disabled).ToList();
+                foreach (ImportRpaActualPlu item in sourceTemplateRecords)
+                {
+                    var found = products.FirstOrDefault(x => x.Plu != null && x.Plu.PluCode == item.PluImport);
+                    item.Plu = new PromoProduct2Plu() { PluCode = item.PluImport };
+                    if (found != null)
+                    {
+                        item.EAN_PC = found.EAN_PC;
+                    }
+                }
+            }
+
             var joinPromoSupports = sourceTemplateRecords
                 .Join(shortPromoes,
                         str => str.PromoNumberImport,
@@ -300,47 +315,25 @@ namespace Module.Host.TPM.Actions
                         (str, ssp) => new
                         {
                             PromoNumberImport = str.PromoNumberImport,
-                            EanPcImport = str.EanPcImport,
+                            PluImport = str.PluImport,
                             ActualProductPcQuantityImport = str.ActualProductPcQuantityImport,
                             PromoId = ssp.Id,
                             Disabled = ssp.Disabled,
                             ClietTreeId = ssp.ClientTreeId,
                             StatusName = ssp.SystemName
+
                         });
 
-            bool isDuplicateRecords = joinPromoSupports
-                .GroupBy(jps => new
-                {
-                    jps.PromoNumberImport,
-                    jps.EanPcImport
-                })
-                .Any(gr => gr.Count() > 1);
-
-            if (isDuplicateRecords)
-            {
-                errors.Add("The record with this PromoId - EAN_PC pair occurs more than once");
-            }
-
-            var promoWithoutDuplicates = joinPromoSupports
-                .GroupBy(jps => new
-                {
-                    jps.PromoNumberImport,
-                    jps.EanPcImport
-                })
-                .Select(jps => jps.First())
-                .ToList();
-
-            distinctRecordIds = promoWithoutDuplicates
-                .Select(p => new ImportRpaActualEanPc
+            distinctRecordIds = joinPromoSupports
+                .Select(p => new ImportRpaActualPlu
                 {
                     PromoNumberImport = p.PromoNumberImport,
-                    EanPcImport = p.EanPcImport,
+                    PluImport = p.PluImport,
                     ActualProductPcQuantityImport = p.ActualProductPcQuantityImport,
                     PromoId = p.PromoId,
                     StatusName = p.StatusName
                 } as IEntity<Guid>)
                 .ToList();
-
         }
 
         private bool IsFilterSuitable(ref IEntity<Guid> rec, DatabaseContext context, out IList<string> errors, List<ClientTree> existingClientTreeIds)
@@ -349,7 +342,7 @@ namespace Module.Host.TPM.Actions
             warnings = new List<string>();
             bool isSuitable = true;
 
-            ImportRpaActualEanPc typedRec = (ImportRpaActualEanPc)rec;
+            ImportRpaActualPlu typedRec = (ImportRpaActualPlu)rec;
             var promo = context.Set<Promo>().FirstOrDefault(x => x.Number == typedRec.PromoNumberImport && !x.Disabled);
             if (promo == null)
             {
@@ -359,6 +352,11 @@ namespace Module.Host.TPM.Actions
             if (!existingClientTreeIds.Any(x => x.ObjectId == promo.ClientTree.ObjectId))
             {
                 errors.Add("No access to the client");
+                isSuitable = false;
+            }
+            if(String.IsNullOrEmpty(typedRec.EAN_PC))
+            {
+                errors.Add("EAN_PC not found for PLU");
                 isSuitable = false;
             }
             var promoProduct = context.Set<PromoProduct>().FirstOrDefault(x => x.PromoId == typedRec.PromoId && !x.Disabled);
@@ -373,6 +371,7 @@ namespace Module.Host.TPM.Actions
                 errors.Add("Invalid promo status");
                 isSuitable = false;
             }
+
             return isSuitable;
         }
 
@@ -380,7 +379,7 @@ namespace Module.Host.TPM.Actions
         {
 
             var sourcePromo = sourceRecords
-                 .Select(sr => sr as ImportRpaActualEanPc)
+                 .Select(sr => sr as ImportRpaActualPlu)
                  .ToList();
 
             var sourcePromoIds = sourcePromo
@@ -642,7 +641,5 @@ namespace Module.Host.TPM.Actions
             IQueryable<PromoProduct> query = context.Set<PromoProduct>().AsNoTracking();
             return query.ToList();
         }
-
-
     }
 }
