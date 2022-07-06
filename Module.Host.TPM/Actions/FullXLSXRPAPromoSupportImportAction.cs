@@ -127,13 +127,19 @@ namespace Module.Host.TPM.Actions
         private IList<IEntity<Guid>> ParseImportFile()
         {
             var fileDispatcher = new FileDispatcher();
-            string importDir = Core.Settings.AppSettingsManager.GetSetting("PROMO_SUPPORT_DIRECTORY", "PromoSupportFiles");
+            string importDir = Core.Settings.AppSettingsManager.GetSetting("RPA_DIRECTORY", "RPAFiles");
 
             string importFilePath = Path.Combine(importDir, ImportFile.Name);
             if (!fileDispatcher.IsExists(importDir, ImportFile.Name))
             {
                 throw new Exception("Import File not found");
             }
+
+            string targetAttachFileDir = Core.Settings.AppSettingsManager.GetSetting("PROMO_SUPPORT_DIRECTORY", "PromoSupportFiles");
+            string targetAttachFilePath = Path.Combine(targetAttachFileDir, ImportFile.Name);
+            File.Copy(importFilePath, targetAttachFilePath);
+            fileDispatcher.UploadToBlob(ImportFile.Name, targetAttachFilePath, targetAttachFilePath.Split('\\').Last());
+
 
             var builder = ImportModelFactory.GetCSVImportModelBuilder(ImportType);
             var validator = ImportModelFactory.GetImportValidator(ImportType);

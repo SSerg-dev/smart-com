@@ -135,12 +135,8 @@ namespace Module.Frontend.TPM.Controllers
 				}
 
 				//Save file
-				string directory = Core.Settings.AppSettingsManager.GetSetting("RPA_DIRECTORY", "RPAFiles");
-				string directorySupport = Core.Settings.AppSettingsManager.GetSetting("PROMO_SUPPORT_DIRECTORY", "PromoSupportFiles");
-				
-				string fileName = Task<string>.Run(async () => await FileUtility.UploadFile(Request, directory)).Result;
-				string fileNameSupport = Task<string>.Run(async () => await FileUtility.UploadFile(Request, directorySupport)).Result;
-
+				string directory = Core.Settings.AppSettingsManager.GetSetting("RPA_DIRECTORY", "RPAFiles");		
+				string fileName = Task<string>.Run(async () => await FileUtility.UploadFile(Request, directory)).Result;				
 				IList<Constraint> constraints = Context.Constraints
 														.Where(x => x.UserRole.UserId == user.Id && x.UserRole.Role.Id == roleId)
 														.ToList();
