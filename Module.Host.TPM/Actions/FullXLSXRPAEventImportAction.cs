@@ -71,6 +71,14 @@ namespace Module.Host.TPM.Actions
                 ResultStatus = null;
                 HasErrors = false;
 
+                var rpaStatus = "In progress";
+                using (var context = new DatabaseContext())
+                {
+                    var rpa = context.Set<RPA>().FirstOrDefault(x => x.Id == RPAId);
+                    rpa.Status = rpaStatus;
+                    context.SaveChanges();
+                }
+
                 var sourceRecords = ParseImportFile();
 
                 int successCount;
