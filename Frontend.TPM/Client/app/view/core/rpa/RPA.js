@@ -140,15 +140,6 @@ Ext.define('App.view.core.rpa.RPA', {
                     value = value ? '<a href=' + downloadFileUrl + '>' + value + '</a>' : "";
                     return value;
                 }
-            }, {
-                text: l10n.ns('core', 'RPA').value('LogURL'),
-                dataIndex: 'LogURL',
-                renderer: function(value) {
-                    var pattern = '/odata/RPAs/DownloadFile?fileName={0}';
-                    var downloadFileUrl = document.location.href + Ext.String.format(pattern, value || '');                    
-                    value = value ? '<a href=' + downloadFileUrl + '>' + value + '</a>' : "";
-                    return value;
-                }
             }]
         }
     }, {
@@ -184,10 +175,6 @@ Ext.define('App.view.core.rpa.RPA', {
             xtype: 'textfield',
             name: 'FileURL',
             fieldLabel: l10n.ns('core', 'RPA').value('FileURL')
-        }, {
-            xtype: 'textfield',
-            name: 'LogURL',
-            fieldLabel: l10n.ns('core', 'RPA').value('LogURL')
         }]
     }]
 

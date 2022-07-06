@@ -603,8 +603,7 @@
         'Constraint': 'Ограничение',
         'Parametrs': 'Параметры',
         'Status': 'Статус',
-        'FileURL': 'File URL',
-        'LogURL': 'Log URL'
+        'FileURL': 'File URL'
     },
 
     'RPASetting': {

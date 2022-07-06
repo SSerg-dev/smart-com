@@ -10,8 +10,7 @@ Ext.define('App.model.core.rpa.RPA', {
         { name: 'Constraint', type: 'string', isDefault: true},
         { name: 'Parametrs', type: 'string', isDefault: true},
         { name: 'Status', type: 'string', isDefault: true},
-        { name: 'FileURL', type: 'string', isDefault: true},
-        { name: 'LogURL', type: 'string', isDefault: true}
+        { name: 'FileURL', type: 'string', isDefault: true}
     ],
     proxy: {
         type: 'breeze',

@@ -2796,6 +2796,10 @@
     <Compile Include="Migrations\202206091227525_Add_Empty_Migration.Designer.cs">
       <DependentUpon>202206091227525_Add_Empty_Migration.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202207061110330_RemoveLogURLRPA.cs" />
+    <Compile Include="Migrations\202207061110330_RemoveLogURLRPA.Designer.cs">
+      <DependentUpon>202207061110330_RemoveLogURLRPA.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -5354,6 +5358,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202206091227525_Add_Empty_Migration.resx">
       <DependentUpon>202206091227525_Add_Empty_Migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202207061110330_RemoveLogURLRPA.resx">
+      <DependentUpon>202207061110330_RemoveLogURLRPA.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

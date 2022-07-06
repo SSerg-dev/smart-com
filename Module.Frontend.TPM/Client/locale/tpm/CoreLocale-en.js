@@ -716,8 +716,7 @@
         'Constraint': 'Constraint',
         'Parametrs': 'Parametrs',
         'Status': 'Status',
-        'FileURL': 'File URL',
-        'LogURL': 'Log URL'
+        'FileURL': 'File URL'
     },
 
     'RPASetting': {
