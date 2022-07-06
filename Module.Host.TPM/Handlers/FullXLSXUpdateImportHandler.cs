@@ -432,7 +432,7 @@ namespace Module.Host.TPM.Handlers
         }
         protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
         {
-            return new FullXLSXRPAPromoSupportImportAction(settings);
+            return new FullXLSXRPAPromoSupportImportAction(settings, rpaId);
         }
     }
 
