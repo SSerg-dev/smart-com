@@ -92,6 +92,7 @@ namespace Module.Host.TPM
                 new Handlers.ExportHandler(),
                 new Handlers.MassApproveHandler(),
                 new Handlers.SendingFilesToBlobHandler(),
+                new Handlers.FullXLSXRPAEventImportHandler(),
                 new Handlers.FullXLSXRPAPromoSupportImportHandler(),
                 new Handlers.FullXLSXRPANonPromoSupportImportHandler()
             };

@@ -159,6 +159,9 @@ namespace Module.Frontend.TPM.Controllers
 
 				switch(rpaType)
                 {
+					case "Events":
+						CreateRPAEventImportTask(fileName);
+						break;
 					case "PromoSupport":
 						CreateRPAPromoSupportTask(fileName);
 						break;
@@ -174,6 +177,51 @@ namespace Module.Frontend.TPM.Controllers
 			return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, message = "RPA save and upload done." }));
 		}
 
+		private void CreateRPAEventImportTask(string fileName)
+        {
+			string importHandler = "FullXLSXRPAEventImportHandler";
+
+            Core.Security.Models.UserInfo user = authorizationManager.GetCurrentUser();
+			Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
+			RoleInfo role = authorizationManager.GetCurrentRole();
+			Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
+
+			HandlerData data = new HandlerData();
+			FileModel file = new FileModel()
+			{
+				LogicType = "Import",
+				Name = Path.GetFileName(fileName),
+				DisplayName = Path.GetFileName(fileName)
+			};
+
+			HandlerDataHelper.SaveIncomingArgument("File", file, data, visible: false, throwIfNotExists: false);
+			HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+			HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+			HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportRPAEvent), data, visible: false, throwIfNotExists: false);
+			HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportRPAEvent).Name, data, throwIfNotExists: false);
+			HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(ImportRPAEvent), data, visible: false, throwIfNotExists: false);
+			
+			LoopHandler handler = new LoopHandler()
+			{
+				Id = Guid.NewGuid(),
+				ConfigurationName = "PROCESSING",
+				Description = "Загрузка импорта из файла " + typeof(ImportRPAEvent).Name,
+				Name = "Module.Host.TPM.Handlers." + importHandler,
+				ExecutionPeriod = null,
+				RunGroup = typeof(ImportRPAEvent).Name,
+				CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+				LastExecutionDate = null,
+				NextExecutionDate = null,
+				ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+				UserId = userId,
+				RoleId = roleId
+			};
+
+			handler.SetParameterData(data);
+			Context.LoopHandlers.Add(handler);
+			Context.SaveChanges();
+		}
+		
 		private void CreateRPAPromoSupportTask(string fileName)
         {
 			var handlerName = "FullXLSXRPAPromoSupportImportHandler";
