@@ -4,9 +4,12 @@ using Core.History;
 using Core.Settings;
 using Interfaces.Implementation.Action;
 using Interfaces.Implementation.Import.FullImport;
+using Looper.Core;
 using Looper.Parameters;
 using Module.Frontend.TPM.Util;
+using Module.Persist.TPM.CalculatePromoParametersModule;
 using Module.Persist.TPM.Model.DTO;
+using Module.Persist.TPM.Model.Import;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
 using NLog;
@@ -156,6 +159,9 @@ namespace Module.Host.TPM.Actions
                 var errorRecords = new ConcurrentBag<Tuple<IEntity<Guid>, string>>();
                 var warningRecords = new ConcurrentBag<Tuple<IEntity<Guid>, string>>();
 
+                IList<IEntity<Guid>> sourceRecordWithoutDuplicates = new List<IEntity<Guid>>();
+                IList<string> validationErrors = new List<string>();
+
                 // Получить функцию Validate
                 var validator = ImportModelFactory.GetImportValidator(ImportType);
                 // Получить функцию SetProperty
@@ -176,14 +182,14 @@ namespace Module.Host.TPM.Actions
                 query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
 
                 List<ClientTree> existingClientTreeIds = query.ToList();
-                PromoTypes promoTypes = context.Set<PromoTypes>().FirstOrDefault(g => !g.Disabled && g.SystemName == "Regular");
-                List<string> mechanics = context.Set<Mechanic>().Where(g => !g.Disabled && g.PromoTypesId == promoTypes.Id).Select(g => g.Name).ToList();
 
-                foreach (var item in sourceRecords)
+
+                CheckForDuplicates(context, sourceRecords, out sourceRecordWithoutDuplicates, out validationErrors);
+
+                foreach (var item in sourceRecordWithoutDuplicates)
                 {
                     IEntity<Guid> rec;
                     IList<string> warnings;
-                    IList<string> validationErrors;
 
                     if (!validator.Validate(item, out validationErrors))
                     {
@@ -199,7 +205,7 @@ namespace Module.Host.TPM.Actions
                             warningRecords.Add(new Tuple<IEntity<Guid>, string>(item, String.Join(", ", warnings)));
                         }
                     }
-                    else if (!IsFilterSuitable(ref rec, context, out validationErrors, existingClientTreeIds, mechanics))
+                    else if (!IsFilterSuitable(ref rec, context, out validationErrors, existingClientTreeIds))
                     {
                         HasErrors = true;
                         errorRecords.Add(new Tuple<IEntity<Guid>, string>(item, string.Join(", ", validationErrors)));
@@ -272,133 +278,94 @@ namespace Module.Host.TPM.Actions
             }
         }
 
-        private bool IsFilterSuitable(ref IEntity<Guid> rec, DatabaseContext context, out IList<string> errors, List<ClientTree> existingClientTreeIds, List<string> mechanics)
+        private bool IsFilterSuitable(ref IEntity<Guid> rec, DatabaseContext context, out IList<string> errors, List<ClientTree> existingClientTreeIds)
         {
             errors = new List<string>();
             bool isSuitable = true;
 
-            if (rec == null)
+            ImportRPAEvent typedRec = (ImportRPAEvent)rec;
+            var promoEvent = context.Set<Event>().FirstOrDefault(x => !x.Disabled && x.Name == typedRec.EventName);
+            if (promoEvent == null)
             {
+                errors.Add("Event not found");
                 isSuitable = false;
-                errors.Add("There is no such Competitor promo on base");
             }
             else
             {
-                CompetitorPromo typedRec = (CompetitorPromo)rec;
-                typedRec.ClientTree = context.Set<ClientTree>().First(x => x.ObjectId == typedRec.ClientTreeObjectId && x.EndDate == null);
-                if (typedRec.CompetitorBrandTech == null)
+                var promo = context.Set<Promo>().FirstOrDefault(x => !x.Disabled && x.Number == typedRec.PromoNumber);
+                if (promo == null)
                 {
-                    errors.Add("Competitor BrandTech not found");
+                    errors.Add("Promo not found");
                     isSuitable = false;
                 }
-                if (!context.Set<CompetitorBrandTech>().Any(x => !x.Disabled && x.CompetitorId == typedRec.CompetitorId && x.BrandTech == typedRec.CompetitorBrandTech.BrandTech))
+                if (!existingClientTreeIds.Any(x => x.ObjectId == promo.ClientTreeId))
                 {
-                    errors.Add("Competitor BrandTech not found");
+                    errors.Add("Client is not available");
                     isSuitable = false;
                 }
-                if (typedRec.ClientTreeObjectId == null)
+                var allowStatuses = new List<String> { "Draft", "DraftPublished", "OnApproval", "Planned" };
+                if (!allowStatuses.Contains(promo.PromoStatus.SystemName))
                 {
-                    errors.Add("Client must have a value");
+                    errors.Add("Invalid Promo status");
                     isSuitable = false;
                 }
-                if (!typedRec.ClientTree.IsBaseClient)
+                //var isSegmentSuitable = context.Set<PromoProduct>().Where(x => !x.Disabled && x.PromoId == promo.Id).All(x => x.Product.MarketSegment == promoEvent.MarketSegment);
+                //if (isSegmentSuitable)
+                //{
+                //    errors.Add("Event is not suitable");
+                //    isSuitable = false;
+                //}
+            }
+            return isSuitable;
+        }
+
+        private void CheckForDuplicates(DatabaseContext context, IList<IEntity<Guid>> templateRecordIds, out IList<IEntity<Guid>> distinctRecordIds, out IList<string> errors)
+        {
+            distinctRecordIds = new List<IEntity<Guid>>();
+            errors = new List<string>();
+
+            var sourceTemplateRecords = templateRecordIds
+                .Select(sr => (sr as ImportRPAEvent));
+
+            bool isDuplicateRecords = sourceTemplateRecords
+                .GroupBy(jps => new
                 {
-                    errors.Add($"{typedRec.ClientTreeObjectId} is not a base client");
-                    isSuitable = false;
-                }
-                if (!existingClientTreeIds.Where(x => x.EndDate == null).Any(x => x.ObjectId == typedRec.ClientTreeObjectId))
-                {
-                    errors.Add($"No access to import data for {typedRec.ClientTreeObjectId}");
-                    isSuitable = false;
-                }
-                if (typedRec.StartDate == null)
-                {
-                    errors.Add("StartDate must have a value");
-                    isSuitable = false;
-                }
-                if (typedRec.EndDate == null)
-                {
-                    errors.Add("EndDate must have a value");
-                    isSuitable = false;
-                }
-                if (typedRec.StartDate > typedRec.EndDate)
-                {
-                    errors.Add("Invalid period");
-                    isSuitable = false;
-                }
-                if (typedRec.CompetitorId == null)
-                {
-                    isSuitable = false;
-                    errors.Add("Competitor must have value");
-                }
-                else if (typedRec.Competitor == null)
-                {
-                    errors.Add("Competitor not found");
-                    isSuitable = false;
-                }
-                if (typedRec.Price != null && typedRec.Price < 0)
-                {
-                    errors.Add("Invalid price");
-                    isSuitable = false;
-                }
-                if (String.IsNullOrEmpty(typedRec.MechanicType))
-                {
-                    errors.Add("Mechanic Type must have a value");
-                    isSuitable = false;
-                }
-                else if (!mechanics.Contains(typedRec.MechanicType))
-                {
-                    errors.Add("Mechanic Type must be - " + String.Join(", ", mechanics.ToArray()));
-                    isSuitable = false;
-                }
-                if (typedRec.Discount != null && (typedRec.Discount < 0 || typedRec.Discount > 100))
-                {
-                    errors.Add("Invalid discount");
-                    isSuitable = false;
-                }
+                    jps.PromoNumber,
+                    jps.EventName
+                })
+                .Any(gr => gr.Count() > 1);
+
+            if (isDuplicateRecords)
+            {
+                errors.Add("The Promo - Event pair occurs more than once");
             }
 
-            return isSuitable;
+            distinctRecordIds = (IList<IEntity<Guid>>)sourceTemplateRecords
+                .GroupBy(jps => new
+                {
+                    jps.PromoNumber,
+                    jps.EventName
+                })
+                .Select(jps => jps.First())
+                .ToList();
+
         }
 
         private int InsertDataToDatabase(IEnumerable<IEntity<Guid>> sourceRecords, DatabaseContext context)
         {
-            NoGuidGeneratingScriptGenerator generatorCreate = new NoGuidGeneratingScriptGenerator(typeof(CompetitorPromo), false);
-            ScriptGenerator generatorUpdate = GetScriptGenerator();
-            IList<CompetitorPromo> toCreate = new List<CompetitorPromo>();
-            IList<CompetitorPromo> toUpdate = new List<CompetitorPromo>();
-            IList<CompetitorPromo> competitorPromoes = context.Set<CompetitorPromo>().ToList();
-
-            List<Tuple<IEntity<Guid>, IEntity<Guid>>> toHisCreate = new List<Tuple<IEntity<Guid>, IEntity<Guid>>>();
-            List<Tuple<IEntity<Guid>, IEntity<Guid>>> toHisUpdate = new List<Tuple<IEntity<Guid>, IEntity<Guid>>>();
-
-            foreach (CompetitorPromo newRecord in sourceRecords)
+            foreach (ImportRPAEvent newRecord in sourceRecords)
             {
-                string competitorBrandTech = newRecord.CompetitorBrandTech.BrandTech;
-                string mechanicType = newRecord.MechanicType;
-                double? discount = newRecord.Discount;
-                dynamic handledDiscount = discount != 0 && discount != null ? discount + "%" : "";//к discount прибавляется знак процента
-                newRecord.Name = competitorBrandTech + " " + mechanicType + " " + handledDiscount;
-                newRecord.ClientTreeObjectId = context.Set<ClientTree>().First(x => x.ObjectId == newRecord.ClientTreeObjectId && x.EndDate == null).Id;
-                newRecord.Id = Guid.NewGuid();
-                toCreate.Add(newRecord);
-                toHisCreate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(null, newRecord));
+                var promo = context.Set<Promo>().FirstOrDefault(x => x.Number == newRecord.PromoNumber);
+                var eventId = context.Set<Event>().FirstOrDefault(x => x.Name == newRecord.EventName)?.Id;
+                var btlPromo = context.Set<BTLPromo>().FirstOrDefault(x => x.PromoId == promo.Id);
+                if (btlPromo != null && promo.EventId != eventId)
+                {
+                    btlPromo.DeletedDate = System.DateTime.Now;
+                    btlPromo.Disabled = true;
+                    CalculateBTLBudgetsCreateTask(btlPromo.BTLId.ToString(), new List<Guid>() { promo.Id }, context);
+                }
+                promo.EventId = eventId;
             }
-
-            foreach (IEnumerable<IEntity<Guid>> items in toCreate.Partition(100))
-            {
-                string insertScript = generatorCreate.BuildInsertScript(items);
-                context.ExecuteSqlCommand(insertScript);
-            }
-
-            foreach (IEnumerable<IEntity<Guid>> items in toUpdate.Partition(10000))
-            {
-                string updateScript = generatorUpdate.BuildUpdateScript(items);
-                context.ExecuteSqlCommand(updateScript);
-            }
-
-            context.HistoryWriter.Write(toHisCreate, context.AuthManager.GetCurrentUser(), context.AuthManager.GetCurrentRole(), OperationType.Created);
-            context.HistoryWriter.Write(toHisUpdate, context.AuthManager.GetCurrentUser(), context.AuthManager.GetCurrentRole(), OperationType.Updated);
 
             context.SaveChanges();
 
@@ -424,13 +391,21 @@ namespace Module.Host.TPM.Actions
             }
         }
 
-        private ScriptGenerator GetScriptGenerator()
+        public void CalculateBTLBudgetsCreateTask(string btlId, List<Guid> unlinkedPromoIds, DatabaseContext context)
         {
-            if (Generator == null)
+            HandlerData data = new HandlerData();
+            HandlerDataHelper.SaveIncomingArgument("BTLId", btlId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("UserId", UserId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("RoleId", RoleId, data, visible: false, throwIfNotExists: false);
+            if (unlinkedPromoIds != null)
             {
-                Generator = new ScriptGenerator(ModelType);
+                HandlerDataHelper.SaveIncomingArgument("UnlinkedPromoIds", unlinkedPromoIds, data, visible: false, throwIfNotExists: false);
             }
-            return Generator;
+
+            bool success = CalculationTaskManager.CreateCalculationTask(CalculationTaskManager.CalculationAction.BTL, data, context);
+
+            if (!success)
+                throw new Exception("Promo was blocked for calculation");
         }
     }
 }

@@ -8,7 +8,7 @@ namespace Module.Persist.TPM.Model.Import
     {
         [ImportCSVColumn(ColumnNumber = 0)]
         [Display(Name = "Promo ID")]
-        public string PromoNumber { get; set; }
+        public int PromoNumber { get; set; }
 
         [ImportCSVColumn(ColumnNumber = 1)]
         [Display(Name = "Event")]
