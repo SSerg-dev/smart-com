@@ -30,6 +30,7 @@ namespace Module.Host.TPM.Actions
     {
         private readonly Guid UserId;
         private readonly Guid RoleId;
+        private readonly Guid RPAId;
         private readonly FileModel ImportFile;
         private readonly Type ImportType;
         private readonly Type ModelType;
@@ -45,7 +46,7 @@ namespace Module.Host.TPM.Actions
 
         private ScriptGenerator Generator { get; set; }
 
-        public FullXLSXRPAEventImportAction(FullImportSettings settings)
+        public FullXLSXRPAEventImportAction(FullImportSettings settings, Guid rpaId)
         {
             UserId = settings.UserId;
             RoleId = settings.RoleId;
@@ -55,6 +56,8 @@ namespace Module.Host.TPM.Actions
             Separator = settings.Separator;
             Quote = settings.Quote;
             HasHeader = settings.HasHeader;
+
+            RPAId = rpaId;
 
             AllowPartialApply = false;
             logger = LogManager.GetCurrentClassLogger();
@@ -113,7 +116,7 @@ namespace Module.Host.TPM.Actions
         private IList<IEntity<Guid>> ParseImportFile()
         {
             var fileDispatcher = new FileDispatcher();
-            string importDir = AppSettingsManager.GetSetting<string>("IMPORT_DIRECTORY", "ImportFiles");
+            string importDir = Core.Settings.AppSettingsManager.GetSetting("RPA_DIRECTORY", "RPAFiles");
             string importFilePath = Path.Combine(importDir, ImportFile.Name);
             if (!fileDispatcher.IsExists(importDir, ImportFile.Name))
             {
@@ -227,6 +230,9 @@ namespace Module.Host.TPM.Actions
                 int resultRecordCount = 0;
 
                 ResultStatus = GetImportStatus();
+                var rpaStatus = ResultStatus;
+                var rpa = context.Set<RPA>().FirstOrDefault(x => x.Id == RPAId);
+                rpa.Status = rpaStatus;
                 var importModel = ImportUtility.BuildActiveImport(UserId, RoleId, ImportType);
                 importModel.Status = ResultStatus;
                 context.Imports.Add(importModel);

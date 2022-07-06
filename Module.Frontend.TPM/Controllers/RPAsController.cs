@@ -143,24 +143,16 @@ namespace Module.Frontend.TPM.Controllers
 														.Where(x => x.UserRole.UserId == user.Id && x.UserRole.Role.Id == roleId)
 														.ToList();
 				IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
-				//здесь должны быть все записи, а не только неудаленные!
-				IQueryable<ClientTree> query = Context.Set<ClientTree>().AsNoTracking();
-				IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
-				query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
-				List<ClientTree> existingClientTreeIds = query.Where(x => x.EndDate == null && x.IsBaseClient == true).ToList();
-				var constraintIds = String.Join(",", existingClientTreeIds.Select(x => x.ObjectId.ToString()));
-				var constraintTreeIds = String.Join(",", existingClientTreeIds.Select(x => x.Id.ToString()));
 				result.Constraint = String.Join(",", constraints.Where(c => c.Prefix == "CLIENT_ID").Select(x => x.Value));
 				result.CreateDate = DateTime.UtcNow;
 				result.FileURL = Path.GetFileName(fileName);
-
 				// Save RPA
 				var resultSaveChanges = Context.SaveChanges();
-
-				switch(rpaType)
+				var rpaId = result.Id;
+				switch (rpaType)
                 {
 					case "Events":
-						CreateRPAEventImportTask(fileName);
+						CreateRPAEventImportTask(fileName, rpaId);
 						break;
 					case "PromoSupport":
 						CreateRPAPromoSupportTask(fileName);
@@ -177,7 +169,7 @@ namespace Module.Frontend.TPM.Controllers
 			return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, message = "RPA save and upload done." }));
 		}
 
-		private void CreateRPAEventImportTask(string fileName)
+		private void CreateRPAEventImportTask(string fileName, Guid rpaId)
         {
 			string importHandler = "FullXLSXRPAEventImportHandler";
 
@@ -197,6 +189,7 @@ namespace Module.Frontend.TPM.Controllers
 			HandlerDataHelper.SaveIncomingArgument("File", file, data, visible: false, throwIfNotExists: false);
 			HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
 			HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+			HandlerDataHelper.SaveIncomingArgument("RPAId", rpaId, data, visible: false, throwIfNotExists: false);
 			HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportRPAEvent), data, visible: false, throwIfNotExists: false);
 			HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportRPAEvent).Name, data, throwIfNotExists: false);
 			HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(ImportRPAEvent), data, visible: false, throwIfNotExists: false);
