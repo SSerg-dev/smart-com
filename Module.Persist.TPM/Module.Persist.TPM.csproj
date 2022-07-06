@@ -2864,6 +2864,30 @@
     <Compile Include="Migrations\202205241955107_Edit_Copy_Settings.Designer.cs">
       <DependentUpon>202205241955107_Edit_Copy_Settings.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202206151137354_Add_EventType.cs" />
+    <Compile Include="Migrations\202206151137354_Add_EventType.Designer.cs">
+      <DependentUpon>202206151137354_Add_EventType.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202206151202068_Add_EventType2.cs" />
+    <Compile Include="Migrations\202206151202068_Add_EventType2.Designer.cs">
+      <DependentUpon>202206151202068_Add_EventType2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202206151207212_Connect_Old_Event.cs" />
+    <Compile Include="Migrations\202206151207212_Connect_Old_Event.Designer.cs">
+      <DependentUpon>202206151207212_Connect_Old_Event.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202206160731155_Change_EventType.cs" />
+    <Compile Include="Migrations\202206160731155_Change_EventType.Designer.cs">
+      <DependentUpon>202206160731155_Change_EventType.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202206160856252_EventType_AP.cs" />
+    <Compile Include="Migrations\202206160856252_EventType_AP.Designer.cs">
+      <DependentUpon>202206160856252_EventType_AP.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202206171236467_Add_BTL_GetEventBTL_AP.cs" />
+    <Compile Include="Migrations\202206171236467_Add_BTL_GetEventBTL_AP.Designer.cs">
+      <DependentUpon>202206171236467_Add_BTL_GetEventBTL_AP.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\202204191212318_Add_Promo_MasterPromo_And_List.cs" />
     <Compile Include="Migrations\202204191212318_Add_Promo_MasterPromo_And_List.Designer.cs">
       <DependentUpon>202204191212318_Add_Promo_MasterPromo_And_List.cs</DependentUpon>
@@ -2887,6 +2911,22 @@
     <Compile Include="Migrations\202205111055378_Update_PromoView4.cs" />
     <Compile Include="Migrations\202205111055378_Update_PromoView4.Designer.cs">
       <DependentUpon>202205111055378_Update_PromoView4.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202206141321310_Add_GAM_Role_and_AP.cs" />
+    <Compile Include="Migrations\202206141321310_Add_GAM_Role_and_AP.Designer.cs">
+      <DependentUpon>202206141321310_Add_GAM_Role_and_AP.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202206231242583_Add_IsGAManagerApproved.cs" />
+    <Compile Include="Migrations\202206231242583_Add_IsGAManagerApproved.Designer.cs">
+      <DependentUpon>202206231242583_Add_IsGAManagerApproved.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202206231324053_Change_PromoGridView_PromoROIReportView.cs" />
+    <Compile Include="Migrations\202206231324053_Change_PromoGridView_PromoROIReportView.Designer.cs">
+      <DependentUpon>202206231324053_Change_PromoGridView_PromoROIReportView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202206301147472_Add_Gam_Role_AP.cs" />
+    <Compile Include="Migrations\202206301147472_Add_Gam_Role_AP.Designer.cs">
+      <DependentUpon>202206301147472_Add_Gam_Role_AP.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\202206240651346_Empty_After_Merge_AddTI.cs" />
     <Compile Include="Migrations\202206240651346_Empty_After_Merge_AddTI.Designer.cs">
@@ -3002,6 +3042,7 @@
     <Compile Include="Model\Import\ImportBudget.cs" />
     <Compile Include="Model\Import\ImportBrandTech.cs" />
     <Compile Include="Model\Import\ImportRollingVolume.cs" />
+    <Compile Include="Model\Import\ImportRPAEvent.cs" />
     <Compile Include="Model\Import\ImportTechnology.cs" />
     <Compile Include="Model\Import\ImportBrand.cs" />
     <Compile Include="Model\Import\ImportPromoProduct.cs" />
@@ -3022,6 +3063,7 @@
     <Compile Include="Model\SimpleModel\SimplePromoCOGSTI.cs" />
     <Compile Include="Model\SimpleModel\YEAR_END_ESTIMATE_FDM.cs" />
     <Compile Include="Model\TPM\COGSTn.cs" />
+    <Compile Include="Model\TPM\EventType.cs" />
     <Compile Include="Model\TPM\TechnologyExport.cs" />
     <Compile Include="Model\TPM\ActualLsvModel.cs" />
     <Compile Include="Model\TPM\Competitor.cs" />
@@ -5503,6 +5545,24 @@
     <EmbeddedResource Include="Migrations\202205241955107_Edit_Copy_Settings.resx">
       <DependentUpon>202205241955107_Edit_Copy_Settings.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202206151137354_Add_EventType.resx">
+      <DependentUpon>202206151137354_Add_EventType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202206151202068_Add_EventType2.resx">
+      <DependentUpon>202206151202068_Add_EventType2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202206151207212_Connect_Old_Event.resx">
+      <DependentUpon>202206151207212_Connect_Old_Event.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202206160731155_Change_EventType.resx">
+      <DependentUpon>202206160731155_Change_EventType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202206160856252_EventType_AP.resx">
+      <DependentUpon>202206160856252_EventType_AP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202206171236467_Add_BTL_GetEventBTL_AP.resx">
+      <DependentUpon>202206171236467_Add_BTL_GetEventBTL_AP.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202204191212318_Add_Promo_MasterPromo_And_List.resx">
       <DependentUpon>202204191212318_Add_Promo_MasterPromo_And_List.cs</DependentUpon>
     </EmbeddedResource>
@@ -5520,6 +5580,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202205111055378_Update_PromoView4.resx">
       <DependentUpon>202205111055378_Update_PromoView4.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202206141321310_Add_GAM_Role_and_AP.resx">
+      <DependentUpon>202206141321310_Add_GAM_Role_and_AP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202206231242583_Add_IsGAManagerApproved.resx">
+      <DependentUpon>202206231242583_Add_IsGAManagerApproved.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202206231324053_Change_PromoGridView_PromoROIReportView.resx">
+      <DependentUpon>202206231324053_Change_PromoGridView_PromoROIReportView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202206301147472_Add_Gam_Role_AP.resx">
+      <DependentUpon>202206301147472_Add_Gam_Role_AP.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202206240651346_Empty_After_Merge_AddTI.resx">
       <DependentUpon>202206240651346_Empty_After_Merge_AddTI.cs</DependentUpon>

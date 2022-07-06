@@ -139,6 +139,7 @@ namespace Module.Host.TPM.Handlers.DataFlow
                                         promo.IsCMManagerApproved = false;
                                         promo.IsDemandFinanceApproved = false;
                                         promo.IsDemandPlanningApproved = false;
+                                        promo.IsGAManagerApproved = false;
                                         PromoStateContext promoStateContext = new PromoStateContext(context, promo);
 
                                         PromoStatus onApproval = context.Set<PromoStatus>().First(x => x.SystemName.ToLower() == "onapproval" && !x.Disabled);

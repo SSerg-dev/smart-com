@@ -324,7 +324,7 @@ namespace Module.Frontend.TPM.Controllers
             {
                 List<string> LinkedStringIds = model.LinkedPromoes.Split(',').ToList();
                 List<int> LinkedIds = LinkedStringIds.Select(s => int.Parse(s)).ToList();
-                List<Promo> ChildPromoes = Context.Set<Promo>().Where(g => LinkedIds.Contains((int)g.Number)).ToList();
+                List<Promo> ChildPromoes = Context.Set<Promo>().Where(g => LinkedIds.Contains((int)g.Number) && !g.Disabled).ToList();
                 foreach (var ChildPromo in ChildPromoes)
                 {
                     ChildPromo.MasterPromoId = result.Id;
@@ -387,7 +387,7 @@ namespace Module.Frontend.TPM.Controllers
                     DateTimeOffset StartDateChange = (DateTimeOffset)ChangePromo.StartDate;
                     if (StartDateCopy.Date != StartDateChange.Date)
                     {
-                        if (!ChangedList.Any(g => g.Contains("EventId")))
+                        if (ChangePromo.EventId == null)
                         {
                             Event promoEvent = Context.Set<Event>().FirstOrDefault(x => !x.Disabled && x.Name == "Standard promo");
                             if (promoEvent == null)
@@ -395,11 +395,13 @@ namespace Module.Frontend.TPM.Controllers
                                 return InternalServerError(new Exception("Event 'Standard promo' not found"));
                             }
 
+                            ChangePromo.EventId = promoEvent.Id;
                             model.EventId = promoEvent.Id;
                             model.EventName = promoEvent.Name;
                         }
                     }
                 }
+
 
                 PromoStateContext promoStateContext = new PromoStateContext(Context, promoCopy);
                 bool status = promoStateContext.ChangeState(model, userRole, out string message);
@@ -473,7 +475,8 @@ namespace Module.Frontend.TPM.Controllers
                 if (promoCopy.PromoStatusId != model.PromoStatusId
                     || promoCopy.IsDemandFinanceApproved != model.IsDemandFinanceApproved
                     || promoCopy.IsCMManagerApproved != model.IsCMManagerApproved
-                    || promoCopy.IsDemandPlanningApproved != model.IsDemandPlanningApproved)
+                    || promoCopy.IsDemandPlanningApproved != model.IsDemandPlanningApproved
+                    || promoCopy.IsGAManagerApproved != model.IsGAManagerApproved)
                 {
 
                     PromoStatusChange psc = Context.Set<PromoStatusChange>().Create<PromoStatusChange>();
@@ -657,6 +660,16 @@ namespace Module.Frontend.TPM.Controllers
                     if (model.InOut.HasValue && model.InOut.Value)
                     {
                         PromoHelper.DisableIncrementalPromo(Context, model);
+                    }
+                }
+                if (ChangePromo.EventId != null)
+                {
+                    var btlPromo = Context.Set<BTLPromo>().FirstOrDefault(x => x.PromoId == key);
+                    if (btlPromo != null)
+                    {
+                        btlPromo.Disabled = true;
+                        btlPromo.DeletedDate = DateTimeOffset.UtcNow;
+                        PromoCalculateHelper.CalculateBTLBudgetsCreateTask(btlPromo.BTLId.ToString(), null, null, Context, new List<Guid> { key }, safe: true);
                     }
                 }
 
@@ -1174,7 +1187,7 @@ namespace Module.Frontend.TPM.Controllers
 
                     //Убираем Linked Promoes и убираем ссылки у дочерних промо
                     patch.TrySetPropertyValue("LinkedPromoes", string.Empty);
-                    var PromoesUnlink = Context.Set<Promo>().Where(p => p.MasterPromoId == promo.Id && p.Disabled).ToList();
+                    var PromoesUnlink = Context.Set<Promo>().Where(p => p.MasterPromoId == promo.Id && !p.Disabled).ToList();
                     foreach (var childpromo in PromoesUnlink)
                     {
                         childpromo.MasterPromoId = null;
@@ -1244,6 +1257,8 @@ namespace Module.Frontend.TPM.Controllers
                     return Content(HttpStatusCode.OK, UserDashboard.GetCMManagerCount(authorizationManager, Context));
                 case "CustomerMarketing":
                     return Content(HttpStatusCode.OK, UserDashboard.GetCustomerMarketingCount(authorizationManager, Context));
+                case "GAManager":
+                    return Content(HttpStatusCode.OK, UserDashboard.GetGAManagerCount(authorizationManager, Context));
             }
             return Content(HttpStatusCode.InternalServerError, JsonConvert.SerializeObject(new { Error = "Fail to role" }));
         }
@@ -2488,7 +2503,7 @@ namespace Module.Frontend.TPM.Controllers
         private void DeleteChildPromoes(Guid modelId, UserInfo user, out string childmessage)
         {
             childmessage = string.Empty;
-            var ChildPromoes = Context.Set<Promo>().Where(p => p.MasterPromoId == modelId).ToList();
+            var ChildPromoes = Context.Set<Promo>().Where(p => p.MasterPromoId == modelId && !p.Disabled).ToList();
             var statuses = Context.Set<PromoStatus>().ToList();
             var DeletedId = statuses.FirstOrDefault(s => s.SystemName == "Deleted" && !s.Disabled).Id;
             var DraftPublishedId = statuses.FirstOrDefault(s => s.SystemName == "DraftPublished" && !s.Disabled).Id;
@@ -2527,7 +2542,7 @@ namespace Module.Frontend.TPM.Controllers
                                 promoProductsCorrection.UserName = user.Login;
                             }
                             // удалить дочерние промо
-                            var PromoesUnlink = Context.Set<Promo>().Where(p => p.MasterPromoId == ChildPromo.Id).ToList();
+                            var PromoesUnlink = Context.Set<Promo>().Where(p => p.MasterPromoId == ChildPromo.Id && !p.Disabled).ToList();
                             foreach (var childpromo in PromoesUnlink)
                             {
                                 childpromo.MasterPromoId = null;
@@ -2551,6 +2566,36 @@ namespace Module.Frontend.TPM.Controllers
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Создание отложенной задачи, выполняющей перерасчет бюджетов
+        /// </summary>
+        /// <param name="promoSupportPromoIds">список ID подстатей</param>
+        /// <param name="calculatePlanCostTE">Необходимо ли пересчитывать значения плановые Cost TE</param>
+        /// <param name="calculateFactCostTE">Необходимо ли пересчитывать значения фактические Cost TE</param>
+        /// <param name="calculatePlanCostProd">Необходимо ли пересчитывать значения плановые Cost Production</param>
+        /// <param name="calculateFactCostProd">Необходимо ли пересчитывать значения фактические Cost Production</param>
+        public void CalculateBTLBudgetsCreateTask(string btlId, List<Guid> unlinkedPromoIds = null)
+        {
+            UserInfo user = authorizationManager.GetCurrentUser();
+            Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
+            RoleInfo role = authorizationManager.GetCurrentRole();
+            Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
+
+            HandlerData data = new HandlerData();
+            HandlerDataHelper.SaveIncomingArgument("BTLId", btlId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+            if (unlinkedPromoIds != null)
+            {
+                HandlerDataHelper.SaveIncomingArgument("UnlinkedPromoIds", unlinkedPromoIds, data, visible: false, throwIfNotExists: false);
+            }
+
+            bool success = CalculationTaskManager.CreateCalculationTask(CalculationTaskManager.CalculationAction.BTL, data, Context);
+
+            if (!success)
+                throw new Exception("Promo was blocked for calculation");
         }
     }
 }

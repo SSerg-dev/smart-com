@@ -6,7 +6,9 @@
         { name: 'Id', hidden: true },
         { name: 'DeletedDate', type: 'date', isDefault: true },
         { name: 'Name', type: 'string', hidden: false, isDefault: true },
-        { name: 'Description', type: 'string', hidden: false, isDefault: true }
+        { name: 'MarketSegment', type: 'string', hidden: false, isDefault: true },
+        { name: 'EventTypeName', type: 'string', mapping: 'EventType.Name', defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'EventType', hidden: false, isDefault: true },
+        { name: 'EventTypeNational', type: 'boolean', mapping: 'EventType.National', defaultFilterConfig: { valueField: 'National' }, breezeEntityType: 'EventType', hidden: true, isDefault: false },
     ],
     proxy: {
         type: 'breeze',

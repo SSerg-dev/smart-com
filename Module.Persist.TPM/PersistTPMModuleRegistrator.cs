@@ -52,7 +52,8 @@ namespace Module.Persist.TPM
             modelBuilder.Entity<RejectReason>();
             modelBuilder.Entity<ClientTree>();
             modelBuilder.Entity<ProductTree>();
-            modelBuilder.Entity<Event>();
+            modelBuilder.Entity<Event>().HasMany(e => e.BTLs).WithRequired(e => e.Event);
+            modelBuilder.Entity<EventType>().HasMany(e => e.Events).WithRequired(e => e.EventType);
             modelBuilder.Entity<NodeType>();
             modelBuilder.Entity<PromoStatusChange>();
             modelBuilder.Entity<PromoDemand>();
@@ -184,12 +185,21 @@ namespace Module.Persist.TPM
             builder.Entity<HistoricalSegment>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalSegment>("HistoricalSegments");
 
             builder.EntitySet<Event>("Events");
+            builder.EntitySet<Event>("Events").HasRequiredBinding(e => e.EventType, "EventTypes");
+            builder.EntitySet<Event>("Events").HasManyBinding(e => e.BTLs, "BTLs");
             builder.EntitySet<Event>("DeletedEvents");
+            builder.EntitySet<Event>("DeletedEvents").HasRequiredBinding(e => e.EventType, "EventTypes");
+            builder.EntitySet<Event>("DeletedEvents").HasManyBinding(e => e.BTLs, "BTLs");
             builder.EntitySet<HistoricalEvent>("HistoricalEvents");
             builder.Entity<Event>().Collection.Action("ExportXLSX");
             builder.Entity<Event>().Collection.Action("FullImportXLSX");
             builder.Entity<Event>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<Event>("Events");
             builder.Entity<HistoricalEvent>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalEvent>("HistoricalEvents");
+
+            builder.EntitySet<EventType>("EventTypes");
+            builder.EntitySet<EventType>("EventTypes").HasManyBinding(e => e.Events, "Events");
+            builder.EntitySet<EventType>("DeletedEventTypes");
+            builder.EntitySet<EventType>("DeletedEventTypes").HasManyBinding(e => e.Events, "Events");
 
             builder.EntitySet<EventClientTree>("EventClientTrees");
             builder.EntitySet<EventClientTree>("EventClientTrees").HasRequiredBinding(e => e.ClientTree, "ClientTrees");
@@ -977,6 +987,7 @@ namespace Module.Persist.TPM
             builder.EntitySet<BTL>("BTLs").HasManyBinding<BTLPromo>(e => e.BTLPromo, "BTLPromoes");
             builder.Entity<BTL>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<BTL>("BTLs");
             builder.Entity<HistoricalBTL>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalBTL>("HistoricalBTLs");
+            builder.Entity<BTL>().Collection.Action("GetEventBTL");
 
             builder.EntitySet<PriceList>("PriceLists");
             builder.Entity<PriceList>().Collection.Action("ExportXLSX");

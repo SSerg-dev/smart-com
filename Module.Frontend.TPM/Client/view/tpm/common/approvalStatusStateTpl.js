@@ -185,8 +185,8 @@
 
 /*-----------------------------OnApproval ThirdLine-----------------------------------*/
 		/* CMM */
-		'<div class="approval-status-state-onapproval-box" style="{[this.getOnApprovalBoxStyle("CMManagerGAFirst", values.currentWidthRatio, values.currentHeightRatio, true)]}">',
-			'<div class="approval-status-state-boxDate">{[this.getOnApprovalDate(values.statusHistory, values.status, "CMManagerGAFirst")]}</div>',
+		'<div class="approval-status-state-onapproval-box" style="{[this.getOnApprovalBoxStyle("CMManagerGA", values.currentWidthRatio, values.currentHeightRatio, true)]}">',
+			'<div class="approval-status-state-boxDate">{[this.getOnApprovalDate(values.statusHistory, values.status, "CMManagerGA")]}</div>',
 			'<div class="approval-status-state-onapproval-boxLine" style="{[this.getStatusColor(values.statusColors, "OnApproval")]}">',
 				'<b style="overflow:hidden;">On Approval</b>',
 				'<div class="approval-status-state-onapproval-arrow">',
@@ -226,13 +226,13 @@
 			'<div id="onapproval-discription" class="approval-status-state-onapproval-boxDiscription" style="{[this.getOnApprovalDiscriptionBoxStyle(values.currentWidthRatio, values.currentHeightRatio)]}"><b>Demand Finance</b></div>',
 		'</div>',
 
-		/* CMM */
-		'<div class="approval-status-state-onapproval-box" style="{[this.getOnApprovalBoxStyle("CMManagerGASecond", values.currentWidthRatio, values.currentHeightRatio, true)]}">',
-			'<div class="approval-status-state-boxDate">{[this.getOnApprovalDate(values.statusHistory, values.status, "CMManagerGASecond")]}</div>',
+		/* GAM */
+		'<div class="approval-status-state-onapproval-box" style="{[this.getOnApprovalBoxStyle("GAManagerGA", values.currentWidthRatio, values.currentHeightRatio, true)]}">',
+			'<div class="approval-status-state-boxDate">{[this.getOnApprovalDate(values.statusHistory, values.status, "GAManagerGA")]}</div>',
 			'<div class="approval-status-state-onapproval-boxLine" style="{[this.getStatusColor(values.statusColors, "OnApproval")]}">',
 				'<b style="overflow:hidden;">On Approval</b>',
 			'</div> ',
-			'<div id="onapproval-discription" class="approval-status-state-onapproval-boxDiscription" style="{[this.getOnApprovalDiscriptionBoxStyle(values.currentWidthRatio, values.currentHeightRatio)]}"><b>Customer Marketing Manager</b></div>',
+			'<div id="onapproval-discription" class="approval-status-state-onapproval-boxDiscription" style="{[this.getOnApprovalDiscriptionBoxStyle(values.currentWidthRatio, values.currentHeightRatio)]}"><b>Growth Acceleration Manager</b></div>',
 		'</div>',
 
 		//'<br>',
@@ -319,10 +319,10 @@
 						case 'DemandPlanningNonego':
 							break;
 
-						case 'CMManagerGAFirst':
+						case 'CMManagerGA':
 							top += 260 * currentHeightRatio - 14;
 							break;
-						case 'CMManagerGASecond':
+						case 'GAManagerGA':
 							top += 260 * currentHeightRatio - 14;
 							left += 3 * boxWidth + 10 * 3;
 							break;
@@ -371,10 +371,10 @@
 					case 'DemandPlanningNonego':
 						break;
 
-					case 'CMManagerGAFirst':
+					case 'CMManagerGA':
 						top += 260 * currentHeightRatio - 14;
 						break;
-					case 'CMManagerGASecond':
+					case 'GAManagerGA':
 						top += 260 * currentHeightRatio - 14;
 						left += 3 * boxOffset;
 						break;
@@ -488,7 +488,7 @@
 				var promo = statusHistory[0].Promo;
 
 				// Скрываем даты ещё не аппрувнутых статусов, даже если есть записи о их поддтверждении в прошлом
-				if (!promo.IsCMManagerApproved && !promo.IsDemandPlanningApproved && !promo.IsDemandFinanceApproved) {
+				if (!promo.IsCMManagerApproved && !promo.IsDemandPlanningApproved && !promo.IsDemandFinanceApproved && !promo.IsGAManagerApproved) {
 					return '';
 				} else if (statusesBeforeOnApproval.indexOf(currentStatus) != -1) {
 					return '';
@@ -557,11 +557,10 @@
 					}
 				}
 				else if (promo.IsGrowthAcceleration === true || promo.IsInExchange === true) {
-					//CMM First
-					if (boxRole === 'CMManagerGAFirst'
+					//CMM 
+					if (boxRole === 'CMManagerGA'
 						&& statusesBeforeOnApproval.indexOf(currentStatus) == -1
-						&& (promo.IsCMManagerApproved
-							|| (promo.IsDemandPlanningApproved && promo.IsDemandFinanceApproved && !promo.IsCMManagerApproved))) {
+						&& promo.IsCMManagerApproved) {
 						for (var i = statusHistory.length - 1; i >= 0; i--) {
 							if (statusHistory[i].StatusName == "On Approval" && statusHistory[i].RoleName == 'Customer Marketing Manager') {
 								date = Ext.util.Format.date(statusHistory[i].Date, 'd.m.Y H:i');
@@ -570,13 +569,12 @@
 						}
 						return date;
 					}
-					//CMM Second
-					if (boxRole === 'CMManagerGASecond'
-						&& promo.IsCMManagerApproved
-						&& statusesBeforeOnApproval.indexOf(currentStatus) == -1
-						&& (promo.IsDemandPlanningApproved && promo.IsDemandFinanceApproved)) {
+					//GAM
+					if (boxRole === 'GAManagerGA'
+						&& promo.IsGAManagerApproved
+						&& statusesBeforeOnApproval.indexOf(currentStatus) == -1) {
 						for (var i = 0; i < statusHistory.length; i++) {
-							if (statusHistory[i].StatusName == "Approved" && statusHistory[i].RoleName == 'Customer Marketing Manager') {
+							if (statusHistory[i].StatusName == "Approved" && statusHistory[i].RoleName == 'Growth Acceleration Manager') {
 								date = Ext.util.Format.date(statusHistory[i].Date, 'd.m.Y H:i');
 								break;
 							}

@@ -233,6 +233,7 @@ namespace Module.Persist.TPM.Model.TPM
         public bool? IsCMManagerApproved { get; set; }
         public bool? IsDemandPlanningApproved { get; set; }
         public bool? IsDemandFinanceApproved { get; set; }
+        public bool? IsGAManagerApproved { get; set; }
 
         public virtual Brand Brand { get; set; }
         public virtual Technology Technology { get; set; }
@@ -365,6 +366,7 @@ namespace Module.Persist.TPM.Model.TPM
             IsDemandPlanningApproved = promoToCopy.IsDemandPlanningApproved;
             IsDemandFinanceApproved = promoToCopy.IsDemandFinanceApproved;
             IsCMManagerApproved = promoToCopy.IsCMManagerApproved;
+            IsGAManagerApproved = promoToCopy.IsGAManagerApproved;
             ActualPromoUpliftPercent = promoToCopy.ActualPromoUpliftPercent;
             ActualPromoIncrementalBaseTI = promoToCopy.ActualPromoIncrementalBaseTI;
             ActualPromoIncrementalCOGS = promoToCopy.ActualPromoIncrementalCOGS;
