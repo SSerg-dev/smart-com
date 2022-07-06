@@ -1,5 +1,6 @@
 using Core.Data;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -37,5 +38,7 @@ namespace Module.Persist.TPM.Model.TPM
         [StringLength(255)]
         public string SubBrand_code { get; set; }
         public bool IsSplittable { get; set; }
+
+        public virtual ICollection<BrandTech> BrandTeches { get; set; }
     }
 }

@@ -503,7 +503,7 @@ namespace Module.Frontend.TPM.Controllers
                 }
                 return result;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return new HttpResponseMessage(HttpStatusCode.Accepted);
             }

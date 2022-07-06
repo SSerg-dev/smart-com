@@ -1,6 +1,7 @@
 using Core.Data;
 using Module.Persist.TPM.Utils;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -33,6 +34,8 @@ namespace Module.Persist.TPM.Model.TPM
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         [SpecialNotKeyProperty]
         public string FilterQuery { get; set; }
+
+        public virtual ICollection<NoneNego> NoneNegoes { get; set; }
         public object Clone()
         {
             var clonedProductTree = new ProductTree {

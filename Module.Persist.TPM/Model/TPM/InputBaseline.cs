@@ -1,16 +1,12 @@
 ﻿using Core.Data;
 using Core.Import;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Module.Persist.TPM.Model.TPM
 {
-    public class InputBaseline: IEntity<Guid>
+    public class InputBaseline : IEntity<Guid>
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }

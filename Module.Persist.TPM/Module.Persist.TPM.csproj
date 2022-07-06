@@ -2892,6 +2892,10 @@
     <Compile Include="Migrations\202206240651346_Empty_After_Merge_AddTI.Designer.cs">
       <DependentUpon>202206240651346_Empty_After_Merge_AddTI.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202207061101557_Add_Mode.cs" />
+    <Compile Include="Migrations\202207061101557_Add_Mode.Designer.cs">
+      <DependentUpon>202207061101557_Add_Mode.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -3016,6 +3020,7 @@
     <Compile Include="Model\Import\PromoSalesComparer.cs" />
     <Compile Include="Model\Import\PromoComparer.cs" />
     <Compile Include="Model\Import\ImportTradeInvestment.cs" />
+    <Compile Include="Model\Interfaces\IMode.cs" />
     <Compile Include="Model\SimpleModel\MARS_UNIVERSAL_PETCARE_MATERIALS.cs" />
     <Compile Include="Model\SimpleModel\MarsUniversalPetcareCustomers.cs" />
     <Compile Include="Model\SimpleModel\SimplePromoRATIShopper.cs" />
@@ -5523,6 +5528,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202206240651346_Empty_After_Merge_AddTI.resx">
       <DependentUpon>202206240651346_Empty_After_Merge_AddTI.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202207061101557_Add_Mode.resx">
+      <DependentUpon>202207061101557_Add_Mode.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -383,7 +383,7 @@ namespace Module.Frontend.TPM.Controllers
 				}
 				book.Close();
 			}
-			catch(Exception ex)
+			catch(Exception)
             {
 				res = false;
 				
@@ -655,7 +655,7 @@ namespace Module.Frontend.TPM.Controllers
 				}
 				return result;
 			}
-			catch (Exception e)
+			catch (Exception)
 			{
 				return new HttpResponseMessage(HttpStatusCode.Accepted);
 			}

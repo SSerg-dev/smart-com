@@ -1,5 +1,6 @@
 using Core.Data;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -24,7 +25,8 @@ namespace Module.Persist.TPM.Model.TPM
 
         [Index("Unique_MechanicType", 3, IsUnique = true)]
         public int? ClientTreeId { get; set; }
-
         public virtual ClientTree ClientTree { get; set; }
+
+        public virtual ICollection<NoneNego> NoneNegoes { get; set; }
     }
 }

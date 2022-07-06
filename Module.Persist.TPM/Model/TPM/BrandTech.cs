@@ -1,7 +1,6 @@
 using Core.Data;
-using Newtonsoft.Json;
 using System;
-using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Module.Persist.TPM.Model.TPM
@@ -17,15 +16,6 @@ namespace Module.Persist.TPM.Model.TPM
         [Index("Unique_BrandTech", 4, IsUnique = true)]
         public DateTimeOffset? DeletedDate { get; set; }
 
-        [Index("Unique_BrandTech", 1, IsUnique = true)]
-        public Guid BrandId { get; set; }
-
-        [Index("Unique_BrandTech", 2, IsUnique = true)]
-        public Guid TechnologyId { get; set; }
-
-        public virtual Brand Brand { get; set; }
-        public virtual Technology Technology { get; set; }
-
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public string Name { get; set; }
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
@@ -36,5 +26,15 @@ namespace Module.Persist.TPM.Model.TPM
         public string BrandsegTechsub { get; set; }
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public string TechSubName { get; set; }
+
+        [Index("Unique_BrandTech", 1, IsUnique = true)]
+        public Guid BrandId { get; set; }
+        public virtual Brand Brand { get; set; }
+        [Index("Unique_BrandTech", 2, IsUnique = true)]
+        public Guid TechnologyId { get; set; }
+        public virtual Technology Technology { get; set; }
+
+        public virtual ICollection<ClientTreeBrandTech> ClientTreeBrandTeches { get; set; }
+        public virtual ICollection<CoefficientSI2SO> CoefficientSI2SOs { get; set; }
     }
 }

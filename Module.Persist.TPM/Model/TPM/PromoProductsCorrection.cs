@@ -1,21 +1,18 @@
 ﻿using Core.Data;
+using Module.Persist.TPM.Model.Interfaces;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Module.Persist.TPM.Model.TPM
 {
-    public class PromoProductsCorrection : IEntity<Guid>, IDeactivatable
+    public class PromoProductsCorrection : IEntity<Guid>, IDeactivatable, IMode
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public System.Guid Id { get; set; } = Guid.NewGuid();
         public bool Disabled { get; set; }
         public DateTimeOffset? DeletedDate { get; set; }
+        public TPMmode TPMmode { get; set; }
 
-        public Guid PromoProductId { get; set; }
         public double? PlanProductUpliftPercentCorrected { get; set; }
 
         public string TempId { get; set; }
@@ -26,7 +23,7 @@ namespace Module.Persist.TPM.Model.TPM
         public DateTimeOffset? CreateDate { get; set; }
         public DateTimeOffset? ChangeDate { get; set; }
 
-
+        public Guid PromoProductId { get; set; }
         public virtual PromoProduct PromoProduct { get; set; }
 
     }

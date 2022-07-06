@@ -1,37 +1,32 @@
 ﻿using AutoMapper;
+using Core.Dependency;
 using Core.Security;
 using Core.Security.Models;
+using Core.Settings;
 using Frontend.Core.Controllers.Base;
 using Frontend.Core.Extensions.Export;
+using Looper.Core;
+using Looper.Parameters;
+using Module.Frontend.TPM.Util;
+using Module.Persist.TPM.CalculatePromoParametersModule;
 using Module.Persist.TPM.Model.TPM;
+using Module.Persist.TPM.Utils;
+using Newtonsoft.Json;
+using Persist;
 using Persist.Model;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
-using System.IO;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.OData;
 using System.Web.Http.OData.Query;
-using Thinktecture.IdentityModel.Authorization.WebApi;
-using System.Data.SqlClient;
-using System.Threading.Tasks;
-using System.Net.Http;
-using Frontend.Core.Extensions;
-using Persist;
-using Looper.Parameters;
-using Looper.Core;
-using Module.Persist.TPM.Model.Import;
 using System.Web.Http.Results;
-using Newtonsoft.Json;
-using System.Data.Entity;
-using Module.Persist.TPM.CalculatePromoParametersModule;
-using Core.Settings;
-using Core.Dependency;
-using Module.Frontend.TPM.Util;
-using System.Web;
-using Module.Persist.TPM.Utils;
+using Thinktecture.IdentityModel.Authorization.WebApi;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -200,7 +195,11 @@ namespace Module.Frontend.TPM.Controllers
                             if (bigDifference)
                                 throw new Exception("The difference between the dates of the promo should be less than two periods");
 
-                            PromoSupportPromo psp = new PromoSupportPromo(promoSupportId, id);
+                            PromoSupportPromo psp = new PromoSupportPromo
+                            {
+                                PromoSupportId = promoSupportId,
+                                PromoId = id
+                            };
                             Context.Set<PromoSupportPromo>().Add(psp);
                             Context.SaveChanges();
                         }
@@ -427,7 +426,7 @@ namespace Module.Frontend.TPM.Controllers
                     {
                         tmp = JsonConvert.DeserializeObject<List<string>>(subItemsIds);
                     }
-                    tmp.ForEach(id => 
+                    tmp.ForEach(id =>
                     {
                         Guid itemId = Guid.Parse(id);
                         subItemsIdsList.Add(itemId);
@@ -614,7 +613,7 @@ namespace Module.Frontend.TPM.Controllers
                 new Column() { Order = 2, Field = "Promo.BrandTech.BrandsegTechsub", Header = "Brandtech", Quoting = false },
                 new Column() { Order = 2, Field = "PlanCalculation", Header = "Plan Cost TE Total", Quoting = false },
                 new Column() { Order = 2, Field = "FactCalculation", Header = "Actual Cost TE Total", Quoting = false },
-                new Column() { Order = 3, Field = "Promo.EventName", Header = "Event", Quoting = false },                
+                new Column() { Order = 3, Field = "Promo.EventName", Header = "Event", Quoting = false },
                 new Column() { Order = 4, Field = "Promo.StartDate", Header = "Start Date", Quoting = false, Format = "dd.MM.yyyy" },
                 new Column() { Order = 5, Field = "Promo.EndDate", Header = "End Date", Quoting = false, Format = "dd.MM.yyyy" },
                 new Column() { Order = 6, Field = "Promo.PromoStatus.Name", Header = "Status", Quoting = false },
@@ -642,8 +641,8 @@ namespace Module.Frontend.TPM.Controllers
         public IHttpActionResult ExportXLSX(ODataQueryOptions<PromoSupportPromo> options, string section = "")
         {
             IQueryable results = options.ApplyTo(GetConstraintedQuery().Where(x => !x.Disabled));
-            string getColumnMethod = section == "ticosts" 
-                                        ? nameof(PromoSupportPromoesController.GetExportSettingsTICosts) 
+            string getColumnMethod = section == "ticosts"
+                                        ? nameof(PromoSupportPromoesController.GetExportSettingsTICosts)
                                         : nameof(PromoSupportPromoesController.GetExportSettingsCostProd);
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);

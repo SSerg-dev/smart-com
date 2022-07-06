@@ -451,7 +451,7 @@ namespace Module.Frontend.TPM.Controllers
                     return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, data = "BrandTech not found." }));
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, data = "BrandTech not found." }));
             }

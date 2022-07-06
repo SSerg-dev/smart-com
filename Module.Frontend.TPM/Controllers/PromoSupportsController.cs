@@ -462,7 +462,7 @@ namespace Module.Frontend.TPM.Controllers
                 string userTimestamp = (user.Login.Split('\\').Last() + timeFormat).Replace(" ", "");
                 return Json(new { success = true, userTimestamp });
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return Json(new { success = false });
             }
@@ -486,7 +486,7 @@ namespace Module.Frontend.TPM.Controllers
 
                 return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, models = promoSupportGroupList }));
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false }));
             }
@@ -551,7 +551,7 @@ namespace Module.Frontend.TPM.Controllers
                 }
                 return result;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return new HttpResponseMessage(HttpStatusCode.Accepted);
             }

@@ -1,6 +1,7 @@
 using Core.Data;
 using Module.Persist.TPM.Utils;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -145,5 +146,8 @@ namespace Module.Persist.TPM.Model.TPM
 
         public double? PCVolume { get; set; }
 
+        public virtual ICollection<AssortmentMatrix> AssortmentMatrices { get; set; }
+        public virtual ICollection<BaseLine> BaseLines { get; set; }
+        public virtual ICollection<IncrementalPromo> IncrementalPromoes { get; set; }
     }
 }

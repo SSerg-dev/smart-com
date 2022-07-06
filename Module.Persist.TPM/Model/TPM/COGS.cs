@@ -10,17 +10,16 @@ namespace Module.Persist.TPM.Model.TPM
         [Index]
         public Guid Id { get; set; } = Guid.NewGuid();
         public bool Disabled { get; set; }
-        public DateTimeOffset? DeletedDate { get; set; }
-
-        public int ClientTreeId { get; set; }
-        public Guid? BrandTechId { get; set; }
+        public DateTimeOffset? DeletedDate { get; set; }        
 
         public DateTimeOffset? StartDate { get; set; }
         public DateTimeOffset? EndDate { get; set; }
         public float LSVpercent { get; set; }
         public int Year { get; set; }
 
+        public Guid? BrandTechId { get; set; }
         public virtual BrandTech BrandTech { get; set; }
+        public int ClientTreeId { get; set; }
         public virtual ClientTree ClientTree { get; set; }
     }
 

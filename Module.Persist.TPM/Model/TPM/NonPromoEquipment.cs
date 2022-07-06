@@ -9,10 +9,8 @@ namespace Module.Persist.TPM.Model.TPM
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public System.Guid Id { get; set; }
-
         [Index("Unique_NonPromoEquipment", 3, IsUnique = true)]
         public bool Disabled { get; set; }
-
         [Index("Unique_NonPromoEquipment", 4, IsUnique = true)]
         public DateTimeOffset? DeletedDate { get; set; }
 

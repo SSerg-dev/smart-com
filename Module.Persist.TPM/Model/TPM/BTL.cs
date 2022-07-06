@@ -2,9 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
 using System.Runtime.Serialization;
 
 namespace Module.Persist.TPM.Model.TPM
@@ -15,18 +13,17 @@ namespace Module.Persist.TPM.Model.TPM
         public System.Guid Id { get; set; }
         public bool Disabled { get; set; }
         public DateTimeOffset? DeletedDate { get; set; }
+
         public int Number { get; set; }
         public double? PlanBTLTotal { get; set; }
         public double? ActualBTLTotal { get; set; }
         public DateTimeOffset? StartDate { get; set; }
         public DateTimeOffset? EndDate { get; set; }
         public string InvoiceNumber { get; set; }
-        public Guid EventId { get; set; }
 
+        public Guid EventId { get; set; }
         public virtual Event Event { get; set; }
 
-        [JsonIgnore]
-        [IgnoreDataMember]
-        public ICollection<BTLPromo> BTLPromo { get; set; }
+        public ICollection<BTLPromo> BTLPromoes { get; set; }
     }
 }

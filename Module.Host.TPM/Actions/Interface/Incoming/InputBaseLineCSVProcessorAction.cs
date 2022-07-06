@@ -583,7 +583,7 @@ namespace Module.Host.TPM.Actions.Interface.Incoming
             errors = new List<string>();
             warnings = new List<string>();
             bool isError = false;
-            string message;
+            //string message;
 
             string REP = rec.REP;
             string DMDGroup = rec.DMDGroup;

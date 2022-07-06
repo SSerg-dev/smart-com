@@ -155,7 +155,7 @@ namespace Module.Frontend.TPM.Controllers
 
                 return fileName;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }

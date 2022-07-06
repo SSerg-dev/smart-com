@@ -1,16 +1,16 @@
-﻿using System;
-using Core.Data;
+﻿using Core.Data;
+using Module.Persist.TPM.Model.Interfaces;
 using Newtonsoft.Json;
+using Persist;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using Newtonsoft.Json;
-using System.Collections.Generic;
-using Persist;
 
 namespace Module.Persist.TPM.Model.TPM
 {
-    public class Promo : IEntity<Guid>, IDeactivatable
+    public class Promo : IEntity<Guid>, IDeactivatable, IMode
     {
         [NotMapped]
         private Guid id;
@@ -29,25 +29,13 @@ namespace Module.Persist.TPM.Model.TPM
 
         public bool Disabled { get; set; }
         public DateTimeOffset? DeletedDate { get; set; }
+        public TPMmode TPMmode { get; set; }
         public DateTimeOffset? LastChangedDate { get; set; }
         public DateTimeOffset? LastChangedDateDemand { get; set; }
         public DateTimeOffset? LastChangedDateFinance { get; set; }
-        public Guid? BrandId { get; set; }
-        public Guid? TechnologyId { get; set; }
-        public Guid? BrandTechId { get; set; }
-        public Guid? PromoStatusId { get; set; }
-        public Guid? MarsMechanicId { get; set; }
-        public Guid? MarsMechanicTypeId { get; set; }
-        public Guid? PromoTypesId { get; set; }
-        public Guid? PlanInstoreMechanicId { get; set; }
-        public Guid? PlanInstoreMechanicTypeId { get; set; }
-        public Guid? ColorId { get; set; }
-        public Guid? RejectReasonId { get; set; }
-        public Guid? EventId { get; set; }
-        public Guid? ActualInStoreMechanicId { get; set; }
-        public Guid? ActualInStoreMechanicTypeId { get; set; }
+
         public int? ClientTreeId { get; set; }
-        public int? ClientTreeKeyId { get; set; }
+
         public Guid? CreatorId { get; set; }
         public string CreatorLogin { get; set; }
 
@@ -234,27 +222,6 @@ namespace Module.Persist.TPM.Model.TPM
         public bool? IsDemandPlanningApproved { get; set; }
         public bool? IsDemandFinanceApproved { get; set; }
 
-        public virtual Brand Brand { get; set; }
-        public virtual Technology Technology { get; set; }
-        public virtual BrandTech BrandTech { get; set; }
-        public virtual PromoStatus PromoStatus { get; set; }
-        [ForeignKey("MarsMechanicId")]
-        public virtual Mechanic MarsMechanic { get; set; }
-        [ForeignKey("PlanInstoreMechanicId")]
-        public virtual Mechanic PlanInstoreMechanic { get; set; }
-        [ForeignKey("MarsMechanicTypeId")]
-        public virtual MechanicType MarsMechanicType { get; set; }
-        [ForeignKey("PlanInstoreMechanicTypeId")]
-        public virtual MechanicType PlanInstoreMechanicType { get; set; }
-        [ForeignKey("PromoTypesId")]
-        public virtual PromoTypes PromoTypes { get; set; }
-        public virtual Color Color { get; set; }
-        public virtual RejectReason RejectReason { get; set; }
-        public virtual Event Event { get; set; }
-        [ForeignKey("ActualInStoreMechanicId")]
-        public virtual Mechanic ActualInStoreMechanic { get; set; }
-        [ForeignKey("ActualInStoreMechanicTypeId")]
-        public virtual MechanicType ActualInStoreMechanicType { get; set; }
         [StringLength(500)]
         public string ProductSubrangesList { get; set; }
         [StringLength(500)]
@@ -278,9 +245,6 @@ namespace Module.Persist.TPM.Model.TPM
         /// </summary>
         // Почему JSON? Привет ExtJS, Odata и Breeze за удобную работу с моделями
         public string PromoBasicProducts { get; set; }
-
-        [ForeignKey("ClientTreeKeyId")]
-        public virtual ClientTree ClientTree { get; set; }
 
         /// <summary>
         /// ID для обозначения операций над промо, позволяет избедать дубрирования в Raven
@@ -323,12 +287,52 @@ namespace Module.Persist.TPM.Model.TPM
         public double? ActualPromoIncrementalCOGSTn { get; set; }
         public double? ActualPromoNetIncrementalCOGSTn { get; set; }
 
+        // соединения к другим entity сначала с ключами, потом списки
+        public Guid? BrandId { get; set; }
+        public virtual Brand Brand { get; set; }
+        public Guid? TechnologyId { get; set; }
+        public virtual Technology Technology { get; set; }
+        public Guid? BrandTechId { get; set; }
+        public virtual BrandTech BrandTech { get; set; }
+        public int? ClientTreeKeyId { get; set; }
+        [ForeignKey("ClientTreeKeyId")]
+        public virtual ClientTree ClientTree { get; set; }
+        public Guid? PromoStatusId { get; set; }
+        public virtual PromoStatus PromoStatus { get; set; }
+        public Guid? MarsMechanicId { get; set; }
+        [ForeignKey("MarsMechanicId")]
+        public virtual Mechanic MarsMechanic { get; set; }
+        public Guid? PlanInstoreMechanicId { get; set; }
+        [ForeignKey("PlanInstoreMechanicId")]
+        public virtual Mechanic PlanInstoreMechanic { get; set; }
+        public Guid? MarsMechanicTypeId { get; set; }
+        [ForeignKey("MarsMechanicTypeId")]
+        public virtual MechanicType MarsMechanicType { get; set; }
+        public Guid? PlanInstoreMechanicTypeId { get; set; }
+        [ForeignKey("PlanInstoreMechanicTypeId")]
+        public virtual MechanicType PlanInstoreMechanicType { get; set; }
+        public Guid? PromoTypesId { get; set; }
+        [ForeignKey("PromoTypesId")]
+        public virtual PromoTypes PromoTypes { get; set; }
+        public Guid? ColorId { get; set; }
+        public virtual Color Color { get; set; }
+        public Guid? RejectReasonId { get; set; }
+        public virtual RejectReason RejectReason { get; set; }
+        public Guid? EventId { get; set; }
+        public virtual Event Event { get; set; }
+        public Guid? ActualInStoreMechanicId { get; set; }
+        [ForeignKey("ActualInStoreMechanicId")]
+        public virtual Mechanic ActualInStoreMechanic { get; set; }
+        public Guid? ActualInStoreMechanicTypeId { get; set; }
+        [ForeignKey("ActualInStoreMechanicTypeId")]
+        public virtual MechanicType ActualInStoreMechanicType { get; set; }
         [ForeignKey("MasterPromo")]
         public Guid? MasterPromoId { get; set; }
         public virtual Promo MasterPromo { get; set; }
 
         public virtual ICollection<Promo> Promoes { get; set; }
         public virtual ICollection<PromoProduct> PromoProducts { get; set; }
+        public virtual ICollection<IncrementalPromo> IncrementalPromoes { get; set; }
         /// <summary>
         /// Copy Constructor
         /// </summary>
@@ -438,19 +442,20 @@ namespace Module.Persist.TPM.Model.TPM
 
                     if (products.Length > 0)
                     {
-                        PromoBasicProduct promoBasicProducts = new PromoBasicProduct();
-
-                        // выбранные узлы
-                        promoBasicProducts.ProductsChoosen = products.Select(n => new
+                        PromoBasicProduct promoBasicProducts = new PromoBasicProduct
                         {
-                            ObjectId = n.ObjectId,
-                            Name = n.Name,
-                            Type = n.Type,
-                            FullPathName = n.FullPathName,
-                            Abbreviation = n.Abbreviation,
-                            LogoFileName = n.LogoFileName,
-                            Filter = n.Filter
-                        }).ToArray();
+                            // выбранные узлы
+                            ProductsChoosen = products.Select(n => new
+                            {
+                                n.ObjectId,
+                                n.Name,
+                                n.Type,
+                                n.FullPathName,
+                                n.Abbreviation,
+                                n.LogoFileName,
+                                n.Filter
+                            }).ToArray()
+                        };
 
                         // формируем название Brand и Technology
                         ProductTree currentNode = products[0];

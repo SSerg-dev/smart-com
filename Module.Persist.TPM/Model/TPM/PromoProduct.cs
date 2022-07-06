@@ -1,11 +1,12 @@
 ﻿using Core.Data;
+using Module.Persist.TPM.Model.Interfaces;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Module.Persist.TPM.Model.TPM
 {
-    public class PromoProduct : IEntity<Guid>, IDeactivatable, ICloneable
+    public class PromoProduct : IEntity<Guid>, IDeactivatable, IMode, ICloneable
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public System.Guid Id { get; set; }
@@ -14,12 +15,9 @@ namespace Module.Persist.TPM.Model.TPM
         public bool Disabled { get; set; }
         [Index("Unique_PromoProduct", 2, IsUnique = true)]
         public DateTimeOffset? DeletedDate { get; set; }
+        public TPMmode TPMmode { get; set; }
 
         public DateTimeOffset? CreateDate { get; set; }
-
-        [Index("Unique_PromoProduct", 3, IsUnique = true)]
-        public Guid PromoId { get; set; }
-        public Guid ProductId { get; set; }
 
         [StringLength(255)]
         [Index("Unique_PromoProduct", 4, IsUnique = true)]
@@ -233,10 +231,13 @@ namespace Module.Persist.TPM.Model.TPM
         public double? PlanProductPostPromoEffectVolume { get; set; }
         public double? ActualProductQtySO { get; set; }
 
+        [Index("Unique_PromoProduct", 3, IsUnique = true)]
+        public Guid PromoId { get; set; }
         public virtual Promo Promo { get; set; }
+        public Guid ProductId { get; set; }
         public virtual Product Product { get; set; }
 
-        public virtual PromoProduct2Plu Plu { get; set; }
+        public virtual PromoProduct2Plu Plu { get; set; } //view
 
         public object Clone()
         {

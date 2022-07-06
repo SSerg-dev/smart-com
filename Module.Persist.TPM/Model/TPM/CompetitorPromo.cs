@@ -10,21 +10,10 @@ namespace Module.Persist.TPM.Model.TPM
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public System.Guid Id { get; set; } = Guid.NewGuid();
-
         [Index("Unique_CompetitorPromo", 1, IsUnique = true)]
         public bool Disabled { get; set; }
-
         [Index("Unique_CompetitorPromo", 2, IsUnique = true)]
         public DateTimeOffset? DeletedDate { get; set; }
-
-        [Required]
-        public Guid? CompetitorId { get; set; }
-
-        [Required]
-        public int? ClientTreeObjectId { get; set; }
-
-        [Required]
-        public Guid CompetitorBrandTechId { get; set; }
 
         [StringLength(124)]
         [Required]
@@ -64,11 +53,17 @@ namespace Module.Persist.TPM.Model.TPM
         [StringLength(256)]
         public string Subrange { get; set; }
 
+        [Required]
+        public Guid? CompetitorId { get; set; }
         [ForeignKey("CompetitorId")]
         public virtual Competitor Competitor { get; set; }
+        [Required]
+        public int? ClientTreeObjectId { get; set; }
         [ForeignKey("ClientTreeObjectId")]
         [SpecialNotKeyProperty]
         public virtual ClientTree ClientTree { get; set; }
+        [Required]
+        public Guid CompetitorBrandTechId { get; set; }
         [ForeignKey("CompetitorBrandTechId")]
         public virtual CompetitorBrandTech CompetitorBrandTech { get; set; }
 

@@ -199,7 +199,12 @@ namespace Module.Frontend.TPM.Controllers
                             bool isLinked = Context.Set<BTLPromo>().Any(x => x.PromoId == promoId && !x.Disabled && x.DeletedDate == null);
                             if (!isLinked)
                             {
-                                BTLPromo bp = new BTLPromo(btlId, promoId, promo.ClientTreeKeyId.Value);
+                                BTLPromo bp = new BTLPromo
+                                {
+                                    BTLId = btlId,
+                                    PromoId = promoId,
+                                    ClientTreeId = promo.ClientTreeKeyId.Value
+                                };
                                 Context.Set<BTLPromo>().Add(bp);
                                 bTLPromos.Add(bp);
                             }

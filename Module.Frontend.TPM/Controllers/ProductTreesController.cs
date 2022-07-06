@@ -694,7 +694,7 @@ namespace Module.Frontend.TPM.Controllers
                 }
                 return FileUtility.DownloadFile(directory, fileName);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return new HttpResponseMessage(HttpStatusCode.BadRequest);
             }
