@@ -363,13 +363,13 @@ namespace Module.Host.TPM.Actions
             {
                 var promo = context.Set<Promo>().FirstOrDefault(x => x.Number == newRecord.PromoNumber);
                 var eventId = context.Set<Event>().FirstOrDefault(x => x.Name == newRecord.EventName)?.Id;
-                var btlPromo = context.Set<BTLPromo>().FirstOrDefault(x => x.PromoId == promo.Id);
-                if (btlPromo != null && promo.EventId != eventId)
-                {
-                    btlPromo.DeletedDate = System.DateTime.Now;
-                    btlPromo.Disabled = true;
-                    CalculateBTLBudgetsCreateTask(btlPromo.BTLId.ToString(), new List<Guid>() { promo.Id }, context);
-                }
+                //var btlPromo = context.Set<BTLPromo>().FirstOrDefault(x => x.PromoId == promo.Id);
+                //if (btlPromo != null && promo.EventId != eventId)
+                //{
+                //    btlPromo.DeletedDate = System.DateTime.Now;
+                //    btlPromo.Disabled = true;
+                //    CalculateBTLBudgetsCreateTask(btlPromo.BTLId.ToString(), new List<Guid>() { promo.Id }, context);
+                //}
                 promo.EventId = eventId;
             }
 
