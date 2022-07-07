@@ -333,6 +333,12 @@ namespace Module.Persist.TPM.Model.TPM
         public virtual ICollection<Promo> Promoes { get; set; }
         public virtual ICollection<PromoProduct> PromoProducts { get; set; }
         public virtual ICollection<IncrementalPromo> IncrementalPromoes { get; set; }
+        public virtual ICollection<PreviousDayIncremental> PreviousDayIncrementals { get; set; }
+        public virtual ICollection<PromoProductTree> PromoProductTrees { get; set; }
+        public virtual ICollection<PromoStatusChange> PromoStatusChanges { get; set; }
+        public virtual ICollection<PromoSupportPromo> PromoSupportPromoes { get; set; }
+        public virtual ICollection<PromoUpliftFailIncident> PromoUpliftFailIncidents { get; set; }
+
         /// <summary>
         /// Copy Constructor
         /// </summary>

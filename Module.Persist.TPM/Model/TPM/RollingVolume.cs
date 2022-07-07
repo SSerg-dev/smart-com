@@ -12,6 +12,7 @@ namespace Module.Persist.TPM.Model.TPM
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
+
         public string DemandGroup { get; set; }
         public string DMDGroup { get; set; }
         public string Week { get; set; }
@@ -31,6 +32,7 @@ namespace Module.Persist.TPM.Model.TPM
         public double? ManualRollingTotalVolumes { get; set; } 
         public bool Lock { get; set; }
         public double? FullWeekDiff { get; set; }
+
         public Guid ProductId { get; set; }
         public virtual Product Product { get; set; }
     }

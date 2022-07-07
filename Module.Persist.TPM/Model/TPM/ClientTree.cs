@@ -57,6 +57,12 @@ namespace Module.Persist.TPM.Model.TPM
         public virtual ICollection<EventClientTree> EventClientTrees { get; set; }
         public virtual ICollection<MechanicType> MechanicTypes { get; set; }
         public virtual ICollection<NoneNego> NoneNegoes { get; set; }
+        public virtual ICollection<NonPromoSupport> NonPromoSupports { get; set; }
+        public virtual ICollection<Plu> Plus { get; set; }
+        public virtual ICollection<PriceList> PriceLists { get; set; }
+        public virtual ICollection<PromoSupport> PromoSupports { get; set; }
+        public virtual ICollection<RATIShopper> RATIShoppers { get; set; }
+        public virtual ICollection<TradeInvestment> TradeInvestments { get; set; }
         public object Clone()
         {
             return this.MemberwiseClone();

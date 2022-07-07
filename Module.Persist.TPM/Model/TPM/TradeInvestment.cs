@@ -14,9 +14,6 @@ namespace Module.Persist.TPM.Model.TPM
         public DateTimeOffset? StartDate { get; set; }
         public DateTimeOffset? EndDate { get; set; }
 
-        public int ClientTreeId { get; set; }
-        public System.Guid? BrandTechId { get; set; }
-
         [StringLength(255)]
         public string TIType { get; set; }
         [StringLength(255)]
@@ -26,7 +23,9 @@ namespace Module.Persist.TPM.Model.TPM
         public bool MarcCalcBudgets { get; set; }
         public int Year { get; set; }
 
+        public System.Guid? BrandTechId { get; set; }
         public virtual BrandTech BrandTech { get; set; }
+        public int ClientTreeId { get; set; }
         public virtual ClientTree ClientTree { get; set; }
     }
 

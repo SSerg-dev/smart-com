@@ -36,5 +36,7 @@ namespace Module.Persist.TPM.Model.TPM
 
         public virtual ICollection<ClientTreeBrandTech> ClientTreeBrandTeches { get; set; }
         public virtual ICollection<CoefficientSI2SO> CoefficientSI2SOs { get; set; }
+        public virtual ICollection<NonPromoSupportBrandTech> NonPromoSupportBrandTeches { get; set; }
+        public virtual ICollection<TradeInvestment> TradeInvestments { get; set; }
     }
 }

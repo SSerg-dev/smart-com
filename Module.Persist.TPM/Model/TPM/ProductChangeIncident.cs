@@ -6,7 +6,7 @@ namespace Module.Persist.TPM.Model.TPM {
     public class ProductChangeIncident : IEntity<Guid> {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
-        public Guid ProductId { get; set; }
+
 		public Guid RecalculatedPromoId { get; set; }
 		public DateTimeOffset CreateDate { get; set; }
         public DateTimeOffset? NotificationProcessDate { get; set; }
@@ -14,15 +14,16 @@ namespace Module.Persist.TPM.Model.TPM {
 		public string AddedProductIds { get; set; }
 		public string ExcludedProductIds { get; set; }
 
-		public Boolean IsCreate { get; set; }
-        public Boolean IsDelete { get; set; }
-		public Boolean IsChecked { get; set; }
-		public Boolean IsCreateInMatrix { get; set; }
-		public Boolean IsDeleteInMatrix { get; set; }
-		public Boolean IsRecalculated { get; set; }
+		public bool IsCreate { get; set; }
+        public bool IsDelete { get; set; }
+		public bool IsChecked { get; set; }
+		public bool IsCreateInMatrix { get; set; }
+		public bool IsDeleteInMatrix { get; set; }
+		public bool IsRecalculated { get; set; }
 
 		public bool Disabled { get; set; }
 
+		public Guid ProductId { get; set; }
 		public virtual Product Product { get; set; }
     }
 }

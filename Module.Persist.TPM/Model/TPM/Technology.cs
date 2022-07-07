@@ -40,5 +40,6 @@ namespace Module.Persist.TPM.Model.TPM
         public bool IsSplittable { get; set; }
 
         public virtual ICollection<BrandTech> BrandTeches { get; set; }
+        public virtual ICollection<ProductTree> ProductTrees { get; set; }
     }
 }

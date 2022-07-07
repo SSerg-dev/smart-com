@@ -1,6 +1,7 @@
 ﻿using Core.Data;
 using Module.Persist.TPM.Model.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -238,6 +239,8 @@ namespace Module.Persist.TPM.Model.TPM
         public virtual Product Product { get; set; }
 
         public virtual PromoProduct2Plu Plu { get; set; } //view
+
+        public virtual ICollection<PromoProductsCorrection> PromoProductsCorrections { get; set; }
 
         public object Clone()
         {

@@ -14,9 +14,8 @@ namespace Module.Persist.TPM.Model.TPM
         [Index("CX_ObjDate", 1, IsUnique = true)]
         public int ObjectId { get; set; }
         public int parentId { get; set; }
-        public Guid? BrandId { get; set; }
-        public Guid? TechnologyId { get; set; }
-        public virtual Technology Technology { get; set; }
+        public Guid? BrandId { get; set; } //чего он тут одинокий?
+
         public string Type { get; set; }
         public int depth { get; set; }
         public string Name { get; set; }
@@ -34,6 +33,9 @@ namespace Module.Persist.TPM.Model.TPM
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         [SpecialNotKeyProperty]
         public string FilterQuery { get; set; }
+
+        public Guid? TechnologyId { get; set; }
+        public virtual Technology Technology { get; set; }
 
         public virtual ICollection<NoneNego> NoneNegoes { get; set; }
         public object Clone()
