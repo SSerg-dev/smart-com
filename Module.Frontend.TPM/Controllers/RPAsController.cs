@@ -159,10 +159,10 @@ namespace Module.Frontend.TPM.Controllers
 						CreateRPANonPromoSupportTask(fileName, rpaId);
 						break;
 					case "Actuals_EAN_PC":
-						CreateRPAActualEanPcTask(fileName);
+						CreateRPAActualEanPcTask(fileName, rpaId);
 						break;
 					case "Actuals_PLU":
-						CreateRpaActualPluTask(fileName);
+						CreateRpaActualPluTask(fileName, rpaId);
 						break;
 				}
 			}
@@ -321,7 +321,7 @@ namespace Module.Frontend.TPM.Controllers
 			}
 		}
 
-		private void CreateRPAActualEanPcTask(string fileName)
+		private void CreateRPAActualEanPcTask(string fileName, Guid rpaId)
 		{
 			var handlerName = "FullXLSXRPAActualEANPCImportHandler";
 			UserInfoCore user = authorizationManager.GetCurrentUser();
@@ -349,6 +349,7 @@ namespace Module.Frontend.TPM.Controllers
 				HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportRpaActualEanPc).Name, data, throwIfNotExists: false);
 				HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(ImportRpaActualEanPc), data, visible: false, throwIfNotExists: false);
 				HandlerDataHelper.SaveIncomingArgument("UniqueFields", new List<String>() { "Name" }, data);
+				HandlerDataHelper.SaveIncomingArgument("RPAId", rpaId, data, visible: false, throwIfNotExists: false);
 
 				LoopHandler handler = new LoopHandler()
 				{
@@ -371,7 +372,7 @@ namespace Module.Frontend.TPM.Controllers
 			}
 		}
 
-		private void CreateRpaActualPluTask(string fileName)
+		private void CreateRpaActualPluTask(string fileName, Guid rpaId)
 		{
 			var handlerName = "FullXLSXRpaActualPluImportHandler";
 			UserInfoCore user = authorizationManager.GetCurrentUser();
@@ -399,6 +400,7 @@ namespace Module.Frontend.TPM.Controllers
 				HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportRpaActualPlu).Name, data, throwIfNotExists: false);
 				HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(ImportRpaActualPlu), data, visible: false, throwIfNotExists: false);
 				HandlerDataHelper.SaveIncomingArgument("UniqueFields", new List<String>() { "Name" }, data);
+				HandlerDataHelper.SaveIncomingArgument("RPAId", rpaId, data, visible: false, throwIfNotExists: false);
 
 				LoopHandler handler = new LoopHandler()
 				{

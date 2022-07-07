@@ -476,7 +476,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Module.Frontend.TPM\Module.Frontend.TPM.csproj">
-      <Project>{70DE5780-2297-41FC-A861-D370F6FE631B}</Project>
+      <Project>{70de5780-2297-41fc-a861-d370f6fe631b}</Project>
       <Name>Module.Frontend.TPM</Name>
     </ProjectReference>
     <ProjectReference Include="..\Module.Persist.TPM\Module.Persist.TPM.csproj">
@@ -484,7 +484,6 @@
       <Name>Module.Persist.TPM</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

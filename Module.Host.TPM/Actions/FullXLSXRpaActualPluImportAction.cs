@@ -29,6 +29,7 @@ namespace Module.Host.TPM.Actions
     {
         private readonly Guid UserId;
         private readonly Guid RoleId;
+        private readonly Guid RPAId;
         private readonly FileModel ImportFile;
         private readonly Type ImportType;
         private readonly Type ModelType;
@@ -47,7 +48,7 @@ namespace Module.Host.TPM.Actions
 
         private ScriptGenerator Generator { get; set; }
 
-        public FullXLSXRpaActualPluImportAction(FullImportSettings settings)
+        public FullXLSXRpaActualPluImportAction(FullImportSettings settings, Guid RPAId)
         {
             UserId = settings.UserId;
             RoleId = settings.RoleId;
@@ -57,6 +58,7 @@ namespace Module.Host.TPM.Actions
             Separator = settings.Separator;
             Quote = settings.Quote;
             HasHeader = settings.HasHeader;
+            this.RPAId = RPAId;
 
             AllowPartialApply = true;
             logger = LogManager.GetCurrentClassLogger();
@@ -70,6 +72,14 @@ namespace Module.Host.TPM.Actions
             {
                 ResultStatus = null;
                 HasErrors = false;
+
+                var rpaStatus = "In progress";
+                using (var context = new DatabaseContext())
+                {
+                    var rpa = context.Set<RPA>().FirstOrDefault(x => x.Id == RPAId);
+                    rpa.Status = rpaStatus;
+                    context.SaveChanges();
+                }
 
                 var sourceRecords = ParseImportFile();
 
@@ -225,6 +235,9 @@ namespace Module.Host.TPM.Actions
                 int resultRecordCount = 0;
 
                 ResultStatus = GetImportStatus();
+                var rpaStatus = ResultStatus;
+                var rpa = context.Set<RPA>().FirstOrDefault(x => x.Id == RPAId);
+                rpa.Status = rpaStatus;
                 var importModel = ImportUtility.BuildActiveImport(UserId, RoleId, ImportType);
                 importModel.Status = ResultStatus;
                 context.Imports.Add(importModel);
