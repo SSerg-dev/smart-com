@@ -22,7 +22,7 @@
         { name: 'MarsStartDate', type: 'string', useNull: true, hidden: false, isDefault: true },
         { name: 'MarsDispatchesStart', type: 'string', useNull: true, hidden: false, isDefault: true },
         { name: 'PromoStatusName', type: 'string', mapping: 'PromoStatusName', defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'PromoStatus', hidden: false, isDefault: true },
-       
+
         { name: 'MarsMechanicDiscount', type: 'float', hidden: false, isDefault: false },
         { name: 'IsCMManagerApproved', type: "boolean", useNull: true, hidden: true, isDefault: false },
         { name: 'IsDemandPlanningApproved', type: "boolean", useNull: true, hidden: true, isDefault: false },
@@ -39,14 +39,14 @@
         { name: 'BudgetYear', type: 'int', hidden: false, isDefault: false },
 
         { name: 'LastChangedDate', useNull: true, type: 'date', hidden: true, isDefault: false, timeZone: +3, convert: dateConvertTimeZone },
-        { name: 'LastChangedDateDemand', useNull: true, type: 'date', hidden: true, isDefault: false, timeZone: +3, convert: dateConvertTimeZone},
-        { name: 'LastChangedDateFinance', useNull: true, type: 'date', hidden: true, isDefault: false, timeZone: +3, convert: dateConvertTimeZone},
+        { name: 'LastChangedDateDemand', useNull: true, type: 'date', hidden: true, isDefault: false, timeZone: +3, convert: dateConvertTimeZone },
+        { name: 'LastChangedDateFinance', useNull: true, type: 'date', hidden: true, isDefault: false, timeZone: +3, convert: dateConvertTimeZone },
 
-        { name: 'MarsEndDate', type: 'string', useNull: true, hidden: false, isDefault: false },     
+        { name: 'MarsEndDate', type: 'string', useNull: true, hidden: false, isDefault: false },
         { name: 'MarsDispatchesEnd', type: 'string', useNull: true, hidden: true, isDefault: false },
 
         { name: 'BrandName', type: 'string', mapping: 'BrandName', defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'Brand', hidden: false, isDefault: false },
-        
+
         { name: 'PromoStatusColor', type: 'string', mapping: 'PromoStatusColor', defaultFilterConfig: { valueField: 'Color' }, breezeEntityType: 'PromoStatus', hidden: true, isDefault: false },
         { name: 'MarsMechanicName', type: 'string', mapping: 'MarsMechanicName', defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'Mechanic', useNull: true, hidden: false, isDefault: false },
         { name: 'MarsMechanicTypeName', type: 'string', mapping: 'MarsMechanicTypeName', defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'MechanicType', useNull: true, hidden: false, isDefault: false },
@@ -83,6 +83,7 @@
 
         // Growth Acceleration
         { name: 'IsGrowthAcceleration', type: 'boolean', hidden: false, isDefault: true },
+        { name: 'IsInExchange', type: 'boolean', hidden: false, isDefault: true },
         { name: 'PromoTypesName', useNull: true, type: 'string', hidden: false, isDefault: true },
 
         { name: 'ActualPromoLSVByCompensation', useNull: true, type: 'float', hidden: false, isDefault: false },
@@ -94,7 +95,7 @@
         //Apollo Export
         { name: 'IsApolloExport', type: 'boolean', hidden: false, isDefault: false },
 
-        {name: 'DeviationCoefficient', type: 'float', hidden: false, isDefault: true}
+        { name: 'DeviationCoefficient', type: 'float', hidden: false, isDefault: true }
     ],
     proxy: {
         type: 'breeze',

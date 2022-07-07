@@ -1053,7 +1053,6 @@
 			//            //    resource: resource,
 			//            //    action: action
 			//            //});
-			//            //debugger;
 			//            //editor.down('editorform').add([{
 			//            //    xtype: 'hiddenfield',
 			//            //    name: 'InterfaceId',

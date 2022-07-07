@@ -189,7 +189,6 @@ Ext.define('App.controller.core.loophandler.UserLoopHandler', {
     applyFilterInternal: function (button) {
         var filterIds = ['clearTaskFilter', 'applyTaskFilter', 'applyReportFilter'];
         var buttonId = button.getItemId();
-        //debugger;
         button.setUI('blue-pressed-button-toolbar-toolbar');
         for (var key in filterIds) {
             if (filterIds[key] != buttonId) {

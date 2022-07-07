@@ -910,10 +910,12 @@
         'ActualPromoNetIncrementalBaseTI': 'Actual Promo Net Incremental BaseTI',
         'ActualPromoNetIncrementalCOGS': 'Actual Promo Net Incremental COGS',
         'ActualPromoNSV': 'Actual Promo NSV',
-        'GrowthAcceleration': 'Growth acceleration',
+        'GrowthAcceleration': 'GA',
         'IsGrowthAcceleration': 'Growth acceleration',
         'ApolloExport': 'Apollo export',
         'IsApolloExport': 'Apollo export',
+        'GAInExcnange': 'GA InExchange',
+        'IsInExchange': 'InExchange',
 
         //Для исторической модели
         'PlanPromoNetROIPercent': 'Plan Promo Net ROI Percent',
@@ -953,7 +955,11 @@
 
         'Price': 'Price',
         'Discount': 'Discount',
-        'Subrange': 'Subrange'
+        'Subrange': 'Subrange',
+
+        'SelectPromo': 'Select Promo',
+        'LinkedPromoes': 'Linked Promoes',
+        'MasterPromoNumber': 'Master Promo Number'
     },
     'HistoricalPromo': ['.tpm.Promo', '.core.BaseHistoryEntity'],
     'DeletedPromo': ['.tpm.Promo', '.core.BaseDeletedEntity'],

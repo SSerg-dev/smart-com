@@ -1,11 +1,7 @@
 ﻿using Core.Import;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Module.Persist.TPM.Model.TPM;
+using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Module.Persist.TPM.Model.Import
 {
@@ -20,13 +16,9 @@ namespace Module.Persist.TPM.Model.Import
         [Display(Name = "Competitor")]
         public string CompetitorName { get; set; }
 
-        [ImportCSVColumn(ColumnNumber = 2)]
-        [Display(Name = "Promo name")]
-        public String Name { get; set; }
-
         [ImportCSVColumn(ColumnNumber = 4)]
         [Display(Name = "Client hierarchy code")]
-        public int ClientTreeObjectId { get; set; }    
+        public int ClientTreeObjectId { get; set; }
 
         [ImportCSVColumn(ColumnNumber = 5)]
         [NavigationPropertyMap(LookupEntityType = typeof(CompetitorBrandTech), LookupPropertyName = "BrandTech")]
