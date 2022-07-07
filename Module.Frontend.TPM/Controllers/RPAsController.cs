@@ -158,7 +158,13 @@ namespace Module.Frontend.TPM.Controllers
 					case "NonPromoSupport":
 						CreateRPANonPromoSupportTask(fileName, rpaId);
 						break;
-                }
+					case "Actuals_EAN_PC":
+						CreateRPAActualEanPcTask(fileName);
+						break;
+					case "Actuals_PLU":
+						CreateRpaActualPluTask(fileName);
+						break;
+				}
 			}
 			catch(Exception ex)
             {
@@ -293,6 +299,106 @@ namespace Module.Frontend.TPM.Controllers
 				HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(ImportRPAPromoSupport), data, visible: false, throwIfNotExists: false);
 				HandlerDataHelper.SaveIncomingArgument("UniqueFields", new List<String>() { "Name" }, data);
 				HandlerDataHelper.SaveIncomingArgument("RPAId", rpaId, data, visible: false, throwIfNotExists: false);
+
+				LoopHandler handler = new LoopHandler()
+				{
+					Id = Guid.NewGuid(),
+					ConfigurationName = "PROCESSING",
+					Description = "Загрузка шаблона из файла " + typeof(RPA).Name,
+					Name = "Module.Host.TPM.Handlers." + handlerName,
+					ExecutionPeriod = null,
+					RunGroup = typeof(PromoSupport).Name,
+					CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+					LastExecutionDate = null,
+					NextExecutionDate = null,
+					ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+					UserId = userId,
+					RoleId = roleId
+				};
+				handler.SetParameterData(data);
+				context.LoopHandlers.Add(handler);
+				context.SaveChanges();
+			}
+		}
+
+		private void CreateRPAActualEanPcTask(string fileName)
+		{
+			var handlerName = "FullXLSXRPAActualEANPCImportHandler";
+			UserInfoCore user = authorizationManager.GetCurrentUser();
+			Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
+			RoleInfo role = authorizationManager.GetCurrentRole();
+			Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
+
+			using (DatabaseContext context = new DatabaseContext())
+			{
+				ImportResultFilesModel resiltfile = new ImportResultFilesModel();
+				ImportResultModel resultmodel = new ImportResultModel();
+
+				HandlerData data = new HandlerData();
+				FileModel file = new FileModel()
+				{
+					LogicType = "Import",
+					Name = System.IO.Path.GetFileName(fileName),
+					DisplayName = System.IO.Path.GetFileName(fileName)
+				};
+
+				HandlerDataHelper.SaveIncomingArgument("File", file, data, throwIfNotExists: false);
+				HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+				HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+				HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportRpaActualEanPc), data, visible: false, throwIfNotExists: false);
+				HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportRpaActualEanPc).Name, data, throwIfNotExists: false);
+				HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(ImportRpaActualEanPc), data, visible: false, throwIfNotExists: false);
+				HandlerDataHelper.SaveIncomingArgument("UniqueFields", new List<String>() { "Name" }, data);
+
+				LoopHandler handler = new LoopHandler()
+				{
+					Id = Guid.NewGuid(),
+					ConfigurationName = "PROCESSING",
+					Description = "Загрузка шаблона из файла " + typeof(RPA).Name,
+					Name = "Module.Host.TPM.Handlers." + handlerName,
+					ExecutionPeriod = null,
+					RunGroup = typeof(PromoSupport).Name,
+					CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+					LastExecutionDate = null,
+					NextExecutionDate = null,
+					ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+					UserId = userId,
+					RoleId = roleId
+				};
+				handler.SetParameterData(data);
+				context.LoopHandlers.Add(handler);
+				context.SaveChanges();
+			}
+		}
+
+		private void CreateRpaActualPluTask(string fileName)
+		{
+			var handlerName = "FullXLSXRpaActualPluImportHandler";
+			UserInfoCore user = authorizationManager.GetCurrentUser();
+			Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
+			RoleInfo role = authorizationManager.GetCurrentRole();
+			Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
+
+			using (DatabaseContext context = new DatabaseContext())
+			{
+				ImportResultFilesModel resiltfile = new ImportResultFilesModel();
+				ImportResultModel resultmodel = new ImportResultModel();
+
+				HandlerData data = new HandlerData();
+				FileModel file = new FileModel()
+				{
+					LogicType = "Import",
+					Name = System.IO.Path.GetFileName(fileName),
+					DisplayName = System.IO.Path.GetFileName(fileName)
+				};
+
+				HandlerDataHelper.SaveIncomingArgument("File", file, data, throwIfNotExists: false);
+				HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+				HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+				HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportRpaActualPlu), data, visible: false, throwIfNotExists: false);
+				HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportRpaActualPlu).Name, data, throwIfNotExists: false);
+				HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(ImportRpaActualPlu), data, visible: false, throwIfNotExists: false);
+				HandlerDataHelper.SaveIncomingArgument("UniqueFields", new List<String>() { "Name" }, data);
 
 				LoopHandler handler = new LoopHandler()
 				{

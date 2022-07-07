@@ -449,4 +449,20 @@ namespace Module.Host.TPM.Handlers
             return new FullXLSXRPANonPromoSupportImportAction(settings, rpaId);
         }
     }
+
+    public class FullXLSXRPAActualEANPCImportHandler: FullXLSXImportHandler
+    {
+        protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
+        {
+            return new FullXLSXRPAActualEanPcImportAction(settings);
+        }
+    }
+
+    public class FullXLSXRpaActualPluImportHandler: FullXLSXImportHandler
+    {
+        protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
+        {
+            return new FullXLSXRpaActualPluImportAction(settings);
+        }
+    }
 }

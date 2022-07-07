@@ -2907,6 +2907,8 @@
     <Compile Include="Model\Import\ImportBudget.cs" />
     <Compile Include="Model\Import\ImportBrandTech.cs" />
     <Compile Include="Model\Import\ImportRollingVolume.cs" />
+    <Compile Include="Model\Import\ImportRpaActualEanPc.cs" />
+    <Compile Include="Model\Import\ImportRpaActualPlu.cs" />
     <Compile Include="Model\Import\ImportRPAEvent.cs" />
     <Compile Include="Model\Import\ImportTechnology.cs" />
     <Compile Include="Model\Import\ImportBrand.cs" />
