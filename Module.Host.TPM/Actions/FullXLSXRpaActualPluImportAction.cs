@@ -361,6 +361,7 @@ namespace Module.Host.TPM.Actions
             {
                 errors.Add("Promo not found or deleted");
                 isSuitable = false;
+                return isSuitable;
             }
             if (!existingClientTreeIds.Any(x => x.ObjectId == promo.ClientTree.ObjectId))
             {
@@ -372,13 +373,13 @@ namespace Module.Host.TPM.Actions
                 errors.Add("EAN_PC not found for PLU");
                 isSuitable = false;
             }
-            var promoProduct = context.Set<PromoProduct>().FirstOrDefault(x => x.PromoId == typedRec.PromoId && !x.Disabled);
+            var promoProduct = context.Set<PromoProduct>().FirstOrDefault(x => x.PromoId == promo.Id && !x.Disabled);
             if (promoProduct == null)
             {
                 errors.Add("PromoProduct not found");
                 isSuitable = false;
             }
-            var promoStatus = context.Set<PromoStatus>().FirstOrDefault(x => x.SystemName == typedRec.StatusName && !x.Disabled);
+            var promoStatus = context.Set<PromoStatus>().FirstOrDefault(x => x.SystemName == promo.PromoStatus.SystemName && !x.Disabled);
             if (promoStatus.SystemName != "Finished")
             {
                 errors.Add("Invalid promo status");
@@ -417,10 +418,12 @@ namespace Module.Host.TPM.Actions
                 {
                     if (!promo.InOut.HasValue || !promo.InOut.Value)
                     {
-                        foreach (PromoProduct newRecord in sourceRecords)
+                        foreach (ImportRpaActualPlu itemRecord in sourceRecords)
                         {
+                            PromoProduct promoProduct = context.Set<PromoProduct>()
+                                .FirstOrDefault(pp => pp.PromoId == itemRecord.PromoId);
                             // выбор продуктов с ненулевым BaseLine (проверка Baseline ниже)
-                            var productsWithRealBaseline = query.Where(x => x.EAN_PC == newRecord.EAN_PC && x.PromoId == promo.Id && !x.Disabled).ToList();
+                            var productsWithRealBaseline = query.Where(x => x.EAN_PC == promoProduct.EAN_PC && x.PromoId == promo.Id && !x.Disabled).ToList();
 
                             if (productsWithRealBaseline != null && productsWithRealBaseline.Count() > 0)
                             {
@@ -431,18 +434,18 @@ namespace Module.Host.TPM.Actions
                                 bool isRealBaselineExist = false;
                                 foreach (var p in productsWithRealBaseline)
                                 {
-                                    var newRecordClone = ClonePromoProduct(newRecord);
+                                    var newRecordClone = ClonePromoProduct(promoProduct);
                                     p.ActualProductUOM = "PC";
                                     // проверка Baseline (исправляет ActualProductPCQty)
                                     if (p.PlanProductBaselineLSV != null && p.PlanProductBaselineLSV != 0)
                                     {
                                         if (p.PlanProductIncrementalLSV != 0 && sumBaseline != 0)
                                         {
-                                            p.ActualProductPCQty = (int?)(newRecord.ActualProductPCQty * ((decimal?)sumBaseline / (decimal?)p.PlanProductBaselineLSV));
+                                            p.ActualProductPCQty = (int?)(promoProduct.ActualProductPCQty * ((decimal?)sumBaseline / (decimal?)p.PlanProductBaselineLSV));
                                         }
                                         else
                                         {
-                                            p.ActualProductPCQty = newRecord.ActualProductPCQty;
+                                            p.ActualProductPCQty = promoProduct.ActualProductPCQty;
                                         }
                                         isRealBaselineExist = true;
                                     }
@@ -458,7 +461,7 @@ namespace Module.Host.TPM.Actions
 
                                 if (isRealBaselineExist)
                                 {
-                                    var differenceActualProductPCQty = newRecord.ActualProductPCQty - promoProductsToUpdate.Sum(x => x.ActualProductPCQty);
+                                    var differenceActualProductPCQty = promoProduct.ActualProductPCQty - promoProductsToUpdate.Sum(x => x.ActualProductPCQty);
                                     if (differenceActualProductPCQty.HasValue && differenceActualProductPCQty != 0)
                                     {
                                         var firstRealBaselineItem = promoProductsToUpdate.FirstOrDefault(x => x.ActualProductPCQty != null);
@@ -470,13 +473,13 @@ namespace Module.Host.TPM.Actions
                                     //TODO: вывод предупреждения
                                     //если не найдено продуктов с ненулевым basline, просто записываем импортируемое количество в первый попавшийся продукт, чтобы сохранилось
                                     warningRecords.Add(new Tuple<IEntity<Guid>, string>(promo, "Plan Product Base Line LSV is 0"));
-                                    PromoProduct oldRecord = query.FirstOrDefault(x => x.EAN_PC == newRecord.EAN_PC && x.PromoId == promo.Id && !x.Disabled);
+                                    PromoProduct oldRecord = query.FirstOrDefault(x => x.EAN_PC == promoProduct.EAN_PC && x.PromoId == promo.Id && !x.Disabled);
                                     if (oldRecord != null)
                                     {
                                         oldRecord.ActualProductUOM = "PC";
-                                        oldRecord.ActualProductPCQty = newRecord.ActualProductPCQty;
+                                        oldRecord.ActualProductPCQty = promoProduct.ActualProductPCQty;
                                         toUpdate.Add(oldRecord);
-                                        toHisUpdate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(oldRecord, newRecord));
+                                        toHisUpdate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(oldRecord, promoProduct));
                                     }
                                 }
 
@@ -487,10 +490,12 @@ namespace Module.Host.TPM.Actions
                     }
                     else
                     {
-                        foreach (PromoProduct newRecord in sourceRecords)
+                        foreach (ImportRpaActualPlu itemRecord in sourceRecords)
                         {
+                            PromoProduct promoProduct = context.Set<PromoProduct>()
+                                .FirstOrDefault(pp => pp.PromoId == itemRecord.PromoId);
                             //в случае inout промо выбираем продукты с ненулевой ценой PlanProductPCPrice, которая подбирается из справочника IncrementalPromo
-                            var productsWithRealPCPrice = query.Where(x => x.EAN_PC == newRecord.EAN_PC && x.PromoId == promo.Id && !x.Disabled).ToList();
+                            var productsWithRealPCPrice = query.Where(x => x.EAN_PC == promoProduct.EAN_PC && x.PromoId == promo.Id && !x.Disabled).ToList();
 
                             if (productsWithRealPCPrice != null && productsWithRealPCPrice.Count() > 0)
                             {
@@ -501,18 +506,18 @@ namespace Module.Host.TPM.Actions
                                 bool isRealPCPriceExist = false;
                                 foreach (var p in productsWithRealPCPrice)
                                 {
-                                    var newRecordClone = ClonePromoProduct(newRecord);
+                                    var newRecordClone = ClonePromoProduct(promoProduct);
                                     p.ActualProductUOM = "PC";
                                     // проверка Price (исправляет ActualProductPCQty)
                                     if (p.PlanProductPCPrice != null && p.PlanProductPCPrice != 0)
                                     {
                                         if (p.PlanProductIncrementalLSV != 0 && sumIncremental != 0)
                                         {
-                                            p.ActualProductPCQty = (int?)(newRecord.ActualProductPCQty * ((decimal?)sumIncremental / (decimal?)p.PlanProductIncrementalLSV));
+                                            p.ActualProductPCQty = (int?)(promoProduct.ActualProductPCQty * ((decimal?)sumIncremental / (decimal?)p.PlanProductIncrementalLSV));
                                         }
                                         else
                                         {
-                                            p.ActualProductPCQty = newRecord.ActualProductPCQty;
+                                            p.ActualProductPCQty = promoProduct.ActualProductPCQty;
                                         }
                                         isRealPCPriceExist = true;
                                     }
@@ -528,7 +533,7 @@ namespace Module.Host.TPM.Actions
 
                                 if (isRealPCPriceExist)
                                 {
-                                    var differenceActualProductPCQty = newRecord.ActualProductPCQty - promoProductsToUpdate.Sum(x => x.ActualProductPCQty);
+                                    var differenceActualProductPCQty = promoProduct.ActualProductPCQty - promoProductsToUpdate.Sum(x => x.ActualProductPCQty);
                                     if (differenceActualProductPCQty.HasValue && differenceActualProductPCQty != 0)
                                     {
                                         var firstRealPriceItem = promoProductsToUpdate.FirstOrDefault(x => x.ActualProductPCQty != null);
@@ -540,11 +545,11 @@ namespace Module.Host.TPM.Actions
                                     //TODO: вывод предупреждения
                                     //если не найдено продуктов с ненулевым basline, просто записываем импортируемое количество в первый попавшийся продукт, чтобы сохранилось
                                     warningRecords.Add(new Tuple<IEntity<Guid>, string>(promo, "Plan Product Base Line LSV is 0"));
-                                    PromoProduct oldRecord = query.FirstOrDefault(x => x.EAN_PC == newRecord.EAN_PC && x.PromoId == promo.Id && !x.Disabled);
+                                    PromoProduct oldRecord = query.FirstOrDefault(x => x.EAN_PC == promoProduct.EAN_PC && x.PromoId == promo.Id && !x.Disabled);
                                     if (oldRecord != null)
                                     {
                                         oldRecord.ActualProductUOM = "PC";
-                                        oldRecord.ActualProductPCQty = newRecord.ActualProductPCQty;
+                                        oldRecord.ActualProductPCQty = promoProduct.ActualProductPCQty;
                                         toUpdate.Add(oldRecord);
                                     }
                                 }

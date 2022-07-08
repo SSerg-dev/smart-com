@@ -389,6 +389,7 @@ namespace Module.Host.TPM.Actions
             {
                 errors.Add("PromoSupport not found or deleted");
                 isSuitable = false;
+                return isSuitable;
             }
             if (!existingClientTreeIds.Any(x => x.ObjectId == promoSupport.ClientTree.ObjectId))
             {

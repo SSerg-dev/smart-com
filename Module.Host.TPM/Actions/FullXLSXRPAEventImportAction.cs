@@ -7,6 +7,7 @@ using Interfaces.Implementation.Import.FullImport;
 using Looper.Core;
 using Looper.Parameters;
 using Module.Frontend.TPM.Util;
+using Module.Host.TPM.Util;
 using Module.Persist.TPM.CalculatePromoParametersModule;
 using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.Import;
@@ -139,7 +140,7 @@ namespace Module.Host.TPM.Actions
             IList<Tuple<IEntity<Guid>, string>> validateErrors;
             logger.Trace("before parse file");
 
-            IList<IEntity<Guid>> records = ImportUtility.ParseXLSXFile(importFilePath, null, builder, validator, Separator, Quote, HasHeader, out sourceRecordCount, out errors, out buildErrors, out validateErrors);
+            IList<IEntity<Guid>> records = ImportUtilityTPM.ParseXLSXFile(importFilePath, null, builder, validator, Separator, Quote, HasHeader, out sourceRecordCount, out errors, out buildErrors, out validateErrors);
 
             logger.Trace("after parse file");
 
@@ -303,6 +304,7 @@ namespace Module.Host.TPM.Actions
             {
                 errors.Add("Event not found");
                 isSuitable = false;
+                return isSuitable;
             }
             else
             {
@@ -311,6 +313,7 @@ namespace Module.Host.TPM.Actions
                 {
                     errors.Add("Promo not found");
                     isSuitable = false;
+                    return isSuitable;
                 }
                 if (!existingClientTreeIds.Any(x => x.ObjectId == promo.ClientTreeId))
                 {
@@ -339,7 +342,7 @@ namespace Module.Host.TPM.Actions
             errors = new List<string>();
 
             var sourceTemplateRecords = templateRecordIds
-                .Select(sr => (sr as ImportRPAEvent));
+                .Select(sr => sr as ImportRPAEvent);
 
             bool isDuplicateRecords = sourceTemplateRecords
                 .GroupBy(jps => new
@@ -354,13 +357,13 @@ namespace Module.Host.TPM.Actions
                 errors.Add("The Promo - Event pair occurs more than once");
             }
 
-            distinctRecordIds = (IList<IEntity<Guid>>)sourceTemplateRecords
+            distinctRecordIds = sourceTemplateRecords
                 .GroupBy(jps => new
                 {
                     jps.PromoNumber,
                     jps.EventName
                 })
-                .Select(jps => jps.First())
+                .Select(jps => jps.First() as IEntity<Guid>)
                 .ToList();
 
         }
