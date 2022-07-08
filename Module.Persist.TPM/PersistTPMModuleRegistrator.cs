@@ -460,6 +460,10 @@ namespace Module.Persist.TPM
             builder.EntitySet<Promo>("DeletedPromoes").HasManyBinding(e => e.PromoStatusChanges, "PromoStatusChanges");
             builder.EntitySet<Promo>("Promoes").HasManyBinding(e => e.PromoSupportPromoes, "PromoSupportPromoes");
             builder.EntitySet<Promo>("DeletedPromoes").HasManyBinding(e => e.PromoSupportPromoes, "PromoSupportPromoes");
+            builder.EntitySet<Promo>("Promoes").HasManyBinding(e => e.PromoProductTrees, "PromoProductTrees");
+            builder.EntitySet<Promo>("DeletedPromoes").HasManyBinding(e => e.PromoProductTrees, "PromoProductTrees");
+            builder.EntitySet<Promo>("Promoes").HasManyBinding(e => e.PromoUpliftFailIncidents, "PromoUpliftFailIncidents");
+            builder.EntitySet<Promo>("DeletedPromoes").HasManyBinding(e => e.PromoUpliftFailIncidents, "PromoUpliftFailIncidents");
             builder.Entity<Promo>().Collection.Action("ExportXLSX");
             builder.Entity<Promo>().Collection.Action("FullImportXLSX");
             builder.Entity<Promo>().Collection.Action("DeclinePromo");
@@ -960,6 +964,10 @@ namespace Module.Persist.TPM
             builder.Entity<AssortmentMatrix>().HasOptional(n => n.Plu, (n, p) => n.Id == p.Id);
 
             builder.Entity<PromoProductTree>().HasRequired(n => n.Promo, (n, p) => n.PromoId == p.Id);
+            builder.EntitySet<PromoProductTree>("PromoProductTrees").HasRequiredBinding(g => g.Promo, "Promoes");
+
+            builder.Entity<PromoUpliftFailIncident>().HasRequired(n => n.Promo, (n, p) => n.PromoId == p.Id);
+            builder.EntitySet<PromoUpliftFailIncident>("PromoUpliftFailIncidents").HasRequiredBinding(g => g.Promo, "Promoes");
 
             builder.EntitySet<PlanIncrementalReport>("PlanIncrementalReports");
             builder.Entity<PlanIncrementalReport>().Collection.Action("ExportXLSX");
