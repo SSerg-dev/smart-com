@@ -756,6 +756,7 @@
     <Content Include="Client\app\view\core\main\RecentMenuItems.js" />
     <Content Include="Client\app\view\core\main\System.js" />
     <Content Include="Client\app\view\core\main\TopToolbar.js" />
+    <Content Include="Client\app\view\core\modeswitcher\ModeSwitcher.js" />
     <Content Include="Client\app\view\core\role\DeletedRole.js" />
     <Content Include="Client\app\view\core\role\HistoricalRole.js" />
     <Content Include="Client\app\view\core\role\HistoricalRoleEditor.js" />
