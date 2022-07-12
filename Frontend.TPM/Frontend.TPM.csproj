@@ -569,6 +569,7 @@
     <Content Include="Client\app\model\core\role\HistoricalRole.js" />
     <Content Include="Client\app\model\core\role\Role.js" />
     <Content Include="Client\app\model\core\security\Role.js" />
+    <Content Include="Client\app\model\core\settinglocal\SettingLocal.js" />
     <Content Include="Client\app\model\core\setting\HistoricalSetting.js" />
     <Content Include="Client\app\model\core\setting\Setting.js" />
     <Content Include="Client\app\model\core\timezone\TimezoneModel.js" />
@@ -588,6 +589,7 @@
     <Content Include="Client\app\store\core\OperationTypeStore.js" />
     <Content Include="Client\app\store\core\recipient\RecipientTypeStore.js" />
     <Content Include="Client\app\store\core\security\CurrentUserRoles.js" />
+    <Content Include="Client\app\store\core\settinglocal\SettingLocalStore.js" />
     <Content Include="Client\app\store\core\SimpleStore.js" />
     <Content Include="Client\app\store\core\timezone\TimezoneDefaultStore.js" />
     <Content Include="Client\app\util\core\Array.js" />

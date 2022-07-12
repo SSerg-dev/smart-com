@@ -5,21 +5,29 @@
         tag: 'input',
         type: 'checkbox',
         cls: 'modelswitchercheckbox',
-        name: 'topping'
+        name: 'topping',
+        id: 'modelswitchercheckboxid'
     },
     listeners: {
         afterrender: function (inputCmp) {
-            
+            var settingStore = Ext.create('App.store.core.settinglocal.SettingLocalStore');
+            settingStore.load();
+            var mode = settingStore.findRecord('name', 'mode');
+            if (mode.data.value == 1) {
+                inputCmp.el.dom.checked = true;
+            }
             inputCmp.mon(inputCmp.el, 'change', function () {
-                debugger;
-                var setting = App.util.core.Setting;
+                var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+                settingStore.load();
+                var mode = settingStore.findRecord('name', 'mode');
                 if (inputCmp.el.dom.checked) {
-                    setting.mode = 1;
+                    mode.set('value', 1);
                     //console.log("Mode RS");
                 } else {
-                    setting.mode = 0;
+                    mode.set('value', 0);
                     //console.log("Mode Standart");
                 }
+                settingStore.sync();
                 //alert('click!')
             }, this);
         }

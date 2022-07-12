@@ -68,6 +68,9 @@ Ext.define('App.controller.core.security.Security', {
                 //},
                 '#securityuserpasswindow #ok': {
                     click: this.onOkChangeUserPassClick
+                },
+                'toptoolbar': {
+                    afterrender: this.afterrenderToolBar
                 }
             },
             app: {
@@ -244,6 +247,14 @@ Ext.define('App.controller.core.security.Security', {
                 window.setLoading(false);
             }
         });
+    },
+    afterrenderToolBar: function (toolbar) {
+        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+        settingStore.load();
+        if (settingStore.data.length == 0) {
+            settingStore.add({ name: 'mode', value: 0 });
+            settingStore.sync();
+        }
     }
 
 });
