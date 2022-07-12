@@ -646,8 +646,8 @@ namespace Module.Host.TPM.Actions
                     RoleId = RoleId
                 };
 
-                BlockedPromo bp = context.Set<BlockedPromo>().First(n => n.PromoId == promoId && !n.Disabled);
-                bp.HandlerId = handler.Id;
+                //BlockedPromo bp = context.Set<BlockedPromo>().First(n => n.PromoId == promoId && !n.Disabled);
+                //bp.HandlerId = handler.Id;
 
                 handler.SetParameterData(data);
                 context.LoopHandlers.Add(handler);
