@@ -307,19 +307,21 @@ namespace Module.Host.TPM.Actions
                     ps.PromoStatus.SystemName
                 });
 
-            foreach(var promo in shortPromoes)
-            {
-                var products = context.Set<PromoProduct>().Include("Plu").Where(n => n.PromoId == promo.Id && !n.Disabled).ToList();
-                foreach (ImportRpaActualPlu item in sourceTemplateRecords)
-                {
-                    var found = products.FirstOrDefault(x => x.Plu != null && x.Plu.PluCode == item.PluImport);
-                    item.Plu = new PromoProduct2Plu() { PluCode = item.PluImport };
-                    if (found != null)
-                    {
-                        item.EAN_PC = found.EAN_PC;
-                    }
-                }
-            }
+
+
+            //foreach(var promo in shortPromoes)
+            //{
+            //    var products = context.Set<PromoProduct>().Include("Plu").Where(n => n.PromoId == promo.Id && !n.Disabled).ToList();
+            //    foreach (ImportRpaActualPlu item in sourceTemplateRecords)
+            //    {
+            //        var found = products.FirstOrDefault(x => x.Plu != null && x.Plu.PluCode == item.PluImport);
+            //        item.Plu = new PromoProduct2Plu() { PluCode = item.PluImport };
+            //        if (found != null)
+            //        {
+            //            item.EAN_PC = found.EAN_PC;
+            //        }
+            //    }
+            //}
 
             var joinPromoSupports = sourceTemplateRecords
                 .Join(shortPromoes,
@@ -414,7 +416,7 @@ namespace Module.Host.TPM.Actions
 
 
             ScriptGenerator generator = GetScriptGenerator();
-            IList<PromoProduct> query = GetQuery(context).ToList();
+            var query = GetQuery(context);
 
             List<PromoProduct> toUpdate = new List<PromoProduct>();
             List<Tuple<IEntity<Guid>, IEntity<Guid>>> toHisUpdate = new List<Tuple<IEntity<Guid>, IEntity<Guid>>>();
@@ -503,7 +505,7 @@ namespace Module.Host.TPM.Actions
                                 .FirstOrDefault(pp => pp.PromoId == itemRecord.PromoId);
                             promoProduct.ActualProductPCQty = itemRecord.ActualProductPcQuantityImport;
                             //в случае inout промо выбираем продукты с ненулевой ценой PlanProductPCPrice, которая подбирается из справочника IncrementalPromo
-                            var productsWithRealPCPrice = query.Where(x => x.EAN_PC == promoProduct.EAN_PC && x.PromoId == promo.Id && !x.Disabled).ToList();
+                            var productsWithRealPCPrice = query.Where(x => x.EAN_PC == itemRecord.EAN_PC && x.PromoId == promo.Id && !x.Disabled).ToList();
 
                             if (productsWithRealPCPrice != null && productsWithRealPCPrice.Count() > 0)
                             {
@@ -553,7 +555,7 @@ namespace Module.Host.TPM.Actions
                                     //TODO: вывод предупреждения
                                     //если не найдено продуктов с ненулевым basline, просто записываем импортируемое количество в первый попавшийся продукт, чтобы сохранилось
                                     warningRecords.Add(new Tuple<IEntity<Guid>, string>(promo, "Plan Product Base Line LSV is 0"));
-                                    PromoProduct oldRecord = query.FirstOrDefault(x => x.EAN_PC == promoProduct.EAN_PC && x.PromoId == promo.Id && !x.Disabled);
+                                    PromoProduct oldRecord = query.FirstOrDefault(x => x.EAN_PC == itemRecord.EAN_PC && x.PromoId == promo.Id && !x.Disabled);
                                     if (oldRecord != null)
                                     {
                                         oldRecord.ActualProductUOM = "PC";
