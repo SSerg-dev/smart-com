@@ -356,6 +356,7 @@ namespace Module.Host.TPM.Actions
             bool isSuitable = true;
 
             ImportRpaActualPlu typedRec = (ImportRpaActualPlu)rec;
+
             var promo = context.Set<Promo>().FirstOrDefault(x => x.Number == typedRec.PromoNumberImport && !x.Disabled);
             if (promo == null)
             {
@@ -363,16 +364,21 @@ namespace Module.Host.TPM.Actions
                 isSuitable = false;
                 return isSuitable;
             }
+
+            var eanPc = context.Set<PLUDictionary>().FirstOrDefault(x => x.PluCode == typedRec.PluImport && x.ObjectId == promo.ClientTree.ObjectId)?.EAN_PC;
+
             if (!existingClientTreeIds.Any(x => x.ObjectId == promo.ClientTree.ObjectId))
             {
                 errors.Add("No access to the client");
                 isSuitable = false;
             }
-            if(String.IsNullOrEmpty(typedRec.EAN_PC))
+            if (String.IsNullOrEmpty(eanPc))
             {
                 errors.Add("EAN_PC not found for PLU");
                 isSuitable = false;
+                return isSuitable;
             }
+            typedRec.EAN_PC = eanPc;
             var promoProduct = context.Set<PromoProduct>().FirstOrDefault(x => x.PromoId == promo.Id && !x.Disabled);
             if (promoProduct == null)
             {
