@@ -13,6 +13,8 @@ Ext.application({
         this.setGlobalHandlers();
         //Ext.widget('loginwindow').show();
         //Ext.Date.defaultFormat = 'd.m.Y';
+        document.getElementById('theme1').disabled = false;
+        document.getElementById('theme2').disabled = true;
         Ext.create('App.view.core.Viewport');
         KeysMngr.bindKeys();
         App.UserInfo.setCurrentRole();
