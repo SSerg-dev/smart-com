@@ -83,6 +83,7 @@
     "../Frontend.TPM/Client/app/util/core/UploadFileFormatVType.js",
     "../Frontend.TPM/Client/app/util/core/UserInfo.js",
     "../Frontend.TPM/Client/app/util/core/Util.js",
+    "../Frontend.TPM/Client/app/util/core/Setting.js",
     "../Frontend.TPM/Client/app/extfilter/**/*.js",
     "../Frontend.TPM/Client/app/model/core/ImportModel.js",
     "../Frontend.TPM/Client/app/model/**/*.js",

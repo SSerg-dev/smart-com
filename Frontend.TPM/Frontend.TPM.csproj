@@ -608,6 +608,7 @@
     <Content Include="Client\app\util\core\ResourceManager.js" />
     <Content Include="Client\app\util\core\SecurableActions.js" />
     <Content Include="Client\app\util\core\Selectable.js" />
+    <Content Include="Client\app\util\core\Setting.js" />
     <Content Include="Client\app\util\core\ShareTemplateHelper.js" />
     <Content Include="Client\app\util\core\System.js" />
     <Content Include="Client\app\util\core\TimeZoneHelper.js" />

@@ -21,6 +21,11 @@
         {
             xtype: 'modelswitcher',
         },
+        {
+            xtype: 'label',
+            text: 'Rolling Scenario mode',
+            margin: '0 0 0 5'
+        },
         '->',
         {
             xtype: 'securitybutton',
