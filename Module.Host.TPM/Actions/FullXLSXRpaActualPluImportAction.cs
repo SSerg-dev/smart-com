@@ -398,11 +398,11 @@ namespace Module.Host.TPM.Actions
         private int InsertDataToDatabase(IEnumerable<IEntity<Guid>> sourceRecords, DatabaseContext context)
         {
 
-            var sourcePromo = sourceRecords
+            var sourcePromoProducts = sourceRecords
                  .Select(sr => sr as ImportRpaActualPlu)
                  .ToList();
 
-            var sourcePromoIds = sourcePromo
+            var sourcePromoIds = sourcePromoProducts
                 .Distinct()
                 .Select(ps => ps.PromoId)
                 .ToList();
@@ -424,7 +424,7 @@ namespace Module.Host.TPM.Actions
                 {
                     if (!promo.InOut.HasValue || !promo.InOut.Value)
                     {
-                        foreach (ImportRpaActualPlu itemRecord in sourceRecords)
+                        foreach (ImportRpaActualPlu itemRecord in sourcePromoProducts.Where(x => x.PromoId == promo.Id))
                         {
                             PromoProduct promoProduct = context.Set<PromoProduct>()
                                 .FirstOrDefault(pp => pp.PromoId == itemRecord.PromoId);
@@ -497,7 +497,7 @@ namespace Module.Host.TPM.Actions
                     }
                     else
                     {
-                        foreach (ImportRpaActualPlu itemRecord in sourceRecords)
+                        foreach (ImportRpaActualPlu itemRecord in sourcePromoProducts)
                         {
                             PromoProduct promoProduct = context.Set<PromoProduct>()
                                 .FirstOrDefault(pp => pp.PromoId == itemRecord.PromoId);
