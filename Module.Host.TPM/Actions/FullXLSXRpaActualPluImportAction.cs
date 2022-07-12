@@ -429,7 +429,7 @@ namespace Module.Host.TPM.Actions
                         foreach (ImportRpaActualPlu itemRecord in sourcePromoProducts.Where(x => x.PromoId == promo.Id))
                         {
                             PromoProduct promoProduct = context.Set<PromoProduct>()
-                                .FirstOrDefault(pp => pp.PromoId == itemRecord.PromoId);
+                                .FirstOrDefault(pp => pp.PromoId == itemRecord.PromoId && pp.EAN_PC == itemRecord.EAN_PC && !pp.Disabled);
                             promoProduct.ActualProductPCQty = itemRecord.ActualProductPcQuantityImport;
                             // выбор продуктов с ненулевым BaseLine (проверка Baseline ниже)
                             var productsWithRealBaseline = query.Where(x => x.EAN_PC == promoProduct.EAN_PC && x.PromoId == promo.Id && !x.Disabled).ToList();
