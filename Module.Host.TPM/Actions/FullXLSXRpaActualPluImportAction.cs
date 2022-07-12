@@ -422,6 +422,7 @@ namespace Module.Host.TPM.Actions
                         {
                             PromoProduct promoProduct = context.Set<PromoProduct>()
                                 .FirstOrDefault(pp => pp.PromoId == itemRecord.PromoId);
+                            promoProduct.ActualProductPCQty = itemRecord.ActualProductPcQuantityImport;
                             // выбор продуктов с ненулевым BaseLine (проверка Baseline ниже)
                             var productsWithRealBaseline = query.Where(x => x.EAN_PC == promoProduct.EAN_PC && x.PromoId == promo.Id && !x.Disabled).ToList();
 
@@ -494,6 +495,7 @@ namespace Module.Host.TPM.Actions
                         {
                             PromoProduct promoProduct = context.Set<PromoProduct>()
                                 .FirstOrDefault(pp => pp.PromoId == itemRecord.PromoId);
+                            promoProduct.ActualProductPCQty = itemRecord.ActualProductPcQuantityImport;
                             //в случае inout промо выбираем продукты с ненулевой ценой PlanProductPCPrice, которая подбирается из справочника IncrementalPromo
                             var productsWithRealPCPrice = query.Where(x => x.EAN_PC == promoProduct.EAN_PC && x.PromoId == promo.Id && !x.Disabled).ToList();
 

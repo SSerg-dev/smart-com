@@ -393,11 +393,11 @@ namespace Module.Host.TPM.Actions
         private int InsertDataToDatabase(IEnumerable<IEntity<Guid>> sourceRecords, DatabaseContext context)
         {
 
-            var sourcePromo = sourceRecords
+            var sourcePromoProducts = sourceRecords
                  .Select(sr => sr as ImportRpaActualEanPc)
                  .ToList();
 
-            var sourcePromoIds = sourcePromo
+            var sourcePromoIds = sourcePromoProducts
                 .Distinct()
                 .Select(ps => ps.PromoId)
                 .ToList();
@@ -419,12 +419,12 @@ namespace Module.Host.TPM.Actions
                 {
                     if (!promo.InOut.HasValue || !promo.InOut.Value)
                     {
-                        foreach (ImportRpaActualEanPc itemRecord in sourceRecords)
+                        foreach (ImportRpaActualEanPc itemRecord in sourcePromoProducts.Where(x => x.PromoId == promo.Id))
                         {
-                            PromoProduct promoProduct = context.Set<PromoProduct>()
-                                .FirstOrDefault(pp => pp.PromoId == itemRecord.PromoId);
+                            var promoProduct = context.Set<PromoProduct>().AsNoTracking().FirstOrDefault(x => x.PromoId == promo.Id && x.EAN_PC == itemRecord.EanPcImport);
+                            promoProduct.ActualProductPCQty = itemRecord.ActualProductPcQuantityImport;
                             // выбор продуктов с ненулевым BaseLine (проверка Baseline ниже)
-                            var productsWithRealBaseline = query.Where(x => x.EAN_PC == promoProduct.EAN_PC && x.PromoId == promo.Id && !x.Disabled).ToList();
+                            var productsWithRealBaseline = query.Where(x => x.EAN_PC == itemRecord.EanPcImport && x.PromoId == promo.Id && !x.Disabled).ToList();
 
                             if (productsWithRealBaseline != null && productsWithRealBaseline.Count() > 0)
                             {
@@ -495,6 +495,8 @@ namespace Module.Host.TPM.Actions
                         {
                             PromoProduct promoProduct = context.Set<PromoProduct>()
                                 .FirstOrDefault(pp => pp.PromoId == itemRecord.PromoId);
+                            promoProduct.ActualProductPCQty = itemRecord.ActualProductPcQuantityImport;
+
                             //в случае inout промо выбираем продукты с ненулевой ценой PlanProductPCPrice, которая подбирается из справочника IncrementalPromo
                             var productsWithRealPCPrice = query.Where(x => x.EAN_PC == promoProduct.EAN_PC && x.PromoId == promo.Id && !x.Disabled).ToList();
 
