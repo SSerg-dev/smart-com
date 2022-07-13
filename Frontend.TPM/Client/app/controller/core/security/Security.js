@@ -255,6 +255,8 @@ Ext.define('App.controller.core.security.Security', {
             settingStore.add({ name: 'mode', value: 0 });
             settingStore.sync();
         }
+    },
+    changeMode: function (mode) {
+        debugger;
     }
-
 });
