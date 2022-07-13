@@ -177,7 +177,7 @@
         'MailNotificationSettingItem': 'Настройки почтовых уведомлений',
         'RPASettingItem': 'Настройки RPA',
         'RPAItem': 'RPA',
-        'SystemDirectories': 'Системные справочники'
+        'SystemDirectories': 'Системные справочники',
     },
 
     'compositePanelTitles': {

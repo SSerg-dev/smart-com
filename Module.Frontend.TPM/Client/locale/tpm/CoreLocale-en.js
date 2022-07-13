@@ -218,7 +218,8 @@
         'SubscriptionItem': 'Subscriptions',
         'SystemMenu': 'Administration',
         'AttendanceType': 'Attendance Types',
-        'ModuleItem': 'Modules'
+        'ModuleItem': 'Modules',
+        'RSmode': 'RS'
     },
 
     'compositePanelTitles': {

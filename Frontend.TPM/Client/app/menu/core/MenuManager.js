@@ -32,7 +32,7 @@
     },
 
     getAvailableMenu: function (items) {
-        function reducer(result, item) {
+        function reducer(result, item) {            
             if (item.hasOwnProperty('children')) {
                 var children = this.getAvailableMenu(item.children);
 
@@ -52,6 +52,13 @@
     },
 
     isAvailable: function (config) {
+        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+        var mode = settingStore.findRecord('name', 'mode');
+        if (mode) {
+            if (mode.data.value == 0 && config.widget == 'rsmode') {
+                return false;
+            }
+        }
         var hasValidRolesProperty = config.hasOwnProperty('roles') && Ext.isArray(config.roles);
 
         if (!hasValidRolesProperty) {
@@ -112,6 +119,18 @@
         return this.currentMenu;
     },
 
+    refreshCurrentMenu: function () {
+        if (this.menuConfig) {
+            var availableMenuConfig = this.getAvailableMenu(this.menuConfig),
+                oldMenu = this.currentMenu;
+            this.currentMenu = this.buildMenu(availableMenuConfig);
+            this.fireEvent('menuchange', this, oldMenu, this.currentMenu);
+        }
+        var menuSearch = Ext.ComponentQuery.query('#menusearchfield')[0];
+        menuSearch.suspendEvents();
+        menuSearch.setValue('');
+        menuSearch.resumeEvents();
+    },
     // Совершает обход дерева меню и вызывает callback для каждого узла.
     menuTraversal: function (callback, scope, node) {
         node = node || this.getCurrentMenu();

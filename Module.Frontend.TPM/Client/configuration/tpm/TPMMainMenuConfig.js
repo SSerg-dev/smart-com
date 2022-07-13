@@ -105,6 +105,19 @@
 			'CMManager'],
 		widget: 'rpa'
 	}, {
+		text: l10n.ns('core', 'mainmenu').value('RSmode'),
+		tooltip: l10n.ns('core', 'mainmenu').value('RSmode'),
+		scale: 'medium',
+		glyph: 0xf149,
+		id: 'rsmodemenuitem',
+		roles: ['Administrator',
+			'SupportAdministrator',
+			'KeyAccountManager',
+			'DemandPlanning',
+			'DemandFinance',
+			'CMManager'],
+		widget: 'rsmode'
+	}, {
 		text: l10n.ns('tpm', 'mainmenu').value('ClientItem'),
 		tooltip: l10n.ns('tpm', 'mainmenu').value('ClientItem'),
 		scale: 'medium',
