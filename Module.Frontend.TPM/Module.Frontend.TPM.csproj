@@ -991,6 +991,7 @@
     <Content Include="Client\view\tpm\tradeinvestment\ImportTradeInvestmentParamForm.js" />
     <Content Include="Client\view\tpm\userdashboard\UserDashboard.js" />
     <Content Include="Client\view\tpm\userdashboard\UserDashboardPanel.js" />
+    <Content Include="Content\custom-color-scheme-rs-mode.css" />
     <Content Include="Content\custom-color-scheme-scheduler.css" />
     <Content Include="Client\view\tpm\toolbar\nonpromosupport\CustomNonPromoSupportBigToolbar.js" />
     <Content Include="Client\view\tpm\toolbar\nonpromosupport\NonPromoSupportBottomToolbar.js" />
