@@ -450,6 +450,8 @@ namespace Module.Persist.TPM
             builder.EntitySet<Promo>("DeletedPromoes").HasOptionalBinding(e => e.PromoTypes, "PromoTypes");
             builder.EntitySet<Promo>("Promoes").HasOptionalBinding(e => e.MasterPromo, "Promoes");
             builder.EntitySet<Promo>("DeletedPromoes").HasOptionalBinding(e => e.MasterPromo, "DeletedPromoes");
+            builder.EntitySet<Promo>("Promoes").HasOptionalBinding(e => e.RollingScenario, "RollingScenarios");
+            builder.EntitySet<Promo>("DeletedPromoes").HasOptionalBinding(e => e.RollingScenario, "DeletedRollingScenarios");
             builder.EntitySet<Promo>("Promoes").HasManyBinding(e => e.Promoes, "Promoes");
             builder.EntitySet<Promo>("DeletedPromoes").HasManyBinding(e => e.Promoes, "DeletedPromoes");
             builder.EntitySet<Promo>("Promoes").HasManyBinding(e => e.PromoProducts, "PromoProducts");
@@ -1132,9 +1134,12 @@ namespace Module.Persist.TPM
             builder.Entity<RPA>().Collection.Action("SaveRPA");
             builder.Entity<RPA>().Collection.Action("DownloadTemplateXLSX");
 
-            builder.EntitySet<RollingScenario>("RollingScenarios");
             builder.EntitySet<RollingScenario>("RollingScenarios").HasRequiredBinding(e => e.PromoStatus, "PromoStatuss");
-            builder.EntitySet<RollingScenario>("RollingScenarios").HasRequiredBinding(e => e.PromoStatus, "PromoStatuss");
+            builder.EntitySet<RollingScenario>("DeletedRollingScenarios").HasRequiredBinding(e => e.PromoStatus, "PromoStatuss");
+            builder.EntitySet<RollingScenario>("RollingScenarios").HasRequiredBinding(e => e.ClientTree, "ClientTrees");
+            builder.EntitySet<RollingScenario>("DeletedRollingScenarios").HasRequiredBinding(e => e.ClientTree, "ClientTrees");
+            builder.EntitySet<RollingScenario>("RollingScenarios").HasManyBinding(e => e.Promoes, "Promoes");
+            builder.EntitySet<RollingScenario>("DeletedRollingScenarios").HasManyBinding(e => e.Promoes, "Promoes");
         }
 
 

@@ -2896,6 +2896,10 @@
     <Compile Include="Migrations\202207061101557_Add_Mode.Designer.cs">
       <DependentUpon>202207061101557_Add_Mode.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202207181208583_Add_RollingScenario.cs" />
+    <Compile Include="Migrations\202207181208583_Add_RollingScenario.Designer.cs">
+      <DependentUpon>202207181208583_Add_RollingScenario.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -5532,6 +5536,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202207061101557_Add_Mode.resx">
       <DependentUpon>202207061101557_Add_Mode.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202207181208583_Add_RollingScenario.resx">
+      <DependentUpon>202207181208583_Add_RollingScenario.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
