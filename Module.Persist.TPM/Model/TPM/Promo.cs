@@ -475,7 +475,7 @@ namespace Module.Persist.TPM.Model.TPM
                             currentNode = context.Set<ProductTree>().FirstOrDefault(n => n.ObjectId == currentNode.parentId && !n.EndDate.HasValue);
                         }
 
-                        PromoBasicProducts = JsonConvert.SerializeObject(promoBasicProducts);
+                        PromoBasicProducts = JsonConvert.SerializeObject(promoBasicProducts, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore});
                     }
                 }
             }
