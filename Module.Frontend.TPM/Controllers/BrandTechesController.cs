@@ -444,7 +444,7 @@ namespace Module.Frontend.TPM.Controllers
 
                 if (brandTech != null)
                 {
-                    return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, data = JsonConvert.SerializeObject(brandTech) }));
+                    return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, data = JsonConvert.SerializeObject(brandTech, new JsonSerializerSettings {ReferenceLoopHandling = ReferenceLoopHandling.Ignore }) }));
                 }
                 else
                 {

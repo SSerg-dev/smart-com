@@ -543,7 +543,7 @@ namespace Module.Frontend.TPM.Controllers
                 productTree = activeTree.Where(x => x.ObjectId == productTree.parentId).FirstOrDefault();
             }
 
-            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, data = nodes }));
+            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, data = nodes }, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore}));
         }
 
         /// <summary>
