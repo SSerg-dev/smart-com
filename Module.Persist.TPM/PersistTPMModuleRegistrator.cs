@@ -145,6 +145,8 @@ namespace Module.Persist.TPM
             modelBuilder.Entity<CompetitorBrandTech>();
             modelBuilder.Entity<RPASetting>();
             modelBuilder.Entity<RPA>();
+
+            modelBuilder.Entity<RollingScenario>();
         }
 
 
@@ -1129,6 +1131,10 @@ namespace Module.Persist.TPM
             builder.Entity<RPA>().Collection.Action("UploadFile");
             builder.Entity<RPA>().Collection.Action("SaveRPA");
             builder.Entity<RPA>().Collection.Action("DownloadTemplateXLSX");
+
+            builder.EntitySet<RollingScenario>("RollingScenarios");
+            builder.EntitySet<RollingScenario>("RollingScenarios").HasRequiredBinding(e => e.PromoStatus, "PromoStatuss");
+            builder.EntitySet<RollingScenario>("RollingScenarios").HasRequiredBinding(e => e.PromoStatus, "PromoStatuss");
         }
 
 

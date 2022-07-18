@@ -318,4 +318,6 @@
     'tpm.btl.BTLPromo',
     'tpm.btl.DeletedBTL',
     'tpm.btl.HistoricalBTL',
+
+    'tpm.rsmode.RSmode',
 ]);

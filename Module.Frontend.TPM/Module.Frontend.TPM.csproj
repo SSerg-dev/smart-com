@@ -282,6 +282,7 @@
     <Content Include="Client\controller\tpm\ratishopper\HistoricalRATIShopper.js" />
     <Content Include="Client\controller\tpm\clienttreebrandtech\HistoricalClientTreeBrandTech.js" />
     <Content Include="Client\controller\tpm\rollingvolume\RollingVolume.js" />
+    <Content Include="Client\controller\tpm\rsmode\RSmode.js" />
     <Content Include="Client\model\tpm\actualcogstn\ActualCOGSTn.js" />
     <Content Include="Client\model\tpm\actualcogstn\DeletedActualCOGSTn.js" />
     <Content Include="Client\model\tpm\actualcogstn\HistoricalActualCOGSTn.js" />
@@ -403,6 +404,7 @@
     <Compile Include="Controllers\RollingVolumesController.cs" />
     <Compile Include="Controllers\RPAsController.cs" />
     <Compile Include="Controllers\RPASettingsController.cs" />
+    <Compile Include="Controllers\RSViewController.cs" />
     <Compile Include="Model\RPAEventJsonField.cs" />
     <Compile Include="Util\AzureBlobHelperLocal.cs" />
     <Compile Include="Util\IQueryableExtensions.cs" />
@@ -980,6 +982,7 @@
     <Content Include="Client\view\tpm\promo\UserRolePromoEditor.js" />
     <Content Include="Client\view\tpm\rollingvolume\RollingVolume.js" />
     <Content Include="Client\view\tpm\rollingvolume\RollingVolumeEditor.js" />
+    <Content Include="Client\view\tpm\rsmode\RSmode.js" />
     <Content Include="Client\view\tpm\schedule\ClientPromoTypeFilter.js" />
     <Content Include="Client\view\tpm\schedule\ScheduleType.js" />
     <Content Include="Client\view\tpm\schedule\SelectBudgetYearWindow.js" />
