@@ -305,7 +305,7 @@ namespace Module.Frontend.TPM.Controllers
 
                 CalculateBudgetsCreateTask(new List<Guid>() { promoSupportId }, deletedPromoIds);
 
-                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, list = newList }));
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, list = newList }, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore}));
             }
             catch (Exception e)
             {
