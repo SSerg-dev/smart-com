@@ -1,17 +1,15 @@
-﻿using System;
-using Core.Data;
+﻿using Core.Data;
+using Module.Persist.TPM.Model.Interfaces;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Collections.Generic;
-using Persist;
-using System.Linq;
-using Newtonsoft.Json;
 
 namespace Module.Persist.TPM.Model.DTO
 {
     public class PromoROIReport : IEntity<Guid>
     {
         public Guid Id { get; set; }
+        public TPMmode TPMmode { get; set; }
         public bool? InOut { get; set; }
         public int? ClientTreeId { get; set; }
         public int? ClientTreeKeyId { get; set; }

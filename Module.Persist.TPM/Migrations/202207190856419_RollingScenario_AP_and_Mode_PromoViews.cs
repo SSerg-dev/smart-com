@@ -468,8 +468,7 @@ namespace Module.Persist.TPM.Migrations
 			DECLARE @RoleId uniqueidentifier = (SELECT[Id] FROM [DefaultSchemaSetting].[Role] where SystemName = 'KeyAccountManager' and [Disabled] = 0);
 			   INSERT INTO[DefaultSchemaSetting].[AccessPointRole]
 			   (RoleId, AccessPointId) values
-			   (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='RollingScenarios' and [Action]='GetRollingScenarios' and [Disabled] = 0)),
-			   (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='RollingScenarios' and [Action]='MassApprove' and [Disabled] = 0)),
+			   (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='RollingScenarios' and [Action]='GetRollingScenarios' and [Disabled] = 0)),			   
 			   (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='RollingScenarios' and [Action]='Cancel' and [Disabled] = 0)),
 			   (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='RollingScenarios' and [Action]='GetCanceled' and [Disabled] = 0)),
 			   (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='RollingScenarios' and [Action]='OnApproval' and [Disabled] = 0)),
@@ -479,6 +478,7 @@ namespace Module.Persist.TPM.Migrations
 			   INSERT INTO[DefaultSchemaSetting].[AccessPointRole]
 			   (RoleId, AccessPointId) values
 			   (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='RollingScenarios' and [Action]='GetRollingScenarios' and [Disabled] = 0)),
+			   (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='RollingScenarios' and [Action]='MassApprove' and [Disabled] = 0)),
 			   (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='RollingScenarios' and [Action]='GetCanceled' and [Disabled] = 0)),
 			   (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='RollingScenarios' and [Action]='Approve' and [Disabled] = 0)),
 			   (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='RollingScenarios' and [Action]='Decline' and [Disabled] = 0)),

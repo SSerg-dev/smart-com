@@ -279,13 +279,22 @@
                 renderer: function (value) {
                     return renderWithDelimiter(value, ' > ', '  ');
                 }
-            }, {
+                },
+                {
+                    text: l10n.ns('tpm', 'Promo').value('TPMmode'),
+                    dataIndex: 'TPMmode',
+                    //renderer: function (value) {
+                    //    return value ? l10n.ns('core', 'booleanValues').value('true') : l10n.ns('core', 'booleanValues').value('false');
+                    //}
+                },
+            {
                 text: l10n.ns('tpm', 'Promo').value('InOut'),
                 dataIndex: 'InOut',
                 renderer: function (value) {
                     return value ? l10n.ns('core', 'booleanValues').value('true') : l10n.ns('core', 'booleanValues').value('false');
                 }
-            }, {
+            },
+            {
                 text: l10n.ns('tpm', 'Promo').value('InvoiceType'),
                 dataIndex: 'IsOnInvoice',
                 width: 100,

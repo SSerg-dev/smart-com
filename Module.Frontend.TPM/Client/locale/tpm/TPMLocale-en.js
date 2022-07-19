@@ -960,7 +960,9 @@
 
         'SelectPromo': 'Select Promo',
         'LinkedPromoes': 'Linked Promoes',
-        'MasterPromoNumber': 'Master Promo Number'
+        'MasterPromoNumber': 'Master Promo Number',
+
+        'TPMmode': 'Indicator'
     },
     'HistoricalPromo': ['.tpm.Promo', '.core.BaseHistoryEntity'],
     'DeletedPromo': ['.tpm.Promo', '.core.BaseDeletedEntity'],

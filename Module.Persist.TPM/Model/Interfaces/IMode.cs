@@ -6,7 +6,7 @@
     }
     public enum TPMmode
     {
-        StandartMode,
-        RSMode
+        Current,
+        RS
     }
 }
