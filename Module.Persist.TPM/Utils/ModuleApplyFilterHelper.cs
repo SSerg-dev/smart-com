@@ -760,5 +760,38 @@ namespace Module.Persist.TPM.Utils {
 		private static IQueryable<ClientTreeHierarchyView> getFilteredHierarchy(IQueryable<ClientTreeHierarchyView> hierarchy, IEnumerable<string> clientFilter) {
             return hierarchy.Where(h => clientFilter.Contains(h.Id.ToString()) || clientFilter.Any(c => h.Hierarchy.Contains(c)));
         }
+        /// <summary>
+        /// Применение фильтра по ограничениям к Промо
+        /// </summary>
+        /// <param name="query"></param>
+        /// <param name="hierarchy"></param>
+        /// <param name="filter"></param>
+        /// <param name="filterMode"></param>
+        /// <returns></returns>
+        public static IQueryable<RollingScenario> ApplyFilter(IQueryable<RollingScenario> query, IQueryable<ClientTreeHierarchyView> hierarchy, IDictionary<string, IEnumerable<string>> filter = null, FilterQueryModes filterMode = FilterQueryModes.Active, string role = "")
+        {
+            if (filterMode == FilterQueryModes.Active)
+            {
+                query = query.Where(x => !x.Disabled);
+            }
+            if (filterMode == FilterQueryModes.Deleted)
+            {
+                query = query.Where(x => x.Disabled);
+            }
+            IEnumerable<string> clientFilter = FilterHelper.GetFilter(filter, ModuleFilterName.Client);
+            if (clientFilter.Any())
+            {
+                hierarchy = getFilteredHierarchy(hierarchy, clientFilter);
+                query = query.Where(x =>
+                    hierarchy.Any(h => h.Id == x.ClientTreeId || h.Hierarchy.Contains(x.ClientTreeId.ToString())));
+            }
+            //if (!string.IsNullOrEmpty(role))
+            //{
+            //    IEnumerable<RollingScenario> promoToFilter = query.AsEnumerable();
+            //    promoToFilter = promoToFilter.Where(x => RoleStateUtil.RoleCanChangeState(role, x.PromoStatus.SystemName) && RoleStateUtil.IsOnApprovalRoleOrder(role, x));
+            //    query = promoToFilter.AsQueryable();
+            //}
+            return query;
+        }
     }
 }

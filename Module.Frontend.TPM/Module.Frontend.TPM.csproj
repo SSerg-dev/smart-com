@@ -312,6 +312,7 @@
     <Content Include="Client\model\tpm\clienttreebrandtech\HistoricalClientTreeBrandTech.js" />
     <Content Include="Client\model\tpm\mechanictype\MechanicTypeForClient.js" />
     <Content Include="Client\model\tpm\rollingvolume\RollingVolume.js" />
+    <Content Include="Client\model\tpm\rsmode\RSmode.js" />
     <Content Include="Client\util\MinHeightColumn.js" />
     <Content Include="Client\view\tpm\actualcogstn\ActualCOGSTnEditor.js" />
     <Content Include="Client\view\tpm\actualcogstn\ActualCOGSTn.js" />
@@ -404,6 +405,7 @@
     <Compile Include="Controllers\RollingVolumesController.cs" />
     <Compile Include="Controllers\RPAsController.cs" />
     <Compile Include="Controllers\RPASettingsController.cs" />
+    <Compile Include="Controllers\RollingScenariosController.cs" />
     <Compile Include="Model\RPAEventJsonField.cs" />
     <Compile Include="Util\AzureBlobHelperLocal.cs" />
     <Compile Include="Util\IQueryableExtensions.cs" />

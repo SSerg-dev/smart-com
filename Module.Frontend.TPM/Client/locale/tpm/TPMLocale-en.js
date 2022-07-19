@@ -186,7 +186,8 @@
         'ApproveClosePromoWindow': 'Confirm closing',
         'Competitor': 'Competitor',
         'CompetitorBrandTech': 'Competitor BrandTech',
-        'CompetitorPromo': 'Competitor Promo'
+        'CompetitorPromo': 'Competitor Promo',
+        'RSmode': 'RS'
     },
 
     'text': {
@@ -2799,4 +2800,13 @@
     },
     'HistoricalCompetitorBrandTech': ['.tpm.CompetitorBrandTech', '.core.BaseHistoryEntity'],
     'DeletedCompetitorBrandTech': ['.tpm.CompetitorBrandTech', '.core.BaseDeletedEntity'],
+
+    'RSmode': {
+        'RSId': 'RS ID',
+        'ClientTreeFullPathName': 'Client',
+        'ExpirationDate': 'Expiration Date',
+        'StartDate': 'Start Date',
+        'EndDate': 'End Date',
+        'PromoStatusName': 'Status',
+    }
 });

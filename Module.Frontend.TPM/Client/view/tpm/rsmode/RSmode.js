@@ -1,7 +1,7 @@
 ﻿Ext.define('App.view.tpm.rsmode.RSmode', {
     extend: 'App.view.core.common.CombinedDirectoryPanel',
     alias: 'widget.rsmode',
-    title: l10n.ns('tpm', 'compositePanelTitles').value('PlanCOGSTn'),
+    title: l10n.ns('tpm', 'compositePanelTitles').value('RSmode'),
 
     customHeaderItems: [
         ResourceMgr.getAdditionalMenu('core').base = {
@@ -61,13 +61,13 @@
         editorModel: 'Core.form.EditorDetailWindowModel',
         store: {
             type: 'directorystore',
-            model: 'App.model.tpm.plancogstn.PlanCOGSTn',
-            storeId: 'plancogstnstore',
+            model: 'App.model.tpm.rsmode.RSmode',
+            storeId: 'rsmodestore',
             extendedFilter: {
                 xclass: 'App.ExtFilterContext',
                 supportedModels: [{
                     xclass: 'App.ExtSelectionFilterModel',
-                    model: 'App.model.tpm.plancogstn.PlanCOGSTn',
+                    model: 'App.model.tpm.rsmode.RSmode',
                     modelId: 'efselectionmodel'
                 }, {
                     xclass: 'App.ExtTextFilterModel',
@@ -84,184 +84,77 @@
                 flex: 1,
                 minWidth: 100
             },
-            items: [{
-                text: l10n.ns('tpm', 'PlanCOGSTn').value('StartDate'),
-                dataIndex: 'StartDate',
-                renderer: Ext.util.Format.dateRenderer('d.m.Y')
-            }, {
-                text: l10n.ns('tpm', 'PlanCOGSTn').value('EndDate'),
-                dataIndex: 'EndDate',
-                renderer: Ext.util.Format.dateRenderer('d.m.Y')
-            }, {
-                text: l10n.ns('tpm', 'PlanCOGSTn').value('Year'),
-                dataIndex: 'Year'
-            }, {
-                text: l10n.ns('tpm', 'PlanCOGSTn').value('ClientTreeFullPathName'),
-                dataIndex: 'ClientTreeFullPathName',
-                minWidth: 200,
-                filter: {
-                    xtype: 'treefsearchfield',
-                    trigger2Cls: '',
-                    selectorWidget: 'clienttree',
-                    valueField: 'FullPathName',
-                    displayField: 'FullPathName',
-                    multiSelect: true,
-                    operator: 'conts',
-                    store: {
-                        model: 'App.model.tpm.clienttree.ClientTree',
-                        autoLoad: false,
-                        root: {}
-                    },
+            items: [
+                {
+                    text: l10n.ns('tpm', 'RSmode').value('RSId'),
+                    dataIndex: 'RSId'
                 },
-                renderer: function (value) {
-                    return renderWithDelimiter(value, ' > ', '  ');
-                }
-            }, {
-                text: l10n.ns('tpm', 'PlanCOGSTn').value('ClientTreeObjectId'),
-                dataIndex: 'ClientTreeObjectId'
-            }, {
-                text: l10n.ns('tpm', 'PlanCOGSTn').value('BrandTechName'),
-                dataIndex: 'BrandTechName',
-                width: 120,
-                filter: {
-                    type: 'search',
-                    selectorWidget: 'brandtech',
-                    valueField: 'BrandsegTechsub',
-                    store: {
-                        type: 'directorystore',
-                        model: 'App.model.tpm.brandtech.BrandTech',
-                        extendedFilter: {
-                            xclass: 'App.ExtFilterContext',
-                            supportedModels: [{
-                                xclass: 'App.ExtSelectionFilterModel',
-                                model: 'App.model.tpm.brandtech.BrandTech',
-                                modelId: 'efselectionmodel'
-                            }, {
-                                xclass: 'App.ExtTextFilterModel',
-                                modelId: 'eftextmodel'
-                            }]
+                {
+                    text: l10n.ns('tpm', 'RSmode').value('ClientTreeFullPathName'),
+                    dataIndex: 'ClientTreeFullPathName',
+                    minWidth: 200,
+                    filter: {
+                        xtype: 'treefsearchfield',
+                        trigger2Cls: '',
+                        selectorWidget: 'clienttree',
+                        valueField: 'FullPathName',
+                        displayField: 'FullPathName',
+                        multiSelect: true,
+                        operator: 'conts',
+                        store: {
+                            model: 'App.model.tpm.clienttree.ClientTree',
+                            autoLoad: false,
+                            root: {}
+                        },
+                    },
+                    renderer: function (value) {
+                        return renderWithDelimiter(value, ' > ', '  ');
+                    }
+                },
+                {
+                    text: l10n.ns('tpm', 'RSmode').value('ExpirationDate'),
+                    dataIndex: 'ExpirationDate',
+                    renderer: Ext.util.Format.dateRenderer('d.m.Y')
+                },
+                {
+                    text: l10n.ns('tpm', 'RSmode').value('StartDate'),
+                    dataIndex: 'StartDate',
+                    renderer: Ext.util.Format.dateRenderer('d.m.Y')
+                },
+                {
+                    text: l10n.ns('tpm', 'RSmode').value('EndDate'),
+                    dataIndex: 'EndDate',
+                    renderer: Ext.util.Format.dateRenderer('d.m.Y')
+                },
+                {
+                    text: l10n.ns('tpm', 'RSmode').value('PromoStatusName'),
+                    dataIndex: 'PromoStatusName',
+                    width: 120,
+                    filter: {
+                        type: 'search',
+                        selectorWidget: 'promostatus',
+                        valueField: 'Name',
+                        operator: 'eq',
+                        store: {
+                            type: 'directorystore',
+                            model: 'App.model.tpm.promostatus.PromoStatus',
+                            extendedFilter: {
+                                xclass: 'App.ExtFilterContext',
+                                supportedModels: [{
+                                    xclass: 'App.ExtSelectionFilterModel',
+                                    model: 'App.model.tpm.promostatus.PromoStatus',
+                                    modelId: 'efselectionmodel'
+                                }, {
+                                    xclass: 'App.ExtTextFilterModel',
+                                    modelId: 'eftextmodel'
+                                }]
+                            }
                         }
                     }
-                }
-            },
-            {
-                text: l10n.ns('tpm', 'PlanCOGSTn').value('TonCost'),
-                dataIndex: 'TonCost'
-            }]
+                },
+            ]
         }
-    }, {
-        xtype: 'editabledetailform',
-        itemId: 'detailform',
-        model: 'App.model.tpm.plancogstn.PlanCOGSTn',
-        items: [{
-            xtype: 'datefield',
-            name: 'StartDate',
-            fieldLabel: l10n.ns('tpm', 'PlanCOGSTn').value('StartDate'),
-            readOnly: false,
-            editable: true,
-            format: 'd.m.Y',
-            listeners: {
-                afterrender: function () {
-                    this.setValue(new Date());
-                },
-                change: function (newValue, oldValue) {
-                    var toDate = this.up('form').down('[name=EndDate]');
-                    toDate.setMinValue(newValue.getValue());
-                }
-            }
-        }, {
-            xtype: 'datefield',
-            name: 'EndDate',
-            fieldLabel: l10n.ns('tpm', 'PlanCOGSTn').value('EndDate'),
-            readOnly: false,
-            editable: true,
-            format: 'd.m.Y',
-            listeners: {
-                afterrender: function () {
-                    this.setValue(new Date());
-                },
-                change: function (newValue, oldValue) {
-                    var fromDate = this.up('form').down('[name=StartDate]');
-                    fromDate.setMaxValue(newValue.getValue());
-                }
-            }
-        }, {
-            xtype: 'treesearchfield',
-            name: 'ClientTreeId',
-            fieldLabel: l10n.ns('tpm', 'PlanCOGSTn').value('ClientTreeFullPathName'),
-            selectorWidget: 'clienttree',
-            valueField: 'Id',
-            displayField: 'FullPathName',
-            store: {
-                storeId: 'clienttreestore',
-                model: 'App.model.tpm.clienttree.ClientTree',
-                autoLoad: false,
-                root: {}
-            },
-            mapping: [{
-                from: 'FullPathName',
-                to: 'ClientTreeFullPathName'
-            }]
-        }, {
-            xtype: 'searchfield',
-            fieldLabel: l10n.ns('tpm', 'PlanCOGSTn').value('BrandTechName'),
-            name: 'BrandTechName',
-            selectorWidget: 'brandtech',
-            valueField: 'Id',
-            displayField: 'BrandsegTechsub',
-            allowBlank: true,
-            allowOnlyWhitespace: true,
-            onTrigger2Click: function () {
-                var technology = this.up().down('[name=BrandTechName]');
-
-                this.clearValue();
-                technology.setValue(null);
-            },
-            listeners: {
-                afterrender: function (field) {
-                    if (!field.value) {
-                        field.value = null;
-                    }
-                },
-                change: function (field, newValue, oldValue) {
-                    var brandtech = field.up().down('[name=BrandTechName]');
-                    var brandtechValue = newValue ? field.record.get('BrandTechId') : null;
-
-                    brandtech.setValue(brandtechValue);
-                }
-            },
-            store: {
-                type: 'directorystore',
-                model: 'App.model.tpm.brandtech.BrandTech',
-                extendedFilter: {
-                    xclass: 'App.ExtFilterContext',
-                    supportedModels: [{
-                        xclass: 'App.ExtSelectionFilterModel',
-                        model: 'App.model.tpm.brandtech.BrandTech',
-                        modelId: 'efselectionmodel'
-                    }]
-                }
-            },
-            mapping: [{
-                from: 'BrandsegTechsub',
-                to: 'BrandTechName'
-            }]
-        }
-            , {
-            xtype: 'numberfield',
-            name: 'TonCost',
-            fieldLabel: l10n.ns('tpm', 'PlanCOGSTn').value('TonCost'),
-            minValue: 0,
-            maxValue: 100,
-            readOnly: true,
-            allowBlank: false,
-            listeners: {
-                change: function (newValue, oldValue) {
-                    if (newValue > 100) {
-                        this.setValue(oldValue);
-                    }
-                },
-            }
-        }]
-    }]
+    },
+ 
+    ]
 });
