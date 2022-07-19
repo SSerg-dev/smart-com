@@ -313,6 +313,9 @@ namespace Module.Frontend.TPM.Controllers
             {
                 success = true,
                 promoes
+            }, new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
             }));
         }
 

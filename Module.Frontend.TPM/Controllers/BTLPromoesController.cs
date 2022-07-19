@@ -291,7 +291,7 @@ namespace Module.Frontend.TPM.Controllers
                     .Select(x => x.Promo.Number).Distinct();
                 }
 
-                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, data = promoesWithBTL }));
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, data = promoesWithBTL }, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }));
             }
             catch (Exception e)
             {

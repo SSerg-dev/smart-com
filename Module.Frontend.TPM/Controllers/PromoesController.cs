@@ -2442,7 +2442,7 @@ namespace Module.Frontend.TPM.Controllers
                     }
                 });
 
-                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, data = JsonConvert.SerializeObject(products) }));
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, data = JsonConvert.SerializeObject(products, new JsonSerializerSettings{ ReferenceLoopHandling = ReferenceLoopHandling.Ignore}) }));
             }
             catch (Exception e)
             {
