@@ -105,6 +105,7 @@
                         store: Ext.create('Ext.data.Store', {
                             fields: ['segment'],
                             data: [
+                                { segment: '' },
                                 { segment: 'Catcare' },
                                 { segment: 'Dogcare' },
                             ]
@@ -113,6 +114,14 @@
                             from: 'segment',
                             to: 'MarketSegment'
                         }],
+                        listeners: {
+                            beforerender: function (combobox) {
+                                var segmentCheckbox = Ext.ComponentQuery.query('checkbox[itemId=segmentCheckbox]')[0];
+                                if (combobox.value === "") {
+                                    segmentCheckbox.setValue(true);
+                                }
+                            },
+                        }
                     },
                     {
                         xtype: 'container',
@@ -129,8 +138,11 @@
                         listeners: {
                             change: function (checkbox, newValue, oldValue) {
                                 var marketSegmentCombobox = Ext.ComponentQuery.query('combobox[name=MarketSegment]')[0];
+                                var detailform = Ext.ComponentQuery.query('editabledetailform[name=detailformEvent]')[0];
                                 if (newValue) {
                                     marketSegmentCombobox.setValue('');
+                                    var record = detailform.getRecord();
+                                    record.set('MarketSegment', '');
                                 }
                                 marketSegmentCombobox.setDisabled(newValue);
                             },

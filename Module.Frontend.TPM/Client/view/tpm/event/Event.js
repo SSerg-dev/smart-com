@@ -106,6 +106,7 @@
     }, {
         xtype: 'editabledetailform',
         itemId: 'detailform',
+        name: 'detailformEvent',
         model: 'App.model.tpm.event.Event',
         items: [
             {

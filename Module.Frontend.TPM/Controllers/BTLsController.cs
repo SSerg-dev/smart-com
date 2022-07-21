@@ -397,7 +397,7 @@ namespace Module.Frontend.TPM.Controllers
                                 endDateDiff = (DateTimeOffset)btl.EndDate;
                             }
                             double diffPeriod = (endDateDiff - startDateDiff).TotalDays;
-                            if (totalDaysBTL / 2 > diffPeriod)
+                            if (totalDays / 2 > diffPeriod)
                             {
                                 copyBtls.Remove(btl);
                             }
