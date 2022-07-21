@@ -54,6 +54,8 @@
         // Is in Exchange
         { name: 'IsInExchange', type: 'boolean', hidden: false, isDefault: true },
         { name: 'MasterPromoId', useNull: true, hidden: true, isDefault: false, defaultValue: null },
+
+        { name: 'TPMmode', type: 'string', hidden: false, isDefault: true },
     ],
     proxy: {
         type: 'breeze',

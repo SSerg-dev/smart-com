@@ -333,8 +333,28 @@
             var maButton = grid.up().down('custombigtoolbar').down('#massapprovalbutton');
             maButton.setDisabled(true);
         });
+        // RSmode
+        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+        var mode = settingStore.findRecord('name', 'mode');
+        if (mode) {
+            if (mode.data.value != 1) {
+                debugger;
+                var promogrid = Ext.getCmp('promoGrid').down('grid');
+                var indexh = this.getColumnIndex(promogrid, 'TPMmode')
+                promogrid.columnManager.getColumns()[indexh].hide();
+            }
+        }
 
         this.onGridAfterrender(grid);
+    },
+
+    getColumnIndex: function (grid, dataIndex) {
+        gridColumns = grid.headerCt.getGridColumns();
+        for (var i = 0; i < gridColumns.length; i++) {
+            if (gridColumns[i].dataIndex == dataIndex) {
+                return i;
+            }
+        }
     },
 
     massApprovalButtonDisable: function (grid, store) {
@@ -1545,7 +1565,7 @@
                                 undoBtn.statusId = promoStatusData.value[i].Id;
                                 undoBtn.statusName = promoStatusData.value[i].Name;
                                 undoBtn.statusSystemName = promoStatusData.value[i].SystemName;
-                                
+
                             }
 
                             if (promoStatusData.value[i].SystemName == 'DraftPublished') {
@@ -2093,7 +2113,7 @@
             promoeditorcustom.down('[name=ApolloExportCheckbox]').setDisabled(false);
             promoeditorcustom.down('[name=ApolloExportCheckbox]').setReadOnly(false);
         }
-        
+
         //if (promoeditorcustom.isInExchange) {
         //    this.disableActualPanels(true);
         //}
@@ -2207,7 +2227,7 @@
     onClosePromoButtonClick: function (button) {
         var window = button.up('promoeditorcustom');
 
-        if (window) {         
+        if (window) {
             window.close();
         }
     },
@@ -2738,7 +2758,7 @@
         promoeditorcustom.isInExchange = record.data.IsInExchange;
         var isInExchange = mechanic.down('checkboxfield[name=IsInExchangeCheckbox]');
         isInExchange.setValue(record.data.IsInExchange);
-        
+
         var gaReadOnlyStatuses = ['Approved', 'Planned', 'Started', 'Finished'];
         if (gaReadOnlyStatuses.indexOf(record.data.PromoStatusSystemName) != -1 && currentRole !== 'SupportAdministrator') {
             growthAccelerationCheckbox.setReadOnly(true);
@@ -3328,7 +3348,7 @@
             promoeditorcustom.down('[name=ApolloExportCheckbox]').setReadOnly(false);
         }
         if (promoeditorcustom.isInExchange) {
-        //    this.disableActualPanels(true);
+            //    this.disableActualPanels(true);
             var splitPublishBtn = Ext.ComponentQuery.query("#btn_splitpublish")[0];
             splitPublishBtn.setDisabled(true);
         }
@@ -3617,7 +3637,7 @@
             success: function (response, req) {
                 if (req.response.length > 0 && req.response[0].value && req.response[0].value.length > 0)
                     App.Notify.pushInfo(req.response[0].value);
-                
+
                 var wasCreating = window.isCreating;
                 if (store) {
                     store.on({
@@ -6270,7 +6290,7 @@
         var promoEvent = promoEditorCustom.down('container[name=promo_step6]');
         var chooseEventButton = promoEvent.down('chooseEventButton');
         var clientTreeKeyId = promoEditorCustom.clientTreeKeyId;
-        
+
         // при каждом вызове этой функции Event сбрасывается до стандартного (в дальнейшем желательно сделать проверку на возможность оставить предзаполненный Event)
         var _event = new App.model.tpm.event.Event({
             Id: null,
@@ -6529,7 +6549,7 @@
         };
         App.Util.makeRequestWithCallback('Promoes', 'CheckIfLogHasErrors', parameters, function (data) {
             var result = Ext.JSON.decode(data.httpResponse.data.value);
-            
+
             var but = Ext.ComponentQuery.query('promoeditorcustom #btn_showlog')[0];
             if (but && !but.isDestroyed) {
                 if (result.LogHasErrors) {

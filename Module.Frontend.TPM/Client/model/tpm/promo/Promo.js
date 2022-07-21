@@ -255,6 +255,7 @@
 
         { name: 'IsSplittable', type: 'boolean', hidden: false, isDefault: false },
 
+        { name: 'TPMmode', type: 'string', hidden: false, isDefault: true },
     ],
     //hasMany: [
     //    //{
