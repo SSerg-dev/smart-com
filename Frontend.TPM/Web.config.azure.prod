@@ -51,7 +51,7 @@
     <add key="INTERFACE_DIRECTORY_OUTBOUND_INCOME" value="InterfaceFiles" />
     <!--AzureAD authentication-->
     <add key="ADidaClientId" value="0ddd2ac8-b12f-42a1-b413-3c781f52f10a" />
-    <add key="ADidaClientSecret" value="n4Cp0~-wXcmuo~1LAi_zo.YQ9ADc2nc.5f" />
+    <add key="ADidaClientSecret" value="qFeYSVzcONDVJWKoyBhtIxGbbJvVxRxbhrw2PLAgV4E=" />
     <add key="KVnameOfDatabaseContext" value="MAINTENANCE-PROD-DATABASE-CONNECTIONSTRING-SECRET" />
     <!-- BlobStorage -->
     <add key="BlobConnectionType" value="SAS" />
