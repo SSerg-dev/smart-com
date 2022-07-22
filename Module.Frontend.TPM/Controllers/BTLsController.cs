@@ -368,7 +368,7 @@ namespace Module.Frontend.TPM.Controllers
                 //List<Event> filterEvents = new List<Event>();
                 foreach (Event item in events)
                 {
-                    item.BTLs = item.BTLs.Where(f => (eventBTL.DurationDateStart <= f.EndDate && eventBTL.DurationDateEnd >= f.StartDate)).ToList();
+                    item.BTLs = item.BTLs.Where(f => (eventBTL.DurationDateStart <= f.EndDate && eventBTL.DurationDateEnd >= f.StartDate) && !f.Disabled).ToList();
                     if (item.BTLs.Count > 0)
                     {
                         var copyBtls = item.BTLs.ToList();
