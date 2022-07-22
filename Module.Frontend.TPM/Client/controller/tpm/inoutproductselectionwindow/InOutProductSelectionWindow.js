@@ -81,7 +81,6 @@
                 var period = promoEditorCustom.down('container[name=promo_step4]');
                 period.setDisabled(false);
                 if (promoEditorCustom.isCreating) {
-                    debugger;
                     promoController.setEventBTL();
                 }
 
