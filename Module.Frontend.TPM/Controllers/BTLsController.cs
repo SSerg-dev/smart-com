@@ -330,7 +330,7 @@ namespace Module.Frontend.TPM.Controllers
         {
             string resultData = Request.Content.ReadAsStringAsync().Result;
             EventBTLModel eventBTL = new EventBTLModel();
-            Event standartPromo = await Context.Set<Event>().AsNoTracking().Where(g => g.Name == "Standard promo").FirstOrDefaultAsync();
+            Event standartPromo = await Context.Set<Event>().AsNoTracking().Where(g => g.Name == "Standard promo" && !g.Disabled).FirstOrDefaultAsync();
             if (resultData != null)
             {
                 eventBTL = JsonConvert.DeserializeObject<EventBTLModel>(resultData);
