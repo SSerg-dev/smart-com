@@ -19,7 +19,9 @@
         { name: 'PromoStartDate', useNull: true, type: 'date', mapping: 'Promo.StartDate', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
         { name: 'PromoEndDate', useNull: true, type: 'date', mapping: 'Promo.EndDate', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
         { name: 'PromoBrandTechName', type: 'string', mapping: 'Promo.BrandTech.BrandsegTechsub', defaultFilterConfig: { valueField: 'BrandsegTechsub' }, breezeEntityType: 'BrandTech', hidden: false, isDefault: true },
-        { name: 'PromoStatusName', type: 'string', mapping: 'Promo.PromoStatus.Name', defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'PromoStatus', hidden: false, isDefault: true },   
+        { name: 'PromoStatusName', type: 'string', mapping: 'Promo.PromoStatus.Name', defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'PromoStatus', hidden: false, isDefault: true },
+
+        { name: 'TPMmode', type: 'string', hidden: false, isDefault: true },
     ],
     proxy: {
         type: 'breeze',
