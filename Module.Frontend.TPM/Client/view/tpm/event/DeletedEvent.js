@@ -57,7 +57,7 @@
             },
             {
                 text: l10n.ns('tpm', 'Event').value('EventTypeName'),
-                dataIndex: 'Type'
+                dataIndex: 'EventTypeName'
             },
             {
                 text: l10n.ns('tpm', 'Event').value('MarketSegment'),
@@ -88,7 +88,7 @@
             },
             {
                 xtype: 'textfield',
-                name: 'Type',
+                name: 'EventTypeName',
                 fieldLabel: l10n.ns('tpm', 'Event').value('EventTypeName')
             },
             {
