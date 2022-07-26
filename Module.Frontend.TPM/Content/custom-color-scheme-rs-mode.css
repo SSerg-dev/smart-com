@@ -4943,3 +4943,27 @@ x-slider-inner:before {
 .x-grid-row-selected .x-grid-td, .x-panel-blue-selectable-panel-framed .x-grid-row-selected .x-grid-cell{
     background-color: #FFF3E4;
 }
+
+.x-btn-white-button-toolbar-toolbar-small .x-btn-glyph {
+    color: #EB8A42 !important;
+}
+
+.x-btn-light-blue-button-toolbar-toolbar-small .x-btn-glyph {
+    color: #EB8A42 !important;
+}
+
+.x-message-box .x-form-display-field {
+    color: #5c6064;
+}
+
+.x-window-header-text-container-default {
+    color: #5c6064;
+}
+
+.x-panel-blue-panel .jspDrag{
+    background-color: #FFF3E4;
+}
+
+.x-panel-blue-panel .jspTrack {
+    border: 1px solid #FFF3E4;
+}
