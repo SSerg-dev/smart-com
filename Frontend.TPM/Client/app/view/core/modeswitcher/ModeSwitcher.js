@@ -30,7 +30,8 @@
                     //console.log("Mode Standart");
                 }
                 settingStore.sync();
-                MenuMgr.refreshCurrentMenu();
+                window.location.reload();
+                //MenuMgr.refreshCurrentMenu();
                 //alert('click!')
             }, this);
         }

@@ -11,19 +11,33 @@ Ext.application({
         ResourceMgr.clearTempData();
         Ext.FocusManager.enable({ focusFrame: false });
         this.setGlobalHandlers();
-        this.setMenuLogo();
         //Ext.widget('loginwindow').show();
         //Ext.Date.defaultFormat = 'd.m.Y';
-        document.getElementById('theme1').disabled = false;
-        document.getElementById('theme2').disabled = true;
+        this.loadColorScheme();
         Ext.create('App.view.core.Viewport');
         KeysMngr.bindKeys();
         App.UserInfo.setCurrentRole();
     },
 
-    setMenuLogo: function () {
-        //var logo = Ext.ComponentQuery.query('#menulogo')[0];
-        //logo.src = '';
+    loadColorScheme: function () {
+        var colorScheme = 'prod';
+
+        var settingStore = Ext.create('App.store.core.settinglocal.SettingLocalStore');
+        settingStore.load();
+        var mode = settingStore.findRecord('name', 'mode');
+        if (mode) {
+            if (mode.data.value == 1) {
+                colorScheme = 'rs';
+            }
+        }
+
+        if (colorScheme == 'rs') {
+            document.getElementById('themeRS').disabled = false;
+            document.getElementById('themeProd').disabled = true;
+        } else {
+            document.getElementById('themeRS').disabled = true;
+            document.getElementById('themeProd').disabled = false;
+        }
     },
 
     setGlobalHandlers: function () {

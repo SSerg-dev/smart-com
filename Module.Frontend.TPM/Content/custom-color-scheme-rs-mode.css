@@ -4935,3 +4935,11 @@ x-slider-inner:before {
 .x-btn-role-item-button-small-over {
     background-color: #fff3e4;
 }
+
+.x-btn-security-button-toolbar-small .x-btn-inner {
+    color: #5c6064;
+}
+
+.x-grid-row-selected .x-grid-td, .x-panel-blue-selectable-panel-framed .x-grid-row-selected .x-grid-cell{
+    background-color: #FFF3E4;
+}
