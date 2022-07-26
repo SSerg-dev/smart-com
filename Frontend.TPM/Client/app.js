@@ -11,6 +11,7 @@ Ext.application({
         ResourceMgr.clearTempData();
         Ext.FocusManager.enable({ focusFrame: false });
         this.setGlobalHandlers();
+        this.setMenuLogo();
         //Ext.widget('loginwindow').show();
         //Ext.Date.defaultFormat = 'd.m.Y';
         document.getElementById('theme1').disabled = false;
@@ -18,7 +19,12 @@ Ext.application({
         Ext.create('App.view.core.Viewport');
         KeysMngr.bindKeys();
         App.UserInfo.setCurrentRole();
-    },       
+    },
+
+    setMenuLogo: function () {
+        //var logo = Ext.ComponentQuery.query('#menulogo')[0];
+        //logo.src = '';
+    },
 
     setGlobalHandlers: function () {
         Ext.util.Observable.observe(Ext.data.Connection);

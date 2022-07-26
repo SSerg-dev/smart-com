@@ -34,12 +34,16 @@
 .x-btn-blue-pressed-button-toolbar-toolbar-small .x-btn-glyph,
 .x-btn-main-menu-button-medium .x-btn-inner,
 .x-btn-main-menu-button-small .x-btn-inner,
-.x-btn-white-button-footer-toolbar-small .x-btn-inner,
-.x-btn-green-button-footer-toolbar-small .x-btn-inner,
-.x-btn-white-button-footer-toolbar-small:hover,
 .x-panel-selectable-panel-framed .x-btn-white-button-small .x-btn-glyph {
     color: #5C6064;
 }
+
+.x-btn-white-button-footer-toolbar-small .x-btn-inner,
+.x-btn-green-button-footer-toolbar-small .x-btn-inner,
+.x-btn-white-button-footer-toolbar-small:hover {
+    color: #FFFFFF;
+}
+
 /*Фон не нажатых кнопок главного меню*/
 .x-btn-main-menu-button-medium,
 .x-btn-main-menu-button-small {
@@ -57,7 +61,7 @@
 .x-btn-blue-main-menu-button-small-over,
 .x-btn-main-menu-button-medium-over,
 .x-btn-main-menu-button-small-over {
-    background-color: #E1F5FE;
+    background-color: #FFF3E4;
     -webkit-border-radius: 1px;
     -moz-border-radius: 1px;
     -ms-border-radius: 1px;
@@ -78,7 +82,7 @@
     .x-btn-blue-main-menu-button-small-over .x-btn-glyph,
     .x-btn-main-menu-button-medium-over .x-btn-glyph,
     .x-btn-main-menu-button-small-over .x-btn-glyph {
-        color: #5B8ABC;
+        color: #EB8A42;
     }
     /*Цвет текста нажатых кнопок и цвет текста при наведении*/
     .x-btn-blue-main-menu-button-small .x-btn-inner,
@@ -87,7 +91,7 @@
     .x-btn-main-menu-button-small-over .x-btn-inner,
     .x-btn-blue-main-menu-button-small-over .x-btn-inner,
     .x-btn-blue-main-menu-button-medium-over .x-btn-inner {
-        color: #3F6895;
+        color: #5C6064;
     }
 /*Цвет иконок пользователя и роли*/
 .x-btn-security-button-toolbar-small .x-btn-glyph {
@@ -160,7 +164,7 @@
 /*кнопки в окнах*/
 .x-btn-green-button-footer-toolbar-small,
 .x-btn-white-button-footer-toolbar-small {
-    background-color: #757575;
+    background-color: #AAAAAA;
     -webkit-border-radius: 1px;
     -moz-border-radius: 1px;
     -ms-border-radius: 1px;
@@ -210,11 +214,11 @@
 }
 /*Активная нижней таб-панели*/
 .x-tab-system-panel-tab-button-active {
-    background-color: #809DBA;
+    background-color: #D7D7D7;
 }
     /*Текст текста активной кнопки нижней таб-панели*/
     .x-tab-system-panel-tab-button-active .x-tab-inner {
-        color: #C1DBF7;
+        color: #47433E;
     }
 /*Цвет выделенной строки грида*/
 .x-panel-blue-selectable-panel-framed .x-grid-row-selected .x-grid-cell {
@@ -256,12 +260,13 @@ x-panel-header-text-container-blue-panel {
 }
 
 .roles-header .x-header-text {
-    color: #42a5f5;
+    color: #EB8A42;
     font-weight: bold;
 }
 
 .x-btn-selected-role-item-button-small {
-    border: 1px solid #42a5f5;
+    border: 1px solid #EB8A42;
+    background-color: #FFF3E4;
 }
 
 .x-btn-role-item-button-small {
@@ -357,13 +362,13 @@ x-panel-header-text-container-blue-panel {
 .x-btn-gray-button-toolbar-toolbar-small,
 .custom-scheduler-toolbar .x-btn-create-promo-btn-toolbar-small,
 .custom-scheduler-toolbar .x-btn-create-promo-btn-toolbar-expanded-small {
-    background-color: #5B8ABC;
+    background-color: #D7D7D7;
     box-shadow: -1px 2px 3px #293A54;
     margin: 0 5px 3px 2px !important;
 }
 /*Широкий тулбар*/
 .custom-scheduler-toolbar {
-    background-color: #3A5A7D;
+    background-color: #757575;
     border-color: #0066a6;
     border: 0px !important;
 }
@@ -377,7 +382,7 @@ x-panel-header-text-container-blue-panel {
 
     /*Кнопка разворачивания/сворачивания тулбара*/
     .custom-scheduler-toolbar .x-btn-fill-gray-button-toolbar-toolbar-small {
-        background-color: #3A5A7D;
+        background-color: #757575;
         padding: 11px;
     }
     /*Цвет кнопки разворачивания/сворачивания тулбара при наведении*/
@@ -389,19 +394,19 @@ x-panel-header-text-container-blue-panel {
         font-size: 24px;
         line-height: 24px;
         padding-left: 7px;
-        color: #C1DBF7;
+        color: #D7D7D7;
     }
 
     .custom-scheduler-toolbar .x-btn-fill-gray-button-toolbar-toolbar-small .x-btn-inner {
         line-height: 24px;
         padding-left: 38px;
-        color: #C1DBF7;
+        color: #D7D7D7;
     }
 
     .custom-scheduler-toolbar .x-btn-create-promo-btn-toolbar-expanded-small-over,
     .custom-scheduler-toolbar .x-btn-create-promo-btn-toolbar-small-over,
     .custom-scheduler-toolbar .x-btn-gray-button-toolbar-toolbar-small-over {
-        background-color: #83AAD5;
+        background-color: #FFF3E4;
     }
 
     .custom-scheduler-toolbar .x-btn-create-promo-btn-toolbar-expanded-small .x-btn-glyph,
@@ -409,7 +414,7 @@ x-panel-header-text-container-blue-panel {
         font-size: 24px;
         line-height: 24px;
         padding-left: 7px;
-        color: #FFFFFF;
+        color: #EB8A42;
     }
 
     .custom-scheduler-toolbar .x-btn-create-promo-btn-toolbar-expanded-small-icon-text-left .x-btn-icon-el,
@@ -421,20 +426,20 @@ x-panel-header-text-container-blue-panel {
     .custom-scheduler-toolbar .x-btn-gray-button-toolbar-toolbar-small-icon-text-left .x-btn-inner {
         line-height: 24px;
         padding-left: 38px;
-        color: #FFFFFF;
+        color: #5C6064;
     }
 
     .custom-scheduler-toolbar .x-btn-create-promo-btn-toolbar-small-icon-text-left .x-btn-inner {
         line-height: 120% !important;
         font-size: 11px !important;
         padding-left: 1px;
-        color: #FFFFFF;
+        color: #5C6064;
         padding-top: 30px;
     }
 
     .custom-scheduler-toolbar .x-btn-create-promo-btn-toolbar-expanded-small-icon-text-left .x-btn-inner {
         padding-left: 38px;
-        color: #FFFFFF;
+        color: #5C6064;
         padding-top: 35px !important;
     }
 
@@ -485,7 +490,7 @@ x-panel-header-text-container-blue-panel {
             line-height: 26px;
             padding-left: 5px;
             padding-top: 10px;
-            color: #FFFFFF;
+            color: #EB8A42;
         }
 
         .custom-scheduler-toolbar .x-btn-create-promo-btn-toolbar-expanded-small .x-btn-glyph {
@@ -493,7 +498,7 @@ x-panel-header-text-container-blue-panel {
             line-height: 26px;
             padding-left: 5px;
             padding-top: 30px;
-            color: #FFFFFF;
+            color: #EB8A42;
         }
 
     .custom-scheduler-toolbar .x-btn-create-promo-btn-toolbar-expanded-small-icon-text-left .x-btn-button,
@@ -702,7 +707,7 @@ pre.code {
 }
 
 .bg-logo {
-    background: #C7CAD0 url(images/jupiter_bg-logo.png) center center no-repeat !important;
+    background: #C7CAD0 url(images/jupiter_bg_rs-logo.png) center center no-repeat !important;
     background-repeat: no-repeat !important;
     background-position: center !important;
 }
@@ -1478,7 +1483,7 @@ tr[data-recordindex="0"] .container-icon {
     .promowindowcontainer .x-panel-header-default.promo-header-item {
         z-index: 1;
         background-image: none;
-        background-color: #A2B2C2;
+        background-color: #D7D7D7;
         color: white;
     }
 
@@ -2852,7 +2857,7 @@ x-slider-inner:before {
 /*-----------------Стиль разворачиваемой строки в гриде промо-------------*/
 .x-grid-rowbody {
     margin-left: -23px;
-    background-color: #7d96b1;
+    background-color: #757575;
 }
 
 .promogridrow.x-grid-row-selected.x-grid-row-focused td {
@@ -4297,7 +4302,7 @@ x-slider-inner:before {
 }
 
 .in-out-promo-header-button {
-    background-color: #3f6895;
+    background-color: #757575;
     margin: 4px 10px;
     padding: 4px 5px !important;
     box-shadow: none !important;
@@ -4890,3 +4895,43 @@ x-slider-inner:before {
     .promo-approve-close-window .x-btn-glyph {
         color: #fff;
     }
+
+.x-menu-item-glyph {
+    color: #EB8A42 !important;
+}
+
+.x-column-header-sort-ASC .x-column-sort-button,
+.x-column-header-sort-DESC .x-column-sort-button {
+    color: #EB8A42 !important;
+}
+
+.x-column-filtered .x-column-filter-button {
+    color: #EB8A42 !important;
+    cursor: pointer;
+}
+
+.x-column-header-sort-ASC .x-column-header-text,
+.x-column-header-sort-DESC .x-column-header-text {
+    background-image: none;
+    color: #EB8A42 !important;
+}
+
+.x-toolbar-footer {
+    background-color: #757575 !important;
+}
+
+.x-panel-header-light-gray-panel-framed .x-panel-header-glyph {
+    color: #EB8A42 !important;
+}
+
+.x-btn-selected-role-item-button-small .x-btn-glyph {
+    color: #EB8A42 !important;
+}
+
+.x-btn-selected-role-item-button-small .x-btn-inner {
+    color: #EB8A42 !important;
+}
+
+.x-btn-role-item-button-small-over {
+    background-color: #fff3e4;
+}
