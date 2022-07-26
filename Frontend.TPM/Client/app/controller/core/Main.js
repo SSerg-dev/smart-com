@@ -21,6 +21,7 @@
         this.listen({
             component: {
                 'viewport': {
+                    beforerender: this.setMenuLogoPath,
                     afterrender: this.onRenderViewport
                 },
                 'drawer [widget]': {
@@ -113,12 +114,16 @@
 
     onRenderViewport: function (viewport) {
         var menucontainer = viewport.down('#menucontainer');
-        var logo = Ext.ComponentQuery.query('#menulogo')[0];
+        MenuMgr.setCurrentMenu(MenuMgr.getCurrentMenu());
+    },
 
+    setMenuLogoPath: function () {
+        var logo = Ext.ComponentQuery.query('#menulogo')[0];
         var path = location.origin + '/Bundles/style/images/logo.svg';
 
         var settingStore = Ext.create('App.store.core.settinglocal.SettingLocalStore');
         settingStore.load();
+
         var mode = settingStore.findRecord('name', 'mode');
         if (mode) {
             if (mode.data.value == 1) {
@@ -127,7 +132,6 @@
         }
 
         logo.setSrc(path);
-        MenuMgr.setCurrentMenu(MenuMgr.getCurrentMenu());
     },
 
     onOpenViewButtonClick: function (button) {
