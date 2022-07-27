@@ -1,4 +1,5 @@
 ﻿using Core.Data;
+using Module.Persist.TPM.Model.Interfaces;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Runtime.Serialization;
 
 namespace Module.Persist.TPM.Model.TPM
 {
-    public class PromoSupport : IEntity<Guid>, IDeactivatable
+    public class PromoSupport : IEntity<Guid>, IDeactivatable, IMode
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public System.Guid Id { get; set; }
@@ -38,5 +39,6 @@ namespace Module.Persist.TPM.Model.TPM
         public virtual BudgetSubItem BudgetSubItem { get; set; }
 
         public ICollection<PromoSupportPromo> PromoSupportPromo { get; set; }
+        public TPMmode TPMmode { get; set; }
     }
 }

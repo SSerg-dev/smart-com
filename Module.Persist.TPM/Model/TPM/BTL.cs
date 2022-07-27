@@ -1,4 +1,5 @@
 ﻿using Core.Data;
+using Module.Persist.TPM.Model.Interfaces;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Runtime.Serialization;
 
 namespace Module.Persist.TPM.Model.TPM
 {
-    public class BTL : IEntity<Guid>, IDeactivatable
+    public class BTL : IEntity<Guid>, IDeactivatable, IMode
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public System.Guid Id { get; set; }
@@ -25,5 +26,6 @@ namespace Module.Persist.TPM.Model.TPM
         public virtual Event Event { get; set; }
 
         public ICollection<BTLPromo> BTLPromoes { get; set; }
+        public TPMmode TPMmode { get; set; }
     }
 }
