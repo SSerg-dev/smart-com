@@ -9,6 +9,7 @@
     "fontsBase": "../Frontend.TPM/Content/core/resources/fonts/*",
     "concatJsDest": "Bundles/app/app.min.js",
     "concatCssDest": "Bundles/style/style.min.css",
+    "concatCssRSDest": "Bundles/style/stylers.min.css",
     "concatResDest": "Bundles/vendor/vendor.min.js",
     "appPath": "Bundles/app",
     "stylePath": "Bundles/style",
@@ -30,6 +31,18 @@
     "../Frontend.TPM/Content/core/jquery.jscrollpane.css",
     "../Module.Frontend.TPM/Content/sch-all-debug.css",
     "../Module.Frontend.TPM/Content/custom-color-scheme.css",
+    "../Module.Frontend.TPM/Content/custom-color-scheme-scheduler.css"
+  ],
+  "cssRSFiles": [
+    "../Frontend.TPM/Content/core/resources/LightODataTemplateThemeApp-all_01.css",
+    "../Frontend.TPM/Content/core/resources/LightODataTemplateThemeApp-all_02.css",
+    "../Frontend.TPM/Content/core/resources/LightODataTemplateThemeApp-all_03.css",
+    "../Frontend.TPM/Client/ext/resources/css/uxs.css",
+    "../Frontend.TPM/Client/ext/resources/css/filterbar.css",
+    "../Frontend.TPM/Content/core/style.css",
+    "../Frontend.TPM/Content/core/jquery.jscrollpane.css",
+    "../Module.Frontend.TPM/Content/sch-all-debug.css",
+    "../Module.Frontend.TPM/Content/custom-color-scheme-rs-mode.css",
     "../Module.Frontend.TPM/Content/custom-color-scheme-scheduler.css"
   ],
   "resourceFiles": [

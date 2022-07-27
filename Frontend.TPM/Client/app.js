@@ -13,10 +13,32 @@ Ext.application({
         this.setGlobalHandlers();
         //Ext.widget('loginwindow').show();
         //Ext.Date.defaultFormat = 'd.m.Y';
+        this.loadColorScheme();
         Ext.create('App.view.core.Viewport');
         KeysMngr.bindKeys();
         App.UserInfo.setCurrentRole();
-    },       
+    },
+
+    loadColorScheme: function () {
+        var colorScheme = 'prod';
+
+        var settingStore = Ext.create('App.store.core.settinglocal.SettingLocalStore');
+        settingStore.load();
+        var mode = settingStore.findRecord('name', 'mode');
+        if (mode) {
+            if (mode.data.value == 1) {
+                colorScheme = 'rs';
+            }
+        }
+
+        if (colorScheme == 'rs') {
+            document.getElementById('themeRS').disabled = false;
+            document.getElementById('themeProd').disabled = true;
+        } else {
+            document.getElementById('themeRS').disabled = true;
+            document.getElementById('themeProd').disabled = false;
+        }
+    },
 
     setGlobalHandlers: function () {
         Ext.util.Observable.observe(Ext.data.Connection);

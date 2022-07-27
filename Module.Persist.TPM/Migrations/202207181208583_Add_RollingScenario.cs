@@ -26,8 +26,6 @@ namespace Module.Persist.TPM.Migrations
                         ClientTreeId = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey($"{defaultSchema}.ClientTree", t => t.ClientTreeId)
-                .ForeignKey($"{defaultSchema}.PromoStatus", t => t.PromoStatusId)
                 .Index(t => t.RSId, unique: true)
                 .Index(t => t.PromoStatusId)
                 .Index(t => t.ClientTreeId);
@@ -35,6 +33,8 @@ namespace Module.Persist.TPM.Migrations
             AddColumn($"{defaultSchema}.Promo", "RollingScenarioId", c => c.Guid());
             CreateIndex($"{defaultSchema}.Promo", "RollingScenarioId");
             AddForeignKey($"{defaultSchema}.Promo", "RollingScenarioId", $"{defaultSchema}.RollingScenario", "Id");
+            AddForeignKey($"{defaultSchema}.RollingScenario", "ClientTreeId", $"{defaultSchema}.ClientTree", "Id");
+            AddForeignKey($"{defaultSchema}.RollingScenario", "PromoStatusId", $"{defaultSchema}.PromoStatus", "Id");
             SqlString = SqlString.Replace("DefaultSchemaSetting", defaultSchema);
             Sql(SqlString);
         }

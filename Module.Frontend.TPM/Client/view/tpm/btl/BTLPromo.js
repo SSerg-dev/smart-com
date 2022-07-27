@@ -58,6 +58,9 @@
                 text: l10n.ns('tpm', 'BTLPromo').value('PromoNumber'),
                 dataIndex: 'PromoNumber',
             }, {
+                text: l10n.ns('tpm', 'BTLPromo').value('TPMmode'),
+                dataIndex: 'TPMmode'
+            }, {
                 text: l10n.ns('tpm', 'BTL').value('PlanPromoBTL'),
                 dataIndex: 'PlanPromoBTL'
             }, {

@@ -23,6 +23,7 @@
             margin: '10 20 0 20',
             items: [{
                 xtype: 'image',
+                id: 'menulogo',
                 cls: 'logo-image',
                 src: location.origin + '/Bundles/style/images/logo.svg',
             }]

@@ -1,5 +1,6 @@
 namespace Module.Persist.TPM.Migrations
 {
+    using Core.Settings;
     using System;
     using System.Data.Entity.Migrations;
     
@@ -7,22 +8,24 @@ namespace Module.Persist.TPM.Migrations
     {
         public override void Up()
         {
-            AddColumn("Jupiter.Promo", "TPMmode", c => c.Int(nullable: false));
-            AddColumn("Jupiter.PromoProduct", "TPMmode", c => c.Int(nullable: false));
-            AddColumn("Jupiter.PromoSupportPromo", "TPMmode", c => c.Int(nullable: false));
-            AddColumn("Jupiter.PromoProductTree", "TPMmode", c => c.Int(nullable: false));
-            AddColumn("Jupiter.PromoProductsCorrection", "TPMmode", c => c.Int(nullable: false));
-            AddColumn("Jupiter.BTLPromo", "TPMmode", c => c.Int(nullable: false));
+            var defaultSchema = AppSettingsManager.GetSetting<string>("DefaultSchema", "dbo");
+            AddColumn($"{defaultSchema}.Promo", "TPMmode", c => c.Int(nullable: false));
+            AddColumn($"{defaultSchema}.PromoProduct", "TPMmode", c => c.Int(nullable: false));
+            AddColumn($"{defaultSchema}.PromoSupportPromo", "TPMmode", c => c.Int(nullable: false));
+            AddColumn($"{defaultSchema}.PromoProductTree", "TPMmode", c => c.Int(nullable: false));
+            AddColumn($"{defaultSchema}.PromoProductsCorrection", "TPMmode", c => c.Int(nullable: false));
+            AddColumn($"{defaultSchema}.BTLPromo", "TPMmode", c => c.Int(nullable: false));
         }
         
         public override void Down()
         {
-            DropColumn("Jupiter.BTLPromo", "TPMmode");
-            DropColumn("Jupiter.PromoProductsCorrection", "TPMmode");
-            DropColumn("Jupiter.PromoProductTree", "TPMmode");
-            DropColumn("Jupiter.PromoSupportPromo", "TPMmode");
-            DropColumn("Jupiter.PromoProduct", "TPMmode");
-            DropColumn("Jupiter.Promo", "TPMmode");
+            var defaultSchema = AppSettingsManager.GetSetting<string>("DefaultSchema", "dbo");
+            DropColumn($"{defaultSchema}.BTLPromo", "TPMmode");
+            DropColumn($"{defaultSchema}.PromoProductsCorrection", "TPMmode");
+            DropColumn($"{defaultSchema}.PromoProductTree", "TPMmode");
+            DropColumn($"{defaultSchema}.PromoSupportPromo", "TPMmode");
+            DropColumn($"{defaultSchema}.PromoProduct", "TPMmode");
+            DropColumn($"{defaultSchema}.Promo", "TPMmode");
         }
     }
 }

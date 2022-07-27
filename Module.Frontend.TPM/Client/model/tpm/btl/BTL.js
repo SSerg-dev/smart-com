@@ -16,6 +16,7 @@
             name: 'EventName', type: 'string', mapping: 'Event.Name', defaultFilterConfig: { valueField: 'Name' },
             breezeEntityType: 'Event', hidden: false, isDefault: true
         },
+        { name: 'TPMmode', type: 'string', hidden: false, isDefault: true }
     ],
     proxy: {
         type: 'breeze',

@@ -21,6 +21,8 @@
 
         { name: 'PlanCostProd', type: 'float', hidden: true },
         { name: 'FactCostProd', type: 'float', hidden: true },
+
+        { name: 'TPMmode', type: 'string', hidden: false, isDefault: true }
     ],
     proxy: {
         type: 'breeze',

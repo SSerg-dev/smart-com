@@ -2904,6 +2904,18 @@
     <Compile Include="Migrations\202207190856419_RollingScenario_AP_and_Mode_PromoViews.Designer.cs">
       <DependentUpon>202207190856419_RollingScenario_AP_and_Mode_PromoViews.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202207261549203_Empty_After_Merge_RS.cs" />
+    <Compile Include="Migrations\202207261549203_Empty_After_Merge_RS.Designer.cs">
+      <DependentUpon>202207261549203_Empty_After_Merge_RS.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202207260642289_Add_RsMode_PromoSupport.cs" />
+    <Compile Include="Migrations\202207260642289_Add_RsMode_PromoSupport.Designer.cs">
+      <DependentUpon>202207260642289_Add_RsMode_PromoSupport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202207270631398_Add_RsMode_BTL.cs" />
+    <Compile Include="Migrations\202207270631398_Add_RsMode_BTL.Designer.cs">
+      <DependentUpon>202207270631398_Add_RsMode_BTL.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\202207261324082_Add_Settings_RS_StartDate.cs" />
     <Compile Include="Migrations\202207261324082_Add_Settings_RS_StartDate.Designer.cs">
       <DependentUpon>202207261324082_Add_Settings_RS_StartDate.cs</DependentUpon>
@@ -5550,6 +5562,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202207190856419_RollingScenario_AP_and_Mode_PromoViews.resx">
       <DependentUpon>202207190856419_RollingScenario_AP_and_Mode_PromoViews.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202207260642289_Add_RsMode_PromoSupport.resx">
+      <DependentUpon>202207260642289_Add_RsMode_PromoSupport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202207261549203_Empty_After_Merge_RS.resx">
+      <DependentUpon>202207261549203_Empty_After_Merge_RS.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202207270631398_Add_RsMode_BTL.resx">
+      <DependentUpon>202207270631398_Add_RsMode_BTL.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202207261324082_Add_Settings_RS_StartDate.resx">
       <DependentUpon>202207261324082_Add_Settings_RS_StartDate.cs</DependentUpon>

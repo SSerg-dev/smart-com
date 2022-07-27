@@ -136,6 +136,9 @@
                 text: l10n.ns('tpm', 'BTL').value('Number'),
                 dataIndex: 'Number'
             }, {
+                text: l10n.ns('tpm', 'BTL').value('TPMmode'),
+                dataIndex: 'TPMmode'
+            }, {
                 text: l10n.ns('tpm', 'BTL').value('PlanBTLTotal'),
                 dataIndex: 'PlanBTLTotal'
             }, {

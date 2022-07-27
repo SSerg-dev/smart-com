@@ -168,6 +168,9 @@
                     return renderWithDelimiter(value, ' > ', '  ');
                 }
             }, {
+                text: l10n.ns('tpm', 'PromoSupport').value('TPMmode'),
+                dataIndex: 'TPMmode'
+            }, {
                 text: l10n.ns('tpm', 'PromoSupport').value('BudgetSubItemBudgetItemName'),
                 dataIndex: 'BudgetSubItemBudgetItemName',
                 filter: {

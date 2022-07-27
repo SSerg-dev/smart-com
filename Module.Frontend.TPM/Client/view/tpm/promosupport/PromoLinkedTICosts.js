@@ -115,6 +115,9 @@
                 dataIndex: 'Number',
                 width: 110
             }, {
+                text: l10n.ns('tpm', 'PromoSupportPromoTICost').value('TPMmode'),
+                dataIndex: 'TPMmode'
+            }, {
                 text: l10n.ns('tpm', 'PromoSupportPromoTICost').value('Name'),
                 dataIndex: 'Name',
                 width: 150

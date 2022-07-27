@@ -1,0 +1,30 @@
+﻿.x-btn-white-button-toolbar-toolbar-small .x-btn-glyph {
+    font-size: 18px;
+    line-height: 18px;
+    color: #EB8A42;
+}
+
+.x-btn-main-menu-button-medium .x-btn-glyph, .x-btn-main-menu-button-small .x-btn-glyph {
+    color: #EB8A42;
+}
+
+.x-btn-security-button-toolbar-small .x-btn-glyph {
+    color: #EB8A42;
+}
+
+.menu-history-panel .x-panel-header-blue-panel, .menu-history-panel .x-panel-header-blue-panel-vertical, .x-panel-body-blue-panel {
+    background-color: #757575;
+}
+
+.x-btn-main-menu-button-medium, .x-btn-main-menu-button-small {
+    background-color: #D7D7D7;
+    border-radius: 1px;
+}
+
+.x-tab-bar-system-panel, .x-tab-system-panel-tab-button-bottom {
+    background-color: #757575;
+}
+
+.topcurtain, .x-panel-body-marengo-panel, .x-toolbar-marengo-toolbar, .x-window-body-default, .x-window-header-default, .x-window-header-default .x-tool-img {
+    background-color: none !important;
+}

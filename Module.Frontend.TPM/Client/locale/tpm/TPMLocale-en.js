@@ -1287,6 +1287,7 @@
         'PlanProdCost': 'Plan Prod Cost',
         'ActualProdCost': 'Actual Prod Cost',
         'OffAllocation': 'Off allocation by LSV',
+        'TPMmode': 'Indicator'
     },
     'HistoricalPromoSupport': {
         'Number': 'ID',
@@ -1801,6 +1802,8 @@
         'PlanCalculation': 'Plan Cost TE Total',
         'FactCalculation': 'Actual Cost TE Total',
         'EquipmentType': 'Equipment Type',
+
+        'TPMmode': 'Indicator'
     },
 
     'PromoSupportPromoCostProd': {
@@ -2705,6 +2708,7 @@
         'PromoStatusName': 'Status',
         'ActualPromoBTL': 'Actual Promo BTL',
         'PlanPromoBTL': 'Plan Promo BTL',
+        'TPMmode': 'Indicator'
     },
 
     'BTL': {
@@ -2725,6 +2729,7 @@
         'ActualBTLTotal': 'Actual BTL Total',
         'ActualPromoBTL': 'Actual Promo BTL',
         'PlanPromoBTL': 'Plan Promo BTL',
+        'TPMmode': 'Indicator',
     },
 
     'HistoricalBTL': {

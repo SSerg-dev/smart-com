@@ -47,6 +47,11 @@ gulp.task("clean:css", function (cb) {
     cb();
 });
 
+gulp.task("clean:cssRS", function (cb) {
+    del(paths.concatCssRSDest, cb);
+    cb();
+});
+
 gulp.task("clean:img", function (cb) {
     del(paths.imagesDestPaths);
     cb();
@@ -82,6 +87,13 @@ gulp.task("min:css", function () {
         .pipe(gulp.dest("."));
 });
 
+gulp.task("min:cssRS", function () {
+    return gulp.src(config.cssRSFiles)
+        .pipe(concat(paths.concatCssRSDest))
+        .pipe(csso())
+        .pipe(gulp.dest("."));
+});
+
 // Копирование и сжатие изображений
 gulp.task("images:img", function () {
     return gulp.src(paths.imgBase + "**/*", { base: paths.imgBase }) // base - для сохранения структуры каталогов при копировании
@@ -108,7 +120,7 @@ gulp.task("clean", gulp.series("clean:app", "clean:res", "clean:css", "clean:img
 });
 
 // Сборка
-gulp.task("min", gulp.series("min:app", "min:resource", "min:css"), function (callback) {
+gulp.task("min", gulp.series("min:app", "min:resource", "min:css", "min:cssRS"), function (callback) {
     callback();
 });
 
@@ -122,6 +134,7 @@ gulp.task("build", gulp.series("clean", "min", "img"));  //Синхронно, �
 gulp.task("watch", function () {
     gulp.watch(config.appFiles, gulp.parallel("clean:app", "min:app"));
     gulp.watch(config.cssFiles, gulp.parallel("clean:css", "min:css"));
+    gulp.watch(config.cssRSFiles, gulp.parallel("clean:cssRS", "min:cssRS"));
     gulp.watch(config.resourceFiles, gulp.parallel("clean:res", "min:resource"));
 });
 // Запускается автоматически при открытии проекта

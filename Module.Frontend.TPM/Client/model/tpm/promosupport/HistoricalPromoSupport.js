@@ -27,6 +27,7 @@
         { name: 'BudgetSubItemBudgetItemName', type: 'string', hidden: false, isDefault: true },
         { name: 'Number', type: 'int', hidden: false, isDefault: true },
         { name: 'OffAllocation', type: 'boolean', hidden: false, isDefault: true },
+        { name: 'TPMmode', type: 'string', hidden: false, isDefault: true }
     ],
     proxy: {
         type: 'breeze',
