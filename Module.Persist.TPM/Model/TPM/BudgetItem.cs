@@ -30,6 +30,6 @@ namespace Module.Persist.TPM.Model.TPM
         public virtual Budget Budget { get; set; }
 
         public virtual ICollection<BudgetSubItem> BudgetSubItems { get; set; }
-        public virtual ICollection<NonPromoEquipment> NonPromoEquipment { get; set; }
+        public virtual ICollection<NonPromoEquipment> NonPromoEquipments { get; set; }
     }
 }

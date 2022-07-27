@@ -3,6 +3,7 @@ using Core.Notification;
 using Core.Settings;
 using Frontend.Core;
 using Frontend.Core.Security;
+using Newtonsoft.Json;
 using Ninject;
 using NLog;
 using Persist;
@@ -39,6 +40,17 @@ namespace Frontend {
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             //BundleConfig.RegisterBundles(BundleTable.Bundles);
 
+            // Newtonsoft Json default settings
+            JsonConvert.DefaultSettings = () => new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            };
+            // Json.net default settings
+            HttpConfiguration config = GlobalConfiguration.Configuration;
+
+            config.Formatters.JsonFormatter
+                        .SerializerSettings
+                        .ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             // Инициализация функций получения списка получателей оповещений
             NotificationEmailGetterLocator.Instance.RegisterGetter(HardcodeInterestedUserEmailGetter.FunctionName, HardcodeInterestedUserEmailGetter.Function);
 

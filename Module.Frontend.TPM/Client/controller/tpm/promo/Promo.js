@@ -1385,6 +1385,7 @@
     onCreateButtonClick: function (button, e, schedulerData, isInOutPromo, promotype) {
 
         var me = this;
+        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
         var promoeditorcustom = Ext.widget('promoeditorcustom');
         promoeditorcustom.isInOutPromo = isInOutPromo;
         promoeditorcustom.promotypeId = promotype.Id;
@@ -1393,6 +1394,7 @@
         promoeditorcustom.promotypeSystemName = promotype.SystemName;
         this.setPromoType(promotype.Name, promoeditorcustom);
         promoeditorcustom.isCreating = true;
+        promoeditorcustom.TPMmode = settingStore.findRecord('name', 'mode').data.value;
         // из-за вызова из календаря, нужно конкретизировать
         this.getController('tpm.promo.Promo').detailButton = null;
         promoeditorcustom.isFromSchedule = schedulerData;
@@ -1774,12 +1776,14 @@
     },
     onUpdateButtonClick: function (button) {
         var me = this;
+        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
         var grid = this.getGridByButton(button);
         grid.up('promo').setLoading(true);
         var promoeditorcustom = Ext.widget('promoeditorcustom');
         me.detailButton = null;
         var promoStatusName = null;
         var record = me.getRecord(promoeditorcustom);
+        promoeditorcustom.TPMmode = settingStore.findRecord('name', 'mode').data.value;
 
         // Если запись обозначена
         if (button.assignedRecord) {
@@ -1861,8 +1865,10 @@
 
     onDetailButtonClick: function (button) {
         var me = this;
+        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
         var promoeditorcustom = Ext.widget('promoeditorcustom');
         me.getController('tpm.promo.Promo').detailButton = button;
+        promoeditorcustom.TPMmode = settingStore.findRecord('name', 'mode').data.value;
 
         // Если запись обозначена
         if (button.assignedRecord) {
@@ -2625,6 +2631,12 @@
             record.data.NeedRecountUplift = false;
         } else {
             record.data.NeedRecountUplift = true;
+        }
+        if (window.TPMmode == 0) {
+            record.data.TPMmode = 'Current';
+        }
+        if (window.TPMmode == 1) {
+            record.data.TPMmode = 'RS';
         }
         //record.data.PlanPromoBaselineLSV = promoActivityStep2.down('numberfield[name=PlanPromoBaselineLSV]').getValue();
         //record.data.PlanPromoIncrementalLSV = promoActivityStep2.down('numberfield[name=PlanPromoIncrementalLSV]').getValue();

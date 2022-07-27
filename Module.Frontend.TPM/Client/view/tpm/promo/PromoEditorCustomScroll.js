@@ -47,6 +47,7 @@
 
     model: null,
     isCreating: true,
+    TPMmode: null,
 
     promoId: null,
     statusId: null,

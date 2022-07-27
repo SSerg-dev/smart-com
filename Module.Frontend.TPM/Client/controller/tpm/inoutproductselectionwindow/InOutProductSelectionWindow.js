@@ -106,7 +106,7 @@
         }
 
         inOutProductSelectionWindowProductTreeGridContainer.setLoading(true);
-        productTreeGridStore.addListener('load', function () {
+        productTreeGridStore.addListener('load', function (store, records, success) {
             var rootNode = productTreeGrid.getRootNode().childNodes[0];
             var productsRootNodeObjectId = rootNode.data.ObjectId;
 

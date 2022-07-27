@@ -104,7 +104,6 @@ namespace Module.Frontend.TPM.Controllers
         {
             int? parentId;
             ProductTree root = null;
-            Object result;
             // Получаем записи у которых родительский элемент = разворачиваемому
             if (node == "root")
             {
@@ -126,6 +125,8 @@ namespace Module.Frontend.TPM.Controllers
             foreach (ProductTree treeNode in activeTreeList)
             {
                 bool leaf = !activeTree.Any(x => x.parentId == treeNode.ObjectId);
+                treeNode.Technology = null; // из-за loopreference, нужно чтобы Context был в приложении а не ядре
+                treeNode.TechnologyId = null; //
                 rootChilds.Add(new ProductTreeNode(treeNode, false, leaf, false));
             }
 
@@ -139,18 +140,21 @@ namespace Module.Frontend.TPM.Controllers
                     rootNode.AddChild(rootChilds);
                 }
 
-                result = rootNode;
+                return Json(new
+                {
+                    success = true,
+                    children = rootNode
+                });
             }
             else
             {
-                result = rootChilds;
+                return Json(new
+                {
+                    success = true,
+                    children = rootChilds
+                });
             }
 
-            return Json(new
-            {
-                success = true,
-                children = result
-            });
         }
 
         /// <summary>

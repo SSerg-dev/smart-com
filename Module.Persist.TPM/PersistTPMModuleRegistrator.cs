@@ -404,8 +404,8 @@ namespace Module.Persist.TPM
 
             builder.EntitySet<BudgetItem>("BudgetItems").HasManyBinding(g => g.BudgetSubItems, "BudgetSubItems");
             builder.EntitySet<BudgetItem>("DeletedBudgetItems").HasManyBinding(g => g.BudgetSubItems, "BudgetSubItems");
-            builder.EntitySet<BudgetItem>("BudgetItems").HasManyBinding(g => g.NonPromoEquipment, "NonPromoEquipments");
-            builder.EntitySet<BudgetItem>("DeletedBudgetItems").HasManyBinding(g => g.NonPromoEquipment, "NonPromoEquipments");
+            builder.EntitySet<BudgetItem>("BudgetItems").HasManyBinding(g => g.NonPromoEquipments, "NonPromoEquipments");
+            builder.EntitySet<BudgetItem>("DeletedBudgetItems").HasManyBinding(g => g.NonPromoEquipments, "NonPromoEquipments");
             builder.EntitySet<HistoricalBudgetItem>("HistoricalBudgetItems");
             builder.EntitySet<BudgetItem>("BudgetItems").HasRequiredBinding(e => e.Budget, "Budgets");
             builder.Entity<BudgetItem>().HasRequired(e => e.Budget, (e, te) => e.BudgetId == te.Id);

@@ -420,6 +420,7 @@ namespace Module.Persist.TPM.Model.TPM
             ManualInputSumInvoice = promoToCopy.ManualInputSumInvoice;
             IsInExchange = promoToCopy.IsInExchange;
             MasterPromoId = promoToCopy.MasterPromoId;
+            TPMmode = promoToCopy.TPMmode;
         }
 
         public Promo() { }
