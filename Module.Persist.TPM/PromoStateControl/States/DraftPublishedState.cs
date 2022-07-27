@@ -21,7 +21,7 @@ namespace Module.Persist.TPM.PromoStateControl
 
             private readonly string Name = "DraftPublished";
 
-            private readonly List<string> Roles = new List<string> { "Administrator", "CMManager", "CustomerMarketing", "DemandFinance", "DemandPlanning", "FunctionalExpert", "KeyAccountManager" };
+            private readonly List<string> Roles = new List<string> { "Administrator", "CMManager", "CustomerMarketing", "DemandFinance", "DemandPlanning", "FunctionalExpert", "KeyAccountManager", "GAManager" };
 
             public DraftPublishedState(PromoStateContext stateContext)
             {
@@ -115,7 +115,7 @@ namespace Module.Persist.TPM.PromoStateControl
                             _stateContext.dbContext.Set<PromoOnApprovalIncident>().Add(new PromoOnApprovalIncident()
                             {
                                 PromoId = promoModel.Id,
-                                ApprovingRole = "CMManager", // Или DemandPlanning? Артём должен уточнить
+                                ApprovingRole = "GAManager",
                                 CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
                                 Promo = promoModel
                             });

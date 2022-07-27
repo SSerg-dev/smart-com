@@ -331,7 +331,7 @@ namespace Module.Frontend.TPM.Controllers
             try
             {
                 PromoProduct promoProduct = Context.Set<PromoProduct>().FirstOrDefault(x => x.PromoId == promoId && x.ProductId == productId);
-                 return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, models = promoProduct }));
+                 return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, models = promoProduct }, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }));
 
             }
             catch (Exception e)

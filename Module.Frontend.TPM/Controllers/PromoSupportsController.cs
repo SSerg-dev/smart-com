@@ -484,11 +484,14 @@ namespace Module.Frontend.TPM.Controllers
                     promoSupportGroupList.Add(new PromoSupportGroup(promoSupport, promoSupportPromoes));
                 }
 
-                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, models = promoSupportGroupList }));
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, models = promoSupportGroupList }, Formatting.Indented, new JsonSerializerSettings
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                }));
             }
             catch (Exception e)
             {
-                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false }));
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, messaage = e.Message }));
             }
         }
 

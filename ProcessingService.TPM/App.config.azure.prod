@@ -65,7 +65,7 @@
     <!--Export settings-->
     <add key="EXPORT_TENANT_ID" value="2fc13e34-f03f-498b-982a-7cb446e25bc6" />
     <add key="EXPORT_APPLICATION_ID" value="0ddd2ac8-b12f-42a1-b413-3c781f52f10a" />
-    <add key="EXPORT_AUTHENTICATION_KEY" value="n4Cp0~-wXcmuo~1LAi_zo.YQ9ADc2nc.5f" />
+    <add key="EXPORT_AUTHENTICATION_KEY" value="qFeYSVzcONDVJWKoyBhtIxGbbJvVxRxbhrw2PLAgV4E=" />
     <add key="EXPORT_SUBSCRIPTION_ID" value="fd43d2cb-5798-4c9b-bf5e-05006585d0cd" />
     <add key="EXPORT_RESOURCE_GROUP" value="RUSSIA-PETCARE-JUPITER-PROD-RG" />
     <add key="EXPORT_REGION" value="East US 2" />

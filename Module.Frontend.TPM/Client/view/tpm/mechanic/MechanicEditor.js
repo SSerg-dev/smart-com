@@ -9,15 +9,18 @@
     items: {
         xtype: 'editorform',
         columnsCount: 1,
-        items: [{
-            xtype: 'textfield',
-            name: 'Name',
-            fieldLabel: l10n.ns('tpm', 'Mechanic').value('Name'),
-        }, {
-            xtype: 'textfield',
-            name: 'SystemName',
-            fieldLabel: l10n.ns('tpm', 'Mechanic').value('SystemName'),
-            }, {
+        items: [
+            {
+                xtype: 'textfield',
+                name: 'Name',
+                fieldLabel: l10n.ns('tpm', 'Mechanic').value('Name'),
+            },
+            {
+                xtype: 'textfield',
+                name: 'SystemName',
+                fieldLabel: l10n.ns('tpm', 'Mechanic').value('SystemName'),
+            },
+            {
                 xtype: 'searchfield',
                 fieldLabel: l10n.ns('tpm', 'Mechanic').value('PromoType.Name'),
                 name: 'PromoTypesId',
@@ -40,6 +43,7 @@
                     from: 'Name',
                     to: 'PromoTypes.Name'
                 }]
-            }]
+            }
+        ]
     }
 });
