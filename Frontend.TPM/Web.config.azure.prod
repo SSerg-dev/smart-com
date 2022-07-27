@@ -51,7 +51,7 @@
     <add key="INTERFACE_DIRECTORY_OUTBOUND_INCOME" value="InterfaceFiles" />
     <!--AzureAD authentication-->
     <add key="ADidaClientId" value="0ddd2ac8-b12f-42a1-b413-3c781f52f10a" />
-    <add key="ADidaClientSecret" value="n4Cp0~-wXcmuo~1LAi_zo.YQ9ADc2nc.5f" />
+    <add key="ADidaClientSecret" value="qFeYSVzcONDVJWKoyBhtIxGbbJvVxRxbhrw2PLAgV4E=" />
     <add key="KVnameOfDatabaseContext" value="MAINTENANCE-PROD-DATABASE-CONNECTIONSTRING-SECRET" />
     <!-- BlobStorage -->
     <add key="BlobConnectionType" value="SAS" />
@@ -66,7 +66,7 @@
     <!--RPA-->
     <add key="RPA_UPLOAD_TENANT_ID" value="2fc13e34-f03f-498b-982a-7cb446e25bc6" />
     <add key="RPA_UPLOAD_APPLICATION_ID" value="0ddd2ac8-b12f-42a1-b413-3c781f52f10a" />
-    <add key="RPA_UPLOAD_AUTHENTICATION_KEY" value="n4Cp0~-wXcmuo~1LAi_zo.YQ9ADc2nc.5f" />
+    <add key="RPA_UPLOAD_AUTHENTICATION_KEY" value="qFeYSVzcONDVJWKoyBhtIxGbbJvVxRxbhrw2PLAgV4E=" />
     <add key="RPA_UPLOAD_SUBSCRIPTION_ID" value="fd43d2cb-5798-4c9b-bf5e-05006585d0cd" />
     <add key="RPA_UPLOAD_RESOURCE_GROUP" value="RUSSIA-PETCARE-JUPITER-PROD-RG" />
     <add key="RPA_UPLOAD_REGION" value="East US 2" />
