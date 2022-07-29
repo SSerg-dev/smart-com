@@ -1,11 +1,7 @@
-﻿using System;
-using Core.Data;
+﻿using Core.Data;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Collections.Generic;
-using Persist;
-using System.Linq;
-using Newtonsoft.Json;
 
 namespace Module.Persist.TPM.Model.DTO
 {
@@ -197,5 +193,16 @@ namespace Module.Persist.TPM.Model.DTO
         public double? ActualPromoROIPercentLSV { get; set; }
         public double? ActualPromoNetROIPercentLSV { get; set; }
 
+        //add new prop
+        public double? PlanPromoIncrementalCOGSTn { get; set; }
+        public double? PlanPromoNetIncrementalCOGSTn { get; set; }
+        public double? ActualPromoIncrementalCOGSTn { get; set; }
+        public double? ActualPromoNetIncrementalCOGSTn { get; set; }
+        public double? PlanPromoBaselineVolume { get; set; }
+        public double? PlanPromoIncrementalVolume { get; set; }
+        public double? PlanPromoNetIncrementalVolume { get; set; }
+        public double? ActualPromoVolume { get; set; }
+        public double? ActualPromoIncrementalVolume { get; set; }
+        public double? ActualPromoNetIncrementalVolume { get; set; }
     }
 }
