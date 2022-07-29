@@ -406,6 +406,8 @@
     <Compile Include="Controllers\RPAsController.cs" />
     <Compile Include="Controllers\RPASettingsController.cs" />
     <Compile Include="Controllers\RollingScenariosController.cs" />
+    <Compile Include="FunctionalHelpers\RSmode\RSmodeHelper.cs" />
+    <Compile Include="FunctionalHelpers\RSPeriod\RSPeriodHelper.cs" />
     <Compile Include="Model\RPAEventJsonField.cs" />
     <Compile Include="Util\AzureBlobHelperLocal.cs" />
     <Compile Include="Util\IQueryableExtensions.cs" />
@@ -1035,6 +1037,7 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="ReadMe.md" />
     <None Include="Templates\ActualCOGSPreTemplate.xlsx" />
     <None Include="Templates\ActualCOGSTnPreTemplate.xlsx" />
     <None Include="Templates\ActualTIPreTemplate.xlsx" />
@@ -1662,6 +1665,7 @@
       <Name>Module.Persist.TPM</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

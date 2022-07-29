@@ -17,7 +17,7 @@
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort>44349</IISExpressSSLPort>
     <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
-    <IISExpressWindowsAuthentication>enabled</IISExpressWindowsAuthentication>
+    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
     <IISExpressUseClassicPipelineMode />
     <UseGlobalApplicationHostFile />
     <SccProjectName>SAK</SccProjectName>
@@ -1585,6 +1585,7 @@
     <None Include="Properties\PublishProfiles\jupiterdevapp - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\jupiterdevapp - ReadOnly - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\jupiterdevapp - Web Deploy.pubxml" />
+    <Content Include="ReadMe.md" />
     <None Include="Scripts\jquery-1.6.4-vsdoc.js" />
     <Content Include="Scripts\breeze.debug.js" />
     <Content Include="Scripts\breeze.min.js" />

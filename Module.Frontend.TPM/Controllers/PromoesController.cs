@@ -38,6 +38,9 @@ using Module.Persist.TPM.CalculatePromoParametersModule;
 using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.SimpleModel;
 using System.Web;
+using Module.Frontend.TPM.FunctionalHelpers.RSPeriod;
+using Module.Frontend.TPM.FunctionalHelpers.RSmode;
+using Module.Persist.TPM.Model.Interfaces;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -367,6 +370,10 @@ namespace Module.Frontend.TPM.Controllers
 
                 Promo promoCopy = new Promo(model);
                 patch.Patch(model);
+                if (ChangedList.Any(g => g.Contains("TPMmode")) && ChangePromo.TPMmode == TPMmode.RS)
+                {
+                    RSmodeHelper.EditToPromoRS(Context, model);
+                }                
                 model.DeviationCoefficient /= 100;
                 if (!String.IsNullOrEmpty(model.AdditionalUserTimestamp))
                     FixateTempPromoProductsCorrections(model.Id, model.AdditionalUserTimestamp);
@@ -2449,6 +2456,14 @@ namespace Module.Frontend.TPM.Controllers
             }
 
             return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { isCreator = isCreator }));
+        }
+        [HttpPost]
+        [ClaimsAuthorize]
+        public IHttpActionResult GetRSPeriod()
+        {
+            StartEndModel startEndModel = RSPeriodHelper.GetRSPeriod(Context);
+
+            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, startEndModel }));
         }
         public void FixateTempPromoProductsCorrections(Guid promoId, string tempEditUpliftId)
         {

@@ -1387,6 +1387,7 @@
         var me = this;
         var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
         var promoeditorcustom = Ext.widget('promoeditorcustom');
+        var RSmodeController = App.app.getController('tpm.rsmode.RSmode');
         promoeditorcustom.isInOutPromo = isInOutPromo;
         promoeditorcustom.promotypeId = promotype.Id;
         promoeditorcustom.promotypeName = promotype.Name;
@@ -1394,7 +1395,12 @@
         promoeditorcustom.promotypeSystemName = promotype.SystemName;
         this.setPromoType(promotype.Name, promoeditorcustom);
         promoeditorcustom.isCreating = true;
+
         promoeditorcustom.TPMmode = settingStore.findRecord('name', 'mode').data.value;
+        debugger;
+        RSmodeController.getRSPeriod(function (returnValue) {
+            promoeditorcustom.rsStartEnd = returnValue;
+        });
         // из-за вызова из календаря, нужно конкретизировать
         this.getController('tpm.promo.Promo').detailButton = null;
         promoeditorcustom.isFromSchedule = schedulerData;

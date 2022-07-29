@@ -72,4 +72,24 @@
             }
         });
     },
+    getRSPeriod: function (cb_func) {
+
+        $.ajax({
+            dataType: 'json',
+            url: '/odata/Promoes/GetRSPeriod',
+            type: 'POST',
+            success: function (response) {
+                var data = Ext.JSON.decode(response.value);
+                if (data.success) {
+                    cb_func(data.startEndModel);
+                }
+                else {
+                    App.Notify.pushError(l10n.ns('tpm', 'text').value('failedStatusLoad'));
+                }
+            },
+            error: function (data) {
+                App.Notify.pushError(data.responseJSON["odata.error"].innererror.message);
+            }
+        });
+    },
 });

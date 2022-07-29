@@ -70,6 +70,8 @@
 
     readOnly: null,
 
+    rsStartEnd: null,
+
     initComponent: function () {
         this.callParent(arguments);
 

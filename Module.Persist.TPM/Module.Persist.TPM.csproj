@@ -2921,6 +2921,7 @@
       <DependentUpon>202207261324082_Add_Settings_RS_StartDate.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Migrations\Views\ViewMigrations.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
     <Compile Include="Model\DTO\PromoProductsView.cs" />
@@ -3049,6 +3050,7 @@
     <Compile Include="Model\SimpleModel\MarsUniversalPetcareCustomers.cs" />
     <Compile Include="Model\SimpleModel\SimplePromoRATIShopper.cs" />
     <Compile Include="Model\SimpleModel\SimplePromoCOGSTI.cs" />
+    <Compile Include="Model\SimpleModel\StartEndModel.cs" />
     <Compile Include="Model\SimpleModel\YEAR_END_ESTIMATE_FDM.cs" />
     <Compile Include="Model\TPM\COGSTn.cs" />
     <Compile Include="Model\TPM\RollingScenario.cs" />
@@ -3598,6 +3600,7 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="ReadMe.md" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201807251319401_Init.resx">
