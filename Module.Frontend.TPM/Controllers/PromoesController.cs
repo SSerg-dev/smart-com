@@ -103,7 +103,7 @@ namespace Module.Frontend.TPM.Controllers
         {
             string bodyText = Helper.GetRequestBody(HttpContext.Current.Request);
             string filter = HttpContext.Current.Request.QueryString["$filter"];
-            bool IsMasterFiltered = filter.Contains("MasterPromoId");
+            bool IsMasterFiltered = filter == null ? false : filter.Contains("MasterPromoId");
             var query = GetConstraintedQuery(Helper.GetValueIfExists<bool>(bodyText, "canChangeStateOnly"), IsMasterFiltered);
 
             var querySettings = new ODataQuerySettings
