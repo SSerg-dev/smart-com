@@ -2967,6 +2967,10 @@
     <Compile Include="Migrations\202207261324082_Add_Settings_RS_StartDate.Designer.cs">
       <DependentUpon>202207261324082_Add_Settings_RS_StartDate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202208011428111_Add_RsMode_AccessPoint.cs" />
+    <Compile Include="Migrations\202208011428111_Add_RsMode_AccessPoint.Designer.cs">
+      <DependentUpon>202208011428111_Add_RsMode_AccessPoint.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
@@ -5624,6 +5628,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202207261324082_Add_Settings_RS_StartDate.resx">
       <DependentUpon>202207261324082_Add_Settings_RS_StartDate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202208011428111_Add_RsMode_AccessPoint.resx">
+      <DependentUpon>202208011428111_Add_RsMode_AccessPoint.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
