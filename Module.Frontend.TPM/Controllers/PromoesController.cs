@@ -264,7 +264,10 @@ namespace Module.Frontend.TPM.Controllers
             }
 
             Promo proxy = Context.Set<Promo>().Create<Promo>();
-            Promo result = (Promo)Mapper.Map(model, proxy, typeof(Promo), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+            var configuration = new MapperConfiguration(cfg =>
+                cfg.CreateMap<Promo, Promo>().ReverseMap());
+            var mapper = configuration.CreateMapper();
+            Promo result = mapper.Map(model, proxy);
 
             if (result.CreatorId == null)
             {
@@ -1412,7 +1415,10 @@ namespace Module.Frontend.TPM.Controllers
             {
                 if (item is IEntity<Guid>)
                 {
-                    Promo result = (Promo)Mapper.Map(item, proxy, typeof(Promo), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+                    var configuration = new MapperConfiguration(cfg =>
+                        cfg.CreateMap<Promo, Promo>().ReverseMap());
+                    var mapper = configuration.CreateMapper();
+                    Promo result = mapper.Map(item, proxy);
                     castedPromoes.Add(result);
                 }
                 else if (item is ISelectExpandWrapper)

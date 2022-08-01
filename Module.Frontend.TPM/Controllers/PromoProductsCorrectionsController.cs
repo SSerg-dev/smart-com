@@ -172,7 +172,10 @@ namespace Module.Frontend.TPM.Controllers
             else
             {
                 var proxy = Context.Set<PromoProductsCorrection>().Create<PromoProductsCorrection>();
-                var result = (PromoProductsCorrection)Mapper.Map(model, proxy, typeof(PromoProductsCorrection), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+                var configuration = new MapperConfiguration(cfg =>
+                    cfg.CreateMap<PromoProductsCorrection, PromoProductsCorrection>().ReverseMap());
+                var mapper = configuration.CreateMapper();
+                var result = mapper.Map(model, proxy);
                 var promoProduct = Context.Set<PromoProduct>().FirstOrDefault(x => x.Id == result.PromoProductId && !x.Disabled);
 
                 if (promoProduct.Promo.NeedRecountUplift == false && String.IsNullOrEmpty(result.TempId))

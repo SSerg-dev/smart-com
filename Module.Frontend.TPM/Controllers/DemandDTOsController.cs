@@ -31,11 +31,14 @@ namespace Module.Frontend.TPM.Controllers
     public class DemandDTOsController : EFContextController
     {
         private readonly IAuthorizationManager authorizationManager;
+        private readonly IMapper mapper;
 
         public DemandDTOsController(IAuthorizationManager authorizationManager)
         {
             this.authorizationManager = authorizationManager;
-            Mapper.CreateMap<Promo, DemandDTO>();
+            var configuration = new MapperConfiguration(cfg =>
+                cfg.CreateMap<Promo, DemandDTO>().ReverseMap());
+            mapper = configuration.CreateMapper();
         }
 
 
@@ -57,7 +60,7 @@ namespace Module.Frontend.TPM.Controllers
         [EnableQuery(MaxNodeCount = int.MaxValue, MaxExpansionDepth = 3)]
         public SingleResult<DemandDTO> GetPromo([FromODataUri] System.Guid key)
         {
-            return SingleResult.Create(GetConstraintedQuery().ProjectTo<DemandDTO>());
+            return SingleResult.Create(mapper.ProjectTo<DemandDTO>(GetConstraintedQuery()));
         }
 
 
@@ -65,14 +68,14 @@ namespace Module.Frontend.TPM.Controllers
         [EnableQuery(MaxNodeCount = int.MaxValue, MaxExpansionDepth = 3)]
         public IQueryable<DemandDTO> GetPromoes()
         {
-            return GetConstraintedQuery().ProjectTo<DemandDTO>();
+            return mapper.ProjectTo<DemandDTO>(GetConstraintedQuery());
         }
 
         [ClaimsAuthorize]
         [HttpPost]
         public IQueryable<DemandDTO> GetFilteredData(ODataQueryOptions<DemandDTO> options)
         {
-            var query = GetConstraintedQuery().ProjectTo<DemandDTO>();
+            var query = mapper.ProjectTo<DemandDTO>(GetConstraintedQuery());
 
             var querySettings = new ODataQuerySettings
             {
@@ -92,9 +95,9 @@ namespace Module.Frontend.TPM.Controllers
             {
                 return NotFound();
             }
-            var dto = Mapper.Map<DemandDTO>(model);
+            var dto = mapper.Map<DemandDTO>(model);
             patch.Put(dto);
-            Mapper.Map(dto, model);
+            mapper.Map(dto, model);
             try
             {
                 Context.SaveChanges();
@@ -121,7 +124,10 @@ namespace Module.Frontend.TPM.Controllers
                 return BadRequest(ModelState);
             }
             var proxy = Context.Set<Promo>().Create<Promo>();
-            var result = (Promo)Mapper.Map(model, proxy, typeof(Promo), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+            var configuration = new MapperConfiguration(cfg =>
+                cfg.CreateMap<Promo, Promo>().ReverseMap());
+            var mapper = configuration.CreateMapper();
+            var result = mapper.Map(model, proxy);
             Context.Set<Promo>().Add(result);
 
             try
@@ -139,7 +145,7 @@ namespace Module.Frontend.TPM.Controllers
         [ClaimsAuthorize]
         [AcceptVerbs("PATCH", "MERGE")]
         public IHttpActionResult Patch([FromODataUri] System.Guid key, Delta<DemandDTO> patch)
-        {            
+        {
             try
             {
                 var model = Context.Set<Promo>().Find(key);
@@ -148,9 +154,9 @@ namespace Module.Frontend.TPM.Controllers
                     return NotFound();
                 }
 
-                var dto = Mapper.Map<DemandDTO>(model);
+                var dto = mapper.Map<DemandDTO>(model);
                 patch.Patch(dto);
-                Mapper.Map(dto, model);
+                mapper.Map(dto, model);
                 Context.SaveChanges();
 
                 return Updated(model);
@@ -169,7 +175,7 @@ namespace Module.Frontend.TPM.Controllers
             catch (Exception e)
             {
                 return GetErorrRequest(e);
-            }            
+            }
         }
 
         [ClaimsAuthorize]

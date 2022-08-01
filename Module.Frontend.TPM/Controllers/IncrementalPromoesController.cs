@@ -135,7 +135,10 @@ namespace Module.Frontend.TPM.Controllers
             }
 
             var proxy = Context.Set<IncrementalPromo>().Create<IncrementalPromo>();
-            var result = (IncrementalPromo)Mapper.Map(model, proxy, typeof(IncrementalPromo), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+            var configuration = new MapperConfiguration(cfg =>
+                cfg.CreateMap<IncrementalPromo, IncrementalPromo>().ReverseMap());
+            var mapper = configuration.CreateMapper();
+            var result = mapper.Map(model, proxy);
             Context.Set<IncrementalPromo>().Add(result);
             result.LastModifiedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
 

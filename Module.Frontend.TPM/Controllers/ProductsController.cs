@@ -190,7 +190,10 @@ namespace Module.Frontend.TPM.Controllers
                     return InternalServerError(new Exception("The product UOM should contain kg or g value"));
             }
             var proxy = Context.Set<Product>().Create<Product>();
-            var result = (Product)Mapper.Map(model, proxy, typeof(Product), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+            var configuration = new MapperConfiguration(cfg =>
+                cfg.CreateMap<Product, Product>().ReverseMap());
+            var mapper = configuration.CreateMapper();
+            var result = mapper.Map(model, proxy);
             IList<string> errors = new List<string>();
             var validBrandTech = BrandTechExist(Context, result.Brand_code, result.Segmen_code, result.SubBrand_code, result.Tech_code, ref errors);
             if (!validBrandTech)

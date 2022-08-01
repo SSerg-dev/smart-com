@@ -136,7 +136,10 @@ namespace Module.Frontend.TPM.Controllers
             }
 
             var proxy = Context.Set<RATIShopper>().Create<RATIShopper>();
-            var result = (RATIShopper)Mapper.Map(model, proxy, typeof(RATIShopper), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+            var configuration = new MapperConfiguration(cfg =>
+                cfg.CreateMap<RATIShopper, RATIShopper>().ReverseMap());
+            var mapper = configuration.CreateMapper();
+            var result = mapper.Map(model, proxy);
 
             //Проверка пересечения по времени на клиенте
             if (!DateCheck(result))

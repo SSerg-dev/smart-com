@@ -124,7 +124,10 @@ namespace Module.Frontend.TPM.Controllers
                 return BadRequest(ModelState);
             }
             var proxy = Context.Set<CoefficientSI2SO>().Create<CoefficientSI2SO>();
-            var result = (CoefficientSI2SO)Mapper.Map(model, proxy, typeof(CoefficientSI2SO), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+            var configuration = new MapperConfiguration(cfg =>
+                cfg.CreateMap<CoefficientSI2SO, CoefficientSI2SO>().ReverseMap());
+            var mapper = configuration.CreateMapper();
+            var result = mapper.Map(model, proxy);
             result.Lock = true;
             Context.Set<CoefficientSI2SO>().Add(result);
 

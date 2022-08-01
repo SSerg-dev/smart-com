@@ -53,7 +53,10 @@ namespace Module.Host.TPM.Actions
                                         continue;
 
                                     var proxy = context.Set<CoefficientSI2SO>().Create<CoefficientSI2SO>();
-                                    var result = (CoefficientSI2SO)Mapper.Map(newRecord, proxy, typeof(CoefficientSI2SO), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+                                    var configuration = new MapperConfiguration(cfg =>
+                                        cfg.CreateMap<CoefficientSI2SO, CoefficientSI2SO>().ReverseMap());
+                                    var mapper = configuration.CreateMapper();
+                                    var result = mapper.Map(newRecord, proxy);
                                     context.Set<CoefficientSI2SO>().Add(result);
                                     context.SaveChanges();
                                 }
@@ -78,7 +81,10 @@ namespace Module.Host.TPM.Actions
                                     continue;
 
                                 var proxy = context.Set<CoefficientSI2SO>().Create<CoefficientSI2SO>();
-                                var result = (CoefficientSI2SO)Mapper.Map(newRecord, proxy, typeof(CoefficientSI2SO), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+                                var configuration = new MapperConfiguration(cfg =>
+                                    cfg.CreateMap<CoefficientSI2SO, CoefficientSI2SO>().ReverseMap());
+                                var mapper = configuration.CreateMapper();
+                                var result = mapper.Map(newRecord, proxy);
                                 context.Set<CoefficientSI2SO>().Add(result);
                                 context.SaveChanges();
                             }

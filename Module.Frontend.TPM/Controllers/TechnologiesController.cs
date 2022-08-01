@@ -147,7 +147,10 @@ namespace Module.Frontend.TPM.Controllers
                 return BadRequest(ModelState);
             }
             var proxy = Context.Set<Technology>().Create<Technology>();
-            var result = (Technology)Mapper.Map(model, proxy, typeof(Technology), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+            var configuration = new MapperConfiguration(cfg =>
+                cfg.CreateMap<Technology, Technology>().ReverseMap());
+            var mapper = configuration.CreateMapper();
+            var result = mapper.Map(model, proxy);
             Context.Set<Technology>().Add(result);
 
             try

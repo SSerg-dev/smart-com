@@ -133,7 +133,10 @@ namespace Module.Frontend.TPM.Controllers
             }
 
             var proxy = Context.Set<BTLPromo>().Create<BTLPromo>();
-            var result = (BTLPromo)Mapper.Map(model, proxy, typeof(BTLPromo), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+            var configuration = new MapperConfiguration(cfg =>
+                cfg.CreateMap<BTLPromo, BTLPromo>().ReverseMap());
+            var mapper = configuration.CreateMapper();
+            var result = mapper.Map(model, proxy);
             Context.Set<BTLPromo>().Add(result);
 
             try

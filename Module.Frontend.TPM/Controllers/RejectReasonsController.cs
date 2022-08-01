@@ -120,7 +120,10 @@ namespace Module.Frontend.TPM.Controllers
                 return BadRequest(ModelState);
             }
             var proxy = Context.Set<RejectReason>().Create<RejectReason>();
-            var result = (RejectReason)Mapper.Map(model, proxy, typeof(RejectReason), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+            var configuration = new MapperConfiguration(cfg =>
+                cfg.CreateMap<RejectReason, RejectReason>().ReverseMap());
+            var mapper = configuration.CreateMapper();
+            var result = mapper.Map(model, proxy);
             Context.Set<RejectReason>().Add(result);
 
             try

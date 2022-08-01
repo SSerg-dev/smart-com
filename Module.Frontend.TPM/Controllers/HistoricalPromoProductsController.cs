@@ -1,4 +1,3 @@
-using AutoMapper.Internal;
 using Core.History;
 using Frontend.Core.Controllers.Base;
 using Module.Frontend.TPM.Util;
@@ -46,8 +45,11 @@ namespace Module.Frontend.TPM.Controllers
         {
             var product = Context.Set<PromoProduct>().Find(Id);
             var promoProducts = HistoryReader.GetAllById<HistoricalPromoProduct>(Id.ToString());
-            promoProducts.Each(pp => pp.EAN_PC = product.EAN_PC);
-            promoProducts.Each(pp => pp.PluCode = product.Plu?.PluCode);
+            foreach (var promoProduct in promoProducts)
+            {
+                promoProduct.EAN_PC = product.EAN_PC;
+                promoProduct.PluCode = product.Plu?.PluCode;
+            }
             return promoProducts;
         }
 

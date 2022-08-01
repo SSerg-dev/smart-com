@@ -109,7 +109,10 @@ namespace Module.Frontend.TPM.Controllers
                 return BadRequest(ModelState);
             }
             var proxy = Context.Set<NonPromoSupportBrandTech>().Create<NonPromoSupportBrandTech>();
-            var result = (NonPromoSupportBrandTech)Mapper.Map(model, proxy, typeof(NonPromoSupportBrandTech), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+            var configuration = new MapperConfiguration(cfg =>
+                cfg.CreateMap<NonPromoSupportBrandTech, NonPromoSupportBrandTech>().ReverseMap());
+            var mapper = configuration.CreateMapper();
+            var result = mapper.Map(model, proxy);
             Context.Set<NonPromoSupportBrandTech>().Add(result);
 
             try

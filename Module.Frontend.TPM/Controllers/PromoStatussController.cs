@@ -126,7 +126,10 @@ namespace Module.Frontend.TPM.Controllers
                 return BadRequest(ModelState);
             }
             var proxy = Context.Set<PromoStatus>().Create<PromoStatus>();
-            var result = (PromoStatus)Mapper.Map(model, proxy, typeof(PromoStatus), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+            var configuration = new MapperConfiguration(cfg =>
+                cfg.CreateMap<PromoStatus, PromoStatus>().ReverseMap());
+            var mapper = configuration.CreateMapper();
+            var result = mapper.Map(model, proxy);
             try
             {
                 Context.Set<PromoStatus>().Add(result);

@@ -118,7 +118,10 @@ namespace Module.Frontend.TPM.Controllers
                 return BadRequest(ModelState);
             }
             var proxy = Context.Set<CommercialSubnet>().Create<CommercialSubnet>();
-            var result = (CommercialSubnet)Mapper.Map(model, proxy, typeof(CommercialSubnet), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+            var configuration = new MapperConfiguration(cfg =>
+                cfg.CreateMap<CommercialSubnet, CommercialSubnet>().ReverseMap());
+            var mapper = configuration.CreateMapper();
+            var result = mapper.Map(model, proxy);
             Context.Set<CommercialSubnet>().Add(result);
 
             try

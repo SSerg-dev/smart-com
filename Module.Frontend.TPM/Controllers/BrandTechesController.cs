@@ -129,7 +129,10 @@ namespace Module.Frontend.TPM.Controllers
             }
 
             var proxy = Context.Set<BrandTech>().Create<BrandTech>();
-            var result = (BrandTech)Mapper.Map(model, proxy, typeof(BrandTech), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+            var configuration = new MapperConfiguration(cfg =>
+                cfg.CreateMap<BrandTech, BrandTech>().ReverseMap());
+            var mapper = configuration.CreateMapper();
+            var result = mapper.Map(model, proxy);
 
             Context.Set<BrandTech>().Add(result);
 

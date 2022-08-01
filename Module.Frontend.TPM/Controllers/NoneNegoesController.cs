@@ -144,7 +144,10 @@ namespace Module.Frontend.TPM.Controllers
             model.ToDate = ChangeTimeZoneUtil.ResetTimeZone(model.ToDate);
 
             var proxy = Context.Set<NoneNego>().Create<NoneNego>();
-            var result = (NoneNego)Mapper.Map(model, proxy, typeof(NoneNego), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+            var configuration = new MapperConfiguration(cfg =>
+                cfg.CreateMap<NoneNego, NoneNego>().ReverseMap());
+            var mapper = configuration.CreateMapper();
+            var result = mapper.Map(model, proxy);
             Context.Set<NoneNego>().Add(result);
 
             try

@@ -132,7 +132,10 @@ namespace Module.Frontend.TPM.Controllers
             model.EndDate = ChangeTimeZoneUtil.ResetTimeZone(model.EndDate);
 
             var proxy = Context.Set<PromoSupport>().Create<PromoSupport>();
-            var result = (PromoSupport)Mapper.Map(model, proxy, typeof(PromoSupport), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+            var configuration = new MapperConfiguration(cfg =>
+                cfg.CreateMap<PromoSupport, PromoSupport>().ReverseMap());
+            var mapper = configuration.CreateMapper();
+            var result = mapper.Map(model, proxy);
             Context.Set<PromoSupport>().Add(result);
 
             try

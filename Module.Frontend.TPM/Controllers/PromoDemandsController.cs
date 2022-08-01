@@ -122,7 +122,10 @@ namespace Module.Frontend.TPM.Controllers
 
             SetDemandMarsDates(model);
             var proxy = Context.Set<PromoDemand>().Create<PromoDemand>();
-            var result = (PromoDemand)Mapper.Map(model, proxy, typeof(PromoDemand), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+            var configuration = new MapperConfiguration(cfg =>
+                cfg.CreateMap<PromoDemand, PromoDemand>().ReverseMap());
+            var mapper = configuration.CreateMapper();
+            var result = mapper.Map(model, proxy);
             Context.Set<PromoDemand>().Add(result);
 
             try

@@ -118,7 +118,10 @@ namespace Module.Frontend.TPM.Controllers
                 return BadRequest(ModelState);
             }
             var proxy = Context.Set<StoreType>().Create<StoreType>();
-            var result = (StoreType)Mapper.Map(model, proxy, typeof(StoreType), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+            var configuration = new MapperConfiguration(cfg =>
+                cfg.CreateMap<StoreType, StoreType>().ReverseMap());
+            var mapper = configuration.CreateMapper();
+            var result = mapper.Map(model, proxy);
             Context.Set<StoreType>().Add(result);
 
             try

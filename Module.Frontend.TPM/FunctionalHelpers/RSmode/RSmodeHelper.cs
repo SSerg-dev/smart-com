@@ -70,8 +70,12 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
             //promo.IncrementalPromoes = null;
             //promo.PromoProducts = null;
             //promo.Promoes = null;
-            PromoStatus promoStatus = Mapper.Map<PromoStatus>(promo.PromoStatus);
-            Promo promoRS = Mapper.Map<Promo>(promo);
+            //PromoStatus promoStatus = Mapper.Map<PromoStatus>(promo.PromoStatus);
+
+            var configuration = new MapperConfiguration(cfg =>
+                cfg.CreateMap<Promo, Promo>().ReverseMap());
+            var mapper = configuration.CreateMapper();
+            Promo promoRS = mapper.Map<Promo>(promo);
             return promoRS;
 
         }

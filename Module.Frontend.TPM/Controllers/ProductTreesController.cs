@@ -383,7 +383,10 @@ namespace Module.Frontend.TPM.Controllers
             model.FullPathName = fullPathClientName;
 
             var proxy = Context.Set<ProductTree>().Create<ProductTree>();
-            var result = (ProductTree)Mapper.Map(model, proxy, typeof(ProductTree), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+            var configuration = new MapperConfiguration(cfg =>
+                cfg.CreateMap<ProductTree, ProductTree>().ReverseMap());
+            var mapper = configuration.CreateMapper();
+            var result = mapper.Map(model, proxy);
 
             result.ObjectId = new int();
             Context.Set<ProductTree>().Add(result);

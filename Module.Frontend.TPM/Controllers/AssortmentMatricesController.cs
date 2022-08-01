@@ -147,7 +147,10 @@ namespace Module.Frontend.TPM.Controllers
             model.EndDate = ChangeTimeZoneUtil.ResetTimeZone(model.EndDate);
 
             var proxy = Context.Set<AssortmentMatrix>().Create<AssortmentMatrix>();
-            var result = (AssortmentMatrix)Mapper.Map(model, proxy, typeof(AssortmentMatrix), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+            var configuration = new MapperConfiguration(cfg =>
+                cfg.CreateMap<AssortmentMatrix, AssortmentMatrix>().ReverseMap());
+            var mapper = configuration.CreateMapper();
+            var result = mapper.Map(model, proxy);
 
             Context.Set<AssortmentMatrix>().Add(result);
 

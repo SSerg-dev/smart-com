@@ -123,7 +123,10 @@ namespace Module.Frontend.TPM.Controllers
                 return BadRequest(ModelState);
             }
             var proxy = Context.Set<BudgetItem>().Create<BudgetItem>();
-            var result = (BudgetItem)Mapper.Map(model, proxy, typeof(BudgetItem), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+            var configuration = new MapperConfiguration(cfg =>
+                cfg.CreateMap<BudgetItem, BudgetItem>().ReverseMap());
+            var mapper = configuration.CreateMapper();
+            var result = mapper.Map(model, proxy);
             Context.Set<BudgetItem>().Add(result);
 
             try
