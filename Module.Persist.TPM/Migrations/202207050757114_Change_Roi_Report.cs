@@ -80,6 +80,7 @@ namespace Module.Persist.TPM.Migrations
 					p.[ActualPromoPostPromoEffectLSVW2],
 					p.[IsAutomaticallyApproved],
 					p.[IsCMManagerApproved],
+					p.[IsGAManagerApproved],
 					p.[IsDemandPlanningApproved],
 					p.[IsDemandFinanceApproved],
 					'' AS [ProductTreeObjectIds],
