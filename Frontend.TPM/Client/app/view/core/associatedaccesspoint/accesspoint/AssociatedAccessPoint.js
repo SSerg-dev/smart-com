@@ -47,6 +47,12 @@ Ext.define('App.view.core.associatedaccesspoint.accesspoint.AssociatedAccessPoin
             }, {
                 text: l10n.ns('core', 'AssociatedAccessPoint').value('Description'),
                 dataIndex: 'Description'
+            }, {
+                xtype: 'checkcolumn',
+                text: l10n.ns('core', 'AssociatedAccessPoint').value('TPMmode'),
+                dataIndex: 'TPMmode',
+                align: 'center;',
+                disabled: true
             }]
         }
     }, {

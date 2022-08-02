@@ -139,11 +139,12 @@ Ext.define('App.util.core.UserInfo', function () {
         },
 
         hasAccessPoint: function (resource, action) {
+            
             var currentRole = this.getCurrentRole();
 
             if (currentRole) {
                 var ap = Ext.Array.findBy(currentRole.AccessPoints, function (item) {
-                    return item.Resource === resource && item.Action === action;
+                    return item.Resource === resource && item.Action === action && item.TPMmode === true;
                 }, this);
 
                 return ap !== null;

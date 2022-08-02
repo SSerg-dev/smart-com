@@ -648,7 +648,8 @@
     'AccessPoint': {
         'Resource': 'Resource',
         'Action': 'Action',
-        'Description': 'Description'
+        'Description': 'Description',
+        'TPMmode': 'Indicator',
     },
     'HistoricalAccessPoint': ['AccessPoint', 'BaseHistoryEntity'],
     'DeletedAccessPoint': ['AccessPoint', 'BaseDeletedEntity'],
