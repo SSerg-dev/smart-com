@@ -596,7 +596,6 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 productQuery = context.Set<Product>().Where(x => !x.Disabled);
             }
 
-            string time, time2;
             Stopwatch s = new Stopwatch();
             if (!String.IsNullOrEmpty(promo.InOutProductIds))
             {

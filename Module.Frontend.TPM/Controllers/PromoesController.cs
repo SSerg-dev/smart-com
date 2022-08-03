@@ -1744,8 +1744,8 @@ namespace Module.Frontend.TPM.Controllers
                     || (DateTime.Compare(x.StartDate, dt) <= 0 && (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, dt) > 0)));
                 IEnumerable<int> promoProductsPTOIds = promoProducts.Select(z => z.ProductTreeObjectId);
                 IQueryable<ProductTree> pts = ptQuery.Where(y => promoProductsPTOIds.Contains(y.ObjectId));
-                promo.ProductSubrangesList = String.Join(";", pts.Where(x => x.Type == "Subrange").Select(z => z.Name));
-                promo.ProductSubrangesListRU = String.Join(";", pts.Where(x => x.Type == "Subrange").Select(z => z.Description_ru));
+                promo.ProductSubrangesList = string.Join(";", pts.Where(x => x.Type == "Subrange").Select(z => z.Name));
+                promo.ProductSubrangesListRU = string.Join(";", pts.Where(x => x.Type == "Subrange").Select(z => z.Description_ru));
 
                 int objectId = product.ProductTreeObjectId;
                 ProductTree pt = context.Set<ProductTree>().FirstOrDefault(x => (x.StartDate < dt && (x.EndDate > dt || !x.EndDate.HasValue)) && x.ObjectId == objectId);
@@ -2112,7 +2112,8 @@ namespace Module.Frontend.TPM.Controllers
                     {
                         Id = Guid.NewGuid(),
                         ProductTreeObjectId = objectId,
-                        Promo = promo
+                        Promo = promo,
+                        TPMmode = promo.TPMmode
                     };
 
                     currentProducTrees.Add(promoProductTree);

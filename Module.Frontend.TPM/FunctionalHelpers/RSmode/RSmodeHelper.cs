@@ -178,12 +178,14 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
             return promoSupportPromoRS;
 
         }
-        public static PromoProductsCorrection EditToPromoRS(DatabaseContext Context, PromoProductsCorrection promoProductsCorrection)
+        public static PromoProductsCorrection EditToPromoProductsCorrectionRS(DatabaseContext Context, PromoProductsCorrection promoProductsCorrection)
         {
             var configuration = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<PromoProductsCorrection, PromoProductsCorrection>();
+                cfg.CreateMap<PromoProductsCorrection, PromoProductsCorrection>()
+                    .ForMember(pTo => pTo.Id, opt => opt.Ignore());
                 cfg.CreateMap<PromoProduct, PromoProduct>()
+                    .ForMember(pTo => pTo.Product, opt => opt.Ignore())
                     .ForMember(pTo => pTo.Product, opt => opt.Ignore())
                     .ForMember(pTo => pTo.Plu, opt => opt.Ignore());
                 cfg.CreateMap<Promo, Promo>()
@@ -231,11 +233,12 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
             return promoProductsCorrectionRS;
 
         }
-        public static IncrementalPromo EditToPromoRS(DatabaseContext Context, IncrementalPromo incrementalPromo)
+        public static IncrementalPromo EditToIncrementalPromoRS(DatabaseContext Context, IncrementalPromo incrementalPromo)
         {
             var configuration = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<IncrementalPromo, IncrementalPromo>()
+                    .ForMember(pTo => pTo.Id, opt => opt.Ignore())
                     .ForMember(pTo => pTo.Product, opt => opt.Ignore());
                 cfg.CreateMap<Promo, Promo>()
                     //.ForMember(pTo => pTo.BTLPromoes, opt => opt.Ignore())
@@ -266,14 +269,18 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
                 cfg.CreateMap<BTLPromo, BTLPromo>()
                     .ForMember(pTo => pTo.BTL, opt => opt.Ignore())
                     .ForMember(pTo => pTo.ClientTree, opt => opt.Ignore())
-                    .ForMember(pTo => pTo.Promo, opt => opt.Ignore());
+                    .ForMember(pTo => pTo.Promo, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoId, opt => opt.Ignore());
                 cfg.CreateMap<PromoSupportPromo, PromoSupportPromo>()
                     .ForMember(pTo => pTo.PromoSupport, opt => opt.Ignore())
-                    .ForMember(pTo => pTo.Promo, opt => opt.Ignore());
+                    .ForMember(pTo => pTo.Promo, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoId, opt => opt.Ignore());
                 cfg.CreateMap<PromoProductTree, PromoProductTree>()
-                    .ForMember(pTo => pTo.Promo, opt => opt.Ignore());
+                    .ForMember(pTo => pTo.Promo, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoId, opt => opt.Ignore());
                 cfg.CreateMap<PromoProduct, PromoProduct>()
                     .ForMember(pTo => pTo.Promo, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoId, opt => opt.Ignore())
                     .ForMember(pTo => pTo.Product, opt => opt.Ignore())
                     .ForMember(pTo => pTo.Plu, opt => opt.Ignore());
                 cfg.CreateMap<PromoProductsCorrection, PromoProductsCorrection>()

@@ -338,7 +338,6 @@
         var mode = settingStore.findRecord('name', 'mode');
         if (mode) {
             if (mode.data.value != 1) {
-                debugger;
                 var promogrid = Ext.getCmp('promoGrid').down('grid');
                 var indexh = this.getColumnIndex(promogrid, 'TPMmode')
                 promogrid.columnManager.getColumns()[indexh].hide();
@@ -1397,7 +1396,6 @@
         promoeditorcustom.isCreating = true;
 
         promoeditorcustom.TPMmode = settingStore.findRecord('name', 'mode').data.value;
-        debugger;
         RSmodeController.getRSPeriod(function (returnValue) {
             promoeditorcustom.rsStartEnd = returnValue;
         });
