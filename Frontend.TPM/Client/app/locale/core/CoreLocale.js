@@ -525,7 +525,8 @@
     'AccessPoint': {
         'Resource': 'Ресурс',
         'Action': 'Действие',
-        'Description': 'Описание'
+        'Description': 'Описание',
+        'TPMmode': 'Индикатор',
     },
     'HistoricalAccessPoint': ['AccessPoint', 'BaseHistoryEntity'],
     'DeletedAccessPoint': ['AccessPoint', 'BaseDeletedEntity'],
