@@ -371,7 +371,8 @@ namespace Module.Frontend.TPM.Controllers
                 patch.CopyChangedValues(ChangePromo);
                 IEnumerable<string> ChangedList = patch.GetChangedPropertyNames();
 
-                Promo promoCopy = new Promo(model);
+                //Promo promoCopy = new Promo(model);
+                Promo promoCopy = AutomapperProfiles.PromoCopy(model);
                 patch.Patch(model);
                 if (ChangedList.Any(g => g.Contains("TPMmode")) && ChangePromo.TPMmode == TPMmode.RS)
                 {
@@ -979,7 +980,7 @@ namespace Module.Frontend.TPM.Controllers
                     return NotFound();
                 }
 
-                Promo promoCopy = new Promo(model);
+                Promo promoCopy = AutomapperProfiles.PromoCopy(model);
 
                 model.DeletedDate = DateTime.Now;
                 model.Disabled = true;
@@ -1051,7 +1052,7 @@ namespace Module.Frontend.TPM.Controllers
                     throw new Exception("NotFound");
                 }
 
-                Promo promoCopy = new Promo(model);
+                Promo promoCopy = AutomapperProfiles.PromoCopy(model);
 
                 model.DeletedDate = DateTime.Now;
                 model.Disabled = true;

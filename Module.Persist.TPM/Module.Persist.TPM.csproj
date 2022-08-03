@@ -3536,6 +3536,7 @@
     <Content Include="SQLInitialize\20200720_1050_Alter_PlanIncrementalReport.sql" />
     <Content Include="SQLInitialize\20200904_1625_Alter_JsonToCondition.sql" />
     <Content Include="SQLInitialize\20200908_1300_Add_Ap_DP_Product_Delete.sql" />
+    <Compile Include="Utils\AutomapperProfiles.cs" />
     <Compile Include="Utils\ConfigManager.cs" />
     <Compile Include="Utils\ExportCSVBuilderFactory.cs" />
     <Compile Include="Utils\ExportCSVModelBuilders\IncrementalToApolloModelBuilder.cs" />

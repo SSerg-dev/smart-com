@@ -271,7 +271,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             {
                 var promo = context.Set<Promo>().Where(x => x.Id == promoId && !x.Disabled).FirstOrDefault();
                 string message = null;
-                Promo promoCopy = new Promo(promo);
+                Promo promoCopy = AutomapperProfiles.PromoCopy(promo);
 
                 if (promo.StartDate.HasValue && promo.EndDate.HasValue)
                 {

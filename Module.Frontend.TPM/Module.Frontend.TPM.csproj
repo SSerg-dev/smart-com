@@ -453,6 +453,7 @@
     <Compile Include="Controllers\RPAsController.cs" />
     <Compile Include="Controllers\RPASettingsController.cs" />
     <Compile Include="Controllers\RollingScenariosController.cs" />
+    <Compile Include="FunctionalHelpers\PromoAction\PromoSaveHelper.cs" />
     <Compile Include="FunctionalHelpers\RSmode\RSmodeHelper.cs" />
     <Compile Include="FunctionalHelpers\RSPeriod\RSPeriodHelper.cs" />
     <Compile Include="Model\RPAEventJsonField.cs" />
