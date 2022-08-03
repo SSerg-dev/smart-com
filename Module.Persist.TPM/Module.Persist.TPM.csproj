@@ -2967,6 +2967,10 @@
     <Compile Include="Migrations\202208030453084_Add_AccessPoint_RSMode.Designer.cs">
       <DependentUpon>202208030453084_Add_AccessPoint_RSMode.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202208032002518_IncrementalPromo_TPMmode.cs" />
+    <Compile Include="Migrations\202208032002518_IncrementalPromo_TPMmode.Designer.cs">
+      <DependentUpon>202208032002518_IncrementalPromo_TPMmode.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
@@ -5625,6 +5629,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202208030453084_Add_AccessPoint_RSMode.resx">
       <DependentUpon>202208030453084_Add_AccessPoint_RSMode.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202208032002518_IncrementalPromo_TPMmode.resx">
+      <DependentUpon>202208032002518_IncrementalPromo_TPMmode.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
