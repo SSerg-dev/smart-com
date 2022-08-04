@@ -342,6 +342,12 @@
                 var indexh = this.getColumnIndex(promogrid, 'TPMmode')
                 promogrid.columnManager.getColumns()[indexh].hide();
             }
+            else {
+                var promoGridViewStore = grid.getStore();
+                var promoGridViewStoreProxy = promoGridViewStore.getProxy();
+
+                promoGridViewStoreProxy.extraParams.TPMmode = 'RS';
+            }
         }
 
         this.onGridAfterrender(grid);

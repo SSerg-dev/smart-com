@@ -5,6 +5,7 @@ using Looper.Core;
 using Looper.Parameters;
 using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.DTO;
+using Module.Persist.TPM.Model.Interfaces;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.PromoStateControl;
 using Module.Persist.TPM.Utils;
@@ -45,7 +46,7 @@ namespace Module.Frontend.TPM.Controllers
             roleId = RoleId;
         }
 
-        public IQueryable<PromoGridView> GetConstraintedQuery(bool canChangeStateOnly = false, DatabaseContext localContext = null)
+        public IQueryable<PromoGridView> GetConstraintedQuery(bool canChangeStateOnly = false, TPMmode tPMmode = TPMmode.Current, DatabaseContext localContext = null)
         {
             PerformanceLogger logger = new PerformanceLogger();
             logger.Start();
@@ -59,7 +60,7 @@ namespace Module.Frontend.TPM.Controllers
             IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
             IQueryable<PromoGridView> query = localContext.Set<PromoGridView>().AsNoTracking();
             IQueryable<ClientTreeHierarchyView> hierarchy = localContext.Set<ClientTreeHierarchyView>().AsNoTracking();
-            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters, FilterQueryModes.Active, canChangeStateOnly ? role : String.Empty);
+            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, tPMmode, filters, FilterQueryModes.Active, canChangeStateOnly ? role : String.Empty);
 
             // Не администраторы не смотрят чужие черновики
             if (role != "Administrator" && role != "SupportAdministrator")
@@ -88,18 +89,18 @@ namespace Module.Frontend.TPM.Controllers
             return query;
         }
 
-        [ClaimsAuthorize]
-        [EnableQuery(MaxNodeCount = int.MaxValue)]
-        public SingleResult<PromoGridView> GetPromoGridView([FromODataUri] Guid key)
-        {
-            return SingleResult.Create(GetConstraintedQuery());
-        }
+        //[ClaimsAuthorize]
+        //[EnableQuery(MaxNodeCount = int.MaxValue)]
+        //public SingleResult<PromoGridView> GetPromoGridView([FromODataUri] Guid key)
+        //{
+        //    return SingleResult.Create(GetConstraintedQuery());
+        //}
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue, MaxExpansionDepth = 3)]
-        public IQueryable<PromoGridView> GetPromoGridViews(bool canChangeStateOnly = false)
+        public IQueryable<PromoGridView> GetPromoGridViews(bool canChangeStateOnly = false, TPMmode tPMmode = TPMmode.Current)
         {
-            return GetConstraintedQuery(canChangeStateOnly);
+            return GetConstraintedQuery(canChangeStateOnly, tPMmode);
         }
 
         [ClaimsAuthorize]
@@ -107,7 +108,7 @@ namespace Module.Frontend.TPM.Controllers
         public IQueryable<PromoGridView> GetFilteredData(ODataQueryOptions<PromoGridView> options)
         {
             string bodyText = Helper.GetRequestBody(HttpContext.Current.Request);
-            var query = GetConstraintedQuery(Helper.GetValueIfExists<bool>(bodyText, "canChangeStateOnly"));
+            var query = GetConstraintedQuery(Helper.GetValueIfExists<bool>(bodyText, "canChangeStateOnly"), JsonHelper.GetValueIfExists<TPMmode>(bodyText, "TPMmode"));
 
             var querySettings = new ODataQuerySettings
             {

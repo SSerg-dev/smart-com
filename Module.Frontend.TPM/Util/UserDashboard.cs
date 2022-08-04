@@ -7,6 +7,7 @@ using Looper.Core;
 using Looper.Parameters;
 using Module.Persist.TPM.CalculatePromoParametersModule;
 using Module.Persist.TPM.Model.DTO;
+using Module.Persist.TPM.Model.Interfaces;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
 using Newtonsoft.Json;
@@ -36,7 +37,7 @@ namespace Module.Frontend.TPM.Util
             IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
             IQueryable<PromoGridView> query = Context.Set<PromoGridView>().AsNoTracking();
             IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
-            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters, FilterQueryModes.Active, canChangeStateOnly ? role : String.Empty);
+            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, TPMmode.Current, filters, FilterQueryModes.Active, canChangeStateOnly ? role : String.Empty);
 
             // Не администраторы не смотрят чужие черновики
             if (role != "Administrator")

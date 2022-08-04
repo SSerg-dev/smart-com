@@ -373,11 +373,12 @@ namespace Module.Frontend.TPM.Controllers
 
                 //Promo promoCopy = new Promo(model);
                 Promo promoCopy = AutomapperProfiles.PromoCopy(model);
-                patch.Patch(model);
-                if (ChangedList.Any(g => g.Contains("TPMmode")) && ChangePromo.TPMmode == TPMmode.RS)
+                if (model.TPMmode != ChangePromo.TPMmode)
                 {
-                    RSmodeHelper.EditToPromoRS(Context, model);
-                }                
+                    model = RSmodeHelper.EditToPromoRS(Context, model);
+                }
+                patch.Patch(model);
+
                 model.DeviationCoefficient /= 100;
                 if (!String.IsNullOrEmpty(model.AdditionalUserTimestamp))
                     FixateTempPromoProductsCorrections(model.Id, model.AdditionalUserTimestamp);

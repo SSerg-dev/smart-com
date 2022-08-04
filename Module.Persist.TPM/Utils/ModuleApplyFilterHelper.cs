@@ -84,7 +84,7 @@ namespace Module.Persist.TPM.Utils {
         /// <param name="filter"></param>
         /// <param name="filterMode"></param>
         /// <returns></returns>
-        public static IQueryable<PromoGridView> ApplyFilter(IQueryable<PromoGridView> query, IQueryable<ClientTreeHierarchyView> hierarchy, IDictionary<string, IEnumerable<string>> filter = null, FilterQueryModes filterMode = FilterQueryModes.Active, string role = "") {
+        public static IQueryable<PromoGridView> ApplyFilter(IQueryable<PromoGridView> query, IQueryable<ClientTreeHierarchyView> hierarchy, TPMmode mode, IDictionary<string, IEnumerable<string>> filter = null, FilterQueryModes filterMode = FilterQueryModes.Active, string role = "") {
             if (filterMode == FilterQueryModes.Active) {
                 query = query.Where(x => !x.Disabled);
             }
@@ -104,6 +104,15 @@ namespace Module.Persist.TPM.Utils {
 					promoToFilter = promoToFilter.Where(x => x.PromoStatusSystemName != "OnApproval");
 				}
 				query = promoToFilter.AsQueryable();
+            }
+            switch (mode)
+            {
+                case TPMmode.Current:
+                    query = query.Where(x => x.TPMmode == TPMmode.Current);
+                    break;
+                case TPMmode.RS:
+                    //query = query.Where(x => x.TPMmode == TPMmode.RS);
+                    break;
             }
             return query;
         }

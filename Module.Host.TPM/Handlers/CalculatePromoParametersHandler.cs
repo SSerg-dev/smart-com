@@ -65,7 +65,7 @@ namespace Module.Host.TPM.Handlers
 					if (promoId != nullGuid)
 					{
                         var role = context.Set<Role>().FirstOrDefault(x => x.Id == RoleId);
-                        bool isSupportAdmin = (role != null && role.SystemName == "SupportAdministrator") ? true : false;
+                        bool isSupportAdmin = (role != null && role.SystemName == "SupportAdministrator");
                         Promo promo = context.Set<Promo>().FirstOrDefault(x => x.Id == promoId);
                         promoCopy = AutomapperProfiles.PromoCopy(promo);
 
