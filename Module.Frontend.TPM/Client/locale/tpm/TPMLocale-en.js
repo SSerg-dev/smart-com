@@ -2513,6 +2513,7 @@
         'UserName': 'User Name',
         'GreaterThanZero': 'Uplift must be greater than zero',
         'ExportCorrections': 'Export correction to XLSX',
+        'TPMmode': 'Indicator'
     },
     'PreviousDayIncremental': {
         'ZREP': 'ZREP',

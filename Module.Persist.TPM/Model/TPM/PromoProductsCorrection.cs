@@ -10,7 +10,9 @@ namespace Module.Persist.TPM.Model.TPM
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public System.Guid Id { get; set; } = Guid.NewGuid();
         public bool Disabled { get; set; }
+        [Index("Unique_PromoProductsCorrection", 1, IsUnique = true)]
         public DateTimeOffset? DeletedDate { get; set; }
+        [Index("Unique_PromoProductsCorrection", 2, IsUnique = true)]
         public TPMmode TPMmode { get; set; }
 
         public double? PlanProductUpliftPercentCorrected { get; set; }
@@ -22,7 +24,7 @@ namespace Module.Persist.TPM.Model.TPM
 
         public DateTimeOffset? CreateDate { get; set; }
         public DateTimeOffset? ChangeDate { get; set; }
-
+        [Index("Unique_PromoProductsCorrection", 3, IsUnique = true)]
         public Guid PromoProductId { get; set; }
         public virtual PromoProduct PromoProduct { get; set; }
 

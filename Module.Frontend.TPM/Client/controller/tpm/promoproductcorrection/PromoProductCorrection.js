@@ -11,7 +11,7 @@
                 },
                 'promoproductcorrection directorygrid': {
                     selectionchange: this.onGridSelectionChange,
-                    afterrender: this.onGridAfterrender,
+                    afterrender: this.onGridPromoProductCorrectionAfterrender,
                     extfilterchange: this.onExtFilterChange
                 },
                 'promoproductcorrection #datatable': {
@@ -77,6 +77,33 @@
                 }
             }
         });
+    },
+
+
+    onGridPromoProductCorrectionAfterrender: function (grid) {
+        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+        var mode = settingStore.findRecord('name', 'mode');
+        if (mode) {
+            if (mode.data.value != 1) {
+                var indexh = this.getColumnIndex(grid, 'TPMmode');
+                grid.columnManager.getColumns()[indexh].hide();
+            }
+            else {
+                var promoProductCorrectionGridStore = grid.getStore();
+                var promoProductCorrectionGridStoreProxy = promoProductCorrectionGridStore.getProxy();
+                promoProductCorrectionGridStoreProxy.extraParams.TPMmode = 'RS';
+            }
+        }
+        this.onGridAfterrender(grid);
+    },
+
+    getColumnIndex: function (grid, dataIndex) {
+        gridColumns = grid.headerCt.getGridColumns();
+        for (var i = 0; i < gridColumns.length; i++) {
+            if (gridColumns[i].dataIndex == dataIndex) {
+                return i;
+            }
+        }
     },
 
     onCreateButtonClick: function () {

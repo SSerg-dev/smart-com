@@ -164,6 +164,10 @@
             },
             items: [
                 {
+                    text: l10n.ns('tpm', 'PromoProductCorrection').value('TPMmode'),
+                    dataIndex: 'TPMmode',
+                },
+                {
 
                     text: l10n.ns('tpm', 'PromoProductCorrection').value('Number'),
                     dataIndex: 'Number',

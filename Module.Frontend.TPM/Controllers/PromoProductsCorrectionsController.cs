@@ -8,9 +8,11 @@ using Frontend.Core.Extensions;
 using Frontend.Core.Extensions.Export;
 using Looper.Core;
 using Looper.Parameters;
+using Module.Frontend.TPM.FunctionalHelpers.RSmode;
 using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.Import;
+using Module.Persist.TPM.Model.Interfaces;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
 using Persist;
@@ -46,7 +48,7 @@ namespace Module.Frontend.TPM.Controllers
         {
             this.authorizationManager = authorizationManager;
         }
-        protected IQueryable<PromoProductsCorrection> GetConstraintedQuery()
+        protected IQueryable<PromoProductsCorrection> GetConstraintedQuery(TPMmode TPMmode = TPMmode.Current)
         {
             UserInfo user = authorizationManager.GetCurrentUser();
             string role = authorizationManager.GetCurrentRoleName();
@@ -57,7 +59,7 @@ namespace Module.Frontend.TPM.Controllers
             IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
             IQueryable<PromoProductsCorrection> query = Context.Set<PromoProductsCorrection>().Where(e => !e.Disabled && e.TempId == null);
 
-            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
+            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, TPMmode, filters);
 
             return query;
         }
@@ -70,16 +72,19 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue, MaxExpansionDepth = 3)]
-        public IQueryable<PromoProductsCorrection> GetPromoProductsCorrections()
+        public IQueryable<PromoProductsCorrection> GetPromoProductsCorrections(TPMmode TPMmode)
         {
-            return GetConstraintedQuery();
+            return GetConstraintedQuery(TPMmode);
         }
 
         [ClaimsAuthorize]
         [HttpPost]
         public IQueryable<PromoProductsCorrection> GetFilteredData(ODataQueryOptions<PromoProductsCorrection> options)
         {
-            var query = GetConstraintedQuery();
+            var bodyText = HttpContext.Current.Request.GetRequestBody();
+            var query = JsonHelper.IsValueExists(bodyText, "TPMmode")
+                 ? GetConstraintedQuery(JsonHelper.GetValueIfExists<TPMmode>(bodyText, "TPMmode"))
+                 : GetConstraintedQuery();
 
             var querySettings = new ODataQuerySettings
             {
@@ -140,7 +145,8 @@ namespace Module.Frontend.TPM.Controllers
             UserInfo user = authorizationManager.GetCurrentUser();
 
             // если существует коррекция на данный PromoProduct, то не создаем новый объект
-            var item = Context.Set<PromoProductsCorrection>().FirstOrDefault(x => x.PromoProductId == model.PromoProductId && x.TempId == model.TempId && !x.Disabled);
+            var item = Context.Set<PromoProductsCorrection>()
+                .FirstOrDefault(x => x.PromoProductId == model.PromoProductId && x.TempId == model.TempId && !x.Disabled);
 
             if (item != null)
             {
@@ -176,7 +182,8 @@ namespace Module.Frontend.TPM.Controllers
                     cfg.CreateMap<PromoProductsCorrection, PromoProductsCorrection>().ReverseMap());
                 var mapper = configuration.CreateMapper();
                 var result = mapper.Map(model, proxy);
-                var promoProduct = Context.Set<PromoProduct>().FirstOrDefault(x => x.Id == result.PromoProductId && !x.Disabled);
+                var promoProduct = Context.Set<PromoProduct>()
+                    .FirstOrDefault(x => x.Id == result.PromoProductId && !x.Disabled);
 
                 if (promoProduct.Promo.NeedRecountUplift == false && String.IsNullOrEmpty(result.TempId))
                 {
@@ -221,6 +228,13 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     return NotFound();
                 }
+                patch.TryGetPropertyValue("TPMmode", out object mode);
+
+                if ((int)model.TPMmode != (int)mode)
+                {
+                    model = RSmodeHelper.EditToPromoProductsCorrectionRS(Context, model);
+                }
+
                 patch.Patch(model);
                 model.ChangeDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
                 model.UserId = user.Id;

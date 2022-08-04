@@ -4,6 +4,7 @@
     breezeEntityType: 'PromoProductsCorrection',
     fields: [
         { name: 'Id', hidden: true },
+        { name: 'TPMmode', type: 'string', hidden: false, isDefault: true },
         { name: 'PromoProductId', hidden: true, isDefault: true },
         { name: 'PlanProductUpliftPercentCorrected', type: 'float', hidden: false, isDefault: true },
         { name: 'UserId', hidden: true, isDefault: true, defaultValue: null },
@@ -39,8 +40,6 @@
         { name: 'PlanProductIncrementalLSV', type: 'float', mapping: 'PromoProduct.PlanProductIncrementalLSV', hidden: false, isDefault: true, useNull: true },
         { name: 'PlanProductLSV', type: 'float', mapping: 'PromoProduct.PlanProductLSV', hidden: false, isDefault: true, useNull: true },
         { name: 'ProductSubrangesList', type: 'string', mapping: 'PromoProduct.Promo.ProductSubrangesList', hidden: false, isDefault: true },
-
-        { name: 'TPMmode', type: 'string', hidden: false, isDefault: true },
     ],
     proxy: {
         type: 'breeze',
@@ -49,6 +48,9 @@
             type: 'json',
             totalProperty: 'inlineCount',
             root: 'results'
+        },
+        extraParams: {
+            TPMmode: 'Current'
         }
     }
 });
