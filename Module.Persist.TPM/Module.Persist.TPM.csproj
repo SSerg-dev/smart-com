@@ -2932,6 +2932,10 @@
     <Compile Include="Migrations\202206240651346_Empty_After_Merge_AddTI.Designer.cs">
       <DependentUpon>202206240651346_Empty_After_Merge_AddTI.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202207050757114_Change_Roi_Report.cs" />
+    <Compile Include="Migrations\202207050757114_Change_Roi_Report.Designer.cs">
+      <DependentUpon>202207050757114_Change_Roi_Report.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\202207191248355_Empty_Migration_Fix_Deploy.cs" />
     <Compile Include="Migrations\202207191248355_Empty_Migration_Fix_Deploy.Designer.cs">
       <DependentUpon>202207191248355_Empty_Migration_Fix_Deploy.cs</DependentUpon>
@@ -5599,6 +5603,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202206240651346_Empty_After_Merge_AddTI.resx">
       <DependentUpon>202206240651346_Empty_After_Merge_AddTI.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202207050757114_Change_Roi_Report.resx">
+      <DependentUpon>202207050757114_Change_Roi_Report.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202207191248355_Empty_Migration_Fix_Deploy.resx">
       <DependentUpon>202207191248355_Empty_Migration_Fix_Deploy.cs</DependentUpon>

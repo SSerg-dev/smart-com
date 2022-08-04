@@ -1,12 +1,11 @@
-﻿using System;
-using Core.Data;
+﻿using Core.Data;
 using Newtonsoft.Json;
+using Persist;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using Newtonsoft.Json;
-using System.Collections.Generic;
-using Persist;
 
 namespace Module.Persist.TPM.Model.TPM
 {
