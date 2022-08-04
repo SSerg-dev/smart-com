@@ -85,6 +85,9 @@
                 minWidth: 110
             },
             items: [{
+                text: l10n.ns('tpm', 'IncrementalPromo').value('TPMmode'),
+                dataIndex: 'TPMmode',
+            }, {
                 text: l10n.ns('tpm', 'IncrementalPromo').value('ProductZREP'),
                 dataIndex: 'ProductZREP',
                 filter: {

@@ -11,7 +11,7 @@
                 },
                 'incrementalpromo directorygrid': {
                     selectionchange: this.onGridSelectionChange,
-                    afterrender: this.onGridAfterrender,
+                    afterrender: this.onGridIncrementalPromoAfterrender,
                     extfilterchange: this.onExtFilterChange
                 },
                 'incrementalpromo #datatable': {
@@ -73,6 +73,32 @@
         });
     },
 
+    onGridIncrementalPromoAfterrender: function (grid) {
+        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+        var mode = settingStore.findRecord('name', 'mode');
+        if (mode) {
+            if (mode.data.value != 1) {
+                var indexh = this.getColumnIndex(grid, 'TPMmode');
+                grid.columnManager.getColumns()[indexh].hide();
+            }
+            else {
+                var incrementalPromoGridStore = grid.getStore();
+                var incrementalPromoGridStoreProxy = incrementalPromoGridStore.getProxy();
+
+                incrementalPromoGridStoreProxy.extraParams.TPMmode = 'RS';
+            }
+        }
+        this.onGridAfterrender(grid);
+    },
+
+    getColumnIndex: function (grid, dataIndex) {
+        gridColumns = grid.headerCt.getGridColumns();
+        for (var i = 0; i < gridColumns.length; i++) {
+            if (gridColumns[i].dataIndex == dataIndex) {
+                return i;
+            }
+        }
+    },
 
     onUpdateButtonClick: function (button) {
         var grid = button.up('incrementalpromo').down('directorygrid');
@@ -199,6 +225,11 @@
             grid = this.editor.grid;
 
         this.editor.setLoading(l10n.ns('core').value('savingText'));
+
+        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+        var mode = settingStore.findRecord('name', 'mode');
+        model.data.TPMmode = mode.data.value;
+
         model.save({
             scope: this,
             success: function (rec, resp, opts) {

@@ -28,7 +28,9 @@ namespace Module.Persist.TPM.Model.TPM
         }
 
         public bool Disabled { get; set; }
+        [Index("Unique_PromoNumber", 3, IsUnique = true)]
         public DateTimeOffset? DeletedDate { get; set; }
+        [Index("Unique_PromoNumber", 2, IsUnique = true)]
         public TPMmode TPMmode { get; set; }
         public DateTimeOffset? LastChangedDate { get; set; }
         public DateTimeOffset? LastChangedDateDemand { get; set; }
@@ -47,8 +49,8 @@ namespace Module.Persist.TPM.Model.TPM
         public DateTimeOffset? LastApprovedDate { get; set; }
 
         // Basic
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        [Index(IsUnique = true)]
+        //[DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        [Index("Unique_PromoNumber", 1, IsUnique = true)]
         public int? Number { get; set; }
         [StringLength(255)]
         public string Name { get; set; }

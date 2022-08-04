@@ -8,7 +8,7 @@ using System.Runtime.Serialization;
 
 namespace Module.Persist.TPM.Model.TPM
 {
-    public class PromoSupport : IEntity<Guid>, IDeactivatable, IMode
+    public class PromoSupport : IEntity<Guid>, IDeactivatable
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public System.Guid Id { get; set; }

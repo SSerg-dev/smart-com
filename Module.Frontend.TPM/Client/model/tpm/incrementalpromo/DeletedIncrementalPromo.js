@@ -5,6 +5,7 @@
     fields: [
         { name: 'DeletedDate', type: 'date', isDefault: false },
         { name: 'Id', hidden: true },
+        { name: 'TPMmode', type: 'string', hidden: false, isDefault: true },
         { name: 'PromoId', hidden: true, isDefault: false },
         { name: 'ProductId', hidden: true, isDefault: false },
         {

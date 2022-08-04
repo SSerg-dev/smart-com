@@ -8,7 +8,7 @@ using System.Runtime.Serialization;
 
 namespace Module.Persist.TPM.Model.TPM
 {
-    public class BTL : IEntity<Guid>, IDeactivatable, IMode
+    public class BTL : IEntity<Guid>, IDeactivatable
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public System.Guid Id { get; set; }
@@ -26,6 +26,5 @@ namespace Module.Persist.TPM.Model.TPM
         public virtual Event Event { get; set; }
 
         public ICollection<BTLPromo> BTLPromoes { get; set; }
-        public TPMmode TPMmode { get; set; }
     }
 }

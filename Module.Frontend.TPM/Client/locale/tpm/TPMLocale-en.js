@@ -2480,6 +2480,7 @@
 
     'IncrementalPromo': {
         'ProductZREP': 'ZREP',
+        'TPMmode': 'Mode',
         'ProductName': 'Product EN',
         'PromoClient': 'Client',
         'PromoNumber': 'Promo ID',

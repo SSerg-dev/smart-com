@@ -4,6 +4,7 @@
     breezeEntityType: 'IncrementalPromo',
     fields: [
         { name: 'Id', hidden: true },
+        { name: 'TPMmode', type: 'string', hidden: false, isDefault: true },
         { name: 'PromoId', hidden: true, isDefault: false },
         { name: 'ProductId', hidden: true, isDefault: false },
         {
@@ -34,6 +35,9 @@
             type: 'json',
             totalProperty: 'inlineCount',
             root: 'results'
+        },
+        extraParams: {
+            TPMmode: 'Current'
         }
     }
 });

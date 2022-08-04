@@ -36,6 +36,8 @@ using Utility;
 using Module.Frontend.TPM.Util;
 using System.Web;
 using Module.Persist.TPM.CalculatePromoParametersModule;
+using Module.Frontend.TPM.FunctionalHelpers.RSmode;
+using Module.Persist.TPM.Model.Interfaces;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -48,7 +50,7 @@ namespace Module.Frontend.TPM.Controllers
             this.authorizationManager = authorizationManager;
         }
 
-        protected IQueryable<IncrementalPromo> GetConstraintedQuery()
+        protected IQueryable<IncrementalPromo> GetConstraintedQuery(TPMmode TPMmode = TPMmode.Current)
         {
             UserInfo user = authorizationManager.GetCurrentUser();
             string role = authorizationManager.GetCurrentRoleName();
@@ -61,7 +63,7 @@ namespace Module.Frontend.TPM.Controllers
 
             IQueryable<IncrementalPromo> query = Context.Set<IncrementalPromo>().Where(e => !e.Disabled);
 
-            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
+            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, TPMmode, filters);
 
             return query;
         }
@@ -75,16 +77,20 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
-        public IQueryable<IncrementalPromo> GetIncrementalPromoes()
+        public IQueryable<IncrementalPromo> GetIncrementalPromoes(TPMmode TPMmode)
         {
-            return GetConstraintedQuery();
+            return GetConstraintedQuery(TPMmode);
         }
 
         [ClaimsAuthorize]
         [HttpPost]
         public IQueryable<IncrementalPromo> GetFilteredData(ODataQueryOptions<IncrementalPromo> options)
         {
-            var query = GetConstraintedQuery();
+
+            var bodyText = HttpContext.Current.Request.GetRequestBody();
+            var query = JsonHelper.IsValueExists(bodyText, "TPMmode")
+                 ? GetConstraintedQuery(JsonHelper.GetValueIfExists<TPMmode>(bodyText, "TPMmode"))
+                 : GetConstraintedQuery();
 
             var querySettings = new ODataQuerySettings
             {
@@ -164,6 +170,13 @@ namespace Module.Frontend.TPM.Controllers
                 if (model == null)
                 {
                     return NotFound();
+                }
+
+                patch.TryGetPropertyValue("TPMmode", out object mode);
+
+                if ((int)model.TPMmode != (int)mode)
+                {
+                    model = RSmodeHelper.EditToIncrementalPromoRS(Context, model);
                 }
 
                 patch.Patch(model);

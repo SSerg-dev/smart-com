@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Module.Persist.TPM.Model.Interfaces;
 using Module.Persist.TPM.Model.TPM;
 using Persist;
 using System;
@@ -238,10 +239,13 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
             var configuration = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<IncrementalPromo, IncrementalPromo>()
-                    .ForMember(pTo => pTo.Id, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
+                    .ForMember(pTo => pTo.TPMmode, opt => opt.MapFrom(x => TPMmode.RS))
                     .ForMember(pTo => pTo.Product, opt => opt.Ignore());
                 cfg.CreateMap<Promo, Promo>()
                     //.ForMember(pTo => pTo.BTLPromoes, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
+                    .ForMember(pTo => pTo.TPMmode, opt => opt.MapFrom(x => TPMmode.RS))
                     .ForMember(pTo => pTo.Brand, opt => opt.Ignore())
                     .ForMember(pTo => pTo.Technology, opt => opt.Ignore())
                     .ForMember(pTo => pTo.BrandTech, opt => opt.Ignore())
@@ -263,35 +267,47 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
                     .ForMember(pTo => pTo.PromoStatusChanges, opt => opt.Ignore())
                     //.ForMember(pTo => pTo.PromoProductTrees, opt => opt.Ignore())
                     .ForMember(pTo => pTo.PreviousDayIncrementals, opt => opt.Ignore())
-                    .ForMember(pTo => pTo.IncrementalPromoes, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.IncrementalPromoes, opt => opt.Condition(c => c.Id != incrementalPromo.Id))
                     //.ForMember(pTo => pTo.PromoProducts, opt => opt.Ignore())
                     .ForMember(pTo => pTo.Promoes, opt => opt.Ignore());
                 cfg.CreateMap<BTLPromo, BTLPromo>()
+                    .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
+                    .ForMember(pTo => pTo.TPMmode, opt => opt.MapFrom(x => TPMmode.RS))
                     .ForMember(pTo => pTo.BTL, opt => opt.Ignore())
                     .ForMember(pTo => pTo.ClientTree, opt => opt.Ignore())
                     .ForMember(pTo => pTo.Promo, opt => opt.Ignore())
                     .ForMember(pTo => pTo.PromoId, opt => opt.Ignore());
                 cfg.CreateMap<PromoSupportPromo, PromoSupportPromo>()
+                    .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
+                    .ForMember(pTo => pTo.TPMmode, opt => opt.MapFrom(x => TPMmode.RS))
                     .ForMember(pTo => pTo.PromoSupport, opt => opt.Ignore())
                     .ForMember(pTo => pTo.Promo, opt => opt.Ignore())
                     .ForMember(pTo => pTo.PromoId, opt => opt.Ignore());
                 cfg.CreateMap<PromoProductTree, PromoProductTree>()
+                    .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
+                    .ForMember(pTo => pTo.TPMmode, opt => opt.MapFrom(x => TPMmode.RS))
                     .ForMember(pTo => pTo.Promo, opt => opt.Ignore())
                     .ForMember(pTo => pTo.PromoId, opt => opt.Ignore());
                 cfg.CreateMap<PromoProduct, PromoProduct>()
+                    .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
+                    .ForMember(pTo => pTo.TPMmode, opt => opt.MapFrom(x => TPMmode.RS))
                     .ForMember(pTo => pTo.Promo, opt => opt.Ignore())
                     .ForMember(pTo => pTo.PromoId, opt => opt.Ignore())
                     .ForMember(pTo => pTo.Product, opt => opt.Ignore())
                     .ForMember(pTo => pTo.Plu, opt => opt.Ignore());
                 cfg.CreateMap<PromoProductsCorrection, PromoProductsCorrection>()
+                    .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
+                    .ForMember(pTo => pTo.TPMmode, opt => opt.MapFrom(x => TPMmode.RS))
                     .ForMember(pTo => pTo.PromoProduct, opt => opt.Ignore());
 
             }
                 );
             var mapper = configuration.CreateMapper();
             IncrementalPromo incrementalPromoRS = mapper.Map<IncrementalPromo>(incrementalPromo);
+           
+            Context.Set<IncrementalPromo>().Add(incrementalPromoRS);
+            Context.SaveChanges();
             return incrementalPromoRS;
-
         }
     }
 }

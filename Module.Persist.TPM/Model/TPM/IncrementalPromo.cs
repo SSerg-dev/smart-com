@@ -12,6 +12,7 @@ namespace Module.Persist.TPM.Model.TPM
         public bool Disabled { get; set; }
         [Index("Unique_IncrementalPromo", 1, IsUnique = true)]
         public DateTimeOffset? DeletedDate { get; set; }
+        [Index("Unique_IncrementalPromo", 2, IsUnique = true)]
         public TPMmode TPMmode { get; set; }
 
         public double? PlanPromoIncrementalCases { get; set; }
@@ -22,10 +23,10 @@ namespace Module.Persist.TPM.Model.TPM
 
         public double? CasePrice { get; set; }
 
-        [Index("Unique_IncrementalPromo", 2, IsUnique = true)]
+        [Index("Unique_IncrementalPromo", 3, IsUnique = true)]
         public Guid PromoId { get; set; }
         public virtual Promo Promo { get; set; }
-        [Index("Unique_IncrementalPromo", 3, IsUnique = true)]
+        [Index("Unique_IncrementalPromo", 4, IsUnique = true)]
         public Guid ProductId { get; set; }
         public virtual Product Product { get; set; }
     }

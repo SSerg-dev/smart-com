@@ -1,5 +1,6 @@
 ﻿using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.Import;
+using Module.Persist.TPM.Model.Interfaces;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.PromoStateControl.RoleStateMap;
 using Persist;
@@ -574,7 +575,7 @@ namespace Module.Persist.TPM.Utils {
         /// <param name="query">Запрос</param>
         /// <param name="hierarchy">Иерархия</param>
         /// <param name="filter">Фильтр</param>
-        public static IQueryable<IncrementalPromo> ApplyFilter(IQueryable<IncrementalPromo> query, IQueryable<ClientTreeHierarchyView> hierarchy, IDictionary<string, IEnumerable<string>> filter = null)
+        public static IQueryable<IncrementalPromo> ApplyFilter(IQueryable<IncrementalPromo> query, IQueryable<ClientTreeHierarchyView> hierarchy, TPMmode mode, IDictionary<string, IEnumerable<string>> filter = null)
         {
             IEnumerable<string> clientFilter = FilterHelper.GetFilter(filter, ModuleFilterName.Client);
             if (clientFilter.Any())
@@ -582,6 +583,17 @@ namespace Module.Persist.TPM.Utils {
                 hierarchy = getFilteredHierarchy(hierarchy, clientFilter);
                 query = query.Where(x =>
                     hierarchy.Any(h => h.Id == x.Promo.ClientTreeId));
+            }
+            switch (mode)
+            {
+                case TPMmode.Current:
+                    query = query.Where(x => x.TPMmode == TPMmode.Current);
+                    break;
+                case TPMmode.RS:
+                    query = query.GroupBy(x => new { x.Promo.Number, x.Product.Id }, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault());
+                    //query = query.ToList().AsQueryable();
+                    //var deletedRSPromoes
+                    break;
             }
             return query;
         }
