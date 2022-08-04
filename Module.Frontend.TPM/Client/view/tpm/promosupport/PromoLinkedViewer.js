@@ -87,13 +87,23 @@
                 if (grid.hasSelection())
                     var status = grid.getSelection()[0].data.PromoStatusName;
                 var panel = this.up();
-                var toolbar = panel.down('custombigtoolbar');
+                var toolbar = panel.down('custombigtoolbar');                               
                 var deleteBtn = toolbar.down('#deletebutton');
                 if (status == 'Closed') {
                     deleteBtn.hide();
                 } else if (editorWind && !editorWind.costProduction) {
                     deleteBtn.show();
 
+                }
+                var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+                var mode = settingStore.findRecord('name', 'mode');
+                if (mode) {
+                    if (mode.data.value == 1) {
+
+                    }
+                    else{
+
+                    }
                 }
             }
         },
