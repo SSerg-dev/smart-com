@@ -2983,6 +2983,10 @@
     <Compile Include="Migrations\202208041843451_PromoProductsCorrection_TPMmode_Index.Designer.cs">
       <DependentUpon>202208041843451_PromoProductsCorrection_TPMmode_Index.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202208050614203_Remove_IndexOld_Promo.cs" />
+    <Compile Include="Migrations\202208050614203_Remove_IndexOld_Promo.Designer.cs">
+      <DependentUpon>202208050614203_Remove_IndexOld_Promo.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
@@ -5653,6 +5657,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202208041843451_PromoProductsCorrection_TPMmode_Index.resx">
       <DependentUpon>202208041843451_PromoProductsCorrection_TPMmode_Index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202208050614203_Remove_IndexOld_Promo.resx">
+      <DependentUpon>202208050614203_Remove_IndexOld_Promo.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
