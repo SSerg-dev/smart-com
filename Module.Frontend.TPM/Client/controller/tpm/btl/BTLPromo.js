@@ -215,7 +215,7 @@
         }
 
         if (closedPromo.length > 0) {
-            App.Notify.pushError('Closed promos cannot be deleted. Promo number: ' + closedPromo.join(", "));
+            App.Notify.pushError('Closed promoes cannot be deleted. Promo number: ' + closedPromo.join(", "));
         } else {
             if (window.btlId && window.btlGrid) {
                 // Привязка нескольких промо к существующему BTL (делается в мастер-детейл)
@@ -226,10 +226,13 @@
                 }
                 window.setLoading(l10n.ns('core').value('savingText'));
 
+               var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+               var mode = settingStore.findRecord('name', 'mode');
+
                $.ajax({
                type: "POST",
                cache: false,
-               url: "/odata/BTLPromoes/BTLPromoPost?btlId=" + window.btlId,
+               url: "/odata/BTLPromoes/BTLPromoPost?btlId=" + window.btlId + '&TPMmode=' + mode.data.value,
                data: JSON.stringify(promoIds),
                dataType: "json",
                contentType: false,

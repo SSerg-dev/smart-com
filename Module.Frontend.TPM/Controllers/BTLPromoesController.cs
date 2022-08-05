@@ -34,6 +34,8 @@ using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Utils;
 using System.Web;
 using Module.Frontend.TPM.Util;
+using Module.Persist.TPM.Model.Interfaces;
+using Module.Frontend.TPM.FunctionalHelpers.RSmode;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -154,7 +156,7 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [HttpPost]
-        public IHttpActionResult BTLPromoPost(Guid btlId)
+        public IHttpActionResult BTLPromoPost(Guid btlId, TPMmode TPMmode)
         {
             using (var transaction = Context.Database.BeginTransaction())
             {
@@ -179,6 +181,8 @@ namespace Module.Frontend.TPM.Controllers
 
                     List<Guid> addedBTLPromoIds = new List<Guid>();
                     List<BTLPromo> bTLPromos = Context.Set<BTLPromo>().Where(n => n.BTLId == btlId && !n.Disabled).ToList();
+                    var isBTLinRS = bTLPromos.Any(x => x.TPMmode == TPMmode.RS);
+
                     foreach (var promoId in guidPromoIds)
                     {
                         Promo promo = Context.Set<Promo>().Find(promoId);
@@ -200,13 +204,20 @@ namespace Module.Frontend.TPM.Controllers
                             }
 
                             bool isLinked = Context.Set<BTLPromo>().Any(x => x.PromoId == promoId && !x.Disabled && x.DeletedDate == null);
-                            if (!isLinked)
+
+                            if (TPMmode == TPMmode.RS && !isBTLinRS)
+                            {
+                                promo = RSmodeHelper.EditToPromoRS(Context, promo);
+                            }
+
+                            if (!isLinked) 
                             {
                                 BTLPromo bp = new BTLPromo
                                 {
                                     BTLId = btlId,
                                     PromoId = promoId,
-                                    ClientTreeId = promo.ClientTreeKeyId.Value
+                                    ClientTreeId = promo.ClientTreeKeyId.Value,
+                                    TPMmode = TPMmode
                                 };
                                 Context.Set<BTLPromo>().Add(bp);
                                 bTLPromos.Add(bp);
@@ -219,6 +230,28 @@ namespace Module.Frontend.TPM.Controllers
                     //    throw new Exception(String.Format("Promoes with numbers {0} are already attached to another BTL.", string.Join(",", linkedPromoes)));
 
                     Context.SaveChanges();
+
+                    if (TPMmode == TPMmode.RS)
+                    {
+                        if (!isBTLinRS)
+                        {
+                            var currentBTLPromoes = bTLPromos.Where(x => x.TPMmode == TPMmode.Current);
+                            foreach(var bTLPromo in currentBTLPromoes)
+                            {
+                                var copiedPromo = RSmodeHelper.EditToPromoRS(Context, bTLPromo.Promo);
+                                BTLPromo bp = new BTLPromo
+                                {
+                                    BTLId = btlId,
+                                    PromoId = copiedPromo.Id,
+                                    ClientTreeId = copiedPromo.ClientTreeKeyId.Value,
+                                    TPMmode = TPMmode
+                                };
+                                Context.Set<BTLPromo>().Add(bp);
+                            }
+                            Context.SaveChanges();
+                        }
+                    }
+
                     CalculateBTLBudgetsCreateTask(btlId.ToString());
 
                     transaction.Commit();
