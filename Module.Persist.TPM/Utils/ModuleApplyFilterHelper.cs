@@ -111,6 +111,7 @@ namespace Module.Persist.TPM.Utils {
                     query = query.Where(x => x.TPMmode == TPMmode.Current);
                     break;
                 case TPMmode.RS:
+                    query = query.GroupBy(x => x.Number, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault());
                     //query = query.Where(x => x.TPMmode == TPMmode.RS);
                     break;
             }
