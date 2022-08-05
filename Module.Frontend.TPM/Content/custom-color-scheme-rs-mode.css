@@ -192,7 +192,7 @@
 }*/
 /*Наведение на кнопку в заголовке панели*/
 .x-panel-blue-selectable-panel-framed .custom-button:hover {
-    background-color: #5481B2;
+    background-color: #808080;
 }
 
 /*Нет рамки у дополнительных кнопок на залоговке грида*/
