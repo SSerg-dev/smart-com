@@ -205,7 +205,7 @@ namespace Module.Frontend.TPM.Controllers
 
                             bool isLinked = Context.Set<BTLPromo>().Any(x => x.PromoId == promoId && !x.Disabled && x.DeletedDate == null);
 
-                            if (TPMmode == TPMmode.RS && !isBTLinRS)
+                            if (TPMmode == TPMmode.RS && !isBTLinRS) //надо проверить если промо уже в RS, то не копируем
                             {
                                 promo = RSmodeHelper.EditToPromoRS(Context, promo);
                             }
@@ -239,14 +239,14 @@ namespace Module.Frontend.TPM.Controllers
                             foreach(var bTLPromo in currentBTLPromoes)
                             {
                                 var copiedPromo = RSmodeHelper.EditToPromoRS(Context, bTLPromo.Promo);
-                                BTLPromo bp = new BTLPromo
-                                {
-                                    BTLId = btlId,
-                                    PromoId = copiedPromo.Id,
-                                    ClientTreeId = copiedPromo.ClientTreeKeyId.Value,
-                                    TPMmode = TPMmode
-                                };
-                                Context.Set<BTLPromo>().Add(bp);
+                                //BTLPromo bp = new BTLPromo
+                                //{
+                                //    BTLId = btlId,
+                                //    PromoId = copiedPromo.Id,
+                                //    ClientTreeId = copiedPromo.ClientTreeKeyId.Value,
+                                //    TPMmode = TPMmode
+                                //};
+                                //Context.Set<BTLPromo>().Add(bp);
                             }
                             Context.SaveChanges();
                         }
