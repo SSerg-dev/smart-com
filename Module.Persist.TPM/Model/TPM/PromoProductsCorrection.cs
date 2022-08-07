@@ -8,7 +8,7 @@ namespace Module.Persist.TPM.Model.TPM
     public class PromoProductsCorrection : IEntity<Guid>, IDeactivatable, IMode
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public System.Guid Id { get; set; } = Guid.NewGuid();
+        public System.Guid Id { get; set; }
         public bool Disabled { get; set; }
         [Index("Unique_PromoProductsCorrection", 1, IsUnique = true)]
         public DateTimeOffset? DeletedDate { get; set; }
