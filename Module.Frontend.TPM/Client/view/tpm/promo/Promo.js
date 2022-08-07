@@ -283,9 +283,19 @@
                 {
                     text: l10n.ns('tpm', 'Promo').value('TPMmode'),
                     dataIndex: 'TPMmode',
-                    //renderer: function (value) {
-                    //    return value ? l10n.ns('core', 'booleanValues').value('true') : l10n.ns('core', 'booleanValues').value('false');
-                    //}
+                    renderer: function (value) {
+                        return value;
+                    },
+                    xtype: 'booleancolumn',
+                    trueText: 'RS',
+                    falseText: 'Current',
+                    filter: {
+                        type: 'bool',
+                        store: [
+                            [0, 'Current'],
+                            [1, 'RS']
+                        ]
+                    }
                 },
             {
                 text: l10n.ns('tpm', 'Promo').value('InOut'),
