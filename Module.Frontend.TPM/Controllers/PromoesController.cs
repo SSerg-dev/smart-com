@@ -56,7 +56,7 @@ namespace Module.Frontend.TPM.Controllers
             this.authorizationManager = authorizationManager;
         }
 
-        protected IQueryable<Promo> GetConstraintedQuery(bool canChangeStateOnly = false, bool withDeleted = false)
+        protected IQueryable<Promo> GetConstraintedQuery(bool canChangeStateOnly = false, TPMmode tPMmode = TPMmode.Current, bool withDeleted = false)
         {
             PerformanceLogger logger = new PerformanceLogger();
             logger.Start();
@@ -68,7 +68,7 @@ namespace Module.Frontend.TPM.Controllers
             IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
             IQueryable<Promo> query = Context.Set<Promo>().Where(e => !e.Disabled || withDeleted);
             IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
-            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters, FilterQueryModes.None, canChangeStateOnly ? role : String.Empty);
+            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, tPMmode, filters, FilterQueryModes.None, canChangeStateOnly ? role : String.Empty);
 
             // Не администраторы не смотрят чужие черновики
             if (role != "Administrator" && role != "SupportAdministrator")
@@ -95,7 +95,7 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue, MaxExpansionDepth = 3)]
-        public IQueryable<Promo> GetCanChangeStatePromoes(bool canChangeStateOnly = false)
+        public IQueryable<Promo> GetCanChangeStatePromoes(bool canChangeStateOnly = false, TPMmode tPMmode = TPMmode.Current)
         {
             return GetConstraintedQuery(canChangeStateOnly);
         }
@@ -107,7 +107,7 @@ namespace Module.Frontend.TPM.Controllers
             string bodyText = Helper.GetRequestBody(HttpContext.Current.Request);
             string filter = HttpContext.Current.Request.QueryString["$filter"];
             bool IsMasterFiltered = filter.Contains("MasterPromoId");
-            var query = GetConstraintedQuery(Helper.GetValueIfExists<bool>(bodyText, "canChangeStateOnly"), IsMasterFiltered);
+            var query = GetConstraintedQuery(Helper.GetValueIfExists<bool>(bodyText, "canChangeStateOnly"), JsonHelper.GetValueIfExists<TPMmode>(bodyText, "TPMmode"), IsMasterFiltered);
 
             var querySettings = new ODataQuerySettings
             {
