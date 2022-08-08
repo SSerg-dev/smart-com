@@ -1790,26 +1790,12 @@
     },
     onUpdateButtonClick: function (button) {
         var me = this;
-        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
         var grid = this.getGridByButton(button);
         grid.up('promo').setLoading(true);
         var promoeditorcustom = Ext.widget('promoeditorcustom');
         me.detailButton = null;
         var promoStatusName = null;
         var record = me.getRecord(promoeditorcustom);
-        var RSmodeController = App.app.getController('tpm.rsmode.RSmode');
-        promoeditorcustom.TPMmode = settingStore.findRecord('name', 'mode').data.value;
-
-        if (promoeditorcustom.TPMmode == 1) {
-            RSmodeController.getRSPeriod(function (returnValue) {
-                promoeditorcustom.rsStartEnd = returnValue;
-            });
-            var promoMechanics = promoeditorcustom.down('promomechanic');
-            var panelGA = promoMechanics.down('[name=panelGA]');
-            panelGA.setDisabled(true);
-            this.showRSmodeLabel(true);
-        }
-
         // Если запись обозначена
         if (button.assignedRecord) {
             promoeditorcustom.isCreating = false;
@@ -1890,21 +1876,9 @@
 
     onDetailButtonClick: function (button) {
         var me = this;
-        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
         var promoeditorcustom = Ext.widget('promoeditorcustom');
         me.getController('tpm.promo.Promo').detailButton = button;
-        var RSmodeController = App.app.getController('tpm.rsmode.RSmode');
-        promoeditorcustom.TPMmode = settingStore.findRecord('name', 'mode').data.value;
 
-        if (promoeditorcustom.TPMmode == 1) {
-            RSmodeController.getRSPeriod(function (returnValue) {
-                promoeditorcustom.rsStartEnd = returnValue;
-            });
-            var promoMechanics = promoeditorcustom.down('promomechanic');
-            var panelGA = promoMechanics.down('[name=panelGA]');
-            panelGA.setDisabled(true);
-            this.showRSmodeLabel(true);
-        }
         // Если запись обозначена
         if (button.assignedRecord) {
             promoeditorcustom.isCreating = false;
@@ -2770,6 +2744,21 @@
         var promoActions = Ext.ComponentQuery.query('button[isPromoAction=true]');
         var mechanic = promoeditorcustom.down('container[name=promo_step3]');
         var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
+        //rsmode
+        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+        var RSmodeController = App.app.getController('tpm.rsmode.RSmode');
+        promoeditorcustom.TPMmode = settingStore.findRecord('name', 'mode').data.value;
+        if (promoeditorcustom.TPMmode == 1) {
+            RSmodeController.getRSPeriod(function (returnValue) {
+                promoeditorcustom.rsStartEnd = returnValue;
+            });
+            var promoMechanics = promoeditorcustom.down('promomechanic');
+            var panelGA = promoMechanics.down('[name=panelGA]');
+            panelGA.setDisabled(true);
+        }
+        if (record.data.TPMmode == 1) {
+            this.showRSmodeLabel(true);
+        }
         // Для InOut Promo
         promoeditorcustom.isInOutPromo = record.data.InOut;
 

@@ -49,6 +49,11 @@
                                 field.setMinValue(new Date(minValueInt + currentTimeZoneOffsetInHours * 60000 + 10800000));
                                 field.getPicker().setValue(field.minValue);
                             }
+                            var promoeditorcustom = field.up('promoeditorcustom');
+                            if (promoeditorcustom.rsStartEnd) {
+                                field.setMinValue(new Date(promoeditorcustom.rsStartEnd.StartDate));
+                                field.setMaxValue(new Date(promoeditorcustom.rsStartEnd.EndDate));
+                            }
                         },
                         change: function (field, newValue, oldValue) {
                             var validDates = false;
@@ -167,7 +172,7 @@
 
                                     checkMainTab(stepButtons, mainTab);
                                 }
-                                
+
                                 // сбрасываем эвент на стандартный
                                 if (oldValue) {
                                     if (!['SupportAdministrator'].includes(userRole) && newValue != oldValue) {
@@ -244,6 +249,13 @@
                         setMonthPicker(field, startDateField);
                     },
                     listeners: {
+                        afterrender: function (field) {
+                            var promoeditorcustom = field.up('promoeditorcustom');
+                            if (promoeditorcustom.rsStartEnd) {
+                                field.setMinValue(new Date(promoeditorcustom.rsStartEnd.StartDate));
+                                field.setMaxValue(new Date(promoeditorcustom.rsStartEnd.EndDate));
+                            }
+                        },
                         change: function (field, newValue, oldValue) {
                             var validDates = false;
                             var panel = field.up('promoperiod');

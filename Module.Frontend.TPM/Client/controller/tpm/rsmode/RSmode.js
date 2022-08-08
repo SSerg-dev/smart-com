@@ -78,6 +78,7 @@
             dataType: 'json',
             url: '/odata/Promoes/GetRSPeriod',
             type: 'POST',
+            async: false,
             success: function (response) {
                 var data = Ext.JSON.decode(response.value);
                 if (data.success) {
