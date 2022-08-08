@@ -106,7 +106,7 @@ namespace Module.Frontend.TPM.Controllers
         {
             string bodyText = Helper.GetRequestBody(HttpContext.Current.Request);
             string filter = HttpContext.Current.Request.QueryString["$filter"];
-            bool IsMasterFiltered = filter == null ? false: filter.Contains("MasterPromoId");
+            bool IsMasterFiltered = filter == null ? false : filter.Contains("MasterPromoId");
             var query = GetConstraintedQuery(Helper.GetValueIfExists<bool>(bodyText, "canChangeStateOnly"), JsonHelper.GetValueIfExists<TPMmode>(bodyText, "TPMmode"), IsMasterFiltered);
 
             var querySettings = new ODataQuerySettings
@@ -1042,7 +1042,41 @@ namespace Module.Frontend.TPM.Controllers
                 return InternalServerError(e);
             }
         }
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IHttpActionResult PromoRSDelete(Guid key, TPMmode TPMmode)
+        {
+            try
+            {
+                Promo model = Context.Set<Promo>().Find(key);
+                if (model == null)
+                {
+                    return NotFound();
+                }
 
+                if (TPMmode == TPMmode.RS && model.TPMmode == TPMmode.Current) //фильтр промо
+                {
+                    Promo presentRsPromo = Context.Set<Promo>().FirstOrDefault(g => g.Disabled && g.TPMmode == TPMmode.RS && g.Number == model.Number);
+                    if (presentRsPromo is null)
+                    {
+                        model = RSmodeHelper.EditToPromoRS(Context, model, true, System.DateTime.Now);
+                    }
+                    //создавать удаленную копию PromoRS c сущностями, если ее нет
+                }
+                else if (TPMmode == TPMmode.RS && model.TPMmode == TPMmode.RS)
+                {
+                    // удалить PromoRS  c сущностями
+                    model = RSmodeHelper.DeleteToPromoRS(Context, model);
+                }
+
+
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
+            }
+            catch (Exception e)
+            {
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = e.Message }));
+            }
+        }
         private void DeletePromo(Guid key)
         {
             try

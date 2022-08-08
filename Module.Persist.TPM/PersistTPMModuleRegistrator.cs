@@ -486,6 +486,7 @@ namespace Module.Persist.TPM
             builder.Entity<Promo>().Collection.Action("ReadPromoCalculatingLog");
             builder.Entity<Promo>().Collection.Action("GetHandlerIdForBlockedPromo");
             builder.Entity<Promo>().Collection.Action("GetRSPeriod");
+            builder.Entity<Promo>().Collection.Action("PromoRSDelete");
             builder.Entity<Promo>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<Promo>("Promoes");
             builder.Entity<HistoricalPromo>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalPromo>("HistoricalPromoes");
 

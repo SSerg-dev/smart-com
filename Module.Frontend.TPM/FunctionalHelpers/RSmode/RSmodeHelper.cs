@@ -16,16 +16,16 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
         {
 
         }
-        public static Promo EditToPromoRS(DatabaseContext Context, Promo promo)
+        public static Promo EditToPromoRS(DatabaseContext Context, Promo promo, bool disabled = false, DateTimeOffset? deleteddate = null)
         {
             var configuration = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<Promo, Promo>()
                     .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
                     .ForMember(pTo => pTo.TPMmode, opt => opt.MapFrom(x => TPMmode.RS))
+                    .ForMember(pTo => pTo.Disabled, opt => opt.MapFrom(x => disabled))
+                    .ForMember(pTo => pTo.DeletedDate, opt => opt.MapFrom(x => deleteddate))
                     //.ForMember(pTo => pTo.BTLPromoes, opt => opt.Ignore())
-                    .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
-                    .ForMember(pTo => pTo.TPMmode, opt => opt.MapFrom(x => TPMmode.RS))
                     .ForMember(pTo => pTo.Brand, opt => opt.Ignore())
                     .ForMember(pTo => pTo.Technology, opt => opt.Ignore())
                     .ForMember(pTo => pTo.BrandTech, opt => opt.Ignore())
@@ -53,33 +53,43 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
                 cfg.CreateMap<BTLPromo, BTLPromo>()
                     .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
                     .ForMember(pTo => pTo.TPMmode, opt => opt.MapFrom(x => TPMmode.RS))
+                    .ForMember(pTo => pTo.Disabled, opt => opt.MapFrom(x => disabled))
+                    .ForMember(pTo => pTo.DeletedDate, opt => opt.MapFrom(x => deleteddate))
                     .ForMember(pTo => pTo.BTL, opt => opt.Ignore())
-                    .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
-                    .ForMember(pTo => pTo.TPMmode, opt => opt.MapFrom(x => TPMmode.RS))
                     .ForMember(pTo => pTo.ClientTree, opt => opt.Ignore())
                     .ForMember(pTo => pTo.Promo, opt => opt.Ignore());
                 cfg.CreateMap<PromoSupportPromo, PromoSupportPromo>()
                     .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
                     .ForMember(pTo => pTo.TPMmode, opt => opt.MapFrom(x => TPMmode.RS))
+                    .ForMember(pTo => pTo.Disabled, opt => opt.MapFrom(x => disabled))
+                    .ForMember(pTo => pTo.DeletedDate, opt => opt.MapFrom(x => deleteddate))
                     .ForMember(pTo => pTo.PromoSupport, opt => opt.Ignore())
                     .ForMember(pTo => pTo.Promo, opt => opt.Ignore());
                 cfg.CreateMap<PromoProductTree, PromoProductTree>()
                     .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
                     .ForMember(pTo => pTo.TPMmode, opt => opt.MapFrom(x => TPMmode.RS))
+                    .ForMember(pTo => pTo.Disabled, opt => opt.MapFrom(x => disabled))
+                    .ForMember(pTo => pTo.DeletedDate, opt => opt.MapFrom(x => deleteddate))
                     .ForMember(pTo => pTo.Promo, opt => opt.Ignore());
                 cfg.CreateMap<PromoProduct, PromoProduct>()
                     .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
                     .ForMember(pTo => pTo.TPMmode, opt => opt.MapFrom(x => TPMmode.RS))
+                    .ForMember(pTo => pTo.Disabled, opt => opt.MapFrom(x => disabled))
+                    .ForMember(pTo => pTo.DeletedDate, opt => opt.MapFrom(x => deleteddate))
                     .ForMember(pTo => pTo.Promo, opt => opt.Ignore())
                     .ForMember(pTo => pTo.Product, opt => opt.Ignore())
                     .ForMember(pTo => pTo.Plu, opt => opt.Ignore());
                 cfg.CreateMap<PromoProductsCorrection, PromoProductsCorrection>()
                     .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
                     .ForMember(pTo => pTo.TPMmode, opt => opt.MapFrom(x => TPMmode.RS))
+                    .ForMember(pTo => pTo.Disabled, opt => opt.MapFrom(x => disabled))
+                    .ForMember(pTo => pTo.DeletedDate, opt => opt.MapFrom(x => deleteddate))
                     .ForMember(pTo => pTo.PromoProduct, opt => opt.Ignore());
                 cfg.CreateMap<IncrementalPromo, IncrementalPromo>()
                     .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
                     .ForMember(pTo => pTo.TPMmode, opt => opt.MapFrom(x => TPMmode.RS))
+                    .ForMember(pTo => pTo.Disabled, opt => opt.MapFrom(x => disabled))
+                    .ForMember(pTo => pTo.DeletedDate, opt => opt.MapFrom(x => deleteddate))
                     .ForMember(pTo => pTo.Promo, opt => opt.Ignore())
                     .ForMember(pTo => pTo.Product, opt => opt.Ignore());
             }
@@ -89,6 +99,46 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
             Context.Set<Promo>().Add(promoRS);
             Context.SaveChanges();
             return promoRS;
+
+        }
+        public static Promo DeleteToPromoRS(DatabaseContext Context, Promo promo)
+        {
+            var disabled = true;
+            var deleteddate = System.DateTime.Now;
+            promo.DeletedDate = deleteddate;
+            promo.Disabled = disabled;
+            foreach (BTLPromo item in promo.BTLPromoes)
+            {
+                item.Disabled = disabled;
+                item.DeletedDate = deleteddate;
+            }
+            foreach (PromoSupportPromo item in promo.PromoSupportPromoes)
+            {
+                item.Disabled = disabled;
+                item.DeletedDate = deleteddate;
+            }
+            foreach (PromoProductTree item in promo.PromoProductTrees)
+            {
+                item.Disabled = disabled;
+                item.DeletedDate = deleteddate;
+            }
+            foreach (IncrementalPromo item in promo.IncrementalPromoes)
+            {
+                item.Disabled = disabled;
+                item.DeletedDate = deleteddate;
+            }
+            foreach (PromoProduct item in promo.PromoProducts)
+            {
+                item.Disabled = disabled;
+                item.DeletedDate = deleteddate;
+                foreach (PromoProductsCorrection correction in item.PromoProductsCorrections)
+                {
+                    correction.Disabled = disabled;
+                    correction.DeletedDate = deleteddate;
+                }
+            }
+            Context.SaveChanges();
+            return promo;
 
         }
         public static BTLPromo EditToBTLPromoRS(DatabaseContext Context, BTLPromo bTLpromo)
