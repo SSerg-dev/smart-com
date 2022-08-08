@@ -662,15 +662,14 @@ namespace Module.Persist.TPM.Utils {
                 query = query.Where(x =>
                     hierarchy.Any(h => h.Id == x.Promo.ClientTreeId));
             }
+            query = query.Where(x => !x.Disabled || x.TPMmode == TPMmode.RS);
             switch (mode)
             {
                 case TPMmode.Current:
                     query = query.Where(x => x.TPMmode == TPMmode.Current);
                     break;
                 case TPMmode.RS:
-                    query = query.GroupBy(x => new { x.Promo.Number }, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault());
-                    //query = query.ToList().AsQueryable();
-                    //var deletedRSPromoes
+                    query = query.GroupBy(x => new { x.BTLId, x.Promo.Number }, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault()).Where(x => !x.Disabled);
                     break;
             }
             return query;

@@ -59,7 +59,7 @@ namespace Module.Frontend.TPM.Controllers
             IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
             IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
 
-            IQueryable<BTLPromo> query = Context.Set<BTLPromo>().Where(e => !e.Disabled);
+            IQueryable<BTLPromo> query = Context.Set<BTLPromo>();
             query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, TPMmode, filters);
 
             return query;
