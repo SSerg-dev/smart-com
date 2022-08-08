@@ -3003,6 +3003,10 @@
     <Compile Include="Migrations\202208081043092_PromoSupportPost_AP.Designer.cs">
       <DependentUpon>202208081043092_PromoSupportPost_AP.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202208081421080_PromoProductCorrectionDelete_AP.cs" />
+    <Compile Include="Migrations\202208081421080_PromoProductCorrectionDelete_AP.Designer.cs">
+      <DependentUpon>202208081421080_PromoProductCorrectionDelete_AP.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
@@ -5688,6 +5692,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202208081043092_PromoSupportPost_AP.resx">
       <DependentUpon>202208081043092_PromoSupportPost_AP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202208081421080_PromoProductCorrectionDelete_AP.resx">
+      <DependentUpon>202208081421080_PromoProductCorrectionDelete_AP.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
