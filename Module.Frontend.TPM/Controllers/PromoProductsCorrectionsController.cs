@@ -228,6 +228,8 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     return NotFound();
                 }
+                var promoStatus = model.PromoProduct.Promo.PromoStatus.SystemName;
+
                 patch.TryGetPropertyValue("TPMmode", out object mode);
 
                 if ((int)model.TPMmode != (int)mode)
@@ -244,7 +246,7 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     model.TempId = null;
                 }
-                var promoStatus = model.PromoProduct.Promo.PromoStatus.SystemName;
+              
 
                 ISettingsManager settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
                 string promoStatuses = settingsManager.GetSetting<string>("PROMO_PRODUCT_CORRECTION_PROMO_STATUS_LIST", "Draft,Deleted,Cancelled,Started,Finished,Closed");
