@@ -3,6 +3,7 @@ using Core.Security.Models;
 using Frontend.Core.Controllers.Base;
 using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.DTO;
+using Module.Persist.TPM.Model.Interfaces;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
 using Persist.Model;
@@ -34,7 +35,7 @@ namespace Module.Frontend.TPM.Controllers {
             IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
             IQueryable<Promo> query = Context.Set<Promo>();
             IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
-            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters, FilterQueryModes.Deleted);
+            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, TPMmode.Current, filters, FilterQueryModes.Deleted);
 
             // Не администраторы не смотрят чужие черновики
             if (role != "Administrator" && role != "SupportAdministrator")
