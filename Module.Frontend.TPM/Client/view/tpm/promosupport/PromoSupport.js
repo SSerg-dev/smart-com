@@ -169,7 +169,20 @@
                 }
             }, {
                 text: l10n.ns('tpm', 'PromoSupport').value('TPMmode'),
-                dataIndex: 'TPMmode'
+                dataIndex: 'TPMmode',
+                renderer: function (value) {
+                    return value;
+                },
+                xtype: 'booleancolumn',
+                trueText: 'RS',
+                falseText: 'Current',
+                filter: {
+                    type: 'bool',
+                    store: [
+                        [0, 'Current'],
+                        [1, 'RS']
+                    ]
+                }
             }, {
                 text: l10n.ns('tpm', 'PromoSupport').value('BudgetSubItemBudgetItemName'),
                 dataIndex: 'BudgetSubItemBudgetItemName',

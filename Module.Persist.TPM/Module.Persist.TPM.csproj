@@ -2991,9 +2991,17 @@
     <Compile Include="Migrations\202208080626168_BTLPromoDelete_AP.Designer.cs">
       <DependentUpon>202208080626168_BTLPromoDelete_AP.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202208080855197_PromoSupportDelete_AP.cs" />
+    <Compile Include="Migrations\202208080855197_PromoSupportDelete_AP.Designer.cs">
+      <DependentUpon>202208080855197_PromoSupportDelete_AP.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\202208080724199_Add_Promoes_GetRSPeriodAP.cs" />
     <Compile Include="Migrations\202208080724199_Add_Promoes_GetRSPeriodAP.Designer.cs">
       <DependentUpon>202208080724199_Add_Promoes_GetRSPeriodAP.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202208081043092_PromoSupportPost_AP.cs" />
+    <Compile Include="Migrations\202208081043092_PromoSupportPost_AP.Designer.cs">
+      <DependentUpon>202208081043092_PromoSupportPost_AP.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -5672,8 +5680,14 @@
     <EmbeddedResource Include="Migrations\202208080626168_BTLPromoDelete_AP.resx">
       <DependentUpon>202208080626168_BTLPromoDelete_AP.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202208080855197_PromoSupportDelete_AP.resx">
+      <DependentUpon>202208080855197_PromoSupportDelete_AP.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202208080724199_Add_Promoes_GetRSPeriodAP.resx">
       <DependentUpon>202208080724199_Add_Promoes_GetRSPeriodAP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202208081043092_PromoSupportPost_AP.resx">
+      <DependentUpon>202208081043092_PromoSupportPost_AP.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

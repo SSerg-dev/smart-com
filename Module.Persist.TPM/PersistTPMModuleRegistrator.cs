@@ -844,6 +844,7 @@ namespace Module.Persist.TPM
             builder.Entity<PromoSupportPromo>().Collection.Action("ExportXLSX");
             builder.Entity<PromoSupportPromo>().Collection.Action("ChangeListPSP");
             builder.Entity<PromoSupportPromo>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PromoSupportPromo>("PromoSupportPromoes");
+            builder.Entity<PromoSupportPromo>().Collection.Action("PromoSupportPromoDelete");
 
             builder.EntitySet<COGS>("COGSs");
             builder.EntitySet<COGS>("DeletedCOGSs");
