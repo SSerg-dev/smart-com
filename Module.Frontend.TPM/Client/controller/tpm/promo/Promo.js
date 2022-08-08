@@ -2751,6 +2751,15 @@
         if (promoeditorcustom.TPMmode == 1) {
             RSmodeController.getRSPeriod(function (returnValue) {
                 promoeditorcustom.rsStartEnd = returnValue;
+                debugger;
+                if (promoeditorcustom.rsStartEnd) {
+                    var RsStartDate = new Date(promoeditorcustom.rsStartEnd.StartDate);
+                    if (RsStartDate > record.data.StartDate) {
+                        record.data.PromoStatusSystemName = 'Cancelled';
+                        var onHoldLabel = Ext.ComponentQuery.query('#btn_promoOnHold')[0];
+                        onHoldLabel.show();
+                    }
+                }
             });
             var promoMechanics = promoeditorcustom.down('promomechanic');
             var panelGA = promoMechanics.down('[name=panelGA]');
