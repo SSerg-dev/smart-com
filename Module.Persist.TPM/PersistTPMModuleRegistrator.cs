@@ -1076,6 +1076,7 @@ namespace Module.Persist.TPM
             builder.EntitySet<BTLPromo>("BTLPromoes").HasRequiredBinding(e => e.ClientTree, "ClientTrees");
             builder.Entity<BTLPromo>().Collection.Action("GetPromoesWithBTL").Parameter<string>("eventId");
             builder.Entity<BTLPromo>().Collection.Action("BTLPromoPost");
+            builder.Entity<BTLPromo>().Collection.Action("BTLPromoDelete");
             builder.Entity<BTLPromo>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<BTLPromo>("BTLPromoes");
 
             builder.EntitySet<ClientDashboard>("ClientDashboards");
