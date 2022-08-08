@@ -9,7 +9,7 @@
                     itemdblclick: this.onDetailButtonClick,
                     selectionchange: this.onGridSelectionChange,
                     selectionchange: this.onGridSelectionChangeCustom,
-                    afterrender: this.onGridAfterrender,
+                    afterrender: this.onPromoSupportLinkedGridAfterrender,
                     extfilterchange: this.onExtFilterChange
                 },
                 'promolinkedticosts #extfilterbutton': {
@@ -128,7 +128,14 @@
         this.onGridAfterrender(grid);
     },
 
-
+    getColumnIndex: function (grid, dataIndex) {
+        gridColumns = grid.headerCt.getGridColumns();
+        for (var i = 0; i < gridColumns.length; i++) {
+            if (gridColumns[i].dataIndex == dataIndex) {
+                return i;
+            }
+        }
+    },
 
     onAddButtonClick: function (button) {
         var promoLinked = button.up('promolinkedticosts'),
