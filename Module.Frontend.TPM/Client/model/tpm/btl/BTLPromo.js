@@ -29,6 +29,9 @@
             type: 'json',
             totalProperty: 'inlineCount',
             root: 'results'
+        },
+        extraParams: {
+            TPMmode: 'Current'
         }
     }
 });

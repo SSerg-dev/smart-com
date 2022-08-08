@@ -8,7 +8,7 @@
                 'btlpromo directorygrid': {
                     selectionchange: this.onGridSelectionChange,
                     selectionchange: this.onGridSelectionChangeCustom,
-                    afterrender: this.onGridAfterrender,
+                    afterrender: this.onBTLPromoGridAfterrender,
                     extfilterchange: this.onExtFilterChange,
                     itemdblclick: this.onDetailButtonClick
                 },
@@ -59,6 +59,32 @@
                 },
             }
         });
+    },
+
+    onBTLPromoGridAfterrender: function (grid) {
+        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+        var mode = settingStore.findRecord('name', 'mode');
+        if (mode) {
+            if (mode.data.value != 1) {
+                var indexh = this.getColumnIndex(grid, 'TPMmode');
+                grid.columnManager.getColumns()[indexh].hide();
+            }
+            else {
+                var incrementalPromoGridStore = grid.getStore();
+                var incrementalPromoGridStoreProxy = incrementalPromoGridStore.getProxy();
+                incrementalPromoGridStoreProxy.extraParams.TPMmode = 'RS';
+            }
+        }
+        this.onGridAfterrender(grid);
+    },
+
+    getColumnIndex: function (grid, dataIndex) {
+        gridColumns = grid.headerCt.getGridColumns();
+        for (var i = 0; i < gridColumns.length; i++) {
+            if (gridColumns[i].dataIndex == dataIndex) {
+                return i;
+            }
+        }
     },
 
     onDeleteBTLPromoButtonClick: function (button) {
