@@ -504,7 +504,7 @@ namespace Module.Frontend.TPM.Controllers
                     }
                 }
 
-                //CalculateBTLBudgetsCreateTask(model.BTLId.ToString(), new List<Guid>() { promoId });
+                CalculateBTLBudgetsCreateTask(model.BTLId.ToString(), new List<Guid>() { promoId });
                 Context.SaveChanges();
                 return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true}));
             }
