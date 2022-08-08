@@ -403,10 +403,11 @@ namespace Module.Persist.TPM.Utils {
             switch (mode)
             {
                 case TPMmode.Current:
-                    query = query.Where(x => x.TPMmode == TPMmode.Current);
+                    query = query.Where(x => x.TPMmode == TPMmode.Current && !x.Disabled);
                     break;
                 case TPMmode.RS:
                     query = query.GroupBy(x => new { x.PromoProduct.Promo.Number, x.PromoProductId }, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault());
+                    query = query.Where(x => !x.Disabled);
                     //query = query.ToList().AsQueryable();
                     //var deletedRSPromoes
                     break;
