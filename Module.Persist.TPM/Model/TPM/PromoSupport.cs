@@ -39,6 +39,5 @@ namespace Module.Persist.TPM.Model.TPM
         public virtual BudgetSubItem BudgetSubItem { get; set; }
 
         public ICollection<PromoSupportPromo> PromoSupportPromo { get; set; }
-        public TPMmode TPMmode { get; set; }
     }
 }
