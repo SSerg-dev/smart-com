@@ -533,8 +533,9 @@
                     .execute()
                     .then(function (data) {
                         if (!promoEditorCustom.isDestroyed) {
+                            debugger;
                             var result = Ext.JSON.decode(data.httpResponse.data.value);
-                            result = Ext.JSON.decode(result.data);
+                            result = result.data;
 
                             if (result.length > 0) {
                                 result.forEach(function (product) {

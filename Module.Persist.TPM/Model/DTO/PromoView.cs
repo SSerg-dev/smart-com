@@ -50,5 +50,6 @@ namespace Module.Persist.TPM.Model.DTO {
         public double Discount { get; set; }
 
         public string Subranges { get; set; }
+        public bool IsOnHold { get; set; }
     }
 }

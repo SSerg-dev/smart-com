@@ -15,6 +15,7 @@ using System.Net;
 using System.Web.Http;
 using System.Web.Http.OData;
 using Thinktecture.IdentityModel.Authorization.WebApi;
+using Newtonsoft.Json.Serialization;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -94,18 +95,25 @@ namespace Module.Frontend.TPM.Controllers
                         item.RejectReason = null;
                         item.PromoStatus = null;
                     }
+                    var config = new MapperConfiguration(cfg => {
+                        cfg.CreateMap<PromoStatusChange, PromoStatusChange>()
+                            .ForMember(pTo => pTo.Promo, opt => opt.Ignore())
+                            .ForMember(pTo => pTo.PromoStatus, opt => opt.Ignore())
+                            .ForMember(pTo => pTo.RejectReason, opt => opt.Ignore());
+                    });
+                    var mapper = config.CreateMapper();
+                    var pscsListMap = mapper.Map<List<PromoStatusChange>>(pscsList);
                     if (promoModel.PromoStatus.SystemName == "OnApproval")
                     {
                         bool isNoNegoPassed = CheckNoNego(promoModel);
-                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, isEmpty = false, data = pscsList, statusColors, isNoNegoPassed }, new JsonSerializerSettings()
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, isEmpty = false, data = pscsListMap, statusColors, isNoNegoPassed }, new JsonSerializerSettings()
                         {
-                            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                            ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                         }));
                     }
                     else
                     {
-                        var ddd = JsonConvert.DefaultSettings();
-                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, isEmpty = false, data = pscsList, statusColors }, new JsonSerializerSettings()
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, isEmpty = false, data = pscsListMap, statusColors }, new JsonSerializerSettings()
                         {
                             ReferenceLoopHandling = ReferenceLoopHandling.Ignore
                         }));
