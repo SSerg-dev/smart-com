@@ -88,16 +88,16 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue, MaxExpansionDepth = 3)]
-        public IQueryable<Promo> GetPromoes(bool canChangeStateOnly = false)
+        public IQueryable<Promo> GetPromoes(bool canChangeStateOnly = false, TPMmode tPMmode = TPMmode.Current)
         {
-            return GetConstraintedQuery(canChangeStateOnly);
+            return GetConstraintedQuery(canChangeStateOnly, tPMmode);
         }
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue, MaxExpansionDepth = 3)]
         public IQueryable<Promo> GetCanChangeStatePromoes(bool canChangeStateOnly = false, TPMmode tPMmode = TPMmode.Current)
         {
-            return GetConstraintedQuery(canChangeStateOnly);
+            return GetConstraintedQuery(canChangeStateOnly, tPMmode);
         }
 
         [ClaimsAuthorize]

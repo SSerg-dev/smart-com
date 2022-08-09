@@ -126,7 +126,6 @@
     eventRenderer: function (event, resource, tplData, row, col, ds) {
         var bgColor = event.get('ColorSystemName');
         tplData.style = Ext.String.format('background: {0} !important; border-color: white;', bgColor || '#DDDDDD');
-        //debugger;
         return {
             headerText: event.get('Name'),
             statusColor: event.get('PromoStatusColor') || '#DDDDDD',
