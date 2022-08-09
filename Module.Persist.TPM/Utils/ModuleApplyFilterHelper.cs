@@ -135,7 +135,7 @@ namespace Module.Persist.TPM.Utils
                     }
                     break;
                 case TPMmode.RS:
-                    query = query.GroupBy(x => x.Number, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault());
+                    query = query.GroupBy(x => x.Number, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault()).Where(g => !g.Disabled);
                     //query = query.Where(x => x.TPMmode == TPMmode.RS);
                     break;
             }
