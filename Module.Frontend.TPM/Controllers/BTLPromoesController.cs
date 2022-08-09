@@ -464,10 +464,8 @@ namespace Module.Frontend.TPM.Controllers
             try
             {
                 var model = Context.Set<BTLPromo>().Find(key);
-                var promoId = key;
-                var btlPromoes = model.BTL.BTLPromoes.ToList();
-                var btlPromos = Context.Set<BTLPromo>().Where(x => x.BTLId == model.BTLId && !x.Disabled);
-                var btlPromoesCopied = btlPromos.Any(x => x.TPMmode == TPMmode.RS);
+                var btlPromoes = Context.Set<BTLPromo>().Where(x => x.BTLId == model.BTLId).ToList();
+                var btlPromoesCopied = btlPromoes.Any(x => x.TPMmode == TPMmode.RS);
                 if (model == null)
                 {
                     return NotFound();
@@ -476,17 +474,24 @@ namespace Module.Frontend.TPM.Controllers
                 if (TPMmode == TPMmode.RS && model.TPMmode != TPMmode.RS) //фильтр промо
                 {
                     var promo = RSmodeHelper.EditToPromoRS(Context, model.Promo);
-                    promoId = promo.Id;
                     BTLPromo bp = new BTLPromo
                     {
                         DeletedDate = System.DateTime.Now,
                         Disabled = true,
                         BTLId = model.BTLId,
-                        PromoId = promoId,
+                        PromoId = promo.Id,
                         ClientTreeId = promo.ClientTreeKeyId.Value,
                         TPMmode = TPMmode
                     };
                     Context.Set<BTLPromo>().Add(bp);
+                    if (!btlPromoesCopied)
+                    {
+                        var currentBTLPromoes = btlPromoes.Where(x => !x.Disabled && x.TPMmode == TPMmode.Current && x.PromoId != model.PromoId && x.PromoId != promo.Id);
+                        foreach (var bTLPromo in currentBTLPromoes)
+                        {
+                            var copiedPromo = RSmodeHelper.EditToPromoRS(Context, bTLPromo.Promo);
+                        }
+                    }
                     model = bp;
                 }
                 else
@@ -495,16 +500,7 @@ namespace Module.Frontend.TPM.Controllers
                     model.Disabled = true;
                 }
 
-                if (TPMmode == TPMmode.RS && !btlPromoesCopied)
-                {
-                    var currentBTLPromoes = btlPromoes.Where(x => x.TPMmode == TPMmode.Current);
-                    foreach (var bTLPromo in currentBTLPromoes)
-                    {
-                        var copiedPromo = RSmodeHelper.EditToPromoRS(Context, bTLPromo.Promo);
-                    }
-                }
-
-                CalculateBTLBudgetsCreateTask(model.BTLId.ToString(), new List<Guid>() { promoId });
+                CalculateBTLBudgetsCreateTask(model.BTLId.ToString(), new List<Guid>() { model.Id });
                 Context.SaveChanges();
                 return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true}));
             }
