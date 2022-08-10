@@ -6,7 +6,9 @@ using Microsoft.Azure.Management.DataFactory;
 using Microsoft.Azure.Management.DataFactory.Models;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using Microsoft.Rest;
+using Module.Frontend.TPM.FunctionalHelpers.RSPeriod;
 using Module.Persist.TPM.Model.DTO;
+using Module.Persist.TPM.Model.SimpleModel;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
 using NLog;
@@ -230,7 +232,7 @@ namespace Module.Host.TPM.Actions.Notifications
             IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
             IQueryable<PromoView> query = context.Set<PromoView>();
             IQueryable<ClientTreeHierarchyView> hierarchy = context.Set<ClientTreeHierarchyView>().AsNoTracking();
-            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters, FilterQueryModes.Active, String.Empty);
+            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, Persist.TPM.Model.Interfaces.TPMmode.Current, filters, FilterQueryModes.Active, String.Empty);
             // Не администраторы не смотрят чужие черновики
             if (role != "Administrator" && role != "SupportAdministrator")
             {

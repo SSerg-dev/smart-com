@@ -162,7 +162,7 @@
     onDragAndDropConfirm: function (btn) {
         var me = this;
         if (btn === 'yes') {
-        var newMonth = me.__dragContext.startDate.getMonth() + 1;
+            var newMonth = me.__dragContext.startDate.getMonth() + 1;
             if (newMonth == 1 || newMonth == 12) {
                 var selectbudgetyearwindow = Ext.widget('selectbudgetyearwindow');
                 selectbudgetyearwindow.context = me.__dragContext;
@@ -226,99 +226,99 @@
     onBudgetYearDropChoose: function (btn, budgetYear) {
         var me = this;
         var dragContext = me.__dragContext;
-            me.calendarSheduler.setLoading(true);
-            var eventRecord = dragContext.eventRecords[0],
-                resourceRecord = dragContext.resourceRecord,
-                promoStore = me.getPromoStore();
+        me.calendarSheduler.setLoading(true);
+        var eventRecord = dragContext.eventRecords[0],
+            resourceRecord = dragContext.resourceRecord,
+            promoStore = me.getPromoStore();
 
-            promoStore.load({
-                id: eventRecord.getId(),
-                scope: this,
-                callback: function (records, operation, success) {
-                    var record = records[0];
+        promoStore.load({
+            id: eventRecord.getId(),
+            scope: this,
+            callback: function (records, operation, success) {
+                var record = records[0];
 
-                    var daysForDispatchDateFromClientSettings = this.getDaysForDispatchDateFromClientSettings(
-                        resourceRecord.data.IsBeforeStart, resourceRecord.data.DaysStart, resourceRecord.data.IsDaysStart);
+                var daysForDispatchDateFromClientSettings = this.getDaysForDispatchDateFromClientSettings(
+                    resourceRecord.data.IsBeforeStart, resourceRecord.data.DaysStart, resourceRecord.data.IsDaysStart);
 
-                    var dispatchDateForCurrentClientAfterResize = null;
-                    var dispatchDateForCurrentPromoAfterResize = null;
+                var dispatchDateForCurrentClientAfterResize = null;
+                var dispatchDateForCurrentPromoAfterResize = null;
 
-                    var deltaDaysBeforeAndAfterResize = dragContext.timeDiff / 3600 / 24 / 1000;
+                var deltaDaysBeforeAndAfterResize = dragContext.timeDiff / 3600 / 24 / 1000;
 
-                    // Если настройки dispatch клиента корректны
-                    if (daysForDispatchDateFromClientSettings !== null) {
+                // Если настройки dispatch клиента корректны
+                if (daysForDispatchDateFromClientSettings !== null) {
 
-                        //Начало
-                        dispatchDateForCurrentClientAfterResize = Ext.Date.add(
-                            dragContext.startDate, Ext.Date.DAY, daysForDispatchDateFromClientSettings);
+                    //Начало
+                    dispatchDateForCurrentClientAfterResize = Ext.Date.add(
+                        dragContext.startDate, Ext.Date.DAY, daysForDispatchDateFromClientSettings);
 
-                        record.set('DispatchesStart', dispatchDateForCurrentClientAfterResize);
-                    }
-                    else {
-                        dispatchDateForCurrentPromoAfterResize = Ext.Date.add(record.get('DispatchesStart'), Ext.Date.DAY, deltaDaysBeforeAndAfterResize);
-                        record.set('DispatchesStart', dispatchDateForCurrentPromoAfterResize);
-                    }
-
-                    daysForDispatchDateFromClientSettings = null;
-                    //Конец
-                    daysForDispatchDateFromClientSettings = this.getDaysForDispatchDateFromClientSettings(
-                        resourceRecord.data.IsBeforeEnd, resourceRecord.data.DaysEnd, resourceRecord.data.IsDaysEnd);
-
-                    if (daysForDispatchDateFromClientSettings !== null) {
-                        dispatchDateForCurrentClientAfterResize = Ext.Date.add(
-                            dragContext.endDate, Ext.Date.DAY, daysForDispatchDateFromClientSettings);
-                        //т.к в  dragContext.endDate в дате присутствует 23ч 59м 59с убираем их
-                        dispatchDateForCurrentClientAfterResize = Ext.Date.add(dispatchDateForCurrentClientAfterResize, Ext.Date.SECOND, 1);
-                        dispatchDateForCurrentClientAfterResize = Ext.Date.add(dispatchDateForCurrentClientAfterResize, Ext.Date.DAY, -1);
-                        
-                        record.set('DispatchesEnd', dispatchDateForCurrentClientAfterResize);
-                    }
-                    else {
-                        dispatchDateForCurrentPromoAfterResize = Ext.Date.add(record.get('DispatchesEnd'), Ext.Date.DAY, deltaDaysBeforeAndAfterResize);
-                        record.set('DispatchesEnd', dispatchDateForCurrentPromoAfterResize);
-                    }
-                    var dispStart = record.get('DispatchesStart'),
-                        dispEnd = record.get('DispatchesEnd'),
-                        startDispatchDateBiggerThanEnd = dispStart > dispEnd,
-                        endDispatchDateLessThanStart = dispEnd < dispStart;
-
-                    // Если dispatch start и dispatch end наехали друг на друга, то показываем ошибку и возвращаем исходные параметры dispatch
-                    if (startDispatchDateBiggerThanEnd === true || endDispatchDateLessThanStart === true) {
-                        record.reject();
-                        dragContext.finalize(false);
-
-                        App.Notify.pushInfo('Dispatch start date must be less than dispatch end date.');
-                    } else {
-                        //Возврат выделения
-                        me.calendarSheduler.down('gridview').on('refresh', (function () { me.highlightRow(null, new Array(resourceRecord)); }));
-                        // выравниваем время с учётом часового пояса
-                        var offset = dragContext.startDate.getTimezoneOffset() / 60.0;
-                        record.set('StartDate', Sch.util.Date.add(dragContext.startDate, Sch.util.Date.HOUR, -(offset + 3))); 
-                        var fixedEndDate = new Date(dragContext.endDate.getFullYear(), dragContext.endDate.getMonth(), dragContext.endDate.getDate(), 0, 0, 0);
-                        fixedEndDate = Sch.util.Date.add(fixedEndDate, Sch.util.Date.HOUR, -(offset + 3));
-                        record.set('EndDate', fixedEndDate);
-                        if (budgetYear != null)
-                            record.set('BudgetYear', budgetYear);
-                        else {
-                            budgetYear = dragContext.startDate.getFullYear();
-                            record.set('BudgetYear', budgetYear);
-                        }
-                        record.save({
-                            callback: function (record, operation, success) {
-                                if (success) {
-                                    dragContext.finalize(true);
-                                    me.eventStoreLoading(me.calendarSheduler.getEventStore());
-                                    me.calendarSheduler.setLoading(false);
-                                } else {
-                                    me.calendarSheduler.setLoading(false);
-                                    dragContext.finalize(false);
-                                }
-                            }
-                        });
-                    }
-
+                    record.set('DispatchesStart', dispatchDateForCurrentClientAfterResize);
                 }
-            })
+                else {
+                    dispatchDateForCurrentPromoAfterResize = Ext.Date.add(record.get('DispatchesStart'), Ext.Date.DAY, deltaDaysBeforeAndAfterResize);
+                    record.set('DispatchesStart', dispatchDateForCurrentPromoAfterResize);
+                }
+
+                daysForDispatchDateFromClientSettings = null;
+                //Конец
+                daysForDispatchDateFromClientSettings = this.getDaysForDispatchDateFromClientSettings(
+                    resourceRecord.data.IsBeforeEnd, resourceRecord.data.DaysEnd, resourceRecord.data.IsDaysEnd);
+
+                if (daysForDispatchDateFromClientSettings !== null) {
+                    dispatchDateForCurrentClientAfterResize = Ext.Date.add(
+                        dragContext.endDate, Ext.Date.DAY, daysForDispatchDateFromClientSettings);
+                    //т.к в  dragContext.endDate в дате присутствует 23ч 59м 59с убираем их
+                    dispatchDateForCurrentClientAfterResize = Ext.Date.add(dispatchDateForCurrentClientAfterResize, Ext.Date.SECOND, 1);
+                    dispatchDateForCurrentClientAfterResize = Ext.Date.add(dispatchDateForCurrentClientAfterResize, Ext.Date.DAY, -1);
+
+                    record.set('DispatchesEnd', dispatchDateForCurrentClientAfterResize);
+                }
+                else {
+                    dispatchDateForCurrentPromoAfterResize = Ext.Date.add(record.get('DispatchesEnd'), Ext.Date.DAY, deltaDaysBeforeAndAfterResize);
+                    record.set('DispatchesEnd', dispatchDateForCurrentPromoAfterResize);
+                }
+                var dispStart = record.get('DispatchesStart'),
+                    dispEnd = record.get('DispatchesEnd'),
+                    startDispatchDateBiggerThanEnd = dispStart > dispEnd,
+                    endDispatchDateLessThanStart = dispEnd < dispStart;
+
+                // Если dispatch start и dispatch end наехали друг на друга, то показываем ошибку и возвращаем исходные параметры dispatch
+                if (startDispatchDateBiggerThanEnd === true || endDispatchDateLessThanStart === true) {
+                    record.reject();
+                    dragContext.finalize(false);
+
+                    App.Notify.pushInfo('Dispatch start date must be less than dispatch end date.');
+                } else {
+                    //Возврат выделения
+                    me.calendarSheduler.down('gridview').on('refresh', (function () { me.highlightRow(null, new Array(resourceRecord)); }));
+                    // выравниваем время с учётом часового пояса
+                    var offset = dragContext.startDate.getTimezoneOffset() / 60.0;
+                    record.set('StartDate', Sch.util.Date.add(dragContext.startDate, Sch.util.Date.HOUR, -(offset + 3)));
+                    var fixedEndDate = new Date(dragContext.endDate.getFullYear(), dragContext.endDate.getMonth(), dragContext.endDate.getDate(), 0, 0, 0);
+                    fixedEndDate = Sch.util.Date.add(fixedEndDate, Sch.util.Date.HOUR, -(offset + 3));
+                    record.set('EndDate', fixedEndDate);
+                    if (budgetYear != null)
+                        record.set('BudgetYear', budgetYear);
+                    else {
+                        budgetYear = dragContext.startDate.getFullYear();
+                        record.set('BudgetYear', budgetYear);
+                    }
+                    record.save({
+                        callback: function (record, operation, success) {
+                            if (success) {
+                                dragContext.finalize(true);
+                                me.eventStoreLoading(me.calendarSheduler.getEventStore());
+                                me.calendarSheduler.setLoading(false);
+                            } else {
+                                me.calendarSheduler.setLoading(false);
+                                dragContext.finalize(false);
+                            }
+                        }
+                    });
+                }
+
+            }
+        })
     },
 
     onExportSchedulerButtonClick: function (button) {
@@ -357,7 +357,7 @@
             function (checkbox) {
                 if (checkbox.checked == true)
                     competitorNames.push(checkbox.inputValue);
-        });
+            });
         typeCheckBoxes.map(
             function (checkbox) {
                 if (checkbox.checked == true)
@@ -438,7 +438,7 @@
                                             var result = JSON.parse(resultData);
                                             var fileName = result.OutcomingParameters.File.Value.Name;
 
-                                            if (fileName) {                                                
+                                            if (fileName) {
                                                 downloadSchedulerFileBtn.addListener('click', function () {
                                                     location.assign(document.location.href + '/api/File/ExportDownload?filename=' + fileName);
                                                 });
@@ -823,7 +823,7 @@
                             dataType: 'json',
                             url: '/odata/PromoStatuss',
                             success: function (promoStatusData) {
-                                for (var i = 0; i < promoStatusData.value.length; i++){
+                                for (var i = 0; i < promoStatusData.value.length; i++) {
                                     if (promoStatusData.value[i].SystemName == "Planned") {
                                         statusId = promoStatusData.value[i].Id;
                                         break;
@@ -890,7 +890,7 @@
                 typeToCreate = scheduler.otherPromoTypes;
                 needSelectWindow = true;
             };
-            createContext.end = me.getDayEndDateTime(createContext.end);          
+            createContext.end = me.getDayEndDateTime(createContext.end);
             if (!view.schedulerView.eventCopy) {
                 schedulerData = { schedulerContext: createContext };
                 schedulerData.isCopy = false;
@@ -990,7 +990,7 @@
 
         button.removeCls('promo-type-select-list-container-button-shplack');
         window.selectedButton = button;
-    }, 
+    },
 
     onPromoTypeOkButtonClick: function (button, e) {
         var me = this;
@@ -1055,9 +1055,9 @@
                         //promoTypeItem.down('button').style = { borderLeft: '6px solid ' + 'rgb(179, 193, 210)' };
                         promoTypeItem.down('button').addCls('promo-type-select-list-container-button-shplack');
                         promoTypeItem.down('button').setText(item.Name);
-                        promoTypeItem.down('button').renderData.glyphCls = 'promo-type-select-list-button'; 
-                        promoTypeItem.down('button').setGlyph(parseInt('0x' + item.Glyph, 16)); 
-                      
+                        promoTypeItem.down('button').renderData.glyphCls = 'promo-type-select-list-button';
+                        promoTypeItem.down('button').setGlyph(parseInt('0x' + item.Glyph, 16));
+
                         promoTypeItem.down('button').budgetRecord = item;
                         supportType.down('fieldset').add(promoTypeItem);
                     });
@@ -1234,11 +1234,11 @@
     // Подтверждение изменения продолжительности промо
     onBudgetYearResizeChoose: function (btn, budgetYear) {
         var me = this;
-            me.calendarSheduler.setLoading(true);
-            var resizeContext = me.__resizeContext,
-                eventRecord = resizeContext.eventRecord,
-                resourceRecord = resizeContext.resourceRecord,
-                promoStore = this.getPromoStore();
+        me.calendarSheduler.setLoading(true);
+        var resizeContext = me.__resizeContext,
+            eventRecord = resizeContext.eventRecord,
+            resourceRecord = resizeContext.resourceRecord,
+            promoStore = this.getPromoStore();
 
         promoStore.load({
             id: eventRecord.getId(),
@@ -1551,7 +1551,7 @@
         breeze.EntityQuery
             .from('PromoTypes')
             .withParameters({
-            $method: 'GET'
+                $method: 'GET'
             })
             .using(Ext.ux.data.BreezeEntityManager.getEntityManager())
             .execute()
@@ -1580,7 +1580,7 @@
                         name: el.Name,
                         inputValue: el.Name,
                         checked: true,
-                        boxLabel: '<span style="vertical-align: text-top;">' + el.Name +'</span>',
+                        boxLabel: '<span style="vertical-align: text-top;">' + el.Name + '</span>',
                         xtype: 'checkbox',
                         beforeBoxLabelTextTpl: beforeBoxLabelTextTpl.apply({ glyph: el.Glyph }),
                     })
@@ -1853,7 +1853,7 @@
                         }
                     }
                 }
-            }); 
+            });
         } else {
             promoStore.load({
                 id: events.getId(), //set the id here
@@ -2046,7 +2046,19 @@
         var filter = store.fixedFilters || {};
         filter['clientfilter'] = newFilter;
         store.fixedFilters = filter;
-        
+
+        // RSmode
+        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+        var mode = settingStore.findRecord('name', 'mode');
+        if (mode) {
+            if (mode.data.value == 0) {
+                store.getProxy().extraParams.TPMmode = 'Current';
+            }
+            else if (true) {
+                store.getProxy().extraParams.TPMmode = 'RS';
+            }
+        }
+
         store.suspendEvent("refresh");
         store.load({
             scope: this,
@@ -2093,8 +2105,8 @@
             } else if (i == 1) {
                 renderId = otherPromoId;
             } else if (i > 1) {
-                renderId = competitorPromoIds[i-2];
-            } 
+                renderId = competitorPromoIds[i - 2];
+            }
 
             records = [];
         };

@@ -2843,7 +2843,7 @@
             var panelGA = promoMechanics.down('[name=panelGA]');
             panelGA.setDisabled(true);
         }
-        if (record.data.TPMmode == 1) {
+        if (record.data.TPMmode == 'RS') {
             this.showRSmodeLabel(true);
         }
         // Для InOut Promo

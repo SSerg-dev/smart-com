@@ -150,7 +150,7 @@ namespace Module.Persist.TPM.Utils
         /// <param name="filter"></param>
         /// <param name="filterMode"></param>
         /// <returns></returns>
-        public static IQueryable<PromoView> ApplyFilter(IQueryable<PromoView> query, IQueryable<ClientTreeHierarchyView> hierarchy, IDictionary<string, IEnumerable<string>> filter = null, FilterQueryModes filterMode = FilterQueryModes.Active, string role = "")
+        public static IQueryable<PromoView> ApplyFilter(IQueryable<PromoView> query, IQueryable<ClientTreeHierarchyView> hierarchy, TPMmode mode, IDictionary<string, IEnumerable<string>> filter = null, FilterQueryModes filterMode = FilterQueryModes.Active, string role = "")
         {
             IEnumerable<string> clientFilter = FilterHelper.GetFilter(filter, ModuleFilterName.Client);
             if (clientFilter.Any())
@@ -158,6 +158,17 @@ namespace Module.Persist.TPM.Utils
                 hierarchy = getFilteredHierarchy(hierarchy, clientFilter);
                 query = query.Where(x =>
                     hierarchy.Any(h => h.Id == x.ClientTreeId || h.Hierarchy.Contains(x.ClientTreeId.Value.ToString())));
+            }
+            switch (mode)
+            {
+                case TPMmode.Current:
+                    query = query.Where(x => x.TPMmode == TPMmode.Current);
+                    break;
+                case TPMmode.RS:
+                    query = query.GroupBy(x => x.Number, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault());
+
+                    //query = query.Where(x => x.TPMmode == TPMmode.RS);
+                    break;
             }
             return query;
         }

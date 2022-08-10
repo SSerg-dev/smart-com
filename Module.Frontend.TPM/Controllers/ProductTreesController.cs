@@ -346,26 +346,23 @@ namespace Module.Frontend.TPM.Controllers
                 branch = new ProductTreeNode(rootNode, true, false, true);
                 branch.AddChild(outList.Count == 0 ? children : outList);
             }
-
+            var config = new MapperConfiguration(cfg => {
+                cfg.CreateMap<ProductTreeNode, ProductTreeNode>()
+                .ForMember(pTo => pTo.Technology, opt => opt.Ignore())
+                    .MaxDepth(3);
+            });
+            var mapper = config.CreateMapper();
+            var branchMap = mapper.Map<ProductTreeNode>(branch);
             if (branch == null)
             {
                 return GetTreeForLevel("root");
             }
             else
             {
-                var fff = JsonConvert.SerializeObject(branch, new JsonSerializerSettings
-                {
-                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                    MaxDepth = 3
-                });
-                branch = JsonConvert.DeserializeObject<ProductTreeNode>(fff, new JsonSerializerSettings
-                {
-                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-                });
                 return Json(new
                 {
-                    success = branch != null,
-                    children = branch
+                    success = branchMap != null,
+                    children = branchMap
                 });
             }
         }
@@ -815,6 +812,10 @@ namespace Module.Frontend.TPM.Controllers
             this.leaf = leaf;
             this.loaded = loaded;
             this.Target = target;
+        }
+
+        public ProductTreeNode()
+        {
         }
 
         /// <summary>

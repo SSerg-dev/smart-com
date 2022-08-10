@@ -24,6 +24,7 @@ using System.Linq.Expressions;
 using Module.Frontend.TPM.Util;
 using System.Web;
 using System.Web.Http.OData.Extensions;
+using Module.Persist.TPM.Model.Interfaces;
 
 namespace Module.Frontend.TPM.Controllers {
     public class PromoViewsController : EFContextController {
@@ -33,7 +34,7 @@ namespace Module.Frontend.TPM.Controllers {
             this.authorizationManager = authorizationManager;
         }
 
-        protected IQueryable<PromoView> GetConstraintedQuery() {
+        protected IQueryable<PromoView> GetConstraintedQuery(TPMmode tPMmode = TPMmode.Current) {
             PerformanceLogger logger = new PerformanceLogger();
             logger.Start();
             UserInfo user = authorizationManager.GetCurrentUser();
@@ -44,7 +45,7 @@ namespace Module.Frontend.TPM.Controllers {
             IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
             IQueryable<PromoView> query = Context.Set<PromoView>().AsNoTracking();
             IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
-            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
+            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, tPMmode, filters);
 
             // Не администраторы не смотрят чужие черновики
             if (role != "Administrator" && role != "SupportAdministrator") {
@@ -66,15 +67,16 @@ namespace Module.Frontend.TPM.Controllers {
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue, MaxExpansionDepth = 3)]
-        public IQueryable<PromoView> GetPromoViews() {
-            return GetConstraintedQuery();
+        public IQueryable<PromoView> GetPromoViews(TPMmode tPMmode = TPMmode.Current) {
+            return GetConstraintedQuery(tPMmode);
         }
 
         [ClaimsAuthorize]
         [HttpPost]
         public IQueryable<PromoView> GetFilteredData(ODataQueryOptions<PromoView> options)
         {
-            var query = GetConstraintedQuery();
+            string bodyText = Helper.GetRequestBody(HttpContext.Current.Request);
+            var query = GetConstraintedQuery(JsonHelper.GetValueIfExists<TPMmode>(bodyText, "TPMmode"));
 
             var querySettings = new ODataQuerySettings
             {

@@ -56,6 +56,7 @@
         { name: 'MasterPromoId', useNull: true, hidden: true, isDefault: false, defaultValue: null },
 
         { name: 'TPMmode', type: 'string', hidden: false, isDefault: true },
+        { name: 'IsOnHold', type: 'boolean', hidden: false, isDefault: false },
     ],
     proxy: {
         type: 'breeze',
@@ -64,6 +65,9 @@
             type: 'json',
             totalProperty: 'inlineCount',
             root: 'results'
+        },
+        extraParams: {
+            TPMmode: 'Current'
         }
     }
 });
