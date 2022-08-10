@@ -10,7 +10,7 @@
                 'deletedpromo directorygrid': {
                     itemdblclick: this.switchToDetailForm,
                     selectionchange: this.onGridSelectionChange,
-                    afterrender: this.onGridDeltedPromoAfterrender,
+                    afterrender: this.onGridDeletedPromoAfterrender,
                     extfilterchange: this.onExtFilterChange
                 },
                 'deletedpromo #datatable': {
@@ -47,7 +47,7 @@
         });
     },
 
-    onGridDeltedPromoAfterrender: function (grid) {
+    onGridDeletedPromoAfterrender: function (grid) {
         var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
         var mode = settingStore.findRecord('name', 'mode');
         if (mode) {
