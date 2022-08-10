@@ -1889,6 +1889,7 @@
             var selectionModel = grid.getSelectionModel();
             if (selectionModel.hasSelection()) {
                 var record = selectionModel.getSelection()[0];
+                grid.promoStore.getProxy().extraParams.TPMmode = record.data.TPMmode;
                 grid.promoStore.load({
                     id: record.getId(),
                     scope: me,
@@ -1972,6 +1973,7 @@
             var selectionModel = grid.getSelectionModel();
             if (selectionModel.hasSelection()) {
                 var record = selectionModel.getSelection()[0];
+                grid.promoStore.getProxy().extraParams.TPMmode = record.data.TPMmode;
                 grid.promoStore.load({
                     id: record.getId(),
                     scope: me,
@@ -2828,7 +2830,6 @@
         if (promoeditorcustom.TPMmode == 1) {
             RSmodeController.getRSPeriod(function (returnValue) {
                 promoeditorcustom.rsStartEnd = returnValue;
-                debugger;
                 if (promoeditorcustom.rsStartEnd) {
                     var RsStartDate = new Date(promoeditorcustom.rsStartEnd.StartDate);
                     if (RsStartDate > record.data.StartDate) {
@@ -3865,6 +3866,9 @@
         var window = button.up('promoeditorcustom');
 
         var isModelComplete = this.validatePromoModel(window);
+        // RSmode
+        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+        var mode = settingStore.findRecord('name', 'mode');
 
         if (isModelComplete === '') {
             var record = this.getRecord(window);
@@ -3876,9 +3880,36 @@
                 this.setPromoTitle(window, window.promoName, window.promoStatusName);
             }
             var model = this.buildPromoModel(window, record);
-            this.saveModel(model, window, close, reloadForm);
+            if (mode) {
+                if (mode.data.value == 0) {
+                    this.saveModel(model, window, close, reloadForm);
+                }
+                if (mode.data.value == 1){
+                    this.savePublishClosePromo(model, window, close, reloadForm);
+                }
+            }
+            
         } else {
             App.Notify.pushInfo(isModelComplete);
+        }
+    },
+
+    savePublishClosePromo: function (model, window, close, reloadPromo) {
+        var checkValid = this.validatePromoModel(window);
+        if (checkValid === '') {
+            var record = this.getRecord(window);
+            
+            var btn_publish = window.down('button[itemId=btn_publish]');
+            window.previousStatusId = window.statusId;
+            window.statusId = btn_publish.statusId;
+            window.promoName = this.getPromoName(window);
+
+            var model = this.buildPromoModel(window, record);
+            this.saveModel(model, window, true, false);
+            this.updateStatusHistoryState();
+
+        } else {
+            App.Notify.pushInfo(checkValid);
         }
     },
 

@@ -88,16 +88,16 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue, MaxExpansionDepth = 3)]
-        public IQueryable<Promo> GetPromoes(bool canChangeStateOnly = false)
+        public IQueryable<Promo> GetPromoes(bool canChangeStateOnly = false, TPMmode tPMmode = TPMmode.Current)
         {
-            return GetConstraintedQuery(canChangeStateOnly);
+            return GetConstraintedQuery(canChangeStateOnly, tPMmode);
         }
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue, MaxExpansionDepth = 3)]
         public IQueryable<Promo> GetCanChangeStatePromoes(bool canChangeStateOnly = false, TPMmode tPMmode = TPMmode.Current)
         {
-            return GetConstraintedQuery(canChangeStateOnly);
+            return GetConstraintedQuery(canChangeStateOnly, tPMmode);
         }
 
         [ClaimsAuthorize]
@@ -2462,22 +2462,35 @@ namespace Module.Frontend.TPM.Controllers
             try
             {
                 var inOutProductIds = data["InOutProductIds"] as IEnumerable<string>;
+                var productIds = new List<Guid>();
                 var products = new List<Product>();
 
                 inOutProductIds.ToList().ForEach(productId =>
                 {
-                    Guid productGuidId;
-                    if (Guid.TryParse(productId, out productGuidId))
+                    if (Guid.TryParse(productId, out Guid productGuidId))
                     {
-                        var productForAdding = Context.Set<Product>().FirstOrDefault(product => product.Id == productGuidId);
-                        if (productForAdding != null)
-                        {
-                            products.Add(productForAdding);
-                        }
+                        productIds.Add(productGuidId);
                     }
                 });
 
-                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, data = JsonConvert.SerializeObject(products) }));
+                products = Context.Set<Product>().Where(g=> productIds.Contains(g.Id)).ToList();
+                var config = new MapperConfiguration(cfg => {
+                    cfg.CreateMap<Product, Product>()
+                        .ForMember(pTo => pTo.AssortmentMatrices, opt => opt.Ignore())
+                        .ForMember(pTo => pTo.BaseLines, opt => opt.Ignore())
+                        .ForMember(pTo => pTo.IncrementalPromoes, opt => opt.Ignore())
+                        .ForMember(pTo => pTo.PreviousDayIncrementals, opt => opt.Ignore())
+                        .ForMember(pTo => pTo.PriceLists, opt => opt.Ignore())
+                        .ForMember(pTo => pTo.ProductChangeIncidents, opt => opt.Ignore())
+                        .ForMember(pTo => pTo.PromoProducts, opt => opt.Ignore())
+                        .ForMember(pTo => pTo.RollingVolumes, opt => opt.Ignore());
+                });
+                var mapper = config.CreateMapper();
+                var productsMap = mapper.Map<List<Product>>(products);
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, data = productsMap }, new JsonSerializerSettings()
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                }));
             }
             catch (Exception e)
             {

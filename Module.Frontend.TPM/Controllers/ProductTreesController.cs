@@ -353,6 +353,15 @@ namespace Module.Frontend.TPM.Controllers
             }
             else
             {
+                var fff = JsonConvert.SerializeObject(branch, new JsonSerializerSettings
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                    MaxDepth = 3
+                });
+                branch = JsonConvert.DeserializeObject<ProductTreeNode>(fff, new JsonSerializerSettings
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                });
                 return Json(new
                 {
                     success = branch != null,
