@@ -132,8 +132,6 @@
         this.editor.grid = grid;
         var isHistorical = this.editor.down('#historicaldetailform'),
             isDeleted = this.editor.down('#deleteddetailform');
-        
-        console.log('FUCK THE SYSTEM!!!');
 
         // если запись из гридов История или Удаленные, то скрывается кнопка Редактировать
 

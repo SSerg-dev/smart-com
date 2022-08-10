@@ -10,7 +10,7 @@
                 'deletedpromo directorygrid': {
                     itemdblclick: this.switchToDetailForm,
                     selectionchange: this.onGridSelectionChange,
-                    afterrender: this.onGridAfterrender,
+                    afterrender: this.onGridDeltedPromoAfterrender,
                     extfilterchange: this.onExtFilterChange
                 },
                 'deletedpromo #datatable': {
@@ -45,6 +45,23 @@
                 }
             }
         });
+    },
+
+    onGridDeltedPromoAfterrender: function (grid) {
+        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+        var mode = settingStore.findRecord('name', 'mode');
+        if (mode) {
+            if (mode.data.value != 1) {
+                var indexh = this.getColumnIndex(grid, 'TPMmode');
+                grid.columnManager.getColumns()[indexh].hide();
+            }
+            else {
+                var deletedPromoGridStore = grid.getStore();
+                var deletedPromoGridStoreProxy = deletedPromoGridStore.getProxy();
+                deletedPromoGridStoreProxy.extraParams.TPMmode = 'RS';
+            }
+        }
+        this.onGridAfterrender(grid);
     },
 
     onHistoryButtonClick: function (button) {
