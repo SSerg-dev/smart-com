@@ -347,9 +347,12 @@ namespace Module.Frontend.TPM.Controllers
                 branch.AddChild(outList.Count == 0 ? children : outList);
             }
             var config = new MapperConfiguration(cfg => {
-                cfg.CreateMap<ProductTreeNode, ProductTreeNode>()
-                .ForMember(pTo => pTo.Technology, opt => opt.Ignore())
-                    .MaxDepth(3);
+                cfg.CreateMap<ProductTreeNode, ProductTreeNode>();
+                cfg.CreateMap<Technology, Technology>()
+                .ForMember(pTo => pTo.BrandTeches, opt => opt.Ignore());
+                cfg.CreateMap<ProductTree, ProductTree>()
+                .ForMember(pTo => pTo.NoneNegoes, opt => opt.Ignore())
+                .MaxDepth(1);
             });
             var mapper = config.CreateMapper();
             var branchMap = mapper.Map<ProductTreeNode>(branch);
@@ -363,7 +366,7 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     success = branchMap != null,
                     children = branchMap
-                });
+                }, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
             }
         }
 
