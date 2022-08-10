@@ -174,10 +174,18 @@ namespace Module.Frontend.TPM.Controllers
 
                 patch.TryGetPropertyValue("TPMmode", out object mode);
 
-                if ((int)model.TPMmode != (int)mode)
+                if ((int)mode == (int)TPMmode.RS)
                 {
-                    model = RSmodeHelper.EditToIncrementalPromoRS(Context, model);
+                    if (model.TPMmode == TPMmode.Current)
+                    {
+                        model = RSmodeHelper.EditToIncrementalPromoRS(Context, model);
+                    }
                 }
+                else
+                {
+                    //RSmodeHelper.DeleteRSLayer(Context, model.Promo);
+                }
+                
 
                 patch.Patch(model);
                 model.LastModifiedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);

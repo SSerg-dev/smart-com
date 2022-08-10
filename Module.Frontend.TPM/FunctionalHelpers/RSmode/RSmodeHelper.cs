@@ -47,7 +47,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
                     .ForMember(pTo => pTo.PromoStatusChanges, opt => opt.Ignore())
                     //.ForMember(pTo => pTo.PromoProductTrees, opt => opt.Ignore())
                     .ForMember(pTo => pTo.PreviousDayIncrementals, opt => opt.Ignore())
-                    .ForMember(pTo => pTo.IncrementalPromoes, opt => opt.Condition(c => c.InOut == false))
+                    .ForMember(pTo => pTo.IncrementalPromoes, opt => opt.Condition(c => c.InOut == true))
                     //.ForMember(pTo => pTo.PromoProducts, opt => opt.Ignore())
                     .ForMember(pTo => pTo.Promoes, opt => opt.Ignore());
                 cfg.CreateMap<BTLPromo, BTLPromo>()
@@ -171,7 +171,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
                     .ForMember(pTo => pTo.PromoStatusChanges, opt => opt.Ignore())
                     //.ForMember(pTo => pTo.PromoProductTrees, opt => opt.Ignore())
                     .ForMember(pTo => pTo.PreviousDayIncrementals, opt => opt.Ignore())
-                    .ForMember(pTo => pTo.IncrementalPromoes, opt => opt.Condition(c => c.InOut == false))
+                    .ForMember(pTo => pTo.IncrementalPromoes, opt => opt.Condition(c => c.InOut == true))
                     //.ForMember(pTo => pTo.PromoProducts, opt => opt.Ignore())
                     .ForMember(pTo => pTo.Promoes, opt => opt.Ignore());
                 cfg.CreateMap<PromoSupportPromo, PromoSupportPromo>()
@@ -224,7 +224,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
                     .ForMember(pTo => pTo.PromoStatusChanges, opt => opt.Ignore())
                     //.ForMember(pTo => pTo.PromoProductTrees, opt => opt.Ignore())
                     .ForMember(pTo => pTo.PreviousDayIncrementals, opt => opt.Ignore())
-                    .ForMember(pTo => pTo.IncrementalPromoes, opt => opt.Condition(c => c.InOut == false))
+                    .ForMember(pTo => pTo.IncrementalPromoes, opt => opt.Condition(c => c.InOut == true))
                     //.ForMember(pTo => pTo.PromoProducts, opt => opt.Ignore())
                     .ForMember(pTo => pTo.Promoes, opt => opt.Ignore());
                 cfg.CreateMap<BTLPromo, BTLPromo>()
@@ -288,7 +288,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
                     .ForMember(pTo => pTo.PromoStatusChanges, opt => opt.Ignore())
                     //.ForMember(pTo => pTo.PromoProductTrees, opt => opt.Ignore())
                     .ForMember(pTo => pTo.PreviousDayIncrementals, opt => opt.Ignore())
-                    .ForMember(pTo => pTo.IncrementalPromoes, opt => opt.Condition(c => c.InOut == false))
+                    .ForMember(pTo => pTo.IncrementalPromoes, opt => opt.Condition(c => c.InOut == true))
                     .ForMember(pTo => pTo.PromoProducts, opt => opt.Ignore())
                     .ForMember(pTo => pTo.Promoes, opt => opt.Ignore());
                 //cfg.CreateMap<PromoStatus, PromoStatus>()
@@ -358,7 +358,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
                     .ForMember(pTo => pTo.PromoStatusChanges, opt => opt.Ignore())
                     //.ForMember(pTo => pTo.PromoProductTrees, opt => opt.Ignore())
                     .ForMember(pTo => pTo.PreviousDayIncrementals, opt => opt.Ignore())
-                    .ForMember(pTo => pTo.IncrementalPromoes, opt => opt.Condition(c => c.InOut == false))
+                    .ForMember(pTo => pTo.IncrementalPromoes, opt => opt.Condition(c => c.InOut == true))
                     .ForMember(pTo => pTo.PromoProducts, opt => opt.Ignore())
                     .ForMember(pTo => pTo.Promoes, opt => opt.Ignore());
                 cfg.CreateMap<BTLPromo, BTLPromo>()
@@ -398,5 +398,55 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
             Context.SaveChanges();
             return incrementalPromoRS;
         }
+
+        public static void DeleteRSLayer(DatabaseContext Context, Promo promo)
+        {
+            var RSPromo = Context.Set<Promo>().FirstOrDefault(x => x.Number == promo.Number && x.TPMmode == TPMmode.RS);
+
+            if (RSPromo != null)
+            {
+                var BTLPromoes = Context.Set<BTLPromo>().Where(x => x.PromoId == RSPromo.Id);
+                Context.Set<BTLPromo>().RemoveRange(BTLPromoes);
+
+                var PSPromoes = Context.Set<PromoSupportPromo>().Where(x => x.PromoId == RSPromo.Id);
+                Context.Set<PromoSupportPromo>().RemoveRange(PSPromoes);
+
+                var corrections = Context.Set<PromoProductsCorrection>().Where(x => x.PromoProduct.PromoId == RSPromo.Id);
+                Context.Set<PromoProductsCorrection>().RemoveRange(corrections);
+
+                var incrementals = Context.Set<IncrementalPromo>().Where(x => x.PromoId == RSPromo.Id);
+                Context.Set<IncrementalPromo>().RemoveRange(incrementals);
+
+                var ppt = Context.Set<PromoProductTree>().Where(x => x.PromoId == RSPromo.Id);
+                Context.Set<PromoProductTree>().RemoveRange(ppt);
+
+                var products = Context.Set<PromoProduct>().Where(x => x.PromoId == RSPromo.Id);
+                Context.Set<PromoProduct>().RemoveRange(products);
+
+                var psc = Context.Set<PromoStatusChange>().Where(x => x.PromoId == RSPromo.Id);
+                Context.Set<PromoStatusChange>().RemoveRange(psc);
+
+                var pai = Context.Set<PromoApprovedIncident>().Where(x => x.PromoId == RSPromo.Id);
+                Context.Set<PromoApprovedIncident>().RemoveRange(pai);
+
+                var pci = Context.Set<PromoCancelledIncident>().Where(x => x.PromoId == RSPromo.Id);
+                Context.Set<PromoCancelledIncident>().RemoveRange(pci);
+
+                //var pdci = Context.Set<PromoDemandChangeIncident>().Where(x => x.PromoId == RSPromo.Id);
+                //Context.Set<PromoDemandChangeIncident>().RemoveRange(psc);
+
+                var poai = Context.Set<PromoOnApprovalIncident>().Where(x => x.PromoId == RSPromo.Id);
+                Context.Set<PromoOnApprovalIncident>().RemoveRange(poai);
+
+                var pori = Context.Set<PromoOnRejectIncident>().Where(x => x.PromoId == RSPromo.Id);
+                Context.Set<PromoOnRejectIncident>().RemoveRange(pori);
+
+                var pufi = Context.Set<PromoUpliftFailIncident>().Where(x => x.PromoId == RSPromo.Id);
+                Context.Set<PromoUpliftFailIncident>().RemoveRange(pufi);
+
+                Context.Set<Promo>().Remove(RSPromo);
+            }
+        }
+        
     }
 }
