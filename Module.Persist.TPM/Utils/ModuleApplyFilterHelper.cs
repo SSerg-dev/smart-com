@@ -1,6 +1,7 @@
 ﻿using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.Import;
 using Module.Persist.TPM.Model.Interfaces;
+using Module.Persist.TPM.Model.SimpleModel;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.PromoStateControl.RoleStateMap;
 using Persist;
@@ -16,6 +17,7 @@ namespace Module.Persist.TPM.Utils
 {
     public static class ModuleApplyFilterHelper
     {
+        
         /// <summary>
         /// Применение фильтра по ограничениям к Промо
         /// </summary>
@@ -438,6 +440,7 @@ namespace Module.Persist.TPM.Utils
                 query = query.Where(x =>
                     hierarchy.Any(h => h.Id == x.PromoProduct.Promo.ClientTree.ObjectId));
             }
+            query = query.Where(x => !x.Disabled || x.TPMmode == TPMmode.RS);
             switch (mode)
             {
                 case TPMmode.Current:
@@ -445,7 +448,7 @@ namespace Module.Persist.TPM.Utils
                     break;
                 case TPMmode.RS:
                     query = query.GroupBy(x => new { x.PromoProduct.Promo.Number, x.PromoProductId }, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault());
-                    query = query.Where(x => !x.Disabled);
+                    query = query.Where(x => !x.Disabled);                   
                     //query = query.ToList().AsQueryable();
                     //var deletedRSPromoes
                     break;
