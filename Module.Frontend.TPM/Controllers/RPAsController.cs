@@ -205,8 +205,8 @@ namespace Module.Frontend.TPM.Controllers
 											{ "PasswordKV", PasswordKV}
 											
 										};
-						await CreateCalculationTaskAsync(fileName, result.Id);
 						CreatePipeForActuals(tenantID, applicationId, authenticationKey, subscriptionId, resourceGroup, dataFactoryName, pipelineName, parameters);
+						await CreateCalculationTaskAsync(fileName, result.Id);
 						break;
 					case "Actuals_PLU":
 						pipelineName = AppSettingsManager.GetSetting("RPA_UPLOAD_PIPELINE_ACTUALS_NAME", "");
@@ -228,8 +228,8 @@ namespace Module.Frontend.TPM.Controllers
 											{ "BlobStorageName", BlobStorageName},
 											{ "PasswordKV", PasswordKV}
 										};
-						await CreateCalculationTaskAsync(fileName, result.Id);
 						CreatePipeForActuals(tenantID, applicationId, authenticationKey, subscriptionId, resourceGroup, dataFactoryName, pipelineName, parameters);
+						await CreateCalculationTaskAsync(fileName, result.Id);
 						break;
 					case "Events":
 						pipelineName = AppSettingsManager.GetSetting("RPA_UPLOAD_PIPELINE_EVENT_NAME", "");
@@ -298,14 +298,16 @@ namespace Module.Frontend.TPM.Controllers
 										{ "PasswordKV", PasswordKV},
 										{ "AKVScope", AKVScope}
 									};
-						await CreateCalculationPromoSupportTaskAsync(fileName, result.Id);
 						CreatePipeForEvents(tenantID, applicationId, authenticationKey, subscriptionId, resourceGroup, dataFactoryName, pipelineName, parameters);
+						await CreateCalculationPromoSupportTaskAsync(fileName, result.Id);
 						break;
 				}
 
 			}
 			catch (Exception e)
 			{
+				result.Status = "Error";
+				Context.SaveChanges();
 				return GetErorrRequest(e);
 
 			}
@@ -357,58 +359,38 @@ namespace Module.Frontend.TPM.Controllers
 			Context.LoopHandlers.Add(handler);
 			Context.SaveChanges();
 		}
-		private IHttpActionResult CreatePipeForEvents(string tenantID, string applicationId, string authenticationKey, string subscriptionId, string resourceGroup, string dataFactoryName, string pipelineName, Dictionary<string, object> parameters)
+		private void CreatePipeForEvents(string tenantID, string applicationId, string authenticationKey, string subscriptionId, string resourceGroup, string dataFactoryName, string pipelineName, Dictionary<string, object> parameters)
 		{
-			try
+			var context = new AuthenticationContext("https://login.microsoftonline.com/" + tenantID);
+			ClientCredential cc = new ClientCredential(applicationId, authenticationKey);
+			AuthenticationResult authenticationResult = context.AcquireTokenAsync(
+				"https://management.azure.com/", cc).Result;
+			ServiceClientCredentials cred = new TokenCredentials(authenticationResult.AccessToken);
+			var client = new DataFactoryManagementClient(cred)
 			{
-				var context = new AuthenticationContext("https://login.microsoftonline.com/" + tenantID);
-				ClientCredential cc = new ClientCredential(applicationId, authenticationKey);
-				AuthenticationResult authenticationResult = context.AcquireTokenAsync(
-					"https://management.azure.com/", cc).Result;
-				ServiceClientCredentials cred = new TokenCredentials(authenticationResult.AccessToken);
-				var client = new DataFactoryManagementClient(cred)
-				{
-					SubscriptionId = subscriptionId
-				};
+				SubscriptionId = subscriptionId
+			};
 
-				CreateRunResponse runResponse = client.Pipelines.CreateRunWithHttpMessagesAsync(
-					resourceGroup, dataFactoryName, pipelineName, parameters: parameters
-				).Result.Body;
-
-			}
-			catch (Exception ex)
-			{
-
-				return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "Pipe start failure " + ex.Message }));
-
-			}
-			return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, message = "Pipe started successfull" }));
+			CreateRunResponse runResponse = client.Pipelines.CreateRunWithHttpMessagesAsync(
+				resourceGroup, dataFactoryName, pipelineName, parameters: parameters
+			).Result.Body;
 		}
 
-		private IHttpActionResult CreatePipeForActuals(string tenantID, string applicationId, string authenticationKey, string subscriptionId, string resourceGroup, string dataFactoryName, string pipelineName, Dictionary<string, object> parameters)
+		private void CreatePipeForActuals(string tenantID, string applicationId, string authenticationKey, string subscriptionId, string resourceGroup, string dataFactoryName, string pipelineName, Dictionary<string, object> parameters)
 		{
-			try
+			var context = new AuthenticationContext("https://login.microsoftonline.com/" + tenantID);
+			ClientCredential cc = new ClientCredential(applicationId, authenticationKey);
+			AuthenticationResult authenticationResult = context.AcquireTokenAsync(
+				"https://management.azure.com/", cc).Result;
+			ServiceClientCredentials cred = new TokenCredentials(authenticationResult.AccessToken);
+			var client = new DataFactoryManagementClient(cred)
 			{
-				var context = new AuthenticationContext("https://login.microsoftonline.com/" + tenantID);
-				ClientCredential cc = new ClientCredential(applicationId, authenticationKey);
-				AuthenticationResult authenticationResult = context.AcquireTokenAsync(
-					"https://management.azure.com/", cc).Result;
-				ServiceClientCredentials cred = new TokenCredentials(authenticationResult.AccessToken);
-				var client = new DataFactoryManagementClient(cred)
-				{
-					SubscriptionId = subscriptionId
-				};
+				SubscriptionId = subscriptionId
+			};
 
-				CreateRunResponse runResponse = client.Pipelines.CreateRunWithHttpMessagesAsync(
-					resourceGroup, dataFactoryName, pipelineName, parameters: parameters
-				).Result.Body;
-
-			}
-			catch (Exception ex)
-			{
-				return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "Pipe start failure " + ex.Message }));
-			}
-			return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, message = "Pipe started successfull" }));
+			CreateRunResponse runResponse = client.Pipelines.CreateRunWithHttpMessagesAsync(
+				resourceGroup, dataFactoryName, pipelineName, parameters: parameters
+			).Result.Body;
 		}
 
 		private bool CheckFileCorrect(string templateFileName)
