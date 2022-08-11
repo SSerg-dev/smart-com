@@ -373,9 +373,12 @@ namespace Module.Frontend.TPM.Controllers
 
                 //Promo promoCopy = new Promo(model);
                 Promo promoCopy = AutomapperProfiles.PromoCopy(model);
-                if (model.TPMmode != ChangePromo.TPMmode)
+                if (model.TPMmode == TPMmode.Current)
                 {
-                    model = RSmodeHelper.EditToPromoRS(Context, model);
+                    if (model.TPMmode != ChangePromo.TPMmode)
+                    {
+                        model = RSmodeHelper.EditToPromoRS(Context, model);
+                    }
                 }
                 patch.Patch(model);
 
@@ -2473,8 +2476,9 @@ namespace Module.Frontend.TPM.Controllers
                     }
                 });
 
-                products = Context.Set<Product>().Where(g=> productIds.Contains(g.Id)).ToList();
-                var config = new MapperConfiguration(cfg => {
+                products = Context.Set<Product>().Where(g => productIds.Contains(g.Id)).ToList();
+                var config = new MapperConfiguration(cfg =>
+                {
                     cfg.CreateMap<Product, Product>()
                         .ForMember(pTo => pTo.AssortmentMatrices, opt => opt.Ignore())
                         .ForMember(pTo => pTo.BaseLines, opt => opt.Ignore())
