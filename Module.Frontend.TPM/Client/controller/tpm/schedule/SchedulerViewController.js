@@ -2057,12 +2057,19 @@
         // RSmode
         var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
         var mode = settingStore.findRecord('name', 'mode');
+        var StartDateRS = null;
+        var EndDateRS = null;
         if (mode) {
             if (mode.data.value == 0) {
                 store.getProxy().extraParams.TPMmode = 'Current';
             }
             else if (true) {
                 store.getProxy().extraParams.TPMmode = 'RS';
+                var RSmodeController = App.app.getController('tpm.rsmode.RSmode');
+                RSmodeController.getRSPeriod(function (returnValue) {
+                    StartDateRS = new Date(returnValue.StartDate);
+                    EndDateRS = new Date(returnValue.EndDate);
+                });
             }
         }
 
@@ -2071,6 +2078,19 @@
             scope: this,
             addRecords: true,
             callback: function (records, operation, success) {
+                if (StartDateRS) {
+                    records = records.map(function (record) {
+                        //debugger;
+                        if (record.data.DispatchesStart < StartDateRS && EndDateRS > record.data.DispatchesStart) {
+                            record.set('IsOnHold', true);
+                        }
+                        if (record.data.MasterPromoId) {
+                            record.set('IsOnHold', true);
+                        }
+                        return record
+                    });
+                }
+
                 //Если закрыли календарь - перестаем грузить
                 var nascheduler = Ext.ComponentQuery.query('#nascheduler')[0];
                 if (nascheduler) {

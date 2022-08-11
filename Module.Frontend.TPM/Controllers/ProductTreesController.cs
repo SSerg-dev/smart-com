@@ -347,6 +347,7 @@ namespace Module.Frontend.TPM.Controllers
                 branch.AddChild(outList.Count == 0 ? children : outList);
             }
             var config = new MapperConfiguration(cfg => {
+                cfg.AllowNullCollections = true; // потому что в children должен быть null а не пустая коллекция
                 cfg.CreateMap<ProductTreeNode, ProductTreeNode>();
                 cfg.CreateMap<Technology, Technology>()
                 .ForMember(pTo => pTo.BrandTeches, opt => opt.Ignore());

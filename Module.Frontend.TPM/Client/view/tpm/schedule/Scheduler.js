@@ -131,7 +131,7 @@
             statusColor: event.get('PromoStatusColor') || '#DDDDDD',
             display: event.data.IsGrowthAcceleration ? 'inline' : 'none',
             marginLeft: event.data.IsGrowthAcceleration ? '13px' : '0px',
-            opacity: event.data.IsOnHold ? 0.3 : 1,
+            opacity: event.get('IsOnHold') ? 0.3 : 1,
             eventStatusBorderGrowthAcceleration:  event.data.IsGrowthAcceleration ? 'event-status-border-growth-acceleration' : ''
         };
     },
