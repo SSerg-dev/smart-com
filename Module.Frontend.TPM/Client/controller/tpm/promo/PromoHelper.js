@@ -293,6 +293,7 @@
         var promo = null;
         var onApprovalState = null;
         var promoStatusName = 'Draft';
+        debugger;
         if (!panel.isDestroyed) {
             var panelWidthRatio = panel.getWidth() / 1160;
             //Small sizes correction:
