@@ -492,7 +492,7 @@ namespace Module.Frontend.TPM.Controllers
                     ReferenceLoopHandling = ReferenceLoopHandling.Ignore
                 }));
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, messaage = e.Message }));
             }

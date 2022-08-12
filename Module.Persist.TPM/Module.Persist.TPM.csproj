@@ -3067,6 +3067,10 @@
     <Compile Include="Migrations\202208091208487_Add_OnHold_PromoView.Designer.cs">
       <DependentUpon>202208091208487_Add_OnHold_PromoView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202208120912546_Aftermigration_changeview.cs" />
+    <Compile Include="Migrations\202208120912546_Aftermigration_changeview.Designer.cs">
+      <DependentUpon>202208120912546_Aftermigration_changeview.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
@@ -5802,6 +5806,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202208091208487_Add_OnHold_PromoView.resx">
       <DependentUpon>202208091208487_Add_OnHold_PromoView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202208120912546_Aftermigration_changeview.resx">
+      <DependentUpon>202208120912546_Aftermigration_changeview.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

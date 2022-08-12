@@ -21,6 +21,11 @@ namespace Module.Persist.TPM.Model.TPM
         public string Name { get; set; }
 
         public string Description { get; set; }
+        [StringLength(255)]
+        public string MarketSegment { get; set; }
+
+        public System.Guid EventTypeId { get; set; }
+        public EventType EventType { get; set; }
 
         public virtual ICollection<BTL> BTLs { get; set; }
         public virtual ICollection<EventClientTree> EventClientTrees { get; set; }
