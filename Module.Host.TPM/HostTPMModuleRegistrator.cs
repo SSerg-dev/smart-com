@@ -85,6 +85,7 @@ namespace Module.Host.TPM
                 new Handlers.CreateCoefficientSI2SOHandler(),
                 new Handlers.FullXLSXUpdateImportClientDashboardHandler(),
                 new Handlers.FullXLSXUpdateImportRollingVolumesHandler(),
+                new Handlers.FullXLSXUpdateImportEventHandler(),
                 new Handlers.RollingVolumeQTYRecalculationHandler(),
                 new Handlers.FullXLSXUpdateTechnologyHandler(),
                 new Handlers.RestartMainNightProcessingHandler(),
@@ -92,7 +93,8 @@ namespace Module.Host.TPM
                 new Handlers.ReapprovingHandler(),
                 new Handlers.ExportHandler(),
                 new Handlers.MassApproveHandler(),
-                new Handlers.SendingFilesToBlobHandler()
+                new Handlers.SendingFilesToBlobHandler(),
+                new Handlers.FullXLSXRPAEventImportHandler()
             };
         }
     }

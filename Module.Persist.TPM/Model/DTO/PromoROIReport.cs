@@ -155,6 +155,7 @@ namespace Module.Persist.TPM.Model.DTO
         public bool? IsCMManagerApproved { get; set; }
         public bool? IsDemandPlanningApproved { get; set; }
         public bool? IsDemandFinanceApproved { get; set; }
+        public bool? IsGAManagerApproved { get; set; }
         [StringLength(255)]
         public string Client1LevelName { get; set; }
         [StringLength(255)]
@@ -194,5 +195,16 @@ namespace Module.Persist.TPM.Model.DTO
         public double? ActualPromoROIPercentLSV { get; set; }
         public double? ActualPromoNetROIPercentLSV { get; set; }
 
+        //add new prop
+        public double? PlanPromoIncrementalCOGSTn { get; set; }
+        public double? PlanPromoNetIncrementalCOGSTn { get; set; }
+        public double? ActualPromoIncrementalCOGSTn { get; set; }
+        public double? ActualPromoNetIncrementalCOGSTn { get; set; }
+        public double? PlanPromoBaselineVolume { get; set; }
+        public double? PlanPromoIncrementalVolume { get; set; }
+        public double? PlanPromoNetIncrementalVolume { get; set; }
+        public double? ActualPromoVolume { get; set; }
+        public double? ActualPromoIncrementalVolume { get; set; }
+        public double? ActualPromoNetIncrementalVolume { get; set; }
     }
 }

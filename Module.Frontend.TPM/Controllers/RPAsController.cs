@@ -38,6 +38,8 @@ using Column = Frontend.Core.Extensions.Export.Column;
 using Module.Persist.TPM.CalculatePromoParametersModule;
 using Utility;
 using Module.Persist.TPM.Model.DTO;
+using Core.Security.Models;
+using Module.Persist.TPM.Model.Import;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -253,6 +255,7 @@ namespace Module.Frontend.TPM.Controllers
 										{ "AKVScope", AKVScope}
 									};
 						CreatePipeForEvents(tenantID, applicationId, authenticationKey, subscriptionId, resourceGroup, dataFactoryName, pipelineName, parameters);
+						CreateRPAEventImportTask(fileName);
 						break;
 					case "NonPromoSupport":
 						pipelineName = AppSettingsManager.GetSetting("RPA_UPLOAD_PIPELINE_SUPPORT_NAME", "");
@@ -313,7 +316,50 @@ namespace Module.Frontend.TPM.Controllers
 			return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, message = "RPA save and upload done." }));
 		}
 
+		private void CreateRPAEventImportTask(string fileName)
+        {
+			string importHandler = "FullXLSXRPAEventImportHandler";
 
+            Core.Security.Models.UserInfo user = authorizationManager.GetCurrentUser();
+			Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
+			RoleInfo role = authorizationManager.GetCurrentRole();
+			Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
+
+			HandlerData data = new HandlerData();
+			FileModel file = new FileModel()
+			{
+				LogicType = "Import",
+				Name = Path.GetFileName(fileName),
+				DisplayName = Path.GetFileName(fileName)
+			};
+
+			HandlerDataHelper.SaveIncomingArgument("File", file, data, visible: false, throwIfNotExists: false);
+			HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+			HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+			HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportRPAEvent), data, visible: false, throwIfNotExists: false);
+			HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportRPAEvent).Name, data, throwIfNotExists: false);
+			HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(ImportRPAEvent), data, visible: false, throwIfNotExists: false);
+			
+			LoopHandler handler = new LoopHandler()
+			{
+				Id = Guid.NewGuid(),
+				ConfigurationName = "PROCESSING",
+				Description = "Загрузка импорта из файла " + typeof(ImportRPAEvent).Name,
+				Name = "Module.Host.TPM.Handlers." + importHandler,
+				ExecutionPeriod = null,
+				RunGroup = typeof(ImportRPAEvent).Name,
+				CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+				LastExecutionDate = null,
+				NextExecutionDate = null,
+				ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+				UserId = userId,
+				RoleId = roleId
+			};
+
+			handler.SetParameterData(data);
+			Context.LoopHandlers.Add(handler);
+			Context.SaveChanges();
+		}
 		private IHttpActionResult CreatePipeForEvents(string tenantID, string applicationId, string authenticationKey, string subscriptionId, string resourceGroup, string dataFactoryName, string pipelineName, Dictionary<string, object> parameters)
 		{
 			try

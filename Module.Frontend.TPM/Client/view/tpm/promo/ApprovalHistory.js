@@ -89,7 +89,7 @@
 										if ((promo.IsCMManagerApproved === false || promo.IsCMManagerApproved === null)
 											&& (promo.IsDemandPlanningApproved === false || promo.IsDemandPlanningApproved === null)
 											&& (promo.IsDemandFinanceApproved === false || promo.IsDemandFinanceApproved === null))
-											onApprovalState = 'CMManagerGAFirst';
+											onApprovalState = 'CMManagerGA';
 										if (promo.IsCMManagerApproved === true
 											&& (promo.IsDemandPlanningApproved === false || promo.IsDemandPlanningApproved === null)
 											&& (promo.IsDemandFinanceApproved === false || promo.IsDemandFinanceApproved === null))
@@ -98,10 +98,10 @@
 											&& promo.IsDemandPlanningApproved === true
 											&& (promo.IsDemandFinanceApproved === false || promo.IsDemandFinanceApproved === null))
 											onApprovalState = 'DemandFinanceGA';
-										if ((promo.IsCMManagerApproved === false || promo.IsCMManagerApproved === null)
+										if (promo.IsCMManagerApproved === true
 											&& promo.IsDemandPlanningApproved === true
 											&& promo.IsDemandFinanceApproved === true)
-											onApprovalState = 'CMManagerGASecond';
+											onApprovalState = 'GAManagerGA';
 									}
 									else {
 										if (promo.IsCMManagerApproved == true

@@ -223,6 +223,7 @@ namespace Module.Persist.TPM.Model.TPM
         public bool? IsCMManagerApproved { get; set; }
         public bool? IsDemandPlanningApproved { get; set; }
         public bool? IsDemandFinanceApproved { get; set; }
+        public bool? IsGAManagerApproved { get; set; }
 
         [StringLength(500)]
         public string ProductSubrangesList { get; set; }
@@ -493,7 +494,7 @@ namespace Module.Persist.TPM.Model.TPM
                             currentNode = context.Set<ProductTree>().FirstOrDefault(n => n.ObjectId == currentNode.parentId && !n.EndDate.HasValue);
                         }
 
-                        PromoBasicProducts = JsonConvert.SerializeObject(promoBasicProducts);
+                        PromoBasicProducts = JsonConvert.SerializeObject(promoBasicProducts, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore});
                     }
                 }
             }

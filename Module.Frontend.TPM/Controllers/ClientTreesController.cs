@@ -93,7 +93,7 @@ namespace Module.Frontend.TPM.Controllers
         public IHttpActionResult GetClientTreeByObjectId(int? objectId)
         {
             var clientTree = Context.Set<ClientTree>().FirstOrDefault(x => x.ObjectId == objectId && x.EndDate == null);
-            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, data = clientTree }));
+            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, data = clientTree }, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }));
         }
 
         /// <summary>
@@ -833,7 +833,7 @@ namespace Module.Frontend.TPM.Controllers
                 clientTree = activeTree.Where(x => x.ObjectId == clientTree.parentId).FirstOrDefault();
             }
 
-            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, data = nodes }));
+            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, data = nodes }, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }));
         }
 
         /// <summary>

@@ -17,6 +17,7 @@ namespace Module.Persist.TPM.Model.DTO {
         public bool? IsDemandFinanceApproved { get; set; }
         public bool? IsDemandPlanningApproved { get; set; }
         public bool? IsCMManagerApproved { get; set; }
+        public bool? IsGAManagerApproved { get; set; }
         public double? PlanInstoreMechanicDiscount { get; set; }
         public TPMmode TPMmode { get; set; }
 

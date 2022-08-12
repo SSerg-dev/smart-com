@@ -337,6 +337,7 @@
     <Compile Include="Actions\DataLakeIntegrationActions\MarsProductsCheckAction.cs" />
     <Compile Include="Actions\DataLakeIntegrationActions\MarsCustomersCheckAction.cs" />
     <Compile Include="Actions\FullXLSXAssortmentMatrixImportAction.cs" />
+    <Compile Include="Actions\FullXLSXRPAEventImportAction.cs" />
     <Compile Include="Actions\FullXLSXCompetitorPromoUpdateNewImportAction.cs" />
     <Compile Include="Actions\FullXLSXCOGSTnUpdateImportAction.cs" />
     <Compile Include="Actions\FullXLSXImportPromoDMPAction.cs" />
@@ -346,6 +347,7 @@
     <Compile Include="Actions\FullXLSXImportPromoProductFromTLCAction.cs" />
     <Compile Include="Actions\FullXLSXMechanicTypeUpdateImportAction.cs" />
     <Compile Include="Actions\FullXLSXImportNonPromoDMPAction.cs" />
+    <Compile Include="Actions\FullXLSXUpdateImportEventAction.cs" />
     <Compile Include="Actions\FullXLSXUpdateImportNonPromoEquipmentAction.cs" />
     <Compile Include="Actions\FullXLSXUpdateImportClientDashboardAction.cs" />
     <Compile Include="Actions\FullXLSXUpdateImportCoefficientSI2SOAction.cs" />
