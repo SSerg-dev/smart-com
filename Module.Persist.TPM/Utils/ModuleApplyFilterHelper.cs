@@ -28,14 +28,6 @@ namespace Module.Persist.TPM.Utils
         /// <returns></returns>
         public static IQueryable<Promo> ApplyFilter(IQueryable<Promo> query, IQueryable<ClientTreeHierarchyView> hierarchy, TPMmode mode = TPMmode.Current, IDictionary<string, IEnumerable<string>> filter = null, FilterQueryModes filterMode = FilterQueryModes.Active, string role = "")
         {
-            if (filterMode == FilterQueryModes.Active)
-            {
-                query = query.Where(x => !x.Disabled);
-            }
-            if (filterMode == FilterQueryModes.Deleted)
-            {
-                query = query.Where(x => x.Disabled);
-            }
             IEnumerable<string> clientFilter = FilterHelper.GetFilter(filter, ModuleFilterName.Client);
             if (clientFilter.Any())
             {
@@ -43,7 +35,7 @@ namespace Module.Persist.TPM.Utils
                 query = query.Where(x =>
                     hierarchy.Any(h => h.Id == x.ClientTreeId || h.Hierarchy.Contains(x.ClientTreeId.Value.ToString())));
             }
-            if (!String.IsNullOrEmpty(role))
+            if (!string.IsNullOrEmpty(role))
             {
                 IEnumerable<Promo> promoToFilter = query.AsEnumerable();
                 promoToFilter = promoToFilter.Where(x => RoleStateUtil.RoleCanChangeState(role, x.PromoStatus.SystemName) && RoleStateUtil.IsOnApprovalRoleOrder(role, x));
@@ -53,9 +45,24 @@ namespace Module.Persist.TPM.Utils
             {
                 case TPMmode.Current:
                     query = query.Where(x => x.TPMmode == TPMmode.Current);
+                    if (filterMode == FilterQueryModes.Active)
+                    {
+                        query = query.Where(x => !x.Disabled);
+                    }
+                    if (filterMode == FilterQueryModes.Deleted)
+                    {
+                        query = query.Where(x => x.Disabled);
+                    }
                     break;
                 case TPMmode.RS:
-                    query = query.GroupBy(x => x.Number, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault());
+                    if (filterMode == FilterQueryModes.Active)
+                    {
+                        query = query.GroupBy(x => x.Number, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault()).Where(g => !g.Disabled);
+                    }
+                    if (filterMode == FilterQueryModes.Deleted)
+                    {
+                        query = query.GroupBy(x => x.Number, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault()).Where(g => g.Disabled);
+                    }                    
                     //query = query.Where(x => x.TPMmode == TPMmode.RS);
                     break;
             }

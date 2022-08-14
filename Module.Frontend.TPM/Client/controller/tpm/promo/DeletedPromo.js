@@ -64,6 +64,15 @@
         this.onGridAfterrender(grid);
     },
 
+    getColumnIndex: function (grid, dataIndex) {
+        gridColumns = grid.headerCt.getGridColumns();
+        for (var i = 0; i < gridColumns.length; i++) {
+            if (gridColumns[i].dataIndex == dataIndex) {
+                return i;
+            }
+        }
+    },
+
     onHistoryButtonClick: function (button) {
         var grid = this.getGridByButton(button),
             selModel = grid.getSelectionModel();

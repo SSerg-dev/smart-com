@@ -26,7 +26,7 @@ namespace Module.Frontend.TPM.Controllers {
             this.authorizationManager = authorizationManager;
         }
 
-        protected IQueryable<Promo> GetConstraintedQuery() {
+        protected IQueryable<Promo> GetConstraintedQuery(TPMmode TPMmode = TPMmode.Current) {
             UserInfo user = authorizationManager.GetCurrentUser();
             string role = authorizationManager.GetCurrentRoleName();
             IList<Constraint> constraints = user.Id.HasValue ? Context.Constraints
@@ -35,7 +35,7 @@ namespace Module.Frontend.TPM.Controllers {
             IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
             IQueryable<Promo> query = Context.Set<Promo>();
             IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
-            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, TPMmode.Current, filters, FilterQueryModes.Deleted);
+            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, TPMmode, filters, FilterQueryModes.Deleted);
 
             // Не администраторы не смотрят чужие черновики
             if (role != "Administrator" && role != "SupportAdministrator")
@@ -47,8 +47,8 @@ namespace Module.Frontend.TPM.Controllers {
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue, MaxExpansionDepth = 3)]
-        public IQueryable<Promo> GetDeletedPromoes() {
-            return GetConstraintedQuery().Where(e => e.Disabled);
+        public IQueryable<Promo> GetDeletedPromoes(TPMmode TPMmode) {
+            return GetConstraintedQuery(TPMmode);
         }
 
         [ClaimsAuthorize]
@@ -63,7 +63,8 @@ namespace Module.Frontend.TPM.Controllers {
         [HttpPost]
         public IQueryable<Promo> GetFilteredData(ODataQueryOptions<Promo> options)
         {
-            var query = GetConstraintedQuery().Where(e => e.Disabled);
+            string bodyText = Helper.GetRequestBody(HttpContext.Current.Request);
+            var query = GetConstraintedQuery(JsonHelper.GetValueIfExists<TPMmode>(bodyText, "TPMmode")).Where(e => e.Disabled);
 
             var querySettings = new ODataQuerySettings
             {
