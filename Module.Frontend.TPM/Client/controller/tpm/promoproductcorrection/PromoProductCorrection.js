@@ -1,6 +1,10 @@
 ﻿Ext.define('App.controller.tpm.promoproductcorrection.PromoProductCorrection', {
     extend: 'App.controller.core.AssociatedDirectory',
     mixins: ['App.controller.core.ImportExportLogic'],
+    
+    startEndModel: null,
+    
+    thisGrid: null,
 
     init: function () {
         this.listen({
@@ -10,7 +14,7 @@
                     itemdblclick: this.onDetailButtonClick
                 },
                 'promoproductcorrection directorygrid': {
-                    selectionchange: this.onGridSelectionChange,
+                    selectionchange: this.onPromoProductCorrectionGridSelectionChange,
                     afterrender: this.onGridPromoProductCorrectionAfterrender,
                     extfilterchange: this.onExtFilterChange
                 },
@@ -81,14 +85,19 @@
 
 
     onGridPromoProductCorrectionAfterrender: function (grid) {
+        thisGrid = grid;
+        var RSmodeController = App.app.getController('tpm.rsmode.RSmode');
         var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
         var mode = settingStore.findRecord('name', 'mode');
         if (mode) {
             if (mode.data.value != 1) {
                 var indexh = this.getColumnIndex(grid, 'TPMmode');
-                grid.columnManager.getColumns()[indexh].hide();
+                grid.columnManager.getColumns()[indexh].hide();                
             }
             else {
+                RSmodeController.getRSPeriod(function (returnValue) {
+                    startEndModel = returnValue;
+                });
                 var promoProductCorrectionGridStore = grid.getStore();
                 var promoProductCorrectionGridStoreProxy = promoProductCorrectionGridStore.getProxy();
                 promoProductCorrectionGridStoreProxy.extraParams.TPMmode = 'RS';
@@ -504,6 +513,22 @@
         else {
             this.onDeleteButtonClick(button);
         }
+    },
+
+    onPromoProductCorrectionGridSelectionChange: function(selMode, selected) { 
+        this.onGridSelectionChange(selMode, selected); 
+        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+        const tpmMode = settingStore.findRecord('name', 'mode').data.value;
+        if (tpmMode == 1) {
+            if(new Date(selected[0].data.PromoDispatchStartDate) > new Date(startEndModel.StartDate) && 
+            new Date(selected[0].data.PromoDispatchStartDate) <= new Date(startEndModel.EndDate)) {
+                    updBtn = thisGrid.up().down('custombigtoolbar').down('#updatebutton');
+                    updBtn.setDisabled(true);
+                    delBtn = thisGrid.up().down('custombigtoolbar').down('#deletebutton');
+                    delBtn.setDisabled(true);
+                };
+        }       
+        
     }
 
 });

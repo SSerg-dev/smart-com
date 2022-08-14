@@ -40,6 +40,7 @@
         { name: 'PlanProductIncrementalLSV', type: 'float', mapping: 'PromoProduct.PlanProductIncrementalLSV', hidden: false, isDefault: true, useNull: true },
         { name: 'PlanProductLSV', type: 'float', mapping: 'PromoProduct.PlanProductLSV', hidden: false, isDefault: true, useNull: true },
         { name: 'ProductSubrangesList', type: 'string', mapping: 'PromoProduct.Promo.ProductSubrangesList', hidden: false, isDefault: true },
+        { name: 'PromoDispatchStartDate', type:'date', hidden: true, mapping:'PromoProduct.Promo.DispatchesStart', timeZone: +3, convert: dateConvertTimeZone}
     ],
     proxy: {
         type: 'breeze',

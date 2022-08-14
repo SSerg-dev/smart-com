@@ -22,7 +22,9 @@
         { name: 'PlanCostProd', type: 'float', hidden: true },
         { name: 'FactCostProd', type: 'float', hidden: true },
 
-        { name: 'TPMmode', type: 'string', hidden: false, isDefault: true }
+        { name: 'TPMmode', type: 'string', hidden: false, isDefault: true },
+        { name: 'PromoDispatchStartDate', type: 'date', hidden: true, mapping: 'Promo.DispatchesStart', timeZone: +3, convert: dateConvertTimeZone }
+        
     ],
     proxy: {
         type: 'breeze',

@@ -2,11 +2,12 @@
     extend: 'App.controller.core.AssociatedDirectory',
     mixins: ['App.controller.core.ImportExportLogic'],
 
+    startEndModel: null,
+
     init: function () {
         this.listen({
             component: {
                 'btlpromo directorygrid': {
-                    selectionchange: this.onGridSelectionChange,
                     selectionchange: this.onGridSelectionChangeCustom,
                     afterrender: this.onBTLPromoGridAfterrender,
                     extfilterchange: this.onExtFilterChange,
@@ -62,6 +63,7 @@
     },
 
     onBTLPromoGridAfterrender: function (grid) {
+        var RSmodeController = App.app.getController('tpm.rsmode.RSmode');
         var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
         var mode = settingStore.findRecord('name', 'mode');
         if (mode) {
@@ -70,9 +72,12 @@
                 grid.columnManager.getColumns()[indexh].hide();
             }
             else {
-                var incrementalPromoGridStore = grid.getStore();
-                var incrementalPromoGridStoreProxy = incrementalPromoGridStore.getProxy();
-                incrementalPromoGridStoreProxy.extraParams.TPMmode = 'RS';
+                RSmodeController.getRSPeriod(function (returnValue) {
+                    startEndModel = returnValue;
+                });
+                var btlPromoGridStore = grid.getStore();
+                var btlPromoGridStoreProxy = btlPromoGridStore.getProxy();
+                btlPromoGridStoreProxy.extraParams.TPMmode = 'RS';
             }
         }
         this.onGridAfterrender(grid);
@@ -418,11 +423,27 @@
         }
     },
 
-    onGridSelectionChangeCustom: function (selModel, selected) {
-        if (selected[0] && selected[0].data.PromoStatusName != "Closed") {
-            Ext.ComponentQuery.query('btlpromo')[0].down('#deletebutton').enable();
-        } else {
-            Ext.ComponentQuery.query('btlpromo')[0].down('#deletebutton').disable();
-        }
+    onGridSelectionChangeCustom: function (selMode, selected) {
+        if (selected[0]) {
+            var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+            const tpmMode = settingStore.findRecord('name', 'mode').data.value;
+            if (tpmMode == 1) {
+                if (new Date(selected[0].data.PromoDispatchStartDate) > new Date(startEndModel.StartDate) &&
+                    new Date(selected[0].data.PromoDispatchStartDate) <= new Date(startEndModel.EndDate)) {
+                        Ext.ComponentQuery.query('btlpromo')[0].down('#deletebutton').disable();
+                }
+                else if (selected[0].data.PromoStatusName != "Closed") {
+                    Ext.ComponentQuery.query('btlpromo')[0].down('#deletebutton').enable();
+                }
+                else {
+                    Ext.ComponentQuery.query('btlpromo')[0].down('#deletebutton').disable();
+                }
+            }
+            else if (selected[0].data.PromoStatusName != "Closed") {
+                Ext.ComponentQuery.query('btlpromo')[0].down('#deletebutton').enable();
+            } else {
+                Ext.ComponentQuery.query('btlpromo')[0].down('#deletebutton').disable();
+            }
+        }        
     },
 });
