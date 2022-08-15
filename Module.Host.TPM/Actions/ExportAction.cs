@@ -50,6 +50,7 @@ namespace Module.Host.TPM.Actions.Notifications
         private string CustomFileName;
         private TPMmode TPMmode;
         private string url;
+        private Role RoleInfo;
 
         private readonly object locker = new object();
 
@@ -70,6 +71,7 @@ namespace Module.Host.TPM.Actions.Notifications
 
             User = getUserInfo(userId);
             Role = GetRole(roleId);
+            RoleInfo = GetRoleInfo(roleId);
         }
         public override void Execute()
         {
@@ -120,6 +122,11 @@ namespace Module.Host.TPM.Actions.Notifications
                         else if (typeof(TModel).Name.Equals(typeof(CompetitorPromo).Name))
                         {
                             records = GetCompetitorPromoes(context, SqlString);
+                        }
+                        else if (typeof(TModel).Name.Equals(typeof(PromoProductsCorrection).Name))
+                        {
+                            var options = getODataQueryOptions<TModel>();
+                            records = options.ApplyTo(new PromoProductsCorrectionsController(User, RoleInfo, RoleId).GetConstraintedQuery(TPMmode: TPMmode, localContext: context)).Cast<PromoProductsCorrection>().ToList();
                         }
                         else
                         {
@@ -270,6 +277,15 @@ namespace Module.Host.TPM.Actions.Notifications
             using (DatabaseContext context = new DatabaseContext())
             {
                 return context.Roles.FirstOrDefault(u => u.Id == roleId && !u.Disabled).SystemName;
+            }
+        }
+
+        private Role GetRoleInfo(Guid roleId)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                var role = context.Roles.FirstOrDefault(u => u.Id == roleId && !u.Disabled);
+                return role;
             }
         }
 

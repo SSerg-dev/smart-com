@@ -43,22 +43,41 @@ namespace Module.Frontend.TPM.Controllers
 {
     public class PromoProductsCorrectionsController : EFContextController
     {
-        private readonly IAuthorizationManager authorizationManager;
+        private readonly UserInfo user;
+        private readonly Role role;
+        private readonly Guid? roleId;
 
         public PromoProductsCorrectionsController(IAuthorizationManager authorizationManager)
         {
-            this.authorizationManager = authorizationManager;
+            user = authorizationManager.GetCurrentUser();
+            var roleInfo = authorizationManager.GetCurrentRole();
+            role = new Role { Id = roleInfo.Id.Value, SystemName = roleInfo.SystemName };
+            roleId = role.Id;
         }
-        protected IQueryable<PromoProductsCorrection> GetConstraintedQuery(TPMmode TPMmode = TPMmode.Current)
+
+        public PromoProductsCorrectionsController()
         {
-            UserInfo user = authorizationManager.GetCurrentUser();
-            string role = authorizationManager.GetCurrentRoleName();
-            IList<Constraint> constraints = user.Id.HasValue ? Context.Constraints
-                .Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
+        }
+
+        public PromoProductsCorrectionsController(UserInfo user, Role role, Guid? roleId)
+        {
+            this.user = user;
+            this.role = role;
+            this.roleId = roleId;
+        }
+
+        public IQueryable<PromoProductsCorrection> GetConstraintedQuery(TPMmode TPMmode = TPMmode.Current, DatabaseContext localContext = null)
+        {
+            if (localContext == null)
+            {
+                localContext = Context;
+            }
+            IList<Constraint> constraints = user.Id.HasValue ? localContext.Constraints
+                .Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role.SystemName))
                 .ToList() : new List<Constraint>();
             IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
-            IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
-            IQueryable<PromoProductsCorrection> query = Context.Set<PromoProductsCorrection>().Where(e => e.TempId == null);
+            IQueryable<ClientTreeHierarchyView> hierarchy = localContext.Set<ClientTreeHierarchyView>().AsNoTracking();
+            IQueryable<PromoProductsCorrection> query = localContext.Set<PromoProductsCorrection>().Where(e => e.TempId == null);
 
             query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, TPMmode, filters);
 
@@ -143,7 +162,6 @@ namespace Module.Frontend.TPM.Controllers
             {
                 model.TempId = null;
             }
-            UserInfo user = authorizationManager.GetCurrentUser();
 
             // если существует коррекция на данный PromoProduct, то не создаем новый объект
             var item = Context.Set<PromoProductsCorrection>()
@@ -221,9 +239,7 @@ namespace Module.Frontend.TPM.Controllers
         {
             try
             {
-                UserInfo user = authorizationManager.GetCurrentUser();
                 var model = Context.Set<PromoProductsCorrection>().Find(key);
-                string role = authorizationManager.GetCurrentRoleName();
 
                 if (model == null)
                 {
@@ -339,10 +355,8 @@ namespace Module.Frontend.TPM.Controllers
         public IHttpActionResult ExportXLSX(ODataQueryOptions<PromoProductsCorrection> options, TPMmode TPMmode)
         {
             IQueryable results = options.ApplyTo(GetConstraintedQuery(TPMmode));
-            UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
-            RoleInfo role = authorizationManager.GetCurrentRole();
-            Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
+            Guid roleId = role.Id;
             using (DatabaseContext context = new DatabaseContext())
             {
                 HandlerData data = new HandlerData();
@@ -414,10 +428,8 @@ namespace Module.Frontend.TPM.Controllers
                 .Where(g => !g.Disabled && stasuses.Contains(g.Promo.PromoStatus.SystemName) && !(bool)g.Promo.InOut && (bool)g.Promo.NeedRecountUplift)
                 .OrderBy(g => g.Promo.Number).ThenBy(d => d.ZREP);
             //IQueryable results = options.ApplyTo(GetConstraintedQuery());
-            UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
-            RoleInfo role = authorizationManager.GetCurrentRole();
-            Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
+            Guid roleId = role.Id;
             using (DatabaseContext context = new DatabaseContext())
             {
                 HandlerData data = new HandlerData();
@@ -494,10 +506,8 @@ namespace Module.Frontend.TPM.Controllers
 
         private void CreateImportTask(string fileName, string importHandler)
         {
-            var userInfo = authorizationManager.GetCurrentUser();
-            var userId = userInfo == null ? Guid.Empty : (userInfo.Id.HasValue ? userInfo.Id.Value : Guid.Empty);
-            var role = authorizationManager.GetCurrentRole();
-            var roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
+            var userId = user == null ? Guid.Empty : (user.Id ?? Guid.Empty);
+            var roleId = role.Id;
 
             using (var databaseContext = new DatabaseContext())
             {
