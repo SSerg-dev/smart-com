@@ -2499,7 +2499,7 @@
 
     'IncrementalPromo': {
         'ProductZREP': 'ZREP',
-        'TPMmode': 'Mode',
+        'TPMmode': 'Indicator',
         'ProductName': 'Product EN',
         'PromoClient': 'Client',
         'PromoNumber': 'Promo ID',
