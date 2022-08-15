@@ -336,9 +336,9 @@ namespace Module.Frontend.TPM.Controllers
             }
         }
         [ClaimsAuthorize]
-        public IHttpActionResult ExportXLSX(ODataQueryOptions<PromoProductsCorrection> options)
+        public IHttpActionResult ExportXLSX(ODataQueryOptions<PromoProductsCorrection> options, TPMmode TPMmode)
         {
-            IQueryable results = options.ApplyTo(GetConstraintedQuery());
+            IQueryable results = options.ApplyTo(GetConstraintedQuery(TPMmode));
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
             RoleInfo role = authorizationManager.GetCurrentRole();
@@ -355,6 +355,7 @@ namespace Module.Frontend.TPM.Controllers
                 HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(PromoProductsCorrectionsController), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PromoProductsCorrectionsController.GetPromoProductCorrectionExportSettings), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("TPMmode", TPMmode, data, visible: false, throwIfNotExists: false);
 
                 LoopHandler handler = new LoopHandler()
                 {
@@ -406,7 +407,7 @@ namespace Module.Frontend.TPM.Controllers
             return columns;
         }
         [ClaimsAuthorize]
-        public IHttpActionResult ExportCorrectionXLSX(ODataQueryOptions<PromoProductsCorrection> options)
+        public IHttpActionResult ExportCorrectionXLSX(ODataQueryOptions<PromoProductsCorrection> options, TPMmode tmpMode)
         {
             List<string> stasuses = new List<string> { "DraftPublished", "OnApproval", "Approved", "Planned" };
             IQueryable<PromoProduct> results = Context.Set<PromoProduct>()

@@ -398,22 +398,37 @@
             });
         }
     },
+
     onExportCorrectionButtonClick: function (button) {
+        var actionName = button.action || 'ExportCorrectionXLSX';
+        this.ExportPromoProductCorrection(actionName, button);
+    },
+
+    onExportButtonClick: function (button) {
+        var actionName = button.action || 'ExportXLSX';
+        this.ExportPromoProductCorrection(actionName, button)
+    },
+
+    ExportPromoProductCorrection: function(actionName, button) {
         var me = this;
         var grid = me.getGridByButton(button);
         var panel = grid.up('combineddirectorypanel');
         var store = grid.getStore();
         var proxy = store.getProxy();
-        var actionName = button.action || 'ExportCorrectionXLSX';
         var resource = button.resource || proxy.resourceName;
         panel.setLoading(true);
 
+        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+        var mode = settingStore.findRecord('name', 'mode');
+        
         var query = breeze.EntityQuery
-            .from(resource)
-            .withParameters({
-                $actionName: actionName,
-                $method: 'POST',
-            });
+        .from(resource)
+        .withParameters({
+            $actionName: actionName,
+            $method: 'POST',
+            TPMmode: mode?.data?.value
+        });
+        
         // тут store фильтр не работает на бэке другой запрос
         query = me.buildQuery(query, store)
             .using(Ext.ux.data.BreezeEntityManager.getEntityManager())
@@ -427,7 +442,7 @@
                 panel.setLoading(false);
                 App.Notify.pushError(me.getErrorMessage(data));
             });
-    },
+    },    
 
     onEditorClose: function (window) {
         var form = this.editor.down('editorform'),
