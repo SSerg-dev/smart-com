@@ -2,6 +2,8 @@
     extend: 'App.controller.core.AssociatedDirectory',
     mixins: ['App.controller.core.ImportExportLogic'],
 
+    startEndModel: null,
+
     init: function () {
         this.listen({
             component: {
@@ -10,7 +12,7 @@
                     itemdblclick: this.onDetailButtonClick
                 },
                 'incrementalpromo directorygrid': {
-                    selectionchange: this.onGridSelectionChange,
+                    selectionchange: this.onGridSelectionChangeCustom,
                     afterrender: this.onGridIncrementalPromoAfterrender,
                     extfilterchange: this.onExtFilterChange
                 },
@@ -74,6 +76,7 @@
     },
 
     onGridIncrementalPromoAfterrender: function (grid) {
+        var RSmodeController = App.app.getController('tpm.rsmode.RSmode');
         var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
         var mode = settingStore.findRecord('name', 'mode');
         if (mode) {
@@ -82,6 +85,9 @@
                 grid.columnManager.getColumns()[indexh].hide();
             }
             else {
+                RSmodeController.getRSPeriod(function (returnValue) {
+                    startEndModel = returnValue;
+                });
                 var incrementalPromoGridStore = grid.getStore();
                 var incrementalPromoGridStoreProxy = incrementalPromoGridStore.getProxy();
 
@@ -96,6 +102,30 @@
         for (var i = 0; i < gridColumns.length; i++) {
             if (gridColumns[i].dataIndex == dataIndex) {
                 return i;
+            }
+        }
+    },
+
+    onGridSelectionChangedCustom: function(selMode, selected) {
+        if (selected[0]) {
+            var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+            const tpmMode = settingStore.findRecord('name', 'mode').data.value;
+            if (tpmMode == 1) {
+                if (new Date(selected[0].data.PromoDispatchStartDate) > new Date(startEndModel.StartDate) &&
+                    new Date(selected[0].data.PromoDispatchStartDate) <= new Date(startEndModel.EndDate) {
+                    Ext.ComponentQuery.query('incrementalpromo')[0].down('#updatebutton').disable();
+                }
+                else if (selected[0].data.PromoStatusName !='Closed') {
+                    Ext.ComponentQuery.query('incrementalpromo')[0].down('#updatebutton').enable();
+                }
+                else {
+                    Ext.ComponentQuery.query('incrementalpromo')[0].down('#updatebutton').disable();
+                }
+            }
+            else if (selected[0].data.PromoStatusName !='Closed') {
+                Ext.ComponentQuery.query('incrementalpromo')[0].down('#updatebutton').enable();
+            } else {
+                Ext.ComponentQuery.query('incrementalpromo')[0].down('#updatebutton').disable();
             }
         }
     },
