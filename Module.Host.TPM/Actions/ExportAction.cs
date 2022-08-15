@@ -31,6 +31,7 @@ using Core.Extensions;
 using System.Net.Http;
 using System.Web.Http.OData.Builder;
 using System.Web.Http.OData;
+using Module.Persist.TPM.Model.Interfaces;
 
 namespace Module.Host.TPM.Actions.Notifications
 {
@@ -47,13 +48,14 @@ namespace Module.Host.TPM.Actions.Notifications
         private bool SimpleModel;
         private bool IsActuals;
         private string CustomFileName;
+        private TPMmode TPMmode;
         private string url;
 
         private readonly object locker = new object();
 
         protected readonly static Logger logger = LogManager.GetCurrentClassLogger();
 
-        public ExportAction(Guid userId, Guid roleId, IEnumerable<Column> columns, string sqlString, Type dbModel, bool simpleModel, string URL, bool isActuals = false, string customFileName = null)
+        public ExportAction(Guid userId, Guid roleId, IEnumerable<Column> columns, string sqlString, Type dbModel, bool simpleModel, string URL, bool isActuals = false, string customFileName = null, TPMmode tPMmode = TPMmode.Current)
         {
             UserId = userId;
             RoleId = roleId;
@@ -64,6 +66,7 @@ namespace Module.Host.TPM.Actions.Notifications
             url = URL;
             IsActuals = isActuals;
             CustomFileName = customFileName;
+            TPMmode = tPMmode;
 
             User = getUserInfo(userId);
             Role = GetRole(roleId);
@@ -108,7 +111,7 @@ namespace Module.Host.TPM.Actions.Notifications
                         else if (typeof(TModel).Name.Equals(typeof(PromoGridView).Name))
                         {
                             var options = getODataQueryOptions<TModel>();
-                            records = options.ApplyTo(new PromoGridViewsController(User, Role, RoleId).GetConstraintedQuery(localContext: context)).Cast<PromoGridView>().ToList();
+                            records = options.ApplyTo(new PromoGridViewsController(User, Role, RoleId).GetConstraintedQuery(tPMmode: TPMmode, localContext: context)).Cast<PromoGridView>().ToList();
                         }
                         else if(typeof(TModel).Name.Equals(typeof(AssortmentMatrix).Name))
 						{

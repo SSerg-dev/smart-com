@@ -509,5 +509,76 @@ namespace Module.Frontend.TPM.Util
             };
             return columns;
         }
+        public static IEnumerable<Column> GetViewExportSettingsRS()
+        {
+            IEnumerable<Column> columns = new List<Column>()
+            {
+                new Column() { Order = 0, Field = "Number", Header = "Promo ID", Quoting = false },
+                new Column() { Order = 0, Field = "ClientHierarchy", Header = "Client", Quoting = false },
+                new Column() { Order = 0, Field = "TPMmode", Header = "Indicator", Quoting = false },
+                new Column() { Order = 0, Field = "InOut", Header = "In-Out", Quoting = false },
+                new Column() { Order = 0, Field = "IsOnInvoice", Header = "Invoice Type (True - On-invoice)", Quoting = false },
+                new Column() { Order = 0, Field = "IsGrowthAcceleration", Header = "Growth acceleration", Quoting = false },
+                new Column() { Order = 0, Field = "IsInExchange", Header = "In Exchange", Quoting = false },
+                new Column() { Order = 0, Field = "IsApolloExport", Header = "Apollo export", Quoting = false },
+                new Column() { Order = 0, Field = "DeviationCoefficient", Header = "Adjustment, %", Quoting = false },
+                new Column() { Order = 0, Field = "Name", Header = "Promo name", Quoting = false },
+                new Column() { Order = 0, Field = "BrandTechName", Header = "Brandtech", Quoting = false },
+                new Column() { Order = 0, Field = "PromoEventName", Header = "Event", Quoting = false },
+                new Column() { Order = 0, Field = "PlanPromoUpliftPercent", Header = "Plan Promo Uplift, %", Quoting = false },
+                new Column() { Order = 0, Field = "PlanPromoIncrementalLSV", Header = "Plan Promo Incremental LSV", Quoting = false },
+                new Column() { Order = 0, Field = "PlanPromoBaselineLSV", Header = "Plan Promo Baseline LSV", Quoting = false },
+                new Column() { Order = 0, Field = "MarsMechanicName", Header = "Mars mechanic", Quoting = false },
+                new Column() { Order = 0, Field = "MarsMechanicTypeName", Header = "Mars mechanic type", Quoting = false },
+                new Column() { Order = 0, Field = "MarsMechanicDiscount", Header = "Mars mechanic discount, %", Quoting = false },
+                new Column() { Order = 0, Field = "PlanInstoreMechanicName", Header = "IA mechanic", Quoting = false },
+                new Column() { Order = 0, Field = "PlanInstoreMechanicTypeName", Header = "IA mechanic type", Quoting = false },
+                new Column() { Order = 0, Field = "InstoreMechanicDiscount", Header = "IA mechanic discount, %", Quoting = false },
+                new Column() { Order = 0, Field = "StartDate", Header = "Start date", Quoting = false, Format = "dd.MM.yyyy" },
+                new Column() { Order = 0, Field = "MarsStartDate", Header = "Mars Start date", Quoting = false, Format = "dd.MM.yyyy" },
+                new Column() { Order = 0, Field = "EndDate", Header = "End date", Quoting = false, Format = "dd.MM.yyyy" },
+                new Column() { Order = 0, Field = "MarsEndDate", Header = "Mars End date", Quoting = false, Format = "dd.MM.yyyy" },
+                new Column() { Order = 0, Field = "DispatchesStart", Header = "Dispatch start", Quoting = false, Format = "dd.MM.yyyy" },
+                new Column() { Order = 0, Field = "MarsDispatchesStart", Header = "Mars Dispatch start", Quoting = false, Format = "dd.MM.yyyy" },
+                new Column() { Order = 0, Field = "DispatchesEnd", Header = "Dispatch end", Quoting = false, Format = "dd.MM.yyyy" },
+                new Column() { Order = 0, Field = "MarsDispatchesEnd", Header = "Mars Dispatch end", Quoting = false, Format = "dd.MM.yyyy" },
+                new Column() { Order = 0, Field = "PromoStatusName", Header = "Status", Quoting = false },
+                new Column() { Order = 0, Field = "PromoTypesName", Header = "Promo Types Name", Quoting = false }
+
+                //new Column() { Order = 0, Field = "Brand.Name", Header = "Brand", Quoting = false },
+                //new Column() { Order = 0, Field = "Priority", Header = "Priority", Quoting = false },
+                //new Column() { Order = 0, Field = "ProductHierarchy", Header = "Product hierarchy", Quoting = false },
+                //new Column() { Order = 0, Field = "ShopperTi", Header = "Shopper TI, RUR", Quoting = false },
+                //new Column() { Order = 0, Field = "MarketingTi", Header = "Marketing TI, RUR", Quoting = false },
+                //new Column() { Order = 0, Field = "Branding", Header = "Branding, RUR", Quoting = false },
+                //new Column() { Order = 0, Field = "BTL", Header = "BTL, RUR", Quoting = false },
+                //new Column() { Order = 0, Field = "CostProduction", Header = "Cost production, RUR", Quoting = false },
+                //new Column() { Order = 0, Field = "TotalCost", Header = "Total cost, RUR", Quoting = false },
+                //new Column() { Order = 0, Field = "PlanUplift", Header = "Uplift, %", Quoting = false },
+                //new Column() { Order = 0, Field = "PlanIncrementalLsv", Header = "Incremental LSV, RUR", Quoting = false },
+                //new Column() { Order = 0, Field = "PlanTotalPromoLsv", Header = "Total promo LSV, RUR", Quoting = false },
+                //new Column() { Order = 0, Field = "PlanPromoPostPromoEffectLSV", Header = "Post promo effect, RUR", Quoting = false },
+                //new Column() { Order = 0, Field = "PlanRoi", Header = "ROI, %", Quoting = false },
+                //new Column() { Order = 0, Field = "PlanIncrementalNsv", Header = "Incremental NSV, RUR", Quoting = false },
+                //new Column() { Order = 0, Field = "PlanTotalPromoNsv", Header = "Total promo NSV, RUR", Quoting = false },
+                //new Column() { Order = 0, Field = "PlanIncrementalMac", Header = "Incremental Mac, RUR", Quoting = false },
+                //new Column() { Order = 0, Field = "FactShopperTi", Header = "Actual Shopper TI, RUR", Quoting = false },
+                //new Column() { Order = 0, Field = "FactMarketingTi", Header = "Actual Marketing TI, RUR", Quoting = false },
+                //new Column() { Order = 0, Field = "FactBranding", Header = "Actual Branding, RUR", Quoting = false },
+                //new Column() { Order = 0, Field = "FactBTL", Header = "Actual BTL, RUR", Quoting = false },
+                //new Column() { Order = 0, Field = "FactCostProduction", Header = "Actual Cost production, RUR", Quoting = false },
+                //new Column() { Order = 0, Field = "FactTotalCost", Header = "Actual Total cost, RUR", Quoting = false },
+                //new Column() { Order = 0, Field = "FactUplift", Header = "Fact Uplift, %", Quoting = false },
+                //new Column() { Order = 0, Field = "FactIncrementalLsv", Header = "Fact Incremental LSV, RUR", Quoting = false },
+                //new Column() { Order = 0, Field = "FactTotalPromoLsv", Header = "Fact Total promo LSV, RUR", Quoting = false },
+                //new Column() { Order = 0, Field = "ActualPromoPostPromoEffectLSV", Header = "Fact Post promo effect, RUR", Quoting = false },
+                //new Column() { Order = 0, Field = "FactRoi", Header = "Fact ROI, %", Quoting = false },
+                //new Column() { Order = 0, Field = "FactIncrementalNsv", Header = "Fact Incremental NSV, RUR", Quoting = false },
+                //new Column() { Order = 0, Field = "FactTotalPromoNsv", Header = "Fact Total promo NSV, RUR", Quoting = false },
+                //new Column() { Order = 0, Field = "FactIncrementalMac", Header = "Fact Incremental Mac, RUR", Quoting = false },
+                //new Column() { Order = 0, Field = "Color.DisplayName", Header = "Color name", Quoting = false }
+            };
+            return columns;
+        }
     }
 }

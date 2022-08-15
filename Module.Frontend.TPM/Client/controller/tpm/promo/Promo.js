@@ -6877,14 +6877,26 @@
         var proxy = store.getProxy();
         var actionName = button.action || 'ExportXLSX';
         var resource = button.resource || proxy.resourceName;
-
+        // RSmode
+        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+        var mode = settingStore.findRecord('name', 'mode');
+        var tpmmode;
+        if (mode) {
+            if (mode.data.value == 0) {
+                tpmmode = 'Current';
+            }
+            else {
+                tpmmode = 'RS';
+            }
+        }
         panel.setLoading(true);
 
         var query = breeze.EntityQuery
             .from(resource)
             .withParameters({
                 $actionName: actionName,
-                $method: 'POST'
+                $method: 'POST',
+                TPMmode: tpmmode
             });
 
         query = me.buildQuery(query, store)

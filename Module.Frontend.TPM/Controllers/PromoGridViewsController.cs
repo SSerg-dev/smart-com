@@ -187,11 +187,13 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult ExportXLSX(ODataQueryOptions<PromoGridView> options)
+        public IHttpActionResult ExportXLSX(ODataQueryOptions<PromoGridView> options, [FromUri] TPMmode tPMmode)
         {
+            string bodyText = Helper.GetRequestBody(HttpContext.Current.Request);
+            //TPMmode tPMmode = JsonHelper.GetValueIfExists<TPMmode>(bodyText, "TPMmode");
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
             var url = HttpContext.Current.Request.Url.AbsoluteUri;
-            var results = options.ApplyTo(GetConstraintedQuery()).Cast<PromoGridView>()
+            var results = options.ApplyTo(GetConstraintedQuery(false, tPMmode)).Cast<PromoGridView>()
                                                 .Where(x => !x.Disabled)
                                                 .Select(p => p.Id)
                                                 .ToList();
@@ -209,9 +211,17 @@ namespace Module.Frontend.TPM.Controllers
                 HandlerDataHelper.SaveIncomingArgument("TModel", typeof(PromoGridView), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(PromoHelper), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PromoHelper.GetViewExportSettings), data, visible: false, throwIfNotExists: false);
+                if (tPMmode == TPMmode.Current)
+                {
+                    HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PromoHelper.GetViewExportSettings), data, visible: false, throwIfNotExists: false);
+                }
+                if (tPMmode == TPMmode.RS)
+                {
+                    HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PromoHelper.GetViewExportSettingsRS), data, visible: false, throwIfNotExists: false);
+                }
                 HandlerDataHelper.SaveIncomingArgument("SqlString", fullResults.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("URL", url, data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("TPMmode", tPMmode, data, visible: false, throwIfNotExists: false);
 
                 LoopHandler handler = new LoopHandler()
                 {
