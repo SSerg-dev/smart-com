@@ -106,7 +106,7 @@
         }
     },
 
-    onGridSelectionChangedCustom: function(selMode, selected) {
+    onGridSelectionChangeCustom: function(selMode, selected) {
         if (selected[0]) {
             var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
             const tpmMode = settingStore.findRecord('name', 'mode').data.value;
