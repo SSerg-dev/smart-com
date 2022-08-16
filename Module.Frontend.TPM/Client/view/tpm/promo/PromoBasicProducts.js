@@ -533,7 +533,6 @@
                     .execute()
                     .then(function (data) {
                         if (!promoEditorCustom.isDestroyed) {
-                            debugger;
                             var result = Ext.JSON.decode(data.httpResponse.data.value);
                             result = result.data;
 

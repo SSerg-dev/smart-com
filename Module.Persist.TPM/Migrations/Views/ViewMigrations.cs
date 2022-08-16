@@ -43,6 +43,7 @@
             AS
             SELECT
                 pr.Id,
+				pr.Disabled,
                 pr.Name,
                 pr.IsOnInvoice,
                 mmc.Name AS MarsMechanicName,
@@ -95,12 +96,12 @@
                 [DefaultSchemaSetting].MechanicType AS mmt ON pr.MarsMechanicTypeId = mmt.Id LEFT OUTER JOIN
                 [DefaultSchemaSetting].Event AS ev ON pr.EventId = ev.Id LEFT OUTER JOIN
                 [DefaultSchemaSetting].BrandTech AS bt ON pr.BrandTechId = bt.Id
-            WHERE   (pr.Disabled = 0)
 
             UNION
 
             SELECT
                 cp.Id,
+				cp.Disabled,
                 cp.Name,
                 CAST(0 AS bit),
                 '',
@@ -144,7 +145,6 @@
                 [DefaultSchemaSetting].ClientTree AS ct ON cp.ClientTreeObjectId = ct.Id LEFT OUTER JOIN
                 [DefaultSchemaSetting].CompetitorBrandTech AS cbt ON cp.CompetitorBrandTechId = cbt.Id LEFT OUTER JOIN
                 [DefaultSchemaSetting].Competitor AS c ON cp.CompetitorId = c.Id
-            WHERE   (cp.Disabled = 0)
             ";
 
         public static string GetPromoInsertTriggerString(string defaultSchema)

@@ -17,7 +17,7 @@ namespace Module.Persist.TPM.Utils
 {
     public static class ModuleApplyFilterHelper
     {
-        
+
         /// <summary>
         /// Применение фильтра по ограничениям к Промо
         /// </summary>
@@ -62,7 +62,7 @@ namespace Module.Persist.TPM.Utils
                     if (filterMode == FilterQueryModes.Deleted)
                     {
                         query = query.GroupBy(x => x.Number, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault()).Where(g => g.Disabled);
-                    }                    
+                    }
                     //query = query.Where(x => x.TPMmode == TPMmode.RS);
                     break;
             }
@@ -171,10 +171,10 @@ namespace Module.Persist.TPM.Utils
             switch (mode)
             {
                 case TPMmode.Current:
-                    query = query.Where(x => x.TPMmode == TPMmode.Current);
+                    query = query.Where(x => x.TPMmode == TPMmode.Current && !x.Disabled);
                     break;
                 case TPMmode.RS:
-                    query = query.GroupBy(x => x.Number, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault());
+                    query = query.GroupBy(x => x.Number, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault()).Where(f => !f.Disabled);
 
                     //query = query.Where(x => x.TPMmode == TPMmode.RS);
                     break;
@@ -455,7 +455,7 @@ namespace Module.Persist.TPM.Utils
                     break;
                 case TPMmode.RS:
                     query = query.GroupBy(x => new { x.PromoProduct.Promo.Number, x.PromoProductId }, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault());
-                    query = query.Where(x => !x.Disabled);                   
+                    query = query.Where(x => !x.Disabled);
                     //query = query.ToList().AsQueryable();
                     //var deletedRSPromoes
                     break;
