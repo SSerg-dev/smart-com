@@ -1,7 +1,9 @@
 ﻿using Module.Persist.TPM.Model.SimpleModel;
+using Module.Persist.TPM.Model.TPM;
 using Persist;
 using Persist.Model.Settings;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
@@ -31,6 +33,38 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                 startEndModel.StartDate = DateTimeOffset.MinValue;
                 return startEndModel;
             }
+        }
+        public static void CreateRSPeriod(Promo promo, DatabaseContext Context)
+        {
+
+        }
+        public static void CreateRSPeriod(List<Promo> promoes, DatabaseContext Context)
+        {
+
+        }
+        public static void EditRSPeriod(Promo promo, DatabaseContext Context)
+        {
+
+        }
+        public static void EditRSPeriod(List<Promo> promoes, DatabaseContext Context)
+        {
+
+        }
+        public static void DeleteRSPeriod(RollingScenario rollingScenario, DatabaseContext Context)
+        {
+
+        }
+        public static void MassApproveRSPeriod(List<RollingScenario> rollingScenarios, DatabaseContext Context)
+        {
+
+        }
+        public static void ApproveRSPeriod(RollingScenario rollingScenario, DatabaseContext Context)
+        {
+
+        }
+        public static void OnApprovalRSPeriod(RollingScenario rollingScenario, DatabaseContext Context)
+        {
+
         }
     }
 }
