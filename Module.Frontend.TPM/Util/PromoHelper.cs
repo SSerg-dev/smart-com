@@ -583,7 +583,7 @@ namespace Module.Frontend.TPM.Util
 
         public static IEnumerable<Column> GetPromoProductCorrectionExportSettings()
         {
-            int orderNumber = 1;
+            int orderNumber = 0;
             IEnumerable<Column> columns = new List<Column>
             {
                  new Column { Order = orderNumber++, Field = "Number", Header = "Promo ID", Quoting = false,  Format = "0" },

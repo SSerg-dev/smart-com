@@ -123,10 +123,10 @@ namespace Module.Host.TPM.Actions.Notifications
                         {
                             records = GetCompetitorPromoes(context, SqlString);
                         }
-                        else if (typeof(TModel).Name.Equals(typeof(PromoProductsCorrection).Name))
+                        else if (typeof(TModel).Name.Equals(typeof(PromoProductCorrectionView).Name))
                         {
                             var options = getODataQueryOptions<TModel>();
-                            records = options.ApplyTo(new PromoProductsCorrectionsController(User, RoleInfo, RoleId).GetConstraintedQuery(TPMmode: TPMmode, localContext: context)).Cast<PromoProductsCorrection>().ToList();
+                            records = options.ApplyTo(new PromoProductCorrectionViewsController(User, Role, RoleId).GetConstraintedQuery(TPMmode: TPMmode, localContext: context)).Cast<PromoProductCorrectionView>().ToList();
                         }
                         else
                         {

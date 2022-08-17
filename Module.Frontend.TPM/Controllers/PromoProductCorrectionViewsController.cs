@@ -128,7 +128,7 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     Id = Guid.NewGuid(),
                     ConfigurationName = "PROCESSING",
-                    Description = $"Export {nameof(PromoProductCorrectionView)} dictionary",
+                    Description = $"Export {nameof(PromoProductsCorrection)} dictionary",
                     Name = "Module.Host.TPM.Handlers." + handlerName,
                     ExecutionPeriod = null,
                     CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
