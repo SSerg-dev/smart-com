@@ -202,8 +202,6 @@
 
     onCreateButtonClick: function () {
 
-        this.callParent(arguments);
-
         var promoproductcorrectioneditor = Ext.ComponentQuery.query('promoproductcorrectioneditor')[0];
         var createDate = promoproductcorrectioneditor.down('[name=CreateDate]');
         var changeDate = promoproductcorrectioneditor.down('[name=ChangeDate]');
@@ -217,6 +215,9 @@
         date.setHours(date.getHours() + (date.getTimezoneOffset() / 60) + 3);   // приведение к московской timezone
         createDate.setValue(date);                                              // вывести дату в поле 
         changeDate.setValue(date);
+        promoproductcorrectioneditor.show();
+
+        this.callParent(arguments);
     },
 
     onEditButtonClick: function (button) {
@@ -531,19 +532,20 @@
     },
 
     onPromoProductCorrectionGridSelectionChange: function(selMode, selected) { 
-        this.onGridSelectionChange(selMode, selected); 
-        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-        const tpmMode = settingStore.findRecord('name', 'mode').data.value;
-        if (tpmMode == 1) {
-            if(new Date(selected[0].data.PromoDispatchStartDate) > new Date(startEndModel.StartDate) && 
-            new Date(selected[0].data.PromoDispatchStartDate) <= new Date(startEndModel.EndDate)) {
-                    updBtn = thisGrid.up().down('custombigtoolbar').down('#updatebutton');
-                    updBtn.setDisabled(true);
-                    delBtn = thisGrid.up().down('custombigtoolbar').down('#deletebutton');
-                    delBtn.setDisabled(true);
-                };
-        }       
-        
+        this.onGridSelectionChange(selMode, selected);
+        if (selected[0]) {
+            var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+            const tpmMode = settingStore.findRecord('name', 'mode').data.value;
+            if (tpmMode == 1) {
+                if(new Date(selected[0].data.PromoDispatchStartDate) > new Date(startEndModel.StartDate) && 
+                new Date(selected[0].data.PromoDispatchStartDate) <= new Date(startEndModel.EndDate)) {
+                        updBtn = thisGrid.up().down('custombigtoolbar').down('#updatebutton');
+                        updBtn.setDisabled(true);
+                        delBtn = thisGrid.up().down('custombigtoolbar').down('#deletebutton');
+                        delBtn.setDisabled(true);
+                    };
+            }
+        }
     }
 
 });

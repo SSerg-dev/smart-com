@@ -3083,6 +3083,10 @@
     <Compile Include="Migrations\202208161208360_Add_Disabled_in_PromoView.Designer.cs">
       <DependentUpon>202208161208360_Add_Disabled_in_PromoView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202208171218063_Update_PromoProductCorrectionView_AP.cs" />
+    <Compile Include="Migrations\202208171218063_Update_PromoProductCorrectionView_AP.Designer.cs">
+      <DependentUpon>202208171218063_Update_PromoProductCorrectionView_AP.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
@@ -5831,6 +5835,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202208161208360_Add_Disabled_in_PromoView.resx">
       <DependentUpon>202208161208360_Add_Disabled_in_PromoView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202208171218063_Update_PromoProductCorrectionView_AP.resx">
+      <DependentUpon>202208171218063_Update_PromoProductCorrectionView_AP.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
