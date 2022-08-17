@@ -462,6 +462,38 @@ namespace Module.Persist.TPM.Utils
             }
             return query;
         }
+
+        /// <summary>
+        /// Применить фильтр по клиентам к PromoProductCorrectionView
+        /// </summary>
+        /// <param name="query">Запрос</param>
+        /// <param name="hierarchy">Иерархия</param>
+        /// <param name="filter">Фильтр</param>
+        public static IQueryable<PromoProductCorrectionView> ApplyFilter(IQueryable<PromoProductCorrectionView> query, IQueryable<ClientTreeHierarchyView> hierarchy, TPMmode mode, IDictionary<string, IEnumerable<string>> filters = null)
+        {
+            IEnumerable<string> clientFilter = FilterHelper.GetFilter(filters, ModuleFilterName.Client);
+            if (clientFilter.Any())
+            {
+                hierarchy = getFilteredHierarchy(hierarchy, clientFilter);
+                query = query.Where(x =>
+                    hierarchy.Any(h => h.Id == x.ObjectId));
+            }
+            query = query.Where(x => !x.Disabled || x.TPMmode == TPMmode.RS);
+            switch (mode)
+            {
+                case TPMmode.Current:
+                    query = query.Where(x => x.TPMmode == TPMmode.Current && !x.Disabled);
+                    break;
+                case TPMmode.RS:
+                    query = query.GroupBy(x => new { x.Number, x.PromoProductId }, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault());
+                    query = query.Where(x => !x.Disabled);
+                    //query = query.ToList().AsQueryable();
+                    //var deletedRSPromoes
+                    break;
+            }
+            return query;
+        }
+
         /// <summary>
         /// Применить фильтр по клиентам к ClienDashboard kpidata
         /// </summary>

@@ -148,6 +148,7 @@ namespace Module.Persist.TPM
             modelBuilder.Entity<RPA>();
 
             modelBuilder.Entity<RollingScenario>();
+            modelBuilder.Entity<PromoProductCorrectionView>();
         }
 
 
@@ -1156,6 +1157,10 @@ namespace Module.Persist.TPM
             builder.EntitySet<RollingScenario>("DeletedRollingScenarios").HasRequiredBinding(e => e.ClientTree, "ClientTrees");
             builder.EntitySet<RollingScenario>("RollingScenarios").HasManyBinding(e => e.Promoes, "Promoes");
             builder.EntitySet<RollingScenario>("DeletedRollingScenarios").HasManyBinding(e => e.Promoes, "Promoes");
+
+            builder.EntitySet<PromoProductCorrectionView>("PromoProductCorrectionViews");
+            builder.Entity<PromoProductCorrectionView>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PromoProductCorrectionView>("PromoProductCorrectionViews");
+            builder.Entity<PromoProductCorrectionView>().Collection.Action("ExportXLSX");
         }
 
 

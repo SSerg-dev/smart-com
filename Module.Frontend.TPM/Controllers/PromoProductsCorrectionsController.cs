@@ -333,10 +333,12 @@ namespace Module.Frontend.TPM.Controllers
                 return InternalServerError(e.InnerException);
             }
         }
+        
         private bool EntityExists(System.Guid key)
         {
             return Context.Set<PromoProductsCorrection>().Count(e => e.Id == key) > 0;
         }
+        
         private ExceptionResult GetErorrRequest(Exception e)
         {
             // обработка при создании дублирующей записи
@@ -350,131 +352,6 @@ namespace Module.Frontend.TPM.Controllers
             {
                 return InternalServerError(e);
             }
-        }
-        [ClaimsAuthorize]
-        public IHttpActionResult ExportXLSX(ODataQueryOptions<PromoProductsCorrection> options, TPMmode TPMmode)
-        {
-            IQueryable results = options.ApplyTo(GetConstraintedQuery(TPMmode));
-            Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
-            Guid roleId = role.Id;
-            using (DatabaseContext context = new DatabaseContext())
-            {
-                HandlerData data = new HandlerData();
-                string handlerName = "ExportHandler";
-
-                HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("TModel", typeof(PromoProductsCorrection), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(PromoProductsCorrectionsController), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PromoProductsCorrectionsController.GetPromoProductCorrectionExportSettings), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("TPMmode", TPMmode, data, visible: false, throwIfNotExists: false);
-
-                LoopHandler handler = new LoopHandler()
-                {
-                    Id = Guid.NewGuid(),
-                    ConfigurationName = "PROCESSING",
-                    Description = $"Export {nameof(PromoProductsCorrection)} dictionary",
-                    Name = "Module.Host.TPM.Handlers." + handlerName,
-                    ExecutionPeriod = null,
-                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                    LastExecutionDate = null,
-                    NextExecutionDate = null,
-                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
-                    UserId = userId,
-                    RoleId = roleId
-                };
-                handler.SetParameterData(data);
-                context.LoopHandlers.Add(handler);
-                context.SaveChanges();
-            }
-
-            return Content(HttpStatusCode.OK, "success");
-        }
-
-        public static IEnumerable<Column> GetPromoProductCorrectionExportSettings()
-        {
-            int orderNumber = 1;
-            IEnumerable<Column> columns = new List<Column>
-            {
-                 new Column { Order = orderNumber++, Field = "PromoProduct.Promo.Number", Header = "Promo ID", Quoting = false,  Format = "0" },
-                 new Column { Order = orderNumber++, Field = "PromoProduct.Promo.ClientTree.FullPathName", Header = "Client", Quoting = false },
-                 new Column { Order = orderNumber++, Field = "PromoProduct.Promo.BrandTech.Name", Header = "BrandTech", Quoting = false },
-                 new Column { Order = orderNumber++, Field = "PromoProduct.Promo.ProductSubrangesList", Header = "Subranges", Quoting = false },
-                 new Column { Order = orderNumber++, Field = "PromoProduct.Promo.Mechanic", Header = "Mars Mechanic", Quoting = false },
-                 new Column { Order = orderNumber++, Field = "PromoProduct.Promo.Event.Name", Header = "Event", Quoting = false },
-                 new Column { Order = orderNumber++, Field = "PromoProduct.Promo.PromoStatus.SystemName", Header = "Promo Status", Quoting = false },
-                 new Column { Order = orderNumber++, Field = "PromoProduct.Promo.MarsStartDate", Header = "Mars Start Date", Quoting = false },
-                 new Column { Order = orderNumber++, Field = "PromoProduct.Promo.MarsEndDate", Header = "Mars End Date", Quoting = false },
-                 new Column { Order = orderNumber++, Field = "PromoProduct.PlanProductBaselineLSV", Header = "Plan Product Baseline LSV", Quoting = false,  Format = "0.00" },
-                 new Column { Order = orderNumber++, Field = "PromoProduct.PlanProductIncrementalLSV", Header = "Plan Product Incremental LSV", Quoting = false,  Format = "0.00" },
-                 new Column { Order = orderNumber++, Field = "PromoProduct.PlanProductLSV", Header = "Plan Product LSV", Quoting = false,  Format = "0.00" },
-                 new Column { Order = orderNumber++, Field = "PromoProduct.ZREP", Header = "ZREP", Quoting = false,  Format = "0" },
-                 new Column { Order = orderNumber++, Field = "PlanProductUpliftPercentCorrected", Header = "Plan Product Uplift Percent Corrected", Quoting = false,  Format = "0.00"  },
-                 new Column { Order = orderNumber++, Field = "CreateDate", Header = "CreateDate", Quoting = false,Format = "dd.MM.yyyy"},
-                 new Column { Order = orderNumber++, Field = "ChangeDate", Header = "ChangeDate", Quoting = false,Format = "dd.MM.yyyy"},
-                 new Column { Order = orderNumber++, Field = "UserName", Header = "UserName", Quoting = false }
-
-            };
-
-            return columns;
-        }
-        [ClaimsAuthorize]
-        public IHttpActionResult ExportCorrectionXLSX(ODataQueryOptions<PromoProductsCorrection> options, TPMmode tmpMode)
-        {
-            List<string> stasuses = new List<string> { "DraftPublished", "OnApproval", "Approved", "Planned" };
-            IQueryable<PromoProduct> results = Context.Set<PromoProduct>()
-                .Where(g => !g.Disabled && stasuses.Contains(g.Promo.PromoStatus.SystemName) && !(bool)g.Promo.InOut && (bool)g.Promo.NeedRecountUplift)
-                .OrderBy(g => g.Promo.Number).ThenBy(d => d.ZREP);
-            //IQueryable results = options.ApplyTo(GetConstraintedQuery());
-            Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
-            Guid roleId = role.Id;
-            using (DatabaseContext context = new DatabaseContext())
-            {
-                HandlerData data = new HandlerData();
-                string handlerName = "ExportHandler";
-
-                HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("TModel", typeof(PromoProduct), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(PromoProductsCorrectionsController), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PromoProductsCorrectionsController.GetExportCorrectionSettings), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
-
-                LoopHandler handler = new LoopHandler()
-                {
-                    Id = Guid.NewGuid(),
-                    ConfigurationName = "PROCESSING",
-                    Description = $"Export {nameof(PromoProductsCorrection)} dictionary",
-                    Name = "Module.Host.TPM.Handlers." + handlerName,
-                    ExecutionPeriod = null,
-                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                    LastExecutionDate = null,
-                    NextExecutionDate = null,
-                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
-                    UserId = userId,
-                    RoleId = roleId
-                };
-                handler.SetParameterData(data);
-                context.LoopHandlers.Add(handler);
-                context.SaveChanges();
-            }
-
-            return Content(HttpStatusCode.OK, "success");
-        }
-
-        public static IEnumerable<Column> GetExportCorrectionSettings()
-        {
-            int orderNumber = 1;
-            IEnumerable<Column> columns = new List<Column>()
-            {
-                new Column { Order = orderNumber++, Field = "Promo.Number", Header = "Promo ID", Quoting = false,  Format = "0" },
-                new Column { Order = orderNumber++, Field = "ZREP", Header = "ZREP", Quoting = false,  Format = "0" },
-                new Column { Order = orderNumber++, Field = "PlanProductUpliftPercent", Header = "Plan Product Uplift, %", Quoting = false,  Format = "0.00"},
-            };
-            return columns;
         }
 
         [ClaimsAuthorize]

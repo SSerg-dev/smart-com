@@ -580,5 +580,44 @@ namespace Module.Frontend.TPM.Util
             };
             return columns;
         }
+
+        public static IEnumerable<Column> GetPromoProductCorrectionExportSettings()
+        {
+            int orderNumber = 1;
+            IEnumerable<Column> columns = new List<Column>
+            {
+                 new Column { Order = orderNumber++, Field = "Number", Header = "Promo ID", Quoting = false,  Format = "0" },
+                 new Column { Order = orderNumber++, Field = "ClientTreeFullPathName", Header = "Client", Quoting = false },
+                 new Column { Order = orderNumber++, Field = "BrandTechName", Header = "BrandTech", Quoting = false },
+                 new Column { Order = orderNumber++, Field = "ProductSubrangesList", Header = "Subranges", Quoting = false },
+                 new Column { Order = orderNumber++, Field = "MarsMechanicName", Header = "Mars Mechanic", Quoting = false },
+                 new Column { Order = orderNumber++, Field = "EventName", Header = "Event", Quoting = false },
+                 new Column { Order = orderNumber++, Field = "PromoStatusSystemName", Header = "Promo Status", Quoting = false },
+                 new Column { Order = orderNumber++, Field = "MarsStartDate", Header = "Mars Start Date", Quoting = false },
+                 new Column { Order = orderNumber++, Field = "MarsEndDate", Header = "Mars End Date", Quoting = false },
+                 new Column { Order = orderNumber++, Field = "PlanProductBaselineLSV", Header = "Plan Product Baseline LSV", Quoting = false,  Format = "0.00" },
+                 new Column { Order = orderNumber++, Field = "PlanProductIncrementalLSV", Header = "Plan Product Incremental LSV", Quoting = false,  Format = "0.00" },
+                 new Column { Order = orderNumber++, Field = "PlanProductLSV", Header = "Plan Product LSV", Quoting = false,  Format = "0.00" },
+                 new Column { Order = orderNumber++, Field = "ZREP", Header = "ZREP", Quoting = false,  Format = "0" },
+                 new Column { Order = orderNumber++, Field = "PlanProductUpliftPercentCorrected", Header = "Plan Product Uplift Percent Corrected", Quoting = false,  Format = "0.00"  },
+                 new Column { Order = orderNumber++, Field = "CreateDate", Header = "CreateDate", Quoting = false,Format = "dd.MM.yyyy"},
+                 new Column { Order = orderNumber++, Field = "ChangeDate", Header = "ChangeDate", Quoting = false,Format = "dd.MM.yyyy"},
+                 new Column { Order = orderNumber++, Field = "UserName", Header = "UserName", Quoting = false }
+            };
+
+            return columns;
+        }
+
+        public static IEnumerable<Column> GetExportCorrectionSettings()
+        {
+            int orderNumber = 1;
+            IEnumerable<Column> columns = new List<Column>()
+            {
+                new Column { Order = orderNumber++, Field = "Promo.Number", Header = "Promo ID", Quoting = false,  Format = "0" },
+                new Column { Order = orderNumber++, Field = "ZREP", Header = "ZREP", Quoting = false,  Format = "0" },
+                new Column { Order = orderNumber++, Field = "PlanProductUpliftPercent", Header = "Plan Product Uplift, %", Quoting = false,  Format = "0.00"},
+            };
+            return columns;
+        }
     }
 }

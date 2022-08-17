@@ -2547,6 +2547,29 @@
     'HistoricalPromoProductCorrection': ['.tpm.PromoProductCorrection', '.core.BaseHistoryEntity'],
     'DeletedPromoProductCorrection': ['.tpm.PromoProductCorrection', '.core.BaseDeletedEntity'],
 
+    'PromoProductCorrectionView': {
+        'ZREP': 'ZREP',
+        'Number': 'Promo ID',
+        'BrandTechName': 'BrandTech',
+        'ClientTreeFullPathName': 'Client',
+        'EventName': 'Event',
+        'MarsMechanicName': 'Mars Mechanic',
+        'MarsStartDate': 'Mars Start date',
+        'MarsEndDate': 'Mars End date',
+        'PromoStatusSystemName': 'Promo Status',
+        'ProductSubrangesList': 'Subranges',
+        'PlanProductBaselineLSV': 'Plan Product Baseline LSV',
+        'PlanProductIncrementalLSV': 'Plan Product Incremental LSV',
+        'PlanProductLSV': 'Plan Product LSV',
+        'PlanProductUpliftPercentCorrected': 'Plan Product Uplift Percent Corrected',
+        'CreateDate': 'Create Date',
+        'ChangeDate': 'Last Change Date',
+        'UserName': 'User Name',
+        'GreaterThanZero': 'Uplift must be greater than zero',
+        'ExportCorrections': 'Export correction to XLSX',
+        'TPMmode': 'Indicator'
+    },
+
     'ActualLSV': {
         'ActualLSV': 'Actual LSV',
         'Number': 'Promo ID',

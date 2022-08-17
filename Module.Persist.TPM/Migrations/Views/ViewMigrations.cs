@@ -162,6 +162,7 @@
     				UPDATE Promo SET Number = (SELECT ISNULL((SELECT MAX(Number) FROM Promo WHERE Number < 999999), 0) + 1) FROM Inserted WHERE Promo.Id = Inserted.Id;
                 END
             ";
+
         public static string GetPromoROIReportViewString(string defaultSchema)
         {
             return PromoROIReportViewSqlString.Replace("DefaultSchemaSetting", defaultSchema); ;
@@ -463,5 +464,64 @@
 
 			SELECT * FROM PromoROIReport
             ";
-    }
+
+		public static string CreatePromoProductCorrectionViewString(string defaultSchema)
+        {
+			return CreatePromoProductCorrectionViewSqlString.Replace("DefaultSchemaSetting", defaultSchema);
+        }
+		private static string CreatePromoProductCorrectionViewSqlString = @"
+			CREATE VIEW [DefaultSchemaSetting].[PromoProductCorrectionView]
+			AS
+			SELECT
+				ppc.Id AS Id,
+				pr.Number AS Number,
+				cltr.FullPathName AS ClientTreeFullPathName,
+				btech.BrandsegTechsub AS BrandTechName,
+				pr.ProductSubrangesList AS ProductSubrangesList,
+				mech.Name AS MarsMechanicName,
+				ev.Name AS EventName,
+				ps.SystemName AS PromoStatusSystemName,
+				pr.MarsStartDate AS MarsStartDate,
+				pr.MarsEndDate AS MarsEndDate,
+				pp.PlanProductBaselineLSV AS PlanProductBaselineLSV,
+				pp.PlanProductIncrementalLSV AS PlanProductIncrementalLSV,
+				pp.PlanProductLSV AS PlanProductLSV,
+				pp.ZREP AS ZREP,
+				ppc.PlanProductUpliftPercentCorrected AS PlanProductUpliftPercentCorrected,
+				ppc.CreateDate AS CreateDate,
+				ppc.ChangeDate AS ChangeDate,
+				ppc.UserName AS UserName,
+				pr.Disabled AS Disabled,
+				cltr.ObjectId AS ObjectId,
+				ppc.PromoProductId AS PromoProductId,
+				pr.TPMmode AS TPMmode
+
+			FROM 
+				[DefaultSchemaSetting].[PromoProductsCorrection] AS ppc
+			LEFT OUTER JOIN
+				[DefaultSchemaSetting].[PromoProduct] AS pp ON ppc.PromoProductId = pp.Id
+			LEFT OUTER JOIN
+				[DefaultSchemaSetting].[Promo] AS pr ON pp.PromoId = pr.Id
+			LEFT OUTER JOIN
+				[DefaultSchemaSetting].[PromoStatus] AS ps ON pr.PromoStatusId = ps.Id
+			LEFT OUTER JOIN
+				[DefaultSchemaSetting].[Event] AS ev ON pr.EventId = ev.Id
+			LEFT OUTER JOIN
+				[DefaultSchemaSetting].[Mechanic] AS mech ON pr.MarsMechanicId = mech.Id
+			LEFT OUTER JOIN
+				[DefaultSchemaSetting].[BrandTech] AS btech ON pr.BrandTechId = btech.Id
+			LEFT OUTER JOIN
+				[DefaultSchemaSetting].[ClientTree] AS cltr ON pr.ClientTreeId = cltr.ObjectId
+		";
+
+		public static string DropPromoProductCorrectionViewString(string defaultSchema)
+		{
+			return DropPromoProductCorrectionViewSqlString.Replace("DefaultSchemaSetting", defaultSchema);
+
+		}
+		private static string DropPromoProductCorrectionViewSqlString = @"
+			DROP VIEW [DefaultSchemaSetting].[PromoProductCorrectionView]
+		";
+
+	}
 }

@@ -1,0 +1,39 @@
+Ext.define('App.model.tpm.promoproductcorrection.PromoProductCorrectionView', {
+    extend: 'Ext.data.Model',
+    idProperty: 'Id',
+    breezeEntityType: 'PromoProductCorrectionView',
+    fields: [
+        { name: 'Id', hidden: true },
+        { name: 'Number', type: 'int', hidden: false, isDefault: true, isKey: true },
+        { name: 'ClientTreeFullPathName', hidden: false },
+        { name: 'BrandTechName', type: 'string', mapping: 'BrandTechName', defaultFilterConfig: { valueField: 'BrandsegTechsub' }, breezeEntityType: 'BrandTech', hidden: false, isDefault: true },
+        { name: 'ProductSubrangesList', type:'string', hidden: false, isDefault: true },
+		{ name: 'MarsMechanicName', type: 'string', mapping: 'MarsMechanicName', defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'Mechanic', useNull: true, hidden: false, isDefault: false },
+        { name: 'EventName', type: 'string', mapping: 'EventName', defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'Event', hidden: false, isDefault: true  },
+        { name: 'PromoStatusSystemName', type: 'string', mapping: 'PromoStatusSystemName', defaultFilterConfig: { valueField: 'SystemName' }, breezeEntityType: 'PromoStatus', hidden: false, isDefault: true },
+        { name: 'MarsStartDate', type: 'string', useNull: true, hidden: false, isDefault: true },
+        { name: 'MarsEndDate', type: 'string', useNull: true, hidden: false, isDefault: true },
+        { name: 'PlanProductBaselineLSV', type:'float', hidden: false, isDefault: true, useNull: true },
+        { name: 'PlanProductIncrementalLSV', type:'float', hidden: false, isDefault: true, useNull: true },
+        { name: 'PlanProductLSV', type:'float', hidden: false, isDefault: true, useNull: true },
+        { name: 'ZREP', type:'string', hidden: false, isDefault: true },
+        { name: 'PlanProductUpliftPercentCorrected', hidden: true },
+        { name: 'CreateDate', useNull: true, type: 'date', hidden: true, timeZone: +3, convert: dateConvertTimeZone },
+        { name: 'ChangeDate', useNull: true, type: 'date', hidden: true, timeZone: +3, convert: dateConvertTimeZone },
+        { name: 'UserName', ype:'string', hidden: false, isDefault: true },
+        { name: 'TPMmode', type: 'string', hidden: false, isDefault: true},
+    ],
+
+    proxy: {
+        type: 'breeze',
+        resourceName: 'PromoProductCorrectionViews',
+        reader: {
+            type: 'json',
+            totalProperty: 'inlineCount',
+            root: 'results'
+        },
+        extraParams: {
+            TPMmode: 'Current'
+        }
+    },
+});
