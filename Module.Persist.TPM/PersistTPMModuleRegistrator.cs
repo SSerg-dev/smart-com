@@ -1161,6 +1161,7 @@ namespace Module.Persist.TPM
             builder.EntitySet<PromoProductCorrectionView>("PromoProductCorrectionViews");
             builder.Entity<PromoProductCorrectionView>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PromoProductCorrectionView>("PromoProductCorrectionViews");
             builder.Entity<PromoProductCorrectionView>().Collection.Action("ExportXLSX");
+            builder.Entity<PromoProductCorrectionView>().Collection.Action("ExportCorrectionXLSX");
         }
 
 

@@ -491,27 +491,20 @@
 				ppc.CreateDate AS CreateDate,
 				ppc.ChangeDate AS ChangeDate,
 				ppc.UserName AS UserName,
-				pr.Disabled AS Disabled,
+				ppc.Disabled AS Disabled,
 				cltr.ObjectId AS ObjectId,
 				ppc.PromoProductId AS PromoProductId,
 				pr.TPMmode AS TPMmode
 
 			FROM 
-				[DefaultSchemaSetting].[PromoProductsCorrection] AS ppc
-			LEFT OUTER JOIN
-				[DefaultSchemaSetting].[PromoProduct] AS pp ON ppc.PromoProductId = pp.Id
-			LEFT OUTER JOIN
-				[DefaultSchemaSetting].[Promo] AS pr ON pp.PromoId = pr.Id
-			LEFT OUTER JOIN
-				[DefaultSchemaSetting].[PromoStatus] AS ps ON pr.PromoStatusId = ps.Id
-			LEFT OUTER JOIN
-				[DefaultSchemaSetting].[Event] AS ev ON pr.EventId = ev.Id
-			LEFT OUTER JOIN
-				[DefaultSchemaSetting].[Mechanic] AS mech ON pr.MarsMechanicId = mech.Id
-			LEFT OUTER JOIN
-				[DefaultSchemaSetting].[BrandTech] AS btech ON pr.BrandTechId = btech.Id
-			LEFT OUTER JOIN
-				[DefaultSchemaSetting].[ClientTree] AS cltr ON pr.ClientTreeId = cltr.ObjectId
+				[DefaultSchemaSetting].PromoProductsCorrection AS ppc INNER JOIN
+                [DefaultSchemaSetting].PromoProduct AS pp ON ppc.PromoProductId = pp.Id INNER JOIN
+                [DefaultSchemaSetting].Promo AS pr ON pp.PromoId = pr.Id INNER JOIN
+                [DefaultSchemaSetting].PromoStatus AS ps ON pr.PromoStatusId = ps.Id INNER JOIN
+                [DefaultSchemaSetting].Event AS ev ON pr.EventId = ev.Id INNER JOIN
+                [DefaultSchemaSetting].Mechanic AS mech ON pr.MarsMechanicId = mech.Id INNER JOIN
+                [DefaultSchemaSetting].BrandTech AS btech ON pr.BrandTechId = btech.Id INNER JOIN
+                [DefaultSchemaSetting].ClientTree AS cltr ON pr.ClientTreeKeyId = cltr.Id
 		";
 
 		public static string DropPromoProductCorrectionViewString(string defaultSchema)
