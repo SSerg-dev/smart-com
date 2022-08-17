@@ -1069,9 +1069,18 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     return NotFound();
                 }
-
+                StartEndModel startEndModel = RSPeriodHelper.GetRSPeriod(Context);
+                if (((DateTimeOffset)model.StartDate).AddDays(15) < startEndModel.StartDate || startEndModel.EndDate < (DateTimeOffset)model.EndDate)
+                {
+                    return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "Promo is not in the RS period" }));
+                }
                 if (TPMmode == TPMmode.RS && model.TPMmode == TPMmode.Current) //фильтр промо
                 {
+                    List<string> blockStatuses = "Draft,Planned,Closed,Deleted,Finished,Started,Cancelled".Split(',').ToList();
+                    if (blockStatuses.Contains(model.PromoStatus.SystemName))
+                    {
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "Promo in status: " + model.PromoStatus.Name + " cannot be deleted in the RS mode" }));
+                    }
                     Promo presentRsPromo = Context.Set<Promo>().FirstOrDefault(g => g.Disabled && g.TPMmode == TPMmode.RS && g.Number == model.Number);
                     if (presentRsPromo is null)
                     {
