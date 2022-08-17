@@ -147,7 +147,11 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, isEmpty = true, statusColors }, new JsonSerializerSettings()
                     {
-                        ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                        ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                        //Error = (object sender, ErrorEventArgs args) =>
+                        //{
+                        //    throw new Exception(String.Format("Parse error: {0}", args.ErrorContext.Error.Message));
+                        //},
                     }));
                 }
 
