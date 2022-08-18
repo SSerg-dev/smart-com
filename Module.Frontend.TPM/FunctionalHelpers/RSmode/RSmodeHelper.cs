@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Module.Frontend.TPM.FunctionalHelpers.RSPeriod;
 using Module.Persist.TPM.Model.Interfaces;
 using Module.Persist.TPM.Model.TPM;
 using Persist;
@@ -98,6 +99,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
             Promo promoRS = mapper.Map<Promo>(promo);
             Context.Set<Promo>().Add(promoRS);
             Context.SaveChanges();
+            RSPeriodHelper.CreateRSPeriod(promoRS, Context);
             return promoRS;
 
         }

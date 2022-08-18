@@ -36,7 +36,11 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
         }
         public static void CreateRSPeriod(Promo promo, DatabaseContext Context)
         {
+            //RollingScenario rollingScenario = new RollingScenario
+            //{
 
+            //};
+            //Context.Set<RollingScenario>().Add(rollingScenario);
         }
         public static void CreateRSPeriod(List<Promo> promoes, DatabaseContext Context)
         {

@@ -47,11 +47,7 @@ namespace Module.Frontend.TPM.Controllers
             IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
             query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters, FilterQueryModes.Active); // TODO workflow
 
-            // Не администраторы не смотрят чужие черновики
-            if (role != "Administrator" && role != "SupportAdministrator")
-            {
-                query = query.Where(e => e.PromoStatus.SystemName != "Draft" || e.CreatorId == user.Id);
-            }
+            
             logger.Stop();
             return query;
         }
