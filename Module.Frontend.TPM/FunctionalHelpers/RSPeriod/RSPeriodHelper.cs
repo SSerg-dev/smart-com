@@ -1,4 +1,5 @@
-﻿using Module.Persist.TPM.Model.SimpleModel;
+﻿using Core.Security.Models;
+using Module.Persist.TPM.Model.SimpleModel;
 using Module.Persist.TPM.Model.TPM;
 using Persist;
 using Persist.Model.Settings;
@@ -22,7 +23,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
 
             if (Int32.TryParse(weeks, out int intweeks))
             {
-                
+
                 DateTimeOffset RsStartDate = today.AddDays(intweeks * 7);
                 startEndModel.StartDate = RsStartDate;
 
@@ -36,15 +37,37 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
         }
         public static void CreateRSPeriod(Promo promo, DatabaseContext Context)
         {
-            //RollingScenario rollingScenario = new RollingScenario
-            //{
-
-            //};
-            //Context.Set<RollingScenario>().Add(rollingScenario);
+            RollingScenario rollingScenarioExist = Context.Set<RollingScenario>().FirstOrDefault(g => g.ClientTreeId == promo.ClientTreeId);
+            
+            List<PromoStatus> promoStatuses = Context.Set<PromoStatus>().Where(g => !g.Disabled).ToList();
+            StartEndModel startEndModel = GetRSPeriod(Context);
+            RollingScenario rollingScenario = new RollingScenario();
+            if (rollingScenarioExist == null)
+            {
+                ClientTree client = Context.Set<ClientTree>().FirstOrDefault(g => g.ObjectId == promo.ClientTreeId);
+                rollingScenario = new RollingScenario
+                {
+                    StartDate = startEndModel.StartDate,
+                    EndDate = startEndModel.EndDate,
+                    PromoStatus = promoStatuses.FirstOrDefault(g => g.SystemName == "Draft"),
+                    ClientTree = client,
+                    Promoes = new List<Promo>()
+                };
+                rollingScenario.Promoes.Add(promo);
+                Context.Set<RollingScenario>().Add(rollingScenario);
+            }
+            else
+            {
+                rollingScenarioExist.Promoes.Add(promo);
+            }
+            Context.SaveChanges();
         }
         public static void CreateRSPeriod(List<Promo> promoes, DatabaseContext Context)
         {
-
+            foreach (Promo promo in promoes)
+            {
+                CreateRSPeriod(promo, Context);
+            }
         }
         public static void EditRSPeriod(Promo promo, DatabaseContext Context)
         {

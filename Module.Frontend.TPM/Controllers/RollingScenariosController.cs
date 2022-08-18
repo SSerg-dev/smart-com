@@ -58,6 +58,10 @@ namespace Module.Frontend.TPM.Controllers
             return GetConstraintedQuery();
         }
 
+        /// <summary>
+        /// Массовый апрув
+        /// </summary>
+        /// <returns></returns>
         [ClaimsAuthorize]
         [HttpPost]
         public IHttpActionResult MassApprove()
@@ -73,7 +77,7 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [HttpPost]
-        public IHttpActionResult Cancel()
+        public IHttpActionResult Decline()
         {
             var promoNumbers = Request.Content.ReadAsStringAsync().Result;
             UserInfo user = authorizationManager.GetCurrentUser();
@@ -123,18 +127,7 @@ namespace Module.Frontend.TPM.Controllers
             return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
         }
 
-        [ClaimsAuthorize]
-        [HttpPost]
-        public IHttpActionResult Decline()
-        {
-            var promoNumbers = Request.Content.ReadAsStringAsync().Result;
-            UserInfo user = authorizationManager.GetCurrentUser();
-            Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
-            RoleInfo role = authorizationManager.GetCurrentRole();
-            Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
 
-            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
-        }
         [ClaimsAuthorize]
         [HttpPost]
         public IHttpActionResult GetVisibleButton()

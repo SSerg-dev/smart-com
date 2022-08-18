@@ -52,7 +52,74 @@
 
     dockedItems: [{
         xtype: 'custombigtoolbar',
-        dock: 'right'
+        dock: 'right',
+        items: [
+            {
+                xtype: 'widthexpandbutton',
+                ui: 'fill-gray-button-toolbar',
+                text: l10n.ns('core', 'selectablePanelButtons').value('toolbarCollapse'),
+                glyph: 0xf13d,
+                glyph1: 0xf13e,
+                target: function () {
+                    return this.up('toolbar');
+                },
+            },
+            {
+                itemId: 'onapprovalbutton',
+                action: 'OnApproval',
+                glyph: 0xF5E1,
+                text: 'Send for approval ',
+                tooltip: 'Send for approval '
+            },
+            {
+                itemId: 'approvebutton',
+                action: 'Approve',
+                glyph: 0xF5E0,
+                text: 'Approve',
+                tooltip: 'Approve'
+            },
+            {
+                itemId: 'declinebutton',
+                action: 'Decline',
+                glyph: 0xF739,
+                text: 'Decline',
+                tooltip: 'Decline'
+            },
+            {
+                itemId: 'getcanceledbutton',
+                action: 'GetCanceled',
+                glyph: 0xf258,
+                text: l10n.ns('core', 'toptoolbar').value('deletedButtonText'),
+                tooltip: l10n.ns('core', 'toptoolbar').value('deletedButtonText')
+            },
+            {
+                itemId: 'historybutton',
+                resource: 'Historical{0}',
+                action: 'Get{0}',
+                glyph: 0xf2da,
+                text: l10n.ns('core', 'crud').value('historyButtonText'),
+                tooltip: l10n.ns('core', 'crud').value('historyButtonText')
+            },
+            '-',
+            {
+                itemId: 'extfilterbutton',
+                glyph: 0xf349,
+                text: l10n.ns('core', 'toptoolbar').value('filterButtonText'),
+                tooltip: l10n.ns('core', 'toptoolbar').value('filterButtonText')
+            }, '-', '->', '-',
+            {
+                itemId: 'extfilterclearbutton',
+                ui: 'blue-button-toolbar',
+                disabled: true,
+                glyph: 0xf232,
+                text: l10n.ns('core', 'filter').value('filterEmptyStatus'),
+                tooltip: l10n.ns('core', 'filter').value('filterEmptyStatus'),
+                overCls: '',
+                style: {
+                    'cursor': 'default'
+                }
+            }
+        ]
     }],
 
     items: [{
@@ -155,6 +222,11 @@
             ]
         }
     },
- 
+        {
+            xtype: 'editabledetailform',
+            itemId: 'detailform',
+            model: 'App.model.tpm.rsmode.RSmode',
+            items: []
+        }
     ]
 });

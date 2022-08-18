@@ -1,5 +1,4 @@
 ﻿using Core.Data;
-using Persist.Model;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -20,8 +19,8 @@ namespace Module.Persist.TPM.Model.TPM
         public DateTimeOffset EndDate { get; set; }
         public DateTimeOffset? ExpirationDate { get; set; }
 
-        public Guid CreatorId { get; set; } // в Core нельзя обратиться к User на прямую
-        public string CreatorLogin { get; set; }
+        public bool IsSendForApproval  { get; set; }
+        public bool IsCMManagerApproved { get; set; }
 
         [ForeignKey("PromoStatus")]
         public Guid PromoStatusId { get; set; }

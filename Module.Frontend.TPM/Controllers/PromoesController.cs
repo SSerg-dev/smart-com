@@ -377,7 +377,7 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     if (model.TPMmode != ChangePromo.TPMmode)
                     {
-                        model = RSmodeHelper.EditToPromoRS(Context, model);
+                        model = RSmodeHelper.EditToPromoRS(Context, model);                        
                     }
                 }
                 patch.Patch(model);

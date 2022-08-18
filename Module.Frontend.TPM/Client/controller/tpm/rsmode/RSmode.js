@@ -38,8 +38,17 @@
                 'rsmode #deletedbutton': {
                     click: this.onDeletedButtonClick
                 },
-                'rsmode #createbutton': {
-                    click: this.onCreateButtonClick
+                'rsmode #onapprovalbutton': {
+                    click: this.onOnApprovalButtonClick
+                },
+                'rsmode #approvebutton': {
+                    click: this.onApproveButtonClick
+                },
+                'rsmode #declinebutton': {
+                    click: this.onDeclineButtonClick
+                },
+                'rsmode #getcanceledbutton': {
+                    click: this.onGetCanceledButtonClick
                 },
                 'rsmode #updatebutton': {
                     click: this.onUpdateButtonClick
@@ -93,4 +102,16 @@
             }
         });
     },
+    onOnApprovalButtonClick: function (button) {
+        debugger;
+    },
+    onApproveButtonClick: function (button) {
+        debugger;
+    },
+    onDeclineButtonClick: function (button) {
+        debugger;
+    },
+    onGetCanceledButtonClick: function(button) {
+        debugger;
+    }
 });
