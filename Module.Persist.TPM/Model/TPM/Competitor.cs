@@ -19,7 +19,7 @@ namespace Module.Persist.TPM.Model.TPM
         [Index("Unique_Competitor", 0, IsUnique = true)]
         public string Name { get; set; }
 
-        public virtual ICollection<CompetitorBrandTech> CompetitorBrandTechs { get; set; }
-        public virtual ICollection<CompetitorPromo> CompetitorPromoes { get; set; }
+        public ICollection<CompetitorBrandTech> CompetitorBrandTechs { get; set; }
+        public ICollection<CompetitorPromo> CompetitorPromoes { get; set; }
     }
 }

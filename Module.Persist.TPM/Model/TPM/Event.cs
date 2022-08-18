@@ -27,7 +27,7 @@ namespace Module.Persist.TPM.Model.TPM
         public System.Guid EventTypeId { get; set; }
         public EventType EventType { get; set; }
 
-        public virtual ICollection<BTL> BTLs { get; set; }
-        public virtual ICollection<EventClientTree> EventClientTrees { get; set; }
+        public ICollection<BTL> BTLs { get; set; }
+        public ICollection<EventClientTree> EventClientTrees { get; set; }
     }
 }

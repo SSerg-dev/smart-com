@@ -50,19 +50,19 @@ namespace Module.Persist.TPM.Model.TPM
 
         public string SFAClientCode { get; set; }
 
-        public virtual ICollection<AssortmentMatrix> AssortmentMatrices { get; set; }
-        public virtual ICollection<BudgetSubItemClientTree> BudgetSubItemClientTrees { get; set; }
-        public virtual ICollection<ClientTreeBrandTech> ClientTreeBrandTeches { get; set; }
-        public virtual ICollection<CompetitorPromo> CompetitorPromoes { get; set; }
-        public virtual ICollection<EventClientTree> EventClientTrees { get; set; }
-        public virtual ICollection<MechanicType> MechanicTypes { get; set; }
-        public virtual ICollection<NoneNego> NoneNegoes { get; set; }
-        public virtual ICollection<NonPromoSupport> NonPromoSupports { get; set; }
-        public virtual ICollection<Plu> Plus { get; set; }
-        public virtual ICollection<PriceList> PriceLists { get; set; }
-        public virtual ICollection<PromoSupport> PromoSupports { get; set; }
-        public virtual ICollection<RATIShopper> RATIShoppers { get; set; }
-        public virtual ICollection<TradeInvestment> TradeInvestments { get; set; }
+        public ICollection<AssortmentMatrix> AssortmentMatrices { get; set; }
+        public ICollection<BudgetSubItemClientTree> BudgetSubItemClientTrees { get; set; }
+        public ICollection<ClientTreeBrandTech> ClientTreeBrandTeches { get; set; }
+        public ICollection<CompetitorPromo> CompetitorPromoes { get; set; }
+        public ICollection<EventClientTree> EventClientTrees { get; set; }
+        public ICollection<MechanicType> MechanicTypes { get; set; }
+        public ICollection<NoneNego> NoneNegoes { get; set; }
+        public ICollection<NonPromoSupport> NonPromoSupports { get; set; }
+        public ICollection<Plu> Plus { get; set; }
+        public ICollection<PriceList> PriceLists { get; set; }
+        public ICollection<PromoSupport> PromoSupports { get; set; }
+        public ICollection<RATIShopper> RATIShoppers { get; set; }
+        public ICollection<TradeInvestment> TradeInvestments { get; set; }
         public object Clone()
         {
             return this.MemberwiseClone();

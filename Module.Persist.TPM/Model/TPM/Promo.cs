@@ -337,14 +337,14 @@ namespace Module.Persist.TPM.Model.TPM
         public virtual RollingScenario RollingScenario { get; set; }
 
         public virtual ICollection<Promo> Promoes { get; set; }
-        public virtual ICollection<PromoProduct> PromoProducts { get; set; }
-        public virtual ICollection<IncrementalPromo> IncrementalPromoes { get; set; }
-        public virtual ICollection<PreviousDayIncremental> PreviousDayIncrementals { get; set; }
-        public virtual ICollection<PromoProductTree> PromoProductTrees { get; set; }
-        public virtual ICollection<PromoStatusChange> PromoStatusChanges { get; set; }
-        public virtual ICollection<PromoSupportPromo> PromoSupportPromoes { get; set; }
-        public virtual ICollection<PromoUpliftFailIncident> PromoUpliftFailIncidents { get; set; }
-        public virtual ICollection<BTLPromo> BTLPromoes { get; set; }
+        public ICollection<PromoProduct> PromoProducts { get; set; }
+        public ICollection<IncrementalPromo> IncrementalPromoes { get; set; }
+        public ICollection<PreviousDayIncremental> PreviousDayIncrementals { get; set; }
+        public ICollection<PromoProductTree> PromoProductTrees { get; set; }
+        public ICollection<PromoStatusChange> PromoStatusChanges { get; set; }
+        public ICollection<PromoSupportPromo> PromoSupportPromoes { get; set; }
+        public ICollection<PromoUpliftFailIncident> PromoUpliftFailIncidents { get; set; }
+        public ICollection<BTLPromo> BTLPromoes { get; set; }
 
         /// <summary>
         /// Copy Constructor

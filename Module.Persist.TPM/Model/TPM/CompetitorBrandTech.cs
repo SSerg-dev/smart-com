@@ -28,6 +28,6 @@ namespace Module.Persist.TPM.Model.TPM
         [ForeignKey("CompetitorId")]
         public virtual Competitor Competitor { get; set; }
 
-        public virtual ICollection<CompetitorPromo> CompetitorPromoes { get; set; }
+        public ICollection<CompetitorPromo> CompetitorPromoes { get; set; }
     }
 }

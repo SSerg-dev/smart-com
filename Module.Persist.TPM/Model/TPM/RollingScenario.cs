@@ -31,6 +31,6 @@ namespace Module.Persist.TPM.Model.TPM
         public int ClientTreeId { get; set; }
         public ClientTree ClientTree { get; set; }
 
-        public virtual ICollection<Promo> Promoes { get; set; }
+        public ICollection<Promo> Promoes { get; set; }
     }
 }

@@ -12,7 +12,7 @@ namespace Module.Persist.TPM.Model.TPM
 
         [Index("Unique_EventClientTree", 1, IsUnique = true)]
         public Guid EventId { get; set; }
-        public virtual Event Event { get; set; }
+        public Event Event { get; set; }
         [Index("Unique_EventClientTree", 2, IsUnique = true)]
         public int ClientTreeId { get; set; }
         public virtual ClientTree ClientTree { get; set; }

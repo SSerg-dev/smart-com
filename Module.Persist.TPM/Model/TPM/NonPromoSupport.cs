@@ -27,6 +27,6 @@ namespace Module.Persist.TPM.Model.TPM
         public virtual ClientTree ClientTree { get; set; }
         public Guid? NonPromoEquipmentId { get; set; }
         public virtual NonPromoEquipment NonPromoEquipment { get; set; }
-        public virtual ICollection<NonPromoSupportBrandTech> NonPromoSupportBrandTeches { get; set; }
+        public ICollection<NonPromoSupportBrandTech> NonPromoSupportBrandTeches { get; set; }
     }
 }

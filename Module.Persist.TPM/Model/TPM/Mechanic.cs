@@ -24,8 +24,8 @@ namespace Module.Persist.TPM.Model.TPM
 
         [Index("Unique_Mechanic", 4, IsUnique = true)]
         public Guid? PromoTypesId { get; set; }
-        public virtual PromoTypes PromoTypes { get; set; }
+        public PromoTypes PromoTypes { get; set; }
 
-        public virtual ICollection<NoneNego> NoneNegoes { get; set; }
+        public ICollection<NoneNego> NoneNegoes { get; set; }
     }
 }

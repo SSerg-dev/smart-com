@@ -25,6 +25,6 @@ namespace Module.Persist.TPM.Model.TPM
         public Guid? BudgetItemId { get; set; }
         public virtual BudgetItem BudgetItem { get; set; }
 
-        public virtual ICollection<NonPromoSupport> NonPromoSupports { get; set; }
+        public ICollection<NonPromoSupport> NonPromoSupports { get; set; }
     }
 }

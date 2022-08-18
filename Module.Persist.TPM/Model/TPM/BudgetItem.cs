@@ -29,7 +29,7 @@ namespace Module.Persist.TPM.Model.TPM
         public Guid BudgetId { get; set; }
         public virtual Budget Budget { get; set; }
 
-        public virtual ICollection<BudgetSubItem> BudgetSubItems { get; set; }
-        public virtual ICollection<NonPromoEquipment> NonPromoEquipments { get; set; }
+        public ICollection<BudgetSubItem> BudgetSubItems { get; set; }
+        public ICollection<NonPromoEquipment> NonPromoEquipments { get; set; }
     }
 }
