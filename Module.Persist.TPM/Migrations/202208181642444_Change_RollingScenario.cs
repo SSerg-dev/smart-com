@@ -29,6 +29,13 @@ namespace Module.Persist.TPM.Migrations
                SET [TPMmode] = 1
              WHERE Resource = 'RollingScenarios'
             GO
+
+			DECLARE @RoleId uniqueidentifier = (SELECT[Id] FROM [DefaultSchemaSetting].[Role] where SystemName = 'Administrator' and [Disabled] = 0);
+			   INSERT INTO[DefaultSchemaSetting].[AccessPointRole]
+			   (RoleId, AccessPointId) values
+			   (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='RollingScenarios' and [Action]='Decline' and [Disabled] = 0)),
+			   (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='RollingScenarios' and [Action]='Approve' and [Disabled] = 0))
+			GO
         ";
     }
 }
