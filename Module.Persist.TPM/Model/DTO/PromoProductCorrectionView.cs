@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 using Core.Data;
 using Module.Persist.TPM.Model.Interfaces;
 
@@ -6,9 +7,10 @@ namespace Module.Persist.TPM.Model.DTO
 {
     public class PromoProductCorrectionView: IEntity<Guid>
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
         public int Number { get; set; }
-        public string ClientTreeFullPathName { get; set; }
+        public string ClientHierarchy { get; set; }
         public string BrandTechName { get; set; }
         public string MarsMechanicName { get; set; }
         public string EventName { get; set; }
@@ -24,9 +26,10 @@ namespace Module.Persist.TPM.Model.DTO
         public DateTimeOffset? ChangeDate { get; set; }
         public string UserName { get; set; }
         public TPMmode TPMmode { get; set; }
-        public int? ObjectId { get; set; }
+        public int? ClientTreeId { get; set; }
         public bool Disabled { get; set; }
         public Guid? PromoProductId { get; set; }
+        public Guid? UserId { get; set; }
 
     }
 }

@@ -3,9 +3,8 @@ Ext.define('App.model.tpm.promoproductcorrection.PromoProductCorrectionView', {
     idProperty: 'Id',
     breezeEntityType: 'PromoProductCorrectionView',
     fields: [
-        { name: 'Id', hidden: true },
         { name: 'Number', type: 'int', hidden: false, isDefault: true, isKey: true },
-        { name: 'ClientTreeFullPathName', hidden: false },
+        { name: 'ClientHierarchy', type: 'string', hidden: false, isDefault: true  },
         { name: 'BrandTechName', type: 'string', mapping: 'BrandTechName', defaultFilterConfig: { valueField: 'BrandsegTechsub' }, breezeEntityType: 'BrandTech', hidden: false, isDefault: true },
         { name: 'ProductSubrangesList', type:'string', hidden: false, isDefault: true },
 		{ name: 'MarsMechanicName', type: 'string', mapping: 'MarsMechanicName', defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'Mechanic', useNull: true, hidden: false, isDefault: false },
@@ -22,6 +21,9 @@ Ext.define('App.model.tpm.promoproductcorrection.PromoProductCorrectionView', {
         { name: 'ChangeDate', useNull: true, type: 'date', hidden: true, timeZone: +3, convert: dateConvertTimeZone },
         { name: 'UserName', ype:'string', hidden: false, isDefault: true },
         { name: 'TPMmode', type: 'string', hidden: false, isDefault: true},
+        { name: 'Id', hidden: true },
+        { name: 'PromoProductId', hidden: true, isDefault: true },
+        { name: 'UserId', hidden: true, isDefault: true, defaultValue: null },
     ],
 
     proxy: {

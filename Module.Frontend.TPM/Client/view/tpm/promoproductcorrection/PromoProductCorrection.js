@@ -202,7 +202,7 @@
                 },
                 {
                     text: l10n.ns('tpm', 'PromoProductCorrection').value('ClientHierarchy'),
-                    dataIndex: 'ClientTreeFullPathName',
+                    dataIndex: 'ClientHierarchy',
                     width: 250,
                     filter: {
                         xtype: 'treefsearchfield',
@@ -370,8 +370,6 @@
         xtype: 'editabledetailform',
         itemId: 'detailform',
         model: 'App.model.tpm.promoproductcorrection.PromoProductCorrectionView',
-        items: [{
-
-        }]
+        items: []
     }]
 });

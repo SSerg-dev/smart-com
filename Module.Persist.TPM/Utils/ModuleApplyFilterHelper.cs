@@ -476,7 +476,7 @@ namespace Module.Persist.TPM.Utils
             {
                 hierarchy = getFilteredHierarchy(hierarchy, clientFilter);
                 query = query.Where(x =>
-                    hierarchy.Any(h => h.Id == x.ObjectId));
+                    hierarchy.Any(h => h.Id == x.ClientTreeId));
             }
             switch (mode)
             {
@@ -486,9 +486,6 @@ namespace Module.Persist.TPM.Utils
                 case TPMmode.RS:
                     query = query.Where(x => !x.Disabled);
                     query = query.GroupBy(x => new { x.Number, x.PromoProductId }, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault());
-                    
-                    //query = query.ToList().AsQueryable();
-                    //var deletedRSPromoes
                     break;
             }
             return query;

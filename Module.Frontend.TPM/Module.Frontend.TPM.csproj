@@ -351,6 +351,7 @@
     <Content Include="Client\model\tpm\pludictionary\HistoricalPLUDictionary.js" />
     <Content Include="Client\model\tpm\pludictionary\PLUDictionary.js" />
     <Content Include="Client\model\tpm\promoproduct2plu\PromoProduct2Plu.js" />
+    <Content Include="Client\model\tpm\promoproductcorrection\PromoProductCorrectionView.js" />
     <Content Include="Client\model\tpm\promosupportpromo\PromoSupportPromoWithPromoId.js" />
     <Content Include="Client\model\tpm\ratishopper\RATIShopper.js" />
     <Content Include="Client\model\tpm\ratishopper\DeletedRATIshopper.js" />
@@ -400,6 +401,7 @@
     <Content Include="Client\view\tpm\pludictionary\HistoricalPLUDictionaryDetail.js" />
     <Content Include="Client\view\tpm\pludictionary\PLUDictionary.js" />
     <Content Include="Client\view\tpm\pludictionary\PLUDictionaryEditor.js" />
+    <Content Include="Client\view\tpm\promoproductcorrection\PromoProductCorrectionViewEditor.js" />
     <Content Include="Client\view\tpm\promo\ApproveClosePromoWindow.js" />
     <Content Include="Client\view\tpm\promo\PromoMechanicAddPromoes.js" />
     <Content Include="Client\view\tpm\ratishopper\RATIShopper.js" />

@@ -114,7 +114,28 @@
             }
         }
     },
-    
+
+    onCreateButtonClick: function (button) {
+        var grid = this.getGridByButton(button);
+        store = grid.getStore(),
+        model = Ext.create(Ext.ModelManager.getModel(store.model)),
+        this.startCreateRecord(model, grid);
+
+        var promoproductcorrectioneditor = Ext.ComponentQuery.query('promoproductcorrectioneditor')[0];
+        var createDate = promoproductcorrectioneditor.down('[name=CreateDate]');
+        var changeDate = promoproductcorrectioneditor.down('[name=ChangeDate]');
+        var userName = promoproductcorrectioneditor.down('[name=UserName]');
+        var number = promoproductcorrectioneditor.down('[name=Number]');
+        userName.setValue(App.UserInfo.getUserName());
+        number.isCreate = true;
+
+
+        var date = new Date();
+        date.setHours(date.getHours() + (date.getTimezoneOffset() / 60) + 3);   // приведение к московской timezone
+        createDate.setValue(date);                                              // вывести дату в поле 
+        changeDate.setValue(date);
+    },
+
     onUpdateButtonClick: function (button) {
         var grid = button.up('promoproductcorrection').down('directorygrid');
         var selModel = grid.getSelectionModel();
@@ -179,6 +200,33 @@
         this.editor.show();
     },
 
+    startCreateRecord: function(model, grid) {
+        this.editor = grid.editorModel.createEditor({
+            title: l10n.ns('core').value('createWindowTitle'),
+            buttons: [{
+                text: l10n.ns('core', 'createWindowButtons').value('cancel'),
+                itemId: 'cancel'
+            }, {
+                text: l10n.ns('core', 'createWindowButtons').value('ok'),
+                ui: 'green-button-footer-toolbar',
+                itemId: 'ok'
+            }]
+        });
+
+        this.editor.down('#ok').on('click', this.onOkButtonClick, this);
+        this.editor.down('#cancel').on('click', this.onCancelButtonClick, this);
+        this.editor.on('close', this.onEditorClose, this);
+
+        this.editor.down('editorform').loadRecord(model);
+        this.editor.show();
+
+        this.editor.afterWindowShow(this.editor, true);
+        this.editor.down('editorform').getForm().getFields().each(function (field, index, len) {
+            if (field.xtype === 'singlelinedisplayfield')
+                field.setReadOnly(false);
+        }, this);
+    },
+
     startEditRecord: function (model, grid) {
         this.editor = grid.editorModel.createEditor({ title: l10n.ns('core').value('updateWindowTitle') });
         this.editor.grid = grid;
@@ -198,26 +246,6 @@
         this.editor.show();
 
         this.editor.afterWindowShow(this.editor, false);
-    },
-
-    onCreateButtonClick: function () {
-
-        var promoproductcorrectioneditor = Ext.ComponentQuery.query('promoproductcorrectioneditor')[0];
-        var createDate = promoproductcorrectioneditor.down('[name=CreateDate]');
-        var changeDate = promoproductcorrectioneditor.down('[name=ChangeDate]');
-        var userName = promoproductcorrectioneditor.down('[name=UserName]');
-        var number = promoproductcorrectioneditor.down('[name=Number]');
-        userName.setValue(App.UserInfo.getUserName());
-        number.isCreate = true;
-
-
-        var date = new Date();
-        date.setHours(date.getHours() + (date.getTimezoneOffset() / 60) + 3);   // приведение к московской timezone
-        createDate.setValue(date);                                              // вывести дату в поле 
-        changeDate.setValue(date);
-        promoproductcorrectioneditor.show();
-
-        this.callParent(arguments);
     },
 
     onEditButtonClick: function (button) {
@@ -260,10 +288,10 @@
         this.editor.grid.getStore().load();
     },
 
-    onOkButtonClick: function (button) {
+    getAndSaveFormData: function() {
         var form = this.editor.down('editorform').getForm();
-            record = form.getRecord();
-        
+        record = form.getRecord();
+    
         if (!form.isValid()) {
             return;
         }
@@ -277,7 +305,10 @@
 
         
         this.saveModelPatch(record);
+    },
 
+    onOkButtonClick: function (button) {
+        this.getAndSaveFormData();
     },
 
     saveModelPatch: function (model) {
@@ -293,6 +324,7 @@
         model.save({
             scope: this,
             success: function (rec, resp, opts) {
+                debugger;
                 if (callback) {
                     callback(true);
                 }
@@ -331,6 +363,7 @@
                 }
             },
             failure: function () {
+                debugger;
                 if (callback) {
                     callback(false);
                 }
@@ -342,7 +375,7 @@
     },
 
     //Получение промо продукта по промо и продукту
-    saveModel: function (promoId, productId) {        
+    saveModel: function (promoId, productId) {
         if (promoId && productId) {
 
             var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
@@ -364,16 +397,16 @@
                         var promoProductId = promoproductcorrectioneditor.down('[name=PromoProductId]');
 
                         var clientHierarchy = promoproductcorrectioneditor.down('[name=ClientHierarchy]');
-                        var brandTech = promoproductcorrectioneditor.down('[name=BrandTech]');
+                        var brandTech = promoproductcorrectioneditor.down('[name=BrandTechName]');
                         var productSubrangesList = promoproductcorrectioneditor.down('[name=ProductSubrangesList]');
-                        var event = promoproductcorrectioneditor.down('[name=Event]');
-                        var status = promoproductcorrectioneditor.down('[name=Status]');
+                        var event = promoproductcorrectioneditor.down('[name=EventName]');
+                        var status = promoproductcorrectioneditor.down('[name=PromoStatusSystemName]');
                         var marsStartDate = promoproductcorrectioneditor.down('[name=MarsStartDate]');
                         var marsEndDate = promoproductcorrectioneditor.down('[name=MarsEndDate]');
                         var planProductBaselineLSV = promoproductcorrectioneditor.down('[name=PlanProductBaselineLSV]');
                         var planProductIncrementalLSV = promoproductcorrectioneditor.down('[name=PlanProductIncrementalLSV]');
                         var planProductLSV = promoproductcorrectioneditor.down('[name=PlanProductLSV]');
-                        var mechanic = promoproductcorrectioneditor.down('[name=Mechanic]');
+                        var mechanic = promoproductcorrectioneditor.down('[name=MarsMechanicName]');
 
                         promoProductId.setValue(result.models.Id);
                         clientHierarchy.setValue(result.models.Promo.ClientHierarchy);
@@ -398,6 +431,7 @@
                 }
             });
         }
+
     },
 
     onExportCorrectionButtonClick: function (button) {

@@ -137,15 +137,18 @@ namespace Module.Frontend.TPM.Controllers
                     }
                     else
                     {
-                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, isEmpty = false, data = pscsListMap, statusColors }, new JsonSerializerSettings()
+                        return Content(HttpStatusCode.OK, 
+                            JsonConvert.SerializeObject(
+                                new { success = true, isEmpty = false, data = pscsListMap, statusColors }, 
+                                new JsonSerializerSettings()
                         {
                             ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                             MaxDepth = 1,
-                            //Error = (object sender, ErrorEventArgs args) =>
-                            //{
-                            //    throw new Exception(String.Format("Parse error: {0}", args.ErrorContext.Error.Message));
-                            //},
-                        }));
+                                    Error = (object sender, ErrorEventArgs args) =>
+                                    {
+                                        throw new Exception(String.Format("Parse error: {0}", args.ErrorContext.Error.Message));
+                                    },
+                                }));
                     }
                 }
                 else

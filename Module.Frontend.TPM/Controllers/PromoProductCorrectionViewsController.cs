@@ -1,9 +1,13 @@
-﻿using Core.Security;
+﻿using AutoMapper;
+using Core.Dependency;
+using Core.Security;
 using Core.Security.Models;
+using Core.Settings;
 using Frontend.Core.Controllers.Base;
 using Frontend.Core.Extensions.Export;
 using Looper.Core;
 using Looper.Parameters;
+using Module.Frontend.TPM.FunctionalHelpers.RSmode;
 using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.Interfaces;
@@ -13,12 +17,16 @@ using Persist;
 using Persist.Model;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.OData;
 using System.Web.Http.OData.Query;
+using System.Web.Http.Results;
 using Thinktecture.IdentityModel.Authorization.WebApi;
 using Utility;
 
@@ -188,6 +196,260 @@ namespace Module.Frontend.TPM.Controllers
             }
 
             return Content(HttpStatusCode.OK, "success");
+        }
+
+        [ClaimsAuthorize]
+        public IHttpActionResult Post(PromoProductCorrectionView model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<PromoProductCorrectionView, PromoProductsCorrection>();
+            });
+            var mapperPromoProductCorrection = config.CreateMapper();
+            var modelMapp = mapperPromoProductCorrection.Map<PromoProductsCorrection>(model);
+
+            if (modelMapp.TempId == "")
+            {
+                modelMapp.TempId = null;
+            }
+
+            // если существует коррекция на данный PromoProduct, то не создаем новый объект
+            var item = Context.Set<PromoProductsCorrection>()
+                .FirstOrDefault(x => x.PromoProductId == modelMapp.PromoProductId && x.TempId == modelMapp.TempId && !x.Disabled);
+
+            if (item != null)
+            {
+                if (item.PromoProduct.Promo.NeedRecountUplift == false && String.IsNullOrEmpty(item.TempId))
+                {
+                    return InternalServerError(new Exception("Promo Locked Update"));
+                }
+                item.PlanProductUpliftPercentCorrected = modelMapp.PlanProductUpliftPercentCorrected;
+                item.ChangeDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                item.UserId = user.Id;
+                item.UserName = user.Login;
+
+                try
+                {
+                    var saveChangesResult = Context.SaveChanges();
+                    if (saveChangesResult > 0)
+                    {
+                        CreateChangesIncident(Context.Set<ChangesIncident>(), modelMapp);
+                        Context.SaveChanges();
+                    }
+                }
+                catch (Exception e)
+                {
+                    return GetErorrRequest(e);
+                }
+
+
+                var configViewMapping = new MapperConfiguration(cfg =>
+                {
+                    cfg.CreateMap<PromoProductsCorrection, PromoProductCorrectionView>()
+                        .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                        .ForMember(dest => dest.Number, opt => opt.MapFrom(src => src.PromoProduct.Promo.Number))
+                        .ForMember(dest => dest.ClientHierarchy, opt => opt.MapFrom(src => src.PromoProduct.Promo.ClientHierarchy))
+                        .ForMember(dest => dest.BrandTechName, opt => opt.MapFrom(src => src.PromoProduct.Promo.BrandTech.Name))
+                        .ForMember(dest => dest.MarsMechanicName, opt => opt.MapFrom(src => src.PromoProduct.Promo.MarsMechanic.Name))
+                        .ForMember(dest => dest.EventName, opt => opt.MapFrom(src => src.PromoProduct.Promo.Event.Name))
+                        .ForMember(dest => dest.PromoStatusSystemName, opt => opt.MapFrom(src => src.PromoProduct.Promo.PromoStatus.SystemName))
+                        .ForMember(dest => dest.MarsStartDate, opt => opt.MapFrom(src => src.PromoProduct.Promo.MarsStartDate))
+                        .ForMember(dest => dest.MarsEndDate, opt => opt.MapFrom(src => src.PromoProduct.Promo.MarsEndDate))
+                        .ForMember(dest => dest.PlanProductBaselineLSV, opt => opt.MapFrom(src => src.PromoProduct.PlanProductBaselineLSV))
+                        .ForMember(dest => dest.PlanProductIncrementalLSV, opt => opt.MapFrom(src => src.PromoProduct.PlanProductIncrementalLSV))
+                        .ForMember(dest => dest.PlanProductLSV, opt => opt.MapFrom(src => src.PromoProduct.PlanProductLSV))
+                        .ForMember(dest => dest.ZREP, opt => opt.MapFrom(src => src.PromoProduct.ZREP))
+                        .ForMember(dest => dest.PlanProductUpliftPercentCorrected, opt => opt.MapFrom(src => src.PlanProductUpliftPercentCorrected))
+                        .ForMember(dest => dest.CreateDate, opt => opt.MapFrom(src => src.CreateDate))
+                        .ForMember(dest => dest.ChangeDate, opt => opt.MapFrom(src => src.ChangeDate))
+                        .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.UserName))
+                        .ForMember(dest => dest.TPMmode, opt => opt.MapFrom(src => src.TPMmode))
+                        .ForMember(dest => dest.ClientTreeId, opt => opt.MapFrom(src => src.PromoProduct.Promo.ClientTreeId))
+                        .ForMember(dest => dest.Disabled, opt => opt.MapFrom(src => src.Disabled))
+                        .ForMember(dest => dest.PromoProductId, opt => opt.MapFrom(src => src.PromoProductId))
+                        .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
+                        ;
+                });
+                var mapperPromoProductCorrectionView = configViewMapping.CreateMapper();
+                var viewMapp = mapperPromoProductCorrectionView.Map<PromoProductCorrectionView>(modelMapp);
+
+                return Created(viewMapp);
+            }
+            else
+            {
+                var proxy = Context.Set<PromoProductsCorrection>().Create<PromoProductsCorrection>();
+                var configuration = new MapperConfiguration(cfg =>
+                    cfg.CreateMap<PromoProductsCorrection, PromoProductsCorrection>().ReverseMap());
+                var mapper = configuration.CreateMapper();
+                var result = mapper.Map(model, proxy);
+                var promoProduct = Context.Set<PromoProduct>()
+                    .FirstOrDefault(x => x.Id == result.PromoProductId && !x.Disabled);
+
+                if (promoProduct.Promo.NeedRecountUplift == false && String.IsNullOrEmpty(result.TempId))
+                {
+                    return InternalServerError(new Exception("Promo Locked Update"));
+                }
+                result.CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                result.ChangeDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                result.UserId = user.Id;
+                result.UserName = user.Login;
+
+                Context.Set<PromoProductsCorrection>().Add(result);
+
+                try
+                {
+                    var saveChangesResult = Context.SaveChanges();
+                    if (saveChangesResult > 0)
+                    {
+                        CreateChangesIncident(Context.Set<ChangesIncident>(), result);
+                        Context.SaveChanges();
+                    }
+                }
+                catch (Exception e)
+                {
+                    return GetErorrRequest(e);
+                }
+
+                return Created(result);
+            }
+        }
+
+        [ClaimsAuthorize]
+        [AcceptVerbs("PATCH", "MERGE")]
+        public IHttpActionResult Patch([FromODataUri] System.Guid key, Delta<PromoProductsCorrection> patch)
+        {
+            try
+            {
+                var model = Context.Set<PromoProductsCorrection>().Find(key);
+
+                if (model == null)
+                {
+                    return NotFound();
+                }
+                var promoStatus = model.PromoProduct.Promo.PromoStatus.SystemName;
+
+                patch.TryGetPropertyValue("TPMmode", out object mode);
+
+                if ((int)model.TPMmode != (int)mode)
+                {
+                    model = RSmodeHelper.EditToPromoProductsCorrectionRS(Context, model);
+                }
+
+                patch.Patch(model);
+                model.ChangeDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                model.UserId = user.Id;
+                model.UserName = user.Login;
+
+                if (model.TempId == "")
+                {
+                    model.TempId = null;
+                }
+
+
+                ISettingsManager settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
+                string promoStatuses = settingsManager.GetSetting<string>("PROMO_PRODUCT_CORRECTION_PROMO_STATUS_LIST", "Draft,Deleted,Cancelled,Started,Finished,Closed");
+                string[] status = promoStatuses.Split(',');
+                if (status.Any(x => x == promoStatus) && !role.Equals("SupportAdministrator"))
+                    return InternalServerError(new Exception("Cannot be update correction where status promo = " + promoStatus));
+                if (model.PromoProduct.Promo.NeedRecountUplift == false)
+                {
+                    return InternalServerError(new Exception("Promo Locked Update"));
+                }
+
+                var saveChangesResult = Context.SaveChanges();
+                if (saveChangesResult > 0)
+                {
+                    CreateChangesIncident(Context.Set<ChangesIncident>(), model);
+                    Context.SaveChanges();
+                }
+
+                return Updated(model);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!EntityExists(key))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            catch (Exception e)
+            {
+                return GetErorrRequest(e);
+            }
+        }
+
+        [ClaimsAuthorize]
+        public IHttpActionResult Delete([FromODataUri] System.Guid key)
+        {
+            try
+            {
+                var model = Context.Set<PromoProductsCorrection>().Find(key);
+                if (model == null)
+                {
+                    return NotFound();
+                }
+                if (model.PromoProduct.Promo.NeedRecountUplift == false)
+                {
+                    return InternalServerError(new Exception("Promo Locked Update"));
+                }
+                model.DeletedDate = System.DateTime.Now;
+                model.Disabled = true;
+
+                var saveChangesResult = Context.SaveChanges();
+                if (saveChangesResult > 0)
+                {
+                    CreateChangesIncident(Context.Set<ChangesIncident>(), model);
+                    Context.SaveChanges();
+                }
+
+                return StatusCode(HttpStatusCode.NoContent);
+            }
+            catch (Exception e)
+            {
+                return InternalServerError(e.InnerException);
+            }
+        }
+
+        private ExceptionResult GetErorrRequest(Exception e)
+        {
+            // обработка при создании дублирующей записи
+            SqlException exc = e.GetBaseException() as SqlException;
+
+            if (exc != null && (exc.Number == 2627 || exc.Number == 2601))
+            {
+                return InternalServerError(new Exception("This PromoProductCorrection has already existed"));
+            }
+            else
+            {
+                return InternalServerError(e);
+            }
+        }
+
+        public static void CreateChangesIncident(DbSet<ChangesIncident> changesIncidents, PromoProductsCorrection promoProductCorrection)
+        {
+            changesIncidents.Add(new ChangesIncident
+            {
+                Id = Guid.NewGuid(),
+                DirectoryName = nameof(PromoProductsCorrection),
+                ItemId = promoProductCorrection.Id.ToString(),
+                CreateDate = DateTimeOffset.Now,
+                ProcessDate = null,
+                DeletedDate = null,
+                Disabled = false
+            });
+        }
+
+        private bool EntityExists(System.Guid key)
+        {
+            return Context.Set<PromoProductsCorrection>().Count(e => e.Id == key) > 0;
         }
 
     }

@@ -2551,7 +2551,7 @@
         'ZREP': 'ZREP',
         'Number': 'Promo ID',
         'BrandTechName': 'BrandTech',
-        'ClientTreeFullPathName': 'Client',
+        'ClientHierarchy': 'Client',
         'EventName': 'Event',
         'MarsMechanicName': 'Mars Mechanic',
         'MarsStartDate': 'Mars Start date',

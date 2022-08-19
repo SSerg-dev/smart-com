@@ -475,7 +475,7 @@
 			SELECT
 				ppc.Id AS Id,
 				pr.Number AS Number,
-				cltr.FullPathName AS ClientTreeFullPathName,
+				pr.ClientHierarchy AS ClientHierarchy,
 				btech.BrandsegTechsub AS BrandTechName,
 				pr.ProductSubrangesList AS ProductSubrangesList,
 				mech.Name AS MarsMechanicName,
@@ -492,9 +492,10 @@
 				ppc.ChangeDate AS ChangeDate,
 				ppc.UserName AS UserName,
 				ppc.Disabled AS Disabled,
-				cltr.ObjectId AS ObjectId,
+				pr.ClientTreeId AS ClientTreeId,
 				ppc.PromoProductId AS PromoProductId,
-				pr.TPMmode AS TPMmode
+				ppc.UserId as UserId,				
+				pr.TPMmode AS TPMmode			
 
 			FROM 
 				[DefaultSchemaSetting].PromoProductsCorrection AS ppc INNER JOIN
