@@ -67,13 +67,22 @@
             {
                 itemId: 'onapprovalbutton',
                 action: 'OnApproval',
+                disabled: true,
                 glyph: 0xF5E1,
                 text: 'Send for approval ',
                 tooltip: 'Send for approval '
             },
             {
+                itemId: 'massapprovebutton',
+                action: 'MassApprove',
+                glyph: 0xf0d7,
+                text: l10n.ns('tpm', 'Promo').value('MassApprovalButtonText'),
+                tooltip: l10n.ns('tpm', 'Promo').value('MassApprovalButtonText')
+            },
+            {
                 itemId: 'approvebutton',
                 action: 'Approve',
+                disabled: true,
                 glyph: 0xF5E0,
                 text: 'Approve',
                 tooltip: 'Approve'
@@ -81,6 +90,7 @@
             {
                 itemId: 'declinebutton',
                 action: 'Decline',
+                disabled: true,
                 glyph: 0xF739,
                 text: 'Decline',
                 tooltip: 'Decline'
@@ -125,6 +135,7 @@
     items: [{
         xtype: 'directorygrid',
         itemId: 'datatable',
+        name: 'RSmodeGrid',
         editorModel: 'Core.form.EditorDetailWindowModel',
         store: {
             type: 'directorystore',
@@ -222,11 +233,11 @@
             ]
         }
     },
-        {
-            xtype: 'editabledetailform',
-            itemId: 'detailform',
-            model: 'App.model.tpm.rsmode.RSmode',
-            items: []
-        }
+    {
+        xtype: 'editabledetailform',
+        itemId: 'detailform',
+        model: 'App.model.tpm.rsmode.RSmode',
+        items: []
+    }
     ]
 });

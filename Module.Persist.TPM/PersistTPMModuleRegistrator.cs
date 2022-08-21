@@ -1157,6 +1157,13 @@ namespace Module.Persist.TPM
             builder.EntitySet<RollingScenario>("DeletedRollingScenarios").HasRequiredBinding(e => e.ClientTree, "ClientTrees");
             builder.EntitySet<RollingScenario>("RollingScenarios").HasManyBinding(e => e.Promoes, "Promoes");
             builder.EntitySet<RollingScenario>("DeletedRollingScenarios").HasManyBinding(e => e.Promoes, "Promoes");
+            builder.Entity<RollingScenario>().Collection.Action("OnApproval");
+            builder.Entity<RollingScenario>().Collection.Action("Approve");
+            builder.Entity<RollingScenario>().Collection.Action("Decline");
+            builder.Entity<RollingScenario>().Collection.Action("GetVisibleButton");
+            builder.Entity<RollingScenario>().Collection.Action("GetCanceled");
+            builder.Entity<RollingScenario>().Collection.Action("MassApprove");
+            builder.Entity<HistoricalCompetitorPromo>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalCompetitorPromo>("HistoricalCompetitorPromoes");
 
             builder.EntitySet<PromoProductCorrectionView>("PromoProductCorrectionViews");
             builder.Entity<PromoProductCorrectionView>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PromoProductCorrectionView>("PromoProductCorrectionViews");

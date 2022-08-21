@@ -8,21 +8,23 @@ namespace Module.Persist.TPM.Migrations
     {
         public override void Up()
         {
-            AddColumn("Jupiter.RollingScenario", "IsSendForApproval", c => c.Boolean(nullable: false));
-            AddColumn("Jupiter.RollingScenario", "IsCMManagerApproved", c => c.Boolean(nullable: false));
-            DropColumn("Jupiter.RollingScenario", "CreatorId");
-            DropColumn("Jupiter.RollingScenario", "CreatorLogin");
             var defaultSchema = AppSettingsManager.GetSetting<string>("DefaultSchema", "dbo");
+            AddColumn($"{defaultSchema}.RollingScenario", "IsSendForApproval", c => c.Boolean(nullable: false));
+            AddColumn($"{ defaultSchema}.RollingScenario", "IsCMManagerApproved", c => c.Boolean(nullable: false));
+            DropColumn($"{defaultSchema}.RollingScenario", "CreatorId");
+            DropColumn($"{defaultSchema}.RollingScenario", "CreatorLogin");
+            
             SqlString = SqlString.Replace("DefaultSchemaSetting", defaultSchema);
             Sql(SqlString);
         }
         
         public override void Down()
         {
-            AddColumn("Jupiter.RollingScenario", "CreatorLogin", c => c.String());
-            AddColumn("Jupiter.RollingScenario", "CreatorId", c => c.Guid(nullable: false));
-            DropColumn("Jupiter.RollingScenario", "IsCMManagerApproved");
-            DropColumn("Jupiter.RollingScenario", "IsSendForApproval");
+            var defaultSchema = AppSettingsManager.GetSetting<string>("DefaultSchema", "dbo");
+            AddColumn($"{defaultSchema}.RollingScenario", "CreatorLogin", c => c.String());
+            AddColumn($"{defaultSchema}.RollingScenario", "CreatorId", c => c.Guid(nullable: false));
+            DropColumn($"{defaultSchema}.RollingScenario", "IsCMManagerApproved");
+            DropColumn($"{defaultSchema}.RollingScenario", "IsSendForApproval");
         }
         private string SqlString = @" 
             UPDATE [DefaultSchemaSetting].[AccessPoint]

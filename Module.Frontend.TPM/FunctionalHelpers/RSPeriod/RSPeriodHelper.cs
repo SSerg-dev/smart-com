@@ -1,10 +1,10 @@
-﻿using Core.Security.Models;
-using Module.Persist.TPM.Model.SimpleModel;
+﻿using Module.Persist.TPM.Model.SimpleModel;
 using Module.Persist.TPM.Model.TPM;
 using Persist;
 using Persist.Model.Settings;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 
 namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
@@ -37,8 +37,10 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
         }
         public static void CreateRSPeriod(Promo promo, DatabaseContext Context)
         {
-            RollingScenario rollingScenarioExist = Context.Set<RollingScenario>().FirstOrDefault(g => g.ClientTreeId == promo.ClientTreeId);
-            
+            RollingScenario rollingScenarioExist = Context.Set<RollingScenario>()
+                .Include(g => g.Promoes)
+                .FirstOrDefault(g => g.ClientTreeId == promo.ClientTreeKeyId);
+
             List<PromoStatus> promoStatuses = Context.Set<PromoStatus>().Where(g => !g.Disabled).ToList();
             StartEndModel startEndModel = GetRSPeriod(Context);
             RollingScenario rollingScenario = new RollingScenario();
