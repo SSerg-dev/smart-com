@@ -339,7 +339,10 @@ namespace Module.Frontend.TPM.Controllers
 
             result.LastChangedDate = ChangedDate;
             Context.SaveChanges();
-
+            if (result.TPMmode == TPMmode.RS)
+            {
+                RSPeriodHelper.CreateRSPeriod(result, Context);
+            }
             return result;
         }
 

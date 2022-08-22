@@ -365,6 +365,7 @@ namespace Module.Frontend.TPM.Controllers
                 }
                 List<Event> events = await Context.Set<Event>()
                     .AsNoTracking()
+                    .Include(g=>g.BTLs)
                     .Where(g => !g.Disabled && g.EventType.National && (g.MarketSegment == marketSegment || string.IsNullOrEmpty(g.MarketSegment)) && !g.EventType.Disabled)
                     .ToListAsync();
                 //events = events.Where(g => g.BTLs.Any(f => (eventBTL.DurationDateStart <= f.StartDate && eventBTL.DurationDateEnd > f.StartDate) || (eventBTL.DurationDateStart >= f.StartDate && eventBTL.DurationDateStart > f.EndDate))).ToList();

@@ -39,7 +39,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
         {
             RollingScenario rollingScenarioExist = Context.Set<RollingScenario>()
                 .Include(g => g.Promoes)
-                .FirstOrDefault(g => g.ClientTreeId == promo.ClientTreeKeyId);
+                .FirstOrDefault(g => g.ClientTreeId == promo.ClientTreeKeyId && !g.Disabled);
 
             List<PromoStatus> promoStatuses = Context.Set<PromoStatus>().Where(g => !g.Disabled).ToList();
             StartEndModel startEndModel = GetRSPeriod(Context);
