@@ -1,46 +1,47 @@
 ﻿using AutoMapper;
 using Core.Data;
+using Core.MarsCalendar;
 using Core.Security;
 using Core.Security.Models;
+using Core.Settings;
 using Frontend.Core.Controllers.Base;
 using Frontend.Core.Extensions;
 using Frontend.Core.Extensions.Export;
 using Looper.Core;
 using Looper.Parameters;
+using Module.Frontend.TPM.FunctionalHelpers.RSmode;
+using Module.Frontend.TPM.FunctionalHelpers.RSPeriod;
 using Module.Frontend.TPM.Model;
+using Module.Frontend.TPM.Util;
+using Module.Persist.TPM.CalculatePromoParametersModule;
+using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.Import;
+using Module.Persist.TPM.Model.Interfaces;
+using Module.Persist.TPM.Model.SimpleModel;
 using Module.Persist.TPM.Model.TPM;
+using Module.Persist.TPM.PromoStateControl;
+using Module.Persist.TPM.Utils;
 using Newtonsoft.Json;
 using Persist;
 using Persist.Model;
+using Persist.ScriptGenerator.Filter;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.OData;
 using System.Web.Http.OData.Query;
-using Thinktecture.IdentityModel.Authorization.WebApi;
-using Core.MarsCalendar;
-using Utility;
-using Module.Persist.TPM.Utils;
-using Module.Persist.TPM.Model.DTO;
-using Core.Settings;
-using Module.Persist.TPM.PromoStateControl;
 using System.Web.Http.Results;
-using System.IO;
-using Persist.ScriptGenerator.Filter;
-using System.Net.Http.Headers;
-using Module.Persist.TPM.CalculatePromoParametersModule;
-using Module.Frontend.TPM.Util;
-using Module.Persist.TPM.Model.SimpleModel;
-using System.Web;
-using Module.Frontend.TPM.FunctionalHelpers.RSPeriod;
-using Module.Frontend.TPM.FunctionalHelpers.RSmode;
-using Module.Persist.TPM.Model.Interfaces;
+using Thinktecture.IdentityModel.Authorization.WebApi;
+using Utility;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -352,7 +353,13 @@ namespace Module.Frontend.TPM.Controllers
         {
             try
             {
-                Promo model = Context.Set<Promo>().Find(key);
+                Promo model = Context.Set<Promo>()
+                    .Include(g => g.BTLPromoes)
+                    .Include(g => g.PromoSupportPromoes)
+                    .Include(g => g.PromoProductTrees)
+                    .Include(g => g.IncrementalPromoes)
+                    .Include(x => x.PromoProducts.Select(y => y.PromoProductsCorrections))
+                    .FirstOrDefault(g => g.Id == key);
                 if (model == null)
                 {
                     return NotFound();
@@ -380,7 +387,7 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     if (model.TPMmode != ChangePromo.TPMmode)
                     {
-                        model = RSmodeHelper.EditToPromoRS(Context, model);                        
+                        model = RSmodeHelper.EditToPromoRS(Context, model);
                     }
                 }
                 patch.Patch(model);
@@ -1067,7 +1074,13 @@ namespace Module.Frontend.TPM.Controllers
         {
             try
             {
-                Promo model = Context.Set<Promo>().Find(key);
+                Promo model = Context.Set<Promo>()
+                    .Include(g => g.BTLPromoes)
+                    .Include(g => g.PromoSupportPromoes)
+                    .Include(g => g.PromoProductTrees)
+                    .Include(g => g.IncrementalPromoes)
+                    .Include(x => x.PromoProducts.Select(y => y.PromoProductsCorrections))
+                    .FirstOrDefault(g=>g.Id == key);
                 if (model == null)
                 {
                     return NotFound();

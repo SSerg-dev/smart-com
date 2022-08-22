@@ -222,7 +222,6 @@
         this.callParent(arguments);
         var me = this;
         var grid = selModel.view.up('directorygrid');
-        debugger;
         if (selected.length > 0) {
             this.getVisibleButton(selected[0].data.Id);
         }
