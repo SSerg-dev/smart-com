@@ -3069,7 +3069,6 @@
     <Compile Include="Model\Import\ImportRPAEvent.cs" />
     <Compile Include="Model\Import\ImportRpaActualEanPc.cs" />
     <Compile Include="Model\Import\ImportRpaActualPlu.cs" />
-    <Compile Include="Model\Import\ImportRPAEvent.cs" />
     <Compile Include="Model\Import\ImportTechnology.cs" />
     <Compile Include="Model\Import\ImportBrand.cs" />
     <Compile Include="Model\Import\ImportPromoProduct.cs" />
