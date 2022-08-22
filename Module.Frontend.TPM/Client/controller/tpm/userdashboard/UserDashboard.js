@@ -771,6 +771,43 @@
         var buttonColor = '#feeded';
         return { filter: filter, widget: widget, text: text, panel: panel, style: style, image: image, color: color, buttonColor: buttonColor };
     },
+    //GAManager
+    getTimeCriticalGAManager: function () {
+        var date = new Date();
+        date.setHours(date.getHours() + (date.getTimezoneOffset() / 60) + 3);
+
+        date = Ext.Date.add(date, Ext.Date.HOUR, 48);
+        var filter = {
+            operator: "and",
+            rules: [{
+                property: "PromoStatusName", operation: "Equals", value: 'On Approval'
+            },
+            {
+                property: "DispatchesStart", operation: "LessThan", value: date
+            }, {
+                operator: "or",
+                rules: [{
+                    property: "IsGAManagerApproved", operation: "Equals", value: null
+                },
+                {
+                    property: "IsGAManagerApproved", operation: "Equals", value: false
+                }]
+            }
+            ]
+        };
+
+        var widget = 'promo';
+        var text = "Time Critical";
+        var panel = 'panel1';
+        var style = {
+            styleStandart: 'panel-time-critical-standart',
+            styleZero: 'panel-time-critical-zero'
+        }
+        var image = 'time_critical.png';
+        var color = '#e1312c';
+        var buttonColor = '#feeded';
+        return { filter: filter, widget: widget, text: text, panel: panel, style: style, image: image, color: color, buttonColor: buttonColor };
+    },
     //Needs my approval
     getNeedsMyApprovalCMManager: function () {
         var promoHelperController = App.app.getController('tpm.promo.PromoHelper');
@@ -853,6 +890,54 @@
         var buttonColor = '#e6fcf9';
         return { filter: filter, widget: widget, text: text, panel: panel, image: image, color: color, buttonColor: buttonColor };
     },
+    getGaInExchangeApprovalDemandFinance: function () {
+        var promoHelperController = App.app.getController('tpm.promo.PromoHelper');
+
+        var filter = promoHelperController.getOnApprovalGAFilterDF();
+        var widget = 'promo';
+        var text = "GA On approval";
+        var panel = 'panel1';
+        var image = 'workflow.png';
+        var color = '#00009b';
+        var buttonColor = '#eef2fc';
+        return { filter: filter, widget: widget, text: text, panel: panel, image: image, color: color, buttonColor: buttonColor };
+    },
+    getGaInExchangeApprovalDemandPlanning: function () {
+        var promoHelperController = App.app.getController('tpm.promo.PromoHelper');
+
+        var filter = promoHelperController.getOnApprovalGAFilterDP();
+        var widget = 'promo';
+        var text = "GA On approval";
+        var panel = 'panel1';
+        var image = 'workflow.png';
+        var color = '#00009b';
+        var buttonColor = '#eef2fc';
+        return { filter: filter, widget: widget, text: text, panel: panel, image: image, color: color, buttonColor: buttonColor };
+    },
+    getGaInExchangeApprovalCMManager: function () {
+        var promoHelperController = App.app.getController('tpm.promo.PromoHelper');
+
+        var filter = promoHelperController.getOnApprovalGAFilterCMM();
+        var widget = 'promo';
+        var text = "GA On approval";
+        var panel = 'panel1';
+        var image = 'workflow.png';
+        var color = '#0e0d9e';
+        var buttonColor = '#eef2fc';
+        return { filter: filter, widget: widget, text: text, panel: panel, image: image, color: color, buttonColor: buttonColor };
+    },
+    getGaApprovalGAManager: function () {
+        var promoHelperController = App.app.getController('tpm.promo.PromoHelper');
+
+        var filter = promoHelperController.getOnApprovalGAFilterGAM();
+        var widget = 'promo';
+        var text = "GA On approval";
+        var panel = 'panel1';
+        var image = 'workflow.png';
+        var color = '#0e0d9e';
+        var buttonColor = '#eef2fc';
+        return { filter: filter, widget: widget, text: text, panel: panel, image: image, color: color, buttonColor: buttonColor };
+    },
     getCard: function (window) {
         var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
         var view = window.up('userdashboard');
@@ -882,14 +967,13 @@
                             button.down('#CountLabel').setText(result[i]);
 
                         }
-
                         button.down('button').style = 'background-color:' + buttons.buttonColor;
                         button.down('#buttonPanel').style = 'background-color:' + buttons.buttonColor;
                         button.down('#buttonArrow').style = 'background-color:' + buttons.buttonColor;
                         button.down('#glyphRight').style = 'background-color:' + buttons.color;
                         button.down('#glyphRight').setSrc('/Bundles/style/images/' + buttons.image);
                         if (buttons.style) {
-                            button.width = '50.5%';
+                            //button.width = '50.5%';
 
                             if (result[i] == 0) {
                                 button.down('#CountLabel').addCls('panel-time-critical-zero');
@@ -909,13 +993,13 @@
                         if (view.down('#' + buttons.panel))
                             view.down('#' + buttons.panel).add(button);
                         Ext.get(button.down('#buttonArrow').id + '-btnIconEl').setStyle('color', buttons.color);
-                        if (buttons.style) {
-                            if (result[i] == 0) {
-                                Ext.get(button.down('#buttonArrow').id + '-btnIconEl').setStyle('color', '#fafafa');
-                            } else {
-                                Ext.get(button.down('#buttonArrow').id + '-btnIconEl').setStyle('padding-left', (button.down('#buttonArrow').getWidth() * 0.5) + 'px');
-                            }
-                        }
+                        //if (buttons.style) {
+                        //    if (result[i] == 0) {
+                        //        Ext.get(button.down('#buttonArrow').id + '-btnIconEl').setStyle('color', '#fafafa');
+                        //    } else {
+                        //        Ext.get(button.down('#buttonArrow').id + '-btnIconEl').setStyle('padding-left', (button.down('#buttonArrow').getWidth() * 0.5) + 'px');
+                        //    }
+                        //}
                     }
                 }
                 mask.hide();

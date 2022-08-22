@@ -180,6 +180,7 @@
                     { xtype: 'singlelinedisplayfield', name: 'IsCMManagerApproved', fieldLabel: l10n.ns('tpm', 'Promo').value('IsCMManagerApproved'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'IsDemandPlanningApproved', fieldLabel: l10n.ns('tpm', 'Promo').value('IsDemandPlanningApproved'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'IsDemandFinanceApproved', fieldLabel: l10n.ns('tpm', 'Promo').value('IsDemandFinanceApproved'), hidden: true },
+                    { xtype: 'singlelinedisplayfield', name: 'IsGAManagerApproved', fieldLabel: l10n.ns('tpm', 'Promo').value('IsDemandFinanceApproved'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'OtherEventName', fieldLabel: l10n.ns('tpm', 'Promo').value('OtherEventName'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'PlanPromoLSV', fieldLabel: l10n.ns('tpm', 'Promo').value('PlanPromoLSV'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'PlanPromoPostPromoEffectLSVW1', fieldLabel: l10n.ns('tpm', 'Promo').value('PlanPromoPostPromoEffectLSVW1'), hidden: true },
@@ -209,7 +210,9 @@
                     { xtype: 'singlelinedisplayfield', name: 'DeviationCoefficient', fieldLabel: l10n.ns('tpm', 'Promo').value('Adjustment'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'IsApolloExport', fieldLabel: l10n.ns('tpm', 'Promo').value('IsApolloExport'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'CreatorLogin', fieldLabel: l10n.ns('tpm', 'Promo').value('CreatorLogin'), hidden: true },
-                    { xtype: 'singlelinedisplayfield', name: 'InvoiceType', fieldLabel: l10n.ns('tpm', 'Promo').value('InvoiceType'), hidden: true }
+                    { xtype: 'singlelinedisplayfield', name: 'InvoiceType', fieldLabel: l10n.ns('tpm', 'Promo').value('InvoiceType'), hidden: true },
+                    { xtype: 'singlelinedisplayfield', name: 'LinkedPromoes', fieldLabel: l10n.ns('tpm', 'Promo').value('LinkedPromoes'), hidden: true },
+                    { xtype: 'singlelinedisplayfield', name: 'MasterPromoNumber', fieldLabel: l10n.ns('tpm', 'Promo').value('MasterPromoNumber'), hidden: true }
                 ]
             }]
         }]

@@ -59,6 +59,8 @@
         'PostPromoEffectItem': 'Post Promo Effect',
         'COGS': 'Plan COGS',
         'ActualCOGS': 'Actual COGS',
+        'PlanCOGSTn': 'Plan COGS/Tn',
+        'ActualCOGSTn': 'Actual COGS/Tn',
         'RATIShopper': 'RA TI Shopper',
         'Finance': 'Finance',
         'TradeInvestment': 'Plan TradeInvestment',
@@ -151,6 +153,8 @@
         'PostPromoEffect': 'Post Promo Effect',
         'COGS': 'COGS',
         'ActualCOGS': 'Actual COGS',
+        'PlanCOGSTn': 'Plan COGS/Tn',
+        'ActualCOGSTn': 'Actual COGS/Tn',
         'RATIShopper': 'RA TI Shopper',
         'AddPromoSupportType': 'Add Promo support type',
         'AddPromoType': 'Create Promo',
@@ -182,7 +186,8 @@
         'ApproveClosePromoWindow': 'Confirm closing',
         'Competitor': 'Competitor',
         'CompetitorBrandTech': 'Competitor BrandTech',
-        'CompetitorPromo': 'Competitor Promo'
+        'CompetitorPromo': 'Competitor Promo',
+        'EventType': 'Event Types'
     },
 
     'text': {
@@ -351,7 +356,14 @@
         'Name': 'Event',
         'Year': 'Year',
         'Period': 'Period',
-        'Description': 'Description'
+        'Description': 'Description',
+        'MarketSegment': 'MarketSegment',
+        'EventTypeName': 'Type',
+        'EventTypeNational': 'National',
+    },
+    'EventType': {
+        'Name': 'Name',
+        'National': 'National',
     },
     'HistoricalEvent': ['.tpm.Event', '.core.BaseHistoryEntity'],
     'DeletedEvent': ['.tpm.Event', '.core.BaseDeletedEntity'],
@@ -470,7 +482,12 @@
         'Segmen_code': 'Segment code',
 
         'UOM_PC2Case': 'UOM_PC2Case',
-        'Division': 'Division'
+        'Division': 'Division',
+
+        'UOM': 'Unit of Measure',
+        'NetWeight': 'Net Weight',
+        'CaseVolume': 'Case Volume',
+        'PCVolume': 'PC Volume'
     },
     'HistoricalProduct': ['.tpm.Product', '.core.BaseHistoryEntity'],
     'DeletedProduct': ['.tpm.Product', '.core.BaseDeletedEntity'],
@@ -899,17 +916,19 @@
         'ProductTreeObjectIds': 'Product Tree ObjectIds',
         'InOut': 'In-Out',
         'ActualPromoNetIncrementalBaseTI': 'Actual Promo Net Incremental BaseTI',
-        'ActualPromoNetIncrementalCOGS': 'Actual Promo Net Incremental COGS',
+        'ActualPromoNetIncrementalCOGS': 'Actual Promo Net Incremental COGS LSV',
         'ActualPromoNSV': 'Actual Promo NSV',
-        'GrowthAcceleration': 'Growth acceleration',
+        'GrowthAcceleration': 'GA',
         'IsGrowthAcceleration': 'Growth acceleration',
         'ApolloExport': 'Apollo export',
         'IsApolloExport': 'Apollo export',
+        'GAInExcnange': 'GA InExchange',
+        'IsInExchange': 'InExchange',
 
         //Для исторической модели
         'PlanPromoNetROIPercent': 'Plan Promo Net ROI Percent',
         'PlanPromoNetIncrementalBaseTI': 'Plan Promo Net Incremental Base TI',
-        'PlanPromoNetIncrementalCOGS': 'Plan Promo Net Incremental COGS',
+        'PlanPromoNetIncrementalCOGS': 'Plan Promo Net Incremental COGS LSV',
         'PlanPromoNetBaseTI': 'Plan Promo Net Base TI',
         'ActualPromoNetIncrementalBaseTI': 'Actual Promo Net Incremental Base TI',
         'ActualPromoNetIncrementalCOGS': 'Actual Promo Net Incremental COGS',
@@ -944,7 +963,11 @@
 
         'Price': 'Price',
         'Discount': 'Discount',
-        'Subrange': 'Subrange'
+        'Subrange': 'Subrange',
+
+        'SelectPromo': 'Select Promo',
+        'LinkedPromoes': 'Linked Promoes',
+        'MasterPromoNumber': 'Master Promo Number'
     },
     'HistoricalPromo': ['.tpm.Promo', '.core.BaseHistoryEntity'],
     'DeletedPromo': ['.tpm.Promo', '.core.BaseDeletedEntity'],
@@ -1638,6 +1661,31 @@
     'HistoricalActualCOGS': ['.tpm.ActualCOGS', '.core.BaseHistoryEntity'],
     'DeletedActualCOGS': ['.tpm.ActualCOGS', '.core.BaseDeletedEntity'],
 
+    'PlanCOGSTn': {
+        'StartDate': 'StartDate',
+        'EndDate': 'EndDate',
+        'ClientTreeFullPathName': 'ClientHierarchy',
+        'ClientTreeObjectId': 'ClientId',
+        'BrandTechName': 'BrandTech',
+        'TonCost': 'Ton Cost',
+        'Year': 'Year',
+    },
+    'HistoricalPlanCOGSTn': ['.tpm.PlanCOGSTn', '.core.BaseHistoryEntity'],
+    'DeletedPlanCOGSTn': ['.tpm.PlanCOGSTn', '.core.BaseDeletedEntity'],
+
+    'ActualCOGSTn': {
+        'StartDate': 'StartDate',
+        'EndDate': 'EndDate',
+        'ClientTreeFullPathName': 'ClientHierarchy',
+        'ClientTreeObjectId': 'ClientId',
+        'BrandTechName': 'BrandTech',
+        'TonCost': 'Ton Cost',
+        'Year': 'Year',
+        'recalculatePreviousYearButtonYearText': 'Recalculate previous year'
+    },
+    'HistoricalActualCOGSTn': ['.tpm.ActualCOGSTn', '.core.BaseHistoryEntity'],
+    'DeletedActualCOGSTn': ['.tpm.ActualCOGSTn', '.core.BaseDeletedEntity'],
+
     'RATIShopper': {
         'ClientTreeFullPathName': 'ClientHierarchy',
         'ClientTreeObjectId': 'ClientId',
@@ -2077,7 +2125,7 @@
         'ActualPromoCostProdPOSMInClient': 'Actual Promo Cost ProdPOSMInClient',
         'PlanPromoIncrementalBaseTI': 'Plan Promo Incremental BaseTI',
         'PlanPromoNetIncrementalBaseTI': 'Plan Promo Net Incremental BaseTI',
-        'PlanPromoIncrementalCOGS': 'Plan Promo Incremental COGS',
+        'PlanPromoIncrementalCOGS': 'Plan Promo Incremental COGS LSV',
         'PlanPromoTotalCost': 'Plan Promo Total Cost',
         'PlanPromoNetIncrementalLSV': 'Plan Promo Net Incremental LSV',
         'PlanPromoNetLSV': 'PlanPromo Net LSV',
@@ -2087,7 +2135,7 @@
         'PlanPromoNetUpliftPercent': 'Plan Promo Net Uplift %',
         'ActualInStoreDiscount': 'Actual InStore Discount',
         'ActualPromoIncrementalBaseTI': 'Actual Promo Incremental BaseTI',
-        'ActualPromoIncrementalCOGS': 'Actual Promo Incremental COGS',
+        'ActualPromoIncrementalCOGS': 'Actual Promo Incremental COGS LSV',
         'ActualPromoTotalCost': 'Actual Promo Total Cost',
         'ActualPromoNetIncrementalLSV': 'Actual Promo Net Incremental LSV',
         'ActualPromoNetLSV': 'Actual Promo Net LSV',
@@ -2126,13 +2174,14 @@
 
         'PlanPromoNetIncrementalBaseTI': 'Plan Promo Net Incremental Base TI',
         'ActualPromoNetIncrementalBaseTI': 'Actual Promo Net Incremental Base TI',
-        'ActualPromoNetIncrementalCOGS': 'Actual Promo Net Incremental COGS',
+        'ActualPromoNetIncrementalCOGS': 'Actual Promo Net Incremental COGS LSV',
         'ActualPromoTotalBaseTI': 'Actual Promo Total Base TI',
         'InOut': 'In-Out',
-        'PlanPromoNetIncrementalCOGS': 'Plan Promo Net Incremental COGS',
+        'PlanPromoNetIncrementalCOGS': 'Plan Promo Net Incremental COGS LSV',
         'PCPrice': 'PC Price',
         'TIBasePercent': 'TI Base',
         'COGSPercent': 'COGS',
+        'COGSTn': 'COGS/Tn',
         'PromoTypesName': 'Promo Types Name',
         'IsGrowthAcceleration': 'Growth acceleration',
         'SumInvoice': 'Sum In Invoice',
@@ -2142,6 +2191,30 @@
         'PlanAddTIMarketingApproved': 'Plan Add TI Promo Marketing Approved',
         'ActualAddTIShopper': 'Actual Add TI Shopper',
         'ActualAddTIMarketing': 'Actual Add TI Promo Marketing',
+
+        'PlanPromoIncrementalMACLSV': 'Plan Promo Incremental MAC LSV',
+        'PlanPromoNetIncrementalMACLSV': 'Plan Promo Net Incremental MAC LSV',
+        'ActualPromoIncrementalMACLSV': 'Actual Promo Incremental MAC LSV',
+        'ActualPromoNetIncrementalMACLSV': 'Actual Promo Net Incremental  MAC LSV',
+        'PlanPromoIncrementalEarningsLSV': 'Plan Promo Incremental  Earnings LSV',
+        'PlanPromoNetIncrementalEarningsLSV': 'Plan Promo Net Incremental  Earnings LSV',
+        'ActualPromoIncrementalEarningsLSV': 'Actual Promo Incremental  Earnings LSV',
+        'ActualPromoNetIncrementalEarningsLSV': 'Actual Promo Net Incremental  Earnings LSV',
+        'PlanPromoROIPercentLSV': 'Plan Promo ROI % LSV',
+        'PlanPromoNetROIPercentLSV': 'Plan Promo Net ROI % LSV',
+        'ActualPromoROIPercentLSV': 'Actual Promo ROI % LSV',
+        'ActualPromoNetROIPercentLSV': 'Actual Promo Net ROI % LSV',
+
+        'PlanPromoIncrementalCOGSTn': 'Plan Promo Incremental COGS/tn',
+        'PlanPromoNetIncrementalCOGSTn': 'Plan Promo Net Incremental COGS/tn',
+        'ActualPromoIncrementalCOGSTn': 'Actual Promo Incremental COGS/tn',
+        'ActualPromoNetIncrementalCOGSTn': 'Actual Promo Net Incremental COGS/tn',
+        'PlanPromoBaselineVolume': 'Plan Promo Baseline Volume',
+        'PlanPromoIncrementalVolume': 'Plan Promo Incremental Volume',
+        'PlanPromoNetIncrementalVolume': 'Plan Promo Net Incremental Volume',
+        'ActualPromoVolume': 'Actual Promo Volume',
+        'ActualPromoIncrementalVolume': 'Actual Promo Incremental Volume',
+        'ActualPromoNetIncrementalVolume': 'Actual Promo Net Incremental Volume',
     },
 
     'PromoActivity': {

@@ -187,7 +187,10 @@
                     change: this.onPromoBudgetsStep1Change
                 },
 
-                // promo calculation                
+                // promo calculation
+                'promomechanic #promoMechanicAddPromoBtn': {
+                    click: this.onPromoMechanicAddPromoBtn
+                },
                 'promomechanic numberfield[name=MarsMechanicDiscount]': {
                     change: this.onMarsMechanicDiscountChange
                 },
@@ -258,6 +261,9 @@
 
                 'promoeditorcustom [name=GrowthAccelerationCheckbox]': {
                     change: this.onGrowthAccelerationCheckboxChange
+                },
+                'promoeditorcustom [name=IsInExchangeCheckbox]': {
+                    change: this.onInExchangeCheckboxChange
                 },
                 'promoeditorcustom [name=ApolloExportCheckbox]': {
                     change: this.onApolloExportCheckboxChange
@@ -338,14 +344,22 @@
         var onApprovalFilterDP = promoHelperController.getOnApprovalFilterDP();
         var onApprovalFilterDF = promoHelperController.getOnApprovalFilterDF();
         var onApprovalFilterCMM = promoHelperController.getOnApprovalFilterCMM();
+        var onApprovalGAFilterDP = promoHelperController.getOnApprovalGAFilterDP();
+        var onApprovalGAFilterDF = promoHelperController.getOnApprovalGAFilterDF();
+        var onApprovalGAFilterCMM = promoHelperController.getOnApprovalGAFilterCMM();
+        var onApprovalGAFilterGAM = promoHelperController.getOnApprovalGAFilterGAM();
         var maButton = grid.up().down('custombigtoolbar').down('#massapprovalbutton');
 
         var isDisabled = !this.compareFilters(filter, onApprovalFilterDP) &&
             !this.compareFilters(filter, onApprovalFilterDF) &&
-            !this.compareFilters(filter, onApprovalFilterCMM);
+            !this.compareFilters(filter, onApprovalFilterCMM) &&
+            !this.compareFilters(filter, onApprovalGAFilterDP) &&
+            !this.compareFilters(filter, onApprovalGAFilterDF) &&
+            !this.compareFilters(filter, onApprovalGAFilterCMM) &&
+            !this.compareFilters(filter, onApprovalGAFilterGAM);
 
         maButton.setDisabled(isDisabled);
-    },   
+    },
 
     compareFilters: function (filter1, filter2) {
         var isSame = true;
@@ -1424,7 +1438,8 @@
                         //disable On/Off invoice group
                         client.down('[id=OffInvoice]').setDisabled(true);
                         client.down('[id=OnInvoice]').setDisabled(true);
-
+                        // period блокируем, для автоматической подстановки BTL
+                        period.setDisabled(true);
                         // Кнопки для изменения состояний промо
                         var promoActions = Ext.ComponentQuery.query('button[isPromoAction=true]');
 
@@ -1443,6 +1458,7 @@
                         var instoreMechanicTypeId = mechanic.down('searchcombobox[name=PlanInstoreMechanicTypeId]');
                         var marsMechanicDiscount = mechanic.down('numberfield[name=MarsMechanicDiscount]');
                         var instoreMechanicDiscount = mechanic.down('numberfield[name=PlanInstoreMechanicDiscount]');
+                        var panelGA = mechanic.down('[name=panelGA]');
                         var promoComment = mechanic.down('textarea[name=PromoComment]');
                         var isEdit = false;
                         var isReadOnly = false;
@@ -1459,6 +1475,7 @@
                             isReadOnly, isEdit
                         );
 
+                        panelGA.setDisabled(true);
                         // event
                         me.refreshPromoEvent(promoeditorcustom, false);
 
@@ -1490,6 +1507,8 @@
 
                             durationDateStart.setValue(startDate);
                             durationDateEnd.setValue(endDate);
+                            promoeditorcustom.promoStartDate = durationDateStart.getValue();
+                            promoeditorcustom.promoEndDate = durationDateEnd.getValue();
                         }
 
                         var clientRecord;
@@ -1529,7 +1548,7 @@
                                 undoBtn.statusId = promoStatusData.value[i].Id;
                                 undoBtn.statusName = promoStatusData.value[i].Name;
                                 undoBtn.statusSystemName = promoStatusData.value[i].SystemName;
-                                
+
                             }
 
                             if (promoStatusData.value[i].SystemName == 'DraftPublished') {
@@ -2073,7 +2092,14 @@
             promoeditorcustom.down('[name=ApolloExportCheckbox]').setDisabled(false);
             promoeditorcustom.down('[name=ApolloExportCheckbox]').setReadOnly(false);
         }
-
+        if (promoeditorcustom.isInExchange && record.data.PromoStatusSystemName === 'Approved') {
+            promoeditorcustom.down('[name=ApolloExportCheckbox]').setDisabled(false);
+            promoeditorcustom.down('[name=ApolloExportCheckbox]').setReadOnly(false);
+        }
+        
+        //if (promoeditorcustom.isInExchange) {
+        //    this.disableActualPanels(true);
+        //}
         // Заблокировать Adjusment для редактирования в указанных ниже статусах
         var isPromoEnd = (['Finished', 'Closed', 'Cancelled', 'Deleted'].indexOf(record.data.PromoStatusSystemName) >= 0);
         if (isPromoEnd
@@ -2097,6 +2123,8 @@
         var gaReadOnlyStatuses = ['Approved', 'Planned', 'Started', 'Finished'];
         if (gaReadOnlyStatuses.indexOf(promoeditorcustom.promoStatusSystemName) != -1 && currentRole !== 'SupportAdministrator') {
             growthAccelerationCheckbox.setReadOnly(true);
+            // InExchanche
+            mechanic.down('checkboxfield[name=IsInExchangeCheckbox]').setReadOnly(true);
         }
 
         var promoComment = mechanic.down('textarea[name=PromoComment]');
@@ -2130,6 +2158,8 @@
             dateFields[i].setReadOnly(true);
             dateFields[i].addCls('readOnlyField');
         }
+        promoeditorcustom.promoStartDate = durationStartDate.getValue();
+        promoeditorcustom.promoEndDate = durationEndDate.getValue();
     },
 
     //blockStartedPromoUplift: function () {
@@ -2180,7 +2210,7 @@
     onClosePromoButtonClick: function (button) {
         var window = button.up('promoeditorcustom');
 
-        if (window) {         
+        if (window) {
             window.close();
         }
     },
@@ -2486,6 +2516,9 @@
         record.data.PlanInstoreMechanicTypeId = instoreMechanicTypeId ? instoreMechanicTypeId : null;
         record.data.PlanInstoreMechanicDiscount = instoreMechanicDiscount != null ? instoreMechanicDiscount : null;
 
+        record.data.IsInExchange = promomechanic.down('checkboxfield[name=IsInExchangeCheckbox]').getValue();
+        record.data.LinkedPromoes = promomechanic.LinkedPromoes;
+
         // promoperiod
         record.data.StartDate = promoperiod.down('datefield[name=DurationStartDate]').getValue();
         record.data.EndDate = promoperiod.down('datefield[name=DurationEndDate]').getValue();
@@ -2672,7 +2705,7 @@
         // Кнопки для изменения состояний промо
         var promoActions = Ext.ComponentQuery.query('button[isPromoAction=true]');
         var mechanic = promoeditorcustom.down('container[name=promo_step3]');
-
+        var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
         // Для InOut Promo
         promoeditorcustom.isInOutPromo = record.data.InOut;
 
@@ -2680,6 +2713,12 @@
         promoeditorcustom.promotypeName = record.data.PromoTypesName;
         promoeditorcustom.promotypeGlyph = record.data.PromoTypesGlyph;
         this.setPromoType(record.data.PromoTypesName, promoeditorcustom);
+        // если дочерний промо, присваиваем фиктивный статус Cancelled, чтобы нельзя было менять
+        if (record.data.MasterPromoId != null && currentRole != 'SupportAdministrator') {
+            record.data.PromoStatusSystemName = 'Cancelled';
+            var onHoldLabel = Ext.ComponentQuery.query('#btn_promoOnHold')[0];
+            onHoldLabel.show();
+        }
         //Промо в статусе Cancelled нельзя менять
         if (record.data.PromoStatusSystemName == 'Cancelled') {
             readOnly = true;
@@ -2698,7 +2737,11 @@
         var apolloExportCheckbox = promoeditorcustom.down('[name=ApolloExportCheckbox]');
         apolloExportCheckbox.setValue(record.data.IsApolloExport);
 
-        var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
+        // GA inExchange
+        promoeditorcustom.isInExchange = record.data.IsInExchange;
+        var isInExchange = mechanic.down('checkboxfield[name=IsInExchangeCheckbox]');
+        isInExchange.setValue(record.data.IsInExchange);
+        
         var gaReadOnlyStatuses = ['Approved', 'Planned', 'Started', 'Finished'];
         if (gaReadOnlyStatuses.indexOf(record.data.PromoStatusSystemName) != -1 && currentRole !== 'SupportAdministrator') {
             growthAccelerationCheckbox.setReadOnly(true);
@@ -2828,6 +2871,8 @@
         var durationEndDate = period.down('datefield[name=DurationEndDate]');
         var dispatchStartDate = period.down('datefield[name=DispatchStartDate]');
         var dispatchEndDate = period.down('datefield[name=DispatchEndDate]');
+        promoeditorcustom.promoStartDate = durationStartDate.getValue();
+        promoeditorcustom.promoEndDate = durationEndDate.getValue();
 
         //budget year
         var budgetYearCombo = budgetYear.down('combobox');
@@ -3177,6 +3222,9 @@
 
         promoComment.setValue(record.data.MechanicComment);
 
+        mechanic.fillSelectedPromoes(record);
+
+        mechanic.LinkedPromoes = record.data.LinkedPromoes;
         // period
         // Если запись создаётся копированием, даты берутся из календаря, а не из копируемой записи
         var startDate = isCopy ? record.schedulerContext.start : record.data.StartDate;
@@ -3278,8 +3326,15 @@
             promoeditorcustom.down('[name=ApolloExportCheckbox]').setDisabled(false);
             promoeditorcustom.down('[name=ApolloExportCheckbox]').setReadOnly(false);
         }
-
-
+        if (promoeditorcustom.isInExchange && record.data.PromoStatusSystemName === 'Approved' && !readOnly) {
+            promoeditorcustom.down('[name=ApolloExportCheckbox]').setDisabled(false);
+            promoeditorcustom.down('[name=ApolloExportCheckbox]').setReadOnly(false);
+        }
+        if (promoeditorcustom.isInExchange) {
+        //    this.disableActualPanels(true);
+            var splitPublishBtn = Ext.ComponentQuery.query("#btn_splitpublish")[0];
+            splitPublishBtn.setDisabled(true);
+        }
         // Заблокировать Adjustment для редактирования в указанных ниже статусах
         var isPromoEnd = (['Finished', 'Closed', 'Cancelled', 'Deleted'].indexOf(record.data.PromoStatusSystemName) >= 0);
         if (isPromoEnd
@@ -3301,7 +3356,8 @@
         }
 
         // Заблокировать Add TI не для GA
-        if (!record.data.IsGrowthAcceleration) {
+        var isGa = record.data.IsGrowthAcceleration || record.data.IsInExchange;
+        if (!isGa) {
             var planPanel = Ext.ComponentQuery.query('#promoBudgets_step4_planpanel')[0];
             var actualPanel = Ext.ComponentQuery.query('#promoBudgets_step4_actualpanel')[0];
             var button = Ext.ComponentQuery.query('#btn_promoBudgets_step4')[0];
@@ -3564,7 +3620,7 @@
             success: function (response, req) {
                 if (req.response.length > 0 && req.response[0].value && req.response[0].value.length > 0)
                     App.Notify.pushInfo(req.response[0].value);
-                
+
                 var wasCreating = window.isCreating;
                 if (store) {
                     store.on({
@@ -3712,7 +3768,6 @@
 
     defineAllowedActions: function (promoeditorcustom, promoActions, status) {
         var currentRole = App.UserInfo.getCurrentRole();
-
         for (var i = 0; i < promoActions.length; i++) {
             var roles = promoActions[i].roles;
             var statuses = promoActions[i].statuses;
@@ -3727,10 +3782,6 @@
                     var record = this.getRecord(promoeditorcustom);
 
                     switch (_role) {
-                        case 'CMManager':
-                            visible = !record.get('IsCMManagerApproved');
-                            break;
-
                         case 'Administrator':
                             visible = true;
                             break;
@@ -3743,12 +3794,20 @@
                             visible = true;
                             break;
 
+                        case 'CMManager':
+                            visible = !record.get('IsCMManagerApproved');
+                            break;
+
                         case 'DemandPlanning':
                             visible = record.get('IsCMManagerApproved') && !record.get('IsDemandPlanningApproved');
                             break;
 
                         case 'DemandFinance':
                             visible = record.get('IsCMManagerApproved') && record.get('IsDemandPlanningApproved') && !record.get('IsDemandFinanceApproved');
+                            break;
+
+                        case 'GAManager':
+                            visible = record.get('IsCMManagerApproved') && record.get('IsDemandPlanningApproved') && record.get('IsDemandFinanceApproved') && !record.get('IsGAManagerApproved');
                             break;
 
                         case 'KeyAccountManager':
@@ -4727,6 +4786,33 @@
         }
 
         totalCostField.setValue(total);
+    },
+
+    onPromoMechanicAddPromoBtn: function (button) {
+        var promoeditorcustom = button.up('promoeditorcustom');
+        var promomechanicaddpromoes = Ext.widget('promomechanicaddpromoes');
+        var record = this.getRecord(promoeditorcustom);
+        promomechanicaddpromoes.setLoading(true);
+
+        if (record.raw) {
+            promomechanicaddpromoes.PromoId = record.get('Id');
+        }
+        else {
+            promomechanicaddpromoes.PromoId = null;
+        }
+        var date = new Date();
+        date.setHours(date.getHours() + (date.getTimezoneOffset() / 60) + 3);   // приведение к московской timezone
+        promomechanicaddpromoes.StartDateFilter = date;
+        promomechanicaddpromoes.ClientTreeId = record.get('ClientTreeId');
+        if (promomechanicaddpromoes.ClientTreeId == null) {
+            promomechanicaddpromoes.ClientTreeId = promoeditorcustom.clientTreeId;
+        }
+        setTimeout(function () {
+            Ext.widget(promomechanicaddpromoes).show(false, function () {
+                promomechanicaddpromoes.setLoading(false);
+            });
+        });
+
     },
 
     onMarsMechanicDiscountChange: function (field) {
@@ -5719,6 +5805,9 @@
                 marsMechanicId.setDisabled(false);
                 instoreMechanicId.setDisabled(false);
                 actualMechanicId.setDisabled(false);
+
+                var panelGA = promoMechanics.down('[name=panelGA]');
+                panelGA.setDisabled(false);
             }
         });
 
@@ -5984,6 +6073,8 @@
             var dispatchEndDate = promoperiod.down('[name=DispatchEndDate]');
             var durationStartDate = promoperiod.down('[name=DurationStartDate]');
             var durationEndDate = promoperiod.down('[name=DurationEndDate]');
+            promoWindow.promoStartDate = durationStartDate.getValue();
+            promoWindow.promoEndDate = durationEndDate.getValue();
 
             dispatchStartDate.reset();
             dispatchEndDate.reset();
@@ -6015,6 +6106,8 @@
         var dispatchEndDate = promoperiod.down('[name=DispatchEndDate]');
         var durationStartDate = promoeditorcustom.down('[name=DurationStartDate]');
         var durationEndDate = promoeditorcustom.down('[name=DurationEndDate]');
+        promoeditorcustom.promoStartDate = durationStartDate.getValue();
+        promoeditorcustom.promoEndDate = durationEndDate.getValue();
         var calculation = Ext.ComponentQuery.query('promocalculation')[0];
         var activity = Ext.ComponentQuery.query('promoactivity')[0];
         if (calculation && activity) {
@@ -6183,7 +6276,7 @@
         var promoEvent = promoEditorCustom.down('container[name=promo_step6]');
         var chooseEventButton = promoEvent.down('chooseEventButton');
         var clientTreeKeyId = promoEditorCustom.clientTreeKeyId;
-        
+
         // при каждом вызове этой функции Event сбрасывается до стандартного (в дальнейшем желательно сделать проверку на возможность оставить предзаполненный Event)
         var _event = new App.model.tpm.event.Event({
             Id: null,
@@ -6210,6 +6303,46 @@
             promoEvent.setDisabled(true);
         }
         chooseEventButton.clientTreeKeyId = clientTreeKeyId;
+    },
+
+
+    setEventBTL: function () {        
+        var promoeditorcustom = Ext.ComponentQuery.query('promoeditorcustom')[0];
+        var period = promoeditorcustom.down('container[name=promo_step4]');
+        var durationDateStart = period.down('datefield[name=DurationStartDate]');
+        var durationDateEnd = period.down('datefield[name=DurationEndDate]');
+
+        if (durationDateStart.value && durationDateEnd.value && promoeditorcustom.InOutProductIds) {
+            var eventBTLModel = new Object();            
+            eventBTLModel.DurationDateStart = durationDateStart.value;
+            eventBTLModel.DurationDateEnd = durationDateEnd.value;
+            eventBTLModel.InOutProductIds = promoeditorcustom.InOutProductIds;
+            $.ajax({
+                dataType: 'json',
+                url: '/odata/BTLs/GetEventBTL',
+                type: 'POST',
+                data: JSON.stringify(eventBTLModel),
+                success: function (response) {
+                    var data = Ext.JSON.decode(response.value);
+                    if (data) {
+                        var _event = new App.model.tpm.event.Event({
+                            Id: data.Id,
+                            Name: data.Name,
+                            Description: data.Description
+                        });
+                        var chooseEventButton = Ext.ComponentQuery.query('chooseEventButton')[0];
+                        chooseEventButton.setValue(_event);
+                        chooseEventButton.updateMappingValues(_event);
+                    }
+                    else {
+                        App.Notify.pushError('BTL Events load error');
+                    }
+                },
+                error: function (data) {
+                    App.Notify.pushError(data.responseJSON["odata.error"].innererror.message);
+                }
+            });
+        }
     },
 
     // --------------------- Выбор продуктов -----------------//
@@ -6442,7 +6575,7 @@
         };
         App.Util.makeRequestWithCallback('Promoes', 'CheckIfLogHasErrors', parameters, function (data) {
             var result = Ext.JSON.decode(data.httpResponse.data.value);
-            
+
             var but = Ext.ComponentQuery.query('promoeditorcustom #btn_showlog')[0];
             if (but && !but.isDestroyed) {
                 if (result.LogHasErrors) {
@@ -6500,6 +6633,37 @@
         }
     },
 
+    getInExchnageWindowLabel: function () {
+        var inExchangeComponent = Ext.ComponentQuery.query('#btn_promoIsInExchange')[0];
+        return inExchangeComponent;
+    },
+
+    showInExchangeWindowLabel: function (value) {
+        var inExchangeWindowLabel = this.getInExchnageWindowLabel();
+        if (value) {
+            if (inExchangeWindowLabel) {
+                inExchangeWindowLabel.show();
+            }
+        } else {
+            if (inExchangeWindowLabel) {
+                inExchangeWindowLabel.hide();
+            }
+        }
+    },
+
+    onInExchangeCheckboxChange: function (component, newValue) {
+        var promoEditorCustom = Ext.ComponentQuery.query('promoeditorcustom')[0];
+        var promoController = App.app.getController('tpm.promo.Promo');
+
+        if (promoEditorCustom && newValue) {
+            promoController.showInExchangeWindowLabel(true);
+            promoEditorCustom.isInExchange = true;
+        } else {
+            promoController.showInExchangeWindowLabel(false);
+            promoEditorCustom.isInExchange = false;
+        }
+    },
+
     onExportButtonClick: function (button) {
         var me = this;
         var grid = me.getGridByButton(button);
@@ -6530,5 +6694,19 @@
                 panel.setLoading(false);
                 App.Notify.pushError(me.getErrorMessage(data));
             });
+    },
+    disableActualPanels: function (disable) {
+        var promobudgets = Ext.ComponentQuery.query('promobudgets')[0];
+        var promoactivity = Ext.ComponentQuery.query('promoactivity')[0];
+        var totalCostBudgetsActuals = promobudgets.down('[name=totalCostBudgetsActuals]');
+        var marketingBudgteTIActual = promobudgets.down('[name=marketingBudgteTIActual]');
+        var costProductionBudgetActual = promobudgets.down('[name=costProductionBudgetActual]');
+        var actualInStoreFieldset = promoactivity.down('[name=actualInStoreFieldset]');
+        var activityActuals = promoactivity.down('[name=activityActuals]');
+        totalCostBudgetsActuals.setDisabled(disable);
+        marketingBudgteTIActual.setDisabled(disable);
+        costProductionBudgetActual.setDisabled(disable);
+        actualInStoreFieldset.setDisabled(disable);
+        activityActuals.setDisabled(disable);
     }
 });

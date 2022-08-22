@@ -3,8 +3,6 @@ using Persist;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Module.Persist.TPM.CalculatePromoParametersModule
 {
@@ -176,6 +174,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                             double? planProductBaseLineCaseQty = result.Sum(x => x.Qty) * baseLineShareIndex;
                             promoProduct.PlanProductBaselineCaseQty = planProductBaseLineCaseQty;
                             promoProduct.PlanProductBaselineLSV = planProductBaseLineCaseQty * promoProduct.Price;
+                            promoProduct.PlanProductBaselineVolume = promoProduct.PlanProductBaselineCaseQty * promoProduct.Product.CaseVolume;
                         }
                     }
                 }

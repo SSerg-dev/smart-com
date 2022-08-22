@@ -177,6 +177,8 @@ namespace Module.Host.TPM.Actions
                 query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
 
                 List<ClientTree> existingClientTreeIds = query.ToList();
+                PromoTypes promoTypes = context.Set<PromoTypes>().FirstOrDefault(g => !g.Disabled && g.SystemName == "Regular");
+                List<string> mechanics = context.Set<Mechanic>().Where(g => !g.Disabled && g.PromoTypesId == promoTypes.Id).Select(g => g.Name).ToList();
 
                 foreach (var item in sourceRecords)
                 {
@@ -198,7 +200,7 @@ namespace Module.Host.TPM.Actions
                             warningRecords.Add(new Tuple<IEntity<Guid>, string>(item, String.Join(", ", warnings)));
                         }
                     }
-                    else if (!IsFilterSuitable(ref rec, context, out validationErrors, existingClientTreeIds))
+                    else if (!IsFilterSuitable(ref rec, context, out validationErrors, existingClientTreeIds, mechanics))
                     {
                         HasErrors = true;
                         errorRecords.Add(new Tuple<IEntity<Guid>, string>(item, string.Join(", ", validationErrors)));
@@ -271,7 +273,7 @@ namespace Module.Host.TPM.Actions
             }
         }
 
-        private bool IsFilterSuitable(ref IEntity<Guid> rec, DatabaseContext context, out IList<string> errors, List<ClientTree> existingClientTreeIds)
+        private bool IsFilterSuitable(ref IEntity<Guid> rec, DatabaseContext context, out IList<string> errors, List<ClientTree> existingClientTreeIds, List<string> mechanics)
         {
             errors = new List<string>();
             bool isSuitable = true;
@@ -285,11 +287,6 @@ namespace Module.Host.TPM.Actions
             {
                 CompetitorPromo typedRec = (CompetitorPromo)rec;
                 typedRec.ClientTree = context.Set<ClientTree>().First(x => x.ObjectId == typedRec.ClientTreeObjectId && x.EndDate == null);
-                if (String.IsNullOrEmpty(typedRec.Name))
-                {
-                    errors.Add("Name must have a value");
-                    isSuitable = false;
-                }
                 if (typedRec.CompetitorBrandTech == null)
                 {
                     errors.Add("Competitor BrandTech not found");
@@ -340,7 +337,7 @@ namespace Module.Host.TPM.Actions
                     errors.Add("Competitor not found");
                     isSuitable = false;
                 }
-                if (typedRec.Price != null && typedRec.Price < 0)
+                if (typedRec.Price == null || typedRec.Price < 0)
                 {
                     errors.Add("Invalid price");
                     isSuitable = false;
@@ -350,7 +347,12 @@ namespace Module.Host.TPM.Actions
                     errors.Add("Mechanic Type must have a value");
                     isSuitable = false;
                 }
-                if (typedRec.Discount != null && ( typedRec.Discount < 0 || typedRec.Discount > 100))
+                else if (!mechanics.Contains(typedRec.MechanicType))
+                {
+                    errors.Add("Mechanic Type must be - " + String.Join(", ", mechanics.ToArray()));
+                    isSuitable = false;
+                }
+                if (typedRec.Discount == null || ( typedRec.Discount < 0 || typedRec.Discount > 100))
                 {
                     errors.Add("Invalid discount");
                     isSuitable = false;
@@ -373,27 +375,15 @@ namespace Module.Host.TPM.Actions
 
             foreach (CompetitorPromo newRecord in sourceRecords)
             {
-                CompetitorPromo oldRecord = competitorPromoes
-                    .FirstOrDefault(t
-                        => (t.Number == newRecord.Number && !t.Disabled));
-
-                if (oldRecord == null)
-                {
-                    newRecord.ClientTreeObjectId = context.Set<ClientTree>().First(x => x.ObjectId == newRecord.ClientTreeObjectId && x.EndDate == null).Id;
-                    newRecord.Id = Guid.NewGuid();
-                    toCreate.Add(newRecord);
-                    toHisCreate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(null, newRecord));
-                }
-                else
-                {
-                    toHisUpdate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(oldRecord, newRecord));
-                    oldRecord.Name = newRecord.Name;
-                    oldRecord.Discount = newRecord.Discount;
-                    oldRecord.Price = newRecord.Price;
-                    oldRecord.StartDate = newRecord.StartDate;
-                    oldRecord.EndDate = newRecord.EndDate;
-                    toUpdate.Add(oldRecord);
-                }
+                string competitorBrandTech = newRecord.CompetitorBrandTech.BrandTech;
+                string mechanicType = newRecord.MechanicType;
+                double? discount = newRecord.Discount;
+                dynamic handledDiscount = discount != 0 && discount != null ? discount + "%" : "";//к discount прибавляется знак процента
+                newRecord.Name = competitorBrandTech + " " + mechanicType + " " + handledDiscount;
+                newRecord.ClientTreeObjectId = context.Set<ClientTree>().First(x => x.ObjectId == newRecord.ClientTreeObjectId && x.EndDate == null).Id;
+                newRecord.Id = Guid.NewGuid();
+                toCreate.Add(newRecord);
+                toHisCreate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(null, newRecord));
             }
 
             foreach (IEnumerable<IEntity<Guid>> items in toCreate.Partition(100))

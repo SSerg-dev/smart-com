@@ -18,5 +18,14 @@ namespace Module.Persist.TPM.Model.Import
         [ImportCSVColumn(ColumnNumber = 1)]
         [Display(Name = "Description")]
         public string Description { get; set; }
+
+        [ImportCSVColumn(ColumnNumber = 2)]
+        [NavigationPropertyMap(LookupEntityType = typeof(EventType), LookupPropertyName = "Name")]
+        [Display(Name = "EventType.Name")]
+        public string Type { get; set; }
+
+        [ImportCSVColumn(ColumnNumber = 3)]
+        [Display(Name = "MarketSegment")]
+        public string MarketSegment { get; set; }
     }
 }

@@ -83,10 +83,28 @@
 								} else {
 									promo = container.historyArray[0].Promo;
 								}
-
+								//debugger;
                                 if (promo) {
 									promoStatusName = promo.PromoStatus == undefined ? promo.PromoStatusSystemName : promo.PromoStatus.SystemName
-									if (!promo.IsGrowthAcceleration) {
+									if (promo.IsGrowthAcceleration === true || promo.IsInExchange === true) {
+										if ((promo.IsCMManagerApproved === false || promo.IsCMManagerApproved === null)
+											&& (promo.IsDemandPlanningApproved === false || promo.IsDemandPlanningApproved === null)
+											&& (promo.IsDemandFinanceApproved === false || promo.IsDemandFinanceApproved === null))
+											onApprovalState = 'CMManagerGA';
+										if (promo.IsCMManagerApproved === true
+											&& (promo.IsDemandPlanningApproved === false || promo.IsDemandPlanningApproved === null)
+											&& (promo.IsDemandFinanceApproved === false || promo.IsDemandFinanceApproved === null))
+											onApprovalState = 'DemandPlanningGA';
+										if (promo.IsCMManagerApproved === true
+											&& promo.IsDemandPlanningApproved === true
+											&& (promo.IsDemandFinanceApproved === false || promo.IsDemandFinanceApproved === null))
+											onApprovalState = 'DemandFinanceGA';
+										if (promo.IsCMManagerApproved === true
+											&& promo.IsDemandPlanningApproved === true
+											&& promo.IsDemandFinanceApproved === true)
+											onApprovalState = 'GAManagerGA';
+									}
+									else {
 										if (promo.IsCMManagerApproved == true
 											&& (promo.IsDemandPlanningApproved == false || promo.IsDemandPlanningApproved == null)
 											&& promo.IsDemandFinanceApproved == true)
@@ -107,24 +125,6 @@
 												onApprovalState = 'DemandFinance';
 											}
 										}
-									}
-									else if (promo.IsGrowthAcceleration === true) {
-										if ((promo.IsCMManagerApproved === false || promo.IsCMManagerApproved === null)
-											&& (promo.IsDemandPlanningApproved === false || promo.IsDemandPlanningApproved === null)
-											&& (promo.IsDemandFinanceApproved === false || promo.IsDemandFinanceApproved === null))
-											onApprovalState = 'CMManagerGAFirst';
-										if (promo.IsCMManagerApproved === true
-											&& (promo.IsDemandPlanningApproved === false || promo.IsDemandPlanningApproved === null)
-											&& (promo.IsDemandFinanceApproved === false || promo.IsDemandFinanceApproved === null))
-											onApprovalState = 'DemandPlanningGA';
-										if (promo.IsCMManagerApproved === true
-											&& promo.IsDemandPlanningApproved === true
-											&& (promo.IsDemandFinanceApproved === false || promo.IsDemandFinanceApproved === null))
-											onApprovalState = 'DemandFinanceGA';
-										if ((promo.IsCMManagerApproved === false || promo.IsCMManagerApproved === null)
-											&& promo.IsDemandPlanningApproved === true
-											&& promo.IsDemandFinanceApproved === true)
-											onApprovalState = 'CMManagerGASecond';
 									}
                                 }
 							}

@@ -208,6 +208,67 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             }
         }
 
+        public static double? GetCOGSTonCost(SimplePromoCOGS promo, DatabaseContext context, IQueryable<BaseCOGSTn> query, out string message)
+        {
+            try
+            {
+                List<BaseCOGSTn> cogsList = new List<BaseCOGSTn>();
+                ClientTree clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == promo.ClientTreeObjectId && !x.EndDate.HasValue).FirstOrDefault();
+
+                var notNullBrandtechCOGS = query.Where(x => x.BrandTech != null);
+                while (notNullBrandtechCOGS != null && (cogsList == null || cogsList.Count() == 0) && clientNode != null && clientNode.Type != "root")
+                {
+                    cogsList = notNullBrandtechCOGS
+                        .Where(x => x.ClientTreeId == clientNode.Id && x.BrandTech.BrandsegTechsub == promo.BrandTechName && !x.Disabled)
+                        //promo DispatchesStart date должна лежать в интервале между COGS/Tn start date и COGS/Tn end date
+                        .Where(x => x.StartDate.HasValue && x.EndDate.HasValue && promo.DispatchesStart.HasValue
+                               && DateTimeOffset.Compare(x.StartDate.Value, promo.DispatchesStart.Value) <= 0
+                               && DateTimeOffset.Compare(x.EndDate.Value, promo.DispatchesStart.Value) >= 0).ToList();
+
+                    clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == clientNode.parentId && !x.EndDate.HasValue).FirstOrDefault();
+                }
+
+                //если не найдено COGS/Tn для конкретного BranTech, ищем COGS/Tn с пустым BrandTech(пустое=любое)
+                if (cogsList.Count == 0)
+                {
+                    clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == promo.ClientTreeObjectId && !x.EndDate.HasValue).FirstOrDefault();
+
+                    while (query != null && (cogsList == null || cogsList.Count() == 0) && clientNode != null && clientNode.Type != "root")
+                    {
+                        cogsList = query
+                            .Where(x => x.ClientTreeId == clientNode.Id && x.BrandTechId == null && !x.Disabled)
+                            //promo DispatchesStart date должна лежать в интервале между COGS/Tn start date и COGS/Tn end date
+                            .Where(x => x.StartDate.HasValue && x.EndDate.HasValue && promo.DispatchesStart.HasValue
+                                   && DateTimeOffset.Compare(x.StartDate.Value, promo.DispatchesStart.Value) <= 0
+                                   && DateTimeOffset.Compare(x.EndDate.Value, promo.DispatchesStart.Value) >= 0).ToList();
+
+                        clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == clientNode.parentId && !x.EndDate.HasValue).FirstOrDefault();
+                    }
+                }
+
+                if (cogsList.Count == 0)
+                {
+                    message = GetMessageTiCogs("COGS/Tn was not found", promo, false, context);
+                    return null;
+                }
+                else if (cogsList.Count > 1)
+                {
+                    message = GetMessageTiCogs("COGS/Tn duplicate record error", promo, false, context);
+                    return null;
+                }
+                else
+                {
+                    message = null;
+                    return cogsList[0].TonCost;
+                }
+            }
+            catch (Exception e)
+            {
+                message = e.ToString();
+                return null;
+            }
+        }
+
         public static double? GetRATIShopperPercent(SimplePromoRATIShopper promo, DatabaseContext context, IQueryable<RATIShopper> query, out string message)
         {
             try

@@ -970,7 +970,10 @@
     SavePromoSupport: function (button, callback) {
         var me = this,
             editor = button.up('custompromosupporteditor');
-
+        if (editor.down('promolinkedviewer').down('grid').getStore().getProxy().data.length < 1) {//must be inserted at least one Promo
+            App.Notify.pushInfo('Please, insert at least one Promo');
+            return;
+        }
         if (/*me.checkSummOfValues(editor) &&*/ me.validateFields(editor)) {
             editor.setLoading(l10n.ns('core').value('savingText'));
             setTimeout(function () {
@@ -1025,7 +1028,7 @@
 
         //InvoiceNumber
         var invoiceNumber = promoSupportForm.down('textfield[name=InvoiceNumber]').getValue();
-
+        
         if (!invoiceNumber) {
             invoiceNumber = '';
             promoSupportForm.down('textfield[name=InvoiceNumber]').setValue('');
@@ -1037,7 +1040,7 @@
             actualQuantityValue = promoSupportForm.down('numberfield[name=ActualQuantity]').getValue(),
             planCostTEValue = promoSupportForm.down('numberfield[name=PlanCostTE]').getValue(),
             actualCostTEValue = promoSupportForm.down('numberfield[name=ActualCostTE]').getValue();
-
+        
         // какие-то проблемы с 0 и Null, в БД Null не бывает поэтому: (можно и дефолт поставить, но не будем)
         if (!planQuantityValue) {
             planQuantityValue = 0;
@@ -1065,7 +1068,7 @@
 
         var startDateValue = startDateValueField.getValue(),
             endDateValue = endDateValueField.getValue();
-
+        
         //startDateValueField.validate();
         //endDateValueField.validate();
 
@@ -1103,7 +1106,7 @@
         var attachFileField = promoSupportForm.down('#attachFileName');
         var attachFileName = attachFileField.attachFileName !== undefined && attachFileField.attachFileName !== null
             ? attachFileField.attachFileName : "";
-
+        
         //поиск текущего PromoSupport в панели слева
         var currentPromoSupport;
         mainContainer.items.items.forEach(function (item) {
@@ -1120,7 +1123,7 @@
 
         model.editing = true;
         //budgetSubItemField.validate();
-
+        
         if (currentPromoSupport && budgetSubItemId) {
             var promoLinkedText = currentPromoSupport.down('#promoLinkedText');
             promoLinkedText.setText(countStore ? countStore : '0');
@@ -1166,7 +1169,7 @@
                 promoLinkedRecords = count > 0 ? promoLinkedStore.getRange(0, count) : [],
                 promoIdString = '',
                 checkedRowsIds = [];
-
+            
             //привязка параметров сохраняемого Promo Support к панельке в левой части экрана(чтобы при клике на нее заполнить форму)
             currentPromoSupport.promoSupportTypeData = editor.promoSupportTypeData;
             currentPromoSupport.clientId = editor.clientId;
@@ -1180,7 +1183,7 @@
             currentPromoSupport.actualProdCost = actualProdCostValue;
             currentPromoSupport.attachFileName = attachFileName;
             currentPromoSupport.borderColor = editor.borderColor;
-
+            
             editor.setLoading(l10n.ns('core').value('savingText'));
 
             model.save({
@@ -1721,43 +1724,49 @@
         customPromoSupportEditor.down('#customPromoSupportEditorContainer').style = { borderLeft: 'none' };
         customPromoSupportEditor.singleUpdateMode = true;
 
-        var promoSupportGrid = item.up('grid'),
-            promoLinkedStore = promoLinkedGrid.getStore(),
-            count = promoLinkedStore.getCount(),
-            selModel = promoSupportGrid.getSelectionModel(),
-            promoLinkedRecords = count > 0 ? promoLinkedStore.getRange(0, count) : [],
-            promoLinkedViewerProxy = promoLinkedStore.getProxy();
+        var promoSupportGrid = item.up('grid');
+        var promoLinkedStore = promoLinkedGrid.getStore();
+        promoLinkedStore.load({
+            scope: this,
+            callback: function (records, operation, success) {
+                var count = promoLinkedStore.getCount();
+                var selModel = promoSupportGrid.getSelectionModel();
+                var promoLinkedRecords = count > 0 ? promoLinkedStore.getRange(0, count) : [];
+                var promoLinkedViewerProxy = promoLinkedStore.getProxy();
 
-        if (selModel.hasSelection()) {
-            var selected = selModel.getSelection()[0];
+                if (selModel.hasSelection()) {
+                    var selected = selModel.getSelection()[0];
 
-            var promoLinkedIds = [];
-            promoLinkedRecords.forEach(function (record) {
-                promoLinkedIds.push(record.data.PromoId);
-            });
+                    var promoLinkedIds = [];
+                    promoLinkedRecords.forEach(function (record) {
+                        promoLinkedIds.push(record.data.PromoId);
+                    });
 
-            customPromoSupportEditor.promoSupportModel = selected;
-            //customPromoSupportEditor.promoLinkedIds = promoLinkedIds;
-            customPromoSupportEditor.PromoSupportPromoes = promoLinkedViewerProxy.getWriter().writeRecords(promoLinkedRecords, promoLinkedRecords.length).splice(0, promoLinkedRecords.length);
-            this.fillSinglePromoSupportForm(customPromoSupportEditor);
-        } else {
-            App.Notify.pushInfo('No selection');
-        }
+                    customPromoSupportEditor.promoSupportModel = selected;
+                    //customPromoSupportEditor.promoLinkedIds = promoLinkedIds;
+                    customPromoSupportEditor.PromoSupportPromoes = promoLinkedViewerProxy.getWriter().writeRecords(promoLinkedRecords, promoLinkedRecords.length).splice(0, promoLinkedRecords.length);
+                    this.fillSinglePromoSupportForm(customPromoSupportEditor);
+                } else {
+                    App.Notify.pushInfo('No selection');
+                }
 
-        // кнопки добавить и удалить в promolinkedviewer
-        var promoLinkedViewer = customPromoSupportEditor.down('promolinkedviewer');
-        promoLinkedViewer.addListener('afterrender', function () {
-            var toolbarpromoLinked = promoLinkedViewer.down('custombigtoolbar');
-            toolbarpromoLinked.down('#addbutton').setDisabled(true);
-            //toolbarpromoLinked.down('#updatebutton').setDisabled(true);
-            toolbarpromoLinked.down('#deletebutton').setDisabled(true);
+                // кнопки добавить и удалить в promolinkedviewer
+                var promoLinkedViewer = customPromoSupportEditor.down('promolinkedviewer');
+                promoLinkedViewer.addListener('afterrender', function () {
+                    var toolbarpromoLinked = promoLinkedViewer.down('custombigtoolbar');
+                    toolbarpromoLinked.down('#addbutton').setDisabled(true);
+                    //toolbarpromoLinked.down('#updatebutton').setDisabled(true);
+                    toolbarpromoLinked.down('#deletebutton').setDisabled(true);
+                });
+
+                // кнопки прикрепления файла
+                customPromoSupportEditor.down('#attachFile').setDisabled(true);
+                customPromoSupportEditor.down('#deleteAttachFile').setDisabled(true);
+
+                customPromoSupportEditor.show();
+            }
         });
-
-        // кнопки прикрепления файла
-        customPromoSupportEditor.down('#attachFile').setDisabled(true);
-        customPromoSupportEditor.down('#deleteAttachFile').setDisabled(true);
-
-        customPromoSupportEditor.show();
+        
     },
 
     onEditPromoSupportEditorButton: function (button) {

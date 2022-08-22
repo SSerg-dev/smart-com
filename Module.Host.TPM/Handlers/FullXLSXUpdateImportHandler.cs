@@ -50,6 +50,24 @@ namespace Module.Host.TPM.Handlers
         }
     }
 
+    class FullXLSXCOGSTnUpdateImportHandler : FullXLSXImportHandler
+    {
+        protected override void InitializeParameters(HandlerData handlerData, ExecuteData data)
+        {
+            var year = Int32.Parse(HandlerDataHelper.GetIncomingArgument<string>("CrossParam.Year", handlerData));
+            var importDestination = HandlerDataHelper.GetIncomingArgument<string>("ImportDestination", handlerData);
+            data.SetValue("Year", year);
+            data.SetValue("ImportDestination", importDestination);
+        }
+
+        protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
+        {
+            var year = data.GetValue<int>("Year");
+            var importDestination = data.GetValue<string>("ImportDestination");
+            return new FullXLSXCOGSTnUpdateImportAction(settings, year, importDestination);
+        }
+    }
+
     class FullXLSXRATIShopperUpdateImportHandler : FullXLSXImportHandler
     {
         protected override void InitializeParameters(HandlerData handlerData, ExecuteData data)
@@ -475,6 +493,23 @@ namespace Module.Host.TPM.Handlers
         protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
         {
             return new FullXLSXRpaActualPluImportAction(settings, rpaId);
+        }
+    }
+    class FullXLSXUpdateImportEventHandler : FullXLSXImportHandler
+    {
+        private Guid RoleId;
+        private Guid userId;
+
+        public override void Action(HandlerInfo info, ExecuteData data)
+        {
+            RoleId = Looper.Parameters.HandlerDataHelper.GetIncomingArgument<Guid>("RoleId", info.Data, false);
+            userId = Looper.Parameters.HandlerDataHelper.GetIncomingArgument<Guid>("UserId", info.Data, false);
+            base.Action(info, data);
+        }
+
+        protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
+        {
+            return new FullXLSXUpdateImportEventAction(settings, RoleId, userId);
         }
     }
 }

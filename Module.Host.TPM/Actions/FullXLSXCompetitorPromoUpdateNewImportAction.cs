@@ -35,7 +35,6 @@ namespace Module.Host.TPM.Actions
         private readonly string Quote;
         private readonly bool HasHeader;
 
-
         private bool AllowPartialApply { get; set; }
         private readonly Logger logger;
         private string ResultStatus { get; set; }
@@ -177,7 +176,8 @@ namespace Module.Host.TPM.Actions
                 query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
 
                 List<ClientTree> existingClientTreeIds = query.ToList();
-
+                PromoTypes promoTypes = context.Set<PromoTypes>().FirstOrDefault(g => !g.Disabled && g.SystemName == "Regular");
+                List<string> mechanics = context.Set<Mechanic>().Where(g => !g.Disabled && g.PromoTypesId == promoTypes.Id).Select(g => g.Name).ToList();
                 foreach (var item in sourceRecords)
                 {
                     IEntity<Guid> rec;
@@ -198,7 +198,7 @@ namespace Module.Host.TPM.Actions
                             warningRecords.Add(new Tuple<IEntity<Guid>, string>(item, String.Join(", ", warnings)));
                         }
                     }
-                    else if (!IsFilterSuitable(ref rec, context, out validationErrors, existingClientTreeIds))
+                    else if (!IsFilterSuitable(ref rec, context, out validationErrors, existingClientTreeIds, mechanics))
                     {
                         HasErrors = true;
                         errorRecords.Add(new Tuple<IEntity<Guid>, string>(item, string.Join(", ", validationErrors)));
@@ -271,7 +271,7 @@ namespace Module.Host.TPM.Actions
             }
         }
 
-        private bool IsFilterSuitable(ref IEntity<Guid> rec, DatabaseContext context, out IList<string> errors, List<ClientTree> existingClientTreeIds)
+        private bool IsFilterSuitable(ref IEntity<Guid> rec, DatabaseContext context, out IList<string> errors, List<ClientTree> existingClientTreeIds, List<string> mechanics)
         {
             errors = new List<string>();
             bool isSuitable = true;
@@ -282,14 +282,9 @@ namespace Module.Host.TPM.Actions
                 errors.Add("There is no such Competitor promo on base");
             }
             else
-            {                
+            {
                 CompetitorPromo typedRec = (CompetitorPromo)rec;
                 typedRec.ClientTree = context.Set<ClientTree>().First(x => x.ObjectId == typedRec.ClientTreeObjectId && x.EndDate == null);
-                if (String.IsNullOrEmpty(typedRec.Name))
-                {
-                    errors.Add("Name must have a value");
-                    isSuitable = false;
-                }
                 if (typedRec.CompetitorBrandTech == null)
                 {
                     errors.Add("Competitor BrandTech not found");
@@ -340,7 +335,7 @@ namespace Module.Host.TPM.Actions
                     errors.Add("Competitor not found");
                     isSuitable = false;
                 }
-                if (typedRec.Price != null && typedRec.Price < 0)
+                if (typedRec.Price == null || typedRec.Price < 0)
                 {
                     errors.Add("Invalid price");
                     isSuitable = false;
@@ -350,18 +345,23 @@ namespace Module.Host.TPM.Actions
                     errors.Add("Mechanic Type must have a value");
                     isSuitable = false;
                 }
-                if (typedRec.Discount != null && (typedRec.Discount < 0 || typedRec.Discount > 100))
+                else if (!mechanics.Contains(typedRec.MechanicType))
+                {
+                    errors.Add("Mechanic Type must be - " + String.Join(", ", mechanics.ToArray()));
+                    isSuitable = false;
+                }
+                if (typedRec.Discount == null || (typedRec.Discount < 0 || typedRec.Discount > 100))
                 {
                     errors.Add("Invalid discount");
                     isSuitable = false;
                 }
 
-                if(typedRec.Number!=0) 
-                { 
+                if (typedRec.Number != 0)
+                {
                     CompetitorPromo recordFromDB = context.Set<CompetitorPromo>()
                     .FirstOrDefault(t
                         => (t.Number == typedRec.Number && !t.Disabled));
-                    if(recordFromDB == null)
+                    if (recordFromDB == null)
                     {
                         errors.Add($"Promo {typedRec.Number} not found");
                         isSuitable = false;
@@ -391,6 +391,12 @@ namespace Module.Host.TPM.Actions
                     .FirstOrDefault(t
                         => (t.Number == newRecord.Number && !t.Disabled));
 
+                string competitorBrandTech = newRecord.CompetitorBrandTech.BrandTech;
+                string mechanicType = newRecord.MechanicType;
+                double? discount = newRecord.Discount;
+                dynamic handledDiscount = discount != 0 && discount != null ? discount + "%" : "";//к discount прибавляется знак процента
+                newRecord.Name = competitorBrandTech + " " + mechanicType + " " + handledDiscount;
+
                 if (oldRecord == null)
                 {
                     newRecord.ClientTreeObjectId = context.Set<ClientTree>().First(x => x.ObjectId == newRecord.ClientTreeObjectId && x.EndDate == null).Id;
@@ -400,7 +406,6 @@ namespace Module.Host.TPM.Actions
                 }
                 else
                 {
-                    toHisUpdate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(oldRecord, newRecord));
                     oldRecord.Competitor = newRecord.Competitor;
                     oldRecord.ClientTreeObjectId = context.Set<ClientTree>().First(x => x.ObjectId == newRecord.ClientTreeObjectId && x.EndDate == null).Id;
                     oldRecord.CompetitorBrandTechId = newRecord.CompetitorBrandTechId;
@@ -411,6 +416,7 @@ namespace Module.Host.TPM.Actions
                     oldRecord.EndDate = newRecord.EndDate;
                     oldRecord.MechanicType = newRecord.MechanicType;
                     toUpdate.Add(oldRecord);
+                    toHisUpdate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(oldRecord, newRecord));
                 }
                 importItems.Add(newRecord);
             }
@@ -441,7 +447,7 @@ namespace Module.Host.TPM.Actions
             }
             foreach (var item in toDeletes)
             {
-                toHisDelete.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(null, item));
+                toHisDelete.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(item, item));
             }
             context.HistoryWriter.Write(toHisCreate, context.AuthManager.GetCurrentUser(), context.AuthManager.GetCurrentRole(), OperationType.Created);
             context.HistoryWriter.Write(toHisUpdate, context.AuthManager.GetCurrentUser(), context.AuthManager.GetCurrentRole(), OperationType.Updated);

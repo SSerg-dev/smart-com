@@ -167,6 +167,8 @@
     'tpm.event.HistoricalEvent',
     'tpm.event.EventClientTree',
 
+    'tpm.eventtype.EventType',
+
     'tpm.nodetype.NodeType',
     'tpm.nodetype.DeletedNodeType',
     'tpm.nodetype.HistoricalNodeType',
@@ -242,6 +244,14 @@
     'tpm.actualcogs.DeletedActualCOGS',
     'tpm.actualcogs.HistoricalActualCOGS',
 
+    'tpm.plancogstn.PlanCOGSTn',
+    'tpm.plancogstn.DeletedPlanCOGSTn',
+    'tpm.plancogstn.HistoricalPlanCOGSTn',
+
+    'tpm.actualcogstn.ActualCOGSTn',
+    'tpm.actualcogstn.DeletedActualCOGSTn',
+    'tpm.actualcogstn.HistoricalActualCOGSTn',
+
     'tpm.actualtradeinvestment.ActualTradeInvestment',
     'tpm.actualtradeinvestment.DeletedActualTradeInvestment',
     'tpm.actualtradeinvestment.HistoricalActualTradeInvestment',
@@ -259,6 +269,8 @@
     'tpm.promosupportpromo.PSPshortFactCostProd',
     'tpm.promosupportpromo.PSPshortPlanCostProd',
     'tpm.promosupport.PromoSupportChoose',
+
+    'tpm.promo.PromoMechanicAddPromoes',
 
     'tpm.planpostpromoeffectreport.PlanPostPromoEffectReport',
     'tpm.promoroireport.PromoROIReport',

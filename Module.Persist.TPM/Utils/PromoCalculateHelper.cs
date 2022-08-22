@@ -208,6 +208,24 @@ namespace Module.Persist.TPM.Utils
                 promo.ActualPromoROIPercent = null;
                 promo.ActualPromoNetROIPercent = null;
                 promo.ActualPromoNetUpliftPercent = null;
+
+                promo.PlanPromoBaselineVolume = null;
+                promo.PlanPromoPostPromoEffectVolume = null;
+                promo.PlanPromoPostPromoEffectVolumeW1 = null;
+                promo.PlanPromoPostPromoEffectVolumeW2 = null;
+                promo.PlanPromoIncrementalVolume = null;
+                promo.PlanPromoNetIncrementalVolume = null;
+                promo.ActualPromoBaselineVolume = null;
+                promo.ActualPromoPostPromoEffectVolume = null;
+                promo.ActualPromoVolumeByCompensation = null;
+                promo.ActualPromoVolumeSI = null;
+                promo.ActualPromoVolume = null;
+                promo.ActualPromoIncrementalVolume = null;
+                promo.ActualPromoNetIncrementalVolume = null;
+                promo.PlanPromoIncrementalCOGSTn = null;
+                promo.PlanPromoNetIncrementalCOGSTn = null;
+                promo.ActualPromoIncrementalCOGSTn = null;
+                promo.ActualPromoNetIncrementalCOGSTn = null;
             }
         }
     }

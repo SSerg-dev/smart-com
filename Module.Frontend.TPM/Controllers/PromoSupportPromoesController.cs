@@ -144,13 +144,13 @@ namespace Module.Frontend.TPM.Controllers
             {
                 // разница между промо в подстатье должно быть меньше 2 периодов (8 недель)
                 ISettingsManager settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
-                var diffBetweenPromoInDays = settingsManager.GetSetting<int>("DIFF_BETWEEN_PROMO_IN_DAYS", 7 * 8);
+                var diffBetweenPromoInDays = settingsManager.GetSetting<int>("DIFF_BETWEEN_PROMO_IN_DAYS", 7 * 12);
                 Promo promo = Context.Set<Promo>().Find(result.PromoId);
                 bool bigDifference = Context.Set<PromoSupportPromo>().Any(n => n.PromoSupportId == result.PromoSupportId
                         && DbFunctions.DiffDays(n.Promo.StartDate.Value, promo.EndDate.Value).Value > diffBetweenPromoInDays && !n.Disabled);
 
                 if (bigDifference)
-                    throw new Exception("The difference between the dates of the promo should be less than two periods");
+                    throw new Exception("The difference between the dates of the promo should be less than 3 periods");
 
                 Context.SaveChanges();
 
@@ -172,7 +172,7 @@ namespace Module.Frontend.TPM.Controllers
                 try
                 {
                     ISettingsManager settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
-                    var diffBetweenPromoInDays = settingsManager.GetSetting<int>("DIFF_BETWEEN_PROMO_IN_DAYS", 7 * 8);
+                    var diffBetweenPromoInDays = settingsManager.GetSetting<int>("DIFF_BETWEEN_PROMO_IN_DAYS", 7 * 12);
                     List<string> promoIdsList = new List<string>();
                     string promoIds = Request.Content.ReadAsStringAsync().Result;
                     if (promoIds != null)
@@ -198,7 +198,7 @@ namespace Module.Frontend.TPM.Controllers
                                     && DbFunctions.DiffDays(n.Promo.StartDate.Value, promo.EndDate.Value).Value > diffBetweenPromoInDays && !n.Disabled);
 
                             if (bigDifference)
-                                throw new Exception("The difference between the dates of the promo should be less than two periods");
+                                throw new Exception("The difference between the dates of the promo should be less than 3 periods");
 
                             PromoSupportPromo psp = new PromoSupportPromo(promoSupportId, id);
                             Context.Set<PromoSupportPromo>().Add(psp);
@@ -258,13 +258,13 @@ namespace Module.Frontend.TPM.Controllers
                         newList[i].PromoSupport = Context.Set<PromoSupport>().Find(newList[i].PromoSupportId);
 
                         ISettingsManager settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
-                        var diffBetweenPromoInDays = settingsManager.GetSetting<int>("DIFF_BETWEEN_PROMO_IN_DAYS", 7 * 8);
+                        var diffBetweenPromoInDays = settingsManager.GetSetting<int>("DIFF_BETWEEN_PROMO_IN_DAYS", 7 * 12);
                         DateTimeOffset endPromoDate = newList[i].Promo.EndDate.Value;
                         bool bigDifference = Context.Set<PromoSupportPromo>().Any(n => n.PromoSupportId == promoSupportId
                                         && DbFunctions.DiffDays(n.Promo.StartDate.Value, endPromoDate).Value > diffBetweenPromoInDays && !n.Disabled);
 
                         if (bigDifference)
-                            throw new Exception("The difference between the dates of the promo should be less than two periods");
+                            throw new Exception("The difference between the dates of the promo should be less than 3 periods");
 
                         Context.Set<PromoSupportPromo>().Add(newList[i]);
                     }
@@ -305,7 +305,7 @@ namespace Module.Frontend.TPM.Controllers
 
                 CalculateBudgetsCreateTask(new List<Guid>() { promoSupportId }, deletedPromoIds);
 
-                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, list = newList }));
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, list = newList }, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore}));
             }
             catch (Exception e)
             {
@@ -467,14 +467,14 @@ namespace Module.Frontend.TPM.Controllers
                     {
                         // разница между промо в подстатье должно быть меньше 2 периодов (8 недель)
                         ISettingsManager settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
-                        var diffBetweenPromoInDays = settingsManager.GetSetting<int>("DIFF_BETWEEN_PROMO_IN_DAYS", 7 * 8);
+                        var diffBetweenPromoInDays = settingsManager.GetSetting<int>("DIFF_BETWEEN_PROMO_IN_DAYS", 7 * 12);
                         bool bigDifference = Context.Set<PromoSupportPromo>().Any(n => n.PromoSupportId == promoSupportId
                             && (DbFunctions.DiffDays(n.Promo.StartDate.Value, promo.EndDate.Value).Value > diffBetweenPromoInDays
                                 || DbFunctions.DiffDays(n.Promo.StartDate.Value, promo.EndDate.Value).Value < -diffBetweenPromoInDays)
                             && !n.Disabled);
 
                         if (bigDifference)
-                            throw new Exception("The difference between the dates of the promo in the promo support should be less than two periods");
+                            throw new Exception("The difference between the dates of the promo in the promo support should be less than 3 periods");
                         else
                         {
                             PromoSupportPromo psp = new PromoSupportPromo()

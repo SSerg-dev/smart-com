@@ -1,7 +1,6 @@
 using Core.Security;
 using Core.Security.Models;
 using Frontend.Core.Controllers.Base;
-using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.TPM;
 using Persist.Model;
 using System.Collections.Generic;

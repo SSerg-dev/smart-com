@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Core.MarsCalendar;
 using Core.Security;
 using Core.Security.Models;
 using Core.Settings;
@@ -7,38 +8,31 @@ using Frontend.Core.Extensions;
 using Frontend.Core.Extensions.Export;
 using Looper.Core;
 using Looper.Parameters;
+using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.Import;
+using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.TPM;
+using Module.Persist.TPM.Utils;
 using Persist;
 using Persist.Model;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Data.Entity.Infrastructure;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.OData;
 using System.Web.Http.OData.Query;
 using System.Web.Http.Results;
 using Thinktecture.IdentityModel.Authorization.WebApi;
 using Utility;
-using Module.Persist.TPM.Utils;
-using Newtonsoft.Json;
-using System.Net.Http.Headers;
-using NPOI.SS.UserModel;
-using NPOI.XSSF.UserModel;
-using Module.Persist.TPM.Model.DTO;
-using System.Collections.Specialized;
-using Core.Dependency;
-using Module.Frontend.TPM.Util;
-using Module.Persist.TPM.Model.SimpleModel;
-using System.Web;
-using Utility.FileWorker;
-using Core.MarsCalendar;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -49,7 +43,6 @@ namespace Module.Frontend.TPM.Controllers
         {
             this.authorizationManager = authorizationManager;
         }
-
 
         protected IQueryable<CompetitorPromo> GetConstraintedQuery()
         {
@@ -67,14 +60,12 @@ namespace Module.Frontend.TPM.Controllers
             return query;
         }
 
-
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
         public SingleResult<CompetitorPromo> GetCompetitorPromo([FromODataUri] System.Guid key)
         {
             return SingleResult.Create(GetConstraintedQuery());
         }
-
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
@@ -100,7 +91,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Put([FromODataUri] System.Guid key, Delta<CompetitorPromo> patch)
+        public IHttpActionResult Put([FromODataUri] Guid key, Delta<CompetitorPromo> patch)
         {
             var model = Context.Set<CompetitorPromo>().Find(key);
             if (model == null)
@@ -144,15 +135,12 @@ namespace Module.Frontend.TPM.Controllers
 
                 var proxy = Context.Set<CompetitorPromo>().Create<CompetitorPromo>();
                 var result = (CompetitorPromo)Mapper.Map(model, proxy, typeof(CompetitorPromo), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
-                
                 //Установка дат в Mars формате
                 SetPromoMarsDates(result);
                 
                 Context.Set<CompetitorPromo>().Add(result);
                 Context.SaveChanges();
                 
-               
-
                 return Created(model);
             }
             catch (Exception e)
@@ -257,13 +245,12 @@ namespace Module.Frontend.TPM.Controllers
             IEnumerable<Column> columns = new List<Column>() {
                 new Column() { Order = 1, Field = "ClientTree.ObjectId", Header = "ClientId", Quoting = false },
                 new Column() { Order = 2, Field = "Competitor.Name", Header = "Competitor", Quoting = false },
-                new Column() { Order = 3, Field = "Name", Header = "Promo Name", Quoting = false },
-                new Column() { Order = 4, Field = "CompetitorBrandTech.BrandTech", Header = "BrandTech", Quoting = false },
-                new Column() { Order = 5, Field = "StartDate", Header = "Start Date", Quoting = false, Format = "dd.MM.yyyy" },
-                new Column() { Order = 6, Field = "EndDate", Header = "End Date", Quoting = false, Format = "dd.MM.yyyy" },
-                new Column() { Order = 7, Field = "MechanicType", Header = "Mechanic Type", Quoting = false },
-                new Column() { Order = 8, Field = "Discount", Header = "Discount", Quoting = false },
-                new Column() { Order = 9, Field = "Price", Header = "Shelf Price", Quoting = false }
+                new Column() { Order = 3, Field = "CompetitorBrandTech.BrandTech", Header = "BrandTech", Quoting = false },
+                new Column() { Order = 4, Field = "StartDate", Header = "Start Date", Quoting = false, Format = "dd.MM.yyyy" },
+                new Column() { Order = 5, Field = "EndDate", Header = "End Date", Quoting = false, Format = "dd.MM.yyyy" },
+                new Column() { Order = 6, Field = "MechanicType", Header = "Mechanic Type", Quoting = false },
+                new Column() { Order = 7, Field = "Discount", Header = "Discount", Quoting = false },
+                new Column() { Order = 8, Field = "Price", Header = "Shelf Price", Quoting = false }
             };
             return columns;
         }
@@ -321,10 +308,10 @@ namespace Module.Frontend.TPM.Controllers
                     throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
                 }
 
-                string importDir = Core.Settings.AppSettingsManager.GetSetting("IMPORT_DIRECTORY", "ImportFiles");
+                string importDir = AppSettingsManager.GetSetting("IMPORT_DIRECTORY", "ImportFiles");
                 string fileName = await FileUtility.UploadFile(Request, importDir);
 
-                NameValueCollection form = System.Web.HttpContext.Current.Request.Form;
+                NameValueCollection form = HttpContext.Current.Request.Form;
                 CreateImportTask(fileName, "FullXLSXCompetitorPromoUpdateImportHandler", form);
 
                 HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
@@ -355,8 +342,8 @@ namespace Module.Frontend.TPM.Controllers
                 FileModel file = new FileModel()
                 {
                     LogicType = "Import",
-                    Name = System.IO.Path.GetFileName(fileName),
-                    DisplayName = System.IO.Path.GetFileName(fileName)
+                    Name = Path.GetFileName(fileName),
+                    DisplayName = Path.GetFileName(fileName)
                 };
 
                 // параметры импорта
@@ -412,7 +399,6 @@ namespace Module.Frontend.TPM.Controllers
             {
                 return Content(HttpStatusCode.InternalServerError, e.Message);
             }
-
         }
 
         [ClaimsAuthorize]
@@ -425,10 +411,10 @@ namespace Module.Frontend.TPM.Controllers
                     throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
                 }
 
-                string importDir = Core.Settings.AppSettingsManager.GetSetting("IMPORT_DIRECTORY", "ImportFiles");
+                string importDir = AppSettingsManager.GetSetting("IMPORT_DIRECTORY", "ImportFiles");
                 string fileName = await FileUtility.UploadFile(Request, importDir);
 
-                NameValueCollection form = System.Web.HttpContext.Current.Request.Form;
+                NameValueCollection form = HttpContext.Current.Request.Form;
                 CreateNewImportTask(fileName, "FullXLSXCompetitorPromoUpdateNewImportHandler", form);
 
                 HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
@@ -459,8 +445,8 @@ namespace Module.Frontend.TPM.Controllers
                 FileModel file = new FileModel()
                 {
                     LogicType = "Import",
-                    Name = System.IO.Path.GetFileName(fileName),
-                    DisplayName = System.IO.Path.GetFileName(fileName)
+                    Name = Path.GetFileName(fileName),
+                    DisplayName = Path.GetFileName(fileName)
                 };
 
                 // параметры импорта
@@ -548,7 +534,5 @@ namespace Module.Frontend.TPM.Controllers
                 return InternalServerError(e.InnerException);
             }
         }
-
-
     }
 }

@@ -19,6 +19,7 @@
         { name: 'IsCMManagerApproved', type: "boolean", useNull: true, hidden: true, isDefault: false, defaultValue: null },
         { name: 'IsDemandPlanningApproved', type: "boolean", useNull: true, hidden: true, isDefault: false, defaultValue: null },
         { name: 'IsDemandFinanceApproved', type: "boolean", useNull: true, hidden: true, isDefault: false, defaultValue: null },
+        { name: 'IsGAManagerApproved', type: "boolean", useNull: true, hidden: true, isDefault: false, defaultValue: null },
 
         /***Порядок полей для расширенного фильтра***/
         // Поле из "Basic"
@@ -185,7 +186,11 @@
         },
 
         //Apollo Export
-        { name: 'IsApolloExport', type: 'boolean', useNull: true, hidden: false, isDefault: false, defaultValue: null }
+        { name: 'IsApolloExport', type: 'boolean', useNull: true, hidden: false, isDefault: false, defaultValue: null },
+
+        { name: 'IsInExchange', type: 'boolean', useNull: true, hidden: false, isDefault: false, defaultValue: null },
+        { name: 'LinkedPromoes', type: 'string', useNull: true, hidden: false, isDefault: true, defaultValue: null },
+        { name: 'MasterPromoNumber', type: 'string', useNull: true, hidden: false, isDefault: true, defaultValue: null },
     ],
     proxy: {
         type: 'breeze',

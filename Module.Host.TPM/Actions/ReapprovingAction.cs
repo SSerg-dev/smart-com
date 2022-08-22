@@ -50,6 +50,7 @@ namespace Module.Host.TPM.Actions
                             promo.IsCMManagerApproved = false;
                             promo.IsDemandFinanceApproved = false;
                             promo.IsDemandPlanningApproved = false;
+                            promo.IsGAManagerApproved = false;
                             PromoStateContext promoStateContext = new PromoStateContext(context, promo);
 
                             PromoStatus onApproval = context.Set<PromoStatus>()

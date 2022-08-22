@@ -53,7 +53,7 @@ namespace Module.Frontend.TPM.Controllers
             this.authorizationManager = authorizationManager;
         }
 
-        protected IQueryable<Promo> GetConstraintedQuery(bool canChangeStateOnly = false)
+        protected IQueryable<Promo> GetConstraintedQuery(bool canChangeStateOnly = false, bool withDeleted = false)
         {
             PerformanceLogger logger = new PerformanceLogger();
             logger.Start();
@@ -63,9 +63,9 @@ namespace Module.Frontend.TPM.Controllers
                 .Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
                 .ToList() : new List<Constraint>();
             IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
-            IQueryable<Promo> query = Context.Set<Promo>().Where(e => !e.Disabled);
+            IQueryable<Promo> query = Context.Set<Promo>().Where(e => !e.Disabled || withDeleted);
             IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
-            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters, FilterQueryModes.Active, canChangeStateOnly ? role : String.Empty);
+            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters, FilterQueryModes.None, canChangeStateOnly ? role : String.Empty);
 
             // Не администраторы не смотрят чужие черновики
             if (role != "Administrator" && role != "SupportAdministrator")
@@ -102,7 +102,9 @@ namespace Module.Frontend.TPM.Controllers
         public IQueryable<Promo> GetFilteredData(ODataQueryOptions<Promo> options)
         {
             string bodyText = Helper.GetRequestBody(HttpContext.Current.Request);
-            var query = GetConstraintedQuery(Helper.GetValueIfExists<bool>(bodyText, "canChangeStateOnly"));
+            string filter = HttpContext.Current.Request.QueryString["$filter"];
+            bool IsMasterFiltered = filter == null ? false : filter.Contains("MasterPromoId");
+            var query = GetConstraintedQuery(Helper.GetValueIfExists<bool>(bodyText, "canChangeStateOnly"), IsMasterFiltered);
 
             var querySettings = new ODataQuerySettings
             {
@@ -298,6 +300,7 @@ namespace Module.Frontend.TPM.Controllers
                 result.LastApprovedDate = ChangeTimeZoneUtil.ResetTimeZone(DateTimeOffset.UtcNow);
             }
 
+
             // Для draft не проверяем и не считаем && если у промо есть признак InOut, то Uplift считать не нужно.
             if (result.PromoStatus.SystemName.ToLower() != "draft")
             {
@@ -314,6 +317,18 @@ namespace Module.Frontend.TPM.Controllers
                 PlanProductParametersCalculation.SetPromoProduct(Context.Set<Promo>().First(x => x.Number == result.Number).Id, Context, out error, true, promoProductTrees);
                 // Создаём инцидент для draft сразу
                 PromoHelper.WritePromoDemandChangeIncident(Context, result);
+            }
+
+            // привязывает дочерние промо
+            if (!string.IsNullOrEmpty(result.LinkedPromoes) && result.IsInExchange)
+            {
+                List<string> LinkedStringIds = model.LinkedPromoes.Split(',').ToList();
+                List<int> LinkedIds = LinkedStringIds.Select(s => int.Parse(s)).ToList();
+                List<Promo> ChildPromoes = Context.Set<Promo>().Where(g => LinkedIds.Contains((int)g.Number) && !g.Disabled).ToList();
+                foreach (var ChildPromo in ChildPromoes)
+                {
+                    ChildPromo.MasterPromoId = result.Id;
+                }
             }
 
             result.LastChangedDate = ChangedDate;
@@ -372,7 +387,7 @@ namespace Module.Frontend.TPM.Controllers
                     DateTimeOffset StartDateChange = (DateTimeOffset)ChangePromo.StartDate;
                     if (StartDateCopy.Date != StartDateChange.Date)
                     {
-                        if (!ChangedList.Any(g=>g.Contains("EventId")))
+                        if (ChangePromo.EventId == null)
                         {
                             Event promoEvent = Context.Set<Event>().FirstOrDefault(x => !x.Disabled && x.Name == "Standard promo");
                             if (promoEvent == null)
@@ -380,15 +395,16 @@ namespace Module.Frontend.TPM.Controllers
                                 return InternalServerError(new Exception("Event 'Standard promo' not found"));
                             }
 
+                            ChangePromo.EventId = promoEvent.Id;
                             model.EventId = promoEvent.Id;
                             model.EventName = promoEvent.Name;
                         }
                     }
                 }
 
-                string message;
+
                 PromoStateContext promoStateContext = new PromoStateContext(Context, promoCopy);
-                bool status = promoStateContext.ChangeState(model, userRole, out message);
+                bool status = promoStateContext.ChangeState(model, userRole, out string message);
                 if (!status)
                 {
                     return InternalServerError(new Exception(message));
@@ -459,8 +475,10 @@ namespace Module.Frontend.TPM.Controllers
                 if (promoCopy.PromoStatusId != model.PromoStatusId
                     || promoCopy.IsDemandFinanceApproved != model.IsDemandFinanceApproved
                     || promoCopy.IsCMManagerApproved != model.IsCMManagerApproved
-                    || promoCopy.IsDemandPlanningApproved != model.IsDemandPlanningApproved)
+                    || promoCopy.IsDemandPlanningApproved != model.IsDemandPlanningApproved
+                    || promoCopy.IsGAManagerApproved != model.IsGAManagerApproved)
                 {
+
                     PromoStatusChange psc = Context.Set<PromoStatusChange>().Create<PromoStatusChange>();
                     psc.PromoId = model.Id;
                     psc.StatusId = model.PromoStatusId;
@@ -473,6 +491,15 @@ namespace Module.Frontend.TPM.Controllers
                     if (statusName != null && statusName.ToLower() == "approved")
                     {
                         model.LastApprovedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                    }
+                    // если approved переводим в cancelled дочерние
+                    if (statusName.ToLower() == "approved" && userRole != "SupportAdministrator")
+                    {
+                        DeleteChildPromoes(model.Id, user, out string childmessage);
+                        if (!string.IsNullOrEmpty(childmessage))
+                        {
+                            return InternalServerError(new Exception(childmessage));
+                        }
                     }
                 }
 
@@ -633,6 +660,16 @@ namespace Module.Frontend.TPM.Controllers
                     if (model.InOut.HasValue && model.InOut.Value)
                     {
                         PromoHelper.DisableIncrementalPromo(Context, model);
+                    }
+                }
+                if (ChangePromo.EventId != null)
+                {
+                    var btlPromo = Context.Set<BTLPromo>().FirstOrDefault(x => x.PromoId == key);
+                    if (btlPromo != null)
+                    {
+                        btlPromo.Disabled = true;
+                        btlPromo.DeletedDate = DateTimeOffset.UtcNow;
+                        PromoCalculateHelper.CalculateBTLBudgetsCreateTask(btlPromo.BTLId.ToString(), null, null, Context, new List<Guid> { key }, safe: true);
                     }
                 }
 
@@ -982,6 +1019,12 @@ namespace Module.Frontend.TPM.Controllers
                     promoProductsCorrection.UserId = (Guid)user.Id;
                     promoProductsCorrection.UserName = user.Login;
                 }
+                // удалить дочерние промо
+                var PromoesUnlink = Context.Set<Promo>().Where(p => p.MasterPromoId == model.Id && !p.Disabled).ToList();
+                foreach (var childpromo in PromoesUnlink)
+                {
+                    childpromo.MasterPromoId = null;
+                }
                 Context.SaveChanges();
 
                 PromoHelper.WritePromoDemandChangeIncident(Context, model, true);
@@ -1001,7 +1044,8 @@ namespace Module.Frontend.TPM.Controllers
             }
         }
 
-        private void DeletePromo(Guid key) {
+        private void DeletePromo(Guid key)
+        {
             try
             {
                 var model = Context.Set<Promo>().Find(key);
@@ -1141,6 +1185,13 @@ namespace Module.Frontend.TPM.Controllers
                     patch.TrySetPropertyValue("PromoStatusId", draftPublishedStatus.Id);
                     patch.TrySetPropertyValue("RejectReasonId", rejectReasonId);
 
+                    //Убираем Linked Promoes и убираем ссылки у дочерних промо
+                    patch.TrySetPropertyValue("LinkedPromoes", string.Empty);
+                    var PromoesUnlink = Context.Set<Promo>().Where(p => p.MasterPromoId == promo.Id && !p.Disabled).ToList();
+                    foreach (var childpromo in PromoesUnlink)
+                    {
+                        childpromo.MasterPromoId = null;
+                    }
                     // Для сохранения корректного значения после Patch
                     promo.DeviationCoefficient *= 100;
                     // если возвращается Update, то всё прошло без ошибок
@@ -1206,6 +1257,8 @@ namespace Module.Frontend.TPM.Controllers
                     return Content(HttpStatusCode.OK, UserDashboard.GetCMManagerCount(authorizationManager, Context));
                 case "CustomerMarketing":
                     return Content(HttpStatusCode.OK, UserDashboard.GetCustomerMarketingCount(authorizationManager, Context));
+                case "GAManager":
+                    return Content(HttpStatusCode.OK, UserDashboard.GetGAManagerCount(authorizationManager, Context));
             }
             return Content(HttpStatusCode.InternalServerError, JsonConvert.SerializeObject(new { Error = "Fail to role" }));
         }
@@ -2102,9 +2155,22 @@ namespace Module.Frontend.TPM.Controllers
             }
 
             // проверка на наличие COGS
+            //if (promo.IsLSVBased)
+            //{
             IQueryable<COGS> cogsQuery = context.Set<COGS>().Where(x => !x.Disabled);
             SimplePromoCOGS simplePromoCOGS = new SimplePromoCOGS(promo);
             PromoUtils.GetCOGSPercent(simplePromoCOGS, context, cogsQuery, out message);
+            //}
+            if (message != null)
+            {
+                messagesError.Add(message);
+                message = null;
+            }
+
+            IQueryable<PlanCOGSTn> cogsTnQuery = context.Set<PlanCOGSTn>().Where(x => !x.Disabled);
+            simplePromoCOGS = new SimplePromoCOGS(promo);
+            PromoUtils.GetCOGSTonCost(simplePromoCOGS, context, cogsTnQuery, out message);
+
             if (message != null)
             {
                 messagesError.Add(message);
@@ -2376,7 +2442,7 @@ namespace Module.Frontend.TPM.Controllers
                     }
                 });
 
-                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, data = JsonConvert.SerializeObject(products) }));
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, data = JsonConvert.SerializeObject(products, new JsonSerializerSettings{ ReferenceLoopHandling = ReferenceLoopHandling.Ignore}) }));
             }
             catch (Exception e)
             {
@@ -2433,6 +2499,103 @@ namespace Module.Frontend.TPM.Controllers
                 tempCorrection.Disabled = true;
             }
 
+        }
+        private void DeleteChildPromoes(Guid modelId, UserInfo user, out string childmessage)
+        {
+            childmessage = string.Empty;
+            var ChildPromoes = Context.Set<Promo>().Where(p => p.MasterPromoId == modelId && !p.Disabled).ToList();
+            var statuses = Context.Set<PromoStatus>().ToList();
+            var DeletedId = statuses.FirstOrDefault(s => s.SystemName == "Deleted" && !s.Disabled).Id;
+            var DraftPublishedId = statuses.FirstOrDefault(s => s.SystemName == "DraftPublished" && !s.Disabled).Id;
+            var OnApprovalId = statuses.FirstOrDefault(s => s.SystemName == "OnApproval" && !s.Disabled).Id;
+            var ApprovedId = statuses.FirstOrDefault(s => s.SystemName == "Approved" && !s.Disabled).Id;
+            List<Guid> mainPromoSupportIds = new List<Guid>();
+            List<Guid> mainBTLIds = new List<Guid>();
+            foreach (var ChildPromo in ChildPromoes)
+            {
+                if (ChildPromo.PromoStatusId != DeletedId)
+                {
+                    using (PromoStateContext childStateContext = new PromoStateContext(Context, ChildPromo))
+                    {
+                        if (childStateContext.ChangeState(ChildPromo, PromoStates.Deleted, "System", out childmessage))
+                        {
+                            ChildPromo.DeletedDate = DateTime.Now;
+                            ChildPromo.Disabled = true;
+                            ChildPromo.PromoStatusId = statuses.FirstOrDefault(e => e.SystemName == "Deleted").Id;
+
+                            List<PromoProduct> promoProductToDeleteList = Context.Set<PromoProduct>().Where(x => x.PromoId == ChildPromo.Id && !x.Disabled).ToList();
+                            foreach (PromoProduct promoProduct in promoProductToDeleteList)
+                            {
+                                promoProduct.DeletedDate = System.DateTime.Now;
+                                promoProduct.Disabled = true;
+                            }
+                            ChildPromo.NeedRecountUplift = true;
+                            //необходимо удалить все коррекции
+                            var promoProductToDeleteListIds = promoProductToDeleteList.Select(x => x.Id).ToList();
+                            List<PromoProductsCorrection> promoProductCorrectionToDeleteList = Context.Set<PromoProductsCorrection>()
+                                .Where(x => promoProductToDeleteListIds.Contains(x.PromoProductId) && x.Disabled != true).ToList();
+                            foreach (PromoProductsCorrection promoProductsCorrection in promoProductCorrectionToDeleteList)
+                            {
+                                promoProductsCorrection.DeletedDate = DateTimeOffset.UtcNow;
+                                promoProductsCorrection.Disabled = true;
+                                promoProductsCorrection.UserId = (Guid)user.Id;
+                                promoProductsCorrection.UserName = user.Login;
+                            }
+                            // удалить дочерние промо
+                            var PromoesUnlink = Context.Set<Promo>().Where(p => p.MasterPromoId == ChildPromo.Id && !p.Disabled).ToList();
+                            foreach (var childpromo in PromoesUnlink)
+                            {
+                                childpromo.MasterPromoId = null;
+                            }
+                            Context.SaveChanges();
+
+                            PromoHelper.WritePromoDemandChangeIncident(Context, ChildPromo, true);
+                            PromoCalculateHelper.RecalculateBudgets(ChildPromo, user, Context);
+                            PromoCalculateHelper.RecalculateBTLBudgets(ChildPromo, user, Context, safe: true);
+
+                            //если промо инаут, необходимо убрать записи в IncrementalPromo при отмене промо
+                            if (ChildPromo.InOut.HasValue && ChildPromo.InOut.Value)
+                            {
+                                PromoHelper.DisableIncrementalPromo(Context, ChildPromo);
+                            }
+                        }
+                        else
+                        {
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Создание отложенной задачи, выполняющей перерасчет бюджетов
+        /// </summary>
+        /// <param name="promoSupportPromoIds">список ID подстатей</param>
+        /// <param name="calculatePlanCostTE">Необходимо ли пересчитывать значения плановые Cost TE</param>
+        /// <param name="calculateFactCostTE">Необходимо ли пересчитывать значения фактические Cost TE</param>
+        /// <param name="calculatePlanCostProd">Необходимо ли пересчитывать значения плановые Cost Production</param>
+        /// <param name="calculateFactCostProd">Необходимо ли пересчитывать значения фактические Cost Production</param>
+        public void CalculateBTLBudgetsCreateTask(string btlId, List<Guid> unlinkedPromoIds = null)
+        {
+            UserInfo user = authorizationManager.GetCurrentUser();
+            Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
+            RoleInfo role = authorizationManager.GetCurrentRole();
+            Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
+
+            HandlerData data = new HandlerData();
+            HandlerDataHelper.SaveIncomingArgument("BTLId", btlId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+            if (unlinkedPromoIds != null)
+            {
+                HandlerDataHelper.SaveIncomingArgument("UnlinkedPromoIds", unlinkedPromoIds, data, visible: false, throwIfNotExists: false);
+            }
+
+            bool success = CalculationTaskManager.CreateCalculationTask(CalculationTaskManager.CalculationAction.BTL, data, Context);
+
+            if (!success)
+                throw new Exception("Promo was blocked for calculation");
         }
     }
 }

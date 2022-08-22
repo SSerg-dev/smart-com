@@ -76,14 +76,14 @@
 		},
 		{
 			"name": "MongoDBName",
-			"value": "jupiter-app-test-cdb",
+			"value": "jupiter-app-test-cdba-2",
 			"contentType": "",
 			"action": "add",
 			"enabled": true
 		},
 		{
 			"name": "MongoUrl",
-			"value": "mongodb://jupiter-app-test-cdba:ajxW1bDMoZTJEkluzTal5oBKkZqn3L9VaIBQ6zkyK9ggi71KkAJpawmF2Gpy8gEoqTHnt4rTHpwrdApeHDAnWA==@jupiter-app-test-cdba.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@jupiter-app-test-cdba@",
+			"value": "mongodb://jupiter-app-test-cdba-2:wjbwGrxU6lmv7D15rICvlD8q1VjhyWKKEa01emYwSIXd4BikTWDliYpLBIltbRTwdwKRiWz7FGzlk60tDge5QQ==@jupiter-app-test-cdba-2.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@jupiter-app-test-cdba-2@",
 			"contentType": "",
 			"action": "add",
 			"enabled": true

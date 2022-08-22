@@ -488,6 +488,9 @@
                                         splitPublishBtn.setDisabled(false);
                                     }                                    
                                 }
+                                if (promoEditorCustom.isInExchange) {
+                                    splitPublishBtn.setDisabled(true);
+                                }
                                 //Activate button "Send for approval"
                                 var sendForApproval = Ext.ComponentQuery.query("#btn_sendForApproval")[0];
                                 sendForApproval.setDisabled(false);
@@ -555,6 +558,12 @@
                     .fail(function (data) {
                         App.Notify.pushError(data.message);
                     })
+                //Activate button "Send for approval"
+                var sendForApproval = Ext.ComponentQuery.query("#btn_sendForApproval")[0];
+                sendForApproval.setDisabled(false);
+                //Activate button "Approve"
+                var approve = Ext.ComponentQuery.query("#btn_approve")[0];
+                approve.setDisabled(false);
             }
         }
     },

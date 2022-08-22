@@ -202,6 +202,7 @@ namespace Module.Host.TPM.Actions
                 {
                     IEntity<Guid> rec;
                     IList<string> warnings;
+                    IList<string> validationErrors;
 
                     if (!validator.Validate(item, out validationErrors))
                     {
@@ -353,7 +354,7 @@ namespace Module.Host.TPM.Actions
                 .Any(gr => gr.Count() > 1);
 
             if (isDuplicateRecords)
-            {
+                {
                 errors.Add("The Promo - Event pair occurs more than once");
             }
 

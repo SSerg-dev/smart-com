@@ -16,6 +16,7 @@ namespace Module.Persist.TPM.Model.DTO {
         public bool? IsDemandFinanceApproved { get; set; }
         public bool? IsDemandPlanningApproved { get; set; }
         public bool? IsCMManagerApproved { get; set; }
+        public bool? IsGAManagerApproved { get; set; }
         public double? PlanInstoreMechanicDiscount { get; set; }
 
         public DateTimeOffset? LastChangedDate { get; set; }
@@ -85,6 +86,7 @@ namespace Module.Persist.TPM.Model.DTO {
         public double? PlanPromoIncrementalLSV { get; set; }
         public double? PlanPromoBaselineLSV { get; set; }
         public bool IsGrowthAcceleration { get; set; }
+        public bool IsInExchange { get; set; }
         public string PromoTypesName { get; set; }
         public double? ActualPromoLSVByCompensation { get; set; }
         public double? PlanPromoLSV { get; set; }

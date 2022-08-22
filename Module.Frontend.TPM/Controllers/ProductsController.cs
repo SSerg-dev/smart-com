@@ -175,6 +175,20 @@ namespace Module.Frontend.TPM.Controllers
             {
                 return BadRequest(ModelState);
             }
+
+            switch (model.UOM.ToLower())
+            {
+                case "kg":
+                    model.CaseVolume = Math.Round(model.NetWeight.Value / 1000, 7);
+                    model.PCVolume = Math.Round(model.CaseVolume.Value / model.UOM_PC2Case.Value, 7);
+                    break;
+                case "g":
+                    model.CaseVolume = Math.Round(model.NetWeight.Value / 1000000, 7);
+                    model.PCVolume = Math.Round(model.CaseVolume.Value / model.UOM_PC2Case.Value, 7);
+                    break;
+                default:
+                    return InternalServerError(new Exception("The product UOM should contain kg or g value"));
+            }
             var proxy = Context.Set<Product>().Create<Product>();
             var result = (Product)Mapper.Map(model, proxy, typeof(Product), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
             IList<string> errors = new List<string>();
@@ -211,8 +225,21 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     return NotFound();
                 }
-                
+
                 patch.Patch(model);
+                switch (model.UOM.ToLower())
+                {
+                    case "kg":
+                        model.CaseVolume = Math.Round(model.NetWeight.Value / 1000, 7);
+                        model.PCVolume = Math.Round(model.CaseVolume.Value / model.UOM_PC2Case.Value, 7);
+                        break;
+                    case "g":
+                        model.CaseVolume = Math.Round(model.NetWeight.Value / 1000000, 7);
+                        model.PCVolume = Math.Round(model.CaseVolume.Value / model.UOM_PC2Case.Value, 7);
+                        break;
+                    default:
+                        return InternalServerError(new Exception("The product UOM should contain kg or g value"));
+                }
                 model.SubBrand_code = !String.IsNullOrEmpty(model.SubBrand_code) ? model.SubBrand_code : null;
                 IList<string> errors = new List<string>();
                 var validBrandTech = BrandTechExist(Context, model.Brand_code, model.Segmen_code, model.SubBrand_code, model.Tech_code, ref errors);
@@ -393,7 +420,11 @@ namespace Module.Frontend.TPM.Controllers
                 new Column() { Order = orderNum++, Field = "TradedUnitFormat", Header = "Traded unit format", Quoting = false },
                 new Column() { Order = orderNum++, Field = "ConsumerPackFormat", Header = "Consumer pack format", Quoting = false },
                 new Column() { Order = orderNum++, Field = "UOM_PC2Case", Header = "UOM_PC2Case", Quoting = false },
-                new Column() { Order = orderNum++, Field = "Division", Header = "Division", Quoting = false }
+                new Column() { Order = orderNum++, Field = "Division", Header = "Division", Quoting = false },
+                new Column() { Order = orderNum++, Field = "UOM", Header = "UOM", Quoting = false },
+                new Column() { Order = orderNum++, Field = "NetWeight", Header = "Net Weight", Quoting = false },
+                new Column() { Order = orderNum++, Field = "CaseVolume", Header = "Case Volume", Quoting = false },
+                new Column() { Order = orderNum++, Field = "PCVolume", Header = "PC Volume", Quoting = false }
             };
             return columns;
         }

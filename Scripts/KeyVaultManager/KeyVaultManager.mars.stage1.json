@@ -8,88 +8,87 @@
 	
 	
 	"secretKeys":  [
-	
+
 		{
-			"name":  "ADidaAADInstance",
-			"value":  "https://login.microsoftonline.com/",
-			"contentType":  "",
-			"action":  "add",
-			
-			"comment":  "Добавление переменной или обновление значений переменной и типа переменной",
+			"name": "ADidaAADInstance",
+			"value": "https://login.microsoftonline.com/",
+			"contentType": "",
+			"action": "add",
+
+			"comment": "Добавление переменной или обновление значений переменной и типа переменной",
 			"enabled": true
-		}
-		,{
-			"name":  "ADidaClientId",
-			"value":  "6f231dc9-7560-4d58-8655-a9fec42cac17",
-			"contentType":  "",
-			"action":  "add",
+		},
+		{
+			"name": "ADidaClientId",
+			"value": "6f231dc9-7560-4d58-8655-a9fec42cac17",
+			"contentType": "",
+			"action": "add",
 			"enabled": true
-		}
-		,{
-			"name":  "ADidaClientSecret",
-			"value":  "kKOHIvUL0nKvtQ4e2Fn53RvYLba5Ne7/pKphScyEg8c=",
-			"contentType":  "",
-			"action":  "add",
+		},
+		{
+			"name": "ADidaClientSecret",
+			"value": "kKOHIvUL0nKvtQ4e2Fn53RvYLba5Ne7/pKphScyEg8c=",
+			"contentType": "",
+			"action": "add",
 			"enabled": true
-		}
-		,{
-			"name":  "ADidaPostLogoutRedirectUri",
-			"value":  "https://russiapetcarejupiterdevwa.azurewebsites.net/",
-			"contentType":  "",
-			"action":  "add",
+		},
+		{
+			"name": "ADidaPostLogoutRedirectUri",
+			"value": "https://russiapetcarejupiterdevwa.azurewebsites.net/",
+			"contentType": "",
+			"action": "add",
 			"enabled": true
-		}
-		,{
-			"name":  "ADidaTenantId",
-			"value":  "2fc13e34-f03f-498b-982a-7cb446e25bc6",
-			"contentType":  "",
-			"action":  "add",
+		},
+		{
+			"name": "ADidaTenantId",
+			"value": "2fc13e34-f03f-498b-982a-7cb446e25bc6",
+			"contentType": "",
+			"action": "add",
 			"enabled": true
-		}
-		,{
-			"name":  "BlobStorageContainer",
-			"value":  "russiapetcarejupiter",
-			"contentType":  "",
-			"action":  "add",
+		},
+		{
+			"name": "BlobStorageContainer",
+			"value": "russiapetcarejupiter",
+			"contentType": "",
+			"action": "add",
 			"enabled": true
-		}
-		,{
-			"name":  "BlobStorageKey",
-			"value":  "",
-			"contentType":  "TafSNai/QbHqFsSwuIoVbJiV/SL3aGyHBPaNvQTXoaMJ4iMTmrPHwD1n7foT98b7agj9H8G8dGR/S1oIlxiYoQ==",
-			"action":  "add",
-			"comment":  "не нужен",
+		},
+		{
+			"name": "BlobStorageKey",
+			"value": "",
+			"contentType": "TafSNai/QbHqFsSwuIoVbJiV/SL3aGyHBPaNvQTXoaMJ4iMTmrPHwD1n7foT98b7agj9H8G8dGR/S1oIlxiYoQ==",
+			"action": "add",
+			"comment": "не нужен",
 			"enabled": true
-		}
-		,{
-			"name":  "BlobStorageName",
-			"value":  "marsanalyticsshareddevsa",
-			"contentType":  "",
-			"action":  "add",
+		},
+		{
+			"name": "BlobStorageName",
+			"value": "marsanalyticsshareddevsa",
+			"contentType": "",
+			"action": "add",
 			"enabled": true
-		}
-		,{
-			"name":  "BlobStorageSAS",
-			"value":  "sv=2019-02-02&sr=c&si=external-write&sig=VgV4eflo5VOOthsfbjiuu33cH20EFbLsPwZFk7c9fG8%3D",
-			"contentType":  "",
-			"action":  "add",
+		},
+		{
+			"name": "BlobStorageSAS",
+			"value": "sv=2019-02-02&sr=c&si=external-write&sig=VgV4eflo5VOOthsfbjiuu33cH20EFbLsPwZFk7c9fG8%3D",
+			"contentType": "",
+			"action": "add",
 			"enabled": true
-		}
-		,{
-			"name":  "LogicAppNotificationURL",
-			"value":  "https://prod-27.eastus2.logic.azure.com:443/workflows/d6b5b9f3be414e139dbd1206e36bab07/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=KW_D9cTrDz8s2p-SWqQCL9qu0cQQbGcOMyHVhCouILI",
-			"contentType":  "",
-			"action":  "add",
+		},
+		{
+			"name": "LogicAppNotificationURL",
+			"value": "https://prod-27.eastus2.logic.azure.com:443/workflows/d6b5b9f3be414e139dbd1206e36bab07/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=KW_D9cTrDz8s2p-SWqQCL9qu0cQQbGcOMyHVhCouILI",
+			"contentType": "",
+			"action": "add",
 			"enabled": true
-		}
-		,{
-			"name":  "MongoDBName",
-			"value":  "ScenarioHistory",
-			"contentType":  "",
-			"action":  "add",
+		},
+		{
+			"name": "MongoDBName",
+			"value": "JupiterDevMongo",
+			"contentType": "",
+			"action": "add",
 			"enabled": true
-		}
-		,{
+		},{
 			"name":  "MongoUrl",
 			"value":  "mongodb://russiapetcarejupiterdev2acdb:CsN8dr3tUnAA5lvIYTdqd0fpkVYtxAZCIy3H6fbMBSApfY1tPXpbvsdMRWWP3bUIVhvRvFwUSXr0zvpCMEH5bg==@russiapetcarejupiterdev2acdb.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@russiapetcarejupiterdev2acdb@",
 			"contentType":  "",

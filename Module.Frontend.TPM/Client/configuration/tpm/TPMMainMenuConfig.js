@@ -20,7 +20,7 @@
 		tooltip: l10n.ns('tpm', 'mainmenu').value('UserDashboard'),
 		scale: 'medium',
 		glyph: 0xfa1c,
-		roles: ['DemandFinance', 'KeyAccountManager', 'DemandPlanning', 'CustomerMarketing', 'CMManager'],
+		roles: ['DemandFinance', 'KeyAccountManager', 'DemandPlanning', 'CustomerMarketing', 'CMManager', 'GAManager'],
 		widget: 'userdashboard'
 	},
 	{
@@ -350,6 +350,18 @@
 			glyph: 0xf152,
 			roles: ['Administrator', 'FunctionalExpert', 'DemandFinance', 'SuperReader', 'CustomerMarketing', 'CMManager', 'SupportAdministrator'],
 			widget: 'actualcogs'
+		}, {
+			text: l10n.ns('tpm', 'mainmenu').value('PlanCOGSTn'),
+			tooltip: l10n.ns('tpm', 'mainmenu').value('PlanCOGSTn'),
+			glyph: 0xf152,
+			roles: ['Administrator', 'FunctionalExpert', 'DemandFinance', 'SuperReader', 'CustomerMarketing', 'CMManager', 'SupportAdministrator'],
+			widget: 'plancogstn'
+		}, {
+			text: l10n.ns('tpm', 'mainmenu').value('ActualCOGSTn'),
+			tooltip: l10n.ns('tpm', 'mainmenu').value('ActualCOGSTn'),
+			glyph: 0xf152,
+			roles: ['Administrator', 'FunctionalExpert', 'DemandFinance', 'SuperReader', 'CustomerMarketing', 'CMManager', 'SupportAdministrator'],
+			widget: 'actualcogstn'
 		}, {
 			text: l10n.ns('tpm', 'mainmenu').value('TradeInvestment'),
 			tooltip: l10n.ns('tpm', 'mainmenu').value('TradeInvestment'),

@@ -169,6 +169,20 @@ namespace Module.Persist.TPM.Model.History {
         public double? ActualPromoBaseTI { get; set; }
         public double? ActualPromoNetNSV { get; set; }
 
+        // New ROI Calculation parameters
+        public double? PlanPromoIncrementalMACLSV { get; set; }
+        public double? PlanPromoNetIncrementalMACLSV { get; set; }
+        public double? ActualPromoIncrementalMACLSV { get; set; }
+        public double? ActualPromoNetIncrementalMACLSV { get; set; }
+        public double? PlanPromoIncrementalEarningsLSV { get; set; }
+        public double? PlanPromoNetIncrementalEarningsLSV { get; set; }
+        public double? ActualPromoIncrementalEarningsLSV { get; set; }
+        public double? ActualPromoNetIncrementalEarningsLSV { get; set; }
+        public double? PlanPromoROIPercentLSV { get; set; }
+        public double? PlanPromoNetROIPercentLSV { get; set; }
+        public double? ActualPromoROIPercentLSV { get; set; }
+        public double? ActualPromoNetROIPercentLSV { get; set; }
+
         // Promo Closure
         public double? ActualPromoTIShopper { get; set; }
         public double? ActualPromoTIMarketing { get; set; }
@@ -222,6 +236,7 @@ namespace Module.Persist.TPM.Model.History {
         public bool? IsCMManagerApproved { get; set; }
         public bool? IsDemandPlanningApproved { get; set; }
         public bool? IsDemandFinanceApproved { get; set; }
+        public bool? IsGAManagerApproved { get; set; }
 
         public bool? NeedRecountUplift { get; set; }
 
@@ -246,5 +261,8 @@ namespace Module.Persist.TPM.Model.History {
         public double? SumInvoice { get; set; }
         public double? InvoiceTotal { get; set; }
         public bool? ManualInputSumInvoice { get; set; }
+        public bool? IsInExchange { get; set; }
+        public string LinkedPromoes { get; set; }
+        public string MasterPromoNumber { get; set; }
     }
 }

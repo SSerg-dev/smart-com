@@ -1,7 +1,7 @@
 ﻿Ext.define('App.model.tpm.baseclient.SchedulerClientTreeDTO', {
     extend: 'Sch.model.Resource',
     mixins: ['Ext.data.Model'],
-    idProperty: 'InOutId',
+    idProperty: 'Id',
     fields: [
         { name: 'Id', type: 'int', hidden: true },
         { name: 'ObjectId', hidden: true },

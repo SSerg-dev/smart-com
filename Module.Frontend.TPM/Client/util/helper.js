@@ -159,7 +159,7 @@ var activityChangeListener = function (field, newValue, oldValue) {
     var status = true;
 
     var panel = field.up('panel[name=promoActivity_step2]');
-    var fields1 = panel.down('fieldset[name=activity]').items.items;
+    var fields1 = panel.down('fieldset[name=activityActuals]').items.items;
     var promoIsInOut = panel.up('promoeditorcustom').isInOutPromo;      // для InOut другая валидация
 
     for (i = 0; i < fields1.length; i++) {
@@ -1477,7 +1477,7 @@ Ext.override(App.menu.core.MenuManager, {
         if (role) {
             this.callParent(arguments);
             var controller = App.app.getController('core.Main');
-            if (['DemandFinance', 'KeyAccountManager', 'DemandPlanning', 'CustomerMarketing', 'CMManager'].includes(role.SystemName)) {
+            if (['DemandFinance', 'KeyAccountManager', 'DemandPlanning', 'CustomerMarketing', 'CMManager', 'GAManager'].includes(role.SystemName)) {
                 controller.showUserDashboard(controller);
             }
         } else {

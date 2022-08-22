@@ -292,6 +292,7 @@
     <Compile Include="Actions\FullXLSXAssortmentMatrixImportAction.cs" />
     <Compile Include="Actions\FullXLSXRPAEventImportAction.cs" />
     <Compile Include="Actions\FullXLSXCompetitorPromoUpdateNewImportAction.cs" />
+    <Compile Include="Actions\FullXLSXCOGSTnUpdateImportAction.cs" />
     <Compile Include="Actions\FullXLSXImportPromoDMPAction.cs" />
     <Compile Include="Actions\FullXLSXImportPromoProductPluAction.cs" />
     <Compile Include="Actions\FullXLSXPLUDictionaryImportAction.cs" />
@@ -301,6 +302,7 @@
     <Compile Include="Actions\FullXLSXImportNonPromoDMPAction.cs" />
     <Compile Include="Actions\FullXLSXRPAActualEanPcImportAction.cs" />
     <Compile Include="Actions\FullXLSXRpaActualPluImportAction.cs" />
+    <Compile Include="Actions\FullXLSXUpdateImportEventAction.cs" />
     <Compile Include="Actions\FullXLSXUpdateImportNonPromoEquipmentAction.cs" />
     <Compile Include="Actions\FullXLSXUpdateImportClientDashboardAction.cs" />
     <Compile Include="Actions\FullXLSXUpdateImportCoefficientSI2SOAction.cs" />

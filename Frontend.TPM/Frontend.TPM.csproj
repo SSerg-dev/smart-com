@@ -1619,6 +1619,12 @@
     <Content Include="..\Module.Frontend.TPM\Templates\TIPreTemplate.xlsx">
       <Link>ApplicationData\Templates\TIPreTemplate.xlsx</Link>
     </Content>
+    <Content Include="..\Module.Frontend.TPM\Templates\PlanCOGSTnPreTemplate.xlsx">
+      <Link>ApplicationData\Templates\PlanCOGSTnPreTemplate.xlsx</Link>
+    </Content>
+    <Content Include="..\Module.Frontend.TPM\Templates\ActualCOGSTnPreTemplate.xlsx">
+      <Link>ApplicationData\Templates\ActualCOGSTnPreTemplate.xlsx</Link>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Global.asax.cs">
@@ -1641,6 +1647,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Module.Frontend.TPM\Module.Frontend.TPM.csproj">
       <Project>{70de5780-2297-41fc-a861-d370f6fe631b}</Project>
       <Name>Module.Frontend.TPM</Name>
@@ -1649,13 +1658,6 @@
       <Project>{a4e76df0-0b6a-4848-a99c-b6bf261623f2}</Project>
       <Name>Module.Persist.TPM</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Connected Services\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Connected Services\AzureAD\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

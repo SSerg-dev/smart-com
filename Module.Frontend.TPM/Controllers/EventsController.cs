@@ -166,7 +166,7 @@ namespace Module.Frontend.TPM.Controllers
         [ClaimsAuthorize]
         [AcceptVerbs("PATCH", "MERGE")]
         public IHttpActionResult Patch([FromODataUri] System.Guid key, Delta<Event> patch)
-        {            
+        {
             try
             {
                 var model = Context.Set<Event>().Find(key);
@@ -194,7 +194,7 @@ namespace Module.Frontend.TPM.Controllers
             catch (Exception e)
             {
                 return GetErorrRequest(e);
-            }            
+            }
         }
 
         [ClaimsAuthorize]
@@ -229,7 +229,9 @@ namespace Module.Frontend.TPM.Controllers
         {
             IEnumerable<Column> columns = new List<Column>() {
                 new Column() { Order = 0, Field = "Name", Header = "Event", Quoting = false },
-                new Column() { Order = 1, Field = "Description", Header = "Description" }
+                new Column() { Order = 1, Field = "Description", Header = "Description" },
+                new Column() { Order = 2, Field = "EventType.Name", Header = "Type", Quoting = false },
+                new Column() { Order = 3, Field = "MarketSegment", Header = "MarketSegment" },
             };
             return columns;
         }
@@ -278,39 +280,47 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public async Task<HttpResponseMessage> FullImportXLSX() {
-            try {
-                if (!Request.Content.IsMimeMultipartContent()) {
+        public async Task<HttpResponseMessage> FullImportXLSX()
+        {
+            try
+            {
+                if (!Request.Content.IsMimeMultipartContent())
+                {
                     throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
                 }
 
                 string importDir = Core.Settings.AppSettingsManager.GetSetting("IMPORT_DIRECTORY", "ImportFiles");
                 string fileName = await FileUtility.UploadFile(Request, importDir);
 
-                CreateImportTask(fileName, "FullXLSXUpdateAllHandler");
+                CreateImportTask(fileName, "FullXLSXUpdateImportEventHandler");
 
                 HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
                 result.Content = new StringContent("success = true");
                 result.Content.Headers.ContentType = new MediaTypeHeaderValue("text/plain");
 
                 return result;
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e.Message);
             }
         }
 
-        private void CreateImportTask(string fileName, string importHandler) {
+        private void CreateImportTask(string fileName, string importHandler)
+        {
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
             RoleInfo role = authorizationManager.GetCurrentRole();
             Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
 
-            using (DatabaseContext context = new DatabaseContext()) {
+            using (DatabaseContext context = new DatabaseContext())
+            {
                 ImportResultFilesModel resiltfile = new ImportResultFilesModel();
                 ImportResultModel resultmodel = new ImportResultModel();
 
                 HandlerData data = new HandlerData();
-                FileModel file = new FileModel() {
+                FileModel file = new FileModel()
+                {
                     LogicType = "Import",
                     Name = System.IO.Path.GetFileName(fileName),
                     DisplayName = System.IO.Path.GetFileName(fileName)
@@ -324,7 +334,8 @@ namespace Module.Frontend.TPM.Controllers
                 HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(Event), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("UniqueFields", new List<String>() { "Name" }, data);
 
-                LoopHandler handler = new LoopHandler() {
+                LoopHandler handler = new LoopHandler()
+                {
                     Id = Guid.NewGuid(),
                     ConfigurationName = "PROCESSING",
                     Description = "Загрузка импорта из файла " + typeof(ImportEvent).Name,
@@ -345,20 +356,25 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult DownloadTemplateXLSX() {
-            try {
+        public IHttpActionResult DownloadTemplateXLSX()
+        {
+            try
+            {
                 IEnumerable<Column> columns = GetExportSettings();
                 XLSXExporter exporter = new XLSXExporter(columns);
                 string exportDir = AppSettingsManager.GetSetting("EXPORT_DIRECTORY", "~/ExportFiles");
                 string filename = string.Format("{0}Template.xlsx", "Event");
-                if (!Directory.Exists(exportDir)) {
+                if (!Directory.Exists(exportDir))
+                {
                     Directory.CreateDirectory(exportDir);
                 }
                 string filePath = Path.Combine(exportDir, filename);
                 exporter.Export(Enumerable.Empty<Event>(), filePath);
                 string file = Path.GetFileName(filePath);
                 return Content(HttpStatusCode.OK, file);
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 return Content(HttpStatusCode.InternalServerError, e.Message);
             }
 
