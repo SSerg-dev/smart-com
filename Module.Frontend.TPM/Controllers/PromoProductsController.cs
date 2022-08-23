@@ -350,16 +350,16 @@ namespace Module.Frontend.TPM.Controllers
                            {
                                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                                MaxDepth = 1,
-                               Error = (object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args) =>
-                               {
-                                   throw new Exception(String.Format("Parse error: {0}", args.ErrorContext.Error.Message));
-                               }
+                               //Error = (object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args) =>
+                               //{
+                               //    throw new Exception(String.Format("Parse error: {0}", args.ErrorContext.Error.Message));
+                               //}
                            }));
 
             }
             catch (Exception ex)
             {
-                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false }));
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, error = ex.Message }));
             }
         }
         private bool EntityExists(System.Guid key)

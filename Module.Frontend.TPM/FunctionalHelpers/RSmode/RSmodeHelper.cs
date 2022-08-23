@@ -227,7 +227,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
             return bTLpromoesRS;
 
         }
-        public static PromoSupportPromo EditToPromoSupportPromoRS(DatabaseContext Context, PromoSupportPromo promoSupportPromo, bool disabled = false, DateTimeOffset? deleteddate = null)
+        public static List<PromoSupportPromo> EditToPromoSupportPromoRS(DatabaseContext Context, List<PromoSupportPromo> promoSupportPromoes, bool disabled = false, DateTimeOffset? deleteddate = null)
         {
             var configuration = new MapperConfiguration(cfg =>
             {
@@ -305,8 +305,8 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
             }
                 );
             var mapper = configuration.CreateMapper();
-            PromoSupportPromo promoSupportPromoRS = mapper.Map<PromoSupportPromo>(promoSupportPromo);
-            return promoSupportPromoRS;
+            List<PromoSupportPromo> promoSupportPromoesRS = mapper.Map<List<PromoSupportPromo>>(promoSupportPromoes);
+            return promoSupportPromoesRS;
 
         }
         public static PromoProductsCorrection EditToPromoProductsCorrectionRS(DatabaseContext Context, PromoProductsCorrection promoProductsCorrection)

@@ -12,6 +12,7 @@ namespace Module.Persist.TPM.Model.TPM
         public bool Disabled { get; set; }
         public DateTimeOffset? DeletedDate { get; set; }
         public TPMmode TPMmode { get; set; }
+        public RSstatus RSstatus { get; set; }
 
         public Guid BTLId { get; set; }
         public virtual BTL BTL { get; set; }

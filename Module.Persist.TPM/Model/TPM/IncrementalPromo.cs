@@ -14,6 +14,7 @@ namespace Module.Persist.TPM.Model.TPM
         public DateTimeOffset? DeletedDate { get; set; }
         [Index("Unique_IncrementalPromo", 2, IsUnique = true)]
         public TPMmode TPMmode { get; set; }
+        public RSstatus RSstatus { get; set; }
 
         public double? PlanPromoIncrementalCases { get; set; }
 

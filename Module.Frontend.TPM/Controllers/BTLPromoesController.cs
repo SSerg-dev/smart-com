@@ -181,8 +181,6 @@ namespace Module.Frontend.TPM.Controllers
                         guidPromoIds.Add(promoId);
                     }
 
-                    var btl = Context.Set<BTL>().FirstOrDefault(x => x.Id == btlId);
-                    //List<Guid> addedBTLPromoIds = new List<Guid>();
                     List<BTLPromo> bTLPromos = Context.Set<BTLPromo>()
                         .Include(x => x.Promo.PromoProducts.Select(y => y.PromoProductsCorrections))
                         .Include(x => x.Promo.IncrementalPromoes)
@@ -464,7 +462,8 @@ namespace Module.Frontend.TPM.Controllers
             try
             {
                 var btlPromo = Context.Set<BTLPromo>()
-                    .Where(x => x.Id == key).ToList();
+                    .Where(x => x.Id == key && !x.Disabled)
+                    .ToList();
                 if (btlPromo == null)
                 {
                     return NotFound();
@@ -472,7 +471,7 @@ namespace Module.Frontend.TPM.Controllers
 
                 if (TPMmode == TPMmode.RS && btlPromo[0].TPMmode == TPMmode.Current) //фильтр промо
                 {
-                    var promo = RSmodeHelper.EditToListBTLPromoesRS(Context, btlPromo, true, System.DateTime.Now);
+                    RSmodeHelper.EditToListBTLPromoesRS(Context, btlPromo, true, System.DateTime.Now);
                 }
                 else
                 {

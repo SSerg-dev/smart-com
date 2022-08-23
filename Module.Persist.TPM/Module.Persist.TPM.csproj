@@ -3091,6 +3091,10 @@
     <Compile Include="Migrations\202208181642444_Change_RollingScenario.Designer.cs">
       <DependentUpon>202208181642444_Change_RollingScenario.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202208231719227_Add-RSstatus.cs" />
+    <Compile Include="Migrations\202208231719227_Add-RSstatus.Designer.cs">
+      <DependentUpon>202208231719227_Add-RSstatus.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
@@ -5845,6 +5849,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202208181642444_Change_RollingScenario.resx">
       <DependentUpon>202208181642444_Change_RollingScenario.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202208231719227_Add-RSstatus.resx">
+      <DependentUpon>202208231719227_Add-RSstatus.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

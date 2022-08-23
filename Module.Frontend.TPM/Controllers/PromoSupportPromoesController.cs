@@ -203,13 +203,26 @@ namespace Module.Frontend.TPM.Controllers
                         Guid promoId = Guid.Parse(id);
                         guidPromoIds.Add(promoId);
                     }
-                    var support = Context.Set<PromoSupport>().FirstOrDefault(ps => ps.Id == promoSupportId);
 
                     List<PromoSupportPromo> promoSupportPromoes = Context.Set<PromoSupportPromo>()
+                        .Include(g => g.PromoSupport)
+                        .Include(g => g.Promo.BTLPromoes)
+                        .Include(g => g.Promo.IncrementalPromoes)
+                        .Include(g => g.Promo.PromoProductTrees)
+                        .Include(x => x.Promo.PromoProducts.Select(y => y.PromoProductsCorrections))
                         .Where(psp => psp.PromoSupportId == promoSupportId && !psp.Disabled)
                         .ToList();
-                    var isPromoSupportPromoInRS = promoSupportPromoes.Any(x => x.TPMmode == TPMmode.RS);
-
+                    bool isAllCurrent = promoSupportPromoes.All(g => g.TPMmode == TPMmode.Current);
+                    bool isAllRS = promoSupportPromoes.All(g => g.TPMmode == TPMmode.RS);
+                    if (TPMmode == TPMmode.RS && isAllCurrent)
+                    {
+                        promoSupportPromoes = RSmodeHelper.EditToPromoSupportPromoRS(Context, promoSupportPromoes);
+                    }
+                    if (!isAllCurrent && !isAllRS)
+                    {
+                        // такого не должно быть
+                        return BadRequest();
+                    }
                     foreach (var id in guidPromoIds)
                     {
                         Promo promo = Context.Set<Promo>().Find(id);
@@ -217,16 +230,10 @@ namespace Module.Frontend.TPM.Controllers
                         if (promo.PromoStatus.SystemName.ToLower().IndexOf("close") < 0)
                         {
                             // разница между промо в подстатье должно быть меньше 2 периодов (8 недель)
-                            bool bigDifference = Context.Set<PromoSupportPromo>().Any(n => n.PromoSupportId == promoSupportId
-                                    && DbFunctions.DiffDays(n.Promo.StartDate.Value, promo.EndDate.Value).Value > diffBetweenPromoInDays && !n.Disabled);
+                            bool bigDifference = promoSupportPromoes.Any(n => DbFunctions.DiffDays(n.Promo.StartDate.Value, promo.EndDate.Value).Value > diffBetweenPromoInDays);
 
                             if (bigDifference)
                                 throw new Exception("The difference between the dates of the promo should be less than 3 periods");
-
-                            if (TPMmode == TPMmode.RS && promo.TPMmode != TPMmode.RS)
-                            {
-                                promo = RSmodeHelper.EditToPromoRS(Context, promo);
-                            }
 
                             PromoSupportPromo psp = new PromoSupportPromo
                             {
@@ -234,21 +241,10 @@ namespace Module.Frontend.TPM.Controllers
                                 PromoId = id,
                                 TPMmode = promo.TPMmode
                             };
-                            Context.Set<PromoSupportPromo>().Add(psp);
                             promoSupportPromoes.Add(psp);
                         }
                     }
                     Context.SaveChanges();
-
-                    if (TPMmode == TPMmode.RS && !isPromoSupportPromoInRS)
-                    {
-                        var currentPromoSupportPromoes = promoSupportPromoes.Where(x => x.TPMmode == TPMmode.Current);
-                        foreach (var promoSupportPromo in currentPromoSupportPromoes)
-                        {
-                            var copiedPromo = RSmodeHelper.EditToPromoRS(Context, promoSupportPromo.Promo);
-                        }
-                        Context.SaveChanges();
-                    }
 
                     CalculateBudgetsCreateTask(new List<Guid>() { promoSupportId });
 
@@ -349,7 +345,7 @@ namespace Module.Frontend.TPM.Controllers
 
                 CalculateBudgetsCreateTask(new List<Guid>() { promoSupportId }, deletedPromoIds);
 
-                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, list = newList }, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore}));
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, list = newList }, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }));
             }
             catch (Exception e)
             {
@@ -754,46 +750,27 @@ namespace Module.Frontend.TPM.Controllers
         {
             try
             {
-                var model = Context.Set<PromoSupportPromo>().Find(key);
-                var promoId = key;                
-                var supportPromos = Context.Set<PromoSupportPromo>().Where(x => x.PromoSupportId == model.PromoSupportId && !x.Disabled);
-                var supportPromoesCopied = supportPromos.Any(x => x.TPMmode == TPMmode.RS);
-                if (model == null)
+                var supportPromos = Context.Set<PromoSupportPromo>()
+                    .Where(x => x.Id == key && !x.Disabled)
+                    .ToList();
+                
+                if (supportPromos == null)
                 {
                     return NotFound();
                 }
 
-                if (TPMmode == TPMmode.RS && model.TPMmode != TPMmode.RS) //фильтр промо
+                if (TPMmode == TPMmode.RS && supportPromos[0].TPMmode == TPMmode.Current) //фильтр промо
                 {
-                    var promo = RSmodeHelper.EditToPromoRS(Context, model.Promo);
-                    promoId = promo.Id;
-                    PromoSupportPromo psp = new PromoSupportPromo
-                    {
-                        DeletedDate = System.DateTime.Now,
-                        Disabled = true,
-                        PromoSupportId = model.PromoSupportId,
-                        PromoId = promoId,
-                        TPMmode = TPMmode
-                    };
-                    Context.Set<PromoSupportPromo>().Add(psp);
-                    model = psp;
+                    RSmodeHelper.EditToPromoSupportPromoRS(Context, supportPromos, true, System.DateTime.Now);
                 }
                 else
                 {
-                    model.DeletedDate = System.DateTime.Now;
-                    model.Disabled = true;
+                    supportPromos[0].DeletedDate = System.DateTime.Now;
+                    supportPromos[0].Disabled = true;
                 }
+                Context.SaveChanges();
 
-                if (TPMmode == TPMmode.RS && !supportPromoesCopied)
-                {
-                    var currentPromoSupportPromoes = supportPromos.Where(x => x.TPMmode == TPMmode.Current);
-                    foreach (var promoSupportPromo in currentPromoSupportPromoes)
-                    {
-                        var copiedPromo = RSmodeHelper.EditToPromoRS(Context, promoSupportPromo.Promo);
-                    }
-                }
-
-                CalculateBudgetsCreateTask(new List<Guid>() { model.PromoSupportId }, new List<Guid>() { model.Id });
+                CalculateBudgetsCreateTask(new List<Guid>() { supportPromos[0].PromoSupportId }, new List<Guid>() { supportPromos[0].Id });
                 Context.SaveChanges();
                 return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
             }
