@@ -77,9 +77,9 @@
                 grid.columnManager.getColumns()[indexh].hide();                
             }
             else {
-                var promoProductCorrectionGridStore = grid.getStore();
-                var promoProductCorrectionGridStoreProxy = promoProductCorrectionGridStore.getProxy();
-                promoProductCorrectionGridStoreProxy.extraParams.TPMmode = 'RS';
+                var promoROIReportGridStore = grid.getStore();
+                var promoROIReportGridStoreProxy = promoROIReportGridStore.getProxy();
+                promoROIReportGridStoreProxy.extraParams.TPMmode = 'RS';
             }
         }
         this.onGridAfterrender(grid);
@@ -95,12 +95,12 @@
     },
 
     onExportButtonClick: function (button) {
-        var actionName = button.action || 'ExportXLSX';
         var me = this;
         var grid = me.getGridByButton(button);
         var panel = grid.up('combineddirectorypanel');
         var store = grid.getStore();
         var proxy = store.getProxy();
+        var actionName = button.action || 'ExportXLSX';
         var resource = button.resource || proxy.resourceName;
         panel.setLoading(true);
 
