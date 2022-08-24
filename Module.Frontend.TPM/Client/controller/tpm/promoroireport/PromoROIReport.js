@@ -1,6 +1,6 @@
 ﻿Ext.define('App.controller.tpm.promoroireport.PromoROIReport', {
     extend: 'App.controller.core.AssociatedDirectory',
-    //mixins: ['App.controller.core.ImportExportLogic'],
+    mixins: ['App.controller.core.ImportExportLogic'],
 
     init: function () {
         this.listen({
@@ -59,7 +59,7 @@
                     click: this.onCloseButtonClick
                 },
                 'promoroireport #exportbutton': {
-                    click: this.onExportButtonClick
+                    click: this.onExportROIReportButtonClick
                 },
                 
             }
@@ -94,7 +94,7 @@
         }
     },
 
-    onExportButtonClick: function (button) {
+    onExportROIReportButtonClick: function (button) {
         var me = this;
         var grid = me.getGridByButton(button);
         var panel = grid.up('combineddirectorypanel');
@@ -106,16 +106,15 @@
 
         var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
         var mode = settingStore.findRecord('name', 'mode');
-        
+    
         var query = breeze.EntityQuery
-        .from(resource)
-        .withParameters({
-            $actionName: actionName,
-            $method: 'POST',
-            TPMmode: mode?.data?.value
-        });
-        
-        // тут store фильтр не работает на бэке другой запрос
+            .from(resource)
+            .withParameters({
+                $actionName: actionName,
+                $method: 'POST',
+                tPMmode: mode?.data?.value
+            });
+    
         query = me.buildQuery(query, store)
             .using(Ext.ux.data.BreezeEntityManager.getEntityManager())
             .execute()
@@ -128,5 +127,6 @@
                 panel.setLoading(false);
                 App.Notify.pushError(me.getErrorMessage(data));
             });
+
     },
 });
