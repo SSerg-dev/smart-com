@@ -59,7 +59,7 @@
                 xtype: 'customheadermenu',
                 items: [{
                     glyph: 0xf21d,
-                    itemId: 'exportxlsxbutton',
+                    itemId: 'exportbutton',
                     exactlyModelCompare: true,
                     text: l10n.ns('core', 'additionalMenu').value('exportXLSX'),
                     action: 'ExportXLSX'
@@ -102,6 +102,23 @@
                 minWidth: 100
             },
             items: [
+                {   
+                    text: l10n.ns('tpm', 'PromoROIReport').value('TPMmode'),
+                    dataIndex: 'TPMmode',
+                    renderer: function (value) {
+                        return value;
+                    },
+                    xtype: 'booleancolumn',
+                    trueText: 'RS',
+                    falseText: 'Current',
+                    filter: {
+                        type: 'bool',
+                        store: [
+                            [0, 'Current'],
+                            [1, 'RS']
+                        ]
+                    }
+                },
                 { text: l10n.ns('tpm', 'PromoROIReport').value('Number'), dataIndex: 'Number', format: '0' },
                 { text: l10n.ns('tpm', 'PromoROIReport').value('Client1LevelName'), dataIndex: 'Client1LevelName' },
                 { text: l10n.ns('tpm', 'PromoROIReport').value('Client2LevelName'), dataIndex: 'Client2LevelName' },

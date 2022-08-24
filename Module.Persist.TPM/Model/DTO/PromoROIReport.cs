@@ -206,5 +206,6 @@ namespace Module.Persist.TPM.Model.DTO
         public double? ActualPromoVolume { get; set; }
         public double? ActualPromoIncrementalVolume { get; set; }
         public double? ActualPromoNetIncrementalVolume { get; set; }
+        public bool Disabled { get; set; }
     }
 }

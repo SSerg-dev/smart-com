@@ -2221,6 +2221,7 @@
         'ActualPromoVolume': 'Actual Promo Volume',
         'ActualPromoIncrementalVolume': 'Actual Promo Incremental Volume',
         'ActualPromoNetIncrementalVolume': 'Actual Promo Net Incremental Volume',
+        'TPMmode': 'Indicator'
     },
 
     'PromoActivity': {

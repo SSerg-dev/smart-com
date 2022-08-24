@@ -13,7 +13,7 @@
                 },
                 'promoroireport directorygrid': {
                     selectionchange: this.onGridSelectionChange,
-                    afterrender: this.onGridAfterrender,
+                    afterrender: this.onGridPromoROIReportAfterrender,
                     extfilterchange: this.onExtFilterChange
                 },
                 'promoroireport #datatable': {
@@ -64,5 +64,69 @@
                 
             }
         });
+    },
+
+    onGridPromoROIReportAfterrender: function (grid) {
+        thisGrid = grid;
+        var RSmodeController = App.app.getController('tpm.rsmode.RSmode');
+        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+        var mode = settingStore.findRecord('name', 'mode');
+        if (mode) {
+            if (mode.data.value != 1) {
+                var indexh = this.getColumnIndex(grid, 'TPMmode');
+                grid.columnManager.getColumns()[indexh].hide();                
+            }
+            else {
+                var promoProductCorrectionGridStore = grid.getStore();
+                var promoProductCorrectionGridStoreProxy = promoProductCorrectionGridStore.getProxy();
+                promoProductCorrectionGridStoreProxy.extraParams.TPMmode = 'RS';
+            }
+        }
+        this.onGridAfterrender(grid);
+    },
+
+    getColumnIndex: function (grid, dataIndex) {
+        gridColumns = grid.headerCt.getGridColumns();
+        for (var i = 0; i < gridColumns.length; i++) {
+            if (gridColumns[i].dataIndex == dataIndex) {
+                return i;
+            }
+        }
+    },
+
+    onExportButtonClick: function (button) {
+        var actionName = button.action || 'ExportXLSX';
+        var me = this;
+        var grid = me.getGridByButton(button);
+        var panel = grid.up('combineddirectorypanel');
+        var store = grid.getStore();
+        var proxy = store.getProxy();
+        var resource = button.resource || proxy.resourceName;
+        panel.setLoading(true);
+
+        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+        var mode = settingStore.findRecord('name', 'mode');
+        
+        var query = breeze.EntityQuery
+        .from(resource)
+        .withParameters({
+            $actionName: actionName,
+            $method: 'POST',
+            TPMmode: mode?.data?.value
+        });
+        
+        // тут store фильтр не работает на бэке другой запрос
+        query = me.buildQuery(query, store)
+            .using(Ext.ux.data.BreezeEntityManager.getEntityManager())
+            .execute()
+            .then(function (data) {
+                panel.setLoading(false);
+                App.Notify.pushInfo('Export task created successfully');
+                App.System.openUserTasksPanel()
+            })
+            .fail(function (data) {
+                panel.setLoading(false);
+                App.Notify.pushError(me.getErrorMessage(data));
+            });
     },
 });

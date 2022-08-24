@@ -666,14 +666,23 @@ namespace Module.Persist.TPM.Utils
         /// <param name="query">Запрос</param>
         /// <param name="hierarchy">Иерархия</param>
         /// <param name="filter">Фильтр</param>
-        public static IQueryable<PromoROIReport> ApplyFilter(IQueryable<PromoROIReport> query, IQueryable<ClientTreeHierarchyView> hierarchy, IDictionary<string, IEnumerable<string>> filter = null)
+        public static IQueryable<PromoROIReport> ApplyFilter(IQueryable<PromoROIReport> query, IQueryable<ClientTreeHierarchyView> hierarchy, TPMmode mode, IDictionary<string, IEnumerable<string>> filter = null)
         {
             IEnumerable<string> clientFilter = FilterHelper.GetFilter(filter, ModuleFilterName.Client);
             if (clientFilter.Any())
             {
                 hierarchy = getFilteredHierarchy(hierarchy, clientFilter);
                 query = query.Where(x =>
-                    hierarchy.Any(h => h.Id == x.ClientTreeId));
+                    hierarchy.Any(h => h.Id == x.ClientTreeId || h.Hierarchy.Contains(x.ClientTreeId.Value.ToString())));
+            }
+            switch (mode)
+            {
+                case TPMmode.Current:
+                    query = query.Where(x => x.TPMmode == TPMmode.Current && !x.Disabled);
+                    break;
+                case TPMmode.RS:
+                    query = query.GroupBy(x => x.Number, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault()).Where(f => !f.Disabled);
+                    break;
             }
             return query;
         }
