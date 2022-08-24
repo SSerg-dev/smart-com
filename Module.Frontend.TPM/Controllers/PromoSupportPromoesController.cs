@@ -218,10 +218,15 @@ namespace Module.Frontend.TPM.Controllers
                     {
                         promoSupportPromoes = RSmodeHelper.EditToPromoSupportPromoRS(Context, promoSupportPromoes);
                     }
-                    if (!isAllCurrent && !isAllRS)
+                    if (!isAllCurrent && !isAllRS && TPMmode == TPMmode.Current)
                     {
-                        // такого не должно быть
-                        return BadRequest();
+                        // убираем RSы
+                        promoSupportPromoes = promoSupportPromoes.Where(g => g.TPMmode == TPMmode.Current).ToList();
+                    }
+                    else
+                    {
+                        // убираем currentы
+                        promoSupportPromoes = promoSupportPromoes.Where(g => g.TPMmode == TPMmode.RS).ToList();
                     }
                     foreach (var id in guidPromoIds)
                     {
@@ -230,18 +235,44 @@ namespace Module.Frontend.TPM.Controllers
                         if (promo.PromoStatus.SystemName.ToLower().IndexOf("close") < 0)
                         {
                             // разница между промо в подстатье должно быть меньше 2 периодов (8 недель)
-                            bool bigDifference = promoSupportPromoes.Any(n => DbFunctions.DiffDays(n.Promo.StartDate.Value, promo.EndDate.Value).Value > diffBetweenPromoInDays);
+                            bool bigDifference = promoSupportPromoes.Any(n => (promo.EndDate.Value - n.Promo.StartDate.Value).Days > diffBetweenPromoInDays);
 
                             if (bigDifference)
                                 throw new Exception("The difference between the dates of the promo should be less than 3 periods");
-
-                            PromoSupportPromo psp = new PromoSupportPromo
+                            if (TPMmode == TPMmode.RS)
                             {
-                                PromoSupportId = promoSupportId,
-                                PromoId = id,
-                                TPMmode = promo.TPMmode
-                            };
-                            promoSupportPromoes.Add(psp);
+                                if (promo.TPMmode == TPMmode.Current)
+                                {
+                                    promo = RSmodeHelper.EditToPromoRS(Context, promo);
+                                    PromoSupportPromo psp = new PromoSupportPromo
+                                    {
+                                        PromoSupportId = promoSupportId,
+                                        PromoId = promo.Id,
+                                        TPMmode = promo.TPMmode
+                                    };
+                                    promo.PromoSupportPromoes.Add(psp);
+                                }
+                                else
+                                {
+                                    PromoSupportPromo psp = new PromoSupportPromo
+                                    {
+                                        PromoSupportId = promoSupportId,
+                                        PromoId = id,
+                                        TPMmode = promo.TPMmode
+                                    };
+                                    promoSupportPromoes.Add(psp);
+                                }
+                            }
+                            else
+                            {
+                                PromoSupportPromo psp = new PromoSupportPromo
+                                {
+                                    PromoSupportId = promoSupportId,
+                                    PromoId = id,
+                                    TPMmode = promo.TPMmode
+                                };
+                                promoSupportPromoes.Add(psp);
+                            }
                         }
                     }
                     Context.SaveChanges();
@@ -753,7 +784,7 @@ namespace Module.Frontend.TPM.Controllers
                 var supportPromos = Context.Set<PromoSupportPromo>()
                     .Where(x => x.Id == key && !x.Disabled)
                     .ToList();
-                
+
                 if (supportPromos == null)
                 {
                     return NotFound();

@@ -26,7 +26,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
                     .ForMember(pTo => pTo.TPMmode, opt => opt.MapFrom(x => TPMmode.RS))
                     .ForMember(pTo => pTo.Disabled, opt => opt.MapFrom(x => disabled))
                     .ForMember(pTo => pTo.DeletedDate, opt => opt.MapFrom(x => deleteddate))
-                    //.ForMember(pTo => pTo.BTLPromoes, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.BTLPromoes, opt => opt.MapFrom(f => f.BTLPromoes.Where(g => !g.Disabled)))//filter
                     .ForMember(pTo => pTo.Brand, opt => opt.Ignore())
                     .ForMember(pTo => pTo.Technology, opt => opt.Ignore())
                     .ForMember(pTo => pTo.BrandTech, opt => opt.Ignore())
@@ -44,12 +44,12 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
                     .ForMember(pTo => pTo.ActualInStoreMechanicType, opt => opt.Ignore())
                     .ForMember(pTo => pTo.MasterPromo, opt => opt.Ignore())
                     .ForMember(pTo => pTo.PromoUpliftFailIncidents, opt => opt.Ignore())
-                    //.ForMember(pTo => pTo.PromoSupportPromoes, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoSupportPromoes, opt => opt.MapFrom(f => f.PromoSupportPromoes.Where(g => !g.Disabled)))//filter
                     .ForMember(pTo => pTo.PromoStatusChanges, opt => opt.Ignore())
-                    //.ForMember(pTo => pTo.PromoProductTrees, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoProductTrees, opt => opt.MapFrom(f => f.PromoProductTrees.Where(g => !g.Disabled)))//filter
                     .ForMember(pTo => pTo.PreviousDayIncrementals, opt => opt.Ignore())
                     .ForMember(pTo => pTo.IncrementalPromoes, opt => opt.Condition(c => c.InOut == true))
-                    //.ForMember(pTo => pTo.PromoProducts, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoProducts, opt => opt.MapFrom(f => f.PromoProducts.Where(g => !g.Disabled)))//filter
                     .ForMember(pTo => pTo.Promoes, opt => opt.Ignore());
                 cfg.CreateMap<BTLPromo, BTLPromo>()
                     .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
@@ -177,12 +177,12 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
                     .ForMember(pTo => pTo.ActualInStoreMechanicType, opt => opt.Ignore())
                     .ForMember(pTo => pTo.MasterPromo, opt => opt.Ignore())
                     .ForMember(pTo => pTo.PromoUpliftFailIncidents, opt => opt.Ignore())
-                    //.ForMember(pTo => pTo.PromoSupportPromoes, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoSupportPromoes, opt => opt.MapFrom(f => f.PromoSupportPromoes.Where(g => !g.Disabled)))//filter
                     .ForMember(pTo => pTo.PromoStatusChanges, opt => opt.Ignore())
-                    //.ForMember(pTo => pTo.PromoProductTrees, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoProductTrees, opt => opt.MapFrom(f => f.PromoProductTrees.Where(g => !g.Disabled)))//filter
                     .ForMember(pTo => pTo.PreviousDayIncrementals, opt => opt.Ignore())
                     .ForMember(pTo => pTo.IncrementalPromoes, opt => opt.Condition(c => c.InOut == true))
-                    //.ForMember(pTo => pTo.PromoProducts, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoProducts, opt => opt.MapFrom(f => f.PromoProducts.Where(g => !g.Disabled)))//filter
                     .ForMember(pTo => pTo.Promoes, opt => opt.Ignore());
                 cfg.CreateMap<PromoSupportPromo, PromoSupportPromo>()
                     .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
@@ -242,7 +242,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
                     .ForMember(pTo => pTo.TPMmode, opt => opt.MapFrom(x => TPMmode.RS))
                     .ForMember(pTo => pTo.Disabled, opt => opt.MapFrom(x => disabled))
                     .ForMember(pTo => pTo.DeletedDate, opt => opt.MapFrom(x => deleteddate))
-                    //.ForMember(pTo => pTo.BTLPromoes, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.BTLPromoes, opt => opt.MapFrom(f => f.BTLPromoes.Where(g => !g.Disabled)))//filter
                     .ForMember(pTo => pTo.Brand, opt => opt.Ignore())
                     .ForMember(pTo => pTo.Technology, opt => opt.Ignore())
                     .ForMember(pTo => pTo.BrandTech, opt => opt.Ignore())
@@ -262,10 +262,10 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
                     .ForMember(pTo => pTo.PromoUpliftFailIncidents, opt => opt.Ignore())
                     .ForMember(pTo => pTo.PromoSupportPromoes, opt => opt.Ignore())
                     .ForMember(pTo => pTo.PromoStatusChanges, opt => opt.Ignore())
-                    //.ForMember(pTo => pTo.PromoProductTrees, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoProductTrees, opt => opt.MapFrom(f => f.PromoProductTrees.Where(g => !g.Disabled)))//filter
                     .ForMember(pTo => pTo.PreviousDayIncrementals, opt => opt.Ignore())
                     .ForMember(pTo => pTo.IncrementalPromoes, opt => opt.Condition(c => c.InOut == true))
-                    //.ForMember(pTo => pTo.PromoProducts, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoProducts, opt => opt.MapFrom(f => f.PromoProducts.Where(g => !g.Disabled)))//filter
                     .ForMember(pTo => pTo.Promoes, opt => opt.Ignore());
                 cfg.CreateMap<BTLPromo, BTLPromo>()
                     .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
@@ -306,6 +306,8 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
                 );
             var mapper = configuration.CreateMapper();
             List<PromoSupportPromo> promoSupportPromoesRS = mapper.Map<List<PromoSupportPromo>>(promoSupportPromoes);
+            Context.Set<PromoSupportPromo>().AddRange(promoSupportPromoesRS);
+            Context.SaveChanges();
             return promoSupportPromoesRS;
 
         }
@@ -319,8 +321,8 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
                 cfg.CreateMap<PromoProduct, PromoProduct>()
                     .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
                     .ForMember(pTo => pTo.TPMmode, opt => opt.MapFrom(x => TPMmode.RS))
-                    //.ForMember(pTo => pTo.Promo, opt => opt.Ignore())
-                    //.ForMember(pTo => pTo.PromoId, opt => opt.Ignore())
+                    //.ForMember(pTo => pTo.Promo, opt => opt.MapFrom(f => f.PromoProducts.Where(g => !g.Disabled)))//filter
+                    //.ForMember(pTo => pTo.PromoId, opt => opt.MapFrom(f => f.PromoProducts.Where(g => !g.Disabled)))//filter
                     .ForMember(pTo => pTo.PromoProductsCorrections, opt => opt.Ignore())
                     .ForMember(pTo => pTo.Plu, opt => opt.Ignore());
                 cfg.CreateMap<Promo, Promo>()
@@ -344,9 +346,9 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
                     .ForMember(pTo => pTo.ActualInStoreMechanicType, opt => opt.Ignore())
                     .ForMember(pTo => pTo.MasterPromo, opt => opt.Ignore())
                     .ForMember(pTo => pTo.PromoUpliftFailIncidents, opt => opt.Ignore())
-                    //.ForMember(pTo => pTo.PromoSupportPromoes, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoSupportPromoes, opt => opt.MapFrom(f => f.PromoSupportPromoes.Where(g => !g.Disabled)))//filter
                     .ForMember(pTo => pTo.PromoStatusChanges, opt => opt.Ignore())
-                    //.ForMember(pTo => pTo.PromoProductTrees, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoProductTrees, opt => opt.MapFrom(f => f.PromoProductTrees.Where(g => !g.Disabled)))//filter
                     .ForMember(pTo => pTo.PreviousDayIncrementals, opt => opt.Ignore())
                     .ForMember(pTo => pTo.IncrementalPromoes, opt => opt.Condition(c => c.InOut == true))
                     .ForMember(pTo => pTo.PromoProducts, opt => opt.Ignore())
@@ -394,7 +396,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
                     .ForMember(pTo => pTo.TPMmode, opt => opt.MapFrom(x => TPMmode.RS))
                     .ForMember(pTo => pTo.Product, opt => opt.Ignore());
                 cfg.CreateMap<Promo, Promo>()
-                    //.ForMember(pTo => pTo.BTLPromoes, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.BTLPromoes, opt => opt.MapFrom(f => f.BTLPromoes.Where(g => !g.Disabled)))//filter
                     .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
                     .ForMember(pTo => pTo.TPMmode, opt => opt.MapFrom(x => TPMmode.RS))
                     .ForMember(pTo => pTo.Brand, opt => opt.Ignore())
@@ -414,9 +416,9 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
                     .ForMember(pTo => pTo.ActualInStoreMechanicType, opt => opt.Ignore())
                     .ForMember(pTo => pTo.MasterPromo, opt => opt.Ignore())
                     .ForMember(pTo => pTo.PromoUpliftFailIncidents, opt => opt.Ignore())
-                    //.ForMember(pTo => pTo.PromoSupportPromoes, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoSupportPromoes, opt => opt.MapFrom(f => f.PromoSupportPromoes.Where(g => !g.Disabled)))//filter
                     .ForMember(pTo => pTo.PromoStatusChanges, opt => opt.Ignore())
-                    //.ForMember(pTo => pTo.PromoProductTrees, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoProductTrees, opt => opt.MapFrom(f => f.PromoProductTrees.Where(g => !g.Disabled)))//filter
                     .ForMember(pTo => pTo.PreviousDayIncrementals, opt => opt.Ignore())
                     .ForMember(pTo => pTo.IncrementalPromoes, opt => opt.Condition(c => c.InOut == true))
                     .ForMember(pTo => pTo.PromoProducts, opt => opt.Ignore())
@@ -453,7 +455,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
                 );
             var mapper = configuration.CreateMapper();
             IncrementalPromo incrementalPromoRS = mapper.Map<IncrementalPromo>(incrementalPromo);
-           
+
             Context.Set<IncrementalPromo>().Add(incrementalPromoRS);
             Context.SaveChanges();
             return incrementalPromoRS;
@@ -507,6 +509,6 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
                 Context.Set<Promo>().Remove(RSPromo);
             }
         }
-        
+
     }
 }

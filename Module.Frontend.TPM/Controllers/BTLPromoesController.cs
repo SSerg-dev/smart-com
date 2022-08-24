@@ -186,7 +186,11 @@ namespace Module.Frontend.TPM.Controllers
                         .Include(x => x.Promo.IncrementalPromoes)
                         .Include(x => x.Promo.PromoProductTrees)
                         .Include(x => x.Promo.PromoSupportPromoes)
-                        .Where(n => n.BTLId == btlId && !n.Disabled)
+                        .Where(n => n.BTLId == btlId && !n.Disabled && !n.Promo.Disabled)
+                        //&& n.Promo.PromoSupportPromoes.All(g => !g.Disabled)
+                        //&& n.Promo.IncrementalPromoes.All(g => !g.Disabled)
+                        //&& n.Promo.PromoProductTrees.All(g => !g.Disabled)
+                        //&& n.Promo.PromoProducts.All(g => !g.Disabled)
                         .ToList();
                     bool isAllCurrent = bTLPromos.All(g => g.TPMmode == TPMmode.Current);
                     bool isAllRS = bTLPromos.All(g => g.TPMmode == TPMmode.RS);
@@ -480,7 +484,7 @@ namespace Module.Frontend.TPM.Controllers
                 }
                 Context.SaveChanges();
                 CalculateBTLBudgetsCreateTask(btlPromo[0].BTLId.ToString(), new List<Guid>() { btlPromo[0].Id });
-                
+
                 return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
             }
             catch (Exception e)
