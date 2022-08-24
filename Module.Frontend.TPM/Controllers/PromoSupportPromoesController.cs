@@ -232,7 +232,7 @@ namespace Module.Frontend.TPM.Controllers
                     {
                         Promo promo = Context.Set<Promo>().Find(id);
                         // закрытые не берем
-                        if (promo.PromoStatus.SystemName.ToLower().IndexOf("close") < 0)
+                        if (promo.PromoStatus.SystemName != "Closed")
                         {
                             // разница между промо в подстатье должно быть меньше 2 периодов (8 недель)
                             bool bigDifference = promoSupportPromoes.Any(n => (promo.EndDate.Value - n.Promo.StartDate.Value).Days > diffBetweenPromoInDays);
@@ -260,7 +260,7 @@ namespace Module.Frontend.TPM.Controllers
                                         PromoId = id,
                                         TPMmode = promo.TPMmode
                                     };
-                                    promoSupportPromoes.Add(psp);
+                                    Context.Set<PromoSupportPromo>().Add(psp);
                                 }
                             }
                             else
@@ -271,7 +271,7 @@ namespace Module.Frontend.TPM.Controllers
                                     PromoId = id,
                                     TPMmode = promo.TPMmode
                                 };
-                                promoSupportPromoes.Add(psp);
+                                Context.Set<PromoSupportPromo>().Add(psp);
                             }
                         }
                     }

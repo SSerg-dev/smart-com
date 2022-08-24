@@ -187,10 +187,6 @@ namespace Module.Frontend.TPM.Controllers
                         .Include(x => x.Promo.PromoProductTrees)
                         .Include(x => x.Promo.PromoSupportPromoes)
                         .Where(n => n.BTLId == btlId && !n.Disabled && !n.Promo.Disabled)
-                        //&& n.Promo.PromoSupportPromoes.All(g => !g.Disabled)
-                        //&& n.Promo.IncrementalPromoes.All(g => !g.Disabled)
-                        //&& n.Promo.PromoProductTrees.All(g => !g.Disabled)
-                        //&& n.Promo.PromoProducts.All(g => !g.Disabled)
                         .ToList();
                     bool isAllCurrent = bTLPromos.All(g => g.TPMmode == TPMmode.Current);
                     bool isAllRS = bTLPromos.All(g => g.TPMmode == TPMmode.RS);
@@ -198,10 +194,15 @@ namespace Module.Frontend.TPM.Controllers
                     {
                         bTLPromos = RSmodeHelper.EditToListBTLPromoesRS(Context, bTLPromos);
                     }
-                    if (!isAllCurrent && !isAllRS)
+                    if (!isAllCurrent && !isAllRS && TPMmode == TPMmode.Current)
                     {
-                        // такого не должно быть
-                        return BadRequest();
+                        // убираем RSы
+                        bTLPromos = bTLPromos.Where(g => g.TPMmode == TPMmode.Current).ToList();
+                    }
+                    else if (!isAllCurrent && !isAllRS && TPMmode == TPMmode.RS)
+                    {
+                        // убираем currentы
+                        bTLPromos = bTLPromos.Where(g => g.TPMmode == TPMmode.RS).ToList();
                     }
 
                     foreach (var promoId in guidPromoIds)
@@ -223,10 +224,33 @@ namespace Module.Frontend.TPM.Controllers
                                 if (bigDifference)
                                     throw new Exception("The difference between the dates of the promo should be less than 3 periods");
                             }
-
-                            bool isLinked = Context.Set<BTLPromo>().Any(x => x.PromoId == promoId && !x.Disabled && x.DeletedDate == null);
-
-                            if (!isLinked)
+                            if (TPMmode == TPMmode.RS)
+                            {
+                                if (promo.TPMmode == TPMmode.Current)
+                                {
+                                    promo = RSmodeHelper.EditToPromoRS(Context, promo);
+                                    BTLPromo bp = new BTLPromo
+                                    {
+                                        BTLId = btlId,
+                                        PromoId = promo.Id,
+                                        ClientTreeId = promo.ClientTreeKeyId.Value,
+                                        TPMmode = TPMmode
+                                    };
+                                    promo.BTLPromoes.Add(bp);
+                                }
+                                else
+                                {
+                                    BTLPromo bp = new BTLPromo
+                                    {
+                                        BTLId = btlId,
+                                        PromoId = promoId,
+                                        ClientTreeId = promo.ClientTreeKeyId.Value,
+                                        TPMmode = TPMmode
+                                    };
+                                    Context.Set<BTLPromo>().Add(bp);
+                                }
+                            }
+                            else
                             {
                                 BTLPromo bp = new BTLPromo
                                 {
@@ -235,7 +259,7 @@ namespace Module.Frontend.TPM.Controllers
                                     ClientTreeId = promo.ClientTreeKeyId.Value,
                                     TPMmode = TPMmode
                                 };
-                                bTLPromos.Add(bp);
+                                Context.Set<BTLPromo>().Add(bp); //bTLPromos.Add(bp); так нельзя потому что делается прокси System.Data.Entity.DynamicProxies при lazyload
                             }
                         }
                     }
