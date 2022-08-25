@@ -320,7 +320,7 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] System.Guid key, Delta<PromoProductsCorrection> patch)
+        public IHttpActionResult Patch([FromODataUri] System.Guid key, Delta<PromoProductCorrectionView> patch)
         {
             try
             {
@@ -334,12 +334,30 @@ namespace Module.Frontend.TPM.Controllers
 
                 patch.TryGetPropertyValue("TPMmode", out object mode);
 
+                var config = new MapperConfiguration(cfg =>
+                {
+                    cfg.CreateMap<PromoProductsCorrection, PromoProductCorrectionView>();
+                });
+                var mapperPromoProductCorrection = config.CreateMapper();
+                var modelMapp = mapperPromoProductCorrection.Map<PromoProductCorrectionView>(model);
+
+                patch.Patch(modelMapp);
+                var config2 = new MapperConfiguration(cfg =>
+                {
+                    cfg.CreateMap<PromoProductCorrectionView, PromoProductsCorrection>()
+                    .ForMember(pTo => pTo.Id, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoProduct, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoProductId, opt => opt.Ignore());
+                });
+                var mapperPromoProductCorrection2 = config2.CreateMapper();
+                mapperPromoProductCorrection2.Map<PromoProductCorrectionView, PromoProductsCorrection>(modelMapp, model);
+
                 if ((int)model.TPMmode != (int)mode)
                 {
                     model = RSmodeHelper.EditToPromoProductsCorrectionRS(Context, model);
                 }
 
-                patch.Patch(model);
+                
                 model.ChangeDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
                 model.UserId = user.Id;
                 model.UserName = user.Login;
