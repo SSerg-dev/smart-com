@@ -32,7 +32,6 @@ namespace Module.Persist.TPM.Model.TPM
         public DateTimeOffset? DeletedDate { get; set; }
         [Index("Unique_PromoNumber", 2, IsUnique = true)]
         public TPMmode TPMmode { get; set; }
-        public RSstatus RSstatus { get; set; }
         public DateTimeOffset? LastChangedDate { get; set; }
         public DateTimeOffset? LastChangedDateDemand { get; set; }
         public DateTimeOffset? LastChangedDateFinance { get; set; }

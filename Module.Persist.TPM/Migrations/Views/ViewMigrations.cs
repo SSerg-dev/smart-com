@@ -523,7 +523,7 @@
 			return UpdatePromoROIReportViewSqlString.Replace("DefaultSchemaSetting", defaultSchema);
 		}
 		private static string UpdatePromoROIReportViewSqlString = @"
-			ALTER VIEW [Jupiter].[PromoROIReportView] AS
+			ALTER VIEW [DefaultSchemaSetting].[PromoROIReportView] AS
 			WITH
 				CheckPromoStatuses
 			AS
@@ -534,7 +534,7 @@
 				(
 					SELECT
 						s.[Value]
-					FROM [Jupiter].[Setting] s
+					FROM [DefaultSchemaSetting].[Setting] s
 					WHERE s.[Name] = 'ACTUAL_COGSTI_CHECK_PROMO_STATUS_LIST'
 				), 'Finished,Closed'), ',')  
 			),
@@ -543,8 +543,8 @@
 			(
 				SELECT
 					p.[Id]
-				FROM [Jupiter].[Promo] p
-				INNER JOIN [Jupiter].[PromoStatus] ps 
+				FROM [DefaultSchemaSetting].[Promo] p
+				INNER JOIN [DefaultSchemaSetting].[PromoStatus] ps 
 					ON ps.[Id] = p.[PromoStatusId]
 				WHERE
 					p.[Disabled] = 0
@@ -766,49 +766,49 @@
 						THEN p.[ActualCOGSTn]
 						ELSE p.[PlanCOGSTn]
 					END									AS [COGSTn]
-				FROM [Jupiter].[Promo] p
-				INNER JOIN [Jupiter].[ClientTree] ct 
+				FROM [DefaultSchemaSetting].[Promo] p
+				INNER JOIN [DefaultSchemaSetting].[ClientTree] ct 
 					ON ct.[Id] = p.[ClientTreeKeyId]
-				INNER JOIN [Jupiter].[PromoStatus] ps
+				INNER JOIN [DefaultSchemaSetting].[PromoStatus] ps
 					ON ps.[Id] = p.[PromoStatusId]
-				INNER JOIN [Jupiter].[PromoTypes] pt
+				INNER JOIN [DefaultSchemaSetting].[PromoTypes] pt
 					ON pt.[Id] = p.[PromoTypesId]
 
-				LEFT JOIN [Jupiter].[Brand] b
+				LEFT JOIN [DefaultSchemaSetting].[Brand] b
 					ON b.[Id] = p.[BrandId]
-				LEFT JOIN [Jupiter].[Technology] t
+				LEFT JOIN [DefaultSchemaSetting].[Technology] t
 					ON t.[Id] = p.[TechnologyId]
 
-				LEFT JOIN [Jupiter].[BrandTech] bt
+				LEFT JOIN [DefaultSchemaSetting].[BrandTech] bt
 					ON bt.[Id] = p.[BrandTechId]
-				LEFT JOIN [Jupiter].[Brand] btB
+				LEFT JOIN [DefaultSchemaSetting].[Brand] btB
 					ON btB.[Id] = bt.[BrandId]
-				LEFT JOIN [Jupiter].[Technology] btT
+				LEFT JOIN [DefaultSchemaSetting].[Technology] btT
 					ON btT.[Id] = bt.[TechnologyId]
 
-				LEFT JOIN [Jupiter].[Event] e
+				LEFT JOIN [DefaultSchemaSetting].[Event] e
 					ON e.[Id] = p.[EventId]
 		
-				LEFT JOIN [Jupiter].[Mechanic] inM
+				LEFT JOIN [DefaultSchemaSetting].[Mechanic] inM
 					ON inM.[Id] = p.[PlanInstoreMechanicId]
-				LEFT JOIN [Jupiter].[MechanicType] inMT
+				LEFT JOIN [DefaultSchemaSetting].[MechanicType] inMT
 					ON inMT.[Id] = p.[PlanInstoreMechanicTypeId]
 		
-				LEFT JOIN [Jupiter].[Mechanic] m
+				LEFT JOIN [DefaultSchemaSetting].[Mechanic] m
 					ON m.[Id] = p.[MarsMechanicId]
-				LEFT JOIN [Jupiter].[MechanicType] mt
+				LEFT JOIN [DefaultSchemaSetting].[MechanicType] mt
 					ON mt.[Id] = p.[MarsMechanicTypeId]
 		
-				LEFT JOIN [Jupiter].[Mechanic] aM
+				LEFT JOIN [DefaultSchemaSetting].[Mechanic] aM
 					ON aM.[Id] = p.[ActualInStoreMechanicId]
-				LEFT JOIN [Jupiter].[MechanicType] aMT
+				LEFT JOIN [DefaultSchemaSetting].[MechanicType] aMT
 					ON aMT.[Id] = p.[ActualInStoreMechanicTypeId]
 
 				LEFT JOIN (
 					SELECT 
 						[PromoId],
 						AVG([PlanProductPCPrice]) AS PlanProductPCPriceAVG
-					FROM [Jupiter].[PromoProduct]
+					FROM [DefaultSchemaSetting].[PromoProduct]
 					WHERE [Disabled] = 0 AND [PlanProductPCPrice] > 0
 					GROUP BY [PromoId]
 				) AS ppPCP

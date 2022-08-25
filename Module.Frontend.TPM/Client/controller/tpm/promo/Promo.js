@@ -2835,7 +2835,7 @@
                 promoeditorcustom.rsStartEnd = returnValue;
                 if (promoeditorcustom.rsStartEnd) {
                     var RsStartDate = new Date(promoeditorcustom.rsStartEnd.StartDate);
-                    if (RsStartDate > record.data.StartDate) {
+                    if (RsStartDate > record.data.DispatchesStart) {
                         record.data.PromoStatusSystemName = 'Cancelled';
                         var onHoldLabel = Ext.ComponentQuery.query('#btn_promoOnHold')[0];
                         onHoldLabel.show();

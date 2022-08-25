@@ -14,7 +14,6 @@ namespace Module.Persist.TPM.Model.TPM
         [Index("Unique_PromoSupportPromo", 4, IsUnique = true)]
         public DateTimeOffset? DeletedDate { get; set; }
         public TPMmode TPMmode { get; set; }
-        public RSstatus RSstatus { get; set; }
 
         // Cost TE
         public double PlanCalculation { get; set; }

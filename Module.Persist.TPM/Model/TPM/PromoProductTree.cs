@@ -14,7 +14,6 @@ namespace Module.Persist.TPM.Model.TPM
         [Index("Unique_PromoProductTree", 4, IsUnique = true)]
         public DateTimeOffset? DeletedDate { get; set; }
         public TPMmode TPMmode { get; set; }
-        public RSstatus RSstatus { get; set; }
 
         [Index("Unique_PromoProductTree", 2, IsUnique = true)]
         public int ProductTreeObjectId { get; set; }
