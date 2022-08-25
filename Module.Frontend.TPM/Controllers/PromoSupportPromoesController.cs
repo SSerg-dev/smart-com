@@ -265,6 +265,9 @@ namespace Module.Frontend.TPM.Controllers
                             }
                             else
                             {
+                                Promo promoMode = Context.Set<Promo>()
+                                    .Include(g => g.PromoSupportPromoes)
+                                    .FirstOrDefault(g => g.Number == promo.Number && g.TPMmode == TPMmode.RS);
                                 PromoSupportPromo psp = new PromoSupportPromo
                                 {
                                     PromoSupportId = promoSupportId,
@@ -272,12 +275,29 @@ namespace Module.Frontend.TPM.Controllers
                                     TPMmode = promo.TPMmode
                                 };
                                 Context.Set<PromoSupportPromo>().Add(psp);
+                                if (promoMode != null)
+                                {
+                                    if (promoMode.PromoSupportPromoes.Any(g => g.PromoSupportId == promoSupportId && !g.Disabled))
+                                    {
+                                        //по идее надо - CalculateBudgetsCreateTask но это тормознет сохранение в Current
+                                    }
+                                    else
+                                    {
+                                        PromoSupportPromo psp1 = new PromoSupportPromo
+                                        {
+                                            PromoSupportId = promoSupportId,
+                                            PromoId = promoMode.Id,
+                                            TPMmode = promo.TPMmode
+                                        };
+                                        Context.Set<PromoSupportPromo>().Add(psp1);
+                                    }
+                                }
                             }
                         }
                     }
                     Context.SaveChanges();
 
-                    CalculateBudgetsCreateTask(new List<Guid>() { promoSupportId });
+                    CalculateBudgetsCreateTask(new List<Guid>() { promoSupportId }, null, TPMmode);
 
                     transaction.Commit();
                     return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
@@ -585,7 +605,7 @@ namespace Module.Frontend.TPM.Controllers
         /// <param name="calculateFactCostTE">Необходимо ли пересчитывать значения фактические Cost TE</param>
         /// <param name="calculatePlanCostProd">Необходимо ли пересчитывать значения плановые Cost Production</param>
         /// <param name="calculateFactCostProd">Необходимо ли пересчитывать значения фактические Cost Production</param>
-        private void CalculateBudgetsCreateTask(List<Guid> promoSupportIds, List<Guid> unlinkedPromoIds = null)
+        private void CalculateBudgetsCreateTask(List<Guid> promoSupportIds, List<Guid> unlinkedPromoIds = null, TPMmode tPMmode = TPMmode.Current)
         {
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
@@ -600,6 +620,7 @@ namespace Module.Frontend.TPM.Controllers
             HandlerDataHelper.SaveIncomingArgument("UnlinkedPromoIds", unlinkedPromoIdsString, data, visible: false, throwIfNotExists: false);
             HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
             HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("TPMmode", tPMmode, data, visible: false, throwIfNotExists: false);
 
             bool success = CalculationTaskManager.CreateCalculationTask(CalculationTaskManager.CalculationAction.Budgets, data, Context);
 

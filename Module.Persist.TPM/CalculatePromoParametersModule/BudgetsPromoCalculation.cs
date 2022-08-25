@@ -196,7 +196,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         /// <param name="unlinkedPromoIds">Список ID отвязанных промо от подстатьи</param>
         /// <param name="context">Контекст БД</param>
         /// <returns></returns>
-        public static List<Guid> GetLinkedPromoId(string promoSupportIds, string unlinkedPromoIds, DatabaseContext context)
+        public static List<Guid> GetLinkedPromoId(string promoSupportIds, string unlinkedPromoIds, DatabaseContext context, TPMmode tPMmode = TPMmode.Current)
         {
 
             // список промо ID, участвующих в расчетах
@@ -210,7 +210,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                 foreach (Guid promoSupportId in promoSupportIdsList)
                 {
-                    Promo[] promoes = context.Set<PromoSupportPromo>().Where(n => n.PromoSupportId == promoSupportId && !n.Disabled).Select(n => n.Promo).ToArray();
+                    Promo[] promoes = context.Set<PromoSupportPromo>().Where(n => n.PromoSupportId == promoSupportId && !n.Disabled && n.TPMmode == tPMmode).Select(n => n.Promo).ToArray();
 
                     // страховка от повторений, сразу при включении
                     foreach (Promo p in promoes)

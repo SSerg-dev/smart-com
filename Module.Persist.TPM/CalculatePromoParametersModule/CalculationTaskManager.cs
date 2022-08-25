@@ -71,7 +71,8 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         // список ID подстатей/промо
                         string promoSupportIds = HandlerDataHelper.GetIncomingArgument<string>("PromoSupportIds", data, false);
                         string unlinkedPromoIds = HandlerDataHelper.GetIncomingArgument<string>("UnlinkedPromoIds", data, false);
-                        promoIdsForBlock = BudgetsPromoCalculation.GetLinkedPromoId(promoSupportIds, unlinkedPromoIds, context);
+                        TPMmode tPMmode1 = HandlerDataHelper.GetIncomingArgument<TPMmode>("TPMmode", data, false);
+                        promoIdsForBlock = BudgetsPromoCalculation.GetLinkedPromoId(promoSupportIds, unlinkedPromoIds, context, tPMmode1);
                         description = "Calculate promo budgets";
                         nameHandler = "Module.Host.TPM.Handlers.CalculateBudgetsHandler";
                         break;
