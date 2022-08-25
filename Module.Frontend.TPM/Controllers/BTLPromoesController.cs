@@ -252,6 +252,10 @@ namespace Module.Frontend.TPM.Controllers
                             }
                             else
                             {
+
+                                Promo promoMode = Context.Set<Promo>()
+                                    .Include(g=>g.BTLPromoes)
+                                    .FirstOrDefault(g => g.Number == promo.Number && g.TPMmode == TPMmode.RS);
                                 BTLPromo bp = new BTLPromo
                                 {
                                     BTLId = btlId,
@@ -260,6 +264,25 @@ namespace Module.Frontend.TPM.Controllers
                                     TPMmode = TPMmode
                                 };
                                 Context.Set<BTLPromo>().Add(bp); //bTLPromos.Add(bp); так нельзя потому что делается прокси System.Data.Entity.DynamicProxies при lazyload
+                                if (promoMode != null)
+                                {
+                                    if (promoMode.BTLPromoes.Any(g => g.BTLId == btlId && !g.Disabled))
+                                    {
+                                        //по идее надо - CalculateBTLBudgetsCreateTask(btlId.ToString(), null, TPMmode.RS); но это тормознет сохранение в Current
+                                    }
+                                    else
+                                    {
+                                        BTLPromo bp1 = new BTLPromo
+                                        {
+                                            BTLId = btlId,
+                                            PromoId = promoMode.Id,
+                                            ClientTreeId = promoMode.ClientTreeKeyId.Value,
+                                            TPMmode = TPMmode.RS
+                                        };
+                                        Context.Set<BTLPromo>().Add(bp1); //bTLPromos.Add(bp); так нельзя потому что делается прокси System.Data.Entity.DynamicProxies при lazyload
+                                    }
+                                }
+
                             }
                         }
                     }
@@ -270,7 +293,7 @@ namespace Module.Frontend.TPM.Controllers
 
                     Context.SaveChanges();
 
-                    CalculateBTLBudgetsCreateTask(btlId.ToString());
+                    CalculateBTLBudgetsCreateTask(btlId.ToString(), null, TPMmode);
 
                     transaction.Commit();
                     return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
@@ -329,7 +352,7 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [HttpPost]
-        public IHttpActionResult GetPromoesWithBTL(string eventId)
+        public IHttpActionResult GetPromoesWithBTL(string eventId, TPMmode tPMmode)
         {
             try
             {
@@ -340,13 +363,13 @@ namespace Module.Frontend.TPM.Controllers
                 if (Guid.TryParse(eventId, out eventIdGuid))
                 {
                     promoesWithBTL = Context.Set<BTLPromo>()
-                    .Where(x => !x.Disabled && x.DeletedDate == null && !excludedStatuses.Contains(x.Promo.PromoStatus.SystemName) && x.Promo.Event.Id == eventIdGuid)
+                    .Where(x => !x.Disabled && x.DeletedDate == null && !excludedStatuses.Contains(x.Promo.PromoStatus.SystemName) && x.Promo.Event.Id == eventIdGuid && x.TPMmode == tPMmode)
                     .Select(x => x.Promo.Number).Distinct();
                 }
                 else
                 {
                     promoesWithBTL = Context.Set<BTLPromo>()
-                    .Where(x => !x.Disabled && x.DeletedDate == null && !excludedStatuses.Contains(x.Promo.PromoStatus.SystemName))
+                    .Where(x => !x.Disabled && x.DeletedDate == null && !excludedStatuses.Contains(x.Promo.PromoStatus.SystemName) && x.TPMmode == tPMmode)
                     .Select(x => x.Promo.Number).Distinct();
                 }
 
@@ -461,7 +484,7 @@ namespace Module.Frontend.TPM.Controllers
         /// <param name="calculateFactCostTE">Необходимо ли пересчитывать значения фактические Cost TE</param>
         /// <param name="calculatePlanCostProd">Необходимо ли пересчитывать значения плановые Cost Production</param>
         /// <param name="calculateFactCostProd">Необходимо ли пересчитывать значения фактические Cost Production</param>
-        public void CalculateBTLBudgetsCreateTask(string btlId, List<Guid> unlinkedPromoIds = null)
+        public void CalculateBTLBudgetsCreateTask(string btlId, List<Guid> unlinkedPromoIds = null, TPMmode tPMmode = TPMmode.Current)
         {
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
@@ -472,6 +495,7 @@ namespace Module.Frontend.TPM.Controllers
             HandlerDataHelper.SaveIncomingArgument("BTLId", btlId, data, visible: false, throwIfNotExists: false);
             HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
             HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("TPMmode", tPMmode, data, visible: false, throwIfNotExists: false);
             if (unlinkedPromoIds != null)
             {
                 HandlerDataHelper.SaveIncomingArgument("UnlinkedPromoIds", unlinkedPromoIds, data, visible: false, throwIfNotExists: false);

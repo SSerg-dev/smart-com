@@ -209,7 +209,7 @@
                 disabled: true
             }]
         });
-
+        
         var choosePromoWindowGrid = choosepromowindow.down('grid');
 
         choosepromowindow.show();
@@ -271,9 +271,13 @@
             },
             single: true
         });
+        //RS
+        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+        var mode = settingStore.findRecord('name', 'mode');
         // Находим номера промо с прикреплёнными BTL, чтобы отфильровать их
         var params = {
-            eventId: btlRecord.get('EventId')
+            eventId: btlRecord.get('EventId'),
+            tPMmode: mode.data.value
         };
         App.Util.makeRequestWithCallback('BTLPromoes', 'GetPromoesWithBTL', params, function (data) {
             var result = Ext.JSON.decode(data.httpResponse.data.value);

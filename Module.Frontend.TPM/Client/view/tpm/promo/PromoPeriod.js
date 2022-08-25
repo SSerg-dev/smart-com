@@ -52,7 +52,7 @@
                             var promoeditorcustom = field.up('promoeditorcustom');
                             if (promoeditorcustom.rsStartEnd) {
                                 var startdate = new Date(promoeditorcustom.rsStartEnd.StartDate);
-                                startdate.setDate(startdate.getDate() + 14);
+                                startdate.setDate(startdate.getDate() + 15);
                                 var enddate = new Date(promoeditorcustom.rsStartEnd.EndDate);
                                 field.setMinValue(startdate);
                                 field.setMaxValue(enddate);
@@ -259,7 +259,7 @@
                             var promoeditorcustom = field.up('promoeditorcustom');
                             if (promoeditorcustom.rsStartEnd) {
                                 var startdate = new Date(promoeditorcustom.rsStartEnd.StartDate);
-                                startdate.setDate(startdate.getDate() + 14);
+                                startdate.setDate(startdate.getDate() + 15);
                                 var enddate = new Date(promoeditorcustom.rsStartEnd.EndDate);
                                 field.setMinValue(startdate);
                                 field.setMaxValue(enddate);
