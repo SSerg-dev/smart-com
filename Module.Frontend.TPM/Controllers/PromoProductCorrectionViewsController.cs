@@ -275,15 +275,15 @@ namespace Module.Frontend.TPM.Controllers
                         ;
                 });
                 var mapperPromoProductCorrectionView = configViewMapping.CreateMapper();
-                var viewMapp = mapperPromoProductCorrectionView.Map<PromoProductCorrectionView>(modelMapp);
+                var viewMapp = mapperPromoProductCorrectionView.Map<PromoProductCorrectionView>(item);
 
-                return Created(viewMapp);
+                return Updated(viewMapp);
             }
             else
             {
                 var proxy = Context.Set<PromoProductsCorrection>().Create<PromoProductsCorrection>();
                 var configuration = new MapperConfiguration(cfg =>
-                    cfg.CreateMap<PromoProductsCorrection, PromoProductsCorrection>().ReverseMap());
+                    cfg.CreateMap<PromoProductCorrectionView, PromoProductsCorrection>().ReverseMap());
                 var mapper = configuration.CreateMapper();
                 var result = mapper.Map(model, proxy);
                 var promoProduct = Context.Set<PromoProduct>()
@@ -314,7 +314,7 @@ namespace Module.Frontend.TPM.Controllers
                     return GetErorrRequest(e);
                 }
 
-                return Created(result);
+                return Created(model);
             }
         }
 

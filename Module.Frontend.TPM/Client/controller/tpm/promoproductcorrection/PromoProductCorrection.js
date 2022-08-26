@@ -311,10 +311,10 @@
         this.getAndSaveFormData();
     },
 
-    saveModelPatch: function (model) {
+    saveModelPatch: function (model, callback) {
         var isCreate = model.phantom;
         grid = this.editor.grid;
-
+        debugger;
         this.editor.setLoading(l10n.ns('core').value('savingText'));
 
         var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
@@ -361,8 +361,10 @@
                         this.editor.close();
                     }               
                 }
+                //this.editor.setLoading(false);
+                //this.editor.close();
             },
-            failure: function () {
+            failure: function (fff) {
                 debugger;
                 if (callback) {
                     callback(false);
