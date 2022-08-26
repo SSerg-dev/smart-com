@@ -314,17 +314,15 @@
     saveModelPatch: function (model, callback) {
         var isCreate = model.phantom;
         grid = this.editor.grid;
-        debugger;
         this.editor.setLoading(l10n.ns('core').value('savingText'));
 
         var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
         var mode = settingStore.findRecord('name', 'mode');
-        model.data.TPMmode = mode.data.value;
+        model.set('TPMmode', mode.data.value);
 
         model.save({
             scope: this,
             success: function (rec, resp, opts) {
-                debugger;
                 if (callback) {
                     callback(true);
                 }
@@ -361,11 +359,12 @@
                         this.editor.close();
                     }               
                 }
-                //this.editor.setLoading(false);
-                //this.editor.close();
+                if (resp.action == 'create') {
+                    this.editor.setLoading(false);
+                    this.editor.close();
+                }                
             },
             failure: function (fff) {
-                debugger;
                 if (callback) {
                     callback(false);
                 }

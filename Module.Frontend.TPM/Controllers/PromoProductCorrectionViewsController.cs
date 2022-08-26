@@ -32,7 +32,7 @@ using Utility;
 
 namespace Module.Frontend.TPM.Controllers
 {
-    public class PromoProductCorrectionViewsController: EFContextController
+    public class PromoProductCorrectionViewsController : EFContextController
     {
         private readonly UserInfo user;
         private readonly string role;
@@ -79,7 +79,7 @@ namespace Module.Frontend.TPM.Controllers
             IQueryable<PromoProductsCorrection> query = Context.Set<PromoProductsCorrection>().AsNoTracking();
             IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
             query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, tPMmode, filters);
-                        
+
             return query;
         }
 
@@ -117,7 +117,7 @@ namespace Module.Frontend.TPM.Controllers
                                                 .Where(x => !x.Disabled)
                                                 .Select(p => p.Id);
 
-            
+
             using (DatabaseContext context = new DatabaseContext())
             {
                 HandlerData data = new HandlerData();
@@ -199,7 +199,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Post(PromoProductCorrectionView model)
+        public IHttpActionResult Post(PromoProductCorrectionView model, TPMmode TPMmode)
         {
             if (!ModelState.IsValid)
             {
@@ -219,10 +219,18 @@ namespace Module.Frontend.TPM.Controllers
 
             // если существует коррекция на данный PromoProduct, то не создаем новый объект
             var item = Context.Set<PromoProductsCorrection>()
+                .Include(g => g.PromoProduct.Promo.IncrementalPromoes)
+                .Include(g => g.PromoProduct.Promo.BTLPromoes)
+                .Include(g => g.PromoProduct.Promo.PromoSupportPromoes)
+                .Include(g => g.PromoProduct.Promo.PromoProductTrees)
                 .FirstOrDefault(x => x.PromoProductId == modelMapp.PromoProductId && x.TempId == modelMapp.TempId && !x.Disabled);
 
             if (item != null)
             {
+                if ((int)model.TPMmode != (int)TPMmode)
+                {
+                    item = RSmodeHelper.EditToPromoProductsCorrectionRS(Context, item);
+                }
                 if (item.PromoProduct.Promo.NeedRecountUplift == false && String.IsNullOrEmpty(item.TempId))
                 {
                     return InternalServerError(new Exception("Promo Locked Update"));
@@ -234,10 +242,11 @@ namespace Module.Frontend.TPM.Controllers
 
                 try
                 {
+
                     var saveChangesResult = Context.SaveChanges();
                     if (saveChangesResult > 0)
                     {
-                        CreateChangesIncident(Context.Set<ChangesIncident>(), modelMapp);
+                        CreateChangesIncident(Context.Set<ChangesIncident>(), item);
                         Context.SaveChanges();
                     }
                 }
@@ -357,7 +366,7 @@ namespace Module.Frontend.TPM.Controllers
                     model = RSmodeHelper.EditToPromoProductsCorrectionRS(Context, model);
                 }
 
-                
+
                 model.ChangeDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
                 model.UserId = user.Id;
                 model.UserName = user.Login;
