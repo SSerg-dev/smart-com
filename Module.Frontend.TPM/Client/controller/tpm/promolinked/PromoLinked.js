@@ -576,9 +576,12 @@
             if (tpmMode == 1) {
                 if (new Date(selected[0].data.PromoDispatchStartDate) > new Date(startEndModel.StartDate) &&
                     new Date(selected[0].data.PromoDispatchStartDate) <= new Date(startEndModel.EndDate)) {
-                        Ext.ComponentQuery.query('promolinkedticosts')[0].down('#deletebutton').disable();
+                        Ext.ComponentQuery.query('promolinkedticosts')[0].down('#deletebutton').enable();
                 }
-                else if (selected[0].data.PromoStatusName != "Closed") {
+                else if (selected[0].data.PromoStatusName != "Closed" || 
+                         selected[0].data.PromoStatusName != "Draft(published)" || 
+                         selected[0].data.PromoStatusName != "On Approval" || 
+                         selected[0].data.PromoStatusName != "Approved") {
                     Ext.ComponentQuery.query('promolinkedticosts')[0].down('#deletebutton').enable();
                 }
                 else {

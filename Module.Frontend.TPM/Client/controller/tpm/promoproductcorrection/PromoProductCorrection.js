@@ -575,9 +575,9 @@
                 if(new Date(selected[0].data.PromoDispatchStartDate) > new Date(startEndModel.StartDate) && 
                 new Date(selected[0].data.PromoDispatchStartDate) <= new Date(startEndModel.EndDate)) {
                         updBtn = thisGrid.up().down('custombigtoolbar').down('#updatebutton');
-                        updBtn.setDisabled(true);
+                        updBtn.setDisabled(false);
                         delBtn = thisGrid.up().down('custombigtoolbar').down('#deletebutton');
-                        delBtn.setDisabled(true);
+                        delBtn.setDisabled(false);
                     };
             }
         }
