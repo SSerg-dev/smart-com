@@ -106,26 +106,26 @@
         }
     },
 
-    onGridSelectionChangeCustom: function(selMode, selected) {
+    onGridSelectionChangeCustom: function (selMode, selected) {
         if (selected[0]) {
             var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
             const tpmMode = settingStore.findRecord('name', 'mode').data.value;
             if (tpmMode == 1) {
                 if (new Date(selected[0].data.PromoDispatchStartDate) > new Date(startEndModel.StartDate) &&
                     new Date(selected[0].data.PromoDispatchStartDate) <= new Date(startEndModel.EndDate)) {
-                    Ext.ComponentQuery.query('incrementalpromo')[0].down('#updatebutton').disable();
-                }
-                else if (selected[0].data.PromoStatusName !='Closed') {
                     Ext.ComponentQuery.query('incrementalpromo')[0].down('#updatebutton').enable();
+                }
+                else if (selected[0].data.PromoStatusName != 'Closed') {
+                    Ext.ComponentQuery.query('incrementalpromo')[0].down('#updatebutton').disable();
                 }
                 else {
                     Ext.ComponentQuery.query('incrementalpromo')[0].down('#updatebutton').disable();
                 }
             }
-            else if (selected[0].data.PromoStatusName !='Closed') {
-                Ext.ComponentQuery.query('incrementalpromo')[0].down('#updatebutton').enable();
-            } else {
+            else if (selected[0].data.PromoStatusName != 'Closed') {
                 Ext.ComponentQuery.query('incrementalpromo')[0].down('#updatebutton').disable();
+            } else {
+                Ext.ComponentQuery.query('incrementalpromo')[0].down('#updatebutton').enable();
             }
         }
     },

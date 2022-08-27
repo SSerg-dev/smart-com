@@ -387,7 +387,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
             return promoProductsCorrectionRS;
 
         }
-        public static IncrementalPromo EditToIncrementalPromoRS(DatabaseContext Context, IncrementalPromo incrementalPromo)
+        public static List<IncrementalPromo> EditToIncrementalPromoRS(DatabaseContext Context, List<IncrementalPromo> incrementalPromos)
         {
             var configuration = new MapperConfiguration(cfg =>
             {
@@ -454,11 +454,11 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
             }
                 );
             var mapper = configuration.CreateMapper();
-            IncrementalPromo incrementalPromoRS = mapper.Map<IncrementalPromo>(incrementalPromo);
+            List<IncrementalPromo> incrementalPromosRS = mapper.Map<List<IncrementalPromo>>(incrementalPromos);
 
-            Context.Set<IncrementalPromo>().Add(incrementalPromoRS);
+            Context.Set<IncrementalPromo>().AddRange(incrementalPromosRS);
             Context.SaveChanges();
-            return incrementalPromoRS;
+            return incrementalPromosRS;
         }
 
         public static void DeleteRSLayer(DatabaseContext Context, Promo promo)
