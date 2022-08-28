@@ -3,6 +3,7 @@
     mixins: ['App.controller.core.ImportExportLogic'],
 
     startEndModel: null,
+    canEditInRSmode: boolean = false,
 
     init: function () {
         this.listen({
@@ -114,12 +115,15 @@
                 if (new Date(selected[0].data.PromoDispatchStartDate) > new Date(startEndModel.StartDate) &&
                     new Date(selected[0].data.PromoDispatchStartDate) <= new Date(startEndModel.EndDate)) {
                     Ext.ComponentQuery.query('incrementalpromo')[0].down('#updatebutton').enable();
+                    this.canEditInRSmode = true;
                 }
                 else if (selected[0].data.PromoStatusName != 'Closed') {
                     Ext.ComponentQuery.query('incrementalpromo')[0].down('#updatebutton').disable();
+                    this.canEditInRSmode = false;
                 }
                 else {
                     Ext.ComponentQuery.query('incrementalpromo')[0].down('#updatebutton').disable();
+                    this.canEditInRSmode = false;
                 }
             }
             else if (selected[0].data.PromoStatusName != 'Closed') {
@@ -166,12 +170,12 @@
                 toEditAccess = App.UserInfo.hasAccessPoint(model.proxy.resourceName, 'Patch');
             }
         }
-
+       
         this.editor.down('editorform').getForm().getFields().each(function (field, index, len) {
             field.setReadOnly(true);
         }, this);
 
-        if (!isHistorical && !isDeleted && toEditAccess) {
+        if (!isHistorical && !isDeleted && toEditAccess && this.canEditInRSmode) {
             this.editor.down('#ok').setVisible(false);
             this.editor.down('#canceledit').setVisible(false);
 
