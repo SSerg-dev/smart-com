@@ -306,6 +306,9 @@
                 'promoproductchoosewindow #dateFilter': {
                     click: this.onProductDateFilterButtonClick
                 },
+                'choosepromo directorygrid': {
+                    afterrender: this.onGridChoosePromoAfterrender,
+                },
             }
         });
     },
@@ -350,6 +353,23 @@
             }
         }
 
+        this.onGridAfterrender(grid);
+    },
+
+    onGridChoosePromoAfterrender: function (grid) {
+        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+        var mode = settingStore.findRecord('name', 'mode');
+        if (mode) {
+            if (mode.data.value != 1) {
+                var indexh = this.getColumnIndex(grid, 'TPMmode');
+                grid.columnManager.getColumns()[indexh].hide();                
+            }
+            else {
+                var promoGridStore = grid.getStore();
+                var promoGridStoreProxy = promoGridStore.getProxy();
+                promoGridStoreProxy.extraParams.TPMmode = 'RS';
+            }
+        }
         this.onGridAfterrender(grid);
     },
 

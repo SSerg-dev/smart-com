@@ -16,7 +16,7 @@ Ext.define('App.model.tpm.promoproductcorrection.PromoProductCorrectionView', {
         { name: 'PlanProductIncrementalLSV', type:'float', hidden: false, isDefault: true, useNull: true },
         { name: 'PlanProductLSV', type:'float', hidden: false, isDefault: true, useNull: true },
         { name: 'ZREP', type:'string', hidden: false, isDefault: true },
-        { name: 'PlanProductUpliftPercentCorrected', hidden: true },
+        { name: 'PlanProductUpliftPercentCorrected', type: 'float', hidden: false, isDefault: true  },
         { name: 'CreateDate', useNull: true, type: 'date', hidden: true, timeZone: +3, convert: dateConvertTimeZone },
         { name: 'ChangeDate', useNull: true, type: 'date', hidden: true, timeZone: +3, convert: dateConvertTimeZone },
         { name: 'UserName', ype:'string', hidden: false, isDefault: true },

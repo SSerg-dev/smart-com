@@ -199,8 +199,10 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Post(PromoProductCorrectionView model, TPMmode TPMmode)
+        public IHttpActionResult Post(PromoProductCorrectionView model)
         {
+            string bodyText = Helper.GetRequestBody(HttpContext.Current.Request);
+            TPMmode tPMmode = JsonHelper.GetValueIfExists<TPMmode>(bodyText, "TPMmode");
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -227,7 +229,7 @@ namespace Module.Frontend.TPM.Controllers
 
             if (item != null)
             {
-                if ((int)model.TPMmode != (int)TPMmode)
+                if ((int)model.TPMmode != (int)tPMmode)
                 {
                     item = RSmodeHelper.EditToPromoProductsCorrectionRS(Context, item);
                 }
