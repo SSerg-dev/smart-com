@@ -224,6 +224,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
             List<BTLPromo> bTLpromoesRS = mapper.Map<List<BTLPromo>>(bTLPromos);
             Context.Set<BTLPromo>().AddRange(bTLpromoesRS);
             Context.SaveChanges();
+            RSPeriodHelper.CreateRSPeriod(bTLpromoesRS.Select(g=>g.Promo).ToList(), Context);
             return bTLpromoesRS;
 
         }
@@ -308,10 +309,11 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
             List<PromoSupportPromo> promoSupportPromoesRS = mapper.Map<List<PromoSupportPromo>>(promoSupportPromoes);
             Context.Set<PromoSupportPromo>().AddRange(promoSupportPromoesRS);
             Context.SaveChanges();
+            RSPeriodHelper.CreateRSPeriod(promoSupportPromoes.Select(g => g.Promo).ToList(), Context);
             return promoSupportPromoesRS;
 
         }
-        public static PromoProductsCorrection EditToPromoProductsCorrectionRS(DatabaseContext Context, PromoProductsCorrection promoProductsCorrection)
+        public static List<PromoProductsCorrection> EditToPromoProductsCorrectionRS(DatabaseContext Context, List<PromoProductsCorrection> promoProductsCorrections)
         {
             var configuration = new MapperConfiguration(cfg =>
             {
@@ -379,12 +381,12 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
             }
                 );
             var mapper = configuration.CreateMapper();
-            PromoProductsCorrection promoProductsCorrectionRS = mapper.Map<PromoProductsCorrection>(promoProductsCorrection);
+            List<PromoProductsCorrection> promoProductsCorrectionsRS = mapper.Map<List<PromoProductsCorrection>>(promoProductsCorrections);
 
-            Context.Set<PromoProductsCorrection>().Add(promoProductsCorrectionRS);
+            Context.Set<List<PromoProductsCorrection>>().Add(promoProductsCorrectionsRS);
             Context.SaveChanges();
-
-            return promoProductsCorrectionRS;
+            RSPeriodHelper.CreateRSPeriod(promoProductsCorrectionsRS.Select(g=>g.PromoProduct.Promo).ToList(), Context);
+            return promoProductsCorrectionsRS;
 
         }
         public static List<IncrementalPromo> EditToIncrementalPromoRS(DatabaseContext Context, List<IncrementalPromo> incrementalPromos)
@@ -458,6 +460,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
 
             Context.Set<IncrementalPromo>().AddRange(incrementalPromosRS);
             Context.SaveChanges();
+            RSPeriodHelper.CreateRSPeriod(incrementalPromos.Select(g => g.Promo).ToList(), Context);
             return incrementalPromosRS;
         }
 

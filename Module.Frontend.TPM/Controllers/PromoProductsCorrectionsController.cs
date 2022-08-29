@@ -239,7 +239,12 @@ namespace Module.Frontend.TPM.Controllers
         {
             try
             {
-                var model = Context.Set<PromoProductsCorrection>().Find(key);
+                var model = Context.Set<PromoProductsCorrection>()
+                    .Include(g => g.PromoProduct.Promo.IncrementalPromoes)
+                    .Include(g => g.PromoProduct.Promo.BTLPromoes)
+                    .Include(g => g.PromoProduct.Promo.PromoSupportPromoes)
+                    .Include(g => g.PromoProduct.Promo.PromoProductTrees)
+                    .FirstOrDefault(x => x.Id == key);
 
                 if (model == null)
                 {
@@ -251,7 +256,15 @@ namespace Module.Frontend.TPM.Controllers
 
                 if ((int)model.TPMmode != (int)mode)
                 {
-                    model = RSmodeHelper.EditToPromoProductsCorrectionRS(Context, model);
+                    List<PromoProductsCorrection> promoProductsCorrections = Context.Set<PromoProductsCorrection>()
+                        .Include(g => g.PromoProduct.Promo.IncrementalPromoes)
+                        .Include(g => g.PromoProduct.Promo.BTLPromoes)
+                        .Include(g => g.PromoProduct.Promo.PromoSupportPromoes)
+                        .Include(g => g.PromoProduct.Promo.PromoProductTrees)
+                        .Where(x => x.PromoProduct.PromoId == model.PromoProduct.PromoId && !x.Disabled)
+                        .ToList();
+                    promoProductsCorrections = RSmodeHelper.EditToPromoProductsCorrectionRS(Context, promoProductsCorrections);
+                    model = promoProductsCorrections.FirstOrDefault(g => g.PromoProduct.Promo.Number == model.PromoProduct.Promo.Number);
                 }
 
                 patch.Patch(model);
