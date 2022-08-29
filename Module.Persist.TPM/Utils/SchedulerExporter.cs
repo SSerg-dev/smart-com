@@ -5,6 +5,7 @@ using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.TPM;
 using NPOI.SS.UserModel;
 using NPOI.SS.Util;
+using NPOI.Util;
 using NPOI.XSSF.UserModel;
 using Persist;
 using System;
@@ -78,7 +79,13 @@ namespace Module.Persist.TPM.Utils {
                             CalendarPriority = promo.CalendarPriority,
                             ColorSystemName = promo.ColorSystemName,
                             Name = promo.Name,
-                            InOut = promo.InOut
+                            InOut = promo.InOut,
+                            Number = promo.Number,
+                            PromoStatusSystemName = promo.PromoStatusSystemName,
+                            Subranges = promo.Subranges,
+                            IsGrowthAcceleration = promo.IsGrowthAcceleration,
+                            Price = promo.Price,
+                            Discount = promo.Discount
                         };
                         promoToAdd.TypeName = SetSchedulePromoTypeName(otherPromoType, promo.TypeName);
                         promoDTOs.Add(promoToAdd);
@@ -150,7 +157,10 @@ namespace Module.Persist.TPM.Utils {
             string exportDir = AppSettingsManager.GetSetting("EXPORT_DIRECTORY", "~/ExportFiles");
             fileDispatcher.UploadToBlob(Path.GetFileName(filePath), Path.GetFullPath(filePath), exportDir.Split('\\').Last());
         }
-               
+
+
+        private static int PixelsToEmus(int pixels) => pixels * Units.EMU_PER_PIXEL;
+
 
         /// <summary>
         /// Разбиение Промо по строкам с учётом приоритета и диапазона дат
@@ -208,8 +218,10 @@ namespace Module.Persist.TPM.Utils {
                     XSSFRichTextString commentDescription;
                     IDrawing drawing = sheet.CreateDrawingPatriarch();
                     IClientAnchor anchor = wb.GetCreationHelper().CreateClientAnchor();
-                    anchor.Dx2 = anchor.Dx1 + 100;
-                    anchor.Dy2 = anchor.Dy1 + 80;
+                    anchor.Col1 = cell.ColumnIndex;
+                    anchor.Col2 = cell.ColumnIndex + 8;
+                    anchor.Row1 = row.RowNum;
+                    anchor.Row2 = row.RowNum + 3;
                     IComment comment = drawing.CreateCellComment(anchor);
                     if (promo.PromoStatusSystemName == "Closed")
                     {
