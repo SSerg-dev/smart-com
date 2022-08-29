@@ -3103,6 +3103,10 @@
     <Compile Include="Migrations\202208250814457_Delete_RSstatus.Designer.cs">
       <DependentUpon>202208250814457_Delete_RSstatus.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202208291125478_Add_Promo_CascadeDelete.cs" />
+    <Compile Include="Migrations\202208291125478_Add_Promo_CascadeDelete.Designer.cs">
+      <DependentUpon>202208291125478_Add_Promo_CascadeDelete.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
@@ -5866,6 +5870,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202208250814457_Delete_RSstatus.resx">
       <DependentUpon>202208250814457_Delete_RSstatus.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202208291125478_Add_Promo_CascadeDelete.resx">
+      <DependentUpon>202208291125478_Add_Promo_CascadeDelete.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

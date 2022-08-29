@@ -18,6 +18,7 @@ using System.Web.Http;
 using System.Web.Http.OData;
 using Thinktecture.IdentityModel.Authorization.WebApi;
 using Utility;
+using Module.Frontend.TPM.FunctionalHelpers.RSPeriod;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -46,7 +47,7 @@ namespace Module.Frontend.TPM.Controllers
             IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
             IQueryable<RollingScenario> query = Context.Set<RollingScenario>().AsNoTracking();
             IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
-            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters, FilterQueryModes.Active); // TODO workflow
+            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters, FilterQueryModes.Active); 
 
 
             logger.Stop();
@@ -85,20 +86,26 @@ namespace Module.Frontend.TPM.Controllers
             RoleInfo role = authorizationManager.GetCurrentRole();
             Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
 
+
             if (role.SystemName == "CMManager" || role.SystemName == "Administrator")
             {
-                RollingScenario RS = Context.Set<RollingScenario>()
-                    .Include(g => g.PromoStatus)
-                    .FirstOrDefault(g => g.Id == rollingScenarioId);
-                PromoStatus promoStatusCancelled = Context.Set<PromoStatus>().FirstOrDefault(v => v.SystemName == "Cancelled");
-                RS.IsSendForApproval = false;
-                RS.Disabled = true;
-                RS.DeletedDate = DateTimeOffset.Now;
-                RS.PromoStatus = promoStatusCancelled;
-                //TODO что то сделать с прикрепленными Promoes
-                Context.SaveChanges();
-                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
+                using (var transaction = Context.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        
+                        RSPeriodHelper.DeleteRSPeriod(rollingScenarioId, Context);
+                        
+                        transaction.Commit();
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
+                    }
+                    catch (Exception e)
+                    {
+                        transaction.Rollback();
+                        return InternalServerError(e);
+                    }
 
+                }
             }
             else
             {
@@ -131,13 +138,13 @@ namespace Module.Frontend.TPM.Controllers
             if (role.SystemName == "KeyAccountManager" || role.SystemName == "Administrator")
             {
                 RollingScenario RS = Context.Set<RollingScenario>()
-                    .Include(g=>g.PromoStatus)
+                    .Include(g => g.PromoStatus)
                     .FirstOrDefault(g => g.Id == rollingScenarioId);
                 PromoStatus promoStatusOnApproval = Context.Set<PromoStatus>().FirstOrDefault(v => v.SystemName == "OnApproval");
                 RS.IsSendForApproval = true;
                 RS.PromoStatus = promoStatusOnApproval;
                 Context.SaveChanges();
-                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true}));
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
 
             }
             else

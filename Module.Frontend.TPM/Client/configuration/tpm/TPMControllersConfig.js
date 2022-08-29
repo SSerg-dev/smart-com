@@ -322,4 +322,5 @@
     'tpm.btl.HistoricalBTL',
 
     'tpm.rsmode.RSmode',
+    'tpm.rsmode.DeletedRSmode',
 ]);

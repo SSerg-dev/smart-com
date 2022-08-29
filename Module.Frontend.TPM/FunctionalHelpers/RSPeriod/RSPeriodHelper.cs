@@ -79,9 +79,19 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
         {
 
         }
-        public static void DeleteRSPeriod(RollingScenario rollingScenario, DatabaseContext Context)
+        public static void DeleteRSPeriod(Guid rollingScenarioId, DatabaseContext Context)
         {
-
+            RollingScenario rollingScenario = Context.Set<RollingScenario>()
+                                            .Include(g => g.PromoStatus)
+                                            .Include(g => g.Promoes)
+                                            .FirstOrDefault(g => g.Id == rollingScenarioId);
+            PromoStatus promoStatusCancelled = Context.Set<PromoStatus>().FirstOrDefault(v => v.SystemName == "Cancelled");
+            rollingScenario.IsSendForApproval = false;
+            rollingScenario.Disabled = true;
+            rollingScenario.DeletedDate = DateTimeOffset.Now;
+            rollingScenario.PromoStatus = promoStatusCancelled;
+            Context.Set<Promo>().RemoveRange(rollingScenario.Promoes);
+            Context.SaveChanges();
         }
         public static void MassApproveRSPeriod(List<RollingScenario> rollingScenarios, DatabaseContext Context)
         {

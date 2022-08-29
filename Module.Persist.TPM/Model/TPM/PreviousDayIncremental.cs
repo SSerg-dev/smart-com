@@ -15,9 +15,9 @@ namespace Module.Persist.TPM.Model.TPM
         public double? IncrementalQty { get; set; }
         public DateTimeOffset? LastChangeDate { get; set; }
 
-        public Guid? PromoId { get; set; }
+        public Guid PromoId { get; set; }
         public virtual Promo Promo { get; set; }
-        public Guid? ProductId { get; set; }
+        public Guid ProductId { get; set; }
         public virtual Product Product { get; set; }
 
     }

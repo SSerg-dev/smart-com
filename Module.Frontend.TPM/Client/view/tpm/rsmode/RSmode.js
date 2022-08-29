@@ -96,11 +96,12 @@
                 tooltip: 'Decline'
             },
             {
-                itemId: 'getcanceledbutton',
-                action: 'GetCanceled',
+                itemId: 'deletedbutton',
+                resource: 'Deleted{0}',
+                action: 'Get{0}',
                 glyph: 0xf258,
-                text: l10n.ns('core', 'toptoolbar').value('deletedButtonText'),
-                tooltip: l10n.ns('core', 'toptoolbar').value('deletedButtonText')
+                text: 'Cancelled',
+                tooltip: 'Cancelled'
             },
             {
                 itemId: 'historybutton',

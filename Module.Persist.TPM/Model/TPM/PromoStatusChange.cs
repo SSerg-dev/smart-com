@@ -32,7 +32,7 @@ namespace Module.Persist.TPM.Model.TPM
         [ForeignKey("StatusId")]
         public virtual PromoStatus PromoStatus { get; set; }
 
-        public Guid? PromoId { get; set; }
+        public Guid PromoId { get; set; }
         [ForeignKey("PromoId")]
         public virtual Promo Promo { get; set; }
 

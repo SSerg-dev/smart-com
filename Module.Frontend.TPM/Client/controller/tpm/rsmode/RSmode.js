@@ -50,9 +50,6 @@
                 'rsmode #declinebutton': {
                     click: this.onDeclineButtonClick
                 },
-                'rsmode #getcanceledbutton': {
-                    click: this.onGetCanceledButtonClick
-                },
                 'rsmode #updatebutton': {
                     click: this.onUpdateButtonClick
                 },
@@ -178,7 +175,7 @@
             success: function (response) {
                 var data = Ext.JSON.decode(response.value);
                 if (data.success) {
-
+                    grid.getStore().load();
                     grid.setLoading(false);
                 }
                 else {

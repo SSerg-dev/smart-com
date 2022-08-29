@@ -43,7 +43,14 @@ namespace Module.Persist.TPM
             modelBuilder.Entity<BudgetItem>();
             modelBuilder.Entity<Promo>().HasMany(p => p.Promoes);
             modelBuilder.Entity<Promo>().HasOptional(p => p.MasterPromo);
-            modelBuilder.Entity<Promo>().HasMany(p => p.PromoProducts).WithRequired(g => g.Promo);
+            modelBuilder.Entity<Promo>().HasMany(p => p.PromoProducts).WithRequired(g => g.Promo).WillCascadeOnDelete();
+            modelBuilder.Entity<Promo>().HasMany(p => p.BTLPromoes).WithRequired(g => g.Promo).WillCascadeOnDelete();
+            modelBuilder.Entity<Promo>().HasMany(p => p.PromoSupportPromoes).WithRequired(g => g.Promo).WillCascadeOnDelete();
+            modelBuilder.Entity<Promo>().HasMany(p => p.IncrementalPromoes).WithRequired(g => g.Promo).WillCascadeOnDelete();
+            modelBuilder.Entity<Promo>().HasMany(p => p.PromoProductTrees).WithRequired(g => g.Promo).WillCascadeOnDelete();
+            modelBuilder.Entity<Promo>().HasMany(p => p.PromoUpliftFailIncidents).WithRequired(g => g.Promo).WillCascadeOnDelete();
+            modelBuilder.Entity<Promo>().HasMany(p => p.PreviousDayIncrementals).WithRequired(g => g.Promo).WillCascadeOnDelete();
+            modelBuilder.Entity<Promo>().HasMany(p => p.PromoStatusChanges).WithRequired(g => g.Promo).WillCascadeOnDelete();
             modelBuilder.Entity<Sale>();
             modelBuilder.Entity<Color>();
             modelBuilder.Entity<PromoSales>();
@@ -67,7 +74,7 @@ namespace Module.Persist.TPM
             modelBuilder.Entity<PromoProduct2Plu>();
             modelBuilder.Entity<PLUDictionary>();
 
-            modelBuilder.Entity<PromoProduct>();
+            modelBuilder.Entity<PromoProduct>().HasMany(p =>p.PromoProductsCorrections).WithRequired(p=>p.PromoProduct).WillCascadeOnDelete();
             modelBuilder.Entity<PromoProduct>().HasOptional(x => x.Plu).WithRequired();
 
 

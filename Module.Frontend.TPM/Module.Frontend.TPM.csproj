@@ -330,6 +330,7 @@
     <Content Include="Client\controller\tpm\ratishopper\HistoricalRATIShopper.js" />
     <Content Include="Client\controller\tpm\clienttreebrandtech\HistoricalClientTreeBrandTech.js" />
     <Content Include="Client\controller\tpm\rollingvolume\RollingVolume.js" />
+    <Content Include="Client\controller\tpm\rsmode\DeletedRSmode.js" />
     <Content Include="Client\controller\tpm\rsmode\RSmode.js" />
     <Content Include="Client\model\tpm\actualcogstn\ActualCOGSTn.js" />
     <Content Include="Client\model\tpm\actualcogstn\DeletedActualCOGSTn.js" />
@@ -362,6 +363,7 @@
     <Content Include="Client\model\tpm\clienttreebrandtech\HistoricalClientTreeBrandTech.js" />
     <Content Include="Client\model\tpm\mechanictype\MechanicTypeForClient.js" />
     <Content Include="Client\model\tpm\rollingvolume\RollingVolume.js" />
+    <Content Include="Client\model\tpm\rsmode\DeletedRSmode.js" />
     <Content Include="Client\model\tpm\rsmode\RSmode.js" />
     <Content Include="Client\util\MinHeightColumn.js" />
     <Content Include="Client\view\tpm\actualcogstn\ActualCOGSTnEditor.js" />
@@ -428,6 +430,7 @@
     <Compile Include="Controllers\DeletedActualCOGSsController.cs" />
     <Compile Include="Controllers\DeletedActualCOGSTnsController.cs" />
     <Compile Include="Controllers\DeletedPlanCOGSTnsController.cs" />
+    <Compile Include="Controllers\DeletedRollingScenariosController.cs" />
     <Compile Include="Controllers\EventTypesController.cs" />
     <Compile Include="Controllers\HistoricalActualCOGSTnsController.cs" />
     <Compile Include="Controllers\DeletedActualTradeInvestmentsController.cs" />
@@ -1040,6 +1043,8 @@
     <Content Include="Client\view\tpm\promo\UserRolePromoEditor.js" />
     <Content Include="Client\view\tpm\rollingvolume\RollingVolume.js" />
     <Content Include="Client\view\tpm\rollingvolume\RollingVolumeEditor.js" />
+    <Content Include="Client\view\tpm\rsmode\DeletedRSmode.js" />
+    <Content Include="Client\view\tpm\rsmode\DeletedRSmodeDetail.js" />
     <Content Include="Client\view\tpm\rsmode\RSmode.js" />
     <Content Include="Client\view\tpm\schedule\ClientPromoTypeFilter.js" />
     <Content Include="Client\view\tpm\schedule\ScheduleType.js" />
