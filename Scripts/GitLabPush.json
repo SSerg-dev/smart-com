@@ -20,6 +20,11 @@
 		, ".git"
 		, ".gitignore"
 		
+		, "Web.config"
+		, "Web.config.test"
+		, "App.config"
+		, "App.config.test"
+		
 		, "Web.config.azure"
 		, "ApplicationInsights.config.azure"
 		, "App.config.azure"
