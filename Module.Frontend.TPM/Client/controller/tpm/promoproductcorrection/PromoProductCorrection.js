@@ -578,7 +578,29 @@
                         updBtn.setDisabled(false);
                         delBtn = thisGrid.up().down('custombigtoolbar').down('#deletebutton');
                         delBtn.setDisabled(false);
-                    };
+                } else if (selected[0].data.PromoStatusName != "Draft"  || 
+                        selected[0].data.PromoStatusName != "Planned"   || 
+                        selected[0].data.PromoStatusName != "Started"   || 
+                        selected[0].data.PromoStatusName != "Finished"  ||
+                        selected[0].data.PromoStatusName != "Closed"    ||
+                        selected[0].data.PromoStatusName != "Cancelled") {
+                            updBtn = thisGrid.up().down('custombigtoolbar').down('#updatebutton');
+                            updBtn.setDisabled(false);
+                            delBtn = thisGrid.up().down('custombigtoolbar').down('#deletebutton');
+                            delBtn.setDisabled(false);
+                } else if (!selected[0].data.IsGrowthAcceleration || 
+                          !selected[0].data.IsInExchange) {
+                            updBtn = thisGrid.up().down('custombigtoolbar').down('#updatebutton');
+                            updBtn.setDisabled(false);
+                            delBtn = thisGrid.up().down('custombigtoolbar').down('#deletebutton');
+                            delBtn.setDisabled(false);
+                        }
+                } else {
+                        updBtn = thisGrid.up().down('custombigtoolbar').down('#updatebutton');
+                        updBtn.setDisabled(false);
+                        delBtn = thisGrid.up().down('custombigtoolbar').down('#deletebutton');
+                        delBtn.setDisabled(false);  
+                }                
             }
         }
     }

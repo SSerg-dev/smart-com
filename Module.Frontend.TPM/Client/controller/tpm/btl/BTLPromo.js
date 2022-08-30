@@ -442,6 +442,10 @@
                          selected[0].data.PromoStatusName != "Approved") {
                     Ext.ComponentQuery.query('btlpromo')[0].down('#deletebutton').enable();
                 }
+                else if (!selected[0].data.IsGrowthAcceleration || 
+                        !selected[0].data.IsInExchange) {
+                    Ext.ComponentQuery.query('btlpromo')[0].down('#deletebutton').enable();
+                }
                 else {
                     Ext.ComponentQuery.query('btlpromo')[0].down('#deletebutton').disable();
                 }

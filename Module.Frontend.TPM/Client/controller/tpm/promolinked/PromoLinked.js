@@ -578,11 +578,17 @@
                     new Date(selected[0].data.PromoDispatchStartDate) <= new Date(startEndModel.EndDate)) {
                         Ext.ComponentQuery.query('promolinkedticosts')[0].down('#deletebutton').enable();
                 }
-                else if (selected[0].data.PromoStatusName != "Closed" || 
-                         selected[0].data.PromoStatusName != "Draft(published)" || 
-                         selected[0].data.PromoStatusName != "On Approval" || 
-                         selected[0].data.PromoStatusName != "Approved") {
+                else if (selected[0].data.PromoStatusName != "Draft"    || 
+                        selected[0].data.PromoStatusName != "Planned"   || 
+                        selected[0].data.PromoStatusName != "Started"   || 
+                        selected[0].data.PromoStatusName != "Finished"  ||
+                        selected[0].data.PromoStatusName != "Closed"    ||
+                        selected[0].data.PromoStatusName != "Cancelled") {
                     Ext.ComponentQuery.query('promolinkedticosts')[0].down('#deletebutton').enable();
+                }
+                else if (!selected[0].data.IsGrowthAcceleration || 
+                        !selected[0].data.IsInExchange) {
+                        Ext.ComponentQuery.query('promolinkedticosts')[0].down('#deletebutton').enable();
                 }
                 else {
                     Ext.ComponentQuery.query('promolinkedticosts')[0].down('#deletebutton').disable();
