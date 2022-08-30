@@ -186,7 +186,7 @@
         'ApproveClosePromoWindow': 'Confirm closing',
         'Competitor': 'Competitor',
         'CompetitorBrandTech': 'Competitor BrandTech',
-        'RSmode': 'RS'
+        'RSmode': 'RS',
         'CompetitorPromo': 'Competitor Promo',
         'EventType': 'Event Types'
     },
