@@ -3107,6 +3107,10 @@
     <Compile Include="Migrations\202208291125478_Add_Promo_CascadeDelete.Designer.cs">
       <DependentUpon>202208291125478_Add_Promo_CascadeDelete.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202208301306233_Add_Promo_CascadeDelete_Some.cs" />
+    <Compile Include="Migrations\202208301306233_Add_Promo_CascadeDelete_Some.Designer.cs">
+      <DependentUpon>202208301306233_Add_Promo_CascadeDelete_Some.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
@@ -3242,6 +3246,7 @@
     <Compile Include="Model\SimpleModel\StartEndModel.cs" />
     <Compile Include="Model\SimpleModel\YEAR_END_ESTIMATE_FDM.cs" />
     <Compile Include="Model\TPM\COGSTn.cs" />
+    <Compile Include="Model\TPM\CurrentDayIncremental.cs" />
     <Compile Include="Model\TPM\EventType.cs" />
     <Compile Include="Model\TPM\RollingScenario.cs" />
     <Compile Include="Model\TPM\TechnologyExport.cs" />
@@ -5873,6 +5878,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202208291125478_Add_Promo_CascadeDelete.resx">
       <DependentUpon>202208291125478_Add_Promo_CascadeDelete.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202208301306233_Add_Promo_CascadeDelete_Some.resx">
+      <DependentUpon>202208301306233_Add_Promo_CascadeDelete_Some.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -190,9 +190,6 @@
             }
         });
     },
-    onGetCanceledButtonClick: function (button) {
-        debugger;
-    },
     getVisibleButton: function (rollingScenarioId) {
         $.ajax({
             dataType: 'json',

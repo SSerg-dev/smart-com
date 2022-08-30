@@ -345,6 +345,8 @@ namespace Module.Persist.TPM.Model.TPM
         public ICollection<PromoSupportPromo> PromoSupportPromoes { get; set; }
         public ICollection<PromoUpliftFailIncident> PromoUpliftFailIncidents { get; set; }
         public ICollection<BTLPromo> BTLPromoes { get; set; }
+        public ICollection<PromoOnApprovalIncident> PromoOnApprovalIncidents { get; set; }
+        public ICollection<CurrentDayIncremental> CurrentDayIncrementals { get; set; }
 
         /// <summary>
         /// Copy Constructor

@@ -137,15 +137,8 @@ namespace Module.Frontend.TPM.Controllers
 
             if (role.SystemName == "KeyAccountManager" || role.SystemName == "Administrator")
             {
-                RollingScenario RS = Context.Set<RollingScenario>()
-                    .Include(g => g.PromoStatus)
-                    .FirstOrDefault(g => g.Id == rollingScenarioId);
-                PromoStatus promoStatusOnApproval = Context.Set<PromoStatus>().FirstOrDefault(v => v.SystemName == "OnApproval");
-                RS.IsSendForApproval = true;
-                RS.PromoStatus = promoStatusOnApproval;
-                Context.SaveChanges();
+                RSPeriodHelper.OnApprovalRSPeriod(rollingScenarioId, Context);
                 return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
-
             }
             else
             {
@@ -164,14 +157,24 @@ namespace Module.Frontend.TPM.Controllers
 
             if (role.SystemName == "CMManager" || role.SystemName == "Administrator")
             {
-                RollingScenario RS = Context.Set<RollingScenario>()
-                    .Include(g => g.PromoStatus)
-                    .FirstOrDefault(g => g.Id == rollingScenarioId);
-                PromoStatus promoStatusApproved = Context.Set<PromoStatus>().FirstOrDefault(v => v.SystemName == "Approved");
-                RS.IsCMManagerApproved = true;
-                RS.PromoStatus = promoStatusApproved;
-                Context.SaveChanges();
-                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
+                
+                using (var transaction = Context.Database.BeginTransaction())
+                {
+                    try
+                    {
+
+                        RSPeriodHelper.ApproveRSPeriod(rollingScenarioId, Context);
+
+                        transaction.Commit();
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
+                    }
+                    catch (Exception e)
+                    {
+                        transaction.Rollback();
+                        return InternalServerError(e);
+                    }
+
+                }
 
             }
             else

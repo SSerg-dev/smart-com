@@ -1,4 +1,6 @@
-﻿using Module.Persist.TPM.Model.SimpleModel;
+﻿using AutoMapper;
+using Module.Persist.TPM.Model.Interfaces;
+using Module.Persist.TPM.Model.SimpleModel;
 using Module.Persist.TPM.Model.TPM;
 using Persist;
 using Persist.Model.Settings;
@@ -71,14 +73,6 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                 CreateRSPeriod(promo, Context);
             }
         }
-        public static void EditRSPeriod(Promo promo, DatabaseContext Context)
-        {
-
-        }
-        public static void EditRSPeriod(List<Promo> promoes, DatabaseContext Context)
-        {
-
-        }
         public static void DeleteRSPeriod(Guid rollingScenarioId, DatabaseContext Context)
         {
             RollingScenario rollingScenario = Context.Set<RollingScenario>()
@@ -93,17 +87,254 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
             Context.Set<Promo>().RemoveRange(rollingScenario.Promoes);
             Context.SaveChanges();
         }
+        public static void OnApprovalRSPeriod(Guid rollingScenarioId, DatabaseContext Context)
+        {
+            RollingScenario RS = Context.Set<RollingScenario>()
+                    .Include(g => g.PromoStatus)
+                    .FirstOrDefault(g => g.Id == rollingScenarioId);
+            PromoStatus promoStatusOnApproval = Context.Set<PromoStatus>().FirstOrDefault(v => v.SystemName == "OnApproval");
+            RS.IsSendForApproval = true;
+            RS.PromoStatus = promoStatusOnApproval;
+            Context.SaveChanges();
+        }
         public static void MassApproveRSPeriod(List<RollingScenario> rollingScenarios, DatabaseContext Context)
         {
 
         }
-        public static void ApproveRSPeriod(RollingScenario rollingScenario, DatabaseContext Context)
+        public static void ApproveRSPeriod(Guid rollingScenarioId, DatabaseContext Context)
         {
-
+            RollingScenario RS = Context.Set<RollingScenario>()
+                    .Include(g => g.PromoStatus)
+                    .Include(g => g.Promoes)
+                    .FirstOrDefault(g => g.Id == rollingScenarioId);
+            List<Guid> PromoRSIds = RS.Promoes.Select(f => f.Id).ToList();
+            if (Context.Set<BlockedPromo>().Any(x => x.Disabled == false && PromoRSIds.Contains(x.PromoId)))
+            {
+                throw new System.Web.HttpException("there is a blocked Promo");
+            }
+            PromoStatus promoStatusApproved = Context.Set<PromoStatus>().FirstOrDefault(v => v.SystemName == "Approved");
+            RS.IsCMManagerApproved = true;
+            RS.PromoStatus = promoStatusApproved;
+            CopyBackPromoes(RS.Promoes.ToList(), Context);
+            DeleteRSPeriod(rollingScenarioId, Context);
+            Context.SaveChanges();
         }
-        public static void OnApprovalRSPeriod(RollingScenario rollingScenario, DatabaseContext Context)
-        {
 
+        public static void CopyBackPromoes(List<Promo> promoesRS, DatabaseContext Context)
+        {
+            var cfgPromoBack = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<Promo, Promo>()
+                    .ForMember(pTo => pTo.Id, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.TPMmode, opt => opt.Ignore())
+                    //.ForMember(pTo => pTo.Disabled, opt => opt.Ignore())
+                    //.ForMember(pTo => pTo.DeletedDate, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.BTLPromoes, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.Brand, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.Technology, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.BrandTech, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ClientTree, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoStatus, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.MarsMechanic, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PlanInstoreMechanic, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.MarsMechanicType, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PlanInstoreMechanicType, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoTypes, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.Color, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.RejectReason, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.Event, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualInStoreMechanic, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualInStoreMechanicType, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.MasterPromo, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoUpliftFailIncidents, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoSupportPromoes, opt => opt.Ignore())//filter
+                    .ForMember(pTo => pTo.PromoStatusChanges, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoProductTrees, opt => opt.Ignore())//filter
+                    .ForMember(pTo => pTo.PreviousDayIncrementals, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.IncrementalPromoes, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoProducts, opt => opt.Ignore())//filter
+                    .ForMember(pTo => pTo.Promoes, opt => opt.Ignore());
+            });
+            var mapperPromoBack = cfgPromoBack.CreateMapper();
+            var cfgBTLPromoBack = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<BTLPromo, BTLPromo>()
+                    .ForMember(pTo => pTo.Id, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.TPMmode, opt => opt.Ignore())
+                    //.ForMember(pTo => pTo.Disabled, opt => opt.Ignore())
+                    //.ForMember(pTo => pTo.DeletedDate, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.BTL, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ClientTree, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoId, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.Promo, opt => opt.Ignore());
+            });
+            var mapperBTLPromoBack = cfgBTLPromoBack.CreateMapper();
+            var cfgPromoSupportPromoBack = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<PromoSupportPromo, PromoSupportPromo>()
+                    .ForMember(pTo => pTo.Id, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.TPMmode, opt => opt.Ignore())
+                    //.ForMember(pTo => pTo.Disabled, opt => opt.Ignore())
+                    //.ForMember(pTo => pTo.DeletedDate, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoSupport, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.Promo, opt => opt.Ignore());
+            });
+            var mapperPromoSupportPromoBack = cfgPromoSupportPromoBack.CreateMapper();
+            var cfgPromoProductTreeBack = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<PromoProductTree, PromoProductTree>()
+                    .ForMember(pTo => pTo.Id, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.TPMmode, opt => opt.Ignore())
+                    //.ForMember(pTo => pTo.Disabled, opt => opt.Ignore())
+                    //.ForMember(pTo => pTo.DeletedDate, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.Promo, opt => opt.Ignore());
+            });
+            var mapperPromoProductTreeBack = cfgPromoProductTreeBack.CreateMapper();
+            var cfgPromoProductBack = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<PromoProduct, PromoProduct>()
+                    .ForMember(pTo => pTo.Id, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.TPMmode, opt => opt.Ignore())
+                    //.ForMember(pTo => pTo.Disabled, opt => opt.Ignore())
+                    //.ForMember(pTo => pTo.DeletedDate, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.Promo, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.Product, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.Plu, opt => opt.Ignore());
+            });
+            var mapperPromoProductBack = cfgPromoProductBack.CreateMapper();
+            var cfgPromoProductsCorrectionBack = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<PromoProductsCorrection, PromoProductsCorrection>()
+                    .ForMember(pTo => pTo.Id, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.TPMmode, opt => opt.Ignore())
+                    //.ForMember(pTo => pTo.Disabled, opt => opt.Ignore())
+                    //.ForMember(pTo => pTo.DeletedDate, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoProduct, opt => opt.Ignore());
+            });
+            var mapperPromoProductsCorrectionBack = cfgPromoProductsCorrectionBack.CreateMapper();
+            var cfgIncrementalPromoBack = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<IncrementalPromo, IncrementalPromo>()
+                    .ForMember(pTo => pTo.Id, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.TPMmode, opt => opt.Ignore())
+                    //.ForMember(pTo => pTo.Disabled, opt => opt.Ignore())
+                    //.ForMember(pTo => pTo.DeletedDate, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.Promo, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.Product, opt => opt.Ignore());
+            });
+            var mapperIncrementalPromoBack = cfgIncrementalPromoBack.CreateMapper();
+
+            List<Guid> promoRSids = promoesRS.Select(h => h.Id).ToList();
+            promoesRS = Context.Set<Promo>()
+                    .Include(g => g.BTLPromoes)
+                    .Include(g => g.PromoSupportPromoes)
+                    .Include(g => g.PromoProductTrees)
+                    .Include(g => g.IncrementalPromoes)
+                    .Include(x => x.PromoProducts.Select(y => y.PromoProductsCorrections))
+                .Where(x => promoRSids.Contains(x.Id)).ToList();
+
+            List<int> promoRSnumbers = promoesRS.Select(h => h.Number).Cast<int>().ToList();
+            List<Promo> promos = Context.Set<Promo>()
+                    .Include(g => g.BTLPromoes)
+                    .Include(g => g.PromoSupportPromoes)
+                    .Include(g => g.PromoProductTrees)
+                    .Include(g => g.IncrementalPromoes)
+                    .Include(x => x.PromoProducts.Select(y => y.PromoProductsCorrections))
+                .Where(x => promoRSnumbers.Contains((int)x.Number) && x.TPMmode == TPMmode.Current).ToList();
+            List<int> numbers = promos.Select(g => g.Number).Cast<int>().ToList();
+            foreach (Promo promoRS in promoesRS)
+            {
+                if (numbers.Contains((int)promoRS.Number)) // существующий
+                {
+                    Promo promo = promos.FirstOrDefault(g => g.Number == promoRS.Number);
+                    mapperPromoBack.Map(promoRS, promo);
+                    foreach (BTLPromo bTLPromoRS in promoRS.BTLPromoes) 
+                    {
+                        if (promo.BTLPromoes.Select(g=>g.BTLId).Contains(bTLPromoRS.BTLId)) // существующий btlpromo
+                        {
+                            BTLPromo bTLPromo = promo.BTLPromoes.FirstOrDefault(g => g.BTLId == bTLPromoRS.BTLId);
+                            mapperBTLPromoBack.Map(bTLPromoRS, bTLPromo);
+                            bTLPromo.PromoId = promo.Id;
+                            bTLPromo.Promo = promo;
+                        }
+                        else // новый btlpromo
+                        {
+                            bTLPromoRS.PromoId = promo.Id;
+                            bTLPromoRS.Promo = promo;
+                            bTLPromoRS.TPMmode = TPMmode.Current;
+                        }
+                    }
+                    foreach (PromoSupportPromo promoSupportPromoRS in promoRS.PromoSupportPromoes)
+                    {
+                        if (promo.PromoSupportPromoes.Select(g => g.PromoSupportId).Contains(promoSupportPromoRS.PromoSupportId)) // существующий PromoSupportPromo
+                        {
+                            PromoSupportPromo promoSupportPromo = promo.PromoSupportPromoes.FirstOrDefault(g => g.PromoSupportId == promoSupportPromoRS.PromoSupportId);
+                            mapperPromoSupportPromoBack.Map(promoSupportPromoRS, promoSupportPromo);
+                            promoSupportPromo.PromoId = promo.Id;
+                            promoSupportPromo.Promo = promo;
+                        }
+                        else // новый PromoSupportPromo
+                        {
+                            promoSupportPromoRS.PromoId = promo.Id;
+                            promoSupportPromoRS.Promo = promo;
+                            promoSupportPromoRS.TPMmode = TPMmode.Current;
+                        }
+                    }
+                    foreach (IncrementalPromo incrementalPromoRS in promoRS.IncrementalPromoes)
+                    {
+                        if (promo.IncrementalPromoes.Select(g => g.ProductId).Contains(incrementalPromoRS.ProductId)) // существующий IncrementalPromo
+                        {
+                            IncrementalPromo incrementalPromo = promo.IncrementalPromoes.FirstOrDefault(g => g.ProductId == incrementalPromoRS.ProductId);
+                            mapperIncrementalPromoBack.Map(incrementalPromoRS, incrementalPromo);
+                            incrementalPromo.PromoId = promo.Id;
+                            incrementalPromo.Promo = promo;
+                        }
+                        else // новый IncrementalPromo
+                        {
+                            incrementalPromoRS.PromoId = promo.Id;
+                            incrementalPromoRS.Promo = promo;
+                            incrementalPromoRS.TPMmode = TPMmode.Current;
+                        }
+                    }
+                    foreach (PromoProductTree promoProductTreeRS in promoRS.PromoProductTrees)
+                    {
+                        if (promo.PromoProductTrees.Select(g => g.ProductTreeObjectId).Contains(promoProductTreeRS.ProductTreeObjectId)) // существующий PromoProductTree
+                        {
+                            PromoProductTree promoProductTree = promo.PromoProductTrees.FirstOrDefault(g => g.ProductTreeObjectId == promoProductTreeRS.ProductTreeObjectId);
+                            mapperPromoProductTreeBack.Map(promoProductTreeRS, promoProductTree);
+                            promoProductTree.PromoId = promo.Id;
+                            promoProductTree.Promo = promo;
+                        }
+                        else // новый PromoProductTree
+                        {
+                            promoProductTreeRS.PromoId = promo.Id;
+                            promoProductTreeRS.Promo = promo;
+                            promoProductTreeRS.TPMmode = TPMmode.Current;
+                        }
+                    }
+                    foreach (PromoProduct promoProductRS in promoRS.PromoProducts)
+                    {
+                        if (promo.PromoProducts.Select(g => g.ProductId).Contains(promoProductRS.ProductId)) // существующий PromoProduct
+                        {
+                            PromoProduct promoProduct = promo.PromoProducts.FirstOrDefault(g => g.ProductId == promoProductRS.ProductId);
+                            mapperPromoProductBack.Map(promoProductRS, promoProduct);
+                            promoProduct.PromoId = promo.Id;
+                            promoProduct.Promo = promo;
+                        }
+                        else // новый PromoProduct
+                        {
+                            promoProductRS.PromoId = promo.Id;
+                            promoProductRS.Promo = promo;
+                            promoProductRS.TPMmode = TPMmode.Current;
+                        }
+                    }
+                }
+                else // новый
+                {
+
+                }
+            }
+            Context.SaveChanges();
         }
     }
 }

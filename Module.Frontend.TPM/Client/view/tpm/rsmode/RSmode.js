@@ -72,13 +72,13 @@
                 text: 'Send for approval ',
                 tooltip: 'Send for approval '
             },
-            {
-                itemId: 'massapprovebutton',
-                action: 'MassApprove',
-                glyph: 0xf0d7,
-                text: l10n.ns('tpm', 'Promo').value('MassApprovalButtonText'),
-                tooltip: l10n.ns('tpm', 'Promo').value('MassApprovalButtonText')
-            },
+            //{
+            //    itemId: 'massapprovebutton',
+            //    action: 'MassApprove',
+            //    glyph: 0xf0d7,
+            //    text: l10n.ns('tpm', 'Promo').value('MassApprovalButtonText'),
+            //    tooltip: l10n.ns('tpm', 'Promo').value('MassApprovalButtonText')
+            //},
             {
                 itemId: 'approvebutton',
                 action: 'Approve',
