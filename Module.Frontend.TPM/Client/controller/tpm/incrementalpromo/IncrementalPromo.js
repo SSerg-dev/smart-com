@@ -113,26 +113,27 @@
             var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
             const tpmMode = settingStore.findRecord('name', 'mode').data.value;
             if (tpmMode == 1) {
-                if (new Date(selected[0].data.PromoDispatchStartDate) > new Date(startEndModel.StartDate) &&
-                    new Date(selected[0].data.PromoDispatchStartDate) <= new Date(startEndModel.EndDate)) {
+                if (
+                    (
+                        new Date(selected[0].data.PromoDispatchStartDate) > new Date(startEndModel.StartDate) &&
+                        new Date(selected[0].data.PromoDispatchStartDate) <= new Date(startEndModel.EndDate)
+                    ) &&
+                    (
+                        selected[0].data.PromoStatusName != "Draft" &&
+                        selected[0].data.PromoStatusName != "Planned" &&
+                        selected[0].data.PromoStatusName != "Started" &&
+                        selected[0].data.PromoStatusName != "Finished" &&
+                        selected[0].data.PromoStatusName != "Closed" &&
+                        selected[0].data.PromoStatusName != "Cancelled"
+                    ) &&
+                    (
+                        !selected[0].data.IsGrowthAcceleration ||
+                        !selected[0].data.IsInExchange
+                    )
+                ) {
                     Ext.ComponentQuery.query('incrementalpromo')[0].down('#updatebutton').enable();
                     this.canEditInRSmode = true;
-                }
-                else if (selected[0].data.PromoStatusName != "Draft"    || 
-                        selected[0].data.PromoStatusName != "Planned"   || 
-                        selected[0].data.PromoStatusName != "Started"   || 
-                        selected[0].data.PromoStatusName != "Finished"  ||
-                        selected[0].data.PromoStatusName != "Closed"    ||
-                        selected[0].data.PromoStatusName != "Cancelled") {
-                    Ext.ComponentQuery.query('incrementalpromo')[0].down('#updatebutton').enable();
-                    this.canEditInRSmode = true;
-                }
-                else if (!selected[0].data.IsGrowthAcceleration || 
-                        !selected[0].data.IsInExchange) {
-                    Ext.ComponentQuery.query('incrementalpromo')[0].down('#updatebutton').enable();
-                    this.canEditInRSmode = true;
-                }
-                else {
+                } else {
                     Ext.ComponentQuery.query('incrementalpromo')[0].down('#updatebutton').disable();
                     this.canEditInRSmode = false;
                 }
