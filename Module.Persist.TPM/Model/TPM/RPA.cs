@@ -32,8 +32,5 @@ namespace Module.Persist.TPM.Model.TPM
 
         [Column(TypeName = "NVARCHAR(MAX)")]        
         public string FileURL { get; set; }
-
-        [Column(TypeName = "NVARCHAR(MAX)")]        
-        public string LogURL { get; set; }
     }
 }

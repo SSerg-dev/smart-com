@@ -5,6 +5,7 @@ using Interfaces.Implementation.Action;
 using Interfaces.Implementation.Import.FullImport;
 using Looper.Parameters;
 using Module.Frontend.TPM.Controllers;
+using Module.Host.TPM.Util;
 using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.Import;
 using Module.Persist.TPM.Model.TPM;
@@ -27,7 +28,8 @@ using Utility.Import.Cache;
 using Utility.Import.ImportModelBuilder;
 using Utility.Import.ModelBuilder;
 
-namespace Module.Host.TPM.Actions {
+namespace Module.Host.TPM.Actions
+{
 
     /// <summary>
     /// Переопределение Action из ядра приложения
@@ -135,7 +137,7 @@ namespace Module.Host.TPM.Actions {
             IList<Tuple<string, string>> buildErrors;
             IList<Tuple<IEntity<Guid>, string>> validateErrors;
             logger.Trace("before parse file");
-            IList<IEntity<Guid>> records = ImportUtility.ParseXLSXFile(importFilePath, null, builder, validator, Separator, Quote, HasHeader, out sourceRecordCount, out errors, out buildErrors, out validateErrors);
+            IList<IEntity<Guid>> records = ImportUtilityTPM.ParseXLSXFile(importFilePath, null, builder, validator, Separator, Quote, HasHeader, out sourceRecordCount, out errors, out buildErrors, out validateErrors);
             logger.Trace("after parse file");
 
             // Обработать ошибки

@@ -337,6 +337,7 @@
     <Compile Include="Actions\DataLakeIntegrationActions\MarsProductsCheckAction.cs" />
     <Compile Include="Actions\DataLakeIntegrationActions\MarsCustomersCheckAction.cs" />
     <Compile Include="Actions\FullXLSXAssortmentMatrixImportAction.cs" />
+    <Compile Include="Actions\FullXLSXRPAEventImportAction.cs" />
     <Compile Include="Actions\FullXLSXCompetitorPromoUpdateNewImportAction.cs" />
     <Compile Include="Actions\FullXLSXCOGSTnUpdateImportAction.cs" />
     <Compile Include="Actions\FullXLSXImportPromoDMPAction.cs" />
@@ -346,6 +347,9 @@
     <Compile Include="Actions\FullXLSXImportPromoProductFromTLCAction.cs" />
     <Compile Include="Actions\FullXLSXMechanicTypeUpdateImportAction.cs" />
     <Compile Include="Actions\FullXLSXImportNonPromoDMPAction.cs" />
+    <Compile Include="Actions\FullXLSXRPAActualEanPcImportAction.cs" />
+    <Compile Include="Actions\FullXLSXRpaActualPluImportAction.cs" />
+    <Compile Include="Actions\FullXLSXUpdateImportEventAction.cs" />
     <Compile Include="Actions\FullXLSXUpdateImportNonPromoEquipmentAction.cs" />
     <Compile Include="Actions\FullXLSXUpdateImportClientDashboardAction.cs" />
     <Compile Include="Actions\FullXLSXUpdateImportCoefficientSI2SOAction.cs" />
@@ -372,6 +376,8 @@
     <Compile Include="Actions\MassApproveAction.cs" />
     <Compile Include="Actions\ReapprovingAction.cs" />
     <Compile Include="Actions\RestartMainNightProcessingActions.cs" />
+    <Compile Include="Actions\FullXLSXRPAPromoSupportImportAction.cs" />
+    <Compile Include="Actions\FullXLSXRPANonPromoSupportImportAction.cs" />
     <Compile Include="Actions\SendingFilesToBlobAction.cs" />
     <Compile Include="Actions\SetCOGSPercentValuesAction.cs" />
     <Compile Include="Actions\SetTIBasePercentValuesAction.cs" />
@@ -487,6 +493,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\ConvertHelper.cs" />
     <Compile Include="Util\DispatcherLogger\BaseDispatcherLogger.cs" />
+    <Compile Include="Util\ImportUtilityTPM.cs" />
     <Compile Include="Util\Interface\IDispatcherLogInfo.cs" />
     <Compile Include="Util\Interface\IErrorLogger.cs" />
     <Compile Include="Util\Interface\ILogInfo.cs" />
@@ -518,7 +525,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Module.Frontend.TPM\Module.Frontend.TPM.csproj">
-      <Project>{70DE5780-2297-41FC-A861-D370F6FE631B}</Project>
+      <Project>{70de5780-2297-41fc-a861-d370f6fe631b}</Project>
       <Name>Module.Frontend.TPM</Name>
     </ProjectReference>
     <ProjectReference Include="..\Module.Persist.TPM\Module.Persist.TPM.csproj">
@@ -526,7 +533,6 @@
       <Name>Module.Persist.TPM</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

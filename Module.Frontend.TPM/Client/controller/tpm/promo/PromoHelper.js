@@ -318,7 +318,7 @@
                         if ((promo.IsCMManagerApproved === false || promo.IsCMManagerApproved === null)
                             && (promo.IsDemandPlanningApproved === false || promo.IsDemandPlanningApproved === null)
                             && (promo.IsDemandFinanceApproved === false || promo.IsDemandFinanceApproved === null))
-                            onApprovalState = 'CMManagerGAFirst';
+                            onApprovalState = 'CMManagerGA';
                         if (promo.IsCMManagerApproved === true
                             && (promo.IsDemandPlanningApproved === false || promo.IsDemandPlanningApproved === null)
                             && (promo.IsDemandFinanceApproved === false || promo.IsDemandFinanceApproved === null))
@@ -327,10 +327,10 @@
                             && promo.IsDemandPlanningApproved === true
                             && (promo.IsDemandFinanceApproved === false || promo.IsDemandFinanceApproved === null))
                             onApprovalState = 'DemandFinanceGA';
-                        if ((promo.IsCMManagerApproved === false || promo.IsCMManagerApproved === null)
+                        if (promo.IsCMManagerApproved === true
                             && promo.IsDemandPlanningApproved === true
                             && promo.IsDemandFinanceApproved === true)
-                            onApprovalState = 'CMManagerGASecond';
+                            onApprovalState = 'GAManagerGA';
                     }
                     else {
                         if (promo.IsCMManagerApproved == true
@@ -692,6 +692,58 @@
                         }
                     ]
                 },
+            ]
+        };
+
+        return filter;
+    },
+
+    getOnApprovalGAFilterGAM: function () {
+        var date = new Date();
+        date.setHours(date.getHours() + (date.getTimezoneOffset() / 60) + 3);
+
+        date = Ext.Date.add(date, Ext.Date.DAY, 9 * 7);
+
+        var filter = {
+            operator: "and",
+            rules: [
+                {
+                    property: "PromoStatusName", operation: "Equals", value: 'On Approval'
+                },
+                {
+                    property: "DispatchesStart", operation: "LessThan", value: date
+                },
+                {
+                    property: "IsCMManagerApproved", operation: "Equals", value: true
+                },
+                {
+                    property: "IsDemandPlanningApproved", operation: "Equals", value: true
+                },
+                {
+                    property: "IsDemandFinanceApproved", operation: "Equals", value: true
+                },
+                {
+                    operator: "or",
+                    rules: [
+                        {
+                            property: "IsGrowthAcceleration", operation: "Equals", value: true
+                        },
+                        {
+                            property: "IsInExchange", operation: "Equals", value: true
+                        },
+                    ]
+                },
+                {
+                    operator: "or",
+                    rules: [
+                        {
+                            property: "IsGAManagerApproved", operation: "Equals", value: null
+                        },
+                        {
+                            property: "IsGAManagerApproved", operation: "Equals", value: false
+                        }
+                    ]
+                }
             ]
         };
 

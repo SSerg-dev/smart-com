@@ -167,6 +167,8 @@
     'tpm.event.HistoricalEvent',
     'tpm.event.EventClientTree',
 
+    'tpm.eventtype.EventType',
+
     'tpm.nodetype.NodeType',
     'tpm.nodetype.DeletedNodeType',
     'tpm.nodetype.HistoricalNodeType',

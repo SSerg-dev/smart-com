@@ -34,27 +34,94 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Antlr3.Runtime, Version=3.4.1.9004, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.22.06201608\lib\net451\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.22.06201608\lib\net451\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="ElasticLinq, Version=1.4.3.0, Culture=neutral, PublicKeyToken=fad43a6f87827247, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.22.06201608\lib\net451\ElasticLinq.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework6.Npgsql, Version=3.1.1.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.22.06201608\lib\net451\EntityFramework6.Npgsql.dll</HintPath>
+    </Reference>
+    <Reference Include="History.ElasticSearch, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.22.06201608\lib\net451\History.ElasticSearch.dll</HintPath>
+    </Reference>
+    <Reference Include="History.Mongo, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.22.06201608\lib\net451\History.Mongo.dll</HintPath>
+    </Reference>
+    <Reference Include="History.RavenDB, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.22.06201608\lib\net451\History.RavenDB.dll</HintPath>
+    </Reference>
+    <Reference Include="LiteDB, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.22.06201608\lib\net451\LiteDB.dll</HintPath>
+    </Reference>
+    <Reference Include="Npgsql, Version=3.2.3.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.22.06201608\lib\net451\Npgsql.dll</HintPath>
+    </Reference>
+    <Reference Include="NSubstitute, Version=4.2.0.0, Culture=neutral, PublicKeyToken=92dd2e9066daa5ca, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.22.06201608\lib\net451\NSubstitute.dll</HintPath>
+    </Reference>
+    <Reference Include="ProcessingHost, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.22.06201608\lib\net451\ProcessingHost.dll</HintPath>
+    </Reference>
+    <Reference Include="Raven.Abstractions, Version=3.0.0.0, Culture=neutral, PublicKeyToken=37f41c7f99471593, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.22.06201608\lib\net451\Raven.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Raven.Client.Lightweight, Version=3.0.0.0, Culture=neutral, PublicKeyToken=37f41c7f99471593, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.22.06201608\lib\net451\Raven.Client.Lightweight.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.22.06201608\lib\net451\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.22.06201608\lib\net451\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.1.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.22.06201608\lib\net451\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="WebGrease, Version=1.5.2.14234, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Common.0.1.22.06201608\lib\net451\WebGrease.dll</HintPath>
+    </Reference>
+    <Reference Include="WindowsBase, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\RodMApp.Core.TPM.Host.0.1.22.06201608\lib\net451\WindowsBase.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
+    <None Include="App.config.template" />
+    <None Include="EmailNotificationSettings.xml.template" />
     <None Include="FrontendMODULENAMEModule.cs.template" />
     <None Include="FrontendMODULENAMEModuleRegistrator.cs.template" />
     <None Include="HostMODULENAMEModule.cs.template" />
     <None Include="HostMODULENAMEModuleRegistrator.cs.template" />
+    <None Include="InterfacesMigrationSettings.xml.template" />
     <None Include="packages.config" />
+    <None Include="PersistMigrationSettings.xml.template" />
     <None Include="PersistMODULENAMEModule.cs.template" />
     <None Include="PersistMODULENAMEModuleRegistrator.cs.template" />
+    <None Include="ProcessingService.cs.template" />
+    <None Include="ProcessingService.Designer.cs.template" />
+    <None Include="ProcessingServiceInstaller.cs.template" />
+    <None Include="Program.cs.template" />
+    <None Include="Tools\ServiceInstall.cmd" />
+    <None Include="Tools\ServiceUninstall.cmd" />
+    <None Include="Tools\UpdateDatabase_Interfaces.cmd" />
+    <None Include="Tools\UpdateDatabase_Persist.cmd" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

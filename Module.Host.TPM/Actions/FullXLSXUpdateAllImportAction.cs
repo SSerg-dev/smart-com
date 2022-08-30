@@ -16,6 +16,12 @@ using Module.Persist.TPM.Utils;
 using Module.Frontend.TPM.Util;
 using System.Text.RegularExpressions;
 using Module.Frontend.TPM.Controllers;
+using Utility.FileWorker;
+using Core.Settings;
+using System.IO;
+using Utility.Import.ImportModelBuilder;
+using Utility.Import;
+using Module.Host.TPM.Util;
 
 namespace Module.Host.TPM.Actions
 {
@@ -27,6 +33,44 @@ namespace Module.Host.TPM.Actions
         {
             TypeTo = type;
             UniqueProperties = uniqueProperties;
+        }
+
+        /// <summary>
+        /// Выполнить разбор файла импорта
+        /// </summary>
+        /// <returns></returns>
+        protected override IList<IEntity<Guid>> ParseImportFile()
+        {
+            var fileDispatcher = new FileDispatcher();
+            string importDir = AppSettingsManager.GetSetting<string>("IMPORT_DIRECTORY", "ImportFiles");
+            string importFilePath = Path.Combine(importDir, ImportFile.Name);
+            if (!fileDispatcher.IsExists(importDir, ImportFile.Name))
+            {
+                throw new Exception("Import File not found");
+            }
+
+            IImportModelBuilder<string[]> builder = ImportModelFactory.GetCSVImportModelBuilder(ImportType);
+            IImportValidator validator = ImportModelFactory.GetImportValidator(ImportType);
+            int sourceRecordCount;
+            List<string> errors;
+            IList<Tuple<string, string>> buildErrors;
+            IList<Tuple<IEntity<Guid>, string>> validateErrors;
+            logger.Trace("before parse file");
+            IList<IEntity<Guid>> records = ImportUtilityTPM.ParseXLSXFile(importFilePath, null, builder, validator, Separator, Quote, HasHeader, out sourceRecordCount, out errors, out buildErrors, out validateErrors);
+            logger.Trace("after parse file");
+
+            // Обработать ошибки
+            foreach (string err in errors)
+            {
+                Errors.Add(err);
+            }
+            if (errors.Any())
+            {
+                HasErrors = true;
+                throw new ImportException("An error occurred while loading the import file.");
+            }
+
+            return records;
         }
 
         //проверки в соответствии с типом
@@ -108,12 +152,6 @@ namespace Module.Host.TPM.Actions
             {
                 Color typedRec = (Color)rec;
                 if (String.IsNullOrEmpty(typedRec.SystemName)) { errors.Add("Color RGB must have a value"); isSuitable = false; }
-            }
-
-            if (TypeTo == typeof(Event))
-            {
-                Event typedRec = (Event)rec;
-                if (String.IsNullOrEmpty(typedRec.Name)) { errors.Add("Event must have a value"); isSuitable = false; }
             }
 
             if (TypeTo == typeof(NodeType))
@@ -233,7 +271,7 @@ namespace Module.Host.TPM.Actions
                             newRecord.Id = oldRecord.Id;
                             toHisUpdate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(oldRecord, newRecord));
                             toUpdate.Add(newRecord);
-                        }                  
+                        }
                     }
                 }
             }
@@ -309,10 +347,6 @@ namespace Module.Host.TPM.Actions
             else if (TypeTo == typeof(Color))
             {
                 query = context.Set<Color>().AsNoTracking();
-            }
-            else if (TypeTo == typeof(Event))
-            {
-                query = context.Set<Event>().AsNoTracking();
             }
             else if (TypeTo == typeof(NodeType))
             {
@@ -428,7 +462,7 @@ namespace Module.Host.TPM.Actions
                 case "g":
                     product.CaseVolume = Math.Round(product.NetWeight.Value / 1000000, 7);
                     product.PCVolume = Math.Round(product.CaseVolume.Value / product.UOM_PC2Case.Value, 7);
-                    break;              
+                    break;
             }
             return (IEntity<Guid>)product;
         }

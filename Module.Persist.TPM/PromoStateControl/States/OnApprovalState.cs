@@ -17,7 +17,7 @@ namespace Module.Persist.TPM.PromoStateControl
 
             private readonly string Name = "OnApproval";
 
-            private readonly List<string> Roles = new List<string> { "Administrator", "CMManager", "CustomerMarketing", "FunctionalExpert", "KeyAccountManager", "DemandPlanning", "DemandFinance" };
+            private readonly List<string> Roles = new List<string> { "Administrator", "CMManager", "CustomerMarketing", "FunctionalExpert", "KeyAccountManager", "DemandPlanning", "DemandFinance", "GAManager" };
 
             public OnApprovalState(PromoStateContext stateContext)
             {
@@ -88,6 +88,7 @@ namespace Module.Persist.TPM.PromoStateControl
                         promoModel.IsCMManagerApproved = false;
                         promoModel.IsDemandPlanningApproved = false;
                         promoModel.IsDemandFinanceApproved = false;
+                        promoModel.IsGAManagerApproved = false;
                         _stateContext.Model = promoModel;
                         _stateContext.State = _stateContext._draftPublishedState;
 
@@ -115,45 +116,20 @@ namespace Module.Persist.TPM.PromoStateControl
                         switch (userRole)
                         {
                             case "CMManager":
-                                if (!promoModel.IsGrowthAcceleration && !promoModel.IsInExchange)
-                                {
-                                    promoModel.IsCMManagerApproved = true;
+                                promoModel.IsCMManagerApproved = true;
 
-                                    // Закрываем все неактуальные инциденты
-                                    foreach (var incident in oldIncidents)
-                                    {
-                                        incident.ProcessDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
-                                    }
-                                    _stateContext.dbContext.Set<PromoOnApprovalIncident>().Add(new PromoOnApprovalIncident()
-                                    {
-                                        CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                                        PromoId = promoModel.Id,
-                                        Promo = promoModel,
-                                        ApprovingRole = "DemandPlanning"
-                                    });
-                                }
-                                else
+                                // Закрываем все неактуальные инциденты
+                                foreach (var incident in oldIncidents)
                                 {
-                                    promoModel.IsCMManagerApproved = true;
-
-                                    next = promoModel.IsDemandFinanceApproved.HasValue && promoModel.IsDemandFinanceApproved.Value
-                                            && promoModel.IsDemandPlanningApproved.HasValue && promoModel.IsDemandPlanningApproved.Value;
-                                    if (!next)
-                                    {
-                                        // Закрываем все неактуальные инциденты
-                                        foreach (var incident in oldIncidents)
-                                        {
-                                            incident.ProcessDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
-                                        }
-                                        _stateContext.dbContext.Set<PromoOnApprovalIncident>().Add(new PromoOnApprovalIncident()
-                                        {
-                                            CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                                            PromoId = promoModel.Id,
-                                            Promo = promoModel,
-                                            ApprovingRole = "DemandPlanning"
-                                        });
-                                    }
+                                    incident.ProcessDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
                                 }
+                                _stateContext.dbContext.Set<PromoOnApprovalIncident>().Add(new PromoOnApprovalIncident()
+                                {
+                                    CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                                    PromoId = promoModel.Id,
+                                    Promo = promoModel,
+                                    ApprovingRole = "DemandPlanning"
+                                });
                                 break;
 
                             case "DemandPlanning":
@@ -169,8 +145,7 @@ namespace Module.Persist.TPM.PromoStateControl
                                     {
                                         promoModel.IsDemandPlanningApproved = promoModel.IsCMManagerApproved;
                                         // если промо прошло проверку на NoNego, но не прошло на 8 недель, то решает только DemandPlanning
-                                        // и в этом случае IsCMManagerApproved и IsDemandFinanceApproved = true
-                                        next = promoModel.IsDemandFinanceApproved.HasValue && promoModel.IsDemandFinanceApproved.Value;
+                                        next = promoModel.IsGAManagerApproved.HasValue && promoModel.IsGAManagerApproved.Value;
                                         if (!promoModel.IsGrowthAcceleration && !promoModel.IsInExchange)
                                             next = promoModel.IsDemandPlanningApproved ?? false;
                                         // Если next = true, то финанса пропускаем
@@ -209,8 +184,7 @@ namespace Module.Persist.TPM.PromoStateControl
                                     {
                                         promoModel.IsDemandPlanningApproved = promoModel.IsCMManagerApproved;
                                         // если промо прошло проверку на NoNego, но не прошло на 8 недель, то решает только DemandPlanning
-                                        // и в этом случае IsCMManagerApproved и IsDemandFinanceApproved = true
-                                        next = promoModel.IsDemandFinanceApproved.HasValue && promoModel.IsDemandFinanceApproved.Value;
+                                        next = promoModel.IsGAManagerApproved.HasValue && promoModel.IsGAManagerApproved.Value;
                                         if (!promoModel.IsGrowthAcceleration && !promoModel.IsInExchange)
                                             next = promoModel.IsDemandPlanningApproved ?? false;
                                         // Если next = true, то финанса пропускаем
@@ -243,12 +217,36 @@ namespace Module.Persist.TPM.PromoStateControl
                                 if (promoModel.IsCMManagerApproved.HasValue && promoModel.IsDemandPlanningApproved.HasValue)
                                 {
                                     promoModel.IsDemandFinanceApproved = promoModel.IsCMManagerApproved.Value && promoModel.IsDemandPlanningApproved.Value;
-                                    next = promoModel.IsDemandFinanceApproved.Value;
+                                    next = promoModel.IsGAManagerApproved.HasValue && promoModel.IsGAManagerApproved.Value;
+                                    if (!promoModel.IsGrowthAcceleration && !promoModel.IsInExchange)
+                                        next = promoModel.IsDemandFinanceApproved ?? false;
+                                    if (promoModel.IsGrowthAcceleration || promoModel.IsInExchange)
+                                    {
+
+                                        foreach (var incident in oldIncidents)
+                                        {
+                                            incident.ProcessDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                                        }
+                                        _stateContext.dbContext.Set<PromoOnApprovalIncident>().Add(new PromoOnApprovalIncident()
+                                        {
+                                            CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                                            PromoId = promoModel.Id,
+                                            Promo = promoModel,
+                                            ApprovingRole = "GAManager"
+                                        });
+                                    }
+                                }
+                                break;
+
+                            case "GAManager":
+                                if (promoModel.IsCMManagerApproved.HasValue && promoModel.IsDemandPlanningApproved.HasValue && promoModel.IsDemandFinanceApproved.HasValue)
+                                {
+                                    promoModel.IsGAManagerApproved = promoModel.IsCMManagerApproved.Value && promoModel.IsDemandPlanningApproved.Value && promoModel.IsDemandFinanceApproved.Value;
+                                    next = promoModel.IsGAManagerApproved.Value;
 
                                     if (promoModel.IsGrowthAcceleration || promoModel.IsInExchange)
                                     {
-                                        promoModel.IsCMManagerApproved = false;
-                                        next = false;
+                                        next = true;
 
                                         foreach (var incident in oldIncidents)
                                         {
@@ -364,7 +362,7 @@ namespace Module.Persist.TPM.PromoStateControl
                     }
                     // Go to: DeletedState
                     else if (promoState == PromoStates.Deleted && promoModel.MasterPromoId != null)
-                    {                        
+                    {
                         return true;
                     }
                     else

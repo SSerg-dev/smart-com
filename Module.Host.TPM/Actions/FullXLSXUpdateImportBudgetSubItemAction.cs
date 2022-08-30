@@ -1,32 +1,26 @@
-﻿using Interfaces.Implementation.Import.FullImport;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Core.Data;
-using Persist;
-using Persist.ScriptGenerator;
+﻿using Core.Data;
+using Core.Extensions;
+using Core.Settings;
+using Interfaces.Implementation.Action;
+using Interfaces.Implementation.Import.FullImport;
+using Looper.Parameters;
+using Module.Host.TPM.Util;
 using Module.Persist.TPM.Model.Import;
 using Module.Persist.TPM.Model.TPM;
-using Core.Extensions;
-using Looper.Parameters;
-using Interfaces.Implementation.Action;
 using NLog;
-using Utility.Import;
-using Core.Settings;
-using System.IO;
-using Utility.Import.ImportModelBuilder;
+using Persist;
+using Persist.ScriptGenerator;
+using System;
 using System.Collections.Concurrent;
-using Utility.Import.ModelBuilder;
-using Utility.Import.Cache;
-using Utility.Import.Structure;
-using System.Reflection;
-using Persist.Extensions;
-using Core.Import;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using Utility.FileWorker;
+using Utility.Import;
 
-namespace Module.Host.TPM.Actions {
+namespace Module.Host.TPM.Actions
+{
     class FullXLSXUpdateImportBudgetSubItemAction : BaseAction {
         private readonly Guid UserId;
         private readonly Guid RoleId;
@@ -117,7 +111,7 @@ namespace Module.Host.TPM.Actions {
             IList<Tuple<string, string>> buildErrors;
             IList<Tuple<IEntity<Guid>, string>> validateErrors;
             logger.Trace("before parse file");
-            IList<IEntity<Guid>> records = ImportUtility.ParseXLSXFile(importFilePath, null, builder, validator, Separator, Quote, HasHeader, out sourceRecordCount, out errors, out buildErrors, out validateErrors);
+            IList<IEntity<Guid>> records = ImportUtilityTPM.ParseXLSXFile(importFilePath, null, builder, validator, Separator, Quote, HasHeader, out sourceRecordCount, out errors, out buildErrors, out validateErrors);
             logger.Trace("after parse file");
 
             // Обработать ошибки

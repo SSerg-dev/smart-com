@@ -423,4 +423,93 @@ namespace Module.Host.TPM.Handlers
             return new FullXLSXUpdateImportRollingVolumesAction(settings);
         }
     }
+    public class FullXLSXRPAEventImportHandler : FullXLSXImportHandler
+    { 
+        private Guid rpaId;
+        private Guid roleId;
+
+        public override void Action(HandlerInfo info, ExecuteData data)
+        {
+            rpaId = Looper.Parameters.HandlerDataHelper.GetIncomingArgument<Guid>("RPAId", info.Data, false);
+            base.Action(info, data);
+        }
+
+        protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
+        {
+            return new FullXLSXRPAEventImportAction(settings, rpaId);
+        }
+    }
+
+    public class FullXLSXRPAPromoSupportImportHandler: FullXLSXImportHandler
+    {
+        private Guid rpaId;
+        public override void Action(HandlerInfo info, ExecuteData data)
+        {
+            rpaId = Looper.Parameters.HandlerDataHelper.GetIncomingArgument<Guid>("RPAId", info.Data, false);
+            base.Action(info, data);
+        }
+        protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
+        {
+            return new FullXLSXRPAPromoSupportImportAction(settings, rpaId);
+        }
+    }
+
+    public class FullXLSXRPANonPromoSupportImportHandler : FullXLSXImportHandler
+    {
+        private Guid rpaId;
+        public override void Action(HandlerInfo info, ExecuteData data)
+        {
+            rpaId = Looper.Parameters.HandlerDataHelper.GetIncomingArgument<Guid>("RPAId", info.Data, false);
+            base.Action(info, data);
+        }
+        protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
+        {
+            return new FullXLSXRPANonPromoSupportImportAction(settings, rpaId);
+        }
+    }
+
+    public class FullXLSXRPAActualEANPCImportHandler: FullXLSXImportHandler
+    {
+        private Guid rpaId;
+        public override void Action(HandlerInfo info, ExecuteData data)
+        {
+            rpaId = Looper.Parameters.HandlerDataHelper.GetIncomingArgument<Guid>("RPAId", info.Data, false);
+            base.Action(info, data);
+        }
+        protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
+        {
+            return new FullXLSXRPAActualEanPcImportAction(settings, rpaId);
+        }
+    }
+
+    public class FullXLSXRpaActualPluImportHandler: FullXLSXImportHandler
+    {
+        private Guid rpaId;
+        public override void Action(HandlerInfo info, ExecuteData data)
+        {
+            rpaId = Looper.Parameters.HandlerDataHelper.GetIncomingArgument<Guid>("RPAId", info.Data, false);
+            base.Action(info, data);
+        }
+        protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
+        {
+            return new FullXLSXRpaActualPluImportAction(settings, rpaId);
+        }
+    }
+    class FullXLSXUpdateImportEventHandler : FullXLSXImportHandler
+    {
+        private Guid RoleId;
+        private Guid userId;
+
+        public override void Action(HandlerInfo info, ExecuteData data)
+        {
+            RoleId = Looper.Parameters.HandlerDataHelper.GetIncomingArgument<Guid>("RoleId", info.Data, false);
+            userId = Looper.Parameters.HandlerDataHelper.GetIncomingArgument<Guid>("UserId", info.Data, false);
+            base.Action(info, data);
+        }
+
+        protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
+        {
+            return new FullXLSXUpdateImportEventAction(settings, RoleId, userId);
+        }
+    }
 }

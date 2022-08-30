@@ -20,7 +20,7 @@
 		tooltip: l10n.ns('tpm', 'mainmenu').value('UserDashboard'),
 		scale: 'medium',
 		glyph: 0xfa1c,
-		roles: ['DemandFinance', 'KeyAccountManager', 'DemandPlanning', 'CustomerMarketing', 'CMManager'],
+		roles: ['DemandFinance', 'KeyAccountManager', 'DemandPlanning', 'CustomerMarketing', 'CMManager', 'GAManager'],
 		widget: 'userdashboard'
 	},
 	{

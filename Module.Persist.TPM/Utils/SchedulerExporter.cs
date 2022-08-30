@@ -5,6 +5,7 @@ using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.TPM;
 using NPOI.SS.UserModel;
 using NPOI.SS.Util;
+using NPOI.Util;
 using NPOI.XSSF.UserModel;
 using Persist;
 using System;
@@ -78,7 +79,13 @@ namespace Module.Persist.TPM.Utils {
                             CalendarPriority = promo.CalendarPriority,
                             ColorSystemName = promo.ColorSystemName,
                             Name = promo.Name,
-                            InOut = promo.InOut
+                            InOut = promo.InOut,
+                            Number = promo.Number,
+                            PromoStatusSystemName = promo.PromoStatusSystemName,
+                            Subranges = promo.Subranges,
+                            IsGrowthAcceleration = promo.IsGrowthAcceleration,
+                            Price = promo.Price,
+                            Discount = promo.Discount
                         };
                         promoToAdd.TypeName = SetSchedulePromoTypeName(otherPromoType, promo.TypeName);
                         promoDTOs.Add(promoToAdd);
@@ -151,6 +158,10 @@ namespace Module.Persist.TPM.Utils {
             fileDispatcher.UploadToBlob(Path.GetFileName(filePath), Path.GetFullPath(filePath), exportDir.Split('\\').Last());
         }
 
+
+        private static int PixelsToEmus(int pixels) => pixels * Units.EMU_PER_PIXEL;
+
+
         /// <summary>
         /// Разбиение Промо по строкам с учётом приоритета и диапазона дат
         /// </summary>
@@ -198,6 +209,48 @@ namespace Module.Persist.TPM.Utils {
                         colorStyle.SetFillForegroundColor(cellColor);
                     }
                     cell.CellStyle = colorStyle;
+                    // Добавляем аннотацию.
+
+                    double discount = 0;
+                    double price = 0;
+                    string gaTitle = promo.IsGrowthAcceleration == true? "Yes" : "No";
+                    string subranges = String.IsNullOrEmpty(promo.Subranges) == true ? "" : promo.Subranges;
+                    XSSFRichTextString commentDescription;
+                    IDrawing drawing = sheet.CreateDrawingPatriarch();
+                    IClientAnchor anchor = wb.GetCreationHelper().CreateClientAnchor();
+                    anchor.Col1 = cell.ColumnIndex;
+                    anchor.Col2 = cell.ColumnIndex + 8;
+                    anchor.Row1 = row.RowNum;
+                    anchor.Row2 = row.RowNum + 3;
+                    IComment comment = drawing.CreateCellComment(anchor);
+                    if (promo.PromoStatusSystemName == "Closed")
+                    {
+                        discount = promo.Discount;
+                        price = promo.Price;
+                    }
+                    
+                    if (promo.TypeName != "Competitor")
+                    {
+                        if (promo.PromoStatusSystemName == "Closed")
+                        {
+
+                            commentDescription = new XSSFRichTextString(String.Format("Promo ID: {0}\r\nStatus: {1}\r\nSubranges: {2}\r\nGA: {3}\r\nShelf Price: {4}\r\nDiscount: {5}", promo.Number, promo.PromoStatusSystemName, subranges, gaTitle, price, discount));
+                        }
+                        else
+                        {
+                            commentDescription = new XSSFRichTextString(String.Format("Promo ID: {0}\r\nStatus: {1}\r\nSubranges: {2}\r\nGA: {3}", promo.Number, promo.PromoStatusSystemName, subranges, gaTitle));
+                        }
+
+                    }
+                    else
+                    {
+                        commentDescription = new XSSFRichTextString(String.Format("Shelf Price: {0}", price));
+                    }
+                    
+                    comment.String = commentDescription;
+                    
+                    comment.Author = ("SchedulerExporter");
+                    cell.CellComment = (comment);
                     // Объединяем ячейки, добавляем рамку (при мерже ячеек не подтягивается стиль рамки первой)
                     if (startCol != endCol) {
                         CellRangeAddress range = new CellRangeAddress(curRow, curRow, startCol, endCol);

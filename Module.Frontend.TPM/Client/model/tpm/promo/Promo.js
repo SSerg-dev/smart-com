@@ -36,6 +36,7 @@
         { name: 'IsCMManagerApproved', type: "boolean", useNull: true, hidden: true, isDefault: false },
         { name: 'IsDemandPlanningApproved', type: "boolean", useNull: true, hidden: true, isDefault: false },
         { name: 'IsDemandFinanceApproved', type: "boolean", useNull: true, hidden: true, isDefault: false },
+        { name: 'IsGAManagerApproved', type: "boolean", useNull: true, hidden: true, isDefault: false },
 
         /***Порядок полей для расширенного фильтра***/
         // Поле из "Basic"

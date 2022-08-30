@@ -9,7 +9,7 @@
     <add key="webpages:Version" value="3.0.0.0" />
     <add key="webpages:Enabled" value="false" />
     <add key="SESSION_TIME" value="15" />
-    <add key="DefaultSchema" value="Jupiter" />
+    <add key="DefaultSchema" value="jupiter_test" />
     <!--Directories-->
     <add key="HANDLER_LOG_DIRECTORY" value="D:\home\site\wwwroot\ApplicationData\HandlerLogs" />
     <add key="IMPORT_DIRECTORY" value="D:\home\site\wwwroot\ApplicationData\ImportFiles" />
@@ -36,13 +36,13 @@
     <add key="KeyVaultUrl" value="russiapetcarejupdev2akv" />
     <add key="NotificationService" value="LogicApp" />
     <add key="HistoryModule" value="MongoDB" />
-    <add key="HANDLER_LOG_TYPE" value="Azure" />
+    <add key="HANDLER_LOG_TYPE" value="File" />
     <!--AzureAD authentication-->
     <add key="ADidaClientId" value="a5dcf1fb-bea3-4776-9262-90ed5a457704" />
-    <add key="ADidaClientSecret" value="O1-uhCJ~QH0e62sG1L_W4ZeMGdA~ePNGs~" />
+    <add key="ADidaClientSecret" value="xxI8Q~s99hLYdE.g6qJI.sAVO3vTCxYhSH6icbS8" />
     <add key="KVnameOfDatabaseContext" value="russiapetcarejupitersqldbcs" />
     <!--Other settings-->
-    <add key="DefaultSchema" value="Jupiter" />
+    <add key="DefaultSchema" value="jupiter_test" />
     <!--Keys-->
     <add key="AllowNotificationsSending" value="true" />
     <add key="ida:ClientIdKey" value="ADidaClientId" />

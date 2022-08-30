@@ -27,6 +27,7 @@
         { name: 'IsCMManagerApproved', type: "boolean", useNull: true, hidden: true, isDefault: false },
         { name: 'IsDemandPlanningApproved', type: "boolean", useNull: true, hidden: true, isDefault: false },
         { name: 'IsDemandFinanceApproved', type: "boolean", useNull: true, hidden: true, isDefault: false },
+        { name: 'IsGAManagerApproved', type: "boolean", useNull: true, hidden: true, isDefault: false },
         { name: 'PlanInstoreMechanicDiscount', type: 'float', hidden: false, isDefault: false },
 
         { name: 'StartDate', useNull: true, type: 'date', hidden: true, timeZone: +3, convert: dateConvertTimeZone },

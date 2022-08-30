@@ -22,10 +22,38 @@ if($args) {
 if($key1 -eq "true") { $deploy = $true }
 Else { $deploy = $false }
 
-if($key2 -eq "Development") { 
+if($key2 -eq "Development_OLD") { 
 	$destFolderMap = "\\192.168.10.92\D$\TPM_dev\DeployScript\Source"
 	$deployScript = "D:\TPM_dev\DeployScript\DevDeploy.ps1"
 	$Server = "192.168.10.92"
+	$username = "smartcom\DeployUser"
+	$pass = "Pass123$"
+	$cred = New-Object System.Management.Automation.PsCredential($username, (ConvertTo-SecureString "Pass123$" -AsPlainText -Force))
+	$isFTP = $false
+	$notFTP = $true
+	$osaka = $false
+
+	$SourceBranch = "$/TPM/Development/DMP/Source" # 14.01.021
+}
+
+if($key2 -eq "Development") { 
+	$destFolderMap = "\\svv-tpmdev1.smartcom.local\D$\TPM_Dev1\DeployScript\Source"
+	$deployScript = "D:\TPM_Dev1\DeployScript\DevDeploy.ps1"
+	$Server = "svv-tpmdev1.smartcom.local"
+	$username = "smartcom\DeployUser"
+	$pass = "Pass123$"
+	$cred = New-Object System.Management.Automation.PsCredential($username, (ConvertTo-SecureString "Pass123$" -AsPlainText -Force))
+	$isFTP = $false
+	$notFTP = $true
+	$osaka = $false
+
+	$SourceBranch = "$/TPM/Development/DMP/Source" # 14.01.021
+}
+
+if($key2 -eq "DevelopmentRA") { 
+	$destFolderMap = "\\svv-tpmdev1.smartcom.local\D$\TPM_Dev1RA\DeployScript\Source"
+	$deployScript = "D:\TPM_Dev1RA\DeployScript\DevDeploy.ps1"
+	$Server = "svv-tpmdev1.smartcom.local"
 	$username = "smartcom\DeployUser"
 	$pass = "Pass123$"
 	$cred = New-Object System.Management.Automation.PsCredential($username, (ConvertTo-SecureString "Pass123$" -AsPlainText -Force))

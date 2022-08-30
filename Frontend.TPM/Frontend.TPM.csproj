@@ -16,7 +16,7 @@
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort>44349</IISExpressSSLPort>
-    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
+    <IISExpressAnonymousAuthentication>disabled</IISExpressAnonymousAuthentication>
     <IISExpressWindowsAuthentication>enabled</IISExpressWindowsAuthentication>
     <IISExpressUseClassicPipelineMode />
     <UseGlobalApplicationHostFile />
@@ -484,7 +484,6 @@
     <Compile Include="Attributes\AntiXssFilter.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\UserProfileController.cs" />
-    <Compile Include="Models\AdalTokenCache.cs" />
     <Compile Include="Startup.cs" />
     <Content Include="BuildConfiguration.txt" />
     <Content Include="Client\app.js" />
@@ -1603,7 +1602,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Global.asax" />
-    <Content Include="Connected Services\AzureAD\ConnectedService.json" />
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
