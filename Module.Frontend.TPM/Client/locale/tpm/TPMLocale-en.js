@@ -188,7 +188,8 @@
         'CompetitorBrandTech': 'Competitor BrandTech',
         'RSmode': 'RS',
         'CompetitorPromo': 'Competitor Promo',
-        'EventType': 'Event Types'
+        'EventType': 'Event Types',
+        'RSmode': 'RS'
     },
 
     'text': {
@@ -2221,6 +2222,7 @@
         'ActualPromoVolume': 'Actual Promo Volume',
         'ActualPromoIncrementalVolume': 'Actual Promo Incremental Volume',
         'ActualPromoNetIncrementalVolume': 'Actual Promo Net Incremental Volume',
+        'TPMmode': 'Indicator'
     },
 
     'PromoActivity': {
@@ -2499,7 +2501,7 @@
 
     'IncrementalPromo': {
         'ProductZREP': 'ZREP',
-        'TPMmode': 'Mode',
+        'TPMmode': 'Indicator',
         'ProductName': 'Product EN',
         'PromoClient': 'Client',
         'PromoNumber': 'Promo ID',
@@ -2546,6 +2548,29 @@
     },
     'HistoricalPromoProductCorrection': ['.tpm.PromoProductCorrection', '.core.BaseHistoryEntity'],
     'DeletedPromoProductCorrection': ['.tpm.PromoProductCorrection', '.core.BaseDeletedEntity'],
+
+    'PromoProductCorrectionView': {
+        'ZREP': 'ZREP',
+        'Number': 'Promo ID',
+        'BrandTechName': 'BrandTech',
+        'ClientHierarchy': 'Client',
+        'EventName': 'Event',
+        'MarsMechanicName': 'Mars Mechanic',
+        'MarsStartDate': 'Mars Start date',
+        'MarsEndDate': 'Mars End date',
+        'PromoStatusSystemName': 'Promo Status',
+        'ProductSubrangesList': 'Subranges',
+        'PlanProductBaselineLSV': 'Plan Product Baseline LSV',
+        'PlanProductIncrementalLSV': 'Plan Product Incremental LSV',
+        'PlanProductLSV': 'Plan Product LSV',
+        'PlanProductUpliftPercentCorrected': 'Plan Product Uplift Percent Corrected',
+        'CreateDate': 'Create Date',
+        'ChangeDate': 'Last Change Date',
+        'UserName': 'User Name',
+        'GreaterThanZero': 'Uplift must be greater than zero',
+        'ExportCorrections': 'Export correction to XLSX',
+        'TPMmode': 'Indicator'
+    },
 
     'ActualLSV': {
         'ActualLSV': 'Actual LSV',

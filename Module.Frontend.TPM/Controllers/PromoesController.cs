@@ -1,46 +1,47 @@
 ﻿using AutoMapper;
 using Core.Data;
+using Core.MarsCalendar;
 using Core.Security;
 using Core.Security.Models;
+using Core.Settings;
 using Frontend.Core.Controllers.Base;
 using Frontend.Core.Extensions;
 using Frontend.Core.Extensions.Export;
 using Looper.Core;
 using Looper.Parameters;
+using Module.Frontend.TPM.FunctionalHelpers.RSmode;
+using Module.Frontend.TPM.FunctionalHelpers.RSPeriod;
 using Module.Frontend.TPM.Model;
+using Module.Frontend.TPM.Util;
+using Module.Persist.TPM.CalculatePromoParametersModule;
+using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.Import;
+using Module.Persist.TPM.Model.Interfaces;
+using Module.Persist.TPM.Model.SimpleModel;
 using Module.Persist.TPM.Model.TPM;
+using Module.Persist.TPM.PromoStateControl;
+using Module.Persist.TPM.Utils;
 using Newtonsoft.Json;
 using Persist;
 using Persist.Model;
+using Persist.ScriptGenerator.Filter;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.OData;
 using System.Web.Http.OData.Query;
-using Thinktecture.IdentityModel.Authorization.WebApi;
-using Core.MarsCalendar;
-using Utility;
-using Module.Persist.TPM.Utils;
-using Module.Persist.TPM.Model.DTO;
-using Core.Settings;
-using Module.Persist.TPM.PromoStateControl;
 using System.Web.Http.Results;
-using System.IO;
-using Persist.ScriptGenerator.Filter;
-using System.Net.Http.Headers;
-using Module.Persist.TPM.CalculatePromoParametersModule;
-using Module.Frontend.TPM.Util;
-using Module.Persist.TPM.Model.SimpleModel;
-using System.Web;
-using Module.Frontend.TPM.FunctionalHelpers.RSPeriod;
-using Module.Frontend.TPM.FunctionalHelpers.RSmode;
-using Module.Persist.TPM.Model.Interfaces;
+using Thinktecture.IdentityModel.Authorization.WebApi;
+using Utility;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -339,7 +340,10 @@ namespace Module.Frontend.TPM.Controllers
 
             result.LastChangedDate = ChangedDate;
             Context.SaveChanges();
-
+            if (result.TPMmode == TPMmode.RS)
+            {
+                RSPeriodHelper.CreateRSPeriod(result, Context);
+            }
             return result;
         }
 
@@ -349,7 +353,13 @@ namespace Module.Frontend.TPM.Controllers
         {
             try
             {
-                Promo model = Context.Set<Promo>().Find(key);
+                Promo model = Context.Set<Promo>()
+                    .Include(g => g.BTLPromoes)
+                    .Include(g => g.PromoSupportPromoes)
+                    .Include(g => g.PromoProductTrees)
+                    .Include(g => g.IncrementalPromoes)
+                    .Include(x => x.PromoProducts.Select(y => y.PromoProductsCorrections))
+                    .FirstOrDefault(g => g.Id == key);
                 if (model == null)
                 {
                     return NotFound();
@@ -1064,14 +1074,29 @@ namespace Module.Frontend.TPM.Controllers
         {
             try
             {
-                Promo model = Context.Set<Promo>().Find(key);
+                Promo model = Context.Set<Promo>()
+                    .Include(g => g.BTLPromoes)
+                    .Include(g => g.PromoSupportPromoes)
+                    .Include(g => g.PromoProductTrees)
+                    .Include(g => g.IncrementalPromoes)
+                    .Include(x => x.PromoProducts.Select(y => y.PromoProductsCorrections))
+                    .FirstOrDefault(g=>g.Id == key);
                 if (model == null)
                 {
                     return NotFound();
                 }
-
+                StartEndModel startEndModel = RSPeriodHelper.GetRSPeriod(Context);
+                if (((DateTimeOffset)model.StartDate).AddDays(15) < startEndModel.StartDate || startEndModel.EndDate < (DateTimeOffset)model.EndDate)
+                {
+                    return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "Promo is not in the RS period" }));
+                }
                 if (TPMmode == TPMmode.RS && model.TPMmode == TPMmode.Current) //фильтр промо
                 {
+                    List<string> blockStatuses = "Draft,Planned,Closed,Deleted,Finished,Started,Cancelled".Split(',').ToList();
+                    if (blockStatuses.Contains(model.PromoStatus.SystemName))
+                    {
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "Promo in status: " + model.PromoStatus.Name + " cannot be deleted in the RS mode" }));
+                    }
                     Promo presentRsPromo = Context.Set<Promo>().FirstOrDefault(g => g.Disabled && g.TPMmode == TPMmode.RS && g.Number == model.Number);
                     if (presentRsPromo is null)
                     {

@@ -6,6 +6,7 @@ using Looper.Core;
 using Looper.Parameters;
 using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.DTO;
+using Module.Persist.TPM.Model.Interfaces;
 using Module.Persist.TPM.Utils;
 using Persist;
 using Persist.Model;
@@ -34,7 +35,7 @@ namespace Module.Frontend.TPM.Controllers
             this.authorizationManager = authorizationManager;
         }
 
-        protected IQueryable<PromoROIReport> GetConstraintedQuery()
+        protected IQueryable<PromoROIReport> GetConstraintedQuery(TPMmode tPMmode = TPMmode.Current)
         {
             UserInfo user = authorizationManager.GetCurrentUser();
             string role = authorizationManager.GetCurrentRoleName();
@@ -45,7 +46,7 @@ namespace Module.Frontend.TPM.Controllers
 
             IQueryable<PromoROIReport> query = Context.Set<PromoROIReport>();
             IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
-            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
+            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, tPMmode, filters);
 
             return query;
         }
@@ -59,9 +60,9 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
-        public IQueryable<PromoROIReport> GetPromoROIReports(ODataQueryOptions<PromoROIReport> queryOptions = null)
+        public IQueryable<PromoROIReport> GetPromoROIReports(ODataQueryOptions<PromoROIReport> queryOptions = null, TPMmode tPMmode = TPMmode.Current)
         {
-            IQueryable<PromoROIReport> query = GetConstraintedQuery();
+            IQueryable<PromoROIReport> query = GetConstraintedQuery(tPMmode);
             return query;
         }
 
@@ -82,9 +83,11 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult ExportXLSX(ODataQueryOptions<PromoROIReport> options)
+        public IHttpActionResult ExportXLSX(ODataQueryOptions<PromoROIReport> options, [FromUri] TPMmode tPMmode)
         {
-            IQueryable results = options.ApplyTo(GetConstraintedQuery());
+            string bodyText = Helper.GetRequestBody(HttpContext.Current.Request);
+            var url = HttpContext.Current.Request.Url.AbsoluteUri;
+            IQueryable results = options.ApplyTo(GetConstraintedQuery(tPMmode)).Cast<PromoROIReport>();
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
             RoleInfo role = authorizationManager.GetCurrentRole();
@@ -124,7 +127,7 @@ namespace Module.Frontend.TPM.Controllers
             return Content(HttpStatusCode.OK, "success");
         }
 
-        public static string ExportXLSXYearStatic(DatabaseContext databaseContext, User user, int year, Role defaultRole, bool yearInName = false)
+        public static string ExportXLSXYearStatic(DatabaseContext databaseContext, User user, int year, Role defaultRole, TPMmode tPMmode = TPMmode.Current, bool yearInName = false)
         {
             try
             {
@@ -138,7 +141,7 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     var constraints = databaseContext.Constraints.Where(x => x.UserRole.UserId.Equals(user.Id) && x.UserRole.Role.SystemName == defaultRoleSystemName).ToList();
                     IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
-                    results = ModuleApplyFilterHelper.ApplyFilter(results, hierarchy, filters);
+                    results = ModuleApplyFilterHelper.ApplyFilter(results, hierarchy, tPMmode, filters);
                 }
 
                 var columns = GetPromoROIExportSettingsStatic();

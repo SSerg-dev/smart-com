@@ -102,7 +102,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                     addedZREPs.Add(p.ZREP);
                                 }
 
-                                insertScript += String.Format(formatStrPromoProduct, Guid.NewGuid(), promoId, p.Id, p.ZREP, p.EAN_Case, p.EAN_PC, p.ProductEN, promo.TPMmode);
+                                insertScript += String.Format(formatStrPromoProduct, Guid.NewGuid(), promoId, p.Id, p.ZREP, p.EAN_Case, p.EAN_PC, p.ProductEN, Convert.ToInt32(promo.TPMmode));
                                 needReturnToOnApprovalStatus = true;
                             }
 
@@ -127,7 +127,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                 }
                                 else if (incrementalPromo == null)
                                 {
-                                    insertScript += String.Format(formatStrIncremental, Guid.NewGuid(), promoId, p.Id, promo.TPMmode);
+                                    insertScript += String.Format(formatStrIncremental, Guid.NewGuid(), promoId, p.Id, Convert.ToInt32(promo.TPMmode));
                                     needReturnToOnApprovalStatus = true;
                                 }
                             }

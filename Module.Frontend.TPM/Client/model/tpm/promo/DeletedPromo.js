@@ -199,7 +199,8 @@
         },
         extraParams: {
             //Id промо для метода GetById в истории
-            promoIdHistory: null
+            promoIdHistory: null,
+            TPMmode: 'Current'
         }
     }
 });

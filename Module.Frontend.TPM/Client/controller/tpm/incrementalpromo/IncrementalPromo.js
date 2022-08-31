@@ -2,6 +2,9 @@
     extend: 'App.controller.core.AssociatedDirectory',
     mixins: ['App.controller.core.ImportExportLogic'],
 
+    startEndModel: null,
+    canEditInRSmode: boolean = false,
+
     init: function () {
         this.listen({
             component: {
@@ -10,7 +13,7 @@
                     itemdblclick: this.onDetailButtonClick
                 },
                 'incrementalpromo directorygrid': {
-                    selectionchange: this.onGridSelectionChange,
+                    selectionchange: this.onGridSelectionChangeCustom,
                     afterrender: this.onGridIncrementalPromoAfterrender,
                     extfilterchange: this.onExtFilterChange
                 },
@@ -74,6 +77,7 @@
     },
 
     onGridIncrementalPromoAfterrender: function (grid) {
+        var RSmodeController = App.app.getController('tpm.rsmode.RSmode');
         var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
         var mode = settingStore.findRecord('name', 'mode');
         if (mode) {
@@ -82,6 +86,9 @@
                 grid.columnManager.getColumns()[indexh].hide();
             }
             else {
+                RSmodeController.getRSPeriod(function (returnValue) {
+                    startEndModel = returnValue;
+                });
                 var incrementalPromoGridStore = grid.getStore();
                 var incrementalPromoGridStoreProxy = incrementalPromoGridStore.getProxy();
 
@@ -96,6 +103,45 @@
         for (var i = 0; i < gridColumns.length; i++) {
             if (gridColumns[i].dataIndex == dataIndex) {
                 return i;
+            }
+        }
+    },
+
+    onGridSelectionChangeCustom: function (selMode, selected) {
+        if (selected[0]) {
+            debugger;
+            var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+            const tpmMode = settingStore.findRecord('name', 'mode').data.value;
+            if (tpmMode == 1) {
+                if (
+                    (
+                        new Date(selected[0].data.PromoDispatchStartDate) > new Date(startEndModel.StartDate) &&
+                        new Date(selected[0].data.PromoDispatchStartDate) <= new Date(startEndModel.EndDate)
+                    ) &&
+                    (
+                        selected[0].data.PromoStatusName != "Draft" &&
+                        selected[0].data.PromoStatusName != "Planned" &&
+                        selected[0].data.PromoStatusName != "Started" &&
+                        selected[0].data.PromoStatusName != "Finished" &&
+                        selected[0].data.PromoStatusName != "Closed" &&
+                        selected[0].data.PromoStatusName != "Cancelled"
+                    ) &&
+                    (
+                        !selected[0].data.IsGrowthAcceleration ||
+                        !selected[0].data.IsInExchange
+                    )
+                ) {
+                    Ext.ComponentQuery.query('incrementalpromo')[0].down('#updatebutton').enable();
+                    this.canEditInRSmode = true;
+                } else {
+                    Ext.ComponentQuery.query('incrementalpromo')[0].down('#updatebutton').disable();
+                    this.canEditInRSmode = false;
+                }
+            }
+            else if (selected[0].data.PromoStatusName != 'Closed') {
+                Ext.ComponentQuery.query('incrementalpromo')[0].down('#updatebutton').disable();
+            } else {
+                Ext.ComponentQuery.query('incrementalpromo')[0].down('#updatebutton').enable();
             }
         }
     },
@@ -136,12 +182,12 @@
                 toEditAccess = App.UserInfo.hasAccessPoint(model.proxy.resourceName, 'Patch');
             }
         }
-
+       
         this.editor.down('editorform').getForm().getFields().each(function (field, index, len) {
             field.setReadOnly(true);
         }, this);
 
-        if (!isHistorical && !isDeleted && toEditAccess) {
+        if (!isHistorical && !isDeleted && toEditAccess && this.canEditInRSmode) {
             this.editor.down('#ok').setVisible(false);
             this.editor.down('#canceledit').setVisible(false);
 

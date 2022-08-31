@@ -43,7 +43,16 @@ namespace Module.Persist.TPM
             modelBuilder.Entity<BudgetItem>();
             modelBuilder.Entity<Promo>().HasMany(p => p.Promoes);
             modelBuilder.Entity<Promo>().HasOptional(p => p.MasterPromo);
-            modelBuilder.Entity<Promo>().HasMany(p => p.PromoProducts).WithRequired(g => g.Promo);
+            modelBuilder.Entity<Promo>().HasMany(p => p.PromoProducts).WithRequired(g => g.Promo).WillCascadeOnDelete();
+            modelBuilder.Entity<Promo>().HasMany(p => p.BTLPromoes).WithRequired(g => g.Promo).WillCascadeOnDelete();
+            modelBuilder.Entity<Promo>().HasMany(p => p.PromoSupportPromoes).WithRequired(g => g.Promo).WillCascadeOnDelete();
+            modelBuilder.Entity<Promo>().HasMany(p => p.IncrementalPromoes).WithRequired(g => g.Promo).WillCascadeOnDelete();
+            modelBuilder.Entity<Promo>().HasMany(p => p.PromoProductTrees).WithRequired(g => g.Promo).WillCascadeOnDelete();
+            modelBuilder.Entity<Promo>().HasMany(p => p.PromoUpliftFailIncidents).WithRequired(g => g.Promo).WillCascadeOnDelete();
+            modelBuilder.Entity<Promo>().HasMany(p => p.PreviousDayIncrementals).WithRequired(g => g.Promo).WillCascadeOnDelete();
+            modelBuilder.Entity<Promo>().HasMany(p => p.CurrentDayIncrementals).WithRequired(g => g.Promo).WillCascadeOnDelete();
+            modelBuilder.Entity<Promo>().HasMany(p => p.PromoStatusChanges).WithRequired(g => g.Promo).WillCascadeOnDelete();
+            modelBuilder.Entity<Promo>().HasMany(p => p.PromoOnApprovalIncidents).WithRequired(g => g.Promo).WillCascadeOnDelete();
             modelBuilder.Entity<Sale>();
             modelBuilder.Entity<Color>();
             modelBuilder.Entity<PromoSales>();
@@ -67,7 +76,7 @@ namespace Module.Persist.TPM
             modelBuilder.Entity<PromoProduct2Plu>();
             modelBuilder.Entity<PLUDictionary>();
 
-            modelBuilder.Entity<PromoProduct>();
+            modelBuilder.Entity<PromoProduct>().HasMany(p =>p.PromoProductsCorrections).WithRequired(p=>p.PromoProduct).WillCascadeOnDelete();
             modelBuilder.Entity<PromoProduct>().HasOptional(x => x.Plu).WithRequired();
 
 
@@ -111,6 +120,7 @@ namespace Module.Persist.TPM
             modelBuilder.Entity<ClientTreeNeedUpdateIncident>();
             modelBuilder.Entity<PromoProductsCorrection>();
             modelBuilder.Entity<PreviousDayIncremental>();
+            modelBuilder.Entity<CurrentDayIncremental>();
             modelBuilder.Entity<PromoProductsView>().ToTable("PromoProductsView"); ;
             modelBuilder.Entity<PromoTypes>();
             modelBuilder.Entity<ActualCOGS>();
@@ -148,6 +158,7 @@ namespace Module.Persist.TPM
             modelBuilder.Entity<RPA>();
 
             modelBuilder.Entity<RollingScenario>();
+            modelBuilder.Entity<PromoProductCorrectionView>();
         }
 
 
@@ -187,11 +198,10 @@ namespace Module.Persist.TPM
             builder.Entity<Segment>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<Segment>("Segments");
             builder.Entity<HistoricalSegment>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalSegment>("HistoricalSegments");
 
-            builder.EntitySet<Event>("Events").HasManyBinding(g => g.BTLs, "BTLs");
-            builder.EntitySet<Event>("Events").HasManyBinding(g => g.EventClientTrees, "EventClientTrees");
             builder.EntitySet<Event>("Events");
             builder.EntitySet<Event>("Events").HasRequiredBinding(e => e.EventType, "EventTypes");
             builder.EntitySet<Event>("Events").HasManyBinding(e => e.BTLs, "BTLs");
+            builder.EntitySet<Event>("Events").HasManyBinding(g => g.EventClientTrees, "EventClientTrees");            
             builder.EntitySet<Event>("DeletedEvents");
             builder.EntitySet<Event>("DeletedEvents").HasManyBinding(g => g.EventClientTrees, "EventClientTrees");
             builder.EntitySet<Event>("DeletedEvents").HasRequiredBinding(e => e.EventType, "EventTypes");
@@ -479,6 +489,10 @@ namespace Module.Persist.TPM
             builder.EntitySet<Promo>("DeletedPromoes").HasManyBinding(e => e.PromoProductTrees, "PromoProductTrees");
             builder.EntitySet<Promo>("Promoes").HasManyBinding(e => e.PromoUpliftFailIncidents, "PromoUpliftFailIncidents");
             builder.EntitySet<Promo>("DeletedPromoes").HasManyBinding(e => e.PromoUpliftFailIncidents, "PromoUpliftFailIncidents");
+            builder.EntitySet<Promo>("Promoes").HasManyBinding(e => e.PromoOnApprovalIncidents, "PromoOnApprovalIncidents");
+            builder.EntitySet<Promo>("DeletedPromoes").HasManyBinding(e => e.PromoOnApprovalIncidents, "PromoOnApprovalIncidents");
+            builder.EntitySet<Promo>("Promoes").HasManyBinding(e => e.CurrentDayIncrementals, "CurrentDayIncrementals");
+            builder.EntitySet<Promo>("DeletedPromoes").HasManyBinding(e => e.CurrentDayIncrementals, "CurrentDayIncrementals");
             builder.Entity<Promo>().Collection.Action("ExportXLSX");
             builder.Entity<Promo>().Collection.Action("FullImportXLSX");
             builder.Entity<Promo>().Collection.Action("DeclinePromo");
@@ -988,6 +1002,13 @@ namespace Module.Persist.TPM
             builder.Entity<PromoUpliftFailIncident>().HasRequired(n => n.Promo, (n, p) => n.PromoId == p.Id);
             builder.EntitySet<PromoUpliftFailIncident>("PromoUpliftFailIncidents").HasRequiredBinding(g => g.Promo, "Promoes");
 
+            builder.Entity<CurrentDayIncremental>().HasRequired(n => n.Promo, (n, p) => n.PromoId == p.Id);
+            builder.EntitySet<CurrentDayIncremental>("CurrentDayIncrementals").HasRequiredBinding(g => g.Promo, "Promoes");
+            builder.EntitySet<CurrentDayIncremental>("CurrentDayIncrementals").HasRequiredBinding(g => g.Product, "Products");
+
+            builder.Entity<PromoOnApprovalIncident>().HasRequired(n => n.Promo, (n, p) => n.PromoId == p.Id);
+            builder.EntitySet<PromoOnApprovalIncident>("PromoOnApprovalIncidents").HasRequiredBinding(g => g.Promo, "Promoes");
+
             builder.EntitySet<PlanIncrementalReport>("PlanIncrementalReports");
             builder.Entity<PlanIncrementalReport>().Collection.Action("ExportXLSX");
             builder.Entity<PlanIncrementalReport>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PlanIncrementalReport>("PlanIncrementalReports");
@@ -1157,6 +1178,18 @@ namespace Module.Persist.TPM
             builder.EntitySet<RollingScenario>("DeletedRollingScenarios").HasRequiredBinding(e => e.ClientTree, "ClientTrees");
             builder.EntitySet<RollingScenario>("RollingScenarios").HasManyBinding(e => e.Promoes, "Promoes");
             builder.EntitySet<RollingScenario>("DeletedRollingScenarios").HasManyBinding(e => e.Promoes, "Promoes");
+            builder.Entity<RollingScenario>().Collection.Action("OnApproval");
+            builder.Entity<RollingScenario>().Collection.Action("Approve");
+            builder.Entity<RollingScenario>().Collection.Action("Decline");
+            builder.Entity<RollingScenario>().Collection.Action("GetVisibleButton");
+            builder.Entity<RollingScenario>().Collection.Action("GetCanceled");
+            builder.Entity<RollingScenario>().Collection.Action("MassApprove");
+            builder.Entity<HistoricalCompetitorPromo>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalCompetitorPromo>("HistoricalCompetitorPromoes");
+
+            builder.EntitySet<PromoProductCorrectionView>("PromoProductCorrectionViews");
+            builder.Entity<PromoProductCorrectionView>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PromoProductCorrectionView>("PromoProductCorrectionViews");
+            builder.Entity<PromoProductCorrectionView>().Collection.Action("ExportXLSX");
+            builder.Entity<PromoProductCorrectionView>().Collection.Action("ExportCorrectionXLSX");
         }
 
 

@@ -28,36 +28,36 @@ namespace Module.Persist.TPM.Model.TPM
         [StringLength(255)]
         public string EAN_PC { get; set; }
 
-		[StringLength(255)]
-		public string ProductEN { get; set; }
+        [StringLength(255)]
+        public string ProductEN { get; set; }
 
-		[StringLength(255)]
+        [StringLength(255)]
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         [SpecialNotKeyProperty]
         public string Brand { get; set; }
 
         [StringLength(255)]
-		public string Brand_code { get; set; }
+        public string Brand_code { get; set; }
 
-		[StringLength(255)]
+        [StringLength(255)]
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         [SpecialNotKeyProperty]
         public string Technology { get; set; }
 
-		[StringLength(255)]
-		public string Tech_code { get; set; }
+        [StringLength(255)]
+        public string Tech_code { get; set; }
 
-		[StringLength(255)]
+        [StringLength(255)]
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         [SpecialNotKeyProperty]
         public string BrandTech { get; set; }
 
-		[StringLength(255)]
+        [StringLength(255)]
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         [SpecialNotKeyProperty]
         public string BrandTech_code { get; set; }
 
-		[StringLength(255)]
+        [StringLength(255)]
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         [SpecialNotKeyProperty]
         public string Brandsegtech { get; set; }
@@ -106,10 +106,10 @@ namespace Module.Persist.TPM.Model.TPM
         [StringLength(255)]
         public string MarketSegment { get; set; }
 
-		[StringLength(255)]
-		public string Segmen_code { get; set; }
+        [StringLength(255)]
+        public string Segmen_code { get; set; }
 
-		[StringLength(255)]
+        [StringLength(255)]
         public string SupplySegment { get; set; }
 
         [StringLength(255)]
@@ -135,7 +135,7 @@ namespace Module.Persist.TPM.Model.TPM
 
         public int? UOM_PC2Case { get; set; }
 
-		public int? Division { get; set; }
+        public int? Division { get; set; }
 
         public double? NetWeight { get; set; }
 
@@ -146,13 +146,13 @@ namespace Module.Persist.TPM.Model.TPM
 
         public double? PCVolume { get; set; }
 
-        public virtual ICollection<AssortmentMatrix> AssortmentMatrices { get; set; }
-        public virtual ICollection<BaseLine> BaseLines { get; set; }
-        public virtual ICollection<IncrementalPromo> IncrementalPromoes { get; set; }
-        public virtual ICollection<PreviousDayIncremental> PreviousDayIncrementals { get; set; }
-        public virtual ICollection<PriceList> PriceLists { get; set; }
-        public virtual ICollection<ProductChangeIncident> ProductChangeIncidents { get; set; }
-        public virtual ICollection<PromoProduct> PromoProducts { get; set; }
-        public virtual ICollection<RollingVolume> RollingVolumes { get; set; }
+        public ICollection<AssortmentMatrix> AssortmentMatrices { get; set; }
+        public ICollection<BaseLine> BaseLines { get; set; }
+        public ICollection<IncrementalPromo> IncrementalPromoes { get; set; }
+        public ICollection<PreviousDayIncremental> PreviousDayIncrementals { get; set; }
+        public ICollection<PriceList> PriceLists { get; set; }
+        public ICollection<ProductChangeIncident> ProductChangeIncidents { get; set; }
+        public ICollection<PromoProduct> PromoProducts { get; set; }
+        public ICollection<RollingVolume> RollingVolumes { get; set; }
     }
 }

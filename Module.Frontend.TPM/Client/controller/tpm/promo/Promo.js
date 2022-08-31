@@ -306,6 +306,9 @@
                 'promoproductchoosewindow #dateFilter': {
                     click: this.onProductDateFilterButtonClick
                 },
+                'choosepromo directorygrid': {
+                    afterrender: this.onGridChoosePromoAfterrender,
+                },
             }
         });
     },
@@ -350,6 +353,23 @@
             }
         }
 
+        this.onGridAfterrender(grid);
+    },
+
+    onGridChoosePromoAfterrender: function (grid) {
+        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+        var mode = settingStore.findRecord('name', 'mode');
+        if (mode) {
+            if (mode.data.value != 1) {
+                var indexh = this.getColumnIndex(grid, 'TPMmode');
+                grid.columnManager.getColumns()[indexh].hide();                
+            }
+            else {
+                var promoGridStore = grid.getStore();
+                var promoGridStoreProxy = promoGridStore.getProxy();
+                promoGridStoreProxy.extraParams.TPMmode = 'RS';
+            }
+        }
         this.onGridAfterrender(grid);
     },
 
@@ -2835,7 +2855,12 @@
                 promoeditorcustom.rsStartEnd = returnValue;
                 if (promoeditorcustom.rsStartEnd) {
                     var RsStartDate = new Date(promoeditorcustom.rsStartEnd.StartDate);
-                    if (RsStartDate > record.data.StartDate) {
+                    if (RsStartDate > record.data.DispatchesStart) {
+                        record.data.PromoStatusSystemName = 'Cancelled';
+                        var onHoldLabel = Ext.ComponentQuery.query('#btn_promoOnHold')[0];
+                        onHoldLabel.show();
+                    }
+                    if (record.data.IsGrowthAcceleration || record.data.IsInExchange) {
                         record.data.PromoStatusSystemName = 'Cancelled';
                         var onHoldLabel = Ext.ComponentQuery.query('#btn_promoOnHold')[0];
                         onHoldLabel.show();
@@ -3700,6 +3725,15 @@
             promoeditorcustom.down('#btn_resetPromo').hide();
 
             //me.createTaskCheckCalculation(promoeditorcustom);
+        }
+        //вырубает кнопки в RS режиме
+        if (promoeditorcustom.TPMmode == 1) {
+            toolbarbutton.items.items.forEach(function (item, i, arr) {
+                //  item.el.setStyle('backgroundColor', '#B53333');
+                if (item.xtype == 'button' && ['btn_publish', 'btn_undoPublish', 'btn_sendForApproval', 'btn_reject', 'btn_backToDraftPublished', 'btn_approve', 'btn_cancel', 'btn_plan', 'btn_close', 'btn_backToFinished'].indexOf(item.itemId) > -1) {
+                    item.setDisabled(true);
+                }
+            });
         }
         else if (record.data.PromoStatusSystemName == 'Draft' && App.UserInfo.getCurrentRole().SystemName.toLowerCase() == 'supportadministrator') {
             promoeditorcustom.down('#btn_recalculatePromo').hide();
@@ -6877,14 +6911,26 @@
         var proxy = store.getProxy();
         var actionName = button.action || 'ExportXLSX';
         var resource = button.resource || proxy.resourceName;
-
+        // RSmode
+        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+        var mode = settingStore.findRecord('name', 'mode');
+        var tpmmode;
+        if (mode) {
+            if (mode.data.value == 0) {
+                tpmmode = 'Current';
+            }
+            else {
+                tpmmode = 'RS';
+            }
+        }
         panel.setLoading(true);
 
         var query = breeze.EntityQuery
             .from(resource)
             .withParameters({
                 $actionName: actionName,
-                $method: 'POST'
+                $method: 'POST',
+                TPMmode: tpmmode
             });
 
         query = me.buildQuery(query, store)

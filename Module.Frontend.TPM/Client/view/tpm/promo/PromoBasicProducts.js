@@ -492,8 +492,10 @@
                                         splitPublishBtn.setDisabled(true);
                                     }
                                     //Activate button "Send for approval"
-                                    var sendForApproval = Ext.ComponentQuery.query("#btn_sendForApproval")[0];
-                                    sendForApproval.setDisabled(false);
+                                    if (promoEditorCustom.TPMmode == 0) {
+                                        var sendForApproval = Ext.ComponentQuery.query("#btn_sendForApproval")[0];
+                                        sendForApproval.setDisabled(false);
+                                    }
                                     //Activate button "Approve"
                                     var approve = Ext.ComponentQuery.query("#btn_approve")[0];
                                     approve.setDisabled(false);
@@ -533,7 +535,6 @@
                     .execute()
                     .then(function (data) {
                         if (!promoEditorCustom.isDestroyed) {
-                            debugger;
                             var result = Ext.JSON.decode(data.httpResponse.data.value);
                             result = result.data;
 
@@ -560,8 +561,11 @@
                         App.Notify.pushError(data.message);
                     })
                 //Activate button "Send for approval"
-                var sendForApproval = Ext.ComponentQuery.query("#btn_sendForApproval")[0];
-                sendForApproval.setDisabled(false);
+                if (promoEditorCustom.TPMmode == 0) {
+                    var sendForApproval = Ext.ComponentQuery.query("#btn_sendForApproval")[0];
+                    sendForApproval.setDisabled(false);
+                }
+
                 //Activate button "Approve"
                 var approve = Ext.ComponentQuery.query("#btn_approve")[0];
                 approve.setDisabled(false);

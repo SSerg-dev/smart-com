@@ -13,7 +13,7 @@ namespace Module.Persist.TPM.Model.TPM
 
 
         public Guid NonPromoSupportId { get; set; }
-        public virtual NonPromoSupport NonPromoSupport { get; set; }
+        public NonPromoSupport NonPromoSupport { get; set; }
         public Guid BrandTechId { get; set; }
         public virtual BrandTech BrandTech { get; set; }
     }

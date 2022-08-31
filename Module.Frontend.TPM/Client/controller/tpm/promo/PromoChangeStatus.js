@@ -61,6 +61,10 @@
         var window = button.up('promoeditorcustom');
         var promoController = App.app.getController('tpm.promo.Promo');
         var checkValid = promoController.validatePromoModel(window);
+        // RSmode
+        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+        var mode = settingStore.findRecord('name', 'mode');
+
         if (checkValid === '') {
             var record = promoController.getRecord(window);
 
@@ -69,7 +73,14 @@
             window.promoName = promoController.getPromoName(window);
 
             var model = promoController.buildPromoModel(window, record);
-            promoController.saveModel(model, window, false, true);
+            if (mode) {
+                if (mode.data.value == 0) {
+                    promoController.saveModel(model, window, false, true);
+                }
+                if (mode.data.value == 1) {
+                    promoController.savePublishClosePromo(model, window, true, true);
+                }
+            }
             promoController.updateStatusHistoryState();
 
         } else {

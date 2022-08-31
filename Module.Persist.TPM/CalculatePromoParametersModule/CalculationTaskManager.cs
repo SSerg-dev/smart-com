@@ -1,6 +1,7 @@
 ﻿using Looper.Core;
 using Looper.Parameters;
 using Microsoft.Ajax.Utilities;
+using Module.Persist.TPM.Model.Interfaces;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
 using Persist;
@@ -70,7 +71,8 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         // список ID подстатей/промо
                         string promoSupportIds = HandlerDataHelper.GetIncomingArgument<string>("PromoSupportIds", data, false);
                         string unlinkedPromoIds = HandlerDataHelper.GetIncomingArgument<string>("UnlinkedPromoIds", data, false);
-                        promoIdsForBlock = BudgetsPromoCalculation.GetLinkedPromoId(promoSupportIds, unlinkedPromoIds, context);
+                        TPMmode tPMmode1 = HandlerDataHelper.GetIncomingArgument<TPMmode>("TPMmode", data, false);
+                        promoIdsForBlock = BudgetsPromoCalculation.GetLinkedPromoId(promoSupportIds, unlinkedPromoIds, context, tPMmode1);
                         description = "Calculate promo budgets";
                         nameHandler = "Module.Host.TPM.Handlers.CalculateBudgetsHandler";
                         break;
@@ -79,9 +81,10 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         // список ID подстатей/промо
                         string btlId = HandlerDataHelper.GetIncomingArgument<string>("BTLId", data, false);
                         var unlinkedPromoIdsList = HandlerDataHelper.GetIncomingArgument<List<Guid>>("UnlinkedPromoIds", data, false);
+                        TPMmode tPMmode = HandlerDataHelper.GetIncomingArgument<TPMmode>("TPMmode", data, false);
                         promoIdsForBlock = unlinkedPromoIdsList != null
-                            ? BudgetsPromoCalculation.GetLinkedPromoId(btlId, context, unlinkedPromoIdsList)
-                            : BudgetsPromoCalculation.GetLinkedPromoId(btlId, context);
+                            ? BudgetsPromoCalculation.GetLinkedPromoId(btlId, context, unlinkedPromoIdsList, tPMmode)
+                            : BudgetsPromoCalculation.GetLinkedPromoId(btlId, context, null, tPMmode);
                         description = "Calculate promo BTL budgets";
                         nameHandler = "Module.Host.TPM.Handlers.CalculateBTLBudgetsHandler";
                         break;

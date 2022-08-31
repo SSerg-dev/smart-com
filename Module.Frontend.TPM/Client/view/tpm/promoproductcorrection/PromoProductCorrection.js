@@ -1,8 +1,12 @@
 ﻿Ext.define('App.view.tpm.promoproductcorrection.PromoProductCorrection', {
     extend: 'App.view.core.common.CombinedDirectoryPanel',
     alias: 'widget.promoproductcorrection',
+    id: 'promoProductCorrectionGrid',
     title: l10n.ns('tpm', 'compositePanelTitles').value('PromoProductCorrection'),
-
+    baseModel: Ext.ModelManager.getModel('App.model.tpm.promoproductcorrection.PromoProductCorrection'),
+    getDefaultResource: function () {
+        return 'PromoProductCorrectionViews';
+    },
     customHeaderItems: [
         ResourceMgr.getAdditionalMenu('core').base = {
             glyph: 0xf068,
@@ -44,7 +48,7 @@
                     },
                     {
                         glyph: 0xf21d,
-                        itemId: 'exportxlsxbutton',
+                        itemId: 'exportbutton',
                         exactlyModelCompare: true,
                         text: l10n.ns('core', 'additionalMenu').value('exportXLSX'),
                         action: 'ExportXLSX'
@@ -135,13 +139,13 @@
         editorModel: 'Core.form.EditorDetailWindowModel',
         store: {
             type: 'directorystore',
-            model: 'App.model.tpm.promoproductcorrection.PromoProductCorrection',
+            model: 'App.model.tpm.promoproductcorrection.PromoProductCorrectionView',
             storeId: 'promoproductcorrectionstore',
             extendedFilter: {
                 xclass: 'App.ExtFilterContext',
                 supportedModels: [{
                     xclass: 'App.ExtSelectionFilterModel',
-                    model: 'App.model.tpm.promoproductcorrection.PromoProductCorrection',
+                    model: 'App.model.tpm.promoproductcorrection.PromoProductCorrectionView',
                     modelId: 'efselectionmodel'
                 }, {
                     xclass: 'App.ExtTextFilterModel',
@@ -152,8 +156,18 @@
                 property: 'Number',
                 direction: 'DESC'
             }],
+            // размер страницы уменьшен для ускорения загрузки грида
+            trailingBufferZone: 20,
+            leadingBufferZone: 20,
+            pageSize: 30
         },
-
+        // стор для получения полной записи PromoProductCorrection
+        promoProductCorrectionStore: Ext.create('App.store.core.SimpleStore', {
+            model: 'App.model.tpm.promoproductcorrection.PromoProductCorrection',
+            storeId: 'gridviewpromoproductcorrectionstore',
+            autoLoad: false,
+        }),
+        
         columns: {
             defaults: {
                 plugins: ['sortbutton'],
@@ -210,7 +224,7 @@
                 },
                 {
                     text: l10n.ns('tpm', 'PromoProductCorrection').value('BrandTech'),
-                    dataIndex: 'BrandTech',
+                    dataIndex: 'BrandTechName',
                     width: 120,
                     filter: {
                         type: 'search',
@@ -240,17 +254,17 @@
                 },
                 {
                     text: l10n.ns('tpm', 'PromoProductCorrection').value('Mechanic'),
-                    dataIndex: 'Mechanic',
+                    dataIndex: 'MarsMechanicName',
                     width: 130,
                 },
                 {
                     text: l10n.ns('tpm', 'PromoProductCorrection').value('Event'),
-                    dataIndex: 'Event',
+                    dataIndex: 'EventName',
                     width: 110,
                 },
                 {
                     text: l10n.ns('tpm', 'PromoProductCorrection').value('Status'),
-                    dataIndex: 'Status',
+                    dataIndex: 'PromoStatusSystemName',
                     width: 120,
                     filter: {
                         type: 'search',
@@ -355,9 +369,7 @@
     }, {
         xtype: 'editabledetailform',
         itemId: 'detailform',
-        model: 'App.model.tpm.PromoProductCorrection.PromoProductCorrection',
-        items: [{
-
-        }]
+        model: 'App.model.tpm.promoproductcorrection.PromoProductCorrectionView',
+        items: []
     }]
 });

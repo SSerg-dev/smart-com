@@ -25,8 +25,8 @@ namespace Module.Persist.TPM.Model.TPM
 
         [Index("Unique_MechanicType", 3, IsUnique = true)]
         public int? ClientTreeId { get; set; }
-        public virtual ClientTree ClientTree { get; set; }
+        public ClientTree ClientTree { get; set; }
 
-        public virtual ICollection<NoneNego> NoneNegoes { get; set; }
+        public ICollection<NoneNego> NoneNegoes { get; set; }
     }
 }

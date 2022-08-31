@@ -1,6 +1,10 @@
 ﻿Ext.define('App.controller.tpm.promoproductcorrection.PromoProductCorrection', {
     extend: 'App.controller.core.AssociatedDirectory',
     mixins: ['App.controller.core.ImportExportLogic'],
+    
+    startEndModel: null,
+    
+    thisGrid: null,
 
     init: function () {
         this.listen({
@@ -10,7 +14,7 @@
                     itemdblclick: this.onDetailButtonClick
                 },
                 'promoproductcorrection directorygrid': {
-                    selectionchange: this.onGridSelectionChange,
+                    selectionchange: this.onPromoProductCorrectionGridSelectionChange,
                     afterrender: this.onGridPromoProductCorrectionAfterrender,
                     extfilterchange: this.onExtFilterChange
                 },
@@ -81,14 +85,19 @@
 
 
     onGridPromoProductCorrectionAfterrender: function (grid) {
+        thisGrid = grid;
+        var RSmodeController = App.app.getController('tpm.rsmode.RSmode');
         var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
         var mode = settingStore.findRecord('name', 'mode');
         if (mode) {
             if (mode.data.value != 1) {
                 var indexh = this.getColumnIndex(grid, 'TPMmode');
-                grid.columnManager.getColumns()[indexh].hide();
+                grid.columnManager.getColumns()[indexh].hide();                
             }
             else {
+                RSmodeController.getRSPeriod(function (returnValue) {
+                    startEndModel = returnValue;
+                });
                 var promoProductCorrectionGridStore = grid.getStore();
                 var promoProductCorrectionGridStoreProxy = promoProductCorrectionGridStore.getProxy();
                 promoProductCorrectionGridStoreProxy.extraParams.TPMmode = 'RS';
@@ -105,7 +114,28 @@
             }
         }
     },
-    
+
+    onCreateButtonClick: function (button) {
+        var grid = this.getGridByButton(button);
+        store = grid.getStore(),
+        model = Ext.create(Ext.ModelManager.getModel(store.model)),
+        this.startCreateRecord(model, grid);
+
+        var promoproductcorrectioneditor = Ext.ComponentQuery.query('promoproductcorrectioneditor')[0];
+        var createDate = promoproductcorrectioneditor.down('[name=CreateDate]');
+        var changeDate = promoproductcorrectioneditor.down('[name=ChangeDate]');
+        var userName = promoproductcorrectioneditor.down('[name=UserName]');
+        var number = promoproductcorrectioneditor.down('[name=Number]');
+        userName.setValue(App.UserInfo.getUserName());
+        number.isCreate = true;
+
+
+        var date = new Date();
+        date.setHours(date.getHours() + (date.getTimezoneOffset() / 60) + 3);   // приведение к московской timezone
+        createDate.setValue(date);                                              // вывести дату в поле 
+        changeDate.setValue(date);
+    },
+
     onUpdateButtonClick: function (button) {
         var grid = button.up('promoproductcorrection').down('directorygrid');
         var selModel = grid.getSelectionModel();
@@ -170,6 +200,33 @@
         this.editor.show();
     },
 
+    startCreateRecord: function(model, grid) {
+        this.editor = grid.editorModel.createEditor({
+            title: l10n.ns('core').value('createWindowTitle'),
+            buttons: [{
+                text: l10n.ns('core', 'createWindowButtons').value('cancel'),
+                itemId: 'cancel'
+            }, {
+                text: l10n.ns('core', 'createWindowButtons').value('ok'),
+                ui: 'green-button-footer-toolbar',
+                itemId: 'ok'
+            }]
+        });
+
+        this.editor.down('#ok').on('click', this.onOkButtonClick, this);
+        this.editor.down('#cancel').on('click', this.onCancelButtonClick, this);
+        this.editor.on('close', this.onEditorClose, this);
+
+        this.editor.down('editorform').loadRecord(model);
+        this.editor.show();
+
+        this.editor.afterWindowShow(this.editor, true);
+        this.editor.down('editorform').getForm().getFields().each(function (field, index, len) {
+            if (field.xtype === 'singlelinedisplayfield')
+                field.setReadOnly(false);
+        }, this);
+    },
+
     startEditRecord: function (model, grid) {
         this.editor = grid.editorModel.createEditor({ title: l10n.ns('core').value('updateWindowTitle') });
         this.editor.grid = grid;
@@ -189,25 +246,6 @@
         this.editor.show();
 
         this.editor.afterWindowShow(this.editor, false);
-    },
-
-    onCreateButtonClick: function () {
-
-        this.callParent(arguments);
-
-        var promoproductcorrectioneditor = Ext.ComponentQuery.query('promoproductcorrectioneditor')[0];
-        var createDate = promoproductcorrectioneditor.down('[name=CreateDate]');
-        var changeDate = promoproductcorrectioneditor.down('[name=ChangeDate]');
-        var userName = promoproductcorrectioneditor.down('[name=UserName]');
-        var number = promoproductcorrectioneditor.down('[name=Number]');
-        userName.setValue(App.UserInfo.getUserName());
-        number.isCreate = true;
-
-
-        var date = new Date();
-        date.setHours(date.getHours() + (date.getTimezoneOffset() / 60) + 3);   // приведение к московской timezone
-        createDate.setValue(date);                                              // вывести дату в поле 
-        changeDate.setValue(date);
     },
 
     onEditButtonClick: function (button) {
@@ -250,10 +288,10 @@
         this.editor.grid.getStore().load();
     },
 
-    onOkButtonClick: function (button) {
+    getAndSaveFormData: function() {
         var form = this.editor.down('editorform').getForm();
-            record = form.getRecord();
-        
+        record = form.getRecord();
+    
         if (!form.isValid()) {
             return;
         }
@@ -267,18 +305,20 @@
 
         
         this.saveModelPatch(record);
-
     },
 
-    saveModelPatch: function (model) {
+    onOkButtonClick: function (button) {
+        this.getAndSaveFormData();
+    },
+
+    saveModelPatch: function (model, callback) {
         var isCreate = model.phantom;
         grid = this.editor.grid;
-
         this.editor.setLoading(l10n.ns('core').value('savingText'));
 
         var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
         var mode = settingStore.findRecord('name', 'mode');
-        model.data.TPMmode = mode.data.value;
+        model.set('TPMmode', mode.data.value);
 
         model.save({
             scope: this,
@@ -319,8 +359,12 @@
                         this.editor.close();
                     }               
                 }
+                if (resp.action == 'create') {
+                    this.editor.setLoading(false);
+                    this.editor.close();
+                }                
             },
-            failure: function () {
+            failure: function (fff) {
                 if (callback) {
                     callback(false);
                 }
@@ -332,7 +376,7 @@
     },
 
     //Получение промо продукта по промо и продукту
-    saveModel: function (promoId, productId) {        
+    saveModel: function (promoId, productId) {
         if (promoId && productId) {
 
             var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
@@ -354,16 +398,16 @@
                         var promoProductId = promoproductcorrectioneditor.down('[name=PromoProductId]');
 
                         var clientHierarchy = promoproductcorrectioneditor.down('[name=ClientHierarchy]');
-                        var brandTech = promoproductcorrectioneditor.down('[name=BrandTech]');
+                        var brandTech = promoproductcorrectioneditor.down('[name=BrandTechName]');
                         var productSubrangesList = promoproductcorrectioneditor.down('[name=ProductSubrangesList]');
-                        var event = promoproductcorrectioneditor.down('[name=Event]');
-                        var status = promoproductcorrectioneditor.down('[name=Status]');
+                        var event = promoproductcorrectioneditor.down('[name=EventName]');
+                        var status = promoproductcorrectioneditor.down('[name=PromoStatusSystemName]');
                         var marsStartDate = promoproductcorrectioneditor.down('[name=MarsStartDate]');
                         var marsEndDate = promoproductcorrectioneditor.down('[name=MarsEndDate]');
                         var planProductBaselineLSV = promoproductcorrectioneditor.down('[name=PlanProductBaselineLSV]');
                         var planProductIncrementalLSV = promoproductcorrectioneditor.down('[name=PlanProductIncrementalLSV]');
                         var planProductLSV = promoproductcorrectioneditor.down('[name=PlanProductLSV]');
-                        var mechanic = promoproductcorrectioneditor.down('[name=Mechanic]');
+                        var mechanic = promoproductcorrectioneditor.down('[name=MarsMechanicName]');
 
                         promoProductId.setValue(result.models.Id);
                         clientHierarchy.setValue(result.models.Promo.ClientHierarchy);
@@ -388,23 +432,39 @@
                 }
             });
         }
+
     },
+
     onExportCorrectionButtonClick: function (button) {
+        var actionName = button.action || 'ExportCorrectionXLSX';
+        this.ExportPromoProductCorrection(actionName, button);
+    },
+
+    onExportButtonClick: function (button) {
+        var actionName = button.action || 'ExportXLSX';
+        this.ExportPromoProductCorrection(actionName, button)
+    },
+
+    ExportPromoProductCorrection: function(actionName, button) {
         var me = this;
         var grid = me.getGridByButton(button);
         var panel = grid.up('combineddirectorypanel');
         var store = grid.getStore();
         var proxy = store.getProxy();
-        var actionName = button.action || 'ExportCorrectionXLSX';
         var resource = button.resource || proxy.resourceName;
         panel.setLoading(true);
 
+        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+        var mode = settingStore.findRecord('name', 'mode');
+        
         var query = breeze.EntityQuery
-            .from(resource)
-            .withParameters({
-                $actionName: actionName,
-                $method: 'POST',
-            });
+        .from(resource)
+        .withParameters({
+            $actionName: actionName,
+            $method: 'POST',
+            TPMmode: mode?.data?.value
+        });
+        
         // тут store фильтр не работает на бэке другой запрос
         query = me.buildQuery(query, store)
             .using(Ext.ux.data.BreezeEntityManager.getEntityManager())
@@ -418,7 +478,7 @@
                 panel.setLoading(false);
                 App.Notify.pushError(me.getErrorMessage(data));
             });
-    },
+    },    
 
     onEditorClose: function (window) {
         var form = this.editor.down('editorform'),
@@ -504,6 +564,43 @@
         else {
             this.onDeleteButtonClick(button);
         }
-    }
+    },
 
+    onPromoProductCorrectionGridSelectionChange: function (selMode, selected) {
+        this.onGridSelectionChange(selMode, selected);
+        if (selected[0]) {
+            var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+            const tpmMode = settingStore.findRecord('name', 'mode').data.value;
+            if (tpmMode == 1) {
+                if (
+                    (
+                        new Date(selected[0].data.PromoDispatchStartDate) > new Date(startEndModel.StartDate) &&
+                        new Date(selected[0].data.PromoDispatchStartDate) <= new Date(startEndModel.EndDate)
+                    ) &&
+                    (
+                        selected[0].data.PromoStatusName != "Draft" &&
+                        selected[0].data.PromoStatusName != "Planned" &&
+                        selected[0].data.PromoStatusName != "Started" &&
+                        selected[0].data.PromoStatusName != "Finished" &&
+                        selected[0].data.PromoStatusName != "Closed" &&
+                        selected[0].data.PromoStatusName != "Cancelled"
+                    ) &&
+                    (
+                        !selected[0].data.IsGrowthAcceleration ||
+                        !selected[0].data.IsInExchange
+                    )
+                   ) {
+                    updBtn = thisGrid.up().down('custombigtoolbar').down('#updatebutton');
+                    updBtn.setDisabled(false);
+                    delBtn = thisGrid.up().down('custombigtoolbar').down('#deletebutton');
+                    delBtn.setDisabled(false);
+                } else {
+                    updBtn = thisGrid.up().down('custombigtoolbar').down('#updatebutton');
+                    updBtn.setDisabled(true);
+                    delBtn = thisGrid.up().down('custombigtoolbar').down('#deletebutton');
+                    delBtn.setDisabled(true);
+                }
+            }
+        }
+    }
 });

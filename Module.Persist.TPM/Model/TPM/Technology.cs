@@ -39,7 +39,7 @@ namespace Module.Persist.TPM.Model.TPM
         public string SubBrand_code { get; set; }
         public bool IsSplittable { get; set; }
 
-        public virtual ICollection<BrandTech> BrandTeches { get; set; }
-        public virtual ICollection<ProductTree> ProductTrees { get; set; }
+        public ICollection<BrandTech> BrandTeches { get; set; }
+        public ICollection<ProductTree> ProductTrees { get; set; }
     }
 }

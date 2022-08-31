@@ -27,6 +27,6 @@ namespace Module.Persist.TPM.Model.TPM
         [StringLength(20)]
         public string Color { get; set; }
 
-        public virtual ICollection<PromoStatusChange> PromoStatusChanges { get; set; }
+        public ICollection<PromoStatusChange> PromoStatusChanges { get; set; }
     }
 }

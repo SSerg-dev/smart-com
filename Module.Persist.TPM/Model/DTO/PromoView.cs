@@ -5,6 +5,7 @@ using Module.Persist.TPM.Model.Interfaces;
 namespace Module.Persist.TPM.Model.DTO {
     public class PromoView : IEntity<Guid> {
         public Guid Id { get; set; }
+        public bool Disabled { get; set; }
 
         public TPMmode TPMmode { get; set; }
         public string BrandTechName { get; set; }

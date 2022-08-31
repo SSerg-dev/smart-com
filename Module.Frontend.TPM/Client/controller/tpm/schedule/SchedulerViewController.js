@@ -780,6 +780,17 @@
                     glyph: 0xf64f,
                     hidden: !postAccess,
                     handler: function (button) {
+                        // RSmode
+                        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+                        var mode = settingStore.findRecord('name', 'mode');
+                        if (mode) {
+                            if (mode.data.value == 0) {
+                                promoStore.getProxy().extraParams.TPMmode = 'Current';
+                            }
+                            else if (mode.data.value == 1) {
+                                promoStore.getProxy().extraParams.TPMmode = 'RS';
+                            }
+                        }
                         panel.up('schedulecontainer').setLoading(true);
                         promoStore.load({
                             id: panel.ctx.recId,
@@ -1732,6 +1743,17 @@
         if (eventRecord.get('TypeName') == 'Competitor') return;
         this.singleClickTask.cancel();
         var promoStore = this.getPromoStore();
+        // RSmode
+        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+        var mode = settingStore.findRecord('name', 'mode');
+        if (mode) {
+            if (mode.data.value == 0) {
+                promoStore.getProxy().extraParams.TPMmode = 'Current';
+            }
+            else if (mode.data.value == 1) {
+                promoStore.getProxy().extraParams.TPMmode = 'RS';
+            }
+        }
         panel.up('schedulecontainer').setLoading(true);
         promoStore.load({
             id: eventRecord.data.Id,
@@ -2080,11 +2102,13 @@
             callback: function (records, operation, success) {
                 if (StartDateRS) {
                     records = records.map(function (record) {
-                        //debugger;
                         if (record.data.DispatchesStart < StartDateRS && EndDateRS > record.data.DispatchesStart) {
                             record.set('IsOnHold', true);
                         }
                         if (record.data.MasterPromoId) {
+                            record.set('IsOnHold', true);
+                        }
+                        if (record.data.IsGrowthAcceleration || record.data.IsInExchange) {
                             record.set('IsOnHold', true);
                         }
                         return record

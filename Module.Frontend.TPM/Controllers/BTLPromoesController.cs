@@ -175,16 +175,35 @@ namespace Module.Frontend.TPM.Controllers
                     }
 
                     List<Guid> guidPromoIds = new List<Guid>();
-                    foreach (var id in promoIdsList) 
+                    foreach (var id in promoIdsList)
                     {
                         Guid promoId = Guid.Parse(id);
                         guidPromoIds.Add(promoId);
                     }
 
-                    var btl = Context.Set<BTL>().FirstOrDefault(x => x.Id == btlId);
-                    List<Guid> addedBTLPromoIds = new List<Guid>();
-                    List<BTLPromo> bTLPromos = Context.Set<BTLPromo>().Where(n => n.BTLId == btlId && !n.Disabled).ToList();
-                    var isBTLinRS = bTLPromos.Any(x => x.TPMmode == TPMmode.RS);
+                    List<BTLPromo> bTLPromos = Context.Set<BTLPromo>()
+                        .Include(x => x.Promo.PromoProducts.Select(y => y.PromoProductsCorrections))
+                        .Include(x => x.Promo.IncrementalPromoes)
+                        .Include(x => x.Promo.PromoProductTrees)
+                        .Include(x => x.Promo.PromoSupportPromoes)
+                        .Where(n => n.BTLId == btlId && !n.Disabled && !n.Promo.Disabled)
+                        .ToList();
+                    bool isAllCurrent = bTLPromos.All(g => g.TPMmode == TPMmode.Current);
+                    bool isAllRS = bTLPromos.All(g => g.TPMmode == TPMmode.RS);
+                    if (TPMmode == TPMmode.RS && isAllCurrent)
+                    {
+                        bTLPromos = RSmodeHelper.EditToListBTLPromoesRS(Context, bTLPromos);
+                    }
+                    if (!isAllCurrent && !isAllRS && TPMmode == TPMmode.Current)
+                    {
+                        // убираем RSы
+                        bTLPromos = bTLPromos.Where(g => g.TPMmode == TPMmode.Current).ToList();
+                    }
+                    else if (!isAllCurrent && !isAllRS && TPMmode == TPMmode.RS)
+                    {
+                        // убираем currentы
+                        bTLPromos = bTLPromos.Where(g => g.TPMmode == TPMmode.RS).ToList();
+                    }
 
                     foreach (var promoId in guidPromoIds)
                     {
@@ -193,7 +212,7 @@ namespace Module.Frontend.TPM.Controllers
                         {
                             // Разница между промо в подстатье должно быть меньше 2 периодов (8 недель) уже 3
                             // если end date добавляемого промо лежит в 8 неделях от самого раннего start date, то всё ок, если более, то добавить промо нельзя.
-                            List<DateTimeOffset> endDateList = new List<DateTimeOffset>(bTLPromos.Select(x => x.Promo.EndDate.Value)) { promo.EndDate.Value }; 
+                            List<DateTimeOffset> endDateList = new List<DateTimeOffset>(bTLPromos.Select(x => x.Promo.EndDate.Value)) { promo.EndDate.Value };
                             List<DateTimeOffset> startDateList = new List<DateTimeOffset>(bTLPromos.Select(x => x.Promo.StartDate.Value)) { promo.StartDate.Value };
                             DateTimeOffset maxEnd = endDateList.Max();
                             DateTimeOffset minStart = startDateList.Min();
@@ -205,16 +224,38 @@ namespace Module.Frontend.TPM.Controllers
                                 if (bigDifference)
                                     throw new Exception("The difference between the dates of the promo should be less than 3 periods");
                             }
-
-                            bool isLinked = Context.Set<BTLPromo>().Any(x => x.PromoId == promoId && !x.Disabled && x.DeletedDate == null);
-
-                            if (TPMmode == TPMmode.RS && promo.TPMmode != TPMmode.RS)
+                            if (TPMmode == TPMmode.RS)
                             {
-                                promo = RSmodeHelper.EditToPromoRS(Context, promo);
+                                if (promo.TPMmode == TPMmode.Current)
+                                {
+                                    promo = RSmodeHelper.EditToPromoRS(Context, promo);
+                                    BTLPromo bp = new BTLPromo
+                                    {
+                                        BTLId = btlId,
+                                        PromoId = promo.Id,
+                                        ClientTreeId = promo.ClientTreeKeyId.Value,
+                                        TPMmode = TPMmode
+                                    };
+                                    promo.BTLPromoes.Add(bp);
+                                }
+                                else
+                                {
+                                    BTLPromo bp = new BTLPromo
+                                    {
+                                        BTLId = btlId,
+                                        PromoId = promoId,
+                                        ClientTreeId = promo.ClientTreeKeyId.Value,
+                                        TPMmode = TPMmode
+                                    };
+                                    Context.Set<BTLPromo>().Add(bp);
+                                }
                             }
-
-                            if (!isLinked) 
+                            else
                             {
+
+                                Promo promoMode = Context.Set<Promo>()
+                                    .Include(g=>g.BTLPromoes)
+                                    .FirstOrDefault(g => g.Number == promo.Number && g.TPMmode == TPMmode.RS);
                                 BTLPromo bp = new BTLPromo
                                 {
                                     BTLId = btlId,
@@ -222,8 +263,26 @@ namespace Module.Frontend.TPM.Controllers
                                     ClientTreeId = promo.ClientTreeKeyId.Value,
                                     TPMmode = TPMmode
                                 };
-                                Context.Set<BTLPromo>().Add(bp);
-                                bTLPromos.Add(bp);
+                                Context.Set<BTLPromo>().Add(bp); //bTLPromos.Add(bp); так нельзя потому что делается прокси System.Data.Entity.DynamicProxies при lazyload
+                                if (promoMode != null)
+                                {
+                                    if (promoMode.BTLPromoes.Any(g => g.BTLId == btlId && !g.Disabled))
+                                    {
+                                        //по идее надо - CalculateBTLBudgetsCreateTask(btlId.ToString(), null, TPMmode.RS); но это тормознет сохранение в Current
+                                    }
+                                    else
+                                    {
+                                        BTLPromo bp1 = new BTLPromo
+                                        {
+                                            BTLId = btlId,
+                                            PromoId = promoMode.Id,
+                                            ClientTreeId = promoMode.ClientTreeKeyId.Value,
+                                            TPMmode = TPMmode.RS
+                                        };
+                                        Context.Set<BTLPromo>().Add(bp1); //bTLPromos.Add(bp); так нельзя потому что делается прокси System.Data.Entity.DynamicProxies при lazyload
+                                    }
+                                }
+
                             }
                         }
                     }
@@ -234,17 +293,7 @@ namespace Module.Frontend.TPM.Controllers
 
                     Context.SaveChanges();
 
-                    if (TPMmode == TPMmode.RS && !isBTLinRS)
-                    {
-                        var currentBTLPromoes = bTLPromos.Where(x => x.TPMmode == TPMmode.Current);
-                        foreach(var bTLPromo in currentBTLPromoes)
-                        {
-                            var copiedPromo = RSmodeHelper.EditToPromoRS(Context, bTLPromo.Promo);
-                        }
-                        Context.SaveChanges();
-                    }
-
-                    CalculateBTLBudgetsCreateTask(btlId.ToString());
+                    CalculateBTLBudgetsCreateTask(btlId.ToString(), null, TPMmode);
 
                     transaction.Commit();
                     return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
@@ -303,7 +352,7 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [HttpPost]
-        public IHttpActionResult GetPromoesWithBTL(string eventId)
+        public IHttpActionResult GetPromoesWithBTL(string eventId, TPMmode tPMmode)
         {
             try
             {
@@ -314,13 +363,13 @@ namespace Module.Frontend.TPM.Controllers
                 if (Guid.TryParse(eventId, out eventIdGuid))
                 {
                     promoesWithBTL = Context.Set<BTLPromo>()
-                    .Where(x => !x.Disabled && x.DeletedDate == null && !excludedStatuses.Contains(x.Promo.PromoStatus.SystemName) && x.Promo.Event.Id == eventIdGuid)
+                    .Where(x => !x.Disabled && x.DeletedDate == null && !excludedStatuses.Contains(x.Promo.PromoStatus.SystemName) && x.Promo.Event.Id == eventIdGuid && x.TPMmode == tPMmode)
                     .Select(x => x.Promo.Number).Distinct();
                 }
                 else
                 {
                     promoesWithBTL = Context.Set<BTLPromo>()
-                    .Where(x => !x.Disabled && x.DeletedDate == null && !excludedStatuses.Contains(x.Promo.PromoStatus.SystemName))
+                    .Where(x => !x.Disabled && x.DeletedDate == null && !excludedStatuses.Contains(x.Promo.PromoStatus.SystemName) && x.TPMmode == tPMmode)
                     .Select(x => x.Promo.Number).Distinct();
                 }
 
@@ -345,7 +394,7 @@ namespace Module.Frontend.TPM.Controllers
 
                 model.DeletedDate = System.DateTime.Now;
                 model.Disabled = true;
-                
+
                 CalculateBTLBudgetsCreateTask(model.BTLId.ToString(), new List<Guid>() { key });
                 Context.SaveChanges();
                 return StatusCode(HttpStatusCode.NoContent);
@@ -354,7 +403,7 @@ namespace Module.Frontend.TPM.Controllers
             {
                 return GetErorrRequest(e);
             }
-        }    
+        }
 
         public static IEnumerable<Column> GetExportSettingsBTLPromo()
         {
@@ -435,7 +484,7 @@ namespace Module.Frontend.TPM.Controllers
         /// <param name="calculateFactCostTE">Необходимо ли пересчитывать значения фактические Cost TE</param>
         /// <param name="calculatePlanCostProd">Необходимо ли пересчитывать значения плановые Cost Production</param>
         /// <param name="calculateFactCostProd">Необходимо ли пересчитывать значения фактические Cost Production</param>
-        public void CalculateBTLBudgetsCreateTask(string btlId, List<Guid> unlinkedPromoIds = null)
+        public void CalculateBTLBudgetsCreateTask(string btlId, List<Guid> unlinkedPromoIds = null, TPMmode tPMmode = TPMmode.Current)
         {
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
@@ -446,6 +495,7 @@ namespace Module.Frontend.TPM.Controllers
             HandlerDataHelper.SaveIncomingArgument("BTLId", btlId, data, visible: false, throwIfNotExists: false);
             HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
             HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("TPMmode", tPMmode, data, visible: false, throwIfNotExists: false);
             if (unlinkedPromoIds != null)
             {
                 HandlerDataHelper.SaveIncomingArgument("UnlinkedPromoIds", unlinkedPromoIds, data, visible: false, throwIfNotExists: false);
@@ -463,46 +513,27 @@ namespace Module.Frontend.TPM.Controllers
         {
             try
             {
-                var model = Context.Set<BTLPromo>().Find(key);
-                var btlPromoes = Context.Set<BTLPromo>().Where(x => x.BTLId == model.BTLId).ToList();
-                var btlPromoesCopied = btlPromoes.Any(x => x.TPMmode == TPMmode.RS);
-                if (model == null)
+                var btlPromo = Context.Set<BTLPromo>()
+                    .Where(x => x.Id == key && !x.Disabled)
+                    .ToList();
+                if (btlPromo == null)
                 {
                     return NotFound();
                 }
 
-                if (TPMmode == TPMmode.RS && model.TPMmode != TPMmode.RS) //фильтр промо
+                if (TPMmode == TPMmode.RS && btlPromo[0].TPMmode == TPMmode.Current) //фильтр промо
                 {
-                    var promo = RSmodeHelper.EditToPromoRS(Context, model.Promo);
-                    BTLPromo bp = new BTLPromo
-                    {
-                        DeletedDate = System.DateTime.Now,
-                        Disabled = true,
-                        BTLId = model.BTLId,
-                        PromoId = promo.Id,
-                        ClientTreeId = promo.ClientTreeKeyId.Value,
-                        TPMmode = TPMmode
-                    };
-                    Context.Set<BTLPromo>().Add(bp);
-                    if (!btlPromoesCopied)
-                    {
-                        var currentBTLPromoes = btlPromoes.Where(x => !x.Disabled && x.TPMmode == TPMmode.Current && x.PromoId != model.PromoId && x.PromoId != promo.Id);
-                        foreach (var bTLPromo in currentBTLPromoes)
-                        {
-                            var copiedPromo = RSmodeHelper.EditToPromoRS(Context, bTLPromo.Promo);
-                        }
-                    }
-                    model = bp;
+                    RSmodeHelper.EditToListBTLPromoesRS(Context, btlPromo, true, System.DateTime.Now);
                 }
                 else
                 {
-                    model.DeletedDate = System.DateTime.Now;
-                    model.Disabled = true;
+                    btlPromo[0].DeletedDate = System.DateTime.Now;
+                    btlPromo[0].Disabled = true;
                 }
-
-                CalculateBTLBudgetsCreateTask(model.BTLId.ToString(), new List<Guid>() { model.Id });
                 Context.SaveChanges();
-                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true}));
+                CalculateBTLBudgetsCreateTask(btlPromo[0].BTLId.ToString(), new List<Guid>() { btlPromo[0].Id });
+
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
             }
             catch (Exception e)
             {

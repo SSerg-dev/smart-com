@@ -30,6 +30,6 @@ namespace Module.Persist.TPM.Model.TPM
         [Index("Unique_Name", 5, IsUnique = true)]
         public string Segmen_code { get; set; }
 
-        public virtual ICollection<BrandTech> BrandTeches { get; set; }
+        public ICollection<BrandTech> BrandTeches { get; set; }
     }
 }

@@ -7,6 +7,7 @@ using Module.Persist.TPM.Model.TPM;
 using Persist.Model;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.IO;
 using System.Linq;
@@ -333,13 +334,32 @@ namespace Module.Frontend.TPM.Controllers
         {
             try
             {
-                PromoProduct promoProduct = Context.Set<PromoProduct>().FirstOrDefault(x => x.PromoId == promoId && x.ProductId == productId);
-                 return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, models = promoProduct }, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }));
+                Context.Configuration.LazyLoadingEnabled = false;
+                PromoProduct promoProduct = Context.Set<PromoProduct>()
+                    .AsNoTracking()
+                    .Include(g => g.Promo)
+                    .Include(g => g.Promo.BrandTech)
+                    .Include(g => g.Promo.Event)
+                    .Include(g => g.Promo.PromoStatus)
+                    .FirstOrDefault(x => x.PromoId == promoId && x.ProductId == productId);
+                Context.Configuration.LazyLoadingEnabled = true;
+                
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(
+                    new { success = true, models = promoProduct },
+                           new JsonSerializerSettings()
+                           {
+                               ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                               MaxDepth = 1,
+                               //Error = (object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args) =>
+                               //{
+                               //    throw new Exception(String.Format("Parse error: {0}", args.ErrorContext.Error.Message));
+                               //}
+                           }));
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false }));
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, error = ex.Message }));
             }
         }
         private bool EntityExists(System.Guid key)

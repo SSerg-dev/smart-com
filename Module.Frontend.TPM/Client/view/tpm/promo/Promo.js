@@ -32,7 +32,7 @@
                 xtype: 'customheadermenu',
                 items: [{
                     glyph: 0xf21d,
-                    itemId: 'exportxlsxbutton',
+                    itemId: 'exportbutton',
                     exactlyModelCompare: true,
                     text: l10n.ns('core', 'additionalMenu').value('exportXLSX'),
                     action: 'ExportXLSX'

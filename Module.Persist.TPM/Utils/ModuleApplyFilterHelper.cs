@@ -17,7 +17,7 @@ namespace Module.Persist.TPM.Utils
 {
     public static class ModuleApplyFilterHelper
     {
-        
+
         /// <summary>
         /// Применение фильтра по ограничениям к Промо
         /// </summary>
@@ -28,14 +28,6 @@ namespace Module.Persist.TPM.Utils
         /// <returns></returns>
         public static IQueryable<Promo> ApplyFilter(IQueryable<Promo> query, IQueryable<ClientTreeHierarchyView> hierarchy, TPMmode mode = TPMmode.Current, IDictionary<string, IEnumerable<string>> filter = null, FilterQueryModes filterMode = FilterQueryModes.Active, string role = "")
         {
-            if (filterMode == FilterQueryModes.Active)
-            {
-                query = query.Where(x => !x.Disabled);
-            }
-            if (filterMode == FilterQueryModes.Deleted)
-            {
-                query = query.Where(x => x.Disabled);
-            }
             IEnumerable<string> clientFilter = FilterHelper.GetFilter(filter, ModuleFilterName.Client);
             if (clientFilter.Any())
             {
@@ -43,7 +35,7 @@ namespace Module.Persist.TPM.Utils
                 query = query.Where(x =>
                     hierarchy.Any(h => h.Id == x.ClientTreeId || h.Hierarchy.Contains(x.ClientTreeId.Value.ToString())));
             }
-            if (!String.IsNullOrEmpty(role))
+            if (!string.IsNullOrEmpty(role))
             {
                 IEnumerable<Promo> promoToFilter = query.AsEnumerable();
                 promoToFilter = promoToFilter.Where(x => RoleStateUtil.RoleCanChangeState(role, x.PromoStatus.SystemName) && RoleStateUtil.IsOnApprovalRoleOrder(role, x));
@@ -53,9 +45,24 @@ namespace Module.Persist.TPM.Utils
             {
                 case TPMmode.Current:
                     query = query.Where(x => x.TPMmode == TPMmode.Current);
+                    if (filterMode == FilterQueryModes.Active)
+                    {
+                        query = query.Where(x => !x.Disabled);
+                    }
+                    if (filterMode == FilterQueryModes.Deleted)
+                    {
+                        query = query.Where(x => x.Disabled);
+                    }
                     break;
                 case TPMmode.RS:
-                    query = query.GroupBy(x => x.Number, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault());
+                    if (filterMode == FilterQueryModes.Active)
+                    {
+                        query = query.GroupBy(x => x.Number, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault()).Where(g => !g.Disabled);
+                    }
+                    if (filterMode == FilterQueryModes.Deleted)
+                    {
+                        query = query.GroupBy(x => x.Number, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault()).Where(g => g.Disabled);
+                    }
                     //query = query.Where(x => x.TPMmode == TPMmode.RS);
                     break;
             }
@@ -164,10 +171,10 @@ namespace Module.Persist.TPM.Utils
             switch (mode)
             {
                 case TPMmode.Current:
-                    query = query.Where(x => x.TPMmode == TPMmode.Current);
+                    query = query.Where(x => x.TPMmode == TPMmode.Current && !x.Disabled);
                     break;
                 case TPMmode.RS:
-                    query = query.GroupBy(x => x.Number, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault());
+                    query = query.GroupBy(x => x.Number, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault()).Where(f => !f.Disabled);
 
                     //query = query.Where(x => x.TPMmode == TPMmode.RS);
                     break;
@@ -448,13 +455,42 @@ namespace Module.Persist.TPM.Utils
                     break;
                 case TPMmode.RS:
                     query = query.GroupBy(x => new { x.PromoProduct.Promo.Number, x.PromoProductId }, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault());
-                    query = query.Where(x => !x.Disabled);                   
+                    query = query.Where(x => !x.Disabled);
                     //query = query.ToList().AsQueryable();
                     //var deletedRSPromoes
                     break;
             }
             return query;
         }
+
+        /// <summary>
+        /// Применить фильтр по клиентам к PromoProductCorrectionView
+        /// </summary>
+        /// <param name="query">Запрос</param>
+        /// <param name="hierarchy">Иерархия</param>
+        /// <param name="filter">Фильтр</param>
+        public static IQueryable<PromoProductCorrectionView> ApplyFilter(IQueryable<PromoProductCorrectionView> query, IQueryable<ClientTreeHierarchyView> hierarchy, TPMmode mode, IDictionary<string, IEnumerable<string>> filters = null)
+        {
+            IEnumerable<string> clientFilter = FilterHelper.GetFilter(filters, ModuleFilterName.Client);
+            if (clientFilter.Any())
+            {
+                hierarchy = getFilteredHierarchy(hierarchy, clientFilter);
+                query = query.Where(x =>
+                    hierarchy.Any(h => h.Id == x.ClientTreeId));
+            }
+            switch (mode)
+            {
+                case TPMmode.Current:
+                    query = query.Where(x => x.TPMmode == TPMmode.Current && !x.Disabled);
+                    break;
+                case TPMmode.RS:
+                    query = query.Where(x => !x.Disabled);
+                    query = query.GroupBy(x => new { x.Number, x.PromoProductId }, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault());
+                    break;
+            }
+            return query;
+        }
+
         /// <summary>
         /// Применить фильтр по клиентам к ClienDashboard kpidata
         /// </summary>
@@ -630,14 +666,23 @@ namespace Module.Persist.TPM.Utils
         /// <param name="query">Запрос</param>
         /// <param name="hierarchy">Иерархия</param>
         /// <param name="filter">Фильтр</param>
-        public static IQueryable<PromoROIReport> ApplyFilter(IQueryable<PromoROIReport> query, IQueryable<ClientTreeHierarchyView> hierarchy, IDictionary<string, IEnumerable<string>> filter = null)
+        public static IQueryable<PromoROIReport> ApplyFilter(IQueryable<PromoROIReport> query, IQueryable<ClientTreeHierarchyView> hierarchy, TPMmode mode, IDictionary<string, IEnumerable<string>> filter = null)
         {
             IEnumerable<string> clientFilter = FilterHelper.GetFilter(filter, ModuleFilterName.Client);
             if (clientFilter.Any())
             {
                 hierarchy = getFilteredHierarchy(hierarchy, clientFilter);
                 query = query.Where(x =>
-                    hierarchy.Any(h => h.Id == x.ClientTreeId));
+                    hierarchy.Any(h => h.Id == x.ClientTreeId || h.Hierarchy.Contains(x.ClientTreeId.Value.ToString())));
+            }
+            switch (mode)
+            {
+                case TPMmode.Current:
+                    query = query.Where(x => x.TPMmode == TPMmode.Current && !x.Disabled);
+                    break;
+                case TPMmode.RS:
+                    query = query.GroupBy(x => x.Number, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault()).Where(f => !f.Disabled);
+                    break;
             }
             return query;
         }

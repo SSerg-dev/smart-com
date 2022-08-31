@@ -21,6 +21,6 @@ namespace Module.Persist.TPM.Model.TPM
         [Required]
         public string Name { get; set; }
 
-        public virtual ICollection<BudgetItem> BudgetItems { get; set; }
+        public ICollection<BudgetItem> BudgetItems { get; set; }
     }
 }

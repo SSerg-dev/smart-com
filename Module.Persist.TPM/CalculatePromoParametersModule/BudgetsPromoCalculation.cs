@@ -1,6 +1,7 @@
 ﻿using Core.Dependency;
 using Core.Settings;
 using Looper.Core;
+using Module.Persist.TPM.Model.Interfaces;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
 using Persist;
@@ -195,7 +196,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         /// <param name="unlinkedPromoIds">Список ID отвязанных промо от подстатьи</param>
         /// <param name="context">Контекст БД</param>
         /// <returns></returns>
-        public static List<Guid> GetLinkedPromoId(string promoSupportIds, string unlinkedPromoIds, DatabaseContext context)
+        public static List<Guid> GetLinkedPromoId(string promoSupportIds, string unlinkedPromoIds, DatabaseContext context, TPMmode tPMmode = TPMmode.Current)
         {
 
             // список промо ID, участвующих в расчетах
@@ -209,7 +210,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                 foreach (Guid promoSupportId in promoSupportIdsList)
                 {
-                    Promo[] promoes = context.Set<PromoSupportPromo>().Where(n => n.PromoSupportId == promoSupportId && !n.Disabled).Select(n => n.Promo).ToArray();
+                    Promo[] promoes = context.Set<PromoSupportPromo>().Where(n => n.PromoSupportId == promoSupportId && !n.Disabled && n.TPMmode == tPMmode).Select(n => n.Promo).ToArray();
 
                     // страховка от повторений, сразу при включении
                     foreach (Promo p in promoes)
@@ -269,7 +270,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         /// <param name="btlId">Id BTL статьи</param>
         /// <param name="context">Контекст БД</param>
         /// <returns></returns>
-        public static List<Guid> GetLinkedPromoId(string btlId, DatabaseContext context, List<Guid> unlinkedPromoIds = null)
+        public static List<Guid> GetLinkedPromoId(string btlId, DatabaseContext context, List<Guid> unlinkedPromoIds = null, TPMmode tPMmode = TPMmode.Current)
         {
             List<Guid> promoIds = new List<Guid>();
             var guidBTLId = Guid.Empty;
@@ -277,7 +278,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
             if (guidBTLId != Guid.Empty)
             {
-                promoIds = context.Set<BTLPromo>().Where(x => !x.Disabled && x.DeletedDate == null && x.BTLId == guidBTLId).Select(x => x.PromoId).ToList();
+                promoIds = context.Set<BTLPromo>().Where(x => !x.Disabled && x.DeletedDate == null && x.BTLId == guidBTLId && x.TPMmode == tPMmode).Select(x => x.PromoId).ToList();
 
                 if(unlinkedPromoIds != null)
                     promoIds.AddRange(unlinkedPromoIds);

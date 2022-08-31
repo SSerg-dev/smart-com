@@ -34,9 +34,9 @@ namespace Module.Persist.TPM.Model.TPM
         public Guid TechnologyId { get; set; }
         public virtual Technology Technology { get; set; }
 
-        public virtual ICollection<ClientTreeBrandTech> ClientTreeBrandTeches { get; set; }
-        public virtual ICollection<CoefficientSI2SO> CoefficientSI2SOs { get; set; }
-        public virtual ICollection<NonPromoSupportBrandTech> NonPromoSupportBrandTeches { get; set; }
-        public virtual ICollection<TradeInvestment> TradeInvestments { get; set; }
+        public ICollection<ClientTreeBrandTech> ClientTreeBrandTeches { get; set; }
+        public ICollection<CoefficientSI2SO> CoefficientSI2SOs { get; set; }
+        public ICollection<NonPromoSupportBrandTech> NonPromoSupportBrandTeches { get; set; }
+        public ICollection<TradeInvestment> TradeInvestments { get; set; }
     }
 }

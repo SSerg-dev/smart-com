@@ -2979,6 +2979,10 @@
     <Compile Include="Migrations\202206240651346_Empty_After_Merge_AddTI.Designer.cs">
       <DependentUpon>202206240651346_Empty_After_Merge_AddTI.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202207191248355_Empty_Migration_Fix_Deploy.cs" />
+    <Compile Include="Migrations\202207191248355_Empty_Migration_Fix_Deploy.Designer.cs">
+      <DependentUpon>202207191248355_Empty_Migration_Fix_Deploy.cs</DependentUpon>
+	</Compile>
     <Compile Include="Migrations\202207061101557_Add_Mode.cs" />
     <Compile Include="Migrations\202207061101557_Add_Mode.Designer.cs">
       <DependentUpon>202207061101557_Add_Mode.cs</DependentUpon>
@@ -3059,13 +3063,53 @@
     <Compile Include="Migrations\202208091208487_Add_OnHold_PromoView.Designer.cs">
       <DependentUpon>202208091208487_Add_OnHold_PromoView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202208120912546_Aftermigration_changeview.cs" />
+    <Compile Include="Migrations\202208120912546_Aftermigration_changeview.Designer.cs">
+      <DependentUpon>202208120912546_Aftermigration_changeview.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202208160558376_Add_PromoProductsCorrection_View.cs" />
+    <Compile Include="Migrations\202208160558376_Add_PromoProductsCorrection_View.Designer.cs">
+      <DependentUpon>202208160558376_Add_PromoProductsCorrection_View.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202208161812571_PromoProductCorrectionView_AP.cs" />
+    <Compile Include="Migrations\202208161812571_PromoProductCorrectionView_AP.Designer.cs">
+      <DependentUpon>202208161812571_PromoProductCorrectionView_AP.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202208161208360_Add_Disabled_in_PromoView.cs" />
+    <Compile Include="Migrations\202208161208360_Add_Disabled_in_PromoView.Designer.cs">
+      <DependentUpon>202208161208360_Add_Disabled_in_PromoView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202208171218063_Update_PromoProductCorrectionView_AP.cs" />
+    <Compile Include="Migrations\202208171218063_Update_PromoProductCorrectionView_AP.Designer.cs">
+      <DependentUpon>202208171218063_Update_PromoProductCorrectionView_AP.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202208181642444_Change_RollingScenario.cs" />
+    <Compile Include="Migrations\202208181642444_Change_RollingScenario.Designer.cs">
+      <DependentUpon>202208181642444_Change_RollingScenario.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202208231719227_Add-RSstatus.cs" />
+    <Compile Include="Migrations\202208231719227_Add-RSstatus.Designer.cs">
+      <DependentUpon>202208231719227_Add-RSstatus.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202208241028258_Update_ROIReport_View.cs" />
+    <Compile Include="Migrations\202208241028258_Update_ROIReport_View.Designer.cs">
+      <DependentUpon>202208241028258_Update_ROIReport_View.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202208250814457_Delete_RSstatus.cs" />
+    <Compile Include="Migrations\202208250814457_Delete_RSstatus.Designer.cs">
+      <DependentUpon>202208250814457_Delete_RSstatus.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202208291125478_Add_Promo_CascadeDelete.cs" />
+    <Compile Include="Migrations\202208291125478_Add_Promo_CascadeDelete.Designer.cs">
+      <DependentUpon>202208291125478_Add_Promo_CascadeDelete.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202208301306233_Add_Promo_CascadeDelete_Some.cs" />
+    <Compile Include="Migrations\202208301306233_Add_Promo_CascadeDelete_Some.Designer.cs">
+      <DependentUpon>202208301306233_Add_Promo_CascadeDelete_Some.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\202207050757114_Change_Roi_Report.cs" />
     <Compile Include="Migrations\202207050757114_Change_Roi_Report.Designer.cs">
       <DependentUpon>202207050757114_Change_Roi_Report.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202207191248355_Empty_Migration_Fix_Deploy.cs" />
-    <Compile Include="Migrations\202207191248355_Empty_Migration_Fix_Deploy.Designer.cs">
-      <DependentUpon>202207191248355_Empty_Migration_Fix_Deploy.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\202208170912353_Empty_migration_merge17082022.cs" />
     <Compile Include="Migrations\202208170912353_Empty_migration_merge17082022.Designer.cs">
@@ -3095,6 +3139,7 @@
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
+    <Compile Include="Model\DTO\PromoProductCorrectionView.cs" />
     <Compile Include="Model\DTO\PromoProductsView.cs" />
     <Compile Include="Model\DTO\ClientTreeSharesView.cs" />
     <Compile Include="Model\DTO\PlanPostPromoEffectReport.cs" />
@@ -3229,8 +3274,9 @@
     <Compile Include="Model\SimpleModel\StartEndModel.cs" />
     <Compile Include="Model\SimpleModel\YEAR_END_ESTIMATE_FDM.cs" />
     <Compile Include="Model\TPM\COGSTn.cs" />
-    <Compile Include="Model\TPM\RollingScenario.cs" />
+    <Compile Include="Model\TPM\CurrentDayIncremental.cs" />
     <Compile Include="Model\TPM\EventType.cs" />
+    <Compile Include="Model\TPM\RollingScenario.cs" />
     <Compile Include="Model\TPM\TechnologyExport.cs" />
     <Compile Include="Model\TPM\ActualLsvModel.cs" />
     <Compile Include="Model\TPM\Competitor.cs" />
@@ -5765,6 +5811,9 @@
     <EmbeddedResource Include="Migrations\202206240651346_Empty_After_Merge_AddTI.resx">
       <DependentUpon>202206240651346_Empty_After_Merge_AddTI.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202207050757114_Change_Roi_Report.resx">
+      <DependentUpon>202207050757114_Change_Roi_Report.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202207061101557_Add_Mode.resx">
       <DependentUpon>202207061101557_Add_Mode.cs</DependentUpon>
     </EmbeddedResource>
@@ -5825,8 +5874,38 @@
     <EmbeddedResource Include="Migrations\202208091208487_Add_OnHold_PromoView.resx">
       <DependentUpon>202208091208487_Add_OnHold_PromoView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202207050757114_Change_Roi_Report.resx">
-      <DependentUpon>202207050757114_Change_Roi_Report.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202208120912546_Aftermigration_changeview.resx">
+      <DependentUpon>202208120912546_Aftermigration_changeview.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202208160558376_Add_PromoProductsCorrection_View.resx">
+      <DependentUpon>202208160558376_Add_PromoProductsCorrection_View.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202208161812571_PromoProductCorrectionView_AP.resx">
+      <DependentUpon>202208161812571_PromoProductCorrectionView_AP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202208161208360_Add_Disabled_in_PromoView.resx">
+      <DependentUpon>202208161208360_Add_Disabled_in_PromoView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202208171218063_Update_PromoProductCorrectionView_AP.resx">
+      <DependentUpon>202208171218063_Update_PromoProductCorrectionView_AP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202208181642444_Change_RollingScenario.resx">
+      <DependentUpon>202208181642444_Change_RollingScenario.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202208231719227_Add-RSstatus.resx">
+      <DependentUpon>202208231719227_Add-RSstatus.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202208241028258_Update_ROIReport_View.resx">
+      <DependentUpon>202208241028258_Update_ROIReport_View.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202208250814457_Delete_RSstatus.resx">
+      <DependentUpon>202208250814457_Delete_RSstatus.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202208291125478_Add_Promo_CascadeDelete.resx">
+      <DependentUpon>202208291125478_Add_Promo_CascadeDelete.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202208301306233_Add_Promo_CascadeDelete_Some.resx">
+      <DependentUpon>202208301306233_Add_Promo_CascadeDelete_Some.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202207191248355_Empty_Migration_Fix_Deploy.resx">
       <DependentUpon>202207191248355_Empty_Migration_Fix_Deploy.cs</DependentUpon>

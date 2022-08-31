@@ -2,20 +2,19 @@
 using Core.Security;
 using Core.Security.Models;
 using Frontend.Core.Controllers.Base;
-using Module.Frontend.TPM.Model;
-using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Model.DTO;
+using Module.Persist.TPM.Model.TPM;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using Persist.Model;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Web.Http;
-using System.Web.Http.OData;
 using Thinktecture.IdentityModel.Authorization.WebApi;
-using Newtonsoft.Json.Serialization;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -39,17 +38,6 @@ namespace Module.Frontend.TPM.Controllers
             return query;
         }
 
-        protected IQueryable<PromoStatusChange> GetConstraintedByPromoQuery(Guid? promoKey)
-        {
-            UserInfo user = authorizationManager.GetCurrentUser();
-            string role = authorizationManager.GetCurrentRoleName();
-            IList<Constraint> constraints = user.Id.HasValue ? Context.Constraints
-                .Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
-                .ToList() : new List<Constraint>();
-            IQueryable<PromoStatusChange> query = Context.Set<PromoStatusChange>().Where(e => e.PromoId == promoKey);
-            return query;
-        }
-
         [ClaimsAuthorize]
         [HttpPost]
         public IHttpActionResult PromoStatusChangesByPromo(String promoKey)
@@ -69,9 +57,15 @@ namespace Module.Frontend.TPM.Controllers
                 bool isGuid = Guid.TryParse(promoKey, out promoId);
                 if (isGuid)
                 {
+
                     Promo promoModel = Context.Set<Promo>().Where(x => x.Id == promoId).First();
-                    IQueryable<PromoStatusChange> pscs = GetConstraintedByPromoQuery(Guid.Parse(promoKey));
-                    var pscsList = pscs.OrderByDescending(y => y.Date).ToList();
+                    Context.Configuration.LazyLoadingEnabled = false;
+                    List<PromoStatusChange> pscsList = Context.Set<PromoStatusChange>()
+                        .AsNoTracking()
+                        .Include(g => g.Promo.PromoStatus)
+                        .Where(e => e.PromoId == promoId)
+                        .OrderByDescending(y => y.Date).ToList();
+                    Context.Configuration.LazyLoadingEnabled = true;
                     foreach (var item in pscsList)
                     {
                         var user = Context.Set<User>().FirstOrDefault(x => x.Id == item.UserId);
@@ -90,16 +84,41 @@ namespace Module.Frontend.TPM.Controllers
                             item.StatusColor = status.Color;
                             item.StatusName = status.Name;
                         }
-                        // почему то с loopreference если даже с ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-                        item.Promo = null;
-                        item.RejectReason = null;
-                        item.PromoStatus = null;
                     }
-                    var config = new MapperConfiguration(cfg => {
-                        cfg.CreateMap<PromoStatusChange, PromoStatusChange>()
-                            .ForMember(pTo => pTo.Promo, opt => opt.Ignore())
-                            .ForMember(pTo => pTo.PromoStatus, opt => opt.Ignore())
-                            .ForMember(pTo => pTo.RejectReason, opt => opt.Ignore());
+                    var config = new MapperConfiguration(cfg =>
+                    {
+                        cfg.CreateMap<PromoStatusChange, PromoStatusChange>();
+                        //.ForMember(pTo => pTo.Promo, opt => opt.Ignore())
+                        //.ForMember(pTo => pTo.PromoStatus, opt => opt.Ignore())
+                        //.ForMember(pTo => pTo.RejectReason, opt => opt.Ignore());
+                        cfg.CreateMap<Promo, Promo>()
+                            .ForMember(pTo => pTo.BTLPromoes, opt => opt.Ignore())
+                            .ForMember(pTo => pTo.Brand, opt => opt.Ignore())
+                            .ForMember(pTo => pTo.Technology, opt => opt.Ignore())
+                            .ForMember(pTo => pTo.BrandTech, opt => opt.Ignore())
+                            .ForMember(pTo => pTo.ClientTree, opt => opt.Ignore())
+                            //.ForMember(pTo => pTo.PromoStatus, opt => opt.Ignore())
+                            .ForMember(pTo => pTo.MarsMechanic, opt => opt.Ignore())
+                            .ForMember(pTo => pTo.PlanInstoreMechanic, opt => opt.Ignore())
+                            .ForMember(pTo => pTo.MarsMechanicType, opt => opt.Ignore())
+                            .ForMember(pTo => pTo.PlanInstoreMechanicType, opt => opt.Ignore())
+                            .ForMember(pTo => pTo.PromoTypes, opt => opt.Ignore())
+                            .ForMember(pTo => pTo.Color, opt => opt.Ignore())
+                            .ForMember(pTo => pTo.RejectReason, opt => opt.Ignore())
+                            .ForMember(pTo => pTo.Event, opt => opt.Ignore())
+                            .ForMember(pTo => pTo.ActualInStoreMechanic, opt => opt.Ignore())
+                            .ForMember(pTo => pTo.ActualInStoreMechanicType, opt => opt.Ignore())
+                            .ForMember(pTo => pTo.MasterPromo, opt => opt.Ignore())
+                            .ForMember(pTo => pTo.PromoUpliftFailIncidents, opt => opt.Ignore())
+                            .ForMember(pTo => pTo.PromoSupportPromoes, opt => opt.Ignore())
+                            .ForMember(pTo => pTo.PromoStatusChanges, opt => opt.Ignore())
+                            .ForMember(pTo => pTo.PromoProductTrees, opt => opt.Ignore())
+                            .ForMember(pTo => pTo.PreviousDayIncrementals, opt => opt.Ignore())
+                            .ForMember(pTo => pTo.IncrementalPromoes, opt => opt.Condition(c => c.InOut == false))
+                            .ForMember(pTo => pTo.PromoProducts, opt => opt.Ignore())
+                            .ForMember(pTo => pTo.Promoes, opt => opt.Ignore());
+                        cfg.CreateMap<PromoStatus, PromoStatus>()
+                            .ForMember(pTo => pTo.PromoStatusChanges, opt => opt.Ignore());
                     });
                     var mapper = config.CreateMapper();
                     var pscsListMap = mapper.Map<List<PromoStatusChange>>(pscsList);
@@ -109,22 +128,38 @@ namespace Module.Frontend.TPM.Controllers
                         return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, isEmpty = false, data = pscsListMap, statusColors, isNoNegoPassed }, new JsonSerializerSettings()
                         {
                             ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                            MaxDepth = 1,
+                            //Error = (object sender, ErrorEventArgs args) =>
+                            //{
+                            //    throw new Exception(String.Format("Parse error: {0}", args.ErrorContext.Error.Message));
+                            //},
                         }));
                     }
                     else
                     {
-                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, isEmpty = false, data = pscsListMap, statusColors }, new JsonSerializerSettings()
+                        return Content(HttpStatusCode.OK, 
+                            JsonConvert.SerializeObject(
+                                new { success = true, isEmpty = false, data = pscsListMap, statusColors }, 
+                                new JsonSerializerSettings()
                         {
-                            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-                        }));
+                            ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                            MaxDepth = 1,
+                                    Error = (object sender, ErrorEventArgs args) =>
+                                    {
+                                        throw new Exception(String.Format("Parse error: {0}", args.ErrorContext.Error.Message));
+                                    },
+                                }));
                     }
                 }
                 else
                 {
-                    List<PromoStatusChange> pscs = new List<PromoStatusChange>();
                     return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, isEmpty = true, statusColors }, new JsonSerializerSettings()
                     {
-                        ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                        ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                        //Error = (object sender, ErrorEventArgs args) =>
+                        //{
+                        //    throw new Exception(String.Format("Parse error: {0}", args.ErrorContext.Error.Message));
+                        //},
                     }));
                 }
 

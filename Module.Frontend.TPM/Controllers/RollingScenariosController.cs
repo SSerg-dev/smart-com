@@ -11,12 +11,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Data.Entity;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.OData;
 using Thinktecture.IdentityModel.Authorization.WebApi;
 using Utility;
+using Module.Frontend.TPM.FunctionalHelpers.RSPeriod;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -45,13 +47,9 @@ namespace Module.Frontend.TPM.Controllers
             IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
             IQueryable<RollingScenario> query = Context.Set<RollingScenario>().AsNoTracking();
             IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
-            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters, FilterQueryModes.Active); // TODO workflow
+            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters, FilterQueryModes.Active); 
 
-            // Не администраторы не смотрят чужие черновики
-            if (role != "Administrator" && role != "SupportAdministrator")
-            {
-                query = query.Where(e => e.PromoStatus.SystemName != "Draft" || e.CreatorId == user.Id);
-            }
+
             logger.Stop();
             return query;
         }
@@ -62,6 +60,10 @@ namespace Module.Frontend.TPM.Controllers
             return GetConstraintedQuery();
         }
 
+        /// <summary>
+        /// Массовый апрув
+        /// </summary>
+        /// <returns></returns>
         [ClaimsAuthorize]
         [HttpPost]
         public IHttpActionResult MassApprove()
@@ -71,21 +73,44 @@ namespace Module.Frontend.TPM.Controllers
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
             RoleInfo role = authorizationManager.GetCurrentRole();
             Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
-            
+
             return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
         }
 
         [ClaimsAuthorize]
         [HttpPost]
-        public IHttpActionResult Cancel()
+        public IHttpActionResult Decline(Guid rollingScenarioId)
         {
-            var promoNumbers = Request.Content.ReadAsStringAsync().Result;
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
             RoleInfo role = authorizationManager.GetCurrentRole();
             Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
 
-            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
+
+            if (role.SystemName == "CMManager" || role.SystemName == "Administrator")
+            {
+                using (var transaction = Context.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        
+                        RSPeriodHelper.DeleteRSPeriod(rollingScenarioId, Context);
+                        
+                        transaction.Commit();
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
+                    }
+                    catch (Exception e)
+                    {
+                        transaction.Rollback();
+                        return InternalServerError(e);
+                    }
+
+                }
+            }
+            else
+            {
+                return InternalServerError(new Exception("Only Key Account Manager send to approval!"));
+            }
         }
 
         [ClaimsAuthorize]
@@ -103,53 +128,121 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [HttpPost]
-        public IHttpActionResult OnApproval()
+        public IHttpActionResult OnApproval(Guid rollingScenarioId)
         {
-            var promoNumbers = Request.Content.ReadAsStringAsync().Result;
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
             RoleInfo role = authorizationManager.GetCurrentRole();
             Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
 
-            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
+            if (role.SystemName == "KeyAccountManager" || role.SystemName == "Administrator")
+            {
+                RSPeriodHelper.OnApprovalRSPeriod(rollingScenarioId, Context);
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
+            }
+            else
+            {
+                return InternalServerError(new Exception("Only Key Account Manager send to approval!"));
+            }
         }
 
         [ClaimsAuthorize]
         [HttpPost]
-        public IHttpActionResult Approve()
+        public IHttpActionResult Approve(Guid rollingScenarioId)
         {
-            var promoNumbers = Request.Content.ReadAsStringAsync().Result;
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
             RoleInfo role = authorizationManager.GetCurrentRole();
             Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
 
-            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
+            if (role.SystemName == "CMManager" || role.SystemName == "Administrator")
+            {
+                
+                using (var transaction = Context.Database.BeginTransaction())
+                {
+                    try
+                    {
+
+                        RSPeriodHelper.ApproveRSPeriod(rollingScenarioId, Context);
+
+                        transaction.Commit();
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
+                    }
+                    catch (Exception e)
+                    {
+                        transaction.Rollback();
+                        return InternalServerError(e);
+                    }
+
+                }
+
+            }
+            else
+            {
+                return InternalServerError(new Exception("Only Key Account Manager send to approval!"));
+            }
         }
+
 
         [ClaimsAuthorize]
         [HttpPost]
-        public IHttpActionResult Decline()
+        public IHttpActionResult GetVisibleButton(Guid rollingScenarioId)
         {
-            var promoNumbers = Request.Content.ReadAsStringAsync().Result;
             UserInfo user = authorizationManager.GetCurrentUser();
-            Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
+            Guid userId = user == null ? Guid.Empty : (user.Id ?? Guid.Empty);
             RoleInfo role = authorizationManager.GetCurrentRole();
-            Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
+            Guid roleId = role == null ? Guid.Empty : (role.Id ?? Guid.Empty);
 
-            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
-        }
-        [ClaimsAuthorize]
-        [HttpPost]
-        public IHttpActionResult GetVisibleButton()
-        {
-            var promoNumbers = Request.Content.ReadAsStringAsync().Result;
-            UserInfo user = authorizationManager.GetCurrentUser();
-            Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
-            RoleInfo role = authorizationManager.GetCurrentRole();
-            Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
+            if (role.SystemName == "KeyAccountManager")
+            {
+                RollingScenario RS = Context.Set<RollingScenario>()
+                    .AsNoTracking()
+                    .FirstOrDefault(g => g.Id == rollingScenarioId);
+                if (!RS.IsSendForApproval && !RS.Disabled)
+                {
+                    return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = false, Approve = true, Decline = true })); //статусы инвертированы для.setDisabled(false) 
+                }
+                else
+                {
+                    return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = true, Decline = true }));
+                }
+            }
+            if (role.SystemName == "CMManager")
+            {
+                RollingScenario RS = Context.Set<RollingScenario>()
+                    .Include(g => g.Promoes)
+                    .AsNoTracking()
+                    .FirstOrDefault(g => g.Id == rollingScenarioId);
+                if (RS.IsSendForApproval && !RS.IsCMManagerApproved && !RS.Disabled) // TODO выяснить как определяется, нужно ли пересчитывать ночью промо
+                {
+                    return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = false, Decline = false }));
+                }
+                else
+                {
+                    return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = true, Decline = true }));
+                }
 
-            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
+            }
+            if (role.SystemName == "Administrator")
+            {
+                RollingScenario RS = Context.Set<RollingScenario>()
+                    .Include(g => g.Promoes)
+                    .AsNoTracking()
+                    .FirstOrDefault(g => g.Id == rollingScenarioId);
+                if (!RS.IsSendForApproval && !RS.Disabled)
+                {
+                    return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = false, Approve = true, Decline = true }));
+                }
+                else if (RS.IsSendForApproval && !RS.IsCMManagerApproved && !RS.Disabled) // TODO выяснить как определяется, нужно ли пересчитывать ночью промо
+                {
+                    return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = false, Decline = false }));
+                }
+                else
+                {
+                    return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = true, Decline = true }));
+                }
+            }
+            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false }));
         }
     }
 }

@@ -2,6 +2,8 @@
     extend: 'App.controller.core.AssociatedDirectory',
     mixins: ['App.controller.core.ImportExportLogic'],
 
+    startEndModel: null,
+    
     init: function () {
         this.listen({
             component: {
@@ -112,6 +114,7 @@
     },
 
     onPromoSupportLinkedGridAfterrender: function (grid) {
+        var RSmodeController = App.app.getController('tpm.rsmode.RSmode');
         var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
         var mode = settingStore.findRecord('name', 'mode');
         if (mode) {
@@ -120,6 +123,9 @@
                 grid.columnManager.getColumns()[indexh].hide();
             }
             else {
+                RSmodeController.getRSPeriod(function (returnValue) {
+                    startEndModel = returnValue;
+                });
                 var promoSupportPromoGridStore = grid.getStore();
                 var promoSupportPromoGridStoreProxy = promoSupportPromoGridStore.getProxy();
                 promoSupportPromoGridStoreProxy.extraParams.TPMmode = 'RS';
@@ -564,10 +570,37 @@
     },
 
     onGridSelectionChangeCustom: function (selModel, selected) {
-        if (selected[0] && selected[0].data.PromoStatusName != "Closed") {
-            Ext.ComponentQuery.query('promolinkedticosts')[0].down('#deletebutton').enable();
-        } else {
-            Ext.ComponentQuery.query('promolinkedticosts')[0].down('#deletebutton').disable();
+        if (selected[0]) {
+            var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+            const tpmMode = settingStore.findRecord('name', 'mode').data.value;
+            if (tpmMode == 1) {
+                if (
+                        (
+                            new Date(selected[0].data.PromoDispatchStartDate) > new Date(startEndModel.StartDate) &&
+                            new Date(selected[0].data.PromoDispatchStartDate) <= new Date(startEndModel.EndDate)
+                        ) &&
+                        (
+                            selected[0].data.PromoStatusName != "Draft" &&
+                            selected[0].data.PromoStatusName != "Planned" &&
+                            selected[0].data.PromoStatusName != "Started" &&
+                            selected[0].data.PromoStatusName != "Finished" &&
+                            selected[0].data.PromoStatusName != "Closed" &&
+                            selected[0].data.PromoStatusName != "Cancelled"
+                        ) &&
+                        (
+                            !selected[0].data.IsGrowthAcceleration ||
+                            !selected[0].data.IsInExchange
+                        )
+                    ) {
+                    Ext.ComponentQuery.query('promolinkedticosts')[0].down('#deletebutton').enable();
+                } else {
+                    Ext.ComponentQuery.query('promolinkedticosts')[0].down('#deletebutton').disable();
+                }
+            } else if (selected[0].data.PromoStatusName != "Closed") {
+                Ext.ComponentQuery.query('promolinkedticosts')[0].down('#deletebutton').enable();
+            } else {
+                Ext.ComponentQuery.query('promolinkedticosts')[0].down('#deletebutton').disable();
+            }
         }
     },
 

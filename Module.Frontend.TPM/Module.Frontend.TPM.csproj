@@ -330,6 +330,7 @@
     <Content Include="Client\controller\tpm\ratishopper\HistoricalRATIShopper.js" />
     <Content Include="Client\controller\tpm\clienttreebrandtech\HistoricalClientTreeBrandTech.js" />
     <Content Include="Client\controller\tpm\rollingvolume\RollingVolume.js" />
+    <Content Include="Client\controller\tpm\rsmode\DeletedRSmode.js" />
     <Content Include="Client\controller\tpm\rsmode\RSmode.js" />
     <Content Include="Client\model\tpm\actualcogstn\ActualCOGSTn.js" />
     <Content Include="Client\model\tpm\actualcogstn\DeletedActualCOGSTn.js" />
@@ -351,6 +352,7 @@
     <Content Include="Client\model\tpm\pludictionary\HistoricalPLUDictionary.js" />
     <Content Include="Client\model\tpm\pludictionary\PLUDictionary.js" />
     <Content Include="Client\model\tpm\promoproduct2plu\PromoProduct2Plu.js" />
+    <Content Include="Client\model\tpm\promoproductcorrection\PromoProductCorrectionView.js" />
     <Content Include="Client\model\tpm\promosupportpromo\PromoSupportPromoWithPromoId.js" />
     <Content Include="Client\model\tpm\ratishopper\RATIShopper.js" />
     <Content Include="Client\model\tpm\ratishopper\DeletedRATIshopper.js" />
@@ -361,6 +363,7 @@
     <Content Include="Client\model\tpm\clienttreebrandtech\HistoricalClientTreeBrandTech.js" />
     <Content Include="Client\model\tpm\mechanictype\MechanicTypeForClient.js" />
     <Content Include="Client\model\tpm\rollingvolume\RollingVolume.js" />
+    <Content Include="Client\model\tpm\rsmode\DeletedRSmode.js" />
     <Content Include="Client\model\tpm\rsmode\RSmode.js" />
     <Content Include="Client\util\MinHeightColumn.js" />
     <Content Include="Client\view\tpm\actualcogstn\ActualCOGSTnEditor.js" />
@@ -400,6 +403,7 @@
     <Content Include="Client\view\tpm\pludictionary\HistoricalPLUDictionaryDetail.js" />
     <Content Include="Client\view\tpm\pludictionary\PLUDictionary.js" />
     <Content Include="Client\view\tpm\pludictionary\PLUDictionaryEditor.js" />
+    <Content Include="Client\view\tpm\promoproductcorrection\PromoProductCorrectionViewEditor.js" />
     <Content Include="Client\view\tpm\promo\ApproveClosePromoWindow.js" />
     <Content Include="Client\view\tpm\promo\PromoMechanicAddPromoes.js" />
     <Content Include="Client\view\tpm\ratishopper\RATIShopper.js" />
@@ -426,6 +430,7 @@
     <Compile Include="Controllers\DeletedActualCOGSsController.cs" />
     <Compile Include="Controllers\DeletedActualCOGSTnsController.cs" />
     <Compile Include="Controllers\DeletedPlanCOGSTnsController.cs" />
+    <Compile Include="Controllers\DeletedRollingScenariosController.cs" />
     <Compile Include="Controllers\EventTypesController.cs" />
     <Compile Include="Controllers\HistoricalActualCOGSTnsController.cs" />
     <Compile Include="Controllers\DeletedActualTradeInvestmentsController.cs" />
@@ -452,6 +457,7 @@
     <Compile Include="Controllers\PreviousDayIncrementalsController.cs" />
     <Compile Include="Controllers\PriceListsController.cs" />
     <Compile Include="Controllers\CompetitorBrandTechsController.cs" />
+    <Compile Include="Controllers\PromoProductCorrectionViewsController.cs" />
     <Compile Include="Controllers\RATIShoppersController.cs" />
     <Compile Include="Controllers\RollingVolumesController.cs" />
     <Compile Include="Controllers\RPAsController.cs" />
@@ -1037,6 +1043,8 @@
     <Content Include="Client\view\tpm\promo\UserRolePromoEditor.js" />
     <Content Include="Client\view\tpm\rollingvolume\RollingVolume.js" />
     <Content Include="Client\view\tpm\rollingvolume\RollingVolumeEditor.js" />
+    <Content Include="Client\view\tpm\rsmode\DeletedRSmode.js" />
+    <Content Include="Client\view\tpm\rsmode\DeletedRSmodeDetail.js" />
     <Content Include="Client\view\tpm\rsmode\RSmode.js" />
     <Content Include="Client\view\tpm\schedule\ClientPromoTypeFilter.js" />
     <Content Include="Client\view\tpm\schedule\ScheduleType.js" />
@@ -1717,7 +1725,6 @@
       <Name>Module.Persist.TPM</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

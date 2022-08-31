@@ -24,6 +24,6 @@ namespace Module.Persist.TPM.Model.TPM
 
         public bool Custom { get; set; }
 
-        public virtual ICollection<PromoStatusChange> PromoStatusChanges { get; set; }
+        public ICollection<PromoStatusChange> PromoStatusChanges { get; set; }
     }
 }
