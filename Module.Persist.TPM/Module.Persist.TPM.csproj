@@ -2982,7 +2982,7 @@
     <Compile Include="Migrations\202207191248355_Empty_Migration_Fix_Deploy.cs" />
     <Compile Include="Migrations\202207191248355_Empty_Migration_Fix_Deploy.Designer.cs">
       <DependentUpon>202207191248355_Empty_Migration_Fix_Deploy.cs</DependentUpon>
-	</Compile>
+    </Compile>
     <Compile Include="Migrations\202207061101557_Add_Mode.cs" />
     <Compile Include="Migrations\202207061101557_Add_Mode.Designer.cs">
       <DependentUpon>202207061101557_Add_Mode.cs</DependentUpon>
@@ -3134,6 +3134,10 @@
     <Compile Include="Migrations\202208301319235_EmptyMerge3008.cs" />
     <Compile Include="Migrations\202208301319235_EmptyMerge3008.Designer.cs">
       <DependentUpon>202208301319235_EmptyMerge3008.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202208311455583_EmptyMerge3108.cs" />
+    <Compile Include="Migrations\202208311455583_EmptyMerge3108.Designer.cs">
+      <DependentUpon>202208311455583_EmptyMerge3108.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -5927,6 +5931,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202208301319235_EmptyMerge3008.resx">
       <DependentUpon>202208301319235_EmptyMerge3008.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202208311455583_EmptyMerge3108.resx">
+      <DependentUpon>202208311455583_EmptyMerge3108.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
