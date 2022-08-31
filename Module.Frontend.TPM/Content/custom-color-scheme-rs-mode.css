@@ -387,7 +387,7 @@ x-panel-header-text-container-blue-panel {
     }
     /*Цвет кнопки разворачивания/сворачивания тулбара при наведении*/
     .custom-scheduler-toolbar .x-btn-fill-gray-button-toolbar-toolbar-small-over {
-        background-color: #507297;
+        background-color: gray;
     }
 
     .custom-scheduler-toolbar .x-btn-fill-gray-button-toolbar-toolbar-small .x-btn-glyph {
@@ -462,12 +462,16 @@ x-panel-header-text-container-blue-panel {
     .custom-scheduler-toolbar .x-btn-create-promo-btn-toolbar-expanded-small-icon-text-left .x-btn-glyph,
     .custom-scheduler-toolbar .x-btn-blue-button-toolbar-toolbar-small-icon-text-left .x-btn-glyph {
         padding-left: 10px;
-        color: #7FC3FA;
+        color: #eb8a42;
     }
 
     .custom-scheduler-toolbar .x-btn-blue-button-toolbar-toolbar-small-disabled .x-btn-glyph {
         padding-left: 10px;
         color: #C7CAD0;
+    }
+
+    .custom-scheduler-toolbar .x-btn-blue-button-toolbar-toolbar-small .x-btn-inner {
+        color: #fff;
     }
 
 
@@ -695,7 +699,7 @@ pre.code {
 }
 
 .sch-preset-btn-selected {
-    background-color: #5481B2;
+    background-color: #868686;
 }
 
 .sch-mode-btn-selected {
@@ -880,11 +884,11 @@ pre.code {
     }
 
     .custom-additional-button:hover {
-        background-color: #5481B2;
+        background-color: #868686;
     }
 
     .custom-additional-button.disabled {
-        background-color: #0066a6;
+        background-color: #86868691;
     }
 
         .custom-additional-button.disabled .x-btn-inner, .custom-additional-button.disabled .x-btn-glyph {
@@ -4298,7 +4302,7 @@ x-slider-inner:before {
 }
 
 .in-out-product-selection-window-product-untoggled-button {
-    background-color: #5b8abc;
+    background-color: #d7d7d7;
 }
 
 .in-out-promo-header-button {
