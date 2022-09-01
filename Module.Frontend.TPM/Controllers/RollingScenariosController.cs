@@ -19,6 +19,7 @@ using System.Web.Http.OData;
 using Thinktecture.IdentityModel.Authorization.WebApi;
 using Utility;
 using Module.Frontend.TPM.FunctionalHelpers.RSPeriod;
+using System.Data.Entity.Infrastructure;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -168,7 +169,7 @@ namespace Module.Frontend.TPM.Controllers
                         transaction.Commit();
                         return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
                     }
-                    catch (Exception e)
+                    catch (DbUpdateException e)
                     {
                         transaction.Rollback();
                         return InternalServerError(e);

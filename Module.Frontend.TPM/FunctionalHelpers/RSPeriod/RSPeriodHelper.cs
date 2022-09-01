@@ -95,6 +95,9 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
             PromoStatus promoStatusOnApproval = Context.Set<PromoStatus>().FirstOrDefault(v => v.SystemName == "OnApproval");
             RS.IsSendForApproval = true;
             RS.PromoStatus = promoStatusOnApproval;
+            DateTimeOffset today = DateTimeOffset.Now;
+            DateTimeOffset expirationDate = new DateTimeOffset(today.Year, today.Month, today.Day, 23, 0, 0, new TimeSpan(0, 0, 0));
+            RS.ExpirationDate = expirationDate.AddDays(14);
             Context.SaveChanges();
         }
         public static void MassApproveRSPeriod(List<RollingScenario> rollingScenarios, DatabaseContext Context)
@@ -146,13 +149,17 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                     .ForMember(pTo => pTo.ActualInStoreMechanic, opt => opt.Ignore())
                     .ForMember(pTo => pTo.ActualInStoreMechanicType, opt => opt.Ignore())
                     .ForMember(pTo => pTo.MasterPromo, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.RollingScenarioId, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.RollingScenario, opt => opt.Ignore())
                     .ForMember(pTo => pTo.PromoUpliftFailIncidents, opt => opt.Ignore())
-                    .ForMember(pTo => pTo.PromoSupportPromoes, opt => opt.Ignore())//filter
+                    .ForMember(pTo => pTo.PromoSupportPromoes, opt => opt.Ignore())
                     .ForMember(pTo => pTo.PromoStatusChanges, opt => opt.Ignore())
-                    .ForMember(pTo => pTo.PromoProductTrees, opt => opt.Ignore())//filter
+                    .ForMember(pTo => pTo.PromoProductTrees, opt => opt.Ignore())
                     .ForMember(pTo => pTo.PreviousDayIncrementals, opt => opt.Ignore())
                     .ForMember(pTo => pTo.IncrementalPromoes, opt => opt.Ignore())
-                    .ForMember(pTo => pTo.PromoProducts, opt => opt.Ignore())//filter
+                    .ForMember(pTo => pTo.PromoProducts, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoOnApprovalIncidents, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.CurrentDayIncrementals, opt => opt.Ignore())
                     .ForMember(pTo => pTo.Promoes, opt => opt.Ignore());
             });
             var mapperPromoBack = cfgPromoBack.CreateMapper();
@@ -177,6 +184,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                     //.ForMember(pTo => pTo.Disabled, opt => opt.Ignore())
                     //.ForMember(pTo => pTo.DeletedDate, opt => opt.Ignore())
                     .ForMember(pTo => pTo.PromoSupport, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoId, opt => opt.Ignore())
                     .ForMember(pTo => pTo.Promo, opt => opt.Ignore());
             });
             var mapperPromoSupportPromoBack = cfgPromoSupportPromoBack.CreateMapper();
@@ -187,6 +195,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                     .ForMember(pTo => pTo.TPMmode, opt => opt.Ignore())
                     //.ForMember(pTo => pTo.Disabled, opt => opt.Ignore())
                     //.ForMember(pTo => pTo.DeletedDate, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoId, opt => opt.Ignore())
                     .ForMember(pTo => pTo.Promo, opt => opt.Ignore());
             });
             var mapperPromoProductTreeBack = cfgPromoProductTreeBack.CreateMapper();
@@ -198,7 +207,9 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                     //.ForMember(pTo => pTo.Disabled, opt => opt.Ignore())
                     //.ForMember(pTo => pTo.DeletedDate, opt => opt.Ignore())
                     .ForMember(pTo => pTo.Promo, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoId, opt => opt.Ignore())
                     .ForMember(pTo => pTo.Product, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ProductId, opt => opt.Ignore())
                     .ForMember(pTo => pTo.Plu, opt => opt.Ignore());
             });
             var mapperPromoProductBack = cfgPromoProductBack.CreateMapper();
@@ -219,6 +230,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                     .ForMember(pTo => pTo.TPMmode, opt => opt.Ignore())
                     //.ForMember(pTo => pTo.Disabled, opt => opt.Ignore())
                     //.ForMember(pTo => pTo.DeletedDate, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoId, opt => opt.Ignore())
                     .ForMember(pTo => pTo.Promo, opt => opt.Ignore())
                     .ForMember(pTo => pTo.Product, opt => opt.Ignore());
             });
@@ -230,6 +242,14 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                     .Include(g => g.PromoSupportPromoes)
                     .Include(g => g.PromoProductTrees)
                     .Include(g => g.IncrementalPromoes)
+                    .Include(g => g.PreviousDayIncrementals)
+                    .Include(g => g.PromoStatusChanges)
+                    .Include(g => g.PromoUpliftFailIncidents)
+                    .Include(g => g.PromoOnApprovalIncidents)
+                    .Include(g => g.PromoOnRejectIncidents)
+                    .Include(g => g.PromoCancelledIncidents)
+                    .Include(g => g.PromoApprovedIncidents)
+                    .Include(g => g.CurrentDayIncrementals)
                     .Include(x => x.PromoProducts.Select(y => y.PromoProductsCorrections))
                 .Where(x => promoRSids.Contains(x.Id)).ToList();
 
@@ -242,20 +262,19 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                     .Include(x => x.PromoProducts.Select(y => y.PromoProductsCorrections))
                 .Where(x => promoRSnumbers.Contains((int)x.Number) && x.TPMmode == TPMmode.Current).ToList();
             List<int> numbers = promos.Select(g => g.Number).Cast<int>().ToList();
-            foreach (Promo promoRS in promoesRS)
+            foreach (Promo promoRS in promoesRS.ToList())
             {
                 if (numbers.Contains((int)promoRS.Number)) // существующий
                 {
                     Promo promo = promos.FirstOrDefault(g => g.Number == promoRS.Number);
                     mapperPromoBack.Map(promoRS, promo);
-                    foreach (BTLPromo bTLPromoRS in promoRS.BTLPromoes) 
+                    foreach (BTLPromo bTLPromoRS in promoRS.BTLPromoes)
                     {
-                        if (promo.BTLPromoes.Select(g=>g.BTLId).Contains(bTLPromoRS.BTLId)) // существующий btlpromo
+                        if (promo.BTLPromoes.Select(g => g.BTLId).Contains(bTLPromoRS.BTLId)) // существующий btlpromo
                         {
                             BTLPromo bTLPromo = promo.BTLPromoes.FirstOrDefault(g => g.BTLId == bTLPromoRS.BTLId);
                             mapperBTLPromoBack.Map(bTLPromoRS, bTLPromo);
-                            bTLPromo.PromoId = promo.Id;
-                            bTLPromo.Promo = promo;
+
                         }
                         else // новый btlpromo
                         {
@@ -270,8 +289,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                         {
                             PromoSupportPromo promoSupportPromo = promo.PromoSupportPromoes.FirstOrDefault(g => g.PromoSupportId == promoSupportPromoRS.PromoSupportId);
                             mapperPromoSupportPromoBack.Map(promoSupportPromoRS, promoSupportPromo);
-                            promoSupportPromo.PromoId = promo.Id;
-                            promoSupportPromo.Promo = promo;
+
                         }
                         else // новый PromoSupportPromo
                         {
@@ -286,8 +304,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                         {
                             IncrementalPromo incrementalPromo = promo.IncrementalPromoes.FirstOrDefault(g => g.ProductId == incrementalPromoRS.ProductId);
                             mapperIncrementalPromoBack.Map(incrementalPromoRS, incrementalPromo);
-                            incrementalPromo.PromoId = promo.Id;
-                            incrementalPromo.Promo = promo;
+
                         }
                         else // новый IncrementalPromo
                         {
@@ -302,8 +319,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                         {
                             PromoProductTree promoProductTree = promo.PromoProductTrees.FirstOrDefault(g => g.ProductTreeObjectId == promoProductTreeRS.ProductTreeObjectId);
                             mapperPromoProductTreeBack.Map(promoProductTreeRS, promoProductTree);
-                            promoProductTree.PromoId = promo.Id;
-                            promoProductTree.Promo = promo;
+
                         }
                         else // новый PromoProductTree
                         {
@@ -317,9 +333,13 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                         if (promo.PromoProducts.Select(g => g.ProductId).Contains(promoProductRS.ProductId)) // существующий PromoProduct
                         {
                             PromoProduct promoProduct = promo.PromoProducts.FirstOrDefault(g => g.ProductId == promoProductRS.ProductId);
+                            foreach (PromoProductsCorrection promoProductsCorrectionRS in promoProductRS.PromoProductsCorrections)
+                            {
+                                PromoProductsCorrection promoProductsCorrection = promoProduct.PromoProductsCorrections.FirstOrDefault();
+                                mapperPromoProductsCorrectionBack.Map(promoProductsCorrectionRS, promoProductsCorrection);
+                            }
                             mapperPromoProductBack.Map(promoProductRS, promoProduct);
-                            promoProduct.PromoId = promo.Id;
-                            promoProduct.Promo = promo;
+
                         }
                         else // новый PromoProduct
                         {
@@ -333,7 +353,30 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                 {
 
                 }
+                //Context.Set<PromoProductsCorrection>().RemoveRange(promoRS.PromoProducts.SelectMany(g => g.PromoProductsCorrections));
+                //foreach (var item in promoRS.PromoProducts)
+                //{
+                //    item.PromoProductsCorrections.Clear();
+                //}
+                //promoRS.PromoProducts.Clear();
+                //promoRS.IncrementalPromoes.Clear();
+                //promoRS.PromoProductTrees.Clear();
+                //promoRS.PromoSupportPromoes.Clear();
+                //promoRS.BTLPromoes.Clear();
+                //promoRS.PreviousDayIncrementals.Clear();
+                //promoRS.PromoStatusChanges.Clear();
+                //promoRS.PromoUpliftFailIncidents.Clear();
+                //promoRS.PromoOnApprovalIncidents.Clear();
+                //promoRS.PromoOnRejectIncidents.Clear();
+                //promoRS.PromoCancelledIncidents.Clear();
+                //promoRS.PromoApprovedIncidents.Clear();
+                //promoRS.CurrentDayIncrementals.Clear();
+
+                //promoesRS.Remove(promoRS); - нельзя сделать
+                Context.Set<Promo>().Remove(promoRS); // не отследит EF
+                Context.SaveChanges();
             }
+
             Context.SaveChanges();
         }
     }
