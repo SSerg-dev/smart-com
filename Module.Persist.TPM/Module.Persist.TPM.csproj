@@ -3143,6 +3143,10 @@
     <Compile Include="Migrations\202209010439412_Add_Promo_CascadeDelete_Some2.Designer.cs">
       <DependentUpon>202209010439412_Add_Promo_CascadeDelete_Some2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202209010707260_EmptyMergeRS.cs" />
+    <Compile Include="Migrations\202209010707260_EmptyMergeRS.Designer.cs">
+      <DependentUpon>202209010707260_EmptyMergeRS.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
@@ -5941,6 +5945,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202209010439412_Add_Promo_CascadeDelete_Some2.resx">
       <DependentUpon>202209010439412_Add_Promo_CascadeDelete_Some2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202209010707260_EmptyMergeRS.resx">
+      <DependentUpon>202209010707260_EmptyMergeRS.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
