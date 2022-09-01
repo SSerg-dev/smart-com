@@ -389,6 +389,17 @@ namespace Module.Frontend.TPM.Controllers
                     {
                         model = RSmodeHelper.EditToPromoRS(Context, model);
                     }
+                    else
+                    {
+                        Promo promoRS = Context.Set<Promo>().FirstOrDefault(f => f.Number == model.Number && f.TPMmode == TPMmode.RS);
+                        if (promoRS != null)
+                        {
+                            Context.Set<Promo>().Remove(promoRS);
+                            Context.SaveChanges();
+                            patch.Patch(model);
+                            RSmodeHelper.EditToPromoRS(Context, model);
+                        }                        
+                    }
                 }
                 patch.Patch(model);
 
