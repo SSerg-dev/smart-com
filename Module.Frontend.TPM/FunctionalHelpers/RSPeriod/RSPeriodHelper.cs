@@ -199,30 +199,6 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                     .ForMember(pTo => pTo.Promo, opt => opt.Ignore());
             });
             var mapperPromoProductTreeBack = cfgPromoProductTreeBack.CreateMapper();
-            var cfgPromoProductBack = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<PromoProduct, PromoProduct>()
-                    .ForMember(pTo => pTo.Id, opt => opt.Ignore())
-                    .ForMember(pTo => pTo.TPMmode, opt => opt.Ignore())
-                    //.ForMember(pTo => pTo.Disabled, opt => opt.Ignore())
-                    //.ForMember(pTo => pTo.DeletedDate, opt => opt.Ignore())
-                    .ForMember(pTo => pTo.Promo, opt => opt.Ignore())
-                    .ForMember(pTo => pTo.PromoId, opt => opt.Ignore())
-                    .ForMember(pTo => pTo.Product, opt => opt.Ignore())
-                    .ForMember(pTo => pTo.ProductId, opt => opt.Ignore())
-                    .ForMember(pTo => pTo.Plu, opt => opt.Ignore());
-            });
-            var mapperPromoProductBack = cfgPromoProductBack.CreateMapper();
-            var cfgPromoProductsCorrectionBack = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<PromoProductsCorrection, PromoProductsCorrection>()
-                    .ForMember(pTo => pTo.Id, opt => opt.Ignore())
-                    .ForMember(pTo => pTo.TPMmode, opt => opt.Ignore())
-                    //.ForMember(pTo => pTo.Disabled, opt => opt.Ignore())
-                    //.ForMember(pTo => pTo.DeletedDate, opt => opt.Ignore())
-                    .ForMember(pTo => pTo.PromoProduct, opt => opt.Ignore());
-            });
-            var mapperPromoProductsCorrectionBack = cfgPromoProductsCorrectionBack.CreateMapper();
             var cfgIncrementalPromoBack = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<IncrementalPromo, IncrementalPromo>()
@@ -235,6 +211,33 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                     .ForMember(pTo => pTo.Product, opt => opt.Ignore());
             });
             var mapperIncrementalPromoBack = cfgIncrementalPromoBack.CreateMapper();
+            var cfgPromoProductBack = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<PromoProduct, PromoProduct>()
+                    .ForMember(pTo => pTo.Id, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.TPMmode, opt => opt.Ignore())
+                    //.ForMember(pTo => pTo.Disabled, opt => opt.Ignore())
+                    //.ForMember(pTo => pTo.DeletedDate, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.Promo, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoId, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.Product, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ProductId, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoProductsCorrections, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.Plu, opt => opt.Ignore());
+            });
+            var mapperPromoProductBack = cfgPromoProductBack.CreateMapper();
+            var cfgPromoProductsCorrectionBack = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<PromoProductsCorrection, PromoProductsCorrection>()
+                    .ForMember(pTo => pTo.Id, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.TPMmode, opt => opt.Ignore())
+                    //.ForMember(pTo => pTo.Disabled, opt => opt.Ignore())
+                    //.ForMember(pTo => pTo.DeletedDate, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoProductId, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoProduct, opt => opt.Ignore());
+            });
+            var mapperPromoProductsCorrectionBack = cfgPromoProductsCorrectionBack.CreateMapper();
+
 
             List<Guid> promoRSids = promoesRS.Select(h => h.Id).ToList();
             promoesRS = Context.Set<Promo>()
@@ -328,18 +331,21 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                             promoProductTreeRS.TPMmode = TPMmode.Current;
                         }
                     }
-                    foreach (PromoProduct promoProductRS in promoRS.PromoProducts)
+                    foreach (PromoProduct promoProductRS in promoRS.PromoProducts.ToList())
                     {
                         if (promo.PromoProducts.Select(g => g.ProductId).Contains(promoProductRS.ProductId)) // существующий PromoProduct
                         {
                             PromoProduct promoProduct = promo.PromoProducts.FirstOrDefault(g => g.ProductId == promoProductRS.ProductId);
-                            foreach (PromoProductsCorrection promoProductsCorrectionRS in promoProductRS.PromoProductsCorrections)
+                            foreach (PromoProductsCorrection promoProductsCorrectionRS in promoProductRS.PromoProductsCorrections.ToList())
                             {
                                 PromoProductsCorrection promoProductsCorrection = promoProduct.PromoProductsCorrections.FirstOrDefault();
                                 mapperPromoProductsCorrectionBack.Map(promoProductsCorrectionRS, promoProductsCorrection);
+                                //promoProductRS.PromoProductsCorrections.Remove(promoProductsCorrectionRS);
+                                Context.Set<PromoProductsCorrection>().Remove(promoProductsCorrectionRS);
                             }
                             mapperPromoProductBack.Map(promoProductRS, promoProduct);
-
+                            //promoRS.PromoProducts.Remove(promoProductRS);
+                            Context.Set<PromoProduct>().Remove(promoProductRS);
                         }
                         else // новый PromoProduct
                         {
@@ -374,7 +380,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
 
                 //promoesRS.Remove(promoRS); - нельзя сделать
                 Context.Set<Promo>().Remove(promoRS); // не отследит EF
-                Context.SaveChanges();
+                Context.SaveChanges(); //удалить
             }
 
             Context.SaveChanges();
