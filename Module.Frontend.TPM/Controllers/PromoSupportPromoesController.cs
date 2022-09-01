@@ -51,7 +51,7 @@ namespace Module.Frontend.TPM.Controllers
                 .Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
                 .ToList() : new List<Constraint>();
 
-            IQueryable<PromoSupportPromo> query = Context.Set<PromoSupportPromo>().Where(e => !e.Disabled);
+            IQueryable<PromoSupportPromo> query = Context.Set<PromoSupportPromo>();
 
             switch (TPMmode)
             {
@@ -64,7 +64,7 @@ namespace Module.Frontend.TPM.Controllers
                     //var deletedRSPromoes
                     break;
             }
-            return query;
+            return query.Where(q => !q.Disabled);
 
         }
 
@@ -822,7 +822,7 @@ namespace Module.Frontend.TPM.Controllers
                 }
                 Context.SaveChanges();
 
-                CalculateBudgetsCreateTask(new List<Guid>() { supportPromos[0].PromoSupportId }, new List<Guid>() { supportPromos[0].Id });
+                CalculateBudgetsCreateTask(new List<Guid>() { supportPromos[0].PromoSupportId }, new List<Guid>() { supportPromos[0].PromoId });
                 Context.SaveChanges();
                 return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
             }
