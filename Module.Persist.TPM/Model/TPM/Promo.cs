@@ -334,7 +334,7 @@ namespace Module.Persist.TPM.Model.TPM
         public virtual Promo MasterPromo { get; set; }
         [ForeignKey("RollingScenario")]
         public Guid? RollingScenarioId { get; set; }
-        public virtual RollingScenario RollingScenario { get; set; }
+        public RollingScenario RollingScenario { get; set; }
 
         public virtual ICollection<Promo> Promoes { get; set; }
         public ICollection<PromoProduct> PromoProducts { get; set; }
@@ -346,6 +346,9 @@ namespace Module.Persist.TPM.Model.TPM
         public ICollection<PromoUpliftFailIncident> PromoUpliftFailIncidents { get; set; }
         public ICollection<BTLPromo> BTLPromoes { get; set; }
         public ICollection<PromoOnApprovalIncident> PromoOnApprovalIncidents { get; set; }
+        public ICollection<PromoOnRejectIncident> PromoOnRejectIncidents { get; set; }
+        public ICollection<PromoCancelledIncident> PromoCancelledIncidents { get; set; }
+        public ICollection<PromoApprovedIncident> PromoApprovedIncidents { get; set; }
         public ICollection<CurrentDayIncremental> CurrentDayIncrementals { get; set; }
 
         /// <summary>
@@ -496,7 +499,7 @@ namespace Module.Persist.TPM.Model.TPM
                             currentNode = context.Set<ProductTree>().FirstOrDefault(n => n.ObjectId == currentNode.parentId && !n.EndDate.HasValue);
                         }
 
-                        PromoBasicProducts = JsonConvert.SerializeObject(promoBasicProducts, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore});
+                        PromoBasicProducts = JsonConvert.SerializeObject(promoBasicProducts, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
                     }
                 }
             }
