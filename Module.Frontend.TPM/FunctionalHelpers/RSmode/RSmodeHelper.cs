@@ -241,8 +241,8 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
                 cfg.CreateMap<Promo, Promo>()
                     .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
                     .ForMember(pTo => pTo.TPMmode, opt => opt.MapFrom(x => TPMmode.RS))
-                    .ForMember(pTo => pTo.Disabled, opt => opt.MapFrom(x => disabled))
-                    .ForMember(pTo => pTo.DeletedDate, opt => opt.MapFrom(x => deleteddate))
+                    //.ForMember(pTo => pTo.Disabled, opt => opt.MapFrom(x => disabled))
+                    //.ForMember(pTo => pTo.DeletedDate, opt => opt.MapFrom(x => deleteddate))
                     .ForMember(pTo => pTo.BTLPromoes, opt => opt.MapFrom(f => f.BTLPromoes.Where(g => !g.Disabled)))//filter
                     .ForMember(pTo => pTo.Brand, opt => opt.Ignore())
                     .ForMember(pTo => pTo.Technology, opt => opt.Ignore())
@@ -271,36 +271,36 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
                 cfg.CreateMap<BTLPromo, BTLPromo>()
                     .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
                     .ForMember(pTo => pTo.TPMmode, opt => opt.MapFrom(x => TPMmode.RS))
-                    .ForMember(pTo => pTo.Disabled, opt => opt.MapFrom(x => disabled))
-                    .ForMember(pTo => pTo.DeletedDate, opt => opt.MapFrom(x => deleteddate))
+                    //.ForMember(pTo => pTo.Disabled, opt => opt.MapFrom(x => disabled))
+                    //.ForMember(pTo => pTo.DeletedDate, opt => opt.MapFrom(x => deleteddate))
                     .ForMember(pTo => pTo.BTL, opt => opt.Ignore())
                     .ForMember(pTo => pTo.ClientTree, opt => opt.Ignore())
                     .ForMember(pTo => pTo.Promo, opt => opt.Ignore());
                 cfg.CreateMap<PromoProductTree, PromoProductTree>()
                     .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
                     .ForMember(pTo => pTo.TPMmode, opt => opt.MapFrom(x => TPMmode.RS))
-                    .ForMember(pTo => pTo.Disabled, opt => opt.MapFrom(x => disabled))
-                    .ForMember(pTo => pTo.DeletedDate, opt => opt.MapFrom(x => deleteddate))
+                    //.ForMember(pTo => pTo.Disabled, opt => opt.MapFrom(x => disabled))
+                    //.ForMember(pTo => pTo.DeletedDate, opt => opt.MapFrom(x => deleteddate))
                     .ForMember(pTo => pTo.Promo, opt => opt.Ignore());
                 cfg.CreateMap<PromoProduct, PromoProduct>()
                     .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
                     .ForMember(pTo => pTo.TPMmode, opt => opt.MapFrom(x => TPMmode.RS))
-                    .ForMember(pTo => pTo.Disabled, opt => opt.MapFrom(x => disabled))
-                    .ForMember(pTo => pTo.DeletedDate, opt => opt.MapFrom(x => deleteddate))
+                    //.ForMember(pTo => pTo.Disabled, opt => opt.MapFrom(x => disabled))
+                    //.ForMember(pTo => pTo.DeletedDate, opt => opt.MapFrom(x => deleteddate))
                     .ForMember(pTo => pTo.Promo, opt => opt.Ignore())
                     .ForMember(pTo => pTo.Product, opt => opt.Ignore())
                     .ForMember(pTo => pTo.Plu, opt => opt.Ignore());
                 cfg.CreateMap<PromoProductsCorrection, PromoProductsCorrection>()
                     .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
                     .ForMember(pTo => pTo.TPMmode, opt => opt.MapFrom(x => TPMmode.RS))
-                    .ForMember(pTo => pTo.Disabled, opt => opt.MapFrom(x => disabled))
-                    .ForMember(pTo => pTo.DeletedDate, opt => opt.MapFrom(x => deleteddate))
+                    //.ForMember(pTo => pTo.Disabled, opt => opt.MapFrom(x => disabled))
+                    //.ForMember(pTo => pTo.DeletedDate, opt => opt.MapFrom(x => deleteddate))
                     .ForMember(pTo => pTo.PromoProduct, opt => opt.Ignore());
                 cfg.CreateMap<IncrementalPromo, IncrementalPromo>()
                     .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
                     .ForMember(pTo => pTo.TPMmode, opt => opt.MapFrom(x => TPMmode.RS))
-                    .ForMember(pTo => pTo.Disabled, opt => opt.MapFrom(x => disabled))
-                    .ForMember(pTo => pTo.DeletedDate, opt => opt.MapFrom(x => deleteddate))
+                    //.ForMember(pTo => pTo.Disabled, opt => opt.MapFrom(x => disabled))
+                    //.ForMember(pTo => pTo.DeletedDate, opt => opt.MapFrom(x => deleteddate))
                     .ForMember(pTo => pTo.Promo, opt => opt.Ignore())
                     .ForMember(pTo => pTo.Product, opt => opt.Ignore());
             }
@@ -309,7 +309,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
             List<PromoSupportPromo> promoSupportPromoesRS = mapper.Map<List<PromoSupportPromo>>(promoSupportPromoes);
             Context.Set<PromoSupportPromo>().AddRange(promoSupportPromoesRS);
             Context.SaveChanges();
-            RSPeriodHelper.CreateRSPeriod(promoSupportPromoes.Select(g => g.Promo).ToList(), Context);
+            RSPeriodHelper.CreateRSPeriod(promoSupportPromoesRS.Select(g => g.Promo).ToList(), Context);
             return promoSupportPromoesRS;
 
         }

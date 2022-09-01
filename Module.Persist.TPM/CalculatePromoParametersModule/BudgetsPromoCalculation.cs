@@ -348,7 +348,8 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             Promo promo = context.Set<Promo>().Find(promoId);
 
             PromoSupportPromo[] subItems = context.Set<PromoSupportPromo>().Where(n => n.PromoId == promoId && !n.Disabled
-                && n.PromoSupport.BudgetSubItem.BudgetItem.Budget.Name.ToLower().IndexOf("marketing") >= 0).ToArray();
+                && n.PromoSupport.BudgetSubItem.BudgetItem.Budget.Name.ToLower().IndexOf("marketing") >= 0
+                && n.TPMmode == promo.TPMmode).ToArray();
 
 
             PromoSupportPromo[] xsites = subItems.Where(n => n.PromoSupport.BudgetSubItem.BudgetItem.Name.ToLower().IndexOf("x-sites") >= 0).ToArray();
