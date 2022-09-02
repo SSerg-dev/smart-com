@@ -2,6 +2,9 @@
 using Module.Persist.TPM.Model.Interfaces;
 using Module.Persist.TPM.Model.SimpleModel;
 using Module.Persist.TPM.Model.TPM;
+using Module.Persist.TPM.PromoStateControl;
+using Module.Persist.TPM.PromoStateControl.RoleStateMap;
+using Module.Persist.TPM.Utils;
 using Persist;
 using Persist.Model.Settings;
 using System;
@@ -62,7 +65,25 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
             }
             else
             {
-                rollingScenarioExist.Promoes.Add(promo);
+                if (rollingScenarioExist.IsCMManagerApproved && rollingScenarioExist.IsSendForApproval)
+                {
+                    ClientTree client = Context.Set<ClientTree>().FirstOrDefault(g => g.ObjectId == promo.ClientTreeId);
+                    rollingScenario = new RollingScenario
+                    {
+                        StartDate = startEndModel.StartDate,
+                        EndDate = startEndModel.EndDate,
+                        PromoStatus = promoStatuses.FirstOrDefault(g => g.SystemName == "Draft"),
+                        ClientTree = client,
+                        Promoes = new List<Promo>()
+                    };
+                    rollingScenario.Promoes.Add(promo);
+                    Context.Set<RollingScenario>().Add(rollingScenario);
+                }
+                else
+                {
+                    rollingScenarioExist.Promoes.Add(promo);
+                }
+                
             }
             Context.SaveChanges();
         }
@@ -119,7 +140,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
             RS.IsCMManagerApproved = true;
             RS.PromoStatus = promoStatusApproved;
             CopyBackPromoes(RS.Promoes.ToList(), Context);
-            DeleteRSPeriod(rollingScenarioId, Context);
+            Context.Set<Promo>().RemoveRange(RS.Promoes);
             Context.SaveChanges();
         }
 
@@ -238,7 +259,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
             });
             var mapperPromoProductsCorrectionBack = cfgPromoProductsCorrectionBack.CreateMapper();
 
-
+            Guid promoStatusOnApproval = Context.Set<PromoStatus>().FirstOrDefault(g => g.SystemName == StateNames.ON_APPROVAL).Id;
             List<Guid> promoRSids = promoesRS.Select(h => h.Id).ToList();
             promoesRS = Context.Set<Promo>()
                     //.Include(g => g.BTLPromoes)
@@ -354,36 +375,62 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                             promoProductRS.TPMmode = TPMmode.Current;
                         }
                     }
+                    promo.PromoStatusId = promoStatusOnApproval;
+                    //promoesRS.Remove(promoRS); - нельзя сделать
+                    Context.Set<Promo>().Remove(promoRS); // не отследит EF
+                    //ChangeStatusOnApproval(Context, promo);
                 }
                 else // новый
                 {
-
+                    promoRS.TPMmode = TPMmode.Current;
+                    promoRS.RollingScenario = null; // unlink
+                    foreach (var item in promoRS.IncrementalPromoes)
+                    {
+                        item.TPMmode = TPMmode.Current;
+                    }
+                    foreach (var item in promoRS.PromoSupportPromoes)
+                    {
+                        item.TPMmode = TPMmode.Current;
+                    }
+                    foreach (var item in promoRS.PromoProductTrees)
+                    {
+                        item.TPMmode = TPMmode.Current;
+                    }
+                    foreach (var item in promoRS.PromoProducts)
+                    {
+                        item.TPMmode = TPMmode.Current;
+                        foreach (var item2 in item.PromoProductsCorrections)
+                        {
+                            item2.TPMmode = TPMmode.Current;
+                        }
+                    }
+                    promoRS.PromoStatusId = promoStatusOnApproval;
+                    //ChangeStatusOnApproval(Context, promoRS);
                 }
-                //Context.Set<PromoProductsCorrection>().RemoveRange(promoRS.PromoProducts.SelectMany(g => g.PromoProductsCorrections));
-                //foreach (var item in promoRS.PromoProducts)
-                //{
-                //    item.PromoProductsCorrections.Clear();
-                //}
-                //promoRS.PromoProducts.Clear();
-                //promoRS.IncrementalPromoes.Clear();
-                //promoRS.PromoProductTrees.Clear();
-                //promoRS.PromoSupportPromoes.Clear();
-                //promoRS.BTLPromoes.Clear();
-                //promoRS.PreviousDayIncrementals.Clear();
-                //promoRS.PromoStatusChanges.Clear();
-                //promoRS.PromoUpliftFailIncidents.Clear();
-                //promoRS.PromoOnApprovalIncidents.Clear();
-                //promoRS.PromoOnRejectIncidents.Clear();
-                //promoRS.PromoCancelledIncidents.Clear();
-                //promoRS.PromoApprovedIncidents.Clear();
-                //promoRS.CurrentDayIncrementals.Clear();
 
-                //promoesRS.Remove(promoRS); - нельзя сделать
-                Context.Set<Promo>().Remove(promoRS); // не отследит EF
-                Context.SaveChanges(); //удалить
+
+
+               // Context.SaveChanges(); //удалить
             }
 
             Context.SaveChanges();
+        }
+        public static void ChangeStatusOnApproval(DatabaseContext context, Promo promo)
+        {
+            using (PromoStateContext promoStateContext = new PromoStateContext(context, promo))
+            {
+                var status = promoStateContext.ChangeState(promo, PromoStates.OnApproval, "System", out string message);
+                if (status)
+                {
+                    //Сохранение изменения статуса
+                    var promoStatusChange = context.Set<PromoStatusChange>().Create<PromoStatusChange>();
+                    promoStatusChange.PromoId = promo.Id;
+                    promoStatusChange.StatusId = promo.PromoStatusId;
+                    promoStatusChange.Date = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).Value;
+
+                    context.Set<PromoStatusChange>().Add(promoStatusChange);
+                }
+            }
         }
     }
 }
