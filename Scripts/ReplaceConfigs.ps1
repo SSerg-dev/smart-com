@@ -50,9 +50,3 @@ try {
 	Write-Host $($_.Exception.Message)
 	throw $($_.Exception.Message)
 }
-	
-	
-
-
-
-
