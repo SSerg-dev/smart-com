@@ -49,7 +49,7 @@ Function CopyHost {
 	Copy-Item "$source\ProcessingService.TPM\bin\$BuildConfiguration\*.dll" -Destination "$serviceTPM"
 
 	if ($IncludeConfigs) {
-		Copy-Item "$source\ProcessingService.TPM\bin\$BuildConfiguration\*.config" -Destination "$webTPM" -Recurse
+		Copy-Item "$source\ProcessingService.TPM\bin\$BuildConfiguration\ProcessingService.TPM.exe.config" -Destination "$serviceTPM"
 	}
 }
 
