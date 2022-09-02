@@ -7,7 +7,7 @@ $source = "$CurrentPath\.."
 $dest = "$CurrentPath\..\..\b"
 
 $BuildConfiguration = $args[0].ToString()
-$IncludeConfigs = $args[1]
+$IncludeConfigs = $args[4]
 
 if (!(Test-Path $dest)) {
     New-Item $dest -ItemType Directory    
