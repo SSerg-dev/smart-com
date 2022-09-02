@@ -4,12 +4,14 @@ using Core.Security;
 using Core.Security.Models;
 using Core.Settings;
 using Frontend.Core.Controllers.Base;
+using Frontend.Core.Extensions;
 using Frontend.Core.Extensions.Export;
 using Looper.Core;
 using Looper.Parameters;
 using Module.Frontend.TPM.FunctionalHelpers.RSmode;
 using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.DTO;
+using Module.Persist.TPM.Model.Import;
 using Module.Persist.TPM.Model.Interfaces;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
@@ -20,8 +22,12 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.OData;
@@ -500,6 +506,117 @@ namespace Module.Frontend.TPM.Controllers
         private bool EntityExists(System.Guid key)
         {
             return Context.Set<PromoProductsCorrection>().Count(e => e.Id == key) > 0;
+        }
+
+        [ClaimsAuthorize]
+        public async Task<HttpResponseMessage> FullImportXLSX()
+        {
+            try
+            {
+                if (!Request.Content.IsMimeMultipartContent())
+                {
+                    throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+                }
+
+                var importDir = AppSettingsManager.GetSetting("IMPORT_DIRECTORY", "ImportFiles");
+                var fileName = await FileUtility.UploadFile(Request, importDir);
+
+                CreateImportTask(fileName, "FullXLSXUpdateImportPromoProductsCorrectionHandler");
+
+                var result = new HttpResponseMessage(HttpStatusCode.OK);
+                result.Content = new StringContent("success = true");
+                result.Content.Headers.ContentType = new MediaTypeHeaderValue("text/plain");
+
+                return result;
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e.Message);
+            }
+        }
+
+        private void CreateImportTask(string fileName, string importHandler)
+        {
+            var userId = user == null ? Guid.Empty : (user.Id ?? Guid.Empty);
+
+            using (var databaseContext = new DatabaseContext())
+            {
+                var resiltfile = new ImportResultFilesModel();
+                var resultmodel = new ImportResultModel();
+
+                var handlerData = new HandlerData();
+                var fileModel = new FileModel()
+                {
+                    LogicType = "Import",
+                    Name = Path.GetFileName(fileName),
+                    DisplayName = Path.GetFileName(fileName)
+                };
+
+                HandlerDataHelper.SaveIncomingArgument("File", fileModel, handlerData, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("UserId", userId, handlerData, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, handlerData, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportPromoProductsCorrection), handlerData, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportPromoProductsCorrection).Name, handlerData, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(PromoProductsCorrection), handlerData, visible: false, throwIfNotExists: false);
+                //HandlerDataHelper.SaveIncomingArgument("UniqueFields", new List<String>() {"Name"}, handlerData);
+
+                var loopHandler = new LoopHandler()
+                {
+                    Id = Guid.NewGuid(),
+                    ConfigurationName = "PROCESSING",
+                    Description = "Загрузка импорта из файла " + typeof(PromoProductsCorrection).Name,
+                    Name = "Module.Host.TPM.Handlers." + importHandler,
+                    ExecutionPeriod = null,
+                    RunGroup = typeof(PromoProductsCorrection).Name,
+                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                    LastExecutionDate = null,
+                    NextExecutionDate = null,
+                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                    UserId = userId,
+                    RoleId = roleId
+                };
+
+                loopHandler.SetParameterData(handlerData);
+                databaseContext.LoopHandlers.Add(loopHandler);
+                databaseContext.SaveChanges();
+            }
+        }
+
+        [ClaimsAuthorize]
+        public IHttpActionResult DownloadTemplateXLSX()
+        {
+            try
+            {
+                IEnumerable<Column> columns = GetImportSettings();
+                XLSXExporter exporter = new XLSXExporter(columns);
+                string exportDir = AppSettingsManager.GetSetting("EXPORT_DIRECTORY", "~/ExportFiles");
+                string filename = string.Format("{0}Template.xlsx", "PromoProductsUplift");
+                if (!Directory.Exists(exportDir))
+                {
+                    Directory.CreateDirectory(exportDir);
+                }
+                string filePath = Path.Combine(exportDir, filename);
+                exporter.Export(Enumerable.Empty<PromoProductsCorrection>(), filePath);
+                string file = Path.GetFileName(filePath);
+                return Content(HttpStatusCode.OK, file);
+            }
+            catch (Exception e)
+            {
+                return Content(HttpStatusCode.InternalServerError, e.Message);
+            }
+
+        }
+
+        private IEnumerable<Column> GetImportSettings()
+        {
+            int orderNumber = 1;
+            IEnumerable<Column> columns = new List<Column>()
+            {
+                new Column { Order = orderNumber++, Field = "PromoNumber", Header = "Promo ID", Quoting = false,  Format = "0"  },
+                new Column { Order = orderNumber++, Field = "ProductZREP", Header = "ZREP", Quoting = false,  Format = "0"  },
+                new Column { Order = orderNumber++, Field = "PlanProductUpliftPercent", Header = "Plan Product Uplift, %", Quoting = false,  Format = "0.00"},
+            };
+            return columns;
         }
 
     }

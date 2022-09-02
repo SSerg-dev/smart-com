@@ -24,9 +24,9 @@ Ext.define('App.model.tpm.promoproductcorrection.PromoProductCorrectionView', {
         { name: 'Id', hidden: true },
         { name: 'PromoProductId', hidden: true, isDefault: true },
         { name: 'UserId', hidden: true, isDefault: true, defaultValue: null },
-        { name: 'PromoStatusName', type: 'string', mapping: 'PromoStatus.Name', defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'PromoStatus', hidden: true, isDefault: false },
-        { name: 'IsGrowthAcceleration', type: 'boolean', hidden: true, isDefault: false, mapping: 'Promo.IsGrowthAcceleration' },
-        { name: 'IsInExchange', type: 'boolean', hidden: true, isDefault: false, mapping: 'Promo.IsInExchange' },
+        { name: 'PromoStatusName', type: 'string', hidden: true, isDefault: false },
+        { name: 'IsGrowthAcceleration', type: 'boolean', hidden: true, isDefault: false },
+        { name: 'IsInExchange', type: 'boolean', hidden: true, isDefault: false },
     ],
 
     proxy: {
