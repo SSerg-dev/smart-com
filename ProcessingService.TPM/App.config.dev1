@@ -30,6 +30,7 @@
     <add key="HANDLER_CONFIG_DIRECTORY" value="D:\TPM_Dev1\Storage\HandlerConfig" />
     <add key="MANUAL_DIRECTORY" value="D:\TPM_Dev1\Storage\Manuals" />
     <add key="LOOPHANDLER_PARAMETER_DIRECTORY" value="D:\TPM_Dev1\Storage\HandlerParameters" />
+    <add key="RPA_DIRECTORY" value="D:\TPM_Dev1\Storage\RPAFiles" />
     <add key="INTEGRITY_CHECK_RESULT_DIRECTORY" value="D:\TPM_Dev1\Storage\IntegrityCheckResults" />
     <add key="USER_SETTINGS_FILE_PATH" value="D:\TPM_Dev1\Storage\EmailNotificationSettings.xml" />
     <add key="RUNTIME_ENVIROMENT" value="Smartcom-TPM" />
