@@ -1,0 +1,366 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  For more information on how to configure your ASP.NET application, please visit
+  http://go.microsoft.com/fwlink/?LinkId=169433
+  -->
+<configuration>
+  <configSections>
+    <section name="entityFramework" type="System.Data.Entity.Internal.ConfigFile.EntityFrameworkSection, EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" requirePermission="false" />
+    <section name="system.identityModel" type="System.IdentityModel.Configuration.SystemIdentityModelSection, System.IdentityModel, Version=4.0.0.0, Culture=neutral, PublicKeyToken=B77A5C561934E089" />
+    <section name="system.identityModel.services" type="System.IdentityModel.Services.Configuration.SystemIdentityModelServicesSection, System.IdentityModel.Services, Version=4.0.0.0, Culture=neutral, PublicKeyToken=B77A5C561934E089" />
+
+    <!-- For more information on Entity Framework configuration, visit http://go.microsoft.com/fwlink/?LinkID=237468 -->
+  </configSections>
+  <connectionStrings>
+    <add name="HistoryDocumentStore" connectionString="Url = http://localhost:8080" />
+    <add name="DatabaseContext" connectionString="Server=STSVH-SQL01,1433; Database=TPM_MovingAzure_Main_Test_Current; Persist Security Info=True;User ID=userdb;Password=qwerty1;MultipleActiveResultSets=True" providerName="System.Data.SqlClient" />
+    <add name="DefaultConnection" connectionString="Server=STSVH-SQL01,1433; Database=TPM_MovingAzure_Main_Test_Current; Persist Security Info=True;User ID=userdb;Password=qwerty1;MultipleActiveResultSets=True" providerName="System.Data.SqlClient" />
+  </connectionStrings>
+  <appSettings>
+    <add key="vs:EnableBrowserLink" value="false" />
+    <add key="webpages:Version" value="3.0.0.0" />
+    <add key="webpages:Enabled" value="false" />
+    <add key="ClientValidationEnabled" value="false" />
+    <add key="UnobtrusiveJavaScriptEnabled" value="false" />
+    <add key="DOMAIN_NAME" value="192.168.10.2" />
+    <add key="AUTH_SOURCE" value="ActiveDirectory" />
+    <add key="DefaultSchema" value="Jupiter" />
+    <!--<add key="AUTH_SOURCE" value="Database" />-->
+    <add key="AUTH_SOURCE" value="ActiveDirectory" />
+    <!--<add key="AUTH_SOURCE" value="Mixed" />-->
+	<add key="IdentityType" value="SamAccountName" />
+    <add key="ENABLE_LOCAL_ENVIRONMENT" value="true" />
+    <add key="AD_CONNECTION_USERNAME" value="adread" />
+    <add key="AD_CONNECTION_PASSWORD" value="Pe&quot;Xbp)Ljq" />
+    <add key="HANDLER_LOG_DIRECTORY" value="D:\TPM_Dev1\Storage\HandlerLogs" />
+    <add key="IMPORT_DIRECTORY" value="D:\TPM_Dev1\Storage\ImportFiles" />
+    <add key="EXPORT_DIRECTORY" value="D:\TPM_Dev1\Storage\ExportFiles" />
+    <add key="INTERFACE_USER_DIRECTORY" value="D:\TPM_Dev1\Storage\InterfaceUserFiles" />
+    <add key="INTERFACE_DIRECTORY" value="D:\TPM_Dev1\Storage\InterfaceFiles" />
+    <add key="INTERFACE_DIRECTORY_INBOUND_OUTCOME" value="InterfaceFilesInboundOutCome" />
+    <add key="INTERFACE_DIRECTORY_OUTBOUND_INCOME" value="InterfaceFilesOutboundIncome" />
+    <add key="IMPORT_RESULT_DIRECTORY" value="D:\TPM_Dev1\Storage\ImportResultFiles" />
+    <add key="DATALAKESYNC_RESULT_DIRECTORY" value="D:\TPM_Dev1\Storage\DataLakeSyncResultFiles" />
+    <add key="HANDLER_CONFIG_DIRECTORY" value="D:\TPM_Dev1\Storage\HandlerConfig" />
+    <add key="MANUAL_DIRECTORY" value="D:\TPM_Dev1\Storage\Manuals" />
+    <add key="LOOPHANDLER_PARAMETER_DIRECTORY" value="D:\TPM_Dev1\Storage\HandlerParameters" />
+    <add key="INTEGRITY_CHECK_RESULT_DIRECTORY" value="D:\TPM_Dev1\Storage\IntegrityCheckResults" />
+    <add key="USER_SETTINGS_FILE_PATH" value="D:\TPM_Dev1\Storage\EmailNotificationSettings.xml" />
+    <add key="FILES_DIRECTORY" value="D:\TPM_Dev1\Storage\Files" />
+    <add key="HANDLER_LOG_TYPE" value="File" />
+    <add key="PROMO_SUPPORT_DIRECTORY" value="D:\TPM_Dev1\Storage\PromoSupportFiles" />
+	<add key="RPA_DIRECTORY" value="D:\TPM_Dev1\Storage\RPAFiles" />
+    <add key="CLIENT_TREE_DIRECTORY" value="D:\TPM_Dev1\Storage\ClientTreeLogoFiles" />
+    <add key="PRODUCT_TREE_DIRECTORY" value="D:\TPM_Dev1\Storage\ProductTreeLogoFiles" />
+    <add key="SESSION_TIME" value="15" />
+    <add key="UseXssFilter" value="false" />
+    <add key="DatabaseContextJupiterAzure" value="Server=STSVH-SQL01,1433; Database=TPM_MovingAzure_Main_Test_Current; Persist Security Info=True;User ID=userdb;Password=qwerty1;MultipleActiveResultSets=True" />
+    <add key="KVnameOfDatabaseContext" value="DatabaseContextJupiterAzure" />
+    <add key="NotificationService" value="NLog" />
+    <add key="AllowNotificationsSending" value="false" />
+	<add key="TEMPLATE_DIRECTORY" value="D:\TPM_Dev1\Storage\Templates" />
+
+	<add key="HistoryModule" value="MongoDB" />
+
+	<!--RPA-->
+	<add key="RPA_UPLOAD_TENANT_ID" value="2fc13e34-f03f-498b-982a-7cb446e25bc6" />
+	<add key="RPA_UPLOAD_APPLICATION_ID" value="6f231dc9-7560-4d58-8655-a9fec42cac17" />
+	<add key="RPA_UPLOAD_AUTHENTICATION_KEY" value="kKOHIvUL0nKvtQ4e2Fn53RvYLba5Ne7/pKphScyEg8c=" />
+	<add key="RPA_UPLOAD_SUBSCRIPTION_ID" value="066fc627-241c-4166-b66f-70f51b9b4b95" />
+	<add key="RPA_UPLOAD_RESOURCE_GROUP" value="RUSSIA-PETCARE-JUPITER-DEV-RG" />
+	<add key="RPA_UPLOAD_REGION" value="East US 2" />
+	<add key="RPA_UPLOAD_DATA_FACTORY_NAME" value="russiapetcarejupiterdevadf" />
+	<add key="RPA_UPLOAD_DOWNLOAD_FILE_URL" value="https://russiapetcarejupiterdevwa.azurewebsites.net/odata/RPAs/DownloadFile?fileName=" />
+	<add key="RPA_UPLOAD_PIPELINE_ACTUALS_NAME" value="JUPITER_RPA_UPLOAD_ACTUALS_PIPE" />
+	<add key="RPA_UPLOAD_PIPELINE_EVENT_NAME" value="JUPITER_RPA_UPLOAD_PIPE" />
+	<add key="RPA_UPLOAD_PIPELINE_SUPPORT_NAME" value="JUPITER_RPA_UPLOAD_SUPPORT_PIPE" />
+  <add key="ServerName" value="" />
+	<add key="DatabaseName" value="" />
+	<add key="DBUserId" value="" />
+	<add key="PasswordKV" value="" />
+	<add key="AKVScope" value="" />
+  <add key="BlobStorageName" value="" />
+
+    <!--Export settings-->
+    <add key="EXPORT_TENANT_ID" value="2fc13e34-f03f-498b-982a-7cb446e25bc6" />
+    <add key="EXPORT_APPLICATION_ID" value="6f231dc9-7560-4d58-8655-a9fec42cac17" />
+    <add key="EXPORT_AUTHENTICATION_KEY" value="kKOHIvUL0nKvtQ4e2Fn53RvYLba5Ne7/pKphScyEg8c=" />
+    <add key="EXPORT_SUBSCRIPTION_ID" value="066fc627-241c-4166-b66f-70f51b9b4b95" />
+    <add key="EXPORT_RESOURCE_GROUP" value="RUSSIA-PETCARE-JUPITER-DEV-RG" />
+    <add key="EXPORT_REGION" value="East US 2" />
+    <add key="EXPORT_DATA_FACTORY_NAME" value="russiapetcarejupiterdevadf" />
+    <add key="EXPORT_PIPELINE_NAME" value="JUPITER_EXPORT_SCHEDULER_DISPATCHER_PIPE" />
+    
+
+    <!--AzureAD authentication-->
+    <add key="LocalADidaClientId" value="c76aabec-ab4d-4e07-83e5-be27281ce062" />
+    <add key="LocalADidaAADInstance" value="https://login.microsoftonline.com/" />
+    <add key="LocalADidaClientSecret" value="CjY3iV-~J-.29th0VTQEe6JE65gj8MQuWv" />
+    <add key="LocalADidaDomain" value="smartcom.software" />
+    <add key="LocalADidaTenantId" value="d43cf2af-b6de-47fe-afe3-9bbaff83dcee" />
+    <add key="LocalADidaPostLogoutRedirectUri" value="https://tpm-rc.smartcom.local/" />
+    <!--mongo-->
+	<add key="MongoColName" value="historicals" />
+	<add key="MongoTTLSec" value="63113904" />
+	<add key="MongoURITemplate" value="mongodb://{0}:{1}@{2}/{3}?{4}" />
+	<add key="MongoUrl" value="mongodb://192.168.10.92:27017" />
+	<add key="MongoDBName" value="Test" />
+    <!--KeyVault-->
+    <add key="UseKeyVault" value="false" />
+    <!--Keys-->
+    <add key="DatabaseContextKey" value="DatabaseContext" />
+    <!--<add key="DefaultConnectionKey" value="DefaultConnection" />-->
+    <add key="MongoDBNameKey" value="MongoDBName" />
+    <add key="MongoUrlKey" value="MongoUrl" />
+    <add key="ida:ClientIdKey" value="LocalADidaClientId" />
+    <add key="ida:AADInstanceKey" value="LocalADidaAADInstance" />
+    <add key="ida:ClientSecretKey" value="LocalADidaClientSecret" />
+    <add key="ida:DomainKey" value="LocalADidaDomain" />
+    <add key="ida:TenantIdKey" value="LocalADidaTenantId" />
+    <add key="ida:PostLogoutRedirectUriKey" value="LocalADidaPostLogoutRedirectUri" />
+  </appSettings>
+  <system.identityModel>
+    <identityConfiguration>
+      <claimsAuthorizationManager type="Frontend.Core.Security.ClaimsAuthorizeManager, Frontend.Core" />
+    </identityConfiguration>
+  </system.identityModel>
+  <system.identityModel.services>
+    <federationConfiguration>
+      <cookieHandler requireSsl="false" domain="" />
+    </federationConfiguration>
+  </system.identityModel.services>
+  <system.webServer>
+    <staticContent>
+      <remove fileExtension=".woff" />
+      <!-- In case IIS already has this mime type -->
+      <remove fileExtension=".woff2" />
+      <mimeMap fileExtension=".woff" mimeType="application/x-font-woff" />
+      <mimeMap fileExtension=".woff2" mimeType="application/x-font-woff" />
+    </staticContent>
+    <handlers>
+      <remove name="ExtensionlessUrlHandler-Integrated-4.0" />
+      <remove name="OPTIONSVerbHandler" />
+      <remove name="TRACEVerbHandler" />
+      <add name="ExtensionlessUrlHandler-Integrated-4.0" path="*." verb="*" type="System.Web.Handlers.TransferRequestHandler" preCondition="integratedMode,runtimeVersionv4.0" />
+    </handlers>
+    <modules runAllManagedModulesForAllRequests="true">
+      <remove name="WebDAVModule" />
+      <add name="SessionAuthenticationModule" type="System.IdentityModel.Services.SessionAuthenticationModule, System.IdentityModel.Services, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"></add>
+      <remove name="TelemetryCorrelationHttpModule" />
+      <add name="TelemetryCorrelationHttpModule" type="Microsoft.AspNet.TelemetryCorrelation.TelemetryCorrelationHttpModule, Microsoft.AspNet.TelemetryCorrelation" preCondition="managedHandler" />
+      <remove name="ApplicationInsightsWebTracking" />
+      <add name="ApplicationInsightsWebTracking" type="Microsoft.ApplicationInsights.Web.ApplicationInsightsHttpModule, Microsoft.AI.Web" preCondition="managedHandler" />
+    </modules>
+    <security>
+      <requestFiltering>
+        <requestLimits maxAllowedContentLength="300000000" />
+      </requestFiltering>
+    </security>
+    <validation validateIntegratedModeConfiguration="false" />
+  </system.webServer>
+  <system.web>
+    <customErrors mode="Off" />
+    <compilation debug="true" targetFramework="4.6.1">
+      <assemblies>
+        <add assembly="System.Web.Mvc, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35" />
+        <add assembly="System.Runtime, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+      </assemblies>
+    </compilation>
+    <httpRuntime targetFramework="4.6.1" requestPathInvalidCharacters="" requestValidationMode="2.0" maxRequestLength="300000000" executionTimeout="120" />
+    <pages validateRequest="false" />
+    <!--<authentication mode="None" />-->
+	<authentication mode="Windows" />
+	<authorization>
+      <allow users="*" />
+	</authorization>
+
+    <httpModules>
+      <add name="TelemetryCorrelationHttpModule" type="Microsoft.AspNet.TelemetryCorrelation.TelemetryCorrelationHttpModule, Microsoft.AspNet.TelemetryCorrelation" />
+      <add name="ApplicationInsightsWebTracking" type="Microsoft.ApplicationInsights.Web.ApplicationInsightsHttpModule, Microsoft.AI.Web" />
+    </httpModules>
+  </system.web>
+	<location path="api/Monitoring/Check">
+		<system.web>
+			<authorization>
+				<allow users="*" />
+			</authorization>
+		</system.web>
+	</location>
+  <runtime>
+    <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+      <dependentAssembly>
+        <assemblyIdentity name="Npgsql" publicKeyToken="5d8b90d52f46fda7" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-3.2.3.0" newVersion="3.2.3.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="Newtonsoft.Json" publicKeyToken="30ad4fe6b2a6aeed" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-12.0.0.0" newVersion="12.0.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System.Web.Http" publicKeyToken="31bf3856ad364e35" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-5.2.3.0" newVersion="5.2.3.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System.Web.Mvc" publicKeyToken="31bf3856ad364e35" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-5.2.3.0" newVersion="5.2.3.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System.Net.Http" publicKeyToken="b03f5f7f11d50a3a" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-4.0.0.0" newVersion="4.0.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System.Web.Http.WebHost" publicKeyToken="31bf3856ad364e35" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-5.2.3.0" newVersion="5.2.3.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System.Net.Http.Formatting" publicKeyToken="31bf3856ad364e35" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-5.2.3.0" newVersion="5.2.3.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="WebGrease" publicKeyToken="31bf3856ad364e35" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-1.5.2.14234" newVersion="1.5.2.14234" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="ICSharpCode.SharpZipLib" publicKeyToken="1b03e6acf1164f73" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-1.1.0.145" newVersion="1.1.0.145" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="NPOI" publicKeyToken="0df73ec7942b34e1" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-2.4.1.0" newVersion="2.4.1.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="NPOI.OOXML" publicKeyToken="0df73ec7942b34e1" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-2.4.1.0" newVersion="2.4.1.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="Antlr3.Runtime" publicKeyToken="eb42632606e9261f" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-3.4.1.9004" newVersion="3.4.1.9004" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System.IdentityModel.Tokens.Jwt" publicKeyToken="31bf3856ad364e35" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-4.0.40306.1554" newVersion="4.0.40306.1554" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="Microsoft.Owin" publicKeyToken="31bf3856ad364e35" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-4.0.0.0" newVersion="4.0.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="Microsoft.Owin.Security" publicKeyToken="31bf3856ad364e35" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-4.0.0.0" newVersion="4.0.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="Microsoft.IdentityModel.Logging" publicKeyToken="31bf3856ad364e35" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-5.2.2.0" newVersion="5.2.2.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="Microsoft.IdentityModel.Tokens" publicKeyToken="31bf3856ad364e35" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-5.2.2.0" newVersion="5.2.2.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="Microsoft.IdentityModel.Protocols.WsFederation" publicKeyToken="31bf3856ad364e35" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-5.2.1.0" newVersion="5.2.1.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="Microsoft.IdentityModel.Protocols" publicKeyToken="31bf3856ad364e35" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-5.2.1.0" newVersion="5.2.1.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="Microsoft.IdentityModel.Tokens.Saml" publicKeyToken="31bf3856ad364e35" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-5.2.1.0" newVersion="5.2.1.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="Microsoft.Owin.Security.OAuth" publicKeyToken="31bf3856ad364e35" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-4.0.0.0" newVersion="4.0.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="Microsoft.IdentityModel.Protocol.Extensions" publicKeyToken="31bf3856ad364e35" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-1.0.4.0" newVersion="1.0.4.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="Microsoft.IdentityModel.Protocols.OpenIdConnect" publicKeyToken="31bf3856ad364e35" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-2.1.5.0" newVersion="2.1.5.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="Microsoft.Data.OData" publicKeyToken="31bf3856ad364e35" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-5.6.4.0" newVersion="5.6.4.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="Microsoft.Data.Edm" publicKeyToken="31bf3856ad364e35" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-5.6.4.0" newVersion="5.6.4.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System.Spatial" publicKeyToken="31bf3856ad364e35" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-5.6.4.0" newVersion="5.6.4.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="Microsoft.Data.Services.Client" publicKeyToken="31bf3856ad364e35" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-5.6.4.0" newVersion="5.6.4.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="Microsoft.Azure.KeyVault.Core" publicKeyToken="31bf3856ad364e35" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-1.0.0.0" newVersion="1.0.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System.Memory" publicKeyToken="cc7b13ffcd2ddd51" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-4.0.1.1" newVersion="4.0.1.1" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System.Buffers" publicKeyToken="cc7b13ffcd2ddd51" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-4.0.3.0" newVersion="4.0.3.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="Microsoft.IdentityModel.Clients.ActiveDirectory" publicKeyToken="31bf3856ad364e35" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-3.19.4.11002" newVersion="3.19.4.11002" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="Microsoft.IdentityModel.Clients.ActiveDirectory.Platform" publicKeyToken="31bf3856ad364e35" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-3.19.4.11002" newVersion="3.19.4.11002" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="Microsoft.Azure.Storage.Common" publicKeyToken="31bf3856ad364e35" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-11.1.7.0" newVersion="11.1.7.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="Microsoft.ApplicationInsights" publicKeyToken="31bf3856ad364e35" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-2.17.0.146" newVersion="2.17.0.146" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System.Runtime.CompilerServices.Unsafe" publicKeyToken="b03f5f7f11d50a3a" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-5.0.0.0" newVersion="5.0.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System.Diagnostics.DiagnosticSource" publicKeyToken="cc7b13ffcd2ddd51" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-5.0.0.0" newVersion="5.0.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System.Threading.Tasks.Extensions" publicKeyToken="cc7b13ffcd2ddd51" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-4.2.0.1" newVersion="4.2.0.1" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="AutoMapper" publicKeyToken="be96cd2c38ef1005" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-9.0.0.0" newVersion="9.0.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System.IO.Compression" publicKeyToken="b77a5c561934e089" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-4.1.2.0" newVersion="4.1.2.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System.Runtime.InteropServices.RuntimeInformation" publicKeyToken="b03f5f7f11d50a3a" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-4.0.1.0" newVersion="4.0.1.0" />
+      </dependentAssembly>
+    </assemblyBinding>
+  </runtime>
+  <entityFramework>
+    <defaultConnectionFactory type="System.Data.Entity.Infrastructure.LocalDbConnectionFactory, EntityFramework">
+      <parameters>
+        <parameter value="mssqllocaldb" />
+      </parameters>
+    </defaultConnectionFactory>
+    <!--<defaultConnectionFactory type="Npgsql.NpgsqlConnectionFactory, EntityFramework6.Npgsql" />-->
+    <providers>
+      <provider invariantName="System.Data.SqlClient" type="System.Data.Entity.SqlServer.SqlProviderServices, EntityFramework.SqlServer" />
+      <!--<provider invariantName="Npgsql" type="Npgsql.NpgsqlServices, EntityFramework6.Npgsql" />-->
+    </providers>
+  </entityFramework>
+</configuration>
