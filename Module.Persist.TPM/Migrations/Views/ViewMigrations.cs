@@ -820,5 +820,54 @@
 		GO
 		";
 
+		public static string UpdatePromoProductCorrectionViewString(string defaultSchema)
+		{
+			return UpdatePromoProductCorrectionViewSqlString.Replace("DefaultSchemaSetting", defaultSchema);
+		}
+		private static string UpdatePromoProductCorrectionViewSqlString = @"
+		ALTER VIEW [Jupiter].[PromoProductCorrectionView]
+			AS
+			SELECT
+				ppc.Id AS Id,
+				pr.Number AS Number,
+				pr.ClientHierarchy AS ClientHierarchy,
+				btech.BrandsegTechsub AS BrandTechName,
+				pr.ProductSubrangesList AS ProductSubrangesList,
+				mech.Name AS MarsMechanicName,
+				ev.Name AS EventName,
+				ps.SystemName AS PromoStatusSystemName,
+				pr.MarsStartDate AS MarsStartDate,
+				pr.MarsEndDate AS MarsEndDate,
+				pp.PlanProductBaselineLSV AS PlanProductBaselineLSV,
+				pp.PlanProductIncrementalLSV AS PlanProductIncrementalLSV,
+				pp.PlanProductLSV AS PlanProductLSV,
+				pp.ZREP AS ZREP,
+				ppc.PlanProductUpliftPercentCorrected AS PlanProductUpliftPercentCorrected,
+				ppc.CreateDate AS CreateDate,
+				ppc.ChangeDate AS ChangeDate,
+				ppc.UserName AS UserName,
+				ppc.Disabled AS Disabled,
+				pr.ClientTreeId AS ClientTreeId,
+				ppc.PromoProductId AS PromoProductId,
+				ppc.UserId as UserId,				
+				ppc.TPMmode AS TPMmode,
+				ppc.TempId AS TempId,
+				ps.Name AS PromoStatusName,
+				pr.IsGrowthAcceleration AS IsGrowthAcceleration,
+				pr.IsInExchange AS IsInExchange
+
+			FROM 
+				[Jupiter].PromoProductsCorrection AS ppc INNER JOIN
+                [Jupiter].PromoProduct AS pp ON ppc.PromoProductId = pp.Id INNER JOIN
+                [Jupiter].Promo AS pr ON pp.PromoId = pr.Id INNER JOIN
+                [Jupiter].PromoStatus AS ps ON pr.PromoStatusId = ps.Id INNER JOIN
+                [Jupiter].Event AS ev ON pr.EventId = ev.Id INNER JOIN
+                [Jupiter].Mechanic AS mech ON pr.MarsMechanicId = mech.Id INNER JOIN
+                [Jupiter].BrandTech AS btech ON pr.BrandTechId = btech.Id INNER JOIN
+                [Jupiter].ClientTree AS cltr ON pr.ClientTreeKeyId = cltr.Id
+		
+		GO
+		";
+
 	}
 }

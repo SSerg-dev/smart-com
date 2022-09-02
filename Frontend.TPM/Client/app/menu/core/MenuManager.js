@@ -55,7 +55,10 @@
         var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
         var mode = settingStore.findRecord('name', 'mode');
         if (mode) {
-            if (mode.data.value == 0 && config.widget == 'rsmode') {
+            if (mode.data.value == 0 && !config.currentMode) {
+                return false;
+            }
+            else if (mode.data.value == 1 && !config.rsMode) {
                 return false;
             }
         }

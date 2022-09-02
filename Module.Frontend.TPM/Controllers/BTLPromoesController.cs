@@ -158,7 +158,7 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [HttpPost]
-        public IHttpActionResult BTLPromoPost(Guid btlId, TPMmode TPMmode)
+        public IHttpActionResult BTLPromoPost(Guid btlId)
         {
             using (var transaction = Context.Database.BeginTransaction())
             {
@@ -188,22 +188,6 @@ namespace Module.Frontend.TPM.Controllers
                         .Include(x => x.Promo.PromoSupportPromoes)
                         .Where(n => n.BTLId == btlId && !n.Disabled && !n.Promo.Disabled)
                         .ToList();
-                    bool isAllCurrent = bTLPromos.All(g => g.TPMmode == TPMmode.Current);
-                    bool isAllRS = bTLPromos.All(g => g.TPMmode == TPMmode.RS);
-                    if (TPMmode == TPMmode.RS && isAllCurrent)
-                    {
-                        bTLPromos = RSmodeHelper.EditToListBTLPromoesRS(Context, bTLPromos);
-                    }
-                    if (!isAllCurrent && !isAllRS && TPMmode == TPMmode.Current)
-                    {
-                        // убираем RSы
-                        bTLPromos = bTLPromos.Where(g => g.TPMmode == TPMmode.Current).ToList();
-                    }
-                    else if (!isAllCurrent && !isAllRS && TPMmode == TPMmode.RS)
-                    {
-                        // убираем currentы
-                        bTLPromos = bTLPromos.Where(g => g.TPMmode == TPMmode.RS).ToList();
-                    }
 
                     foreach (var promoId in guidPromoIds)
                     {
@@ -224,66 +208,15 @@ namespace Module.Frontend.TPM.Controllers
                                 if (bigDifference)
                                     throw new Exception("The difference between the dates of the promo should be less than 3 periods");
                             }
-                            if (TPMmode == TPMmode.RS)
-                            {
-                                if (promo.TPMmode == TPMmode.Current)
-                                {
-                                    promo = RSmodeHelper.EditToPromoRS(Context, promo);
-                                    BTLPromo bp = new BTLPromo
-                                    {
-                                        BTLId = btlId,
-                                        PromoId = promo.Id,
-                                        ClientTreeId = promo.ClientTreeKeyId.Value,
-                                        TPMmode = TPMmode
-                                    };
-                                    promo.BTLPromoes.Add(bp);
-                                }
-                                else
-                                {
-                                    BTLPromo bp = new BTLPromo
-                                    {
-                                        BTLId = btlId,
-                                        PromoId = promoId,
-                                        ClientTreeId = promo.ClientTreeKeyId.Value,
-                                        TPMmode = TPMmode
-                                    };
-                                    Context.Set<BTLPromo>().Add(bp);
-                                }
-                            }
-                            else
-                            {
 
-                                Promo promoMode = Context.Set<Promo>()
-                                    .Include(g=>g.BTLPromoes)
-                                    .FirstOrDefault(g => g.Number == promo.Number && g.TPMmode == TPMmode.RS);
-                                BTLPromo bp = new BTLPromo
-                                {
-                                    BTLId = btlId,
-                                    PromoId = promoId,
-                                    ClientTreeId = promo.ClientTreeKeyId.Value,
-                                    TPMmode = TPMmode
-                                };
-                                Context.Set<BTLPromo>().Add(bp); //bTLPromos.Add(bp); так нельзя потому что делается прокси System.Data.Entity.DynamicProxies при lazyload
-                                if (promoMode != null)
-                                {
-                                    if (promoMode.BTLPromoes.Any(g => g.BTLId == btlId && !g.Disabled))
-                                    {
-                                        //по идее надо - CalculateBTLBudgetsCreateTask(btlId.ToString(), null, TPMmode.RS); но это тормознет сохранение в Current
-                                    }
-                                    else
-                                    {
-                                        BTLPromo bp1 = new BTLPromo
-                                        {
-                                            BTLId = btlId,
-                                            PromoId = promoMode.Id,
-                                            ClientTreeId = promoMode.ClientTreeKeyId.Value,
-                                            TPMmode = TPMmode.RS
-                                        };
-                                        Context.Set<BTLPromo>().Add(bp1); //bTLPromos.Add(bp); так нельзя потому что делается прокси System.Data.Entity.DynamicProxies при lazyload
-                                    }
-                                }
+                            BTLPromo bp = new BTLPromo
+                            {
+                                BTLId = btlId,
+                                PromoId = promoId,
+                                ClientTreeId = promo.ClientTreeKeyId.Value,
+                            };
+                            Context.Set<BTLPromo>().Add(bp); //bTLPromos.Add(bp); так нельзя потому что делается прокси System.Data.Entity.DynamicProxies при lazyload
 
-                            }
                         }
                     }
 
@@ -293,7 +226,7 @@ namespace Module.Frontend.TPM.Controllers
 
                     Context.SaveChanges();
 
-                    CalculateBTLBudgetsCreateTask(btlId.ToString(), null, TPMmode);
+                    CalculateBTLBudgetsCreateTask(btlId.ToString());
 
                     transaction.Commit();
                     return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
@@ -484,7 +417,7 @@ namespace Module.Frontend.TPM.Controllers
         /// <param name="calculateFactCostTE">Необходимо ли пересчитывать значения фактические Cost TE</param>
         /// <param name="calculatePlanCostProd">Необходимо ли пересчитывать значения плановые Cost Production</param>
         /// <param name="calculateFactCostProd">Необходимо ли пересчитывать значения фактические Cost Production</param>
-        public void CalculateBTLBudgetsCreateTask(string btlId, List<Guid> unlinkedPromoIds = null, TPMmode tPMmode = TPMmode.Current)
+        public void CalculateBTLBudgetsCreateTask(string btlId, List<Guid> unlinkedPromoIds = null)
         {
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
@@ -495,7 +428,6 @@ namespace Module.Frontend.TPM.Controllers
             HandlerDataHelper.SaveIncomingArgument("BTLId", btlId, data, visible: false, throwIfNotExists: false);
             HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
             HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
-            HandlerDataHelper.SaveIncomingArgument("TPMmode", tPMmode, data, visible: false, throwIfNotExists: false);
             if (unlinkedPromoIds != null)
             {
                 HandlerDataHelper.SaveIncomingArgument("UnlinkedPromoIds", unlinkedPromoIds, data, visible: false, throwIfNotExists: false);
@@ -509,7 +441,7 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [HttpPost]
-        public IHttpActionResult BTLPromoDelete(Guid key, TPMmode TPMmode)
+        public IHttpActionResult BTLPromoDelete(Guid key)
         {
             try
             {
@@ -521,15 +453,10 @@ namespace Module.Frontend.TPM.Controllers
                     return NotFound();
                 }
 
-                if (TPMmode == TPMmode.RS && btlPromo[0].TPMmode == TPMmode.Current) //фильтр промо
-                {
-                    RSmodeHelper.EditToListBTLPromoesRS(Context, btlPromo, true, System.DateTime.Now);
-                }
-                else
-                {
-                    btlPromo[0].DeletedDate = System.DateTime.Now;
-                    btlPromo[0].Disabled = true;
-                }
+
+                btlPromo[0].DeletedDate = System.DateTime.Now;
+                btlPromo[0].Disabled = true;
+
                 Context.SaveChanges();
                 CalculateBTLBudgetsCreateTask(btlPromo[0].BTLId.ToString(), new List<Guid>() { btlPromo[0].Id });
 

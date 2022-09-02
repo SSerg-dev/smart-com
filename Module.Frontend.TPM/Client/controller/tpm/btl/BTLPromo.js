@@ -63,23 +63,7 @@
     },
 
     onBTLPromoGridAfterrender: function (grid) {
-        var RSmodeController = App.app.getController('tpm.rsmode.RSmode');
-        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-        var mode = settingStore.findRecord('name', 'mode');
-        if (mode) {
-            if (mode.data.value != 1) {
-                var indexh = this.getColumnIndex(grid, 'TPMmode');
-                grid.columnManager.getColumns()[indexh].hide();
-            }
-            else {
-                RSmodeController.getRSPeriod(function (returnValue) {
-                    startEndModel = returnValue;
-                });
-                var btlPromoGridStore = grid.getStore();
-                var btlPromoGridStoreProxy = btlPromoGridStore.getProxy();
-                btlPromoGridStoreProxy.extraParams.TPMmode = 'RS';
-            }
-        }
+        
         this.onGridAfterrender(grid);
     },
 
@@ -97,10 +81,6 @@
         var grid = this.getGridByButton(button),
             panel = grid.up('combineddirectorypanel'),
             selModel = grid.getSelectionModel();
-
-        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-        var mode = settingStore.findRecord('name', 'mode');
-
 
         if (mode) {
             if (mode.data.value == 1) {
@@ -137,7 +117,7 @@
                         $.ajax({
                             type: "POST",
                             cache: false,
-                            url: "/odata/BTLPromoes/BTLPromoDelete?key=" + record.data.Id + '&TPMmode=' + mode.data.value,
+                            url: "/odata/BTLPromoes/BTLPromoDelete?key=" + record.data.Id,
                             dataType: "json",
                             contentType: false,
                             processData: false,
@@ -340,13 +320,10 @@
                 }
                 window.setLoading(l10n.ns('core').value('savingText'));
 
-               var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-               var mode = settingStore.findRecord('name', 'mode');
-
                $.ajax({
                type: "POST",
                cache: false,
-               url: "/odata/BTLPromoes/BTLPromoPost?btlId=" + window.btlId + '&TPMmode=' + mode.data.value,
+               url: "/odata/BTLPromoes/BTLPromoPost?btlId=" + window.btlId,
                data: JSON.stringify(promoIds),
                dataType: "json",
                contentType: false,
@@ -429,33 +406,7 @@
 
     onGridSelectionChangeCustom: function (selMode, selected) {
         if (selected[0]) {
-            var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-            const tpmMode = settingStore.findRecord('name', 'mode').data.value;
-            if (tpmMode == 1) {
-                if (
-                    (
-                        new Date(selected[0].data.PromoDispatchStartDate) > new Date(startEndModel.StartDate) &&
-                        new Date(selected[0].data.PromoDispatchStartDate) <= new Date(startEndModel.EndDate)
-                    ) &&
-                    (
-                        selected[0].data.PromoStatusName != "Draft" &&
-                        selected[0].data.PromoStatusName != "Planned" &&
-                        selected[0].data.PromoStatusName != "Started" &&
-                        selected[0].data.PromoStatusName != "Finished" &&
-                        selected[0].data.PromoStatusName != "Closed" &&
-                        selected[0].data.PromoStatusName != "Cancelled"
-                    ) &&
-                    (
-                        !selected[0].data.IsGrowthAcceleration ||
-                        !selected[0].data.IsInExchange
-                    )
-                ) {
-                    Ext.ComponentQuery.query('btlpromo')[0].down('#deletebutton').enable();
-                } else {
-                    Ext.ComponentQuery.query('btlpromo')[0].down('#deletebutton').disable();
-                }
-            }
-            else if (selected[0].data.PromoStatusName != "Closed") {
+            if (selected[0].data.PromoStatusName != "Closed") {
                 Ext.ComponentQuery.query('btlpromo')[0].down('#deletebutton').enable();
             } else {
                 Ext.ComponentQuery.query('btlpromo')[0].down('#deletebutton').disable();

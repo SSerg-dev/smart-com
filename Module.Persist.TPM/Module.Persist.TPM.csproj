@@ -3143,9 +3143,21 @@
     <Compile Include="Migrations\202209010439412_Add_Promo_CascadeDelete_Some2.Designer.cs">
       <DependentUpon>202209010439412_Add_Promo_CascadeDelete_Some2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202209020644031_PromoProductCorrection_Import_Add_AP.cs" />
+    <Compile Include="Migrations\202209020644031_PromoProductCorrection_Import_Add_AP.Designer.cs">
+      <DependentUpon>202209020644031_PromoProductCorrection_Import_Add_AP.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202209021137302_Update_PromoProductCorrection_View.cs" />
+    <Compile Include="Migrations\202209021137302_Update_PromoProductCorrection_View.Designer.cs">
+      <DependentUpon>202209021137302_Update_PromoProductCorrection_View.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\202209010707260_EmptyMergeRS.cs" />
     <Compile Include="Migrations\202209010707260_EmptyMergeRS.Designer.cs">
       <DependentUpon>202209010707260_EmptyMergeRS.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202209021150284_EmptyMerge02092022.cs" />
+    <Compile Include="Migrations\202209021150284_EmptyMerge02092022.Designer.cs">
+      <DependentUpon>202209021150284_EmptyMerge02092022.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -5946,8 +5958,17 @@
     <EmbeddedResource Include="Migrations\202209010439412_Add_Promo_CascadeDelete_Some2.resx">
       <DependentUpon>202209010439412_Add_Promo_CascadeDelete_Some2.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202209020644031_PromoProductCorrection_Import_Add_AP.resx">
+      <DependentUpon>202209020644031_PromoProductCorrection_Import_Add_AP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202209021137302_Update_PromoProductCorrection_View.resx">
+      <DependentUpon>202209021137302_Update_PromoProductCorrection_View.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202209010707260_EmptyMergeRS.resx">
       <DependentUpon>202209010707260_EmptyMergeRS.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202209021150284_EmptyMerge02092022.resx">
+      <DependentUpon>202209021150284_EmptyMerge02092022.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
