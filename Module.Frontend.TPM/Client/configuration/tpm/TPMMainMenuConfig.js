@@ -233,7 +233,7 @@
         tooltip: l10n.ns('tpm', 'mainmenu').value('ProductItem'),
         scale: 'medium',
         glyph: 0xf1a6,
-        rsMode: false,
+        rsMode: true,
         currentMode: true,
         children: [
             {
@@ -280,7 +280,7 @@
                 text: l10n.ns('tpm', 'mainmenu').value('PromoProductCorection'),
                 tooltip: l10n.ns('tpm', 'mainmenu').value('PromoProductCorection'),
                 glyph: 0xf619,
-                rsMode: false,
+                rsMode: true,
                 currentMode: true,
                 widget: 'promoproductcorrection'
             }

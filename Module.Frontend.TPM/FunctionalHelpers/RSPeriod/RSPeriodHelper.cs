@@ -163,19 +163,19 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                     .ForMember(pTo => pTo.Promoes, opt => opt.Ignore());
             });
             var mapperPromoBack = cfgPromoBack.CreateMapper();
-            var cfgBTLPromoBack = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<BTLPromo, BTLPromo>()
-                    .ForMember(pTo => pTo.Id, opt => opt.Ignore())
-                    .ForMember(pTo => pTo.TPMmode, opt => opt.Ignore())
-                    //.ForMember(pTo => pTo.Disabled, opt => opt.Ignore())
-                    //.ForMember(pTo => pTo.DeletedDate, opt => opt.Ignore())
-                    .ForMember(pTo => pTo.BTL, opt => opt.Ignore())
-                    .ForMember(pTo => pTo.ClientTree, opt => opt.Ignore())
-                    .ForMember(pTo => pTo.PromoId, opt => opt.Ignore())
-                    .ForMember(pTo => pTo.Promo, opt => opt.Ignore());
-            });
-            var mapperBTLPromoBack = cfgBTLPromoBack.CreateMapper();
+            //var cfgBTLPromoBack = new MapperConfiguration(cfg =>
+            //{
+            //    cfg.CreateMap<BTLPromo, BTLPromo>()
+            //        .ForMember(pTo => pTo.Id, opt => opt.Ignore())
+            //        .ForMember(pTo => pTo.TPMmode, opt => opt.Ignore())
+            //        //.ForMember(pTo => pTo.Disabled, opt => opt.Ignore())
+            //        //.ForMember(pTo => pTo.DeletedDate, opt => opt.Ignore())
+            //        .ForMember(pTo => pTo.BTL, opt => opt.Ignore())
+            //        .ForMember(pTo => pTo.ClientTree, opt => opt.Ignore())
+            //        .ForMember(pTo => pTo.PromoId, opt => opt.Ignore())
+            //        .ForMember(pTo => pTo.Promo, opt => opt.Ignore());
+            //});
+            //var mapperBTLPromoBack = cfgBTLPromoBack.CreateMapper();
             var cfgPromoSupportPromoBack = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<PromoSupportPromo, PromoSupportPromo>()
@@ -241,7 +241,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
 
             List<Guid> promoRSids = promoesRS.Select(h => h.Id).ToList();
             promoesRS = Context.Set<Promo>()
-                    .Include(g => g.BTLPromoes)
+                    //.Include(g => g.BTLPromoes)
                     .Include(g => g.PromoSupportPromoes)
                     .Include(g => g.PromoProductTrees)
                     .Include(g => g.IncrementalPromoes)
@@ -258,7 +258,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
 
             List<int> promoRSnumbers = promoesRS.Select(h => h.Number).Cast<int>().ToList();
             List<Promo> promos = Context.Set<Promo>()
-                    .Include(g => g.BTLPromoes)
+                    //.Include(g => g.BTLPromoes)
                     .Include(g => g.PromoSupportPromoes)
                     .Include(g => g.PromoProductTrees)
                     .Include(g => g.IncrementalPromoes)
@@ -271,21 +271,21 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                 {
                     Promo promo = promos.FirstOrDefault(g => g.Number == promoRS.Number);
                     mapperPromoBack.Map(promoRS, promo);
-                    foreach (BTLPromo bTLPromoRS in promoRS.BTLPromoes)
-                    {
-                        if (promo.BTLPromoes.Select(g => g.BTLId).Contains(bTLPromoRS.BTLId)) // существующий btlpromo
-                        {
-                            BTLPromo bTLPromo = promo.BTLPromoes.FirstOrDefault(g => g.BTLId == bTLPromoRS.BTLId);
-                            mapperBTLPromoBack.Map(bTLPromoRS, bTLPromo);
+                    //foreach (BTLPromo bTLPromoRS in promoRS.BTLPromoes)
+                    //{
+                    //    if (promo.BTLPromoes.Select(g => g.BTLId).Contains(bTLPromoRS.BTLId)) // существующий btlpromo
+                    //    {
+                    //        BTLPromo bTLPromo = promo.BTLPromoes.FirstOrDefault(g => g.BTLId == bTLPromoRS.BTLId);
+                    //        mapperBTLPromoBack.Map(bTLPromoRS, bTLPromo);
 
-                        }
-                        else // новый btlpromo
-                        {
-                            bTLPromoRS.PromoId = promo.Id;
-                            bTLPromoRS.Promo = promo;
-                            bTLPromoRS.TPMmode = TPMmode.Current;
-                        }
-                    }
+                    //    }
+                    //    else // новый btlpromo
+                    //    {
+                    //        bTLPromoRS.PromoId = promo.Id;
+                    //        bTLPromoRS.Promo = promo;
+                    //        bTLPromoRS.TPMmode = TPMmode.Current;
+                    //    }
+                    //}
                     foreach (PromoSupportPromo promoSupportPromoRS in promoRS.PromoSupportPromoes)
                     {
                         if (promo.PromoSupportPromoes.Select(g => g.PromoSupportId).Contains(promoSupportPromoRS.PromoSupportId)) // существующий PromoSupportPromo
