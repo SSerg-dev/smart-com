@@ -44,7 +44,8 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
         {
             RollingScenario rollingScenarioExist = Context.Set<RollingScenario>()
                 .Include(g => g.Promoes)
-                .FirstOrDefault(g => g.ClientTreeId == promo.ClientTreeKeyId && !g.Disabled);
+                .Include(g => g.PromoStatus)
+                .FirstOrDefault(g => g.ClientTreeId == promo.ClientTreeKeyId && !g.Disabled && g.PromoStatus.SystemName != StateNames.APPROVED);
 
             List<PromoStatus> promoStatuses = Context.Set<PromoStatus>().Where(g => !g.Disabled).ToList();
             StartEndModel startEndModel = GetRSPeriod(Context);
@@ -65,25 +66,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
             }
             else
             {
-                if (rollingScenarioExist.IsCMManagerApproved && rollingScenarioExist.IsSendForApproval)
-                {
-                    ClientTree client = Context.Set<ClientTree>().FirstOrDefault(g => g.ObjectId == promo.ClientTreeId);
-                    rollingScenario = new RollingScenario
-                    {
-                        StartDate = startEndModel.StartDate,
-                        EndDate = startEndModel.EndDate,
-                        PromoStatus = promoStatuses.FirstOrDefault(g => g.SystemName == "Draft"),
-                        ClientTree = client,
-                        Promoes = new List<Promo>()
-                    };
-                    rollingScenario.Promoes.Add(promo);
-                    Context.Set<RollingScenario>().Add(rollingScenario);
-                }
-                else
-                {
-                    rollingScenarioExist.Promoes.Add(promo);
-                }
-                
+                rollingScenarioExist.Promoes.Add(promo);
             }
             Context.SaveChanges();
         }
@@ -410,7 +393,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
 
 
 
-               // Context.SaveChanges(); //удалить
+                // Context.SaveChanges(); //удалить
             }
 
             Context.SaveChanges();
