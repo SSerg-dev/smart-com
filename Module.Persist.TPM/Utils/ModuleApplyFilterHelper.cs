@@ -168,17 +168,28 @@ namespace Module.Persist.TPM.Utils
                 query = query.Where(x =>
                     hierarchy.Any(h => h.Id == x.ClientTreeId || h.Hierarchy.Contains(x.ClientTreeId.Value.ToString())));
             }
-            switch (mode)
-            {
-                case TPMmode.Current:
-                    query = query.Where(x => x.TPMmode == TPMmode.Current && !x.Disabled);
-                    break;
-                case TPMmode.RS:
-                    query = query.GroupBy(x => x.Number, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault()).Where(f => !f.Disabled);
+            query = query.Where(x => !x.Disabled);
+            return query;
+        }
 
-                    //query = query.Where(x => x.TPMmode == TPMmode.RS);
-                    break;
+        /// <summary>
+        /// Применение фильтра по ограничениям к Промо для Календаря
+        /// </summary>
+        /// <param name="query"></param>
+        /// <param name="hierarchy"></param>
+        /// <param name="filter"></param>
+        /// <param name="filterMode"></param>
+        /// <returns></returns>
+        public static IQueryable<PromoRSView> ApplyFilter(IQueryable<PromoRSView> query, IQueryable<ClientTreeHierarchyView> hierarchy, TPMmode mode, IDictionary<string, IEnumerable<string>> filter = null, FilterQueryModes filterMode = FilterQueryModes.Active, string role = "")
+        {
+            IEnumerable<string> clientFilter = FilterHelper.GetFilter(filter, ModuleFilterName.Client);
+            if (clientFilter.Any())
+            {
+                hierarchy = getFilteredHierarchy(hierarchy, clientFilter);
+                query = query.Where(x =>
+                    hierarchy.Any(h => h.Id == x.ClientTreeId || h.Hierarchy.Contains(x.ClientTreeId.Value.ToString())));
             }
+            query = query.Where(x => !x.Disabled);
             return query;
         }
         /// <summary>
