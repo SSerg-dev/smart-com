@@ -55,7 +55,7 @@ namespace Module.Persist.TPM.Migrations
         private string SqlString = @" 
             CREATE SEQUENCE [DefaultSchemaSetting].[RollingScenarioSequence] 
                  AS [int]
-                 START WITH 0
+                 START WITH 1
                  INCREMENT BY 1
                  MAXVALUE 2147483647
 

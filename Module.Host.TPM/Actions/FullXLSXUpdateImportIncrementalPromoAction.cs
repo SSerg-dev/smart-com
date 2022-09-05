@@ -18,14 +18,17 @@ using Module.Persist.TPM.Utils;
 using Utility;
 using Core.Settings;
 using Module.Persist.TPM.CalculatePromoParametersModule;
+using Module.Persist.TPM.Model.Interfaces;
 
 namespace Module.Host.TPM.Actions {
     class FullXLSXUpdateImportIncrementalPromoAction : FullXLSXImportAction {
 
         private readonly IDictionary<string, IEnumerable<string>> Filters;
+        private readonly TPMmode TPMmode;
 
-        public FullXLSXUpdateImportIncrementalPromoAction(FullImportSettings settings, IDictionary<string, IEnumerable<string>> filters) : base(settings) {
+        public FullXLSXUpdateImportIncrementalPromoAction(FullImportSettings settings, IDictionary<string, IEnumerable<string>> filters, TPMmode tPMmode) : base(settings) {
 			Filters = filters;
+            TPMmode = tPMmode;
 			UniqueErrorMessage = "This entry already exists in the database";
 			ErrorMessageScaffold = "FullImportAction failed: {0}";
             FileParseErrorMessage = "An error occurred while parsing the import file";
@@ -216,7 +219,7 @@ namespace Module.Host.TPM.Actions {
             ScriptGenerator generator = GetScriptGenerator();
             IList<IncrementalPromo> toUpdate = new List<IncrementalPromo>();
 			IList<ImportIncrementalPromo> filteredRecords = new List<ImportIncrementalPromo>();
-            List<Tuple<IEntity<Guid>, IEntity<Guid>>> toHisUpdate = new List<Tuple<IEntity<Guid>, IEntity<Guid>>>();
+            //List<Tuple<IEntity<Guid>, IEntity<Guid>>> toHisUpdate = new List<Tuple<IEntity<Guid>, IEntity<Guid>>>();
 
             foreach (IncrementalPromo incrementalPromo in sourceRecords)
 			{
@@ -232,7 +235,7 @@ namespace Module.Host.TPM.Actions {
 			filteredRecords = ModuleApplyFilterHelper.ApplyFilter(filteredRecords.AsQueryable(), context);
 
 			// Забор по уникальным полям
-			var groups = filteredRecords.Select(iip => (ImportIncrementalPromo)iip).GroupBy(ip => new { ip.ProductZREP, ip.PromoNumber});
+			var groups = filteredRecords.GroupBy(ip => new { ip.ProductZREP, ip.PromoNumber});
             foreach (var group in groups) {
                 ImportIncrementalPromo newRecord = group.FirstOrDefault();
 
@@ -243,34 +246,35 @@ namespace Module.Host.TPM.Actions {
 					{
 						IncrementalPromo oldRecord = context.Set<IncrementalPromo>()
 							.FirstOrDefault(x => x.Product.ZREP == newRecord.ProductZREP && x.Promo.Number == newRecord.PromoNumber && !x.Disabled);
-                        var oldRecordCopy = oldRecord;
                         if (oldRecord != null)
                         {
                             newRecord.Id = oldRecord.Id;
 							oldRecord.PlanPromoIncrementalCases = newRecord.PlanPromoIncrementalCases;
-                            var casePrice = BaselineAndPriceCalculation.CalculateCasePrice(oldRecord, context);
-                            oldRecord.CasePrice = casePrice;
+                            oldRecord.CasePrice = BaselineAndPriceCalculation.CalculateCasePrice(oldRecord, context);
                             oldRecord.PlanPromoIncrementalLSV = oldRecord.CasePrice * oldRecord.PlanPromoIncrementalCases;
                             oldRecord.LastModifiedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
-                            toHisUpdate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(oldRecordCopy, oldRecord));
+                            oldRecord.TPMmode = TPMmode;
+                            //toHisUpdate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(oldRecordCopy, oldRecord));
                             toUpdate.Add(oldRecord);
+                            //нужно взять все связанные и отправить делать копии
+                            //context.SaveChanges();
 						}
 					}
 				}
 			}
-
-            foreach (IEnumerable<IncrementalPromo> items in toUpdate.Partition(1000))
-            {
-                string insertScript = String.Join("", items.Select(y => String.Format("UPDATE [DefaultSchemaSetting].IncrementalPromo SET PlanPromoIncrementalCases = {0}, " +
-                                                                                    "CasePrice = {1}, " +
-                                                                                    "PlanPromoIncrementalLSV = {2}, " +
-                                                                                    "LastModifiedDate = '{3:yyyy-MM-dd HH:mm:ss +03:00}'  " +
-                                                                                    "WHERE Id = '{4}';", 
-                                                                                    y.PlanPromoIncrementalCases, y.CasePrice, y.PlanPromoIncrementalLSV, y.LastModifiedDate, y.Id)));
-                context.ExecuteSqlCommand(insertScript);
-            }
+            //foreach (IEnumerable<IncrementalPromo> items in toUpdate.Partition(1000))
+            //{
+            //    string insertScript = String.Join("", items.Select(y => String.Format("UPDATE [DefaultSchemaSetting].IncrementalPromo SET PlanPromoIncrementalCases = {0}, " +
+            //                                                                        "CasePrice = {1}, " +
+            //                                                                        "PlanPromoIncrementalLSV = {2}, " +
+            //                                                                        "LastModifiedDate = '{3:yyyy-MM-dd HH:mm:ss +03:00}',  " +
+            //                                                                        "TPMmode = {4}  " +
+            //                                                                        "WHERE Id = '{5}';", 
+            //                                                                        y.PlanPromoIncrementalCases, y.CasePrice, y.PlanPromoIncrementalLSV, y.LastModifiedDate, TPMmode, y.Id)));
+            //    context.ExecuteSqlCommand(insertScript);
+            //}
             //Добавление изменений в историю
-            context.HistoryWriter.Write(toHisUpdate, context.AuthManager.GetCurrentUser(), context.AuthManager.GetCurrentRole(), OperationType.Updated);
+            //context.HistoryWriter.Write(toHisUpdate, context.AuthManager.GetCurrentUser(), context.AuthManager.GetCurrentRole(), OperationType.Updated);
 
             context.SaveChanges();
 

@@ -3,6 +3,7 @@ using Interfaces.Implementation.Import.FullImport;
 using Looper.Core;
 using Looper.Parameters;
 using Module.Host.TPM.Actions;
+using Module.Persist.TPM.Model.Interfaces;
 using Module.Persist.TPM.Utils;
 using ProcessingHost.Handlers.Import;
 using System;
@@ -16,14 +17,17 @@ namespace Module.Host.TPM.Handlers {
     public class FullXLSXUpdateImportIncrementalPromoHandler : FullXLSXImportHandler {
         protected override IAction GetAction(FullImportSettings settings, ExecuteData data) {
             IDictionary<string, IEnumerable<string>> filters = data.GetValue<IDictionary<string, IEnumerable<string>>>("Filters");
-			return new FullXLSXUpdateImportIncrementalPromoAction(settings, filters);
+            TPMmode tPMmode = data.GetValue<TPMmode>("TPMmode");
+			return new FullXLSXUpdateImportIncrementalPromoAction(settings, filters, tPMmode);
         }
 
         protected override void InitializeParameters(HandlerData handlerData, ExecuteData data) {
 			bool allowPartialApply = HandlerDataHelper.GetIncomingArgument<bool?>("AllowPartialApply", handlerData, false) ?? false;
 			data.SetValue<bool>("AllowPartialApply", allowPartialApply);
 			string clientFilter = HandlerDataHelper.GetIncomingArgument<TextListModel>("CrossParam.ClientFilter", handlerData).Value;
-			IDictionary<string, IEnumerable<string>> filters = new Dictionary<string, IEnumerable<string>>() {
+            TPMmode tPMmode = HandlerDataHelper.GetIncomingArgument<TPMmode>("TPMmode", handlerData, throwIfNotExists: false);
+            data.SetValue("TPMmode", tPMmode);
+            IDictionary<string, IEnumerable<string>> filters = new Dictionary<string, IEnumerable<string>>() {
 				{ ModuleFilterName.Client, FilterHelper.ParseFilter(clientFilter) }
 			};
 			data.SetValue("Filters", filters);
