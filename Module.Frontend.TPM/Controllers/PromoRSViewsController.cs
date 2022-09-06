@@ -128,6 +128,7 @@ namespace Module.Frontend.TPM.Controllers {
                 HandlerDataHelper.SaveIncomingArgument("clients", clients.ToList(), handlerData, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("competitors", competitors.ToList(), handlerData, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("types", types.ToList(), handlerData, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("TPMmode", TPMmode.RS, handlerData, visible: false, throwIfNotExists: false);
 
                 var handlerId = Guid.NewGuid();
                 HandlerDataHelper.SaveIncomingArgument("HandlerId", handlerId, handlerData, visible: false, throwIfNotExists: false);

@@ -15,6 +15,7 @@ using System.Web.Http.OData.Query;
 using Module.Persist.TPM.Model.TPM;
 using System.Linq.Expressions;
 using Module.Persist.TPM.Utils;
+using Module.Persist.TPM.Model.Interfaces;
 
 namespace Module.Host.TPM.Handlers {
     /// <summary>
@@ -34,11 +35,12 @@ namespace Module.Host.TPM.Handlers {
                 Guid userId = HandlerDataHelper.GetIncomingArgument<Guid>("UserId", info.Data);
                 Guid roleId = HandlerDataHelper.GetIncomingArgument<Guid>("RoleId", info.Data);
                 Guid handlerId = HandlerDataHelper.GetIncomingArgument<Guid>("HandlerId", info.Data);
+                TPMmode tPMmode = HandlerDataHelper.GetIncomingArgument<TPMmode>("TPMmode", info.Data);
                 var rawFilters = HandlerDataHelper.GetIncomingArgument<string>("rawFilters", info.Data);
                 
                 handlerLogger.Write(true, String.Format("Start of calendar export at 10 {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)), "Message");
                 Thread.Sleep(10000);
-                IAction action = new SchedulerExportAction(clients, /*competitors, types,*/ year, userId, roleId, rawFilters/*, handlerId*/);
+                IAction action = new SchedulerExportAction(clients, /*competitors, types,*/ year, userId, roleId, rawFilters/*, handlerId*/, tPMmode);
                 action.Execute();
 
                 if (action.Errors.Any()) {
