@@ -112,6 +112,7 @@
 
     onGridSelectionChangeCustom: function (selMode, selected) {
         if (selected[0]) {
+            debugger;
             var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
             const tpmMode = settingStore.findRecord('name', 'mode').data.value;
             if (tpmMode == 1) {
@@ -141,9 +142,9 @@
                 }
             }
             else if (selected[0].data.PromoStatusName != 'Closed') {
-                Ext.ComponentQuery.query('incrementalpromo')[0].down('#updatebutton').disable();
-            } else {
                 Ext.ComponentQuery.query('incrementalpromo')[0].down('#updatebutton').enable();
+            } else {
+                Ext.ComponentQuery.query('incrementalpromo')[0].down('#updatebutton').disable();
             }
         }
     },
@@ -380,7 +381,6 @@
         this.detailMode = null;
     },
     onExportIncrementalPromoButtonClick: function (button) {
-        debugger;
         var me = this;
         var grid = me.getGridByButton(button);
         var panel = grid.up('combineddirectorypanel');
@@ -496,7 +496,6 @@
         editor.show();
     },
     onShowImportFormButtonClick: function (button) {
-        debugger;
         var grid = this.getGridByButton(button),
             panel = grid.up('combineddirectorypanel'),
             viewClassName = App.Util.buildViewClassName(panel, panel.getBaseModel(), 'Import', 'ParamForm'),
@@ -553,7 +552,6 @@
         editor.show();
     },
     onUploadFileOkButtonClick: function (button) {
-        debugger;
         var me = this;
         var win = button.up('uploadfilewindow');
         var url = Ext.String.format("/odata/{0}/{1}?tPMmode={2}", win.resource, win.action, win.tpmmode);

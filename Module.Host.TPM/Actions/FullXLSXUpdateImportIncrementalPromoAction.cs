@@ -3,9 +3,11 @@ using Interfaces.Implementation.Action;
 using Interfaces.Implementation.Import.FullImport;
 using Looper.Parameters;
 using Module.Frontend.TPM.FunctionalHelpers.RSmode;
+using Module.Frontend.TPM.FunctionalHelpers.RSPeriod;
 using Module.Persist.TPM.CalculatePromoParametersModule;
 using Module.Persist.TPM.Model.Import;
 using Module.Persist.TPM.Model.Interfaces;
+using Module.Persist.TPM.Model.SimpleModel;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
 using Persist;
@@ -197,7 +199,15 @@ namespace Module.Host.TPM.Actions
                 PromoNumber = ipRec.Promo.Number,
                 PlanPromoIncrementalCases = ipRec.PlanPromoIncrementalCases
             };
-
+            if (TPMmode == TPMmode.RS)
+            {
+                StartEndModel startEndModel = RSPeriodHelper.GetRSPeriod(context);
+                if (ipRec.Promo.DispatchesStart < startEndModel.StartDate || startEndModel.EndDate < ipRec.Promo.EndDate)
+                {
+                    isSuitable = false;
+                    errors.Add($"Promo number:{iipRec.PromoNumber} is not in the RS period");
+                }
+            }
             if (ipBadBaseUniqueIdent
                 .Any(z => z.Item1 == iipRec.ProductZREP && z.Item2 == iipRec.PromoNumber))
             {
@@ -300,25 +310,10 @@ namespace Module.Host.TPM.Actions
                                     incrementalPromo.LastModifiedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
                                 }
                             }
-                            //нужно взять все связанные и отправить делать копии
-                            //context.SaveChanges();
                         }
                     }
                 }
             }
-            //foreach (IEnumerable<IncrementalPromo> items in toUpdate.Partition(1000))
-            //{
-            //    string insertScript = String.Join("", items.Select(y => String.Format("UPDATE [DefaultSchemaSetting].IncrementalPromo SET PlanPromoIncrementalCases = {0}, " +
-            //                                                                        "CasePrice = {1}, " +
-            //                                                                        "PlanPromoIncrementalLSV = {2}, " +
-            //                                                                        "LastModifiedDate = '{3:yyyy-MM-dd HH:mm:ss +03:00}',  " +
-            //                                                                        "TPMmode = {4}  " +
-            //                                                                        "WHERE Id = '{5}';", 
-            //                                                                        y.PlanPromoIncrementalCases, y.CasePrice, y.PlanPromoIncrementalLSV, y.LastModifiedDate, TPMmode, y.Id)));
-            //    context.ExecuteSqlCommand(insertScript);
-            //}
-            //Добавление изменений в историю
-            //context.HistoryWriter.Write(toHisUpdate, context.AuthManager.GetCurrentUser(), context.AuthManager.GetCurrentRole(), OperationType.Updated);
 
             context.SaveChanges();
 

@@ -16,7 +16,7 @@ namespace Module.Persist.TPM.Model.TPM
         public DateTimeOffset LastChangeDate { get; set; }
         [MaxLength(12)]
         public string WEEK { get; set; }
-        public float IncrementalQty { get; set; }
+        public double? IncrementalQty { get; set; }
         [MaxLength(255)]
         public string DemandCode { get; set; }
         public string DMDGroup { get; set; }

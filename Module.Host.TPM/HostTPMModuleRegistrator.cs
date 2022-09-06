@@ -98,7 +98,8 @@ namespace Module.Host.TPM
                 new Handlers.FullXLSXRPAPromoSupportImportHandler(),
                 new Handlers.FullXLSXRPANonPromoSupportImportHandler(),
                 new Handlers.FullXLSXRPAActualEANPCImportHandler(),
-                new Handlers.FullXLSXRpaActualPluImportHandler()
+                new Handlers.FullXLSXRpaActualPluImportHandler(),
+                new Handlers.RSperiodExpiredHandler()
             };
         }
     }

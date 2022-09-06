@@ -3151,6 +3151,18 @@
     <Compile Include="Migrations\202209021137302_Update_PromoProductCorrection_View.Designer.cs">
       <DependentUpon>202209021137302_Update_PromoProductCorrection_View.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202209060720364_Add_Create_RSPromoView.cs" />
+    <Compile Include="Migrations\202209060720364_Add_Create_RSPromoView.Designer.cs">
+      <DependentUpon>202209060720364_Add_Create_RSPromoView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202209060735188_Create_RSPromoView_AP.cs" />
+    <Compile Include="Migrations\202209060735188_Create_RSPromoView_AP.Designer.cs">
+      <DependentUpon>202209060735188_Create_RSPromoView_AP.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202209061142318_Add_RSperiodExpiredHandler.cs" />
+    <Compile Include="Migrations\202209061142318_Add_RSperiodExpiredHandler.Designer.cs">
+      <DependentUpon>202209061142318_Add_RSperiodExpiredHandler.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\202209010707260_EmptyMergeRS.cs" />
     <Compile Include="Migrations\202209010707260_EmptyMergeRS.Designer.cs">
       <DependentUpon>202209010707260_EmptyMergeRS.cs</DependentUpon>
@@ -5967,6 +5979,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202209021137302_Update_PromoProductCorrection_View.resx">
       <DependentUpon>202209021137302_Update_PromoProductCorrection_View.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202209060720364_Add_Create_RSPromoView.resx">
+      <DependentUpon>202209060720364_Add_Create_RSPromoView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202209060735188_Create_RSPromoView_AP.resx">
+      <DependentUpon>202209060735188_Create_RSPromoView_AP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202209061142318_Add_RSperiodExpiredHandler.resx">
+      <DependentUpon>202209061142318_Add_RSperiodExpiredHandler.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202209010707260_EmptyMergeRS.resx">
       <DependentUpon>202209010707260_EmptyMergeRS.cs</DependentUpon>
