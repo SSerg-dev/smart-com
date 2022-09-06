@@ -700,6 +700,7 @@
         e.stopEvent();
         var status = rec.get('PromoStatusSystemName').toLowerCase();
         var promoStore = me.getPromoStore();
+        var mode = this.getTPMmode();
         var isDeletable = status == 'draft' || status == 'draftpublished';
         var isEditable = false;
         var isPlannable = false;
@@ -709,7 +710,7 @@
         if (['Administrator', 'CMManager', 'CustomerMarketing', 'FunctionalExpert', 'KeyAccountManager', 'DemandPlanning'].includes(App.UserInfo.getCurrentRole()['SystemName'])) {
             isEditable = true;
         }
-        if (['Administrator', 'KeyAccountManager', 'FunctionalExpert'].includes(App.UserInfo.getCurrentRole()['SystemName']) && status == 'approved') {
+        if (['Administrator', 'KeyAccountManager', 'FunctionalExpert'].includes(App.UserInfo.getCurrentRole()['SystemName']) && status == 'approved' && mode != 'RS') {
             isPlannable = true;
         }
         var postAccess = me.getAllowedActionsForCurrentRoleAndResource('Promoes').some(function (action) { return action === 'Post' });
@@ -2226,5 +2227,19 @@
                 }
             }
         };
+    },
+
+    getTPMmode: function () {
+        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+        var mode = settingStore.findRecord('name', 'mode');
+        if (mode) {
+            if (mode.data.value == 0) {
+                return 'Current';
+            }
+            else if (mode.data.value == 1) {
+                return 'RS';
+            } else
+                return 'Current'
+        }
     }
 });
