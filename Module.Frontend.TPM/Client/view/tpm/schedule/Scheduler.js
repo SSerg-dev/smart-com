@@ -226,6 +226,10 @@
                 model: 'App.model.tpm.promo.PromoView',
                 modelId: 'efselectionmodel'
             }, {
+                xclass: 'App.ExtSelectionFilterModel',
+                model: 'App.model.tpm.promo.PromoRSView',
+                modelId: 'efselectionmodel'
+            }, {
                 xclass: 'App.ExtTextFilterModel',
                 modelId: 'eftextmodel'
             }]

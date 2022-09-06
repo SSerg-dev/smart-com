@@ -147,6 +147,124 @@
                 [DefaultSchemaSetting].Competitor AS c ON cp.CompetitorId = c.Id
             ";
 
+        public static string GetPromoRSViewString(string defaultSchema)
+        {
+            return SqlPromoRSViewString.Replace("DefaultSchemaSetting", defaultSchema); ;
+        }
+        private static readonly string SqlPromoRSViewString = @" 
+             CREATE OR ALTER VIEW [DefaultSchemaSetting].[PromoRSView]
+            AS
+			select * from (
+            SELECT
+                pr.Id,
+				pr.Disabled,
+                pr.Name,
+                pr.IsOnInvoice,
+                mmc.Name AS MarsMechanicName,
+                mmt.Name AS MarsMechanicTypeName,
+				CASE
+					WHEN LEN(pr.MechanicComment) > 30 THEN SUBSTRING(pr.MechanicComment,0,29) + '...'
+						ELSE pr.MechanicComment
+				END as MechanicComment,
+                pr.MarsMechanicDiscount,
+                cl.SystemName AS ColorSystemName,
+                ps.Color AS PromoStatusColor,
+                ps.SystemName AS PromoStatusSystemName,
+                ps.Name AS PromoStatusName,
+                pr.CreatorId,
+                pr.ClientTreeId,
+                pr.BaseClientTreeIds,
+                pr.StartDate,
+                DATEADD(SECOND, 86399, pr.EndDate) AS EndDate,
+                pr.DispatchesStart, 
+                pr.MarsStartDate,
+                pr.MarsEndDate,
+                pr.MarsDispatchesStart,
+                pr.MarsDispatchesEnd,
+                pr.CalendarPriority,
+                pr.IsApolloExport,
+                CAST(CAST(pr.DeviationCoefficient * 100 AS DECIMAL) AS FLOAT) AS DeviationCoefficient,
+                pr.Number,
+                bt.BrandsegTechsub AS BrandTechName,
+                ev.Name AS EventName,
+                pr.InOut,
+                pt.SystemName AS TypeName,
+                pt.Glyph AS TypeGlyph,
+                pr.IsGrowthAcceleration,
+				pr.IsInExchange,
+				pr.MasterPromoId,
+				pr.TPMmode,
+				CAST(0 AS bit) AS IsOnHold,
+                'mars' AS CompetitorName,
+                'mars' AS CompetitorBrandTechName,
+                ISNULL(pr.ActualInStoreShelfPrice, 0) AS Price, 
+                ISNULL(pr.ActualInStoreDiscount, 0) AS Discount,
+                [DefaultSchemaSetting].[GetPromoSubrangesById](pr.Id) as Subranges,
+				ROW_NUMBER() OVER(PARTITION BY pr.Number ORDER BY TPMmode DESC) AS row_number
+
+            FROM
+                [DefaultSchemaSetting].Promo AS pr LEFT OUTER JOIN
+                [DefaultSchemaSetting].PromoStatus AS ps ON pr.PromoStatusId = ps.Id LEFT OUTER JOIN
+                [DefaultSchemaSetting].PromoTypes AS pt ON pr.PromoTypesId = pt.Id LEFT OUTER JOIN
+                [DefaultSchemaSetting].Color AS cl ON pr.ColorId = cl.Id LEFT OUTER JOIN
+                [DefaultSchemaSetting].Mechanic AS mmc ON pr.MarsMechanicId = mmc.Id LEFT OUTER JOIN
+                [DefaultSchemaSetting].MechanicType AS mmt ON pr.MarsMechanicTypeId = mmt.Id LEFT OUTER JOIN
+                [DefaultSchemaSetting].Event AS ev ON pr.EventId = ev.Id LEFT OUTER JOIN
+                [DefaultSchemaSetting].BrandTech AS bt ON pr.BrandTechId = bt.Id) query
+			WHERE 
+				row_number = 1
+
+            UNION
+
+            SELECT
+                cp.Id,
+				cp.Disabled,
+                cp.Name,
+                CAST(0 AS bit),
+                '',
+                '',
+				'',
+                cp.Discount,
+                cbt.Color,
+                '#FFFFFF',
+                'Finished',
+                'Finished',
+                NULL,
+                ct.ObjectId,
+                CAST(ct.ObjectId AS nvarchar),
+                cp.StartDate,
+                DATEADD(SECOND, 86399, cp.EndDate),
+                cp.StartDate,
+                cp.MarsStartDate,
+                cp.MarsEndDate,
+                cp.MarsDispatchesStart,
+                cp.MarsDispatchesEnd,
+                '3', 
+                0, 
+                0, 
+                cp.Number, cbt.BrandTech, 
+                '', 
+                CAST(0 AS bit), 
+                'Competitor', 
+                'FD01', 
+                CAST(0 AS bit), 
+				CAST(0 AS bit), 
+				NULL,
+				0,
+				CAST(0 AS bit),
+                c.[Name], 
+                cbt.BrandTech, 
+                cp.Price, cp.Discount, 
+                '' as Subranges,
+				1 as row_number
+
+            FROM    
+                [DefaultSchemaSetting].CompetitorPromo AS cp LEFT OUTER JOIN
+                [DefaultSchemaSetting].ClientTree AS ct ON cp.ClientTreeObjectId = ct.Id LEFT OUTER JOIN
+                [DefaultSchemaSetting].CompetitorBrandTech AS cbt ON cp.CompetitorBrandTechId = cbt.Id LEFT OUTER JOIN
+                [DefaultSchemaSetting].Competitor AS c ON cp.CompetitorId = c.Id
+            ";
+
         public static string GetPromoInsertTriggerString(string defaultSchema)
         {
             return PromoInsertTriggerSqlString.Replace("DefaultSchemaSetting", defaultSchema); ;
@@ -825,7 +943,7 @@
 			return UpdatePromoProductCorrectionViewSqlString.Replace("DefaultSchemaSetting", defaultSchema);
 		}
 		private static string UpdatePromoProductCorrectionViewSqlString = @"
-		ALTER VIEW [Jupiter].[PromoProductCorrectionView]
+		ALTER VIEW [DefaultSchemaSetting].[PromoProductCorrectionView]
 			AS
 			SELECT
 				ppc.Id AS Id,
@@ -857,14 +975,14 @@
 				pr.IsInExchange AS IsInExchange
 
 			FROM 
-				[Jupiter].PromoProductsCorrection AS ppc INNER JOIN
-                [Jupiter].PromoProduct AS pp ON ppc.PromoProductId = pp.Id INNER JOIN
-                [Jupiter].Promo AS pr ON pp.PromoId = pr.Id INNER JOIN
-                [Jupiter].PromoStatus AS ps ON pr.PromoStatusId = ps.Id INNER JOIN
-                [Jupiter].Event AS ev ON pr.EventId = ev.Id INNER JOIN
-                [Jupiter].Mechanic AS mech ON pr.MarsMechanicId = mech.Id INNER JOIN
-                [Jupiter].BrandTech AS btech ON pr.BrandTechId = btech.Id INNER JOIN
-                [Jupiter].ClientTree AS cltr ON pr.ClientTreeKeyId = cltr.Id
+				[DefaultSchemaSetting].PromoProductsCorrection AS ppc INNER JOIN
+                [DefaultSchemaSetting].PromoProduct AS pp ON ppc.PromoProductId = pp.Id INNER JOIN
+                [DefaultSchemaSetting].Promo AS pr ON pp.PromoId = pr.Id INNER JOIN
+                [DefaultSchemaSetting].PromoStatus AS ps ON pr.PromoStatusId = ps.Id INNER JOIN
+                [DefaultSchemaSetting].Event AS ev ON pr.EventId = ev.Id INNER JOIN
+                [DefaultSchemaSetting].Mechanic AS mech ON pr.MarsMechanicId = mech.Id INNER JOIN
+                [DefaultSchemaSetting].BrandTech AS btech ON pr.BrandTechId = btech.Id INNER JOIN
+                [DefaultSchemaSetting].ClientTree AS cltr ON pr.ClientTreeKeyId = cltr.Id
 		
 		GO
 		";

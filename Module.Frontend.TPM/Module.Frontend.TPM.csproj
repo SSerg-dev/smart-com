@@ -354,6 +354,7 @@
     <Content Include="Client\model\tpm\promoproduct2plu\PromoProduct2Plu.js" />
     <Content Include="Client\model\tpm\promoproductcorrection\PromoProductCorrectionView.js" />
     <Content Include="Client\model\tpm\promosupportpromo\PromoSupportPromoWithPromoId.js" />
+    <Content Include="Client\model\tpm\promo\PromoRSView.js" />
     <Content Include="Client\model\tpm\ratishopper\RATIShopper.js" />
     <Content Include="Client\model\tpm\ratishopper\DeletedRATIshopper.js" />
     <Content Include="Client\model\tpm\ratishopper\HistoricalRATIShopper.js" />
@@ -458,6 +459,7 @@
     <Compile Include="Controllers\PriceListsController.cs" />
     <Compile Include="Controllers\CompetitorBrandTechsController.cs" />
     <Compile Include="Controllers\PromoProductCorrectionViewsController.cs" />
+    <Compile Include="Controllers\PromoRSViewsController.cs" />
     <Compile Include="Controllers\RATIShoppersController.cs" />
     <Compile Include="Controllers\RollingVolumesController.cs" />
     <Compile Include="Controllers\RPAsController.cs" />

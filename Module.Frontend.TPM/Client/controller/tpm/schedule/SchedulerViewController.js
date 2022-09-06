@@ -4,6 +4,8 @@
     alias: 'controller.schedulerviewcontroller',
 
     rowCount: 3,
+    startEndModel: null,
+    canEditInRSmode: boolean = false,
 
     init: function () {
         this.listen({
@@ -358,6 +360,14 @@
                 }),
             actionName = 'ExportSchedule',
             resource = 'PromoViews';
+
+        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+        var mode = settingStore.findRecord('name', 'mode');
+        if (mode) {
+            if (mode.data.value == 1) {
+                resource = 'PromoRSViews';
+            }
+        }
 
         competitorCheckBoxes.map(
             function (checkbox) {
@@ -2022,6 +2032,33 @@
         });
 
         return allowedActions;
+    },
+
+    accessDeniedForRSmode: function (rec) {
+        if (mode.data.value == 1) {
+            if (
+                (
+                    new Date(rec.get("PromoDispatchStartDate")) > new Date(StartDateRS) &&
+                    new Date(rec.get("PromoDispatchStartDate")) <= new Date(EndDateRS)
+                ) &&
+                (
+                    rec.get("PromoStatusName") != "Draft" &&
+                    rec.get("PromoStatusName") != "Planned" &&
+                    rec.get("PromoStatusName") != "Started" &&
+                    rec.get("PromoStatusName") != "Finished" &&
+                    rec.get("PromoStatusName") != "Closed" &&
+                    rec.get("PromoStatusName") != "Cancelled"
+                ) &&
+                (
+                    !rec.get("IsGrowthAcceleration") ||
+                    !rec.get("IsInExchange") 
+                )
+            ) {                    
+                this.canEditInRSmode = true;
+            } else {                   
+                this.canEditInRSmode = false;
+            }
+        }       
     },
 
     loopHandlerViewLogWindowCreate: function (record) {
