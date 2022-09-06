@@ -409,6 +409,7 @@
     <Compile Include="Handlers\ExportHandler.cs" />
     <Compile Include="Handlers\ReapprovingHandler.cs" />
     <Compile Include="Handlers\RollingVolumeQTYRecalculationHandler.cs" />
+    <Compile Include="Handlers\RSperiodExpiredHandler.cs" />
     <Compile Include="Handlers\SellOutBaselineQtyCalculationHandler.cs" />
     <Compile Include="Handlers\MainNightProcessing\NightProcessingMainHandler.cs" />
     <Compile Include="Handlers\Interface\Outcoming\OutputIncrementalProcessHandler.cs" />
