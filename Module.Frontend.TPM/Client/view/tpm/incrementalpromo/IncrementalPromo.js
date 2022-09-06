@@ -27,7 +27,7 @@
                 xtype: 'customheadermenu',
                 items: [{
                     glyph: 0xf220,
-                    itemgroup: 'loadimportbutton',
+                    itemId: 'loadimportipbutton',
                     exactlyModelCompare: true,
                     text: l10n.ns('core', 'additionalMenu').value('fullImportXLSX'),
                     resource: '{0}',
@@ -35,16 +35,16 @@
                     allowFormat: ['zip', 'xlsx']
                 }, {
                     glyph: 0xf21d,
-                    itemId: 'loadimporttemplatexlsxbutton',
+                    itemId: 'customloadimporttemplatebutton',
                     exactlyModelCompare: true,
                     text: l10n.ns('core', 'additionalMenu').value('importTemplateXLSX'),
                     action: 'DownloadTemplateXLSX'
                 }, {
                     glyph: 0xf21d,
-                    itemId: 'exportxlsxbutton',
+                    itemId: 'exportbutton',
                     exactlyModelCompare: true,
                     text: l10n.ns('core', 'additionalMenu').value('exportXLSX'),
-                    action: 'ExportXLSX'
+                    //action: 'ExportXLSX'
                 }]
             }
         }

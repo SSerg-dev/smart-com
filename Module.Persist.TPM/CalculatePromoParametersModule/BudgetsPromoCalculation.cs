@@ -306,10 +306,13 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             //double summActualLSV = notClosedPromo.Where(n => n.ActualPromoLSVByCompensation.HasValue).Sum(n => n.ActualPromoLSVByCompensation.Value);
 
             // ушедший бюджет на закрытые промо  
-            double closedBudgetMarketingTi = psps.Where(n => n.Promo.PromoStatus.SystemName == "Closed").Sum(n => n.FactCalculation);
-            double closedBudgetCostProd = psps.Where(n => n.Promo.PromoStatus.SystemName == "Closed").Sum(n => n.FactCostProd);
+            double closedBudgetMarketingTi = psps.Where(n => n.Promo.PromoStatus.SystemName == "Closed" && n.TPMmode == TPMmode.Current).Sum(n => n.FactCalculation);
+            double closedBudgetCostProd = psps.Where(n => n.Promo.PromoStatus.SystemName == "Closed" && n.TPMmode == TPMmode.Current).Sum(n => n.FactCostProd);
 
-            foreach (PromoSupportPromo psp in pspsNotClosed)
+            double closedBudgetMarketingTiRS = psps.Where(n => n.Promo.PromoStatus.SystemName == "Closed" && n.TPMmode == TPMmode.RS).Sum(n => n.FactCalculation);
+            double closedBudgetCostProdRS = psps.Where(n => n.Promo.PromoStatus.SystemName == "Closed" && n.TPMmode == TPMmode.RS).Sum(n => n.FactCostProd);
+
+            foreach (PromoSupportPromo psp in pspsNotClosed.Where(x => x.TPMmode == TPMmode.Current))
             {
                 Promo promo = psp.Promo;
 
@@ -331,6 +334,31 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 {
                     psp.FactCalculation = Math.Round((ps.ActualCostTE.Value - closedBudgetMarketingTi) * kPlan, 2, MidpointRounding.AwayFromZero);
                     psp.FactCostProd = Math.Round((ps.ActualProdCost.Value - closedBudgetCostProd) * kPlan, 2, MidpointRounding.AwayFromZero);
+                }
+                RecalculateSummBudgets(promo.Id, context);
+            }
+            foreach (PromoSupportPromo psp in pspsNotClosed.Where(x => x.TPMmode == TPMmode.RS))
+            {
+                Promo promo = psp.Promo;
+
+                double kPlan = promo.PlanPromoLSV.HasValue ? promo.PlanPromoLSV.Value / summPlanLSV : 0;
+
+                if (double.IsNaN(kPlan))
+                {
+                    kPlan = 0;
+                }
+                //double kActual = promo.ActualPromoLSVByCompensation.HasValue ? promo.ActualPromoLSVByCompensation.Value / summActualLSV : 0;
+
+                if (plan)
+                {
+                    psp.PlanCalculation = Math.Round((ps.PlanCostTE.Value - closedBudgetMarketingTiRS) * kPlan, 2, MidpointRounding.AwayFromZero);
+                    psp.PlanCostProd = Math.Round((ps.PlanProdCost.Value - closedBudgetCostProdRS) * kPlan, 2, MidpointRounding.AwayFromZero);
+                }
+
+                if (actual)
+                {
+                    psp.FactCalculation = Math.Round((ps.ActualCostTE.Value - closedBudgetMarketingTiRS) * kPlan, 2, MidpointRounding.AwayFromZero);
+                    psp.FactCostProd = Math.Round((ps.ActualProdCost.Value - closedBudgetCostProdRS) * kPlan, 2, MidpointRounding.AwayFromZero);
                 }
                 RecalculateSummBudgets(promo.Id, context);
             }

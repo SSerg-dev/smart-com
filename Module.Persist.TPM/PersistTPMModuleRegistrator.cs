@@ -110,6 +110,7 @@ namespace Module.Persist.TPM
 
             modelBuilder.Entity<IncrementalPromo>();
             modelBuilder.Entity<PromoView>();
+            modelBuilder.Entity<PromoRSView>();
             modelBuilder.Entity<PromoGridView>();
             modelBuilder.Entity<PlanIncrementalReport>();
             modelBuilder.Entity<PromoCancelledIncident>();
@@ -529,6 +530,12 @@ namespace Module.Persist.TPM
             schedExp.CollectionParameter<string>("competitors");
             schedExp.CollectionParameter<string>("types");
             schedExp.Parameter<int?>("year");
+
+            ActionConfiguration schedExpRS = builder.Entity<PromoRSView>().Collection.Action("ExportSchedule");
+            schedExpRS.CollectionParameter<int>("clients");
+            schedExpRS.CollectionParameter<string>("competitors");
+            schedExpRS.CollectionParameter<string>("types");
+            schedExpRS.Parameter<int?>("year");
 
             builder.EntitySet<Sale>("Sales");
             builder.EntitySet<Sale>("DeletedSales");
@@ -1036,7 +1043,9 @@ namespace Module.Persist.TPM
             builder.Entity<PlanPostPromoEffectReportWeekView>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PlanPostPromoEffectReportWeekView>("PlanPostPromoEffectReports");
 
             builder.EntitySet<PromoView>("PromoViews");
-            builder.Entity<PromoView>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PromoView>("PromoViews");
+            builder.Entity<PromoView>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PromoRSView>("PromoRSViews");
+            builder.EntitySet<PromoRSView>("PromoRSViews");
+            builder.Entity<PromoRSView>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PromoRSView>("PromoRSViews");
             builder.EntitySet<PromoGridView>("PromoGridViews");
             builder.Entity<PromoGridView>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PromoGridView>("PromoGridViews");
             builder.Entity<PromoGridView>().Collection.Action("ExportXLSX");

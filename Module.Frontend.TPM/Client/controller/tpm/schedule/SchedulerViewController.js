@@ -359,6 +359,14 @@
             actionName = 'ExportSchedule',
             resource = 'PromoViews';
 
+        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+        var mode = settingStore.findRecord('name', 'mode');
+        if (mode) {
+            if (mode.data.value == 1) {
+                resource = 'PromoRSViews';
+            }
+        }
+
         competitorCheckBoxes.map(
             function (checkbox) {
                 if (checkbox.checked == true)
