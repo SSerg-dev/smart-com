@@ -3123,6 +3123,14 @@
     <Compile Include="Migrations\202209021137302_Update_PromoProductCorrection_View.Designer.cs">
       <DependentUpon>202209021137302_Update_PromoProductCorrection_View.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202209060720364_Add_Create_RSPromoView.cs" />
+    <Compile Include="Migrations\202209060720364_Add_Create_RSPromoView.Designer.cs">
+      <DependentUpon>202209060720364_Add_Create_RSPromoView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202209060735188_Create_RSPromoView_AP.cs" />
+    <Compile Include="Migrations\202209060735188_Create_RSPromoView_AP.Designer.cs">
+      <DependentUpon>202209060735188_Create_RSPromoView_AP.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
@@ -5902,6 +5910,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202209021137302_Update_PromoProductCorrection_View.resx">
       <DependentUpon>202209021137302_Update_PromoProductCorrection_View.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202209060720364_Add_Create_RSPromoView.resx">
+      <DependentUpon>202209060720364_Add_Create_RSPromoView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202209060735188_Create_RSPromoView_AP.resx">
+      <DependentUpon>202209060735188_Create_RSPromoView_AP.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
