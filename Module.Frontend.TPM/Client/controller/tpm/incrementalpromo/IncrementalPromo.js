@@ -112,6 +112,7 @@
 
     onGridSelectionChangeCustom: function (selMode, selected) {
         if (selected[0]) {
+            debugger;
             var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
             const tpmMode = settingStore.findRecord('name', 'mode').data.value;
             if (tpmMode == 1) {
@@ -141,9 +142,9 @@
                 }
             }
             else if (selected[0].data.PromoStatusName != 'Closed') {
-                Ext.ComponentQuery.query('incrementalpromo')[0].down('#updatebutton').disable();
-            } else {
                 Ext.ComponentQuery.query('incrementalpromo')[0].down('#updatebutton').enable();
+            } else {
+                Ext.ComponentQuery.query('incrementalpromo')[0].down('#updatebutton').disable();
             }
         }
     },
