@@ -460,7 +460,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
 
             Context.Set<IncrementalPromo>().AddRange(incrementalPromosRS);
             Context.SaveChanges();
-            RSPeriodHelper.CreateRSPeriod(incrementalPromos.Select(g => g.Promo).ToList(), Context);
+            RSPeriodHelper.CreateRSPeriod(incrementalPromosRS.Select(g => g.Promo).ToList(), Context);
             return incrementalPromosRS;
         }
 
