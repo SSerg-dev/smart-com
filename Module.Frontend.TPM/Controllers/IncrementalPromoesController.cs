@@ -164,17 +164,24 @@ namespace Module.Frontend.TPM.Controllers
         {
             try
             {
+                IncrementalPromo ChangeIncrementalPromo = new IncrementalPromo();
+                patch.CopyChangedValues(ChangeIncrementalPromo);
+
                 var model = Context.Set<IncrementalPromo>()
                     .Include(x => x.Promo)
-                    .FirstOrDefault(g => g.Id == key);
+                    .FirstOrDefault(g => g.Id == key && g.TPMmode == ChangeIncrementalPromo.TPMmode);
                 if (model == null)
                 {
                     return NotFound();
                 }
+                List<IncrementalPromo> ipromoes = Context.Set<Promo>()
+                    .Include(x => x.IncrementalPromoes)
+                    .Where(g => g.Number == model.Promo.Number)
+                    .SelectMany(f => f.IncrementalPromoes)
+                    .ToList();
 
-                patch.TryGetPropertyValue("TPMmode", out object mode);
 
-                if ((int)mode == (int)TPMmode.RS)
+                if (ChangeIncrementalPromo.TPMmode == TPMmode.RS)
                 {
                     if (model.TPMmode == TPMmode.Current)
                     {
@@ -199,6 +206,26 @@ namespace Module.Frontend.TPM.Controllers
                 model.PlanPromoIncrementalLSV = model.CasePrice * model.PlanPromoIncrementalCases;
 
                 Context.SaveChanges();
+
+                if (ChangeIncrementalPromo.TPMmode == TPMmode.Current)
+                {
+                    if (ipromoes.Count > 1)
+                    {
+                        IncrementalPromo modelRS = ipromoes
+                            .FirstOrDefault(g => g.Promo.Number == model.Promo.Number && g.TPMmode == TPMmode.RS);
+                        Context.Set<Promo>().Remove(modelRS.Promo);
+                        Context.SaveChanges();
+                        //нужно взять все причастные записи IncrementalPromo по promo
+                        List<IncrementalPromo> incrementalPromos = Context.Set<IncrementalPromo>()
+                            .Include(x => x.Promo.PromoProducts.Select(y => y.PromoProductsCorrections))
+                            .Include(x => x.Promo.BTLPromoes)
+                            .Include(x => x.Promo.PromoProductTrees)
+                            .Include(x => x.Promo.PromoSupportPromoes)
+                            .Where(g => g.Promo.Number == model.Promo.Number && !g.Disabled)
+                            .ToList();
+                        List<IncrementalPromo> resultIncrementalPromos = RSmodeHelper.EditToIncrementalPromoRS(Context, incrementalPromos);
+                    }
+                }
 
                 return Updated(model);
             }
@@ -310,7 +337,7 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(IncrementalPromoesController.GetExportSettingsRS), data, visible: false, throwIfNotExists: false);
                 }
-                
+
                 HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
 
                 LoopHandler handler = new LoopHandler()
@@ -472,7 +499,7 @@ namespace Module.Frontend.TPM.Controllers
                 //{
                 //    columns = GetExportSettingsRS().Where(col => col.Field != "PlanPromoIncrementalLSV");
                 //}
-                
+
                 XLSXExporter exporter = new XLSXExporter(columns);
                 string exportDir = AppSettingsManager.GetSetting("EXPORT_DIRECTORY", "~/ExportFiles");
                 string filename = string.Format("{0}Template.xlsx", "IncrementalPromo");

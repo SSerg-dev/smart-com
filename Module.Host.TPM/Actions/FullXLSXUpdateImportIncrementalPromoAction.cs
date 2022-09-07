@@ -240,7 +240,6 @@ namespace Module.Host.TPM.Actions
         protected override int InsertDataToDatabase(IEnumerable<IEntity<Guid>> sourceRecords, DatabaseContext context)
         {
             ScriptGenerator generator = GetScriptGenerator();
-            IList<IncrementalPromo> toUpdate = new List<IncrementalPromo>();
             IList<ImportIncrementalPromo> filteredRecords = new List<ImportIncrementalPromo>();
             //List<Tuple<IEntity<Guid>, IEntity<Guid>>> toHisUpdate = new List<Tuple<IEntity<Guid>, IEntity<Guid>>>();
 
@@ -268,20 +267,46 @@ namespace Module.Host.TPM.Actions
                     Product product = context.Set<Product>().FirstOrDefault(x => x.ZREP == newRecord.ProductZREP && !x.Disabled);
                     if (product != null)
                     {
-                        IncrementalPromo oldRecord = context.Set<IncrementalPromo>()
-                            .FirstOrDefault(x => x.Product.ZREP == newRecord.ProductZREP && x.Promo.Number == newRecord.PromoNumber && !x.Disabled);
-                        if (oldRecord != null)
+                        List<IncrementalPromo> oldRecords = context.Set<IncrementalPromo>()
+                            .Where(x => x.Product.ZREP == newRecord.ProductZREP && x.Promo.Number == newRecord.PromoNumber && !x.Disabled)
+                            .ToList();
+
+                        if (oldRecords != null)
                         {
                             if (TPMmode == TPMmode.Current)
                             {
+                                IncrementalPromo oldRecord = oldRecords
+                                    .FirstOrDefault(x => x.TPMmode == TPMmode.Current);
                                 newRecord.Id = oldRecord.Id;
                                 oldRecord.PlanPromoIncrementalCases = newRecord.PlanPromoIncrementalCases;
                                 oldRecord.CasePrice = BaselineAndPriceCalculation.CalculateCasePrice(oldRecord, context);
                                 oldRecord.PlanPromoIncrementalLSV = oldRecord.CasePrice * oldRecord.PlanPromoIncrementalCases;
                                 oldRecord.LastModifiedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
-                                oldRecord.TPMmode = TPMmode;
-                                //toHisUpdate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(oldRecordCopy, oldRecord));
-                                toUpdate.Add(oldRecord);
+                                if (oldRecords.Count > 1)
+                                {
+                                    IncrementalPromo oldRecordRS = oldRecords
+                                        .FirstOrDefault(x => x.TPMmode == TPMmode.RS);
+                                    Promo deleteIP = context.Set<IncrementalPromo>()
+                                        .Include(g=>g.Promo).FirstOrDefault(g => g.PromoId == oldRecordRS.PromoId)
+                                        .Promo;
+                                    context.Set<Promo>().Remove(deleteIP);
+                                    context.SaveChanges();
+
+                                    List<IncrementalPromo> incrementalpromoes = context.Set<IncrementalPromo>()
+                                        .Include(x => x.Promo.PromoProducts.Select(y => y.PromoProductsCorrections))
+                                        .Include(x => x.Promo.BTLPromoes)
+                                        .Include(x => x.Promo.PromoProductTrees)
+                                        .Include(x => x.Promo.PromoSupportPromoes)
+                                        .Where(x => x.Promo.Number == newRecord.PromoNumber && !x.Disabled)
+                                        .ToList();
+                                    IncrementalPromo incrementalPromo = incrementalpromoes.FirstOrDefault(g => g.Product.ZREP == newRecord.ProductZREP);
+                                    incrementalpromoes = RSmodeHelper.EditToIncrementalPromoRS(context, incrementalpromoes);
+                                    incrementalPromo = incrementalpromoes.FirstOrDefault(g => g.Product.ZREP == newRecord.ProductZREP);
+                                    incrementalPromo.PlanPromoIncrementalCases = newRecord.PlanPromoIncrementalCases;
+                                    incrementalPromo.CasePrice = BaselineAndPriceCalculation.CalculateCasePrice(incrementalPromo, context);
+                                    incrementalPromo.PlanPromoIncrementalLSV = incrementalPromo.CasePrice * incrementalPromo.PlanPromoIncrementalCases;
+                                    incrementalPromo.LastModifiedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                                }
                             }
                             if (TPMmode == TPMmode.RS)
                             {
@@ -313,9 +338,8 @@ namespace Module.Host.TPM.Actions
                         }
                     }
                 }
-            }
-
-            context.SaveChanges();
+                context.SaveChanges();
+            }            
 
             return filteredRecords.Count();
         }

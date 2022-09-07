@@ -88,7 +88,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
             rollingScenario.Disabled = true;
             rollingScenario.DeletedDate = DateTimeOffset.Now;
             rollingScenario.PromoStatus = promoStatusCancelled;
-            Context.Set<Promo>().RemoveRange(rollingScenario.Promoes);
+            Context.Set<Promo>().RemoveRange(rollingScenario.Promoes.Where(g=>g.TPMmode == TPMmode.RS));
             Context.SaveChanges();
         }
         public static void OnApprovalRSPeriod(Guid rollingScenarioId, DatabaseContext Context)
