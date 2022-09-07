@@ -1217,6 +1217,8 @@ namespace Module.Persist.TPM
             builder.Entity<PromoProductCorrectionView>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PromoProductCorrectionView>("PromoProductCorrectionViews");
             builder.Entity<PromoProductCorrectionView>().Collection.Action("ExportXLSX");
             builder.Entity<PromoProductCorrectionView>().Collection.Action("ExportCorrectionXLSX");
+            builder.Entity<PromoProductCorrectionView>().Collection.Action("FullImportXLSX");
+            builder.Entity<PromoProductCorrectionView>().Collection.Action("DownloadTemplateXLSX");
         }
 
 

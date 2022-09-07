@@ -136,7 +136,13 @@ namespace Module.Frontend.TPM.Controllers
                 HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(PromoHelper), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PromoHelper.GetPromoProductCorrectionExportSettings), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("TPMmode", tPMmode, data, visible: false, throwIfNotExists: false);
+                if(tPMmode == TPMmode.Current)
+                {
+                }
+                if (tPMmode == TPMmode.RS)
+                {
+                    HandlerDataHelper.SaveIncomingArgument("TPMmode", tPMmode, data, visible: false, throwIfNotExists: false);
+                }
 
                 LoopHandler handler = new LoopHandler()
                 {
@@ -228,7 +234,6 @@ namespace Module.Frontend.TPM.Controllers
             // если существует коррекция на данный PromoProduct, то не создаем новый объект
             var item = Context.Set<PromoProductsCorrection>()
                 .Include(g => g.PromoProduct.Promo.IncrementalPromoes)
-                .Include(g => g.PromoProduct.Promo.BTLPromoes)
                 .Include(g => g.PromoProduct.Promo.PromoSupportPromoes)
                 .Include(g => g.PromoProduct.Promo.PromoProductTrees)
                 .FirstOrDefault(x => x.PromoProductId == modelMapp.PromoProductId && x.TempId == modelMapp.TempId && !x.Disabled);
@@ -239,13 +244,12 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     List<PromoProductsCorrection> promoProductsCorrections = Context.Set<PromoProductsCorrection>()
                         .Include(g => g.PromoProduct.Promo.IncrementalPromoes)
-                        .Include(g => g.PromoProduct.Promo.BTLPromoes)
                         .Include(g => g.PromoProduct.Promo.PromoSupportPromoes)
                         .Include(g => g.PromoProduct.Promo.PromoProductTrees)
                         .Where(x => x.PromoProduct.PromoId == item.PromoProduct.PromoId && !x.Disabled)
                         .ToList();
                     promoProductsCorrections = RSmodeHelper.EditToPromoProductsCorrectionRS(Context, promoProductsCorrections);
-                    item = promoProductsCorrections.FirstOrDefault(g => g.PromoProduct.Promo.Number == item.PromoProduct.Promo.Number);
+                    item = promoProductsCorrections.FirstOrDefault(g => g.PromoProduct.ZREP == item.PromoProduct.ZREP);
                 }
                 if (item.PromoProduct.Promo.NeedRecountUplift == false && String.IsNullOrEmpty(item.TempId))
                 {
@@ -351,7 +355,6 @@ namespace Module.Frontend.TPM.Controllers
             {
                 var model = Context.Set<PromoProductsCorrection>()
                     .Include(g => g.PromoProduct.Promo.IncrementalPromoes)
-                    .Include(g => g.PromoProduct.Promo.BTLPromoes)
                     .Include(g => g.PromoProduct.Promo.PromoSupportPromoes)
                     .Include(g => g.PromoProduct.Promo.PromoProductTrees)
                     .FirstOrDefault(x => x.Id == key);
@@ -386,7 +389,6 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     List<PromoProductsCorrection> promoProductsCorrections = Context.Set<PromoProductsCorrection>()
                         .Include(g => g.PromoProduct.Promo.IncrementalPromoes)
-                        .Include(g => g.PromoProduct.Promo.BTLPromoes)
                         .Include(g => g.PromoProduct.Promo.PromoSupportPromoes)
                         .Include(g => g.PromoProduct.Promo.PromoProductTrees)
                         .Where(x => x.PromoProduct.PromoId == model.PromoProduct.PromoId && !x.Disabled)
@@ -509,7 +511,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public async Task<HttpResponseMessage> FullImportXLSX()
+        public async Task<HttpResponseMessage> FullImportXLSX([FromUri] TPMmode tPMmode)
         {
             try
             {
@@ -521,7 +523,7 @@ namespace Module.Frontend.TPM.Controllers
                 var importDir = AppSettingsManager.GetSetting("IMPORT_DIRECTORY", "ImportFiles");
                 var fileName = await FileUtility.UploadFile(Request, importDir);
 
-                CreateImportTask(fileName, "FullXLSXUpdateImportPromoProductsCorrectionHandler");
+                CreateImportTask(fileName, "FullXLSXUpdateImportPromoProductsCorrectionHandler", tPMmode);
 
                 var result = new HttpResponseMessage(HttpStatusCode.OK);
                 result.Content = new StringContent("success = true");
@@ -535,7 +537,7 @@ namespace Module.Frontend.TPM.Controllers
             }
         }
 
-        private void CreateImportTask(string fileName, string importHandler)
+        private void CreateImportTask(string fileName, string importHandler, TPMmode tPMmode)
         {
             var userId = user == null ? Guid.Empty : (user.Id ?? Guid.Empty);
 
@@ -552,6 +554,7 @@ namespace Module.Frontend.TPM.Controllers
                     DisplayName = Path.GetFileName(fileName)
                 };
 
+                HandlerDataHelper.SaveIncomingArgument("TPMmode", tPMmode, handlerData, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("File", fileModel, handlerData, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("UserId", userId, handlerData, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, handlerData, visible: false, throwIfNotExists: false);
@@ -583,11 +586,19 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult DownloadTemplateXLSX()
+        public IHttpActionResult DownloadTemplateXLSX([FromUri] TPMmode tPMmode)
         {
             try
             {
                 IEnumerable<Column> columns = GetImportSettings();
+                //if (tPMmode == TPMmode.Current)
+                //{
+                //    columns = GetImportSettings();
+                //}
+                //if (tPMmode == TPMmode.RS)
+                //{
+                //    columns = GetImportSettingsRS();
+                //}
                 XLSXExporter exporter = new XLSXExporter(columns);
                 string exportDir = AppSettingsManager.GetSetting("EXPORT_DIRECTORY", "~/ExportFiles");
                 string filename = string.Format("{0}Template.xlsx", "PromoProductsUplift");
@@ -615,6 +626,21 @@ namespace Module.Frontend.TPM.Controllers
                 new Column { Order = orderNumber++, Field = "PromoNumber", Header = "Promo ID", Quoting = false,  Format = "0"  },
                 new Column { Order = orderNumber++, Field = "ProductZREP", Header = "ZREP", Quoting = false,  Format = "0"  },
                 new Column { Order = orderNumber++, Field = "PlanProductUpliftPercent", Header = "Plan Product Uplift, %", Quoting = false,  Format = "0.00"},
+
+            };
+            return columns;
+        }
+
+        private IEnumerable<Column> GetImportSettingsRS()
+        {
+            int orderNumber = 1;
+            IEnumerable<Column> columns = new List<Column>()
+            {
+                new Column { Order = orderNumber++, Field = "TPMmode", Header = "Indicator", Quoting = false },
+                new Column { Order = orderNumber++, Field = "PromoNumber", Header = "Promo ID", Quoting = false,  Format = "0"  },
+                new Column { Order = orderNumber++, Field = "ProductZREP", Header = "ZREP", Quoting = false,  Format = "0"  },
+                new Column { Order = orderNumber++, Field = "PlanProductUpliftPercent", Header = "Plan Product Uplift, %", Quoting = false,  Format = "0.00"},
+
             };
             return columns;
         }

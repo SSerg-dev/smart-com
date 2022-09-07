@@ -3163,6 +3163,10 @@
     <Compile Include="Migrations\202209061142318_Add_RSperiodExpiredHandler.Designer.cs">
       <DependentUpon>202209061142318_Add_RSperiodExpiredHandler.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202209070539379_Change_RS_Additional.cs" />
+    <Compile Include="Migrations\202209070539379_Change_RS_Additional.Designer.cs">
+      <DependentUpon>202209070539379_Change_RS_Additional.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\202209010707260_EmptyMergeRS.cs" />
     <Compile Include="Migrations\202209010707260_EmptyMergeRS.Designer.cs">
       <DependentUpon>202209010707260_EmptyMergeRS.cs</DependentUpon>
@@ -5992,6 +5996,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202209061142318_Add_RSperiodExpiredHandler.resx">
       <DependentUpon>202209061142318_Add_RSperiodExpiredHandler.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202209070539379_Change_RS_Additional.resx">
+      <DependentUpon>202209070539379_Change_RS_Additional.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202209010707260_EmptyMergeRS.resx">
       <DependentUpon>202209010707260_EmptyMergeRS.cs</DependentUpon>

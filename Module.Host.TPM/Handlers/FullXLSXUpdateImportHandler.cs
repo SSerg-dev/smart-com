@@ -3,6 +3,7 @@ using Interfaces.Implementation.Import.FullImport;
 using Looper.Core;
 using Looper.Parameters;
 using Module.Host.TPM.Actions;
+using Module.Persist.TPM.Model.Interfaces;
 using Moule.Host.TPM.Actions;
 using ProcessingHost.Handlers.Import;
 using System;
@@ -372,17 +373,19 @@ namespace Module.Host.TPM.Handlers
     {
         private Guid userId;
         private Guid handlerId;
+        private TPMmode tPMmode;
 
         public override void Action(HandlerInfo info, ExecuteData data)
         {
             userId = HandlerDataHelper.GetIncomingArgument<Guid>("UserId", info.Data, false);
+            tPMmode = HandlerDataHelper.GetIncomingArgument<TPMmode>("TPMmode", info.Data, throwIfNotExists: false);
             handlerId = info.HandlerId;
             base.Action(info, data);
         }
 
         protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
         {
-            return new FullXLSXUpdateImportPromoProductsCorrectionAction(settings, userId, handlerId);
+            return new FullXLSXUpdateImportPromoProductsCorrectionAction(settings, userId, handlerId, tPMmode);
         }
     }
 
