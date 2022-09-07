@@ -32,7 +32,7 @@
                 items: [
                     {
                         glyph: 0xf220,
-                        itemgroup: 'loadimportbutton',
+                        itemId: 'loadimportppcbutton',
                         exactlyModelCompare: true,
                         text: l10n.ns('core', 'additionalMenu').value('fullImportXLSX'),
                         resource: '{0}',
@@ -41,7 +41,7 @@
                     },
                     {
                         glyph: 0xf21d,
-                        itemId: 'loadimporttemplatexlsxbutton',
+                        itemId: 'customloadimporttemplatebutton',
                         exactlyModelCompare: true,
                         text: l10n.ns('core', 'additionalMenu').value('importTemplateXLSX'),
                         action: 'DownloadTemplateXLSX',

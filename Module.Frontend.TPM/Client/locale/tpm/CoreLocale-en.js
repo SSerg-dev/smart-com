@@ -55,7 +55,7 @@
     'loginConfirmMessage': 'You will be redirected to the main page as user {0}.',
     'SessionExpiredWindowTitle': 'Session is expired',
     'SessionExpiredMessage': 'Due to inactivity your session has expired. Application will be reloaded.',
-    'SignalRConnectionWasLost': 'Session timed outt.',
+    'SignalRConnectionWasLost': 'Session timed out.',
     'SignalRConnectionWasLostMessage': 'Session timed out. Application will be reloaded.',
 
     'customValidators': {
