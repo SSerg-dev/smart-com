@@ -31,6 +31,7 @@ using Utility.Import.Cache;
 using Utility.Import.ImportModelBuilder;
 using Utility.Import.ModelBuilder;
 using Utility.LogWriter;
+using Module.Host.TPM.Util;
 
 namespace Module.Host.TPM.Actions
 {
