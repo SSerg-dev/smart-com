@@ -3135,6 +3135,10 @@
     <Compile Include="Migrations\202209061142318_Add_RSperiodExpiredHandler.Designer.cs">
       <DependentUpon>202209061142318_Add_RSperiodExpiredHandler.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202209070539379_Change_RS_Additional.cs" />
+    <Compile Include="Migrations\202209070539379_Change_RS_Additional.Designer.cs">
+      <DependentUpon>202209070539379_Change_RS_Additional.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
@@ -5923,6 +5927,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202209061142318_Add_RSperiodExpiredHandler.resx">
       <DependentUpon>202209061142318_Add_RSperiodExpiredHandler.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202209070539379_Change_RS_Additional.resx">
+      <DependentUpon>202209070539379_Change_RS_Additional.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

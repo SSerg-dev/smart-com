@@ -710,6 +710,12 @@
         if (['Administrator', 'CMManager', 'CustomerMarketing', 'FunctionalExpert', 'KeyAccountManager', 'DemandPlanning'].includes(App.UserInfo.getCurrentRole()['SystemName'])) {
             isEditable = true;
         }
+        if ((status == 'onapproval' || status == 'approved') && mode == 'RS') {
+            isDeletable = true;
+        }
+        if ((status == 'planned' || status == 'started' || status == 'finished') && mode == 'RS') {
+            isEditable = false;
+        }
         if (['Administrator', 'KeyAccountManager', 'FunctionalExpert'].includes(App.UserInfo.getCurrentRole()['SystemName']) && status == 'approved' && mode != 'RS') {
             isPlannable = true;
         }
